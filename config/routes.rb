@@ -1,11 +1,10 @@
 Rails.application.routes.draw do
-
+ 
   devise_for :admin_users, ActiveAdmin::Devise.config
   ActiveAdmin.routes(self)
- 
-  resources :encounters
 
   resources :pois, :only => [:index]
+  resources :encounters, :only => [:index, :create]
 
   resources :users do
     collection do
