@@ -1,4 +1,4 @@
-unless @error
+if @user
   json.set! :user do
     json.id @user.id.to_s
     json.email @user.email
