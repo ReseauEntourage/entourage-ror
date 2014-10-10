@@ -1,7 +1,12 @@
-json.array! @pois do |poi|
+json.categories @categories do |category|
+	json.id category.id.to_s
+	json.name category.name
+end
+
+json.pois @pois do |poi|
+	json.id poi.id.to_s
 	json.name poi.name
 	json.description poi.description
-	json.poi_type poi.poi_type
 	json.longitude poi.longitude
 	json.latitude poi.latitude
 	json.adress poi.adress
@@ -9,4 +14,6 @@ json.array! @pois do |poi|
 	json.website poi.website
 	json.email poi.email
 	json.audience poi.audience
+	json.category_id poi.category_id
+
 end

@@ -1,4 +1,4 @@
-ActiveAdmin.register Poi do
+ActiveAdmin.register Category do
 
 
   # See permitted parameters documentation:
@@ -14,6 +14,6 @@ ActiveAdmin.register Poi do
   #   permitted
   # end
 
-  permit_params :name, :description, :longitude, :latitude, :adress, :phone, :website, :email, :audience, :category, :category_id
+  permit_params :name
 
 end
