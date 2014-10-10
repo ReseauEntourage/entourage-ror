@@ -1,13 +1,10 @@
 Rails.application.routes.draw do
- 
-  resources :encounters
-
-  resources :groups
-
-  resources :street_people
 
   devise_for :admin_users, ActiveAdmin::Devise.config
   ActiveAdmin.routes(self)
+ 
+  resources :encounters
+
   resources :pois, :only => [:index]
 
   # The priority is based upon order of creation: first created -> highest priority.

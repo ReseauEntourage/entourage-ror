@@ -1,10 +1,10 @@
 json.categories @categories do |category|
-	json.id category.id.to_s
+	json.id category.id
 	json.name category.name
 end
 
 json.pois @pois do |poi|
-	json.id poi.id.to_s
+	json.id poi.id
 	json.name poi.name
 	json.description poi.description
 	json.longitude poi.longitude

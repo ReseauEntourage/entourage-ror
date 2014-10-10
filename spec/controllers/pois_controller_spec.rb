@@ -1,7 +1,7 @@
 RSpec.describe "PoisController" do
   describe "GET index" do
     it "assigns @categories" do
-      expect(assigns(:teams)).to eq([team])
+      expect(assigns(:categories)).to eq([categories])
     end
   end
 end
