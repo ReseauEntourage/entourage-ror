@@ -1,2 +1,0 @@
-class StreetPeopleController < ApplicationController
-end

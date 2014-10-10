@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141010132550) do
+ActiveRecord::Schema.define(version: 20141010150026) do
 
   create_table "active_admin_comments", force: true do |t|
     t.string   "namespace"
@@ -56,28 +56,6 @@ ActiveRecord::Schema.define(version: 20141010132550) do
     t.datetime "date"
     t.string   "location"
     t.integer  "user_id"
-    t.integer  "group_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "groups", force: true do |t|
-    t.integer  "street_person_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "groups_users", id: false, force: true do |t|
-    t.integer "group_id"
-    t.integer "user_id"
-  end
-
-  create_table "messages", force: true do |t|
-    t.date     "date"
-    t.string   "content"
-    t.integer  "user_id"
-    t.integer  "group_id"
-    t.boolean  "is_private"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -95,15 +73,6 @@ ActiveRecord::Schema.define(version: 20141010132550) do
     t.string   "email"
     t.string   "audience"
     t.integer  "category_id"
-  end
-
-  create_table "street_people", force: true do |t|
-    t.string   "name"
-    t.string   "description"
-    t.string   "language"
-    t.string   "usual_location"
-    t.datetime "created_at"
-    t.datetime "updated_at"
   end
 
   create_table "users", force: true do |t|
