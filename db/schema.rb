@@ -67,4 +67,10 @@ ActiveRecord::Schema.define(version: 20141010093648) do
     t.integer  "category_id"
   end
 
+  create_table "users", force: true do |t|
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "email"
+  end
+
 end
