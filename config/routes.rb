@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
  
-  resources :encounters
+  resources :encounters, :only => [:index, :create]
 
   resources :groups
 
