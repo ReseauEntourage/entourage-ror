@@ -1,5 +1,13 @@
 Rails.application.routes.draw do
  
+  resources :messages
+
+  resources :encounters
+
+  resources :groups
+
+  resources :street_people
+
   devise_for :admin_users, ActiveAdmin::Devise.config
   ActiveAdmin.routes(self)
   resources :pois, :only => [:index]
