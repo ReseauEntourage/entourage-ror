@@ -70,6 +70,9 @@ GEM
     execjs (2.2.1)
     factory_girl (4.4.0)
       activesupport (>= 3.0.0)
+    factory_girl_rails (4.4.1)
+      factory_girl (~> 4.4.0)
+      railties (>= 3.0.0)
     formtastic (3.0.0)
       actionpack (>= 3.2.13)
     has_scope (0.6.0.rc)
@@ -191,7 +194,7 @@ DEPENDENCIES
   activeadmin!
   coffee-rails (~> 4.0.0)
   devise
-  factory_girl
+  factory_girl_rails
   jbuilder (~> 2.0)
   jquery-rails
   pg
