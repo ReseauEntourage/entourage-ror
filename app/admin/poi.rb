@@ -14,6 +14,6 @@ ActiveAdmin.register Poi do
   #   permitted
   # end
 
-  permit_params :name, :description, :longitude, :latitude, :poi_type
+  permit_params :name, :description, :longitude, :latitude, :poi_type, :adress, :phone, :website, :email, :audience
 
 end
