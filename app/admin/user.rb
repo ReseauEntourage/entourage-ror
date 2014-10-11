@@ -14,8 +14,7 @@ ActiveAdmin.register User do
   #   permitted
   # end
 
-  remove_filter :users_groups
-  permit_params :email
+  permit_params :email, :first_name, :last_name, :phone
 
 
 end
