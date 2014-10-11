@@ -4,4 +4,8 @@ class User < ActiveRecord::Base
 
   has_many :encounters
 
+  def to_s
+    "#{id} - #{first_name} #{last_name}"
+  end
+
 end
