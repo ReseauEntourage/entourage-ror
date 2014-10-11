@@ -35,3 +35,4 @@ end
 
 gem 'devise'
 gem 'activeadmin', github: 'activeadmin'
+gem 'newrelic_rpm'
