@@ -4,10 +4,11 @@ RSpec.describe PoisController, :type => :controller do
 
   let!(:poi) { FactoryGirl.create :poi }
   let!(:category) { FactoryGirl.create :category }
+  let!(:user) { create :user }
 
   describe "GET index" do
-    before(:each)do
-      get 'index', :format => :json
+    before(:each) do
+      get 'index', token: user.token, :format => :json
     end
     it "returns http success" do
       expect(response).to be_success
