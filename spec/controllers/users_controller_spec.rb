@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe UsersController, :type => :controller do
+RSpec.describe UsersController, :type => :controller do
 
   describe 'users enrollment' do
     let!(:user) { create :user }
