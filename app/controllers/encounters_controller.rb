@@ -7,12 +7,12 @@ class EncountersController < ApplicationController
 
   def create
     @encounter = Encounter.create(encounters_params)
-    if(@encounter.valid?)
+
+    if @encounter.valid?
       redirect_to action: 'index'
     else
       render :json => { :errors => @encounter.errors.full_messages }, :status => 403
     end
-
   end
 
   private

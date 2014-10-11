@@ -3,6 +3,7 @@ Rails.application.routes.draw do
   devise_for :admin_users, ActiveAdmin::Devise.config
   ActiveAdmin.routes(self)
 
+  get 'map' => 'map#index'
   resources :pois, :only => [:index]
   resources :encounters, :only => [:index, :create]
 
