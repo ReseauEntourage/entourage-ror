@@ -14,6 +14,6 @@ ActiveAdmin.register Encounter do
   #   permitted
   # end
 
-  permit_params :date, :location, :user_id, :user, :street_person_name, :message
+  permit_params :date, :user_id, :user, :street_person_name, :message, :latitude, :longitude
 
 end
