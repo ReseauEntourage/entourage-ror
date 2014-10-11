@@ -35,4 +35,5 @@ end
 
 gem 'devise'
 gem 'activeadmin', github: 'activeadmin'
+gem 'active_admin_import' , '2.1.1'
 gem 'newrelic_rpm'
