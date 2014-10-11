@@ -1,4 +1,4 @@
-json.encounters do
+json.encounter do
   json.id @encounter.id
   json.date @encounter.date
   json.latitude @encounter.latitude
