@@ -15,7 +15,6 @@ gem 'jbuilder', '~> 2.0'
 
 gem 'sdoc', '~> 0.4.0',          group: :doc
 
-
 group :development do
 	gem 'sqlite3'
 	gem 'spring'
@@ -29,7 +28,7 @@ group :development, :test do
 end
 
 group :production do
-	gem 'pg'
+  gem 'pg'
   gem 'rails_12factor'
 end
 

@@ -3,7 +3,8 @@ require 'rails_helper'
 RSpec.describe PoisController, :type => :controller do
 
   describe "GET index" do
-    context "returns" do
+    
+    context "Access control" do
       let!(:user) { FactoryGirl.create :user }
       it "http success if user is logged in" do
         get 'index', token: user.token, :format => :json
@@ -15,7 +16,7 @@ RSpec.describe PoisController, :type => :controller do
       end
     end
 
-    context "assigns" do
+    context "view scope variable assignment" do
       let!(:poi) { FactoryGirl.create :poi }
       let!(:category) { FactoryGirl.create :category }
       let!(:user) { create :user }
@@ -27,5 +28,6 @@ RSpec.describe PoisController, :type => :controller do
         expect(assigns(:pois)).to eq([poi])
       end
     end
+
   end
 end
