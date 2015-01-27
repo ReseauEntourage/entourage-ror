@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141011105539) do
+ActiveRecord::Schema.define(version: 20150127134009) do
 
   create_table "active_admin_comments", force: true do |t|
     t.string   "namespace"
@@ -78,6 +78,8 @@ ActiveRecord::Schema.define(version: 20141011105539) do
     t.string   "audience"
     t.integer  "category_id"
   end
+
+  add_index "pois", ["latitude", "longitude"], name: "index_pois_on_latitude_and_longitude"
 
   create_table "users", force: true do |t|
     t.datetime "created_at"
