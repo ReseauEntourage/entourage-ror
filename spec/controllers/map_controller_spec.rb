@@ -57,16 +57,16 @@ RSpec.describe MapController, :type => :controller do
         get 'index', token: user.token, :format => :json
         expect(assigns(:pois)).to eq([poi1, poi2, poi3])
       end
-      it "returns 1 poi if coordinates provided and 1 km radius" do
-        get 'index', token: user.token, latitude: 48.7, longitude: 2.3, radius: 1,:format => :json
+      it "returns 1 poi if coordinates provided and 1 km distance" do
+        get 'index', token: user.token, latitude: 48.7, longitude: 2.3, distance: 1,:format => :json
         expect(assigns(:pois)).to eq([poi1])
       end
-      it "returns 2 pois if coordinates provided and 15 km radius" do
-        get 'index', token: user.token, latitude: 48.7, longitude: 2.3, radius: 15,:format => :json
+      it "returns 2 pois if coordinates provided and 15 km distance" do
+        get 'index', token: user.token, latitude: 48.7, longitude: 2.3, distance: 15,:format => :json
         expect(assigns(:pois)).to eq([poi1, poi2])
       end   
-      it "returns 3 pois if coordinates provided and 30 km radius" do
-        get 'index', token: user.token, latitude: 48.7, longitude: 2.3, radius: 30,:format => :json
+      it "returns 3 pois if coordinates provided and 30 km distance" do
+        get 'index', token: user.token, latitude: 48.7, longitude: 2.3, distance: 30,:format => :json
         expect(assigns(:pois)).to eq([poi1, poi2, poi3])
       end
     end
