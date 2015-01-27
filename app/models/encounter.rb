@@ -4,6 +4,8 @@ class Encounter < ActiveRecord::Base
   validates :latitude, :longitude, presence: true, numericality: true
 
 	belongs_to :user
+  
+  geocoded_by :address
 
   def to_s
     "#{id} - Entre #{user.first_name} et #{street_person_name}"
