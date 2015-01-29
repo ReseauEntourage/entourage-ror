@@ -14,7 +14,7 @@ class EncountersController < ApplicationController
 
   def encounters_params
     if params[:encounter]
-      params.require(:encounter).permit(:street_person_name, :date, :latitude, :longitude, :message, :voice_message_url)
+      params.require(:encounter).permit(:street_person_name, :date, :latitude, :longitude, :message, :voice_message )
     end
   end
 
