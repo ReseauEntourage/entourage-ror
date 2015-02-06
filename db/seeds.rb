@@ -8,14 +8,14 @@
 
 #<Category id: 8, created_at: "2014-10-10 15:54:50", updated_at: "2014-10-10 15:54:50", name: "Test">]>
 
-se_nourrir = Category.find_by_name("Se nourrir")
-se_loger = Category.find_by_name("Se loger")
-se_soigner = Category.find_by_name("Se soigner")
-se_rafraichir = Category.find_by_name("Se rafraîchir")
-s_orienter = Category.find_by_name("S'orienter")
-s_occuper_de_soi = Category.find_by_name("S'occuper de soi")
-se_reinserer = Category.find_by_name("Se réinsérer")
-autres = Category.find_by_name("Test")
+se_nourrir = Category.find_or_create_by(name: "Se nourrir")
+se_loger = Category.find_or_create_by(name: "Se loger")
+se_soigner = Category.find_or_create_by(name: "Se soigner")
+se_rafraichir = Category.find_or_create_by(name: "Se rafraîchir")
+s_orienter = Category.find_or_create_by(name: "S'orienter")
+s_occuper_de_soi = Category.find_or_create_by(name: "S'occuper de soi")
+se_reinserer = Category.find_or_create_by(name: "Se réinsérer")
+autres = Category.find_or_create_by(name: "Test")
 
 Poi.create(name:"CASVP (Centre d'action sociale de la Ville de Paris) - Sous-direction de la solidarité et de la lutte contre l'exclusion", description:"Tél. : 01 44 67 18 34 ou 01 44 67 18 28. Fax : 01 44 67 18 71", latitude:48.845401, longitude:2.3696595, adress: "5, boulevard Diderot, 75012", phone:"01 44 67 18 34", website:"", email:"", audience:"", category_id:se_nourrir.id)
 Poi.create(name:"RESTAURANTS DU COEUR", description:"Repas chauds 19h30-20h45. M° Pyramide", latitude:48.8660793, longitude:2.3327335, adress: "24, rue Saint-Roch, 75001", phone:"", website:"", email:"", audience:"Personnes sans abri", category_id:se_nourrir.id)
