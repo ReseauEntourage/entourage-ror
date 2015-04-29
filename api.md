@@ -112,3 +112,20 @@ Users related resources of the **Entourage API**
 + Response 400 (application/json)
 
         {"error":{"status":400,"message":"Login failed"}}
+
+# Group Newsletter
+
+Newsletter subscription related resources of the **Entourage API**
+
+## Newsletter actions [/newsletter_subscription.json]
+
+### Create new subscription [POST]
+
++ Request (application/json)
+    
+        {"newsletter_subscription":{"email":"newslette@subscription.com","active":true}}
+
++ Response 200
+        
++ Response 400
+
