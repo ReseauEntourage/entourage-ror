@@ -6,7 +6,7 @@ class NewsletterSubscriptionsController < ApplicationController
   def create
     newsletter_subscription = NewsletterSubscription.new(newsletter_subscription_params)
     if newsletter_subscription.save
-      head :created
+      render json: newsletter_subscription, status: :created
     else
       head :bad_request
     end
