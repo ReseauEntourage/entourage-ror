@@ -1,14 +1,13 @@
 FORMAT: 1A
+HOST: http://entourage-back-preprod.herokuapp.com
 
 # Entourage
 Entourage application backend API documentation.
 
 # Group Map
 Map related resources of the **Entourage API**
-
 ## Map collection [/map.json{?token,limit,latitude,longitude,distance}]
 A single Note object with all its details
-
 + Parameters
     + token (required, string, `aaabbbcccddd`) ... Token identifying the current user
     + limit (optional, number, `15`) ... Max number of pois to return. 45 if not defined
@@ -17,7 +16,6 @@ A single Note object with all its details
     + distance (optional, number, `1`) ... Half side of the result square (for geolocated results)
 
 ### Get all map points [GET]
-
 + Response 200 (application/json)
 
     + Body
@@ -39,14 +37,11 @@ A single Note object with all its details
 
 # Group Encounters
 Encounters related resources of the **Entourage API**
-
 ## Encounters collection [/encounters.json{?token}]
-
 + Parameters
     + token (required, string, `aaabbbcccddd`) ... Token identifying the current user
 
 ### Create an Encounter [POST]
-
 + Request (application/json)
     
         {"encounter":{"street_person_name":"jean","date":"2014-10-11 15:19:45","latitude":42,"longitude":2,"message":"test","voice_message":"http://www.google.com"}}
@@ -65,14 +60,11 @@ Encounters related resources of the **Entourage API**
 
 # Group POIs
 POI related resources of the **Entourage API**
-
 ## Pois collection [/pois.json{?token}]
-
 + Parameters
     + token (required, string, `aaabbbcccddd`) ... Token identifying the current user
 
 ### List all POIs [GET]
-
 + Response 200 (application/json)
 
         {categories: [{id: 1,name: "Se nourrir"},{id: 2,name: "Se loger"},{id: 3,name: "Se soigner"},{id: 4,name: "Se rafraîchir"},{id: 5,name: "S'orienter"},{id: 6,name: "S'occuper de soi"},{id: 7,name: "Se réinsérer"}],
@@ -87,13 +79,10 @@ POI related resources of the **Entourage API**
         {"error":{"status":401,"message":"Please sign-in"}}
 
 # Group Users
-
 Users related resources of the **Entourage API**
 
 ## User actions [/login.json]
-
 ### Login user [POST]
-
 + Request
 
     + Header
@@ -114,13 +103,10 @@ Users related resources of the **Entourage API**
         {"error":{"status":400,"message":"Login failed"}}
 
 # Group Newsletter
-
 Newsletter subscription related resources of the **Entourage API**
 
 ## Newsletter actions [/newsletter_subscription.json]
-
 ### Create new subscription [POST]
-
 + Request (application/json)
     
         {"newsletter_subscription":{"email":"newslette@subscription.com","active":true}}
@@ -129,21 +115,17 @@ Newsletter subscription related resources of the **Entourage API**
         
 + Response 400
 
-
-
 # Group Tours
 Tours, or "maraude", are definied only by their type (attribute tour_type).
 
 tour_type should be within ["social", "other", "food"]
 
 ## Tours collection [/tours{?token}]
-
 + Parameters
     + token (required, string, `aaabbbcccddd`) ... Token identifying the current user
 
 
 ### Create a tour [POST]
-
 + Request (application/json)
     
         {"tour":{"tour_type":"social"}}
@@ -161,13 +143,11 @@ tour_type should be within ["social", "other", "food"]
         {"error":{"status":401,"message":"Please sign-in"}}
 
 ## Tour [/tours/{id}{?token}]
-
 + Parameters
     + id (required, integer, `1`) ... Identifier of the tour to be retrieved
     + token (required, string, `aaabbbcccddd`) ... Token identifying the current user
 
 ### Retrieve a tour [GET]
-
 + Request (application/json)
     
 + Response 200 (application/json)
@@ -182,11 +162,8 @@ tour_type should be within ["social", "other", "food"]
 
         {"error":{"status":401,"message":"Please sign-in"}}
 
-
-
 # Group Tour Points
 Tour points describe the tour itinerary
-
 ## Tour Points collection [/tours/{tour_id}/tour_points{?token}]
 
 + Parameters
@@ -194,7 +171,6 @@ Tour points describe the tour itinerary
     + token (required, string, `aaabbbcccddd`) ... Token identifying the current user
 
 ### Create a tour point [POST]
-
 + Request (application/json)
     
         {"tour_point":{"latitude":1.5,"longitude":1.5,"passing_time":"2015-07-07T10:31:43.000+02:00"}}
@@ -210,4 +186,37 @@ Tour points describe the tour itinerary
 + Response 401 (application/json)
 
         {"error":{"status":401,"message":"Please sign-in"}}
+
++ Response 404 (application/json)
+
+        {"error":{"status":404,"message":"Could not find tour with id 233232"}}
+
+# Group Tour Encounters
+Encounters occured during tour
+## Tour Encounters collection [/tours/{tour_id}/encounters{?token}]
+
++ Parameters
+    + tour_id (required, integer, `1`) ... Identifier of the tour related to the point
+    + token (required, string, `aaabbbcccddd`) ... Token identifying the current user
+
+### Create an encounter [POST]
++ Request (application/json)
+    
+        {"encounter":{"street_person_name":"jean","date":"2014-10-11 15:19:45","latitude":42,"longitude":2,"message":"test","voice_message":"http://www.google.com"}}
+
++ Response 200 (application/json)
+
+        {"encounter":{"id":1,"date":"2014-10-11T15:19:45.000+02:00","latitude":42.0,"longitude":2.0,"user_id":1,"user_name":"Eric","street_person_name":"jean","message":"test","voice_message":"http://www.google.com"}}
+        
++ Response 400 (application/json)
+
+        {"error":{"status":400,"message":"Could not create encouter","reasons":["Date can't be blank","Street person name can't be blank","Latitude can't be blank","Latitude is not a number","Longitude can't be blank","Longitude is not a number"]}}
+
++ Response 401 (application/json)
+
+        {"error":{"status":401,"message":"Please sign-in"}}
+
++ Response 404 (application/json)
+
+        {"error":{"status":404,"message":"Could not find tour with id 233232"}}
 
