@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
 
+  resources :tours, only: [:index,:create,:show]
+
   resources :newsletter_subscriptions
 
   devise_for :admin_users, ActiveAdmin::Devise.config

@@ -129,3 +129,32 @@ Newsletter subscription related resources of the **Entourage API**
         
 + Response 400
 
+
+
+# Group Tours
+Tours related resources of the **Entourage API**
+
+## Tours collection [/tours{?token}]
+
++ Parameters
+    + token (required, string, `aaabbbcccddd`) ... Token identifying the current user
+    + tour_type (required, string, `social`) ... Type of the tour. Must be within ["social", "food", "other"]
+
+### Create an Encounter [POST]
+
++ Request (application/json)
+    
+        {"tour":{"tour_type":"social"}}
+
++ Response 200 (application/json)
+
+        {"tour":{"id":1,"type":"social"}}
+        
++ Response 400 (application/json)
+
+        {"error":{"status":400,"message":"Could not create tour","reasons":["Tour type is not included in the list"]}}
+
++ Response 401 (application/json)
+
+        {"error":{"status":401,"message":"Please sign-in"}}
+

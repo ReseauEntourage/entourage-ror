@@ -14,7 +14,7 @@ class ApplicationController < ActionController::Base
 
   def require_login
     unless user_logged_in
-      render layout: 'unauthorized', status: :unauthorized
+      render 'unauthorized', status: :unauthorized
     end
   end
 
