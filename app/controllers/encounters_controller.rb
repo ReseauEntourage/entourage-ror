@@ -4,8 +4,12 @@ class EncountersController < ApplicationController
   def create
     @encounter = Encounter.new(encounters_params)
     @encounter.user = current_user
-
-    unless @encounter.save
+    if params[:tour_id]
+      @encounter.tour = Tour.find_by(id: params[:tour_id])
+    end
+    if @encounter.save
+      render status: 201
+    else
       render 'error', status: :bad_request
     end
   end

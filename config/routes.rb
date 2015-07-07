@@ -2,16 +2,16 @@ Rails.application.routes.draw do
 
   resources :tours, only: [:index,:create,:show] do
     resources :tour_points, only:[:create]
+    resources :encounters, only: [:create]
   end
-
   resources :newsletter_subscriptions
-
-  devise_for :admin_users, ActiveAdmin::Devise.config
-  ActiveAdmin.routes(self)
+  resources :pois, only: [:index]
+  resources :encounters, only: [:create]
 
   get 'map' => 'map#index'
   post 'login' => 'users#login'
-  resources :pois, only: [:index]
-  resources :encounters, only: [:create]
+
+  devise_for :admin_users, ActiveAdmin::Devise.config
+  ActiveAdmin.routes(self)
 
 end

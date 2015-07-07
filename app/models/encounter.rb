@@ -4,7 +4,8 @@ class Encounter < ActiveRecord::Base
   validates :latitude, :longitude, presence: true, numericality: true
 
 	belongs_to :user
-  
+  belongs_to :tour
+
   geocoded_by :address
 
   alias_attribute :voice_message, :voice_message_url

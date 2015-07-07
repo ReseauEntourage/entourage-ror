@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150707103143) do
+ActiveRecord::Schema.define(version: 20150707124956) do
 
   create_table "active_admin_comments", force: true do |t|
     t.string   "namespace"
@@ -62,6 +62,7 @@ ActiveRecord::Schema.define(version: 20150707103143) do
     t.float    "latitude"
     t.float    "longitude"
     t.string   "voice_message_url"
+    t.integer  "tour_id"
   end
 
   create_table "newsletter_subscriptions", force: true do |t|
