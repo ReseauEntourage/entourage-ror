@@ -132,15 +132,17 @@ Newsletter subscription related resources of the **Entourage API**
 
 
 # Group Tours
-Tours related resources of the **Entourage API**
+Tours, or "maraude", are definied only by their type (attribute tour_type).
+
+tour_type should be within ["social", "other", "food"]
 
 ## Tours collection [/tours{?token}]
 
 + Parameters
     + token (required, string, `aaabbbcccddd`) ... Token identifying the current user
-    + tour_type (required, string, `social`) ... Type of the tour. Must be within ["social", "food", "other"]
 
-### Create an Encounter [POST]
+
+### Create a tour [POST]
 
 + Request (application/json)
     
@@ -148,11 +150,62 @@ Tours related resources of the **Entourage API**
 
 + Response 200 (application/json)
 
-        {"tour":{"id":1,"type":"social"}}
+        {"tour":{"id":1,"tour_type":"social"}}
         
 + Response 400 (application/json)
 
         {"error":{"status":400,"message":"Could not create tour","reasons":["Tour type is not included in the list"]}}
+
++ Response 401 (application/json)
+
+        {"error":{"status":401,"message":"Please sign-in"}}
+
+## Tour [/tours/{id}{?token}]
+
++ Parameters
+    + id (required, integer, `1`) ... Identifier of the tour to be retrieved
+    + token (required, string, `aaabbbcccddd`) ... Token identifying the current user
+
+### Retrieve a tour [GET]
+
++ Request (application/json)
+    
++ Response 200 (application/json)
+
+        {"tour":{"id":1,"tour_type":"social"}}
+        
++ Response 404 (application/json)
+
+        {"error":{"status":404,"message":"Could not find tour with id 233232"}}
+
++ Response 401 (application/json)
+
+        {"error":{"status":401,"message":"Please sign-in"}}
+
+
+
+# Group Tour Points
+Tour points describe the tour itinerary
+
+## Tour Points collection [/tours/{tour_id}/tour_points{?token}]
+
++ Parameters
+    + tour_id (required, integer, `1`) ... Identifier of the tour related to the point
+    + token (required, string, `aaabbbcccddd`) ... Token identifying the current user
+
+### Create a tour point [POST]
+
++ Request (application/json)
+    
+        {"tour_point":{"latitude":1.5,"longitude":1.5,"passing_time":"2015-07-07T10:31:43.000+02:00"}}
+
++ Response 200 (application/json)
+
+        {"tour":{"id":1,"type":"social","tour_points":[{"latitude":1.5,"longitude":1.5,"passing_time":"2015-07-07T10:31:43.000+02:00"},{"latitude":1.5,"longitude":1.5,"passing_time":"2015-07-07T10:31:43.000+02:00"}]}
+        
++ Response 400 (application/json)
+
+        {"error":{"status":400,"message":"Could not create tour point","reasons":["Longitude is not a number"]}}
 
 + Response 401 (application/json)
 

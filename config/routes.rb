@@ -1,6 +1,8 @@
 Rails.application.routes.draw do
 
-  resources :tours, only: [:index,:create,:show]
+  resources :tours, only: [:index,:create,:show] do
+    resources :tour_points, only:[:create]
+  end
 
   resources :newsletter_subscriptions
 
