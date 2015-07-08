@@ -5,14 +5,13 @@ class ApplicationController < ActionController::Base
   before_filter :require_login
 
   def current_user
-    if Rails.env.production?
-      @current_user ||= User.find_by_token params[:token]
-    else
-      @current_user ||= User.find_by_token params[:token]
+    @current_user ||= User.find_by_token params[:token]
+    unless Rails.env.production?
       if @current_user.nil? && params[:token] == "DREDDTESTSTOKEN"
         @current_user = User.create(token:"DREDDTESTSTOKEN", email:"dredd@test.com")
       end
     end
+    @current_user
   end
 
   def user_logged_in
