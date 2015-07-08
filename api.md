@@ -6,16 +6,23 @@ Entourage application backend API documentation.
 
 # Group Map
 Map related resources of the **Entourage API**
-## Map collection [/map.json{?token,limit,latitude,longitude,distance}]
+## Map collection [/map{?token,limit,latitude,longitude,distance}]
 A single Note object with all its details
 + Parameters
-    + token (required, string, `aaabbbcccddd`) ... Token identifying the current user
+    + token (required, string, `DREDDTESTSTOKEN`) ... Token identifying the current user
     + limit (optional, number, `15`) ... Max number of pois to return. 45 if not defined
     + latitude (optional, number, `42`) ... Latitude of middle point of the square (for geolocated results)
     + longitude (optional, number, `2`) ... Latitude of middle point of the square (for geolocated results)
     + distance (optional, number, `1`) ... Half side of the result square (for geolocated results)
 
 ### Get all map points [GET]
+
++ Request
+    
+    + Headers
+
+            Accept: application/json
+
 + Response 200 (application/json)
 
     + Body
@@ -37,14 +44,20 @@ A single Note object with all its details
 
 # Group Encounters
 Encounters related resources of the **Entourage API**
-## Encounters collection [/encounters.json{?token}]
+## Encounters collection [/encounters{?token}]
 + Parameters
-    + token (required, string, `aaabbbcccddd`) ... Token identifying the current user
+    + token (required, string, `DREDDTESTSTOKEN`) ... Token identifying the current user
 
 ### Create an Encounter [POST]
 + Request (application/json)
-    
-        {"encounter":{"street_person_name":"jean","date":"2014-10-11 15:19:45","latitude":42,"longitude":2,"message":"test","voice_message":"http://www.google.com"}}
+
+    + Headers
+
+            Accept: application/json
+
+    + Body
+
+            {"encounter":{"street_person_name":"jean","date":"2014-10-11 15:19:45","latitude":42,"longitude":2,"message":"test","voice_message":"http://www.google.com"}}
 
 + Response 200 (application/json)
 
@@ -60,11 +73,18 @@ Encounters related resources of the **Entourage API**
 
 # Group POIs
 POI related resources of the **Entourage API**
-## Pois collection [/pois.json{?token}]
+## Pois collection [/pois{?token}]
 + Parameters
-    + token (required, string, `aaabbbcccddd`) ... Token identifying the current user
+    + token (required, string, `DREDDTESTSTOKEN`) ... Token identifying the current user
 
 ### List all POIs [GET]
+    
++ Request
+
+    + Headers
+
+            Accept: application/json
+
 + Response 200 (application/json)
 
         {categories: [{id: 1,name: "Se nourrir"},{id: 2,name: "Se loger"},{id: 3,name: "Se soigner"},{id: 4,name: "Se rafraîchir"},{id: 5,name: "S'orienter"},{id: 6,name: "S'occuper de soi"},{id: 7,name: "Se réinsérer"}],
@@ -81,13 +101,14 @@ POI related resources of the **Entourage API**
 # Group Users
 Users related resources of the **Entourage API**
 
-## User actions [/login.json]
+## User actions [/login]
 ### Login user [POST]
 + Request
 
     + Header
             
             Content-type: application/x-www-form-urlencoded; charset=utf-8
+            Accept: application/json
     
     + Body
     
@@ -96,7 +117,7 @@ Users related resources of the **Entourage API**
 
 + Response 200 (application/json)
 
-        {"user":{"id":20,"email":"user@email.com","first_name":"Jean","last_name":"Test","token":"aaabbbcccddd"}}
+        {"user":{"id":20,"email":"user@email.com","first_name":"Jean","last_name":"Test","token":"DREDDTESTSTOKEN"}}
 
 + Response 400 (application/json)
 
@@ -105,15 +126,25 @@ Users related resources of the **Entourage API**
 # Group Newsletter
 Newsletter subscription related resources of the **Entourage API**
 
-## Newsletter actions [/newsletter_subscription.json]
+## Newsletter actions [/newsletter_subscriptions]
 ### Create new subscription [POST]
 + Request (application/json)
-    
-        {"newsletter_subscription":{"email":"newslette@subscription.com","active":true}}
+
+    + Header
+            
+            Accept: application/json  
+
+    + Body
+
+            {"newsletter_subscription":{"email":"newslette@subscription.com","active":true}}
 
 + Response 200
         
+        {"newsletter_subscription":{"email":"newslette@subscription.com","active":true}}
+
 + Response 400
+
+        {"error":{"status":400,"message":"Could not create entity","reasons":["Tour type is not included in the list"]}}
 
 # Group Tours
 Tours, or "maraude", are definied only by their type (attribute tour_type).
@@ -122,13 +153,19 @@ tour_type should be within ["social", "other", "food"]
 
 ## Tours collection [/tours{?token}]
 + Parameters
-    + token (required, string, `aaabbbcccddd`) ... Token identifying the current user
+    + token (required, string, `DREDDTESTSTOKEN`) ... Token identifying the current user
 
 
 ### Create a tour [POST]
 + Request (application/json)
-    
-        {"tour":{"tour_type":"social"}}
+
+    + Header
+            
+            Accept: application/json
+
+    + Body
+
+            {"tour":{"tour_type":"social"}}
 
 + Response 200 (application/json)
 
@@ -145,11 +182,15 @@ tour_type should be within ["social", "other", "food"]
 ## Tour [/tours/{id}{?token}]
 + Parameters
     + id (required, integer, `1`) ... Identifier of the tour to be retrieved
-    + token (required, string, `aaabbbcccddd`) ... Token identifying the current user
+    + token (required, string, `DREDDTESTSTOKEN`) ... Token identifying the current user
 
 ### Retrieve a tour [GET]
 + Request (application/json)
-    
+
+    + Header
+            
+            Accept: application/json
+
 + Response 200 (application/json)
 
         {"tour":{"id":1,"tour_type":"social"}}
@@ -168,12 +209,17 @@ Tour points describe the tour itinerary
 
 + Parameters
     + tour_id (required, integer, `1`) ... Identifier of the tour related to the point
-    + token (required, string, `aaabbbcccddd`) ... Token identifying the current user
+    + token (required, string, `DREDDTESTSTOKEN`) ... Token identifying the current user
 
 ### Create a tour point [POST]
 + Request (application/json)
-    
-        {"tour_point":{"latitude":1.5,"longitude":1.5,"passing_time":"2015-07-07T10:31:43.000+02:00"}}
+
+    + Header
+            
+            Accept: application/json
+    + Body
+
+            {"tour_point":{"latitude":1.5,"longitude":1.5,"passing_time":"2015-07-07T10:31:43.000+02:00"}}
 
 + Response 200 (application/json)
 
@@ -197,12 +243,18 @@ Encounters occured during tour
 
 + Parameters
     + tour_id (required, integer, `1`) ... Identifier of the tour related to the point
-    + token (required, string, `aaabbbcccddd`) ... Token identifying the current user
+    + token (required, string, `DREDDTESTSTOKEN`) ... Token identifying the current user
 
 ### Create an encounter [POST]
 + Request (application/json)
     
-        {"encounter":{"street_person_name":"jean","date":"2014-10-11 15:19:45","latitude":42,"longitude":2,"message":"test","voice_message":"http://www.google.com"}}
+    + Header
+            
+            Accept: application/json
+
+    + Body
+
+            {"encounter":{"street_person_name":"jean","date":"2014-10-11 15:19:45","latitude":42,"longitude":2,"message":"test","voice_message":"http://www.google.com"}}
 
 + Response 200 (application/json)
 

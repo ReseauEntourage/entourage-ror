@@ -8,7 +8,8 @@ class NewsletterSubscriptionsController < ApplicationController
     if newsletter_subscription.save
       render json: newsletter_subscription, status: :created
     else
-      head :bad_request
+      @entity = newsletter_subscription
+      render "application/400", status: 400
     end
   end
 
