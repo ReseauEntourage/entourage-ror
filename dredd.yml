@@ -1,8 +1,8 @@
 dry-run: null
 hookfiles: ./dredd/hooks/trailing_new_line.js
 sandbox: false
-server: bundle exec rails s -p 3210
-server-wait: 5
+server: bundle exec rails s -p 3001
+server-wait: 10
 init: false
 custom: {}
 names: false
@@ -21,4 +21,4 @@ timestamp: false
 silent: false
 path: []
 blueprint: ./api.md
-endpoint: 'http://0.0.0.0:3210'
+endpoint: 'http://localhost:3001'
