@@ -1,7 +1,7 @@
 dry-run: null
 hookfiles: ./dredd/hooks/trailing_new_line.js
 sandbox: false
-server: bundle exec rails s -p 321O
+server: bundle exec rails s -p3210
 server-wait: 10
 init: false
 custom: {}
