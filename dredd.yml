@@ -1,14 +1,14 @@
 dry-run: null
-hookfiles: ./dredd/hooks.js
+hookfiles: ./dredd/hooks/trailing_new_line.js
 sandbox: false
 server: bundle exec rails s
-server-wait: 10
+server-wait: 5
 init: false
 custom: {}
 names: false
 only: []
-reporter: []
-output: []
+reporter: [junit]
+output: [dredd/output/report.xml]
 header: []
 sorted: true
 user: null
