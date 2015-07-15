@@ -6,12 +6,6 @@ class ApplicationController < ActionController::Base
 
   def current_user
     @current_user ||= User.find_by_token params[:token]
-    unless Rails.env.production?
-      if @current_user.nil? && params[:token] == "DREDDTESTSTOKEN"
-        @current_user = User.create(token:"DREDDTESTSTOKEN", email:"dredd@test.com")
-      end
-    end
-    @current_user
   end
 
   def user_logged_in

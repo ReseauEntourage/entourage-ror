@@ -1,8 +1,8 @@
 dry-run: null
-hookfiles: null
+hookfiles: ./dredd/hooks.js
 sandbox: false
 server: bundle exec rails s
-server-wait: 3
+server-wait: 10
 init: false
 custom: {}
 names: false
@@ -10,7 +10,7 @@ only: []
 reporter: []
 output: []
 header: []
-sorted: false
+sorted: true
 user: null
 inline-errors: false
 details: false

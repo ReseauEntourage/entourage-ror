@@ -4,11 +4,11 @@ class NewsletterSubscriptionsController < ApplicationController
   protect_from_forgery with: :null_session, if: Proc.new { |c| c.request.format == 'application/json' }
 
   def create
-    newsletter_subscription = NewsletterSubscription.new(newsletter_subscription_params)
-    if newsletter_subscription.save
-      render json: newsletter_subscription, status: :created
+    @newsletter_subscription = NewsletterSubscription.new(newsletter_subscription_params)
+    if @newsletter_subscription.save
+      render status: 201
     else
-      @entity = newsletter_subscription
+      @entity = @newsletter_subscription
       render "application/400", status: 400
     end
   end

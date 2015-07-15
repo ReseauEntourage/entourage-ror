@@ -1,28 +1,56 @@
-== README
+# Prerequisites
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Ruby 2.0.0
+Rails 4.1.1
 
-Things you may want to cover:
+rbenv or rvm recommanded
 
-* Ruby version
+# Resolve dependencies and run server
 
-* System dependencies
+```
+$ gem install bundler
+$ bundle install --without production
+$ bundle exec rake db:migrate
+$ bundle exec rails server
+```
 
-* Configuration
+# Rspec tests
 
-* Database creation
+Run tests with 
 
-* Database initialization
+```
+$ rspec
+```
 
-* How to run the test suite
+# Dredd tests
 
-* Services (job queues, cache servers, search engines, etc.)
+Test the API documentation compliance with [Dredd](https://github.com/apiaryio/dredd)
 
-* Deployment instructions
+## Install Dredd:
+```
+$ npm install -g dredd
+```
 
-* ...
+## Setup database for Dredd tests:
+- Reset DB to reset id sequence
+- Run migrations to set database schema
+- Populate database with Dredd specific seeds (cf file ./db/seeds/dredd.rb)
 
+```
+$ rake db:drop db:create db:migrate dredd:seeds
+```
 
-Please feel free to use a different markup language if you do not plan to run
-<tt>rake doc:app</tt>.
+### rake dredd:seeds task description:
+Removes all newsletter subscriptions
+Removes all users
+Generates the dredd user
+
+## Run Dredd:
+
+```
+$ dredd
+```
+
+## Dredd config
+
+Dredd options are listed in dredd.yml file
