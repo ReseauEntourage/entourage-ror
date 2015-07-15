@@ -10,7 +10,6 @@ RSpec.describe EncountersController, :type => :controller do
       it "creates new encounter" do
         post 'create', token: user.token , encounter: {street_person_name: encounter.street_person_name, date: encounter.date, latitude: encounter.latitude, longitude: encounter.longitude, message: encounter.message, voice_message: encounter.voice_message_url }, :format => :json
         expect(response.status).to eq(201)
-        p response.body
       end
 
       it "is not related to any tour" do

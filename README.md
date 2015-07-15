@@ -37,7 +37,7 @@ $ npm install -g dredd
 - Populate database with Dredd specific seeds (cf file ./db/seeds/dredd.rb)
 
 ```
-$ rake db:drop db:create db:migrate dredd:seeds
+$ rake db:drop db:migrate dredd:seeds
 ```
 
 ### rake dredd:seeds task description:
