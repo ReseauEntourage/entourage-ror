@@ -8,7 +8,7 @@ custom: {}
 names: false
 only: []
 reporter: [junit]
-output: [dredd/output/report.xml]
+output: [./dredd/output/report.xml]
 header: []
 sorted: true
 user: null
