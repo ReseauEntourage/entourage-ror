@@ -9,7 +9,7 @@ Map related resources of the **Entourage API**
 ## Map collection [/map{?token,limit,latitude,longitude,distance}]
 A single Note object with all its details
 + Parameters
-    + token (required, string, `DREDDTESTSTOKEN`) ... Token identifying the current user
+    + token (required, string, `FAKETOKEN`) ... Token identifying the current user
     + limit (optional, number, `15`) ... Max number of pois to return. 45 if not defined
     + latitude (optional, number, `42`) ... Latitude of middle point of the square (for geolocated results)
     + longitude (optional, number, `2`) ... Latitude of middle point of the square (for geolocated results)
@@ -38,7 +38,7 @@ A single Note object with all its details
 Encounters related resources of the **Entourage API**
 ## Encounters collection [/encounters{?token}]
 + Parameters
-    + token (required, string, `DREDDTESTSTOKEN`) ... Token identifying the current user
+    + token (required, string, `FAKETOKEN`) ... Token identifying the current user
 
 ### Create an Encounter [POST]
 + Request (application/json)
@@ -67,7 +67,7 @@ Encounters related resources of the **Entourage API**
 POI related resources of the **Entourage API**
 ## Pois collection [/pois{?token}]
 + Parameters
-    + token (required, string, `DREDDTESTSTOKEN`) ... Token identifying the current user
+    + token (required, string, `FAKETOKEN`) ... Token identifying the current user
 
 ### List all POIs [GET]
     
@@ -103,7 +103,7 @@ Users related resources of the **Entourage API**
 
 + Response 200 (application/json; charset=utf-8)
 
-        {"user":{"id":1,"email":"dredd@test.com","first_name":"Judge","last_name":"Dredd","token":"DREDDTESTSTOKEN"}}
+        {"user":{"id":1,"email":"dredd@test.com","first_name":"Judge","last_name":"Dredd","token":"FAKETOKEN"}}
 
 + Response 400 (application/json; charset=utf-8)
 
@@ -139,7 +139,26 @@ tour_type should be within ["social", "other", "food"]
 
 ## Tours collection [/tours{?token}]
 + Parameters
-    + token (required, string, `DREDDTESTSTOKEN`) ... Token identifying the current user
+    + token (required, string, `FAKETOKEN`) ... Token identifying the current user
+
+### Retrieve all tours [GET]
++ Request (application/json)
+
+    + Header
+            
+            Accept: application/json
+
++ Response 200 (application/json; charset=utf-8)
+
+        {"tours":[{"id":10,"type":"social","tour_points":[]}]}
+        
++ Response 400 (application/json; charset=utf-8)
+
+        {"error":{"status":400,"message":"Could not create tour","reasons":["Tour type is not included in the list"]}}
+
++ Response 401 (application/json; charset=utf-8)
+
+        {"error":{"status":401,"message":"Please sign-in"}}
 
 
 ### Create a tour [POST]
@@ -168,7 +187,7 @@ tour_type should be within ["social", "other", "food"]
 ## Tour [/tours/{id}{?token}]
 + Parameters
     + id (required, integer, `1`) ... Identifier of the tour to be retrieved
-    + token (required, string, `DREDDTESTSTOKEN`) ... Token identifying the current user
+    + token (required, string, `FAKETOKEN`) ... Token identifying the current user
 
 ### Retrieve a tour [GET]
 + Request (application/json)
@@ -195,7 +214,7 @@ Tour points describe the tour itinerary
 
 + Parameters
     + tour_id (required, integer, `1`) ... Identifier of the tour related to the point
-    + token (required, string, `DREDDTESTSTOKEN`) ... Token identifying the current user
+    + token (required, string, `FAKETOKEN`) ... Token identifying the current user
 
 ### Create a tour point [POST]
 + Request (application/json)
@@ -229,7 +248,7 @@ Encounters occured during tour
 
 + Parameters
     + tour_id (required, integer, `1`) ... Identifier of the tour related to the point
-    + token (required, string, `DREDDTESTSTOKEN`) ... Token identifying the current user
+    + token (required, string, `FAKETOKEN`) ... Token identifying the current user
 
 ### Create an encounter [POST]
 + Request (application/json)
@@ -245,7 +264,21 @@ Encounters occured during tour
 + Response 201 (application/json; charset=utf-8)
 
         {"encounter":{"id":1,"date":"2014-10-11T15:19:45.000+02:00","latitude":42.0,"longitude":2.0,"user_id":1,"user_name":"Eric","street_person_name":"jean","message":"test","voice_message":"http://www.google.com"}}
+
++ Request (application/json)
+    
+    + Header
+            
+            Accept: application/json
+
+    + Body
+
+            {"encounter":{"date":"2014-10-11 15:19:45","latitude":42,"longitude":2,"message":"test","voice_message":"http://www.google.com"}}
         
++ Response 400 (application/json; charset=utf-8)
+
+        {"error":{"status":400,"message":"Could not create encouter","reasons":["Street person name can't be blank"]}}
+
 + Response 400 (application/json; charset=utf-8)
 
         {"error":{"status":400,"message":"Could not create encouter","reasons":["Date can't be blank","Street person name can't be blank","Latitude can't be blank","Latitude is not a number","Longitude can't be blank","Longitude is not a number"]}}

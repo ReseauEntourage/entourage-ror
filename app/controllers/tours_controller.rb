@@ -19,6 +19,11 @@ class ToursController < ApplicationController
     end
   end
 
+  def index
+    @tours = Tour.all
+    render status: 200
+  end
+
   def tour_params
     params.require(:tour).permit(:tour_type)
   end
