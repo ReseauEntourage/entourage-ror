@@ -20,5 +20,5 @@ level: info
 timestamp: false
 silent: false
 path: []
-blueprint: ./api.md
+blueprint: ./entourage.apib
 endpoint: 'http://localhost:3210'
