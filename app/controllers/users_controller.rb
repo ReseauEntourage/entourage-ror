@@ -14,7 +14,8 @@ class UsersController < ApplicationController
     if @user.save
       render "show", status: 201
     else
-      render '400', status: 400
+      @entity = @user
+      render 'application/400', status: 400
     end
   end
 

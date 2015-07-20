@@ -29,6 +29,7 @@ group :test do
   gem 'shoulda-matchers'
   gem 'simplecov'
   gem 'dredd_hooks'
+  gem 'byebug'
 end
 
 group :production do
