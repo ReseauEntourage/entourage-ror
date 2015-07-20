@@ -1,5 +1,5 @@
 dry-run: null
-hookfiles: ./dredd/hooks/trailing_new_line.js
+hookfiles: ./dredd/hooks/*.js
 sandbox: false
 server: bundle exec rails s -p3210
 server-wait: 10
@@ -11,7 +11,7 @@ reporter: [junit]
 output: [./dredd/output/report.xml]
 header: []
 sorted: true
-user: YWRtaW46M250MHVyNGcz
+user: null
 inline-errors: false
 details: false
 method: []

@@ -97,7 +97,7 @@ Users related resources of the **Entourage API**
     + Header
             
             Accept: application/json
-            Authorization: YWRtaW46M250MHVyNGcz
+            Authorization: ADMINBASICAUTH
 
 + Response 200 (application/json; charset=utf-8)
 
@@ -107,13 +107,14 @@ Users related resources of the **Entourage API**
 
         {"error":{"status":401,"message":"Please sign-in"}}
 
-### Create a users [POST]
+### Create a user [POST]
 
 + Request (application/json)
 
     + Header
             
             Accept: application/json
+            Authorization: ADMINBASICAUTH
 
     + Body
 
@@ -139,6 +140,7 @@ Users related resources of the **Entourage API**
     + Header
             
             Accept: application/json
+            Authorization: ADMINBASICAUTH
 
     + Body
 
@@ -155,6 +157,7 @@ Users related resources of the **Entourage API**
     + Header
             
             Accept: application/json
+            Authorization: ADMINBASICAUTH
 
 + Response 204
 
