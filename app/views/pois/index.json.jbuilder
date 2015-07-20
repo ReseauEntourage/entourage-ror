@@ -15,5 +15,4 @@ json.pois @pois do |poi|
 	json.email poi.email
 	json.audience poi.audience
 	json.category_id poi.category_id
-
 end

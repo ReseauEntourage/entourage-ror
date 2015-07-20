@@ -11,7 +11,7 @@ reporter: [junit]
 output: [./dredd/output/report.xml]
 header: []
 sorted: true
-user: null
+user: YWRtaW46M250MHVyNGcz
 inline-errors: false
 details: false
 method: []

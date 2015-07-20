@@ -88,8 +88,78 @@ POI related resources of the **Entourage API**
 
 # Group Users
 Users related resources of the **Entourage API**
+## Users collection [/users]
 
-## User actions [/login]
+### Retrieve all users [GET]
+
++ Request (application/json)
+
+    + Header
+            
+            Accept: application/json
+            Authorization: YWRtaW46M250MHVyNGcz
+
++ Response 200 (application/json; charset=utf-8)
+
+        {"users":[{"id":1,"email":"dredd@test.com","first_name":"Judge","last_name":"Dredd"},{"id":2,"email":"johnsmith@test.com","first_name":"John","last_name":"Smith"}]}
+        
++ Response 401 (application/json; charset=utf-8)
+
+        {"error":{"status":401,"message":"Please sign-in"}}
+
+### Create a users [POST]
+
++ Request (application/json)
+
+    + Header
+            
+            Accept: application/json
+
+    + Body
+
+            {"user":{"email":"johnsmith@test.com","first_name":"John","last_name":"Smith"}}
+
++ Response 201 (application/json; charset=utf-8)
+
+        {"user":{"id":10,"email":"johnsmith@test.com","first_name":"John","last_name":"Smith"}}
+        
++ Response 401 (application/json; charset=utf-8)
+
+        {"error":{"status":401,"message":"Please sign-in"}}
+
+## User [/users/{id}]
+
++ Parameters
+    + id (required, string, `2`) ... Id of the user
+
+### Update user [PUT]
+
++ Request (application/json; charset=utf-8)
+
+    + Header
+            
+            Accept: application/json
+
+    + Body
+
+            {"user":{"email":"johnsmith2@test.com","first_name":"Johnny","last_name":"Smit"}}
+
++ Response 200 (application/json; charset=utf-8)
+
+        {"user":{"id":2,"email":"johnsmith2@test.com","first_name":"Johnny","last_name":"Smit"}}
+
+### Delete user [DELETE]
+
++ Request (application/x-www-form-urlencoded; charset=utf-8)
+
+    + Header
+            
+            Accept: application/json
+
++ Response 204
+
+
+## User login [/login]
 ### Login user [POST]
 + Request (application/x-www-form-urlencoded; charset=utf-8)
 
@@ -152,10 +222,6 @@ tour_type should be within ["social", "other", "food"]
 
         {"tours":[{"id":10,"type":"social","tour_points":[]}]}
         
-+ Response 400 (application/json; charset=utf-8)
-
-        {"error":{"status":400,"message":"Could not create tour","reasons":["Tour type is not included in the list"]}}
-
 + Response 401 (application/json; charset=utf-8)
 
         {"error":{"status":401,"message":"Please sign-in"}}
@@ -252,7 +318,7 @@ Encounters occured during tour
 
 ### Create an encounter [POST]
 + Request (application/json)
-    
+
     + Header
             
             Accept: application/json
@@ -262,11 +328,13 @@ Encounters occured during tour
             {"encounter":{"street_person_name":"jean","date":"2014-10-11 15:19:45","latitude":42,"longitude":2,"message":"test","voice_message":"http://www.google.com"}}
 
 + Response 201 (application/json; charset=utf-8)
+    
+    + Body
 
-        {"encounter":{"id":1,"date":"2014-10-11T15:19:45.000+02:00","latitude":42.0,"longitude":2.0,"user_id":1,"user_name":"Eric","street_person_name":"jean","message":"test","voice_message":"http://www.google.com"}}
+            {"encounter":{"id":1,"date":"2014-10-11T15:19:45.000+02:00","latitude":42.0,"longitude":2.0,"user_id":1,"user_name":"Eric","street_person_name":"jean","message":"test","voice_message":"http://www.google.com"}}
 
 + Request (application/json)
-    
+
     + Header
             
             Accept: application/json
@@ -279,15 +347,34 @@ Encounters occured during tour
 
         {"error":{"status":400,"message":"Could not create encouter","reasons":["Street person name can't be blank"]}}
 
-+ Response 400 (application/json; charset=utf-8)
++ Request (application/json)
 
-        {"error":{"status":400,"message":"Could not create encouter","reasons":["Date can't be blank","Street person name can't be blank","Latitude can't be blank","Latitude is not a number","Longitude can't be blank","Longitude is not a number"]}}
+    + Header
+            
+            Accept: application/json
+
+    + Body
+
+            {"encounter":{"wrong_key":"wrong_value"}}
+
++ Response 400 (application/json; charset=utf-8)
+    
+    + Body
+    
+            {"error":{"status":400,"message":"Could not create encouter","reasons":["Date can't be blank","Street person name can't be blank","Latitude can't be blank","Latitude is not a number","Longitude can't be blank","Longitude is not a number"]}}
 
 + Response 401 (application/json; charset=utf-8)
+    
+    + Body
 
-        {"error":{"status":401,"message":"Please sign-in"}}
+            {"error":{"status":401,"message":"Please sign-in"}}
 
 + Response 404 (application/json; charset=utf-8)
 
-        {"error":{"status":404,"message":"Could not find tour with id 233232"}}
+    + Parameters
 
+        tour_id = 233232
+
+    + Body
+
+            {"error":{"status":404,"message":"Could not find tour with id 233232"}}
