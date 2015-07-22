@@ -35,7 +35,7 @@ group :production do
   gem 'rails_12factor'
 end
 
-#gem 'puma'
+gem 'puma'
 gem 'devise'
 gem 'activeadmin', github: 'activeadmin'
 gem 'active_admin_import' , '2.1.1'
