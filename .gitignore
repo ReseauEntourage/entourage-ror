@@ -20,3 +20,7 @@
 
 /coverage
 /dredd/output/*.xml
+
+# IC modules
+use-ruby
+use-node
