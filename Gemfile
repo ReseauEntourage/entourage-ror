@@ -33,11 +33,11 @@ end
 group :production do
   gem 'pg'
   gem 'rails_12factor'
+  gem 'puma'
+  gem 'newrelic_rpm'
 end
 
-gem 'puma'
 gem 'devise'
 gem 'activeadmin', github: 'activeadmin'
 gem 'active_admin_import' , '2.1.1'
-gem 'newrelic_rpm'
 gem 'geocoder'
