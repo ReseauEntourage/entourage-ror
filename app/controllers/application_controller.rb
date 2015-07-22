@@ -20,7 +20,7 @@ class ApplicationController < ActionController::Base
 
   def admin_authentication
     authenticate_or_request_with_http_basic do |username, password|
-      if(username == ENV["ADMIN_USER"] && password == ENV["ADMIN_PASSWORD"])
+      if(username == ENV["BASIC_ADMIN_USER"] && password == ENV["BASIC_ADMIN_PASSWORD"])
         true
       else
         render 'unauthorized', status: :unauthorized

@@ -36,4 +36,6 @@ Rails.application.configure do
 
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
+  ENV["BASIC_ADMIN_USER"] = "admin"
+  ENV["BASIC_ADMIN_PASSWORD"] = "3nt0ur4g3"
 end
