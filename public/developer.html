@@ -254,7 +254,8 @@
     "<span class="hljs-attribute">message</span>": <span class="hljs-value"><span class="hljs-string">"Login failed"</span>
   </span>}
 </span>}</code></pre><div style="height: 1px;"></div></div></div></div></div></section><section id="newsletter" class="resource-group"><h2 class="group-heading">Newsletter<a href="#newsletter" class="permalink">&para;</a></h2><p>Newsletter subscription related resources of the <strong>Entourage API</strong></p>
-<div id="newsletter-newsletter-actions" class="resource"><h3>Newsletter actions<a href="#newsletter-newsletter-actions" class="permalink">&para;</a></h3><div id="newsletter-newsletter-actions-post" class="action post"><h4><div class="name">Create new subscription</div><a href="#newsletter-newsletter-actions-post" class="method post">POST</a><code class="uri">/newsletter_subscriptions</code></h4><div class="title"><strong>Request</strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json</span><br><span class="hljs-attribute">Accept</span>: <span class="hljs-string">application/json</span></code></pre><div style="height: 1px;"></div><h5>Body</h5><pre><code>{
+<div id="newsletter-newsletter-actions" class="resource"><h3>Newsletter actions<a href="#newsletter-newsletter-actions" class="permalink">&para;</a></h3><div id="newsletter-newsletter-actions-post" class="action post"><h4><div class="name">Create new subscription</div><a href="#newsletter-newsletter-actions-post" class="method post">POST</a><code class="uri">/newsletter_subscriptions</code></h4><p>If the email is already registered to newsletter subscription, a</p>
+<div class="title"><strong>Request</strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json</span><br><span class="hljs-attribute">Accept</span>: <span class="hljs-string">application/json</span></code></pre><div style="height: 1px;"></div><h5>Body</h5><pre><code>{
   "<span class="hljs-attribute">newsletter_subscription</span>": <span class="hljs-value">{
     "<span class="hljs-attribute">email</span>": <span class="hljs-value"><span class="hljs-string">"newslette@subscription.com"</span></span>,
     "<span class="hljs-attribute">active</span>": <span class="hljs-value"><span class="hljs-literal">true</span>
@@ -269,7 +270,7 @@
     "<span class="hljs-attribute">status</span>": <span class="hljs-value"><span class="hljs-number">400</span></span>,
     "<span class="hljs-attribute">message</span>": <span class="hljs-value"><span class="hljs-string">"Could not create entity"</span></span>,
     "<span class="hljs-attribute">reasons</span>": <span class="hljs-value">[
-      <span class="hljs-string">"Tour type is not included in the list"</span>
+      <span class="hljs-string">"Email already exists"</span>
     ]
   </span>}
 </span>}</code></pre><div style="height: 1px;"></div></div></div></div></div></section><section id="tours" class="resource-group"><h2 class="group-heading">Tours<a href="#tours" class="permalink">&para;</a></h2><p>Tours, or “maraude”, are definied only by their type (attribute tour_type).</p>
