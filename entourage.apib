@@ -89,7 +89,7 @@ POI related resources of the **Entourage API**
 # Group Users
 Users related resources of the **Entourage API**
 ## Users collection [/users]
-Users resources access is restricted by basic authentication.
+Users resources access is restricted by basic authentication. 
 
 ### Retrieve all users [GET]
 
@@ -188,6 +188,7 @@ Newsletter subscription related resources of the **Entourage API**
 
 ## Newsletter actions [/newsletter_subscriptions]
 ### Create new subscription [POST]
+If the email is already registered to newsletter subscription, a 
 + Request (application/json)
 
     + Header
@@ -204,7 +205,7 @@ Newsletter subscription related resources of the **Entourage API**
 
 + Response 400 (application/json; charset=utf-8)
 
-        {"error":{"status":400,"message":"Could not create entity","reasons":["Tour type is not included in the list"]}}
+        {"error":{"status":400,"message":"Could not create entity","reasons":["Email already exists"]}}
 
 # Group Tours
 Tours, or "maraude", are definied only by their type (attribute tour_type).
