@@ -8,7 +8,7 @@ function initialize() {
   });
 
   map.data.setStyle(function(feature) {
-    var tourType = feature.getProperty('type');
+    var tourType = feature.getProperty('tour_type');
     var color = colors[tourType];
     return /** @type {google.maps.Data.StyleOptions} */({
       strokeColor: color,
