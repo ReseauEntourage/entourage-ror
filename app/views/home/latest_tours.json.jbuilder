@@ -8,10 +8,7 @@ json.features do
     end
     json.coordinates do 
       json.array!(tour.tour_points) do |tour_point|
-        json.array! do 
-          tour_point.latitude
-          tour_point.longitude
-        end
+        json.array!([tour_point.latitude, tour_point.longitude])
       end
     end
   end
