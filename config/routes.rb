@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
 
+  root 'home#tours_map'
+
   resources :tours, only: [:index,:create,:show] do
     resources :tour_points, only:[:create]
     resources :encounters, only: [:create]
@@ -12,6 +14,7 @@ Rails.application.routes.draw do
   post 'login' => 'users#login'
 
   get 'map' => 'map#index'
+
 
   devise_for :admin_users, ActiveAdmin::Devise.config
   ActiveAdmin.routes(self)
