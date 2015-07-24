@@ -1,5 +1,5 @@
 var map;
-
+var colors = {"other":"#FF0000", "social":"#00FF00", "food":"#0000FF"}
 function initialize() {
   map = new google.maps.Map(document.getElementById('map-canvas'), {
     zoom: 13,
@@ -8,14 +8,15 @@ function initialize() {
   });
 
   map.data.setStyle(function(feature) {
-    var color = 'red';
+    var tourType = feature.getProperty('type');
+    var color = colors[tourType];
     return /** @type {google.maps.Data.StyleOptions} */({
-      strokeColor: "#FF0000",
+      strokeColor: color,
       strokeWeight: 2
     });
   });
 
-  map.data.loadGeoJson('/latest_tours.json');
+  map.data.loadGeoJson('http://entourage-back-preprod.herokuapp.com/latest_tours.json');
 }
 
 google.maps.event.addDomListener(window, 'load', initialize);

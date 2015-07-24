@@ -3,8 +3,7 @@ json.features do
   json.array!(@latest_tours) do |tour|
     json.type "Feature" 
     json.properties do
-      json.type tour.tour_type
-      json.color "blue"
+      json.tour_type tour.tour_type
     end
     json.geometry do 
       json.type "LineString"
@@ -16,8 +15,3 @@ json.features do
     end
   end
 end
-
-
-
-
-
