@@ -15,7 +15,7 @@ function initialize() {
     });
   });
 
-  map.data.loadGeoJson('http://entourage-back-preprod.herokuapp.com/latest_tours.json');
+  map.data.loadGeoJson('/latest_tours.json');
 }
 
 google.maps.event.addDomListener(window, 'load', initialize);
