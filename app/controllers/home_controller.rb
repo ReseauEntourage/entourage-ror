@@ -6,7 +6,7 @@ class HomeController < ApplicationController
   end
 
   def latest_tours
-    @latest_tours = Tour.order(passing_time: :desc).limit(10)
+    @latest_tours = Tour.order(created_at: :desc).limit(10)
   end
 
 end
