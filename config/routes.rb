@@ -3,7 +3,7 @@ Rails.application.routes.draw do
   root 'home#tours_map'
   get 'latest_tours' => 'home#latest_tours'
 
-  resources :tours, only: [:index,:create,:show] do
+  resources :tours, only: [:index,:create,:show,:update] do
     resources :tour_points, only:[:create]
     resources :encounters, only: [:create]
   end

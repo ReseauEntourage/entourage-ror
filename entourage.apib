@@ -211,6 +211,7 @@ If the email is already registered to newsletter subscription, a 400 error is re
 Tours, or "maraude", are definied only by their type (attribute tour_type).
 
 tour_type should be within ["social", "other", "food"]
+status is either "ongoing" or "closed"
 
 ## Tours collection [/tours{?token}]
 + Parameters
@@ -225,7 +226,7 @@ tour_type should be within ["social", "other", "food"]
 
 + Response 200 (application/json; charset=utf-8)
 
-        {"tours":[{"id":10,"type":"social","tour_points":[]}]}
+        {"tours":[{"id":10,"type":"social","tour_points":[],"status":"ongoing"}]}
         
 + Response 401 (application/json; charset=utf-8)
 
@@ -241,7 +242,7 @@ tour_type should be within ["social", "other", "food"]
 
     + Body
 
-            {"tour":{"tour_type":"social"}}
+            {"tour":{"tour_type":"social", "status":"ongoing"}}
 
 + Response 201 (application/json; charset=utf-8)
 
@@ -269,7 +270,7 @@ tour_type should be within ["social", "other", "food"]
 
 + Response 200 (application/json; charset=utf-8)
 
-        {"tour":{"id":1,"type":"social","tour_points":[{"latitude":1.5,"longitude":1.5,"passing_time":"2015-07-07T10:31:43.000+02:00"}]}}
+        {"tour":{"id":1,"type":"social","status":"ongoing","tour_points":[{"latitude":1.5,"longitude":1.5,"passing_time":"2015-07-07T10:31:43.000+02:00"}]}}
         
 + Response 404 (application/json; charset=utf-8)
 
@@ -278,6 +279,31 @@ tour_type should be within ["social", "other", "food"]
 + Response 401 (application/json; charset=utf-8)
 
         {"error":{"status":401,"message":"Please sign-in"}}
+
+### Update a tour [PUT]
++ Request (application/json)
+
+    + Header
+            
+            Accept: application/json
+
+    + Body
+
+            {"tour":{"tour_type":"social", "status":"closed"}}
+
+
++ Response 200 (application/json; charset=utf-8)
+
+        {"tour":{"id":1,"type":"social","status":"closed","tour_points":[{"latitude":1.5,"longitude":1.5,"passing_time":"2015-07-07T10:31:43.000+02:00"}]}}
+        
++ Response 404 (application/json; charset=utf-8)
+
+        {"error":{"status":404,"message":"Could not find tour with id 233232"}}
+
++ Response 401 (application/json; charset=utf-8)
+
+        {"error":{"status":401,"message":"Please sign-in"}}
+
 
 # Group Tour Points
 Tour points describe the tour itinerary

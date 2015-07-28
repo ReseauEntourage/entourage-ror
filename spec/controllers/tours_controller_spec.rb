@@ -10,11 +10,11 @@ RSpec.describe ToursController, :type => :controller do
       let!(:tour) { FactoryGirl.build :tour }
 
       it "returns 201" do
-        post 'create', token: user.token , tour: {tour_type: tour.tour_type}, :format => :json
+        post 'create', token: user.token , tour: {tour_type: tour.tour_type, status:tour.status}, :format => :json
         expect(response.status).to eq(201)
       end
       it "assigns tour" do
-        post 'create', token: user.token , tour: {tour_type: tour.tour_type}, :format => :json
+        post 'create', token: user.token , tour: {tour_type: tour.tour_type, status:tour.status}, :format => :json
         last_tour = Tour.last
         expect(assigns(:tour)).to eq(last_tour)
       end
@@ -25,7 +25,7 @@ RSpec.describe ToursController, :type => :controller do
       let!(:tour) { FactoryGirl.build(:tour, tour_type:"invalid") }
 
       it "retours error 400" do
-        post 'create', token: user.token , tour: {tour_type: tour.tour_type}, :format => :json
+        post 'create', token: user.token , tour: {tour_type: tour.tour_type, status:tour.status}, :format => :json
         expect(response.status).to eq(400)
       end
 
@@ -56,6 +56,33 @@ RSpec.describe ToursController, :type => :controller do
 
       it "retours error 404" do
         get 'show', id: 0, token: user.token , :format => :json
+        expect(response.status).to eq(404)
+      end
+
+    end
+
+  end
+
+  describe "PUT update" do
+    
+    context "with correct id" do
+
+      let!(:user) { FactoryGirl.create :user }
+      let!(:tour) { FactoryGirl.create :tour }
+
+      it "updates tour" do
+        put 'update', id: tour.id, token: user.token, tour:{tour_type:tour.tour_type, status:"closed"}, format: :json
+        expect(tour.reload.status).to eq("closed")
+      end
+
+    end
+
+    context "with unexisting id" do
+      let!(:user) { FactoryGirl.create :user }
+      let!(:tour) { FactoryGirl.build(:tour, tour_type:"invalid") }
+
+      it "retours error 404" do
+        put 'update', id: 0, token: user.token , :format => :json
         expect(response.status).to eq(404)
       end
 

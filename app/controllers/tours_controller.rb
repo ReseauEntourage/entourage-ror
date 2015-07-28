@@ -24,8 +24,20 @@ class ToursController < ApplicationController
     render status: 200
   end
 
+  def update
+    if @tour = Tour.find_by(id: params[:id])
+      @tour.update_attributes(tour_params)
+      render 'show', status: 200
+    else
+      @id = params[:id]
+      render '404', status: 404
+    end
+  end
+
+private
+
   def tour_params
-    params.require(:tour).permit(:tour_type)
+    params.require(:tour).permit(:tour_type, :status)
   end
 
 end

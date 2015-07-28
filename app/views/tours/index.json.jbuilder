@@ -2,6 +2,7 @@ json.tours do
   json.array!(@tours) do |tour|
     json.id tour.id
     json.type tour.tour_type
+    json.status tour.status
     json.tour_points do
       json.array!(tour.tour_points) do |tour_point|
         json.latitude tour_point.latitude

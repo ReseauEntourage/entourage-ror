@@ -16,11 +16,14 @@ gem 'jbuilder', '~> 2.0'
 
 gem 'sdoc', '~> 0.4.0',          group: :doc
 
+group :development, :test do 
+  gem 'byebug'
+end
+
 group :development do
 	gem 'sqlite3'
 	gem 'spring'
   gem 'better_errors'
-  gem 'byebug'
 end
 
 group :test do
