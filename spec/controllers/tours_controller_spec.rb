@@ -139,6 +139,26 @@ RSpec.describe ToursController, :type => :controller do
       end
        
     end
+     
+    context "with type parameter" do 
+     
+      let!(:tour1) { FactoryGirl.create :tour, tour_type:'other' }
+      let!(:tour2) { FactoryGirl.create :tour, tour_type:'other' }
+      let!(:tour3) { FactoryGirl.create :tour, tour_type:'friendly' }
+      let!(:tour4) { FactoryGirl.create :tour, tour_type:'friendly' }
+      let!(:tour5) { FactoryGirl.create :tour, tour_type:'other' }
+         
+      it "returns status 200" do
+        get 'index', token: user.token, type:'friendly', :format => :json
+        expect(response.status).to eq 200
+      end
+      
+      it "returns only matching type tours" do
+        get 'index', token: user.token, type:'friendly', :format => :json
+        expect(assigns(:tours)).to eq([tour4, tour3])
+      end
+       
+    end
     
   end
   

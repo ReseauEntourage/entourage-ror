@@ -21,4 +21,6 @@ class Tour < ActiveRecord::Base
     end
     coordinates_uri
   end
+  
+  scope :type, -> (type) { where tour_type: type }
 end

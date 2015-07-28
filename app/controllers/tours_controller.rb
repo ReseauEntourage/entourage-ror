@@ -20,7 +20,9 @@ class ToursController < ApplicationController
   end
 
   def index
-    @tours = Tour.order(updated_at: :desc).take(params.fetch(:limit, 10))
+    @tours = Tour.where(nil)
+    @tours = @tours.type(params[:type]) if params[:type].present?
+    @tours = @tours.order(updated_at: :desc).take(params.fetch(:limit, 10))
     render status: 200
   end
 
