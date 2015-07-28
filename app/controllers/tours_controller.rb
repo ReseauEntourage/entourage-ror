@@ -20,7 +20,7 @@ class ToursController < ApplicationController
   end
 
   def index
-    @tours = Tour.all
+    @tours = Tour.order(updated_at: :desc).take(params.fetch(:limit, 10))
     render status: 200
   end
 
