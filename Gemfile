@@ -21,8 +21,9 @@ group :development, :test do
 end
 
 group :development do
-	gem 'sqlite3'
-	gem 'spring'
+  gem 'sqlite3'
+  gem 'spring'
+  gem 'guard-rspec'
   gem 'better_errors'
 end
 
