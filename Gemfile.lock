@@ -38,7 +38,7 @@ GEM
       erubis (~> 2.7.0)
       rails-dom-testing (~> 1.0, >= 1.0.5)
       rails-html-sanitizer (~> 1.0, >= 1.0.1)
-    active_admin_import (2.1.1)
+    active_admin_import (2.1.2)
       activeadmin (>= 0.6.0)
       activerecord-import (~> 0.4, >= 0.4.1)
       rubyzip (~> 1.0, >= 1.0.0)
@@ -293,7 +293,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  active_admin_import (= 2.1.1)
+  active_admin_import (= 2.1.2)
   activeadmin!
   better_errors
   byebug
