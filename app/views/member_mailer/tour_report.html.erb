@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+  </head>
+  <body>
+    <p>Bonjour <%= @user.first_name %></p>
+    <p>
+     Bravo, vous avez maintenant une nouvelle maraude &agrave; votre actif !
+     Voici un r&eacute;sum&eacute; que vous pourrez ensuite transf&eacute;rer &agrave; votre coordinateur :
+    </p>
+    <h2>votre parcours</h2>
+    <img src="<%=@map_url%>" alt="parcours"/>
+    <% if @tour.tour_points.count > 0 %>
+    <p>D&eacute;part de <%=@tour.tour_points.first.latitude %> &agrave; <%=@tour.tour_points.first.passing_time%></p>
+    <p>Arriv&eacute;e &agrave; <%=@tour.tour_points.last.latitude %> &agrave; <%=@tour.tour_points.last.passing_time%></p>
+    <% end %>
+    <% @encounters.each do |encounter| %>
+
+    <% end %>
+
+  </body>
+</html>
