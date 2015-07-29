@@ -21,13 +21,14 @@ group :development, :test do
 end
 
 group :development do
-	gem 'sqlite3'
-	gem 'spring'
+  gem 'sqlite3'
+  gem 'spring'
+  gem 'guard-rspec'
   gem 'better_errors'
 end
 
 group :test do
-  gem 'rspec-rails', '~> 3.0.0'
+  gem 'rspec-rails', '~> 3.1'
   gem 'factory_girl_rails'
   gem 'shoulda-matchers'
   gem 'simplecov'
@@ -42,5 +43,5 @@ end
 
 gem 'devise'
 gem 'activeadmin', github: 'activeadmin'
-gem 'active_admin_import' , '2.1.1'
+gem 'active_admin_import' , '2.1.2'
 gem 'geocoder'

@@ -89,4 +89,77 @@ RSpec.describe ToursController, :type => :controller do
     end
 
   end
+  
+  describe "GET index" do
+    
+    let!(:user) { FactoryGirl.create :user }
+    
+    context "without parameter" do
+    
+      let!(:tour1) { FactoryGirl.create :tour, updated_at:0 }
+      let!(:tour2) { FactoryGirl.create :tour, updated_at:1 }
+      let!(:tour3) { FactoryGirl.create :tour, updated_at:2 }
+      let!(:tour4) { FactoryGirl.create :tour, updated_at:3 }
+      let!(:tour5) { FactoryGirl.create :tour, updated_at:4 }
+      let!(:tour6) { FactoryGirl.create :tour, updated_at:5 }
+      let!(:tour7) { FactoryGirl.create :tour, updated_at:6 }
+      let!(:tour8) { FactoryGirl.create :tour, updated_at:7 }
+      let!(:tour9) { FactoryGirl.create :tour, updated_at:8 }
+      let!(:tour10) { FactoryGirl.create :tour, updated_at:9 }
+      let!(:tour11) { FactoryGirl.create :tour, updated_at:10 }
+         
+      it "returns status 200" do
+        get 'index', token: user.token, :format => :json
+        expect(response.status).to eq 200
+      end
+      
+      it "returns last 10 tours" do
+        get 'index', token: user.token, :format => :json
+        expect(assigns(:tours)).to eq([tour11, tour10, tour9, tour8, tour7, tour6, tour5, tour4, tour3, tour2])
+      end
+      
+    end
+     
+    context "with limit parameter" do
+     
+      let!(:tour1) { FactoryGirl.create :tour, updated_at:0 }
+      let!(:tour2) { FactoryGirl.create :tour, updated_at:1 }
+      let!(:tour3) { FactoryGirl.create :tour, updated_at:2 }
+      let!(:tour4) { FactoryGirl.create :tour, updated_at:3 }
+      let!(:tour5) { FactoryGirl.create :tour, updated_at:4 }
+         
+      it "returns status 200" do
+        get 'index', token: user.token, limit: 3, :format => :json
+        expect(response.status).to eq 200
+      end
+      
+      it "returns last 3 tours" do
+        get 'index', token: user.token, limit: 3, :format => :json
+        expect(assigns(:tours)).to eq([tour5, tour4, tour3])
+      end
+       
+    end
+     
+    context "with type parameter" do 
+     
+      let!(:tour1) { FactoryGirl.create :tour, tour_type:'other' }
+      let!(:tour2) { FactoryGirl.create :tour, tour_type:'other' }
+      let!(:tour3) { FactoryGirl.create :tour, tour_type:'friendly' }
+      let!(:tour4) { FactoryGirl.create :tour, tour_type:'friendly' }
+      let!(:tour5) { FactoryGirl.create :tour, tour_type:'other' }
+         
+      it "returns status 200" do
+        get 'index', token: user.token, type:'friendly', :format => :json
+        expect(response.status).to eq 200
+      end
+      
+      it "returns only matching type tours" do
+        get 'index', token: user.token, type:'friendly', :format => :json
+        expect(assigns(:tours)).to eq([tour4, tour3])
+      end
+       
+    end
+    
+  end
+  
 end
