@@ -5,7 +5,7 @@ class Tour < ActiveRecord::Base
   has_many :encounters
   enum status: [ :ongoing, :closed ]
 
-  # after_update :send_tour_report
+  after_update :send_tour_report
 
   def send_tour_report
     if self.status == "closed" && ! self.email_sent
