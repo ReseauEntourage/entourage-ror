@@ -29,9 +29,12 @@ end
 
 group :test do
   gem 'rspec-rails', '~> 3.1'
-  gem 'factory_girl_rails'
   gem 'shoulda-matchers'
   gem 'simplecov'
+end
+
+group :test, :development do
+  gem 'factory_girl_rails'
 end
 
 group :production do
