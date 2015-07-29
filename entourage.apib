@@ -212,12 +212,14 @@ Tours, or "maraude", are definied only by their type (attribute tour_type).
 
 tour_type should be within ["social", "other", "food"]
 status is either "ongoing" or "closed"
+vehicle_type is either "feet" or "car"
 
 ## Tours collection [/tours{?token}]
 + Parameters
     + token (required, string, `FAKETOKEN`) ... Token identifying the current user
     + limit (optional, number, `15`) ... Max number of tours to return. 10 if not defined
     + type (optional, string, `friendly`) ... Type of tours to filter. None by default
+    + vehicle_type (optional, string, `feet`) ... Type of tours vehicle types to filter (can be 'feet' or 'car'). None by default
 
 ### Retrieve all tours [GET]
 + Request (application/json)
@@ -228,7 +230,7 @@ status is either "ongoing" or "closed"
 
 + Response 200 (application/json; charset=utf-8)
 
-        {"tours":[{"id":10,"type":"social","tour_points":[],"status":"ongoing"}]}
+        {"tours":[{"id":10,"type":"social", "vehicle_type":"feet","tour_points":[],"status":"ongoing"}]}
         
 + Response 401 (application/json; charset=utf-8)
 
@@ -244,11 +246,11 @@ status is either "ongoing" or "closed"
 
     + Body
 
-            {"tour":{"tour_type":"social", "status":"ongoing"}}
+            {"tour":{"tour_type":"social", "status":"ongoing", "vehicle_type":"feet"}}
 
 + Response 201 (application/json; charset=utf-8)
 
-        {"tour":{"id":10,"type":"social","tour_points":[]}}
+        {"tour":{"id":10,"type":"social", "vehicle_type":"feet","tour_points":[]}}
         
 + Response 400 (application/json; charset=utf-8)
 
@@ -272,7 +274,7 @@ status is either "ongoing" or "closed"
 
 + Response 200 (application/json; charset=utf-8)
 
-        {"tour":{"id":1,"type":"social","status":"ongoing","tour_points":[{"latitude":1.5,"longitude":1.5,"passing_time":"2015-07-07T10:31:43.000+02:00"}]}}
+        {"tour":{"id":1,"type":"social","status":"ongoing", "vehicle_type":"feet","tour_points":[{"latitude":1.5,"longitude":1.5,"passing_time":"2015-07-07T10:31:43.000+02:00"}]}}
         
 + Response 404 (application/json; charset=utf-8)
 
@@ -291,12 +293,12 @@ status is either "ongoing" or "closed"
 
     + Body
 
-            {"tour":{"tour_type":"social", "status":"closed"}}
+            {"tour":{"tour_type":"social", "status":"closed", "vehicle_type":"car"}}
 
 
 + Response 200 (application/json; charset=utf-8)
 
-        {"tour":{"id":1,"type":"social","status":"closed","tour_points":[{"latitude":1.5,"longitude":1.5,"passing_time":"2015-07-07T10:31:43.000+02:00"}]}}
+        {"tour":{"id":1,"type":"social","status":"closed", "vehicle_type":"car","tour_points":[{"latitude":1.5,"longitude":1.5,"passing_time":"2015-07-07T10:31:43.000+02:00"}]}}
         
 + Response 404 (application/json; charset=utf-8)
 

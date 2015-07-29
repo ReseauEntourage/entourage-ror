@@ -10,11 +10,11 @@ RSpec.describe ToursController, :type => :controller do
       let!(:tour) { FactoryGirl.build :tour }
 
       it "returns 201" do
-        post 'create', token: user.token , tour: {tour_type: tour.tour_type, status:tour.status}, :format => :json
+        post 'create', token: user.token , tour: {tour_type: tour.tour_type, status:tour.status, vehicle_type:tour.vehicle_type}, :format => :json
         expect(response.status).to eq(201)
       end
       it "assigns tour" do
-        post 'create', token: user.token , tour: {tour_type: tour.tour_type, status:tour.status}, :format => :json
+        post 'create', token: user.token , tour: {tour_type: tour.tour_type, status:tour.status, vehicle_type:tour.vehicle_type}, :format => :json
         last_tour = Tour.last
         expect(assigns(:tour)).to eq(last_tour)
       end
@@ -25,7 +25,7 @@ RSpec.describe ToursController, :type => :controller do
       let!(:tour) { FactoryGirl.build(:tour, tour_type:"invalid") }
 
       it "retours error 400" do
-        post 'create', token: user.token , tour: {tour_type: tour.tour_type, status:tour.status}, :format => :json
+        post 'create', token: user.token , tour: {tour_type: tour.tour_type, status:tour.status, vehicle_type:tour.vehicle_type}, :format => :json
         expect(response.status).to eq(400)
       end
 
@@ -71,8 +71,9 @@ RSpec.describe ToursController, :type => :controller do
       let!(:tour) { FactoryGirl.create :tour }
 
       it "updates tour" do
-        put 'update', id: tour.id, token: user.token, tour:{tour_type:tour.tour_type, status:"closed"}, format: :json
+        put 'update', id: tour.id, token: user.token, tour:{tour_type:tour.tour_type, status:"closed", vehicle_type:"car"}, format: :json
         expect(tour.reload.status).to eq("closed")
+        expect(tour.reload.vehicle_type).to eq("car")
       end
 
     end
@@ -155,6 +156,26 @@ RSpec.describe ToursController, :type => :controller do
       
       it "returns only matching type tours" do
         get 'index', token: user.token, type:'friendly', :format => :json
+        expect(assigns(:tours)).to eq([tour4, tour3])
+      end
+       
+    end
+    
+    context "with vehicle type parameter" do 
+     
+      let!(:tour1) { FactoryGirl.create :tour, vehicle_type:'feet' }
+      let!(:tour2) { FactoryGirl.create :tour, vehicle_type:'feet' }
+      let!(:tour3) { FactoryGirl.create :tour, vehicle_type:'car' }
+      let!(:tour4) { FactoryGirl.create :tour, vehicle_type:'car' }
+      let!(:tour5) { FactoryGirl.create :tour, vehicle_type:'feet' }
+         
+      it "returns status 200" do
+        get 'index', token: user.token, vehicle_type:'car', :format => :json
+        expect(response.status).to eq 200
+      end
+      
+      it "returns only matching vehicle type tours" do
+        get 'index', token: user.token, vehicle_type:'car', :format => :json
         expect(assigns(:tours)).to eq([tour4, tour3])
       end
        

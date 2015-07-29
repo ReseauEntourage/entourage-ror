@@ -22,6 +22,7 @@ class ToursController < ApplicationController
   def index
     @tours = Tour.where(nil)
     @tours = @tours.type(params[:type]) if params[:type].present?
+    @tours = @tours.vehicle_type(Tour.vehicle_types[params[:vehicle_type]]) if params[:vehicle_type].present?
     @tours = @tours.order(updated_at: :desc).take(params.fetch(:limit, 10))
     render status: 200
   end
@@ -39,7 +40,7 @@ class ToursController < ApplicationController
 private
 
   def tour_params
-    params.require(:tour).permit(:tour_type, :status)
+    params.require(:tour).permit(:tour_type, :status, :vehicle_type)
   end
 
 end

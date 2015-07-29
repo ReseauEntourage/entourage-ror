@@ -4,6 +4,8 @@ class Tour < ActiveRecord::Base
   has_many :tour_points, dependent: :destroy
   has_many :encounters
   enum status: [ :ongoing, :closed ]
+  enum vehicle_type: [ :feet, :car ]
+  validates_presence_of :tour_type, :status, :vehicle_type
 
   after_update :send_tour_report
 
@@ -23,4 +25,5 @@ class Tour < ActiveRecord::Base
   end
   
   scope :type, -> (type) { where tour_type: type }
+  scope :vehicle_type, -> (vehicle_type) { where vehicle_type: vehicle_type }
 end
