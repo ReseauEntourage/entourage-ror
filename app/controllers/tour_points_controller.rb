@@ -3,8 +3,8 @@ class TourPointsController < ApplicationController
 
   def create
     if @tour = Tour.find_by(id:params[:tour_id])
-      @tour_point = @tour.tour_points.create(tour_point_params)
-      if @tour_point.valid?
+      tour_points = @tour.tour_points.create(tour_point_params['tour_points'])
+      if tour_points.all?(&:valid?)
         render "tours/show", status: 201
       else
         render "400", status: 400
@@ -16,7 +16,8 @@ class TourPointsController < ApplicationController
   end
 
   def tour_point_params
-    params.require(:tour_point).permit(:latitude, :longitude, :passing_time)
+    params.require(:tour_points)
+    params.permit(tour_points: [:latitude, :longitude, :passing_time])
   end
 
 end

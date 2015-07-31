@@ -333,7 +333,7 @@ Tour points describe the tour itinerary
     + tour_id (required, integer, `1`) ... Identifier of the tour related to the point
     + token (required, string, `FAKETOKEN`) ... Token identifying the current user
 
-### Create a tour point [POST]
+### Create tour points [POST]
 + Request (application/json)
 
     + Header
@@ -341,11 +341,11 @@ Tour points describe the tour itinerary
             Accept: application/json
     + Body
 
-            {"tour_point":{"latitude":1.5,"longitude":1.5,"passing_time":"2015-07-07T10:31:43.000+02:00"}}
+            {"tour_points":[{"latitude":1.5,"longitude":1.5,"passing_time":"2015-07-07T10:31:43.000+02:00"}, {"latitude":2.5,"longitude":2.5,"passing_time":"2015-07-07T10:31:43.000+03:00"}]}
 
 + Response 201 (application/json; charset=utf-8)
 
-        {"tour":{"id":1,"type":"social","tour_points":[{"latitude":1.5,"longitude":1.5,"passing_time":"2015-07-07T10:31:43.000+02:00"}]}}
+        {"tour":{"id":1,"type":"social","tour_points":[{"latitude":1.5,"longitude":1.5,"passing_time":"2015-07-07T10:31:43.000+02:00"}, {"latitude":2.5,"longitude":2.5,"passing_time":"2015-07-07T10:31:43.000+03:00"}]}}
         
 + Response 400 (application/json; charset=utf-8)
 
