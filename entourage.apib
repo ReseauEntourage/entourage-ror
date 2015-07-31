@@ -218,8 +218,24 @@ vehicle_type is either "feet" or "car"
 + Parameters
     + token (required, string, `FAKETOKEN`) ... Token identifying the current user
     + limit (optional, number, `15`) ... Max number of tours to return. 10 if not defined
-    + type (optional, string, `friendly`) ... Type of tours to filter. None by default
-    + vehicle_type (optional, string, `feet`) ... Type of tours vehicle types to filter (can be 'feet' or 'car'). None by default
+    + type: `friendly` (optional, string)
+        
+        Type of tours to filter
+        
+        + Members
+            + `health`
+            + `friendly`
+            + `social`
+            + `food`
+            + `other`
+
+    + vehicle_type: `feet` (optional, enum[string])
+        
+        Type of tours vehicle types to filter
+        
+        + Members
+            + `feet`
+            + `car`
 
 ### Retrieve tours [GET]
 + Request (application/json)
