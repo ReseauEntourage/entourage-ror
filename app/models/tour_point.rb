@@ -4,4 +4,6 @@ class TourPoint < ActiveRecord::Base
   belongs_to :tour
   default_scope { order('passing_time') }
   
+  geocoded_by :address
+  
 end

@@ -181,6 +181,36 @@ RSpec.describe ToursController, :type => :controller do
        
     end
     
+    context "with location parameter" do 
+     
+      let!(:tour1) { FactoryGirl.create :tour }
+      let!(:tour_point1) { FactoryGirl.create :tour_point, tour: tour1, latitude: 10, longitude: 12 }
+      let!(:tour2) { FactoryGirl.create :tour }
+      let!(:tour_point2) { FactoryGirl.create :tour_point, tour: tour2, latitude: 9.9, longitude: 10.1 }
+      let!(:tour3) { FactoryGirl.create :tour }
+      let!(:tour_point3) { FactoryGirl.create :tour_point, tour: tour3, latitude: 10, longitude: 10 }
+      let!(:tour4) { FactoryGirl.create :tour }
+      let!(:tour_point4) { FactoryGirl.create :tour_point, tour: tour4, latitude: 10.05, longitude: 9.95 }
+      let!(:tour5) { FactoryGirl.create :tour }
+      let!(:tour_point5) { FactoryGirl.create :tour_point, tour: tour5, latitude: 12, longitude: 10 }
+         
+      it "returns status 200" do
+        get 'index', token: user.token, latitude: 10.0, longitude: 10.0, :format => :json
+        expect(response.status).to eq 200
+      end
+      
+      it "returns only matching location tours" do
+        get 'index', token: user.token, latitude: 10.0, longitude: 10.0, :format => :json
+        expect(assigns(:tours)).to eq([tour4, tour3])
+      end
+      
+      it "returns only matching location tours with provided distance" do
+        get 'index', token: user.token, latitude: 10.0, longitude: 10.0, distance: 20.0, :format => :json
+        expect(assigns(:tours)).to eq([tour4, tour3, tour2])
+      end
+       
+    end
+    
   end
   
 end

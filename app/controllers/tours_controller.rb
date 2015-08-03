@@ -23,6 +23,15 @@ class ToursController < ApplicationController
     @tours = Tour.where(nil)
     @tours = @tours.type(params[:type]) if params[:type].present?
     @tours = @tours.vehicle_type(Tour.vehicle_types[params[:vehicle_type]]) if params[:vehicle_type].present?
+    
+    if (params[:latitude].present? && params[:longitude].present?)
+      center_point = [params[:latitude], params[:longitude]]
+      distance = params.fetch(:distance, 10)
+      box = Geocoder::Calculations.bounding_box(center_point, distance, :units => :km)
+      points = TourPoint.within_bounding_box(box).select(:tour_id).distinct
+      @tours = @tours.where(id: points)
+    end
+    
     @tours = @tours.order(updated_at: :desc).take(params.fetch(:limit, 10))
     render status: 200
   end

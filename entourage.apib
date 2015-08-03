@@ -214,7 +214,7 @@ tour_type should be within ["social", "other", "food"]
 status is either "ongoing" or "closed"
 vehicle_type is either "feet" or "car"
 
-## Tours collection [/tours{?token}{&limit}{&type}{&vehicle_type}]
+## Tours collection [/tours{?token}{&limit}{&type}{&vehicle_type}{&latitude}{&longitude}{&distance}]
 + Parameters
     + token (required, string, `FAKETOKEN`) ... Token identifying the current user
     + limit (optional, number, `15`) ... Max number of tours to return. 10 if not defined
@@ -236,6 +236,10 @@ vehicle_type is either "feet" or "car"
         + Members
             + `feet`
             + `car`
+            
+    + latitude: 48.853333 (optional, number) ... The latitude of the center of the box to filter
+    + longitude: 2.348611 (optional, number) ... The longitude of the center of the box to filter
+    + distance: 20.0 (optional, number) ... The box size to filter (in km)
 
 ### Retrieve tours [GET]
 + Request (application/json)
