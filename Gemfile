@@ -25,6 +25,7 @@ group :development do
   gem 'spring'
   gem 'guard-rspec'
   gem 'better_errors'
+  gem 'hirb'
 end
 
 group :test do
