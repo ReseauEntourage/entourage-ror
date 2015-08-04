@@ -215,6 +215,9 @@ status is either "ongoing" or "closed"
 vehicle_type is either "feet" or "car"
 
 ## Tours collection [/tours{?token}{&limit}{&type}{&vehicle_type}{&latitude}{&longitude}{&distance}]
+
+### Retrieve tours [GET]
+
 + Parameters
     + token (required, string, `FAKETOKEN`) ... Token identifying the current user
     + limit (optional, number, `15`) ... Max number of tours to return. 10 if not defined
@@ -241,7 +244,6 @@ vehicle_type is either "feet" or "car"
     + longitude (optional, number, `2.348611`) ... The longitude of the center of the box to filter
     + distance (optional, number, `20.0`) ... The box size to filter (in km)
 
-### Retrieve tours [GET]
 + Request (application/json)
 
     + Header
