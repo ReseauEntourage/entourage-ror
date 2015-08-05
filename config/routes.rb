@@ -12,6 +12,7 @@ Rails.application.routes.draw do
   resources :encounters, only: [:create]
   resources :users, only: [:index, :create, :update, :destroy] do
     post 'send_message', on: :collection
+    post 'send_sms', on: :member
   end
 
   post 'login' => 'users#login'

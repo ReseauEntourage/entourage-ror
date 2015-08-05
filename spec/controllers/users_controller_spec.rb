@@ -185,5 +185,29 @@ RSpec.describe UsersController, :type => :controller do
     it { expect(response.status).to eq(200) }
     it { expect(android_notification_service).to have_received(:send_notification).with(sender, object, content, [user2.device_id, user4.device_id]) }
   end
+  
+  describe '#send_sms' do
+    let!(:user) { FactoryGirl.create :user }
+    let!(:sms_notification_service) { spy('sms_notification_service') }
+    
+    context 'the user exists' do
+      before do
+        controller.sms_notification_service = sms_notification_service
+        admin_basic_login
+        post 'send_sms', id: user.id, format: :json
+      end
+      it { expect(response.status).to eq(200) }
+      it { expect(sms_notification_service).to have_received(:send_notification).with(user.phone, user.sms_code) }
+    end
+    
+    context 'the user does not exists' do
+      before do
+        controller.sms_notification_service = sms_notification_service
+        admin_basic_login
+        post 'send_sms', id: user.id + 1, format: :json
+      end
+      it { expect(response.status).to eq(404) }
+    end
+  end
 
 end

@@ -3,7 +3,7 @@ class UsersController < ApplicationController
   protect_from_forgery with: :null_session, if: Proc.new { |c| c.request.format == 'application/json' }
   skip_before_filter :require_login
   before_filter :admin_authentication, except: :login
-  attr_writer :android_notification_service
+  attr_writer :android_notification_service, :sms_notification_service
 
   def index
     @users = User.all
@@ -57,6 +57,16 @@ class UsersController < ApplicationController
     android_notification_service.send_notification(params['sender'], params['object'], params['content'], device_ids)
     head 200
   end
+  
+  def send_sms
+    user = User.find_by(id: params[:id])
+    if user.nil?
+      render '404', status: 404
+    else
+      sms_notification_service.send_notification(user.phone, user.sms_code)
+      head 200
+    end
+  end
 
   private
 
@@ -66,6 +76,10 @@ class UsersController < ApplicationController
   
   def android_notification_service
     @android_notification_service ||= AndroidNotificationService.new(Rpush)
+  end
+  
+  def sms_notification_service
+    @sms_notification_service ||= SmsNotificationService.new
   end
 
 end
