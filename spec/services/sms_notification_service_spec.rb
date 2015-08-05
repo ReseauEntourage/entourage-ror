@@ -25,7 +25,7 @@ describe SmsNotificationService do
         Rails.logger.stub(:warn)
         sms_notification_service.send_notification(phone_number, message)
       end
-      it { expect(Rails.logger).to have_received(:warn).with('No SMS has been sent. Please provide SINCH_API_KEY and SINCH_API_SECRET environment variables') }
+      it { expect(Rails.logger).to have_received(:warn).with('No SMS has been sent. Please provide SINCH_API_KEY and SINCH_API_SECRET environment variables'.red) }
     end
   end
 end
