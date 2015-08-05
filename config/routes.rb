@@ -10,11 +10,11 @@ Rails.application.routes.draw do
   resources :newsletter_subscriptions
   resources :pois, only: [:index]
   resources :encounters, only: [:create]
-  resources :users, only: [:index, :create, :update, :destroy]
+  resources :users, only: [:index, :create, :update, :destroy] do
+    post 'send_message', on: :collection
+  end
 
   post 'login' => 'users#login'
-  post 'users/send_message' => 'users#send_message'
-
   get 'map' => 'map#index'
 
   devise_for :admin_users, ActiveAdmin::Devise.config
