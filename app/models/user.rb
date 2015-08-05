@@ -4,6 +4,8 @@ class User < ActiveRecord::Base
 
   validates :email, presence: true, uniqueness: true
 
+  enum device_type: [ :android ]
+
   after_create :set_token
 
   def set_token

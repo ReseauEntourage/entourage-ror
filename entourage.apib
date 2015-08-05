@@ -163,17 +163,20 @@ Users resources access is restricted by basic authentication.
 + Response 204
 
 
-## User login [/login]
+## User login [/login{?email}{&device_type}{&device_id}]
++ Parameters
+    + email (required, string, `dredd@test.com`) ... Email of the user to login
+    + device_type: `android` (optional, enum[string]) - Type of mobile device the user is using
+        + Members
+            + `android` - Only Android is supported for the moment
+    + device_id (optional, string, `APA91bHSxpidt2SJ33aosTNSlYQMGRyzdt5LFBBSJEhd6zuR9hhe7Qxj00Y_u8og0W7DMaWTU_hWVqUl__yrMq7juuQNKzN689tnCcQKN2LcoJ_09ljgaRFNggfS77Kd0eWfX011oB5S`) ... Technical identifier of the mobile device the user is using (to be able to send notifications)
+
 ### Login user [POST]
 + Request (application/x-www-form-urlencoded; charset=utf-8)
 
     + Header
             
             Accept: application/json
-    
-    + Body
-    
-            email=dredd@test.com
 
 + Response 200 (application/json; charset=utf-8)
 

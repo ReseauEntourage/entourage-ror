@@ -1,19 +1,7 @@
 require 'rails_helper'
 
 describe User, :type => :model do
-  it { should validate_presence_of(:email) }
-  describe 'user validation' do
-    let!(:old_user) { FactoryGirl.create :user }
-    subject { new_user }
-
-    context 'should fail with already existing email' do
-      let(:new_user) { FactoryGirl.build :user }
-      it { should_not be_valid }
-    end
-
-    context 'should succeed with new email' do
-      let(:new_user) { FactoryGirl.build :user, email: "mail_not_existing@mail.com" }
-      it { should be_valid }
-    end
-  end
+    it { should validate_presence_of(:email) }
+    it { should validate_uniqueness_of(:email) }
+    it { should define_enum_for(:device_type) }
 end

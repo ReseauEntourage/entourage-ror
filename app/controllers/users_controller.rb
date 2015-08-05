@@ -44,6 +44,10 @@ class UsersController < ApplicationController
 
     if @user.nil?
       render 'error', status: :bad_request
+    else
+      @user.device_id = params['device_id'] if params['device_id'].present?
+      @user.device_type = params['device_type'] if params['device_type'].present?
+      @user.save
     end
   end
 

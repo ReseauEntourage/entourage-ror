@@ -5,23 +5,24 @@ include Requests::JsonHelpers
 RSpec.describe UsersController, :type => :controller do
   render_views
   
-  describe 'users login' do
-    let!(:user) { create :user }
-    subject { assigns(:user) }
-
+  describe 'POST #login' do
     context 'when user email is valid' do
-      let(:another_user) { create :user, email: 'another_user@mail.com' }
-      before { post 'login', email: another_user.email, format: 'json' }
-      it { should eq another_user }
+      let(:device_id) { 'device_id' }
+      let(:device_type) { 'android' }
+      let(:user) { create :user, email: 'another_user@mail.com' }
+      before { post 'login', email: user.email, device_id: device_id, device_type: device_type, format: 'json' }
+      it { expect(response.status).to eq(200) }
+      it { expect(assigns(:user)).to eq(user) }
+      it { expect(User.find(user.id).device_id).to eq(device_id) }
+      it { expect(User.find(user.id).device_type).to eq(device_type) }
     end
-
     context 'when user does not exist' do
       before { post 'login', email: 'not_existing@nowhere.com', format: 'json' }
-      it { should be nil }
+      it { expect(response.status).to eq(400) }
+      it { expect(assigns(:user)).to be_nil }
     end
-
   end
-
+  
   describe 'get index' do
 
     context 'without basic authentication' do
