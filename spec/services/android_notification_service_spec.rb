@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe AndroidNotificationService do
-  describe '#push' do
+  describe '#send_notification' do
     let!(:android_app) { FactoryGirl.create :android_app }
     let!(:sender) { 'sender' }
     let!(:object) { 'object' }
