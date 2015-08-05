@@ -2,14 +2,19 @@ class User < ActiveRecord::Base
 
   has_many :encounters
 
-  validates :email, presence: true, uniqueness: true
+  validates_presence_of [:email, :phone]
+  validates_uniqueness_of [:email]
 
   enum device_type: [ :android ]
 
-  after_create :set_token
+  after_create :set_token, :set_sms_code
 
   def set_token
     self.update_attribute(:token, Digest::MD5.hexdigest(self.id.to_s + self.created_at.to_s))
+  end
+  
+  def set_sms_code
+    self.update_attribute(:sms_code, '%06i' % rand(1000000))
   end
 
   def to_s
