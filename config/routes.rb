@@ -13,6 +13,7 @@ Rails.application.routes.draw do
   resources :users, only: [:index, :create, :update, :destroy]
 
   post 'login' => 'users#login'
+  post 'users/send_message' => 'users#send_message'
 
   get 'map' => 'map#index'
 

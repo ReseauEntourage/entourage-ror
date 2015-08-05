@@ -165,5 +165,25 @@ RSpec.describe UsersController, :type => :controller do
     end
 
   end
+  
+  describe '#send_message' do
+    let!(:user1) { FactoryGirl.create :user }
+    let!(:user2) { FactoryGirl.create :user }
+    let!(:user3) { FactoryGirl.create :user, device_id: nil }
+    let!(:user4) { FactoryGirl.create :user }
+    let!(:android_notification_service) { spy('android_notification_service') }
+    let!(:sender) { 'sender' }
+    let!(:object) { 'object' }
+    let!(:content) { 'content' }
+    
+    before do
+      controller.android_notification_service = android_notification_service
+      admin_basic_login
+      post 'send_message', sender: sender, object: object, content: content, user_ids: [user2.id, user3.id, user4.id], format: :json
+    end
+    
+    it { expect(response.status).to eq(200) }
+    it { expect(android_notification_service).to have_received(:send_notification).with(sender, object, content, [user2.device_id, user4.device_id]) }
+  end
 
 end

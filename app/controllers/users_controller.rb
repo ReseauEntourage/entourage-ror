@@ -3,6 +3,7 @@ class UsersController < ApplicationController
   protect_from_forgery with: :null_session, if: Proc.new { |c| c.request.format == 'application/json' }
   skip_before_filter :require_login
   before_filter :admin_authentication, except: :login
+  attr_writer :android_notification_service
 
   def index
     @users = User.all
@@ -50,11 +51,21 @@ class UsersController < ApplicationController
       @user.save
     end
   end
+  
+  def send_message
+    device_ids = User.where(id: params['user_ids']).where.not(device_id: nil).pluck(:device_id)
+    android_notification_service.send_notification(params['sender'], params['object'], params['content'], device_ids)
+    head 200
+  end
 
   private
 
   def user_params
     params.require(:user).permit(:email, :first_name, :last_name)
+  end
+  
+  def android_notification_service
+    @android_notification_service ||= AndroidNotificationService.new(Rpush)
   end
 
 end
