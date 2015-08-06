@@ -6,20 +6,41 @@ RSpec.describe UsersController, :type => :controller do
   render_views
   
   describe 'POST #login' do
-    context 'when user email is valid' do
+    context 'when the user exists' do
       let(:device_id) { 'device_id' }
       let(:device_type) { 'android' }
-      let(:user) { create :user, email: 'another_user@mail.com' }
-      before { post 'login', email: user.email, device_id: device_id, device_type: device_type, format: 'json' }
-      it { expect(response.status).to eq(200) }
-      it { expect(assigns(:user)).to eq(user) }
-      it { expect(User.find(user.id).device_id).to eq(device_id) }
-      it { expect(User.find(user.id).device_type).to eq(device_type) }
+      let(:user) { create :user }
+      context 'when user email is valid' do
+        before { post 'login', email: user.email, device_id: device_id, device_type: device_type, format: 'json' }
+        it { expect(response.status).to eq(200) }
+        it { expect(assigns(:user)).to eq(user) }
+        it { expect(User.find(user.id).device_id).to eq(device_id) }
+        it { expect(User.find(user.id).device_type).to eq(device_type) }
+      end
+      context 'when the phone number and sms code are valid' do
+        before { post 'login', phone: user.phone, sms_code: user.sms_code, device_id: device_id, device_type: device_type, format: 'json' }
+        it { expect(response.status).to eq(200) }
+        it { expect(assigns(:user)).to eq(user) }
+        it { expect(User.find(user.id).device_id).to eq(device_id) }
+        it { expect(User.find(user.id).device_type).to eq(device_type) }
+      end
+      context 'when sms code is invalid' do
+        before { post 'login', phone: user.phone, sms_code: 'wrong sms code', device_id: device_id, device_type: device_type, format: 'json' }
+        it { expect(response.status).to eq(400) }
+        it { expect(assigns(:user)).to be_nil }
+      end
     end
     context 'when user does not exist' do
-      before { post 'login', email: 'not_existing@nowhere.com', format: 'json' }
-      it { expect(response.status).to eq(400) }
-      it { expect(assigns(:user)).to be_nil }
+      context 'using the email' do
+        before { post 'login', email: 'not_existing@nowhere.com', format: 'json' }
+        it { expect(response.status).to eq(400) }
+        it { expect(assigns(:user)).to be_nil }
+      end
+      context 'using the phone number and sms code' do
+        before { post 'login', phone: 'phone', sms_code: 'sms code', format: 'json' }
+        it { expect(response.status).to eq(400) }
+        it { expect(assigns(:user)).to be_nil }
+      end
     end
   end
   

@@ -163,9 +163,11 @@ Users resources access is restricted by basic authentication.
 + Response 204
 
 
-## User login [/login{?email}{&device_type}{&device_id}]
+## User login [/login{?email}{&phone}{sms_code}{&device_type}{&device_id}]
 + Parameters
-    + email (required, string, `dredd@test.com`) ... Email of the user to login
+    + email (optional, string, `dredd@test.com`) ... DEPRECATED - Email of the user to login
+    + phone (optional, string, `+33605040302`) ... phone number of the user to login. Use with sms_code
+    + sms_code (optional, string, `123456`) ... Sms code received by the user to login
     + device_type: `android` (optional, enum[string]) - Type of mobile device the user is using
         + Members
             + `android` - Only Android is supported for the moment
