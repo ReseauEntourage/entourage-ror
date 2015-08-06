@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 describe User, :type => :model do
+  it { should validate_presence_of(:first_name) }
+  it { should validate_presence_of(:last_name) }
   it { should validate_presence_of(:email) }
   it { should validate_presence_of(:phone) }
   it { should validate_uniqueness_of(:email) }
@@ -13,6 +15,9 @@ describe User, :type => :model do
   it { should_not allow_value('+3312345678').for(:phone) }
   it { should_not allow_value('+331234567890').for(:phone) }
   it { should_not allow_value('+33000a00000').for(:phone) }
+  it { should allow_value('a@a.a').for(:email) }
+  it { should_not allow_value('a-a.a').for(:email) }
+  it { should_not allow_value('@').for(:email) }
   
   context 'token automatically created' do
     let!(:user) { FactoryGirl.create :user, token: nil }
