@@ -112,14 +112,14 @@ RSpec.describe UsersController, :type => :controller do
     context 'with correct parameters' do
       it "retuns 201" do
         admin_basic_login
-        post 'create', user: {email: "test@rspec.com", first_name:"tester", last_name:"tested", phone:'01 02 03 04 05'}, format: :json
+        post 'create', user: {email: "test@rspec.com", first_name:"tester", last_name:"tested", phone:'+33102030405'}, format: :json
         expect(response.status).to eq(201)
       end
 
       it "creates new user" do
         admin_basic_login
         user_count = User.count
-        post 'create', user: {email: "test@rspec.com", first_name:"tester", last_name:"tested", phone:'01 02 03 04 05'}, format: :json
+        post 'create', user: {email: "test@rspec.com", first_name:"tester", last_name:"tested", phone:'+33102030405'}, format: :json
         expect(User.count).to eq(user_count + 1)
       end
     end

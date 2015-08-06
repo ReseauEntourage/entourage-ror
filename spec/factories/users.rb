@@ -9,7 +9,7 @@ FactoryGirl.define do
       "device id #{n}"
     end
     sequence :phone do |n|
-      "00 11 22 33 #{n}"
+      "+336%08i" % n
     end
   end
 end

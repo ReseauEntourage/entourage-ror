@@ -4,6 +4,7 @@ class User < ActiveRecord::Base
 
   validates_presence_of [:email, :phone]
   validates_uniqueness_of [:email]
+  validates_format_of :phone, :with => /\A\+33[0-9]{9}\Z/, :on => :create
 
   enum device_type: [ :android ]
 

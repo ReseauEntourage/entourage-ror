@@ -5,6 +5,14 @@ describe User, :type => :model do
   it { should validate_presence_of(:phone) }
   it { should validate_uniqueness_of(:email) }
   it { should define_enum_for(:device_type) }
+  it { should allow_value('+33000000000').for(:phone) }
+  it { should allow_value('+33123456789').for(:phone) }
+  it { should allow_value('+33999999999').for(:phone) }
+  it { should_not allow_value('01 23 45 67 89').for(:phone) }
+  it { should_not allow_value('0123456789').for(:phone) }
+  it { should_not allow_value('+3312345678').for(:phone) }
+  it { should_not allow_value('+331234567890').for(:phone) }
+  it { should_not allow_value('+33000a00000').for(:phone) }
   
   context 'token automatically created' do
     let!(:user) { FactoryGirl.create :user, token: nil }
