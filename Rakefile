@@ -12,6 +12,7 @@ Dredd::Rack::RakeTask.new(:dredd) do |task|
   task.runner.configure do |dredd|
     dredd.paths_to_blueprints './*.apib', 'blueprints/*.apib'
     dredd.hookfiles './dredd/hooks/add_basic_auth.js'
+    dredd.reporter(:junit).output('./dredd/output/report.xml')
     dredd.sorted!
   end
 end
