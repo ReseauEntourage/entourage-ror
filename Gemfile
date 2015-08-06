@@ -26,6 +26,7 @@ group :development do
   gem 'guard-rspec'
   gem 'better_errors'
   gem 'hirb'
+  gem 'dredd-rack'
 end
 
 group :test do

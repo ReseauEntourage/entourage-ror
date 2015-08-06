@@ -33,11 +33,10 @@ $ npm install -g dredd
 
 ## Setup database for Dredd tests:
 - Reset DB to reset id sequence
-- Run migrations to set database schema
 - Populate database with Dredd specific seeds (cf file ./db/seeds/dredd.rb)
 
 ```
-$ rake db:drop db:migrate dredd:seeds
+$ rake db:reset dredd:seeds
 ```
 
 ### rake dredd:seeds task description:
@@ -48,7 +47,7 @@ Generates the dredd user
 ## Run Dredd:
 
 ```
-$ dredd
+$ rake dredd
 ```
 
 ## Dredd config
