@@ -73,9 +73,14 @@ end
 
 group 'apib' do
   guard :shell do
+    require 'colorize'
     watch 'entourage.apib' do |m|
-      system('rake db:reset dredd:seeds dredd && aglio -i entourage.apib -o public/developer.html'); ""
+      system('rake db:reset dredd:seeds dredd')
+      system('echo "' + 'Launching Aglio'.yellow + '"')
+      system('aglio -i entourage.apib -o public/developer.html')
+      system('echo "' + 'Aglio Complete'.green + '"')
     end
+    
   end
 end
 
