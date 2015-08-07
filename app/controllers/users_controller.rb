@@ -41,8 +41,7 @@ class UsersController < ApplicationController
   end
 
   def login
-    @user = User.find_by_email params[:email].downcase if params[:email].present?
-    @user = User.find_by_phone_and_sms_code params[:phone], params[:sms_code] if params[:phone].present? && params[:sms_code].present?
+    @user = User.find_by_phone_and_sms_code params[:phone], params[:sms_code]
 
     if @user.nil?
       render 'error', status: :bad_request

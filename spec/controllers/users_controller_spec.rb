@@ -10,13 +10,6 @@ RSpec.describe UsersController, :type => :controller do
       let(:device_id) { 'device_id' }
       let(:device_type) { 'android' }
       let(:user) { create :user }
-      context 'when user email is valid' do
-        before { post 'login', email: user.email, device_id: device_id, device_type: device_type, format: 'json' }
-        it { expect(response.status).to eq(200) }
-        it { expect(assigns(:user)).to eq(user) }
-        it { expect(User.find(user.id).device_id).to eq(device_id) }
-        it { expect(User.find(user.id).device_type).to eq(device_type) }
-      end
       context 'when the phone number and sms code are valid' do
         before { post 'login', phone: user.phone, sms_code: user.sms_code, device_id: device_id, device_type: device_type, format: 'json' }
         it { expect(response.status).to eq(200) }
