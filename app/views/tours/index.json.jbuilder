@@ -1,7 +1,7 @@
 json.tours do
   json.array!(@tours) do |tour|
     json.id tour.id
-    json.type tour.tour_type
+    json.tour_type tour.tour_type
     json.status tour.status
     json.vehicle_type tour.vehicle_type
     json.tour_points do

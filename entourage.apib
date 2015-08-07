@@ -258,7 +258,7 @@ vehicle_type is either "feet" or "car"
 
 + Response 200 (application/json; charset=utf-8)
 
-        {"tours":[{"id":10,"type":"social", "vehicle_type":"feet","tour_points":[],"status":"ongoing"}]}
+        {"tours":[{"id":10,"tour_type":"social", "vehicle_type":"feet","tour_points":[],"status":"ongoing"}]}
         
 + Response 401 (application/json; charset=utf-8)
 
@@ -278,7 +278,7 @@ vehicle_type is either "feet" or "car"
 
 + Response 201 (application/json; charset=utf-8)
 
-        {"tour":{"id":10,"type":"social", "vehicle_type":"feet","tour_points":[]}}
+        {"tour":{"id":10,"tour_type":"social", "vehicle_type":"feet","tour_points":[]}}
         
 + Response 400 (application/json; charset=utf-8)
 
@@ -302,7 +302,7 @@ vehicle_type is either "feet" or "car"
 
 + Response 200 (application/json; charset=utf-8)
 
-        {"tour":{"id":1,"type":"social","status":"ongoing", "vehicle_type":"feet","tour_points":[{"latitude":1.5,"longitude":1.5,"passing_time":"2015-07-07T10:31:43.000+02:00"}]}}
+        {"tour":{"id":1,"tour_type":"social","status":"ongoing", "vehicle_type":"feet","tour_points":[{"latitude":1.5,"longitude":1.5,"passing_time":"2015-07-07T10:31:43.000+02:00"}]}}
         
 + Response 404 (application/json; charset=utf-8)
 
@@ -326,7 +326,7 @@ vehicle_type is either "feet" or "car"
 
 + Response 200 (application/json; charset=utf-8)
 
-        {"tour":{"id":1,"type":"social","status":"closed", "vehicle_type":"car","tour_points":[{"latitude":1.5,"longitude":1.5,"passing_time":"2015-07-07T10:31:43.000+02:00"}]}}
+        {"tour":{"id":1,"tour_type":"social","status":"closed", "vehicle_type":"car","tour_points":[{"latitude":1.5,"longitude":1.5,"passing_time":"2015-07-07T10:31:43.000+02:00"}]}}
         
 + Response 404 (application/json; charset=utf-8)
 
@@ -357,7 +357,7 @@ Tour points describe the tour itinerary
 
 + Response 201 (application/json; charset=utf-8)
 
-        {"tour":{"id":1,"type":"social","tour_points":[{"latitude":1.5,"longitude":1.5,"passing_time":"2015-07-07T10:31:43.000+02:00"}, {"latitude":2.5,"longitude":2.5,"passing_time":"2015-07-07T10:31:43.000+03:00"}]}}
+        {"tour":{"id":1,"tour_type":"social","tour_points":[{"latitude":1.5,"longitude":1.5,"passing_time":"2015-07-07T10:31:43.000+02:00"}, {"latitude":2.5,"longitude":2.5,"passing_time":"2015-07-07T10:31:43.000+03:00"}]}}
         
 + Response 400 (application/json; charset=utf-8)
 
