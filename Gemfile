@@ -18,6 +18,7 @@ gem 'sdoc', '~> 0.4.0',          group: :doc
 
 group :development, :test do 
   gem 'byebug'
+  gem 'factory_girl_rails'
 end
 
 group :development do
@@ -25,7 +26,6 @@ group :development do
   gem 'spring'
   gem 'guard-rspec'
   gem 'better_errors'
-  gem 'hirb'
   gem 'dredd-rack'
 end
 
@@ -35,8 +35,8 @@ group :test do
   gem 'simplecov'
 end
 
-group :test, :development do
-  gem 'factory_girl_rails'
+group :console do
+  gem 'hirb'
 end
 
 group :production do
