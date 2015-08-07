@@ -25,6 +25,7 @@ group :development do
   gem 'sqlite3'
   gem 'spring'
   gem 'guard-rspec'
+  gem 'guard-shell'
   gem 'better_errors'
   gem 'dredd-rack'
 end
