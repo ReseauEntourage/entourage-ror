@@ -1,7 +1,7 @@
 # Prerequisites
 
 Ruby 2.0.0
-Rails 4.1.1
+Rails 4.2
 
 rbenv or rvm recommanded
 
@@ -53,3 +53,21 @@ $ rake dredd
 ## Dredd config
 
 Dredd options are listed in dredd.yml file
+
+# Guard
+
+## Guard Rspec (default)
+
+Launch automatically tests with:
+
+```
+$ bundle exec guard
+```
+
+## Guard Api blueprint
+
+Launch automatically dredd and aglio (static documentation generation) with:
+
+```
+$ bundle exec guard -g apib
+```
