@@ -77,7 +77,7 @@ group 'apib' do
     watch 'entourage.apib' do |m|
       system('rake db:reset dredd:seeds dredd')
       system('echo "' + 'Launching Aglio'.yellow + '"')
-      system('aglio -i entourage.apib -o public/developer.html')
+      system('aglio -i entourage.apib -o public/developer.html --theme-full-width')
       system('echo "' + 'Aglio Complete'.green + '"')
     end
     
