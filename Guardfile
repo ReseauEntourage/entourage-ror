@@ -25,7 +25,7 @@
 #  * 'just' rspec: 'rspec'
 
 group 'spec' do
-  guard :rspec, cmd: "bundle exec rspec" do
+  guard :rspec, cmd: "bundle exec rspec --format NyanCatFormatter" do
     require "guard/rspec/dsl"
     dsl = Guard::RSpec::Dsl.new(self)
   
