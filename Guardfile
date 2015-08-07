@@ -74,12 +74,16 @@ end
 group 'apib' do
   guard :shell do
     require 'colorize'
-    watch 'entourage.apib' do |m|
+    
+    def apib
       system('rake db:reset dredd:seeds dredd')
       system('echo "' + 'Launching Aglio'.yellow + '"')
       system('aglio -i entourage.apib -o public/developer.html --theme-full-width')
       system('echo "' + 'Aglio Complete'.green + '"')
     end
+    
+    watch('entourage.apib') { apib }
+    watch(%r{^app/.+\.(rb|jbuilder)$}) { apib }
     
   end
 end
