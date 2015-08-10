@@ -34,35 +34,6 @@ A single Note object with all its details
 
         {"error":{"status":401,"message":"Please sign-in"}}
 
-# Group Encounters
-Encounters related resources of the **Entourage API**
-## Encounters collection [/encounters{?token}]
-+ Parameters
-    + token (required, string, `FAKETOKEN`) ... Token identifying the current user
-
-### Create an Encounter [POST]
-+ Request (application/json)
-
-    + Headers
-
-            Accept: application/json
-
-    + Body
-
-            {"encounter":{"street_person_name":"jean","date":"2014-10-11 15:19:45","latitude":42,"longitude":2,"message":"test","voice_message":"http://www.google.com"}}
-
-+ Response 201 (application/json; charset=utf-8)
-
-        {"encounter":{"id":1,"date":"2014-10-11T15:19:45.000+02:00","latitude":42.0,"longitude":2.0,"user_id":1,"user_name":"Eric","street_person_name":"jean","message":"test","voice_message":"http://www.google.com"}}
-        
-+ Response 400 (application/json; charset=utf-8)
-
-        {"error":{"status":400,"message":"Could not create encouter","reasons":["Date can't be blank","Street person name can't be blank","Latitude can't be blank","Latitude is not a number","Longitude can't be blank","Longitude is not a number"]}}
-
-+ Response 401 (application/json; charset=utf-8)
-
-        {"error":{"status":401,"message":"Please sign-in"}}
-
 # Group POIs
 POI related resources of the **Entourage API**
 ## Pois collection [/pois{?token}]
@@ -181,7 +152,7 @@ Users resources access is restricted by basic authentication.
 
 + Response 200 (application/json; charset=utf-8)
 
-        {"user":{"id":1,"email":"dredd@test.com","first_name":"Judge","last_name":"Dredd","token":"FAKETOKEN"}}
+        {"user":{"id":1,"email":"dredd@test.com","first_name":"Judge","last_name":"Dredd","token":"FAKETOKEN","stats":{"tour_count":0,"encounter_count":0}}}
 
 + Response 400 (application/json; charset=utf-8)
 

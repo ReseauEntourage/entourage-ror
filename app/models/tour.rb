@@ -5,7 +5,8 @@ class Tour < ActiveRecord::Base
   has_many :encounters
   enum status: [ :ongoing, :closed ]
   enum vehicle_type: [ :feet, :car ]
-  validates_presence_of :tour_type, :status, :vehicle_type
+  validates_presence_of :tour_type, :status, :vehicle_type, :user
+  belongs_to :user
 
   after_update :send_tour_report
 

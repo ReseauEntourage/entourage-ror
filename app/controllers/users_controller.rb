@@ -49,6 +49,9 @@ class UsersController < ApplicationController
       @user.device_id = params['device_id'] if params['device_id'].present?
       @user.device_type = params['device_type'] if params['device_type'].present?
       @user.save
+      
+      @tour_count = @user.tours.count
+      @encounter_count = @user.encounters.count
     end
   end
   

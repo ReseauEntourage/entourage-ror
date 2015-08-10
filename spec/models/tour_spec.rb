@@ -7,4 +7,6 @@ RSpec.describe Tour, :type => :model do
     it { should validate_presence_of(:tour_type) }
     it { should validate_presence_of(:vehicle_type) }
     it { should validate_presence_of(:status) }
+    it { should validate_presence_of(:user) }
+    it { should belong_to(:user) }
 end

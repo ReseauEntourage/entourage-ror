@@ -1,11 +1,11 @@
 class User < ActiveRecord::Base
 
-  has_many :encounters
-
   validates_presence_of [:first_name, :last_name, :email, :phone]
   validates_uniqueness_of [:email]
   validates_format_of :phone, with: /\A\+33[0-9]{9}\Z/, on: :create
   validates_format_of :email, with: Devise.email_regexp
+  has_many :tours
+  has_many :encounters, through: :tours
 
   enum device_type: [ :android ]
 

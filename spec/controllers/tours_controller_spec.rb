@@ -3,32 +3,23 @@ require 'rails_helper'
 RSpec.describe ToursController, :type => :controller do
   
   describe "POST create" do
+    let!(:user) { FactoryGirl.create :user }
+    let!(:tour) { FactoryGirl.build :tour }
     
     context "with correct type" do
+      before { post 'create', token: user.token , tour: {tour_type: tour.tour_type, status:tour.status, vehicle_type:tour.vehicle_type}, :format => :json }
 
-      let!(:user) { FactoryGirl.create :user }
-      let!(:tour) { FactoryGirl.build :tour }
-
-      it "returns 201" do
-        post 'create', token: user.token , tour: {tour_type: tour.tour_type, status:tour.status, vehicle_type:tour.vehicle_type}, :format => :json
-        expect(response.status).to eq(201)
-      end
-      it "assigns tour" do
-        post 'create', token: user.token , tour: {tour_type: tour.tour_type, status:tour.status, vehicle_type:tour.vehicle_type}, :format => :json
-        last_tour = Tour.last
-        expect(assigns(:tour)).to eq(last_tour)
-      end
+      it { should respond_with 201 }
+      it { expect(assigns(:tour)).to eq(Tour.last) }
+      it { expect(Tour.last.tour_type).to eq(tour.tour_type) }
+      it { expect(Tour.last.status).to eq(tour.status) }
+      it { expect(Tour.last.vehicle_type).to eq(tour.vehicle_type) }
+      it { expect(Tour.last.user).to eq(user) }
     end
 
     context "with incorrect type" do
-      let!(:user) { FactoryGirl.create :user }
-      let!(:tour) { FactoryGirl.build(:tour, tour_type:"invalid") }
-
-      it "retours error 400" do
-        post 'create', token: user.token , tour: {tour_type: tour.tour_type, status:tour.status, vehicle_type:tour.vehicle_type}, :format => :json
-        expect(response.status).to eq(400)
-      end
-
+      before { post 'create', token: user.token , tour: {tour_type: 'invalid', status:tour.status, vehicle_type:tour.vehicle_type}, :format => :json }
+      it { should respond_with 400 }
     end
 
   end
@@ -65,28 +56,27 @@ RSpec.describe ToursController, :type => :controller do
 
   describe "PUT update" do
     
+    let!(:user) { FactoryGirl.create :user }
+    let!(:other_user) { FactoryGirl.create :user }
+    let!(:tour) { FactoryGirl.create :tour, user: user }
+      
     context "with correct id" do
+      before { put 'update', id: tour.id, token: user.token, tour:{tour_type:"health", status:"closed", vehicle_type:"car"}, format: :json }
 
-      let!(:user) { FactoryGirl.create :user }
-      let!(:tour) { FactoryGirl.create :tour }
-
-      it "updates tour" do
-        put 'update', id: tour.id, token: user.token, tour:{tour_type:tour.tour_type, status:"closed", vehicle_type:"car"}, format: :json
-        expect(tour.reload.status).to eq("closed")
-        expect(tour.reload.vehicle_type).to eq("car")
-      end
-
+      it { should respond_with 200 }
+      it { expect(tour.reload.status).to eq("closed") }
+      it { expect(tour.reload.vehicle_type).to eq("car") }
+      it { expect(tour.reload.tour_type).to eq("health") }
     end
 
     context "with unexisting id" do
-      let!(:user) { FactoryGirl.create :user }
-      let!(:tour) { FactoryGirl.build(:tour, tour_type:"invalid") }
-
-      it "retours error 404" do
-        put 'update', id: 0, token: user.token , :format => :json
-        expect(response.status).to eq(404)
-      end
-
+      before { put 'update', id: 0, token: user.token, tour:{tour_type:"health", status:"closed", vehicle_type:"car"}, format: :json }
+      it { should respond_with 404 }
+    end
+    
+    context "with incorrect_user" do
+      before { put 'update', id: tour.id, token: other_user.token, tour:{tour_type:"health", status:"closed", vehicle_type:"car"}, format: :json }
+      it { should respond_with 403 }
     end
 
   end

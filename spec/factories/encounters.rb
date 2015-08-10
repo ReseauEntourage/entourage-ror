@@ -8,8 +8,6 @@ FactoryGirl.define do
     voice_message_url "https://www.google.com"
     latitude 48.870424
     longitude 2.3068194999999605
-    factory :valid_encounter do
-      user_id 1
-    end
+    tour
   end
 end

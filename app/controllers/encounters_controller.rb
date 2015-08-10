@@ -3,7 +3,6 @@ class EncountersController < ApplicationController
 
   def create
     @encounter = Encounter.new(encounters_params)
-    @encounter.user = current_user
     if params[:tour_id]
       @encounter.tour = Tour.find_by(id: params[:tour_id])
     end

@@ -3,6 +3,7 @@ class ToursController < ApplicationController
 
   def create
     @tour = Tour.new(tour_params)
+    @tour.user = @current_user
     if @tour.save
       render "show", status: 201
     else
@@ -38,8 +39,12 @@ class ToursController < ApplicationController
 
   def update
     if @tour = Tour.find_by(id: params[:id])
-      @tour.update_attributes(tour_params)
-      render 'show', status: 200
+      if @tour.user != @current_user
+        head 403
+      else
+        @tour.update_attributes(tour_params)
+        render 'show', status: 200
+      end
     else
       @id = params[:id]
       render '404', status: 404

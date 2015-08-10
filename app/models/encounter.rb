@@ -1,9 +1,8 @@
 class Encounter < ActiveRecord::Base
 
-  validates :date, :user_id, :street_person_name, presence: true
+  validates :date, :street_person_name, :tour, presence: true
   validates :latitude, :longitude, presence: true, numericality: true
 
-	belongs_to :user
   belongs_to :tour
 
   geocoded_by :address

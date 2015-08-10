@@ -18,6 +18,8 @@ describe User, :type => :model do
   it { should allow_value('a@a.a').for(:email) }
   it { should_not allow_value('a-a.a').for(:email) }
   it { should_not allow_value('@').for(:email) }
+  it { should have_many :tours }
+  it { should have_many :encounters }
   
   context 'token automatically created' do
     let!(:user) { FactoryGirl.create :user, token: nil }

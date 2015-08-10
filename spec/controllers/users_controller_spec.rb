@@ -7,15 +7,25 @@ RSpec.describe UsersController, :type => :controller do
   
   describe 'POST #login' do
     context 'when the user exists' do
-      let(:device_id) { 'device_id' }
-      let(:device_type) { 'android' }
-      let(:user) { create :user }
+      let!(:device_id) { 'device_id' }
+      let!(:device_type) { 'android' }
+      let!(:user) { create :user }
+      let!(:tour1) { create :tour, user: user }
+      let!(:tour2) { create :tour }
+      let!(:tour3) { create :tour, user: user }
+      let!(:encounter1) { create :encounter, tour: tour1 }
+      let!(:encounter2) { create :encounter, tour: tour1 }
+      let!(:encounter3) { create :encounter, tour: tour2 }
+      let!(:encounter4) { create :encounter, tour: tour3 }
       context 'when the phone number and sms code are valid' do
         before { post 'login', phone: user.phone, sms_code: user.sms_code, device_id: device_id, device_type: device_type, format: 'json' }
-        it { expect(response.status).to eq(200) }
-        it { expect(assigns(:user)).to eq(user) }
-        it { expect(User.find(user.id).device_id).to eq(device_id) }
-        it { expect(User.find(user.id).device_type).to eq(device_type) }
+        it { should respond_with 200 }
+        it { expect(assigns(:user)).to eq user }
+        it { expect(assigns(:tour_count)).to eq 2 }
+        it { expect(assigns(:encounter_count)).to eq 3 }
+        it { expect(assigns(:user)).to eq user }
+        it { expect(User.find(user.id).device_id).to eq device_id }
+        it { expect(User.find(user.id).device_type).to eq device_type }
       end
       context 'when sms code is invalid' do
         before { post 'login', phone: user.phone, sms_code: 'wrong sms code', device_id: device_id, device_type: device_type, format: 'json' }

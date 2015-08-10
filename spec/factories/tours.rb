@@ -5,5 +5,6 @@ FactoryGirl.define do
     tour_type "social"
     vehicle_type "feet"
     status "ongoing"
+    user
   end
 end

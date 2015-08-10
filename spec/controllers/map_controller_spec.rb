@@ -1,7 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe MapController, :type => :controller do
-
+  render_views
+  
   describe "GET index" do
     context "Access control" do
       let!(:user) { FactoryGirl.create :user }
@@ -19,7 +20,7 @@ RSpec.describe MapController, :type => :controller do
       let!(:user) { FactoryGirl.create :user }
       let!(:poi) { FactoryGirl.create :poi }
       let!(:category) { FactoryGirl.create :category }
-      let!(:encounter) { FactoryGirl.create :valid_encounter }
+      let!(:encounter) { FactoryGirl.create :encounter }
       before { get 'index', token: user.token, :format => :json }
       it "assigns @categories" do
         expect(assigns(:categories)).to eq([category])
