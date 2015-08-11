@@ -19,5 +19,8 @@ module EntourageBack
      'Access-Control-Request-Method' => '*'
      });
 
+     config.generators do |g|
+       g.test_framework :rspec
+     end
   end
 end
