@@ -20,6 +20,8 @@ describe User, :type => :model do
   it { should_not allow_value('@').for(:email) }
   it { should have_many :tours }
   it { should have_many :encounters }
+  it { should belong_to :organization }
+  it { should validate_presence_of :organization }
   
   context 'token automatically created' do
     let!(:user) { FactoryGirl.create :user, token: nil }

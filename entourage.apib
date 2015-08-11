@@ -60,7 +60,7 @@ POI related resources of the **Entourage API**
 # Group Users
 Users related resources of the **Entourage API**
 ## Users collection [/users]
-Users resources access is restricted by basic authentication. 
+Users resources access is restricted by basic authentication.
 
 ### Retrieve all users [GET]
 
@@ -90,7 +90,7 @@ Users resources access is restricted by basic authentication.
 
     + Body
 
-            {"user":{"email":"johnsmith@test.com","first_name":"John","last_name":"Smith","phone":"+33605040302"}}
+            {"user":{"email":"johnsmith@test.com","first_name":"John","last_name":"Smith","phone":"+33605040302","organization_id":1}}
 
 + Response 201 (application/json; charset=utf-8)
 
@@ -152,7 +152,7 @@ Users resources access is restricted by basic authentication.
 
 + Response 200 (application/json; charset=utf-8)
 
-        {"user":{"id":1,"email":"dredd@test.com","first_name":"Judge","last_name":"Dredd","token":"FAKETOKEN","stats":{"tour_count":0,"encounter_count":0}}}
+        {"user":{"id":1,"email":"dredd@test.com","first_name":"Judge","last_name":"Dredd","token":"FAKETOKEN","stats":{"tour_count":0,"encounter_count":0},"organization":{"name":"org name","description":"org description","phone":"org phone","address":"org address"}}}
 
 + Response 400 (application/json; charset=utf-8)
 
@@ -168,7 +168,7 @@ If the email is already registered to newsletter subscription, a 400 error is re
 
     + Header
             
-            Accept: application/json  
+            Accept: application/json
 
     + Body
 

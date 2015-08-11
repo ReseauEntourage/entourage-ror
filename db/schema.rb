@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150810134322) do
+ActiveRecord::Schema.define(version: 20150811140317) do
 
   create_table "active_admin_comments", force: :cascade do |t|
     t.string   "namespace"
@@ -70,6 +70,15 @@ ActiveRecord::Schema.define(version: 20150810134322) do
     t.boolean  "active"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "organizations", force: :cascade do |t|
+    t.string   "name"
+    t.string   "description"
+    t.string   "phone"
+    t.string   "address"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
   end
 
   create_table "pois", force: :cascade do |t|
@@ -179,6 +188,7 @@ ActiveRecord::Schema.define(version: 20150810134322) do
     t.string   "device_id"
     t.integer  "device_type"
     t.string   "sms_code"
+    t.integer  "organization_id"
   end
 
 end

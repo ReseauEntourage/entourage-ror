@@ -113,18 +113,19 @@ RSpec.describe UsersController, :type => :controller do
     end
 
     context 'with correct parameters' do
-      it "retuns 201" do
+      let!(:organization) { FactoryGirl.create :organization }
+      
+      before do
         admin_basic_login
-        post 'create', user: {email: "test@rspec.com", first_name:"tester", last_name:"tested", phone:'+33102030405'}, format: :json
-        expect(response.status).to eq(201)
+        post 'create', user: {email: "test@rspec.com", first_name:"tester", last_name:"tested", phone:'+33102030405', organization_id:organization.id}, format: :json
       end
-
-      it "creates new user" do
-        admin_basic_login
-        user_count = User.count
-        post 'create', user: {email: "test@rspec.com", first_name:"tester", last_name:"tested", phone:'+33102030405'}, format: :json
-        expect(User.count).to eq(user_count + 1)
-      end
+        
+      it { should respond_with 201 }
+      it { expect(User.last.first_name).to eq "tester" }
+      it { expect(User.last.last_name).to eq "tested" }
+      it { expect(User.last.phone).to eq "+33102030405" }
+      it { expect(User.last.email).to eq "test@rspec.com" }
+      it { expect(User.last.organization).to eq organization }
     end
 
   end
@@ -141,22 +142,19 @@ RSpec.describe UsersController, :type => :controller do
     end
 
     context 'with correct user id and parameters' do
-      it "retuns 200" do
+      let!(:organization) { FactoryGirl.create :organization }
+      let!(:user) { FactoryGirl.create :user }
+      
+      before do
         admin_basic_login
-        user = FactoryGirl.create(:user)
-        put 'update', id: user.id, user: {email: "change#{user.email}", first_name:"change#{user.first_name}", last_name:"change#{user.last_name}"}, format: :json
-        expect(response.status).to eq(200)
+        put 'update', id: user.id, user: {email: "change#{user.email}", first_name:"change#{user.first_name}", last_name:"change#{user.last_name}", organization_id:organization.id}, format: :json
       end
-
-      it "changes user attributes" do
-        admin_basic_login
-        initial_user = FactoryGirl.create(:user)
-        put 'update', id: initial_user.id, user: {email: "change#{initial_user.email}", first_name:"change#{initial_user.first_name}", last_name:"change#{initial_user.last_name}"}, format: :json
-        changed_user = User.find(initial_user.id)
-        expect(changed_user.email).to eq("change#{initial_user.email}")
-        expect(changed_user.first_name).to eq("change#{initial_user.first_name}")
-        expect(changed_user.last_name).to eq("change#{initial_user.last_name}")
-      end
+      
+      it { should respond_with 200 }
+      it { expect(User.find(user.id).first_name).to eq "change#{user.first_name}" }
+      it { expect(User.find(user.id).last_name).to eq "change#{user.last_name}" }
+      it { expect(User.find(user.id).email).to eq "change#{user.email}" }
+      it { expect(User.find(user.id).organization).to eq organization }
     end
 
   end

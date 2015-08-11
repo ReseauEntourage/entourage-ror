@@ -13,5 +13,6 @@ FactoryGirl.define do
     sequence :phone do |n|
       "+336%08i" % n
     end
+    organization
   end
 end

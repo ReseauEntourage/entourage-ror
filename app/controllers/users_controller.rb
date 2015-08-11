@@ -41,8 +41,7 @@ class UsersController < ApplicationController
   end
 
   def login
-    @user = User.find_by_phone_and_sms_code params[:phone], params[:sms_code]
-
+    @user = User.includes(:organization).find_by_phone_and_sms_code params[:phone], params[:sms_code]
     if @user.nil?
       render 'error', status: :bad_request
     else
@@ -74,7 +73,7 @@ class UsersController < ApplicationController
   private
 
   def user_params
-    params.require(:user).permit(:email, :first_name, :last_name, :phone)
+    params.require(:user).permit(:email, :first_name, :last_name, :phone, :organization_id)
   end
   
   def android_notification_service
