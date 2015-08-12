@@ -14,6 +14,7 @@ Rails.application.routes.draw do
     post 'send_message', on: :collection
     post 'send_sms', on: :member
   end
+  get 'organization/edit' => 'organization#edit'
 
   post 'login' => 'users#login'
   get 'map' => 'map#index'

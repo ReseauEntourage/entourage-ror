@@ -1,6 +1,6 @@
 org = Organization.create name:"org", description:"org description", phone:"+33102030405", address:"50 avenue des Champs Elysées 75008 Paris"
 
-dredd_user = User.create email:"dredd@test.com", first_name:"Judge", last_name:"Dredd", phone:"+33605040302", organization:org
+dredd_user = User.create email:"dredd@test.com", first_name:"Judge", last_name:"Dredd", phone:"+33605040302", organization:org, manager: true
 dredd_user.update_attribute :token, "FAKETOKEN"
 dredd_user.update_attribute :sms_code, "123456"
 

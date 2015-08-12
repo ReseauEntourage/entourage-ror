@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150811140317) do
+ActiveRecord::Schema.define(version: 20150812123803) do
 
   create_table "active_admin_comments", force: :cascade do |t|
     t.string   "namespace"
@@ -189,6 +189,7 @@ ActiveRecord::Schema.define(version: 20150811140317) do
     t.integer  "device_type"
     t.string   "sms_code"
     t.integer  "organization_id"
+    t.boolean  "manager"
   end
 
 end
