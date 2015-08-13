@@ -16,7 +16,7 @@ gem 'jbuilder', '~> 2.0'
 
 gem 'sdoc', '~> 0.4.0',          group: :doc
 
-group :development, :test do 
+group :development, :test do
   gem 'byebug'
   gem 'factory_girl_rails'
 end
@@ -27,6 +27,7 @@ group :development do
   gem 'guard-rspec'
   gem 'guard-shell'
   gem 'better_errors'
+  gem 'binding_of_caller'
   gem 'dredd-rack'
 end
 
@@ -56,3 +57,6 @@ gem 'rpush'
 gem 'http_logger'
 gem 'sinch_sms'
 gem 'colorize'
+gem 'bootstrap-sass', '~> 3.3.1'
+gem 'simple_form'
+gem 'rails-footnotes'
