@@ -13,17 +13,8 @@ class ApplicationController < ActionController::Base
   end
 
   def require_login
-    if request.format.json?
-      unless user_logged_in
-        render 'unauthorized', status: :unauthorized
-      end
-    else
-      if user = authenticate_with_http_basic { |u, p| User.find_by_phone_and_sms_code_and_manager(u, p, true) }
-        @current_user = user
-        @organization = @current_user.organization
-      else
-        request_http_basic_authentication
-      end
+    unless user_logged_in
+      render 'unauthorized', status: :unauthorized
     end
   end
 

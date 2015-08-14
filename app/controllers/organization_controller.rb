@@ -1,4 +1,4 @@
-class OrganizationController < ApplicationController
+class OrganizationController < GuiController
 
   def edit
   end
