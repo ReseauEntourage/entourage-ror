@@ -3,6 +3,7 @@
 <head>
   <title>EntourageBack</title>
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCnlDcEs4vEqVBteQV5XrsYuduApu-7gJU"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
   <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
   <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
   <%= csrf_meta_tags %>
@@ -14,9 +15,7 @@
 <%= content_tag :div, msg, class: name %>
 <% end -%>
 </div>
-<div class="row">
 <%= yield %>
-</div>
 </div>
 </body>
 </html>

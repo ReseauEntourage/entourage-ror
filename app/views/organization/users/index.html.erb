@@ -1,0 +1,26 @@
+<div class="row">
+<h2>Utilisateurs</h2>
+<ul class="list-inline">
+<% @organization.users.each do |user| %>
+  <li>
+    <h3><%= user.first_name %> <%= user.last_name %></h3>
+    <%= link_to '', { controller:'organization/users', action:'edit', id:user.id }, class:'btn btn-default fa fa-pencil' %>
+    <%= link_to '', { controller:'organization/users', action: :destroy, id: user.id }, method: :delete, data: { confirm: 'Etes-vous sur ?' }, class:'btn btn-default fa fa-trash' %>
+    <a class="btn btn-default fa fa-envelope" href="#" role="button" disabled></a>
+  </li>
+<% end %>
+</ul>
+</div>
+<div class="row">
+<h2>Nouvel utilisateur</h2>
+<div class=".col-md-4">
+  <%= simple_form_for @new_user, url:organization_users_path do |f| %>
+    <%= f.input :first_name, label: "Prénom" %>
+    <%= f.input :last_name, label: 'Nom' %>
+    <%= f.input :phone, label: 'Téléphone' %>
+    <%= f.input :email, label: 'Email' %>
+    <%= f.input :manager, label: 'Manager' %>
+    <%= f.button :submit, 'Sauvegarder' %>
+  <% end %>
+</div>
+</div>

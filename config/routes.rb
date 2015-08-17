@@ -17,6 +17,10 @@ Rails.application.routes.draw do
   end
   get 'organization/edit' => 'organization#edit', as: :organization_edit
   patch 'organization' => 'organization#update', as: :organization
+  
+  namespace :organization do
+    resources :users
+  end
 
   post 'login' => 'users#login'
   get 'map' => 'map#index'
