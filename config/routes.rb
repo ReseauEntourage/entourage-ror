@@ -13,6 +13,7 @@ Rails.application.routes.draw do
   resources :users, only: [:index, :create, :update, :destroy] do
     post 'send_message', on: :collection
     post 'send_sms', on: :member
+    patch 'update_me', on: :collection
   end
   get 'organization/edit' => 'organization#edit', as: :organization_edit
   patch 'organization' => 'organization#update', as: :organization

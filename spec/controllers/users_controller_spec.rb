@@ -232,4 +232,24 @@ RSpec.describe UsersController, :type => :controller do
     end
   end
 
+  describe '#updateme' do
+    context 'authentication is OK' do
+      let!(:user) { create :user }
+      context 'params are valid' do
+        before { patch 'update_me', token:user.token, user: { email:'new@e.mail', sms_code:'654321' }, format: :json }
+        it { should respond_with 200 }
+        it { expect(User.find(user.id).email).to eq('new@e.mail') }
+        it { expect(User.find(user.id).sms_code).to eq('654321') }
+      end
+      context 'params are invalid' do
+        before { patch 'update_me', token:user.token, user: { email:'bademail', sms_code:'badcode' }, format: :json }
+        it { should respond_with 400 }
+      end
+    end
+    context 'bad authentication' do
+      before { patch 'update_me', token:'badtoken', user: { email:'new@e.mail', sms_code:'654321' }, format: :json }
+      it { should respond_with 401 }
+    end
+  end
+
 end

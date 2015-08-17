@@ -1,8 +1,8 @@
 class UsersController < ApplicationController
 
   protect_from_forgery with: :null_session, if: Proc.new { |c| c.request.format == 'application/json' }
-  skip_before_filter :require_login
-  before_filter :admin_authentication, except: :login
+  skip_before_filter :require_login, except: :update_me
+  before_filter :admin_authentication, except: [:login, :update_me]
   attr_writer :android_notification_service, :sms_notification_service
 
   def index
@@ -70,10 +70,23 @@ class UsersController < ApplicationController
     end
   end
 
+  def update_me
+    if @current_user.update_attributes(self_user_params)
+      @user = @current_user
+      render 'show'
+    else
+      head 400
+    end
+  end
+
   private
 
   def user_params
     params.require(:user).permit(:email, :first_name, :last_name, :phone, :organization_id)
+  end
+
+  def self_user_params
+    params.require(:user).permit(:email, :sms_code)
   end
   
   def android_notification_service
