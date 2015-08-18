@@ -13,7 +13,10 @@ body { padding-top: $navbar-height; }
   font-size: 15px;
   text-transform: uppercase;
 }
-.nav-pills { padding-top: 28px;}
+.nav-pills {
+  padding-top: 28px;
+  border-bottom: 1px solid silver;
+}
 .nav-pills > .active > a,
 .nav-pills > .active > a:hover,
 .nav-pills > li > a:hover {
