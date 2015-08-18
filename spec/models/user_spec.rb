@@ -32,4 +32,9 @@ describe User, :type => :model do
     let!(:user) { FactoryGirl.create :user, sms_code: nil }
     it { expect(user.sms_code.length).to be(6) }
   end
+  
+  describe '#full_name' do
+    subject { User.new(first_name: 'John', last_name: 'Doe').full_name }
+    it { should eq 'John Doe' }
+  end
 end

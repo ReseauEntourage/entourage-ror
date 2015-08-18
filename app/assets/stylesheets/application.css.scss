@@ -28,3 +28,8 @@ body { padding-top: $navbar-height; }
   border-radius:0px;
   color: $text-color !important;
 }
+.flash {
+  margin: 10px;
+  padding: 10px;
+  border-radius: $border-radius-large;
+}

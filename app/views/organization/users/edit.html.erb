@@ -1,8 +1,16 @@
+<div class="container-fluid">
+<div class="row">
+<div class="col-md-4 col-md-offset-4">
+<h2>Modification de <%= @user.full_name %></h2>
 <%= simple_form_for @user, url:organization_user_path(@user) do |f| %>
   <%= f.input :first_name, label: "Prénom" %>
   <%= f.input :last_name, label: 'Nom' %>
   <%= f.input :phone, label: 'Téléphone' %>
   <%= f.input :email, label: 'Email' %>
   <%= f.input :manager, label: 'Manager' %>
-  <%= f.button :submit, 'Sauvegarder' %>
+  <%= f.button :submit, 'Sauvegarder', class: 'btn btn-primary' %>
+  <%= link_to 'Annuler', organization_users_path, class: 'btn btn-danger' %>
 <% end %>
+</div>
+</div>
+</div>

@@ -11,7 +11,7 @@
 </head>
 <body>
 <nav class="navbar navbar-inverse navbar-fixed-top">
-<div class="container">
+<div class="container-fluid">
 <div class="navbar-header">
 <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false">
 <span class="sr-only">Toggle navigation</span>
@@ -30,12 +30,10 @@
 </div>
 </div>
 </nav>
-<div class="container">
-<div class="row">
 <% flash.each do |name, msg| -%>
-<%= content_tag :div, msg, class: name %>
+<%= content_tag :p, msg, class: 'flash bg-info' %>
 <% end -%>
-</div>
+<div style="padding: 0px 10px;">
 <%= yield %>
 </div>
 </body>
