@@ -23,7 +23,7 @@
 </div>
 <div id="navbar" class="navbar-collapse collapse">
 <ul class="nav navbar-nav navbar-right">
-<li class="disabled"><a href="#">Dashboard</a></li>
+<li class="<%= active_class(organization_dashboard_path) %>"><%= link_to 'Dashboard', organization_dashboard_path %></li>
 <li class="<%= active_class(organization_edit_path) %>"><%= link_to 'Gestion association', organization_edit_path %></li>
 <li class="<%= active_class(organization_users_path) %>"><%= link_to 'Gestion utilisateurs', organization_users_path %></li>
 </ul>

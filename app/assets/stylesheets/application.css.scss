@@ -8,8 +8,20 @@ $navbar-inverse-bg: #252525;
 
 body { padding-top: $navbar-height; }
 .navbar-brand { padding: 5px; }
-.navbar {
+.nav {
   font-family: 'Asap', sans-serif;
   font-size: 15px;
   text-transform: uppercase;
+}
+.nav-pills { padding-top: 28px;}
+.nav-pills > .active > a,
+.nav-pills > .active > a:hover,
+.nav-pills > li > a:hover {
+  border-bottom : 4px solid #FFCE55;
+  background-color: transparent !important;
+}
+.nav-pills > li > a {
+  font-size: 14px;
+  border-radius:0px;
+  color: $text-color !important;
 }

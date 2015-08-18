@@ -1,5 +1,8 @@
 class OrganizationController < GuiController
 
+  def dashboard
+  end
+
   def edit
   end
   
