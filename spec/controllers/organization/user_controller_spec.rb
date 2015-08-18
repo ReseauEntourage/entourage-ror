@@ -61,6 +61,33 @@ RSpec.describe Organization::UsersController, :type => :controller do
       it { expect(flash[:notice]).to eq "L'utilisateur a bien été supprimé" }
       it { expect(User.exists?(deleted_user.id)).to be false }
     end
+    describe '#send_sms' do
+      let!(:sms_notification_service) { spy('sms_notification_service') }
+      context 'the user exists and is the same organization' do
+        let(:sms_user) { create :user, organization: user.organization }
+        before do
+          controller.sms_notification_service = sms_notification_service
+          post 'send_sms', id: sms_user.id, format: :json
+        end
+        it { expect(response.status).to eq(200) }
+        it { expect(sms_notification_service).to have_received(:send_notification).with(sms_user.phone, sms_user.sms_code) }
+      end
+      context 'the user exists but different organizations' do
+        let(:sms_user) { FactoryGirl.create :user }
+        before do
+          controller.sms_notification_service = sms_notification_service
+          post 'send_sms', id: sms_user.id, format: :json
+        end
+        it { expect(response.status).to eq(403) }
+      end
+      context 'the user does not exists' do
+        before do
+          controller.sms_notification_service = sms_notification_service
+          post 'send_sms', id: -1, format: :json
+        end
+        it { expect(response.status).to eq(404) }
+      end
+    end
   end
   context 'no authentication' do
     describe '#index' do
@@ -81,6 +108,10 @@ RSpec.describe Organization::UsersController, :type => :controller do
     end
     describe '#destroy' do
       before { get :destroy, id:1 }
+      it { should respond_with 401 }
+    end
+    describe '#send_sms' do
+      before { post :send_sms, id:1 }
       it { should respond_with 401 }
     end
   end

@@ -1,4 +1,5 @@
 class Organization::UsersController < GuiController
+  attr_writer :sms_notification_service
 
   def index
     @new_user = User.new
@@ -36,10 +37,28 @@ class Organization::UsersController < GuiController
     redirect_to organization_users_url, notice: "L'utilisateur a bien été supprimé"
   end
   
+  def send_sms
+    user = User.find_by id: params[:id]
+    if user.nil?
+      head 404
+    else
+      if user.organization == @current_user.organization
+        sms_notification_service.send_notification(user.phone, user.sms_code)
+        head 200
+      else
+        head 403
+      end
+    end
+  end
+  
   private
   
   def user_params
     params.require(:user).permit(:first_name, :last_name, :phone, :email, :manager)
+  end
+  
+  def sms_notification_service
+    @sms_notification_service ||= SmsNotificationService.new
   end
   
 end

@@ -20,7 +20,9 @@ Rails.application.routes.draw do
   patch 'organization' => 'organization#update', as: :organization
   
   namespace :organization do
-    resources :users
+    resources :users do
+      post 'send_sms', on: :member
+    end
   end
 
   post 'login' => 'users#login'
