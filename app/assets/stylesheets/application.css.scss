@@ -1,6 +1,15 @@
+$navbar-height: 82px;
+$navbar-inverse-bg: #252525;
+
 @import "bootstrap-sprockets";
 @import "bootstrap";
 
 @import "home";
 
-body { padding-top: 50px; }
+body { padding-top: $navbar-height; }
+.navbar-brand { padding: 5px; }
+.navbar {
+  font-family: 'Asap', sans-serif;
+  font-size: 15px;
+  text-transform: uppercase;
+}
