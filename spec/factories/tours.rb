@@ -9,7 +9,8 @@ FactoryGirl.define do
     
     trait :filled do
       after(:create) do |tour, evaluator|
-        create_list(:tour_point, 10, :in_paris, tour: tour)
+        create_list(:tour_point, 10, :in_paris, :now, tour: tour)
+        create_list(:encounter, 2, :in_paris, :now, tour: tour)
       end
     end
   end

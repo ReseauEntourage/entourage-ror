@@ -12,7 +12,7 @@ FactoryGirl.define do
       longitude { rand * (2.39 - 2.29) + 2.29 } # between 2.29 and 2.39
     end
     trait :now do
-      passing_time now
+      passing_time { Time.now }
     end
   end
 end
