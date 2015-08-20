@@ -21,7 +21,7 @@ class OrganizationController < GuiController
   end
   
   def tours
-    @tours = Tour.joins(:user)
+    @tours = Tour.joins(:user).includes(:tour_points)
       .where(users: { organization_id: @organization.id })
       .where("tours.updated_at >= ?", Time.now.monday)
   end
