@@ -18,5 +18,5 @@ $(document).ready ->
     }
   )
 
-  map.data.loadGeoJson('/latest_tours.json');
+  map.data.loadGeoJson('/organization/tours.json');
   

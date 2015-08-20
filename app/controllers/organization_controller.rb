@@ -18,6 +18,12 @@ class OrganizationController < GuiController
     end
   end
   
+  def tours
+    @tours = Tour.all.joins(:user)
+      .where(users: { organization_id: @organization.id })
+      .where("tours.updated_at >= ?", Time.now.monday)
+  end
+  
   private
   
   def organization_params

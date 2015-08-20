@@ -18,6 +18,7 @@ Rails.application.routes.draw do
   get 'organization/dashboard' => 'organization#dashboard', as: :organization_dashboard
   get 'organization/edit' => 'organization#edit', as: :organization_edit
   patch 'organization' => 'organization#update', as: :organization
+  get 'organization/tours' => 'organization#tours'
   
   namespace :organization do
     resources :users do
