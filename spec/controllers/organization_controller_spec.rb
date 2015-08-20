@@ -44,5 +44,9 @@ RSpec.describe OrganizationController, :type => :controller do
       before { patch :update }
       it { should respond_with 401 }
     end
+    describe '#dashboard' do
+      before { get :dashboard }
+      it { should respond_with 401 }
+    end
   end
 end
