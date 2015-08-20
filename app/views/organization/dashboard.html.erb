@@ -12,7 +12,7 @@
 <% @latest_tours.each do |day, tours| %>
 <h4><%= day %></h4>
 <% tours.each do |tour| %>
-<div><%= tour.user.full_name %> a réalisé une maraude et a rencontré <%= pluralize tour.encounters.size, 'personne' %>.</div>
+<div><%= tour.user.full_name %> a réalisé une maraude<% if tour.encounters.size > 0 %> et a rencontré <%= pluralize tour.encounters.size, 'personne' %><% end %>.</div>
 <% end %>
 <% end %>
 </div>
