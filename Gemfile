@@ -36,6 +36,7 @@ group :test do
   gem 'shoulda-matchers'
   gem 'simplecov'
   gem 'nyan-cat-formatter'
+  gem 'timecop'
 end
 
 group :console do

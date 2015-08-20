@@ -9,6 +9,12 @@
 <div class="col-md-2">
 <div>
 <h3>Derniers Evènements</h3>
+<% @latest_tours.each do |day, tours| %>
+<h4><%= day %></h4>
+<% tours.each do |tour| %>
+<div><%= tour.user.full_name %> a réalisé une maraude et a rencontré <%= pluralize tour.encounters.size, 'personne' %>.</div>
+<% end %>
+<% end %>
 </div>
 <div>
 <h3>Activité de la semaine</h3>

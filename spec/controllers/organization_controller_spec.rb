@@ -18,21 +18,30 @@ RSpec.describe OrganizationController, :type => :controller do
       it { expect(User.find(user.id).organization.address).to eq 'newaddress' }
     end
     describe '#dashboard' do
-      let!(:user1) { create :user }
-      let!(:user2) { create :user }
-      let!(:tour1) { create :tour, user: user1, updated_at: Time.now.monday }
-      let!(:tour2) { create :tour, user: user1, updated_at: Time.now.monday }
-      let!(:tour3) { create :tour, user: user2, updated_at: Time.now.monday }
-      let!(:tour4) { create :tour, user: user2, updated_at: Time.now.monday - 1 }
+      let!(:time) { DateTime.new 2015, 8, 20 }
+      let!(:last_sunday) { (last_monday - 1).to_date }
+      let!(:last_monday) { time.monday.to_date }
+      let!(:last_tuesday) { (last_monday + 1).to_date }
+      let!(:user1) { create :user, organization: user.organization }
+      let!(:user2) { create :user, organization: user.organization }
+      let!(:tour1) { create :tour, user: user1, updated_at: time.monday }
+      let!(:tour2) { create :tour, user: user1, updated_at: time.monday + 1 }
+      let!(:tour3) { create :tour, user: user2, updated_at: time.monday + 1}
+      let!(:tour4) { create :tour, user: user2, updated_at: time.monday - 1 }
       let!(:encounter1) { create :encounter, tour: tour1 }
       let!(:encounter2) { create :encounter, tour: tour1 }
       let!(:encounter3) { create :encounter, tour: tour2 }
       let!(:encounter4) { create :encounter, tour: tour3 }
-      before { get :dashboard }
+      before do
+        Timecop.freeze(time)
+        get :dashboard
+      end
+      after { Timecop.return }
       it { should respond_with 200 }
       it { expect(assigns[:tour_count]).to eq 3 }
       it { expect(assigns[:tourer_count]).to eq 2 }
       it { expect(assigns[:encounter_count]).to eq 4 }
+      it { expect(assigns[:latest_tours]).to eq({ last_sunday => [tour4], last_monday => [tour1], last_tuesday => [tour2, tour3] }) }
     end
     describe '#tours' do
       let!(:user1) { create :user, organization: user.organization }
