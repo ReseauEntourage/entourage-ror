@@ -20,13 +20,14 @@ RSpec.describe OrganizationController, :type => :controller do
     describe '#dashboard' do
       let!(:time) { DateTime.new 2015, 8, 20, 0, 0, 0, '+2' }
       let!(:last_sunday) { (last_monday - 1).to_date }
-      let!(:last_monday) { time.monday.to_date }
+      let!(:last_monday) { time.monday }
       let!(:last_tuesday) { (last_monday + 1).to_date }
+      let!(:last_wednesday) { (last_monday + 2).to_date }
       let!(:user1) { create :user, organization: user.organization }
       let!(:user2) { create :user, organization: user.organization }
-      let!(:tour1) { create :tour, user: user1, updated_at: time.monday }
-      let!(:tour2) { create :tour, user: user1, updated_at: time.monday + 1 }
-      let!(:tour3) { create :tour, user: user2, updated_at: time.monday + 1}
+      let!(:tour1) { create :tour, user: user1, updated_at: time.monday + 1 }
+      let!(:tour2) { create :tour, user: user1, updated_at: time.monday + 2 }
+      let!(:tour3) { create :tour, user: user2, updated_at: time.monday + 2 }
       let!(:tour4) { create :tour, user: user2, updated_at: time.monday - 1 }
       let!(:encounter1) { create :encounter, tour: tour1 }
       let!(:encounter2) { create :encounter, tour: tour1 }
@@ -41,7 +42,7 @@ RSpec.describe OrganizationController, :type => :controller do
       it { expect(assigns[:tour_count]).to eq 3 }
       it { expect(assigns[:tourer_count]).to eq 2 }
       it { expect(assigns[:encounter_count]).to eq 4 }
-       it { expect(assigns[:latest_tours]).to eq({ last_sunday => [tour4], last_monday => [tour1], last_tuesday => [tour2, tour3] }) }
+      it { expect(assigns[:latest_tours]).to eq({ last_sunday => [tour4], last_tuesday => [tour1], last_wednesday => [tour2, tour3] }) }
     end
     describe '#tours' do
       let!(:user1) { create :user, organization: user.organization }
