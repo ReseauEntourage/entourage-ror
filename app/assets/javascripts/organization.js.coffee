@@ -13,17 +13,18 @@ $(document).ready ->
         center: new google.maps.LatLng(48.858859, 2.3470599),
       })
       
-      map.data.setStyle((feature) ->
-        tourType = feature.getProperty('tour_type')
-        color = colors[tourType]
-        {
-          strokeColor: color,
-          strokeWeight: 2
-        }
-      )
+      refreshMap = () ->
+        url = '/organization/encounters.json'
+        tour_type_filter = document.getElementById('rencontres-tour-type-filter').value
+        if (tour_type_filter != '')
+          url += '?tour_type=' + tour_type_filter
+        map.data.forEach((feature) ->
+          map.data.remove(feature))
+        map.data.loadGeoJson(url)
       
-      url = '/organization/encounters.json'
-      map.data.loadGeoJson(url)
+      $('.rencontres-map-filter').change(refreshMap)
+      
+      refreshMap()
       
     map_rencontres_created = true
   )
@@ -45,13 +46,13 @@ $(document).ready ->
   
   refreshMap = () ->
     url = '/organization/tours.json'
-    tour_type_filter = document.getElementById('tour-type-filter').value
+    tour_type_filter = document.getElementById('maraudes-tour-type-filter').value
     if (tour_type_filter != '')
       url += '?tour_type=' + tour_type_filter
     map.data.forEach((feature) ->
       map.data.remove(feature))
     map.data.loadGeoJson(url)
   
-  $('.map-filter').change(refreshMap)
+  $('.maraudes-map-filter').change(refreshMap)
   
   refreshMap()

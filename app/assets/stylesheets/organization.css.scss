@@ -1,3 +1,15 @@
 #map-maraudes, #map-rencontres {
   min-height: 800px;
 }
+select.maraudes-map-filter, select.rencontres-map-filter {
+  margin: 10px 0px;
+  font-size: 18px;
+  background-color: $buttons-color;
+  color: white;
+}
+.left-panel {
+  background-color: #f8f8f8;
+  padding: 8px;
+  margin: 8px 0px;
+  border-radius: 14px;
+}
