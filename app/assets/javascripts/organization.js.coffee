@@ -1,8 +1,33 @@
+map_rencontres_created = false
+
 $(document).ready ->
   $("#user-list a.send_sms").on("ajax:success", (e, data, status, xhr) ->
     alert 'Message envoyé'
   ).on "ajax:error", (e, xhr, status, error) ->
     alert "Erreur dans l'envoi du message"
+    
+  $('a[data-toggle="tab"]').on('shown.bs.tab', (e) ->
+    if (!map_rencontres_created)
+      map = new google.maps.Map(document.getElementById('map-rencontres'), {
+        zoom: 13,
+        center: new google.maps.LatLng(48.858859, 2.3470599),
+      })
+      
+      map.data.setStyle((feature) ->
+        tourType = feature.getProperty('tour_type')
+        color = colors[tourType]
+        {
+          strokeColor: color,
+          strokeWeight: 2
+        }
+      )
+      
+      url = '/organization/encounters.json'
+      map.data.loadGeoJson(url)
+      
+    map_rencontres_created = true
+  )
+  
     
   map = new google.maps.Map(document.getElementById('map-maraudes'), {
     zoom: 13,
