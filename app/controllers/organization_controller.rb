@@ -27,6 +27,11 @@ class OrganizationController < GuiController
     @tours = @tours.where(tour_type: params[:tour_type]) if params[:tour_type].present?
   end
   
+  def encounters
+    tours
+    @encounters = Encounter.where(tour: @tours)
+  end
+  
   private
   
   def organization_params

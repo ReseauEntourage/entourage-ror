@@ -63,6 +63,31 @@ RSpec.describe OrganizationController, :type => :controller do
         it { expect(assigns[:tours]).to eq [tour2]}
       end
     end
+    describe '#encounters' do
+      let!(:user1) { create :user, organization: user.organization }
+      let!(:user2) { create :user, organization: user.organization }
+      let!(:user3) { create :user }
+      let!(:tour1) { create :tour, user: user1, tour_type:'other' }
+      let!(:tour2) { create :tour, user: user2, tour_type:'health' }
+      let!(:tour3) { create :tour, user: user3 }
+      let!(:tour4) { create :tour, user: user1, updated_at: Time.now.monday - 1 }
+      let!(:encounter1) { create :encounter, tour: tour1 }
+      let!(:encounter2) { create :encounter, tour: tour1 }
+      let!(:encounter3) { create :encounter, tour: tour2 }
+      let!(:encounter4) { create :encounter, tour: tour2 }
+      let!(:encounter5) { create :encounter, tour: tour3 }
+      let!(:encounter6) { create :encounter, tour: tour4 }
+      context 'with no filter' do
+        before { get :encounters, format: :json }
+        it { should respond_with 200 }
+        it { expect(assigns[:encounters]).to eq [encounter1, encounter2, encounter3, encounter4]}
+      end
+      context 'with type filter' do
+        before { get :encounters, tour_type: 'health', format: :json }
+        it { should respond_with 200 }
+        it { expect(assigns[:encounters]).to eq [encounter3, encounter4]}
+      end
+    end
   end
   context 'no authentication' do
     describe '#edit' do
@@ -79,6 +104,10 @@ RSpec.describe OrganizationController, :type => :controller do
     end
     describe '#tours' do
       before { get :tours, format: :json }
+      it { should respond_with 401 }
+    end
+    describe '#encounters' do
+      before { get :encounters, format: :json }
       it { should respond_with 401 }
     end
   end
