@@ -6,6 +6,13 @@ $(document).ready ->
   ).on "ajax:error", (e, xhr, status, error) ->
     alert "Erreur dans l'envoi du message"
     
+  $("#send_message_form").on("ajax:success", (e, data, status, xhr) ->
+    $("#flash").append '<p>' + xhr.responseText + '</p>'
+    document.getElementById('send_message_form').reset()
+    $('#messageModal').modal('hide')
+  ).on "ajax:error", (e, xhr, status, error) ->
+    alert "Erreur dans l'envoi du message"
+    
   $('a[data-toggle="tab"]').on('shown.bs.tab', (e) ->
     if (!map_rencontres_created)
       map = new google.maps.Map(document.getElementById('map-rencontres'), {

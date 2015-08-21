@@ -33,7 +33,9 @@ h1, h2, h3, h4, h5, h6, .nav, select, button {
   border-radius:0px;
   color: $text-color !important;
 }
-.flash {
+
+#flash p {
+  @extend .bg-success;
   margin: 10px;
   padding: 10px;
   border-radius: $border-radius-large;
