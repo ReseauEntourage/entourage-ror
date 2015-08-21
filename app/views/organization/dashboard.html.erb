@@ -7,7 +7,7 @@
 <div role="tabpanel" class="tab-pane active" id="maraudes">
 <div class="container-fluid">
 <div class="col-md-2">
-<div>
+<div class="left-panel">
 <h3>Derniers Evènements</h3>
 <% @latest_tours.each do |day, tours| %>
 <h4><%= day %></h4>
@@ -16,7 +16,7 @@
 <% end %>
 <% end %>
 </div>
-<div>
+<div class="left-panel">
 <h3>Activité de la semaine</h3>
 <h4><%= pluralize @encounter_count, 'personne rencontrée', 'personnes rencontrées' %></h4>
 <h4><%= pluralize @tourer_count, 'maraudeur actif', 'maraudeurs actifs' %></h4>
@@ -35,13 +35,13 @@
   <option value="food">Nourriture</option>
   <option value="other">Autre</option>
 </select>
-<select class="form-control" disabled>
+<select class="map-filter form-control" disabled>
   <option>Zone géographique</option>
 </select>
-<select class="form-control" disabled>
+<select class="map-filter form-control" disabled>
   <option>Choix de l'association</option>
 </select>
-<select class="form-control" disabled>
+<select class="map-filter form-control" disabled>
   <option>Sélection de la date</option>
 </select>
 </div>

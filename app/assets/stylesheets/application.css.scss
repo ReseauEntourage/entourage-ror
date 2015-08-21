@@ -1,6 +1,7 @@
 $navbar-height: 82px;
 $navbar-inverse-bg: #252525;
 $text-color: #555;
+$buttons-color: #f1c40f;
 
 @import "bootstrap-sprockets";
 @import "bootstrap";
@@ -10,7 +11,7 @@ $text-color: #555;
 
 body { padding-top: $navbar-height; }
 .navbar-brand { padding: 5px; }
-h1, h2, h3, h4, h5, h6, .nav {
+h1, h2, h3, h4, h5, h6, .nav, select {
   font-family: 'Asap', sans-serif;
 }
 .nav {
@@ -36,4 +37,16 @@ h1, h2, h3, h4, h5, h6, .nav {
   margin: 10px;
   padding: 10px;
   border-radius: $border-radius-large;
+}
+select.map-filter {
+  margin: 10px 0px;
+  font-size: 18px;
+  background-color: $buttons-color;
+  color: white;
+}
+.left-panel {
+  background-color: #f8f8f8;
+  padding: 8px;
+  margin: 8px 0px;
+  border-radius: 14px;
 }
