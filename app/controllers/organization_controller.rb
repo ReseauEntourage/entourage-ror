@@ -24,6 +24,7 @@ class OrganizationController < GuiController
     @tours = Tour.joins(:user).includes(:tour_points)
       .where(users: { organization_id: @organization.id })
       .where("tours.updated_at >= ?", Time.now.monday)
+    @tours = @tours.where(tour_type: params[:tour_type]) if params[:tour_type].present?
   end
   
   private

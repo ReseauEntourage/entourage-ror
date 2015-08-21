@@ -48,13 +48,20 @@ RSpec.describe OrganizationController, :type => :controller do
       let!(:user1) { create :user, organization: user.organization }
       let!(:user2) { create :user, organization: user.organization }
       let!(:user3) { create :user }
-      let!(:tour1) { create :tour, user: user1 }
-      let!(:tour2) { create :tour, user: user2 }
+      let!(:tour1) { create :tour, user: user1, tour_type:'other' }
+      let!(:tour2) { create :tour, user: user2, tour_type:'health' }
       let!(:tour3) { create :tour, user: user3 }
       let!(:tour4) { create :tour, user: user1, updated_at: Time.now.monday - 1 }
-      before { get :tours, format: :json }
-      it { should respond_with 200 }
-      it { expect(assigns[:tours]).to eq [tour1, tour2]}
+      context 'with no filter' do
+        before { get :tours, format: :json }
+        it { should respond_with 200 }
+        it { expect(assigns[:tours]).to eq [tour1, tour2]}
+      end
+      context 'with type filter' do
+        before { get :tours, tour_type: 'health', format: :json }
+        it { should respond_with 200 }
+        it { expect(assigns[:tours]).to eq [tour2]}
+      end
     end
   end
   context 'no authentication' do
