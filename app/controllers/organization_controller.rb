@@ -1,4 +1,5 @@
 class OrganizationController < GuiController
+  attr_writer :android_notification_service
 
   def dashboard
     my_tours = Tour.joins(:user).where(users: { organization_id: @organization.id })
@@ -32,9 +33,21 @@ class OrganizationController < GuiController
     @encounters = Encounter.where(tour: @tours)
   end
   
+  def send_message
+    sender = @current_user.full_name
+    user_ids = @organization.users.where(device_type: 'android').where.not(device_id: nil).pluck(:device_id)
+    android_notification_service.send_notification sender, params[:object], params[:message], user_ids
+    render plain: 'message envoyé', status: 200
+  end
+  
   private
   
   def organization_params
     params.require(:organization).permit(:name, :description, :phone, :address)
   end
+  
+  def android_notification_service
+    @android_notification_service ||= AndroidNotificationService.new
+  end
+
 end

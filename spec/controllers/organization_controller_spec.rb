@@ -88,6 +88,20 @@ RSpec.describe OrganizationController, :type => :controller do
         it { expect(assigns[:encounters]).to eq [encounter3, encounter4]}
       end
     end
+    describe '#send_message' do
+      let!(:user1) { create :user, organization: user.organization, device_type: :android, device_id:'deviceid1' }
+      let!(:user2) { create :user, organization: user.organization, device_type: :android, device_id:nil }
+      let!(:user3) { create :user, organization: user.organization, device_type: :android, device_id:'deviceid2' }
+      let!(:user4) { create :user, organization: user.organization, device_type: nil, device_id:'deviceid3' }
+      let!(:user5) { create :user }
+      let!(:android_notification_service) { spy('android_notification_service') }
+      before do
+        controller.android_notification_service = android_notification_service
+        post :send_message, object:'object', message: 'message'
+      end
+      it { should respond_with 200 }
+      it { expect(android_notification_service).to have_received(:send_notification).with(user.full_name, 'object', 'message', [user.device_id, user1.device_id, user3.device_id]) }
+    end
   end
   context 'no authentication' do
     describe '#edit' do
