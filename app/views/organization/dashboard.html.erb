@@ -49,8 +49,11 @@
 </div>
 <div role="tabpanel" class="tab-pane" id="statistiques">
 <div class="col-md-2">
-<div>
+<div class="left-panel">
 <h3>Stastistiques de la recherche</h3>
+<h4><%= pluralize @encounter_count, 'personne rencontrée', 'personnes rencontrées' %></h4>
+<h4><%= pluralize @tourer_count, 'maraudeur actif', 'maraudeurs actifs' %></h4>
+<h4><%= pluralize @tour_count, 'maraude réalisée', 'maraudes réalisées' %></h4>
 </div>
 </div>
 <div class="col-md-8" id="map-rencontres">
