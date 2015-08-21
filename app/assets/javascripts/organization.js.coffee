@@ -7,7 +7,7 @@ $(document).ready ->
     alert "Erreur dans l'envoi du message"
     
   $("#send_message_form").on("ajax:success", (e, data, status, xhr) ->
-    $("#flash").append '<p>' + xhr.responseText + '</p>'
+    $('#flash').append('<p class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><span>' + xhr.responseText + '</span></p>')
     document.getElementById('send_message_form').reset()
     $('#messageModal').modal('hide')
   ).on "ajax:error", (e, xhr, status, error) ->
