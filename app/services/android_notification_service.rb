@@ -15,13 +15,13 @@ class AndroidNotificationService
       notification.data = { sender: sender, object: object, content: content }
       notification.save!
       
-      @notification_pusher.push
+      notification_pusher.push
     end
   end
   
   private
   
   def notification_pusher
-    notification_pusher ||= Rpush
+    @notification_pusher ||= Rpush
   end
 end

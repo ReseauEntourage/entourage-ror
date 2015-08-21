@@ -90,7 +90,7 @@ class UsersController < ApplicationController
   end
   
   def android_notification_service
-    @android_notification_service ||= AndroidNotificationService.new(Rpush)
+    @android_notification_service ||= AndroidNotificationService.new
   end
   
   def sms_notification_service
