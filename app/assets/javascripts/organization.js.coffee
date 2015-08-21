@@ -17,6 +17,16 @@ $(document).ready ->
       strokeWeight: 2
     }
   )
-
-  map.data.loadGeoJson('/organization/tours.json');
   
+  refreshMap = () ->
+    url = '/organization/tours.json'
+    tour_type_filter = document.getElementById('tour-type-filter').value
+    if (tour_type_filter != '')
+      url += '?tour_type=' + tour_type_filter
+    map.data.forEach((feature) ->
+      map.data.remove(feature))
+    map.data.loadGeoJson(url)
+  
+  $('.map-filter').change(refreshMap)
+  
+  refreshMap()
