@@ -13,4 +13,11 @@ module OrganizationHelper
       end.join(' ')
     end
   end
+  
+  def meters_to_printable_km(meters)
+    km = (meters / 1000.0).round(1)
+    kmi = km.to_i
+    km = kmi if km == kmi
+    "#{km}"
+  end
 end

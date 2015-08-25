@@ -9,6 +9,7 @@ FactoryGirl.define do
     
     trait :filled do
       status 'closed'
+      length { rand * 2000 + 400 }
       created_at { Time.now - 3 * 60 * 60 }
       closed_at { Time.now - 2 * 60 * 60 }
       after(:create) do |tour, evaluator|
