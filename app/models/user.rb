@@ -8,7 +8,7 @@ class User < ActiveRecord::Base
   has_many :encounters, through: :tours
   belongs_to :organization
 
-  enum device_type: [ :android ]
+  enum device_type: [ :android, :ios ]
 
   after_create :set_token, :set_sms_code
 
