@@ -15,7 +15,7 @@
     <p>D&eacute;part de <%=@tour.tour_points.first.latitude %> &agrave; <%=@tour.tour_points.first.passing_time%></p>
     <p>Arriv&eacute;e &agrave; <%=@tour.tour_points.last.latitude %> &agrave; <%=@tour.tour_points.last.passing_time%></p>
     <% end %>
-    <% @encounters.each do |encounter| %>
+    <% @tour.encounters.each do |encounter| %>
 
     <% end %>
 
