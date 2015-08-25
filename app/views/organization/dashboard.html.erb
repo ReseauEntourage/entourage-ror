@@ -94,6 +94,12 @@
       <%= form_tag("/organization/send_message", method: "post", remote: true, id:'send_message_form') do %>
       <div class="modal-body">
         <div class="form-group">
+          <label>Destinataires:</label>
+          <select class="form-control" disabled>
+            <option>Toute l'association</option>
+          </select>
+        </div>
+        <div class="form-group">
           <%= label_tag :object, 'Objet:' %>
           <%= text_field_tag :object, '', class:'form-control', required:true %>
         </div>
