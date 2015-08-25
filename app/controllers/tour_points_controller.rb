@@ -4,6 +4,8 @@ class TourPointsController < ApplicationController
   def create
     if @tour = Tour.find_by(id:params[:tour_id])
       tour_points = @tour.tour_points.create(tour_point_params['tour_points'])
+      @tour.length = params[:distance].to_i
+      @tour.save
       if tour_points.all?(&:valid?)
         render "tours/show", status: 201
       else
