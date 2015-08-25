@@ -27,4 +27,12 @@ class Tour < ActiveRecord::Base
   
   scope :type, -> (type) { where tour_type: type }
   scope :vehicle_type, -> (vehicle_type) { where vehicle_type: vehicle_type }
+  
+  def status=(value)
+    if (value == 'closed' or value == :closed) and status == 'ongoing'
+      update_attribute :closed_at, DateTime.now
+    end
+    super(value)
+  end
+  
 end
