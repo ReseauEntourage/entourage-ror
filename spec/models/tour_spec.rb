@@ -35,4 +35,20 @@ RSpec.describe Tour, :type => :model do
       it { expect(tour.status).to eq 'ongoing' }
     end
   end
+  
+  describe '#duration' do
+    let!(:start) { Time.new 2015, 8, 25, 11, 5, 0 }
+    let!(:now) { Time.new 2015, 8, 25, 13, 11, 0 }
+    before { Timecop.freeze(now) }
+    after { Timecop.return }
+    context 'ongoing' do
+      let!(:tour) { Tour.new created_at: start, closed_at:nil }
+      it { expect(tour.duration).to eq(now - start) }
+    end
+    context 'closed' do
+      let!(:stop) { Time.new 2015, 8, 25, 12, 8, 0 }
+      let!(:tour) { Tour.new created_at: start, closed_at:stop }
+      it { expect(tour.duration).to eq(stop - start) }
+    end
+  end
 end

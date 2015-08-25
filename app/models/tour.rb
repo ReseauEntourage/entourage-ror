@@ -35,4 +35,12 @@ class Tour < ActiveRecord::Base
     super(value)
   end
   
+  def duration
+    if closed_at.nil?
+      Time.now - created_at
+    else
+      closed_at - created_at
+    end
+  end
+  
 end
