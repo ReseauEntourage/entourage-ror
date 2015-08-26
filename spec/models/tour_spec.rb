@@ -76,10 +76,12 @@ RSpec.describe Tour, :type => :model do
       it { expect(static_map.paths[0].points[1].longitude).to eq tour_point2.longitude.to_s }
       it { expect(static_map.markers.length).to eq 2 }
       it { expect(static_map.markers[0]).to be_a MapMarker }
+      it { expect(static_map.markers[0].label).to eq '1' }
       it { expect(static_map.markers[0].location).to be_a MapLocation }
       it { expect(static_map.markers[0].location.latitude).to eq encounter1.latitude.to_s }
       it { expect(static_map.markers[0].location.longitude).to eq encounter1.longitude.to_s }
       it { expect(static_map.markers[1]).to be_a MapMarker }
+      it { expect(static_map.markers[1].label).to eq '2' }
       it { expect(static_map.markers[1].location).to be_a MapLocation }
       it { expect(static_map.markers[1].location.latitude).to eq encounter2.latitude.to_s }
       it { expect(static_map.markers[1].location.longitude).to eq encounter2.longitude.to_s }

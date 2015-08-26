@@ -27,8 +27,8 @@ class Tour < ActiveRecord::Base
         end
         map.paths << tourpoints
       end
-      self.encounters.each do |e|
-        map.markers << MapMarker.new(:location => MapLocation.new(latitude: e.latitude, longitude: e.longitude))
+      self.encounters.each_with_index do |e,index|
+        map.markers << MapMarker.new(label: (index + 1).to_s, location: MapLocation.new(latitude: e.latitude, longitude: e.longitude))
       end
       return map
     else

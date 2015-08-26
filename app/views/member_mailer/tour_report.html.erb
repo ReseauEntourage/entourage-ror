@@ -22,13 +22,13 @@
           <p><%= meters_to_printable_km @tour.length %> km parcourus</p>
           <% end %>
           <% if @tour.encounters.count > 0 %>
-          <ul>
+          <ol>
             <% @tour.encounters.each do |encounter| %>
             <li>
               Rencontre de <%= encounter.street_person_name %>
             </li>
             <% end %>
-          </ul>
+          </ol>
           <% end %>
         </td>
       </tr>
