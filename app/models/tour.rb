@@ -17,12 +17,23 @@ class Tour < ActiveRecord::Base
     end
   end
 
-  def get_coordinates_uri_static_map
-    coordinates_uri = ""
-    self.tour_points.each do |tour_point|
-      coordinates_uri += "|#{tour_point.latitude.round(4)},#{tour_point.longitude.round(4)}"
+  def static_map
+    if self.tour_points.length > 0 or self.encounters.length > 0
+      map = GoogleStaticMap.new(width: 512, height: 512)
+      if self.tour_points.length > 0
+        tourpoints = MapPolygon.new(:color => '0x0000ff', weight: 5)
+        self.tour_points.each do |tp|
+          tourpoints.points << MapLocation.new(latitude: tp.latitude, longitude: tp.longitude)
+        end
+        map.paths << tourpoints
+      end
+      self.encounters.each do |e|
+        map.markers << MapMarker.new(:location => MapLocation.new(latitude: e.latitude, longitude: e.longitude))
+      end
+      return map
+    else
+      return EmptyMap.new
     end
-    coordinates_uri
   end
   
   scope :type, -> (type) { where tour_type: type }
@@ -43,4 +54,10 @@ class Tour < ActiveRecord::Base
     end
   end
   
+end
+
+class EmptyMap
+  def url
+    ''
+  end
 end
