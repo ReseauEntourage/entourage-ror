@@ -7,18 +7,18 @@
     <p>Bonjour <%= @user.first_name %></p>
     <p>
      Bravo, vous avez maintenant une nouvelle maraude &agrave; votre actif !
-     Voici un r&eacute;sum&eacute; que vous pourrez ensuite transf&eacute;rer &agrave; votre coordinateur :
+     Voici un r&eacute;sum&eacute; que vous pourrez ensuite transf&eacute;rer &agrave; votre coordinateur.
     </p>
-    <h2 style="text-align: center;">votre parcours</h2>
+    <h2 style="text-align: center;">Votre parcours</h2>
     <table style="width: 100%;">
       <tr>
         <td>
-          <img src="<%= @tour.static_map.url %>" alt="parcours"/>
+          <%= image_tag @tour.static_map.url, alt:'parcours' %>
         </td>
         <td>
           <% if @tour.tour_points.count > 0 %>
-          <p>D&eacute;part &agrave; <%= @tour.tour_points.first.passing_time %></p>
-          <p>Arriv&eacute;e &agrave; <%= @tour.tour_points.last.passing_time %></p>
+          <p>D&eacute;part &agrave; <%= @tour.tour_points.first.passing_time.strftime('%H:%M')  %></p>
+          <p>Arriv&eacute;e &agrave; <%= @tour.tour_points.last.passing_time.strftime('%H:%M') %></p>
           <p><%= meters_to_printable_km @tour.length %> km parcourus</p>
           <% end %>
           <% if @tour.encounters.count > 0 %>
