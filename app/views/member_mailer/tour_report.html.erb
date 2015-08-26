@@ -13,7 +13,7 @@
     <table style="width: 100%;">
       <tr>
         <td>
-          <%= image_tag @tour.static_map.url, alt:'parcours' %>
+          <img src="<%= raw @tour.static_map.url %>" alt="parcours"/>
         </td>
         <td>
           <% if @tour.tour_points.count > 0 %>
