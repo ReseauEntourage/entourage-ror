@@ -10,6 +10,6 @@ class Encounter < ActiveRecord::Base
   alias_attribute :voice_message, :voice_message_url
 
   def to_s
-    "#{id} - Entre #{user.first_name} et #{street_person_name}"
+    "#{id} - Entre #{tour.user.full_name} et #{street_person_name}"
   end
 end
