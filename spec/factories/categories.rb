@@ -2,6 +2,8 @@
 
 FactoryGirl.define do
   factory :category do
-    name "Restaurant"
+    sequence :name do |n|
+      "Categorie #{n}"
+    end
   end
 end

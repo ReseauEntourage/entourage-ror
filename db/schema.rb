@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150825140554) do
+ActiveRecord::Schema.define(version: 20150827124733) do
 
   create_table "active_admin_comments", force: :cascade do |t|
     t.string   "namespace"
@@ -94,6 +94,7 @@ ActiveRecord::Schema.define(version: 20150825140554) do
     t.string   "email"
     t.string   "audience"
     t.integer  "category_id"
+    t.boolean  "validated",   default: false, null: false
   end
 
   add_index "pois", ["latitude", "longitude"], name: "index_pois_on_latitude_and_longitude"

@@ -1,33 +1,26 @@
 require 'rails_helper'
 
-RSpec.describe PoisController, :type => :controller do
-
-  describe "GET index" do
-    
-    context "Access control" do
-      let!(:user) { FactoryGirl.create :user }
-      it "http success if user is logged in" do
-        get 'index', token: user.token, :format => :json
-        expect(response).to be_success
-      end
-      it "an error if user is not logged in" do
-        get 'index', :format => :json
-        expect(response).not_to be_success
-      end
-    end
-
-    context "view scope variable assignment" do
-      let!(:poi) { FactoryGirl.create :poi }
-      let!(:category) { FactoryGirl.create :category }
-      let!(:user) { create :user }
+describe PoisController, :type => :controller do
+  render_views
+  
+  context 'authorized' do
+    let!(:user) { create :user }
+    describe '#index' do
+      let!(:poi1) { create :poi, validated: true }
+      let!(:poi2) { create :poi, validated: false }
+      let!(:poi3) { create :poi, validated: true }
+      let!(:category1) { create :category }
+      let!(:category2) { create :category }
       before { get 'index', token: user.token, :format => :json }
-      it "assigns @categories" do
-        expect(assigns(:categories)).to eq([category])
-      end
-      it "assigns @pois" do
-        expect(assigns(:pois)).to eq([poi])
-      end
+      it { expect(assigns(:categories)).to eq([category1, category2]) }
+      it { expect(assigns(:pois)).to eq([poi1, poi3]) }
     end
-
+  end
+    
+  context "unauthorized" do
+    describe '#index' do
+      before { get 'index', :format => :json }
+      it { should respond_with 401 }
+    end
   end
 end

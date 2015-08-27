@@ -11,5 +11,6 @@ FactoryGirl.define do
     email "entourage@entourage.com"
     audience "Mon audience"
     category_id 1
+    validated true
   end
 end

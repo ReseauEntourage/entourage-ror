@@ -5,6 +5,8 @@ class Poi < ActiveRecord::Base
   belongs_to :category
   
   geocoded_by :address
+  
+  default_scope { where(validated: true) }
 
   def self.find_pois_in_square(latitude, longitude, distance)
     center_point = [latitude, longitude]
