@@ -59,37 +59,41 @@ RSpec.describe Tour, :type => :model do
       let!(:tour_point2) { create :tour_point, tour: tour, latitude: rand, longitude: rand }
       let!(:encounter1) { create :encounter, tour: tour, latitude: rand, longitude: rand }
       let!(:encounter2) { create :encounter, tour: tour, latitude: rand, longitude: rand }
-      let!(:static_map) { tour.static_map }
-      it { expect(static_map).to be_a GoogleStaticMap }
-      it { expect(static_map.width).to eq 512 }
-      it { expect(static_map.height).to eq 512 }
-      it { expect(static_map.paths.length).to eq 1 }
-      it { expect(static_map.paths[0]).to be_a MapPolygon }
-      it { expect(static_map.paths[0].color).to eq '0x0000ff' }
-      it { expect(static_map.paths[0].weight).to eq 5 }
-      it { expect(static_map.paths[0].points.length).to eq 2 }
-      it { expect(static_map.paths[0].points[0]).to be_a MapLocation }
-      it { expect(static_map.paths[0].points[0].latitude).to eq tour_point1.latitude.to_s }
-      it { expect(static_map.paths[0].points[0].longitude).to eq tour_point1.longitude.to_s }
-      it { expect(static_map.paths[0].points[1]).to be_a MapLocation }
-      it { expect(static_map.paths[0].points[1].latitude).to eq tour_point2.latitude.to_s }
-      it { expect(static_map.paths[0].points[1].longitude).to eq tour_point2.longitude.to_s }
-      it { expect(static_map.markers.length).to eq 2 }
-      it { expect(static_map.markers[0]).to be_a MapMarker }
-      it { expect(static_map.markers[0].label).to eq '1' }
-      it { expect(static_map.markers[0].location).to be_a MapLocation }
-      it { expect(static_map.markers[0].location.latitude).to eq encounter1.latitude.to_s }
-      it { expect(static_map.markers[0].location.longitude).to eq encounter1.longitude.to_s }
-      it { expect(static_map.markers[1]).to be_a MapMarker }
-      it { expect(static_map.markers[1].label).to eq '2' }
-      it { expect(static_map.markers[1].location).to be_a MapLocation }
-      it { expect(static_map.markers[1].location.latitude).to eq encounter2.latitude.to_s }
-      it { expect(static_map.markers[1].location.longitude).to eq encounter2.longitude.to_s }
+      let!(:api_key) { 'API KEY' }
+      subject { tour.static_map }
+      before { ENV["ANDROID_GCM_API_KEY"] = api_key }
+      after { ENV.delete("ANDROID_GCM_API_KEY") }
+      it { should be_a GoogleStaticMap }
+      it { expect(subject.api_key).to eq api_key }
+      it { expect(subject.width).to eq 512 }
+      it { expect(subject.height).to eq 512 }
+      it { expect(subject.paths.length).to eq 1 }
+      it { expect(subject.paths[0]).to be_a MapPolygon }
+      it { expect(subject.paths[0].color).to eq '0x0000ff' }
+      it { expect(subject.paths[0].weight).to eq 5 }
+      it { expect(subject.paths[0].points.length).to eq 2 }
+      it { expect(subject.paths[0].points[0]).to be_a MapLocation }
+      it { expect(subject.paths[0].points[0].latitude).to eq tour_point1.latitude.round(4).to_s }
+      it { expect(subject.paths[0].points[0].longitude).to eq tour_point1.longitude.round(4).to_s }
+      it { expect(subject.paths[0].points[1]).to be_a MapLocation }
+      it { expect(subject.paths[0].points[1].latitude).to eq tour_point2.latitude.round(4).to_s }
+      it { expect(subject.paths[0].points[1].longitude).to eq tour_point2.longitude.round(4).to_s }
+      it { expect(subject.markers.length).to eq 2 }
+      it { expect(subject.markers[0]).to be_a MapMarker }
+      it { expect(subject.markers[0].label).to eq '1' }
+      it { expect(subject.markers[0].location).to be_a MapLocation }
+      it { expect(subject.markers[0].location.latitude).to eq encounter1.latitude.round(4).to_s }
+      it { expect(subject.markers[0].location.longitude).to eq encounter1.longitude.round(4).to_s }
+      it { expect(subject.markers[1]).to be_a MapMarker }
+      it { expect(subject.markers[1].label).to eq '2' }
+      it { expect(subject.markers[1].location).to be_a MapLocation }
+      it { expect(subject.markers[1].location.latitude).to eq encounter2.latitude.round(4).to_s }
+      it { expect(subject.markers[1].location.longitude).to eq encounter2.longitude.round(4).to_s }
     end
     context 'empty tour' do
       let!(:tour) { create :tour }
-      let!(:static_map) { tour.static_map }
-      it { expect(static_map.url).to eq '' }
+      subject { tour.static_map.url }
+      it { should eq '' }
     end
   end
 end

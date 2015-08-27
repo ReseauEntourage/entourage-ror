@@ -17,18 +17,19 @@ class Tour < ActiveRecord::Base
     end
   end
 
+  STATIC_MAP_PRECISION = 4
   def static_map
     if self.tour_points.length > 0 or self.encounters.length > 0
-      map = GoogleStaticMap.new(width: 512, height: 512)
+      map = GoogleStaticMap.new(width: 512, height: 512, api_key:ENV["ANDROID_GCM_API_KEY"])
       if self.tour_points.length > 0
         tourpoints = MapPolygon.new(:color => '0x0000ff', weight: 5)
         self.tour_points.each do |tp|
-          tourpoints.points << MapLocation.new(latitude: tp.latitude, longitude: tp.longitude)
+          tourpoints.points << MapLocation.new(latitude: tp.latitude.round(STATIC_MAP_PRECISION), longitude: tp.longitude.round(STATIC_MAP_PRECISION))
         end
         map.paths << tourpoints
       end
       self.encounters.each_with_index do |e,index|
-        map.markers << MapMarker.new(label: (index + 1).to_s, location: MapLocation.new(latitude: e.latitude, longitude: e.longitude))
+        map.markers << MapMarker.new(label: (index + 1).to_s, location: MapLocation.new(latitude: e.latitude.round(STATIC_MAP_PRECISION), longitude: e.longitude.round(STATIC_MAP_PRECISION)))
       end
       return map
     else
