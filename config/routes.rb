@@ -8,7 +8,7 @@ Rails.application.routes.draw do
     resources :encounters, only: [:create]
   end
   resources :newsletter_subscriptions
-  resources :pois, only: [:index]
+  resources :pois, only: [:index, :create]
   resources :encounters, only: [:create]
   resources :users, only: [:index, :create, :update, :destroy] do
     post 'send_message', on: :collection

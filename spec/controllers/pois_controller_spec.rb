@@ -7,11 +7,11 @@ describe PoisController, :type => :controller do
     let!(:user) { create :user }
     describe '#index' do
       context 'without parameters' do
-        let!(:poi1) { create :poi, validated: true }
-        let!(:poi2) { create :poi, validated: false }
-        let!(:poi3) { create :poi, validated: true }
         let!(:category1) { create :category }
         let!(:category2) { create :category }
+        let!(:poi1) { create :poi, category: category1, validated: true }
+        let!(:poi2) { create :poi, category: category1, validated: false }
+        let!(:poi3) { create :poi, category: category1, validated: true }
         before { get 'index', token: user.token, :format => :json }
         it { expect(assigns(:categories)).to eq([category1, category2]) }
         it { expect(assigns(:pois)).to eq([poi1, poi3]) }
@@ -34,6 +34,23 @@ describe PoisController, :type => :controller do
         end
       end
     end
+    
+    describe '#create' do
+      let!(:poi) { build :poi }
+      before { post :create, token: user.token, poi: { name: poi.name, latitude: poi.latitude, longitude: poi.longitude, adress: poi.adress, phone: poi.phone, website: poi.website, email: poi.email, audience: poi.audience, category_id: poi.category_id }, format: :json}
+      it { should respond_with 201 }
+      it { expect(Poi.unscoped.last.name).to eq poi.name }
+      it { expect(Poi.unscoped.last.latitude).to eq poi.latitude }
+      it { expect(Poi.unscoped.last.longitude).to eq poi.longitude }
+      it { expect(Poi.unscoped.last.adress).to eq poi.adress }
+      it { expect(Poi.unscoped.last.phone).to eq poi.phone }
+      it { expect(Poi.unscoped.last.website).to eq poi.website }
+      it { expect(Poi.unscoped.last.email).to eq poi.email }
+      it { expect(Poi.unscoped.last.audience).to eq poi.audience }
+      it { expect(Poi.unscoped.last.category).to eq poi.category }
+      it { expect(Poi.unscoped.last.validated).to be false }
+    end
+    
   end
     
   context "unauthorized" do

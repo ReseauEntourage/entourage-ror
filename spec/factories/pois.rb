@@ -12,5 +12,6 @@ FactoryGirl.define do
     audience "Mon audience"
     category_id 1
     validated true
+    category
   end
 end

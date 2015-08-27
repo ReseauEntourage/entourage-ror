@@ -2,6 +2,7 @@ require 'rails_helper'
 
 describe Poi, :type => :model do
   it { should validate_presence_of(:name) }
+  it { should validate_presence_of(:category) }
   it { should validate_numericality_of(:latitude) }
   it { should validate_numericality_of(:longitude) }
   describe 'poi validation' do

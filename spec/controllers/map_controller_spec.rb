@@ -19,11 +19,10 @@ RSpec.describe MapController, :type => :controller do
     context "view scope variable assignment" do
       let!(:user) { FactoryGirl.create :user }
       let!(:poi) { FactoryGirl.create :poi }
-      let!(:category) { FactoryGirl.create :category }
       let!(:encounter) { FactoryGirl.create :encounter }
       before { get 'index', token: user.token, :format => :json }
       it "assigns @categories" do
-        expect(assigns(:categories)).to eq([category])
+        expect(assigns(:categories)).to eq([poi.category])
       end
       it "assigns @pois" do
         expect(assigns(:pois)).to eq([poi])
@@ -65,7 +64,7 @@ RSpec.describe MapController, :type => :controller do
       it "returns 2 pois if coordinates provided and 15 km distance" do
         get 'index', token: user.token, latitude: 48.7, longitude: 2.3, distance: 15,:format => :json
         expect(assigns(:pois)).to eq([poi1, poi2])
-      end   
+      end
       it "returns 3 pois if coordinates provided and 30 km distance" do
         get 'index', token: user.token, latitude: 48.7, longitude: 2.3, distance: 30,:format => :json
         expect(assigns(:pois)).to eq([poi1, poi2, poi3])
