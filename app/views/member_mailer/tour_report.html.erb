@@ -3,19 +3,23 @@
   <head>
     <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
   </head>
-  <body>
-    <p>Bonjour <%= @user.first_name %></p>
-    <p>
-     Bravo, vous avez maintenant une nouvelle maraude &agrave; votre actif !
-     Voici un r&eacute;sum&eacute; que vous pourrez ensuite transf&eacute;rer &agrave; votre coordinateur.
-    </p>
-    <h2 style="text-align: center;">Votre parcours</h2>
-    <table style="width: 100%;">
+  <body style="background-color: #07123a; color: #07123a;">
+    <table style="width: 600px; margin: 0 auto; background-color: #eee; padding: 10px;">
       <tr>
-        <td>
+        <td colspan="2">
+          <p>Bonjour <%= @user.first_name %></p>
+          <p>
+           Bravo, vous avez maintenant une nouvelle maraude &agrave; votre actif !
+           Voici un r&eacute;sum&eacute; que vous pourrez ensuite transf&eacute;rer &agrave; votre coordinateur.
+          </p>
+          <h2 style="text-align: center;">Votre parcours</h2>
+        </td>
+      </tr>
+      <tr>
+        <td style="width:300px;">
           <img src="<%= raw @tour.static_map.url %>" alt="parcours"/>
         </td>
-        <td>
+        <td style="width:300px; padding: 10px; vertical-align: top;">
           <% if @tour.tour_points.count > 0 %>
           <p>D&eacute;part &agrave; <%= @tour.tour_points.first.passing_time.strftime('%H:%M')  %></p>
           <p>Arriv&eacute;e &agrave; <%= @tour.tour_points.last.passing_time.strftime('%H:%M') %></p>
@@ -32,6 +36,24 @@
           <% end %>
         </td>
       </tr>
+      <% if @tour.encounters.count > 0 %>
+      <tr>
+        <td colspan="2" style="padding: 10px;">
+          <ol>
+            <% @tour.encounters.each do |encounter| %>
+            <li>
+              <p>
+                <%= encounter.street_person_name %> &agrave; <%= encounter.date.strftime('%H:%M') %>
+              </p>
+              <p>
+                <%= encounter.message %>
+              </p>
+            </li>
+            <% end %>
+          </ol>
+        </td>
+      </tr>
+      <% end %>
     </table>
   </body>
 </html>
