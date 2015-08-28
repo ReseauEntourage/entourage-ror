@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+  </head>
+  <body>
+    <p>
+      Bonjour,
+    </p>
+    <p>
+      L'utilisateur <%= @user.full_name %> #<%= @user.id %> voudrait soumettre une correction sur le POI <%= @poi.name %> #<%= @poi.id %>
+    </p>
+    <p>
+      Voici son message : <quote><%= @message %></quote>
+    </p>
+  </body>
+</html>
