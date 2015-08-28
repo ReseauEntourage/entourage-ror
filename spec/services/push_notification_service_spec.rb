@@ -3,6 +3,7 @@ require 'rails_helper'
 describe PushNotificationService, type: :service do
   describe '#send_notification' do
     let!(:android_notification_service) { spy('android_notification_service') }
+    let!(:ios_notification_service) { spy('ios_notification_service') }
     let!(:user1) { create :user, device_type: :android, device_id: 'device id 1' }
     let!(:user2) { create :user, device_type: :android, device_id: 'device id 2' }
     let!(:user3) { create :user, device_type: :android, device_id: nil }
@@ -13,7 +14,8 @@ describe PushNotificationService, type: :service do
     let!(:sender) { 'sender' }
     let!(:object) { 'object' }
     let!(:content) { 'content' }
-    subject! { PushNotificationService.new(android_notification_service).send_notification(sender, object, content, User.all) }
+    subject! { PushNotificationService.new(android_notification_service, ios_notification_service).send_notification(sender, object, content, User.all) }
     it { expect(android_notification_service).to have_received(:send_notification).with(sender, object, content, [user1.device_id, user2.device_id]) }
+    it { expect(ios_notification_service).to have_received(:send_notification).with(sender, object, content, [user4.device_id, user5.device_id]) }
   end
 end
