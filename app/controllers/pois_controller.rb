@@ -1,6 +1,8 @@
 class PoisController < ApplicationController
   protect_from_forgery with: :null_session, if: Proc.new { |c| c.request.format == 'application/json' }
   
+  attr_writer :member_mailer
+  
   def index
     @categories = Category.all
     @pois = Poi.all
@@ -17,10 +19,29 @@ class PoisController < ApplicationController
     end
   end
   
+  def report
+    poi = Poi.find_by(id: params[:id])
+    if poi.nil?
+      head '404'
+    else
+      message = params[:message]
+      if message.nil?
+        render '400', status: 400
+      else
+        mail = member_mailer.poi_report(poi, @current_user, message).deliver_later
+        render plain:'201 Created', status: 201
+      end
+    end
+  end
+  
   private
   
   def poi_params
     params.require(:poi).permit(:name, :latitude, :longitude, :adress, :phone, :website, :email, :audience, :category_id)
+  end
+  
+  def member_mailer
+    @member_mailer ||= MemberMailer
   end
 
 end

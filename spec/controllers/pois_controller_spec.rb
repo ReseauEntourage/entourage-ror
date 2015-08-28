@@ -51,6 +51,30 @@ describe PoisController, :type => :controller do
       it { expect(Poi.unscoped.last.validated).to be false }
     end
     
+    describe '#report' do
+      let!(:poi) { create :poi }
+      let!(:mail) { spy('mail') }
+      let!(:member_mailer) { spy('member_mailer', poi_report: mail) }
+      let!(:message) { 'message' }
+      describe 'correct request' do
+        before do
+          controller.member_mailer = member_mailer
+          post :report, id: poi.id, token: user.token, message: message, format: :json
+        end
+        it { should respond_with 201 }
+        it { expect(member_mailer).to have_received(:poi_report).with poi, user, message }
+        it { expect(mail).to have_received(:deliver_later).with no_args }
+      end
+      describe 'wrong poi id' do
+        before { post :report, id: -1, token: user.token, message: message, format: :json }
+        it { should respond_with 404 }
+      end
+      describe 'no message' do
+        before { post :report, id: poi.id, token: user.token, format: :json }
+        it { should respond_with 400 }
+      end
+    end
+    
   end
     
   context "unauthorized" do
