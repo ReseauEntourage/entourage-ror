@@ -53,13 +53,7 @@ class UsersController < ApplicationController
       @encounter_count = @user.encounters.count
     end
   end
-  
-  def send_message
-    device_ids = User.where(id: params['user_ids']).where.not(device_id: nil).pluck(:device_id)
-    android_notification_service.send_notification(params['sender'], params['object'], params['content'], device_ids)
-    head 200
-  end
-  
+    
   def send_sms
     user = User.find_by(id: params[:id])
     if user.nil?
