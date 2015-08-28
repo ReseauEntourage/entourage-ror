@@ -95,13 +95,13 @@ RSpec.describe OrganizationController, :type => :controller do
       let!(:user3) { create :user, organization: user.organization, device_type: :android, device_id:'deviceid2' }
       let!(:user4) { create :user, organization: user.organization, device_type: nil, device_id:'deviceid3' }
       let!(:user5) { create :user }
-      let!(:android_notification_service) { spy('android_notification_service') }
+      let!(:push_notification_service) { spy('push_notification_service') }
       before do
-        controller.android_notification_service = android_notification_service
+        controller.push_notification_service = push_notification_service
         post :send_message, object:'object', message: 'message'
       end
       it { should respond_with 200 }
-      it { expect(android_notification_service).to have_received(:send_notification).with(user.full_name, 'object', 'message', [user.device_id, user1.device_id, user3.device_id]) }
+      it { expect(push_notification_service).to have_received(:send_notification).with(user.full_name, 'object', 'message', user.organization.users) }
     end
   end
   context 'no authentication' do
