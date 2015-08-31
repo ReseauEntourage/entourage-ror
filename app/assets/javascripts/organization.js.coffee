@@ -12,7 +12,52 @@ $(document).on "page:change", ->
     $('#messageModal').modal('hide')
   ).on "ajax:error", (e, xhr, status, error) ->
     alert "Erreur dans l'envoi du message"
-    
+  
+  $('input[name="daterange"]').daterangepicker({
+    opens:'left',
+    ranges: {
+      "Aujourd'hui": [moment(), moment()],
+      "Hier": [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+      "Les 7 derniers jours": [moment().subtract(6, 'days'), moment()],
+      "Les 30 derniers jours": [moment().subtract(29, 'days'), moment()],
+      "Le mois en cours": [moment().startOf('month'), moment().endOf('month')],
+      "Le mois dernier": [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+    },
+    locale: {
+      "format": "DD/MM/YYYY",
+      "separator": "-",
+      "applyLabel": "OK",
+      "cancelLabel": "Annuler",
+      "fromLabel": "De",
+      "toLabel": "à",
+      "customRangeLabel": "Autre",
+      "daysOfWeek": [
+        "Dim",
+        "Lun",
+        "Mar",
+        "Mer",
+        "Jeu",
+        "Ven",
+        "Sam"
+      ],
+      "monthNames": [
+        "Janvier",
+        "Février",
+        "Mars",
+        "Avril",
+        "Mai",
+        "Juin",
+        "Juillet",
+        "Aout",
+        "Septembre",
+        "Octobre",
+        "Novembre",
+        "Decembre"
+      ],
+      "firstDay": 1
+    }
+  })
+  
   $('a[data-toggle="tab"]').on('shown.bs.tab', (e) ->
     if (!map_rencontres_created)
       map = new google.maps.Map(document.getElementById('map-rencontres'), {
@@ -22,9 +67,12 @@ $(document).on "page:change", ->
       
       refreshMap = () ->
         url = '/organization/encounters.json'
-        tour_type_filter = document.getElementById('rencontres-tour-type-filter').value
-        if (tour_type_filter != '')
-          url += '?tour_type=' + tour_type_filter
+        filters = []
+        if (document.getElementById('rencontres-date-filter').value.length > 0)
+          filters.push('date_range=' + document.getElementById('rencontres-date-filter').value)
+        if (document.getElementById('rencontres-tour-type-filter').value.length > 0)
+          filters.push('tour_type=' + document.getElementById('rencontres-tour-type-filter').value)
+        url += '?' + filters.join('&')
         map.data.forEach((feature) ->
           map.data.remove(feature))
         map.data.loadGeoJson(url)
@@ -54,9 +102,12 @@ $(document).on "page:change", ->
   
   refreshMap = () ->
     url = '/organization/tours.json'
-    tour_type_filter = document.getElementById('maraudes-tour-type-filter').value
-    if (tour_type_filter != '')
-      url += '?tour_type=' + tour_type_filter
+    filters = []
+    if (document.getElementById('maraudes-date-filter').value.length > 0)
+      filters.push('date_range=' + document.getElementById('maraudes-date-filter').value)
+    if (document.getElementById('maraudes-tour-type-filter').value.length > 0)
+      filters.push('tour_type=' + document.getElementById('maraudes-tour-type-filter').value)
+    url += '?' + filters.join('&')
     map.data.forEach((feature) ->
       map.data.remove(feature))
     map.data.loadGeoJson(url)

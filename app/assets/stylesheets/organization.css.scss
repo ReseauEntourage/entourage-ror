@@ -1,13 +1,14 @@
 #map-maraudes, #map-rencontres {
   min-height: 700px;
 }
-button.btn-entourage, select.maraudes-map-filter, select.rencontres-map-filter {
+button.btn-entourage, .maraudes-map-filter, .rencontres-map-filter,.maraudes-map-filter::-webkit-input-placeholder, .rencontres-map-filter::-webkit-input-placeholder {
   background-color: $buttons-color;
   color: white;
 }
-select.maraudes-map-filter, select.rencontres-map-filter {
+.maraudes-map-filter, .rencontres-map-filter {
   margin: 10px 0px;
   font-size: 18px;
+  font-family: 'Asap', sans-serif;
 }
 .left-panel {
   background-color: #f8f8f8;

@@ -25,7 +25,12 @@ class OrganizationController < GuiController
   def tours
     @tours = Tour.joins(:user).includes(:tour_points)
       .where(users: { organization_id: @organization.id })
-      .where("tours.updated_at >= ?", Time.now.monday)
+    if params[:date_range].nil?
+      @tours = @tours.where("tours.updated_at >= ?", Time.now.monday)
+    else
+      date_range = params[:date_range].split('-').map { |s| Date.strptime(s, '%d/%m/%Y') }
+      @tours = @tours.where("tours.updated_at between ? and ?", date_range[0].beginning_of_day, date_range[1].end_of_day)
+    end
     @tours = @tours.where(tour_type: params[:tour_type]) if params[:tour_type].present?
   end
   
