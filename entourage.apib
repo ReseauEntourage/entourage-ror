@@ -36,14 +36,15 @@ A single Note object with all its details
 
 # Group POIs
 POI related resources of the **Entourage API**
-## Pois collection [/pois{?token}{&latitude}{&longitude}{&distance}]
+## Pois collection [/pois]
+
+### List all POIs [GET /pois{?token}{&latitude}{&longitude}{&distance}]
+
 + Parameters
     + token (required, string, `FAKETOKEN`) ... Token identifying the current user
     + latitude (optional, number, `48.853333`) ... The latitude of the center of the box to filter
     + longitude (optional, number, `2.348611`) ... The longitude of the center of the box to filter
     + distance (optional, number, `20.0`) ... The box size to filter (in km)
-
-### List all POIs [GET]
     
 + Request
 
@@ -59,6 +60,26 @@ POI related resources of the **Entourage API**
 + Response 401 (application/json; charset=utf-8)
 
         {"error":{"status":401,"message":"Please sign-in"}}
+
+### Create a POI [POST /pois{?token}]
+
++ Parameters
+
+    + token (required, string, `FAKETOKEN`) ... Token identifying the current user
+
++ Request (application/json; charset=utf-8)
+
+    + Body
+
+            {"poi":{"name":"name","latitude":40.0,"longitude":2.0,"adress":"address","phone":"+33102030405","website":"http://www.poi.com","email":"poi@pois.com","audience":"audience","category_id":1}}
+
+    + Headers
+
+            Accept: application/json
+
++ Response 201 (application/json; charset=utf-8)
+
+            {"poi":{"id":430,"name":"name","description":null,"longitude":2.0,"latitude":40.0,"adress":"address","phone":"+33102030405","website":"http://www.poi.com","email":"poi@pois.com","audience":"audience","validated":false,"category":{"id":1,"name":"Se nourrir"}}}
 
 # Group Users
 Users related resources of the **Entourage API**
