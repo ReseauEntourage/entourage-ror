@@ -30,6 +30,7 @@ $(document).on "page:change", ->
         map.data.loadGeoJson(url)
       
       $('.rencontres-map-filter').change(refreshMap)
+      setInterval(refreshMap, 30 * 1000);
       
       refreshMap()
       
@@ -61,5 +62,6 @@ $(document).on "page:change", ->
     map.data.loadGeoJson(url)
   
   $('.maraudes-map-filter').change(refreshMap)
+  setInterval(refreshMap, 30 * 1000);
   
   refreshMap()
