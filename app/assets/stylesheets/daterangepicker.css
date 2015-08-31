@@ -166,7 +166,7 @@
 .daterangepicker .calendar.right .calendar-table {
   border-left: none;
   border-top-left-radius: 0;
-  border-bottom-left-radius: 0;  
+  border-bottom-left-radius: 0;
 }
 
 .daterangepicker .calendar.left {
@@ -226,7 +226,7 @@
 }
 
 .daterangepicker td.active, .daterangepicker td.active:hover {
-  background-color: #357ebd;
+  background-color: #f1c40f;
   border-color: #3071a9;
   color: #fff;
 }
@@ -278,7 +278,7 @@
 }
 
 .daterangepicker .input-mini.active {
-  border: 1px solid #357ebd;
+  border: 1px solid #f1c40f;
 }
 
 .daterangepicker .daterangepicker_input i {
@@ -327,7 +327,7 @@
   font-size: 13px;
   background: #f5f5f5;
   border: 1px solid #f5f5f5;
-  color: #08c;
+  color: #555;
   padding: 3px 12px;
   margin-bottom: 8px;
   border-radius: 5px;
@@ -335,7 +335,7 @@
 }
 
 .daterangepicker .ranges li.active, .daterangepicker .ranges li:hover {
-  background: #08c;
-  border: 1px solid #08c;
+  background: #f1c40f;
+  border: 1px solid #f1c40f;
   color: #fff;
 }
