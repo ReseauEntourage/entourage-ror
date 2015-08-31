@@ -1,5 +1,5 @@
 class PushNotificationService
-  def initialize(android_notification_service, ios_notification_service)
+  def initialize(android_notification_service = nil, ios_notification_service = nil)
     @android_notification_service = android_notification_service
     @ios_notification_service = ios_notification_service
   end
