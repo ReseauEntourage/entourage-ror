@@ -15,6 +15,7 @@ $(document).on "page:change", ->
   
   $('input[name="daterange"]').daterangepicker({
     opens:'left',
+    linkedCalendars: false,
     ranges: {
       "Aujourd'hui": [moment(), moment()],
       "Hier": [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
