@@ -80,6 +80,39 @@ POI related resources of the **Entourage API**
 + Response 201 (application/json; charset=utf-8)
 
             {"poi":{"id":430,"name":"name","description":null,"longitude":2.0,"latitude":40.0,"adress":"address","phone":"+33102030405","website":"http://www.poi.com","email":"poi@pois.com","audience":"audience","validated":false,"category":{"id":1,"name":"Se nourrir"}}}
+            
++ Response 401 (application/json; charset=utf-8)
+
+        {"error":{"status":401,"message":"Please sign-in"}}
+
+### Request a change on a POI [POST /pois/{poi_id}/report{?token}]
+
++ Parameters
+
+    + token (required, string, `FAKETOKEN`) ... Token identifying the current user
+    + poi_id (required, number, `1`) ... identifier of the POI on which a request for change needs to be done
+    
++ Request (application/json; charset=utf-8)
+
+    + Body
+
+            {"message":"Message explaining the change requested on the POI"}
+
+    + Headers
+
+            Accept: application/json
+
++ Response 201 (application/json; charset=utf-8)
+
+        {"message":"Message explaining the change requested on the POI"}
+
++ Response 401 (application/json; charset=utf-8)
+
+        {"error":{"status":401,"message":"Please sign-in"}}
+
++ Response 404 (application/json; charset=utf-8)
+
+        {"error":{"status":404,"message":"Could not find poi with id 233232"}}
 
 # Group Users
 Users related resources of the **Entourage API**

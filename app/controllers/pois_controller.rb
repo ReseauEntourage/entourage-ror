@@ -29,7 +29,7 @@ class PoisController < ApplicationController
         render '400', status: 400
       else
         mail = member_mailer.poi_report(poi, @current_user, message).deliver_later
-        render plain:'201 Created', status: 201
+        render json: {message: message}, status: 201
       end
     end
   end
