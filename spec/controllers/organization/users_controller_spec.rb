@@ -65,12 +65,16 @@ RSpec.describe Organization::UsersController, :type => :controller do
       let!(:sms_notification_service) { spy('sms_notification_service') }
       context 'the user exists and is the same organization' do
         let(:sms_user) { create :user, organization: user.organization }
+        let(:url_shortener) { spy('url_shortener') }
+        let(:link) { 'link' }
         before do
           controller.sms_notification_service = sms_notification_service
+          allow(url_shortener).to receive(:shorten).and_return(link)
+          controller.url_shortener = url_shortener
           post 'send_sms', id: sms_user.id, format: :json
         end
         it { expect(response.status).to eq(200) }
-        it { expect(sms_notification_service).to have_received(:send_notification).with(sms_user.phone, "Bienvenue sur Entourage. Votre code est \"#{sms_user.sms_code}\".") }
+        it { expect(sms_notification_service).to have_received(:send_notification).with(sms_user.phone, "Bienvenue sur Entourage. Votre code est \"#{sms_user.sms_code}\". Retrouvez l'application ici : #{link}.") }
       end
       context 'the user exists but different organizations' do
         let(:sms_user) { FactoryGirl.create :user }

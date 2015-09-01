@@ -1,5 +1,5 @@
 class Organization::UsersController < GuiController
-  attr_writer :sms_notification_service
+  attr_writer :sms_notification_service, :url_shortener
 
   def index
     @new_user = User.new
@@ -43,7 +43,8 @@ class Organization::UsersController < GuiController
       head 404
     else
       if user.organization == @current_user.organization
-        sms_notification_service.send_notification(user.phone, "Bienvenue sur Entourage. Votre code est \"#{user.sms_code}\".")
+        link = url_shortener.shorten(apps_url)
+        sms_notification_service.send_notification(user.phone, "Bienvenue sur Entourage. Votre code est \"#{user.sms_code}\". Retrouvez l'application ici : #{link}.")
         head 200
       else
         head 403
@@ -59,6 +60,10 @@ class Organization::UsersController < GuiController
   
   def sms_notification_service
     @sms_notification_service ||= SmsNotificationService.new
+  end
+  
+  def url_shortener
+    @url_shortener ||= ShortURL
   end
   
 end

@@ -9,5 +9,9 @@ class HomeController < ApplicationController
   def latest_tours
     @latest_tours = Tour.order(created_at: :desc).limit(10)
   end
+  
+  def apps
+    render layout: 'full_screen'
+  end
 
 end

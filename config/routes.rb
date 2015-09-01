@@ -2,6 +2,7 @@ Rails.application.routes.draw do
 
   root 'home#tours_map'
   get 'latest_tours' => 'home#latest_tours'
+  get 'apps' => 'home#apps', as: :apps
 
   resources :tours, only: [:index,:create,:show,:update] do
     resources :tour_points, only:[:create]
