@@ -59,7 +59,7 @@ $buttons-color: #f1c40f;
 @import "home";
 @import "organization";
 
-body { padding-top: $navbar-height; }
+body.with-navbar { padding-top: $navbar-height; }
 .navbar-brand { padding: 5px; }
 h1, h2, h3, h4, h5, h6, .nav, select, button {
   font-family: 'Asap', sans-serif;
