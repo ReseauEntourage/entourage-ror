@@ -27,5 +27,13 @@ class ApplicationController < ActionController::Base
       end
     end
   end
+  
+  def default_url_options
+    if Rails.env.production?
+      { host: "entourage.social" }
+    else
+      { host: "localhost", port:3000 }
+    end
+  end
 
 end
