@@ -44,7 +44,7 @@ class Organization::UsersController < GuiController
     else
       if user.organization == @current_user.organization
         link = url_shortener.shorten(apps_url)
-        sms_notification_service.send_notification(user.phone, "Bienvenue sur Entourage. Votre code est \"#{user.sms_code}\". Retrouvez l'application ici : #{link}.")
+        sms_notification_service.send_notification(user.phone, "Bienvenue sur Entourage. Votre code est #{user.sms_code}. Retrouvez l'application ici : #{link}.")
         head 200
       else
         head 403
