@@ -43,7 +43,7 @@ class Organization::UsersController < GuiController
       head 404
     else
       if user.organization == @current_user.organization
-        sms_notification_service.send_notification(user.phone, user.sms_code)
+        sms_notification_service.send_notification(user.phone, "Bienvenue sur Entourage. Votre code est \"#{user.sms_code}\".")
         head 200
       else
         head 403
