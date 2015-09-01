@@ -1,6 +1,8 @@
 $(document).on "page:change", ->
   map_rencontres_created = false
 
+  $('[data-toggle="tooltip"]').tooltip()
+
   $("#user-list a.send_sms").on("ajax:success", (e, data, status, xhr) ->
     alert 'Message envoyé'
   ).on "ajax:error", (e, xhr, status, error) ->
