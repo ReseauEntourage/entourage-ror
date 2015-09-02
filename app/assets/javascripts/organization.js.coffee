@@ -67,6 +67,7 @@ $(document).on "page:change", ->
         zoom: 13,
         center: new google.maps.LatLng(48.858859, 2.3470599),
       })
+      heatmap = new google.maps.visualization.HeatmapLayer({map: map})
       
       refreshMap = () ->
         url = '/organization/encounters.json'
@@ -76,9 +77,15 @@ $(document).on "page:change", ->
         if (document.getElementById('rencontres-tour-type-filter').value.length > 0)
           filters.push('tour_type=' + document.getElementById('rencontres-tour-type-filter').value)
         url += '?' + filters.join('&')
-        map.data.forEach((feature) ->
-          map.data.remove(feature))
-        map.data.loadGeoJson(url)
+        heatmap.setMap(null)
+        $.getJSON(url, (data) ->
+          points = data.features.map((x) -> new google.maps.LatLng(x.geometry.coordinates[1], x.geometry.coordinates[0]))
+          heatmap = new google.maps.visualization.HeatmapLayer({
+            data: points,
+            radius: 40,
+            map: map
+          })
+        )
       
       $('.rencontres-map-filter').change(refreshMap)
       setInterval(refreshMap, 30 * 1000);
