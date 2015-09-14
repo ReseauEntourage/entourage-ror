@@ -16,3 +16,9 @@ button.btn-entourage, .maraudes-map-filter, .rencontres-map-filter,.maraudes-map
   margin: 8px 0px;
   border-radius: 14px;
 }
+
+.daterangepicker .ranges li.active, .daterangepicker .ranges li:hover {
+  background: $buttons-color;
+  border: 1px solid $buttons-color;
+  color: #fff;
+}

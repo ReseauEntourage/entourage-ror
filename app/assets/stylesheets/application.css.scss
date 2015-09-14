@@ -1,7 +1,7 @@
 $navbar-height: 82px;
 $navbar-inverse-bg: #252525;
 $text-color: #555;
-$buttons-color: #f1c40f;
+$buttons-color: #ef662f;
 
 @import "bootstrap-sprockets";
 // Core variables and mixins
@@ -75,7 +75,7 @@ h1, h2, h3, h4, h5, h6, .nav, select, button {
 .nav-pills > .active > a,
 .nav-pills > .active > a:hover,
 .nav-pills > li > a:hover {
-  border-bottom : 4px solid #FFCE55;
+  border-bottom : 4px solid $buttons-color;
   background-color: transparent !important;
 }
 .nav-pills > li > a {
