@@ -16,6 +16,8 @@ gem 'jbuilder', '~> 2.0'
 
 gem 'sdoc', '~> 0.4.0',          group: :doc
 
+gem 'handlebars_assets'
+
 group :development, :test do
   gem 'byebug'
   gem 'factory_girl_rails'

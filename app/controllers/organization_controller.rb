@@ -37,6 +37,9 @@ class OrganizationController < GuiController
   def encounters
     tours
     @encounters = Encounter.where(tour: @tours)
+    @tour_count = @tours.count
+    @tourer_count = @tours.select(:user_id).distinct.count
+    @encounter_count = @encounters.count
   end
   
   def send_message

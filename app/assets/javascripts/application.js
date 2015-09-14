@@ -16,4 +16,7 @@
 //= require turbolinks
 //= require moment
 //= require daterangepicker
+//= require handlebars.runtime
+//= require handlebars_helpers
+//= require_tree ./templates
 //= require_tree .

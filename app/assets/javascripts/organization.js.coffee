@@ -79,12 +79,13 @@ $(document).on "page:change", ->
         url += '?' + filters.join('&')
         heatmap.setMap(null)
         $.getJSON(url, (data) ->
-          points = data.features.map((x) -> new google.maps.LatLng(x.geometry.coordinates[1], x.geometry.coordinates[0]))
+          points = data.encounters.map((x) -> new google.maps.LatLng(x.latitude, x.longitude))
           heatmap = new google.maps.visualization.HeatmapLayer({
             data: points,
             radius: 40,
             map: map
           })
+          $('#search-stats').html(HandlebarsTemplates['organization/stats'](data.stats))
         )
       
       $('.rencontres-map-filter').change(refreshMap)

@@ -151,6 +151,11 @@ GEM
     guard-shell (0.7.1)
       guard (>= 2.0.0)
       guard-compat (~> 1.0)
+    handlebars_assets (0.20.2)
+      execjs (~> 2.0)
+      multi_json (~> 1.0)
+      sprockets (>= 2.0.0, < 4.0)
+      tilt (~> 1.2)
     has_scope (0.6.0)
       actionpack (>= 3.2, < 5)
       activesupport (>= 3.2, < 5)
@@ -362,6 +367,7 @@ DEPENDENCIES
   googlestaticmap
   guard-rspec
   guard-shell
+  handlebars_assets
   hirb
   http_logger
   jbuilder (~> 2.0)

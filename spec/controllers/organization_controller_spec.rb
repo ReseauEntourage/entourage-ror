@@ -93,16 +93,25 @@ RSpec.describe OrganizationController, :type => :controller do
         before { get :encounters, format: :json }
         it { should respond_with 200 }
         it { expect(assigns[:encounters]).to eq [encounter1, encounter2, encounter3, encounter4]}
+        it { expect(assigns[:encounter_count]).to eq 4 }
+        it { expect(assigns[:tourer_count]).to eq 2 }
+        it { expect(assigns[:tour_count]).to eq 2 }
       end
       context 'with type filter' do
         before { get :encounters, tour_type: 'health', format: :json }
         it { should respond_with 200 }
         it { expect(assigns[:encounters]).to eq [encounter3, encounter4]}
+        it { expect(assigns[:encounter_count]).to eq 2 }
+        it { expect(assigns[:tourer_count]).to eq 1 }
+        it { expect(assigns[:tour_count]).to eq 1 }
       end
       context 'with date range' do
         before { get :encounters, date_range:'10/03/2009-11/03/2009', format: :json }
         it { should respond_with 200 }
         it { expect(assigns[:encounters]).to eq [encounter3, encounter4]}
+        it { expect(assigns[:encounter_count]).to eq 2 }
+        it { expect(assigns[:tourer_count]).to eq 1 }
+        it { expect(assigns[:tour_count]).to eq 1 }
       end
     end
     describe '#send_message' do
