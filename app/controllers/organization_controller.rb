@@ -58,7 +58,7 @@ class OrganizationController < GuiController
   private
   
   def organization_params
-    params.require(:organization).permit(:name, :description, :phone, :address)
+    params.require(:organization).permit(:name, :description, :phone, :address, :logo_url)
   end
   
   def push_notification_service
