@@ -9,6 +9,7 @@ json.user do
     json.description @user.organization.description
     json.phone @user.organization.phone
     json.address @user.organization.address
+    json.logo_url @user.organization.logo_url
   end
   json.stats do
     json.tour_count @tour_count
