@@ -72,6 +72,8 @@ $(document).on "page:change", ->
       refreshMap = () ->
         url = '/organization/encounters.json'
         filters = []
+        filters.push('ne=' + map.getBounds().getNorthEast().lat() + '-' + map.getBounds().getNorthEast().lng())
+        filters.push('sw=' + map.getBounds().getSouthWest().lat() + '-' + map.getBounds().getSouthWest().lng())
         if (document.getElementById('rencontres-date-filter').value.length > 0)
           filters.push('date_range=' + document.getElementById('rencontres-date-filter').value)
         if (document.getElementById('rencontres-tour-type-filter').value.length > 0)
@@ -89,6 +91,7 @@ $(document).on "page:change", ->
         )
       
       $('.rencontres-map-filter').change(refreshMap)
+      map.addListener('idle', refreshMap)
       setInterval(refreshMap, 30 * 1000);
       
       refreshMap()

@@ -31,6 +31,13 @@ class OrganizationController < GuiController
       date_range = params[:date_range].split('-').map { |s| Date.strptime(s, '%d/%m/%Y') }
       @tours = @tours.where("tours.updated_at between ? and ?", date_range[0].beginning_of_day, date_range[1].end_of_day)
     end
+    if (params[:sw].present? && params[:ne].present?)
+      ne = params[:ne].split('-').map(&:to_f)
+      sw = params[:sw].split('-').map(&:to_f)
+      box = sw + ne
+      points = TourPoint.unscoped.within_bounding_box(box).select(:tour_id).distinct
+      @tours = @tours.where(id: points)
+    end
     @tours = @tours.where(tour_type: params[:tour_type]) if params[:tour_type].present?
   end
   
