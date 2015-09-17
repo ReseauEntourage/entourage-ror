@@ -78,6 +78,8 @@ $(document).on "page:change", ->
           filters.push('date_range=' + document.getElementById('rencontres-date-filter').value)
         if (document.getElementById('rencontres-tour-type-filter').value.length > 0)
           filters.push('tour_type=' + document.getElementById('rencontres-tour-type-filter').value)
+        if (document.getElementById('rencontres-org-filter').value.length > 0)
+          filters.push('org=' + document.getElementById('rencontres-org-filter').value)
         url += '?' + filters.join('&')
         heatmap.setMap(null)
         $.getJSON(url, (data) ->
@@ -121,6 +123,8 @@ $(document).on "page:change", ->
       filters.push('date_range=' + document.getElementById('maraudes-date-filter').value)
     if (document.getElementById('maraudes-tour-type-filter').value.length > 0)
       filters.push('tour_type=' + document.getElementById('maraudes-tour-type-filter').value)
+    if (document.getElementById('maraudes-org-filter').value.length > 0)
+      filters.push('org=' + document.getElementById('maraudes-org-filter').value)
     url += '?' + filters.join('&')
     map.data.forEach((feature) ->
       map.data.remove(feature))

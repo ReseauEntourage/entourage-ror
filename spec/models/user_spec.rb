@@ -22,6 +22,7 @@ describe User, :type => :model do
   it { should have_many :encounters }
   it { should belong_to :organization }
   it { should validate_presence_of :organization }
+  it { should have_and_belong_to_many(:coordinated_organizations).class_name('Organization') }
   
   context 'token automatically created' do
     let!(:user) { FactoryGirl.create :user, token: nil }

@@ -44,9 +44,15 @@
 <select class="maraudes-map-filter form-control" disabled>
   <option>Zone géographique</option>
 </select>
-<select class="maraudes-map-filter form-control" disabled>
-  <option>Choix de l'association</option>
+<% if @current_user.coordinated_organizations.count > 0 %>
+<select id="maraudes-org-filter" class="maraudes-map-filter form-control">
+  <option value="">Choix de l'association</option>
+  <option value="<%= @current_user.organization.id %>"><%= @current_user.organization.name %></option>
+  <% @current_user.coordinated_organizations.each do |org| %>
+  <option value="<%= org.id %>"><%= org.name %></option>
+  <% end %>
 </select>
+<% end %>
 </div>
 </div>
 </div>
@@ -75,9 +81,15 @@
 <select class="rencontres-map-filter form-control" disabled>
   <option>Zone géographique</option>
 </select>
-<select class="rencontres-map-filter form-control" disabled>
-  <option>Choix de l'association</option>
+<% if @current_user.coordinated_organizations.count > 0 %>
+<select id="rencontres-org-filter" class="rencontres-map-filter form-control">
+  <option value="">Choix de l'association</option>
+  <option value="<%= @current_user.organization.id %>"><%= @current_user.organization.name %></option>
+  <% @current_user.coordinated_organizations.each do |org| %>
+  <option value="<%= org.id %>"><%= org.name %></option>
+  <% end %>
 </select>
+<% end %>
 </div>
 </div>
 </div>

@@ -47,19 +47,24 @@ RSpec.describe OrganizationController, :type => :controller do
     end
     describe '#tours' do
       let!(:time) { Time.new(2009, 3, 11, 8, 25, 00) }
-      before { Timecop.freeze(time) }
+      before do
+        Timecop.freeze(time)
+        user.coordinated_organizations << user4.organization
+      end
       after { Timecop.return }
       let!(:user1) { create :user, organization: user.organization }
       let!(:user2) { create :user, organization: user.organization }
       let!(:user3) { create :user }
+      let!(:user4) { create :user }
       let!(:tour1) { create :tour, user: user1, tour_type:'other', updated_at: Time.new(2009, 3, 9, 13, 22, 0) }
       let!(:tour2) { create :tour, user: user2, tour_type:'health', updated_at: Time.new(2009, 3, 11, 13, 22, 0) }
       let!(:tour3) { create :tour, user: user3 }
       let!(:tour4) { create :tour, user: user1, updated_at: Time.now.monday - 1 }
+      let!(:tour5) { create :tour, user: user4, tour_type:'other', updated_at: Time.new(2009, 3, 9, 13, 22, 0) }
       context 'with no filter' do
         before { get :tours, format: :json }
         it { should respond_with 200 }
-        it { expect(assigns[:tours]).to eq [tour1, tour2]}
+        it { expect(assigns[:tours]).to eq [tour1, tour2, tour5]}
       end
       context 'with type filter' do
         before { get :tours, tour_type: 'health', format: :json }
@@ -71,31 +76,47 @@ RSpec.describe OrganizationController, :type => :controller do
         it { should respond_with 200 }
         it { expect(assigns[:tours]).to eq [tour2]}
       end
+      context 'with org filter' do
+        before { get :tours, org:user4.organization.id, format: :json }
+        it { should respond_with 200 }
+        it { expect(assigns[:tours]).to eq [tour5]}
+      end
+      context 'with incorrect org filter' do
+        before { get :tours, org:user3.organization.id, format: :json }
+        it { should respond_with 200 }
+        it { expect(assigns[:tours]).to eq []}
+      end
     end
     describe '#encounters' do
       let!(:time) { Time.new(2009, 3, 11, 8, 25, 00) }
-      before { Timecop.freeze(time) }
+      before do
+        Timecop.freeze(time)
+        user.coordinated_organizations << user4.organization
+      end
       after { Timecop.return }
       let!(:user1) { create :user, organization: user.organization }
       let!(:user2) { create :user, organization: user.organization }
       let!(:user3) { create :user }
+      let!(:user4) { create :user }
       let!(:tour1) { create :tour, user: user1, tour_type:'other', updated_at: Time.new(2009, 3, 9, 13, 22, 0) }
       let!(:tour2) { create :tour, user: user2, tour_type:'health', updated_at: Time.new(2009, 3, 11, 13, 22, 0) }
       let!(:tour3) { create :tour, user: user3 }
       let!(:tour4) { create :tour, user: user1, updated_at: Time.now.monday - 1 }
+      let!(:tour5) { create :tour, user: user4, tour_type:'other', updated_at: Time.new(2009, 3, 9, 13, 22, 0) }
       let!(:encounter1) { create :encounter, tour: tour1 }
       let!(:encounter2) { create :encounter, tour: tour1 }
       let!(:encounter3) { create :encounter, tour: tour2 }
       let!(:encounter4) { create :encounter, tour: tour2 }
       let!(:encounter5) { create :encounter, tour: tour3 }
       let!(:encounter6) { create :encounter, tour: tour4 }
+      let!(:encounter7) { create :encounter, tour: tour5 }
       context 'with no filter' do
         before { get :encounters, format: :json }
         it { should respond_with 200 }
-        it { expect(assigns[:encounters]).to eq [encounter1, encounter2, encounter3, encounter4]}
-        it { expect(assigns[:encounter_count]).to eq 4 }
-        it { expect(assigns[:tourer_count]).to eq 2 }
-        it { expect(assigns[:tour_count]).to eq 2 }
+        it { expect(assigns[:encounters]).to eq [encounter1, encounter2, encounter3, encounter4, encounter7]}
+        it { expect(assigns[:encounter_count]).to eq 5 }
+        it { expect(assigns[:tourer_count]).to eq 3 }
+        it { expect(assigns[:tour_count]).to eq 3 }
       end
       context 'with type filter' do
         before { get :encounters, tour_type: 'health', format: :json }
@@ -112,6 +133,22 @@ RSpec.describe OrganizationController, :type => :controller do
         it { expect(assigns[:encounter_count]).to eq 2 }
         it { expect(assigns[:tourer_count]).to eq 1 }
         it { expect(assigns[:tour_count]).to eq 1 }
+      end
+      context 'with org filter' do
+        before { get :encounters, org: user4.organization.id, format: :json }
+        it { should respond_with 200 }
+        it { expect(assigns[:encounters]).to eq [encounter7]}
+        it { expect(assigns[:encounter_count]).to eq 1 }
+        it { expect(assigns[:tourer_count]).to eq 1 }
+        it { expect(assigns[:tour_count]).to eq 1 }
+      end
+      context 'with incorrect org filter' do
+        before { get :encounters, org: user3.organization.id, format: :json }
+        it { should respond_with 200 }
+        it { expect(assigns[:encounters]).to eq []}
+        it { expect(assigns[:encounter_count]).to eq 0 }
+        it { expect(assigns[:tourer_count]).to eq 0 }
+        it { expect(assigns[:tour_count]).to eq 0 }
       end
     end
     describe '#send_message' do
