@@ -4,8 +4,9 @@
 <h2>Utilisateurs</h2>
 <ul class="list-inline" id="user-list">
 <% @organization.users.each do |user| %>
-  <li>
-    <h3><%= user.first_name %> <%= user.last_name %></h3>
+  <li style="text-align: center;">
+    <i class="fa fa-user fa-5x"></i>
+    <h4><%= user.last_name %><br><%= user.first_name %></h4>
     <%= link_to '', { controller:'organization/users', action: :edit, id:user.id }, class:'btn btn-default fa fa-pencil' %>
     <%= link_to '', { controller:'organization/users', action: :destroy, id: user.id }, method: :delete, data: { confirm: 'Etes-vous sur ?' }, class:'btn btn-default fa fa-trash' %>
     <%= link_to '', { controller:'organization/users', action: :send_sms, id: user.id }, method: :post, class:'btn btn-default fa fa-envelope send_sms', remote: true %>
