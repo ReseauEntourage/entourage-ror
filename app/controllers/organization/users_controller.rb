@@ -1,12 +1,13 @@
 class Organization::UsersController < GuiController
   attr_writer :sms_notification_service, :url_shortener
 
+  before_filter :get_user, :only => [:edit, :update, :destroy, :send_sms]
+
   def index
     @new_user = User.new
   end
   
   def edit
-    @user = User.find params[:id]
   end
 
   def create
@@ -21,8 +22,6 @@ class Organization::UsersController < GuiController
   end
 
   def update
-    @user = User.find params[:id]
-
     if @user.update_attributes(user_params)
       redirect_to organization_users_url, notice: "L'utilisateur a été sauvegardé"
     else
@@ -32,27 +31,28 @@ class Organization::UsersController < GuiController
   end
 
   def destroy
-    @entity = User.find params[:id]
-    @entity.destroy
+    @user.destroy
     redirect_to organization_users_url, notice: "L'utilisateur a bien été supprimé"
   end
   
   def send_sms
-    user = User.find_by id: params[:id]
-    if user.nil?
-      head 404
-    else
-      if user.organization == @current_user.organization
-        link = url_shortener.shorten(apps_url)
-        sms_notification_service.send_notification(user.phone, "Bienvenue sur Entourage. Votre code est #{user.sms_code}. Retrouvez l'application ici : #{link} .")
-        head 200
-      else
-        head 403
-      end
-    end
+    link = url_shortener.shorten(apps_url)
+    sms_notification_service.send_notification(@user.phone, "Bienvenue sur Entourage. Votre code est #{@user.sms_code}. Retrouvez l'application ici : #{link} .")
+    head 200
   end
   
   private
+  
+  def get_user
+    @user = User.find_by id: params[:id]
+    if @user.nil?
+      head :not_found
+    else
+      if @user.organization != @organization
+        head :forbidden
+      end
+    end
+  end
   
   def user_params
     params.require(:user).permit(:first_name, :last_name, :phone, :email, :manager)
