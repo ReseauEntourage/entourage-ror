@@ -57,6 +57,16 @@ class Tour < ActiveRecord::Base
     end
   end
   
+  def force_close
+    update_attributes email_sent: true, status: 'closed'
+    last_tour_point = tour_points.last
+    update_attributes closed_at: last_tour_point.passing_time if !last_tour_point.nil?
+  end
+  
+  def to_s
+    "#{id} - by user #{user} at #{created_at}"
+  end
+  
 end
 
 class EmptyMap

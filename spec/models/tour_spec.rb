@@ -110,4 +110,22 @@ RSpec.describe Tour, :type => :model do
       it { should eq '' }
     end
   end
+  
+  describe '#force_close' do
+    context 'ongoing tour' do
+      let!(:tour) { create :tour, status:'ongoing' }
+      before { tour.force_close }
+      it { expect(tour.status).to eq 'closed' }
+      it { expect(tour.email_sent).to be true }
+    end
+    context 'ongoing tour with tour points' do
+      let!(:tour) { create :tour, status:'ongoing' }
+      let!(:tour_point1) { create :tour_point, tour: tour, passing_time: (Time.now - 5.hours) }
+      let!(:tour_point2) { create :tour_point, tour: tour, passing_time: (Time.now - 4.hours) }
+      before { tour.force_close }
+      it { expect(tour.status).to eq 'closed' }
+      it { expect(tour.email_sent).to be true }
+      it { expect(tour.closed_at).to eq TourPoint.find(tour_point2.id).passing_time }
+    end
+  end
 end
