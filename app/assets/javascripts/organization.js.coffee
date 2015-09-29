@@ -107,6 +107,8 @@ $(document).on "page:change", ->
     center: new google.maps.LatLng(48.858859, 2.3470599),
   })
   
+  colors = { "health":"red", "friendly":"magenta", "social":"green", "food":"blue", "other":"black" }
+  
   map.data.setStyle((feature) ->
     tourType = feature.getProperty('tour_type')
     color = colors[tourType]
