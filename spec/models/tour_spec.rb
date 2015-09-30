@@ -105,6 +105,20 @@ RSpec.describe Tour, :type => :model do
       it { expect(subject.markers[3].location.latitude).to eq encounter2.latitude.round(4).to_s }
       it { expect(subject.markers[3].location.longitude).to eq encounter2.longitude.round(4).to_s }
     end
+    context 'huge tour' do
+      let!(:tour) { create :tour, :filled, point_count: 67 }
+      let!(:api_key) { 'API KEY' }
+      subject { tour.static_map 30 }
+      before { ENV["ANDROID_GCM_API_KEY"] = api_key }
+      after { ENV.delete("ANDROID_GCM_API_KEY") }
+      it { expect(subject.paths[0].points.length).to eq 23 }
+      it { expect(subject.paths[0].points[0].latitude).to eq tour.tour_points[0].latitude.round(4).to_s }
+      it { expect(subject.paths[0].points[0].longitude).to eq tour.tour_points[0].longitude.round(4).to_s }
+      it { expect(subject.paths[0].points[1].latitude).to eq tour.tour_points[3].latitude.round(4).to_s }
+      it { expect(subject.paths[0].points[1].longitude).to eq tour.tour_points[3].longitude.round(4).to_s }
+      it { expect(subject.paths[0].points[2].latitude).to eq tour.tour_points[6].latitude.round(4).to_s }
+      it { expect(subject.paths[0].points[2].longitude).to eq tour.tour_points[6].longitude.round(4).to_s }
+    end
     context 'empty tour' do
       let!(:tour) { create :tour }
       subject { tour.static_map.url }
