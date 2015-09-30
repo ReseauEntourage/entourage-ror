@@ -22,7 +22,7 @@ class Tour < ActiveRecord::Base
     if self.tour_points.length > 0 or self.encounters.length > 0
       map = GoogleStaticMap.new(width: 300, height: 300, api_key:ENV["ANDROID_GCM_API_KEY"])
       if self.tour_points.length > 0
-        tourpoints = MapPolygon.new(:color => '0x0000ff', weight: 5)
+        tourpoints = MapPolygon.new(:color => '0x0000ff', weight: 5, polyline: true)
         self.tour_points.each do |tp|
           tourpoints.points << MapLocation.new(latitude: tp.latitude.round(STATIC_MAP_PRECISION), longitude: tp.longitude.round(STATIC_MAP_PRECISION))
         end

@@ -71,6 +71,7 @@ RSpec.describe Tour, :type => :model do
       it { expect(subject.paths[0]).to be_a MapPolygon }
       it { expect(subject.paths[0].color).to eq '0x0000ff' }
       it { expect(subject.paths[0].weight).to eq 5 }
+      it { expect(subject.paths[0].polyline).to be true }
       it { expect(subject.paths[0].points.length).to eq 2 }
       it { expect(subject.paths[0].points[0]).to be_a MapLocation }
       it { expect(subject.paths[0].points[0].latitude).to eq tour_point1.latitude.round(4).to_s }
