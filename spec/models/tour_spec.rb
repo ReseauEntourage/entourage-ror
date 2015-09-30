@@ -108,7 +108,7 @@ RSpec.describe Tour, :type => :model do
     context 'huge tour' do
       let!(:tour) { create :tour, :filled, point_count: 67 }
       let!(:api_key) { 'API KEY' }
-      subject { tour.static_map 30 }
+      subject { tour.static_map point_limit: 30 }
       before { ENV["ANDROID_GCM_API_KEY"] = api_key }
       after { ENV.delete("ANDROID_GCM_API_KEY") }
       it { expect(subject.paths[0].points.length).to eq 23 }

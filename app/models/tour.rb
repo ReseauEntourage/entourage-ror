@@ -17,8 +17,7 @@ class Tour < ActiveRecord::Base
     end
   end
 
-  STATIC_MAP_PRECISION = 4
-  def static_map(point_limit = 200)
+  def static_map(point_limit: 200, precision: 4)
     if self.tour_points.length > 0 or self.encounters.length > 0
       map = GoogleStaticMap.new(width: 300, height: 300, api_key:ENV["ANDROID_GCM_API_KEY"])
       if self.tour_points.length > 0
@@ -35,14 +34,14 @@ class Tour < ActiveRecord::Base
           end
         end
         points.each do |tp|
-          tourpoints.points << MapLocation.new(latitude: tp.latitude.round(STATIC_MAP_PRECISION), longitude: tp.longitude.round(STATIC_MAP_PRECISION))
+          tourpoints.points << MapLocation.new(latitude: tp.latitude.round(precision), longitude: tp.longitude.round(precision))
         end
         map.paths << tourpoints
-        map.markers << MapMarker.new(label: 'D', color:'green', location: MapLocation.new(latitude: self.tour_points.first.latitude.round(STATIC_MAP_PRECISION), longitude: self.tour_points.first.longitude.round(STATIC_MAP_PRECISION)))
-        map.markers << MapMarker.new(label: 'A', color:'red', location: MapLocation.new(latitude: self.tour_points.last.latitude.round(STATIC_MAP_PRECISION), longitude: self.tour_points.last.longitude.round(STATIC_MAP_PRECISION)))
+        map.markers << MapMarker.new(label: 'D', color:'green', location: MapLocation.new(latitude: self.tour_points.first.latitude.round(precision), longitude: self.tour_points.first.longitude.round(precision)))
+        map.markers << MapMarker.new(label: 'A', color:'red', location: MapLocation.new(latitude: self.tour_points.last.latitude.round(precision), longitude: self.tour_points.last.longitude.round(precision)))
       end
       self.encounters.each_with_index do |e,index|
-        map.markers << MapMarker.new(label: (index + 1).to_s, color:'blue', location: MapLocation.new(latitude: e.latitude.round(STATIC_MAP_PRECISION), longitude: e.longitude.round(STATIC_MAP_PRECISION)))
+        map.markers << MapMarker.new(label: (index + 1).to_s, color:'blue', location: MapLocation.new(latitude: e.latitude.round(precision), longitude: e.longitude.round(precision)))
       end
       return map
     else
