@@ -106,9 +106,9 @@ RSpec.describe Tour, :type => :model do
       it { expect(subject.markers[3].location.longitude).to eq encounter2.longitude.round(4).to_s }
     end
     context 'huge tour' do
-      let!(:tour) { create :tour, :filled, point_count: 67 }
+      let!(:tour) { create :tour, :filled, point_count: 67, encounter_count: 15 }
       let!(:api_key) { 'API KEY' }
-      subject { tour.static_map point_limit: 30 }
+      subject { tour.static_map point_limit: 30, encounter_limit: 7 }
       before { ENV["ANDROID_GCM_API_KEY"] = api_key }
       after { ENV.delete("ANDROID_GCM_API_KEY") }
       it { expect(subject.paths[0].points.length).to eq 23 }
@@ -118,6 +118,25 @@ RSpec.describe Tour, :type => :model do
       it { expect(subject.paths[0].points[1].longitude).to eq tour.tour_points[3].longitude.round(4).to_s }
       it { expect(subject.paths[0].points[2].latitude).to eq tour.tour_points[6].latitude.round(4).to_s }
       it { expect(subject.paths[0].points[2].longitude).to eq tour.tour_points[6].longitude.round(4).to_s }
+      it { expect(subject.markers.count).to eq 9 }
+      it { expect(subject.markers[2]).to be_a MapMarker }
+      it { expect(subject.markers[2].label).to eq '1' }
+      it { expect(subject.markers[2].color).to eq 'blue' }
+      it { expect(subject.markers[2].location).to be_a MapLocation }
+      it { expect(subject.markers[2].location.latitude).to eq tour.encounters[0].latitude.round(4).to_s }
+      it { expect(subject.markers[2].location.longitude).to eq tour.encounters[0].longitude.round(4).to_s }
+      it { expect(subject.markers[3]).to be_a MapMarker }
+      it { expect(subject.markers[3].label).to eq '2' }
+      it { expect(subject.markers[3].color).to eq 'blue' }
+      it { expect(subject.markers[3].location).to be_a MapLocation }
+      it { expect(subject.markers[3].location.latitude).to eq tour.encounters[1].latitude.round(4).to_s }
+      it { expect(subject.markers[3].location.longitude).to eq tour.encounters[1].longitude.round(4).to_s }
+      it { expect(subject.markers[8]).to be_a MapMarker }
+      it { expect(subject.markers[8].label).to eq '7' }
+      it { expect(subject.markers[8].color).to eq 'blue' }
+      it { expect(subject.markers[8].location).to be_a MapLocation }
+      it { expect(subject.markers[8].location.latitude).to eq tour.encounters[6].latitude.round(4).to_s }
+      it { expect(subject.markers[8].location.longitude).to eq tour.encounters[6].longitude.round(4).to_s }
     end
     context 'empty tour' do
       let!(:tour) { create :tour }

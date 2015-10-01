@@ -17,7 +17,7 @@ class Tour < ActiveRecord::Base
     end
   end
 
-  def static_map(point_limit: 200, precision: 4)
+  def static_map(point_limit: 100, encounter_limit: 9, precision: 4)
     if self.tour_points.length > 0 or self.encounters.length > 0
       map = GoogleStaticMap.new(width: 300, height: 300, api_key:ENV["ANDROID_GCM_API_KEY"])
       if self.tour_points.length > 0
@@ -40,7 +40,7 @@ class Tour < ActiveRecord::Base
         map.markers << MapMarker.new(label: 'D', color:'green', location: MapLocation.new(latitude: self.tour_points.first.latitude.round(precision), longitude: self.tour_points.first.longitude.round(precision)))
         map.markers << MapMarker.new(label: 'A', color:'red', location: MapLocation.new(latitude: self.tour_points.last.latitude.round(precision), longitude: self.tour_points.last.longitude.round(precision)))
       end
-      self.encounters.each_with_index do |e,index|
+      self.encounters.first(encounter_limit).each_with_index do |e,index|
         map.markers << MapMarker.new(label: (index + 1).to_s, color:'blue', location: MapLocation.new(latitude: e.latitude.round(precision), longitude: e.longitude.round(precision)))
       end
       return map
