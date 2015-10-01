@@ -22,6 +22,7 @@ Rails.application.routes.draw do
   patch 'organization' => 'organization#update', as: :organization
   get 'organization/tours' => 'organization#tours'
   get 'organization/encounters' => 'organization#encounters'
+  get 'organization/map_center' => 'organization#map_center'
   post 'organization/send_message' => 'organization#send_message'
   
   namespace :organization do

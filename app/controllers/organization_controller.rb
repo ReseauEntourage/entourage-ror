@@ -1,5 +1,7 @@
 class OrganizationController < GuiController
   attr_writer :push_notification_service
+  
+  before_filter :location_filter, only: [:encounters, :tours]
 
   def dashboard
     my_tours = Tour.joins(:user).where(users: { organization_id: @organization.id })
@@ -26,7 +28,11 @@ class OrganizationController < GuiController
     orgs = [@organization.id] + @current_user.coordinated_organizations.map(&:id)
     @tours = Tour.includes(:tour_points).joins(:user).includes(:tour_points)
       .where(users: { organization_id: orgs })
-      
+    
+    if @box
+      tours_with_point_in_box = TourPoint.unscoped.within_bounding_box(@box).select(:tour_id).distinct
+      @tours = @tours.where(id: tours_with_point_in_box)
+    end
     if !params[:org].nil?
       @tours = @tours.where(users: { organization_id: params[:org] })
     end
@@ -36,22 +42,22 @@ class OrganizationController < GuiController
       date_range = params[:date_range].split('-').map { |s| Date.strptime(s, '%d/%m/%Y') }
       @tours = @tours.where("tours.updated_at between ? and ?", date_range[0].beginning_of_day, date_range[1].end_of_day)
     end
-    if (params[:sw].present? && params[:ne].present?)
-      ne = params[:ne].split('-').map(&:to_f)
-      sw = params[:sw].split('-').map(&:to_f)
-      box = sw + ne
-      points = TourPoint.unscoped.within_bounding_box(box).select(:tour_id).distinct
-      @tours = @tours.where(id: points)
-    end
     @tours = @tours.where(tour_type: params[:tour_type]) if params[:tour_type].present?
   end
   
   def encounters
     tours
     @encounters = Encounter.where(tour: @tours)
+    if @box
+      @encounters = @encounters.within_bounding_box(@box)
+    end
     @tour_count = @tours.count
     @tourer_count = @tours.select(:user_id).distinct.count
     @encounter_count = @encounters.count
+  end
+  
+  def map_center
+    render json: [@current_user.default_latitude ||= 48.858859, @current_user.default_longitude ||= 2.3470599]
   end
   
   def send_message
@@ -61,6 +67,17 @@ class OrganizationController < GuiController
   end
   
   private
+  
+  def location_filter
+    if (params[:sw].present? && params[:ne].present?)
+      ne = params[:ne].split('-').map(&:to_f)
+      sw = params[:sw].split('-').map(&:to_f)
+      @current_user.default_latitude = (ne[0] + sw[0]) / 2
+      @current_user.default_longitude = (ne[1] + sw[1]) / 2
+      @current_user.save
+      @box = sw + ne
+    end
+  end
   
   def organization_params
     params.require(:organization).permit(:name, :description, :phone, :address, :logo_url)
