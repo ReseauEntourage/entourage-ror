@@ -12,8 +12,12 @@ class Tour < ActiveRecord::Base
 
   def send_tour_report
     if self.status == "closed" && ! self.email_sent
-      MemberMailer.tour_report(self).deliver_later
-      self.update_attributes(email_sent: true)
+      begin
+        MemberMailer.tour_report(self).deliver_later
+        self.update_attributes(email_sent: true)
+      rescue
+        logger.error "Tour report email for tour #{id} could not be sent"
+      end
     end
   end
 
