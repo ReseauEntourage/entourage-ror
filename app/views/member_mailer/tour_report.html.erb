@@ -17,7 +17,10 @@
       </tr>
       <tr>
         <td style="width:300px;">
-          <img src="<%= raw @tour.static_map.url %>" alt="parcours"/>
+          <img src="<%= raw @tour.static_path_map.url %>" alt="parcours"/>
+          <% if @tour.encounters.count > 0 %>
+          <img src="<%= raw @tour.static_encounters_map.url %>" alt="rencontres"/>
+          <% end %>
         </td>
         <td style="width:300px; padding: 10px; vertical-align: top;">
           <% if @tour.tour_points.count > 0 %>
@@ -26,31 +29,31 @@
           <p><%= meters_to_printable_km @tour.length %> km parcourus</p>
           <% end %>
           <% if @tour.encounters.count > 0 %>
-          <ol>
-            <% @tour.encounters.each do |encounter| %>
+          <ul>
+            <% @tour.encounters.each_with_index do |encounter, index| %>
             <li>
-              Rencontre de <%= encounter.street_person_name %>
+              <%= marker_index index %> - Rencontre de <%= encounter.street_person_name %>
             </li>
             <% end %>
-          </ol>
+          </ul>
           <% end %>
         </td>
       </tr>
       <% if @tour.encounters.count > 0 %>
       <tr>
         <td colspan="2" style="padding: 10px;">
-          <ol>
-            <% @tour.encounters.each do |encounter| %>
+          <ul>
+            <% @tour.encounters.each_with_index do |encounter, index| %>
             <li>
               <p>
-                <%= encounter.street_person_name %> &agrave; <%= encounter.date.strftime('%H:%M') %>
+                <%= marker_index index %> - <%= encounter.street_person_name %> &agrave; <%= encounter.date.strftime('%H:%M') %>
               </p>
               <p>
                 <%= encounter.message %>
               </p>
             </li>
             <% end %>
-          </ol>
+          </ul>
         </td>
       </tr>
       <% end %>

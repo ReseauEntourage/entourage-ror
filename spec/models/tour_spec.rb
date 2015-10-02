@@ -52,7 +52,7 @@ RSpec.describe Tour, :type => :model do
     end
   end
   
-  describe '#static_map' do
+  describe '#static_path_map' do
     context 'filled tour' do
       let!(:tour) { create :tour }
       let!(:tour_point1) { create :tour_point, tour: tour, latitude: rand, longitude: rand }
@@ -60,7 +60,7 @@ RSpec.describe Tour, :type => :model do
       let!(:encounter1) { create :encounter, tour: tour, latitude: rand, longitude: rand }
       let!(:encounter2) { create :encounter, tour: tour, latitude: rand, longitude: rand }
       let!(:api_key) { 'API KEY' }
-      subject { tour.static_map }
+      subject { tour.static_path_map }
       before { ENV["ANDROID_GCM_API_KEY"] = api_key }
       after { ENV.delete("ANDROID_GCM_API_KEY") }
       it { should be_a GoogleStaticMap }
@@ -79,7 +79,7 @@ RSpec.describe Tour, :type => :model do
       it { expect(subject.paths[0].points[1]).to be_a MapLocation }
       it { expect(subject.paths[0].points[1].latitude).to eq tour_point2.latitude.round(4).to_s }
       it { expect(subject.paths[0].points[1].longitude).to eq tour_point2.longitude.round(4).to_s }
-      it { expect(subject.markers.length).to eq 4 }
+      it { expect(subject.markers.length).to eq 2 }
       it { expect(subject.markers[0]).to be_a MapMarker }
       it { expect(subject.markers[0].label).to eq 'D' }
       it { expect(subject.markers[0].color).to eq 'green' }
@@ -92,23 +92,11 @@ RSpec.describe Tour, :type => :model do
       it { expect(subject.markers[1].location).to be_a MapLocation }
       it { expect(subject.markers[1].location.latitude).to eq tour_point2.latitude.round(4).to_s }
       it { expect(subject.markers[1].location.longitude).to eq tour_point2.longitude.round(4).to_s }
-      it { expect(subject.markers[2]).to be_a MapMarker }
-      it { expect(subject.markers[2].label).to eq '1' }
-      it { expect(subject.markers[2].color).to eq 'blue' }
-      it { expect(subject.markers[2].location).to be_a MapLocation }
-      it { expect(subject.markers[2].location.latitude).to eq encounter1.latitude.round(4).to_s }
-      it { expect(subject.markers[2].location.longitude).to eq encounter1.longitude.round(4).to_s }
-      it { expect(subject.markers[3]).to be_a MapMarker }
-      it { expect(subject.markers[3].label).to eq '2' }
-      it { expect(subject.markers[3].color).to eq 'blue' }
-      it { expect(subject.markers[3].location).to be_a MapLocation }
-      it { expect(subject.markers[3].location.latitude).to eq encounter2.latitude.round(4).to_s }
-      it { expect(subject.markers[3].location.longitude).to eq encounter2.longitude.round(4).to_s }
     end
     context 'huge tour' do
       let!(:tour) { create :tour, :filled, point_count: 67, encounter_count: 15 }
       let!(:api_key) { 'API KEY' }
-      subject { tour.static_map point_limit: 30, encounter_limit: 7 }
+      subject { tour.static_path_map point_limit: 30 }
       before { ENV["ANDROID_GCM_API_KEY"] = api_key }
       after { ENV.delete("ANDROID_GCM_API_KEY") }
       it { expect(subject.paths[0].points.length).to eq 23 }
@@ -118,29 +106,58 @@ RSpec.describe Tour, :type => :model do
       it { expect(subject.paths[0].points[1].longitude).to eq tour.tour_points[3].longitude.round(4).to_s }
       it { expect(subject.paths[0].points[2].latitude).to eq tour.tour_points[6].latitude.round(4).to_s }
       it { expect(subject.paths[0].points[2].longitude).to eq tour.tour_points[6].longitude.round(4).to_s }
-      it { expect(subject.markers.count).to eq 9 }
-      it { expect(subject.markers[2]).to be_a MapMarker }
-      it { expect(subject.markers[2].label).to eq '1' }
-      it { expect(subject.markers[2].color).to eq 'blue' }
-      it { expect(subject.markers[2].location).to be_a MapLocation }
-      it { expect(subject.markers[2].location.latitude).to eq tour.encounters[0].latitude.round(4).to_s }
-      it { expect(subject.markers[2].location.longitude).to eq tour.encounters[0].longitude.round(4).to_s }
-      it { expect(subject.markers[3]).to be_a MapMarker }
-      it { expect(subject.markers[3].label).to eq '2' }
-      it { expect(subject.markers[3].color).to eq 'blue' }
-      it { expect(subject.markers[3].location).to be_a MapLocation }
-      it { expect(subject.markers[3].location.latitude).to eq tour.encounters[1].latitude.round(4).to_s }
-      it { expect(subject.markers[3].location.longitude).to eq tour.encounters[1].longitude.round(4).to_s }
-      it { expect(subject.markers[8]).to be_a MapMarker }
-      it { expect(subject.markers[8].label).to eq '7' }
-      it { expect(subject.markers[8].color).to eq 'blue' }
-      it { expect(subject.markers[8].location).to be_a MapLocation }
-      it { expect(subject.markers[8].location.latitude).to eq tour.encounters[6].latitude.round(4).to_s }
-      it { expect(subject.markers[8].location.longitude).to eq tour.encounters[6].longitude.round(4).to_s }
     end
     context 'empty tour' do
       let!(:tour) { create :tour }
-      subject { tour.static_map.url }
+      subject { tour.static_path_map.url }
+      it { should eq '' }
+    end
+  end
+  
+  describe '#static_encounters_map' do
+    context 'filled tour' do
+      let!(:tour) { create :tour }
+      let!(:tour_point1) { create :tour_point, tour: tour, latitude: rand, longitude: rand }
+      let!(:tour_point2) { create :tour_point, tour: tour, latitude: rand, longitude: rand }
+      let!(:encounter1) { create :encounter, tour: tour, latitude: rand, longitude: rand }
+      let!(:encounter2) { create :encounter, tour: tour, latitude: rand, longitude: rand }
+      let!(:api_key) { 'API KEY' }
+      subject { tour.static_encounters_map }
+      before { ENV["ANDROID_GCM_API_KEY"] = api_key }
+      after { ENV.delete("ANDROID_GCM_API_KEY") }
+      it { should be_a GoogleStaticMap }
+      it { expect(subject.api_key).to eq api_key }
+      it { expect(subject.width).to eq 300 }
+      it { expect(subject.height).to eq 300 }
+      it { expect(subject.paths.length).to eq 0 }
+      it { expect(subject.markers.length).to eq 2 }
+      it { expect(subject.markers[0]).to be_a MapMarker }
+      it { expect(subject.markers[0].label).to eq '1' }
+      it { expect(subject.markers[0].color).to eq 'blue' }
+      it { expect(subject.markers[0].location).to be_a MapLocation }
+      it { expect(subject.markers[0].location.latitude).to eq encounter1.latitude.round(4).to_s }
+      it { expect(subject.markers[0].location.longitude).to eq encounter1.longitude.round(4).to_s }
+      it { expect(subject.markers[1]).to be_a MapMarker }
+      it { expect(subject.markers[1].label).to eq '2' }
+      it { expect(subject.markers[1].color).to eq 'blue' }
+      it { expect(subject.markers[1].location).to be_a MapLocation }
+      it { expect(subject.markers[1].location.latitude).to eq encounter2.latitude.round(4).to_s }
+      it { expect(subject.markers[1].location.longitude).to eq encounter2.longitude.round(4).to_s }
+    end
+    context 'huge tour' do
+      let!(:tour) { create :tour, :filled, point_count: 67, encounter_count: 15 }
+      let!(:api_key) { 'API KEY' }
+      subject { tour.static_encounters_map encounter_limit: 12 }
+      before { ENV["ANDROID_GCM_API_KEY"] = api_key }
+      after { ENV.delete("ANDROID_GCM_API_KEY") }
+      it { expect(subject.markers.count).to eq 12 }
+      it { expect(subject.markers[9].label).to eq 'A' }
+      it { expect(subject.markers[10].label).to eq 'B' }
+      it { expect(subject.markers[11].label).to eq 'C' }
+    end
+    context 'empty tour' do
+      let!(:tour) { create :tour }
+      subject { tour.static_encounters_map.url }
       it { should eq '' }
     end
   end
