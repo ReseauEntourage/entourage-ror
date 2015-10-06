@@ -36,7 +36,7 @@ class Organization::UsersController < GuiController
   end
   
   def send_sms
-    link = url_shortener.shorten(apps_url)
+    link = url_shortener.shorten("https://play.google.com/apps/testing/social.entourage.android")
     sms_notification_service.send_notification(@user.phone, "Bienvenue sur Entourage. Votre code est #{@user.sms_code}. Retrouvez l'application ici : #{link} .")
     head 200
   end
