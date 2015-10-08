@@ -22,10 +22,12 @@
 <%= image_tag('logo.png', alt:'Entourage', class:'navbar-brand') %>
 </div>
 <div id="navbar" class="navbar-collapse collapse">
+<p class="nav navbar-nav navbar-left navbar-text"> Bonjour, <%= @current_user.first_name %></p>
 <ul class="nav navbar-nav navbar-right">
 <li class="<%= active_class(organization_dashboard_path) %>"><%= link_to 'Dashboard', organization_dashboard_path %></li>
 <li class="<%= active_class(organization_edit_path) %>"><%= link_to 'Gestion association', organization_edit_path %></li>
 <li class="<%= active_class(organization_users_path) %>"><%= link_to 'Gestion utilisateurs', organization_users_path %></li>
+<li><%= link_to 'Gestion Profil', { controller:'organization/users', action: :edit, id:@current_user.id } %></li>
 </ul>
 </div>
 </div>
