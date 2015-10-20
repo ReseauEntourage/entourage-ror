@@ -67,3 +67,4 @@ gem 'googlestaticmap', git: 'https://github.com/ReseauEntourage/googlestaticmap.
 gem 'momentjs-rails'
 gem 'shorturl'
 gem 'attr_encrypted'
+gem 'mailchimp-api'
