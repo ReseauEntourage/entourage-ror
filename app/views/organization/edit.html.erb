@@ -3,6 +3,7 @@
 <div class="col-md-4 col-md-offset-4">
 <h1><%= @organization.name %></h1>
 <%= render 'form' %>
+<h3>Ajout d'utilisateur <%= link_to '', organization_users_path+'#add-user', class:'btn btn-default fa fa-user-plus' %></h3>
 </div>
 </div>
 </div>
