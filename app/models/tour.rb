@@ -22,7 +22,7 @@ class Tour < ActiveRecord::Base
   end
 
   def static_path_map(point_limit: 200, precision: 4)
-    if self.tour_points.length > 0
+    if self.tour_points.length > 1
       map = GoogleStaticMap.new(width: 300, height: 300, api_key:ENV["ANDROID_GCM_API_KEY"])
       tourpoints = MapPolygon.new(:color => '0x0000ff', weight: 5, polyline: true)
       points = limited_tour_points point_limit
