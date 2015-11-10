@@ -10,7 +10,7 @@ class CleanupService
   end
 
   def self.force_resend_tour_reports
-    old_tours = Tour.where(status: Tour.statuses[:closed], email_sent: true)
+    old_tours = Tour.where(status: Tour.statuses[:closed], email_sent: false)
       .where('closed_at <= ?', Time.now - 4.hours)
 
     old_tours.each do |t|
