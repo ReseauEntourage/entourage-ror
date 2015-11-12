@@ -29,7 +29,7 @@ class Tour < ActiveRecord::Base
       points.each do |tp|
         tourpoints.points << MapLocation.new(latitude: tp.latitude.round(precision), longitude: tp.longitude.round(precision))
       end
-      if tourpoints.length > 1
+      if tourpoints.points.length > 1
         map.paths << tourpoints
       end
       map.markers << MapMarker.new(label: 'D', color:'green', location: MapLocation.new(latitude: self.tour_points.first.latitude.round(precision), longitude: self.tour_points.first.longitude.round(precision)))
