@@ -22,14 +22,16 @@ class Tour < ActiveRecord::Base
   end
 
   def static_path_map(point_limit: 200, precision: 4)
-    if self.tour_points.length > 1
+    if self.tour_points.length > 0
       map = GoogleStaticMap.new(width: 300, height: 300, api_key:ENV["ANDROID_GCM_API_KEY"])
       tourpoints = MapPolygon.new(:color => '0x0000ff', weight: 5, polyline: true)
       points = limited_tour_points point_limit
       points.each do |tp|
         tourpoints.points << MapLocation.new(latitude: tp.latitude.round(precision), longitude: tp.longitude.round(precision))
       end
-      map.paths << tourpoints
+      if tourpoints.length > 1
+        endmap.paths << tourpoints
+      end
       map.markers << MapMarker.new(label: 'D', color:'green', location: MapLocation.new(latitude: self.tour_points.first.latitude.round(precision), longitude: self.tour_points.first.longitude.round(precision)))
       map.markers << MapMarker.new(label: 'A', color:'red', location: MapLocation.new(latitude: self.tour_points.last.latitude.round(precision), longitude: self.tour_points.last.longitude.round(precision)))
       return map
