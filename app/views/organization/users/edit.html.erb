@@ -7,7 +7,7 @@
   <%= f.input :last_name, label: 'Nom' %>
   <%= f.input :phone, label: 'Téléphone', input_html: { 'data-toggle' => "tooltip", 'data-placement' => "right", 'title' => "De type +33XXXXXXXXX" } %>
   <%= f.input :email, label: 'Email' %>
-  <%= f.input :manager, label: 'Manager' %>
+  <%= f.input :manager, label: 'Administrateur' %>
   <%= f.button :submit, 'Sauvegarder', class: 'btn-primary' %>
   <%= link_to 'Annuler', organization_users_path, class: 'btn btn-danger' %>
 <% end %>
