@@ -7,7 +7,7 @@ ActiveAdmin.register User do
   form do |f|
     f.inputs
     f.inputs "Coordination of external organizations" do
-      f.input :coordinated_organizations, as: :check_boxes, collection: Organization.where.not(id: :organization_id)
+      f.input :coordinated_organizations, as: :check_boxes, collection: Organization.where.not(id: user.organization_id)
     end
     f.actions
   end
