@@ -15,18 +15,18 @@
           <h2 style="text-align: center;">Votre parcours</h2>
         </td>
       </tr>
+      <% if @tour.tour_points.count > 0 %>
       <tr>
         <td style="width:300px;">
           <img src="<%= raw @tour.static_path_map.url %>" alt="parcours"/>
         </td>
         <td style="width:300px; padding: 10px; vertical-align: top;">
-          <% if @tour.tour_points.count > 0 %>
           <p><strong>D&eacute;part</strong> &agrave; <%= @tour.tour_points.first.passing_time.strftime('%H:%M')  %></p>
           <p><strong>Arriv&eacute;e</strong> &agrave; <%= @tour.tour_points.last.passing_time.strftime('%H:%M') %></p>
           <p><%= meters_to_printable_km @tour.length %> km parcourus</p>
-          <% end %>
         </td>
       </tr>
+      <% end %>
       <% if @tour.encounters.count > 0 %>
       <tr>
         <td colspan="2" style="width:300px;">
