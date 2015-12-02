@@ -7,7 +7,7 @@ module AuthHelper
   
   def manager_basic_login
     user = create :user, manager: true
-    request.env['HTTP_AUTHORIZATION'] = ActionController::HttpAuthentication::Basic.encode_credentials user.phone, user.sms_code
+    session[:user_id] = user.id
     return user
   end
 end

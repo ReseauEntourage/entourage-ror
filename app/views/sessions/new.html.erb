@@ -1,0 +1,17 @@
+<div class="row">
+  <div class="sign-in-block col-md-3 center-block" style="float: none">
+
+    <p><b>Veuillez renseigner vos identifiants :</b></p>
+    <%= form_tag sessions_path, html: {class: 'form-horizontal'} do %>
+      <div class="field form-group">
+        <%= text_field_tag :phone, nil, placeholder: "téléphone", class: 'form-control' %>
+      </div>
+      <div class="field form-group">
+        <%= password_field_tag :sms_code, nil, placeholder: "code reçu par SMS", class: 'form-control' %>
+      </div>
+      <div class="actions form-group">
+        <%= submit_tag "Connexion", class: "btn btn-lg btn-entourage" %>
+      </div>
+    <% end %>
+  </div>
+</div>

@@ -58,6 +58,7 @@ $buttons-color: #ef662f;
 
 @import "home";
 @import "organization";
+@import "sign_in";
 
 body.with-navbar { padding-top: $navbar-height; }
 .navbar-brand { padding: 5px; }

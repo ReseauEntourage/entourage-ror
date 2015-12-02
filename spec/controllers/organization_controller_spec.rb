@@ -169,23 +169,23 @@ RSpec.describe OrganizationController, :type => :controller do
   context 'no authentication' do
     describe '#edit' do
       before { get :edit }
-      it { should respond_with 401 }
+      it { should respond_with 302 }
     end
     describe '#update' do
       before { patch :update }
-      it { should respond_with 401 }
+      it { should respond_with 302 }
     end
     describe '#dashboard' do
       before { get :dashboard }
-      it { should respond_with 401 }
+      it { should respond_with 302 }
     end
     describe '#tours' do
       before { get :tours, format: :json }
-      it { should respond_with 401 }
+      it { should respond_with 302 }
     end
     describe '#encounters' do
       before { get :encounters, format: :json }
-      it { should respond_with 401 }
+      it { should respond_with 302 }
     end
   end
 end

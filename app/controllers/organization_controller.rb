@@ -2,6 +2,7 @@ class OrganizationController < GuiController
   attr_writer :push_notification_service
   
   before_filter :location_filter, only: [:encounters, :tours]
+  before_filter :set_organization
 
   def dashboard
     my_tours = Tour.joins(:user).where(users: { organization_id: @organization.id })
@@ -85,6 +86,10 @@ class OrganizationController < GuiController
   
   def push_notification_service
     @push_notification_service ||= PushNotificationService.new
+  end
+
+  def set_organization
+    @organization = current_user.organization
   end
 
 end
