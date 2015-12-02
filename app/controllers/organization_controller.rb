@@ -27,8 +27,9 @@ class OrganizationController < GuiController
   
   def tours
     orgs = [@organization.id] + @current_user.coordinated_organizations.map(&:id)
-    @tours = Tour.includes(:tour_points).joins(:user).includes(:tour_points)
-      .where(users: { organization_id: orgs })
+    @tours = Tour.includes(:tour_points)
+                 .joins(:user)
+                 .where(users: { organization_id: orgs })
     
     if @box
       tours_with_point_in_box = TourPoint.unscoped.within_bounding_box(@box).select(:tour_id).distinct
@@ -44,6 +45,8 @@ class OrganizationController < GuiController
       @tours = @tours.where("tours.updated_at between ? and ?", date_range[0].beginning_of_day, date_range[1].end_of_day)
     end
     @tours = @tours.where(tour_type: params[:tour_type]) if params[:tour_type].present?
+    @presenters = TourCollectionPresenter.new(tours: @tours)
+    @tours
   end
   
   def encounters

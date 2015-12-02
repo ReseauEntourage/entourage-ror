@@ -1,15 +1,15 @@
 json.type "FeatureCollection"
 json.features do
-  json.array!(@tours) do |tour|
+  json.array!(@presenters) do |presenter|
     json.type "Feature"
     json.properties do
-      json.tour_type tour.tour_type
+      json.tour_type presenter.tour_type
     end
     json.geometry do
       json.type "LineString"
       json.coordinates do
-        json.array!(tour.tour_points) do |tour_point|
-          json.array!([tour_point.longitude, tour_point.latitude])
+        json.array!(presenter.snap_to_road_points) do |coordinate|
+          json.array!([coordinate[:long], coordinate[:lat]])
         end
       end
     end

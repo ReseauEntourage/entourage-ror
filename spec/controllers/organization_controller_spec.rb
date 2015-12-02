@@ -45,7 +45,7 @@ RSpec.describe OrganizationController, :type => :controller do
       it { expect(assigns[:total_length]).to eq 6006 }
       it { expect(assigns[:latest_tours]).to eq({ last_sunday => [tour4], last_tuesday => [tour1], last_wednesday => [tour2, tour3] }) }
     end
-    describe '#tours' do
+    describe 'tours' do
       let!(:time) { Time.new(2009, 3, 11, 8, 25, 00) }
       before do
         Timecop.freeze(time)
@@ -85,6 +85,21 @@ RSpec.describe OrganizationController, :type => :controller do
         before { get :tours, org:user3.organization.id, format: :json }
         it { should respond_with 200 }
         it { expect(assigns[:tours]).to eq []}
+      end
+
+      context "has map points" do
+        before {
+          GoogleMap::SnapToRoadResponse.any_instance.stub(:coordinates_only) { [{lat: -35.2784167, long: 149.1294692},
+                                                                                {lat: -35.284728724835304, long: 149.12835061713685}] }
+        }
+
+        let(:resp) do
+          get :tours, format: :json
+          JSON.parse(response.body)
+        end
+
+        it { expect(resp["features"].count).to eq(3) }
+        it { expect(resp["features"][0]["geometry"]["coordinates"]).to eq([[149.1294692, -35.2784167], [149.12835061713685, -35.284728724835304]]) }
       end
     end
     describe '#encounters' do
