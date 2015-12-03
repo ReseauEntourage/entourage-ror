@@ -24,3 +24,4 @@
 # IC modules
 use-ruby
 use-node
+.env

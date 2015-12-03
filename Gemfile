@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-ruby '2.0.0'
+ruby '2.2.3'
 
 gem 'rails',                '~> 4.2'
 gem 'thin',                 '~> 1.6.3'
@@ -27,11 +27,10 @@ gem 'momentjs-rails',       '~> 2.10.3'
 gem 'shorturl',             '~> 1.0.0'
 gem 'attr_encrypted',       '~> 1.3.4'
 gem 'mailchimp-api',        '~> 2.0.6'
-
+gem 'pg',                   '~> 0.18.2'
 
 group :development, :test do
   gem 'byebug',             '~> 5.0.0'
-  gem 'sqlite3',            '~> 1.3.10'
   gem 'spring',             '~> 1.3.6'
 end
 
@@ -53,7 +52,6 @@ group :test do
 end
 
 group :production do
-  gem 'pg',                 '~> 0.18.2'
   gem 'rails_12factor',     '~> 0.0.3'
   gem 'puma',               '~> 2.12.2'
   gem 'newrelic_rpm',       '~> 3.12.1.298'
