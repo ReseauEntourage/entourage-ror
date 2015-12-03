@@ -22,5 +22,7 @@ module EntourageBack
      config.generators do |g|
        g.test_framework :rspec
      end
+
+    Rails.application.routes.default_url_options[:host] = ENV["HOST"]
   end
 end

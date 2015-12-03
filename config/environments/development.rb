@@ -33,9 +33,9 @@ Rails.application.configure do
   # config.action_view.raise_on_missing_translations = true
 
   # DEV / TEST CREDENTIALS
+  #TODO: Remove credentials from sources files
   ENV["BASIC_ADMIN_USER"] = "admin"
   ENV["BASIC_ADMIN_PASSWORD"] = "3nt0ur4g3"
-
 
   config.action_mailer.perform_deliveries = false
   config.action_mailer.raise_delivery_errors = true
