@@ -1,5 +1,8 @@
 <div class="row">
-  <div class="sign-in-block col-md-3 center-block" style="float: none">
+  <div class="sign-in-block col-md-4 center-block" style="float: none">
+    <div id="flash">
+      <%= flash_messages %>
+    </div>
 
     <p><b>Veuillez renseigner vos identifiants :</b></p>
     <%= form_tag sessions_path, html: {class: 'form-horizontal'} do %>
