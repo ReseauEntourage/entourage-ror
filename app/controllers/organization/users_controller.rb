@@ -4,6 +4,7 @@ class Organization::UsersController < GuiController
   before_filter :get_user, :only => [:edit, :update, :destroy, :send_sms]
 
   def index
+    @organization = current_user.organization
     @new_user = User.new
   end
   
@@ -12,7 +13,7 @@ class Organization::UsersController < GuiController
 
   def create
     @user = User.new(user_params)
-    @user.organization = @organization
+    @user.organization = current_user.organization
 
     if @user.save
       redirect_to organization_users_url, notice: "L'utilisateur a été créé"
@@ -48,7 +49,7 @@ class Organization::UsersController < GuiController
     if @user.nil?
       head :not_found
     else
-      if @user.organization != @organization
+      if @user.organization != current_user.organization
         head :forbidden
       end
     end

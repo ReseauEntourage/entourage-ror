@@ -3,6 +3,8 @@ Rails.application.routes.draw do
   root 'home#index'
   get 'apps' => 'home#apps', as: :apps
 
+  resources :sessions, only: [:new, :create, :destroy]
+
   resources :tours, only: [:index,:create,:show,:update] do
     resources :tour_points, only:[:create]
     resources :encounters, only: [:create]

@@ -129,27 +129,27 @@ RSpec.describe Organization::UsersController, :type => :controller do
   context 'no authentication' do
     describe '#index' do
       before { get :index }
-      it { should respond_with 401 }
+      it { should respond_with 302 }
     end
     describe '#edit' do
       before { get :edit, id:1 }
-      it { should respond_with 401 }
+      it { should respond_with 302 }
     end
     describe '#create' do
       before { post :create, user: {} }
-      it { should respond_with 401 }
+      it { should respond_with 302 }
     end
     describe '#update' do
       before { patch :update, id:1, user: {} }
-      it { should respond_with 401 }
+      it { should respond_with 302 }
     end
     describe '#destroy' do
       before { get :destroy, id:1 }
-      it { should respond_with 401 }
+      it { should respond_with 302 }
     end
     describe '#send_sms' do
       before { post :send_sms, id:1 }
-      it { should respond_with 401 }
+      it { should respond_with 302 }
     end
   end
 end

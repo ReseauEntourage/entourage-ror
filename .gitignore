@@ -24,4 +24,6 @@
 # IC modules
 use-ruby
 use-node
+
+# Ignore environment variables file
 .env

@@ -57,10 +57,10 @@ group :production do
   gem 'newrelic_rpm',       '~> 3.12.1.298'
 end
 
-group :doc do
-  gem 'sdoc',               '~> 0.4.1'
-end
-
 group :console do
   gem 'hirb',               '~> 0.7.3'
+end
+
+group :doc do
+  gem 'sdoc',               '~> 0.4.1'
 end
