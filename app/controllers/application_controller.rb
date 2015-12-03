@@ -27,13 +27,4 @@ class ApplicationController < ActionController::Base
       end
     end
   end
-  
-  def default_url_options
-    if Rails.env.production?
-      { host: "entourage-back.herokuapp.com" }
-    else
-      { host: "localhost", port:3000 }
-    end
-  end
-
 end

@@ -40,5 +40,4 @@ Rails.application.configure do
   # DEV / TEST CREDENTIALS
   ENV["BASIC_ADMIN_USER"] = "admin"
   ENV["BASIC_ADMIN_PASSWORD"] = "3nt0ur4g3"
-
 end
