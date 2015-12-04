@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151001143729) do
+ActiveRecord::Schema.define(version: 20151204134222) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -166,6 +166,14 @@ ActiveRecord::Schema.define(version: 20151001143729) do
   end
 
   add_index "rpush_notifications", ["delivered", "failed"], name: "index_rpush_notifications_multi", where: "((NOT delivered) AND (NOT failed))", using: :btree
+
+  create_table "snap_to_road_tour_points", force: :cascade do |t|
+    t.float   "latitude",  null: false
+    t.float   "longitude", null: false
+    t.integer "tour_id",   null: false
+  end
+
+  add_index "snap_to_road_tour_points", ["tour_id"], name: "index_snap_to_road_tour_points_on_tour_id", using: :btree
 
   create_table "tour_points", force: :cascade do |t|
     t.float    "latitude"

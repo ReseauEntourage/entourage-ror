@@ -12,7 +12,7 @@ class TourPresenter
   end
 
   def snap_to_road_points
-    TourBuilders::PolylineBuilder.new(tour: tour).polyline
+    tour.snap_to_road_tour_points.map {|point| [point.longitude, point.latitude]}
   end
 
   def start_time
