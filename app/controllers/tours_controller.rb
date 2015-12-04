@@ -47,7 +47,10 @@ class ToursController < ApplicationController
       if @tour.user != @current_user
         head 403
       else
-        @tour.update_attributes(tour_params)
+        if tour_params[:status]=="closed"
+          TourServices::CloseTourService.new(tour: @tour).close!
+        end
+        @tour.update_attributes(tour_params.except(:status))
         @presenter = TourPresenter.new(tour: @tour)
         render 'show', status: 200
       end

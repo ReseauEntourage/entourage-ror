@@ -170,4 +170,11 @@ RSpec.describe Tour, :type => :model do
       it { expect(tour.closed_at).to eq TourPoint.find(tour_point2.id).passing_time }
     end
   end
+
+  describe "#closed?" do
+    let(:open_tour) { FactoryGirl.build(:tour, status: :ongoing) }
+    let(:closed_tour) { FactoryGirl.build(:tour, status: :closed) }
+    it { expect(open_tour.closed?).to be false }
+    it { expect(closed_tour.closed?).to be true }
+  end
 end

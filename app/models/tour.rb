@@ -9,20 +9,7 @@ class Tour < ActiveRecord::Base
   validates_presence_of :tour_type, :status, :vehicle_type, :user
   belongs_to :user
 
-  after_update :send_tour_report
-
   delegate :organization_name, :organization_description, to: :user
-
-  def send_tour_report
-    if self.status == "closed" && ! self.email_sent
-      begin
-        MemberMailer.tour_report(self).deliver_later
-        self.update_attributes(email_sent: true)
-      rescue
-        logger.error "Tour report email for tour #{id} could not be sent"
-      end
-    end
-  end
 
   def static_path_map(point_limit: 200, precision: 4)
     if self.tour_points.length > 0
@@ -77,9 +64,14 @@ class Tour < ActiveRecord::Base
   end
   
   def force_close
+    #TODO: multiple write to db, refactor to write only once
     update_attributes email_sent: true, status: 'closed'
     last_tour_point = tour_points.last
     update_attributes closed_at: last_tour_point.passing_time if !last_tour_point.nil?
+  end
+
+  def closed?
+    status=="closed"
   end
   
   def to_s

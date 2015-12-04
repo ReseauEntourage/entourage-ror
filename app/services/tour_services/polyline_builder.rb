@@ -1,4 +1,4 @@
-module TourBuilders
+module TourServices
   class PolylineBuilder
     def initialize(tour:)
       @tour = tour
