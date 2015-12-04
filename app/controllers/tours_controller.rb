@@ -5,6 +5,7 @@ class ToursController < ApplicationController
     @tour = Tour.new(tour_params)
     @tour.user = @current_user
     if @tour.save
+      @presenter = TourPresenter.new(tour: @tour)
       render "show", status: 201
     else
       render '400', status: 400
@@ -12,7 +13,9 @@ class ToursController < ApplicationController
   end
 
   def show
+    #TODO: ActiveRecordNotFound resolves to 404 in production, change find_by into find
     if @tour = Tour.find_by(id: params[:id])
+      @presenter = TourPresenter.new(tour: @tour)
       render status: 200
     else
       @id = params[:id]
@@ -34,15 +37,18 @@ class ToursController < ApplicationController
     end
     
     @tours = @tours.order(updated_at: :desc).take(params.fetch(:limit, 10))
+    @presenters = TourCollectionPresenter.new(tours: @tours)
     render status: 200
   end
 
   def update
+    #TODO: ActiveRecordNotFound resolves to 404 in production, change find_by into find
     if @tour = Tour.find_by(id: params[:id])
       if @tour.user != @current_user
         head 403
       else
         @tour.update_attributes(tour_params)
+        @presenter = TourPresenter.new(tour: @tour)
         render 'show', status: 200
       end
     else
@@ -57,5 +63,4 @@ private
   def tour_params
     params.require(:tour).permit(:tour_type, :status, :vehicle_type)
   end
-
 end

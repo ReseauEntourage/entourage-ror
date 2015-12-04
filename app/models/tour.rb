@@ -10,6 +10,8 @@ class Tour < ActiveRecord::Base
 
   after_update :send_tour_report
 
+  delegate :organization_name, :organization_description, to: :user
+
   def send_tour_report
     if self.status == "closed" && ! self.email_sent
       begin

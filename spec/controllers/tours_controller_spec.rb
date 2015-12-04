@@ -1,7 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe ToursController, :type => :controller do
-  
+  render_views
+
   describe "POST create" do
     let!(:user) { FactoryGirl.create :user }
     let!(:tour) { FactoryGirl.build :tour }

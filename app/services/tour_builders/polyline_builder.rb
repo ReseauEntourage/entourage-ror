@@ -9,6 +9,9 @@ module TourBuilders
         {lat: tour_point.latitude, long: tour_point.longitude}
       end
 
+      #FIXME: Support for more than 100 points
+      coordinates = coordinates.take(99)
+
       response = GoogleMap::SnapToRoadRequest.new.perform(coordinates: coordinates)
       response.coordinates_only
     end

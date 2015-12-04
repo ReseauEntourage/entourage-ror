@@ -42,6 +42,7 @@ class UsersController < ApplicationController
 
   def login
     @user = User.includes(:organization).find_by_phone_and_sms_code params[:phone], params[:sms_code]
+    #TODO : In case of incorrect credentials return a a 401, instead of a 400
     if @user.nil?
       render 'error', status: :bad_request
     else
