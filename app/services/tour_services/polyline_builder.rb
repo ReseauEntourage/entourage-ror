@@ -9,11 +9,14 @@ module TourServices
         {lat: tour_point.latitude, long: tour_point.longitude}
       end
 
-      #FIXME: Support for more than 100 points
-      coordinates = coordinates.take(99)
+      coordinates.each_slice(max_point).map do |sub_tour|
+        response = GoogleMap::SnapToRoadRequest.new.perform(coordinates: sub_tour)
+        response.coordinates_only
+      end.flatten
+    end
 
-      response = GoogleMap::SnapToRoadRequest.new.perform(coordinates: coordinates)
-      response.coordinates_only
+    def max_point
+      99
     end
 
     private
