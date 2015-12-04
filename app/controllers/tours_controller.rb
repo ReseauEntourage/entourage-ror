@@ -51,6 +51,7 @@ class ToursController < ApplicationController
     end
   end
 
+
 private
 
   def tour_params

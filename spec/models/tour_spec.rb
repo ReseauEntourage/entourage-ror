@@ -59,12 +59,9 @@ RSpec.describe Tour, :type => :model do
       let!(:tour_point2) { create :tour_point, tour: tour, latitude: rand, longitude: rand }
       let!(:encounter1) { create :encounter, tour: tour, latitude: rand, longitude: rand }
       let!(:encounter2) { create :encounter, tour: tour, latitude: rand, longitude: rand }
-      let!(:api_key) { 'API KEY' }
       subject { tour.static_path_map }
-      before { ENV["ANDROID_GCM_API_KEY"] = api_key }
-      after { ENV.delete("ANDROID_GCM_API_KEY") }
       it { should be_a GoogleStaticMap }
-      it { expect(subject.api_key).to eq api_key }
+      it { expect(subject.api_key).to eq "foobar" }
       it { expect(subject.width).to eq 300 }
       it { expect(subject.height).to eq 300 }
       it { expect(subject.paths.length).to eq 1 }
@@ -95,10 +92,8 @@ RSpec.describe Tour, :type => :model do
     end
     context 'huge tour' do
       let!(:tour) { create :tour, :filled, point_count: 67, encounter_count: 15 }
-      let!(:api_key) { 'API KEY' }
       subject { tour.static_path_map point_limit: 30 }
-      before { ENV["ANDROID_GCM_API_KEY"] = api_key }
-      after { ENV.delete("ANDROID_GCM_API_KEY") }
+
       it { expect(subject.paths[0].points.length).to eq 23 }
       it { expect(subject.paths[0].points[0].latitude).to eq tour.tour_points[0].latitude.round(4).to_s }
       it { expect(subject.paths[0].points[0].longitude).to eq tour.tour_points[0].longitude.round(4).to_s }
@@ -121,12 +116,9 @@ RSpec.describe Tour, :type => :model do
       let!(:tour_point2) { create :tour_point, tour: tour, latitude: rand, longitude: rand }
       let!(:encounter1) { create :encounter, tour: tour, latitude: rand, longitude: rand }
       let!(:encounter2) { create :encounter, tour: tour, latitude: rand, longitude: rand }
-      let!(:api_key) { 'API KEY' }
       subject { tour.static_encounters_map }
-      before { ENV["ANDROID_GCM_API_KEY"] = api_key }
-      after { ENV.delete("ANDROID_GCM_API_KEY") }
       it { should be_a GoogleStaticMap }
-      it { expect(subject.api_key).to eq api_key }
+      it { expect(subject.api_key).to eq "foobar" }
       it { expect(subject.width).to eq 300 }
       it { expect(subject.height).to eq 300 }
       it { expect(subject.paths.length).to eq 0 }
@@ -146,10 +138,7 @@ RSpec.describe Tour, :type => :model do
     end
     context 'huge tour' do
       let!(:tour) { create :tour, :filled, point_count: 67, encounter_count: 15 }
-      let!(:api_key) { 'API KEY' }
       subject { tour.static_encounters_map encounter_limit: 12 }
-      before { ENV["ANDROID_GCM_API_KEY"] = api_key }
-      after { ENV.delete("ANDROID_GCM_API_KEY") }
       it { expect(subject.markers.count).to eq 12 }
       it { expect(subject.markers[9].label).to eq 'A' }
       it { expect(subject.markers[10].label).to eq 'B' }

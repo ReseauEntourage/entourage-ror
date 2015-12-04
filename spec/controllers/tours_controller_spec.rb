@@ -202,5 +202,4 @@ RSpec.describe ToursController, :type => :controller do
     end
     
   end
-  
 end

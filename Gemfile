@@ -39,6 +39,7 @@ group :development do
   gem 'better_errors',      '~> 2.1.1'
   gem 'binding_of_caller',  '~> 0.7.2'
   gem 'dredd-rack',         '~> 0.7.0'
+  gem 'dotenv-rails',       '~> 2.0.2'
 end
 
 group :test do
@@ -49,6 +50,7 @@ group :test do
   gem 'nyan-cat-formatter', '~> 0.11'
   gem 'timecop',            '~> 0.8.0'
   gem 'factory_girl_rails', '~> 4.5.0'
+  gem 'webmock',            '~> 1.20.4'
 end
 
 group :production do

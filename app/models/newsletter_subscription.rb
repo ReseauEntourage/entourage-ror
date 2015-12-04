@@ -11,6 +11,7 @@ class NewsletterSubscription < ActiveRecord::Base
   after_create :send_mailchimp_info
 
   def send_mailchimp_info
+    #TODO: Wrong format for key, replace '-' with '_'
     if ENV.key? "MAILCHIMP-LIST-ID"
       begin
         mc = Mailchimp::API.new(ENV['MAILCHIMP-API-KEY'])
