@@ -515,3 +515,33 @@ Statistics about the application
     + Body
 
             {"tours"=>2, "encounters"=>4, "organizations"=>1}
+
+
+# Group Message
+Send message to the Entourage team
+## Messages collection [/messages{?token}]
+
+### Create a message [POST]
+
++ Parameters
+
+    + token (required, string, `FAKETOKEN`) ... Token identifying the current user
+
+
++ Request (application/json; charset=utf-8)
+
+    + Body
+
+            {"message":{"content":"foobar"}}
+
+    + Headers
+
+            Accept: application/json
+
++ Response 201 (application/json; charset=utf-8)
+
+            {"message":{"content":"foobar"}}
+
++ Response 400 (application/json; charset=utf-8)
+
+        {"errors":["Content can't be blank"]}

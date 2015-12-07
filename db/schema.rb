@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151207090814) do
+ActiveRecord::Schema.define(version: 20151207180524) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -53,6 +53,12 @@ ActiveRecord::Schema.define(version: 20151207090814) do
     t.string   "voice_message_url",  limit: 255
     t.integer  "tour_id"
     t.string   "encrypted_message"
+  end
+
+  create_table "messages", force: :cascade do |t|
+    t.string   "content",    null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "newsletter_subscriptions", force: :cascade do |t|
