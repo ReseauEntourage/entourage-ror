@@ -11,7 +11,7 @@ describe MessagesController do
       it { expect(lambda { subject }).to change {Message.count}.by(1) }
       it "return 200" do
         subject
-        expect(response.status).to eq(200)
+        expect(response.status).to eq(201)
       end
     end
 
