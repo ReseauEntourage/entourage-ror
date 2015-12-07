@@ -36,7 +36,8 @@ Rails.application.routes.draw do
   post 'login' => 'users#login'
   get 'map' => 'map#index'
 
-  devise_for :admin_users, ActiveAdmin::Devise.config
+  namespace :admin do
+    get 'logout' => 'sessions#logout'
+  end
   ActiveAdmin.routes(self)
-
 end

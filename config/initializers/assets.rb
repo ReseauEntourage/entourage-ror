@@ -1,0 +1,1 @@
+Rails.application.config.assets.precompile += %w( generate_tour.js )
