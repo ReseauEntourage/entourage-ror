@@ -2,6 +2,8 @@ require 'simplecov'
 SimpleCov.start
 require 'factory_girl'
 require 'webmock/rspec'
+require 'coveralls'
+Coveralls.wear!
 
 RSpec.configure do |config|
   config.include FactoryGirl::Syntax::Methods
