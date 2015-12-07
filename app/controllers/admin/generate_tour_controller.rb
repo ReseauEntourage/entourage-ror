@@ -5,7 +5,6 @@ module Admin
       return render json: {error: "missing_coordinates"}, status: 400 if params[:coordinates].blank?
 
       tour = current_admin.tours.create(closed_at: Time.now,
-                                        email_sent: true,
                                         status: :closed,
                                         vehicle_type: :feet,
                                         tour_type: :social)
