@@ -47,7 +47,7 @@ RSpec.describe Organization::UsersController, :type => :controller do
         it { expect(flash[:notice]).to eq "Erreur de création" }
       end
     end
-    describe '#update' do
+    describe 'update' do
       context 'correct organization' do
         let!(:updated_user) { create :user, organization: user.organization }
         context 'utilisateur valide' do

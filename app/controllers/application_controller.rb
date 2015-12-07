@@ -13,20 +13,19 @@ class ApplicationController < ActionController::Base
     @user_logged_in ||= !current_user.nil?
   end
 
-  def require_login
-    unless user_logged_in
-      render 'unauthorized', status: :unauthorized
+  def current_admin
+    @current_admin ||= User.where(id: session[:user_id]).first
+  end
+
+  def authenticate_admin!
+    unless current_admin
+      flash[:alert] = "Vous devez vous authentifier avec un compte admin pour accéder à cette page"
+      render new_session_path, status: 401, layout: "login"
     end
   end
 
-  def admin_authentication
-    authenticate_or_request_with_http_basic do |username, password|
-      if(username == ENV["BASIC_ADMIN_USER"] && password == ENV["BASIC_ADMIN_PASSWORD"])
-        true
-      else
-        render 'unauthorized', status: :unauthorized
-      end
-    end
+  def require_login
+    render 'unauthorized', status: :unauthorized unless user_logged_in
   end
 
   def ssl_configured?

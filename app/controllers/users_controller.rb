@@ -2,7 +2,7 @@ class UsersController < ApplicationController
 
   protect_from_forgery with: :null_session, if: Proc.new { |c| c.request.format == 'application/json' }
   skip_before_filter :require_login, except: :update_me
-  before_filter :admin_authentication, except: [:login, :update_me]
+  before_filter :authenticate_admin!, except: [:login, :update_me]
   attr_writer :android_notification_service, :sms_notification_service
 
   def index

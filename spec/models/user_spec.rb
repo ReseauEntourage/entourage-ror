@@ -17,7 +17,6 @@ describe User, :type => :model do
   it { should_not allow_value('+33000a00000').for(:phone) }
   it { should allow_value('a@a.a').for(:email) }
   it { should_not allow_value('a-a.a').for(:email) }
-  it { should_not allow_value('@').for(:email) }
   it { should have_many :tours }
   it { should have_many :encounters }
   it { should belong_to :organization }
