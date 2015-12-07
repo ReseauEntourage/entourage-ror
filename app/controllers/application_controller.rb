@@ -1,5 +1,6 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
+  force_ssl if: :ssl_configured?
 
   helper_method :current_user, :user_logged_in
   before_filter :require_login
@@ -26,5 +27,9 @@ class ApplicationController < ActionController::Base
         render 'unauthorized', status: :unauthorized
       end
     end
+  end
+
+  def ssl_configured?
+    Rails.env.production?
   end
 end
