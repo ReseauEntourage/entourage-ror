@@ -37,6 +37,7 @@ Rails.application.routes.draw do
   get 'map' => 'map#index'
 
   resources :stats, only: [:index]
+  resources :messages, only: [:create]
 
   #ADMIN
   namespace :admin do
