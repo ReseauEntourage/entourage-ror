@@ -16,11 +16,11 @@ class TourPresenter
   end
 
   def start_time
-    tour.tour_points.first.try(:passing_time)
+    @start_time ||= tour.tour_points.first.try(:passing_time)
   end
 
   def end_time
-    tour.tour_points.last.try(:passing_time)
+    @end_time ||= tour.tour_points.last.try(:passing_time)
   end
 
   private

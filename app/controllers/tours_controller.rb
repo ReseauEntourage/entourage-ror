@@ -24,7 +24,7 @@ class ToursController < ApplicationController
   end
 
   def index
-    @tours = Tour.where(nil)
+    @tours = Tour.includes(:snap_to_road_tour_points).includes(:user).where(nil)
     @tours = @tours.type(params[:type]) if params[:type].present?
     @tours = @tours.vehicle_type(Tour.vehicle_types[params[:vehicle_type]]) if params[:vehicle_type].present?
     
@@ -32,7 +32,7 @@ class ToursController < ApplicationController
       center_point = [params[:latitude], params[:longitude]]
       distance = params.fetch(:distance, 10)
       box = Geocoder::Calculations.bounding_box(center_point, distance, :units => :km)
-      points = TourPoint.unscoped.within_bounding_box(box).select(:tour_id).distinct
+      points = SnapToRoadTourPoint.unscoped.within_bounding_box(box).select(:tour_id).distinct
       @tours = @tours.where(id: points)
     end
     
