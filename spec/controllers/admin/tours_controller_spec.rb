@@ -22,7 +22,6 @@ describe Admin::GenerateTourController do
         subject
         tour = Tour.last
         expect(tour.closed_at.utc).to be_within(1.second).of(Time.parse("10/10/2010").at_beginning_of_day.utc)
-        expect(tour.email_sent).to eq(true)
         expect(tour.status).to eq("closed")
         expect(tour.vehicle_type).to eq("feet")
         expect(tour.tour_type).to eq("social")
