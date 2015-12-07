@@ -20,7 +20,7 @@ class ApplicationController < ActionController::Base
   def authenticate_admin!
     unless current_admin
       flash[:alert] = "Vous devez vous authentifier avec un compte admin pour accéder à cette page"
-      redirect_to new_session_path
+      render new_session_path, status: 401, layout: "login"
     end
   end
 

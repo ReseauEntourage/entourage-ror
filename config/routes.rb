@@ -36,8 +36,11 @@ Rails.application.routes.draw do
   post 'login' => 'users#login'
   get 'map' => 'map#index'
 
+
+  #ADMIN
   namespace :admin do
     get 'logout' => 'sessions#logout'
+    post 'generate_tour' => 'generate_tour#generate'
   end
   ActiveAdmin.routes(self)
 end

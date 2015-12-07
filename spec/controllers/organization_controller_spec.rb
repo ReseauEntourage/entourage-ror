@@ -64,7 +64,7 @@ RSpec.describe OrganizationController, :type => :controller do
       context 'with no filter' do
         before { get :tours, format: :json }
         it { should respond_with 200 }
-        it { expect(assigns[:tours]).to eq [tour1, tour2, tour5]}
+        it { expect(assigns[:tours]).to match_array([tour1, tour2, tour5]) }
       end
       context 'with type filter' do
         before { get :tours, tour_type: 'health', format: :json }
@@ -101,7 +101,11 @@ RSpec.describe OrganizationController, :type => :controller do
         end
 
         it { expect(resp["features"].count).to eq(3) }
-        it { expect(resp["features"][0]["geometry"]["coordinates"]).to eq([[149.1294692, -35.2784167], [149.128350617137, -35.2847287248353]]) }
+        it "returns coordinates" do
+          #some feature don't contain any coordinates => select the first feature containing coordinates
+          feature = resp["features"].select {|hash| hash["geometry"]["coordinates"].present?}.first
+          expect(feature["geometry"]["coordinates"]).to eq([[149.1294692, -35.2784167], [149.128350617137, -35.2847287248353]])
+        end
       end
     end
     describe '#encounters' do

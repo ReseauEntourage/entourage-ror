@@ -8,8 +8,8 @@ var snappedCoordinates = [];
 
 function initialize() {
   var mapOptions = {
-    zoom: 17,
-    center: {lat: -33.8667, lng: 151.1955}
+    zoom: 12,
+    center: {lat: 48.873002, lng: 2.316136}
   };
   map = new google.maps.Map(document.getElementById('map'), mapOptions);
 
@@ -81,7 +81,6 @@ function runSnapToRoad(path) {
   }, function(data) {
     processSnapToRoadResponse(data);
     drawSnappedPolyline();
-    getAndDrawSpeedLimits();
   });
 }
 
@@ -109,7 +108,19 @@ function drawSnappedPolyline() {
   snappedPolyline.setMap(map);
   polylines.push(snappedPolyline);
 
-
+  $.ajax({
+    type: "POST",
+    url: "/admin/generate_tour",
+    data: JSON.stringify({coordinates: snappedCoordinates}),
+    contentType: "application/json; charset=utf-8",
+    dataType: "json",
+    success: function (data) {
+      console.log("Tour was created");
+    },
+    failure: function (errMsg) {
+      console.log("could not create tour : " + errMsg);
+    }
+  });
 }
 
 

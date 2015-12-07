@@ -49,55 +49,39 @@ RSpec.describe UsersController, :type => :controller do
   
   describe 'get index' do
 
-    context 'without basic authentication' do
+    context 'not logged in as admin' do
       it "retuns 401" do
         get 'index', :format => :json
         expect(response.status).to eq(401)
       end
     end
-    
-    context 'without any user' do
-      it "retuns 200" do
-        admin_basic_login
-        get 'index', :format => :json
-        expect(response.status).to eq(200)
-      end
 
-      it "assigns empty array" do
-        admin_basic_login
-        get 'index', :format => :json
-        expect(assigns(:users)).to match_array([])
-      end
+    context "logged in as admin" do
+      before { admin_basic_login }
 
-      it 'returns empty array' do
-        admin_basic_login
-        get 'index', :format => :json
-        expect(json["users"]).to match_array([])
-      end
+      context 'without any user' do
+        it "retuns 200" do
+          get 'index', :format => :json
+          expect(response.status).to eq(200)
+        end
 
-    end
+        it "assigns current admin" do
+          get 'index', :format => :json
+          expect(assigns(:users)).to match_array(User.where(admin: true))
+        end
 
-    context 'with one user' do
-      it 'assigns array with user' do
-        admin_basic_login
-        user = FactoryGirl.create(:user)
-        get 'index', :format => :json
-        expect(assigns(:users)).to match_array([user])
-      end
-
-      it 'returns array with one user' do
-        admin_basic_login
-        user = FactoryGirl.create(:user)
-        get 'index', :format => :json
-        expect(json["users"]).to match_array([{"id" => user.id,"email"=>user.email,"first_name"=>user.first_name, "last_name"=>user.last_name}])
+        it 'returns current admin' do
+          get 'index', :format => :json
+          admin = User.where(admin: true).first
+          expect(json["users"]).to match_array([{"id"=>admin.id, "email"=>admin.email, "first_name"=>admin.first_name, "last_name"=>admin.last_name}])
+        end
       end
     end
-
   end
 
   describe 'post create' do
 
-    context 'without basic authentication' do
+    context 'not logged in as admin' do
       it "retuns 401" do
         post 'create', :format => :json
         expect(response.status).to eq(401)
@@ -206,7 +190,7 @@ RSpec.describe UsersController, :type => :controller do
       before do
         controller.sms_notification_service = sms_notification_service
         admin_basic_login
-        post 'send_sms', id: user.id + 1, format: :json
+        post 'send_sms', id: 0, format: :json
       end
       it { expect(response.status).to eq(404) }
     end
