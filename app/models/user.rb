@@ -13,6 +13,8 @@ class User < ActiveRecord::Base
 
   after_create :set_token, :set_sms_code
 
+  delegate :name, :description, to: :organization, prefix: true
+
   def set_token
     self.update_attribute(:token, Digest::MD5.hexdigest(self.id.to_s + self.created_at.to_s))
   end

@@ -88,10 +88,12 @@ RSpec.describe OrganizationController, :type => :controller do
       end
 
       context "has map points" do
-        before {
-          GoogleMap::SnapToRoadResponse.any_instance.stub(:coordinates_only) { [{lat: -35.2784167, long: 149.1294692},
-                                                                                {lat: -35.284728724835304, long: 149.12835061713685}] }
-        }
+        before(:each) do
+          [tour1, tour2, tour3].each do |t|
+            FactoryGirl.create(:snap_to_road_tour_point, tour: t, latitude: -35.2784167, longitude: 149.1294692)
+            FactoryGirl.create(:snap_to_road_tour_point, tour: t, latitude: -35.2847287248353, longitude: 149.128350617137)
+          end
+        end
 
         let(:resp) do
           get :tours, format: :json
@@ -99,7 +101,7 @@ RSpec.describe OrganizationController, :type => :controller do
         end
 
         it { expect(resp["features"].count).to eq(3) }
-        it { expect(resp["features"][0]["geometry"]["coordinates"]).to eq([[149.1294692, -35.2784167], [149.12835061713685, -35.284728724835304]]) }
+        it { expect(resp["features"][0]["geometry"]["coordinates"]).to eq([[149.1294692, -35.2784167], [149.128350617137, -35.2847287248353]]) }
       end
     end
     describe '#encounters' do

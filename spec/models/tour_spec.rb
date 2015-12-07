@@ -10,6 +10,8 @@ RSpec.describe Tour, :type => :model do
   it { should validate_presence_of(:status) }
   it { should validate_presence_of(:user) }
   it { should belong_to(:user) }
+  it { should have_many(:tour_points).dependent(:destroy) }
+  it { should have_many(:snap_to_road_tour_points).dependent(:destroy) }
   
   describe '#status=' do
     let!(:time) { DateTime.new 2015, 8, 25, 13, 11, 0 }
@@ -167,5 +169,12 @@ RSpec.describe Tour, :type => :model do
       it { expect(tour.email_sent).to be true }
       it { expect(tour.closed_at).to eq TourPoint.find(tour_point2.id).passing_time }
     end
+  end
+
+  describe "#closed?" do
+    let(:open_tour) { FactoryGirl.build(:tour, status: :ongoing) }
+    let(:closed_tour) { FactoryGirl.build(:tour, status: :closed) }
+    it { expect(open_tour.closed?).to be false }
+    it { expect(closed_tour.closed?).to be true }
   end
 end

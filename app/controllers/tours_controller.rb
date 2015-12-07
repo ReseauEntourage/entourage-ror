@@ -5,6 +5,7 @@ class ToursController < ApplicationController
     @tour = Tour.new(tour_params)
     @tour.user = @current_user
     if @tour.save
+      @presenter = TourPresenter.new(tour: @tour)
       render "show", status: 201
     else
       render '400', status: 400
@@ -12,7 +13,9 @@ class ToursController < ApplicationController
   end
 
   def show
+    #TODO: ActiveRecordNotFound resolves to 404 in production, change find_by into find
     if @tour = Tour.find_by(id: params[:id])
+      @presenter = TourPresenter.new(tour: @tour)
       render status: 200
     else
       @id = params[:id]
@@ -21,7 +24,7 @@ class ToursController < ApplicationController
   end
 
   def index
-    @tours = Tour.where(nil)
+    @tours = Tour.includes(:snap_to_road_tour_points).includes(:user).where(nil)
     @tours = @tours.type(params[:type]) if params[:type].present?
     @tours = @tours.vehicle_type(Tour.vehicle_types[params[:vehicle_type]]) if params[:vehicle_type].present?
     
@@ -29,20 +32,26 @@ class ToursController < ApplicationController
       center_point = [params[:latitude], params[:longitude]]
       distance = params.fetch(:distance, 10)
       box = Geocoder::Calculations.bounding_box(center_point, distance, :units => :km)
-      points = TourPoint.unscoped.within_bounding_box(box).select(:tour_id).distinct
+      points = SnapToRoadTourPoint.unscoped.within_bounding_box(box).select(:tour_id).distinct
       @tours = @tours.where(id: points)
     end
     
     @tours = @tours.order(updated_at: :desc).take(params.fetch(:limit, 10))
+    @presenters = TourCollectionPresenter.new(tours: @tours)
     render status: 200
   end
 
   def update
+    #TODO: ActiveRecordNotFound resolves to 404 in production, change find_by into find
     if @tour = Tour.find_by(id: params[:id])
       if @tour.user != @current_user
         head 403
       else
-        @tour.update_attributes(tour_params)
+        if tour_params[:status]=="closed"
+          TourServices::CloseTourService.new(tour: @tour).close!
+        end
+        @tour.update_attributes(tour_params.except(:status))
+        @presenter = TourPresenter.new(tour: @tour)
         render 'show', status: 200
       end
     else
@@ -57,5 +66,4 @@ private
   def tour_params
     params.require(:tour).permit(:tour_type, :status, :vehicle_type)
   end
-
 end

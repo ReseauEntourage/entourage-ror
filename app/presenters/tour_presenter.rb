@@ -1,13 +1,26 @@
 class TourPresenter
   delegate :id,
-           :tour_type, to: :tour
+           :tour_type,
+           :status,
+           :vehicle_type,
+           :organization_name,
+           :organization_description,
+           to: :tour
 
   def initialize(tour:)
     @tour = tour
   end
 
   def snap_to_road_points
-    TourBuilders::PolylineBuilder.new(tour: tour).polyline
+    tour.snap_to_road_tour_points.map {|point| {long: point.longitude, lat: point.latitude} }
+  end
+
+  def start_time
+    @start_time ||= tour.tour_points.first.try(:passing_time)
+  end
+
+  def end_time
+    @end_time ||= tour.tour_points.last.try(:passing_time)
   end
 
   private

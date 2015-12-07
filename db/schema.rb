@@ -11,18 +11,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151001143729) do
+ActiveRecord::Schema.define(version: 20151204134222) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "active_admin_comments", force: :cascade do |t|
-    t.string   "namespace"
+    t.string   "namespace",     limit: 255
     t.text     "body"
-    t.string   "resource_id",   null: false
-    t.string   "resource_type", null: false
+    t.string   "resource_id",   limit: 255, null: false
+    t.string   "resource_type", limit: 255, null: false
     t.integer  "author_id"
-    t.string   "author_type"
+    t.string   "author_type",   limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -32,16 +32,16 @@ ActiveRecord::Schema.define(version: 20151001143729) do
   add_index "active_admin_comments", ["resource_type", "resource_id"], name: "index_active_admin_comments_on_resource_type_and_resource_id", using: :btree
 
   create_table "admin_users", force: :cascade do |t|
-    t.string   "email",                  default: "", null: false
-    t.string   "encrypted_password",     default: "", null: false
-    t.string   "reset_password_token"
+    t.string   "email",                  limit: 255, default: "", null: false
+    t.string   "encrypted_password",     limit: 255, default: "", null: false
+    t.string   "reset_password_token",   limit: 255
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
-    t.integer  "sign_in_count",          default: 0,  null: false
+    t.integer  "sign_in_count",                      default: 0,  null: false
     t.datetime "current_sign_in_at"
     t.datetime "last_sign_in_at"
-    t.string   "current_sign_in_ip"
-    t.string   "last_sign_in_ip"
+    t.string   "current_sign_in_ip",     limit: 255
+    t.string   "last_sign_in_ip",        limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -52,7 +52,7 @@ ActiveRecord::Schema.define(version: 20151001143729) do
   create_table "categories", force: :cascade do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "name"
+    t.string   "name",       limit: 255
   end
 
   create_table "coordination", id: false, force: :cascade do |t|
@@ -65,16 +65,16 @@ ActiveRecord::Schema.define(version: 20151001143729) do
     t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "street_person_name"
+    t.string   "street_person_name", limit: 255
     t.float    "latitude"
     t.float    "longitude"
-    t.string   "voice_message_url"
+    t.string   "voice_message_url",  limit: 255
     t.integer  "tour_id"
     t.string   "encrypted_message"
   end
 
   create_table "newsletter_subscriptions", force: :cascade do |t|
-    t.string   "email"
+    t.string   "email",      limit: 255
     t.boolean  "active"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -91,19 +91,19 @@ ActiveRecord::Schema.define(version: 20151001143729) do
   end
 
   create_table "pois", force: :cascade do |t|
-    t.string   "name"
+    t.string   "name",        limit: 255
     t.text     "description"
     t.float    "latitude"
     t.float    "longitude"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "adress"
-    t.string   "phone"
-    t.string   "website"
-    t.string   "email"
-    t.string   "audience"
+    t.string   "adress",      limit: 255
+    t.string   "phone",       limit: 255
+    t.string   "website",     limit: 255
+    t.string   "email",       limit: 255
+    t.string   "audience",    limit: 255
     t.integer  "category_id"
-    t.boolean  "validated",   default: false, null: false
+    t.boolean  "validated",               default: false, null: false
   end
 
   add_index "pois", ["latitude", "longitude"], name: "index_pois_on_latitude_and_longitude", using: :btree
@@ -167,6 +167,14 @@ ActiveRecord::Schema.define(version: 20151001143729) do
 
   add_index "rpush_notifications", ["delivered", "failed"], name: "index_rpush_notifications_multi", where: "((NOT delivered) AND (NOT failed))", using: :btree
 
+  create_table "snap_to_road_tour_points", force: :cascade do |t|
+    t.float   "latitude",  null: false
+    t.float   "longitude", null: false
+    t.integer "tour_id",   null: false
+  end
+
+  add_index "snap_to_road_tour_points", ["tour_id"], name: "index_snap_to_road_tour_points_on_tour_id", using: :btree
+
   create_table "tour_points", force: :cascade do |t|
     t.float    "latitude"
     t.float    "longitude"
@@ -177,25 +185,25 @@ ActiveRecord::Schema.define(version: 20151001143729) do
   end
 
   create_table "tours", force: :cascade do |t|
-    t.string   "tour_type"
+    t.string   "tour_type",    limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "status"
-    t.boolean  "email_sent",   default: false
-    t.integer  "vehicle_type", default: 0
+    t.boolean  "email_sent",               default: false
+    t.integer  "vehicle_type",             default: 0
     t.integer  "user_id"
     t.datetime "closed_at"
-    t.integer  "length",       default: 0
+    t.integer  "length",                   default: 0
   end
 
   create_table "users", force: :cascade do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "email"
-    t.string   "first_name"
-    t.string   "last_name"
-    t.string   "phone"
-    t.string   "token"
+    t.string   "email",             limit: 255
+    t.string   "first_name",        limit: 255
+    t.string   "last_name",         limit: 255
+    t.string   "phone",             limit: 255
+    t.string   "token",             limit: 255
     t.string   "device_id"
     t.integer  "device_type"
     t.string   "sms_code"

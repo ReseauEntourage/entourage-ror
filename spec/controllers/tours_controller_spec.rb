@@ -1,7 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe ToursController, :type => :controller do
-  
+  render_views
+
   describe "POST create" do
     let!(:user) { FactoryGirl.create :user }
     let!(:tour) { FactoryGirl.build :tour }
@@ -58,24 +59,42 @@ RSpec.describe ToursController, :type => :controller do
     
     let!(:user) { FactoryGirl.create :user }
     let!(:other_user) { FactoryGirl.create :user }
-    let!(:tour) { FactoryGirl.create :tour, user: user }
+    let(:tour) { FactoryGirl.create(:tour, user: user) }
       
     context "with correct id" do
-      before { put 'update', id: tour.id, token: user.token, tour:{tour_type:"health", status:"closed", vehicle_type:"car"}, format: :json }
+      before { put 'update', id: tour.id, token: user.token, tour:{tour_type:"health", status:"ongoing", vehicle_type:"car"}, format: :json }
 
       it { should respond_with 200 }
-      it { expect(tour.reload.status).to eq("closed") }
+      it { expect(tour.reload.status).to eq("ongoing") }
       it { expect(tour.reload.vehicle_type).to eq("car") }
       it { expect(tour.reload.tour_type).to eq("health") }
     end
 
+    context "close tour" do
+      context "tour open" do
+        let(:open_tour) { FactoryGirl.create(:tour, user: user, status: :ongoing) }
+        before { put 'update', id: open_tour.id, token: user.token, tour:{tour_type:"health", status:"closed", vehicle_type:"car"}, format: :json }
+        it { expect(open_tour.reload.closed?).to be true }
+        it { expect(ActionMailer::Base.deliveries.last.to).to eq([user.email])}
+      end
+
+      context "tour closed" do
+        let(:closed_tour) { FactoryGirl.create(:tour, user: user, status: :closed) }
+        before { put 'update', id: closed_tour.id, token: user.token, tour:{tour_type:"health", status:"closed", vehicle_type:"car"}, format: :json }
+        it { expect(closed_tour.reload.closed?).to be true }
+        it { expect(ActionMailer::Base.deliveries.last).to be nil}
+      end
+
+
+    end
+
     context "with unexisting id" do
-      before { put 'update', id: 0, token: user.token, tour:{tour_type:"health", status:"closed", vehicle_type:"car"}, format: :json }
+      before { put 'update', id: 0, token: user.token, tour:{tour_type:"health", status:"ongoing", vehicle_type:"car"}, format: :json }
       it { should respond_with 404 }
     end
     
     context "with incorrect_user" do
-      before { put 'update', id: tour.id, token: other_user.token, tour:{tour_type:"health", status:"closed", vehicle_type:"car"}, format: :json }
+      before { put 'update', id: tour.id, token: other_user.token, tour:{tour_type:"health", status:"ongoing", vehicle_type:"car"}, format: :json }
       it { should respond_with 403 }
     end
 
@@ -174,15 +193,15 @@ RSpec.describe ToursController, :type => :controller do
     context "with location parameter" do 
      
       let!(:tour1) { FactoryGirl.create :tour }
-      let!(:tour_point1) { FactoryGirl.create :tour_point, tour: tour1, latitude: 10, longitude: 12 }
+      let!(:tour_point1) { FactoryGirl.create :snap_to_road_tour_point, tour: tour1, latitude: 10, longitude: 12 }
       let!(:tour2) { FactoryGirl.create :tour }
-      let!(:tour_point2) { FactoryGirl.create :tour_point, tour: tour2, latitude: 9.9, longitude: 10.1 }
+      let!(:tour_point2) { FactoryGirl.create :snap_to_road_tour_point, tour: tour2, latitude: 9.9, longitude: 10.1 }
       let!(:tour3) { FactoryGirl.create :tour }
-      let!(:tour_point3) { FactoryGirl.create :tour_point, tour: tour3, latitude: 10, longitude: 10 }
+      let!(:tour_point3) { FactoryGirl.create :snap_to_road_tour_point, tour: tour3, latitude: 10, longitude: 10 }
       let!(:tour4) { FactoryGirl.create :tour }
-      let!(:tour_point4) { FactoryGirl.create :tour_point, tour: tour4, latitude: 10.05, longitude: 9.95 }
+      let!(:tour_point4) { FactoryGirl.create :snap_to_road_tour_point, tour: tour4, latitude: 10.05, longitude: 9.95 }
       let!(:tour5) { FactoryGirl.create :tour }
-      let!(:tour_point5) { FactoryGirl.create :tour_point, tour: tour5, latitude: 12, longitude: 10 }
+      let!(:tour_point5) { FactoryGirl.create :snap_to_road_tour_point, tour: tour5, latitude: 12, longitude: 10 }
          
       it "returns status 200" do
         get 'index', token: user.token, latitude: 10.0, longitude: 10.0, :format => :json
