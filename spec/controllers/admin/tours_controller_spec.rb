@@ -12,7 +12,7 @@ describe Admin::GenerateTourController do
     end
 
     context "has coordinates" do
-      before { Timecop.freeze(Date.parse("10/10/2010")) }
+      before { Timecop.freeze(Time.parse("10/10/2010").at_beginning_of_day) }
       subject { post :generate, {coordinates: [{lat: -35.1, lng: 49.1}, {lat: -35.2, lng: 49.2}]} }
 
       it { expect(lambda { subject }).to change {Tour.count}.by(1) }
@@ -21,7 +21,7 @@ describe Admin::GenerateTourController do
       it "saves tour" do
         subject
         tour = Tour.last
-        expect(tour.closed_at).to eq(Time.parse("10/10/2010"))
+        expect(tour.closed_at.utc).to be_within(1.second).of(Time.parse("10/10/2010").at_beginning_of_day.utc)
         expect(tour.email_sent).to eq(true)
         expect(tour.status).to eq("closed")
         expect(tour.vehicle_type).to eq("feet")
