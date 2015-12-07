@@ -496,3 +496,22 @@ Encounters occured during tour
     + Body
 
             {"error":{"status":404,"message":"Could not find tour with id 233232"}}
+
+
+# Group Stats
+Statistics about the application
+## Stats collection [/stats]
+
+### Get all stats [GET]
+
++ Request
+
+    + Headers
+
+            Accept: application/json
+
++ Response 200 (application/json; charset=utf-8)
+
+    + Body
+
+            {"tours"=>2, "encounters"=>4, "organizations"=>1}
