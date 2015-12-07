@@ -14,12 +14,12 @@ class ApplicationController < ActionController::Base
   end
 
   def current_admin
-    @current_admin ||= User.where(id: session[:user_id]).first
+    @current_admin ||= User.where(id: session[:user_id], admin: true).first
   end
 
   def authenticate_admin!
     unless current_admin
-      flash[:alert] = "Vous devez vous authentifier avec un compte admin pour accéder à cette page"
+      flash[:error] = "Vous devez vous authentifier avec un compte admin pour accéder à cette page"
       render new_session_path, status: 401, layout: "login"
     end
   end
