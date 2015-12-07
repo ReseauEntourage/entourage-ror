@@ -36,6 +36,7 @@ Rails.application.routes.draw do
   post 'login' => 'users#login'
   get 'map' => 'map#index'
 
+  resources :stats, only: [:index]
 
   #ADMIN
   namespace :admin do
