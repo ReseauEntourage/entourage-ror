@@ -3,20 +3,18 @@ include AuthHelper
 
 describe MessagesController do
 
-  let(:user) { FactoryGirl.create(:user, token: "foobar") }
-
   describe 'create' do
     context "valid message" do
-      subject { post 'create', {message: {content: "abcf"}, token: user.token } }
-      it { expect(lambda { subject }).to change {Message.count}.by(1) }
-      it "return 200" do
-        subject
-        expect(response.status).to eq(201)
-      end
+      before { post 'create', {message: {content: "abcf", first_name: "john", last_name: "doe", email: "some@mail.com"} } }
+      it { expect(response.status).to eq(201) }
+      it { expect(Message.last.content).to eq("abcf") }
+      it { expect(Message.last.first_name).to eq("john") }
+      it { expect(Message.last.last_name).to eq("doe") }
+      it { expect(Message.last.email).to eq("some@mail.com") }
     end
 
     context "invalid message" do
-      subject { post 'create', {message: {content: ""}, token: user.token } }
+      subject { post 'create', {message: {content: ""} } }
       it { expect(lambda { subject }).to change {Message.count}.by(0) }
       it "returns 400" do
         subject

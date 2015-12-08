@@ -1,4 +1,6 @@
 class MessagesController < ApplicationController
+  skip_before_filter :require_login
+
   def create
     message = Message.new(message_params)
     if message.save
@@ -11,6 +13,6 @@ class MessagesController < ApplicationController
   private
 
   def message_params
-    params.require(:message).permit(:content)
+    params.require(:message).permit(:content, :first_name, :last_name, :email)
   end
 end
