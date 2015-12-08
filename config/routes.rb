@@ -1,6 +1,14 @@
 Rails.application.routes.draw do
 
   root 'home#index'
+
+  namespace :api do
+    namespace :v0 do
+      resources :tours, only: [:index,:create,:show,:update]
+    end
+  end
+
+
   get 'apps' => 'home#apps', as: :apps
 
   resources :sessions, only: [:new, :create, :destroy]

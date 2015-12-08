@@ -11,6 +11,8 @@ class OrganizationController < GuiController
     @tourer_count = week_tours.select(:user_id).distinct.count
     @total_length = week_tours.sum(:length)
     @encounter_count = Encounter.where(tour: week_tours).count
+
+    #TODO : improve query (take, group_by)
     @latest_tours = (my_tours.order('tours.updated_at DESC').take 8).group_by { |t| t.updated_at.to_date }
   end
 
