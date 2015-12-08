@@ -1,6 +1,5 @@
-class RegistrationRequestsController < InheritedResources::Base
-
-  skip_before_filter :require_login
+class RegistrationRequestsController < GuiController
+  skip_before_filter :require_login, only: [:create]
 
   def index
     @registration_requests = RegistrationRequest.all.page(params[:page])
@@ -13,7 +12,7 @@ class RegistrationRequestsController < InheritedResources::Base
     end
 
     registration_request = RegistrationRequest.new(status: "pending",
-                                                   extra: registration_request_params.to_json)
+                                                   extra: registration_request_params)
     registration_request.save!
     render json: {registration_request: registration_request.as_json}, status: 201
   end

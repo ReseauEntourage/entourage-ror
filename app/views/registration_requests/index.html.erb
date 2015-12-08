@@ -2,24 +2,29 @@
 
 <h1>Listing Registration Requests</h1>
 
-<table>
+<table class="table table-striped">
   <thead>
     <tr>
-      <th colspan="3"></th>
+      <th>#</th>
+      <th>Organisation</th>
+      <th>status</th>
+      <th colspan="3">
     </tr>
   </thead>
 
   <tbody>
     <% @registration_requests.each do |registration_request| %>
       <tr>
-        <td><%= link_to 'Show', registration_request %></td>
-        <td><%= link_to 'Edit', edit_registration_request_path(registration_request) %></td>
-        <td><%= link_to 'Destroy', registration_request, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <td class="vert-align"><%= registration_request.id %></td>
+        <td class="vert-align"><%= registration_request.organization_name %></td>
+        <td class="vert-align"><%= registration_request.status %></td>
+        <td><%= link_to 'Editer', edit_registration_request_path(registration_request), class: "btn btn-default" %></td>
+        <td><%= link_to 'Valider', registration_request_path(registration_request, validate: true), method: "PUT", class: "btn btn-success" %></td>
+        <td><%= link_to 'Supprimer', registration_request, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-danger" %></td>
       </tr>
     <% end %>
   </tbody>
 </table>
 
 <br>
-
-<%= link_to 'New Registration request', new_registration_request_path %>
+<%= paginate @registration_requests %>

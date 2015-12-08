@@ -41,7 +41,7 @@ group :development do
   gem 'binding_of_caller',      '~> 0.7.2'
   gem 'dredd-rack',             '~> 0.7.0'
   gem 'dotenv-rails',           '~> 2.0.2'
-  gem 'rack-mini-profiler',     '~> 0.9.8'
+  gem 'rack-mini-profiler',     '~> 0.9.8' #enable by requesting any page with '?pp=enable'
 end
 
 group :test do

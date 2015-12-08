@@ -24,6 +24,7 @@ RSpec.describe RegistrationRequestsController, type: :controller do
   }
 
   describe "GET #index" do
+    let!(:user) { admin_basic_login }
     before { get :index }
 
     context "has registration requests" do
