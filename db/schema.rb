@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151208100303) do
+ActiveRecord::Schema.define(version: 20151208140700) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -76,9 +76,12 @@ ActiveRecord::Schema.define(version: 20151208100303) do
     t.string   "description"
     t.string   "phone"
     t.string   "address"
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
     t.string   "logo_url"
+    t.string   "local_entity"
+    t.string   "email"
+    t.string   "website_url"
   end
 
   create_table "pois", force: :cascade do |t|
@@ -98,6 +101,13 @@ ActiveRecord::Schema.define(version: 20151208100303) do
   end
 
   add_index "pois", ["latitude", "longitude"], name: "index_pois_on_latitude_and_longitude", using: :btree
+
+  create_table "registration_requests", force: :cascade do |t|
+    t.string   "status",     default: "pending", null: false
+    t.string   "extra",                          null: false
+    t.datetime "created_at",                     null: false
+    t.datetime "updated_at",                     null: false
+  end
 
   create_table "rpush_apps", force: :cascade do |t|
     t.string   "name",                                null: false

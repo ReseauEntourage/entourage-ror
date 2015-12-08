@@ -38,6 +38,7 @@ Rails.application.routes.draw do
 
   resources :stats, only: [:index]
   resources :messages, only: [:create]
+  resources :registration_requests
 
   #ADMIN
   namespace :admin do

@@ -540,3 +540,28 @@ Send message to the Entourage team
 + Response 400 (application/json; charset=utf-8)
 
         {"errors":["Content can't be blank"]}
+
+
+# Group Registration Request
+Manage registration requests from organization who want to join entourage platform
+## Registration Request [/registration_requests]
+
+### Create a Registration Request [POST]
+
++ Request (application/json; charset=utf-8)
+
+    + Body
+
+            {"registration_request": {"organization": {"name":"foo", "local_entity":"bar", "address":"2 rue de l'église", "phone":"+33612345678", "email":"some@email.com", "website_url":"http://foobar.com", "description":"lorem ipsum", "logo_key":"some_key.jpg"}, "user":{"first_name":"John", "last_name":"Doe", "phone":"+33612345678", "email":"some@email.com"}}, "controller":"registration_requests", "action":"create"}
+
+    + Headers
+
+            Accept: application/json
+
++ Response 201 (application/json; charset=utf-8)
+
+             {:registration_request:{"id":34, "status":"pending", "extra":"{\"organization\":{\"name\":\"foo\",\"description\":\"lorem ipsum\",\"phone\":\"+33612345678\",\"address\":\"2 rue de l'église\"},\"user\":{\"first_name\":\"John\",\"last_name\":\"Doe\",\"email\":\"some@email.com\",\"phone\":\"+33612345678\"}}", "created_at":Tue, 08 Dec 2015 15:22:55 CET +01:00, "updated_at":Tue, 08 Dec 2015 15:22:55 CET +01:00}}
+
++ Response 400 (application/json; charset=utf-8)
+
+        {"errors":["Missing required organization and user infos"]}
