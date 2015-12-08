@@ -519,20 +519,15 @@ Statistics about the application
 
 # Group Message
 Send message to the Entourage team
-## Messages collection [/messages{?token}]
+## Messages collection [/messages]
 
 ### Create a message [POST]
-
-+ Parameters
-
-    + token (required, string, `FAKETOKEN`) ... Token identifying the current user
-
 
 + Request (application/json; charset=utf-8)
 
     + Body
 
-            {"message":{"content":"foobar"}}
+            {"message":{"content":"foobar", "first_name": "john", "last_name": "doe", "email": "some@mail.com"}}
 
     + Headers
 
@@ -540,7 +535,7 @@ Send message to the Entourage team
 
 + Response 201 (application/json; charset=utf-8)
 
-            {"message":{"content":"foobar"}}
+            {"message":{"content":"foobar", "first_name": "john", "last_name": "doe", "email": "some@mail.com"}}
 
 + Response 400 (application/json; charset=utf-8)
 
