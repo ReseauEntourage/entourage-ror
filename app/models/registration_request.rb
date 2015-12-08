@@ -3,7 +3,13 @@ class RegistrationRequest < ActiveRecord::Base
 
   validates :status, :extra, presence: true
 
-  def organization_name
-    extra["organization"]["name"]
+  scope :pending, -> { where(status: "pending") }
+
+  def organization_field(field)
+    extra["organization"][field]
+  end
+
+  def user_field(field)
+    extra["user"][field]
   end
 end

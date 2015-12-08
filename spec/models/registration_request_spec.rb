@@ -6,6 +6,7 @@ RSpec.describe RegistrationRequest, type: :model do
 
   describe "info about request" do
     let(:registration_request) { FactoryGirl.build(:registration_request) }
-    it { expect(registration_request.organization_name).to eq("namefoo")}
+    it { expect(registration_request.organization_field("name")).to eq("namefoo")}
+    it { expect(registration_request.user_field("first_name")).to eq("John")}
   end
 end

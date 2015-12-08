@@ -16,9 +16,9 @@
     <% @registration_requests.each do |registration_request| %>
       <tr>
         <td class="vert-align"><%= registration_request.id %></td>
-        <td class="vert-align"><%= registration_request.organization_name %></td>
+        <td class="vert-align"><%= registration_request.organization_field("name") %></td>
         <td class="vert-align"><%= registration_request.status %></td>
-        <td><%= link_to 'Editer', edit_registration_request_path(registration_request), class: "btn btn-default" %></td>
+        <td><%= link_to 'Consulter', registration_request_path(registration_request), class: "btn btn-default" %></td>
         <td><%= link_to 'Valider', registration_request_path(registration_request, validate: true), method: "PUT", class: "btn btn-success" %></td>
         <td><%= link_to 'Supprimer', registration_request, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-danger" %></td>
       </tr>
