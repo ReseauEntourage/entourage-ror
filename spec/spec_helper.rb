@@ -12,5 +12,9 @@ RSpec.configure do |config|
     mocks.verify_partial_doubles = true
   end
 
+  config.tty = true
+  config.color = true
+  config.formatter = :documentation
+
   config.before(:each) { ActionMailer::Base.deliveries.clear }
 end

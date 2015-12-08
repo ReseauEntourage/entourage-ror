@@ -20,7 +20,6 @@ gem 'sinch_sms',            '~> 2.1'
 gem 'colorize',             '~> 0.7.7'
 gem 'bootstrap-sass',       '~> 3.3.1'
 gem 'simple_form',          '~> 3.1.0'
-gem 'rails-footnotes',      '~> 4.1.7'
 gem 'googlestaticmap',      git: 'https://github.com/ReseauEntourage/googlestaticmap.git'
 gem 'momentjs-rails',       '~> 2.10.3'
 gem 'shorturl',             '~> 1.0.0'
@@ -40,6 +39,7 @@ group :development do
   gem 'binding_of_caller',  '~> 0.7.2'
   gem 'dredd-rack',         '~> 0.7.0'
   gem 'dotenv-rails',       '~> 2.0.2'
+  gem 'rack-mini-profiler', '~> 0.9.8'
 end
 
 group :test do
@@ -57,8 +57,4 @@ end
 group :production do
   gem 'rails_12factor',     '~> 0.0.3'
   gem 'puma',               '~> 2.12.2'
-end
-
-group :doc do
-  gem 'sdoc',               '~> 0.4.1'
 end
