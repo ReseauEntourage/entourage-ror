@@ -9,7 +9,7 @@ class RegistrationRequestsController < InheritedResources::Base
   def create
     validator = RegistrationRequestValidator.new(params: registration_request_params)
     unless validator.valid?
-      return render json: {errors: ["Missing required organization and user infos"]}, status: 400
+      return render json: {errors: {organization: validator.organization_errors, user: validator.user_errors}}, status: 400
     end
 
     registration_request = RegistrationRequest.new(status: "pending",

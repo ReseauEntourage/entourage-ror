@@ -47,6 +47,7 @@ RSpec.describe RegistrationRequestsController, type: :controller do
       before { post :create, {registration_request: invalid_attributes} }
       it { expect(RegistrationRequest.count).to eq(0) }
       it { expect(response.status).to eq(400) }
+      it { expect(JSON.parse(response.body)).to eq({"errors"=>{"organization"=>["Name can't be blank", "Description can't be blank", "Phone can't be blank", "Address can't be blank"], "user"=>[]}}) }
     end
   end
 end
