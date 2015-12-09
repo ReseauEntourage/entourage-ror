@@ -10,8 +10,8 @@ RSpec.describe Tour, :type => :model do
   it { should validate_presence_of(:status) }
   it { should validate_presence_of(:user) }
   it { should belong_to(:user) }
-  it { should have_many(:tour_points).dependent(:destroy) }
-  it { should have_many(:snap_to_road_tour_points).dependent(:destroy) }
+  it { should have_many(:tour_points).dependent(:delete_all) }
+  it { should have_many(:snap_to_road_tour_points).dependent(:delete_all) }
   
   describe '#status=' do
     let!(:time) { DateTime.new 2015, 8, 25, 13, 11, 0 }
