@@ -4,7 +4,7 @@ class CleanupService
       .where('created_at <= ?', Time.now - 4.hours)
 
     old_tours.each do |t|
-      TourServices::CloseTourService.new(tour: t).close!
+      TourServices::CloseTourService.new(tour: t, params: nil).close!
       Rails.logger.warn "Force closing tour #{t}"
     end
   end

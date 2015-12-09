@@ -5,6 +5,7 @@ class TourPresenter
            :vehicle_type,
            :organization_name,
            :organization_description,
+           :length,
            to: :tour
 
   def initialize(tour:)

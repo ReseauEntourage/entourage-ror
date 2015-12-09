@@ -3,6 +3,7 @@ json.tour do
   json.tour_type @presenter.tour_type
   json.status @presenter.status
   json.vehicle_type @presenter.vehicle_type
+  json.distance @presenter.length
   json.start_time  @presenter.start_time
   json.end_time  @presenter.end_time
   json.tour_points do
