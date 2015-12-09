@@ -1,4 +1,4 @@
-class Organization::UsersController < GuiController
+class Organizations::UsersController < GuiController
   attr_writer :sms_notification_service, :url_shortener
 
   before_filter :get_user, :only => [:edit, :update, :destroy, :send_sms]
@@ -16,15 +16,15 @@ class Organization::UsersController < GuiController
     @user.organization = current_user.organization
 
     if @user.save
-      redirect_to organization_users_url, notice: "L'utilisateur a été créé"
+      redirect_to organizations_users_url, notice: "L'utilisateur a été créé"
     else
-      redirect_to organization_users_url, notice: "Erreur de création"
+      redirect_to organizations_users_url, notice: "Erreur de création"
     end
   end
 
   def update
     if @user.update_attributes(user_params)
-      redirect_to organization_users_url, notice: "L'utilisateur a été sauvegardé"
+      redirect_to organizations_users_url, notice: "L'utilisateur a été sauvegardé"
     else
       flash[:notice] = "Erreur de modification"
       render action: "edit"
@@ -33,7 +33,7 @@ class Organization::UsersController < GuiController
 
   def destroy
     @user.destroy
-    redirect_to organization_users_url, notice: "L'utilisateur a bien été supprimé"
+    redirect_to organizations_users_url, notice: "L'utilisateur a bien été supprimé"
   end
   
   def send_sms

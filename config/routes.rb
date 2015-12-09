@@ -47,6 +47,13 @@ Rails.application.routes.draw do
       post 'send_message'
     end
   end
+
+  namespace :organizations do
+    resources :users do
+      post 'send_sms', on: :member
+    end
+  end
+
   get 'apps' => 'home#apps', as: :apps
 
   # get 'organization/dashboard' => 'organization#dashboard', as: :organization_dashboard
@@ -64,14 +71,5 @@ Rails.application.routes.draw do
     post 'generate_tour' => 'generate_tour#generate'
   end
   ActiveAdmin.routes(self)
-
-  
-  namespace :organization do
-    resources :users do
-      post 'send_sms', on: :member
-    end
-  end
-
-
 
 end

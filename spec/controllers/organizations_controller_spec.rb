@@ -6,12 +6,12 @@ RSpec.describe OrganizationsController, :type => :controller do
   
   context 'correct authentication' do
     let!(:user) { manager_basic_login }
-    describe '#edit' do
-      before { get :edit }
+    describe 'edit' do
+      before { get :edit, id: user.organization }
       it { should respond_with 200 }
     end
     describe '#update' do
-      before { get :update, organization:{name: 'newname', description: 'newdescription', phone: 'newphone', address:'newaddress'} }
+      before { get :update, id: user.organization, organization:{name: 'newname', description: 'newdescription', phone: 'newphone', address:'newaddress'} }
       it { expect(User.find(user.id).organization.name).to eq 'newname' }
       it { expect(User.find(user.id).organization.description).to eq 'newdescription' }
       it { expect(User.find(user.id).organization.phone).to eq 'newphone' }
@@ -189,11 +189,11 @@ RSpec.describe OrganizationsController, :type => :controller do
   end
   context 'no authentication' do
     describe '#edit' do
-      before { get :edit }
+      before { get :edit, id: 0  }
       it { should respond_with 302 }
     end
     describe '#update' do
-      before { patch :update }
+      before { put :update, id: 0 }
       it { should respond_with 302 }
     end
     describe '#dashboard' do

@@ -1,4 +1,4 @@
-class OrganizationController < GuiController
+class OrganizationsController < GuiController
   attr_writer :push_notification_service
   
   before_filter :location_filter, only: [:encounters, :tours]
@@ -21,9 +21,9 @@ class OrganizationController < GuiController
   
   def update
     if (@organization.update_attributes(organization_params))
-      redirect_to :organization_edit, notice: 'Organization was successfully updated.'
+      redirect_to edit_organization_path(@organization), notice: 'Organization was successfully updated.'
     else
-      redirect_to :organization_edit, notice: 'Error'
+      redirect_to edit_organization_path(@organization), notice: 'Error'
     end
   end
   
