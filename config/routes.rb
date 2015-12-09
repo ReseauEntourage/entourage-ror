@@ -8,8 +8,14 @@ Rails.application.routes.draw do
         resources :tour_points, only:[:create]
         resources :encounters, only: [:create]
       end
+      resources :stats, only: [:index]
     end
   end
+
+
+  resources :messages, only: [:create]
+  resources :registration_requests, except: [:edit]
+
 
 
   get 'apps' => 'home#apps', as: :apps
@@ -42,10 +48,6 @@ Rails.application.routes.draw do
 
   post 'login' => 'users#login'
   get 'map' => 'map#index'
-
-  resources :stats, only: [:index]
-  resources :messages, only: [:create]
-  resources :registration_requests, except: [:edit]
 
   #ADMIN
   namespace :admin do

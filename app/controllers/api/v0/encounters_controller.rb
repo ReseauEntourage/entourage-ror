@@ -1,6 +1,6 @@
 module Api
   module V0
-    class EncountersController < ApplicationController
+    class EncountersController < Api::V0::BaseController
       protect_from_forgery with: :null_session, if: Proc.new { |c| c.request.format == 'application/json' }
 
       def create
