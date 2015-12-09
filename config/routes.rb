@@ -13,6 +13,7 @@ Rails.application.routes.draw do
       resources :messages, only: [:create]
       resources :registration_requests, only: [:create]
       resources :map, only: [:index]
+      resources :newsletter_subscriptions
 
       resources :pois, only: [:index, :create] do
         member do
@@ -41,8 +42,6 @@ Rails.application.routes.draw do
   get 'apps' => 'home#apps', as: :apps
 
 
-
-  resources :newsletter_subscriptions
 
   resources :encounters, only: [:create]
 
