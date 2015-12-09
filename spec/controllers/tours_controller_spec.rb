@@ -31,6 +31,7 @@ RSpec.describe ToursController, :type => :controller do
 
       let!(:user) { FactoryGirl.create :user }
       let!(:tour) { FactoryGirl.create :tour }
+      let!(:snap_to_road_tour_points) { FactoryGirl.create_list(:snap_to_road_tour_point, 2, tour: tour)}
 
       it "returns 200" do
         get 'show', id: tour.id, token: user.token , :format => :json

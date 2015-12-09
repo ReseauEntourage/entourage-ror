@@ -3,12 +3,13 @@ class TourPointsController < ApplicationController
 
   def create
     if @tour = Tour.find_by(id:params[:tour_id])
-      tour_points = @tour.tour_points.create(tour_point_params['tour_points'])
+      @tour_points = @tour.tour_points.create(tour_point_params['tour_points'])
 
       #TODO: Don't save the length at everypoint, we receive the final distance when we close the tour
       @tour.length = params[:distance].to_i
       @tour.save
-      if tour_points.all?(&:valid?)
+      if @tour_points.all?(&:valid?)
+        @presenter = TourPresenter.new(tour: @tour)
         render "tours/show", status: 201
       else
         render "400", status: 400

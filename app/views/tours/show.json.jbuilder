@@ -10,7 +10,7 @@ json.tour do
     json.array!(@presenter.snap_to_road_points) do |coordinate|
       json.latitude coordinate[:lat]
       json.longitude coordinate[:long]
-      json.passing_time presenter.start_time
+      json.passing_time @presenter.start_time
     end
   end
 end
