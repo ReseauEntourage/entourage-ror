@@ -4,7 +4,10 @@ Rails.application.routes.draw do
 
   namespace :api do
     namespace :v0 do
-      resources :tours, only: [:index,:create,:show,:update]
+      resources :tours, only: [:index,:create,:show,:update] do
+        resources :tour_points, only:[:create]
+        resources :encounters, only: [:create]
+      end
     end
   end
 
@@ -13,10 +16,6 @@ Rails.application.routes.draw do
 
   resources :sessions, only: [:new, :create, :destroy]
 
-  resources :tours, only: [:index,:create,:show,:update] do
-    resources :tour_points, only:[:create]
-    resources :encounters, only: [:create]
-  end
   resources :newsletter_subscriptions
   resources :pois, only: [:index, :create] do
     post 'report', on: :member
