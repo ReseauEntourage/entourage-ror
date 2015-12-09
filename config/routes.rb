@@ -9,11 +9,11 @@ Rails.application.routes.draw do
         resources :encounters, only: [:create]
       end
       resources :stats, only: [:index]
+      resources :messages, only: [:create]
     end
   end
 
 
-  resources :messages, only: [:create]
   resources :registration_requests, except: [:edit]
 
 
