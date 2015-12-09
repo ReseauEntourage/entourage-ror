@@ -48,7 +48,7 @@ module Api
             head 403
           else
             if tour_params[:status]=="closed"
-              TourServices::CloseTourService.new(tour: @tour).close!
+              TourServices::CloseTourService.new(tour: @tour, params: tour_params).close!
             end
             @tour.update_attributes(tour_params.except(:status))
             @presenter = TourPresenter.new(tour: @tour)

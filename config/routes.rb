@@ -56,14 +56,6 @@ Rails.application.routes.draw do
 
   get 'apps' => 'home#apps', as: :apps
 
-  # get 'organization/dashboard' => 'organization#dashboard', as: :organization_dashboard
-  # get 'organization/edit' => 'organization#edit', as: :organization_edit
-  # patch 'organization' => 'organization#update', as: :organization
-  # get 'organization/tours' => 'organization#tours'
-  # get 'organization/encounters' => 'organization#encounters'
-  # get 'organization/map_center' => 'organization#map_center'
-  # post 'organization/send_message' => 'organization#send_message'
-
 
   #ADMIN
   namespace :admin do
