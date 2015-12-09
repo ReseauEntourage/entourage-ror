@@ -14,11 +14,11 @@ module Api
             @presenter = TourPresenter.new(tour: @tour)
             render "/api/v0/tours/show", status: 201
           else
-            render "/api/v0/tours/400", status: 400
+            render "api/v0/tours/400", status: 400
           end
         else
           @id = params[:tour_id]
-          render "/api/v0/tours/404", status: 404
+          render "api/v0/tours/404", status: 404
         end
       end
 

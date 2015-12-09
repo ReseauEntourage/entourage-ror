@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe PoisController, :type => :controller do
+describe Api::V0::PoisController, :type => :controller do
   render_views
   
   context 'authorized' do

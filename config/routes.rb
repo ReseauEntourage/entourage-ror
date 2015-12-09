@@ -13,6 +13,10 @@ Rails.application.routes.draw do
       resources :messages, only: [:create]
       resources :registration_requests, only: [:create]
       resources :map, only: [:index]
+
+      resources :pois, only: [:index, :create] do
+        post 'report', on: :member
+      end
     end
   end
 
@@ -25,9 +29,7 @@ Rails.application.routes.draw do
 
 
   resources :newsletter_subscriptions
-  resources :pois, only: [:index, :create] do
-    post 'report', on: :member
-  end
+
   resources :encounters, only: [:create]
   resources :users, only: [:index, :create, :update, :destroy] do
     post 'send_message', on: :collection
