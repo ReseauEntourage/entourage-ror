@@ -2,6 +2,7 @@ Rails.application.routes.draw do
 
   root 'home#index'
 
+  #API
   namespace :api do
     namespace :v0 do
       resources :tours, only: [:index,:create,:show,:update] do
@@ -10,12 +11,12 @@ Rails.application.routes.draw do
       end
       resources :stats, only: [:index]
       resources :messages, only: [:create]
+      resources :registration_requests, only: [:create]
     end
   end
 
-
-  resources :registration_requests, except: [:edit]
-
+  #WEB
+  resources :registration_requests, only: [:index, :show, :update, :destroy]
 
 
   get 'apps' => 'home#apps', as: :apps
