@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
 
-  root 'home#index'
+  root 'organization#dashboard'
 
   #API
   namespace :api do
@@ -38,26 +38,24 @@ Rails.application.routes.draw do
   #WEB
   resources :registration_requests, only: [:index, :show, :update, :destroy]
   resources :sessions, only: [:new, :create, :destroy]
-
-  get 'apps' => 'home#apps', as: :apps
-
-
-
-  resources :encounters, only: [:create]
-
-  get 'organization/dashboard' => 'organization#dashboard', as: :organization_dashboard
-  get 'organization/edit' => 'organization#edit', as: :organization_edit
-  patch 'organization' => 'organization#update', as: :organization
-  get 'organization/tours' => 'organization#tours'
-  get 'organization/encounters' => 'organization#encounters'
-  get 'organization/map_center' => 'organization#map_center'
-  post 'organization/send_message' => 'organization#send_message'
-  
-  namespace :organization do
-    resources :users do
-      post 'send_sms', on: :member
+  resources :organizations, only: [:edit, :update] do
+    collection do
+      get 'dashboard'
+      get 'tours'
+      get 'encounters'
+      get 'map_center'
+      post 'send_message'
     end
   end
+  get 'apps' => 'home#apps', as: :apps
+
+  # get 'organization/dashboard' => 'organization#dashboard', as: :organization_dashboard
+  # get 'organization/edit' => 'organization#edit', as: :organization_edit
+  # patch 'organization' => 'organization#update', as: :organization
+  # get 'organization/tours' => 'organization#tours'
+  # get 'organization/encounters' => 'organization#encounters'
+  # get 'organization/map_center' => 'organization#map_center'
+  # post 'organization/send_message' => 'organization#send_message'
 
 
   #ADMIN
@@ -66,4 +64,14 @@ Rails.application.routes.draw do
     post 'generate_tour' => 'generate_tour#generate'
   end
   ActiveAdmin.routes(self)
+
+  
+  namespace :organization do
+    resources :users do
+      post 'send_sms', on: :member
+    end
+  end
+
+
+
 end

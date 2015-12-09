@@ -1,7 +1,7 @@
 require 'rails_helper'
 include AuthHelper
 
-RSpec.describe OrganizationController, :type => :controller do
+RSpec.describe OrganizationsController, :type => :controller do
   render_views
   
   context 'correct authentication' do
