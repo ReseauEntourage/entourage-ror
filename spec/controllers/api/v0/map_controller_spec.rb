@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe MapController, :type => :controller do
+RSpec.describe Api::V0::MapController, :type => :controller do
   render_views
   
   describe "GET index" do

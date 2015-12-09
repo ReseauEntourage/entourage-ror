@@ -1,6 +1,6 @@
 module Api
   module V0
-    class RegistrationRequestsController < GuiController
+    class RegistrationRequestsController < Api::V0::BaseController
       skip_before_filter :require_login, only: [:create]
 
       def create

@@ -12,16 +12,17 @@ Rails.application.routes.draw do
       resources :stats, only: [:index]
       resources :messages, only: [:create]
       resources :registration_requests, only: [:create]
+      resources :map, only: [:index]
     end
   end
 
   #WEB
   resources :registration_requests, only: [:index, :show, :update, :destroy]
-
+  resources :sessions, only: [:new, :create, :destroy]
 
   get 'apps' => 'home#apps', as: :apps
 
-  resources :sessions, only: [:new, :create, :destroy]
+
 
   resources :newsletter_subscriptions
   resources :pois, only: [:index, :create] do
@@ -48,7 +49,7 @@ Rails.application.routes.draw do
   end
 
   post 'login' => 'users#login'
-  get 'map' => 'map#index'
+
 
   #ADMIN
   namespace :admin do

@@ -1,6 +1,6 @@
 module Api
   module V0
-    class MessagesController < ApplicationController
+    class MessagesController < Api::V0::BaseController
       skip_before_filter :require_login
 
       def create
