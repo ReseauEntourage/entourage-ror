@@ -1,7 +1,6 @@
 module Api
   module V0
     class TourPointsController < Api::V0::BaseController
-      protect_from_forgery with: :null_session, if: Proc.new { |c| c.request.format == 'application/json' }
 
       def create
         if @tour = Tour.find_by(id:params[:tour_id])

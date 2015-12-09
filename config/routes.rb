@@ -15,7 +15,21 @@ Rails.application.routes.draw do
       resources :map, only: [:index]
 
       resources :pois, only: [:index, :create] do
-        post 'report', on: :member
+        member do
+          post 'report'
+        end
+      end
+
+      resources :users, only: [:index, :create, :update, :destroy] do
+        collection do
+          post 'login'
+          post 'send_message'
+          patch 'update_me'
+        end
+
+        member do
+          post 'send_sms'
+        end
       end
     end
   end
@@ -31,11 +45,7 @@ Rails.application.routes.draw do
   resources :newsletter_subscriptions
 
   resources :encounters, only: [:create]
-  resources :users, only: [:index, :create, :update, :destroy] do
-    post 'send_message', on: :collection
-    post 'send_sms', on: :member
-    patch 'update_me', on: :collection
-  end
+
   get 'organization/dashboard' => 'organization#dashboard', as: :organization_dashboard
   get 'organization/edit' => 'organization#edit', as: :organization_edit
   patch 'organization' => 'organization#update', as: :organization
@@ -49,8 +59,6 @@ Rails.application.routes.draw do
       post 'send_sms', on: :member
     end
   end
-
-  post 'login' => 'users#login'
 
 
   #ADMIN
