@@ -1,7 +1,7 @@
 require 'rails_helper'
 include AuthHelper
 
-RSpec.describe Organization::UsersController, :type => :controller do
+RSpec.describe Organizations::UsersController, :type => :controller do
   render_views
   
   context 'correct authentication' do
@@ -109,7 +109,7 @@ RSpec.describe Organization::UsersController, :type => :controller do
         it { expect(response.status).to eq(200) }
         it { expect(sms_notification_service).to have_received(:send_notification).with(sms_user.phone, "Bienvenue sur Entourage. Votre code est #{sms_user.sms_code}. Retrouvez l'application ici : #{link} .") }
       end
-      context 'the user exists but different organizations' do
+      context 'the user exists but different organization' do
         let(:sms_user) { FactoryGirl.create :user }
         before do
           controller.sms_notification_service = sms_notification_service

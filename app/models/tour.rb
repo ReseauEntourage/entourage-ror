@@ -3,7 +3,7 @@ class Tour < ActiveRecord::Base
   validates :tour_type, inclusion: { in: %w(health friendly social food other) }
   has_many :tour_points, dependent: :delete_all
   has_many :snap_to_road_tour_points, dependent: :delete_all
-  has_many :encounters
+  has_many :encounters, dependent: :destroy
   enum status: [ :ongoing, :closed ]
   enum vehicle_type: [ :feet, :car ]
   validates_presence_of :tour_type, :status, :vehicle_type, :user

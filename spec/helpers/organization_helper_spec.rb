@@ -15,10 +15,10 @@ describe OrganizationHelper, :type => :helper do
   end
 
   describe 'meters_to_printable_km' do
-    it { expect(meters_to_printable_km(0)).to eq "0" }
-    it { expect(meters_to_printable_km(1000)).to eq "1" }
+    it { expect(meters_to_printable_km(0)).to eq "0.0" }
+    it { expect(meters_to_printable_km(1000)).to eq "1.0" }
     it { expect(meters_to_printable_km(1500)).to eq "1.5" }
-    it { expect(meters_to_printable_km(1999)).to eq "2" }
+    it { expect(meters_to_printable_km(1999)).to eq "2.0" }
   end
   
   describe 'marker_index' do

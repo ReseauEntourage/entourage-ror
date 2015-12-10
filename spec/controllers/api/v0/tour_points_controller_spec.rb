@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe TourPointsController, :type => :controller do
+RSpec.describe Api::V0::TourPointsController, :type => :controller do
   render_views
 
   describe "POST create" do

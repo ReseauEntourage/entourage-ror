@@ -1,4 +1,4 @@
-class OrganizationController < GuiController
+class OrganizationsController < GuiController
   attr_writer :push_notification_service
   
   before_filter :location_filter, only: [:encounters, :tours]
@@ -11,6 +11,8 @@ class OrganizationController < GuiController
     @tourer_count = week_tours.select(:user_id).distinct.count
     @total_length = week_tours.sum(:length)
     @encounter_count = Encounter.where(tour: week_tours).count
+
+    #TODO : improve query (take, group_by)
     @latest_tours = (my_tours.order('tours.updated_at DESC').take 8).group_by { |t| t.updated_at.to_date }
   end
 
@@ -19,9 +21,9 @@ class OrganizationController < GuiController
   
   def update
     if (@organization.update_attributes(organization_params))
-      redirect_to :organization_edit, notice: 'Organization was successfully updated.'
+      redirect_to edit_organization_path(@organization), notice: 'Organization was successfully updated.'
     else
-      redirect_to :organization_edit, notice: 'Error'
+      redirect_to edit_organization_path(@organization), notice: 'Error'
     end
   end
   
