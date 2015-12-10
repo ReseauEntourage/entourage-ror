@@ -60,7 +60,7 @@ $(document).on "page:change", ->
   })
     
   if ($('#tours-tab').length > 0)
-    $.getJSON('/organization/map_center', (result) ->
+    $.getJSON('/organizations/map_center', (result) ->
       map_center = new google.maps.LatLng(result[0], result[1])
       
       map_rencontres_created = false
@@ -73,7 +73,7 @@ $(document).on "page:change", ->
           heatmap = new google.maps.visualization.HeatmapLayer({map: map})
           
           refreshMap = () ->
-            url = '/organization/encounters.json'
+            url = '/organizations/encounters.json'
             filters = []
             filters.push('ne=' + map.getBounds().getNorthEast().lat() + '-' + map.getBounds().getNorthEast().lng())
             filters.push('sw=' + map.getBounds().getSouthWest().lat() + '-' + map.getBounds().getSouthWest().lng())
@@ -121,7 +121,7 @@ $(document).on "page:change", ->
       )
       
       refreshMap = () ->
-        url = '/organization/tours.json'
+        url = '/organizations/tours.json'
         filters = []
         if (map.getBounds())
           filters.push('ne=' + map.getBounds().getNorthEast().lat() + '-' + map.getBounds().getNorthEast().lng())

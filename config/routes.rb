@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
 
-  root 'organization#dashboard'
+  root 'organizations#dashboard'
 
   #API
   namespace :api do
