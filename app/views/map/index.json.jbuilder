@@ -16,15 +16,3 @@ json.pois @pois do |poi|
   json.audience poi.audience
   json.category_id poi.category_id
 end
-
-json.encounters @encounters do |encounter|
-  json.id encounter.id
-  json.date encounter.date
-  json.latitude encounter.latitude
-  json.longitude encounter.longitude
-  json.user_id encounter.tour.user.id
-  json.user_name encounter.tour.user.first_name
-  json.street_person_name encounter.street_person_name
-  json.message encounter.message
-  json.voice_message encounter.voice_message_url
-end
