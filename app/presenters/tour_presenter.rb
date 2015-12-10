@@ -6,6 +6,7 @@ class TourPresenter
            :organization_name,
            :organization_description,
            :length,
+           :user_id,
            to: :tour
 
   def initialize(tour:)

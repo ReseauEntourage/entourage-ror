@@ -23,7 +23,6 @@ Rails.application.routes.draw do
 
       resources :users, only: [:index, :create, :update, :destroy] do
         collection do
-          post 'login'
           post 'send_message'
           patch 'update_me'
         end
@@ -32,6 +31,8 @@ Rails.application.routes.draw do
           post 'send_sms'
         end
       end
+
+      post 'login' => 'users#login'
     end
   end
 
