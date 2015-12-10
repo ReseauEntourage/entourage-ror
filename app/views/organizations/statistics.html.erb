@@ -1,67 +1,48 @@
 <div>
   <ul class="nav nav-pills" role="tablist">
-    <li role="presentation" class="active">
-      <%= link_to "Carte des maraudes", '#'  %>
-    </li>
     <li role="presentation">
-      <%= link_to "Statistiques", statistics_organizations_path  %>
+      <%= link_to "Carte des maraudes", dashboard_organizations_path  %>
+    </li>
+    <li role="presentation" class="active">
+      <%= link_to "Statistiques", "#"  %>
     </li>
   </ul>
-  <div class="container-fluid">
-    <div class="col-md-3">
-      <div class="left-panel">
-        <h3>Derniers Evènements</h3>
-        <% @latest_tours.each do |day, tours| %>
-          <h4><%= day %></h4>
-          <% tours.each do |tour| %>
-            <div>
-              <%= tour.user.full_name %> a réalisé une maraude de <%= duration(tour) %>
-              <% if tour.encounters.size > 0 %> et a rencontré <%= pluralize tour.encounters.size, 'personne' %>
-              <% end %>.
-            </div>
-          <% end %>
+
+  <div class="col-md-3">
+    <div class="left-panel" id="search-stats">
+    </div>
+  </div>
+  <div class="col-md-7">
+    <div id="map-rencontres"></div>
+    <div class="text-center" style="margin: 10px;">
+      <button type="button" class="btn btn-lg btn-entourage" data-toggle="modal" data-target="#messageModal">Envoyer
+        un message
+      </button>
+    </div>
+  </div>
+  <div class="col-md-2">
+    <h3>Filtres</h3>
+    <input type="text" id="rencontres-date-filter" class="rencontres-map-filter form-control" placeholder="Sélection de la date" name="daterange"/>
+    <select id="rencontres-tour-type-filter" class="rencontres-map-filter form-control">
+      <option value="">Type de maraude</option>
+      <option value="health">Sant&eacute;</option>
+      <option value="friendly">Amical</option>
+      <option value="social">Social</option>
+      <option value="food">Nourriture</option>
+      <option value="other">Autre</option>
+    </select>
+    <select class="rencontres-map-filter form-control" disabled>
+      <option>Zone géographique</option>
+    </select>
+    <% if @current_user.coordinated_organizations.count > 0 %>
+      <select id="rencontres-org-filter" class="rencontres-map-filter form-control">
+        <option value="">Choix de l'association</option>
+        <option value="<%= @current_user.organization.id %>"><%= @current_user.organization.name %></option>
+        <% @current_user.coordinated_organizations.each do |org| %>
+          <option value="<%= org.id %>"><%= org.name %></option>
         <% end %>
-      </div>
-      <div class="left-panel">
-        <h3>Activité de la semaine</h3>
-        <h4><%= meters_to_printable_km @total_length %> km parcourus</h4>
-        <h4><%= pluralize @encounter_count, 'personne rencontrée', 'personnes rencontrées' %></h4>
-        <h4><%= pluralize @tourer_count, 'maraudeur actif', 'maraudeurs actifs' %></h4>
-        <h4><%= pluralize @tour_count, 'maraude réalisée', 'maraudes réalisées' %></h4>
-      </div>
-    </div>
-    <div class="col-md-7">
-      <div id="map-maraudes"></div>
-      <div class="text-center" style="margin: 10px;">
-        <button type="button" class="btn btn-lg btn-entourage" data-toggle="modal" data-target="#messageModal">Envoyer
-          un message
-        </button>
-      </div>
-    </div>
-    <div class="col-md-2">
-      <h3>Filtres</h3>
-      <input type="text" id="maraudes-date-filter" class="maraudes-map-filter form-control" placeholder="Sélection de la date" name="daterange"/>
-      <select id="maraudes-tour-type-filter" class="maraudes-map-filter form-control">
-        <option value="">Type de maraude</option>
-        <option value="health">Sant&eacute;</option>
-        <option value="friendly">Amical</option>
-        <option value="social">Social</option>
-        <option value="food">Nourriture</option>
-        <option value="other">Autre</option>
       </select>
-      <select class="maraudes-map-filter form-control" disabled>
-        <option>Zone géographique</option>
-      </select>
-      <% if @current_user.coordinated_organizations.count > 0 %>
-        <select id="maraudes-org-filter" class="maraudes-map-filter form-control">
-          <option value="">Choix de l'association</option>
-          <option value="<%= @current_user.organization.id %>"><%= @current_user.organization.name %></option>
-          <% @current_user.coordinated_organizations.each do |org| %>
-            <option value="<%= org.id %>"><%= org.name %></option>
-          <% end %>
-        </select>
-      <% end %>
-    </div>
+    <% end %>
   </div>
 
   <div class="modal fade" id="messageModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">

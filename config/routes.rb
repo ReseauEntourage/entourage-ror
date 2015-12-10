@@ -42,6 +42,7 @@ Rails.application.routes.draw do
   resources :organizations, only: [:edit, :update] do
     collection do
       get 'dashboard'
+      get 'statistics'
       get 'tours'
       get 'encounters'
       get 'map_center'

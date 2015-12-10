@@ -2,7 +2,7 @@
 <html>
 <%= render partial: "layouts/head" %>
 
-<body class="with-navbar">
+<body class="with-navbar <%= controller_name %> <%= action_name %>">
 <%= render partial: "layouts/navigation" %>
 <div id="flash">
   <%= display_flash_messages %>
