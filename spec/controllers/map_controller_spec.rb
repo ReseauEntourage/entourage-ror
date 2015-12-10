@@ -19,16 +19,12 @@ RSpec.describe MapController, :type => :controller do
     context "view scope variable assignment" do
       let!(:user) { FactoryGirl.create :user }
       let!(:poi) { FactoryGirl.create :poi }
-      let!(:encounter) { FactoryGirl.create :encounter }
       before { get 'index', token: user.token, :format => :json }
       it "assigns @categories" do
         expect(assigns(:categories)).to eq([poi.category])
       end
       it "assigns @pois" do
         expect(assigns(:pois)).to eq([poi])
-      end
-      it "assigns @encounters" do
-        expect(assigns(:encounters)).to eq([encounter])
       end
     end
 

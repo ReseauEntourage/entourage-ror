@@ -8,7 +8,6 @@ class MapController < ApplicationController
     else
       @pois = Poi.all.order(:id).limit(pois_limit)
     end
-    @encounters = Encounter.all.includes(tour: [:user])
   end
 
 end
