@@ -17,6 +17,12 @@ RSpec.describe OrganizationsController, :type => :controller do
       it { expect(User.find(user.id).organization.phone).to eq 'newphone' }
       it { expect(User.find(user.id).organization.address).to eq 'newaddress' }
     end
+
+    describe 'GET statistics' do
+      before { get :statistics }
+      it { expect(response.status).to eq(200) }
+    end
+
     describe '#dashboard' do
       let!(:time) { DateTime.new 2015, 8, 20, 0, 0, 0, '+2' }
       let!(:last_sunday) { (last_monday - 1).to_date }
