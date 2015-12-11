@@ -5,71 +5,65 @@ include Requests::JsonHelpers
 RSpec.describe UsersController, :type => :controller do
   render_views
 
-  describe 'get index' do
-
+  describe 'GET index' do
     context 'not logged in as admin' do
-      it "retuns 302" do
-        get 'index', :format => :json
-        expect(response.status).to eq(401)
-      end
+      before { get :index }
+      it { should redirect_to new_session_path }
     end
 
     context "logged in as admin" do
-      before { admin_basic_login }
-
-      context 'without any user' do
-        it "retuns 200" do
-          get 'index', :format => :json
-          expect(response.status).to eq(200)
-        end
-
-        it "assigns current admin" do
-          get 'index', :format => :json
-          expect(assigns(:users)).to match_array(User.where(admin: true))
-        end
-
-        it 'returns current admin' do
-          get 'index', :format => :json
-          admin = User.where(admin: true).first
-          expect(json["users"]).to match_array([{"id"=>admin.id, "email"=>admin.email, "first_name"=>admin.first_name, "last_name"=>admin.last_name}])
-        end
-      end
+      let!(:user) { admin_basic_login }
+      let!(:user_outside_organization) { FactoryGirl.create(:user) }
+      let!(:user_inside_organization) { FactoryGirl.create(:user, organization: user.organization) }
+      before { get :index }
+      it { expect(assigns(:users)).to match_array([user, user_inside_organization]) }
     end
   end
 
-  describe 'post create' do
-
+  describe 'GET edit' do
     context 'not logged in as admin' do
-      it "retuns 401" do
-        post 'create', :format => :json
-        expect(response.status).to eq(401)
-      end
+      before { get :edit, id: 0 }
+      it { should redirect_to new_session_path }
     end
 
-    context 'with incorrect parameters' do
-      it "retuns 400" do
-        admin_basic_login
-        post 'create', user: {key: "value"}, format: :json
-        expect(response.status).to eq(400)
-      end
+    context 'logged in as admin' do
+      let!(:user) { admin_basic_login }
+      before { get :edit, id: user.id }
+      it { should render_template 'edit' }
     end
 
-    context 'with correct parameters' do
-      let!(:organization) { FactoryGirl.create :organization }
+  end
 
-      before do
-        admin_basic_login
-        post 'create', user: {email: "test@rspec.com", first_name:"tester", last_name:"tested", phone:'+33102030405', organization_id:organization.id}, format: :json
-      end
-
-      it { should respond_with 201 }
-      it { expect(User.last.first_name).to eq "tester" }
-      it { expect(User.last.last_name).to eq "tested" }
-      it { expect(User.last.phone).to eq "+33102030405" }
-      it { expect(User.last.email).to eq "test@rspec.com" }
-      it { expect(User.last.organization).to eq organization }
+  describe 'post create' do
+    context 'not logged in as admin' do
+      before { post 'create' }
+      it { should redirect_to new_session_path }
     end
 
+    context "logged in as admin" do
+      let!(:user) { admin_basic_login }
+
+      context 'with incorrect parameters' do
+        it "retuns 302" do
+          post 'create', user: {key: "value"}
+          expect(response.status).to eq(302)
+          expect(User.count).to eq(1)
+        end
+      end
+
+      context 'with correct parameters' do
+        before do
+          post 'create', user: {email: "test@rspec.com", first_name:"tester", last_name:"tested", phone:'+33102030405'}
+        end
+
+        it { should respond_with 302 }
+        it { expect(User.last.first_name).to eq "tester" }
+        it { expect(User.last.last_name).to eq "tested" }
+        it { expect(User.last.phone).to eq "+33102030405" }
+        it { expect(User.last.email).to eq "test@rspec.com" }
+        it { expect(User.last.organization).to eq user.organization }
+      end
+    end
   end
 
 
@@ -78,25 +72,24 @@ RSpec.describe UsersController, :type => :controller do
     context 'with incorrect user id' do
       it "retuns 404" do
         admin_basic_login
-        put 'update', id: 1, user: {key: "value"}, format: :json
-        expect(response.status).to eq(404)
+        expect {
+          put 'update', id: 1, user: {key: "value"}
+        }.to raise_error(ActiveRecord::RecordNotFound)
       end
     end
 
     context 'with correct user id and parameters' do
-      let!(:organization) { FactoryGirl.create :organization }
-      let!(:user) { FactoryGirl.create :user }
+      let!(:user) { admin_basic_login }
 
       before do
-        admin_basic_login
-        put 'update', id: user.id, user: {email: "change#{user.email}", first_name:"change#{user.first_name}", last_name:"change#{user.last_name}", organization_id:organization.id}, format: :json
+        put 'update', id: user.id, user: {email: "change#{user.email}", first_name:"change#{user.first_name}", last_name:"change#{user.last_name}"}
       end
 
-      it { should respond_with 200 }
+      it { should respond_with 302 }
       it { expect(User.find(user.id).first_name).to eq "change#{user.first_name}" }
       it { expect(User.find(user.id).last_name).to eq "change#{user.last_name}" }
       it { expect(User.find(user.id).email).to eq "change#{user.email}" }
-      it { expect(User.find(user.id).organization).to eq organization }
+      it { expect(User.find(user.id).organization).to eq user.organization }
     end
 
   end
@@ -106,23 +99,22 @@ RSpec.describe UsersController, :type => :controller do
     context 'with incorrect user id' do
       it "retuns 404" do
         admin_basic_login
-        delete 'destroy', id: 1, format: :json
-        expect(response.status).to eq(404)
+        expect {
+          delete 'destroy', id: 1
+        }.to raise_error(ActiveRecord::RecordNotFound)
       end
     end
 
     context 'with correct user id' do
-      it "retuns 204" do
-        admin_basic_login
-        user = FactoryGirl.create(:user)
-        delete 'destroy', id: user.id, format: :json
-        expect(response.status).to eq(204)
+      it "Redirects" do
+        user = admin_basic_login
+        delete 'destroy', id: user.id
+        expect(response.status).to eq(302)
       end
 
       it "destroys user" do
-        admin_basic_login
-        user = FactoryGirl.create(:user)
-        delete 'destroy', id: user.id, format: :json
+        user = admin_basic_login
+        delete 'destroy', id: user.id
         deleted_user = User.find_by(id: user.id)
         expect(deleted_user).to eq(nil)
       end
@@ -131,26 +123,25 @@ RSpec.describe UsersController, :type => :controller do
   end
 
   describe '#send_sms' do
-    let!(:user) { FactoryGirl.create :user }
+    let!(:user) { admin_basic_login }
     let!(:sms_notification_service) { spy('sms_notification_service') }
 
     context 'the user exists' do
       before do
         controller.sms_notification_service = sms_notification_service
-        admin_basic_login
-        post 'send_sms', id: user.id, format: :json
+        post 'send_sms', id: user.id
       end
       it { expect(response.status).to eq(200) }
-      it { expect(sms_notification_service).to have_received(:send_notification).with(user.phone, user.sms_code) }
+      it { expect(sms_notification_service).to have_received(:send_notification).with(user.phone, "Bienvenue sur Entourage. Votre code est 098765. Retrouvez l'application ici : http://foo.bar .") }
     end
 
     context 'the user does not exists' do
-      before do
+      it "retuns 404" do
         controller.sms_notification_service = sms_notification_service
-        admin_basic_login
-        post 'send_sms', id: 0, format: :json
+        expect {
+          post 'send_sms', id: 0
+        }.to raise_error(ActiveRecord::RecordNotFound)
       end
-      it { expect(response.status).to eq(404) }
     end
   end
 

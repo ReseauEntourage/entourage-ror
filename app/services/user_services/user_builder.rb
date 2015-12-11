@@ -15,12 +15,16 @@ module UserServices
       '%06i' % rand(1000000)
     end
 
-    def create
+    def new_user
       user = User.new(params)
       user.organization = organization
       user.token = token
       user.sms_code = sms_code
-      user.save
+      user
+    end
+
+    def create
+      new_user.save
     end
 
     private

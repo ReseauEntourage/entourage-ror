@@ -26,6 +26,12 @@ module Api
           head 400
         end
       end
+
+      private
+
+      def self_user_params
+        params.require(:user).permit(:email, :sms_code)
+      end
     end
   end
 end

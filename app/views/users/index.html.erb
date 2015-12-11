@@ -3,13 +3,13 @@
 <div class="col-md-10 col-md-offset-1">
 <h2>Utilisateurs <%= link_to '', '#add-user', class:'btn btn-default fa fa-user-plus' %></h2>
 <ul class="list-inline" id="user-list">
-<% @organization.users.order(:last_name,:first_name).each do |user| %>
+<% @users.each do |user| %>
   <li class="user-card">
     <i class="fa fa-user fa-5x"></i>
     <h4><%= user.last_name %></h4><h5><%= user.first_name %><h4>
-    <%= link_to '', { controller:'organizations/users', action: :edit, id:user.id }, class:'btn btn-default fa fa-pencil' %>
-    <%= link_to '', { controller:'organizations/users', action: :destroy, id: user.id }, method: :delete, data: { confirm: 'Etes-vous sûr ?' }, class:'btn btn-default fa fa-trash' %>
-    <%= link_to '', { controller:'organizations/users', action: :send_sms, id: user.id }, method: :post, class:'btn btn-default fa fa-envelope send_sms', remote: true %>
+    <%= link_to '', edit_user_path(user), class:'btn btn-default fa fa-pencil' %>
+    <%= link_to '', user_path(user), method: :delate, data: { confirm: 'Etes-vous sûr ?' }, class:'btn btn-default fa fa-trash' %>
+    <%= link_to '', send_sms_user_path(user), method: :post, class:'btn btn-default fa fa-envelope send_sms', remote: true %>
   </li>
 <% end %>
 </ul>
@@ -18,7 +18,7 @@
 <div class="row">
 <div class="col-md-4 col-md-offset-1">
 <h2 id="add-user">Nouvel utilisateur</h2>
-  <%= simple_form_for @new_user, url:organizations_users_path do |f| %>
+  <%= simple_form_for @new_user do |f| %>
     <%= f.input :first_name, label: "Prénom" %>
     <%= f.input :last_name, label: 'Nom' %>
     <%= f.input :phone, label: 'Téléphone', input_html: { 'data-toggle' => "tooltip", 'data-placement' => "right", 'title' => "De type +33XXXXXXXXX" } %>
