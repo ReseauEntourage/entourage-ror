@@ -124,20 +124,20 @@ RSpec.describe UsersController, :type => :controller do
 
   describe '#send_sms' do
     let!(:user) { admin_basic_login }
-    let!(:sms_notification_service) { spy('sms_notification_service') }
+    let!(:target_user) { FactoryGirl.create(:user, organization: user.organization) }
 
     context 'the user exists' do
-      before do
-        controller.sms_notification_service = sms_notification_service
-        post 'send_sms', id: user.id
-      end
+      before { post 'send_sms', id: target_user.id }
       it { expect(response.status).to eq(200) }
-      it { expect(sms_notification_service).to have_received(:send_notification).with(user.phone, "Bienvenue sur Entourage. Votre code est 098765. Retrouvez l'application ici : http://foo.bar .") }
+
+      it "sends sms" do
+        expect_any_instance_of(SmsNotificationService).to receive(:send_notification).with(target_user.phone, "Bienvenue sur Entourage. Votre code est #{target_user.sms_code}. Retrouvez l'application ici : http://foo.bar .")
+        post 'send_sms', id: target_user.id
+      end
     end
 
     context 'the user does not exists' do
       it "retuns 404" do
-        controller.sms_notification_service = sms_notification_service
         expect {
           post 'send_sms', id: 0
         }.to raise_error(ActiveRecord::RecordNotFound)
