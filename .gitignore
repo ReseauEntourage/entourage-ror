@@ -27,3 +27,4 @@ use-node
 
 # Ignore environment variables file
 .env
+*.dump
