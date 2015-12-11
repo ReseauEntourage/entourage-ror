@@ -16,6 +16,9 @@ class OrganizationsController < GuiController
     @latest_tours = (my_tours.order('tours.updated_at DESC').take 8).group_by { |t| t.updated_at.to_date }
   end
 
+  def statistics
+  end
+
   def edit
   end
   

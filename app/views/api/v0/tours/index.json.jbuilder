@@ -5,11 +5,11 @@ json.tours do
     json.status presenter.status
     json.vehicle_type presenter.vehicle_type
     json.distance presenter.length
-    json.start_time  presenter.start_time
-    json.end_time  presenter.end_time
+    json.start_time presenter.start_time
+    json.end_time presenter.end_time
     json.organization_name presenter.organization_name
     json.organization_description presenter.organization_description
-    json.user_id  presenter.user_id
+    json.user_id presenter.user_id
     json.tour_points do
       json.array!(presenter.snap_to_road_points) do |coordinate|
         json.latitude coordinate[:lat]
