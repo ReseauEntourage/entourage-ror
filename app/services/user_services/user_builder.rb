@@ -25,6 +25,7 @@ module UserServices
 
     def create
       new_user.save
+      UserServices::SMSSender.new(user: new_user).send_welcome_sms!
     end
 
     private

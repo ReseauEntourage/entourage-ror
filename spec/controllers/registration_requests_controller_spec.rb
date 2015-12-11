@@ -38,11 +38,18 @@ RSpec.describe RegistrationRequestsController, type: :controller do
     let(:registration_request) { FactoryGirl.create(:registration_request, status: "pending") }
 
     context "validate" do
-      before { put 'update', id: registration_request.to_param, validate: true }
-      it { expect(registration_request.reload.status).to eq("validated") }
-      #Already 1 user authenticated with organization
-      it { expect(Organization.count).to eq(2) }
-      it { expect(User.count).to eq(2) }
+      describe "objects creation" do
+        before { put 'update', id: registration_request.to_param, validate: true }
+        it { expect(registration_request.reload.status).to eq("validated") }
+        #Already 1 user authenticated with organization
+        it { expect(Organization.count).to eq(2) }
+        it { expect(User.count).to eq(2) }
+      end
+
+      it "sends sms" do
+        expect_any_instance_of(SmsNotificationService).to receive(:send_notification)
+        put 'update', id: registration_request.to_param, validate: true
+      end
     end
 
     context "don't validate" do

@@ -33,13 +33,12 @@ class UsersController < GuiController
     @user.destroy
     redirect_to users_url, notice: "L'utilisateur a bien été supprimé"
   end
-  
+
   def send_sms
-    link = Rails.env.test? ? "http://foo.bar" : url_shortener.shorten("https://play.google.com/apps/testing/social.entourage.android")
-    sms_notification_service.send_notification(@user.phone, "Bienvenue sur Entourage. Votre code est #{@user.sms_code}. Retrouvez l'application ici : #{link} .")
-    head 200
+    UserServices::SMSSender.new(user: @user).send_welcome_sms!
+    render json: {status: "message sent"}
   end
-  
+
   private
   
   def get_user
@@ -52,13 +51,5 @@ class UsersController < GuiController
   def user_params
     params.require(:user).permit(:first_name, :last_name, :phone, :email, :manager)
   end
-  
-  def sms_notification_service
-    @sms_notification_service ||= SmsNotificationService.new
-  end
-  
-  def url_shortener
-    @url_shortener ||= ShortURL
-  end
-  
+
 end
