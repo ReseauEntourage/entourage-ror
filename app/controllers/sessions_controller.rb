@@ -6,7 +6,8 @@ class SessionsController < ApplicationController
   end
 
   def create
-    user = User.where(phone: params[:phone], sms_code: params[:sms_code]).first
+    user_phone = Phone::PhoneBuilder.new(phone: params[:phone]).format
+    user = User.where(phone: user_phone, sms_code: params[:sms_code]).first
     if user
       session[:user_id] = user.id
       flash[:notice] = "Vous êtes authentifié"

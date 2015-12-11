@@ -1,6 +1,6 @@
-class Organizations::UsersController < GuiController
+class UsersController < GuiController
   attr_writer :sms_notification_service, :url_shortener
-
+  before_filter :authenticate_admin!
   before_filter :get_user, :only => [:edit, :update, :destroy, :send_sms]
 
   def index
@@ -12,10 +12,8 @@ class Organizations::UsersController < GuiController
   end
 
   def create
-    @user = User.new(user_params)
-    @user.organization = current_user.organization
-
-    if @user.save
+    builder = UserServices::UserBuilder.new(params:user_params, organization:current_user.organization)
+    if builder.create
       redirect_to organizations_users_url, notice: "L'utilisateur a été créé"
     else
       redirect_to organizations_users_url, notice: "Erreur de création"

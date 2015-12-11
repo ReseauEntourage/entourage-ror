@@ -21,14 +21,9 @@ Rails.application.routes.draw do
         end
       end
 
-      resources :users, only: [:index, :create, :update, :destroy] do
+      resources :users, only: [:none] do
         collection do
-          post 'send_message'
           patch 'update_me'
-        end
-
-        member do
-          post 'send_sms'
         end
       end
 
@@ -49,10 +44,9 @@ Rails.application.routes.draw do
       post 'send_message'
     end
   end
-
-  namespace :organizations do
-    resources :users do
-      post 'send_sms', on: :member
+  resources :users, only: [:index, :edit, :create, :update, :destroy] do
+    member do
+      post 'send_sms'
     end
   end
 
