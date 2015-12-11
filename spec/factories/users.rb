@@ -13,6 +13,12 @@ FactoryGirl.define do
     sequence :phone do |n|
       "+336%08i" % n
     end
+
+    sms_code '098765'
+
+    sequence :token do |n|
+      "foobar#{n}"
+    end
     organization
   end
 end

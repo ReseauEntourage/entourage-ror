@@ -1,8 +1,8 @@
 class User < ActiveRecord::Base
 
-  validates_presence_of [:first_name, :last_name, :email, :phone, :organization]
-  validates_uniqueness_of [:email]
-  validates_format_of :phone, with: /\A\+33[0-9]{9}\Z/
+  validates_presence_of [:first_name, :last_name, :email, :phone, :organization, :sms_code, :token]
+  validates_uniqueness_of [:email, :token]
+  validate :validate_phone!
   validates_format_of :email, with: /@/
   has_many :tours
   has_many :encounters, through: :tours
@@ -11,16 +11,17 @@ class User < ActiveRecord::Base
 
   enum device_type: [ :android, :ios ]
 
-  after_create :set_token, :set_sms_code
-
   delegate :name, :description, to: :organization, prefix: true
 
-  def set_token
-    self.update_attribute(:token, Digest::MD5.hexdigest(self.id.to_s + self.created_at.to_s))
+  def validate_phone!
+    unless PhoneValidator.valid?(self.phone)
+      errors.add(:phone, "devrait être au format +33... ou 06...")
+    end
   end
-  
-  def set_sms_code
-    self.update_attribute(:sms_code, '%06i' % rand(1000000))
+
+  #Force all phone number to be inserted in DB in "+33" format
+  def phone=(new_phone)
+    super(Phone::PhoneBuilder.new(phone: new_phone).format)
   end
 
   def to_s
@@ -30,5 +31,4 @@ class User < ActiveRecord::Base
   def full_name
     "#{first_name} #{last_name}"
   end
-
 end

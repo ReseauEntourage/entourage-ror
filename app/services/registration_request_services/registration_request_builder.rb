@@ -6,12 +6,11 @@ module RegistrationRequestServices
 
     def validate!
       organization = Organization.new(registration_request.extra["organization"].except("logo_key"))
-      user = User.new(registration_request.extra["user"])
-      user.organization = organization
+      builder = UserServices::UserBuilder.new(params:registration_request.extra["user"], organization:organization)
 
       ActiveRecord::Base.transaction do
         organization.save!
-        user.save!
+        builder.create
         registration_request.update(status: "validated")
       end
     end
