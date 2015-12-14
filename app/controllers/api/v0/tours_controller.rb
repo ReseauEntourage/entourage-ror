@@ -50,7 +50,8 @@ module Api
             if tour_params[:status]=="closed"
               TourServices::CloseTourService.new(tour: @tour, params: tour_params).close!
             end
-            @tour.update_attributes(tour_params.except(:status))
+            @tour.length = tour_params[:distance]
+            @tour.update_attributes(tour_params.except(:status, :distance))
             @presenter = TourPresenter.new(tour: @tour)
             render 'show', status: 200
           end
@@ -64,7 +65,8 @@ module Api
       private
 
       def tour_params
-        params.require(:tour).permit(:tour_type, :status, :vehicle_type)
+        params
+        params.require(:tour).permit(:tour_type, :status, :vehicle_type, :distance)
       end
     end
   end
