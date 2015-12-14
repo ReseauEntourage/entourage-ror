@@ -28,6 +28,7 @@ gem 'mailchimp-api',            '~> 2.0.6'
 gem 'pg',                       '~> 0.18.2'
 gem 'newrelic_rpm',             '~> 3.12.1.298'
 gem 'kaminari',                 '~> 0.16.3'
+gem 'spreadsheet'
 
 group :development, :test do
   gem 'byebug',                 '~> 5.0.0'
