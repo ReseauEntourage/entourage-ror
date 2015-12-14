@@ -269,7 +269,7 @@ If the email is already registered to newsletter subscription, a 400 error is re
 # Group Tours
 Tours, or "maraude", are definied only by their type (attribute tour_type).
 
-tour_type should be within ["social", "other", "food"]
+tour_type should be within ["medical", "barehands", "alimentary"]
 status is either "ongoing" or "closed"
 vehicle_type is either "feet" or "car"
 
@@ -282,16 +282,14 @@ vehicle_type is either "feet" or "car"
 
 + Parameters
     + limit (optional, number, `15`) ... Max number of tours to return. 10 if not defined
-    + type: `friendly` (optional, string)
+    + type: `medical` (optional, string)
         
         Type of tours to filter
         
         + Members
-            + `health`
-            + `friendly`
-            + `social`
-            + `food`
-            + `other`
+            + `medical`
+            + `barehands`
+            + `alimentary`
 
     + vehicle_type: `feet` (optional, enum[string])
         
@@ -313,7 +311,7 @@ vehicle_type is either "feet" or "car"
 
 + Response 200 (application/json; charset=utf-8)
 
-        {"tours":[{"id":10,"tour_type":"social", "vehicle_type":"feet", "distance": 8543.65, "organization_name":"organization name", "organization_description":"organization description","tour_points":[],"status":"ongoing"}]}
+        {"tours":[{"id":10,"tour_type":"medical", "vehicle_type":"feet", "distance": 8543.65, "organization_name":"organization name", "organization_description":"organization description","tour_points":[],"status":"ongoing"}]}
         
 + Response 401 (application/json; charset=utf-8)
 
@@ -329,11 +327,11 @@ vehicle_type is either "feet" or "car"
 
     + Body
 
-            {"tour":{"tour_type":"social", "status":"ongoing", "vehicle_type":"feet"}}
+            {"tour":{"tour_type":"medical", "status":"ongoing", "vehicle_type":"feet"}}
 
 + Response 201 (application/json; charset=utf-8)
 
-        {"tour":{"id":10,"tour_type":"social", "vehicle_type":"feet","tour_points":[]}}
+        {"tour":{"id":10,"tour_type":"medical", "vehicle_type":"feet","tour_points":[]}}
         
 + Response 400 (application/json; charset=utf-8)
 
@@ -357,7 +355,7 @@ vehicle_type is either "feet" or "car"
 
 + Response 200 (application/json; charset=utf-8)
 
-        {"tour":{"id":1,"tour_type":"social","status":"ongoing", "vehicle_type":"feet","distance": 8543.65,"tour_points":[{"latitude":1.5,"longitude":1.5,"passing_time":"2015-07-07T10:31:43.000+02:00"}]}}
+        {"tour":{"id":1,"tour_type":"medical","status":"ongoing", "vehicle_type":"feet","distance": 8543.65,"tour_points":[{"latitude":1.5,"longitude":1.5,"passing_time":"2015-07-07T10:31:43.000+02:00"}]}}
         
 + Response 404 (application/json; charset=utf-8)
 
@@ -376,12 +374,12 @@ vehicle_type is either "feet" or "car"
 
     + Body
 
-            {"tour":{"tour_type":"social", "status":"closed", "vehicle_type":"car", "distance": 8543.65}}
+            {"tour":{"tour_type":"medical", "status":"closed", "vehicle_type":"car", "distance": 8543.65}}
 
 
 + Response 200 (application/json; charset=utf-8)
 
-        {"tour":{"id":1,"tour_type":"social","status":"closed", "vehicle_type":"car","tour_points":[{"latitude":1.5,"longitude":1.5,"passing_time":"2015-07-07T10:31:43.000+02:00"}]}}
+        {"tour":{"id":1,"tour_type":"medical","status":"closed", "vehicle_type":"car","tour_points":[{"latitude":1.5,"longitude":1.5,"passing_time":"2015-07-07T10:31:43.000+02:00"}]}}
         
 + Response 404 (application/json; charset=utf-8)
 
@@ -412,7 +410,7 @@ Tour points describe the tour itinerary
 
 + Response 201 (application/json; charset=utf-8)
 
-        {"tour":{"id":1,"tour_type":"social","tour_points":[{"latitude":1.5,"longitude":1.5,"passing_time":"2015-07-07T10:31:43.000+02:00"}, {"latitude":2.5,"longitude":2.5,"passing_time":"2015-07-07T10:31:43.000+03:00"}]}}
+        {"tour":{"id":1,"tour_type":"medical","tour_points":[{"latitude":1.5,"longitude":1.5,"passing_time":"2015-07-07T10:31:43.000+02:00"}, {"latitude":2.5,"longitude":2.5,"passing_time":"2015-07-07T10:31:43.000+03:00"}]}}
         
 + Response 400 (application/json; charset=utf-8)
 

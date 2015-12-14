@@ -13,6 +13,6 @@ namespace :data_migration do
     Tour.where(type: "friendly").update_all(type: "barehands")
     Tour.where(type: "social").update_all(type: "barehands")
     Tour.where(type: "food").update_all(type: "alimentary")
-    Tour.where(type: "other").update_all(type: "barehands")
+    Tour.where(type: "other").update_all(type: "medical")
   end
 end

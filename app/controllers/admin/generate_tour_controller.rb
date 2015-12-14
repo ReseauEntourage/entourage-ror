@@ -7,7 +7,7 @@ module Admin
       tour = current_admin.tours.create(closed_at: Time.now,
                                         status: :closed,
                                         vehicle_type: :feet,
-                                        tour_type: :social,
+                                        tour_type: :medical,
                                         length: 2200)
 
       params["coordinates"].each do |coordinate|
