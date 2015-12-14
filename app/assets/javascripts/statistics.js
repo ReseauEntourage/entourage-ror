@@ -19,7 +19,7 @@ function displayStatisticsMapData() {
           filters.push('date_range=' + $('#rencontres-date-filter').val());
         }
 
-        if ($('#rencontres-tour-type-filter').val().length > 0) {
+        if ($('#rencontres-tour-type-filter').val() != null && $('#rencontres-tour-type-filter').val().length > 0) {
           filters.push('tour_type=' + $('#rencontres-tour-type-filter').val());
         }
 
