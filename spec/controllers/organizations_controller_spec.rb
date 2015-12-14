@@ -77,6 +77,10 @@ RSpec.describe OrganizationsController, :type => :controller do
         it { should respond_with 200 }
         it { expect(assigns[:tours]).to eq [tour2]}
       end
+      context 'with multiple type filter' do
+        before { get :tours, tour_type: 'alimentary,medical', format: :json }
+        it { expect(assigns[:tours]).to match_array([tour1, tour2, tour5])}
+      end
       context 'with date range' do
         before { get :tours, date_range:'10/03/2009-11/03/2009', format: :json }
         it { should respond_with 200 }
