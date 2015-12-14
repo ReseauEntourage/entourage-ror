@@ -63,25 +63,25 @@ RSpec.describe Api::V0::ToursController, :type => :controller do
     let(:tour) { FactoryGirl.create(:tour, user: user) }
       
     context "with correct id" do
-      before { put 'update', id: tour.id, token: user.token, tour:{tour_type:"health", status:"ongoing", vehicle_type:"car"}, format: :json }
+      before { put 'update', id: tour.id, token: user.token, tour:{tour_type:"medical", status:"ongoing", vehicle_type:"car"}, format: :json }
 
       it { should respond_with 200 }
       it { expect(tour.reload.status).to eq("ongoing") }
       it { expect(tour.reload.vehicle_type).to eq("car") }
-      it { expect(tour.reload.tour_type).to eq("health") }
+      it { expect(tour.reload.tour_type).to eq("medical") }
     end
 
     context "close tour" do
       context "tour open" do
         let(:open_tour) { FactoryGirl.create(:tour, user: user, status: :ongoing) }
-        before { put 'update', id: open_tour.id, token: user.token, tour:{tour_type:"health", status:"closed", vehicle_type:"car"}, format: :json }
+        before { put 'update', id: open_tour.id, token: user.token, tour:{tour_type:"medical", status:"closed", vehicle_type:"car"}, format: :json }
         it { expect(open_tour.reload.closed?).to be true }
         it { expect(ActionMailer::Base.deliveries.last.to).to eq([user.email])}
       end
 
       context "tour closed" do
         let(:closed_tour) { FactoryGirl.create(:tour, user: user, status: :closed) }
-        before { put 'update', id: closed_tour.id, token: user.token, tour:{tour_type:"health", status:"closed", vehicle_type:"car"}, format: :json }
+        before { put 'update', id: closed_tour.id, token: user.token, tour:{tour_type:"medical", status:"closed", vehicle_type:"car"}, format: :json }
         it { expect(closed_tour.reload.closed?).to be true }
         it { expect(ActionMailer::Base.deliveries.last).to be nil}
       end
@@ -90,12 +90,12 @@ RSpec.describe Api::V0::ToursController, :type => :controller do
     end
 
     context "with unexisting id" do
-      before { put 'update', id: 0, token: user.token, tour:{tour_type:"health", status:"ongoing", vehicle_type:"car"}, format: :json }
+      before { put 'update', id: 0, token: user.token, tour:{tour_type:"medical", status:"ongoing", vehicle_type:"car"}, format: :json }
       it { should respond_with 404 }
     end
     
     context "with incorrect_user" do
-      before { put 'update', id: tour.id, token: other_user.token, tour:{tour_type:"health", status:"ongoing", vehicle_type:"car"}, format: :json }
+      before { put 'update', id: tour.id, token: other_user.token, tour:{tour_type:"medical", status:"ongoing", vehicle_type:"car"}, format: :json }
       it { should respond_with 403 }
     end
 
@@ -148,19 +148,19 @@ RSpec.describe Api::V0::ToursController, :type => :controller do
      
     context "with type parameter" do 
      
-      let!(:tour1) { FactoryGirl.create :tour, tour_type:'other' }
-      let!(:tour2) { FactoryGirl.create :tour, tour_type:'other' }
-      let!(:tour3) { FactoryGirl.create :tour, tour_type:'friendly' }
-      let!(:tour4) { FactoryGirl.create :tour, tour_type:'friendly' }
-      let!(:tour5) { FactoryGirl.create :tour, tour_type:'other' }
+      let!(:tour1) { FactoryGirl.create :tour, tour_type:'medical' }
+      let!(:tour2) { FactoryGirl.create :tour, tour_type:'medical' }
+      let!(:tour3) { FactoryGirl.create :tour, tour_type:'alimentary' }
+      let!(:tour4) { FactoryGirl.create :tour, tour_type:'alimentary' }
+      let!(:tour5) { FactoryGirl.create :tour, tour_type:'medical' }
          
       it "returns status 200" do
-        get 'index', token: user.token, type:'friendly', :format => :json
+        get 'index', token: user.token, type:'alimentary', :format => :json
         expect(response.status).to eq 200
       end
       
       it "returns only matching type tours" do
-        get 'index', token: user.token, type:'friendly', :format => :json
+        get 'index', token: user.token, type:'alimentary', :format => :json
         expect(assigns(:tours)).to match_array([tour4, tour3])
       end
        

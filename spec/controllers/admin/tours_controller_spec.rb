@@ -24,7 +24,7 @@ describe Admin::GenerateTourController do
         expect(tour.closed_at.utc).to be_within(1.second).of(Time.parse("10/10/2010").at_beginning_of_day.utc)
         expect(tour.status).to eq("closed")
         expect(tour.vehicle_type).to eq("feet")
-        expect(tour.tour_type).to eq("social")
+        expect(tour.tour_type).to eq("medical")
       end
 
       it "saves tour snap points" do

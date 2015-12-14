@@ -62,18 +62,18 @@ RSpec.describe OrganizationsController, :type => :controller do
       let!(:user2) { create :user, organization: user.organization }
       let!(:user3) { create :user }
       let!(:user4) { create :user }
-      let!(:tour1) { create :tour, user: user1, tour_type:'other', updated_at: Time.new(2009, 3, 9, 13, 22, 0) }
-      let!(:tour2) { create :tour, user: user2, tour_type:'health', updated_at: Time.new(2009, 3, 11, 13, 22, 0) }
+      let!(:tour1) { create :tour, user: user1, tour_type:'medical', updated_at: Time.new(2009, 3, 9, 13, 22, 0) }
+      let!(:tour2) { create :tour, user: user2, tour_type:'alimentary', updated_at: Time.new(2009, 3, 11, 13, 22, 0) }
       let!(:tour3) { create :tour, user: user3 }
       let!(:tour4) { create :tour, user: user1, updated_at: Time.now.monday - 1 }
-      let!(:tour5) { create :tour, user: user4, tour_type:'other', updated_at: Time.new(2009, 3, 9, 13, 22, 0) }
+      let!(:tour5) { create :tour, user: user4, tour_type:'medical', updated_at: Time.new(2009, 3, 9, 13, 22, 0) }
       context 'with no filter' do
         before { get :tours, format: :json }
         it { should respond_with 200 }
         it { expect(assigns[:tours]).to match_array([tour1, tour2, tour5]) }
       end
       context 'with type filter' do
-        before { get :tours, tour_type: 'health', format: :json }
+        before { get :tours, tour_type: 'alimentary', format: :json }
         it { should respond_with 200 }
         it { expect(assigns[:tours]).to eq [tour2]}
       end
@@ -125,11 +125,11 @@ RSpec.describe OrganizationsController, :type => :controller do
       let!(:user2) { create :user, organization: user.organization }
       let!(:user3) { create :user }
       let!(:user4) { create :user }
-      let!(:tour1) { create :tour, user: user1, tour_type:'other', updated_at: Time.new(2009, 3, 9, 13, 22, 0) }
-      let!(:tour2) { create :tour, user: user2, tour_type:'health', updated_at: Time.new(2009, 3, 11, 13, 22, 0) }
+      let!(:tour1) { create :tour, user: user1, tour_type:'barehands', updated_at: Time.new(2009, 3, 9, 13, 22, 0) }
+      let!(:tour2) { create :tour, user: user2, tour_type:'medical', updated_at: Time.new(2009, 3, 11, 13, 22, 0) }
       let!(:tour3) { create :tour, user: user3 }
       let!(:tour4) { create :tour, user: user1, updated_at: Time.now.monday - 1 }
-      let!(:tour5) { create :tour, user: user4, tour_type:'other', updated_at: Time.new(2009, 3, 9, 13, 22, 0) }
+      let!(:tour5) { create :tour, user: user4, tour_type:'barehands', updated_at: Time.new(2009, 3, 9, 13, 22, 0) }
       let!(:encounter1) { create :encounter, tour: tour1 }
       let!(:encounter2) { create :encounter, tour: tour1 }
       let!(:encounter3) { create :encounter, tour: tour2 }
@@ -146,7 +146,7 @@ RSpec.describe OrganizationsController, :type => :controller do
         it { expect(assigns[:tour_count]).to eq 3 }
       end
       context 'with type filter' do
-        before { get :encounters, tour_type: 'health', format: :json }
+        before { get :encounters, tour_type: 'medical', format: :json }
         it { should respond_with 200 }
         it { expect(assigns[:encounters]).to eq [encounter3, encounter4]}
         it { expect(assigns[:encounter_count]).to eq 2 }
