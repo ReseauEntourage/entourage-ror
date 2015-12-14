@@ -2,7 +2,8 @@ module Api
   module V0
     class ToursController < Api::V0::BaseController
       def create
-        @tour = Tour.new(tour_params)
+        @tour = Tour.new(tour_params.except(:distance))
+        @tour.length = tour_params[:distance]
         @tour.user = @current_user
         if @tour.save
           @presenter = TourPresenter.new(tour: @tour)

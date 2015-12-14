@@ -8,7 +8,7 @@ RSpec.describe Api::V0::ToursController, :type => :controller do
     let!(:tour) { FactoryGirl.build :tour }
     
     context "with correct type" do
-      before { post 'create', token: user.token , tour: {tour_type: tour.tour_type, status:tour.status, vehicle_type:tour.vehicle_type}, :format => :json }
+      before { post 'create', token: user.token , tour: {tour_type: tour.tour_type, status:tour.status, vehicle_type:tour.vehicle_type, distance: 123.456}, :format => :json }
 
       it { should respond_with 201 }
       it { expect(assigns(:tour)).to eq(Tour.last) }
@@ -19,7 +19,7 @@ RSpec.describe Api::V0::ToursController, :type => :controller do
     end
 
     context "with incorrect type" do
-      before { post 'create', token: user.token , tour: {tour_type: 'invalid', status:tour.status, vehicle_type:tour.vehicle_type}, :format => :json }
+      before { post 'create', token: user.token , tour: {tour_type: 'invalid', status:tour.status, vehicle_type:tour.vehicle_type, distance: 123.456}, :format => :json }
       it { should respond_with 400 }
     end
 
@@ -63,7 +63,7 @@ RSpec.describe Api::V0::ToursController, :type => :controller do
     let(:tour) { FactoryGirl.create(:tour, user: user) }
       
     context "with correct id" do
-      before { put 'update', id: tour.id, token: user.token, tour:{tour_type:"medical", status:"ongoing", vehicle_type:"car"}, format: :json }
+      before { put 'update', id: tour.id, token: user.token, tour:{tour_type:"medical", status:"ongoing", vehicle_type:"car", distance: 123.456}, format: :json }
 
       it { should respond_with 200 }
       it { expect(tour.reload.status).to eq("ongoing") }
@@ -82,7 +82,7 @@ RSpec.describe Api::V0::ToursController, :type => :controller do
 
       context "tour closed" do
         let(:closed_tour) { FactoryGirl.create(:tour, user: user, status: :closed) }
-        before { put 'update', id: closed_tour.id, token: user.token, tour:{tour_type:"medical", status:"closed", vehicle_type:"car"}, format: :json }
+        before { put 'update', id: closed_tour.id, token: user.token, tour:{tour_type:"medical", status:"closed", vehicle_type:"car", distance: 123.456}, format: :json }
         it { expect(closed_tour.reload.closed?).to be true }
         it { expect(ActionMailer::Base.deliveries.last).to be nil}
       end
@@ -91,12 +91,12 @@ RSpec.describe Api::V0::ToursController, :type => :controller do
     end
 
     context "with unexisting id" do
-      before { put 'update', id: 0, token: user.token, tour:{tour_type:"medical", status:"ongoing", vehicle_type:"car"}, format: :json }
+      before { put 'update', id: 0, token: user.token, tour:{tour_type:"medical", status:"ongoing", vehicle_type:"car", distance: 123.456}, format: :json }
       it { should respond_with 404 }
     end
     
     context "with incorrect_user" do
-      before { put 'update', id: tour.id, token: other_user.token, tour:{tour_type:"medical", status:"ongoing", vehicle_type:"car"}, format: :json }
+      before { put 'update', id: tour.id, token: other_user.token, tour:{tour_type:"medical", status:"ongoing", vehicle_type:"car", distance: 123.456}, format: :json }
       it { should respond_with 403 }
     end
 
