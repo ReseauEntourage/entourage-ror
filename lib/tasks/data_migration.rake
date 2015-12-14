@@ -8,11 +8,11 @@ namespace :data_migration do
   end
 
   desc "update tour types"
-  test update_tour_types: :environment do
-    Tour.where(type: "health").update_all(type: "medical")
-    Tour.where(type: "friendly").update_all(type: "barehands")
-    Tour.where(type: "social").update_all(type: "barehands")
-    Tour.where(type: "food").update_all(type: "alimentary")
-    Tour.where(type: "other").update_all(type: "medical")
+  task update_tour_types: :environment do
+    Tour.where(tour_type: "health").update_all(tour_type: "medical")
+    Tour.where(tour_type: "friendly").update_all(tour_type: "barehands")
+    Tour.where(tour_type: "social").update_all(tour_type: "barehands")
+    Tour.where(tour_type: "food").update_all(tour_type: "alimentary")
+    Tour.where(tour_type: "other").update_all(tour_type: "medical")
   end
 end
