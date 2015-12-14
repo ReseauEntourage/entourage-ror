@@ -1,150 +1,47 @@
-<div>
-  <ul class="nav nav-pills" role="tablist">
-    <li role="presentation">
-      <%= link_to "Carte des maraudes", dashboard_organizations_path  %>
-    </li>
-    <li role="presentation" class="active">
-      <%= link_to "Statistiques", "#"  %>
-    </li>
-  </ul>
+<ul class="nav nav-pills" role="tablist">
+  <li role="presentation">
+    <%= link_to "Carte des maraudes", dashboard_organizations_path  %>
+  </li>
+  <li role="presentation" class="active">
+    <%= link_to "Statistiques", "#"  %>
+  </li>
+</ul>
 
-  <div class="col-md-3">
-    <div class="left-panel" id="search-stats">
-    </div>
+<div class="col-md-3">
+  <div class="left-panel" id="search-stats">
   </div>
-  <div class="col-md-7">
-    <div id="map-rencontres"></div>
-    <div class="text-center" style="margin: 10px;">
-      <button type="button" class="btn btn-lg btn-entourage" data-toggle="modal" data-target="#messageModal">Envoyer
-        un message
-      </button>
-    </div>
+</div>
+<div class="col-md-7">
+  <div id="map-rencontres"></div>
+  <div class="text-center" style="margin: 10px;">
+    <button type="button" class="btn btn-lg btn-entourage" data-toggle="modal" data-target="#messageModal">Envoyer
+      un message
+    </button>
   </div>
-  <div class="col-md-2">
-    <h3>Filtres</h3>
-    <input type="text" id="rencontres-date-filter" class="rencontres-map-filter form-control" placeholder="Sélection de la date" name="daterange"/>
-    <select id="rencontres-tour-type-filter" class="rencontres-map-filter form-control">
-      <option value="">Type de maraude</option>
-      <option value="health">Sant&eacute;</option>
-      <option value="friendly">Amical</option>
-      <option value="social">Social</option>
-      <option value="food">Nourriture</option>
-      <option value="other">Autre</option>
+</div>
+<div class="col-md-2">
+  <h3>Filtres</h3>
+  <input type="text" id="rencontres-date-filter" class="rencontres-map-filter form-control" placeholder="Sélection de la date" name="daterange"/>
+  <select id="rencontres-tour-type-filter" class="rencontres-map-filter form-control">
+    <option value="">Type de maraude</option>
+    <option value="health">Sant&eacute;</option>
+    <option value="friendly">Amical</option>
+    <option value="social">Social</option>
+    <option value="food">Nourriture</option>
+    <option value="other">Autre</option>
+  </select>
+  <select class="rencontres-map-filter form-control" disabled>
+    <option>Zone géographique</option>
+  </select>
+  <% if @current_user.coordinated_organizations.count > 0 %>
+    <select id="rencontres-org-filter" class="rencontres-map-filter form-control">
+      <option value="">Choix de l'association</option>
+      <option value="<%= @current_user.organization.id %>"><%= @current_user.organization.name %></option>
+      <% @current_user.coordinated_organizations.each do |org| %>
+        <option value="<%= org.id %>"><%= org.name %></option>
+      <% end %>
     </select>
-    <select class="rencontres-map-filter form-control" disabled>
-      <option>Zone géographique</option>
-    </select>
-    <% if @current_user.coordinated_organizations.count > 0 %>
-      <select id="rencontres-org-filter" class="rencontres-map-filter form-control">
-        <option value="">Choix de l'association</option>
-        <option value="<%= @current_user.organization.id %>"><%= @current_user.organization.name %></option>
-        <% @current_user.coordinated_organizations.each do |org| %>
-          <option value="<%= org.id %>"><%= org.name %></option>
-        <% end %>
-      </select>
-    <% end %>
-  </div>
+  <% end %>
+</div>
 
-  <div class="modal fade" id="messageModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title" id="messageModalLabel">Envoi de message</h4>
-        </div>
-        <%= form_tag("/organization/send_message", method: "post", remote: true, id: 'send_message_form') do %>
-          <div class="modal-body">
-            <div class="form-group">
-              <label>Destinataires:</label>
-              <select class="form-control" disabled>
-                <option>Toute l'association</option>
-              </select>
-              <select class="maraudes-map-filter form-control" disabled>
-                <option>Zone géographique</option>
-              </select>
-              <% if @current_user.coordinated_organizations.count > 0 %>
-                <select id="maraudes-org-filter" class="maraudes-map-filter form-control">
-                  <option value="">Choix de l'association</option>
-                  <option value="<%= @current_user.organization.id %>"><%= @current_user.organization.name %></option>
-                  <% @current_user.coordinated_organizations.each do |org| %>
-                    <option value="<%= org.id %>"><%= org.name %></option>
-                  <% end %>
-                </select>
-              <% end %>
-            </div>
-          </div>
-        <% end %>
-        <div role="tabpanel" class="tab-pane" id="statistiques">
-          <div class="col-md-3">
-            <div class="left-panel" id="search-stats">
-            </div>
-          </div>
-          <div class="col-md-7">
-            <div id="map-rencontres"></div>
-            <div class="text-center" style="margin: 10px;">
-              <button type="button" class="btn btn-lg btn-entourage" data-toggle="modal" data-target="#messageModal">Envoyer
-                un message
-              </button>
-            </div>
-          </div>
-          <div class="col-md-2">
-            <h3>Filtres</h3>
-            <input type="text" id="rencontres-date-filter" class="rencontres-map-filter form-control" placeholder="Sélection de la date" name="daterange"/>
-            <select id="rencontres-tour-type-filter" class="rencontres-map-filter form-control">
-              <option value="">Type de maraude</option>
-              <option value="health">Sant&eacute;</option>
-              <option value="friendly">Amical</option>
-              <option value="social">Social</option>
-              <option value="food">Nourriture</option>
-              <option value="other">Autre</option>
-            </select>
-            <select class="rencontres-map-filter form-control" disabled>
-              <option>Zone géographique</option>
-            </select>
-            <% if @current_user.coordinated_organizations.count > 0 %>
-              <select id="rencontres-org-filter" class="rencontres-map-filter form-control">
-                <option value="">Choix de l'association</option>
-                <option value="<%= @current_user.organization.id %>"><%= @current_user.organization.name %></option>
-                <% @current_user.coordinated_organizations.each do |org| %>
-                  <option value="<%= org.id %>"><%= org.name %></option>
-                <% end %>
-              </select>
-            <% end %>
-          </div>
-        </div>
-      </div>
-
-      <div class="modal fade" id="messageModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-        <div class="modal-dialog" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span></button>
-              <h4 class="modal-title" id="messageModalLabel">Envoi de message</h4>
-            </div>
-            <%= form_tag("/organization/send_message", method: "post", remote: true, id: 'send_message_form') do %>
-              <div class="modal-body">
-                <div class="form-group">
-                  <label>Destinataires:</label>
-                  <select class="form-control" disabled>
-                    <option>Toute l'association</option>
-                  </select>
-                </div>
-                <div class="form-group">
-                  <%= label_tag :object, 'Objet:' %>
-                  <%= text_field_tag :object, '', class: 'form-control', required: true %>
-                </div>
-                <div class="form-group">
-                  <%= label_tag :message, 'Message:' %>
-                  <%= text_area_tag :message, '', class: 'form-control', required: true %>
-                </div>
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Annuler</button>
-                <%= submit_tag 'Envoyer', class: 'btn btn-primary' %>
-              </div>
-            <% end %>
-          </div>
-        </div>
-      </div>
+<%= render partial: 'send_message' %>

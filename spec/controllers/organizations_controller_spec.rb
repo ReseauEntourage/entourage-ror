@@ -178,19 +178,26 @@ RSpec.describe OrganizationsController, :type => :controller do
         it { expect(assigns[:tour_count]).to eq 0 }
       end
     end
-    describe '#send_message' do
+    describe 'send_message' do
       let!(:user1) { create :user, organization: user.organization, device_type: :android, device_id:'deviceid1' }
       let!(:user2) { create :user, organization: user.organization, device_type: :android, device_id:nil }
       let!(:user3) { create :user, organization: user.organization, device_type: :android, device_id:'deviceid2' }
       let!(:user4) { create :user, organization: user.organization, device_type: nil, device_id:'deviceid3' }
       let!(:user5) { create :user }
       let!(:push_notification_service) { spy('push_notification_service') }
-      before do
-        controller.push_notification_service = push_notification_service
-        post :send_message, object:'object', message: 'message'
+      before { controller.push_notification_service = push_notification_service }
+
+      context "valid message" do
+        before { post :send_message, id: user.organization.to_param, object:'object', message: 'message' }
+        it { should respond_with 200 }
+        it { expect(push_notification_service).to have_received(:send_notification).with(user.full_name, 'object', 'message', user.organization.users) }
       end
-      it { should respond_with 200 }
-      it { expect(push_notification_service).to have_received(:send_notification).with(user.full_name, 'object', 'message', user.organization.users) }
+
+      context "try to send message to another organization" do
+        before { post :send_message, id: user5.organization.to_param, object:'object', message: 'message' }
+        it { should respond_with 302 }
+        it { expect(push_notification_service).to_not have_received(:send_notification).with(user.full_name, 'object', 'message', user.organization.users) }
+      end
     end
   end
   context 'no authentication' do

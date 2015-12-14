@@ -70,6 +70,11 @@ class OrganizationsController < GuiController
   end
   
   def send_message
+    if Organization.find(params[:id]) != @current_user.organization
+      flash[:alert] = "Vous n'êtes pas autorisé à envoyer un message en dehors de votre organization"
+      return redirect_to root_url
+    end
+
     sender = @current_user.full_name
     push_notification_service.send_notification sender, params[:object], params[:message], @organization.users
     render plain: 'message envoyé', status: 200
