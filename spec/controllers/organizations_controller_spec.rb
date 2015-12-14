@@ -192,12 +192,6 @@ RSpec.describe OrganizationsController, :type => :controller do
         it { should respond_with 200 }
         it { expect(push_notification_service).to have_received(:send_notification).with(user.full_name, 'object', 'message', user.organization.users) }
       end
-
-      context "try to send message to another organization" do
-        before { post :send_message, id: user5.organization.to_param, object:'object', message: 'message' }
-        it { should respond_with 302 }
-        it { expect(push_notification_service).to_not have_received(:send_notification).with(user.full_name, 'object', 'message', user.organization.users) }
-      end
     end
   end
   context 'no authentication' do
