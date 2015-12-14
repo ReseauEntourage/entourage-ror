@@ -49,7 +49,7 @@ class OrganizationsController < GuiController
       date_range = params[:date_range].split('-').map { |s| Date.strptime(s, '%d/%m/%Y') }
       @tours = @tours.where("tours.updated_at between ? and ?", date_range[0].beginning_of_day, date_range[1].end_of_day)
     end
-    @tours = @tours.where(tour_type: params[:tour_type]) if params[:tour_type].present?
+    @tours = @tours.where(tour_type: params[:tour_type].split(",")) if params[:tour_type].present?
     @presenters = TourCollectionPresenter.new(tours: @tours)
     @tours
   end

@@ -18,5 +18,6 @@
 //= require daterangepicker
 //= require handlebars.runtime
 //= require handlebars_helpers
+//= require bootstrap-multiselect
 //= require_tree ./templates
 //= require_tree .
