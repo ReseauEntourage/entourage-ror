@@ -103,7 +103,7 @@ var ready = function() {
     }
   });
 
-  $('#maraudes-tour-type-filter').multiselect({ buttonClass :'btn btn-default multitest',
+  $('#rencontres-tour-type-filter').multiselect({ buttonClass :'btn btn-default multitest',
                                                 nonSelectedText: 'Sélectionnez une option'});
 };
 
