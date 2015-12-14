@@ -28,7 +28,7 @@ function displayDashboardMapData() {
           filters.push('date_range=' + $('#maraudes-date-filter').val());
         }
 
-        if ($('#maraudes-tour-type-filter').val().length > 0) {
+        if ($('#maraudes-tour-type-filter').val() != null && $('#maraudes-tour-type-filter').val().length > 0) {
           filters.push('tour_type=' + $('#maraudes-tour-type-filter').val());
         }
 
@@ -55,7 +55,7 @@ var ready = function() {
     displayDashboardMapData();
   }
 
-  $('[data-toggle="tooltip"]').tooltip()
+  $('[data-toggle="tooltip"]').tooltip();
   
   $('input[name="daterange"]').daterangepicker({
     opens:'left',
@@ -101,7 +101,10 @@ var ready = function() {
       ],
       "firstDay": 1
     }
-  })
+  });
+
+  $('#maraudes-tour-type-filter').multiselect({ buttonClass :'btn btn-default multitest',
+                                                nonSelectedText: 'Sélectionnez une option'});
 };
 
 $(document).ready(ready);
