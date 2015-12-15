@@ -12,7 +12,7 @@ RSpec.describe UsersController, :type => :controller do
     end
 
     context "logged in as admin" do
-      let!(:user) { admin_basic_login }
+      let!(:user) { manager_basic_login }
       let!(:user_outside_organization) { FactoryGirl.create(:user) }
       let!(:user_inside_organization) { FactoryGirl.create(:user, organization: user.organization) }
       before { get :index }
@@ -27,7 +27,7 @@ RSpec.describe UsersController, :type => :controller do
     end
 
     context 'logged in as admin' do
-      let!(:user) { admin_basic_login }
+      let!(:user) { manager_basic_login }
       before { get :edit, id: user.id }
       it { should render_template 'edit' }
     end
@@ -41,7 +41,7 @@ RSpec.describe UsersController, :type => :controller do
     end
 
     context "logged in as admin" do
-      let!(:user) { admin_basic_login }
+      let!(:user) { manager_basic_login }
 
       context 'with incorrect parameters' do
         it "retuns 302" do

@@ -1,6 +1,6 @@
 class UsersController < GuiController
   attr_writer :sms_notification_service, :url_shortener
-  before_filter :authenticate_admin!
+  before_filter :authenticate_manager!
   before_filter :get_user, only: [:edit, :update, :destroy, :send_sms]
   
   def edit
