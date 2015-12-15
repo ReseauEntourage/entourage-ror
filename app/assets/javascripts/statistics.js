@@ -30,7 +30,7 @@ function displayStatisticsMapData() {
         heatmap.setMap(null);
 
         $.getJSON(url, function(data) {
-          points = data.encounters.map(function(x) {new google.maps.LatLng(x.latitude, x.longitude)} );
+          points = data.encounters.map(function(x) {return new google.maps.LatLng(x.latitude, x.longitude)} );
           heatmap = new google.maps.visualization.HeatmapLayer({
             data: points,
             radius: 40,
