@@ -14,7 +14,7 @@ class TourPresenter
   end
 
   def snap_to_road_points
-    tour.nap_to_road_tour_points.map {|point| {long: point.longitude, lat: point.latitude} }
+    tour.snap_to_road_tour_points.map {|point| {long: point.longitude, lat: point.latitude} }
   end
 
   def tour_points

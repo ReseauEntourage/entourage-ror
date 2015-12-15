@@ -21,6 +21,9 @@ function displayDashboardMapData() {
     google.maps.event.addListenerOnce(map, 'idle', function(){
       refreshMap = function() {
         var url = '/organizations/tours.json';
+        if($("#snapbox").is(":checked")) {
+          url = '/organizations/snap_tours.json';
+        }
         var filters = [];
         filters.push('ne=' + map.getBounds().getNorthEast().lat() + '-' + map.getBounds().getNorthEast().lng());
         filters.push('sw=' + map.getBounds().getSouthWest().lat() + '-' + map.getBounds().getSouthWest().lng());
@@ -46,6 +49,10 @@ function displayDashboardMapData() {
       map.addListener('idle', refreshMap);
 
       refreshMap();
+
+      $('#snapbox').change(function() {
+        refreshMap();
+      });
     });
   });
 }
