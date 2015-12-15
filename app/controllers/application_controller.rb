@@ -24,6 +24,13 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def authenticate_manager!
+    unless current_user && (current_user.manager || current_user.admin)
+      flash[:error] = "Vous devez vous authentifier avec un compte manager pour accéder à cette page"
+      render new_session_path, status: 401, layout: "login"
+    end
+  end
+
   def require_login
     render 'unauthorized', status: :unauthorized unless user_logged_in
   end
