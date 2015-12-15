@@ -3,6 +3,7 @@ class OrganizationsController < GuiController
   
   before_filter :location_filter, only: [:encounters, :tours]
   before_filter :set_organization
+  before_filter :authenticate_manager!, only: [:edit, :update]
 
   def dashboard
     my_tours = Tour.joins(:user).where(users: { organization_id: @organization.id })

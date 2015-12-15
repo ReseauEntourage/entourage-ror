@@ -1,6 +1,6 @@
 class UsersController < GuiController
   attr_writer :sms_notification_service, :url_shortener
-  before_filter :authenticate_manager!
+  before_filter :authenticate_manager!, except: [:edit, :update]
   before_filter :get_user, only: [:edit, :update, :destroy, :send_sms]
   
   def edit
@@ -22,7 +22,7 @@ class UsersController < GuiController
 
   def update
     if @user.update_attributes(user_params)
-      redirect_to users_url, notice: "L'utilisateur a été sauvegardé"
+      redirect_to edit_user_url(@user), notice: "L'utilisateur a été sauvegardé"
     else
       flash[:notice] = "Erreur de modification"
       render action: "edit"
