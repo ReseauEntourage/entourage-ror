@@ -107,5 +107,8 @@ var ready = function() {
                                                 nonSelectedText: 'Sélectionnez une option'});
 };
 
+
+
+
 $(document).ready(ready);
 $(document).on('page:load', ready);
