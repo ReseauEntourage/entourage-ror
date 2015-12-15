@@ -74,6 +74,10 @@ class OrganizationsController < GuiController
     push_notification_service.send_notification sender, params[:object], params[:message], @organization.users
     render plain: 'message envoyé', status: 200
   end
+
+  def export_dashboard
+
+  end
   
   private
   

@@ -28,6 +28,7 @@ gem 'mailchimp-api',            '~> 2.0.6'
 gem 'pg',                       '~> 0.18.2'
 gem 'newrelic_rpm',             '~> 3.12.1.298'
 gem 'kaminari',                 '~> 0.16.3'
+gem 'spreadsheet'
 
 group :development, :test do
   gem 'byebug',                 '~> 5.0.0'
@@ -36,12 +37,12 @@ group :development, :test do
 end
 
 group :development do
-  gem 'guard-shell',            '~> 0.7.1'
   gem 'better_errors',          '~> 2.1.1'
   gem 'binding_of_caller',      '~> 0.7.2'
   gem 'dredd-rack',             '~> 0.7.0'
   gem 'dotenv-rails',           '~> 2.0.2'
   gem 'rack-mini-profiler',     '~> 0.9.8' #enable by requesting any page with '?pp=enable'
+  gem 'pry-rails',              '~> 0.3.4'
 end
 
 group :test do

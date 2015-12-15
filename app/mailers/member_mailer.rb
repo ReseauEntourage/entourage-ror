@@ -5,7 +5,11 @@ class MemberMailer < ActionMailer::Base
   def tour_report(tour)
     @tour = tour
     @user = tour.user
-    
+
+    exporter = ExportServices::TourExporter.new(tour: tour)
+    attachments['tour_points.csv'] = File.read(exporter.export_tour_points)
+    attachments['encounters.csv'] = File.read(exporter.export_encounters)
+
     mail(to: @user.email, subject: 'Résumé de la maraude')
   end
   
