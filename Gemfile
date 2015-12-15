@@ -37,12 +37,12 @@ group :development, :test do
 end
 
 group :development do
-  gem 'guard-shell',            '~> 0.7.1'
   gem 'better_errors',          '~> 2.1.1'
   gem 'binding_of_caller',      '~> 0.7.2'
   gem 'dredd-rack',             '~> 0.7.0'
   gem 'dotenv-rails',           '~> 2.0.2'
   gem 'rack-mini-profiler',     '~> 0.9.8' #enable by requesting any page with '?pp=enable'
+  gem 'pry-rails',              '~> 0.3.4'
 end
 
 group :test do
