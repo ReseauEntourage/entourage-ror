@@ -28,9 +28,6 @@
       <h4><%= pluralize @tourer_count, 'maraudeur actif', 'maraudeurs actifs' %></h4>
       <h4><%= pluralize @tour_count, 'maraude réalisée', 'maraudes réalisées' %></h4>
     </div>
-    <div class="left-panel">
-      <%= link_to "Export CSV", "#", class: "btn btn-default" %>
-    </div>
   </div>
   <div class="col-md-7">
     <div id="map-maraudes"></div>
