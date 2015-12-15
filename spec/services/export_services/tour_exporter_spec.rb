@@ -1,12 +1,7 @@
 require 'rails_helper'
 
 describe ExportServices::TourExporter do
-
-  before { Timecop.freeze(Time.local(2015)) }
-  after { Timecop.return }
-
   let!(:tour) { FactoryGirl.create(:tour) }
-
 
   describe 'export_tour_points' do
     let!(:tour_points) { FactoryGirl.create_list(:tour_point, 3, tour: tour) }
@@ -14,7 +9,12 @@ describe ExportServices::TourExporter do
 
     it 'generates a csv with tour points' do
       csv = exporter.export_tour_points
-      expect(CSV.read(csv)).to eq([["latitude;Longitude;Date"], ["1.5;1.5;2015-07-07 12:31:43 +0200"], ["1.5;1.5;2015-07-07 12:31:43 +0200"], ["1.5;1.5;2015-07-07 12:31:43 +0200"]])
+      rows = CSV.read(csv)
+      expect(rows.count).to eq(4)
+      expect(rows[0]).to eq(["latitude;Longitude;Date"])
+      columns = rows[1].first.split(";")
+      expect(columns[0]).to eq("1.5")
+      expect(columns[1]).to eq("1.5")
     end
   end
 
@@ -24,7 +24,13 @@ describe ExportServices::TourExporter do
 
     it 'generates a csv with tour points' do
       csv = exporter.export_encounters
-      expect(CSV.read(csv)).to eq([["Nom;latitude;Longitude;Date"], ["Toto;48.870424;2.30681949999996;2015-01-01 00:00:00 +0100"], ["Toto;48.870424;2.30681949999996;2015-01-01 00:00:00 +0100"], ["Toto;48.870424;2.30681949999996;2015-01-01 00:00:00 +0100"]])
+      rows = CSV.read(csv)
+      expect(rows.count).to eq(4)
+      expect(rows[0]).to eq(["Nom;latitude;Longitude;Date"])
+      columns = rows[1].first.split(";")
+      expect(columns[0]).to eq("Toto")
+      expect(columns[1]).to eq("48.870424")
+      expect(columns[2]).to eq("2.30681949999996")
     end
   end
 end
