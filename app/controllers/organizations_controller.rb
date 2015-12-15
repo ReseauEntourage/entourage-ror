@@ -33,12 +33,12 @@ class OrganizationsController < GuiController
   
   def tours
     orgs = [@organization.id] + @current_user.coordinated_organizations.map(&:id)
-    @tours = Tour.includes(:snap_to_road_tour_points)
+    @tours = Tour.includes(:tour_points)
                  .joins(:user)
                  .where(users: { organization_id: orgs })
     
     if @box
-      tours_with_point_in_box = SnapToRoadTourPoint.unscoped.within_bounding_box(@box).select(:tour_id).distinct
+      tours_with_point_in_box = TourPoint.unscoped.within_bounding_box(@box).select(:tour_id).distinct
       @tours = @tours.where(id: tours_with_point_in_box)
     end
     if !params[:org].nil?

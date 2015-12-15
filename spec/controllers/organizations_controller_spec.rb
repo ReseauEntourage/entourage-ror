@@ -100,8 +100,8 @@ RSpec.describe OrganizationsController, :type => :controller do
       context "has map points" do
         before(:each) do
           [tour1, tour2, tour3].each do |t|
-            FactoryGirl.create(:snap_to_road_tour_point, tour: t, latitude: -35.2784167, longitude: 149.1294692)
-            FactoryGirl.create(:snap_to_road_tour_point, tour: t, latitude: -35.2847287248353, longitude: 149.128350617137)
+            FactoryGirl.create(:tour_point, tour: t, latitude: -35.2784167, longitude: 149.1294692)
+            FactoryGirl.create(:tour_point, tour: t, latitude: -35.2847287248353, longitude: 149.128350617137)
           end
         end
 

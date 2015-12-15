@@ -190,15 +190,15 @@ RSpec.describe Api::V0::ToursController, :type => :controller do
     context "with location parameter" do 
      
       let!(:tour1) { FactoryGirl.create :tour }
-      let!(:tour_point1) { FactoryGirl.create :snap_to_road_tour_point, tour: tour1, latitude: 10, longitude: 12 }
+      let!(:tour_point1) { FactoryGirl.create :tour_point, tour: tour1, latitude: 10, longitude: 12 }
       let!(:tour2) { FactoryGirl.create :tour }
-      let!(:tour_point2) { FactoryGirl.create :snap_to_road_tour_point, tour: tour2, latitude: 9.9, longitude: 10.1 }
+      let!(:tour_point2) { FactoryGirl.create :tour_point, tour: tour2, latitude: 9.9, longitude: 10.1 }
       let!(:tour3) { FactoryGirl.create :tour }
-      let!(:tour_point3) { FactoryGirl.create :snap_to_road_tour_point, tour: tour3, latitude: 10, longitude: 10 }
+      let!(:tour_point3) { FactoryGirl.create :tour_point, tour: tour3, latitude: 10, longitude: 10 }
       let!(:tour4) { FactoryGirl.create :tour }
-      let!(:tour_point4) { FactoryGirl.create :snap_to_road_tour_point, tour: tour4, latitude: 10.05, longitude: 9.95 }
+      let!(:tour_point4) { FactoryGirl.create :tour_point, tour: tour4, latitude: 10.05, longitude: 9.95 }
       let!(:tour5) { FactoryGirl.create :tour }
-      let!(:tour_point5) { FactoryGirl.create :snap_to_road_tour_point, tour: tour5, latitude: 12, longitude: 10 }
+      let!(:tour_point5) { FactoryGirl.create :tour_point, tour: tour5, latitude: 12, longitude: 10 }
          
       it "returns status 200" do
         get 'index', token: user.token, latitude: 10.0, longitude: 10.0, :format => :json
