@@ -15,7 +15,7 @@ module ExportServices
     end
 
     def export_tour_points
-      new_csv('sample.csv') do |csv|
+      new_csv('tour_points.csv') do |csv|
         csv << ["latitude", "Longitude", "Date"]
         tour.tour_points.find_each do |tour_point|
           csv << [tour_point.latitude, tour_point.longitude, tour_point.passing_time]
