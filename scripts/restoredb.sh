@@ -3,6 +3,8 @@ set -e
 
 echo "CLOSE ALL PROGRAMS USING THE DATABASE : Ruby web server, SQL client, etc"
 
+echo "snapshot production DB"
+heroku pg:backups capture -a entourage-back
 echo "Reset DB"
 rake db:drop db:create
 echo "Download DB from preprod"
