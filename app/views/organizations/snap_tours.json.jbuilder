@@ -8,7 +8,7 @@ json.features do
     json.geometry do
       json.type "LineString"
       json.coordinates do
-        json.array!(presenter.tour_points) do |coordinate|
+        json.array!(presenter.snap_to_road_points) do |coordinate|
           json.array!([coordinate[:long], coordinate[:lat]])
         end
       end

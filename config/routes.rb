@@ -39,6 +39,7 @@ Rails.application.routes.draw do
       get 'dashboard'
       get 'statistics'
       get 'tours'
+      get 'snap_tours'
       get 'encounters'
       get 'map_center'
       post 'send_message'

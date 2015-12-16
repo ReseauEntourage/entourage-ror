@@ -12,6 +12,7 @@ class OrganizationsController < GuiController
     @tourer_count = week_tours.select(:user_id).distinct.count
     @total_length = week_tours.sum(:length)
     @encounter_count = Encounter.where(tour: week_tours).count
+    @user_presenter = UserPresenter.new(user: @current_user)
 
     #TODO : improve query (take, group_by)
     @latest_tours = (my_tours.order('tours.updated_at DESC').take 8).group_by { |t| t.updated_at.to_date }
@@ -37,6 +38,30 @@ class OrganizationsController < GuiController
                  .joins(:user)
                  .where(users: { organization_id: orgs })
     
+    if @box
+      tours_with_point_in_box = TourPoint.unscoped.within_bounding_box(@box).select(:tour_id).distinct
+      @tours = @tours.where(id: tours_with_point_in_box)
+    end
+    if !params[:org].nil?
+      @tours = @tours.where(users: { organization_id: params[:org] })
+    end
+    if params[:date_range].nil?
+      @tours = @tours.where("tours.updated_at >= ?", Time.now.monday)
+    else
+      date_range = params[:date_range].split('-').map { |s| Date.strptime(s, '%d/%m/%Y') }
+      @tours = @tours.where("tours.updated_at between ? and ?", date_range[0].beginning_of_day, date_range[1].end_of_day)
+    end
+    @tours = @tours.where(tour_type: params[:tour_type].split(",")) if params[:tour_type].present?
+    @presenters = TourCollectionPresenter.new(tours: @tours)
+    @tours
+  end
+
+  def snap_tours
+    orgs = [@organization.id] + @current_user.coordinated_organizations.map(&:id)
+    @tours = Tour.includes(:tour_points)
+                 .joins(:user)
+                 .where(users: { organization_id: orgs })
+
     if @box
       tours_with_point_in_box = TourPoint.unscoped.within_bounding_box(@box).select(:tour_id).distinct
       @tours = @tours.where(id: tours_with_point_in_box)

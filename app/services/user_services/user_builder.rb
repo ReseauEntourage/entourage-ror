@@ -2,7 +2,7 @@ require "securerandom"
 
 module UserServices
   class UserBuilder
-    def initialize(params:, organization:)
+    def initialize(params:, organization: nil)
       @params = params
       @organization = organization
     end
@@ -26,6 +26,12 @@ module UserServices
     def create
       new_user.save
       UserServices::SMSSender.new(user: new_user).send_welcome_sms!
+    end
+
+    def update(user:)
+      snap_to_road = (params.delete(:snap_to_road) == "true")
+      PreferenceServices::UserDefault.new(user: user).snap_to_road = snap_to_road
+      user.update_attributes(params)
     end
 
     private

@@ -28,7 +28,7 @@ gem 'mailchimp-api',            '~> 2.0.6'
 gem 'pg',                       '~> 0.18.2'
 gem 'newrelic_rpm',             '~> 3.12.1.298'
 gem 'kaminari',                 '~> 0.16.3'
-gem 'spreadsheet'
+gem 'redis',                    '~> 3.2.1'
 
 group :development, :test do
   gem 'byebug',                 '~> 5.0.0'
@@ -55,6 +55,7 @@ group :test do
   gem 'factory_girl_rails',     '~> 4.5.0'
   gem 'webmock',                '~> 1.20.4'
   gem 'coveralls',              require: false
+  gem 'fakeredis',              '~> 0.5.0'
 end
 
 group :production do

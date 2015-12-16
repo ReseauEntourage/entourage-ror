@@ -11,7 +11,7 @@ json.tours do
     json.organization_description presenter.organization_description
     json.user_id presenter.user_id
     json.tour_points do
-      json.array!(presenter.snap_to_road_points) do |coordinate|
+      json.array!(presenter.tour_points) do |coordinate|
         json.latitude coordinate[:lat]
         json.longitude coordinate[:long]
         json.passing_time presenter.start_time

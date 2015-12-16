@@ -21,6 +21,9 @@ function displayDashboardMapData() {
     google.maps.event.addListenerOnce(map, 'idle', function(){
       refreshMap = function() {
         var url = '/organizations/tours.json';
+        if($("#snapbox").val() == "true") {
+          url = '/organizations/snap_tours.json';
+        }
         var filters = [];
         filters.push('ne=' + map.getBounds().getNorthEast().lat() + '-' + map.getBounds().getNorthEast().lng());
         filters.push('sw=' + map.getBounds().getSouthWest().lat() + '-' + map.getBounds().getSouthWest().lng());
@@ -46,6 +49,10 @@ function displayDashboardMapData() {
       map.addListener('idle', refreshMap);
 
       refreshMap();
+
+      $('#snapbox').change(function() {
+        refreshMap();
+      });
     });
   });
 }
@@ -106,6 +113,9 @@ var ready = function() {
   $('#rencontres-tour-type-filter').multiselect({ buttonClass :'btn btn-default multitest',
                                                 nonSelectedText: 'Sélectionnez une option'});
 };
+
+
+
 
 $(document).ready(ready);
 $(document).on('page:load', ready);
