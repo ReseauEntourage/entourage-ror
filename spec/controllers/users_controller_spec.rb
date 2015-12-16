@@ -68,7 +68,6 @@ RSpec.describe UsersController, :type => :controller do
 
 
   describe 'put update' do
-
     context 'with incorrect user id' do
       it "retuns 404" do
         admin_basic_login
@@ -78,20 +77,38 @@ RSpec.describe UsersController, :type => :controller do
       end
     end
 
-    context 'with correct user id and parameters' do
+    context "logged in" do
       let!(:user) { admin_basic_login }
 
-      before do
-        put 'update', id: user.id, user: {email: "change#{user.email}", first_name:"change#{user.first_name}", last_name:"change#{user.last_name}"}
+      context 'with correct user id and parameters' do
+        before do
+          put 'update', id: user.id, user: {email: "change#{user.email}", first_name:"change#{user.first_name}", last_name:"change#{user.last_name}"}
+        end
+
+        it { should respond_with 302 }
+        it { expect(User.find(user.id).first_name).to eq "change#{user.first_name}" }
+        it { expect(User.find(user.id).last_name).to eq "change#{user.last_name}" }
+        it { expect(User.find(user.id).email).to eq "change#{user.email}" }
+        it { expect(User.find(user.id).organization).to eq user.organization }
       end
 
-      it { should respond_with 302 }
-      it { expect(User.find(user.id).first_name).to eq "change#{user.first_name}" }
-      it { expect(User.find(user.id).last_name).to eq "change#{user.last_name}" }
-      it { expect(User.find(user.id).email).to eq "change#{user.email}" }
-      it { expect(User.find(user.id).organization).to eq user.organization }
-    end
+      context 'with snap to road true' do
+        before { put 'update', id: user.id, user: {email: "change#{user.email}", first_name:"change#{user.first_name}", last_name:"change#{user.last_name}", snap_to_road: "true"} }
+        it {  expect(PreferenceServices::UserDefault.new(user: User.find(user.id)).snap_to_road).to eq true }
+      end
 
+      context 'with snap to road true' do
+        before { PreferenceServices::UserDefault.new(user: user).snap_to_road = true }
+        before { put 'update', id: user.id, user: {email: "change#{user.email}", first_name:"change#{user.first_name}", last_name:"change#{user.last_name}", snap_to_road: "false"} }
+        it { expect(PreferenceServices::UserDefault.new(user: User.find(user.id)).snap_to_road).to eq false }
+      end
+
+      context 'without snap to road' do
+        before { PreferenceServices::UserDefault.new(user: user).snap_to_road = true }
+        before { put 'update', id: user.id, user: {email: "change#{user.email}", first_name:"change#{user.first_name}", last_name:"change#{user.last_name}"} }
+        it { expect(PreferenceServices::UserDefault.new(user: User.find(user.id)).snap_to_road).to eq false }
+      end
+    end
   end
 
   describe 'delete destroy' do

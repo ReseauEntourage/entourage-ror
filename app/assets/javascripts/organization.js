@@ -21,7 +21,7 @@ function displayDashboardMapData() {
     google.maps.event.addListenerOnce(map, 'idle', function(){
       refreshMap = function() {
         var url = '/organizations/tours.json';
-        if($("#snapbox").is(":checked")) {
+        if($("#snapbox").val() == "true") {
           url = '/organizations/snap_tours.json';
         }
         var filters = [];

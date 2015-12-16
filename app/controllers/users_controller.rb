@@ -4,6 +4,7 @@ class UsersController < GuiController
   before_filter :get_user, only: [:edit, :update, :destroy, :send_sms]
   
   def edit
+    @user_presenter = UserPresenter.new(user: @current_user)
   end
 
   def index
@@ -21,7 +22,8 @@ class UsersController < GuiController
   end
 
   def update
-    if @user.update_attributes(user_params)
+    builder = UserServices::UserBuilder.new(params: user_params)
+    if builder.update(user: @user)
       redirect_to edit_user_url(@user), notice: "L'utilisateur a été sauvegardé"
     else
       flash[:notice] = "Erreur de modification"
@@ -49,7 +51,7 @@ class UsersController < GuiController
   end
   
   def user_params
-    params.require(:user).permit(:first_name, :last_name, :phone, :email, :manager)
+    params.require(:user).permit(:first_name, :last_name, :phone, :email, :manager, :snap_to_road)
   end
 
 end

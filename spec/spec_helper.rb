@@ -2,6 +2,7 @@ require 'simplecov'
 SimpleCov.start
 require 'factory_girl'
 require 'webmock/rspec'
+require 'fakeredis/rspec'
 require 'coveralls'
 Coveralls.wear!
 

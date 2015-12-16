@@ -10,7 +10,6 @@ class SessionsController < ApplicationController
     user = User.where(phone: user_phone, sms_code: params[:sms_code]).first
     if user
       session[:user_id] = user.id
-      flash[:notice] = "Vous êtes authentifié"
       redirect_to root_url
     else
       flash[:error] = "Identifiants incorrects"
