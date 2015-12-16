@@ -5,12 +5,18 @@ describe IosNotificationService, type: :service do
     let!(:sender) { 'sender' }
     let!(:object) { 'object' }
     let!(:content) { 'content' }
-    let!(:device_ids) { ['id1', 'id2', 'id3'] }
+    let!(:device_ids) { ['1ea4b458607094b493b8a4be2712ee6b0a1c3cc9af6d7db9caabec6a10994a20', '1ea4b458607094b493b8a4be2712ee6b0a1c3cc9af6d7db9caabec6a10994a20', '1ea4b458607094b493b8a4be2712ee6b0a1c3cc9af6d7db9caabec6a10994a20'] }
     let!(:notification_pusher) { spy('notification_pusher') }
-    context 'android app is present' do
-      # Awaiting Ios app support to be able to mock the app
+    context 'ios app is present' do
+      let!(:ios_app) { FactoryGirl.create :ios_app }
+      subject! { IosNotificationService.new(notification_pusher).send_notification(sender, object, content, device_ids) }
+      it { expect(Rpush::Apns::Notification.count).to eq(3) }
+      it { expect(Rpush::Apns::Notification.last.app).to eq(ios_app) }
+      it { expect(Rpush::Apns::Notification.last.device_token).to eq(device_ids.last) }
+      it { expect(Rpush::Apns::Notification.last.data).to eq({ "sender" => sender, "object" => object, "content" => content }) }
+      it { expect(notification_pusher).to have_received(:push).with(no_args) }
     end
-    context 'android app is absent' do
+    context 'ios app is absent' do
       before { Rails.logger.stub(:warn) }
       subject! { IosNotificationService.new(notification_pusher).send_notification(sender, object, content, device_ids) }
       it { expect(Rails.logger).to have_received(:warn).with('No IOS notification has been sent. Please save a Rpush::Apns::App in database'.red) }
