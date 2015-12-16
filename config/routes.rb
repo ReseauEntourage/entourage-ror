@@ -25,6 +25,8 @@ Rails.application.routes.draw do
         collection do
           patch 'update_me'
         end
+
+        resources :tours, :controller => 'users/tours', only: [:index]
       end
 
       post 'login' => 'users#login'
