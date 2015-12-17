@@ -54,7 +54,7 @@ RSpec.describe Api::V0::UsersController, :type => :controller do
         before { patch 'update_me', token:user.token, user: { email:'new@e.mail', sms_code:'654321' }, format: :json }
         it { should respond_with 200 }
         it { expect(User.find(user.id).email).to eq('new@e.mail') }
-        it { expect(User.find(user.id).sms_code).to eq('654321') }
+        it { expect(BCrypt::Password.new(User.find(user.id).sms_code) == '654321').to be true }
       end
       context 'params are invalid' do
         before { patch 'update_me', token:user.token, user: { email:'bademail', sms_code:'badcode' }, format: :json }

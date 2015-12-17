@@ -6,8 +6,7 @@ class SessionsController < ApplicationController
   end
 
   def create
-    user_phone = Phone::PhoneBuilder.new(phone: params[:phone]).format
-    user = User.where(phone: user_phone, sms_code: params[:sms_code]).first
+    user = UserServices::UserAuthenticator.authenticate_by_phone_and_sms(phone: params[:phone], sms_code: params[:sms_code])
     if user
       session[:user_id] = user.id
       redirect_to root_url
