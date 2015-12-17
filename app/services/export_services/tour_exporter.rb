@@ -25,9 +25,9 @@ module ExportServices
 
     def export_encounters
       new_csv('encounters.csv') do |csv|
-        csv << ["Nom", "latitude", "Longitude", "Date"]
+        csv << ["Nom", "Addresse", "Notes", "latitude", "Longitude", "Date"]
         tour.encounters.find_each do |encounter|
-          csv << [encounter.street_person_name, encounter.latitude, encounter.longitude, encounter.created_at]
+          csv << [encounter.street_person_name, encounter.address, encounter.message, encounter.latitude, encounter.longitude, encounter.created_at]
         end
       end
     end
