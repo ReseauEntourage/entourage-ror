@@ -6,7 +6,7 @@ module Api
 
         def index
           page = params[:page] || 1
-          per = [(params[:per] || 25), 25].min
+          per = [(params[:per].try(:to_i) || 25), 25].min
           tours = @user.tours.page(page).per(per)
           @presenters = TourCollectionPresenter.new(tours: tours)
           render status: 200
