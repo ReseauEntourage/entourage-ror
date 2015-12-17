@@ -29,6 +29,7 @@ gem 'pg',                       '~> 0.18.2'
 gem 'newrelic_rpm',             '~> 3.12.1.298'
 gem 'kaminari',                 '~> 0.16.3'
 gem 'redis',                    '~> 3.2.1'
+gem 'bcrypt',                   '~> 3.1.10'
 
 group :development, :test do
   gem 'byebug',                 '~> 5.0.0'

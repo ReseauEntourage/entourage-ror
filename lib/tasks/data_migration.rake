@@ -18,4 +18,11 @@ namespace :data_migration do
       EncounterReverseGeocodeJob.perform_now(encounter.id)
     end
   end
+
+  desc "Hash all user sms_code"
+  task hash_sms_code: :environment do
+    User.find_each do |user|
+      user.update_columns(sms_code: BCrypt::Password.create(user.sms_code)) if user.sms_code.length == 6
+    end
+  end
 end

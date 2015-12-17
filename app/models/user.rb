@@ -31,4 +31,9 @@ class User < ActiveRecord::Base
   def full_name
     "#{first_name} #{last_name}"
   end
+
+  def sms_code=(another_sms_code)
+    another_sms_code = BCrypt::Password.create(another_sms_code) unless another_sms_code.nil?
+    super(another_sms_code)
+  end
 end
