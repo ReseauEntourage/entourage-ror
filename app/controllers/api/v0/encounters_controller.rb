@@ -8,6 +8,7 @@ module Api
           @encounter.tour = Tour.find_by(id: params[:tour_id])
         end
         if @encounter.save
+          EncounterReverseGeocodeJob.perform_later(@encounter.id)
           render status: 201
         else
           render 'error', status: :bad_request

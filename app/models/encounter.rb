@@ -5,7 +5,7 @@ class Encounter < ActiveRecord::Base
 
   belongs_to :tour
 
-  geocoded_by :address
+  reverse_geocoded_by :latitude, :longitude
   attr_encrypted :message, key: :crypting_key, if: :crypting_key_present?
 
   alias_attribute :voice_message, :voice_message_url
