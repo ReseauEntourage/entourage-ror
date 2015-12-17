@@ -37,7 +37,7 @@ module Api
           @tours = @tours.where(id: points)
         end
 
-        @tours = @tours.order(updated_at: :desc).limit(params.fetch(:limit, 10))
+        @tours = @tours.where("updated_at > ?", 24.hours.ago).order(updated_at: :desc).limit(params.fetch(:limit, 10))
         @presenters = TourCollectionPresenter.new(tours: @tours)
         render status: 200
       end
