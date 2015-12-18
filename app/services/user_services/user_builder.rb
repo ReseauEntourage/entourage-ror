@@ -23,7 +23,8 @@ module UserServices
       user
     end
 
-    def create
+    def create(send_sms: false)
+      UserServices::SMSSender.new(user: @user).send_welcome_sms! if send_sms
       new_user.save
     end
 

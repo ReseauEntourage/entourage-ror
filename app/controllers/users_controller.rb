@@ -15,10 +15,11 @@ class UsersController < ApplicationController
 
   def create
     builder = UserServices::UserBuilder.new(params:user_params, organization:current_user.organization)
-    if builder.create
+    send_sms = params[:send_sms] == "1"
+    if builder.create(send_sms: send_sms)
       redirect_to users_url, notice: "L'utilisateur a été créé"
     else
-      redirect_to users_url, notice: "Erreur de création"
+      redirect_to users_url, error: "Erreur de création"
     end
   end
 
