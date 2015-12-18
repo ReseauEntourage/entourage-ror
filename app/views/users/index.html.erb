@@ -1,31 +1,34 @@
 <div class="container-fluid">
-<div class="row">
-<div class="col-md-10 col-md-offset-1">
-<h2>Utilisateurs <%= link_to '', '#add-user', class:'btn btn-default fa fa-user-plus' %></h2>
-<ul class="list-inline" id="user-list">
-<% @users.each do |user| %>
-  <li class="user-card">
-    <i class="fa fa-user fa-5x"></i>
-    <h4><%= user.last_name %></h4><h5><%= user.first_name %><h4>
-    <%= link_to '', edit_user_path(user), class:'btn btn-default fa fa-pencil' %>
-    <%= link_to '', user_path(user), method: :delate, data: { confirm: 'Etes-vous sûr ?' }, class:'btn btn-default fa fa-trash' %>
-    <%= link_to '', send_sms_user_path(user), method: :post, class:'btn btn-default fa fa-envelope send_sms', remote: true %>
-  </li>
-<% end %>
-</ul>
+  <div class="row">
+    <div class="col-md-10 col-md-offset-1">
+      <h2>Utilisateurs <%= link_to '', '#add-user', class: 'btn btn-default fa fa-user-plus' %></h2>
+      <ul class="list-inline" id="user-list">
+        <% @users.each do |user| %>
+          <li class="user-card">
+            <i class="fa fa-user fa-5x"></i>
+            <h4><%= user.last_name %></h4>
+            <h5><%= user.first_name %></h5>
+            <%= link_to '', edit_user_path(user), class: 'btn btn-default fa fa-pencil' %>
+            <%= link_to '', user_path(user), method: :delate, data: {confirm: 'Etes-vous sûr ?'}, class: 'btn btn-default fa fa-trash' %>
+            <button type="button" class="btn btn-default fa fa-envelope send_sms" data-toggle="modal" data-target="#sendSMSUserModal" data-user-id="<%= user.id %>" id="send_sms"></button>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-4 col-md-offset-1">
+      <h2 id="add-user">Nouvel utilisateur</h2>
+      <%= simple_form_for @new_user do |f| %>
+        <%= f.input :first_name, label: "Prénom" %>
+        <%= f.input :last_name, label: 'Nom' %>
+        <%= f.input :phone, label: 'Téléphone', input_html: {'data-toggle' => "tooltip", 'data-placement' => "right", 'title' => "De type +33XXXXXXXXX"} %>
+        <%= f.input :email, label: 'Email' %>
+        <%= f.input :manager, label: 'Administrateur' %>
+        <%= f.hidden_field :send_sms, name: "send_sms", value: "0" %>
+        <button class="btn btn-primary" id="save_user">Sauvegarder</button>
+      <% end %>
+    </div>
+  </div>
 </div>
-</div>
-<div class="row">
-<div class="col-md-4 col-md-offset-1">
-<h2 id="add-user">Nouvel utilisateur</h2>
-  <%= simple_form_for @new_user do |f| %>
-    <%= f.input :first_name, label: "Prénom" %>
-    <%= f.input :last_name, label: 'Nom' %>
-    <%= f.input :phone, label: 'Téléphone', input_html: { 'data-toggle' => "tooltip", 'data-placement' => "right", 'title' => "De type +33XXXXXXXXX" } %>
-    <%= f.input :email, label: 'Email' %>
-    <%= f.input :manager, label: 'Administrateur' %>
-    <%= f.button :submit, 'Sauvegarder', class: 'btn-primary' %>
-  <% end %>
-</div>
-</div>
-</div>
+<%= render partial: "users/create_user_modal_confirm" %>

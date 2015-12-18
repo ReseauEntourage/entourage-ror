@@ -23,9 +23,12 @@ module UserServices
       user
     end
 
-    def create
-      new_user.save
-      UserServices::SMSSender.new(user: new_user).send_welcome_sms!
+    def create(send_sms: false)
+      valid = new_user.save
+      return new_user if !valid
+
+      UserServices::SMSSender.new(user: new_user).send_welcome_sms! if send_sms
+      new_user
     end
 
     def update(user:)

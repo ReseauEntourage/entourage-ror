@@ -45,11 +45,6 @@ RSpec.describe RegistrationRequestsController, type: :controller do
         it { expect(Organization.count).to eq(2) }
         it { expect(User.count).to eq(2) }
       end
-
-      it "sends sms" do
-        expect_any_instance_of(SmsNotificationService).to receive(:send_notification)
-        put 'update', id: registration_request.to_param, validate: true
-      end
     end
 
     context "don't validate" do

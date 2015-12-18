@@ -10,6 +10,7 @@ describe User, :type => :model do
   it { should validate_uniqueness_of(:token) }
   it { should validate_uniqueness_of(:email) }
   it { should define_enum_for(:device_type) }
+  it { should validate_uniqueness_of(:phone) }
   it { should allow_value('+33123456789').for(:phone) }
   it { should allow_value('0123456789').for(:phone) }
   it { should allow_value('+33623456789').for(:phone) }
