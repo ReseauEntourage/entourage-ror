@@ -46,7 +46,8 @@ RSpec.describe UsersController, :type => :controller do
       context 'with incorrect parameters' do
         it "retuns 302" do
           post 'create', user: {key: "value"}
-          expect(response.status).to eq(302)
+          expect(response.status).to eq(200)
+          expect(response).to render_template('index')
           expect(User.count).to eq(1)
         end
       end
