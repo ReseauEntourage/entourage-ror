@@ -39,7 +39,7 @@ class UsersController < ApplicationController
 
   def send_sms
     UserServices::SMSSender.new(user: @user).send_welcome_sms!
-    render json: {status: "message sent"}
+    redirect_to users_url, notice: "Le sms a bien été envoyé"
   end
 
   private

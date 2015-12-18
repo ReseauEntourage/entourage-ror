@@ -9,7 +9,7 @@
     <h4><%= user.last_name %></h4><h5><%= user.first_name %><h4>
     <%= link_to '', edit_user_path(user), class:'btn btn-default fa fa-pencil' %>
     <%= link_to '', user_path(user), method: :delate, data: { confirm: 'Etes-vous sûr ?' }, class:'btn btn-default fa fa-trash' %>
-    <%= link_to '', send_sms_user_path(user), method: :post, class:'btn btn-default fa fa-envelope send_sms', remote: true %>
+    <button type="button" class="btn btn-default fa fa-envelope send_sms" data-toggle="modal" data-target="#createUserModal" data-user-id="<%= user.id %>" id="send_sms"></button>
   </li>
 <% end %>
 </ul>
@@ -29,3 +29,4 @@
 </div>
 </div>
 </div>
+<%= render partial: "organizations/create_user_modal_confirm"%>
