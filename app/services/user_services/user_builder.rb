@@ -17,8 +17,9 @@ module UserServices
     end
 
     def self.regenerate_sms!(user:)
-      user.update(sms_code: sms_code)
-      sms_code
+      new_sms_code = sms_code
+      user.update(sms_code: new_sms_code)
+      new_sms_code
     end
 
     def new_user
