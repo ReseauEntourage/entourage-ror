@@ -62,6 +62,10 @@ var ready = function() {
     displayDashboardMapData();
   }
 
+  $("#send_message_form").find(":submit").click(function() {
+    $("#messageModal").modal('hide');
+  });
+
   $('[data-toggle="tooltip"]').tooltip();
   
   $('input[name="daterange"]').daterangepicker({

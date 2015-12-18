@@ -25,4 +25,10 @@ namespace :data_migration do
       user.update_columns(sms_code: BCrypt::Password.create(user.sms_code)) if user.sms_code.length == 6
     end
   end
+
+  desc "set dev organization"
+  task set_dev_organization: :environment do
+    org = Organization.create!(name: "dev only", description: "dev only", phone: "0123456789", address: "foobar")
+    User.where(email: "vdaubry@gmail.com").first.update(organization: org)
+  end
 end

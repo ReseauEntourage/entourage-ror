@@ -15,7 +15,7 @@ class IosNotificationService
         notification.device_token = device_token
         notification.alert = "Entourage vous envoi un message"
         notification.data = { sender: sender, object: object, content: content }
-        notification.save!
+        notification.save
       end
       notification_pusher.push
     end
