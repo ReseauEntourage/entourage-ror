@@ -19,3 +19,5 @@ RSpec.configure do |config|
 
   config.before(:each) { ActionMailer::Base.deliveries.clear }
 end
+
+ENV["DISABLE_CRYPT"]="TRUE"

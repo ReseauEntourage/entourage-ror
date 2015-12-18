@@ -7,6 +7,8 @@ RSpec.describe Api::V0::UsersController, :type => :controller do
   
   describe 'POST #login' do
     context 'when the user exists' do
+      before { ENV["DISABLE_CRYPT"]="FALSE" }
+      after { ENV["DISABLE_CRYPT"]="TRUE" }
       let!(:device_id) { 'device_id' }
       let!(:device_type) { 'android' }
       let!(:user) { create :user, sms_code: "123456" }
@@ -49,6 +51,8 @@ RSpec.describe Api::V0::UsersController, :type => :controller do
 
   describe '#updateme' do
     context 'authentication is OK' do
+      before { ENV["DISABLE_CRYPT"]="FALSE" }
+      after { ENV["DISABLE_CRYPT"]="TRUE" }
       let!(:user) { create :user }
       context 'params are valid' do
         before { patch 'update_me', token:user.token, user: { email:'new@e.mail', sms_code:'654321' }, format: :json }

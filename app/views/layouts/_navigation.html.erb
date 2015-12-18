@@ -10,18 +10,8 @@
       <%= image_tag('logo.png', alt:'Entourage', class:'navbar-brand') %>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
-
       <% if current_admin.present? %>
-        <ul class="nav navbar-nav">
-          <li class="dropdown">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><%= current_user.first_name %> <span class="caret"></span></a>
-            <ul class="dropdown-menu scrollable-menu">
-              <% User.all.each do |user| %>
-                <li><%= link_to "#{user.first_name}-#{user.last_name}", switch_user_admin_sessions_path(user_id: user.id) %></li>
-              <% end %>
-            </ul>
-          </li>
-        </ul>
+        <%= render partial: "layouts/switch_user" %>
       <% else %>
         <p class="nav navbar-nav navbar-left navbar-text"> Bonjour, <%= current_user.first_name %></p>
       <% end %>
