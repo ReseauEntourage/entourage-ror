@@ -12,15 +12,20 @@ module UserServices
       SecureRandom.hex(16)
     end
 
-    def sms_code
+    def self.sms_code
       '%06i' % rand(1000000)
+    end
+
+    def self.regenerate_sms!(user:)
+      user.update(sms_code: sms_code)
+      sms_code
     end
 
     def new_user
       user = User.new(params)
       user.organization = organization
       user.token = token
-      user.sms_code = sms_code
+      user.sms_code = UserServices::UserBuilder.sms_code
       user
     end
 
