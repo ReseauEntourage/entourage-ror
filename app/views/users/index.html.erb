@@ -10,7 +10,8 @@
             <h5><%= user.first_name %></h5>
             <%= link_to '', edit_user_path(user), class: 'btn btn-default fa fa-pencil' %>
             <%= link_to '', user_path(user), method: :delate, data: {confirm: 'Etes-vous sûr ?'}, class: 'btn btn-default fa fa-trash' %>
-            <button type="button" class="btn btn-default fa fa-envelope send_sms" data-toggle="modal" data-target="#sendSMSUserModal" data-user-id="<%= user.id %>" id="send_sms"></button>
+            <button type="button" class="btn btn-default fa fa-envelope send_sms" data-toggle="modal" data-target="#sendSMSUserModal" data-user-id="<%= user.id %>"></button>
+            <%= hidden_field_tag 'url_template', send_sms_user_url("{user_id}") %>
           </li>
         <% end %>
       </ul>
@@ -33,3 +34,4 @@
   </div>
 </div>
 <%= render partial: "users/create_user_modal_confirm" %>
+<%= render partial: "users/send_sms_user_modal" %>

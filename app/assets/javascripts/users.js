@@ -1,9 +1,11 @@
 var ready = function() {
   if ($(".users")[0]){
-    $("#send_sms").click(function () {
+    $(".send_sms").click(function () {
       var user_id = $(this).data('user-id');
-      var href = $(".modal-footer a").attr("href");
+      console.log("user_id="+user_id);
+      var href = $("#url_template").val();
       $(".modal-footer a").attr("href", href.replace("%7Buser_id%7D", user_id));
+      console.log("href="+$(".modal-footer a").attr("href"));
     });
 
     $("#save_user").click(function(e){
