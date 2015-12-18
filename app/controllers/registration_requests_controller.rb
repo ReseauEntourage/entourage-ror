@@ -1,4 +1,5 @@
-class RegistrationRequestsController < GuiController
+class RegistrationRequestsController < ApplicationController
+  before_filter :authenticate_admin!
   before_filter :set_registration_request, only: [:show, :destroy, :update]
 
   def index

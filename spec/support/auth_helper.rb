@@ -1,6 +1,7 @@
 module AuthHelper
   def admin_basic_login
     user = create :user, admin: true
+    session[:admin_user_id] = user.id
     basic_login(user)
   end
   

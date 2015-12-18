@@ -1,7 +1,7 @@
 module Api
   module V0
     class MessagesController < Api::V0::BaseController
-      skip_before_filter :require_login
+      skip_before_filter :authenticate_user!
 
       def create
         message = Message.new(message_params)

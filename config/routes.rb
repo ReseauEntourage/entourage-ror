@@ -61,6 +61,12 @@ Rails.application.routes.draw do
   namespace :admin do
     get 'logout' => 'sessions#logout'
     post 'generate_tour' => 'generate_tour#generate'
+
+    resources :sessions, only: [:none] do
+      collection do
+        get 'switch_user'
+      end
+    end
   end
   ActiveAdmin.routes(self)
 
