@@ -7,7 +7,7 @@ module Api
         def index
           page = params[:page] || 1
           per = [(params[:per].try(:to_i) || 25), 25].min
-          tours = @user.tours.page(page).per(per)
+          tours = @user.tours.order(updated_at: :desc).page(page).per(per)
           @presenters = TourCollectionPresenter.new(tours: tours)
           render status: 200
         end
