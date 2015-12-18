@@ -4,6 +4,8 @@ class AndroidNotificationService
   end
   
   def send_notification(sender, object, content, device_ids)
+    return if device_ids.blank?
+
     entourage = Rpush::Gcm::App.where(name: 'entourage').first
     
     if entourage.nil?
