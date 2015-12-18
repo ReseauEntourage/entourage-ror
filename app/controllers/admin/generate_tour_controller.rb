@@ -1,5 +1,6 @@
 module Admin
   class GenerateTourController < Admin::BaseController
+    before_action :authenticate_admin!
 
     def generate
       return render json: {error: "missing_coordinates"}, status: 400 if params[:coordinates].blank?

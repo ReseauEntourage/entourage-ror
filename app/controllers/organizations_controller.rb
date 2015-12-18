@@ -1,9 +1,10 @@
-class OrganizationsController < GuiController
+class OrganizationsController < ApplicationController
   attr_writer :push_notification_service
-  
+
+  before_filter :authenticate_user!
+  before_filter :authenticate_manager!, only: [:edit, :update]
   before_filter :location_filter, only: [:encounters, :tours]
   before_filter :set_organization
-  before_filter :authenticate_manager!, only: [:edit, :update]
 
   def dashboard
     my_tours = Tour.joins(:user).where(users: { organization_id: @organization.id })
@@ -127,7 +128,7 @@ class OrganizationsController < GuiController
   end
 
   def set_organization
-    @organization = current_user.organization
+    @organization = @current_user.organization
   end
 
 end
