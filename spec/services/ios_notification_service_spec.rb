@@ -17,9 +17,11 @@ describe IosNotificationService, type: :service do
       it { expect(notification_pusher).to have_received(:push).with(no_args) }
     end
     context 'ios app is absent' do
-      before { Rails.logger.stub(:warn) }
-      subject! { IosNotificationService.new(notification_pusher).send_notification(sender, object, content, device_ids) }
-      it { expect(Rails.logger).to have_received(:warn).with('No IOS notification has been sent. Please save a Rpush::Apns::App in database'.red) }
+      it "raise an error" do
+        expect {
+          IosNotificationService.new(notification_pusher).send_notification(sender, object, content, device_ids)
+        }.to raise_error
+      end
     end
   end
 end

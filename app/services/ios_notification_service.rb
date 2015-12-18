@@ -7,7 +7,7 @@ class IosNotificationService
     entourage = Rpush::Apns::App.where(name: 'entourage').first
 
     if entourage.nil?
-      Rails.logger.warn 'No IOS notification has been sent. Please save a Rpush::Apns::App in database'.red
+      raise 'No IOS notification has been sent. Please save a Rpush::Apns::App in database'
     else
       device_ids.each do |device_token|
         notification = Rpush::Apns::Notification.new

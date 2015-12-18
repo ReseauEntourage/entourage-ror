@@ -4,6 +4,8 @@ describe UserServices::PasswordService do
   
   describe 'check_password' do
     context "valid user password" do
+      before { ENV["DISABLE_CRYPT"]="FALSE" }
+      after { ENV["DISABLE_CRYPT"]="TRUE" }
       let(:user) { FactoryGirl.create(:user, sms_code: "foobar") }
       let(:password_service) { UserServices::PasswordService.new(user: user) }
       it { expect(password_service.check_password("foobar")).to be true }

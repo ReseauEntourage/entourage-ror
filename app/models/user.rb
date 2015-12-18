@@ -33,7 +33,12 @@ class User < ActiveRecord::Base
   end
 
   def sms_code=(another_sms_code)
-    another_sms_code = BCrypt::Password.create(another_sms_code) unless another_sms_code.nil?
+    #Hashing slows down tests a lot
+    if Rails.env.test? && ENV["DISABLE_CRYPT"]=="TRUE"
+      return super(another_sms_code)
+    end
+
+    another_sms_code = BCrypt::Password.create(another_sms_code) unless (another_sms_code.nil?)
     super(another_sms_code)
   end
 end

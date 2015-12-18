@@ -10,6 +10,8 @@ describe SessionsController do
 
   describe 'POST create' do
     context "Valid credentials" do
+      before { ENV["DISABLE_CRYPT"]="FALSE" }
+      after { ENV["DISABLE_CRYPT"]="TRUE" }
       let!(:user) { FactoryGirl.create(:user, phone: "+33612345678", sms_code: "123456") }
       before { post :create, phone: "+33612345678", sms_code: "123456" }
       it { expect(session[:user_id]).to eq(user.id) }
@@ -41,12 +43,16 @@ describe SessionsController do
       end
 
       context "admin" do
+        before { ENV["DISABLE_CRYPT"]="FALSE" }
+        after { ENV["DISABLE_CRYPT"]="TRUE" }
         let!(:user) { FactoryGirl.create(:user, phone: "+33612345678", sms_code: "123456", admin: true) }
         before { post :create, phone: "+33612345678", sms_code: "123456" }
         it { expect(session[:admin_user_id]).to eq(user.id) }
       end
 
       context "logout and then login" do
+        before { ENV["DISABLE_CRYPT"]="FALSE" }
+        after { ENV["DISABLE_CRYPT"]="TRUE" }
         it "doesn't log as admin" do
           admin = FactoryGirl.create(:user, phone: "+33612345678", sms_code: "123456", admin: true)
           post :create, phone: "+33612345678", sms_code: "123456"

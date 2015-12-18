@@ -12,8 +12,8 @@ namespace :data_migration do
     app.save!
   end
 
-  desc "Create ios Rpush app"
-  task create_rpush_ios_app: :environment do
+  desc "geocode encounters"
+  task geocode_encounters: :environment do
     Encounter.find_each do |encounter|
       EncounterReverseGeocodeJob.perform_now(encounter.id)
     end
