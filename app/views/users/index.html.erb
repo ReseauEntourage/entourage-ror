@@ -20,6 +20,7 @@
     <div class="col-md-4 col-md-offset-1">
       <h2 id="add-user">Nouvel utilisateur</h2>
       <%= simple_form_for @new_user do |f| %>
+        <%= render partial: "common/errors", locals: {obj: @new_user} %>
         <%= f.input :first_name, label: "Prénom" %>
         <%= f.input :last_name, label: 'Nom' %>
         <%= f.input :phone, label: 'Téléphone', input_html: {'data-toggle' => "tooltip", 'data-placement' => "right", 'title' => "De type +33XXXXXXXXX"} %>

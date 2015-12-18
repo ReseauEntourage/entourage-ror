@@ -5,6 +5,7 @@ module UserServices
     def initialize(params:, organization: nil)
       @params = params
       @organization = organization
+      @callback = Callback.new
     end
 
     def token
@@ -24,11 +25,15 @@ module UserServices
     end
 
     def create(send_sms: false)
-      valid = new_user.save
-      return new_user if !valid
+      yield callback if block_given?
 
-      UserServices::SMSSender.new(user: new_user).send_welcome_sms! if send_sms
-      new_user
+      user = new_user
+      if user.save
+        UserServices::SMSSender.new(user: new_user).send_welcome_sms! if send_sms
+        callback.on_create_success.try(:call, user)
+      else
+        callback.on_create_failure.try(:call, user)
+      end
     end
 
     def update(user:)
@@ -38,6 +43,18 @@ module UserServices
     end
 
     private
-    attr_reader :params, :organization
+    attr_reader :params, :organization, :callback
+  end
+
+  class Callback
+    attr_accessor :on_create_success, :on_create_failure
+
+    def create_success(&block)
+      @on_create_success = block
+    end
+
+    def create_failure(&block)
+      @on_create_failure = block
+    end
   end
 end
