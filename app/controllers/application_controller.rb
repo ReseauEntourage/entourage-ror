@@ -27,7 +27,7 @@ class ApplicationController < ActionController::Base
   end
 
   def current_user
-    @current_user ||= User.where(id: session[:user_id]).first
+    @current_user = User.where(id: session[:user_id]).first
   end
 
   def current_admin
