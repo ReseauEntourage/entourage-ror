@@ -34,11 +34,6 @@ module UserServices
       else
         callback.on_create_failure.try(:call, user)
       end
-
-      return false
-
-
-      true
     end
 
     def update(user:)
