@@ -55,6 +55,7 @@ Rails.application.routes.draw do
   end
 
   get 'apps' => 'home#apps', as: :apps
+  get 'store_redirection' => 'home#store_redirection'
 
 
   #ADMIN
