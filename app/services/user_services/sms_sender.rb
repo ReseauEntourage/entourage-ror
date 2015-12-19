@@ -6,7 +6,7 @@ module UserServices
 
     def send_welcome_sms!
       new_sms = UserServices::UserBuilder.regenerate_sms!(user: user)
-      link = Rails.env.test? ? "http://foo.bar" : url_shortener.shorten("https://play.google.com/apps/testing/social.entourage.android")
+      link = Rails.env.test? ? "http://foo.bar" : url_shortener.shorten(Rails.application.routes.url_helpers.store_redirection_url)
       message = "Bienvenue sur Entourage. Votre code est #{new_sms}. Retrouvez l'application ici : #{link} ."
       sms_notification_service.send_notification(user.phone, message)
     end
