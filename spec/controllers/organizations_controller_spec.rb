@@ -77,6 +77,11 @@ RSpec.describe OrganizationsController, :type => :controller do
         it { should respond_with 200 }
         it { expect(assigns[:tours]).to eq [tour2]}
       end
+      context 'with location filter' do
+        before { get :tours, tour_type: 'alimentary', ne: "2.38-2.45", sw: "38.45-38.12", format: :json }
+        it { should respond_with 200 }
+        it { expect(assigns[:tours]).to eq []}
+      end
       context 'with multiple type filter' do
         before { get :tours, tour_type: 'alimentary,medical', format: :json }
         it { expect(assigns[:tours]).to match_array([tour1, tour2, tour5])}

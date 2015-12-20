@@ -112,6 +112,7 @@ class OrganizationsController < ApplicationController
     if (params[:sw].present? && params[:ne].present?)
       ne = params[:ne].split('-').map(&:to_f)
       sw = params[:sw].split('-').map(&:to_f)
+      #TODO : move default preferences in redis and dont write DB at each request
       @current_user.default_latitude = (ne[0] + sw[0]) / 2
       @current_user.default_longitude = (ne[1] + sw[1]) / 2
       @current_user.save
