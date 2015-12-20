@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151217094818) do
+ActiveRecord::Schema.define(version: 20151220075406) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -186,6 +186,8 @@ ActiveRecord::Schema.define(version: 20151217094818) do
     t.datetime "updated_at"
   end
 
+  add_index "tour_points", ["tour_id", "latitude", "longitude"], name: "index_tour_points_on_tour_id_and_latitude_and_longitude", using: :btree
+
   create_table "tours", force: :cascade do |t|
     t.string   "tour_type"
     t.datetime "created_at"
@@ -196,6 +198,8 @@ ActiveRecord::Schema.define(version: 20151217094818) do
     t.datetime "closed_at"
     t.integer  "length",       default: 0
   end
+
+  add_index "tours", ["user_id", "updated_at", "tour_type"], name: "index_tours_on_user_id_and_updated_at_and_tour_type", using: :btree
 
   create_table "users", force: :cascade do |t|
     t.datetime "created_at"
@@ -214,5 +218,7 @@ ActiveRecord::Schema.define(version: 20151217094818) do
     t.float    "default_longitude"
     t.boolean  "admin",                         default: false, null: false
   end
+
+  add_index "users", ["organization_id"], name: "index_users_on_organization_id", using: :btree
 
 end
