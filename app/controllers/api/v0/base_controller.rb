@@ -15,7 +15,7 @@ module Api
 
       def validate_request!
         begin
-          ApiRequestValidator.new(params: params, headers: headers).validate!
+          ApiRequestValidator.new(params: params, headers: headers, env: request.env).validate!
         rescue UnauthorisedApiKeyError => e
           Rails.logger.error e
           return render json: {message: 'Missing API Key or invalid key'}, status: 426
