@@ -49,7 +49,9 @@ RSpec.describe OrganizationsController, :type => :controller do
       it { expect(assigns[:tourer_count]).to eq 2 }
       it { expect(assigns[:encounter_count]).to eq 4 }
       it { expect(assigns[:total_length]).to eq 6006 }
-      it { expect(assigns[:latest_tours]).to eq({ last_sunday => [tour4], last_tuesday => [tour1], last_wednesday => [tour2, tour3] }) }
+      it { expect(assigns[:latest_tours][last_sunday]).to match_array([tour4]) }
+      it { expect(assigns[:latest_tours][last_tuesday]).to match_array([tour1]) }
+      it { expect(assigns[:latest_tours][last_wednesday]).to match_array([tour2, tour3]) }
     end
     describe 'tours' do
       let!(:time) { Time.new(2009, 3, 11, 8, 25, 00) }
@@ -76,11 +78,6 @@ RSpec.describe OrganizationsController, :type => :controller do
         before { get :tours, tour_type: 'alimentary', format: :json }
         it { should respond_with 200 }
         it { expect(assigns[:tours]).to eq [tour2]}
-      end
-      context 'with location filter' do
-        before { get :tours, tour_type: 'alimentary', ne: "2.38-2.45", sw: "38.45-38.12", format: :json }
-        it { should respond_with 200 }
-        it { expect(assigns[:tours]).to eq []}
       end
       context 'with multiple type filter' do
         before { get :tours, tour_type: 'alimentary,medical', format: :json }
