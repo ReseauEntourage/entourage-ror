@@ -16,8 +16,6 @@ RSpec.configure do |config|
   config.tty = true
   config.color = true
   config.formatter = :documentation
-
-  config.before(:each) { ActionMailer::Base.deliveries.clear }
 end
 
 ENV["DISABLE_CRYPT"]="TRUE"
