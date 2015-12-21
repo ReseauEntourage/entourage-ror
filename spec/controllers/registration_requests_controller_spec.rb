@@ -46,6 +46,11 @@ RSpec.describe RegistrationRequestsController, type: :controller do
         it { expect(Organization.count).to eq(2) }
         it { expect(User.count).to eq(2) }
       end
+
+      it "sends mail" do
+        expect(MemberMailer).to receive(:registration_request_accepted).once
+        put 'update', id: registration_request.to_param, validate: true
+      end
     end
 
     context "don't validate" do
@@ -54,6 +59,11 @@ RSpec.describe RegistrationRequestsController, type: :controller do
       #Already 1 user authenticated with organization
       it { expect(Organization.count).to eq(1) }
       it { expect(User.count).to eq(1) }
+    end
+
+    it "doesn't send mail" do
+      expect(MemberMailer).to receive(:registration_request_accepted).never
+      put 'update', id: registration_request.to_param
     end
   end
 end

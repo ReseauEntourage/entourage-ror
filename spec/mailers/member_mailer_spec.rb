@@ -24,4 +24,12 @@ describe MemberMailer, type: :mailer do
     it { expect(subject.body.encoded).to match "L'utilisateur #{user.full_name} ##{user.id} voudrait soumettre une correction sur le POI #{poi.name} ##{poi.id}" }
     it { expect(subject.body.encoded).to match message }
   end
+
+  describe '#registration_request_accepted' do
+    let!(:user) { create :user }
+    subject { MemberMailer.registration_request_accepted(user) }
+    it { expect(subject.from).to eq ['contact@entourage.social'] }
+    it { expect(subject.to).to eq [user.email] }
+    it { expect(subject.subject).to eq "Votre demande d'adhésion à la plateforme Entourage a été acceptée" }
+  end
 end

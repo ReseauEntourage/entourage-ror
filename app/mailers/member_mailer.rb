@@ -24,4 +24,9 @@ class MemberMailer < ActionMailer::Base
       logger.warn "Could not deliver POI report. Please provide POI_REPORT_EMAIL as an environment variable".red
     end
   end
+
+  def registration_request_accepted(user)
+    @user = user
+    mail(to: @user.email, subject: "Votre demande d'adhésion à la plateforme Entourage a été acceptée")
+  end
 end
