@@ -6,6 +6,7 @@ class User < ActiveRecord::Base
   validates_format_of :email, with: /@/
   has_many :tours
   has_many :encounters, through: :tours
+  has_many :login_histories
   belongs_to :organization
   has_and_belongs_to_many :coordinated_organizations, -> { uniq }, class_name: "Organization", join_table: "coordination"
 

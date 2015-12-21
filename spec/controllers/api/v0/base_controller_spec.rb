@@ -24,5 +24,7 @@ RSpec.describe Api::V0::BaseController, :type => :controller do
       before { get :ping }
       it { expect(response.status).to eq(200) }
     end
+
+
   end
 end

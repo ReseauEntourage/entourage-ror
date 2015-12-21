@@ -6,24 +6,19 @@ class ApplicationController < ActionController::Base
 
 
   def authenticate_admin!
-    unless current_admin
-      flash[:error] = "Vous devez vous authentifier avec un compte admin pour accéder à cette page"
-      return redirect_to new_session_path
-    end
+    login_error "Vous devez vous authentifier avec un compte admin pour accéder à cette page" unless current_admin
   end
 
   def authenticate_user!
-    unless current_user
-      flash[:error] = "Vous devez vous authentifier pour accéder à cette page"
-      return redirect_to new_session_path
+    if current_user
+      UserServices::LoginHistoryService.new(user: current_user).record_login!
+    else
+      login_error "Vous devez vous authentifier pour accéder à cette page"
     end
   end
 
   def authenticate_manager!
-    unless current_user && (current_user.manager || current_user.admin)
-      flash[:error] = "Vous devez vous authentifier avec un compte manager pour accéder à cette page"
-      return redirect_to new_session_path
-    end
+    login_error "Vous devez vous authentifier avec un compte manager pour accéder à cette page" unless current_user && (current_user.manager || current_user.admin)
   end
 
   def current_user
@@ -32,6 +27,11 @@ class ApplicationController < ActionController::Base
 
   def current_admin
     @current_admin ||= User.where(id: session[:admin_user_id]).first
+  end
+
+  def login_error(message)
+    flash[:error] = "Vous devez vous authentifier avec un compte admin pour accéder à cette page"
+    return redirect_to new_session_path
   end
 
   def ssl_configured?
