@@ -28,9 +28,10 @@ RSpec.describe RegistrationRequestsController, type: :controller do
   end
 
   describe "DELETE destroy" do
-    let(:registration_request) { FactoryGirl.create(:registration_request) }
+    let(:registration_request) { FactoryGirl.create(:registration_request, status: "pending") }
     before { delete 'destroy', id: registration_request.to_param }
-    it { expect(RegistrationRequest.count).to eq(0) }
+    it { expect(RegistrationRequest.count).to eq(1) }
+    it { expect(registration_request.reload.status).to eq("rejected") }
     it { should redirect_to registration_requests_path }
   end
 
