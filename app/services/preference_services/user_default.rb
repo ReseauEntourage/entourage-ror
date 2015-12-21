@@ -13,7 +13,7 @@ module PreferenceServices
     end
 
     def tour_types
-      ($redis.get("preferences:user:#{user.id}:tour_types") || "").split(",")
+      ($redis.get("preferences:user:#{user.id}:tour_types") || "medical,barehands,alimentary").split(",")
     end
 
     def tour_types=(other_tour_types)

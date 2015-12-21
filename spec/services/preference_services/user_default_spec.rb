@@ -23,7 +23,7 @@ describe PreferenceServices::UserDefault do
     end
 
     context "no tours" do
-      it { expect(PreferenceServices::UserDefault.new(user: user).tour_types).to eq([]) }
+      it { expect(PreferenceServices::UserDefault.new(user: user).tour_types).to eq(["medical", "barehands", "alimentary"]) }
     end
 
     context "set no tours" do
