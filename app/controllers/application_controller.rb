@@ -13,7 +13,9 @@ class ApplicationController < ActionController::Base
   end
 
   def authenticate_user!
-    unless current_user
+    if current_user
+
+    else
       flash[:error] = "Vous devez vous authentifier pour accéder à cette page"
       return redirect_to new_session_path
     end

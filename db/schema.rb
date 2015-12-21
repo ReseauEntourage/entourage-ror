@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151220075406) do
+ActiveRecord::Schema.define(version: 20151220203627) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -55,6 +55,13 @@ ActiveRecord::Schema.define(version: 20151220075406) do
     t.string   "encrypted_message"
     t.string   "address"
   end
+
+  create_table "login_histories", force: :cascade do |t|
+    t.integer  "user_id",      null: false
+    t.datetime "connected_at", null: false
+  end
+
+  add_index "login_histories", ["user_id"], name: "index_login_histories_on_connected_at_by_hour", unique: true, using: :btree
 
   create_table "messages", force: :cascade do |t|
     t.string   "content",    null: false
