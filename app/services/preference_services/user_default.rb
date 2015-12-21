@@ -4,6 +4,22 @@ module PreferenceServices
       @user = user
     end
 
+    def date_range
+      $redis.get("preferences:user:#{user.id}:date_range") || ""
+    end
+
+    def date_range=(another_date_range)
+      $redis.set("preferences:user:#{user.id}:date_range", another_date_range)
+    end
+
+    def tour_types
+      ($redis.get("preferences:user:#{user.id}:tour_types") || "").split(",")
+    end
+
+    def tour_types=(other_tour_types)
+      $redis.set("preferences:user:#{user.id}:tour_types", other_tour_types.join(","))
+    end
+
     def snap_to_road
       $redis.get("preferences:user:#{user.id}:snap_to_road") == "true"
     end
