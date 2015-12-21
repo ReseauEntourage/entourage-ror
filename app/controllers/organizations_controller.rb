@@ -50,13 +50,13 @@ class OrganizationsController < ApplicationController
     if params[:date_range].nil?
       @tours = @tours.where("tours.updated_at >= ?", Time.now.monday)
     else
-      PreferenceServices::UserDefault.new(user: @current_user).date_range = params[:date_range]
+      user_default.date_range = params[:date_range]
       date_range = params[:date_range].split('-').map { |s| Date.strptime(s, '%d/%m/%Y') }
       @tours = @tours.where("tours.updated_at between ? and ?", date_range[0].beginning_of_day, date_range[1].end_of_day)
     end
     if params[:tour_type].present?
       tour_types = params[:tour_type].split(",")
-      PreferenceServices::UserDefault.new(user: @current_user).tour_types = tour_types
+      user_default.tour_types = tour_types
       @tours = @tours.where(tour_type: tour_types)
     end
     @presenters = TourCollectionPresenter.new(tours: @tours)
@@ -97,22 +97,18 @@ class OrganizationsController < ApplicationController
     @tourer_count = @tours.select(:user_id).distinct.count
     @encounter_count = @encounters.count
 
-    PreferenceServices::UserDefault.new(user: @current_user).date_range = params[:date_range] if params[:date_range]
-    PreferenceServices::UserDefault.new(user: @current_user).tour_types = params[:tour_type].split(",") if params[:tour_type].present?
+    user_default.date_range = params[:date_range] if params[:date_range]
+    user_default.tour_types = params[:tour_type].split(",") if params[:tour_type].present?
   end
   
   def map_center
-    render json: [@current_user.default_latitude ||= 48.858859, @current_user.default_longitude ||= 2.3470599]
+    render json: [user_default.latitude ||= 48.858859, user_default.longitude ||= 2.3470599]
   end
   
   def send_message
     sender = @current_user.full_name
     push_notification_service.send_notification sender, params[:object], params[:message], @organization.users
     render plain: 'message envoyé', status: 200
-  end
-
-  def export_dashboard
-
   end
   
   private
@@ -121,10 +117,8 @@ class OrganizationsController < ApplicationController
     if (params[:sw].present? && params[:ne].present?)
       ne = params[:ne].split('-').map(&:to_f)
       sw = params[:sw].split('-').map(&:to_f)
-      #TODO : move default preferences in redis and dont write DB at each request
-      @current_user.default_latitude = (ne[0] + sw[0]) / 2
-      @current_user.default_longitude = (ne[1] + sw[1]) / 2
-      @current_user.save
+      user_default.latitude = (ne[0] + sw[0]) / 2
+      user_default.longitude = (ne[1] + sw[1]) / 2
       @box = sw + ne
     end
   end
@@ -132,13 +126,17 @@ class OrganizationsController < ApplicationController
   def organization_params
     params.require(:organization).permit(:name, :description, :phone, :address, :logo_url)
   end
+
+  def set_organization
+    @organization = @current_user.organization
+  end
   
   def push_notification_service
     @push_notification_service ||= PushNotificationService.new
   end
 
-  def set_organization
-    @organization = @current_user.organization
+  def user_default
+    @user_default ||= PreferenceServices::UserDefault.new(user: @current_user)
   end
 
 end
