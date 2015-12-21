@@ -39,7 +39,7 @@
   </div>
   <div class="col-md-2">
     <h3>Filtres</h3>
-    <input type="text" id="maraudes-date-filter" class="maraudes-map-filter form-control" placeholder="Sélection de la date" name="daterange"/>
+    <input type="text" id="maraudes-date-filter" class="maraudes-map-filter form-control" placeholder="Sélection de la date" name="daterange" value=<%= @user_presenter.date_range %>/>
     <%= select_tag "tour_types",
                    options_for_select([["Médical", "medical"], ["A mains nues", "barehands"], ["Alimentaire", "alimentary"]], @user_presenter.tour_types),
                    {multiple: true, class: "maraudes-map-filter form-control", id: "maraudes-tour-type-filter"} %>

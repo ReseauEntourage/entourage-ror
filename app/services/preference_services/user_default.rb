@@ -4,6 +4,14 @@ module PreferenceServices
       @user = user
     end
 
+    def date_range
+      $redis.get("preferences:user:#{user.id}:date_range")
+    end
+
+    def date_range=(another_date_range)
+      $redis.set("preferences:user:#{user.id}:date_range", another_date_range)
+    end
+
     def tour_types
       ($redis.get("preferences:user:#{user.id}:tour_types") || "").split(",")
     end

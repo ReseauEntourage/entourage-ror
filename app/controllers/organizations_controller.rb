@@ -49,6 +49,7 @@ class OrganizationsController < ApplicationController
     if params[:date_range].nil?
       @tours = @tours.where("tours.updated_at >= ?", Time.now.monday)
     else
+      PreferenceServices::UserDefault.new(user: @current_user).date_range = params[:date_range]
       date_range = params[:date_range].split('-').map { |s| Date.strptime(s, '%d/%m/%Y') }
       @tours = @tours.where("tours.updated_at between ? and ?", date_range[0].beginning_of_day, date_range[1].end_of_day)
     end

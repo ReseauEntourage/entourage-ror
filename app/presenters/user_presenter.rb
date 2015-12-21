@@ -1,6 +1,7 @@
 class UserPresenter
   delegate :snap_to_road,
-           :tour_types, to: :user_default
+           :tour_types,
+           :date_range, to: :user_default
 
   def initialize(user:)
     @user = user
