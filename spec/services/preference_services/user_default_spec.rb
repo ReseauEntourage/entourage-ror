@@ -15,4 +15,20 @@ describe PreferenceServices::UserDefault do
       it { expect(PreferenceServices::UserDefault.new(user: user).snap_to_road).to be false }
     end
   end
+
+  describe 'tour types' do
+    context "has tours" do
+      before { PreferenceServices::UserDefault.new(user: user).tour_types = ["foo", "bar"] }
+      it { expect(PreferenceServices::UserDefault.new(user: user).tour_types).to eq(["foo", "bar"]) }
+    end
+
+    context "no tours" do
+      it { expect(PreferenceServices::UserDefault.new(user: user).tour_types).to eq([]) }
+    end
+
+    context "set no tours" do
+      before { PreferenceServices::UserDefault.new(user: user).tour_types = [] }
+      it { expect(PreferenceServices::UserDefault.new(user: user).tour_types).to eq([]) }
+    end
+  end
 end

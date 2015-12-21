@@ -114,7 +114,7 @@ var ready = function() {
     }
   });
 
-  $('#rencontres-tour-type-filter').multiselect({ buttonClass :'btn btn-default multitest',
+  $('#maraudes-tour-type-filter').multiselect({ buttonClass :'btn btn-default multitest',
                                                 nonSelectedText: 'Sélectionnez une option'});
 };
 

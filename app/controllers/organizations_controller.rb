@@ -52,7 +52,11 @@ class OrganizationsController < ApplicationController
       date_range = params[:date_range].split('-').map { |s| Date.strptime(s, '%d/%m/%Y') }
       @tours = @tours.where("tours.updated_at between ? and ?", date_range[0].beginning_of_day, date_range[1].end_of_day)
     end
-    @tours = @tours.where(tour_type: params[:tour_type].split(",")) if params[:tour_type].present?
+    if params[:tour_type].present?
+      tour_types = params[:tour_type].split(",")
+      PreferenceServices::UserDefault.new(user: @current_user).tour_types = tour_types
+      @tours = @tours.where(tour_type: tour_types)
+    end
     @presenters = TourCollectionPresenter.new(tours: @tours)
     @tours
   end
