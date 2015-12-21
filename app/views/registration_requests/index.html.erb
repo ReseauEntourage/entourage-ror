@@ -2,6 +2,18 @@
 
 <h1>Listing Registration Requests</h1>
 
+<ul class="nav nav-pills" role="tablist">
+  <li role="presentation" class="<%= active_class(registration_requests_path(status: "pending"))%>">
+    <%= link_to "En attente", registration_requests_path(status: "pending") %>
+  </li>
+  <li role="presentation" class="<%= active_class(registration_requests_path(status: "validated"))%>">
+    <%= link_to "Acceptées", registration_requests_path(status: "validated") %>
+  </li>
+  <li role="presentation" class="<%= active_class(registration_requests_path(status: "rejected"))%>">
+    <%= link_to "Refusés", registration_requests_path(status: "rejected") %>
+  </li>
+</ul>
+
 <table class="table table-striped">
   <thead>
     <tr>

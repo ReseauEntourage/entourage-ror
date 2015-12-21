@@ -3,7 +3,14 @@ class RegistrationRequestsController < ApplicationController
   before_filter :set_registration_request, only: [:show, :destroy, :update]
 
   def index
-    @registration_requests = RegistrationRequest.pending.page(params[:page])
+    @registration_requests = if params[:status] == "validated"
+                               RegistrationRequest.validated
+                             elsif params[:status] == "rejected"
+                               RegistrationRequest.rejected
+                             else
+                               RegistrationRequest.pending
+                             end
+    @registration_requests = @registration_requests.page(params[:page])
   end
 
   def show
