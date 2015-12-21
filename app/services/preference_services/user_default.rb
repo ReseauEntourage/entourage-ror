@@ -29,6 +29,23 @@ module PreferenceServices
       $redis.set("preferences:user:#{user.id}:snap_to_road", bool_value)
     end
 
+    def latitude
+      $redis.get("preferences:user:#{user.id}:latitude").try(:to_f)
+    end
+
+    def latitude=(another_latitude)
+      $redis.set("preferences:user:#{user.id}:latitude", another_latitude)
+    end
+
+    def longitude
+      $redis.get("preferences:user:#{user.id}:longitude").try(:to_f)
+    end
+
+    def longitude=(another_longitude)
+      $redis.set("preferences:user:#{user.id}:longitude", another_longitude)
+    end
+
+
     private
     attr_reader :user
   end

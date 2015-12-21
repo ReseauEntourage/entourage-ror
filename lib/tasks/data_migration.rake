@@ -31,4 +31,13 @@ namespace :data_migration do
     org = Organization.create!(name: "dev only", description: "dev only", phone: "0123456789", address: "foobar")
     User.where(email: "vdaubry@gmail.com").first.update(organization: org)
   end
+
+  desc "set default longitude and latitude"
+  task set_default_longitude_and_latitude: :environment do
+    User.find_each do |user|
+      user_default = PreferenceServices::UserDefault.new(user: user)
+      user_default.latitude = user.default_latitude
+      user_default.longitude = user.default_longitude
+    end
+  end
 end

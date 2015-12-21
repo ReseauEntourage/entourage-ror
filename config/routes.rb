@@ -46,7 +46,6 @@ Rails.application.routes.draw do
       get 'encounters'
       get 'map_center'
       post 'send_message'
-      get 'export_dashboard'
     end
   end
   resources :users, only: [:index, :edit, :create, :update, :destroy] do
