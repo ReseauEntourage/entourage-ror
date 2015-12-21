@@ -10,7 +10,11 @@ module Api
       end
 
       def authenticate_user!
-        render 'unauthorized', status: :unauthorized unless current_user
+        if current_user
+          UserServices::LoginHistoryService.new(user: current_user).record_login!
+        else
+          render 'unauthorized', status: :unauthorized
+        end
       end
 
       def validate_request!
