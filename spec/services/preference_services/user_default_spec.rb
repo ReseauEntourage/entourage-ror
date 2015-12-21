@@ -31,4 +31,15 @@ describe PreferenceServices::UserDefault do
       it { expect(PreferenceServices::UserDefault.new(user: user).tour_types).to eq([]) }
     end
   end
+
+  describe 'date_range' do
+    context "has date range saved" do
+      before { PreferenceServices::UserDefault.new(user: user).date_range = "22/11/2015-21/12/2015" }
+      it { expect(PreferenceServices::UserDefault.new(user: user).date_range).to eq("22/11/2015-21/12/2015") }
+    end
+
+    context "no tours" do
+      it { expect(PreferenceServices::UserDefault.new(user: user).date_range).to eq("") }
+    end
+  end
 end

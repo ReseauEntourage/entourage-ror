@@ -5,7 +5,7 @@ module PreferenceServices
     end
 
     def date_range
-      $redis.get("preferences:user:#{user.id}:date_range")
+      $redis.get("preferences:user:#{user.id}:date_range") || ""
     end
 
     def date_range=(another_date_range)
