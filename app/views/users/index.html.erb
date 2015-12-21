@@ -3,7 +3,7 @@
     <div class="col-md-10 col-md-offset-1">
       <h2>Utilisateurs <%= link_to '', '#add-user', class: 'btn btn-default fa fa-user-plus' %></h2>
       <ul class="list-inline" id="user-list">
-        <% @users.each do |user| %>
+        <% @users.find_each do |user| %>
           <li class="user-card">
             <i class="fa fa-user fa-5x"></i>
             <h4><%= user.last_name %></h4>

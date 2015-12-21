@@ -1,10 +1,6 @@
 <ul class="nav navbar-nav">
   <li class="dropdown">
     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><%= current_user.first_name %> <span class="caret"></span></a>
-    <ul class="dropdown-menu scrollable-menu">
-      <% User.find_each do |user| %>
-        <li><%= link_to "#{user.first_name}-#{user.last_name}", switch_user_admin_sessions_path(user_id: user.id) %></li>
-      <% end %>
-    </ul>
+    <%= AdminPresenter.user_list %>
   </li>
 </ul>
