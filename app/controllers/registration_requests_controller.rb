@@ -10,7 +10,7 @@ class RegistrationRequestsController < ApplicationController
   end
 
   def destroy
-    @registration_request.destroy
+    @registration_request.update(status: "rejected")
     redirect_to registration_requests_path
   end
 
