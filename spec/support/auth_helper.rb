@@ -6,8 +6,11 @@ module AuthHelper
   end
   
   def manager_basic_login
-    user = create :user, manager: true
-    basic_login(user)
+    basic_login(create :user, manager: true)
+  end
+
+  def user_basic_login
+    basic_login(create :user)
   end
 
   def basic_login(user)

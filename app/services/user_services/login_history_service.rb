@@ -4,9 +4,12 @@ module UserServices
       @user = user
     end
 
-    def record_login
+    def record_login!
       create_login_history! unless already_recorded?
     end
+
+    private
+    attr_reader :user
 
     def already_recorded?
       $redis.get(redis_key).present?
@@ -15,11 +18,8 @@ module UserServices
     def create_login_history!
       user.login_histories.create(connected_at: DateTime.now)
       #don't check login history for 1h
-      $redis.setex(redis_key, 60*60)
+      $redis.setex(redis_key, 60*60, "1")
     end
-
-    private
-    attr_reader :user
 
     def redis_key
       "log_history:user:#{user.id}"
