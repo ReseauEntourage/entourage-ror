@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+</head>
+<body>
+<p>
+  Bonjour <%= @user.first_name %>,
+</p>
+<p>
+  Votre demande d'adhésion à la plateforme Entourage a été acceptée !
+</p>
+<p>
+  Retrouvez vos maraudes à cette adresse : <%= ENV['HOST'] %>
+  Vous pouvez vous identifier avec votre numéro de téléphone et le code qui vous a été envoyé par SMS.
+</p>
+<p>
+  L'équipe Entourage
+</p>
+</body>
+</html>

@@ -10,8 +10,15 @@ module RegistrationRequestServices
 
       ActiveRecord::Base.transaction do
         organization.save!
-        builder.create
-        registration_request.update(status: "validated")
+        builder.create(send_sms: true) do |on|
+          on.create_success do |user|
+            registration_request.update(status: "validated")
+            MemberMailer.registration_request_accepted(user)
+          end
+
+          on.create_failure do |user|
+          end
+        end
       end
     end
 
