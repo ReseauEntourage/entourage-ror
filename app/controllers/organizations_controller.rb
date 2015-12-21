@@ -20,6 +20,7 @@ class OrganizationsController < ApplicationController
   end
 
   def statistics
+    @user_presenter = UserPresenter.new(user: @current_user)
   end
 
   def edit
@@ -95,6 +96,9 @@ class OrganizationsController < ApplicationController
     @tour_count = @tours.count
     @tourer_count = @tours.select(:user_id).distinct.count
     @encounter_count = @encounters.count
+
+    PreferenceServices::UserDefault.new(user: @current_user).date_range = params[:date_range] if params[:date_range]
+    PreferenceServices::UserDefault.new(user: @current_user).tour_types = params[:tour_type].split(",") if params[:tour_type].present?
   end
   
   def map_center

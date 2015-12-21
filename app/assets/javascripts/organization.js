@@ -27,16 +27,16 @@ function displayDashboardMapData() {
         var filters = [];
         filters.push('ne=' + map.getBounds().getNorthEast().lat() + '-' + map.getBounds().getNorthEast().lng());
         filters.push('sw=' + map.getBounds().getSouthWest().lat() + '-' + map.getBounds().getSouthWest().lng());
-        if ($('#maraudes-date-filter').val().length > 0) {
-          filters.push('date_range=' + $('#maraudes-date-filter').val());
+        if ($('#date-filter').val().length > 0) {
+          filters.push('date_range=' + $('#date-filter').val());
         }
 
-        if ($('#maraudes-tour-type-filter').val() != null && $('#maraudes-tour-type-filter').val().length > 0) {
-          filters.push('tour_type=' + $('#maraudes-tour-type-filter').val());
+        if ($('#tour-type-filter').val() != null && $('#tour-type-filter').val().length > 0) {
+          filters.push('tour_type=' + $('#tour-type-filter').val());
         }
 
-        if ($('#maraudes-org-filter').val() != undefined && $('#maraudes-org-filter').val().length > 0) {
-          filters.push('org=' + $('#maraudes-org-filter').val());
+        if ($('#org-filter').val() != undefined && $('#org-filter').val().length > 0) {
+          filters.push('org=' + $('#org-filter').val());
         }
         url += '?' + filters.join('&');
         map.data.forEach(function(feature) {
@@ -45,7 +45,7 @@ function displayDashboardMapData() {
         map.data.loadGeoJson(url);
       };
 
-      $('.maraudes-map-filter').change(refreshMap);
+      $('.map-filter').change(refreshMap);
       map.addListener('idle', refreshMap);
 
       refreshMap();
@@ -114,7 +114,7 @@ var ready = function() {
     }
   });
 
-  $('#maraudes-tour-type-filter').multiselect({ buttonClass :'btn btn-default multitest',
+  $('#tour-type-filter').multiselect({ buttonClass :'btn btn-default multitest',
                                                 nonSelectedText: 'Sélectionnez une option'});
 };
 

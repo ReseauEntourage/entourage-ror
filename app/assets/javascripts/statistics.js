@@ -15,16 +15,16 @@ function displayStatisticsMapData() {
         var filters = [];
         filters.push('ne=' + map.getBounds().getNorthEast().lat() + '-' + map.getBounds().getNorthEast().lng());
         filters.push('sw=' + map.getBounds().getSouthWest().lat() + '-' + map.getBounds().getSouthWest().lng());
-        if ($('#rencontres-date-filter').val().length > 0) {
-          filters.push('date_range=' + $('#rencontres-date-filter').val());
+        if ($('#date-filter').val().length > 0) {
+          filters.push('date_range=' + $('#date-filter').val());
         }
 
-        if ($('#rencontres-tour-type-filter').val() != null && $('#rencontres-tour-type-filter').val().length > 0) {
-          filters.push('tour_type=' + $('#rencontres-tour-type-filter').val());
+        if ($('#tour-type-filter').val() != null && $('#tour-type-filter').val().length > 0) {
+          filters.push('tour_type=' + $('#tour-type-filter').val());
         }
 
-        if ($('#rencontres-org-filter').val() != undefined && $('#rencontres-org-filter').val().length > 0) {
-          filters.push('org=' + $('#rencontres-org-filter').val());
+        if ($('#org-filter').val() != undefined && $('#org-filter').val().length > 0) {
+          filters.push('org=' + $('#org-filter').val());
         }
         url += '?' + filters.join('&');
         heatmap.setMap(null);
@@ -41,7 +41,7 @@ function displayStatisticsMapData() {
         });
       };
 
-      $('.rencontres-map-filter').change(refreshMap);
+      $('.map-filter').change(refreshMap);
       map.addListener('idle', refreshMap);
 
       refreshMap();
@@ -103,7 +103,7 @@ var ready = function() {
       }
     });
 
-    $('#rencontres-tour-type-filter').multiselect({ buttonClass :'btn btn-default multitest',
+    $('#tour-type-filter').multiselect({ buttonClass :'btn btn-default multitest',
       nonSelectedText: 'Sélectionnez une option'});
   }
 };
