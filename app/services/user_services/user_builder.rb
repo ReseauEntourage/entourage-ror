@@ -18,7 +18,8 @@ module UserServices
 
     def self.regenerate_sms!(user:)
       new_sms_code = sms_code
-      user.update(sms_code: new_sms_code)
+      user.sms_code = new_sms_code
+      user.save
       new_sms_code
     end
 

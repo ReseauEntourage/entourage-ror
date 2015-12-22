@@ -26,6 +26,10 @@ Rails.application.routes.draw do
           patch 'update_me'
         end
 
+        member do
+          patch 'code'
+        end
+
         resources :tours, :controller => 'users/tours', only: [:index]
       end
 

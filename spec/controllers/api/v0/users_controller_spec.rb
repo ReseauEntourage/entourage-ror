@@ -71,4 +71,32 @@ RSpec.describe Api::V0::UsersController, :type => :controller do
     end
   end
 
+  describe 'code' do
+    let!(:user) { create :user, sms_code: "123456" }
+
+    describe "regenerate sms code" do
+      before { patch 'code', {id: "me", user: { phone: user.phone }, code: {action: "regenerate"}, format: :json} }
+      it { expect(response.status).to eq(200) }
+      it { expect(user.reload.sms_code).to_not eq("123456") }
+    end
+
+    describe "missing phone" do
+      before { patch 'code', {id: "me", user: { foo: "bar" }, code: {action: "regenerate"}, format: :json} }
+      it { expect(response.status).to eq(400) }
+    end
+
+    describe "unknown phone" do
+      it "returns 404" do
+        expect {
+          patch 'code', {id: "me", user: { phone: "0000" }, code: {action: "regenerate"}, format: :json}
+        }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+    end
+
+    describe "unknown action" do
+      before { patch 'code', {id: "me", user: { phone: user.phone }, code: {action: "foo"}, format: :json} }
+      it { expect(response.status).to eq(400) }
+    end
+  end
+
 end
