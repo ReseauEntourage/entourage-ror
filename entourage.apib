@@ -168,6 +168,28 @@ Users related resources of the **Entourage API**
 
 + Response 401 (application/json; charset=utf-8)
 
+## Regenerate user secret code [/users/me/code]
+
+### Update user secret code [PATCH]
+
+
++ Request (application/json)
+
+    + Header
+
+            Accept: application/json
+
+    + Body
+
+            {user: {phone: "0623456789"}, code: {action: "regenerate"}}
+
++ Response 200 (application/json; charset=utf-8)
+
+            {"user":{"id":1,"email":"new@e.mail","first_name":"Judge","last_name":"Dredd"}}
+
++ Response 400 (application/json; charset=utf-8)
+
+
 # Group Newsletter
 Newsletter subscription related resources of the **Entourage API**
 
