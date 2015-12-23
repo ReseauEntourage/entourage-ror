@@ -47,6 +47,7 @@ Rails.application.routes.draw do
       get 'statistics'
       get 'tours'
       get 'snap_tours'
+      get 'simplified_tours'
       get 'encounters'
       get 'map_center'
       post 'send_message'

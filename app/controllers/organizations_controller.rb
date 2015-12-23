@@ -60,17 +60,17 @@ class OrganizationsController < ApplicationController
       @tours = @tours.where(tour_type: tour_types)
     end
     @presenters = TourCollectionPresenter.new(tours: @tours)
-    @tours
   end
 
-  def snap_tours
+  #TODO : DRY after refactoring tours display
+  def simplified_tours
     orgs = [@organization.id] + @current_user.coordinated_organizations.map(&:id)
-    @tours = Tour.includes(:tour_points)
+    @tours = Tour.includes(:simplified_tour_points)
                  .joins(:user)
                  .where(users: { organization_id: orgs })
 
     if @box
-      tours_with_point_in_box = TourPoint.unscoped.within_bounding_box(@box).select(:tour_id).distinct
+      tours_with_point_in_box = SimplifiedTour.unscoped.within_bounding_box(@box).select(:tour_id).distinct
       @tours = @tours.where(id: tours_with_point_in_box)
     end
     if !params[:org].nil?
@@ -79,12 +79,40 @@ class OrganizationsController < ApplicationController
     if params[:date_range].nil?
       @tours = @tours.where("tours.updated_at >= ?", Time.now.monday)
     else
+      user_default.date_range = params[:date_range]
       date_range = params[:date_range].split('-').map { |s| Date.strptime(s, '%d/%m/%Y') }
       @tours = @tours.where("tours.updated_at between ? and ?", date_range[0].beginning_of_day, date_range[1].end_of_day)
     end
-    @tours = @tours.where(tour_type: params[:tour_type].split(",")) if params[:tour_type].present?
+    if params[:tour_type].present?
+      tour_types = params[:tour_type].split(",")
+      user_default.tour_types = tour_types
+      @tours = @tours.where(tour_type: tour_types)
+    end
     @presenters = TourCollectionPresenter.new(tours: @tours)
-    @tours
+  end
+
+  #TODO : DRY after refactoring tours display
+  def snap_tours
+    orgs = [@organization.id] + @current_user.coordinated_organizations.map(&:id)
+    tours = Tour.includes(:snap_to_road_tour_points)
+                 .joins(:user)
+                 .where(users: { organization_id: orgs })
+
+    if @box
+      tours_with_point_in_box = SnapToRoadTourPoint.unscoped.within_bounding_box(@box).select(:tour_id).distinct
+      tours = tours.where(id: tours_with_point_in_box)
+    end
+    if !params[:org].nil?
+      tours = tours.where(users: { organization_id: params[:org] })
+    end
+    if params[:date_range].nil?
+      tours = tours.where("tours.updated_at >= ?", Time.now.monday)
+    else
+      date_range = params[:date_range].split('-').map { |s| Date.strptime(s, '%d/%m/%Y') }
+      tours = tours.where("tours.updated_at between ? and ?", date_range[0].beginning_of_day, date_range[1].end_of_day)
+    end
+    tours = tours.where(tour_type: params[:tour_type].split(",")) if params[:tour_type].present?
+    @presenters = TourCollectionPresenter.new(tours: tours)
   end
   
   def encounters

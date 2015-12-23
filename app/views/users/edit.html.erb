@@ -11,7 +11,9 @@
         <% if @current_user.admin %>
           <%= f.input :manager, label: 'Administrateur' if @current_user.admin %>
           <%= check_box_tag "user[snap_to_road]", 'true', @user_presenter.snap_to_road %>
-           Snap to road
+           Snap to road<br>
+          <%= check_box_tag "user[simplified_tour]", 'true', @user_presenter.simplified_tour %>
+          simplified_tour
         <% end %>
         <br><br>
 
