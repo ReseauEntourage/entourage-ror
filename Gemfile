@@ -32,6 +32,7 @@ gem 'redis',                    '~> 3.2.1'
 gem 'bcrypt',                   '~> 3.1.10'
 gem 'sentry-raven',             '~> 0.13.3'
 gem 'sidekiq',                  '~> 3.4.1'
+gem 'simplify_rb',              '~> 0.1.2'
 
 group :development, :test do
   gem 'byebug',                 '~> 5.0.0'
