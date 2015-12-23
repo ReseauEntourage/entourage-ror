@@ -16,7 +16,7 @@ class OrganizationsController < ApplicationController
     @user_presenter = UserPresenter.new(user: @current_user)
 
     #TODO : improve query (take, group_by)
-    @latest_tours = (my_tours.order('tours.updated_at DESC').take 8).group_by { |t| t.updated_at.to_date }
+    @latest_tours = my_tours.order('tours.updated_at DESC').limit(8).group_by { |t| t.updated_at.to_date }
   end
 
   def statistics

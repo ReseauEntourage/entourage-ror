@@ -23,7 +23,7 @@ RSpec.describe OrganizationsController, :type => :controller do
       it { expect(response.status).to eq(200) }
     end
 
-    describe '#dashboard' do
+    describe 'dashboard' do
       let!(:time) { DateTime.new 2015, 8, 20, 0, 0, 0, '+2' }
       let!(:last_sunday) { (last_monday - 1).to_date }
       let!(:last_monday) { time.monday }
