@@ -24,6 +24,9 @@ function displayDashboardMapData() {
         if($("#snapbox").val() == "true") {
           url = '/organizations/snap_tours.json';
         }
+        else if($("#simplifiedbox").val() == "true") {
+          url = '/organizations/simplified_tours.json';
+        }
         var filters = [];
         filters.push('ne=' + map.getBounds().getNorthEast().lat() + '-' + map.getBounds().getNorthEast().lng());
         filters.push('sw=' + map.getBounds().getSouthWest().lat() + '-' + map.getBounds().getSouthWest().lng());

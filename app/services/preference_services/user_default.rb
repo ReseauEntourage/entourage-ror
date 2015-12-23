@@ -29,6 +29,15 @@ module PreferenceServices
       $redis.set("preferences:user:#{user.id}:snap_to_road", bool_value)
     end
 
+    def simplified_tour
+      $redis.get("preferences:user:#{user.id}:simplified_tour") == "true"
+    end
+
+    def simplified_tour=(val)
+      bool_value = (val ? "true" : "false")
+      $redis.set("preferences:user:#{user.id}:simplified_tour", bool_value)
+    end
+
     def latitude
       $redis.get("preferences:user:#{user.id}:latitude").try(:to_f)
     end

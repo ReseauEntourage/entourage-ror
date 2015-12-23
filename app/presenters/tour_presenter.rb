@@ -21,6 +21,10 @@ class TourPresenter
     tour.tour_points.map {|point| {long: point.longitude, lat: point.latitude} }
   end
 
+  def simplified_tour_points
+    tour.simplified_tour_points.map {|point| {long: point.longitude, lat: point.latitude} }
+  end
+
   def start_time
     @start_time ||= tour.tour_points.first.try(:passing_time)
   end
