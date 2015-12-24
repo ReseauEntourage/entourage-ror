@@ -7,16 +7,9 @@ class OrganizationsController < ApplicationController
   before_filter :set_organization
 
   def dashboard
-    my_tours = Tour.joins(:user).where(users: { organization_id: @organization.id })
-    week_tours = my_tours.where("tours.updated_at >= ?", DateTime.now.monday)
-    @tour_count = week_tours.count
-    @tourer_count = week_tours.select(:user_id).distinct.count
-    @total_length = week_tours.sum(:length)
-    @encounter_count = Encounter.where(tour: week_tours).count
+    tours = Tour.joins(:user).where(users: { organization_id: @organization.id })
+    @tours_presenter = TourCollectionPresenter.new(tours: tours)
     @user_presenter = UserPresenter.new(user: @current_user)
-
-    #TODO : improve query (take, group_by)
-    @latest_tours = my_tours.order('tours.updated_at DESC').limit(8).group_by { |t| t.updated_at.to_date }
   end
 
   def statistics

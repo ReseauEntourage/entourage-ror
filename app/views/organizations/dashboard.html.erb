@@ -10,23 +10,19 @@
   <div class="col-md-3">
     <div class="left-panel">
       <h3>Derniers Evènements</h3>
-      <% @latest_tours.each do |day, tours| %>
+      <% @tours_presenter.latest_tours.each do |day, tours| %>
         <h4><%= day %></h4>
         <% tours.each do |tour| %>
-          <div>
-            <%= tour.user.full_name %> a réalisé une maraude de <%= duration(tour) %>
-            <% if tour.encounters.size > 0 %> et a rencontré <%= pluralize tour.encounters.size, 'personne' %>
-            <% end %>.
-          </div>
+            <%= TourPresenter.new(tour: tour).tour_summary %>
         <% end %>
       <% end %>
     </div>
     <div class="left-panel">
       <h3>Activité de la semaine</h3>
-      <h4><%= meters_to_printable_km @total_length %> km parcourus</h4>
-      <h4><%= pluralize @encounter_count, 'personne rencontrée', 'personnes rencontrées' %></h4>
-      <h4><%= pluralize @tourer_count, 'maraudeur actif', 'maraudeurs actifs' %></h4>
-      <h4><%= pluralize @tour_count, 'maraude réalisée', 'maraudes réalisées' %></h4>
+      <h4><%= @tours_presenter.total_length %> km parcourus</h4>
+      <h4><%= pluralize @tours_presenter.encounter_count, 'personne rencontrée', 'personnes rencontrées' %></h4>
+      <h4><%= pluralize @tours_presenter.tourer_count, 'maraudeur actif', 'maraudeurs actifs' %></h4>
+      <h4><%= pluralize @tours_presenter.week_tours.count, 'maraude réalisée', 'maraudes réalisées' %></h4>
     </div>
   </div>
   <div class="col-md-7">
