@@ -26,5 +26,37 @@ RSpec.describe ToursController, :type => :controller do
         it { expect(assigns(:tour)).to eq(user_tour) }
       end
     end
+
+    context "logged in as manager" do
+      let!(:user) { manager_basic_login }
+      let!(:organisation_tour) { FactoryGirl.create(:tour, user: FactoryGirl.create(:user, organization: user.organization)) }
+      let!(:another_organisation_tour) { FactoryGirl.create(:tour, user: FactoryGirl.create(:user)) }
+
+      context "access somebody else tour outside my organisation" do
+        before { get 'show', id: another_organisation_tour.to_param }
+        it { should redirect_to root_path }
+      end
+
+      context "access somebody else tour from my organisation" do
+        before { get 'show', id: organisation_tour.to_param }
+        it { expect(response.status).to eq(200) }
+      end
+    end
+
+    context "logged in as admin" do
+      let!(:user) { admin_basic_login }
+      let!(:organisation_tour) { FactoryGirl.create(:tour, user: FactoryGirl.create(:user, organization: user.organization)) }
+      let!(:another_organisation_tour) { FactoryGirl.create(:tour, user: FactoryGirl.create(:user)) }
+
+      context "access somebody else tour outside my organisation" do
+        before { get 'show', id: another_organisation_tour.to_param }
+        it { expect(response.status).to eq(200) }
+      end
+
+      context "access somebody else tour from my organisation" do
+        before { get 'show', id: organisation_tour.to_param }
+        it { expect(response.status).to eq(200) }
+      end
+    end
   end
 end

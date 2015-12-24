@@ -6,7 +6,9 @@ module Authentication
     end
 
     def allowed_to_see?
-      tour.user == user
+      return true if tour.user == user
+      return true if user.manager && (user.organization == tour.user.organization)
+      user.admin
     end
 
     private
