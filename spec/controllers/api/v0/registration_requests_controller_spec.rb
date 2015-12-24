@@ -35,7 +35,7 @@ RSpec.describe Api::V0::RegistrationRequestsController, type: :controller do
       before { post :create, {registration_request: invalid_attributes} }
       it { expect(RegistrationRequest.count).to eq(0) }
       it { expect(response.status).to eq(400) }
-      it { expect(JSON.parse(response.body)).to eq({"errors"=>{"organization"=>["Name can't be blank", "Description can't be blank", "Phone can't be blank", "Address can't be blank"], "user"=>[]}}) }
+      it { expect(JSON.parse(response.body)).to eq({"errors"=>{"organization"=>["Name doit être rempli(e)", "Description doit être rempli(e)", "Phone doit être rempli(e)", "Address doit être rempli(e)"], "user"=>[]}}) }
     end
   end
 end

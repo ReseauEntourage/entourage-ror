@@ -58,9 +58,9 @@ class Tour < ActiveRecord::Base
   
   def duration
     if closed_at.nil?
-      Time.now - created_at
+      (Time.now - created_at).to_i
     else
-      closed_at - created_at
+      (closed_at - created_at).to_i
     end
   end
   

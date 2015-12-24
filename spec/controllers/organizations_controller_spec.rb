@@ -45,13 +45,13 @@ RSpec.describe OrganizationsController, :type => :controller do
       end
       after { Timecop.return }
       it { should respond_with 200 }
-      it { expect(assigns[:tour_count]).to eq 3 }
-      it { expect(assigns[:tourer_count]).to eq 2 }
-      it { expect(assigns[:encounter_count]).to eq 4 }
-      it { expect(assigns[:total_length]).to eq 6006 }
-      it { expect(assigns[:latest_tours][last_sunday]).to match_array([tour4]) }
-      it { expect(assigns[:latest_tours][last_tuesday]).to match_array([tour1]) }
-      it { expect(assigns[:latest_tours][last_wednesday]).to match_array([tour2, tour3]) }
+      it { expect(assigns(:tours_presenter).week_tours.count).to eq 3 }
+      it { expect(assigns(:tours_presenter).tourer_count).to eq 2 }
+      it { expect(assigns(:tours_presenter).encounter_count).to eq 4 }
+      it { expect(assigns(:tours_presenter).total_length).to eq "6,006 km" }
+      it { expect(assigns(:tours_presenter).latest_tours[last_sunday]).to match_array([tour4]) }
+      it { expect(assigns(:tours_presenter).latest_tours[last_tuesday]).to match_array([tour1]) }
+      it { expect(assigns(:tours_presenter).latest_tours[last_wednesday]).to match_array([tour2, tour3]) }
     end
     describe 'tours' do
       let!(:time) { Time.new(2009, 3, 11, 8, 25, 00) }

@@ -24,7 +24,7 @@ RSpec.describe Api::V0::MessagesController, :type => :controller do
       it "returns error mesage" do
         subject
         resp = JSON.parse(response.body)
-        expect(resp["errors"]).to eq(["Content can't be blank"])
+        expect(resp["errors"]).to eq(["Content doit être rempli(e)"])
       end
     end
   end
