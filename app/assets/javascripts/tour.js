@@ -1,5 +1,5 @@
 function displayDashboardMapData(tour_id) {
-  $.getJSON('/tour/'+tour_id+'/map_center', function (result) {
+  $.getJSON('/tours/'+tour_id+'/map_center', function (result) {
     var map_center = new google.maps.LatLng(result[0], result[1]);
 
     map = new google.maps.Map(document.getElementById('map-maraudes'), {
@@ -17,8 +17,8 @@ function displayDashboardMapData(tour_id) {
 }
 
 var ready = function() {
-  if ($(".tour")[0]) {
-    var tour_id = window.location.href.split().slice(-1).pop();
+  if ($(".tours.show")[0]) {
+    var tour_id = window.location.href.split('/').slice(-1).pop();
     displayDashboardMapData(tour_id);
   }
 };

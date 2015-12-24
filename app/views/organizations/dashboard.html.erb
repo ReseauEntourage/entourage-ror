@@ -13,7 +13,7 @@
       <% @tours_presenter.latest_tours.each do |day, tours| %>
         <h4><%= day %></h4>
         <% tours.each do |tour| %>
-            <%= TourPresenter.new(tour: tour).tour_summary %>
+            <%= TourPresenter.new(tour: tour).tour_summary %><br>
         <% end %>
       <% end %>
     </div>
