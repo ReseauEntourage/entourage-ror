@@ -58,6 +58,7 @@ Rails.application.routes.draw do
       post 'send_sms'
     end
   end
+  resources :tours, only: [:show]
 
   get 'apps' => 'home#apps', as: :apps
   get 'store_redirection' => 'home#store_redirection'
