@@ -3,7 +3,6 @@ source 'https://rubygems.org'
 ruby '2.2.3'
 
 gem 'rails',                    '~> 4.2'
-gem 'thin',                     '~> 1.6.3'
 gem 'sass-rails',               '~> 4.0.3'
 gem 'uglifier',                 '>= 1.3.0'
 gem 'coffee-rails',             '~> 4.0.0'
@@ -19,7 +18,6 @@ gem 'http_logger',              '~> 0.5.1'
 gem 'sinch_sms',                '~> 2.1'
 gem 'colorize',                 '~> 0.7.7'
 gem 'bootstrap-sass',           '~> 3.3.1'
-gem 'simple_form',              '~> 3.1.0'
 gem 'googlestaticmap',          git: 'https://github.com/ReseauEntourage/googlestaticmap.git'
 gem 'momentjs-rails',           '~> 2.10.3'
 gem 'shorturl',                 '~> 1.0.0'
@@ -49,6 +47,7 @@ group :development do
   gem 'pry-rails',              '~> 0.3.4'
   gem 'quiet_assets',           '~> 1.1.0'
   gem 'bullet',                 '~> 4.14.7'
+  gem 'thin',                   '~> 1.6.3'
 end
 
 group :test do

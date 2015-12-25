@@ -1,11 +1,35 @@
-<%= simple_form_for @organization do |f| %>
-  <%= f.input :name, label: "Nom de l'association" %>
-  <%= f.input :description, label: 'Description', as: :text %>
-  <div>
-  <h3>Informations pratiques</h3>
-  <%= f.input :phone, label: 'Téléphone' %>
-  <%= f.input :address, label: 'Adresse' %>
-  <%= f.input :logo_url, label: 'URL du Logo' %>
+<%= form_for(@organization, html: {class: 'form-horizontal'}) do |f| %>
+
+  <%= render 'common/errors', obj: @organization %>
+
+  <div class="field form-group">
+    <label>Nom de l'association</label>
+    <%= f.text_field :name, class: 'form-control' %>
   </div>
-  <%= f.button :submit, 'Sauvegarder les modifications', class: 'btn-primary' %>
+
+  <div class="field form-group">
+    <label>Description</label>
+    <%= f.text_area :description, class: 'form-control' %>
+  </div>
+
+  <h3>Informations pratiques</h3>
+
+  <div class="field form-group">
+    <label>Téléphone</label>
+    <%= f.text_field :phone, class: 'form-control' %>
+  </div>
+
+  <div class="field form-group">
+    <label>Adresse</label>
+    <%= f.text_field :address, class: 'form-control' %>
+  </div>
+
+  <div class="field form-group">
+    <label>URL du Logo</label>
+    <%= f.text_field :logo_url, class: 'form-control' %>
+  </div>
+
+  <div class="actions form-group">
+    <%= f.submit "Sauvegarder les modifications", class: "btn btn-primary" %>
+  </div>
 <% end %>
