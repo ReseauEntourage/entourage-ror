@@ -127,19 +127,8 @@ class OrganizationsController < ApplicationController
   end
   
   def send_message
-    sender = @current_user.full_name
-    recipients = @organization.users
-
-    if params[:recipients]==in_tour
-      recipients = @organization.users.joins(:tours).where("tours.status=\"ongoing\" AND date(created_at)=?", Date.today).group("users.id")
-    end
-
-    individual_recipients = params.keys.select?{|k| k.match("user_id").present? }
-    if individual_recipients.present?
-      recipients = @organization.users.where(id: individual_recipients.map {|user_id_str| user_id_str.delete("user_id")})
-    end
-
-    push_notification_service.send_notification sender, params[:object], params[:message], recipients
+    send_message_service = TourServices::SendMessageService.new(params: params, current_user: @current_user)
+    push_notification_service.send_notification send_message_service.sender, send_message_service.object, send_message_service.content, send_message_service.recipients
     render plain: 'message envoyé', status: 200
   end
   
