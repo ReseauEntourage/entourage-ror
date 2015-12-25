@@ -3,6 +3,8 @@
     <div class="col-md-4">
       <h3>Informations sur cette maraude :</h3>
       <h4>Distance parcourue : <%= @tour_presenter.distance %></h4>
+      <h4>heude de début : <%= @tour_presenter.start_time.strftime("%H:%M") %></h4>
+      <h4>heude de fin : <%= @tour_presenter.end_time.strftime("%H:%M") %></h4>
       <h4>Durée : <%= @tour_presenter.duration %></h4>
     </div>
   </div>

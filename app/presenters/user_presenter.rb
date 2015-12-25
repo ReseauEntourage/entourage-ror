@@ -8,6 +8,10 @@ class UserPresenter
     @user = user
   end
 
+  def organization_members
+    @user.organization.users.order("upper(first_name) ASC")
+  end
+
   def user_default
     PreferenceServices::UserDefault.new(user: user)
   end

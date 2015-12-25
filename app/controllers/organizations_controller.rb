@@ -127,8 +127,8 @@ class OrganizationsController < ApplicationController
   end
   
   def send_message
-    sender = @current_user.full_name
-    push_notification_service.send_notification sender, params[:object], params[:message], @organization.users
+    send_message_service = TourServices::SendMessageService.new(params: params, current_user: @current_user)
+    push_notification_service.send_notification send_message_service.sender, send_message_service.object, send_message_service.content, send_message_service.recipients
     render plain: 'message envoyé', status: 200
   end
   

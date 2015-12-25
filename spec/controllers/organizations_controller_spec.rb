@@ -193,10 +193,42 @@ RSpec.describe OrganizationsController, :type => :controller do
       let!(:push_notification_service) { spy('push_notification_service') }
       before { controller.push_notification_service = push_notification_service }
 
-      context "valid message" do
+      context "send message without recipients" do
         before { post :send_message, id: user.organization.to_param, object:'object', message: 'message' }
         it { should respond_with 200 }
         it { expect(push_notification_service).to have_received(:send_notification).with(user.full_name, 'object', 'message', user.organization.users) }
+      end
+
+      context "send message to all organization user" do
+        before { post :send_message, id: user.organization.to_param, object:'object', message: 'message', recipients: 'all' }
+        it { should respond_with 200 }
+        it { expect(push_notification_service).to have_received(:send_notification).with(user.full_name, 'object', 'message', user.organization.users) }
+      end
+
+      context "send message to user in tour" do
+        before(:each) do
+          Timecop.freeze(Time.parse("10/10/2010").at_beginning_of_day)
+          @user_in_tour = FactoryGirl.create(:user, organization: user.organization)
+          FactoryGirl.create(:tour, status: :ongoing, user: @user_in_tour, created_at: Date.parse("10/10/2010")) #user in same organization, with an ongoing tour started the same day
+          FactoryGirl.create(:tour, status: :ongoing, created_at: Date.parse("09/10/2010")) #user in same organization, with an ongoing tour started yesterday
+          FactoryGirl.create(:tour, status: :closed, user: @user_in_tour, created_at: Date.parse("10/10/2010")) #user in same organization, with closed tour started the same day
+          FactoryGirl.create(:tour, status: :ongoing, created_at: Date.parse("10/10/2010")) #user in different organization, with an ongoing tour started the same day
+        end
+        before { post :send_message, id: user.organization.to_param, object:'object', message: 'message', recipients: 'in_tour' }
+        it { expect(push_notification_service).to have_received(:send_notification).with(user.full_name, 'object', 'message', [@user_in_tour]) }
+      end
+
+      context "send message to specific users" do
+        before(:each) do
+          Timecop.freeze(Time.parse("10/10/2010").at_beginning_of_day)
+          @user_in_tour = FactoryGirl.create(:user, organization: user.organization)
+          FactoryGirl.create(:tour, status: :ongoing, user: @user_in_tour, created_at: Date.parse("10/10/2010"))
+          user_in_tour2 = FactoryGirl.create(:user, organization: user.organization)
+          FactoryGirl.create(:tour, status: :ongoing, user: user_in_tour2, created_at: Date.parse("10/10/2010"))
+        end
+        before { post :send_message, id: user.organization.to_param, object:'object', message: 'message', recipients: ["user_id_#{@user_in_tour.id}"] }
+        it { should respond_with 200 }
+        it { expect(push_notification_service).to have_received(:send_notification).with(user.full_name, 'object', 'message', [@user_in_tour]) }
       end
     end
   end
