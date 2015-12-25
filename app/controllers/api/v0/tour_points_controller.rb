@@ -5,7 +5,7 @@ module Api
       def create
         if @tour = Tour.find_by(id:params[:tour_id])
           @tour_points = @tour.tour_points.create(tour_point_params['tour_points'])
-
+          
           if @tour_points.all?(&:valid?)
             @presenter = TourPresenter.new(tour: @tour)
             render "/api/v0/tours/show", status: 201

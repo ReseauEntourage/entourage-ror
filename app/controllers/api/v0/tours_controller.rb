@@ -1,6 +1,8 @@
 module Api
   module V0
     class ToursController < Api::V0::BaseController
+      before_action :set_tour, only: [:show, :update]
+
       def create
         @tour = Tour.new(tour_params.except(:distance))
         @tour.length = tour_params[:distance]
@@ -14,7 +16,6 @@ module Api
       end
 
       def show
-        @tour = Tour.find(params[:id])
         @presenter = TourPresenter.new(tour: @tour)
       end
 
@@ -37,31 +38,28 @@ module Api
       end
 
       def update
-        #TODO: ActiveRecordNotFound resolves to 404 in production, change find_by into find
-        if @tour = Tour.find_by(id: params[:id])
-          if @tour.user != @current_user
-            head 403
-          else
-            if tour_params[:status]=="closed"
-              TourServices::CloseTourService.new(tour: @tour, params: tour_params).close!
-            end
-            @tour.length = tour_params[:distance]
-            @tour.update_attributes(tour_params.except(:status, :distance))
-            @presenter = TourPresenter.new(tour: @tour)
-            render 'show', status: 200
-          end
+        if @tour.user != @current_user
+          head 403
         else
-          @id = params[:id]
-          render '404', status: 404
+          if tour_params[:status]=="closed"
+            TourServices::CloseTourService.new(tour: @tour, params: tour_params).close!
+          end
+          @tour.length = tour_params[:distance]
+          @tour.update_attributes(tour_params.except(:status, :distance))
+          @presenter = TourPresenter.new(tour: @tour)
+          render 'show', status: 200
         end
       end
-
 
       private
 
       def tour_params
         params
         params.require(:tour).permit(:tour_type, :status, :vehicle_type, :distance)
+      end
+
+      def set_tour
+        @tour = Tour.find(params[:id])
       end
     end
   end

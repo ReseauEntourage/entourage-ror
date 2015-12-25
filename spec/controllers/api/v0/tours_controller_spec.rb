@@ -81,8 +81,10 @@ RSpec.describe Api::V0::ToursController, :type => :controller do
     end
 
     context "with unexisting id" do
-      before { put 'update', id: 0, token: user.token, tour:{tour_type:"medical", status:"ongoing", vehicle_type:"car", distance: 123.456}, format: :json }
-      it { should respond_with 404 }
+      it { expect {
+            put 'update', id: 0, token: user.token, tour:{tour_type:"medical", status:"ongoing", vehicle_type:"car", distance: 123.456}, format: :json
+          }.to raise_error(ActiveRecord::RecordNotFound)
+        }
     end
     
     context "with incorrect_user" do
@@ -96,11 +98,12 @@ RSpec.describe Api::V0::ToursController, :type => :controller do
     
     let!(:user) { FactoryGirl.create :user }
     let(:date) { Date.parse("10/10/2010") }
+    before { Timecop.freeze(Time.parse("10/10/2010").at_beginning_of_day) }
 
     context "without parameter" do
       before(:each) do
         11.times do |i|
-          FactoryGirl.create :tour, updated_at:date+i.days
+          FactoryGirl.create :tour, updated_at:date+i.hours
         end
       end
          
@@ -112,7 +115,7 @@ RSpec.describe Api::V0::ToursController, :type => :controller do
       it "returns last 10 tours" do
         get 'index', token: user.token, :format => :json
         expect(assigns(:tours).count).to eq(10)
-        expect(assigns(:tours).all? {|t| t.updated_at >= Date.parse("10/10/2010") }).to be true
+        expect(assigns(:tours).all? {|t| t.updated_at >= Date.parse("10/10/2010").at_beginning_of_day }).to be true
       end
       
     end
