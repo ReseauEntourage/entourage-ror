@@ -20,11 +20,8 @@ class OrganizationsController < ApplicationController
   end
   
   def update
-    if (@organization.update_attributes(organization_params))
-      redirect_to edit_organization_path(@organization), notice: 'Organization was successfully updated.'
-    else
-      redirect_to edit_organization_path(@organization), notice: 'Error'
-    end
+    flash[:notice]= "L'association a bien été mise à jour" if @organization.update(organization_params)
+    render :edit
   end
   
   def tours

@@ -2,24 +2,7 @@
   <div class="row">
     <div class="col-md-4 col-md-offset-4">
       <h2>Modification de <%= @user.full_name %></h2>
-      <%= simple_form_for @user do |f| %>
-        <%= f.input :first_name, label: "Prénom" %>
-        <%= f.input :last_name, label: 'Nom' %>
-        <%= f.input :phone, label: 'Téléphone', input_html: {'data-toggle' => "tooltip", 'data-placement' => "right", 'title' => "De type +33XXXXXXXXX"} %>
-        <%= f.input :email, label: 'Email' %>
-
-        <% if @current_user.admin %>
-          <%= f.input :manager, label: 'Administrateur' if @current_user.admin %>
-          <%= check_box_tag "user[snap_to_road]", 'true', @user_presenter.snap_to_road %>
-           Snap to road<br>
-          <%= check_box_tag "user[simplified_tour]", 'true', @user_presenter.simplified_tour %>
-          simplified_tour
-        <% end %>
-        <br><br>
-
-        <%= f.button :submit, 'Sauvegarder', class: 'btn-primary' %>
-        <%= link_to 'Annuler', root_path, class: 'btn btn-danger' %>
-      <% end %>
+      <%= render "users/form" %>
     </div>
   </div>
 </div>
