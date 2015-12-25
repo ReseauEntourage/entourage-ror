@@ -3,7 +3,7 @@ class Encounter < ActiveRecord::Base
   validates :date, :street_person_name, :tour, presence: true
   validates :latitude, :longitude, presence: true, numericality: true
 
-  belongs_to :tour
+  belongs_to :tour, counter_cache: true
 
   reverse_geocoded_by :latitude, :longitude
   attr_encrypted :message, key: :crypting_key, if: :crypting_key_present?

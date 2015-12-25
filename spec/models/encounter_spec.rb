@@ -9,5 +9,6 @@ RSpec.describe Encounter, :type => :model do
   it { should validate_numericality_of(:latitude) }
   it { should validate_presence_of(:longitude) }
   it { should validate_numericality_of(:longitude) }
+  it { should belong_to(:tour).counter_cache(true) }
 
 end
