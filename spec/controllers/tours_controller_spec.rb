@@ -2,6 +2,8 @@ require 'rails_helper'
 include AuthHelper
 
 RSpec.describe ToursController, :type => :controller do
+  render_views
+
   let(:tour) { FactoryGirl.create(:tour) }
 
   describe 'GET show' do
@@ -24,6 +26,12 @@ RSpec.describe ToursController, :type => :controller do
         before { get 'show', id: user_tour.to_param }
         it { should render_template 'show' }
         it { expect(assigns(:tour)).to eq(user_tour) }
+      end
+
+      context "tour without points" do
+        let!(:user_tour) { FactoryGirl.create(:tour, user: user, tour_points: []) }
+        before { get 'show', id: user_tour.to_param }
+        it { should render_template 'show' }
       end
     end
 

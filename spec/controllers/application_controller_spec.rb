@@ -2,6 +2,7 @@ require 'rails_helper'
 include AuthHelper
 
 describe ApplicationController, :type => :controller do
+  render_views
 
   describe 'authenticate_user!' do
     let(:time) { Time.parse("10/10/2010").at_beginning_of_day }
