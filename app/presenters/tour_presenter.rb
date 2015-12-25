@@ -46,7 +46,7 @@ class TourPresenter
 
   def tour_summary
     summary_text = "#{tour.user.full_name} a réalisé une maraude de #{duration}"
-    summary_text += "et a rencontré #{pluralize tour.encounters.size, 'personne'}" if tour.encounters.size > 0
+    summary_text += " et a rencontré #{pluralize tour.encounters.size, 'personne'}" if tour.encounters.size > 0
     link_to summary_text, Rails.application.routes.url_helpers.tour_path(tour)
   end
 
