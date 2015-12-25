@@ -48,14 +48,7 @@ class Tour < ActiveRecord::Base
   
   scope :type, -> (type) { where tour_type: type }
   scope :vehicle_type, -> (vehicle_type) { where vehicle_type: vehicle_type }
-  
-  def status=(value)
-    if (value == 'closed' or value == :closed) and status == 'ongoing'
-      update_attribute :closed_at, DateTime.now
-    end
-    super(value)
-  end
-  
+
   def duration
     if closed_at.nil?
       (Time.now - created_at).to_i
@@ -65,10 +58,7 @@ class Tour < ActiveRecord::Base
   end
   
   def force_close
-    #TODO: multiple write to db, refactor to write only once
-    update_attributes status: 'closed'
-    last_tour_point = tour_points.last
-    update_attributes closed_at: last_tour_point.passing_time if !last_tour_point.nil?
+    update(status: :closed, closed_at: tour_points.last.try(:passing_time) || DateTime.now)
   end
 
   def closed?

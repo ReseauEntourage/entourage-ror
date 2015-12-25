@@ -65,7 +65,9 @@ RSpec.describe Api::V0::ToursController, :type => :controller do
       context "tour open" do
         let(:open_tour) { FactoryGirl.create(:tour, user: user, status: :ongoing) }
         before { put 'update', id: open_tour.id, token: user.token, tour:{tour_type:"medical", status:"closed", vehicle_type:"car", distance: 633.0878}, format: :json }
-        it { expect(open_tour.reload.closed?).to be true }
+        it "somthe" do
+          expect(open_tour.reload.closed?).to be true
+        end
         it { expect(ActionMailer::Base.deliveries.last.to).to eq([user.email])}
         it { expect(open_tour.reload.length).to eq(633)}
       end
