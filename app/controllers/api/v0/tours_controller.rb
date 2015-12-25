@@ -14,14 +14,8 @@ module Api
       end
 
       def show
-        #TODO: ActiveRecordNotFound resolves to 404 in production, change find_by into find
-        if @tour = Tour.find_by(id: params[:id])
-          @presenter = TourPresenter.new(tour: @tour)
-          render status: 200
-        else
-          @id = params[:id]
-          render '404', status: 404
-        end
+        @tour = Tour.find(params[:id])
+        @presenter = TourPresenter.new(tour: @tour)
       end
 
       def index

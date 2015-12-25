@@ -26,34 +26,24 @@ RSpec.describe Api::V0::ToursController, :type => :controller do
   end
 
   describe "GET show" do
-    
+    let(:user) { FactoryGirl.create :user }
+
     context "with correct id" do
-
-      let!(:user) { FactoryGirl.create :user }
       let!(:tour) { FactoryGirl.create :tour }
-      let!(:snap_to_road_tour_points) { FactoryGirl.create_list(:snap_to_road_tour_point, 2, tour: tour)}
-
-      it "returns 200" do
-        get 'show', id: tour.id, token: user.token , :format => :json
-        expect(response.status).to eq(200)
-      end
-      it "assigns tour" do
-        get 'show', id: tour.id, token: user.token , :format => :json
-        expect(assigns(:tour)).to eq(tour)
-      end
+      before { get 'show', id: tour.id, token: user.token , format: :json }
+      it { expect(response.status).to eq(200) }
+      it { expect(assigns(:tour)).to eq(tour) }
     end
 
     context "with unexisting id" do
       let!(:user) { FactoryGirl.create :user }
-      let!(:tour) { FactoryGirl.build(:tour, tour_type:"invalid") }
 
-      it "retours error 404" do
-        get 'show', id: 0, token: user.token , :format => :json
-        expect(response.status).to eq(404)
+      it "returns error 404" do
+        expect {
+          get 'show', id: 0, token: user.token , format: :json
+        }.to raise_error(ActiveRecord::RecordNotFound)
       end
-
     end
-
   end
 
   describe "PUT update" do
