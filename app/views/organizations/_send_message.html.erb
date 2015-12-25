@@ -9,7 +9,7 @@
         <div class="modal-body">
           <div class="form-group">
             <label>Destinataires:</label>
-            <select name="recipients" class="form-control" multiple="multiple">
+            <select name="recipients[]" class="form-control" multiple="multiple">
               <option value="all">Toute l'association</option>
               <option value="in_tour">Les membres actuellement en maraude</option>
               <% @user_presenter.organization_members.each do |member| %>

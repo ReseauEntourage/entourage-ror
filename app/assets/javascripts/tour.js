@@ -1,4 +1,4 @@
-function displayDashboardMapData(tour_id) {
+function displayTourMapData(tour_id) {
   $.getJSON('/tours/'+tour_id+'/map_center', function (result) {
     var map_center = new google.maps.LatLng(result[0], result[1]);
 
@@ -19,7 +19,7 @@ function displayDashboardMapData(tour_id) {
 var ready = function() {
   if ($(".tours.show")[0]) {
     var tour_id = window.location.href.split('/').slice(-1).pop();
-    displayDashboardMapData(tour_id);
+    displayTourMapData(tour_id);
   }
 };
 

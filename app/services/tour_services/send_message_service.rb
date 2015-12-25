@@ -20,15 +20,11 @@ module TourServices
     def recipients
       if params[:recipients]=="all"
         recipients = organization.users
-      end
-
-      if params[:recipients]=="in_tour"
-        recipients = organization.users.joins(:tours).where("tours.status=\"ongoing\" AND date(created_at)=?", Date.today).group("users.id")
-      end
-
-      individual_recipients = params.keys.select {|k| k.match("user_id").present? }
-      if individual_recipients.present?
-        recipients = organization.users.where(id: individual_recipients.map {|user_id_str| user_id_str.delete("user_id")})
+      elsif params[:recipients]=="in_tour"
+        recipients = organization.users.joins(:tours).where("tours.status=0 AND tours.created_at>=?", Date.today.beginning_of_day).group("users.id")
+      elsif params[:recipients]
+        individual_recipients = params[:recipients].select {|k| k.match(/user_id/).present? }
+        recipients = organization.users.where(id: individual_recipients.map {|user_id_str| user_id_str.delete("user_id_")})
       end
 
       recipients || organization.users
