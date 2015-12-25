@@ -11,20 +11,18 @@ class NewsletterSubscription < ActiveRecord::Base
   after_create :send_mailchimp_info
 
   def send_mailchimp_info
-    #TODO: Wrong format for key, replace '-' with '_'
-    if ENV.key? "MAILCHIMP-LIST-ID"
+    if ENV.key?("MAILCHIMP_LIST_ID")
       begin
-        mc = Mailchimp::API.new(ENV['MAILCHIMP-API-KEY'])
+        mc = Mailchimp::API.new(ENV['MAILCHIMP_API_KEY'])
         if (self.active)
           begin
-            mc.lists.subscribe(ENV['MAILCHIMP-LIST-ID'],{ "email" => self.email})
-            #mc.lists.subscribe(ENV['MAILCHIMP-LIST-ID'],{ "email" => self.email}, nil, 'html', true, true, true, true)
+            mc.lists.subscribe(ENV['MAILCHIMP_LIST_ID'],{ "email" => self.email})
           rescue
             logger.error "Newsletter Subscription for #{email} could not be updated in Mailchimp !"
           end
         else
           begin
-            mc.lists.unsubscribe(ENV['MAILCHIMP-LIST-ID'],{ "email" => self.email})
+            mc.lists.unsubscribe(ENV['MAILCHIMP_LIST_ID'],{ "email" => self.email})
           rescue
             logger.error "Newsletter UNSubscription for #{email} could not be updated in Mailchimp !"
           end
@@ -34,5 +32,4 @@ class NewsletterSubscription < ActiveRecord::Base
       logger.error "NewsletterSubscription isnot linked to Mailchimp !"
     end
   end
-
 end
