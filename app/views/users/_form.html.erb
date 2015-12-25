@@ -1,0 +1,45 @@
+<%= form_for(@user, html: {class: 'form-horizontal'}) do |f| %>
+  <%= render 'common/errors', obj: @user %>
+
+  <div class="field form-group">
+    <label>Prénom</label>
+    <%= f.text_field :first_name, class: 'form-control' %>
+  </div>
+
+  <div class="field form-group">
+    <label>Nom</label>
+    <%= f.text_field :last_name, class: 'form-control' %>
+  </div>
+
+  <div class="field form-group">
+    <label>Téléphone</label>
+    <%= f.text_field :phone, class: 'form-control' %>
+  </div>
+
+  <div class="field form-group">
+    <label>Email</label>
+    <%= f.text_field :email, class: 'form-control' %>
+  </div>
+
+  <% if @current_user.admin %>
+    <div class="field form-group">
+      <label>Administrateur</label>
+      <%= f.check_box :manager %>
+    </div>
+
+    <div class="field form-group">
+      <label>Snap to road</label>
+      <%= check_box_tag "user[snap_to_road]", 'true', @user_presenter.snap_to_road %>
+    </div>
+
+    <div class="field form-group">
+      <label>simplified tour</label>
+      <%= check_box_tag "user[simplified_tour]", 'true', @user_presenter.simplified_tour %>
+    </div>
+
+  <% end %>
+
+  <div class="actions form-group">
+    <%= f.submit "Sauvegarder", class: "btn btn-primary" %>
+  </div>
+<% end %>

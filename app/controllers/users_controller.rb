@@ -2,7 +2,7 @@ class UsersController < ApplicationController
   attr_writer :sms_notification_service, :url_shortener
   before_filter :authenticate_user!
   before_filter :authenticate_manager!, only: [:edit, :update]
-  before_filter :get_user, only: [:edit, :update, :destroy, :send_sms]
+  before_filter :set_user, only: [:edit, :update, :destroy, :send_sms]
   
   def edit
     @user_presenter = UserPresenter.new(user: @current_user)
@@ -10,7 +10,8 @@ class UsersController < ApplicationController
 
   def index
     @users = current_user.organization.users.order(:last_name,:first_name)
-    @new_user = User.new
+    @user = User.new
+    @user_presenter = UserPresenter.new(user: @user)
   end
 
   def create
@@ -23,7 +24,8 @@ class UsersController < ApplicationController
       end
 
       on.create_failure do |user|
-        @new_user = user
+        @user = user
+        @user_presenter = UserPresenter.new(user: @user)
         @users = current_user.organization.users.order(:last_name,:first_name)
         render :index, alert: "Erreur de création"
       end
@@ -52,7 +54,7 @@ class UsersController < ApplicationController
 
   private
   
-  def get_user
+  def set_user
     @user = User.find(params[:id])
     if @user.organization != current_user.organization
       head :forbidden
