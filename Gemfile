@@ -48,6 +48,7 @@ group :development do
   gem 'rack-mini-profiler',     '~> 0.9.8' #enable by requesting any page with '?pp=enable'
   gem 'pry-rails',              '~> 0.3.4'
   gem 'quiet_assets',           '~> 1.1.0'
+  gem 'bullet',                 '~> 4.14.7'
 end
 
 group :test do
