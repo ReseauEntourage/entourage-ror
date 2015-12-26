@@ -3,6 +3,7 @@ module TourServices
     def initialize(params:, current_user:)
       @params = params
       @current_user = current_user
+      schedule_push_service.schedule unless should_send_now?
     end
 
     def sender
@@ -30,11 +31,19 @@ module TourServices
       recipients || organization.users
     end
 
+    def should_send_now?
+      params[:date].nil?
+    end
+
     private
     attr_reader :params, :current_user
 
     def organization
       current_user.organization
+    end
+
+    def schedule_push_service
+      @schedule_push_service ||= TourServices::SchedulePushService.new
     end
   end
 end

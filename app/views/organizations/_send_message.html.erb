@@ -7,6 +7,15 @@
       </div>
       <%= form_tag(send_message_organizations_path, method: "post", remote: true, id:'send_message_form') do %>
         <div class="modal-body">
+          <ul class="nav nav-pills" role="tablist">
+            <li role="presentation">
+              Envoyer maintenant
+            </li>
+            <li role="presentation">
+              Envoyer à une date
+            </li>
+          </ul>
+
           <div class="form-group">
             <label>Destinataires:</label>
             <select name="recipients[]" class="form-control" multiple="multiple">
