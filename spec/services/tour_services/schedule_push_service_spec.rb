@@ -16,14 +16,16 @@ describe TourServices::SchedulePushService do
     let(:service) { TourServices::SchedulePushService.new(organization: organization,
                                                                   date: Date.parse("10/10/2010")) }
     before { service.schedule(object: "foo",
-                              message: "bar") }
+                              message: "bar",
+                              sender: "vda") }
 
 
     it "returns message for same date" do
       on_time_service = TourServices::SchedulePushService.new(organization: organization,
                                                               date: Date.parse("10/10/2010"))
       expect(on_time_service.scheduled_message).to eq({"object" => "foo",
-                                                       "message" => "bar"})
+                                                       "message" => "bar",
+                                                       "sender" => "vda"})
     end
     it "returns nil for another date" do
       off_time_service = TourServices::SchedulePushService.new(organization: organization,
@@ -44,7 +46,8 @@ describe TourServices::SchedulePushService do
     it "sets expire on key" do
       expect($redis).to receive(:expire).with("scheduled_message:organization:#{organization.id}:date:2010-10-10", 172800)
       service.schedule(object: "foo",
-                       message: "bar")
+                       message: "bar",
+                       sender: "vda")
     end
   end
 end

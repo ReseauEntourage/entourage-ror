@@ -6,13 +6,18 @@ module TourServices
       raise TourServices::InvalidScheduledPushDateError.new("Cannot schedule a push with past date : #{date}") if date < Date.today
     end
 
-    def schedule(object:, message:)
-      $redis.mapped_hmset(key, {object: object, message: message})
+    def schedule(object:, message:, sender:)
+      $redis.mapped_hmset(key, {object: object, message: message, sender: sender})
       $redis.expire(key, (date.to_time.to_i-DateTime.now.to_i))
     end
 
     def scheduled_message
-      $redis.hgetall(key)
+      @scheduled_message ||= $redis.hgetall(key)
+    end
+
+    def send_to(user)
+      return if scheduled_message.blank?
+      push_service.send_notification(scheduled_message[:sender], scheduled_message[:object], scheduled_message[:message], User.where(id: user.id))
     end
 
     private
@@ -20,6 +25,10 @@ module TourServices
 
     def key
       "scheduled_message:organization:#{organization.id}:date:#{date}"
+    end
+
+    def push_service
+      PushNotificationService.new
     end
   end
 

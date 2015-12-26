@@ -4,14 +4,17 @@ module Api
       before_action :set_tour, only: [:show, :update]
 
       def create
-        @tour = Tour.new(tour_params.except(:distance))
-        @tour.length = tour_params[:distance]
-        @tour.user = @current_user
-        if @tour.save
-          @presenter = TourPresenter.new(tour: @tour)
-          render "show", status: 201
-        else
-          render '400', status: 400
+        tour_builder = TourServices::TourBuilder.new(params: tour_params, user: current_user)
+        tour_builder.create do |on|
+          on.create_success do |tour|
+            @presenter = TourPresenter.new(tour: tour)
+            render "show", status: 201
+          end
+
+          on.create_failure do |tour|
+            @tour = tour
+            render '400', status: 400
+          end
         end
       end
 
@@ -54,7 +57,6 @@ module Api
       private
 
       def tour_params
-        params
         params.require(:tour).permit(:tour_type, :status, :vehicle_type, :distance)
       end
 

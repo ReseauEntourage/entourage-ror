@@ -8,14 +8,19 @@ RSpec.describe Api::V0::ToursController, :type => :controller do
     let!(:tour) { FactoryGirl.build :tour }
     
     context "with correct type" do
-      before { post 'create', token: user.token , tour: {tour_type: tour.tour_type, status:tour.status, vehicle_type:tour.vehicle_type, distance: 123.456}, :format => :json }
+      before { post 'create', token: user.token , tour: {tour_type: tour.tour_type, status:tour.status, vehicle_type:tour.vehicle_type, distance: 123.456}, format: :json }
 
       it { should respond_with 201 }
-      it { expect(assigns(:tour)).to eq(Tour.last) }
+      it { expect(assigns(:presenter).tour).to eq(Tour.last) }
       it { expect(Tour.last.tour_type).to eq(tour.tour_type) }
       it { expect(Tour.last.status).to eq(tour.status) }
       it { expect(Tour.last.vehicle_type).to eq(tour.vehicle_type) }
       it { expect(Tour.last.user).to eq(user) }
+    end
+
+    it "sends scheduled push" do
+      expect_any_instance_of(TourServices::SchedulePushService).to receive(:send_to)
+      post 'create', token: user.token , tour: {tour_type: tour.tour_type, status:tour.status, vehicle_type:tour.vehicle_type, distance: 123.456}, format: :json
     end
 
     context "with incorrect type" do

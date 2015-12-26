@@ -3,7 +3,7 @@ module TourServices
     def initialize(params:, current_user:)
       @params = params
       @current_user = current_user
-      schedule_push_service.schedule unless should_send_now?
+      schedule_push_service.schedule(object: object, message: content, sender: sender) unless should_send_now?
     end
 
     def sender
@@ -32,7 +32,7 @@ module TourServices
     end
 
     def should_send_now?
-      params[:date].nil?
+      params[:pushdate].nil?
     end
 
     private
@@ -43,7 +43,7 @@ module TourServices
     end
 
     def schedule_push_service
-      @schedule_push_service ||= TourServices::SchedulePushService.new
+      @schedule_push_service ||= TourServices::SchedulePushService.new(organization: organization, date: Date.parse(params[:pushdate]))
     end
   end
 end
