@@ -428,6 +428,7 @@ DEPENDENCIES
   http_logger (~> 0.5.1)
   jbuilder (~> 2.3.1)
   jquery-rails (~> 4.0.4)
+  jquery-ui-rails (~> 5.0.5)
   kaminari (~> 0.16.3)
   mailchimp-api (~> 2.0.6)
   momentjs-rails (~> 2.10.3)

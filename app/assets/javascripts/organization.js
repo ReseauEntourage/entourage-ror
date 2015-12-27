@@ -69,7 +69,7 @@ var ready = function() {
     $("#messageModal").modal('hide');
   });
 
-  $('[data-toggle="tooltip"]').tooltip();
+  $('input[name="pushdate"]').datepicker({dateFormat: 'dd/mm/yy'});
   
   $('input[name="daterange"]').daterangepicker({
     opens:'left',

@@ -61,6 +61,7 @@ $buttons-color: #ef662f;
 @import "sign_in";
 @import "generate_tour";
 @import "bootstrap-multiselect";
+@import "jquery-ui/datepicker";
 
 body.with-navbar { padding-top: $navbar-height; }
 .navbar-brand { padding: 5px; }

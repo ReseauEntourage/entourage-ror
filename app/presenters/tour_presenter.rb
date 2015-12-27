@@ -1,4 +1,6 @@
 class TourPresenter
+  attr_reader :tour
+
   include ActionView::Helpers
   delegate :id,
            :tour_type,
@@ -57,7 +59,4 @@ class TourPresenter
   def end_time
     @end_time ||= tour.tour_points.last.try(:passing_time).try(:strftime, "%H:%M")
   end
-
-  private
-  attr_reader :tour
 end
