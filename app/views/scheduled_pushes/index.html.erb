@@ -1,0 +1,27 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Liste des push programmés</h1>
+
+<table class="table table-striped">
+  <thead>
+  <tr>
+    <th>Expéditeur</th>
+    <th>date</th>
+    <th>Objet</th>
+    <th>Message</th>
+    <th></th>
+  </tr>
+  </thead>
+
+  <tbody>
+  <% @scheduled_pushes.each do |push| %>
+    <tr>
+      <td class="vert-align"><%= push["sender"] %></td>
+      <td class="vert-align"><%= push["date"] %></td>
+      <td class="vert-align"><%= push["object"] %></td>
+      <td class="vert-align"><%= push["message"] %></td>
+      <td><%= link_to 'Supprimer', scheduled_pushes_path(date: push["date"]), method: :delete, data: { confirm: 'Êtes-vous sûr ?' }, class: "btn btn-default" %></td>
+    </tr>
+  <% end %>
+  </tbody>
+</table>

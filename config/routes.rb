@@ -39,7 +39,6 @@ Rails.application.routes.draw do
   end
 
   #WEB
-  resources :registration_requests, only: [:index, :show, :update, :destroy]
   resources :sessions, only: [:new, :create, :destroy]
   resources :organizations, only: [:edit, :update] do
     collection do
@@ -62,6 +61,12 @@ Rails.application.routes.draw do
     member do
       get :map_center
       get :map_data
+    end
+  end
+  resources :registration_requests, only: [:index, :show, :update, :destroy]
+  resources :scheduled_pushes, only: [:index] do
+    collection do
+      delete :destroy
     end
   end
 
