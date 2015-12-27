@@ -32,7 +32,7 @@
         <td class="vert-align"><%= registration_request.status %></td>
         <td><%= link_to 'Consulter', registration_request_path(registration_request), class: "btn btn-default" %></td>
         <td><%= link_to 'Valider', registration_request_path(registration_request, validate: true), method: "PUT", class: "btn btn-success" %></td>
-        <td><%= link_to 'Refuser', registration_request, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-danger" %></td>
+        <td><%= link_to 'Refuser', registration_request, method: :delete, data: { confirm: 'Êtes-vous sûr ?' }, class: "btn btn-danger" %></td>
       </tr>
     <% end %>
   </tbody>

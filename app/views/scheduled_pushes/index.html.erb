@@ -16,15 +16,12 @@
   <tbody>
   <% @scheduled_pushes.each do |push| %>
     <tr>
-      <td class="vert-align"><%= push[:sender] %></td>
-      <td class="vert-align"><%= push[:date] %></td>
-      <td class="vert-align"><%= push[:object] %></td>
-      <td class="vert-align"><%= push[:message] %></td>
-      <td><%= link_to 'Supprimer', scheduled_pushes_path(date: push[:date]), method: :delete, class: "btn btn-default" %></td>
+      <td class="vert-align"><%= push["sender"] %></td>
+      <td class="vert-align"><%= push["date"] %></td>
+      <td class="vert-align"><%= push["object"] %></td>
+      <td class="vert-align"><%= push["message"] %></td>
+      <td><%= link_to 'Supprimer', scheduled_pushes_path(date: push["date"]), method: :delete, data: { confirm: 'Êtes-vous sûr ?' }, class: "btn btn-default" %></td>
     </tr>
   <% end %>
   </tbody>
 </table>
-
-<br>
-<%= paginate @registration_requests %>
