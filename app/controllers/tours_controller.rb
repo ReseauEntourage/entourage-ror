@@ -5,9 +5,12 @@ class ToursController < ApplicationController
   before_action :check_authorisations
 
   def show
+    flash[:alert] = "Cette maraude n'a aucun point" if @tour.tour_points.blank?
   end
 
   def map_center
+    return render json: [] if @tour.tour_points.blank?
+
     first_tour_point = @tour.tour_points.first
     render json: [first_tour_point.latitude, first_tour_point.longitude]
   end
