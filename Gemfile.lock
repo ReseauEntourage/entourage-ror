@@ -112,7 +112,6 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.10.0)
-    colorize (0.7.7)
     columnize (0.9.0)
     connection_pool (2.2.0)
     coveralls (0.8.9)
@@ -415,7 +414,6 @@ DEPENDENCIES
   bullet (~> 4.14.7)
   byebug (~> 5.0.0)
   coffee-rails (~> 4.0.0)
-  colorize (~> 0.7.7)
   coveralls
   dotenv-rails (~> 2.0.2)
   dredd-rack (~> 0.7.0)

@@ -18,7 +18,7 @@ describe AndroidNotificationService do
     context 'android app is absent' do
       before { Rails.logger.stub(:warn) }
       subject! { AndroidNotificationService.new(notification_pusher).send_notification(sender, object, content, device_ids) }
-      it { expect(Rails.logger).to have_received(:warn).with('No android notification has been sent. Please save a Rpush::Gcm::App in database'.red) }
+      it { expect(Rails.logger).to have_received(:warn).with('No android notification has been sent. Please save a Rpush::Gcm::App in database') }
     end
   end
 end

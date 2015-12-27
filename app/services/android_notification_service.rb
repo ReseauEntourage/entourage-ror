@@ -9,7 +9,7 @@ class AndroidNotificationService
     entourage = Rpush::Gcm::App.where(name: 'entourage').first
     
     if entourage.nil?
-      Rails.logger.warn 'No android notification has been sent. Please save a Rpush::Gcm::App in database'.red
+      Rails.logger.warn 'No android notification has been sent. Please save a Rpush::Gcm::App in database'
     else
       notification = Rpush::Gcm::Notification.new
       notification.app = entourage

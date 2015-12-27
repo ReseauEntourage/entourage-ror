@@ -30,7 +30,7 @@ class ApplicationController < ActionController::Base
   end
 
   def login_error(message)
-    flash[:error] = "Vous devez vous authentifier avec un compte admin pour accéder à cette page"
+    flash[:error] = message
     return redirect_to new_session_path
   end
 
