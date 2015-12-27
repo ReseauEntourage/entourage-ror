@@ -26,5 +26,16 @@ module EntourageBack
     config.active_job.queue_adapter = :sidekiq
 
     Rails.application.routes.default_url_options[:host] = ENV["HOST"]
+
+    #lograge
+    config.lograge.enabled = true
+    config.lograge.custom_options = lambda do |event|
+      params = event.payload[:params].reject do |k|
+        ['controller', 'action'].include? k
+      end
+
+      { "params" => params }
+    end
+    config.log_tags = [ lambda {|req| Time.now.to_s(:db) }, :remote_ip ]
   end
 end
