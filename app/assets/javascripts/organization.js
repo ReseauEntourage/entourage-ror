@@ -7,6 +7,8 @@ function displayDashboardMapData() {
       center: map_center
     });
 
+    var heatmap = new google.maps.visualization.HeatmapLayer({map: map});
+
     colors = {"health": "red", "friendly": "magenta", "social": "green", "food": "blue", "other": "black"};
 
     map.data.setStyle(function (feature) {
@@ -20,6 +22,7 @@ function displayDashboardMapData() {
 
     google.maps.event.addListenerOnce(map, 'idle', function(){
       refreshMap = function() {
+        var tour_display_type = $("[name=tour_display_type]:checked").val();
         var url = '/organizations/tours.json';
         if($("#snapbox").val() == "true") {
           url = '/organizations/snap_tours.json';
@@ -41,15 +44,40 @@ function displayDashboardMapData() {
         if ($('#org-filter').val() != undefined && $('#org-filter').val().length > 0) {
           filters.push('org=' + $('#org-filter').val());
         }
+
+        if(tour_display_type=="heatmap") {
+          filters.push('only_points=true');
+        }
+
         url += '?' + filters.join('&');
+
         map.data.forEach(function(feature) {
           map.data.remove(feature);
         });
-        map.data.loadGeoJson(url);
+        heatmap.setMap(null);
+        if(tour_display_type=="points") {
+          map.data.loadGeoJson(url);
+        }
+        else {
+          $.getJSON(url, function (data) {
+            points = data.points.map(function (x) {
+              return new google.maps.LatLng(x.latitude, x.longitude)
+            });
+            heatmap = new google.maps.visualization.HeatmapLayer({
+              data: points,
+              radius: 40,
+              map: map
+            });
+          });
+        }
       };
 
       $('.map-filter').change(refreshMap);
       map.addListener('idle', refreshMap);
+
+      $("[name=tour_display_type]").change(function() {
+        refreshMap();
+      });
 
       refreshMap();
 

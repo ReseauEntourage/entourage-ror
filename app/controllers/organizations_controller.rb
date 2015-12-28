@@ -50,6 +50,11 @@ class OrganizationsController < ApplicationController
       @tours = @tours.where(tour_type: tour_types)
     end
     @presenters = TourCollectionPresenter.new(tours: @tours)
+
+    if params[:only_points]=="true"
+      points = @tours.map {|tour| tour.tour_points }.flatten
+      render json: {points: points}
+    end
   end
 
   #TODO : DRY after refactoring tours display
