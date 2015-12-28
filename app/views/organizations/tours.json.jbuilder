@@ -4,6 +4,7 @@ json.features do
     json.type "Feature"
     json.properties do
       json.tour_type presenter.tour_type
+      json.color "blue"
     end
     json.geometry do
       json.type "LineString"
