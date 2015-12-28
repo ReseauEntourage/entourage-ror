@@ -46,10 +46,14 @@ class TourPresenter
     number_to_human(tour.length, precision: 4, units: {unit: "m", thousand: "km"})
   end
 
-  def tour_summary
+  def tour_summary(current_user)
     summary_text = "#{tour.user.full_name} a réalisé une maraude de #{duration}"
     summary_text += " et a rencontré #{pluralize tour.encounters.size, 'personne'}" if tour.encounters.size > 0
-    link_to summary_text, Rails.application.routes.url_helpers.tour_path(tour)
+    if Authentication::UserTourAuthenticator.new(user: current_user, tour: tour).allowed_to_see?
+      link_to summary_text, Rails.application.routes.url_helpers.tour_path(tour)
+    else
+      summary_text
+    end
   end
 
   def start_time
