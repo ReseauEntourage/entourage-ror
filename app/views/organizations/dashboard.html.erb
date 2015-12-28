@@ -34,6 +34,10 @@
     <div id="map-maraudes"></div>
   </div>
   <%= render partial: "organizations/tour_filters" %>
+
+  <input type="radio" name="tour_display_type" value="points" checked> Parcours
+  <br>
+  <input type="radio" name="tour_display_type" value="heatmap"> Heatmap
 </div>
 <input type="hidden" id="snapbox" value="<%= @user_presenter.snap_to_road %>">
 <input type="hidden" id="simplifiedbox" value="<%= @user_presenter.simplified_tour %>">
