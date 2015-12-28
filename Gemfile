@@ -15,7 +15,6 @@ gem 'activeadmin',              github: 'activeadmin'
 gem 'active_admin_import',      '~> 2.1.2'
 gem 'geocoder',                 '~> 1.2.9'
 gem 'rpush',                    '~> 2.5.0'
-gem 'http_logger',              '~> 0.5.1'
 gem 'sinch_sms',                '~> 2.1'
 gem 'bootstrap-sass',           '~> 3.3.1'
 gem 'googlestaticmap',          git: 'https://github.com/ReseauEntourage/googlestaticmap.git'
@@ -40,9 +39,6 @@ group :development, :test do
 end
 
 group :development do
-  gem 'better_errors',          '~> 2.1.1'
-  gem 'binding_of_caller',      '~> 0.7.2'
-  gem 'dredd-rack',             '~> 0.7.0'
   gem 'dotenv-rails',           '~> 2.0.2'
   gem 'rack-mini-profiler',     '~> 0.9.8' #enable by requesting any page with '?pp=enable'
   gem 'pry-rails',              '~> 0.3.4'
@@ -54,8 +50,6 @@ end
 group :test do
   gem 'rspec-rails',            '~> 3.1'
   gem 'shoulda-matchers',       '~> 3.0.1'
-  gem 'simplecov',              '~> 0.10.0'
-  gem 'nyan-cat-formatter',     '~> 0.11'
   gem 'timecop',                '~> 0.8.0'
   gem 'factory_girl_rails',     '~> 4.5.0'
   gem 'webmock',                '~> 1.20.4'
