@@ -24,12 +24,12 @@ describe Api::V0::PoisController, :type => :controller do
         let!(:poi5) { create :poi, latitude: 12, longitude: 10 }
         context 'without distance' do
           before { get :index, token: user.token, latitude: 10.0, longitude: 10.0, format: :json }
-          it { should respond_with 200 }
+          it { expect(response.status).to eq(200) }
           it { expect(assigns[:pois]).to eq [poi3, poi4] }
         end
         context 'with distance' do
           before { get :index, token: user.token, latitude: 10.0, longitude: 10.0, distance: 20.0, format: :json }
-          it { should respond_with 200 }
+          it { expect(response.status).to eq(200) }
           it { expect(assigns[:pois]).to eq [poi2, poi3, poi4] }
         end
       end
@@ -38,7 +38,7 @@ describe Api::V0::PoisController, :type => :controller do
     describe '#create' do
       let!(:poi) { build :poi }
       before { post :create, token: user.token, poi: { name: poi.name, latitude: poi.latitude, longitude: poi.longitude, adress: poi.adress, phone: poi.phone, website: poi.website, email: poi.email, audience: poi.audience, category_id: poi.category_id }, format: :json}
-      it { should respond_with 201 }
+      it { expect(response.status).to eq(201) }
       it { expect(Poi.unscoped.last.name).to eq poi.name }
       it { expect(Poi.unscoped.last.latitude).to eq poi.latitude }
       it { expect(Poi.unscoped.last.longitude).to eq poi.longitude }
@@ -61,17 +61,17 @@ describe Api::V0::PoisController, :type => :controller do
           controller.member_mailer = member_mailer
           post :report, id: poi.id, token: user.token, message: message, format: :json
         end
-        it { should respond_with 201 }
+        it { expect(response.status).to eq(201) }
         it { expect(member_mailer).to have_received(:poi_report).with poi, user, message }
         it { expect(mail).to have_received(:deliver_later).with no_args }
       end
       describe 'wrong poi id' do
         before { post :report, id: -1, token: user.token, message: message, format: :json }
-        it { should respond_with 404 }
+        it { expect(response.status).to eq(404) }
       end
       describe 'no message' do
         before { post :report, id: poi.id, token: user.token, format: :json }
-        it { should respond_with 400 }
+        it { expect(response.status).to eq(400) }
       end
     end
     
@@ -80,7 +80,7 @@ describe Api::V0::PoisController, :type => :controller do
   context "unauthorized" do
     describe '#index' do
       before { get 'index', :format => :json }
-      it { should respond_with 401 }
+      it { expect(response.status).to eq(401) }
     end
   end
 end

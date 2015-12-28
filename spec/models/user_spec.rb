@@ -11,20 +11,20 @@ describe User, :type => :model do
   it { should validate_uniqueness_of(:email) }
   it { should define_enum_for(:device_type) }
   it { should validate_uniqueness_of(:phone) }
-  it { should allow_value('+33123456789').for(:phone) }
-  it { should allow_value('0123456789').for(:phone) }
-  it { should allow_value('+33623456789').for(:phone) }
-  it { should allow_value('0623456789').for(:phone) }
-  it { should allow_value('+33 6 23 45 67 89').for(:phone) }
-  it { should allow_value('06 23 45 67 89').for(:phone) }
-  it { should allow_value('06.23.45.67.89').for(:phone) }
-  it { should allow_value('+336.23.45.67.89').for(:phone) }
-  it { should allow_value('+336-23-45-67-89').for(:phone) }
-  it { should allow_value('06-23-45-67-89').for(:phone) }
-  it { should_not allow_value('').for(:phone) }
-  it { should_not allow_value('23-45-67-89').for(:phone) }
-  it { should_not allow_value('+3323456789').for(:phone) }
-  it { should_not allow_value('+33000000000').for(:phone) }
+  it { expect(FactoryGirl.build(:user, phone: '+33123456789').save).to be true }
+  it { expect(FactoryGirl.build(:user, phone: '0123456789').save).to be true }
+  it { expect(FactoryGirl.build(:user, phone: '+33623456789').save).to be true }
+  it { expect(FactoryGirl.build(:user, phone: '0623456789').save).to be true }
+  it { expect(FactoryGirl.build(:user, phone: '+33 6 23 45 67 89').save).to be true }
+  it { expect(FactoryGirl.build(:user, phone: '06 23 45 67 89').save).to be true }
+  it { expect(FactoryGirl.build(:user, phone: '06.23.45.67.89').save).to be true }
+  it { expect(FactoryGirl.build(:user, phone: '+336.23.45.67.89').save).to be true }
+  it { expect(FactoryGirl.build(:user, phone: '+336-23-45-67-89').save).to be true }
+  it { expect(FactoryGirl.build(:user, phone: '06-23-45-67-89').save).to be true }
+  it { expect(FactoryGirl.build(:user, phone: '').save).to be false }
+  it { expect(FactoryGirl.build(:user, phone: '23-45-67-89').save).to be false }
+  it { expect(FactoryGirl.build(:user, phone: '+3323456789').save).to be false }
+  it { expect(FactoryGirl.build(:user, phone: '+33000000000').save).to be false }
   it { should allow_value('a@a.a').for(:email) }
   it { should_not allow_value('a-a.a').for(:email) }
   it { should have_many :tours }

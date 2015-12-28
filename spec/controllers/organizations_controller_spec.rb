@@ -8,7 +8,7 @@ RSpec.describe OrganizationsController, :type => :controller do
     let!(:user) { manager_basic_login }
     describe 'edit' do
       before { get :edit, id: user.organization }
-      it { should respond_with 200 }
+      it { expect(response.status).to eq(200) }
     end
     describe '#update' do
       before { get :update, id: user.organization, organization:{name: 'newname', description: 'newdescription', phone: 'newphone', address:'newaddress'} }
@@ -44,7 +44,7 @@ RSpec.describe OrganizationsController, :type => :controller do
         get :dashboard
       end
       after { Timecop.return }
-      it { should respond_with 200 }
+      it { expect(response.status).to eq(200) }
       it { expect(assigns(:tours_presenter).week_tours.count).to eq 3 }
       it { expect(assigns(:tours_presenter).tourer_count).to eq 2 }
       it { expect(assigns(:tours_presenter).encounter_count).to eq 4 }
@@ -71,12 +71,12 @@ RSpec.describe OrganizationsController, :type => :controller do
       let!(:tour5) { create :tour, user: user4, tour_type:'medical', updated_at: Time.new(2009, 3, 9, 13, 22, 0) }
       context 'with no filter' do
         before { get :tours, format: :json }
-        it { should respond_with 200 }
+        it { expect(response.status).to eq(200) }
         it { expect(assigns[:tours]).to match_array([tour1, tour2, tour5]) }
       end
       context 'with type filter' do
         before { get :tours, tour_type: 'alimentary', format: :json }
-        it { should respond_with 200 }
+        it { expect(response.status).to eq(200) }
         it { expect(assigns[:tours]).to eq [tour2]}
       end
       context 'with multiple type filter' do
@@ -85,17 +85,17 @@ RSpec.describe OrganizationsController, :type => :controller do
       end
       context 'with date range' do
         before { get :tours, date_range:'10/03/2009-11/03/2009', format: :json }
-        it { should respond_with 200 }
+        it { expect(response.status).to eq(200) }
         it { expect(assigns[:tours]).to eq [tour2]}
       end
       context 'with org filter' do
         before { get :tours, org:user4.organization.id, format: :json }
-        it { should respond_with 200 }
+        it { expect(response.status).to eq(200) }
         it { expect(assigns[:tours]).to eq [tour5]}
       end
       context 'with incorrect org filter' do
         before { get :tours, org:user3.organization.id, format: :json }
-        it { should respond_with 200 }
+        it { expect(response.status).to eq(200) }
         it { expect(assigns[:tours]).to eq []}
       end
 
@@ -145,7 +145,7 @@ RSpec.describe OrganizationsController, :type => :controller do
       let!(:encounter7) { create :encounter, tour: tour5 }
       context 'with no filter' do
         before { get :encounters, format: :json }
-        it { should respond_with 200 }
+        it { expect(response.status).to eq(200) }
         it { expect(assigns[:encounters]).to eq [encounter1, encounter2, encounter3, encounter4, encounter7]}
         it { expect(assigns[:encounter_count]).to eq 5 }
         it { expect(assigns[:tourer_count]).to eq 3 }
@@ -153,7 +153,7 @@ RSpec.describe OrganizationsController, :type => :controller do
       end
       context 'with type filter' do
         before { get :encounters, tour_type: 'medical', format: :json }
-        it { should respond_with 200 }
+        it { expect(response.status).to eq(200) }
         it { expect(assigns[:encounters]).to eq [encounter3, encounter4]}
         it { expect(assigns[:encounter_count]).to eq 2 }
         it { expect(assigns[:tourer_count]).to eq 1 }
@@ -161,7 +161,7 @@ RSpec.describe OrganizationsController, :type => :controller do
       end
       context 'with date range' do
         before { get :encounters, date_range:'10/03/2009-11/03/2009', format: :json }
-        it { should respond_with 200 }
+        it { expect(response.status).to eq(200) }
         it { expect(assigns[:encounters]).to eq [encounter3, encounter4]}
         it { expect(assigns[:encounter_count]).to eq 2 }
         it { expect(assigns[:tourer_count]).to eq 1 }
@@ -169,7 +169,7 @@ RSpec.describe OrganizationsController, :type => :controller do
       end
       context 'with org filter' do
         before { get :encounters, org: user4.organization.id, format: :json }
-        it { should respond_with 200 }
+        it { expect(response.status).to eq(200) }
         it { expect(assigns[:encounters]).to eq [encounter7]}
         it { expect(assigns[:encounter_count]).to eq 1 }
         it { expect(assigns[:tourer_count]).to eq 1 }
@@ -177,7 +177,7 @@ RSpec.describe OrganizationsController, :type => :controller do
       end
       context 'with incorrect org filter' do
         before { get :encounters, org: user3.organization.id, format: :json }
-        it { should respond_with 200 }
+        it { expect(response.status).to eq(200) }
         it { expect(assigns[:encounters]).to eq []}
         it { expect(assigns[:encounter_count]).to eq 0 }
         it { expect(assigns[:tourer_count]).to eq 0 }
@@ -195,13 +195,13 @@ RSpec.describe OrganizationsController, :type => :controller do
 
       context "send message without recipients" do
         before { post :send_message, id: user.organization.to_param, object:'object', message: 'message' }
-        it { should respond_with 200 }
+        it { expect(response.status).to eq(200) }
         it { expect(push_notification_service).to have_received(:send_notification).with(user.full_name, 'object', 'message', user.organization.users) }
       end
 
       context "send message to all organization user" do
         before { post :send_message, id: user.organization.to_param, object:'object', message: 'message', recipients: 'all' }
-        it { should respond_with 200 }
+        it { expect(response.status).to eq(200) }
         it { expect(push_notification_service).to have_received(:send_notification).with(user.full_name, 'object', 'message', user.organization.users) }
       end
 
@@ -227,7 +227,7 @@ RSpec.describe OrganizationsController, :type => :controller do
           FactoryGirl.create(:tour, status: :ongoing, user: user_in_tour2, created_at: Date.parse("10/10/2010"))
         end
         before { post :send_message, id: user.organization.to_param, object:'object', message: 'message', recipients: ["user_id_#{@user_in_tour.id}"] }
-        it { should respond_with 200 }
+        it { expect(response.status).to eq(200) }
         it { expect(push_notification_service).to have_received(:send_notification).with(user.full_name, 'object', 'message', [@user_in_tour]) }
       end
     end
@@ -235,23 +235,23 @@ RSpec.describe OrganizationsController, :type => :controller do
   context 'no authentication' do
     describe '#edit' do
       before { get :edit, id: 0  }
-      it { should respond_with 302 }
+      it { expect(response.status).to eq(302) }
     end
     describe '#update' do
       before { put :update, id: 0 }
-      it { should respond_with 302 }
+      it { expect(response.status).to eq(302) }
     end
     describe '#dashboard' do
       before { get :dashboard }
-      it { should respond_with 302 }
+      it { expect(response.status).to eq(302) }
     end
     describe '#tours' do
       before { get :tours, format: :json }
-      it { should respond_with 302 }
+      it { expect(response.status).to eq(302) }
     end
     describe '#encounters' do
       before { get :encounters, format: :json }
-      it { should respond_with 302 }
+      it { expect(response.status).to eq(302) }
     end
   end
 end

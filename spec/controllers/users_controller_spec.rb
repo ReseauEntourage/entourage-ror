@@ -57,7 +57,7 @@ RSpec.describe UsersController, :type => :controller do
           post 'create', user: {email: "test@rspec.com", first_name:"tester", last_name:"tested", phone:'+33102030405'}
         end
 
-        it { should respond_with 302 }
+        it { expect(response.status).to eq(302) }
         it { expect(User.last.first_name).to eq "tester" }
         it { expect(User.last.last_name).to eq "tested" }
         it { expect(User.last.phone).to eq "+33102030405" }
@@ -104,7 +104,7 @@ RSpec.describe UsersController, :type => :controller do
           put 'update', id: user.id, user: {email: "change#{user.email}", first_name:"change#{user.first_name}", last_name:"change#{user.last_name}"}
         end
 
-        it { should respond_with 302 }
+        it { expect(response.status).to eq(302) }
         it { expect(User.find(user.id).first_name).to eq "change#{user.first_name}" }
         it { expect(User.find(user.id).last_name).to eq "change#{user.last_name}" }
         it { expect(User.find(user.id).email).to eq "change#{user.email}" }

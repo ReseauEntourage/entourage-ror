@@ -52,9 +52,8 @@ group :development do
 end
 
 group :test do
-  gem 'guard-rspec',            '~> 4.6.3'
   gem 'rspec-rails',            '~> 3.1'
-  gem 'shoulda-matchers',       '~> 2.8.0'
+  gem 'shoulda-matchers',       '~> 3.0.1'
   gem 'simplecov',              '~> 0.10.0'
   gem 'nyan-cat-formatter',     '~> 0.11'
   gem 'timecop',                '~> 0.8.0'

@@ -11,7 +11,7 @@ RSpec.describe Api::V0::EncountersController, :type => :controller do
     describe "response" do
       before { post 'create', tour_id: tour.id, token: user.token , encounter: {street_person_name: encounter.street_person_name, date: encounter.date, latitude: encounter.latitude, longitude: encounter.longitude, message: encounter.message, voice_message: encounter.voice_message_url }, :format => :json }
 
-      it { should respond_with 201 }
+      it { expect(response.status).to eq(201) }
       it { expect(Encounter.last.tour).to eq(tour) }
       it { expect(Encounter.last.tour).to eq(tour) }
     end

@@ -10,7 +10,7 @@ RSpec.describe Api::V0::ToursController, :type => :controller do
     context "with correct type" do
       before { post 'create', token: user.token , tour: {tour_type: tour.tour_type, status:tour.status, vehicle_type:tour.vehicle_type, distance: 123.456}, format: :json }
 
-      it { should respond_with 201 }
+      it { expect(response.status).to eq(201) }
       it { expect(assigns(:presenter).tour).to eq(Tour.last) }
       it { expect(Tour.last.tour_type).to eq(tour.tour_type) }
       it { expect(Tour.last.status).to eq(tour.status) }
@@ -25,7 +25,7 @@ RSpec.describe Api::V0::ToursController, :type => :controller do
 
     context "with incorrect type" do
       before { post 'create', token: user.token , tour: {tour_type: 'invalid', status:tour.status, vehicle_type:tour.vehicle_type, distance: 123.456}, :format => :json }
-      it { should respond_with 400 }
+      it { expect(response.status).to eq(400) }
     end
 
   end
@@ -60,7 +60,7 @@ RSpec.describe Api::V0::ToursController, :type => :controller do
     context "with correct id" do
       before { put 'update', id: tour.id, token: user.token, tour:{tour_type:"medical", status:"ongoing", vehicle_type:"car", distance: 123.456}, format: :json }
 
-      it { should respond_with 200 }
+      it { expect(response.status).to eq(200) }
       it { expect(tour.reload.status).to eq("ongoing") }
       it { expect(tour.reload.vehicle_type).to eq("car") }
       it { expect(tour.reload.tour_type).to eq("medical") }
@@ -96,7 +96,7 @@ RSpec.describe Api::V0::ToursController, :type => :controller do
     
     context "with incorrect_user" do
       before { put 'update', id: tour.id, token: other_user.token, tour:{tour_type:"medical", status:"ongoing", vehicle_type:"car", distance: 123.456}, format: :json }
-      it { should respond_with 403 }
+      it { expect(response.status).to eq(403) }
     end
 
   end

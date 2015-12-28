@@ -21,7 +21,7 @@ RSpec.describe Api::V0::UsersController, :type => :controller do
       let!(:encounter4) { create :encounter, tour: tour3 }
       context 'when the phone number and sms code are valid' do
         before { post 'login', phone: user.phone, sms_code: "123456", device_id: device_id, device_type: device_type, format: 'json' }
-        it { should respond_with 200 }
+        it { expect(response.status).to eq(200) }
         it { expect(assigns(:user)).to eq user }
         it { expect(assigns(:tour_count)).to eq 2 }
         it { expect(assigns(:encounter_count)).to eq 3 }
@@ -56,18 +56,18 @@ RSpec.describe Api::V0::UsersController, :type => :controller do
       let!(:user) { create :user }
       context 'params are valid' do
         before { patch 'update_me', token:user.token, user: { email:'new@e.mail', sms_code:'654321' }, format: :json }
-        it { should respond_with 200 }
+        it { expect(response.status).to eq(200) }
         it { expect(User.find(user.id).email).to eq('new@e.mail') }
         it { expect(BCrypt::Password.new(User.find(user.id).sms_code) == '654321').to be true }
       end
       context 'params are invalid' do
         before { patch 'update_me', token:user.token, user: { email:'bademail', sms_code:'badcode' }, format: :json }
-        it { should respond_with 400 }
+        it { expect(response.status).to eq(400) }
       end
     end
     context 'bad authentication' do
       before { patch 'update_me', token:'badtoken', user: { email:'new@e.mail', sms_code:'654321' }, format: :json }
-      it { should respond_with 401 }
+      it { expect(response.status).to eq(401) }
     end
   end
 
