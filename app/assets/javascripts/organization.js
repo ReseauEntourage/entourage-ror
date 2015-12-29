@@ -117,9 +117,6 @@ var ready = function() {
       $('input[name="pushdate"]').datepicker('setDate', new Date());
     }
   });
-
-
-
   
   $('input[name="daterange"]').daterangepicker({
     opens:'left',
