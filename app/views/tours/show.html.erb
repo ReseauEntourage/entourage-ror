@@ -6,6 +6,9 @@
     <h4>heude de début : <%= @tour_presenter.start_time %></h4>
     <h4>heude de fin : <%= @tour_presenter.end_time %></h4>
     <h4>Durée : <%= @tour_presenter.duration %></h4>
+    <p>
+      <%= link_to "Retour à la liste des maraudes", dashboard_organizations_path %>
+    </p>
   </div>
   <div class="col-md-8">
     <div id="map-maraudes"></div>
