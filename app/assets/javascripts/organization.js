@@ -94,7 +94,20 @@ var ready = function() {
   }
 
   $('input[name="pushdate"]').datepicker({dateFormat: 'dd/mm/yy', minDate: 0});
-  $('input[name="pushdate"]').datepicker('setDate', new Date());
+  $('#recipients-select').multiselect({ buttonClass :'btn btn-default multitest',
+    nonSelectedText: 'Sélectionnez des destinataires'});
+
+  $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+    var target = $(e.target).attr("href");
+    if ((target == '#now')) {
+      $('input[name="pushdate"]').datepicker();
+    }else{
+      $('input[name="pushdate"]').datepicker('setDate', new Date());
+    }
+  });
+
+
+
   
   $('input[name="daterange"]').daterangepicker({
     opens:'left',
