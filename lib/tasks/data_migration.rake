@@ -1,4 +1,10 @@
 namespace :data_migration do
+  desc "run all pending migration jobs"
+  task migration_jobs: :environment do
+    Rake::Task["create_simplified_tour_points"].invoke
+    Rake::Task["initialize_encounter_counter_cache"].invoke
+  end
+
   desc "create simplified tour points"
   task create_simplified_tour_points: :environment do
     Tour.find_each { |t| SimplifyTourPointsJob.perform_now(t.id) }
