@@ -10,6 +10,9 @@ namespace :db do
     last_id = TourPoint.reorder("id DESC").limit(5000).last.id
     TourPoint.where("id < #{last_id}").delete_all
     SnapToRoadTourPoint.delete_all
+
+    #delete push token
+    User.where("id NOT IN (93, 6, 1, 21, 2)").update_all(device_id: nil)
   end
 
 
