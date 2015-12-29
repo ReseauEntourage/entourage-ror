@@ -24,7 +24,7 @@
                   <option value="all">Toute l'association</option>
                   <option value="in_tour">Les membres actuellement en maraude</option>
                   <% @user_presenter.organization_members.each do |member| %>
-                    <option value="user_id_<%= member.id %>"><%= member.full_name%></option>
+                    <option value="user_id_<%= member.id %>" <%= UserPresenter.new(user: member).can_send_push? ? "" : "disabled='disabled'" %>><%= member.full_name%></option>
                   <% end %>
                 </select>
               </div>
