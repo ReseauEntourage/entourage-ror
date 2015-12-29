@@ -93,11 +93,8 @@ var ready = function() {
     displayDashboardMapData();
   }
 
-  $("#send_message_form").find(":submit").click(function() {
-    $("#messageModal").modal('hide');
-  });
-
-  $('input[name="pushdate"]').datepicker({dateFormat: 'dd/mm/yy'});
+  $('input[name="pushdate"]').datepicker({dateFormat: 'dd/mm/yy', minDate: 0});
+  $('input[name="pushdate"]').datepicker('setDate', new Date());
   
   $('input[name="daterange"]').daterangepicker({
     opens:'left',

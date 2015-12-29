@@ -32,7 +32,7 @@ module TourServices
     end
 
     def should_send_now?
-      params[:pushdate].nil?
+      params[:pushdate].blank?
     end
 
     private

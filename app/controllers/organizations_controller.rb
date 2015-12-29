@@ -132,9 +132,9 @@ class OrganizationsController < ApplicationController
     send_message_service = TourServices::SendMessageService.new(params: params, current_user: @current_user)
     if send_message_service.should_send_now?
       push_notification_service.send_notification send_message_service.sender, send_message_service.object, send_message_service.content, send_message_service.recipients
-      render plain: 'message envoyé', status: 200
+      redirect_to dashboard_organizations_path, notice: 'message envoyé'
     else
-      render plain: 'message programmé', status: 200
+      redirect_to dashboard_organizations_path, notice: 'message programmé'
     end
   end
   

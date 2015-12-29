@@ -195,13 +195,13 @@ RSpec.describe OrganizationsController, :type => :controller do
 
       context "send message without recipients" do
         before { post :send_message, id: user.organization.to_param, object:'object', message: 'message' }
-        it { expect(response.status).to eq(200) }
+        it { should redirect_to dashboard_organizations_path }
         it { expect(push_notification_service).to have_received(:send_notification).with(user.full_name, 'object', 'message', user.organization.users) }
       end
 
       context "send message to all organization user" do
         before { post :send_message, id: user.organization.to_param, object:'object', message: 'message', recipients: 'all' }
-        it { expect(response.status).to eq(200) }
+        it { should redirect_to dashboard_organizations_path }
         it { expect(push_notification_service).to have_received(:send_notification).with(user.full_name, 'object', 'message', user.organization.users) }
       end
 
@@ -227,7 +227,7 @@ RSpec.describe OrganizationsController, :type => :controller do
           FactoryGirl.create(:tour, status: :ongoing, user: user_in_tour2, created_at: Date.parse("10/10/2010"))
         end
         before { post :send_message, id: user.organization.to_param, object:'object', message: 'message', recipients: ["user_id_#{@user_in_tour.id}"] }
-        it { expect(response.status).to eq(200) }
+        it { should redirect_to dashboard_organizations_path }
         it { expect(push_notification_service).to have_received(:send_notification).with(user.full_name, 'object', 'message', [@user_in_tour]) }
       end
     end
