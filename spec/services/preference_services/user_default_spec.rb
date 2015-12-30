@@ -50,7 +50,7 @@ describe PreferenceServices::UserDefault do
     end
 
     context "no latitude" do
-      it { expect(PreferenceServices::UserDefault.new(user: user).latitude).to be_nil }
+      it { expect(PreferenceServices::UserDefault.new(user: user).latitude).to eq(48.866051) }
     end
   end
 
@@ -61,7 +61,7 @@ describe PreferenceServices::UserDefault do
     end
 
     context "no longitude" do
-      it { expect(PreferenceServices::UserDefault.new(user: user).longitude).to be_nil }
+      it { expect(PreferenceServices::UserDefault.new(user: user).longitude).to eq(2.3565218) }
     end
   end
 end

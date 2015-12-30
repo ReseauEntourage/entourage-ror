@@ -2,6 +2,7 @@ namespace :data_migration do
   desc "run all pending migration jobs"
   task migration_jobs: :environment do
     Rake::Task["initialize_encounter_counter_cache"].invoke
+    Rake::Task["set_defaut_map_locations"].invoke
   end
 
   desc "create simplified tour points"
@@ -12,5 +13,16 @@ namespace :data_migration do
   desc "initialize encounter counter_cache"
   task initialize_encounter_counter_cache: :environment do
     Tour.update_all("encounters_count=(SELECT count(*) FROM encounters WHERE encounters.tour_id=tours.id)")
+  end
+
+  desc "clean default locations"
+  task set_defaut_map_locations: :environment do
+    User.find_each do |user|
+      pref = PreferenceServices::UserDefault.new(user: user)
+      if pref.latitude < 1
+        pref.latitude = 48.866051
+        pref.longitude = 2.3565218
+      end
+    end
   end
 end

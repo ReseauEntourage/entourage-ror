@@ -39,7 +39,7 @@ module PreferenceServices
     end
 
     def latitude
-      $redis.get("preferences:user:#{user.id}:latitude").try(:to_f)
+      $redis.get("preferences:user:#{user.id}:latitude").try(:to_f) || 48.866051
     end
 
     def latitude=(another_latitude)
@@ -47,7 +47,7 @@ module PreferenceServices
     end
 
     def longitude
-      $redis.get("preferences:user:#{user.id}:longitude").try(:to_f)
+      $redis.get("preferences:user:#{user.id}:longitude").try(:to_f) || 2.3565218
     end
 
     def longitude=(another_longitude)

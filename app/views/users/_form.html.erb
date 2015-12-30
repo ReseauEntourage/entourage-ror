@@ -21,7 +21,7 @@
     <%= f.text_field :email, class: 'form-control' %>
   </div>
 
-  <% if @current_user.admin %>
+  <% if current_admin %>
     <div class="field form-group">
       <label>Administrateur</label>
       <%= f.check_box :manager %>
@@ -36,7 +36,6 @@
       <label>simplified tour</label>
       <%= check_box_tag "user[simplified_tour]", 'true', @user_presenter.simplified_tour %>
     </div>
-
   <% end %>
 
   <div class="actions form-group">
