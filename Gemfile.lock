@@ -360,7 +360,6 @@ DEPENDENCIES
   bootstrap-sass (~> 3.3.1)
   bullet (~> 4.14.7)
   byebug (~> 5.0.0)
-  coffee-rails (~> 4.0.0)
   coveralls
   dotenv-rails (~> 2.0.2)
   factory_girl_rails (~> 4.5.0)

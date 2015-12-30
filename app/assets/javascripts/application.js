@@ -23,3 +23,4 @@
 //= require bootstrap-multiselect
 //= require_tree ./templates
 //= require_tree .
+//= active_admin/base
