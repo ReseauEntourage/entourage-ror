@@ -4,7 +4,7 @@ FactoryGirl.define do
       "Association #{n}"
     end
     sequence :description do |n|
-      "Association #{n} description"
+      "Association description"
     end
     sequence :phone do |n|
       "+336%08i" % n

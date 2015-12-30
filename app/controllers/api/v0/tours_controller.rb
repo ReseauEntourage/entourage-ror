@@ -7,19 +7,17 @@ module Api
         tour_builder = TourServices::TourBuilder.new(params: tour_params, user: current_user)
         tour_builder.create do |on|
           on.create_success do |tour|
-            @presenter = TourPresenter.new(tour: tour)
-            render "show", status: 201
+            render json: tour, status: 201
           end
 
           on.create_failure do |tour|
-            @tour = tour
-            render '400', status: 400
+            render json: {message: 'Could not create tour', reasons: tour.errors.full_messages}, status: 400
           end
         end
       end
 
       def show
-        @presenter = TourPresenter.new(tour: @tour)
+        render json: @tour, status: 200
       end
 
       def index
@@ -37,7 +35,7 @@ module Api
 
         @tours = @tours.where("updated_at > ?", 24.hours.ago).order(updated_at: :desc).limit(params.fetch(:limit, 10))
         @presenters = TourCollectionPresenter.new(tours: @tours)
-        render status: 200
+        render json: @tours, status: 200
       end
 
       def update
@@ -49,8 +47,7 @@ module Api
           end
           @tour.length = tour_params[:distance]
           @tour.update_attributes(tour_params.except(:status, :distance))
-          @presenter = TourPresenter.new(tour: @tour)
-          render 'show', status: 200
+          render json: @tour, status: 200
         end
       end
 

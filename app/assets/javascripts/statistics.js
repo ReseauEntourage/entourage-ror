@@ -1,6 +1,5 @@
 function displayStatisticsMapData() {
   $.getJSON('/organizations/map_center', function (result) {
-
     var map_center = new google.maps.LatLng(result[0], result[1]);
     map = new google.maps.Map(document.getElementById('map-rencontres'), {
       zoom: 13,

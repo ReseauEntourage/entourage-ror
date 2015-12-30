@@ -3,15 +3,15 @@ module Api
     class EncountersController < Api::V0::BaseController
 
       def create
-        @encounter = Encounter.new(encounters_params)
+        encounter = Encounter.new(encounters_params)
         if params[:tour_id]
-          @encounter.tour = Tour.find_by(id: params[:tour_id])
+          encounter.tour = Tour.find(params[:tour_id])
         end
-        if @encounter.save
-          EncounterReverseGeocodeJob.perform_now(@encounter.id)
-          render status: 201
+        if encounter.save
+          EncounterReverseGeocodeJob.perform_now(encounter.id)
+          render json: encounter, status: 201
         else
-          render 'error', status: :bad_request
+          render json: {message: 'Could not create encouter', reasons: encounter.errors.full_messages}, status: :bad_request
         end
       end
 

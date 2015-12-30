@@ -82,13 +82,13 @@ RSpec.describe ToursController, :type => :controller do
         context "has points" do
           let!(:tour_points) { FactoryGirl.create_list(:tour_point, 2, tour: user_tour) }
           before { get :map_center, id: user_tour.to_param }
-          it { expect(JSON.parse(response.body)).to eq([1.5, 1.5]) }
+          it { expect(JSON.parse(response.body)).to eq({"tours"=>[1.5, 1.5]}) }
         end
 
 
         context "no points" do
           before { get :map_center, id: user_tour.to_param }
-          it { expect(JSON.parse(response.body)).to eq([]) }
+          it { expect(JSON.parse(response.body)).to eq({"tours"=>[]}) }
         end
       end
     end
