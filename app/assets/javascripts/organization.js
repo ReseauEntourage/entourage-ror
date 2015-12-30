@@ -57,6 +57,18 @@ function displayDashboardMapData() {
         heatmap.setMap(null);
         if(tour_display_type=="points") {
           map.data.loadGeoJson(url);
+
+          // Color each letter gray. Change the color when the isColorful property
+          // is set to true.
+          map.data.setStyle(function(feature) {
+            var color = 'gray';
+            color = feature.getProperty('color');
+
+            return /** @type {google.maps.Data.StyleOptions} */({
+              fillColor: color,
+              strokeColor: color
+            });
+          });
         }
         else {
           $.getJSON(url, function (data) {
@@ -105,9 +117,6 @@ var ready = function() {
       $('input[name="pushdate"]').datepicker('setDate', new Date());
     }
   });
-
-
-
   
   $('input[name="daterange"]').daterangepicker({
     opens:'left',

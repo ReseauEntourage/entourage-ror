@@ -56,6 +56,13 @@ class TourPresenter
     end
   end
 
+  def self.color(total:, current:)
+    start_color = "1d5a13".to_i(16)
+    end_color = "3db927".to_i(16)
+    step = (end_color-start_color)/total
+    "#"+(start_color + step*current).to_s(16)
+  end
+
   def start_time
     @start_time ||= tour.tour_points.first.try(:passing_time).try(:strftime, "%H:%M")
   end
