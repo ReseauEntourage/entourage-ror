@@ -20,8 +20,8 @@ namespace :data_migration do
     User.find_each do |user|
       pref = PreferenceServices::UserDefault.new(user: user)
       if pref.latitude < 1
-        pref.latitude = 48.866051
-        pref.longitude = 2.3565218
+        pref.latitude = user.default_latitude || 48.866051
+        pref.longitude = user.default_longitude || 2.3565218
       end
     end
   end
