@@ -3,11 +3,11 @@ module Api
     class TourPointsController < Api::V0::BaseController
       def create
         tour = Tour.find(params[:tour_id])
-        tour_point = tour.tour_points.new(tour_point_params['tour_points'])
-        if tour_point.save
-          render json: tour_point, status: 201
+        tour_points = tour.tour_points.create(tour_point_params['tour_points'])
+        if tour_points.all?(&:valid?)
+          render json: tour_points, status: 201
         else
-          render json: {message: 'Could not create tour point', reasons: tour_point.errors.full_messages}, status: 400
+          render json: {message: 'Could not create tour points'}, status: 400
         end
       end
 

@@ -27,7 +27,29 @@ describe Api::V0::PoisController, :type => :controller do
                                   "name"=>"Dede",
                                   "description"=>nil,
                                   "longitude"=>2.30681949999996,
-                                  "latitude"=>48.870424, "adress"=>"Au 50 75008 Paris", "phone"=>"0000000000", "website"=>"entourage.com", "email"=>"entourage@entourage.com", "audience"=>"Mon audience", validated: true, "category_id"=>poi1.category_id, "category"=>{"id"=>poi1.category.id, "name"=>poi1.category.name}}, {"id"=>poi3.id, "name"=>"Dede", "description"=>nil, "longitude"=>2.30681949999996, "latitude"=>48.870424, "adress"=>"Au 50 75008 Paris", "phone"=>"0000000000", "website"=>"entourage.com", "email"=>"entourage@entourage.com", "audience"=>"Mon audience", validated: true, "category_id"=>poi3.category_id, "category"=>{"id"=>poi3.category.id, "name"=>poi3.category.name}}]})
+                                  "latitude"=>48.870424,
+                                  "adress"=>"Au 50 75008 Paris",
+                                  "phone"=>"0000000000",
+                                  "website"=>"entourage.com",
+                                  "email"=>"entourage@entourage.com",
+                                  "audience"=>"Mon audience",
+                                  "validated"=>true,
+                                  "category_id"=>poi1.category_id,
+                                  "category"=>{"id"=>poi1.category.id, "name"=>poi1.category.name}},
+                                 {"id"=>poi3.id,
+                                  "name"=>"Dede",
+                                  "description"=>nil,
+                                  "longitude"=>2.30681949999996,
+                                  "latitude"=>48.870424,
+                                  "adress"=>"Au 50 75008 Paris",
+                                  "phone"=>"0000000000",
+                                  "website"=>"entourage.com",
+                                  "email"=>"entourage@entourage.com",
+                                  "audience"=>"Mon audience",
+                                  "validated"=>true,
+                                  "category_id"=>poi3.category_id,
+                                  "category"=>{"id"=>poi3.category.id, "name"=>poi3.category.name}}
+                             ]})
         end
       end
 
