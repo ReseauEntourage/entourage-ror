@@ -125,7 +125,7 @@ class OrganizationsController < ApplicationController
   end
   
   def map_center
-    render json: [user_default.latitude ||= 48.858859, user_default.longitude ||= 2.3470599]
+    render json: [user_default.latitude ||= 48.858859, user_default.longitude ||= 2.3470599], root: false
   end
   
   def send_message
@@ -141,13 +141,17 @@ class OrganizationsController < ApplicationController
   private
   
   def location_filter
-    if (params[:sw].present? && params[:ne].present?)
+    if (params[:sw].present? && params[:ne].present? && ![params[:sw], params[:ne]].include?("NaN-NaN"))
       ne = params[:ne].split('-').map(&:to_f)
       sw = params[:sw].split('-').map(&:to_f)
       user_default.latitude = (ne[0] + sw[0]) / 2
       user_default.longitude = (ne[1] + sw[1]) / 2
       @box = sw + ne
     end
+  end
+
+  def is_number? string
+    true if Float(string) rescue false
   end
   
   def organization_params

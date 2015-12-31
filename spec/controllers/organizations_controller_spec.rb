@@ -254,4 +254,10 @@ RSpec.describe OrganizationsController, :type => :controller do
       it { expect(response.status).to eq(302) }
     end
   end
+
+  describe "map_center" do
+    let!(:user) { manager_basic_login }
+    before { get :map_center, format: :json }
+    it { expect(JSON.parse(response.body)).to eq([48.866051, 2.3565218]) }
+  end
 end
