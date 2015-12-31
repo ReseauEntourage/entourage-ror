@@ -26,6 +26,11 @@ RSpec.describe Api::V0::MapController, :type => :controller do
       it "assigns @pois" do
         expect(assigns(:pois)).to eq([poi])
       end
+
+      it "renders pois" do
+        res = JSON.parse(response.body)
+        expect(res).to eq({"categories"=>[{"id"=>poi.category.id, "name"=>poi.category.name}], "pois"=>[{"id"=>poi.id, "name"=>"Dede", "description"=>nil, "longitude"=>2.30681949999996, "latitude"=>48.870424, "adress"=>"Au 50 75008 Paris", "phone"=>"0000000000", "website"=>"entourage.com", "email"=>"entourage@entourage.com", "audience"=>"Mon audience", "validated"=>true, "category_id"=>poi.category.id, "category"=>{"id"=>poi.category.id, "name"=>poi.category.name}}]})
+      end
     end
 
     context "returned values limitations" do

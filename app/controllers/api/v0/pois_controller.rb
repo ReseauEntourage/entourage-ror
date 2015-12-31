@@ -8,7 +8,7 @@ module Api
         @pois = Poi.all
         @pois = @pois.around params[:latitude], params[:longitude], params[:distance] if params[:latitude].present? and params[:longitude].present?
 
-        #TODO : refactor API to refactor 1 top level POI ressources and associated categories ressources
+        #TODO : refactor API to return 1 top level POI ressources and associated categories ressources
         poi_json = JSON.parse(ActiveModel::ArraySerializer.new(@pois, each_serializer: PoiSerializer).to_json)
         categorie_json = JSON.parse(ActiveModel::ArraySerializer.new(@categories, each_serializer: CategorySerializer).to_json)
         render json: {pois: poi_json, categories: categorie_json }, status: 200
