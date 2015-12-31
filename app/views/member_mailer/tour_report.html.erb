@@ -26,6 +26,11 @@
           <p><%= @tour_presenter.distance %> parcourus</p>
         </td>
       </tr>
+      <tr>
+        <td style="padding: 10px;">>
+          <p><%= link_to "Cliquez ici", tour_url(@tour) %> pour retrouver votre maraude sur le web </p>
+        </td>
+      </tr>
       <% end %>
       <% if @tour.encounters.count > 0 %>
       <tr>

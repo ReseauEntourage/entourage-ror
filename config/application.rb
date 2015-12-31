@@ -23,9 +23,11 @@ module EntourageBack
        g.test_framework :rspec
      end
 
+
     config.active_job.queue_adapter = :sidekiq
 
     Rails.application.routes.default_url_options[:host] = ENV["HOST"]
+    config.action_mailer.default_url_options = { :host => ENV["HOST"] }
 
     #lograge
     config.lograge.enabled = true
