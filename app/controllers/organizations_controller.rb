@@ -122,6 +122,13 @@ class OrganizationsController < ApplicationController
 
     user_default.date_range = params[:date_range] if params[:date_range]
     user_default.tour_types = params[:tour_type].split(",") if params[:tour_type].present?
+
+    encounters = JSON.parse(ActiveModel::ArraySerializer.new(@encounters, each_serializer: EncounterSerializer).to_json)
+    render json: {encounters: encounters,
+                  stats: {encounter_count: @encounter_count,
+                          tour_count: @tourer_count,
+                          tourer_count: @tour_count }
+                  }
   end
   
   def map_center
