@@ -10,7 +10,7 @@ module Api
           render json: newsletter_subscription, status: 201
         else
           @entity = @newsletter_subscription
-          render "application/400", status: 400
+          render json: {message: "Could not create newsletter subscription"}, status: 400
         end
       end
 

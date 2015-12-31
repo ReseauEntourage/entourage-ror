@@ -5,7 +5,7 @@ module Api
 
       def login
         user = UserServices::UserAuthenticator.authenticate_by_phone_and_sms(phone: params[:phone], sms_code: params[:sms_code])
-        return render 'unauthorized', status: :unauthorized unless user
+        return render json: {message: 'unauthorized'}, status: :unauthorized unless user
 
         user.device_id = params['device_id'] if params['device_id'].present?
         user.device_type = params['device_type'] if params['device_type'].present?
