@@ -8,6 +8,7 @@ describe MemberMailer, type: :mailer do
     it { expect(mail.to).to eq [tour.user.email] }
     it { expect(mail.subject).to eq 'Résumé de la maraude' }
     it { expect(mail.body.encoded).to match "Bonjour #{tour.user.first_name}" }
+    it { expect(mail.body.encoded).to match "<a href=\"http://localhost/tours/#{tour.id}\">Cliquez ici</a> pour retrouver votre maraude sur le web" }
   end
   
   describe '#poi_report' do
