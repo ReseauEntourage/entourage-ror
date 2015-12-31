@@ -5,7 +5,8 @@ RSpec.describe Api::V0::Users::ToursController, :type => :controller do
 
   describe 'GET index' do
     let!(:user) { FactoryGirl.create(:user) }
-    let!(:user_tours) { FactoryGirl.create_list(:tour, 2, user: user) }
+    let!(:tour1) { FactoryGirl.create(:tour, user: user, updated_at: Date.parse("10/10/2010")) }
+    let!(:tour2) { FactoryGirl.create(:tour, user: user, updated_at: Date.parse("09/10/2010")) }
     let!(:other_tours) { FactoryGirl.create(:tour) }
 
     context "without pagination params" do
@@ -19,27 +20,27 @@ RSpec.describe Api::V0::Users::ToursController, :type => :controller do
 
         res = JSON.parse(response.body)
         expect(res).to eq({"tours"=>[
-            {"id"=>user_tours.last.id,
+            {"id"=>tour1.id,
              "tour_type"=>"medical",
              "status"=>"ongoing",
              "vehicle_type"=>"feet",
              "distance"=>0,
              "start_time"=>nil,
              "end_time"=>nil,
-             "organization_name"=>user_tours.last.user.organization.name,
+             "organization_name"=>tour1.user.organization.name,
              "organization_description"=>"Association description",
-             "user_id"=>user_tours.last.user_id,
+             "user_id"=>tour1.user_id,
              "tour_points"=>[]},
-            {"id"=>user_tours.first.id,
+            {"id"=>tour2.id,
              "tour_type"=>"medical",
              "status"=>"ongoing",
              "vehicle_type"=>"feet",
              "distance"=>0,
              "start_time"=>nil,
              "end_time"=>nil,
-             "organization_name"=>user_tours.first.user.organization.name,
+             "organization_name"=>tour2.user.organization.name,
              "organization_description"=>"Association description",
-             "user_id"=>user_tours.first.user_id,
+             "user_id"=>tour2.user_id,
              "tour_points"=>[]}]})
       end
     end
