@@ -28,7 +28,7 @@ module Api
           if message.nil?
             render '400', status: 400
           else
-            mail = member_mailer.poi_report(poi, @current_user, message).deliver_later
+            mail = member_mailer.poi_report(poi, @current_user, message).deliver_now
             render json: {message: message}, status: 201
           end
         end

@@ -18,7 +18,7 @@ RSpec.describe Api::V0::EncountersController, :type => :controller do
 
     describe "jobs" do
       it "reverse geocode encounter" do
-        expect(EncounterReverseGeocodeJob).to receive(:perform_later)
+        expect(EncounterReverseGeocodeJob).to receive(:perform_now)
         post 'create', tour_id: tour.id, token: user.token , encounter: {street_person_name: encounter.street_person_name, date: encounter.date, latitude: encounter.latitude, longitude: encounter.longitude, message: encounter.message, voice_message: encounter.voice_message_url }, :format => :json
       end
     end

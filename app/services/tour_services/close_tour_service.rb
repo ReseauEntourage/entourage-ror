@@ -14,8 +14,8 @@ module TourServices
       tour.closed_at= closed_at
       tour.length = distance
       if tour.save
-        MemberMailer.tour_report(tour).deliver_later
-        SnapToRoadPolylineJob.perform_later(tour.id)
+        MemberMailer.tour_report(tour).deliver_now
+        SnapToRoadPolylineJob.perform_now(tour.id)
       end
     end
 
