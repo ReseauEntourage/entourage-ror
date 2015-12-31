@@ -28,12 +28,12 @@
     </div>
 
     <div class="field form-group">
-      <label>Snap to road</label>
+      <label>Snap to road (points collé à la route)</label>
       <%= check_box_tag "user[snap_to_road]", 'true', @user_presenter.snap_to_road %>
     </div>
 
     <div class="field form-group">
-      <label>simplified tour</label>
+      <label>Points simplifiés (affichage des maraudes plus rapide)</label>
       <%= check_box_tag "user[simplified_tour]", 'true', @user_presenter.simplified_tour %>
     </div>
   <% end %>
