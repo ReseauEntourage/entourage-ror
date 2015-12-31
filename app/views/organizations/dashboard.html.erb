@@ -1,6 +1,6 @@
 <ul class="nav nav-pills" role="tablist">
   <li role="presentation" class="active">
-    <%= link_to "Carte des maraudes", '#'  %>
+    <%= link_to "Carte des maraudes", '#' %>
   </li>
   <li role="presentation">
     <%= link_to "Statistiques", statistics_organizations_path  %>
@@ -38,6 +38,11 @@
   <input type="radio" name="tour_display_type" value="points" checked> Parcours
   <br>
   <input type="radio" name="tour_display_type" value="heatmap"> Heatmap
+
+  <br><br>
+  <div class="row spinner hidden">
+    <i class="fa fa-spinner fa-spin"></i> <strong>Chargement des maraudes</strong>
+  </div>
 </div>
 <input type="hidden" id="snapbox" value="<%= @user_presenter.snap_to_road %>">
 <input type="hidden" id="simplifiedbox" value="<%= @user_presenter.simplified_tour %>">
