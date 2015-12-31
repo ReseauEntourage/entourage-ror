@@ -58,8 +58,11 @@ function displayDashboardMapData() {
         if(tour_display_type=="points") {
           map.data.loadGeoJson(url);
 
-          // Color each letter gray. Change the color when the isColorful property
-          // is set to true.
+          $(".spinner").removeClass("hidden");
+          google.maps.event.addListener(map.data, 'addfeature', function (e) {
+            $(".spinner").addClass("hidden");
+          });
+
           map.data.setStyle(function(feature) {
             var color = 'gray';
             color = feature.getProperty('color');
