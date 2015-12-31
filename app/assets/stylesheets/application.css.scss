@@ -103,3 +103,9 @@ li.user-card {
 .table tbody>tr>td.vert-align{
   vertical-align: middle;
 }
+
+
+.form-group.required .control-label:after {
+  content:"*";
+  color:red;
+}

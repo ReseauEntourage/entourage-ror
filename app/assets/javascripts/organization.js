@@ -103,69 +103,69 @@ function displayDashboardMapData() {
 var ready = function() {
   if ($(".organizations.dashboard")[0]) {
     displayDashboardMapData();
+
+    $('input[name="pushdate"]').datepicker({dateFormat: 'dd/mm/yy', minDate: 0});
+    $('#recipients-select').multiselect({ buttonClass :'btn btn-default multitest',
+      nonSelectedText: 'Sélectionnez des destinataires'});
+
+    $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+      var target = $(e.target).attr("href");
+      if ((target == '#now')) {
+        $('input[name="pushdate"]').datepicker();
+      }else{
+        $('input[name="pushdate"]').datepicker('setDate', new Date());
+      }
+    });
+
+    $('input[name="daterange"]').daterangepicker({
+      opens:'left',
+      linkedCalendars: false,
+      ranges: {
+        "Aujourd'hui": [moment(), moment()],
+        "Hier": [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+        "Les 7 derniers jours": [moment().subtract(6, 'days'), moment()],
+        "Les 30 derniers jours": [moment().subtract(29, 'days'), moment()],
+        "Le mois en cours": [moment().startOf('month'), moment().endOf('month')],
+        "Le mois dernier": [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+      },
+      locale: {
+        "format": "DD/MM/YYYY",
+        "separator": "-",
+        "applyLabel": "OK",
+        "cancelLabel": "Annuler",
+        "fromLabel": "De",
+        "toLabel": "à",
+        "customRangeLabel": "Autre",
+        "daysOfWeek": [
+          "Dim",
+          "Lun",
+          "Mar",
+          "Mer",
+          "Jeu",
+          "Ven",
+          "Sam"
+        ],
+        "monthNames": [
+          "Janvier",
+          "Février",
+          "Mars",
+          "Avril",
+          "Mai",
+          "Juin",
+          "Juillet",
+          "Aout",
+          "Septembre",
+          "Octobre",
+          "Novembre",
+          "Decembre"
+        ],
+        "firstDay": 1
+      }
+    });
+
+    $('#tour-type-filter').multiselect({ buttonClass :'btn btn-default multitest',
+      nonSelectedText: 'Sélectionnez une option'});
   }
-
-  $('input[name="pushdate"]').datepicker({dateFormat: 'dd/mm/yy', minDate: 0});
-  $('#recipients-select').multiselect({ buttonClass :'btn btn-default multitest',
-    nonSelectedText: 'Sélectionnez des destinataires'});
-
-  $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-    var target = $(e.target).attr("href");
-    if ((target == '#now')) {
-      $('input[name="pushdate"]').datepicker();
-    }else{
-      $('input[name="pushdate"]').datepicker('setDate', new Date());
-    }
-  });
-  
-  $('input[name="daterange"]').daterangepicker({
-    opens:'left',
-    linkedCalendars: false,
-    ranges: {
-      "Aujourd'hui": [moment(), moment()],
-      "Hier": [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-      "Les 7 derniers jours": [moment().subtract(6, 'days'), moment()],
-      "Les 30 derniers jours": [moment().subtract(29, 'days'), moment()],
-      "Le mois en cours": [moment().startOf('month'), moment().endOf('month')],
-      "Le mois dernier": [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-    },
-    locale: {
-      "format": "DD/MM/YYYY",
-      "separator": "-",
-      "applyLabel": "OK",
-      "cancelLabel": "Annuler",
-      "fromLabel": "De",
-      "toLabel": "à",
-      "customRangeLabel": "Autre",
-      "daysOfWeek": [
-        "Dim",
-        "Lun",
-        "Mar",
-        "Mer",
-        "Jeu",
-        "Ven",
-        "Sam"
-      ],
-      "monthNames": [
-        "Janvier",
-        "Février",
-        "Mars",
-        "Avril",
-        "Mai",
-        "Juin",
-        "Juillet",
-        "Aout",
-        "Septembre",
-        "Octobre",
-        "Novembre",
-        "Decembre"
-      ],
-      "firstDay": 1
-    }
-  });
-
-  $('#tour-type-filter').multiselect({ buttonClass :'btn btn-default multitest',
-                                                nonSelectedText: 'Sélectionnez une option'});
 };
 
 
