@@ -1,5 +1,5 @@
 var ready = function() {
-  if ($(".users")[0]){
+  if ($(".users")[0] && $('#new_user')[0]){
     $(".send_sms").click(function () {
       var user_id = $(this).data('user-id');
       console.log("user_id="+user_id);

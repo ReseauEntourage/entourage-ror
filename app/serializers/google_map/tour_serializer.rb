@@ -1,26 +1,44 @@
-class GoogleMap::TourSerializer < ActiveModel::Serializer
-  attributes :type,
-             :properties,
-             :geometry
-
-  def type
-    "FeatureCollection"
+class GoogleMap::TourSerializer
+  def initialize(tours:)
+    @tours = tours
   end
 
-  def properties
-    { tour_type: object.tour_type }
-  end
-
-  def geometry
+  def to_json
     {
-      type: "LineString",
-      coordinates: coordinates
+      type: "FeatureCollection",
+      features: features
     }
   end
 
-  def coordinates
-    object.tour_points.map do |point|
-      [point.longitude, point.latitude]
+  private
+  attr_reader :tours
+
+  def features
+    tours.each_with_index.map do |tour, index|
+      {
+        type: "Feature",
+        properties: properties(tour, index),
+        geometry: geometry(tour)
+      }
     end
   end
+
+  def properties(tour, index)
+    {
+      tour_type: tour.tour_type,
+      color: TourPresenter.color(total: tours.count, current: index)
+    }
+  end
+
+  def geometry(tour)
+    {
+      type: "LineString",
+      coordinates: coordinates(tour)
+    }
+  end
+
+  def coordinates(tour)
+    tour.tour_points.map { |point| [point.longitude, point.latitude] }
+  end
+
 end

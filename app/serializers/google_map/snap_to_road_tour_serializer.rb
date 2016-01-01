@@ -1,9 +1,7 @@
 module GoogleMap
   class SnapToRoadTourSerializer < GoogleMap::TourSerializer
-    def coordinates
-      object.snap_to_road_tour_points.map do |point|
-        [point.longitude, point.latitude]
-      end
+    def coordinates(tour)
+      tour.snap_to_road_tour_points.map { |point| [point.longitude, point.latitude] }
     end
   end
 end

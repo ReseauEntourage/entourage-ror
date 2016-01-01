@@ -29,21 +29,21 @@ class OrganizationsController < ApplicationController
       points = @tours.map {|tour| tour.tour_points }.flatten
       render json: {points: points}
     else
-      tours_json = JSON.parse(ActiveModel::ArraySerializer.new(@tours, each_serializer: GoogleMap::TourSerializer).to_json)
-      render json: {type: "FeatureCollection", features: tours_json}, status: 200
+      tours_json = GoogleMap::TourSerializer.new(tours: @tours).to_json
+      render json: tours_json, status: 200
     end
   end
 
   def simplified_tours
     @tours = TourServices::SimplifiedTourFilter.new(params: params, organization: @organization, user: @current_user).filter
-    tours_json = JSON.parse(ActiveModel::ArraySerializer.new(@tours, each_serializer: GoogleMap::SimplifiedTourSerializer).to_json)
-    render json: {type: "FeatureCollection", features: tours_json}, status: 200
+    tours_json = GoogleMap::SimplifiedTourSerializer.new(tours: @tours).to_json
+    render json: tours_json, status: 200
   end
 
   def snap_tours
     @tours = TourServices::SnapToRoadTourFilter.new(params: params, organization: @organization, user: @current_user).filter
-    tours_json = JSON.parse(ActiveModel::ArraySerializer.new(@tours, each_serializer: GoogleMap::SnapToRoadTourSerializer).to_json)
-    render json: {type: "FeatureCollection", features: tours_json}, status: 200
+    tours_json = GoogleMap::SnapToRoadTourSerializer.new(tours: @tours).to_json
+    render json: tours_json, status: 200
   end
   
   def encounters
