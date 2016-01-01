@@ -71,13 +71,11 @@ RSpec.describe Tour, :type => :model do
       let!(:tour) { create :tour, :filled, point_count: 67, encounter_count: 15 }
       subject { tour.static_path_map point_limit: 30 }
 
-      it { expect(subject.paths[0].points.length).to eq 23 }
+      it { expect(subject.paths[0].points.length).to eq 2 }
       it { expect(subject.paths[0].points[0].latitude).to eq tour.tour_points[0].latitude.round(4).to_s }
       it { expect(subject.paths[0].points[0].longitude).to eq tour.tour_points[0].longitude.round(4).to_s }
-      it { expect(subject.paths[0].points[1].latitude).to eq tour.tour_points[3].latitude.round(4).to_s }
-      it { expect(subject.paths[0].points[1].longitude).to eq tour.tour_points[3].longitude.round(4).to_s }
-      it { expect(subject.paths[0].points[2].latitude).to eq tour.tour_points[6].latitude.round(4).to_s }
-      it { expect(subject.paths[0].points[2].longitude).to eq tour.tour_points[6].longitude.round(4).to_s }
+      it { expect(subject.paths[0].points[1].latitude).to eq tour.tour_points[1].latitude.round(4).to_s }
+      it { expect(subject.paths[0].points[1].longitude).to eq tour.tour_points[1].longitude.round(4).to_s }
     end
     context 'empty tour' do
       let!(:tour) { create :tour }
@@ -86,7 +84,7 @@ RSpec.describe Tour, :type => :model do
     end
   end
   
-  describe '#static_encounters_map' do
+  describe 'static_encounters_map' do
     context 'filled tour' do
       let!(:tour) { create :tour }
       let!(:tour_point1) { create :tour_point, tour: tour, latitude: rand, longitude: rand }
@@ -116,10 +114,9 @@ RSpec.describe Tour, :type => :model do
     context 'huge tour' do
       let!(:tour) { create :tour, :filled, point_count: 67, encounter_count: 15 }
       subject { tour.static_encounters_map encounter_limit: 12 }
-      it { expect(subject.markers.count).to eq 12 }
-      it { expect(subject.markers[9].label).to eq 'A' }
-      it { expect(subject.markers[10].label).to eq 'B' }
-      it { expect(subject.markers[11].label).to eq 'C' }
+      it { expect(subject.markers.count).to eq 2 }
+      it { expect(subject.markers[0].label).to eq '1' }
+      it { expect(subject.markers[1].label).to eq '2' }
     end
     context 'empty tour' do
       let!(:tour) { create :tour }

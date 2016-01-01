@@ -3,7 +3,6 @@ class OrganizationsController < ApplicationController
 
   before_filter :authenticate_user!
   before_filter :authenticate_manager!, only: [:edit, :update]
-  before_filter :location_filter, only: [:encounters, :tours]
   before_filter :set_organization
 
   def dashboard
@@ -23,96 +22,33 @@ class OrganizationsController < ApplicationController
     flash[:notice]= "L'association a bien été mise à jour" if @organization.update(organization_params)
     render :edit
   end
-  
-  def tours
-    orgs = [@organization.id] + @current_user.coordinated_organizations.map(&:id)
-    @tours = Tour.includes(:tour_points)
-                 .joins(:user)
-                 .where(users: { organization_id: orgs })
-    
-    if @box
-      tours_with_point_in_box = TourPoint.unscoped.within_bounding_box(@box).select(:tour_id).distinct
-      @tours = @tours.where(id: tours_with_point_in_box)
-    end
-    if !params[:org].nil?
-      @tours = @tours.where(users: { organization_id: params[:org] })
-    end
-    if params[:date_range].nil?
-      @tours = @tours.where("tours.updated_at >= ?", Time.now.monday)
-    else
-      user_default.date_range = params[:date_range]
-      date_range = params[:date_range].split('-').map { |s| Date.strptime(s, '%d/%m/%Y') }
-      @tours = @tours.where("tours.updated_at between ? and ?", date_range[0].beginning_of_day, date_range[1].end_of_day)
-    end
-    if params[:tour_type].present?
-      tour_types = params[:tour_type].split(",")
-      user_default.tour_types = tour_types
-      @tours = @tours.where(tour_type: tour_types)
-    end
-    @presenters = TourCollectionPresenter.new(tours: @tours)
 
+  def tours
+    @tours = TourServices::TourFilter.new(params: params, organization: @organization, user: @current_user).filter
     if params[:only_points]=="true"
       points = @tours.map {|tour| tour.tour_points }.flatten
       render json: {points: points}
+    else
+      tours_json = GoogleMap::TourSerializer.new(tours: @tours).to_json
+      render json: tours_json, status: 200
     end
   end
 
-  #TODO : DRY after refactoring tours display
   def simplified_tours
-    orgs = [@organization.id] + @current_user.coordinated_organizations.map(&:id)
-    @tours = Tour.includes(:simplified_tour_points)
-                 .joins(:user)
-                 .where(users: { organization_id: orgs })
-
-    if @box
-      tours_with_point_in_box = SimplifiedTour.unscoped.within_bounding_box(@box).select(:tour_id).distinct
-      @tours = @tours.where(id: tours_with_point_in_box)
-    end
-    if !params[:org].nil?
-      @tours = @tours.where(users: { organization_id: params[:org] })
-    end
-    if params[:date_range].nil?
-      @tours = @tours.where("tours.updated_at >= ?", Time.now.monday)
-    else
-      user_default.date_range = params[:date_range]
-      date_range = params[:date_range].split('-').map { |s| Date.strptime(s, '%d/%m/%Y') }
-      @tours = @tours.where("tours.updated_at between ? and ?", date_range[0].beginning_of_day, date_range[1].end_of_day)
-    end
-    if params[:tour_type].present?
-      tour_types = params[:tour_type].split(",")
-      user_default.tour_types = tour_types
-      @tours = @tours.where(tour_type: tour_types)
-    end
-    @presenters = TourCollectionPresenter.new(tours: @tours)
+    @tours = TourServices::SimplifiedTourFilter.new(params: params, organization: @organization, user: @current_user).filter
+    tours_json = GoogleMap::SimplifiedTourSerializer.new(tours: @tours).to_json
+    render json: tours_json, status: 200
   end
 
-  #TODO : DRY after refactoring tours display
   def snap_tours
-    orgs = [@organization.id] + @current_user.coordinated_organizations.map(&:id)
-    tours = Tour.includes(:snap_to_road_tour_points)
-                 .joins(:user)
-                 .where(users: { organization_id: orgs })
-
-    if @box
-      tours_with_point_in_box = SnapToRoadTourPoint.unscoped.within_bounding_box(@box).select(:tour_id).distinct
-      tours = tours.where(id: tours_with_point_in_box)
-    end
-    if !params[:org].nil?
-      tours = tours.where(users: { organization_id: params[:org] })
-    end
-    if params[:date_range].nil?
-      tours = tours.where("tours.updated_at >= ?", Time.now.monday)
-    else
-      date_range = params[:date_range].split('-').map { |s| Date.strptime(s, '%d/%m/%Y') }
-      tours = tours.where("tours.updated_at between ? and ?", date_range[0].beginning_of_day, date_range[1].end_of_day)
-    end
-    tours = tours.where(tour_type: params[:tour_type].split(",")) if params[:tour_type].present?
-    @presenters = TourCollectionPresenter.new(tours: tours)
+    @tours = TourServices::SnapToRoadTourFilter.new(params: params, organization: @organization, user: @current_user).filter
+    tours_json = GoogleMap::SnapToRoadTourSerializer.new(tours: @tours).to_json
+    render json: {type: "FeatureCollection", features: tours_json}, status: 200
   end
   
   def encounters
-    tours
-    @encounters = Encounter.where(tour: @tours)
+    @tours = TourServices::TourFilter.new(params: params, organization: @organization, user: @current_user).filter
+    @encounters = Encounter.includes(tour: :user).where(tour: @tours)
     if @box
       @encounters = @encounters.within_bounding_box(@box)
     end
@@ -122,10 +58,17 @@ class OrganizationsController < ApplicationController
 
     user_default.date_range = params[:date_range] if params[:date_range]
     user_default.tour_types = params[:tour_type].split(",") if params[:tour_type].present?
+
+    encounters = JSON.parse(ActiveModel::ArraySerializer.new(@encounters, each_serializer: EncounterSerializer).to_json)
+    render json: {encounters: encounters,
+                  stats: {encounter_count: @encounter_count,
+                          tour_count: @tourer_count,
+                          tourer_count: @tour_count }
+                  }
   end
   
   def map_center
-    render json: [user_default.latitude ||= 48.858859, user_default.longitude ||= 2.3470599]
+    render json: [user_default.latitude ||= 48.858859, user_default.longitude ||= 2.3470599], root: false
   end
   
   def send_message
@@ -139,15 +82,9 @@ class OrganizationsController < ApplicationController
   end
   
   private
-  
-  def location_filter
-    if (params[:sw].present? && params[:ne].present?)
-      ne = params[:ne].split('-').map(&:to_f)
-      sw = params[:sw].split('-').map(&:to_f)
-      user_default.latitude = (ne[0] + sw[0]) / 2
-      user_default.longitude = (ne[1] + sw[1]) / 2
-      @box = sw + ne
-    end
+
+  def is_number? string
+    true if Float(string) rescue false
   end
   
   def organization_params

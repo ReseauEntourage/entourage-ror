@@ -5,20 +5,22 @@ RSpec.describe Api::V0::NewsletterSubscriptionsController, :type => :controller 
   describe "POST create" do
 
     context "with correct parameters" do
+      let(:newsletter_subscription_attributes) { attributes_for(:newsletter_subscription) }
 
       it "renders 201" do
-        newsletter_subscription_attributes = attributes_for(:newsletter_subscription)
-
-        newsletter_subscription = FactoryGirl.create(:newsletter_subscription)
-        post 'create', newsletter_subscription: {email: newsletter_subscription_attributes[:email], active: newsletter_subscription_attributes[:active]}, :format => :json
+        post 'create', newsletter_subscription: {email: newsletter_subscription_attributes[:email], active: newsletter_subscription_attributes[:active]}, format: :json
         expect(response.status).to eq(201)
       end
 
       it "creates new subscription" do
-        newsletter_subscription_attributes = attributes_for(:newsletter_subscription)
         newsletter_subscription_count = NewsletterSubscription.count
-        post 'create', newsletter_subscription: {email: newsletter_subscription_attributes[:email], active: newsletter_subscription_attributes[:active]}, :format => :json
+        post 'create', newsletter_subscription: {email: newsletter_subscription_attributes[:email], active: newsletter_subscription_attributes[:active]}, format: :json
         expect(NewsletterSubscription.count).to be(newsletter_subscription_count + 1)
+      end
+
+      it "renders newsletter subscription" do
+        post 'create', newsletter_subscription: {email: newsletter_subscription_attributes[:email], active: newsletter_subscription_attributes[:active]}, format: :json
+        expect(JSON.parse(response.body)).to eq("newsletter_subscription"=>{"email"=>newsletter_subscription_attributes[:email], "active"=>true})
       end
 
     end

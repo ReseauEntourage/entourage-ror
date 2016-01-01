@@ -11,11 +11,16 @@ RSpec.describe Api::V0::ToursController, :type => :controller do
       before { post 'create', token: user.token , tour: {tour_type: tour.tour_type, status:tour.status, vehicle_type:tour.vehicle_type, distance: 123.456}, format: :json }
 
       it { expect(response.status).to eq(201) }
-      it { expect(assigns(:presenter).tour).to eq(Tour.last) }
       it { expect(Tour.last.tour_type).to eq(tour.tour_type) }
       it { expect(Tour.last.status).to eq(tour.status) }
       it { expect(Tour.last.vehicle_type).to eq(tour.vehicle_type) }
       it { expect(Tour.last.user).to eq(user) }
+
+      it "responds with tour" do
+        res = JSON.parse(response.body)
+        last_tour = Tour.last
+        expect(res).to eq({"tour"=>{"id"=>last_tour.id, "tour_type"=>"medical", "status"=>"ongoing", "vehicle_type"=>"feet", "distance"=>123, "organization_name"=>last_tour.user.organization.name, "organization_description"=>"Association description", "start_time"=>nil, "end_time"=>nil, "user_id"=>user.id, "tour_points"=>[]}})
+      end
     end
 
     it "sends scheduled push" do
@@ -31,13 +36,32 @@ RSpec.describe Api::V0::ToursController, :type => :controller do
   end
 
   describe "GET show" do
+    before { Timecop.freeze(Time.parse("10/10/2010").at_beginning_of_day) }
     let(:user) { FactoryGirl.create :user }
 
     context "with correct id" do
-      let!(:tour) { FactoryGirl.create :tour }
+      let!(:tour) { FactoryGirl.create :tour, :filled }
       before { get 'show', id: tour.id, token: user.token , format: :json }
       it { expect(response.status).to eq(200) }
-      it { expect(assigns(:tour)).to eq(tour) }
+
+      it "responds with tour" do
+
+        res = JSON.parse(response.body)
+        start_time = tour.tour_points.first.passing_time.strftime("%H:%M")
+        end_time = tour.tour_points.last.passing_time.strftime("%H:%M")
+        last_tour = Tour.last
+        expect(res).to eq({"tour"=>{"id"=>last_tour.id,
+                                    "tour_type"=>"medical",
+                                    "status"=>"closed",
+                                    "vehicle_type"=>"feet",
+                                    "distance"=>tour.length,
+                                    "organization_name"=>last_tour.user.organization.name,
+                                    "organization_description"=>"Association description",
+                                    "start_time"=>start_time,
+                                    "end_time"=>end_time,
+                                    "user_id"=>last_tour.user_id,
+                                    "tour_points"=>[{"latitude"=>48.83, "longitude"=>2.29, "passing_time"=>tour.tour_points.first.passing_time.strftime("%H:%M")}, {"latitude"=>48.83, "longitude"=>2.29, "passing_time"=>tour.tour_points.last.passing_time.strftime("%H:%M")}]}})
+      end
     end
 
     context "with unexisting id" do
@@ -52,18 +76,36 @@ RSpec.describe Api::V0::ToursController, :type => :controller do
   end
 
   describe "PUT update" do
-    
+    before { Timecop.freeze(DateTime.parse("10/10/2010").at_beginning_of_day) }
     let!(:user) { FactoryGirl.create :user }
     let!(:other_user) { FactoryGirl.create :user }
-    let(:tour) { FactoryGirl.create(:tour, user: user) }
+    let(:tour) { FactoryGirl.create(:tour, :filled, user: user) }
       
     context "with correct id" do
-      before { put 'update', id: tour.id, token: user.token, tour:{tour_type:"medical", status:"ongoing", vehicle_type:"car", distance: 123.456}, format: :json }
+      before { put 'update', id: tour.id, token: user.token, tour:{tour_type:"medical", status:"closed", vehicle_type:"car", distance: 123.456}, format: :json }
 
       it { expect(response.status).to eq(200) }
-      it { expect(tour.reload.status).to eq("ongoing") }
+      it { expect(tour.reload.status).to eq("closed") }
       it { expect(tour.reload.vehicle_type).to eq("car") }
       it { expect(tour.reload.tour_type).to eq("medical") }
+
+      it "responds with tour" do
+        res = JSON.parse(response.body)
+        start_time = tour.tour_points.first.passing_time.strftime("%H:%M")
+        end_time = tour.tour_points.last.passing_time.strftime("%H:%M")
+        last_tour = Tour.last
+        expect(res).to eq({"tour"=>{"id"=>last_tour.id,
+                                    "tour_type"=>"medical",
+                                    "status"=>"closed",
+                                    "vehicle_type"=>"car",
+                                    "distance"=>tour.length,
+                                    "organization_name"=>last_tour.user.organization.name,
+                                    "organization_description"=>"Association description",
+                                    "start_time"=>start_time,
+                                    "end_time"=>end_time,
+                                    "user_id"=>last_tour.user_id,
+                                    "tour_points"=>[{"latitude"=>48.83, "longitude"=>2.29, "passing_time"=>"02:00"}, {"latitude"=>48.83, "longitude"=>2.29, "passing_time"=>"02:00"}]}})
+      end
     end
 
     context "close tour" do
@@ -113,18 +155,44 @@ RSpec.describe Api::V0::ToursController, :type => :controller do
           FactoryGirl.create :tour, updated_at:date+i.hours
         end
       end
+
+      before { get 'index', token: user.token, format: :json }
          
-      it "returns status 200" do
-        get 'index', token: user.token, :format => :json
-        expect(response.status).to eq 200
-      end
-      
-      it "returns last 10 tours" do
-        get 'index', token: user.token, :format => :json
-        expect(assigns(:tours).count).to eq(10)
-        expect(assigns(:tours).all? {|t| t.updated_at >= Date.parse("10/10/2010").at_beginning_of_day }).to be true
-      end
-      
+      it { expect(response.status).to eq 200 }
+      it { expect(assigns(:tours).count).to eq(10) }
+      it { expect(assigns(:tours).all? {|t| t.updated_at >= Date.parse("10/10/2010").at_beginning_of_day }).to be true }
+    end
+
+    it "responds with tours" do
+      Timecop.freeze(DateTime.parse("10/10/2010").at_beginning_of_day)
+      tours = FactoryGirl.create_list :tour, 2
+
+      get 'index', token: user.token, format: :json
+
+      res = JSON.parse(response.body)
+      expect(res).to eq({"tours"=>[
+          {"id"=>tours.first.id,
+           "tour_type"=>"medical",
+           "status"=>"ongoing",
+           "vehicle_type"=>"feet",
+           "distance"=>0,
+           "start_time"=>nil,
+           "end_time"=>nil,
+           "organization_name"=>tours.first.user.organization.name,
+           "organization_description"=>"Association description",
+           "user_id"=>tours.first.user_id,
+           "tour_points"=>[]},
+          {"id"=>tours.last.id,
+           "tour_type"=>"medical",
+           "status"=>"ongoing",
+           "vehicle_type"=>"feet",
+           "distance"=>0,
+           "start_time"=>nil,
+           "end_time"=>nil,
+           "organization_name"=>tours.last.user.organization.name,
+           "organization_description"=>"Association description",
+           "user_id"=>tours.last.user_id,
+           "tour_points"=>[]}]})
     end
      
     context "with limit parameter" do

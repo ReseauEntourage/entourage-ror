@@ -90,6 +90,7 @@ function displayDashboardMapData() {
       $('.map-filter').change(refreshMap);
       map.addListener('idle', refreshMap);
 
+
       $("[name=tour_display_type]").change(function() {
         refreshMap();
       });
