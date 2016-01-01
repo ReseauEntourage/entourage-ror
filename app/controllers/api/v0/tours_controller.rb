@@ -21,7 +21,7 @@ module Api
       end
 
       def index
-        @tours = Tour.includes(:snap_to_road_tour_points).includes(:user).where(nil)
+        @tours = Tour.includes(:tour_points).includes(:user).where(nil)
         @tours = @tours.type(params[:type]) if params[:type].present?
         @tours = @tours.vehicle_type(Tour.vehicle_types[params[:vehicle_type]]) if params[:vehicle_type].present?
 
