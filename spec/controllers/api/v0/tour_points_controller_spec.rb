@@ -11,13 +11,13 @@ RSpec.describe Api::V0::TourPointsController, :type => :controller do
     context "within existing tour" do
       before { post 'create', tour_id: tour.id, token: user.token, tour_points: [{latitude: tour_point.latitude, longitude: tour_point.longitude, passing_time: tour_point.passing_time}], :format => :json }
       it { expect(response.status).to eq(201) }
-      it { expect(JSON.parse(response.body)).to eq({"tour_points"=>[{"latitude"=>1.5, "longitude"=>1.5, "passing_time"=>"12:31"}]}) }
+      it { expect(JSON.parse(response.body)).to eq({"tour_points"=>[{"latitude"=>1.5, "longitude"=>1.5, "passing_time"=>tour.tour_points.first.passing_time.iso8601(3)}]}) }
     end
     
     context "with multiple tour points" do
       before { post 'create', tour_id: tour.id, token: user.token, tour_points: [{latitude: tour_point.latitude, longitude: tour_point.longitude, passing_time: tour_point.passing_time}, {latitude: tour_point.latitude, longitude: tour_point.longitude, passing_time: tour_point.passing_time}], :format => :json }
       it { expect(response.status).to eq(201) }
-      it { expect(JSON.parse(response.body)).to eq({"tour_points"=>[{"latitude"=>1.5, "longitude"=>1.5, "passing_time"=>"12:31"}, {"latitude"=>1.5, "longitude"=>1.5, "passing_time"=>"12:31"}]}) }
+      it { expect(JSON.parse(response.body)).to eq({"tour_points"=>[{"latitude"=>1.5, "longitude"=>1.5, "passing_time"=>tour.tour_points.first.passing_time.iso8601(3)}, {"latitude"=>1.5, "longitude"=>1.5, "passing_time"=>tour.tour_points.last.passing_time.iso8601(3)}]}) }
     end
 
     context "with inexisting tour" do
