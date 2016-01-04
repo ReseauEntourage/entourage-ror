@@ -6,9 +6,7 @@ class ApiRequestValidator
   end
 
   def validate!
-    #TODO: active request validation when mobile apps have implemented api_key
-    return
-    #return if Rails.env.test?
+    return if Rails.env.test?
 
     raise UnauthorisedApiKeyError unless Api::ApplicationKey.new(api_key: api_key).authorised?
   end

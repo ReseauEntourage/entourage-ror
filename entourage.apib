@@ -259,8 +259,8 @@ vehicle_type is either "feet" or "car"
 
 + Response 200 (application/json; charset=utf-8)
 
-        {"tours":[{"id":10,"tour_type":"medical", "vehicle_type":"feet", "distance": 8543.65, "organization_name":"organization name", "organization_description":"organization description","tour_points":[],"status":"ongoing"}]}
-        
+        {"tours":[{"id":10,"tour_type":"medical", "vehicle_type":"feet", "distance": 8543.65, "organization_name":"organization name", "organization_description":"organization description", "start_time": "2016-01-01T19:09:06.000+01:00", "end_time": "2016-01-01T20:09:06.000+01:00","tour_points":[],"status":"ongoing"}]}
+
 + Response 401 (application/json; charset=utf-8)
 
         {"error":{"status":401,"message":"Please sign-in"}}
@@ -270,7 +270,7 @@ vehicle_type is either "feet" or "car"
 + Request (application/json)
 
     + Header
-            
+
             Accept: application/json
 
     + Body
@@ -279,8 +279,8 @@ vehicle_type is either "feet" or "car"
 
 + Response 201 (application/json; charset=utf-8)
 
-        {"tour":{"id":10,"tour_type":"medical", "vehicle_type":"feet","tour_points":[]}}
-        
+        {"tour":{"id":10,"tour_type":"medical", "vehicle_type":"feet", "distance": 8543.65, "organization_name":"organization name", "organization_description":"organization description", "start_time": "2016-01-01T19:09:06.000+01:00", "end_time": "2016-01-01T20:09:06.000+01:00", "tour_points":[]}}
+
 + Response 400 (application/json; charset=utf-8)
 
         {"error":{"status":400,"message":"Could not create tour","reasons":["Tour type is not included in the list"]}}
@@ -298,13 +298,13 @@ vehicle_type is either "feet" or "car"
 + Request (application/json)
 
     + Header
-            
+
             Accept: application/json
 
 + Response 200 (application/json; charset=utf-8)
 
-        {"tour":{"id":1,"tour_type":"medical","status":"ongoing", "vehicle_type":"feet","distance": 8543.65,"tour_points":[{"latitude":1.5,"longitude":1.5,"passing_time":"2015-07-07T10:31:43.000+02:00"}]}}
-        
+        {"tour":{"id":10,"tour_type":"medical", "vehicle_type":"feet", "distance": 8543.65, "organization_name":"organization name", "organization_description":"organization description", "start_time": "2016-01-01T19:09:06.000+01:00", "end_time": "2016-01-01T20:09:06.000+01:00", "tour_points":[{"latitude":1.5,"longitude":1.5,"passing_time":"2015-07-07T10:31:43.000+02:00"}]}}
+
 + Response 404 (application/json; charset=utf-8)
 
         {"error":{"status":404,"message":"Could not find tour with id 233232"}}
@@ -317,12 +317,12 @@ vehicle_type is either "feet" or "car"
 + Request (application/json)
 
     + Header
-            
+
             Accept: application/json
 
     + Body
 
-            {"tour":{"tour_type":"medical", "status":"closed", "vehicle_type":"car", "distance": 8543.65}}
+            {"tour":{"id":10,"tour_type":"medical", "vehicle_type":"feet", "distance": 8543.65, "organization_name":"organization name", "organization_description":"organization description", "start_time": "2016-01-01T19:09:06.000+01:00", "end_time": "2016-01-01T20:09:06.000+01:00"}}
 
 
 + Response 200 (application/json; charset=utf-8)
@@ -539,3 +539,26 @@ Manage registration requests from organization who want to join entourage platfo
 + Response 400 (application/json; charset=utf-8)
 
         {"errors":{"organization":["Name can't be blank", "Description can't be blank", "Phone can't be blank", "Address can't be blank"], "user":[]}}
+
+
+# Group Check
+Perform checks against the API
+
+### Checks that the application version is still valid [GET]
+
++ Request (application/json; charset=utf-8)
+
+    + Body
+
+    + Headers
+
+            Accept: application/json
+            X-API-Key: (required, string, `79499c9d2c45`)
+
++ Response 200 (application/json; charset=utf-8)
+
+             {"status": "ok"}
+
++ Response 426 (application/json; charset=utf-8)
+
+        {"message": "Missing API Key or invalid key"}

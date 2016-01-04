@@ -34,7 +34,7 @@ Rails.application.routes.draw do
       end
 
       post 'login' => 'users#login'
-      get 'ping' => 'base#ping'
+      get 'check' => 'base#check'
     end
   end
 
