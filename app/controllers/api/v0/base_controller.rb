@@ -2,8 +2,8 @@ module Api
   module V0
     class BaseController < ApplicationController
       protect_from_forgery with: :null_session
-      before_filter :validate_request!
-      before_filter :authenticate_user!, except: [:ping]
+      before_filter :validate_request!, only: [:check]
+      before_filter :authenticate_user!, except: [:check]
 
       def current_user
         @current_user ||= User.find_by_token params[:token]
@@ -26,7 +26,7 @@ module Api
         end
       end
 
-      def ping
+      def check
         render json: {status: :ok}
       end
     end
