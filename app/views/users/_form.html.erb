@@ -21,6 +21,8 @@
     <%= f.email_field :email, class: 'form-control', required: true %>
   </div>
 
+  <%= f.hidden_field :send_sms, name: "send_sms", value: "0" %>
+
   <% if current_admin %>
     <div class="field form-group">
       <label>Administrateur</label>
