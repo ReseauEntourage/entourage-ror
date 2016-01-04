@@ -16,11 +16,11 @@ class TourSerializer < ActiveModel::Serializer
   end
 
   def start_time
-    object.tour_points.first.try(:passing_time).try(:strftime, "%H:%M")
+    object.tour_points.first.try(:passing_time)
   end
 
   def end_time
-    object.tour_points.last.try(:passing_time).try(:strftime, "%H:%M")
+    object.tour_points.last.try(:passing_time)
   end
 
   def organization_name

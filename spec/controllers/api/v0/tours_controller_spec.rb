@@ -47,8 +47,8 @@ RSpec.describe Api::V0::ToursController, :type => :controller do
       it "responds with tour" do
 
         res = JSON.parse(response.body)
-        start_time = tour.tour_points.first.passing_time.strftime("%H:%M")
-        end_time = tour.tour_points.last.passing_time.strftime("%H:%M")
+        start_time = tour.tour_points.first.passing_time.iso8601(3)
+        end_time = tour.tour_points.last.passing_time.iso8601(3)
         last_tour = Tour.last
         expect(res).to eq({"tour"=>{"id"=>last_tour.id,
                                     "tour_type"=>"medical",
@@ -60,7 +60,7 @@ RSpec.describe Api::V0::ToursController, :type => :controller do
                                     "start_time"=>start_time,
                                     "end_time"=>end_time,
                                     "user_id"=>last_tour.user_id,
-                                    "tour_points"=>[{"latitude"=>48.83, "longitude"=>2.29, "passing_time"=>tour.tour_points.first.passing_time.strftime("%H:%M")}, {"latitude"=>48.83, "longitude"=>2.29, "passing_time"=>tour.tour_points.last.passing_time.strftime("%H:%M")}]}})
+                                    "tour_points"=>[{"latitude"=>48.83, "longitude"=>2.29, "passing_time"=>tour.tour_points.first.passing_time.iso8601(3)}, {"latitude"=>48.83, "longitude"=>2.29, "passing_time"=>tour.tour_points.last.passing_time.iso8601(3)}]}})
       end
     end
 
@@ -91,20 +91,19 @@ RSpec.describe Api::V0::ToursController, :type => :controller do
 
       it "responds with tour" do
         res = JSON.parse(response.body)
-        start_time = tour.tour_points.first.passing_time.strftime("%H:%M")
-        end_time = tour.tour_points.last.passing_time.strftime("%H:%M")
-        last_tour = Tour.last
-        expect(res).to eq({"tour"=>{"id"=>last_tour.id,
+        start_time = tour.tour_points.first.passing_time.iso8601(3)
+        end_time = tour.tour_points.last.passing_time.iso8601(3)
+        expect(res).to eq({"tour"=>{"id"=>tour.id, 
                                     "tour_type"=>"medical",
                                     "status"=>"closed",
                                     "vehicle_type"=>"car",
                                     "distance"=>tour.length,
-                                    "organization_name"=>last_tour.user.organization.name,
+                                    "organization_name"=>tour.user.organization.name,
                                     "organization_description"=>"Association description",
                                     "start_time"=>start_time,
                                     "end_time"=>end_time,
-                                    "user_id"=>last_tour.user_id,
-                                    "tour_points"=>[{"latitude"=>48.83, "longitude"=>2.29, "passing_time"=>"02:00"}, {"latitude"=>48.83, "longitude"=>2.29, "passing_time"=>"02:00"}]}})
+                                    "user_id"=>tour.user_id,
+                                    "tour_points"=>[{"latitude"=>48.83, "longitude"=>2.29, "passing_time"=>tour.tour_points.first.passing_time.iso8601(3)}, {"latitude"=>48.83, "longitude"=>2.29, "passing_time"=>tour.tour_points.last.passing_time.iso8601(3)}]}})
       end
     end
 
