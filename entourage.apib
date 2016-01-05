@@ -185,9 +185,13 @@ Users related resources of the **Entourage API**
 
 + Response 200 (application/json; charset=utf-8)
 
-            {"user":{"id":1,"email":"new@e.mail","first_name":"Judge","last_name":"Dredd"}}
+            {"user":{"id":1,"email":"new@e.mail","first_name":"Judge","last_name":"Dredd","token":"153ad0b7ef67e5c44b8ef5afc12709e4","organization":{"name":"Entourage","description":"Réseau Entourage","phone":"+33677300840","address":"40 avenue Hoche 75008 Paris","logo_url":""},"stats":{"tour_count":5,"encounter_count":5}}}
 
 + Response 400 (application/json; charset=utf-8)
+
++ Response 404 (application/json; charset=utf-8)
+
+             Unknow phone number : no user with the given phone number could be found
 
 
 # Group Newsletter
