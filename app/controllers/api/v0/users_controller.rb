@@ -26,7 +26,8 @@ module Api
         if user_params[:phone].blank?
           return render json: {error: "Missing phone number"}, status:400
         end
-        user = User.where(phone: user_params[:phone]).first!
+        user_phone = Phone::PhoneBuilder.new(phone: user_params[:phone]).format
+        user = User.where(phone: user_phone).first!
 
         if params[:code][:action] == "regenerate"
           UserServices::SMSSender.new(user: user).send_welcome_sms!
