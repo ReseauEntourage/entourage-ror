@@ -43,6 +43,7 @@ group :development do
   gem 'quiet_assets',           '~> 1.1.0'
   gem 'bullet',                 '~> 4.14.7'
   gem 'thin',                   '~> 1.6.3'
+  gem 'web-console',            '~> 3.0'
 end
 
 group :test do

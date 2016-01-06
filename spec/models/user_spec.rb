@@ -25,6 +25,7 @@ describe User, :type => :model do
   it { expect(FactoryGirl.build(:user, phone: '23-45-67-89').save).to be false }
   it { expect(FactoryGirl.build(:user, phone: '+3323456789').save).to be false }
   it { expect(FactoryGirl.build(:user, phone: '+33000000000').save).to be false }
+  it { expect(FactoryGirl.build(:user, phone: '+33600000000').save).to be true } #Apple account
   it { should allow_value('a@a.a').for(:email) }
   it { should_not allow_value('a-a.a').for(:email) }
   it { should have_many :tours }
