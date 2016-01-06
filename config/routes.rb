@@ -72,7 +72,7 @@ Rails.application.routes.draw do
 
   get 'apps' => 'home#apps', as: :apps
   get 'store_redirection' => 'home#store_redirection'
-
+  get 'cgu' => 'home#cgu'
 
   #ADMIN
   namespace :admin do

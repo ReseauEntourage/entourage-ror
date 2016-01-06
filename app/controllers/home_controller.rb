@@ -1,9 +1,12 @@
 class HomeController < ApplicationController
+  layout 'full_screen'
+
   def apps
-    render layout: 'full_screen'
   end
 
   def store_redirection
-    render layout: 'full_screen'
+  end
+
+  def cgu
   end
 end
