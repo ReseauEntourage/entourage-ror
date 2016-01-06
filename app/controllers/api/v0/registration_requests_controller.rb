@@ -18,7 +18,7 @@ module Api
       private
 
       def registration_request_params
-        params.require(:registration_request).permit({organization: [:name, :description, :phone, :address, :local_entity, :email, :website_url]}, {user: [:first_name, :last_name, :email, :phone]})
+        params.require(:registration_request).permit({organization: [:name, :description, :phone, :address, :local_entity, :email, :website_url, :logo_key]}, {user: [:first_name, :last_name, :email, :phone]})
       end
     end
   end
