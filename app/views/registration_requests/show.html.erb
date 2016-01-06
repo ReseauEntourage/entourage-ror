@@ -29,6 +29,9 @@
     <label>Description</label>
     <%= text_field_tag :description, @registration_request.organization_field("description"), disabled: true, class: 'form-control' %>
   </div>
+  <div>
+    <img src="https://s3-eu-west-1.amazonaws.com/entourage-images-development/<%= @registration_request.organization_field("logo_key") %>" alt="">
+  </div>
 
   <h2>Contact</h2>
 
