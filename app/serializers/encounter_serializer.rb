@@ -20,4 +20,13 @@ class EncounterSerializer < ActiveModel::Serializer
   def voice_message
     object.voice_message_url
   end
+
+  def message
+    begin
+      object.message
+    rescue OpenSSL::Cipher::CipherError => e
+      Rails.logger.error "Cound not decrypt message for Encounter #{object.id}"
+      "Unreadable message"
+    end
+  end
 end

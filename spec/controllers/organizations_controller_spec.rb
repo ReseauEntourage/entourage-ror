@@ -120,7 +120,7 @@ RSpec.describe OrganizationsController, :type => :controller do
         end
       end
     end
-    describe '#encounters' do
+    describe 'encounters' do
       let!(:time) { Time.new(2009, 3, 11, 8, 25, 00) }
       before do
         Timecop.freeze(time)
@@ -182,6 +182,12 @@ RSpec.describe OrganizationsController, :type => :controller do
         it { expect(assigns[:encounter_count]).to eq 0 }
         it { expect(assigns[:tourer_count]).to eq 0 }
         it { expect(assigns[:tour_count]).to eq 0 }
+      end
+
+      context "bad decrypt encounter message" do
+        before { Encounter.any_instance.stub(:message).and_raise(OpenSSL::Cipher::CipherError) }
+        before { get :encounters, format: :json }
+        it { expect(response.status).to eq(200) }
       end
     end
     describe 'send_message' do
