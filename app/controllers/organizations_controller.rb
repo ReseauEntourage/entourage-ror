@@ -6,7 +6,7 @@ class OrganizationsController < ApplicationController
   before_filter :set_organization
 
   def dashboard
-    tours = Tour.joins(:user).where(users: { organization_id: @organization.id })
+    tours = Tour.joins(user: :organization).where(users: { organization_id: @organization.id })
     @tours_presenter = TourCollectionPresenter.new(tours: tours)
     @user_presenter = UserPresenter.new(user: @current_user)
   end
