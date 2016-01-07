@@ -30,7 +30,7 @@ module Api
         user = User.where(phone: user_phone).first!
 
         if params[:code][:action] == "regenerate"
-          UserServices::SMSSender.new(user: user).send_welcome_sms!
+          UserServices::SMSSender.new(user: user).regenerate_sms!
           render json: user, status: 200
         else
           render json: {error: "Unknown action"}, status:400

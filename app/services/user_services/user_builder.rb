@@ -23,20 +23,21 @@ module UserServices
       new_sms_code
     end
 
-    def new_user
+    def new_user(sms_code=nil)
       user = User.new(params)
       user.organization = organization
       user.token = token
-      user.sms_code = UserServices::UserBuilder.sms_code
+      user.sms_code = sms_code || UserServices::UserBuilder.sms_code
       user
     end
 
     def create(send_sms: false)
       yield callback if block_given?
 
-      user = new_user
+      sms_code = UserServices::UserBuilder.sms_code
+      user = new_user(sms_code)
       if user.save
-        UserServices::SMSSender.new(user: new_user).send_welcome_sms! if send_sms
+        UserServices::SMSSender.new(user: user).send_welcome_sms(sms_code) if send_sms
         callback.on_create_success.try(:call, user)
       else
         callback.on_create_failure.try(:call, user)

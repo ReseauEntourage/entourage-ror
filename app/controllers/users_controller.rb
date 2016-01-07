@@ -48,7 +48,7 @@ class UsersController < ApplicationController
   end
 
   def send_sms
-    UserServices::SMSSender.new(user: @user).send_welcome_sms!
+    UserServices::SMSSender.new(user: @user).regenerate_sms!
     redirect_to users_url, notice: "Le sms a bien été envoyé"
   end
 
