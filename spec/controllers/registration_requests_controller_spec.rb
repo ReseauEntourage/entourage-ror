@@ -22,9 +22,21 @@ RSpec.describe RegistrationRequestsController, type: :controller do
 
   describe "GET show" do
     let(:registration_request) { FactoryGirl.create(:registration_request) }
-    before { get 'show', id: registration_request.to_param }
-    it { expect(assigns(:registration_request)).to eq(registration_request) }
-    it { should render_template('show') }
+
+    context "valid registration request" do
+      before { get 'show', id: registration_request.to_param }
+      it { expect(assigns(:registration_request)).to eq(registration_request) }
+      it { should render_template('show') }
+    end
+
+    context "empty logo" do
+      before do
+        RegistrationRequest.any_instance.stub(:organization_field).and_call_original
+        RegistrationRequest.any_instance.stub(:organization_field).with("logo_key") { "" }
+      end
+      before { get 'show', id: registration_request.to_param }
+      it { expect(response.status).to eq(200) }
+    end
   end
 
   describe "DELETE destroy" do

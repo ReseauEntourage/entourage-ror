@@ -14,7 +14,8 @@ class RegistrationRequestsController < ApplicationController
   end
 
   def show
-    @image_url = Storage::Client.images.url_for(key: @registration_request.organization_field("logo_key"))
+    logo = @registration_request.organization_field("logo_key")
+    @image_url = logo.blank? ? "" : Storage::Client.images.url_for(key: logo)
   end
 
   def destroy
