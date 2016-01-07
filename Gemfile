@@ -29,7 +29,7 @@ gem 'sentry-raven',             '~> 0.13.3'
 gem 'sidekiq',                  '~> 3.4.1'
 gem 'simplify_rb',              '~> 0.1.2'
 gem 'lograge',                  '~> 0.3.4'
-gem 'aws-sdk',                  '~> 2.2.8'
+gem 'aws-sdk',                  '~> 2.2.9'
 
 group :development, :test do
   gem 'byebug',                 '~> 5.0.0'
