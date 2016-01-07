@@ -1,6 +1,6 @@
 class RegistrationRequestValidator
   def initialize(params:)
-    @organization = Organization.new(params["organization"])
+    @organization = Organization.new(params["organization"].except("logo_key"))
     @user = UserServices::UserBuilder.new(params:params["user"], organization:@organization).new_user
   end
 
