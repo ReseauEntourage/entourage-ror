@@ -4,10 +4,14 @@ module UserServices
       @user = user
     end
 
-    def send_welcome_sms!
+    def regenerate_sms!
       new_sms = UserServices::UserBuilder.regenerate_sms!(user: user)
+      send_welcome_sms(new_sms)
+    end
+
+    def send_welcome_sms(sms_code)
       link = Rails.env.test? ? "http://foo.bar" : url_shortener.shorten(Rails.application.routes.url_helpers.store_redirection_url)
-      message = "Bienvenue sur Entourage. Votre code est #{new_sms}. Retrouvez l'application ici : #{link} ."
+      message = "Bienvenue sur Entourage. Votre code est #{sms_code}. Retrouvez l'application ici : #{link} ."
       sms_notification_service.send_notification(user.phone, message)
     end
 
