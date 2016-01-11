@@ -83,6 +83,12 @@ GEM
     aws-sdk-resources (2.2.9)
       aws-sdk-core (= 2.2.9)
     bcrypt (3.1.10)
+    better_errors (2.1.1)
+      coderay (>= 1.0.0)
+      erubis (>= 2.6.6)
+      rack (>= 0.9.0)
+    binding_of_caller (0.7.2)
+      debug_inspector (>= 0.0.1)
     bourbon (3.2.4)
       sass (~> 3.2)
       thor
@@ -207,8 +213,6 @@ GEM
     pry-rails (0.3.4)
       pry (>= 0.9.10)
     puma (2.12.3)
-    quiet_assets (1.1.0)
-      railties (>= 3.1, < 5.0)
     rack (1.6.4)
     rack-mini-profiler (0.9.8)
       rack (>= 1.1.3)
@@ -346,10 +350,6 @@ GEM
       unf_ext
     unf_ext (0.0.7.1)
     uniform_notifier (1.9.0)
-    web-console (3.0.0)
-      activemodel (>= 4.2)
-      debug_inspector
-      railties (>= 4.2)
     webmock (1.20.4)
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
@@ -364,6 +364,8 @@ DEPENDENCIES
   attr_encrypted (~> 1.3.4)
   aws-sdk (~> 2.2.9)
   bcrypt (~> 3.1.10)
+  better_errors
+  binding_of_caller
   bullet (~> 4.14.7)
   byebug (~> 5.0.0)
   coveralls
@@ -383,7 +385,6 @@ DEPENDENCIES
   pg (~> 0.18.2)
   pry-rails (~> 0.3.4)
   puma (~> 2.12.2)
-  quiet_assets (~> 1.1.0)
   rack-mini-profiler (~> 0.9.8)
   rails (~> 4.2)
   rails_12factor (~> 0.0.3)
@@ -403,7 +404,6 @@ DEPENDENCIES
   timecop (~> 0.8.0)
   turbolinks (~> 2.5.3)
   uglifier (>= 1.3.0)
-  web-console (~> 3.0)
   webmock (~> 1.20.4)
 
 BUNDLED WITH

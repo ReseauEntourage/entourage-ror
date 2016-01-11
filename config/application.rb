@@ -14,15 +14,11 @@ module EntourageBack
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
     config.i18n.default_locale = :fr
 
-    config.action_dispatch.default_headers.merge!({
-     'Access-Control-Allow-Origin' => '*',
-     'Access-Control-Request-Method' => '*'
-     });
-
      config.generators do |g|
        g.test_framework :rspec
+       g.view_specs false
+       g.helper_specs false
      end
-
 
     config.active_job.queue_adapter = :sidekiq
 
