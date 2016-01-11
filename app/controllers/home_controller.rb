@@ -6,4 +6,7 @@ class HomeController < ApplicationController
 
   def store_redirection
   end
+
+  def cgu
+  end
 end

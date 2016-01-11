@@ -33,7 +33,7 @@ module Api
           if message.nil?
             render json: {message: "Missing 'message' params"}, status: 400
           else
-            member_mailer.poi_report(poi, @current_user, message).deliver_now
+            member_mailer.poi_report(poi, @current_user, message).deliver_later
             render json: {message: message}, status: 201
           end
         end
