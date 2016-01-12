@@ -20,7 +20,9 @@
         <li class="<%= active_class(dashboard_organizations_path) %>"><%= link_to 'Dashboard', dashboard_organizations_path %></li>
         <li class="<%= active_class(edit_organization_path(current_user.organization)) %>"><%= link_to 'Gestion association', edit_organization_path(current_user.organization) %></li>
         <li class="<%= active_class(users_path) %>"><%= link_to 'Gestion utilisateurs', users_path %></li>
-        <li class="<%= active_class(registration_requests_path) %>"><%= link_to "Gestion des demandes d'adhésions", registration_requests_path %></li>
+        <% if current_admin %>
+          <li class="<%= active_class(registration_requests_path) %>"><%= link_to "Gestion des demandes d'adhésions", registration_requests_path %></li>
+        <% end %>
         <li><%= link_to 'Gestion Profil', edit_user_path(current_user) %></li>
         <li><%= link_to 'Déconnexion', session_path(current_user), method: :delete %></li>
       </ul>

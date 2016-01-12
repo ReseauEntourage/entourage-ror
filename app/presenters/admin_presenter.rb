@@ -20,5 +20,4 @@ class AdminPresenter < ApplicationPresenter
       end
     end
   end
-
 end
