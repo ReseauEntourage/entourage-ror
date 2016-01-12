@@ -47,9 +47,6 @@ Rails.application.routes.draw do
       resources :registration_requests, only: [:create]
       resources :map, only: [:index]
       resources :newsletter_subscriptions
-      resources :entourages, only: [:index, :show, :create, :update] do
-        resources :users, only: [:index, :destroy]
-      end
 
       resources :pois, only: [:index, :create] do
         member do
@@ -67,6 +64,10 @@ Rails.application.routes.draw do
         end
 
         resources :tours, :controller => 'users/tours', only: [:index]
+      end
+
+      resources :entourages, only: [:index, :show, :create, :update] do
+        resources :users, :controller => 'entourages/users', only: [:index, :destroy]
       end
 
       post 'login' => 'users#login'
