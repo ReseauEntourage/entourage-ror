@@ -854,15 +854,17 @@ vehicle_type is either “feet” or “car”</p>
     </span>}
   ]
 </span>}</code></pre><div style="height: 1px;"></div></div></div><div class="title"><strong>Response&nbsp;&nbsp;<code>200</code></strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json; charset=utf-8</span></code></pre><div style="height: 1px;"></div><h5>Body</h5><pre><code>{
-"<span class="hljs-attribute">contacts_found</span>": <span class="hljs-value">[{
-    "<span class="hljs-attribute">phone</span>": <span class="hljs-value"><span class="hljs-string">"f5e096009dd3f88205a1942ad6e889fcfb642938"</span>
-    </span>}
-<span class="hljs-string">"contacts_not_found"</span>: [
+  "<span class="hljs-attribute">contacts_found</span>": <span class="hljs-value">[
     {
-    "<span class="hljs-attribute">phone</span>": <span class="hljs-value"><span class="hljs-string">"c29772ca36ae7896f11bd5c62f740339ed8bc916"</span>
-    </span>}]
-}
-</span></code></pre><div style="height: 1px;"></div></div></div><div class="title"><strong>Response&nbsp;&nbsp;<code>400</code></strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json; charset=utf-8</span></code></pre><div style="height: 1px;"></div><h5>Body</h5><pre><code>{
+      "<span class="hljs-attribute">phone</span>": <span class="hljs-value"><span class="hljs-string">"f5e096009dd3f88205a1942ad6e889fcfb642938"</span>
+    </span>}
+  ]</span>,
+  "<span class="hljs-attribute">contacts_not_found</span>": <span class="hljs-value">[
+    {
+      "<span class="hljs-attribute">phone</span>": <span class="hljs-value"><span class="hljs-string">"c29772ca36ae7896f11bd5c62f740339ed8bc916"</span>
+    </span>}
+  ]
+</span>}</code></pre><div style="height: 1px;"></div></div></div><div class="title"><strong>Response&nbsp;&nbsp;<code>400</code></strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json; charset=utf-8</span></code></pre><div style="height: 1px;"></div><h5>Body</h5><pre><code>{
   "<span class="hljs-attribute">error</span>": <span class="hljs-value">{
     "<span class="hljs-attribute">status</span>": <span class="hljs-value"><span class="hljs-number">400</span></span>,
     "<span class="hljs-attribute">message</span>": <span class="hljs-value"><span class="hljs-string">"Could not find contacts"</span></span>,
