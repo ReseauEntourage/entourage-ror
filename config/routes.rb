@@ -69,6 +69,7 @@ Rails.application.routes.draw do
       resources :entourages, only: [:index, :show, :create, :update] do
         resources :users, :controller => 'entourages/users', only: [:index, :destroy]
       end
+      resources :contacts, only: [:update]
 
       post 'login' => 'users#login'
       get 'check' => 'base#check'
