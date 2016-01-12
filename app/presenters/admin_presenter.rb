@@ -1,8 +1,12 @@
-class AdminPresenter
+class AdminPresenter < ApplicationPresenter
   extend ActionView::Helpers::TagHelper
   extend ActionView::Helpers::TextHelper
-  extend ActionView::Context
   extend ActionView::Helpers::UrlHelper
+  extend ActionView::Context
+
+  class << self
+    include Rails.application.routes.url_helpers
+  end
 
   def self.user_display_name(user)
     "#{user.organization_name} - #{user.first_name} - #{user.last_name}"
@@ -12,7 +16,7 @@ class AdminPresenter
     users = User.includes(:organization).sort_by { |user| user_display_name(user) }
     content_tag(:ul, class: "dropdown-menu scrollable-menu") do
       users.map do |user|
-        concat(content_tag(:li, link_to(user_display_name(user), Rails.application.routes.url_helpers.switch_user_admin_sessions_path(user_id: user.id))))
+        concat(content_tag(:li, link_to(user_display_name(user), switch_user_admin_sessions_path(user_id: user.id))))
       end
     end
   end

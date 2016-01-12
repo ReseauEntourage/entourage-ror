@@ -1,4 +1,4 @@
-class UserPresenter
+class UserPresenter < ApplicationPresenter
   delegate :snap_to_road,
            :simplified_tour,
            :tour_types,
