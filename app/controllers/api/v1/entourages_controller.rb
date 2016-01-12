@@ -4,6 +4,10 @@ module Api
       def index
         render file: 'mocks/entourages.json'
       end
+
+      def show
+        render file: 'mocks/entourage.json'
+      end
     end
   end
 end
