@@ -5,6 +5,10 @@ module Api
         def index
           return render file: 'mocks/users.json'
         end
+
+        def destroy
+          return head :no_content
+        end
       end
     end
   end
