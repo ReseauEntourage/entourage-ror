@@ -36,6 +36,39 @@ Rails.application.routes.draw do
       post 'login' => 'users#login'
       get 'check' => 'base#check'
     end
+
+    namespace :v1 do
+      resources :tours, only: [:index,:create,:show,:update] do
+        resources :tour_points, only:[:create]
+        resources :encounters, only: [:create]
+      end
+      resources :stats, only: [:index]
+      resources :messages, only: [:create]
+      resources :registration_requests, only: [:create]
+      resources :map, only: [:index]
+      resources :newsletter_subscriptions
+
+      resources :pois, only: [:index, :create] do
+        member do
+          post 'report'
+        end
+      end
+
+      resources :users, only: [:none] do
+        collection do
+          patch 'update_me'
+        end
+
+        member do
+          patch 'code'
+        end
+
+        resources :tours, :controller => 'users/tours', only: [:index]
+      end
+
+      post 'login' => 'users#login'
+      get 'check' => 'base#check'
+    end
   end
 
   #WEB
