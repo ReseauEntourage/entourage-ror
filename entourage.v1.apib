@@ -701,3 +701,134 @@ Entourages related resources of the **Entourage API**
 + Response 401 (application/json; charset=utf-8)
 
         {"error":{"status":401,"message":"Please sign-in"}}
+
+### Update all infos about an entourage [PUT]
++ Request (application/json)
+
+    + Header
+
+            Accept: application/json
+
+    + Body
+
+            {
+            "entourage": {
+                "name": "entourage1",
+                "type": "ask_for_help",
+                "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+                "location" : { "latitude" : 37.4224764, "longitude" : -122.0842499 }
+                }
+            }
+
++ Response 200 (application/json; charset=utf-8)
+
+        { "entourage": { "id": 567, "name": "entourage1", "type": "ask_for_help", "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.", "author": { "id": 123, "name": "Seb"}, "number_of_people": 1, "location" : { "latitude" : 37.4224764, "longitude" : -122.0842499 } } }
+
++ Response 400 (application/json; charset=utf-8)
+
+        {"error":{"status":400,"message":"Could not update entourage","reasons":["Entourage type unknown"]}}
+
++ Response 401 (application/json; charset=utf-8)
+
+        {"error":{"status":401,"message":"Please sign-in"}}
+
+
+# Group Entourage Users
+Resources related to users of an entourage
+## Entourages [/entourages/{entourage_id}/users]
+
+### Get all users from an entourage [GET /entourages/{entourage_id}/users{?token}{&page}{&per}]
+
++ Parameters
+    + token (required, string, `FAKETOKEN`) ... Token identifying the current user
+    + page (optional, number) ... pagination : page number
+    + per (optional, number) ... pagination : number of entourages per page
+
++ Request
+
+    + Headers
+
+            Accept: application/json
+
++ Response 200 (application/json; charset=utf-8)
+
+    + Body
+
+            {
+            "users": [
+                {
+                    "id": 1,
+                    "email": "dredd@test.com",
+                    "first_name": "Judge",
+                    "last_name": "Dredd"
+                },
+                {
+                    "id": 2,
+                    "email": "dredd2@test.com",
+                    "first_name": "Judge2",
+                    "last_name": "Dredd2"
+                }]
+            }
+
++ Response 401 (application/json; charset=utf-8)
+
+        {"error":{"status":401,"message":"Please sign-in"}}
+
+### Remove a user from an entourage [DELETE /entourages/{entourage_id}/users/{user_id}{?token}]
+
++ Parameters
+    + token (required, string, `FAKETOKEN`) ... Token identifying the current user
+
++ Request
+
+    + Headers
+
+            Accept: application/json
+
++ Response 204 (application/json; charset=utf-8)
+
++ Response 401 (application/json; charset=utf-8)
+
+        {"error":{"status":401,"message":"Please sign-in"}}
+
+# Group Contacts
+Contacts related resources of the **Entourage API**
+## Contacts [/contacts]
+
+### Send user contacts info to find who has an account on Entourage [PUT]
++ Request (application/json)
+
+    + Header
+
+            Accept: application/json
+
+    + Body
+
+            {
+            "contacts": [{
+                "phone": "f5e096009dd3f88205a1942ad6e889fcfb642938"
+                },
+                {
+                "phone": "c29772ca36ae7896f11bd5c62f740339ed8bc916"
+                }]
+            }
+
++ Response 200 (application/json; charset=utf-8)
+
+        {
+        "contacts_found": [{
+            "phone": "f5e096009dd3f88205a1942ad6e889fcfb642938"
+            }
+        "contacts_not_found": [
+            {
+            "phone": "c29772ca36ae7896f11bd5c62f740339ed8bc916"
+            }]
+        }
+
++ Response 400 (application/json; charset=utf-8)
+
+        {"error":{"status":400,"message":"Could not find contacts","reasons":["Malformed request"]}}
+
++ Response 401 (application/json; charset=utf-8)
+
+        {"error":{"status":401,"message":"Please sign-in"}}
