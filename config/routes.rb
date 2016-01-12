@@ -47,6 +47,9 @@ Rails.application.routes.draw do
       resources :registration_requests, only: [:create]
       resources :map, only: [:index]
       resources :newsletter_subscriptions
+      resources :entourages, only: [:index, :show, :create, :update] do
+        resources :users, only: [:index, :destroy]
+      end
 
       resources :pois, only: [:index, :create] do
         member do
@@ -54,9 +57,9 @@ Rails.application.routes.draw do
         end
       end
 
-      resources :users, only: [:none] do
+      resources :users, only: [:show] do
         collection do
-          patch 'update_me'
+          patch 'update'
         end
 
         member do
