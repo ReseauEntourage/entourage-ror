@@ -8,6 +8,10 @@ module Api
       def show
         render file: 'mocks/entourage.json'
       end
+
+      def create
+        render file: 'mocks/entourage.json'
+      end
     end
   end
 end
