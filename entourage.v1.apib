@@ -137,6 +137,29 @@ Users related resources of the **Entourage API**
 
         {"error":{"status":400,"message":"Login failed"}}
 
+
+## Get details about a user [/users/{user_id}]
+
+### Retrieve details about a user [GET]
++ Request (application/json)
+
+    + Header
+
+            Accept: application/json
+
++ Response 200 (application/json; charset=utf-8)
+
+        {"user":{"id":1,"email":"dredd@test.com","first_name":"Judge","last_name":"Dredd","token":"FAKETOKEN","stats":{"tour_count":0,"encounter_count":0},"organization":{"name":"org name","description":"org description","phone":"org phone","address":"org address","logo_url":"org logo url"}}}
+
++ Response 404 (application/json; charset=utf-8)
+
+        {"error":{"status":404,"message":"Could not find user with id 233232"}}
+
++ Response 401 (application/json; charset=utf-8)
+
+        {"error":{"status":401,"message":"Please sign-in"}}
+
+
 ## Create a new user [/users]
 
 ### Signup user [POST]
