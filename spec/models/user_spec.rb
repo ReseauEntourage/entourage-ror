@@ -31,12 +31,19 @@ describe User, :type => :model do
   it { should have_many :tours }
   it { should have_many :encounters }
   it { should belong_to :organization }
-  it { should validate_presence_of :organization }
   it { should have_and_belong_to_many(:coordinated_organizations).class_name('Organization') }
 
   describe '#full_name' do
     subject { User.new(first_name: 'John', last_name: 'Doe').full_name }
     it { should eq 'John Doe' }
+  end
+
+  describe "organization association" do
+    let(:valid_organization) { FactoryGirl.build(:organization) }
+    let(:invalid_organization) { FactoryGirl.build(:organization, name: nil) }
+    it { expect(FactoryGirl.build(:user, organization: nil).save).to be false }
+    it { expect(FactoryGirl.build(:user, organization: invalid_organization).save).to be false }
+    it { expect(FactoryGirl.build(:user, organization: valid_organization).save).to be true }
   end
 
   describe "set_phone" do

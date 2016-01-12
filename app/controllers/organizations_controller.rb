@@ -3,7 +3,8 @@ class OrganizationsController < ApplicationController
 
   before_filter :authenticate_user!
   before_filter :authenticate_manager!, only: [:edit, :update]
-  before_filter :set_organization
+  before_filter :set_organization, except: [:new, :create]
+  before_filter :authenticate_admin!, only: [:new, :create]
 
   def dashboard
     tours = Tour.joins(user: :organization).where(users: { organization_id: @organization.id })
@@ -13,6 +14,25 @@ class OrganizationsController < ApplicationController
 
   def statistics
     @user_presenter = UserPresenter.new(user: @current_user)
+  end
+
+  def new
+    @organization = Organization.new
+  end
+
+  def create
+    builder = OrganizationServices::OrganizationBuiler.new(params: organization_params)
+    builder.create do |on|
+      on.create_success do |organization, user|
+        @organization = organization
+        render :edit, success: "L'organisation a bien été créé"
+      end
+
+      on.create_failure do |organization, user|
+        @organization = organization
+        render :new
+      end
+    end
   end
 
   def edit
@@ -88,7 +108,7 @@ class OrganizationsController < ApplicationController
   end
   
   def organization_params
-    params.require(:organization).permit(:name, :description, :phone, :address, :logo_url)
+    params.require(:organization).permit(:name, :description, :phone, :address, :logo_url, user: [:first_name, :last_name, :phone, :email])
   end
 
   def set_organization

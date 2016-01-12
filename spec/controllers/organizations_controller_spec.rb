@@ -266,4 +266,32 @@ RSpec.describe OrganizationsController, :type => :controller do
     before { get :map_center, format: :json }
     it { expect(JSON.parse(response.body)).to eq([48.866051, 2.3565218]) }
   end
+
+  describe "new" do
+    let!(:user) { admin_basic_login }
+    before { get :new }
+    it { expect(assigns(:organization)).to be_a_new(Organization) }
+  end
+
+  describe "create" do
+    let!(:user) { admin_basic_login }
+
+    context "valid params" do
+      let(:post_organization) { post :create, { "organization" => {"name"=>"gvjbh", "description"=>"gvj", "phone"=>"gvj", "address"=>"gjv", "logo_url"=>"", "user"=>{"first_name"=>"jvgh", "last_name"=>"gjv", "phone"=>"0612345678", "email"=>"gvj@hgvj.com"}} } }
+      it { expect { post_organization }.to change { Organization.count }.by(1) }
+      it { expect { post_organization }.to change { User.count }.by(1) }
+    end
+
+    context "invalid user" do
+      let(:post_organization) { post :create, { "organization" => {"name"=>"gvjbh", "description"=>"gvj", "phone"=>"gvj", "address"=>"gjv", "logo_url"=>"", "user"=>{"first_name"=>"jvgh", "last_name"=>"gjv", "phone"=>"cfghgvj", "email"=>"gvj@hgvj.com"}} } }
+      it { expect { post_organization }.to change { Organization.count }.by(0) }
+      it { expect { post_organization }.to change { User.count }.by(0) }
+    end
+
+    context "invalid organization" do
+      let(:post_organization) { post :create, { "organization" => {"description"=>"gvj", "phone"=>"gvj", "address"=>"gjv", "logo_url"=>"", "user"=>{"first_name"=>"jvgh", "last_name"=>"gjv", "phone"=>"0612345678", "email"=>"gvj@hgvj.com"}} } }
+      it { expect { post_organization }.to change { Organization.count }.by(0) }
+      it { expect { post_organization }.to change { User.count }.by(0) }
+    end
+  end
 end

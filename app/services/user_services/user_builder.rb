@@ -5,7 +5,7 @@ module UserServices
     def initialize(params:, organization: nil)
       @params = params
       @organization = organization
-      @callback = Callback.new
+      @callback = UserServices::Callback.new
     end
 
     def token
@@ -24,8 +24,7 @@ module UserServices
     end
 
     def new_user(sms_code=nil)
-      user = User.new(params)
-      user.organization = organization
+      user = organization.users.new(params)
       user.token = token
       user.sms_code = sms_code || UserServices::UserBuilder.sms_code
       user

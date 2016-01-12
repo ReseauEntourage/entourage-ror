@@ -40,7 +40,7 @@ Rails.application.routes.draw do
 
   #WEB
   resources :sessions, only: [:new, :create, :destroy]
-  resources :organizations, only: [:edit, :update] do
+  resources :organizations, only: [:new, :create, :edit, :update] do
     collection do
       get 'dashboard'
       get 'statistics'

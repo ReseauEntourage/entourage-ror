@@ -1,6 +1,7 @@
 class User < ActiveRecord::Base
 
-  validates_presence_of [:first_name, :last_name, :email, :phone, :organization, :sms_code, :token]
+  validates_presence_of [:first_name, :last_name, :organization, :email, :phone, :sms_code, :token]
+  validates_associated :organization
   validates_uniqueness_of [:email, :token, :phone]
   validate :validate_phone!
   validates_format_of :email, with: /@/

@@ -117,15 +117,10 @@ POI related resources of the **Entourage API**
 # Group Users
 Users related resources of the **Entourage API**
 
-## User login [/login{?phone}{&sms_code}{&device_type}{&device_id}]
+## User login [/login{?phone}{&sms_code}]
 + Parameters
     + phone (required, string, `+33605040302`) ... phone number of the user to login
     + sms_code (required, string, `123456`) ... Sms code received by the user to login
-    + device_type: `android` (optional, enum[string]) - Type of mobile device the user is using
-        + Members
-            + `android` - Google's Android
-            + `ios` - Apple's IOS
-    + device_id (optional, string, `APA91bHSxpidt2SJ33aosTNSlYQMGRyzdt5LFBBSJEhd6zuR9hhe7Qxj00Y_u8og0W7DMaWTU_hWVqUl__yrMq7juuQNKzN689tnCcQKN2LcoJ_09ljgaRFNggfS77Kd0eWfX011oB5S`) ... Technical identifier of the mobile device the user is using (to be able to send notifications)
 
 ### Login user [POST]
 + Request (application/x-www-form-urlencoded; charset=utf-8)
@@ -142,7 +137,30 @@ Users related resources of the **Entourage API**
 
         {"error":{"status":400,"message":"Login failed"}}
 
-## Update the authenticated user [/users/update_me{?token}]
+## Create a new user [/users]
+
+### Signup user [POST]
+
+When signing up a new user we genereate a new sms_code and send it via SMS
+
++ Request (application/json)
+
+    + Header
+
+            Accept: application/json
+
+    + Body
+
+            {"user":{"phone":"0612345678"}}
+
++ Response 200 (application/json; charset=utf-8)
+
+            {"user":{"id":1,"email":"dredd@test.com","first_name":"Judge","last_name":"Dredd","token":"FAKETOKEN","stats":{"tour_count":0,"encounter_count":0},"organization":{"name":"org name","description":"org description","phone":"org phone","address":"org address","logo_url":"org logo url"}}}
+
++ Response 400 (application/json; charset=utf-8)
+
+
+## Update the authenticated user [/users/me{?token}]
 
 ### Update my user [PATCH]
 
@@ -158,11 +176,13 @@ Users related resources of the **Entourage API**
 
     + Body
 
-            {"user":{"email":"new@e.mail","sms_code":"654321"}}
+            {"user":{"device_id":"APA91bHSxpidt2SJ33aosTNSlYQMGRyzdt5LFBBSJEhd6zuR9hhe7Qxj00Y_u8og0W7DMaWTU_hWVqUl__yrMq7juuQNKzN689tnCcQKN2LcoJ_09ljgaRFNggfS77Kd0eWfX011oB5S", "device_type": "android"}}
+
+            device_id (optional, string, ``) ... Technical identifier of the mobile device the user is using (to be able to send notifications)
 
 + Response 200 (application/json; charset=utf-8)
 
-            {"user":{"id":1,"email":"new@e.mail","first_name":"Judge","last_name":"Dredd"}}
+            {"user":{"id":1,"email":"dredd@test.com","first_name":"Judge","last_name":"Dredd","token":"FAKETOKEN","stats":{"tour_count":0,"encounter_count":0},"organization":{"name":"org name","description":"org description","phone":"org phone","address":"org address","logo_url":"org logo url"}}}
 
 + Response 400 (application/json; charset=utf-8)
 

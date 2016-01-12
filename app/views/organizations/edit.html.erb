@@ -6,4 +6,11 @@
       <h3>Ajout d'utilisateur <%= link_to '', users_path+'#add-user', class:'btn btn-default fa fa-user-plus' %></h3>
     </div>
   </div>
+  <% if current_admin %>
+    <div class="row">
+      <div class="col-md-4 col-md-offset-4">
+        <h3>Ajout d'une nouvelle association <%= link_to '', new_organization_path, class:'btn btn-default fa fa-user-plus' %></h3>
+      </div>
+    </div>
+  <% end %>
 </div>
