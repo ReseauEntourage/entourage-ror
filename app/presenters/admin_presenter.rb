@@ -5,8 +5,7 @@ class AdminPresenter
   extend ActionView::Helpers::UrlHelper
 
   def self.user_display_name(user)
-    #"#{user.organization_name} - #{user.first_name} - #{user.last_name}"
-    ""
+    "#{user.organization_name} - #{user.first_name} - #{user.last_name}"
   end
 
   def self.user_list
