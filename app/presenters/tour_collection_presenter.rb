@@ -1,4 +1,4 @@
-class TourCollectionPresenter
+class TourCollectionPresenter < ApplicationPresenter
   include Enumerable
   include ActionView::Helpers
 
