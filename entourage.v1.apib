@@ -638,42 +638,42 @@ Entourages related resources of the **Entourage API**
 
     + Body
 
-        {
-            "feeds": {
-                "data": [{
-                    "entourage": {
-                        "id": 567,
-                        "updated_at": "",
-                        "created_at": "",
-                        "status": "open",
-                        "title": "entourage1",
-                        "type": "ask_for_help",
-                        "author": {
-                            "id": 123,
-                            "name": "Seb",
-                            "avatar_url": "https://s3.amazonaws.com/entourage-avatars/image.jpeg"
-                        },
-                        "number_of_people": 2,
-                        "location": {
-                            "latitude": 37.4224764,
-                            "longitude": -122.0842499
+            {
+                "feeds": {
+                    "data": [{
+                        "entourage": {
+                            "id": 567,
+                            "updated_at": "",
+                            "created_at": "",
+                            "status": "open",
+                            "title": "entourage1",
+                            "type": "ask_for_help",
+                            "author": {
+                                "id": 123,
+                                "name": "Seb",
+                                "avatar_url": "https://s3.amazonaws.com/entourage-avatars/image.jpeg"
+                            },
+                            "number_of_people": 2,
+                            "location": {
+                                "latitude": 37.4224764,
+                                "longitude": -122.0842499
+                            }
                         }
-                    }
-                }, {
-                    "video": {
-                        "id": 432,
-                        "updated_at": "",
-                        "created_at": "",
-                        "title": "video 1",
-                        "link": "https://s3.amazonaws.com/entourage-videos/video.mp4",
-                        "author": {
-                            "id": 123,
-                            "name": "Entourage"
+                    }, {
+                        "video": {
+                            "id": 432,
+                            "updated_at": "",
+                            "created_at": "",
+                            "title": "video 1",
+                            "link": "https://s3.amazonaws.com/entourage-videos/video.mp4",
+                            "author": {
+                                "id": 123,
+                                "name": "Entourage"
+                            }
                         }
-                    }
-                }]
+                    }]
+                }
             }
-        }
 
 + Response 401 (application/json; charset=utf-8)
 
@@ -839,6 +839,7 @@ Contacts related resources of the **Entourage API**
 ## Contacts [/contacts]
 
 ### Send user contacts info to find who has an account on Entourage [PUT]
+
 + Request (application/json)
 
     + Header
@@ -876,3 +877,27 @@ Contacts related resources of the **Entourage API**
 + Response 401 (application/json; charset=utf-8)
 
         {"error":{"status":401,"message":"Please sign-in"}}
+
+
+# Group Applications
+Resources  related to contacts for the **Entourage API**
+## Applications [/applications]
+
+### Add an Application with info about device [PUT]
+
++ Request (application/json; charset=utf-8)
+
+    + Body
+
+            {"application":{"device_id":"APA91bHSxpidt2SJ33aosTNSlYQMGRyzdt5LFBBSJEhd6zuR9hhe7Qxj00Y_u8og0W7DMaWTU_hWVqUl__yrMq7juuQNKzN689tnCcQKN2LcoJ_09ljgaRFNggfS77Kd0eWfX011oB5S","os":"iOS8.1"}}
+
+    + Headers
+
+            Accept: application/json
+
++ Response 204 (application/json; charset=utf-8)
+
++ Response 401 (application/json; charset=utf-8)
+
+        {"error":{"status":401,"message":"Please sign-in"}}
+
