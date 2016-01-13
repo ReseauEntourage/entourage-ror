@@ -149,7 +149,9 @@ Users related resources of the **Entourage API**
 
 + Response 200 (application/json; charset=utf-8)
 
-        {"user":{"id":1,"email":"dredd@test.com","first_name":"Judge","last_name":"Dredd","token":"FAKETOKEN","stats":{"tour_count":0,"encounter_count":0},"organization":{"name":"org name","description":"org description","phone":"org phone","address":"org address","logo_url":"org logo url"}}}
+        {"user":{"id":1,"email":"dredd@test.com","first_name":"Judge","last_name":"Dredd", type: "PRO"}}
+
+        Type : (required, string, `FAKETOKEN`) ... Type of user : PRO / PUBLIC
 
 + Response 404 (application/json; charset=utf-8)
 
@@ -636,24 +638,42 @@ Entourages related resources of the **Entourage API**
 
     + Body
 
-            {
-            "feeds": [{
-                "entourage": {
-                    "id": 567,
-                    "name": "entourage1",
-                    "type": "ask_for_help",
-                    "author": {
-                        "id": 123,
-                        "name": "Seb"},
-                    "number_of_people": 2,
-                    "location" : { "latitude" : 37.4224764, "longitude" : -122.0842499 }
+        {
+            "feeds": {
+                "data": [{
+                    "entourage": {
+                        "id": 567,
+                        "updated_at": "",
+                        "created_at": "",
+                        "status": "open",
+                        "title": "entourage1",
+                        "type": "ask_for_help",
+                        "author": {
+                            "id": 123,
+                            "name": "Seb",
+                            "avatar_url": "https://s3.amazonaws.com/entourage-avatars/image.jpeg"
+                        },
+                        "number_of_people": 2,
+                        "location": {
+                            "latitude": 37.4224764,
+                            "longitude": -122.0842499
+                        }
                     }
                 }, {
-                "video": {
-                    "id": 432,
-                    "link": "https://s3.amazonaws.com/entourage-videos/video.mp4" }
+                    "video": {
+                        "id": 432,
+                        "updated_at": "",
+                        "created_at": "",
+                        "title": "video 1",
+                        "link": "https://s3.amazonaws.com/entourage-videos/video.mp4",
+                        "author": {
+                            "id": 123,
+                            "name": "Entourage"
+                        }
+                    }
                 }]
             }
+        }
 
 + Response 401 (application/json; charset=utf-8)
 
@@ -840,6 +860,7 @@ Contacts related resources of the **Entourage API**
 
         {
         "contacts_found": [{
+            "id": 1234,
             "phone": "f5e096009dd3f88205a1942ad6e889fcfb642938"
         }],
         "contacts_not_found": [
