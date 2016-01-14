@@ -1,0 +1,1044 @@
+FORMAT: 1A
+HOST: http://entourage-back-preprod.herokuapp.com/api/v1
+
+# Entourage
+Entourage application backend API documentation.
+
+# Group Map
+Map related resources of the **Entourage API**
+## Map collection [/map{?token,limit,latitude,longitude,distance}]
+A single Note object with all its details
++ Parameters
+    + token (required, string, `FAKETOKEN`) ... Token identifying the current user
+    + limit (optional, number, `15`) ... Max number of pois to return. 45 if not defined
+    + latitude (optional, number, `42`) ... Latitude of middle point of the square (for geolocated results)
+    + longitude (optional, number, `2`) ... Latitude of middle point of the square (for geolocated results)
+    + distance (optional, number, `1`) ... Half side of the result square (for geolocated results)
+
+### Get all map points [GET]
+
++ Request
+
+    + Headers
+
+            Accept: application/json
+
++ Response 200 (application/json; charset=utf-8)
+
+    + Body
+
+            {"categories":[{"id":1,"name":"Se nourrir"},{"id":2,"name":"Se loger"},{"id":3,"name":"Se soigner"},{"id":4,"name":"Se rafraîchir"},{"id":5,"name":"S'orienter"},{"id":6,"name":"S'occuper de soi"},{"id":7,"name":"Se réinsérer"},{"id":8,"name":"Test"}],
+            "pois":[{"id":1,"name":"CASVP (Centre d'action sociale de la Ville de Paris) - Sous-direction de la solidarité et de la lutte contre l'exclusion","description":"Tél. : 01 44 67 18 34 ou 01 44 67 18 28. Fax : 01 44 67 18 71","longitude":2.3696595,"latitude":48.845401,"adress":"5, boulevard Diderot, 75012","phone":"01 44 67 18 34","website":"","email":"","audience":"","category_id":1}]}
+
++ Response 401 (application/json; charset=utf-8)
+
+        {"error":{"status":401,"message":"Please sign-in"}}
+
+# Group POIs
+POI related resources of the **Entourage API**
+## Pois collection [/pois]
+
+### List all POIs [GET /pois{?token}{&latitude}{&longitude}{&distance}]
+
++ Parameters
+    + token (required, string, `FAKETOKEN`) ... Token identifying the current user
+    + latitude (optional, number, `48.853333`) ... The latitude of the center of the box to filter
+    + longitude (optional, number, `2.348611`) ... The longitude of the center of the box to filter
+    + distance (optional, number, `20.0`) ... The box size to filter (in km)
+
++ Request
+
+    + Headers
+
+            Accept: application/json
+
++ Response 200 (application/json; charset=utf-8)
+
+        {"categories":[{"id":1,"name":"Se nourrir"},{"id":2,"name":"Se loger"},{"id":3,"name":"Se soigner"},{"id":4,"name":"Se rafraîchir"},{"id":5,"name":"S'orienter"},{"id":6,"name":"S'occuper de soi"},{"id":7,"name":"Se réinsérer"},{"id":8,"name":"Test"}],
+        "pois":[{"id":1,"name":"CASVP (Centre d'action sociale de la Ville de Paris) - Sous-direction de la solidarité et de la lutte contre l'exclusion","description":"Tél. : 01 44 67 18 34 ou 01 44 67 18 28. Fax : 01 44 67 18 71","longitude":2.3696595,"latitude":48.845401,"adress":"5, boulevard Diderot, 75012","phone":"01 44 67 18 34","website":"","email":"","audience":"","category_id":1},{"id":2,"name":"Comité médical pour les exilés (COMEDE)","description":"• Centre de santé Hôpital Bicêtre","longitude":2.3405129,"latitude":48.8725447,"adress":"78, rue du Général-Leclerc, 94270 Le Kremlin-Bicêtre","phone":"","website":"","email":"contact@comede.org","audience":"","category_id":3},{"id":3,"name":"SSDP","description":"Mairie du 1er arr. M° Louvre. Services sociaux départementaux polyvalents (SSDP) : Ouverture du lundi au vendredi 9h-17h. ","longitude":2.3412674,"latitude":48.8600425,"adress":"4, place du Louvre, 75001","phone":"01 44 50 76 40","website":"","email":"","audience":"","category_id":5}]}
+
++ Response 401 (application/json; charset=utf-8)
+
+        {"error":{"status":401,"message":"Please sign-in"}}
+
+### Create a POI [POST /pois{?token}]
+
++ Parameters
+
+    + token (required, string, `FAKETOKEN`) ... Token identifying the current user
+
++ Request (application/json; charset=utf-8)
+
+    + Body
+
+            {"poi":{"name":"name","latitude":40.0,"longitude":2.0,"adress":"address","phone":"+33102030405","website":"http://www.poi.com","email":"poi@pois.com","audience":"audience","category_id":1}}
+
+    + Headers
+
+            Accept: application/json
+
++ Response 201 (application/json; charset=utf-8)
+
+            {"poi":{"id":430,"name":"name","description":null,"longitude":2.0,"latitude":40.0,"adress":"address","phone":"+33102030405","website":"http://www.poi.com","email":"poi@pois.com","audience":"audience","validated":false,"category":{"id":1,"name":"Se nourrir"}}}
+
++ Response 401 (application/json; charset=utf-8)
+
+        {"error":{"status":401,"message":"Please sign-in"}}
+
+### Request a change on a POI [POST /pois/{poi_id}/report{?token}]
+
++ Parameters
+
+    + token (required, string, `FAKETOKEN`) ... Token identifying the current user
+    + poi_id (required, number, `1`) ... identifier of the POI on which a request for change needs to be done
+
++ Request (application/json; charset=utf-8)
+
+    + Body
+
+            {"message":"Message explaining the change requested on the POI"}
+
+    + Headers
+
+            Accept: application/json
+
++ Response 201 (application/json; charset=utf-8)
+
+        {"message":"Message explaining the change requested on the POI"}
+
++ Response 401 (application/json; charset=utf-8)
+
+        {"error":{"status":401,"message":"Please sign-in"}}
+
++ Response 404 (application/json; charset=utf-8)
+
+        {"error":{"status":404,"message":"Could not find poi with id 233232"}}
+
+# Group Users
+Users related resources of the **Entourage API**
+
+## User login [/login{?phone}{&sms_code}]
++ Parameters
+    + phone (required, string, `+33605040302`) ... phone number of the user to login
+    + sms_code (required, string, `123456`) ... Sms code received by the user to login
+
+### Login user [POST]
++ Request (application/x-www-form-urlencoded; charset=utf-8)
+
+    + Header
+
+            Accept: application/json
+
++ Response 200 (application/json; charset=utf-8)
+
+        {"user":{"id":1,"email":"dredd@test.com","first_name":"Judge","last_name":"Dredd","token":"FAKETOKEN","stats":{"tour_count":0,"encounter_count":0},"organization":{"name":"org name","description":"org description","phone":"org phone","address":"org address","logo_url":"org logo url"}}}
+
++ Response 400 (application/json; charset=utf-8)
+
+        {"error":{"status":400,"message":"Login failed"}}
+
+
+## Get details about a user [/users/{user_id}]
+
+### Retrieve details about a user [GET]
++ Request (application/json)
+
+    + Header
+
+            Accept: application/json
+
++ Response 200 (application/json; charset=utf-8)
+
+        {"user":{"id":1,"email":"dredd@test.com","first_name":"Judge","last_name":"Dredd", type: "PRO"}}
+
+        Type : (required, string, `FAKETOKEN`) ... Type of user : PRO / PUBLIC
+
++ Response 404 (application/json; charset=utf-8)
+
+        {"error":{"status":404,"message":"Could not find user with id 233232"}}
+
++ Response 401 (application/json; charset=utf-8)
+
+        {"error":{"status":401,"message":"Please sign-in"}}
+
+
+## Create a new user [/users]
+
+### Signup user [POST]
+
+When signing up a new user we genereate a new sms_code and send it via SMS
+
++ Request (application/json)
+
+    + Header
+
+            Accept: application/json
+
+    + Body
+
+            {"user":{"phone":"0612345678"}}
+
++ Response 200 (application/json; charset=utf-8)
+
+            {"user":{"id":1,"email":"dredd@test.com","first_name":"Judge","last_name":"Dredd","token":"FAKETOKEN","stats":{"tour_count":0,"encounter_count":0},"organization":{"name":"org name","description":"org description","phone":"org phone","address":"org address","logo_url":"org logo url"}}}
+
++ Response 400 (application/json; charset=utf-8)
+
+
+## Update the authenticated user [/users/me{?token}]
+
+### Update my user [PATCH]
+
++ Parameters
+
+    + token (required, string, `FAKETOKEN`) ... Token identifying the current user
+
++ Request (application/json)
+
+    + Header
+
+            Accept: application/json
+
+    + Body
+
+            {"user":{"device_id":"APA91bHSxpidt2SJ33aosTNSlYQMGRyzdt5LFBBSJEhd6zuR9hhe7Qxj00Y_u8og0W7DMaWTU_hWVqUl__yrMq7juuQNKzN689tnCcQKN2LcoJ_09ljgaRFNggfS77Kd0eWfX011oB5S", "device_type": "android"}, "location" : { "latitude" : 37.4224764, "longitude" : -122.0842499 }}
+
+            device_id (optional, string, ``) ... Technical identifier of the mobile device the user is using (to be able to send notifications)
+            location: current user location (needed to filter entourage around your position)
+
++ Response 200 (application/json; charset=utf-8)
+
+            {"user":{"id":1,"email":"dredd@test.com","first_name":"Judge","last_name":"Dredd","token":"FAKETOKEN","stats":{"tour_count":0,"encounter_count":0},"organization":{"name":"org name","description":"org description","phone":"org phone","address":"org address","logo_url":"org logo url"}}}
+
++ Response 400 (application/json; charset=utf-8)
+
++ Response 401 (application/json; charset=utf-8)
+
+## Regenerate user secret code [/users/me/code]
+
+### Regenerate user secret code [PATCH]
+
+
++ Request (application/json)
+
+    + Header
+
+            Accept: application/json
+
+    + Body
+
+            {user: {phone: "0623456789"}, code: {action: "regenerate"}}
+
++ Response 200 (application/json; charset=utf-8)
+
+            {"user":{"id":1,"email":"new@e.mail","first_name":"Judge","last_name":"Dredd","token":"153ad0b7ef67e5c44b8ef5afc12709e4","organization":{"name":"Entourage","description":"Réseau Entourage","phone":"+33677300840","address":"40 avenue Hoche 75008 Paris","logo_url":""},"stats":{"tour_count":5,"encounter_count":5}}}
+
++ Response 400 (application/json; charset=utf-8)
+
++ Response 404 (application/json; charset=utf-8)
+
+             Unknow phone number : no user with the given phone number could be found
+
+
+# Group Newsletter
+Newsletter subscription related resources of the **Entourage API**
+
+## Newsletter actions [/newsletter_subscriptions]
+### Create new subscription [POST]
+If the email is already registered to newsletter subscription, a 400 error is returned.
++ Request (application/json)
+
+    + Header
+
+            Accept: application/json
+
+    + Body
+
+            {"newsletter_subscription":{"email":"newslette@subscription.com","active":true}}
+
++ Response 201 (application/json; charset=utf-8)
+
+        {"newsletter_subscription":{"email":"newslette@subscription.com","active":true}}
+
++ Response 400 (application/json; charset=utf-8)
+
+        {"error":{"status":400,"message":"Could not create entity","reasons":["Email already exists"]}}
+
+# Group Tours
+Tours, or "maraude", are definied only by their type (attribute tour_type).
+
+tour_type should be within ["medical", "barehands", "alimentary"]
+status is either "ongoing" or "closed"
+vehicle_type is either "feet" or "car"
+
+## Tours collection [/tours{?token}]
+
++ Parameters
+    + token (required, string, `FAKETOKEN`) ... Token identifying the current user
+
+### Retrieve tours [GET /tours{?token}{&limit}{&type}{&vehicle_type}{&latitude}{&longitude}{&distance}]
+
++ Parameters
+    + limit (optional, number, `15`) ... Max number of tours to return. 10 if not defined
+    + type: `medical` (optional, string)
+
+        Type of tours to filter
+
+        + Members
+            + `medical`
+            + `barehands`
+            + `alimentary`
+
+    + vehicle_type: `feet` (optional, enum[string])
+
+        Type of tours vehicle types to filter
+
+        + Members
+            + `feet`
+            + `car`
+
+    + latitude (optional, number, `48.853333`) ... The latitude of the center of the box to filter
+    + longitude (optional, number, `2.348611`) ... The longitude of the center of the box to filter
+    + distance (optional, number, `20.0`) ... The box size to filter (in km)
+
++ Request (application/json)
+
+    + Header
+
+            Accept: application/json
+
++ Response 200 (application/json; charset=utf-8)
+
+        {"tours":[{"id":10,"tour_type":"medical", "vehicle_type":"feet", "distance": 8543.65, "organization_name":"organization name", "organization_description":"organization description", "start_time": "2016-01-01T19:09:06.000+01:00", "end_time": "2016-01-01T20:09:06.000+01:00","tour_points":[],"status":"ongoing"}]}
+
++ Response 401 (application/json; charset=utf-8)
+
+        {"error":{"status":401,"message":"Please sign-in"}}
+
+
+### Create a tour [POST]
++ Request (application/json)
+
+    + Header
+
+            Accept: application/json
+
+    + Body
+
+            {"tour":{"tour_type":"medical", "status":"ongoing", "vehicle_type":"feet"}}
+
++ Response 201 (application/json; charset=utf-8)
+
+        {"tour":{"id":10,"tour_type":"medical", "vehicle_type":"feet", "distance": 8543.65, "organization_name":"organization name", "organization_description":"organization description", "start_time": "2016-01-01T19:09:06.000+01:00", "end_time": "2016-01-01T20:09:06.000+01:00", "tour_points":[]}}
+
++ Response 400 (application/json; charset=utf-8)
+
+        {"error":{"status":400,"message":"Could not create tour","reasons":["Tour type is not included in the list"]}}
+
++ Response 401 (application/json; charset=utf-8)
+
+        {"error":{"status":401,"message":"Please sign-in"}}
+
+## Tour [/tours/{id}{?token}]
++ Parameters
+    + id (required, integer, `1`) ... Identifier of the tour to be retrieved
+    + token (required, string, `FAKETOKEN`) ... Token identifying the current user
+
+### Retrieve a tour [GET]
++ Request (application/json)
+
+    + Header
+
+            Accept: application/json
+
++ Response 200 (application/json; charset=utf-8)
+
+        {"tour":{"id":10,"tour_type":"medical", "vehicle_type":"feet", "distance": 8543.65, "organization_name":"organization name", "organization_description":"organization description", "start_time": "2016-01-01T19:09:06.000+01:00", "end_time": "2016-01-01T20:09:06.000+01:00", "tour_points":[{"latitude":1.5,"longitude":1.5,"passing_time":"2015-07-07T10:31:43.000+02:00"}]}}
+
++ Response 404 (application/json; charset=utf-8)
+
+        {"error":{"status":404,"message":"Could not find tour with id 233232"}}
+
++ Response 401 (application/json; charset=utf-8)
+
+        {"error":{"status":401,"message":"Please sign-in"}}
+
+### Update a tour [PUT]
++ Request (application/json)
+
+    + Header
+
+            Accept: application/json
+
+    + Body
+
+            {"tour":{"id":10,"tour_type":"medical", "vehicle_type":"feet", "distance": 8543.65, "organization_name":"organization name", "organization_description":"organization description", "start_time": "2016-01-01T19:09:06.000+01:00", "end_time": "2016-01-01T20:09:06.000+01:00"}}
+
+
++ Response 200 (application/json; charset=utf-8)
+
+        {"tour":{"id":1,"tour_type":"medical","status":"closed", "vehicle_type":"car","tour_points":[{"latitude":1.5,"longitude":1.5,"passing_time":"2015-07-07T10:31:43.000+02:00"}]}}
+
++ Response 404 (application/json; charset=utf-8)
+
+        {"error":{"status":404,"message":"Could not find tour with id 233232"}}
+
++ Response 401 (application/json; charset=utf-8)
+
+        {"error":{"status":401,"message":"Please sign-in"}}
+
+
+
+## User tours collection [/users/{user_id}/tours{?token}]
+
++ Parameters
+    + token (required, string, `FAKETOKEN`) ... Token identifying the current user
+
+
+### Retrieve tours from user [GET /users/{user_id}/tours{?token}{&page}{&per}]
+
++ Parameters
+    + page (optional, number) ... pagination : page number
+    + per (optional, number) ... pagination : number of tours per page
+
++ Request (application/json)
+
+    + Header
+
+            Accept: application/json
+
++ Response 200 (application/json; charset=utf-8)
+
+        {"tours":[{"id":10,"tour_type":"medical", "vehicle_type":"feet", "distance": 8543.65, "organization_name":"organization name", "organization_description":"organization description","tour_points":[],"status":"ongoing"}]}
+
++ Response 401 (application/json; charset=utf-8)
+
+        {"error":{"status":401,"message":"Please sign-in"}}
+
+
+# Group Tour Points
+Tour points describe the tour itinerary
+## Tour Points collection [/tours/{tour_id}/tour_points{?token}]
+
++ Parameters
+    + tour_id (required, integer, `1`) ... Identifier of the tour related to the point
+    + token (required, string, `FAKETOKEN`) ... Token identifying the current user
+
+### Create tour points [POST]
++ Request (application/json)
+
+    + Header
+
+            Accept: application/json
+    + Body
+
+            {"tour_points":[{"latitude":1.5,"longitude":1.5,"passing_time":"2015-07-07T10:31:43.000+02:00"}, {"latitude":2.5,"longitude":2.5,"passing_time":"2015-07-07T10:31:43.000+03:00"}]}
+
++ Response 201 (application/json; charset=utf-8)
+
+        {"tour":{"id":1,"tour_type":"medical","tour_points":[{"latitude":1.5,"longitude":1.5,"passing_time":"2015-07-07T10:31:43.000+02:00"}, {"latitude":2.5,"longitude":2.5,"passing_time":"2015-07-07T10:31:43.000+03:00"}]}}
+
++ Response 400 (application/json; charset=utf-8)
+
+        {"error":{"status":400,"message":"Could not create tour point","reasons":["Longitude is not a number"]}}
+
++ Response 401 (application/json; charset=utf-8)
+
+        {"error":{"status":401,"message":"Please sign-in"}}
+
++ Response 404 (application/json; charset=utf-8)
+
+        {"error":{"status":404,"message":"Could not find tour with id 233232"}}
+
+# Group Tour Encounters
+Encounters occured during tour
+## Tour Encounters collection [/tours/{tour_id}/encounters{?token}]
+
++ Parameters
+    + tour_id (required, integer, `1`) ... Identifier of the tour related to the point
+    + token (required, string, `FAKETOKEN`) ... Token identifying the current user
+
+### Create an encounter [POST]
++ Request (application/json)
+
+    + Header
+
+            Accept: application/json
+
+    + Body
+
+            {"encounter":{"street_person_name":"jean","date":"2014-10-11 15:19:45","latitude":42,"longitude":2,"message":"test","voice_message":"http://www.google.com"}}
+
++ Response 201 (application/json; charset=utf-8)
+
+    + Body
+
+            {"encounter":{"id":1,"date":"2014-10-11T15:19:45.000+02:00","latitude":42.0,"longitude":2.0,"user_id":1,"user_name":"Eric","street_person_name":"jean","message":"test","voice_message":"http://www.google.com"}}
+
++ Request (application/json)
+
+    + Header
+
+            Accept: application/json
+
+    + Body
+
+            {"encounter":{"date":"2014-10-11 15:19:45","latitude":42,"longitude":2,"message":"test","voice_message":"http://www.google.com"}}
+
++ Response 400 (application/json; charset=utf-8)
+
+        {"error":{"status":400,"message":"Could not create encouter","reasons":["Street person name can't be blank"]}}
+
++ Request (application/json)
+
+    + Header
+
+            Accept: application/json
+
+    + Body
+
+            {"encounter":{"wrong_key":"wrong_value"}}
+
++ Response 400 (application/json; charset=utf-8)
+
+    + Body
+
+            {"error":{"status":400,"message":"Could not create encouter","reasons":["Date can't be blank","Street person name can't be blank","Latitude can't be blank","Latitude is not a number","Longitude can't be blank","Longitude is not a number"]}}
+
++ Response 401 (application/json; charset=utf-8)
+
+    + Body
+
+            {"error":{"status":401,"message":"Please sign-in"}}
+
++ Response 404 (application/json; charset=utf-8)
+
+    + Parameters
+
+        tour_id = 233232
+
+    + Body
+
+            {"error":{"status":404,"message":"Could not find tour with id 233232"}}
+
+
+# Group Stats
+Statistics about the application
+## Stats collection [/stats]
+
+### Get all stats [GET]
+
++ Request
+
+    + Headers
+
+            Accept: application/json
+
++ Response 200 (application/json; charset=utf-8)
+
+    + Body
+
+            {"tours"=>2, "encounters"=>4, "organizations"=>1}
+
+
+# Group Message
+Send message to the Entourage team
+## Messages collection [/messages]
+
+### Create a message [POST]
+
++ Request (application/json; charset=utf-8)
+
+    + Body
+
+            {"message":{"content":"foobar", "first_name": "john", "last_name": "doe", "email": "some@mail.com"}}
+
+    + Headers
+
+            Accept: application/json
+
++ Response 201 (application/json; charset=utf-8)
+
+            {"message":{"content":"foobar", "first_name": "john", "last_name": "doe", "email": "some@mail.com"}}
+
++ Response 400 (application/json; charset=utf-8)
+
+        {"errors":["Content can't be blank"]}
+
+
+# Group Registration Request
+Manage registration requests from organization who want to join entourage platform
+## Registration Request [/registration_requests]
+
+### Create a Registration Request [POST]
+
++ Request (application/json; charset=utf-8)
+
+    + Body
+
+            {"registration_request": {"organization": {"name":"foo", "local_entity":"bar", "address":"2 rue de l'église", "phone":"+33612345678", "email":"some@email.com", "website_url":"http://foobar.com", "description":"lorem ipsum", "logo_key":"some_key.jpg"}, "user":{"first_name":"John", "last_name":"Doe", "phone":"+33612345678", "email":"some@email.com"}}}
+
+    + Headers
+
+            Accept: application/json
+
++ Response 201 (application/json; charset=utf-8)
+
+             {:registration_request:{"id":34, "status":"pending", "extra":"{\"organization\":{\"name\":\"foo\",\"description\":\"lorem ipsum\",\"phone\":\"+33612345678\",\"address\":\"2 rue de l'église\"},\"user\":{\"first_name\":\"John\",\"last_name\":\"Doe\",\"email\":\"some@email.com\",\"phone\":\"+33612345678\"}}", "created_at":Tue, 08 Dec 2015 15:22:55 CET +01:00, "updated_at":Tue, 08 Dec 2015 15:22:55 CET +01:00}}
+
++ Response 400 (application/json; charset=utf-8)
+
+        {"errors":{"organization":["Name can't be blank", "Description can't be blank", "Phone can't be blank", "Address can't be blank"], "user":[]}}
+
+
+# Group Check
+Perform checks against the API
+
+## Check [/check]
+
+### Checks that the application version is still valid [GET]
+
+
++ Request (application/json; charset=utf-8)
+
+    + Body
+
+    + Headers
+
+            Accept: application/json
+            X-API-Key: (required, string, `79499c9d2c45`)
+
++ Response 200 (application/json; charset=utf-8)
+
+             {"status": "ok"}
+
++ Response 426 (application/json; charset=utf-8)
+
+        {"message": "Missing API Key or invalid key"}
+
+
+
+# Group Feeds
+Feeds related resources of the **Entourage API**
+## Feeds [/feeds]
+
+### Get all feeds [GET /feeds{?token}{&page}{&per}]
+
++ Parameters
+    + token (required, string, `FAKETOKEN`) ... Token identifying the current user
+    + page (optional, number) ... pagination : page number
+    + per (optional, number) ... pagination : number of entourages per page
+
++ Request
+
+    + Headers
+
+            Accept: application/json
+
++ Response 200 (application/json; charset=utf-8)
+
+    + Body
+
+            {
+                "feeds": {
+                    "data": [{
+                        "entourage": {
+                            "id": 567,
+                            "updated_at": "",
+                            "created_at": "",
+                            "status": "open",
+                            "title": "entourage1",
+                            "type": "ask_for_help",
+                            "author": {
+                                "id": 123,
+                                "name": "Seb",
+                                "avatar_url": "https://s3.amazonaws.com/entourage-avatars/image.jpeg"
+                            },
+                            "number_of_people": 2,
+                            "location": {
+                                "latitude": 37.4224764,
+                                "longitude": -122.0842499
+                            }
+                        }
+                    }, {
+                        "video": {
+                            "id": 432,
+                            "updated_at": "",
+                            "created_at": "",
+                            "title": "video 1",
+                            "link": "https://s3.amazonaws.com/entourage-videos/video.mp4",
+                            "author": {
+                                "id": 123,
+                                "name": "Entourage"
+                            }
+                        }
+                    }]
+                }
+            }
+
++ Response 401 (application/json; charset=utf-8)
+
+        {"error":{"status":401,"message":"Please sign-in"}}
+
+
+
+# Group Entourages
+Entourages related resources of the **Entourage API**
+## Entourages [/entourages]
+
+### Get all entourages [GET /entourages{?token}{&status}{&page}{&per}]
+
++ Parameters
+    + token (required, string, `FAKETOKEN`) ... Token identifying the current user
+    + status (optional, string) ... Status of the entourage (open / closed)
+    + page (optional, number) ... pagination : page number
+    + per (optional, number) ... pagination : number of entourages per page
+
++ Request
+
+    + Headers
+
+            Accept: application/json
+
++ Response 200 (application/json; charset=utf-8)
+
+    + Body
+
+            {
+                "entourages": [
+                    {
+                        "id": 567,
+                        "updated_at": "2015-07-07T10:31:43.000+02:00",
+                        "created_at": "2015-07-07T10:31:43.000+02:00",
+                        "status": "open",
+                        "title": "entourage1",
+                        "type": "ask_for_help",
+                        "author": {
+                            "id": 123,
+                            "name": "Seb",
+                            "avatar_url": "https://s3.amazonaws.com/entourage-avatars/image.jpeg"
+                        },
+                        "number_of_people": 2,
+                        "location": {
+                            "latitude": 37.4224764,
+                            "longitude": -122.0842499
+                        }
+                    },
+                    {
+                        "id": 568,
+                        "updated_at": "2015-07-07T10:31:43.000+02:00",
+                        "created_at": "2015-07-07T10:31:43.000+02:00",
+                        "status": "open",
+                        "title": "entourage1",
+                        "type": "ask_for_help",
+                        "author": {
+                            "id": 123,
+                            "name": "Seb",
+                            "avatar_url": "https://s3.amazonaws.com/entourage-avatars/image.jpeg"
+                        },
+                        "number_of_people": 2,
+                        "location": {
+                            "latitude": 37.4224764,
+                            "longitude": -122.0842499
+                        }
+                    }
+                ]
+            }
+
++ Response 401 (application/json; charset=utf-8)
+
+        {"error":{"status":401,"message":"Please sign-in"}}
+
+## Entourage [/entourages/{id}{?token}]
++ Parameters
+    + id (required, integer, `1`) ... Identifier of the entourage to be retrieved
+    + token (required, string, `FAKETOKEN`) ... Token identifying the current user
+
+### Retrieve an entourage [GET]
++ Request (application/json)
+
+    + Header
+
+            Accept: application/json
+
++ Response 200 (application/json; charset=utf-8)
+
+        {
+            "id": 567,
+            "updated_at": "2015-07-07T10:31:43.000+02:00",
+            "created_at": "2015-07-07T10:31:43.000+02:00",
+            "status": "open",
+            "title": "entourage1",
+            "type": "ask_for_help",
+            "author": {
+                "id": 123,
+                "name": "Seb",
+                "avatar_url": "https://s3.amazonaws.com/entourage-avatars/image.jpeg"
+            },
+            "number_of_people": 2,
+            "location": {
+                "latitude": 37.4224764,
+                "longitude": -122.0842499
+            }
+        }
+
++ Response 404 (application/json; charset=utf-8)
+
+        {"error":{"status":404,"message":"Could not find entourage with id 233232"}}
+
++ Response 401 (application/json; charset=utf-8)
+
+        {"error":{"status":401,"message":"Please sign-in"}}
+
+### Create an entourage [POST]
++ Request (application/json)
+
+    + Header
+
+            Accept: application/json
+
+    + Body
+
+            {
+            "entourage": {
+                "name": "entourage1",
+                "type": "ask_for_help",
+                "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+                "location" : { "latitude" : 37.4224764, "longitude" : -122.0842499 }
+                }
+            }
+
++ Response 201 (application/json; charset=utf-8)
+
+        { "id": 567, "updated_at": "2015-07-07T10:31:43.000+02:00", "created_at": "2015-07-07T10:31:43.000+02:00", "status": "open", "title": "entourage1", "type": "ask_for_help", "author": { "id": 123, "name": "Seb", "avatar_url": "https://s3.amazonaws.com/entourage-avatars/image.jpeg" }, "number_of_people": 2, "location": { "latitude": 37.4224764, "longitude": -122.0842499 } }
+
++ Response 400 (application/json; charset=utf-8)
+
+        {"error":{"status":400,"message":"Could not create entourage","reasons":["Entourage type unknown"]}}
+
++ Response 401 (application/json; charset=utf-8)
+
+        {"error":{"status":401,"message":"Please sign-in"}}
+
+### Update all infos about an entourage [PUT]
++ Request (application/json)
+
+    + Header
+
+            Accept: application/json
+
+    + Body
+
+            {
+            "entourage": {
+                "name": "entourage1",
+                "type": "ask_for_help",
+                "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+                "location" : { "latitude" : 37.4224764, "longitude" : -122.0842499 }
+                }
+            }
+
++ Response 200 (application/json; charset=utf-8)
+
+        { "id": 567, "updated_at": "2015-07-07T10:31:43.000+02:00", "created_at": "2015-07-07T10:31:43.000+02:00", "status": "open", "title": "entourage1", "type": "ask_for_help", "author": { "id": 123, "name": "Seb", "avatar_url": "https://s3.amazonaws.com/entourage-avatars/image.jpeg" }, "number_of_people": 2, "location": { "latitude": 37.4224764, "longitude": -122.0842499 } }
+
++ Response 400 (application/json; charset=utf-8)
+
+        {"error":{"status":400,"message":"Could not update entourage","reasons":["Entourage type unknown"]}}
+
++ Response 401 (application/json; charset=utf-8)
+
+        {"error":{"status":401,"message":"Please sign-in"}}
+
+
+# Group Entourage Users
+Resources related to users of an entourage
+## Entourages [/entourages/{entourage_id}/users]
+
+### Get all users from an entourage [GET /entourages/{entourage_id}/users{?token}{&page}{&per}]
+
++ Parameters
+    + token (required, string, `FAKETOKEN`) ... Token identifying the current user
+    + page (optional, number) ... pagination : page number
+    + per (optional, number) ... pagination : number of entourages per page
+
++ Request
+
+    + Headers
+
+            Accept: application/json
+
++ Response 200 (application/json; charset=utf-8)
+
+    + Body
+
+            {
+            "users": [
+                {
+                    "id": 1,
+                    "email": "dredd@test.com",
+                    "first_name": "Judge",
+                    "last_name": "Dredd",
+                    "status": "pending"
+                },
+                {
+                    "id": 2,
+                    "email": "dredd2@test.com",
+                    "first_name": "Judge2",
+                    "last_name": "Dredd2",
+                    "status": "accepted"
+                }]
+            }
+
++ Response 401 (application/json; charset=utf-8)
+
+        {"error":{"status":401,"message":"Please sign-in"}}
+        
+        
+### Request to be added to an entourage [POST /entourages/{entourage_id}/users{?token}]
+
++ Parameters
+
+    + token (required, string, `FAKETOKEN`) ... Token identifying the current user
+
++ Request (application/json; charset=utf-8)
+
+    + Body
+
+            Empty body
+
+    + Headers
+
+            Accept: application/json
+
++ Response 201 (application/json; charset=utf-8)
+
+            {"poi":{"id":430,"name":"name","description":null,"longitude":2.0,"latitude":40.0,"adress":"address","phone":"+33102030405","website":"http://www.poi.com","email":"poi@pois.com","audience":"audience","validated":false,"category":{"id":1,"name":"Se nourrir"}}}
+
++ Response 401 (application/json; charset=utf-8)
+
+        {"error":{"status":401,"message":"Please sign-in"}}
+        
+        
+## Entourage user [/entourages/{entourage_id}/users/{user_id}{?token}]
+
++ Parameters
+    + entourage_id (required, integer, `1`) ... Identifier of the entourage to be retrieved
+    + user_id (required, integer, `1`) ... Identifier of the user inside entourage
+    + token (required, string, `FAKETOKEN`) ... Token identifying the current user
+
+
+### Remove a user from an entourage [DELETE]
+
++ Parameters
+    + token (required, string, `FAKETOKEN`) ... Token identifying the current user
+
++ Request
+
+    + Headers
+
+            Accept: application/json
+
++ Response 204 (application/json; charset=utf-8)
+
++ Response 401 (application/json; charset=utf-8)
+
+        {"error":{"status":401,"message":"Please sign-in"}}
+        
+        
+### Update the status of a user inside an entourage (accept or reject) [PUT]
+
++ Request (application/json)
+
+    + Header
+
+            Accept: application/json
+
+    + Body
+
+            {
+            "user": {"status": "accepted"}
+            }
+
++ Response 204 (application/json; charset=utf-8)
+
+
++ Response 400 (application/json; charset=utf-8)
+
+        {"error":{"status":400,"message":"Could not update user status","reasons":["Malformed request"]}}
+
++ Response 401 (application/json; charset=utf-8)
+
+        {"error":{"status":401,"message":"Please sign-in"}}
+        
+
+        
+
+# Group Contacts
+Contacts related resources of the **Entourage API**
+## Contacts [/contacts]
+
+### Send user contacts info to find who has an account on Entourage [PUT]
+
++ Request (application/json)
+
+    + Header
+
+            Accept: application/json
+
+    + Body
+
+            {
+            "contacts": [{
+                "phone": "f5e096009dd3f88205a1942ad6e889fcfb642938"
+                },
+                {
+                "phone": "c29772ca36ae7896f11bd5c62f740339ed8bc916"
+                }]
+            }
+
++ Response 200 (application/json; charset=utf-8)
+
+        {
+        "contacts_found": [{
+            "id": 1234,
+            "phone": "f5e096009dd3f88205a1942ad6e889fcfb642938"
+        }],
+        "contacts_not_found": [
+            {
+            "phone": "c29772ca36ae7896f11bd5c62f740339ed8bc916"
+            }]
+        }
+
++ Response 400 (application/json; charset=utf-8)
+
+        {"error":{"status":400,"message":"Could not find contacts","reasons":["Malformed request"]}}
+
++ Response 401 (application/json; charset=utf-8)
+
+        {"error":{"status":401,"message":"Please sign-in"}}
+
+
+# Group Applications
+Resources  related to contacts for the **Entourage API**
+## Applications [/applications]
+
+### Add an Application with info about device [PUT]
+
++ Request (application/json; charset=utf-8)
+
+    + Body
+
+            {"application":{"device_id":"APA91bHSxpidt2SJ33aosTNSlYQMGRyzdt5LFBBSJEhd6zuR9hhe7Qxj00Y_u8og0W7DMaWTU_hWVqUl__yrMq7juuQNKzN689tnCcQKN2LcoJ_09ljgaRFNggfS77Kd0eWfX011oB5S","os":"iOS8.1"}}
+
+    + Headers
+
+            Accept: application/json
+
++ Response 204 (application/json; charset=utf-8)
+
++ Response 401 (application/json; charset=utf-8)
+
+        {"error":{"status":401,"message":"Please sign-in"}}
+        
+        
