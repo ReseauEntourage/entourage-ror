@@ -803,13 +803,15 @@ Resources related to users of an entourage
                     "id": 1,
                     "email": "dredd@test.com",
                     "first_name": "Judge",
-                    "last_name": "Dredd"
+                    "last_name": "Dredd",
+                    "status": "pending"
                 },
                 {
                     "id": 2,
                     "email": "dredd2@test.com",
                     "first_name": "Judge2",
-                    "last_name": "Dredd2"
+                    "last_name": "Dredd2",
+                    "status": "accepted"
                 }]
             }
 
@@ -817,7 +819,41 @@ Resources related to users of an entourage
 
         {"error":{"status":401,"message":"Please sign-in"}}
 
-### Remove a user from an entourage [DELETE /entourages/{entourage_id}/users/{user_id}{?token}]
+
+### Request to be added to an entourage [POST /entourages/{entourage_id}/users{?token}]
+
++ Parameters
+
+    + token (required, string, `FAKETOKEN`) ... Token identifying the current user
+
++ Request (application/json; charset=utf-8)
+
+    + Body
+
+            Empty body
+
+    + Headers
+
+            Accept: application/json
+
++ Response 201 (application/json; charset=utf-8)
+
+            {"poi":{"id":430,"name":"name","description":null,"longitude":2.0,"latitude":40.0,"adress":"address","phone":"+33102030405","website":"http://www.poi.com","email":"poi@pois.com","audience":"audience","validated":false,"category":{"id":1,"name":"Se nourrir"}}}
+
++ Response 401 (application/json; charset=utf-8)
+
+        {"error":{"status":401,"message":"Please sign-in"}}
+
+
+## Entourage user [/entourages/{entourage_id}/users/{user_id}{?token}]
+
++ Parameters
+    + entourage_id (required, integer, `1`) ... Identifier of the entourage to be retrieved
+    + user_id (required, integer, `1`) ... Identifier of the user inside entourage
+    + token (required, string, `FAKETOKEN`) ... Token identifying the current user
+
+
+### Remove a user from an entourage [DELETE]
 
 + Parameters
     + token (required, string, `FAKETOKEN`) ... Token identifying the current user
@@ -833,6 +869,35 @@ Resources related to users of an entourage
 + Response 401 (application/json; charset=utf-8)
 
         {"error":{"status":401,"message":"Please sign-in"}}
+
+
+### Update the status of a user inside an entourage (accept or reject) [PUT]
+
++ Request (application/json)
+
+    + Header
+
+            Accept: application/json
+
+    + Body
+
+            {
+            "user": {"status": "accepted"}
+            }
+
++ Response 204 (application/json; charset=utf-8)
+
+
++ Response 400 (application/json; charset=utf-8)
+
+        {"error":{"status":400,"message":"Could not update user status","reasons":["Malformed request"]}}
+
++ Response 401 (application/json; charset=utf-8)
+
+        {"error":{"status":401,"message":"Please sign-in"}}
+
+
+
 
 # Group Contacts
 Contacts related resources of the **Entourage API**
@@ -900,4 +965,5 @@ Resources  related to contacts for the **Entourage API**
 + Response 401 (application/json; charset=utf-8)
 
         {"error":{"status":401,"message":"Please sign-in"}}
+
 
