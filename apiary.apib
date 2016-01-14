@@ -944,7 +944,33 @@ Resources related to users of an entourage
 + Response 401 (application/json; charset=utf-8)
 
         {"error":{"status":401,"message":"Please sign-in"}}failing endpoint
-        
+
+
+### Update an entourage user status : accept or reject a user request to join an entourage [PUT]
+
++ Request (application/json)
+
+    + Header
+
+            Accept: application/json
+
+    + Body
+
+            {
+            "user": {"status": "accepted"}
+            }
+
++ Response 204 (application/json; charset=utf-8)
+
+
++ Response 400 (application/json; charset=utf-8)
+
+        {"error":{"status":400,"message":"Could not update user status","reasons":["Could not find user request"]}}
+
++ Response 401 (application/json; charset=utf-8)
+
+        {"error":{"status":401,"message":"Please sign-in"}}
+
 
 # Group Contacts
 Contacts related resources of the **Entourage API**
