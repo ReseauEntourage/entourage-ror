@@ -1,8 +1,12 @@
+MAX_ZOOM=14;
+INITIAL_ZOOM=13;
+
 function displayStatisticsMapData() {
   $.getJSON('/organizations/map_center', function (result) {
     var map_center = new google.maps.LatLng(result[0], result[1]);
     map = new google.maps.Map(document.getElementById('map-rencontres'), {
-      zoom: 13,
+      zoom: INITIAL_ZOOM,
+      maxZoom: MAX_ZOOM,
       center: map_center
     });
 
