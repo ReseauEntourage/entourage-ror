@@ -617,11 +617,12 @@ Perform checks against the API
         {"message": "Missing API Key or invalid key"}
 
 
-# Group Entourages
-Entourages related resources of the **Entourage API**
-## Entourages [/entourages]
 
-### Get all entourages [GET /entourages{?token}{&page}{&per}]
+# Group Feeds
+Feeds related resources of the **Entourage API**
+## Feeds [/feeds]
+
+### Get all feeds [GET /feeds{?token}{&page}{&per}]
 
 + Parameters
     + token (required, string, `FAKETOKEN`) ... Token identifying the current user
@@ -679,6 +680,74 @@ Entourages related resources of the **Entourage API**
 
         {"error":{"status":401,"message":"Please sign-in"}}
 
+
+
+# Group Entourages
+Entourages related resources of the **Entourage API**
+## Entourages [/entourages]
+
+### Get all entourages [GET /entourages{?token}{&page}{&per}]
+
++ Parameters
+    + token (required, string, `FAKETOKEN`) ... Token identifying the current user
+    + page (optional, number) ... pagination : page number
+    + per (optional, number) ... pagination : number of entourages per page
+
++ Request
+
+    + Headers
+
+            Accept: application/json
+
++ Response 200 (application/json; charset=utf-8)
+
+    + Body
+
+            {
+                "entourages": [
+                    {
+                        "id": 567,
+                        "updated_at": "2015-07-07T10:31:43.000+02:00",
+                        "created_at": "2015-07-07T10:31:43.000+02:00",
+                        "status": "open",
+                        "title": "entourage1",
+                        "type": "ask_for_help",
+                        "author": {
+                            "id": 123,
+                            "name": "Seb",
+                            "avatar_url": "https://s3.amazonaws.com/entourage-avatars/image.jpeg"
+                        },
+                        "number_of_people": 2,
+                        "location": {
+                            "latitude": 37.4224764,
+                            "longitude": -122.0842499
+                        }
+                    },
+                    {
+                        "id": 568,
+                        "updated_at": "2015-07-07T10:31:43.000+02:00",
+                        "created_at": "2015-07-07T10:31:43.000+02:00",
+                        "status": "open",
+                        "title": "entourage1",
+                        "type": "ask_for_help",
+                        "author": {
+                            "id": 123,
+                            "name": "Seb",
+                            "avatar_url": "https://s3.amazonaws.com/entourage-avatars/image.jpeg"
+                        },
+                        "number_of_people": 2,
+                        "location": {
+                            "latitude": 37.4224764,
+                            "longitude": -122.0842499
+                        }
+                    }
+                ]
+            }
+
++ Response 401 (application/json; charset=utf-8)
+
+        {"error":{"status":401,"message":"Please sign-in"}}
+
 ## Entourage [/entourages/{id}{?token}]
 + Parameters
     + id (required, integer, `1`) ... Identifier of the entourage to be retrieved
@@ -694,16 +763,21 @@ Entourages related resources of the **Entourage API**
 + Response 200 (application/json; charset=utf-8)
 
         {
-        "entourage": {
             "id": 567,
-            "name": "entourage1",
+            "updated_at": "2015-07-07T10:31:43.000+02:00",
+            "created_at": "2015-07-07T10:31:43.000+02:00",
+            "status": "open",
+            "title": "entourage1",
             "type": "ask_for_help",
-            "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
             "author": {
                 "id": 123,
-                "name": "Seb"},
+                "name": "Seb",
+                "avatar_url": "https://s3.amazonaws.com/entourage-avatars/image.jpeg"
+            },
             "number_of_people": 2,
-            "location" : { "latitude" : 37.4224764, "longitude" : -122.0842499 }
+            "location": {
+                "latitude": 37.4224764,
+                "longitude": -122.0842499
             }
         }
 
@@ -735,7 +809,7 @@ Entourages related resources of the **Entourage API**
 
 + Response 201 (application/json; charset=utf-8)
 
-        { "entourage": { "id": 567, "name": "entourage1", "type": "ask_for_help", "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.", "author": { "id": 123, "name": "Seb"}, "number_of_people": 1, "location" : { "latitude" : 37.4224764, "longitude" : -122.0842499 } } }
+        { "id": 567, "updated_at": "2015-07-07T10:31:43.000+02:00", "created_at": "2015-07-07T10:31:43.000+02:00", "status": "open", "title": "entourage1", "type": "ask_for_help", "author": { "id": 123, "name": "Seb", "avatar_url": "https://s3.amazonaws.com/entourage-avatars/image.jpeg" }, "number_of_people": 2, "location": { "latitude": 37.4224764, "longitude": -122.0842499 } }
 
 + Response 400 (application/json; charset=utf-8)
 
@@ -765,7 +839,7 @@ Entourages related resources of the **Entourage API**
 
 + Response 200 (application/json; charset=utf-8)
 
-        { "entourage": { "id": 567, "name": "entourage1", "type": "ask_for_help", "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.", "author": { "id": 123, "name": "Seb"}, "number_of_people": 1, "location" : { "latitude" : 37.4224764, "longitude" : -122.0842499 } } }
+        { "id": 567, "updated_at": "2015-07-07T10:31:43.000+02:00", "created_at": "2015-07-07T10:31:43.000+02:00", "status": "open", "title": "entourage1", "type": "ask_for_help", "author": { "id": 123, "name": "Seb", "avatar_url": "https://s3.amazonaws.com/entourage-avatars/image.jpeg" }, "number_of_people": 2, "location": { "latitude": 37.4224764, "longitude": -122.0842499 } }
 
 + Response 400 (application/json; charset=utf-8)
 
