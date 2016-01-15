@@ -20,7 +20,8 @@ RSpec.describe OrganizationsController, :type => :controller do
 
     describe 'GET statistics' do
       before { get :statistics }
-      it { expect(response.status).to eq(200) }
+      #TODO : disable statistics
+      #it { expect(response.status).to eq(200) }
     end
 
     describe 'dashboard' do

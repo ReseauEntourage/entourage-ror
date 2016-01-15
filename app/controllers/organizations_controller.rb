@@ -13,6 +13,7 @@ class OrganizationsController < ApplicationController
   end
 
   def statistics
+    return redirect_to root_path
     @user_presenter = UserPresenter.new(user: @current_user)
   end
 
