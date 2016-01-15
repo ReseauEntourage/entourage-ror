@@ -68,7 +68,7 @@ Rails.application.routes.draw do
       end
 
       resources :entourages, only: [:index, :show, :create, :update] do
-        resources :users, :controller => 'entourages/users', only: [:index, :destroy]
+        resources :users, :controller => 'entourages/users', only: [:index, :destroy, :update, :create]
       end
       resources :contacts, only: [:update]
 

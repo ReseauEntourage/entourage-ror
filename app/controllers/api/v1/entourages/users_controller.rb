@@ -9,6 +9,14 @@ module Api
         def destroy
           return head :no_content
         end
+
+        def update
+          return head :no_content
+        end
+
+        def create
+          return head :no_content
+        end
       end
     end
   end

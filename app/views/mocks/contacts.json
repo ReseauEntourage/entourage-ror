@@ -1,8 +1,11 @@
 {
-  "contacts": [
+  "contacts_found": [
     {
+      "id": 1234,
       "phone": "f5e096009dd3f88205a1942ad6e889fcfb642938"
-    },
+    }
+  ],
+  "contacts_not_found": [
     {
       "phone": "c29772ca36ae7896f11bd5c62f740339ed8bc916"
     }
