@@ -1,25 +1,39 @@
 {
-  "feeds": [
+  "entourages": [
     {
-      "entourage": {
-        "id": 567,
-        "name": "entourage1",
-        "type": "ask_for_help",
-        "author": {
-          "id": 123,
-          "name": "Seb"
-        },
-        "number_of_people": 2,
-        "location": {
-          "latitude": 37.4224764,
-          "longitude": -122.0842499
-        }
+      "id": 567,
+      "updated_at": "2015-07-07T10:31:43.000+02:00",
+      "created_at": "2015-07-07T10:31:43.000+02:00",
+      "status": "open",
+      "title": "entourage1",
+      "type": "ask_for_help",
+      "author": {
+        "id": 123,
+        "name": "Seb",
+        "avatar_url": "https://s3.amazonaws.com/entourage-avatars/image.jpeg"
+      },
+      "number_of_people": 2,
+      "location": {
+        "latitude": 37.4224764,
+        "longitude": -122.0842499
       }
     },
     {
-      "video": {
-        "id": 432,
-        "link": "https://s3.amazonaws.com/entourage-videos/video.mp4"
+      "id": 568,
+      "updated_at": "2015-07-07T10:31:43.000+02:00",
+      "created_at": "2015-07-07T10:31:43.000+02:00",
+      "status": "open",
+      "title": "entourage1",
+      "type": "ask_for_help",
+      "author": {
+        "id": 123,
+        "name": "Seb",
+        "avatar_url": "https://s3.amazonaws.com/entourage-avatars/image.jpeg"
+      },
+      "number_of_people": 2,
+      "location": {
+        "latitude": 37.4224764,
+        "longitude": -122.0842499
       }
     }
   ]

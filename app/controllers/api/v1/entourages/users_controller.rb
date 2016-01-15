@@ -15,7 +15,7 @@ module Api
         end
 
         def create
-          return head :no_content
+          return render file: 'mocks/user.json'
         end
       end
     end
