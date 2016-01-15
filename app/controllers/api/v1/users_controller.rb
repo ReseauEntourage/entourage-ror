@@ -4,12 +4,8 @@ module Api
       skip_before_filter :authenticate_user!, only: [:login, :code]
 
       def login
-        user = UserServices::UserAuthenticator.authenticate_by_phone_and_sms(phone: params[:phone], sms_code: params[:sms_code])
+        user = UserServices::UserAuthenticator.authenticate_by_phone_and_sms(phone: user_params[:phone], sms_code: user_params[:sms_code])
         return render json: {message: 'unauthorized'}, status: :unauthorized unless user
-
-        user.device_id = params['device_id'] if params['device_id'].present?
-        user.device_type = params['device_type'] if params['device_type'].present?
-        user.save
 
         render json: user, status: 200
       end
@@ -43,7 +39,7 @@ module Api
 
       private
       def user_params
-        params.require(:user).permit(:email, :sms_code, :phone)
+        params.require(:user).permit(:email, :sms_code, :phone, :device_id, :device_type)
       end
     end
   end

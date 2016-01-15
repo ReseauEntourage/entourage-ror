@@ -6,11 +6,41 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
   render_views
   
   describe 'POST #login' do
+    before { ENV["DISABLE_CRYPT"]="FALSE" }
+    after { ENV["DISABLE_CRYPT"]="TRUE" }
+
     context 'when the user exists' do
-      before { ENV["DISABLE_CRYPT"]="FALSE" }
-      after { ENV["DISABLE_CRYPT"]="TRUE" }
-      let!(:device_id) { 'device_id' }
-      let!(:device_type) { 'android' }
+      let!(:user) { create :user, sms_code: "123456" }
+
+      context 'when the phone number and sms code are valid' do
+        before { post 'login', user: {phone: user.phone, sms_code: "123456"}, format: 'json' }
+        it { expect(response.status).to eq(200) }
+
+        it "renders user" do
+          res = JSON.parse(response.body)
+          expect(res).to eq({"user"=>{"id"=>user.id, "email"=>user.email, "first_name"=>"John", "last_name"=>"Doe", "token"=>user.token, "organization"=>{"name"=>user.organization.name, "description"=>"Association description", "phone"=>user.organization.phone, "address"=>user.organization.address, "logo_url"=>nil}, "stats"=>{"tour_count"=>0, "encounter_count"=>0}}})
+        end
+      end
+
+      context 'when sms code is invalid' do
+        before { post 'login', user: {phone: user.phone, sms_code: "invalid code"}, format: 'json' }
+        it { expect(response.status).to eq(401) }
+        it { expect(assigns(:user)).to be_nil }
+      end
+    end
+    context 'when user does not exist' do
+      context 'using the email' do
+        before { post 'login', user: {email: 'not_existing@nowhere.com', sms_code: 'sms code'}, format: 'json' }
+        it { expect(response.status).to eq(401) }
+        it { expect(assigns(:user)).to be_nil }
+      end
+      context 'using the phone number and sms code' do
+        before { post 'login', user: {phone: 'phone', sms_code: 'sms code'}, format: 'json' }
+        it { expect(response.status).to eq(401) }
+        it { expect(assigns(:user)).to be_nil }
+      end
+    end
+    context "user with tours and encounters" do
       let!(:user) { create :user, sms_code: "123456" }
       let!(:tour1) { create :tour, user: user }
       let!(:tour2) { create :tour }
@@ -20,35 +50,8 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
       let!(:encounter3) { create :encounter, tour: tour2 }
       let!(:encounter4) { create :encounter, tour: tour3 }
 
-      context 'when the phone number and sms code are valid' do
-        before { post 'login', phone: user.phone, sms_code: "123456", device_id: device_id, device_type: device_type, format: 'json' }
-        it { expect(response.status).to eq(200) }
-        it { expect(User.find(user.id).device_id).to eq device_id }
-        it { expect(User.find(user.id).device_type).to eq device_type }
-
-        it "renders user" do
-          res = JSON.parse(response.body)
-          expect(res).to eq({"user"=>{"id"=>user.id, "email"=>user.email, "first_name"=>"John", "last_name"=>"Doe", "token"=>user.token, "organization"=>{"name"=>user.organization.name, "description"=>"Association description", "phone"=>user.organization.phone, "address"=>user.organization.address, "logo_url"=>nil}, "stats"=>{"tour_count"=>2, "encounter_count"=>3}}})
-        end
-      end
-
-      context 'when sms code is invalid' do
-        before { post 'login', phone: user.phone, sms_code: 'wrong sms code', device_id: device_id, device_type: device_type, format: 'json' }
-        it { expect(response.status).to eq(401) }
-        it { expect(assigns(:user)).to be_nil }
-      end
-    end
-    context 'when user does not exist' do
-      context 'using the email' do
-        before { post 'login', email: 'not_existing@nowhere.com', sms_code: 'sms code', format: 'json' }
-        it { expect(response.status).to eq(401) }
-        it { expect(assigns(:user)).to be_nil }
-      end
-      context 'using the phone number and sms code' do
-        before { post 'login', phone: 'phone', sms_code: 'sms code', format: 'json' }
-        it { expect(response.status).to eq(401) }
-        it { expect(assigns(:user)).to be_nil }
-      end
+      before { post 'login', user: {phone: user.phone, sms_code: "123456"}, format: 'json' }
+      it { expect(JSON.parse(response.body)).to eq({"user"=>{"id"=>user.id, "email"=>user.email, "first_name"=>"John", "last_name"=>"Doe", "token"=>user.token, "organization"=>{"name"=>user.organization.name, "description"=>"Association description", "phone"=>user.organization.phone, "address"=>user.organization.address, "logo_url"=>nil}, "stats"=>{"tour_count"=>2, "encounter_count"=>3}}}) }
     end
   end
 
