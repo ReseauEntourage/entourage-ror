@@ -749,6 +749,37 @@ Entourages related resources of the **Entourage API**
 + Response 401 (application/json; charset=utf-8)
 
         {"error":{"status":401,"message":"Please sign-in"}}
+        
+        
+### Create an entourage [POST]
++ Request (application/json)
+
+    + Header
+
+            Accept: application/json
+
+    + Body
+
+            {
+            "entourage": {
+                "name": "entourage1",
+                "type": "ask_for_help",
+                "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+                "location" : { "latitude" : 37.4224764, "longitude" : -122.0842499 }
+                }
+            }
+
++ Response 201 (application/json; charset=utf-8)
+
+        { "id": 567, "updated_at": "2015-07-07T10:31:43.000+02:00", "created_at": "2015-07-07T10:31:43.000+02:00", "status": "open", "title": "entourage1", "type": "ask_for_help", "author": { "id": 123, "name": "Seb", "avatar_url": "https://s3.amazonaws.com/entourage-avatars/image.jpeg" }, "number_of_people": 2, "location": { "latitude": 37.4224764, "longitude": -122.0842499 } }
+
++ Response 400 (application/json; charset=utf-8)
+
+        {"error":{"status":400,"message":"Could not create entourage","reasons":["Entourage type unknown"]}}
+
++ Response 401 (application/json; charset=utf-8)
+
+        {"error":{"status":401,"message":"Please sign-in"}}
 
 ## Entourage [/entourages/{id}{?token}]
 + Parameters
@@ -791,36 +822,6 @@ Entourages related resources of the **Entourage API**
 
         {"error":{"status":401,"message":"Please sign-in"}}
 
-### Create an entourage [POST]
-+ Request (application/json)
-
-    + Header
-
-            Accept: application/json
-
-    + Body
-
-            {
-            "entourage": {
-                "name": "entourage1",
-                "type": "ask_for_help",
-                "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-                "location" : { "latitude" : 37.4224764, "longitude" : -122.0842499 }
-                }
-            }
-
-+ Response 201 (application/json; charset=utf-8)
-
-        { "id": 567, "updated_at": "2015-07-07T10:31:43.000+02:00", "created_at": "2015-07-07T10:31:43.000+02:00", "status": "open", "title": "entourage1", "type": "ask_for_help", "author": { "id": 123, "name": "Seb", "avatar_url": "https://s3.amazonaws.com/entourage-avatars/image.jpeg" }, "number_of_people": 2, "location": { "latitude": 37.4224764, "longitude": -122.0842499 } }
-
-+ Response 400 (application/json; charset=utf-8)
-
-        {"error":{"status":400,"message":"Could not create entourage","reasons":["Entourage type unknown"]}}
-
-+ Response 401 (application/json; charset=utf-8)
-
-        {"error":{"status":401,"message":"Please sign-in"}}
-
 ### Update all infos about an entourage [PUT]
 + Request (application/json)
 
@@ -854,7 +855,10 @@ Entourages related resources of the **Entourage API**
 
 # Group Entourage Users
 Resources related to users of an entourage
-## Entourages [/entourages/{entourage_id}/users]
+## Entourages [/entourages/{entourage_id}/users{?token}]
+
++ Parameters
+    + token (required, string, `FAKETOKEN`) ... Token identifying the current user
 
 ### Get all users from an entourage [GET /entourages/{entourage_id}/users{?token}{&page}{&per}]
 
