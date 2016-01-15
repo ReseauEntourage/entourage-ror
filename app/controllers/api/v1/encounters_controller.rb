@@ -1,7 +1,6 @@
 module Api
   module V1
     class EncountersController < Api::V1::BaseController
-
       def create
         encounter = Encounter.new(encounters_params)
         if params[:tour_id]

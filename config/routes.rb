@@ -47,6 +47,7 @@ Rails.application.routes.draw do
       resources :registration_requests, only: [:create]
       resources :map, only: [:index]
       resources :newsletter_subscriptions
+      resources :applications, only: [:create]
 
       resources :pois, only: [:index, :create] do
         member do
