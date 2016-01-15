@@ -117,13 +117,14 @@ POI related resources of the **Entourage API**
 # Group Users
 Users related resources of the **Entourage API**
 
-## User login [/login{?phone}{&sms_code}]
-+ Parameters
-    + phone (required, string, `+33605040302`) ... phone number of the user to login
-    + sms_code (required, string, `123456`) ... Sms code received by the user to login
+## User login [/login]
 
 ### Login user [POST]
 + Request (application/x-www-form-urlencoded; charset=utf-8)
+
+    + Body
+
+            {"user": {"phone": "0605040302", "sms_code": "123456"}}
 
     + Header
 
