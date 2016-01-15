@@ -12,8 +12,9 @@ module RegistrationRequestServices
         organization.save!
         builder.create(send_sms: true) do |on|
           on.create_success do |user|
+            user.update(manager: true)
             registration_request.update(status: "validated")
-            MemberMailer.registration_request_accepted(user)
+            MemberMailer.registration_request_accepted(user).try(:deliver_later)
           end
 
           on.create_failure do |user|
