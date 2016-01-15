@@ -38,6 +38,7 @@ Rails.application.routes.draw do
     end
 
     namespace :v1 do
+      resources :feeds, only: [:index]
       resources :tours, only: [:index,:create,:show,:update] do
         resources :tour_points, only:[:create]
         resources :encounters, only: [:create]
