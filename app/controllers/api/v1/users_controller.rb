@@ -1,7 +1,7 @@
 module Api
   module V1
     class UsersController < Api::V1::BaseController
-      skip_before_filter :authenticate_user!, except: [:update_me]
+      skip_before_filter :authenticate_user!, only: [:login, :code]
 
       def login
         user = UserServices::UserAuthenticator.authenticate_by_phone_and_sms(phone: params[:phone], sms_code: params[:sms_code])
@@ -14,7 +14,7 @@ module Api
         render json: user, status: 200
       end
 
-      def update_me
+      def update
         if @current_user.update_attributes(user_params)
           render json: @current_user, status: 200
         else
@@ -35,6 +35,10 @@ module Api
         else
           render json: {error: "Unknown action"}, status:400
         end
+      end
+
+      def show
+        return render file: 'mocks/user.json'
       end
 
       private

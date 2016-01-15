@@ -1,0 +1,26 @@
+{
+  "feeds": [
+    {
+      "entourage": {
+        "id": 567,
+        "name": "entourage1",
+        "type": "ask_for_help",
+        "author": {
+          "id": 123,
+          "name": "Seb"
+        },
+        "number_of_people": 2,
+        "location": {
+          "latitude": 37.4224764,
+          "longitude": -122.0842499
+        }
+      }
+    },
+    {
+      "video": {
+        "id": 432,
+        "link": "https://s3.amazonaws.com/entourage-videos/video.mp4"
+      }
+    }
+  ]
+}
