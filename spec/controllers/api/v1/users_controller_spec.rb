@@ -55,17 +55,19 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
     end
   end
 
-  describe '#update' do
+  describe 'update' do
     context 'authentication is OK' do
       before { ENV["DISABLE_CRYPT"]="FALSE" }
       after { ENV["DISABLE_CRYPT"]="TRUE" }
       let!(:user) { create :user }
 
       context 'params are valid' do
-        before { patch 'update', token:user.token, user: { email:'new@e.mail', sms_code:'654321' }, format: :json }
+        before { patch 'update', token:user.token, user: { email:'new@e.mail', sms_code:'654321', device_id: 'foo', device_type: 'android' }, format: :json }
         it { expect(response.status).to eq(200) }
-        it { expect(User.find(user.id).email).to eq('new@e.mail') }
+        it { expect(user.reload.email).to eq('new@e.mail') }
         it { expect(BCrypt::Password.new(User.find(user.id).sms_code) == '654321').to be true }
+        it { expect(user.reload.device_id).to eq('foo') }
+        it { expect(user.reload.device_type).to eq('android') }
 
         it "renders user" do
           res = JSON.parse(response.body)
