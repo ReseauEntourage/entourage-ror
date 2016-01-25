@@ -16,7 +16,7 @@ module TourServices
       filter_date
       filter_type
 
-      self.tours
+      @tours
     end
 
     private
@@ -47,23 +47,23 @@ module TourServices
     def filter_box
       if box
         tours_with_point_in_box = TourPoint.unscoped.within_bounding_box(box).select(:tour_id).distinct
-        self.tours = self.tours.where(id: tours_with_point_in_box)
+        @tours = @tours.where(id: tours_with_point_in_box)
       end
     end
 
     def filter_org
       if !params[:org].nil?
-        self.tours = self.tours.where(users: { organization_id: params[:org] })
+        @tours = @tours.where(users: { organization_id: params[:org] })
       end
     end
 
     def filter_date
       if params[:date_range].nil?
-        self.tours = self.tours.where("tours.updated_at >= ?", Time.now.monday)
+        @tours = @tours.where("tours.updated_at >= ?", Time.now.monday)
       else
         user_default.date_range = params[:date_range]
         date_range = params[:date_range].split('-').map { |s| Date.strptime(s, '%d/%m/%Y') }
-        self.tours = self.tours.where("tours.updated_at between ? and ?", date_range[0].beginning_of_day, date_range[1].end_of_day)
+        @tours = @tours.where("tours.updated_at between ? and ?", date_range[0].beginning_of_day, date_range[1].end_of_day)
       end
     end
 
@@ -71,7 +71,7 @@ module TourServices
       if params[:tour_type].present?
         tour_types = params[:tour_type].split(",")
         user_default.tour_types = tour_types
-        self.tours = self.tours.where(tour_type: tour_types)
+        @tours = @tours.where(tour_type: tour_types)
       end
     end
 
