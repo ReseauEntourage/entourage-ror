@@ -25,4 +25,12 @@ namespace :data_migration do
       end
     end
   end
+
+  desc "set mandatory infos for all users"
+  task :set_mandatory_info do
+    User.where("last_name IS NULL OR last_name = ''").update_all(last_name: " ")
+    User.where("phone IS NULL").each do |user|
+      user.update(phone: "+336#{99999999-user.id}")
+    end
+  end
 end
