@@ -1,4 +1,4 @@
-module V0
+module V1
   class CategorySerializer < ActiveModel::Serializer
     attributes :id,
                :name

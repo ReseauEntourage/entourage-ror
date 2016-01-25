@@ -8,7 +8,7 @@ module Api
           page = params[:page] || 1
           per = [(params[:per].try(:to_i) || 25), 25].min
           tours = @user.tours.order(updated_at: :desc).page(page).per(per)
-          render json: tours, status: 200
+          render json: tours, status: 200, each_serializer: ::V0::TourSerializer
         end
 
         private

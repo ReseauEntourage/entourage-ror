@@ -60,7 +60,7 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
                                     "start_time"=>start_time,
                                     "end_time"=>end_time,
                                     "user_id"=>last_tour.user_id,
-                                    "tour_points"=>[{"latitude"=>48.83, "longitude"=>2.29, "passing_time"=>tour.tour_points.first.passing_time.iso8601(3)}, {"latitude"=>48.83, "longitude"=>2.29, "passing_time"=>tour.tour_points.last.passing_time.iso8601(3)}]}})
+                                    "tour_points"=>[{"latitude"=>48.83, "longitude"=>2.29}, {"latitude"=>48.83, "longitude"=>2.29}]}})
       end
     end
 
@@ -103,7 +103,7 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
                                     "start_time"=>start_time,
                                     "end_time"=>end_time,
                                     "user_id"=>tour.user_id,
-                                    "tour_points"=>[{"latitude"=>48.83, "longitude"=>2.29, "passing_time"=>tour.tour_points.first.passing_time.iso8601(3)}, {"latitude"=>48.83, "longitude"=>2.29, "passing_time"=>tour.tour_points.last.passing_time.iso8601(3)}]}})
+                                    "tour_points"=>[{"latitude"=>48.83, "longitude"=>2.29}, {"latitude"=>48.83, "longitude"=>2.29}]}})
       end
     end
 

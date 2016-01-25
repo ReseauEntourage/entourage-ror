@@ -1,4 +1,4 @@
-module V0
+module V1
   class TourSerializer < ActiveModel::Serializer
     attributes :id,
                :tour_type,

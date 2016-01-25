@@ -1,4 +1,4 @@
-module V0
+module V1
   module GoogleMap
     class TourSerializer
       def initialize(tours:)

@@ -1,4 +1,4 @@
-module V0
+module V1
   class MapSerializer < ActiveModel::Serializer
     attributes :categories
     has_many :pois

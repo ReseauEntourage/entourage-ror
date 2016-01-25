@@ -1,4 +1,4 @@
-module V0
+module V1
   class EncounterSerializer < ActiveModel::Serializer
     attributes :id,
                :date,

@@ -9,7 +9,7 @@ module Api
         end
         if encounter.save
           EncounterReverseGeocodeJob.perform_later(encounter.id)
-          render json: encounter, status: 201
+          render json: encounter, status: 201, serializer: ::V0::EncounterSerializer
         else
           render json: {message: 'Could not create encouter', reasons: encounter.errors.full_messages}, status: :bad_request
         end

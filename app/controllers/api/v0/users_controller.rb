@@ -11,12 +11,12 @@ module Api
         user.device_type = params['device_type'] if params['device_type'].present?
         user.save
 
-        render json: user, status: 200
+        render json: user, status: 200, serializer: ::V0::UserSerializer
       end
 
       def update_me
         if @current_user.update_attributes(user_params)
-          render json: @current_user, status: 200
+          render json: @current_user, status: 200, serializer: ::V0::UserSerializer
         else
           head 400
         end
@@ -31,7 +31,7 @@ module Api
 
         if params[:code][:action] == "regenerate"
           UserServices::SMSSender.new(user: user).regenerate_sms!
-          render json: user, status: 200
+          render json: user, status: 200, serializer: ::V0::UserSerializer
         else
           render json: {error: "Unknown action"}, status:400
         end
