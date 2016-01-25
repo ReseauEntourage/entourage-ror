@@ -9,8 +9,8 @@ module Api
         @pois = @pois.around params[:latitude], params[:longitude], params[:distance] if params[:latitude].present? and params[:longitude].present?
 
         #TODO : refactor API to return 1 top level POI ressources and associated categories ressources
-        poi_json = JSON.parse(ActiveModel::ArraySerializer.new(@pois, each_serializer: PoiSerializer).to_json)
-        categorie_json = JSON.parse(ActiveModel::ArraySerializer.new(@categories, each_serializer: CategorySerializer).to_json)
+        poi_json = JSON.parse(ActiveModel::ArraySerializer.new(@pois, each_serializer: ::V1::PoiSerializer).to_json)
+        categorie_json = JSON.parse(ActiveModel::ArraySerializer.new(@categories, each_serializer: ::V1::CategorySerializer).to_json)
         render json: {pois: poi_json, categories: categorie_json }, status: 200
       end
 
@@ -18,7 +18,7 @@ module Api
         @poi = Poi.new(poi_params)
         @poi.validated = false
         if @poi.save
-          render json: @poi, status: 201
+          render json: @poi, status: 201, serializer: ::V1::PoiSerializer
         else
           render json: {message: "Could not create POI", reasons: @poi.errors.full_message }, status: 400
         end

@@ -7,12 +7,12 @@ module Api
         user = UserServices::UserAuthenticator.authenticate_by_phone_and_sms(phone: user_params[:phone], sms_code: user_params[:sms_code])
         return render json: {message: 'unauthorized'}, status: :unauthorized unless user
 
-        render json: user, status: 200
+        render json: user, status: 200, serializer: ::V1::UserSerializer
       end
 
       def update
         if @current_user.update_attributes(user_params)
-          render json: @current_user, status: 200
+          render json: @current_user, status: 200, serializer: ::V1::UserSerializer
         else
           head 400
         end
@@ -27,7 +27,7 @@ module Api
 
         if params[:code][:action] == "regenerate"
           UserServices::SMSSender.new(user: user).regenerate_sms!
-          render json: user, status: 200
+          render json: user, status: 200, serializer: ::V1::UserSerializer
         else
           render json: {error: "Unknown action"}, status:400
         end

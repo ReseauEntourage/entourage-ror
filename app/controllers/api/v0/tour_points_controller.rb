@@ -5,7 +5,7 @@ module Api
         tour = Tour.find(params[:tour_id])
         tour_points = tour.tour_points.create(tour_point_params['tour_points'])
         if tour_points.all?(&:valid?)
-          render json: tour_points, status: 201
+          render json: tour_points, status: 201, each_serializer: ::V0::TourPointSerializer
         else
           render json: {message: 'Could not create tour points'}, status: 400
         end
