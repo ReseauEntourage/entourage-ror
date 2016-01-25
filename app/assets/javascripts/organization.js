@@ -23,13 +23,7 @@ function displayDashboardMapData() {
     google.maps.event.addListenerOnce(map, 'idle', function(){
       refreshMap = function() {
         var tour_display_type = $("[name=tour_display_type]:checked").val();
-        var url = '/organizations/tours.json';
-        if($("#snapbox").val() == "true") {
-          url = '/organizations/snap_tours.json';
-        }
-        else if($("#simplifiedbox").val() == "true") {
-          url = '/organizations/simplified_tours.json';
-        }
+        var url = '/organizations/simplified_tours.json';
         var filters = [];
         filters.push('ne=' + map.getBounds().getNorthEast().lat() + '-' + map.getBounds().getNorthEast().lng());
         filters.push('sw=' + map.getBounds().getSouthWest().lat() + '-' + map.getBounds().getSouthWest().lng());

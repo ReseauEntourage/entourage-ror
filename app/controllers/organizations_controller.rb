@@ -68,7 +68,7 @@ class OrganizationsController < ApplicationController
   end
   
   def encounters
-    @tours = TourServices::TourFilter.new(params: params, organization: @organization, user: @current_user).filter
+    @tours = TourServices::SimplifiedTourFilter.new(params: params, organization: @organization, user: @current_user).filter
     @encounters = Encounter.includes(tour: :user).where(tour: @tours)
     if @box
       @encounters = @encounters.within_bounding_box(@box)

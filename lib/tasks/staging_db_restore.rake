@@ -1,7 +1,7 @@
 namespace :db do
   task remove_old_points: :environment do
     #Keep the latest 5000 tour points to stay below row limit
-    last_id = TourPoint.reorder("id DESC").limit(5000).last.id
+    last_id = TourPoint.reorder("id DESC").limit(4000).last.id
     TourPoint.where("id < #{last_id}").delete_all
     SnapToRoadTourPoint.delete_all
     SimplifiedTourPoint.delete_all
