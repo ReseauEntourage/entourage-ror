@@ -354,7 +354,7 @@ vehicle_type is either "feet" or "car"
 
 + Response 200 (application/json; charset=utf-8)
 
-        {"tour":{"id":10,"tour_type":"medical", "vehicle_type":"feet", "distance": 8543.65, "organization_name":"organization name", "organization_description":"organization description", "start_time": "2016-01-01T19:09:06.000+01:00", "end_time": "2016-01-01T20:09:06.000+01:00", "tour_points":[{"latitude":1.5,"longitude":1.5,"passing_time":"2015-07-07T10:31:43.000+02:00"}]}}
+        {"tour":{"id":10,"tour_type":"medical", "vehicle_type":"feet", "distance": 8543.65, "organization_name":"organization name", "organization_description":"organization description", "start_time": "2016-01-01T19:09:06.000+01:00", "end_time": "2016-01-01T20:09:06.000+01:00", "tour_points":[{"latitude":1.5,"longitude":1.5}]}}
 
 + Response 404 (application/json; charset=utf-8)
 
@@ -378,7 +378,7 @@ vehicle_type is either "feet" or "car"
 
 + Response 200 (application/json; charset=utf-8)
 
-        {"tour":{"id":1,"tour_type":"medical","status":"closed", "vehicle_type":"car","tour_points":[{"latitude":1.5,"longitude":1.5,"passing_time":"2015-07-07T10:31:43.000+02:00"}]}}
+        {"tour":{"id":1,"tour_type":"medical","status":"closed", "vehicle_type":"car","tour_points":[{"latitude":1.5,"longitude":1.5}]}}
 
 + Response 404 (application/json; charset=utf-8)
 
@@ -433,11 +433,11 @@ Tour points describe the tour itinerary
             Accept: application/json
     + Body
 
-            {"tour_points":[{"latitude":1.5,"longitude":1.5,"passing_time":"2015-07-07T10:31:43.000+02:00"}, {"latitude":2.5,"longitude":2.5,"passing_time":"2015-07-07T10:31:43.000+03:00"}]}
+            {"tour_points":[{"latitude":1.5,"longitude":1.5}, {"latitude":2.5,"longitude":2.5}]}
 
 + Response 201 (application/json; charset=utf-8)
 
-        {"tour":{"id":1,"tour_type":"medical","tour_points":[{"latitude":1.5,"longitude":1.5,"passing_time":"2015-07-07T10:31:43.000+02:00"}, {"latitude":2.5,"longitude":2.5,"passing_time":"2015-07-07T10:31:43.000+03:00"}]}}
+        {"tour":{"id":1,"tour_type":"medical","tour_points":[{"latitude":1.5,"longitude":1.5}, {"latitude":2.5,"longitude":2.5}]}}
 
 + Response 400 (application/json; charset=utf-8)
 
