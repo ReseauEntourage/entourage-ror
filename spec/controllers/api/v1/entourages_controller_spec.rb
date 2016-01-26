@@ -21,6 +21,7 @@ describe Api::V1::EntouragesController do
         before { post :create, entourage: { longitude: 1.123, latitude: 4.567, title: "foo", entourage_type: "ask_for_help" }, token: user.token }
         it { expect(JSON.parse(response.body)).to eq({"entourage"=>{"status"=>"open", "title"=>"foo", "entourage_type"=>"ask_for_help", "number_of_people"=>1, "author"=>{"id"=>user.id, "name"=>"John"}, "location"=>{"latitude"=>1.123, "longitude"=>1.123}}}) }
         it { expect(response.status).to eq(201) }
+        it { expect(user.entourage_participations).to eq([Entourage.last]) }
       end
 
       context "invalid params" do

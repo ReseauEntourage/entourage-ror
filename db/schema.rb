@@ -72,13 +72,14 @@ ActiveRecord::Schema.define(version: 20160126175302) do
   add_index "entourages", ["user_id"], name: "index_entourages_on_user_id", using: :btree
 
   create_table "entourages_users", force: :cascade do |t|
-    t.integer  "user_id",      null: false
-    t.integer  "entourage_id", null: false
-    t.datetime "created_at",   null: false
-    t.datetime "updated_at",   null: false
+    t.integer  "user_id",                          null: false
+    t.integer  "entourage_id",                     null: false
+    t.string   "status",       default: "pending", null: false
+    t.datetime "created_at",                       null: false
+    t.datetime "updated_at",                       null: false
   end
 
-  add_index "entourages_users", ["user_id", "entourage_id"], name: "index_entourages_users_on_user_id_and_entourage_id", using: :btree
+  add_index "entourages_users", ["user_id", "entourage_id"], name: "index_entourages_users_on_user_id_and_entourage_id", unique: true, using: :btree
 
   create_table "login_histories", force: :cascade do |t|
     t.integer  "user_id",      null: false
