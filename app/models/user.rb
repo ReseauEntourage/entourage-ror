@@ -8,6 +8,7 @@ class User < ActiveRecord::Base
   has_many :tours
   has_many :encounters, through: :tours
   has_many :login_histories
+  has_many :entourages
   belongs_to :organization
   has_and_belongs_to_many :coordinated_organizations, -> { uniq }, class_name: "Organization", join_table: "coordination"
 

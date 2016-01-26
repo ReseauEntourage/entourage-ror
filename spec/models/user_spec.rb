@@ -27,6 +27,7 @@ describe User, :type => :model do
   it { should_not allow_value('a-a.a').for(:email) }
   it { should have_many :tours }
   it { should have_many :encounters }
+  it { should have_many :entourages }
   it { should belong_to :organization }
   it { should have_and_belong_to_many(:coordinated_organizations).class_name('Organization') }
 

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151225120901) do
+ActiveRecord::Schema.define(version: 20160126132023) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -55,6 +55,21 @@ ActiveRecord::Schema.define(version: 20151225120901) do
     t.string   "encrypted_message"
     t.string   "address"
   end
+
+  create_table "entourages", force: :cascade do |t|
+    t.string   "status",           default: "open", null: false
+    t.string   "title",                             null: false
+    t.string   "type",                              null: false
+    t.integer  "user_id",                           null: false
+    t.float    "latitude",                          null: false
+    t.float    "longitude",                         null: false
+    t.integer  "number_of_people", default: 1,      null: false
+    t.datetime "created_at",                        null: false
+    t.datetime "updated_at",                        null: false
+  end
+
+  add_index "entourages", ["latitude", "longitude"], name: "index_entourages_on_latitude_and_longitude", using: :btree
+  add_index "entourages", ["user_id"], name: "index_entourages_on_user_id", using: :btree
 
   create_table "login_histories", force: :cascade do |t|
     t.integer  "user_id",      null: false
