@@ -2,7 +2,8 @@ module Api
   module V1
     class EntouragesController < Api::V1::BaseController
       def index
-        render file: 'mocks/entourages.json'
+        entourages = current_user.entourages.page(params[:page]).per(params[:per])
+        render json: entourages, each_serializer: ::V1::EntourageSerializer
       end
 
       def show

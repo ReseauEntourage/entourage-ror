@@ -30,4 +30,22 @@ describe Api::V1::EntouragesController do
       end
     end
   end
+
+  describe 'GET index' do
+    context "not signed in" do
+      before { get :index }
+      it { expect(response.status).to eq(401) }
+    end
+
+    context "signed in" do
+      let!(:user) { FactoryGirl.create(:user) }
+      let!(:user_entourage) { FactoryGirl.create(:entourage, user: user) }
+      let!(:entourage) { FactoryGirl.create(:entourage) }
+      before { get :index, page: 1, per: 25, token: user.token }
+
+      it "returns only user entourages" do
+        expect(JSON.parse(response.body)).to eq({"entourages"=>[{"status"=>"open", "title"=>"foobar", "entourage_type"=>"hand", "number_of_people"=>1, "author"=>{"id"=>user.id, "name"=>"John"}, "location"=>{"latitude"=>2.345, "longitude"=>2.345}}]})
+      end
+    end
+  end
 end
