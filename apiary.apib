@@ -150,9 +150,9 @@ Users related resources of the **Entourage API**
 
 + Response 200 (application/json; charset=utf-8)
 
-        {"user":{"id":1,"email":"dredd@test.com","first_name":"Judge","last_name":"Dredd", type: "PRO"}}
+        {"user":{"id":1,"email":"dredd@test.com","first_name":"Judge","last_name":"Dredd", "user_type": "PRO"}}
 
-        Type : (required, string) ... Type of user : PRO / PUBLICget user body comment
+        user_type : (required, string) ... Type of user : PRO / PUBLIC
 
 + Response 404 (application/json; charset=utf-8)
 
@@ -649,7 +649,7 @@ Feeds related resources of the **Entourage API**
                             "created_at": "",
                             "status": "open",
                             "title": "entourage1",
-                            "type": "ask_for_help",
+                            "entourage_type": "ask_for_help",
                             "author": {
                                 "id": 123,
                                 "name": "Seb",
@@ -713,7 +713,7 @@ Entourages related resources of the **Entourage API**
                         "created_at": "2015-07-07T10:31:43.000+02:00",
                         "status": "open",
                         "title": "entourage1",
-                        "type": "ask_for_help",
+                        "entourage_type": "ask_for_help",
                         "author": {
                             "id": 123,
                             "name": "Seb",
@@ -731,7 +731,7 @@ Entourages related resources of the **Entourage API**
                         "created_at": "2015-07-07T10:31:43.000+02:00",
                         "status": "open",
                         "title": "entourage1",
-                        "type": "ask_for_help",
+                        "entourage_type": "ask_for_help",
                         "author": {
                             "id": 123,
                             "name": "Seb",
@@ -763,7 +763,7 @@ Entourages related resources of the **Entourage API**
             {
             "entourage": {
                 "name": "entourage1",
-                "type": "ask_for_help",
+                "entourage_type": "ask_for_help",
                 "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
                 "location" : { "latitude" : 37.4224764, "longitude" : -122.0842499 }
                 }
@@ -771,7 +771,7 @@ Entourages related resources of the **Entourage API**
 
 + Response 201 (application/json; charset=utf-8)
 
-        { "id": 567, "updated_at": "2015-07-07T10:31:43.000+02:00", "created_at": "2015-07-07T10:31:43.000+02:00", "status": "open", "title": "entourage1", "type": "ask_for_help", "author": { "id": 123, "name": "Seb", "avatar_url": "https://s3.amazonaws.com/entourage-avatars/image.jpeg" }, "number_of_people": 2, "location": { "latitude": 37.4224764, "longitude": -122.0842499 } }
+        { "id": 567, "updated_at": "2015-07-07T10:31:43.000+02:00", "created_at": "2015-07-07T10:31:43.000+02:00", "status": "open", "title": "entourage1", "entourage_type": "ask_for_help", "author": { "id": 123, "name": "Seb", "avatar_url": "https://s3.amazonaws.com/entourage-avatars/image.jpeg" }, "number_of_people": 2, "location": { "latitude": 37.4224764, "longitude": -122.0842499 } }
 
 + Response 400 (application/json; charset=utf-8)
 
@@ -801,7 +801,7 @@ Entourages related resources of the **Entourage API**
             "created_at": "2015-07-07T10:31:43.000+02:00",
             "status": "open",
             "title": "entourage1",
-            "type": "ask_for_help",
+            "entourage_type": "ask_for_help",
             "author": {
                 "id": 123,
                 "name": "Seb",
@@ -834,7 +834,7 @@ Entourages related resources of the **Entourage API**
             {
             "entourage": {
                 "name": "entourage1",
-                "type": "ask_for_help",
+                "entourage_type": "ask_for_help",
                 "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
                 "location" : { "latitude" : 37.4224764, "longitude" : -122.0842499 }
                 }
@@ -842,7 +842,7 @@ Entourages related resources of the **Entourage API**
 
 + Response 200 (application/json; charset=utf-8)
 
-        { "id": 567, "updated_at": "2015-07-07T10:31:43.000+02:00", "created_at": "2015-07-07T10:31:43.000+02:00", "status": "open", "title": "entourage1", "type": "ask_for_help", "author": { "id": 123, "name": "Seb", "avatar_url": "https://s3.amazonaws.com/entourage-avatars/image.jpeg" }, "number_of_people": 2, "location": { "latitude": 37.4224764, "longitude": -122.0842499 } }
+        { "id": 567, "updated_at": "2015-07-07T10:31:43.000+02:00", "created_at": "2015-07-07T10:31:43.000+02:00", "status": "open", "title": "entourage1", "entourage_type": "ask_for_help", "author": { "id": 123, "name": "Seb", "avatar_url": "https://s3.amazonaws.com/entourage-avatars/image.jpeg" }, "number_of_people": 2, "location": { "latitude": 37.4224764, "longitude": -122.0842499 } }
 
 + Response 400 (application/json; charset=utf-8)
 
