@@ -23,13 +23,19 @@ module Api
       end
 
       def update
-        render file: 'mocks/entourage.json'
+        return render json: {message: 'unauthorized'}, status: :unauthorized if @entourage.user != current_user
+
+        if @entourage.update(entourage_params)
+          render json: @entourage, status: 201, serializer: ::V1::EntourageSerializer
+        else
+          render json: {message: 'Could not update entourage', reasons: @entourage.errors.full_messages}, status: 400
+        end
       end
 
       private
 
       def entourage_params
-        params.require(:entourage).permit(:longitude, :latitude, :title, :entourage_type)
+        params.require(:entourage).permit(:longitude, :latitude, :title, :entourage_type, :status)
       end
 
       def set_entourage
