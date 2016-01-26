@@ -21,6 +21,7 @@ describe Api::V1::EntouragesController do
         before { post :create, entourage: { longitude: 1.123, latitude: 4.567, title: "foo", entourage_type: "ask_for_help" }, token: user.token }
         it { expect(JSON.parse(response.body)).to eq({"entourage"=>{"status"=>"open", "title"=>"foo", "entourage_type"=>"ask_for_help", "number_of_people"=>1, "author"=>{"id"=>user.id, "name"=>"John"}, "location"=>{"latitude"=>1.123, "longitude"=>1.123}}}) }
         it { expect(response.status).to eq(201) }
+        it { expect(user.entourage_participations).to eq([Entourage.last]) }
       end
 
       context "invalid params" do
@@ -75,11 +76,11 @@ describe Api::V1::EntouragesController do
     end
   end
 
-  describe 'PUT update' do
+  describe 'PATCH update' do
     let!(:entourage) { FactoryGirl.create(:entourage) }
 
     context "not signed in" do
-      before { put :update, id: entourage.to_param, entourage: {title: "new_title"} }
+      before { patch :update, id: entourage.to_param, entourage: {title: "new_title"} }
       it { expect(response.status).to eq(401) }
     end
 
@@ -88,25 +89,25 @@ describe Api::V1::EntouragesController do
       let!(:user_entourage) { FactoryGirl.create(:entourage, user: user) }
 
       context "entourage exists" do
-        before { put :update, id: user_entourage.to_param, entourage: {title: "new_title"}, token: user.token }
+        before { patch :update, id: user_entourage.to_param, entourage: {title: "new_title"}, token: user.token }
         it { expect(JSON.parse(response.body)).to eq({"entourage"=>{"status"=>"open", "title"=>"new_title", "entourage_type"=>"ask_for_help", "number_of_people"=>1, "author"=>{"id"=>user.id, "name"=>"John"}, "location"=>{"latitude"=>2.345, "longitude"=>2.345}}}) }
       end
 
       context "entourage does not belong to user" do
-        before { put :update, id: entourage.to_param, entourage: {title: "new_title"}, token: user.token }
+        before { patch :update, id: entourage.to_param, entourage: {title: "new_title"}, token: user.token }
         it { expect(response.status).to eq(401) }
       end
 
       context "entourage doesn't exists" do
         it "return not found" do
           expect {
-            put :update, id: 0, entourage: {title: "new_title"}, token: user.token
+            patch :update, id: 0, entourage: {title: "new_title"}, token: user.token
           }.to raise_error(ActiveRecord::RecordNotFound)
         end
       end
 
       context "invalid params" do
-        before { put :update, id: user_entourage.to_param, entourage: {status: "not exist"}, token: user.token }
+        before { patch :update, id: user_entourage.to_param, entourage: {status: "not exist"}, token: user.token }
         it { expect(JSON.parse(response.body)).to eq({"message"=>"Could not update entourage", "reasons"=>["Status n'est pas inclus(e) dans la liste"]}) }
         it { expect(response.status).to eq(400) }
       end

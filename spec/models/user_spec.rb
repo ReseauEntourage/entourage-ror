@@ -77,4 +77,11 @@ describe User, :type => :model do
       it { user.update(phone: "nil"); expect(user.reload.phone).to eq('+33612345678') }
     end
   end
+
+  it "has many entourage_participations" do
+    user = FactoryGirl.create(:user)
+    entourage = FactoryGirl.create(:entourage)
+    EntouragesUser.create(user: user, entourage: entourage)
+    expect(user.entourage_participations).to eq([entourage])
+  end
 end
