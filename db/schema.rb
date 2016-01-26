@@ -59,7 +59,7 @@ ActiveRecord::Schema.define(version: 20160126132023) do
   create_table "entourages", force: :cascade do |t|
     t.string   "status",           default: "open", null: false
     t.string   "title",                             null: false
-    t.string   "type",                              null: false
+    t.string   "entourage_type",                    null: false
     t.integer  "user_id",                           null: false
     t.float    "latitude",                          null: false
     t.float    "longitude",                         null: false

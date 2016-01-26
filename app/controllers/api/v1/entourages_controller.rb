@@ -10,11 +10,23 @@ module Api
       end
 
       def create
-        render file: 'mocks/entourage.json'
+        entourage = Entourage.new(entourage_params)
+        entourage.user = current_user
+        if entourage.save
+          render json: entourage, status: 201, serializer: ::V1::EntourageSerializer
+        else
+          render json: {message: 'Could not create entourage', reasons: entourage.errors.full_messages}, status: 400
+        end
       end
 
       def update
         render file: 'mocks/entourage.json'
+      end
+
+      private
+
+      def entourage_params
+        params.require(:entourage).permit(:longitude, :latitude, :title, :entourage_type)
       end
     end
   end
