@@ -48,4 +48,30 @@ describe Api::V1::EntouragesController do
       end
     end
   end
+
+  describe 'GET show' do
+    let!(:entourage) { FactoryGirl.create(:entourage) }
+
+    context "not signed in" do
+      before { get :show, id: entourage.to_param }
+      it { expect(response.status).to eq(401) }
+    end
+
+    context "signed in" do
+      let!(:user) { FactoryGirl.create(:user) }
+
+      context "entourage exists" do
+        before { get :show, id: entourage.to_param, token: user.token }
+        it { expect(JSON.parse(response.body)).to eq({"entourage"=>{"status"=>"open", "title"=>"foobar", "entourage_type"=>"hand", "number_of_people"=>1, "author"=>{"id"=>entourage.user.id, "name"=>"John"}, "location"=>{"latitude"=>2.345, "longitude"=>2.345}}}) }
+      end
+
+      context "entourage doesn't exists" do
+        it "return not found" do
+          expect {
+              get :show, id: 0, token: user.token
+            }.to raise_error(ActiveRecord::RecordNotFound)
+        end
+      end
+    end
+  end
 end
