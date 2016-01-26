@@ -795,7 +795,7 @@ Entourages related resources of the **Entourage API**
 
 + Response 200 (application/json; charset=utf-8)
 
-        {
+        { "entourage": {
             "id": 567,
             "updated_at": "2015-07-07T10:31:43.000+02:00",
             "created_at": "2015-07-07T10:31:43.000+02:00",
@@ -812,7 +812,7 @@ Entourages related resources of the **Entourage API**
                 "latitude": 37.4224764,
                 "longitude": -122.0842499
             }
-        }
+        } }
 
 + Response 404 (application/json; charset=utf-8)
 
@@ -925,7 +925,7 @@ Resources related to users of an entourage
 
 + Response 201 (application/json; charset=utf-8)
 
-        { "id": 2, "email": "dredd2@test.com", "first_name": "Judge2", "last_name": "Dredd2", "status": "accepted" }
+        { "user": { "id": 2, "email": "dredd2@test.com", "first_name": "Judge2", "last_name": "Dredd2", "status": "accepted" } }
 
 + Response 401 (application/json; charset=utf-8)
 
