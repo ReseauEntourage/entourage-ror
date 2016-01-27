@@ -50,10 +50,9 @@ function displayDashboardMapData() {
         });
         heatmap.setMap(null);
         if(tour_display_type=="points") {
-          map.data.loadGeoJson(url);
 
           $(".spinner").removeClass("hidden");
-          google.maps.event.addListener(map.data, 'addfeature', function (e) {
+          map.data.loadGeoJson(url, null, function (features) {
             $(".spinner").addClass("hidden");
           });
 
