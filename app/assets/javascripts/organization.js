@@ -52,6 +52,7 @@ function displayDashboardMapData() {
         if(tour_display_type=="points") {
 
           $(".spinner").removeClass("hidden");
+          //see : https://developers.google.com/maps/documentation/javascript/3.exp/reference
           map.data.loadGeoJson(url, null, function (features) {
             $(".spinner").addClass("hidden");
           });
