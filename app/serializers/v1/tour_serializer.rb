@@ -9,8 +9,10 @@ module V1
                :organization_description,
                :start_time,
                :end_time,
-               :user_id
+               :number_of_people
+
     has_many :tour_points
+    has_one :author
 
     def distance
       object.length
@@ -26,6 +28,16 @@ module V1
 
     def organization_name
       object.organization_name
+    end
+
+    def author
+      tour_user = object.user
+      {
+          id: tour_user.id,
+          display_name: tour_user.first_name,
+          avatar_url: nil
+      }
+
     end
 
     def organization_description

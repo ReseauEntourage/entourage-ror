@@ -29,7 +29,8 @@ RSpec.describe Api::V1::Users::ToursController, :type => :controller do
              "end_time"=>nil,
              "organization_name"=>tour1.user.organization.name,
              "organization_description"=>"Association description",
-             "user_id"=>tour1.user_id,
+             "author"=>{"id"=>tour1.user.id, "display_name"=>"John", "avatar_url"=>nil},
+             "number_of_people"=> 1,
              "tour_points"=>[]},
             {"id"=>tour2.id,
              "tour_type"=>"medical",
@@ -40,7 +41,8 @@ RSpec.describe Api::V1::Users::ToursController, :type => :controller do
              "end_time"=>nil,
              "organization_name"=>tour2.user.organization.name,
              "organization_description"=>"Association description",
-             "user_id"=>tour2.user_id,
+             "author"=>{"id"=>tour2.user.id, "display_name"=>"John", "avatar_url"=>nil},
+             "number_of_people"=> 1,
              "tour_points"=>[]}]})
       end
     end

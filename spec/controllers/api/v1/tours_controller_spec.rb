@@ -19,7 +19,7 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
       it "responds with tour" do
         res = JSON.parse(response.body)
         last_tour = Tour.last
-        expect(res).to eq({"tour"=>{"id"=>last_tour.id, "tour_type"=>"medical", "status"=>"ongoing", "vehicle_type"=>"feet", "distance"=>123, "organization_name"=>last_tour.user.organization.name, "organization_description"=>"Association description", "start_time"=>nil, "end_time"=>nil, "user_id"=>user.id, "tour_points"=>[]}})
+        expect(res).to eq({"tour"=>{"id"=>last_tour.id, "tour_type"=>"medical", "status"=>"ongoing", "vehicle_type"=>"feet", "distance"=>123, "organization_name"=>last_tour.user.organization.name, "organization_description"=>"Association description", "start_time"=>nil, "end_time"=>nil, "author"=>{"id"=>user.id, "display_name"=>"John", "avatar_url"=>nil}, "number_of_people"=> 1, "tour_points"=>[]}})
       end
     end
 
@@ -59,7 +59,8 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
                                     "organization_description"=>"Association description",
                                     "start_time"=>start_time,
                                     "end_time"=>end_time,
-                                    "user_id"=>last_tour.user_id,
+                                    "author"=>{"id"=>last_tour.user.id, "display_name"=>"John", "avatar_url"=>nil},
+                                    "number_of_people"=> 1,
                                     "tour_points"=>[{"latitude"=>48.83, "longitude"=>2.29}, {"latitude"=>48.83, "longitude"=>2.29}]}})
       end
     end
@@ -102,7 +103,8 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
                                     "organization_description"=>"Association description",
                                     "start_time"=>start_time,
                                     "end_time"=>end_time,
-                                    "user_id"=>tour.user_id,
+                                    "author"=>{"id"=>tour.user.id, "display_name"=>"John", "avatar_url"=>nil},
+                                    "number_of_people"=> 1,
                                     "tour_points"=>[{"latitude"=>48.83, "longitude"=>2.29}, {"latitude"=>48.83, "longitude"=>2.29}]}})
       end
     end
@@ -179,7 +181,8 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
            "end_time"=>nil,
            "organization_name"=>tours.first.user.organization.name,
            "organization_description"=>"Association description",
-           "user_id"=>tours.first.user_id,
+           "author"=>{"id"=>tours.first.user.id, "display_name"=>"John", "avatar_url"=>nil},
+           "number_of_people"=> 1,
            "tour_points"=>[]},
           {"id"=>tours.last.id,
            "tour_type"=>"medical",
@@ -190,7 +193,8 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
            "end_time"=>nil,
            "organization_name"=>tours.last.user.organization.name,
            "organization_description"=>"Association description",
-           "user_id"=>tours.last.user_id,
+           "author"=>{"id"=>tours.last.user.id, "display_name"=>"John", "avatar_url"=>nil},
+           "number_of_people"=> 1,
            "tour_points"=>[]}]})
     end
      
