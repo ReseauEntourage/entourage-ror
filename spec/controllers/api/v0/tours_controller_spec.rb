@@ -15,6 +15,7 @@ RSpec.describe Api::V0::ToursController, :type => :controller do
       it { expect(Tour.last.status).to eq(tour.status) }
       it { expect(Tour.last.vehicle_type).to eq(tour.vehicle_type) }
       it { expect(Tour.last.user).to eq(user) }
+      it { expect(Tour.last.members).to eq([user]) }
 
       it "responds with tour" do
         res = JSON.parse(response.body)
@@ -32,7 +33,6 @@ RSpec.describe Api::V0::ToursController, :type => :controller do
       before { post 'create', token: user.token , tour: {tour_type: 'invalid', status:tour.status, vehicle_type:tour.vehicle_type, distance: 123.456}, :format => :json }
       it { expect(response.status).to eq(400) }
     end
-
   end
 
   describe "GET show" do

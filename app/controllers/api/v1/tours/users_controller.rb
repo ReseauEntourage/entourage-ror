@@ -10,11 +10,13 @@ module Api
           render json: @tour.tours_users, root: "users", each_serializer: ::V1::ToursUserSerializer
         end
 
-        def destroy
-          if @tour_user.reject!
-            head :no_content
+        def create
+          tour_user = ToursUser.new(tour: @tour, user: current_user)
+
+          if tour_user.save
+            render json: tour_user, root: "user", status: 201, serializer: ::V1::ToursUserSerializer
           else
-            render json: {message: 'Could not update tour participation request status', reasons: @tour_user.errors.full_messages}, status: :bad_request
+            render json: {message: 'Could not create tour participation request', reasons: tour_user.errors.full_messages}, status: :bad_request
           end
         end
 
@@ -29,13 +31,11 @@ module Api
           end
         end
 
-        def create
-          tour_user = ToursUser.new(tour: @tour, user: current_user)
-
-          if tour_user.save
-            render json: tour_user, root: "user", status: 201, serializer: ::V1::ToursUserSerializer
+        def destroy
+          if @tour_user.reject!
+            head :no_content
           else
-            render json: {message: 'Could not create tour participation request', reasons: tour_user.errors.full_messages}, status: :bad_request
+            render json: {message: 'Could not update tour participation request status', reasons: @tour_user.errors.full_messages}, status: :bad_request
           end
         end
 

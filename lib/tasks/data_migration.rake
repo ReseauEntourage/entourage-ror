@@ -27,10 +27,19 @@ namespace :data_migration do
   end
 
   desc "set mandatory infos for all users"
-  task :set_mandatory_info do
+  task set_mandatory_info: :environment do
     User.where("last_name IS NULL OR last_name = ''").update_all(last_name: "_")
     User.where("phone IS NULL").each do |user|
       user.update(phone: "+336#{99999999-user.id}")
+    end
+  end
+
+  desc "set initial members for tours"
+  task set_tour_members: :environment do
+    ToursUser.destroy_all
+    Tour.update_all(number_of_people: 0)
+    Tour.find_each do |tour|
+      ToursUser.create!(tour: tour, user: tour.user)
     end
   end
 end

@@ -11,18 +11,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160129091333) do
+ActiveRecord::Schema.define(version: 20160129160109) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "active_admin_comments", force: :cascade do |t|
-    t.string   "namespace"
+    t.string   "namespace",     limit: 255
     t.text     "body"
-    t.string   "resource_id",   null: false
-    t.string   "resource_type", null: false
+    t.string   "resource_id",   limit: 255, null: false
+    t.string   "resource_type", limit: 255, null: false
     t.integer  "author_id"
-    t.string   "author_type"
+    t.string   "author_type",   limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -34,7 +34,7 @@ ActiveRecord::Schema.define(version: 20160129091333) do
   create_table "categories", force: :cascade do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "name"
+    t.string   "name",       limit: 255
   end
 
   create_table "coordination", id: false, force: :cascade do |t|
@@ -47,10 +47,10 @@ ActiveRecord::Schema.define(version: 20160129091333) do
     t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "street_person_name"
+    t.string   "street_person_name", limit: 255
     t.float    "latitude"
     t.float    "longitude"
-    t.string   "voice_message_url"
+    t.string   "voice_message_url",  limit: 255
     t.integer  "tour_id"
     t.string   "encrypted_message"
     t.string   "address"
@@ -63,7 +63,7 @@ ActiveRecord::Schema.define(version: 20160129091333) do
     t.integer  "user_id",                           null: false
     t.float    "latitude",                          null: false
     t.float    "longitude",                         null: false
-    t.integer  "number_of_people", default: 1,      null: false
+    t.integer  "number_of_people", default: 0,      null: false
     t.datetime "created_at",                        null: false
     t.datetime "updated_at",                        null: false
   end
@@ -98,7 +98,7 @@ ActiveRecord::Schema.define(version: 20160129091333) do
   end
 
   create_table "newsletter_subscriptions", force: :cascade do |t|
-    t.string   "email"
+    t.string   "email",      limit: 255
     t.boolean  "active"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -120,19 +120,19 @@ ActiveRecord::Schema.define(version: 20160129091333) do
   add_index "organizations", ["name"], name: "index_organizations_on_name", unique: true, using: :btree
 
   create_table "pois", force: :cascade do |t|
-    t.string   "name"
+    t.string   "name",        limit: 255
     t.text     "description"
     t.float    "latitude"
     t.float    "longitude"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "adress"
-    t.string   "phone"
-    t.string   "website"
-    t.string   "email"
-    t.string   "audience"
+    t.string   "adress",      limit: 255
+    t.string   "phone",       limit: 255
+    t.string   "website",     limit: 255
+    t.string   "email",       limit: 255
+    t.string   "audience",    limit: 255
     t.integer  "category_id"
-    t.boolean  "validated",   default: false, null: false
+    t.boolean  "validated",               default: false, null: false
   end
 
   add_index "pois", ["latitude", "longitude"], name: "index_pois_on_latitude_and_longitude", using: :btree
@@ -240,7 +240,7 @@ ActiveRecord::Schema.define(version: 20160129091333) do
     t.datetime "closed_at"
     t.integer  "length",           default: 0
     t.integer  "encounters_count", default: 0, null: false
-    t.integer  "number_of_people", default: 1, null: false
+    t.integer  "number_of_people", default: 0, null: false
   end
 
   add_index "tours", ["user_id", "updated_at", "tour_type"], name: "index_tours_on_user_id_and_updated_at_and_tour_type", using: :btree
@@ -258,19 +258,19 @@ ActiveRecord::Schema.define(version: 20160129091333) do
   create_table "users", force: :cascade do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "email"
-    t.string   "first_name"
-    t.string   "last_name"
-    t.string   "phone",                             null: false
-    t.string   "token"
+    t.string   "email",             limit: 255
+    t.string   "first_name",        limit: 255
+    t.string   "last_name",         limit: 255
+    t.string   "phone",                                         null: false
+    t.string   "token",             limit: 255
     t.string   "device_id"
     t.integer  "device_type"
     t.string   "sms_code"
-    t.integer  "organization_id",                   null: false
-    t.boolean  "manager",           default: false, null: false
+    t.integer  "organization_id",                               null: false
+    t.boolean  "manager",                       default: false, null: false
     t.float    "default_latitude"
     t.float    "default_longitude"
-    t.boolean  "admin",             default: false, null: false
+    t.boolean  "admin",                         default: false, null: false
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree

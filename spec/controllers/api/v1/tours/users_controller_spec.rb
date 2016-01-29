@@ -15,6 +15,7 @@ describe Api::V1::Tours::UsersController do
         before { post :create, tour_id: tour.to_param, token: user.token }
         it { expect(tour.members).to eq([user]) }
         it { expect(JSON.parse(response.body)).to eq("user"=>{"id"=>user.id, "email"=>user.email, "first_name"=>"John", "last_name"=>"Doe", "status" => "pending"}) }
+        it { expect(tour.reload.number_of_people).to eq(2) }
       end
 
       context "duplicate request to join tour" do
