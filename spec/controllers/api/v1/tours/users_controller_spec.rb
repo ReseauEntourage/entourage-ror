@@ -15,7 +15,7 @@ describe Api::V1::Tours::UsersController do
         before { post :create, tour_id: tour.to_param, token: user.token }
         it { expect(tour.members).to eq([user]) }
         it { expect(JSON.parse(response.body)).to eq("user"=>{"id"=>user.id, "email"=>user.email, "first_name"=>"John", "last_name"=>"Doe", "status" => "pending"}) }
-        it { expect(tour.reload.number_of_people).to eq(2) }
+        it { expect(tour.reload.number_of_people).to eq(1) }
       end
 
       context "duplicate request to join tour" do
@@ -111,6 +111,13 @@ describe Api::V1::Tours::UsersController do
       before { delete :destroy, tour_id: tour.to_param, id: requester.id, token: user.token }
       it { expect(response.status).to eq(204) }
       it { expect(tour_requested.reload.status).to eq("rejected") }
+      it { expect(tour.reload.number_of_people).to eq(1) }
+
+      context "delete the same user twice" do
+        before { delete :destroy, tour_id: tour.to_param, id: requester.id, token: user.token }
+        it { expect(response.status).to eq(204) }
+        it { expect(tour.reload.number_of_people).to eq(1) }
+      end
     end
 
     context "not member of the tour" do

@@ -5,6 +5,7 @@ FactoryGirl.define do
     tour_type "medical"
     vehicle_type "feet"
     status "ongoing"
+    number_of_people 1
     user
     
     trait :filled do

@@ -24,7 +24,10 @@ module Api
           status = params[:user].try(:[], :status)
           return render json: {message: 'Missing status'}, status: :bad_request unless status
 
-          if @tour_user.update(status: status)
+          return render json: {message: "Invalid status : #{status}"}, status: :bad_request unless status == "accepted"
+
+          user_status = TourServices::ToursUserStatus.new(tours_user: @tour_user)
+          if user_status.accept!
             head :no_content
           else
             render json: {message: 'Could not update tour participation request status', reasons: @tour_user.errors.full_messages}, status: :bad_request
@@ -32,7 +35,8 @@ module Api
         end
 
         def destroy
-          if @tour_user.reject!
+          user_status = TourServices::ToursUserStatus.new(tours_user: @tour_user)
+          if user_status.reject!
             head :no_content
           else
             render json: {message: 'Could not update tour participation request status', reasons: @tour_user.errors.full_messages}, status: :bad_request
@@ -43,7 +47,8 @@ module Api
 
         def check_current_user_member_of_tour
           current_tour_user = ToursUser.where(tour: @tour, user: current_user).first
-          unless current_tour_user && current_tour_user.accepted?
+
+          unless current_tour_user && TourServices::ToursUserStatus.new(tours_user: current_tour_user).accepted?
             return render json: {message: "You are not accepted in this tour, you don't have rights to manage users of this tour"}, status: :unauthorized
           end
         end

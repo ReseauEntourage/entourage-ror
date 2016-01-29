@@ -16,11 +16,23 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
       it { expect(Tour.last.vehicle_type).to eq(tour.vehicle_type) }
       it { expect(Tour.last.user).to eq(user) }
       it { expect(Tour.last.members).to eq([user]) }
+      it { expect(ToursUser.last.status).to eq("accepted") }
 
       it "responds with tour" do
         res = JSON.parse(response.body)
         last_tour = Tour.last
-        expect(res).to eq({"tour"=>{"id"=>last_tour.id, "tour_type"=>"medical", "status"=>"ongoing", "vehicle_type"=>"feet", "distance"=>123, "organization_name"=>last_tour.user.organization.name, "organization_description"=>"Association description", "start_time"=>nil, "end_time"=>nil, "author"=>{"id"=>user.id, "display_name"=>"John", "avatar_url"=>nil}, "number_of_people"=> 1, "tour_points"=>[]}})
+        expect(res).to eq({"tour"=>{"id"=>last_tour.id,
+                                    "tour_type"=>"medical",
+                                    "status"=>"ongoing",
+                                    "vehicle_type"=>"feet",
+                                    "distance"=>123,
+                                    "organization_name"=>last_tour.user.organization.name,
+                                    "organization_description"=>"Association description",
+                                    "start_time"=>nil,
+                                    "end_time"=>nil,
+                                    "author"=>{"id"=>user.id, "display_name"=>"John", "avatar_url"=>nil},
+                                    "number_of_people"=> 1,
+                                    "tour_points"=>[]}})
       end
     end
 
@@ -46,7 +58,6 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
       it { expect(response.status).to eq(200) }
 
       it "responds with tour" do
-
         res = JSON.parse(response.body)
         start_time = tour.tour_points.first.passing_time.iso8601(3)
         end_time = tour.tour_points.last.passing_time.iso8601(3)

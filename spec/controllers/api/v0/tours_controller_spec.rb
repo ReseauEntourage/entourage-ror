@@ -16,6 +16,7 @@ RSpec.describe Api::V0::ToursController, :type => :controller do
       it { expect(Tour.last.vehicle_type).to eq(tour.vehicle_type) }
       it { expect(Tour.last.user).to eq(user) }
       it { expect(Tour.last.members).to eq([user]) }
+      it { expect(ToursUser.last.status).to eq("accepted") }
 
       it "responds with tour" do
         res = JSON.parse(response.body)
