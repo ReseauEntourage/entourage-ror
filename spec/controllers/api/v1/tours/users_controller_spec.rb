@@ -120,6 +120,21 @@ describe Api::V1::Tours::UsersController do
       end
     end
 
+    context "delete yourself" do
+      let!(:tour_member) { ToursUser.create(user: user, tour: tour, status: "accepted") }
+      before { delete :destroy, tour_id: tour.to_param, id: user.id, token: user.token }
+      it { expect(response.status).to eq(400) }
+      it { expect(tour.reload.number_of_people).to eq(1) }
+    end
+
+    context "delete the author of the tour" do
+      let!(:tour_author) { ToursUser.create(user: tour.user, tour: tour, status: "accepted") }
+      let!(:tour_member) { ToursUser.create(user: user, tour: tour, status: "accepted") }
+      before { delete :destroy, tour_id: tour.to_param, id: tour.user.id, token: user.token }
+      it { expect(response.status).to eq(400) }
+      it { expect(tour.reload.number_of_people).to eq(1) }
+    end
+
     context "not member of the tour" do
       let(:requester) { FactoryGirl.create(:user) }
       let!(:other_tour_member) { ToursUser.create(user: user, tour: FactoryGirl.create(:tour), status: "accepted") }
