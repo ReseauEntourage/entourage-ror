@@ -525,6 +525,138 @@ vehicle_type is either "feet" or "car"
         {"error":{"status":401,"message":"Please sign-in"}}
 
 
+# Group Tour Users
+Resources related to users of a tour
+## Tours [/tours/{tour_id}/users{?token}]
+
++ Parameters
+    + token (required, string, `FAKETOKEN`) ... Token identifying the current user
+
+### Get all users from a tour [GET /tours/{tour_id}/users{?token}{&page}{&per}]
+
++ Parameters
+    + token (required, string, `FAKETOKEN`) ... Token identifying the current user
+    + page (optional, number) ... pagination : page number
+    + per (optional, number) ... pagination : number of elements per page
+
++ Request
+
+    + Headers
+
+            Accept: application/json
+
++ Response 200 (application/json; charset=utf-8)
+
+    + Body
+
+            {
+            "users": [
+                {
+                    "id": 1,
+                    "email": "dredd@test.com",
+                    "first_name": "Judge",
+                    "last_name": "Dredd",
+                    "status": "pending"
+                },
+                {
+                    "id": 2,
+                    "email": "dredd2@test.com",
+                    "first_name": "Judge2",
+                    "last_name": "Dredd2",
+                    "status": "accepted"
+                },
+                {
+                    "id": 3,
+                    "email": "dredd3@test.com",
+                    "first_name": "Judge3",
+                    "last_name": "Dredd3",
+                    "status": "rejected"
+                }]
+            }
+
++ Response 401 (application/json; charset=utf-8)
+
+        {"error":{"status":401,"message":"Please sign-in"}}
+        
+        
+### Request to be added to a tour [POST /tours/{tour_id}/users{?token}]
+
++ Parameters
+
+    + token (required, string, `FAKETOKEN`) ... Token identifying the current user
+
++ Request (application/json; charset=utf-8)
+
+    + Body
+
+            Empty body
+
+    + Headers
+
+            Accept: application/json
+
++ Response 201 (application/json; charset=utf-8)
+
+        { "user": { "id": 2, "email": "dredd2@test.com", "first_name": "Judge2", "last_name": "Dredd2", "status": "accepted" } }
+
++ Response 401 (application/json; charset=utf-8)
+
+        {"error":{"status":401,"message":"Please sign-in"}}
+        
+        
+## Tour user [/tours/{tour_id}/users/{user_id}{?token}]
+
++ Parameters
+    + tour_id (required, integer, `1`) ... Identifier of the tour to be retrieved
+    + user_id (required, integer, `1`) ... Identifier of the user
+    + token (required, string, `FAKETOKEN`) ... Token identifying the current user
+
+
+### Remove a user from a tour [DELETE]
+
++ Parameters
+    + token (required, string, `FAKETOKEN`) ... Token identifying the current user
+
++ Request
+
+    + Headers
+
+            Accept: application/json
+
++ Response 204 (application/json; charset=utf-8)
+
++ Response 401 (application/json; charset=utf-8)
+
+        {"error":{"status":401,"message":"Please sign-in"}}
+
+
+### Update a tour user status : accept or reject a user request to join a tour [PUT]
+
++ Request (application/json)
+
+    + Header
+
+            Accept: application/json
+
+    + Body
+
+            {
+            "user": {"status": "accepted"}
+            }
+
++ Response 204 (application/json; charset=utf-8)
+
+
++ Response 400 (application/json; charset=utf-8)
+
+        {"error":{"status":400,"message":"Could not update user status","reasons":["Could not find user request"]}}
+
++ Response 401 (application/json; charset=utf-8)
+
+        {"error":{"status":401,"message":"Please sign-in"}}
+
+
+
 # Group Tour Points
 Tour points describe the tour itinerary
 ## Tour Points collection [/tours/{tour_id}/tour_points{?token}]
@@ -1063,7 +1195,7 @@ Resources related to users of an entourage
 
 + Response 401 (application/json; charset=utf-8)
 
-        {"error":{"status":401,"message":"Please sign-in"}}failing endpoint
+        {"error":{"status":401,"message":"Please sign-in"}}
 
 
 ### Update an entourage user status : accept or reject a user request to join an entourage [PUT]
