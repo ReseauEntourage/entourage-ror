@@ -46,18 +46,40 @@ describe Api::V1::Tours::UsersController do
       it { expect(response.status).to eq(401) }
     end
 
-    context "signed in" do
-      let!(:tour_user) { ToursUser.create(user: user, tour: tour) }
-      before { patch :update, tour_id: tour.to_param, id: user.id, user: {status: "accepted"}, token: user.token }
-      it { expect(response.status).to eq(204) }
-      it { expect(tour_user.reload.status).to eq("accepted") }
+    context "signed in as accepted member of the tour" do
+      let(:requester) { FactoryGirl.create(:user) }
+      let!(:tour_member) { ToursUser.create(user: user, tour: tour, status: "accepted") }
+      let!(:tour_requested) { ToursUser.create(user: requester, tour: tour, status: "pending") }
+
+      context "valid params" do
+        before { patch :update, tour_id: tour.to_param, id: requester.id, user: {status: "accepted"}, token: user.token }
+        it { expect(response.status).to eq(204) }
+        it { expect(tour_requested.reload.status).to eq("accepted") }
+      end
+
+      context "valid params" do
+        before { patch :update, tour_id: tour.to_param, id: requester.id, user: {status: "foobar"}, token: user.token }
+        it { expect(response.status).to eq(400) }
+        it { expect(tour_requested.reload.status).to eq("pending") }
+      end
     end
 
-    context "invalid status" do
-      let!(:tour_user) { ToursUser.create(user: user, tour: tour) }
-      before { patch :update, tour_id: tour.to_param, id: user.id, user: {status: "foo"}, token: user.token }
-      it { expect(response.status).to eq(400) }
-      it { expect(JSON.parse(response.body)).to eq({"message"=>"Could not update tour participation request status", "reasons"=>["Status n'est pas inclus(e) dans la liste"]}) }
+    context "not member of the tour" do
+      let(:requester) { FactoryGirl.create(:user) }
+      let!(:other_tour_member) { ToursUser.create(user: user, tour: FactoryGirl.create(:tour), status: "accepted") }
+      let!(:tour_requested) { ToursUser.create(user: requester, tour: tour, status: "pending") }
+      before { patch :update, tour_id: tour.to_param, id: requester.id, user: {status: "accepted"}, token: user.token }
+      it { expect(response.status).to eq(401) }
+      it { expect(tour_requested.reload.status).to eq("pending") }
+    end
+
+    context "member of the tour but not accepted" do
+      let(:requester) { FactoryGirl.create(:user) }
+      let!(:tour_member) { ToursUser.create(user: user, tour: tour, status: "pending") }
+      let!(:tour_requested) { ToursUser.create(user: requester, tour: tour, status: "pending") }
+      before { patch :update, tour_id: tour.to_param, id: requester.id, user: {status: "accepted"}, token: user.token }
+      it { expect(response.status).to eq(401) }
+      it { expect(tour_requested.reload.status).to eq("pending") }
     end
 
     context "user didn't request to join tour" do
@@ -75,11 +97,31 @@ describe Api::V1::Tours::UsersController do
       it { expect(response.status).to eq(401) }
     end
 
-    context "signed in" do
-      let!(:tour_user) { ToursUser.create(user: user, tour: tour) }
-      before { delete :destroy, tour_id: tour.to_param, id: user.id, token: user.token }
+    context "signed in as accepted member of the tour" do
+      let(:requester) { FactoryGirl.create(:user) }
+      let!(:tour_member) { ToursUser.create(user: user, tour: tour, status: "accepted") }
+      let!(:tour_requested) { ToursUser.create(user: requester, tour: tour, status: "pending") }
+      before { delete :destroy, tour_id: tour.to_param, id: requester.id, token: user.token }
       it { expect(response.status).to eq(204) }
-      it { expect(tour_user.reload.status).to eq("rejected") }
+      it { expect(tour_requested.reload.status).to eq("rejected") }
+    end
+
+    context "not member of the tour" do
+      let(:requester) { FactoryGirl.create(:user) }
+      let!(:other_tour_member) { ToursUser.create(user: user, tour: FactoryGirl.create(:tour), status: "accepted") }
+      let!(:tour_requested) { ToursUser.create(user: requester, tour: tour, status: "pending") }
+      before { delete :destroy, tour_id: tour.to_param, id: requester.id, token: user.token }
+      it { expect(response.status).to eq(401) }
+      it { expect(tour_requested.reload.status).to eq("pending") }
+    end
+
+    context "member of the tour but not accepted" do
+      let(:requester) { FactoryGirl.create(:user) }
+      let!(:tour_member) { ToursUser.create(user: user, tour: tour, status: "pending") }
+      let!(:tour_requested) { ToursUser.create(user: requester, tour: tour, status: "pending") }
+      before { delete :destroy, tour_id: tour.to_param, id: requester.id, token: user.token }
+      it { expect(response.status).to eq(401) }
+      it { expect(tour_requested.reload.status).to eq("pending") }
     end
 
     context "user didn't request to join tour" do

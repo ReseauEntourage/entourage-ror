@@ -4,13 +4,14 @@ module Api
       class UsersController < Api::V1::BaseController
         before_action :set_tour
         before_action :set_tour_user, only: [:update, :destroy]
+        before_action :check_current_user_member_of_tour, only: [:update, :destroy]
 
         def index
           render json: @tour.tours_users, root: "users", each_serializer: ::V1::ToursUserSerializer
         end
 
         def destroy
-          if @tour_user.update(status: "rejected")
+          if @tour_user.reject!
             head :no_content
           else
             render json: {message: 'Could not update tour participation request status', reasons: @tour_user.errors.full_messages}, status: :bad_request
@@ -37,12 +38,19 @@ module Api
 
         private
 
+        def check_current_user_member_of_tour
+          current_tour_user = ToursUser.where(tour: @tour, user: current_user).first
+          unless current_tour_user && current_tour_user.accepted?
+            return render json: {message: 'unauthorized'}, status: :unauthorized
+          end
+        end
+
         def set_tour
           @tour = Tour.find(params[:tour_id])
         end
 
         def set_tour_user
-          @tour_user = ToursUser.where(tour: @tour, user: current_user).first!
+          @tour_user = ToursUser.where(tour: @tour, user: User.find(params[:id])).first!
         end
       end
     end
