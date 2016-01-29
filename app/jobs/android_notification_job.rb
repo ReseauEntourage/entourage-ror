@@ -5,7 +5,7 @@ class AndroidNotificationJob < ActiveJob::Base
     entourage = Rpush::Gcm::App.where(name: 'entourage').first
 
     if entourage.nil?
-      Rails.logger.warn 'No android notification has been sent. Please save a Rpush::Gcm::App in database'
+      raise 'No android notification has been sent. Please save a Rpush::Gcm::App in database'
     else
       notification = Rpush::Gcm::Notification.new
       notification.app = entourage
@@ -13,7 +13,7 @@ class AndroidNotificationJob < ActiveJob::Base
       notification.data = { sender: sender, object: object, content: content }
       notification.save!
 
-      Rpush.push
+      Rpush.push unless Rails.env.test?
     end
   end
 end

@@ -2,23 +2,24 @@ require 'rails_helper'
 
 describe AndroidNotificationService do
   describe '#send_notification' do
-    let!(:sender) { 'sender' }
-    let!(:object) { 'object' }
-    let!(:content) { 'content' }
-    let!(:device_ids) { ['id1', 'id2', 'id3'] }
-    let!(:notification_pusher) { spy('notification_pusher') }
+    let(:service) { AndroidNotificationService.new }
+
     context 'android app is present' do
-      let!(:android_app) { FactoryGirl.create :android_app }
-      subject! { AndroidNotificationService.new(notification_pusher).send_notification(sender, object, content, device_ids) }
+      let!(:android_app) { FactoryGirl.create(:android_app, name: 'entourage') }
+      before { service.send_notification("sender", "object", "content", ["device_id_1", "device_id_2"]) }
+      it { expect(Rpush::Gcm::Notification.count).to eq(1) }
       it { expect(Rpush::Gcm::Notification.last.app).to eq(android_app) }
-      it { expect(Rpush::Gcm::Notification.last.registration_ids).to eq(device_ids) }
-      it { expect(Rpush::Gcm::Notification.last.data).to eq({ "sender" => sender, "object" => object, "content" => content }) }
-      it { expect(notification_pusher).to have_received(:push).with(no_args) }
+      it { expect(Rpush::Gcm::Notification.last.registration_ids).to eq(["device_id_1", "device_id_2"]) }
+      it { expect(Rpush::Gcm::Notification.last.data).to eq({ "sender" => "sender", "object" => "object", "content" => "content" }) }
     end
+
     context 'android app is absent' do
-      before { Rails.logger.stub(:warn) }
-      subject! { AndroidNotificationService.new(notification_pusher).send_notification(sender, object, content, device_ids) }
-      it { expect(Rails.logger).to have_received(:warn).with('No android notification has been sent. Please save a Rpush::Gcm::App in database') }
+      it "raises exception" do
+        expect {
+          service.send_notification("sender", "object", "content", ["device_id_1", "device_id_2"])
+        }.to raise_error
+        expect(Rpush::Gcm::Notification.count).to eq(0)
+      end
     end
   end
 end

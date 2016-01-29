@@ -1,26 +1,25 @@
 require 'rails_helper'
 
-describe IosNotificationService, type: :service do
+describe IosNotificationService do
   describe '#send_notification' do
-    let!(:sender) { 'sender' }
-    let!(:object) { 'object' }
-    let!(:content) { 'content' }
-    let!(:device_ids) { ['1ea4b458607094b493b8a4be2712ee6b0a1c3cc9af6d7db9caabec6a10994a20', '1ea4b458607094b493b8a4be2712ee6b0a1c3cc9af6d7db9caabec6a10994a20', '1ea4b458607094b493b8a4be2712ee6b0a1c3cc9af6d7db9caabec6a10994a20'] }
-    let!(:notification_pusher) { spy('notification_pusher') }
-    context 'ios app is present' do
-      let!(:ios_app) { FactoryGirl.create :ios_app }
-      subject! { IosNotificationService.new(notification_pusher).send_notification(sender, object, content, device_ids) }
-      it { expect(Rpush::Apns::Notification.count).to eq(3) }
+    let(:service) { IosNotificationService.new }
+
+    context 'android app is present' do
+      let!(:ios_app) { FactoryGirl.create(:ios_app, name: 'entourage') }
+      before { service.send_notification("sender", "object", "content", ['1ea4b458607094b493b8a4be2712ee6b0a1c3cc9af6d7db9caabec6a10994a20', '1ea4b458607094b493b8a4be2712ee6b0a1c3cc9af6d7db9caabec6a10994a20']) }
+      it { expect(Rpush::Apns::Notification.count).to eq(2) }
       it { expect(Rpush::Apns::Notification.last.app).to eq(ios_app) }
-      it { expect(Rpush::Apns::Notification.last.device_token).to eq(device_ids.last) }
-      it { expect(Rpush::Apns::Notification.last.data).to eq({ "sender" => sender, "object" => object, "content" => content }) }
-      it { expect(notification_pusher).to have_received(:push).with(no_args) }
+      it { expect(Rpush::Apns::Notification.first.device_token).to eq('1ea4b458607094b493b8a4be2712ee6b0a1c3cc9af6d7db9caabec6a10994a20') }
+      it { expect(Rpush::Apns::Notification.last.device_token).to eq('1ea4b458607094b493b8a4be2712ee6b0a1c3cc9af6d7db9caabec6a10994a20') }
+      it { expect(Rpush::Apns::Notification.last.data).to eq({ "sender" => "sender", "object" => "object", "content" => "content" }) }
     end
-    context 'ios app is absent' do
-      it "raise an error" do
+
+    context 'android app is absent' do
+      it "raises exception" do
         expect {
-          IosNotificationService.new(notification_pusher).send_notification(sender, object, content, device_ids)
+          service.send_notification("sender", "object", "content", ["device_id_1", "device_id_2"])
         }.to raise_error
+        expect(Rpush::Apns::Notification.count).to eq(0)
       end
     end
   end
