@@ -3,7 +3,8 @@ module V1
     attributes :id,
                :email,
                :first_name,
-               :last_name
+               :last_name,
+               :status
 
     def id
       object.user.id
