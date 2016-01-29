@@ -84,4 +84,11 @@ describe User, :type => :model do
     EntouragesUser.create(user: user, entourage: entourage)
     expect(user.entourage_participations).to eq([entourage])
   end
+
+  it "has many tour_participations" do
+    user = FactoryGirl.create(:user)
+    tour = FactoryGirl.create(:tour)
+    ToursUser.create(user: user, tour: tour)
+    expect(user.tour_participations).to eq([tour])
+  end
 end
