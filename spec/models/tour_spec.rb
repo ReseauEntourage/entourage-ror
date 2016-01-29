@@ -12,6 +12,13 @@ RSpec.describe Tour, :type => :model do
   it { should belong_to(:user) }
   it { should have_many(:tour_points).dependent(:delete_all) }
   it { should have_many(:snap_to_road_tour_points).dependent(:delete_all) }
+
+  it "has many members" do
+    user = FactoryGirl.create(:user)
+    tour = FactoryGirl.create(:tour)
+    ToursUser.create(user: user, tour: tour)
+    expect(tour.members).to eq([user])
+  end
   
   describe '#duration' do
     let!(:start) { Time.new 2015, 8, 25, 11, 5, 0 }
