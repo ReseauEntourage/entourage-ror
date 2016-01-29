@@ -57,8 +57,14 @@ describe Api::V1::Tours::UsersController do
         it { expect(tour_requested.reload.status).to eq("accepted") }
       end
 
-      context "valid params" do
+      context "invalid status" do
         before { patch :update, tour_id: tour.to_param, id: requester.id, user: {status: "foobar"}, token: user.token }
+        it { expect(response.status).to eq(400) }
+        it { expect(tour_requested.reload.status).to eq("pending") }
+      end
+
+      context "invalid params" do
+        before { patch :update, tour_id: tour.to_param, id: requester.id, status: "foobar", token: user.token }
         it { expect(response.status).to eq(400) }
         it { expect(tour_requested.reload.status).to eq("pending") }
       end
