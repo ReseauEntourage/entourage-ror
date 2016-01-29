@@ -42,6 +42,7 @@ Rails.application.routes.draw do
       resources :tours, only: [:index,:create,:show,:update] do
         resources :tour_points, only:[:create]
         resources :encounters, only: [:create]
+        resources :users, :controller => 'tours/users', only: [:index, :destroy, :update, :create]
       end
       resources :stats, only: [:index]
       resources :messages, only: [:create]
