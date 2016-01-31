@@ -283,6 +283,11 @@ RSpec.describe OrganizationsController, :type => :controller do
       it { expect { post_organization }.to change { User.count }.by(1) }
     end
 
+    context "creates user" do
+      before { post :create, { "organization" => {"name"=>"gvjbh", "description"=>"gvj", "phone"=>"gvj", "address"=>"gjv", "logo_url"=>"", "user"=>{"first_name"=>"jvgh", "last_name"=>"gjv", "phone"=>"0612345678", "email"=>"gvj@hgvj.com"}} } }
+      it { expect(User.last.manager).to be true }
+    end
+
     context "invalid user" do
       let(:post_organization) { post :create, { "organization" => {"name"=>"gvjbh", "description"=>"gvj", "phone"=>"gvj", "address"=>"gjv", "logo_url"=>"", "user"=>{"first_name"=>"jvgh", "last_name"=>"gjv", "phone"=>"cfghgvj", "email"=>"gvj@hgvj.com"}} } }
       it { expect { post_organization }.to change { Organization.count }.by(0) }
