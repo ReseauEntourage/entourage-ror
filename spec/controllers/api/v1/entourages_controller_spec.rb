@@ -1,7 +1,9 @@
 require 'rails_helper'
 
 describe Api::V1::EntouragesController do
-  
+
+  let(:user) { FactoryGirl.create(:public_user) }
+
   describe 'POST create' do
     context "not signed in" do
       before { post :create, entourage: { longitude: 1.123, latitude: 4.567, title: "foo", entourage_type: "ask_for_help" } }
@@ -9,8 +11,6 @@ describe Api::V1::EntouragesController do
     end
 
     context "signed in" do
-      let(:user) { FactoryGirl.create(:user) }
-
       it "creates an entourage" do
         expect {
           post :create, entourage: { longitude: 1.123, latitude: 4.567, title: "foo", entourage_type: "ask_for_help" }, token: user.token
@@ -39,7 +39,6 @@ describe Api::V1::EntouragesController do
     end
 
     context "signed in" do
-      let!(:user) { FactoryGirl.create(:user) }
       let!(:user_entourage) { FactoryGirl.create(:entourage, user: user) }
       let!(:entourage) { FactoryGirl.create(:entourage) }
       before { get :index, page: 1, per: 25, token: user.token }
@@ -59,8 +58,6 @@ describe Api::V1::EntouragesController do
     end
 
     context "signed in" do
-      let!(:user) { FactoryGirl.create(:user) }
-
       context "entourage exists" do
         before { get :show, id: entourage.to_param, token: user.token }
         it { expect(JSON.parse(response.body)).to eq({"entourage"=>{"status"=>"open", "title"=>"foobar", "entourage_type"=>"ask_for_help", "number_of_people"=>1, "author"=>{"id"=>entourage.user.id, "name"=>"John"}, "location"=>{"latitude"=>2.345, "longitude"=>2.345}}}) }
@@ -85,7 +82,6 @@ describe Api::V1::EntouragesController do
     end
 
     context "signed in" do
-      let!(:user) { FactoryGirl.create(:user) }
       let!(:user_entourage) { FactoryGirl.create(:entourage, user: user) }
 
       context "entourage exists" do

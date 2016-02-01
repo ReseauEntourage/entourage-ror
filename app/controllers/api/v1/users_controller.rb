@@ -1,7 +1,7 @@
 module Api
   module V1
     class UsersController < Api::V1::BaseController
-      skip_before_filter :authenticate_user!, only: [:login, :code]
+      skip_before_filter :authenticate_user!, only: [:login, :code, :create]
 
       def login
         user = UserServices::UserAuthenticator.authenticate_by_phone_and_sms(phone: user_params[:phone], sms_code: user_params[:sms_code])
@@ -15,6 +15,19 @@ module Api
           render json: @current_user, status: 200, serializer: ::V1::UserSerializer
         else
           head 400
+        end
+      end
+
+      def create
+        builder = UserServices::PublicUserBuilder.new(params: user_params)
+        builder.create(send_sms: true) do |on|
+          on.create_success do |user|
+            render json: user, status: 201, serializer: ::V1::UserSerializer
+          end
+
+          on.create_failure do |user|
+            render json: {message: 'Could not sign up user', reasons: user.errors.full_messages}, status: :bad_request
+          end
         end
       end
 

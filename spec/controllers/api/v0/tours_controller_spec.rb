@@ -3,8 +3,9 @@ require 'rails_helper'
 RSpec.describe Api::V0::ToursController, :type => :controller do
   render_views
 
+  let!(:user) { FactoryGirl.create :pro_user }
+
   describe "POST create" do
-    let!(:user) { FactoryGirl.create :user }
     let!(:tour) { FactoryGirl.build :tour }
     
     context "with correct type" do
@@ -38,7 +39,6 @@ RSpec.describe Api::V0::ToursController, :type => :controller do
 
   describe "GET show" do
     before { Timecop.freeze(Time.parse("10/10/2010").at_beginning_of_day) }
-    let(:user) { FactoryGirl.create :user }
 
     context "with correct id" do
       let!(:tour) { FactoryGirl.create :tour, :filled }
@@ -66,8 +66,6 @@ RSpec.describe Api::V0::ToursController, :type => :controller do
     end
 
     context "with unexisting id" do
-      let!(:user) { FactoryGirl.create :user }
-
       it "returns error 404" do
         expect {
           get 'show', id: 0, token: user.token , format: :json
@@ -78,8 +76,7 @@ RSpec.describe Api::V0::ToursController, :type => :controller do
 
   describe "PUT update" do
     before { Timecop.freeze(DateTime.parse("10/10/2010").at_beginning_of_day) }
-    let!(:user) { FactoryGirl.create :user }
-    let!(:other_user) { FactoryGirl.create :user }
+    let!(:other_user) { FactoryGirl.create :pro_user }
     let(:tour) { FactoryGirl.create(:tour, :filled, user: user) }
       
     context "with correct id" do
@@ -144,8 +141,6 @@ RSpec.describe Api::V0::ToursController, :type => :controller do
   end
   
   describe "GET index" do
-    
-    let!(:user) { FactoryGirl.create :user }
     let(:date) { Date.parse("10/10/2010") }
     before { Timecop.freeze(Time.parse("10/10/2010").at_beginning_of_day) }
 
@@ -255,8 +250,7 @@ RSpec.describe Api::V0::ToursController, :type => :controller do
        
     end
     
-    context "with location parameter" do 
-     
+    context "with location parameter" do
       let!(:tour1) { FactoryGirl.create :tour }
       let!(:tour_point1) { FactoryGirl.create :tour_point, tour: tour1, latitude: 10, longitude: 12 }
       let!(:tour2) { FactoryGirl.create :tour }
@@ -282,8 +276,6 @@ RSpec.describe Api::V0::ToursController, :type => :controller do
         get 'index', token: user.token, latitude: 10.0, longitude: 10.0, distance: 20.0, :format => :json
         expect(assigns(:tours)).to match_array([tour4, tour3, tour2])
       end
-       
     end
-    
   end
 end

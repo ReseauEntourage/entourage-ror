@@ -4,7 +4,7 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
   render_views
 
   describe "POST create" do
-    let!(:user) { FactoryGirl.create :user }
+    let!(:user) { FactoryGirl.create :pro_user }
     let!(:tour) { FactoryGirl.build :tour }
     
     context "with correct type" do
@@ -50,7 +50,7 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
 
   describe "GET show" do
     before { Timecop.freeze(Time.parse("10/10/2010").at_beginning_of_day) }
-    let(:user) { FactoryGirl.create :user }
+    let(:user) { FactoryGirl.create :pro_user }
 
     context "with correct id" do
       let!(:tour) { FactoryGirl.create :tour, :filled }
@@ -78,7 +78,7 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
     end
 
     context "with unexisting id" do
-      let!(:user) { FactoryGirl.create :user }
+      let!(:user) { FactoryGirl.create :pro_user }
 
       it "returns error 404" do
         expect {
@@ -90,8 +90,8 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
 
   describe "PUT update" do
     before { Timecop.freeze(DateTime.parse("10/10/2010").at_beginning_of_day) }
-    let!(:user) { FactoryGirl.create :user }
-    let!(:other_user) { FactoryGirl.create :user }
+    let!(:user) { FactoryGirl.create :pro_user }
+    let!(:other_user) { FactoryGirl.create :pro_user }
     let(:tour) { FactoryGirl.create(:tour, :filled, user: user) }
       
     context "with correct id" do
@@ -158,7 +158,7 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
   
   describe "GET index" do
     
-    let!(:user) { FactoryGirl.create :user }
+    let!(:user) { FactoryGirl.create :pro_user }
     let(:date) { Date.parse("10/10/2010") }
     before { Timecop.freeze(Time.parse("10/10/2010").at_beginning_of_day) }
 

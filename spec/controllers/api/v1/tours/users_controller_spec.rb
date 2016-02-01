@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe Api::V1::Tours::UsersController do
-  let(:user) { FactoryGirl.create(:user) }
+  let(:user) { FactoryGirl.create(:pro_user) }
   let(:tour) { FactoryGirl.create(:tour) }
 
   describe 'POST create' do
@@ -48,7 +48,7 @@ describe Api::V1::Tours::UsersController do
     end
 
     context "signed in as accepted member of the tour" do
-      let(:requester) { FactoryGirl.create(:user) }
+      let(:requester) { FactoryGirl.create(:pro_user) }
       let!(:tour_member) { ToursUser.create(user: user, tour: tour, status: "accepted") }
       let!(:tour_requested) { ToursUser.create(user: requester, tour: tour, status: "pending") }
 
@@ -72,7 +72,7 @@ describe Api::V1::Tours::UsersController do
     end
 
     context "not member of the tour" do
-      let(:requester) { FactoryGirl.create(:user) }
+      let(:requester) { FactoryGirl.create(:pro_user) }
       let!(:other_tour_member) { ToursUser.create(user: user, tour: FactoryGirl.create(:tour), status: "accepted") }
       let!(:tour_requested) { ToursUser.create(user: requester, tour: tour, status: "pending") }
       before { patch :update, tour_id: tour.to_param, id: requester.id, user: {status: "accepted"}, token: user.token }
@@ -81,7 +81,7 @@ describe Api::V1::Tours::UsersController do
     end
 
     context "member of the tour but not accepted" do
-      let(:requester) { FactoryGirl.create(:user) }
+      let(:requester) { FactoryGirl.create(:pro_user) }
       let!(:tour_member) { ToursUser.create(user: user, tour: tour, status: "pending") }
       let!(:tour_requested) { ToursUser.create(user: requester, tour: tour, status: "pending") }
       before { patch :update, tour_id: tour.to_param, id: requester.id, user: {status: "accepted"}, token: user.token }
@@ -105,7 +105,7 @@ describe Api::V1::Tours::UsersController do
     end
 
     context "signed in as accepted member of the tour" do
-      let(:requester) { FactoryGirl.create(:user) }
+      let(:requester) { FactoryGirl.create(:pro_user) }
       let!(:tour_member) { ToursUser.create(user: user, tour: tour, status: "accepted") }
       let!(:tour_requested) { ToursUser.create(user: requester, tour: tour, status: "pending") }
       before { delete :destroy, tour_id: tour.to_param, id: requester.id, token: user.token }
@@ -136,7 +136,7 @@ describe Api::V1::Tours::UsersController do
     end
 
     context "not member of the tour" do
-      let(:requester) { FactoryGirl.create(:user) }
+      let(:requester) { FactoryGirl.create(:pro_user) }
       let!(:other_tour_member) { ToursUser.create(user: user, tour: FactoryGirl.create(:tour), status: "accepted") }
       let!(:tour_requested) { ToursUser.create(user: requester, tour: tour, status: "pending") }
       before { delete :destroy, tour_id: tour.to_param, id: requester.id, token: user.token }
@@ -145,7 +145,7 @@ describe Api::V1::Tours::UsersController do
     end
 
     context "member of the tour but not accepted" do
-      let(:requester) { FactoryGirl.create(:user) }
+      let(:requester) { FactoryGirl.create(:pro_user) }
       let!(:tour_member) { ToursUser.create(user: user, tour: tour, status: "pending") }
       let!(:tour_requested) { ToursUser.create(user: requester, tour: tour, status: "pending") }
       before { delete :destroy, tour_id: tour.to_param, id: requester.id, token: user.token }

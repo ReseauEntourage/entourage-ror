@@ -1,7 +1,7 @@
 class RegistrationRequestValidator
   def initialize(params:)
     @organization = Organization.new(params["organization"].except("logo_key"))
-    @user = UserServices::UserBuilder.new(params:params["user"], organization:@organization).new_user
+    @user = UserServices::ProUserBuilder.new(params:params["user"], organization:@organization).new_user
   end
 
   def valid?

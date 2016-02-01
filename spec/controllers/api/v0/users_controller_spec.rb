@@ -11,7 +11,7 @@ RSpec.describe Api::V0::UsersController, :type => :controller do
       after { ENV["DISABLE_CRYPT"]="TRUE" }
       let!(:device_id) { 'device_id' }
       let!(:device_type) { 'android' }
-      let!(:user) { create :user, sms_code: "123456" }
+      let!(:user) { create :pro_user, sms_code: "123456" }
       let!(:tour1) { create :tour, user: user }
       let!(:tour2) { create :tour }
       let!(:tour3) { create :tour, user: user }
@@ -56,7 +56,7 @@ RSpec.describe Api::V0::UsersController, :type => :controller do
     context 'authentication is OK' do
       before { ENV["DISABLE_CRYPT"]="FALSE" }
       after { ENV["DISABLE_CRYPT"]="TRUE" }
-      let!(:user) { create :user }
+      let!(:user) { create :pro_user }
 
       context 'params are valid' do
         before { patch 'update_me', token:user.token, user: { email:'new@e.mail', sms_code:'654321' }, format: :json }
@@ -83,7 +83,7 @@ RSpec.describe Api::V0::UsersController, :type => :controller do
   end
 
   describe 'code' do
-    let!(:user) { create :user, sms_code: "123456" }
+    let!(:user) { create :pro_user, sms_code: "123456" }
 
     describe "regenerate sms code" do
       before { patch 'code', {id: "me", user: { phone: user.phone }, code: {action: "regenerate"}, format: :json} }
@@ -113,5 +113,4 @@ RSpec.describe Api::V0::UsersController, :type => :controller do
       it { expect(response.status).to eq(400) }
     end
   end
-
 end

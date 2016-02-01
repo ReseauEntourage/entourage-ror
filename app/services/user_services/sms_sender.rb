@@ -5,7 +5,7 @@ module UserServices
     end
 
     def regenerate_sms!
-      new_sms = UserServices::UserBuilder.regenerate_sms!(user: user)
+      new_sms = UserServices::SmsCode.new.regenerate_sms!(user: user)
       send_welcome_sms(new_sms)
     end
 

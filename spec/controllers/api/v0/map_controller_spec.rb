@@ -2,10 +2,11 @@ require 'rails_helper'
 
 RSpec.describe Api::V0::MapController, :type => :controller do
   render_views
-  
+
+  let!(:user) { FactoryGirl.create :pro_user }
+
   describe "GET index" do
     context "Access control" do
-      let!(:user) { FactoryGirl.create :user }
       it "returns http success if user is logged in" do
         get 'index', token: user.token, :format => :json
         expect(response).to be_success
@@ -17,7 +18,6 @@ RSpec.describe Api::V0::MapController, :type => :controller do
     end
 
     context "view scope variable assignment" do
-      let!(:user) { FactoryGirl.create :user }
       let!(:poi) { FactoryGirl.create :poi }
       before { get 'index', token: user.token, :format => :json }
       it "assigns @categories" do
@@ -37,7 +37,6 @@ RSpec.describe Api::V0::MapController, :type => :controller do
       let!(:poi1) { FactoryGirl.create :poi }
       let!(:poi2) { FactoryGirl.create :poi }
       let!(:category) { FactoryGirl.create :category }
-      let!(:user) { create :user }
       it "returns all pois" do
         get 'index', token: user.token, :format => :json
         expect(assigns(:pois)).to eq([poi1, poi2])
@@ -53,7 +52,6 @@ RSpec.describe Api::V0::MapController, :type => :controller do
       let!(:poi2) { FactoryGirl.create(:poi, latitude: 48.8, longitude: 2.4) }
       let!(:poi3) { FactoryGirl.create(:poi, latitude: 48.9, longitude: 2.5) }
       let!(:category) { FactoryGirl.create :category }
-      let!(:user) { create :user }
       it "returns all pois if no coordinates provided" do
         get 'index', token: user.token, :format => :json
         expect(assigns(:pois)).to eq([poi1, poi2, poi3])
@@ -71,7 +69,5 @@ RSpec.describe Api::V0::MapController, :type => :controller do
         expect(assigns(:pois)).to eq([poi1, poi2, poi3])
       end
     end
-
   end
-
 end

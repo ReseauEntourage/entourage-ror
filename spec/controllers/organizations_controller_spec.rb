@@ -30,8 +30,8 @@ RSpec.describe OrganizationsController, :type => :controller do
       let!(:last_monday) { time.monday }
       let!(:last_tuesday) { (last_monday + 1).to_date }
       let!(:last_wednesday) { (last_monday + 2).to_date }
-      let!(:user1) { create :user, organization: user.organization }
-      let!(:user2) { create :user, organization: user.organization }
+      let!(:user1) { create :pro_user, organization: user.organization }
+      let!(:user2) { create :pro_user, organization: user.organization }
       let!(:tour1) { create :tour, user: user1, updated_at: time.monday + 1, length: 1001 }
       let!(:tour2) { create :tour, user: user1, updated_at: time.monday + 2, length: 2002 }
       let!(:tour3) { create :tour, user: user2, updated_at: time.monday + 2, length: 3003 }
@@ -61,10 +61,10 @@ RSpec.describe OrganizationsController, :type => :controller do
         user.coordinated_organizations << user4.organization
       end
       after { Timecop.return }
-      let!(:user1) { create :user, organization: user.organization }
-      let!(:user2) { create :user, organization: user.organization }
-      let!(:user3) { create :user }
-      let!(:user4) { create :user }
+      let!(:user1) { create :pro_user, organization: user.organization }
+      let!(:user2) { create :pro_user, organization: user.organization }
+      let!(:user3) { create :pro_user }
+      let!(:user4) { create :pro_user }
       let!(:tour1) { create :tour, user: user1, tour_type:'medical', updated_at: Time.new(2009, 3, 9, 13, 22, 0) }
       let!(:tour2) { create :tour, user: user2, tour_type:'alimentary', updated_at: Time.new(2009, 3, 11, 13, 22, 0) }
       let!(:tour3) { create :tour, user: user3 }
@@ -128,10 +128,10 @@ RSpec.describe OrganizationsController, :type => :controller do
         user.coordinated_organizations << user4.organization
       end
       after { Timecop.return }
-      let!(:user1) { create :user, organization: user.organization }
-      let!(:user2) { create :user, organization: user.organization }
-      let!(:user3) { create :user }
-      let!(:user4) { create :user }
+      let!(:user1) { create :pro_user, organization: user.organization }
+      let!(:user2) { create :pro_user, organization: user.organization }
+      let!(:user3) { create :pro_user }
+      let!(:user4) { create :pro_user }
       let!(:tour1) { create :tour, user: user1, tour_type:'barehands', updated_at: Time.new(2009, 3, 9, 13, 22, 0) }
       let!(:tour2) { create :tour, user: user2, tour_type:'medical', updated_at: Time.new(2009, 3, 11, 13, 22, 0) }
       let!(:tour3) { create :tour, user: user3 }
@@ -192,11 +192,11 @@ RSpec.describe OrganizationsController, :type => :controller do
       end
     end
     describe 'send_message' do
-      let!(:user1) { create :user, organization: user.organization, device_type: :android, device_id:'deviceid1' }
-      let!(:user2) { create :user, organization: user.organization, device_type: :android, device_id:nil }
-      let!(:user3) { create :user, organization: user.organization, device_type: :android, device_id:'deviceid2' }
-      let!(:user4) { create :user, organization: user.organization, device_type: nil, device_id:'deviceid3' }
-      let!(:user5) { create :user }
+      let!(:user1) { create :pro_user, organization: user.organization, device_type: :android, device_id:'deviceid1' }
+      let!(:user2) { create :pro_user, organization: user.organization, device_type: :android, device_id:nil }
+      let!(:user3) { create :pro_user, organization: user.organization, device_type: :android, device_id:'deviceid2' }
+      let!(:user4) { create :pro_user, organization: user.organization, device_type: nil, device_id:'deviceid3' }
+      let!(:user5) { create :pro_user }
       let!(:push_notification_service) { spy('push_notification_service') }
       before { controller.push_notification_service = push_notification_service }
 

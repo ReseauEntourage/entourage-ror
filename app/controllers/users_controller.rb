@@ -15,7 +15,7 @@ class UsersController < ApplicationController
   end
 
   def create
-    builder = UserServices::UserBuilder.new(params:user_params, organization:current_user.organization)
+    builder = UserServices::ProUserBuilder.new(params:user_params, organization:current_user.organization)
     send_sms = params[:send_sms] == "1"
 
     builder.create(send_sms: send_sms) do |on|
@@ -33,7 +33,7 @@ class UsersController < ApplicationController
   end
 
   def update
-    builder = UserServices::UserBuilder.new(params: user_params)
+    builder = UserServices::ProUserBuilder.new(params: user_params)
     if builder.update(user: @user)
       redirect_to edit_user_url(@user), notice: "L'utilisateur a été sauvegardé"
     else

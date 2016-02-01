@@ -1,6 +1,5 @@
 require 'rails_helper'
 include AuthHelper
-include Requests::JsonHelpers
 
 RSpec.describe Api::V1::UsersController, :type => :controller do
   render_views
@@ -10,7 +9,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
     after { ENV["DISABLE_CRYPT"]="TRUE" }
 
     context 'when the user exists' do
-      let!(:user) { create :user, sms_code: "123456" }
+      let!(:user) { create :pro_user, sms_code: "123456" }
 
       context 'when the phone number and sms code are valid' do
         before { post 'login', user: {phone: user.phone, sms_code: "123456"}, format: 'json' }
@@ -41,7 +40,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
       end
     end
     context "user with tours and encounters" do
-      let!(:user) { create :user, sms_code: "123456" }
+      let!(:user) { create :pro_user, sms_code: "123456" }
       let!(:tour1) { create :tour, user: user }
       let!(:tour2) { create :tour }
       let!(:tour3) { create :tour, user: user }
@@ -59,7 +58,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
     context 'authentication is OK' do
       before { ENV["DISABLE_CRYPT"]="FALSE" }
       after { ENV["DISABLE_CRYPT"]="TRUE" }
-      let!(:user) { create :user }
+      let!(:user) { create :pro_user }
 
       context 'params are valid' do
         before { patch 'update', token:user.token, user: { email:'new@e.mail', sms_code:'654321', device_id: 'foo', device_type: 'android' }, format: :json }
@@ -88,7 +87,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
   end
 
   describe 'code' do
-    let!(:user) { create :user, sms_code: "123456" }
+    let!(:user) { create :pro_user, sms_code: "123456" }
 
     describe "regenerate sms code" do
       before { patch 'code', {id: "me", user: { phone: user.phone }, code: {action: "regenerate"}, format: :json} }
@@ -119,4 +118,32 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
     end
   end
 
+  describe "POST create" do
+    it "creates a new user" do
+      expect {
+        post 'create', {user: {phone: "+33612345678"}}
+      }.to change { User.count }.by(1)
+    end
+
+    context "valid params" do
+      before { post 'create', {user: {phone: "+33612345678"}} }
+      it { expect(User.last.user_type).to eq("public") }
+      it { expect(JSON.parse(response.body)).to eq({"user"=>{"id"=>User.last.id, "email"=>nil, "first_name"=>nil, "last_name"=>nil, "token"=>User.last.token, "organization"=>nil, "stats"=>{"tour_count"=>0, "encounter_count"=>0}}}) }
+    end
+
+    context "invalid params" do
+      it "doesn't create a new user" do
+        expect {
+          post 'create', {user: {phone: "123"}}
+        }.to change { User.count }.by(0)
+      end
+
+      it "returns error" do
+        post 'create', {user: {phone: "123"}}
+        user = User.last
+        expect(response.status).to eq(400)
+        expect(JSON.parse(response.body)).to eq({"message"=>"Could not sign up user", "reasons"=>["Phone devrait être au format +33... ou 06..."]})
+      end
+    end
+  end
 end

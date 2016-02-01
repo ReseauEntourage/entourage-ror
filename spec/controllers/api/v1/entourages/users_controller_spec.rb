@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe Api::V1::Entourages::UsersController do
 
-  let(:user) { FactoryGirl.create(:user) }
+  let(:user) { FactoryGirl.create(:public_user) }
   let(:entourage) { FactoryGirl.create(:entourage) }
 
   describe 'POST create' do

@@ -14,7 +14,7 @@ RSpec.describe Entourage, type: :model do
   it { should belong_to(:user) }
 
   it "has many members" do
-    user = FactoryGirl.create(:user)
+    user = FactoryGirl.create(:public_user)
     entourage = FactoryGirl.create(:entourage)
     EntouragesUser.create(user: user, entourage: entourage)
     expect(entourage.members).to eq([user])

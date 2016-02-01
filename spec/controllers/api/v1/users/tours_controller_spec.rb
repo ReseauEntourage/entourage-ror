@@ -4,7 +4,7 @@ RSpec.describe Api::V1::Users::ToursController, :type => :controller do
   render_views
 
   describe 'GET index' do
-    let!(:user) { FactoryGirl.create(:user) }
+    let!(:user) { FactoryGirl.create(:pro_user) }
     let!(:tour1) { FactoryGirl.create(:tour, user: user, updated_at: Date.parse("10/10/2010")) }
     let!(:tour2) { FactoryGirl.create(:tour, user: user, updated_at: Date.parse("09/10/2010")) }
     let!(:other_tours) { FactoryGirl.create(:tour) }

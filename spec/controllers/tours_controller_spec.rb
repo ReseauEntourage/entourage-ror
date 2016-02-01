@@ -37,8 +37,8 @@ RSpec.describe ToursController, :type => :controller do
 
     context "logged in as manager" do
       let!(:user) { manager_basic_login }
-      let!(:organisation_tour) { FactoryGirl.create(:tour, user: FactoryGirl.create(:user, organization: user.organization)) }
-      let!(:another_organisation_tour) { FactoryGirl.create(:tour, user: FactoryGirl.create(:user)) }
+      let!(:organisation_tour) { FactoryGirl.create(:tour, user: FactoryGirl.create(:pro_user, organization: user.organization)) }
+      let!(:another_organisation_tour) { FactoryGirl.create(:tour, user: FactoryGirl.create(:pro_user)) }
 
       context "access somebody else tour outside my organisation" do
         before { get 'show', id: another_organisation_tour.to_param }
@@ -53,8 +53,8 @@ RSpec.describe ToursController, :type => :controller do
 
     context "logged in as admin" do
       let!(:user) { admin_basic_login }
-      let!(:organisation_tour) { FactoryGirl.create(:tour, user: FactoryGirl.create(:user, organization: user.organization)) }
-      let!(:another_organisation_tour) { FactoryGirl.create(:tour, user: FactoryGirl.create(:user)) }
+      let!(:organisation_tour) { FactoryGirl.create(:tour, user: FactoryGirl.create(:pro_user, organization: user.organization)) }
+      let!(:another_organisation_tour) { FactoryGirl.create(:tour, user: FactoryGirl.create(:pro_user)) }
 
       context "access somebody else tour outside my organisation" do
         before { get 'show', id: another_organisation_tour.to_param }

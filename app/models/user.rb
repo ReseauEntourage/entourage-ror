@@ -1,10 +1,12 @@
 class User < ActiveRecord::Base
 
-  validates_presence_of [:first_name, :last_name, :organization, :email, :phone, :sms_code, :token]
-  validates_associated :organization
+  validates_presence_of [:phone, :sms_code, :token]
   validates_uniqueness_of [:email, :token, :phone]
   validate :validate_phone!
-  validates_format_of :email, with: /@/
+  validates_format_of :email, with: /@/, unless: "email.nil?"
+  validates_presence_of [:first_name, :last_name, :organization, :email], if: Proc.new { |u| u.pro? }
+  validates_associated :organization, if: Proc.new { |u| u.pro? }
+
   has_many :tours
   has_many :encounters, through: :tours
   has_many :login_histories
@@ -47,5 +49,13 @@ class User < ActiveRecord::Base
 
     another_sms_code = BCrypt::Password.create(another_sms_code) unless (another_sms_code.nil?)
     super(another_sms_code)
+  end
+
+  def pro?
+    user_type=="pro"
+  end
+
+  def public?
+    user_type=="public"
   end
 end

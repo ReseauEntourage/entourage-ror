@@ -1,5 +1,4 @@
 FactoryGirl.define do
-
   factory :user do
     first_name 'John'
     last_name 'Doe'
@@ -19,6 +18,17 @@ FactoryGirl.define do
     sequence :token do |n|
       "foobar#{n}"
     end
-    organization
+
+    trait :public do
+      user_type 'public'
+    end
+
+    trait :pro do
+      organization
+      user_type 'pro'
+    end
+
+    factory :pro_user,    traits: [:pro]
+    factory :public_user, traits: [:public]
   end
 end

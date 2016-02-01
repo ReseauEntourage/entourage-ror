@@ -3,7 +3,7 @@ require 'rails_helper'
 describe UserServices::SMSSender do
   
   describe 'send_welcome_sms' do
-    let(:user) { FactoryGirl.create(:user, sms_code: "123456") }
+    let(:user) { FactoryGirl.create(:pro_user, sms_code: "123456") }
     let(:sender) { UserServices::SMSSender.new(user: user) }
 
     it "doesn't regenerate user sms code" do
@@ -14,7 +14,7 @@ describe UserServices::SMSSender do
   end
 
   describe 'regenerate_sms!' do
-    let(:user) { FactoryGirl.create(:user, sms_code: "123456") }
+    let(:user) { FactoryGirl.create(:pro_user, sms_code: "123456") }
     let(:sender) { UserServices::SMSSender.new(user: user) }
 
     it "doesn't regenerate user sms code" do

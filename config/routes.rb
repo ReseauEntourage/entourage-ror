@@ -57,7 +57,7 @@ Rails.application.routes.draw do
         end
       end
 
-      resources :users, only: [:show] do
+      resources :users, only: [:show, :create] do
         collection do
           patch 'update'
         end

@@ -4,7 +4,7 @@ RSpec.describe Api::V1::TourPointsController, :type => :controller do
   render_views
 
   describe "POST create" do
-    let!(:user) { FactoryGirl.create :user }
+    let!(:user) { FactoryGirl.create :pro_user }
     let!(:tour) { FactoryGirl.create :tour }
     let!(:tour_point) { FactoryGirl.build :tour_point }
     

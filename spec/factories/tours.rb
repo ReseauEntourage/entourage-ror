@@ -6,7 +6,7 @@ FactoryGirl.define do
     vehicle_type "feet"
     status "ongoing"
     number_of_people 1
-    user
+    association :user, factory: :pro_user
     
     trait :filled do
       transient do
