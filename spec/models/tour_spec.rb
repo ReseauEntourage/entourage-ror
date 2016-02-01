@@ -14,7 +14,7 @@ RSpec.describe Tour, :type => :model do
   it { should have_many(:snap_to_road_tour_points).dependent(:delete_all) }
 
   it "has many members" do
-    user = FactoryGirl.create(:user)
+    user = FactoryGirl.create(:pro_user)
     tour = FactoryGirl.create(:tour)
     ToursUser.create(user: user, tour: tour)
     expect(tour.members).to eq([user])

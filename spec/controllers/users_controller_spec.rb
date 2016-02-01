@@ -13,8 +13,8 @@ RSpec.describe UsersController, :type => :controller do
 
     context "logged in as admin" do
       let!(:user) { manager_basic_login }
-      let!(:user_outside_organization) { FactoryGirl.create(:user) }
-      let!(:user_inside_organization) { FactoryGirl.create(:user, organization: user.organization) }
+      let!(:user_outside_organization) { FactoryGirl.create(:pro_user) }
+      let!(:user_inside_organization) { FactoryGirl.create(:pro_user, organization: user.organization) }
       before { get :index }
       it { expect(assigns(:users)).to match_array([user, user_inside_organization]) }
     end
@@ -76,7 +76,7 @@ RSpec.describe UsersController, :type => :controller do
       end
 
       context 'with incorrect parameters' do
-        let!(:user_already_exist) { FactoryGirl.create(:user, phone: '+33102030405') }
+        let!(:user_already_exist) { FactoryGirl.create(:pro_user, phone: '+33102030405') }
         it "never sends sms" do
           expect_any_instance_of(SmsNotificationService).to_not receive(:send_notification)
           post 'create', user: {email: "test@rspec.com", first_name:"tester", last_name:"tested", phone:'+33102030405'}, send_sms: "1"
@@ -160,7 +160,7 @@ RSpec.describe UsersController, :type => :controller do
 
   describe '#send_sms' do
     let!(:user) { admin_basic_login }
-    let!(:target_user) { FactoryGirl.create(:user, organization: user.organization) }
+    let!(:target_user) { FactoryGirl.create(:pro_user, organization: user.organization) }
 
     context 'the user exists' do
       before { post 'send_sms', id: target_user.id }

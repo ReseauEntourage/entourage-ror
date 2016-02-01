@@ -1,6 +1,6 @@
 FactoryGirl.define do
   factory :tours_user do
-    user
+    association :user, factory: :pro_user
     tour
     status "pending"
   end

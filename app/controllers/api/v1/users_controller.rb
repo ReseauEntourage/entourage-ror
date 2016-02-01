@@ -18,6 +18,19 @@ module Api
         end
       end
 
+      def create
+        builder = PublicUserBuilder.new(params: user_params)
+        builder.create(send_sms: true) do |on|
+          on.success do |user|
+            render json: user, status: 201, serializer: ::V1::UserSerializer
+          end
+
+          on.failure do |user|
+            render json: {message: 'Could not sign up user', reasons: user.errors.full_messages}, status: :bad_request
+          end
+        end
+      end
+
       def code
         if user_params[:phone].blank?
           return render json: {error: "Missing phone number"}, status:400

@@ -23,6 +23,9 @@ module UserServices
         callback.on_create_failure.try(:call, user)
       end
     end
+
+    private
+    attr_reader :params, :callback
   end
 
   class Callback

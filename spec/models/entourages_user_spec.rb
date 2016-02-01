@@ -9,7 +9,7 @@ RSpec.describe EntouragesUser, type: :model do
   it { should belong_to :entourage }
 
   it "validates uniqueness of entourages_user" do
-    user = FactoryGirl.create(:user)
+    user = FactoryGirl.create(:public_user)
     entourage = FactoryGirl.create(:entourage)
     expect(EntouragesUser.new(user: user, entourage: entourage).save).to be true
     expect(EntouragesUser.new(user: user, entourage: entourage).save).to be false

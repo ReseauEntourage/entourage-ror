@@ -9,7 +9,7 @@ RSpec.describe ToursUser, type: :model do
   it { should belong_to :tour }
 
   it "validates uniqueness of entourages_user" do
-    user = FactoryGirl.create(:user)
+    user = FactoryGirl.create(:pro_user)
     tour = FactoryGirl.create(:tour)
     expect(ToursUser.new(user: user, tour: tour).save).to be true
     expect(ToursUser.new(user: user, tour: tour).save).to be false

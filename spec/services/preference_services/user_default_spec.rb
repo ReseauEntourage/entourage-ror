@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe PreferenceServices::UserDefault do
 
-  let(:user) { FactoryGirl.create(:user) }
+  let(:user) { FactoryGirl.create(:pro_user) }
 
   describe 'snap_to_road' do
     context "true" do

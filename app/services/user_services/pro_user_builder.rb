@@ -21,7 +21,6 @@ module UserServices
     end
 
     private
-    attr_reader :params, :organization, :callback
-
+    attr_reader :organization
   end
 end

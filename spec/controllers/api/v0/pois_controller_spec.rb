@@ -4,7 +4,7 @@ describe Api::V0::PoisController, :type => :controller do
   render_views
   
   context 'authorized' do
-    let!(:user) { create :user }
+    let!(:user) { create :pro_user }
 
     describe 'index' do
       context 'without parameters' do

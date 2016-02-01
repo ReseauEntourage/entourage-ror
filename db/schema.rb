@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160129160109) do
+ActiveRecord::Schema.define(version: 20160201070012) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -266,11 +266,12 @@ ActiveRecord::Schema.define(version: 20160129160109) do
     t.string   "device_id"
     t.integer  "device_type"
     t.string   "sms_code"
-    t.integer  "organization_id",                   null: false
+    t.integer  "organization_id"
     t.boolean  "manager",           default: false, null: false
     t.float    "default_latitude"
     t.float    "default_longitude"
     t.boolean  "admin",             default: false, null: false
+    t.string   "user_type",         default: "pro", null: false
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree

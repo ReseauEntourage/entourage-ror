@@ -13,7 +13,7 @@ describe MemberMailer, type: :mailer do
   
   describe '#poi_report' do
     let!(:poi) { create :poi }
-    let!(:user) { create :user }
+    let!(:user) { create :pro_user }
     let!(:message) { 'message' }
     let!(:poi_report_email) { 'report_email' }
     before { ENV["POI_REPORT_EMAIL"] = poi_report_email }
@@ -27,7 +27,7 @@ describe MemberMailer, type: :mailer do
   end
 
   describe '#registration_request_accepted' do
-    let!(:user) { create :user }
+    let!(:user) { create :pro_user }
     subject { MemberMailer.registration_request_accepted(user) }
     it { expect(subject.from).to eq ['contact@entourage.social'] }
     it { expect(subject.to).to eq [user.email] }

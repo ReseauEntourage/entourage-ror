@@ -10,7 +10,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
     after { ENV["DISABLE_CRYPT"]="TRUE" }
 
     context 'when the user exists' do
-      let!(:user) { create :user, sms_code: "123456" }
+      let!(:user) { create :pro_user, sms_code: "123456" }
 
       context 'when the phone number and sms code are valid' do
         before { post 'login', user: {phone: user.phone, sms_code: "123456"}, format: 'json' }
@@ -41,7 +41,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
       end
     end
     context "user with tours and encounters" do
-      let!(:user) { create :user, sms_code: "123456" }
+      let!(:user) { create :pro_user, sms_code: "123456" }
       let!(:tour1) { create :tour, user: user }
       let!(:tour2) { create :tour }
       let!(:tour3) { create :tour, user: user }
@@ -59,7 +59,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
     context 'authentication is OK' do
       before { ENV["DISABLE_CRYPT"]="FALSE" }
       after { ENV["DISABLE_CRYPT"]="TRUE" }
-      let!(:user) { create :user }
+      let!(:user) { create :pro_user }
 
       context 'params are valid' do
         before { patch 'update', token:user.token, user: { email:'new@e.mail', sms_code:'654321', device_id: 'foo', device_type: 'android' }, format: :json }
@@ -88,7 +88,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
   end
 
   describe 'code' do
-    let!(:user) { create :user, sms_code: "123456" }
+    let!(:user) { create :pro_user, sms_code: "123456" }
 
     describe "regenerate sms code" do
       before { patch 'code', {id: "me", user: { phone: user.phone }, code: {action: "regenerate"}, format: :json} }

@@ -30,10 +30,7 @@ RSpec.describe Api::V0::NewsletterSubscriptionsController, :type => :controller 
       it "renders 400" do
         post 'create', newsletter_subscription: {not_email_param: "subscriber@newsletter.com", not_active_param: true}, :format => :json
         expect(response.status).to eq(400)
-      end      
-
+      end
     end
-
   end
-
 end
