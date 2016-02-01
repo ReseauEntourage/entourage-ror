@@ -7,6 +7,7 @@ module UserServices
 
     def new_user(sms_code=nil)
       user = organization.users.new(params)
+      user.user_type = 'pro'
       user.token = token
       user.sms_code = sms_code || UserServices::SmsCode.new.code
       user

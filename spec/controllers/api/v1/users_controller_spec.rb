@@ -1,6 +1,5 @@
 require 'rails_helper'
 include AuthHelper
-include Requests::JsonHelpers
 
 RSpec.describe Api::V1::UsersController, :type => :controller do
   render_views
@@ -119,4 +118,32 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
     end
   end
 
+  describe "POST create" do
+    it "creates a new user" do
+      expect {
+        post 'create', {user: {phone: "+33612345678"}}
+      }.to change { User.count }.by(1)
+    end
+
+    context "valid params" do
+      before { post 'create', {user: {phone: "+33612345678"}} }
+      it { expect(User.last.user_type).to eq("public") }
+      it { expect(JSON.parse(response.body)).to eq({"user"=>{"id"=>User.last.id, "email"=>nil, "first_name"=>nil, "last_name"=>nil, "token"=>User.last.token, "organization"=>nil, "stats"=>{"tour_count"=>0, "encounter_count"=>0}}}) }
+    end
+
+    context "invalid params" do
+      it "doesn't create a new user" do
+        expect {
+          post 'create', {user: {phone: "123"}}
+        }.to change { User.count }.by(0)
+      end
+
+      it "returns error" do
+        post 'create', {user: {phone: "123"}}
+        user = User.last
+        expect(response.status).to eq(400)
+        expect(JSON.parse(response.body)).to eq({"message"=>"Could not sign up user", "reasons"=>["Phone devrait être au format +33... ou 06..."]})
+      end
+    end
+  end
 end
