@@ -56,6 +56,8 @@ describe User, :type => :model do
     it { expect(FactoryGirl.build(:pro_user, phone: '+3323456789').save).to be false }
     it { expect(FactoryGirl.build(:pro_user, phone: '+33000000000').save).to be false }
     it { expect(FactoryGirl.build(:pro_user, phone: '+33600000000').save).to be true } #Apple account
+    it { expect(FactoryGirl.build(:pro_user, phone: '+32-2-555-12-12').save).to be true } #belgian number
+    it { expect(FactoryGirl.build(:pro_user, phone: '+1-999-999-9999').save).to be true } #canadian number
   end
 
   it "validates uniqueness of token" do
@@ -96,6 +98,8 @@ describe User, :type => :model do
     it { expect(FactoryGirl.create(:pro_user, phone: "01-12-34-56-78").phone).to eq('+33112345678') }
     it { expect(FactoryGirl.create(:pro_user, phone: "+331-12-34-56-78").phone).to eq('+33112345678') }
     it { expect(FactoryGirl.create(:pro_user, phone: "+33612345678").phone).to eq('+33612345678') }
+    it { expect(FactoryGirl.create(:pro_user, phone: "+32-2-555-12-12").phone).to eq('+3225551212') } #belgian number
+    it { expect(FactoryGirl.create(:pro_user, phone: "+1-999-999-9999").phone).to eq('+19999999999') } #canadian number
 
     context "updates with invalid phone number" do
       let(:user) { FactoryGirl.create(:pro_user, phone: "+33612345678") }

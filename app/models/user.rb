@@ -23,7 +23,7 @@ class User < ActiveRecord::Base
   delegate :name, :description, to: :organization, prefix: true
 
   def validate_phone!
-    unless PhoneValidator.valid?(self.phone)
+    unless PhoneValidator.new(phone: self.phone).valid?
       errors.add(:phone, "devrait être au format +33... ou 06...")
     end
   end
