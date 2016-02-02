@@ -202,7 +202,17 @@ When signing up a new user we genereate a new sms_code and send it via SMS
 
     + Body
 
-            {"user":{"device_id":"APA91bHSxpidt2SJ33aosTNSlYQMGRyzdt5LFBBSJEhd6zuR9hhe7Qxj00Y_u8og0W7DMaWTU_hWVqUl__yrMq7juuQNKzN689tnCcQKN2LcoJ_09ljgaRFNggfS77Kd0eWfX011oB5S", "device_type": "android"}, "location" : { "latitude" : 37.4224764, "longitude" : -122.0842499 }}
+            {"user":{
+                "email": "foo@bar.com", 
+                "sms_code": "123456", 
+                "phone": "+33612345678",
+                "device_id":"APA91bHSxpidt2SJ33aosTNSlYQMGRyzdt5LFBBSJEhd6zuR9hhe7Qxj00Y_u8og0W7DMaWTU_hWVqUl__yrMq7juuQNKzN689tnCcQKN2LcoJ_09ljgaRFNggfS77Kd0eWfX011oB5S", 
+                "device_type": "android"
+                }, 
+            "location" : { 
+                "latitude" : 37.4224764, 
+                "longitude" : -122.0842499 
+            }}
 
             device_id (optional, string, ``) ... Technical identifier of the mobile device the user is using (to be able to send notifications)
             location: current user location (needed to filter entourage around your position)
@@ -581,6 +591,8 @@ Resources related to users of a tour
         
 ### Request to be added to a tour [POST /tours/{tour_id}/users{?token}]
 
+Note: anyone can ask to join a tour
+
 + Parameters
 
     + token (required, string, `FAKETOKEN`) ... Token identifying the current user
@@ -614,6 +626,8 @@ Resources related to users of a tour
 
 ### Remove a user from a tour [DELETE]
 
+Note : You must be part of the tour to remove someone
+
 + Parameters
     + token (required, string, `FAKETOKEN`) ... Token identifying the current user
 
@@ -631,6 +645,8 @@ Resources related to users of a tour
 
 
 ### Update a tour user status : accept or reject a user request to join a tour [PUT]
+
+Note : You must be part of the tour to change the status of a user (ex: accept someone in the tour)
 
 + Request (application/json)
 
