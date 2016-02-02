@@ -84,6 +84,12 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
       before { patch 'update', token:'badtoken', user: { email:'new@e.mail', sms_code:'654321' }, format: :json }
       it { expect(response.status).to eq(401) }
     end
+
+    describe "upload avatar" do
+      let(:avatar) { fixture_file_upload('spec/fixtures/avatar.jpg', 'image/jpeg') }
+      before { patch 'update', token:user.token, user: { avatar: avatar }, format: :json }
+      it { expect(user.reload.avatar_key).to eq("avatar_#{user.id}") }
+    end
   end
 
   describe 'code' do

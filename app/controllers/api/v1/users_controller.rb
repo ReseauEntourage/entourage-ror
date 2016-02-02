@@ -11,6 +11,11 @@ module Api
       end
 
       def update
+        avatar_file = user_params.delete(:avatar)
+        if avatar_file
+          avatar_file.read
+        end
+
         if @current_user.update_attributes(user_params)
           render json: @current_user, status: 200, serializer: ::V1::UserSerializer
         else
@@ -25,8 +30,7 @@ module Api
             render json: user, status: 201, serializer: ::V1::UserSerializer
           end
 
-          on.create_failure do |user
-            |
+          on.create_failure do |user|
             render json: {message: 'Could not sign up user', reasons: user.errors.full_messages}, status: :bad_request
           end
         end
@@ -53,7 +57,7 @@ module Api
 
       private
       def user_params
-        params.require(:user).permit(:email, :sms_code, :phone, :device_id, :device_type, :avatar)
+        @user_params ||= params.require(:user).permit(:email, :sms_code, :phone, :device_id, :device_type, :avatar)
       end
     end
   end
