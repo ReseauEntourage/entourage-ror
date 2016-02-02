@@ -25,7 +25,8 @@ module Api
             render json: user, status: 201, serializer: ::V1::UserSerializer
           end
 
-          on.create_failure do |user|
+          on.create_failure do |user
+            |
             render json: {message: 'Could not sign up user', reasons: user.errors.full_messages}, status: :bad_request
           end
         end

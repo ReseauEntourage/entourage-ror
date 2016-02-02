@@ -11,7 +11,7 @@ class TourCollectionPresenter < ApplicationPresenter
   end
 
   def latest_tours
-    @latest_tours ||= tours.includes(:user).order('tours.updated_at DESC').limit(8).group_by { |t| t.updated_at.to_date }
+    @latest_tours ||= tours.includes(:user => :organization).order('tours.updated_at DESC').limit(8).group_by { |t| t.updated_at.to_date }
   end
 
   def week_tours

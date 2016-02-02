@@ -22,6 +22,8 @@ class User < ActiveRecord::Base
 
   delegate :name, :description, to: :organization, prefix: true
 
+  scope :pro, -> { where(user_type: "pro") }
+
   def validate_phone!
     unless PhoneValidator.new(phone: self.phone).valid?
       errors.add(:phone, "devrait être au format +33... ou 06...")
