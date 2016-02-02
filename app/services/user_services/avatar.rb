@@ -6,16 +6,17 @@ module UserServices
 
     def upload(file:)
       extra = {content_type: file.content_type}
-      Storage::Client.avatars.upload(file: file, key: key, extra: extra)
+      avatars.upload(file: file, key: key, extra: extra)
       user.update(avatar_key: key)
     end
 
-    def full_size_url
-      Storage::Client.avatars.url_for(key: key)
+    def thumbnail_url
+      return "https://foobar.s3-eu-west-1.amazonaws.com/300x300/avatar.jpg" if Rails.env.test?
+      avatars.url_for(key: thumbnail_key)
     end
 
-    def thumbnail_url
-      Storage::Client.avatars.url_for(key: thumbnail_key)
+    def destroy
+      [key, thumbnail_key].each {|k| avatars.destroy(key: k)}
     end
 
     private
@@ -27,6 +28,10 @@ module UserServices
 
     def thumbnail_key
       "300x300/avatar_#{user.id}"
+    end
+
+    def avatars
+      Storage::Client.avatars
     end
   end
 end

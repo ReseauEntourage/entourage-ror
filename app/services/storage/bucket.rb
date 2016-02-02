@@ -17,6 +17,10 @@ module Storage
       bucket.object(key).upload_file(file, content_type: extra[:content_type])
     end
 
+    def destroy(key:)
+      bucket.object(key).destroy(key)
+    end
+
     private
     attr_reader :bucket
   end

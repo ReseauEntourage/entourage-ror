@@ -9,11 +9,12 @@ module Admin
       else
         User.validated
       end
-      @users = @users.where("avatar_key IS NOT NULL").page(params[:page]).per(25)
+      @users = @users.where("avatar_key IS NOT NULL").order("updated_at DESC").page(params[:page]).per(25)
     end
 
     def banish
       @user.block!
+      Avatar.new(user: user).destroy
       redirect_to moderate_admin_users_path(validation_status: "blocked")
     end
 
