@@ -125,6 +125,17 @@ Rails.application.routes.draw do
         get 'switch_user'
       end
     end
+
+    resources :users, only: [:none] do
+      collection do
+        get 'moderate'
+      end
+
+      member do
+        put 'banish'
+        put 'validate'
+      end
+    end
   end
   ActiveAdmin.routes(self)
 

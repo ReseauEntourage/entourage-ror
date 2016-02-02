@@ -15,7 +15,7 @@ module UserServices
     end
 
     def thumbnail_url
-
+      Storage::Client.avatars.url_for(key: thumbnail_key)
     end
 
     private
@@ -23,6 +23,10 @@ module UserServices
 
     def key
       "avatar_#{user.id}"
+    end
+
+    def thumbnail_key
+      "300x300/avatar_#{user.id}"
     end
   end
 end

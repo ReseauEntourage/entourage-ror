@@ -14,6 +14,7 @@ FactoryGirl.define do
     end
 
     sms_code '098765'
+    validation_status "validated"
 
     sequence :token do |n|
       "foobar#{n}"

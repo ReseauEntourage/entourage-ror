@@ -1,6 +1,6 @@
 class User < ActiveRecord::Base
 
-  validates_presence_of [:phone, :sms_code, :token]
+  validates_presence_of [:phone, :sms_code, :token, :validation_status]
   validates_uniqueness_of [:email, :token, :phone]
   validate :validate_phone!
   validates_format_of :email, with: /@/, unless: "email.nil?"
@@ -23,6 +23,8 @@ class User < ActiveRecord::Base
   delegate :name, :description, to: :organization, prefix: true
 
   scope :pro, -> { where(user_type: "pro") }
+  scope :validated, -> { where(validation_status: "validated") }
+  scope :blocked, -> { where(validation_status: "blocked") }
 
   def validate_phone!
     unless PhoneValidator.new(phone: self.phone).valid?
@@ -59,5 +61,21 @@ class User < ActiveRecord::Base
 
   def public?
     user_type=="public"
+  end
+
+  def validated?
+    validation_status=="validated"
+  end
+
+  def blocked?
+    validation_status=="blocked"
+  end
+
+  def block!
+    update(validation_status: "blocked")
+  end
+
+  def validate!
+    update(validation_status: "validated")
   end
 end
