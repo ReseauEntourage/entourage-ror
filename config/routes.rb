@@ -59,7 +59,7 @@ Rails.application.routes.draw do
 
       resources :users, only: [:show, :create] do
         collection do
-          patch 'update'
+          patch 'me' => 'users#update'
         end
 
         member do

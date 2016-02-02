@@ -54,7 +54,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
     end
   end
 
-  describe 'update' do
+  describe 'PATCH update' do
     context 'authentication is OK' do
       before { ENV["DISABLE_CRYPT"]="FALSE" }
       after { ENV["DISABLE_CRYPT"]="TRUE" }
