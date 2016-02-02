@@ -53,7 +53,7 @@ module Api
 
       private
       def user_params
-        params.require(:user).permit(:email, :sms_code, :phone, :device_id, :device_type)
+        params.require(:user).permit(:email, :sms_code, :phone, :device_id, :device_type, :avatar)
       end
     end
   end
