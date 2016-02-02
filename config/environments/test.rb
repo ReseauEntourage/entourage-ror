@@ -45,6 +45,7 @@ Rails.application.configure do
   config.action_mailer.default_url_options = { :host => "localhost" }
 
   ENV["ENTOURAGE_IMAGES_BUCKET"]="foobar"
+  ENV["ENTOURAGE_AVATARS_BUCKET"]="foobar"
   ENV["ENTOURAGE_AWS_ACCESS_KEY_ID"]="foo"
   ENV["ENTOURAGE_AWS_SECRET_ACCESS_KEY"]="bar"
 end
