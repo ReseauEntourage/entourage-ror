@@ -13,7 +13,7 @@ module Api
       def update
         avatar_file = user_params.delete(:avatar)
         if avatar_file
-          avatar_file.read
+          UserServices::Avatar.new(user: @current_user).upload(file: avatar_file)
         end
 
         if @current_user.update_attributes(user_params)

@@ -55,10 +55,11 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
   end
 
   describe 'PATCH update' do
+    let!(:user) { create :pro_user }
+
     context 'authentication is OK' do
       before { ENV["DISABLE_CRYPT"]="FALSE" }
       after { ENV["DISABLE_CRYPT"]="TRUE" }
-      let!(:user) { create :pro_user }
 
       context 'params are valid' do
         before { patch 'update', token:user.token, user: { email:'new@e.mail', sms_code:'654321', device_id: 'foo', device_type: 'android' }, format: :json }
@@ -86,9 +87,20 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
     end
 
     describe "upload avatar" do
-      let(:avatar) { fixture_file_upload('spec/fixtures/avatar.jpg', 'image/jpeg') }
-      before { patch 'update', token:user.token, user: { avatar: avatar }, format: :json }
-      it { expect(user.reload.avatar_key).to eq("avatar_#{user.id}") }
+      let(:avatar) { fixture_file_upload('avatar.jpg', 'image/jpeg') }
+
+      context "valid params" do
+        it "sets user avatar key" do
+          stub_request(:put,
+                       "https://foobar.s3-eu-west-1.amazonaws.com/avatar_#{user.id}"
+          ).to_return(:status => 200,
+                      :body => "",
+                      :headers => {})
+
+          patch 'update', token:user.token, user: { avatar: avatar }, format: :json
+          expect(user.reload.avatar_key).to eq("avatar_#{user.id}")
+        end
+      end
     end
   end
 

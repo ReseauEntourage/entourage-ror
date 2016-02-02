@@ -13,6 +13,10 @@ module Storage
       bucket.object(key).presigned_url(:get, expires_in: expire)
     end
 
+    def upload(file:, key:, extra: {})
+      bucket.object(key).upload_file(file, content_type: extra[:content_type])
+    end
+
     private
     attr_reader :bucket
   end
