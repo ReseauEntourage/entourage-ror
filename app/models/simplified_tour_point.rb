@@ -4,4 +4,8 @@ class SimplifiedTourPoint < ActiveRecord::Base
 
   validates :longitude, :latitude, numericality: true, presence: true
   validates :tour_id, presence: true
+
+  def passing_time
+    Time.now
+  end
 end
