@@ -10,7 +10,7 @@ module V0
                :start_time,
                :end_time,
                :user_id
-    has_many :tour_points#, class_name: "SimplifiedTourPoint"
+    has_many :tour_points
 
     def distance
       object.length

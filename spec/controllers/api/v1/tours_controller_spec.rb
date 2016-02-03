@@ -86,6 +86,21 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
         }.to raise_error(ActiveRecord::RecordNotFound)
       end
     end
+
+    context "has simplified tour points" do
+      let!(:tour) { FactoryGirl.create(:tour)}
+      let!(:tour_points) { FactoryGirl.create_list(:tour_point, 2, tour: tour)}
+      let!(:simplified_tour_points) { FactoryGirl.create(:simplified_tour_point, tour: tour)}
+      before { get 'show', id: tour.id, token: user.token , format: :json }
+      it { expect(JSON.parse(response.body)["tour"]["tour_points"].count).to eq(1) }
+    end
+
+    context "don't have simplified tour points" do
+      let!(:tour) { FactoryGirl.create(:tour)}
+      let!(:tour_points) { FactoryGirl.create_list(:tour_point, 2, tour: tour)}
+      before { get 'show', id: tour.id, token: user.token , format: :json }
+      it { expect(JSON.parse(response.body)["tour"]["tour_points"].count).to eq(2) }
+    end
   end
 
   describe "PUT update" do
