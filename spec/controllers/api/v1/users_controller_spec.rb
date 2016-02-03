@@ -9,7 +9,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
     after { ENV["DISABLE_CRYPT"]="TRUE" }
 
     context 'when the user exists' do
-      let!(:user) { create :pro_user, sms_code: "123456" }
+      let!(:user) { create :pro_user, sms_code: "123456", avatar_key: "avatar" }
 
       context 'when the phone number and sms code are valid' do
         before { post 'login', user: {phone: user.phone, sms_code: "123456"}, format: 'json' }
@@ -40,7 +40,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
       end
     end
     context "user with tours and encounters" do
-      let!(:user) { create :pro_user, sms_code: "123456" }
+      let!(:user) { create :pro_user, sms_code: "123456", validation_status: "validated", avatar_key: "avatar" }
       let!(:tour1) { create :tour, user: user }
       let!(:tour2) { create :tour }
       let!(:tour3) { create :tour, user: user }
@@ -52,10 +52,22 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
       before { post 'login', user: {phone: user.phone, sms_code: "123456"}, format: 'json' }
       it { expect(JSON.parse(response.body)).to eq({"user"=>{"id"=>user.id, "email"=>user.email, "first_name"=>"John", "last_name"=>"Doe", "token"=>user.token, "avatar_url"=>"https://foobar.s3-eu-west-1.amazonaws.com/300x300/avatar.jpg", "organization"=>{"name"=>user.organization.name, "description"=>"Association description", "phone"=>user.organization.phone, "address"=>user.organization.address, "logo_url"=>nil}, "stats"=>{"tour_count"=>2, "encounter_count"=>3}}}) }
     end
+
+    context "blocked user" do
+      let!(:user) { create :pro_user, sms_code: "123456", validation_status: "blocked", avatar_key: nil }
+      before { post 'login', user: {phone: user.phone, sms_code: "123456"}, format: 'json' }
+      it { expect(JSON.parse(response.body)).to eq({"user"=>{"id"=>user.id, "email"=>user.email, "first_name"=>"John", "last_name"=>"Doe", "token"=>user.token, "avatar_url"=>nil, "organization"=>{"name"=>user.organization.name, "description"=>"Association description", "phone"=>user.organization.phone, "address"=>user.organization.address, "logo_url"=>nil}, "stats"=>{"tour_count"=>0, "encounter_count"=>0}}}) }
+    end
+
+    context "no avatar" do
+      let!(:user) { create :pro_user, sms_code: "123456", validation_status: "validated", avatar_key: nil }
+      before { post 'login', user: {phone: user.phone, sms_code: "123456"}, format: 'json' }
+      it { expect(JSON.parse(response.body)).to eq({"user"=>{"id"=>user.id, "email"=>user.email, "first_name"=>"John", "last_name"=>"Doe", "token"=>user.token, "avatar_url"=>nil, "organization"=>{"name"=>user.organization.name, "description"=>"Association description", "phone"=>user.organization.phone, "address"=>user.organization.address, "logo_url"=>nil}, "stats"=>{"tour_count"=>0, "encounter_count"=>0}}}) }
+    end
   end
 
   describe 'PATCH update' do
-    let!(:user) { create :pro_user }
+    let!(:user) { create :pro_user, avatar_key: "avatar" }
 
     context 'authentication is OK' do
       before { ENV["DISABLE_CRYPT"]="FALSE" }
@@ -105,7 +117,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
   end
 
   describe 'code' do
-    let!(:user) { create :pro_user, sms_code: "123456" }
+    let!(:user) { create :pro_user, sms_code: "123456", avatar_key: "avatar" }
 
     describe "regenerate sms code" do
       before { patch 'code', {id: "me", user: { phone: user.phone }, code: {action: "regenerate"}, format: :json} }
@@ -146,7 +158,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
     context "valid params" do
       before { post 'create', {user: {phone: "+33612345678"}} }
       it { expect(User.last.user_type).to eq("public") }
-      it { expect(JSON.parse(response.body)).to eq({"user"=>{"id"=>User.last.id, "email"=>nil, "first_name"=>nil, "last_name"=>nil, "token"=>User.last.token, "avatar_url"=>"https://foobar.s3-eu-west-1.amazonaws.com/300x300/avatar.jpg", "organization"=>nil, "stats"=>{"tour_count"=>0, "encounter_count"=>0}}}) }
+      it { expect(JSON.parse(response.body)).to eq({"user"=>{"id"=>User.last.id, "email"=>nil, "first_name"=>nil, "last_name"=>nil, "token"=>User.last.token, "avatar_url"=>nil, "organization"=>nil, "stats"=>{"tour_count"=>0, "encounter_count"=>0}}}) }
     end
 
     context "invalid params" do

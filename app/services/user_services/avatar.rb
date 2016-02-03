@@ -11,6 +11,7 @@ module UserServices
     end
 
     def thumbnail_url
+      return unless user.avatar_key
       return "https://foobar.s3-eu-west-1.amazonaws.com/300x300/avatar.jpg" if Rails.env.test?
       avatars.url_for(key: thumbnail_key)
     end

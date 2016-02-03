@@ -18,7 +18,7 @@ module V1
     end
 
     def avatar_url
-      UserServices::Avatar.new(user: object).thumbnail_url
+      UserServices::Avatar.new(user: object).thumbnail_url unless object.blocked?
     end
   end
 end
