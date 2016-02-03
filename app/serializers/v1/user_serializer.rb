@@ -4,7 +4,8 @@ module V1
                :email,
                :first_name,
                :last_name,
-               :token
+               :token,
+               :avatar_url
 
     has_one :organization
     has_one :stats
@@ -14,6 +15,10 @@ module V1
           tour_count: object.tours.count,
           encounter_count: object.encounters.count
       }
+    end
+
+    def avatar_url
+      UserServices::Avatar.new(user: object).thumbnail_url
     end
   end
 end

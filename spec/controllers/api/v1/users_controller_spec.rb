@@ -17,7 +17,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
 
         it "renders user" do
           res = JSON.parse(response.body)
-          expect(res).to eq({"user"=>{"id"=>user.id, "email"=>user.email, "first_name"=>"John", "last_name"=>"Doe", "token"=>user.token, "organization"=>{"name"=>user.organization.name, "description"=>"Association description", "phone"=>user.organization.phone, "address"=>user.organization.address, "logo_url"=>nil}, "stats"=>{"tour_count"=>0, "encounter_count"=>0}}})
+          expect(res).to eq({"user"=>{"id"=>user.id, "email"=>user.email, "first_name"=>"John", "last_name"=>"Doe", "token"=>user.token, "avatar_url"=>"https://foobar.s3-eu-west-1.amazonaws.com/300x300/avatar.jpg", "organization"=>{"name"=>user.organization.name, "description"=>"Association description", "phone"=>user.organization.phone, "address"=>user.organization.address, "logo_url"=>nil}, "stats"=>{"tour_count"=>0, "encounter_count"=>0}}})
         end
       end
 
@@ -50,7 +50,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
       let!(:encounter4) { create :encounter, tour: tour3 }
 
       before { post 'login', user: {phone: user.phone, sms_code: "123456"}, format: 'json' }
-      it { expect(JSON.parse(response.body)).to eq({"user"=>{"id"=>user.id, "email"=>user.email, "first_name"=>"John", "last_name"=>"Doe", "token"=>user.token, "organization"=>{"name"=>user.organization.name, "description"=>"Association description", "phone"=>user.organization.phone, "address"=>user.organization.address, "logo_url"=>nil}, "stats"=>{"tour_count"=>2, "encounter_count"=>3}}}) }
+      it { expect(JSON.parse(response.body)).to eq({"user"=>{"id"=>user.id, "email"=>user.email, "first_name"=>"John", "last_name"=>"Doe", "token"=>user.token, "avatar_url"=>"https://foobar.s3-eu-west-1.amazonaws.com/300x300/avatar.jpg", "organization"=>{"name"=>user.organization.name, "description"=>"Association description", "phone"=>user.organization.phone, "address"=>user.organization.address, "logo_url"=>nil}, "stats"=>{"tour_count"=>2, "encounter_count"=>3}}}) }
     end
   end
 
@@ -71,7 +71,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
 
         it "renders user" do
           res = JSON.parse(response.body)
-          expect(res).to eq({"user"=>{"id"=>user.id, "email"=>"new@e.mail", "first_name"=>"John", "last_name"=>"Doe", "token"=>user.token, "organization"=>{"name"=>user.organization.name, "description"=>"Association description", "phone"=>user.organization.phone, "address"=>user.organization.address, "logo_url"=>nil}, "stats"=>{"tour_count"=>0, "encounter_count"=>0}}})
+          expect(res).to eq({"user"=>{"id"=>user.id, "email"=>"new@e.mail", "first_name"=>"John", "last_name"=>"Doe", "token"=>user.token, "avatar_url"=>"https://foobar.s3-eu-west-1.amazonaws.com/300x300/avatar.jpg", "organization"=>{"name"=>user.organization.name, "description"=>"Association description", "phone"=>user.organization.phone, "address"=>user.organization.address, "logo_url"=>nil}, "stats"=>{"tour_count"=>0, "encounter_count"=>0}}})
         end
       end
 
@@ -113,7 +113,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
       it { expect(user.reload.sms_code).to_not eq("123456") }
       it "renders user" do
         res = JSON.parse(response.body)
-        expect(res).to eq({"user"=>{"id"=>user.id, "email"=>user.email, "first_name"=>"John", "last_name"=>"Doe", "token"=>user.token, "organization"=>{"name"=>user.organization.name, "description"=>"Association description", "phone"=>user.organization.phone, "address"=>user.organization.address, "logo_url"=>nil}, "stats"=>{"tour_count"=>0, "encounter_count"=>0}}})
+        expect(res).to eq({"user"=>{"id"=>user.id, "email"=>user.email, "first_name"=>"John", "last_name"=>"Doe", "token"=>user.token, "avatar_url"=>"https://foobar.s3-eu-west-1.amazonaws.com/300x300/avatar.jpg", "organization"=>{"name"=>user.organization.name, "description"=>"Association description", "phone"=>user.organization.phone, "address"=>user.organization.address, "logo_url"=>nil}, "stats"=>{"tour_count"=>0, "encounter_count"=>0}}})
       end
     end
 
@@ -146,7 +146,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
     context "valid params" do
       before { post 'create', {user: {phone: "+33612345678"}} }
       it { expect(User.last.user_type).to eq("public") }
-      it { expect(JSON.parse(response.body)).to eq({"user"=>{"id"=>User.last.id, "email"=>nil, "first_name"=>nil, "last_name"=>nil, "token"=>User.last.token, "organization"=>nil, "stats"=>{"tour_count"=>0, "encounter_count"=>0}}}) }
+      it { expect(JSON.parse(response.body)).to eq({"user"=>{"id"=>User.last.id, "email"=>nil, "first_name"=>nil, "last_name"=>nil, "token"=>User.last.token, "avatar_url"=>"https://foobar.s3-eu-west-1.amazonaws.com/300x300/avatar.jpg", "organization"=>nil, "stats"=>{"tour_count"=>0, "encounter_count"=>0}}}) }
     end
 
     context "invalid params" do

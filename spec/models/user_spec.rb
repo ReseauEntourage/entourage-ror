@@ -11,6 +11,7 @@ describe User, :type => :model do
     it { expect(FactoryGirl.build(:public_user, email: nil).save).to be true }
     it { expect(FactoryGirl.build(:public_user, device_type: nil).save).to be true }
     it { expect(FactoryGirl.build(:public_user, device_id: nil).save).to be true }
+    it { expect(FactoryGirl.build(:public_user, validation_status: nil).save).to be false }
   end
 
   describe "pro user" do
@@ -23,6 +24,8 @@ describe User, :type => :model do
     it { expect(FactoryGirl.build(:pro_user, email: nil).save).to be false }
     it { expect(FactoryGirl.build(:pro_user, device_type: nil).save).to be true }
     it { expect(FactoryGirl.build(:pro_user, device_id: nil).save).to be true }
+    it { expect(FactoryGirl.build(:pro_user, device_id: nil).save).to be true }
+    it { expect(FactoryGirl.build(:public_user, validation_status: nil).save).to be false }
   end
 
   it { should validate_presence_of(:first_name) }

@@ -20,6 +20,18 @@ class UserPresenter < ApplicationPresenter
     PreferenceServices::UserDefault.new(user: user)
   end
 
+  def avatar
+    image_tag(UserServices::Avatar.new(user: user).thumbnail_url, height: '128', width: '128')
+  end
+
+  def validation_status_action_link
+    if user.validated?
+      link_to("Bannir", Rails.application.routes.url_helpers.banish_admin_user_path(user), method: :put, class: "btn btn-danger")
+    else
+      link_to("Valider", Rails.application.routes.url_helpers.validate_admin_user_path(user), method: :put, class: "btn btn-success")
+    end
+  end
+
   private
   attr_reader :user
 end
