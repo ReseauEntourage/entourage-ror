@@ -37,7 +37,6 @@ module V1
           display_name: tour_user.first_name,
           avatar_url: nil
       }
-
     end
 
     def organization_description

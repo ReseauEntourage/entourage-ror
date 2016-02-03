@@ -1,3 +1,3 @@
-ActiveAdmin.register Tour do
-  menu false
-end
+# ActiveAdmin.register Tour do
+#   menu false
+# end
