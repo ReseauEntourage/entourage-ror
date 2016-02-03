@@ -26,7 +26,7 @@ class UserPresenter < ApplicationPresenter
 
   def validation_status_action_link
     if user.validated?
-      link_to("Bannir", Rails.application.routes.url_helpers.banish_admin_user_path(user), method: :put, class: "btn btn-danger")
+      link_to("Bannir", Rails.application.routes.url_helpers.banish_admin_user_path(user), method: :put, class: "btn btn-danger", data: { confirm: "Vous allez supprimer l'avatar et bannir l'utilisateur, êtes vous sûr ?" })
     else
       link_to("Valider", Rails.application.routes.url_helpers.validate_admin_user_path(user), method: :put, class: "btn btn-success")
     end
