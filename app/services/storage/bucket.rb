@@ -18,7 +18,7 @@ module Storage
     end
 
     def destroy(key:)
-      bucket.object(key).destroy(key)
+      bucket.object(key).delete
     end
 
     private

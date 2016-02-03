@@ -14,7 +14,7 @@ module Admin
 
     def banish
       @user.block!
-      Avatar.new(user: user).destroy
+      UserServices::Avatar.new(user: user).destroy
       redirect_to moderate_admin_users_path(validation_status: "blocked")
     end
 
@@ -24,6 +24,8 @@ module Admin
     end
 
     private
+    attr_reader :user
+
     def set_user
       @user = User.find(params[:id])
     end
