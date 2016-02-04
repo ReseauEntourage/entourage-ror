@@ -31,5 +31,10 @@ module V0
     def organization_description
       object.organization_description
     end
+
+    def tour_points
+      points = object.simplified_tour_points.present? ? object.simplified_tour_points : object.tour_points
+      JSON.parse(ActiveModel::ArraySerializer.new(points, each_serializer: ::V0::TourPointSerializer).to_json)
+    end
   end
 end

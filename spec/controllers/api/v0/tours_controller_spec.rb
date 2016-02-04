@@ -46,7 +46,6 @@ RSpec.describe Api::V0::ToursController, :type => :controller do
       it { expect(response.status).to eq(200) }
 
       it "responds with tour" do
-
         res = JSON.parse(response.body)
         start_time = tour.tour_points.first.passing_time.iso8601(3)
         end_time = tour.tour_points.last.passing_time.iso8601(3)
@@ -71,6 +70,21 @@ RSpec.describe Api::V0::ToursController, :type => :controller do
           get 'show', id: 0, token: user.token , format: :json
         }.to raise_error(ActiveRecord::RecordNotFound)
       end
+    end
+
+    context "has simplified tour points" do
+      let!(:tour) { FactoryGirl.create(:tour)}
+      let!(:tour_points) { FactoryGirl.create_list(:tour_point, 2, tour: tour)}
+      let!(:simplified_tour_points) { FactoryGirl.create(:simplified_tour_point, tour: tour)}
+      before { get 'show', id: tour.id, token: user.token , format: :json }
+      it { expect(JSON.parse(response.body)["tour"]["tour_points"].count).to eq(1) }
+    end
+
+    context "don't have simplified tour points" do
+      let!(:tour) { FactoryGirl.create(:tour)}
+      let!(:tour_points) { FactoryGirl.create_list(:tour_point, 2, tour: tour)}
+      before { get 'show', id: tour.id, token: user.token , format: :json }
+      it { expect(JSON.parse(response.body)["tour"]["tour_points"].count).to eq(2) }
     end
   end
 
