@@ -57,8 +57,13 @@ class OrganizationsController < ApplicationController
 
   def simplified_tours
     @tours = TourServices::SimplifiedTourFilter.new(params: params, organization: @organization, user: @current_user).filter
-    tours_json = V1::GoogleMap::SimplifiedTourSerializer.new(tours: @tours).to_json
-    render json: tours_json, status: 200
+    if params[:only_points]=="true"
+      points = @tours.map {|tour| tour.simplified_tour_points }.flatten
+      render json: {points: points}
+    else
+      tours_json = V1::GoogleMap::SimplifiedTourSerializer.new(tours: @tours).to_json
+      render json: tours_json, status: 200
+    end
   end
 
   def snap_tours
