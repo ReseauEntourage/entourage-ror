@@ -42,4 +42,11 @@ namespace :data_migration do
       ToursUser.create!(tour: tour, user: tour.user)
     end
   end
+
+  desc "set initial members for tours"
+  task set_simplified_tour_points_passing_time: :environment do
+    Tour.joins(:simplified_tour_points).find_each do |tour|
+      tour.simplified_tour_points.update_all(created_at: tour.created_at)
+    end
+  end
 end

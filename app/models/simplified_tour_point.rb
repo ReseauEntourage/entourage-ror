@@ -6,6 +6,6 @@ class SimplifiedTourPoint < ActiveRecord::Base
   validates :tour_id, presence: true
 
   def passing_time
-    Time.now
+    created_at
   end
 end
