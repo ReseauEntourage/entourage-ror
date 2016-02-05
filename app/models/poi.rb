@@ -4,7 +4,7 @@ class Poi < ActiveRecord::Base
   validates :latitude, :longitude, numericality: true
   belongs_to :category
   
-  geocoded_by :address
+  geocoded_by :adress
   
   default_scope { where(validated: true) }
   

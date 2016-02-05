@@ -1,0 +1,27 @@
+<div class="container">
+  <div class="row">
+    <h1>Liste des POI</h1>
+  </div>
+
+  <div class="row">
+    <%= link_to "ajouter un POI", new_admin_poi_path, class: "btn btn-success" %>
+  </div>
+
+  <br>
+  <table class="table">
+    <th>id</th>
+    <th>Nom</th>
+    <th>Adresse</th>
+    <th>Date de création</th>
+    <% @pois.each do |poi| %>
+      <tr>
+        <td><%= poi.id %></td>
+        <td><%= poi.name %></td>
+        <td><%= poi.adress %></td>
+        <td><%=  l(poi.created_at, format: :short) if poi.created_at %></td>
+      </tr>
+    <% end %>
+  </table>
+
+  <%= paginate(@pois) %>
+</div>
