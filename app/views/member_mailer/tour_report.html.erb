@@ -21,8 +21,8 @@
           <img src="<%= raw @tour.static_path_map.url %>" alt="parcours"/>
         </td>
         <td style="width:300px; padding: 10px; vertical-align: top;">
-          <p><strong>D&eacute;part</strong> &agrave; <%= @tour.tour_points.first.passing_time.strftime('%H:%M')  %></p>
-          <p><strong>Arriv&eacute;e</strong> &agrave; <%= @tour.tour_points.last.passing_time.strftime('%H:%M') %></p>
+          <p><strong>D&eacute;part</strong> &agrave; <%= @tour.created_at.try(:strftime, '%H:%M')  %></p>
+          <p><strong>Arriv&eacute;e</strong> &agrave; <%= @tour.closed_at.try(:strftime, '%H:%M') %></p>
           <p><%= @tour_presenter.distance %> parcourus</p>
         </td>
       </tr>
