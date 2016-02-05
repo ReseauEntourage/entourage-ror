@@ -13,7 +13,7 @@
       <% if current_admin.present? %>
         <%= render partial: "layouts/switch_user" %>
       <% else %>
-        <p class="nav navbar-nav navbar-left navbar-text"> Bonjour, <%= current_user.first_name %></p>
+        <p class="nav navbar-nav navbar-left navbar-text"> Bonjour, <%= current_user.try(:first_name) %></p>
       <% end %>
 
       <ul class="nav navbar-nav navbar-right">

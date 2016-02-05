@@ -1,6 +1,6 @@
 module Admin
   class SessionsController < Admin::BaseController
-    before_action :authenticate_admin!, only: [:switch_user]
+    skip_before_action :authenticate_admin!, except: [:switch_user]
 
     #used by active admin
     def logout

@@ -1,6 +1,5 @@
 module Admin
   class UsersController < Admin::BaseController
-    before_action :authenticate_admin!
     before_action :set_user, only: [:banish, :validate]
 
     def moderate
