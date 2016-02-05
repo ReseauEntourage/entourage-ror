@@ -52,5 +52,18 @@ RSpec.describe Api::V1::Users::ToursController, :type => :controller do
       it { expect(response.status).to eq 200 }
       it { expect(JSON.parse(response.body)["tours"].count).to eq 1 }
     end
+
+    context "with location filter" do
+      context "has tour around point" do
+        let!(:tour_point) { FactoryGirl.create(:tour_point, tour: tour1, latitude: 48.2, longitude: 2.2) }
+        before { get 'index', user_id: user.id, token: user.token, format: :json, distance: 1000, latitude: 48.2, longitude: 2.2 }
+        it { expect(JSON.parse(response.body)["tours"].count).to eq 1 }
+      end
+
+      context "don't have any tour around point" do
+        before { get 'index', user_id: user.id, token: user.token, format: :json, distance: 1000, latitude: 48.2, longitude: 2.2 }
+        it { expect(JSON.parse(response.body)["tours"].count).to eq 0 }
+      end
+    end
   end
 end
