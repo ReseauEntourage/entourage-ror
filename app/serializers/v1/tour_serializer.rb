@@ -9,7 +9,8 @@ module V1
                :organization_description,
                :start_time,
                :end_time,
-               :number_of_people
+               :number_of_people,
+               :join_status
 
     has_many :tour_points
     has_one :author
@@ -47,5 +48,18 @@ module V1
       points = object.simplified_tour_points.present? ? object.simplified_tour_points : object.tour_points
       JSON.parse(ActiveModel::ArraySerializer.new(points, each_serializer: ::V1::TourPointSerializer).to_json)
     end
+
+    def join_status
+      if current_tour_user
+        current_tour_user.status
+      else
+        "not_requested"
+      end
+    end
+
+    def current_tour_user
+      object.tours_users.select {|tour_user| tour_user.user_id == scope.id}.first
+    end
+
   end
 end

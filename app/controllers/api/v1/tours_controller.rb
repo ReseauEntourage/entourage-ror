@@ -21,7 +21,7 @@ module Api
       end
 
       def index
-        @tours = Tour.includes(:tour_points).includes(:user).where(nil)
+        @tours = Tour.includes(:tour_points).includes(:tours_users).includes(:user).where(nil)
         @tours = @tours.type(params[:type]) if params[:type].present?
         @tours = @tours.vehicle_type(Tour.vehicle_types[params[:vehicle_type]]) if params[:vehicle_type].present?
 
@@ -35,7 +35,7 @@ module Api
 
         @tours = @tours.where("updated_at > ?", 24.hours.ago).order(updated_at: :desc).limit(params.fetch(:limit, 10))
         @presenters = TourCollectionPresenter.new(tours: @tours)
-        render json: @tours, status: 200, each_serializer: ::V1::TourSerializer
+        render json: @tours, status: 200, each_serializer: ::V1::TourSerializer, scope: current_user
       end
 
       def update
