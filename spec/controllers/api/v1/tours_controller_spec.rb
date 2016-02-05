@@ -32,6 +32,7 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
                                     "end_time"=>nil,
                                     "author"=>{"id"=>user.id, "display_name"=>"John", "avatar_url"=>nil},
                                     "number_of_people"=> 1,
+                                    "join_status"=>"accepted",
                                     "tour_points"=>[]}})
       end
     end
@@ -73,6 +74,7 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
                                     "end_time"=>end_time,
                                     "author"=>{"id"=>last_tour.user.id, "display_name"=>"John", "avatar_url"=>nil},
                                     "number_of_people"=> 1,
+                                    "join_status"=>"not_requested",
                                     "tour_points"=>[{"latitude"=>48.83, "longitude"=>2.29}, {"latitude"=>48.83, "longitude"=>2.29}]}})
       end
     end
@@ -132,6 +134,7 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
                                     "end_time"=>end_time,
                                     "author"=>{"id"=>tour.user.id, "display_name"=>"John", "avatar_url"=>nil},
                                     "number_of_people"=> 1,
+                                    "join_status"=>"not_requested",
                                     "tour_points"=>[{"latitude"=>48.83, "longitude"=>2.29}, {"latitude"=>48.83, "longitude"=>2.29}]}})
       end
     end
@@ -210,6 +213,7 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
            "organization_description"=>"Association description",
            "author"=>{"id"=>tours.first.user.id, "display_name"=>"John", "avatar_url"=>nil},
            "number_of_people"=> 1,
+           "join_status"=>"not_requested",
            "tour_points"=>[]},
           {"id"=>tours.last.id,
            "tour_type"=>"medical",
@@ -222,6 +226,7 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
            "organization_description"=>"Association description",
            "author"=>{"id"=>tours.last.user.id, "display_name"=>"John", "avatar_url"=>nil},
            "number_of_people"=> 1,
+           "join_status"=>"not_requested",
            "tour_points"=>[]}]})
     end
      
@@ -313,6 +318,10 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
         expect(assigns(:tours)).to match_array([tour4, tour3, tour2])
       end
        
+    end
+
+    context "user is part of the tour" do
+
     end
     
   end
