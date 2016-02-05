@@ -515,11 +515,14 @@ vehicle_type is either "feet" or "car"
     + token (required, string, `FAKETOKEN`) ... Token identifying the current user
 
 
-### Retrieve tours from user [GET /users/{user_id}/tours{?token}{&page}{&per}]
+### Retrieve tours from user [GET /users/{user_id}/tours{?token}{&page}{&per}{&distance}{&latitude}{&longitude}]
 
-+ Parameters
++ Parametersparameters to filter 
     + page (optional, number) ... pagination : page number
     + per (optional, number) ... pagination : number of tours per page
+    + distance (optional, number) ... distance : filter results within a circle with distance radius (in meters)
+    + latitude (optional, number) ... latitude : filter results within a circle with this center
+    + longitude (optional, number) ... longitude : filter results within a circle with this center
 
 + Request (application/json)
 
@@ -1307,5 +1310,3 @@ Resources  related to contacts for the **Entourage API**
 + Response 401 (application/json; charset=utf-8)
 
         {"error":{"status":401,"message":"Please sign-in"}}
-        
-        
