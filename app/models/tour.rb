@@ -14,6 +14,9 @@ class Tour < ActiveRecord::Base
 
   delegate :organization_name, :organization_description, to: :user
 
+  scope :type, -> (type) { where tour_type: type }
+  scope :vehicle_type, -> (vehicle_type) { where vehicle_type: vehicle_type }
+
   def static_path_map(point_limit: 200, precision: 4)
     if self.tour_points.length > 0
       map = GoogleStaticMap.new(width: 300, height: 300, api_key:ENV["ANDROID_GCM_API_KEY"])
@@ -47,9 +50,6 @@ class Tour < ActiveRecord::Base
       return EmptyMap.new
     end
   end
-  
-  scope :type, -> (type) { where tour_type: type }
-  scope :vehicle_type, -> (vehicle_type) { where vehicle_type: vehicle_type }
 
   def duration
     if closed_at.nil?
@@ -70,9 +70,10 @@ class Tour < ActiveRecord::Base
   def to_s
     "#{id} - by user #{user} at #{created_at}"
   end
-  
+
   private
-  
+
+  #TODO: remove this method and use simplified tour points instead
   def limited_tour_points(point_limit)
     if self.tour_points.count <= point_limit
       points = self.tour_points
@@ -87,7 +88,7 @@ class Tour < ActiveRecord::Base
     end
     points
   end
-  
+
 end
 
 class EmptyMap
