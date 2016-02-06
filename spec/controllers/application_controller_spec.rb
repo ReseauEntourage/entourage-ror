@@ -33,4 +33,40 @@ describe ApplicationController, :type => :controller do
       end
     end
   end
+
+
+
+  describe "authorisations" do
+    let(:admin) { FactoryGirl.create(:pro_user, admin: true) }
+    let(:manager) { FactoryGirl.create(:pro_user, manager: true) }
+    let(:user) { FactoryGirl.create(:pro_user) }
+
+    context "admin" do
+      before { session[:admin_user_id] = admin.id }
+      before { session[:user_id] = admin.id }
+      it { expect(controller.current_admin).to eq(admin) }
+      it { expect(controller.current_manager).to eq(admin) }
+      it { expect(controller.current_user).to eq(admin) }
+    end
+
+    context "manager" do
+      before { session[:user_id] = manager.id }
+      it { expect(controller.current_admin).to be nil }
+      it { expect(controller.current_manager).to eq(manager) }
+      it { expect(controller.current_user).to eq(manager) }
+    end
+
+    context "user" do
+      before { session[:user_id] = user.id }
+      it { expect(controller.current_admin).to be nil }
+      it { expect(controller.current_manager).to be nil }
+      it { expect(controller.current_user).to eq(user) }
+    end
+
+    context "not logged in" do
+      it { expect(controller.current_admin).to be nil }
+      it { expect(controller.current_manager).to be nil }
+      it { expect(controller.current_user).to be nil }
+    end
+  end
 end

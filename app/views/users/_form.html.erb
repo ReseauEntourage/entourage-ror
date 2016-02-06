@@ -23,12 +23,13 @@
 
   <%= f.hidden_field :send_sms, name: "send_sms", value: "0" %>
 
-  <% if current_admin %>
+  <% if current_manager %>
     <div class="field form-group">
       <label>Administrateur</label>
       <%= f.check_box :manager %>
     </div>
-
+  <% end %>
+  <% if current_admin %>
     <div class="field form-group">
       <label>Snap to road (points collé à la route)</label>
       <%= check_box_tag "user[snap_to_road]", 'true', @user_presenter.snap_to_road %>
