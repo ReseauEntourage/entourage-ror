@@ -33,20 +33,4 @@ namespace :data_migration do
       user.update(phone: "+336#{99999999-user.id}")
     end
   end
-
-  desc "set initial members for tours"
-  task set_tour_members: :environment do
-    ToursUser.destroy_all
-    Tour.update_all(number_of_people: 0)
-    Tour.find_each do |tour|
-      ToursUser.create!(tour: tour, user: tour.user)
-    end
-  end
-
-  desc "set initial members for tours"
-  task set_simplified_tour_points_passing_time: :environment do
-    Tour.joins(:simplified_tour_points).find_each do |tour|
-      tour.simplified_tour_points.update_all(created_at: tour.created_at)
-    end
-  end
 end
