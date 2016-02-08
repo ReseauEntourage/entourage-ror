@@ -22,6 +22,15 @@ module Admin
       redirect_to moderate_admin_users_path(validation_status: "validated")
     end
 
+    def fake_users
+
+    end
+
+    def generate
+      @users = []
+      render :fake_users
+    end
+
     private
     attr_reader :user
 

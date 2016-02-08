@@ -1,0 +1,10 @@
+<div class="container">
+  <div class="row">
+    <%= link_to "Générer des utilisateurs de test", generate_admin_users_path, class: "btn btn success" %>
+  </div>
+  <% if @users %>
+    <div class="row">
+      <p> Utilisateur sans maraude  <%= @users[0].phone %> / <%= @users[0].sms_code %> </p>
+    </div>
+  <% end %>
+</div>
