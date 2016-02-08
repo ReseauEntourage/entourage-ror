@@ -23,6 +23,7 @@ module TourServices
       else
         callback.on_create_failure.try(:call, tour)
       end
+      tour
     end
 
     private

@@ -22,6 +22,7 @@ module UserServices
       else
         callback.on_create_failure.try(:call, user)
       end
+      user
     end
 
     private
