@@ -23,11 +23,17 @@ module Admin
     end
 
     def fake_users
-
     end
 
     def generate
       @users = []
+      @users << UserServices::FakeUser.new.user_without_tours
+      user_with_tours = UserServices::FakeUser.new.user_with_tours
+      ongoing_tour = user_with_tours.tours.where(status: "ongoing").first
+      @users << user_with_tours
+      @users << UserServices::FakeUser.new.user_joining_tour(tour: ongoing_tour)
+      @users << UserServices::FakeUser.new.user_accepted_in_tour(tour: ongoing_tour)
+      @users << UserServices::FakeUser.new.user_rejected_of_tour(tour: ongoing_tour)
       render :fake_users
     end
 

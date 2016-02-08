@@ -11,10 +11,10 @@ module UserServices
       SecureRandom.hex(16)
     end
 
-    def create(send_sms: false)
+    def create(send_sms: false, sms_code: nil)
       yield callback if block_given?
 
-      sms_code = UserServices::SmsCode.new.code
+      sms_code = sms_code || UserServices::SmsCode.new.code
       user = new_user(sms_code)
       if user.save
         UserServices::SMSSender.new(user: user).send_welcome_sms(sms_code) if send_sms
