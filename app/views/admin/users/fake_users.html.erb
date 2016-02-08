@@ -1,14 +1,40 @@
 <div class="container">
+  <% if @users %>
+    <div class="row">
+      <table class="table">
+        <th></th>
+        <th>Téléphone</th>
+        <th>Code SMS</th>
+        <tr>
+          <td>Utilisateur sans maraude</td>
+          <td><%= @users[0].phone %></td>
+          <td>123456</td>
+        </tr>
+        <tr>
+          <td>Utilisateur avec 2 maraude (1 fermée, 1 en cours)</td>
+          <td><%= @users[1].phone %></td>
+          <td>123456</td>
+        </tr>
+        <tr>
+          <td>Utilisateur qui a demandé à rejoindre une maraude</td>
+          <td><%= @users[2].phone %></td>
+          <td>123456</td>
+        </tr>
+        <tr>
+          <td>Utilisateur qui a été accepté dans une maraude</td>
+          <td><%= @users[3].phone %></td>
+          <td>123456</td>
+        </tr>
+        <tr>
+          <td>Utilisateur qui a été refusé dans une maraude</td>
+          <td><%= @users[4].phone %></td>
+          <td>123456</td>
+        </tr>
+      </table>
+    </div>
+    <br>
+  <% end %>
   <div class="row">
     <%= link_to "Générer des utilisateurs de test", generate_admin_users_path, method: :post, class: "btn btn-success" %>
   </div>
-  <% if @users %>
-    <div class="row">
-      <p> Utilisateur sans maraude  <%= @users[0].phone %> / 123456 </p>
-      <p> Utilisateur avec 2 maraude (1 fermée, 1 en cours) <%= @users[1].phone %> / 123456 </p>
-      <p> Utilisateur qui a demandé à rejoindre une maraude <%= @users[2].phone %> / 123456 </p>
-      <p> Utilisateur qui a été accepté dans une maraude <%= @users[3].phone %> / 123456 </p>
-      <p> Utilisateur qui a été refusé dans une maraude <%= @users[4].phone %> / 123456 </p>
-    </div>
-  <% end %>
 </div>
