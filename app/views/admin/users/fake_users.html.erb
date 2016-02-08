@@ -1,0 +1,14 @@
+<div class="container">
+  <div class="row">
+    <%= link_to "Générer des utilisateurs de test", generate_admin_users_path, method: :post, class: "btn btn-success" %>
+  </div>
+  <% if @users %>
+    <div class="row">
+      <p> Utilisateur sans maraude  <%= @users[0].phone %> / <%= @users[0].sms_code %> </p>
+      <p> Utilisateur avec 2 maraude (1 fermée, 1 en cours) <%= @users[1].phone %> / <%= @users[1].sms_code %> </p>
+      <p> Utilisateur qui a demandé à rejoindre une maraude <%= @users[2].phone %> / <%= @users[2].sms_code %> </p>
+      <p> Utilisateur qui a été accepté dans une maraude <%= @users[3].phone %> / <%= @users[3].sms_code %> </p>
+      <p> Utilisateur qui a été refusé dans une maraude <%= @users[4].phone %> / <%= @users[4].sms_code %> </p>
+    </div>
+  <% end %>
+</div>

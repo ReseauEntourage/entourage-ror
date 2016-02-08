@@ -30,6 +30,7 @@ gem 'sidekiq',                  '~> 3.4.1'
 gem 'simplify_rb',              '~> 0.1.2'
 gem 'lograge',                  '~> 0.3.4'
 gem 'aws-sdk',                  '~> 2.2.9'
+gem 'faker',                    '~> 1.6.1'
 
 group :development, :test do
   gem 'byebug',                 '~> 5.0.0'
