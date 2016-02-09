@@ -22,7 +22,7 @@ module Admin
       redirect_to moderate_admin_users_path(validation_status: "validated")
     end
 
-    def fake_users
+    def fake
     end
 
     def generate
@@ -34,7 +34,7 @@ module Admin
       @users << UserServices::FakeUser.new.user_joining_tour(tour: ongoing_tour)
       @users << UserServices::FakeUser.new.user_accepted_in_tour(tour: ongoing_tour)
       @users << UserServices::FakeUser.new.user_rejected_of_tour(tour: ongoing_tour)
-      render :fake_users
+      render :fake
     end
 
     private

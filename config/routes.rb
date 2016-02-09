@@ -129,7 +129,7 @@ Rails.application.routes.draw do
     resources :users, only: [:none] do
       collection do
         get 'moderate'
-        get 'fake_users'
+        get 'fake'
         post 'generate'
       end
 
