@@ -20,11 +20,11 @@ module V1
     end
 
     def start_time
-      object.tour_points.first.try(:passing_time)
+      object.created_at
     end
 
     def end_time
-      object.tour_points.last.try(:passing_time)
+      object.closed_at
     end
 
     def organization_name
@@ -60,6 +60,5 @@ module V1
     def current_tour_user
       object.tours_users.select {|tour_user| tour_user.user_id == scope.id}.first
     end
-
   end
 end

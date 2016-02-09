@@ -28,8 +28,8 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
                                     "distance"=>123,
                                     "organization_name"=>last_tour.user.organization.name,
                                     "organization_description"=>"Association description",
-                                    "start_time"=>nil,
-                                    "end_time"=>nil,
+                                    "start_time"=>last_tour.created_at.iso8601(3),
+                                    "end_time"=>last_tour.closed_at,
                                     "author"=>{"id"=>user.id, "display_name"=>"John", "avatar_url"=>nil},
                                     "number_of_people"=> 1,
                                     "join_status"=>"accepted",
@@ -60,8 +60,6 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
 
       it "responds with tour" do
         res = JSON.parse(response.body)
-        start_time = tour.tour_points.first.passing_time.iso8601(3)
-        end_time = tour.tour_points.last.passing_time.iso8601(3)
         last_tour = Tour.last
         expect(res).to eq({"tour"=>{"id"=>last_tour.id,
                                     "tour_type"=>"medical",
@@ -70,8 +68,8 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
                                     "distance"=>tour.length,
                                     "organization_name"=>last_tour.user.organization.name,
                                     "organization_description"=>"Association description",
-                                    "start_time"=>start_time,
-                                    "end_time"=>end_time,
+                                    "start_time"=>last_tour.created_at.iso8601(3),
+                                    "end_time"=>last_tour.closed_at.iso8601(3),
                                     "author"=>{"id"=>last_tour.user.id, "display_name"=>"John", "avatar_url"=>nil},
                                     "number_of_people"=> 1,
                                     "join_status"=>"not_requested",
@@ -121,8 +119,6 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
 
       it "responds with tour" do
         res = JSON.parse(response.body)
-        start_time = tour.tour_points.first.passing_time.iso8601(3)
-        end_time = tour.tour_points.last.passing_time.iso8601(3)
         expect(res).to eq({"tour"=>{"id"=>tour.id, 
                                     "tour_type"=>"medical",
                                     "status"=>"closed",
@@ -130,8 +126,8 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
                                     "distance"=>tour.length,
                                     "organization_name"=>tour.user.organization.name,
                                     "organization_description"=>"Association description",
-                                    "start_time"=>start_time,
-                                    "end_time"=>end_time,
+                                    "start_time"=>tour.created_at.iso8601(3),
+                                    "end_time"=>tour.closed_at.iso8601(3),
                                     "author"=>{"id"=>tour.user.id, "display_name"=>"John", "avatar_url"=>nil},
                                     "number_of_people"=> 1,
                                     "join_status"=>"not_requested",
@@ -207,7 +203,7 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
            "status"=>"ongoing",
            "vehicle_type"=>"feet",
            "distance"=>0,
-           "start_time"=>nil,
+           "start_time"=>tours.first.created_at.iso8601(3),
            "end_time"=>nil,
            "organization_name"=>tours.first.user.organization.name,
            "organization_description"=>"Association description",
@@ -220,7 +216,7 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
            "status"=>"ongoing",
            "vehicle_type"=>"feet",
            "distance"=>0,
-           "start_time"=>nil,
+           "start_time"=>tours.last.created_at.iso8601(3),
            "end_time"=>nil,
            "organization_name"=>tours.last.user.organization.name,
            "organization_description"=>"Association description",

@@ -14,8 +14,6 @@ RSpec.describe Api::V1::Users::ToursController, :type => :controller do
       it { expect(response.status).to eq 200 }
 
       it "responds with tours" do
-        Timecop.freeze(DateTime.parse("10/10/2010").at_beginning_of_day)
-
         get 'index', user_id: user.id, token: user.token, format: :json
 
         res = JSON.parse(response.body)
@@ -25,7 +23,7 @@ RSpec.describe Api::V1::Users::ToursController, :type => :controller do
              "status"=>"ongoing",
              "vehicle_type"=>"feet",
              "distance"=>0,
-             "start_time"=>nil,
+             "start_time"=>tour1.created_at.iso8601(3),
              "end_time"=>nil,
              "organization_name"=>tour1.user.organization.name,
              "organization_description"=>"Association description",
@@ -38,7 +36,7 @@ RSpec.describe Api::V1::Users::ToursController, :type => :controller do
              "status"=>"ongoing",
              "vehicle_type"=>"feet",
              "distance"=>0,
-             "start_time"=>nil,
+             "start_time"=>tour2.created_at.iso8601(3),
              "end_time"=>nil,
              "organization_name"=>tour2.user.organization.name,
              "organization_description"=>"Association description",
