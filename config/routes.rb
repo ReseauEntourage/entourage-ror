@@ -138,7 +138,7 @@ Rails.application.routes.draw do
         put 'validate'
       end
     end
-    resources :pois, only: [:index, :new, :create]
+    resources :pois
   end
   ActiveAdmin.routes(self)
 

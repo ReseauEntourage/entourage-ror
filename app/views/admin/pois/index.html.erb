@@ -9,16 +9,22 @@
 
   <br>
   <table class="table">
+    <th></th>
+    <th></th>
     <th>id</th>
     <th>Nom</th>
     <th>Adresse</th>
     <th>Date de création</th>
+    <th>Validé?</th>
     <% @pois.each do |poi| %>
       <tr>
+        <td><%= link_to "Modifier", edit_admin_poi_path(poi), class: "btn btn-default" %></td>
+        <td><%= link_to "Supprimer", admin_poi_path(poi), method: :delete, class: "btn btn-danger", data: { confirm: "Êtes vous sûr ?" } %></td>
         <td><%= poi.id %></td>
         <td><%= poi.name %></td>
         <td><%= poi.adress %></td>
         <td><%=  l(poi.created_at, format: :short) if poi.created_at %></td>
+        <td><%= check_box_tag '', '', poi.validated, disabled: true %></td>
       </tr>
     <% end %>
   </table>

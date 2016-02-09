@@ -1,11 +1,30 @@
 module Admin
   class PoisController < Admin::BaseController
+    before_action :set_poi, only: [:edit, :update, :destroy]
+
     def index
-      @pois = Poi.order("created_at DESC").page(params[:page]).per(25)
+      @pois = Poi.unscoped.order("created_at DESC").page(params[:page]).per(25)
     end
 
     def new
       @poi = Poi.new
+    end
+
+    def edit
+    end
+
+    def update
+      if @poi.update(poi_params)
+        @poi.geocode
+        redirect_to admin_pois_path, notice: "Le POI a bien été mis à jour"
+      else
+        render edit_admin_pois_path
+      end
+    end
+
+    def destroy
+      @poi.destroy
+      redirect_to admin_pois_path
     end
 
     def create
@@ -14,13 +33,17 @@ module Admin
       if @poi.save
         redirect_to admin_pois_url, notice: "Le POI a bien été créé"
       else
-        render :new, alert: "le POI n'a pas pu être créé"
+        render new_admin_poi_path, alert: "le POI n'a pas pu être créé"
       end
     end
 
     private
     def poi_params
-      params.require(:poi).permit(:name, :adress, :audience, :email, :category_id)
+      params.require(:poi).permit(:name, :adress, :description, :audience, :email, :website, :phone, :category_id, :validated)
+    end
+
+    def set_poi
+      @poi = Poi.unscoped.find(params[:id])
     end
   end
 end
