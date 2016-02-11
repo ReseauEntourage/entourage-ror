@@ -71,6 +71,10 @@ class Tour < ActiveRecord::Base
     "#{id} - by user #{user} at #{created_at}"
   end
 
+  def empty_points?
+    tour_points.count == 0
+  end
+
   private
 
   #TODO: remove this method and use simplified tour points instead
@@ -88,7 +92,6 @@ class Tour < ActiveRecord::Base
     end
     points
   end
-
 end
 
 class EmptyMap

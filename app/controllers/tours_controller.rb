@@ -5,11 +5,11 @@ class ToursController < ApplicationController
   before_action :check_authorisations
 
   def show
-    flash[:alert] = "Cette maraude n'a aucun point" if @tour.tour_points.blank?
+    flash[:alert] = "Cette maraude n'a aucun point" if @tour.empty_points?
   end
 
   def map_center
-    return render json: [] if @tour.tour_points.blank?
+    return render json: [] if @tour.empty_points?
 
     first_tour_point = @tour.tour_points.first
     render json: [first_tour_point.latitude, first_tour_point.longitude]
@@ -22,7 +22,7 @@ class ToursController < ApplicationController
                 },
                 "geometry" => {
                     "type" => "LineString",
-                    "coordinates" => @tour_presenter.tour_points.map { |coordinate| [coordinate[:long], coordinate[:lat]] }
+                    "coordinates" => @tour_presenter.simplified_tour_points.map { |coordinate| [coordinate[:long], coordinate[:lat]] }
                     }
                 }]
 

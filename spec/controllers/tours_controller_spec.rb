@@ -105,11 +105,9 @@ RSpec.describe ToursController, :type => :controller do
       context "logged in as user" do
         let(:user) { user_basic_login }
         let(:user_tour) { FactoryGirl.create(:tour, user: user) }
-        let!(:tour_points) { FactoryGirl.create_list(:tour_point, 2, tour: user_tour) }
+        let!(:tour_points) { FactoryGirl.create_list(:simplified_tour_point, 2, tour: user_tour) }
         before { get :map_data, id: user_tour.to_param, format: :json }
-        it "somteinh" do
-          expect(JSON.parse(response.body)).to eq({"type"=>"FeatureCollection", "features"=>[{"type"=>"Feature", "properties"=>{"tour_type"=>"medical"}, "geometry"=>{"type"=>"LineString", "coordinates"=>[[1.5, 1.5], [1.5, 1.5]]}}]})
-        end
+        it { expect(JSON.parse(response.body)).to eq({"type"=>"FeatureCollection", "features"=>[{"type"=>"Feature", "properties"=>{"tour_type"=>"medical"}, "geometry"=>{"type"=>"LineString", "coordinates"=>[[1.5, 1.5], [1.5, 1.5]]}}]}) }
       end
     end
   end
