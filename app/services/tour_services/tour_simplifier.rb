@@ -9,7 +9,7 @@ module TourServices
     end
 
     def simplified_points
-      return tour.tour_points.map {|point| point[:id]}) if tour.tour_points.count <= 10
+      return tour.tour_points if tour.tour_points.count <= 10
 
       points = tour.tour_points.map {|tp| {x: R*CMath.cos(tp.latitude)*CMath.cos(tp.longitude),
                                            y: R*CMath.cos(tp.latitude)*CMath.sin(tp.longitude),

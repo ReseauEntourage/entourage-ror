@@ -25,8 +25,8 @@ function displayDashboardMapData() {
         var tour_display_type = $("[name=tour_display_type]:checked").val();
         var url = '/organizations/simplified_tours.json';
         var filters = [];
-        filters.push('ne=' + map.getBounds().getNorthEast().lat() + '-' + map.getBounds().getNorthEast().lng());
-        filters.push('sw=' + map.getBounds().getSouthWest().lat() + '-' + map.getBounds().getSouthWest().lng());
+        filters.push('ne=' + map.getBounds().getNorthEast().lat() + '_' + map.getBounds().getNorthEast().lng());
+        filters.push('sw=' + map.getBounds().getSouthWest().lat() + '_' + map.getBounds().getSouthWest().lng());
         if ($('#date-filter').val().length > 0) {
           filters.push('date_range=' + $('#date-filter').val());
         }
