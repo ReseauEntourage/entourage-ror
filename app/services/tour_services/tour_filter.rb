@@ -19,14 +19,14 @@ module TourServices
       @tours
     end
 
-    private
+    #private
     attr_reader :params, :organization, :user
 
     def box
       return @box if @box
       if (params[:sw].present? && params[:ne].present? && ![params[:sw], params[:ne]].include?("NaN-NaN"))
-        ne = params[:ne].split('-').map(&:to_f)
-        sw = params[:sw].split('-').map(&:to_f)
+        ne = params[:ne].split('_').map(&:to_f)
+        sw = params[:sw].split('_').map(&:to_f)
         user_default.latitude = (ne[0] + sw[0]) / 2
         user_default.longitude = (ne[1] + sw[1]) / 2
         @box = sw + ne
