@@ -36,35 +36,51 @@
   </div>
 
   <div class="control-group">
-    <%= f.label :website,"Website", class: "control-label" %>
+    <%= f.label :website,"Site web", class: "control-label" %>
     <div class="controls">
       <%= f.text_field :website, class: "form-control" %>
     </div>
   </div>
 
   <div class="control-group">
-    <%= f.label :phone,"Phone", class: "control-label" %>
+    <%= f.label :phone,"Téléphone", class: "control-label" %>
     <div class="controls">
       <%= f.text_field :phone, class: "form-control" %>
     </div>
   </div>
 
   <div class="control-group">
-    <%= f.label :category,"Category", class: "control-label" %>
+    <%= f.label :category,"Categorie", class: "control-label" %>
     <div class="controls">
       <%= f.collection_select :category_id, Category.all, :id, :name, required: true %>
     </div>
   </div>
 
   <div class="control-group">
-    <%= f.label :validated,"Validated", class: "control-label" %>
+    <%= f.label :validated,"Validé", class: "control-label" %>
     <div class="controls">
       <%= f.check_box :validated %>
     </div>
   </div>
 
+  <% if @should_edit_gps %>
+    <div class="control-group">
+      <%= f.label :latitude,"Latitude", class: "control-label" %>
+      <div class="controls">
+        <%= f.text_field :latitude, class: "form-control", required: true %>
+      </div>
+    </div>
+
+    <div class="control-group">
+      <%= f.label :longitude,"Longitude", class: "control-label" %>
+      <div class="controls">
+        <%= f.text_field :longitude, class: "form-control", required: true %>
+      </div>
+    </div>
+  <% end %>
+
 
   <br>
   <%= f.submit "Sauver", class: "btn btn-success" %>
-
+  <%= link_to "Annuler", admin_pois_path, class: "btn btn-default" %>
 <% end %>
