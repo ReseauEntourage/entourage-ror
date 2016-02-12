@@ -6,7 +6,7 @@ module Api
       def create
         newsletter_subscription = NewsletterSubscription.new(newsletter_subscription_params)
         if newsletter_subscription.save
-          newsletter_subscription.send_mailchimp_info
+          SubscribeNewsletterMailchimpJob.perform_later(newsletter_subscription.email, newsletter_subscription.active)
           render json: newsletter_subscription, status: 201, serializer: ::V0::NewsletterSubscriptionSerializer
         else
           @entity = @newsletter_subscription
