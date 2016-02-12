@@ -33,11 +33,14 @@ class TourPresenter
   end
 
   def duration
-    if tour.duration < 3600
-      distance_of_time_in_words(tour.duration)
+    return "-" if tour.tour_points.count == 0
+
+    duration = (tour.tour_points.unscoped.last.created_at - tour.tour_points.unscoped.first.created_at).to_i
+    if duration < 3600
+      "environ "+distance_of_time_in_words(duration)
     else
-      hours = tour.duration/3600
-      minutes = (tour.duration % 3600)/60
+      hours = duration/3600
+      minutes = (duration % 3600)/60
       "#{pluralize(hours, "heure")} #{pluralize(minutes, "minute")}"
     end
   end
