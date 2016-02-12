@@ -8,6 +8,7 @@ Bundler.require(*Rails.groups)
 
 module EntourageBack
   class Application < Rails::Application
+    config.middleware.use Rack::Deflater
     config.time_zone = 'Paris'
 
     # The default locale is :en and all translations from config/locales/*.rb,yml are auto loaded.
