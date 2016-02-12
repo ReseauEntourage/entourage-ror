@@ -4,6 +4,11 @@ RSpec.describe Api::V1::NewsletterSubscriptionsController, :type => :controller 
 
   describe "POST create" do
 
+    before(:each) do
+      stub_request(:post, "https://us8.api.mailchimp.com/2.0/lists/subscribe.json").
+          to_return(:status => 200, :body => "", :headers => {})
+    end
+
     context "with correct parameters" do
       let(:newsletter_subscription_attributes) { attributes_for(:newsletter_subscription) }
 
