@@ -2,6 +2,7 @@
 <div class="container-fluid">
   <div class="col-md-4">
     <h3>Informations sur cette maraude :</h3>
+    <h4><%= l(@tour_presenter.created_at, format: "%A %e %B %Y").capitalize %></h4>
     <h4>Distance parcourue : <%= @tour_presenter.distance %></h4>
     <h4>heure de début : <%= @tour_presenter.start_time %></h4>
     <h4>heure de fin : <%= @tour_presenter.end_time %></h4>
