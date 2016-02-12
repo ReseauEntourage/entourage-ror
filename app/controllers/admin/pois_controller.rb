@@ -3,7 +3,7 @@ module Admin
     before_action :set_poi, only: [:edit, :update, :destroy]
 
     def index
-      @pois = Poi.unscoped.order("created_at DESC").page(params[:page]).per(25)
+      @pois = Poi.order("created_at DESC").page(params[:page]).per(25)
     end
 
     def new
@@ -44,7 +44,7 @@ module Admin
     end
 
     def set_poi
-      @poi = Poi.unscoped.find(params[:id])
+      @poi = Poi.find(params[:id])
     end
   end
 end

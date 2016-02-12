@@ -78,19 +78,19 @@ describe Api::V1::PoisController, :type => :controller do
       let!(:poi) { build :poi }
       before { post :create, token: user.token, poi: { name: poi.name, latitude: poi.latitude, longitude: poi.longitude, adress: poi.adress, phone: poi.phone, website: poi.website, email: poi.email, audience: poi.audience, category_id: poi.category_id }, format: :json}
       it { expect(response.status).to eq(201) }
-      it { expect(Poi.unscoped.last.name).to eq poi.name }
-      it { expect(Poi.unscoped.last.latitude).to eq poi.latitude }
-      it { expect(Poi.unscoped.last.longitude).to eq poi.longitude }
-      it { expect(Poi.unscoped.last.adress).to eq poi.adress }
-      it { expect(Poi.unscoped.last.phone).to eq poi.phone }
-      it { expect(Poi.unscoped.last.website).to eq poi.website }
-      it { expect(Poi.unscoped.last.email).to eq poi.email }
-      it { expect(Poi.unscoped.last.audience).to eq poi.audience }
-      it { expect(Poi.unscoped.last.category).to eq poi.category }
-      it { expect(Poi.unscoped.last.validated).to be false }
+      it { expect(Poi.last.name).to eq poi.name }
+      it { expect(Poi.last.latitude).to eq poi.latitude }
+      it { expect(Poi.last.longitude).to eq poi.longitude }
+      it { expect(Poi.last.adress).to eq poi.adress }
+      it { expect(Poi.last.phone).to eq poi.phone }
+      it { expect(Poi.last.website).to eq poi.website }
+      it { expect(Poi.last.email).to eq poi.email }
+      it { expect(Poi.last.audience).to eq poi.audience }
+      it { expect(Poi.last.category).to eq poi.category }
+      it { expect(Poi.last.validated).to be false }
 
       it "renders POI" do
-        poi = Poi.unscoped.last
+        poi = Poi.last
         res = JSON.parse(response.body)
         expect(res).to eq({"poi"=>{"id"=>poi.id, "name"=>"Dede", "description"=>nil, "longitude"=>2.30681949999996, "latitude"=>48.870424, "adress"=>"Au 50 75008 Paris", "phone"=>"0000000000", "website"=>"entourage.com", "email"=>"entourage@entourage.com", "audience"=>"Mon audience", "validated"=>false, "category_id"=>poi.category_id, "category"=>{"id"=>poi.category.id, "name"=>poi.category.name}}})
       end

@@ -5,9 +5,9 @@ class Poi < ActiveRecord::Base
   belongs_to :category
   
   geocoded_by :adress
-  
-  default_scope { where(validated: true) }
-  
+
+  scope :validated, -> { where(validated: true) }
+
   scope :around, -> (latitude, longitude, distance) do
     distance ||= 10
     box = Geocoder::Calculations.bounding_box([latitude, longitude], distance, units: :km)

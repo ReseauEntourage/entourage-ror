@@ -29,7 +29,7 @@ module Api
           center_point = [params[:latitude], params[:longitude]]
           distance = params.fetch(:distance, 10)
           box = Geocoder::Calculations.bounding_box(center_point, distance, :units => :km)
-          points = TourPoint.unscoped.within_bounding_box(box).select(:tour_id).distinct
+          points = TourPoint.within_bounding_box(box).select(:tour_id).distinct
           @tours = @tours.where(id: points)
         end
 

@@ -35,7 +35,7 @@ class TourPresenter
   def duration
     return "-" if tour.tour_points.count == 0
 
-    duration = (tour.tour_points.unscoped.last.created_at - tour.tour_points.unscoped.first.created_at).to_i
+    duration = (tour.tour_points.last.created_at - tour.tour_points.first.created_at).to_i
     if duration < 3600
       "environ "+distance_of_time_in_words(duration)
     else
@@ -67,10 +67,10 @@ class TourPresenter
   end
 
   def start_time
-    @start_time ||= tour.tour_points.first.try(:passing_time).try(:strftime, "%H:%M")
+    @start_time ||= tour.tour_points.first.try(:created_at).try(:strftime, "%H:%M")
   end
 
   def end_time
-    @end_time ||= tour.tour_points.last.try(:passing_time).try(:strftime, "%H:%M")
+    @end_time ||= tour.tour_points.last.try(:created_at).try(:strftime, "%H:%M")
   end
 end
