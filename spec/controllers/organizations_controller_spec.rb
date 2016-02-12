@@ -99,6 +99,14 @@ RSpec.describe OrganizationsController, :type => :controller do
         it { expect(response.status).to eq(200) }
         it { expect(assigns[:tours]).to eq []}
       end
+      context 'with valid box filter' do
+        before { get :tours, sw:"48.615629449762814_1.8729114532470703", ne:"49.24715808228131_2.8177356719970703", format: :json }
+        it { expect(response.status).to eq(200) }
+      end
+      context 'with invalid box filter' do
+        before { get :tours, sw:"48.615629449762814-1.8729114532470703", ne:"49.24715808228131-2.8177356719970703", format: :json }
+        it { expect(response.status).to eq(200) }
+      end
 
       context "has map points" do
         before(:each) do

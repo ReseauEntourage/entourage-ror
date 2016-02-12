@@ -27,6 +27,9 @@ module TourServices
       if (params[:sw].present? && params[:ne].present? && ![params[:sw], params[:ne]].include?("NaN-NaN"))
         ne = params[:ne].split('_').map(&:to_f)
         sw = params[:sw].split('_').map(&:to_f)
+        return if [ne, sw].any? {|coord| coord.blank? } ||
+                  [ne, sw].any? {|coord| coord.count != 2 }
+
         user_default.latitude = (ne[0] + sw[0]) / 2
         user_default.longitude = (ne[1] + sw[1]) / 2
         @box = sw + ne
