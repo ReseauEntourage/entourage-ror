@@ -5,7 +5,7 @@ module Api
 
       def index
         @categories = Category.all
-        @pois = Poi.all
+        @pois = Poi.validated.all
         @pois = @pois.around params[:latitude], params[:longitude], params[:distance] if params[:latitude].present? and params[:longitude].present?
 
         #TODO : refactor API to return 1 top level POI ressources and associated categories ressources
