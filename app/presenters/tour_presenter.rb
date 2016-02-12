@@ -67,10 +67,10 @@ class TourPresenter
   end
 
   def start_time
-    @start_time ||= tour.tour_points.first.try(:passing_time).try(:strftime, "%H:%M")
+    @start_time ||= tour.tour_points.first.try(:created_at).try(:strftime, "%H:%M")
   end
 
   def end_time
-    @end_time ||= tour.tour_points.last.try(:passing_time).try(:strftime, "%H:%M")
+    @end_time ||= tour.tour_points.last.try(:created_at).try(:strftime, "%H:%M")
   end
 end

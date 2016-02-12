@@ -51,14 +51,6 @@ class Tour < ActiveRecord::Base
     end
   end
 
-  def duration
-    if closed_at.nil?
-      (Time.now - created_at).to_i
-    else
-      (closed_at - created_at).to_i
-    end
-  end
-  
   def force_close
     update(status: :closed, closed_at: tour_points.last.try(:passing_time) || DateTime.now)
   end
