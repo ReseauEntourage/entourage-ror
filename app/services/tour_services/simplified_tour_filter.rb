@@ -8,7 +8,7 @@ module TourServices
 
     def filter_box
       if box
-        tours_with_point_in_box = SimplifiedTourPoint.unscoped.within_bounding_box(box).select(:tour_id).distinct
+        tours_with_point_in_box = SimplifiedTourPoint.within_bounding_box(box).select(:tour_id).distinct
         self.tours = self.tours.where(id: tours_with_point_in_box)
       end
     end

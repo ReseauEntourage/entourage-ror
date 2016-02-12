@@ -47,7 +47,7 @@ class OrganizationsController < ApplicationController
   def tours
     @tours = TourServices::TourFilter.new(params: params, organization: @organization, user: @current_user).filter
     if params[:only_points]=="true"
-      points = @tours.map {|tour| tour.tour_points }.flatten
+      points = @tours.map {|tour| tour.tour_points}.flatten
       render json: {points: points}
     else
       tours_json = V1::GoogleMap::TourSerializer.new(tours: @tours).to_json

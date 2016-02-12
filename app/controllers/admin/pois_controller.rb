@@ -44,7 +44,7 @@ module Admin
     end
 
     def set_poi
-      @poi = Poi.unscoped.find(params[:id])
+      @poi = Poi.find(params[:id])
     end
   end
 end
