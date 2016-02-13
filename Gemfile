@@ -44,8 +44,10 @@ group :development do
   gem 'pry-rails',              '~> 0.3.4'
   gem 'bullet',                 '~> 4.14.7'
   gem 'thin',                   '~> 1.6.3'
-  gem 'better_errors'
-  gem 'binding_of_caller'
+  gem 'better_errors',          '~> 2.1.1'
+  gem 'binding_of_caller',      '~> 0.7.2'
+  gem 'derailed',               '~> 0.1.0'
+  gem 'stackprof',              '~> 0.2.8'
 end
 
 group :test do
