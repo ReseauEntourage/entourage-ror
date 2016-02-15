@@ -10,7 +10,7 @@ module Admin
                                         length: 2200)
 
       params["coordinates"].each do |coordinate|
-        tour.snap_to_road_tour_points.create(longitude: coordinate["lng"],
+        tour.simplified_tour_points.create(longitude: coordinate["lng"],
                                              latitude: coordinate["lat"])
         tour.tour_points.create(longitude: coordinate["lng"],
                                  latitude: coordinate["lat"],
