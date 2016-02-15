@@ -5,6 +5,8 @@ class TourPoint < ActiveRecord::Base
 
   geocoded_by :address
 
+  scope :ordered, -> { order("created_at DESC") }
+
   scope :around, -> (latitude, longitude, distance) do
     distance ||= 10
     box = Geocoder::Calculations.bounding_box([latitude, longitude], distance, units: :km)

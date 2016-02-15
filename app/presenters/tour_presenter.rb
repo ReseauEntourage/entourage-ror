@@ -22,11 +22,11 @@ class TourPresenter
   end
 
   def tour_points
-    tour.tour_points.map {|point| {long: point.longitude, lat: point.latitude} }
+    tour.tour_points.ordered.map {|point| {long: point.longitude, lat: point.latitude} }
   end
 
   def simplified_tour_points
-    tour.simplified_tour_points.map {|point| {long: point.longitude, lat: point.latitude} }
+    tour.simplified_tour_points.ordered.map {|point| {long: point.longitude, lat: point.latitude} }
   end
 
   def can_see_detail?

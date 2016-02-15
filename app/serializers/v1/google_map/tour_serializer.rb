@@ -40,7 +40,7 @@ module V1
       end
 
       def coordinates(tour)
-        tour.tour_points.map { |point| [point.longitude, point.latitude] }
+        tour.tour_points.ordered.map { |point| [point.longitude, point.latitude] }
       end
     end
   end
