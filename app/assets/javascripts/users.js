@@ -26,6 +26,11 @@ var ready = function() {
       $('#new_user').submit();
     });
   }
+
+
+  if($(".users.edit")[0] || $(".users.update")[0]) {
+    $('#organizations-select').multiselect({ buttonClass :'btn btn-default multitest'});
+  }
 };
 
 $(document).ready(ready);

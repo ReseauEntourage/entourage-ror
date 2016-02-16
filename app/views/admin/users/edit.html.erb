@@ -37,7 +37,7 @@
     <div class="control-group">
       <%= f.label :organization,"Associations coordonées", class: "control-label" %>
       <div class="controls">
-        <%= f.collection_select(:coordinated_organizations, Organization.all, :id, :name, {selected: @user.coordinated_organizations.map(&:id)}, {multiple: true}) %>
+        <%= f.collection_select(:coordinated_organizations, Organization.all, :id, :name, {selected: @user.coordinated_organizations.map(&:id)}, {multiple: true, id: "organizations-select"}) %>
       </div>
     </div>
 

@@ -3,7 +3,7 @@ module Admin
     before_action :set_user, only: [:edit, :update, :banish, :validate]
 
     def index
-      @users = User.joins(:organization).includes(:organization).page(params[:page]).per(25)
+      @users = User.pro.includes(:organization).order("last_name ASC").page(params[:page]).per(25)
     end
 
     def edit
