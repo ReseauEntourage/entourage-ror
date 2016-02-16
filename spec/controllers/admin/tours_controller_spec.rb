@@ -16,7 +16,7 @@ describe Admin::GenerateTourController do
       subject { post :generate, {coordinates: [{lat: -35.1, lng: 49.1}, {lat: -35.2, lng: 49.2}]} }
 
       it { expect(lambda { subject }).to change {Tour.count}.by(1) }
-      it { expect(lambda { subject }).to change {SnapToRoadTourPoint.count}.by(2) }
+      it { expect(lambda { subject }).to change {SimplifiedTourPoint.count}.by(2) }
 
       it "saves tour" do
         subject
@@ -29,7 +29,7 @@ describe Admin::GenerateTourController do
 
       it "saves tour snap points" do
         subject
-        points = Tour.last.snap_to_road_tour_points
+        points = Tour.last.simplified_tour_points
         expect(points[0].latitude).to eq(-35.1)
         expect(points[0].longitude).to eq(49.1)
         expect(points[1].latitude).to eq(-35.2)
