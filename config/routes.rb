@@ -126,7 +126,7 @@ Rails.application.routes.draw do
       end
     end
 
-    resources :users, only: [:none] do
+    resources :users, only: [:index, :edit, :update] do
       collection do
         get 'moderate'
         get 'fake'

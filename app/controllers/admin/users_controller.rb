@@ -1,6 +1,26 @@
 module Admin
   class UsersController < Admin::BaseController
-    before_action :set_user, only: [:banish, :validate]
+    before_action :set_user, only: [:edit, :update, :banish, :validate]
+
+    def index
+      @users = User.joins(:organization).includes(:organization).page(params[:page]).per(25)
+    end
+
+    def edit
+    end
+
+    def update
+      if @user.update(user_params)
+        coordinated_organizations = params.dig(:user, :coordinated_organizations)
+        if coordinated_organizations
+          @user.coordinated_organizations = Organization.where(id: coordinated_organizations.select {|o| o.present?})
+          @user.save
+        end
+        render :edit, notice: "utilisateur mis à jour"
+      else
+        render :edit
+      end
+    end
 
     def moderate
       @users = if params[:validation_status] == "blocked"
@@ -42,6 +62,10 @@ module Admin
 
     def set_user
       @user = User.find(params[:id])
+    end
+
+    def user_params
+      params.require(:user).permit(:first_name, :last_name, :email, :sms_code)
     end
   end
 end
