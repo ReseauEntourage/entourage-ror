@@ -1,6 +1,9 @@
 module Admin
-  class GenerateTourController < Admin::BaseController
-    def generate
+  class GenerateToursController < Admin::BaseController
+    def index
+    end
+
+    def create
       return render json: {error: "missing_coordinates"}, status: 400 if params[:coordinates].blank?
 
       tour = current_admin.tours.create(closed_at: Time.now,

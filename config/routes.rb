@@ -104,7 +104,7 @@ Rails.application.routes.draw do
       get :map_data
     end
   end
-  resources :registration_requests, only: [:index, :show, :update, :destroy]
+
   resources :scheduled_pushes, only: [:index] do
     collection do
       delete :destroy
@@ -118,7 +118,8 @@ Rails.application.routes.draw do
   #ADMIN
   namespace :admin do
     get 'logout' => 'sessions#logout'
-    post 'generate_tour' => 'generate_tour#generate'
+
+    resources :generate_tours, only: [:index, :create]
 
     resources :sessions, only: [:none] do
       collection do
@@ -139,7 +140,6 @@ Rails.application.routes.draw do
       end
     end
     resources :pois
+    resources :registration_requests, only: [:index, :show, :update, :destroy]
   end
-  ActiveAdmin.routes(self)
-
 end

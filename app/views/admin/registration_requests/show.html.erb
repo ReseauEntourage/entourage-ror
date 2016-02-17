@@ -55,6 +55,6 @@
 
 <div class="clearfix"></div>
 <br>
-<%= link_to 'Valider', registration_request_path(@registration_request, validate: true), method: "PUT", class: "btn btn-success" %>
-<%= link_to 'Refuser', @registration_request, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-danger" %>
-<%= link_to 'Back', registration_requests_path, class: "btn btn-default" %>
+<%= link_to 'Valider', admin_registration_request_path(@registration_request, validate: true), method: "PUT", class: "btn btn-success" %>
+<%= link_to 'Refuser', [:admin, @registration_request], method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-danger" %>
+<%= link_to 'Back', admin_registration_requests_path, class: "btn btn-default" %>
