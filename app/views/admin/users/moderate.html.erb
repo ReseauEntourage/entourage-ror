@@ -1,32 +1,29 @@
-<div class="container">
+<h1>Liste des dernier avatar uploadés</h1>
 
-  <h1>Liste des dernier avatar uploadés</h1>
+<ul class="nav nav-pills" role="tablist">
+  <li role="presentation" class="<%= active_class(moderate_admin_users_path(validation_status: "validated"))%>">
+    <%= link_to "Validés", moderate_admin_users_path(validation_status: "validated") %>
+  </li>
+  <li role="presentation" class="<%= active_class(moderate_admin_users_path(validation_status: "blocked"))%>">
+    <%= link_to "Bloqués", moderate_admin_users_path(validation_status: "blocked") %>
+  </li>
+</ul>
 
-  <ul class="nav nav-pills" role="tablist">
-    <li role="presentation" class="<%= active_class(moderate_admin_users_path(validation_status: "validated"))%>">
-      <%= link_to "Validés", moderate_admin_users_path(validation_status: "validated") %>
-    </li>
-    <li role="presentation" class="<%= active_class(moderate_admin_users_path(validation_status: "blocked"))%>">
-      <%= link_to "Bloqués", moderate_admin_users_path(validation_status: "blocked") %>
-    </li>
-  </ul>
+<table class="table">
+  <th>id</th>
+  <th>name</th>
+  <th>avatar</th>
+  <th></th>
 
-  <table class="table">
-    <th>id</th>
-    <th>name</th>
-    <th>avatar</th>
-    <th></th>
+  <% @users.each do |user| %>
+    <% presenter = UserPresenter.new(user: user) %>
+    <tr>
+      <td><%= user.id %></td>
+      <td><%= user.first_name %> <%= user.last_name %> </td>
+      <td><%= presenter.avatar %> </td>
+      <td><%= presenter.validation_status_action_link %></td>
+    </tr>
+  <% end %>
+</table>
 
-    <% @users.each do |user| %>
-      <% presenter = UserPresenter.new(user: user) %>
-      <tr>
-        <td><%= user.id %></td>
-        <td><%= user.first_name %> <%= user.last_name %> </td>
-        <td><%= presenter.avatar %> </td>
-        <td><%= presenter.validation_status_action_link %></td>
-      </tr>
-    <% end %>
-  </table>
-
-  <%= paginate @users %>
-</div>
+<%= paginate @users %>
