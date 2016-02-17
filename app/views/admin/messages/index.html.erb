@@ -1,0 +1,25 @@
+<h1>Liste des messages</h1>
+
+<table class="table">
+  <th>id</th>
+  <th>Prénom</th>
+  <th>Nom</th>
+  <th>Email</th>
+  <th>Contenu</th>
+  <th></th>
+
+  <% @messages.each do |message| %>
+    <tr>
+      <td><%= message.id %></td>
+      <td><%= message.first_name %></td>
+      <td><%= message.last_name %></td>
+      <td><%= message.email %></td>
+      <td><%= message.content %></td>
+      <td><%= link_to "Supprimer", admin_message_path(message), method: :delete, class: "btn btn-danger", data: {confirm: "Êtes vous sûr de supprimer ce message ?"} %></td>
+    </tr>
+  <% end %>
+</table>
+
+<div class="row">
+  <%= paginate @messages %>
+</div>
