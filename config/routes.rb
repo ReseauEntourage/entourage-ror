@@ -140,6 +140,4 @@ Rails.application.routes.draw do
     end
     resources :pois
   end
-  ActiveAdmin.routes(self)
-
 end
