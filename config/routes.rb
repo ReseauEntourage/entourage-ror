@@ -119,7 +119,7 @@ Rails.application.routes.draw do
   namespace :admin do
     get 'logout' => 'sessions#logout'
 
-    resource :generate_tour, only: [:index, :create]
+    resources :generate_tours, only: [:index, :create]
 
     resources :sessions, only: [:none] do
       collection do

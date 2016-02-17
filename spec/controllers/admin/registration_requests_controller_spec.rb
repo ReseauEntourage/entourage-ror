@@ -1,7 +1,7 @@
 require 'rails_helper'
 include AuthHelper
 
-RSpec.describe RegistrationRequestsController, type: :controller do
+RSpec.describe Admin::RegistrationRequestsController, type: :controller do
   render_views
 
   let!(:user) { admin_basic_login }
@@ -44,7 +44,7 @@ RSpec.describe RegistrationRequestsController, type: :controller do
     before { delete 'destroy', id: registration_request.to_param }
     it { expect(RegistrationRequest.count).to eq(1) }
     it { expect(registration_request.reload.status).to eq("rejected") }
-    it { should redirect_to registration_requests_path }
+    it { should redirect_to admin_registration_requests_path }
   end
 
   describe "PUT update" do

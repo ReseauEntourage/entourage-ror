@@ -21,7 +21,7 @@ module Admin
 
     def destroy
       @registration_request.update(status: "rejected")
-      redirect_to registration_requests_path
+      redirect_to admin_registration_requests_path
     end
 
     def update
@@ -29,7 +29,7 @@ module Admin
         builder = RegistrationRequestServices::RegistrationRequestBuilder.new(registration_request: @registration_request)
         builder.validate!
       end
-      redirect_to registration_requests_path
+      redirect_to admin_registration_requests_path
     end
 
     private

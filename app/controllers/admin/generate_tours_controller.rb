@@ -1,5 +1,5 @@
 module Admin
-  class GenerateTourController < Admin::BaseController
+  class GenerateToursController < Admin::BaseController
     def index
     end
 
