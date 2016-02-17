@@ -7,7 +7,7 @@ var polylines = [];
 var snappedCoordinates = [];
 
 function initialize() {
-  if($(".admin_generatetour")[0]) {
+  if($(".generate_tours")[0]) {
     var mapOptions = {
       zoom: 12,
       center: {lat: 48.873002, lng: 2.316136}
@@ -111,7 +111,7 @@ function initialize() {
 
     $.ajax({
       type: "POST",
-      url: "/admin/generate_tour",
+      url: "/admin/generate_tours",
       data: JSON.stringify({coordinates: snappedCoordinates}),
       contentType: "application/json; charset=utf-8",
       dataType: "json",
