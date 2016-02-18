@@ -117,6 +117,7 @@ Rails.application.routes.draw do
 
   #ADMIN
   namespace :admin do
+    get '/' => 'users#index'
     get 'logout' => 'sessions#logout'
 
     resources :generate_tours, only: [:index, :create]
