@@ -1,4 +1,4 @@
-<div class="col-xs-4">
+<div class="col-xs-8">
   <h2>Organisation</h2>
 
   <div class="field form-group">
@@ -27,7 +27,7 @@
   </div>
   <div class="field form-group">
     <label>Description</label>
-    <%= text_field_tag :description, @registration_request.organization_field("description"), disabled: true, class: 'form-control' %>
+    <%= text_area_tag :description, @registration_request.organization_field("description"), disabled: true, class: 'form-control' %>
   </div>
   <div>
     <img src="<%= @image_url %>" alt="">
