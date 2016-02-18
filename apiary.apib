@@ -717,7 +717,9 @@ Tour points describe the tour itinerary
             Accept: application/json
     + Body
 
-            {"tour_points":[{"latitude":1.5,"longitude":1.5}, {"latitude":2.5,"longitude":2.5}]}
+            {"tour_points":[
+                            {"latitude":1.5,"longitude":1.5, "passing_time": "2014-10-11T15:19:45.000+02:00"}, 
+                            {"latitude":2.5,"longitude":2.5, "passing_time": "2014-10-11T15:19:47.000+02:00"}]}
 
 + Response 201 (application/json; charset=utf-8)
 
