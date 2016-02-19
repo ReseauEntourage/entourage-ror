@@ -1,5 +1,6 @@
 class Question < ActiveRecord::Base
   belongs_to :organization
+  has_many :answers
 
   validates :title, :answer_type, :organization_id, presence: true
   validate :max_question_per_organization

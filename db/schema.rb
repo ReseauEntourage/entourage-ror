@@ -32,11 +32,12 @@ ActiveRecord::Schema.define(version: 20160219185848) do
   add_index "active_admin_comments", ["resource_type", "resource_id"], name: "index_active_admin_comments_on_resource_type_and_resource_id", using: :btree
 
   create_table "answers", force: :cascade do |t|
-    t.integer "question_id", null: false
-    t.string  "value",       null: false
+    t.integer "question_id",  null: false
+    t.integer "encounter_id", null: false
+    t.string  "value",        null: false
   end
 
-  add_index "answers", ["question_id"], name: "index_answers_on_question_id", using: :btree
+  add_index "answers", ["encounter_id", "question_id"], name: "index_answers_on_encounter_id_and_question_id", using: :btree
 
   create_table "categories", force: :cascade do |t|
     t.datetime "created_at"
