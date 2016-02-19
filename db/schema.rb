@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160204083753) do
+ActiveRecord::Schema.define(version: 20160219150110) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -136,6 +136,17 @@ ActiveRecord::Schema.define(version: 20160204083753) do
   end
 
   add_index "pois", ["latitude", "longitude"], name: "index_pois_on_latitude_and_longitude", using: :btree
+
+  create_table "questions", force: :cascade do |t|
+    t.string   "title",           null: false
+    t.string   "answer_type",     null: false
+    t.string   "answer_value",    null: false
+    t.integer  "organization_id", null: false
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
+  end
+
+  add_index "questions", ["organization_id"], name: "index_questions_on_organization_id", using: :btree
 
   create_table "registration_requests", force: :cascade do |t|
     t.string   "status",     default: "pending", null: false
