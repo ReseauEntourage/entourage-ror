@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160219150110) do
+ActiveRecord::Schema.define(version: 20160219185848) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -30,6 +30,13 @@ ActiveRecord::Schema.define(version: 20160219150110) do
   add_index "active_admin_comments", ["author_type", "author_id"], name: "index_active_admin_comments_on_author_type_and_author_id", using: :btree
   add_index "active_admin_comments", ["namespace"], name: "index_active_admin_comments_on_namespace", using: :btree
   add_index "active_admin_comments", ["resource_type", "resource_id"], name: "index_active_admin_comments_on_resource_type_and_resource_id", using: :btree
+
+  create_table "answers", force: :cascade do |t|
+    t.integer "question_id", null: false
+    t.string  "value",       null: false
+  end
+
+  add_index "answers", ["question_id"], name: "index_answers_on_question_id", using: :btree
 
   create_table "categories", force: :cascade do |t|
     t.datetime "created_at"
@@ -140,7 +147,6 @@ ActiveRecord::Schema.define(version: 20160219150110) do
   create_table "questions", force: :cascade do |t|
     t.string   "title",           null: false
     t.string   "answer_type",     null: false
-    t.string   "answer_value",    null: false
     t.integer  "organization_id", null: false
     t.datetime "created_at",      null: false
     t.datetime "updated_at",      null: false

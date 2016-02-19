@@ -1,7 +1,7 @@
 class Question < ActiveRecord::Base
   belongs_to :organization
 
-  validates :title, :answer_type, :answer_value, :organization_id, presence: true
+  validates :title, :answer_type, :organization_id, presence: true
   validate :max_question_per_organization
 
   def max_question_per_organization

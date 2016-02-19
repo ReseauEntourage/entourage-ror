@@ -111,6 +111,8 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :questions, only: [:create, :destroy]
+
   get 'apps' => 'home#apps', as: :apps
   get 'store_redirection' => 'home#store_redirection'
   get 'cgu' => 'home#cgu'
