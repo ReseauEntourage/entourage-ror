@@ -1336,3 +1336,27 @@ Resources  related to contacts for the **Entourage API**
 + Response 401 (application/json; charset=utf-8)
 
         {"error":{"status":401,"message":"Please sign-in"}}
+        
+        
+# Group Questions
+Resources  related to questions for the **Entourage API**
+## Questions [/questions]
+
+### GET all questions for current user organization [GET]
+
++ Request
+
+    + Headers
+
+            Accept: application/json
+
++ Response 200 (application/json; charset=utf-8)
+
+    + Body
+
+            {"questions": [{"id": 123, "title": "Question text", "answer_type": "integer"},
+                           {"id": 124, "title": "Question text", "answer_type": "string"}]
+
++ Response 401 (application/json; charset=utf-8)
+
+        {"error":{"status":401,"message":"Please sign-in"}}
