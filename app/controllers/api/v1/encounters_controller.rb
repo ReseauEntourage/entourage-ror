@@ -8,6 +8,13 @@ module Api
         end
         if encounter.save
           EncounterReverseGeocodeJob.perform_later(encounter.id)
+
+          if params[:answers]
+            params[:answers].each do |answer_params|
+              encounter.answers.create(question_id: answer_params[:question_id], value: answer_params[:value])
+            end
+          end
+
           render json: encounter, status: 201, serializer: ::V1::EncounterSerializer
         else
           render json: {message: 'Could not create encouter', reasons: encounter.errors.full_messages}, status: :bad_request
@@ -18,7 +25,7 @@ module Api
 
       def encounters_params
         if params[:encounter]
-          params.require(:encounter).permit(:street_person_name, :date, :latitude, :longitude, :message, :voice_message )
+          params.require(:encounter).permit(:street_person_name, :date, :latitude, :longitude, :message, :voice_message, :answers)
         end
       end
     end

@@ -50,6 +50,7 @@ Rails.application.routes.draw do
       resources :map, only: [:index]
       resources :newsletter_subscriptions
       resources :applications, only: [:create]
+      resources :questions, only: [:index]
 
       resources :pois, only: [:index, :create] do
         member do
@@ -110,6 +111,8 @@ Rails.application.routes.draw do
       delete :destroy
     end
   end
+
+  resources :questions, only: [:create, :destroy]
 
   get 'apps' => 'home#apps', as: :apps
   get 'store_redirection' => 'home#store_redirection'

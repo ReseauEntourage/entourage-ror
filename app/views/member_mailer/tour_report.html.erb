@@ -45,9 +45,18 @@
         <td style="width:300px; padding: 10px; vertical-align: top;">
           <ul>
             <% @tour.encounters.each_with_index do |encounter, index| %>
-            <li style="padding: 10px;">
-              <%= marker_index index %> - Rencontre de <%= encounter.street_person_name %>
-            </li>
+              <li style="padding: 10px;">
+                <%= marker_index index %> - Rencontre de <%= encounter.street_person_name %>
+              </li>
+              <% if encounter.answers.count>0 %>
+                <br>
+                <p>Réponses aux questions posées :</p>
+                <li>
+                  <% encounter.answers.include(:question).each do |answer| %>
+                    <ul><%= answer.question.title %> : <%= answer.value %> </ul>
+                  <% end %>
+                </li>
+              <% end %>
             <% end %>
           </ul>
           <p> (attention une rencontre peut en cacher une autre)</p>
