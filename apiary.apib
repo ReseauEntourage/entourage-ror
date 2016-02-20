@@ -754,7 +754,13 @@ Encounters occured during tour
 
     + Body
 
-            {"encounter":{"street_person_name":"jean","date":"2014-10-11 15:19:45","latitude":42,"longitude":2,"message":"test","voice_message":"http://www.google.com"}}
+            {"encounter":{"street_person_name":"jean",
+                            "date":"2014-10-11 15:19:45",
+                            "latitude":42,"longitude":2,
+                            "message":"test",
+                            "voice_message":"http://www.google.com"},
+            "answers": [{"question_id": 1, "value": 3},
+                        {"question_id": 1, "value": true}]}
 
 + Response 201 (application/json; charset=utf-8)
 
