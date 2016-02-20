@@ -760,7 +760,7 @@ Encounters occured during tour
                             "message":"test",
                             "voice_message":"http://www.google.com"},
             "answers": [{"question_id": 1, "value": 3},
-                        {"question_id": 1, "value": true}]}
+                        {"question_id": 2, "value": true}]}
 
 + Response 201 (application/json; charset=utf-8)
 
@@ -778,19 +778,6 @@ Encounters occured during tour
 
             {"encounter":{"date":"2014-10-11 15:19:45","latitude":42,"longitude":2,"message":"test","voice_message":"http://www.google.com"}}
 
-+ Response 400 (application/json; charset=utf-8)
-
-        {"error":{"status":400,"message":"Could not create encouter","reasons":["Street person name can't be blank"]}}
-
-+ Request (application/json)
-
-    + Header
-
-            Accept: application/json
-
-    + Body
-
-            {"encounter":{"wrong_key":"wrong_value"}}
 
 + Response 400 (application/json; charset=utf-8)
 
