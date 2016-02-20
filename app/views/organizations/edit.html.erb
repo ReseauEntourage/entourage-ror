@@ -1,39 +1,31 @@
-<div class="container-fluid">
-  <div class="row">
-    <div class="col-md-6 col-md-offset-3">
-      <h1><%= @organization.name %></h1>
-      <%= render 'form' %>
-    </div>
-  </div>
-
-  <div class="row">
-    <p>Liste des questions posées lors d'une rencontre :</p>
-    <% @organization.questions.each do |question| %>
-      <div class="row">
-        <input type="text" value="<%= question.title %>" style="width: 450px; float: left; margin-right: 40px" disabled>
-        <%= button_to "-", question_path(question), method: :delete, style: "background-color: red; width: 50px" %>
-      </div>
-      <div style="clear: both;"></div>
-    <% end %>
-    <p>Ajouter une Question a poser lors d'une rencontre :</p>
-    <%= form_for([Question.new], html: { class: "form" }) do |f| %>
-      <div class="form-inputs">
-        <div class="form-field form-field--string">
-          <%= f.text_field :title %>
-          <%= f.select :answer_type, options_for_select(["Valeur", "Checkbox"]) %>
-          <%= f.submit "+", style: "width: 50px" %>
-        </div>
-      </div>
-    <% end %>
-  </div>
+<div class="container">
+  <h1><%= @organization.name %></h1>
+  <%= render 'form' %>
 
   <h3>Ajout d'utilisateur <%= link_to '', users_path+'#add-user', class:'btn btn-default fa fa-user-plus' %></h3>
 
   <% if current_admin %>
+    <h3>Ajout d'une nouvelle association <%= link_to '', new_organization_path, class:'btn btn-default fa fa-user-plus' %></h3>
+  <% end %>
+
+  <br><br>
+  <p>Liste des questions posées lors d'une rencontre :</p>
+  <% @organization.questions.each do |question| %>
     <div class="row">
-      <div class="col-md-6 col-md-offset-3">
-        <h3>Ajout d'une nouvelle association <%= link_to '', new_organization_path, class:'btn btn-default fa fa-user-plus' %></h3>
+      <input type="text" value="<%= question.title %>" class="form-control" style="width: 450px; float: left; margin-right: 30px; margin-bottom: 5px" disabled>
+      <%= button_to "-", question_path(question), method: :delete, class: "btn btn-danger" %>
+    </div>
+  <% end %>
+  <br>
+  <p>Ajouter une question à poser lors d'une rencontre :</p>
+  <%= form_for([Question.new], html: { class: "form-horizontal" }) do |f| %>
+    <div class="form-inputs">
+      <div class="form-field form-field--string">
+        <%= f.text_field :title, style: "width: 450px;"  %>
+        <%= f.select :answer_type, options_for_select(["Valeur", "Checkbox"]) %>
+        <%= f.submit "+", class: "btn btn-default" %>
       </div>
     </div>
   <% end %>
+  <br>
 </div>
