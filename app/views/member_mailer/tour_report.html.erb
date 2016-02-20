@@ -52,7 +52,7 @@
                 <br>
                 <p>Réponses aux questions posées :</p>
                 <li>
-                  <% encounter.answers.include(:question).each do |answer| %>
+                  <% encounter.answers.includes(:question).each do |answer| %>
                     <ul><%= answer.question.title %> : <%= answer.value %> </ul>
                   <% end %>
                 </li>
