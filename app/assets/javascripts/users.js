@@ -29,7 +29,7 @@ var ready = function() {
 
 
   if($(".users.edit")[0] || $(".users.update")[0]) {
-    $('#organizations-select').multiselect({ buttonClass :'btn btn-default multitest'});
+    $('.organizations-select').multiselect({ buttonClass :'btn btn-default multitest'});
   }
 };
 
