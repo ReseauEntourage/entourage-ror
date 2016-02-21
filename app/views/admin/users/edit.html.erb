@@ -27,6 +27,13 @@
   </div>
 
   <div class="control-group">
+    <%= f.label :phone,"Téléphone", class: "control-label" %>
+    <div class="controls">
+      <%= f.text_field :phone, class: "form-control", required: true %>
+    </div>
+  </div>
+
+  <div class="control-group">
     <%= f.label :sms_code,"Code SMS", class: "control-label" %>
     <div class="controls">
       <%= f.text_field :sms_code, class: "form-control", required: true %>
@@ -34,7 +41,7 @@
   </div>
 
   <div class="control-group">
-    <%= f.label :organization,"Associations coordonées", class: "control-label" %>
+    <%= f.label :coordinated_organizations,"Associations coordonées", class: "control-label" %>
     <div class="controls">
       <%= f.collection_select(:coordinated_organizations, Organization.all, :id, :name, {selected: @user.coordinated_organizations.map(&:id)}, {multiple: true, id: "organizations-select"}) %>
     </div>

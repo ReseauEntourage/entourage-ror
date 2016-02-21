@@ -78,7 +78,7 @@ module Admin
     end
 
     def user_params
-      params.require(:user).permit(:first_name, :last_name, :email, :sms_code)
+      params.require(:user).permit(:first_name, :last_name, :email, :sms_code, :phone, :organization_id)
     end
 
     def search_param
