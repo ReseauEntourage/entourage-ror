@@ -5,6 +5,7 @@
   <li class="list-group-item"><%= link_to "Demandes d'adhésions", admin_registration_requests_path %></li>
   <li class="list-group-item"><%= link_to "Messages pour Entourage", admin_messages_path %></li>
   <li class="list-group-item"><%= link_to "Modération des photos de profils", moderate_admin_users_path %></li>
+  <li class="list-group-item"><%= link_to "Inscription à la newsletter", admin_newsletter_subscriptions_path %></li>
   <% if ENV["STAGING"] %>
     <li class="list-group-item"><%= link_to "Maraudes de test", admin_generate_tours_path %></li>
     <li class="list-group-item"><%= link_to "Utilisateurs de test", fake_admin_users_path %></li>

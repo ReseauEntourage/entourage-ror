@@ -1,0 +1,17 @@
+<h1>Liste des inscrits à la newsletter</h1>
+
+<table class="table">
+  <th>id</th>
+  <th>email</th>
+
+  <% @newsletter_subscriptions.each do |newsletter_subscription| %>
+    <tr>
+      <td><%= newsletter_subscription.id %></td>
+      <td><%= newsletter_subscription.email %></td>
+    </tr>
+  <% end %>
+</table>
+
+<div class="row">
+  <%= paginate @newsletter_subscriptions %>
+</div>
