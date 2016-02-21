@@ -1,22 +1,38 @@
 <h1>Liste des utilisateurs pro</h1>
 
-<table class="table">
-  <th>id</th>
-  <th>Nom</th>
-  <th>Prénom</th>
-  <th>Association</th>
-  <th></th>
-
-  <% @users.each do |user| %>
-    <tr>
-      <td><%= user.id %></td>
-      <td><%= user.last_name %></td>
-      <td><%= user.first_name %></td>
-      <td><%= user.organization.name %></td>
-      <td><%= link_to "Modifier", edit_admin_user_path(user), class: "btn btn-danger" %></td>
-    </tr>
+<div class="row">
+  <%= form_tag(search_admin_users_path, method: :get, html: { class: "form-horizontal", role: "form" }) do %>
+    <div class="col-lg-4 pull-right">
+      <div class="input-group">
+        <%= text_field_tag :search, nil, class: "form-control", placeholder: "nom, prénom, email..." %>
+        <span class="input-group-btn">
+          <%= button_tag(type: 'submit', class: "btn btn-default") do %>Chercher<% end %>
+        </span>
+      </div>
+    </div>
   <% end %>
-</table>
+</div>
+<br><br>
+
+<div class="row">
+  <table class="table">
+    <th>id</th>
+    <th>Nom</th>
+    <th>Prénom</th>
+    <th>Association</th>
+    <th></th>
+
+    <% @users.each do |user| %>
+      <tr>
+        <td><%= user.id %></td>
+        <td><%= user.last_name %></td>
+        <td><%= user.first_name %></td>
+        <td><%= user.organization.name %></td>
+        <td><%= link_to "Modifier", edit_admin_user_path(user), class: "btn btn-danger" %></td>
+      </tr>
+    <% end %>
+  </table>
+</div>
 
 <div class="row">
   <%= paginate @users %>

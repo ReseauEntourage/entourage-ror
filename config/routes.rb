@@ -136,6 +136,7 @@ Rails.application.routes.draw do
         get 'moderate'
         get 'fake'
         post 'generate'
+        get 'search'
       end
 
       member do
