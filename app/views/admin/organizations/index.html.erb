@@ -1,0 +1,21 @@
+<h1>Liste des associations</h1>
+
+<div class="row">
+  <table class="table">
+    <th>id</th>
+    <th>Nom</th>
+    <th></th>
+
+    <% @organizations.each do |organization| %>
+      <tr>
+        <td><%= organization.id %></td>
+        <td><%= organization.name %></td>
+        <td><%= link_to "Modifier", edit_admin_organization_path(organization), class: "btn btn-danger" %></td>
+      </tr>
+    <% end %>
+  </table>
+</div>
+
+<div class="row">
+  <%= paginate @organizations %>
+</div>
