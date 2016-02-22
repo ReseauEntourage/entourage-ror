@@ -148,5 +148,6 @@ Rails.application.routes.draw do
     resources :registration_requests, only: [:index, :show, :update, :destroy]
     resources :messages, only: [:index, :destroy]
     resources :organizations, only: [:index, :edit, :update]
+    resources :newsletter_subscriptions, only: [:index]
   end
 end
