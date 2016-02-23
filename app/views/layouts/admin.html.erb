@@ -3,6 +3,21 @@
 <%= render partial: "layouts/head" %>
 
 <body class="<%= controller_name %> <%= action_name %>">
+
+<nav class="navbar navbar-inverse navbar-fixed-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <%= image_tag('logo.png', alt:'Entourage', class:'navbar-brand') %>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <p class="nav navbar-nav navbar-left navbar-text"> Bonjour, <%= current_admin.try(:first_name) %></p>
+      <ul class="nav navbar-nav navbar-right">
+        <li><%= link_to 'Déconnexion', session_path(current_user), method: :delete %></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<br>
 <div id="flash">
   <%= display_flash_messages %>
 </div>
