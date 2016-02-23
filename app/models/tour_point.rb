@@ -5,7 +5,7 @@ class TourPoint < ActiveRecord::Base
 
   geocoded_by :address
 
-  scope :ordered, -> { order("created_at DESC") }
+  scope :ordered, -> { order("passing_time DESC") }
 
   scope :around, -> (latitude, longitude, distance) do
     distance ||= 10
