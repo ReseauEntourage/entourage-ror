@@ -594,21 +594,24 @@ Resources related to users of a tour
                     "email": "dredd@test.com",
                     "first_name": "Judge",
                     "last_name": "Dredd",
-                    "status": "pending"
+                    "status": "pending",
+                    "requested_at": "2016-01-01T20:09:06.000+01:00"
                 },
                 {
                     "id": 2,
                     "email": "dredd2@test.com",
                     "first_name": "Judge2",
                     "last_name": "Dredd2",
-                    "status": "accepted"
+                    "status": "accepted",
+                    "requested_at": "2016-01-01T20:09:06.000+01:00"
                 },
                 {
                     "id": 3,
                     "email": "dredd3@test.com",
                     "first_name": "Judge3",
                     "last_name": "Dredd3",
-                    "status": "rejected"
+                    "status": "rejected",
+                    "requested_at": "2016-01-01T20:09:06.000+01:00"
                 }]
             }
 
@@ -637,7 +640,13 @@ Note: anyone can ask to join a tour
 
 + Response 201 (application/json; charset=utf-8)
 
-        { "user": { "id": 2, "email": "dredd2@test.com", "first_name": "Judge2", "last_name": "Dredd2", "status": "accepted" } }
+        { "user": 
+            { "id": 2, 
+            "email": "dredd2@test.com", 
+            "first_name": "Judge2", 
+            "last_name": "Dredd2", 
+            "status": "accepted",
+            "requested_at": "2016-01-01T20:09:06.000+01:00" } }
 
 + Response 401 (application/json; charset=utf-8)
 
