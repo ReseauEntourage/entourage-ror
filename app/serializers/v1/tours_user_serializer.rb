@@ -4,7 +4,8 @@ module V1
                :email,
                :first_name,
                :last_name,
-               :status
+               :status,
+               :requested_at
 
     def id
       object.user.id
@@ -20,6 +21,10 @@ module V1
 
     def last_name
       object.user.last_name
+    end
+
+    def requested_at
+      object.created_at
     end
   end
 end

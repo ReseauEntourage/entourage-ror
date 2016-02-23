@@ -14,7 +14,12 @@ describe Api::V1::Tours::UsersController do
       context "first request to join tour" do
         before { post :create, tour_id: tour.to_param, token: user.token }
         it { expect(tour.members).to eq([user]) }
-        it { expect(JSON.parse(response.body)).to eq("user"=>{"id"=>user.id, "email"=>user.email, "first_name"=>"John", "last_name"=>"Doe", "status" => "pending"}) }
+        it { expect(JSON.parse(response.body)).to eq("user"=>{"id"=>user.id,
+                                                              "email"=>user.email,
+                                                              "first_name"=>"John",
+                                                              "last_name"=>"Doe",
+                                                              "status" => "pending",
+                                                              "requested_at"=>ToursUser.last.created_at.iso8601(3)}) }
         it { expect(tour.reload.number_of_people).to eq(1) }
       end
 
@@ -37,7 +42,12 @@ describe Api::V1::Tours::UsersController do
     context "signed in" do
       let!(:tour_user) { ToursUser.create(user: user, tour: tour) }
       before { get :index, tour_id: tour.to_param, token: user.token }
-      it { expect(JSON.parse(response.body)).to eq({"users"=>[{"id"=>user.id, "email"=>user.email, "first_name"=>"John", "last_name"=>"Doe", "status"=>"pending"}]}) }
+      it { expect(JSON.parse(response.body)).to eq({"users"=>[{"id"=>user.id,
+                                                               "email"=>user.email,
+                                                               "first_name"=>"John",
+                                                               "last_name"=>"Doe",
+                                                               "status"=>"pending",
+                                                               "requested_at"=>tour_user.created_at.iso8601(3)}]}) }
     end
   end
 
