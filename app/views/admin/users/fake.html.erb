@@ -1,4 +1,5 @@
-<br><br>
+<h1>Utilisateurs de tests</h1>
+
 <% if @users %>
   <div class="row">
     <table class="table">
@@ -33,6 +34,8 @@
     </table>
   </div>
   <br>
+<% else %>
+  <br><br>
 <% end %>
 <div class="row">
   <%= link_to "Générer des utilisateurs de test", generate_admin_users_path, method: :post, class: "btn btn-success" %>
