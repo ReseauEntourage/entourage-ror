@@ -14,6 +14,7 @@
     <% @organization.questions.each do |question| %>
       <div class="row">
         <input type="text" value="<%= question.title %>" class="form-control" style="width: 450px; float: left; margin-right: 30px; margin-bottom: 5px" disabled>
+        <input type="text" value="<%= question.answer_type %>" class="form-control" style="width: 95px; float: left; margin-right: 30px; margin-bottom: 5px" disabled>
         <%= button_to "-", question_path(question), method: :delete, class: "btn btn-danger", data: { confirm: "Êtes vous sûr de supprimer cette question ?" } %>
       </div>
     <% end %>
