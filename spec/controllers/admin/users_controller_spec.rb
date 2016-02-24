@@ -32,7 +32,7 @@ describe Admin::UsersController do
       before(:each) do
         stub_request(:delete, "https://foobar.s3-eu-west-1.amazonaws.com/avatar_#{validated_user_with_avatar.id}").
             to_return(:status => 200, :body => "", :headers => {})
-        stub_request(:delete, "https://foobar.s3-eu-west-1.amazonaws.com/300x300/avatar_#{validated_user_with_avatar.id}").
+        stub_request(:delete, "https://foobar.s3-eu-west-1.amazonaws.com/300x300/avatar_#{validated_user_with_avatar.id}.jpg").
             to_return(:status => 200, :body => "", :headers => {})
 
         put :banish, id: validated_user_with_avatar.to_param

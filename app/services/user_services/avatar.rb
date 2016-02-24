@@ -28,7 +28,7 @@ module UserServices
     end
 
     def thumbnail_key
-      "300x300/avatar_#{user.id}"
+      "300x300/avatar_#{user.id}.jpg"
     end
 
     def avatars
