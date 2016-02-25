@@ -30,4 +30,33 @@ describe Api::V1::Tours::ChatMessagesController do
                                                       }]}) }
     end
   end
+
+  describe 'POST create' do
+    context "not signed in" do
+      before { post :create, tour_id: tour.to_param, chat_message: {content: "foobar"} }
+      it { expect(response.status).to eq(401) }
+      it { expect(ChatMessage.count).to eq(0) }
+    end
+
+    context "signed in" do
+      let(:user) { FactoryGirl.create(:pro_user) }
+      context "valid params" do
+        before { post :create, tour_id: tour.to_param, chat_message: {content: "foobar"}, token: user.token }
+        it { expect(response.status).to eq(201) }
+        it { expect(ChatMessage.count).to eq(1) }
+        it { expect(JSON.parse(response.body)).to eq({"chat_message"=>
+                                                          {"id"=>ChatMessage.first.id,
+                                                           "content"=>"foobar",
+                                                           "user_id"=>user.id,
+                                                           "created_at"=>ChatMessage.first.created_at.iso8601(3)
+                                                          }}) }
+      end
+
+      context "invalid params" do
+        before { post :create, tour_id: tour.to_param, chat_message: {content: nil}, token: user.token }
+        it { expect(response.status).to eq(400) }
+        it { expect(ChatMessage.count).to eq(0) }
+      end
+    end
+  end
 end
