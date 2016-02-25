@@ -33,7 +33,8 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
                                     "author"=>{"id"=>user.id, "display_name"=>"John", "avatar_url"=>nil},
                                     "number_of_people"=> 1,
                                     "join_status"=>"accepted",
-                                    "tour_points"=>[]}})
+                                    "tour_points"=>[],
+                                    "number_of_unread_messages"=>0}})
       end
     end
 
@@ -73,8 +74,10 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
                                     "author"=>{"id"=>last_tour.user.id, "display_name"=>"John", "avatar_url"=>nil},
                                     "number_of_people"=> 1,
                                     "join_status"=>"not_requested",
-                                    "tour_points"=>[{"latitude"=>48.83, "longitude"=>2.29}, {"latitude"=>48.83, "longitude"=>2.29}]}})
+                                    "tour_points"=>[{"latitude"=>48.83, "longitude"=>2.29}, {"latitude"=>48.83, "longitude"=>2.29}],
+                                    "number_of_unread_messages"=>nil}})
       end
+
     end
 
     context "with unexisting id" do
@@ -100,6 +103,31 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
       let!(:tour_points) { FactoryGirl.create_list(:tour_point, 2, tour: tour)}
       before { get 'show', id: tour.id, token: user.token , format: :json }
       it { expect(JSON.parse(response.body)["tour"]["tour_points"].count).to eq(2) }
+    end
+
+    context "has 2 unread messages" do
+      let!(:tour) { FactoryGirl.create :tour }
+      let!(:tours_user) { FactoryGirl.create(:tours_user, tour: tour, user: user, status: "accepted", last_message_read: DateTime.parse("20/10/2015")) }
+      let!(:new_chat_messages) { FactoryGirl.create_list(:chat_message, 2, created_at: DateTime.parse("21/10/2015"), messageable: tour)}
+      let!(:old_chat_message) { FactoryGirl.create(:chat_message, created_at: DateTime.parse("19/10/2015"), messageable: tour)}
+      before { get 'show', id: tour.id, token: user.token , format: :json }
+      it { expect(JSON.parse(response.body)["tour"]["number_of_unread_messages"]).to eq(2) }
+    end
+
+    context "has 0 unread messages" do
+      let!(:tour) { FactoryGirl.create :tour }
+      let!(:tours_user) { FactoryGirl.create(:tours_user, tour: tour, user: user, status: "accepted", last_message_read: DateTime.parse("20/10/2015")) }
+      let!(:old_chat_message) { FactoryGirl.create(:chat_message, created_at: DateTime.parse("19/10/2015"), messageable: tour)}
+      before { get 'show', id: tour.id, token: user.token , format: :json }
+      it { expect(JSON.parse(response.body)["tour"]["number_of_unread_messages"]).to eq(0) }
+    end
+
+    context "has never read a message" do
+      let!(:tour) { FactoryGirl.create :tour }
+      let!(:tours_user) { FactoryGirl.create(:tours_user, tour: tour, user: user, status: "accepted", last_message_read: nil) }
+      let!(:old_chat_message) { FactoryGirl.create(:chat_message, created_at: DateTime.parse("19/10/2015"), messageable: tour)}
+      before { get 'show', id: tour.id, token: user.token , format: :json }
+      it { expect(JSON.parse(response.body)["tour"]["number_of_unread_messages"]).to eq(1) }
     end
   end
 
@@ -131,7 +159,8 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
                                     "author"=>{"id"=>tour.user.id, "display_name"=>"John", "avatar_url"=>nil},
                                     "number_of_people"=> 1,
                                     "join_status"=>"not_requested",
-                                    "tour_points"=>[{"latitude"=>48.83, "longitude"=>2.29}, {"latitude"=>48.83, "longitude"=>2.29}]}})
+                                    "tour_points"=>[{"latitude"=>48.83, "longitude"=>2.29}, {"latitude"=>48.83, "longitude"=>2.29}],
+                                    "number_of_unread_messages"=>nil}})
       end
     end
 
@@ -210,7 +239,8 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
            "author"=>{"id"=>tours.first.user.id, "display_name"=>"John", "avatar_url"=>nil},
            "number_of_people"=> 1,
            "join_status"=>"not_requested",
-           "tour_points"=>[]},
+           "tour_points"=>[],
+           "number_of_unread_messages"=>nil},
           {"id"=>tours.last.id,
            "tour_type"=>"medical",
            "status"=>"ongoing",
@@ -223,7 +253,8 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
            "author"=>{"id"=>tours.last.user.id, "display_name"=>"John", "avatar_url"=>nil},
            "number_of_people"=> 1,
            "join_status"=>"not_requested",
-           "tour_points"=>[]}]})
+           "tour_points"=>[],
+           "number_of_unread_messages"=>nil}]})
     end
      
     context "with limit parameter" do
