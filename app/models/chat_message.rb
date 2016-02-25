@@ -3,4 +3,6 @@ class ChatMessage < ActiveRecord::Base
   belongs_to :user
 
   validates :messageable_id, :messageable_type, :content, :user_id, presence: true
+
+  scope :ordered, -> { order("created_at DESC") }
 end
