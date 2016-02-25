@@ -6,6 +6,7 @@ module Api
 
         def index
           messages = @tour.chat_messages.ordered.page(params[:page]).per(25)
+          tour_user.update(last_message_read: messages.first.created_at)
           render json: messages, each_serializer: ::V1::ChatMessageSerializer
         end
 
@@ -13,6 +14,7 @@ module Api
           message = @tour.chat_messages.new(chat_messages_params)
           message.user = @current_user
           if message.save
+            tour_user.update(last_message_read: message.created_at)
             render json: message, status: 201, serializer: ::V1::ChatMessageSerializer
           else
             render json: {message: 'Could not create chat message', reasons: message.errors.full_messages}, status: :bad_request
@@ -26,6 +28,10 @@ module Api
 
         def chat_messages_params
           params.require(:chat_message).permit(:content)
+        end
+
+        def tour_user
+          ToursUser.where(tour: @tour, user: @current_user, status: "accepted").first!
         end
       end
     end
