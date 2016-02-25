@@ -1,0 +1,2 @@
+class ChatMessageSerializer
+end
