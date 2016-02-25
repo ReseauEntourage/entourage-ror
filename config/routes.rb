@@ -43,7 +43,7 @@ Rails.application.routes.draw do
         resources :tour_points, only:[:create]
         resources :encounters, only: [:create]
         resources :users, :controller => 'tours/users', only: [:index, :destroy, :update, :create]
-        resources :chat_messages_controller, :controller => 'tours/chat_messages', only: [:index, :create]
+        resources :chat_messages, :controller => 'tours/chat_messages', only: [:index, :create]
       end
       resources :stats, only: [:index]
       resources :messages, only: [:create]

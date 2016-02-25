@@ -15,7 +15,7 @@ class ApiRequestValidator
   attr_reader :params, :headers, :env
 
   def api_key
-    headers['X-API-Key'] || env['X-API-Key'] || env['HTTP_X_API_KEY']
+    headers['X-API-KEY'] || env['X-API-KEY'] || env['HTTP_X_API_KEY']
   end
 end
 
