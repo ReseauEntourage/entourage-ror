@@ -7,12 +7,15 @@ module Api
         before_action :set_tour
 
         rescue_from Api::V1::Tours::UnauthorisedTour do |exception|
-          render json: {message: 'unauthorized'}, status: :unauthorized
+          render json: {message: 'unauthorized : you are not accepted in this tour'}, status: :unauthorized
         end
 
         def index
           messages = @tour.chat_messages.ordered.page(params[:page]).per(25)
-          tour_user.update(last_message_read: messages.first.created_at)
+          if tour_user.last_message_read.nil? || tour_user.last_message_read < messages.last.created_at
+            tour_user.update(last_message_read: messages.last.created_at)
+          end
+
           render json: messages, each_serializer: ::V1::ChatMessageSerializer
         end
 
