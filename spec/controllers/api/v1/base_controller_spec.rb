@@ -12,13 +12,13 @@ RSpec.describe Api::V1::BaseController, :type => :controller do
     end
 
     context "invalid api key" do
-      before { @request.env['X-API-Key'] = 'foobar' }
+      before { @request.env['X-API-KEY'] = 'foobar' }
       before { get :check }
       it { expect(response.status).to eq(426) }
     end
 
     context "valid api key" do
-      before { @request.env['X-API-Key'] = 'api_debug' }
+      before { @request.env['X-API-KEY'] = 'api_debug' }
       before { get :check }
       it { expect(response.status).to eq(200) }
     end
