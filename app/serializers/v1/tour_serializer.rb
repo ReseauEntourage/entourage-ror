@@ -10,7 +10,8 @@ module V1
                :start_time,
                :end_time,
                :number_of_people,
-               :join_status
+               :join_status,
+               :number_of_unread_messages
 
     has_many :tour_points
     has_one :author
@@ -57,7 +58,14 @@ module V1
       end
     end
 
+    def number_of_unread_messages
+      return nil unless current_tour_user
+      return object.chat_messages.count if current_tour_user.last_message_read.nil?
+      object.chat_messages.where("created_at > ?", current_tour_user.last_message_read).count
+    end
+
     def current_tour_user
+      #TODO : replace by sql request ?
       object.tours_users.select {|tour_user| tour_user.user_id == scope.id}.first
     end
   end

@@ -30,7 +30,8 @@ RSpec.describe Api::V1::Users::ToursController, :type => :controller do
              "author"=>{"id"=>tour1.user.id, "display_name"=>"John", "avatar_url"=>nil},
              "number_of_people"=> 1,
              "join_status"=>"not_requested",
-             "tour_points"=>[]},
+             "tour_points"=>[],
+             "number_of_unread_messages"=>nil},
             {"id"=>tour2.id,
              "tour_type"=>"medical",
              "status"=>"ongoing",
@@ -43,7 +44,8 @@ RSpec.describe Api::V1::Users::ToursController, :type => :controller do
              "author"=>{"id"=>tour2.user.id, "display_name"=>"John", "avatar_url"=>nil},
              "number_of_people"=> 1,
              "join_status"=>"not_requested",
-             "tour_points"=>[]}]})
+             "tour_points"=>[],
+             "number_of_unread_messages"=>nil}]})
       end
     end
 

@@ -12,22 +12,53 @@ describe Api::V1::Tours::ChatMessagesController do
 
     context "signed in" do
       let(:user) { FactoryGirl.create(:pro_user) }
-      let!(:chat_messages) { FactoryGirl.create_list(:chat_message, 2, messageable: tour) }
-      before { get :index, tour_id: tour.to_param, token: user.token }
-      it { expect(response.status).to eq(200) }
-      it { expect(JSON.parse(response.body)).to eq({"chat_messages"=>
-                                                     [{
-                                                          "id"=>chat_messages.last.id,
-                                                          "content"=>"MyText",
-                                                          "user_id"=>chat_messages.last.user_id,
-                                                          "created_at"=>chat_messages.last.created_at.iso8601(3)
-                                                      },
-                                                      {
-                                                          "id"=>chat_messages.first.id,
-                                                          "content"=>"MyText",
-                                                          "user_id"=>chat_messages.first.user_id,
-                                                          "created_at"=>chat_messages.first.created_at.iso8601(3)
-                                                      }]}) }
+
+      context "i belong to the tour" do
+        let!(:chat_message1) { FactoryGirl.create(:chat_message, messageable: tour, created_at: DateTime.parse("10/01/2016")) }
+        let!(:chat_message2) { FactoryGirl.create(:chat_message, messageable: tour, created_at: DateTime.parse("09/01/2016")) }
+        let!(:tour_user) { FactoryGirl.create(:tours_user, tour: tour, user: user, status: "accepted") }
+        before { get :index, tour_id: tour.to_param, token: user.token }
+        it { expect(response.status).to eq(200) }
+        it { expect(JSON.parse(response.body)).to eq({"chat_messages"=>
+                                                          [{
+                                                               "id"=>chat_message2.id,
+                                                               "content"=>"MyText",
+                                                               "user_id"=>chat_message2.user_id,
+                                                               "created_at"=>chat_message2.created_at.iso8601(3)
+                                                           },
+                                                           {
+                                                               "id"=>chat_message1.id,
+                                                               "content"=>"MyText",
+                                                               "user_id"=>chat_message1.user_id,
+                                                               "created_at"=>chat_message1.created_at.iso8601(3)
+                                                           }]}) }
+
+        it { expect(tour_user.reload.last_message_read).to eq(chat_message1.created_at)}
+      end
+
+      context "i request older messages" do
+        let!(:chat_messages) { FactoryGirl.create_list(:chat_message, 2, messageable: tour, created_at: DateTime.parse("10/01/2016")) }
+        let!(:tour_user) { FactoryGirl.create(:tours_user, tour: tour, user: user, status: "accepted", last_message_read: DateTime.parse("20/01/2016")) }
+        before { get :index, tour_id: tour.to_param, token: user.token }
+        it { expect(tour_user.reload.last_message_read).to eq(DateTime.parse("20/01/2016"))}
+      end
+
+      context "i don't belong to the tour" do
+        before { get :index, tour_id: tour.to_param, token: user.token }
+        it { expect(response.status).to eq(401) }
+      end
+
+      context "i am still in pending status" do
+        let!(:tour_user) { FactoryGirl.create(:tours_user, tour: tour, user: user, status: "pending") }
+        before { get :index, tour_id: tour.to_param, token: user.token }
+        it { expect(response.status).to eq(401) }
+      end
+
+      context "i am rejected from the tour" do
+        let!(:tour_user) { FactoryGirl.create(:tours_user, tour: tour, user: user, status: "rejected") }
+        before { get :index, tour_id: tour.to_param, token: user.token }
+        it { expect(response.status).to eq(401) }
+      end
     end
   end
 
@@ -40,7 +71,9 @@ describe Api::V1::Tours::ChatMessagesController do
 
     context "signed in" do
       let(:user) { FactoryGirl.create(:pro_user) }
+
       context "valid params" do
+        let!(:tour_user) { FactoryGirl.create(:tours_user, tour: tour, user: user, status: "accepted") }
         before { post :create, tour_id: tour.to_param, chat_message: {content: "foobar"}, token: user.token }
         it { expect(response.status).to eq(201) }
         it { expect(ChatMessage.count).to eq(1) }
@@ -53,9 +86,27 @@ describe Api::V1::Tours::ChatMessagesController do
       end
 
       context "invalid params" do
+        let!(:tour_user) { FactoryGirl.create(:tours_user, tour: tour, user: user, status: "accepted") }
         before { post :create, tour_id: tour.to_param, chat_message: {content: nil}, token: user.token }
         it { expect(response.status).to eq(400) }
         it { expect(ChatMessage.count).to eq(0) }
+      end
+
+      context "post in a tour i don't belong to" do
+        before { post :create, tour_id: tour.to_param, chat_message: {content: "foobar"}, token: user.token }
+        it { expect(response.status).to eq(401) }
+      end
+
+      context "post in a tour i am still in pending status" do
+        let!(:tour_user) { FactoryGirl.create(:tours_user, tour: tour, user: user, status: "pending") }
+        before { post :create, tour_id: tour.to_param, chat_message: {content: "foobar"}, token: user.token }
+        it { expect(response.status).to eq(401) }
+      end
+
+      context "post in a tour i am rejected from" do
+        let!(:tour_user) { FactoryGirl.create(:tours_user, tour: tour, user: user, status: "rejected") }
+        before { post :create, tour_id: tour.to_param, chat_message: {content: "foobar"}, token: user.token }
+        it { expect(response.status).to eq(401) }
       end
     end
   end
