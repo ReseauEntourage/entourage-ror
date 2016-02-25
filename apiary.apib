@@ -323,7 +323,8 @@ vehicle_type is either "feet" or "car"
 
         {"tours":
             [
-                {   "id":10,
+                {   
+                    "id":10,
                     "tour_type":"medical", 
                     "vehicle_type":"feet", 
                     "distance": 8543.65, 
@@ -342,9 +343,11 @@ vehicle_type is either "feet" or "car"
                         "display_name": "Arnaud",
                         "avatar_url": "https://foo.bar"
                     },
-                    "join_status": "pending"
+                    "join_status": "pending",
+                    "number_of_unread_messages": 0
                 },
-                {   "id":11,
+                {   
+                    "id":11,
                     "tour_type":"medical", 
                     "vehicle_type":"feet", 
                     "distance": 8543.65, 
@@ -363,7 +366,8 @@ vehicle_type is either "feet" or "car"
                         "display_name": "Arnaud",
                         "avatar_url": "https://foo.bar"
                     },
-                    "join_status": "accepted"
+                    "join_status": "accepted",
+                    "number_of_unread_messages": 0
                 }
             ]
         }
@@ -382,7 +386,8 @@ vehicle_type is either "feet" or "car"
 
     + Body
 
-            {   "id":10,
+            {   
+                "id":10,
                 "tour_type":"medical", 
                 "vehicle_type":"feet", 
                 "distance": 8543.65, 
@@ -405,7 +410,31 @@ vehicle_type is either "feet" or "car"
 
 + Response 201 (application/json; charset=utf-8)
 
-        {"tour":{"id":10,"tour_type":"medical", "vehicle_type":"feet", "distance": 8543.65, "organization_name":"organization name", "organization_description":"organization description", "start_time": "2016-01-01T19:09:06.000+01:00", "end_time": "2016-01-01T20:09:06.000+01:00", "tour_points":[]}}
+        {"tour":
+            {
+                "id":10,
+                "tour_type":"medical", 
+                "vehicle_type":"feet", 
+                "distance": 8543.65, 
+                "organization_name":"organization name", 
+                "organization_description":"organization description", 
+                "start_time": "2016-01-01T19:09:06.000+01:00", 
+                "end_time": "2016-01-01T20:09:06.000+01:00",
+                "tour_points":[
+                {"latitude":1.5,"longitude":1.5},
+                {"latitude":1.6,"longitude":1.6}
+                ],
+                "status":"ongoing",
+                "number_of_people": 1,
+                "author": {
+                    "id": 14,
+                    "display_name": "Arnaud",
+                    "avatar_url": "https://foo.bar"
+                },
+                "join_status": "pending",
+                "number_of_unread_messages": 0
+            }
+        }
 
 + Response 400 (application/json; charset=utf-8)
 
@@ -447,7 +476,9 @@ vehicle_type is either "feet" or "car"
                     "id": 14,
                     "display_name": "Arnaud",
                     "avatar_url": "https://foo.bar"
-                }
+                },
+                "join_status": "pending",
+                "number_of_unread_messages": 0
             }
 
 + Response 404 (application/json; charset=utf-8)
@@ -481,24 +512,26 @@ vehicle_type is either "feet" or "car"
 + Response 200 (application/json; charset=utf-8)
 
         {   "id":10,
-                "tour_type":"medical", 
-                "vehicle_type":"feet", 
-                "distance": 8543.65, 
-                "organization_name":"organization name", 
-                "organization_description":"organization description", 
-                "start_time": "2016-01-01T19:09:06.000+01:00", 
-                "end_time": "2016-01-01T20:09:06.000+01:00",
-                "tour_points":[
-                {"latitude":1.5,"longitude":1.5},
-                {"latitude":1.6,"longitude":1.6}
-                ],
-                "status":"ongoing",
-                "number_of_people": 1,
-                "author": {
-                    "id": 14,
-                    "display_name": "Arnaud",
-                    "avatar_url": "https://foo.bar"
-                }
+            "tour_type":"medical", 
+            "vehicle_type":"feet", 
+            "distance": 8543.65, 
+            "organization_name":"organization name", 
+            "organization_description":"organization description", 
+            "start_time": "2016-01-01T19:09:06.000+01:00", 
+            "end_time": "2016-01-01T20:09:06.000+01:00",
+            "tour_points":[
+            {"latitude":1.5,"longitude":1.5},
+            {"latitude":1.6,"longitude":1.6}
+            ],
+            "status":"ongoing",
+            "number_of_people": 1,
+            "author": {
+                "id": 14,
+                "display_name": "Arnaud",
+                "avatar_url": "https://foo.bar"
+            },
+            "join_status": "pending",
+            "number_of_unread_messages": 0
             }
 
 + Response 404 (application/json; charset=utf-8)
@@ -543,7 +576,8 @@ vehicle_type is either "feet" or "car"
                 "organization_description":"organization description",
                 "tour_points":[],
                 "status":"ongoing",
-                "join_status": "pending"
+                "join_status": "pending",
+                "number_of_unread_messages": 0
             },
             {  "id":11,
                 "tour_type":"medical", 
@@ -553,7 +587,8 @@ vehicle_type is either "feet" or "car"
                 "organization_description":"organization description",
                 "tour_points":[],
                 "status":"ongoing",
-                "join_status": "accepted"
+                "join_status": "accepted",
+                "number_of_unread_messages": 0
             }
             ]
         }
