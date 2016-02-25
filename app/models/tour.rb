@@ -1,5 +1,4 @@
 class Tour < ActiveRecord::Base
-
   validates :tour_type, inclusion: { in: %w(medical barehands alimentary) }
   has_many :tour_points, dependent: :delete_all
   has_many :snap_to_road_tour_points, dependent: :delete_all
@@ -11,6 +10,7 @@ class Tour < ActiveRecord::Base
   belongs_to :user
   has_many :tours_users
   has_many :members, through: :tours_users, source: :user
+  has_many :chat_messages, as: :messageable
 
   delegate :organization_name, :organization_description, to: :user
 

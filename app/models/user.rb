@@ -17,6 +17,7 @@ class User < ActiveRecord::Base
   has_many :tour_participations, through: :tours_users, source: :tour
   belongs_to :organization
   has_and_belongs_to_many :coordinated_organizations, -> { uniq }, class_name: "Organization", join_table: "coordination"
+  has_many :chat_messages
 
   enum device_type: [ :android, :ios ]
 
