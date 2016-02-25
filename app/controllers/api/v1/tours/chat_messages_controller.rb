@@ -5,14 +5,17 @@ module Api
 
       class ChatMessagesController < Api::V1::BaseController
         before_action :set_tour
+        before_action :authorised_to_see_messages?
 
         rescue_from Api::V1::Tours::UnauthorisedTour do |exception|
           render json: {message: 'unauthorized : you are not accepted in this tour'}, status: :unauthorized
         end
 
         def index
-          messages = @tour.chat_messages.ordered.page(params[:page]).per(25)
-          if tour_user.last_message_read.nil? || tour_user.last_message_read < messages.last.created_at
+          before = params[:before] ? DateTime.parse(params[:before]) : DateTime.now
+          messages = @tour.chat_messages.ordered.before(before).limit(25)
+          #TODO: move into a LastMessageRead class
+          if messages.present? && (tour_user.last_message_read.nil? || tour_user.last_message_read < messages.last.created_at)
             tour_user.update(last_message_read: messages.last.created_at)
           end
 
@@ -40,10 +43,11 @@ module Api
         end
 
         def tour_user
-          return @tour_user if @tour_user
-          @tour_user = ToursUser.where(tour: @tour, user: @current_user, status: "accepted").first
-          raise Api::V1::Tours::UnauthorisedTour unless @tour_user
-          @tour_user
+          @tour_user ||= ToursUser.where(tour: @tour, user: @current_user, status: "accepted").first
+        end
+
+        def authorised_to_see_messages?
+          raise Api::V1::Tours::UnauthorisedTour unless tour_user
         end
       end
     end
