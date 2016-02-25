@@ -34,29 +34,20 @@ describe Api::V1::Tours::ChatMessagesController do
       end
 
       context "i don't belong to the tour" do
-        it {
-          expect {
-            get :index, tour_id: tour.to_param, token: user.token
-          }.to raise_error(ActiveRecord::RecordNotFound)
-        }
+        before { get :index, tour_id: tour.to_param, token: user.token }
+        it { expect(response.status).to eq(401) }
       end
 
       context "i am still in pending status" do
         let!(:tour_user) { FactoryGirl.create(:tours_user, tour: tour, user: user, status: "pending") }
-        it {
-          expect {
-            get :index, tour_id: tour.to_param, token: user.token
-          }.to raise_error(ActiveRecord::RecordNotFound)
-        }
+        before { get :index, tour_id: tour.to_param, token: user.token }
+        it { expect(response.status).to eq(401) }
       end
 
       context "i am rejected from the tour" do
         let!(:tour_user) { FactoryGirl.create(:tours_user, tour: tour, user: user, status: "rejected") }
-        it {
-          expect {
-            get :index, tour_id: tour.to_param, token: user.token
-          }.to raise_error(ActiveRecord::RecordNotFound)
-        }
+        before { get :index, tour_id: tour.to_param, token: user.token }
+        it { expect(response.status).to eq(401) }
       end
     end
   end
@@ -92,29 +83,20 @@ describe Api::V1::Tours::ChatMessagesController do
       end
 
       context "post in a tour i don't belong to" do
-        it {
-          expect {
-            post :create, tour_id: tour.to_param, chat_message: {content: "foobar"}, token: user.token
-          }.to raise_error(ActiveRecord::RecordNotFound)
-        }
+        before { post :create, tour_id: tour.to_param, chat_message: {content: "foobar"}, token: user.token }
+        it { expect(response.status).to eq(401) }
       end
 
       context "post in a tour i am still in pending status" do
         let!(:tour_user) { FactoryGirl.create(:tours_user, tour: tour, user: user, status: "pending") }
-        it {
-          expect {
-            post :create, tour_id: tour.to_param, chat_message: {content: "foobar"}, token: user.token
-          }.to raise_error(ActiveRecord::RecordNotFound)
-        }
+        before { post :create, tour_id: tour.to_param, chat_message: {content: "foobar"}, token: user.token }
+        it { expect(response.status).to eq(401) }
       end
 
       context "post in a tour i am rejected from" do
         let!(:tour_user) { FactoryGirl.create(:tours_user, tour: tour, user: user, status: "rejected") }
-        it {
-          expect {
-            post :create, tour_id: tour.to_param, chat_message: {content: "foobar"}, token: user.token
-          }.to raise_error(ActiveRecord::RecordNotFound)
-        }
+        before { post :create, tour_id: tour.to_param, chat_message: {content: "foobar"}, token: user.token }
+        it { expect(response.status).to eq(401) }
       end
     end
   end

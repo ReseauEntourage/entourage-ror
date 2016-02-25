@@ -1,8 +1,14 @@
 module Api
   module V1
     module Tours
+      class UnauthorisedTour < StandardError; end
+
       class ChatMessagesController < Api::V1::BaseController
         before_action :set_tour
+
+        rescue_from Api::V1::Tours::UnauthorisedTour do |exception|
+          render json: {message: 'unauthorized'}, status: :unauthorized
+        end
 
         def index
           messages = @tour.chat_messages.ordered.page(params[:page]).per(25)
@@ -31,7 +37,10 @@ module Api
         end
 
         def tour_user
-          ToursUser.where(tour: @tour, user: @current_user, status: "accepted").first!
+          return @tour_user if @tour_user
+          @tour_user = ToursUser.where(tour: @tour, user: @current_user, status: "accepted").first
+          raise Api::V1::Tours::UnauthorisedTour unless @tour_user
+          @tour_user
         end
       end
     end
