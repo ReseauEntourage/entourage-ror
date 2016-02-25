@@ -1362,3 +1362,73 @@ Resources  related to questions for the **Entourage API**
 + Response 401 (application/json; charset=utf-8)
 
         {"error":{"status":401,"message":"Please sign-in"}}
+        
+        
+# Group Chat Messages
+Resources  related to chat messages for the **Entourage API**
+## Chat Messages [/tours/{tour_id}/chat_messages{?token}{&page}{&per}]
+
++ Parameters
+    + tour_id (required, integer, `1`) ... Identifier of the tour
+    + token (required, string, `FAKETOKEN`) ... Token identifying the current user
+    + page (optional, number) ... pagination : page number
+    + per (optional, number) ... pagination : number of entourages per page
+
+### GET all messages for the tour [GET]
+
++ Request
+
+    + Headers
+
+            Accept: application/json
+
++ Response 200 (application/json; charset=utf-8)
+
+    + Body
+
+            {"chat_messages": [ {   "id": 123, 
+                                    "content": "Content text", 
+                                    "user_id": 456,
+                                    "created_at": "2015-07-07T10:31:43.000+02:00" 
+                                },
+                                {   "id": 124, 
+                                    "content": "Content text", 
+                                    "user_id": 457,
+                                    "created_at": "2015-07-07T10:31:43.000+02:00" 
+                                }]
+                                
++ Response 401 (application/json; charset=utf-8)
+
+        {"error":{"status":401,"message":"Please sign-in"}}
+        
+        
+### Create a chat message [POST]
++ Request (application/json)
+
+    + Header
+
+            Accept: application/json
+
+    + Body
+
+            {
+            "chat_message": {
+                "content": "Content text"
+                }
+            }
+
++ Response 201 (application/json; charset=utf-8)
+
+        {   "id": 123, 
+            "content": "Content text", 
+            "user_id": 456,
+            "created_at": "2015-07-07T10:31:43.000+02:00" 
+        }
+
++ Response 400 (application/json; charset=utf-8)
+
+        {"error":{"status":400,"message":"Could not create message","reasons":["Content is missing"]}}
+
++ Response 401 (application/json; charset=utf-8)
+
+        {"error":{"status":401,"message":"Please sign-in"d}}
