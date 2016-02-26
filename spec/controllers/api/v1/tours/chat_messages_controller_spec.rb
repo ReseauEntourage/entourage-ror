@@ -23,13 +23,13 @@ describe Api::V1::Tours::ChatMessagesController do
                                                           [{
                                                                "id"=>chat_message2.id,
                                                                "content"=>"MyText",
-                                                               "user_id"=>chat_message2.user_id,
+                                                               "user"=> {"id"=>chat_message2.user_id, "avatar_url"=>nil},
                                                                "created_at"=>chat_message2.created_at.iso8601(3)
                                                            },
                                                            {
                                                                "id"=>chat_message1.id,
                                                                "content"=>"MyText",
-                                                               "user_id"=>chat_message1.user_id,
+                                                               "user"=> {"id"=>chat_message1.user_id, "avatar_url"=>nil},
                                                                "created_at"=>chat_message1.created_at.iso8601(3)
                                                            }]}) }
 
@@ -68,7 +68,7 @@ describe Api::V1::Tours::ChatMessagesController do
         it { expect(JSON.parse(response.body)).to eq({"chat_messages"=>[{
                                                                            "id"=>chat_message2.id,
                                                                            "content"=>"MyText",
-                                                                           "user_id"=>chat_message2.user_id,
+                                                                           "user"=>{"id"=>chat_message2.user.id, "avatar_url"=>nil},
                                                                            "created_at"=>chat_message2.created_at.iso8601(3)
                                                                        }]}) }
       end
@@ -93,7 +93,7 @@ describe Api::V1::Tours::ChatMessagesController do
         it { expect(JSON.parse(response.body)).to eq({"chat_message"=>
                                                           {"id"=>ChatMessage.first.id,
                                                            "content"=>"foobar",
-                                                           "user_id"=>user.id,
+                                                           "user"=>{"id"=>user.id, "avatar_url"=>nil},
                                                            "created_at"=>ChatMessage.first.created_at.iso8601(3)
                                                           }}) }
       end
