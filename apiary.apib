@@ -1401,14 +1401,16 @@ Resources  related to questions for the **Entourage API**
         
 # Group Chat Messages
 Resources  related to chat messages for the **Entourage API**
-## Chat Messages [/tours/{tour_id}/chat_messages{?token}{&before}]
+## Chat Messages [/tours/{tour_id}/chat_messages{?token}]
 
 + Parameters
     + tour_id (required, integer, `1`) ... Identifier of the tour
     + token (required, string, `FAKETOKEN`) ... Token identifying the current user
-    + before (optional, string) ... pagination : date of the last message to be returned
 
-### GET all messages for the tour [GET]
+### GET all messages for the tour [GET/{?before}]
+
++ Parameters
+    + before (optional, string) ... pagination : date of the last message to be returned
 
 + Request
 
