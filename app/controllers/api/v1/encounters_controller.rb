@@ -1,11 +1,15 @@
 module Api
   module V1
     class EncountersController < Api::V1::BaseController
+      before_action :set_tour
+
+      def index
+        encounters = @tour.encounters.page(params[:page]).per(25)
+        render json: encounters, status: 201, each_serializer: ::V1::EncounterSerializer
+      end
+
       def create
-        encounter = Encounter.new(encounters_params)
-        if params[:tour_id]
-          encounter.tour = Tour.find(params[:tour_id])
-        end
+        encounter = @tour.encounters.new(encounters_params)
         if encounter.save
           EncounterReverseGeocodeJob.perform_later(encounter.id)
 
@@ -24,9 +28,11 @@ module Api
       private
 
       def encounters_params
-        if params[:encounter]
-          params.require(:encounter).permit(:street_person_name, :date, :latitude, :longitude, :message, :voice_message, :answers)
-        end
+        params.require(:encounter).permit(:street_person_name, :date, :latitude, :longitude, :message, :voice_message, :answers)
+      end
+
+      def set_tour
+        @tour = Tour.find(params[:tour_id])
       end
     end
   end
