@@ -12,5 +12,6 @@ FactoryGirl.define do
     sequence :address do |n|
       "#{n} avenue des Champs Elysées 75008 Paris France"
     end
+    test_organization false
   end
 end
