@@ -60,10 +60,11 @@ module Admin
     def search
       @users = User.pro
                    .includes(:organization)
-                   .where("first_name ILIKE ? OR last_name ILIKE ? OR email ILIKE ?",
+                   .where("first_name ILIKE ? OR last_name ILIKE ? OR email ILIKE ? OR phone = ?",
                             search_param,
                             search_param,
-                            search_param)
+                            search_param,
+                            params[:search])
                    .order("last_name ASC")
                    .page(params[:page])
                    .per(25)
