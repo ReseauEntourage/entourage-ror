@@ -789,6 +789,51 @@ Encounters occured during tour
     + tour_id (required, integer, `1`) ... Identifier of the tour related to the point
     + token (required, string, `FAKETOKEN`) ... Token identifying the current user
 
+
+### Get all encounters [GET]
++ Request (application/json)
+
+    + Header
+
+            Accept: application/json
+
++ Response 200 (application/json; charset=utf-8)
+
+    + Body
+
+            {
+                "encounters": [{
+                    "id":1,
+                    "date":"2014-10-11T15:19:45.000+02:00",
+                    "latitude":42.0,
+                    "longitude":2.0,
+                    "user_id":1,
+                    "user_name":"Eric",
+                    "street_person_name":"jean",
+                    "message":"test",
+                    "voice_message":"http://www.google.com"
+                },
+                {
+                    "id":2,
+                    "date":"2014-10-11T15:19:45.000+02:00",
+                    "latitude":42.0,
+                    "longitude":2.0,
+                    "user_id":1,
+                    "user_name":"Eric",
+                    "street_person_name":"jean",
+                    "message":"test",
+                    "voice_message":"http://www.google.com"
+                }]
+            }
+
+
++ Response 401 (application/json; charset=utf-8)
+
+    + Body
+
+            {"error":{"status":401,"message":"Please sign-in"}}
+
+
 ### Create an encounter [POST]
 + Request (application/json)
 
