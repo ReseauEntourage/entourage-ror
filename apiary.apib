@@ -1469,12 +1469,18 @@ Resources  related to chat messages for the **Entourage API**
 
             {"chat_messages": [ {   "id": 123, 
                                     "content": "Content text", 
-                                    "user_id": 456,
+                                    "user": {
+                                        "id": 456,
+                                        "avatar_url": "https://foo.bar"
+                                    }
                                     "created_at": "2015-07-07T10:31:43.000+02:00" 
                                 },
                                 {   "id": 124, 
                                     "content": "Content text", 
-                                    "user_id": 457,
+                                    "user": {
+                                        "id": 457,
+                                        "avatar_url": "https://foo.bar"
+                                    }
                                     "created_at": "2015-07-07T10:31:43.000+02:00" 
                                 }]
                                 
@@ -1502,7 +1508,10 @@ Resources  related to chat messages for the **Entourage API**
 
         {   "id": 123, 
             "content": "Content text", 
-            "user_id": 456,
+            "user": {
+                "id": 456,
+                "avatar_url": "https://foo.bar"
+            },
             "created_at": "2015-07-07T10:31:43.000+02:00" 
         }
 
