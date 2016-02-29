@@ -3,4 +3,6 @@ class Organization < ActiveRecord::Base
   validates_uniqueness_of [:name]
   has_many :users
   has_many :questions
+
+  scope :not_test, -> { where test_organization: false}
 end

@@ -3,6 +3,11 @@ require 'rails_helper'
 RSpec.describe Api::V1::StatsController, :type => :controller do
   describe 'index' do
     before(:each) do
+      test_organization = FactoryGirl.create(:organization, test_organization: true)
+      test_user = FactoryGirl.create(:pro_user, organization: test_organization)
+      test_tours = FactoryGirl.create_list(:tour, 2, user: test_user)
+      FactoryGirl.create_list(:encounter, 4, tour: test_tours.first)
+
       organization = FactoryGirl.create(:organization)
       user = FactoryGirl.create(:pro_user, organization: organization)
       tours = FactoryGirl.create_list(:tour, 2, user: user)
