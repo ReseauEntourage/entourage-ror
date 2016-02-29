@@ -117,12 +117,13 @@ RSpec.describe Tour, :type => :model do
   end
   
   describe '#force_close' do
+    before { Timecop.freeze(Time.parse("10/12/2016")) }
+
     context 'ongoing tour withtout points' do
       let!(:tour) { create :tour, status:'ongoing' }
-      before { Timecop.freeze(Time.parse("10/10/2016")) }
       before { tour.force_close }
       it { expect(tour.status).to eq 'closed' }
-      it { expect(tour.closed_at).to eq(Time.parse('10/10/2016')) }
+      it { expect(tour.closed_at).to eq(Time.parse('10/12/2016')) }
     end
     context 'ongoing tour with tour points' do
       let!(:tour) { create :tour, status:'ongoing' }
@@ -130,12 +131,11 @@ RSpec.describe Tour, :type => :model do
       let!(:tour_point2) { create :tour_point, tour: tour, passing_time: (Time.now - 4.hours) }
       before { tour.force_close }
       it { expect(tour.status).to eq 'closed' }
-      it { expect(tour.closed_at).to eq TourPoint.find(tour_point2.id).passing_time }
+      it { expect(tour.closed_at).to eq(Time.parse("10/12/2016")) }
     end
     context 'ongoing tour with tour points in the past' do
       let!(:tour) { create :tour, status:'ongoing' }
       let!(:tour_point1) { create :tour_point, tour: tour, passing_time: Time.parse("10/10/2016"), created_at: Time.parse("10/11/2016") }
-      before { Timecop.freeze(Time.parse("10/12/2016")) }
       before { tour.force_close }
       it { expect(tour.closed_at).to eq(Time.parse("10/12/2016")) }
     end
