@@ -52,7 +52,14 @@ class Tour < ActiveRecord::Base
   end
 
   def force_close
-    update(status: :closed, closed_at: tour_points.last.try(:passing_time) || DateTime.now)
+    last_point_date = tour_points.last.try(:passing_time)
+    closed_at = if last_point_date && last_point_date < created_at
+      last_point_date
+    else
+      DateTime.now
+    end
+
+    update(status: :closed, closed_at: closed_at)
   end
 
   def closed?
