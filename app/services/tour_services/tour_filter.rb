@@ -13,7 +13,6 @@ module TourServices
       filter_box
       filter_org
       filter_date
-      filter_date
       filter_type
 
       @tours

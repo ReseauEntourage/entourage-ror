@@ -22,7 +22,8 @@ function displayDashboardMapData() {
 
     google.maps.event.addListenerOnce(map, 'idle', function(){
       refreshMap = function() {
-        var tour_display_type = $("[name=tour_display_type]:checked").val();
+        var tour_display_points = $("[name=tour_display_points]")[0].checked;
+        var tour_display_heatmap = $("[name=tour_display_heatmap]")[0].checked;
         var url = '/organizations/simplified_tours.json';
         var filters = [];
         filters.push('ne=' + map.getBounds().getNorthEast().lat() + '_' + map.getBounds().getNorthEast().lng());
@@ -39,18 +40,13 @@ function displayDashboardMapData() {
           filters.push('org=' + $('#org-filter').val());
         }
 
-        if(tour_display_type=="heatmap") {
-          filters.push('only_points=true');
-        }
-
-        url += '?' + filters.join('&');
-
         map.data.forEach(function(feature) {
           map.data.remove(feature);
         });
         heatmap.setMap(null);
-        if(tour_display_type=="points") {
 
+        if(tour_display_points) {
+          url += '?' + filters.join('&');
           $(".spinner").removeClass("hidden");
           //see : https://developers.google.com/maps/documentation/javascript/3.exp/reference
           map.data.loadGeoJson(url, null, function (features) {
@@ -67,7 +63,11 @@ function displayDashboardMapData() {
             });
           });
         }
-        else {
+
+        if(tour_display_heatmap){
+          filters.push('only_points=true');
+          url += '?' + filters.join('&');
+
           $.getJSON(url, function (data) {
             points = data.points.map(function (x) {
               return new google.maps.LatLng(x.latitude, x.longitude)
@@ -85,7 +85,11 @@ function displayDashboardMapData() {
       map.addListener('idle', refreshMap);
 
 
-      $("[name=tour_display_type]").change(function() {
+      $("[name=tour_display_points]").change(function() {
+        refreshMap();
+      });
+
+      $("[name=tour_display_heatmap]").change(function() {
         refreshMap();
       });
 
