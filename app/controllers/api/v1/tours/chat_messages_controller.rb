@@ -23,13 +23,18 @@ module Api
         end
 
         def create
-          message = @tour.chat_messages.new(chat_messages_params)
-          message.user = @current_user
-          if message.save
-            tour_user.update(last_message_read: message.created_at)
-            render json: message, status: 201, serializer: ::V1::ChatMessageSerializer
-          else
-            render json: {message: 'Could not create chat message', reasons: message.errors.full_messages}, status: :bad_request
+          chat_builder = ChatServices::ChatMessageBuilder.new(params: chat_messages_params,
+                                                              user: current_user,
+                                                              tour: @tour,
+                                                              tour_user: tour_user)
+          chat_builder.create do |on|
+            on.create_success do |message|
+              render json: message, status: 201, serializer: ::V1::ChatMessageSerializer
+            end
+
+            on.create_failure do |message|
+              render json: {message: 'Could not create chat message', reasons: message.errors.full_messages}, status: :bad_request
+            end
           end
         end
 
