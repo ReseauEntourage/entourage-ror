@@ -83,10 +83,13 @@ describe Api::V1::Tours::ChatMessagesController do
     end
 
     context "signed in" do
+      let!(:ios_app) { FactoryGirl.create(:ios_app, name: 'entourage') }
+      let!(:android_app) { FactoryGirl.create(:android_app, name: 'entourage') }
       let(:user) { FactoryGirl.create(:pro_user) }
 
       context "valid params" do
         let!(:tour_user) { FactoryGirl.create(:tours_user, tour: tour, user: user, status: "accepted") }
+        let!(:tour_user2) { FactoryGirl.create(:tours_user, tour: tour, status: "accepted") }
         before { post :create, tour_id: tour.to_param, chat_message: {content: "foobar"}, token: user.token }
         it { expect(response.status).to eq(201) }
         it { expect(ChatMessage.count).to eq(1) }
@@ -96,6 +99,16 @@ describe Api::V1::Tours::ChatMessagesController do
                                                            "user"=>{"id"=>user.id, "avatar_url"=>nil},
                                                            "created_at"=>ChatMessage.first.created_at.iso8601(3)
                                                           }}) }
+      end
+
+      describe "send push notif" do
+        it "sends notif to everyone accaepted except message sender" do
+          tour_user = FactoryGirl.create(:tours_user, tour: tour, user: user, status: "accepted")
+          tour_user2 = FactoryGirl.create(:tours_user, tour: tour, status: "accepted")
+          FactoryGirl.create(:tours_user, tour: tour, status: "pending")
+          expect_any_instance_of(PushNotificationService).to receive(:send_notification).with(user.full_name, 'Nouveau message', 'foobar', [tour_user2.user])
+          post :create, tour_id: tour.to_param, chat_message: {content: "foobar"}, token: user.token
+        end
       end
 
       context "invalid params" do
