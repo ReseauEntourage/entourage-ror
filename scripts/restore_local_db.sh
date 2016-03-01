@@ -11,5 +11,7 @@ echo "Download DB from production"
 curl -o tmp/db.dump `heroku pg:backups public-url -a entourage-back`
 echo "Restore DB"
 pg_restore -h localhost -d entourage-dev tmp/db.dump
+echo "Restore test db"
+RAILS_ENV=test rake db:migrate
 echo "Clean files"
 rm tmp/db.dump
