@@ -15,7 +15,7 @@ module Api
       private
 
       def user_application_params
-        params.require(:user_application).permit(:push_token, :device_os, :version)
+        params.require(:application).permit(:push_token, :device_os, :version)
       end
     end
   end
