@@ -52,7 +52,8 @@ module Api
       end
 
       def show
-        return render file: 'mocks/user.json'
+        user = User.find(params[:id])
+        render json: user, status: 200, serializer: ::V1::UserSerializer
       end
 
       private

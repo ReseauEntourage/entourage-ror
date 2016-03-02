@@ -176,4 +176,29 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
       end
     end
   end
+
+  describe 'GET show' do
+    let!(:user) { create :pro_user}
+
+    context "not signed in" do
+      before { get :show, id: user.id }
+      it { expect(response.status).to eq(401) }
+    end
+
+    context "user signed in" do
+      context "get your own profile" do
+        before { get :show, id: user.id, token: user.token }
+        it { expect(response.status).to eq(200) }
+        it { expect(JSON.parse(response.body)).to eq({"user"=>
+                                                          {"id"=>user.id,
+                                                           "email"=>user.email,
+                                                           "first_name"=>"John",
+                                                           "last_name"=>"Doe",
+                                                           "token"=>user.token,
+                                                           "avatar_url"=>nil,
+                                                           "organization"=>{"name"=>user.organization.name, "description"=>"Association description", "phone"=>user.organization.phone, "address"=>user.organization.address, "logo_url"=>nil},
+                                                           "stats"=>{"tour_count"=>0, "encounter_count"=>0}}}) }
+      end
+    end
+  end
 end
