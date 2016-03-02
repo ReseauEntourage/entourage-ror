@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160226171907) do
+ActiveRecord::Schema.define(version: 20160302143433) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -288,6 +288,17 @@ ActiveRecord::Schema.define(version: 20160226171907) do
   end
 
   add_index "tours_users", ["user_id", "tour_id"], name: "index_tours_users_on_user_id_and_tour_id", unique: true, using: :btree
+
+  create_table "user_applications", force: :cascade do |t|
+    t.string   "push_token", null: false
+    t.string   "device_os",  null: false
+    t.string   "version",    null: false
+    t.integer  "user_id",    null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "user_applications", ["user_id", "device_os", "version"], name: "index_user_applications_on_user_id_and_device_os_and_version", unique: true, using: :btree
 
   create_table "users", force: :cascade do |t|
     t.datetime "created_at"

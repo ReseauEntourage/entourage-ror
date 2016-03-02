@@ -1,0 +1,24 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Push token:</strong>
+  <%= @user_application.push_token %>
+</p>
+
+<p>
+  <strong>Device os:</strong>
+  <%= @user_application.device_os %>
+</p>
+
+<p>
+  <strong>Version:</strong>
+  <%= @user_application.version %>
+</p>
+
+<p>
+  <strong>User:</strong>
+  <%= @user_application.user_id %>
+</p>
+
+<%= link_to 'Edit', edit_user_application_path(@user_application) %> |
+<%= link_to 'Back', user_applications_path %>

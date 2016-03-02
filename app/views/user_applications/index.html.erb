@@ -1,0 +1,33 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Listing User Applications</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Push token</th>
+      <th>Device os</th>
+      <th>Version</th>
+      <th>User</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @user_applications.each do |user_application| %>
+      <tr>
+        <td><%= user_application.push_token %></td>
+        <td><%= user_application.device_os %></td>
+        <td><%= user_application.version %></td>
+        <td><%= user_application.user_id %></td>
+        <td><%= link_to 'Show', user_application %></td>
+        <td><%= link_to 'Edit', edit_user_application_path(user_application) %></td>
+        <td><%= link_to 'Destroy', user_application, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New User application', new_user_application_path %>
