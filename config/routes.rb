@@ -50,7 +50,6 @@ Rails.application.routes.draw do
       resources :registration_requests, only: [:create]
       resources :map, only: [:index]
       resources :newsletter_subscriptions
-      resources :applications, only: [:create]
       resources :questions, only: [:index]
 
       resources :pois, only: [:index, :create] do
@@ -76,6 +75,7 @@ Rails.application.routes.draw do
       end
       resources :contacts, only: [:update]
 
+      put 'applications' => 'user_applications#update'
       post 'login' => 'users#login'
       get 'check' => 'base#check'
     end

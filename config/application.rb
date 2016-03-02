@@ -20,6 +20,7 @@ module EntourageBack
        g.test_framework :rspec
        g.view_specs false
        g.helper_specs false
+       g.routing_specs false
        g.factory_girl dir: 'spec/factories'
      end
 
