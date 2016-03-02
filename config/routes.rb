@@ -76,6 +76,7 @@ Rails.application.routes.draw do
       end
       resources :contacts, only: [:update]
 
+      put 'user_applications' => 'user_applications#update'
       post 'login' => 'users#login'
       get 'check' => 'base#check'
     end

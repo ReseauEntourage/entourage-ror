@@ -18,6 +18,7 @@ class User < ActiveRecord::Base
   belongs_to :organization
   has_and_belongs_to_many :coordinated_organizations, -> { uniq }, class_name: "Organization", join_table: "coordination"
   has_many :chat_messages
+  has_many :user_applications
 
   enum device_type: [ :android, :ios ]
 
