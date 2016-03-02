@@ -200,6 +200,20 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                                                            "stats"=>{"tour_count"=>0, "encounter_count"=>0}}}) }
       end
 
+      context "get my profile with 'me' shortcut" do
+        before { get :show, id: "me", token: user.token }
+        it { expect(response.status).to eq(200) }
+        it { expect(JSON.parse(response.body)).to eq({"user"=>
+                                                          {"id"=>user.id,
+                                                           "email"=>user.email,
+                                                           "first_name"=>"John",
+                                                           "last_name"=>"Doe",
+                                                           "token"=>user.token,
+                                                           "avatar_url"=>nil,
+                                                           "organization"=>{"name"=>user.organization.name, "description"=>"Association description", "phone"=>user.organization.phone, "address"=>user.organization.address, "logo_url"=>nil},
+                                                           "stats"=>{"tour_count"=>0, "encounter_count"=>0}}}) }
+      end
+
       context "get someone else profile" do
         let(:other_user) { FactoryGirl.create(:pro_user) }
         before { get :show, id: other_user.id, token: user.token }

@@ -52,7 +52,7 @@ module Api
       end
 
       def show
-        user = User.find(params[:id])
+        user = params[:id] == "me" ? current_user : User.find(params[:id])
         render json: user, status: 200, serializer: ::V1::UserSerializer, scope: current_user
       end
 
