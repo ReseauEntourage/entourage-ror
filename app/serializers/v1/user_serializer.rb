@@ -10,6 +10,10 @@ module V1
     has_one :organization
     has_one :stats
 
+    def filter(keys)
+      me? ? keys : keys - [:token, :email]
+    end
+
     def stats
       {
           tour_count: object.tours.count,
@@ -19,6 +23,10 @@ module V1
 
     def avatar_url
       UserServices::Avatar.new(user: object).thumbnail_url
+    end
+
+    def me?
+      scope && (object.id == scope.id)
     end
   end
 end
