@@ -1398,7 +1398,7 @@ Contacts related resources of the **Entourage API**
 
 
 # Group Applications
-Resources  related to contacts for the **Entourage API**
+
 ## Applications [/applications]
 
 ### Add an Application with info about device [PUT]
@@ -1407,7 +1407,7 @@ Resources  related to contacts for the **Entourage API**
 
     + Body
 
-            {"application":{"device_id":"APA91bHSxpidt2SJ33aosTNSlYQMGRyzdt5LFBBSJEhd6zuR9hhe7Qxj00Y_u8og0W7DMaWTU_hWVqUl__yrMq7juuQNKzN689tnCcQKN2LcoJ_09ljgaRFNggfS77Kd0eWfX011oB5S","os":"iOS8.1"}}
+            {"application":{"push_token":"APA91bHSxpidt2SJ33aosTNSlYQMGRyzdt5LFBBSJEhd6zuR9hhe7Qxj00Y_u8og0W7DMaWTU_hWVqUl__yrMq7juuQNKzN689tnCcQKN2LcoJ_09ljgaRFNggfS77Kd0eWfX011oB5S","device_os":"iOS8.1", "version": "1.0"}}
 
     + Headers
 
@@ -1521,4 +1521,4 @@ Resources  related to chat messages for the **Entourage API**
 
 + Response 401 (application/json; charset=utf-8)
 
-        {"error":{"status":401,"message":"Please sign-in"d}}
+        {"error":{"status":401,"message":"Please sign-in"}}
