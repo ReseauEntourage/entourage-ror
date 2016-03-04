@@ -209,8 +209,7 @@
   "<span class="hljs-attribute">user</span>": <span class="hljs-value">{
     "<span class="hljs-attribute">id</span>": <span class="hljs-value"><span class="hljs-number">1</span></span>,
     "<span class="hljs-attribute">email</span>": <span class="hljs-value"><span class="hljs-string">"dredd@test.com"</span></span>,
-    "<span class="hljs-attribute">first_name</span>": <span class="hljs-value"><span class="hljs-string">"Judge"</span></span>,
-    "<span class="hljs-attribute">last_name</span>": <span class="hljs-value"><span class="hljs-string">"Dredd"</span></span>,
+    "<span class="hljs-attribute">display_name</span>": <span class="hljs-value"><span class="hljs-string">"Judge Dredd"</span></span>,
     "<span class="hljs-attribute">token</span>": <span class="hljs-value"><span class="hljs-string">"FAKETOKEN"</span></span>,
     "<span class="hljs-attribute">stats</span>": <span class="hljs-value">{
       "<span class="hljs-attribute">tour_count</span>": <span class="hljs-value"><span class="hljs-number">0</span></span>,
@@ -229,7 +228,7 @@
     "<span class="hljs-attribute">status</span>": <span class="hljs-value"><span class="hljs-number">400</span></span>,
     "<span class="hljs-attribute">message</span>": <span class="hljs-value"><span class="hljs-string">"Login failed"</span>
   </span>}
-</span>}</code></pre><div style="height: 1px;"></div></div></div></div></div><div id="users-get-details-about-a-user" class="resource"><h3 class="resource-heading">Get details about a user <a href="#users-get-details-about-a-user" class="permalink">&nbsp;&para;</a></h3><div id="users-get-details-about-a-user-get" class="action get"><h4 class="action-heading"><div class="name">Retrieve details about a user</div><a href="#users-get-details-about-a-user-get" class="method get">GET</a><code class="uri">/users</code></h4><h4>Example URI</h4><div class="definition"><span class="method get">GET</span>&nbsp;<span class="uri"><span class="hostname">https://entourage-back-preprod.herokuapp.com/api/v1</span>/users</span></div><div class="title"><strong>Request</strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json</span><br><span class="hljs-attribute">Accept</span>: <span class="hljs-string">application/json</span></code></pre><div style="height: 1px;"></div></div></div><div class="title"><strong>Response&nbsp;&nbsp;<code>200</code></strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json; charset=utf-8</span></code></pre><div style="height: 1px;"></div><h5>Body</h5><pre><code>{<span class="hljs-string">"user"</span>:{<span class="hljs-string">"id"</span>:<span class="hljs-number">1</span>,<span class="hljs-string">"email"</span>:<span class="hljs-string">"dredd@test.com"</span>,<span class="hljs-string">"first_name"</span>:<span class="hljs-string">"Judge"</span>,<span class="hljs-string">"last_name"</span>:<span class="hljs-string">"Dredd"</span>, <span class="hljs-string">"user_type"</span>: <span class="hljs-string">"PRO"</span>}}
+</span>}</code></pre><div style="height: 1px;"></div></div></div></div></div><div id="users-get-details-about-a-user" class="resource"><h3 class="resource-heading">Get details about a user <a href="#users-get-details-about-a-user" class="permalink">&nbsp;&para;</a></h3><div id="users-get-details-about-a-user-get" class="action get"><h4 class="action-heading"><div class="name">Retrieve details about a user</div><a href="#users-get-details-about-a-user-get" class="method get">GET</a><code class="uri">/users</code></h4><h4>Example URI</h4><div class="definition"><span class="method get">GET</span>&nbsp;<span class="uri"><span class="hostname">https://entourage-back-preprod.herokuapp.com/api/v1</span>/users</span></div><div class="title"><strong>Request</strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json</span><br><span class="hljs-attribute">Accept</span>: <span class="hljs-string">application/json</span></code></pre><div style="height: 1px;"></div></div></div><div class="title"><strong>Response&nbsp;&nbsp;<code>200</code></strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json; charset=utf-8</span></code></pre><div style="height: 1px;"></div><h5>Body</h5><pre><code>{<span class="hljs-string">"user"</span>:{<span class="hljs-string">"id"</span>:<span class="hljs-number">1</span>,<span class="hljs-string">"email"</span>:<span class="hljs-string">"dredd@test.com"</span>,<span class="hljs-string">"display_name"</span>:<span class="hljs-string">"Judge Dredd"</span>, <span class="hljs-string">"user_type"</span>: <span class="hljs-string">"PRO"</span>}}
 
 user_type : (required, string) ... Type <span class="hljs-keyword">of</span> user : PRO / PUBLIC</code></pre><div style="height: 1px;"></div></div></div><div class="title"><strong>Response&nbsp;&nbsp;<code>404</code></strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json; charset=utf-8</span></code></pre><div style="height: 1px;"></div><h5>Body</h5><pre><code>{
   "<span class="hljs-attribute">error</span>": <span class="hljs-value">{
@@ -250,8 +249,7 @@ user_type : (required, string) ... Type <span class="hljs-keyword">of</span> use
   "<span class="hljs-attribute">user</span>": <span class="hljs-value">{
     "<span class="hljs-attribute">id</span>": <span class="hljs-value"><span class="hljs-number">1</span></span>,
     "<span class="hljs-attribute">email</span>": <span class="hljs-value"><span class="hljs-string">"dredd@test.com"</span></span>,
-    "<span class="hljs-attribute">first_name</span>": <span class="hljs-value"><span class="hljs-string">"Judge"</span></span>,
-    "<span class="hljs-attribute">last_name</span>": <span class="hljs-value"><span class="hljs-string">"Dredd"</span></span>,
+    "<span class="hljs-attribute">display_name</span>": <span class="hljs-value"><span class="hljs-string">"Judge Dredd"</span></span>,
     "<span class="hljs-attribute">token</span>": <span class="hljs-value"><span class="hljs-string">"FAKETOKEN"</span></span>,
     "<span class="hljs-attribute">stats</span>": <span class="hljs-value">{
       "<span class="hljs-attribute">tour_count</span>": <span class="hljs-value"><span class="hljs-number">0</span></span>,
@@ -284,8 +282,7 @@ location: current user location (needed to filter entourage around your position
   "<span class="hljs-attribute">user</span>": <span class="hljs-value">{
     "<span class="hljs-attribute">id</span>": <span class="hljs-value"><span class="hljs-number">1</span></span>,
     "<span class="hljs-attribute">email</span>": <span class="hljs-value"><span class="hljs-string">"dredd@test.com"</span></span>,
-    "<span class="hljs-attribute">first_name</span>": <span class="hljs-value"><span class="hljs-string">"Judge"</span></span>,
-    "<span class="hljs-attribute">last_name</span>": <span class="hljs-value"><span class="hljs-string">"Dredd"</span></span>,
+    "<span class="hljs-attribute">display_name</span>": <span class="hljs-value"><span class="hljs-string">"Judge Dredd"</span></span>,
     "<span class="hljs-attribute">token</span>": <span class="hljs-value"><span class="hljs-string">"FAKETOKEN"</span></span>,
     "<span class="hljs-attribute">stats</span>": <span class="hljs-value">{
       "<span class="hljs-attribute">tour_count</span>": <span class="hljs-value"><span class="hljs-number">0</span></span>,
@@ -303,8 +300,7 @@ location: current user location (needed to filter entourage around your position
   "<span class="hljs-attribute">user</span>": <span class="hljs-value">{
     "<span class="hljs-attribute">id</span>": <span class="hljs-value"><span class="hljs-number">1</span></span>,
     "<span class="hljs-attribute">email</span>": <span class="hljs-value"><span class="hljs-string">"new@e.mail"</span></span>,
-    "<span class="hljs-attribute">first_name</span>": <span class="hljs-value"><span class="hljs-string">"Judge"</span></span>,
-    "<span class="hljs-attribute">last_name</span>": <span class="hljs-value"><span class="hljs-string">"Dredd"</span></span>,
+    "<span class="hljs-attribute">display_name</span>": <span class="hljs-value"><span class="hljs-string">"Judge Dredd"</span></span>,
     "<span class="hljs-attribute">token</span>": <span class="hljs-value"><span class="hljs-string">"153ad0b7ef67e5c44b8ef5afc12709e4"</span></span>,
     "<span class="hljs-attribute">organization</span>": <span class="hljs-value">{
       "<span class="hljs-attribute">name</span>": <span class="hljs-value"><span class="hljs-string">"Entourage"</span></span>,
@@ -625,24 +621,21 @@ vehicle_type is either “feet” or “car”</p>
     {
       "<span class="hljs-attribute">id</span>": <span class="hljs-value"><span class="hljs-number">1</span></span>,
       "<span class="hljs-attribute">email</span>": <span class="hljs-value"><span class="hljs-string">"dredd@test.com"</span></span>,
-      "<span class="hljs-attribute">first_name</span>": <span class="hljs-value"><span class="hljs-string">"Judge"</span></span>,
-      "<span class="hljs-attribute">last_name</span>": <span class="hljs-value"><span class="hljs-string">"Dredd"</span></span>,
+      "<span class="hljs-attribute">display_name</span>": <span class="hljs-value"><span class="hljs-string">"Judge Dredd"</span></span>,
       "<span class="hljs-attribute">status</span>": <span class="hljs-value"><span class="hljs-string">"pending"</span></span>,
       "<span class="hljs-attribute">requested_at</span>": <span class="hljs-value"><span class="hljs-string">"2016-01-01T20:09:06.000+01:00"</span>
     </span>},
     {
       "<span class="hljs-attribute">id</span>": <span class="hljs-value"><span class="hljs-number">2</span></span>,
       "<span class="hljs-attribute">email</span>": <span class="hljs-value"><span class="hljs-string">"dredd2@test.com"</span></span>,
-      "<span class="hljs-attribute">first_name</span>": <span class="hljs-value"><span class="hljs-string">"Judge2"</span></span>,
-      "<span class="hljs-attribute">last_name</span>": <span class="hljs-value"><span class="hljs-string">"Dredd2"</span></span>,
+      "<span class="hljs-attribute">display_name</span>": <span class="hljs-value"><span class="hljs-string">"Judge Dredd"</span></span>,
       "<span class="hljs-attribute">status</span>": <span class="hljs-value"><span class="hljs-string">"accepted"</span></span>,
       "<span class="hljs-attribute">requested_at</span>": <span class="hljs-value"><span class="hljs-string">"2016-01-01T20:09:06.000+01:00"</span>
     </span>},
     {
       "<span class="hljs-attribute">id</span>": <span class="hljs-value"><span class="hljs-number">3</span></span>,
       "<span class="hljs-attribute">email</span>": <span class="hljs-value"><span class="hljs-string">"dredd3@test.com"</span></span>,
-      "<span class="hljs-attribute">first_name</span>": <span class="hljs-value"><span class="hljs-string">"Judge3"</span></span>,
-      "<span class="hljs-attribute">last_name</span>": <span class="hljs-value"><span class="hljs-string">"Dredd3"</span></span>,
+      "<span class="hljs-attribute">display_name</span>": <span class="hljs-value"><span class="hljs-string">"Judge Dredd"</span></span>,
       "<span class="hljs-attribute">status</span>": <span class="hljs-value"><span class="hljs-string">"rejected"</span></span>,
       "<span class="hljs-attribute">requested_at</span>": <span class="hljs-value"><span class="hljs-string">"2016-01-01T20:09:06.000+01:00"</span>
     </span>}
@@ -658,8 +651,7 @@ vehicle_type is either “feet” or “car”</p>
   "<span class="hljs-attribute">user</span>": <span class="hljs-value">{
     "<span class="hljs-attribute">id</span>": <span class="hljs-value"><span class="hljs-number">2</span></span>,
     "<span class="hljs-attribute">email</span>": <span class="hljs-value"><span class="hljs-string">"dredd2@test.com"</span></span>,
-    "<span class="hljs-attribute">first_name</span>": <span class="hljs-value"><span class="hljs-string">"Judge2"</span></span>,
-    "<span class="hljs-attribute">last_name</span>": <span class="hljs-value"><span class="hljs-string">"Dredd2"</span></span>,
+    "<span class="hljs-attribute">display_name</span>": <span class="hljs-value"><span class="hljs-string">"Judge Dredd"</span></span>,
     "<span class="hljs-attribute">status</span>": <span class="hljs-value"><span class="hljs-string">"accepted"</span></span>,
     "<span class="hljs-attribute">requested_at</span>": <span class="hljs-value"><span class="hljs-string">"2016-01-01T20:09:06.000+01:00"</span>
   </span>}
@@ -855,15 +847,13 @@ vehicle_type is either “feet” or “car”</p>
 <div id="message-messages-collection" class="resource"><h3 class="resource-heading">Messages collection <a href="#message-messages-collection" class="permalink">&nbsp;&para;</a></h3><div id="message-messages-collection-post" class="action post"><h4 class="action-heading"><div class="name">Create a message</div><a href="#message-messages-collection-post" class="method post">POST</a><code class="uri">/messages</code></h4><h4>Example URI</h4><div class="definition"><span class="method post">POST</span>&nbsp;<span class="uri"><span class="hostname">https://entourage-back-preprod.herokuapp.com/api/v1</span>/messages</span></div><div class="title"><strong>Request</strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json; charset=utf-8</span><br><span class="hljs-attribute">Accept</span>: <span class="hljs-string">application/json</span></code></pre><div style="height: 1px;"></div><h5>Body</h5><pre><code>{
   "<span class="hljs-attribute">message</span>": <span class="hljs-value">{
     "<span class="hljs-attribute">content</span>": <span class="hljs-value"><span class="hljs-string">"foobar"</span></span>,
-    "<span class="hljs-attribute">first_name</span>": <span class="hljs-value"><span class="hljs-string">"john"</span></span>,
-    "<span class="hljs-attribute">last_name</span>": <span class="hljs-value"><span class="hljs-string">"doe"</span></span>,
+    "<span class="hljs-attribute">display_name</span>": <span class="hljs-value"><span class="hljs-string">"Judge Dredd"</span></span>,
     "<span class="hljs-attribute">email</span>": <span class="hljs-value"><span class="hljs-string">"some@mail.com"</span>
   </span>}
 </span>}</code></pre><div style="height: 1px;"></div></div></div><div class="title"><strong>Response&nbsp;&nbsp;<code>201</code></strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json; charset=utf-8</span></code></pre><div style="height: 1px;"></div><h5>Body</h5><pre><code>{
   "<span class="hljs-attribute">message</span>": <span class="hljs-value">{
     "<span class="hljs-attribute">content</span>": <span class="hljs-value"><span class="hljs-string">"foobar"</span></span>,
-    "<span class="hljs-attribute">first_name</span>": <span class="hljs-value"><span class="hljs-string">"john"</span></span>,
-    "<span class="hljs-attribute">last_name</span>": <span class="hljs-value"><span class="hljs-string">"doe"</span></span>,
+    "<span class="hljs-attribute">display_name</span>": <span class="hljs-value"><span class="hljs-string">"Judge Dredd"</span></span>,
     "<span class="hljs-attribute">email</span>": <span class="hljs-value"><span class="hljs-string">"some@mail.com"</span>
   </span>}
 </span>}</code></pre><div style="height: 1px;"></div></div></div><div class="title"><strong>Response&nbsp;&nbsp;<code>400</code></strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json; charset=utf-8</span></code></pre><div style="height: 1px;"></div><h5>Body</h5><pre><code>{
@@ -884,13 +874,12 @@ vehicle_type is either “feet” or “car”</p>
       "<span class="hljs-attribute">logo_key</span>": <span class="hljs-value"><span class="hljs-string">"some_key.jpg"</span>
     </span>}</span>,
     "<span class="hljs-attribute">user</span>": <span class="hljs-value">{
-      "<span class="hljs-attribute">first_name</span>": <span class="hljs-value"><span class="hljs-string">"John"</span></span>,
-      "<span class="hljs-attribute">last_name</span>": <span class="hljs-value"><span class="hljs-string">"Doe"</span></span>,
+      "<span class="hljs-attribute">display_name</span>": <span class="hljs-value"><span class="hljs-string">"Judge Dredd"</span></span>,
       "<span class="hljs-attribute">phone</span>": <span class="hljs-value"><span class="hljs-string">"+33612345678"</span></span>,
       "<span class="hljs-attribute">email</span>": <span class="hljs-value"><span class="hljs-string">"some@email.com"</span>
     </span>}
   </span>}
-</span>}</code></pre><div style="height: 1px;"></div></div></div><div class="title"><strong>Response&nbsp;&nbsp;<code>201</code></strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json; charset=utf-8</span></code></pre><div style="height: 1px;"></div><h5>Body</h5><pre><code>{:registration_request:{<span class="hljs-string">"id"</span>:<span class="hljs-number">34</span>, <span class="hljs-string">"status"</span>:<span class="hljs-string">"pending"</span>, <span class="hljs-string">"extra"</span>:<span class="hljs-string">"{\"organization\":{\"name\":\"foo\",\"description\":\"lorem ipsum\",\"phone\":\"+33612345678\",\"address\":\"2 rue de l'église\"},\"user\":{\"first_name\":\"John\",\"last_name\":\"Doe\",\"email\":\"some@email.com\",\"phone\":\"+33612345678\"}}"</span>, <span class="hljs-string">"created_at"</span>:Tue, <span class="hljs-number">08</span> Dec <span class="hljs-number">2015</span> <span class="hljs-number">15</span>:<span class="hljs-number">22</span>:<span class="hljs-number">55</span> CET +<span class="hljs-number">01</span>:<span class="hljs-number">00</span>, <span class="hljs-string">"updated_at"</span>:Tue, <span class="hljs-number">08</span> Dec <span class="hljs-number">2015</span> <span class="hljs-number">15</span>:<span class="hljs-number">22</span>:<span class="hljs-number">55</span> CET +<span class="hljs-number">01</span>:<span class="hljs-number">00</span>}}</code></pre><div style="height: 1px;"></div></div></div><div class="title"><strong>Response&nbsp;&nbsp;<code>400</code></strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json; charset=utf-8</span></code></pre><div style="height: 1px;"></div><h5>Body</h5><pre><code>{
+</span>}</code></pre><div style="height: 1px;"></div></div></div><div class="title"><strong>Response&nbsp;&nbsp;<code>201</code></strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json; charset=utf-8</span></code></pre><div style="height: 1px;"></div><h5>Body</h5><pre><code>{:registration_request:{<span class="hljs-string">"id"</span>:<span class="hljs-number">34</span>, <span class="hljs-string">"status"</span>:<span class="hljs-string">"pending"</span>, <span class="hljs-string">"extra"</span>:<span class="hljs-string">"{\"organization\":{\"name\":\"foo\",\"description\":\"lorem ipsum\",\"phone\":\"+33612345678\",\"address\":\"2 rue de l'église\"},\"user\":{\"display_name\":\"Judge Dredd\",\"email\":\"some@email.com\",\"phone\":\"+33612345678\"}}"</span>, <span class="hljs-string">"created_at"</span>:Tue, <span class="hljs-number">08</span> Dec <span class="hljs-number">2015</span> <span class="hljs-number">15</span>:<span class="hljs-number">22</span>:<span class="hljs-number">55</span> CET +<span class="hljs-number">01</span>:<span class="hljs-number">00</span>, <span class="hljs-string">"updated_at"</span>:Tue, <span class="hljs-number">08</span> Dec <span class="hljs-number">2015</span> <span class="hljs-number">15</span>:<span class="hljs-number">22</span>:<span class="hljs-number">55</span> CET +<span class="hljs-number">01</span>:<span class="hljs-number">00</span>}}</code></pre><div style="height: 1px;"></div></div></div><div class="title"><strong>Response&nbsp;&nbsp;<code>400</code></strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json; charset=utf-8</span></code></pre><div style="height: 1px;"></div><h5>Body</h5><pre><code>{
   "<span class="hljs-attribute">errors</span>": <span class="hljs-value">{
     "<span class="hljs-attribute">organization</span>": <span class="hljs-value">[
       <span class="hljs-string">"Name can't be blank"</span>,
@@ -1123,22 +1112,19 @@ vehicle_type is either “feet” or “car”</p>
     {
       "<span class="hljs-attribute">id</span>": <span class="hljs-value"><span class="hljs-number">1</span></span>,
       "<span class="hljs-attribute">email</span>": <span class="hljs-value"><span class="hljs-string">"dredd@test.com"</span></span>,
-      "<span class="hljs-attribute">first_name</span>": <span class="hljs-value"><span class="hljs-string">"Judge"</span></span>,
-      "<span class="hljs-attribute">last_name</span>": <span class="hljs-value"><span class="hljs-string">"Dredd"</span></span>,
+      "<span class="hljs-attribute">display_name</span>": <span class="hljs-value"><span class="hljs-string">"Judge Dredd"</span></span>,
       "<span class="hljs-attribute">status</span>": <span class="hljs-value"><span class="hljs-string">"pending"</span>
     </span>},
     {
       "<span class="hljs-attribute">id</span>": <span class="hljs-value"><span class="hljs-number">2</span></span>,
       "<span class="hljs-attribute">email</span>": <span class="hljs-value"><span class="hljs-string">"dredd2@test.com"</span></span>,
-      "<span class="hljs-attribute">first_name</span>": <span class="hljs-value"><span class="hljs-string">"Judge2"</span></span>,
-      "<span class="hljs-attribute">last_name</span>": <span class="hljs-value"><span class="hljs-string">"Dredd2"</span></span>,
+      "<span class="hljs-attribute">display_name</span>": <span class="hljs-value"><span class="hljs-string">"Judge Dredd"</span></span>,
       "<span class="hljs-attribute">status</span>": <span class="hljs-value"><span class="hljs-string">"accepted"</span>
     </span>},
     {
       "<span class="hljs-attribute">id</span>": <span class="hljs-value"><span class="hljs-number">3</span></span>,
       "<span class="hljs-attribute">email</span>": <span class="hljs-value"><span class="hljs-string">"dredd3@test.com"</span></span>,
-      "<span class="hljs-attribute">first_name</span>": <span class="hljs-value"><span class="hljs-string">"Judge3"</span></span>,
-      "<span class="hljs-attribute">last_name</span>": <span class="hljs-value"><span class="hljs-string">"Dredd3"</span></span>,
+      "<span class="hljs-attribute">display_name</span>": <span class="hljs-value"><span class="hljs-string">"Judge Dredd"</span></span>,
       "<span class="hljs-attribute">status</span>": <span class="hljs-value"><span class="hljs-string">"rejected"</span>
     </span>}
   ]
@@ -1152,8 +1138,7 @@ vehicle_type is either “feet” or “car”</p>
   "<span class="hljs-attribute">user</span>": <span class="hljs-value">{
     "<span class="hljs-attribute">id</span>": <span class="hljs-value"><span class="hljs-number">2</span></span>,
     "<span class="hljs-attribute">email</span>": <span class="hljs-value"><span class="hljs-string">"dredd2@test.com"</span></span>,
-    "<span class="hljs-attribute">first_name</span>": <span class="hljs-value"><span class="hljs-string">"Judge2"</span></span>,
-    "<span class="hljs-attribute">last_name</span>": <span class="hljs-value"><span class="hljs-string">"Dredd2"</span></span>,
+    "<span class="hljs-attribute">display_name</span>": <span class="hljs-value"><span class="hljs-string">"Judge Dredd"</span></span>,
     "<span class="hljs-attribute">status</span>": <span class="hljs-value"><span class="hljs-string">"accepted"</span>
   </span>}
 </span>}</code></pre><div style="height: 1px;"></div></div></div><div class="title"><strong>Response&nbsp;&nbsp;<code>401</code></strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json; charset=utf-8</span></code></pre><div style="height: 1px;"></div><h5>Body</h5><pre><code>{
@@ -1293,7 +1278,7 @@ vehicle_type is either “feet” or “car”</p>
     "<span class="hljs-attribute">status</span>": <span class="hljs-value"><span class="hljs-number">401</span></span>,
     "<span class="hljs-attribute">message</span>": <span class="hljs-value"><span class="hljs-string">"Please sign-in"</span>
   </span>}
-</span>}</code></pre><div style="height: 1px;"></div></div></div></div></div></section></div></div></div><p style="text-align: center;" class="text-muted">Generated by&nbsp;<a href="https://github.com/danielgtaylor/aglio" class="aglio">aglio</a>&nbsp;on 02 Mar 2016</p><script>/* eslint-env browser */
+</span>}</code></pre><div style="height: 1px;"></div></div></div></div></div></section></div></div></div><p style="text-align: center;" class="text-muted">Generated by&nbsp;<a href="https://github.com/danielgtaylor/aglio" class="aglio">aglio</a>&nbsp;on 04 Mar 2016</p><script>/* eslint-env browser */
 /* eslint quotes: [2, "single"] */
 'use strict';
 

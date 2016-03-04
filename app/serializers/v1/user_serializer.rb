@@ -2,8 +2,7 @@ module V1
   class UserSerializer < ActiveModel::Serializer
     attributes :id,
                :email,
-               :first_name,
-               :last_name,
+               :display_name,
                :token,
                :avatar_url
 
@@ -23,6 +22,10 @@ module V1
 
     def avatar_url
       UserServices::Avatar.new(user: object).thumbnail_url
+    end
+
+    def display_name
+      "#{object.first_name} #{object.last_name}" if [object.first_name, object.last_name].compact.present?
     end
 
     def me?
