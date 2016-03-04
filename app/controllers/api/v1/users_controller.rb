@@ -7,7 +7,7 @@ module Api
         user = UserServices::UserAuthenticator.authenticate_by_phone_and_sms(phone: user_params[:phone], sms_code: user_params[:sms_code])
         return render json: {message: 'unauthorized'}, status: :unauthorized unless user
 
-        render json: user, status: 200, serializer: ::V1::UserSerializer
+        render json: user, status: 200, serializer: ::V1::UserSerializer, scope: user
       end
 
       def update
@@ -17,7 +17,7 @@ module Api
         end
 
         if @current_user.update_attributes(user_params)
-          render json: @current_user, status: 200, serializer: ::V1::UserSerializer
+          render json: @current_user, status: 200, serializer: ::V1::UserSerializer, scope: @current_user
         else
           head 400
         end
@@ -27,7 +27,7 @@ module Api
         builder = UserServices::PublicUserBuilder.new(params: user_params)
         builder.create(send_sms: true) do |on|
           on.create_success do |user|
-            render json: user, status: 201, serializer: ::V1::UserSerializer
+            render json: user, status: 201, serializer: ::V1::UserSerializer, scope: user
           end
 
           on.create_failure do |user|
@@ -45,14 +45,15 @@ module Api
 
         if params[:code][:action] == "regenerate"
           UserServices::SMSSender.new(user: user).regenerate_sms!
-          render json: user, status: 200, serializer: ::V1::UserSerializer
+          render json: user, status: 200, serializer: ::V1::UserSerializer, scope: user
         else
           render json: {error: "Unknown action"}, status:400
         end
       end
 
       def show
-        return render file: 'mocks/user.json'
+        user = params[:id] == "me" ? current_user : User.find(params[:id])
+        render json: user, status: 200, serializer: ::V1::UserSerializer, scope: current_user
       end
 
       private
