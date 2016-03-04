@@ -132,7 +132,7 @@ Users related resources of the **Entourage API**
 
 + Response 200 (application/json; charset=utf-8)
 
-        {"user":{"id":1,"email":"dredd@test.com","first_name":"Judge","last_name":"Dredd","token":"FAKETOKEN","stats":{"tour_count":0,"encounter_count":0},"organization":{"name":"org name","description":"org description","phone":"org phone","address":"org address","logo_url":"org logo url"}}}
+        {"user":{"id":1,"email":"dredd@test.com","display_name":"Judge Dredd","token":"FAKETOKEN","stats":{"tour_count":0,"encounter_count":0},"organization":{"name":"org name","description":"org description","phone":"org phone","address":"org address","logo_url":"org logo url"}}}
 
 + Response 400 (application/json; charset=utf-8)
 
@@ -150,7 +150,7 @@ Users related resources of the **Entourage API**
 
 + Response 200 (application/json; charset=utf-8)
 
-        {"user":{"id":1,"email":"dredd@test.com","first_name":"Judge","last_name":"Dredd", "user_type": "PRO"}}
+        {"user":{"id":1,"email":"dredd@test.com","display_name":"Judge Dredd", "user_type": "PRO"}}
 
         user_type : (required, string) ... Type of user : PRO / PUBLIC
 
@@ -181,7 +181,7 @@ When signing up a new user we genereate a new sms_code and send it via SMS
 
 + Response 200 (application/json; charset=utf-8)
 
-            {"user":{"id":1,"email":"dredd@test.com","first_name":"Judge","last_name":"Dredd","token":"FAKETOKEN","stats":{"tour_count":0,"encounter_count":0},"organization":{"name":"org name","description":"org description","phone":"org phone","address":"org address","logo_url":"org logo url"}}}
+            {"user":{"id":1,"email":"dredd@test.com","display_name":"Judge Dredd","token":"FAKETOKEN","stats":{"tour_count":0,"encounter_count":0},"organization":{"name":"org name","description":"org description","phone":"org phone","address":"org address","logo_url":"org logo url"}}}
 
 + Response 400 (application/json; charset=utf-8)
 
@@ -220,7 +220,7 @@ When signing up a new user we genereate a new sms_code and send it via SMS
 
 + Response 200 (application/json; charset=utf-8)
 
-            {"user":{"id":1,"email":"dredd@test.com","first_name":"Judge","last_name":"Dredd","token":"FAKETOKEN","stats":{"tour_count":0,"encounter_count":0},"organization":{"name":"org name","description":"org description","phone":"org phone","address":"org address","logo_url":"org logo url"}}}
+            {"user":{"id":1,"email":"dredd@test.com","display_name":"Judge Dredd","token":"FAKETOKEN","stats":{"tour_count":0,"encounter_count":0},"organization":{"name":"org name","description":"org description","phone":"org phone","address":"org address","logo_url":"org logo url"}}}
 
 + Response 400 (application/json; charset=utf-8)
 
@@ -243,7 +243,7 @@ When signing up a new user we genereate a new sms_code and send it via SMS
 
 + Response 200 (application/json; charset=utf-8)
 
-            {"user":{"id":1,"email":"new@e.mail","first_name":"Judge","last_name":"Dredd","token":"153ad0b7ef67e5c44b8ef5afc12709e4","organization":{"name":"Entourage","description":"Réseau Entourage","phone":"+33677300840","address":"40 avenue Hoche 75008 Paris","logo_url":""},"stats":{"tour_count":5,"encounter_count":5}}}
+            {"user":{"id":1,"email":"new@e.mail","display_name":"Judge Dredd","token":"153ad0b7ef67e5c44b8ef5afc12709e4","organization":{"name":"Entourage","description":"Réseau Entourage","phone":"+33677300840","address":"40 avenue Hoche 75008 Paris","logo_url":""},"stats":{"tour_count":5,"encounter_count":5}}}
 
 + Response 400 (application/json; charset=utf-8)
 
@@ -627,24 +627,21 @@ Resources related to users of a tour
                 {
                     "id": 1,
                     "email": "dredd@test.com",
-                    "first_name": "Judge",
-                    "last_name": "Dredd",
+                    "display_name":"Judge Dredd",
                     "status": "pending",
                     "requested_at": "2016-01-01T20:09:06.000+01:00"
                 },
                 {
                     "id": 2,
                     "email": "dredd2@test.com",
-                    "first_name": "Judge2",
-                    "last_name": "Dredd2",
+                    "display_name":"Judge Dredd",
                     "status": "accepted",
                     "requested_at": "2016-01-01T20:09:06.000+01:00"
                 },
                 {
                     "id": 3,
                     "email": "dredd3@test.com",
-                    "first_name": "Judge3",
-                    "last_name": "Dredd3",
+                    "display_name":"Judge Dredd",
                     "status": "rejected",
                     "requested_at": "2016-01-01T20:09:06.000+01:00"
                 }]
@@ -678,8 +675,7 @@ Note: anyone can ask to join a tour
         { "user": 
             { "id": 2, 
             "email": "dredd2@test.com", 
-            "first_name": "Judge2", 
-            "last_name": "Dredd2", 
+            "display_name":"Judge Dredd",
             "status": "accepted",
             "requested_at": "2016-01-01T20:09:06.000+01:00" } }
 
@@ -920,7 +916,7 @@ Send message to the Entourage team
 
     + Body
 
-            {"message":{"content":"foobar", "first_name": "john", "last_name": "doe", "email": "some@mail.com"}}
+            {"message":{"content":"foobar", "display_name":"Judge Dredd", "email": "some@mail.com"}}
 
     + Headers
 
@@ -928,7 +924,7 @@ Send message to the Entourage team
 
 + Response 201 (application/json; charset=utf-8)
 
-            {"message":{"content":"foobar", "first_name": "john", "last_name": "doe", "email": "some@mail.com"}}
+            {"message":{"content":"foobar", "display_name":"Judge Dredd", "email": "some@mail.com"}}
 
 + Response 400 (application/json; charset=utf-8)
 
@@ -945,7 +941,7 @@ Manage registration requests from organization who want to join entourage platfo
 
     + Body
 
-            {"registration_request": {"organization": {"name":"foo", "local_entity":"bar", "address":"2 rue de l'église", "phone":"+33612345678", "email":"some@email.com", "website_url":"http://foobar.com", "description":"lorem ipsum", "logo_key":"some_key.jpg"}, "user":{"first_name":"John", "last_name":"Doe", "phone":"+33612345678", "email":"some@email.com"}}}
+            {"registration_request": {"organization": {"name":"foo", "local_entity":"bar", "address":"2 rue de l'église", "phone":"+33612345678", "email":"some@email.com", "website_url":"http://foobar.com", "description":"lorem ipsum", "logo_key":"some_key.jpg"}, "user":{"display_name":"Judge Dredd", "phone":"+33612345678", "email":"some@email.com"}}}
 
     + Headers
 
@@ -953,7 +949,7 @@ Manage registration requests from organization who want to join entourage platfo
 
 + Response 201 (application/json; charset=utf-8)
 
-             {:registration_request:{"id":34, "status":"pending", "extra":"{\"organization\":{\"name\":\"foo\",\"description\":\"lorem ipsum\",\"phone\":\"+33612345678\",\"address\":\"2 rue de l'église\"},\"user\":{\"first_name\":\"John\",\"last_name\":\"Doe\",\"email\":\"some@email.com\",\"phone\":\"+33612345678\"}}", "created_at":Tue, 08 Dec 2015 15:22:55 CET +01:00, "updated_at":Tue, 08 Dec 2015 15:22:55 CET +01:00}}
+             {:registration_request:{"id":34, "status":"pending", "extra":"{\"organization\":{\"name\":\"foo\",\"description\":\"lorem ipsum\",\"phone\":\"+33612345678\",\"address\":\"2 rue de l'église\"},\"user\":{\"display_name\":\"Judge Dredd\",\"email\":\"some@email.com\",\"phone\":\"+33612345678\"}}", "created_at":Tue, 08 Dec 2015 15:22:55 CET +01:00, "updated_at":Tue, 08 Dec 2015 15:22:55 CET +01:00}}
 
 + Response 400 (application/json; charset=utf-8)
 
@@ -1250,22 +1246,19 @@ Resources related to users of an entourage
                 {
                     "id": 1,
                     "email": "dredd@test.com",
-                    "first_name": "Judge",
-                    "last_name": "Dredd",
+                    "display_name": "Judge Dredd",
                     "status": "pending"
                 },
                 {
                     "id": 2,
                     "email": "dredd2@test.com",
-                    "first_name": "Judge2",
-                    "last_name": "Dredd2",
+                    "display_name": "Judge Dredd",
                     "status": "accepted"
                 },
                 {
                     "id": 3,
                     "email": "dredd3@test.com",
-                    "first_name": "Judge3",
-                    "last_name": "Dredd3",
+                    "display_name": "Judge Dredd",
                     "status": "rejected"
                 }]
             }
@@ -1281,7 +1274,7 @@ Resources related to users of an entourage
 
     + token (required, string, `FAKETOKEN`) ... Token identifying the current user
 
-+ Request (application/json; charset=utf-8)
++ Request (application/json; charset=utf-8)lace fiorst name 
 
     + Body
 
@@ -1293,7 +1286,7 @@ Resources related to users of an entourage
 
 + Response 201 (application/json; charset=utf-8)
 
-        { "user": { "id": 2, "email": "dredd2@test.com", "first_name": "Judge2", "last_name": "Dredd2", "status": "accepted" } }
+        { "user": { "id": 2, "email": "dredd2@test.com", "display_name": "Judge Dredd", "status": "accepted" } }
 
 + Response 401 (application/json; charset=utf-8)
 
