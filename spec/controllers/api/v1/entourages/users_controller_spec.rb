@@ -15,7 +15,7 @@ describe Api::V1::Entourages::UsersController do
       context "first request to join entourage" do
         before { post :create, entourage_id: entourage.to_param, token: user.token }
         it { expect(entourage.members).to eq([user]) }
-        it { expect(JSON.parse(response.body)).to eq("user"=>{"id"=>user.id, "email"=>user.email, "first_name"=>"John", "last_name"=>"Doe"}) }
+        it { expect(JSON.parse(response.body)).to eq("user"=>{"id"=>user.id, "email"=>user.email, "display_name"=>"John Doe"}) }
       end
 
       context "duplicate request to join entourage" do
@@ -37,7 +37,7 @@ describe Api::V1::Entourages::UsersController do
     context "signed in" do
       let!(:entourage_user) { EntouragesUser.create(user: user, entourage: entourage) }
       before { get :index, entourage_id: entourage.to_param, token: user.token }
-      it { expect(JSON.parse(response.body)).to eq({"users"=>[{"id"=>user.id, "email"=>user.email, "first_name"=>"John", "last_name"=>"Doe"}]}) }
+      it { expect(JSON.parse(response.body)).to eq({"users"=>[{"id"=>user.id, "email"=>user.email, "display_name"=>"John Doe"}]}) }
     end
   end
 

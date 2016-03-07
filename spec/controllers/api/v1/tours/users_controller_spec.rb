@@ -16,8 +16,7 @@ describe Api::V1::Tours::UsersController do
         it { expect(tour.members).to eq([user]) }
         it { expect(JSON.parse(response.body)).to eq("user"=>{"id"=>user.id,
                                                               "email"=>user.email,
-                                                              "first_name"=>"John",
-                                                              "last_name"=>"Doe",
+                                                              "display_name"=>"John Doe",
                                                               "status" => "pending",
                                                               "requested_at"=>ToursUser.last.created_at.iso8601(3)}) }
         it { expect(tour.reload.number_of_people).to eq(1) }
@@ -44,8 +43,7 @@ describe Api::V1::Tours::UsersController do
       before { get :index, tour_id: tour.to_param, token: user.token }
       it { expect(JSON.parse(response.body)).to eq({"users"=>[{"id"=>user.id,
                                                                "email"=>user.email,
-                                                               "first_name"=>"John",
-                                                               "last_name"=>"Doe",
+                                                               "display_name"=>"John Doe",
                                                                "status"=>"pending",
                                                                "requested_at"=>tour_user.created_at.iso8601(3)}]}) }
     end
