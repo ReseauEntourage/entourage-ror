@@ -3,17 +3,12 @@ module Api
     class TourPointsController < Api::V1::BaseController
       def create
         tour = Tour.find(params[:tour_id])
-        tour_points = tour.tour_points.create(tour_point_params['tour_points'])
-        if tour_points.all?(&:valid?)
-          render json: tour_points, status: 201, each_serializer: ::V1::TourPointSerializer
+        tour_points_builder = TourPointsServices::TourPointsBuilder.new(tour, params['tour_points'], :fail_with_exception)
+        if tour_points_builder.create
+          render json: {status: :ok}, status: 201
         else
           render json: {message: 'Could not create tour points'}, status: 400
         end
-      end
-
-      def tour_point_params
-        params.require(:tour_points)
-        params.permit(tour_points: [:latitude, :longitude, :passing_time])
       end
     end
   end
