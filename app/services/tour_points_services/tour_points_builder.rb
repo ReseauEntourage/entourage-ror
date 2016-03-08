@@ -1,5 +1,5 @@
 module TourPointsServices
-  class TourPointsBuilder < Struct.new(:tour, :params)
+  class TourPointsBuilder < Struct.new(:tour, :params, :fail_with)
     def create
       begin
         sql = "INSERT INTO tour_points (passing_time, latitude, longitude, tour_id, created_at, updated_at) VALUES #{values}"
@@ -22,8 +22,13 @@ module TourPointsServices
     end
 
     def sanitized_hash(p)
+      unless p["passing_time"]
+        Rails.logger.error "Found nil passing time for tour : #{tour.id}"
+        raise TourPointsServices::MissingPassingTimeError if fail_with==:fail_with_exception
+        p["passing_time"] = now
+      end
       {
-        passing_time: "'#{p["passing_time"] || now}'",
+        passing_time: "'#{p["passing_time"]}'",
         latitude: p["latitude"].to_s,
         longitude: p["longitude"].to_s,
         tour_id: tour.id,
@@ -40,4 +45,6 @@ module TourPointsServices
       params.is_a?(Array) ? params : [params]
     end
   end
+
+  class MissingPassingTimeError < StandardError; end
 end

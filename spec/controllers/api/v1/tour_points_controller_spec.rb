@@ -31,5 +31,13 @@ RSpec.describe Api::V1::TourPointsController, :type => :controller do
       before { post 'create', tour_id: tour.id, token: user.token , tour_points: [{latitude: "ABC", longitude: "DEF", passing_time: "GHI"}], :format => :json }
       it { expect(response.status).to eq(400) }
     end
+
+    context "with missing passing time" do
+      it "raises exception" do
+        expect {
+          post 'create', tour_id: tour.id, token: user.token , tour_points: {latitude: "ABC", longitude: "DEF"}
+        }.to raise_error
+      end
+    end
   end
 end

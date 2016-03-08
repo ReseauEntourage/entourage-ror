@@ -3,7 +3,7 @@ module Api
     class TourPointsController < Api::V1::BaseController
       def create
         tour = Tour.find(params[:tour_id])
-        tour_points_builder = TourPointsServices::TourPointsBuilder.new(tour, params['tour_points'])
+        tour_points_builder = TourPointsServices::TourPointsBuilder.new(tour, params['tour_points'], :fail_with_exception)
         if tour_points_builder.create
           render json: {status: :ok}, status: 201
         else
