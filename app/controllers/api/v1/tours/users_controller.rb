@@ -35,10 +35,6 @@ module Api
         end
 
         def destroy
-          if @tour_user.user == current_user
-            return render json: {message: 'Cannot remove yourself from tour'}, status: :bad_request
-          end
-
           if @tour_user.user == @tour.user
             return render json: {message: 'Cannot remove the author of the tour'}, status: :bad_request
           end
