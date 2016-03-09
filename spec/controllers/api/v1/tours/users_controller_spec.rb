@@ -131,8 +131,8 @@ describe Api::V1::Tours::UsersController do
     context "delete yourself" do
       let!(:tour_member) { ToursUser.create(user: user, tour: tour, status: "accepted") }
       before { delete :destroy, tour_id: tour.to_param, id: user.id, token: user.token }
-      it { expect(response.status).to eq(400) }
-      it { expect(tour.reload.number_of_people).to eq(1) }
+      it { expect(response.status).to eq(204) }
+      it { expect(tour.reload.number_of_people).to eq(0) }
     end
 
     context "delete the author of the tour" do
