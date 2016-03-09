@@ -23,7 +23,7 @@ module Admin
     end
 
     def organization_params
-      params.require(:organization).permit(:name, :description, :phone, :address, :logo_url)
+      params.require(:organization).permit(:name, :description, :phone, :address, :logo_url, :test_organization)
     end
   end
 end

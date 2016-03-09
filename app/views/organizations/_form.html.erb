@@ -29,6 +29,11 @@
     <%= f.text_field :logo_url, class: 'form-control' %>
   </div>
 
+  <div class="field form-group">
+    <label>Mon association apparaîtra dans les statistiques sur le site entourage</label>
+    <%= f.check_box :test_organization, {:checked => !@organization.test_organization}, 0, 1 %>
+  </div>
+
   <div class="actions form-group">
     <%= f.submit "Sauvegarder les modifications", class: "btn btn-primary" %>
   </div>
