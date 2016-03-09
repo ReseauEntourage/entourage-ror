@@ -9,15 +9,15 @@ RSpec.describe Api::V1::TourPointsController, :type => :controller do
     let!(:tour_point) { FactoryGirl.build :tour_point }
     
     context "within existing tour" do
-      before { post 'create', tour_id: tour.id, token: user.token, tour_points: [{latitude: tour_point.latitude, longitude: tour_point.longitude, passing_time: tour_point.passing_time}], :format => :json }
+      before { post 'create', tour_id: tour.id, token: user.token, tour_points: [{latitude: tour_point.latitude, longitude: tour_point.longitude, passing_time: tour_point.passing_time.iso8601(3)}], :format => :json }
       it { expect(response.status).to eq(201) }
-      it { expect(JSON.parse(response.body)).to eq({"tour_points"=>[{"latitude"=>1.5, "longitude"=>1.5}]}) }
+      it { expect(JSON.parse(response.body)).to eq({"status"=>"ok"}) }
     end
     
     context "with multiple tour points" do
-      before { post 'create', tour_id: tour.id, token: user.token, tour_points: [{latitude: tour_point.latitude, longitude: tour_point.longitude, passing_time: tour_point.passing_time}, {latitude: tour_point.latitude, longitude: tour_point.longitude, passing_time: tour_point.passing_time}], :format => :json }
+      before { post 'create', tour_id: tour.id, token: user.token, tour_points: [{latitude: tour_point.latitude, longitude: tour_point.longitude, passing_time: tour_point.passing_time.iso8601(3)}, {latitude: tour_point.latitude, longitude: tour_point.longitude, passing_time: tour_point.passing_time.iso8601(3)}], :format => :json }
       it { expect(response.status).to eq(201) }
-      it { expect(JSON.parse(response.body)).to eq({"tour_points"=>[{"latitude"=>1.5, "longitude"=>1.5}, {"latitude"=>1.5, "longitude"=>1.5}]}) }
+      it { expect(JSON.parse(response.body)).to eq({"status"=>"ok"}) }
     end
 
     context "with inexisting tour" do
@@ -30,6 +30,14 @@ RSpec.describe Api::V1::TourPointsController, :type => :controller do
     context "with invalid tour_point" do
       before { post 'create', tour_id: tour.id, token: user.token , tour_points: [{latitude: "ABC", longitude: "DEF", passing_time: "GHI"}], :format => :json }
       it { expect(response.status).to eq(400) }
+    end
+
+    context "with missing passing time" do
+      it "raises exception" do
+        expect {
+          post 'create', tour_id: tour.id, token: user.token , tour_points: {latitude: "ABC", longitude: "DEF"}
+        }.to raise_error
+      end
     end
   end
 end
