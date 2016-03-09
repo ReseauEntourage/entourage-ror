@@ -13,7 +13,7 @@ module Api
 
         def index
           before = params[:before] ? DateTime.parse(params[:before]) : DateTime.now
-          messages = @tour.chat_messages.ordered.before(before).limit(25)
+          messages = @tour.chat_messages.includes(:user).ordered.before(before).limit(25)
           #TODO: move into a LastMessageRead class
           if messages.present? && (tour_user.last_message_read.nil? || tour_user.last_message_read < messages.last.created_at)
             tour_user.update(last_message_read: messages.last.created_at)

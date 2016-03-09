@@ -21,19 +21,19 @@ describe Api::V1::Tours::ChatMessagesController do
         it { expect(response.status).to eq(200) }
         it { expect(JSON.parse(response.body)).to eq({"chat_messages"=>
                                                           [{
-                                                               "id"=>chat_message2.id,
-                                                               "content"=>"MyText",
-                                                               "user"=> {"id"=>chat_message2.user_id, "avatar_url"=>nil},
-                                                               "created_at"=>chat_message2.created_at.iso8601(3)
-                                                           },
-                                                           {
                                                                "id"=>chat_message1.id,
                                                                "content"=>"MyText",
                                                                "user"=> {"id"=>chat_message1.user_id, "avatar_url"=>nil},
                                                                "created_at"=>chat_message1.created_at.iso8601(3)
+                                                           },
+                                                           {
+                                                               "id"=>chat_message2.id,
+                                                               "content"=>"MyText",
+                                                               "user"=> {"id"=>chat_message2.user_id, "avatar_url"=>nil},
+                                                               "created_at"=>chat_message2.created_at.iso8601(3)
                                                            }]}) }
 
-        it { expect(tour_user.reload.last_message_read).to eq(chat_message1.created_at)}
+        it { expect(tour_user.reload.last_message_read).to eq(chat_message2.created_at)}
       end
 
       context "i request older messages" do

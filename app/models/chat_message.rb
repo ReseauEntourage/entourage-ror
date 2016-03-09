@@ -4,6 +4,6 @@ class ChatMessage < ActiveRecord::Base
 
   validates :messageable_id, :messageable_type, :content, :user_id, presence: true
 
-  scope :ordered, -> { order("created_at ASC") }
+  scope :ordered, -> { order("created_at DESC") }
   scope :before, -> (before){ where("created_at < ?", before) }
 end
