@@ -1354,7 +1354,10 @@ Resources related to users of an entourage
 
 # Group Contacts
 Contacts related resources of the **Entourage API**
-## Contacts [/contacts]
+## Contacts [/contacts{?token}]
+
++ Parameters
+    + token (required, string, `FAKETOKEN`) ... Token identifying the current user
 
 ### Send user contacts info to find who has an account on Entourage [PUT]
 
@@ -1399,7 +1402,10 @@ Contacts related resources of the **Entourage API**
 
 # Group Applications
 
-## Applications [/applications]
+## Applications [/applications{?token}]
+
++ Parameters
+    + token (required, string, `FAKETOKEN`) ... Token identifying the current user
 
 ### Add an Application with info about device [PUT]
 
