@@ -190,6 +190,12 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
         it { expect(open_tour.reload.frozen?).to be false }
       end
 
+      context "not the author tour of the tour" do
+        let(:open_tour) { FactoryGirl.create(:tour, status: :closed) }
+        before { put 'update', id: open_tour.id, token: user.token, tour:{tour_type:"medical", status:"freezed", vehicle_type:"car", distance: 633.0878}, format: :json }
+        it { expect(open_tour.reload.freezed?).to be false }
+      end
+
       context "tour closed" do
         let(:open_tour) { FactoryGirl.create(:tour, user: user, status: :closed) }
         before { put 'update', id: open_tour.id, token: user.token, tour:{tour_type:"medical", status:"freezed", vehicle_type:"car", distance: 633.0878}, format: :json }

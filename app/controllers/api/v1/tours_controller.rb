@@ -47,7 +47,7 @@ module Api
           end
 
           if tour_params[:status]=="freezed"
-            TourServices::FreezeTourService.new(tour: @tour).freeze!
+            TourServices::FreezeTourService.new(tour: @tour, user: @current_user).freeze!
           end
 
           @tour.length = tour_params[:distance]
