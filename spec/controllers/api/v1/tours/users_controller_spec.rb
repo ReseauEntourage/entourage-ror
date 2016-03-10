@@ -34,9 +34,9 @@ describe Api::V1::Tours::UsersController do
         new_member = FactoryGirl.create(:pro_user)
         ToursUser.create(user: user, tour: tour, status: "accepted")
         expect_any_instance_of(PushNotificationService).to receive(:send_notification).with(new_member.full_name,
-                                                                                            "Nouvelle demande pour rejoindre votre maraude",
+                                                                                            "Demande en attente",
                                                                                             "Un nouveau membre souhaite rejoindre votre maraude",
-                                                                                            [user])
+                                                                                            User.where(id: user.id))
         post :create, tour_id: tour.to_param, token: new_member.token
       end
     end
@@ -71,6 +71,7 @@ describe Api::V1::Tours::UsersController do
       let!(:tour_requested) { ToursUser.create(user: requester, tour: tour, status: "pending") }
 
       context "valid params" do
+        before { FactoryGirl.create(:android_app) }
         before { patch :update, tour_id: tour.to_param, id: requester.id, user: {status: "accepted"}, token: user.token }
         it { expect(response.status).to eq(204) }
         it { expect(tour_requested.reload.status).to eq("accepted") }

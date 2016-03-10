@@ -1,19 +1,19 @@
 module TourServices
   class ToursUserStatus
-    def initialize(tours_user:)
-      @user = tours_user
+    def initialize(tour_user:)
+      @tour_user = tour_user
     end
 
     def accepted?
-      user.status=="accepted"
+      tour_user.status=="accepted"
     end
 
     def pending?
-      user.status=="pending"
+      tour_user.status=="pending"
     end
 
     def rejected?
-      user.status=="rejected"
+      tour_user.status=="rejected"
     end
 
     def accept!
@@ -21,37 +21,46 @@ module TourServices
 
       ActiveRecord::Base.transaction do
         increment_counter
-        user.update!(status: "accepted")
+        tour_user.update!(status: "accepted")
       end
 
-      PushNotificationService.new.send_notification(user.full_name,
+      PushNotificationService.new.send_notification(tour.user.full_name,
                                                     "Demande acceptée",
-                                                    "Vous faites désormais partie de la mauraude",
-                                                    recipients)
+                                                    "Vous venez de rejoindre l'entourage de #{user.organization_name}",
+                                                    User.where(id: user.id))
+      true
     end
 
     def reject!
       return true if rejected?
 
       if pending?
-        user.update(status: "rejected")
+        tour_user.update(status: "rejected")
       elsif accepted?
         ActiveRecord::Base.transaction do
           decrement_counter
-          user.update!(status: "rejected")
+          tour_user.update!(status: "rejected")
         end
       end
     end
 
     def decrement_counter
-      Tour.decrement_counter(:number_of_people, user.tour.id)
+      Tour.decrement_counter(:number_of_people, tour.id)
     end
 
     def increment_counter
-      Tour.increment_counter(:number_of_people, user.tour.id)
+      Tour.increment_counter(:number_of_people, tour.id)
+    end
+
+    def user
+      tour_user.user
+    end
+
+    def tour
+      tour_user.tour
     end
 
     private
-    attr_reader :user
+    attr_reader :tour_user
   end
 end

@@ -20,14 +20,14 @@ module UserServices
     def user_accepted_in_tour(tour:)
       user = create_user!
       tours_user = ToursUser.create(tour: tour, user: user)
-      TourServices::ToursUserStatus.new(tours_user: tours_user).accept!
+      TourServices::ToursUserStatus.new(tour_user: tours_user).accept!
       user
     end
 
     def user_rejected_of_tour(tour:)
       user = create_user!
       tours_user = ToursUser.create(tour: tour, user: user)
-      TourServices::ToursUserStatus.new(tours_user: tours_user).reject!
+      TourServices::ToursUserStatus.new(tour_user: tours_user).reject!
       user
     end
 
