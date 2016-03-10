@@ -23,6 +23,11 @@ module TourServices
         increment_counter
         user.update!(status: "accepted")
       end
+
+      PushNotificationService.new.send_notification(user.full_name,
+                                                    "Demande acceptée",
+                                                    "Vous faites désormais partie de la mauraude",
+                                                    recipients)
     end
 
     def reject!

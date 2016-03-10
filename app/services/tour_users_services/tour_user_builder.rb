@@ -24,7 +24,7 @@ module TourUsersServices
     def notify_tour_members
       recipients = tour.members.includes(:tours_users).where(tours_users: {status: "accepted"})
       PushNotificationService.new.send_notification(user.full_name,
-                                                    "Nouvelle demande pour rejoindre votre maraude",
+                                                    "Demande en attente",
                                                     "Un nouveau membre souhaite rejoindre votre maraude",
                                                     recipients)
     end
