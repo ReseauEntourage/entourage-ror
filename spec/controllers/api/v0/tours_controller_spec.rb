@@ -9,6 +9,7 @@ RSpec.describe Api::V0::ToursController, :type => :controller do
     let!(:tour) { FactoryGirl.build :tour }
     
     context "with correct type" do
+      before { FactoryGirl.create(:android_app) }
       before { post 'create', token: user.token , tour: {tour_type: tour.tour_type, status:tour.status, vehicle_type:tour.vehicle_type, distance: 123.456}, format: :json }
 
       it { expect(response.status).to eq(201) }
@@ -27,6 +28,7 @@ RSpec.describe Api::V0::ToursController, :type => :controller do
     end
 
     it "sends scheduled push" do
+      FactoryGirl.create(:android_app)
       expect_any_instance_of(TourServices::SchedulePushService).to receive(:send_to)
       post 'create', token: user.token , tour: {tour_type: tour.tour_type, status:tour.status, vehicle_type:tour.vehicle_type, distance: 123.456}, format: :json
     end
