@@ -11,12 +11,15 @@ module Api
         end
 
         def create
-          tour_user = ToursUser.new(tour: @tour, user: current_user)
+          tour_user_builder = TourUsersServices::TourUserBuilder.new(tour: @tour, user: current_user)
+          tour_user_builder.create do |on|
+            on.success do |tour_user|
+              render json: tour_user, root: "user", status: 201, serializer: ::V1::ToursUserSerializer
+            end
 
-          if tour_user.save
-            render json: tour_user, root: "user", status: 201, serializer: ::V1::ToursUserSerializer
-          else
-            render json: {message: 'Could not create tour participation request', reasons: tour_user.errors.full_messages}, status: :bad_request
+            on.failure do |tour_user|
+              render json: {message: 'Could not create tour participation request', reasons: tour_user.errors.full_messages}, status: :bad_request
+            end
           end
         end
 

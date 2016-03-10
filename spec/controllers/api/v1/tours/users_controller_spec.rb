@@ -29,6 +29,16 @@ describe Api::V1::Tours::UsersController do
         it { expect(JSON.parse(response.body)).to eq("message"=>"Could not create tour participation request", "reasons"=>["Tour a déjà été ajouté"]) }
         it { expect(response.status).to eq(400) }
       end
+
+      it "sends a notifications to tour members" do
+        new_member = FactoryGirl.create(:pro_user)
+        ToursUser.create(user: user, tour: tour, status: "accepted")
+        expect_any_instance_of(PushNotificationService).to receive(:send_notification).with(new_member.full_name,
+                                                                                            "Nouvelle demande pour rejoindre votre maraude",
+                                                                                            "Un nouveau membre souhaite rejoindre votre maraude",
+                                                                                            [user])
+        post :create, tour_id: tour.to_param, token: new_member.token
+      end
     end
   end
 
