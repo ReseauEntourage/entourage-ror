@@ -10,7 +10,7 @@ module TourServices
 
       closed_at = tour.tour_points.last.try(:passing_time) || Time.now
       distance = params.try(:[], :distance).try(:to_f) || 0
-      tour.status = "closed"
+      tour.status = :closed
       tour.closed_at= closed_at
       tour.length = distance
       if tour.save

@@ -45,6 +45,11 @@ module Api
           if tour_params[:status]=="closed"
             TourServices::CloseTourService.new(tour: @tour, params: tour_params).close!
           end
+
+          if tour_params[:status]=="freezed"
+            TourServices::FreezeTourService.new(tour: @tour).freeze!
+          end
+
           @tour.length = tour_params[:distance]
           @tour.update_attributes(tour_params.except(:status, :distance))
           render json: @tour, status: 200, serializer: ::V1::TourSerializer

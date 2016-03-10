@@ -4,7 +4,7 @@ class Tour < ActiveRecord::Base
   has_many :snap_to_road_tour_points, dependent: :delete_all
   has_many :simplified_tour_points, dependent: :delete_all
   has_many :encounters, dependent: :destroy
-  enum status: [ :ongoing, :closed ]
+  enum status: [ :ongoing, :closed, :freezed ]
   enum vehicle_type: [ :feet, :car ]
   validates_presence_of :tour_type, :status, :vehicle_type, :user
   belongs_to :user
@@ -55,10 +55,6 @@ class Tour < ActiveRecord::Base
     update(status: :closed, closed_at: DateTime.now)
   end
 
-  def closed?
-    status=="closed"
-  end
-  
   def to_s
     "#{id} - by user #{user} at #{created_at}"
   end
