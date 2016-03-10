@@ -35,6 +35,10 @@ module Api
             on.create_failure do |message|
               render json: {message: 'Could not create chat message', reasons: message.errors.full_messages}, status: :bad_request
             end
+
+            on.freezed_tour do |message|
+              render json: {message: 'Could not create chat message', reasons: 'Tour is freezed'}, status: 422
+            end
           end
         end
 

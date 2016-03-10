@@ -134,6 +134,13 @@ describe Api::V1::Tours::ChatMessagesController do
         before { post :create, tour_id: tour.to_param, chat_message: {content: "foobar"}, token: user.token }
         it { expect(response.status).to eq(401) }
       end
+
+      context "post in a freezed tour" do
+        let(:freezed_tour) { FactoryGirl.create(:tour, status: :freezed) }
+        let!(:tour_user) { FactoryGirl.create(:tours_user, tour: freezed_tour, user: user, status: "accepted") }
+        before { post :create, tour_id: freezed_tour.to_param, chat_message: {content: "foobar"}, token: user.token }
+        it { expect(response.status).to eq(422) }
+      end
     end
   end
 end

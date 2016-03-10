@@ -6,8 +6,8 @@ module TourServices
     end
 
     def freeze!
-      return unless user == tour.user
-      return unless tour.closed?
+      return false unless user == tour.user
+      return false unless tour.closed?
 
       tour.status = :freezed
       tour.save
