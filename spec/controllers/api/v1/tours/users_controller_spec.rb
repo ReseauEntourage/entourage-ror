@@ -117,13 +117,14 @@ describe Api::V1::Tours::UsersController do
       let!(:tour_member) { ToursUser.create(user: user, tour: tour, status: "accepted") }
       let!(:tour_requested) { ToursUser.create(user: requester, tour: tour, status: "pending") }
       before { delete :destroy, tour_id: tour.to_param, id: requester.id, token: user.token }
-      it { expect(response.status).to eq(204) }
+      it { expect(response.status).to eq(200) }
+      it { expect(JSON.parse(response.body)).to eq({"user"=>{"id"=>requester.id, "email"=>requester.email, "display_name"=>"John Doe", "status"=>"rejected", "requested_at"=>tour_requested.created_at.iso8601(3)}}) }
       it { expect(tour_requested.reload.status).to eq("rejected") }
       it { expect(tour.reload.number_of_people).to eq(1) }
 
       context "delete the same user twice" do
         before { delete :destroy, tour_id: tour.to_param, id: requester.id, token: user.token }
-        it { expect(response.status).to eq(204) }
+        it { expect(response.status).to eq(200) }
         it { expect(tour.reload.number_of_people).to eq(1) }
       end
     end
@@ -131,7 +132,7 @@ describe Api::V1::Tours::UsersController do
     context "delete yourself" do
       let!(:tour_member) { ToursUser.create(user: user, tour: tour, status: "accepted") }
       before { delete :destroy, tour_id: tour.to_param, id: user.id, token: user.token }
-      it { expect(response.status).to eq(204) }
+      it { expect(response.status).to eq(200) }
       it { expect(tour.reload.number_of_people).to eq(0) }
     end
 

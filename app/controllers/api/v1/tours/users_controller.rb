@@ -41,7 +41,7 @@ module Api
 
           user_status = TourServices::ToursUserStatus.new(tours_user: @tour_user)
           if user_status.reject!
-            head :no_content
+            render json: @tour_user, root: "user", status: 200, serializer: ::V1::ToursUserSerializer
           else
             render json: {message: 'Could not update tour participation request status', reasons: @tour_user.errors.full_messages}, status: :bad_request
           end
