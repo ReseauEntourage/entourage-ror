@@ -12,6 +12,8 @@ module ChatServices
     def create
       yield callback if block_given?
 
+      return callback.on_freezed_tour.try(:call, message) if tour.freezed?
+
       if message.save
         tour_user.update(last_message_read: message.created_at)
         PushNotificationService.new.send_notification(user.full_name,
@@ -34,7 +36,7 @@ module ChatServices
   end
 
   class Callback
-    attr_accessor :on_create_success, :on_create_failure
+    attr_accessor :on_create_success, :on_create_failure, :on_freezed_tour
 
     def create_success(&block)
       @on_create_success = block
@@ -42,6 +44,10 @@ module ChatServices
 
     def create_failure(&block)
       @on_create_failure = block
+    end
+
+    def freezed_tour(&block)
+      @on_freezed_tour = block
     end
   end
 end
