@@ -6,6 +6,8 @@ RSpec.describe UserApplication, type: :model do
   it { should validate_presence_of :device_os }
   it { should validate_presence_of :version }
   it { should validate_presence_of :user_id }
+  it { should validate_presence_of :device_family }
+  it { should validate_inclusion_of(:device_family).in_array([UserApplication::ANDROID, UserApplication::IOS]) }
   it { should belong_to :user }
 
   it "has unique application version per user and device os" do

@@ -30,7 +30,7 @@ module Api
 
       def validate_request!
         begin
-          ApiRequestValidator.new(params: params, headers: headers, env: request.env).validate!
+          api_request.validate!
         rescue UnauthorisedApiKeyError => e
           Rails.logger.error e
           return render json: {message: 'Missing API Key or invalid key'}, status: 426
@@ -39,6 +39,10 @@ module Api
 
       def check
         render json: {status: :ok}
+      end
+
+      def api_request
+        ApiRequest.new(params: params, headers: headers, env: request.env)
       end
     end
   end
