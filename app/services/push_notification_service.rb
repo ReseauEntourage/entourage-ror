@@ -6,10 +6,12 @@ class PushNotificationService
 
 
   def send_notification(sender, object, content, users)
-    android_device_ids = users.where(device_type: User.device_types[:android]).where.not(device_id: nil).pluck(:device_id)
+    user_applications = UserApplication.where(user_id: users.map(&:id))
+
+    android_device_ids = user_applications.where(device_family: UserApplication::ANDROID).pluck(:push_token)
     android_notification_service.send_notification sender, object, content, android_device_ids
     
-    ios_device_ids = users.where(device_type: User.device_types[:ios]).where.not(device_id: nil).pluck(:device_id)
+    ios_device_ids = user_applications.where(device_family: UserApplication::IOS).pluck(:push_token)
     ios_notification_service.send_notification sender, object, content, ios_device_ids
   end
   

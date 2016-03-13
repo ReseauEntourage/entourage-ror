@@ -1,4 +1,4 @@
-class ApiRequestValidator
+class ApiRequest
   def initialize(params:, headers:, env:)
     @params = params
     @headers = headers
@@ -8,7 +8,11 @@ class ApiRequestValidator
   def validate!
     return if Rails.env.test?
 
-    raise UnauthorisedApiKeyError unless Api::ApplicationKey.new(api_key: api_key).authorised?
+    raise UnauthorisedApiKeyError unless key_infos.present?
+  end
+
+  def key_infos
+    Api::ApplicationKey.new(api_key: api_key).key_infos
   end
 
   private
