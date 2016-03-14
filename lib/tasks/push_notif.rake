@@ -12,35 +12,40 @@ namespace :push do
     AndroidNotificationService.new.send_notification("Expéditeur", "Objet", "Contenu du message", device_ids)
   end
 
-  desc "update sandbox certificates"
-  task update_sandbox_certificates: :environment do
-    desc "Create ios Rpush app"
-    task create_rpush_ios_app: :environment do
-      Rpush::Apns::App.destroy_all
+  desc "create ios sandbox push app"
+  task create_ios_sandbox_app: :environment do
+    Rpush::Apns::App.destroy_all
 
-      app = Rpush::Apns::App.new
-      app.name = "entourage"
-      app.certificate = File.read File.join(Rails.root, 'certificates', 'ios_push_sandbox.pem')
-      app.environment = "sandbox" # APNs environment.
-      app.password = ""
-      app.connections = 1
-      app.save!
-    end
+    app = Rpush::Apns::App.new
+    app.name = "entourage"
+    app.certificate = File.read File.join(Rails.root, 'certificates', 'ios_push_sandbox.pem')
+    app.environment = "sandbox" # APNs environment.
+    app.password = ""
+    app.connections = 1
+    app.save!
   end
 
-  desc "update sandbox certificates"
-  task update_production_certificates: :environment do
-    desc "Create ios Rpush app"
-    task create_rpush_ios_app: :environment do
-      Rpush::Apns::App.destroy_all
+  desc "create ios production push app"
+  task create_ios_production_app: :environment do
+    Rpush::Apns::App.destroy_all
 
-      app = Rpush::Apns::App.new
-      app.name = "entourage"
-      app.certificate = File.read File.join(Rails.root, 'certificates', 'ios_push_production.pem')
-      app.environment = "production" # APNs environment.
-      app.password = ""
-      app.connections = 1
-      app.save!
-    end
+    app = Rpush::Apns::App.new
+    app.name = "entourage"
+    app.certificate = File.read File.join(Rails.root, 'certificates', 'ios_push_production.pem')
+    app.environment = "production" # APNs environment.
+    app.password = ""
+    app.connections = 1
+    app.save!
+  end
+
+  desc "create android push app"
+  task create_android_production_app: :environment do
+    Rpush::Gcm::App.destroy_all
+
+    app = Rpush::Gcm::App.new
+    app.name = "entourage"
+    app.auth_key = "AIzaSyAOediRh9oYDQkIs0lkMcN_639sawoxCAg"
+    app.connections = 1
+    app.save!
   end
 end
