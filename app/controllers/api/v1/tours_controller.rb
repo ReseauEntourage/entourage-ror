@@ -24,6 +24,7 @@ module Api
         @tours = Tour.includes(:tour_points).includes(:tours_users).includes(:user).where(nil)
         @tours = @tours.type(params[:type]) if params[:type].present?
         @tours = @tours.vehicle_type(Tour.vehicle_types[params[:vehicle_type]]) if params[:vehicle_type].present?
+        @tours = @tours.where(status: params[:status]) if params[:status].present?
 
         if (params[:latitude].present? && params[:longitude].present?)
           center_point = [params[:latitude], params[:longitude]]
