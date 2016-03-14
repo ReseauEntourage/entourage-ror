@@ -551,7 +551,7 @@ vehicle_type is either "feet" or "car"
     + token (required, string, `FAKETOKEN`) ... Token identifying the current user
 
 
-### Retrieve tours from user [GET /users/{user_id}/tours{?token}{&page}{&per}{&distance}{&latitude}{&longitude}]
+### Retrieve tours from user [GET /users/{user_id}/tours{?token}{&page}{&per}{&distance}{&latitude}{&longitude}{&status}]
 
 + Parametersparameters to filter 
     + page (optional, number) ... pagination : page number
@@ -559,6 +559,7 @@ vehicle_type is either "feet" or "car"
     + distance (optional, number) ... distance : filter results within a circle with distance radius (in meters)
     + latitude (optional, number) ... latitude : filter results within a circle with this center
     + longitude (optional, number) ... longitude : filter results within a circle with this center
+    + status (optional, string) ... status : filter results with tour status
 
 + Request (application/json)
 
