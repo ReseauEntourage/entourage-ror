@@ -12,6 +12,7 @@ module Api
             tours_within_distance = TourPoint.select(:tour_id).around(params[:latitude], params[:longitude], params[:distance]).map(&:tour_id)
             tours = tours.where(id: tours_within_distance)
           end
+          tours = tours.where(status: params[:status]) if params[:status].present?
           render json: tours, status: 200, each_serializer: ::V1::TourSerializer
         end
 

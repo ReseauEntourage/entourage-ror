@@ -5,8 +5,8 @@ RSpec.describe Api::V1::Users::ToursController, :type => :controller do
 
   describe 'GET index' do
     let!(:user) { FactoryGirl.create(:pro_user) }
-    let!(:tour1) { FactoryGirl.create(:tour, user: user, updated_at: Date.parse("10/10/2010")) }
-    let!(:tour2) { FactoryGirl.create(:tour, user: user, updated_at: Date.parse("09/10/2010")) }
+    let!(:tour1) { FactoryGirl.create(:tour, user: user, updated_at: Date.parse("10/10/2010"), status: "ongoing") }
+    let!(:tour2) { FactoryGirl.create(:tour, user: user, updated_at: Date.parse("09/10/2010"), status: "closed") }
     let!(:other_tours) { FactoryGirl.create(:tour) }
 
     context "without pagination params" do
@@ -66,6 +66,12 @@ RSpec.describe Api::V1::Users::ToursController, :type => :controller do
         before { get 'index', user_id: user.id, token: user.token, format: :json, distance: 1000, latitude: 48.2, longitude: 2.2 }
         it { expect(JSON.parse(response.body)["tours"].count).to eq 0 }
       end
+    end
+
+    context "with status parameter" do
+      before { get 'index', user_id: user.id, token: user.token, status: "ongoing", format: :json }
+      it { expect(JSON.parse(response.body)["tours"].count).to eq(1) }
+      it { expect(JSON.parse(response.body)["tours"].first["id"]).to eq(tour1.id) }
     end
   end
 end
