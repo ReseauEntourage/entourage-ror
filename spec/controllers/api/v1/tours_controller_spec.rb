@@ -365,9 +365,11 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
        
     end
 
-    context "user is part of the tour" do
-
+    context "with status parameter" do
+      let!(:ongoing_tour) { FactoryGirl.create :tour, status: "ongoing" }
+      let!(:closed_tour) { FactoryGirl.create :tour, status: "closed" }
+      before { get 'index', token: user.token, status: "ongoing", format: :json }
+      it { expect(JSON.parse(response.body)["tours"].first["id"]).to eq(ongoing_tour.id) }
     end
-    
   end
 end
