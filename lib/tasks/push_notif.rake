@@ -1,8 +1,15 @@
 namespace :push do
   desc "Send a ios push"
-  task ios: :environment do
-    device_ids = [User.where(email: "vdaubry@gmail.com").first.device_id]
+  task :ios, [:token] => [:environment] do |t, args|
+    device_ids = [args[:token]]
+    puts "device_ids = #{device_ids}"
     IosNotificationService.new.send_notification("Expéditeur", "Objet", "Contenu du message", device_ids)
+  end
+
+  task :android, [:token] => [:environment] do |t, args|
+    device_ids = [args[:token]]
+    puts "device_ids = #{device_ids}"
+    AndroidNotificationService.new.send_notification("Expéditeur", "Objet", "Contenu du message", device_ids)
   end
 
   desc "update sandbox certificates"
