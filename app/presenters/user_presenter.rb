@@ -32,6 +32,10 @@ class UserPresenter < ApplicationPresenter
     end
   end
 
+  def coordinated_organizations
+    (user.coordinated_organizations + [user.organization]).compact.sort_by(&:name)
+  end
+
   private
   attr_reader :user
 end

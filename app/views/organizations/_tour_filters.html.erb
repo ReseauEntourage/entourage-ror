@@ -10,8 +10,7 @@
   <% if @current_user.coordinated_organizations.count > 0 %>
     <select id="org-filter" class="map-filter form-control">
       <option value="">Choix de l'association</option>
-      <option value="<%= @current_user.organization.id %>"><%= @current_user.organization.name %></option>
-      <% @current_user.coordinated_organizations.each do |org| %>
+      <% @user_presenter.coordinated_organizations.each do |org| %>
         <option value="<%= org.id %>"><%= org.name %></option>
       <% end %>
     </select>

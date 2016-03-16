@@ -5,4 +5,5 @@ class Organization < ActiveRecord::Base
   has_many :questions
 
   scope :not_test, -> { where test_organization: false}
+  scope :ordered, -> { order("name ASC")}
 end
