@@ -1,5 +1,5 @@
 class IosNotificationJob < ActiveJob::Base
-  def perform(sender, object, content, device_token)
+  def perform(sender, object, content, device_token, extra={})
     return if device_token.blank?
 
     entourage = Rpush::Apns::App.where(name: 'entourage').first
@@ -11,7 +11,7 @@ class IosNotificationJob < ActiveJob::Base
       notification.app = entourage
       notification.device_token = device_token
       notification.alert = "Entourage vous envoi un message"
-      notification.data = { sender: sender, object: object, content: content }
+      notification.data = { sender: sender, object: object, content: {message: content, extra: extra} }
       notification.save!
 
       Rpush.push unless Rails.env.test?
