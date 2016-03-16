@@ -19,7 +19,8 @@ module ChatServices
         PushNotificationService.new.send_notification(user.full_name,
                                                       "Nouveau message",
                                                       message.content,
-                                                      recipients)
+                                                      recipients,
+                                                      {extra: {tour_id: tour.id}})
         callback.on_create_success.try(:call, message)
       else
         callback.on_create_failure.try(:call, message)

@@ -27,7 +27,8 @@ module TourServices
       PushNotificationService.new.send_notification(tour.user.full_name,
                                                     "Demande acceptée",
                                                     "Vous venez de rejoindre l'entourage de #{tour.user.organization_name}",
-                                                    User.where(id: user.id))
+                                                    User.where(id: user.id),
+                                                    {extra: {trour_id: tour.id}})
       true
     end
 

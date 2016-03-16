@@ -26,7 +26,8 @@ module TourUsersServices
       PushNotificationService.new.send_notification(user.full_name,
                                                     "Demande en attente",
                                                     "Un nouveau membre souhaite rejoindre votre maraude",
-                                                    recipients)
+                                                    recipients,
+                                                    {extra: {tour_id: tour.id}})
     end
   end
 
