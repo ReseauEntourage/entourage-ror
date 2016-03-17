@@ -20,7 +20,7 @@ module ChatServices
                                                       "Nouveau message",
                                                       message.content,
                                                       recipients,
-                                                      {extra: {tour_id: tour.id}})
+                                                      {tour_id: tour.id})
         callback.on_create_success.try(:call, message)
       else
         callback.on_create_failure.try(:call, message)

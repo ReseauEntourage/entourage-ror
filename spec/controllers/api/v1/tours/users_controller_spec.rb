@@ -37,7 +37,7 @@ describe Api::V1::Tours::UsersController do
                                                                                             "Demande en attente",
                                                                                             "Un nouveau membre souhaite rejoindre votre maraude",
                                                                                             User.where(id: user.id),
-                                                                                            {:extra=>{:tour_id=>tour.id}}
+                                                                                            {:tour_id=>tour.id}
         )
         post :create, tour_id: tour.to_param, token: new_member.token
       end
@@ -85,7 +85,7 @@ describe Api::V1::Tours::UsersController do
                                                                                             "Demande acceptée",
                                                                                             "Vous venez de rejoindre l'entourage de #{tour.user.organization_name}",
                                                                                             User.where(id: requester.id),
-                                                                                            {:extra=>{:trour_id=>tour.id}})
+                                                                                            {:tour_id=>tour.id})
         patch :update, tour_id: tour.to_param, id: requester.id, user: {status: "accepted"}, token: user.token
       end
 

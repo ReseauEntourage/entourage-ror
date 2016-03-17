@@ -28,7 +28,7 @@ module TourServices
                                                     "Demande acceptée",
                                                     "Vous venez de rejoindre l'entourage de #{tour.user.organization_name}",
                                                     User.where(id: user.id),
-                                                    {extra: {trour_id: tour.id}})
+                                                    {tour_id: tour.id})
       true
     end
 
