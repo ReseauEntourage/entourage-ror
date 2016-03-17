@@ -13,6 +13,7 @@ namespace :poi do
       else
         puts "Couldn't save POI at line #{$INPUT_LINE_NUMBER} : #{poi.errors.full_messages}"
       end
+      sleep(5)
     end
   end
 
