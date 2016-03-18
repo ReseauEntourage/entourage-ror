@@ -37,7 +37,7 @@ describe Api::V1::Tours::UsersController do
                                                                                             "Demande en attente",
                                                                                             "Un nouveau membre souhaite rejoindre votre maraude",
                                                                                             User.where(id: user.id),
-                                                                                            {:tour_id=>tour.id, :type=>"NEW_JOIN_REQUEST"}
+                                                                                            {:tour_id=>tour.id, :type=>"NEW_JOIN_REQUEST", :user_id => new_member.id}
         )
         post :create, tour_id: tour.to_param, token: new_member.token
       end
