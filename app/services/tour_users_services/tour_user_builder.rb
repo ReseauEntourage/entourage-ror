@@ -27,7 +27,7 @@ module TourUsersServices
                                                     "Demande en attente",
                                                     "Un nouveau membre souhaite rejoindre votre maraude",
                                                     recipients,
-                                                    {tour_id: tour.id})
+                                                    {tour_id: tour.id, type: "NEW_JOIN_REQUEST"})
     end
   end
 

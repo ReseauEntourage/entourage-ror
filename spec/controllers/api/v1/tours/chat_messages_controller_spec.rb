@@ -106,7 +106,7 @@ describe Api::V1::Tours::ChatMessagesController do
           tour_user = FactoryGirl.create(:tours_user, tour: tour, user: user, status: "accepted")
           tour_user2 = FactoryGirl.create(:tours_user, tour: tour, status: "accepted")
           FactoryGirl.create(:tours_user, tour: tour, status: "pending")
-          expect_any_instance_of(PushNotificationService).to receive(:send_notification).with(user.full_name, 'Nouveau message', 'foobar', [tour_user2.user], {:tour_id=>tour.id})
+          expect_any_instance_of(PushNotificationService).to receive(:send_notification).with(user.full_name, 'Nouveau message', 'foobar', [tour_user2.user], {:tour_id=>tour.id, :type=>"NEW_CHAT_MESSAGE"})
           post :create, tour_id: tour.to_param, chat_message: {content: "foobar"}, token: user.token
         end
       end
