@@ -9,13 +9,31 @@ module Admin
     def edit
     end
 
+    def new
+      @user = User.new
+    end
+
+    def create
+      organization = Organization.find(params[:user][:organization_id])
+      builder = UserServices::ProUserBuilder.new(params: user_params, organization: organization)
+
+      builder.create(send_sms: params[:send_sms].present?) do |on|
+        on.create_success do |user|
+          @user = user
+          set_coordinated_organizations(user)
+          redirect_to admin_users_path, notice: "utilisateur créé"
+        end
+
+        on.create_failure do |user|
+          @user = user
+          render :new
+        end
+      end
+    end
+
     def update
       if @user.update(user_params)
-        coordinated_organizations = params.dig(:user, :coordinated_organizations)
-        if coordinated_organizations
-          @user.coordinated_organizations = Organization.where(id: coordinated_organizations.select {|o| o.present?})
-          @user.save
-        end
+        set_coordinated_organizations(user)
         render :edit, notice: "utilisateur mis à jour"
       else
         render :edit
@@ -85,5 +103,14 @@ module Admin
     def search_param
       "%#{params[:search]}%"
     end
+
+    def set_coordinated_organizations(user)
+      coordinated_organizations = params.dig(:user, :coordinated_organizations)
+      if coordinated_organizations
+        user.coordinated_organizations = Organization.where(id: coordinated_organizations.select {|o| o.present?})
+        user.save
+      end
+    end
   end
+
 end

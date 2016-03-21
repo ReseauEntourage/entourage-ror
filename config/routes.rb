@@ -132,7 +132,7 @@ Rails.application.routes.draw do
       end
     end
 
-    resources :users, only: [:index, :edit, :update] do
+    resources :users, only: [:index, :edit, :update, :new, :create] do
       collection do
         get 'moderate'
         get 'fake'
@@ -145,6 +145,7 @@ Rails.application.routes.draw do
         put 'validate'
       end
     end
+
     resources :pois
     resources :registration_requests, only: [:index, :show, :update, :destroy]
     resources :messages, only: [:index, :destroy]

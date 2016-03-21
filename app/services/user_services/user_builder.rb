@@ -27,6 +27,10 @@ module UserServices
 
     private
     attr_reader :params, :callback
+
+    def new_user
+      raise "should be overriden by subclasses"
+    end
   end
 
   class Callback
