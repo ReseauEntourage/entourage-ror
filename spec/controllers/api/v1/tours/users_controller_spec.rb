@@ -85,7 +85,7 @@ describe Api::V1::Tours::UsersController do
                                                                                             "Demande acceptée",
                                                                                             "Vous venez de rejoindre l'entourage de #{tour.user.organization_name}",
                                                                                             User.where(id: requester.id),
-                                                                                            {:tour_id=>tour.id, :type=>"JOIN_REQUEST_ACCEPTED"})
+                                                                                            {:tour_id=>tour.id, :type=>"JOIN_REQUEST_ACCEPTED", :user_id => requester.id})
         patch :update, tour_id: tour.to_param, id: requester.id, user: {status: "accepted"}, token: user.token
       end
 

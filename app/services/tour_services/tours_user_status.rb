@@ -28,7 +28,7 @@ module TourServices
                                                     "Demande acceptée",
                                                     "Vous venez de rejoindre l'entourage de #{tour.user.organization_name}",
                                                     User.where(id: user.id),
-                                                    {tour_id: tour.id, type: "JOIN_REQUEST_ACCEPTED"})
+                                                    {tour_id: tour.id, type: "JOIN_REQUEST_ACCEPTED", user_id: user.id})
       true
     end
 
