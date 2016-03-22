@@ -3,10 +3,15 @@ module Api
     class PoisController < Api::V1::BaseController
       attr_writer :member_mailer
 
+      #curl "https://entourage-back.herokuapp.com/api/v1/pois.json?token=azerty"
       def index
         @categories = Category.all
-        @pois = Poi.validated.all
-        @pois = @pois.around params[:latitude], params[:longitude], params[:distance] if params[:latitude].present? and params[:longitude].present?
+        @pois = Poi.validated
+        if params[:latitude].present? and params[:longitude].present?
+          @pois = @pois.around params[:latitude], params[:longitude], params[:distance]
+        else
+          @pois = @pois.limit(25)
+        end
 
         #TODO : refactor API to return 1 top level POI ressources and associated categories ressources
         poi_json = JSON.parse(ActiveModel::ArraySerializer.new(@pois, each_serializer: ::V1::PoiSerializer).to_json)

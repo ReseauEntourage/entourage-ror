@@ -5,9 +5,13 @@ module Api
 
       def index
         @categories = Category.all
-        @pois = Poi.validated.all
-        @pois = @pois.around params[:latitude], params[:longitude], params[:distance] if params[:latitude].present? and params[:longitude].present?
-
+        @pois = Poi.validated
+        if params[:latitude].present? and params[:longitude].present?
+          @pois = @pois.around params[:latitude], params[:longitude], params[:distance]
+        else
+          @pois = @pois.limit(25)
+        end
+        
         #TODO : refactor API to return 1 top level POI ressources and associated categories ressources
         poi_json = JSON.parse(ActiveModel::ArraySerializer.new(@pois, each_serializer: ::V0::PoiSerializer).to_json)
         categorie_json = JSON.parse(ActiveModel::ArraySerializer.new(@categories, each_serializer: ::V0::CategorySerializer).to_json)
