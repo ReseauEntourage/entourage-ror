@@ -45,6 +45,13 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
       post 'create', token: user.token , tour: {tour_type: tour.tour_type, status:tour.status, vehicle_type:tour.vehicle_type, distance: 123.456}, format: :json
     end
 
+    it "doesn't send join request accepted push" do
+      FactoryGirl.create(:android_app)
+      expect_any_instance_of(IosNotificationService).to_not receive(:send_notification)
+      expect_any_instance_of(AndroidNotificationService).to_not receive(:send_notification)
+      post 'create', token: user.token , tour: {tour_type: tour.tour_type, status:tour.status, vehicle_type:tour.vehicle_type, distance: 123.456}, format: :json
+    end
+
     context "with incorrect type" do
       before { post 'create', token: user.token , tour: {tour_type: 'invalid', status:tour.status, vehicle_type:tour.vehicle_type, distance: 123.456}, :format => :json }
       it { expect(response.status).to eq(400) }

@@ -24,11 +24,14 @@ module TourServices
         tour_user.update!(status: "accepted")
       end
 
-      PushNotificationService.new.send_notification(tour.user.full_name,
-                                                    "Demande acceptée",
-                                                    "Vous venez de rejoindre l'entourage de #{tour.user.organization_name}",
-                                                    User.where(id: user.id),
-                                                    {tour_id: tour.id, type: "JOIN_REQUEST_ACCEPTED", user_id: user.id})
+      if user != tour_author
+        PushNotificationService.new.send_notification(tour.user.full_name,
+                                                      "Demande acceptée",
+                                                      "Vous venez de rejoindre l'entourage de #{tour.user.organization_name}",
+                                                      User.where(id: user.id),
+                                                      {tour_id: tour.id, type: "JOIN_REQUEST_ACCEPTED", user_id: user.id})
+      end
+
       true
     end
 
@@ -59,6 +62,10 @@ module TourServices
 
     def tour
       tour_user.tour
+    end
+
+    def tour_author
+      tour.user
     end
 
     private

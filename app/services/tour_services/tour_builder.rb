@@ -2,7 +2,7 @@ module TourServices
   class TourBuilder
     def initialize(params:, user:)
       @callback = TourServices::Callback.new
-      @tour = user.tours.build(params.except(:distance))
+      @tour = user.tours.build(tour_params(params))
       @tour.length = params[:distance]
       @user = user
     end
@@ -31,6 +31,11 @@ module TourServices
 
     def organization
       tour.user.organization
+    end
+
+    def tour_params(params)
+      params[:status] = Tour.statuses[:ongoing]
+      params.except(:distance)
     end
   end
 

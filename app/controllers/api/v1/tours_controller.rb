@@ -3,6 +3,7 @@ module Api
     class ToursController < Api::V1::BaseController
       before_action :set_tour, only: [:show, :update]
 
+      #curl -X POST -d '{"tour": { "tour_type":"medical", "vehicle_type":"feet", "distance": 8543.65 }}' -H "Content-Type: application/json" "http://localhost:3000/api/v1/tours.json?token=azerty"
       def create
         tour_builder = TourServices::TourBuilder.new(params: tour_params, user: current_user)
         tour_builder.create do |on|
