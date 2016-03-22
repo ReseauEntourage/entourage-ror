@@ -11,7 +11,7 @@ module Api
         else
           @pois = @pois.limit(25)
         end
-        
+
         #TODO : refactor API to return 1 top level POI ressources and associated categories ressources
         poi_json = JSON.parse(ActiveModel::ArraySerializer.new(@pois, each_serializer: ::V0::PoiSerializer).to_json)
         categorie_json = JSON.parse(ActiveModel::ArraySerializer.new(@categories, each_serializer: ::V0::CategorySerializer).to_json)

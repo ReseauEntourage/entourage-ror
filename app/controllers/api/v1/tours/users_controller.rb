@@ -10,6 +10,7 @@ module Api
           render json: @tour.tours_users, root: "users", each_serializer: ::V1::ToursUserSerializer
         end
 
+        #curl -X POST -H "Content-Type: application/json" "http://localhost:3000/api/v1/tours/1017/users.json?token=07ee026192ea722e66feb2340a05e3a8"
         def create
           tour_user_builder = TourUsersServices::TourUserBuilder.new(tour: @tour, user: current_user)
           tour_user_builder.create do |on|
