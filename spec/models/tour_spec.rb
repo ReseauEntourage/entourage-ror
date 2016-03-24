@@ -23,8 +23,8 @@ RSpec.describe Tour, :type => :model do
   describe '#static_path_map' do
     context 'filled tour' do
       let!(:tour) { create :tour }
-      let!(:tour_point1) { create :tour_point, tour: tour, latitude: rand, longitude: rand }
-      let!(:tour_point2) { create :tour_point, tour: tour, latitude: rand, longitude: rand }
+      let!(:tour_point1) { create :simplified_tour_point, tour: tour, latitude: rand, longitude: rand, created_at: DateTime.parse("09/10/2010") }
+      let!(:tour_point2) { create :simplified_tour_point, tour: tour, latitude: rand, longitude: rand, created_at: DateTime.parse("10/10/2010") }
       let!(:encounter1) { create :encounter, tour: tour, latitude: rand, longitude: rand }
       let!(:encounter2) { create :encounter, tour: tour, latitude: rand, longitude: rand }
       subject { tour.static_path_map }
@@ -39,7 +39,9 @@ RSpec.describe Tour, :type => :model do
       it { expect(subject.paths[0].polyline).to be true }
       it { expect(subject.paths[0].points.length).to eq 2 }
       it { expect(subject.paths[0].points[0]).to be_a MapLocation }
-      it { expect(subject.paths[0].points[0].latitude).to eq tour_point1.latitude.round(4).to_s }
+      it "" do
+        expect(subject.paths[0].points[0].latitude).to eq tour_point1.latitude.round(4).to_s
+      end
       it { expect(subject.paths[0].points[0].longitude).to eq tour_point1.longitude.round(4).to_s }
       it { expect(subject.paths[0].points[1]).to be_a MapLocation }
       it { expect(subject.paths[0].points[1].latitude).to eq tour_point2.latitude.round(4).to_s }
@@ -57,16 +59,6 @@ RSpec.describe Tour, :type => :model do
       it { expect(subject.markers[1].location).to be_a MapLocation }
       it { expect(subject.markers[1].location.latitude).to eq tour_point2.latitude.round(4).to_s }
       it { expect(subject.markers[1].location.longitude).to eq tour_point2.longitude.round(4).to_s }
-    end
-    context 'huge tour' do
-      let!(:tour) { create :tour, :filled, point_count: 67, encounter_count: 15 }
-      subject { tour.static_path_map point_limit: 30 }
-
-      it { expect(subject.paths[0].points.length).to eq 2 }
-      it { expect(subject.paths[0].points[0].latitude).to eq tour.tour_points[0].latitude.round(4).to_s }
-      it { expect(subject.paths[0].points[0].longitude).to eq tour.tour_points[0].longitude.round(4).to_s }
-      it { expect(subject.paths[0].points[1].latitude).to eq tour.tour_points[1].latitude.round(4).to_s }
-      it { expect(subject.paths[0].points[1].longitude).to eq tour.tour_points[1].longitude.round(4).to_s }
     end
     context 'empty tour' do
       let!(:tour) { create :tour }

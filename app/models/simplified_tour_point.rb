@@ -5,7 +5,7 @@ class SimplifiedTourPoint < ActiveRecord::Base
   validates :longitude, :latitude, numericality: true, presence: true
   validates :tour_id, presence: true
 
-  scope :ordered, -> { order("created_at DESC") }
+  scope :ordered, -> { order("created_at ASC") }
 
   def passing_time
     created_at
