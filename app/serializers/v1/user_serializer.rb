@@ -3,6 +3,8 @@ module V1
     attributes :id,
                :email,
                :display_name,
+               :first_name,
+               :last_name,
                :token,
                :avatar_url
 
