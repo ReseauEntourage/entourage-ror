@@ -78,8 +78,6 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
         it { expect(response.status).to eq(200) }
         it { expect(user.reload.email).to eq('new@e.mail') }
         it { expect(BCrypt::Password.new(User.find(user.id).sms_code) == '654321').to be true }
-        it { expect(user.reload.device_id).to eq('foo') }
-        it { expect(user.reload.device_type).to eq('android') }
 
         it "renders user" do
           expect(JSON.parse(response.body)["user"]["id"]).to eq(user.id)
