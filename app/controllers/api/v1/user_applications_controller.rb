@@ -6,7 +6,7 @@ module Api
                                                                  version: user_application_params["version"]).first_or_initialize
         user_application.tap do |user_application|
           user_application.push_token = user_application_params["push_token"]
-          user_application.device_family = api_request.key_infos[:device_family]
+          user_application.device_family = api_request.key_infos.try(:[], :device_family)
         end
         if user_application.save
           head :no_content
