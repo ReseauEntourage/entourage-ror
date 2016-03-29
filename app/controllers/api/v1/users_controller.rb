@@ -6,6 +6,7 @@ module Api
       def login
         user = UserServices::UserAuthenticator.authenticate_by_phone_and_sms(phone: user_params[:phone], sms_code: user_params[:sms_code])
         return render json: {message: 'unauthorized'}, status: :unauthorized unless user
+        return render json: {message: 'deleted'}, status: :unauthorized if user.deleted
 
         render json: user, status: 200, serializer: ::V1::UserSerializer, scope: user
       end
@@ -54,6 +55,11 @@ module Api
       def show
         user = params[:id] == "me" ? current_user : User.find(params[:id])
         render json: user, status: 200, serializer: ::V1::UserSerializer, scope: current_user
+      end
+
+      def destroy
+        @current_user.update!(deleted: true)
+        render json: @current_user, status: 200, serializer: ::V1::UserSerializer, scope: @current_user
       end
 
       private

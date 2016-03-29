@@ -39,6 +39,16 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
         it { expect(assigns(:user)).to be_nil }
       end
     end
+    context 'when user is deleted' do
+      let(:deleted_user) { FactoryGirl.create(:pro_user, deleted: true, sms_code: "123456") }
+      before { post 'login', user: {phone: deleted_user.phone, sms_code: "123456"}, format: 'json' }
+      it { expect(response.status).to eq(401) }
+    end
+    context 'when user is not deleted' do
+      let(:not_deleted_user) { FactoryGirl.create(:pro_user, deleted: false, sms_code: "123456") }
+      before { post 'login', user: {phone: not_deleted_user.phone, sms_code: "123456"}, format: 'json' }
+      it { expect(response.status).to eq(200) }
+    end
     context "user with tours and encounters" do
       let!(:user) { create :pro_user, sms_code: "123456", validation_status: "validated", avatar_key: "avatar" }
       let!(:tour1) { create :tour, user: user }
@@ -226,5 +236,12 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                                                            "stats"=>{"tour_count"=>0, "encounter_count"=>0}}}) }
       end
     end
+  end
+
+  describe "DELETE destroy" do
+    let!(:user) { FactoryGirl.create(:pro_user, deleted: false) }
+    before { delete :destroy, id: user.to_param, token: user.token }
+    it { expect(user.deleted).to be false }
+    it { expect(response.status).to eq(200) }
   end
 end

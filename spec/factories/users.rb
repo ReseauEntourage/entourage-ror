@@ -2,6 +2,7 @@ FactoryGirl.define do
   factory :user do
     first_name 'John'
     last_name 'Doe'
+    deleted false
     sequence :email do |n|
       "user#{n}@mail.com"
     end
