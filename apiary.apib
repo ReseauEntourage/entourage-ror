@@ -246,6 +246,29 @@ When signing up a new user we genereate a new sms_code and send it via SMS
              Unknow phone number : no user with the given phone number could be found
 
 
+### Delete a user account [DELETE]
+
++ Request
+
+    + Headers
+
+            Accept: application/json
+
++ Response 200 (application/json; charset=utf-8)
+
+        { "user": 
+            { "id": 2, 
+            "email": "dredd2@test.com", 
+            "display_name":"Judge Dredd",
+            "status": "accepted",
+            "requested_at": "2016-01-01T20:09:06.000+01:00" } }
+
++ Response 401 (application/json; charset=utf-8)
+
+        {"error":{"status":401,"message":"Please sign-in"}}
+
+
+
 # Group Newsletter
 Newsletter subscription related resources of the **Entourage API**
 
