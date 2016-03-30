@@ -29,18 +29,18 @@
     </div>
   </div>
 
-  <div class="control-group">
-    <%= f.label :sms_code,"Code SMS", class: "control-label" %>
-    <div class="controls">
-      <%= f.text_field :sms_code, class: "form-control", required: true %>
-    </div>
-  </div>
-
   <% if @user.new_record? %>
     <div class="control-group">
       <%= f.label :sends, "Envoi SMS", class: "control-label" %>
       <div class="controls">
         <%= check_box_tag :send_sms %>
+      </div>
+    </div>
+  <% else %>
+    <div class="control-group">
+      <%= f.label :sms_code,"Code SMS", class: "control-label" %>
+      <div class="controls">
+        <%= f.text_field :sms_code, class: "form-control", required: true %>
       </div>
     </div>
   <% end %>
