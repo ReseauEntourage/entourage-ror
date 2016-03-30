@@ -1,6 +1,5 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
-  force_ssl if: :ssl_configured?
 
   helper_method :current_user, :current_admin, :current_manager
 
@@ -36,9 +35,5 @@ class ApplicationController < ActionController::Base
   def login_error(message)
     flash[:error] = message
     return redirect_to new_session_path
-  end
-
-  def ssl_configured?
-    Rails.env.production?
   end
 end
