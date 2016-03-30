@@ -14,13 +14,12 @@ module Admin
     end
 
     def create
-      builder = UserServices::PublicUserBuilder.new(params: user_params, organization: organization)
+      builder = UserServices::PublicUserBuilder.new(params: user_params)
 
       builder.create(send_sms: params[:send_sms].present?) do |on|
         on.create_success do |user|
           @user = user
-          set_coordinated_organizations(user)
-          redirect_to admin_users_path, notice: "utilisateur créé"
+          redirect_to admin_ambassadors_path, notice: "Ambassadeur créé"
         end
 
         on.create_failure do |user|
@@ -32,7 +31,7 @@ module Admin
 
     def update
       if @user.update(user_params)
-        render :edit, notice: "utilisateur mis à jour"
+        render :edit, notice: "Ambassadeur mis à jour"
       else
         render :edit
       end
@@ -60,6 +59,10 @@ module Admin
 
     def user_params
       params.require(:user).permit(:first_name, :last_name, :email, :sms_code, :phone)
+    end
+
+    def search_param
+      "%#{params[:search]}%"
     end
   end
 end
