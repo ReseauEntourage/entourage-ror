@@ -24,7 +24,8 @@ class User < ActiveRecord::Base
 
   delegate :name, :description, to: :organization, prefix: true
 
-  scope :pro, -> { where(user_type: "pro") }
+  scope :type_pro, -> { where(user_type: "pro") }
+  scope :type_public, -> { where(user_type: "public") }
   scope :validated, -> { where(validation_status: "validated") }
   scope :blocked, -> { where(validation_status: "blocked") }
 

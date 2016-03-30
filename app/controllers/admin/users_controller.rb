@@ -3,7 +3,7 @@ module Admin
     before_action :set_user, only: [:edit, :update, :banish, :validate]
 
     def index
-      @users = User.pro.includes(:organization).order("last_name ASC").page(params[:page]).per(25)
+      @users = User.type_pro.includes(:organization).order("last_name ASC").page(params[:page]).per(25)
     end
 
     def edit
@@ -76,7 +76,7 @@ module Admin
     end
 
     def search
-      @users = User.pro
+      @users = User.type_pro
                    .includes(:organization)
                    .where("first_name ILIKE ? OR last_name ILIKE ? OR email ILIKE ? OR phone = ?",
                             search_param,
