@@ -1,0 +1,51 @@
+<%= form_for([:admin, @user], url: {action: action, controller: :ambassadors}, html: { class: "form-horizontal", role: "form" }) do |f| %>
+  <%= render partial: "layouts/errors", locals: {obj: @user} %>
+
+  <div class="control-group">
+    <%= f.label :first_name,"Prénom", class: "control-label" %>
+    <div class="controls">
+      <%= f.text_field :first_name, class: "form-control", required: true %>
+    </div>
+  </div>
+
+  <div class="control-group">
+    <%= f.label :last_name,"Nom", class: "control-label" %>
+    <div class="controls">
+      <%= f.text_field :last_name, class: "form-control", required: true %>
+    </div>
+  </div>
+
+  <div class="control-group">
+    <%= f.label :email,"Email", class: "control-label" %>
+    <div class="controls">
+      <%= f.email_field :email, class: "form-control", required: true %>
+    </div>
+  </div>
+
+  <div class="control-group">
+    <%= f.label :phone,"Téléphone", class: "control-label" %>
+    <div class="controls">
+      <%= f.text_field :phone, class: "form-control", required: true %>
+    </div>
+  </div>
+
+  <div class="control-group">
+    <%= f.label :sms_code,"Code SMS", class: "control-label" %>
+    <div class="controls">
+      <%= f.text_field :sms_code, class: "form-control", required: true %>
+    </div>
+  </div>
+
+  <% if @user.new_record? %>
+    <div class="control-group">
+      <%= f.label :sends, "Envoi SMS", class: "control-label" %>
+      <div class="controls">
+        <%= check_box_tag :send_sms %>
+      </div>
+    </div>
+  <% end %>
+
+  <br>
+  <%= f.submit "Sauver", class: "btn btn-success" %>
+  <%= link_to "Annuler", admin_ambassadors_path, class: "btn btn-default" %>
+<% end %>

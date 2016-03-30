@@ -151,5 +151,10 @@ Rails.application.routes.draw do
     resources :messages, only: [:index, :destroy]
     resources :organizations, only: [:index, :edit, :update]
     resources :newsletter_subscriptions, only: [:index]
+    resources :ambassadors, only: [:index, :edit, :update, :new, :create] do
+      collection do
+        get 'search'
+      end
+    end
   end
 end
