@@ -7,6 +7,7 @@
   <th>Nom</th>
   <th>Email</th>
   <th>Contenu</th>
+  <th>Date</th>
   <th></th>
 
   <% @messages.each do |message| %>
@@ -16,6 +17,7 @@
       <td><%= message.last_name %></td>
       <td><%= message.email %></td>
       <td><%= message.content %></td>
+      <td><%= l(message.created_at, format: :long) %></td>
       <td><%= link_to "Supprimer", admin_message_path(message), method: :delete, class: "btn btn-danger", data: {confirm: "Êtes vous sûr de supprimer ce message ?"} %></td>
     </tr>
   <% end %>
