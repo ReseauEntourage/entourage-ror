@@ -45,8 +45,21 @@
     </div>
   <% end %>
 
+
+  <hr>
+  <h2>Relations</h2>
+
+  <ul class="list-group">
+    <% @user.relations.each do |user| %>
+      <li class="list-group-item relation_cell">
+        <%= user.full_name %>
+        <%= link_to "Supprimer", "#", class: "btn btn-danger pull-right" %>
+      </li>
+    <% end %>
+  </ul>
+
   <div class="control-group">
-    <label class="control-label">Parrain <small>(Chercher par prénom, nom, téléphone)</small></label>
+    <label class="control-label">Ajouter une relation <small>(Chercher par prénom, nom, téléphone)</small></label>
     <div class="controls">
       <%= text_field_tag "relations", "", class: "form-control", id: "user_relations" %>
       <%= hidden_field_tag 'user_relation_id' %>
