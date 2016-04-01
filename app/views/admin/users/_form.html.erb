@@ -59,14 +59,6 @@
     </div>
   <% end %>
 
-  <div class="control-group">
-    <label class="control-label">Parrain <small>(Chercher par prénom, nom, téléphone)</small></label>
-    <div class="controls">
-      <%= text_field_tag "relations", "", class: "form-control", id: "user_relations" %>
-      <%= hidden_field_tag 'user_relation_id' %>
-    </div>
-  </div>
-
   <br>
   <%= f.submit "Sauver", class: "btn btn-success" %>
   <%= link_to "Annuler", admin_users_path, class: "btn btn-default" %>
