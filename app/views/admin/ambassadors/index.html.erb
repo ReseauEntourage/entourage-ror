@@ -1,7 +1,7 @@
 <h1>Liste des ambassadeurs</h1>
 
 <div class="row">
-  <%= form_tag(search_admin_ambassadors_path, method: :get, html: { class: "form-horizontal", role: "form" }) do %>
+  <%= form_tag(admin_public_user_search_path, method: :get, html: { class: "form-horizontal", role: "form" }) do %>
     <div class="col-lg-4 pull-right">
       <div class="input-group">
         <%= text_field_tag :search, nil, class: "form-control", placeholder: "nom, prénom, email..." %>
