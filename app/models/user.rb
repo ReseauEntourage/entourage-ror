@@ -19,6 +19,8 @@ class User < ActiveRecord::Base
   has_and_belongs_to_many :coordinated_organizations, -> { uniq }, class_name: "Organization", join_table: "coordination"
   has_many :chat_messages
   has_many :user_applications
+  has_many :user_relationships, foreign_key: "source_user_id", dependent: :destroy
+  has_many :relations, through: :user_relationships, source: "target_user"
 
   enum device_type: [ :android, :ios ]
 

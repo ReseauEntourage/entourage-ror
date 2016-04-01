@@ -126,4 +126,11 @@ describe User, :type => :model do
     ToursUser.create(user: user, tour: tour)
     expect(user.tour_participations).to eq([tour])
   end
+
+  it "has many relations" do
+    user1 = FactoryGirl.create(:public_user)
+    user2 = FactoryGirl.create(:public_user)
+    UserRelationship.create!(source_user: user1, target_user: user2, relation_type: UserRelationship::TYPE_INVITE )
+    expect(user1.relations).to eq([user2])
+  end
 end
