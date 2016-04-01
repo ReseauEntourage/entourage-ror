@@ -50,10 +50,10 @@
   <h2>Relations</h2>
 
   <ul class="list-group">
-    <% @user.relations.each do |user| %>
+    <% @user.relations.each do |target_user| %>
       <li class="list-group-item relation_cell">
-        <%= user.full_name %>
-        <%= link_to "Supprimer", "#", class: "btn btn-danger pull-right" %>
+        <%= target_user.full_name %>
+        <%= link_to "Supprimer", admin_user_relationships_path(source_user: @user.to_param, target_user: target_user.to_param), method: :delete, class: "btn btn-danger pull-right" %>
       </li>
     <% end %>
   </ul>

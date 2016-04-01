@@ -160,5 +160,6 @@ Rails.application.routes.draw do
     get 'public_user_search' => "users_search#public_user_search"
     get 'public_user_autocomplete' => "users_search#public_user_autocomplete"
     get 'pro_user_search' => "users_search#pro_user_search"
+    delete 'user_relationships' => "user_relationships#destroy"
   end
 end
