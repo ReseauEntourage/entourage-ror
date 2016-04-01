@@ -11,18 +11,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160329095950) do
+ActiveRecord::Schema.define(version: 20160401054432) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "active_admin_comments", force: :cascade do |t|
-    t.string   "namespace"
+    t.string   "namespace",     limit: 255
     t.text     "body"
-    t.string   "resource_id",   null: false
-    t.string   "resource_type", null: false
+    t.string   "resource_id",   limit: 255, null: false
+    t.string   "resource_type", limit: 255, null: false
     t.integer  "author_id"
-    t.string   "author_type"
+    t.string   "author_type",   limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -42,7 +42,7 @@ ActiveRecord::Schema.define(version: 20160329095950) do
   create_table "categories", force: :cascade do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "name"
+    t.string   "name",       limit: 255
   end
 
   create_table "chat_messages", force: :cascade do |t|
@@ -68,10 +68,10 @@ ActiveRecord::Schema.define(version: 20160329095950) do
     t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "street_person_name"
+    t.string   "street_person_name", limit: 255
     t.float    "latitude"
     t.float    "longitude"
-    t.string   "voice_message_url"
+    t.string   "voice_message_url",  limit: 255
     t.integer  "tour_id"
     t.string   "encrypted_message"
     t.string   "address"
@@ -119,7 +119,7 @@ ActiveRecord::Schema.define(version: 20160329095950) do
   end
 
   create_table "newsletter_subscriptions", force: :cascade do |t|
-    t.string   "email"
+    t.string   "email",      limit: 255
     t.boolean  "active"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -142,19 +142,19 @@ ActiveRecord::Schema.define(version: 20160329095950) do
   add_index "organizations", ["name"], name: "index_organizations_on_name", unique: true, using: :btree
 
   create_table "pois", force: :cascade do |t|
-    t.string   "name"
+    t.string   "name",        limit: 255
     t.text     "description"
     t.float    "latitude"
     t.float    "longitude"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "adress"
-    t.string   "phone"
-    t.string   "website"
-    t.string   "email"
-    t.string   "audience"
+    t.string   "adress",      limit: 255
+    t.string   "phone",       limit: 255
+    t.string   "website",     limit: 255
+    t.string   "email",       limit: 255
+    t.string   "audience",    limit: 255
     t.integer  "category_id"
-    t.boolean  "validated",   default: false, null: false
+    t.boolean  "validated",               default: false, null: false
   end
 
   add_index "pois", ["latitude", "longitude"], name: "index_pois_on_latitude_and_longitude", using: :btree
@@ -301,26 +301,34 @@ ActiveRecord::Schema.define(version: 20160329095950) do
 
   add_index "user_applications", ["user_id", "device_os", "version"], name: "index_user_applications_on_user_id_and_device_os_and_version", unique: true, using: :btree
 
+  create_table "user_relationships", force: :cascade do |t|
+    t.integer "source_user_id", null: false
+    t.integer "target_user_id", null: false
+    t.string  "relation_type",  null: false
+  end
+
+  add_index "user_relationships", ["source_user_id", "target_user_id", "relation_type"], name: "unique_user_relationship", unique: true, using: :btree
+
   create_table "users", force: :cascade do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "email"
-    t.string   "first_name"
-    t.string   "last_name"
-    t.string   "phone",                                   null: false
-    t.string   "token"
+    t.string   "email",             limit: 255
+    t.string   "first_name",        limit: 255
+    t.string   "last_name",         limit: 255
+    t.string   "phone",                                               null: false
+    t.string   "token",             limit: 255
     t.string   "device_id"
     t.integer  "device_type"
     t.string   "sms_code"
     t.integer  "organization_id"
-    t.boolean  "manager",           default: false,       null: false
+    t.boolean  "manager",                       default: false,       null: false
     t.float    "default_latitude"
     t.float    "default_longitude"
-    t.boolean  "admin",             default: false,       null: false
-    t.string   "user_type",         default: "pro",       null: false
+    t.boolean  "admin",                         default: false,       null: false
+    t.string   "user_type",                     default: "pro",       null: false
     t.string   "avatar_key"
-    t.string   "validation_status", default: "validated", null: false
-    t.boolean  "deleted",           default: false,       null: false
+    t.string   "validation_status",             default: "validated", null: false
+    t.boolean  "deleted",                       default: false,       null: false
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree

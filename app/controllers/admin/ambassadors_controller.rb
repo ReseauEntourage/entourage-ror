@@ -15,9 +15,9 @@ module Admin
 
     def create
       builder = UserServices::PublicUserBuilder.new(params: user_params)
-
       builder.create(send_sms: params[:send_sms].present?) do |on|
         on.create_success do |user|
+          add_relation(params[:user_relation_id])
           @user = user
           redirect_to admin_ambassadors_path, notice: "Ambassadeur créé"
         end
@@ -31,23 +31,11 @@ module Admin
 
     def update
       if @user.update(user_params)
+        add_relation(params[:user_relation_id])
         render :edit, notice: "Ambassadeur mis à jour"
       else
         render :edit
       end
-    end
-
-    def search
-      @users = User.type_public
-                   .where("first_name ILIKE ? OR last_name ILIKE ? OR email ILIKE ? OR phone = ?",
-                          search_param,
-                          search_param,
-                          search_param,
-                          params[:search])
-                   .order("last_name ASC")
-                   .page(params[:page])
-                   .per(25)
-      render :index
     end
 
     private
@@ -61,8 +49,12 @@ module Admin
       params.require(:user).permit(:first_name, :last_name, :email, :sms_code, :phone)
     end
 
-    def search_param
-      "%#{params[:search]}%"
+    def add_relation(user_relation_id)
+      if user_relation_id
+        UserServices::UserRelationshipBuilder.new(source_user_id: user.id,
+                                                  target_user_ids: [user_relation_id],
+                                                  relation_type: UserRelationship::TYPE_INVITE).create
+      end
     end
   end
 end

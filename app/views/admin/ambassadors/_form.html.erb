@@ -45,6 +45,27 @@
     </div>
   <% end %>
 
+
+  <hr>
+  <h2>Relations</h2>
+
+  <ul class="list-group">
+    <% @user.relations.each do |target_user| %>
+      <li class="list-group-item relation_cell">
+        <%= target_user.full_name %>
+        <%= link_to "Supprimer", admin_user_relationships_path(source_user: @user.to_param, target_user: target_user.to_param), method: :delete, class: "btn btn-danger pull-right" %>
+      </li>
+    <% end %>
+  </ul>
+
+  <div class="control-group">
+    <label class="control-label">Ajouter une relation <small>(Chercher par prénom, nom, téléphone)</small></label>
+    <div class="controls">
+      <%= text_field_tag "relations", "", class: "form-control", id: "user_relations" %>
+      <%= hidden_field_tag 'user_relation_id' %>
+    </div>
+  </div>
+
   <br>
   <%= f.submit "Sauver", class: "btn btn-success" %>
   <%= link_to "Annuler", admin_ambassadors_path, class: "btn btn-default" %>
