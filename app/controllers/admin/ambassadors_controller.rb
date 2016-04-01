@@ -17,8 +17,8 @@ module Admin
       builder = UserServices::PublicUserBuilder.new(params: user_params)
       builder.create(send_sms: params[:send_sms].present?) do |on|
         on.create_success do |user|
-          add_relation(params[:user_relation_id])
           @user = user
+          add_relation(params[:user_relation_id])
           redirect_to admin_ambassadors_path, notice: "Ambassadeur créé"
         end
 
@@ -51,7 +51,7 @@ module Admin
 
     def add_relation(user_relation_id)
       if user_relation_id
-        UserServices::UserRelationshipBuilder.new(source_user_id: user.id,
+        UserServices::UserRelationshipBuilder.new(source_user_id: @user.id,
                                                   target_user_ids: [user_relation_id],
                                                   relation_type: UserRelationship::TYPE_INVITE).create
       end
