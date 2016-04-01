@@ -15,9 +15,13 @@ module Admin
 
     def create
       builder = UserServices::PublicUserBuilder.new(params: user_params)
-
       builder.create(send_sms: params[:send_sms].present?) do |on|
         on.create_success do |user|
+          if user_relation_id=params[:user_relation_id]
+            UserServices::UserRelationshipBuilder.new(source_user_id: user.id,
+                                                      target_user_ids: [user_relation_id],
+                                                      relation_type: UserRelationship::TYPE_INVITE).create
+          end
           @user = user
           redirect_to admin_ambassadors_path, notice: "Ambassadeur créé"
         end
@@ -31,6 +35,11 @@ module Admin
 
     def update
       if @user.update(user_params)
+        if user_relation_id=params[:user_relation_id]
+          UserServices::UserRelationshipBuilder.new(source_user_id: user,
+                                                    target_user_ids: [user_relation_id],
+                                                    relation_type: UserRelationship::TYPE_INVITE).create
+        end
         render :edit, notice: "Ambassadeur mis à jour"
       else
         render :edit

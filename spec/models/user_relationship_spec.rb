@@ -28,7 +28,7 @@ describe UserRelationship do
     end
 
 
-    context "first relationship" do
+    context "user relationship already exists" do
       before { UserRelationship.create(source_user: user1,
                                     target_user: user2,
                                     relation_type: UserRelationship::TYPE_INVITE ) }
