@@ -307,6 +307,8 @@ ActiveRecord::Schema.define(version: 20160401054432) do
     t.string  "relation_type",  null: false
   end
 
+  add_index "user_relationships", ["source_user_id", "target_user_id", "relation_type"], name: "unique_user_relationship", unique: true, using: :btree
+
   create_table "users", force: :cascade do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
