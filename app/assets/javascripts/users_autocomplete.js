@@ -5,6 +5,7 @@ var ready = function() {
         $.ajax({
           url: "/admin/public_user_autocomplete",
           dataType: "json",
+          delay: 250,
           data: {
             search: request.term
           },
