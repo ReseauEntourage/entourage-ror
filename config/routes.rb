@@ -156,5 +156,9 @@ Rails.application.routes.draw do
         get 'search'
       end
     end
+
+    get 'public_user_search' => "users_search#public_user_search"
+    get 'public_user_autocomplete' => "users_search#public_user_autocomplete"
+    get 'pro_user_search' => "users_search#pro_user_search"
   end
 end
