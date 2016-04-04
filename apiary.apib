@@ -1068,11 +1068,27 @@ Feeds related resources of the **Entourage API**
 Entourages related resources of the **Entourage API**
 ## Entourages [/entourages]
 
-### Get all entourages [GET /entourages{?token}{&status}{&page}{&per}]
+### Get all entourages [GET /entourages{?token}{&status}{&type}&latitude}{&longitude}{&distance}{&page}{&per}]
 
 + Parameters
     + token (required, string, `FAKETOKEN`) ... Token identifying the current user
-    + status (optional, string) ... Status of the entourage (open / closed)
+    + status (optional, string)
+            Status of entourages
+
+            + Members
+                + `open`
+                + `close`
+
+    + type (optional, string)
+
+            Type of entourages to filter
+
+            + Members
+                + `ask_for_help`
+
+    + latitude (optional, number, `48.853333`) ... The latitude of the center of the box to filter
+    + longitude (optional, number, `2.348611`) ... The longitude of the center of the box to filter
+    + distance (optional, number, `20.0`) ... The box size to filter (in km)
     + page (optional, number) ... pagination : page number
     + per (optional, number) ... pagination : number of entourages per page
 

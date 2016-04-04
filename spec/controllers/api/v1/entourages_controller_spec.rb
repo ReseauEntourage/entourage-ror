@@ -4,6 +4,36 @@ describe Api::V1::EntouragesController do
 
   let(:user) { FactoryGirl.create(:public_user) }
 
+  describe 'GET index' do
+    context "not signed in" do
+      before { get :index }
+      it { expect(response.status).to eq(401) }
+    end
+
+    context "signed in" do
+      let!(:user_entourage) { FactoryGirl.create(:entourage, user: user) }
+      let!(:entourage) { FactoryGirl.create(:entourage) }
+
+      it "renders JSON response" do
+        get :index, token: user.token
+        expect(JSON.parse(response.body)).to eq({"entourages"=>
+                                                     [{"status"=>"open",
+                                                       "title"=>"foobar",
+                                                       "entourage_type"=>"ask_for_help",
+                                                       "number_of_people"=>1,
+                                                       "author"=>{"id"=>user.id, "name"=>"John"},
+                                                       "location"=>{"latitude"=>2.345, "longitude"=>2.345}
+                                                      }]
+                                                })
+      end
+
+      context "no params" do
+        before { get :index, token: user.token }
+        it { expect(JSON.parse(response.body)["entourages"].count).to eq(1) }
+      end
+    end
+  end
+
   describe 'POST create' do
     context "not signed in" do
       before { post :create, entourage: { longitude: 1.123, latitude: 4.567, title: "foo", entourage_type: "ask_for_help" } }
@@ -28,23 +58,6 @@ describe Api::V1::EntouragesController do
         before { post :create, entourage: { longitude: "", latitude: 4.567, title: "foo", entourage_type: "ask_for_help" }, token: user.token }
         it { expect(JSON.parse(response.body)).to eq({"message"=>"Could not create entourage", "reasons"=>["Longitude doit être rempli(e)"]}) }
         it { expect(response.status).to eq(400) }
-      end
-    end
-  end
-
-  describe 'GET index' do
-    context "not signed in" do
-      before { get :index }
-      it { expect(response.status).to eq(401) }
-    end
-
-    context "signed in" do
-      let!(:user_entourage) { FactoryGirl.create(:entourage, user: user) }
-      let!(:entourage) { FactoryGirl.create(:entourage) }
-      before { get :index, page: 1, per: 25, token: user.token }
-
-      it "returns only user entourages" do
-        expect(JSON.parse(response.body)).to eq({"entourages"=>[{"status"=>"open", "title"=>"foobar", "entourage_type"=>"ask_for_help", "number_of_people"=>1, "author"=>{"id"=>user.id, "name"=>"John"}, "location"=>{"latitude"=>2.345, "longitude"=>2.345}}]})
       end
     end
   end
