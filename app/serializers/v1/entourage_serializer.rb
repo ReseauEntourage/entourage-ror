@@ -1,6 +1,6 @@
 module V1
   class EntourageSerializer < ActiveModel::Serializer
-    attributes :status, :title, :entourage_type, :number_of_people
+    attributes :id, :status, :title, :entourage_type, :number_of_people
     has_one :author
     has_one :location
 
