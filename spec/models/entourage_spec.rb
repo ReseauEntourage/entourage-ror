@@ -19,4 +19,10 @@ RSpec.describe Entourage, type: :model do
     EntouragesUser.create(user: user, entourage: entourage)
     expect(entourage.members).to eq([user])
   end
+
+  it "has many chat messages" do
+    entourage = FactoryGirl.create(:entourage)
+    chat_message = FactoryGirl.create(:chat_message, messageable: entourage)
+    expect(entourage.chat_messages).to eq([chat_message])
+  end
 end

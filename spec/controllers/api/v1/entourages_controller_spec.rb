@@ -24,7 +24,9 @@ describe Api::V1::EntouragesController do
                                        "entourage_type"=>"ask_for_help",
                                        "number_of_people"=>1,
                                        "author"=>{"id"=>user.id, "name"=>"John"},
-                                       "location"=>{"latitude"=>2.345, "longitude"=>2.345}
+                                       "location"=>{"latitude"=>2.345, "longitude"=>2.345},
+                                       "join_status"=>"not_requested",
+                                       "number_of_unread_messages"=>nil
                                     }]
                               })
       end
@@ -86,7 +88,18 @@ describe Api::V1::EntouragesController do
 
       context "valid params" do
         before { post :create, entourage: { longitude: 1.123, latitude: 4.567, title: "foo", entourage_type: "ask_for_help" }, token: user.token }
-        it { expect(JSON.parse(response.body)).to eq({"entourage"=>{"id"=>Entourage.last.id, "status"=>"open", "title"=>"foo", "entourage_type"=>"ask_for_help", "number_of_people"=>0, "author"=>{"id"=>user.id, "name"=>"John"}, "location"=>{"latitude"=>1.123, "longitude"=>1.123}}}) }
+        it { expect(JSON.parse(response.body)).to eq({"entourage"=>
+                                                          {"id"=>Entourage.last.id,
+                                                           "status"=>"open",
+                                                           "title"=>"foo",
+                                                           "entourage_type"=>"ask_for_help",
+                                                           "number_of_people"=>0,
+                                                           "author"=>{"id"=>user.id, "name"=>"John"},
+                                                           "location"=>{"latitude"=>1.123, "longitude"=>1.123},
+                                                           "join_status"=>"pending",
+                                                           "number_of_unread_messages"=>0
+                                                          }
+                                                     }) }
         it { expect(response.status).to eq(201) }
         it { expect(user.entourage_participations).to eq([Entourage.last]) }
       end
@@ -110,7 +123,18 @@ describe Api::V1::EntouragesController do
     context "signed in" do
       context "entourage exists" do
         before { get :show, id: entourage.to_param, token: user.token }
-        it { expect(JSON.parse(response.body)).to eq({"entourage"=>{"id"=>entourage.id, "status"=>"open", "title"=>"foobar", "entourage_type"=>"ask_for_help", "number_of_people"=>1, "author"=>{"id"=>entourage.user.id, "name"=>"John"}, "location"=>{"latitude"=>2.345, "longitude"=>2.345}}}) }
+        it { expect(JSON.parse(response.body)).to eq({"entourage"=>
+                                                          {"id"=>entourage.id,
+                                                           "status"=>"open",
+                                                           "title"=>"foobar",
+                                                           "entourage_type"=>"ask_for_help",
+                                                           "number_of_people"=>1,
+                                                           "author"=>{"id"=>entourage.user.id, "name"=>"John"},
+                                                           "location"=>{"latitude"=>2.345, "longitude"=>2.345},
+                                                           "join_status"=>"not_requested",
+                                                           "number_of_unread_messages"=>nil
+                                                          }
+                                                     }) }
       end
 
       context "entourage doesn't exists" do
@@ -136,7 +160,18 @@ describe Api::V1::EntouragesController do
 
       context "entourage exists" do
         before { patch :update, id: user_entourage.to_param, entourage: {title: "new_title"}, token: user.token }
-        it { expect(JSON.parse(response.body)).to eq({"entourage"=>{"id"=>user_entourage.id, "status"=>"open", "title"=>"new_title", "entourage_type"=>"ask_for_help", "number_of_people"=>1, "author"=>{"id"=>user.id, "name"=>"John"}, "location"=>{"latitude"=>2.345, "longitude"=>2.345}}}) }
+        it { expect(JSON.parse(response.body)).to eq({"entourage"=>
+                                                          {"id"=>user_entourage.id,
+                                                           "status"=>"open",
+                                                           "title"=>"new_title",
+                                                           "entourage_type"=>"ask_for_help",
+                                                           "number_of_people"=>1,
+                                                           "author"=>{"id"=>user.id, "name"=>"John"},
+                                                           "location"=>{"latitude"=>2.345, "longitude"=>2.345},
+                                                           "join_status"=>"not_requested",
+                                                           "number_of_unread_messages"=>nil
+                                                          }
+                                                     }) }
       end
 
       context "entourage does not belong to user" do
