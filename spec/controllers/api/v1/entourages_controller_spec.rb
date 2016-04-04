@@ -56,10 +56,10 @@ describe Api::V1::EntouragesController do
       end
 
       context "filter entourage_type" do
-        let!(:help_entourage) { FactoryGirl.create(:entourage, entourage_type: "ask_for_help") }
+        let!(:help_entourage) { FactoryGirl.create(:entourage, entourage_type: "ask_for_help", updated_at: entourage.updated_at-1.days) }
         before { get :index, type: "ask_for_help", token: user.token }
         it { expect(subject["entourages"].count).to eq(2) }
-        it { expect(subject["entourages"][0]["id"]).to eq(help_entourage.id) }
+        it { expect(subject["entourages"][0]["id"]).to eq(entourage.id) }
       end
 
       context "filter position" do
