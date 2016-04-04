@@ -23,6 +23,16 @@ describe SessionsController do
       end
     end
 
+    describe "public user" do
+      before { ENV["DISABLE_CRYPT"]="FALSE" }
+      after { ENV["DISABLE_CRYPT"]="TRUE" }
+      let!(:user) { FactoryGirl.create(:public_user, phone: "+33612345678", sms_code: "123456", admin: false) }
+      before { post :create, phone: "+33612345678", sms_code: "123456" }
+      it { expect(session[:admin_user_id]).to be_nil }
+      it { expect(session[:user_id]).to eq(user.id) }
+      it { expect(response).to redirect_to edit_public_user_user_path(user) }
+    end
+
     context "Invalid credentials" do
       before { post :create, phone: "+33612345678", sms_code: "123456" }
       it { expect(session[:user_id]).to be_nil }

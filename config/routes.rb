@@ -157,4 +157,9 @@ Rails.application.routes.draw do
     get 'pro_user_search' => "users_search#pro_user_search"
     delete 'user_relationships' => "user_relationships#destroy"
   end
+
+  #PUBLIC USER
+  namespace :public_user do
+    resources :users, only: [:edit, :update]
+  end
 end
