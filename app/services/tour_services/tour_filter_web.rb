@@ -1,5 +1,5 @@
 module TourServices
-  class TourFilter
+  class TourFilterWeb
     attr_accessor :tours
 
     def initialize(params:, organization:, user:)

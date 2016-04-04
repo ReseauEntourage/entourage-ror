@@ -1,5 +1,5 @@
 module TourServices
-  class SimplifiedTourFilter < TourServices::TourFilter
+  class SimplifiedTourFilter < TourServices::TourFilterWeb
     def set_tours
       @tours = Tour.includes(:simplified_tour_points)
                    .joins(:user)

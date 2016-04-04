@@ -1,5 +1,5 @@
 module TourServices
-  class SnapToRoadTourFilter < TourServices::TourFilter
+  class SnapToRoadTourFilter < TourServices::TourFilterWeb
     def set_tours
       @tours = Tour.includes(:snap_to_road_tour_points)
                    .joins(:user)

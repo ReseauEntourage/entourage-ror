@@ -293,12 +293,6 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
         get 'index', token: user.token, limit: 3, :format => :json
         expect(response.status).to eq 200
       end
-      
-      it "returns last 3 tours" do
-        get 'index', token: user.token, limit: 3, :format => :json
-        expect(assigns(:tours).count).to eq(3)
-        expect(assigns(:tours).all? {|t| t.updated_at >= Date.parse("10/10/2010")+1.days }).to be true
-      end
        
     end
      

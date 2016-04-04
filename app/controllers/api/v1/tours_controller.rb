@@ -4,21 +4,16 @@ module Api
       before_action :set_tour, only: [:show, :update]
 
       def index
-        @tours = Tour.includes(:tour_points).includes(:tours_users).includes(:user).where(nil) #where(nil) ?
-        @tours = @tours.type(params[:type]) if params[:type].present?
-        @tours = @tours.vehicle_type(Tour.vehicle_types[params[:vehicle_type]]) if params[:vehicle_type].present?
-        @tours = @tours.where(status: Tour.statuses[params[:status]]) if params[:status].present?
-
-        if (params[:latitude].present? && params[:longitude].present?)
-          center_point = [params[:latitude], params[:longitude]]
-          distance = params.fetch(:distance, 10)
-          box = Geocoder::Calculations.bounding_box(center_point, distance, :units => :km)
-          points = TourPoint.within_bounding_box(box).select(:tour_id).distinct
-          @tours = @tours.where(id: points)
-        end
-
-        @tours = @tours.where("updated_at > ?", 24.hours.ago).order(updated_at: :desc).limit(params.fetch(:limit, 10))
-        @presenters = TourCollectionPresenter.new(tours: @tours)
+        per = params[:per] || 10
+        @tours = TourServices::TourFilterApi.new(user: current_user,
+                                                 status: params[:status],
+                                                 type: params[:type],
+                                                 vehicle_type: params[:vehicle_type],
+                                                 latitude: params[:latitude],
+                                                 longitude: params[:longitude],
+                                                 distance: params[:distance],
+                                                 page: params[:page],
+                                                 per: per).tours
         render json: @tours, status: 200, each_serializer: ::V1::TourSerializer, scope: current_user
       end
 
