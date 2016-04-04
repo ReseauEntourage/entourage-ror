@@ -25,7 +25,7 @@ module EntourageServices
 
     def box
       Geocoder::Calculations.bounding_box([latitude, longitude],
-                                          (distance || 100),
+                                          (distance || 10),
                                           units: :km)
     end
   end

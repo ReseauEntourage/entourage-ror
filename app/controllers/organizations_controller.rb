@@ -45,7 +45,7 @@ class OrganizationsController < ApplicationController
   end
 
   def tours
-    @tours = TourServices::TourFilter.new(params: params, organization: @organization, user: @current_user).filter
+    @tours = TourServices::TourFilterWeb.new(params: params, organization: @organization, user: @current_user).filter
     if params[:only_points]=="true"
       points = @tours.map {|tour| tour.tour_points.ordered}.flatten
       render json: {points: points}

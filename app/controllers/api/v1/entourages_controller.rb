@@ -4,6 +4,7 @@ module Api
       before_action :set_entourage, only: [:show, :update]
 
       def index
+        per = params[:per] || 10
         finder = EntourageServices::EntourageFinder.new(user: current_user,
                                                         status: params[:status],
                                                         type: params[:type],
@@ -11,7 +12,7 @@ module Api
                                                         longitude: params[:longitude],
                                                         distance: params[:distance],
                                                         page: params[:page],
-                                                        per: params[:per])
+                                                        per: per)
         render json: finder.entourages, each_serializer: ::V1::EntourageSerializer
       end
 
