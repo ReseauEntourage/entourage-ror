@@ -8,6 +8,13 @@ Rails 4.2
 
 rbenv or rvm recommanded
 
+# Update API
+
+```
+aglio -i apiary.apib -o public/developer.html
+```
+
+
 # Resolve dependencies and run server
 
 ```
