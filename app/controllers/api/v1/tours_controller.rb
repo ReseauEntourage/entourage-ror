@@ -56,7 +56,7 @@ module Api
       private
 
       def tour_params
-        params.require(:tour).permit(:tour_type, :status, :vehicle_type, :distance)
+        params.require(:tour).permit(:tour_type, :status, :vehicle_type, :distance, :start_time)
       end
 
       def set_tour

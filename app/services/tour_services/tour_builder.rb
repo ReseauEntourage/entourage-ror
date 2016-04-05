@@ -2,7 +2,8 @@ module TourServices
   class TourBuilder
     def initialize(params:, user:)
       @callback = TourServices::Callback.new
-      @tour = user.tours.build(tour_params(params))
+      @tour = user.tours.build(tour_params(params.except(:start_time)))
+      @tour.created_at = params[:start_time] if params[:start_time]
       @tour.length = params[:distance]
       @user = user
     end

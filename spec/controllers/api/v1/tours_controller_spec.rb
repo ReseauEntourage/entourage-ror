@@ -9,7 +9,11 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
     
     context "with correct type" do
       before { FactoryGirl.create(:android_app) }
-      before { post 'create', token: user.token , tour: {tour_type: tour.tour_type, status:tour.status, vehicle_type:tour.vehicle_type, distance: 123.456}, format: :json }
+      before { post 'create', token: user.token , tour: {tour_type: tour.tour_type,
+                                                         status:tour.status,
+                                                         vehicle_type:tour.vehicle_type,
+                                                         distance: 123.456,
+                                                         start_time: "2016-01-01T19:09:06.000+01:00"}, format: :json }
 
       it { expect(response.status).to eq(201) }
       it { expect(Tour.last.tour_type).to eq(tour.tour_type) }
@@ -17,6 +21,7 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
       it { expect(Tour.last.vehicle_type).to eq(tour.vehicle_type) }
       it { expect(Tour.last.user).to eq(user) }
       it { expect(Tour.last.members).to eq([user]) }
+      it { expect(Tour.last.created_at).to eq(DateTime.parse("2016-01-01T19:09:06.000+01:00")) }
       it { expect(ToursUser.last.status).to eq("accepted") }
 
       it "responds with tour" do
