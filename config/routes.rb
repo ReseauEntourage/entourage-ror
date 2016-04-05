@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
 
-  root 'organizations#dashboard'
+  root 'home#index'
 
   #API
   namespace :api do
@@ -160,6 +160,8 @@ Rails.application.routes.draw do
 
   #PUBLIC USER
   namespace :public_user do
+    root to: "users#edit"
+
     resources :users, only: [:edit, :update]
   end
 end
