@@ -1,0 +1,27 @@
+<%= form_for([:public_user, @user], html: {class: 'form-horizontal'}) do |f| %>
+  <%= render 'common/errors', obj: @user %>
+
+  <div class="field form-group required">
+    <label class='control-label'>Prénom</label>
+    <%= f.text_field :first_name, class: 'form-control', required: true %>
+  </div>
+
+  <div class="field form-group required">
+    <label class='control-label'>Nom</label>
+    <%= f.text_field :last_name, class: 'form-control', required: true %>
+  </div>
+
+  <div class="field form-group required">
+    <label class='control-label'>Téléphone</label>
+    <%= f.text_field :phone, class: 'form-control', required: true %>
+  </div>
+
+  <div class="field form-group required">
+    <label class='control-label'>Email</label>
+    <%= f.email_field :email, class: 'form-control', required: true %>
+  </div>
+
+  <div class="actions form-group">
+    <%= f.submit "Sauvegarder", class: "btn btn-primary", id: "save_user" %>
+  </div>
+<% end %>

@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
 
-  root 'organizations#dashboard'
+  root 'home#index'
 
   #API
   namespace :api do
@@ -156,5 +156,12 @@ Rails.application.routes.draw do
     get 'public_user_autocomplete' => "users_search#public_user_autocomplete"
     get 'pro_user_search' => "users_search#pro_user_search"
     delete 'user_relationships' => "user_relationships#destroy"
+  end
+
+  #PUBLIC USER
+  namespace :public_user do
+    root to: "users#edit"
+
+    resources :users, only: [:edit, :update]
   end
 end
