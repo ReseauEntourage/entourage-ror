@@ -64,6 +64,12 @@ describe User, :type => :model do
     it { expect(FactoryGirl.build(:pro_user, phone: '+1-999-999-9999').save).to be true } #canadian number
   end
 
+  describe "sms_code" do
+    it { expect(FactoryGirl.build(:pro_user, sms_code: '123456').save).to be true }
+    it { expect(FactoryGirl.build(:pro_user, sms_code: '12345').save).to be false }
+    it { expect(FactoryGirl.build(:pro_user, sms_code: '1234567').save).to be true }
+  end
+
   it "validates uniqueness of token" do
     expect(FactoryGirl.build(:pro_user, token: 'foo').save).to be true
     expect(FactoryGirl.build(:pro_user, token: 'foo').save).to be false

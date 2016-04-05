@@ -6,6 +6,7 @@ class User < ActiveRecord::Base
   validates_format_of :email, with: /@/, unless: "email.nil?"
   validates_presence_of [:first_name, :last_name, :organization, :email], if: Proc.new { |u| u.pro? }
   validates_associated :organization, if: Proc.new { |u| u.pro? }
+  validates :sms_code, length: { minimum: 6 }
 
   has_many :tours
   has_many :encounters, through: :tours
