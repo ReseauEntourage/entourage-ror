@@ -48,7 +48,7 @@ module Api
           end
 
           @tour.length = tour_params[:distance]
-          @tour.update_attributes(tour_params.except(:status, :distance))
+          @tour.update(tour_params.except(:status, :distance, :start_time, :end_time))
           render json: @tour, status: 200, serializer: ::V1::TourSerializer
         end
       end
@@ -56,7 +56,7 @@ module Api
       private
 
       def tour_params
-        params.require(:tour).permit(:tour_type, :status, :vehicle_type, :distance, :start_time)
+        params.require(:tour).permit(:tour_type, :status, :vehicle_type, :distance, :start_time, :end_time)
       end
 
       def set_tour

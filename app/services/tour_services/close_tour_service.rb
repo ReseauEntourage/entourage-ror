@@ -2,14 +2,14 @@ module TourServices
   class CloseTourService
     def initialize(tour:, params:)
       @tour = tour
-      @params = params
+      @params = params || {}
     end
 
     def close!
       return if tour.closed?
 
-      closed_at = tour.tour_points.last.try(:passing_time) || Time.now
-      distance = params.try(:[], :distance).try(:to_f) || 0
+      closed_at = params[:end_time] || tour.tour_points.last.try(:passing_time) || Time.now
+      distance = params[:distance].try(:to_f) || 0
       tour.status = :closed
       tour.closed_at= closed_at
       tour.length = distance

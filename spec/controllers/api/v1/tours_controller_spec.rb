@@ -181,7 +181,7 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
     context "close tour" do
       context "tour open" do
         let(:open_tour) { FactoryGirl.create(:tour, user: user, status: :ongoing) }
-        before { put 'update', id: open_tour.id, token: user.token, tour:{tour_type:"medical", status:"closed", vehicle_type:"car", distance: 633.0878}, format: :json }
+        before { put 'update', id: open_tour.id, token: user.token, tour:{tour_type:"medical", status:"closed", vehicle_type:"car", distance: 633.0878, end_time: "2016-01-01T20:09:06.000+01:00"}, format: :json }
         it { expect(open_tour.reload.closed?).to be true }
         it { expect(ActionMailer::Base.deliveries.last.to).to eq([user.email])}
         it { expect(open_tour.reload.length).to eq(633)}
@@ -189,28 +189,48 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
 
       context "tour closed" do
         let(:closed_tour) { FactoryGirl.create(:tour, user: user, status: :closed) }
-        before { put 'update', id: closed_tour.id, token: user.token, tour:{tour_type:"medical", status:"closed", vehicle_type:"car", distance: 123.456}, format: :json }
+        before { put 'update', id: closed_tour.id, token: user.token, tour:{tour_type:"medical", status:"closed", vehicle_type:"car", distance: 123.456, end_time: "2016-01-01T20:09:06.000+01:00"}, format: :json }
         it { expect(closed_tour.reload.closed?).to be true }
         it { expect(ActionMailer::Base.deliveries.last).to be nil}
+      end
+
+      context "sends end_time" do
+        let(:open_tour) { FactoryGirl.create(:tour, user: user, status: :ongoing) }
+        before { put 'update', id: open_tour.id, token: user.token, tour:{tour_type:"medical", status:"closed", vehicle_type:"car", distance: 633.0878, end_time: "2016-01-01T20:09:06.000+01:00"}, format: :json }
+        it { expect(open_tour.reload.closed_at).to eq(DateTime.parse("2016-01-01T20:09:06.000+01:00"))}
+      end
+
+      context "doesn't send end_time and has tour_points" do
+        let(:open_tour) { FactoryGirl.create(:tour, user: user, status: :ongoing) }
+        let!(:last_point) { FactoryGirl.create(:tour_point, tour: open_tour, passing_time: DateTime.parse("2016-01-01T20:09:06.000+01:00")) }
+        before { put 'update', id: open_tour.id, token: user.token, tour:{tour_type:"medical", status:"closed", vehicle_type:"car", distance: 633.0878}, format: :json }
+        it { expect(open_tour.reload.closed_at).to eq(DateTime.parse("2016-01-01T20:09:06.000+01:00"))}
+      end
+
+      context "doesn't send end_time and no tour_points" do
+        Timecop.freeze(DateTime.parse("10/10/2010"))
+        let(:open_tour) { FactoryGirl.create(:tour, user: user, status: :ongoing) }
+        before { put 'update', id: open_tour.id, token: user.token, tour:{tour_type:"medical", status:"closed", vehicle_type:"car", distance: 633.0878}, format: :json }
+        it { expect(open_tour.reload.closed_at).to eq(DateTime.parse("10/10/2010"))}
       end
     end
 
     context "freeze tour" do
       context "tour open" do
         let(:open_tour) { FactoryGirl.create(:tour, user: user, status: :ongoing) }
-        before { put 'update', id: open_tour.id, token: user.token, tour:{tour_type:"medical", status:"freezed", vehicle_type:"car", distance: 633.0878}, format: :json }
+        before { put 'update', id: open_tour.id, token: user.token, tour:{tour_type:"medical", status:"freezed", vehicle_type:"car", distance: 633.0878, end_time: "2016-01-01T20:09:06.000+01:00"}, format: :json }
         it { expect(open_tour.reload.frozen?).to be false }
       end
 
       context "not the author tour of the tour" do
         let(:open_tour) { FactoryGirl.create(:tour, status: :closed) }
-        before { put 'update', id: open_tour.id, token: user.token, tour:{tour_type:"medical", status:"freezed", vehicle_type:"car", distance: 633.0878}, format: :json }
+        before { put 'update', id: open_tour.id, token: user.token, tour:{tour_type:"medical", status:"freezed", vehicle_type:"car", distance: 633.0878, end_time: "2016-01-01T20:09:06.000+01:00"}, format: :json }
         it { expect(open_tour.reload.freezed?).to be false }
       end
 
       context "tour closed" do
         let(:open_tour) { FactoryGirl.create(:tour, user: user, status: :closed) }
-        before { put 'update', id: open_tour.id, token: user.token, tour:{tour_type:"medical", status:"freezed", vehicle_type:"car", distance: 633.0878}, format: :json }
+        before { put 'update', id: open_tour.id, token: user.token, tour:{tour_type:"medical", status:"freezed", vehicle_type:"car", distance: 633.0878, end_time: "2016-01-01T20:09:06.000+01:00"}, format: :json }
         it { expect(open_tour.reload.freezed?).to be true }
       end
     end
