@@ -33,10 +33,10 @@ module V1
     end
 
     def author
-      tour_user = object.user
+      tour_author = object.user
       {
-          id: tour_user.id,
-          display_name: tour_user.first_name,
+          id: tour_author.id,
+          display_name: tour_author.first_name,
           avatar_url: UserServices::Avatar.new(user: object.user).thumbnail_url
       }
     end
@@ -51,22 +51,22 @@ module V1
     end
 
     def join_status
-      if current_tour_user
-        current_tour_user.status
+      if current_join_request
+        current_join_request.status
       else
         "not_requested"
       end
     end
 
     def number_of_unread_messages
-      return nil unless current_tour_user
-      return object.chat_messages.count if current_tour_user.last_message_read.nil?
-      object.chat_messages.where("created_at > ?", current_tour_user.last_message_read).count
+      return nil unless current_join_request
+      return object.chat_messages.count if current_join_request.last_message_read.nil?
+      object.chat_messages.where("created_at > ?", current_join_request.last_message_read).count
     end
 
-    def current_tour_user
+    def current_join_request
       #TODO : replace by sql request ?
-      object.tours_users.select {|tour_user| tour_user.user_id == scope.id}.first
+      object.join_requests.select {|join_request| join_request.user_id == scope.id}.first
     end
   end
 end

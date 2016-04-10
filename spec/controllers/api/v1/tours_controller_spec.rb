@@ -22,7 +22,7 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
       it { expect(Tour.last.user).to eq(user) }
       it { expect(Tour.last.members).to eq([user]) }
       it { expect(Tour.last.created_at).to eq(DateTime.parse("2016-01-01T19:09:06.000+01:00")) }
-      it { expect(ToursUser.last.status).to eq("accepted") }
+      it { expect(JoinRequest.last.status).to eq("accepted") }
 
       it "responds with tour" do
         res = JSON.parse(response.body)
@@ -121,7 +121,7 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
 
     context "has 2 unread messages" do
       let!(:tour) { FactoryGirl.create :tour }
-      let!(:tours_user) { FactoryGirl.create(:tours_user, tour: tour, user: user, status: "accepted", last_message_read: DateTime.parse("20/10/2015")) }
+      let!(:join_request) { FactoryGirl.create(:join_request, joinable: tour, user: user, status: "accepted", last_message_read: DateTime.parse("20/10/2015")) }
       let!(:new_chat_messages) { FactoryGirl.create_list(:chat_message, 2, created_at: DateTime.parse("21/10/2015"), messageable: tour)}
       let!(:old_chat_message) { FactoryGirl.create(:chat_message, created_at: DateTime.parse("19/10/2015"), messageable: tour)}
       before { get 'show', id: tour.id, token: user.token , format: :json }
@@ -130,7 +130,7 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
 
     context "has 0 unread messages" do
       let!(:tour) { FactoryGirl.create :tour }
-      let!(:tours_user) { FactoryGirl.create(:tours_user, tour: tour, user: user, status: "accepted", last_message_read: DateTime.parse("20/10/2015")) }
+      let!(:join_request) { FactoryGirl.create(:join_request, joinable: tour, user: user, status: "accepted", last_message_read: DateTime.parse("20/10/2015")) }
       let!(:old_chat_message) { FactoryGirl.create(:chat_message, created_at: DateTime.parse("19/10/2015"), messageable: tour)}
       before { get 'show', id: tour.id, token: user.token , format: :json }
       it { expect(JSON.parse(response.body)["tour"]["number_of_unread_messages"]).to eq(0) }
@@ -138,7 +138,7 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
 
     context "has never read a message" do
       let!(:tour) { FactoryGirl.create :tour }
-      let!(:tours_user) { FactoryGirl.create(:tours_user, tour: tour, user: user, status: "accepted", last_message_read: nil) }
+      let!(:join_request) { FactoryGirl.create(:join_request, joinable: tour, user: user, status: "accepted", last_message_read: nil) }
       let!(:old_chat_message) { FactoryGirl.create(:chat_message, created_at: DateTime.parse("19/10/2015"), messageable: tour)}
       before { get 'show', id: tour.id, token: user.token , format: :json }
       it { expect(JSON.parse(response.body)["tour"]["number_of_unread_messages"]).to eq(1) }

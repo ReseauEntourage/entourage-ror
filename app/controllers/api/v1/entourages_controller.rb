@@ -24,7 +24,7 @@ module Api
         entourage = Entourage.new(entourage_params)
         entourage.user = current_user
         if entourage.save
-          EntouragesUser.create(user: current_user, entourage: entourage)
+          JoinRequest.create(user: current_user, joinable: entourage)
           render json: entourage, status: 201, serializer: ::V1::EntourageSerializer
         else
           render json: {message: 'Could not create entourage', reasons: entourage.errors.full_messages}, status: 400

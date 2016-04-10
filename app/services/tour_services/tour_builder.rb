@@ -13,8 +13,8 @@ module TourServices
 
       if tour.save
         #We you start a tour you are automatically added to members of the tour
-        tours_user = ToursUser.create(tour: tour, user: user)
-        TourServices::ToursUserStatus.new(tour_user: tours_user).accept!
+        join_request = JoinRequest.create(joinable: tour, user: user)
+        TourServices::JoinRequestStatus.new(join_request: join_request).accept!
 
         # When you start a tour we check if there was any messages scheduled to be delivered to people starting a tour on that day
         schedule_push_service = TourServices::SchedulePushService.new(organization: organization, date: Date.today)

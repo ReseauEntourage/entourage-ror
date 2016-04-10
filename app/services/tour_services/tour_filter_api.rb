@@ -13,7 +13,7 @@ module TourServices
     end
 
     def tours
-      tours = Tour.includes(:tour_points).includes(:tours_users).includes(:user)
+      tours = Tour.includes(:tour_points).includes(:join_requests).includes(:user)
       tours = tours.where(status: status) if status
       tours = tours.where(tour_type: type) if type
       tours = tours.where(vehicle_type: Tour.vehicle_types[vehicle_type.to_sym]) if vehicle_type

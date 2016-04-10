@@ -15,8 +15,8 @@ module Api
           before = params[:before] ? DateTime.parse(params[:before]) : DateTime.now
           messages = @tour.chat_messages.includes(:user).ordered.before(before).limit(25)
           #TODO: move into a LastMessageRead class
-          if messages.present? && (join_request.last_message_read.nil? || tour_user.last_message_read < messages.last.created_at)
-            tour_user.update(last_message_read: messages.last.created_at)
+          if messages.present? && (join_request.last_message_read.nil? || join_request.last_message_read < messages.last.created_at)
+            join_request.update(last_message_read: messages.last.created_at)
           end
 
           render json: messages, each_serializer: ::V1::ChatMessageSerializer
@@ -25,8 +25,8 @@ module Api
         def create
           chat_builder = ChatServices::ChatMessageBuilder.new(params: chat_messages_params,
                                                               user: current_user,
-                                                              tour: @tour,
-                                                              tour_user: tour_user)
+                                                              joinable: @tour,
+                                                              join_request: join_request)
           chat_builder.create do |on|
             on.create_success do |message|
               render json: message, status: 201, serializer: ::V1::ChatMessageSerializer
@@ -56,7 +56,7 @@ module Api
         end
 
         def authorised_to_see_messages?
-          raise Api::V1::Tours::UnauthorisedTour unless tour_user
+          raise Api::V1::Tours::UnauthorisedTour unless join_request
         end
       end
     end

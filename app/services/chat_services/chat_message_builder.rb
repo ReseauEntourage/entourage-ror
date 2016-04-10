@@ -1,38 +1,40 @@
 module ChatServices
   class ChatMessageBuilder
-    def initialize(params:, user:, tour:, tour_user:)
+    def initialize(params:, user:, joinable:, join_request:)
       @callback = ChatServices::Callback.new
       @user = user
-      @tour = tour
-      @message = tour.chat_messages.new(params)
+      @joinable = joinable
+      @message = joinable.chat_messages.new(params)
       @message.user = user
-      @tour_user = tour_user
+      @join_request = join_request
     end
 
     def create
       yield callback if block_given?
 
-      return callback.on_freezed_tour.try(:call, message) if tour.freezed?
+      return callback.on_freezed_tour.try(:call, message) if joinable.freezed?
 
       if message.save
-        tour_user.update(last_message_read: message.created_at)
+        join_request.update(last_message_read: message.created_at)
         PushNotificationService.new.send_notification(user.full_name,
                                                       "Nouveau message",
                                                       message.content,
                                                       recipients,
-                                                      {tour_id: tour.id, type: "NEW_CHAT_MESSAGE"})
+                                                      {joinable_id: join_request.joinable_id,
+                                                       joinable_type: join_request.joinable_type,
+                                                       type: "NEW_CHAT_MESSAGE"})
         callback.on_create_success.try(:call, message)
       else
         callback.on_create_failure.try(:call, message)
       end
-      tour
+      joinable
     end
 
     private
-    attr_reader :message, :user, :tour, :tour_user, :callback
+    attr_reader :message, :user, :joinable, :join_request, :callback
 
     def recipients
-      tour.members.where("users.id != ? AND status = ?", user.id, "accepted")
+      joinable.members.where("users.id != ? AND status = ?", user.id, "accepted")
     end
   end
 

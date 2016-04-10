@@ -3,8 +3,8 @@ class CreateJoinRequests < ActiveRecord::Migration
     create_table :join_requests do |t|
       t.integer   :user_id,             null: false
       t.integer   :joinable_id,         null: false
-      t.integer   :joinable_type,       null: false
-      t.string    :status,              null: false
+      t.string    :joinable_type,       null: false
+      t.string    :status,              null: false, default: "pending"
       t.text      :message,             null: true
       t.datetime  :last_message_read,   null: true
 

@@ -104,14 +104,14 @@ ActiveRecord::Schema.define(version: 20160410143008) do
   add_index "entourages_users", ["user_id", "entourage_id"], name: "index_entourages_users_on_user_id_and_entourage_id", unique: true, using: :btree
 
   create_table "join_requests", force: :cascade do |t|
-    t.integer  "user_id",           null: false
-    t.integer  "joinable_id",       null: false
-    t.integer  "joinable_type",     null: false
-    t.string   "status",            null: false
+    t.integer  "user_id",                               null: false
+    t.integer  "joinable_id",                           null: false
+    t.string   "joinable_type",                         null: false
+    t.string   "status",            default: "pending", null: false
     t.text     "message"
     t.datetime "last_message_read"
-    t.datetime "created_at",        null: false
-    t.datetime "updated_at",        null: false
+    t.datetime "created_at",                            null: false
+    t.datetime "updated_at",                            null: false
   end
 
   add_index "join_requests", ["user_id", "joinable_id", "joinable_type", "status"], name: "index_user_joinable_on_join_requests", using: :btree

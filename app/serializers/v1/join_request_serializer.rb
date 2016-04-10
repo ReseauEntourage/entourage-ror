@@ -1,9 +1,10 @@
 module V1
-  class ToursUserSerializer < ActiveModel::Serializer
+  class JoinRequestSerializer < ActiveModel::Serializer
     attributes :id,
                :email,
                :display_name,
                :status,
+               :message,
                :requested_at
 
     def id
