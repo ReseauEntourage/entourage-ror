@@ -16,7 +16,7 @@ RSpec.describe Tour, :type => :model do
   it "has many members" do
     user = FactoryGirl.create(:pro_user)
     tour = FactoryGirl.create(:tour)
-    ToursUser.create(user: user, tour: tour)
+    FactoryGirl.create(:join_request, user: user, joinable: tour)
     expect(tour.members).to eq([user])
   end
   

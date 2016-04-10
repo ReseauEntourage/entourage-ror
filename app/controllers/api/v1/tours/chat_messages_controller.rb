@@ -15,7 +15,7 @@ module Api
           before = params[:before] ? DateTime.parse(params[:before]) : DateTime.now
           messages = @tour.chat_messages.includes(:user).ordered.before(before).limit(25)
           #TODO: move into a LastMessageRead class
-          if messages.present? && (tour_user.last_message_read.nil? || tour_user.last_message_read < messages.last.created_at)
+          if messages.present? && (join_request.last_message_read.nil? || tour_user.last_message_read < messages.last.created_at)
             tour_user.update(last_message_read: messages.last.created_at)
           end
 
@@ -51,8 +51,8 @@ module Api
           params.require(:chat_message).permit(:content)
         end
 
-        def tour_user
-          @tour_user ||= ToursUser.where(tour: @tour, user: @current_user, status: "accepted").first
+        def join_request
+          @join_request ||= JoinRequest.where(joinable: @tour, user: @current_user, status: "accepted").first
         end
 
         def authorised_to_see_messages?
