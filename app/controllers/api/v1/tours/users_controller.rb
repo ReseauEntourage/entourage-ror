@@ -12,7 +12,7 @@ module Api
 
         #curl -X POST -H "Content-Type: application/json" "http://localhost:3000/api/v1/tours/1017/users.json?token=07ee026192ea722e66feb2340a05e3a8"
         def create
-          join_request_builder = JoinRequestsServices::JoinRequestBuilder.new(joinable: @tour, user: current_user)
+          join_request_builder = JoinRequestsServices::JoinRequestBuilder.new(joinable: @tour, user: current_user, message: params.dig(:request, :message))
           join_request_builder.create do |on|
             on.create_success do |join_request|
               render json: join_request, root: "user", status: 201, serializer: ::V1::JoinRequestSerializer

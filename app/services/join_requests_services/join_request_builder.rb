@@ -1,15 +1,16 @@
 module JoinRequestsServices
   class JoinRequestBuilder
-    def initialize(joinable:, user:)
+    def initialize(joinable:, user:, message:)
       @joinable = joinable
       @user = user
+      @message = message
       @callback = Callback.new
     end
 
     def create
       yield callback if block_given?
 
-      join_request = JoinRequest.new(joinable: joinable, user: user)
+      join_request = JoinRequest.new(joinable: joinable, user: user, message: message)
       if join_request.save
         notify_members(join_request.joinable_type)
         callback.on_create_success.try(:call, join_request)
@@ -19,7 +20,7 @@ module JoinRequestsServices
     end
 
     private
-    attr_reader :joinable, :callback, :user
+    attr_reader :joinable, :callback, :user, :message
 
     def notify_members(type)
       recipients = joinable.members.includes(:join_requests).where(join_requests: {status: "accepted"})

@@ -42,6 +42,17 @@ describe Api::V1::Tours::UsersController do
         )
         post :create, tour_id: tour.to_param, token: new_member.token
       end
+
+      context "with message" do
+        before { post :create, tour_id: tour.to_param, request: {message: "foo"}, token: user.token }
+        it { expect(tour.members).to eq([user]) }
+        it { expect(JSON.parse(response.body)).to eq("user"=>{"id"=>user.id,
+                                                              "email"=>user.email,
+                                                              "display_name"=>"John Doe",
+                                                              "status" => "pending",
+                                                              "message"=> "foo",
+                                                              "requested_at"=>JoinRequest.last.created_at.iso8601(3)}) }
+      end
     end
   end
 
