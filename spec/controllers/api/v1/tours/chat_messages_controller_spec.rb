@@ -16,7 +16,7 @@ describe Api::V1::Tours::ChatMessagesController do
       context "i belong to the tour" do
         let!(:chat_message1) { FactoryGirl.create(:chat_message, messageable: tour, created_at: DateTime.parse("10/01/2000")) }
         let!(:chat_message2) { FactoryGirl.create(:chat_message, messageable: tour, created_at: DateTime.parse("09/01/2000")) }
-        let!(:tour_user) { FactoryGirl.create(:tours_user, tour: tour, user: user, status: "accepted") }
+        let!(:join_request) { FactoryGirl.create(:join_request, joinable: tour, user: user, status: "accepted") }
         before { get :index, tour_id: tour.to_param, token: user.token }
         it { expect(response.status).to eq(200) }
         it { expect(JSON.parse(response.body)).to eq({"chat_messages"=>
@@ -33,14 +33,14 @@ describe Api::V1::Tours::ChatMessagesController do
                                                                "created_at"=>chat_message2.created_at.iso8601(3)
                                                            }]}) }
 
-        it { expect(tour_user.reload.last_message_read).to eq(chat_message2.created_at)}
+        it { expect(join_request.reload.last_message_read).to eq(chat_message2.created_at)}
       end
 
       context "i request older messages" do
         let!(:chat_messages) { FactoryGirl.create_list(:chat_message, 2, messageable: tour, created_at: DateTime.parse("10/01/2016")) }
-        let!(:tour_user) { FactoryGirl.create(:tours_user, tour: tour, user: user, status: "accepted", last_message_read: DateTime.parse("20/01/2016")) }
+        let!(:join_request) { FactoryGirl.create(:join_request, joinable: tour, user: user, status: "accepted", last_message_read: DateTime.parse("20/01/2016")) }
         before { get :index, tour_id: tour.to_param, token: user.token }
-        it { expect(tour_user.reload.last_message_read).to eq(DateTime.parse("20/01/2016"))}
+        it { expect(join_request.reload.last_message_read).to eq(DateTime.parse("20/01/2016"))}
       end
 
       context "i don't belong to the tour" do
@@ -49,13 +49,13 @@ describe Api::V1::Tours::ChatMessagesController do
       end
 
       context "i am still in pending status" do
-        let!(:tour_user) { FactoryGirl.create(:tours_user, tour: tour, user: user, status: "pending") }
+        let!(:join_request) { FactoryGirl.create(:join_request, joinable: tour, user: user, status: "pending") }
         before { get :index, tour_id: tour.to_param, token: user.token }
         it { expect(response.status).to eq(401) }
       end
 
       context "i am rejected from the tour" do
-        let!(:tour_user) { FactoryGirl.create(:tours_user, tour: tour, user: user, status: "rejected") }
+        let!(:join_request) { FactoryGirl.create(:join_request, joinable: tour, user: user, status: "rejected") }
         before { get :index, tour_id: tour.to_param, token: user.token }
         it { expect(response.status).to eq(401) }
       end
@@ -63,7 +63,7 @@ describe Api::V1::Tours::ChatMessagesController do
       context "pagination" do
         let!(:chat_message1) { FactoryGirl.create(:chat_message, messageable: tour, created_at: DateTime.parse("11/01/2016")) }
         let!(:chat_message2) { FactoryGirl.create(:chat_message, messageable: tour, created_at: DateTime.parse("09/01/2016")) }
-        let!(:tour_user) { FactoryGirl.create(:tours_user, tour: tour, user: user, status: "accepted") }
+        let!(:join_request) { FactoryGirl.create(:join_request, joinable: tour, user: user, status: "accepted") }
         before { get :index, tour_id: tour.to_param, token: user.token, before: "10/01/2016" }
         it { expect(JSON.parse(response.body)).to eq({"chat_messages"=>[{
                                                                            "id"=>chat_message2.id,
@@ -88,8 +88,8 @@ describe Api::V1::Tours::ChatMessagesController do
       let(:user) { FactoryGirl.create(:pro_user) }
 
       context "valid params" do
-        let!(:tour_user) { FactoryGirl.create(:tours_user, tour: tour, user: user, status: "accepted") }
-        let!(:tour_user2) { FactoryGirl.create(:tours_user, tour: tour, status: "accepted") }
+        let!(:join_request) { FactoryGirl.create(:join_request, joinable: tour, user: user, status: "accepted") }
+        let!(:join_request2) { FactoryGirl.create(:join_request, joinable: tour, status: "accepted") }
         before { post :create, tour_id: tour.to_param, chat_message: {content: "foobar"}, token: user.token }
         it { expect(response.status).to eq(201) }
         it { expect(ChatMessage.count).to eq(1) }
@@ -103,16 +103,16 @@ describe Api::V1::Tours::ChatMessagesController do
 
       describe "send push notif" do
         it "sends notif to everyone accaepted except message sender" do
-          tour_user = FactoryGirl.create(:tours_user, tour: tour, user: user, status: "accepted")
-          tour_user2 = FactoryGirl.create(:tours_user, tour: tour, status: "accepted")
-          FactoryGirl.create(:tours_user, tour: tour, status: "pending")
-          expect_any_instance_of(PushNotificationService).to receive(:send_notification).with(user.full_name, 'Nouveau message', 'foobar', [tour_user2.user], {:tour_id=>tour.id, :type=>"NEW_CHAT_MESSAGE"})
+          join_request = FactoryGirl.create(:join_request, joinable: tour, user: user, status: "accepted")
+          join_request2 = FactoryGirl.create(:join_request, joinable: tour, status: "accepted")
+          FactoryGirl.create(:join_request, joinable: tour, status: "pending")
+          expect_any_instance_of(PushNotificationService).to receive(:send_notification).with(user.full_name, 'Nouveau message', 'foobar', [join_request2.user], {:joinable_id=>tour.id, :joinable_type=>"Tour", :type=>"NEW_CHAT_MESSAGE"})
           post :create, tour_id: tour.to_param, chat_message: {content: "foobar"}, token: user.token
         end
       end
 
       context "invalid params" do
-        let!(:tour_user) { FactoryGirl.create(:tours_user, tour: tour, user: user, status: "accepted") }
+        let!(:join_request) { FactoryGirl.create(:join_request, joinable: tour, user: user, status: "accepted") }
         before { post :create, tour_id: tour.to_param, chat_message: {content: nil}, token: user.token }
         it { expect(response.status).to eq(400) }
         it { expect(ChatMessage.count).to eq(0) }
@@ -124,20 +124,20 @@ describe Api::V1::Tours::ChatMessagesController do
       end
 
       context "post in a tour i am still in pending status" do
-        let!(:tour_user) { FactoryGirl.create(:tours_user, tour: tour, user: user, status: "pending") }
+        let!(:join_request) { FactoryGirl.create(:join_request, joinable: tour, user: user, status: "pending") }
         before { post :create, tour_id: tour.to_param, chat_message: {content: "foobar"}, token: user.token }
         it { expect(response.status).to eq(401) }
       end
 
       context "post in a tour i am rejected from" do
-        let!(:tour_user) { FactoryGirl.create(:tours_user, tour: tour, user: user, status: "rejected") }
+        let!(:join_request) { FactoryGirl.create(:join_request, joinable: tour, user: user, status: "rejected") }
         before { post :create, tour_id: tour.to_param, chat_message: {content: "foobar"}, token: user.token }
         it { expect(response.status).to eq(401) }
       end
 
       context "post in a freezed tour" do
         let(:freezed_tour) { FactoryGirl.create(:tour, status: :freezed) }
-        let!(:tour_user) { FactoryGirl.create(:tours_user, tour: freezed_tour, user: user, status: "accepted") }
+        let!(:join_request) { FactoryGirl.create(:join_request, joinable: freezed_tour, user: user, status: "accepted") }
         before { post :create, tour_id: freezed_tour.to_param, chat_message: {content: "foobar"}, token: user.token }
         it { expect(response.status).to eq(422) }
       end

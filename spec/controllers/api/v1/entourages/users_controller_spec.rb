@@ -15,14 +15,14 @@ describe Api::V1::Entourages::UsersController do
       context "first request to join entourage" do
         before { post :create, entourage_id: entourage.to_param, token: user.token }
         it { expect(entourage.members).to eq([user]) }
-        it { expect(JSON.parse(response.body)).to eq("user"=>{"id"=>user.id, "email"=>user.email, "display_name"=>"John Doe"}) }
+        it { expect(JSON.parse(response.body)).to eq("user"=>{"id"=>user.id, "email"=>user.email, "display_name"=>"John Doe", "status"=>"pending", "message"=>nil, "requested_at"=>JoinRequest.last.created_at.iso8601(3)}) }
       end
 
       context "duplicate request to join entourage" do
-        before { EntouragesUser.create(user: user, entourage: entourage) }
+        before { JoinRequest.create(user: user, joinable: entourage) }
         before { post :create, entourage_id: entourage.to_param, token: user.token }
         it { expect(entourage.members).to eq([user]) }
-        it { expect(JSON.parse(response.body)).to eq("message"=>"Could not create entourage participation request", "reasons"=>["Entourage a déjà été ajouté"]) }
+        it { expect(JSON.parse(response.body)).to eq("message"=>"Could not create entourage participation request", "reasons"=>["Joinable a déjà été ajouté"]) }
         it { expect(response.status).to eq(400) }
       end
     end
@@ -35,9 +35,9 @@ describe Api::V1::Entourages::UsersController do
     end
 
     context "signed in" do
-      let!(:entourage_user) { EntouragesUser.create(user: user, entourage: entourage) }
+      let!(:join_request) { JoinRequest.create(user: user, joinable: entourage) }
       before { get :index, entourage_id: entourage.to_param, token: user.token }
-      it { expect(JSON.parse(response.body)).to eq({"users"=>[{"id"=>user.id, "email"=>user.email, "display_name"=>"John Doe"}]}) }
+      it { expect(JSON.parse(response.body)).to eq({"users"=>[{"id"=>user.id, "email"=>user.email, "display_name"=>"John Doe", "status"=>"pending", "message"=>nil, "requested_at"=>join_request.created_at.iso8601(3)}]}) }
     end
   end
 
@@ -48,14 +48,14 @@ describe Api::V1::Entourages::UsersController do
     end
 
     context "signed in" do
-      let!(:entourage_user) { EntouragesUser.create(user: user, entourage: entourage) }
+      let!(:join_request) { JoinRequest.create(user: user, joinable: entourage) }
       before { patch :update, entourage_id: entourage.to_param, id: user.id, user: {status: "accepted"}, token: user.token }
       it { expect(response.status).to eq(204) }
-      it { expect(entourage_user.reload.status).to eq("accepted") }
+      it { expect(join_request.reload.status).to eq("accepted") }
     end
 
     context "invalid status" do
-      let!(:entourage_user) { EntouragesUser.create(user: user, entourage: entourage) }
+      let!(:join_request) { JoinRequest.create(user: user, joinable: entourage) }
       before { patch :update, entourage_id: entourage.to_param, id: user.id, user: {status: "foo"}, token: user.token }
       it { expect(response.status).to eq(400) }
       it { expect(JSON.parse(response.body)).to eq({"message"=>"Could not update entourage participation request status", "reasons"=>["Status n'est pas inclus(e) dans la liste"]}) }
@@ -77,10 +77,10 @@ describe Api::V1::Entourages::UsersController do
     end
 
     context "signed in" do
-      let!(:entourage_user) { EntouragesUser.create(user: user, entourage: entourage) }
+      let!(:join_request) { JoinRequest.create(user: user, joinable: entourage) }
       before { delete :destroy, entourage_id: entourage.to_param, id: user.id, token: user.token }
       it { expect(response.status).to eq(204) }
-      it { expect(entourage_user.reload.status).to eq("rejected") }
+      it { expect(join_request.reload.status).to eq("rejected") }
     end
 
     context "user didn't request to join entourage" do

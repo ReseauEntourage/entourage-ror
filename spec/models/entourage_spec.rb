@@ -16,7 +16,7 @@ RSpec.describe Entourage, type: :model do
   it "has many members" do
     user = FactoryGirl.create(:public_user)
     entourage = FactoryGirl.create(:entourage)
-    EntouragesUser.create(user: user, entourage: entourage)
+    FactoryGirl.create(:join_request, user: user, joinable: entourage)
     expect(entourage.members).to eq([user])
   end
 

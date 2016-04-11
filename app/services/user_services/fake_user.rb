@@ -13,21 +13,21 @@ module UserServices
 
     def user_joining_tour(tour:)
       user = create_user!
-      ToursUser.create(tour: tour, user: user)
+      JoinRequest.create(joinable: tour, user: user)
       user
     end
 
     def user_accepted_in_tour(tour:)
       user = create_user!
-      tours_user = ToursUser.create(tour: tour, user: user)
-      TourServices::ToursUserStatus.new(tour_user: tours_user).accept!
+      join_request = JoinRequest.create(joinable: tour, user: user)
+      TourServices::JoinRequestStatus.new(join_request: join_request).accept!
       user
     end
 
     def user_rejected_of_tour(tour:)
       user = create_user!
-      tours_user = ToursUser.create(tour: tour, user: user)
-      TourServices::ToursUserStatus.new(tour_user: tours_user).reject!
+      join_request = JoinRequest.create(joinable: tour, user: user)
+      TourServices::JoinRequestStatus.new(join_request: join_request).reject!
       user
     end
 

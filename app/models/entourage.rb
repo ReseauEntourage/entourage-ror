@@ -1,7 +1,7 @@
 class Entourage < ActiveRecord::Base
   belongs_to :user
-  has_many :entourages_users
-  has_many :members, through: :entourages_users, source: :user
+  has_many :join_requests, as: :joinable
+  has_many :members, through: :join_requests, source: :user
   reverse_geocoded_by :latitude, :longitude
   has_many :chat_messages, as: :messageable
 
