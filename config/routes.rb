@@ -1,6 +1,45 @@
 Rails.application.routes.draw do
 
-  root 'home#index'
+  #ADMIN
+  constraints :subdomain => "admin" do
+    scope :module => "admin", :as => "admin" do
+      get '/' => 'users#index'
+      get 'logout' => 'sessions#logout'
+
+      resources :generate_tours, only: [:index, :create]
+
+      resources :sessions, only: [:none] do
+        collection do
+          get 'switch_user'
+        end
+      end
+
+      resources :users, only: [:index, :edit, :update, :new, :create] do
+        collection do
+          get 'moderate'
+          get 'fake'
+          post 'generate'
+        end
+
+        member do
+          put 'banish'
+          put 'validate'
+        end
+      end
+
+      resources :pois
+      resources :registration_requests, only: [:index, :show, :update, :destroy]
+      resources :messages, only: [:index, :destroy]
+      resources :organizations, only: [:index, :edit, :update]
+      resources :newsletter_subscriptions, only: [:index]
+      resources :ambassadors, only: [:index, :edit, :update, :new, :create]
+
+      get 'public_user_search' => "users_search#public_user_search"
+      get 'public_user_autocomplete' => "users_search#public_user_autocomplete"
+      get 'pro_user_search' => "users_search#pro_user_search"
+      delete 'user_relationships' => "user_relationships#destroy"
+    end
+  end
 
   #API
   namespace :api do
@@ -119,44 +158,6 @@ Rails.application.routes.draw do
   get 'store_redirection' => 'home#store_redirection'
   get 'cgu' => 'home#cgu'
 
-  #ADMIN
-  namespace :admin do
-    get '/' => 'users#index'
-    get 'logout' => 'sessions#logout'
-
-    resources :generate_tours, only: [:index, :create]
-
-    resources :sessions, only: [:none] do
-      collection do
-        get 'switch_user'
-      end
-    end
-
-    resources :users, only: [:index, :edit, :update, :new, :create] do
-      collection do
-        get 'moderate'
-        get 'fake'
-        post 'generate'
-      end
-
-      member do
-        put 'banish'
-        put 'validate'
-      end
-    end
-
-    resources :pois
-    resources :registration_requests, only: [:index, :show, :update, :destroy]
-    resources :messages, only: [:index, :destroy]
-    resources :organizations, only: [:index, :edit, :update]
-    resources :newsletter_subscriptions, only: [:index]
-    resources :ambassadors, only: [:index, :edit, :update, :new, :create]
-
-    get 'public_user_search' => "users_search#public_user_search"
-    get 'public_user_autocomplete' => "users_search#public_user_autocomplete"
-    get 'pro_user_search' => "users_search#pro_user_search"
-    delete 'user_relationships' => "user_relationships#destroy"
-  end
 
   #PUBLIC USER
   namespace :public_user do
@@ -164,4 +165,6 @@ Rails.application.routes.draw do
 
     resources :users, only: [:edit, :update]
   end
+
+  root 'home#index'
 end
