@@ -28,11 +28,11 @@ module Api
                                                               joinable: @tour,
                                                               join_request: join_request)
           chat_builder.create do |on|
-            on.create_success do |message|
+            on.success do |message|
               render json: message, status: 201, serializer: ::V1::ChatMessageSerializer
             end
 
-            on.create_failure do |message|
+            on.failure do |message|
               render json: {message: 'Could not create chat message', reasons: message.errors.full_messages}, status: :bad_request
             end
 

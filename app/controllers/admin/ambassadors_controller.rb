@@ -16,13 +16,13 @@ module Admin
     def create
       builder = UserServices::PublicUserBuilder.new(params: user_params)
       builder.create(send_sms: params[:send_sms].present?) do |on|
-        on.create_success do |user|
+        on.success do |user|
           @user = user
           add_relation(params[:user_relation_id])
           redirect_to admin_ambassadors_path, notice: "Ambassadeur créé"
         end
 
-        on.create_failure do |user|
+        on.failure do |user|
           @user = user
           render :new
         end

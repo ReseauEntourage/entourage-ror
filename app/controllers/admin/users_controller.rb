@@ -18,13 +18,13 @@ module Admin
       builder = UserServices::ProUserBuilder.new(params: user_params, organization: organization)
 
       builder.create(send_sms: params[:send_sms].present?) do |on|
-        on.create_success do |user|
+        on.success do |user|
           @user = user
           set_coordinated_organizations(user)
           redirect_to admin_users_path, notice: "utilisateur créé"
         end
 
-        on.create_failure do |user|
+        on.failure do |user|
           @user = user
           render :new
         end

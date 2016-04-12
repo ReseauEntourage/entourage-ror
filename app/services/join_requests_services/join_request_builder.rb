@@ -13,9 +13,9 @@ module JoinRequestsServices
       join_request = JoinRequest.new(joinable: joinable, user: user, message: message)
       if join_request.save
         notify_members(join_request.joinable_type)
-        callback.on_create_success.try(:call, join_request)
+        callback.on_success.try(:call, join_request)
       else
-        callback.on_create_failure.try(:call, join_request)
+        callback.on_failure.try(:call, join_request)
       end
     end
 

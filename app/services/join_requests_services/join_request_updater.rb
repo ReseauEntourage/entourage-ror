@@ -32,9 +32,9 @@ module JoinRequestsServices
 
       user_status = TourServices::JoinRequestStatus.new(join_request: @join_request)
       if user_status.reject!
-        callback.on_create_success.try(:call, join_request)
+        callback.on_success.try(:call, join_request)
       else
-        callback.on_create_failure.try(:call, join_request)
+        callback.on_failure.try(:call, join_request)
       end
     end
 
@@ -52,9 +52,9 @@ module JoinRequestsServices
 
       user_status = TourServices::JoinRequestStatus.new(join_request: join_request)
       if user_status.accept!
-        callback.on_create_success.try(:call, join_request)
+        callback.on_success.try(:call, join_request)
       else
-        callback.on_create_failure.try(:call, join_request)
+        callback.on_failure.try(:call, join_request)
       end
     end
 
@@ -64,9 +64,9 @@ module JoinRequestsServices
       end
 
       if join_request.update(message: message)
-        callback.on_create_success.try(:call, join_request)
+        callback.on_success.try(:call, join_request)
       else
-        callback.on_create_failure.try(:call, join_request)
+        callback.on_failure.try(:call, join_request)
       end
     end
 

@@ -15,7 +15,7 @@ module UserServices
                                 target_user_id: target_user_id,
                                 relation_type: relation_type)
       end
-      callback.on_create_success.try(:call)
+      callback.on_success.try(:call)
     end
 
     private

@@ -1,7 +1,7 @@
 module TourServices
   class TourBuilder
     def initialize(params:, user:)
-      @callback = TourServices::Callback.new
+      @callback = Callback.new
       @tour = user.tours.build(tour_params(params.except(:start_time)))
       @tour.created_at = params[:start_time] if params[:start_time]
       @tour.length = params[:distance]
@@ -20,9 +20,9 @@ module TourServices
         schedule_push_service = TourServices::SchedulePushService.new(organization: organization, date: Date.today)
         schedule_push_service.send_to(user)
 
-        callback.on_create_success.try(:call, tour.reload)
+        callback.on_success.try(:call, tour.reload)
       else
-        callback.on_create_failure.try(:call, tour)
+        callback.on_failure.try(:call, tour)
       end
       tour
     end
@@ -37,18 +37,6 @@ module TourServices
     def tour_params(params)
       params[:status] = Tour.statuses[:ongoing]
       params.except(:distance)
-    end
-  end
-
-  class Callback
-    attr_accessor :on_create_success, :on_create_failure
-
-    def create_success(&block)
-      @on_create_success = block
-    end
-
-    def create_failure(&block)
-      @on_create_failure = block
     end
   end
 end
