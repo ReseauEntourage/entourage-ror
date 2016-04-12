@@ -19,11 +19,11 @@ class UsersController < ApplicationController
     send_sms = params[:send_sms] == "1"
 
     builder.create(send_sms: send_sms) do |on|
-      on.create_success do |user|
+      on.success do |user|
         redirect_to users_url, notice: "L'utilisateur a été créé"
       end
 
-      on.create_failure do |user|
+      on.failure do |user|
         @user = user
         @user_presenter = UserPresenter.new(user: @user)
         @users = current_user.organization.users.order(:last_name,:first_name)

@@ -14,11 +14,11 @@ module Api
         def create
           join_request_builder = JoinRequestsServices::JoinRequestBuilder.new(joinable: @entourage, user: current_user, message: params.dig(:request, :message))
           join_request_builder.create do |on|
-            on.create_success do |join_request|
+            on.success do |join_request|
               render json: join_request, root: "user", status: 201, serializer: ::V1::JoinRequestSerializer
             end
 
-            on.create_failure do |join_request|
+            on.failure do |join_request|
               render json: {message: 'Could not create entourage participation request', reasons: join_request.errors.full_messages}, status: :bad_request
             end
           end
@@ -37,11 +37,11 @@ module Api
               render json: {message: "Invalid status : #{status}"}, status: :bad_request
             end
 
-            on.create_success do
+            on.success do
               head :no_content
             end
 
-            on.create_failure do |join_request|
+            on.failure do |join_request|
               render json: {message: 'Could not update entourage participation request status', reasons: join_request.errors.full_messages}, status: :bad_request
             end
 
@@ -58,11 +58,11 @@ module Api
                                                                  current_user: @current_user)
 
           updater.reject do |on|
-            on.create_success do |join_request|
+            on.success do |join_request|
               render json: join_request, root: "user", status: 200, serializer: ::V1::JoinRequestSerializer
             end
 
-            on.create_failure do |join_request|
+            on.failure do |join_request|
               render json: {message: 'Could not update entourage participation request status', reasons: @join_request.errors.full_messages}, status: :bad_request
             end
 

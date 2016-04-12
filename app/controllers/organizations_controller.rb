@@ -24,12 +24,12 @@ class OrganizationsController < ApplicationController
   def create
     builder = OrganizationServices::OrganizationBuiler.new(params: organization_params)
     builder.create do |on|
-      on.create_success do |organization, user|
+      on.success do |organization, user|
         @organization = organization
         render :edit, success: "L'organisation a bien été créé"
       end
 
-      on.create_failure do |organization, user|
+      on.failure do |organization, user|
         @organization = organization
         render :new
       end

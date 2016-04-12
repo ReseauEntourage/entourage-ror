@@ -21,11 +21,11 @@ module Api
       def create
         tour_builder = TourServices::TourBuilder.new(params: tour_params, user: current_user)
         tour_builder.create do |on|
-          on.create_success do |tour|
+          on.success do |tour|
             render json: tour, status: 201, serializer: ::V1::TourSerializer
           end
 
-          on.create_failure do |tour|
+          on.failure do |tour|
             render json: {message: 'Could not create tour', reasons: tour.errors.full_messages}, status: 400
           end
         end

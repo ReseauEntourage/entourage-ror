@@ -27,11 +27,11 @@ module Api
       def create
         builder = UserServices::PublicUserBuilder.new(params: user_params)
         builder.create(send_sms: true) do |on|
-          on.create_success do |user|
+          on.success do |user|
             render json: user, status: 201, serializer: ::V1::UserSerializer, scope: user
           end
 
-          on.create_failure do |user|
+          on.failure do |user|
             render json: {message: 'Could not sign up user', reasons: user.errors.full_messages}, status: :bad_request
           end
         end

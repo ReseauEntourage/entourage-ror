@@ -18,9 +18,9 @@ module UserServices
       user = new_user(sms_code)
       if user.save
         UserServices::SMSSender.new(user: user).send_welcome_sms(sms_code) if send_sms
-        callback.on_create_success.try(:call, user)
+        callback.on_success.try(:call, user)
       else
-        callback.on_create_failure.try(:call, user)
+        callback.on_failure.try(:call, user)
       end
       user
     end

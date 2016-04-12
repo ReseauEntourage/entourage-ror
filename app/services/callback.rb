@@ -1,11 +1,11 @@
 class Callback
-  attr_accessor :on_create_success, :on_create_failure
+  attr_accessor :on_success, :on_failure
 
-  def create_success(&block)
-    @on_create_success = block
+  def success(&block)
+    @on_success = block
   end
 
-  def create_failure(&block)
-    @on_create_failure = block
+  def failure(&block)
+    @on_failure = block
   end
 end
