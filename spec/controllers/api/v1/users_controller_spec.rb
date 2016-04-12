@@ -74,6 +74,19 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
       before { post 'login', user: {phone: user.phone, sms_code: "123456"}, format: 'json' }
       it { expect(JSON.parse(response.body)["user"]["avatar_url"]).to be_nil }
     end
+
+    context "public user with version 1.1.0" do
+      before { ApiRequest.any_instance.stub(:key_infos) { {version: "1.1.0"} } }
+      let!(:user) { create :public_user, sms_code: "123456"}
+      before { post 'login', user: {phone: user.phone, sms_code: "123456"}, format: 'json' }
+      it { expect(response.status).to eq(401) }
+    end
+    context "public user with version 1.2.0" do
+      before { ApiRequest.any_instance.stub(:key_infos) { {version: "1.2.0"} } }
+      let!(:user) { create :public_user, sms_code: "123456"}
+      before { post 'login', user: {phone: user.phone, sms_code: "123456"}, format: 'json' }
+      it { expect(response.status).to eq(200) }
+    end
   end
 
   describe 'PATCH update' do
