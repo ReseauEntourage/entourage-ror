@@ -27,7 +27,7 @@ describe Api::V1::Tours::UsersController do
         before { JoinRequest.create(user: user, joinable: tour) }
         before { post :create, tour_id: tour.to_param, token: user.token }
         it { expect(tour.members).to eq([user]) }
-        it { expect(JSON.parse(response.body)).to eq("message"=>"Could not create tour participation request", "reasons"=>["Joinable a déjà été ajouté"]) }
+        it { expect(JSON.parse(response.body)).to eq("message"=>"Could not create entourage participation request", "reasons"=>["Joinable a déjà été ajouté"]) }
         it { expect(response.status).to eq(400) }
       end
 
@@ -83,13 +83,13 @@ describe Api::V1::Tours::UsersController do
     context "signed in as accepted member of the tour" do
       let(:requester) { FactoryGirl.create(:pro_user) }
       let!(:tour_member) { JoinRequest.create(user: user, joinable: tour, status: "accepted") }
-      let!(:tour_requested) { JoinRequest.create(user: requester, joinable: tour, status: "pending") }
+      let!(:tour_requester) { JoinRequest.create(user: requester, joinable: tour, status: "pending") }
 
       context "valid params" do
         before { FactoryGirl.create(:android_app) }
         before { patch :update, tour_id: tour.to_param, id: requester.id, user: {status: "accepted"}, token: user.token }
         it { expect(response.status).to eq(204) }
-        it { expect(tour_requested.reload.status).to eq("accepted") }
+        it { expect(tour_requester.reload.status).to eq("accepted") }
       end
 
       it "sends a notifications to tour members" do
@@ -105,13 +105,13 @@ describe Api::V1::Tours::UsersController do
       context "invalid status" do
         before { patch :update, tour_id: tour.to_param, id: requester.id, user: {status: "foobar"}, token: user.token }
         it { expect(response.status).to eq(400) }
-        it { expect(tour_requested.reload.status).to eq("pending") }
+        it { expect(tour_requester.reload.status).to eq("pending") }
       end
 
       context "invalid params" do
         before { patch :update, tour_id: tour.to_param, id: requester.id, status: "foobar", token: user.token }
         it { expect(response.status).to eq(400) }
-        it { expect(tour_requested.reload.status).to eq("pending") }
+        it { expect(tour_requester.reload.status).to eq("pending") }
       end
     end
 
