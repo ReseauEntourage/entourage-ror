@@ -22,7 +22,7 @@ module Api
 
       def authenticate_user!
         if current_user
-          UserServices::LoginHistoryService.new(user: current_user).record_login!
+          #UserServices::LoginHistoryService.new(user: current_user).record_login!
         else
           render json: {message: 'unauthorized'}, status: :unauthorized
         end

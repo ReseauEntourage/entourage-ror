@@ -30,13 +30,6 @@
   </div>
 
   <div class="control-group">
-    <%= f.label :sms_code,"Code SMS", class: "control-label" %>
-    <div class="controls">
-      <%= f.text_field :sms_code, class: "form-control", required: true %>
-    </div>
-  </div>
-
-  <div class="control-group">
     <%= f.label :organization,"Association", class: "control-label" %>
     <div class="controls">
       <%= f.collection_select(:organization_id, Organization.all, :id, :name, {selected: @user.try(:organization).try(:id) }, {class: "organizations-select"}) %>
@@ -58,6 +51,16 @@
       </div>
     </div>
   <% end %>
+  <br>
+
+  <div class="control-group" id="sms_group">
+    <%= f.label :sms_code,"Code SMS", class: "control-label" %>
+    <div class="controls">
+      <%= f.text_field :sms_code, class: "form-control", required: true %>
+    </div>
+  </div>
+  <%= link_to "Modifier le code SMS", "#", id: "change_password" %>
+  <br>
 
   <br>
   <%= f.submit "Sauver", class: "btn btn-success" %>
