@@ -6,6 +6,7 @@ class SmsNotificationService
   def send_notification(phone_number, message)
     if (ENV.key?('SINCH_API_KEY') && ENV.key?('SINCH_API_SECRET'))
       notification_pusher.send(ENV['SINCH_API_KEY'], ENV['SINCH_API_SECRET'], message, phone_number)
+      Rails.logger.info "Sent SMS to #{phone_number}"
     else
       Rails.logger.warn 'No SMS has been sent. Please provide SINCH_API_KEY and SINCH_API_SECRET environment variables'
     end

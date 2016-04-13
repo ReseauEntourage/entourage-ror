@@ -8,12 +8,6 @@ Rails.application.routes.draw do
 
       resources :generate_tours, only: [:index, :create]
 
-      resources :sessions, only: [:none] do
-        collection do
-          get 'switch_user'
-        end
-      end
-
       resources :users, only: [:index, :edit, :update, :new, :create] do
         collection do
           get 'moderate'
@@ -121,7 +115,11 @@ Rails.application.routes.draw do
   end
 
   #WEB
-  resources :sessions, only: [:new, :create, :destroy]
+  resources :sessions, only: [:new, :create, :destroy] do
+    collection do
+      get 'switch_user' => 'admin/sessions#switch_user'
+    end
+  end
   resources :organizations, only: [:new, :create, :edit, :update] do
     collection do
       get 'dashboard'
