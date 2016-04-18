@@ -15,12 +15,14 @@ ActiveRecord::Schema.define(version: 20160416072946) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+  enable_extension "pg_stat_statements"
 
-  create_table "active_admin_comments", force: :cascade do |t|
+  create_table "active_admin_comments", id: false, force: :cascade do |t|
+    t.integer  "id",                        default: "nextval('active_admin_comments_id_seq'::regclass)", null: false
     t.string   "namespace",     limit: 255
     t.text     "body"
-    t.string   "resource_id",   limit: 255, null: false
-    t.string   "resource_type", limit: 255, null: false
+    t.string   "resource_id",   limit: 255,                                                               null: false
+    t.string   "resource_type", limit: 255,                                                               null: false
     t.integer  "author_id"
     t.string   "author_type",   limit: 255
     t.datetime "created_at"
