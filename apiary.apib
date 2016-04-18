@@ -900,10 +900,6 @@ Encounters occured during tour
 
 + Response 404 (application/json; charset=utf-8)
 
-    + Parameters
-
-        tour_id = 233232
-
     + Body
 
             {"error":{"status":404,"message":"Could not find tour with id 233232"}}
@@ -1250,6 +1246,47 @@ Entourages related resources of the **Entourage API**
 + Response 400 (application/json; charset=utf-8)
 
         {"error":{"status":400,"message":"Could not update entourage","reasons":["Entourage type unknown"]}}
+
++ Response 401 (application/json; charset=utf-8)
+
+        {"error":{"status":401,"message":"Please sign-in"}}
+        
+        
+
+## Entourage Invitation [/entourages/{id}/invitations{?token}]
++ Parameters
+    + id (required, integer, `1`) ... Identifier of the entourage
+    + token (required, string, `FAKETOKEN`) ... Token identifying the current user
+
+### Ivite someone by SMS [POST]
++ Request (application/json)
+
+    + Header
+
+            Accept: application/json
+            
+    + Body
+
+            {
+                "invite": {
+                    "mode": "SMS",
+                    "phone_number": "+33612345678"
+                }
+            }
+
++ Response 201 (application/json; charset=utf-8)
+
+            {
+                "invite": {
+                    "id": 123,
+                    "mode": "SMS",
+                    "phone_number": "+33612345678"
+                }
+            }
+
++ Response 404 (application/json; charset=utf-8)
+
+        {"error":{"status":404,"message":"Could not find entourage with id 233232"}}
 
 + Response 401 (application/json; charset=utf-8)
 
