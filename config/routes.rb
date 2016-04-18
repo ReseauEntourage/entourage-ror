@@ -105,6 +105,7 @@ Rails.application.routes.draw do
 
       resources :entourages, only: [:index, :show, :create, :update] do
         resources :users, :controller => 'entourages/users', only: [:index, :destroy, :update, :create]
+        resources :invitations, :controller => 'entourages/invitations', only: [:create]
       end
       resources :contacts, only: [:update]
 

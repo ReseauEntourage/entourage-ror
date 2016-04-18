@@ -139,4 +139,10 @@ describe User, :type => :model do
     UserRelationship.create!(source_user: user1, target_user: user2, relation_type: UserRelationship::TYPE_INVITE )
     expect(user1.relations).to eq([user2])
   end
+
+  it "has many invitations" do
+    user = FactoryGirl.create(:public_user)
+    invitation = FactoryGirl.create(:entourage_invitation, invitee: user)
+    expect(user.invitations).to eq([invitation])
+  end
 end

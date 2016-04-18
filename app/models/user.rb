@@ -21,6 +21,7 @@ class User < ActiveRecord::Base
   has_many :user_applications
   has_many :user_relationships, foreign_key: "source_user_id", dependent: :destroy
   has_many :relations, through: :user_relationships, source: "target_user"
+  has_many :invitations, class_name: "EntourageInvitation", foreign_key: "invitee_id"
 
   enum device_type: [ :android, :ios ]
 
