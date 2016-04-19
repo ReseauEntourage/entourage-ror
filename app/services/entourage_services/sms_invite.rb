@@ -3,12 +3,17 @@ module EntourageServices
     def initialize(phone_number:, entourage:, inviter:)
       @phone_number = phone_number
       @entourage = entourage
-      @callback = Callback.new
+      @callback = SmsInviteCallback.new
       @inviter = inviter
     end
 
     def send_invite
       yield callback if block_given?
+
+      if EntouragesUser.where(user: inviter, entourage: entourage, status: "accepted").first.nil?
+        return callback.on_not_part_of_entourage.try(:call)
+      end
+
       invite = EntourageInvitation.new(invitable: entourage,
                                        inviter: inviter,
                                        phone_number: phone_number,
@@ -22,5 +27,13 @@ module EntourageServices
 
     private
     attr_reader :phone_number, :entourage, :callback, :inviter
+  end
+
+  class SmsInviteCallback < Callback
+    attr_accessor :on_not_part_of_entourage
+
+    def not_part_of_entourage(&block)
+      @on_not_part_of_entourage = block
+    end
   end
 end
