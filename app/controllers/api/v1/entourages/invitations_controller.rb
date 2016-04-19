@@ -5,17 +5,18 @@ module Api
         before_action :set_entourage
 
         def create
-          sms_invite = EntourageServices::SmsInvite.new(phone_number: invite_params[:phone_number], entourage: entourage)
+          sms_invite = EntourageServices::SmsInvite.new(phone_number: invite_params[:phone_number],
+                                                        entourage: entourage,
+                                                        inviter: @current_user)
           sms_invite.send_invite do |on|
             on.success do |invite|
-
+              render json: invite, root: "invite", status: 201, serializer: ::V1::EntourageInvitationSerializer
             end
 
             on.failure do |invite|
-
+              render json: {message: 'Could not create entourage invitation', reasons: invite.errors.full_messages}, status: :bad_request
             end
           end
-          render json: :ok
         end
 
         private

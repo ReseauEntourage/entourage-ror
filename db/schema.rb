@@ -90,6 +90,7 @@ ActiveRecord::Schema.define(version: 20160418143631) do
 
   add_index "entourage_invitations", ["invitable_id", "invitable_type"], name: "index_entourage_invitations_on_invitable_id_and_invitable_type", using: :btree
   add_index "entourage_invitations", ["invitee_id"], name: "index_entourage_invitations_on_invitee_id", using: :btree
+  add_index "entourage_invitations", ["inviter_id", "phone_number", "invitable_id", "invitable_type"], name: "unique_invitation_by_entourage", unique: true, using: :btree
   add_index "entourage_invitations", ["inviter_id"], name: "index_entourage_invitations_on_inviter_id", using: :btree
   add_index "entourage_invitations", ["phone_number"], name: "index_entourage_invitations_on_phone_number", using: :btree
 
