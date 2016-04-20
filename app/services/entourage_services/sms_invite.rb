@@ -39,6 +39,7 @@ module EntourageServices
       return @invitee  if @invitee
       @invitee = UserServices::PublicUserBuilder.new(params: {phone: phone_number}).create(send_sms: false)
       raise ActiveRecord::RecordInvalid.new(@invitee) unless @invitee.valid?
+      @invitee
     end
 
     def message
