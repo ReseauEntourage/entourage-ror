@@ -14,18 +14,20 @@ module EntourageServices
         return callback.on_not_part_of_entourage.try(:call)
       end
 
-      Faire une transaction :
-      créer le user puis l'invitation
+      begin
+        invite = EntourageInvitation.new(invitable: entourage,
+                                         inviter: inviter,
+                                         phone_number: phone_number,
+                                         invitation_mode: EntourageInvitation::MODE_SMS)
+        ActiveRecord::Base.transaction do
+          invite.save!
 
-      invite = EntourageInvitation.new(invitable: entourage,
-                                       inviter: inviter,
-                                       phone_number: phone_number,
-                                       invitation_mode: EntourageInvitation::MODE_SMS)
-
-      if invite.save
-        SmsSenderJob.perform_later(phone_number, message)
-        callback.on_success.try(:call, invite)
-      else
+          SmsSenderJob.perform_later(phone_number, message)
+          callback.on_success.try(:call, invite)
+        end
+      rescue ActiveRecord::RecordInvalid => e
+        Rails.logger.error e.message
+        Rails.logger.error e.backtrace.join("\n")
         callback.on_failure.try(:call, invite)
       end
     end
@@ -33,8 +35,14 @@ module EntourageServices
     private
     attr_reader :phone_number, :entourage, :callback, :inviter
 
+    def invitee
+      return @invitee  if @invitee
+      @invitee = UserServices::PublicUserBuilder.new(params: {phone: phone_number}).create(send_sms: false)
+      raise ActiveRecord::RecordInvalid.new(@invitee) unless @invitee.valid?
+    end
+
     def message
-      "Bonjour, vous êtes invité à rejoindre un Entourage. Votre code est #{sms_code}. Retrouvez l'application ici : #{link} ."
+      "Bonjour, vous êtes invité à rejoindre un Entourage. Votre code est #{invitee.sms_code}. Retrouvez l'application ici : #{link} ."
     end
 
     def link

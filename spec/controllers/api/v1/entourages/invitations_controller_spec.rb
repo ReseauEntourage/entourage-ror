@@ -18,6 +18,7 @@ describe Api::V1::Entourages::InvitationsController do
         context "valid params" do
           before { post :create, entourage_id: entourage.to_param, invite: {mode: "SMS", phone_number: "+33612345678"}, token: user.token }
           it { expect(EntourageInvitation.count).to eq(1) }
+          #it { expect(User.where(id: EntourageInvitation.last.invitee_id).to_not be_nil) }
           it { expect(result).to eq({"invite"=>{
               "id"=>EntourageInvitation.last.id,
               "inviter_id"=>user.id,
@@ -39,6 +40,10 @@ describe Api::V1::Entourages::InvitationsController do
         let(:entourage_invitation) { FactoryGirl.create(:entourage_invitation, invitable: entourage, inviter: user, phone_number: "+33612345678") }
         before { post :create, entourage_id: entourage.to_param, invite: {mode: "SMS", phone_number: "+33612345678"}, token: user.token }
         it { expect(response.status).to eq(403) }
+      end
+
+      context "a user with same phone number already exists" do
+
       end
     end
 
