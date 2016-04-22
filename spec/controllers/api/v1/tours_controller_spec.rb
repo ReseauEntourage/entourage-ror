@@ -3,6 +3,162 @@ require 'rails_helper'
 RSpec.describe Api::V1::ToursController, :type => :controller do
   render_views
 
+  describe "GET index" do
+
+    let!(:user) { FactoryGirl.create :pro_user }
+    let(:date) { Date.parse("10/10/2010") }
+    before { Timecop.freeze(Time.parse("10/10/2010").at_beginning_of_day) }
+
+    context "without parameter" do
+      before(:each) do
+        11.times do |i|
+          FactoryGirl.create :tour, updated_at:date+i.hours
+        end
+      end
+
+      before { get 'index', token: user.token, format: :json }
+
+      it { expect(response.status).to eq 200 }
+      it { expect(assigns(:tours).count).to eq(10) }
+      it { expect(assigns(:tours).all? {|t| t.updated_at >= Date.parse("10/10/2010").at_beginning_of_day }).to be true }
+    end
+
+    it "responds with tours" do
+      Timecop.freeze(DateTime.parse("10/10/2010").at_beginning_of_day)
+      tours = FactoryGirl.create_list :tour, 2
+
+      get 'index', token: user.token, format: :json
+
+      res = JSON.parse(response.body)
+      expect(res).to eq({"tours"=>[
+          {"id"=>tours.first.id,
+           "tour_type"=>"medical",
+           "status"=>"ongoing",
+           "vehicle_type"=>"feet",
+           "distance"=>0,
+           "start_time"=>tours.first.created_at.iso8601(3),
+           "end_time"=>nil,
+           "organization_name"=>tours.first.user.organization.name,
+           "organization_description"=>"Association description",
+           "author"=>{"id"=>tours.first.user.id, "display_name"=>"John", "avatar_url"=>nil},
+           "number_of_people"=> 1,
+           "join_status"=>"not_requested",
+           "tour_points"=>[],
+           "number_of_unread_messages"=>nil},
+          {"id"=>tours.last.id,
+           "tour_type"=>"medical",
+           "status"=>"ongoing",
+           "vehicle_type"=>"feet",
+           "distance"=>0,
+           "start_time"=>tours.last.created_at.iso8601(3),
+           "end_time"=>nil,
+           "organization_name"=>tours.last.user.organization.name,
+           "organization_description"=>"Association description",
+           "author"=>{"id"=>tours.last.user.id, "display_name"=>"John", "avatar_url"=>nil},
+           "number_of_people"=> 1,
+           "join_status"=>"not_requested",
+           "tour_points"=>[],
+           "number_of_unread_messages"=>nil}]})
+    end
+
+    context "with limit parameter" do
+      before(:each) do
+        3.times do |i|
+          FactoryGirl.create :tour, updated_at:date+i.days
+        end
+      end
+
+      it "returns limit tours" do
+        get 'index', token: user.token, per: 2, :format => :json
+        expect(JSON.parse(response.body)["tours"].count).to eq(2)
+      end
+    end
+
+    context "with type parameter" do
+
+      let!(:tour1) { FactoryGirl.create :tour, tour_type:'medical' }
+      let!(:tour2) { FactoryGirl.create :tour, tour_type:'medical' }
+      let!(:tour3) { FactoryGirl.create :tour, tour_type:'alimentary' }
+      let!(:tour4) { FactoryGirl.create :tour, tour_type:'alimentary' }
+      let!(:tour5) { FactoryGirl.create :tour, tour_type:'medical' }
+
+      it "returns status 200" do
+        get 'index', token: user.token, type:'alimentary', :format => :json
+        expect(response.status).to eq 200
+      end
+
+      it "returns only matching type tours" do
+        get 'index', token: user.token, type:'alimentary', :format => :json
+        expect(assigns(:tours)).to match_array([tour4, tour3])
+      end
+
+    end
+
+    context "with vehicle type parameter" do
+
+      let!(:tour1) { FactoryGirl.create :tour, vehicle_type:'feet' }
+      let!(:tour2) { FactoryGirl.create :tour, vehicle_type:'feet' }
+      let!(:tour3) { FactoryGirl.create :tour, vehicle_type:'car' }
+      let!(:tour4) { FactoryGirl.create :tour, vehicle_type:'car' }
+      let!(:tour5) { FactoryGirl.create :tour, vehicle_type:'feet' }
+
+      it "returns status 200" do
+        get 'index', token: user.token, vehicle_type:'car', :format => :json
+        expect(response.status).to eq 200
+      end
+
+      it "returns only matching vehicle type tours" do
+        get 'index', token: user.token, vehicle_type:'car', :format => :json
+        expect(assigns(:tours)).to match_array([tour4, tour3])
+      end
+
+    end
+
+    context "with location parameter" do
+
+      let!(:tour1) { FactoryGirl.create :tour }
+      let!(:tour_point1) { FactoryGirl.create :tour_point, tour: tour1, latitude: 10, longitude: 12 }
+      let!(:tour2) { FactoryGirl.create :tour }
+      let!(:tour_point2) { FactoryGirl.create :tour_point, tour: tour2, latitude: 9.9, longitude: 10.1 }
+      let!(:tour3) { FactoryGirl.create :tour }
+      let!(:tour_point3) { FactoryGirl.create :tour_point, tour: tour3, latitude: 10, longitude: 10 }
+      let!(:tour4) { FactoryGirl.create :tour }
+      let!(:tour_point4) { FactoryGirl.create :tour_point, tour: tour4, latitude: 10.05, longitude: 9.95 }
+      let!(:tour5) { FactoryGirl.create :tour }
+      let!(:tour_point5) { FactoryGirl.create :tour_point, tour: tour5, latitude: 12, longitude: 10 }
+
+      it "returns status 200" do
+        get 'index', token: user.token, latitude: 10.0, longitude: 10.0, :format => :json
+        expect(response.status).to eq 200
+      end
+
+      it "returns only matching location tours" do
+        get 'index', token: user.token, latitude: 10.0, longitude: 10.0, :format => :json
+        expect(assigns(:tours)).to match_array([tour4, tour3])
+      end
+
+      it "returns only matching location tours with provided distance" do
+        get 'index', token: user.token, latitude: 10.0, longitude: 10.0, distance: 20.0, :format => :json
+        expect(assigns(:tours)).to match_array([tour4, tour3, tour2])
+      end
+
+    end
+
+    context "with status parameter" do
+      let!(:ongoing_tour) { FactoryGirl.create :tour, status: "ongoing" }
+      let!(:closed_tour) { FactoryGirl.create :tour, status: "closed" }
+      before { get 'index', token: user.token, status: "ongoing", format: :json }
+      it { expect(JSON.parse(response.body)["tours"].count).to eq(1) }
+      it { expect(JSON.parse(response.body)["tours"].first["id"]).to eq(ongoing_tour.id) }
+    end
+
+    context "public user" do
+      let(:public_user) { FactoryGirl.create(:public_user) }
+      before { get 'index', token: public_user.token, status: "ongoing", format: :json }
+      it { expect(response.status).to eq(403) }
+    end
+  end
+
   describe "POST create" do
     let!(:user) { FactoryGirl.create :pro_user }
     let!(:tour) { FactoryGirl.build :tour }
@@ -247,156 +403,5 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
       it { expect(response.status).to eq(403) }
     end
 
-  end
-  
-  describe "GET index" do
-    
-    let!(:user) { FactoryGirl.create :pro_user }
-    let(:date) { Date.parse("10/10/2010") }
-    before { Timecop.freeze(Time.parse("10/10/2010").at_beginning_of_day) }
-
-    context "without parameter" do
-      before(:each) do
-        11.times do |i|
-          FactoryGirl.create :tour, updated_at:date+i.hours
-        end
-      end
-
-      before { get 'index', token: user.token, format: :json }
-         
-      it { expect(response.status).to eq 200 }
-      it { expect(assigns(:tours).count).to eq(10) }
-      it { expect(assigns(:tours).all? {|t| t.updated_at >= Date.parse("10/10/2010").at_beginning_of_day }).to be true }
-    end
-
-    it "responds with tours" do
-      Timecop.freeze(DateTime.parse("10/10/2010").at_beginning_of_day)
-      tours = FactoryGirl.create_list :tour, 2
-
-      get 'index', token: user.token, format: :json
-
-      res = JSON.parse(response.body)
-      expect(res).to eq({"tours"=>[
-          {"id"=>tours.first.id,
-           "tour_type"=>"medical",
-           "status"=>"ongoing",
-           "vehicle_type"=>"feet",
-           "distance"=>0,
-           "start_time"=>tours.first.created_at.iso8601(3),
-           "end_time"=>nil,
-           "organization_name"=>tours.first.user.organization.name,
-           "organization_description"=>"Association description",
-           "author"=>{"id"=>tours.first.user.id, "display_name"=>"John", "avatar_url"=>nil},
-           "number_of_people"=> 1,
-           "join_status"=>"not_requested",
-           "tour_points"=>[],
-           "number_of_unread_messages"=>nil},
-          {"id"=>tours.last.id,
-           "tour_type"=>"medical",
-           "status"=>"ongoing",
-           "vehicle_type"=>"feet",
-           "distance"=>0,
-           "start_time"=>tours.last.created_at.iso8601(3),
-           "end_time"=>nil,
-           "organization_name"=>tours.last.user.organization.name,
-           "organization_description"=>"Association description",
-           "author"=>{"id"=>tours.last.user.id, "display_name"=>"John", "avatar_url"=>nil},
-           "number_of_people"=> 1,
-           "join_status"=>"not_requested",
-           "tour_points"=>[],
-           "number_of_unread_messages"=>nil}]})
-    end
-     
-    context "with limit parameter" do
-      before(:each) do
-        5.times do |i|
-          FactoryGirl.create :tour, updated_at:date+i.days
-        end
-      end
-         
-      it "returns status 200" do
-        get 'index', token: user.token, limit: 3, :format => :json
-        expect(response.status).to eq 200
-      end
-       
-    end
-     
-    context "with type parameter" do 
-     
-      let!(:tour1) { FactoryGirl.create :tour, tour_type:'medical' }
-      let!(:tour2) { FactoryGirl.create :tour, tour_type:'medical' }
-      let!(:tour3) { FactoryGirl.create :tour, tour_type:'alimentary' }
-      let!(:tour4) { FactoryGirl.create :tour, tour_type:'alimentary' }
-      let!(:tour5) { FactoryGirl.create :tour, tour_type:'medical' }
-         
-      it "returns status 200" do
-        get 'index', token: user.token, type:'alimentary', :format => :json
-        expect(response.status).to eq 200
-      end
-      
-      it "returns only matching type tours" do
-        get 'index', token: user.token, type:'alimentary', :format => :json
-        expect(assigns(:tours)).to match_array([tour4, tour3])
-      end
-       
-    end
-    
-    context "with vehicle type parameter" do 
-     
-      let!(:tour1) { FactoryGirl.create :tour, vehicle_type:'feet' }
-      let!(:tour2) { FactoryGirl.create :tour, vehicle_type:'feet' }
-      let!(:tour3) { FactoryGirl.create :tour, vehicle_type:'car' }
-      let!(:tour4) { FactoryGirl.create :tour, vehicle_type:'car' }
-      let!(:tour5) { FactoryGirl.create :tour, vehicle_type:'feet' }
-         
-      it "returns status 200" do
-        get 'index', token: user.token, vehicle_type:'car', :format => :json
-        expect(response.status).to eq 200
-      end
-      
-      it "returns only matching vehicle type tours" do
-        get 'index', token: user.token, vehicle_type:'car', :format => :json
-        expect(assigns(:tours)).to match_array([tour4, tour3])
-      end
-       
-    end
-    
-    context "with location parameter" do 
-     
-      let!(:tour1) { FactoryGirl.create :tour }
-      let!(:tour_point1) { FactoryGirl.create :tour_point, tour: tour1, latitude: 10, longitude: 12 }
-      let!(:tour2) { FactoryGirl.create :tour }
-      let!(:tour_point2) { FactoryGirl.create :tour_point, tour: tour2, latitude: 9.9, longitude: 10.1 }
-      let!(:tour3) { FactoryGirl.create :tour }
-      let!(:tour_point3) { FactoryGirl.create :tour_point, tour: tour3, latitude: 10, longitude: 10 }
-      let!(:tour4) { FactoryGirl.create :tour }
-      let!(:tour_point4) { FactoryGirl.create :tour_point, tour: tour4, latitude: 10.05, longitude: 9.95 }
-      let!(:tour5) { FactoryGirl.create :tour }
-      let!(:tour_point5) { FactoryGirl.create :tour_point, tour: tour5, latitude: 12, longitude: 10 }
-         
-      it "returns status 200" do
-        get 'index', token: user.token, latitude: 10.0, longitude: 10.0, :format => :json
-        expect(response.status).to eq 200
-      end
-      
-      it "returns only matching location tours" do
-        get 'index', token: user.token, latitude: 10.0, longitude: 10.0, :format => :json
-        expect(assigns(:tours)).to match_array([tour4, tour3])
-      end
-      
-      it "returns only matching location tours with provided distance" do
-        get 'index', token: user.token, latitude: 10.0, longitude: 10.0, distance: 20.0, :format => :json
-        expect(assigns(:tours)).to match_array([tour4, tour3, tour2])
-      end
-       
-    end
-
-    context "with status parameter" do
-      let!(:ongoing_tour) { FactoryGirl.create :tour, status: "ongoing" }
-      let!(:closed_tour) { FactoryGirl.create :tour, status: "closed" }
-      before { get 'index', token: user.token, status: "ongoing", format: :json }
-      it { expect(JSON.parse(response.body)["tours"].count).to eq(1) }
-      it { expect(JSON.parse(response.body)["tours"].first["id"]).to eq(ongoing_tour.id) }
-    end
   end
 end
