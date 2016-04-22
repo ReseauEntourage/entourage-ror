@@ -9,6 +9,7 @@ describe Api::V1::Entourages::InvitationsController do
   describe 'POST create' do
     context "user not signed in" do
       before { post :create, entourage_id: entourage.to_param }
+      it { expect(response.status).to eq(401) }
     end
 
     context "user signed in" do
@@ -19,12 +20,14 @@ describe Api::V1::Entourages::InvitationsController do
           before { post :create, entourage_id: entourage.to_param, invite: {mode: "SMS", phone_number: "+33612345678"}, token: user.token }
           it { expect(EntourageInvitation.count).to eq(1) }
           it { expect(result).to eq({"invite"=>{
-              "id"=>EntourageInvitation.last.id,
-              "inviter_id"=>user.id,
-              "invitation_mode"=>"SMS",
-              "phone_number"=>"+33612345678",
-              "entourage_id"=>entourage.id}
-                                    }) }
+                                                "id"=>EntourageInvitation.last.id,
+                                                "inviter_id"=>user.id,
+                                                "invitation_mode"=>"SMS",
+                                                "phone_number"=>"+33612345678",
+                                                "entourage_id"=>entourage.id,
+                                                "accepted"=>false
+                                                }
+                                      }) }
         end
 
         context "invitation already exists" do
