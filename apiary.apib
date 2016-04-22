@@ -311,10 +311,10 @@ vehicle_type is either "feet" or "car"
 + Parameters
     + token (required, string, `FAKETOKEN`) ... Token identifying the current user
 
-### Retrieve tours [GET /tours{?token}{&limit}{&type}{&vehicle_type}{&latitude}{&longitude}{&distance}{&status}]
+### Retrieve tours [GET /tours{?token}{&per}{&type}{&vehicle_type}{&latitude}{&longitude}{&distance}{&status}]
 
 + Parameters
-    + limit (optional, number, `15`) ... Max number of tours to return. 10 if not defined
+    + per (optional, number, `15`) ... Max number of tours to return. 10 if not defined
     + type: `medical` (optional, string)
 
         Type of tours to filter
