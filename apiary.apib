@@ -1258,7 +1258,7 @@ Entourages related resources of the **Entourage API**
     + id (required, integer, `1`) ... Identifier of the entourage
     + token (required, string, `FAKETOKEN`) ... Token identifying the current user
 
-### Ivite someone by SMS [POST]
+### Invite someone by SMS [POST]
 + Request (application/json)
 
     + Header
@@ -1289,6 +1289,46 @@ Entourages related resources of the **Entourage API**
 + Response 404 (application/json; charset=utf-8)
 
         {"error":{"status":404,"message":"Could not find entourage with id 233232"}}
+
++ Response 401 (application/json; charset=utf-8)
+
+        {"error":{"status":401,"message":"Please sign-in"}}
+        
+
+
+# Group Invitations collection
+
+## Users Invitation [/invitations{?token}]
++ Parameters
+    + token (required, string, `FAKETOKEN`) ... Token identifying the current user
+
+### List user invitation [GET]
++ Request (application/json)
+
+    + Header
+
+            Accept: application/json
+            
++ Response 200 (application/json; charset=utf-8)
+
+            {
+                "invitations": [{
+                    "id": 123,
+                    "invitation_mode": "SMS",
+                    "phone_number": "+33612345678",
+                    "inviter_id": 123,
+                    "entourage_id": 123,
+                    "accepted": true
+                },
+                {
+                    "id": 123,
+                    "invitation_mode": "SMS",
+                    "phone_number": "+33612345678",
+                    "inviter_id": 123,
+                    "entourage_id": 123,
+                    "accepted": false
+                }]
+            }
 
 + Response 401 (application/json; charset=utf-8)
 
