@@ -98,10 +98,21 @@ describe Api::V1::Entourages::UsersController do
     end
 
     context "signed in" do
-      let!(:join_request) { JoinRequest.create(user: user, joinable: entourage, status: "accepted") }
-      before { delete :destroy, entourage_id: entourage.to_param, id: user.id, token: user.token }
-      it { expect(response.status).to eq(200) }
-      it { expect(join_request.reload.status).to eq("rejected") }
+      context "reject someone from tour" do
+        let!(:other_user) { FactoryGirl.create(:pro_user) }
+        let!(:other_join_request) { JoinRequest.create(user: other_user, joinable: entourage, status: "accepted") }
+        let!(:my_join_request) { JoinRequest.create(user: user, joinable: entourage, status: "accepted") }
+        before { delete :destroy, entourage_id: entourage.to_param, id: other_user.id, token: user.token }
+        it { expect(response.status).to eq(200) }
+        it { expect(other_join_request.reload.status).to eq("rejected") }
+        it { expect(my_join_request.reload.status).to eq("accepted") }
+      end
+
+      context "quit tour" do
+        let!(:my_join_request) { JoinRequest.create(user: user, joinable: entourage, status: "accepted") }
+        before { delete :destroy, entourage_id: entourage.to_param, id: user.id, token: user.token }
+        it { expect(JoinRequest.where(id: my_join_request.id)).to eq([]) }
+      end
     end
 
     context "not accepted in tour" do

@@ -51,6 +51,11 @@ module TourServices
       end
     end
 
+    def quit!
+      decrement_counter
+      join_request.destroy
+    end
+
     def decrement_counter
       joinable.class.decrement_counter(:number_of_people, joinable.id)
     end
