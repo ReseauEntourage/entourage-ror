@@ -1,4 +1,8 @@
 class JoinRequest < ActiveRecord::Base
+  ACCEPTED_STATUS="accepted"
+  PENDING_STATUS="pending"
+  REJECTED_STATUS="rejected"
+
   belongs_to :user
   belongs_to :joinable, polymorphic: true
 

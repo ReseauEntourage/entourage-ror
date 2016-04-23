@@ -14,7 +14,7 @@ describe Api::V1::Entourages::InvitationsController do
 
     context "user signed in" do
       context "inviter accepted in entourage" do
-        before { EntouragesUser.create(user: user, entourage: entourage, status: "accepted") }
+        before { FactoryGirl.create(:join_request, user: user, joinable: entourage, status: JoinRequest::ACCEPTED_STATUS) }
 
         context "valid params" do
           before { post :create, entourage_id: entourage.to_param, invite: {mode: "SMS", phone_number: "+33612345678"}, token: user.token }
