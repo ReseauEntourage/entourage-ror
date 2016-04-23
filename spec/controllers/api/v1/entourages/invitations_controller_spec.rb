@@ -19,6 +19,8 @@ describe Api::V1::Entourages::InvitationsController do
         context "valid params" do
           before { post :create, entourage_id: entourage.to_param, invite: {mode: "SMS", phone_number: "+33612345678"}, token: user.token }
           it { expect(EntourageInvitation.count).to eq(1) }
+          it { expect(User.count).to eq(3) }
+          it { expect(User.where(id: EntourageInvitation.last.invitee_id)).to_not be_nil }
           it { expect(result).to eq({"invite"=>{
                                                 "id"=>EntourageInvitation.last.id,
                                                 "inviter_id"=>user.id,
@@ -30,11 +32,29 @@ describe Api::V1::Entourages::InvitationsController do
                                       }) }
         end
 
+        it "sends sms if valid params" do
+          expect(SmsSenderJob).to receive(:perform_later)
+          post :create, entourage_id: entourage.to_param, invite: {mode: "SMS", phone_number: "+33612345678"}, token: user.token
+        end
+
         context "invitation already exists" do
           let!(:entourage_invitation) { FactoryGirl.create(:entourage_invitation, invitable: entourage, inviter: user, phone_number: "+33612345678") }
           before { post :create, entourage_id: entourage.to_param, invite: {mode: "SMS", phone_number: "+33612345678"}, token: user.token }
           it { expect(EntourageInvitation.all).to eq([entourage_invitation]) }
           it { expect(response.status).to eq(400) }
+        end
+
+        context "a user with same phone number already exists" do
+          let!(:existing_user) { FactoryGirl.create(:public_user, phone: "+33612345678") }
+          before { post :create, entourage_id: entourage.to_param, invite: {mode: "SMS", phone_number: "+33612345678"}, token: user.token }
+          it { expect(EntourageInvitation.count).to eq(0) }
+          it { expect(User.count).to eq(3) }
+        end
+
+        it "doesn't sends sms if user already exists" do
+          FactoryGirl.create(:entourage_invitation, invitable: entourage, inviter: user, phone_number: "+33612345678")
+          expect(SmsSenderJob).to_not receive(:perform_later)
+          post :create, entourage_id: entourage.to_param, invite: {mode: "SMS", phone_number: "+33612345678"}, token: user.token
         end
       end
 
