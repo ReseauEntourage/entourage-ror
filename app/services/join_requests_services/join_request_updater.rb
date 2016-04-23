@@ -31,6 +31,12 @@ module JoinRequestsServices
       end
 
       user_status = TourServices::JoinRequestStatus.new(join_request: @join_request)
+
+      if join_request.user == current_user
+        user_status.quit!
+        return callback.on_success.try(:call, join_request)
+      end
+
       if user_status.reject!
         callback.on_success.try(:call, join_request)
       else
