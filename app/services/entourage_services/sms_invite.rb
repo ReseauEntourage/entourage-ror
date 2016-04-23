@@ -10,7 +10,7 @@ module EntourageServices
     def send_invite
       yield callback if block_given?
 
-      if EntouragesUser.where(user: inviter, entourage: entourage, status: "accepted").first.nil?
+      if JoinRequest.where(user: inviter, joinable: entourage, status: JoinRequest::ACCEPTED_STATUS).blank?
         return callback.on_not_part_of_entourage.try(:call)
       end
 

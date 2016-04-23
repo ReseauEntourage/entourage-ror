@@ -12,7 +12,7 @@ module V1
     end
 
     def accepted
-      EntouragesUser.where(entourage: object.invitable, user: object.invitee).present?
+      JoinRequest.where(joinable: object.invitable, user: object.invitee, status: JoinRequest::ACCEPTED_STATUS).present?
     end
   end
 end

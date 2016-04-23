@@ -65,8 +65,7 @@ module V1
     end
 
     def current_join_request
-      #TODO : replace by sql request ?
-      object.join_requests.select {|join_request| join_request.user_id == scope.id}.first
+      JoinRequest.where(user_id: scope.id, joinable: object).first
     end
   end
 end

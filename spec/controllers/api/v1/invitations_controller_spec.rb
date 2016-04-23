@@ -30,7 +30,7 @@ describe Api::V1::InvitationsController do
 
     context "belongs to entourage" do
       let!(:entourage) { FactoryGirl.create(:entourage) }
-      before { EntouragesUser.create(user: user, entourage: entourage, status: "accepted") }
+      before { FactoryGirl.create(:join_request, user: user, joinable: entourage, status: JoinRequest::ACCEPTED_STATUS) }
       let!(:invitation) { FactoryGirl.create(:entourage_invitation, invitee: user, invitable: entourage ) }
       before { get :index, token: user.token }
       it { expect(result["invitations"][0]["accepted"]).to be true }
