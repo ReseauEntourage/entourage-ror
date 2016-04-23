@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160418143631) do
+ActiveRecord::Schema.define(version: 20160423070425) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -116,6 +116,7 @@ ActiveRecord::Schema.define(version: 20160418143631) do
     t.datetime "created_at",                            null: false
     t.datetime "updated_at",                            null: false
     t.datetime "last_message_read"
+    t.string   "entourage_type",                        null: false
   end
 
   add_index "entourages_users", ["user_id", "entourage_id"], name: "index_entourages_users_on_user_id_and_entourage_id", unique: true, using: :btree
