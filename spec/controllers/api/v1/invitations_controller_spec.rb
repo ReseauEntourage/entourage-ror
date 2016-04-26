@@ -58,4 +58,26 @@ describe Api::V1::InvitationsController do
       end
     end
   end
+
+  describe "DELETE destroy" do
+    context "user not signed in" do
+      before { delete :destroy, id: invitation.to_param}
+      it { expect(response.status).to eq(401) }
+    end
+
+    context "user signed in" do
+      context "refuse my invite" do
+        before { delete :destroy, id: invitation.to_param, token: user.token }
+        it { expect(response.status).to eq(204) }
+        it { expect(JoinRequest.where(user: invitation.invitee, joinable: invitation.invitable, status: JoinRequest::REJECTED_STATUS).count).to eq(1) }
+      end
+
+      context "accept another user invite" do
+        let!(:invitation) { FactoryGirl.create(:entourage_invitation, invitee: FactoryGirl.create(:public_user)) }
+        before { put :update, id: invitation.to_param, token: user.token }
+        it { expect(response.status).to eq(403) }
+        it { expect(JoinRequest.where(user: invitation.invitee, joinable: invitation.invitable, status: JoinRequest::REJECTED_STATUS).count).to eq(0) }
+      end
+    end
+  end
 end

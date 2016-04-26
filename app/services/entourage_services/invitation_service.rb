@@ -9,7 +9,7 @@ module EntourageServices
     end
 
     def reject!
-
+      JoinRequest.create(user: invitation.invitee, joinable: invitation.invitable, status: JoinRequest::REJECTED_STATUS)
     end
 
     private
