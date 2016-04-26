@@ -12,34 +12,11 @@ describe Api::V1::FeedsController do
 
     context "signed in" do
       let(:user) { FactoryGirl.create(:pro_user) }
-      let!(:tour) { FactoryGirl.create(:tour) }
-      let!(:entourage) { FactoryGirl.create(:entourage) }
+      let!(:tour) { FactoryGirl.create(:tour, created_at: 2.day.ago) }
+      let!(:entourage) { FactoryGirl.create(:entourage, created_at: 1.day.ago) }
       before { get :index, token: user.token }
       it { expect(response.status).to eq(200) }
       it { expect(result).to eq({"feeds"=>[{
-                                               "type"=>"Tour",
-                                               "data"=>
-                                                   {
-                                                      "id"=>tour.id,
-                                                      "tour_type"=>"medical",
-                                                      "status"=>"ongoing",
-                                                      "vehicle_type"=>"feet",
-                                                      "distance"=>0,
-                                                      "organization_name"=>tour.organization_name,
-                                                      "organization_description"=>"Association description",
-                                                      "start_time"=>tour.created_at.iso8601(3),
-                                                      "end_time"=>nil,
-                                                      "number_of_people"=>1,
-                                                      "join_status"=>"not_requested",
-                                                      "number_of_unread_messages"=>nil,
-                                                      "tour_points"=>[],
-                                                      "author"=>{"id"=>tour.user.id,
-                                                                 "display_name"=>"John",
-                                                                 "avatar_url"=>nil
-                                                      }
-                                                   }
-                                           },
-                                           {
                                               "type"=>"Entourage",
                                               "data"=>{
                                                   "id"=>entourage.id,
@@ -58,6 +35,29 @@ describe Api::V1::FeedsController do
                                                       "longitude"=>2.345
                                                   }
                                               }
+                                           },
+                                           {
+                                               "type"=>"Tour",
+                                               "data"=>
+                                                   {
+                                                       "id"=>tour.id,
+                                                       "tour_type"=>"medical",
+                                                       "status"=>"ongoing",
+                                                       "vehicle_type"=>"feet",
+                                                       "distance"=>0,
+                                                       "organization_name"=>tour.organization_name,
+                                                       "organization_description"=>"Association description",
+                                                       "start_time"=>tour.created_at.iso8601(3),
+                                                       "end_time"=>nil,
+                                                       "number_of_people"=>1,
+                                                       "join_status"=>"not_requested",
+                                                       "number_of_unread_messages"=>nil,
+                                                       "tour_points"=>[],
+                                                       "author"=>{"id"=>tour.user.id,
+                                                                  "display_name"=>"John",
+                                                                  "avatar_url"=>nil
+                                                       }
+                                                   }
                                            }
                              ]}) }
     end
