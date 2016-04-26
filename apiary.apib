@@ -1005,10 +1005,12 @@ Perform checks against the API
 Feeds related resources of the **Entourage API**
 ## Feeds [/feeds]
 
-### Get all feeds [GET /feeds{?token}{&page}{&per}]
+### Get all feeds [GET /feeds{?token}{&latitude}{&longitude}{&page}{&per}]
 
 + Parameters
     + token (required, string, `FAKETOKEN`) ... Token identifying the current user
+    + latitude (optional, number, `48.853333`) ... The latitude of the center of the box to filter
+    + longitude (optional, number, `2.348611`) ... The longitude of the center of the box to filter
     + page (optional, number) ... pagination : page number
     + per (optional, number) ... pagination : number of entourages per page
 
