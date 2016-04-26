@@ -5,14 +5,15 @@ module V1
                :invitation_mode,
                :phone_number,
                :entourage_id,
-               :accepted
+               :status
 
     def entourage_id
       object.invitable_id
     end
 
-    def accepted
-      JoinRequest.where(joinable: object.invitable, user: object.invitee, status: JoinRequest::ACCEPTED_STATUS).present?
+    def status
+      join_request = JoinRequest.where(joinable: object.invitable, user: object.invitee).first
+      join_request.present? ? join_request.status : "pending"
     end
   end
 end

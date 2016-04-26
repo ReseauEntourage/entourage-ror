@@ -4,7 +4,6 @@ describe Api::V1::InvitationsController do
 
   let(:user) { FactoryGirl.create(:pro_user) }
   let(:result) { JSON.parse(response.body) }
-  let!(:invitation) { FactoryGirl.create(:entourage_invitation, invitee: user) }
 
   describe 'GET index' do
     context "user not signed in" do
@@ -13,6 +12,7 @@ describe Api::V1::InvitationsController do
     end
 
     context "user signed in" do
+      let!(:invitation) { FactoryGirl.create(:entourage_invitation, invitee: user) }
       before { get :index, token: user.token }
       it { expect(response.status).to eq(200) }
       it { expect(result).to eq({"invitations"=>[
@@ -22,10 +22,24 @@ describe Api::V1::InvitationsController do
                                                     "invitation_mode"=>"SMS",
                                                     "phone_number"=>"+33612345678",
                                                     "entourage_id"=>invitation.invitable_id,
-                                                    "accepted"=>false
+                                                    "status"=>"pending"
                                                   }
                                                 ]}) }
 
+    end
+
+    context "accepted invitation" do
+      let!(:accepted_invitation) { FactoryGirl.create(:entourage_invitation, invitee: user) }
+      let!(:join_request) { JoinRequest.create(user: user, joinable: accepted_invitation.invitable, status: JoinRequest::ACCEPTED_STATUS) }
+      before { get :index, token: user.token }
+      it { expect(result["invitations"][0]["status"]).to eq("accepted")}
+    end
+
+    context "rejected invitation" do
+      let!(:rejected_invitation) { FactoryGirl.create(:entourage_invitation, invitee: user) }
+      let!(:join_request) { JoinRequest.create(user: user, joinable: rejected_invitation.invitable, status: JoinRequest::REJECTED_STATUS) }
+      before { get :index, token: user.token }
+      it { expect(result["invitations"][0]["status"]).to eq("rejected")}
     end
 
     context "belongs to entourage" do
@@ -33,11 +47,12 @@ describe Api::V1::InvitationsController do
       before { FactoryGirl.create(:join_request, user: user, joinable: entourage, status: JoinRequest::ACCEPTED_STATUS) }
       let!(:invitation) { FactoryGirl.create(:entourage_invitation, invitee: user, invitable: entourage ) }
       before { get :index, token: user.token }
-      it { expect(result["invitations"][0]["accepted"]).to be true }
+      it { expect(result["invitations"][0]["status"]).to eq("accepted") }
     end
   end
 
   describe "PUT update" do
+    let!(:invitation) { FactoryGirl.create(:entourage_invitation, invitee: user) }
     context "user not signed in" do
       before { put :update, id: invitation.to_param}
       it { expect(response.status).to eq(401) }
@@ -60,6 +75,7 @@ describe Api::V1::InvitationsController do
   end
 
   describe "DELETE destroy" do
+    let!(:invitation) { FactoryGirl.create(:entourage_invitation, invitee: user) }
     context "user not signed in" do
       before { delete :destroy, id: invitation.to_param}
       it { expect(response.status).to eq(401) }
