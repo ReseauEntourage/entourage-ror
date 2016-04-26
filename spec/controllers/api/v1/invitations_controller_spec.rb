@@ -4,6 +4,7 @@ describe Api::V1::InvitationsController do
 
   let(:user) { FactoryGirl.create(:pro_user) }
   let(:result) { JSON.parse(response.body) }
+  let!(:invitation) { FactoryGirl.create(:entourage_invitation, invitee: user) }
 
   describe 'GET index' do
     context "user not signed in" do
@@ -12,7 +13,6 @@ describe Api::V1::InvitationsController do
     end
 
     context "user signed in" do
-      let!(:invitation) { FactoryGirl.create(:entourage_invitation, invitee: user) }
       before { get :index, token: user.token }
       it { expect(response.status).to eq(200) }
       it { expect(result).to eq({"invitations"=>[
@@ -34,6 +34,28 @@ describe Api::V1::InvitationsController do
       let!(:invitation) { FactoryGirl.create(:entourage_invitation, invitee: user, invitable: entourage ) }
       before { get :index, token: user.token }
       it { expect(result["invitations"][0]["accepted"]).to be true }
+    end
+  end
+
+  describe "PUT update" do
+    context "user not signed in" do
+      before { put :update, id: invitation.to_param}
+      it { expect(response.status).to eq(401) }
+    end
+
+    context "user signed in" do
+      context "accept my invite" do
+        before { put :update, id: invitation.to_param, token: user.token }
+        it { expect(response.status).to eq(204) }
+        it { expect(JoinRequest.where(user: invitation.invitee, joinable: invitation.invitable, status: JoinRequest::ACCEPTED_STATUS).count).to eq(1) }
+      end
+
+      context "accept another user invite" do
+        let!(:invitation) { FactoryGirl.create(:entourage_invitation, invitee: FactoryGirl.create(:public_user)) }
+        before { put :update, id: invitation.to_param, token: user.token }
+        it { expect(response.status).to eq(403) }
+        it { expect(JoinRequest.where(user: invitation.invitee, joinable: invitation.invitable, status: JoinRequest::ACCEPTED_STATUS).count).to eq(0) }
+      end
     end
   end
 end

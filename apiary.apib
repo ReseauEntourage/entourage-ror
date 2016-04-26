@@ -1253,7 +1253,7 @@ Entourages related resources of the **Entourage API**
         
         
 
-## Entourage Invitation [/entourages/{id}/invitations{?token}]
+## Entourage Invitation Collection [/entourages/{id}/invitations{?token}]
 + Parameters
     + id (required, integer, `1`) ... Identifier of the entourage
     + token (required, string, `FAKETOKEN`) ... Token identifying the current user
@@ -1293,10 +1293,52 @@ Entourages related resources of the **Entourage API**
 + Response 401 (application/json; charset=utf-8)
 
         {"error":{"status":401,"message":"Please sign-in"}}
-        
+
 
 
 # Group Invitations collection
+
+## Entourage Invitation [/invitation/{id}{?token}]
+
++ Parameters
+    + id (required, integer, `1`) ... Identifier of the invitation
+    + token (required, string, `FAKETOKEN`) ... Token identifying the current user
+
+### Accept Invitation [PUT]
++ Request (application/json)
+
+    + Header
+
+            Accept: application/json
+
++ Response 204 (application/json; charset=utf-8)
+
++ Response 404 (application/json; charset=utf-8)
+
+        {"error":{"status":404,"message":"Could not find invitation with id 233232"}}
+
++ Response 401 (application/json; charset=utf-8)
+
+        {"error":{"status":401,"message":"Please sign-in"}}
+
+
+### Refuse Invitation [DELETE]
++ Request (application/json)
+
+    + Header
+
+            Accept: application/json
+
++ Response 204 (application/json; charset=utf-8)
+
++ Response 404 (application/json; charset=utf-8)
+
+        {"error":{"status":404,"message":"Could not find invitation with id 233232"}}
+
++ Response 401 (application/json; charset=utf-8)
+
+        {"error":{"status":401,"message":"Please sign-in"}}
+
 
 ## Users Invitation [/invitations{?token}]
 + Parameters
