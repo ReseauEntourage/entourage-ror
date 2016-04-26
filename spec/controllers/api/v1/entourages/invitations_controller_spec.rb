@@ -27,7 +27,7 @@ describe Api::V1::Entourages::InvitationsController do
                                                 "invitation_mode"=>"SMS",
                                                 "phone_number"=>"+33612345678",
                                                 "entourage_id"=>entourage.id,
-                                                "accepted"=>false
+                                                "status"=>"pending"
                                                 }
                                       }) }
         end
