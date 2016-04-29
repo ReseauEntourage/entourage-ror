@@ -132,7 +132,20 @@ Users related resources of the **Entourage API**
 
 + Response 200 (application/json; charset=utf-8)
 
-        {"user":{"id":1,"email":"dredd@test.com","display_name":"Judge Dredd", "first_name": "Judge", "last_name": "Dredd","token":"FAKETOKEN","stats":{"tour_count":0,"encounter_count":0},"organization":{"name":"org name","description":"org description","phone":"org phone","address":"org address","logo_url":"org logo url"}}}
+        {"user":{"id":1,
+                    "email":"dredd@test.com",
+                    "display_name":"Judge Dredd", 
+                    "first_name": "Judge", 
+                    "last_name": "Dredd",
+                    "token":"FAKETOKEN",
+                    "stats":{"tour_count":0,"encounter_count":0},
+                    "user_type": "pro",
+                    "avatar_url": "http://foo.com/bar.jpg",
+                    "organization":{"name":"org name",
+                                    "description":"org description",
+                                    "phone":"org phone",
+                                    "address":"org address",
+                                    "logo_url":"org logo url"}}}
 
 + Response 400 (application/json; charset=utf-8)
 
@@ -150,7 +163,17 @@ Users related resources of the **Entourage API**
 
 + Response 200 (application/json; charset=utf-8)
 
-        {"user":{"id":1,"email":"dredd@test.com","display_name":"Judge Dredd", "first_name": "Judge", "last_name": "Dredd", "user_type": "PRO"}}
+        {"user":
+                {
+                "id":1,
+                "email":"dredd@test.com",
+                "display_name":"Judge Dredd", 
+                "first_name": "Judge", 
+                "last_name": "Dredd", 
+                "user_type": "pro",
+                "avatar_url": "http://foo.com/bar.jpg"
+                }
+        }
 
         user_type : (required, string) ... Type of user : PRO / PUBLIC
 
