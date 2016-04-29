@@ -13,8 +13,8 @@ module Api
               render json: invite, root: "invite", status: 201, serializer: ::V1::EntourageInvitationSerializer
             end
 
-            on.failure do |invite|
-              render json: {message: 'Could not create entourage invitation', reasons: invite.errors.full_messages}, status: :bad_request
+            on.failure do |error|
+              render json: {message: 'Could not create entourage invitation', reasons: error.message}, status: :bad_request
             end
 
             on.not_part_of_entourage do

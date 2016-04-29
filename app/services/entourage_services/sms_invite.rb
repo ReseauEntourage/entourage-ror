@@ -17,10 +17,15 @@ module EntourageServices
       begin
         invite = EntourageInvitation.new(invitable: entourage,
                                          inviter: inviter,
+                                         invitee: invitee,
                                          phone_number: phone_number,
                                          invitation_mode: EntourageInvitation::MODE_SMS)
+        relationship = UserRelationship.new(source_user: inviter,
+                                            target_user: invitee,
+                                            relation_type: UserRelationship::TYPE_INVITE)
         ActiveRecord::Base.transaction do
           invite.save!
+          relationship.save!
 
           SmsSenderJob.perform_later(phone_number, message)
           callback.on_success.try(:call, invite)
@@ -28,7 +33,7 @@ module EntourageServices
       rescue ActiveRecord::RecordInvalid => e
         Rails.logger.error e.message
         Rails.logger.error e.backtrace.join("\n")
-        callback.on_failure.try(:call, invite)
+        callback.on_failure.try(:call, e)
       end
     end
 

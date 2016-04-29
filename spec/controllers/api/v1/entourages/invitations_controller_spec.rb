@@ -21,6 +21,8 @@ describe Api::V1::Entourages::InvitationsController do
           it { expect(EntourageInvitation.count).to eq(1) }
           it { expect(User.count).to eq(3) }
           it { expect(User.where(id: EntourageInvitation.last.invitee_id)).to_not be_nil }
+          it { expect(UserRelationship.count).to eq(1) }
+          it { expect(UserRelationship.last.target_user).to eq(EntourageInvitation.last.invitee) }
           it { expect(result).to eq({"invite"=>{
                                                 "id"=>EntourageInvitation.last.id,
                                                 "inviter_id"=>user.id,
