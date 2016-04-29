@@ -21,7 +21,9 @@ module Api
       end
 
       def create
-        entourage = Entourage.new(entourage_params)
+        entourage = Entourage.new(entourage_params.except(:location))
+        entourage.longitude = entourage_params.dig(:location, :longitude)
+        entourage.latitude = entourage_params.dig(:location, :latitude)
         entourage.user = current_user
         if entourage.save
           JoinRequest.create(user: current_user, joinable: entourage)
@@ -44,7 +46,7 @@ module Api
       private
 
       def entourage_params
-        params.require(:entourage).permit(:longitude, :latitude, :title, :entourage_type, :status)
+        params.require(:entourage).permit({location: [:longitude, :latitude]}, :title, :entourage_type, :status)
       end
 
       def set_entourage

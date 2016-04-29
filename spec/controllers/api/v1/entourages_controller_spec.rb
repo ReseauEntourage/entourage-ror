@@ -75,19 +75,19 @@ describe Api::V1::EntouragesController do
 
   describe 'POST create' do
     context "not signed in" do
-      before { post :create, entourage: { longitude: 1.123, latitude: 4.567, title: "foo", entourage_type: "ask_for_help" } }
+      before { post :create, entourage: { location: {longitude: 1.123, latitude: 4.567}, title: "foo", entourage_type: "ask_for_help" } }
       it { expect(response.status).to eq(401) }
     end
 
     context "signed in" do
       it "creates an entourage" do
         expect {
-          post :create, entourage: { longitude: 1.123, latitude: 4.567, title: "foo", entourage_type: "ask_for_help" }, token: user.token
+          post :create, entourage: { location: {longitude: 1.123, latitude: 4.567}, title: "foo", entourage_type: "ask_for_help" }, token: user.token
         }.to change { Entourage.count }.by(1)
       end
 
       context "valid params" do
-        before { post :create, entourage: { longitude: 1.123, latitude: 4.567, title: "foo", entourage_type: "ask_for_help" }, token: user.token }
+        before { post :create, entourage: { location: {longitude: 1.123, latitude: 4.567}, title: "foo", entourage_type: "ask_for_help" }, token: user.token }
         it { expect(JSON.parse(response.body)).to eq({"entourage"=>
                                                           {"id"=>Entourage.last.id,
                                                            "status"=>"open",
@@ -101,11 +101,13 @@ describe Api::V1::EntouragesController do
                                                           }
                                                      }) }
         it { expect(response.status).to eq(201) }
+        it { expect(Entourage.last.longitude).to eq(1.123) }
+        it { expect(Entourage.last.latitude).to eq(4.567) }
         it { expect(user.entourage_participations).to eq([Entourage.last]) }
       end
 
       context "invalid params" do
-        before { post :create, entourage: { longitude: "", latitude: 4.567, title: "foo", entourage_type: "ask_for_help" }, token: user.token }
+        before { post :create, entourage: { location: {longitude: "", latitude: 4.567}, title: "foo", entourage_type: "ask_for_help" }, token: user.token }
         it { expect(JSON.parse(response.body)).to eq({"message"=>"Could not create entourage", "reasons"=>["Longitude doit être rempli(e)"]}) }
         it { expect(response.status).to eq(400) }
       end
