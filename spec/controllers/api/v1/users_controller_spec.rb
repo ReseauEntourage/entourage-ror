@@ -17,7 +17,21 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
 
         it "renders user" do
           res = JSON.parse(response.body)
-          expect(res).to eq({"user"=>{"id"=>user.id, "email"=>user.email, "display_name"=>"John Doe", "first_name"=> "John", "last_name"=> "Doe", "token"=>user.token, "avatar_url"=>"https://foobar.s3-eu-west-1.amazonaws.com/300x300/avatar.jpg", "organization"=>{"name"=>user.organization.name, "description"=>"Association description", "phone"=>user.organization.phone, "address"=>user.organization.address, "logo_url"=>nil}, "stats"=>{"tour_count"=>0, "encounter_count"=>0}}})
+          expect(res).to eq({"user"=>
+                                 {"id"=>user.id,
+                                  "email"=>user.email,
+                                  "display_name"=>"John Doe",
+                                  "first_name"=> "John",
+                                  "last_name"=> "Doe",
+                                  "token"=>user.token,
+                                  "user_type"=>"pro",
+                                  "avatar_url"=>"https://foobar.s3-eu-west-1.amazonaws.com/300x300/avatar.jpg",
+                                  "organization"=>{"name"=>user.organization.name,
+                                                   "description"=>"Association description",
+                                                   "phone"=>user.organization.phone,
+                                                   "address"=>user.organization.address,
+                                                   "logo_url"=>nil},
+                                  "stats"=>{"tour_count"=>0, "encounter_count"=>0}}})
         end
       end
 
@@ -60,7 +74,14 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
       let!(:encounter4) { create :encounter, tour: tour3 }
 
       before { post 'login', user: {phone: user.phone, sms_code: "123456"}, format: 'json' }
-      it { expect(JSON.parse(response.body)).to eq({"user"=>{"id"=>user.id, "email"=>user.email, "display_name"=>"John Doe", "first_name"=> "John", "last_name"=> "Doe", "token"=>user.token, "avatar_url"=>"https://foobar.s3-eu-west-1.amazonaws.com/300x300/avatar.jpg", "organization"=>{"name"=>user.organization.name, "description"=>"Association description", "phone"=>user.organization.phone, "address"=>user.organization.address, "logo_url"=>nil}, "stats"=>{"tour_count"=>2, "encounter_count"=>3}}}) }
+      it { expect(JSON.parse(response.body)).to eq({"user"=>{"id"=>user.id,
+                                                             "email"=>user.email,
+                                                             "display_name"=>"John Doe",
+                                                             "first_name"=> "John",
+                                                             "last_name"=> "Doe",
+                                                             "user_type"=>"pro",
+                                                             "token"=>user.token,
+                                                             "avatar_url"=>"https://foobar.s3-eu-west-1.amazonaws.com/300x300/avatar.jpg", "organization"=>{"name"=>user.organization.name, "description"=>"Association description", "phone"=>user.organization.phone, "address"=>user.organization.address, "logo_url"=>nil}, "stats"=>{"tour_count"=>2, "encounter_count"=>3}}}) }
     end
 
     context "blocked user" do
@@ -215,8 +236,13 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                                                            "first_name"=>"John",
                                                            "last_name"=>"Doe",
                                                            "token"=>user.token,
+                                                           "user_type"=>"pro",
                                                            "avatar_url"=>nil,
-                                                           "organization"=>{"name"=>user.organization.name, "description"=>"Association description", "phone"=>user.organization.phone, "address"=>user.organization.address, "logo_url"=>nil},
+                                                           "organization"=>{"name"=>user.organization.name,
+                                                                            "description"=>"Association description",
+                                                                            "phone"=>user.organization.phone,
+                                                                            "address"=>user.organization.address,
+                                                                            "logo_url"=>nil},
                                                            "stats"=>{"tour_count"=>0, "encounter_count"=>0}}}) }
       end
 
@@ -230,6 +256,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                                                            "first_name"=>"John",
                                                            "last_name"=>"Doe",
                                                            "token"=>user.token,
+                                                           "user_type"=>"pro",
                                                            "avatar_url"=>nil,
                                                            "organization"=>{"name"=>user.organization.name, "description"=>"Association description", "phone"=>user.organization.phone, "address"=>user.organization.address, "logo_url"=>nil},
                                                            "stats"=>{"tour_count"=>0, "encounter_count"=>0}}}) }
@@ -245,6 +272,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                                                            "first_name"=>"John",
                                                            "last_name"=>"Doe",
                                                            "avatar_url"=>nil,
+                                                           "user_type"=>"pro",
                                                            "organization"=>{"name"=>other_user.organization.name, "description"=>"Association description", "phone"=>other_user.organization.phone, "address"=>other_user.organization.address, "logo_url"=>nil},
                                                            "stats"=>{"tour_count"=>0, "encounter_count"=>0}}}) }
       end

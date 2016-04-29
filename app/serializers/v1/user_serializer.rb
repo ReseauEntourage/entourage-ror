@@ -6,7 +6,8 @@ module V1
                :first_name,
                :last_name,
                :token,
-               :avatar_url
+               :avatar_url,
+               :user_type
 
     has_one :organization
     has_one :stats
