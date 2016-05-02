@@ -96,7 +96,7 @@ describe Api::V1::EntouragesController do
                                                            "number_of_people"=>0,
                                                            "author"=>{"id"=>user.id, "name"=>"John"},
                                                            "location"=>{"latitude"=>1.123, "longitude"=>1.123},
-                                                           "join_status"=>"pending",
+                                                           "join_status"=>"accepted",
                                                            "number_of_unread_messages"=>0
                                                           }
                                                      }) }
@@ -104,6 +104,8 @@ describe Api::V1::EntouragesController do
         it { expect(Entourage.last.longitude).to eq(1.123) }
         it { expect(Entourage.last.latitude).to eq(4.567) }
         it { expect(user.entourage_participations).to eq([Entourage.last]) }
+        it { expect(JoinRequest.count).to eq(1) }
+        it { expect(JoinRequest.last.status).to eq(JoinRequest::ACCEPTED_STATUS) }
       end
 
       context "invalid params" do

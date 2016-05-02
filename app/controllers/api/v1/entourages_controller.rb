@@ -26,7 +26,7 @@ module Api
         entourage.latitude = entourage_params.dig(:location, :latitude)
         entourage.user = current_user
         if entourage.save
-          JoinRequest.create(user: current_user, joinable: entourage)
+          JoinRequest.create(user: current_user, joinable: entourage, status: JoinRequest::ACCEPTED_STATUS)
           render json: entourage, status: 201, serializer: ::V1::EntourageSerializer
         else
           render json: {message: 'Could not create entourage', reasons: entourage.errors.full_messages}, status: 400
