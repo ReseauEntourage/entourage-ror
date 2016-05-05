@@ -902,44 +902,53 @@ vehicle_type is either “feet” or “car”</p>
 </dd><dt>page</dt><dd><code>number</code>&nbsp;<span>(optional)</span>&nbsp;<p>pagination : page number</p>
 </dd><dt>per</dt><dd><code>number</code>&nbsp;<span>(optional)</span>&nbsp;<p>pagination : number of entourages per page</p>
 </dd></dl></div><div class="title"><strong>Request</strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Accept</span>: <span class="hljs-string">application/json</span></code></pre><div style="height: 1px;"></div></div></div><div class="title"><strong>Response&nbsp;&nbsp;<code>200</code></strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json; charset=utf-8</span></code></pre><div style="height: 1px;"></div><h5>Body</h5><pre><code>{
-  "<span class="hljs-attribute">feeds</span>": <span class="hljs-value">{
-    "<span class="hljs-attribute">data</span>": <span class="hljs-value">[
-      {
-        "<span class="hljs-attribute">entourage</span>": <span class="hljs-value">{
-          "<span class="hljs-attribute">id</span>": <span class="hljs-value"><span class="hljs-number">567</span></span>,
-          "<span class="hljs-attribute">updated_at</span>": <span class="hljs-value"><span class="hljs-string">""</span></span>,
-          "<span class="hljs-attribute">created_at</span>": <span class="hljs-value"><span class="hljs-string">""</span></span>,
-          "<span class="hljs-attribute">status</span>": <span class="hljs-value"><span class="hljs-string">"open"</span></span>,
-          "<span class="hljs-attribute">title</span>": <span class="hljs-value"><span class="hljs-string">"entourage1"</span></span>,
-          "<span class="hljs-attribute">entourage_type</span>": <span class="hljs-value"><span class="hljs-string">"ask_for_help"</span></span>,
-          "<span class="hljs-attribute">author</span>": <span class="hljs-value">{
-            "<span class="hljs-attribute">id</span>": <span class="hljs-value"><span class="hljs-number">123</span></span>,
-            "<span class="hljs-attribute">display_name</span>": <span class="hljs-value"><span class="hljs-string">"Seb"</span></span>,
-            "<span class="hljs-attribute">avatar_url</span>": <span class="hljs-value"><span class="hljs-string">"https://s3.amazonaws.com/entourage-avatars/image.jpeg"</span>
-          </span>}</span>,
-          "<span class="hljs-attribute">number_of_people</span>": <span class="hljs-value"><span class="hljs-number">2</span></span>,
-          "<span class="hljs-attribute">location</span>": <span class="hljs-value">{
-            "<span class="hljs-attribute">latitude</span>": <span class="hljs-value"><span class="hljs-number">37.4224764</span></span>,
-            "<span class="hljs-attribute">longitude</span>": <span class="hljs-value">-<span class="hljs-number">122.0842499</span>
-          </span>}
-        </span>}
-      </span>},
-      {
-        "<span class="hljs-attribute">video</span>": <span class="hljs-value">{
-          "<span class="hljs-attribute">id</span>": <span class="hljs-value"><span class="hljs-number">432</span></span>,
-          "<span class="hljs-attribute">updated_at</span>": <span class="hljs-value"><span class="hljs-string">""</span></span>,
-          "<span class="hljs-attribute">created_at</span>": <span class="hljs-value"><span class="hljs-string">""</span></span>,
-          "<span class="hljs-attribute">title</span>": <span class="hljs-value"><span class="hljs-string">"video 1"</span></span>,
-          "<span class="hljs-attribute">link</span>": <span class="hljs-value"><span class="hljs-string">"https://s3.amazonaws.com/entourage-videos/video.mp4"</span></span>,
-          "<span class="hljs-attribute">author</span>": <span class="hljs-value">{
-            "<span class="hljs-attribute">id</span>": <span class="hljs-value"><span class="hljs-number">123</span></span>,
-            "<span class="hljs-attribute">name</span>": <span class="hljs-value"><span class="hljs-string">"Entourage"</span>
-          </span>}
-        </span>}
-      </span>}
-    ]
-  </span>}
-</span>}</code></pre><div style="height: 1px;"></div></div></div><div class="title"><strong>Response&nbsp;&nbsp;<code>401</code></strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json; charset=utf-8</span></code></pre><div style="height: 1px;"></div><h5>Body</h5><pre><code>{
+    "<span class="hljs-attribute">feeds</span>": <span class="hljs-value">[{
+                "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"Entourage"</span></span>,
+                "<span class="hljs-attribute">data</span>": <span class="hljs-value">{
+                    "<span class="hljs-attribute">id</span>": <span class="hljs-value"><span class="hljs-number">567</span></span>,
+                    "<span class="hljs-attribute">created_at</span>": <span class="hljs-value"><span class="hljs-string">""</span></span>,
+                    "<span class="hljs-attribute">status</span>": <span class="hljs-value"><span class="hljs-string">"open"</span></span>,
+                    "<span class="hljs-attribute">title</span>": <span class="hljs-value"><span class="hljs-string">"entourage1"</span></span>,
+                    "<span class="hljs-attribute">entourage_type</span>": <span class="hljs-value"><span class="hljs-string">"ask_for_help"</span></span>,
+                    "<span class="hljs-attribute">author</span>": <span class="hljs-value">{
+                        "<span class="hljs-attribute">id</span>": <span class="hljs-value"><span class="hljs-number">123</span></span>,
+                        "<span class="hljs-attribute">display_name</span>": <span class="hljs-value"><span class="hljs-string">"Seb"</span></span>,
+                        "<span class="hljs-attribute">avatar_url</span>": <span class="hljs-value"><span class="hljs-string">"https://s3.amazonaws.com/entourage-avatars/image.jpeg"</span>
+                    </span>}</span>,
+                    "<span class="hljs-attribute">number_of_people</span>": <span class="hljs-value"><span class="hljs-number">2</span></span>,
+                    "<span class="hljs-attribute">location</span>": <span class="hljs-value">{
+                        "<span class="hljs-attribute">latitude</span>": <span class="hljs-value"><span class="hljs-number">37.4224764</span></span>,
+                        "<span class="hljs-attribute">longitude</span>": <span class="hljs-value">-<span class="hljs-number">122.0842499</span>
+                    </span>}
+                </span>}
+            </span>},
+            {
+                "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"Tour"</span></span>,
+                "<span class="hljs-attribute">data</span>": <span class="hljs-value">{
+                    "<span class="hljs-attribute">id</span>":<span class="hljs-value"><span class="hljs-number">10</span></span>,
+                    "<span class="hljs-attribute">tour_type</span>":<span class="hljs-value"><span class="hljs-string">"medical"</span></span>, 
+                    "<span class="hljs-attribute">vehicle_type</span>":<span class="hljs-value"><span class="hljs-string">"feet"</span></span>, 
+                    "<span class="hljs-attribute">distance</span>": <span class="hljs-value"><span class="hljs-number">8543.65</span></span>, 
+                    "<span class="hljs-attribute">organization_name</span>":<span class="hljs-value"><span class="hljs-string">"organization name"</span></span>, 
+                    "<span class="hljs-attribute">organization_description</span>":<span class="hljs-value"><span class="hljs-string">"organization description"</span></span>, 
+                    "<span class="hljs-attribute">start_time</span>": <span class="hljs-value"><span class="hljs-string">"2016-01-01T19:09:06.000+01:00"</span></span>, 
+                    "<span class="hljs-attribute">end_time</span>": <span class="hljs-value"><span class="hljs-string">"2016-01-01T20:09:06.000+01:00"</span></span>,
+                    "<span class="hljs-attribute">tour_points</span>":<span class="hljs-value">[
+                    {"<span class="hljs-attribute">latitude</span>":<span class="hljs-value"><span class="hljs-number">1.5</span></span>,"<span class="hljs-attribute">longitude</span>":<span class="hljs-value"><span class="hljs-number">1.5</span></span>},
+                    {"<span class="hljs-attribute">latitude</span>":<span class="hljs-value"><span class="hljs-number">1.6</span></span>,"<span class="hljs-attribute">longitude</span>":<span class="hljs-value"><span class="hljs-number">1.6</span></span>}
+                    ]</span>,
+                    "<span class="hljs-attribute">status</span>":<span class="hljs-value"><span class="hljs-string">"ongoing"</span></span>,
+                    "<span class="hljs-attribute">number_of_people</span>": <span class="hljs-value"><span class="hljs-number">1</span></span>,
+                    "<span class="hljs-attribute">author</span>": <span class="hljs-value">{
+                        "<span class="hljs-attribute">id</span>": <span class="hljs-value"><span class="hljs-number">14</span></span>,
+                        "<span class="hljs-attribute">display_name</span>": <span class="hljs-value"><span class="hljs-string">"Arnaud"</span></span>,
+                        "<span class="hljs-attribute">avatar_url</span>": <span class="hljs-value"><span class="hljs-string">"https://foo.bar"</span>
+                    </span>}</span>,
+                    "<span class="hljs-attribute">join_status</span>": <span class="hljs-value"><span class="hljs-string">"pending"</span></span>,
+                    "<span class="hljs-attribute">number_of_unread_messages</span>": <span class="hljs-value"><span class="hljs-number">0</span>
+            </span>}]
+</span>}
+</span></code></pre><div style="height: 1px;"></div></div></div><div class="title"><strong>Response&nbsp;&nbsp;<code>401</code></strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json; charset=utf-8</span></code></pre><div style="height: 1px;"></div><h5>Body</h5><pre><code>{
   "<span class="hljs-attribute">error</span>": <span class="hljs-value">{
     "<span class="hljs-attribute">status</span>": <span class="hljs-value"><span class="hljs-number">401</span></span>,
     "<span class="hljs-attribute">message</span>": <span class="hljs-value"><span class="hljs-string">"Please sign-in"</span>
@@ -967,7 +976,6 @@ vehicle_type is either “feet” or “car”</p>
   "<span class="hljs-attribute">entourages</span>": <span class="hljs-value">[
     {
       "<span class="hljs-attribute">id</span>": <span class="hljs-value"><span class="hljs-number">567</span></span>,
-      "<span class="hljs-attribute">updated_at</span>": <span class="hljs-value"><span class="hljs-string">"2015-07-07T10:31:43.000+02:00"</span></span>,
       "<span class="hljs-attribute">created_at</span>": <span class="hljs-value"><span class="hljs-string">"2015-07-07T10:31:43.000+02:00"</span></span>,
       "<span class="hljs-attribute">status</span>": <span class="hljs-value"><span class="hljs-string">"open"</span></span>,
       "<span class="hljs-attribute">title</span>": <span class="hljs-value"><span class="hljs-string">"entourage1"</span></span>,
@@ -985,7 +993,6 @@ vehicle_type is either “feet” or “car”</p>
     </span>},
     {
       "<span class="hljs-attribute">id</span>": <span class="hljs-value"><span class="hljs-number">568</span></span>,
-      "<span class="hljs-attribute">updated_at</span>": <span class="hljs-value"><span class="hljs-string">"2015-07-07T10:31:43.000+02:00"</span></span>,
       "<span class="hljs-attribute">created_at</span>": <span class="hljs-value"><span class="hljs-string">"2015-07-07T10:31:43.000+02:00"</span></span>,
       "<span class="hljs-attribute">status</span>": <span class="hljs-value"><span class="hljs-string">"open"</span></span>,
       "<span class="hljs-attribute">title</span>": <span class="hljs-value"><span class="hljs-string">"entourage1"</span></span>,
