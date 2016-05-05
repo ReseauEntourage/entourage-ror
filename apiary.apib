@@ -1046,40 +1046,51 @@ Feeds related resources of the **Entourage API**
     + Body
 
             {
-                "feeds": {
-                    "data": [{
-                        "entourage": {
-                            "id": 567,
-                            "updated_at": "",
-                            "created_at": "",
-                            "status": "open",
-                            "title": "entourage1",
-                            "entourage_type": "ask_for_help",
-                            "author": {
-                                "id": 123,
-                                "display_name": "Seb",
-                                "avatar_url": "https://s3.amazonaws.com/entourage-avatars/image.jpeg"
-                            },
-                            "number_of_people": 2,
-                            "location": {
-                                "latitude": 37.4224764,
-                                "longitude": -122.0842499
+                "feeds": [{
+                            "type": "Entourage",
+                            "data": {
+                                "id": 567,
+                                "created_at": "",
+                                "status": "open",
+                                "title": "entourage1",
+                                "entourage_type": "ask_for_help",
+                                "author": {
+                                    "id": 123,
+                                    "display_name": "Seb",
+                                    "avatar_url": "https://s3.amazonaws.com/entourage-avatars/image.jpeg"
+                                },
+                                "number_of_people": 2,
+                                "location": {
+                                    "latitude": 37.4224764,
+                                    "longitude": -122.0842499
+                                }
                             }
-                        }
-                    }, {
-                        "video": {
-                            "id": 432,
-                            "updated_at": "",
-                            "created_at": "",
-                            "title": "video 1",
-                            "link": "https://s3.amazonaws.com/entourage-videos/video.mp4",
-                            "author": {
-                                "id": 123,
-                                "name": "Entourage"
-                            }
-                        }
-                    }]
-                }
+                        },
+                        {
+                            "type": "Tour",
+                            "data": {
+                                "id":10,
+                                "tour_type":"medical", 
+                                "vehicle_type":"feet", 
+                                "distance": 8543.65, 
+                                "organization_name":"organization name", 
+                                "organization_description":"organization description", 
+                                "start_time": "2016-01-01T19:09:06.000+01:00", 
+                                "end_time": "2016-01-01T20:09:06.000+01:00",
+                                "tour_points":[
+                                {"latitude":1.5,"longitude":1.5},
+                                {"latitude":1.6,"longitude":1.6}
+                                ],
+                                "status":"ongoing",
+                                "number_of_people": 1,
+                                "author": {
+                                    "id": 14,
+                                    "display_name": "Arnaud",
+                                    "avatar_url": "https://foo.bar"
+                                },
+                                "join_status": "pending",
+                                "number_of_unread_messages": 0
+                        }]
             }
 
 + Response 401 (application/json; charset=utf-8)
@@ -1131,7 +1142,6 @@ Entourages related resources of the **Entourage API**
                 "entourages": [
                     {
                         "id": 567,
-                        "updated_at": "2015-07-07T10:31:43.000+02:00",
                         "created_at": "2015-07-07T10:31:43.000+02:00",
                         "status": "open",
                         "title": "entourage1",
@@ -1149,7 +1159,6 @@ Entourages related resources of the **Entourage API**
                     },
                     {
                         "id": 568,
-                        "updated_at": "2015-07-07T10:31:43.000+02:00",
                         "created_at": "2015-07-07T10:31:43.000+02:00",
                         "status": "open",
                         "title": "entourage1",
