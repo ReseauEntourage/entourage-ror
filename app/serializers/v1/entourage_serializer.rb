@@ -6,7 +6,8 @@ module V1
                :entourage_type,
                :join_status,
                :number_of_unread_messages,
-               :number_of_people
+               :number_of_people,
+               :created_at
     
     has_one :author
     has_one :location

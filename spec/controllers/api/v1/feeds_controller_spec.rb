@@ -33,7 +33,8 @@ describe Api::V1::FeedsController do
                                                   "location"=>{
                                                       "latitude"=>2.345,
                                                       "longitude"=>2.345
-                                                  }
+                                                  },
+                                                  "created_at"=> entourage.created_at.iso8601(3)
                                               }
                                            },
                                            {
