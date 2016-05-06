@@ -101,6 +101,7 @@ Rails.application.routes.draw do
         end
 
         resources :tours, :controller => 'users/tours', only: [:index]
+        resources :entourages, :controller => 'users/entourages', only: [:index]
       end
 
       resources :entourages, only: [:index, :show, :create, :update] do
