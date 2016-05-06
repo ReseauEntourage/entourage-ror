@@ -13,15 +13,17 @@ module V1
     has_one :location
 
     def author
+      entourage_author = object.user
       {
-          id: object.user.id,
-          name: object.user.first_name
+          id: entourage_author.id,
+          display_name: entourage_author.first_name,
+          avatar_url: UserServices::Avatar.new(user: entourage_author).thumbnail_url
       }
     end
 
     def location
       {
-          latitude: object.longitude,
+          latitude: object.latitude,
           longitude: object.longitude
       }
     end

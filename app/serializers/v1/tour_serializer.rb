@@ -37,7 +37,7 @@ module V1
       {
           id: tour_author.id,
           display_name: tour_author.first_name,
-          avatar_url: UserServices::Avatar.new(user: object.user).thumbnail_url
+          avatar_url: UserServices::Avatar.new(user: tour_author).thumbnail_url
       }
     end
 
