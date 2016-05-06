@@ -1028,12 +1028,14 @@ Perform checks against the API
 Feeds related resources of the **Entourage API**
 ## Feeds [/feeds]
 
-### Get all feeds [GET /feeds{?token}{&page}{&per}]
+### Get all feeds [GET /feeds{?token}{&longitude}{&latitude}{&page}{&per}]
 
 + Parameters
     + token (required, string, `FAKETOKEN`) ... Token identifying the current user
     + page (optional, number) ... pagination : page number
     + per (optional, number) ... pagination : number of entourages per page
+    + longitude (optional, number) ... Filter feed by location
+    + latidude (optional, number) ... Filter feed by location
 
 + Request
 
