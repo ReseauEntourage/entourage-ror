@@ -10,7 +10,7 @@ module Api
           entourages = Entourage
                            .joins(:join_requests)
                            .where(join_requests: {user: @user, status: JoinRequest::ACCEPTED_STATUS})
-                           .order(updated_at: :desc)
+                           .order(created_at: :desc)
                            .page(page)
                            .per(per)
           if position_params?

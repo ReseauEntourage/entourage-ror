@@ -13,15 +13,15 @@ describe Api::V1::Users::EntouragesController, :type => :controller do
     end
 
     context "logged in" do
-      let!(:entourage_created) { FactoryGirl.create(:entourage, user: user) }
+      let!(:entourage_created) { FactoryGirl.create(:entourage, user: user, created_at: 1.day.ago) }
       let!(:join_request_created) { FactoryGirl.create(:join_request, joinable: entourage_created, user: user, status: JoinRequest::ACCEPTED_STATUS) }
-      let!(:entourage_joined) { FactoryGirl.create(:entourage) }
+      let!(:entourage_joined) { FactoryGirl.create(:entourage, created_at: 2.day.ago) }
       let!(:join_request_joinded) { FactoryGirl.create(:join_request, joinable: entourage_joined, user: user, status: JoinRequest::ACCEPTED_STATUS) }
       let!(:entourage_other) { FactoryGirl.create(:entourage) }
       before { get :index, user_id: user.id, token: user.token }
       it { expect(response.status).to eq(200) }
       it { expect(result["entourages"].count).to eq(2) }
-      it { expect(result["entourages"].map {|entourages| entourages["id"]}).to eq([entourage_joined.id, entourage_created.id]) }
+      it { expect(result["entourages"].map {|entourages| entourages["id"]}).to eq([entourage_created.id, entourage_joined.id]) }
     end
   end
 end
