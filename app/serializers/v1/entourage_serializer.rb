@@ -6,21 +6,24 @@ module V1
                :entourage_type,
                :join_status,
                :number_of_unread_messages,
-               :number_of_people
+               :number_of_people,
+               :created_at
     
     has_one :author
     has_one :location
 
     def author
+      entourage_author = object.user
       {
-          id: object.user.id,
-          name: object.user.first_name
+          id: entourage_author.id,
+          display_name: entourage_author.first_name,
+          avatar_url: UserServices::Avatar.new(user: entourage_author).thumbnail_url
       }
     end
 
     def location
       {
-          latitude: object.longitude,
+          latitude: object.latitude,
           longitude: object.longitude
       }
     end

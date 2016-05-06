@@ -10,12 +10,12 @@ module V1
         if feed.is_a?(Tour)
           {
               type: "Tour",
-              data: JSON.parse(TourSerializer.new(feed, {scope: user, root: false}).to_json)
+              data: JSON.parse(V1::TourSerializer.new(feed, {scope: user, root: false}).to_json)
           }
         elsif feed.is_a?(Entourage)
           {
               type: "Entourage",
-              data: JSON.parse(EntourageSerializer.new(feed, {scope: user, root: false}).to_json)
+              data: JSON.parse(V1::EntourageSerializer.new(feed, {scope: user, root: false}).to_json)
           }
         end
       end

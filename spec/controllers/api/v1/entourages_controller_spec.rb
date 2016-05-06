@@ -23,10 +23,18 @@ describe Api::V1::EntouragesController do
                                        "title"=>"foobar",
                                        "entourage_type"=>"ask_for_help",
                                        "number_of_people"=>1,
-                                       "author"=>{"id"=>user.id, "name"=>"John"},
-                                       "location"=>{"latitude"=>2.345, "longitude"=>2.345},
+                                       "author"=>{
+                                           "id"=>entourage.user.id,
+                                           "display_name"=>"John",
+                                           "avatar_url"=>nil
+                                       },
+                                       "location"=>{
+                                           "latitude"=>1.122,
+                                           "longitude"=>2.345
+                                       },
                                        "join_status"=>"not_requested",
-                                       "number_of_unread_messages"=>nil
+                                       "number_of_unread_messages"=>nil,
+                                       "created_at"=> entourage.created_at.iso8601(3)
                                     }]
                               })
       end
@@ -94,10 +102,18 @@ describe Api::V1::EntouragesController do
                                                            "title"=>"foo",
                                                            "entourage_type"=>"ask_for_help",
                                                            "number_of_people"=>0,
-                                                           "author"=>{"id"=>user.id, "name"=>"John"},
-                                                           "location"=>{"latitude"=>1.123, "longitude"=>1.123},
+                                                           "author"=>{
+                                                               "id"=>user.id,
+                                                               "display_name"=>"John",
+                                                               "avatar_url"=>nil
+                                                           },
+                                                           "location"=>{
+                                                               "latitude"=>4.567,
+                                                               "longitude"=>1.123
+                                                           },
                                                            "join_status"=>"accepted",
-                                                           "number_of_unread_messages"=>0
+                                                           "number_of_unread_messages"=>0,
+                                                           "created_at"=> Entourage.last.created_at.iso8601(3)
                                                           }
                                                      }) }
         it { expect(response.status).to eq(201) }
@@ -133,10 +149,18 @@ describe Api::V1::EntouragesController do
                                                            "title"=>"foobar",
                                                            "entourage_type"=>"ask_for_help",
                                                            "number_of_people"=>1,
-                                                           "author"=>{"id"=>entourage.user.id, "name"=>"John"},
-                                                           "location"=>{"latitude"=>2.345, "longitude"=>2.345},
+                                                           "author"=>{
+                                                               "id"=>entourage.user.id,
+                                                               "display_name"=>"John",
+                                                               "avatar_url"=>nil
+                                                           },
+                                                           "location"=>{
+                                                               "latitude"=>1.122,
+                                                               "longitude"=>2.345
+                                                           },
                                                            "join_status"=>"not_requested",
-                                                           "number_of_unread_messages"=>nil
+                                                           "number_of_unread_messages"=>nil,
+                                                           "created_at"=> entourage.created_at.iso8601(3)
                                                           }
                                                      }) }
       end
@@ -170,10 +194,18 @@ describe Api::V1::EntouragesController do
                                                            "title"=>"new_title",
                                                            "entourage_type"=>"ask_for_help",
                                                            "number_of_people"=>1,
-                                                           "author"=>{"id"=>user.id, "name"=>"John"},
-                                                           "location"=>{"latitude"=>2.345, "longitude"=>2.345},
+                                                           "author"=>{
+                                                               "id"=>user.id,
+                                                               "display_name"=>"John",
+                                                               "avatar_url"=>nil
+                                                           },
+                                                           "location"=>{
+                                                               "latitude"=>1.122,
+                                                               "longitude"=>2.345
+                                                           },
                                                            "join_status"=>"not_requested",
-                                                           "number_of_unread_messages"=>nil
+                                                           "number_of_unread_messages"=>nil,
+                                                           "created_at"=> user_entourage.created_at.iso8601(3)
                                                           }
                                                      }) }
       end

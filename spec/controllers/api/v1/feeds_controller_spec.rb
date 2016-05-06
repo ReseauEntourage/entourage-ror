@@ -28,12 +28,14 @@ describe Api::V1::FeedsController do
                                                   "number_of_people"=>1,
                                                   "author"=>{
                                                       "id"=>entourage.user.id,
-                                                      "name"=>"John"
+                                                      "display_name"=>"John",
+                                                      "avatar_url"=>nil
                                                   },
                                                   "location"=>{
-                                                      "latitude"=>2.345,
+                                                      "latitude"=>1.122,
                                                       "longitude"=>2.345
-                                                  }
+                                                  },
+                                                  "created_at"=> entourage.created_at.iso8601(3)
                                               }
                                            },
                                            {
