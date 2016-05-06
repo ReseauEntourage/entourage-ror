@@ -576,6 +576,72 @@ vehicle_type is either "feet" or "car"
 
 
 
+## User entourages collection [/users/{user_id}/entourages{?token}]
+
++ Parameters
+    + token (required, string, `FAKETOKEN`) ... Token identifying the current user
+
+
+### Retrieve entourages from user [GET /users/{user_id}/entourages{?token}{&page}{&per}{&distance}{&latitude}{&longitude}{&status}]
+
++ Parametersparameters to filter 
+    + page (optional, number) ... pagination : page number
+    + per (optional, number) ... pagination : number of tours per page
+    + distance (optional, number) ... distance : filter results within a circle with distance radius (in meters)
+    + latitude (optional, number) ... latitude : filter results within a circle with this center
+    + longitude (optional, number) ... longitude : filter results within a circle with this center
+    + status (optional, string) ... status : filter results with tour status
+
++ Request (application/json)
+
+    + Header
+
+            Accept: application/json
+
++ Response 200 (application/json; charset=utf-8)
+
+        {"entourages":
+            [{  "id": 567,
+                "created_at": "2015-07-07T10:31:43.000+02:00",
+                "status": "open",
+                "title": "entourage1",
+                "entourage_type": "ask_for_help",
+                "author": {
+                    "id": 123,
+                    "display_name": "Seb",
+                    "avatar_url": "https://s3.amazonaws.com/entourage-avatars/image.jpeg"
+                },
+                "number_of_people": 2,
+                "location": {
+                    "latitude": 37.4224764,
+                    "longitude": -122.0842499
+                }
+            },
+            {   "id": 568,
+                "created_at": "2015-07-07T10:31:43.000+02:00",
+                "status": "open",
+                "title": "entourage1",
+                "entourage_type": "ask_for_help",
+                "author": {
+                    "id": 123,
+                    "display_name": "Seb",
+                    "avatar_url": "https://s3.amazonaws.com/entourage-avatars/image.jpeg"
+                },
+                "number_of_people": 2,
+                "location": {
+                    "latitude": 37.4224764,
+                    "longitude": -122.0842499
+                }
+            }
+            ]
+        }
+
++ Response 401 (application/json; charset=utf-8)
+
+        {"error":{"status":401,"message":"Please sign-in"}}
+
+
+
 ## User tours collection [/users/{user_id}/tours{?token}]
 
 + Parameters
