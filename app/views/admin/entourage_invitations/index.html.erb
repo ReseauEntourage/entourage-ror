@@ -1,0 +1,26 @@
+<h1>Liste des invitations à rejoindre un entourage</h1>
+
+<table class="table table-striped">
+  <thead>
+  <tr>
+    <th>#</th>
+    <th>Envoyé par</th>
+    <th>Numéro</th>
+    <th>status</th>
+    <th>Date</th>
+  </tr>
+  </thead>
+
+  <tbody>
+  <% @entourage_invitations.each do |entourage_invitation| %>
+    <tr>
+      <td class="vert-align"><%= entourage_invitation.id %></td>
+      <td class="vert-align"><%= link_to(entourage_invitation.inviter.full_name, admin_user_path(entourage_invitation.inviter)) %></td>
+      <td class="vert-align"><%= entourage_invitation.status %></td>
+    </tr>
+  <% end %>
+  </tbody>
+</table>
+
+<br>
+<%= paginate @registration_requests %>
