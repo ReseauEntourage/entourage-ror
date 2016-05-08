@@ -5,11 +5,15 @@ module EntourageServices
     end
 
     def accept!
-      JoinRequest.create(user: invitation.invitee, joinable: invitation.invitable, status: JoinRequest::ACCEPTED_STATUS)
+      if JoinRequest.create(user: invitation.invitee, joinable: invitation.invitable, status: JoinRequest::ACCEPTED_STATUS)
+        invitation.update(status: EntourageInvitation::ACCEPTED_STATUS)
+      end
     end
 
     def reject!
-      JoinRequest.create(user: invitation.invitee, joinable: invitation.invitable, status: JoinRequest::REJECTED_STATUS)
+      if JoinRequest.create(user: invitation.invitee, joinable: invitation.invitable, status: JoinRequest::REJECTED_STATUS)
+        invitation.update(status: EntourageInvitation::REJECTED_STATUS)
+      end
     end
 
     private
