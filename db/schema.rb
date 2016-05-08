@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160418143631) do
+ActiveRecord::Schema.define(version: 20160508125847) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -78,14 +78,15 @@ ActiveRecord::Schema.define(version: 20160418143631) do
   end
 
   create_table "entourage_invitations", force: :cascade do |t|
-    t.integer  "invitable_id",    null: false
-    t.string   "invitable_type",  null: false
-    t.integer  "inviter_id",      null: false
+    t.integer  "invitable_id",                        null: false
+    t.string   "invitable_type",                      null: false
+    t.integer  "inviter_id",                          null: false
     t.integer  "invitee_id"
-    t.string   "invitation_mode", null: false
-    t.string   "phone_number",    null: false
-    t.datetime "created_at",      null: false
-    t.datetime "updated_at",      null: false
+    t.string   "invitation_mode",                     null: false
+    t.string   "phone_number",                        null: false
+    t.datetime "created_at",                          null: false
+    t.datetime "updated_at",                          null: false
+    t.string   "status",          default: "pending", null: false
   end
 
   add_index "entourage_invitations", ["invitable_id", "invitable_type"], name: "index_entourage_invitations_on_invitable_id_and_invitable_type", using: :btree

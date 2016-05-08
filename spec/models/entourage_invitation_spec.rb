@@ -15,6 +15,8 @@ RSpec.describe EntourageInvitation, type: :model do
     it { expect(entourage.entourage_invitations).to eq([entourage_invitation]) }
   end
 
+  context "create "
+
   context "belongs to a user" do
     let(:user) { FactoryGirl.create(:pro_user) }
     let(:entourage_invitation) { FactoryGirl.create(:entourage_invitation, invitee: user) }
