@@ -46,7 +46,7 @@ module V1
     end
 
     def tour_points
-      points = object.simplified_tour_points.present? ? object.simplified_tour_points.ordered : object.tour_points.ordered
+      points = object.simplified_tour_points.count > 0 ? object.simplified_tour_points.ordered : object.tour_points.ordered
       JSON.parse(ActiveModel::ArraySerializer.new(points, each_serializer: ::V1::TourPointSerializer).to_json)
     end
 

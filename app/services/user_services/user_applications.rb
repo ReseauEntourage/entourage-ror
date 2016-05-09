@@ -16,7 +16,7 @@ module UserServices
     attr_reader :user
 
     def app(type)
-      user.user_applications.where(device_family: type).last
+      user.user_applications.where(device_family: type).order("updated_at DESC").first
     end
   end
 end
