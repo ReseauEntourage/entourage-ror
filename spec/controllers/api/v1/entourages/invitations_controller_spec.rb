@@ -49,7 +49,7 @@ describe Api::V1::Entourages::InvitationsController do
         context "a user with same phone number already exists" do
           let!(:existing_user) { FactoryGirl.create(:public_user, phone: "+33612345678") }
           before { post :create, entourage_id: entourage.to_param, invite: {mode: "SMS", phone_number: "+33612345678"}, token: user.token }
-          it { expect(EntourageInvitation.count).to eq(0) }
+          it { expect(EntourageInvitation.count).to eq(1) }
           it { expect(User.count).to eq(3) }
         end
 

@@ -14,45 +14,32 @@ module EntourageServices
         return callback.on_not_part_of_entourage.try(:call)
       end
 
-      begin
-        invite = EntourageInvitation.new(invitable: entourage,
-                                         inviter: inviter,
-                                         invitee: invitee,
-                                         phone_number: phone_number,
-                                         invitation_mode: EntourageInvitation::MODE_SMS)
-        relationship = UserRelationship.new(source_user: inviter,
-                                            target_user: invitee,
-                                            relation_type: UserRelationship::TYPE_INVITE)
-        ActiveRecord::Base.transaction do
-          invite.save!
-          relationship.save!
+      if invitee
+        invite = invite_existing_user.send_invite
+      else
+        invite = invite_new_user_by_sms.send_invite
+      end
 
-          SmsSenderJob.perform_later(phone_number, message)
-          callback.on_success.try(:call, invite)
-        end
-      rescue ActiveRecord::RecordInvalid => e
-        Rails.logger.error e.message
-        Rails.logger.error e.backtrace.join("\n")
-        callback.on_failure.try(:call, e)
+      if invite
+        callback.on_success.try(:call, invite)
+      else
+        callback.on_failure.try(:call)
       end
     end
 
     private
     attr_reader :phone_number, :entourage, :callback, :inviter
 
+    def invite_existing_user
+      EntourageServices::InviteExistingUser.new(phone_number: phone_number, entourage: entourage, inviter: inviter, invitee: invitee)
+    end
+
+    def invite_new_user_by_sms
+      EntourageServices::InviteNewUserBySMS.new(phone_number: phone_number, entourage: entourage, inviter: inviter)
+    end
+
     def invitee
-      return @invitee  if @invitee
-      @invitee = UserServices::PublicUserBuilder.new(params: {phone: phone_number}).create(send_sms: false)
-      raise ActiveRecord::RecordInvalid.new(@invitee) unless @invitee.valid?
-      @invitee
-    end
-
-    def message
-      "Bonjour, vous êtes invité à rejoindre un Entourage. Votre code est #{invitee.sms_code}. Retrouvez l'application ici : #{link} ."
-    end
-
-    def link
-      link = Rails.env.test? ? "http://foo.bar" : url_shortener.shorten(Rails.application.routes.url_helpers.store_redirection_url)
+      User.where(phone: phone_number).first
     end
   end
 

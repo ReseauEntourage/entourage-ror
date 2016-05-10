@@ -14,7 +14,7 @@ module Api
             end
 
             on.failure do |error|
-              render json: {message: 'Could not create entourage invitation', reasons: error.message}, status: :bad_request
+              render json: {message: 'Could not create entourage invitation'}, status: :bad_request
             end
 
             on.not_part_of_entourage do
