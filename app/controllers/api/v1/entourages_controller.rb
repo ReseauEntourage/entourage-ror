@@ -4,7 +4,6 @@ module Api
       before_action :set_entourage, only: [:show, :update]
 
       def index
-        per = params[:per] || 10
         finder = EntourageServices::EntourageFinder.new(user: current_user,
                                                         status: params[:status],
                                                         type: params[:type],

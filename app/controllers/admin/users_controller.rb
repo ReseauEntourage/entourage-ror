@@ -36,7 +36,7 @@ module Admin
         set_coordinated_organizations(user)
         render :edit, notice: "utilisateur mis à jour"
       else
-        render :edit
+        render :edit, alert: "Erreur lors de la mise à jour"
       end
     end
 

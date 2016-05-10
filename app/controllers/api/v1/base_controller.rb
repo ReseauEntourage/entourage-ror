@@ -45,6 +45,10 @@ module Api
       def api_request
         ApiRequest.new(params: params, headers: headers, env: request.env)
       end
+
+      def per
+        [params[:per] || 10, 25].min
+      end
     end
   end
 end

@@ -5,8 +5,6 @@ module Api
 
       def index
         return render json: {message: 'Public users cannot list tours'}, status: 403 if current_user.public?
-
-        per = params[:per] || 10
         @tours = TourServices::TourFilterApi.new(user: current_user,
                                                  status: params[:status],
                                                  type: params[:type],

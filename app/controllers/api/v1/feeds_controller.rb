@@ -29,10 +29,6 @@ module Api
                                                page: params[:page],
                                                per: per).entourages.to_a
       end
-
-      def per
-        params[:per] || 10
-      end
     end
   end
 end
