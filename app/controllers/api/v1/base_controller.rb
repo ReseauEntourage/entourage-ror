@@ -47,7 +47,7 @@ module Api
       end
 
       def per
-        [params[:per] || 10, 25].min
+        [params[:per].try(:to_i) || 10, 25].min
       end
     end
   end
