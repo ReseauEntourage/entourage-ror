@@ -9,7 +9,7 @@ module Facebook
       yield callback if block_given?
 
       begin
-        update_or_create_user
+        update_user
       rescue Facebook::InvalidTokenError => e
         log_exception(e)
         callback.on_invalid_facebook_token.try(:call, client.token)
@@ -22,7 +22,7 @@ module Facebook
     private
     attr_reader :client, :callback
 
-    def update_or_create_user
+    def update_user
       facebook = FacebookAuthenticationProvider.select(:user_id).where(provider_id: facebook_user.try(:[], "id")).first
       if facebook
         Rails.logger.info "Update user from facebook : #{facebook_user.inspect}"
