@@ -152,6 +152,42 @@ Users related resources of the **Entourage API**
         {"error":{"status":400,"message":"Login failed"}}
 
 
+## Authentication Provider [/authentication_providers]
+
+### Create Authentication Provider [POST]
+
++ Request (application/x-www-form-urlencoded; charset=utf-8)
+
+    + Body
+            {"authentification_provider": {"source": "facebook", "token": "foobar"}}
+
+    + Header
+
+            Accept: application/json
+
++ Response 200 (application/json; charset=utf-8)
+
+        {"user":{"id":1,
+                    "email":"dredd@test.com",
+                    "display_name":"Judge Dredd",
+                    "first_name": "Judge",
+                    "last_name": "Dredd",
+                    "token":"FAKETOKEN"
+                    "user_type": "pro",
+                    "avatar_url": "http://foo.com/bar.jpg",
+                    "organization":nil},
+                    "stats":{"tour_count":0,"encounter_count":0}
+                }}
+
++ Response 401 (application/json; charset=utf-8)
+
+        {"message": "Invalid Facebook token"}
+
++ Response 401 (application/json; charset=utf-8)
+
+        {"message": "Facebook error : ..."}
+
+
 ## Get details about a user [/users/{user_id}]
 
 ### Retrieve details about a user [GET]
