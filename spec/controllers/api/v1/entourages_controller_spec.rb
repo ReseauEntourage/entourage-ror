@@ -101,7 +101,7 @@ describe Api::V1::EntouragesController do
                                                            "status"=>"open",
                                                            "title"=>"foo",
                                                            "entourage_type"=>"ask_for_help",
-                                                           "number_of_people"=>0,
+                                                           "number_of_people"=>1,
                                                            "author"=>{
                                                                "id"=>user.id,
                                                                "display_name"=>"John",
@@ -119,6 +119,7 @@ describe Api::V1::EntouragesController do
         it { expect(response.status).to eq(201) }
         it { expect(Entourage.last.longitude).to eq(1.123) }
         it { expect(Entourage.last.latitude).to eq(4.567) }
+        it { expect(Entourage.last.number_of_people).to eq(1) }
         it { expect(user.entourage_participations).to eq([Entourage.last]) }
         it { expect(JoinRequest.count).to eq(1) }
         it { expect(JoinRequest.last.status).to eq(JoinRequest::ACCEPTED_STATUS) }
