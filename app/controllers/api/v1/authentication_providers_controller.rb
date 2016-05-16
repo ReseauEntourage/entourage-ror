@@ -4,8 +4,12 @@ module Api
       skip_before_filter :authenticate_user!
 
       def create
-        facebook_authenticator = Facebook::FacebookAuthenticator.new(token: authent_params[:token])
-        facebook_authenticator.authenticate do |on|
+        if authent_params[:source] == "facebook"
+          authenticator = Facebook::FacebookAuthenticator.new(token: authent_params[:token])
+        elsif authent_params[:source] == "twitter"
+          authenticator = Twitter::TwitterAuthenticator.new(token: authent_params[:token])
+        end
+        authenticator.authenticate do |on|
           on.login_success do |user|
             render json: user, status: 200, serializer: ::V1::UserSerializer, scope: user
           end
@@ -14,12 +18,12 @@ module Api
             return render json: {message: user.errors.full_messages}, status: 401
           end
 
-          on.invalid_facebook_token do |token|
-            return render json: {message: "Invalid Facebook token : #{token}"}, status: 401
+          on.invalid_token do |token|
+            return render json: {message: "Invalid token : #{token}"}, status: 401
           end
 
-          on.facebook_error do |error_message|
-            return render json: {message: "Facebook error : #{error_message}"}, status: 401
+          on.provider_error do |error_message|
+            return render json: {message: "Provider error : #{error_message}"}, status: 401
           end
         end
       end

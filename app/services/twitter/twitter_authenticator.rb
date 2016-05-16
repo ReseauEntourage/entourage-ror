@@ -1,7 +1,7 @@
-module Facebook
-  class FacebookAuthenticator
+module Twitter
+  class TwitterAuthenticator
     def initialize(token:)
-      @client = Facebook::Client.new(token: token)
+      @client = Twitter::Client.new(token: token)
       @callback = AuthenticationProviderCallback.new
     end
 
@@ -10,10 +10,10 @@ module Facebook
 
       begin
         update_user
-      rescue Facebook::InvalidTokenError => e
+      rescue Twitter::InvalidTokenError => e
         log_exception(e)
         callback.on_invalid_token.try(:call, client.token)
-      rescue Facebook::FacebookResponseWithError => e
+      rescue Twitter::TwitterResponseWithError => e
         log_exception(e)
         callback.on_provider_error.try(:call, e.message)
       end
@@ -23,16 +23,16 @@ module Facebook
     attr_reader :client, :callback
 
     def update_user
-      facebook = FacebookAuthenticationProvider.select(:user_id).where(provider_id: facebook_user.try(:[], "id")).first
-      if facebook
-        Rails.logger.info "Update user from facebook : #{facebook_user.inspect}"
-        user = update_user_from_facebook(user: facebook.user)
+      twitter = TwitterAuthenticationProvider.select(:user_id).where(provider_id: facebook_user.try(:[], "id")).first
+      if twitter
+        Rails.logger.info "Update user from twitter : #{twitter_user.inspect}"
+        user = update_user_from_twitter(user: twitter.user)
       end
       user
     end
 
-    def update_user_from_facebook(user:)
-      user = Facebook::FacebookUserBuilder.new(facebook_user: facebook_user).update_user(user)
+    def update_user_from_twitter(user:)
+      user = Twitter::TwitterUserBuilder.new(twitter_user: twitter_user).update_user(user)
       if user.save
         callback.on_login_success.try(:call, user)
       else
@@ -41,8 +41,8 @@ module Facebook
       user
     end
 
-    def facebook_user
-      @facebook_user ||= client.me
+    def twitter_user
+      @twitter_user ||= client.me
     end
 
     def log_exception(e)
@@ -50,4 +50,7 @@ module Facebook
       Raven.capture_exception(e) if Rails.env.production?
     end
   end
+
+  class InvalidTokenError < StandardError; end
+  class TwitterResponseWithError < StandardError; end
 end
