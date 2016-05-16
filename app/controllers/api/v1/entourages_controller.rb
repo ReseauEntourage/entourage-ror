@@ -20,15 +20,15 @@ module Api
       end
 
       def create
-        entourage = Entourage.new(entourage_params.except(:location))
-        entourage.longitude = entourage_params.dig(:location, :longitude)
-        entourage.latitude = entourage_params.dig(:location, :latitude)
-        entourage.user = current_user
-        if entourage.save
-          JoinRequest.create(user: current_user, joinable: entourage, status: JoinRequest::ACCEPTED_STATUS)
-          render json: entourage, status: 201, serializer: ::V1::EntourageSerializer
-        else
-          render json: {message: 'Could not create entourage', reasons: entourage.errors.full_messages}, status: 400
+        entourage_builder = EntourageServices::EntourageBuilder.new(params: entourage_params, user: current_user)
+        entourage_builder.create do |on|
+          on.success do |entourage|
+            render json: entourage, status: 201, serializer: ::V1::EntourageSerializer
+          end
+
+          on.failure do |entourage|
+            render json: {message: 'Could not create entourage', reasons: entourage.errors.full_messages}, status: 400
+          end
         end
       end
 
