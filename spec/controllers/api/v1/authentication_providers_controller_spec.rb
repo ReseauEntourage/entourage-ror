@@ -60,7 +60,7 @@ describe Api::V1::AuthenticationProvidersController do
         before { Facebook::Client.any_instance.stub(:me).and_raise(Facebook::InvalidTokenError) }
         before { post :create, user_id: logged_user.id, authentification_provider: {source: "facebook", token: "foobar"} }
         it { expect(response.status).to eq(401) }
-        it { expect(parsed_response).to eq({"message"=>"Invalid Facebook token : foobar"}) }
+        it { expect(parsed_response).to eq({"message"=>"Invalid token : foobar"}) }
       end
     end
 
@@ -74,7 +74,7 @@ describe Api::V1::AuthenticationProvidersController do
 
       before { post :create, user_id: logged_user.id, authentification_provider: {source: "facebook", token: "foobar"} }
       it { expect(response.status).to eq(401) }
-      it { expect(parsed_response).to eq({"message"=>"Facebook error : (#4) Application request limit reached"})}
+      it { expect(parsed_response).to eq({"message"=>"Provider error : (#4) Application request limit reached"})}
     end
   end
 end
