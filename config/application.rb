@@ -35,8 +35,10 @@ module EntourageBack
       params = event.payload[:params].reject do |k|
         ['controller', 'action'].include? k
       end
-
-      { "params" => params }
+      {
+          "params" => params,
+          "API_KEY" => event.payload[:api_key]
+      }
     end
     config.log_tags = [ lambda {|req| Time.now.to_s(:db) }, :remote_ip ]
   end

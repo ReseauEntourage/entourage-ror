@@ -15,12 +15,12 @@ class ApiRequest
     Api::ApplicationKey.new(api_key: api_key).key_infos
   end
 
-  private
-  attr_reader :params, :headers, :env
-
   def api_key
     headers['X-API-KEY'] || env['X-API-KEY'] || env['HTTP_X_API_KEY']
   end
+
+  private
+  attr_reader :params, :headers, :env
 end
 
 class UnauthorisedApiKeyError < StandardError; end

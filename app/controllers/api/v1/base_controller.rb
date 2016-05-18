@@ -43,11 +43,17 @@ module Api
       end
 
       def api_request
-        ApiRequest.new(params: params, headers: headers, env: request.env)
+        @api_request ||= ApiRequest.new(params: params, headers: headers, env: request.env)
       end
 
       def per
         [params[:per].try(:to_i) || 10, 25].min
+      end
+
+      # For logging API_KEY with lograge
+      def append_info_to_payload(payload)
+        super
+        payload[:api_key] = api_request.api_key
       end
     end
   end

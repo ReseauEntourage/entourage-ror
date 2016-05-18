@@ -3,6 +3,7 @@ module Api
     class UsersController < Api::V1::BaseController
       skip_before_filter :authenticate_user!, only: [:login, :code, :create]
 
+      #curl -H "X-API-KEY:adc86c761fa8" -H "Content-Type: application/json" -X POST -d '{"user": {"phone": "+3312345567", "sms_code": "11111"}}' "http://localhost:3000/api/v1/login.json"
       def login
         user = UserServices::UserAuthenticator.authenticate_by_phone_and_sms(phone: user_params[:phone], sms_code: user_params[:sms_code])
         return render json: {message: 'unauthorized'}, status: :unauthorized unless user
