@@ -45,7 +45,7 @@ module Api
       private
 
       def entourage_params
-        params.require(:entourage).permit({location: [:longitude, :latitude]}, :title, :entourage_type, :status)
+        params.require(:entourage).permit({location: [:longitude, :latitude]}, :title, :entourage_type, :status, :description)
       end
 
       def set_entourage

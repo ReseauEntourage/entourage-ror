@@ -34,7 +34,8 @@ describe Api::V1::EntouragesController do
                                        },
                                        "join_status"=>"not_requested",
                                        "number_of_unread_messages"=>nil,
-                                       "created_at"=> entourage.created_at.iso8601(3)
+                                       "created_at"=> entourage.created_at.iso8601(3),
+                                       "description" => nil
                                     }]
                               })
       end
@@ -95,7 +96,7 @@ describe Api::V1::EntouragesController do
       end
 
       context "valid params" do
-        before { post :create, entourage: { location: {longitude: 1.123, latitude: 4.567}, title: "foo", entourage_type: "ask_for_help" }, token: user.token }
+        before { post :create, entourage: { location: {longitude: 1.123, latitude: 4.567}, title: "foo", entourage_type: "ask_for_help", description: "foo bar"}, token: user.token }
         it { expect(JSON.parse(response.body)).to eq({"entourage"=>
                                                           {"id"=>Entourage.last.id,
                                                            "status"=>"open",
@@ -113,7 +114,8 @@ describe Api::V1::EntouragesController do
                                                            },
                                                            "join_status"=>"accepted",
                                                            "number_of_unread_messages"=>0,
-                                                           "created_at"=> Entourage.last.created_at.iso8601(3)
+                                                           "created_at"=> Entourage.last.created_at.iso8601(3),
+                                                           "description"=> "foo bar"
                                                           }
                                                      }) }
         it { expect(response.status).to eq(201) }
@@ -161,7 +163,8 @@ describe Api::V1::EntouragesController do
                                                            },
                                                            "join_status"=>"not_requested",
                                                            "number_of_unread_messages"=>nil,
-                                                           "created_at"=> entourage.created_at.iso8601(3)
+                                                           "created_at"=> entourage.created_at.iso8601(3),
+                                                           "description" => nil
                                                           }
                                                      }) }
       end
@@ -206,7 +209,8 @@ describe Api::V1::EntouragesController do
                                                            },
                                                            "join_status"=>"not_requested",
                                                            "number_of_unread_messages"=>nil,
-                                                           "created_at"=> user_entourage.created_at.iso8601(3)
+                                                           "created_at"=> user_entourage.created_at.iso8601(3),
+                                                           "description" => nil
                                                           }
                                                      }) }
       end

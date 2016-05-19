@@ -35,7 +35,8 @@ describe Api::V1::FeedsController do
                                                       "latitude"=>1.122,
                                                       "longitude"=>2.345
                                                   },
-                                                  "created_at"=> entourage.created_at.iso8601(3)
+                                                  "created_at"=> entourage.created_at.iso8601(3),
+                                                  "description" => nil
                                               }
                                            },
                                            {

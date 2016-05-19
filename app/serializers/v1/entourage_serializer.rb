@@ -7,7 +7,8 @@ module V1
                :join_status,
                :number_of_unread_messages,
                :number_of_people,
-               :created_at
+               :created_at,
+               :description
     
     has_one :author
     has_one :location
