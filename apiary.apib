@@ -1134,8 +1134,9 @@ Feeds related resources of the **Entourage API**
 
 tour_types should be a list of values separated by coma, ex: , `tour_types=medical,social,distributive`
 entourage_types should be a list of values separated by coma, ex: , `entourage_types=ask_for_help,contribution`
+time_range should be a number of hours
 
-### Get all feeds [GET /feeds{?token}{&longitude}{&latitude}{&page}{&per}{&tour_types}{&show_tours}{&entourage_types}]
+### Get all feeds [GET /feeds{?token}{&longitude}{&latitude}{&page}{&per}{&tour_types}{&show_tours}{&entourage_types}{&time_range}{&show_my_entourages_only}]
 
 + Parameters
     + token (required, string, `FAKETOKEN`) ... Token identifying the current user
@@ -1146,6 +1147,8 @@ entourage_types should be a list of values separated by coma, ex: , `entourage_t
     + tour_types (optional, list) ... Types of tours separated by coma
     + show_tours (optional, boolean) ... Should include tours in response
     + entourage_types (optional, list) ... Types of tours separated by coma
+    + show_my_entourages_only (optional, boolean) ... Return only my entourages
+    + time_range  (optional, number) ... Number of hours to filter
 
 + Request
 
