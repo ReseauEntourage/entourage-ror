@@ -16,7 +16,7 @@ module Api
           if position_params?
             entourages = entourages.around(params[:latitude], params[:longitude], params[:distance])
           end
-          entourages = entourages.where(status: Tour.statuses[params[:status]]) if params[:status].present?
+          entourages = entourages.where(status: params[:status]) if params[:status].present?
           render json: entourages, status: 200, each_serializer: ::V1::EntourageSerializer
         end
 
