@@ -12,8 +12,8 @@ describe Api::V1::FeedsController do
 
     context "signed in" do
       let(:user) { FactoryGirl.create(:pro_user) }
-      let!(:tour) { FactoryGirl.create(:tour, created_at: 2.day.ago, tour_type: "medical") }
-      let!(:entourage) { FactoryGirl.create(:entourage, created_at: 1.day.ago, entourage_type: "ask_for_help") }
+      let!(:tour) { FactoryGirl.create(:tour, created_at: 5.hours.ago, tour_type: "medical") }
+      let!(:entourage) { FactoryGirl.create(:entourage, created_at: 4.hours.ago, entourage_type: "ask_for_help") }
 
       context "get all" do
         before { get :index, token: user.token, show_tours: true }
@@ -74,33 +74,33 @@ describe Api::V1::FeedsController do
       end
 
       context "get tour types only" do
-        let!(:tour_social) { FactoryGirl.create(:tour, created_at: 2.day.ago, tour_type: "alimentary") }
-        let!(:tour_medical) { FactoryGirl.create(:tour, created_at: 3.day.ago, tour_type: "barehands") }
+        let!(:tour_social) { FactoryGirl.create(:tour, created_at: 2.hours.ago, tour_type: "alimentary") }
+        let!(:tour_medical) { FactoryGirl.create(:tour, created_at: 3.hours.ago, tour_type: "barehands") }
         before { get :index, token: user.token, show_tours: true, tour_types: "alimentary, barehands" }
-        it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([entourage.id, tour_social.id, tour_medical.id]) }
+        it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([tour_social.id, tour_medical.id, entourage.id]) }
       end
 
       context "get entourages types only" do
-        let!(:entourage_contribution) { FactoryGirl.create(:entourage, created_at: 1.day.ago, entourage_type: "contribution") }
+        let!(:entourage_contribution) { FactoryGirl.create(:entourage, created_at: 1.hour.ago, entourage_type: "contribution") }
         before { get :index, token: user.token, entourage_types: "contribution" }
         it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([entourage_contribution.id]) }
       end
 
       context "show only my entourages" do
-        let!(:entourage_i_created) { FactoryGirl.create(:entourage, user: user, created_at: 1.day.ago) }
+        let!(:entourage_i_created) { FactoryGirl.create(:entourage, user: user, created_at: 1.hour.ago) }
         let!(:join_request_created) { FactoryGirl.create(:join_request, joinable: entourage_i_created, user: user, status: JoinRequest::ACCEPTED_STATUS) }
-        let!(:entourage_i_joined) { FactoryGirl.create(:entourage, created_at: 2.day.ago) }
+        let!(:entourage_i_joined) { FactoryGirl.create(:entourage, created_at: 2.hour.ago) }
         let!(:join_request_joined) { FactoryGirl.create(:join_request, joinable: entourage_i_joined, user: user, status: JoinRequest::ACCEPTED_STATUS) }
         before { get :index, token: user.token, show_only_my_entourages: true }
         it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([entourage_i_created.id, entourage_i_joined.id]) }
       end
 
       context "filter by timerange" do
-        let!(:entourage1) { FactoryGirl.create(:entourage, created_at: 3.days.ago) }
+        let!(:entourage1) { FactoryGirl.create(:entourage, created_at: 3.day.ago) }
         let!(:entourage2) { FactoryGirl.create(:entourage, created_at: 3.day.ago) }
-        let!(:tour2) { FactoryGirl.create(:tour, created_at: 5.hours.ago, tour_type: "medical") }
+        let!(:tour2) { FactoryGirl.create(:tour, created_at: 3.hours.ago, tour_type: "medical") }
         before { get :index, token: user.token, show_tours: true, time_range: 47 }
-        it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([tour2.id, entourage.id]) }
+        it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([tour2.id, entourage.id, tour.id]) }
       end
     end
   end

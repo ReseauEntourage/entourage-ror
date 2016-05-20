@@ -8,7 +8,7 @@ module EntourageServices
       @longitude = longitude
       @distance = distance
       @show_only_my_entourages = show_only_my_entourages
-      @time_range = time_range.to_i
+      @time_range = (time_range || 24).to_i
       @page = page
       @per = per
     end

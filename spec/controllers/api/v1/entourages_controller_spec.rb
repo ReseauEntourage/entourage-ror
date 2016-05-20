@@ -46,8 +46,8 @@ describe Api::V1::EntouragesController do
       end
 
       context "order recents entourages" do
-        let!(:very_old_entourage) { FactoryGirl.create(:entourage, created_at: entourage.created_at - 2.months) }
-        let!(:old_entourage) { FactoryGirl.create(:entourage, created_at: entourage.created_at - 1.days) }
+        let!(:entourage1) { FactoryGirl.create(:entourage, created_at: entourage.created_at - 2.hours) }
+        let!(:entourage2) { FactoryGirl.create(:entourage, created_at: entourage.created_at - 3.days) }
         before { get :index, token: user.token }
         it { expect(subject["entourages"].count).to eq(2) }
         it { expect(subject["entourages"][0]["id"]).to eq(entourage.id) }
@@ -67,7 +67,7 @@ describe Api::V1::EntouragesController do
       end
 
       context "filter entourage_type" do
-        let!(:help_entourage) { FactoryGirl.create(:entourage, entourage_type: "ask_for_help", created_at: entourage.created_at-1.days) }
+        let!(:help_entourage) { FactoryGirl.create(:entourage, entourage_type: "ask_for_help", created_at: entourage.created_at-1.hours) }
         before { get :index, type: "ask_for_help", token: user.token }
         it { expect(subject["entourages"].count).to eq(2) }
         it { expect(subject["entourages"][0]["id"]).to eq(entourage.id) }
