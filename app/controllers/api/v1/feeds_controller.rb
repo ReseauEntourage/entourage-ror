@@ -28,6 +28,7 @@ module Api
                                                latitude: params[:latitude],
                                                longitude: params[:longitude],
                                                distance: nil,
+                                               show_only_my_entourages: params[:show_only_my_entourages],
                                                page: params[:page],
                                                per: per).entourages.to_a
       end
