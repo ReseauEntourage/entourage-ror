@@ -94,6 +94,14 @@ describe Api::V1::FeedsController do
         before { get :index, token: user.token, show_only_my_entourages: true }
         it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([entourage_i_created.id, entourage_i_joined.id]) }
       end
+
+      context "filter by timerange" do
+        let!(:entourage1) { FactoryGirl.create(:entourage, created_at: 3.days.ago) }
+        let!(:entourage2) { FactoryGirl.create(:entourage, created_at: 3.day.ago) }
+        let!(:tour2) { FactoryGirl.create(:tour, created_at: 5.hours.ago, tour_type: "medical") }
+        before { get :index, token: user.token, show_tours: true, time_range: 47 }
+        it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([tour2.id, entourage.id]) }
+      end
     end
   end
 end
