@@ -2,7 +2,9 @@ module Api
   module V1
     class FeedsController < Api::V1::BaseController
       def index
-        feeds = (tours+entourages).sort_by { |feed| -feed.created_at.to_i}
+        feeds = entourages
+        feeds += tours if params[:show_tours]
+        feeds = feeds.sort_by { |feed| -feed.created_at.to_i}
         render json: ::V1::FeedSerializer.new(feeds: feeds, user: current_user).to_json, status: 200
       end
 
