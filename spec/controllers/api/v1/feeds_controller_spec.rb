@@ -12,7 +12,7 @@ describe Api::V1::FeedsController do
 
     context "signed in" do
       let(:user) { FactoryGirl.create(:pro_user) }
-      let!(:tour) { FactoryGirl.create(:tour, created_at: 2.day.ago) }
+      let!(:tour) { FactoryGirl.create(:tour, created_at: 2.day.ago, tour_type: "medical") }
       let!(:entourage) { FactoryGirl.create(:entourage, created_at: 1.day.ago) }
 
       context "get all" do
@@ -71,6 +71,13 @@ describe Api::V1::FeedsController do
         before { get :index, token: user.token, show_tours: false }
         it { expect(result["feeds"].count).to eq(1) }
         it { expect(result["feeds"][0]["type"]).to eq("Entourage") }
+      end
+
+      context "get tour types only" do
+        let!(:tour_social) { FactoryGirl.create(:tour, created_at: 2.day.ago, tour_type: "alimentary") }
+        let!(:tour_medical) { FactoryGirl.create(:tour, created_at: 3.day.ago, tour_type: "barehands") }
+        before { get :index, token: user.token, show_tours: true, tour_types: "alimentary, barehands" }
+        it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([entourage.id, tour_social.id, tour_medical.id]) }
       end
     end
   end

@@ -15,7 +15,7 @@ module TourServices
     def tours
       tours = Tour.includes(:tour_points, :join_requests, :user)
       tours = tours.where(status: status) if status
-      tours = tours.where(tour_type: type) if type
+      tours = tours.where(tour_type: formated_type) if type
       tours = tours.where(vehicle_type: Tour.vehicle_types[vehicle_type.to_sym]) if vehicle_type
       tours = filter_box(tours) if latitude && longitude
       tours = tours.where("updated_at > ?", 24.hours.ago)
@@ -34,6 +34,10 @@ module TourServices
       Geocoder::Calculations.bounding_box([latitude, longitude],
                                           (distance || 10),
                                           units: :km)
+    end
+
+    def formated_type
+      type.gsub(" ", "").split(",")
     end
   end
 end

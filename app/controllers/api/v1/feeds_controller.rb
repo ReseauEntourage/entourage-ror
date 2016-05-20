@@ -11,8 +11,8 @@ module Api
       private
       def tours
         TourServices::TourFilterApi.new(user: current_user,
-                                        status: nil,
-                                        type: nil,
+                                        status: params[:tour_types],
+                                        type: params[:tour_types],
                                         vehicle_type: nil,
                                         latitude: params[:latitude],
                                         longitude: params[:longitude],
