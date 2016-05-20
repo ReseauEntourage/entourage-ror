@@ -14,7 +14,7 @@ module EntourageServices
     def entourages
       entourages = Entourage.includes(:join_requests, :user)
       entourages = entourages.where(status: status) if status
-      entourages = entourages.where(entourage_type: type) if type
+      entourages = entourages.where(entourage_type: formated_types) if type
       entourages = entourages.within_bounding_box(box) if latitude && longitude
       entourages = entourages.where("created_at > ?", 1.month.ago)
       entourages.order(created_at: :desc).page(page).per(per)
@@ -27,6 +27,10 @@ module EntourageServices
       Geocoder::Calculations.bounding_box([latitude, longitude],
                                           (distance || 10),
                                           units: :km)
+    end
+
+    def formated_types
+      type.gsub(" ", "").split(",")
     end
   end
 end

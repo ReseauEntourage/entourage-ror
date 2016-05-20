@@ -11,7 +11,7 @@ module Api
       private
       def tours
         TourServices::TourFilterApi.new(user: current_user,
-                                        status: params[:tour_types],
+                                        status: nil,
                                         type: params[:tour_types],
                                         vehicle_type: nil,
                                         latitude: params[:latitude],
@@ -24,7 +24,7 @@ module Api
       def entourages
         EntourageServices::EntourageFinder.new(user: current_user,
                                                status: nil,
-                                               type: nil,
+                                               type: params[:entourage_types],
                                                latitude: params[:latitude],
                                                longitude: params[:longitude],
                                                distance: nil,
