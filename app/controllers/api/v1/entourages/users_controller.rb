@@ -76,7 +76,8 @@ module Api
             end
 
             on.quit do
-              head status: 204
+              #JoinRequest was destroyed we return an empty join request
+              render json: @join_request, root: "user", status: 200, serializer: ::V1::JoinRequestSerializer
             end
           end
         end

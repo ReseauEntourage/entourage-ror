@@ -121,7 +121,15 @@ describe Api::V1::Entourages::UsersController do
         let!(:my_join_request) { JoinRequest.create(user: user, joinable: entourage, status: "accepted") }
         before { delete :destroy, entourage_id: entourage.to_param, id: user.id, token: user.token }
         it { expect(JoinRequest.where(id: my_join_request.id)).to eq([]) }
-        it { expect(response.status).to eq(204) }
+        it { expect(response.status).to eq(200) }
+        it { expect(result).to eq({"user"=>{
+                                      "id"=>user.id,
+                                      "email"=>user.email,
+                                      "display_name"=>"John Doe",
+                                      "status"=>"not requested",
+                                      "message"=>nil,
+                                      "requested_at"=>my_join_request.created_at.iso8601(3)}
+                                  }) }
       end
     end
 
