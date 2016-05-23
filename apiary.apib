@@ -1213,6 +1213,92 @@ time_range should be a number of hours
         {"error":{"status":401,"message":"Please sign-in"}}
 
 
+# Group Myfeeds
+Feeds related resources of the **Entourage API**
+## Feeds [/myfeeds]
+
+tour_types should be a list of values separated by coma, ex: , `tour_types=medical,social,distributive`
+entourage_types should be a list of values separated by coma, ex: , `entourage_types=ask_for_help,contribution`
+time_range should be a number of hours
+status : 
+ACTIVE: either created by me or that I joined
+CLOSED: either (created and closed by me) or (that I joined and left)
+
+### Get all feeds [GET /myfeeds{?token}{&page}{&per}{&tour_types}{&entourage_types}{&time_range}{&status}]
+
++ Parameters
+    + token (required, string, `FAKETOKEN`) ... Token identifying the current user
+    + page (optional, number) ... pagination : page number
+    + per (optional, number) ... pagination : number of entourages per page
+    + tour_types (optional, list) ... Types of tours separated by coma
+    + entourage_types (optional, list) ... Types of tours separated by coma
+    + time_range (optional, number) ... Number of hours to filter
+    + status (optional, string) ... ALL, ACTIVE, CLOSED
+
++ Request
+
+    + Headers
+
+            Accept: application/json
+
++ Response 200 (application/json; charset=utf-8)
+
+    + Body
+
+            {
+                "feeds": [{
+                            "type": "Entourage",
+                            "data": {
+                                "id": 567,
+                                "created_at": "",
+                                "status": "open",
+                                "title": "entourage1",
+                                "entourage_type": "ask_for_help",
+                                "author": {
+                                    "id": 123,
+                                    "display_name": "Seb",
+                                    "avatar_url": "https://s3.amazonaws.com/entourage-avatars/image.jpeg"
+                                },
+                                "number_of_people": 2,
+                                "location": {
+                                    "latitude": 37.4224764,
+                                    "longitude": -122.0842499
+                                },
+                                "description": "lorem ipsum"
+                            }
+                        },
+                        {
+                            "type": "Tour",
+                            "data": {
+                                "id":10,
+                                "tour_type":"medical", 
+                                "vehicle_type":"feet", 
+                                "distance": 8543.65, 
+                                "organization_name":"organization name", 
+                                "organization_description":"organization description", 
+                                "start_time": "2016-01-01T19:09:06.000+01:00", 
+                                "end_time": "2016-01-01T20:09:06.000+01:00",
+                                "tour_points":[
+                                {"latitude":1.5,"longitude":1.5},
+                                {"latitude":1.6,"longitude":1.6}
+                                ],
+                                "status":"ongoing",
+                                "number_of_people": 1,
+                                "author": {
+                                    "id": 14,
+                                    "display_name": "Arnaud",
+                                    "avatar_url": "https://foo.bar"
+                                },
+                                "join_status": "pending",
+                                "number_of_unread_messages": 0
+                        }]
+            }
+
++ Response 401 (application/json; charset=utf-8)
+
+        {"error":{"status":401,"message":"Please sign-in"}}
+
+
 
 # Group Entourages
 Entourages related resources of the **Entourage API**
@@ -1382,12 +1468,12 @@ Entourages related resources of the **Entourage API**
     + Body
 
             {
-            "entourage": {
-                "name": "entourage1",
-                "entourage_type": "ask_for_help",
-                "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-                "description": "lorem ipsum",
-                "status": "closed"
+                "entourage": {
+                    "name": "entourage1",
+                    "entourage_type": "ask_for_help",
+                    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+                    "status": "closed"
+                }
             }
 
 + Response 200 (application/json; charset=utf-8)
