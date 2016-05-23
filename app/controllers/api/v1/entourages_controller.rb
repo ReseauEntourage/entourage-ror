@@ -35,7 +35,7 @@ module Api
       def update
         return render json: {message: 'unauthorized'}, status: :unauthorized if @entourage.user != current_user
 
-        if @entourage.update(entourage_params)
+        if @entourage.update(entourage_params.except(:location))
           render json: @entourage, status: 201, serializer: ::V1::EntourageSerializer
         else
           render json: {message: 'Could not update entourage', reasons: @entourage.errors.full_messages}, status: 400
