@@ -74,6 +74,10 @@ module Api
             on.remove_author do
               render json: {message: 'Cannot remove the author of the entourage'}, status: :bad_request
             end
+
+            on.quit do
+              head status: 204
+            end
           end
         end
 
