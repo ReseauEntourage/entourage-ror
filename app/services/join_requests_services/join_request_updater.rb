@@ -34,7 +34,7 @@ module JoinRequestsServices
 
       if join_request.user == current_user
         user_status.quit!
-        return callback.on_success.try(:call, join_request)
+        return callback.on_quit.try(:call)
       end
 
       if user_status.reject!
@@ -83,7 +83,7 @@ module JoinRequestsServices
   end
 
   class UpdateJoinRequestCallback < Callback
-    attr_accessor :on_invalid_status, :on_not_authorised, :on_remove_author
+    attr_accessor :on_invalid_status, :on_not_authorised, :on_remove_author, :on_quit
 
     def invalid_status(&block)
       @on_invalid_status = block
@@ -95,6 +95,10 @@ module JoinRequestsServices
 
     def remove_author(&block)
       @on_remove_author = block
+    end
+
+    def quit(&block)
+      @on_quit = block
     end
   end
 end

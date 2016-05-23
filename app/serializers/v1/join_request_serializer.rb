@@ -22,5 +22,9 @@ module V1
     def display_name
       "#{object.user.first_name} #{object.user.last_name}" if [object.user.first_name, object.user.last_name].compact.present?
     end
+
+    def status
+      object.persisted? ? object.status : "not requested"
+    end
   end
 end

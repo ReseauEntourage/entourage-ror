@@ -3,6 +3,7 @@ require 'rails_helper'
 describe Api::V1::Tours::UsersController do
   let(:user) { FactoryGirl.create(:pro_user) }
   let(:tour) { FactoryGirl.create(:tour) }
+  let(:result) { JSON.parse(response.body) }
 
   describe 'POST create' do
     context "not signed in" do
@@ -14,7 +15,7 @@ describe Api::V1::Tours::UsersController do
       context "first request to join tour" do
         before { post :create, tour_id: tour.to_param, token: user.token }
         it { expect(tour.members).to eq([user]) }
-        it { expect(JSON.parse(response.body)).to eq("user"=>{"id"=>user.id,
+        it { expect(result).to eq("user"=>{"id"=>user.id,
                                                               "email"=>user.email,
                                                               "display_name"=>"John Doe",
                                                               "status" => "pending",
@@ -27,7 +28,7 @@ describe Api::V1::Tours::UsersController do
         before { JoinRequest.create(user: user, joinable: tour) }
         before { post :create, tour_id: tour.to_param, token: user.token }
         it { expect(tour.members).to eq([user]) }
-        it { expect(JSON.parse(response.body)).to eq("message"=>"Could not create entourage participation request", "reasons"=>["Joinable a déjà été ajouté"]) }
+        it { expect(result).to eq("message"=>"Could not create entourage participation request", "reasons"=>["Joinable a déjà été ajouté"]) }
         it { expect(response.status).to eq(400) }
       end
 
@@ -46,7 +47,7 @@ describe Api::V1::Tours::UsersController do
       context "with message" do
         before { post :create, tour_id: tour.to_param, request: {message: "foo"}, token: user.token }
         it { expect(tour.members).to eq([user]) }
-        it { expect(JSON.parse(response.body)).to eq("user"=>{"id"=>user.id,
+        it { expect(result).to eq("user"=>{"id"=>user.id,
                                                               "email"=>user.email,
                                                               "display_name"=>"John Doe",
                                                               "status" => "pending",
@@ -65,7 +66,7 @@ describe Api::V1::Tours::UsersController do
     context "signed in" do
       let!(:join_request) { FactoryGirl.create(:join_request, user: user, joinable: tour) }
       before { get :index, tour_id: tour.to_param, token: user.token }
-      it { expect(JSON.parse(response.body)).to eq({"users"=>[{"id"=>user.id,
+      it { expect(result).to eq({"users"=>[{"id"=>user.id,
                                                                "email"=>user.email,
                                                                "display_name"=>"John Doe",
                                                                "status"=>"pending",
@@ -154,7 +155,7 @@ describe Api::V1::Tours::UsersController do
       let!(:tour_requested) { JoinRequest.create(user: requester, joinable: tour, status: "pending") }
       before { delete :destroy, tour_id: tour.to_param, id: requester.id, token: user.token }
       it { expect(response.status).to eq(200) }
-      it { expect(JSON.parse(response.body)).to eq({"user"=>{"id"=>requester.id, "email"=>requester.email, "display_name"=>"John Doe", "status"=>"rejected", "message"=>nil, "requested_at"=>JoinRequest.last.created_at.iso8601(3)}}) }
+      it { expect(result).to eq({"user"=>{"id"=>requester.id, "email"=>requester.email, "display_name"=>"John Doe", "status"=>"rejected", "message"=>nil, "requested_at"=>JoinRequest.last.created_at.iso8601(3)}}) }
       it { expect(tour_requested.reload.status).to eq("rejected") }
       it { expect(tour.reload.number_of_people).to eq(1) }
 
@@ -169,6 +170,14 @@ describe Api::V1::Tours::UsersController do
       let!(:tour_member) { JoinRequest.create(user: user, joinable: tour, status: "accepted") }
       before { delete :destroy, tour_id: tour.to_param, id: user.id, token: user.token }
       it { expect(response.status).to eq(200) }
+      it { expect(result).to eq({"user"=>{
+                                  "id"=>user.id,
+                                  "email"=>user.email,
+                                  "display_name"=>"John Doe",
+                                  "status"=>"not requested",
+                                  "message"=>nil,
+                                  "requested_at"=>tour_member.created_at.iso8601(3)}
+                                }) }
       it { expect(tour.reload.number_of_people).to eq(0) }
     end
 

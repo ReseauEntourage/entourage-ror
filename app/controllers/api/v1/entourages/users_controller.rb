@@ -74,6 +74,11 @@ module Api
             on.remove_author do
               render json: {message: 'Cannot remove the author of the entourage'}, status: :bad_request
             end
+
+            on.quit do
+              #JoinRequest was destroyed we return an empty join request
+              render json: @join_request, root: "user", status: 200, serializer: ::V1::JoinRequestSerializer
+            end
           end
         end
 
