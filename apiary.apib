@@ -1756,7 +1756,7 @@ Resources  related to questions for the **Entourage API**
         {"error":{"status":401,"message":"Please sign-in"}}
         
         
-# Group Chat Messages
+# Group Tour Chat Messages
 Resources  related to chat messages for the **Entourage API**
 ## Chat Messages [/tours/{tour_id}/chat_messages{?token}]
 
@@ -1765,6 +1765,87 @@ Resources  related to chat messages for the **Entourage API**
     + token (required, string, `FAKETOKEN`) ... Token identifying the current user
 
 ### GET all messages for the tour [GET/{?before}]
+
++ Parameters
+    + before (optional, string) ... pagination : date of the last message to be returned
+
++ Request
+
+    + Headers
+
+            Accept: application/json
+
++ Response 200 (application/json; charset=utf-8)
+
+    + Body
+
+            {"chat_messages": [ {   "id": 123, 
+                                    "content": "Content text", 
+                                    "user": {
+                                        "id": 456,
+                                        "avatar_url": "https://foo.bar"
+                                    }
+                                    "created_at": "2015-07-07T10:31:43.000+02:00" 
+                                },
+                                {   "id": 124, 
+                                    "content": "Content text", 
+                                    "user": {
+                                        "id": 457,
+                                        "avatar_url": "https://foo.bar"
+                                    }
+                                    "created_at": "2015-07-07T10:31:43.000+02:00" 
+                                }]
+                                
++ Response 401 (application/json; charset=utf-8)
+
+        {"error":{"status":401,"message":"Please sign-in"}}
+        
+        
+### Create a chat message for a tour [POST]
++ Request (application/json)
+
+    + Header
+
+            Accept: application/json
+
+    + Body
+
+            {
+            "chat_message": {
+                "content": "Content text"
+                }
+            }
+
++ Response 201 (application/json; charset=utf-8)
+
+        {   "id": 123, 
+            "content": "Content text", 
+            "user": {
+                "id": 456,
+                "avatar_url": "https://foo.bar"
+            },
+            "created_at": "2015-07-07T10:31:43.000+02:00" 
+        }
+
++ Response 400 (application/json; charset=utf-8)
+
+        {"error":{"status":400,"message":"Could not create message","reasons":["Content is missing"]}}
+
++ Response 401 (application/json; charset=utf-8)
+
+        {"error":{"status":401,"message":"Please sign-in"}}
+        
+        
+        
+# Group Entourages Chat Messages
+Resources  related to chat messages for the **Entourage API**
+## Chat Messages [/entourages/{entourage_id}/chat_messages{?token}]
+
++ Parameters
+    + entourage_id (required, integer, `1`) ... Identifier of the tour
+    + token (required, string, `FAKETOKEN`) ... Token identifying the current user
+
+### GET all messages for the entourage [GET/{?before}]
 
 + Parameters
     + before (optional, string) ... pagination : date of the last message to be returned
