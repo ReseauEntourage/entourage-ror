@@ -23,16 +23,14 @@ describe Api::V1::Tours::ChatMessagesController do
                                                           [{
                                                                "id"=>chat_message1.id,
                                                                "content"=>"MyText",
-                                                               "user"=> {"id"=>chat_message1.user_id, "avatar_url"=>nil},
-                                                               "created_at"=>chat_message1.created_at.iso8601(3),
-                                                               "display_name"=>"John Doe"
+                                                               "user"=> {"id"=>chat_message1.user_id, "avatar_url"=>nil, "display_name"=>"John Doe"},
+                                                               "created_at"=>chat_message1.created_at.iso8601(3)
                                                            },
                                                            {
                                                                "id"=>chat_message2.id,
                                                                "content"=>"MyText",
-                                                               "user"=> {"id"=>chat_message2.user_id, "avatar_url"=>nil},
-                                                               "created_at"=>chat_message2.created_at.iso8601(3),
-                                                               "display_name"=>"John Doe"
+                                                               "user"=> {"id"=>chat_message2.user_id, "avatar_url"=>nil, "display_name"=>"John Doe"},
+                                                               "created_at"=>chat_message2.created_at.iso8601(3)
                                                            }]}) }
 
         it { expect(join_request.reload.last_message_read).to eq(chat_message2.created_at)}
