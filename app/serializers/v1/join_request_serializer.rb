@@ -6,6 +6,7 @@ module V1
                :status,
                :message,
                :requested_at
+               :avatar_url
 
     def id
       object.user.id
@@ -25,6 +26,10 @@ module V1
 
     def status
       object.persisted? ? object.status : "not requested"
+    end
+
+    def avatar_url
+      UserServices::Avatar.new(user: object.user).thumbnail_url
     end
   end
 end
