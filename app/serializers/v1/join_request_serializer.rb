@@ -5,7 +5,7 @@ module V1
                :display_name,
                :status,
                :message,
-               :requested_at
+               :requested_at,
                :avatar_url
 
     def id

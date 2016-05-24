@@ -20,6 +20,7 @@ describe Api::V1::Tours::UsersController do
                                                               "display_name"=>"John Doe",
                                                               "status" => "pending",
                                                               "message"=>nil,
+                                                              "avatar_url"=>nil,
                                                               "requested_at"=>JoinRequest.last.created_at.iso8601(3)}) }
         it { expect(tour.reload.number_of_people).to eq(1) }
       end
@@ -52,7 +53,8 @@ describe Api::V1::Tours::UsersController do
                                                               "display_name"=>"John Doe",
                                                               "status" => "pending",
                                                               "message"=> "foo",
-                                                              "requested_at"=>JoinRequest.last.created_at.iso8601(3)}) }
+                                                              "requested_at"=>JoinRequest.last.created_at.iso8601(3),
+                                                              "avatar_url"=>nil}) }
       end
     end
   end
@@ -71,7 +73,8 @@ describe Api::V1::Tours::UsersController do
                                                                "display_name"=>"John Doe",
                                                                "status"=>"pending",
                                                                "message"=>nil,
-                                                               "requested_at"=>join_request.created_at.iso8601(3)}]}) }
+                                                               "requested_at"=>join_request.created_at.iso8601(3),
+                                                               "avatar_url"=>nil}]}) }
     end
   end
 
@@ -155,7 +158,15 @@ describe Api::V1::Tours::UsersController do
       let!(:tour_requested) { JoinRequest.create(user: requester, joinable: tour, status: "pending") }
       before { delete :destroy, tour_id: tour.to_param, id: requester.id, token: user.token }
       it { expect(response.status).to eq(200) }
-      it { expect(result).to eq({"user"=>{"id"=>requester.id, "email"=>requester.email, "display_name"=>"John Doe", "status"=>"rejected", "message"=>nil, "requested_at"=>JoinRequest.last.created_at.iso8601(3)}}) }
+      it { expect(result).to eq({"user"=>{
+                                          "id"=>requester.id,
+                                          "email"=>requester.email,
+                                          "display_name"=>"John Doe",
+                                          "status"=>"rejected",
+                                          "message"=>nil,
+                                          "requested_at"=>JoinRequest.last.created_at.iso8601(3),
+                                          "avatar_url"=>nil
+                                          }}) }
       it { expect(tour_requested.reload.status).to eq("rejected") }
       it { expect(tour.reload.number_of_people).to eq(1) }
 
@@ -176,7 +187,8 @@ describe Api::V1::Tours::UsersController do
                                   "display_name"=>"John Doe",
                                   "status"=>"not requested",
                                   "message"=>nil,
-                                  "requested_at"=>tour_member.created_at.iso8601(3)}
+                                  "requested_at"=>tour_member.created_at.iso8601(3),
+                                  "avatar_url"=>nil}
                                 }) }
       it { expect(tour.reload.number_of_people).to eq(0) }
     end

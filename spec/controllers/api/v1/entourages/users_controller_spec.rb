@@ -16,7 +16,15 @@ describe Api::V1::Entourages::UsersController do
       context "first request to join entourage" do
         before { post :create, entourage_id: entourage.to_param, token: user.token }
         it { expect(entourage.members).to eq([user]) }
-        it { expect(result).to eq("user"=>{"id"=>user.id, "email"=>user.email, "display_name"=>"John Doe", "status"=>"pending", "message"=>nil, "requested_at"=>JoinRequest.last.created_at.iso8601(3)}) }
+        it { expect(result).to eq("user"=>{
+                                            "id"=>user.id,
+                                            "email"=>user.email,
+                                            "display_name"=>"John Doe",
+                                            "status"=>"pending",
+                                            "message"=>nil,
+                                            "requested_at"=>JoinRequest.last.created_at.iso8601(3),
+                                            "avatar_url"=>nil
+                                          }) }
       end
 
       context "duplicate request to join entourage" do
@@ -38,7 +46,15 @@ describe Api::V1::Entourages::UsersController do
     context "signed in" do
       let!(:join_request) { JoinRequest.create(user: user, joinable: entourage) }
       before { get :index, entourage_id: entourage.to_param, token: user.token }
-      it { expect(result).to eq({"users"=>[{"id"=>user.id, "email"=>user.email, "display_name"=>"John Doe", "status"=>"pending", "message"=>nil, "requested_at"=>join_request.created_at.iso8601(3)}]}) }
+      it { expect(result).to eq({"users"=>[{
+                                               "id"=>user.id,
+                                               "email"=>user.email,
+                                               "display_name"=>"John Doe",
+                                               "status"=>"pending",
+                                               "message"=>nil,
+                                               "requested_at"=>join_request.created_at.iso8601(3),
+                                               "avatar_url"=>nil
+                                           }]}) }
     end
   end
 
@@ -113,7 +129,8 @@ describe Api::V1::Entourages::UsersController do
                                             "display_name"=>"John Doe",
                                             "status"=>"rejected",
                                             "message"=>nil,
-                                            "requested_at"=>other_join_request.created_at.iso8601(3)}
+                                            "requested_at"=>other_join_request.created_at.iso8601(3),
+                                            "avatar_url"=>nil}
                                   }) }
       end
 
@@ -128,7 +145,8 @@ describe Api::V1::Entourages::UsersController do
                                       "display_name"=>"John Doe",
                                       "status"=>"not requested",
                                       "message"=>nil,
-                                      "requested_at"=>my_join_request.created_at.iso8601(3)}
+                                      "requested_at"=>my_join_request.created_at.iso8601(3),
+                                      "avatar_url"=>nil}
                                   }) }
       end
     end
