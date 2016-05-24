@@ -6,11 +6,19 @@ module V1
                :created_at
 
     def user
-      chat_user = object.user
       {
         id: chat_user.id,
-        avatar_url: UserServices::Avatar.new(user: chat_user).thumbnail_url
+        avatar_url: UserServices::Avatar.new(user: chat_user).thumbnail_url,
+        display_name: display_name
       }
+    end
+
+    def display_name
+      "#{chat_user.first_name} #{chat_user.last_name}" if [chat_user.first_name, chat_user.last_name].compact.present?
+    end
+
+    def chat_user
+      object.user
     end
   end
 end
