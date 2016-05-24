@@ -1,6 +1,6 @@
 FactoryGirl.define do
   factory :user_application do
-    push_token    "MyString"
+    sequence(:push_token) {|n| "MyString#{n}" }
     device_os     "MyString"
     version       "MyString"
     device_family UserApplication::ANDROID
