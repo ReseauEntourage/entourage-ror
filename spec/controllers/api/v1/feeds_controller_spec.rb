@@ -39,7 +39,8 @@ describe Api::V1::FeedsController do
                                                      },
                                                      "created_at"=> entourage.created_at.iso8601(3),
                                                      "description" => nil
-                                                 }
+                                                 },
+                                                 "heatmap_size" => 20
                                              },
                                              {
                                                  "type"=>"Tour",
@@ -62,7 +63,8 @@ describe Api::V1::FeedsController do
                                                                     "display_name"=>"John",
                                                                     "avatar_url"=>nil
                                                          }
-                                                     }
+                                                     },
+                                                    "heatmap_size" => 20
                                              }
         ]}) }
       end

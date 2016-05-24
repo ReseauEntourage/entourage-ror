@@ -17,4 +17,10 @@ RSpec.describe UserApplication, type: :model do
     expect(FactoryGirl.build(:user_application, user: user, device_os: "android", version: "1.0").save).to be true
     expect(FactoryGirl.build(:user_application, user: user, device_os: "ios", version: "1.1").save).to be true
   end
+
+  it "has unique push token" do
+    expect(FactoryGirl.build(:user_application, push_token: "foo").save).to be true
+    expect(FactoryGirl.build(:user_application, push_token: "foo").save).to be false
+    expect(FactoryGirl.build(:user_application, push_token: "bar").save).to be true
+  end
 end

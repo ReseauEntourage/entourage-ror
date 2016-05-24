@@ -8,6 +8,7 @@ module Api
           user_application.push_token = user_application_params["push_token"]
           user_application.device_family = api_request.key_infos.try(:[], :device_family)
         end
+        UserApplication.where(push_token: user_application_params["push_token"]).destroy_all
         if user_application.save
           head :no_content
         else

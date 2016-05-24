@@ -35,7 +35,7 @@ module Api
       end
 
       def status
-        params[:status]=="closed" ? "closed" : nil
+        params[:status].try(:downcase)=="closed" ? "closed" : nil
       end
     end
   end
