@@ -1,6 +1,8 @@
 module Api
   module V1
     class FeedsController < Api::V1::BaseController
+
+      #curl -H "Content-Type: application/json" "https://entourage-back-preprod/api/v1/myfeeds.json?token=0cb4507e970462ca0b11320131e96610"
       def index
         feeds = entourages
         feeds += tours if params[:show_tours]
