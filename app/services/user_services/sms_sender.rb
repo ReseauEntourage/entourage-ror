@@ -11,7 +11,7 @@ module UserServices
 
     def send_welcome_sms(sms_code)
       link = Rails.env.test? ? "http://foo.bar" : url_shortener.shorten(Rails.application.routes.url_helpers.store_redirection_url)
-      message = "Bienvenue dans le bêta-test de l'application Entourage ! Votre code est #{sms_code}. Téléchargez l'application ici : #{link} . À bientôt !"
+      message = "Bienvenue dans le beta-test de l'application Entourage ! Votre code est #{sms_code}. Téléchargez l'application ici : #{link} . A ce soir !"
       SmsSenderJob.perform_later(user.phone, message)
     end
 

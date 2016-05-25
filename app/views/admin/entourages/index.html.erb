@@ -1,0 +1,25 @@
+<h1>Liste des entourages</h1>
+
+<br><br>
+
+<div class="row">
+  <table class="table">
+    <th>id</th>
+    <th>Auteur</th>
+    <th>Status</th>
+    <th>Entourage_type</th>
+
+    <% @entourages.each do |entourage| %>
+      <tr>
+        <td><%= entourage.id %></td>
+        <td><%= entourage.user.full_name %></td>
+        <td><%= entourage.status %></td>
+        <td><%= entourage.entourage_type %></td>
+      </tr>
+    <% end %>
+  </table>
+</div>
+
+<div class="row">
+  <%= paginate @entourages %>
+</div>

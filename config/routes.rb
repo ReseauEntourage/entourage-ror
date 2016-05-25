@@ -28,6 +28,7 @@ Rails.application.routes.draw do
       resources :newsletter_subscriptions, only: [:index]
       resources :ambassadors, only: [:index, :edit, :update, :new, :create]
       resources :entourage_invitations, only: [:index]
+      resources :entourages, only: [:index]
 
       get 'public_user_search' => "users_search#public_user_search"
       get 'public_user_autocomplete' => "users_search#public_user_autocomplete"
