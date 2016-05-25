@@ -16,7 +16,7 @@ module Api
                                         longitude: nil,
                                         distance: nil,
                                         show_only_my_tours: true,
-                                        time_range: params[:time_range],
+                                        time_range: time_range,
                                         page: params[:page],
                                         per: per).tours.to_a
       end
@@ -29,13 +29,17 @@ module Api
                                                longitude: nil,
                                                distance: nil,
                                                show_only_my_entourages: true,
-                                               time_range: params[:time_range],
+                                               time_range: time_range,
                                                page: params[:page],
                                                per: per).entourages.to_a
       end
 
       def status
         params[:status].try(:downcase)=="closed" ? "closed" : nil
+      end
+
+      def time_range
+        params[:time_range] || 7*24
       end
     end
   end
