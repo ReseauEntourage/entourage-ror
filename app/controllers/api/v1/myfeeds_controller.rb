@@ -39,7 +39,7 @@ module Api
       end
 
       def time_range
-        params[:time_range] || 7*24
+        params[:time_range] || 365*24
       end
     end
   end
