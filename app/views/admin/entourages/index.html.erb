@@ -7,7 +7,8 @@
     <th>id</th>
     <th>Auteur</th>
     <th>Status</th>
-    <th>Entourage_type</th>
+    <th>Entourage type</th>
+    <th>Date</th>
 
     <% @entourages.each do |entourage| %>
       <tr>
@@ -15,6 +16,7 @@
         <td><%= entourage.user.full_name %></td>
         <td><%= entourage.status %></td>
         <td><%= entourage.entourage_type %></td>
+        <td><%= entourage.created_at.to_formatted_s(:long)%></td>
       </tr>
     <% end %>
   </table>
