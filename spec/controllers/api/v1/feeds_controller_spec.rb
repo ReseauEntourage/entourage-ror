@@ -104,6 +104,12 @@ describe Api::V1::FeedsController do
         before { get :index, token: user.token, show_tours: true, time_range: 47 }
         it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([tour2.id, entourage.id, tour.id]) }
       end
+
+      context "public user doesn't see tours" do
+        let(:public_user) { FactoryGirl.create(:public_user) }
+        before { get :index, token: public_user.token, show_tours: true, time_range: 47 }
+        it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([entourage.id]) }
+      end
     end
   end
 end
