@@ -8,9 +8,9 @@ class Tour < ActiveRecord::Base
   enum vehicle_type: [ :feet, :car ]
   validates_presence_of :tour_type, :status, :vehicle_type, :user
   belongs_to :user
-  has_many :join_requests, as: :joinable
+  has_many :join_requests, as: :joinable, dependent: :destroy
   has_many :members, through: :join_requests, source: :user
-  has_many :chat_messages, as: :messageable
+  has_many :chat_messages, as: :messageable, dependent: :destroy
 
   delegate :organization_name, :organization_description, to: :user
 
