@@ -12,7 +12,7 @@ class IosNotificationJob < ActiveJob::Base
       notification = Rpush::Apns::Notification.new
       notification.app = entourage
       notification.device_token = device_token.to_s
-      notification.alert = "Entourage vous envoi un message"
+      notification.alert = "Entourage vous envoie un message"
       notification.data = { sender: sender, object: object, content: {message: content, extra: extra} }
       notification.save!
 
