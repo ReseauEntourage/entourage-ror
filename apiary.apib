@@ -874,7 +874,10 @@ Note : You must be part of the tour to change the status of a user (ex: accept s
     + Body
 
             {
-            "user": {"status": "accepted"}
+                "user": {
+                    "status": "accepted",
+                    "message": "lorem ipsum"
+                }
             }
 
 + Response 204 (application/json; charset=utf-8)
@@ -1721,7 +1724,7 @@ Resources related to users of an entourage
         {"error":{"status":401,"message":"Please sign-in"}}
 
 
-### Update an entourage user status : accept or reject a user request to join an entourage [PUT]
+### Update an entourage user status : accept or reject a user request to join an entourage, or add a message to a join request [PUT]
 
 + Request (application/json)
 
@@ -1732,7 +1735,10 @@ Resources related to users of an entourage
     + Body
 
             {
-            "user": {"status": "accepted"}
+                "user": {
+                    "status": "accepted",
+                    "message": "lorem ipsum"
+                }
             }
 
 + Response 204 (application/json; charset=utf-8)
