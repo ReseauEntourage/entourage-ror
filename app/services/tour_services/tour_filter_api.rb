@@ -2,7 +2,7 @@ module TourServices
   class TourFilterApi
     def initialize(user:, status:, type:, vehicle_type:, show_only_my_tours: false, latitude:, longitude:, distance:, time_range: 24, page:, per:)
       @user = user
-      @status = status
+      @status = status.is_a?(Array) ? status : [status]
       @type = type
       @vehicle_type = vehicle_type
       @latitude = latitude
@@ -16,7 +16,7 @@ module TourServices
 
     def tours
       tours = Tour.includes(:tour_points, :join_requests, :user, user: :organization)
-      tours = tours.where(status: Tour.statuses[status]) if status
+      tours = tours.where(status: status.map {|s| Tour.statuses[s]}) if status.try(:compact).present?
       tours = tours.where(tour_type: formated_types) if type
       tours = tours.where(vehicle_type: Tour.vehicle_types[vehicle_type.to_sym]) if vehicle_type
       tours = filter_box(tours) if latitude && longitude

@@ -9,7 +9,7 @@ module Api
       private
       def tours
         TourServices::TourFilterApi.new(user: current_user,
-                                        status: status,
+                                        status: tour_status,
                                         type: params[:tour_types],
                                         vehicle_type: nil,
                                         latitude: nil,
@@ -23,7 +23,7 @@ module Api
 
       def entourages
         EntourageServices::EntourageFinder.new(user: current_user,
-                                               status: status,
+                                               status: entourage_status,
                                                type: params[:entourage_types],
                                                latitude: nil,
                                                longitude: nil,
@@ -34,8 +34,12 @@ module Api
                                                per: per).entourages.to_a
       end
 
-      def status
-        params[:status].try(:downcase)=="closed" ? "closed" : nil
+      def tour_status
+        params[:status].try(:downcase)=="closed" ? ["closed", "freezed"] : "ongoing"
+      end
+
+      def entourage_status
+        params[:status].try(:downcase)=="closed" ? "closed" : "open"
       end
 
       def time_range
