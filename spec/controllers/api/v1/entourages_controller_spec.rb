@@ -35,6 +35,7 @@ describe Api::V1::EntouragesController do
                                        "join_status"=>"not_requested",
                                        "number_of_unread_messages"=>nil,
                                        "created_at"=> entourage.created_at.iso8601(3),
+                                       "updated_at"=> entourage.updated_at.iso8601(3),
                                        "description" => nil
                                     }]
                               })
@@ -115,6 +116,7 @@ describe Api::V1::EntouragesController do
                                                            "join_status"=>"accepted",
                                                            "number_of_unread_messages"=>0,
                                                            "created_at"=> Entourage.last.created_at.iso8601(3),
+                                                           "updated_at"=> Entourage.last.updated_at.iso8601(3),
                                                            "description"=> "foo bar"
                                                           }
                                                      }) }
@@ -164,6 +166,7 @@ describe Api::V1::EntouragesController do
                                                            "join_status"=>"not_requested",
                                                            "number_of_unread_messages"=>nil,
                                                            "created_at"=> entourage.created_at.iso8601(3),
+                                                           "updated_at"=> entourage.updated_at.iso8601(3),
                                                            "description" => nil
                                                           }
                                                      }) }
@@ -210,6 +213,7 @@ describe Api::V1::EntouragesController do
                                                            "join_status"=>"not_requested",
                                                            "number_of_unread_messages"=>nil,
                                                            "created_at"=> user_entourage.created_at.iso8601(3),
+                                                           "updated_at"=> user_entourage.updated_at.iso8601(3),
                                                            "description" => nil
                                                           }
                                                      }) }

@@ -38,6 +38,7 @@ describe Api::V1::FeedsController do
                                                          "longitude"=>2.345
                                                      },
                                                      "created_at"=> entourage.created_at.iso8601(3),
+                                                     "updated_at"=> entourage.updated_at.iso8601(3),
                                                      "description" => nil
                                                  },
                                                  "heatmap_size" => 20
@@ -62,7 +63,8 @@ describe Api::V1::FeedsController do
                                                          "author"=>{"id"=>tour.user.id,
                                                                     "display_name"=>"John",
                                                                     "avatar_url"=>nil
-                                                         }
+                                                         },
+                                                         "updated_at"=>tour.updated_at.iso8601(3)
                                                      },
                                                     "heatmap_size" => 20
                                              }

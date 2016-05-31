@@ -18,34 +18,40 @@ RSpec.describe Api::V1::Users::ToursController, :type => :controller do
 
         res = JSON.parse(response.body)
         expect(res).to eq({"tours"=>[
-            {"id"=>tour1.id,
-             "tour_type"=>"medical",
-             "status"=>"ongoing",
-             "vehicle_type"=>"feet",
-             "distance"=>0,
-             "start_time"=>tour1.created_at.iso8601(3),
-             "end_time"=>nil,
-             "organization_name"=>tour1.user.organization.name,
-             "organization_description"=>"Association description",
-             "author"=>{"id"=>tour1.user.id, "display_name"=>"John", "avatar_url"=>nil},
-             "number_of_people"=> 1,
-             "join_status"=>"not_requested",
-             "tour_points"=>[],
-             "number_of_unread_messages"=>nil},
-            {"id"=>tour2.id,
-             "tour_type"=>"medical",
-             "status"=>"closed",
-             "vehicle_type"=>"feet",
-             "distance"=>0,
-             "start_time"=>tour2.created_at.iso8601(3),
-             "end_time"=>nil,
-             "organization_name"=>tour2.user.organization.name,
-             "organization_description"=>"Association description",
-             "author"=>{"id"=>tour2.user.id, "display_name"=>"John", "avatar_url"=>nil},
-             "number_of_people"=> 1,
-             "join_status"=>"not_requested",
-             "tour_points"=>[],
-             "number_of_unread_messages"=>nil}]})
+            {
+               "id"=>tour1.id,
+               "tour_type"=>"medical",
+               "status"=>"ongoing",
+               "vehicle_type"=>"feet",
+               "distance"=>0,
+               "start_time"=>tour1.created_at.iso8601(3),
+               "end_time"=>nil,
+               "organization_name"=>tour1.user.organization.name,
+               "organization_description"=>"Association description",
+               "author"=>{"id"=>tour1.user.id, "display_name"=>"John", "avatar_url"=>nil},
+               "number_of_people"=> 1,
+               "join_status"=>"not_requested",
+               "tour_points"=>[],
+               "number_of_unread_messages"=>nil,
+               "updated_at"=>tour1.updated_at.iso8601(3)
+            },
+            {
+               "id"=>tour2.id,
+               "tour_type"=>"medical",
+               "status"=>"closed",
+               "vehicle_type"=>"feet",
+               "distance"=>0,
+               "start_time"=>tour2.created_at.iso8601(3),
+               "end_time"=>nil,
+               "organization_name"=>tour2.user.organization.name,
+               "organization_description"=>"Association description",
+               "author"=>{"id"=>tour2.user.id, "display_name"=>"John", "avatar_url"=>nil},
+               "number_of_people"=> 1,
+               "join_status"=>"not_requested",
+               "tour_points"=>[],
+               "number_of_unread_messages"=>nil,
+               "updated_at"=>tour2.updated_at.iso8601(3)
+            }]})
       end
     end
 

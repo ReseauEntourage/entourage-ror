@@ -31,34 +31,39 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
 
       res = JSON.parse(response.body)
       expect(res).to eq({"tours"=>[
-          {"id"=>tours.first.id,
-           "tour_type"=>"medical",
-           "status"=>"ongoing",
-           "vehicle_type"=>"feet",
-           "distance"=>0,
-           "start_time"=>tours.first.created_at.iso8601(3),
-           "end_time"=>nil,
-           "organization_name"=>tours.first.user.organization.name,
-           "organization_description"=>"Association description",
-           "author"=>{"id"=>tours.first.user.id, "display_name"=>"John", "avatar_url"=>nil},
-           "number_of_people"=> 1,
-           "join_status"=>"not_requested",
-           "tour_points"=>[],
-           "number_of_unread_messages"=>nil},
-          {"id"=>tours.last.id,
-           "tour_type"=>"medical",
-           "status"=>"ongoing",
-           "vehicle_type"=>"feet",
-           "distance"=>0,
-           "start_time"=>tours.last.created_at.iso8601(3),
-           "end_time"=>nil,
-           "organization_name"=>tours.last.user.organization.name,
-           "organization_description"=>"Association description",
-           "author"=>{"id"=>tours.last.user.id, "display_name"=>"John", "avatar_url"=>nil},
-           "number_of_people"=> 1,
-           "join_status"=>"not_requested",
-           "tour_points"=>[],
-           "number_of_unread_messages"=>nil}]})
+          {
+             "id"=>tours.first.id,
+             "tour_type"=>"medical",
+             "status"=>"ongoing",
+             "vehicle_type"=>"feet",
+             "distance"=>0,
+             "start_time"=>tours.first.created_at.iso8601(3),
+             "end_time"=>nil,
+             "organization_name"=>tours.first.user.organization.name,
+             "organization_description"=>"Association description",
+             "author"=>{"id"=>tours.first.user.id, "display_name"=>"John", "avatar_url"=>nil},
+             "number_of_people"=> 1,
+             "join_status"=>"not_requested",
+             "tour_points"=>[],
+             "number_of_unread_messages"=>nil,
+             "updated_at"=>tours.first.updated_at.iso8601(3)
+          },
+          {
+             "id"=>tours.last.id,
+             "tour_type"=>"medical",
+             "status"=>"ongoing",
+             "vehicle_type"=>"feet",
+             "distance"=>0,
+             "start_time"=>tours.last.created_at.iso8601(3),
+             "end_time"=>nil,
+             "organization_name"=>tours.last.user.organization.name,
+             "organization_description"=>"Association description",
+             "author"=>{"id"=>tours.last.user.id, "display_name"=>"John", "avatar_url"=>nil},
+             "number_of_people"=> 1,
+             "join_status"=>"not_requested",
+             "tour_points"=>[],
+             "number_of_unread_messages"=>nil,
+             "updated_at"=>tours.last.updated_at.iso8601(3)}]})
     end
 
     context "with limit parameter" do
@@ -203,7 +208,8 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
                                     "number_of_people"=> 1,
                                     "join_status"=>"accepted",
                                     "tour_points"=>[],
-                                    "number_of_unread_messages"=>0}})
+                                    "number_of_unread_messages"=>0,
+                                    "updated_at"=>last_tour.updated_at.iso8601(3)}})
       end
     end
 
@@ -233,7 +239,7 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
 
     context "with correct id" do
       let!(:tour) { FactoryGirl.create :tour, :filled }
-      before { get 'show', id: tour.id, token: user.token , format: :json }
+      before { get 'show', id: tour.id, token: user.token, format: :json }
       it { expect(response.status).to eq(200) }
 
       it "responds with tour" do
@@ -252,7 +258,8 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
                                     "number_of_people"=> 1,
                                     "join_status"=>"not_requested",
                                     "tour_points"=>[{"latitude"=>48.83, "longitude"=>2.29}, {"latitude"=>48.83, "longitude"=>2.29}],
-                                    "number_of_unread_messages"=>nil}})
+                                    "number_of_unread_messages"=>nil,
+                                    "updated_at"=>last_tour.updated_at.iso8601(3)}})
       end
 
     end
@@ -337,7 +344,8 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
                                     "number_of_people"=> 1,
                                     "join_status"=>"not_requested",
                                     "tour_points"=>[{"latitude"=>48.83, "longitude"=>2.29}, {"latitude"=>48.83, "longitude"=>2.29}],
-                                    "number_of_unread_messages"=>nil}})
+                                    "number_of_unread_messages"=>nil,
+                                    "updated_at"=>tour.updated_at.iso8601(3)}})
       end
     end
 

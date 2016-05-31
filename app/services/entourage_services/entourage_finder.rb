@@ -24,7 +24,7 @@ module EntourageServices
                                             user: @user,
                                             status: JoinRequest::ACCEPTED_STATUS
                                         }) if show_only_my_entourages
-      entourages.order(created_at: :desc).page(page).per(per)
+      entourages.order(updated_at: :desc).page(page).per(per)
     end
 
     private
