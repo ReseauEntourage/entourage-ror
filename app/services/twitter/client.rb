@@ -20,7 +20,7 @@ module Twitter
       res = Net::HTTP.new(uri.host, uri.port)
       res.verify_mode = OpenSSL::SSL::VERIFY_NONE
       res.use_ssl = true
-      res.read_timeout = res.open_timeout = 1 #very important: fail fast if facebook is not answering within 1sec
+      res.read_timeout = res.open_timeout = 1 #very important: fail fast if twitter is not answering within 1sec
 
       response = nil
       res.start do |http|
