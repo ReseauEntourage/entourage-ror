@@ -29,7 +29,7 @@ module EntourageServices
       if page || per
         entourages.page(page).per(per)
       elsif before
-        entourages.before(before)
+        entourages.before(DateTime.parse(before))
       else
         entourages
       end

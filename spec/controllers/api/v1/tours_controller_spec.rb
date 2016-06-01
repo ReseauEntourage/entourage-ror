@@ -164,11 +164,6 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
       end
     end
 
-    context "with before parameter" do
-      before { get 'index', token: user.token, before: "", format: :json }
-      it { expect(JSON.parse(response.body)["tours"].map{|t| t["id"]}).to eq([ongoing_tour.id]) }
-    end
-
     context "public user" do
       let(:public_user) { FactoryGirl.create(:public_user) }
       before { get 'index', token: public_user.token, status: "ongoing", format: :json }

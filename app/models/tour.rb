@@ -1,4 +1,6 @@
 class Tour < ActiveRecord::Base
+  include FeedsConcern
+
   validates :tour_type, inclusion: { in: %w(medical barehands alimentary) }
   has_many :tour_points, dependent: :delete_all
   has_many :snap_to_road_tour_points, dependent: :delete_all

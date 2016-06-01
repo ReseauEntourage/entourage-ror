@@ -31,7 +31,7 @@ module TourServices
       if page || per
         tours.page(page).per(per)
       elsif before
-        tours.before(before)
+        tours.before(DateTime.parse(before))
       else
         tours
       end

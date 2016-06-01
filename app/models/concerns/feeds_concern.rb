@@ -2,6 +2,6 @@ module FeedsConcern
   extend ActiveSupport::Concern
 
   included do
-    scope :before, -> (before){ where("created_at < ?", before) }
+    scope :before, -> (before){ where("updated_at < ?", before) }
   end
 end
