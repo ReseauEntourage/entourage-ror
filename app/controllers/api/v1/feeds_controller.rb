@@ -20,8 +20,8 @@ module Api
                                         longitude: params[:longitude],
                                         distance: nil,
                                         time_range: params[:time_range],
-                                        page: nil,
-                                        per: nil,
+                                        page: params[:page],
+                                        per: params[:per],
                                         before: params[:before]).tours.to_a
       end
 
@@ -34,8 +34,8 @@ module Api
                                                distance: nil,
                                                show_only_my_entourages: params[:show_only_my_entourages],
                                                time_range: params[:time_range],
-                                               page: nil,
-                                               per: nil,
+                                               page: params[:page],
+                                               per: params[:per],
                                                before: params[:before]).entourages.to_a
       end
     end
