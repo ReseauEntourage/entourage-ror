@@ -7,7 +7,7 @@ module Api
         if authent_params[:source] == "facebook"
           authenticator = Facebook::FacebookAuthenticator.new(token: authent_params[:token])
         elsif authent_params[:source] == "twitter"
-          authenticator = Twitter::TwitterAuthenticator.new(token: authent_params[:token])
+          authenticator = Twitter::TwitterAuthenticator.new(token: authent_params[:token], token_secret: authent_params[:token_secret])
         end
         authenticator.authenticate do |on|
           on.login_success do |user|

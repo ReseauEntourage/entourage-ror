@@ -1,7 +1,7 @@
 module Twitter
   class TwitterAuthenticator
-    def initialize(token:)
-      @client = Twitter::Client.new(token: token)
+    def initialize(token:, token_secret:)
+      @client = Twitter::Client.new(token: token, token_secret: token_secret)
       @callback = AuthenticationProviderCallback.new
     end
 
@@ -23,7 +23,7 @@ module Twitter
     attr_reader :client, :callback
 
     def update_user
-      twitter = TwitterAuthenticationProvider.select(:user_id).where(provider_id: facebook_user.try(:[], "id")).first
+      twitter = TwitterAuthenticationProvider.select(:user_id).where(provider_id: twitter_user.try(:[], "id")).first
       if twitter
         Rails.logger.info "Update user from twitter : #{twitter_user.inspect}"
         user = update_user_from_twitter(user: twitter.user)

@@ -29,6 +29,7 @@ gem 'simplify_rb',              '~> 0.1.2'
 gem 'lograge',                  '~> 0.3.4'
 gem 'aws-sdk',                  '~> 2.2.9'
 gem 'faker',                    '~> 1.6.1'
+gem 'twitter',                  '~> 5.16.0'
 
 group :development, :test do
   gem 'byebug',                 '~> 5.0.0'

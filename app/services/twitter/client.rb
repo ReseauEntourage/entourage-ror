@@ -2,35 +2,22 @@ module Twitter
   class Client
     attr_reader :token
 
-    def initialize(token:)
-      @token = token
-    end
-
-    def me
-      get("https://twitter.com/me")
-    end
-
-
-    def get(url)
-      uri = URI.parse(url)
-
-      uri.query = URI.encode_www_form({'access_token' => token, 'fields' => 'id,email,first_name,last_name,gender,location,birthday'})
-      req = Net::HTTP::Get.new uri.request_uri
-
-      res = Net::HTTP.new(uri.host, uri.port)
-      res.verify_mode = OpenSSL::SSL::VERIFY_NONE
-      res.use_ssl = true
-      res.read_timeout = res.open_timeout = 1 #very important: fail fast if twitter is not answering within 1sec
-
-      response = nil
-      res.start do |http|
-        response = http.request(req)
-        raise Facebook::InvalidTokenError if response.code=="400"
-        response = JSON.parse(response.body)
-        raise Facebook::FacebookResponseWithError.new(response.dig("error", "message")) if response["error"].present?
-        response
+    def initialize(token:, token_secret:)
+      @client = Twitter::REST::Client.new do |config|
+        config.consumer_key        = ENV["ENTOURAGE_TWITTER_CONSUMER_KEY"]
+        config.consumer_secret     = ENV["ENTOURAGE_TWITTER_CONSUMER_SECRET"]
+        config.access_token        = token
+        config.access_token_secret = token_secret
       end
     end
+
+    #Twitter user attribute list : http://www.rubydoc.info/gems/twitter/Twitter/User
+    def me
+      client.verify_credentials.id
+    end
+
+    private
+    attr_reader :client
   end
 
   class InvalidTokenError < StandardError; end
