@@ -1,4 +1,6 @@
 class Entourage < ActiveRecord::Base
+  include FeedsConcern
+
   belongs_to :user
   has_many :join_requests, as: :joinable, dependent: :destroy
   has_many :members, through: :join_requests, source: :user

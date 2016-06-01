@@ -11,7 +11,8 @@ module V1
                :end_time,
                :number_of_people,
                :join_status,
-               :number_of_unread_messages
+               :number_of_unread_messages,
+               :updated_at
 
     has_many :tour_points
     has_one :author

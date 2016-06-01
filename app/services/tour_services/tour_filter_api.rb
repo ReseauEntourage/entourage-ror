@@ -1,6 +1,6 @@
 module TourServices
   class TourFilterApi
-    def initialize(user:, status:, type:, vehicle_type:, show_only_my_tours: false, latitude:, longitude:, distance:, time_range: 24, page:, per:)
+    def initialize(user:, status:, type:, vehicle_type:, show_only_my_tours: false, latitude:, longitude:, distance:, time_range: 24, page:, per:, before: nil)
       @user = user
       @status = status.is_a?(Array) ? status : [status]
       @type = type
@@ -12,6 +12,7 @@ module TourServices
       @time_range = (time_range || 24).to_i
       @page = page
       @per = per
+      @before = before
     end
 
     def tours
@@ -26,11 +27,18 @@ module TourServices
                                             status: JoinRequest::ACCEPTED_STATUS
                                         }) if show_only_my_tours
       tours = tours.where("tours.created_at > ?", time_range.hours.ago)
-      tours.order(updated_at: :desc).page(page).per(per)
+      tours = tours.order(updated_at: :desc)
+      if page || per
+        tours.page(page).per(per)
+      elsif before
+        tours.before(DateTime.parse(before))
+      else
+        tours
+      end
     end
 
     private
-    attr_reader :user, :status, :type, :vehicle_type, :show_only_my_tours, :latitude, :longitude, :distance, :time_range, :page, :per
+    attr_reader :user, :status, :type, :vehicle_type, :show_only_my_tours, :latitude, :longitude, :distance, :time_range, :page, :per, :before
 
     def filter_box(tours)
       points = TourPoint.within_bounding_box(box).select(:tour_id).distinct

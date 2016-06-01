@@ -8,6 +8,7 @@ module V1
                :number_of_unread_messages,
                :number_of_people,
                :created_at,
+               :updated_at,
                :description
     
     has_one :author

@@ -38,6 +38,7 @@ describe Api::V1::FeedsController do
                                                          "longitude"=>2.345
                                                      },
                                                      "created_at"=> entourage.created_at.iso8601(3),
+                                                     "updated_at"=> entourage.updated_at.iso8601(3),
                                                      "description" => nil
                                                  },
                                                  "heatmap_size" => 20
@@ -62,7 +63,8 @@ describe Api::V1::FeedsController do
                                                          "author"=>{"id"=>tour.user.id,
                                                                     "display_name"=>"John",
                                                                     "avatar_url"=>nil
-                                                         }
+                                                         },
+                                                         "updated_at"=>tour.updated_at.iso8601(3)
                                                      },
                                                     "heatmap_size" => 20
                                              }
@@ -109,6 +111,13 @@ describe Api::V1::FeedsController do
         let(:public_user) { FactoryGirl.create(:public_user) }
         before { get :index, token: public_user.token, show_tours: true, time_range: 47 }
         it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([entourage.id]) }
+      end
+
+      context "with before parameter" do
+        let!(:old_tour) { FactoryGirl.create :tour, updated_at: 71.hours.ago }
+        let!(:old_entourage) { FactoryGirl.create :entourage, updated_at: 72.hours.ago }
+        before { get 'index', token: user.token, before: 2.day.ago.iso8601(3), show_tours: true, format: :json }
+        it { expect(JSON.parse(response.body)["feeds"].map{|feed| feed["data"]["id"]}).to eq([old_entourage.id, old_tour.id]) }
       end
     end
   end

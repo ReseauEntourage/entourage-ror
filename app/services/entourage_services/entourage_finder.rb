@@ -1,6 +1,6 @@
 module EntourageServices
   class EntourageFinder
-    def initialize(user:, status:, type:, latitude:, longitude:, distance:, show_only_my_entourages: false, time_range: 24, page:, per:)
+    def initialize(user:, status:, type:, latitude:, longitude:, distance:, show_only_my_entourages: false, time_range: 24, page:, per:, before: nil)
       @user = user
       @status = status
       @type = type
@@ -11,6 +11,7 @@ module EntourageServices
       @time_range = (time_range || 24).to_i
       @page = page
       @per = per
+      @before = before
     end
 
     def entourages
@@ -24,11 +25,18 @@ module EntourageServices
                                             user: @user,
                                             status: JoinRequest::ACCEPTED_STATUS
                                         }) if show_only_my_entourages
-      entourages.order(created_at: :desc).page(page).per(per)
+      entourages = entourages.order(updated_at: :desc)
+      if page || per
+        entourages.page(page).per(per)
+      elsif before
+        entourages.before(DateTime.parse(before))
+      else
+        entourages
+      end
     end
 
     private
-    attr_reader :user, :status, :type, :latitude, :longitude, :distance, :show_only_my_entourages, :time_range, :page, :per
+    attr_reader :user, :status, :type, :latitude, :longitude, :distance, :show_only_my_entourages, :time_range, :page, :per, :before
 
     def box
       Geocoder::Calculations.bounding_box([latitude, longitude],
