@@ -69,7 +69,7 @@
             <% @tour.encounters.each_with_index do |encounter, index| %>
             <li>
               <p>
-                <%= marker_index index %> - <%= encounter.street_person_name %> &agrave; <%= encounter.date.strftime('%H:%M') %>
+                <%= marker_index index %> - <%= encounter.street_person_name %> &agrave; <%= encounter.date.strftime('%H:%M') %> - <%= encounter.address %>
               </p>
               <p>
                 <%= encounter.message %>
