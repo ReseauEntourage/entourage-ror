@@ -6,7 +6,7 @@ module Api
       def index
         feeds = entourages
         feeds += tours if params[:show_tours] && current_user.pro?
-        feeds = feeds.sort_by { |feed| -feed.created_at.to_i}
+        feeds = feeds.sort_by { |feed| -feed.updated_at.to_i}
         render json: ::V1::FeedSerializer.new(feeds: feeds, user: current_user).to_json, status: 200
       end
 
