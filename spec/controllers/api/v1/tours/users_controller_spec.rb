@@ -17,7 +17,7 @@ describe Api::V1::Tours::UsersController do
         it { expect(tour.members).to eq([user]) }
         it { expect(result).to eq("user"=>{"id"=>user.id,
                                                               "email"=>user.email,
-                                                              "display_name"=>"John Doe",
+                                                              "display_name"=>"John D",
                                                               "status" => "pending",
                                                               "message"=>nil,
                                                               "avatar_url"=>nil,
@@ -50,7 +50,7 @@ describe Api::V1::Tours::UsersController do
         it { expect(tour.members).to eq([user]) }
         it { expect(result).to eq("user"=>{"id"=>user.id,
                                                               "email"=>user.email,
-                                                              "display_name"=>"John Doe",
+                                                              "display_name"=>"John D",
                                                               "status" => "pending",
                                                               "message"=> "foo",
                                                               "requested_at"=>JoinRequest.last.created_at.iso8601(3),
@@ -70,7 +70,7 @@ describe Api::V1::Tours::UsersController do
       before { get :index, tour_id: tour.to_param, token: user.token }
       it { expect(result).to eq({"users"=>[{"id"=>user.id,
                                                                "email"=>user.email,
-                                                               "display_name"=>"John Doe",
+                                                               "display_name"=>"John D",
                                                                "status"=>"pending",
                                                                "message"=>nil,
                                                                "requested_at"=>join_request.created_at.iso8601(3),
@@ -161,7 +161,7 @@ describe Api::V1::Tours::UsersController do
       it { expect(result).to eq({"user"=>{
                                           "id"=>requester.id,
                                           "email"=>requester.email,
-                                          "display_name"=>"John Doe",
+                                          "display_name"=>"John D",
                                           "status"=>"rejected",
                                           "message"=>nil,
                                           "requested_at"=>JoinRequest.last.created_at.iso8601(3),
@@ -184,7 +184,7 @@ describe Api::V1::Tours::UsersController do
       it { expect(result).to eq({"user"=>{
                                   "id"=>user.id,
                                   "email"=>user.email,
-                                  "display_name"=>"John Doe",
+                                  "display_name"=>"John D",
                                   "status"=>"not requested",
                                   "message"=>nil,
                                   "requested_at"=>tour_member.created_at.iso8601(3),

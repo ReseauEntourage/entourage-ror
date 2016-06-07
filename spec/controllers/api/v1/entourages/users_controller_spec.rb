@@ -19,7 +19,7 @@ describe Api::V1::Entourages::UsersController do
         it { expect(result).to eq("user"=>{
                                             "id"=>user.id,
                                             "email"=>user.email,
-                                            "display_name"=>"John Doe",
+                                            "display_name"=>"John D",
                                             "status"=>"pending",
                                             "message"=>nil,
                                             "requested_at"=>JoinRequest.last.created_at.iso8601(3),
@@ -49,7 +49,7 @@ describe Api::V1::Entourages::UsersController do
       it { expect(result).to eq({"users"=>[{
                                                "id"=>user.id,
                                                "email"=>user.email,
-                                               "display_name"=>"John Doe",
+                                               "display_name"=>"John D",
                                                "status"=>"pending",
                                                "message"=>nil,
                                                "requested_at"=>join_request.created_at.iso8601(3),
@@ -126,7 +126,7 @@ describe Api::V1::Entourages::UsersController do
         it { expect(result).to eq({"user"=>{
                                             "id"=>other_user.id,
                                             "email"=>other_user.email,
-                                            "display_name"=>"John Doe",
+                                            "display_name"=>"John D",
                                             "status"=>"rejected",
                                             "message"=>nil,
                                             "requested_at"=>other_join_request.created_at.iso8601(3),
@@ -142,7 +142,7 @@ describe Api::V1::Entourages::UsersController do
         it { expect(result).to eq({"user"=>{
                                       "id"=>user.id,
                                       "email"=>user.email,
-                                      "display_name"=>"John Doe",
+                                      "display_name"=>"John D",
                                       "status"=>"not requested",
                                       "message"=>nil,
                                       "requested_at"=>my_join_request.created_at.iso8601(3),

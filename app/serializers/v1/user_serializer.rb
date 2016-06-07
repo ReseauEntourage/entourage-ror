@@ -28,7 +28,7 @@ module V1
     end
 
     def display_name
-      "#{object.first_name} #{object.last_name}" if [object.first_name, object.last_name].compact.present?
+      "#{object.first_name} #{object.last_name[0, 1]}" if [object.first_name, object.last_name].compact.present?
     end
 
     def me?

@@ -21,7 +21,7 @@ module V1
     end
 
     def display_name
-      "#{object.user.first_name} #{object.user.last_name}" if [object.user.first_name, object.user.last_name].compact.present?
+      "#{object.user.first_name} #{object.user.last_name[0, 1]}" if [object.user.first_name, object.user.last_name].compact.present?
     end
 
     def status

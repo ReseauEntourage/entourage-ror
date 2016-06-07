@@ -44,7 +44,7 @@ describe Api::V1::AuthenticationProvidersController do
                                                    "token"=>logged_user.reload.token,
                                                    "first_name"=>"John",
                                                    "last_name"=>"Doe",
-                                                   "display_name"=>"John Doe",
+                                                   "display_name"=>"John D",
                                                    "avatar_url"=>nil,
                                                    "user_type"=>"public",
                                                    "organization"=>nil,
