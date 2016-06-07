@@ -35,7 +35,7 @@ module Api
       end
 
       def tour_status
-        params[:status].try(:downcase)=="closed" ? ["closed", "freezed"] : "ongoing"
+        params[:status].try(:downcase)=="closed" ? ["freezed"] : ["ongoing", "closed"]
       end
 
       def entourage_status
