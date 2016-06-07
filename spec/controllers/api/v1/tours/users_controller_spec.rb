@@ -100,7 +100,7 @@ describe Api::V1::Tours::UsersController do
         FactoryGirl.create(:android_app)
         expect_any_instance_of(PushNotificationService).to receive(:send_notification).with(user.full_name,
                                                                                             "Demande acceptée",
-                                                                                            "Vous venez de rejoindre l'entourage de John Doe",
+                                                                                            "Vous venez de rejoindre l'entourage de John D",
                                                                                             User.where(id: requester.id),
                                                                                             {:joinable_id=>tour.id, :joinable_type=>"Tour", :type=>"JOIN_REQUEST_ACCEPTED", :user_id => requester.id})
         patch :update, tour_id: tour.to_param, id: requester.id, user: {status: "accepted"}, token: user.token
