@@ -39,17 +39,17 @@ describe Api::V1::MyfeedsController do
         let!(:join_request_tour_ongoing) { FactoryGirl.create(:join_request, joinable: tour_ongoing, user: user, status: JoinRequest::ACCEPTED_STATUS) }
         let!(:tour_closed) { FactoryGirl.create(:tour, created_at: 4.hours.ago, status: :closed) }
         let!(:join_request_tour_closed) { FactoryGirl.create(:join_request, joinable: tour_closed, user: user, status: JoinRequest::ACCEPTED_STATUS) }
-        let!(:tour_freezed) { FactoryGirl.create(:tour, created_at: 5.hours.ago, status: :closed) }
+        let!(:tour_freezed) { FactoryGirl.create(:tour, created_at: 5.hours.ago, status: :freezed) }
         let!(:join_request_tour_freezed) { FactoryGirl.create(:join_request, joinable: tour_freezed, user: user, status: JoinRequest::ACCEPTED_STATUS) }
 
         context "get active feeds" do
           before { get :index, token: user.token, status: "active" }
-          it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([entourage_open.id, tour_ongoing.id]) }
+          it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([entourage_open.id, tour_ongoing.id, tour_closed.id]) }
         end
 
         context "get active feeds" do
           before { get :index, token: user.token, status: "closed" }
-          it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([entourage_closed.id, tour_closed.id, tour_freezed.id]) }
+          it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([entourage_closed.id, tour_freezed.id]) }
         end
       end
     end

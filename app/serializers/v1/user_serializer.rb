@@ -28,7 +28,7 @@ module V1
     end
 
     def display_name
-      "#{object.first_name} #{object.last_name}" if [object.first_name, object.last_name].compact.present?
+      UserPresenter.new(user: object).display_name
     end
 
     def me?

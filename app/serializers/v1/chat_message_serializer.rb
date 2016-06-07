@@ -14,7 +14,7 @@ module V1
     end
 
     def display_name
-      "#{chat_user.first_name} #{chat_user.last_name}" if [chat_user.first_name, chat_user.last_name].compact.present?
+      UserPresenter.new(user: object.user).display_name
     end
 
     def chat_user

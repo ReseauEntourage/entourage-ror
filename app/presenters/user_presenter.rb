@@ -36,6 +36,10 @@ class UserPresenter < ApplicationPresenter
     (user.coordinated_organizations + [user.organization]).compact.sort_by(&:name)
   end
 
+  def display_name
+    "#{user.first_name} #{user.last_name[0, 1]}" if [user.first_name, user.last_name].compact.present?
+  end
+
   private
   attr_reader :user
 end
