@@ -16,7 +16,7 @@ describe Api::V1::FeedsController do
       let!(:entourage) { FactoryGirl.create(:entourage, updated_at: 4.hours.ago, created_at: 4.hours.ago, entourage_type: "ask_for_help") }
 
       context "get all" do
-        before { get :index, token: user.token, show_tours: true }
+        before { get :index, token: user.token, show_tours: "true" }
         it { expect(response.status).to eq(200) }
         it { expect(result).to eq({"feeds"=>[{
                                                  "type"=>"Entourage",
@@ -72,7 +72,7 @@ describe Api::V1::FeedsController do
       end
 
       context "get entourages only" do
-        before { get :index, token: user.token, show_tours: false }
+        before { get :index, token: user.token, show_tours: "false" }
         it { expect(result["feeds"].count).to eq(1) }
         it { expect(result["feeds"][0]["type"]).to eq("Entourage") }
       end
@@ -80,7 +80,7 @@ describe Api::V1::FeedsController do
       context "get tour types only" do
         let!(:tour_social) { FactoryGirl.create(:tour, updated_at: 2.hours.ago, created_at: 2.hours.ago, tour_type: "alimentary") }
         let!(:tour_medical) { FactoryGirl.create(:tour, updated_at: 3.hours.ago, created_at: 3.hours.ago, tour_type: "barehands") }
-        before { get :index, token: user.token, show_tours: true, tour_types: "alimentary, barehands" }
+        before { get :index, token: user.token, show_tours: "true", tour_types: "alimentary, barehands" }
         it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([tour_social.id, tour_medical.id, entourage.id]) }
       end
 
@@ -90,12 +90,13 @@ describe Api::V1::FeedsController do
         it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([entourage_contribution.id]) }
       end
 
+
       context "show only my entourages" do
         let!(:entourage_i_created) { FactoryGirl.create(:entourage, user: user, updated_at: 1.hour.ago, created_at: 1.hour.ago) }
         let!(:join_request_created) { FactoryGirl.create(:join_request, joinable: entourage_i_created, user: user, status: JoinRequest::ACCEPTED_STATUS) }
         let!(:entourage_i_joined) { FactoryGirl.create(:entourage, updated_at: 2.hour.ago, created_at: 2.hour.ago) }
         let!(:join_request_joined) { FactoryGirl.create(:join_request, joinable: entourage_i_joined, user: user, status: JoinRequest::ACCEPTED_STATUS) }
-        before { get :index, token: user.token, show_only_my_entourages: true }
+        before { get :index, token: user.token, show_only_my_entourages: "true" }
         it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([entourage_i_created.id, entourage_i_joined.id]) }
       end
 
@@ -103,20 +104,20 @@ describe Api::V1::FeedsController do
         let!(:entourage1) { FactoryGirl.create(:entourage, updated_at: 3.day.ago, created_at: 3.day.ago) }
         let!(:entourage2) { FactoryGirl.create(:entourage, updated_at: 3.day.ago, created_at: 3.day.ago) }
         let!(:tour2) { FactoryGirl.create(:tour, updated_at: 3.hours.ago, created_at: 3.hours.ago, tour_type: "medical") }
-        before { get :index, token: user.token, show_tours: true, time_range: 47 }
+        before { get :index, token: user.token, show_tours: "true", time_range: 47 }
         it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([tour2.id, entourage.id, tour.id]) }
       end
 
       context "public user doesn't see tours" do
         let(:public_user) { FactoryGirl.create(:public_user) }
-        before { get :index, token: public_user.token, show_tours: true, time_range: 47 }
+        before { get :index, token: public_user.token, show_tours: "true", time_range: 47 }
         it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([entourage.id]) }
       end
 
       context "with before parameter" do
         let!(:old_tour) { FactoryGirl.create :tour, updated_at: 71.hours.ago }
         let!(:old_entourage) { FactoryGirl.create :entourage, updated_at: 72.hours.ago }
-        before { get 'index', token: user.token, before: 2.day.ago.iso8601(3), show_tours: true, format: :json }
+        before { get 'index', token: user.token, before: 2.day.ago.iso8601(3), show_tours: "true", format: :json }
         it { expect(JSON.parse(response.body)["feeds"].map{|feed| feed["data"]["id"]}).to eq([old_tour.id, old_entourage.id]) }
       end
     end

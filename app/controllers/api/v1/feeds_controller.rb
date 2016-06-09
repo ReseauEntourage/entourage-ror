@@ -5,7 +5,7 @@ module Api
       #curl -H "Content-Type: application/json" "https://entourage-back-preprod/api/v1/myfeeds.json?token=0cb4507e970462ca0b11320131e96610"
       def index
         feeds = entourages
-        feeds += tours if params[:show_tours] && current_user.pro?
+        feeds += tours if params[:show_tours]=="true" && current_user.pro?
         feeds = feeds.sort_by { |feed| -feed.updated_at.to_i}
         render json: ::V1::FeedSerializer.new(feeds: feeds, user: current_user).to_json, status: 200
       end
