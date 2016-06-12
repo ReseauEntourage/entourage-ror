@@ -2,6 +2,7 @@
 set -e
 
 echo "CLOSE ALL PROGRAMS USING THE DATABASE : Ruby web server, SQL client, etc"
+lsof -t -i tcp:3000 | xargs kill -9
 
 echo "snapshot production DB"
 heroku pg:backups capture -a entourage-back-preprod
