@@ -106,7 +106,7 @@ describe Api::V1::Tours::ChatMessagesController do
           join_request = FactoryGirl.create(:join_request, joinable: tour, user: user, status: "accepted")
           join_request2 = FactoryGirl.create(:join_request, joinable: tour, status: "accepted")
           FactoryGirl.create(:join_request, joinable: tour, status: "pending")
-          expect_any_instance_of(PushNotificationService).to receive(:send_notification).with(user.full_name, 'Nouveau message', 'foobar', [join_request2.user], {:joinable_id=>tour.id, :joinable_type=>"Tour", :type=>"NEW_CHAT_MESSAGE"})
+          expect_any_instance_of(PushNotificationService).to receive(:send_notification).with("John D", 'Nouveau message', 'foobar', [join_request2.user], {:joinable_id=>tour.id, :joinable_type=>"Tour", :type=>"NEW_CHAT_MESSAGE"})
           post :create, tour_id: tour.to_param, chat_message: {content: "foobar"}, token: user.token
         end
       end

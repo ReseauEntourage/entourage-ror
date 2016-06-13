@@ -16,7 +16,7 @@ module ChatServices
 
       if message.save
         join_request.update(last_message_read: message.created_at)
-        PushNotificationService.new.send_notification(user.full_name,
+        PushNotificationService.new.send_notification(UserPresenter.new(user: user).display_name,
                                                       "Nouveau message",
                                                       message.content,
                                                       recipients,
