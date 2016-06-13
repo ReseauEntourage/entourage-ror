@@ -1,6 +1,6 @@
 class User < ActiveRecord::Base
 
-  validates_presence_of [:phone, :sms_code, :token, :validation_status]
+  validates_presence_of [:phone, :sms_code, :token, :validation_status, :marketing_referer_id]
   validates_uniqueness_of [:email, :token, :phone]
   validate :validate_phone!
   validates_format_of :email, with: /@/, unless: "email.nil?"
@@ -23,6 +23,7 @@ class User < ActiveRecord::Base
   has_many :relations, through: :user_relationships, source: "target_user"
   has_many :invitations, class_name: "EntourageInvitation", foreign_key: "invitee_id"
   has_many :authentication_providers, dependent: :destroy
+  belongs_to :marketing_referer
 
   enum device_type: [ :android, :ios ]
 

@@ -34,6 +34,7 @@ describe User, :type => :model do
   it { should validate_presence_of(:phone) }
   it { should validate_presence_of(:sms_code) }
   it { should validate_presence_of(:token) }
+  it { should validate_presence_of(:marketing_referer_id) }
   it { should define_enum_for(:device_type) }
   it { should allow_value('a@a.a').for(:email) }
   it { should_not allow_value('a-a.a').for(:email) }
@@ -44,6 +45,7 @@ describe User, :type => :model do
   it { should have_many :authentication_providers }
   it { should belong_to :organization }
   it { should have_and_belong_to_many(:coordinated_organizations).class_name('Organization') }
+  it { should belong_to :marketing_referer }
 
   describe "phone number" do
     it { expect(FactoryGirl.build(:pro_user, phone: '+33123456789').save).to be true }
