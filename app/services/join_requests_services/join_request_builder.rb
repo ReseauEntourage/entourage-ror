@@ -24,7 +24,7 @@ module JoinRequestsServices
 
     def notify_members(type)
       recipients = joinable.members.includes(:join_requests).where(join_requests: {status: "accepted"})
-      PushNotificationService.new.send_notification(user.full_name,
+      PushNotificationService.new.send_notification(UserPresenter.new(user: user).display_name,
                                                     "Demande en attente",
                                                     "Un nouveau membre souhaite rejoindre votre maraude",
                                                     recipients,

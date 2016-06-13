@@ -36,7 +36,7 @@ describe Api::V1::Tours::UsersController do
       it "sends a notifications to tour members" do
         new_member = FactoryGirl.create(:pro_user)
         JoinRequest.create(user: user, joinable: tour, status: "accepted")
-        expect_any_instance_of(PushNotificationService).to receive(:send_notification).with(new_member.full_name,
+        expect_any_instance_of(PushNotificationService).to receive(:send_notification).with("John D",
                                                                                             "Demande en attente",
                                                                                             "Un nouveau membre souhaite rejoindre votre maraude",
                                                                                             User.where(id: user.id),
@@ -98,7 +98,7 @@ describe Api::V1::Tours::UsersController do
 
       it "sends a notifications to tour members" do
         FactoryGirl.create(:android_app)
-        expect_any_instance_of(PushNotificationService).to receive(:send_notification).with(user.full_name,
+        expect_any_instance_of(PushNotificationService).to receive(:send_notification).with("John D",
                                                                                             "Demande acceptée",
                                                                                             "Vous venez de rejoindre l'entourage de John D",
                                                                                             User.where(id: requester.id),
