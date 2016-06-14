@@ -1,0 +1,21 @@
+<h1>Liste des marketing referers</h1>
+
+<br><br>
+
+<div class="row">
+  <table class="table">
+    <th>id</th>
+    <th>Nom</th>
+
+    <% @marketing_referers.each do |marketing_referer| %>
+      <tr>
+        <td><%= marketing_referer.id %></td>
+        <td><%= marketing_referer.name %></td>
+      </tr>
+    <% end %>
+  </table>
+</div>
+
+<div class="row">
+  <%= paginate @marketing_referers %>
+</div>
