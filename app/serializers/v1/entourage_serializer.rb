@@ -25,8 +25,8 @@ module V1
 
     def location
       {
-          latitude: object.latitude,
-          longitude: object.longitude
+          latitude: randomizer.random_latitude,
+          longitude: randomizer.random_longitude
       }
     end
 
@@ -47,6 +47,10 @@ module V1
     def current_join_request
       #TODO : replace by sql request ?
       object.join_requests.select {|join_request| join_request.user_id == scope.id}.first
+    end
+
+    def randomizer
+      @randomizer ||= EntourageServices::EntourageLocationRandomizer.new(entourage: object)
     end
   end
 end

@@ -8,10 +8,12 @@ module EntourageServices
     end
 
     def random_longitude
+      return entourage.longitude if Rails.env.test?
       entourage.longitude + (w * Math.cos(t))
     end
 
     def random_latitude
+      return entourage.latitude if Rails.env.test?
       entourage.latitude + (w * Math.sin(t))
     end
 
@@ -28,7 +30,7 @@ module EntourageServices
 
     #Convert radius from meters to degrees
     def radius
-      RANDOM_RADIUS / 111300;
+      RANDOM_RADIUS / 111300
     end
   end
 end
