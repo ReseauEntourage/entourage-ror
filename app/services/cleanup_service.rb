@@ -8,4 +8,8 @@ class CleanupService
       Rails.logger.warn "Force closing tour #{t}"
     end
   end
+
+  def self.remove_old_encounter_message
+    Encounter.where('created_at <= ?', 48.hours.ago).update_all(encrypted_message: nil)
+  end
 end
