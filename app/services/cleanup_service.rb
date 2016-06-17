@@ -10,6 +10,8 @@ class CleanupService
   end
 
   def self.remove_old_encounter_message
-    Encounter.where('created_at <= ?', 48.hours.ago).update_all(encrypted_message: nil)
+    Encounter.where('created_at <= ?', 48.hours.ago)
+        .where('encrypted_message IS NOT NULL')
+        .update_all(encrypted_message: nil)
   end
 end
