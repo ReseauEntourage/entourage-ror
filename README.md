@@ -3,8 +3,8 @@
 
 # Prerequisites
 
-Ruby 2.2.3
-Rails 4.2
+Ruby 2.3.1
+Rails 4.2.6
 
 rbenv or rvm recommanded
 
@@ -26,7 +26,7 @@ $ bundle exec rails server
 
 # Rspec tests
 
-Run tests with 
+Run tests with
 
 ```
 $ rspec
