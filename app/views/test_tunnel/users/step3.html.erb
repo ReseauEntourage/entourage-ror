@@ -1,21 +1,41 @@
 <div class="row">
-  <h1>Code de vérification</h1>
+  <h1>Mise à jour du profil</h1>
 </div>
 
-<form class="form-horizontal" role="form" id="new_user" accept-charset="UTF-8" method="post">
+<form class="form-horizontal" role="form" id="edit_user" accept-charset="UTF-8" method="put">
   <div class="row">
     <div class="control-group">
       <div class="col-md-3">
-        <label class="control-label">Code SMS</label>
+        <label class="control-label">Prénom</label>
         <div class="controls">
-          <input class="form-control" required="required" type="text" name="phone" id="user_sms_code">
+          <input class="form-control" required="required" type="text" name="first_name" id="user_first_name">
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="control-group">
+      <div class="col-md-3">
+        <label class="control-label">Nom</label>
+        <div class="controls">
+          <input class="form-control" required="required" type="text" name="last_name" id="user_last_name">
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="control-group">
+      <div class="col-md-3">
+        <label class="control-label">Email</label>
+        <div class="controls">
+          <input class="form-control" required="required" type="email" name="email" id="user_email_name">
         </div>
       </div>
     </div>
   </div>
   <br>
   <div class="row">
-    <a href="#" class="btn btn-success" id="validate">Vérifier cet appareil</a>
+    <a href="#" class="btn btn-success" id="validate">Mettre à jour</a>
   </div>
 </form>
 <script>
@@ -24,13 +44,17 @@
     $("#validate").click(function() {
       $.ajax({
         type: form.attr('method'),
-        url: "/api/v1/login",
+        url: "/api/v1/users/<%= User.last.id %>",
         data: {"user":
-        {"phone": '<%= User.last.phone %>',
-          "sms_code": $("#user_sms_code").val()}
+                {
+                  "first_name": $("#user_first_name").val(),
+                  "last_name": $("#user_last_name").val(),
+                  "email": $("#user_email_name").val()
+                },
+                "token": '<%= User.last.token %>'
         },
         success: function(response){
-          window.location.href = "/test_tunnel/users/step3";
+          window.location.href = "/test_tunnel/users/step4";
         },
         error: function(){
           console.log("error");

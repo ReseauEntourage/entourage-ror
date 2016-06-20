@@ -130,6 +130,7 @@ Rails.application.routes.draw do
         get :step1
         get :step2
         get :step3
+        get :step4
       end
     end
 
