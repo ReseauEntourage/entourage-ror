@@ -1,34 +1,43 @@
 <div class="row">
-  <h1>Mettre à jour votre profil</h1>
+  <h1>Code de vérification</h1>
 </div>
 
-<%= form_for([:test_tunnel, @user], html: { class: "form-horizontal", role: "form" }) do |f| %>
-  <%= render partial: "layouts/errors", locals: {obj: @user} %>
-
+<form class="form-horizontal" role="form" id="new_user" accept-charset="UTF-8" method="post">
   <div class="row">
     <div class="control-group">
-      <%= f.label :first_name,"Prénom", class: "control-label" %>
-      <div class="controls">
-        <%= f.text_field :first_name, class: "form-control", required: true %>
-      </div>
-    </div>
-
-    <div class="control-group">
-      <%= f.label :last_name,"Nom", class: "control-label" %>
-      <div class="controls">
-        <%= f.text_field :last_name, class: "form-control", required: true %>
-      </div>
-    </div>
-
-    <div class="control-group">
-      <%= f.label :email,"Email", class: "control-label" %>
-      <div class="controls">
-        <%= f.email_field :email, class: "form-control", required: true %>
+      <div class="col-md-3">
+        <label class="control-label">Code SMS</label>
+        <div class="controls">
+          <input class="form-control" required="required" type="text" name="phone" id="user_sms_code">
+        </div>
       </div>
     </div>
   </div>
   <br>
   <div class="row">
-    <%= f.submit "Mettre à jour", class: "btn btn-success" %>
+    <a href="#" class="btn btn-success" id="validate">Vérifier cet appareil</a>
   </div>
-<% end %>
+</form>
+<script>
+  var ready = function() {
+    var form = $("#new_user");
+    $("#validate").click(function() {
+      $.ajax({
+        type: form.attr('method'),
+        url: "/api/v1/login",
+        data: {"user":
+        {"phone": '<%= User.last.phone %>',
+          "sms_code": $("#user_sms_code").val()}
+        },
+        success: function(response){
+          window.location.href = "/test_tunnel/users/step3";
+        },
+        error: function(){
+          console.log("error");
+        }
+      });
+    });
+  }
+  $(document).ready(ready);
+  $(document).on('page:load', ready);
+</script>

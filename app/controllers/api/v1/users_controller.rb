@@ -8,7 +8,6 @@ module Api
         user = UserServices::UserAuthenticator.authenticate_by_phone_and_sms(phone: user_params[:phone], sms_code: user_params[:sms_code])
         return render json: {message: 'unauthorized'}, status: :unauthorized unless user
         return render json: {message: 'deleted'}, status: :unauthorized if user.deleted
-        return render json: {message: 'public user not authorised yet'}, status: :unauthorized if user.public? && api_request.key_infos[:version]=="1.1.0"
 
         render json: user, status: 200, serializer: ::V1::UserSerializer, scope: user
       end
