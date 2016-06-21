@@ -123,6 +123,18 @@ Rails.application.routes.draw do
     end
   end
 
+  #Test user signup => delete when done
+  namespace :test_tunnel do
+    resources :users, only: :none do
+      collection do
+        get :step1
+        get :step2
+        get :step3
+        get :step4
+      end
+    end
+  end
+
   #WEB
   resources :sessions, only: [:new, :create, :destroy] do
     collection do

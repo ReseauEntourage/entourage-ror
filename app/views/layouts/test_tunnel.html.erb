@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<%= render partial: "layouts/head" %>
+
+<body class="test_tunnel <%= controller_name %> <%= action_name %>">
+
+<nav class="navbar navbar-inverse navbar-fixed-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <%= image_tag('logo.png', alt:'Entourage', class:'navbar-brand') %>
+    </div>
+  </div>
+</nav>
+<br><br>
+<div id="flash">
+  <%= display_flash_messages %>
+</div>
+<div style="padding: 25px 10px;">
+  <div class="col-md-12 container">
+    <%= yield %>
+  </div>
+</div>
+</body>
+</html>
