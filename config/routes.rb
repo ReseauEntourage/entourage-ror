@@ -133,7 +133,6 @@ Rails.application.routes.draw do
         get :step4
       end
     end
-
   end
 
   #WEB

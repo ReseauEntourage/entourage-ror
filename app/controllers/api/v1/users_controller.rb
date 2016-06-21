@@ -59,7 +59,11 @@ module Api
       end
 
       def destroy
-        @current_user.update!(deleted: true)
+        if env["STAGING"]=="true"
+          @current_user.destroy
+        else
+          @current_user.update!(deleted: true)
+        end
         render json: @current_user, status: 200, serializer: ::V1::UserSerializer, scope: @current_user
       end
 
