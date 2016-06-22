@@ -30,11 +30,13 @@ module Admin
 
     def create
       @poi = Poi.new(poi_params)
+      @poi = PoiServices::PoiGeocoder.new(poi: @poi, params: poi_params).geocode
 
-      if @poi.save
+      if @poi.errors.blank? && @poi.save(poi_params)
         redirect_to admin_pois_url, notice: "Le POI a bien été créé"
       else
-        render :new, alert: "le POI n'a pas pu être créé"
+        @should_edit_gps = true
+        render :new
       end
     end
 
