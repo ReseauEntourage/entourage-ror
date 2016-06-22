@@ -25,6 +25,7 @@ module Api
         end
       end
 
+      #curl -X POST -d '{"user": { "phone":"+4068999999999"}}' -H "Content-Type: application/json" "http://localhost:3000/api/v1/users.json?token=azerty"
       def create
         builder = UserServices::PublicUserBuilder.new(params: user_params)
         builder.create(send_sms: true) do |on|

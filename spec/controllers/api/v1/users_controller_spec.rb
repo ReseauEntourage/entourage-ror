@@ -192,8 +192,16 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
     context "valid params" do
       before { post 'create', {user: {phone: "+33612345678"}} }
       it { expect(User.last.user_type).to eq("public") }
+      it { expect(User.last.phone).to eq("+33612345678") }
       it { expect(JSON.parse(response.body)["user"]["id"]).to eq(User.last.id) }
     end
+
+    context "already has a user without email" do
+      let!(:previous_user) { FactoryGirl.create(:public_user, email: nil) }
+      before { post 'create', {user: {phone: "+33612345678"}} }
+      it { expect(response.status).to eq(201) }
+    end
+
 
     context "invalid params" do
       it "doesn't create a new user" do
