@@ -59,11 +59,7 @@ module Api
       end
 
       def destroy
-        if env["STAGING"]=="true"
-          @current_user.destroy
-        else
-          @current_user.update!(deleted: true)
-        end
+        @current_user.update_columns(deleted: true, phone: "#{@current_user.phone}-#{Time.now.to_formatted_s(:iso8601)}")
         render json: @current_user, status: 200, serializer: ::V1::UserSerializer, scope: @current_user
       end
 
