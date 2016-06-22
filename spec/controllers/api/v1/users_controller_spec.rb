@@ -278,7 +278,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
     let!(:user) { FactoryGirl.create(:pro_user, deleted: false, phone: "0612345678") }
     before { delete :destroy, id: user.to_param, token: user.token }
     it { expect(user.reload.deleted).to be true }
-    it { expect(user.reload.phone).to eq("+33612345678-2010-10-10T00:00:00+02:00") }
+    it { expect(user.reload.phone).to eq("+33612345678-2010-10-10 00:00:00") }
     it { expect(response.status).to eq(200) }
   end
 end
