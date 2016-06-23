@@ -3,6 +3,8 @@ include AuthHelper
 
 RSpec.describe Api::V1::UsersController, :type => :controller do
   render_views
+
+  let(:result) { JSON.parse(response.body) }
   
   describe 'POST #login' do
     before { ENV["DISABLE_CRYPT"]="FALSE" }
@@ -16,8 +18,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
         it { expect(response.status).to eq(200) }
 
         it "renders user" do
-          res = JSON.parse(response.body)
-          expect(res).to eq({"user"=>
+          expect(result).to eq({"user"=>
                                  {"id"=>user.id,
                                   "email"=>user.email,
                                   "display_name"=>"John D",
@@ -38,6 +39,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
       context 'when sms code is invalid' do
         before { post 'login', user: {phone: user.phone, sms_code: "invalid code"}, format: 'json' }
         it { expect(response.status).to eq(401) }
+        it { expect(result).to eq({"error"=>{"code"=>"UNAUTHORIZED", "message"=>"wrong phone / sms_code"}}) }
         it { expect(assigns(:user)).to be_nil }
       end
     end
@@ -57,6 +59,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
       let(:deleted_user) { FactoryGirl.create(:pro_user, deleted: true, sms_code: "123456") }
       before { post 'login', user: {phone: deleted_user.phone, sms_code: "123456"}, format: 'json' }
       it { expect(response.status).to eq(401) }
+      it { expect(result).to eq({"error"=>{"code"=>"DELETED", "message"=>"user is deleted"}}) }
     end
     context 'when user is not deleted' do
       let(:not_deleted_user) { FactoryGirl.create(:pro_user, deleted: false, sms_code: "123456") }
@@ -125,6 +128,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
       context 'params are invalid' do
         before { patch 'update', token:user.token, user: { email:'bademail', sms_code:'badcode' }, format: :json }
         it { expect(response.status).to eq(400) }
+        it { expect(result).to eq({"error"=>{"code"=>"CANNOT_UPDATE_USER", "message"=>["Email n'est pas valide"]}}) }
       end
     end
 
@@ -214,7 +218,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
         post 'create', {user: {phone: "123"}}
         user = User.last
         expect(response.status).to eq(400)
-        expect(JSON.parse(response.body)).to eq({"message"=>"Could not sign up user", "reasons"=>["Phone devrait être au format +33... ou 06..."]})
+        expect(result).to eq({"error"=>{"code"=>"CANNOT_CREATE_USER", "message"=>["Phone devrait être au format +33... ou 06..."]}})
       end
     end
   end

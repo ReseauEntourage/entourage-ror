@@ -6,8 +6,8 @@ module Api
       #curl -H "X-API-KEY:adc86c761fa8" -H "Content-Type: application/json" -X POST -d '{"user": {"phone": "+3312345567", "sms_code": "11111"}}' "http://localhost:3000/api/v1/login.json"
       def login
         user = UserServices::UserAuthenticator.authenticate_by_phone_and_sms(phone: user_params[:phone], sms_code: user_params[:sms_code])
-        return render json: {message: 'unauthorized'}, status: :unauthorized unless user
-        return render json: {message: 'deleted'}, status: :unauthorized if user.deleted
+        return render_error(code: "UNAUTHORIZED", message: "wrong phone / sms_code", status: 401) unless user
+        return render_error(code: "DELETED", message: "user is deleted", status: 401) if user.deleted
 
         render json: user, status: 200, serializer: ::V1::UserSerializer, scope: user
       end
@@ -21,7 +21,7 @@ module Api
         if @current_user.update_attributes(user_params)
           render json: @current_user, status: 200, serializer: ::V1::UserSerializer, scope: @current_user
         else
-          render json: {message: @current_user.errors.full_messages}, status: 400
+          render_error(code: "CANNOT_UPDATE_USER", message: @current_user.errors.full_messages, status: 400)
         end
       end
 
@@ -34,7 +34,7 @@ module Api
           end
 
           on.failure do |user|
-            render json: {message: 'Could not sign up user', reasons: user.errors.full_messages}, status: :bad_request
+            render_error(code: "CANNOT_CREATE_USER", message: user.errors.full_messages, status: 400)
           end
         end
       end
