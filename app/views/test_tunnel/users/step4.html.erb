@@ -1,1 +1,22 @@
-<p>Foo</p>
+<%= link_to "Supprimer mon compte", "#", id: "delete-btn", class: "btn btn-danger" %>
+
+<script>
+  var ready = function() {
+    var form = $("#new_user");
+    $("#delete-btn").click(function() {
+      $.ajax({
+        type: 'delete',
+        url: "/api/v1/users/<%= User.last.id %>",
+        data: {"token": '<%= User.last.token %>'},
+        success: function(response){
+          window.location.href = "/test_tunnel/users/step1";
+        },
+        error: function(){
+          console.log("error");
+        }
+      });
+    });
+  }
+  $(document).ready(ready);
+  $(document).on('page:load', ready);
+</script>
