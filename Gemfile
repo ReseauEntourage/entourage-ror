@@ -30,7 +30,6 @@ gem 'lograge',                  '~> 0.3.4'
 gem 'aws-sdk',                  '~> 2.2.9'
 gem 'faker',                    '~> 1.6.1'
 gem 'twitter',                  '~> 5.16.0'
-gem 'rack-timeout',             '~> 0.4.2'
 
 group :development, :test do
   gem 'byebug',                 '~> 5.0.0'
@@ -64,4 +63,5 @@ group :production do
   gem 'rails_12factor',         '~> 0.0.3'
   gem 'rails_stdout_logging',   '~> 0.0.5'
   gem 'puma',                   '~> 2.12.2'
+  gem 'rack-timeout',           '~> 0.4.2'
 end

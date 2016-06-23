@@ -95,7 +95,7 @@ Rails.application.routes.draw do
         end
       end
 
-      resources :users, only: [:show, :create, :destroy] do
+      resources :users, only: [:show, :create, :destroy, :update] do
         collection do
           patch 'me' => 'users#update'
         end

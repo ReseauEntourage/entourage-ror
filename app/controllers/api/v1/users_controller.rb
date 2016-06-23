@@ -21,7 +21,7 @@ module Api
         if @current_user.update_attributes(user_params)
           render json: @current_user, status: 200, serializer: ::V1::UserSerializer, scope: @current_user
         else
-          head 400
+          render json: {message: @current_user.errors.full_messages}, status: 400
         end
       end
 
