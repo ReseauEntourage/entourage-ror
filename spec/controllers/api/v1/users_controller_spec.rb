@@ -125,6 +125,11 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
         end
       end
 
+      context 'try to update phone number' do
+        before { patch 'update', token:user.token, user: { phone:'+33654876754' }, format: :json }
+        it { expect(response.status).to eq(400) }
+      end
+
       context 'params are invalid' do
         before { patch 'update', token:user.token, user: { email:'bademail', sms_code:'badcode' }, format: :json }
         it { expect(response.status).to eq(400) }
