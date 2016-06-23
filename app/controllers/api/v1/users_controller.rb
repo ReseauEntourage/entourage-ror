@@ -15,10 +15,10 @@ module Api
       def update
         return render_error(code: "CANNOT_UPDATE_PHONE", message: "Not allowed to update phone number", status: 400) if user_params.keys.include?("phone")
 
-        avatar_file = user_params.delete(:avatar)
-        if avatar_file
-          UserServices::Avatar.new(user: @current_user).upload(file: avatar_file)
-        end
+        # avatar_file = user_params.delete(:avatar)
+        # if avatar_file
+        #   UserServices::Avatar.new(user: @current_user).upload(file: avatar_file)
+        # end
 
         if @current_user.update_attributes(user_params)
           render json: @current_user, status: 200, serializer: ::V1::UserSerializer, scope: @current_user

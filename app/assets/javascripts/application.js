@@ -21,6 +21,8 @@
 //= require handlebars.runtime
 //= require handlebars_helpers
 //= require bootstrap-multiselect
+//= require jquery.ui.widget
+//= require jquery.fileupload
 //= require_tree ./templates
 //= require_tree .
 //= require_tree ./admin

@@ -7,6 +7,7 @@ module TestTunnel
     end
 
     def step3
+      @upload_presenter = Presenters::UploadPresenter.new
     end
 
     def step4
