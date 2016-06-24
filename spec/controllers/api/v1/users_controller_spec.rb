@@ -115,9 +115,10 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
       after { ENV["DISABLE_CRYPT"]="TRUE" }
 
       context 'params are valid' do
-        before { patch 'update', token:user.token, user: { email:'new@e.mail', sms_code:'654321', device_id: 'foo', device_type: 'android' }, format: :json }
+        before { patch 'update', token:user.token, user: { email:'new@e.mail', sms_code:'654321', device_id: 'foo', device_type: 'android', avatar_key: 'foo.jpg'}, format: :json }
         it { expect(response.status).to eq(200) }
         it { expect(user.reload.email).to eq('new@e.mail') }
+        it { expect(user.reload.avatar_key).to eq('foo.jpg') }
         it { expect(BCrypt::Password.new(User.find(user.id).sms_code) == '654321').to be true }
 
         it "renders user" do
@@ -142,22 +143,22 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
       it { expect(response.status).to eq(401) }
     end
 
-    describe "upload avatar" do
-      let(:avatar) { fixture_file_upload('avatar.jpg', 'image/jpeg') }
-
-      context "valid params" do
-        it "sets user avatar key" do
-          stub_request(:put,
-                       "https://foobar.s3-eu-west-1.amazonaws.com/avatar_#{user.id}"
-          ).to_return(:status => 200,
-                      :body => "",
-                      :headers => {})
-
-          patch 'update', token:user.token, user: { avatar: avatar }, format: :json
-          expect(user.reload.avatar_key).to eq("avatar_#{user.id}")
-        end
-      end
-    end
+    # describe "upload avatar" do
+    #   let(:avatar) { fixture_file_upload('avatar.jpg', 'image/jpeg') }
+    #
+    #   context "valid params" do
+    #     it "sets user avatar key" do
+    #       stub_request(:put,
+    #                    "https://foobar.s3-eu-west-1.amazonaws.com/avatar_#{user.id}"
+    #       ).to_return(:status => 200,
+    #                   :body => "",
+    #                   :headers => {})
+    #
+    #       patch 'update', token:user.token, user: { avatar: avatar }, format: :json
+    #       expect(user.reload.avatar_key).to eq("avatar_#{user.id}")
+    #     end
+    #   end
+    # end
   end
 
   describe 'code' do
