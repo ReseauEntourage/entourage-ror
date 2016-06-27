@@ -1,5 +1,5 @@
 module Presenters
-  class UploadPresenter < Presenters::ApplicationPresenter
+  class UploadPresenter < ApplicationPresenter
     require 'json'
     def json
       if presigned_post
