@@ -38,6 +38,41 @@ Rails.application.routes.draw do
     end
   end
 
+  namespace :admin do
+    get '/' => 'users#index'
+    get 'logout' => 'sessions#logout'
+
+    resources :generate_tours, only: [:index, :create]
+
+    resources :users, only: [:index, :edit, :update, :new, :create] do
+      collection do
+        get 'moderate'
+        get 'fake'
+        post 'generate'
+      end
+
+      member do
+        put 'banish'
+        put 'validate'
+      end
+    end
+
+    resources :pois
+    resources :registration_requests, only: [:index, :show, :update, :destroy]
+    resources :messages, only: [:index, :destroy]
+    resources :organizations, only: [:index, :edit, :update]
+    resources :newsletter_subscriptions, only: [:index]
+    resources :ambassadors, only: [:index, :edit, :update, :new, :create]
+    resources :entourage_invitations, only: [:index]
+    resources :entourages, only: [:index]
+    resources :marketing_referers, only: [:index, :edit, :update, :new, :create]
+
+    get 'public_user_search' => "users_search#public_user_search"
+    get 'public_user_autocomplete' => "users_search#public_user_autocomplete"
+    get 'pro_user_search' => "users_search#pro_user_search"
+    delete 'user_relationships' => "user_relationships#destroy"
+  end
+
   #API
   namespace :api do
     namespace :v0 do
