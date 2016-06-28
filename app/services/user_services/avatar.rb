@@ -18,18 +18,18 @@ module UserServices
     end
 
     def destroy
-      [key, thumbnail_key].each {|k| avatars.destroy(key: k)}
+      avatars.destroy(key: thumbnail_key)
     end
 
     private
     attr_reader :user
 
     def key
-      "avatar_#{user.id}"
+      user.avatar_key || SecureRandom.uuid
     end
 
     def thumbnail_key
-      "300x300/avatar_#{user.id}.jpg"
+      "300x300/#{user.avatar_key}"
     end
 
     def avatars

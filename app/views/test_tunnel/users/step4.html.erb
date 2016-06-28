@@ -6,8 +6,8 @@
     $("#delete-btn").click(function() {
       $.ajax({
         type: 'delete',
-        url: "/api/v1/users/<%= User.last.id %>",
-        data: {"token": '<%= User.last.token %>'},
+        url: "/api/v1/users/<%= @user.id %>",
+        data: {"token": '<%= @user.token %>'},
         success: function(response){
           window.location.href = "/test_tunnel/users/step1";
         },

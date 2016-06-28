@@ -43,7 +43,7 @@
     <div>
       <label>Avatar </label>
     </div>
-    <img src="https://s3-eu-west-1.amazonaws.com/corpogames-thumbs/300x300/<%= User.last.avatar_key %>">
+    <img src="https://s3-eu-west-1.amazonaws.com/entourage-avatars-production-thumb/300x300/<%= @user.avatar_key %>">
     <div>
       <div class="controls">
         <div class='text-center'>
@@ -63,17 +63,18 @@
     $("#validate").click(function() {
       $.ajax({
         type: form.attr('method'),
-        url: "/api/v1/users/<%= User.last.id %>",
+        url: "/api/v1/users/<%= @user.id %>",
         data: {"user":
                 {
                   "first_name": $("#user_first_name").val(),
                   "last_name": $("#user_last_name").val(),
-                  "email": $("#user_email_name").val()
+                  "email": $("#user_email_name").val(),
+                  "avatar_key": $("#file-key").val()
                 },
-                "token": '<%= User.last.token %>'
+                "token": '<%= @user.token %>'
         },
         success: function(response){
-          window.location.href = "/test_tunnel/users/step4";
+          window.location.href = "/test_tunnel/users/<%= @user.id %>/step4";
         },
         error: function(){
           console.log("error");

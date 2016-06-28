@@ -129,6 +129,9 @@ Rails.application.routes.draw do
       collection do
         get :step1
         get :step2
+      end
+
+      member do
         get :step3
         get :step4
       end

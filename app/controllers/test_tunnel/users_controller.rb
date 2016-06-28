@@ -4,13 +4,16 @@ module TestTunnel
     end
 
     def step2
+      @user = User.where(phone: Phone::PhoneBuilder.new(phone: params[:phone]).format).first
     end
 
     def step3
-      @upload_presenter = Presenters::UploadPresenter.new
+      @user = User.find(params[:id])
+      @upload_presenter = UploadPresenter.new
     end
 
     def step4
+      @user = User.find(params[:id])
     end
   end
 end

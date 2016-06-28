@@ -27,7 +27,7 @@
         url: "/api/v1/users",
         data: {"user": {"phone": $("#user_phone").val()}},
         success: function(){
-          window.location.href = "/test_tunnel/users/step2";
+          window.location.href = "/test_tunnel/users/step2?phone="+encodeURIComponent($("#user_phone").val());
         },
         error: function(){
           console.log("error");

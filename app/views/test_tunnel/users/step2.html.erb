@@ -26,11 +26,11 @@
         type: form.attr('method'),
         url: "/api/v1/login",
         data: {"user":
-                {"phone": '<%= User.last.phone %>',
+                {"phone": '<%= @user.phone %>',
                 "sms_code": $("#user_sms_code").val()}
               },
         success: function(response){
-          window.location.href = "/test_tunnel/users/step3";
+          window.location.href = "/test_tunnel/users/<%= @user.id %>/step3";
         },
         error: function(){
           console.log("error");
