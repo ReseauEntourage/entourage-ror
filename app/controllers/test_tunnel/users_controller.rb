@@ -1,5 +1,7 @@
 module TestTunnel
   class UsersController < TestTunnel::BaseController
+    before_action :authenticate_admin!
+
     def step1
     end
 
@@ -14,6 +16,14 @@ module TestTunnel
 
     def step4
       @user = User.find(params[:id])
+    end
+
+    private
+
+    def authenticate_admin!
+      unless ENV["STAGING"]
+        return render text: "Unauthorised", status: 401 unless User.where(id: session[:user_id]).first.try(:admin)
+      end
     end
   end
 end
