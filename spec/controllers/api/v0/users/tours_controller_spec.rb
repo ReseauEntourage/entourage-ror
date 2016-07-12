@@ -48,8 +48,7 @@ RSpec.describe Api::V0::Users::ToursController, :type => :controller do
     context "with pagination params" do
       before { get 'index', user_id: user.id, token: user.token, format: :json, page: 1, per: 1 }
       it { expect(response.status).to eq 200 }
-      # @todo: John hot fix
-      xit { expect(JSON.parse(response.body)["tours"].count).to eq 1 }
+      it { expect(JSON.parse(response.body)["tours"].count).to eq 1 }
     end
   end
 end
