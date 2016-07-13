@@ -1,7 +1,7 @@
 #Solution taken from : http://gis.stackexchange.com/a/25883
 module EntourageServices
   class EntourageLocationRandomizer
-    RANDOM_RADIUS=250.0
+    RANDOM_RADIUS=125.0
 
     def initialize(entourage:)
       @entourage = entourage
