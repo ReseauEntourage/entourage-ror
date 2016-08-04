@@ -12,6 +12,7 @@ module Api
         render json: user, status: 200, serializer: ::V1::UserSerializer, scope: user
       end
 
+      #curl -X PATCH -d '{"user": { "sms_code":"123456"}}' -H "Content-Type: application/json" "http://localhost:3000/api/v1/users/93.json?token=azerty"
       def update
         return render_error(code: "CANNOT_UPDATE_PHONE", message: "Not allowed to update phone number", status: 400) if user_params.keys.include?("phone")
 
