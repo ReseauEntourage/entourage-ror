@@ -4,6 +4,7 @@ module Api
       class InvitationsController < Api::V1::BaseController
         before_action :set_entourage
 
+        #curl -X POST -d '{"user": { "phone":"+4068999999999"}}' -H "Content-Type: application/json" "http://localhost:3000/api/v1/users.json?token=azerty"
         def create
           sms_invite = EntourageServices::SmsInvite.new(phone_number: invite_params[:phone_number],
                                                         entourage: entourage,

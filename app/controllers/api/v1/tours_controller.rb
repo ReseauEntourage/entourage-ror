@@ -31,10 +31,12 @@ module Api
         end
       end
 
+      #curl -H "Content-Type: application/json" "http://localhost:3000/api/v1/tours/1948.json?token=azerty"
       def show
         render json: @tour, status: 200, serializer: ::V1::TourSerializer
       end
 
+      #curl -X PUT -d '{ "status":"closed"}' -H "Content-Type: application/json" "http://localhost:3000/api/v1/tours/1948.json?token=azerty"
       def update
         if @tour.user != @current_user
           head 403
