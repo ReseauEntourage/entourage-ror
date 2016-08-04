@@ -1518,20 +1518,21 @@ Entourages related resources of the **Entourage API**
             {
                 "invite": {
                     "mode": "SMS",
-                    "phone_number": "+33612345678"
+                    "phone_numbers": ["+33612345678", "+3361234569"]
                 }
             }
 
 + Response 201 (application/json; charset=utf-8)
 
             {
-                "invite": {
-                    "id": 123,
-                    "invitation_mode": "SMS",
-                    "phone_number": "+33612345678",
-                    "inviter_id": 123,
-                    "entourage_id": 123
-                }
+                "successfull_numbers": ["+33612345678", "+3361234569"]
+            }
+            
++ Response 400 (application/json; charset=utf-8)
+
+            {
+                "successfull_numbers": ["+33612345678"],
+                "failed_numbers": ["+3361234569"]
             }
 
 + Response 404 (application/json; charset=utf-8)
