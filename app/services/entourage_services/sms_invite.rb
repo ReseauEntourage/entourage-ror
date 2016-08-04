@@ -3,7 +3,7 @@ module EntourageServices
     def initialize(phone_number:, entourage:, inviter:)
       @phone_number = phone_number
       @entourage = entourage
-      @callback = SmsInviteCallback.new
+      @callback = EntourageServices::SmsInviteCallback.new
       @inviter = inviter
     end
 
@@ -40,14 +40,6 @@ module EntourageServices
 
     def invitee
       User.where(phone: phone_number).first
-    end
-  end
-
-  class SmsInviteCallback < Callback
-    attr_accessor :on_not_part_of_entourage
-
-    def not_part_of_entourage(&block)
-      @on_not_part_of_entourage = block
     end
   end
 end
