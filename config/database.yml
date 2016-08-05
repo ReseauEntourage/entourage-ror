@@ -17,3 +17,4 @@ test:
 production:
   <<: *default
   database: entourage-dev
+  prepared_statements: false
