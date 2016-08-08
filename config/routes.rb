@@ -155,6 +155,7 @@ Rails.application.routes.draw do
       put 'applications' => 'user_applications#update'
       post 'login' => 'users#login'
       get 'check' => 'base#check'
+      get 'ping' => 'base#ping'
     end
   end
 

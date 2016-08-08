@@ -11,16 +11,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160613124422) do
+ActiveRecord::Schema.define(version: 20160808144640) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+  enable_extension "pg_stat_statements"
 
-  create_table "active_admin_comments", force: :cascade do |t|
+  create_table "active_admin_comments", id: false, force: :cascade do |t|
+    t.integer  "id",                        default: "nextval('active_admin_comments_id_seq'::regclass)", null: false
     t.string   "namespace",     limit: 255
     t.text     "body"
-    t.string   "resource_id",   limit: 255, null: false
-    t.string   "resource_type", limit: 255, null: false
+    t.string   "resource_id",   limit: 255,                                                               null: false
+    t.string   "resource_type", limit: 255,                                                               null: false
     t.integer  "author_id"
     t.string   "author_type",   limit: 255
     t.datetime "created_at"
@@ -383,6 +385,7 @@ ActiveRecord::Schema.define(version: 20160613124422) do
     t.string   "validation_status",                default: "validated", null: false
     t.boolean  "deleted",                          default: false,       null: false
     t.integer  "marketing_referer_id",             default: 1,           null: false
+    t.datetime "last_sign_in_at"
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree

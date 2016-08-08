@@ -22,7 +22,7 @@ module Api
 
       def authenticate_user!
         if current_user
-          #UserServices::LoginHistoryService.new(user: current_user).record_login!
+          current_user.update(last_sign_in_at: DateTime.now) unless current_user.last_sign_in_at.try(:today?)
         else
           render json: {message: 'unauthorized'}, status: :unauthorized
         end
@@ -43,6 +43,10 @@ module Api
 
       #curl -H "X-API-KEY: api_debug" "http://api.entourage.social/api/v1/check.json"
       def check
+        render json: {status: :ok}
+      end
+
+      def ping
         render json: {status: :ok}
       end
 
