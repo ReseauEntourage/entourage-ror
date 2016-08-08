@@ -47,6 +47,7 @@ group :development do
   gem 'binding_of_caller',      '~> 0.7.2'
   gem 'derailed',               '~> 0.1.0'
   gem 'stackprof',              '~> 0.2.8'
+  gem 'letter_opener',          '~> 1.4.1'
 end
 
 group :test do
