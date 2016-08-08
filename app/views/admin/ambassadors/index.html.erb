@@ -24,6 +24,7 @@
     <th>Prénom</th>
     <th>Date de création</th>
     <th>Date de connexion</th>
+    <th>Nombre d'entourages</th>
     <th></th>
 
     <% @users.each do |user| %>
@@ -33,6 +34,7 @@
         <td><%= user.first_name %></td>
         <td><%= user.created_at.to_formatted_s(:long) %></td>
         <td><%= user.last_sign_in_at.try(:to_formatted_s, :long) %></td>
+        <td><%= user.entourages.count %></td>
         <td><%= link_to "Modifier", edit_admin_ambassador_path(user), class: "btn btn-danger" %></td>
       </tr>
     <% end %>

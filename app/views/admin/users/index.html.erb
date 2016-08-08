@@ -23,6 +23,8 @@
     <th>Nom</th>
     <th>Prénom</th>
     <th>Association</th>
+    <th>Date de connexion</th>
+    <th>Nombre d'entourages</th>
     <th></th>
 
     <% @users.each do |user| %>
@@ -31,6 +33,8 @@
         <td><%= user.last_name %></td>
         <td><%= user.first_name %></td>
         <td><%= user.organization.name %></td>
+        <td><%= user.last_sign_in_at.try(:to_formatted_s, :long) %></td>
+        <td><%= user.entourages.count %></td>
         <td><%= link_to "Modifier", edit_admin_user_path(user), class: "btn btn-danger" %></td>
       </tr>
     <% end %>
