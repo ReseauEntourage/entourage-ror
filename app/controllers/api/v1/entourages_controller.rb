@@ -19,6 +19,7 @@ module Api
         render json: @entourage, serializer: ::V1::EntourageSerializer
       end
 
+      #curl -H "Content-Type: application/json" -X POST -d '{"entourage": {"title": "entourage1", "entourage_type": "ask_for_help", "description": "lorem ipsum", "location": {"latitude": 37.4224764, "longitude": -122.0842499}}, "token": "azerty"}' "http://localhost:3000/api/v1/entourages.json"
       def create
         entourage_builder = EntourageServices::EntourageBuilder.new(params: entourage_params, user: current_user)
         entourage_builder.create do |on|

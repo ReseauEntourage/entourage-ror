@@ -15,7 +15,7 @@ module EntourageServices
       entourage.user = user
 
       if entourage.save
-        #We you start a tour you are automatically added to members of the tour
+        #When you start an entourage you are automatically added to members of the tour
         join_request = JoinRequest.create(joinable: entourage, user: user)
         TourServices::JoinRequestStatus.new(join_request: join_request).accept!
         callback.on_success.try(:call, entourage.reload)
