@@ -4,15 +4,15 @@ set -e
 echo "CLOSE ALL PROGRAMS USING THE DATABASE : Ruby web server, SQL client, etc"
 lsof -t -i tcp:3000 | xargs kill -9
 
-echo "snapshot production DB"
-heroku pg:backups capture -a entourage-back
+echo "snapshot preproduction DB"
+heroku pg:backups capture -a entourage-back-preprod
 echo "Reset DB"
-rake db:drop db:create
-echo "Download DB from production"
-curl -o tmp/db.dump `heroku pg:backups public-url -a entourage-back`
+bundle exec rake db:drop db:create
+echo "Download DB from preproduction"
+curl -o tmp/db.dump `heroku pg:backups public-url -a entourage-back-preprod`
 echo "Restore DB"
 pg_restore -h localhost -d entourage-dev tmp/db.dump
 echo "Restore test db"
-RAILS_ENV=test rake db:migrate
+RAILS_ENV=test bundle exec rake db:migrate
 echo "Clean files"
 

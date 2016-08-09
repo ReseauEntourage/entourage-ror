@@ -96,7 +96,7 @@ describe Api::V1::FeedsController do
         let!(:join_request_created) { FactoryGirl.create(:join_request, joinable: entourage_i_created, user: user, status: JoinRequest::ACCEPTED_STATUS) }
         let!(:entourage_i_joined) { FactoryGirl.create(:entourage, updated_at: 2.hour.ago, created_at: 2.hour.ago) }
         let!(:join_request_joined) { FactoryGirl.create(:join_request, joinable: entourage_i_joined, user: user, status: JoinRequest::ACCEPTED_STATUS) }
-        before { get :index, token: user.token, show_only_my_entourages: "true" }
+        before { get :index, token: user.token, show_my_entourages_only: "true" }
         it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([entourage_i_created.id, entourage_i_joined.id]) }
       end
 

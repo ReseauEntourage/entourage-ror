@@ -28,7 +28,7 @@ module Api
                                                latitude: nil,
                                                longitude: nil,
                                                distance: nil,
-                                               show_only_my_entourages: true,
+                                               show_my_entourages_only: true,
                                                time_range: time_range,
                                                page: params[:page],
                                                per: per).entourages.to_a

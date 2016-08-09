@@ -10,7 +10,7 @@ module Api
           render json: @entourage.join_requests, root: "users", each_serializer: ::V1::JoinRequestSerializer
         end
 
-        #curl -X POST -H "Content-Type: application/json" -d '{"request":{"message": "a join message"}}' "http://localhost:3000/api/v1/tours/1017/users.json?token=07ee026192ea722e66feb2340a05e3a8"
+        #curl -X POST -H "Content-Type: application/json" -d '{"request":{"message": "a join message"}}' "http://localhost:3000/api/v1/entourages/1017/users.json?token=azerty"
         def create
           join_request_builder = JoinRequestsServices::JoinRequestBuilder.new(joinable: @entourage, user: current_user, message: params.dig(:request, :message))
           join_request_builder.create do |on|
