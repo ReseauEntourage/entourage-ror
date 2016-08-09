@@ -1,5 +1,5 @@
 <div class="row">
-  <h1>Editer l'assocaition</h1>
+  <h1>Editer l'association</h1>
 </div>
 
 <%= form_for([:admin, @organization], html: { class: "form-horizontal", role: "form" }) do |f| %>
@@ -27,7 +27,7 @@
   </div>
 
   <div class="control-group">
-    <%= f.label :address,"Addresse", class: "control-label" %>
+    <%= f.label :address,"Adresse", class: "control-label" %>
     <div class="controls">
       <%= f.text_field :address, class: "form-control", required: true %>
     </div>

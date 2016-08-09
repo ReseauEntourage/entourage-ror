@@ -1,11 +1,15 @@
 module V1
   class EntourageInvitationSerializer < ActiveModel::Serializer
     attributes :id,
-               :inviter_id,
                :invitation_mode,
                :phone_number,
+               :status,
                :entourage_id,
-               :status
+               :inviter
+
+    def inviter
+      UserSerializer.new(object.inviter, root: false)
+    end
 
     def entourage_id
       object.invitable_id

@@ -18,11 +18,29 @@ describe Api::V1::InvitationsController do
       it { expect(result).to eq({"invitations"=>[
                                                   {
                                                     "id"=>invitation.id,
-                                                    "inviter_id"=>invitation.inviter_id,
                                                     "invitation_mode"=>"SMS",
                                                     "phone_number"=>"+33612345678",
                                                     "entourage_id"=>invitation.invitable_id,
-                                                    "status"=>"pending"
+                                                    "status"=>"pending",
+                                                    "inviter"=>{
+                                                        "id"=>invitation.inviter_id,
+                                                        "display_name"=>"John D",
+                                                        "first_name"=>"John",
+                                                        "last_name"=>"Doe",
+                                                        "avatar_url"=>nil,
+                                                        "user_type"=>"pro",
+                                                        "organization"=>{
+                                                            "name"=>invitation.inviter.organization.name,
+                                                            "description"=>"Association description",
+                                                            "phone"=>invitation.inviter.organization.phone,
+                                                            "address"=>invitation.inviter.organization.address,
+                                                            "logo_url"=>nil
+                                                        },
+                                                        "stats"=>{
+                                                            "tour_count"=>0,
+                                                            "encounter_count"=>0
+                                                        }
+                                                    }
                                                   }
                                                 ]}) }
 
