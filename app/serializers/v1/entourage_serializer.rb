@@ -15,6 +15,7 @@ module V1
     has_one :location
 
     def author
+      return unless object.user
       entourage_author = object.user
       {
           id: entourage_author.id,
