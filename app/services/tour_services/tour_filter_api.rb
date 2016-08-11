@@ -27,7 +27,7 @@ module TourServices
                                             status: JoinRequest::ACCEPTED_STATUS
                                         }) if show_only_my_tours
       tours = tours.where("tours.created_at > ?", time_range.hours.ago)
-      tours = tours.order(updated_at: :desc)
+      tours = tours.order("tours.updated_at DESC")
       if page || per
         tours.page(page).per(per)
       elsif before
