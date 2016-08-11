@@ -25,9 +25,9 @@ module TourServices
       end
 
       if user != joinable_author
-        PushNotificationService.new.send_notification(UserPresenter.new(user: joinable_author).display_name,
+        PushNotificationService.new.send_notification(author_name,
                                                       "Demande acceptée",
-                                                      "Vous venez de rejoindre l'entourage de #{UserPresenter.new(user: joinable_author).display_name}",
+                                                      "Vous venez de rejoindre l'entourage de #{author_name}",
                                                       User.where(id: user.id),
                                                       {joinable_id: join_request.joinable_id,
                                                        joinable_type: join_request.joinable_type,
@@ -74,6 +74,10 @@ module TourServices
 
     def joinable_author
       joinable.user
+    end
+
+    def author_name
+      UserPresenter.new(user: joinable_author).display_name
     end
 
     private

@@ -45,6 +45,12 @@ describe Api::V1::Entourages::InvitationsController do
           it { expect(User.count).to eq(3) }
         end
 
+        it "sends notif to invitee" do
+          existing_user = FactoryGirl.create(:public_user, phone: "+33612345678")
+          expect_any_instance_of(PushNotificationService).to receive(:send_notification).with("John D", 'Invitation à nrejoindre un entourage', "Vous ête invité à rejoindre l'entourage de John D", [existing_user])
+          post :create, entourage_id: entourage.to_param, invite: {mode: "SMS", phone_numbers: ["+33612345678"]}, token: user.token
+        end
+
         it "doesn't sends sms if user already exists" do
           FactoryGirl.create(:entourage_invitation, invitable: entourage, inviter: user, phone_number: "+33612345678")
           expect(SmsSenderJob).to_not receive(:perform_later)

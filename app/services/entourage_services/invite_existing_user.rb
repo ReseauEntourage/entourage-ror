@@ -21,6 +21,12 @@ module EntourageServices
         ActiveRecord::Base.transaction do
           invite.save!
           relationship.save!
+
+          PushNotificationService.new.send_notification(inviter_name,
+                                                        "Invitation à nrejoindre un entourage",
+                                                        "Vous ête invité à rejoindre l'entourage de #{inviter_name}",
+                                                        User.where(id: invitee.id))
+
           invite
         end
       rescue ActiveRecord::RecordInvalid => e
@@ -32,5 +38,10 @@ module EntourageServices
 
     private
     attr_reader :phone_number, :entourage, :inviter, :invitee
+
+    def inviter_name
+      UserPresenter.new(user: invitee).display_name
+    end
+
   end
 end
