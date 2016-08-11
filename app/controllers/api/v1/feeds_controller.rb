@@ -16,6 +16,7 @@ module Api
                                         status: nil,
                                         type: params[:tour_types],
                                         vehicle_type: nil,
+                                        show_only_my_tours: params[:show_my_entourages_only],
                                         latitude: params[:latitude],
                                         longitude: params[:longitude],
                                         distance: nil,
