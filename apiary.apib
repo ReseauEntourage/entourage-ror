@@ -1233,7 +1233,7 @@ status :
 active: either created by me or that I joined
 closed: either (created and closed by me)
 
-### Get all feeds [GET /myfeeds{?token}{&page}{&per}{&tour_types}{&entourage_types}{&time_range}{&status}]
+### Get all feeds [GET /myfeeds{?token}{&page}{&per}{&tour_types}{&entourage_types}{&time_range}{&status}{&created_by_me}]
 
 + Parameters
     + token (required, string, `FAKETOKEN`) ... Token identifying the current user
@@ -1243,6 +1243,7 @@ closed: either (created and closed by me)
     + entourage_types (optional, list) ... Types of tours separated by coma
     + time_range (optional, number) ... Number of hours to filter
     + status (optional, string) ... all, active, closed
+    + created_by_me (optional, boolean) ... current_user is the author
 
 + Request
 
