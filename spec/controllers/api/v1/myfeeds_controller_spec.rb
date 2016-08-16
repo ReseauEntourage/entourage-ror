@@ -54,6 +54,26 @@ describe Api::V1::MyfeedsController do
         before { get :index, token: user.token, created_by_me: "true" }
         it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([my_entourage.id, my_tour.id]) }
       end
+
+      context "filter created_by_me" do
+        let!(:my_entourage) { FactoryGirl.create(:entourage, :joined, join_request_user: user, user: user, created_at: 1.hour.ago, status: :open) }
+        let!(:other_entourage) { FactoryGirl.create(:entourage, :joined, join_request_user: user, created_at: 1.hour.ago, status: :open) }
+        let!(:my_tour) { FactoryGirl.create(:tour, :joined, join_request_user: user, user: user, created_at: 3.hours.ago, status: :ongoing) }
+        let!(:other_tour) { FactoryGirl.create(:tour, :joined, join_request_user: user, created_at: 3.hours.ago, status: :ongoing) }
+        before { get :index, token: user.token, created_by_me: "true" }
+        it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([my_entourage.id, my_tour.id]) }
+      end
+
+      context "filter accepted_invitation" do
+        let!(:invited_entourage) { FactoryGirl.create(:entourage, :joined, join_request_user: user, user: user, created_at: 1.hour.ago, status: :open) }
+        let!(:entourage_invitation) { FactoryGirl.create(:entourage_invitation, :accepted, invitee: user, invitable: invited_entourage) }
+        let!(:other_entourage) { FactoryGirl.create(:entourage, :joined, join_request_user: user, created_at: 1.hour.ago, status: :open) }
+        let!(:invited_tour) { FactoryGirl.create(:tour, :joined, join_request_user: user, user: user, created_at: 3.hours.ago, status: :ongoing) }
+        let!(:tour_invitation) { FactoryGirl.create(:entourage_invitation, :accepted, invitee: user, invitable: invited_tour) }
+        let!(:other_tour) { FactoryGirl.create(:tour, :joined, join_request_user: user, created_at: 3.hours.ago, status: :ongoing) }
+        before { get :index, token: user.token, accepted_invitation: "true" }
+        it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([invited_entourage.id, invited_tour.id]) }
+      end
     end
   end
 end

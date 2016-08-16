@@ -12,7 +12,8 @@ module TourServices
                    page:,
                    per:,
                    before: nil,
-                   author: nil)
+                   author: nil,
+                   invitee: nil)
       @user = user
       @status = status.is_a?(Array) ? status : [status]
       @type = type
@@ -26,19 +27,32 @@ module TourServices
       @per = per
       @before = before
       @author = author
+      @invitee = invitee
     end
 
     def tours
-      tours = Tour.includes(:tour_points, :join_requests, :user, user: :organization)
+      tours = Tour.includes(:tour_points, :join_requests, :entourage_invitations, :user, user: :organization)
       tours = tours.where(status: status.map {|s| Tour.statuses[s]}) if status.try(:compact).present?
       tours = tours.where(tour_type: formated_types) if type
       tours = tours.where(vehicle_type: Tour.vehicle_types[vehicle_type.to_sym]) if vehicle_type
       tours = filter_box(tours) if latitude && longitude
-      tours = tours.where(join_requests:
-                                        {
-                                            user: @user,
-                                            status: JoinRequest::ACCEPTED_STATUS
-                                        }) if show_only_my_tours
+
+      if show_only_my_tours
+        tours = tours.where(join_requests:
+                                          {
+                                              user: @user,
+                                              status: JoinRequest::ACCEPTED_STATUS
+                                          })
+      end
+
+      if invitee
+        tours = tours.where(entourage_invitations:
+                                          {
+                                              invitee: invitee,
+                                              status: EntourageInvitation::ACCEPTED_STATUS
+                                          })
+      end
+
       tours = tours.where(user: author) if author
       tours = tours.where("tours.created_at > ?", time_range.hours.ago)
       tours = tours.order("tours.updated_at DESC")
@@ -52,7 +66,7 @@ module TourServices
     end
 
     private
-    attr_reader :user, :status, :type, :vehicle_type, :show_only_my_tours, :latitude, :longitude, :distance, :time_range, :page, :per, :before, :author
+    attr_reader :user, :status, :type, :vehicle_type, :show_only_my_tours, :latitude, :longitude, :distance, :time_range, :page, :per, :before, :author, :invitee
 
     def filter_box(tours)
       points = TourPoint.within_bounding_box(box).select(:tour_id).distinct

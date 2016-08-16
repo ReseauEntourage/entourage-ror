@@ -19,7 +19,8 @@ module Api
                                         time_range: time_range,
                                         page: params[:page],
                                         per: per,
-                                        author: author).tours.to_a
+                                        author: author,
+                                        invitee: invitee).tours.to_a
       end
 
       def entourages
@@ -33,7 +34,8 @@ module Api
                                                time_range: time_range,
                                                page: params[:page],
                                                per: per,
-                                               author: author).entourages.to_a
+                                               author: author,
+                                               invitee: invitee).entourages.to_a
       end
 
       def tour_status
@@ -50,6 +52,10 @@ module Api
 
       def author
         current_user if params[:created_by_me] == "true"
+      end
+
+      def invitee
+        current_user if params[:accepted_invitation] == "true"
       end
     end
   end

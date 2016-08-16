@@ -5,6 +5,10 @@ FactoryGirl.define do
     association :invitee, factory: :pro_user
     invitation_mode "SMS"
     phone_number    "+33612345678"
+
+    trait :accepted do
+      status EntourageInvitation::ACCEPTED_STATUS
+    end
   end
 
 end

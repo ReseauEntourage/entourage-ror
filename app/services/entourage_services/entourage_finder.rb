@@ -11,7 +11,8 @@ module EntourageServices
                    page:,
                    per:,
                    before: nil,
-                   author: nil)
+                   author: nil,
+                   invitee: nil)
       @user = user
       @status = status
       @type = type
@@ -24,20 +25,32 @@ module EntourageServices
       @per = per
       @before = before
       @author = author
+      @invitee = invitee
     end
 
     def entourages
-      entourages = Entourage.includes(:join_requests, :user)
+      entourages = Entourage.includes(:join_requests, :entourage_invitations, :user)
       entourages = entourages.where(status: status) if status
       entourages = entourages.where(entourage_type: formated_types) if type
       entourages = entourages.within_bounding_box(box) if latitude && longitude
       entourages = entourages.where("entourages.created_at > ?", time_range.hours.ago)
-      entourages = entourages.where(join_requests:
-                                        {
-                                            user: @user,
-                                            status: JoinRequest::ACCEPTED_STATUS
-                                        }) if show_my_entourages_only
       entourages = entourages.where(user: author) if author
+
+      if show_my_entourages_only
+        entourages = entourages.where(join_requests:
+                                          {
+                                              user: @user,
+                                              status: JoinRequest::ACCEPTED_STATUS
+                                          })
+      end
+
+      if invitee
+        entourages = entourages.where(entourage_invitations:
+                                          {
+                                              invitee: invitee,
+                                              status: EntourageInvitation::ACCEPTED_STATUS
+                                          })
+      end
       entourages = entourages.order("entourages.updated_at DESC")
       if page || per
         entourages.page(page).per(per)
@@ -49,7 +62,7 @@ module EntourageServices
     end
 
     private
-    attr_reader :user, :status, :type, :latitude, :longitude, :distance, :show_my_entourages_only, :time_range, :page, :per, :before, :author
+    attr_reader :user, :status, :type, :latitude, :longitude, :distance, :show_my_entourages_only, :time_range, :page, :per, :before, :author, :invitee
 
     def box
       Geocoder::Calculations.bounding_box([latitude, longitude],
