@@ -1,6 +1,18 @@
 module TourServices
   class TourFilterApi
-    def initialize(user:, status:, type:, vehicle_type:, show_only_my_tours: false, latitude:, longitude:, distance:, time_range: 24, page:, per:, before: nil)
+    def initialize(user:,
+                   status:,
+                   type:,
+                   vehicle_type:,
+                   show_only_my_tours: false,
+                   latitude:,
+                   longitude:,
+                   distance:,
+                   time_range: 24,
+                   page:,
+                   per:,
+                   before: nil,
+                   author: nil)
       @user = user
       @status = status.is_a?(Array) ? status : [status]
       @type = type
@@ -13,6 +25,7 @@ module TourServices
       @page = page
       @per = per
       @before = before
+      @author = author
     end
 
     def tours
@@ -26,6 +39,7 @@ module TourServices
                                             user: @user,
                                             status: JoinRequest::ACCEPTED_STATUS
                                         }) if show_only_my_tours
+      tours = tours.where(user: author) if author
       tours = tours.where("tours.created_at > ?", time_range.hours.ago)
       tours = tours.order("tours.updated_at DESC")
       if page || per
@@ -38,7 +52,7 @@ module TourServices
     end
 
     private
-    attr_reader :user, :status, :type, :vehicle_type, :show_only_my_tours, :latitude, :longitude, :distance, :time_range, :page, :per, :before
+    attr_reader :user, :status, :type, :vehicle_type, :show_only_my_tours, :latitude, :longitude, :distance, :time_range, :page, :per, :before, :author
 
     def filter_box(tours)
       points = TourPoint.within_bounding_box(box).select(:tour_id).distinct

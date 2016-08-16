@@ -18,7 +18,8 @@ module Api
                                         show_only_my_tours: true,
                                         time_range: time_range,
                                         page: params[:page],
-                                        per: per).tours.to_a
+                                        per: per,
+                                        author: author).tours.to_a
       end
 
       def entourages
@@ -31,7 +32,8 @@ module Api
                                                show_my_entourages_only: true,
                                                time_range: time_range,
                                                page: params[:page],
-                                               per: per).entourages.to_a
+                                               per: per,
+                                               author: author).entourages.to_a
       end
 
       def tour_status
@@ -44,6 +46,10 @@ module Api
 
       def time_range
         params[:time_range] || 365*24
+      end
+
+      def author
+        current_user if params[:created_by_me] == "true"
       end
     end
   end
