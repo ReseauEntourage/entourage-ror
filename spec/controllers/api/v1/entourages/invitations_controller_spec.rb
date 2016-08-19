@@ -32,21 +32,23 @@ describe Api::V1::Entourages::InvitationsController do
         end
 
         context "invitation already exists" do
-          context "user has an account on entourage" do
+          context "user has already connected to entourage" do
             let!(:existing_user) { FactoryGirl.create(:public_user, phone: "+33612345678") }
             let!(:entourage_invitation) { FactoryGirl.create(:entourage_invitation, invitable: entourage, inviter: user, phone_number: "+33612345678") }
+            before { expect_any_instance_of(PushNotificationService).to receive(:send_notification).with("John D", 'Invitation à rejoindre un entourage', "Vous ête invité à rejoindre l'entourage de John D", [existing_user]) }
             before { post :create, entourage_id: entourage.to_param, invite: {mode: "SMS", phone_numbers: ["+33612345678"]}, token: user.token }
             it { expect(EntourageInvitation.all).to eq([entourage_invitation]) }
-            it { expect(response.status).to eq(200) }
+            it { expect(response.status).to eq(201) }
           end
 
-          context "user doesn't have an account on entourage" do
-
+          context "user never used his entourage account" do
+            it "sends a SMS" do
+              existing_user = FactoryGirl.create(:public_user, phone: "+33612345678", last_sign_in_at: nil)
+              entourage_invitation = FactoryGirl.create(:entourage_invitation, invitable: entourage, inviter: user, phone_number: "+33612345678")
+              expect(SmsSenderJob).to receive(:perform_later)
+              post :create, entourage_id: entourage.to_param, invite: {mode: "SMS", phone_numbers: ["+33612345678"]}, token: user.token
+            end
           end
-        end
-
-        context "user has multiple invite to the same entourage from same user" do
-
         end
 
         context "a user with same phone number already exists" do
@@ -58,7 +60,7 @@ describe Api::V1::Entourages::InvitationsController do
 
         it "sends notif to invitee" do
           existing_user = FactoryGirl.create(:public_user, phone: "+33612345678")
-          expect_any_instance_of(PushNotificationService).to receive(:send_notification).with("John D", 'Invitation à nrejoindre un entourage', "Vous ête invité à rejoindre l'entourage de John D", [existing_user])
+          expect_any_instance_of(PushNotificationService).to receive(:send_notification).with("John D", 'Invitation à rejoindre un entourage', "Vous ête invité à rejoindre l'entourage de John D", [existing_user])
           post :create, entourage_id: entourage.to_param, invite: {mode: "SMS", phone_numbers: ["+33612345678"]}, token: user.token
         end
 
