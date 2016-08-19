@@ -3,6 +3,7 @@ FactoryGirl.define do
     first_name 'John'
     last_name 'Doe'
     deleted false
+    last_sign_in_at 1.month.ago
     sequence :email do |n|
       "user#{n}@mail.com"
     end

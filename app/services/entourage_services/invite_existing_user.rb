@@ -9,6 +9,24 @@ module EntourageServices
     end
 
     def send_invite
+      invite = EntourageInvitation.where(invitable: entourage,
+                              inviter: inviter,
+                              invitee: invitee).first
+      if invite.nil?
+        new_invite
+      else
+        resend_invite
+      end
+    end
+
+    private
+    attr_reader :phone_number, :entourage, :inviter, :invitee
+
+    def resend_invite
+
+    end
+
+    def new_invite
       begin
         invite = EntourageInvitation.new(invitable: entourage,
                                          inviter: inviter,
@@ -23,7 +41,7 @@ module EntourageServices
           relationship.save!
 
           PushNotificationService.new.send_notification(inviter_name,
-                                                        "Invitation à nrejoindre un entourage",
+                                                        "Invitation à rejoindre un entourage",
                                                         "Vous ête invité à rejoindre l'entourage de #{inviter_name}",
                                                         User.where(id: invitee.id))
 
@@ -35,9 +53,6 @@ module EntourageServices
         return nil
       end
     end
-
-    private
-    attr_reader :phone_number, :entourage, :inviter, :invitee
 
     def inviter_name
       UserPresenter.new(user: invitee).display_name
