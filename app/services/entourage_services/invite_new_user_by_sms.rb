@@ -35,7 +35,7 @@ module EntourageServices
     attr_reader :phone_number, :entourage, :inviter
 
     def invitee
-      return @invitee  if @invitee
+      return @invitee if @invitee
       @invitee = UserServices::PublicUserBuilder.new(params: {phone: phone_number}).create(send_sms: false)
       raise ActiveRecord::RecordInvalid.new(@invitee) unless @invitee.valid?
       @invitee
