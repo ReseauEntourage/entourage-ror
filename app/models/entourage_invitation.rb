@@ -12,4 +12,6 @@ class EntourageInvitation < ActiveRecord::Base
   validates :invitable_id, :invitable_type, :status, :inviter, :invitee, :phone_number, :invitation_mode, presence: true
   validates_inclusion_of :invitation_mode, in: [EntourageInvitation::MODE_SMS]
   validates_uniqueness_of :phone_number, scope: [:inviter_id, :invitable_id, :invitable_type]
+
+  scope :status, -> (status) { where(status: status) }
 end

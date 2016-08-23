@@ -1591,9 +1591,10 @@ Entourages related resources of the **Entourage API**
         {"error":{"status":401,"message":"Please sign-in"}}
 
 
-## Users Invitation [/invitations{?token}]
+## Users Invitation [/invitations{?token}{&status}]
 + Parameters
     + token (required, string, `FAKETOKEN`) ... Token identifying the current user
+    + status (optional, string, `accepted`) ... filter invitations by status
 
 ### List user invitation [GET]
 + Request (application/json)
@@ -1601,7 +1602,7 @@ Entourages related resources of the **Entourage API**
     + Header
 
             Accept: application/json
-            
+
 + Response 200 (application/json; charset=utf-8)
 
             {
@@ -1611,14 +1612,14 @@ Entourages related resources of the **Entourage API**
                     "phone_number": "+33612345678",
                     "inviter": {
                         "id":1,
-                        "display_name":"Judge Dredd", 
-                        "first_name": "Judge", 
+                        "display_name":"Judge Dredd",
+                        "first_name": "Judge",
                         "last_name": "Dredd",
                         "user_type": "pro",
                         "avatar_url": "http://foo.com/bar.jpg"
                     },
                     "entourage_id": 123,
-                    "accepted": true
+                    "status": "pending"
                 },
                 {
                     "id": 123,
@@ -1626,7 +1627,7 @@ Entourages related resources of the **Entourage API**
                     "phone_number": "+33612345678",
                     "inviter_id": 123,
                     "entourage_id": 123,
-                    "accepted": false
+                    "status": "accepted"
                 }]
             }
 

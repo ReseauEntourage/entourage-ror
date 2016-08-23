@@ -6,6 +6,9 @@ module Api
 
       def index
         invitations = current_user.invitations
+        if params[:status]
+          invitations = invitations.status(params[:status])
+        end
         render json: invitations, each_serializer: ::V1::EntourageInvitationSerializer
       end
 

@@ -67,6 +67,14 @@ describe Api::V1::InvitationsController do
       before { get :index, token: user.token }
       it { expect(result["invitations"][0]["status"]).to eq("accepted") }
     end
+
+    context "filter accepted invitations" do
+      let!(:accepted_invitation) { FactoryGirl.create(:entourage_invitation, invitee: user, status: "accepted") }
+      let!(:pending_invitation) { FactoryGirl.create(:entourage_invitation, invitee: user, status: "pending") }
+      let!(:rejected_invitation) { FactoryGirl.create(:entourage_invitation, invitee: user, status: "rejected") }
+      before { get :index, token: user.token, status: "accepted" }
+      it { expect(result["invitations"].map {|invite| invite["id"]}).to eq([accepted_invitation.id])}
+    end
   end
 
   describe "PUT update" do
