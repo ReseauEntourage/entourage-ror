@@ -1,6 +1,7 @@
 module Api
   module V1
     class MyfeedsController < FeedsController
+      #curl "http://localhost:3000/api/v1/myfeeds?page=1&per=2"
       def index
         feeds = (entourages+tours).sort_by { |feed| -feed.created_at.to_i}
         render json: ::V1::FeedSerializer.new(feeds: feeds, user: current_user).to_json, status: 200
