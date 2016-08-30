@@ -59,7 +59,7 @@ module TourServices
       if page || per
         tours.page(page).per(per)
       elsif before
-        tours.before(DateTime.parse(before))
+        tours.before(DateTime.parse(before)).limit(25)
       else
         tours
       end

@@ -55,7 +55,7 @@ module EntourageServices
       if page || per
         entourages.page(page).per(per)
       elsif before
-        entourages.before(DateTime.parse(before))
+        entourages.before(DateTime.parse(before)).limit(25)
       else
         entourages
       end
