@@ -35,7 +35,7 @@ describe Api::V1::Entourages::InvitationsController do
           context "user has already connected to entourage" do
             let!(:existing_user) { FactoryGirl.create(:public_user, phone: "+33612345678") }
             let!(:entourage_invitation) { FactoryGirl.create(:entourage_invitation, invitable: entourage, inviter: user, phone_number: "+33612345678") }
-            before { expect_any_instance_of(PushNotificationService).to receive(:send_notification).with("John D", 'Invitation à rejoindre un entourage', "Vous ête invité à rejoindre l'entourage de John D", [existing_user], {inviter_id: user.id, invitee_id: existing_user.id}) }
+            before { expect_any_instance_of(PushNotificationService).to receive(:send_notification).with("John D", 'Invitation à rejoindre un entourage', "Vous ête invité à rejoindre l'entourage de John D", [existing_user], {type: "ENTOURAGE_INVITATION", entourage_id: entourage.id, inviter_id: user.id, invitee_id: existing_user.id}) }
             before { post :create, entourage_id: entourage.to_param, invite: {mode: "SMS", phone_numbers: ["+33612345678"]}, token: user.token }
             it { expect(EntourageInvitation.all).to eq([entourage_invitation]) }
             it { expect(response.status).to eq(201) }
@@ -60,7 +60,7 @@ describe Api::V1::Entourages::InvitationsController do
 
         it "sends notif to invitee" do
           existing_user = FactoryGirl.create(:public_user, phone: "+33612345678")
-          expect_any_instance_of(PushNotificationService).to receive(:send_notification).with("John D", 'Invitation à rejoindre un entourage', "Vous ête invité à rejoindre l'entourage de John D", [existing_user], {inviter_id: user.id, invitee_id: existing_user.id})
+          expect_any_instance_of(PushNotificationService).to receive(:send_notification).with("John D", 'Invitation à rejoindre un entourage', "Vous ête invité à rejoindre l'entourage de John D", [existing_user], {type: "ENTOURAGE_INVITATION", entourage_id: entourage.id, inviter_id: user.id, invitee_id: existing_user.id})
           post :create, entourage_id: entourage.to_param, invite: {mode: "SMS", phone_numbers: ["+33612345678"]}, token: user.token
         end
 

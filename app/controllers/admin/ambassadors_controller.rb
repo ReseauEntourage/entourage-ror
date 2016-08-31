@@ -3,7 +3,7 @@ module Admin
     before_action :set_user, only: [:edit, :update]
 
     def index
-      @users = User.type_public.page(params[:page]).per(params[:per])
+      @users = User.type_public.page(params[:page]).per(params[:per]).order(:created_at)
     end
 
     def edit

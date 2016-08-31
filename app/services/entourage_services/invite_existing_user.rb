@@ -27,7 +27,12 @@ module EntourageServices
                                                       "Invitation à rejoindre un entourage",
                                                       "Vous ête invité à rejoindre l'entourage de #{inviter_name}",
                                                       User.where(id: invitee.id),
-                                                      {inviter_id: inviter.id, invitee_id: invitee.id})
+                                                      {
+                                                          type: "ENTOURAGE_INVITATION",
+                                                          entourage_id: entourage.id,
+                                                          inviter_id: inviter.id,
+                                                          invitee_id: invitee.id
+                                                      })
       else
         SmsSenderJob.perform_later(phone_number, message)
       end
