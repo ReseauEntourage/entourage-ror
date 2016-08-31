@@ -4,10 +4,15 @@ module Api
 
       #curl -H "Content-Type: application/json" "https://entourage-back-preprod.herokuapp.com/api/v1/feeds.json?token=azerty"
       def index
-        feeds = entourages
-        feeds += tours if params[:show_tours]=="true" && current_user.pro?
-        feeds = feeds.sort_by { |feed| -feed.updated_at.to_i}
+        feeds = FeedServices::FeedFinder.new(user: current_user,
+                                             page: params[:page],
+                                             per: params[:per],
+                                             before: params[:before]).feeds
         render json: ::V1::FeedSerializer.new(feeds: feeds, user: current_user).to_json, status: 200
+        # feeds = entourages
+        # feeds += tours if params[:show_tours]=="true" && current_user.pro?
+        # feeds = feeds.sort_by { |feed| -feed.updated_at.to_i}
+        # render json: ::V1::FeedSerializer.new(feeds: feeds, user: current_user).to_json, status: 200
       end
 
       private

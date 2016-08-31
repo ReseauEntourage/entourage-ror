@@ -25,6 +25,7 @@ class User < ActiveRecord::Base
   has_many :invitations, class_name: "EntourageInvitation", foreign_key: "invitee_id"
   has_many :authentication_providers, dependent: :destroy
   belongs_to :marketing_referer
+  has_many :feeds
 
   enum device_type: [ :android, :ios ]
 
