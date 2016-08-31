@@ -26,7 +26,8 @@ module EntourageServices
         PushNotificationService.new.send_notification(inviter_name,
                                                       "Invitation à rejoindre un entourage",
                                                       "Vous ête invité à rejoindre l'entourage de #{inviter_name}",
-                                                      User.where(id: invitee.id))
+                                                      User.where(id: invitee.id),
+                                                      {inviter_id: inviter.id, invitee_id: invitee.id})
       else
         SmsSenderJob.perform_later(phone_number, message)
       end
