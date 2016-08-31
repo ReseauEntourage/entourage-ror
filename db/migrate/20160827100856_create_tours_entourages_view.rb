@@ -1,7 +1,7 @@
 class CreateToursEntouragesView < ActiveRecord::Migration
   def up
     sql = <<-SQL
-      CREATE VIEW tours_entourages AS
+      CREATE VIEW feeds AS
         SELECT id,
           status,
           title,
@@ -33,6 +33,6 @@ class CreateToursEntouragesView < ActiveRecord::Migration
   end
 
   def down
-    execute('DROP VIEW tours_entourages')
+    execute('DROP VIEW feeds')
   end
 end
