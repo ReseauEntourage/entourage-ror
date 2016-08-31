@@ -7,16 +7,16 @@ module V1
 
     def to_json
       result = feeds.map do |feed|
-        if feed.is_a?(Tour)
+        if feedable.is_a?(Tour)
           {
               type: "Tour",
-              data: JSON.parse(V1::TourSerializer.new(feed, {scope: user, root: false}).to_json),
+              data: JSON.parse(V1::TourSerializer.new(feed.feedable, {scope: user, root: false}).to_json),
               heatmap_size: 20
           }
         elsif feed.is_a?(Entourage)
           {
               type: "Entourage",
-              data: JSON.parse(V1::EntourageSerializer.new(feed, {scope: user, root: false}).to_json),
+              data: JSON.parse(V1::EntourageSerializer.new(feed.feedable, {scope: user, root: false}).to_json),
               heatmap_size: 20
           }
         end
