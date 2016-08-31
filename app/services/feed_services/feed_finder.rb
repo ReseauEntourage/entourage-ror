@@ -11,7 +11,7 @@ module FeedServices
     end
 
     def feeds
-      feeds = user.feeds
+      feeds = Feed
 
       if page || per
         feeds.page(page).per(per)

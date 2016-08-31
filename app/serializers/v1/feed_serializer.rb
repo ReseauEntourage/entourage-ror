@@ -8,7 +8,7 @@ module V1
 
     def to_json
       result = feeds.map do |feed|
-        if feedable.is_a?(Tour)
+        if feed.feedable.is_a?(Tour)
           {
               type: "Tour",
               data: JSON.parse(V1::TourSerializer.new(feed.feedable, {scope: {user: user, include_last_message: include_last_message}, root: false}).to_json),
