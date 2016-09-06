@@ -243,6 +243,9 @@ When signing up a new user we genereate a new sms_code and send it via SMS
             {"user":{"id":1,"email":"dredd@test.com","display_name":"Judge Dredd", "first_name": "Judge", "last_name": "Dredd","token":"FAKETOKEN","stats":{"tour_count":0,"encounter_count":0},"organization":{"name":"org name","description":"org description","phone":"org phone","address":"org address","logo_url":"org logo url"}}}
 
 + Response 400 (application/json; charset=utf-8)
+    
+            {"error": {"code": "PHONE_ALREADY_EXIST", "message" :"Phone +33612345678 n'est pas disponible"}}
+            {"error": {"code": "CANNOT_CREATE_USER", "message" :"Phone devrait être au format +33... ou 06..."}}
 
 
 ## Authenticated user ressource [/users/me{?token}]
