@@ -13,5 +13,11 @@ class CleanupService
     Encounter.where('created_at <= ?', 48.hours.ago)
         .where('encrypted_message IS NOT NULL')
         .update_all(encrypted_message: nil)
+    Encounter.where('created_at <= ?', 48.hours.ago)
+        .where('street_person_name IS NOT NULL')
+        .update_all(street_person_name: nil)
+    Encounter.where('created_at <= ?', 48.hours.ago)
+        .where('latitude!=0')
+        .update_all(latitude: 0, longitude:0, address: nil)
   end
 end
