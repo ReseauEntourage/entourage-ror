@@ -11,13 +11,13 @@ class CleanupService
 
   def self.remove_old_encounter_message
     Encounter.where('created_at <= ?', 48.hours.ago)
-        .where('encrypted_message IS NOT NULL')
-        .update_all(encrypted_message: nil)
-    Encounter.where('created_at <= ?', 48.hours.ago)
-        .where('street_person_name IS NOT NULL')
-        .update_all(street_person_name: nil)
-    Encounter.where('created_at <= ?', 48.hours.ago)
-        .where('latitude!=0')
-        .update_all(latitude: 0, longitude:0, address: nil)
+        .where('encrypted_message IS NOT NULL OR '\
+               'street_person_name IS NOT NULL OR '\
+               'latitude IS NOT NULL')
+        .update_all(encrypted_message: nil,
+                    street_person_name: nil,
+                    latitude: nil,
+                    longitude:nil,
+                    address: nil)
   end
 end
