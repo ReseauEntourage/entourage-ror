@@ -40,5 +40,8 @@ module EntourageBack
       }
     end
     config.log_tags = [ lambda {|req| Time.now.to_s(:db) }, :remote_ip ]
+
+    #Enabling Profiling on GC
+    GC::Profiler.enable
   end
 end
