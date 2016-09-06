@@ -18,6 +18,10 @@ class UsersController < ApplicationController
     builder = UserServices::ProUserBuilder.new(params:user_params, organization:current_user.organization)
     send_sms = params[:send_sms] == "1"
 
+    render_after_error = Proc.new do |user|
+
+    end
+
     builder.create(send_sms: send_sms) do |on|
       on.success do |user|
         redirect_to users_url, notice: "L'utilisateur a été créé"
