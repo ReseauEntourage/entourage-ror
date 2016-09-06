@@ -39,6 +39,10 @@ module Api
           on.failure do |user|
             render_error(code: "CANNOT_CREATE_USER", message: user.errors.full_messages, status: 400)
           end
+
+          on.duplicate do
+            render_error(code: "PHONE_ALREADY_EXIST", message: "Phone #{user_params["phone"]} n'est pas disponible", status: 400)
+          end
         end
       end
 

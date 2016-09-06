@@ -4,7 +4,7 @@ module UserServices
   class UserBuilder
     def initialize(params:)
       @params = params
-      @callback = Callback.new
+      @callback = UserServices::UserBuilderCallback.new
     end
 
     def token
@@ -13,6 +13,10 @@ module UserServices
 
     def create(send_sms: false, sms_code: nil)
       yield callback if block_given?
+
+      if User.where(phone: params["phone"]).count>0
+        return callback.on_duplicate.try(:call)
+      end
 
       sms_code = sms_code || UserServices::SmsCode.new.code
       user = new_user(sms_code)

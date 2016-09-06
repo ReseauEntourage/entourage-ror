@@ -227,6 +227,14 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
         expect(result).to eq({"error"=>{"code"=>"CANNOT_CREATE_USER", "message"=>["Phone devrait être au format +33... ou 06..."]}})
       end
     end
+
+    context "phone already exists" do
+      let!(:existing_user) { FactoryGirl.create(:public_user, phone: "+33612345678") }
+      before { post 'create', {user: {phone: "+33612345678"}} }
+      it { expect(User.count).to eq(1) }
+      it { expect(response.status).to eq(400) }
+      it { expect(result).to eq({"error"=>{"code"=>"PHONE_ALREADY_EXIST", "message"=>"Phone +33612345678 n'est pas disponible"}}) }
+    end
   end
 
   describe 'GET show' do
