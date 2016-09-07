@@ -98,6 +98,20 @@ describe Api::V1::InvitationsController do
         it { expect(response.status).to eq(403) }
         it { expect(JoinRequest.where(user: invitation.invitee, joinable: invitation.invitable, status: JoinRequest::ACCEPTED_STATUS).count).to eq(0) }
       end
+
+      it "sends notification for accepted invitation" do
+        expect_any_instance_of(PushNotificationService).to receive(:send_notification).with("John D",
+                                                                                            "Invitation accepté",
+                                                                                            "John D a accepté votre invitation",
+                                                                                            [invitation.inviter],
+                                                                                            {type: "INVITATION_STATUS",
+                                                                                             inviter_id: invitation.inviter_id,
+                                                                                             invitee_id: invitation.invitee_id,
+                                                                                             invitable_id: invitation.invitable_id,
+                                                                                             invitable_type: "Entourage",
+                                                                                             accepted: true})
+        put :update, id: invitation.to_param, token: user.token
+      end
     end
   end
 
@@ -116,11 +130,25 @@ describe Api::V1::InvitationsController do
         it { expect(EntourageInvitation.last.status).to eq(EntourageInvitation::REJECTED_STATUS) }
       end
 
-      context "accept another user invite" do
+      context "refuse another user invite" do
         let!(:invitation) { FactoryGirl.create(:entourage_invitation, invitee: FactoryGirl.create(:public_user)) }
-        before { put :update, id: invitation.to_param, token: user.token }
+        before { delete :destroy, id: invitation.to_param, token: user.token }
         it { expect(response.status).to eq(403) }
         it { expect(JoinRequest.where(user: invitation.invitee, joinable: invitation.invitable, status: JoinRequest::REJECTED_STATUS).count).to eq(0) }
+      end
+
+      it "sends notification for accepted invitation" do
+        expect_any_instance_of(PushNotificationService).to receive(:send_notification).with("John D",
+                                                                                            "Invitation refusé",
+                                                                                            "John D a refusé votre invitation",
+                                                                                            [invitation.inviter],
+                                                                                            {type: "INVITATION_STATUS",
+                                                                                             inviter_id: invitation.inviter_id,
+                                                                                             invitee_id: invitation.invitee_id,
+                                                                                             invitable_id: invitation.invitable_id,
+                                                                                             invitable_type: "Entourage",
+                                                                                             accepted: false})
+        delete :destroy, id: invitation.to_param, token: user.token
       end
     end
   end
