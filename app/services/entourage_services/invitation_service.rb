@@ -30,8 +30,8 @@ module EntourageServices
           type: "INVITATION_STATUS",
           inviter_id: invitation.inviter.id,
           invitee_id: invitation.invitee.id,
-          invitable_id: invitation.invitable_id,
-          invitable_type: invitation.invitable_type,
+          feed_id: invitation.invitable_id,
+          feed_type: invitation.invitable_type,
           accepted: accepted
       }
       PushNotificationService.new.send_notification(invitee_name, title, content, [invitation.inviter], meta)

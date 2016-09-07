@@ -107,8 +107,8 @@ describe Api::V1::InvitationsController do
                                                                                             {type: "INVITATION_STATUS",
                                                                                              inviter_id: invitation.inviter_id,
                                                                                              invitee_id: invitation.invitee_id,
-                                                                                             invitable_id: invitation.invitable_id,
-                                                                                             invitable_type: "Entourage",
+                                                                                             feed_id: invitation.invitable_id,
+                                                                                             feed_type: "Entourage",
                                                                                              accepted: true})
         put :update, id: invitation.to_param, token: user.token
       end
@@ -145,8 +145,8 @@ describe Api::V1::InvitationsController do
                                                                                             {type: "INVITATION_STATUS",
                                                                                              inviter_id: invitation.inviter_id,
                                                                                              invitee_id: invitation.invitee_id,
-                                                                                             invitable_id: invitation.invitable_id,
-                                                                                             invitable_type: "Entourage",
+                                                                                             feed_id: invitation.invitable_id,
+                                                                                             feed_type: "Entourage",
                                                                                              accepted: false})
         delete :destroy, id: invitation.to_param, token: user.token
       end
