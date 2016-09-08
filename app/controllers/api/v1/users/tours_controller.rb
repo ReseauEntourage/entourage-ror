@@ -14,7 +14,7 @@ module Api
           end
           tours = tours.where(status: Tour.statuses[params[:status]]) if params[:status].present?
           tours = tours.includes(:simplified_tour_points, :join_requests).order(updated_at: :desc).page(page).per(per)
-          render json: tours, status: 200, each_serializer: ::V1::TourSerializer
+          render json: tours, status: 200, each_serializer: ::V1::TourSerializer, scope: {user: current_user}
         end
 
         private

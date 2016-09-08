@@ -17,7 +17,7 @@ module Api
             entourages = entourages.around(params[:latitude], params[:longitude], params[:distance])
           end
           entourages = entourages.where(status: params[:status]) if params[:status].present?
-          render json: entourages, status: 200, each_serializer: ::V1::EntourageSerializer
+          render json: entourages, status: 200, each_serializer: ::V1::EntourageSerializer, scope: {user: current_user}
         end
 
         private

@@ -28,6 +28,25 @@ describe Api::V1::MyfeedsController do
         it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([entourage_i_created.id, entourage_i_joined.id]) }
       end
 
+
+      context "last_message" do
+        let!(:entourage) { FactoryGirl.create(:entourage, :joined, join_request_user: user, user: user, created_at: 1.hour.ago) }
+        let!(:tour) { FactoryGirl.create(:tour, :joined, join_request_user: user, user: user, created_at: 1.hour.ago) }
+
+        context "has messages" do
+          let!(:chat_message1) { FactoryGirl.create(:chat_message, messageable: entourage, created_at: DateTime.parse("10/01/2000"), updated_at: DateTime.parse("10/01/2000"), content: "foo") }
+          let!(:chat_message2) { FactoryGirl.create(:chat_message, messageable: entourage, created_at: DateTime.parse("09/01/2000"), updated_at: DateTime.parse("09/01/2000"), content: "bar") }
+          let!(:chat_message3) { FactoryGirl.create(:chat_message, messageable: tour, created_at: DateTime.parse("11/01/2000"), updated_at: DateTime.parse("11/01/2000"), content: "tour_foo") }
+          before { get :index, token: user.token }
+          it { expect(result["feeds"].map {|feed| feed["data"]["last_message"]} ).to eq([{"text" => "foo"}, {"text" => "tour_foo"}]) }
+        end
+
+        context "has no messages" do
+          before { get :index, token: user.token }
+          it { expect(result["feeds"].map {|feed| feed["data"]["last_message"]} ).to eq([nil, nil]) }
+        end
+      end
+
       context "filter by status" do
         let!(:entourage_open) { FactoryGirl.create(:entourage, :joined, join_request_user: user, user: user, created_at: 1.hour.ago, status: :open) }
         let!(:entourage_closed) { FactoryGirl.create(:entourage, :joined, join_request_user: user, created_at: 2.hour.ago, status: :closed) }

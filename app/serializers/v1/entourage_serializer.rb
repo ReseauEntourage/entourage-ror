@@ -1,5 +1,7 @@
 module V1
   class EntourageSerializer < ActiveModel::Serializer
+    include V1::Myfeeds::LastMessage
+
     attributes :id,
                :status,
                :title,
@@ -13,6 +15,11 @@ module V1
     
     has_one :author
     has_one :location
+    has_one :last_message
+
+    def filter(keys)
+      include_last_message? ? keys : keys - [:last_message]
+    end
 
     def author
       return unless object.user
@@ -47,7 +54,7 @@ module V1
 
     def current_join_request
       #TODO : replace by sql request ?
-      object.join_requests.select {|join_request| join_request.user_id == scope.id}.first
+      object.join_requests.select {|join_request| join_request.user_id == scope[:user]&.id}.first
     end
 
     def randomizer

@@ -84,7 +84,7 @@ Rails.application.routes.draw do
       resources :messages, only: [:create]
       resources :registration_requests, only: [:create]
       resources :map, only: [:index]
-      resources :newsletter_subscriptions
+      resources :newsletter_subscriptions, only: [:create]
 
       resources :pois, only: [:index, :create] do
         member do

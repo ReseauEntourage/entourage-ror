@@ -1,5 +1,7 @@
 module V1
   class TourSerializer < ActiveModel::Serializer
+    include V1::Myfeeds::LastMessage
+
     attributes :id,
                :tour_type,
                :status,
@@ -16,6 +18,11 @@ module V1
 
     has_many :tour_points
     has_one :author
+    has_one :last_message
+
+    def filter(keys)
+      include_last_message? ? keys : keys - [:last_message]
+    end
 
     def distance
       object.length
@@ -66,7 +73,7 @@ module V1
     end
 
     def current_join_request
-      JoinRequest.where(user_id: scope.id, joinable: object).first
+      JoinRequest.where(user_id: scope[:user]&.id, joinable: object).first
     end
   end
 end

@@ -14,7 +14,7 @@ module Api
                                                  distance: params[:distance],
                                                  page: params[:page],
                                                  per: per).tours
-        render json: @tours, status: 200, each_serializer: ::V1::TourSerializer, scope: current_user
+        render json: @tours, status: 200, each_serializer: ::V1::TourSerializer, scope: {user: current_user}
       end
 
       #curl -X POST -d '{"tour": { "tour_type":"medical", "vehicle_type":"feet", "distance": 8543.65 }}' -H "Content-Type: application/json" "http://localhost:3000/api/v1/tours.json?token=azerty"
@@ -22,7 +22,7 @@ module Api
         tour_builder = TourServices::TourBuilder.new(params: tour_params, user: current_user)
         tour_builder.create do |on|
           on.success do |tour|
-            render json: tour, status: 201, serializer: ::V1::TourSerializer
+            render json: tour, status: 201, serializer: ::V1::TourSerializer, scope: {user: current_user}
           end
 
           on.failure do |tour|
@@ -33,7 +33,7 @@ module Api
 
       #curl -H "Content-Type: application/json" "http://localhost:3000/api/v1/tours/1948.json?token=azerty"
       def show
-        render json: @tour, status: 200, serializer: ::V1::TourSerializer
+        render json: @tour, status: 200, serializer: ::V1::TourSerializer, scope: {user: current_user}
       end
 
       #curl -X PUT -d '{ "status":"closed"}' -H "Content-Type: application/json" "http://localhost:3000/api/v1/tours/1948.json?token=azerty"
@@ -51,7 +51,7 @@ module Api
 
           @tour.length = tour_params[:distance]
           @tour.update(tour_params.except(:status, :distance, :start_time, :end_time))
-          render json: @tour, status: 200, serializer: ::V1::TourSerializer
+          render json: @tour, status: 200, serializer: ::V1::TourSerializer, scope: {user: current_user}
         end
       end
 

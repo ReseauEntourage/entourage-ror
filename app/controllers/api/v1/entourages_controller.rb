@@ -12,11 +12,11 @@ module Api
                                                         distance: params[:distance],
                                                         page: params[:page],
                                                         per: per)
-        render json: finder.entourages, each_serializer: ::V1::EntourageSerializer
+        render json: finder.entourages, each_serializer: ::V1::EntourageSerializer, scope: {user: current_user}
       end
 
       def show
-        render json: @entourage, serializer: ::V1::EntourageSerializer
+        render json: @entourage, serializer: ::V1::EntourageSerializer, scope: {user: current_user}
       end
 
       #curl -H "Content-Type: application/json" -X POST -d '{"entourage": {"title": "entourage1", "entourage_type": "ask_for_help", "description": "lorem ipsum", "location": {"latitude": 37.4224764, "longitude": -122.0842499}}, "token": "azerty"}' "http://localhost:3000/api/v1/entourages.json"
@@ -24,7 +24,7 @@ module Api
         entourage_builder = EntourageServices::EntourageBuilder.new(params: entourage_params, user: current_user)
         entourage_builder.create do |on|
           on.success do |entourage|
-            render json: entourage, status: 201, serializer: ::V1::EntourageSerializer
+            render json: entourage, status: 201, serializer: ::V1::EntourageSerializer, scope: {user: current_user}
           end
 
           on.failure do |entourage|
@@ -37,7 +37,7 @@ module Api
         return render json: {message: 'unauthorized'}, status: :unauthorized if @entourage.user != current_user
 
         if @entourage.update(entourage_params.except(:location))
-          render json: @entourage, status: 201, serializer: ::V1::EntourageSerializer
+          render json: @entourage, status: 201, serializer: ::V1::EntourageSerializer, scope: {user: current_user}
         else
           render json: {message: 'Could not update entourage', reasons: @entourage.errors.full_messages}, status: 400
         end
