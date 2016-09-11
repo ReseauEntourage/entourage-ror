@@ -13,7 +13,9 @@ module Api
                                              show_my_entourages_only: "true",
                                              show_my_tours_only: "true",
                                              tour_status: tour_status,
-                                             entourage_status: entourage_status).feeds
+                                             entourage_status: entourage_status,
+                                             author: author,
+                                             invitee: invitee).feeds
         render json: ::V1::FeedSerializer.new(feeds: feeds, user: current_user, include_last_message: true).to_json, status: 200
         # feeds = (entourages+tours).sort_by { |feed| -feed.created_at.to_i}
         # render json: ::V1::FeedSerializer.new(feeds: feeds, user: current_user, include_last_message: true).to_json, status: 200
