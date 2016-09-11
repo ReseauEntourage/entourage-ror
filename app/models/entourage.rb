@@ -1,6 +1,8 @@
 class Entourage < ActiveRecord::Base
   include FeedsConcern
 
+  ENTOURAGE_TYPES=['ask_for_help', 'contribution']
+
   belongs_to :user
   has_many :join_requests, as: :joinable, dependent: :destroy
   has_many :members, through: :join_requests, source: :user
@@ -10,7 +12,7 @@ class Entourage < ActiveRecord::Base
 
   validates_presence_of :status, :title, :entourage_type, :user_id, :latitude, :longitude, :number_of_people
   validates_inclusion_of :status, in: ['open', 'closed']
-  validates_inclusion_of :entourage_type, in: ['ask_for_help', 'contribution']
+  validates_inclusion_of :entourage_type, in: ENTOURAGE_TYPES
 
   #An entourage can never be freezed
   def freezed?

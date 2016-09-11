@@ -7,7 +7,10 @@ module Api
         feeds = FeedServices::FeedFinder.new(user: current_user,
                                              page: params[:page],
                                              per: params[:per],
-                                             before: params[:before]).feeds
+                                             before: params[:before],
+                                             show_tours: params[:show_tours],
+                                             entourage_types: params[:entourage_types],
+                                             tour_types: params[:tour_types]).feeds
         render json: ::V1::FeedSerializer.new(feeds: feeds, user: current_user).to_json, status: 200
         # feeds = entourages
         # feeds += tours if params[:show_tours]=="true" && current_user.pro?
