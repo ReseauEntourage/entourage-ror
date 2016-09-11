@@ -22,8 +22,8 @@ describe Api::V1::MyfeedsController do
       end
 
       context "get my entourages" do
-        let!(:entourage_i_created) { FactoryGirl.create(:entourage, :joined, join_request_user: user, user: user, created_at: 1.hour.ago) }
-        let!(:entourage_i_joined) { FactoryGirl.create(:entourage, :joined, join_request_user: user, created_at: 2.hour.ago) }
+        let!(:entourage_i_created) { FactoryGirl.create(:entourage, :joined, join_request_user: user, user: user, updated_at: 1.hour.ago) }
+        let!(:entourage_i_joined) { FactoryGirl.create(:entourage, :joined, join_request_user: user, updated_at: 2.hour.ago) }
         before { get :index, token: user.token }
         it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([entourage_i_created.id, entourage_i_joined.id]) }
       end
@@ -48,11 +48,11 @@ describe Api::V1::MyfeedsController do
       end
 
       context "filter by status" do
-        let!(:entourage_open) { FactoryGirl.create(:entourage, :joined, join_request_user: user, user: user, created_at: 1.hour.ago, status: :open) }
-        let!(:entourage_closed) { FactoryGirl.create(:entourage, :joined, join_request_user: user, created_at: 2.hour.ago, status: :closed) }
-        let!(:tour_ongoing) { FactoryGirl.create(:tour, :joined, join_request_user: user, created_at: 3.hours.ago, status: :ongoing) }
-        let!(:tour_closed) { FactoryGirl.create(:tour, :joined, join_request_user: user, created_at: 4.hours.ago, status: :closed) }
-        let!(:tour_freezed) { FactoryGirl.create(:tour, :joined, join_request_user: user, created_at: 5.hours.ago, status: :freezed) }
+        let!(:entourage_open) { FactoryGirl.create(:entourage, :joined, join_request_user: user, user: user, updated_at: 1.hour.ago, status: :open) }
+        let!(:entourage_closed) { FactoryGirl.create(:entourage, :joined, join_request_user: user, updated_at: 2.hour.ago, status: :closed) }
+        let!(:tour_ongoing) { FactoryGirl.create(:tour, :joined, join_request_user: user, updated_at: 3.hours.ago, status: :ongoing) }
+        let!(:tour_closed) { FactoryGirl.create(:tour, :joined, join_request_user: user, updated_at: 4.hours.ago, status: :closed) }
+        let!(:tour_freezed) { FactoryGirl.create(:tour, :joined, join_request_user: user, updated_at: 5.hours.ago, status: :freezed) }
 
         context "get active feeds" do
           before { get :index, token: user.token, status: "active" }

@@ -9,7 +9,9 @@ module FeedServices
                    tour_types:,
                    show_my_entourages_only: "false",
                    show_my_tours_only: "false",
-                   time_range: 24)
+                   time_range: 24,
+                   tour_status:,
+                   entourage_status:)
       @user = user
       @page = page
       @per = per
@@ -19,13 +21,15 @@ module FeedServices
       @show_my_entourages_only = show_my_entourages_only=="true"
       @show_my_tours_only = show_my_tours_only=="true"
       @time_range = (time_range || 24).to_i
+      @tour_status = [tour_status].flatten
+      @entourage_status = [entourage_status].flatten
     end
 
     def feeds
       feeds = Feed
-
       feeds = feeds.where(feedable_type: "Entourage") unless (show_tours=="true" && user.pro?)
       feeds = feeds.where(feed_type: feed_type) if feed_type
+      feeds = feeds.where("(feedable_type='Entourage' AND feeds.status IN (?)) OR (feedable_type='Tour' AND feeds.status IN (?))", entourage_status, tour_status)
       feeds = feeds.where("feeds.created_at > ?", time_range.hours.ago)
 
       if show_my_entourages_only && show_my_tours_only
@@ -48,7 +52,7 @@ module FeedServices
     end
 
     private
-    attr_reader :user, :page, :per, :before, :show_tours, :feed_type, :show_my_entourages_only, :show_my_tours_only, :time_range
+    attr_reader :user, :page, :per, :before, :show_tours, :feed_type, :show_my_entourages_only, :show_my_tours_only, :time_range, :tour_status, :entourage_status
 
     def join_types(entourage_types:, tour_types:)
       entourage_types = formated_type(entourage_types) || Entourage::ENTOURAGE_TYPES
