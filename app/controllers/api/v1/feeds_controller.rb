@@ -10,7 +10,9 @@ module Api
                                              before: params[:before],
                                              show_tours: params[:show_tours],
                                              entourage_types: params[:entourage_types],
-                                             tour_types: params[:tour_types]).feeds
+                                             tour_types: params[:tour_types],
+                                             show_my_entourages_only: params[:show_my_entourages_only],
+                                             show_my_tours_only: params[:show_my_tours_only]).feeds
         render json: ::V1::FeedSerializer.new(feeds: feeds, user: current_user).to_json, status: 200
         # feeds = entourages
         # feeds += tours if params[:show_tours]=="true" && current_user.pro?
