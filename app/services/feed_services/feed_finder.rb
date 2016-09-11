@@ -9,8 +9,8 @@ module FeedServices
                    show_my_entourages_only: "false",
                    show_my_tours_only: "false",
                    time_range: 24,
-                   tour_status:,
-                   entourage_status:,
+                   tour_status: nil,
+                   entourage_status: nil,
                    before: nil,
                    author: nil,
                    invitee: nil)
@@ -23,8 +23,8 @@ module FeedServices
       @show_my_entourages_only = show_my_entourages_only=="true"
       @show_my_tours_only = show_my_tours_only=="true"
       @time_range = (time_range || 24).to_i
-      @tour_status = [tour_status].flatten
-      @entourage_status = [entourage_status].flatten
+      @tour_status = formated_status(tour_status)
+      @entourage_status = formated_status(entourage_status)
       @author = author
       @invitee = invitee
     end
@@ -33,9 +33,12 @@ module FeedServices
       feeds = Feed
       feeds = feeds.where(feedable_type: "Entourage") unless (show_tours=="true" && user.pro?)
       feeds = feeds.where(feed_type: feed_type) if feed_type
-      feeds = feeds.where("(feedable_type='Entourage' AND feeds.status IN (?)) OR (feedable_type='Tour' AND feeds.status IN (?))", entourage_status, tour_status)
       feeds = feeds.where(user: author) if author
       feeds = feeds.where("feeds.created_at > ?", time_range.hours.ago)
+
+      if tour_status && entourage_status
+        feeds = feeds.where("(feedable_type='Entourage' AND feeds.status IN (?)) OR (feedable_type='Tour' AND feeds.status IN (?))", entourage_status, tour_status)
+      end
 
       if show_my_entourages_only && show_my_tours_only
         feeds = feeds.joins("INNER JOIN join_requests ON ((join_requests.joinable_type='Entourage' AND feeds.feedable_type='Entourage' AND join_requests.joinable_id=feeds.feedable_id) OR (join_requests.joinable_type='Tour' AND feeds.feedable_type='Tour' AND join_requests.joinable_id=feeds.feedable_id) AND join_requests.status='accepted')")
@@ -71,6 +74,10 @@ module FeedServices
 
     def formated_type(types)
       types&.gsub(" ", "")&.split(",")
+    end
+
+    def formated_status(status)
+      [status].flatten if status
     end
   end
 end
