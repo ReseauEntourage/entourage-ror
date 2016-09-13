@@ -38,7 +38,7 @@ describe Api::V1::MyfeedsController do
           let!(:chat_message2) { FactoryGirl.create(:chat_message, messageable: entourage, created_at: DateTime.parse("09/01/2000"), updated_at: DateTime.parse("09/01/2000"), content: "bar") }
           let!(:chat_message3) { FactoryGirl.create(:chat_message, messageable: tour, created_at: DateTime.parse("11/01/2000"), updated_at: DateTime.parse("11/01/2000"), content: "tour_foo") }
           before { get :index, token: user.token }
-          it { expect(result["feeds"].map {|feed| feed["data"]["last_message"]} ).to eq([{"text" => "foo"}, {"text" => "tour_foo"}]) }
+          it { expect(result["feeds"].map {|feed| feed["data"]["last_message"]} ).to eq([{"text"=>"foo", "author"=>{"first_name"=>"John", "last_name"=>"Doe"}}, {"text"=>"tour_foo", "author"=>{"first_name"=>"John", "last_name"=>"Doe"}}]) }
         end
 
         context "has no messages" do
