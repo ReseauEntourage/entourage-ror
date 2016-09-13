@@ -26,6 +26,11 @@ describe Api::V1::Entourages::InvitationsController do
           it { expect(result).to eq({"successfull_numbers"=>["+33612345678", "+33612345679"]}) }
         end
 
+        context "phone number with spaces" do
+          before { post :create, entourage_id: entourage.to_param, invite: {mode: "SMS", phone_numbers: ["+40 744 219 491"]}, token: user.token }
+          it { expect(EntourageInvitation.count).to eq(1) }
+        end
+
         it "sends sms if valid params" do
           expect(SmsSenderJob).to receive(:perform_later).twice
           post :create, entourage_id: entourage.to_param, invite: {mode: "SMS", phone_numbers: ["+33612345678", "+33612345679"]}, token: user.token

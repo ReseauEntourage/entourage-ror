@@ -4,40 +4,20 @@ module Api
 
       #curl -H "Content-Type: application/json" "https://entourage-back-preprod.herokuapp.com/api/v1/feeds.json?token=azerty"
       def index
-        feeds = entourages
-        feeds += tours if params[:show_tours]=="true" && current_user.pro?
-        feeds = feeds.sort_by { |feed| -feed.updated_at.to_i}
+        feeds = FeedServices::FeedFinder.new(user: current_user,
+                                             page: params[:page],
+                                             per: params[:per],
+                                             before: params[:before],
+                                             show_tours: params[:show_tours],
+                                             entourage_types: params[:entourage_types],
+                                             tour_types: params[:tour_types],
+                                             show_my_entourages_only: params[:show_my_entourages_only],
+                                             show_my_tours_only: params[:show_my_tours_only]).feeds
         render json: ::V1::FeedSerializer.new(feeds: feeds, user: current_user).to_json, status: 200
-      end
-
-      private
-      def tours
-        TourServices::TourFilterApi.new(user: current_user,
-                                        status: nil,
-                                        type: params[:tour_types],
-                                        vehicle_type: nil,
-                                        show_only_my_tours: params[:show_my_entourages_only]=="true",
-                                        latitude: params[:latitude],
-                                        longitude: params[:longitude],
-                                        distance: nil,
-                                        time_range: params[:time_range],
-                                        page: params[:page],
-                                        per: params[:per],
-                                        before: params[:before]).tours.to_a
-      end
-
-      def entourages
-        EntourageServices::EntourageFinder.new(user: current_user,
-                                               status: nil,
-                                               type: params[:entourage_types],
-                                               latitude: params[:latitude],
-                                               longitude: params[:longitude],
-                                               distance: nil,
-                                               show_my_entourages_only: params[:show_my_entourages_only]=="true",
-                                               time_range: params[:time_range],
-                                               page: params[:page],
-                                               per: params[:per],
-                                               before: params[:before]).entourages.to_a
+        # feeds = entourages
+        # feeds += tours if params[:show_tours]=="true" && current_user.pro?
+        # feeds = feeds.sort_by { |feed| -feed.updated_at.to_i}
+        # render json: ::V1::FeedSerializer.new(feeds: feeds, user: current_user).to_json, status: 200
       end
     end
   end

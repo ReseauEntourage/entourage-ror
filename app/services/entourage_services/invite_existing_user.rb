@@ -43,13 +43,13 @@ module EntourageServices
     def create_invite!
       begin
         invite = EntourageInvitation.where(invitable: entourage,
-                                           inviter: inviter,
-                                           invitee: invitee,
-                                           phone_number: phone_number,
-                                           invitation_mode: EntourageInvitation::MODE_SMS).first_or_initialize
+                                         inviter: inviter,
+                                         invitee: invitee,
+                                         phone_number: phone_number,
+                                         invitation_mode: EntourageInvitation::MODE_SMS).first_or_initialize
         relationship = UserRelationship.where(source_user: inviter,
-                                              target_user: invitee,
-                                              relation_type: UserRelationship::TYPE_INVITE).first_or_initialize
+                                            target_user: invitee,
+                                            relation_type: UserRelationship::TYPE_INVITE).first_or_initialize
         ActiveRecord::Base.transaction do
           invite.save!
           relationship.save!
