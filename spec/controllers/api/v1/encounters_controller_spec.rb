@@ -7,28 +7,54 @@ RSpec.describe Api::V1::EncountersController, :type => :controller do
   let!(:tour) { FactoryGirl.create :tour, user: user }
 
   describe 'GET index' do
-    let!(:encounters) { FactoryGirl.create_list(:encounter, 2, tour: tour) }
-    before { get 'index', tour_id: tour.to_param, token: user.token }
-    it { expect(JSON.parse(response.body)).to eq({"encounters"=>[{"id"=>encounters.first.id,
-                                                                  "date"=>"2014-10-11T15:19:45.000+02:00",
-                                                                  "latitude"=>48.870424,
-                                                                  "longitude"=>2.30681949999996,
-                                                                  "user_id"=>user.id,
-                                                                  "user_name"=>"John",
-                                                                  "street_person_name"=>"Toto",
-                                                                  "message"=>"Toto fait du velo.",
-                                                                  "voice_message"=>"https://www.google.com"
-                                                                 },
-                                                                 {"id"=>encounters.last.id,
-                                                                  "date"=>"2014-10-11T15:19:45.000+02:00",
-                                                                  "latitude"=>48.870424,
-                                                                  "longitude"=>2.30681949999996,
-                                                                  "user_id"=>user.id,
-                                                                  "user_name"=>"John",
-                                                                  "street_person_name"=>"Toto",
-                                                                  "message"=>"Toto fait du velo.",
-                                                                  "voice_message"=>"https://www.google.com"
-                                                                 }]}) }
+    context "valid params" do
+      let!(:encounters) { FactoryGirl.create_list(:encounter, 2, tour: tour) }
+      before { get 'index', tour_id: tour.to_param, token: user.token }
+      it { expect(JSON.parse(response.body)).to eq({"encounters"=>[{"id"=>encounters.first.id,
+                                                                    "date"=>"2014-10-11T15:19:45.000+02:00",
+                                                                    "latitude"=>48.870424,
+                                                                    "longitude"=>2.30681949999996,
+                                                                    "user_id"=>user.id,
+                                                                    "user_name"=>"John",
+                                                                    "street_person_name"=>"Toto",
+                                                                    "message"=>"Toto fait du velo.",
+                                                                    "voice_message"=>"https://www.google.com"
+                                                                   },
+                                                                   {"id"=>encounters.last.id,
+                                                                    "date"=>"2014-10-11T15:19:45.000+02:00",
+                                                                    "latitude"=>48.870424,
+                                                                    "longitude"=>2.30681949999996,
+                                                                    "user_id"=>user.id,
+                                                                    "user_name"=>"John",
+                                                                    "street_person_name"=>"Toto",
+                                                                    "message"=>"Toto fait du velo.",
+                                                                    "voice_message"=>"https://www.google.com"
+                                                                   }]}) }
+    end
+
+    context "deleted encounter" do
+      let!(:encounter) do
+        encounter = FactoryGirl.create(:encounter,
+                                            tour: tour)
+        encounter.update_columns(encrypted_message: nil,
+                         street_person_name: nil,
+                         latitude: nil,
+                         longitude:nil,
+                         address: nil)
+        encounter
+      end
+      before { get 'index', tour_id: tour.to_param, token: user.token }
+      it { expect(JSON.parse(response.body)).to eq({"encounters"=>[{"id"=>encounter.id,
+                                                                    "date"=>"2014-10-11T15:19:45.000+02:00",
+                                                                    "latitude"=>nil,
+                                                                    "longitude"=>nil,
+                                                                    "user_id"=>user.id,
+                                                                    "user_name"=>"John",
+                                                                    "street_person_name"=>"xxxx",
+                                                                    "message"=>nil,
+                                                                    "voice_message"=>"https://www.google.com"
+                                                                   }]}) }
+    end
   end
 
   describe "POST create" do

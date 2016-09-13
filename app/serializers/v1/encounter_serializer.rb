@@ -22,6 +22,10 @@ module V1
       object.voice_message_url
     end
 
+    def street_person_name
+      object.street_person_name || "xxxx"
+    end
+
     def message
       begin
         object.message
