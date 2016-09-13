@@ -47,8 +47,8 @@ describe Api::V1::EntouragesController do
       end
 
       context "order recents entourages" do
-        let!(:entourage1) { FactoryGirl.create(:entourage, created_at: entourage.created_at - 2.hours) }
-        let!(:entourage2) { FactoryGirl.create(:entourage, created_at: entourage.created_at - 3.days) }
+        let!(:entourage1) { FactoryGirl.create(:entourage, updated_at: entourage.created_at - 2.hours, created_at: entourage.created_at - 2.hours) }
+        let!(:entourage2) { FactoryGirl.create(:entourage, updated_at: entourage.created_at - 3.days, created_at: entourage.created_at - 3.days) }
         before { get :index, token: user.token }
         it { expect(subject["entourages"].count).to eq(2) }
         it { expect(subject["entourages"][0]["id"]).to eq(entourage.id) }
@@ -68,7 +68,7 @@ describe Api::V1::EntouragesController do
       end
 
       context "filter entourage_type" do
-        let!(:help_entourage) { FactoryGirl.create(:entourage, entourage_type: "ask_for_help", created_at: entourage.created_at-1.hours) }
+        let!(:help_entourage) { FactoryGirl.create(:entourage, entourage_type: "ask_for_help", updated_at: entourage.created_at-1.hours, created_at: entourage.created_at-1.hours) }
         before { get :index, type: "ask_for_help", token: user.token }
         it { expect(subject["entourages"].count).to eq(2) }
         it { expect(subject["entourages"][0]["id"]).to eq(entourage.id) }
@@ -213,7 +213,7 @@ describe Api::V1::EntouragesController do
                                                            "join_status"=>"not_requested",
                                                            "number_of_unread_messages"=>nil,
                                                            "created_at"=> user_entourage.created_at.iso8601(3),
-                                                           "updated_at"=> user_entourage.updated_at.iso8601(3),
+                                                           "updated_at"=> user_entourage.reload.updated_at.iso8601(3),
                                                            "description" => nil
                                                           }
                                                      }) }
@@ -236,6 +236,13 @@ describe Api::V1::EntouragesController do
         before { patch :update, id: user_entourage.to_param, entourage: {status: "not exist"}, token: user.token }
         it { expect(JSON.parse(response.body)).to eq({"message"=>"Could not update entourage", "reasons"=>["Status n'est pas inclus(e) dans la liste"]}) }
         it { expect(response.status).to eq(400) }
+      end
+
+      context "update location" do
+        let!(:user_entourage) { FactoryGirl.create(:entourage, user: user) }
+        before { patch :update, id: user_entourage.to_param, entourage: {location: {latitude: 10.5, longitude: 20.1}}, token: user.token }
+        it { expect(user_entourage.reload.latitude).to eq(10.5) }
+        it { expect(user_entourage.reload.longitude).to eq(20.1) }
       end
     end
   end

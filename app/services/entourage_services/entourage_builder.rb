@@ -22,8 +22,24 @@ module EntourageServices
       else
         callback.on_failure.try(:call, entourage)
       end
-      tour
+      entourage
     end
+
+    def update(entourage:)
+      yield callback if block_given?
+
+      if params[:location]
+        entourage.longitude = params.dig(:location, :longitude)
+        entourage.latitude = params.dig(:location, :latitude)
+      end
+
+      if entourage.update(params.except(:location))
+        callback.on_success.try(:call, entourage.reload)
+      else
+        callback.on_failure.try(:call, entourage)
+      end
+    end
+
 
     private
     attr_reader :tour, :user, :callback, :params
