@@ -40,6 +40,7 @@ module EntourageServices
     attr_reader :phone_numbers, :entourage, :callback, :inviter
 
     def sms_invite(phone_number:)
+      phone_number = Phone::PhoneBuilder.new(phone: phone_number).format
       EntourageServices::SmsInvite.new(phone_number: phone_number, entourage: entourage, inviter: inviter)
     end
 
