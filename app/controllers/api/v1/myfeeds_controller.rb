@@ -7,6 +7,8 @@ module Api
                                              page: params[:page],
                                              per: params[:per],
                                              before: params[:before],
+                                             latitude: nil,
+                                             longitude: nil,
                                              show_tours: "true",
                                              entourage_types: params[:entourage_types],
                                              tour_types: params[:tour_types],

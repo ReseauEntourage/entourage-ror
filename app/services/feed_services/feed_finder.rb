@@ -6,6 +6,8 @@ module FeedServices
                    show_tours:,
                    entourage_types:,
                    tour_types:,
+                   latitude:,
+                   longitude:,
                    show_my_entourages_only: "false",
                    show_my_tours_only: "false",
                    time_range: 24,
@@ -18,6 +20,8 @@ module FeedServices
       @page = page
       @per = per
       @before = before
+      @latitude = latitude
+      @longitude = longitude
       @show_tours = show_tours
       @feed_type = join_types(entourage_types: entourage_types, tour_types: tour_types)
       @show_my_entourages_only = show_my_entourages_only=="true"
@@ -35,6 +39,7 @@ module FeedServices
       feeds = feeds.where(feed_type: feed_type) if feed_type
       feeds = feeds.where(user: author) if author
       feeds = feeds.where("feeds.created_at > ?", time_range.hours.ago)
+      feeds = feeds.within_bounding_box(box) if latitude && longitude
 
       if tour_status && entourage_status
         feeds = feeds.where("(feedable_type='Entourage' AND feeds.status IN (?)) OR (feedable_type='Tour' AND feeds.status IN (?))", entourage_status, tour_status)
@@ -64,7 +69,13 @@ module FeedServices
     end
 
     private
-    attr_reader :user, :page, :per, :before, :show_tours, :feed_type, :show_my_entourages_only, :show_my_tours_only, :time_range, :tour_status, :entourage_status, :author, :invitee
+    attr_reader :user, :page, :per, :before, :latitude, :longitude, :show_tours, :feed_type, :show_my_entourages_only, :show_my_tours_only, :time_range, :tour_status, :entourage_status, :author, :invitee
+
+    def box
+      Geocoder::Calculations.bounding_box([latitude, longitude],
+                                          10,
+                                          units: :km)
+    end
 
     def join_types(entourage_types:, tour_types:)
       entourage_types = formated_type(entourage_types) || Entourage::ENTOURAGE_TYPES

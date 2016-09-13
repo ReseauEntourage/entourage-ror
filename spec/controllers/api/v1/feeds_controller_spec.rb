@@ -71,6 +71,12 @@ describe Api::V1::FeedsController do
         ]}) }
       end
 
+      context "get entourages around location" do
+        let!(:paris_entourage) { FactoryGirl.create(:entourage, updated_at: 4.hours.ago, latitude: 48.8566, longitude: 2.3522) }
+        before { get :index, token: user.token, latitude: 48.8566, longitude: 2.3522 }
+        it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([paris_entourage.id]) }
+      end
+
       context "get entourages only" do
         before { get :index, token: user.token, show_tours: "false" }
         it { expect(result["feeds"].count).to eq(1) }
