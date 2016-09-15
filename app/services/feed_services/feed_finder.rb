@@ -37,6 +37,7 @@ module FeedServices
       feeds = Feed
       feeds = feeds.where(feedable_type: "Entourage") unless (show_tours=="true" && user.pro?)
       feeds = feeds.where(feed_type: feed_type) if feed_type
+      feeds = filter_my_feeds_only(feeds: feeds)
       feeds = feeds.where(user: author) if author
       feeds = feeds.where("feeds.created_at > ?", time_range.hours.ago)
       feeds = feeds.within_bounding_box(box) if latitude && longitude
@@ -45,9 +46,9 @@ module FeedServices
         feeds = feeds.where("(feedable_type='Entourage' AND feeds.status IN (?)) OR (feedable_type='Tour' AND feeds.status IN (?))", entourage_status, tour_status)
       end
 
-      feeds = filter_by_invitee(feeds: feeds, inclusive: true)
-      feeds = filter_my_feeds_only(feeds: feeds, inclusive: true)
-
+      #If we have both created_by_me filter AND invited_in filter, then we look for created_by_me OR invited_in feeds
+      inclusive = author.blank? || invitee.blank?
+      feeds = filter_by_invitee(feeds: feeds, inclusive: inclusive)
 
       feeds = if page || per
         feeds.page(page).per(per)
@@ -85,13 +86,13 @@ module FeedServices
     end
 
 
-    def filter_my_feeds_only(feeds:, inclusive:)
+    def filter_my_feeds_only(feeds:)
       if show_my_entourages_only && show_my_tours_only
-        feeds = feeds.joins("#{join_type(inclusive)} join_requests ON ((join_requests.joinable_type='Entourage' AND feeds.feedable_type='Entourage' AND join_requests.joinable_id=feeds.feedable_id) OR (join_requests.joinable_type='Tour' AND feeds.feedable_type='Tour' AND join_requests.joinable_id=feeds.feedable_id) AND join_requests.status='accepted')")
+        feeds = feeds.joins("INNER JOIN join_requests ON ((join_requests.joinable_type='Entourage' AND feeds.feedable_type='Entourage' AND join_requests.joinable_id=feeds.feedable_id) OR (join_requests.joinable_type='Tour' AND feeds.feedable_type='Tour' AND join_requests.joinable_id=feeds.feedable_id) AND join_requests.status='accepted')")
       elsif show_my_entourages_only
-        feeds = feeds.joins("#{join_type(inclusive)} join_requests ON ((join_requests.joinable_type='Entourage' AND feeds.feedable_type='Entourage' AND join_requests.joinable_id=feeds.feedable_id AND join_requests.status='accepted') OR (join_requests.joinable_type='Tour' AND feeds.feedable_type='Tour' AND join_requests.joinable_id=feeds.feedable_id))")
+        feeds = feeds.joins("INNER JOIN join_requests ON ((join_requests.joinable_type='Entourage' AND feeds.feedable_type='Entourage' AND join_requests.joinable_id=feeds.feedable_id AND join_requests.status='accepted') OR (join_requests.joinable_type='Tour' AND feeds.feedable_type='Tour' AND join_requests.joinable_id=feeds.feedable_id))")
       elsif show_my_tours_only
-        feeds = feeds.joins("#{join_type(inclusive)} join_requests ON ((join_requests.joinable_type='Entourage' AND feeds.feedable_type='Entourage' AND join_requests.joinable_id=feeds.feedable_id) OR (join_requests.joinable_type='Tour' AND feeds.feedable_type='Tour' AND join_requests.joinable_id=feeds.feedable_id AND join_requests.status='accepted'))")
+        feeds = feeds.joins("INNER JOIN join_requests ON ((join_requests.joinable_type='Entourage' AND feeds.feedable_type='Entourage' AND join_requests.joinable_id=feeds.feedable_id) OR (join_requests.joinable_type='Tour' AND feeds.feedable_type='Tour' AND join_requests.joinable_id=feeds.feedable_id AND join_requests.status='accepted'))")
       end
       feeds
     end

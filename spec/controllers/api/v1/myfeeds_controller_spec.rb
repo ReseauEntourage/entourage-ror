@@ -97,7 +97,7 @@ describe Api::V1::MyfeedsController do
         let!(:tour_invitation) { FactoryGirl.create(:entourage_invitation, :accepted, invitee: user, invitable: invited_tour) }
         let!(:other_tour) { FactoryGirl.create(:tour, :joined, join_request_user: user, updated_at: 3.hours.ago, status: :ongoing) }
         before { get :index, token: user.token, created_by_me: "true", accepted_invitation: "true"  }
-        it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([my_entourage.id, my_tour.id, invited_entourage.id, invited_tour.id]) }
+        it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([invited_entourage.id, my_entourage.id, invited_tour.id, my_tour.id]) }
       end
     end
   end
