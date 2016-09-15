@@ -24,7 +24,8 @@ module Api
           end
         end
 
-        #curl -X PUT -H "Content-Type: application/json" -d '{"request":{"message": "a join message"}}' "http://localhost:3000/api/v1/tours/1017/users.json?token=07ee026192ea722e66feb2340a05e3a8"
+        #curl -X PUT -H "Content-Type: application/json" -d '{"request":{"message": "a join message"}}' "http://localhost:3000/api/v1/entourages/1017/users/123.json?token=azerty"
+        #curl -X PUT -H "Content-Type: application/json" -d '{"user":{"status": "accepted"}}' "http://localhost:3000/api/v1/entourages/1017/users/123.json?token=azerty"
         def update
           status = params.dig(:user, :status)
           message = params.dig(:request, :message)
@@ -52,6 +53,7 @@ module Api
           end
         end
 
+        #curl -X DELETE -H "Content-Type: application/json" "http://localhost:3000/api/v1/entourages/454/users/428.json?token=azerty"
         def destroy
           updater = JoinRequestsServices::JoinRequestUpdater.new(join_request: @join_request,
                                                                  status: status,
