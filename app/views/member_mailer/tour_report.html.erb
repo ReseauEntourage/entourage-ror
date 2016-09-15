@@ -44,7 +44,7 @@
         </td>
         <td style="width:300px; padding: 10px; vertical-align: top;">
           <ul>
-            <% @tour.encounters.each_with_index do |encounter, index| %>
+            <% @tour.encounters.order("created_at ASC").each_with_index do |encounter, index| %>
               <li style="padding: 10px;">
                 <%= marker_index index %> - Rencontre de <%= encounter.street_person_name %>
               </li>
@@ -66,7 +66,7 @@
         <td colspan="2" style="padding: 10px;">
           <p><strong>Description</strong></p>
           <ul>
-            <% @tour.encounters.each_with_index do |encounter, index| %>
+            <% @tour.encounters.order("created_at ASC").each_with_index do |encounter, index| %>
             <li>
               <p>
                 <%= marker_index index %> - <%= encounter.street_person_name %> &agrave; <%= encounter.date.strftime('%H:%M') %> - <%= encounter.address %>
