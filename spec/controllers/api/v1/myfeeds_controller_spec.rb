@@ -33,8 +33,8 @@ describe Api::V1::MyfeedsController do
         let!(:tour) { FactoryGirl.create(:tour, :joined, join_request_user: user, user: user, created_at: 1.hour.ago) }
 
         context "has messages" do
-          let!(:chat_message1) { FactoryGirl.create(:chat_message, messageable: entourage, created_at: DateTime.parse("10/01/2000"), updated_at: DateTime.parse("10/01/2000"), content: "foo") }
-          let!(:chat_message2) { FactoryGirl.create(:chat_message, messageable: entourage, created_at: DateTime.parse("09/01/2000"), updated_at: DateTime.parse("09/01/2000"), content: "bar") }
+          let!(:chat_message1) { FactoryGirl.create(:chat_message, messageable: entourage, created_at: DateTime.parse("25/01/2000"), updated_at: DateTime.parse("25/01/2000"), content: "foo") }
+          let!(:chat_message2) { FactoryGirl.create(:chat_message, messageable: entourage, created_at: DateTime.parse("24/01/2000"), updated_at: DateTime.parse("24/01/2000"), content: "bar") }
           let!(:chat_message3) { FactoryGirl.create(:chat_message, messageable: tour, created_at: DateTime.parse("11/01/2000"), updated_at: DateTime.parse("11/01/2000"), content: "tour_foo") }
           before { get :index, token: user.token }
           it { expect(result["feeds"].map {|feed| feed["data"]["last_message"]} ).to eq([{"text"=>"foo", "author"=>{"first_name"=>"John", "last_name"=>"Doe"}}, {"text"=>"tour_foo", "author"=>{"first_name"=>"John", "last_name"=>"Doe"}}]) }
@@ -43,6 +43,34 @@ describe Api::V1::MyfeedsController do
         context "has no messages" do
           before { get :index, token: user.token }
           it { expect(result["feeds"].map {|feed| feed["data"]["last_message"]} ).to eq([nil, nil]) }
+        end
+
+        context "has pending join_request" do
+          let!(:join_request) do
+            entourage.join_requests.last.update(message: "foo_bar", status: "pending")
+          end
+          before { get :index, token: user.token }
+          it { expect(result["feeds"].map {|feed| feed["data"]["last_message"]} ).to eq([{"text"=>"1 nouvelle demande pour rejoindre votre entourage", "author"=>nil}, nil]) }
+        end
+
+        context "has pending join_request and messages" do
+          context "messages more recent that join requests" do
+            let!(:join_request) do
+              entourage.join_requests.last.update(message: "foo_bar", status: "pending", created_at: DateTime.parse("10/01/2015"), updated_at: DateTime.parse("10/01/2015"))
+            end
+            let!(:chat_message1) { FactoryGirl.create(:chat_message, messageable: entourage, created_at: DateTime.parse("10/01/2016"), updated_at: DateTime.parse("10/01/2016"), content: "foo") }
+            before { get :index, token: user.token }
+            it { expect(result["feeds"].map {|feed| feed["data"]["last_message"]} ).to eq([{"text"=>"foo", "author"=>{"first_name"=>"John", "last_name"=>"Doe"}}, nil]) }
+          end
+
+          context "join requests more recent that messages" do
+            let!(:join_request) do
+              entourage.join_requests.last.update(message: "foo_bar", status: "pending", created_at: DateTime.parse("10/01/2016"), updated_at: DateTime.parse("10/01/2016"))
+            end
+            let!(:chat_message1) { FactoryGirl.create(:chat_message, messageable: entourage, created_at: DateTime.parse("10/01/2015"), updated_at: DateTime.parse("10/01/2015"), content: "foo") }
+            before { get :index, token: user.token }
+            it { expect(result["feeds"].map {|feed| feed["data"]["last_message"]} ).to eq([{"text"=>"1 nouvelle demande pour rejoindre votre entourage", "author"=>nil}, nil]) }
+          end
         end
       end
 
