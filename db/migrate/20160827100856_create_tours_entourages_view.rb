@@ -25,8 +25,8 @@ class CreateToursEntouragesView < ActiveRecord::Migration
           '' AS "TITLE",
           tour_type as "feed_type",
           user_id,
-          tp.longitude,
           tp.latitude,
+          tp.longitude,
           number_of_people,
           created_at,
           updated_at
