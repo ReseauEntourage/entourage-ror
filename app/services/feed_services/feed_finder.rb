@@ -10,7 +10,7 @@ module FeedServices
                    longitude:,
                    show_my_entourages_only: "false",
                    show_my_tours_only: "false",
-                   time_range: 24,
+                   time_range:,
                    tour_status: nil,
                    entourage_status: nil,
                    before: nil,
@@ -34,7 +34,7 @@ module FeedServices
     end
 
     def feeds
-      feeds = Feed
+      feeds = Feed.includes(feedable: [:user, :join_requests])
       feeds = feeds.where(feedable_type: "Entourage") unless (show_tours=="true" && user.pro?)
       feeds = feeds.where(feed_type: feed_type) if feed_type
       feeds = filter_my_feeds_only(feeds: feeds)

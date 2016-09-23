@@ -1,7 +1,7 @@
 module Api
   module V1
     class MyfeedsController < FeedsController
-      #curl "http://localhost:3000/api/v1/myfeeds?page=1&per=2"
+      #curl "http://localhost:3000/api/v1/myfeeds?page=1&per=2&token=azerty"
       def index
         feeds = FeedServices::FeedFinder.new(user: current_user,
                                              page: params[:page],
@@ -10,6 +10,7 @@ module Api
                                              latitude: nil,
                                              longitude: nil,
                                              show_tours: "true",
+                                             time_range: time_range,
                                              entourage_types: params[:entourage_types],
                                              tour_types: params[:tour_types],
                                              show_my_entourages_only: "true",
