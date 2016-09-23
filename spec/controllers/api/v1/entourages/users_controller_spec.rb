@@ -34,6 +34,48 @@ describe Api::V1::Entourages::UsersController do
         it { expect(result).to eq("message"=>"Could not create entourage participation request", "reasons"=>["Joinable a déjà été ajouté"]) }
         it { expect(response.status).to eq(400) }
       end
+
+      describe "push notif" do
+        let!(:entourage_join_request) { JoinRequest.create(user: entourage.user, joinable: entourage, status: "accepted") }
+
+        context "no join request message" do
+          let!(:member) { FactoryGirl.create(:pro_user) }
+          let!(:member_join_request) { JoinRequest.create(user: member, joinable: entourage, status: "accepted") }
+
+          it "sends notif to all entourage members" do
+            expect_any_instance_of(PushNotificationService).to receive(:send_notification).with("John D",
+                                                                                                'Demande en attente',
+                                                                                                "Un nouveau membre souhaite rejoindre votre maraude",
+                                                                                                [entourage.user, member],
+                                                                                                {
+                                                                                                    joinable_type: "Entourage",
+                                                                                                    joinable_id: entourage.id,
+                                                                                                    type: "NEW_JOIN_REQUEST",
+                                                                                                    user_id: user.id
+                                                                                                })
+            post :create, entourage_id: entourage.to_param, token: user.token
+          end
+        end
+
+        context "has join request message" do
+          let!(:member) { FactoryGirl.create(:pro_user) }
+          let!(:member_join_request) { JoinRequest.create(user: member, joinable: entourage, status: "accepted") }
+
+          it "sends notif to all entourage members" do
+            expect_any_instance_of(PushNotificationService).to receive(:send_notification).with("John D",
+                                                                                                'Demande en attente',
+                                                                                                "foobar",
+                                                                                                [entourage.user, member],
+                                                                                                {
+                                                                                                    joinable_type: "Entourage",
+                                                                                                    joinable_id: entourage.id,
+                                                                                                    type: "NEW_JOIN_REQUEST",
+                                                                                                    user_id: user.id
+                                                                                                })
+            post :create, { entourage_id: entourage.to_param, request: {message: "foobar"}, token: user.token}
+          end
+        end
+      end
     end
   end
 
