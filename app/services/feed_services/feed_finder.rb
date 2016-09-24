@@ -10,7 +10,7 @@ module FeedServices
                    longitude:,
                    show_my_entourages_only: "false",
                    show_my_tours_only: "false",
-                   time_range:,
+                   time_range: 24,
                    tour_status: nil,
                    entourage_status: nil,
                    before: nil,
@@ -26,7 +26,7 @@ module FeedServices
       @feed_type = join_types(entourage_types: entourage_types, tour_types: tour_types)
       @show_my_entourages_only = show_my_entourages_only=="true"
       @show_my_tours_only = show_my_tours_only=="true"
-      @time_range = (time_range || 24).to_i
+      @time_range = time_range.to_i
       @tour_status = formated_status(tour_status)
       @entourage_status = formated_status(entourage_status)
       @author = author
