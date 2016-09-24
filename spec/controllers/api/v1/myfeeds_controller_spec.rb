@@ -92,6 +92,14 @@ describe Api::V1::MyfeedsController do
         end
       end
 
+      context "filter timerange" do
+        let!(:my_entourage) { FactoryGirl.create(:entourage, :joined, join_request_user: user, user: user, updated_at: 1.hour.ago, created_at: 1.hour.ago, status: :open) }
+        let!(:my_old_entourage) { FactoryGirl.create(:entourage, :joined, join_request_user: user, user: user, updated_at: 2.hour.ago, created_at: 24.hour.ago, status: :open) }
+        let!(:my_older_entourage) { FactoryGirl.create(:entourage, :joined, join_request_user: user, user: user, updated_at: 3.hour.ago, created_at: 72.hour.ago, status: :open) }
+        before { get :index, token: user.token, time_range: 48 }
+        it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([my_entourage.id, my_old_entourage.id]) }
+      end
+
       context "filter created_by_me" do
         let!(:my_entourage) { FactoryGirl.create(:entourage, :joined, join_request_user: user, user: user, updated_at: 1.hour.ago, status: :open) }
         let!(:other_entourage) { FactoryGirl.create(:entourage, :joined, join_request_user: user, updated_at: 1.hour.ago, status: :open) }
