@@ -279,7 +279,11 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                                                                             "phone"=>user.organization.phone,
                                                                             "address"=>user.organization.address,
                                                                             "logo_url"=>nil},
-                                                           "stats"=>{"tour_count"=>0, "encounter_count"=>0}}}) }
+                                                           "stats"=>{
+                                                               "tour_count"=>0,
+                                                               "encounter_count"=>0,
+                                                               "entourage_count"=>0,
+                                                           }}}) }
       end
 
       context "get my profile with 'me' shortcut" do
@@ -295,7 +299,11 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                                                            "user_type"=>"pro",
                                                            "avatar_url"=>nil,
                                                            "organization"=>{"name"=>user.organization.name, "description"=>"Association description", "phone"=>user.organization.phone, "address"=>user.organization.address, "logo_url"=>nil},
-                                                           "stats"=>{"tour_count"=>0, "encounter_count"=>0}}}) }
+                                                           "stats"=>{
+                                                               "tour_count"=>0,
+                                                               "encounter_count"=>0,
+                                                               "entourage_count"=>0,
+                                                           }}}) }
       end
 
       context "get someone else profile" do
@@ -310,7 +318,11 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                                                            "avatar_url"=>nil,
                                                            "user_type"=>"pro",
                                                            "organization"=>{"name"=>other_user.organization.name, "description"=>"Association description", "phone"=>other_user.organization.phone, "address"=>other_user.organization.address, "logo_url"=>nil},
-                                                           "stats"=>{"tour_count"=>0, "encounter_count"=>0}}}) }
+                                                           "stats"=>{
+                                                               "tour_count"=>0,
+                                                               "encounter_count"=>0,
+                                                               "entourage_count"=>0,
+                                                           }}}) }
       end
     end
   end

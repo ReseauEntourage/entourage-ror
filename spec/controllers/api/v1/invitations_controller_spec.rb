@@ -38,7 +38,8 @@ describe Api::V1::InvitationsController do
                                                         },
                                                         "stats"=>{
                                                             "tour_count"=>0,
-                                                            "encounter_count"=>0
+                                                            "encounter_count"=>0,
+                                                            "entourage_count"=>0,
                                                         }
                                                     }
                                                   }

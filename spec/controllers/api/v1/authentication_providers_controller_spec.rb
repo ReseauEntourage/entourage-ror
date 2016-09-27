@@ -48,7 +48,11 @@ describe Api::V1::AuthenticationProvidersController do
                                                    "avatar_url"=>nil,
                                                    "user_type"=>"public",
                                                    "organization"=>nil,
-                                                   "stats"=>{"tour_count"=>0, "encounter_count"=>0}
+                                                   "stats"=>{
+                                                       "tour_count"=>0,
+                                                       "encounter_count"=>0,
+                                                       "entourage_count"=>0,
+                                                   }
                                                   }}) }
           it { expect(response.status).to eq(200) }
           it { expect(User.count).to eq(1) }
