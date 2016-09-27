@@ -13,9 +13,16 @@ module Api
                                              show_tours: params[:show_tours],
                                              entourage_types: params[:entourage_types],
                                              tour_types: params[:tour_types],
+                                             time_range: time_range,
                                              show_my_entourages_only: params[:show_my_entourages_only],
                                              show_my_tours_only: params[:show_my_tours_only]).feeds
         render json: ::V1::FeedSerializer.new(feeds: feeds, user: current_user).to_json, status: 200
+      end
+
+      private
+
+      def time_range
+        params[:time_range] || 365*24
       end
     end
   end

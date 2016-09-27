@@ -141,8 +141,16 @@ describe Api::V1::FeedsController do
       context "with before parameter" do
         let!(:old_tour) { FactoryGirl.create :tour, updated_at: 71.hours.ago }
         let!(:old_entourage) { FactoryGirl.create :entourage, updated_at: 72.hours.ago }
-        before { get 'index', token: user.token, before: 2.day.ago.iso8601(3), show_tours: "true", format: :json }
+        before { get :index, token: user.token, before: 2.day.ago.iso8601(3), show_tours: "true", format: :json }
         it { expect(JSON.parse(response.body)["feeds"].map{|feed| feed["data"]["id"]}).to eq([old_tour.id, old_entourage.id]) }
+      end
+
+      context "filter timerange" do
+        let!(:my_entourage) { FactoryGirl.create(:entourage, :joined, join_request_user: user, user: user, updated_at: 1.hour.ago, created_at: 1.hour.ago, status: :open) }
+        let!(:my_old_entourage) { FactoryGirl.create(:entourage, :joined, join_request_user: user, user: user, updated_at: 2.hour.ago, created_at: 24.hour.ago, status: :open) }
+        let!(:my_older_entourage) { FactoryGirl.create(:entourage, :joined, join_request_user: user, user: user, updated_at: 3.hour.ago, created_at: 72.hour.ago, status: :open) }
+        before { get :index, token: user.token, time_range: 48 }
+        it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([my_entourage.id, my_old_entourage.id, entourage.id]) }
       end
     end
   end

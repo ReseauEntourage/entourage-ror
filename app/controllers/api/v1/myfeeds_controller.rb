@@ -30,10 +30,6 @@ module Api
         params[:status].try(:downcase)=="closed" ? "closed" : "open"
       end
 
-      def time_range
-        params[:time_range] || 365*24
-      end
-
       def author
         current_user if params[:created_by_me] == "true"
       end
