@@ -32,7 +32,12 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                                                    "phone"=>user.organization.phone,
                                                    "address"=>user.organization.address,
                                                    "logo_url"=>nil},
-                                  "stats"=>{"tour_count"=>0, "encounter_count"=>0}}})
+                                  "stats"=>{
+                                      "tour_count"=>0,
+                                      "encounter_count"=>0,
+                                      "entourage_count"=>0,
+                                  }
+                                 }})
         end
       end
 
@@ -75,6 +80,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
       let!(:encounter2) { create :encounter, tour: tour1 }
       let!(:encounter3) { create :encounter, tour: tour2 }
       let!(:encounter4) { create :encounter, tour: tour3 }
+      let!(:entourage) { create :entourage, user: user }
 
       before { post 'login', user: {phone: user.phone, sms_code: "123456"}, format: 'json' }
       it { expect(JSON.parse(response.body)).to eq({"user"=>{"id"=>user.id,
@@ -84,7 +90,17 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                                                              "last_name"=> "Doe",
                                                              "user_type"=>"pro",
                                                              "token"=>user.token,
-                                                             "avatar_url"=>"https://foobar.s3-eu-west-1.amazonaws.com/300x300/avatar.jpg", "organization"=>{"name"=>user.organization.name, "description"=>"Association description", "phone"=>user.organization.phone, "address"=>user.organization.address, "logo_url"=>nil}, "stats"=>{"tour_count"=>2, "encounter_count"=>3}}}) }
+                                                             "avatar_url"=>"https://foobar.s3-eu-west-1.amazonaws.com/300x300/avatar.jpg",
+                                                             "organization"=>{"name"=>user.organization.name,
+                                                                              "description"=>"Association description",
+                                                                              "phone"=>user.organization.phone,
+                                                                              "address"=>user.organization.address,
+                                                                              "logo_url"=>nil},
+                                                             "stats"=>{
+                                                                 "tour_count"=>2,
+                                                                 "encounter_count"=>3,
+                                                                 "entourage_count"=>1,
+                                                             }}}) }
     end
 
     context "blocked user" do

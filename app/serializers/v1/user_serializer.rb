@@ -19,7 +19,8 @@ module V1
     def stats
       {
           tour_count: object.tours.count,
-          encounter_count: object.encounters.count
+          encounter_count: object.encounters.count,
+          entourage_count: object.entourages.count
       }
     end
 
