@@ -215,7 +215,8 @@
     "<span class="hljs-attribute">token</span>": <span class="hljs-value"><span class="hljs-string">"FAKETOKEN"</span></span>,
     "<span class="hljs-attribute">stats</span>": <span class="hljs-value">{
       "<span class="hljs-attribute">tour_count</span>": <span class="hljs-value"><span class="hljs-number">0</span></span>,
-      "<span class="hljs-attribute">encounter_count</span>": <span class="hljs-value"><span class="hljs-number">0</span>
+      "<span class="hljs-attribute">encounter_count</span>": <span class="hljs-value"><span class="hljs-number">0</span></span>,
+      "<span class="hljs-attribute">entourage_count</span>": <span class="hljs-value"><span class="hljs-number">0</span>
     </span>}</span>,
     "<span class="hljs-attribute">user_type</span>": <span class="hljs-value"><span class="hljs-string">"pro"</span></span>,
     "<span class="hljs-attribute">avatar_url</span>": <span class="hljs-value"><span class="hljs-string">"http://foo.com/bar.jpg"</span></span>,
@@ -246,7 +247,7 @@
             <span class="hljs-string">"user_type"</span>: <span class="hljs-string">"pro"</span>,
             <span class="hljs-string">"avatar_url"</span>: <span class="hljs-string">"http://foo.com/bar.jpg"</span>,
             <span class="hljs-string">"organization"</span>:nil},
-            <span class="hljs-string">"stats"</span>:{<span class="hljs-string">"tour_count"</span>:<span class="hljs-number">0</span>,<span class="hljs-string">"encounter_count"</span>:<span class="hljs-number">0</span>}
+            <span class="hljs-string">"stats"</span>:{<span class="hljs-string">"tour_count"</span>:<span class="hljs-number">0</span>,<span class="hljs-string">"encounter_count"</span>:<span class="hljs-number">0</span>, <span class="hljs-string">"entourage_count"</span>: <span class="hljs-number">0</span>}
         }}</code></pre><div style="height: 1px;"></div></div></div><div class="title"><strong>Response&nbsp;&nbsp;<code>401</code></strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json; charset=utf-8</span></code></pre><div style="height: 1px;"></div><h5>Body</h5><pre><code>{
   "<span class="hljs-attribute">message</span>": <span class="hljs-value"><span class="hljs-string">"Invalid Facebook token"</span>
 </span>}</code></pre><div style="height: 1px;"></div></div></div><div class="title"><strong>Response&nbsp;&nbsp;<code>401</code></strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json; charset=utf-8</span></code></pre><div style="height: 1px;"></div><h5>Body</h5><pre><code>{
@@ -286,9 +287,10 @@ user_type : (required, string) ... Type <span class="hljs-keyword">of</span> use
     "<span class="hljs-attribute">first_name</span>": <span class="hljs-value"><span class="hljs-string">"Judge"</span></span>,
     "<span class="hljs-attribute">last_name</span>": <span class="hljs-value"><span class="hljs-string">"Dredd"</span></span>,
     "<span class="hljs-attribute">token</span>": <span class="hljs-value"><span class="hljs-string">"FAKETOKEN"</span></span>,
-    "<span class="hljs-attribute">stats</span>": <span class="hljs-value">{
+    "<span class="hljs-attribute">age </span>": <span class="hljs-value">{
       "<span class="hljs-attribute">tour_count</span>": <span class="hljs-value"><span class="hljs-number">0</span></span>,
-      "<span class="hljs-attribute">encounter_count</span>": <span class="hljs-value"><span class="hljs-number">0</span>
+      "<span class="hljs-attribute">encounter_count</span>": <span class="hljs-value"><span class="hljs-number">0</span></span>,
+      "<span class="hljs-attribute">entourage_count</span>": <span class="hljs-value"><span class="hljs-number">0</span>
     </span>}</span>,
     "<span class="hljs-attribute">organization</span>": <span class="hljs-value">{
       "<span class="hljs-attribute">name</span>": <span class="hljs-value"><span class="hljs-string">"org name"</span></span>,
@@ -319,7 +321,8 @@ user_type : (required, string) ... Type <span class="hljs-keyword">of</span> use
     "<span class="hljs-attribute">token</span>": <span class="hljs-value"><span class="hljs-string">"FAKETOKEN"</span></span>,
     "<span class="hljs-attribute">stats</span>": <span class="hljs-value">{
       "<span class="hljs-attribute">tour_count</span>": <span class="hljs-value"><span class="hljs-number">0</span></span>,
-      "<span class="hljs-attribute">encounter_count</span>": <span class="hljs-value"><span class="hljs-number">0</span>
+      "<span class="hljs-attribute">encounter_count</span>": <span class="hljs-value"><span class="hljs-number">0</span></span>,
+      "<span class="hljs-attribute">entourage_count</span>": <span class="hljs-value"><span class="hljs-number">0</span>
     </span>}</span>,
     "<span class="hljs-attribute">organization</span>": <span class="hljs-value">{
       "<span class="hljs-attribute">name</span>": <span class="hljs-value"><span class="hljs-string">"org name"</span></span>,
@@ -360,7 +363,8 @@ user_type : (required, string) ... Type <span class="hljs-keyword">of</span> use
     </span>}</span>,
     "<span class="hljs-attribute">stats</span>": <span class="hljs-value">{
       "<span class="hljs-attribute">tour_count</span>": <span class="hljs-value"><span class="hljs-number">5</span></span>,
-      "<span class="hljs-attribute">encounter_count</span>": <span class="hljs-value"><span class="hljs-number">5</span>
+      "<span class="hljs-attribute">encounter_count</span>": <span class="hljs-value"><span class="hljs-number">5</span></span>,
+      "<span class="hljs-attribute">entourage_count</span>": <span class="hljs-value"><span class="hljs-number">0</span>
     </span>}
   </span>}
 </span>}</code></pre><div style="height: 1px;"></div></div></div><div class="title"><strong>Response&nbsp;&nbsp;<code>400</code></strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json; charset=utf-8</span></code></pre><div style="height: 1px;"></div></div></div><div class="title"><strong>Response&nbsp;&nbsp;<code>404</code></strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json; charset=utf-8</span></code></pre><div style="height: 1px;"></div><h5>Body</h5><pre><code>Unknow phone number : no user <span class="hljs-keyword">with</span> the given phone number could be found</code></pre><div style="height: 1px;"></div></div></div></div></div></section><section id="newsletter" class="resource-group"><h2 class="group-heading">Newsletter <a href="#newsletter" class="permalink">&para;</a></h2><p>Newsletter subscription related resources of the <strong>Entourage API</strong></p>
@@ -1610,7 +1614,7 @@ closed: either (created and closed by me)</p>
     "<span class="hljs-attribute">status</span>": <span class="hljs-value"><span class="hljs-number">401</span></span>,
     "<span class="hljs-attribute">message</span>": <span class="hljs-value"><span class="hljs-string">"Please sign-in"</span>
   </span>}
-</span>}</code></pre><div style="height: 1px;"></div></div></div></div></div></section></div></div></div><p style="text-align: center;" class="text-muted">Generated by&nbsp;<a href="https://github.com/danielgtaylor/aglio" class="aglio">aglio</a>&nbsp;on 15 Sep 2016</p><script>/* eslint-env browser */
+</span>}</code></pre><div style="height: 1px;"></div></div></div></div></div></section></div></div></div><p style="text-align: center;" class="text-muted">Generated by&nbsp;<a href="https://github.com/danielgtaylor/aglio" class="aglio">aglio</a>&nbsp;on 27 Sep 2016</p><script>/* eslint-env browser */
 /* eslint quotes: [2, "single"] */
 'use strict';
 
