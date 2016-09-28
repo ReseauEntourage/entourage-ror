@@ -102,6 +102,7 @@ describe Api::V1::FeedsController do
         let!(:entourage_i_joined) { FactoryGirl.create(:entourage, :joined, join_request_user: user, updated_at: 2.hour.ago, created_at: 2.hour.ago) }
         let!(:tour_i_joined) { FactoryGirl.create(:tour, :joined, join_request_user: user, updated_at: 3.hour.ago, created_at: 2.hour.ago) }
         let!(:tour_not_requested) { FactoryGirl.create(:tour, updated_at: 2.hour.ago, created_at: 2.hour.ago) }
+        let!(:tour_not_requested_join_request) { FactoryGirl.create(:join_request, joinable: tour_not_requested, status: JoinRequest::ACCEPTED_STATUS) }
         before { get :index, token: user.token, show_tours: "true", show_my_tours_only: "true" }
         it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([entourage_i_created.id, entourage_i_joined.id, tour_i_joined.id]) }
       end
@@ -109,6 +110,7 @@ describe Api::V1::FeedsController do
       context "show only my entourages" do
         let!(:entourage_i_created) { FactoryGirl.create(:entourage, :joined, join_request_user: user, user: user, updated_at: 1.hour.ago, created_at: 1.hour.ago) }
         let!(:entourage_not_requested) { FactoryGirl.create(:entourage, updated_at: 2.hour.ago, created_at: 2.hour.ago) }
+        let!(:entourage_not_requested_join_request) { FactoryGirl.create(:join_request, joinable: entourage_not_requested, status: JoinRequest::ACCEPTED_STATUS) }
         let!(:tour_i_joined) { FactoryGirl.create(:tour, :joined, join_request_user: user, updated_at: 3.hour.ago, created_at: 2.hour.ago) }
         let!(:tour_i_created) { FactoryGirl.create(:tour, :joined, join_request_user: user, user: user, updated_at: 2.hour.ago, created_at: 2.hour.ago) }
         before { get :index, token: user.token, show_tours: "true", show_my_entourages_only: "true" }
@@ -118,8 +120,10 @@ describe Api::V1::FeedsController do
       context "show only my entourages and my tours" do
         let!(:entourage_i_created) { FactoryGirl.create(:entourage, :joined, join_request_user: user, user: user, updated_at: 1.hour.ago, created_at: 1.hour.ago) }
         let!(:entourage_not_requested) { FactoryGirl.create(:entourage, updated_at: 2.hour.ago, created_at: 2.hour.ago) }
+        let!(:entourage_not_requested_join_request) { FactoryGirl.create(:join_request, joinable: entourage_not_requested, status: JoinRequest::ACCEPTED_STATUS) }
         let!(:tour_i_joined) { FactoryGirl.create(:tour, :joined, join_request_user: user, updated_at: 3.hour.ago, created_at: 2.hour.ago) }
         let!(:tour_not_requested) { FactoryGirl.create(:tour, updated_at: 2.hour.ago, created_at: 2.hour.ago) }
+        let!(:tour_not_requested_join_request) { FactoryGirl.create(:join_request, joinable: tour_not_requested, status: JoinRequest::ACCEPTED_STATUS) }
         before { get :index, token: user.token, show_tours: "true", show_my_entourages_only: "true", show_my_tours_only: "true" }
         it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([entourage_i_created.id, tour_i_joined.id]) }
       end
