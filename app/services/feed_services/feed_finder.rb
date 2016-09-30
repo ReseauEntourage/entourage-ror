@@ -44,6 +44,10 @@ module FeedServices
 
       if tour_status && entourage_status
         feeds = feeds.where("(feedable_type='Entourage' AND feeds.status IN (?)) OR (feedable_type='Tour' AND feeds.status IN (?))", entourage_status, tour_status)
+      elsif tour_status
+          feeds = feeds.where("feedable_type='Tour' AND feeds.status IN (?)", tour_status)
+      elsif entourage_status
+          feeds = feeds.where("feedable_type='Entourage' AND feeds.status IN (?)", entourage_status)
       end
 
       #If we have both created_by_me filter AND invited_in filter, then we look for created_by_me OR invited_in feeds

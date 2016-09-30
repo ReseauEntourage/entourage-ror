@@ -23,11 +23,26 @@ module Api
       end
 
       def tour_status
-        params[:status].try(:downcase)=="closed" ? ["freezed"] : ["ongoing", "closed"]
+        if params[:status].try(:downcase)=="closed"
+          tour_status = ["freezed", "closed"]
+        elsif params[:status].try(:downcase)=="all"
+          tour_status = nil
+        else
+          tour_status = ["ongoing"]
+        end
+        tour_status
       end
 
       def entourage_status
-        params[:status].try(:downcase)=="closed" ? "closed" : "open"
+        if params[:status].try(:downcase)=="closed"
+          entourage_status = "closed"
+        elsif params[:status].try(:downcase)=="open"
+          entourage_status = "open"
+        else
+          entourage_status = nil
+          #here no filter should be applied on status
+        end
+        entourage_status
       end
 
       def author
