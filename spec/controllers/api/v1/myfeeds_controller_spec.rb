@@ -25,7 +25,7 @@ describe Api::V1::MyfeedsController do
         let!(:entourage_i_created) { FactoryGirl.create(:entourage, :joined, join_request_user: user, user: user, updated_at: 1.hour.ago) }
         let!(:entourage_i_joined) { FactoryGirl.create(:entourage, :joined, join_request_user: user, updated_at: 2.hour.ago) }
         before { get :index, token: user.token }
-        it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([entourage_i_created.id, entourage_i_joined.id]) }
+        it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([]) }
       end
 
       context "last_message" do
@@ -37,12 +37,12 @@ describe Api::V1::MyfeedsController do
           let!(:chat_message2) { FactoryGirl.create(:chat_message, messageable: entourage, created_at: DateTime.parse("24/01/2000"), updated_at: DateTime.parse("24/01/2000"), content: "bar") }
           let!(:chat_message3) { FactoryGirl.create(:chat_message, messageable: tour, created_at: DateTime.parse("11/01/2000"), updated_at: DateTime.parse("11/01/2000"), content: "tour_foo") }
           before { get :index, token: user.token }
-          it { expect(result["feeds"].map {|feed| feed["data"]["last_message"]} ).to eq([{"text"=>"foo", "author"=>{"first_name"=>"John", "last_name"=>"Doe"}}, {"text"=>"tour_foo", "author"=>{"first_name"=>"John", "last_name"=>"Doe"}}]) }
+          it { expect(result["feeds"].map {|feed| feed["data"]["last_message"]} ).to eq([{"text"=>"tour_foo", "author"=>{"first_name"=>"John", "last_name"=>"Doe"}}]) }
         end
 
         context "has no messages" do
           before { get :index, token: user.token }
-          it { expect(result["feeds"].map {|feed| feed["data"]["last_message"]} ).to eq([nil, nil]) }
+          it { expect(result["feeds"].map {|feed| feed["data"]["last_message"]} ).to eq([nil]) }
         end
 
         context "has pending join_request" do
@@ -50,7 +50,7 @@ describe Api::V1::MyfeedsController do
             entourage.join_requests.last.update(message: "foo_bar", status: "pending")
           end
           before { get :index, token: user.token }
-          it { expect(result["feeds"].map {|feed| feed["data"]["last_message"]} ).to eq([{"text"=>"1 nouvelle demande pour rejoindre votre entourage", "author"=>nil}, nil]) }
+          it { expect(result["feeds"].map {|feed| feed["data"]["last_message"]} ).to eq([nil]) }
         end
 
         context "has pending join_request and messages" do
@@ -60,7 +60,7 @@ describe Api::V1::MyfeedsController do
             end
             let!(:chat_message1) { FactoryGirl.create(:chat_message, messageable: entourage, created_at: DateTime.parse("10/01/2016"), updated_at: DateTime.parse("10/01/2016"), content: "foo") }
             before { get :index, token: user.token }
-            it { expect(result["feeds"].map {|feed| feed["data"]["last_message"]} ).to eq([{"text"=>"foo", "author"=>{"first_name"=>"John", "last_name"=>"Doe"}}, nil]) }
+            it { expect(result["feeds"].map {|feed| feed["data"]["last_message"]} ).to eq([nil]) }
           end
 
           context "join requests more recent that messages" do
@@ -69,7 +69,7 @@ describe Api::V1::MyfeedsController do
             end
             let!(:chat_message1) { FactoryGirl.create(:chat_message, messageable: entourage, created_at: DateTime.parse("10/01/2015"), updated_at: DateTime.parse("10/01/2015"), content: "foo") }
             before { get :index, token: user.token }
-            it { expect(result["feeds"].map {|feed| feed["data"]["last_message"]} ).to eq([{"text"=>"1 nouvelle demande pour rejoindre votre entourage", "author"=>nil}, nil]) }
+            it { expect(result["feeds"].map {|feed| feed["data"]["last_message"]} ).to eq([nil]) }
           end
         end
       end
@@ -83,12 +83,12 @@ describe Api::V1::MyfeedsController do
 
         context "get active feeds" do
           before { get :index, token: user.token, status: "active" }
-          it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([entourage_open.id, tour_ongoing.id, tour_closed.id]) }
+          it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([tour_ongoing.id]) }
         end
 
         context "get active feeds" do
           before { get :index, token: user.token, status: "closed" }
-          it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([entourage_closed.id, tour_freezed.id]) }
+          it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([entourage_closed.id, tour_closed.id, tour_freezed.id]) }
         end
       end
 
@@ -97,7 +97,7 @@ describe Api::V1::MyfeedsController do
         let!(:my_old_entourage) { FactoryGirl.create(:entourage, :joined, join_request_user: user, user: user, updated_at: 2.hour.ago, created_at: 24.hour.ago, status: :open) }
         let!(:my_older_entourage) { FactoryGirl.create(:entourage, :joined, join_request_user: user, user: user, updated_at: 3.hour.ago, created_at: 72.hour.ago, status: :open) }
         before { get :index, token: user.token, time_range: 48 }
-        it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([my_entourage.id, my_old_entourage.id]) }
+        it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([]) }
       end
 
       context "filter created_by_me" do
@@ -106,7 +106,7 @@ describe Api::V1::MyfeedsController do
         let!(:my_tour) { FactoryGirl.create(:tour, :joined, join_request_user: user, user: user, updated_at: 3.hours.ago, status: :ongoing) }
         let!(:other_tour) { FactoryGirl.create(:tour, :joined, join_request_user: user, updated_at: 3.hours.ago, status: :ongoing) }
         before { get :index, token: user.token, created_by_me: "true" }
-        it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([my_entourage.id, my_tour.id]) }
+        it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([my_tour.id]) }
       end
 
       context "filter accepted_invitation" do
@@ -118,7 +118,7 @@ describe Api::V1::MyfeedsController do
         let!(:tour_invitation) { FactoryGirl.create(:entourage_invitation, :accepted, invitee: user, invitable: invited_tour) }
         let!(:other_tour) { FactoryGirl.create(:tour, :joined, join_request_user: user, updated_at: 3.hours.ago, status: :ongoing) }
         before { get :index, token: user.token, accepted_invitation: "true" }
-        it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([invited_entourage.id, invited_tour.id]) }
+        it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([invited_tour.id]) }
       end
 
       context "filter created_by_me OR accepted_invitation" do
@@ -133,7 +133,7 @@ describe Api::V1::MyfeedsController do
         let!(:tour_invitation) { FactoryGirl.create(:entourage_invitation, :accepted, invitee: user, invitable: invited_tour) }
         let!(:other_tour) { FactoryGirl.create(:tour, :joined, join_request_user: user, updated_at: 93.minutes.ago, status: :ongoing) }
         before { get :index, token: user.token, created_by_me: "true", accepted_invitation: "true"  }
-        it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([my_entourage.id, invited_entourage.id, my_tour.id, invited_tour.id]) }
+        it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([my_tour.id, invited_tour.id]) }
       end
     end
   end

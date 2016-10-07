@@ -29,7 +29,7 @@ FactoryGirl.define do
 
     trait :joined do
       after(:create) do |tour, evaluator|
-        FactoryGirl.create(:join_request, joinable: tour, user: evaluator.join_request_user, status: JoinRequest::ACCEPTED_STATUS)
+        evaluator.join_request_user.join_requests.create(joinable: tour, status: JoinRequest::ACCEPTED_STATUS)
       end
     end
   end
