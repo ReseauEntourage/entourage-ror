@@ -121,6 +121,12 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
       before { post 'login', user: {phone: user.phone, sms_code: "123456"}, format: 'json' }
       it { expect(response.status).to eq(200) }
     end
+
+    context "apple formatted phone number" do
+      let!(:user) { create :public_user, phone: "+40724593579", sms_code: "123456"}
+      before { post 'login', user: {phone: "+40 (724) 593 579", sms_code: "123456"}, format: 'json' }
+      it { expect(response.status).to eq(200) }
+    end
   end
 
   describe 'PATCH update' do
@@ -228,6 +234,10 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
       it { expect(response.status).to eq(201) }
     end
 
+    context "user with Apple formated phone number" do
+      before { post 'create', {user: {phone: "+40 (724) 593 579"}} }
+      it { expect(User.last.phone).to eq("+40724593579") }
+    end
 
     context "invalid params" do
       it "doesn't create a new user" do

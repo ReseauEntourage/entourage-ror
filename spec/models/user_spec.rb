@@ -65,6 +65,7 @@ describe User, :type => :model do
     it { expect(FactoryGirl.build(:pro_user, phone: '+33600000000').save).to be true } #Apple account
     it { expect(FactoryGirl.build(:pro_user, phone: '+32-2-555-12-12').save).to be true } #belgian number
     it { expect(FactoryGirl.build(:pro_user, phone: '+1-999-999-9999').save).to be true } #canadian number
+    it { expect(FactoryGirl.build(:public_user, phone: '+40 (724) 593 579').save).to be true } #Apple formatted
   end
 
   describe "sms_code" do

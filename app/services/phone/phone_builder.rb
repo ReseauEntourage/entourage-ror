@@ -6,7 +6,7 @@ module Phone
 
     def format
       return if @phone.nil?
-      @phone = @phone.gsub(/[\s.-]/, "")
+      @phone = @phone.gsub(/[\s.()-]/, "")
       add_international_code_for_french_numbers
       @phone
     end
