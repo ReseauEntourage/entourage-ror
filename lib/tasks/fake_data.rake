@@ -64,21 +64,22 @@ namespace :fake_data do
 
 
   desc "create tours"
-  task :tours, [:number_of_tours] => [:environment] do |t, args|
-    number_of_tours = args[:number_of_tours].to_i
+  task :tours, [:tours_nb, :users_nb] => [:environment] do |t, args|
+    tours_nb = args[:tours_nb].to_i
+    users_nb = args[:users_nb].to_i
 
     values = Proc.new do |index|
       array = [DateTime.now,
                DateTime.now,
-               "#{SecureRandom.uuid}@mail.com",
-               "+336#{99999999-index}"].map {|val| "'#{val}'"}
+               "medical",
+               index%users_nb].map {|val| "'#{val}'"}
                   .join(",")
       "(#{array})"
     end
 
     insert_batch(table: "tours",
-                 keys: "(created_at, updated_at, email, phone)",
-                 number: number_of_tours,
+                 keys: "(created_at, updated_at, tour_type, user_id)",
+                 number: tours_nb,
                  &values)
 
     puts "Done"
@@ -86,21 +87,49 @@ namespace :fake_data do
 
 
   desc "create tours points"
-  task :tours, [:number_of_tour_points] => [:environment] do |t, args|
-    number_of_tour_points = args[:number_of_tour_points].to_i
+  task :tour_points, [:tour_points_nb, :tours_nb] => [:environment] do |t, args|
+    tour_points_nb = args[:tour_points_nb].to_i
+    tours_nb = args[:tours_nb].to_i
 
     values = Proc.new do |index|
       array = [DateTime.now,
                DateTime.now,
-               "#{SecureRandom.uuid}@mail.com",
-               "+336#{99999999-index}"].map {|val| "'#{val}'"}
+               index%tours_nb,
+               2.48,
+               49.5,
+               DateTime.now].map {|val| "'#{val}'"}
                   .join(",")
       "(#{array})"
     end
 
     insert_batch(table: "tour_points",
-                 keys: "(created_at, updated_at, email, phone)",
-                 number: number_of_tour_points,
+                 keys: "(created_at, updated_at, tour_id, latitude, longitude, passing_time)",
+                 number: tour_points_nb,
+                 &values)
+
+    puts "Done"
+  end
+
+
+  desc "create tours join_request"
+  task :tours_join_requests, [:tour_join_requests_nb, :tours_nb, :users_nb] => [:environment] do |t, args|
+    tour_join_requests_nb = args[:tour_join_requests_nb].to_i
+    tours_nb = args[:tours_nb].to_i
+
+    values = Proc.new do |index|
+      array = [DateTime.now,
+               DateTime.now,
+               index%users_nb,
+               2.48,
+               49.5,
+               DateTime.now].map {|val| "'#{val}'"}
+                  .join(",")
+      "(#{array})"
+    end
+
+    insert_batch(table: "join_requests",
+                 keys: "(created_at, updated_at, user_id, joinable_id, joinable_type)",
+                 number: tour_join_requests_nb,
                  &values)
 
     puts "Done"
