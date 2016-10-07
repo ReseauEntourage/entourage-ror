@@ -31,6 +31,12 @@ RSpec.describe Api::V1::RegistrationRequestsController, type: :controller do
       it { expect(response.status).to eq(201) }
     end
 
+    context "with valid params" do
+      before { post :create, {registration_request: valid_attributes} }
+      it { expect(RegistrationRequest.count).to eq(1) }
+      it { expect(response.status).to eq(201) }
+    end
+
     context "with invalid params" do
       before { post :create, {registration_request: invalid_attributes} }
       it { expect(RegistrationRequest.count).to eq(0) }
