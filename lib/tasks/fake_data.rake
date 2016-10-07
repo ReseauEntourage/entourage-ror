@@ -16,8 +16,8 @@ namespace :fake_data do
 
 
   desc "create users"
-  task :users, [:number_of_users] => [:environment] do |t, args|
-    number_of_users = args[:number_of_users].to_i
+  task :users, [:users_nb] => [:environment] do |t, args|
+    users_nb = args[:users_nb].to_i
 
     values = Proc.new do |index|
       array = [DateTime.now,
@@ -30,11 +30,83 @@ namespace :fake_data do
 
     insert_batch(table: "users",
                  keys: "(created_at, updated_at, email, phone)",
-                 number: number_of_users,
+                 number: users_nb,
                  &values)
 
     puts "Done"
   end
+
+
+  desc "create entourages"
+  task :entourages, [:entourages_nb, :users_nb] => [:environment] do |t, args|
+    entourages_nb = args[:entourages_nb].to_i
+    users_nb = args[:users_nb].to_i
+
+    values = Proc.new do |index|
+      array = [DateTime.now,
+               DateTime.now,
+               "title",
+               "ask_for_help",
+               index%users_nb,
+               2.48,
+               49.5].map {|val| "'#{val}'"}
+                  .join(",")
+      "(#{array})"
+    end
+
+    insert_batch(table: "entourages",
+                 keys: "(created_at, updated_at, title, entourage_type, user_id, latitude, longitude)",
+                 number: entourages_nb,
+                 &values)
+
+    puts "Done"
+  end
+
+
+  desc "create tours"
+  task :tours, [:number_of_tours] => [:environment] do |t, args|
+    number_of_tours = args[:number_of_tours].to_i
+
+    values = Proc.new do |index|
+      array = [DateTime.now,
+               DateTime.now,
+               "#{SecureRandom.uuid}@mail.com",
+               "+336#{99999999-index}"].map {|val| "'#{val}'"}
+                  .join(",")
+      "(#{array})"
+    end
+
+    insert_batch(table: "tours",
+                 keys: "(created_at, updated_at, email, phone)",
+                 number: number_of_tours,
+                 &values)
+
+    puts "Done"
+  end
+
+
+  desc "create tours points"
+  task :tours, [:number_of_tour_points] => [:environment] do |t, args|
+    number_of_tour_points = args[:number_of_tour_points].to_i
+
+    values = Proc.new do |index|
+      array = [DateTime.now,
+               DateTime.now,
+               "#{SecureRandom.uuid}@mail.com",
+               "+336#{99999999-index}"].map {|val| "'#{val}'"}
+                  .join(",")
+      "(#{array})"
+    end
+
+    insert_batch(table: "tour_points",
+                 keys: "(created_at, updated_at, email, phone)",
+                 number: number_of_tour_points,
+                 &values)
+
+    puts "Done"
+  end
+
+
 
   def insert_elements(table:, keys:, previous_index:, number_to_insert:, &block)
     puts "Creating #{number_to_insert} #{table}"
