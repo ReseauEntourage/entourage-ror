@@ -115,26 +115,52 @@ namespace :fake_data do
   task :tours_join_requests, [:tour_join_requests_nb, :tours_nb, :users_nb] => [:environment] do |t, args|
     tour_join_requests_nb = args[:tour_join_requests_nb].to_i
     tours_nb = args[:tours_nb].to_i
+    users_nb = args[:users_nb].to_i
 
     values = Proc.new do |index|
       array = [DateTime.now,
                DateTime.now,
                index%users_nb,
-               2.48,
-               49.5,
-               DateTime.now].map {|val| "'#{val}'"}
+               index,
+               "Tour",
+               JoinRequest::ACCEPTED_STATUS].map {|val| "'#{val}'"}
                   .join(",")
       "(#{array})"
     end
 
     insert_batch(table: "join_requests",
-                 keys: "(created_at, updated_at, user_id, joinable_id, joinable_type)",
+                 keys: "(created_at, updated_at, user_id, joinable_id, joinable_type, status)",
                  number: tour_join_requests_nb,
                  &values)
 
     puts "Done"
   end
 
+
+  desc "create entourages join_request"
+  task :entourages_join_requests, [:entourage_join_requests_nb, :entourages_nb, :users_nb] => [:environment] do |t, args|
+    entourage_join_requests_nb = args[:entourage_join_requests_nb].to_i
+    entourages_nb = args[:entourages_nb].to_i
+    users_nb = args[:users_nb].to_i
+
+    values = Proc.new do |index|
+      array = [DateTime.now,
+               DateTime.now,
+               index%users_nb,
+               index,
+               "Entourage",
+               JoinRequest::ACCEPTED_STATUS].map {|val| "'#{val}'"}
+                  .join(",")
+      "(#{array})"
+    end
+
+    insert_batch(table: "join_requests",
+                 keys: "(created_at, updated_at, user_id, joinable_id, joinable_type, status)",
+                 number: entourage_join_requests_nb,
+                 &values)
+
+    puts "Done"
+  end
 
 
   def insert_elements(table:, keys:, previous_index:, number_to_insert:, &block)
