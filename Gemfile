@@ -31,8 +31,9 @@ gem 'aws-sdk',                  '~> 2.2.9'
 gem 'faker',                    '~> 1.6.1'
 gem 'twitter',                  '~> 5.16.0'
 
+gem 'byebug',                 '~> 5.0.0'
 group :development, :test do
-  gem 'byebug',                 '~> 5.0.0'
+
   gem 'spring',                 '~> 1.3.6'
   gem 'spring-commands-rspec',  '~> 1.0.4'
 end
@@ -48,6 +49,7 @@ group :development do
   gem 'derailed',               '~> 0.1.0'
   gem 'stackprof',              '~> 0.2.8'
   gem 'letter_opener',          '~> 1.4.1'
+  gem 'benchmark-ips',          '~> 2.7.2'
 end
 
 group :test do
