@@ -10,18 +10,22 @@ module Storage
 
     def url_for(key:, extra: {})
       expire = extra[:expire] || 3600
-      bucket.object(key).presigned_url(:get, expires_in: expire)
+      bucket.object(key_with_folder(key)).presigned_url(:get, expires_in: expire)
     end
 
     def upload(file:, key:, extra: {})
-      bucket.object(key).upload_file(file, content_type: extra[:content_type])
+      bucket.object(key_with_folder(key)).upload_file(file, content_type: extra[:content_type])
     end
 
     def destroy(key:)
-      bucket.object(key).delete
+      bucket.object(key_with_folder(key)).delete
     end
 
     private
     attr_reader :bucket
+
+    def key_with_folder(key)
+      ENV["ENTOURAGE_AVATARS_FOLDER"] ? "#{ENV["ENTOURAGE_AVATARS_FOLDER"]}/#{key}" : key
+    end
   end
 end
