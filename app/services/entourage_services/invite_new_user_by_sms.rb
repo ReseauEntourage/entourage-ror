@@ -5,6 +5,7 @@ module EntourageServices
       @phone_number = phone_number
       @entourage = entourage
       @inviter = inviter
+      @invitee_sms_code = UserServices::SmsCode.new.code
     end
 
     def send_invite
@@ -32,17 +33,17 @@ module EntourageServices
     end
 
     private
-    attr_reader :phone_number, :entourage, :inviter
+    attr_reader :phone_number, :entourage, :inviter, :invitee_sms_code
 
     def invitee
       return @invitee if @invitee
-      @invitee = UserServices::PublicUserBuilder.new(params: {phone: phone_number}).create(send_sms: false)
+      @invitee = UserServices::PublicUserBuilder.new(params: {phone: phone_number}).create(send_sms: false, sms_code: @invitee_sms_code)
       raise ActiveRecord::RecordInvalid.new(@invitee) unless @invitee.valid?
       @invitee
     end
 
     def message
-      "Bonjour, vous êtes invité à rejoindre un Entourage. Votre code est #{invitee.sms_code}. Retrouvez l'application ici : #{link} ."
+      "Bonjour, vous êtes invité à rejoindre un Entourage. Votre code est #{invitee_sms_code}. Retrouvez l'application ici : #{link} ."
     end
 
     def link
