@@ -26,7 +26,7 @@ module EntourageServices
         invitation_id = Rails.env.test? ? 123 : invite.id
         PushNotificationService.new.send_notification(inviter_name,
                                                       "Invitation à rejoindre un entourage",
-                                                      "Vous ête invité à rejoindre l'entourage de #{inviter_name}",
+                                                      "Vous êtes invité à rejoindre l'entourage de #{inviter_name}",
                                                       User.where(id: invitee.id),
                                                       {
                                                           type: "ENTOURAGE_INVITATION",
