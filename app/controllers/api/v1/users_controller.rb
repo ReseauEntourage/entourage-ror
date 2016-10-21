@@ -71,7 +71,7 @@ module Api
       end
 
       def destroy
-        @current_user.update_columns(deleted: true, phone: "#{@current_user.phone}-#{Time.now.strftime("%Y-%m-%d %H:%M:%S")}")
+        UserServices::DeleteUserService.new(user: @current_user).delete
         render json: @current_user, status: 200, serializer: ::V1::UserSerializer, scope: @current_user
       end
 

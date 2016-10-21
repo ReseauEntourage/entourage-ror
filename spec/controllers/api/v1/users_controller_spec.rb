@@ -339,10 +339,11 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
 
   describe "DELETE destroy" do
     before { Timecop.freeze(Time.parse("10/10/2010").at_beginning_of_day) }
-    let!(:user) { FactoryGirl.create(:pro_user, deleted: false, phone: "0612345678") }
+    let!(:user) { FactoryGirl.create(:pro_user, deleted: false, phone: "0612345678", email: "foo@bar.com") }
     before { delete :destroy, id: user.to_param, token: user.token }
     it { expect(user.reload.deleted).to be true }
     it { expect(user.reload.phone).to eq("+33612345678-2010-10-10 00:00:00") }
+    it { expect(user.reload.email).to eq("foo@bar.com-2010-10-10 00:00:00") }
     it { expect(response.status).to eq(200) }
   end
 end
