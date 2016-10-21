@@ -17,5 +17,9 @@ FactoryGirl.define do
         FactoryGirl.create(:join_request, joinable: entourage, user: evaluator.join_request_user, status: JoinRequest::ACCEPTED_STATUS)
       end
     end
+
+    trait :blacklisted do
+      status "blacklisted"
+    end
   end
 end

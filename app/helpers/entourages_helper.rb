@@ -10,8 +10,9 @@ module EntouragesHelper
 
   def entourage_state_label entourage
     state_to_class = {
-      "open"   => "label-success",
-      "closed" => "label-danger"
+      "open"        => "label-success",
+      "closed"      => "label-danger",
+      "blacklisted" => "label-default"
     }
     content_tag :span, entourage.status, class: "label #{state_to_class[entourage.status]}"
   end

@@ -2,7 +2,7 @@ class Entourage < ActiveRecord::Base
   include FeedsConcern
 
   ENTOURAGE_TYPES  = ['ask_for_help', 'contribution']
-  ENTOURAGE_STATES = ['open', 'closed']
+  ENTOURAGE_STATUS = ['open', 'closed', 'blacklisted']
 
   belongs_to :user
   has_many :join_requests, as: :joinable, dependent: :destroy
@@ -12,8 +12,10 @@ class Entourage < ActiveRecord::Base
   has_many :entourage_invitations, as: :invitable, dependent: :destroy
 
   validates_presence_of :status, :title, :entourage_type, :user_id, :latitude, :longitude, :number_of_people
-  validates_inclusion_of :status, in: ['open', 'closed']
+  validates_inclusion_of :status, in: ENTOURAGE_STATUS
   validates_inclusion_of :entourage_type, in: ENTOURAGE_TYPES
+
+  scope :visible, -> { where.not(status: 'blacklisted') }
 
   #An entourage can never be freezed
   def freezed?
