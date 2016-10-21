@@ -1,0 +1,30 @@
+<%= link_to('<- Retourner à la liste des entourages', admin_entourages_path) %>
+</br>
+</br>
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <div class="row">
+      <div class='col-sm-8'>
+        <h3 class="panel-title"><%= "#{@entourage.id} - #{@entourage.title.try(:capitalize)}" %></h3>
+      </div>
+      <div class='col-sm-4 '>
+        <div class='pull-right'>
+          <%= entourage_state_label(@entourage) %>
+          <%= entourage_type_label(@entourage) %>
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+
+  <div class="panel-body">
+    <%= render partial: "admin/entourages/show/details", entourage: @entourage %>
+    <%= render partial: "admin/entourages/show/members_list", members: @members %>
+    <%= render partial: "admin/entourages/show/invitations_list", invitations: @invitations %>
+    <!-- <%= render partial: "admin/entourages/show/join_requests_list", join_requests: @join_requests %> -->
+    <%= render partial: "admin/entourages/show/chat_messages_list", chat_messages: @chat_messages %>
+  </div>
+  <!-- <div class="panel-footer"></div> -->
+</div>

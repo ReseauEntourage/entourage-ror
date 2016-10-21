@@ -1,7 +1,8 @@
 class Entourage < ActiveRecord::Base
   include FeedsConcern
 
-  ENTOURAGE_TYPES=['ask_for_help', 'contribution']
+  ENTOURAGE_TYPES  = ['ask_for_help', 'contribution']
+  ENTOURAGE_STATES = ['open', 'closed']
 
   belongs_to :user
   has_many :join_requests, as: :joinable, dependent: :destroy

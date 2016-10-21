@@ -1,0 +1,29 @@
+<h4>Liste des membres <span class="badge"><%= @members.count %><span></h4>
+
+<table id="members-list" class="table table-striped">
+  <thead>
+    <tr>
+      <th>Prénom / Nom</th>
+      <th>Status</th>
+      <th>Email</th>
+      <th>Phone</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @members.each do |member| %>
+      <tr>
+        <td>
+          <%= link_to "#{member.full_name} (##{member.id})", admin_user_path(member) %>
+          <%- if member.id == @entourage.user.id %>
+            <span class="label label-info">créateur</span>
+          <% end %>
+        </td>
+        <td><%= user_state_label(member.validation_status) %></td>
+        <td><%= member.email %></td>
+        <td><%= member.phone %></td>
+      </tr>
+    <% end %>
+
+  </tbody>
+</table>

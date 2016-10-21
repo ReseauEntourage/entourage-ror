@@ -1,9 +1,13 @@
 module Admin
   class UsersController < Admin::BaseController
-    before_action :set_user, only: [:edit, :update, :banish, :validate]
+    before_action :set_user, only: [:show, :edit, :update, :banish, :validate]
 
     def index
       @users = User.type_pro.includes(:organization).order("last_name ASC").page(params[:page]).per(25)
+    end
+
+    def show
+      render :edit
     end
 
     def edit

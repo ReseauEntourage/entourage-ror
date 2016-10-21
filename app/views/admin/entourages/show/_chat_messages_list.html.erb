@@ -1,0 +1,27 @@
+<h3>Liste des messages <span class="badge"><%= @chat_messages.count %><span></h3>
+
+<table id="chat-messages-list" class="table table-striped">
+  <%- if @chat_messages.any? %>
+    <thead>
+      <tr>
+        <thÉcrit le</th>
+        <th>Mis à jour le</th>
+        <th>Par</th>
+        <th>Message</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% @chat_messages.each do |message| %>
+        <tr>
+          <td><%= message.created_at.to_formatted_s(:long) %></td>
+          <td><%= message.updated_at.to_formatted_s(:long) %></td>
+          <td><%= link_to(message.user, admin_user_path(message.user)) %></td>
+          <td><%= message.content %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  <%- else %>
+    <caption><%= "Il n'y a pas encore de messages."%></caption>
+  <% end %>
+</table>

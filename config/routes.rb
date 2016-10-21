@@ -8,7 +8,7 @@ Rails.application.routes.draw do
 
       resources :generate_tours, only: [:index, :create]
 
-      resources :users, only: [:index, :edit, :update, :new, :create] do
+      resources :users, only: [:index, :show, :edit, :update, :new, :create] do
         collection do
           get 'moderate'
           get 'fake'
@@ -28,7 +28,7 @@ Rails.application.routes.draw do
       resources :newsletter_subscriptions, only: [:index]
       resources :ambassadors, only: [:index, :edit, :update, :new, :create]
       resources :entourage_invitations, only: [:index]
-      resources :entourages, only: [:index]
+      resources :entourages, only: [:index, :show]
       resources :marketing_referers, only: [:index, :edit, :update, :new, :create]
 
       get 'public_user_search' => "users_search#public_user_search"
@@ -64,7 +64,7 @@ Rails.application.routes.draw do
     resources :newsletter_subscriptions, only: [:index]
     resources :ambassadors, only: [:index, :edit, :update, :new, :create]
     resources :entourage_invitations, only: [:index]
-    resources :entourages, only: [:index]
+    resources :entourages, only: [:index, :show]
     resources :marketing_referers, only: [:index, :edit, :update, :new, :create]
 
     get 'public_user_search' => "users_search#public_user_search"
