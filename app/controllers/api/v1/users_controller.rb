@@ -6,6 +6,7 @@ module Api
       #curl -H "X-API-KEY:adc86c761fa8" -H "Content-Type: application/json" -X POST -d '{"user": {"phone": "+3312345567", "sms_code": "11111"}}' "http://localhost:3000/api/v1/login.json"
       def login
         user = UserServices::UserAuthenticator.authenticate_by_phone_and_sms(phone: user_params[:phone], sms_code: user_params[:sms_code])
+        return render_error(code: "INVALID_PHONE_FORMAT", message: "invalid phone number format", status: 401) unless PhoneValidator.new(phone: user_params[:phone]).valid?
         return render_error(code: "UNAUTHORIZED", message: "wrong phone / sms_code", status: 401) unless user
         return render_error(code: "DELETED", message: "user is deleted", status: 401) if user.deleted
 

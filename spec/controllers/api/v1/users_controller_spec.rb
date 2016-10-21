@@ -41,23 +41,26 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
         end
       end
 
-      context 'when sms code is invalid' do
+      context 'invalid sms code' do
         before { post 'login', user: {phone: user.phone, sms_code: "invalid code"}, format: 'json' }
         it { expect(response.status).to eq(401) }
-        it { expect(result).to eq({"error"=>{"code"=>"UNAUTHORIZED", "message"=>"wrong phone / sms_code"}}) }
-        it { expect(assigns(:user)).to be_nil }
+        it { expect(result).to eq({"error"=>{"code"=>"UNAUTHORIZED", "message" => "wrong phone / sms_code"}}) }
+      end
+
+      context 'invalid phone number format' do
+        before { post 'login', user: {phone: "1234x"}, format: 'json' }
+        it { expect(response.status).to eq(401) }
+        it { expect(result).to eq({"error"=>{"code"=>"INVALID_PHONE_FORMAT", "message"=>"invalid phone number format"}}) }
       end
     end
     context 'when user does not exist' do
       context 'using the email' do
         before { post 'login', user: {email: 'not_existing@nowhere.com', sms_code: 'sms code'}, format: 'json' }
         it { expect(response.status).to eq(401) }
-        it { expect(assigns(:user)).to be_nil }
       end
       context 'using the phone number and sms code' do
         before { post 'login', user: {phone: 'phone', sms_code: 'sms code'}, format: 'json' }
         it { expect(response.status).to eq(401) }
-        it { expect(assigns(:user)).to be_nil }
       end
     end
     context 'when user is deleted' do
