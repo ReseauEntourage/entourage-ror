@@ -250,7 +250,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
         post 'create', {user: {phone: "123"}}
         user = User.last
         expect(response.status).to eq(400)
-        expect(result).to eq({"error"=>{"code"=>"CANNOT_CREATE_USER", "message"=>["Phone devrait être au format +33... ou 06..."]}})
+        expect(result).to eq({"error"=>{"code"=>"INVALID_PHONE_FORMAT", "message"=>"Phone devrait être au format +33... ou 06..."}})
       end
     end
 

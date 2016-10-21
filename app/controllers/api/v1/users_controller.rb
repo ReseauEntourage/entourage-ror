@@ -43,6 +43,10 @@ module Api
           on.duplicate do
             render_error(code: "PHONE_ALREADY_EXIST", message: "Phone #{user_params["phone"]} n'est pas disponible", status: 400)
           end
+
+          on.invalid_phone_format do
+            render_error(code: "INVALID_PHONE_FORMAT", message: "Phone devrait être au format +33... ou 06...", status: 400)
+          end
         end
       end
 
