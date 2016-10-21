@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160827100856) do
+ActiveRecord::Schema.define(version: 20161021144302) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -147,7 +147,7 @@ ActiveRecord::Schema.define(version: 20160827100856) do
   end
 
   add_index "join_requests", ["user_id", "joinable_id", "joinable_type", "status"], name: "index_user_joinable_on_join_requests", using: :btree
-  add_index "join_requests", ["user_id", "joinable_id"], name: "index_join_requests_on_user_id_and_joinable_id", unique: true, using: :btree
+  add_index "join_requests", ["user_id", "joinable_id", "joinable_type"], name: "index_join_requests_on_user_and_joinable", unique: true, using: :btree
 
   create_table "login_histories", force: :cascade do |t|
     t.integer  "user_id",      null: false
@@ -329,8 +329,11 @@ ActiveRecord::Schema.define(version: 20160827100856) do
     t.integer  "length",           default: 0
     t.integer  "encounters_count", default: 0, null: false
     t.integer  "number_of_people", default: 0, null: false
+    t.float    "latitude"
+    t.float    "longitude"
   end
 
+  add_index "tours", ["latitude", "longitude"], name: "index_tours_on_latitude_and_longitude", using: :btree
   add_index "tours", ["user_id", "updated_at", "tour_type"], name: "index_tours_on_user_id_and_updated_at_and_tour_type", using: :btree
 
   create_table "tours_users", force: :cascade do |t|
