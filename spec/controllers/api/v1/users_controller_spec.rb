@@ -168,22 +168,30 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
       it { expect(response.status).to eq(401) }
     end
 
-    # describe "upload avatar" do
-    #   let(:avatar) { fixture_file_upload('avatar.jpg', 'image/jpeg') }
-    #
-    #   context "valid params" do
-    #     it "sets user avatar key" do
-    #       stub_request(:put,
-    #                    "https://foobar.s3-eu-west-1.amazonaws.com/avatar_#{user.id}"
-    #       ).to_return(:status => 200,
-    #                   :body => "",
-    #                   :headers => {})
-    #
-    #       patch 'update', token:user.token, user: { avatar: avatar }, format: :json
-    #       expect(user.reload.avatar_key).to eq("avatar_#{user.id}")
-    #     end
-    #   end
-    # end
+    describe "upload avatar" do
+      let(:avatar) { fixture_file_upload('avatar.jpg', 'image/jpeg') }
+
+      context "valid params" do
+        it "sets user avatar key" do
+          patch 'update', token:user.token, user: { avatar: avatar }, format: :json
+          expect(user.reload.avatar_key).to eq("avatar")
+        end
+      end
+    end
+
+    describe "welcome email" do
+      context "user has no email" do
+        let!(:user) { create :public_user, email: nil }
+        before { expect_any_instance_of(MemberMailer).to receive(:welcome).once }
+        it { patch 'update', token: user.token, user: { email:'new@e.mail' }, format: :json }
+      end
+
+      context "user has an email" do
+        let!(:user) { create :public_user, email: "foo@bar.com" }
+        before { expect_any_instance_of(MemberMailer).to receive(:welcome).never }
+        it { patch 'update', token: user.token, user: { email:'new@e.mail' }, format: :json }
+      end
+    end
   end
 
   describe 'code' do

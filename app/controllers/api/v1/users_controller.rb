@@ -15,17 +15,15 @@ module Api
 
       #curl -X PATCH -d '{"user": { "sms_code":"123456"}}' -H "Content-Type: application/json" "http://localhost:3000/api/v1/users/93.json?token=azerty"
       def update
-        return render_error(code: "CANNOT_UPDATE_PHONE", message: "Not allowed to update phone number", status: 400) if user_params.keys.include?("phone")
+        builder = UserServices::PublicUserBuilder.new(params: user_params)
+        builder.update(user: @current_user) do |on|
+          on.success do |user|
+            render json: user, status: 200, serializer: ::V1::UserSerializer, scope: @current_user
+          end
 
-        avatar_file = user_params.delete(:avatar)
-        if avatar_file
-          UserServices::Avatar.new(user: @current_user).upload(file: avatar_file)
-        end
-
-        if @current_user.update_attributes(user_params)
-          render json: @current_user, status: 200, serializer: ::V1::UserSerializer, scope: @current_user
-        else
-          render_error(code: "CANNOT_UPDATE_USER", message: @current_user.errors.full_messages, status: 400)
+          on.failure do |user|
+            render_error(code: "CANNOT_UPDATE_USER", message: user.errors.full_messages, status: 400)
+          end
         end
       end
 

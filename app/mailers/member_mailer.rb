@@ -2,6 +2,11 @@ class MemberMailer < ActionMailer::Base
   default from: "contact@entourage.social"
   add_template_helper(OrganizationHelper)
 
+  def welcome(user)
+    @user = user
+    mail(to: user.email, subject: 'Bienvenue sur Entourage !')
+  end
+
   def tour_report(tour)
     @tour = tour
     @user = tour.user
