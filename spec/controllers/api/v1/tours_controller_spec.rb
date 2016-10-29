@@ -417,6 +417,15 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
       before { put 'update', id: tour.id, token: other_user.token, tour:{tour_type:"medical", status:"ongoing", vehicle_type:"car", distance: 123.456}, format: :json }
       it { expect(response.status).to eq(403) }
     end
+  end
 
+  describe "DELETE delete_all" do
+    before { ENV["STAGING"]="true" }
+    after { ENV["STAGING"]="false" }
+    let!(:user) { FactoryGirl.create(:pro_user) }
+    let!(:tours) { FactoryGirl.create_list(:tour, 2) }
+    before { delete 'delete_all', token: user.token, format: :json }
+    it { expect(response.status).to eq(200) }
+    it { expect(Tour.count).to eq(0) }
   end
 end

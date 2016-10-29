@@ -55,6 +55,11 @@ module Api
         end
       end
 
+      def delete_all
+        Tour.destroy_all if ENV["STAGING"]=="true"
+        render json: {status: :ok}, status: 200
+      end
+
       private
 
       def tour_params
