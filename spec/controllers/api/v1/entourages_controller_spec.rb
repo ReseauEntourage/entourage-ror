@@ -60,6 +60,15 @@ describe Api::V1::EntouragesController do
         it { expect(subject["entourages"].count).to eq(2) }
       end
 
+      context "scope by visible state" do
+        let!(:open_entourage)        { FactoryGirl.create(:entourage, status: "open") }
+        let!(:closed_entourage)      { FactoryGirl.create(:entourage, status: "closed") }
+        let!(:blacklisted_entourage) { FactoryGirl.create(:entourage, status: "blacklisted") }
+
+        before { get :index, token: user.token }
+        it { expect(subject["entourages"].map{ |e| e['id'] }).to match_array([entourage.id, open_entourage.id, closed_entourage.id]) }
+      end
+
       context "filter status" do
         let!(:closed_entourage) { FactoryGirl.create(:entourage, status: "closed") }
         before { get :index, status: "closed", token: user.token }

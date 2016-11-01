@@ -1,0 +1,28 @@
+<%= form_for([:admin, @entourage], :method => :PATCH, html: { class: "form-horizontal", role: "form" }) do |f| %>
+  <%= render partial: "layouts/errors", locals: {obj: @entourage} %>
+
+  <div class="control-group">
+    <%= f.label :title, "Titre", class: "control-label" %>
+    <div class="controls">
+      <%= f.text_field :title, class: "form-control", required: true %>
+    </div>
+  </div>
+
+  <div class="control-group">
+    <%= f.label :description, "Description", class: "control-label" %>
+    <div class="controls">
+      <%= f.text_field :description, class: "form-control", required: true %>
+    </div>
+  </div>
+
+  <div class="control-group">
+    <%= f.label :status, "Status", class: "control-label" %>
+    <div class="controls">
+      <%= f.select :status, Entourage::ENTOURAGE_STATUS, include_blank: false %>
+    </div>
+  </div>
+
+  <br>
+  <%= f.submit "Sauver", class: "btn btn-success" %>
+  <%= link_to "Annuler", admin_entourages_path, class: "btn btn-default" %>
+<% end %>

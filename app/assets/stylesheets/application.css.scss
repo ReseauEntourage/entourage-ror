@@ -14,6 +14,9 @@ $buttons-color: #ef662f;
 @import "ambassador";
 @import "bootstrap-multiselect";
 @import "jquery-ui/datepicker";
+@import "settings";
+@import "utils";
+
 
 body.with-navbar { padding-top: $navbar-height; }
 .navbar-brand { padding: 5px; }

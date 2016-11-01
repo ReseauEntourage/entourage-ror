@@ -45,3 +45,14 @@
     -moz-border-radius: 0px;
     background-image: none;
 }
+
+.o-entourage-title {
+  .label:nth-child(odd) {
+    margin-left: 10px;
+  }
+}
+
+table.admin-table {
+    table-layout: fixed;
+    word-wrap: break-word;
+}

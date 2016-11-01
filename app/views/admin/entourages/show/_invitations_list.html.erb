@@ -1,0 +1,28 @@
+<h4>Liste des invitations <span class="badge"><%= @invitations.count %><span></h4>
+
+<table id="invitations-list" class="table table-striped">
+  <%- if @invitations.any? %>
+    <thead>
+      <tr>
+        <th>Prénom / Nom</th>
+        <th>Status</th>
+        <th>Email</th>
+        <th>Phone</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% @invitations.each do |invitation| %>
+        <tr>
+          <td><%= link_to "#{invitation.invitee.full_name} (##{invitation.invitee.id})", admin_user_path(invitation.invitee) %></td>
+          <td><%= user_state_label(invitation.status) %></td>
+          <td><%= invitation.invitee.email %></td>
+          <td><%= invitation.invitee.phone %></td>
+        </tr>
+      <% end %>
+    </tbody>
+
+  <%- else %>
+    <caption><%= "Il n'y a pas encore d'invitations."%></caption>
+  <% end %>
+</table>

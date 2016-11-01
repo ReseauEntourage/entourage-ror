@@ -55,7 +55,7 @@ class User < ActiveRecord::Base
   def to_s
     "#{id} - #{first_name} #{last_name}"
   end
-  
+
   def full_name
     "#{first_name} #{last_name}"
   end

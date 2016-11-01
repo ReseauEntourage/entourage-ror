@@ -29,7 +29,7 @@ module EntourageServices
     end
 
     def entourages
-      entourages = Entourage.includes(:join_requests, :entourage_invitations, :user)
+      entourages = Entourage.visible.includes(:join_requests, :entourage_invitations, :user)
       entourages = entourages.where(status: status) if status
       entourages = entourages.where(entourage_type: formated_types) if type
       entourages = entourages.within_bounding_box(box) if latitude && longitude
