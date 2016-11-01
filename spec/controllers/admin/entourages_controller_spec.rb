@@ -10,7 +10,7 @@ describe Admin::EntouragesController do
       let!(:entourage_list) { FactoryGirl.create_list(:entourage, 2) }
       before { get :index }
 
-      it { expect(assigns(:entourages)).to eq(entourage_list.reverse) }
+      it { expect(assigns(:entourages)).to match_array(entourage_list) }
     end
 
     context "has no entourages" do
