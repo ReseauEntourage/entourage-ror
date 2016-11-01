@@ -8,6 +8,7 @@ LOCAL_DB_NAME=entourage-dev
 if [ $1 == "prod" ]; then
 	current=$PROD
 else
+  echo "To run on production DB, use ./scripts/restore_local_db.sh prod"
 	current=$STAGING
 fi
 

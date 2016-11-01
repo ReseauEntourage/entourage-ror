@@ -41,6 +41,7 @@ describe Api::V1::Entourages::UsersController do
         context "no join request message" do
           let!(:member) { FactoryGirl.create(:pro_user) }
           let!(:member_join_request) { JoinRequest.create(user: member, joinable: entourage, status: "accepted") }
+          let!(:user_join_request) { JoinRequest.create(user: user, status: "accepted") }
 
           it "sends notif to all entourage members" do
             expect_any_instance_of(PushNotificationService).to receive(:send_notification).with("John D",

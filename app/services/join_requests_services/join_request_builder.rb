@@ -12,7 +12,6 @@ module JoinRequestsServices
 
       join_request = JoinRequest.new(joinable: joinable, user: user, message: message)
       if join_request.save
-        #notify_members(join_request.joinable_type)
         NewJoinRequestNotifyJob.set(wait: 1.minute).perform_later(joinable.class.name,
                                            joinable.id,
                                            user.id,
@@ -26,18 +25,5 @@ module JoinRequestsServices
 
     private
     attr_reader :joinable, :callback, :user, :message
-
-    # def notify_members(type)
-    #   recipients = joinable.members.includes(:join_requests).where(join_requests: {status: "accepted"})
-    #   push_message = message || "Un nouveau membre souhaite rejoindre votre maraude"
-    #   PushNotificationService.new.send_notification(UserPresenter.new(user: user).display_name,
-    #                                                 "Demande en attente",
-    #                                                 push_message,
-    #                                                 recipients,
-    #                                                 {joinable_id: joinable.id,
-    #                                                  joinable_type: type,
-    #                                                  type: "NEW_JOIN_REQUEST",
-    #                                                  user_id: user.id})
-    # end
   end
 end
