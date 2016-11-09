@@ -6,9 +6,21 @@ module Api
       #curl -H "X-API-KEY:adc86c761fa8" -H "Content-Type: application/json" -X POST -d '{"user": {"phone": "+3312345567", "sms_code": "11111"}}' "http://localhost:3000/api/v1/login.json"
       def login
         user = UserServices::UserAuthenticator.authenticate_by_phone_and_sms(phone: user_params[:phone], sms_code: user_params[:sms_code])
-        return render_error(code: "INVALID_PHONE_FORMAT", message: "invalid phone number format", status: 401) unless PhoneValidator.new(phone: user_params[:phone]).valid?
-        return render_error(code: "UNAUTHORIZED", message: "wrong phone / sms_code", status: 401) unless user
-        return render_error(code: "DELETED", message: "user is deleted", status: 401) if user.deleted
+
+        unless PhoneValidator.new(phone: user_params[:phone]).valid?
+          Rails.logger.info "SIGNIN_FAILED: invalid phone number format - params: #{params.inspect}"
+          return render_error(code: "INVALID_PHONE_FORMAT", message: "invalid phone number format", status: 401)
+        end
+
+        unless user
+          Rails.logger.info "SIGNIN_FAILED: wrong phone / sms_code combination - params: #{params.inspect}"
+          return render_error(code: "UNAUTHORIZED", message: "wrong phone / sms_code", status: 401)
+        end
+
+        if user.deleted
+          Rails.logger.info "SIGNIN_FAILED: deleted user - params: #{params.inspect}"
+          return render_error(code: "DELETED", message: "user is deleted", status: 401)
+        end
 
         render json: user, status: 200, serializer: ::V1::UserSerializer, scope: user
       end
@@ -36,14 +48,17 @@ module Api
           end
 
           on.failure do |user|
+            Rails.logger.info "SIGNUP_FAILED: invalid params - params: #{params.inspect}"
             render_error(code: "CANNOT_CREATE_USER", message: user.errors.full_messages, status: 400)
           end
 
           on.duplicate do
+            Rails.logger.info "SIGNUP_FAILED: phone number already exists - params: #{params.inspect}"
             render_error(code: "PHONE_ALREADY_EXIST", message: "Phone #{user_params["phone"]} n'est pas disponible", status: 400)
           end
 
           on.invalid_phone_format do
+            Rails.logger.info "SIGNUP_FAILED: invalid phone number format - params: #{params.inspect}"
             render_error(code: "INVALID_PHONE_FORMAT", message: "Phone devrait être au format +33... ou 06...", status: 400)
           end
         end

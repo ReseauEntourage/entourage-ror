@@ -79,9 +79,11 @@ describe User, :type => :model do
     expect(FactoryGirl.build(:pro_user, token: 'foo').save).to be false
   end
 
-  it "validates uniqueness of email" do
+  it "doesn't validate uniqueness of email" do
     expect(FactoryGirl.build(:pro_user, email: 'foo@bar.com').save).to be true
-    expect(FactoryGirl.build(:pro_user, email: 'foo@bar.com').save).to be false
+    expect(FactoryGirl.build(:pro_user, email: 'foo@bar.com').save).to be true
+    expect(FactoryGirl.build(:public_user, email: 'foo@bar.com').save).to be true
+    expect(FactoryGirl.build(:public_user, email: 'foo@bar.com').save).to be true
   end
 
   it "validates uniqueness of phone" do
