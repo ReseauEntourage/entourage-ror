@@ -4,6 +4,7 @@ class SmsSenderJob
   sidekiq_options :retry => false
 
   def perform(phone, message)
+    Rails.logger.info "SmsSenderJob : sending #{message} to #{phone}"
     SmsNotificationService.new.send_notification(phone, message)
   end
 
