@@ -7,6 +7,14 @@ var ready = function() {
       $("#sms_group").show();
       $("#sms_group :input")[0].removeAttribute("disabled");
     });
+
+    $("#pro_user").hide();
+    $("#pro_user :input")[0].setAttribute("disabled", "disabled");
+    $("#pro_user :input").val("");
+    $("#change_status").click(function() {
+      $("#pro_user").show();
+      $("#pro_user :input")[0].removeAttribute("disabled");
+    });
   }
 };
 
