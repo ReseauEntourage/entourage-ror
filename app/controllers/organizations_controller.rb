@@ -66,12 +66,6 @@ class OrganizationsController < ApplicationController
     end
   end
 
-  def snap_tours
-    @tours = TourServices::SnapToRoadTourFilter.new(params: params, organization: @organization, user: @current_user).filter
-    tours_json = V1::GoogleMap::SnapToRoadTourSerializer.new(tours: @tours).to_json
-    render json: {type: "FeatureCollection", features: tours_json}, status: 200
-  end
-  
   def encounters
     @tours = TourServices::SimplifiedTourFilter.new(params: params, organization: @organization, user: @current_user).filter
     @encounters = Encounter.includes(tour: :user).where(tour: @tours)

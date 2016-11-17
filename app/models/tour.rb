@@ -5,7 +5,6 @@ class Tour < ActiveRecord::Base
 
   validates :tour_type, inclusion: { in: TOUR_TYPES }
   has_many :tour_points, dependent: :delete_all
-  has_many :snap_to_road_tour_points, dependent: :delete_all
   has_many :simplified_tour_points, dependent: :delete_all
   has_many :encounters, dependent: :destroy
   enum status: [ :ongoing, :closed, :freezed ]

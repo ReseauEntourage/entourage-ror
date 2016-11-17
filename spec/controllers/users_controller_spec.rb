@@ -110,23 +110,6 @@ RSpec.describe UsersController, :type => :controller do
         it { expect(User.find(user.id).email).to eq "change#{user.email}" }
         it { expect(User.find(user.id).organization).to eq user.organization }
       end
-
-      context 'with snap to road true' do
-        before { put 'update', id: user.id, user: {email: "change#{user.email}", first_name:"change#{user.first_name}", last_name:"change#{user.last_name}", snap_to_road: "true"} }
-        it {  expect(PreferenceServices::UserDefault.new(user: User.find(user.id)).snap_to_road).to eq true }
-      end
-
-      context 'with snap to road true' do
-        before { PreferenceServices::UserDefault.new(user: user).snap_to_road = true }
-        before { put 'update', id: user.id, user: {email: "change#{user.email}", first_name:"change#{user.first_name}", last_name:"change#{user.last_name}", snap_to_road: "false"} }
-        it { expect(PreferenceServices::UserDefault.new(user: User.find(user.id)).snap_to_road).to eq false }
-      end
-
-      context 'without snap to road' do
-        before { PreferenceServices::UserDefault.new(user: user).snap_to_road = true }
-        before { put 'update', id: user.id, user: {email: "change#{user.email}", first_name:"change#{user.first_name}", last_name:"change#{user.last_name}"} }
-        it { expect(PreferenceServices::UserDefault.new(user: User.find(user.id)).snap_to_road).to eq false }
-      end
     end
   end
 
