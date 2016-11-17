@@ -30,6 +30,11 @@ module Admin
     end
 
     def update
+      if(user_params["organization_id"])
+        user.user_type = "pro"
+        user.organization_id = user_params["organization_id"]
+      end
+
       if @user.update(user_params)
         add_relation(params[:user_relation_id])
         render :edit, notice: "Ambassadeur mis à jour"
@@ -46,7 +51,7 @@ module Admin
     end
 
     def user_params
-      params.require(:user).permit(:first_name, :last_name, :email, :sms_code, :phone, :marketing_referer_id)
+      params.require(:user).permit(:first_name, :last_name, :email, :sms_code, :phone, :marketing_referer_id, :organization_id)
     end
 
     def add_relation(user_relation_id)

@@ -36,6 +36,16 @@
     </div>
   </div>
 
+  <br>
+  <div class="control-group" id="pro_user">
+    <%= f.label :organization,"Association", class: "control-label" %>
+    <div class="controls">
+      <%= f.collection_select(:organization_id, Organization.all, :id, :name, {selected: @user.try(:organization).try(:id) }, {class: "organizations-select"}) %>
+    </div>
+  </div>
+  <%= link_to "Passer l'utilisateur en pro", "#", id: "change_status" %>
+  <br>
+
   <% if @user.new_record? %>
     <div class="control-group">
       <%= f.label :sends, "Envoi SMS", class: "control-label" %>
