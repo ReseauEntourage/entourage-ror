@@ -25,4 +25,22 @@ RSpec.describe Entourage, type: :model do
     chat_message = FactoryGirl.create(:chat_message, messageable: entourage)
     expect(entourage.chat_messages).to eq([chat_message])
   end
+
+  describe 'moderate after create' do
+    it 'should not ping Slack if description is acceptable' do
+      entourage = FactoryGirl.create(:entourage, description: 'Coucou, je veux donner des jouets.')
+      expect(entourage).not_to receive(:ping_slack)
+    end
+
+    it 'should ping Slack if description is unacceptable' do
+      entourage = FactoryGirl.build(
+        :entourage,
+        description: 'Hello, je veux donner des jouets au 9 rue Marcel Sembat.'
+      )
+
+      stub_request(:any, "https://hooks.slack.com").to_return(body: "abc", status: 200)
+      entourage.should_receive :ping_slack
+      entourage.save
+    end
+  end
 end
