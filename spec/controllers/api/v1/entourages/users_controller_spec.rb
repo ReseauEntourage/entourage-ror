@@ -46,7 +46,7 @@ describe Api::V1::Entourages::UsersController do
           it "sends notif to all entourage members" do
             expect_any_instance_of(PushNotificationService).to receive(:send_notification).with("John D",
                                                                                                 'Demande en attente',
-                                                                                                "Un nouveau membre souhaite rejoindre votre maraude",
+                                                                                                "Un nouveau membre souhaite rejoindre votre entourage",
                                                                                                 [entourage.user, member],
                                                                                                 {
                                                                                                     joinable_type: "Entourage",
