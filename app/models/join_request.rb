@@ -3,6 +3,8 @@ class JoinRequest < ActiveRecord::Base
   PENDING_STATUS="pending"
   REJECTED_STATUS="rejected"
 
+  STATUS = [ACCEPTED_STATUS, PENDING_STATUS, REJECTED_STATUS]
+
   belongs_to :user
   belongs_to :joinable, polymorphic: true
 
@@ -11,6 +13,12 @@ class JoinRequest < ActiveRecord::Base
   validates_inclusion_of :status, in: ["pending", "accepted", "rejected"]
 
   scope :accepted, -> {where(status: ACCEPTED_STATUS)}
-  scope :pending, -> {where(status: PENDING_STATUS)}
+  scope :pending,  -> {where(status: PENDING_STATUS)}
   scope :rejected, -> {where(status: REJECTED_STATUS)}
+
+  STATUS.each do |check_status|
+    define_method("is_#{check_status}?") do
+      status == check_status
+    end
+  end
 end

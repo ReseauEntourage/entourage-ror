@@ -16,18 +16,25 @@ module V1
           }
         elsif last_element.is_a?(JoinRequest)
           {
-              text: "1 nouvelle demande pour rejoindre votre entourage",
+              text: last_message_text,
               author: nil
           }
         end
       end
-
 
       def last_element
         @last_element ||= begin
           last_chat_message = object.chat_messages.includes(:user).order("created_at ASC").last
           last_join_request = object.join_requests.pending.order("created_at ASC").last
           [last_chat_message, last_join_request].compact.sort_by {|o| o.created_at}.reverse[0]
+        end
+      end
+
+      def last_message_text
+        if last_element.is_pending?
+          return "Votre demande est en attente."
+        elsif last_element.is_accepted?
+          return "Vous avez rejoint l'entourage"
         end
       end
     end
