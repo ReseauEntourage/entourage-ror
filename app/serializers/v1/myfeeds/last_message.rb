@@ -16,7 +16,7 @@ module V1
           }
         elsif last_element.is_a?(JoinRequest)
           {
-              text: last_message_text,
+              text: last_join_request_text,
               author: nil
           }
         end
@@ -30,10 +30,10 @@ module V1
         end
       end
 
-      def last_message_text
-        if last_element.is_pending?
+      def last_join_request_text
+        if @last_element.is_pending?
           return "Votre demande est en attente."
-        elsif last_element.is_accepted?
+        elsif @last_element.is_accepted?
           return "Vous avez rejoint l'entourage"
         end
       end
