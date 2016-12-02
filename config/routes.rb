@@ -219,7 +219,7 @@ Rails.application.routes.draw do
   get 'apps' => 'home#apps', as: :apps
   get 'store_redirection' => 'home#store_redirection'
   get 'cgu' => 'home#cgu'
-
+  get 'ping' => 'application#ping'
 
   #PUBLIC USER
   namespace :public_user do

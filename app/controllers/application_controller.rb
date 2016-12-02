@@ -3,7 +3,6 @@ class ApplicationController < ActionController::Base
 
   helper_method :current_user, :current_admin, :current_manager
 
-
   def authenticate_admin!
     login_error "Vous devez vous authentifier avec un compte admin pour accéder à cette page" unless current_admin
   end
@@ -35,5 +34,9 @@ class ApplicationController < ActionController::Base
   def login_error(message)
     flash[:error] = message
     return redirect_to new_session_path
+  end
+
+  def ping
+    head 200
   end
 end
