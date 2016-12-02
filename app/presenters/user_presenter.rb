@@ -1,6 +1,5 @@
 class UserPresenter < ApplicationPresenter
-  delegate :snap_to_road,
-           :simplified_tour,
+  delegate :simplified_tour,
            :tour_types,
            :date_range, to: :user_default
 

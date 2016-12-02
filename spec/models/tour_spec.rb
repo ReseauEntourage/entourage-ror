@@ -11,7 +11,6 @@ RSpec.describe Tour, :type => :model do
   it { should validate_presence_of(:user) }
   it { should belong_to(:user) }
   it { should have_many(:tour_points).dependent(:delete_all) }
-  it { should have_many(:snap_to_road_tour_points).dependent(:delete_all) }
 
   it "has many members" do
     user = FactoryGirl.create(:pro_user)

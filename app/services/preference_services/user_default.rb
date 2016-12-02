@@ -20,15 +20,6 @@ module PreferenceServices
       $redis.set("preferences:user:#{user.id}:tour_types", other_tour_types.join(","))
     end
 
-    def snap_to_road
-      $redis.get("preferences:user:#{user.id}:snap_to_road") == "true"
-    end
-
-    def snap_to_road=(val)
-      bool_value = (val ? "true" : "false")
-      $redis.set("preferences:user:#{user.id}:snap_to_road", bool_value)
-    end
-
     def simplified_tour
       $redis.get("preferences:user:#{user.id}:simplified_tour") == "true"
     end

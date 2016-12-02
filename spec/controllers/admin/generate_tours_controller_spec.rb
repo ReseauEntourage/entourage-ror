@@ -26,15 +26,6 @@ describe Admin::GenerateToursController do
         expect(tour.vehicle_type).to eq("feet")
         expect(tour.tour_type).to eq("medical")
       end
-
-      it "saves tour snap points" do
-        subject
-        points = Tour.last.simplified_tour_points
-        expect(points[0].latitude).to eq(-35.1)
-        expect(points[0].longitude).to eq(49.1)
-        expect(points[1].latitude).to eq(-35.2)
-        expect(points[1].longitude).to eq(49.2)
-      end
     end
   end
 end
