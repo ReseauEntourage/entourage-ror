@@ -257,7 +257,7 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
                                     "author"=>{"id"=>last_tour.user.id, "display_name"=>"John", "avatar_url"=>nil},
                                     "number_of_people"=> 1,
                                     "join_status"=>"not_requested",
-                                    "tour_points"=>[{"latitude"=>48.83, "longitude"=>2.29}, {"latitude"=>48.83, "longitude"=>2.29}],
+                                    "tour_points"=>[],
                                     "number_of_unread_messages"=>nil,
                                     "updated_at"=>last_tour.updated_at.iso8601(3)}})
       end
@@ -286,7 +286,7 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
       let!(:tour) { FactoryGirl.create(:tour)}
       let!(:tour_points) { FactoryGirl.create_list(:tour_point, 2, tour: tour)}
       before { get 'show', id: tour.id, token: user.token , format: :json }
-      it { expect(JSON.parse(response.body)["tour"]["tour_points"].count).to eq(2) }
+      it { expect(JSON.parse(response.body)["tour"]["tour_points"].count).to eq(0) }
     end
 
     context "has 2 unread messages" do
@@ -343,7 +343,7 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
                                     "author"=>{"id"=>tour.user.id, "display_name"=>"John", "avatar_url"=>nil},
                                     "number_of_people"=> 1,
                                     "join_status"=>"not_requested",
-                                    "tour_points"=>[{"latitude"=>48.83, "longitude"=>2.29}, {"latitude"=>48.83, "longitude"=>2.29}],
+                                    "tour_points"=>[],
                                     "number_of_unread_messages"=>nil,
                                     "updated_at"=>tour.updated_at.iso8601(3)}})
       end
