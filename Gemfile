@@ -30,8 +30,10 @@ gem 'lograge',                  '~> 0.3.4'
 gem 'aws-sdk',                  '~> 2.2.9'
 gem 'faker',                    '~> 1.6.1'
 gem 'twitter',                  '~> 5.16.0'
+gem 'slack-notifier'
 
 group :development, :test do
+  gem 'annotate'
   gem 'byebug',                 '~> 5.0.0'
   gem 'spring',                 '~> 1.3.6'
   gem 'spring-commands-rspec',  '~> 1.0.4'
