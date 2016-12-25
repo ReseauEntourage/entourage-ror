@@ -257,7 +257,8 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
                                     "author"=>{"id"=>last_tour.user.id, "display_name"=>"John", "avatar_url"=>nil},
                                     "number_of_people"=> 1,
                                     "join_status"=>"not_requested",
-                                    "tour_points"=>[],
+                                    "tour_points"=>[{"latitude"=>"49.40752907", "longitude"=>"0.26782405"},
+                                                    {"latitude"=>"49.40774009", "longitude"=>"0.26870057"}],
                                     "number_of_unread_messages"=>nil,
                                     "updated_at"=>last_tour.updated_at.iso8601(3)}})
       end
@@ -284,10 +285,9 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
     end
 
     context "don't have simplified tour points" do
-      let!(:tour) { FactoryGirl.create(:tour)}
-      let!(:tour_points) { FactoryGirl.create_list(:tour_point, 2, tour: tour)}
+      let!(:tour) { FactoryGirl.create(:tour, :filled)}
       before { get 'show', id: tour.id, token: user.token , format: :json }
-      it { expect(JSON.parse(response.body)["tour"]["tour_points"].count).to eq(0) }
+      it { expect(JSON.parse(response.body)["tour"]["tour_points"].count).to eq(2) }
     end
 
     context "has 2 unread messages" do
@@ -344,7 +344,8 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
                                     "author"=>{"id"=>tour.user.id, "display_name"=>"John", "avatar_url"=>nil},
                                     "number_of_people"=> 1,
                                     "join_status"=>"not_requested",
-                                    "tour_points"=>[],
+                                    "tour_points"=>[{"latitude"=>"49.40752907", "longitude"=>"0.26782405"},
+                                                    {"latitude"=>"49.40774009", "longitude"=>"0.26870057"}],
                                     "number_of_unread_messages"=>nil,
                                     "updated_at"=>tour.updated_at.iso8601(3)}})
       end
