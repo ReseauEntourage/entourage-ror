@@ -54,8 +54,8 @@ module V1
     end
 
     def tour_points
-      points = object.simplified_tour_points.count > 0 ? object.simplified_tour_points.ordered : []
-      JSON.parse(ActiveModel::ArraySerializer.new(points, each_serializer: ::V1::TourPointSerializer).to_json)
+      cache_points = $redis.get("entourage:tours:#{object.id}:tour_points")
+      cache_points.present? ? JSON.parse(cache_points) : TourPointsServices::TourPointsSimplifier.new(tour_id: object.id).simplified_tour_points
     end
 
     def join_status
