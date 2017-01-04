@@ -47,7 +47,6 @@ module Twitter
 
     def log_exception(e)
       Rails.logger.error e
-      Raven.capture_exception(e) if Rails.env.production?
     end
   end
 

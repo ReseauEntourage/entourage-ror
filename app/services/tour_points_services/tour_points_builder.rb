@@ -8,7 +8,6 @@ module TourPointsServices
         end
       rescue ActiveRecord::StatementInvalid => e
         Rails.logger.error "Received invalid tour points params. Tour_id : #{tour.id} , Tour points : #{params}"
-        Raven.capture_exception(e)
         false
       end
     end
