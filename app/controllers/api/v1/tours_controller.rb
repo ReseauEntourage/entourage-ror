@@ -3,6 +3,7 @@ module Api
     class ToursController < Api::V1::BaseController
       before_action :set_tour, only: [:show, :update]
 
+      #curl -H "Content-Type: application/json" "http://localhost:3000/api/v1/tours.json?token=azerty"
       def index
         return render json: {message: 'Public users cannot list tours'}, status: 403 if current_user.public?
         @tours = TourServices::TourFilterApi.new(user: current_user,
