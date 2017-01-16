@@ -2041,3 +2041,44 @@ Resources  related to chat messages for the **Entourage API**
 + Response 401 (application/json; charset=utf-8)
 
         {"error":{"status":401,"message":"Please sign-in"}}
+        
+# Group User Partners
+
+Resources related to partners of a user
+
+## Partners [/users/{user_id}/partners{?token}]
+
++ Parameters
+    + token (required, string, `FAKETOKEN`) ... Token identifying the current user
+
+### Get all partners from a user [GET /users/{user_id}/partners{?token}]
+
++ Parameters
+    + token (required, string, `FAKETOKEN`) ... Token identifying the current user
+    
++ Request
+
+    + Headers
+
+            Accept: application/json
+
++ Response 200 (application/json; charset=utf-8)
+
+    + Body
+
+            {
+            "partners": [{
+                    "id": 1,
+                    "name": "foo",
+                    "logo_url":"http://foo.com/bar.jpg"
+                },
+                {
+                    "id": 2,
+                    "name": "bar",
+                    "logo_url":"http://foo.com/bar.jpg"
+                }]
+            }
+
++ Response 401 (application/json; charset=utf-8)
+
+        {"error":{"status":401,"message":"Please sign-in"}}
