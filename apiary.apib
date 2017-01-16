@@ -1236,7 +1236,7 @@ status :
 active: either created by me or that I joined
 closed: either (created and closed by me)
 
-### Get all feeds [GET /myfeeds{?token,page,per,tour_types,entourage_types,time_range,status,created_by_me,accepted_invitation}]
+### Get all feeds [GET /myfeeds{?token,page,per,tour_types,entourage_types,time_range,status,created_by_me,`accepted_invitation`}]
 
 + Parameters
     + token (required, string, `FAKETOKEN`) ... Token identifying the current user
@@ -2042,6 +2042,50 @@ Resources  related to chat messages for the **Entourage API**
 
         {"error":{"status":401,"message":"Please sign-in"}}
         
+        
+        
+# Group Partners
+
+Resources related to partners
+
+## Partners [/partners{?token}]
+
++ Parameters
+    + token (required, string, `FAKETOKEN`) ... Token identifying the current user
+
+### Get all partners [GET]
+
++ Request
+
+    + Headers
+
+            Accept: application/json
+
++ Response 200 (application/json; charset=utf-8)
+
+    + Body
+
+            {
+                "partners": [{
+                        "id": 1,
+                        "name": "foo",
+                        "logo_url":"http://foo.com/bar.jpg",
+                        "default": true
+                    },
+                    {
+                        "id": 2,
+                        "name": "bar",
+                        "logo_url":"http://foo.com/bar.jpg",
+                        "default": false
+                    }]
+            }
+
++ Response 401 (application/json; charset=utf-8)
+
+        {"error":{"status":401,"message":"Please sign-in"}}
+        
+        
+        
 # Group User Partners
 
 Resources related to partners of a user
@@ -2076,7 +2120,7 @@ Resources related to partners of a user
                     {
                         "id": 2,
                         "name": "bar",
-                        "logo_url":"http://foo.com/bar.jpg"
+                        "logo_url":"http://foo.com/bar.jpg",
                         "default": false
                     }]
             }
@@ -2087,8 +2131,6 @@ Resources related to partners of a user
         
         
 ### Added a partner to a user [POST /users/{user_id}/partner{?token}]
-
-Note: anyone can ask to join a tour
 
 + Parameters
 
@@ -2114,7 +2156,8 @@ Note: anyone can ask to join a tour
             "partners": {
                         "id": 1,
                         "name": "foo",
-                        "logo_url":"http://foo.com/bar.jpg"
+                        "logo_url":"http://foo.com/bar.jpg",
+                        "default": false
                     }
         }
 
@@ -2165,7 +2208,18 @@ Note: anyone can ask to join a tour
                 }
             }
 
-+ Response 204 (application/json; charset=utf-8)
++ Response 200 (application/json; charset=utf-8)
+
+    + Body
+    
+            {
+                "partner": {
+                        "id": 1,
+                        "name": "foo",
+                        "logo_url":"http://foo.com/bar.jpg",
+                        "default": true
+                    }
+            }
 
 
 + Response 400 (application/json; charset=utf-8)
