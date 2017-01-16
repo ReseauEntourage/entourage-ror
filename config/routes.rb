@@ -156,6 +156,7 @@ Rails.application.routes.draw do
       end
       resources :invitations, only: [:index, :update, :destroy]
       resources :contacts, only: [:update]
+      resources :partners, only: [:index]
 
       put 'applications' => 'user_applications#update'
       post 'login' => 'users#login'
