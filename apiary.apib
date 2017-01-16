@@ -38,7 +38,7 @@ A single Note object with all its details
 POI related resources of the **Entourage API**
 ## Pois collection [/pois]
 
-### List all POIs [GET /pois{?token}{&latitude}{&longitude}{&distance}]
+### List all POIs [GET /pois{?token,latitude,longitude,distance}]
 
 + Parameters
     + token (required, string, `FAKETOKEN`) ... Token identifying the current user
@@ -373,7 +373,7 @@ vehicle_type is either "feet" or "car"
 + Parameters
     + token (required, string, `FAKETOKEN`) ... Token identifying the current user
 
-### Retrieve tours [GET /tours{?token}{&per}{&type}{&vehicle_type}{&latitude}{&longitude}{&distance}{&status}]
+### Retrieve tours [GET /tours{?token,per,type,vehicle_type,latitude,longitude,distance,status}]
 
 + Parameters
     + per (optional, number, `15`) ... Max number of tours to return. 10 if not defined
@@ -745,7 +745,7 @@ Resources related to users of a tour
 + Parameters
     + token (required, string, `FAKETOKEN`) ... Token identifying the current user
 
-### Get all users from a tour [GET /tours/{tour_id}/users{?token}{&page}{&per}]
+### Get all users from a tour [GET /tours/{tour_id}/users{?token,page,per}]
 
 + Parameters
     + token (required, string, `FAKETOKEN`) ... Token identifying the current user
@@ -1142,7 +1142,7 @@ tour_types should be a list of values separated by coma, ex: , `tour_types=medic
 entourage_types should be a list of values separated by coma, ex: , `entourage_types=ask_for_help,contribution`
 time_range should be a number of hours
 
-### Get all feeds [GET /feeds{?token}{&longitude}{&latitude}{&before}{&page}{&per}{&tour_types}{&entourage_types}{&time_range}{&show_my_entourages_only}]
+### Get all feeds [GET /feeds{?token,longitude,latitude,before,page,per,tour_types,entourage_types,time_range,show_my_entourages_only}]
 
 + Parameters
     + token (required, string, `FAKETOKEN`) ... Token identifying the current user
@@ -1236,7 +1236,7 @@ status :
 active: either created by me or that I joined
 closed: either (created and closed by me)
 
-### Get all feeds [GET /myfeeds{?token}{&page}{&per}{&tour_types}{&entourage_types}{&time_range}{&status}{&created_by_me}{&`accepted_invitation`}]
+### Get all feeds [GET /myfeeds{?token,page,per,tour_types,entourage_types,time_range,status,created_by_me,`accepted_invitation`}]
 
 + Parameters
     + token (required, string, `FAKETOKEN`) ... Token identifying the current user
@@ -1328,7 +1328,7 @@ closed: either (created and closed by me)
 Entourages related resources of the **Entourage API**
 ## Entourages [/entourages]
 
-### Get all entourages [GET /entourages{?token}{&status}{&type}&latitude}{&longitude}{&distance}{&page}{&per}]
+### Get all entourages [GET /entourages{?token,status,type,latitude,longitude,distance,page,per}]
 
 + Parameters
     + token (required, string, `FAKETOKEN`) ... Token identifying the current user
@@ -1602,7 +1602,7 @@ Entourages related resources of the **Entourage API**
         {"error":{"status":401,"message":"Please sign-in"}}
 
 
-## Users Invitation [/invitations{?token}{&status}]
+## Users Invitation [/invitations{?token,status}]
 + Parameters
     + token (required, string, `FAKETOKEN`) ... Token identifying the current user
     + status (optional, string, `accepted`) ... filter invitations by status
@@ -1654,7 +1654,7 @@ Resources related to users of an entourage
 + Parameters
     + token (required, string, `FAKETOKEN`) ... Token identifying the current user
 
-### Get all users from an entourage [GET /entourages/{entourage_id}/users{?token}{&page}{&per}]
+### Get all users from an entourage [GET /entourages/{entourage_id}/users{?token,page,per}]
 
 + Parameters
     + token (required, string, `FAKETOKEN`) ... Token identifying the current user
@@ -2067,17 +2067,110 @@ Resources related to partners of a user
     + Body
 
             {
-            "partners": [{
-                    "id": 1,
-                    "name": "foo",
-                    "logo_url":"http://foo.com/bar.jpg"
-                },
-                {
-                    "id": 2,
-                    "name": "bar",
-                    "logo_url":"http://foo.com/bar.jpg"
-                }]
+                "partners": [{
+                        "id": 1,
+                        "name": "foo",
+                        "logo_url":"http://foo.com/bar.jpg",
+                        "default": true
+                    },
+                    {
+                        "id": 2,
+                        "name": "bar",
+                        "logo_url":"http://foo.com/bar.jpg"
+                        "default": false
+                    }]
             }
+
++ Response 401 (application/json; charset=utf-8)
+
+        {"error":{"status":401,"message":"Please sign-in"}}
+        
+        
+### Added a partner to a user [POST /users/{user_id}/partner{?token}]
+
+Note: anyone can ask to join a tour
+
++ Parameters
+
+    + token (required, string, `FAKETOKEN`) ... Token identifying the current user
+
++ Request (application/json; charset=utf-8)
+
+    + Body
+
+            {
+                "partner" : {
+                    "id": 3
+                }
+            }
+
+    + Headers
+
+            Accept: application/json
+
++ Response 201 (application/json; charset=utf-8)
+
+        {
+            "partners": {
+                        "id": 1,
+                        "name": "foo",
+                        "logo_url":"http://foo.com/bar.jpg"
+                    }
+        }
+
++ Response 401 (application/json; charset=utf-8)
+
+        {"error":{"status":401,"message":"Please sign-in"}}
+        
+        
+## User partner [/users/{user_id}/partners/{partner_id}{?token}]
+
++ Parameters
+    + user_id (required, integer, `1`) ... Identifier of the user to be retrieved
+    + partner_id (required, integer, `1`) ... Identifier of the partner
+    + token (required, string, `FAKETOKEN`) ... Token identifying the current user
+
+
+### Remove a partner from a user [DELETE]
+
++ Parameters
+    + token (required, string, `FAKETOKEN`) ... Token identifying the current user
+
++ Request
+
+    + Headers
+
+            Accept: application/json
+
++ Response 204 (application/json; charset=utf-8)
+
++ Response 401 (application/json; charset=utf-8)
+
+        {"error":{"status":401,"message":"Please sign-in"}}
+
+
+### Update a user partner [PUT]
+
++ Request (application/json)
+
+    + Header
+
+            Accept: application/json
+
+    + Body
+
+            {
+                "partner": {
+                    "default": true
+                }
+            }
+
++ Response 204 (application/json; charset=utf-8)
+
+
++ Response 400 (application/json; charset=utf-8)
+
+        {"error":{"status":400,"message":"Could not update user status","reasons":["Could not find user request"]}}
 
 + Response 401 (application/json; charset=utf-8)
 
