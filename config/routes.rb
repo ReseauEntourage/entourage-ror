@@ -102,6 +102,7 @@ Rails.application.routes.draw do
         end
 
         resources :tours, :controller => 'users/tours', only: [:index]
+        resources :partners, :controller => 'users/tours', only: [:index]
       end
 
       post 'login' => 'users#login'
