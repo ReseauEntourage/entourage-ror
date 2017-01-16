@@ -102,7 +102,6 @@ Rails.application.routes.draw do
         end
 
         resources :tours, :controller => 'users/tours', only: [:index]
-        resources :partners, :controller => 'users/tours', only: [:index]
       end
 
       post 'login' => 'users#login'
@@ -147,6 +146,7 @@ Rails.application.routes.draw do
         resources :tours, :controller => 'users/tours', only: [:index]
         resources :entourages, :controller => 'users/entourages', only: [:index]
         resources :authentication_providers, only: [:create]
+        resources :partners, :controller => 'users/partners'
       end
 
       resources :entourages, only: [:index, :show, :create, :update] do
