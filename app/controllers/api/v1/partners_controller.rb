@@ -7,15 +7,10 @@ module Api
         render json: {
             "partners": [{
                              "id": 1,
-                             "name": "foo",
-                             "logo_url":"http://foo.com/bar.jpg",
+                             "name": "ATD Quart Monde",
+                             "large_logo_url":"https://s3-eu-west-1.amazonaws.com/entourage-ressources/ATDQM-coul-V-fr.png",
+                             "small_logo_url":"https://s3-eu-west-1.amazonaws.com/entourage-ressources/Badge+image.png",
                              "default": true
-                         },
-                         {
-                             "id": 2,
-                             "name": "bar",
-                             "logo_url":"http://foo.com/bar.jpg",
-                             "default": false
                          }]
         }, status: 200
       end
