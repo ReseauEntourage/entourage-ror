@@ -2067,17 +2067,12 @@ Resources related to partners
 
             {
                 "partners": [{
-                        "id": 1,
-                        "name": "foo",
-                        "logo_url":"http://foo.com/bar.jpg",
-                        "default": true
-                    },
-                    {
-                        "id": 2,
-                        "name": "bar",
-                        "logo_url":"http://foo.com/bar.jpg",
-                        "default": false
-                    }]
+                    "id": 1,
+                    "name": "ATD Quart Monde",
+                    "large_logo_url":"https://s3-eu-west-1.amazonaws.com/entourage-ressources/ATDQM-coul-V-fr.png",
+                    "small_logo_url":"https://s3-eu-west-1.amazonaws.com/entourage-ressources/Badge+image.png",
+                    "default": true
+                }]
             }
 
 + Response 401 (application/json; charset=utf-8)
@@ -2112,17 +2107,12 @@ Resources related to partners of a user
 
             {
                 "partners": [{
-                        "id": 1,
-                        "name": "foo",
-                        "logo_url":"http://foo.com/bar.jpg",
-                        "default": true
-                    },
-                    {
-                        "id": 2,
-                        "name": "bar",
-                        "logo_url":"http://foo.com/bar.jpg",
-                        "default": false
-                    }]
+                    "id": 1,
+                    "name": "ATD Quart Monde",
+                    "large_logo_url":"https://s3-eu-west-1.amazonaws.com/entourage-ressources/ATDQM-coul-V-fr.png",
+                    "small_logo_url":"https://s3-eu-west-1.amazonaws.com/entourage-ressources/Badge+image.png",
+                    "default": true
+                }]
             }
 
 + Response 401 (application/json; charset=utf-8)
@@ -2153,12 +2143,13 @@ Resources related to partners of a user
 + Response 201 (application/json; charset=utf-8)
 
         {
-            "partners": {
-                        "id": 1,
-                        "name": "foo",
-                        "logo_url":"http://foo.com/bar.jpg",
-                        "default": false
-                    }
+            "partner": {
+                "id": 1,
+                "name": "ATD Quart Monde",
+                "large_logo_url":"https://s3-eu-west-1.amazonaws.com/entourage-ressources/ATDQM-coul-V-fr.png",
+                "small_logo_url":"https://s3-eu-west-1.amazonaws.com/entourage-ressources/Badge+image.png",
+                "default": true
+            }
         }
 
 + Response 401 (application/json; charset=utf-8)
@@ -2215,10 +2206,11 @@ Resources related to partners of a user
             {
                 "partner": {
                         "id": 1,
-                        "name": "foo",
-                        "logo_url":"http://foo.com/bar.jpg",
+                        "name": "ATD Quart Monde",
+                        "large_logo_url":"https://s3-eu-west-1.amazonaws.com/entourage-ressources/ATDQM-coul-V-fr.png",
+                        "small_logo_url":"https://s3-eu-west-1.amazonaws.com/entourage-ressources/Badge+image.png",
                         "default": true
-                    }
+                }
             }
 
 
