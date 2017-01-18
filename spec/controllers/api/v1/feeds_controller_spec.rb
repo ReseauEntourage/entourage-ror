@@ -31,7 +31,13 @@ describe Api::V1::FeedsController do
                                                      "author"=>{
                                                          "id"=>entourage.user.id,
                                                          "display_name"=>"John",
-                                                         "avatar_url"=>nil
+                                                         "avatar_url"=>nil,
+                                                         "partner"=>{
+                                                             "id"=>2,
+                                                             "name"=>"Autre partner",
+                                                             "large_logo_url"=>"http://foo.com/bar.png",
+                                                             "small_logo_url"=>"http://foo.com/bar.png"
+                                                         }
                                                      },
                                                      "location"=>{
                                                          "latitude"=>1.122,
@@ -62,7 +68,13 @@ describe Api::V1::FeedsController do
                                                          "tour_points"=>[],
                                                          "author"=>{"id"=>tour.user.id,
                                                                     "display_name"=>"John",
-                                                                    "avatar_url"=>nil
+                                                                    "avatar_url"=>nil,
+                                                                    "partner"=>{
+                                                                        "id"=>2,
+                                                                        "name"=>"Autre partner",
+                                                                        "large_logo_url"=>"http://foo.com/bar.png",
+                                                                        "small_logo_url"=>"http://foo.com/bar.png"
+                                                                    }
                                                          },
                                                          "updated_at"=>tour.updated_at.iso8601(3)
                                                      },

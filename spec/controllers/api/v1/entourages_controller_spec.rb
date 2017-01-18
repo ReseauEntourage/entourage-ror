@@ -26,7 +26,13 @@ describe Api::V1::EntouragesController do
                                        "author"=>{
                                            "id"=>entourage.user.id,
                                            "display_name"=>"John",
-                                           "avatar_url"=>nil
+                                           "avatar_url"=>nil,
+                                           "partner"=>{
+                                               "id"=>2,
+                                               "name"=>"Autre partner",
+                                               "large_logo_url"=>"http://foo.com/bar.png",
+                                               "small_logo_url"=>"http://foo.com/bar.png"
+                                           }
                                        },
                                        "location"=>{
                                            "latitude"=>1.122,
@@ -116,7 +122,13 @@ describe Api::V1::EntouragesController do
                                                            "author"=>{
                                                                "id"=>user.id,
                                                                "display_name"=>"John",
-                                                               "avatar_url"=>nil
+                                                               "avatar_url"=>nil,
+                                                               "partner"=>{
+                                                                   "id"=>2,
+                                                                   "name"=>"Autre partner",
+                                                                   "large_logo_url"=>"http://foo.com/bar.png",
+                                                                   "small_logo_url"=>"http://foo.com/bar.png"
+                                                               }
                                                            },
                                                            "location"=>{
                                                                "latitude"=>4.567,
@@ -166,7 +178,13 @@ describe Api::V1::EntouragesController do
                                                            "author"=>{
                                                                "id"=>entourage.user.id,
                                                                "display_name"=>"John",
-                                                               "avatar_url"=>nil
+                                                               "avatar_url"=>nil,
+                                                               "partner"=>{
+                                                                   "id"=>2,
+                                                                   "name"=>"Autre partner",
+                                                                   "large_logo_url"=>"http://foo.com/bar.png",
+                                                                   "small_logo_url"=>"http://foo.com/bar.png"
+                                                               }
                                                            },
                                                            "location"=>{
                                                                "latitude"=>1.122,
@@ -213,7 +231,13 @@ describe Api::V1::EntouragesController do
                                                            "author"=>{
                                                                "id"=>user.id,
                                                                "display_name"=>"John",
-                                                               "avatar_url"=>nil
+                                                               "avatar_url"=>nil,
+                                                               "partner"=>{
+                                                                   "id"=>2,
+                                                                   "name"=>"Autre partner",
+                                                                   "large_logo_url"=>"http://foo.com/bar.png",
+                                                                   "small_logo_url"=>"http://foo.com/bar.png"
+                                                               }
                                                            },
                                                            "location"=>{
                                                                "latitude"=>1.122,

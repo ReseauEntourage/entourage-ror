@@ -27,7 +27,13 @@ module V1
       {
           id: entourage_author.id,
           display_name: entourage_author.first_name,
-          avatar_url: UserServices::Avatar.new(user: entourage_author).thumbnail_url
+          avatar_url: UserServices::Avatar.new(user: entourage_author).thumbnail_url,
+          partner: {
+              "id": 2,
+              "name": "Autre partner",
+              "large_logo_url":"http://foo.com/bar.png",
+              "small_logo_url":"http://foo.com/bar.png"
+          }
       }
     end
 

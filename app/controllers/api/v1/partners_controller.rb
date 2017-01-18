@@ -11,6 +11,13 @@ module Api
                              "large_logo_url":"https://s3-eu-west-1.amazonaws.com/entourage-ressources/ATDQM-coul-V-fr.png",
                              "small_logo_url":"https://s3-eu-west-1.amazonaws.com/entourage-ressources/Badge+image.png",
                              "default": true
+                         },
+                         {
+                             "id": 2,
+                             "name": "Autre partner",
+                             "large_logo_url":"http://foo.com/bar.png",
+                             "small_logo_url":"http://foo.com/bar.png",
+                             "default": false
                          }]
         }, status: 200
       end

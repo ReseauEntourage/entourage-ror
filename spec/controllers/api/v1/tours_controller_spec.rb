@@ -41,7 +41,17 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
              "end_time"=>nil,
              "organization_name"=>tours.first.user.organization.name,
              "organization_description"=>"Association description",
-             "author"=>{"id"=>tours.first.user.id, "display_name"=>"John", "avatar_url"=>nil},
+             "author"=>{
+                 "id"=>tours.first.user.id,
+                 "display_name"=>"John",
+                 "avatar_url"=>nil,
+                 "partner"=>{
+                     "id"=>2,
+                     "name"=>"Autre partner",
+                     "large_logo_url"=>"http://foo.com/bar.png",
+                     "small_logo_url"=>"http://foo.com/bar.png"
+                 }
+             },
              "number_of_people"=> 1,
              "join_status"=>"not_requested",
              "tour_points"=>[],
@@ -58,7 +68,17 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
              "end_time"=>nil,
              "organization_name"=>tours.last.user.organization.name,
              "organization_description"=>"Association description",
-             "author"=>{"id"=>tours.last.user.id, "display_name"=>"John", "avatar_url"=>nil},
+             "author"=>{
+                 "id"=>tours.last.user.id,
+                 "display_name"=>"John",
+                 "avatar_url"=>nil,
+                 "partner"=>{
+                     "id"=>2,
+                     "name"=>"Autre partner",
+                     "large_logo_url"=>"http://foo.com/bar.png",
+                     "small_logo_url"=>"http://foo.com/bar.png"
+                 }
+             },
              "number_of_people"=> 1,
              "join_status"=>"not_requested",
              "tour_points"=>[],
@@ -204,7 +224,17 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
                                     "organization_description"=>"Association description",
                                     "start_time"=>last_tour.created_at.iso8601(3),
                                     "end_time"=>last_tour.closed_at,
-                                    "author"=>{"id"=>user.id, "display_name"=>"John", "avatar_url"=>nil},
+                                    "author"=>{
+                                        "id"=>user.id,
+                                        "display_name"=>"John",
+                                        "avatar_url"=>nil,
+                                        "partner"=>{
+                                            "id"=>2,
+                                            "name"=>"Autre partner",
+                                            "large_logo_url"=>"http://foo.com/bar.png",
+                                            "small_logo_url"=>"http://foo.com/bar.png"
+                                        }
+                                    },
                                     "number_of_people"=> 1,
                                     "join_status"=>"accepted",
                                     "tour_points"=>[],
@@ -254,7 +284,17 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
                                     "organization_description"=>"Association description",
                                     "start_time"=>last_tour.created_at.iso8601(3),
                                     "end_time"=>last_tour.closed_at.iso8601(3),
-                                    "author"=>{"id"=>last_tour.user.id, "display_name"=>"John", "avatar_url"=>nil},
+                                    "author"=>{
+                                        "id"=>last_tour.user.id,
+                                        "display_name"=>"John",
+                                        "avatar_url"=>nil,
+                                        "partner"=>{
+                                            "id"=>2,
+                                            "name"=>"Autre partner",
+                                            "large_logo_url"=>"http://foo.com/bar.png",
+                                            "small_logo_url"=>"http://foo.com/bar.png"
+                                        }
+                                    },
                                     "number_of_people"=> 1,
                                     "join_status"=>"not_requested",
                                     "tour_points"=>[{"latitude"=>"49.40752907", "longitude"=>"0.26782405"},
@@ -341,7 +381,17 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
                                     "organization_description"=>"Association description",
                                     "start_time"=>tour.created_at.iso8601(3),
                                     "end_time"=>tour.closed_at.iso8601(3),
-                                    "author"=>{"id"=>tour.user.id, "display_name"=>"John", "avatar_url"=>nil},
+                                    "author"=>{
+                                        "id"=>tour.user.id,
+                                        "display_name"=>"John",
+                                        "avatar_url"=>nil,
+                                        "partner"=>{
+                                            "id"=>2,
+                                            "name"=>"Autre partner",
+                                            "large_logo_url"=>"http://foo.com/bar.png",
+                                            "small_logo_url"=>"http://foo.com/bar.png"
+                                        }
+                                    },
                                     "number_of_people"=> 1,
                                     "join_status"=>"not_requested",
                                     "tour_points"=>[{"latitude"=>"49.40752907", "longitude"=>"0.26782405"},

@@ -28,7 +28,17 @@ RSpec.describe Api::V1::Users::ToursController, :type => :controller do
                "end_time"=>nil,
                "organization_name"=>tour1.user.organization.name,
                "organization_description"=>"Association description",
-               "author"=>{"id"=>tour1.user.id, "display_name"=>"John", "avatar_url"=>nil},
+               "author"=>{
+                   "id"=>tour1.user.id,
+                   "display_name"=>"John",
+                   "avatar_url"=>nil,
+                   "partner"=>{
+                       "id"=>2,
+                       "name"=>"Autre partner",
+                       "large_logo_url"=>"http://foo.com/bar.png",
+                       "small_logo_url"=>"http://foo.com/bar.png"
+                   }
+               },
                "number_of_people"=> 1,
                "join_status"=>"not_requested",
                "tour_points"=>[],
@@ -45,7 +55,17 @@ RSpec.describe Api::V1::Users::ToursController, :type => :controller do
                "end_time"=>nil,
                "organization_name"=>tour2.user.organization.name,
                "organization_description"=>"Association description",
-               "author"=>{"id"=>tour2.user.id, "display_name"=>"John", "avatar_url"=>nil},
+               "author"=>{
+                   "id"=>tour2.user.id,
+                   "display_name"=>"John",
+                   "avatar_url"=>nil,
+                   "partner"=>{
+                       "id"=>2,
+                       "name"=>"Autre partner",
+                       "large_logo_url"=>"http://foo.com/bar.png",
+                       "small_logo_url"=>"http://foo.com/bar.png"
+                   }
+               },
                "number_of_people"=> 1,
                "join_status"=>"not_requested",
                "tour_points"=>[],
