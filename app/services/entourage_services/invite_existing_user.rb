@@ -72,7 +72,7 @@ module EntourageServices
     end
 
     def link
-      link = Rails.env.test? ? "http://foo.bar" : Rails.application.routes.url_helpers.tiny_store_redirection_url
+      link = Rails.env.test? ? "http://foo.bar" : "http://tinyurl.com/hfkhcpr"
     end
   end
 end

@@ -17,10 +17,6 @@ class HomeController < ApplicationController
     redirect_to "https://s3-eu-west-1.amazonaws.com/entourage-ressources/store_redirection.html"
   end
 
-  def tiny_store_redirection
-    redirect_to "http://tinyurl.com/hfkhcpr"
-  end
-
   def cgu
   end
 end

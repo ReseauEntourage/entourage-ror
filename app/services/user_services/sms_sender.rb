@@ -10,7 +10,7 @@ module UserServices
     end
 
     def send_welcome_sms(sms_code)
-      link = Rails.env.test? ? "http://foo.bar" : url_shortener.shorten(Rails.application.routes.url_helpers.store_redirection_url)
+      link = Rails.env.test? ? "http://foo.bar" : "http://tinyurl.com/hfkhcpr"
       message = "Bienvenue dans le réseau Entourage. #{sms_code} est votre code de connexion. Téléchargez l'application ici: #{link} ."
       SmsSenderJob.perform_later(user.phone, message)
     end
