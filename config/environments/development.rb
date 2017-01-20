@@ -39,18 +39,12 @@ Rails.application.configure do
   ENV["BASIC_ADMIN_USER"] = "admin"
   ENV["BASIC_ADMIN_PASSWORD"] = "3nt0ur4g3"
 
-  config.action_mailer.perform_deliveries = false
-  config.action_mailer.raise_delivery_errors = true
-  config.action_mailer.delivery_method = :smtp
-  config.action_mailer.smtp_settings = {
-    address:              'smtp.gmail.com',
-    port:                 587,
-    domain:               ENV['SMTP_DOMAIN'],
-    user_name:            ENV['SMTP_USER'],
-    password:             ENV['SMTP_PASSWORD'],
-    authentication:       'plain',
-    enable_starttls_auto: true
-  }
+  if ENV['ENABLE_MAILCATCHER']
+    config.action_mailer.delivery_method = :smtp
+    config.action_mailer.smtp_settings   = { :address => "localhost", :port => 1025 }
+  else
+    config.action_mailer.delivery_method = :file
+  end
 
   #Bullet gem config
   config.after_initialize do
