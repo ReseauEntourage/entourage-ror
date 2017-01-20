@@ -31,6 +31,7 @@ gem 'faker',                          '~> 1.6.1'
 gem 'twitter',                        '~> 5.16.0'
 gem 'activerecord-postgis-adapter',   '~> 3.1.4'
 gem 'slack-notifier'
+gem 'mailjet'
 
 group :development, :test do
   gem 'annotate'
@@ -50,6 +51,8 @@ group :development do
   gem 'derailed',                     '~> 0.1.0'
   gem 'stackprof',                    '~> 0.2.8'
   gem 'letter_opener',                '~> 1.4.1'
+  gem 'safety_mailer'
+  gem 'mailcatcher'
 end
 
 group :test do
