@@ -11,6 +11,6 @@ class JoinRequest < ActiveRecord::Base
   validates_inclusion_of :status, in: ["pending", "accepted", "rejected"]
 
   scope :accepted, -> {where(status: ACCEPTED_STATUS)}
-  scope :pending, -> {where(status: PENDING_STATUS)}
+  scope :pending,  -> {where(status: PENDING_STATUS)}
   scope :rejected, -> {where(status: REJECTED_STATUS)}
 end

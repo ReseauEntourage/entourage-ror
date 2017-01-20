@@ -7,6 +7,7 @@ module EntourageServices
     def accept!
       if JoinRequest.create(user: invitation.invitee, joinable: invitation.invitable, status: JoinRequest::ACCEPTED_STATUS)
         invitation.update(status: EntourageInvitation::ACCEPTED_STATUS)
+        invitation.invitable.touch
         send_notif(title: "Invitation accepté",
                    content: "#{invitee_name} a accepté votre invitation",
                    accepted: true)
