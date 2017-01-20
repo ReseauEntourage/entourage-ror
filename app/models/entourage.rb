@@ -32,6 +32,7 @@ class Entourage < ActiveRecord::Base
   validates_presence_of :status, :title, :entourage_type, :user_id, :latitude, :longitude, :number_of_people
   validates_inclusion_of :status, in: ENTOURAGE_STATUS
   validates_inclusion_of :entourage_type, in: ENTOURAGE_TYPES
+  validates_uniqueness_of :uuid
 
   scope :visible, -> { where.not(status: 'blacklisted') }
 

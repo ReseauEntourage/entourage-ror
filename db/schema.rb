@@ -118,10 +118,12 @@ ActiveRecord::Schema.define(version: 20170122122727) do
     t.datetime "created_at",                        null: false
     t.datetime "updated_at",                        null: false
     t.string   "description"
+    t.uuid     "uuid"
   end
 
   add_index "entourages", ["latitude", "longitude"], name: "index_entourages_on_latitude_and_longitude", using: :btree
   add_index "entourages", ["user_id"], name: "index_entourages_on_user_id", using: :btree
+  add_index "entourages", ["uuid"], name: "index_entourages_on_uuid", unique: true, using: :btree
 
   create_table "entourages_users", force: :cascade do |t|
     t.integer  "user_id",                               null: false
@@ -379,6 +381,7 @@ ActiveRecord::Schema.define(version: 20170122122727) do
   create_table "users", force: :cascade do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
+<<<<<<< HEAD
     t.string   "email"
     t.string   "first_name"
     t.string   "last_name"
@@ -386,6 +389,13 @@ ActiveRecord::Schema.define(version: 20170122122727) do
     t.string   "token"
     t.string   "device_id"
     t.integer  "device_type"
+=======
+    t.string   "email",                limit: 255
+    t.string   "first_name",           limit: 255
+    t.string   "last_name",            limit: 255
+    t.string   "phone",                                                  null: false
+    t.string   "token",                limit: 255
+>>>>>>> [API] Added new public namespace. Added new endpoint in api/v1/entourages for entourage's sharing. Moved StatsController in Api::Public.
     t.string   "sms_code"
     t.integer  "organization_id"
     t.boolean  "manager",              default: false,       null: false

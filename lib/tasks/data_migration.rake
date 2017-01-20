@@ -5,4 +5,11 @@ namespace :data_migration do
                     "large_logo_url":"https://s3-eu-west-1.amazonaws.com/entourage-ressources/ATDQM-coul-V-fr.png",
                     "small_logo_url":"https://s3-eu-west-1.amazonaws.com/entourage-ressources/Badge+image.png")
   end
+
+  desc "set uuid to entourages"
+  task set_uuid_to_entourages: :environment do
+    Entourage.all.each do |entourage|
+      entourage.update_attribute(:uuid, SecureRandom.uuid)
+    end
+  end
 end

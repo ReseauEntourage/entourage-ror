@@ -80,7 +80,6 @@ Rails.application.routes.draw do
         resources :tour_points, only:[:create]
         resources :encounters, only: [:create]
       end
-      resources :stats, only: [:index]
       resources :messages, only: [:create]
       resources :registration_requests, only: [:create]
       resources :map, only: [:index]
@@ -163,6 +162,11 @@ Rails.application.routes.draw do
       get 'check' => 'base#check'
       get 'ping' => 'base#ping'
       get 'csv_matching' => 'csv_matching#show'
+
+      namespace :public do
+        resources :stats, only: [:index]
+        match 'entourages/:uuid' => 'entourages#show', :via => :get
+      end
     end
   end
 

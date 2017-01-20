@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Api::V1::StatsController, :type => :controller do
+describe Api::V1::Public::StatsController do
   describe 'index' do
     before(:each) do
       test_organization = FactoryGirl.create(:organization, test_organization: true)
