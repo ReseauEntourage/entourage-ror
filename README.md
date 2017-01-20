@@ -85,10 +85,10 @@ $ bundle exec guard -g apib
 ## Redirection to app stores :
 In order to redirect a mobile to the application from a SMS, we redirect toward a page on the website :
 
-http://entourage-back.herokuapp.com/store_redirection
+http://api.entourage.social/store_redirection
 
 * If you visit this page from an iOS device you will be redirected to the Appstore
 * If you visit this page from an Android device you will be redirected to the PlayStore
 
 The logic and URL for the store can be found here :
-/app/views/home/store_redirection.html.erb
+https://s3-eu-west-1.amazonaws.com/entourage-ressources/store_redirection.html
