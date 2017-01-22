@@ -48,7 +48,7 @@ module EntourageServices
     end
 
     def link
-      link = Rails.env.test? ? "http://foo.bar" : ShortURL.shorten(Rails.application.routes.url_helpers.store_redirection_url)
+      link = Rails.env.test? ? "http://foo.bar" : "http://tinyurl.com/hfkhcpr"
     end
   end
 end
