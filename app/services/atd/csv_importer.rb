@@ -8,18 +8,19 @@ module Atd
       @phone_hashes = {}
     end
 
-    def import
+    def match
       set_entourage_user_hashes
       found_users = Set.new
-      CSV.parse(csv) do |row|
-        user_id = email_hashes[row["email"]] || phone_hashes[row["email"]]
-        found_users.add({entourage_id: user_id, atd_id: row["id"]}) if user_id
+      CSV.parse(csv, headers: true) do |row|
+        user_id = email_hashes[row["email_hash"]] || phone_hashes[row["phone_hash"]]
+        found_users.add({entourage_id: user_id, atd_id: row["atd_user_id"]}) if user_id
       end
       generate_final_csv(found_users)
     end
 
     private
-    attr_reader :csv, :email_hashes, :phone_hashes
+    attr_reader :csv
+    attr_accessor :email_hashes, :phone_hashes
 
     def generate_final_csv(found_users)
       CSV.open("tmp/tmp.csv", "wb") do |csv|
@@ -55,6 +56,7 @@ module Atd
         email_hashes[hash(user.email)] = user.id
         phone_hashes[hash(user.phone)] = user.id
       end
+      i=0
     end
 
     def hash(str)
