@@ -1236,7 +1236,7 @@ status :
 active: either created by me or that I joined
 closed: either (created and closed by me)
 
-### Get all feeds [GET /myfeeds{?token,page,per,tour_types,entourage_types,time_range,status,created_by_me,accepted_invitation}]
+### Get all feeds [GET /myfeeds{?token,page,per,tour_types,entourage_types,time_range,status,created_by_me,`accepted_invitation`}]
 
 + Parameters
     + token (required, string, `FAKETOKEN`) ... Token identifying the current user
@@ -2221,3 +2221,35 @@ Resources related to partners of a user
 + Response 401 (application/json; charset=utf-8)
 
         {"error":{"status":401,"message":"Please sign-in"}}
+
+
+# Group CSV Matching
+
+Match entourage users by email hash or phone
+
+## CSV matching [/csv_matching{?source}]
+
+### Get CSV matching [GET /csv_matching{?source,url}]
+
++ Parameters
+    + source (required, string, `ATD`) ... Partner identifier
+    + url (required, string, `http://foobar.com/res.csv`) ... Input CSV
+
++ Request
+
+    + Headers
+
+            Accept: application/json
+            Authorization: Basic ABC123
+
++ Response 200 (application/json; charset=utf-8)
+
+    + Body
+
+            {
+                "csv_url": "http://foobar.com/res.csv"
+            }
+
++ Response 401 (application/json; charset=utf-8)
+
+        {"error":{"status":401,"message":"Invalid authentication"}}
