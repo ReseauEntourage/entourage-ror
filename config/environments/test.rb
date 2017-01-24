@@ -51,4 +51,7 @@ Rails.application.configure do
 
   ENV["MAILCHIMP_LIST_ID"]="foobar"
   ENV["MAILCHIMP_API_KEY"]="foobar-us8"
+
+  ENV["ATD_USERNAME"] = "name"
+  ENV["ATD_PASSWORD"] = "password"
 end

@@ -162,21 +162,7 @@ Rails.application.routes.draw do
       post 'login' => 'users#login'
       get 'check' => 'base#check'
       get 'ping' => 'base#ping'
-    end
-  end
-
-  #Test user signup => delete when done
-  namespace :test_tunnel do
-    resources :users, only: :none do
-      collection do
-        get :step1
-        get :step2
-      end
-
-      member do
-        get :step3
-        get :step4
-      end
+      get 'csv_matching' => 'csv_matching#show'
     end
   end
 

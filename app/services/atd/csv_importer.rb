@@ -6,6 +6,7 @@ module Atd
       @csv = csv
       @email_hashes = {}
       @phone_hashes = {}
+      @result_file = Tempfile.new
     end
 
     def match
@@ -16,15 +17,16 @@ module Atd
         found_users.add({entourage_id: user_id, atd_id: row["atd_user_id"]}) if user_id
       end
       generate_final_csv(found_users)
+      result_file
     end
 
     private
-    attr_reader :csv
+    attr_reader :csv, :result_file
     attr_accessor :email_hashes, :phone_hashes
 
     def generate_final_csv(found_users)
-      CSV.open("tmp/tmp.csv", "wb") do |csv|
-        csv << ["atd_id", "entourage_id", "email", "phone", "status"]
+      CSV.open(result_file, "wb") do |csv|
+        csv << ["atd_id1", "entourage_id", "email", "phone", "status"]
 
         found_users.each do |user_infos|
           user = User.find(user_infos[:entourage_id])
@@ -56,7 +58,6 @@ module Atd
         email_hashes[hash(user.email)] = user.id
         phone_hashes[hash(user.phone)] = user.id
       end
-      i=0
     end
 
     def hash(str)

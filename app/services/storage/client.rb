@@ -7,5 +7,9 @@ module Storage
     def self.avatars
       Storage::Bucket.new(ENV["ENTOURAGE_AVATARS_BUCKET"])
     end
+
+    def self.csv
+      Storage::Bucket.new("entourage-csv")
+    end
   end
 end
