@@ -25,6 +25,8 @@ class User < ActiveRecord::Base
   has_many :authentication_providers, dependent: :destroy
   belongs_to :marketing_referer
   has_many :feeds
+  has_many :user_partners, dependent: :destroy
+  has_many :partners, through: :user_partners
 
   enum device_type: [ :android, :ios ]
 
