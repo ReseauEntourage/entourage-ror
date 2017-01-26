@@ -7,7 +7,8 @@ module V1
                :last_name,
                :token,
                :avatar_url,
-               :user_type
+               :user_type,
+               :partner
 
     has_one :organization
     has_one :stats
@@ -30,6 +31,11 @@ module V1
 
     def display_name
       UserPresenter.new(user: object).display_name
+    end
+
+    def partner
+      return nil unless object.default_partner
+      JSON.parse(V1::PartnerSerializer.new(object.default_partner, root: false).to_json)
     end
 
     def me?

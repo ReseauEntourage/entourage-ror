@@ -94,4 +94,8 @@ class User < ActiveRecord::Base
   def validate!
     update(validation_status: "validated")
   end
+
+  def default_partner
+    @default_partner ||= user_partners.where(default: true).first&.partner
+  end
 end

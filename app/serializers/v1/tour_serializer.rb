@@ -46,12 +46,7 @@ module V1
           id: tour_author.id,
           display_name: tour_author.first_name,
           avatar_url: UserServices::Avatar.new(user: tour_author).thumbnail_url,
-          partner: {
-              "id": 2,
-              "name": "Autre partner",
-              "large_logo_url":"http://foo.com/bar.png",
-              "small_logo_url":"http://foo.com/bar.png"
-          }
+          partner: object.user.default_partner.nil? ? nil : JSON.parse(V1::PartnerSerializer.new(object.user.default_partner, root: false).to_json)
       }
     end
 

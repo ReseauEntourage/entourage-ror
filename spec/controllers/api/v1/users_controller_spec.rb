@@ -36,7 +36,8 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                                       "tour_count"=>0,
                                       "encounter_count"=>0,
                                       "entourage_count"=>0,
-                                  }
+                                  },
+                                  "partner"=>nil
                                  }})
         end
       end
@@ -103,7 +104,8 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                                                                  "tour_count"=>2,
                                                                  "encounter_count"=>3,
                                                                  "entourage_count"=>1,
-                                                             }}}) }
+                                                             },
+                                                             "partner"=>nil}}) }
     end
 
     context "blocked user" do
@@ -304,7 +306,8 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                                                                "tour_count"=>0,
                                                                "encounter_count"=>0,
                                                                "entourage_count"=>0,
-                                                           }}}) }
+                                                           },
+                                                           "partner"=>nil}}) }
       end
 
       context "get my profile with 'me' shortcut" do
@@ -324,7 +327,8 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                                                                "tour_count"=>0,
                                                                "encounter_count"=>0,
                                                                "entourage_count"=>0,
-                                                           }}}) }
+                                                           },
+                                                           "partner"=>nil}}) }
       end
 
       context "get someone else profile" do
@@ -343,7 +347,8 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                                                                "tour_count"=>0,
                                                                "encounter_count"=>0,
                                                                "entourage_count"=>0,
-                                                           }}}) }
+                                                           },
+                                                           "partner"=>nil}}) }
       end
     end
   end

@@ -52,7 +52,8 @@ describe Api::V1::AuthenticationProvidersController do
                                                        "tour_count"=>0,
                                                        "encounter_count"=>0,
                                                        "entourage_count"=>0,
-                                                   }
+                                                   },
+                                                   "partner"=>nil
                                                   }}) }
           it { expect(response.status).to eq(200) }
           it { expect(User.count).to eq(1) }

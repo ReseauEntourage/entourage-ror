@@ -40,7 +40,8 @@ describe Api::V1::InvitationsController do
                                                             "tour_count"=>0,
                                                             "encounter_count"=>0,
                                                             "entourage_count"=>0,
-                                                        }
+                                                        },
+                                                        "partner"=>nil
                                                     }
                                                   }
                                                 ]}) }

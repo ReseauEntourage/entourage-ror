@@ -32,12 +32,7 @@ RSpec.describe Api::V1::Users::ToursController, :type => :controller do
                    "id"=>tour1.user.id,
                    "display_name"=>"John",
                    "avatar_url"=>nil,
-                   "partner"=>{
-                       "id"=>2,
-                       "name"=>"Autre partner",
-                       "large_logo_url"=>"http://foo.com/bar.png",
-                       "small_logo_url"=>"http://foo.com/bar.png"
-                   }
+                   "partner"=>nil
                },
                "number_of_people"=> 1,
                "join_status"=>"not_requested",
@@ -59,12 +54,7 @@ RSpec.describe Api::V1::Users::ToursController, :type => :controller do
                    "id"=>tour2.user.id,
                    "display_name"=>"John",
                    "avatar_url"=>nil,
-                   "partner"=>{
-                       "id"=>2,
-                       "name"=>"Autre partner",
-                       "large_logo_url"=>"http://foo.com/bar.png",
-                       "small_logo_url"=>"http://foo.com/bar.png"
-                   }
+                   "partner"=>nil
                },
                "number_of_people"=> 1,
                "join_status"=>"not_requested",
