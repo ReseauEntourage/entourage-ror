@@ -35,7 +35,7 @@ module V1
 
     def partner
       return nil unless object.default_partner
-      JSON.parse(V1::PartnerSerializer.new(object.default_partner, scope: {user: object.user}, root: false).to_json)
+      JSON.parse(V1::PartnerSerializer.new(object.default_partner, scope: {user: object}, root: false).to_json)
     end
 
     def me?
