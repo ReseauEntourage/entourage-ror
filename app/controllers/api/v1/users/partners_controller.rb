@@ -13,7 +13,7 @@ module Api
         #curl -H "Content-Type: application/json" -X POST -d '{"partner" : { "id": 3 }}' "http://localhost:3000/api/v1/users/93/partners?token=153ad0b7ef67e5c44b8ef5afc12709e4"
         def create
           partner = Partner.find(params[:partner][:id])
-          current_user.partners << partner
+          current_user.user_partners.create(partner: partner, default: true)
           render json: partner, status: 201, serializer: ::V1::PartnerSerializer, scope: {user: current_user}
         end
 

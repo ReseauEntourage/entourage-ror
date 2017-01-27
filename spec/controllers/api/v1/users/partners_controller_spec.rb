@@ -18,6 +18,7 @@ RSpec.describe Api::V1::Users::PartnersController, type: :controller do
     let!(:partner) { FactoryGirl.create(:partner) }
     before { post :create, {partner: { id: partner.to_param }, user_id: user.id, token: user.token } }
     it { expect(user.partners).to eq([partner]) }
+    it { expect(user.default_partner).to eq(partner) }
   end
 
   describe 'PUT update' do
