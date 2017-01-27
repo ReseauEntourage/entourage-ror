@@ -28,7 +28,7 @@ module V1
           id: entourage_author.id,
           display_name: entourage_author.first_name,
           avatar_url: UserServices::Avatar.new(user: entourage_author).thumbnail_url,
-          partner: object.user.default_partner.nil? ? nil : V1::PartnerSerializer.new(object.user.default_partner).to_json
+          partner: object.user.default_partner.nil? ? nil : V1::PartnerSerializer.new(object.user.default_partner, scope: {user: object.user}).to_json
       }
     end
 
