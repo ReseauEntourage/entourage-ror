@@ -21,7 +21,7 @@ module Api
         def update
           default = (params[:partner][:default].to_s == "true")
           partner = current_user.partners.where(partners: {id: params[:id]}).first
-          current_user.user_partners.where(partner: partner).first.update(default: default)
+          current_user.user_partners.where(partner: partner).first&.update(default: default)
           render json: partner, status: 201, serializer: ::V1::PartnerSerializer, scope: {user: current_user}
         end
 
