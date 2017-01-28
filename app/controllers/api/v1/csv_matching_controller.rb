@@ -4,6 +4,7 @@ module Api
       skip_before_action :authenticate_user!
       http_basic_authenticate_with name: ENV["ATD_USERNAME"], password: ENV["ATD_PASSWORD"]
 
+      #curl "http://localhost:3000/api/v1/csv_matching?url=localhost%3A3000%2Fentourage_test_hash.csv"
       def show
         csv_file = Atd::CsvImporter.new(csv: input_csv).match
         cvs_bucket.upload(file: csv_file, key: filename)
@@ -20,7 +21,7 @@ module Api
       end
 
       def filename
-        @filename ||= SecureRandom.uuid
+        @filename ||= "#{SecureRandom.uuid}.csv"
       end
     end
   end
