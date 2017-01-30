@@ -6,7 +6,8 @@ module V1
                :status,
                :message,
                :requested_at,
-               :avatar_url
+               :avatar_url,
+               :partner
 
     def id
       object.user.id
@@ -30,6 +31,11 @@ module V1
 
     def avatar_url
       UserServices::Avatar.new(user: object.user).thumbnail_url
+    end
+
+    def partner
+      return nil unless object.user.default_partner
+      JSON.parse(V1::PartnerSerializer.new(object.user.default_partner, scope: {user: object.user}, root: false).to_json)
     end
   end
 end

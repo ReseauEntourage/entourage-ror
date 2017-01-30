@@ -21,7 +21,8 @@ describe Api::V1::Tours::UsersController do
                                                               "status" => "pending",
                                                               "message"=>nil,
                                                               "avatar_url"=>nil,
-                                                              "requested_at"=>JoinRequest.last.created_at.iso8601(3)}) }
+                                                              "requested_at"=>JoinRequest.last.created_at.iso8601(3),
+                                                              "partner"=>nil}) }
         it { expect(tour.reload.number_of_people).to eq(1) }
       end
 
@@ -54,7 +55,8 @@ describe Api::V1::Tours::UsersController do
                                                               "status" => "pending",
                                                               "message"=> "foo",
                                                               "requested_at"=>JoinRequest.last.created_at.iso8601(3),
-                                                              "avatar_url"=>nil}) }
+                                                              "avatar_url"=>nil,
+                                                              "partner"=>nil}) }
       end
     end
   end
@@ -74,7 +76,8 @@ describe Api::V1::Tours::UsersController do
                                                                "status"=>"pending",
                                                                "message"=>nil,
                                                                "requested_at"=>join_request.created_at.iso8601(3),
-                                                               "avatar_url"=>nil}]}) }
+                                                               "avatar_url"=>nil,
+                                                               "partner"=>nil}]}) }
     end
   end
 
@@ -165,7 +168,8 @@ describe Api::V1::Tours::UsersController do
                                           "status"=>"rejected",
                                           "message"=>nil,
                                           "requested_at"=>JoinRequest.last.created_at.iso8601(3),
-                                          "avatar_url"=>nil
+                                          "avatar_url"=>nil,
+                                          "partner"=>nil
                                           }}) }
       it { expect(tour_requested.reload.status).to eq("rejected") }
       it { expect(tour.reload.number_of_people).to eq(1) }
@@ -188,7 +192,8 @@ describe Api::V1::Tours::UsersController do
                                   "status"=>"not requested",
                                   "message"=>nil,
                                   "requested_at"=>tour_member.created_at.iso8601(3),
-                                  "avatar_url"=>nil}
+                                  "avatar_url"=>nil,
+                                  "partner"=>nil}
                                 }) }
       it { expect(tour.reload.number_of_people).to eq(0) }
     end

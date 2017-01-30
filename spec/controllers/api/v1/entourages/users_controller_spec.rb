@@ -23,7 +23,8 @@ describe Api::V1::Entourages::UsersController do
                                             "status"=>"pending",
                                             "message"=>nil,
                                             "requested_at"=>JoinRequest.last.created_at.iso8601(3),
-                                            "avatar_url"=>nil
+                                            "avatar_url"=>nil,
+                                            "partner"=>nil
                                           }) }
       end
 
@@ -96,7 +97,8 @@ describe Api::V1::Entourages::UsersController do
                                                "status"=>"pending",
                                                "message"=>nil,
                                                "requested_at"=>join_request.created_at.iso8601(3),
-                                               "avatar_url"=>nil
+                                               "avatar_url"=>nil,
+                                               "partner"=>nil
                                            }]}) }
     end
   end
@@ -173,7 +175,9 @@ describe Api::V1::Entourages::UsersController do
                                             "status"=>"rejected",
                                             "message"=>nil,
                                             "requested_at"=>other_join_request.created_at.iso8601(3),
-                                            "avatar_url"=>nil}
+                                            "avatar_url"=>nil,
+                                            "partner"=>nil
+                                          }
                                   }) }
       end
 
@@ -189,7 +193,8 @@ describe Api::V1::Entourages::UsersController do
                                       "status"=>"not requested",
                                       "message"=>nil,
                                       "requested_at"=>my_join_request.created_at.iso8601(3),
-                                      "avatar_url"=>nil}
+                                      "avatar_url"=>nil,
+                                      "partner"=>nil}
                                   }) }
       end
     end

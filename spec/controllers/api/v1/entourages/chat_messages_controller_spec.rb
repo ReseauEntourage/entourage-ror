@@ -23,13 +23,13 @@ describe Api::V1::Entourages::ChatMessagesController do
                                                           [{
                                                                "id"=>chat_message1.id,
                                                                "content"=>"MyText",
-                                                               "user"=> {"id"=>chat_message1.user_id, "avatar_url"=>nil, "display_name"=>"John D"},
+                                                               "user"=> {"id"=>chat_message1.user_id, "avatar_url"=>nil, "display_name"=>"John D","partner"=>nil},
                                                                "created_at"=>chat_message1.created_at.iso8601(3)
                                                            },
                                                            {
                                                                "id"=>chat_message2.id,
                                                                "content"=>"MyText",
-                                                               "user"=> {"id"=>chat_message2.user_id, "avatar_url"=>nil, "display_name"=>"John D"},
+                                                               "user"=> {"id"=>chat_message2.user_id, "avatar_url"=>nil, "display_name"=>"John D","partner"=>nil},
                                                                "created_at"=>chat_message2.created_at.iso8601(3)
                                                            }]}) }
 
@@ -68,7 +68,7 @@ describe Api::V1::Entourages::ChatMessagesController do
         it { expect(JSON.parse(response.body)).to eq({"chat_messages"=>[{
                                                                             "id"=>chat_message2.id,
                                                                             "content"=>"MyText",
-                                                                            "user"=>{"id"=>chat_message2.user.id, "avatar_url"=>nil, "display_name"=>"John D"},
+                                                                            "user"=>{"id"=>chat_message2.user.id, "avatar_url"=>nil, "display_name"=>"John D","partner"=>nil},
                                                                             "created_at"=>chat_message2.created_at.iso8601(3)
                                                                         }]}) }
       end
@@ -96,7 +96,7 @@ describe Api::V1::Entourages::ChatMessagesController do
         it { expect(JSON.parse(response.body)).to eq({"chat_message"=>
                                                           {"id"=>ChatMessage.first.id,
                                                            "content"=>"foobar",
-                                                           "user"=>{"id"=>user.id, "avatar_url"=>nil, "display_name"=>"John D"},
+                                                           "user"=>{"id"=>user.id, "avatar_url"=>nil, "display_name"=>"John D","partner"=>nil},
                                                            "created_at"=>ChatMessage.first.created_at.iso8601(3)
                                                           }}) }
       end
