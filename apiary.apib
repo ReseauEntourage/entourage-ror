@@ -2089,10 +2089,12 @@ Resources related to partners of a user
 
 + Parameters
     + token (required, string, `FAKETOKEN`) ... Token identifying the current user
+    + user_id (required, integer, `1`) ... Identifier of the user
 
 ### Get all partners from a user [GET /users/{user_id}/partners{?token}]
 
 + Parameters
+    + user_id (required, integer, `1`) ... Identifier of the user
     + token (required, string, `FAKETOKEN`) ... Token identifying the current user
     
 + Request
@@ -2120,10 +2122,11 @@ Resources related to partners of a user
         {"error":{"status":401,"message":"Please sign-in"}}
         
         
-### Added a partner to a user [POST /users/{user_id}/partners{?token}]
+### Add a partner to a user [POST /users/{user_id}/partners{?token}]
 
 + Parameters
 
+    + user_id (required, integer, `1`) ... Identifier of the user
     + token (required, string, `FAKETOKEN`) ... Token identifying the current user
 
 + Request (application/json; charset=utf-8)
