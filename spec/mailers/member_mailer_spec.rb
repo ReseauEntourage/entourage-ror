@@ -4,7 +4,7 @@ describe MemberMailer, type: :mailer do
   describe '#tour_report' do
     let!(:tour) { FactoryGirl.create :tour, :filled }
     let!(:mail) { MemberMailer.tour_report(tour) }
-    it { expect(mail.from).to eq ['contact@entourage.social'] }
+    it { expect(mail.from).to eq ['maraudes@entourage.social'] }
     it { expect(mail.to).to eq [tour.user.email] }
     it { expect(mail.subject).to eq 'Résumé de la maraude' }
     it { expect(mail.body.encoded).to match "Bonjour #{tour.user.first_name}" }
@@ -16,7 +16,7 @@ describe MemberMailer, type: :mailer do
       it { expect(mail.body.encoded).to match "aux questions" }
     end
   end
-  
+
   describe '#poi_report' do
     let!(:poi) { create :poi }
     let!(:user) { create :pro_user }
