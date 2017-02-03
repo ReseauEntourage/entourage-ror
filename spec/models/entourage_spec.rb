@@ -42,6 +42,7 @@ RSpec.describe Entourage, type: :model do
       entourage.should_receive :ping_slack
       entourage.save
     end
+  end
 
   it "has an uuid" do
     entourage = FactoryGirl.create(:entourage)

@@ -80,6 +80,7 @@ Rails.application.routes.draw do
         resources :tour_points, only:[:create]
         resources :encounters, only: [:create]
       end
+      resources :stats, only: [:index]
       resources :messages, only: [:create]
       resources :registration_requests, only: [:create]
       resources :map, only: [:index]

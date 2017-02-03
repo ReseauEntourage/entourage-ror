@@ -3,7 +3,7 @@ require 'rails_helper'
 describe Api::V1::FeedsController do
 
   let(:result) { JSON.parse(response.body) }
-  
+
   describe 'GET index' do
     context "not signed in" do
       before { get :index }
@@ -40,7 +40,9 @@ describe Api::V1::FeedsController do
                                                      },
                                                      "created_at"=> entourage.created_at.iso8601(3),
                                                      "updated_at"=> entourage.updated_at.iso8601(3),
-                                                     "description" => nil
+                                                     "description" => nil,
+                                                     "share_url" => "http://entourage.social/entourages/#{entourage.uuid}"
+
                                                  },
                                                  "heatmap_size" => 20
                                              },
