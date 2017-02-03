@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Api::V1::EntouragesController do
+describe Api::V1::Public::EntouragesController do
   describe 'GET show' do
     context "could get entourage with uuid" do
       let!(:entourage) { FactoryGirl.create(:entourage, status: "open") }
