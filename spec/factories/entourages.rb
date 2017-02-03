@@ -11,6 +11,7 @@ FactoryGirl.define do
     latitude 1.122
     longitude 2.345
     number_of_people 1
+    uuid SecureRandom.uuid
 
     trait :joined do
       after(:create) do |entourage, evaluator|
