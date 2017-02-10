@@ -3,7 +3,7 @@ require 'rails_helper'
 describe Api::V1::FeedsController do
 
   let(:result) { JSON.parse(response.body) }
-  
+
   describe 'GET index' do
     context "not signed in" do
       before { get :index }
@@ -157,6 +157,27 @@ describe Api::V1::FeedsController do
         let!(:my_older_entourage) { FactoryGirl.create(:entourage, :joined, join_request_user: user, user: user, updated_at: 3.hour.ago, created_at: 72.hour.ago, status: :open) }
         before { get :index, token: user.token, time_range: 48 }
         it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([my_entourage.id, my_old_entourage.id, entourage.id]) }
+      end
+
+      context "touch chat message association" do
+        let!(:my_entourage) { FactoryGirl.create(:entourage, :joined, join_request_user: user, user: user, updated_at: 1.hour.ago, created_at: 1.hour.ago, status: :open) }
+        let!(:my_old_entourage) { FactoryGirl.create(:entourage, :joined, join_request_user: user, user: user, updated_at: 2.hour.ago, created_at: 24.hour.ago, status: :open) }
+        before { get :index, token: user.token, time_range: 48 }
+        it do
+          FactoryGirl.create(:chat_message, messageable: my_old_entourage, created_at: DateTime.now, updated_at: DateTime.now, content: "foo")
+          expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([my_old_entourage.id, my_entourage.id, entourage.id])
+        end
+      end
+
+      context "touch entourage invitation association" do
+        let!(:my_entourage) { FactoryGirl.create(:entourage, :joined, join_request_user: user, user: user, updated_at: 1.hour.ago, created_at: 1.hour.ago, status: :open) }
+        let!(:my_old_entourage) { FactoryGirl.create(:entourage, :joined, join_request_user: user, user: user, updated_at: 2.hour.ago, created_at: 24.hour.ago, status: :open) }
+        let!(:entourage_invitation) { FactoryGirl.create(:entourage_invitation, invitable: my_old_entourage, inviter: user, phone_number: "+40744219491") }
+        before { get :index, token: user.token, time_range: 48 }
+        it do
+          EntourageServices::InvitationService.new(invitation: entourage_invitation).accept!
+          expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([my_old_entourage.id, my_entourage.id, entourage.id])
+        end
       end
     end
   end
