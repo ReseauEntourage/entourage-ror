@@ -33,6 +33,12 @@ module Api
         "dd47b51df9a7f602e890b7a6" => {version: "2.2.0", device: "Android", device_family: UserApplication::ANDROID},
         "b6d9f316189b8fb207d64f12" => {version: "3.0.0", device: "iOS", device_family: UserApplication::IOS},
         "25a28b3aba65f8be85295946" => {version: "3.0.0", device: "Android", device_family: UserApplication::ANDROID},
+        "e8999d7ce425154f68c4b552" => {version: "3.1.0", device: "iOS", device_family: UserApplication::IOS},
+        "e467ee4b5918753fca9cc8af" => {version: "3.1.0", device: "Android", device_family: UserApplication::ANDROID},
+        "dfa6227b5e0dbe989ead945b" => {version: "3.2.0", device: "iOS", device_family: UserApplication::IOS},
+        "d75e03bd7cce4ebe45b3e45b" => {version: "3.2.0", device: "Android", device_family: UserApplication::ANDROID},
+        "0fe1d87ed0be6530157ac07a" => {version: "3.3.0", device: "iOS", device_family: UserApplication::IOS},
+        "0eb393e29d32a9595e4bf30d" => {version: "3.3.0", device: "Android", device_family: UserApplication::ANDROID},
       }
     end
   end
