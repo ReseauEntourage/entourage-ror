@@ -12,7 +12,7 @@ module Atd
     def match
       set_entourage_user_hashes
       found_users = Set.new
-      CSV.parse(csv, {headers: true, col_sep: ";"}) do |row|
+      CSV.parse(csv, {headers: true, col_sep: ","}) do |row|
         user_id = email_hashes[row["email_hash"]] || phone_hashes[row["phone_hash"]]
         found_users.add({entourage_id: user_id, atd_id: row["atd_user_id"]}) if user_id
       end
