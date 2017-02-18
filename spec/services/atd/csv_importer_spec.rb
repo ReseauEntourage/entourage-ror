@@ -28,5 +28,13 @@ RSpec.describe Atd::CsvImporter do
       it { expect(find_with_atd_id("7543")[4]).to eq("AFTER_COMMUNICATION") }
       it { expect(find_with_atd_id("3459")[4]).to eq("PRO") }
     end
+
+    describe "create atd_users" do
+      before { Atd::CsvImporter.new(csv: csv).match }
+      it { expect(AtdUser.count).to eq(4) }
+      it { expect(AtdUser.first.atd_id).to eq(2345) }
+      it { expect(AtdUser.first.mail_hash).to eq("823776525776c8f23a87176c59d25759da7a52c4") }
+      it { expect(AtdUser.first.tel_hash).to eq("823776525776c8f23a87176c59d25759da7a52c4") }
+    end
   end
 end

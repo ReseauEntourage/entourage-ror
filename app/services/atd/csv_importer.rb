@@ -12,8 +12,9 @@ module Atd
     def match
       set_entourage_user_hashes
       found_users = Set.new
-      CSV.parse(csv, {headers: true, col_sep: ","}) do |row|
+      CSV.parse(csv, {headers: true, col_sep: ";"}) do |row|
         user_id = email_hashes[row["email_hash"]] || phone_hashes[row["phone_hash"]]
+        AtdUser.create!(atd_id: row["atd_user_id"], user_id: user_id, mail_hash: row["email_hash"], tel_hash: row["email_hash"])
         found_users.add({entourage_id: user_id, atd_id: row["atd_user_id"]}) if user_id
       end
       generate_final_csv(found_users)
@@ -26,7 +27,7 @@ module Atd
 
     def generate_final_csv(found_users)
       CSV.open(result_file, "wb") do |csv|
-        csv << ["atd_id1", "entourage_id", "email", "phone", "status"]
+        csv << ["atd_id", "entourage_id", "email", "phone", "status"]
 
         found_users.each do |user_infos|
           user = User.find(user_infos[:entourage_id])
