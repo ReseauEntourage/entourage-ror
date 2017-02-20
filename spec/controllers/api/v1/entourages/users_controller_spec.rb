@@ -199,9 +199,17 @@ describe Api::V1::Entourages::UsersController do
       end
     end
 
-    context "not accepted in tour" do
-      let!(:join_request) { JoinRequest.create(user: user, joinable: entourage) }
+    context "quit tour when join request is pending acceptance" do
+      let!(:join_request) { JoinRequest.create(user: user, joinable: entourage, status: "pending") }
       before { delete :destroy, entourage_id: entourage.to_param, id: user.id, token: user.token }
+      it { expect(response.status).to eq(200) }
+    end
+
+    context "reject someone from tour when join request is pending acceptance" do
+      let!(:other_user) { FactoryGirl.create(:public_user) }
+      let!(:my_join_request) { JoinRequest.create(user: user, joinable: entourage, status: "pending") }
+      let!(:other_join_request) { JoinRequest.create(user: other_user, joinable: entourage, status: "pending") }
+      before { delete :destroy, entourage_id: entourage.to_param, id: other_user.id, token: user.token }
       it { expect(response.status).to eq(401) }
     end
 

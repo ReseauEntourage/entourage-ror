@@ -23,7 +23,7 @@ module JoinRequestsServices
     def reject
       yield callback if block_given?
       unless current_user_authorised?
-        return callback.on_not_authorised.try(:call)
+        return callback.on_not_authorised.try(:call) if join_request.user != current_user
       end
 
       if join_request.user == join_request.joinable.user
