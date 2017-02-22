@@ -9,14 +9,18 @@ class IosNotificationJob < ActiveJob::Base
     if entourage.nil?
       raise 'No IOS notification has been sent. Please save a Rpush::Apns::App in database'
     else
-      notification = Rpush::Apns::Notification.new
-      notification.app = entourage
-      notification.device_token = device_token.to_s
-      notification.alert = content
-      notification.data = { sender: sender, object: object, content: {message: content, extra: extra} }
-      notification.save!
+      begin
+        notification = Rpush::Apns::Notification.new
+        notification.app = entourage
+        notification.device_token = device_token.to_s
+        notification.alert = content
+        notification.data = { sender: sender, object: object, content: {message: content, extra: extra} }
+        notification.save!
 
-      Rpush.push unless Rails.env.test?
+        Rpush.push unless Rails.env.test?
+      rescue ActiveRecord::RecordInvalid => e
+        Rails.logger.error e.message
+      end
     end
   end
 end
