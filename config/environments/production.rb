@@ -99,6 +99,7 @@ Rails.application.configure do
         :authentication => :plain
       }
     }
+  end
 
   config.action_mailer.smtp_settings = {
     :port =>           '587',
