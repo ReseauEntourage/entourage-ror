@@ -17,7 +17,7 @@ describe Api::V1::Public::StatsController do
     it 'should returns stats' do
       get 'index'
       resp = JSON.parse(response.body)
-      expect(resp).to eq({"tours"=>2, "encounters"=>4, "organizations"=>1})
+      expect(resp).to eq({'tours'=>2, 'encounters'=>4, 'organizations'=>1})
     end
   end
 end

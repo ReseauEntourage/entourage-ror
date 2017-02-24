@@ -5,29 +5,10 @@ module Api
         def index
           json_stats = $redis.get("entourage::stats")
           if json_stats.blank?
-            json_stats = stats
+            json_stats = ::V1::Public::StatsSerializer.new.to_json
             $redis.setex("entourage::stats", 1.hour, json_stats)
           end
-          render json: json_stats
-        end
-
-        private
-        def stats
-          { tours: tours_count,
-            encounters: encounters_count,
-            organizations: organizations_count}.to_json
-        end
-
-        def tours_count
-          Tour.joins(user: :organization).where("organizations.test_organization=false").group("tours.id").count.count
-        end
-
-        def encounters_count
-          Encounter.joins(tour: {user: :organization}).where("organizations.test_organization=false").group("encounters.id").count.count
-        end
-
-        def organizations_count
-          Organization.not_test.count
+          render json: json_stats, status: 200
         end
       end
     end
