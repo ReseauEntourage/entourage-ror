@@ -8,7 +8,7 @@ module JoinRequestsServices
     def create
       return false unless @user.admin?
 
-      join_request = JoinRequest.create(joinable: @joinable, user: @user,  status: JoinRequest::ACCEPTED_STATUS)
+      join_request = JoinRequest.new(joinable: @joinable, user: @user,  status: JoinRequest::ACCEPTED_STATUS)
 
       if join_request.save
 
