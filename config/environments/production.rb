@@ -83,6 +83,7 @@ Rails.application.configure do
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
 
+  config.action_mailer.delivery_method = :smtp
 
   if ENV['STAGING']
     config.action_mailer.delivery_method = :safety_mailer
@@ -99,19 +100,12 @@ Rails.application.configure do
       }
     }
 
-  else
-    config.action_mailer.delivery_method = :smtp
-
-    config.action_mailer.smtp_settings = {
-      delivery_method: :smtp,
-      delivery_method_settings: {
-        :port =>           '587',
-        :address =>        'in-v3.mailjet.com',
-        :user_name =>      ENV['MAILJET_API_KEY'],
-        :password =>       ENV['MAILJET_SECRET_KEY'],
-        :authentication => :plain
-      }
-    }
-  end
+  config.action_mailer.smtp_settings = {
+    :port =>           '587',
+    :address =>        'in-v3.mailjet.com',
+    :user_name =>      ENV['MAILJET_API_KEY'],
+    :password =>       ENV['MAILJET_SECRET_KEY'],
+    :authentication => :plain
+  }
 
 end
