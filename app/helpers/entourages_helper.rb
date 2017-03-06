@@ -29,7 +29,8 @@ module EntouragesHelper
     type_to_class = {
       "pending"  => "label-warning",
       "accepted" => "label-success",
-      "rejected" => "label-danger"
+      "rejected" => "label-danger",
+      "cancelled" => "label-danger"
     }
     content_tag :span, entourage_invitation.status, class: "label #{type_to_class[entourage_invitation.status]}"
   end

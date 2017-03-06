@@ -31,6 +31,13 @@ module UserServices
       user
     end
 
+    def user_quitting_tour(tour:)
+      user = create_user!
+      join_request = JoinRequest.create(joinable: tour, user: user)
+      TourServices::JoinRequestStatus.new(join_request: join_request).cancelled!
+      user
+    end
+
     private
     def create_user!
       params = {first_name: ::Faker::Name.first_name,

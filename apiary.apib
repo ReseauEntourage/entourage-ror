@@ -784,6 +784,13 @@ Resources related to users of a tour
                     "display_name":"Judge Dredd",
                     "status": "rejected",
                     "requested_at": "2016-01-01T20:09:06.000+01:00"
+                },
+                {
+                    "id": 4,
+                    "email": "dredd3@test.com",
+                    "display_name":"Judge Dredd",
+                    "status": "cancelled",
+                    "requested_at": "2016-01-01T20:09:06.000+01:00"
                 }]
             }
 
@@ -864,7 +871,7 @@ Note : You must be part of the tour to remove someone
         {"error":{"status":401,"message":"Please sign-in"}}
 
 
-### Update a tour user status : accept or reject a user request to join a tour [PUT]
+### Update a tour user status : accept or reject or cancel a user request to join a tour [PUT]
 
 Note : You must be part of the tour to change the status of a user (ex: accept someone in the tour)
 
@@ -1690,6 +1697,12 @@ Resources related to users of an entourage
                     "email": "dredd3@test.com",
                     "display_name": "Judge Dredd",
                     "status": "rejected"
+                },
+                {
+                    "id": 4,
+                    "email": "dredd3@test.com",
+                    "display_name": "Judge Dredd",
+                    "status": "cancelled"
                 }]
             }
 

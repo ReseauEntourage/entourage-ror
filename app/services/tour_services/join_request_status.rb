@@ -16,6 +16,10 @@ module TourServices
       join_request.status=="rejected"
     end
 
+    def cancelled?
+      join_request.status=="cancelled"
+    end
+
     def accept!
       return true if accepted?
 
@@ -52,8 +56,16 @@ module TourServices
     end
 
     def quit!
-      decrement_counter
-      join_request.destroy
+      return true if quit?
+
+      if pending?
+        join_request.update(status: "cancelled")
+      elsif accepted?
+        ActiveRecord::Base.transaction do
+          decrement_counter
+          join_request.update!(status: "cancelled")
+        end
+      end
     end
 
     def decrement_counter

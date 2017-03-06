@@ -60,6 +60,12 @@ describe Api::V1::Entourages::ChatMessagesController do
         it { expect(response.status).to eq(401) }
       end
 
+      context "i quit the tour" do
+        let!(:join_request) { FactoryGirl.create(:join_request, joinable: entourage, user: user, status: "cancelled") }
+        before { get :index, entourage_id: entourage.to_param, token: user.token }
+        it { expect(response.status).to eq(401) }
+      end
+
       context "pagination" do
         let!(:chat_message1) { FactoryGirl.create(:chat_message, messageable: entourage, updated_at: DateTime.parse("11/01/2016")) }
         let!(:chat_message2) { FactoryGirl.create(:chat_message, messageable: entourage, updated_at: DateTime.parse("09/01/2016")) }
@@ -131,6 +137,12 @@ describe Api::V1::Entourages::ChatMessagesController do
 
       context "post in a entourage i am rejected from" do
         let!(:join_request) { FactoryGirl.create(:join_request, joinable: entourage, user: user, status: "rejected") }
+        before { post :create, entourage_id: entourage.to_param, chat_message: {content: "foobar"}, token: user.token }
+        it { expect(response.status).to eq(401) }
+      end
+
+      context "post in a entourage i have quit" do
+        let!(:join_request) { FactoryGirl.create(:join_request, joinable: entourage, user: user, status: "cancelled") }
         before { post :create, entourage_id: entourage.to_param, chat_message: {content: "foobar"}, token: user.token }
         it { expect(response.status).to eq(401) }
       end
