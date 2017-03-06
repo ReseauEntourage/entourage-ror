@@ -76,6 +76,7 @@ module Admin
       @users << UserServices::FakeUser.new.user_joining_tour(tour: ongoing_tour)
       @users << UserServices::FakeUser.new.user_accepted_in_tour(tour: ongoing_tour)
       @users << UserServices::FakeUser.new.user_rejected_of_tour(tour: ongoing_tour)
+      @users << UserServices::FakeUser.new.user_quitting_tour(tour: ongoing_tour)
       render :fake
     end
 

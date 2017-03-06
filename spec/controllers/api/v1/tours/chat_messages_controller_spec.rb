@@ -60,6 +60,12 @@ describe Api::V1::Tours::ChatMessagesController do
         it { expect(response.status).to eq(401) }
       end
 
+      context "i have quit the tour" do
+        let!(:join_request) { FactoryGirl.create(:join_request, joinable: tour, user: user, status: "cancelled") }
+        before { get :index, tour_id: tour.to_param, token: user.token }
+        it { expect(response.status).to eq(401) }
+      end
+
       context "pagination" do
         let!(:chat_message1) { FactoryGirl.create(:chat_message, messageable: tour, updated_at: DateTime.parse("11/01/2016")) }
         let!(:chat_message2) { FactoryGirl.create(:chat_message, messageable: tour, updated_at: DateTime.parse("09/01/2016")) }
@@ -131,6 +137,12 @@ describe Api::V1::Tours::ChatMessagesController do
 
       context "post in a tour i am rejected from" do
         let!(:join_request) { FactoryGirl.create(:join_request, joinable: tour, user: user, status: "rejected") }
+        before { post :create, tour_id: tour.to_param, chat_message: {content: "foobar"}, token: user.token }
+        it { expect(response.status).to eq(401) }
+      end
+
+      context "post in a tour i have quit" do
+        let!(:join_request) { FactoryGirl.create(:join_request, joinable: tour, user: user, status: "cancelled") }
         before { post :create, tour_id: tour.to_param, chat_message: {content: "foobar"}, token: user.token }
         it { expect(response.status).to eq(401) }
       end

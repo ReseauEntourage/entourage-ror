@@ -64,6 +64,23 @@ module JoinRequestsServices
       end
     end
 
+    def quit
+      unless status == "cancelled"
+        return callback.on_invalid_status.try(:call, status)
+      end
+
+      if join_request.user != current_user
+        return callback.on_not_authorised.try(:call)
+      end
+
+      user_status = TourServices::JoinRequestStatus.new(join_request: join_request)
+      if user_status.quit!
+        callback.on_success.try(:call, join_request)
+      else
+        callback.on_failure.try(:call, join_request)
+      end
+    end
+
     def update_message
       if join_request.user != current_user
         return callback.on_not_authorised.try(:call)

@@ -2,6 +2,7 @@ class JoinRequest < ActiveRecord::Base
   ACCEPTED_STATUS="accepted"
   PENDING_STATUS="pending"
   REJECTED_STATUS="rejected"
+  CANCELLED_STATUS="cancelled"
 
   STATUS = [ACCEPTED_STATUS, PENDING_STATUS, REJECTED_STATUS]
 
@@ -10,11 +11,12 @@ class JoinRequest < ActiveRecord::Base
 
   validates :user_id, :joinable_id, :joinable_type, :status, presence: true
   validates_uniqueness_of :joinable_id, {scope: [:user_id], message: "a déjà été ajouté"}
-  validates_inclusion_of :status, in: ["pending", "accepted", "rejected"]
+  validates_inclusion_of :status, in: ["pending", "accepted", "rejected", "cancelled"]
 
   scope :accepted, -> {where(status: ACCEPTED_STATUS)}
   scope :pending,  -> {where(status: PENDING_STATUS)}
   scope :rejected, -> {where(status: REJECTED_STATUS)}
+  scope :cancelled, -> {where(status: CANCELLED_STATUS)}
 
   STATUS.each do |check_status|
     define_method("is_#{check_status}?") do

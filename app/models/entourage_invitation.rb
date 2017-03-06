@@ -4,6 +4,7 @@ class EntourageInvitation < ActiveRecord::Base
   PENDING_STATUS="pending"
   ACCEPTED_STATUS="accepted"
   REJECTED_STATUS="rejected"
+  CANCELLED_STATUS="cancelled"
 
   belongs_to :invitable, polymorphic: true
   belongs_to :inviter, class_name: "User"

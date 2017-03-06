@@ -62,6 +62,13 @@ describe Api::V1::InvitationsController do
       it { expect(result["invitations"][0]["status"]).to eq("rejected")}
     end
 
+    context "cancelled invitation" do
+      let!(:cancelled_invitation) { FactoryGirl.create(:entourage_invitation, invitee: user) }
+      let!(:join_request) { JoinRequest.create(user: user, joinable: cancelled_invitation.invitable, status: JoinRequest::CANCELLED_STATUS) }
+      before { get :index, token: user.token }
+      it { expect(result["invitations"][0]["status"]).to eq("cancelled")}
+    end
+
     context "belongs to entourage" do
       let!(:entourage) { FactoryGirl.create(:entourage) }
       before { FactoryGirl.create(:join_request, user: user, joinable: entourage, status: JoinRequest::ACCEPTED_STATUS) }
@@ -74,6 +81,7 @@ describe Api::V1::InvitationsController do
       let!(:accepted_invitation) { FactoryGirl.create(:entourage_invitation, invitee: user, status: "accepted") }
       let!(:pending_invitation) { FactoryGirl.create(:entourage_invitation, invitee: user, status: "pending") }
       let!(:rejected_invitation) { FactoryGirl.create(:entourage_invitation, invitee: user, status: "rejected") }
+      let!(:cancelled_invitation) { FactoryGirl.create(:entourage_invitation, invitee: user, status: "cancelled") }
       before { get :index, token: user.token, status: "accepted" }
       it { expect(result["invitations"].map {|invite| invite["id"]}).to eq([accepted_invitation.id])}
     end
@@ -103,7 +111,7 @@ describe Api::V1::InvitationsController do
 
       it "sends notification for accepted invitation" do
         expect_any_instance_of(PushNotificationService).to receive(:send_notification).with("John D",
-                                                                                            "Invitation accepté",
+                                                                                            "Invitation acceptée",
                                                                                             "John D a accepté votre invitation",
                                                                                             [invitation.inviter],
                                                                                             {type: "INVITATION_STATUS",
@@ -141,7 +149,7 @@ describe Api::V1::InvitationsController do
 
       it "sends notification for accepted invitation" do
         expect_any_instance_of(PushNotificationService).to receive(:send_notification).with("John D",
-                                                                                            "Invitation refusé",
+                                                                                            "Invitation refusée",
                                                                                             "John D a refusé votre invitation",
                                                                                             [invitation.inviter],
                                                                                             {type: "INVITATION_STATUS",
