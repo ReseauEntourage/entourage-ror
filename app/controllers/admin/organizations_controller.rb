@@ -3,7 +3,11 @@ module Admin
     before_action :set_organization, only: [:edit, :update]
 
     def index
-      @organizations = Organization.order("name ASC").page(params[:page]).per(25)
+      @q = Organization.ransack(params[:q])
+      @organizations = @q.result(distinct: true)
+                         .page(params[:page])
+                         .per(25)
+                         .order("name ASC")
     end
 
     def edit

@@ -1,0 +1,29 @@
+<div class='panel panel-default'>
+  <div class="panel-body">
+    <%= search_form_for [:admin, @q], class: 'form-inline' do |f| %>
+
+      <div class='form-group'>
+        <%= f.label :title_cont, 'Titre' %>
+        <%= f.search_field :title_cont, class: 'form-control' %>
+      </div>
+
+      <div class='form-group'>
+        <%= f.label :description_cont, 'Description' %>
+        <%= f.search_field :description_cont, class: 'form-control' %>
+      </div>
+
+      <div class='form-group'>
+        <%= f.label :entourage_type_eq, 'Type' %>
+        <%= f.select :entourage_type_eq, Entourage::ENTOURAGE_TYPES, { include_blank: true, class: 'form-control'} %>
+      </div>
+
+      <div class='form-group'>
+        <%= f.label :status_eq, 'Status' %>
+        <%= f.select :status_eq, Entourage::ENTOURAGE_STATUS, { include_blank: true, class: 'form-control'} %>
+      </div>
+
+      <%= f.submit 'Rechercher', class: 'btn btn-default' %>
+    <% end %>
+
+  </div>
+</div>

@@ -33,6 +33,7 @@ gem 'activerecord-postgis-adapter',   '~> 3.1.4'
 gem 'slack-notifier'
 gem 'mailjet'
 gem 'safety_mailer'
+gem 'ransack'
 
 group :development, :test do
   gem 'annotate'
