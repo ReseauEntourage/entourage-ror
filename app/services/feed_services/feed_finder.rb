@@ -71,7 +71,7 @@ module FeedServices
 
     def box
       Geocoder::Calculations.bounding_box([latitude, longitude],
-                                          10,
+                                          2,
                                           units: :km)
     end
 
