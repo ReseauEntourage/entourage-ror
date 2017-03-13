@@ -56,7 +56,7 @@ module V1
 
     def current_join_request
       #TODO : replace by sql request ?
-      object.join_requests.select {|join_request| join_request.user_id == scope[:user]&.id}.first
+      object.join_requests.where('status NOT LIKE %s', JoinRequest.cancelled).select {|join_request| join_request.user_id == scope[:user]&.id}.first
     end
 
     def randomizer
