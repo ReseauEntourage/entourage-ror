@@ -2,7 +2,7 @@ class NewJoinRequestNotifyJob < ActiveJob::Base
   def perform(joinable_type, joinable_id, user_id, type, message)
     user = User.find(user_id)
     joinable = joinable_type.constantize.find(joinable_id)
-    recipients = joinable.members.includes(:join_requests).where(join_requests: {status: "accepted"})
+    recipients = [joinable.user]
     push_message = message || default_message(joinable_type: joinable_type)
     PushNotificationService.new.send_notification(UserPresenter.new(user: user).display_name,
                                                   "Demande en attente",
