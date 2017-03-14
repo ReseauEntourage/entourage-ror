@@ -48,7 +48,7 @@ describe Api::V1::Entourages::UsersController do
             expect_any_instance_of(PushNotificationService).to receive(:send_notification).with("John D",
                                                                                                 'Demande en attente',
                                                                                                 "Un nouveau membre souhaite rejoindre votre entourage",
-                                                                                                [entourage.user, member],
+                                                                                                [entourage.user],
                                                                                                 {
                                                                                                     joinable_type: "Entourage",
                                                                                                     joinable_id: entourage.id,
@@ -67,7 +67,7 @@ describe Api::V1::Entourages::UsersController do
             expect_any_instance_of(PushNotificationService).to receive(:send_notification).with("John D",
                                                                                                 'Demande en attente',
                                                                                                 "foobar",
-                                                                                                [entourage.user, member],
+                                                                                                [entourage.user],
                                                                                                 {
                                                                                                     joinable_type: "Entourage",
                                                                                                     joinable_id: entourage.id,
