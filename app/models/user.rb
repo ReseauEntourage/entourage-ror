@@ -3,7 +3,7 @@ class User < ActiveRecord::Base
   validates_presence_of [:phone, :sms_code, :token, :validation_status, :marketing_referer_id]
   validates_uniqueness_of [:token, :phone]
   validate :validate_phone!
-  validates_format_of :email, with: /@/, unless: "email.nil?"
+  validates_format_of :email, with: /@/, unless: "email.to_s.size.zero?"
   validates_presence_of [:first_name, :last_name, :organization, :email], if: Proc.new { |u| u.pro? }
   validates_associated :organization, if: Proc.new { |u| u.pro? }
   validates :sms_code, length: { minimum: 6 }

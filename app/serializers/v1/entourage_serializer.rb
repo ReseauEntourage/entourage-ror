@@ -11,8 +11,9 @@ module V1
                :number_of_people,
                :created_at,
                :updated_at,
-               :description
-    
+               :description,
+               :share_url
+
     has_one :author
     has_one :location
     has_one :last_message
@@ -60,6 +61,12 @@ module V1
 
     def randomizer
       @randomizer ||= EntourageServices::EntourageLocationRandomizer.new(entourage: object)
+    end
+
+    def share_url
+      return unless object.uuid
+      share_url_prefix = ENV['PUBLIC_SHARE_URL'] || 'http://entourage.social/entourages/'
+      "#{share_url_prefix}#{object.uuid}"
     end
   end
 end

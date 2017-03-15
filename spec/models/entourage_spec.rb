@@ -43,4 +43,10 @@ RSpec.describe Entourage, type: :model do
       entourage.save
     end
   end
+
+  it "has an uuid" do
+    entourage = FactoryGirl.create(:entourage)
+
+    expect(entourage.uuid).to_not be nil
+  end
 end

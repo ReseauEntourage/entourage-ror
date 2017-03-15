@@ -118,10 +118,12 @@ ActiveRecord::Schema.define(version: 20170122122727) do
     t.datetime "created_at",                        null: false
     t.datetime "updated_at",                        null: false
     t.string   "description"
+    t.uuid     "uuid"
   end
 
   add_index "entourages", ["latitude", "longitude"], name: "index_entourages_on_latitude_and_longitude", using: :btree
   add_index "entourages", ["user_id"], name: "index_entourages_on_user_id", using: :btree
+  add_index "entourages", ["uuid"], name: "index_entourages_on_uuid", unique: true, using: :btree
 
   create_table "entourages_users", force: :cascade do |t|
     t.integer  "user_id",                               null: false

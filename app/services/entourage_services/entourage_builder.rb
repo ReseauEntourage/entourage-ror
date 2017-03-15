@@ -13,6 +13,7 @@ module EntourageServices
       entourage.longitude = params.dig(:location, :longitude)
       entourage.latitude = params.dig(:location, :latitude)
       entourage.user = user
+      entourage.uuid = SecureRandom.uuid
 
       if entourage.save
         #When you start an entourage you are automatically added to members of the tour

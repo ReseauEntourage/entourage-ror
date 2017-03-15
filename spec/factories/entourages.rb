@@ -4,6 +4,7 @@ FactoryGirl.define do
       join_request_user nil
     end
 
+    uuid { SecureRandom.uuid }
     status "open"
     title "foobar"
     entourage_type "ask_for_help"
