@@ -16,7 +16,7 @@ module V1
     end
 
     def status
-      join_request = JoinRequest.where(joinable: object.invitable, user: object.invitee).where('status NOT LIKE %s', JoinRequest.cancelled).first
+      join_request = JoinRequest.where(joinable: object.invitable, user: object.invitee).where('status NOT LIKE ?', JoinRequest::CANCELLED_STATUS).first
       join_request.present? ? join_request.status : "pending"
     end
   end

@@ -94,7 +94,7 @@ module JoinRequestsServices
     end
 
     def current_user_authorised?
-      current_join_request = JoinRequest.where('status NOT LIKE %s', JoinRequest.cancelled).where(joinable: join_request.joinable, user: current_user).first
+      current_join_request = JoinRequest.where('status NOT LIKE ?', JoinRequest::CANCELLED_STATUS).where(joinable: join_request.joinable, user: current_user).first
       current_join_request && TourServices::JoinRequestStatus.new(join_request: current_join_request).accepted?
     end
   end

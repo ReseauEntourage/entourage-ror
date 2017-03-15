@@ -190,7 +190,7 @@ describe Api::V1::Entourages::UsersController do
                                       "id"=>user.id,
                                       "email"=>user.email,
                                       "display_name"=>"John D",
-                                      "status"=>"not requested",
+                                      "status"=>"cancelled",
                                       "message"=>nil,
                                       "requested_at"=>my_join_request.created_at.iso8601(3),
                                       "avatar_url"=>nil,

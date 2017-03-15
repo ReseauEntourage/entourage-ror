@@ -189,7 +189,7 @@ describe Api::V1::Tours::UsersController do
                                   "id"=>user.id,
                                   "email"=>user.email,
                                   "display_name"=>"John D",
-                                  "status"=>"not requested",
+                                  "status"=>"cancelled",
                                   "message"=>nil,
                                   "requested_at"=>tour_member.created_at.iso8601(3),
                                   "avatar_url"=>nil,

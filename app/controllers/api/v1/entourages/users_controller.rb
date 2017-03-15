@@ -90,7 +90,7 @@ module Api
         end
 
         def set_join_request
-          @join_request = JoinRequest.where(joinable: @entourage, user: User.find(params[:id])).where('status NOT LIKE %s', JoinRequest.cancelled).first!
+          @join_request = JoinRequest.where(joinable: @entourage, user: User.find(params[:id])).where('status NOT LIKE ?', JoinRequest::CANCELLED_STATUS).first!
         end
       end
     end

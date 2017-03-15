@@ -74,7 +74,7 @@ module V1
     end
 
     def current_join_request
-      JoinRequest.where('status NOT LIKE %s', JoinRequest.cancelled).where(user_id: scope[:user]&.id, joinable: object).first
+      JoinRequest.where('status NOT LIKE ?', JoinRequest::CANCELLED_STATUS).where(user_id: scope[:user]&.id, joinable: object).first
     end
   end
 end
