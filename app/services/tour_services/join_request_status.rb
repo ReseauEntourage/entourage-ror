@@ -57,10 +57,13 @@ module TourServices
     end
 
     def decrement_counter
-      joinable.class.decrement_counter(:number_of_people, joinable.id)
+      if accepted?
+        joinable.class.decrement_counter(:number_of_people, joinable.id)
+      end
     end
 
     def increment_counter
+      return true if accepted?
       joinable.class.increment_counter(:number_of_people, joinable.id)
     end
 
