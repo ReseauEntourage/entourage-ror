@@ -56,7 +56,7 @@ module TourServices
     end
 
     def quit!
-      return true if quit?
+      return true if cancelled?
 
       if pending?
         join_request.update(status: "cancelled")
