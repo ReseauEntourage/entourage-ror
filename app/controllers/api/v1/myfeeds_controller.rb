@@ -38,6 +38,8 @@ module Api
           entourage_status = "closed"
         elsif params[:status].try(:downcase)=="open"
           entourage_status = "open"
+        elsif params[:status].try(:downcase)=="active"
+          entourage_status = "open"
         else
           entourage_status = nil
           #here no filter should be applied on status

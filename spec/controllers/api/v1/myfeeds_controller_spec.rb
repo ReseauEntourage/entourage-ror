@@ -83,10 +83,10 @@ describe Api::V1::MyfeedsController do
 
         context "get active feeds" do
           before { get :index, token: user.token, status: "active" }
-          it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([tour_ongoing.id]) }
+          it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([entourage_open.id, tour_ongoing.id]) }
         end
 
-        context "get active feeds" do
+        context "get close feeds" do
           before { get :index, token: user.token, status: "closed" }
           it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([entourage_closed.id, tour_closed.id, tour_freezed.id]) }
         end
