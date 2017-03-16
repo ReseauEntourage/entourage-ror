@@ -184,7 +184,7 @@ describe Api::V1::Entourages::UsersController do
       context "quit tour" do
         let!(:my_join_request) { JoinRequest.create(user: user, joinable: entourage, status: "accepted") }
         before { delete :destroy, entourage_id: entourage.to_param, id: user.id, token: user.token }
-        it { expect(JoinRequest.where(id: my_join_request.id)).to eq([]) }
+        it { expect(JoinRequest.where(id: my_join_request.id).status).to eq('cancelled') }
         it { expect(response.status).to eq(200) }
         it { expect(result).to eq({"user"=>{
                                       "id"=>user.id,
