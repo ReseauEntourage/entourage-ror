@@ -6,7 +6,8 @@ module V1
                  :title,
                  :description,
                  :created_at,
-                 :description
+                 :description,
+                 :approximated_location
 
       has_one :author
 
