@@ -4,13 +4,13 @@ class JoinRequest < ActiveRecord::Base
   REJECTED_STATUS="rejected"
   CANCELLED_STATUS="cancelled"
 
-  STATUS = [ACCEPTED_STATUS, PENDING_STATUS, REJECTED_STATUS]
+  STATUS = [ACCEPTED_STATUS, PENDING_STATUS, REJECTED_STATUS, CANCELLED_STATUS]
 
   belongs_to :user
   belongs_to :joinable, polymorphic: true
 
   validates :user_id, :joinable_id, :joinable_type, :status, presence: true
-  validates_uniqueness_of :joinable_id, {scope: [:user_id], conditions: -> { where.not(status: CANCELLED_STATUS) }, message: "a déjà été ajouté"}
+  validates_uniqueness_of :joinable_id, {scope: [:user_id], message: "a déjà été ajouté"}
   validates_inclusion_of :status, in: ["pending", "accepted", "rejected", "cancelled"]
 
   scope :accepted, -> {where(status: ACCEPTED_STATUS)}

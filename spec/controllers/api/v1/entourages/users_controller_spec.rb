@@ -28,12 +28,36 @@ describe Api::V1::Entourages::UsersController do
                                           }) }
       end
 
+      context "request to join entourage after a cancel" do
+        before { JoinRequest.create(user: user, joinable: entourage, status: JoinRequest::CANCELLED_STATUS) }
+        before { post :create, entourage_id: entourage.to_param, token: user.token }
+        it { expect(entourage.members).to eq([user]) }
+        it { expect(result).to eq("user"=>{
+            "id"=>user.id,
+            "email"=>user.email,
+            "display_name"=>"John D",
+            "status"=>"pending",
+            "message"=>nil,
+            "requested_at"=>JoinRequest.last.created_at.iso8601(3),
+            "avatar_url"=>nil,
+            "partner"=>nil
+        }) }
+      end
+
       context "duplicate request to join entourage" do
         before { JoinRequest.create(user: user, joinable: entourage) }
         before { post :create, entourage_id: entourage.to_param, token: user.token }
         it { expect(entourage.members).to eq([user]) }
-        it { expect(result).to eq("message"=>"Could not create entourage participation request", "reasons"=>["Joinable a déjà été ajouté"]) }
-        it { expect(response.status).to eq(400) }
+        it { expect(result).to eq("user"=>{
+            "id"=>user.id,
+            "email"=>user.email,
+            "display_name"=>"John D",
+            "status"=>"pending",
+            "message"=>nil,
+            "requested_at"=>JoinRequest.last.created_at.iso8601(3),
+            "avatar_url"=>nil,
+            "partner"=>nil
+        }) }
       end
 
       describe "push notif" do
@@ -184,8 +208,8 @@ describe Api::V1::Entourages::UsersController do
       context "quit tour" do
         let!(:my_join_request) { JoinRequest.create(user: user, joinable: entourage, status: "accepted") }
         before { delete :destroy, entourage_id: entourage.to_param, id: user.id, token: user.token }
-        it { expect(JoinRequest.where(id: my_join_request.id).status).to eq('cancelled') }
         it { expect(response.status).to eq(200) }
+        it { expect(expect(my_join_request.reload.status).to eq('cancelled')) }
         it { expect(result).to eq({"user"=>{
                                       "id"=>user.id,
                                       "email"=>user.email,
