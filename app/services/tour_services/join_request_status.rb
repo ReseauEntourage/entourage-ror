@@ -68,6 +68,19 @@ module TourServices
       end
     end
 
+    def pending!
+      return true if pending?
+
+      if accepted?
+        ActiveRecord::Base.transaction do
+          decrement_counter
+          join_request.update!(status: "pending")
+        end
+      elsif cancelled?
+        join_request.update(status: "pending")
+      end
+    end
+
     def decrement_counter
       if accepted?
         joinable.class.decrement_counter(:number_of_people, joinable.id)

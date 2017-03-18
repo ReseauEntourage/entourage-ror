@@ -4,7 +4,6 @@ module UsersHelper
       "accepted"  => "label-success",
       "validated" => "label-success",
       "pending"   => "label-warning",
-      "cancelled"  => "label-warning",
       "rejected"  => "label-danger",
       "blocked"   => "label-danger"
     }

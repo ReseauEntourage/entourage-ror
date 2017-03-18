@@ -12,7 +12,11 @@ module JoinRequestsServices
       yield callback if block_given?
 
       if status
-        accept
+        if status=='pending'
+          pending
+        else
+          accept
+        end
       elsif message
         update_message
       else
@@ -81,6 +85,23 @@ module JoinRequestsServices
       end
     end
 
+    def pending
+      unless status == "pending"
+        return callback.on_invalid_status.try(:call, status)
+      end
+
+      if join_request.user != current_user
+        return callback.on_not_authorised.try(:call)
+      end
+
+      user_status = TourServices::JoinRequestStatus.new(join_request: join_request)
+      if user_status.pending!
+        callback.on_success.try(:call, join_request)
+      else
+        callback.on_failure.try(:call, join_request)
+      end
+    end
+
     def update_message
       if join_request.user != current_user
         return callback.on_not_authorised.try(:call)
@@ -94,7 +115,7 @@ module JoinRequestsServices
     end
 
     def current_user_authorised?
-      current_join_request = JoinRequest.where('status NOT LIKE ?', JoinRequest::CANCELLED_STATUS).where(joinable: join_request.joinable, user: current_user).first
+      current_join_request = JoinRequest.where(joinable: join_request.joinable, user: current_user).first
       current_join_request && TourServices::JoinRequestStatus.new(join_request: current_join_request).accepted?
     end
   end

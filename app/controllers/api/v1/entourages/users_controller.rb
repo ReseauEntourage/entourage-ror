@@ -12,6 +12,28 @@ module Api
 
         #curl -X POST -H "Content-Type: application/json" -d '{"request":{"message": "a join message"}}' "http://localhost:3000/api/v1/entourages/1017/users.json?token=azerty"
         def create
+          # first we check if the request is already existing
+          join_request = JoinRequest.where(joinable: @entourage, user: current_user).first
+          if join_request.present?
+           message = params.dig(:request, :message)
+            updater = JoinRequestsServices::JoinRequestUpdater.new(join_request: join_request, status: JoinRequest::PENDING_STATUS, message: message, current_user: current_user)
+
+            updater.update do |on|
+              on.success do
+                render json: join_request, root: "user", status: 201, serializer: ::V1::JoinRequestSerializer
+              end
+
+              on.failure do |join_request|
+                render json: {message: 'Could not create entourage participation request', reasons: join_request.errors.full_messages}, status: :bad_request
+              end
+
+              on.not_authorised do
+                render json: {message: 'Could not create entourage participation request', reasons: join_request.errors.full_messages}, status: :bad_request
+              end
+            end
+           return
+          end
+
           join_request_builder = JoinRequestsServices::JoinRequestBuilder.new(joinable: @entourage, user: current_user, message: params.dig(:request, :message))
           join_request_builder.create do |on|
             on.success do |join_request|
@@ -90,7 +112,7 @@ module Api
         end
 
         def set_join_request
-          @join_request = JoinRequest.where(joinable: @entourage, user: User.find(params[:id])).where('status NOT LIKE ?', JoinRequest::CANCELLED_STATUS).first!
+          @join_request = JoinRequest.where(joinable: @entourage, user: User.find(params[:id])).first!
         end
       end
     end

@@ -30,8 +30,15 @@ describe Api::V1::Tours::UsersController do
         before { JoinRequest.create(user: user, joinable: tour) }
         before { post :create, tour_id: tour.to_param, token: user.token }
         it { expect(tour.members).to eq([user]) }
-        it { expect(result).to eq("message"=>"Could not create entourage participation request", "reasons"=>["Joinable a déjà été ajouté"]) }
-        it { expect(response.status).to eq(400) }
+        it { expect(result).to eq("user"=>{"id"=>user.id,
+                                           "email"=>user.email,
+                                           "display_name"=>"John D",
+                                           "status" => "pending",
+                                           "message"=>nil,
+                                           "avatar_url"=>nil,
+                                           "requested_at"=>JoinRequest.last.created_at.iso8601(3),
+                                           "partner"=>nil}) }
+        it { expect(tour.reload.number_of_people).to eq(1) }
       end
 
       it "sends a notifications to tour owner" do
