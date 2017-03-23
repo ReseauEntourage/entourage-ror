@@ -3,6 +3,7 @@ class IosNotificationJob < ActiveJob::Base
     return if device_token.blank?
 
     entourage = Rpush::Apns::App.where(name: 'entourage').first
+    puts "IosNotificationJob.perform using device token = #{device_token}"
 
     if entourage.nil?
       raise 'No IOS notification has been sent. Please save a Rpush::Apns::App in database'
@@ -18,7 +19,6 @@ class IosNotificationJob < ActiveJob::Base
 
         Rpush.push unless Rails.env.test?
       rescue ActiveRecord::RecordInvalid => e
-        puts "IosNotificationJob.perform using device token = #{device_token}"
         Rails.logger.error e.message
       end
     end

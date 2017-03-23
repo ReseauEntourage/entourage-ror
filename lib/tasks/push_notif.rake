@@ -3,7 +3,7 @@ namespace :push do
   task :ios, [:token] => [:environment] do |t, args|
     device_ids = [args[:token]]
     puts "device_ids = #{device_ids}"
-    IosNotificationService.new.send_notification("Expéditeur", "Objet", "Contenu du message", device_ids)
+    IosNotificationService.new.send_notification("Expéditeur", "Objet", "Contenu du message", 1, device_ids)
   end
 
   task :android, [:token] => [:environment] do |t, args|
