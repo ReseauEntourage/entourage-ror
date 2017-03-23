@@ -1,5 +1,5 @@
 class IosNotificationJob < ActiveJob::Base
-  def perform(sender, object, content, device_token, extra={})
+  def perform(sender, object, content, device_token, extra={},badge=nil)
     return if device_token.blank?
 
     puts "device token = #{device_token}"
@@ -11,6 +11,7 @@ class IosNotificationJob < ActiveJob::Base
     else
       begin
         notification = Rpush::Apns::Notification.new
+        notification.badge = badge if badge
         notification.app = entourage
         notification.device_token = device_token.to_s
         notification.alert = content
