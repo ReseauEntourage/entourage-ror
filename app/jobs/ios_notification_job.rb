@@ -1,8 +1,6 @@
 class IosNotificationJob < ActiveJob::Base
-  def perform(sender, object, content, device_token, extra={})
+  def perform(sender, object, content, badge, device_token, extra={})
     return if device_token.blank?
-
-    puts "device token = #{device_token}"
 
     entourage = Rpush::Apns::App.where(name: 'entourage').first
 
@@ -14,11 +12,13 @@ class IosNotificationJob < ActiveJob::Base
         notification.app = entourage
         notification.device_token = device_token.to_s
         notification.alert = content
+        notification.badge = badge
         notification.data = { sender: sender, object: object, content: {message: content, extra: extra} }
         notification.save!
 
         Rpush.push unless Rails.env.test?
       rescue ActiveRecord::RecordInvalid => e
+        puts "IosNotificationJob.perform using device token = #{device_token}"
         Rails.logger.error e.message
       end
     end

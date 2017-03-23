@@ -12,6 +12,6 @@ describe PushNotificationService, type: :service do
     let!(:content) { 'content' }
     subject! { PushNotificationService.new(android_notification_service, ios_notification_service).send_notification(sender, object, content, User.all) }
     it { expect(android_notification_service).to have_received(:send_notification).with(sender, object, content, match_array([user_app1.push_token]), {}) }
-    it { expect(ios_notification_service).to have_received(:send_notification).with(sender, object, content, match_array([user_app2.push_token]), {}) }
+    it { expect(ios_notification_service).to have_received(:send_notification).with(sender, object, content, 0, match_array([user_app2.push_token]), {}) }
   end
 end
