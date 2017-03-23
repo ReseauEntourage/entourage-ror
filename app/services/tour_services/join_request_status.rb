@@ -22,6 +22,7 @@ module TourServices
 
     def accept!
       return true if accepted?
+      return false if cancelled?
 
       ActiveRecord::Base.transaction do
         increment_counter
@@ -44,6 +45,7 @@ module TourServices
 
     def reject!
       return true if rejected?
+      return false if cancelled?
 
       if pending?
         join_request.update(status: "rejected")
