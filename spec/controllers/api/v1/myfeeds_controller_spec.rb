@@ -28,7 +28,7 @@ describe Api::V1::MyfeedsController do
         it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([]) }
       end
 
-      context "last_message" do
+      context "last_message i'm accepted in" do
         let!(:entourage) { FactoryGirl.create(:entourage, :joined, join_request_user: user, user: user, created_at: 1.hour.ago) }
         let!(:tour) { FactoryGirl.create(:tour, :joined, join_request_user: user, user: user, created_at: 1.hour.ago) }
 
@@ -72,6 +72,19 @@ describe Api::V1::MyfeedsController do
             it { expect(result["feeds"].map {|feed| feed["data"]["last_message"]} ).to eq([nil]) }
           end
         end
+      end
+
+      context "last_message i'm pending in" do
+        let!(:join_request) { FactoryGirl.create(:join_request, joinable: entourage, user: user, status: "pending") }
+        before { get :index, token: user.token, status: "all" }
+        it { expect(result["feeds"].map {|feed| feed["data"]["last_message"]} ).to eq([{"text"=>"Votre demande est en attente.", "author"=>nil}]) }
+      end
+
+      context "last_message someone else is pending in" do
+        let!(:join_request) { FactoryGirl.create(:join_request, joinable: entourage, user: user, status: "accepted") }
+        let!(:join_request2) { FactoryGirl.create(:join_request, joinable: entourage, status: "pending") }
+        before { get :index, token: user.token, status: "all" }
+        it { expect(result["feeds"].map {|feed| feed["data"]["last_message"]} ).to eq([{"text"=>"1 nouvelle demande pour rejoindre votre entourage", "author"=>nil}]) }
       end
 
       context "filter by status" do
