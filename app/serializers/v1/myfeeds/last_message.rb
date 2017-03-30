@@ -31,13 +31,17 @@ module V1
       end
 
       def last_join_request_text
-        if @last_element.is_pending?
-          return "Votre demande est en attente."
-        elsif @last_element.is_accepted?
+        if last_element.is_pending?
+          if last_element.user == scope[:user]
+            "Votre demande est en attente."
+          else
+            "1 nouvelle demande pour rejoindre votre entourage"
+          end
+        elsif last_element.is_accepted?
           return "Vous avez rejoint l'entourage."
-        elsif @last_element.is_cancelled?
+        elsif last_element.is_cancelled?
           return "Vous avez annulé votre demande."
-        elsif @last_element.is_rejected?
+        elsif last_element.is_rejected?
           return "Votre demande a été rejetée."
         end
       end
