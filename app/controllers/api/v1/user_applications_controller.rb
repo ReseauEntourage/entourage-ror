@@ -5,17 +5,22 @@ module Api
       def update
         ActiveRecord::Base.transaction do
           UserApplication.where(push_token: user_application_params["push_token"]).destroy_all
-          user_application = @current_user.user_applications.where(device_os: user_application_params["device_os"],
-                                                                   version: user_application_params["version"]).first_or_initialize
-          user_application.tap do |user_application|
-            user_application.push_token = user_application_params["push_token"]
-            user_application.device_family = api_request.key_infos.try(:[], :device_family)
-          end
-
-          if user_application.save!
+          if user_application_params["push_token"] == "0"
+            @current_user.user_applications.where(device_os: user_application_params["device_os"], version: user_application_params["version"]).destroy_all
             head :no_content
           else
-            render json: {message: 'Could not create user_application', reasons: user_application.errors.full_messages}, status: :bad_request
+            user_application = @current_user.user_applications.where(device_os: user_application_params["device_os"],
+                                                                     version: user_application_params["version"]).first_or_initialize
+            user_application.tap do |user_application|
+              user_application.push_token = user_application_params["push_token"]
+              user_application.device_family = api_request.key_infos.try(:[], :device_family)
+            end
+
+            if user_application.save!
+              head :no_content
+            else
+              render json: {message: 'Could not create user_application', reasons: user_application.errors.full_messages}, status: :bad_request
+            end
           end
         end
       end
