@@ -614,6 +614,29 @@ vehicle_type is either "feet" or "car"
         {"error":{"status":401,"message":"Please sign-in"}}
 
 
+## Read tour messages [/tours/{id}/read{?token}]
++ Parameters
+    + id (required, integer, `1`) ... Identifier of the tour
+    + token (required, string, `FAKETOKEN`) ... Token identifying the current user
+
+### Set messages as read [PUT]
++ Request (application/json)
+
+    + Header
+
+            Accept: application/json
+
++ Response 204 (application/json; charset=utf-8)
+
+
++ Response 404 (application/json; charset=utf-8)
+
+        {"error":{"status":404,"message":"Could not find tour with id 233232"}}
+
++ Response 401 (application/json; charset=utf-8)
+
+        {"error":{"status":401,"message":"Please sign-in"}}
+
 
 ## User entourages collection [/users/{user_id}/entourages{?token}]
 
@@ -1520,6 +1543,30 @@ Entourages related resources of the **Entourage API**
         {"error":{"status":401,"message":"Please sign-in"}}
         
         
+        
+## Read entourage messages [/entourages/{id}/read{?token}]
++ Parameters
+    + id (required, integer, `1`) ... Identifier of the entourage
+    + token (required, string, `FAKETOKEN`) ... Token identifying the current user
+
+### Set messages as read [PUT]
++ Request (application/json)
+
+    + Header
+
+            Accept: application/json
+
++ Response 204 (application/json; charset=utf-8)
+
+
++ Response 404 (application/json; charset=utf-8)
+
+        {"error":{"status":404,"message":"Could not find entourage with id 233232"}}
+
++ Response 401 (application/json; charset=utf-8)
+
+        {"error":{"status":401,"message":"Please sign-in"}}
+
 
 ## Entourage Invitation Collection [/entourages/{id}/invitations{?token}]
 + Parameters
@@ -1796,6 +1843,7 @@ Resources related to users of an entourage
 
         {"error":{"status":401,"message":"Please sign-in"}}
 
+        
 
 # Group Contacts
 Contacts related resources of the **Entourage API**
