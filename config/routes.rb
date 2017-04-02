@@ -122,6 +122,10 @@ Rails.application.routes.draw do
         collection do
           delete 'delete_all' => 'tours#delete_all'
         end
+
+        member do
+          put :read
+        end
       end
       resources :stats, only: [:index]
       resources :messages, only: [:create]
@@ -155,6 +159,10 @@ Rails.application.routes.draw do
         resources :users, :controller => 'entourages/users', only: [:index, :destroy, :update, :create]
         resources :invitations, :controller => 'entourages/invitations', only: [:create]
         resources :chat_messages, :controller => 'entourages/chat_messages', only: [:index, :create]
+
+        member do
+          put :read
+        end
       end
       resources :invitations, only: [:index, :update, :destroy]
       resources :contacts, only: [:update]

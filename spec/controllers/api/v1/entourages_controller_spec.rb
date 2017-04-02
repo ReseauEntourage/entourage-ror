@@ -263,4 +263,29 @@ describe Api::V1::EntouragesController do
       end
     end
   end
+
+  describe "PUT read" do
+    let!(:entourage) { FactoryGirl.create(:entourage) }
+
+    context "not signed in" do
+      before { put :read, id: entourage.to_param }
+      it { expect(response.status).to eq(401) }
+    end
+
+    context "user is accepted in entourage" do
+      let(:old_date) { DateTime.parse("15/10/2010") }
+      let!(:join_request) { FactoryGirl.create(:join_request, joinable: entourage, user: user, status: JoinRequest::ACCEPTED_STATUS, last_message_read: old_date) }
+      before { put :read, id: entourage.to_param, token: user.token }
+      it { expect(response.status).to eq(204) }
+      it { expect(join_request.reload.last_message_read).to be > old_date }
+    end
+
+    context "user is not accepted in entourage" do
+      let(:old_date) { DateTime.parse("15/10/2010") }
+      let!(:join_request) { FactoryGirl.create(:join_request, joinable: entourage, user: user, status: JoinRequest::PENDING_STATUS, last_message_read: old_date) }
+      before { put :read, id: entourage.to_param, token: user.token }
+      it { expect(response.status).to eq(204) }
+      it { expect(join_request.reload.last_message_read).to eq(old_date) }
+    end
+  end
 end

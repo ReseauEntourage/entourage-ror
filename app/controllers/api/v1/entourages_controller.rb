@@ -1,7 +1,7 @@
 module Api
   module V1
     class EntouragesController < Api::V1::BaseController
-      before_action :set_entourage, only: [:show, :update]
+      before_action :set_entourage, only: [:show, :update, :read]
 
       def index
         finder = EntourageServices::EntourageFinder.new(user: current_user,
@@ -46,6 +46,14 @@ module Api
             render json: {message: 'Could not update entourage', reasons: @entourage.errors.full_messages}, status: 400
           end
         end
+      end
+
+      def read
+        @entourage.join_requests
+                  .accepted
+                  .where(user: current_user)
+                  .update_all(last_message_read: DateTime.now)
+        head :no_content
       end
 
       private
