@@ -38,3 +38,6 @@ use-node
 
 # sensitive words category files
 db/sensitive-words/*.txt
+
+# Vagrant
+.vagrant
