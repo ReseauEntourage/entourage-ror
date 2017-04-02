@@ -62,6 +62,7 @@ module Api
         render json: {status: :ok}, status: 200
       end
 
+      #curl -H "Content-Type: application/json" -X PUT "http://localhost:3000/api/v1/tours/2361/read.json?token=azerty"
       def read
         @tour.join_requests
             .accepted

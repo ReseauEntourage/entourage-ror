@@ -48,6 +48,8 @@ module Api
         end
       end
 
+
+      #curl -H "Content-Type: application/json" -X PUT "http://localhost:3000/api/v1/entourages/1184/read.json?token=azerty"
       def read
         @entourage.join_requests
                   .accepted
