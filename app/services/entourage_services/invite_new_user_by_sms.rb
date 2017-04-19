@@ -48,7 +48,7 @@ module EntourageServices
     end
 
     def link
-      link = Rails.env.test? ? "http://foo.bar" : "http://tinyurl.com/hfkhcpr"
+      link = Rails.env.test? ? "http://foo.bar" : "https://api.entourage.social/store_redirection"
     end
   end
 end
