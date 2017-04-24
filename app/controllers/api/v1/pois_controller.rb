@@ -3,7 +3,7 @@ module Api
     class PoisController < Api::V1::BaseController
       attr_writer :member_mailer
 
-      #curl "https://entourage-back.herokuapp.com/api/v1/pois.json?token=azerty"
+      #curl -H "Content-Type: application/json" "https://entourage-back-preprod.herokuapp.com/api/v1/pois.json?token=153ad0b7ef67e5c44b8ef5afc12709e4&category_ids=1,2"
       def index
         @categories = Category.all
         @pois = Poi.validated
