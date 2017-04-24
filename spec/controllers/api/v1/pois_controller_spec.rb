@@ -10,10 +10,12 @@ describe Api::V1::PoisController, :type => :controller do
       context 'without parameters' do
         let!(:category1) { create :category }
         let!(:category2) { create :category }
+        let!(:category3) { create :category }
         let!(:poi1) { create :poi, category: category1, validated: true }
-        let!(:poi2) { create :poi, category: category1, validated: false }
-        let!(:poi3) { create :poi, category: category1, validated: true }
-        before { get 'index', token: user.token, :format => :json }
+        let!(:poi2) { create :poi, category: category2, validated: false }
+        let!(:poi3) { create :poi, category: category2, validated: true }
+        let!(:poi4) { create :poi, category: category3, validated: true }
+        before { get 'index', token: user.token, category_ids: [category1.id, category2.id], :format => :json }
         it { expect(assigns(:categories)).to eq([category1, category2]) }
         it { expect(assigns(:pois)).to eq([poi1, poi3]) }
 
@@ -21,7 +23,8 @@ describe Api::V1::PoisController, :type => :controller do
           res = JSON.parse(response.body)
           expect(res).to eq({"categories"=>[
               {"id"=>category1.id, "name"=>category1.name},
-              {"id"=>category2.id, "name"=>category2.name}],
+              {"id"=>category2.id, "name"=>category2.name},
+              {"id"=>category3.id, "name"=>category3.name}],
                              "pois"=>[
                                  {"id"=>poi1.id,
                                   "name"=>"Dede",

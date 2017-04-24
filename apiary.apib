@@ -38,13 +38,14 @@ A single Note object with all its details
 POI related resources of the **Entourage API**
 ## Pois collection [/pois]
 
-### List all POIs [GET /pois{?token,latitude,longitude,distance}]
+### List all POIs [GET /pois{?token,latitude,longitude,distance,category_ids}]
 
 + Parameters
     + token (required, string, `FAKETOKEN`) ... Token identifying the current user
     + latitude (optional, number, `48.853333`) ... The latitude of the center of the box to filter
     + longitude (optional, number, `2.348611`) ... The longitude of the center of the box to filter
     + distance (optional, number, `20.0`) ... The box size to filter (in km)
+    + category_ids (optional, list, `1,2`) ... List of coma separated category ids
 
 + Request
 
@@ -134,8 +135,8 @@ Users related resources of the **Entourage API**
 
         {"user":{"id":1,
                     "email":"dredd@test.com",
-                    "display_name":"Judge Dredd", 
-                    "first_name": "Judge", 
+                    "display_name":"Judge Dredd",
+                    "first_name": "Judge",
                     "last_name": "Dredd",
                     "token":"FAKETOKEN",
                     "stats":{"tour_count":0,"encounter_count":0, "entourage_count": 0},
@@ -203,9 +204,9 @@ Users related resources of the **Entourage API**
                 {
                 "id":1,
                 "email":"dredd@test.com",
-                "display_name":"Judge Dredd", 
-                "first_name": "Judge", 
-                "last_name": "Dredd", 
+                "display_name":"Judge Dredd",
+                "first_name": "Judge",
+                "last_name": "Dredd",
                 "user_type": "pro",
                 "avatar_url": "http://foo.com/bar.jpg"
                 }
@@ -243,7 +244,7 @@ When signing up a new user we genereate a new sms_code and send it via SMS
             {"user":{"id":1,"email":"dredd@test.com","display_name":"Judge Dredd", "first_name": "Judge", "last_name": "Dredd","token":"FAKETOKEN","age ":{"tour_count":0,"encounter_count":0, "entourage_count": 0},"organization":{"name":"org name","description":"org description","phone":"org phone","address":"org address","logo_url":"org logo url"}}}
 
 + Response 400 (application/json; charset=utf-8)
-    
+
             {"error": {"code": "PHONE_ALREADY_EXIST", "message" :"Phone +33612345678 n'est pas disponible"}}
             {"error": {"code": "CANNOT_CREATE_USER", "message" :"Phone devrait être au format +33... ou 06..."}}
 
@@ -267,8 +268,8 @@ When signing up a new user we genereate a new sms_code and send it via SMS
             {"user":{
                 "first_name": "Judge",
                 "last_name": "Dredd",
-                "email": "foo@bar.com", 
-                "sms_code": "123456", 
+                "email": "foo@bar.com",
+                "sms_code": "123456",
                 "phone": "+33612345678",
                 "avatar_key": "unique_id.jpg"
                 }
@@ -298,9 +299,9 @@ When signing up a new user we genereate a new sms_code and send it via SMS
 
 + Response 200 (application/json; charset=utf-8)
 
-        { "user": 
-            { "id": 2, 
-            "email": "dredd2@test.com", 
+        { "user":
+            { "id": 2,
+            "email": "dredd2@test.com",
             "display_name":"Judge Dredd",
             "status": "accepted",
             "requested_at": "2016-01-01T20:09:06.000+01:00" } }
@@ -409,14 +410,14 @@ vehicle_type is either "feet" or "car"
 
         {"tours":
             [
-                {   
+                {
                     "id":10,
-                    "tour_type":"medical", 
-                    "vehicle_type":"feet", 
-                    "distance": 8543.65, 
-                    "organization_name":"organization name", 
-                    "organization_description":"organization description", 
-                    "start_time": "2016-01-01T19:09:06.000+01:00", 
+                    "tour_type":"medical",
+                    "vehicle_type":"feet",
+                    "distance": 8543.65,
+                    "organization_name":"organization name",
+                    "organization_description":"organization description",
+                    "start_time": "2016-01-01T19:09:06.000+01:00",
                     "end_time": "2016-01-01T20:09:06.000+01:00",
                     "tour_points":[
                     {"latitude":1.5,"longitude":1.5},
@@ -432,14 +433,14 @@ vehicle_type is either "feet" or "car"
                     "join_status": "pending",
                     "number_of_unread_messages": 0
                 },
-                {   
+                {
                     "id":11,
-                    "tour_type":"medical", 
-                    "vehicle_type":"feet", 
-                    "distance": 8543.65, 
-                    "organization_name":"organization name", 
-                    "organization_description":"organization description", 
-                    "start_time": "2016-01-01T19:09:06.000+01:00", 
+                    "tour_type":"medical",
+                    "vehicle_type":"feet",
+                    "distance": 8543.65,
+                    "organization_name":"organization name",
+                    "organization_description":"organization description",
+                    "start_time": "2016-01-01T19:09:06.000+01:00",
                     "end_time": "2016-01-01T20:09:06.000+01:00",
                     "tour_points":[
                     {"latitude":1.5,"longitude":1.5},
@@ -474,7 +475,7 @@ vehicle_type is either "feet" or "car"
 
             {
                 "tour": {
-                    "tour_type":"medical", 
+                    "tour_type":"medical",
                     "vehicle_type":"feet",
                     "start_time": "2015-07-07T10:31:43.000+02:00"
                 }
@@ -485,12 +486,12 @@ vehicle_type is either "feet" or "car"
         {"tour":
             {
                 "id":10,
-                "tour_type":"medical", 
-                "vehicle_type":"feet", 
-                "distance": 8543.65, 
-                "organization_name":"organization name", 
-                "organization_description":"organization description", 
-                "start_time": "2016-01-01T19:09:06.000+01:00", 
+                "tour_type":"medical",
+                "vehicle_type":"feet",
+                "distance": 8543.65,
+                "organization_name":"organization name",
+                "organization_description":"organization description",
+                "start_time": "2016-01-01T19:09:06.000+01:00",
                 "end_time": "2016-01-01T20:09:06.000+01:00",
                 "tour_points":[
                 {"latitude":1.5,"longitude":1.5},
@@ -531,12 +532,12 @@ vehicle_type is either "feet" or "car"
 + Response 200 (application/json; charset=utf-8)
 
         {   "id":10,
-                "tour_type":"medical", 
-                "vehicle_type":"feet", 
-                "distance": 8543.65, 
-                "organization_name":"organization name", 
-                "organization_description":"organization description", 
-                "start_time": "2016-01-01T19:09:06.000+01:00", 
+                "tour_type":"medical",
+                "vehicle_type":"feet",
+                "distance": 8543.65,
+                "organization_name":"organization name",
+                "organization_description":"organization description",
+                "start_time": "2016-01-01T19:09:06.000+01:00",
                 "end_time": "2016-01-01T20:09:06.000+01:00",
                 "tour_points":[
                 {"latitude":1.5,"longitude":1.5},
@@ -570,10 +571,10 @@ vehicle_type is either "feet" or "car"
 
     + Body
 
-            {   "tour_type":"medical", 
-                "vehicle_type":"feet", 
-                "distance": 8543.65, 
-                "organization_name":"organization name", 
+            {   "tour_type":"medical",
+                "vehicle_type":"feet",
+                "distance": 8543.65,
+                "organization_name":"organization name",
                 "organization_description":"organization description",
                 "end_time": "2016-01-01T20:09:06.000+01:00",
                 "status":"ongoing"
@@ -583,12 +584,12 @@ vehicle_type is either "feet" or "car"
 + Response 200 (application/json; charset=utf-8)
 
         {   "id":10,
-            "tour_type":"medical", 
-            "vehicle_type":"feet", 
-            "distance": 8543.65, 
-            "organization_name":"organization name", 
-            "organization_description":"organization description", 
-            "start_time": "2016-01-01T19:09:06.000+01:00", 
+            "tour_type":"medical",
+            "vehicle_type":"feet",
+            "distance": 8543.65,
+            "organization_name":"organization name",
+            "organization_description":"organization description",
+            "start_time": "2016-01-01T19:09:06.000+01:00",
             "end_time": "2016-01-01T20:09:06.000+01:00",
             "tour_points":[
             {"latitude":1.5,"longitude":1.5},
@@ -646,7 +647,7 @@ vehicle_type is either "feet" or "car"
 
 ### Retrieve entourages from user [GET /users/{user_id}/entourages{?token}{&page}{&per}{&distance}{&latitude}{&longitude}{&status}]
 
-+ Parametersparameters to filter 
++ Parametersparameters to filter
     + page (optional, number) ... pagination : page number
     + per (optional, number) ... pagination : number of tours per page
     + distance (optional, number) ... distance : filter results within a circle with distance radius (in meters)
@@ -714,7 +715,7 @@ vehicle_type is either "feet" or "car"
 
 ### Retrieve tours from user [GET /users/{user_id}/tours{?token}{&page}{&per}{&distance}{&latitude}{&longitude}{&status}]
 
-+ Parametersparameters to filter 
++ Parametersparameters to filter
     + page (optional, number) ... pagination : page number
     + per (optional, number) ... pagination : number of tours per page
     + distance (optional, number) ... distance : filter results within a circle with distance radius (in meters)
@@ -732,10 +733,10 @@ vehicle_type is either "feet" or "car"
 
         {"tours":
             [{  "id":10,
-                "tour_type":"medical", 
-                "vehicle_type":"feet", 
-                "distance": 8543.65, 
-                "organization_name":"organization name", 
+                "tour_type":"medical",
+                "vehicle_type":"feet",
+                "distance": 8543.65,
+                "organization_name":"organization name",
                 "organization_description":"organization description",
                 "tour_points":[],
                 "status":"ongoing",
@@ -743,10 +744,10 @@ vehicle_type is either "feet" or "car"
                 "number_of_unread_messages": 0
             },
             {  "id":11,
-                "tour_type":"medical", 
-                "vehicle_type":"feet", 
-                "distance": 8543.65, 
-                "organization_name":"organization name", 
+                "tour_type":"medical",
+                "vehicle_type":"feet",
+                "distance": 8543.65,
+                "organization_name":"organization name",
                 "organization_description":"organization description",
                 "tour_points":[],
                 "status":"ongoing",
@@ -820,8 +821,8 @@ Resources related to users of a tour
 + Response 401 (application/json; charset=utf-8)
 
         {"error":{"status":401,"message":"Please sign-in"}}
-        
-        
+
+
 ### Request to be added to a tour [POST /tours/{tour_id}/users{?token}]
 
 Note: anyone can ask to join a tour
@@ -846,9 +847,9 @@ Note: anyone can ask to join a tour
 
 + Response 201 (application/json; charset=utf-8)
 
-        { "user": 
-            { "id": 2, 
-            "email": "dredd2@test.com", 
+        { "user":
+            { "id": 2,
+            "email": "dredd2@test.com",
             "display_name":"Judge Dredd",
             "status": "accepted",
             "message": "foo bar",
@@ -857,8 +858,8 @@ Note: anyone can ask to join a tour
 + Response 401 (application/json; charset=utf-8)
 
         {"error":{"status":401,"message":"Please sign-in"}}
-        
-        
+
+
 ## Tour user [/tours/{tour_id}/users/{user_id}{?token}]
 
 + Parameters
@@ -882,9 +883,9 @@ Note : You must be part of the tour to remove someone
 
 + Response 200 (application/json; charset=utf-8)
 
-        { "user": 
-            { "id": 2, 
-            "email": "dredd2@test.com", 
+        { "user":
+            { "id": 2,
+            "email": "dredd2@test.com",
             "display_name":"Judge Dredd",
             "status": "accepted",
             "requested_at": "2016-01-01T20:09:06.000+01:00" } }
@@ -943,7 +944,7 @@ Tour points describe the tour itinerary
     + Body
 
             {"tour_points":[
-                            {"latitude":1.5,"longitude":1.5, "passing_time": "2014-10-11T15:19:45.000+02:00"}, 
+                            {"latitude":1.5,"longitude":1.5, "passing_time": "2014-10-11T15:19:45.000+02:00"},
                             {"latitude":2.5,"longitude":2.5, "passing_time": "2014-10-11T15:19:47.000+02:00"}]}
 
 + Response 201 (application/json; charset=utf-8)
@@ -1224,12 +1225,12 @@ time_range should be a number of hours
                             "type": "Tour",
                             "data": {
                                 "id":10,
-                                "tour_type":"medical", 
-                                "vehicle_type":"feet", 
-                                "distance": 8543.65, 
-                                "organization_name":"organization name", 
-                                "organization_description":"organization description", 
-                                "start_time": "2016-01-01T19:09:06.000+01:00", 
+                                "tour_type":"medical",
+                                "vehicle_type":"feet",
+                                "distance": 8543.65,
+                                "organization_name":"organization name",
+                                "organization_description":"organization description",
+                                "start_time": "2016-01-01T19:09:06.000+01:00",
                                 "end_time": "2016-01-01T20:09:06.000+01:00",
                                 "tour_points":[
                                 {"latitude":1.5,"longitude":1.5},
@@ -1262,7 +1263,7 @@ Feeds related resources of the **Entourage API**
 tour_types should be a list of values separated by coma, ex: , `tour_types=medical,social,distributive`
 entourage_types should be a list of values separated by coma, ex: , `entourage_types=ask_for_help,contribution`
 time_range should be a number of hours
-status : 
+status :
 active: either created by me or that I joined
 closed: either (created and closed by me)
 
@@ -1323,12 +1324,12 @@ closed: either (created and closed by me)
                             "type": "Tour",
                             "data": {
                                 "id":10,
-                                "tour_type":"medical", 
-                                "vehicle_type":"feet", 
-                                "distance": 8543.65, 
-                                "organization_name":"organization name", 
-                                "organization_description":"organization description", 
-                                "start_time": "2016-01-01T19:09:06.000+01:00", 
+                                "tour_type":"medical",
+                                "vehicle_type":"feet",
+                                "distance": 8543.65,
+                                "organization_name":"organization name",
+                                "organization_description":"organization description",
+                                "start_time": "2016-01-01T19:09:06.000+01:00",
                                 "end_time": "2016-01-01T20:09:06.000+01:00",
                                 "tour_points":[
                                 {"latitude":1.5,"longitude":1.5},
@@ -1437,8 +1438,8 @@ Entourages related resources of the **Entourage API**
 + Response 401 (application/json; charset=utf-8)
 
         {"error":{"status":401,"message":"Please sign-in"}}
-        
-        
+
+
 ### Create an entourage [POST]
 + Request (application/json)
 
@@ -1541,9 +1542,9 @@ Entourages related resources of the **Entourage API**
 + Response 401 (application/json; charset=utf-8)
 
         {"error":{"status":401,"message":"Please sign-in"}}
-        
-        
-        
+
+
+
 ## Read entourage messages [/entourages/{id}/read{?token}]
 + Parameters
     + id (required, integer, `1`) ... Identifier of the entourage
@@ -1579,7 +1580,7 @@ Entourages related resources of the **Entourage API**
     + Header
 
             Accept: application/json
-            
+
     + Body
 
             {
@@ -1594,7 +1595,7 @@ Entourages related resources of the **Entourage API**
             {
                 "successfull_numbers": ["+33612345678", "+3361234569"]
             }
-            
+
 + Response 400 (application/json; charset=utf-8)
 
             {
@@ -1756,8 +1757,8 @@ Resources related to users of an entourage
 + Response 401 (application/json; charset=utf-8)
 
         {"error":{"status":401,"message":"Please sign-in"}}
-        
-        
+
+
 ### Request to be added to an entourage [POST /entourages/{entourage_id}/users{?token}]
 
 + Parameters
@@ -1781,8 +1782,8 @@ Resources related to users of an entourage
 + Response 401 (application/json; charset=utf-8)
 
         {"error":{"status":401,"message":"Please sign-in"}}
-        
-        
+
+
 ## Entourage user [/entourages/{entourage_id}/users/{user_id}{?token}]
 
 + Parameters
@@ -1843,7 +1844,7 @@ Resources related to users of an entourage
 
         {"error":{"status":401,"message":"Please sign-in"}}
 
-        
+
 
 # Group Contacts
 Contacts related resources of the **Entourage API**
@@ -1917,8 +1918,8 @@ Contacts related resources of the **Entourage API**
 + Response 401 (application/json; charset=utf-8)
 
         {"error":{"status":401,"message":"Please sign-in"}}
-        
-        
+
+
 # Group Questions
 Resources  related to questions for the **Entourage API**
 ## Questions [/questions]
@@ -1941,8 +1942,8 @@ Resources  related to questions for the **Entourage API**
 + Response 401 (application/json; charset=utf-8)
 
         {"error":{"status":401,"message":"Please sign-in"}}
-        
-        
+
+
 # Group Tour Chat Messages
 Resources  related to chat messages for the **Entourage API**
 ## Chat Messages [/tours/{tour_id}/chat_messages{?token}]
@@ -1966,28 +1967,28 @@ Resources  related to chat messages for the **Entourage API**
 
     + Body
 
-            {"chat_messages": [ {   "id": 123, 
-                                    "content": "Content text", 
+            {"chat_messages": [ {   "id": 123,
+                                    "content": "Content text",
                                     "user": {
                                         "id": 456,
                                         "avatar_url": "https://foo.bar"
                                     }
-                                    "created_at": "2015-07-07T10:31:43.000+02:00" 
+                                    "created_at": "2015-07-07T10:31:43.000+02:00"
                                 },
-                                {   "id": 124, 
-                                    "content": "Content text", 
+                                {   "id": 124,
+                                    "content": "Content text",
                                     "user": {
                                         "id": 457,
                                         "avatar_url": "https://foo.bar"
                                     }
-                                    "created_at": "2015-07-07T10:31:43.000+02:00" 
+                                    "created_at": "2015-07-07T10:31:43.000+02:00"
                                 }]
-                                
+
 + Response 401 (application/json; charset=utf-8)
 
         {"error":{"status":401,"message":"Please sign-in"}}
-        
-        
+
+
 ### Create a chat message for a tour [POST]
 + Request (application/json)
 
@@ -2005,13 +2006,13 @@ Resources  related to chat messages for the **Entourage API**
 
 + Response 201 (application/json; charset=utf-8)
 
-        {   "id": 123, 
-            "content": "Content text", 
+        {   "id": 123,
+            "content": "Content text",
             "user": {
                 "id": 456,
                 "avatar_url": "https://foo.bar"
             },
-            "created_at": "2015-07-07T10:31:43.000+02:00" 
+            "created_at": "2015-07-07T10:31:43.000+02:00"
         }
 
 + Response 400 (application/json; charset=utf-8)
@@ -2021,9 +2022,9 @@ Resources  related to chat messages for the **Entourage API**
 + Response 401 (application/json; charset=utf-8)
 
         {"error":{"status":401,"message":"Please sign-in"}}
-        
-        
-        
+
+
+
 # Group Entourages Chat Messages
 Resources  related to chat messages for the **Entourage API**
 ## Chat Messages [/entourages/{entourage_id}/chat_messages{?token}]
@@ -2047,28 +2048,28 @@ Resources  related to chat messages for the **Entourage API**
 
     + Body
 
-            {"chat_messages": [ {   "id": 123, 
-                                    "content": "Content text", 
+            {"chat_messages": [ {   "id": 123,
+                                    "content": "Content text",
                                     "user": {
                                         "id": 456,
                                         "avatar_url": "https://foo.bar"
                                     }
-                                    "created_at": "2015-07-07T10:31:43.000+02:00" 
+                                    "created_at": "2015-07-07T10:31:43.000+02:00"
                                 },
-                                {   "id": 124, 
-                                    "content": "Content text", 
+                                {   "id": 124,
+                                    "content": "Content text",
                                     "user": {
                                         "id": 457,
                                         "avatar_url": "https://foo.bar"
                                     }
-                                    "created_at": "2015-07-07T10:31:43.000+02:00" 
+                                    "created_at": "2015-07-07T10:31:43.000+02:00"
                                 }]
-                                
+
 + Response 401 (application/json; charset=utf-8)
 
         {"error":{"status":401,"message":"Please sign-in"}}
-        
-        
+
+
 ### Create a chat message [POST]
 + Request (application/json)
 
@@ -2086,13 +2087,13 @@ Resources  related to chat messages for the **Entourage API**
 
 + Response 201 (application/json; charset=utf-8)
 
-        {   "id": 123, 
-            "content": "Content text", 
+        {   "id": 123,
+            "content": "Content text",
             "user": {
                 "id": 456,
                 "avatar_url": "https://foo.bar"
             },
-            "created_at": "2015-07-07T10:31:43.000+02:00" 
+            "created_at": "2015-07-07T10:31:43.000+02:00"
         }
 
 + Response 400 (application/json; charset=utf-8)
@@ -2102,9 +2103,9 @@ Resources  related to chat messages for the **Entourage API**
 + Response 401 (application/json; charset=utf-8)
 
         {"error":{"status":401,"message":"Please sign-in"}}
-        
-        
-        
+
+
+
 # Group Partners
 
 Resources related to partners
@@ -2139,9 +2140,9 @@ Resources related to partners
 + Response 401 (application/json; charset=utf-8)
 
         {"error":{"status":401,"message":"Please sign-in"}}
-        
-        
-        
+
+
+
 # Group User Partners
 
 Resources related to partners of a user
@@ -2157,7 +2158,7 @@ Resources related to partners of a user
 + Parameters
     + user_id (required, integer, `1`) ... Identifier of the user
     + token (required, string, `FAKETOKEN`) ... Token identifying the current user
-    
+
 + Request
 
     + Headers
@@ -2181,8 +2182,8 @@ Resources related to partners of a user
 + Response 401 (application/json; charset=utf-8)
 
         {"error":{"status":401,"message":"Please sign-in"}}
-        
-        
+
+
 ### Add a partner to a user [POST /users/{user_id}/partners{?token}]
 
 + Parameters
@@ -2219,8 +2220,8 @@ Resources related to partners of a user
 + Response 401 (application/json; charset=utf-8)
 
         {"error":{"status":401,"message":"Please sign-in"}}
-        
-        
+
+
 ## User partner [/users/{user_id}/partners/{partner_id}{?token}]
 
 + Parameters
@@ -2266,7 +2267,7 @@ Resources related to partners of a user
 + Response 200 (application/json; charset=utf-8)
 
     + Body
-    
+
             {
                 "partner": {
                         "id": 1,

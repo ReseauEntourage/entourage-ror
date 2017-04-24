@@ -7,6 +7,11 @@ module Api
       def index
         @categories = Category.all
         @pois = Poi.validated
+
+        if params[:category_ids].present?
+          @pois = @pois.where(category_id: params[:category_ids])
+        end
+
         if params[:latitude].present? and params[:longitude].present?
           @pois = @pois.around params[:latitude], params[:longitude], params[:distance]
         else
