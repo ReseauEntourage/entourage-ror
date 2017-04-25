@@ -15,8 +15,8 @@ describe Api::V1::PoisController, :type => :controller do
         let!(:poi2) { create :poi, category: category2, validated: false }
         let!(:poi3) { create :poi, category: category2, validated: true }
         let!(:poi4) { create :poi, category: category3, validated: true }
-        before { get 'index', token: user.token, category_ids: [category1.id, category2.id], :format => :json }
-        it { expect(assigns(:categories)).to eq([category1, category2]) }
+        before { get 'index', token: user.token, category_ids: [category1.id, category2.id].join(","), :format => :json }
+        it { expect(assigns(:categories)).to eq([category1, category2, category3]) }
         it { expect(assigns(:pois)).to eq([poi1, poi3]) }
 
         it "renders POI" do
