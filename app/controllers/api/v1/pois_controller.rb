@@ -9,7 +9,7 @@ module Api
         @pois = Poi.validated
 
         if params[:category_ids].present?
-          @pois = @pois.where(category_id: params[:category_ids])
+          @pois = @pois.where(category_id: params[:category_ids].split(","))
         end
 
         if params[:latitude].present? and params[:longitude].present?
