@@ -1039,6 +1039,34 @@ Encounters occured during tour
 
             {"encounter":{"id":1,"date":"2014-10-11T15:19:45.000+02:00","latitude":42.0,"longitude":2.0,"user_id":1,"user_name":"Eric","street_person_name":"jean","message":"test","voice_message":"http://www.google.com"}}
 
+
++ Response 400 (application/json; charset=utf-8)
+
+    + Body
+
+            {"error":{"status":400,"message":"Could not create encouter","reasons":["Date can't be blank","Street person name can't be blank","Latitude can't be blank","Latitude is not a number","Longitude can't be blank","Longitude is not a number"]}}
+
++ Response 401 (application/json; charset=utf-8)
+
+    + Body
+
+            {"error":{"status":401,"message":"Please sign-in"}}
+
++ Response 404 (application/json; charset=utf-8)
+
+    + Body
+
+            {"error":{"status":404,"message":"Could not find tour with id 233232"}}
+
+
+
+## Single Tour Encounter [/encounters/{id}{?token}]
+
++ Parameters
+    + id (required, integer, `1`) ... id
+    + token (required, string, `FAKETOKEN`) ... Token identifying the current user
+
+### Update an encounter [PATCH]
 + Request (application/json)
 
     + Header
@@ -1047,7 +1075,19 @@ Encounters occured during tour
 
     + Body
 
-            {"encounter":{"date":"2014-10-11 15:19:45","latitude":42,"longitude":2,"message":"test","voice_message":"http://www.google.com"}}
+            {
+                "encounter": {
+                    "street_person_name":"jean",
+                    "message":"test",
+                    "voice_message":"http://www.google.com"
+                }
+            }
+
++ Response 201 (application/json; charset=utf-8)
+
+    + Body
+
+            {"encounter":{"id":1,"date":"2014-10-11T15:19:45.000+02:00","latitude":42.0,"longitude":2.0,"user_id":1,"user_name":"Eric","street_person_name":"jean","message":"test","voice_message":"http://www.google.com"}}
 
 
 + Response 400 (application/json; charset=utf-8)
@@ -1067,6 +1107,8 @@ Encounters occured during tour
     + Body
 
             {"error":{"status":404,"message":"Could not find tour with id 233232"}}
+
+
 
 
 # Group Stats
@@ -1267,7 +1309,7 @@ status :
 active: either created by me or that I joined
 closed: either (created and closed by me)
 
-### Get all feeds [GET /myfeeds{?token,page,per,tour_types,entourage_types,time_range,status,created_by_me,`accepted_invitation`}]
+### Get all feeds [GET /myfeeds{?token,page,per,tour_types,entourage_types,time_range,status,created_by_me,accepted_invitation}]
 
 + Parameters
     + token (required, string, `FAKETOKEN`) ... Token identifying the current user
