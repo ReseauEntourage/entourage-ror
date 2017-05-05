@@ -115,7 +115,7 @@ Rails.application.routes.draw do
       resources :myfeeds, only: [:index]
       resources :tours, only: [:index, :create, :show, :update] do
         resources :tour_points, only:[:create]
-        resources :encounters, only: [:index, :create]
+        resources :encounters, only: [:index, :create, :update], :shallow => true
         resources :users, :controller => 'tours/users', only: [:index, :destroy, :update, :create]
         resources :chat_messages, :controller => 'tours/chat_messages', only: [:index, :create]
 
