@@ -1518,7 +1518,12 @@ Entourages related resources of the **Entourage API**
     + id (required, integer, `1`) ... Identifier of the entourage to be retrieved
     + token (required, string, `FAKETOKEN`) ... Token identifying the current user
 
-### Retrieve an entourage [GET]
+### Retrieve an entourage [GET /{?distance,feed_rank}]
+
++ Parameters
+    + distance (required, integer, `1`) ... Distance between user and entourage
+    + feed_rank (required, string, `FAKETOKEN`) ... Position of the entourage in the feed
+
 + Request (application/json)
 
     + Header
@@ -1811,7 +1816,9 @@ Resources related to users of an entourage
 
     + Body
 
-            Empty body
+            {
+                "distance": 125.78
+            }
 
     + Headers
 
@@ -1885,7 +1892,6 @@ Resources related to users of an entourage
 + Response 401 (application/json; charset=utf-8)
 
         {"error":{"status":401,"message":"Please sign-in"}}
-
 
 
 # Group Contacts
