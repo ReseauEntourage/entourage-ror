@@ -99,4 +99,12 @@ RSpec.describe Api::V1::EncountersController, :type => :controller do
       end
     end
   end
+
+  describe "PUT update" do
+    let(:encounter) { FactoryGirl.create(:encounter, street_person_name: "foo", message: "foobar", voice_message: "http://foo.bar") }
+    before { put :update, id: encounter.to_param, encounter: {street_person_name: "foo1", message: "foobar1", voice_message: "http://foo.bar1"}, token: user.token }
+    it { expect(encounter.reload.street_person_name).to eq("foo1") }
+    it { expect(encounter.reload.message).to eq("foobar1") }
+    it { expect(encounter.reload.voice_message).to eq("http://foo.bar1") }
+  end
 end

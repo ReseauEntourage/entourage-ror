@@ -1,7 +1,8 @@
 module Api
   module V1
     class EncountersController < Api::V1::BaseController
-      before_action :set_tour
+      before_action :set_tour, only: [:index, :create]
+      before_action :set_encounter, only: [:update]
 
       def index
         encounters = @tour.encounters.page(params[:page]).per(25)
@@ -26,7 +27,11 @@ module Api
       end
 
       def update
-
+        if @encounter.update(encounters_params)
+          head :no_content
+        else
+          render json: {message: 'Could not create encouter', reasons: @encounter.errors.full_messages}, status: :bad_request
+        end
       end
 
       private
@@ -37,6 +42,10 @@ module Api
 
       def set_tour
         @tour = Tour.find(params[:tour_id])
+      end
+
+      def set_encounter
+        @encounter = Encounter.find(params[:id])
       end
     end
   end
