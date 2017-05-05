@@ -14,7 +14,8 @@ describe Api::V1::Entourages::UsersController do
 
     context "signed in" do
       context "first request to join entourage" do
-        before { post :create, entourage_id: entourage.to_param, token: user.token }
+        before { post :create, entourage_id: entourage.to_param, token: user.token, distance: 123.45 }
+        it { expect(JoinRequest.last.distance).to eq(123.45) }
         it { expect(entourage.members).to eq([user]) }
         it { expect(result).to eq("user"=>{
                                             "id"=>user.id,

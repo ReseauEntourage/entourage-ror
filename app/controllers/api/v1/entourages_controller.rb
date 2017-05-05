@@ -15,7 +15,13 @@ module Api
         render json: finder.entourages, each_serializer: ::V1::EntourageSerializer, scope: {user: current_user}
       end
 
+      #curl -H "Content-Type: application/json" "http://localhost:3000/api/v1/entourages/951.json?token=azerty"
       def show
+        if params[:distance] && params[:feed_rank]
+          EntourageDisplay.create(entourage: @entourage,
+                                  distance: params[:distance],
+                                  feed_rank: params[:feed_rank])
+        end
         render json: @entourage, serializer: ::V1::EntourageSerializer, scope: {user: current_user}
       end
 

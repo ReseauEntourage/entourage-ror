@@ -16,7 +16,10 @@ module Api
           join_request = JoinRequest.where(joinable: @entourage, user: current_user).first
           if join_request.present?
            message = params.dig(:request, :message)
-            updater = JoinRequestsServices::JoinRequestUpdater.new(join_request: join_request, status: JoinRequest::PENDING_STATUS, message: message, current_user: current_user)
+            updater = JoinRequestsServices::JoinRequestUpdater.new(join_request: join_request,
+                                                                   status: JoinRequest::PENDING_STATUS,
+                                                                   message: message,
+                                                                   current_user: current_user)
 
             updater.update do |on|
               on.success do
@@ -34,7 +37,7 @@ module Api
            return
           end
 
-          join_request_builder = JoinRequestsServices::JoinRequestBuilder.new(joinable: @entourage, user: current_user, message: params.dig(:request, :message))
+          join_request_builder = JoinRequestsServices::JoinRequestBuilder.new(joinable: @entourage, user: current_user, message: params.dig(:request, :message), distance: params[:distance])
           join_request_builder.create do |on|
             on.success do |join_request|
               render json: join_request, root: "user", status: 201, serializer: ::V1::JoinRequestSerializer
