@@ -20,7 +20,8 @@ module Api
         if params[:distance] && params[:feed_rank]
           EntourageDisplay.create(entourage: @entourage,
                                   distance: params[:distance],
-                                  feed_rank: params[:feed_rank])
+                                  feed_rank: params[:feed_rank],
+                                  source: params[:source])
         end
         render json: @entourage, serializer: ::V1::EntourageSerializer, scope: {user: current_user}
       end

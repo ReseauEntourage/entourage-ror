@@ -1518,11 +1518,12 @@ Entourages related resources of the **Entourage API**
     + id (required, integer, `1`) ... Identifier of the entourage to be retrieved
     + token (required, string, `FAKETOKEN`) ... Token identifying the current user
 
-### Retrieve an entourage [GET /{?distance,feed_rank}]
+### Retrieve an entourage [GET /{?distance,feed_rank,source}]
 
 + Parameters
     + distance (required, integer, `1`) ... Distance between user and entourage
-    + feed_rank (required, string, `FAKETOKEN`) ... Position of the entourage in the feed
+    + feed_rank (required, string, `2`) ... Position of the entourage in the feed
+    + source (required, string, `newsfeed`) ... data source
 
 + Request (application/json)
 

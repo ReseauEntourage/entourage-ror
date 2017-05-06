@@ -197,10 +197,11 @@ describe Api::V1::EntouragesController do
 
       describe "create entourage display" do
         context "has distance and feed_rank" do
-          before { get :show, id: entourage.to_param, token: user.token, distance: 123.45, feed_rank: 2 }
+          before { get :show, id: entourage.to_param, token: user.token, distance: 123.45, feed_rank: 2, source: "foo" }
           it { expect(EntourageDisplay.count).to eq(1) }
           it { expect(EntourageDisplay.last.distance).to eq(123.45) }
           it { expect(EntourageDisplay.last.feed_rank).to eq(2) }
+          it { expect(EntourageDisplay.last.source).to eq("foo") }
         end
 
         context "no distance or feed_rank" do
