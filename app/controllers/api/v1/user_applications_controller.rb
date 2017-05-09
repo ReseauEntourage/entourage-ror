@@ -5,7 +5,7 @@ module Api
       def update
         ActiveRecord::Base.transaction do
           UserApplication.where(push_token: user_application_params["push_token"]).destroy_all
-          if user_application_params["push_token"] == "0"
+          if user_application_params["push_token"] == "0" || user_application_params["push_token"] == ""
             @current_user.user_applications.where(device_os: user_application_params["device_os"], version: user_application_params["version"]).destroy_all
             head :no_content
           else
