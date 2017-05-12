@@ -14,6 +14,9 @@ module Api
             user_application.tap do |user_application|
               user_application.push_token = user_application_params["push_token"]
               user_application.device_family = api_request.key_infos.try(:[], :device_family)
+              # hot fix to be sure that we have the right device family in case API keys are not the right ones
+              user_application.device_family = UserApplication::ANDROID if user_application.push_token.length == 152
+              user_application.device_family = UserApplication::IOS if user_application.push_token.length == 64
             end
 
             if user_application.save!
