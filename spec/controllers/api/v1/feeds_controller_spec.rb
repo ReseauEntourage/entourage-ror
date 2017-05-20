@@ -77,8 +77,23 @@ describe Api::V1::FeedsController do
 
       context "get entourages around location" do
         let!(:paris_entourage) { FactoryGirl.create(:entourage, updated_at: 4.hours.ago, latitude: 48.8566, longitude: 2.3522) }
-        before { get :index, token: user.token, latitude: 48.8566, longitude: 2.3522 }
-        it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([paris_entourage.id]) }
+        let!(:suburbs_entourage) { FactoryGirl.create(:entourage, updated_at: 4.hours.ago, latitude: 48.752552, longitude: 2.294402) }
+        let!(:south_of_france) { FactoryGirl.create(:entourage, updated_at: 4.hours.ago, latitude: 43.716691, longitude: 7.258083) }
+
+        context "default distance" do
+          before { get :index, token: user.token, latitude: 48.8566, longitude: 2.3522 }
+          it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([paris_entourage.id]) }
+        end
+
+        context "30km distance" do
+          before { get :index, token: user.token, latitude: 48.8566, longitude: 2.3522, distance: 30 }
+          it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([paris_entourage.id, suburbs_entourage.id]) }
+        end
+
+        context "max distance is 40km" do
+          before { get :index, token: user.token, latitude: 48.8566, longitude: 2.3522, distance: 1000 }
+          it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([paris_entourage.id, suburbs_entourage.id]) }
+        end
       end
 
       context "get entourages only" do

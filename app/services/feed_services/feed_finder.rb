@@ -1,5 +1,8 @@
 module FeedServices
   class FeedFinder
+
+    DEFAULT_DISTANCE=10
+
     def initialize(user:,
                    page:,
                    per:,
@@ -15,7 +18,8 @@ module FeedServices
                    entourage_status: nil,
                    before: nil,
                    author: nil,
-                   invitee: nil)
+                   invitee: nil,
+                   distance: nil)
       @user = user
       @page = page
       @per = per
@@ -31,6 +35,7 @@ module FeedServices
       @entourage_status = formated_status(entourage_status)
       @author = author
       @invitee = invitee
+      @distance = [(distance&.to_i || DEFAULT_DISTANCE), 40].min
     end
 
     def feeds
@@ -40,7 +45,11 @@ module FeedServices
       feeds = filter_my_feeds_only(feeds: feeds)
       feeds = feeds.where(user: author) if author
       feeds = feeds.where("feeds.created_at > ?", time_range.hours.ago)
-      feeds = feeds.within_bounding_box(box) if latitude && longitude
+      if latitude && longitude
+        feeds = feeds.near([latitude, longitude],
+                           distance,
+                           units: :km)
+      end
 
       if tour_status && entourage_status
         feeds = feeds.where("(feedable_type='Entourage' AND feeds.status IN (?)) OR (feedable_type='Tour' AND feeds.status IN (?))", entourage_status, tour_status)
@@ -67,13 +76,7 @@ module FeedServices
     end
 
     private
-    attr_reader :user, :page, :per, :before, :latitude, :longitude, :show_tours, :feed_type, :show_my_entourages_only, :show_my_tours_only, :time_range, :tour_status, :entourage_status, :author, :invitee
-
-    def box
-      Geocoder::Calculations.bounding_box([latitude, longitude],
-                                          10,
-                                          units: :km)
-    end
+    attr_reader :user, :page, :per, :before, :latitude, :longitude, :show_tours, :feed_type, :show_my_entourages_only, :show_my_tours_only, :time_range, :tour_status, :entourage_status, :author, :invitee, :distance
 
     def join_types(entourage_types:, tour_types:)
       entourage_types = formated_type(entourage_types) || Entourage::ENTOURAGE_TYPES
@@ -88,7 +91,6 @@ module FeedServices
     def formated_status(status)
       [status].flatten if status
     end
-
 
     def filter_my_feeds_only(feeds:)
       if show_my_entourages_only && show_my_tours_only
