@@ -11,11 +11,12 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170506103712) do
+ActiveRecord::Schema.define(version: 20170516102712) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "pg_stat_statements"
+  enable_extension "pgcrypto"
   enable_extension "postgis"
 
   create_table "active_admin_comments", id: false, force: :cascade do |t|
@@ -97,7 +98,7 @@ ActiveRecord::Schema.define(version: 20170506103712) do
     t.integer  "feed_rank"
     t.datetime "created_at",                        null: false
     t.datetime "updated_at",                        null: false
-    t.string   "source",       default: "newsfeed", null: false
+    t.string   "source",       default: "newsfeed"
   end
 
   add_index "entourage_displays", ["entourage_id"], name: "index_entourage_displays_on_entourage_id", using: :btree
