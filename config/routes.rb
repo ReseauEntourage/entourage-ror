@@ -240,6 +240,8 @@ Rails.application.routes.draw do
       end
 
       put 'applications' => 'user_applications#update'
+      delete 'applications' => 'user_applications#destroy'
+
       post 'login' => 'users#login'
       get 'check' => 'base#check'
       get 'ping' => 'base#ping'
