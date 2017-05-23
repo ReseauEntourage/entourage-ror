@@ -27,6 +27,7 @@ class User < ActiveRecord::Base
   has_many :feeds
   has_many :user_partners, dependent: :destroy
   has_many :partners, through: :user_partners
+  has_one :users_appetence
 
   enum device_type: [ :android, :ios ]
 

@@ -17,12 +17,7 @@ module Api
 
       #curl -H "Content-Type: application/json" "http://localhost:3000/api/v1/entourages/951.json?token=e4fdc865bc7a91c34daea849e7d73349&distance=123.45&feed_rank=2"
       def show
-        if params[:distance] && params[:feed_rank]
-          EntourageDisplay.create(entourage: @entourage,
-                                  distance: params[:distance],
-                                  feed_rank: params[:feed_rank],
-                                  source: params[:source])
-        end
+        EntourageServices::EntourageDisplayService.new(entourage: @entourage, user: current_user, params: params).view
         render json: @entourage, serializer: ::V1::EntourageSerializer, scope: {user: current_user}
       end
 
@@ -68,7 +63,7 @@ module Api
       private
 
       def entourage_params
-        params.require(:entourage).permit({location: [:longitude, :latitude]}, :title, :entourage_type, :status, :description)
+        params.require(:entourage).permit({location: [:longitude, :latitude]}, :title, :entourage_type, :status, :description, :category)
       end
 
       def set_entourage

@@ -26,7 +26,7 @@ module TourServices
 
       ActiveRecord::Base.transaction do
         increment_counter
-        join_request.update!(status: "accepted")
+        join_request.udate!(status: "accepted")
       end
 
       if user != joinable_author

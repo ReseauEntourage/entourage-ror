@@ -1,15 +1,21 @@
 namespace :data_migration do
-  task create_atd_partner: :environment do
-    Partner.destroy_all
-    Partner.create!(name: "ATD Quart Monde",
-                    "large_logo_url":"https://s3-eu-west-1.amazonaws.com/entourage-ressources/ATDQM-coul-V-fr.png",
-                    "small_logo_url":"https://s3-eu-west-1.amazonaws.com/entourage-ressources/Badge+image.png")
-  end
 
-  desc "set uuid to entourages"
-  task set_uuid_to_entourages: :environment do
-    Entourage.all.each do |entourage|
-      entourage.update_attribute(:uuid, SecureRandom.uuid)
+  task set_entourage_category: :environment do
+    Entourage.find_each do |entourage|
+      puts "update entourage #{entourage.id}"
+      text = "#{entourage.title} #{entourage.description}"
+      category = EntourageServices::CategoryLexicon.new(text: text).category
+      next unless category
+      entourage.update(category: category)
     end
   end
+
+  task set_user_appetences: :environment do
+    UsersAppetence.delete_all
+    User.find_each do |user|
+      puts "Create user_appetences #{user.id}"
+      EntourageServices::UsersAppetenceBuilder.new(user: user).create
+    end
+  end
+
 end

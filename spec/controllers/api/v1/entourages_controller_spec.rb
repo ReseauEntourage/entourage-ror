@@ -108,7 +108,7 @@ describe Api::V1::EntouragesController do
       end
 
       context "valid params" do
-        before { post :create, entourage: { location: {longitude: 1.123, latitude: 4.567}, title: "foo", entourage_type: "ask_for_help", description: "foo bar"}, token: user.token }
+        before { post :create, entourage: { location: {longitude: 1.123, latitude: 4.567}, title: "foo", entourage_type: "ask_for_help", description: "foo bar", category: "mat_help"}, token: user.token }
         it { expect(JSON.parse(response.body)).to eq({"entourage"=>
                                                           {"id"=>Entourage.last.id,
                                                            "status"=>"open",
@@ -137,6 +137,7 @@ describe Api::V1::EntouragesController do
         it { expect(Entourage.last.longitude).to eq(1.123) }
         it { expect(Entourage.last.latitude).to eq(4.567) }
         it { expect(Entourage.last.number_of_people).to eq(1) }
+        it { expect(Entourage.last.category).to eq("mat_help") }
         it { expect(user.entourage_participations).to eq([Entourage.last]) }
         it { expect(JoinRequest.count).to eq(1) }
         it { expect(JoinRequest.last.status).to eq(JoinRequest::ACCEPTED_STATUS) }
