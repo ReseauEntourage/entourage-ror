@@ -35,7 +35,7 @@ module Admin
     end
 
     def entourage_params
-      params.require(:entourage).permit(:status, :title, :description)
+      params.require(:entourage).permit(:status, :title, :description, :category)
     end
   end
 end

@@ -10,6 +10,11 @@ RSpec.describe EntourageServices::CategoryLexicon do
       it { should eq("mat_help") }
     end
 
+    context "one word from social" do
+      let(:text) { "atelier" }
+      it { should eq("social") }
+    end
+
     context "multiple word from mat_help" do
       let(:text) { "besoin d'aide distribution" }
       it { should eq("mat_help") }
@@ -23,6 +28,11 @@ RSpec.describe EntourageServices::CategoryLexicon do
     context "one word from mat_help and one word from non_mat_help" do
       let(:text) { "maraude de distribution" }
       it { should eq("mat_help") }
+    end
+
+    context "one word from mat_help and two word from non_mat_help" do
+      let(:text) { "maraude de distribution à partager" }
+      it { should eq("non_mat_help") }
     end
 
     context "no known word" do

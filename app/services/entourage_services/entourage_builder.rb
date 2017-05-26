@@ -15,6 +15,9 @@ module EntourageServices
       entourage.user = user
       entourage.uuid = SecureRandom.uuid
 
+      text = "#{entourage.title} #{entourage.description}"
+      entourage.category = EntourageServices::CategoryLexicon.new(text: text).category
+
       if entourage.save
         #When you start an entourage you are automatically added to members of the tour
         join_request = JoinRequest.create(joinable: entourage, user: user)
