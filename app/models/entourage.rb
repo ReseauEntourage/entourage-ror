@@ -21,6 +21,7 @@ class Entourage < ActiveRecord::Base
   ENTOURAGE_TYPES  = ['ask_for_help', 'contribution']
   ENTOURAGE_STATUS = ['open', 'closed', 'blacklisted']
   BLACKLIST_WORDS  = ['rue', 'avenue', 'boulevard', 'en face de', 'vend', 'loue', '06', '07', '01']
+  CATEGORIES  = ['mat_help', 'non_mat_help', 'social']
 
   belongs_to :user
   has_many :join_requests, as: :joinable, dependent: :destroy
@@ -32,14 +33,26 @@ class Entourage < ActiveRecord::Base
   validates_presence_of :status, :title, :entourage_type, :user_id, :latitude, :longitude, :number_of_people
   validates_inclusion_of :status, in: ENTOURAGE_STATUS
   validates_inclusion_of :entourage_type, in: ENTOURAGE_TYPES
+  validates_inclusion_of :category, in: CATEGORIES, allow_nil: true
+  validates_uniqueness_of :uuid, on: :create
 
   scope :visible, -> { where.not(status: 'blacklisted') }
+  scope :social_category, -> { where(category: 'social') }
+  scope :mat_help_category, -> { where(category: 'mat_help') }
+  scope :non_mat_help_category, -> { where(category: 'non_mat_help') }
 
   after_create :check_moderation
+  before_create :set_uuid
 
   #An entourage can never be freezed
   def freezed?
     false
+  end
+
+  def approximated_location
+   location ||= Geocoder.search([latitude, longitude]).first
+   return '' unless location
+   "#{location.city}, #{location.postal_code}"
   end
 
   protected
@@ -63,5 +76,10 @@ class Entourage < ActiveRecord::Base
                                .url_helpers
                                .admin_entourage_url(id, host: ENV['ADMIN_HOST'])
     notifier.ping "Un nouvel entourage doit être modéré : #{admin_entourage_url}", http_options: { open_timeout: 10 }
+  end
+
+  def set_uuid
+    uuid = SecureRandom.uuid
+    true
   end
 end

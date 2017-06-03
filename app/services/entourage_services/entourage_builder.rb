@@ -13,11 +13,16 @@ module EntourageServices
       entourage.longitude = params.dig(:location, :longitude)
       entourage.latitude = params.dig(:location, :latitude)
       entourage.user = user
+      entourage.uuid = SecureRandom.uuid
+
+      text = "#{entourage.title} #{entourage.description}"
+      entourage.category = EntourageServices::CategoryLexicon.new(text: text).category
 
       if entourage.save
         #When you start an entourage you are automatically added to members of the tour
         join_request = JoinRequest.create(joinable: entourage, user: user)
         TourServices::JoinRequestStatus.new(join_request: join_request).accept!
+
         callback.on_success.try(:call, entourage.reload)
       else
         callback.on_failure.try(:call, entourage)

@@ -7,7 +7,8 @@ module EntourageServices
     def accept!
       if JoinRequest.create(user: invitation.invitee, joinable: invitation.invitable, status: JoinRequest::ACCEPTED_STATUS)
         invitation.update(status: EntourageInvitation::ACCEPTED_STATUS)
-        send_notif(title: "Invitation accepté",
+        invitation.invitable.touch
+        send_notif(title: "Invitation acceptée",
                    content: "#{invitee_name} a accepté votre invitation",
                    accepted: true)
       end
@@ -16,8 +17,17 @@ module EntourageServices
     def reject!
       if JoinRequest.create(user: invitation.invitee, joinable: invitation.invitable, status: JoinRequest::REJECTED_STATUS)
         invitation.update(status: EntourageInvitation::REJECTED_STATUS)
-        send_notif(title: "Invitation refusé",
+        send_notif(title: "Invitation refusée",
                    content: "#{invitee_name} a refusé votre invitation",
+                   accepted: false)
+      end
+    end
+
+    def quit!
+      if JoinRequest.create(user: invitation.invitee, joinable: invitation.invitable, status: JoinRequest::CANCELLED_STATUS)
+        invitation.update(status: EntourageInvitation::CANCELLED_STATUS)
+        send_notif(title: "Invitation annulée",
+                   content: "Vous avez annulé l'invitation de #{invitee_name}",
                    accepted: false)
       end
     end

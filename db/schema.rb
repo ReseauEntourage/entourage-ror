@@ -11,11 +11,12 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170218174440) do
+ActiveRecord::Schema.define(version: 20170527074545) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "pg_stat_statements"
+  enable_extension "pgcrypto"
   enable_extension "postgis"
 
   create_table "active_admin_comments", id: false, force: :cascade do |t|
@@ -102,6 +103,17 @@ ActiveRecord::Schema.define(version: 20170218174440) do
     t.string   "address"
   end
 
+  create_table "entourage_displays", force: :cascade do |t|
+    t.integer  "entourage_id"
+    t.float    "distance"
+    t.integer  "feed_rank"
+    t.datetime "created_at",                        null: false
+    t.datetime "updated_at",                        null: false
+    t.string   "source",       default: "newsfeed"
+  end
+
+  add_index "entourage_displays", ["entourage_id"], name: "index_entourage_displays_on_entourage_id", using: :btree
+
   create_table "entourage_invitations", force: :cascade do |t|
     t.integer  "invitable_id",                        null: false
     t.string   "invitable_type",                      null: false
@@ -131,10 +143,13 @@ ActiveRecord::Schema.define(version: 20170218174440) do
     t.datetime "created_at",                        null: false
     t.datetime "updated_at",                        null: false
     t.string   "description"
+    t.uuid     "uuid"
+    t.string   "category"
   end
 
   add_index "entourages", ["latitude", "longitude"], name: "index_entourages_on_latitude_and_longitude", using: :btree
   add_index "entourages", ["user_id"], name: "index_entourages_on_user_id", using: :btree
+  add_index "entourages", ["uuid"], name: "index_entourages_on_uuid", unique: true, using: :btree
 
   create_table "entourages_users", force: :cascade do |t|
     t.integer  "user_id",                               null: false
@@ -156,10 +171,11 @@ ActiveRecord::Schema.define(version: 20170218174440) do
     t.datetime "last_message_read"
     t.datetime "created_at",                            null: false
     t.datetime "updated_at",                            null: false
+    t.float    "distance"
   end
 
   add_index "join_requests", ["user_id", "joinable_id", "joinable_type", "status"], name: "index_user_joinable_on_join_requests", using: :btree
-  add_index "join_requests", ["user_id", "joinable_id"], name: "index_join_requests_on_user_id_and_joinable_id", unique: true, using: :btree
+  add_index "join_requests", ["user_id", "joinable_id", "joinable_type"], name: "index_join_requests_on_user_id_and_joinable_id", using: :btree
 
   create_table "login_histories", force: :cascade do |t|
     t.integer  "user_id",      null: false
@@ -416,5 +432,17 @@ ActiveRecord::Schema.define(version: 20170218174440) do
   add_index "users", ["organization_id"], name: "index_users_on_organization_id", using: :btree
   add_index "users", ["phone"], name: "index_users_on_phone", unique: true, using: :btree
   add_index "users", ["token"], name: "index_users_on_token", unique: true, using: :btree
+
+  create_table "users_appetences", force: :cascade do |t|
+    t.integer  "user_id",                                null: false
+    t.integer  "appetence_social",       default: 0,     null: false
+    t.integer  "appetence_mat_help",     default: 0,     null: false
+    t.integer  "appetence_non_mat_help", default: 0,     null: false
+    t.float    "avg_dist",               default: 150.0, null: false
+    t.datetime "created_at",                             null: false
+    t.datetime "updated_at",                             null: false
+  end
+
+  add_index "users_appetences", ["user_id"], name: "index_users_appetences_on_user_id", unique: true, using: :btree
 
 end

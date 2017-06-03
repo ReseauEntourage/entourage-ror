@@ -28,7 +28,7 @@ describe Api::V1::MyfeedsController do
         it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([]) }
       end
 
-      context "last_message" do
+      context "last_message i'm accepted in" do
         let!(:entourage) { FactoryGirl.create(:entourage, :joined, join_request_user: user, user: user, created_at: 1.hour.ago) }
         let!(:tour) { FactoryGirl.create(:tour, :joined, join_request_user: user, user: user, created_at: 1.hour.ago) }
 
@@ -74,6 +74,19 @@ describe Api::V1::MyfeedsController do
         end
       end
 
+      context "last_message i'm pending in" do
+        let!(:join_request) { FactoryGirl.create(:join_request, joinable: entourage, user: user, status: "pending") }
+        before { get :index, token: user.token, status: "all" }
+        it { expect(result["feeds"].map {|feed| feed["data"]["last_message"]} ).to eq([{"text"=>"Votre demande est en attente.", "author"=>nil}]) }
+      end
+
+      context "last_message someone else is pending in" do
+        let!(:join_request) { FactoryGirl.create(:join_request, joinable: entourage, user: user, status: "accepted") }
+        let!(:join_request2) { FactoryGirl.create(:join_request, joinable: entourage, status: "pending") }
+        before { get :index, token: user.token, status: "all" }
+        it { expect(result["feeds"].map {|feed| feed["data"]["last_message"]} ).to eq([{"text"=>"1 nouvelle demande pour rejoindre votre entourage", "author"=>nil}]) }
+      end
+
       context "filter by status" do
         let!(:entourage_open) { FactoryGirl.create(:entourage, :joined, join_request_user: user, user: user, updated_at: 1.hour.ago, status: :open) }
         let!(:entourage_closed) { FactoryGirl.create(:entourage, :joined, join_request_user: user, updated_at: 2.hour.ago, status: :closed) }
@@ -83,10 +96,10 @@ describe Api::V1::MyfeedsController do
 
         context "get active feeds" do
           before { get :index, token: user.token, status: "active" }
-          it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([tour_ongoing.id]) }
+          it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([entourage_open.id, tour_ongoing.id]) }
         end
 
-        context "get active feeds" do
+        context "get close feeds" do
           before { get :index, token: user.token, status: "closed" }
           it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([entourage_closed.id, tour_closed.id, tour_freezed.id]) }
         end
@@ -119,21 +132,6 @@ describe Api::V1::MyfeedsController do
         let!(:other_tour) { FactoryGirl.create(:tour, :joined, join_request_user: user, updated_at: 3.hours.ago, status: :ongoing) }
         before { get :index, token: user.token, accepted_invitation: "true" }
         it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([invited_tour.id]) }
-      end
-
-      context "filter created_by_me OR accepted_invitation" do
-        let!(:my_entourage) { FactoryGirl.create(:entourage, :joined, join_request_user: user, user: user, updated_at: 30.minutes.ago, status: :open) }
-        let!(:my_tour) { FactoryGirl.create(:tour, :joined, join_request_user: user, user: user, updated_at: 90.minutes.ago, status: :ongoing) }
-        let!(:other_tour) { FactoryGirl.create(:tour, :joined, join_request_user: user, updated_at: 91.minutes.ago, status: :ongoing) }
-        let!(:invited_entourage) { FactoryGirl.create(:entourage, :joined, join_request_user: user, user: user, updated_at: 31.minutes.ago, status: :open) }
-        let!(:entourage_invitation) { FactoryGirl.create(:entourage_invitation, :accepted, invitee: user, invitable: invited_entourage) }
-        let!(:other_entourage) { FactoryGirl.create(:entourage, :joined, join_request_user: user, updated_at: 32.minutes.ago, status: :open) }
-        let!(:other_entourage_invitation) { FactoryGirl.create(:entourage_invitation, invitee: user, invitable: other_entourage) }
-        let!(:invited_tour) { FactoryGirl.create(:tour, :joined, join_request_user: user, user: user, updated_at: 92.minutes.ago, status: :ongoing) }
-        let!(:tour_invitation) { FactoryGirl.create(:entourage_invitation, :accepted, invitee: user, invitable: invited_tour) }
-        let!(:other_tour) { FactoryGirl.create(:tour, :joined, join_request_user: user, updated_at: 93.minutes.ago, status: :ongoing) }
-        before { get :index, token: user.token, created_by_me: "true", accepted_invitation: "true"  }
-        it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([my_tour.id, invited_tour.id]) }
       end
     end
   end

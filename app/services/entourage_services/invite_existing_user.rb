@@ -25,7 +25,7 @@ module EntourageServices
       if invitee.last_sign_in_at
         invitation_id = Rails.env.test? ? 123 : invite.id
         PushNotificationService.new.send_notification(inviter_name,
-                                                      "Invitation à rejoindre un entourage",
+                                                      "vous invite à rejoindre un entourage",
                                                       "Vous êtes invité à rejoindre l'entourage de #{inviter_name}",
                                                       User.where(id: invitee.id),
                                                       {
@@ -64,7 +64,7 @@ module EntourageServices
     end
 
     def inviter_name
-      UserPresenter.new(user: invitee).display_name
+      UserPresenter.new(user: inviter).display_name
     end
 
     def message
@@ -72,7 +72,7 @@ module EntourageServices
     end
 
     def link
-      link = Rails.env.test? ? "http://foo.bar" : "http://tinyurl.com/hfkhcpr"
+      link = Rails.env.test? ? "http://foo.bar" : "https://api.entourage.social/store_redirection"
     end
   end
 end

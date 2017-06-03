@@ -37,7 +37,8 @@ describe Api::V1::EntouragesController do
                                        "number_of_unread_messages"=>nil,
                                        "created_at"=> entourage.created_at.iso8601(3),
                                        "updated_at"=> entourage.updated_at.iso8601(3),
-                                       "description" => nil
+                                       "description" => nil,
+                                       "share_url" => "http://entourage.social/entourages/#{entourage.uuid}"
                                     }]
                               })
       end
@@ -107,7 +108,8 @@ describe Api::V1::EntouragesController do
       end
 
       context "valid params" do
-        before { post :create, entourage: { location: {longitude: 1.123, latitude: 4.567}, title: "foo", entourage_type: "ask_for_help", description: "foo bar"}, token: user.token }
+        before { allow_any_instance_of(EntourageServices::CategoryLexicon).to receive(:category) { "mat_help" } }
+        before { post :create, entourage: { location: {longitude: 1.123, latitude: 4.567}, title: "foo", entourage_type: "ask_for_help", description: "foo bar", category: "mat_help"}, token: user.token }
         it { expect(JSON.parse(response.body)).to eq({"entourage"=>
                                                           {"id"=>Entourage.last.id,
                                                            "status"=>"open",
@@ -128,13 +130,15 @@ describe Api::V1::EntouragesController do
                                                            "number_of_unread_messages"=>0,
                                                            "created_at"=> Entourage.last.created_at.iso8601(3),
                                                            "updated_at"=> Entourage.last.updated_at.iso8601(3),
-                                                           "description"=> "foo bar"
+                                                           "description"=> "foo bar",
+                                                           "share_url" => "http://entourage.social/entourages/#{Entourage.last.uuid}"
                                                           }
                                                      }) }
         it { expect(response.status).to eq(201) }
         it { expect(Entourage.last.longitude).to eq(1.123) }
         it { expect(Entourage.last.latitude).to eq(4.567) }
         it { expect(Entourage.last.number_of_people).to eq(1) }
+        it { expect(Entourage.last.category).to eq("mat_help") }
         it { expect(user.entourage_participations).to eq([Entourage.last]) }
         it { expect(JoinRequest.count).to eq(1) }
         it { expect(JoinRequest.last.status).to eq(JoinRequest::ACCEPTED_STATUS) }
@@ -179,7 +183,8 @@ describe Api::V1::EntouragesController do
                                                            "number_of_unread_messages"=>nil,
                                                            "created_at"=> entourage.created_at.iso8601(3),
                                                            "updated_at"=> entourage.updated_at.iso8601(3),
-                                                           "description" => nil
+                                                           "description" => nil,
+                                                           "share_url" => "http://entourage.social/entourages/#{entourage.uuid}"
                                                           }
                                                      }) }
       end
@@ -189,6 +194,29 @@ describe Api::V1::EntouragesController do
           expect {
               get :show, id: 0, token: user.token
             }.to raise_error(ActiveRecord::RecordNotFound)
+        end
+      end
+
+      describe "create entourage display" do
+        context "has distance and feed_rank and source" do
+          before { get :show, id: entourage.to_param, token: user.token, distance: 123.45, feed_rank: 2, source: "foo" }
+          it { expect(EntourageDisplay.count).to eq(1) }
+          it { expect(EntourageDisplay.last.distance).to eq(123.45) }
+          it { expect(EntourageDisplay.last.feed_rank).to eq(2) }
+          it { expect(EntourageDisplay.last.source).to eq("foo") }
+        end
+
+        context "has distance and feed_rank but no source" do
+          before { get :show, id: entourage.to_param, token: user.token, distance: 123.45, feed_rank: 2 }
+          it { expect(EntourageDisplay.count).to eq(1) }
+          it { expect(EntourageDisplay.last.distance).to eq(123.45) }
+          it { expect(EntourageDisplay.last.feed_rank).to eq(2) }
+          it { expect(EntourageDisplay.last.source).to be_nil }
+        end
+
+        context "no distance or feed_rank" do
+          before { get :show, id: entourage.to_param, token: user.token }
+          it { expect(EntourageDisplay.count).to eq(0) }
         end
       end
     end
@@ -227,7 +255,8 @@ describe Api::V1::EntouragesController do
                                                            "number_of_unread_messages"=>nil,
                                                            "created_at"=> user_entourage.created_at.iso8601(3),
                                                            "updated_at"=> user_entourage.reload.updated_at.iso8601(3),
-                                                           "description" => nil
+                                                           "description" => nil,
+                                                           "share_url" => "http://entourage.social/entourages/#{user_entourage.uuid}"
                                                           }
                                                      }) }
       end
@@ -257,6 +286,31 @@ describe Api::V1::EntouragesController do
         it { expect(user_entourage.reload.latitude).to eq(10.5) }
         it { expect(user_entourage.reload.longitude).to eq(20.1) }
       end
+    end
+  end
+
+  describe "PUT read" do
+    let!(:entourage) { FactoryGirl.create(:entourage) }
+
+    context "not signed in" do
+      before { put :read, id: entourage.to_param }
+      it { expect(response.status).to eq(401) }
+    end
+
+    context "user is accepted in entourage" do
+      let(:old_date) { DateTime.parse("15/10/2010") }
+      let!(:join_request) { FactoryGirl.create(:join_request, joinable: entourage, user: user, status: JoinRequest::ACCEPTED_STATUS, last_message_read: old_date) }
+      before { put :read, id: entourage.to_param, token: user.token }
+      it { expect(response.status).to eq(204) }
+      it { expect(join_request.reload.last_message_read).to be > old_date }
+    end
+
+    context "user is not accepted in entourage" do
+      let(:old_date) { DateTime.parse("15/10/2010") }
+      let!(:join_request) { FactoryGirl.create(:join_request, joinable: entourage, user: user, status: JoinRequest::PENDING_STATUS, last_message_read: old_date) }
+      before { put :read, id: entourage.to_param, token: user.token }
+      it { expect(response.status).to eq(204) }
+      it { expect(join_request.reload.last_message_read).to eq(old_date) }
     end
   end
 end

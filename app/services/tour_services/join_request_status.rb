@@ -16,8 +16,13 @@ module TourServices
       join_request.status=="rejected"
     end
 
+    def cancelled?
+      join_request.status=="cancelled"
+    end
+
     def accept!
       return true if accepted?
+      return false if cancelled?
 
       ActiveRecord::Base.transaction do
         increment_counter
@@ -40,6 +45,7 @@ module TourServices
 
     def reject!
       return true if rejected?
+      return false if cancelled?
 
       if pending?
         join_request.update(status: "rejected")
@@ -49,18 +55,44 @@ module TourServices
           join_request.update!(status: "rejected")
         end
       end
+      notify_owner(join_request.user, join_request.joinable.user, join_request.joinable)
     end
 
     def quit!
-      decrement_counter
-      join_request.destroy
+      return true if cancelled?
+
+      if pending?
+        join_request.update(status: "cancelled")
+      elsif accepted?
+        ActiveRecord::Base.transaction do
+          decrement_counter
+          join_request.update!(status: "cancelled")
+        end
+      end
+      notify_owner(join_request.user, join_request.joinable.user, join_request.joinable)
+    end
+
+    def pending!
+      return true if pending?
+
+      if accepted?
+        ActiveRecord::Base.transaction do
+          decrement_counter
+          join_request.update!(status: "pending")
+        end
+      elsif cancelled?
+        join_request.update(status: "pending")
+      end
     end
 
     def decrement_counter
-      joinable.class.decrement_counter(:number_of_people, joinable.id)
+      if accepted?
+        joinable.class.decrement_counter(:number_of_people, joinable.id)
+      end
     end
 
     def increment_counter
+      return true if accepted?
       joinable.class.increment_counter(:number_of_people, joinable.id)
     end
 
@@ -82,5 +114,17 @@ module TourServices
 
     private
     attr_reader :join_request
+
+    def notify_owner(requester, owner, joinable)
+      PushNotificationService.new.send_notification(UserPresenter.new(user: requester).display_name,
+                                                    "Demande annulée",
+                                                    "Demande annulée",
+                                                    [owner],
+                                                    {
+                                                        joinable_id: joinable.id,
+                                                        joinable_type: joinable.class.name,
+                                                        user_id: requester.id
+                                                    })
+    end
   end
 end

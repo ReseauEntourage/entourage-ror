@@ -1,6 +1,7 @@
 <h1>Liste des entourages</h1>
 
 <br><br>
+<%= render 'search_form' %>
 
 <div class="row">
   <table class="table admin-table">
@@ -11,6 +12,7 @@
     <th style="width:15%">Titre</th>
     <th>Créé le</th>
     <th style="width:20%">Description</th>
+    <th>Location</th>
     <th>Auteur</th>
     <th>Organisation</th>
     <th>Email</th>
@@ -26,6 +28,7 @@
         <td><%= link_to_entourage_with_infos(entourage) %></td>
         <td><%= entourage.created_at.strftime('%d/%m/%Y') %></td>
         <td><%= entourage_description_excerpt(entourage.description) %></td>
+        <td><%= entourage.approximated_location %></td>
         <td><%= link_to("#{entourage.user.full_name} (##{entourage.user.id})", admin_user_path(entourage.user)) %></td>
         <td><%= entourage.user.organization.try(:name) %></td>
         <td><%= entourage.user.email %></td>
@@ -34,6 +37,7 @@
         <td><span class="badge"><%= entourage.entourage_invitations.status('pending').count %></span></td>
         <td><span class="badge"><%= entourage.entourage_invitations.status('accepted').count %></span></td>
         <td><span class="badge"><%= entourage.entourage_invitations.status('rejected').count %></span></td>
+        <td><span class="badge"><%= entourage.entourage_invitations.status('cancelled').count %></span></td>
         <td><span class="badge"><%= entourage.chat_messages.count %></span></td>
       </tr>
     <% end %>

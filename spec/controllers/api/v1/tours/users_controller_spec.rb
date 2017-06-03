@@ -30,17 +30,24 @@ describe Api::V1::Tours::UsersController do
         before { JoinRequest.create(user: user, joinable: tour) }
         before { post :create, tour_id: tour.to_param, token: user.token }
         it { expect(tour.members).to eq([user]) }
-        it { expect(result).to eq("message"=>"Could not create entourage participation request", "reasons"=>["Joinable a déjà été ajouté"]) }
-        it { expect(response.status).to eq(400) }
+        it { expect(result).to eq("user"=>{"id"=>user.id,
+                                           "email"=>user.email,
+                                           "display_name"=>"John D",
+                                           "status" => "pending",
+                                           "message"=>nil,
+                                           "avatar_url"=>nil,
+                                           "requested_at"=>JoinRequest.last.created_at.iso8601(3),
+                                           "partner"=>nil}) }
+        it { expect(tour.reload.number_of_people).to eq(1) }
       end
 
-      it "sends a notifications to tour members" do
+      it "sends a notifications to tour owner" do
         new_member = FactoryGirl.create(:pro_user)
         JoinRequest.create(user: user, joinable: tour, status: "accepted")
         expect_any_instance_of(PushNotificationService).to receive(:send_notification).with("John D",
                                                                                             "Demande en attente",
                                                                                             "Un nouveau membre souhaite rejoindre votre maraude",
-                                                                                            User.where(id: user.id),
+                                                                                            [tour.user],
                                                                                             {:joinable_id=>tour.id, :joinable_type=>"Tour", :type=>"NEW_JOIN_REQUEST", :user_id => new_member.id}
         )
         post :create, tour_id: tour.to_param, token: new_member.token
@@ -189,7 +196,7 @@ describe Api::V1::Tours::UsersController do
                                   "id"=>user.id,
                                   "email"=>user.email,
                                   "display_name"=>"John D",
-                                  "status"=>"not requested",
+                                  "status"=>"cancelled",
                                   "message"=>nil,
                                   "requested_at"=>tour_member.created_at.iso8601(3),
                                   "avatar_url"=>nil,

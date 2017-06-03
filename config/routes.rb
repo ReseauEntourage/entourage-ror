@@ -30,6 +30,7 @@ Rails.application.routes.draw do
       resources :entourage_invitations, only: [:index]
       resources :entourages, only: [:index, :show, :edit, :update]
       resources :marketing_referers, only: [:index, :edit, :update, :new, :create]
+      resources :join_requests, only: [:create]
 
       get 'public_user_search' => "users_search#public_user_search"
       get 'public_user_autocomplete' => "users_search#public_user_autocomplete"
@@ -66,6 +67,7 @@ Rails.application.routes.draw do
     resources :entourage_invitations, only: [:index]
     resources :entourages, only: [:index, :show, :edit, :update]
     resources :marketing_referers, only: [:index, :edit, :update, :new, :create]
+    resources :join_requests, only: [:create]
 
     get 'public_user_search' => "users_search#public_user_search"
     get 'public_user_autocomplete' => "users_search#public_user_autocomplete"
@@ -113,12 +115,16 @@ Rails.application.routes.draw do
       resources :myfeeds, only: [:index]
       resources :tours, only: [:index, :create, :show, :update] do
         resources :tour_points, only:[:create]
-        resources :encounters, only: [:index, :create]
+        resources :encounters, only: [:index, :create, :update], :shallow => true
         resources :users, :controller => 'tours/users', only: [:index, :destroy, :update, :create]
         resources :chat_messages, :controller => 'tours/chat_messages', only: [:index, :create]
 
         collection do
           delete 'delete_all' => 'tours#delete_all'
+        end
+
+        member do
+          put :read
         end
       end
       resources :stats, only: [:index]
@@ -153,6 +159,10 @@ Rails.application.routes.draw do
         resources :users, :controller => 'entourages/users', only: [:index, :destroy, :update, :create]
         resources :invitations, :controller => 'entourages/invitations', only: [:create]
         resources :chat_messages, :controller => 'entourages/chat_messages', only: [:index, :create]
+
+        member do
+          put :read
+        end
       end
       resources :invitations, only: [:index, :update, :destroy]
       resources :contacts, only: [:update]
@@ -163,6 +173,11 @@ Rails.application.routes.draw do
       get 'check' => 'base#check'
       get 'ping' => 'base#ping'
       get 'csv_matching' => 'csv_matching#show'
+
+      namespace :public do
+        resources :stats, only: [:index]
+        match 'entourages/:uuid' => 'entourages#show', :via => :get
+      end
     end
   end
 

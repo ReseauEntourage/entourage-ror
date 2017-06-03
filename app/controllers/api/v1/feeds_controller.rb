@@ -15,7 +15,9 @@ module Api
                                              tour_types: params[:tour_types],
                                              time_range: time_range,
                                              show_my_entourages_only: params[:show_my_entourages_only],
-                                             show_my_tours_only: params[:show_my_tours_only]).feeds
+                                             show_my_tours_only: params[:show_my_tours_only],
+                                             distance: params[:distance]).feeds
+
         render json: ::V1::FeedSerializer.new(feeds: feeds, user: current_user).to_json, status: 200
       end
 

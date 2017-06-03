@@ -6,14 +6,22 @@ class PushNotificationService
 
   def send_notification(sender, object, content, users, extra={})
     Rails.logger.info("Sending push notif to users : #{users.map(&:email)}, content: #{content}, sender: #{sender}, object: #{object}")
-    android_device_ids = users.map { |user| UserServices::UserApplications.new(user: user).android_app.try(:push_token) }.compact
-    android_notification_service.send_notification(sender, object, content, android_device_ids, extra)
+    users.each do |user|
+      token = UserServices::UserApplications.new(user: user).android_app.try(:push_token)
+      android_notification_service.send_notification(sender, object, content, [token], extra, badge(user)) if token
+    end
 
-    ios_device_ids = users.map { |user| UserServices::UserApplications.new(user: user).ios_app.try(:push_token) }.compact
-    ios_notification_service.send_notification(sender, object, content, ios_device_ids, extra)
+    users.each do |user|
+      token = UserServices::UserApplications.new(user: user).ios_app.try(:push_token)
+      ios_notification_service.send_notification(sender, object, content, [token], extra, badge(user)) if token
+    end
   end
   
   private
+
+  def badge(user)
+    UserServices::UnreadMessages.new(user: user).number_of_unread_messages
+  end
   
   def android_notification_service
     @android_notification_service || AndroidNotificationService.new

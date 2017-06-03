@@ -1,5 +1,8 @@
 module FeedServices
   class FeedFinder
+
+    DEFAULT_DISTANCE=10
+
     def initialize(user:,
                    page:,
                    per:,
@@ -15,7 +18,8 @@ module FeedServices
                    entourage_status: nil,
                    before: nil,
                    author: nil,
-                   invitee: nil)
+                   invitee: nil,
+                   distance: nil)
       @user = user
       @page = page
       @per = per
@@ -31,6 +35,7 @@ module FeedServices
       @entourage_status = formated_status(entourage_status)
       @author = author
       @invitee = invitee
+      @distance = [(distance&.to_i || DEFAULT_DISTANCE), 40].min
     end
 
     def feeds
@@ -67,11 +72,11 @@ module FeedServices
     end
 
     private
-    attr_reader :user, :page, :per, :before, :latitude, :longitude, :show_tours, :feed_type, :show_my_entourages_only, :show_my_tours_only, :time_range, :tour_status, :entourage_status, :author, :invitee
+    attr_reader :user, :page, :per, :before, :latitude, :longitude, :show_tours, :feed_type, :show_my_entourages_only, :show_my_tours_only, :time_range, :tour_status, :entourage_status, :author, :invitee, :distance
 
     def box
       Geocoder::Calculations.bounding_box([latitude, longitude],
-                                          10,
+                                          distance,
                                           units: :km)
     end
 
@@ -89,10 +94,9 @@ module FeedServices
       [status].flatten if status
     end
 
-
     def filter_my_feeds_only(feeds:)
       if show_my_entourages_only && show_my_tours_only
-        feeds = feeds.joins("INNER JOIN join_requests ON ((join_requests.joinable_type='Entourage' AND feeds.feedable_type='Entourage' AND join_requests.joinable_id=feeds.feedable_id AND join_requests.user_id = #{user.id}) OR (join_requests.joinable_type='Tour' AND feeds.feedable_type='Tour' AND join_requests.joinable_id=feeds.feedable_id AND join_requests.user_id = #{user.id}) AND join_requests.status='accepted')")
+        feeds = feeds.joins("INNER JOIN join_requests ON ((join_requests.joinable_type='Entourage' AND feeds.feedable_type='Entourage' AND join_requests.joinable_id=feeds.feedable_id AND join_requests.user_id = #{user.id}  AND join_requests.status <> 'cancelled') OR (join_requests.joinable_type='Tour' AND feeds.feedable_type='Tour' AND join_requests.joinable_id=feeds.feedable_id AND join_requests.user_id = #{user.id}) AND join_requests.status='accepted')")
       elsif show_my_entourages_only
         feeds = feeds.joins("INNER JOIN join_requests ON ((join_requests.joinable_type='Entourage' AND feeds.feedable_type='Entourage' AND join_requests.joinable_id=feeds.feedable_id AND join_requests.status='accepted' AND join_requests.user_id = #{user.id}) OR (join_requests.joinable_type='Tour' AND feeds.feedable_type='Tour' AND join_requests.joinable_id=feeds.feedable_id AND join_requests.user_id = #{user.id}))")
       elsif show_my_tours_only

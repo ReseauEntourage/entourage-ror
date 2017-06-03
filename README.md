@@ -14,6 +14,10 @@ rbenv or rvm recommanded
 aglio -i apiary.apib -o public/developer.html
 ```
 
+### Install aglio:
+```
+npm install -g aglio
+```
 
 # Resolve dependencies and run server
 
@@ -50,9 +54,9 @@ $ rake db:reset dredd:seeds
 ```
 
 ### rake dredd:seeds task description:
-Removes all newsletter subscriptions
-Removes all users
-Generates the dredd user
+- Removes all newsletter subscriptions
+- Removes all users
+- Generates the dredd user
 
 ## Run Dredd:
 

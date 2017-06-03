@@ -1,7 +1,7 @@
 module Api
   module V1
     class EntouragesController < Api::V1::BaseController
-      before_action :set_entourage, only: [:show, :update]
+      before_action :set_entourage, only: [:show, :update, :read]
 
       def index
         finder = EntourageServices::EntourageFinder.new(user: current_user,
@@ -15,7 +15,9 @@ module Api
         render json: finder.entourages, each_serializer: ::V1::EntourageSerializer, scope: {user: current_user}
       end
 
+      #curl -H "Content-Type: application/json" "http://localhost:3000/api/v1/entourages/951.json?token=e4fdc865bc7a91c34daea849e7d73349&distance=123.45&feed_rank=2"
       def show
+        EntourageServices::EntourageDisplayService.new(entourage: @entourage, user: current_user, params: params).view
         render json: @entourage, serializer: ::V1::EntourageSerializer, scope: {user: current_user}
       end
 
@@ -48,10 +50,20 @@ module Api
         end
       end
 
+
+      #curl -H "Content-Type: application/json" -X PUT "http://localhost:3000/api/v1/entourages/1184/read.json?token=azerty"
+      def read
+        @entourage.join_requests
+                  .accepted
+                  .where(user: current_user)
+                  .update_all(last_message_read: DateTime.now)
+        head :no_content
+      end
+
       private
 
       def entourage_params
-        params.require(:entourage).permit({location: [:longitude, :latitude]}, :title, :entourage_type, :status, :description)
+        params.require(:entourage).permit({location: [:longitude, :latitude]}, :title, :entourage_type, :status, :description, :category)
       end
 
       def set_entourage

@@ -3,10 +3,12 @@ module Admin
     before_action :set_entourage, only: [:show, :edit, :update]
 
     def index
-      @entourages = Entourage.includes(:user => [ :organization ])
-                             .page(params[:page])
-                             .per(params[:per])
-                             .order("created_at DESC")
+      @q = Entourage.ransack(params[:q])
+      @entourages = @q.result(distinct: true)
+                      .includes(user: [ :organization ])
+                      .page(params[:page])
+                      .per(params[:per])
+                      .order("created_at DESC")
     end
 
     def show
@@ -33,7 +35,7 @@ module Admin
     end
 
     def entourage_params
-      params.require(:entourage).permit(:status, :title, :description)
+      params.require(:entourage).permit(:status, :title, :description, :category)
     end
   end
 end

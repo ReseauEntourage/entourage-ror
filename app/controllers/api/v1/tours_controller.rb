@@ -1,7 +1,7 @@
 module Api
   module V1
     class ToursController < Api::V1::BaseController
-      before_action :set_tour, only: [:show, :update]
+      before_action :set_tour, only: [:show, :update, :read]
 
       #curl -H "Content-Type: application/json" "http://localhost:3000/api/v1/tours.json?token=azerty"
       def index
@@ -60,6 +60,15 @@ module Api
       def delete_all
         Tour.destroy_all if ENV["STAGING"]=="true"
         render json: {status: :ok}, status: 200
+      end
+
+      #curl -H "Content-Type: application/json" -X PUT "http://localhost:3000/api/v1/tours/2361/read.json?token=azerty"
+      def read
+        @tour.join_requests
+            .accepted
+            .where(user: current_user)
+            .update_all(last_message_read: DateTime.now)
+        head :no_content
       end
 
       private

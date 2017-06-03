@@ -12,6 +12,9 @@
       </div>
       <div class='col-sm-4 '>
         <div class='pull-right'>
+          <%- unless @entourage.members.include?(current_user)%>
+            <%= link_to "Rejoindre", admin_join_requests_path(joinable_id: @entourage), class: "btn btn-info", method: :post %>
+          <% end %>
           <%= link_to "Modifier", edit_admin_entourage_path(@entourage), class: "btn btn-success" %>
         </div>
       </div>

@@ -3,7 +3,7 @@ require 'rails_helper'
 describe Api::V1::FeedsController do
 
   let(:result) { JSON.parse(response.body) }
-  
+
   describe 'GET index' do
     context "not signed in" do
       before { get :index }
@@ -40,7 +40,9 @@ describe Api::V1::FeedsController do
                                                      },
                                                      "created_at"=> entourage.created_at.iso8601(3),
                                                      "updated_at"=> entourage.updated_at.iso8601(3),
-                                                     "description" => nil
+                                                     "description" => nil,
+                                                     "share_url" => "http://entourage.social/entourages/#{entourage.uuid}"
+
                                                  },
                                                  "heatmap_size" => 20
                                              },
@@ -75,8 +77,23 @@ describe Api::V1::FeedsController do
 
       context "get entourages around location" do
         let!(:paris_entourage) { FactoryGirl.create(:entourage, updated_at: 4.hours.ago, latitude: 48.8566, longitude: 2.3522) }
-        before { get :index, token: user.token, latitude: 48.8566, longitude: 2.3522 }
-        it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([paris_entourage.id]) }
+        let!(:suburbs_entourage) { FactoryGirl.create(:entourage, updated_at: 4.hours.ago, latitude: 48.752552, longitude: 2.294402) }
+        let!(:south_of_france) { FactoryGirl.create(:entourage, updated_at: 4.hours.ago, latitude: 43.716691, longitude: 7.258083) }
+
+        context "default distance" do
+          before { get :index, token: user.token, latitude: 48.8566, longitude: 2.3522 }
+          it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([paris_entourage.id]) }
+        end
+
+        context "30km distance" do
+          before { get :index, token: user.token, latitude: 48.8566, longitude: 2.3522, distance: 30 }
+          it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([paris_entourage.id, suburbs_entourage.id]) }
+        end
+
+        context "max distance is 40km" do
+          before { get :index, token: user.token, latitude: 48.8566, longitude: 2.3522, distance: 1000 }
+          it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([paris_entourage.id, suburbs_entourage.id]) }
+        end
       end
 
       context "get entourages only" do
@@ -157,6 +174,51 @@ describe Api::V1::FeedsController do
         let!(:my_older_entourage) { FactoryGirl.create(:entourage, :joined, join_request_user: user, user: user, updated_at: 3.hour.ago, created_at: 72.hour.ago, status: :open) }
         before { get :index, token: user.token, time_range: 48 }
         it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([my_entourage.id, my_old_entourage.id, entourage.id]) }
+      end
+
+      context "touch chat message association" do
+        let!(:my_entourage) {
+          FactoryGirl.create(:entourage,
+                             :joined,
+                             join_request_user: user,
+                             user: user,
+                             updated_at: 3.hour.ago.beginning_of_hour,
+                             created_at: 3.hour.ago.beginning_of_hour,
+                             status: :open)
+        }
+
+        let!(:my_old_entourage) {
+          FactoryGirl.create(:entourage,
+                             :joined,
+                             join_request_user: user,
+                             user: user,
+                             updated_at: 24.hour.ago.beginning_of_hour,
+                             created_at: 24.hour.ago.beginning_of_hour,
+                             status: :open)
+        }
+
+        before do
+          FactoryGirl.create(:chat_message, messageable: my_old_entourage, created_at: DateTime.now, updated_at: DateTime.now, content: "foo")
+          get :index, token: user.token, time_range: 48
+        end
+
+        it do
+          expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([my_old_entourage.id, my_entourage.id, entourage.id])
+        end
+      end
+
+      context "touch entourage invitation association" do
+        let!(:my_entourage) { FactoryGirl.create(:entourage, :joined, join_request_user: user, user: user, updated_at: 1.hour.ago, created_at: 1.hour.ago, status: :open) }
+        let!(:my_old_entourage) { FactoryGirl.create(:entourage, :joined, join_request_user: user, user: user, updated_at: 2.hour.ago, created_at: 24.hour.ago, status: :open) }
+        let!(:entourage_invitation) { FactoryGirl.create(:entourage_invitation, invitable: my_old_entourage, inviter: user, phone_number: "+40744219491") }
+        before do
+          EntourageServices::InvitationService.new(invitation: entourage_invitation).accept!
+          get :index, token: user.token, time_range: 48
+        end
+
+        it do
+          expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([my_old_entourage.id, my_entourage.id, entourage.id])
+        end
       end
     end
   end

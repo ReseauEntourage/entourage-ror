@@ -3,6 +3,10 @@ require 'rails_helper'
 RSpec.describe Api::V1::ToursController, :type => :controller do
   render_views
 
+  after do
+    Timecop.return
+  end
+
   describe "GET index" do
 
     let!(:user) { FactoryGirl.create :pro_user }
@@ -454,5 +458,31 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
     before { delete 'delete_all', token: user.token, format: :json }
     it { expect(response.status).to eq(200) }
     it { expect(Tour.count).to eq(0) }
+  end
+
+  describe "PUT read" do
+    let!(:user) { FactoryGirl.create(:pro_user) }
+    let!(:tour) { FactoryGirl.create(:tour) }
+
+    context "not signed in" do
+      before { put :read, id: tour.to_param }
+      it { expect(response.status).to eq(401) }
+    end
+
+    context "user is accepted in tour" do
+      let(:old_date) { DateTime.parse("15/10/2010") }
+      let!(:join_request) { FactoryGirl.create(:join_request, joinable: tour, user: user, status: JoinRequest::ACCEPTED_STATUS, last_message_read: old_date) }
+      before { put :read, id: tour.to_param, token: user.token }
+      it { expect(response.status).to eq(204) }
+      it { expect(join_request.reload.last_message_read).to be > old_date }
+    end
+
+    context "user is not accepted in tour" do
+      let(:old_date) { DateTime.parse("15/10/2010") }
+      let!(:join_request) { FactoryGirl.create(:join_request, joinable: tour, user: user, status: JoinRequest::PENDING_STATUS, last_message_read: old_date) }
+      before { put :read, id: tour.to_param, token: user.token }
+      it { expect(response.status).to eq(204) }
+      it { expect(join_request.reload.last_message_read).to eq(old_date) }
+    end
   end
 end
