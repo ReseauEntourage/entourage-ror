@@ -113,7 +113,9 @@ describe Api::V1::Entourages::UsersController do
     end
 
     context "signed in" do
-      let!(:join_request) { JoinRequest.create(user: user, joinable: entourage) }
+      let!(:join_request) { JoinRequest.create(user: user, joinable: entourage, status: "pending") }
+      let!(:join_request1) { JoinRequest.create(user: user, joinable: entourage, status: "canceled") }
+      let!(:join_request2) { JoinRequest.create(user: user, joinable: entourage, status: "rejected") }
       before { get :index, entourage_id: entourage.to_param, token: user.token }
       it { expect(result).to eq({"users"=>[{
                                                "id"=>user.id,

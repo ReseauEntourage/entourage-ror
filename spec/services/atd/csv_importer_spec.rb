@@ -9,7 +9,7 @@ RSpec.describe Atd::CsvImporter do
     let!(:user4) { FactoryGirl.create(:pro_user, phone: "+33612345675") }
     let!(:user5) { FactoryGirl.create(:public_user) }
 
-    let(:csv) { File.read("spec/fixtures/atd.csv") }
+    let(:csv) { File.read("spec/fixtures/atd/atd.csv") }
     subject { Atd::CsvImporter.new(csv: csv).match }
 
     def find_with_atd_id(atd_id)
