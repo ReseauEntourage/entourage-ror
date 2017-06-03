@@ -1,6 +1,6 @@
 module TourPointsServices
   class TourPointsSimplifier
-    TOLERANCE=0.001
+    TOLERANCE=0.0003
 
     def initialize(tour_id:)
       @tour_id = tour_id
