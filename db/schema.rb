@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170527074545) do
+ActiveRecord::Schema.define(version: 20170604060645) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -42,6 +42,25 @@ ActiveRecord::Schema.define(version: 20170527074545) do
   end
 
   add_index "answers", ["encounter_id", "question_id"], name: "index_answers_on_encounter_id_and_question_id", using: :btree
+
+  create_table "atd_synchronizations", force: :cascade do |t|
+    t.string   "filename",   null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "atd_synchronizations", ["filename"], name: "index_atd_synchronizations_on_filename", unique: true, using: :btree
+
+  create_table "atd_users", force: :cascade do |t|
+    t.integer  "user_id"
+    t.integer  "atd_id",     null: false
+    t.string   "tel_hash"
+    t.string   "mail_hash"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "atd_users", ["atd_id", "user_id"], name: "index_atd_users_on_atd_id_and_user_id", unique: true, using: :btree
 
   create_table "authentication_providers", force: :cascade do |t|
     t.integer  "user_id",     null: false
