@@ -314,6 +314,7 @@ GEM
       sass (~> 3.2.2)
       sprockets (~> 2.8, < 3.0)
       sprockets-rails (~> 2.0)
+    scout_apm (2.1.24)
     shorturl (1.0.0)
     shoulda-matchers (3.0.1)
       activesupport (>= 4.0.0)
@@ -442,6 +443,7 @@ DEPENDENCIES
   rspec-rails (~> 3.1)
   safety_mailer
   sass-rails (~> 4.0.3)
+  scout_apm
   shorturl (~> 1.0.0)
   shoulda-matchers (~> 3.0.1)
   sidekiq (~> 3.4.1)
