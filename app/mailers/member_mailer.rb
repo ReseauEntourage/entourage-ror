@@ -7,7 +7,7 @@ class MemberMailer < ActionMailer::Base
 
   def welcome(user)
     @user = user
-    mail(from: COMMUNITY_EMAIL, to: user.email, subject: 'Bienvenue sur Entourage !')
+    mail(from: COMMUNITY_EMAIL, to: user.email, subject: 'Bienvenue sur Entourage !') if user.email.present?
   end
 
   def tour_report(tour)
@@ -19,7 +19,7 @@ class MemberMailer < ActionMailer::Base
     attachments['tour_points.csv'] = File.read(exporter.export_tour_points)
     attachments['encounters.csv'] = File.read(exporter.export_encounters)
 
-    mail(from: TOUR_REPORT_EMAIL, to: @user.email, subject: 'Résumé de la maraude')
+    mail(from: TOUR_REPORT_EMAIL, to: @user.email, subject: 'Résumé de la maraude') if @user.email.present?
   end
 
   def poi_report(poi, user, message)
@@ -36,6 +36,6 @@ class MemberMailer < ActionMailer::Base
 
   def registration_request_accepted(user)
     @user = user
-    mail(to: @user.email, subject: "Votre demande d'adhésion à la plateforme Entourage a été acceptée")
+    mail(from: COMMUNITY_EMAIL, to: @user.email, subject: "Votre demande d'adhésion à la plateforme Entourage a été acceptée") if @user.email.present?
   end
 end
