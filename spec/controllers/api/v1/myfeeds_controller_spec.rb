@@ -24,8 +24,11 @@ describe Api::V1::MyfeedsController do
       context "get my entourages" do
         let!(:entourage_i_created) { FactoryGirl.create(:entourage, :joined, join_request_user: user, user: user, updated_at: 1.hour.ago) }
         let!(:entourage_i_joined) { FactoryGirl.create(:entourage, :joined, join_request_user: user, updated_at: 2.hour.ago) }
-        before { get :index, token: user.token }
-        it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([]) }
+        let!(:entourage_i_canceled) { FactoryGirl.create(:entourage, updated_at: 4.hour.ago) }
+        let!(:entourage_i_canceled_join_request) { FactoryGirl.create(:join_request, joinable: entourage_i_canceled, user: user, status: JoinRequest::CANCELLED_STATUS) }
+        let!(:entourage) { FactoryGirl.create(:entourage, :joined, join_request_user: FactoryGirl.create(:public_user), updated_at: 3.hour.ago) }
+        before { get :index, token: user.token, status: "open" }
+        it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([entourage_i_created.id, entourage_i_joined.id]) }
       end
 
       context "last_message i'm accepted in" do

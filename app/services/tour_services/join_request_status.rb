@@ -34,10 +34,12 @@ module TourServices
                                                       "Demande acceptée",
                                                       "Vous venez de rejoindre l'entourage de #{author_name}",
                                                       User.where(id: user.id),
-                                                      {joinable_id: join_request.joinable_id,
-                                                       joinable_type: join_request.joinable_type,
-                                                       type: "JOIN_REQUEST_ACCEPTED",
-                                                       user_id: user.id})
+                                                      {
+                                                          joinable_id: join_request.joinable_id,
+                                                          joinable_type: join_request.joinable_type,
+                                                          type: "JOIN_REQUEST_ACCEPTED",
+                                                          user_id: user.id
+                                                      })
       end
 
       true
@@ -123,6 +125,7 @@ module TourServices
                                                     {
                                                         joinable_id: joinable.id,
                                                         joinable_type: joinable.class.name,
+                                                        type: "JOIN_REQUEST_CANCELED",
                                                         user_id: requester.id
                                                     })
     end

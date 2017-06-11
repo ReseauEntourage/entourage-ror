@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170604060645) do
+ActiveRecord::Schema.define(version: 20170611151047) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -118,6 +118,7 @@ ActiveRecord::Schema.define(version: 20170604060645) do
     t.datetime "created_at",                        null: false
     t.datetime "updated_at",                        null: false
     t.string   "source",       default: "newsfeed"
+    t.integer  "user_id",                           null: false
   end
 
   add_index "entourage_displays", ["entourage_id"], name: "index_entourage_displays_on_entourage_id", using: :btree
@@ -139,6 +140,17 @@ ActiveRecord::Schema.define(version: 20170604060645) do
   add_index "entourage_invitations", ["inviter_id", "phone_number", "invitable_id", "invitable_type"], name: "unique_invitation_by_entourage", unique: true, using: :btree
   add_index "entourage_invitations", ["inviter_id"], name: "index_entourage_invitations_on_inviter_id", using: :btree
   add_index "entourage_invitations", ["phone_number"], name: "index_entourage_invitations_on_phone_number", using: :btree
+
+  create_table "entourage_scores", force: :cascade do |t|
+    t.integer  "entourage_id", null: false
+    t.integer  "user_id",      null: false
+    t.float    "base_score",   null: false
+    t.float    "final_score",  null: false
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
+  end
+
+  add_index "entourage_scores", ["entourage_id"], name: "index_entourage_scores_on_entourage_id", using: :btree
 
   create_table "entourages", force: :cascade do |t|
     t.string   "status",           default: "open", null: false

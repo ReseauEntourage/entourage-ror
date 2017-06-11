@@ -29,6 +29,7 @@ class Entourage < ActiveRecord::Base
   reverse_geocoded_by :latitude, :longitude
   has_many :chat_messages, as: :messageable, dependent: :destroy
   has_many :entourage_invitations, as: :invitable, dependent: :destroy
+  has_one :entourage_score, dependent: :destroy
 
   validates_presence_of :status, :title, :entourage_type, :user_id, :latitude, :longitude, :number_of_people
   validates_inclusion_of :status, in: ENTOURAGE_STATUS

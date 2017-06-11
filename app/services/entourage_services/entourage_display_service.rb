@@ -9,6 +9,7 @@ module EntourageServices
     def view
       if params[:distance] && params[:feed_rank]
         EntourageDisplay.create(entourage: entourage,
+                                user: user,
                                 distance: params[:distance],
                                 feed_rank: params[:feed_rank],
                                 source: params[:source])
