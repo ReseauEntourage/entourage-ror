@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Api::V1::FeedsController do
+  describe Api::V1::FeedsController do
 
   let(:result) { JSON.parse(response.body) }
 
@@ -77,8 +77,8 @@ describe Api::V1::FeedsController do
 
       context "get entourages around location" do
         let!(:paris_entourage) { FactoryGirl.create(:entourage, updated_at: 4.hours.ago, latitude: 48.8566, longitude: 2.3522) }
-        let!(:suburbs_entourage) { FactoryGirl.create(:entourage, updated_at: 4.hours.ago, latitude: 48.752552, longitude: 2.294402) }
-        let!(:south_of_france) { FactoryGirl.create(:entourage, updated_at: 4.hours.ago, latitude: 43.716691, longitude: 7.258083) }
+        let!(:suburbs_entourage) { FactoryGirl.create(:entourage, updated_at: 5.hours.ago, latitude: 48.752552, longitude: 2.294402) }
+        let!(:south_of_france) { FactoryGirl.create(:entourage, updated_at: 6.hours.ago, latitude: 43.716691, longitude: 7.258083) }
 
         context "default distance" do
           before { get :index, token: user.token, latitude: 48.8566, longitude: 2.3522 }
