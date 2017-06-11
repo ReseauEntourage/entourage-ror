@@ -2,6 +2,7 @@ module FeedServices
   class FeedFinder
 
     DEFAULT_DISTANCE=10
+    DEFAULT_PER=25
 
     def initialize(user:,
                    page:,
@@ -22,7 +23,7 @@ module FeedServices
                    distance: nil)
       @user = user
       @page = page
-      @per = per
+      @per = per || DEFAULT_PER
       @before = before
       @latitude = latitude
       @longitude = longitude
@@ -59,7 +60,7 @@ module FeedServices
       inclusive = author.blank? || invitee.blank?
       feeds = filter_by_invitee(feeds: feeds, inclusive: inclusive)
 
-      feeds = if page || per
+      feeds = if page && per
         feeds.page(page).per(per)
       elsif before
         feeds.before(DateTime.parse(before)).limit(25)

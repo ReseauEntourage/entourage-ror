@@ -164,7 +164,7 @@ describe Api::V1::FeedsController do
       context "with before parameter" do
         let!(:old_tour) { FactoryGirl.create :tour, updated_at: 71.hours.ago }
         let!(:old_entourage) { FactoryGirl.create :entourage, updated_at: 72.hours.ago }
-        before { get :index, token: user.token, before: 2.day.ago.iso8601(3), show_tours: "true", format: :json }
+        before { get :index, token: user.token, before: 2.day.ago.iso8601(3), per: 10, show_tours: "true", format: :json }
         it { expect(JSON.parse(response.body)["feeds"].map{|feed| feed["data"]["id"]}).to eq([old_tour.id, old_entourage.id]) }
       end
 
