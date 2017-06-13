@@ -40,8 +40,7 @@ RSpec.describe Atd::CsvImporter do
 
     describe "create user partner for mathcing users" do
       before { Atd::CsvImporter.new(csv: csv).match }
-      it { expect(UserPartner.count).to eq(3) }
-      it { expect(UserPartner.all.map(&:user_id)).to match_array([user1.id, user2.id, user3.id]) }
+      it { expect(User.atd_friends).to match_array([user1, user2, user3]) }
     end
   end
 end

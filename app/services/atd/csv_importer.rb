@@ -16,7 +16,7 @@ module Atd
         AtdUser.create(atd_id: row["id_physique"], user_id: user_id, mail_hash: row["mail_hash"], tel_hash: row["tel_hash"])
         if user_id
           Rails.logger.info "Found atd user : #{user_id}"
-          User.find(user_id).user_partners.create(partner: atd_partner)
+          User.find(user_id).update(atd_friend: true)
         end
       end
     end

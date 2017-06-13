@@ -44,6 +44,7 @@ class User < ActiveRecord::Base
                                                                     last_name,
                                                                     email,
                                                                     phone) }
+  scope :atd_friends, -> { where(atd_friend: true) }
 
   def validate_phone!
     unless PhoneValidator.new(phone: self.phone).valid?
