@@ -9,6 +9,9 @@ RSpec.describe TourServices::JoinRequestStatus do
 
   subject { TourServices::JoinRequestStatus.new(join_request: join_request) }
 
+  before { ENV["QUIT_ENTOURAGE_NOTIFICATION"]="true" }
+  after { ENV["QUIT_ENTOURAGE_NOTIFICATION"]="false" }
+
   describe 'reject!' do
     it { expect_any_instance_of(PushNotificationService).to receive(:send_notification).with("foo b",
                                                                                             "Demande annulée",

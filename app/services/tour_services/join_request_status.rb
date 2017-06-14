@@ -58,6 +58,7 @@ module TourServices
         end
       end
       notify_owner(join_request.user, join_request.joinable.user, join_request.joinable)
+      true
     end
 
     def quit!
@@ -72,6 +73,7 @@ module TourServices
         end
       end
       notify_owner(join_request.user, join_request.joinable.user, join_request.joinable)
+      true
     end
 
     def pending!
@@ -118,16 +120,18 @@ module TourServices
     attr_reader :join_request
 
     def notify_owner(requester, owner, joinable)
-      PushNotificationService.new.send_notification(UserPresenter.new(user: requester).display_name,
-                                                    "Demande annulée",
-                                                    "Demande annulée",
-                                                    [owner],
-                                                    {
-                                                        joinable_id: joinable.id,
-                                                        joinable_type: joinable.class.name,
-                                                        type: "JOIN_REQUEST_CANCELED",
-                                                        user_id: requester.id
-                                                    })
+      if ENV["QUIT_ENTOURAGE_NOTIFICATION"]=="true"
+        PushNotificationService.new.send_notification(UserPresenter.new(user: requester).display_name,
+                                                      "Demande annulée",
+                                                      "Demande annulée",
+                                                      [owner],
+                                                      {
+                                                          joinable_id: joinable.id,
+                                                          joinable_type: joinable.class.name,
+                                                          type: "JOIN_REQUEST_CANCELED",
+                                                          user_id: requester.id
+                                                      })
+      end
     end
   end
 end
