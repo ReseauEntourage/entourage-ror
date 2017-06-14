@@ -13,7 +13,9 @@ module Atd
       set_entourage_user_hashes
       CSV.parse(csv, {headers: true, col_sep: ","}) do |row|
         user_id = email_hashes[row["mail_hash"]] || phone_hashes[row["tel_hash"]]
-        AtdUser.create(atd_id: row["id_physique"], user_id: user_id, mail_hash: row["mail_hash"], tel_hash: row["tel_hash"])
+
+        AtdUser.find_or_initialize_by(atd_id: row["id_physique"]).update(user_id: user_id, mail_hash: row["mail_hash"], tel_hash: row["tel_hash"])
+
         if user_id
           Rails.logger.info "Found atd user : #{user_id}"
           User.find(user_id).update(atd_friend: true)
