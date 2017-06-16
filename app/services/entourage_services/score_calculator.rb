@@ -22,10 +22,12 @@ module EntourageServices
       score = appetence_score
       score = origin_score(score)
       score = freshness_score(score)
+      score
     end
 
     def appetence_score
       return 0.0 if entourage.category.nil?
+      return 0.0 if appetence.nil?
 
       appetence_category = appetence.send("appetence_#{entourage.category}")
       appetence_sum = appetence.appetence_social + appetence.appetence_mat_help + appetence.appetence_non_mat_help
@@ -45,11 +47,8 @@ module EntourageServices
     end
 
     def freshness_score(score)
+      return if user.last_sign_in_at.nil?
       entourage.updated_at > user.last_sign_in_at ? score * 1.2 : score
-    end
-
-    def average_entourage_distance
-      user.entourage_displays.avg(:distance)
     end
 
     private

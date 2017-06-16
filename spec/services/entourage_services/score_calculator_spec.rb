@@ -58,5 +58,34 @@ RSpec.describe EntourageServices::ScoreCalculator do
 
       it { should eq(0.0) }
     end
+
+    describe "by appetence" do
+      let!(:entourage_user) { FactoryGirl.create(:public_user) }
+      let!(:entourage) { FactoryGirl.create(:entourage, user: entourage_user, category: "mat_help") }
+
+      context "no appettence" do
+        subject { EntourageServices::ScoreCalculator.new(entourage: entourage, user: entourage_user).final_score }
+
+        it { should eq(0.0) }
+      end
+
+      context "with appettence" do
+        let!(:user_appetence) { FactoryGirl.create(:users_appetence, user: entourage_user, appetence_social: 1, appetence_mat_help: 2, appetence_non_mat_help: 3) }
+        subject { EntourageServices::ScoreCalculator.new(entourage: entourage, user: entourage_user).final_score }
+
+        it { should be_within(0.001).of(0.399) }
+      end
+    end
+
+    context "Entourage from entourage organization" do
+      let!(:entourage_assos) { FactoryGirl.create(:organization, id: 1) }
+      let!(:entourage_user) { FactoryGirl.create(:pro_user, organization: entourage_assos) }
+      let!(:entourage) { FactoryGirl.create(:entourage, user: entourage_user, category: "mat_help") }
+      let!(:user_appetence) { FactoryGirl.create(:users_appetence, user: entourage_user, appetence_social: 1, appetence_mat_help: 2, appetence_non_mat_help: 3) }
+
+      subject { EntourageServices::ScoreCalculator.new(entourage: entourage, user: entourage_user).final_score }
+
+      it { should be_within(0.001).of(0.479) }
+    end
   end
 end
