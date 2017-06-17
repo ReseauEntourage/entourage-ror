@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170613203416) do
+ActiveRecord::Schema.define(version: 20170617132818) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -165,6 +165,7 @@ ActiveRecord::Schema.define(version: 20170613203416) do
     t.string   "description"
     t.uuid     "uuid"
     t.string   "category"
+    t.boolean  "use_suggestions",  default: false,  null: false
   end
 
   add_index "entourages", ["latitude", "longitude"], name: "index_entourages_on_latitude_and_longitude", using: :btree
@@ -355,6 +356,17 @@ ActiveRecord::Schema.define(version: 20170613203416) do
 
   add_index "simplified_tour_points", ["tour_id"], name: "index_simplified_tour_points_on_tour_id", using: :btree
 
+  create_table "suggestion_compute_histories", force: :cascade do |t|
+    t.integer  "user_number",                               null: false
+    t.integer  "total_user_number",                         null: false
+    t.integer  "entourage_number",                          null: false
+    t.integer  "total_entourage_number",                    null: false
+    t.integer  "duration",                                  null: false
+    t.string   "filter_type",            default: "NORMAL", null: false
+    t.datetime "created_at",                                null: false
+    t.datetime "updated_at",                                null: false
+  end
+
   create_table "tour_points", force: :cascade do |t|
     t.float    "latitude",     null: false
     t.float    "longitude",    null: false
@@ -448,6 +460,7 @@ ActiveRecord::Schema.define(version: 20170613203416) do
     t.integer  "marketing_referer_id",             default: 1,           null: false
     t.datetime "last_sign_in_at"
     t.boolean  "atd_friend",                       default: false,       null: false
+    t.boolean  "use_suggestions",                  default: false,       null: false
   end
 
   add_index "users", ["organization_id"], name: "index_users_on_organization_id", using: :btree
