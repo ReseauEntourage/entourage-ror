@@ -30,6 +30,7 @@ class User < ActiveRecord::Base
   has_one :users_appetence
   has_many :entourage_displays
   has_many :entourage_scores
+  has_many :user_newsfeeds
 
   enum device_type: [ :android, :ios ]
 
