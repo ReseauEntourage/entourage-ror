@@ -44,7 +44,6 @@ RSpec.describe OrganizationsController, :type => :controller do
         Timecop.freeze(time)
         get :dashboard
       end
-      after { Timecop.return }
       it { expect(response.status).to eq(200) }
       it { expect(assigns(:tours_presenter).week_tours.count).to eq 3 }
       it { expect(assigns(:tours_presenter).tourer_count).to eq 2 }
@@ -60,7 +59,6 @@ RSpec.describe OrganizationsController, :type => :controller do
         Timecop.freeze(time)
         user.coordinated_organizations << user4.organization
       end
-      after { Timecop.return }
       let!(:user1) { create :pro_user, organization: user.organization }
       let!(:user2) { create :pro_user, organization: user.organization }
       let!(:user3) { create :pro_user }
@@ -135,7 +133,6 @@ RSpec.describe OrganizationsController, :type => :controller do
         Timecop.freeze(time)
         user.coordinated_organizations << user4.organization
       end
-      after { Timecop.return }
       let!(:user1) { create :pro_user, organization: user.organization }
       let!(:user2) { create :pro_user, organization: user.organization }
       let!(:user3) { create :pro_user }

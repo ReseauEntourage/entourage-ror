@@ -71,9 +71,12 @@ RSpec.describe EntourageServices::ScoreCalculator do
 
       context "with appettence" do
         let!(:user_appetence) { FactoryGirl.create(:users_appetence, user: entourage_user, appetence_social: 1, appetence_mat_help: 2, appetence_non_mat_help: 3) }
-        subject { EntourageServices::ScoreCalculator.new(entourage: entourage, user: entourage_user).final_score }
+        subject {  }
 
-        it { should be_within(0.001).of(0.399) }
+        it "" do
+          score = EntourageServices::ScoreCalculator.new(entourage: entourage, user: entourage_user).final_score
+          expect(score).to be_within(0.001).of(0.399)
+        end
       end
     end
 
