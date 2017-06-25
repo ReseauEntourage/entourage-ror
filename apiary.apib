@@ -1217,7 +1217,7 @@ tour_types should be a list of values separated by coma, ex: , `tour_types=medic
 entourage_types should be a list of values separated by coma, ex: , `entourage_types=ask_for_help,contribution`
 time_range should be a number of hours
 
-### Get all feeds [GET /feeds{?token,longitude,latitude,before,page,per,tour_types,entourage_types,time_range,show_my_entourages_only,distance}]
+### Get all feeds [GET /feeds{?token,longitude,latitude,before,page,per,tour_types,entourage_types,time_range,show_my_entourages_only,distance,atd}]
 
 + Parameters
     + token (required, string, `FAKETOKEN`) ... Token identifying the current user
@@ -1231,12 +1231,13 @@ time_range should be a number of hours
     + show_my_entourages_only (optional, boolean) ... Return only my entourages
     + time_range  (optional, number) ... Number of hours to filter
     + distance (optional, number) ... Feed perimeter
+    + atd (optional, boolean) ... Filter only entourages from atd friends
 
 + Request
 
     + Headers
 
-            Accept: application/json
+            Accept: application/jsonparam
 
 + Response 200 (application/json; charset=utf-8)
 
