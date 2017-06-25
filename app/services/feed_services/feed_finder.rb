@@ -68,6 +68,10 @@ module FeedServices
         feeds.limit(25)
       end
 
+      UserServices::NewsfeedHistory.save(user: user,
+                                         latitude: latitude,
+                                         longitude: longitude)
+
       feeds.group("feeds.feedable_type, feeds.feed_type, feeds.user_id, feeds.title, feeds.status, feeds.feedable_id, feeds.latitude, feeds.longitude, feeds.number_of_people, feeds.created_at, feeds.updated_at")
            .order("updated_at DESC")
     end

@@ -30,6 +30,7 @@ class User < ActiveRecord::Base
   has_one :users_appetence
   has_many :entourage_displays
   has_many :entourage_scores
+  has_many :user_newsfeeds
 
   enum device_type: [ :android, :ios ]
 
@@ -45,6 +46,8 @@ class User < ActiveRecord::Base
                                                                     email,
                                                                     phone) }
   scope :atd_friends, -> { where(atd_friend: true) }
+
+  after_save :update_user_name
 
   def validate_phone!
     unless PhoneValidator.new(phone: self.phone).valid?
@@ -101,5 +104,11 @@ class User < ActiveRecord::Base
 
   def default_partner
     @default_partner ||= user_partners.where(default: true).first&.partner
+  end
+
+  def update_user_name
+    if [first_name, last_name].all?(&:blank?)
+      update(first_name: "Inconnu", last_name: "XXX")
+    end
   end
 end

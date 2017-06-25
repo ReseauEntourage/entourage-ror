@@ -5,6 +5,7 @@ RSpec.describe ScheduledPushesController, type: :controller do
   render_views
 
   let(:service) { TourServices::SchedulePushService }
+  before { Timecop.freeze(DateTime.parse("01/01/2016")) }
 
   describe 'GET index' do
     context "user not logged in" do

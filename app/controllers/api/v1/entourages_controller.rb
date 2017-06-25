@@ -11,7 +11,8 @@ module Api
                                                         longitude: params[:longitude],
                                                         distance: params[:distance],
                                                         page: params[:page],
-                                                        per: per)
+                                                        per: per,
+                                                        atd: params[:atd])
         render json: finder.entourages, each_serializer: ::V1::EntourageSerializer, scope: {user: current_user}
       end
 

@@ -35,7 +35,7 @@ describe MemberMailer, type: :mailer do
   describe '#registration_request_accepted' do
     let!(:user) { create :pro_user }
     subject { MemberMailer.registration_request_accepted(user) }
-    it { expect(subject.from).to eq ['contact@entourage.social'] }
+    it { expect(subject.from).to eq ['communaute@entourage.social'] }
     it { expect(subject.to).to eq [user.email] }
     it { expect(subject.subject).to eq "Votre demande d'adhésion à la plateforme Entourage a été acceptée" }
   end

@@ -3,10 +3,6 @@ require 'rails_helper'
 RSpec.describe Api::V1::ToursController, :type => :controller do
   render_views
 
-  after do
-    Timecop.return
-  end
-
   describe "GET index" do
 
     let!(:user) { FactoryGirl.create :pro_user }

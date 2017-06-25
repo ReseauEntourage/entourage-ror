@@ -43,6 +43,7 @@ describe User, :type => :model do
   it { should have_many :entourages }
   it { should have_many :user_applications }
   it { should have_many :authentication_providers }
+  it { should have_many :user_newsfeeds }
   it { should belong_to :organization }
   it { should have_and_belong_to_many(:coordinated_organizations).class_name('Organization') }
   it { should belong_to :marketing_referer }
@@ -150,5 +151,52 @@ describe User, :type => :model do
     user = FactoryGirl.create(:public_user)
     invitation = FactoryGirl.create(:entourage_invitation, invitee: user)
     expect(user.invitations).to eq([invitation])
+  end
+
+  describe "sets default user name" do
+    context "has first name" do
+      it "don't do anything for new user" do
+        user = FactoryGirl.create(:public_user, first_name: "foo", last_name: "")
+        expect(user.first_name).to eq("foo")
+        expect(user.last_name).to eq("")
+      end
+
+      it "don't do anything when updating user" do
+        user = FactoryGirl.create(:public_user, first_name: "foo", last_name: "")
+        user.update(first_name: "foo1")
+        expect(user.first_name).to eq("foo1")
+        expect(user.last_name).to eq("")
+      end
+    end
+
+    context "has last name" do
+      it "don't do anything for new user" do
+        user = FactoryGirl.create(:public_user, first_name: "", last_name: "foo")
+        expect(user.first_name).to eq("")
+        expect(user.last_name).to eq("foo")
+      end
+
+      it "don't do anything when updating user" do
+        user = FactoryGirl.create(:public_user, first_name: "", last_name: "foo")
+        user.update(last_name: "foo1")
+        expect(user.first_name).to eq("")
+        expect(user.last_name).to eq("foo1")
+      end
+    end
+
+    context "has empty first and last name" do
+      it "renames new user" do
+        user = FactoryGirl.create(:public_user, first_name: "", last_name: "")
+        expect(user.first_name).to eq("Inconnu")
+        expect(user.last_name).to eq("XXX")
+      end
+
+      it "don't do anything when updating user" do
+        user = FactoryGirl.create(:public_user, first_name: "foo", last_name: "foo1")
+        user.update(first_name: "", last_name: "")
+        expect(user.first_name).to eq("Inconnu")
+        expect(user.last_name).to eq("XXX")
+      end
+    end
   end
 end

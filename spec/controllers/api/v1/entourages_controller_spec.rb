@@ -91,6 +91,16 @@ describe Api::V1::EntouragesController do
         it { expect(subject["entourages"].count).to eq(1) }
         it { expect(subject["entourages"][0]["id"]).to eq(near_entourage.id) }
       end
+
+      context "filter atd friends" do
+        let(:atd_user) { FactoryGirl.create(:public_user, atd_friend: true) }
+        let(:user) { FactoryGirl.create(:public_user, atd_friend: false) }
+        let!(:entourage_from_atd) { FactoryGirl.create(:entourage, user: atd_user) }
+        let!(:entourage) { FactoryGirl.create(:entourage, user: user) }
+        before { get :index, atd: true, token: user.token }
+        it { expect(subject["entourages"].count).to eq(1) }
+        it { expect(subject["entourages"][0]["id"]).to eq(entourage_from_atd.id) }
+      end
     end
   end
 
