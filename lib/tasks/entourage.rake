@@ -1,5 +1,4 @@
-namespace :data_migration do
-
+namespace :entourage do
   task set_entourage_user_suggestion: :environment do
     EntourageServices::UserEntourageSuggestion.perform
   end
@@ -8,5 +7,4 @@ namespace :data_migration do
     puts "Starting set_entourage_score"
     EntourageServices::EntourageUserSuggestionsCalculator.compute
   end
-
 end

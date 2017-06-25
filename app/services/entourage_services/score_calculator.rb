@@ -6,7 +6,9 @@ module EntourageServices
     end
 
     def calculate
-      EntourageScore.find_or_initialize_by(entourage: entourage, user: user).update(base_score: base_score, final_score: final_score)
+      EntourageScore.find_or_initialize_by(entourage: entourage, user: user)
+          .update(base_score: base_score,
+                  final_score: final_score)
     end
 
     def base_score
@@ -22,6 +24,7 @@ module EntourageServices
       score = appetence_score
       score = origin_score(score)
       score = freshness_score(score)
+      score = atd_score(score)
       score
     end
 
@@ -47,8 +50,13 @@ module EntourageServices
     end
 
     def freshness_score(score)
-      return if user.last_sign_in_at.nil?
+      return score if user.last_sign_in_at.nil?
       entourage.updated_at > user.last_sign_in_at ? score * 1.2 : score
+    end
+
+    def atd_score(score)
+      return score unless user.atd_friend?
+      entourage.user.atd_friend? ? score * 1.2 : score
     end
 
     private

@@ -11,7 +11,7 @@ module Api
           render json: join_requests, root: "users", each_serializer: ::V1::JoinRequestSerializer
         end
 
-        #curl -X POST -H "Content-Type: application/json" -d '{"request":{"message": "a join message"}}' "http://localhost:3000/api/v1/entourages/1017/users.json?token=azerty"
+        #curl -X POST -H "Content-Type: application/json" -d '{"distance": 987.65, "request":{"message": "a join message"}}' "http://localhost:3000/api/v1/entourages/1017/users.json?token=azerty"
         def create
           # first we check if the request is already existing
           join_request = JoinRequest.where(joinable: @entourage, user: current_user).first

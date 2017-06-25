@@ -90,5 +90,22 @@ RSpec.describe EntourageServices::ScoreCalculator do
 
       it { should be_within(0.001).of(0.479) }
     end
+
+    context "Entourage from atd friend" do
+      let!(:atd_user1) { FactoryGirl.create(:public_user, atd_friend: true) }
+      let!(:atd_user2) { FactoryGirl.create(:public_user, atd_friend: true) }
+      let!(:user1) { FactoryGirl.create(:public_user, atd_friend: false) }
+      let!(:user_appetence) { FactoryGirl.create(:users_appetence, user: user1, appetence_social: 1, appetence_mat_help: 2, appetence_non_mat_help: 3) }
+      let!(:user_appetence2) { FactoryGirl.create(:users_appetence, user: atd_user2, appetence_social: 1, appetence_mat_help: 2, appetence_non_mat_help: 3) }
+      let!(:entourage_by_atd) { FactoryGirl.create(:entourage, user: atd_user1, category: "mat_help") }
+      let!(:entourage) { FactoryGirl.create(:entourage, user: user1, category: "mat_help") }
+
+      subject { EntourageServices::ScoreCalculator }
+
+      it "boost atd entourage score for atd friends" do
+        expect(subject.new(entourage: entourage_by_atd, user: user1).final_score).to be_within(0.001).of(0.399)
+        expect(subject.new(entourage: entourage_by_atd, user: atd_user2).final_score).to be_within(0.001).of(0.479)
+      end
+    end
   end
 end
