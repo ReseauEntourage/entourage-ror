@@ -47,8 +47,6 @@ class User < ActiveRecord::Base
                                                                     phone) }
   scope :atd_friends, -> { where(atd_friend: true) }
 
-  after_save :update_user_name
-
   def validate_phone!
     unless PhoneValidator.new(phone: self.phone).valid?
       errors.add(:phone, "devrait être au format +33... ou 06...")
@@ -104,11 +102,5 @@ class User < ActiveRecord::Base
 
   def default_partner
     @default_partner ||= user_partners.where(default: true).first&.partner
-  end
-
-  def update_user_name
-    if [first_name, last_name].all?(&:blank?)
-      update(first_name: "Inconnu", last_name: "XXX")
-    end
   end
 end
