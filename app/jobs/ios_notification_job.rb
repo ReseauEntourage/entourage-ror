@@ -18,8 +18,6 @@ class IosNotificationJob < ActiveJob::Base
           notification.alert = content
           notification.data = { sender: sender, object: object, content: {message: content, extra: extra} }
           notification.save!
-
-          Rpush.push unless Rails.env.test?
         rescue ActiveRecord::RecordInvalid => e
           Rails.logger.error e.message
         end

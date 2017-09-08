@@ -13,8 +13,6 @@ class AndroidNotificationJob < ActiveJob::Base
       notification.registration_ids = device_ids
       notification.data = { sender: sender, object: object, content: {message: content, extra: extra} }
       notification.save!
-
-      Rpush.push unless Rails.env.test?
     end
   end
 end
