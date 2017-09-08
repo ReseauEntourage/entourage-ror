@@ -138,11 +138,23 @@ describe Api::V1::Entourages::UsersController do
 
     context "signed in" do
       let!(:join_request) { JoinRequest.create(user: user, joinable: entourage, status: "accepted") }
+      let(:requester) { FactoryGirl.create(:pro_user) }
+      let!(:requester_join_request) { JoinRequest.create(user: requester, joinable: entourage, status: "pending") }
 
       context "valid params" do
         before { patch :update, entourage_id: entourage.to_param, id: user.id, user: {status: "accepted"}, token: user.token }
         it { expect(response.status).to eq(204) }
         it { expect(join_request.reload.status).to eq("accepted") }
+      end
+
+      it "sends a notification to the requester" do
+        FactoryGirl.create(:android_app)
+        expect_any_instance_of(PushNotificationService).to receive(:send_notification).with("John D",
+                                                                                            "Demande acceptée",
+                                                                                            "Vous venez de rejoindre l'entourage de John D : foobar1",
+                                                                                            User.where(id: requester.id),
+                                                                                            {:joinable_id=>entourage.id, :joinable_type=>"Entourage", :type=>"JOIN_REQUEST_ACCEPTED", :user_id => requester.id})
+        patch :update, entourage_id: entourage.to_param, id: requester.id, user: {status: "accepted"}, token: user.token
       end
     end
 

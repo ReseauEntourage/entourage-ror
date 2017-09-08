@@ -30,9 +30,15 @@ module TourServices
       end
 
       if user != joinable_author
+        joinable_description =
+          if join_request.joinable_type == "Tour"
+            "la maraude de #{author_name}"
+          else
+            "l'entourage de #{author_name} : #{joinable.title}"
+          end
         PushNotificationService.new.send_notification(author_name,
                                                       "Demande acceptée",
-                                                      "Vous venez de rejoindre l'entourage de #{author_name}",
+                                                      "Vous venez de rejoindre #{joinable_description}",
                                                       User.where(id: user.id),
                                                       {
                                                           joinable_id: join_request.joinable_id,
