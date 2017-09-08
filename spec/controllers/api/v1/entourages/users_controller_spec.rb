@@ -138,9 +138,12 @@ describe Api::V1::Entourages::UsersController do
 
     context "signed in" do
       let!(:join_request) { JoinRequest.create(user: user, joinable: entourage, status: "accepted") }
-      before { patch :update, entourage_id: entourage.to_param, id: user.id, user: {status: "accepted"}, token: user.token }
-      it { expect(response.status).to eq(204) }
-      it { expect(join_request.reload.status).to eq("accepted") }
+
+      context "valid params" do
+        before { patch :update, entourage_id: entourage.to_param, id: user.id, user: {status: "accepted"}, token: user.token }
+        it { expect(response.status).to eq(204) }
+        it { expect(join_request.reload.status).to eq("accepted") }
+      end
     end
 
     context "not accepted in tour" do
