@@ -16,7 +16,7 @@ class NewJoinRequestNotifyJob < ActiveJob::Base
 
   def default_message(joinable_type:, name:)
     object_name = (joinable_type=="Tour" ? "maraude" : "entourage")
-    object_title = ": #{name}" if name.present?
+    object_title = " : #{name}" if name.present?
     "Un nouveau membre souhaite rejoindre votre #{object_name}#{object_title}"
   end
 end
