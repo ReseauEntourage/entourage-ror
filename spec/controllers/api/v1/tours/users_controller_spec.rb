@@ -106,11 +106,11 @@ describe Api::V1::Tours::UsersController do
         it { expect(tour_requester.reload.status).to eq("accepted") }
       end
 
-      it "sends a notifications to tour members" do
+      it "sends a notification to the requester" do
         FactoryGirl.create(:android_app)
         expect_any_instance_of(PushNotificationService).to receive(:send_notification).with("John D",
                                                                                             "Demande acceptée",
-                                                                                            "Vous venez de rejoindre l'entourage de John D",
+                                                                                            "Vous venez de rejoindre la maraude de John D",
                                                                                             User.where(id: requester.id),
                                                                                             {:joinable_id=>tour.id, :joinable_type=>"Tour", :type=>"JOIN_REQUEST_ACCEPTED", :user_id => requester.id})
         patch :update, tour_id: tour.to_param, id: requester.id, user: {status: "accepted"}, token: user.token
