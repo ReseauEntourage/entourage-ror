@@ -7,11 +7,15 @@ module TourPointsServices
     end
 
     def simplified_tour_points
-      ActiveRecord::Base.connection.execute(sql)
+      ActiveRecord::Base.connection.execute(sql).map { |point| format_point(point) }
     end
 
     private
     attr_reader :tour_id
+
+    def format_point point
+      point.each_pair { |k, v| point[k] = v.to_f }
+    end
 
     def sql
       <<-SQL
