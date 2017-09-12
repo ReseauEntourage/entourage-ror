@@ -203,7 +203,7 @@ Rails.application.routes.draw do
       post 'send_sms'
     end
   end
-  resources :tours, only: [:show] do
+  resources :tours, only: [:show, :destroy] do
     member do
       get :map_center
       get :map_data

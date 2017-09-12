@@ -1,4 +1,5 @@
 class ToursController < ApplicationController
+  before_action :authenticate_admin!, only: [:destroy]
   before_action :authenticate_user!
   before_action :set_tour
   before_action :set_tour_presenter
@@ -28,6 +29,16 @@ class ToursController < ApplicationController
 
     render json: {"type" => "FeatureCollection",
                   "features" => features}
+  end
+
+  def destroy
+    if @tour.destroy
+      flash[:success] = "La maraude a été supprimée"
+      redirect_to dashboard_organizations_path
+    else
+      flash[:error] = "Une erreur technique a empêché la suppression de cette maraude."
+      redirect_to @tour
+    end
   end
 
   private
