@@ -71,5 +71,4 @@ group :production do
   gem 'rails_stdout_logging',         '~> 0.0.5'
   gem 'puma',                         '~> 2.12.2'
   gem 'rack-timeout',                 '~> 0.4.2'
-  gem 'scout_apm'
 end
