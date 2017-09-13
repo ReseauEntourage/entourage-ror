@@ -277,8 +277,8 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
                                     },
                                     "number_of_people"=> 1,
                                     "join_status"=>"not_requested",
-                                    "tour_points"=>[{"latitude"=>"49.40752907", "longitude"=>"0.26782405"},
-                                                    {"latitude"=>"49.40774009", "longitude"=>"0.26870057"}],
+                                    "tour_points"=>[{"latitude"=>49.40752907, "longitude"=>0.26782405},
+                                                    {"latitude"=>49.40774009, "longitude"=>0.26870057}],
                                     "number_of_unread_messages"=>nil,
                                     "updated_at"=>last_tour.updated_at.iso8601(3)}})
       end
@@ -369,8 +369,8 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
                                     },
                                     "number_of_people"=> 1,
                                     "join_status"=>"not_requested",
-                                    "tour_points"=>[{"latitude"=>"49.40752907", "longitude"=>"0.26782405"},
-                                                    {"latitude"=>"49.40774009", "longitude"=>"0.26870057"}],
+                                    "tour_points"=>[{"latitude"=>49.40752907, "longitude"=>0.26782405},
+                                                    {"latitude"=>49.40774009, "longitude"=>0.26870057}],
                                     "number_of_unread_messages"=>nil,
                                     "updated_at"=>tour.updated_at.iso8601(3)}})
       end
