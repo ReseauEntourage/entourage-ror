@@ -11,6 +11,10 @@ module Authentication
       user.admin
     end
 
+    def allowed_to_destroy?
+      allowed_to_see? && tour.organization_name =~ /\AEntourage/
+    end
+
     private
     attr_reader :user, :tour
   end

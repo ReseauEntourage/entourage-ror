@@ -111,4 +111,24 @@ RSpec.describe ToursController, :type => :controller do
       end
     end
   end
+
+  describe 'DELETE destroy' do
+    let(:tour_creator) { create(:pro_user, admin: true, organization: organization) }
+    let!(:tour) { create(:tour, user: tour_creator) }
+
+    before { basic_login(tour_creator) }
+
+    subject { delete 'destroy', id: tour.to_param }
+
+    context "for a tour by standard organization" do
+      let(:organization) { create(:organization) }
+      it { should redirect_to root_path }
+      it { expect { subject }.not_to change { Tour.count } }
+    end
+
+    context "for a tour by the Entourage organization" do
+      let(:organization) { create(:organization, name: 'Entourage') }
+      it { expect { subject }.to change { Tour.count }.by(-1) }
+    end
+  end
 end

@@ -10,10 +10,10 @@
     <p>
       <%= link_to "Retour à la liste des maraudes", dashboard_organizations_path %>
     </p>
-    <% if current_admin.present? %>
+    <% if Authentication::UserTourAuthenticator.new(user: current_user, tour: @tour).allowed_to_destroy? %>
       <p>
         <%= link_to "Supprimer cette maraude", @tour, method: :delete, data: { confirm: "Supprimer cette maraude ? Cette action est irréversible." } %>
-        <span class="glyphicon glyphicon-question-sign" aria-hidden="true" data-toggle="tooltip" data-placement="top" title="cette option est disponible uniquement pour les administrateurs"></span>
+        <span class="glyphicon glyphicon-question-sign" aria-hidden="true" data-toggle="tooltip" data-placement="top" title="cette option est disponible uniquement pour les maraudes Entourage"></span>
       </p>
     <% end %>
   </div>
