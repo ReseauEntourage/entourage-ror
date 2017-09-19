@@ -22,6 +22,7 @@ class Entourage < ActiveRecord::Base
   ENTOURAGE_STATUS = ['open', 'closed', 'blacklisted']
   BLACKLIST_WORDS  = ['rue', 'avenue', 'boulevard', 'en face de', 'vend', 'loue', '06', '07', '01']
   CATEGORIES  = ['mat_help', 'non_mat_help', 'social']
+  DISPLAY_CATEGORIES = ['social', 'event', 'mat_help', 'resource', 'info', 'skill', 'other']
 
   belongs_to :user
   has_many :join_requests, as: :joinable, dependent: :destroy
@@ -35,6 +36,7 @@ class Entourage < ActiveRecord::Base
   validates_inclusion_of :status, in: ENTOURAGE_STATUS
   validates_inclusion_of :entourage_type, in: ENTOURAGE_TYPES
   validates_inclusion_of :category, in: CATEGORIES, allow_nil: true
+  validates_inclusion_of :display_category, in: DISPLAY_CATEGORIES, allow_nil: true
   validates_uniqueness_of :uuid, on: :create
 
   scope :visible, -> { where.not(status: 'blacklisted') }
