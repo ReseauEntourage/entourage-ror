@@ -22,6 +22,7 @@ describe Api::V1::EntouragesController do
                                        "status"=>"open",
                                        "title"=>"foobar",
                                        "entourage_type"=>"ask_for_help",
+                                       "display_category"=>"social",
                                        "number_of_people"=>1,
                                        "author"=>{
                                            "id"=>entourage.user.id,
@@ -106,25 +107,26 @@ describe Api::V1::EntouragesController do
 
   describe 'POST create' do
     context "not signed in" do
-      before { post :create, entourage: { location: {longitude: 1.123, latitude: 4.567}, title: "foo", entourage_type: "ask_for_help" } }
+      before { post :create, entourage: { location: {longitude: 1.123, latitude: 4.567}, title: "foo", entourage_type: "ask_for_help", display_category: "social" } }
       it { expect(response.status).to eq(401) }
     end
 
     context "signed in" do
       it "creates an entourage" do
         expect {
-          post :create, entourage: { location: {longitude: 1.123, latitude: 4.567}, title: "foo", entourage_type: "ask_for_help" }, token: user.token
+          post :create, entourage: { location: {longitude: 1.123, latitude: 4.567}, title: "foo", entourage_type: "ask_for_help", display_category: "social" }, token: user.token
         }.to change { Entourage.count }.by(1)
       end
 
       context "valid params" do
         before { allow_any_instance_of(EntourageServices::CategoryLexicon).to receive(:category) { "mat_help" } }
-        before { post :create, entourage: { location: {longitude: 1.123, latitude: 4.567}, title: "foo", entourage_type: "ask_for_help", description: "foo bar", category: "mat_help"}, token: user.token }
+        before { post :create, entourage: { location: {longitude: 1.123, latitude: 4.567}, title: "foo", entourage_type: "ask_for_help", display_category: "mat_help", description: "foo bar", category: "mat_help"}, token: user.token }
         it { expect(JSON.parse(response.body)).to eq({"entourage"=>
                                                           {"id"=>Entourage.last.id,
                                                            "status"=>"open",
                                                            "title"=>"foo",
                                                            "entourage_type"=>"ask_for_help",
+                                                           "display_category"=>"mat_help",
                                                            "number_of_people"=>1,
                                                            "author"=>{
                                                                "id"=>user.id,
@@ -155,7 +157,7 @@ describe Api::V1::EntouragesController do
       end
 
       context "invalid params" do
-        before { post :create, entourage: { location: {longitude: "", latitude: 4.567}, title: "foo", entourage_type: "ask_for_help" }, token: user.token }
+        before { post :create, entourage: { location: {longitude: "", latitude: 4.567}, title: "foo", entourage_type: "ask_for_help", display_category: "social" }, token: user.token }
         it { expect(JSON.parse(response.body)).to eq({"message"=>"Could not create entourage", "reasons"=>["Longitude doit être rempli(e)"]}) }
         it { expect(response.status).to eq(400) }
       end
@@ -178,6 +180,7 @@ describe Api::V1::EntouragesController do
                                                            "status"=>"open",
                                                            "title"=>"foobar",
                                                            "entourage_type"=>"ask_for_help",
+                                                           "display_category"=>"social",
                                                            "number_of_people"=>1,
                                                            "author"=>{
                                                                "id"=>entourage.user.id,
@@ -250,6 +253,7 @@ describe Api::V1::EntouragesController do
                                                            "status"=>"open",
                                                            "title"=>"new_title",
                                                            "entourage_type"=>"ask_for_help",
+                                                           "display_category"=>"social",
                                                            "number_of_people"=>1,
                                                            "author"=>{
                                                                "id"=>user.id,

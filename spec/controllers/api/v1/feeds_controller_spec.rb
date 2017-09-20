@@ -25,6 +25,7 @@ require 'rails_helper'
                                                      "status"=>"open",
                                                      "title"=>"foobar",
                                                      "entourage_type"=>"ask_for_help",
+                                                     "display_category"=>"social",
                                                      "join_status"=>"not_requested",
                                                      "number_of_unread_messages"=>nil,
                                                      "number_of_people"=>1,

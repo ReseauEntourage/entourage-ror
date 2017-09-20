@@ -8,6 +8,7 @@ FactoryGirl.define do
     status "open"
     title "foobar"
     entourage_type "ask_for_help"
+    display_category "social"
     association :user, factory: :public_user
     latitude 1.122
     longitude 2.345
