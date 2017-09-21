@@ -1,12 +1,14 @@
 module V1
   module Public
     class EntourageSerializer < ActiveModel::Serializer
+      include V1::Entourages::Location
 
       attributes :uuid,
                  :title,
                  :description,
                  :created_at,
                  :description,
+                 :location,
                  :approximated_location
 
       has_one :author
@@ -23,6 +25,14 @@ module V1
           display_name: entourage_author.first_name,
           avatar_url: UserServices::Avatar.new(user: entourage_author).thumbnail_url
         }
+      end
+
+      def filter(keys)
+        if scope == :map
+          [:title, :location]
+        else
+          keys - [:location]
+        end
       end
     end
   end

@@ -1,6 +1,7 @@
 module V1
   class EntourageSerializer < ActiveModel::Serializer
     include V1::Myfeeds::LastMessage
+    include V1::Entourages::Location
 
     attributes :id,
                :status,
@@ -33,13 +34,6 @@ module V1
       }
     end
 
-    def location
-      {
-          latitude: randomizer.random_latitude,
-          longitude: randomizer.random_longitude
-      }
-    end
-
     def join_status
       if current_join_request
         current_join_request.status
@@ -57,10 +51,6 @@ module V1
     def current_join_request
       #TODO : replace by sql request ?
       object.join_requests.select {|join_request| join_request.user_id == scope[:user]&.id}.first
-    end
-
-    def randomizer
-      @randomizer ||= EntourageServices::EntourageLocationRandomizer.new(entourage: object)
     end
 
     def share_url

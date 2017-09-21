@@ -176,6 +176,7 @@ Rails.application.routes.draw do
 
       namespace :public do
         resources :stats, only: [:index]
+        resources :entourages, only: [:index]
         match 'entourages/:uuid' => 'entourages#show', :via => :get
       end
     end
