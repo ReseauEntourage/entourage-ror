@@ -53,9 +53,9 @@ class Entourage < ActiveRecord::Base
   end
 
   def approximated_location
-   location ||= Geocoder.search([latitude, longitude]).first
-   return '' unless location
-   "#{location.city}, #{location.postal_code}"
+    @approximated_location ||=
+      EntourageServices::LocationApproximationService.new(self)
+      .approximated_location
   end
 
   protected
