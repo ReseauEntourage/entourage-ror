@@ -23,7 +23,14 @@
   </div>
 
   <div class="control-group">
-    <%= f.label :category, "Category", class: "control-label" %>
+    <%= f.label :display_category, "Catégorie affichée", class: "control-label" %>
+    <div class="controls">
+      <%= f.select :display_category, Entourage::DISPLAY_CATEGORIES, include_blank: true %>
+    </div>
+  </div>
+
+  <div class="control-group">
+    <%= f.label :category, "Catégorie pour l'algorithme de recommandation", class: "control-label" %>
     <div class="controls">
       <%= f.select :category, Entourage::CATEGORIES, include_blank: true %>
     </div>

@@ -1,4 +1,6 @@
 module EntouragesHelper
+  NO_CATEGORY = '(pas de catégorie)'.freeze
+
   def link_to_entourage_with_infos entourage
     content_tag(:div, class: "o-entourage-title") do
       link_to("#{entourage.title.try(:capitalize)} (##{entourage.id})", admin_entourage_path(entourage))+

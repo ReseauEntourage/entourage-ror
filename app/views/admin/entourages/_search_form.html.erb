@@ -22,6 +22,11 @@
         <%= f.select :status_eq, Entourage::ENTOURAGE_STATUS, { include_blank: true, class: 'form-control'} %>
       </div>
 
+      <div class='form-group'>
+        <%= f.label :display_category_eq, 'Catégorie' %>
+        <%= f.select :display_category_eq, Entourage::DISPLAY_CATEGORIES + [EntouragesHelper::NO_CATEGORY], { include_blank: true, class: 'form-control'} %>
+      </div>
+
       <%= f.submit 'Rechercher', class: 'btn btn-default' %>
     <% end %>
 

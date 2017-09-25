@@ -9,6 +9,7 @@
         <h3 class="panel-title"><%= "#{@entourage.id} - #{@entourage.title.try(:capitalize)}" %></h3>
         <%= entourage_state_label(@entourage) %>
         <%= entourage_type_label(@entourage) %>
+        <span class="label label-default"><%= @entourage.display_category || EntouragesHelper::NO_CATEGORY %></span>
       </div>
       <div class='col-sm-4 '>
         <div class='pull-right'>

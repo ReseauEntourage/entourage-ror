@@ -3,7 +3,16 @@ module Admin
     before_action :set_entourage, only: [:show, :edit, :update]
 
     def index
-      @q = Entourage.ransack(params[:q])
+      # workaround for the 'null' option
+      if params.dig(:q, :display_category_eq) == EntouragesHelper::NO_CATEGORY
+        ransack_params = params[:q].dup
+        ransack_params.delete(:display_category_eq)
+        ransack_params.merge!(display_category_null: 1)
+      else
+        ransack_params = params[:q]
+      end
+
+      @q = Entourage.ransack(ransack_params)
       @entourages = @q.result(distinct: true)
                       .includes(user: [ :organization ])
                       .page(params[:page])
@@ -28,6 +37,9 @@ module Admin
           .group(:messageable_id)
           .count
       @chat_message_count.default = 0
+
+      # workaround for the 'null' option
+      @q = Entourage.ransack(params[:q])
     end
 
     def show
@@ -54,7 +66,7 @@ module Admin
     end
 
     def entourage_params
-      params.require(:entourage).permit(:status, :title, :description, :category)
+      params.require(:entourage).permit(:status, :title, :description, :category, :display_category)
     end
   end
 end
