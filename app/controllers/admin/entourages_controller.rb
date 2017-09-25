@@ -9,6 +9,25 @@ module Admin
                       .page(params[:page])
                       .per(params[:per])
                       .order("created_at DESC")
+
+      entourage_ids = @entourages.map(&:id)
+      @member_count =
+        JoinRequest
+          .where(joinable_type: :Entourage, joinable_id: entourage_ids)
+          .group(:joinable_id)
+          .count
+      @invitation_count =
+        EntourageInvitation
+          .where(invitable_type: :Entourage, invitable_id: entourage_ids)
+          .group(:invitable_id, :status)
+          .count
+      @invitation_count.default = 0
+      @chat_message_count =
+        ChatMessage
+          .where(messageable_type: :Entourage, messageable_id: entourage_ids)
+          .group(:messageable_id)
+          .count
+      @chat_message_count.default = 0
     end
 
     def show

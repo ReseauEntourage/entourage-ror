@@ -33,12 +33,12 @@
         <td><%= entourage.user.organization.try(:name) %></td>
         <td><%= entourage.user.email %></td>
         <td><%= entourage.user.phone %></td>
-        <td><span class="badge"><%= entourage.members.count %></span></td>
-        <td><span class="badge"><%= entourage.entourage_invitations.status('pending').count %></span></td>
-        <td><span class="badge"><%= entourage.entourage_invitations.status('accepted').count %></span></td>
-        <td><span class="badge"><%= entourage.entourage_invitations.status('rejected').count %></span></td>
-        <td><span class="badge"><%= entourage.entourage_invitations.status('cancelled').count %></span></td>
-        <td><span class="badge"><%= entourage.chat_messages.count %></span></td>
+        <td><span class="badge"><%= @member_count[entourage.id] %></span></td>
+        <td><span class="badge"><%= @invitation_count[[entourage.id, 'pending']] %></span></td>
+        <td><span class="badge"><%= @invitation_count[[entourage.id, 'accepted']] %></span></td>
+        <td><span class="badge"><%= @invitation_count[[entourage.id, 'rejected']] %></span></td>
+        <td><span class="badge"><%= @invitation_count[[entourage.id, 'cancelled']] %></span></td>
+        <td><span class="badge"><%= @chat_message_count[entourage.id] %></span></td>
       </tr>
     <% end %>
   </table>
