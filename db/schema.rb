@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170907131932) do
+ActiveRecord::Schema.define(version: 20170919132830) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -163,6 +163,7 @@ ActiveRecord::Schema.define(version: 20170907131932) do
     t.uuid     "uuid"
     t.string   "category"
     t.boolean  "use_suggestions",  default: false,  null: false
+    t.string   "display_category"
   end
 
   add_index "entourages", ["latitude", "longitude"], name: "index_entourages_on_latitude_and_longitude", using: :btree

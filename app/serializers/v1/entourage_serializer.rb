@@ -7,6 +7,7 @@ module V1
                :status,
                :title,
                :entourage_type,
+               :display_category,
                :join_status,
                :number_of_unread_messages,
                :number_of_people,

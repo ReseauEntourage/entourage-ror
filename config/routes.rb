@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
 
   #ADMIN
-  constraints :subdomain => "admin" do
+  constraints :subdomain => /\A(admin|admin-preprod)\z/ do
     scope :module => "admin", :as => "admin" do
       get '/' => 'users#index'
       get 'logout' => 'sessions#logout'
