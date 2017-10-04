@@ -70,7 +70,7 @@ describe Api::V1::PoisController, :type => :controller do
         end
 
         context 'with distance' do
-          before { get :index, token: user.token, latitude: 10.0, longitude: 10.0, distance: 20.0, format: :json }
+          before { get :index, token: user.token, latitude: 10.0, longitude: 10.0, distance: 40.0, format: :json }
           it { expect(response.status).to eq(200) }
           it { expect(assigns[:pois]).to eq [poi2, poi3, poi4] }
         end

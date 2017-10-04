@@ -49,5 +49,23 @@ module Api
         "fbe5ec205f074b7533c2dbd6" => {version: "3.6.0", device: "Android", device_family: UserApplication::ANDROID},
       }
     end
+
+    class Version
+      include Comparable
+
+      def initialize version
+        @version_array = parse(version)
+      end
+
+      def <=> other
+        @version_array <=> parse(other)
+      end
+
+      private
+      def parse value
+        raise ArgumentError, "version must be a String" unless value.is_a?(String)
+        value.split('.')
+      end
+    end
   end
 end

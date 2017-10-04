@@ -12,15 +12,29 @@ module Api
           @pois = @pois.where(category_id: params[:category_ids].split(","))
         end
 
+        # distance was calculated incorrectly on Android before 3.6.0
+        key_infos = api_request.key_infos || {}
+        if key_infos[:device] == 'Android' && ApplicationKey::Version.new(key_infos[:version]) < '3.6.0'
+          params[:distance] = params[:distance].to_f * 2
+        end
+
         if params[:latitude].present? and params[:longitude].present?
-          @pois = @pois.around params[:latitude], params[:longitude], params[:distance]
+          distance = params[:distance] ? (params[:distance].to_f / 2) : nil
+          @pois = @pois.around params[:latitude], params[:longitude], distance
         else
           @pois = @pois.limit(25)
         end
 
         #TODO : refactor API to return 1 top level POI ressources and associated categories ressources
-        poi_json = JSON.parse(ActiveModel::ArraySerializer.new(@pois, each_serializer: ::V1::PoiSerializer).to_json)
-        categorie_json = JSON.parse(ActiveModel::ArraySerializer.new(@categories, each_serializer: ::V1::CategorySerializer).to_json)
+        poi_json = PoiServices::PoiOptimizedSerializer.new(@pois, box_size: params[:distance]) do |pois|
+          # manually preload the :category association to prevent n+1 queries
+          category_by_id = Hash[@categories.map { |c| [c.id, c] }]
+          pois.each { |p| p.category = category_by_id[p.category_id] }
+
+          ActiveModel::ArraySerializer.new(pois, each_serializer: ::V1::PoiSerializer).as_json
+        end.serialize
+
+        categorie_json = ActiveModel::ArraySerializer.new(@categories, each_serializer: ::V1::CategorySerializer).as_json
         render json: {pois: poi_json, categories: categorie_json }, status: 200
       end
 
