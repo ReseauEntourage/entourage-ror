@@ -68,7 +68,7 @@ module Api
       end
 
       def set_entourage
-        @entourage = Entourage.find(params[:id])
+        @entourage = Entourage.visible.find(params[:id])
       end
     end
   end
