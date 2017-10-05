@@ -148,6 +148,20 @@ require 'rails_helper'
         it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([entourage_i_created.id, tour_i_joined.id]) }
       end
 
+      context "show only my partner's entourages and tours" do
+        let!(:partner) { FactoryGirl.create(:partner) }
+        let!(:partner_user) { FactoryGirl.create(:pro_user) }
+        let!(:partner_user_association) { FactoryGirl.create(:user_partner, user: partner_user, partner: partner, default: true) }
+        let!(:current_user_association) { FactoryGirl.create(:user_partner, user: user, partner: partner, default: true) }
+        let!(:other_user) { FactoryGirl.create(:pro_user) }
+        let!(:entourage_by_partner) { FactoryGirl.create(:entourage, user: partner_user) }
+        let!(:entourage_by_other) { FactoryGirl.create(:entourage, user: other_user) }
+        let!(:tour_by_partner) { FactoryGirl.create(:tour, user: partner_user) }
+        let!(:tour_by_other) { FactoryGirl.create(:tour, user: other_user) }
+        before { get :index, token: user.token, show_tours: "true", show_my_partner_only: "true" }
+        it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([tour_by_partner.id, entourage_by_partner.id]) }
+      end
+
       context "filter by timerange" do
         let!(:entourage1) { FactoryGirl.create(:entourage, updated_at: 3.day.ago, created_at: 3.day.ago) }
         let!(:entourage2) { FactoryGirl.create(:entourage, updated_at: 3.day.ago, created_at: 3.day.ago) }
