@@ -53,7 +53,7 @@ module Admin
     end
 
     def update
-      if @entourage.update(entourage_params)
+      if EntourageServices::EntourageBuilder.update(entourage: @entourage, params: entourage_params)
         render :edit, notice: "Entourage mis à jour"
       else
         render :edit, alert: "Erreur lors de la mise à jour"
