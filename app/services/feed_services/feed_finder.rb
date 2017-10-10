@@ -14,6 +14,7 @@ module FeedServices
                    longitude:,
                    show_my_entourages_only: "false",
                    show_my_tours_only: "false",
+                   show_my_partner_only: "false",
                    time_range: 24,
                    tour_status: nil,
                    entourage_status: nil,
@@ -31,6 +32,7 @@ module FeedServices
       @feed_type = join_types(entourage_types: entourage_types, tour_types: tour_types)
       @show_my_entourages_only = show_my_entourages_only=="true"
       @show_my_tours_only = show_my_tours_only=="true"
+      @show_my_partner_only = show_my_partner_only=="true"
       @time_range = time_range.to_i
       @tour_status = formated_status(tour_status)
       @entourage_status = formated_status(entourage_status)
@@ -44,6 +46,7 @@ module FeedServices
       feeds = feeds.where(feedable_type: "Entourage") unless (show_tours=="true" && user.pro?)
       feeds = feeds.where(feed_type: feed_type) if feed_type
       feeds = filter_my_feeds_only(feeds: feeds)
+      feeds = filter_my_partner_only(feeds: feeds) if show_my_partner_only
       feeds = feeds.where(user: author) if author
       feeds = feeds.where("feeds.created_at > ?", time_range.hours.ago)
       feeds = feeds.within_bounding_box(box) if latitude && longitude
@@ -77,7 +80,7 @@ module FeedServices
     end
 
     private
-    attr_reader :user, :page, :per, :before, :latitude, :longitude, :show_tours, :feed_type, :show_my_entourages_only, :show_my_tours_only, :time_range, :tour_status, :entourage_status, :author, :invitee, :distance
+    attr_reader :user, :page, :per, :before, :latitude, :longitude, :show_tours, :feed_type, :show_my_entourages_only, :show_my_tours_only, :show_my_partner_only, :time_range, :tour_status, :entourage_status, :author, :invitee, :distance
 
     def box
       Geocoder::Calculations.bounding_box([latitude, longitude],
@@ -108,6 +111,16 @@ module FeedServices
         feeds = feeds.joins("INNER JOIN join_requests ON ((join_requests.joinable_type='Entourage' AND feeds.feedable_type='Entourage' AND join_requests.joinable_id=feeds.feedable_id AND join_requests.user_id = #{user.id}) OR (join_requests.joinable_type='Tour' AND feeds.feedable_type='Tour' AND join_requests.joinable_id=feeds.feedable_id AND join_requests.status='accepted' AND join_requests.user_id = #{user.id}))")
       end
       feeds
+    end
+
+    def filter_my_partner_only(feeds:)
+      partner_id = user.default_partner_id
+
+      return feeds if partner_id.nil?
+
+      feeds
+        .joins(user: :user_partners)
+        .merge(UserPartner.where(default: true, partner_id: partner_id))
     end
 
     def filter_by_invitee(feeds:, inclusive:)

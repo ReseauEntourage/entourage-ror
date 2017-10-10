@@ -103,4 +103,8 @@ class User < ActiveRecord::Base
   def default_partner
     @default_partner ||= user_partners.where(default: true).first&.partner
   end
+
+  def default_partner_id
+    user_partners.where(default: true).limit(1).pluck(:partner_id).first
+  end
 end
