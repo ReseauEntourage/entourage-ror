@@ -38,13 +38,25 @@ module EntourageServices
         entourage.latitude = params.dig(:location, :latitude)
       end
 
-      if entourage.update(params.except(:location))
+      if self.class.update(entourage: entourage, params: params.except(:location))
         callback.on_success.try(:call, entourage.reload)
       else
         callback.on_failure.try(:call, entourage)
       end
     end
 
+    def self.update(entourage:, params:)
+      entourage.assign_attributes(params)
+
+      entourage.skip_updated_at! if
+        entourage.changes.all? do |attribute, change|
+          from, to = change
+
+          attribute == 'status' && to == 'closed'
+        end
+
+      entourage.save
+    end
 
     private
     attr_reader :tour, :user, :callback, :params
