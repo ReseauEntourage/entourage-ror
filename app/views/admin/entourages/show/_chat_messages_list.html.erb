@@ -1,27 +1,189 @@
+<style>
+  .conversation-sender {
+    font-weight: bold;
+    color: inherit;
+    text-decoration: none;
+    margin-right: 4px;
+  }
+  .conversation-sender:hover {
+    color: inherit;
+  }
+  .conversation-timestamp {
+    font-size: 12px;
+    color: #717274;
+  }
+  .conversation-message {
+    display: flex;
+    padding: 4px 40px 3px 0;
+    position: relative;
+  }
+  .conversation-message:hover {
+    background: #f5f5f5;
+  }
+  .conversation-gutter {
+    flex-grow: 0;
+    padding-right: 10px;
+  }
+  .conversation-icon {
+    width: 2em;
+    height: 2em;
+    color: #fff;
+    text-align: center;
+    line-height: 2;
+    font-size: 18px;
+    border-radius: 0.2em;
+    margin-top: 2px;
+  }
+  .conversation-actions {
+    position: absolute;
+    z-index: 2;
+    right: 0;
+    top: 0;
+    padding: 6px;
+  }
+  .conversation-message:not(:hover) .conversation-actions {
+    display: none;
+  }
+  .conversation-day-divider {
+    text-align: center;
+    margin-bottom: -13px;
+  }
+  .conversation-day-divider-label {
+    display: inline-block;
+    padding: 4px 12px;
+    background-color: #fff;
+    font-weight: bold;
+    z-index: 1;
+    position: relative;
+    border-radius: 3px;
+  }
+  .conversation-day-divider+.conversation-message {
+    border-top: 1px solid #e8e8e8;
+    padding-top: 16px;
+  }
+  .conversation-day-divider+.conversation-unread-divider+.conversation-message {
+    padding-top: 16px;
+  }
+  .conversation-unread-divider+.conversation-message {
+    border-top: 1px solid #f26130;
+  }
+  .conversation-unread-status {
+    background: #29B2EE;
+    border-radius: 6px;
+    color: #fff;
+    text-shadow: 0 1px rgba(0,0,0,.15);
+    height: 25px;
+    font-size: 13px;
+    text-align: center;
+    font-weight: bold;
+    padding: 4px 6px;
+    cursor: pointer;
+  }
+  .conversation-unread-status:hover {
+    background: #3d9cd4;
+  }
+  .conversation-unread-divider {
+    text-align: center;
+  }
+  .conversation-unread-divider-label {
+    background: #fff;
+    margin: -4px 0 -9px 0;
+    float: right;
+    padding: 0 5px 3px;
+    color: #f26130;
+    font-weight: bold;
+    font-size: 13px;
+    line-height: 8px;
+    z-index: 1;
+    position: relative;
+    border-radius: 3px;
+  }
+</style>
+
 <h3>Liste des messages <span class="badge"><%= @chat_messages.count %><span></h3>
 
-<table id="chat-messages-list" class="table table-striped">
-  <%- if @chat_messages.any? %>
-    <thead>
-      <tr>
-        <thÉcrit le</th>
-        <th>Mis à jour le</th>
-        <th>Par</th>
-        <th>Message</th>
-      </tr>
-    </thead>
+<% if @unread_count > 0 %>
+  <div class="conversation-unread-status" id="unreadStatus">
+    <%= pluralize(@unread_count, "nouveau message", "nouveaux messages") %>
+    depuis le <%= l @first_unread.created_at, format: "%-d %B à %H h %M" %>
+  </div>
+<% end %>
 
-    <tbody>
-      <% @chat_messages.each do |message| %>
-        <tr>
-          <td><%= message.created_at.to_formatted_s(:long) %></td>
-          <td><%= message.updated_at.to_formatted_s(:long) %></td>
-          <td><%= link_to(message.user, admin_user_path(message.user)) %></td>
-          <td><%= message.content %></td>
-        </tr>
-      <% end %>
-    </tbody>
-  <%- else %>
-    <caption><%= "Il n'y a pas encore de messages."%></caption>
+<% if @chat_messages.empty? %>
+  <caption><%= "Il n'y a pas encore de messages."%></caption>
+<% else %>
+  <% color = {} %>
+  <% date = nil %>
+  <% @chat_messages.each do |message| %>
+    <% if date.nil? || date != message.created_at.to_date %>
+      <% date = message.created_at.to_date %>
+      <div class="conversation-day-divider">
+        <div class="conversation-day-divider-label">
+          <% if date == Date.today %>
+            aujourd'hui
+          <% else %>
+            <%= l date, format: "%A %-d %B" %>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+
+    <% if message == @first_unread %>
+      <div class="conversation-unread-divider" id="unreadDivider">
+        <div class="conversation-unread-divider-label">nouveaux messages</div>
+      </div>
+    <% end %>
+
+    <% color[message.user_id] ||= (color.count * 0.381966011 * 360).round %>
+
+    <div class="conversation-message">
+      <div class="conversation-gutter">
+        <div style="background-color: hsl(<%= color[message.user_id] %>, 70%, 75%)" class="conversation-icon">
+          <%= [message.user.first_name.try(:first), message.user.last_name.try(:first)].compact.join.upcase %>
+        </div>
+      </div>
+      <div>
+        <div>
+          <%= link_to message.user.full_name, admin_user_path(message.user), class: "conversation-sender" %>
+          <span class="conversation-timestamp"><%= l message.created_at, format: "%H h %M" %></span>
+        </div>
+        <% if message.join_request? %>
+          <% if message.user_id == @entourage.user_id %>
+            <b><%= @entourage.title %></b><br/>
+            <%= @entourage.description %>
+          <% else %>
+            <i>a demandé à rejoindre l'entourage</i>
+            <%= entourage_invitation_type_label message %>
+            <% if message.content.present? %>
+              :<br>
+            <% end %>
+          <% end %>
+        <% end %>
+        <%= message.content %>
+      </div>
+      <div class="conversation-actions">
+        <%= link_to "Marquer comme non lu",
+                    moderator_read_admin_entourage_path(@entourage, read_at: message.created_at),
+                    method: :post,
+                    class: "btn btn-default" %>
+      </div>
+    </div>
   <% end %>
-</table>
+
+  <% if @unread_count > 0 %>
+    <div class="text-center">
+      <%= link_to "Marquer comme lu",
+                  moderator_read_admin_entourage_path(@entourage),
+                  method: :post,
+                  class: "btn btn-default" %>
+    </div>
+  <% end %>
+<% end %>
+
+<script>
+  $('#unreadStatus').on('click', function(){
+    $('html, body').animate({
+      scrollTop: $('#unreadDivider').offset().top - 60
+    });
+  });
+</script>

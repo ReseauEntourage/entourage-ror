@@ -30,6 +30,8 @@ class Entourage < ActiveRecord::Base
   has_many :members, through: :join_requests, source: :user
   reverse_geocoded_by :latitude, :longitude
   has_many :chat_messages, as: :messageable, dependent: :destroy
+  has_many :conversation_messages, as: :messageable, dependent: :destroy
+  has_many :moderator_reads, as: :moderatable, dependent: :destroy
   has_many :entourage_invitations, as: :invitable, dependent: :destroy
   has_one :entourage_score, dependent: :destroy
 
@@ -47,6 +49,10 @@ class Entourage < ActiveRecord::Base
 
   after_create :check_moderation
   before_create :set_uuid
+
+  def moderator_read_for(user:)
+    moderator_reads.where(user_id: user.id).first
+  end
 
   #An entourage can never be freezed
   def freezed?
