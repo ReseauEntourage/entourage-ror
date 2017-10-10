@@ -9,6 +9,7 @@
     <th>Status</th>
     <th>Titre</th>
     <th>Type</th> -->
+    <th></th>
     <th style="width:15%">Titre</th>
     <th>Créé le</th>
     <th style="width:20%">Description</th>
@@ -24,7 +25,13 @@
     <th>#Messages</th>
 
     <% @entourages.each do |entourage| %>
+      <% unread_count = @message_count[entourage.id].unread %>
       <tr>
+        <td>
+          <% if unread_count > 0 %>
+            <span class="badge" style="background: #d9534f"><%= unread_count %></span>
+          <% end %>
+        </td>
         <td><%= link_to_entourage_with_infos(entourage) %></td>
         <td><%= entourage.created_at.strftime('%d/%m/%Y') %></td>
         <td><%= entourage_description_excerpt(entourage.description) %></td>
@@ -37,8 +44,7 @@
         <td><span class="badge"><%= @invitation_count[[entourage.id, 'pending']] %></span></td>
         <td><span class="badge"><%= @invitation_count[[entourage.id, 'accepted']] %></span></td>
         <td><span class="badge"><%= @invitation_count[[entourage.id, 'rejected']] %></span></td>
-        <td><span class="badge"><%= @invitation_count[[entourage.id, 'cancelled']] %></span></td>
-        <td><span class="badge"><%= @chat_message_count[entourage.id] %></span></td>
+        <td><span class="badge"><%= @message_count[entourage.id].total %></span></td>
       </tr>
     <% end %>
   </table>

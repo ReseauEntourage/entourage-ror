@@ -28,7 +28,12 @@ Rails.application.routes.draw do
       resources :newsletter_subscriptions, only: [:index]
       resources :ambassadors, only: [:index, :edit, :update, :new, :create]
       resources :entourage_invitations, only: [:index]
-      resources :entourages, only: [:index, :show, :edit, :update]
+      resources :entourages, only: [:index, :show, :edit, :update] do
+        member do
+          post :moderator_read
+        end
+      end
+
       resources :marketing_referers, only: [:index, :edit, :update, :new, :create]
       resources :join_requests, only: [:create]
 
