@@ -42,7 +42,8 @@ module FeedServices
     end
 
     def feeds
-      feeds = Feed.includes(feedable: [:user, :join_requests])
+      feeds = Feed.where.not(status: 'blacklisted')
+                  .includes(feedable: [:user, :join_requests])
       feeds = feeds.where(feedable_type: "Entourage") unless (show_tours=="true" && user.pro?)
       feeds = feeds.where(feed_type: feed_type) if feed_type
       feeds = filter_my_feeds_only(feeds: feeds)
