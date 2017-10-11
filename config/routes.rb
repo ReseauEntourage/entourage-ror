@@ -31,6 +31,7 @@ Rails.application.routes.draw do
       resources :entourages, only: [:index, :show, :edit, :update] do
         member do
           post :moderator_read
+          post :moderator_unread
         end
       end
 

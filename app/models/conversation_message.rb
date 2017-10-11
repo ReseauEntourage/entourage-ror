@@ -4,6 +4,7 @@ class ConversationMessage < ActiveRecord::Base
   belongs_to :full_object, polymorphic: true
 
   scope :ordered, -> { order(:created_at) }
+  scope :with_content, -> { where("content <> ''") }
 
   def self.with_moderator_reads_for(user:)
     joins(%(

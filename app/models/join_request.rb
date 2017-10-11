@@ -18,6 +18,20 @@ class JoinRequest < ActiveRecord::Base
   scope :rejected, -> {where(status: REJECTED_STATUS)}
   scope :cancelled, -> {where(status: CANCELLED_STATUS)}
 
+  def self.with_entourage_invitations
+    joins(%(
+      left join entourage_invitations on (
+        entourage_invitations.invitable_type = join_requests.joinable_type and
+        entourage_invitations.invitable_id = join_requests.joinable_id and
+        entourage_invitations.invitee_id = join_requests.user_id
+      )
+    ))
+    .select(%(
+      join_requests.*,
+      entourage_invitations.id as entourage_invitation_id
+    ))
+  end
+
   STATUS.each do |check_status|
     define_method("is_#{check_status}?") do
       status == check_status

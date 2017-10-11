@@ -54,6 +54,16 @@ class Entourage < ActiveRecord::Base
     moderator_reads.where(user_id: user.id).first
   end
 
+  def self.with_moderator_reads_for(user:)
+    joins(%(
+      left join moderator_reads on (
+        moderator_reads.user_id = #{user.id} and
+        moderator_reads.moderatable_id = entourages.id and
+        moderator_reads.moderatable_type = 'Entourage'
+      )
+    ))
+  end
+
   #An entourage can never be freezed
   def freezed?
     false

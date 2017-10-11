@@ -28,7 +28,9 @@
       <% unread_count = @message_count[entourage.id].unread %>
       <tr>
         <td>
-          <% if unread_count > 0 %>
+          <% if entourage.unread %>
+            <span class="badge" style="background: #d9534f">nouveau</span>
+          <% elsif unread_count > 0 %>
             <span class="badge" style="background: #d9534f"><%= unread_count %></span>
           <% end %>
         </td>

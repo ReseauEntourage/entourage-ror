@@ -1,0 +1,69 @@
+<style>
+  .unread-circle {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    background-color: #d9534f;
+    border-radius: 50%;
+    margin-top: 5px;
+  }
+</style>
+
+<% status_order = %w(pending rejected cancelled) %>
+
+<%
+  unread = requests.find_all { |r| @moderator_read && r.created_at >= @moderator_read.read_at }
+%>
+
+<h3>Demandes <span class="badge"><%= requests.count(&:is_pending?) %><span></h3>
+
+<% if unread.count > 0 %>
+  <div class="conversation-unread-status">
+    <%= pluralize(unread.count, "nouvelle demande", "nouvelles demandes") %>
+    depuis le <%= l unread.map(&:created_at).min, format: "%-d %B à %H h %M" %>
+  </div>
+<% end %>
+
+<% if requests.empty? %>
+  Il n'y a pas encore de demande.
+<% else %>
+  <table id="members-list" class="table table-striped">
+    <thead>
+      <tr>
+        <th style="width: 10px"></th>
+        <th>Prénom / Nom</th>
+        <th></th>
+        <th>Status</th>
+        <th>Email</th>
+        <th>Phone</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% requests.sort_by { |r| [status_order.index(r.status), r.created_at] }.each do |request| %>
+        <% member = request.user %>
+        <tr>
+          <td>
+            <% if @moderator_read && request.created_at >= @moderator_read.read_at %>
+              <span class="unread-circle"></span>
+            <% end %>
+          </td>
+          <td>
+            <%= link_to "#{member.full_name} (##{member.id})", admin_user_path(member) %>
+            <%- if member.id == @entourage.user.id %>
+              <span class="label label-info">créateur</span>
+            <% end %>
+          </td>
+          <td>
+            <% if request.entourage_invitation_id.present? %>
+              <span class="label label-default">invitation</span>
+            <% end %>
+          </td>
+          <td><%= entourage_invitation_type_label(request) %></td>
+          <td><%= member.email %></td>
+          <td><%= member.phone %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>

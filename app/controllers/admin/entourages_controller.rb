@@ -1,6 +1,6 @@
 module Admin
   class EntouragesController < Admin::BaseController
-    before_action :set_entourage, only: [:show, :edit, :update, :moderator_read]
+    before_action :set_entourage, only: [:show, :edit, :update, :moderator_read, :moderator_unread]
 
     def index
       # workaround for the 'null' option
@@ -13,16 +13,33 @@ module Admin
       end
 
       @q = Entourage.ransack(ransack_params)
-      @entourages = @q.result(distinct: true)
-                      .includes(user: [ :organization ])
-                      .page(params[:page])
-                      .per(params[:per])
-                      .order("created_at DESC")
+      @entourages =
+        @q.result
+        .includes(user: [ :organization ])
+        .page(params[:page])
+        .per(params[:per])
+        .with_moderator_reads_for(user: current_user)
+        .select("entourages.*, moderator_reads is null and entourages.created_at >= now() - interval '1 week' as unread")
+        .group("entourages.id, moderator_reads.id")
+        .joins(:conversation_messages)
+        .with_moderator_reads_for(user: current_user)
+        .order(%(
+          case
+          when moderator_reads is null and entourages.created_at >= now() - interval '1 week' then 0
+          when max(conversation_messages.created_at) >= moderator_reads.read_at then 1
+          else 2
+          end
+        ))
+        .order("created_at DESC")
+        .to_a
 
+      @entourages = Kaminari.paginate_array(@entourages, total_count: @q.result.count).page(params[:page]).per(10)
       entourage_ids = @entourages.map(&:id)
       @member_count =
         JoinRequest
-          .where(joinable_type: :Entourage, joinable_id: entourage_ids)
+          .where(joinable_type: :Entourage, joinable_id: entourage_ids, status: :accepted)
+          .joins(:user)
+          .merge(User.where(admin: false))
           .group(:joinable_id)
           .count
       @invitation_count =
@@ -33,44 +50,44 @@ module Admin
       @invitation_count.default = 0
       @message_count =
         ConversationMessage
+          .where(status: [nil, 'pending', 'accepted'])
           .with_moderator_reads_for(user: current_user)
           .where(messageable_type: :Entourage, messageable_id: entourage_ids)
           .group(:messageable_id)
           .select(%{
             messageable_id,
-            count(*) as total,
-            sum(
-              case when moderator_reads is null
-                     or conversation_messages.created_at >= moderator_reads.read_at then
-                1
-              else
-                0
-              end
-            ) as unread
+            sum(case when conversation_messages.content <> '' then 1 else 0 end) as total,
+            sum(case when conversation_messages.created_at >= moderator_reads.read_at then 1 else 0 end) as unread
           })
       @message_count = Hash[@message_count.map { |m| [m.messageable_id, m] }]
+      @message_count.default = OpenStruct.new(unread: 0, total: 0)
 
       # workaround for the 'null' option
       @q = Entourage.ransack(params[:q])
     end
 
     def show
-      @members        = @entourage.members
-      @join_requests  = @entourage.join_requests.includes(:user)
-      @invitations    = @entourage.entourage_invitations.includes(:invitee)
-      @chat_messages  = @entourage.conversation_messages.ordered.includes(:user)
-      moderator_read  = @entourage.moderator_read_for(user: current_user)
+      @join_requests =
+        @entourage
+        .join_requests
+        .with_entourage_invitations
+        .includes(:user)
+        .to_a
+      @invitations =
+        @entourage
+        .entourage_invitations
+        .where.not(status: :accepted)
+        .includes(:invitee)
+        .to_a
+      @chat_messages  =
+        @entourage
+          .conversation_messages.ordered.includes(:user)
+          .with_content
+          .to_a
 
-      @first_unread = nil
-      @unread_count = 0
-      @chat_messages.each do |m|
-        if @first_unread.nil? &&
-           (moderator_read.nil? || m.created_at >= moderator_read.read_at)
-          @first_unread = m
-        end
+      @moderator_read  = @entourage.moderator_read_for(user: current_user)
 
-        @unread_count += 1 if @first_unread
-      end
+      @unread_content = @moderator_read.nil?
     end
 
     def moderator_read
@@ -88,6 +105,11 @@ module Admin
         @entourage.moderator_reads.create!(user: current_user, read_at: read_at)
       end
 
+      redirect_to [:admin, @entourage]
+    end
+
+    def moderator_unread
+      @entourage.moderator_read_for(user: current_user).delete
       redirect_to [:admin, @entourage]
     end
 
