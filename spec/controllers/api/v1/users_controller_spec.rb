@@ -24,6 +24,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                                   "display_name"=>"John D",
                                   "first_name"=> "John",
                                   "last_name"=> "Doe",
+                                  "about"=> nil,
                                   "token"=>user.token,
                                   "user_type"=>"pro",
                                   "avatar_url"=>"https://foobar.s3-eu-west-1.amazonaws.com/300x300/avatar.jpg",
@@ -92,6 +93,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                                                              "display_name"=>"John D",
                                                              "first_name"=> "John",
                                                              "last_name"=> "Doe",
+                                                             "about" => nil,
                                                              "user_type"=>"pro",
                                                              "token"=>user.token,
                                                              "avatar_url"=>"https://foobar.s3-eu-west-1.amazonaws.com/300x300/avatar.jpg",
@@ -162,6 +164,12 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
         before { patch 'update', token:user.token, user: { email:'bademail', sms_code:'badcode' }, format: :json }
         it { expect(response.status).to eq(400) }
         it { expect(result).to eq({"error"=>{"code"=>"CANNOT_UPDATE_USER", "message"=>["Email n'est pas valide"]}}) }
+      end
+
+      context 'about is too long' do
+        before { patch 'update', token:user.token, user: { about: "x" * 201 }, format: :json }
+        it { expect(response.status).to eq(400) }
+        it { expect(result).to eq({"error"=>{"code"=>"CANNOT_UPDATE_USER", "message"=>["À propos est trop long (pas plus de 200 caractères)"]}}) }
       end
     end
 
@@ -294,6 +302,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                                                            "display_name"=>"John D",
                                                            "first_name"=>"John",
                                                            "last_name"=>"Doe",
+                                                           "about"=>nil,
                                                            "token"=>user.token,
                                                            "user_type"=>"pro",
                                                            "avatar_url"=>nil,
@@ -319,6 +328,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                                                            "display_name"=>"John D",
                                                            "first_name"=>"John",
                                                            "last_name"=>"Doe",
+                                                           "about"=>nil,
                                                            "token"=>user.token,
                                                            "user_type"=>"pro",
                                                            "avatar_url"=>nil,
@@ -332,7 +342,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
       end
 
       context "get someone else profile" do
-        let(:other_user) { FactoryGirl.create(:pro_user) }
+        let(:other_user) { FactoryGirl.create(:pro_user, about: "about") }
         before { get :show, id: other_user.id, token: user.token }
         it { expect(response.status).to eq(200) }
         it { expect(JSON.parse(response.body)).to eq({"user"=>
@@ -340,6 +350,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                                                            "display_name"=>"John D",
                                                            "first_name"=>"John",
                                                            "last_name"=>"Doe",
+                                                           "about"=>"about",
                                                            "avatar_url"=>nil,
                                                            "user_type"=>"pro",
                                                            "organization"=>{"name"=>other_user.organization.name, "description"=>"Association description", "phone"=>other_user.organization.phone, "address"=>other_user.organization.address, "logo_url"=>nil},

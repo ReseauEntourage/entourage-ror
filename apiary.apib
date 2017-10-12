@@ -138,6 +138,7 @@ Users related resources of the **Entourage API**
                     "display_name":"Judge Dredd",
                     "first_name": "Judge",
                     "last_name": "Dredd",
+                    "about": "I am the Law",
                     "token":"FAKETOKEN",
                     "stats":{"tour_count":0,"encounter_count":0, "entourage_count": 0},
                     "user_type": "pro",
@@ -173,6 +174,7 @@ Users related resources of the **Entourage API**
                     "display_name":"Judge Dredd",
                     "first_name": "Judge",
                     "last_name": "Dredd",
+                    "about": "I am the Law",
                     "token":"FAKETOKEN"
                     "user_type": "pro",
                     "avatar_url": "http://foo.com/bar.jpg",
@@ -207,6 +209,7 @@ Users related resources of the **Entourage API**
                 "display_name":"Judge Dredd",
                 "first_name": "Judge",
                 "last_name": "Dredd",
+                "about": "I am the Law",
                 "user_type": "pro",
                 "avatar_url": "http://foo.com/bar.jpg"
                 }
@@ -241,7 +244,7 @@ When signing up a new user we genereate a new sms_code and send it via SMS
 
 + Response 200 (application/json; charset=utf-8)
 
-            {"user":{"id":1,"email":"dredd@test.com","display_name":"Judge Dredd", "first_name": "Judge", "last_name": "Dredd","token":"FAKETOKEN","age ":{"tour_count":0,"encounter_count":0, "entourage_count": 0},"organization":{"name":"org name","description":"org description","phone":"org phone","address":"org address","logo_url":"org logo url"}}}
+            {"user":{"id":1,"email":"dredd@test.com","display_name":"Judge Dredd", "first_name": "Judge", "last_name": "Dredd","about": "I am the Law","token":"FAKETOKEN","age ":{"tour_count":0,"encounter_count":0, "entourage_count": 0},"organization":{"name":"org name","description":"org description","phone":"org phone","address":"org address","logo_url":"org logo url"}}}
 
 + Response 400 (application/json; charset=utf-8)
 
@@ -268,6 +271,7 @@ When signing up a new user we genereate a new sms_code and send it via SMS
             {"user":{
                 "first_name": "Judge",
                 "last_name": "Dredd",
+                "about": "I am the Law",
                 "email": "foo@bar.com",
                 "sms_code": "123456",
                 "phone": "+33612345678",
@@ -277,7 +281,7 @@ When signing up a new user we genereate a new sms_code and send it via SMS
 
 + Response 200 (application/json; charset=utf-8)
 
-            {"user":{"id":1,"email":"dredd@test.com","display_name":"Judge Dredd", "first_name": "Judge", "last_name": "Dredd","token":"FAKETOKEN","stats":{"tour_count":0,"encounter_count":0, "entourage_count": 0},"organization":{"name":"org name","description":"org description","phone":"org phone","address":"org address","logo_url":"org logo url"}}}
+            {"user":{"id":1,"email":"dredd@test.com","display_name":"Judge Dredd", "first_name": "Judge", "last_name": "Dredd","about": "I am the Law","token":"FAKETOKEN","stats":{"tour_count":0,"encounter_count":0, "entourage_count": 0},"organization":{"name":"org name","description":"org description","phone":"org phone","address":"org address","logo_url":"org logo url"}}}
 
 + Response 400 (application/json; charset=utf-8)
 
@@ -329,7 +333,7 @@ When signing up a new user we genereate a new sms_code and send it via SMS
 
 + Response 200 (application/json; charset=utf-8)
 
-            {"user":{"id":1,"email":"new@e.mail","display_name":"Judge Dredd", "first_name": "Judge", "last_name": "Dredd","token":"153ad0b7ef67e5c44b8ef5afc12709e4","organization":{"name":"Entourage","description":"Réseau Entourage","phone":"+33677300840","address":"40 avenue Hoche 75008 Paris","logo_url":""},"stats":{"tour_count":5,"encounter_count":5, "entourage_count": 0}}}
+            {"user":{"id":1,"email":"new@e.mail","display_name":"Judge Dredd", "first_name": "Judge", "last_name": "Dredd","about": "I am the Law","token":"153ad0b7ef67e5c44b8ef5afc12709e4","organization":{"name":"Entourage","description":"Réseau Entourage","phone":"+33677300840","address":"40 avenue Hoche 75008 Paris","logo_url":""},"stats":{"tour_count":5,"encounter_count":5, "entourage_count": 0}}}
 
 + Response 400 (application/json; charset=utf-8)
 
@@ -1744,6 +1748,7 @@ Entourages related resources of the **Entourage API**
                         "display_name":"Judge Dredd",
                         "first_name": "Judge",
                         "last_name": "Dredd",
+                        "about": "I am the Law",
                         "user_type": "pro",
                         "avatar_url": "http://foo.com/bar.jpg"
                     },
