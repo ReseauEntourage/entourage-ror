@@ -5,6 +5,7 @@ module V1
                :display_name,
                :first_name,
                :last_name,
+               :about,
                :token,
                :avatar_url,
                :user_type,

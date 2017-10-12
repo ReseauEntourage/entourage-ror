@@ -27,6 +27,7 @@ describe Api::V1::InvitationsController do
                                                         "display_name"=>"John D",
                                                         "first_name"=>"John",
                                                         "last_name"=>"Doe",
+                                                        "about"=>nil,
                                                         "avatar_url"=>nil,
                                                         "user_type"=>"pro",
                                                         "organization"=>{
