@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171010161645) do
+ActiveRecord::Schema.define(version: 20171012072614) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -196,6 +196,7 @@ ActiveRecord::Schema.define(version: 20171010161645) do
     t.float    "distance"
   end
 
+  add_index "join_requests", ["joinable_type", "joinable_id", "status"], name: "index_join_requests_on_joinable_type_and_joinable_id_and_status", using: :btree
   add_index "join_requests", ["user_id", "joinable_id", "joinable_type", "status"], name: "index_user_joinable_on_join_requests", using: :btree
   add_index "join_requests", ["user_id", "joinable_id", "joinable_type"], name: "index_join_requests_on_user_id_and_joinable_id", using: :btree
 

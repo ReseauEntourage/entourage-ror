@@ -50,7 +50,6 @@ module Admin
       @invitation_count.default = 0
       @message_count =
         ConversationMessage
-          .where(status: [nil, 'pending', 'accepted'])
           .with_moderator_reads_for(user: current_user)
           .where(messageable_type: :Entourage, messageable_id: entourage_ids)
           .group(:messageable_id)
