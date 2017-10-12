@@ -9,6 +9,10 @@ module EntourageServices
         cache(cache_key, 30.days, except: '') { formated_location }
     end
 
+    def expire_cache
+      $redis.del(cache_key) if cache_key.present?
+    end
+
     private
 
     def formated_location
@@ -25,7 +29,7 @@ module EntourageServices
 
     def cache_key
       return if @entourage.id.nil?
-      "entourages:#{@entourage.id}:approximated_location"
+      @cache_key ||= "entourages:#{@entourage.id}:approximated_location"
     end
 
     def cache(key, ttl, options={})
@@ -36,6 +40,19 @@ module EntourageServices
       ignore_value = options.key?(:except) && computed_value == options[:except]
       $redis.setex(key, ttl, computed_value) if !key.nil? && !ignore_value
       computed_value
+    end
+
+    module Callback
+      extend ActiveSupport::Concern
+
+      included do
+        after_commit :expire_approximated_location_cache
+      end
+
+      def expire_approximated_location_cache
+        return unless (['latitude', 'longitude'] & previous_changes.keys).any?
+        LocationApproximationService.new(self).expire_cache
+      end
     end
   end
 end

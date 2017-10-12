@@ -117,7 +117,7 @@ module Admin
 
     def update
       if EntourageServices::EntourageBuilder.update(entourage: @entourage, params: entourage_params)
-        render :edit, notice: "Entourage mis à jour"
+        redirect_to [:edit, :admin, @entourage], notice: "Entourage mis à jour"
       else
         render :edit, alert: "Erreur lors de la mise à jour"
       end
@@ -129,7 +129,7 @@ module Admin
     end
 
     def entourage_params
-      params.require(:entourage).permit(:status, :title, :description, :category, :display_category)
+      params.require(:entourage).permit(:status, :title, :description, :category, :display_category, :latitude, :longitude)
     end
   end
 end
