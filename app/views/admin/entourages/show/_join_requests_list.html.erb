@@ -13,6 +13,7 @@
 
 <%
   unread = requests.find_all { |r| @moderator_read && r.created_at >= @moderator_read.read_at }
+  @unread_content = true if unread.any?
 %>
 
 <h3>Demandes <span class="badge"><%= requests.count(&:is_pending?) %><span></h3>

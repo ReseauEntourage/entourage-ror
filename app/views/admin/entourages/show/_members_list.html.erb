@@ -1,5 +1,6 @@
 <%
   unread = requests.find_all { |r| @moderator_read && r.created_at >= @moderator_read.read_at }
+  @unread_content = true if unread.any?
 %>
 
 <h3>Membres <span class="badge"><%= requests.count %><span></h3>
