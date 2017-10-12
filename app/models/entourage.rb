@@ -18,6 +18,7 @@
 class Entourage < ActiveRecord::Base
   include FeedsConcern
   include UpdatedAtSkippable
+  include EntourageServices::LocationApproximationService::Callback
 
   ENTOURAGE_TYPES  = ['ask_for_help', 'contribution']
   ENTOURAGE_STATUS = ['open', 'closed', 'blacklisted']
