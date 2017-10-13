@@ -17,6 +17,7 @@ module Api
 
           if params[:preset] == "atd-paris"
             @entourages = @entourages
+              .where(status: :open)
               .where("title || description ~* '(biblioth[eè]que de rue)|(atd)|(université)|(stop.p)'")
               .within_bounding_box(
                 Geocoder::Calculations.bounding_box(
