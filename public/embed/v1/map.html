@@ -12,10 +12,35 @@
         margin: 0;
         padding: 0;
       }
+      .info-window {
+        text-align: center;
+        max-width: 300px;
+        margin: 10px 0 10px 23px;
+      }
+      .info-window-title {
+        font-size: 16px;
+      }
+      .info-window-button {
+        border-radius: 5px;
+        color: #fff;
+        background: #ef662f;
+        padding: 8px 10px;
+        font-size: 13px;
+        text-decoration: none;
+        display: inline-block;
+        margin-top: 10px;
+      }
     </style>
   </head>
   <body>
     <div id="map"></div>
+    <div id="infoWindowTemplate" class="info-window">
+      <div class="info-window-title" data-value="title"></div>
+      <a class="info-window-button"
+         href="http://www.entourage.social/" target="_blank">
+        Rejoindre cette action !
+      </a>
+    </div>
     <script>
       var map;
       var infoWindow;
@@ -103,7 +128,9 @@
       }
 
       function openInfoWindow() {
-        infoWindow.setContent('<div>' + this.title + '</div>');
+        html = document.querySelector('#infoWindowTemplate').cloneNode(true);
+        html.querySelector('[data-value="title"]').textContent = this.title;
+        infoWindow.setContent(html);
         infoWindow.setPosition(this.position);
         infoWindow.open(map);
       }
