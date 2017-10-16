@@ -3,6 +3,8 @@ module Admin
     before_action :set_entourage, only: [:show, :edit, :update, :moderator_read, :moderator_unread]
 
     def index
+      per_page = params[:per] || 50
+
       # workaround for the 'null' option
       if params.dig(:q, :display_category_eq) == EntouragesHelper::NO_CATEGORY
         ransack_params = params[:q].dup
@@ -15,9 +17,8 @@ module Admin
       @q = Entourage.ransack(ransack_params)
       @entourages =
         @q.result
-        .includes(user: [ :organization ])
         .page(params[:page])
-        .per(params[:per])
+        .per(per_page)
         .with_moderator_reads_for(user: current_user)
         .select("entourages.*, moderator_reads is null and entourages.created_at >= now() - interval '1 week' as unread")
         .group("entourages.id, moderator_reads.id")
@@ -33,7 +34,7 @@ module Admin
         .order("created_at DESC")
         .to_a
 
-      @entourages = Kaminari.paginate_array(@entourages, total_count: @q.result.count).page(params[:page]).per(10)
+      @entourages = Kaminari.paginate_array(@entourages, total_count: @q.result.count).page(params[:page]).per(per_page)
       entourage_ids = @entourages.map(&:id)
       @member_count =
         JoinRequest
@@ -42,12 +43,6 @@ module Admin
           .merge(User.where(admin: false))
           .group(:joinable_id)
           .count
-      @invitation_count =
-        EntourageInvitation
-          .where(invitable_type: :Entourage, invitable_id: entourage_ids)
-          .group(:invitable_id, :status)
-          .count
-      @invitation_count.default = 0
       @message_count =
         ConversationMessage
           .with_moderator_reads_for(user: current_user)
@@ -63,6 +58,8 @@ module Admin
 
       # workaround for the 'null' option
       @q = Entourage.ransack(params[:q])
+
+      render layout: 'admin_large'
     end
 
     def show

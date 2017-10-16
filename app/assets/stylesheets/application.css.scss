@@ -64,3 +64,19 @@ li.user-card {
   content:"*";
   color:red;
 }
+
+body.layout-index-large {
+  margin-top: 70px;
+}
+
+.entourages.index .table {
+  font-size: 80%;
+
+  tr.not-open:not(:hover) {
+    opacity: 0.33;
+  }
+
+  td {
+    padding: 6px;
+  }
+}
