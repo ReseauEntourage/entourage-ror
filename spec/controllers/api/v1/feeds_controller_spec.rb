@@ -42,7 +42,7 @@ require 'rails_helper'
                                                      "created_at"=> entourage.created_at.iso8601(3),
                                                      "updated_at"=> entourage.updated_at.iso8601(3),
                                                      "description" => nil,
-                                                     "share_url" => "http://entourage.social/entourages/#{entourage.uuid}"
+                                                     "share_url" => "http://entourage.social/entourages/#{entourage.uuid_v2}"
 
                                                  },
                                                  "heatmap_size" => 20
