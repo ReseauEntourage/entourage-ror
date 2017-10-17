@@ -203,8 +203,13 @@ describe Api::V1::EntouragesController do
                                                        }) }
         end
 
-        context "find by uuid" do
+        context "find by v1 uuid" do
           before { get :show, id: entourage.uuid.to_param, token: user.token }
+          it { expect(JSON.parse(response.body)["entourage"]["id"]).to eq entourage.id }
+        end
+
+        context "find by v2 uuid" do
+          before { get :show, id: entourage.uuid_v2.to_param, token: user.token }
           it { expect(JSON.parse(response.body)["entourage"]["id"]).to eq entourage.id }
         end
       end
