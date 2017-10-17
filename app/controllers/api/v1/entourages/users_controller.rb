@@ -122,7 +122,7 @@ module Api
 
         private
         def set_entourage
-          @entourage = Entourage.visible.find(params[:entourage_id])
+          @entourage = Entourage.visible.find_by_id_or_uuid(params[:entourage_id])
         end
 
         def set_join_request

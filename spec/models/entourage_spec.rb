@@ -50,4 +50,49 @@ RSpec.describe Entourage, type: :model do
 
     expect(entourage.uuid).to_not be nil
   end
+
+  describe '.find_by_id_or_uuid' do
+    subject { Entourage.find_by_id_or_uuid identifier }
+
+    context "when the entourage exists" do
+      let(:entourage) { create :entourage }
+
+      context "when searching with an integer id" do
+        let(:identifier) { entourage.id }
+        it { is_expected.to eq entourage }
+      end
+
+      context "when searching with an string id" do
+        let(:identifier) { entourage.id.to_s }
+        it { is_expected.to eq entourage }
+      end
+
+      context "when searching with a uuid" do
+        let(:identifier) { entourage.uuid }
+        it { is_expected.to eq entourage }
+      end
+    end
+
+    context "when the entourage doesn't exists" do
+      # wraps subject in a Proc to allow use of `raise_error`
+      def subject
+        -> { super }
+      end
+
+      context "when searching with an integer id" do
+        let(:identifier) { 1234 }
+        it { is_expected.to raise_error ActiveRecord::RecordNotFound }
+      end
+
+      context "when searching with an string id" do
+        let(:identifier) { "1234" }
+        it { is_expected.to raise_error ActiveRecord::RecordNotFound }
+      end
+
+      context "when searching with a uuid" do
+        let(:identifier) { "59f213f2-7101-4c4c-b9a2-e298d9cb56af" }
+        it { is_expected.to raise_error ActiveRecord::RecordNotFound }
+      end
+    end
+  end
 end

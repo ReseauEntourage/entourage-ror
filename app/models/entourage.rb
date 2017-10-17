@@ -65,6 +65,14 @@ class Entourage < ActiveRecord::Base
     ))
   end
 
+  def self.find_by_id_or_uuid identifier
+    if identifier.is_a?(String) && identifier.length == 36
+      @entourage = Entourage.visible.find_by!(uuid: identifier)
+    else
+      @entourage = Entourage.visible.find(identifier)
+    end
+  end
+
   #An entourage can never be freezed
   def freezed?
     false
