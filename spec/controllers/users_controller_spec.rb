@@ -53,21 +53,38 @@ RSpec.describe UsersController, :type => :controller do
       end
 
       context 'with correct parameters' do
+        let(:sms_service) { spy }
         before do
-          post 'create', user: {email: "test@rspec.com", first_name:"tester", last_name:"tested", phone:'+33102030405'}
+          allow(SmsNotificationService).to receive(:new).and_return(sms_service)
+        end
+        subject do
+          post 'create', user: {email: "test@rspec.com", first_name:"tester", last_name:"tested", phone:'+33102030405'}, send_sms: '1'
         end
 
-        it { expect(response.status).to eq(302) }
-        it { expect(User.last.first_name).to eq "tester" }
-        it { expect(User.last.last_name).to eq "tested" }
-        it { expect(User.last.phone).to eq "+33102030405" }
-        it { expect(User.last.email).to eq "test@rspec.com" }
-        it { expect(User.last.organization).to eq user.organization }
-      end
+        context 'for a new user' do
+          before { subject }
+          it { expect(response.status).to eq(302) }
+          it { expect(User.last.first_name).to eq "tester" }
+          it { expect(User.last.last_name).to eq "tested" }
+          it { expect(User.last.phone).to eq "+33102030405" }
+          it { expect(User.last.email).to eq "test@rspec.com" }
+          it { expect(User.last.organization).to eq user.organization }
+          it { expect(sms_service).to have_received(:send_notification) }
+        end
 
-      it "sends sms" do
-        expect_any_instance_of(SmsNotificationService).to receive(:send_notification)
-        post 'create', user: {email: "test@rspec.com", first_name:"tester", last_name:"tested", phone:'+33102030405'}, send_sms: "1"
+        context 'for an existing user' do
+          before do
+            create :public_user, phone: "+33102030405", first_name: "existing", last_name: nil, email: nil
+            subject
+          end
+          it { expect(response.status).to eq(302) }
+          it { expect(User.last.first_name).to eq "existing" }
+          it { expect(User.last.last_name).to eq "tested" }
+          it { expect(User.last.phone).to eq "+33102030405" }
+          it { expect(User.last.email).to eq "test@rspec.com" }
+          it { expect(User.last.organization).to eq user.organization }
+          it { expect(sms_service).to_not have_received(:send_notification) }
+        end
       end
 
       it "doesn't sends sms" do

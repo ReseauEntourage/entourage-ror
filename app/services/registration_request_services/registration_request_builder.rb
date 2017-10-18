@@ -10,7 +10,7 @@ module RegistrationRequestServices
 
       ActiveRecord::Base.transaction do
         organization.save!
-        builder.create(send_sms: true) do |on|
+        builder.create_or_upgrade(send_sms: true) do |on|
           on.success do |user|
             user.update(manager: true)
             registration_request.update(status: "validated")
@@ -18,6 +18,7 @@ module RegistrationRequestServices
           end
 
           on.failure do |user|
+            raise ActiveRecord::Rollback
           end
         end
       end

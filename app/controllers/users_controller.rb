@@ -22,7 +22,7 @@ class UsersController < ApplicationController
 
     end
 
-    builder.create(send_sms: send_sms) do |on|
+    builder.create_or_upgrade(send_sms: send_sms) do |on|
       on.success do |user|
         redirect_to users_url, notice: "L'utilisateur a été créé"
       end
