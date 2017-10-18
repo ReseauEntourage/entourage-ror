@@ -12,6 +12,9 @@ module Api
         registration_request = RegistrationRequest.new(status: "pending",
                                                        extra: registration_request_params)
         registration_request.save!
+
+        AdminMailer.registration_request(registration_request.id).deliver_later
+
         render json: {registration_request: registration_request.as_json}, status: 201
       end
 

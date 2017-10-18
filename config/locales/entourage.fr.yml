@@ -1,0 +1,14 @@
+fr:
+  activerecord:
+    attributes:
+      user:
+        first_name: Prénom
+        last_name: Nom
+        email: Email
+        phone: Téléphone
+        organization: Association
+      organization:
+        name: Nom
+        description: Description
+        phone: Téléphone
+        address: Adresse
