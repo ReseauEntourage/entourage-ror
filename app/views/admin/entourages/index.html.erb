@@ -9,6 +9,7 @@
   <th>Titre</th>
   <th>Type</th> -->
   <th></th>
+  <th>id</th>
   <th>Titre</th>
   <th>Description</th>
   <th><span class="glyphicon glyphicon-user" aria-hidden="true"></span></th>
@@ -24,6 +25,7 @@
           <span class="badge" style="background: #d9534f"><%= unread_count %></span>
         <% end %>
       </td>
+      <td><%= entourage.id %></td>
       <td><%= link_to entourage.title, [:admin, entourage] %></td>
       <td><%= entourage_description_excerpt(entourage.description) %></td>
       <td><span class="badge"><%= @member_count[entourage.id] %></span></td>

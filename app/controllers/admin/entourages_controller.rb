@@ -1,6 +1,6 @@
 module Admin
   class EntouragesController < Admin::BaseController
-    before_action :set_entourage, only: [:show, :edit, :update, :moderator_read, :moderator_unread]
+    before_action :set_entourage, only: [:show, :edit, :update, :moderator_read, :moderator_unread, :message]
 
     def index
       per_page = params[:per] || 50
@@ -43,6 +43,7 @@ module Admin
           .merge(User.where(admin: false))
           .group(:joinable_id)
           .count
+      @member_count.default = 0
       @message_count =
         ConversationMessage
           .with_moderator_reads_for(user: current_user)
@@ -83,29 +84,30 @@ module Admin
 
       @moderator_read  = @entourage.moderator_read_for(user: current_user)
 
+      @messages_author = User.find_by email: 'guillaume@entourage.social'
+
       @unread_content = @moderator_read.nil?
     end
 
     def moderator_read
-      moderator_read = @entourage.moderator_read_for(user: current_user)
       read_at =
         if params[:read_at]
           DateTime.parse(params[:read_at])
         else
-           Time.zone.now
+          Time.zone.now
         end
 
-      if moderator_read
-        moderator_read.update_column(:read_at, read_at)
-      else
-        @entourage.moderator_reads.create!(user: current_user, read_at: read_at)
-      end
+      ModeratorReadsService
+        .new(entourage: @entourage, moderator: current_user)
+        .mark_as_read(at: read_at)
 
       redirect_to [:admin, @entourage]
     end
 
     def moderator_unread
-      @entourage.moderator_read_for(user: current_user).delete
+      ModeratorReadsService
+        .new(entourage: @entourage, moderator: current_user)
+        .mark_as_unread
       redirect_to [:admin, @entourage]
     end
 
@@ -120,6 +122,35 @@ module Admin
       end
     end
 
+    def message
+      user = User.find_by email: 'guillaume@entourage.social'
+
+      join_request =
+        user.join_requests.find_or_create_by!(joinable: @entourage) do |join_request|
+          join_request.status = JoinRequest::ACCEPTED_STATUS
+        end
+
+      chat_builder = ChatServices::ChatMessageBuilder.new(
+        params: chat_messages_params,
+        user: user,
+        joinable: @entourage,
+        join_request: join_request
+      )
+
+      chat_builder.create do |on|
+        on.success do |message|
+          ModeratorReadsService
+            .new(entourage: @entourage, moderator: current_user)
+            .mark_as_read
+          redirect_to [:admin, @entourage, anchor: "chat_message-#{message.id}"]
+        end
+
+        on.failure do |message|
+          redirect_to [:admin, @entourage], alert: "Erreur lors de l'envoi du message : #{message.errors.full_messages.to_sentence}"
+        end
+      end
+    end
+
     private
     def set_entourage
       @entourage = Entourage.find(params[:id])
@@ -127,6 +158,10 @@ module Admin
 
     def entourage_params
       params.require(:entourage).permit(:status, :title, :description, :category, :display_category, :latitude, :longitude)
+    end
+
+    def chat_messages_params
+      params.require(:chat_message).permit(:content)
     end
   end
 end

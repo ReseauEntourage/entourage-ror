@@ -32,6 +32,7 @@ Rails.application.routes.draw do
         member do
           post :moderator_read
           post :moderator_unread
+          post :message
         end
       end
 
