@@ -206,6 +206,7 @@ GEM
     mime-types (2.99.1)
     mini_portile2 (2.0.0)
     minitest (5.8.4)
+    mixpanel-ruby (2.2.0)
     momentjs-rails (2.10.6)
       railties (>= 3.1)
     multi_json (1.11.2)
@@ -426,6 +427,7 @@ DEPENDENCIES
   mailcatcher
   mailchimp-api (~> 2.0.6)
   mailjet
+  mixpanel-ruby
   momentjs-rails (~> 2.10.3)
   newrelic_rpm (~> 3.12.1.298)
   pg (~> 0.18.2)
@@ -462,4 +464,4 @@ RUBY VERSION
    ruby 2.3.1p112
 
 BUNDLED WITH
-   1.13.6
+   1.15.4

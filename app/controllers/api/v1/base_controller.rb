@@ -22,7 +22,10 @@ module Api
 
       def authenticate_user!
         if current_user
-          current_user.update(last_sign_in_at: DateTime.now) unless current_user.last_sign_in_at.try(:today?)
+          unless current_user.last_sign_in_at.try(:today?)
+            current_user.update(last_sign_in_at: DateTime.now)
+            mixpanel.track("Opened App")
+          end
         else
           render json: {message: 'unauthorized'}, status: :unauthorized
         end
@@ -52,6 +55,18 @@ module Api
 
       def api_request
         @api_request ||= ApiRequest.new(params: params, headers: headers, env: request.env)
+      end
+
+      def mixpanel
+        @mixpanel ||= MixpanelService.new(
+          distinct_id: current_user.id,
+          default_properties: {
+            'Platform' => api_request.key_infos.try(:[], :device),
+            '$app_version_string' => api_request.key_infos.try(:[], :version),
+            'ip' => request.remote_ip
+          },
+          event_prefix: "Backend"
+        )
       end
 
       def per

@@ -34,6 +34,7 @@ gem 'slack-notifier'
 gem 'mailjet'
 gem 'safety_mailer'
 gem 'ransack'
+gem 'mixpanel-ruby'
 
 group :development, :test do
   gem 'annotate'

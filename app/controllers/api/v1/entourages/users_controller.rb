@@ -24,6 +24,8 @@ module Api
 
             updater.update do |on|
               on.success do
+                mixpanel.track("Requested to join Entourage")
+                mixpanel.track("Wrote Message in Entourage") if message.present?
                 render json: join_request, root: "user", status: 201, serializer: ::V1::JoinRequestSerializer
               end
 
@@ -41,6 +43,8 @@ module Api
           join_request_builder = JoinRequestsServices::JoinRequestBuilder.new(joinable: @entourage, user: current_user, message: params.dig(:request, :message), distance: params[:distance])
           join_request_builder.create do |on|
             on.success do |join_request|
+              mixpanel.track("Requested to join Entourage")
+              mixpanel.track("Wrote Message in Entourage") if message.present?
               render json: join_request, root: "user", status: 201, serializer: ::V1::JoinRequestSerializer
             end
 
@@ -66,6 +70,7 @@ module Api
             end
 
             on.success do
+              mixpanel.track("Wrote Message in Entourage") if message.present?
               head :no_content
             end
 
