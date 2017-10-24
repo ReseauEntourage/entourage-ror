@@ -70,7 +70,12 @@ module Api
             end
 
             on.success do
-              mixpanel.track("Wrote Message in Entourage") if message.present?
+              if status == JoinRequest::ACCEPTED_STATUS
+                mixpanel.track("Accepted Join Request to Entourage")
+              elsif message.present?
+                mixpanel.track("Wrote Message in Entourage")
+              end
+
               head :no_content
             end
 
