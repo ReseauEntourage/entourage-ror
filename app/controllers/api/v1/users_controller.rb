@@ -30,6 +30,11 @@ module Api
         builder = UserServices::PublicUserBuilder.new(params: user_params)
         builder.update(user: @current_user) do |on|
           on.success do |user|
+            mixpanel.sync_changes(user, {
+              'first_name' => '$first_name',
+              'email' => '$email'
+            })
+
             render json: user, status: 200, serializer: ::V1::UserSerializer, scope: @current_user
           end
 

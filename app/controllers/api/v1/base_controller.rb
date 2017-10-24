@@ -25,6 +25,12 @@ module Api
           unless current_user.last_sign_in_at.try(:today?)
             current_user.update(last_sign_in_at: DateTime.now)
             mixpanel.track("Opened App")
+            mixpanel.set_once("First Seen" => current_user.last_sign_in_at)
+            mixpanel.set(
+              '$first_name' => current_user.first_name,
+              '$email' => current_user.email,
+              "Partner Badge" => current_user.default_partner.try(:name)
+            )
           end
         else
           render json: {message: 'unauthorized'}, status: :unauthorized
