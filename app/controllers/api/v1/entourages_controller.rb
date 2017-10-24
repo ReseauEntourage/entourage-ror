@@ -19,6 +19,7 @@ module Api
       #curl -H "Content-Type: application/json" "http://localhost:3000/api/v1/entourages/951.json?token=e4fdc865bc7a91c34daea849e7d73349&distance=123.45&feed_rank=2"
       def show
         EntourageServices::EntourageDisplayService.new(entourage: @entourage, user: current_user, params: params).view
+        mixpanel.track("Displayed Entourage")
         render json: @entourage, serializer: ::V1::EntourageSerializer, scope: {user: current_user}
       end
 
@@ -27,6 +28,9 @@ module Api
         entourage_builder = EntourageServices::EntourageBuilder.new(params: entourage_params, user: current_user)
         entourage_builder.create do |on|
           on.success do |entourage|
+            mixpanel.track("Displayed Entourage")
+            mixpanel.track("Requested to join Entourage")
+            mixpanel.track("Wrote Message in Entourage")
             render json: entourage, status: 201, serializer: ::V1::EntourageSerializer, scope: {user: current_user}
           end
 

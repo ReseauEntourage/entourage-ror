@@ -29,6 +29,7 @@ module Api
                                                               join_request: join_request)
           chat_builder.create do |on|
             on.success do |message|
+              mixpanel.track("Wrote Message in Entourage")
               render json: message, status: 201, serializer: ::V1::ChatMessageSerializer
             end
 
