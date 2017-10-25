@@ -49,6 +49,8 @@ module Api
         builder = UserServices::PublicUserBuilder.new(params: user_params)
         builder.create(send_sms: true) do |on|
           on.success do |user|
+            mixpanel.distinct_id = user.id
+            mixpanel.track("Created Account")
             render json: user, status: 201, serializer: ::V1::UserSerializer, scope: user
           end
 

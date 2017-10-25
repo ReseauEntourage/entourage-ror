@@ -5,9 +5,24 @@ class MixpanelService
     @event_prefix = event_prefix
   end
 
+  attr_writer :distinct_id
+
+  def distinct_id
+    return @distinct_id if @distinct_id.present?
+
+    warning_message = "distinct_id is not set yet"
+    if Rails.env.in? %w(development test)
+      raise warning_message
+    else
+      Rails.logger.warn "type=mixpanel.warning message=#{warning_message.inspect}"
+    end
+
+    nil
+  end
+
   def track event, properties={}
     client.track(
-      @distinct_id,
+      distinct_id,
       [@event_prefix, event].compact.join(" / "),
       @default_properties.merge(properties)
     )
@@ -15,7 +30,7 @@ class MixpanelService
 
   def set properties
     client.people.set(
-      @distinct_id,
+      distinct_id,
       properties,
       @default_properties['ip'] || '0'
     )
@@ -23,7 +38,7 @@ class MixpanelService
 
   def set_once properties
     client.people.set_once(
-      @distinct_id,
+      distinct_id,
       properties,
       @default_properties['ip'] || '0'
     )
