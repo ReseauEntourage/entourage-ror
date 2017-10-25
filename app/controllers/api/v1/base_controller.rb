@@ -23,8 +23,9 @@ module Api
       def authenticate_user!
         if current_user
           unless current_user.last_sign_in_at.try(:today?)
+            first_session = current_user.last_sign_in_at.nil?
             current_user.update(last_sign_in_at: DateTime.now)
-            mixpanel.track("Opened App")
+            mixpanel.track("Opened App", { "First Session" => first_session })
             mixpanel.set_once("First Seen" => current_user.last_sign_in_at)
             mixpanel.set(
               '$first_name' => current_user.first_name,
@@ -65,7 +66,7 @@ module Api
 
       def mixpanel
         @mixpanel ||= MixpanelService.new(
-          distinct_id: current_user.id,
+          distinct_id: current_user.try(:id),
           default_properties: {
             'Platform' => api_request.key_infos.try(:[], :device),
             '$app_version_string' => api_request.key_infos.try(:[], :version),
