@@ -35,7 +35,14 @@ module Api
         private
 
         def set_entourage
-          @entourage = Entourage.visible.find_by(uuid: params[:uuid])
+          key =
+            if params[:uuid].is_a?(String) && params[:uuid].length == 36
+              :uuid
+            else
+              :uuid_v2
+            end
+
+          @entourage = Entourage.visible.find_by(key => params[:uuid])
         end
       end
     end

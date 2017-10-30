@@ -39,7 +39,7 @@ describe Api::V1::EntouragesController do
                                        "created_at"=> entourage.created_at.iso8601(3),
                                        "updated_at"=> entourage.updated_at.iso8601(3),
                                        "description" => nil,
-                                       "share_url" => "http://entourage.social/entourages/#{entourage.uuid}"
+                                       "share_url" => "http://entourage.social/entourages/#{entourage.uuid_v2}"
                                     }]
                               })
       end
@@ -143,7 +143,7 @@ describe Api::V1::EntouragesController do
                                                            "created_at"=> Entourage.last.created_at.iso8601(3),
                                                            "updated_at"=> Entourage.last.updated_at.iso8601(3),
                                                            "description"=> "foo bar",
-                                                           "share_url" => "http://entourage.social/entourages/#{Entourage.last.uuid}"
+                                                           "share_url" => "http://entourage.social/entourages/#{Entourage.last.uuid_v2}"
                                                           }
                                                      }) }
         it { expect(response.status).to eq(201) }
@@ -174,32 +174,44 @@ describe Api::V1::EntouragesController do
 
     context "signed in" do
       context "entourage exists" do
-        before { get :show, id: entourage.to_param, token: user.token }
-        it { expect(JSON.parse(response.body)).to eq({"entourage"=>
-                                                          {"id"=>entourage.id,
-                                                           "status"=>"open",
-                                                           "title"=>"foobar",
-                                                           "entourage_type"=>"ask_for_help",
-                                                           "display_category"=>"social",
-                                                           "number_of_people"=>1,
-                                                           "author"=>{
-                                                               "id"=>entourage.user.id,
-                                                               "display_name"=>"John",
-                                                               "avatar_url"=>nil,
-                                                               "partner"=>nil
-                                                           },
-                                                           "location"=>{
-                                                               "latitude"=>1.122,
-                                                               "longitude"=>2.345
-                                                           },
-                                                           "join_status"=>"not_requested",
-                                                           "number_of_unread_messages"=>nil,
-                                                           "created_at"=> entourage.created_at.iso8601(3),
-                                                           "updated_at"=> entourage.updated_at.iso8601(3),
-                                                           "description" => nil,
-                                                           "share_url" => "http://entourage.social/entourages/#{entourage.uuid}"
-                                                          }
-                                                     }) }
+        context "find by id" do
+          before { get :show, id: entourage.to_param, token: user.token }
+          it { expect(JSON.parse(response.body)).to eq({"entourage"=>
+                                                            {"id"=>entourage.id,
+                                                             "status"=>"open",
+                                                             "title"=>"foobar",
+                                                             "entourage_type"=>"ask_for_help",
+                                                             "display_category"=>"social",
+                                                             "number_of_people"=>1,
+                                                             "author"=>{
+                                                                 "id"=>entourage.user.id,
+                                                                 "display_name"=>"John",
+                                                                 "avatar_url"=>nil,
+                                                                 "partner"=>nil
+                                                             },
+                                                             "location"=>{
+                                                                 "latitude"=>1.122,
+                                                                 "longitude"=>2.345
+                                                             },
+                                                             "join_status"=>"not_requested",
+                                                             "number_of_unread_messages"=>nil,
+                                                             "created_at"=> entourage.created_at.iso8601(3),
+                                                             "updated_at"=> entourage.updated_at.iso8601(3),
+                                                             "description" => nil,
+                                                             "share_url" => "http://entourage.social/entourages/#{entourage.uuid_v2}"
+                                                            }
+                                                       }) }
+        end
+
+        context "find by v1 uuid" do
+          before { get :show, id: entourage.uuid.to_param, token: user.token }
+          it { expect(JSON.parse(response.body)["entourage"]["id"]).to eq entourage.id }
+        end
+
+        context "find by v2 uuid" do
+          before { get :show, id: entourage.uuid_v2.to_param, token: user.token }
+          it { expect(JSON.parse(response.body)["entourage"]["id"]).to eq entourage.id }
+        end
       end
 
       context "entourage doesn't exists" do
@@ -270,7 +282,7 @@ describe Api::V1::EntouragesController do
                                                            "created_at"=> user_entourage.created_at.iso8601(3),
                                                            "updated_at"=> user_entourage.reload.updated_at.iso8601(3),
                                                            "description" => nil,
-                                                           "share_url" => "http://entourage.social/entourages/#{user_entourage.uuid}"
+                                                           "share_url" => "http://entourage.social/entourages/#{user_entourage.uuid_v2}"
                                                           }
                                                      }) }
       end

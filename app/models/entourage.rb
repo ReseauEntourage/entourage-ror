@@ -65,6 +65,21 @@ class Entourage < ActiveRecord::Base
     ))
   end
 
+  def self.find_by_id_or_uuid identifier
+    string = identifier.is_a?(String)
+
+    key =
+      if string && identifier.length == 36
+        :uuid
+      elsif string && identifier.length == 12
+        :uuid_v2
+      else
+        :id
+      end
+
+    @entourage = Entourage.visible.find_by!(key => identifier)
+  end
+
   #An entourage can never be freezed
   def freezed?
     false
@@ -100,7 +115,29 @@ class Entourage < ActiveRecord::Base
   end
 
   def set_uuid
-    uuid = SecureRandom.uuid
+    self.uuid ||= SecureRandom.uuid
+    self.uuid_v2 ||= self.class.generate_uuid_v2
     true
+  end
+
+  def self.generate_uuid_v2
+    'e' + SecureRandom.urlsafe_base64(8)
+  end
+
+  private
+
+  # If the record creation fails because of an non-unique uuid_v2,
+  # generates a new uuid_v2 and retries (at most 3 times in total)
+  def _create_record
+    tries ||= 1
+    transaction(requires_new: true) { super }
+  rescue ActiveRecord::RecordNotUnique => e
+    raise e unless /uuid_v2/ === e.cause.error
+    logger.info "type=entourages.uuid_v2.not_unique tries=#{tries}"
+    raise e if tries == 3
+    self.uuid_v2 = nil
+    set_uuid
+    tries += 1
+    retry
   end
 end

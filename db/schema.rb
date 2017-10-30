@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171012093647) do
+ActiveRecord::Schema.define(version: 20171017114301) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -153,25 +153,27 @@ ActiveRecord::Schema.define(version: 20171012093647) do
   add_index "entourage_scores", ["entourage_id"], name: "index_entourage_scores_on_entourage_id", using: :btree
 
   create_table "entourages", force: :cascade do |t|
-    t.string   "status",           default: "open", null: false
-    t.string   "title",                             null: false
-    t.string   "entourage_type",                    null: false
-    t.integer  "user_id",                           null: false
-    t.float    "latitude",                          null: false
-    t.float    "longitude",                         null: false
-    t.integer  "number_of_people", default: 0,      null: false
-    t.datetime "created_at",                        null: false
-    t.datetime "updated_at",                        null: false
+    t.string   "status",                      default: "open", null: false
+    t.string   "title",                                        null: false
+    t.string   "entourage_type",                               null: false
+    t.integer  "user_id",                                      null: false
+    t.float    "latitude",                                     null: false
+    t.float    "longitude",                                    null: false
+    t.integer  "number_of_people",            default: 0,      null: false
+    t.datetime "created_at",                                   null: false
+    t.datetime "updated_at",                                   null: false
     t.string   "description"
     t.uuid     "uuid"
     t.string   "category"
-    t.boolean  "use_suggestions",  default: false,  null: false
+    t.boolean  "use_suggestions",             default: false,  null: false
     t.string   "display_category"
+    t.string   "uuid_v2",          limit: 12,                  null: false
   end
 
   add_index "entourages", ["latitude", "longitude"], name: "index_entourages_on_latitude_and_longitude", using: :btree
   add_index "entourages", ["user_id"], name: "index_entourages_on_user_id", using: :btree
   add_index "entourages", ["uuid"], name: "index_entourages_on_uuid", unique: true, using: :btree
+  add_index "entourages", ["uuid_v2"], name: "index_entourages_on_uuid_v2", unique: true, using: :btree
 
   create_table "entourages_users", force: :cascade do |t|
     t.integer  "user_id",                               null: false

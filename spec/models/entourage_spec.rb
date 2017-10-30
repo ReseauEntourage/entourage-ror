@@ -50,4 +50,85 @@ RSpec.describe Entourage, type: :model do
 
     expect(entourage.uuid).to_not be nil
   end
+
+  describe "has a v2 uuid" do
+    let(:entourage) { create :entourage }
+
+    describe "format" do
+      it { expect(entourage.uuid_v2[0]).to eq 'e' }
+      it { expect(entourage.uuid_v2.length).to eq 12 }
+    end
+
+    describe "retries automatically if not unique" do
+      let(:new_entourage) { build :entourage }
+      let(:existing_uuid_v2) { entourage.uuid_v2 }
+      let(:new_uuid_v2) { Entourage.generate_uuid_v2 }
+      before {
+        allow(Entourage).to receive(:generate_uuid_v2).and_return(
+          existing_uuid_v2,
+          new_uuid_v2
+        )
+        new_entourage.save
+      }
+
+      it { expect(new_entourage.uuid_v2).to eq new_uuid_v2 }
+      it { expect(Entourage).to have_received(:generate_uuid_v2).exactly(2).times }
+      it { expect(Entourage.count).to eq 2 }
+    end
+  end
+
+  describe '.find_by_id_or_uuid' do
+    subject { Entourage.find_by_id_or_uuid identifier }
+
+    context "when the entourage exists" do
+      let(:entourage) { create :entourage }
+
+      context "when searching with an integer id" do
+        let(:identifier) { entourage.id }
+        it { is_expected.to eq entourage }
+      end
+
+      context "when searching with an string id" do
+        let(:identifier) { entourage.id.to_s }
+        it { is_expected.to eq entourage }
+      end
+
+      context "when searching with a v1 uuid" do
+        let(:identifier) { entourage.uuid }
+        it { is_expected.to eq entourage }
+      end
+
+      context "when searching with a v2 uuid" do
+        let(:identifier) { entourage.uuid_v2 }
+        it { is_expected.to eq entourage }
+      end
+    end
+
+    context "when the entourage doesn't exists" do
+      # wraps subject in a Proc to allow use of `raise_error`
+      def subject
+        -> { super }
+      end
+
+      context "when searching with an integer id" do
+        let(:identifier) { 1234 }
+        it { is_expected.to raise_error ActiveRecord::RecordNotFound }
+      end
+
+      context "when searching with an string id" do
+        let(:identifier) { "1234" }
+        it { is_expected.to raise_error ActiveRecord::RecordNotFound }
+      end
+
+      context "when searching with a v1 uuid" do
+        let(:identifier) { "59f213f2-7101-4c4c-b9a2-e298d9cb56af" }
+        it { is_expected.to raise_error ActiveRecord::RecordNotFound }
+      end
+
+      context "when searching with a v2 uuid" do
+        let(:identifier) { "emRCdKR0VOio" }
+        it { is_expected.to raise_error ActiveRecord::RecordNotFound }
+      end
+    end
+  end
 end

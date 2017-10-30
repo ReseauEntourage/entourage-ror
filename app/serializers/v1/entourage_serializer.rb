@@ -55,9 +55,9 @@ module V1
     end
 
     def share_url
-      return unless object.uuid
+      return unless object.uuid_v2
       share_url_prefix = ENV['PUBLIC_SHARE_URL'] || 'http://entourage.social/entourages/'
-      "#{share_url_prefix}#{object.uuid}"
+      "#{share_url_prefix}#{object.uuid_v2}"
     end
   end
 end

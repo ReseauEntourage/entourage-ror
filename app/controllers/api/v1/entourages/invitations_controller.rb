@@ -28,7 +28,7 @@ module Api
         attr_reader :entourage
 
         def set_entourage
-          @entourage = Entourage.visible.find(params[:entourage_id])
+          @entourage = Entourage.visible.find_by_id_or_uuid(params[:entourage_id])
         end
 
         def invite_params
