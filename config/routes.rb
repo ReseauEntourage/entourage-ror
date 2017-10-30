@@ -181,6 +181,14 @@ Rails.application.routes.draw do
         end
       end
 
+      resources :announcements, only: [] do
+        member do
+          get :icon
+          get :avatar
+          get :redirect
+        end
+      end
+
       put 'applications' => 'user_applications#update'
       post 'login' => 'users#login'
       get 'check' => 'base#check'

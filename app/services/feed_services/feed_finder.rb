@@ -21,7 +21,8 @@ module FeedServices
                    before: nil,
                    author: nil,
                    invitee: nil,
-                   distance: nil)
+                   distance: nil,
+                   announcements: nil)
       @user = user
       @page = page
       @per = per || DEFAULT_PER
@@ -39,6 +40,7 @@ module FeedServices
       @author = author
       @invitee = invitee
       @distance = [(distance&.to_i || DEFAULT_DISTANCE), 40].min
+      @announcements = announcements.try(:to_sym)
       @cursor = nil
       @version = FeatureSwitch.new(user).variant(:feed)
     end
@@ -85,15 +87,20 @@ module FeedServices
 
       feeds = feeds.group("feeds.feedable_type, feeds.feed_type, feeds.user_id, feeds.title, feeds.status, feeds.feedable_id, feeds.latitude, feeds.longitude, feeds.number_of_people, feeds.created_at, feeds.updated_at")
 
-      if version == :v2 && latitude && longitude
-        order_by_distance(feeds: feeds)
-      else
-        feeds.order("updated_at DESC")
-      end
+      feeds =
+        if version == :v2 && latitude && longitude
+          order_by_distance(feeds: feeds)
+        else
+          feeds.order("updated_at DESC")
+        end
+
+      feeds = insert_announcements(feeds: feeds) if announcements == :v1
+
+      feeds
     end
 
     private
-    attr_reader :user, :page, :per, :before, :latitude, :longitude, :show_tours, :feed_type, :show_my_entourages_only, :show_my_tours_only, :show_my_partner_only, :time_range, :tour_status, :entourage_status, :author, :invitee, :distance, :cursor, :version
+    attr_reader :user, :page, :per, :before, :latitude, :longitude, :show_tours, :feed_type, :show_my_entourages_only, :show_my_tours_only, :show_my_partner_only, :time_range, :tour_status, :entourage_status, :author, :invitee, :distance, :announcements, :cursor, :version
 
     def box
       Geocoder::Calculations.bounding_box([latitude, longitude],
@@ -147,6 +154,14 @@ module FeedServices
       inclusive ? "INNER JOIN" : "LEFT OUTER JOIN"
     end
 
+    def insert_announcements(feeds:)
+      AnnouncementsService.new(
+        feeds: feeds,
+        user: user,
+        page: page
+      ).feeds
+    end
+
     def order_by_distance(feeds:)
       center   = "ST_SetSRID(ST_MakePoint(#{longitude}, #{latitude}), 4326)"
       feedable = "ST_SetSRID(ST_MakePoint(longitude, latitude), 4326)"
@@ -160,6 +175,7 @@ module FeedServices
       # the `<->` operator is fast but gives only an approximate ordering
       # so we overshoot a bit, then re-sort and paginate manually
       @cursor ||= 1
+      @page = cursor
       feeds = feeds.limit(25 * cursor + 5)
                    .sort_by(&:distance)
                    .drop((cursor - 1) * 25)
