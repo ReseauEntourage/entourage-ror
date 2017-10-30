@@ -14,9 +14,15 @@ require 'rails_helper'
       let(:user) { FactoryGirl.create(:pro_user) }
       let!(:tour) { FactoryGirl.create(:tour, updated_at: 5.hours.ago, created_at: 5.hours.ago, tour_type: "medical") }
       let!(:entourage) { FactoryGirl.create(:entourage, updated_at: 4.hours.ago, created_at: 4.hours.ago, entourage_type: "ask_for_help") }
+      let(:announcement) { FactoryGirl.build(:announcement, author: user) }
+      before do
+        allow_any_instance_of(FeedServices::AnnouncementsService)
+          .to receive(:select_announcement)
+          .and_return(announcement)
+      end
 
       context "get all" do
-        before { get :index, token: user.token, show_tours: "true" }
+        before { get :index, token: user.token, show_tours: "true", announcements: "v1" }
         it { expect(response.status).to eq(200) }
         it { expect(result).to eq({"feeds"=>[{
                                                  "type"=>"Entourage",
@@ -46,6 +52,23 @@ require 'rails_helper'
 
                                                  },
                                                  "heatmap_size" => 20
+                                             },
+                                             {
+                                                 "type"=>"Announcement",
+                                                 "data"=>{
+                                                     "id"=>1,
+                                                     "title"=>"Une autre façon de contribuer.",
+                                                     "body"=>"Entourage a besoin de vous pour continuer à accompagner les sans-abri.",
+                                                     "action"=>"Aider",
+                                                     "url"=>"http://test.host/api/v1/announcements/1/redirect?token=#{user.token}",
+                                                     "icon_url"=>"http://test.host/api/v1/announcements/1/icon",
+                                                     "author"=>{
+                                                         "id"=>announcement.author.id,
+                                                         "display_name"=>"John",
+                                                         "avatar_url"=>nil,
+                                                         "partner"=>nil
+                                                     }
+                                                 }
                                              },
                                              {
                                                  "type"=>"Tour",

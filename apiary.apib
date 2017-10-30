@@ -1223,7 +1223,7 @@ tour_types should be a list of values separated by coma, ex: , `tour_types=medic
 entourage_types should be a list of values separated by coma, ex: , `entourage_types=ask_for_help,contribution`
 time_range should be a number of hours
 
-### Get all feeds [GET /feeds{?token,longitude,latitude,before,page,per,tour_types,entourage_types,time_range,show_my_entourages_only,show_my_partner_only,distance}]
+### Get all feeds [GET /feeds{?token,longitude,latitude,before,page,per,tour_types,entourage_types,time_range,show_my_entourages_only,show_my_partner_only,distance,announcements}]
 
 + Parameters
     + token (required, string, `FAKETOKEN`) ... Token identifying the current user
@@ -1238,6 +1238,7 @@ time_range should be a number of hours
     + show_my_partner_only (optional, boolean) ... Return only feed items created by users that support the same partner as me
     + time_range  (optional, number) ... Number of hours to filter
     + distance (optional, number) ... Feed perimeter
+    + announcements (optional, enum[string]) ... Set to `v1` to enable feed announcements
 
 + Request
 
@@ -1273,6 +1274,29 @@ time_range should be a number of hours
                             },
                             "heatmap_size": 20,
                             "updated_at": "2016-01-01T19:09:06.000+01:00"
+                        },
+                        {
+                            "type": "Announcement",
+                            "data": {
+                                "id":1,
+                                "title": "Une autre façon de contribuer.",
+                                "body": "Entourage a besoin de vous pour continuer à accompagner les sans-abri.",
+                                "action": "Aider",
+                                "url": "http://test.host/api/v1/announcements/1/redirect?token=4a34a0ae28c7fe6e5dcc180e317ed732",
+                                "icon_url": "http://test.host/api/v1/announcements/1/icon",
+                                "author": {
+                                    "id": 123,
+                                    "display_name": "Seb",
+                                    "avatar_url": "https://s3.amazonaws.com/entourage-avatars/image.jpeg",
+                                    "partner": {
+                                        "id": 1,
+                                        "name": "ATD Quart Monde",
+                                        "large_logo_url":"https://s3-eu-west-1.amazonaws.com/entourage-ressources/ATDQM-coul-V-fr.png",
+                                        "small_logo_url":"https://s3-eu-west-1.amazonaws.com/entourage-ressources/Badge+image.png",
+                                        "default": true
+                                    }
+                                }
+                            }
                         },
                         {
                             "type": "Tour",

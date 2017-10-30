@@ -17,9 +17,10 @@ module Api
                                              show_my_entourages_only: params[:show_my_entourages_only],
                                              show_my_tours_only: params[:show_my_tours_only],
                                              show_my_partner_only: params[:show_my_partner_only],
-                                             distance: params[:distance]).feeds
+                                             distance: params[:distance],
+                                             announcements: params[:announcements]).feeds
 
-        render json: ::V1::FeedSerializer.new(feeds: feeds, user: current_user).to_json, status: 200
+        render json: ::V1::FeedSerializer.new(feeds: feeds, user: current_user, base_url: request.base_url).to_json, status: 200
       end
 
       private
