@@ -77,10 +77,21 @@ describe Api::V1::MyfeedsController do
         end
       end
 
-      context "last_message i'm pending in" do
-        let!(:join_request) { FactoryGirl.create(:join_request, joinable: entourage, user: user, status: "pending") }
+      context "last_message i'm not accepted in" do
+        let!(:join_request) { FactoryGirl.create(:join_request, joinable: entourage, user: user, status: status) }
+        let!(:chat_message) { FactoryGirl.create(:chat_message, messageable: entourage, content: "foo") }
         before { get :index, token: user.token, status: "all" }
-        it { expect(result["feeds"].map {|feed| feed["data"]["last_message"]} ).to eq([{"text"=>"Votre demande est en attente.", "author"=>nil}]) }
+        subject { result["feeds"].map {|feed| feed["data"]["last_message"]} }
+
+        context "request is pending" do
+          let(:status) { "pending" }
+          it { is_expected.to eq [{"text"=>"Votre demande est en attente.", "author"=>nil}] }
+        end
+
+        context "request is rejected" do
+          let(:status) { "rejected" }
+          it { is_expected.to eq [{"text"=>"Votre demande a été rejetée.", "author"=>nil}] }
+        end
       end
 
       context "last_message someone else is pending in" do

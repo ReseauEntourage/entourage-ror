@@ -24,9 +24,14 @@ module V1
 
       def last_element
         @last_element ||= begin
-          last_chat_message = object.chat_messages.includes(:user).order("created_at ASC").last
-          last_join_request = object.join_requests.pending.order("created_at ASC").last
-          [last_chat_message, last_join_request].compact.sort_by {|o| o.created_at}.reverse[0]
+          user_join_request = object.join_requests.includes(:user).where(user_id: scope[:user].id).last
+          if user_join_request.is_accepted?
+            last_chat_message = object.chat_messages.includes(:user).order("created_at ASC").last
+            last_join_request = object.join_requests.pending.order("created_at ASC").last
+            [last_chat_message, last_join_request].compact.sort_by {|o| o.created_at}.reverse[0]
+          else
+            user_join_request
+          end
         end
       end
 
