@@ -24,8 +24,10 @@ module Api
         if current_user
           unless current_user.last_sign_in_at.try(:today?)
             first_session = current_user.last_sign_in_at.nil?
+            reactivated = !first_session && current_user.last_sign_in_at <= 3.months.ago
             current_user.update(last_sign_in_at: DateTime.now)
             mixpanel.track("Opened App", { "First Session" => first_session })
+            mixpanel.track("Reactivated", { "Threshold (Months)" => 3 }) if reactivated
             mixpanel.set_once("First Seen" => current_user.last_sign_in_at)
             mixpanel.set(
               '$first_name' => current_user.first_name,
