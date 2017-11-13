@@ -28,6 +28,9 @@ module Api
 
       def update
         if @encounter.update(encounters_params)
+          if (@encounter.previous_changes.keys & %w(latitude longitude)).any?
+            EncounterReverseGeocodeJob.perform_later(@encounter.id)
+          end
           head :no_content
         else
           render json: {message: 'Could not create encouter', reasons: @encounter.errors.full_messages}, status: :bad_request
