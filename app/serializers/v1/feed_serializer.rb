@@ -22,6 +22,14 @@ module V1
           }
         end
       end
+
+      if FeatureSwitch.new(user).variant(:feed) == :v2
+        if feeds.is_a?(FeedServices::FeedWithCursor) && result.any?
+          # the apps use the last items's updated_at as cursor
+          result.last[:data]['updated_at'] = feeds.cursor
+        end
+      end
+
       return {"feeds": result}
     end
 
