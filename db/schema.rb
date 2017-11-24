@@ -141,6 +141,26 @@ ActiveRecord::Schema.define(version: 20180105085710) do
   add_index "entourage_invitations", ["inviter_id"], name: "index_entourage_invitations_on_inviter_id", using: :btree
   add_index "entourage_invitations", ["phone_number"], name: "index_entourage_invitations_on_phone_number", using: :btree
 
+  create_table "entourage_moderations", force: :cascade do |t|
+    t.integer "entourage_id",                                      null: false
+    t.boolean "moderated",                         default: false, null: false
+    t.string  "action_author_type"
+    t.string  "action_recipient_type"
+    t.string  "action_type"
+    t.string  "action_recipient_consent_obtained"
+    t.date    "moderated_at"
+    t.string  "moderation_contact_channel"
+    t.string  "moderator"
+    t.string  "moderation_action"
+    t.text    "moderation_comment"
+    t.date    "action_outcome_reported_at"
+    t.string  "action_outcome"
+    t.string  "action_success_reason"
+    t.string  "action_failure_reason"
+  end
+
+  add_index "entourage_moderations", ["entourage_id"], name: "index_entourage_moderations_on_entourage_id", unique: true, using: :btree
+
   create_table "entourage_scores", force: :cascade do |t|
     t.integer  "entourage_id", null: false
     t.integer  "user_id",      null: false
@@ -437,6 +457,19 @@ ActiveRecord::Schema.define(version: 20180105085710) do
 
   add_index "user_applications", ["push_token"], name: "index_user_applications_on_push_token", using: :btree
   add_index "user_applications", ["user_id", "device_os", "version"], name: "index_user_applications_on_user_id_and_device_os_and_version", unique: true, using: :btree
+
+  create_table "user_moderations", force: :cascade do |t|
+    t.integer "user_id",                     null: false
+    t.string  "expectations"
+    t.string  "acquisition_channel"
+    t.string  "content_sent"
+    t.string  "skills"
+    t.boolean "accepts_event_invitations"
+    t.boolean "accepts_volunteering_offers"
+    t.boolean "ambassador"
+  end
+
+  add_index "user_moderations", ["user_id"], name: "index_user_moderations_on_user_id", unique: true, using: :btree
 
   create_table "user_newsfeeds", force: :cascade do |t|
     t.integer  "user_id",    null: false

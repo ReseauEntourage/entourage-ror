@@ -20,10 +20,15 @@ module Admin
         .page(params[:page])
         .per(per_page)
         .with_moderator_reads_for(user: current_user)
-        .select("entourages.*, moderator_reads is null and entourages.created_at >= now() - interval '1 week' as unread")
-        .group("entourages.id, moderator_reads.id")
+        .select(%(
+          entourages.*,
+          entourage_moderations.moderated_at is not null or entourages.created_at < '2018-01-01' as moderated,
+          moderator_reads is null and entourages.created_at >= now() - interval '1 week' as unread
+        ))
+        .group("entourages.id, moderator_reads.id, entourage_moderations.id")
         .joins(:conversation_messages)
         .with_moderator_reads_for(user: current_user)
+        .with_moderation
         .order(%(
           case
           when moderator_reads is null and entourages.created_at >= now() - interval '1 week' then 0
@@ -56,6 +61,8 @@ module Admin
           })
       @message_count = Hash[@message_count.map { |m| [m.messageable_id, m] }]
       @message_count.default = OpenStruct.new(unread: 0, total: 0)
+      @moderation = Hash[EntourageModeration.where(entourage_id: entourage_ids).pluck(:entourage_id, :moderated)]
+      @moderation.default = false
 
       # workaround for the 'null' option
       @q = Entourage.ransack(params[:q])
@@ -87,6 +94,8 @@ module Admin
       @messages_author = User.find_by email: 'guillaume@entourage.social'
 
       @unread_content = @moderator_read.nil?
+
+      render layout: 'admin_large'
     end
 
     def moderator_read

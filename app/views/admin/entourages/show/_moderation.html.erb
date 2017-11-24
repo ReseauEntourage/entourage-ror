@@ -1,0 +1,209 @@
+<%
+  moderation = entourage.moderation || entourage.build_moderation
+  user_moderation = entourage.user_moderation || entourage.build_user_moderation
+
+  values = EntourageModeration::VALUES
+  column_type = Hash[EntourageModeration.columns_hash.map { |n, c| [n.to_sym, c.type] }]
+
+  user_values = UserModeration::VALUES
+  user_column_type = Hash[UserModeration.columns_hash.map { |n, c| [n.to_sym, c.type] }]
+%>
+
+<style>
+  /* TODO: find a better way to do this */
+  .unsafe-overlay-on-header {
+    position: fixed;
+    top: 15px;
+    right: 149px;
+    z-index: 1030;
+  }
+
+  .panel-row {
+    display: flex;
+    overflow: hidden;
+  }
+
+  .panel-row + .panel-row {
+    border-top: 1px solid #ddd;
+  }
+
+  .panel-row .panel-heading {
+    color: #333;
+    background-color: #f5f5f5;
+    border-right: 1px solid #ddd;
+    border-radius: 0;
+    flex: 0 0 140px;
+  }
+
+  .panel-row .panel-body {
+    padding-top: 10px;
+    flex-grow: 1;
+  }
+</style>
+<%= form_for moderation,
+             method: :post, url: admin_entourage_moderations_path,
+             remote: true,
+             html: { id: :moderation } do |f| %>
+
+  <%= f.hidden_field :entourage_id %>
+
+  <div class="js-save-status text-right text-muted unsafe-overlay-on-header">
+    <span class="js-save-status-default">&nbsp;</span>
+    <span class="js-save-status-unsaved hidden">Certains changements ne sont pas enregistrés</span>
+    <span class="js-save-status-saved hidden">Enregistré</span>
+    <span class="js-save-status-saving hidden">Enregistrement...</span>
+    <span class="js-save-status-error text-danger hidden">
+      Erreur lors de l'enregistrement des changements
+      <a href="#" class="js-save-retry">Réessayer</a>
+    </span>
+  </div>
+
+  <div class="panel panel-default">
+    <div class="panel-row">
+      <div class="panel-heading">
+        Nature de l’action
+      </div>
+      <div class="panel-body row">
+        <% [:action_author_type, :action_recipient_type, :action_type, :action_recipient_consent_obtained].each do |field| %>
+          <div class="col-md-3">
+            <%= f.label field %>
+            <%= f.select field, values[field], { include_blank: true }, { class: "form-control" } %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="panel-row">
+      <div class="panel-heading">
+        Modération
+      </div>
+      <div class="panel-body">
+        <div class="row">
+          <% [:moderated_at, :moderation_contact_channel, :moderator, :moderation_action].each do |field| %>
+            <div class="col-md-3 form-group">
+              <%= f.label field %>
+              <% case column_type[field] %>
+              <% when :date %>
+                <%= f.date_field field, class: "form-control js-datepicker" %>
+              <% else %>
+                <%= f.select field, values[field], { include_blank: true }, { class: "form-control" } %>
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+
+        <div>
+          <%= f.label :moderation_comment %>
+          <%= f.text_area :moderation_comment, class: "form-control vresize" %>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel-row">
+      <div class="panel-heading">
+        Informations de l'utilisateur
+      </div>
+      <div class="panel-body row">
+        <%= fields_for :user_moderation, user_moderation do |uf| %>
+          <% [:expectations, :acquisition_channel, :content_sent, :skills].each do |field| %>
+            <div class="col-md-3">
+              <%= uf.label field %>
+              <%= uf.select field, user_values[field], { include_blank: true }, { class: "form-control" } %>
+            </div>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="panel-row">
+      <div class="panel-heading">
+        Finalité de l’action
+      </div>
+      <div class="panel-body row">
+        <% [:action_outcome_reported_at, :action_outcome, :action_success_reason, :action_failure_reason].each do |field| %>
+          <div class="col-md-3">
+            <%= f.label field %>
+            <% case column_type[field] %>
+            <% when :date %>
+              <%= f.date_field field, class: "form-control js-datepicker" %>
+            <% else %>
+              <%= f.select field, values[field], { include_blank: true }, { class: "form-control" } %>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+<% end %>
+
+<script>
+  var $moderation = $('#moderation'),
+      moderationSaveTimeout = null,
+      contentVersion = 0,
+      savedVersion = 0,
+      pendingSave = null
+
+  function setSaveModerationStatus(status) {
+    $moderation.find('[class^=js-save-status-]').addClass('hidden')
+    $moderation.find('.js-save-status-'+status).removeClass('hidden')
+  }
+
+  function saveModeration() {
+    if (pendingSave !== null) {
+      setTimeout(saveModeration, 1000) // retry in 1 second
+      return
+    }
+    $moderation.submit()
+  }
+
+  $moderation
+    .on('change input', function(e) {
+      // require a save after 2 seconds of inactivity
+      clearTimeout(moderationSaveTimeout)
+      moderationSaveTimeout = setTimeout(saveModeration, 2000)
+
+      // hide the "saved" message
+      submittedVersion = pendingSave || savedVersion
+      if (contentVersion <= submittedVersion) {
+        setSaveModerationStatus('unsaved')
+        contentVersion = submittedVersion + 1
+      }
+    })
+    .on('ajax:before', function() {
+      setSaveModerationStatus('saving')
+      pendingSave = contentVersion
+    })
+    .on('ajax:error', function(){
+      setSaveModerationStatus('error')
+      contentVersion = pendingSave
+      pendingSave = null
+    })
+    .on('ajax:success', function() {
+      savedVersion = pendingSave
+      pendingSave = null
+
+      // if no more usaved changes exist,
+      // display the message and reset the version counter
+      if (contentVersion > savedVersion) {
+        setSaveModerationStatus('unsaved')
+      }
+      else {
+        setSaveModerationStatus('saved')
+        contentVersion = 0
+        savedVersion = 0
+      }
+    })
+
+  $moderation.find('.js-save-retry').on('click', function(e) {
+    e.preventDefault()
+    saveModeration()
+  })
+
+  window.onbeforeunload = function (e) {
+    var message = "Are you sure?"
+    if (contentVersion > savedVersion) {
+      if (e) { e.returnValue = message }
+      return message
+    }
+  }
+</script>

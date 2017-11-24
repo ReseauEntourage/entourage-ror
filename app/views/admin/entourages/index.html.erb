@@ -9,6 +9,7 @@
   <th>Titre</th>
   <th>Type</th> -->
   <th></th>
+  <th></th>
   <th>id</th>
   <th>Titre</th>
   <th>Description</th>
@@ -18,6 +19,11 @@
   <% @entourages.each do |entourage| %>
     <% unread_count = @message_count[entourage.id].unread %>
     <tr class="<%= 'not-open' if entourage.status != 'open' %>">
+      <td>
+        <% if !entourage.moderated %>
+          <span class="badge" style="background: #f0ad4e">●</span>
+        <% end %>
+      </td>
       <td>
         <% if entourage.unread %>
           <span class="badge" style="background: #d9534f">●</span>
