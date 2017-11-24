@@ -14,3 +14,25 @@ fr:
         description: Description
         phone: Téléphone
         address: Adresse
+      entourage_moderation:
+        action_author_type: Emetteur
+        action_recipient_type: Destinataire
+        action_type: Type d’action
+        action_recipient_consent_obtained: Consentement
+
+        moderated_at: Date de modération
+        moderation_contact_channel: Moyen de contact
+        moderator: Interlocuteur
+        moderation_action: Action
+        moderation_comment: Notes
+
+        action_outcome_reported_at: Date de fin
+        action_outcome: Aboutissement
+        action_success_reason: Raison de la réussite
+        action_failure_reason: Raison de l'échec
+
+      user_moderation:
+        expectations: Attentes
+        acquisition_channel: Connaissance d’Entourage
+        content_sent: Contenu envoyé
+        skills: Compétence

@@ -35,6 +35,8 @@ class Entourage < ActiveRecord::Base
   has_many :moderator_reads, as: :moderatable, dependent: :destroy
   has_many :entourage_invitations, as: :invitable, dependent: :destroy
   has_one :entourage_score, dependent: :destroy
+  has_one :moderation, class_name: 'EntourageModeration'
+  has_one :user_moderation, primary_key: :user_id, foreign_key: :user_id
 
   validates_presence_of :status, :title, :entourage_type, :user_id, :latitude, :longitude, :number_of_people
   validates_inclusion_of :status, in: ENTOURAGE_STATUS
@@ -63,6 +65,10 @@ class Entourage < ActiveRecord::Base
         moderator_reads.moderatable_type = 'Entourage'
       )
     ))
+  end
+
+  def self.with_moderation
+    joins("left join entourage_moderations on entourage_moderations.entourage_id = entourages.id")
   end
 
   def self.find_by_id_or_uuid identifier

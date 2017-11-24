@@ -49,6 +49,13 @@
 
   <div class="panel-body">
     <%= render partial: "admin/entourages/show/details", entourage: @entourage %>
+  </div>
+</div>
+
+  <%= render "admin/entourages/show/moderation", entourage: @entourage %>
+
+<div class="panel panel-default">
+  <div class="panel-body">
     <%= render "admin/entourages/show/members_list", requests: @join_requests.find_all(&:is_accepted?) %>
     <%= render "admin/entourages/show/join_requests_list",
                requests: @join_requests.reject { |r| r.is_accepted? || r.entourage_invitation_id } %>

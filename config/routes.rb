@@ -35,6 +35,7 @@ Rails.application.routes.draw do
           post :message
         end
       end
+      resources :entourage_moderations, only: [:create]
 
       resources :marketing_referers, only: [:index, :edit, :update, :new, :create]
       resources :join_requests, only: [:create]
