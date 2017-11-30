@@ -23,6 +23,7 @@ module FeedServices
     private
 
     def select_announcement
+      return
       Announcement.new(
         id: 1,
         title: "Et si on comprenait le monde de la rue ?",
