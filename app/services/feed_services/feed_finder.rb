@@ -10,6 +10,7 @@ module FeedServices
                    show_tours:,
                    entourage_types:,
                    tour_types:,
+                   types: nil,
                    latitude:,
                    longitude:,
                    show_my_entourages_only: "false",
@@ -31,6 +32,7 @@ module FeedServices
       @longitude = longitude
       @show_tours = show_tours
       @feed_type = join_types(entourage_types: entourage_types, tour_types: tour_types)
+      @types = formated_types(types) if types != nil
       @show_my_entourages_only = show_my_entourages_only=="true"
       @show_my_tours_only = show_my_tours_only=="true"
       @show_my_partner_only = show_my_partner_only=="true"
@@ -48,8 +50,13 @@ module FeedServices
     def feeds
       feeds = Feed.where.not(status: 'blacklisted')
                   .includes(feedable: [:user, :join_requests])
-      feeds = feeds.where(feedable_type: "Entourage") unless (show_tours=="true" && user.pro?)
-      feeds = feeds.where(feed_type: feed_type) if feed_type
+
+      if types != nil
+        feeds = feeds.where(feed_category: types)
+      else
+        feeds = feeds.where(feedable_type: "Entourage") unless (show_tours=="true" && user.pro?)
+        feeds = feeds.where(feed_type: feed_type) if feed_type
+      end
       feeds = filter_my_feeds_only(feeds: feeds)
       feeds = filter_my_partner_only(feeds: feeds) if show_my_partner_only
       feeds = feeds.where(user: author) if author
@@ -85,8 +92,6 @@ module FeedServices
                                          latitude: latitude,
                                          longitude: longitude)
 
-      feeds = feeds.group("feeds.feedable_type, feeds.feed_type, feeds.user_id, feeds.title, feeds.status, feeds.feedable_id, feeds.latitude, feeds.longitude, feeds.number_of_people, feeds.created_at, feeds.updated_at")
-
       feeds =
         if version == :v2 && latitude && longitude
           order_by_distance(feeds: feeds)
@@ -100,7 +105,7 @@ module FeedServices
     end
 
     private
-    attr_reader :user, :page, :per, :before, :latitude, :longitude, :show_tours, :feed_type, :show_my_entourages_only, :show_my_tours_only, :show_my_partner_only, :time_range, :tour_status, :entourage_status, :author, :invitee, :distance, :announcements, :cursor, :version
+    attr_reader :user, :page, :per, :before, :latitude, :longitude, :show_tours, :feed_type, :types, :show_my_entourages_only, :show_my_tours_only, :show_my_partner_only, :time_range, :tour_status, :entourage_status, :author, :invitee, :distance, :announcements, :cursor, :version
 
     def box
       Geocoder::Calculations.bounding_box([latitude, longitude],
@@ -116,6 +121,40 @@ module FeedServices
 
     def formated_type(types)
       types&.gsub(" ", "")&.split(",")
+    end
+
+    PRO_TYPES = {
+      'tm' => 'tour_medical',
+      'tb' => 'tour_barehands',
+      'ta' => 'tour_alimentary',
+    }
+
+    COMMON_TYPES = {
+      'as' => 'ask_for_help_social',
+      'ae' => 'ask_for_help_event',
+      'am' => 'ask_for_help_mat_help',
+      'ar' => 'ask_for_help_resource',
+      'ai' => 'ask_for_help_info',
+      'aa' => 'ask_for_help_skill',
+      'ao' => 'ask_for_help_other',
+
+      'cs' => 'contribution_social',
+      'ce' => 'contribution_event',
+      'cm' => 'contribution_mat_help',
+      'cr' => 'contribution_resource',
+      'ci' => 'contribution_info',
+      'ca' => 'contribution_skill',
+      'co' => 'contribution_other',
+    }
+
+    def formated_types(types)
+      allowed_types = COMMON_TYPES
+      allowed_types.merge!(PRO_TYPES) if user.pro?
+
+      types = (types || "").split(',').map(&:strip)
+      types = types.map { |t| allowed_types[t] || t }
+
+      types & allowed_types.values
     end
 
     def formated_status(status)

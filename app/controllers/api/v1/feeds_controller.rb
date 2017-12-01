@@ -13,6 +13,7 @@ module Api
                                              show_tours: params[:show_tours],
                                              entourage_types: params[:entourage_types],
                                              tour_types: params[:tour_types],
+                                             types: params[:types],
                                              time_range: time_range,
                                              show_my_entourages_only: params[:show_my_entourages_only],
                                              show_my_tours_only: params[:show_my_tours_only],
