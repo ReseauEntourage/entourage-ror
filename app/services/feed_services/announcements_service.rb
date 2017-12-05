@@ -23,12 +23,11 @@ module FeedServices
     private
 
     def select_announcement
-      return
       Announcement.new(
-        id: 1,
-        title: "Et si on comprenait le monde de la rue ?",
-        body: "Préjugés sur les personnes sans-abri : 3 minutes pour changer son regard !",
-        action: "Voir",
+        id: 2,
+        title: "Une autre façon de contribuer !",
+        body: "Entourage a besoin de votre soutien pour continuer sa mission.",
+        action: "Aider",
         author: User.find_by(email: "guillaume@entourage.social"),
       )
     end

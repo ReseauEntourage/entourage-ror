@@ -8,7 +8,22 @@ module Api
           'action-examples' =>
             'http://blog.entourage.social/quelles-actions-faire-avec-entourage',
           'donation' =>
-            'https://entourage.iraiser.eu',
+            lambda do |user|
+              url = "https://www.entourage.social/don" +
+                      "?firstname=#{current_user.first_name}" +
+                      "&lastname=#{current_user.last_name}" +
+                      "&email=#{current_user.email}" +
+                      "&external_id=#{current_user.id}" +
+                      "&utm_medium=APP" +
+                      "&utm_campaign=DEC2017"
+
+              mixpanel.track("Clicked Menu Link", { "Link" => "Donation", "Campaign" => "Donation DEC2017" })
+              if user.id % 2 == 0
+                url + "&utm_source=APP-S1"
+              else
+                url + "&utm_source=APP-S2"
+              end
+            end,
           'atd-partnership' =>
             'https://www.atd-quartmonde.fr/entourage/',
           'faq' =>

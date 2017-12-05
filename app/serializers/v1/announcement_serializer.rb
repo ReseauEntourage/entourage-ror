@@ -16,8 +16,8 @@ module V1
       {
           id: author.id,
           display_name: author.first_name,
-          avatar_url: avatar_url,
-          partner: author.default_partner.nil? ? nil : V1::PartnerSerializer.new(author.default_partner, scope: {user: author}, root: false).as_json
+          avatar_url: UserServices::Avatar.new(user: author).thumbnail_url,
+          partner: nil
       }
     end
 

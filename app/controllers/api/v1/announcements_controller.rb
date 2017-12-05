@@ -4,7 +4,7 @@ module Api
       skip_before_filter :authenticate_user!, only: [:icon, :avatar]
 
       def icon
-        redirect_to view_context.asset_url("assets/announcements/icons/video.png")
+        redirect_to view_context.asset_url("assets/announcements/icons/heart.png")
       end
 
       def avatar
@@ -12,8 +12,20 @@ module Api
       end
 
       def redirect
-        mixpanel.track("Opened Announcement", { "Campaign" => "SCB_1.1" })
-        redirect_to "http://www.simplecommebonjour.org/?p=4&utm_source=app&utm_medium=annonce&utm_campaign=SCB_1.1"
+        url = "https://www.entourage.social/don" +
+                "?firstname=#{current_user.first_name}" +
+                "&lastname=#{current_user.last_name}" +
+                "&email=#{current_user.email}" +
+                "&external_id=#{current_user.id}" +
+                "&utm_medium=APP" +
+                "&utm_campaign=DEC2017"
+
+        mixpanel.track("Opened Announcement", { "Campaign" => "Donation DEC2017" })
+        if current_user.id % 2 == 0
+          redirect_to url + "&utm_source=APP-S1"
+        else
+          redirect_to url + "&utm_source=APP-S2"
+        end
       end
     end
   end
