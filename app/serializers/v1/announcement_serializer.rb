@@ -22,7 +22,9 @@ module V1
     end
 
     def url
-      url_for(:redirect, id: object.id, token: scope[:user].token)
+      url = url_for(:redirect, id: object.id, token: scope[:user].token)
+      url = "#{ENV['DEEPLINK_SCHEME']}://webview?url=#{url}" if object.webview
+      url
     end
 
     def icon_url

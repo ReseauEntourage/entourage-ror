@@ -8,7 +8,9 @@ class Announcement
     :action,
     :url,
     :icon_url,
-    :author
+    :author,
+    :webview,
+    :position
   ].freeze
   attr_accessor *ATTRIBUTES
 
