@@ -14,16 +14,11 @@ fi
 
 echo "CLOSE ALL PROGRAMS USING THE DATABASE : Ruby web server, SQL client, etc"
 lsof -t -i tcp:3000 | xargs kill -9
-pkill Valentina || true
 pkill rails || true
 
-echo "snapshot remote DB $current"
-heroku pg:backups:capture -a $current
-echo "Reset DB"
-bundle exec bin/rake db:drop db:create
-echo "Download DB dump from $current"
-curl -o tmp/db.dump `heroku pg:backups:public-url -a $current`
-echo "Restore DB"
-pg_restore -h localhost -d $LOCAL_DB_NAME tmp/db.dump || true
+echo "Drop local DB"
+dropdb $LOCAL_DB_NAME || true
+echo "Pull remote DB"
+heroku pg:pull DATABASE $LOCAL_DB_NAME -a $current
 echo "Restore test db"
 RAILS_ENV=test bundle exec bin/rake db:migrate
