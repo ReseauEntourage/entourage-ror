@@ -35,7 +35,11 @@ module Api
               else
                 'https://blog.entourage.social/charte-ethique-grand-public/'
               end
-            end
+            end,
+          'feedback' =>
+            'https://entourage-asso.typeform.com/to/TUpltC',
+          'volunteering' =>
+            'https://entourage-asso.typeform.com/to/U5MocH'
         }
 
         redirection = redirections[params[:id]]
