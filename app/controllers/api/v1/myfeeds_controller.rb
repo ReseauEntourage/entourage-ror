@@ -15,6 +15,7 @@ module Api
                                              tour_types: params[:tour_types],
                                              show_my_entourages_only: "true",
                                              show_my_tours_only: "true",
+                                             show_my_partner_only: params[:show_my_partner_only],
                                              tour_status: tour_status,
                                              entourage_status: entourage_status,
                                              author: author,
