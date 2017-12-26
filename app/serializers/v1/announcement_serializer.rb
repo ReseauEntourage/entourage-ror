@@ -12,11 +12,17 @@ module V1
     def author
       return unless object.author
       author = object.author
-      avatar_url = url_for(:avatar, id: object.id)
+      case object.id
+      when 4
+        avatar_url = url_for(:avatar, id: object.id)
+      else
+        avatar_url = UserServices::Avatar.new(user: author).thumbnail_url
+      end
+
       {
           id: author.id,
           display_name: author.first_name,
-          avatar_url: UserServices::Avatar.new(user: author).thumbnail_url,
+          avatar_url: avatar_url,
           partner: nil
       }
     end

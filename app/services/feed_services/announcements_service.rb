@@ -50,10 +50,20 @@ module FeedServices
         title = "ne manquez rien !"
       end
 
+      # announcements.push Announcement.new(
+      #   id: 3,
+      #   title: "#{user.first_name}, ne manquez rien !",
+      #   body: "Définissez votre zone d’action pour être informé des nouveautés du quartier.",
+      #   action: "Voir",
+      #   author: User.find_by(email: "guillaume@entourage.social"),
+      #   webview: true,
+      #   position: 5
+      # )
+
       announcements.push Announcement.new(
-        id: 3,
-        title: "#{user.first_name}, ne manquez rien ! ",
-        body: "Définissez votre zone d’action pour être informé des nouveautés du quartier.",
+        id: 4,
+        title: "Pendant les fêtes, osez la rencontre !",
+        body: "Découvrez des conseils concrets pour aller vers les personnes sans-abri.",
         action: "Voir",
         author: User.find_by(email: "guillaume@entourage.social"),
         webview: true,
