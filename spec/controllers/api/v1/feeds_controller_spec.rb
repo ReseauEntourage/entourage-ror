@@ -17,8 +17,8 @@ require 'rails_helper'
       let(:announcement) { FactoryGirl.build(:announcement, author: user) }
       before do
         allow_any_instance_of(FeedServices::AnnouncementsService)
-          .to receive(:select_announcement)
-          .and_return(announcement)
+          .to receive(:select_announcements)
+          .and_return([announcement])
       end
 
       context "get all" do
@@ -60,12 +60,12 @@ require 'rails_helper'
                                                      "title"=>"Une autre façon de contribuer.",
                                                      "body"=>"Entourage a besoin de vous pour continuer à accompagner les sans-abri.",
                                                      "action"=>"Aider",
-                                                     "url"=>"http://test.host/api/v1/announcements/1/redirect?token=#{user.token}",
+                                                     "url"=>"http://test.host/api/v1/announcements/1/redirect/#{user.token}",
                                                      "icon_url"=>"http://test.host/api/v1/announcements/1/icon",
                                                      "author"=>{
                                                          "id"=>announcement.author.id,
                                                          "display_name"=>"John",
-                                                         "avatar_url"=>"http://test.host/api/v1/announcements/1/avatar",
+                                                         "avatar_url"=>nil,
                                                          "partner"=>nil
                                                      }
                                                  }

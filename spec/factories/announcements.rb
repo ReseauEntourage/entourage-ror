@@ -5,5 +5,6 @@ FactoryGirl.define do
     body "Entourage a besoin de vous pour continuer à accompagner les sans-abri."
     action "Aider"
     association :author, factory: :public_user
+    position 1
   end
 end
