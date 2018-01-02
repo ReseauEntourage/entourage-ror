@@ -39,20 +39,20 @@ module FeedServices
         action: "Aider",
         author: User.find_by(email: "guillaume@entourage.social"),
         webview: false,
-        position: 1
+        position: 5
       )
 
-      first_name = (user.first_name || "").scan(/[[:alpha:]]+|[^[:alpha:]]+/).map(&:capitalize).join.strip
+      # first_name = (user.first_name || "").scan(/[[:alpha:]]+|[^[:alpha:]]+/).map(&:capitalize).join.strip
 
-      if first_name.present?
-        title = "#{first_name}, ne manquez rien !"
-      else
-        title = "ne manquez rien !"
-      end
+      # if first_name.present?
+      #   title = "#{first_name}, ne manquez rien !"
+      # else
+      #   title = "ne manquez rien !"
+      # end
 
       # announcements.push Announcement.new(
       #   id: 3,
-      #   title: "#{user.first_name}, ne manquez rien !",
+      #   title: title,
       #   body: "Définissez votre zone d’action pour être informé des nouveautés du quartier.",
       #   action: "Voir",
       #   author: User.find_by(email: "guillaume@entourage.social"),
@@ -62,12 +62,12 @@ module FeedServices
 
       announcements.push Announcement.new(
         id: 4,
-        title: "Pendant les fêtes, osez la rencontre !",
+        title: "En 2018, osez la rencontre !",
         body: "Découvrez des conseils concrets pour aller vers les personnes sans-abri.",
         action: "Voir",
         author: User.find_by(email: "guillaume@entourage.social"),
         webview: true,
-        position: 5
+        position: 1
       )
 
       announcements
