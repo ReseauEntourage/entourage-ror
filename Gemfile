@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 ruby '2.3.1'
 
-gem 'rails',                          '~> 4.2.6'
+gem 'rails',                          '~> 4.2.10'
 gem 'sass-rails',                     '~> 4.0.3'
 gem 'uglifier',                       '>= 1.3.0'
 gem 'jquery-rails',                   '~> 4.0.4'
@@ -45,7 +45,7 @@ end
 
 group :development do
   gem 'dotenv-rails',                 '~> 2.0.2'
-  gem 'rack-mini-profiler',           '~> 0.9.8' #enable by requesting any page with '?pp=enable'
+  gem 'rack-mini-profiler',           '~> 0.10.1' #enable by requesting any page with '?pp=enable'
   gem 'pry-rails',                    '~> 0.3.4'
   gem 'bullet',                       '~> 4.14.7'
   gem 'thin',                         '~> 1.6.3'
