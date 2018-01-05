@@ -40,7 +40,7 @@ module V1
     end
 
     def me?
-      scope && (object.id == scope.id)
+      scope && scope[:user] && (object.id == scope[:user].id)
     end
   end
 end

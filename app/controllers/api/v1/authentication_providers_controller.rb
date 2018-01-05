@@ -11,7 +11,7 @@ module Api
         end
         authenticator.authenticate do |on|
           on.login_success do |user|
-            render json: user, status: 200, serializer: ::V1::UserSerializer, scope: user
+            render json: user, status: 200, serializer: ::V1::UserSerializer, scope: { user: user }
           end
 
           on.save_user_error do |user|

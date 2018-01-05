@@ -22,7 +22,7 @@ module Api
           return render_error(code: "DELETED", message: "user is deleted", status: 401)
         end
 
-        render json: user, status: 200, serializer: ::V1::UserSerializer, scope: user
+        render json: user, status: 200, serializer: ::V1::UserSerializer, scope: { user: user }
       end
 
       #curl -X PATCH -d '{"user": { "sms_code":"123456"}}' -H "Content-Type: application/json" "http://localhost:3000/api/v1/users/93.json?token=azerty"
@@ -35,7 +35,7 @@ module Api
               'email' => '$email'
             })
 
-            render json: user, status: 200, serializer: ::V1::UserSerializer, scope: @current_user
+            render json: user, status: 200, serializer: ::V1::UserSerializer, scope: { user: @current_user }
           end
 
           on.failure do |user|
@@ -51,7 +51,7 @@ module Api
           on.success do |user|
             mixpanel.distinct_id = user.id
             mixpanel.track("Created Account")
-            render json: user, status: 201, serializer: ::V1::UserSerializer, scope: user
+            render json: user, status: 201, serializer: ::V1::UserSerializer, scope: { user: user }
           end
 
           on.failure do |user|
@@ -80,7 +80,7 @@ module Api
 
         if params[:code][:action] == "regenerate"
           UserServices::SMSSender.new(user: user).regenerate_sms!
-          render json: user, status: 200, serializer: ::V1::UserSerializer, scope: user
+          render json: user, status: 200, serializer: ::V1::UserSerializer, scope: { user: user }
         else
           render json: {error: "Unknown action"}, status:400
         end
@@ -89,12 +89,12 @@ module Api
       #curl -H "X-API-KEY:adc86c761fa8" -H "Content-Type: application/json" "http://localhost:3000/api/v1/users/me.json?token=azerty"
       def show
         user = params[:id] == "me" ? current_user : User.find(params[:id])
-        render json: user, status: 200, serializer: ::V1::UserSerializer, scope: current_user
+        render json: user, status: 200, serializer: ::V1::UserSerializer, scope: { user: current_user }
       end
 
       def destroy
         UserServices::DeleteUserService.new(user: @current_user).delete
-        render json: @current_user, status: 200, serializer: ::V1::UserSerializer, scope: @current_user
+        render json: @current_user, status: 200, serializer: ::V1::UserSerializer, scope: { user: @current_user }
       end
 
       private
