@@ -36,11 +36,15 @@ module V1
 
     def partner
       return nil unless object.default_partner
-      JSON.parse(V1::PartnerSerializer.new(object.default_partner, scope: {user: object}, root: false).to_json)
+      JSON.parse(V1::PartnerSerializer.new(object.default_partner, scope: {user: object, full: scope[:full_partner] || false}, root: false).to_json)
+    end
+
+    def scope
+      super || {}
     end
 
     def me?
-      scope && scope[:user] && (object.id == scope[:user].id)
+      scope[:user] && (object.id == scope[:user].id)
     end
   end
 end

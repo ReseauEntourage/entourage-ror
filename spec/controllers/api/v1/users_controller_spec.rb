@@ -12,6 +12,8 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
 
     context 'when the user exists' do
       let!(:user) { create :pro_user, sms_code: "123456", avatar_key: "avatar" }
+      let(:partner) { create :partner }
+      before { UserPartner.create!(user: user, partner: partner, default: true) }
 
       context 'when the phone number and sms code are valid' do
         before { post 'login', user: {phone: user.phone, sms_code: "123456"}, format: 'json' }
@@ -38,7 +40,18 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                                       "encounter_count"=>0,
                                       "entourage_count"=>0,
                                   },
-                                  "partner"=>nil
+                                  "partner"=>{
+                                      "id"=>partner.id,
+                                      "name"=>"MyString",
+                                      "large_logo_url"=>"MyString",
+                                      "small_logo_url"=>"MyString",
+                                      "description"=>"MyDescription",
+                                      "phone"=>nil,
+                                      "address"=>nil,
+                                      "website_url"=>nil,
+                                      "email"=>nil,
+                                      "default"=>true
+                                  }
                                  }})
         end
       end
@@ -286,6 +299,8 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
 
   describe 'GET show' do
     let!(:user) { create :pro_user}
+    let(:partner) { create :partner }
+    before { UserPartner.create!(user: user, partner: partner, default: true) }
 
     context "not signed in" do
       before { get :show, id: user.id }
@@ -316,7 +331,18 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                                                                "encounter_count"=>0,
                                                                "entourage_count"=>0,
                                                            },
-                                                           "partner"=>nil}}) }
+                                                           "partner"=>{
+                                                               "id"=>partner.id,
+                                                               "name"=>"MyString",
+                                                               "large_logo_url"=>"MyString",
+                                                               "small_logo_url"=>"MyString",
+                                                               "description"=>"MyDescription",
+                                                               "phone"=>nil,
+                                                               "address"=>nil,
+                                                               "website_url"=>nil,
+                                                               "email"=>nil,
+                                                               "default"=>true
+                                                           }}}) }
       end
 
       context "get my profile with 'me' shortcut" do
@@ -338,7 +364,18 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                                                                "encounter_count"=>0,
                                                                "entourage_count"=>0,
                                                            },
-                                                           "partner"=>nil}}) }
+                                                           "partner"=>{
+                                                               "id"=>partner.id,
+                                                               "name"=>"MyString",
+                                                               "large_logo_url"=>"MyString",
+                                                               "small_logo_url"=>"MyString",
+                                                               "description"=>"MyDescription",
+                                                               "phone"=>nil,
+                                                               "address"=>nil,
+                                                               "website_url"=>nil,
+                                                               "email"=>nil,
+                                                               "default"=>true
+                                                           }}}) }
       end
 
       context "get someone else profile" do

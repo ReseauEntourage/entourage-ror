@@ -22,7 +22,7 @@ module Api
           return render_error(code: "DELETED", message: "user is deleted", status: 401)
         end
 
-        render json: user, status: 200, serializer: ::V1::UserSerializer, scope: { user: user }
+        render json: user, status: 200, serializer: ::V1::UserSerializer, scope: { user: user, full_partner: true }
       end
 
       #curl -X PATCH -d '{"user": { "sms_code":"123456"}}' -H "Content-Type: application/json" "http://localhost:3000/api/v1/users/93.json?token=azerty"
@@ -35,7 +35,7 @@ module Api
               'email' => '$email'
             })
 
-            render json: user, status: 200, serializer: ::V1::UserSerializer, scope: { user: @current_user }
+            render json: user, status: 200, serializer: ::V1::UserSerializer, scope: { user: @current_user, full_partner: true }
           end
 
           on.failure do |user|
@@ -89,7 +89,7 @@ module Api
       #curl -H "X-API-KEY:adc86c761fa8" -H "Content-Type: application/json" "http://localhost:3000/api/v1/users/me.json?token=azerty"
       def show
         user = params[:id] == "me" ? current_user : User.find(params[:id])
-        render json: user, status: 200, serializer: ::V1::UserSerializer, scope: { user: current_user }
+        render json: user, status: 200, serializer: ::V1::UserSerializer, scope: { user: current_user, full_partner: true }
       end
 
       def destroy
