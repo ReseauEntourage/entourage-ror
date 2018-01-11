@@ -230,6 +230,11 @@ module FeedServices
       super array.to_ary
     end
 
+    # prevent accidental conversion back to array
+    def to_a
+      self
+    end
+
     attr_reader :cursor
   end
 end
