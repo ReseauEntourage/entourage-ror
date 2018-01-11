@@ -27,6 +27,7 @@ class User < ActiveRecord::Base
   belongs_to :marketing_referer
   has_many :feeds
   has_many :user_partners, dependent: :destroy
+  has_many :default_user_partners, -> { where(default: true) }, class_name: :UserPartner
   has_many :partners, through: :user_partners
   has_one :users_appetence
   has_many :entourage_displays
@@ -102,7 +103,7 @@ class User < ActiveRecord::Base
   end
 
   def default_partner
-    @default_partner ||= user_partners.where(default: true).first&.partner
+    @default_partner ||= default_user_partners.first&.partner
   end
 
   def default_partner_id
