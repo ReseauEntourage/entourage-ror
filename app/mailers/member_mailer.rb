@@ -7,7 +7,7 @@ class MemberMailer < ActionMailer::Base
 
   def welcome(user)
     @user = user
-    mail(from: COMMUNITY_EMAIL, to: user.email, subject: 'Bienvenue sur Entourage !') if user.email.present?
+    mail(from: email_with_name(COMMUNITY_EMAIL, "Claire d'Entourage"), to: user.email, subject: 'Bienvenue sur Entourage !') if user.email.present?
   end
 
   def tour_report(tour)
@@ -37,5 +37,11 @@ class MemberMailer < ActionMailer::Base
   def registration_request_accepted(user)
     @user = user
     mail(from: COMMUNITY_EMAIL, to: @user.email, subject: "Votre demande d'adhésion à la plateforme Entourage a été acceptée") if @user.email.present?
+  end
+
+  private
+
+  def email_with_name(email, name)
+    %("#{name}" <#{email}>)
   end
 end
