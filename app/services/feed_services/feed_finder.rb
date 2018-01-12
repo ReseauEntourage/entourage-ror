@@ -45,6 +45,8 @@ module FeedServices
       @announcements = announcements.try(:to_sym)
       @cursor = nil
       @version = FeatureSwitch.new(user).variant(:feed)
+
+      @time_range = lyon_grenoble_timerange_workaround
     end
 
     def feeds
@@ -221,6 +223,28 @@ module FeedServices
                    .take(25)
 
       FeedWithCursor.new(feeds, cursor: Time.at(cursor + 1).as_json)
+    end
+
+    def lyon_grenoble_timerange_workaround
+      return time_range if time_range != 192 # only workaround the '8 days' setting
+      return time_range if latitude.nil? || longitude.nil?
+
+      lat = latitude.to_f
+      lng = longitude.to_f
+      cities = [
+        { name: 'Lyon',     lats: 45.71..45.80, lngs: 4.77..4.91 },
+        { name: 'Grenoble', lats: 45.15..45.22, lngs: 5.67..5.79 },
+      ]
+
+      cities.each do |c|
+        p [c[:name], lat, lat.in?(c[:lats]), lng, lng.in?(c[:lngs])]
+      end
+
+      if cities.any? { |c| lat.in?(c[:lats]) && lng.in?(c[:lngs]) }
+        720 # 30 days
+      else
+        time_range
+      end
     end
   end
 
