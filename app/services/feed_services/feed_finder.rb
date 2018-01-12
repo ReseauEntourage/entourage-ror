@@ -94,7 +94,7 @@ module FeedServices
 
       feeds =
         if version == :v2 && latitude && longitude
-          order_by_distance(feeds: feeds)
+          order_by_distance(feeds: feeds).sort_by(&:updated_at).reverse
         else
           feeds.order("updated_at DESC")
         end
