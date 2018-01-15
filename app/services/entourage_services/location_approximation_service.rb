@@ -5,8 +5,12 @@ module EntourageServices
     end
 
     def approximated_location
-      @approximated_location ||=
-        cache(cache_key, 30.days, except: '') { formated_location }
+      if ENV['DISABLE_ENTOURAGE_GEOCODING']
+        ''
+      else
+        @approximated_location ||=
+          cache(cache_key, 30.days, except: '') { formated_location }
+      end
     end
 
     def expire_cache
