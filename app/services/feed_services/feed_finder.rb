@@ -45,6 +45,7 @@ module FeedServices
       @announcements = announcements.try(:to_sym)
       @cursor = nil
       @version = FeatureSwitch.new(user).variant(:feed)
+      @area = FeedRequestArea.new(@latitude, @longitude)
 
       @time_range = lyon_grenoble_timerange_workaround
     end
@@ -107,7 +108,7 @@ module FeedServices
     end
 
     private
-    attr_reader :user, :page, :per, :before, :latitude, :longitude, :show_tours, :feed_type, :types, :show_my_entourages_only, :show_my_tours_only, :show_my_partner_only, :time_range, :tour_status, :entourage_status, :author, :invitee, :distance, :announcements, :cursor, :version
+    attr_reader :user, :page, :per, :before, :latitude, :longitude, :show_tours, :feed_type, :types, :show_my_entourages_only, :show_my_tours_only, :show_my_partner_only, :time_range, :tour_status, :entourage_status, :author, :invitee, :distance, :announcements, :cursor, :area, :version
 
     def box
       Geocoder::Calculations.bounding_box([latitude, longitude],
@@ -229,22 +230,72 @@ module FeedServices
       return time_range if time_range != 192 # only workaround the '8 days' setting
       return time_range if latitude.nil? || longitude.nil?
 
-      lat = latitude.to_f
-      lng = longitude.to_f
-      cities = [
-        { name: 'Lyon',     lats: 45.71..45.80, lngs: 4.77..4.91 },
-        { name: 'Grenoble', lats: 45.15..45.22, lngs: 5.67..5.79 },
-      ]
 
-      cities.each do |c|
-        p [c[:name], lat, lat.in?(c[:lats]), lng, lng.in?(c[:lngs])]
-      end
-
-      if cities.any? { |c| lat.in?(c[:lats]) && lng.in?(c[:lngs]) }
+      if area.in?(['Lyon', 'Grenoble'])
         720 # 30 days
       else
         time_range
       end
+    end
+  end
+
+  # lazily evaluates if the coordinates are inside one of the pre-defined areas
+  # returns a String (name of the area or UNKNOWN_AREA)
+  class FeedRequestArea < BasicObject
+    # the areas are circles: lat,lng define the center, radius is in km
+    # coeff is for the length of a degree of longitude depending on the latitude
+    # area[:coeff] = Math.cos(area[:lat] * (::Math::PI / 180))).round(5)
+    # see: http://jonisalonen.com/2014/computing-distance-between-coordinates-can-be-simple-and-fast/
+    AREAS = [
+      { name: 'Paris',    lat: 48.8558, lng: 2.3369, radius: 7, coeff: 0.65796 },
+      { name: 'Lyon',     lat: 45.7544, lng: 4.8445, radius: 6, coeff: 0.69774 },
+      { name: 'Grenoble', lat: 45.1864, lng: 5.7237, radius: 6, coeff: 0.70480 },
+      { name: 'Lille',    lat: 50.6284, lng: 3.0389, radius: 6, coeff: 0.63435 },
+    ]
+    UNKNOWN_AREA = 'UNKNOWN_AREA'.freeze
+    KM_PER_DEG = 110.25
+
+    def initialize lat, lng
+      @lat = lat
+      @lng = lng
+      @evaluated = false
+    end
+
+    def method_missing(method_name, *args, &block)
+      _area.send(method_name, *args, &block)
+    end
+
+    def == other
+      _area == other
+    end
+
+    def present?
+      _area != UNKNOWN_AREA
+    end
+
+    def blank?; !present?; end
+    def empty?; !present?; end
+    def !;      !present?; end
+
+    private
+
+    def respond_to_missing? method_name, include_private=false
+      _area.send(:respond_to_missing?, method_name, include_private)
+    end
+
+    def _area
+      @area ||= begin
+        @lat = @lat.to_f
+        @lng = @lng.to_f
+        area = AREAS.find { |a| _distance(a[:lat], a[:lng], a[:coeff]) <= a[:radius] }
+        area.nil? ? UNKNOWN_AREA : area[:name]
+      end
+    end
+
+    def _distance(lat, lng, coeff)
+      x = @lat - lat
+      y = (@lng - lng) * coeff
+      KM_PER_DEG * ::Math.sqrt(x**2 + y**2)
     end
   end
 
