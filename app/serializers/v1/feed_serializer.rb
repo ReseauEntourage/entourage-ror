@@ -1,7 +1,15 @@
 module V1
   class FeedSerializer
     def initialize(feeds:, user:, include_last_message: false, base_url: nil, key_infos: nil)
-      @feeds = feeds
+      @feed_version = FeatureSwitch.new(user).variant(:feed)
+
+      if feed_version == :v2
+        @feeds = feeds.entries
+        @cursor = feeds.cursor
+      else
+        @feeds = feeds
+      end
+
       @user = user
       @include_last_message = include_last_message
       @base_url = base_url
@@ -37,10 +45,10 @@ module V1
         end
       end
 
-      if FeatureSwitch.new(user).variant(:feed) == :v2
-        if feeds.is_a?(FeedServices::FeedWithCursor) && result.any?
+      if feed_version == :v2
+        if !cursor.nil? && result.any?
           # the apps use the last items's updated_at as cursor
-          result.last[:data]['updated_at'] = feeds.cursor
+          result.last[:data]['updated_at'] = cursor
         end
       end
 
@@ -48,6 +56,6 @@ module V1
     end
 
     private
-    attr_reader :feeds, :user, :include_last_message, :base_url, :key_infos
+    attr_reader :feeds, :user, :include_last_message, :base_url, :key_infos, :cursor, :feed_version
   end
 end

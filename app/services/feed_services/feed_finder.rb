@@ -104,7 +104,12 @@ module FeedServices
 
       feeds = insert_announcements(feeds: feeds) if announcements == :v1
 
-      feeds
+      if version == :v2
+        cursor = Time.at(cursor + 1).as_json if !cursor.nil?
+        FeedWithCursor.new(feeds, cursor: cursor)
+      else
+        feeds
+      end
     end
 
     private
@@ -222,8 +227,6 @@ module FeedServices
                    .sort_by(&:distance)
                    .drop((cursor - 1) * 25)
                    .take(25)
-
-      FeedWithCursor.new(feeds, cursor: Time.at(cursor + 1).as_json)
     end
 
     def lyon_grenoble_timerange_workaround
@@ -299,17 +302,12 @@ module FeedServices
     end
   end
 
-  class FeedWithCursor < SimpleDelegator
-    def initialize array, cursor:
-      @cursor = cursor.to_s
-      super array.to_ary
+  class FeedWithCursor
+    def initialize entries, cursor:
+      @cursor = cursor
+      @entries = entries
     end
 
-    # prevent accidental conversion back to array
-    def to_a
-      self
-    end
-
-    attr_reader :cursor
+    attr_reader :entries, :cursor
   end
 end
