@@ -21,6 +21,16 @@ module Api
                                              distance: params[:distance],
                                              announcements: params[:announcements]).feeds
 
+        if FeatureSwitch.new(current_user).variant(:feed) == :v2
+          if feeds.metadata.any?
+            mixpanel.track("Displayed Feed", {
+              "Onboarding Entourage Pinned" => !!feeds.metadata[:onboarding_entourage_pinned],
+              "Onboarding Announcement Card" => !!feeds.metadata[:onboarding_announcement],
+              "Onboarding Entourage Area" => feeds.metadata[:area]
+            })
+          end
+        end
+
         render json: ::V1::FeedSerializer.new(feeds: feeds, user: current_user, base_url: request.base_url, key_infos: api_request.key_infos).to_json, status: 200
       end
 

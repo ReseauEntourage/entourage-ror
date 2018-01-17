@@ -46,6 +46,7 @@ module FeedServices
       @cursor = nil
       @version = FeatureSwitch.new(user).variant(:feed)
       @area = FeedRequestArea.new(@latitude, @longitude)
+      @metadata = {}
 
       @time_range = lyon_grenoble_timerange_workaround
     end
@@ -102,11 +103,19 @@ module FeedServices
           feeds.order("updated_at DESC")
         end
 
+      if latitude && longitude && page == 1
+        pinned = Onboarding::V1.pinned_entourage_for area, user: user
+        if !pinned.nil?
+          feeds = pin(pinned, feeds: feeds)
+          @metadata.merge!(onboarding_entourage_pinned: true, area: area)
+        end
+      end
+
       feeds = insert_announcements(feeds: feeds) if announcements == :v1
 
       if version == :v2
         cursor = Time.at(cursor + 1).as_json if !cursor.nil?
-        FeedWithCursor.new(feeds, cursor: cursor)
+        FeedWithCursor.new(feeds, cursor: cursor, metadata: @metadata)
       else
         feeds
       end
@@ -202,11 +211,16 @@ module FeedServices
     end
 
     def insert_announcements(feeds:)
-      AnnouncementsService.new(
+      feeds, announcements_metadata = AnnouncementsService.new(
         feeds: feeds,
         user: user,
-        page: page
+        page: page,
+        area: area
       ).feeds
+
+      @metadata.merge!(announcements_metadata)
+
+      feeds
     end
 
     def order_by_distance(feeds:)
@@ -229,6 +243,24 @@ module FeedServices
                    .take(25)
     end
 
+    def pin entourage_id, feeds:
+      feeds = feeds.to_a
+
+      index = feeds.index { |f| f.feedable_type == 'Entourage' && f.feedable_id == entourage_id }
+
+      if index != nil
+        item = feeds.delete_at(index)
+      else
+        item = Announcement::Feed.new(Entourage.find_by(id: entourage_id))
+      end
+
+      if item.feedable.nil?
+        feeds
+      else
+        feeds.insert(0, item)
+      end
+    end
+
     def lyon_grenoble_timerange_workaround
       return time_range if time_range != 192 # only workaround the '8 days' setting
       return time_range if latitude.nil? || longitude.nil?
@@ -247,13 +279,14 @@ module FeedServices
   class FeedRequestArea < BasicObject
     # the areas are circles: lat,lng define the center, radius is in km
     # coeff is for the length of a degree of longitude depending on the latitude
-    # area[:coeff] = Math.cos(area[:lat] * (::Math::PI / 180))).round(5)
+    # area[:coeff] = Math.cos(area[:lat] * (::Math::PI / 180)).round(5)
     # see: http://jonisalonen.com/2014/computing-distance-between-coordinates-can-be-simple-and-fast/
     AREAS = [
-      { name: 'Paris',    lat: 48.8558, lng: 2.3369, radius: 7, coeff: 0.65796 },
-      { name: 'Lyon',     lat: 45.7544, lng: 4.8445, radius: 6, coeff: 0.69774 },
-      { name: 'Grenoble', lat: 45.1864, lng: 5.7237, radius: 6, coeff: 0.70480 },
-      { name: 'Lille',    lat: 50.6284, lng: 3.0389, radius: 6, coeff: 0.63435 },
+      { name: 'République', lat: 48.8676, lng: 2.3639, radius: 1.5, coeff: 0.65780 },
+      { name: 'Paris',      lat: 48.8558, lng: 2.3369, radius: 7.0, coeff: 0.65796 },
+      { name: 'Lyon',       lat: 45.7544, lng: 4.8445, radius: 6.0, coeff: 0.69774 },
+      { name: 'Grenoble',   lat: 45.1864, lng: 5.7237, radius: 6.0, coeff: 0.70480 },
+      { name: 'Lille',      lat: 50.6284, lng: 3.0389, radius: 6.0, coeff: 0.63435 },
     ]
     UNKNOWN_AREA = 'UNKNOWN_AREA'.freeze
     KM_PER_DEG = 110.25
@@ -303,11 +336,12 @@ module FeedServices
   end
 
   class FeedWithCursor
-    def initialize entries, cursor:
+    def initialize entries, cursor:, metadata:{}
       @cursor = cursor
       @entries = entries
+      @metadata = metadata
     end
 
-    attr_reader :entries, :cursor
+    attr_reader :entries, :cursor, :metadata
   end
 end

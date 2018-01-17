@@ -8,6 +8,11 @@ module Api
         #curl -H "Content-Type: application/json" "http://localhost:3000/api/v1/tours/1017/users.json?token=07ee026192ea722e66feb2340a05e3a8"
         def index
           join_requests = @entourage.join_requests.where(status: ["pending", "accepted"])
+
+          if @entourage.id.in?(Onboarding::V1::ENTOURAGES.values)
+            join_requests = join_requests.unscope(where: :status).where(status: :accepted).map { |r| r.message = nil; r }
+          end
+
           render json: join_requests, root: "users", each_serializer: ::V1::JoinRequestSerializer
         end
 
@@ -15,6 +20,9 @@ module Api
         def create
           # first we check if the request is already existing
           join_request = JoinRequest.where(joinable: @entourage, user: current_user).first
+
+          is_onboarding, mp_params = Onboarding::V1.entourage_metadata(@entourage)
+
           if join_request.present?
            message = params.dig(:request, :message)
             updater = JoinRequestsServices::JoinRequestUpdater.new(join_request: join_request,
@@ -24,8 +32,11 @@ module Api
 
             updater.update do |on|
               on.success do
-                mixpanel.track("Requested to join Entourage")
+                mixpanel.track("Requested to join Entourage", mp_params)
                 mixpanel.track("Wrote Message in Entourage") if message.present?
+
+                Onboarding::V1.join_request_success(join_request) if is_onboarding
+
                 render json: join_request, root: "user", status: 201, serializer: ::V1::JoinRequestSerializer
               end
 
@@ -43,8 +54,11 @@ module Api
           join_request_builder = JoinRequestsServices::JoinRequestBuilder.new(joinable: @entourage, user: current_user, message: params.dig(:request, :message), distance: params[:distance])
           join_request_builder.create do |on|
             on.success do |join_request|
-              mixpanel.track("Requested to join Entourage")
+              mixpanel.track("Requested to join Entourage", mp_params)
               mixpanel.track("Wrote Message in Entourage") if message.present?
+
+              Onboarding::V1.join_request_success(join_request) if is_onboarding
+
               render json: join_request, root: "user", status: 201, serializer: ::V1::JoinRequestSerializer
             end
 

@@ -8,6 +8,7 @@ module Api
           2 => :heart,
           3 => :pin,
           4 => :video,
+          5 => :megaphone,
         }[params[:id].to_i]
 
         redirect_to view_context.asset_url("assets/announcements/icons/#{icon}.png")

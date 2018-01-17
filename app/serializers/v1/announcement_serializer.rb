@@ -13,7 +13,7 @@ module V1
       return unless object.author
       author = object.author
       case object.id
-      when 4
+      when 4, 5
         avatar_url = url_for(:avatar, id: object.id)
       else
         avatar_url = UserServices::Avatar.new(user: author).thumbnail_url
@@ -28,8 +28,12 @@ module V1
     end
 
     def url
-      url = url_for(:redirect, id: object.id, token: scope[:user].token)
-      url = "#{ENV['DEEPLINK_SCHEME']}://webview?url=#{url}" if object.webview
+      if object.url =~ /^#{ENV['DEEPLINK_SCHEME']}:\/\//
+        url = object.url
+      else
+        url = url_for(:redirect, id: object.id, token: scope[:user].token)
+        url = "#{ENV['DEEPLINK_SCHEME']}://webview?url=#{url}" if object.webview
+      end
       url
     end
 

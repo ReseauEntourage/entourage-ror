@@ -19,7 +19,8 @@ module Api
       #curl -H "Content-Type: application/json" "http://localhost:3000/api/v1/entourages/951.json?token=e4fdc865bc7a91c34daea849e7d73349&distance=123.45&feed_rank=2"
       def show
         EntourageServices::EntourageDisplayService.new(entourage: @entourage, user: current_user, params: params).view
-        mixpanel.track("Displayed Entourage")
+        is_onboarding, mp_params = Onboarding::V1.entourage_metadata(@entourage)
+        mixpanel.track("Displayed Entourage", mp_params)
         render json: @entourage, serializer: ::V1::EntourageSerializer, scope: {user: current_user}
       end
 
