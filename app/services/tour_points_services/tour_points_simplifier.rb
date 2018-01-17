@@ -6,8 +6,24 @@ module TourPointsServices
       @tour_id = tour_id
     end
 
-    def simplified_tour_points
-      ActiveRecord::Base.connection.execute(sql).map { |point| format_point(point) }
+    def simplified_tour_points clear_cache: false
+      cache_key = "entourage:tours:#{tour_id}:tour_points"
+
+      if clear_cache
+        $redis.del(cache_key)
+        cached_points = nil
+      else
+        cached_points = $redis.get(cache_key)
+      end
+
+      if cached_points.present?
+        points = JSON.parse(cached_points)
+      else
+        points = ActiveRecord::Base.connection.execute(sql).map { |point| format_point(point) }
+        $redis.set(cache_key, points.to_json, {ex: 7 * 24 * 3600})
+      end
+
+      points
     end
 
     private

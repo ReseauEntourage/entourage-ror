@@ -55,9 +55,7 @@ module V1
     end
 
     def tour_points
-      cache_points = $redis.get("entourage:tours:#{object.id}:tour_points")
-      result = cache_points.present? ? JSON.parse(cache_points) : TourPointsServices::TourPointsSimplifier.new(tour_id: object.id).simplified_tour_points
-      result.blank? ? object.tour_points : result
+      TourPointsServices::TourPointsSimplifier.new(tour_id: object.id).simplified_tour_points
     end
 
     def join_status
