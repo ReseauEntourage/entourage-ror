@@ -78,7 +78,7 @@ module Api
         user_phone = Phone::PhoneBuilder.new(phone: user_params[:phone]).format
         user = User.where(phone: user_phone).first!
 
-        if params[:code][:action] == "regenerate"
+        if params[:code][:action] == "regenerate" && !user.deleted
           UserServices::SMSSender.new(user: user).regenerate_sms!
           render json: user, status: 200, serializer: ::V1::UserSerializer, scope: { user: user }
         else
