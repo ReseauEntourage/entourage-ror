@@ -16,9 +16,9 @@ module V1
                :number_of_unread_messages,
                :updated_at
 
-    has_many :tour_points
-    has_one :author
-    has_one :last_message
+    has_many :tour_points, serializer: ActiveModel::DefaultSerializer
+    has_one :author, serializer: ActiveModel::DefaultSerializer
+    has_one :last_message, serializer: ActiveModel::DefaultSerializer
 
     def filter(keys)
       include_last_message? ? keys : keys - [:last_message]

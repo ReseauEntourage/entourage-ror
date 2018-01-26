@@ -16,9 +16,9 @@ module V1
                :description,
                :share_url
 
-    has_one :author
-    has_one :location
-    has_one :last_message
+    has_one :author, serializer: ActiveModel::DefaultSerializer
+    has_one :location, serializer: ActiveModel::DefaultSerializer
+    has_one :last_message, serializer: ActiveModel::DefaultSerializer
 
     def filter(keys)
       include_last_message? ? keys : keys - [:last_message]

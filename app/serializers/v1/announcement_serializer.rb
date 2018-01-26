@@ -7,7 +7,7 @@ module V1
                :url,
                :icon_url
 
-    has_one :author
+    has_one :author, serializer: ActiveModel::DefaultSerializer
 
     def author
       return unless object.author

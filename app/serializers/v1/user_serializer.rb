@@ -12,7 +12,7 @@ module V1
                :partner
 
     has_one :organization
-    has_one :stats
+    has_one :stats, serializer: ActiveModel::DefaultSerializer
 
     def filter(keys)
       me? ? keys : keys - [:token, :email]
