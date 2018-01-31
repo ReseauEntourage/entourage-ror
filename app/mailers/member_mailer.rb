@@ -19,6 +19,11 @@ class MemberMailer < ActionMailer::Base
     attachments['tour_points.csv'] = File.read(exporter.export_tour_points)
     attachments['encounters.csv'] = File.read(exporter.export_encounters)
 
+    headers['X-MJ-EventPayload'] = JSON.fast_generate(
+      type: :tour_report,
+      tour_id: tour.id
+    )
+
     mail(from: TOUR_REPORT_EMAIL, to: @user.email, subject: 'Résumé de la maraude') if @user.email.present?
   end
 
