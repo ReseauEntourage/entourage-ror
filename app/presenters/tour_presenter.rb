@@ -48,7 +48,7 @@ class TourPresenter
 
   def tour_summary(current_user)
     summary_text = "#{tour.user.full_name} a réalisé une maraude de #{duration}"
-    summary_text += " et a rencontré #{pluralize tour.encounters.size, 'personne'}" if tour.encounters.size > 0
+    summary_text += " et a fait #{pluralize tour.encounters.size, 'rencontre'}" if tour.encounters.size > 0
     if Authentication::UserTourAuthenticator.new(user: current_user, tour: tour).allowed_to_see?
       link_to summary_text, Rails.application.routes.url_helpers.tour_path(tour)
     else
