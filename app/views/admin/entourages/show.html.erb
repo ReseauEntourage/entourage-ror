@@ -15,11 +15,18 @@
       <div class="row">
         <div class='col-sm-8'>
           <h3 class="panel-title">
-            <%= "#{@entourage.id} - #{@entourage.title.try(:capitalize)}" %>
+            <%= entourage_category_image @entourage, style: "position: relative; top: -2px;" %>
+            <%= @entourage.title %>
           </h3>
-          <%= entourage_state_label(@entourage) %>
-          <%= entourage_type_label(@entourage) %>
-          <span class="label label-default"><%= @entourage.display_category || EntouragesHelper::NO_CATEGORY %></span>
+          <div>
+            <%= entourage_type_name @entourage %> par
+            <span style="font-weight: bold">
+              <%= user_avatar_image @entourage.user, size: '24x24', style: "border-radius: 50%; display: inline-block; background-image: url('#{asset_path "user/default_avatar.png"}'); background-size: contain; background-color: #fff;", alt: '' %>
+              <%= UserPresenter.new(user: @entourage.user).display_name %>
+            </span>
+            —
+            Créée il y a <%= time_ago_in_words @entourage.created_at %>
+          </div>
         </div>
         <div class='col-sm-4 '>
           <div class='pull-right'>

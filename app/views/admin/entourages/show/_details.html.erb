@@ -5,8 +5,21 @@
 
   <div class='col-sm-4 '>
     <div class='pull-right'>
-      <span class="glyphicon glyphicon-map-marker" aria-hidden="true"></span>
-      <%= @entourage.approximated_location %>
+      <div>
+        <span class="glyphicon glyphicon-map-marker" aria-hidden="true"></span>
+        <%= @entourage.approximated_location %>
+      </div>
+      <div>
+        <%= l @entourage.created_at, format: "%A %-d %B à %H h %M" %>
+      </div>
+      <div>
+        <span style="font-weight: bold">id :</span>
+        #<%= @entourage.id %>
+      </div>
+      <div>
+        <span style="font-weight: bold">statut :</span>
+        <%= entourage_state_label(@entourage) %>
+      </div>
     </div>
   </div>
 </div>

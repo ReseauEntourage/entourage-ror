@@ -103,14 +103,33 @@
       <div class="panel-heading">
         Informations de l'utilisateur
       </div>
-      <div class="panel-body row">
+      <div class="panel-body">
+        <div class="row" style="margin-bottom: 2px;">
+          <div class="col-md-3 form-inline">
+            <label>Actions :</label> <%= entourage.user.entourages.count %>
+            <%= link_to '(Voir)', admin_entourages_path(q: { user_id_eq: entourage.user_id }), target: :_blank %>
+          </div>
+          <div class="col-md-3 form-inline">
+            <label>Messages :</label> <%= entourage.user.chat_messages.count %>
+          </div>
+        </div>
         <%= fields_for :user_moderation, user_moderation do |uf| %>
-          <% [:expectations, :acquisition_channel, :content_sent, :skills].each do |field| %>
-            <div class="col-md-3">
-              <%= uf.label field %>
-              <%= uf.select field, user_values[field], { include_blank: true }, { class: "form-control" } %>
-            </div>
-          <% end %>
+          <div class="row">
+            <% [:expectations, :acquisition_channel, :content_sent, :skills].each do |field| %>
+              <div class="col-md-3 form-group">
+                <%= uf.label field %>
+                <%= uf.select field, user_values[field], { include_blank: true }, { class: "form-control" } %>
+              </div>
+            <% end %>
+          </div>
+          <div class="row" style="margin-bottom: -9px; overflow: hidden;">
+            <% [:accepts_event_invitations, :accepts_volunteering_offers, :ambassador].each do |field| %>
+              <div class="col-md-3 form-inline">
+                <%= uf.label field %>
+                <%= uf.check_box field %>
+              </div>
+            <% end %>
+          </div>
         <% end %>
       </div>
     </div>

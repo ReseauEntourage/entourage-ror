@@ -37,7 +37,8 @@ module Admin
 
     def user_moderation_params
       params.require(:user_moderation).permit(
-        :expectations, :acquisition_channel, :content_sent, :skills
+        :expectations, :acquisition_channel, :content_sent, :skills,
+        :accepts_event_invitations, :accepts_volunteering_offers, :ambassador
       )
     end
   end

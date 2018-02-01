@@ -27,6 +27,51 @@ module EntouragesHelper
     content_tag :span, entourage.entourage_type, class: "label #{type_to_class[entourage.entourage_type]}"
   end
 
+  def entourage_full_category entourage
+    "#{entourage.entourage_type}_#{entourage.display_category || :other}"
+  end
+
+  def entourage_category_image entourage, options={}
+    path = "entourage/display_category/#{entourage_full_category entourage}.png"
+    options[:title] ||= [entourage_type_phrase(entourage),
+                         ' › ',
+                         entourage_category_phrase(entourage)].join
+    image_tag path, options
+  end
+
+  def entourage_type_name entourage
+    {
+      'contribution' => "Contribution",
+      'ask_for_help' => "Demande"
+    }[entourage.entourage_type]
+  end
+
+  def entourage_type_phrase entourage
+    {
+      'contribution' => "Je me propose de",
+      'ask_for_help' => "Je cherche"
+    }[entourage.entourage_type]
+  end
+
+  def entourage_category_phrase entourage
+    {
+      'ask_for_help_event'    => "Des bénévoles pour un évènement",
+      'ask_for_help_info'     => "Poser une question au réseau",
+      'ask_for_help_mat_help' => "Un don matériel",
+      'ask_for_help_other'    => "Autre chose !",
+      'ask_for_help_resource' => "Une ressource mise à disposition",
+      'ask_for_help_skill'    => "Une compétence",
+      'ask_for_help_social'   => "Des voisins pour entourer une personne",
+      'contribution_event'    => "Inviter à un évènement solidaire",
+      'contribution_info'     => "Diffuser une information",
+      'contribution_mat_help' => "Faire un don matériel",
+      'contribution_other'    => "Aider à ma façon",
+      'contribution_resource' => "Mettre à disposition une ressource",
+      'contribution_skill'    => "Donner une compétence",
+      'contribution_social'   => "Passer du temps avec une personne"
+    }[entourage_full_category entourage]
+  end
+
   def entourage_invitation_type_label entourage_invitation
     type_to_class = {
       "pending"  => "label-warning",
