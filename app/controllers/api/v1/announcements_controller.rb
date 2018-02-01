@@ -9,6 +9,7 @@ module Api
           3 => :pin,
           4 => :video,
           5 => :megaphone,
+          6 => :megaphone,
         }[params[:id].to_i]
 
         redirect_to view_context.asset_url("assets/announcements/icons/#{icon}.png")
@@ -39,9 +40,11 @@ module Api
         when 3
           hex_id = current_user.id.to_s(16)
           sig = OpenSSL::HMAC.hexdigest(OpenSSL::Digest.new('sha1'), '6db24fb6', hex_id).first(4)
-          url = "https://entourage-asso.typeform.com/to/WIg5A9?user_id=#{hex_id}:#{sig}"
+          url = "https://entourage-asso.typeform.com/to/WIg5A9?user_id=#{hex_id}#{sig}"
         when 4
           url = "http://www.simplecommebonjour.org/?p=153"
+        when 6
+          url = "https://blog.entourage.social/2018/01/15/securite-et-moderation/"
         end
 
         mixpanel.track("Opened Announcement", { "Announcement" => id })

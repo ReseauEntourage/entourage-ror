@@ -34,34 +34,6 @@ module FeedServices
     def select_announcements
       announcements = []
 
-      announcements.push Announcement.new(
-        id: 2,
-        title: "Une autre façon de contribuer !",
-        body: "Entourage a besoin de votre soutien pour continuer sa mission.",
-        action: "Aider",
-        author: User.find_by(email: "guillaume@entourage.social"),
-        webview: false,
-        position: 5
-      )
-
-      # first_name = (user.first_name || "").scan(/[[:alpha:]]+|[^[:alpha:]]+/).map(&:capitalize).join.strip
-
-      # if first_name.present?
-      #   title = "#{first_name}, ne manquez rien !"
-      # else
-      #   title = "ne manquez rien !"
-      # end
-
-      # announcements.push Announcement.new(
-      #   id: 3,
-      #   title: title,
-      #   body: "Définissez votre zone d’action pour être informé des nouveautés du quartier.",
-      #   action: "Voir",
-      #   author: User.find_by(email: "guillaume@entourage.social"),
-      #   webview: true,
-      #   position: 5
-      # )
-
       onboarding_announcement = Onboarding::V1.announcement_for(area, user: user)
 
       if onboarding_announcement
@@ -69,17 +41,45 @@ module FeedServices
         @metadata.merge!(onboarding_announcement: true, area: area)
       else
         announcements.push Announcement.new(
-          id: 4,
-          title: "En 2018, osez la rencontre !",
-          body: "Découvrez des conseils concrets pour aller vers les personnes sans-abri.",
-          action: "Voir",
+          id: 6,
+          title: "Le saviez-vous ? Chaque action est contrôlée.",
+          body: "L'équipe de modération d'Entourage veille au respect des personnes et de la vie privée.",
+          action: "En savoir plus",
           author: User.find_by(email: "guillaume@entourage.social"),
           webview: true,
           position: 1
         )
       end
 
+      announcements.push Announcement.new(
+        id: 3,
+        title: with_first_name("ne manquez pas les actions autour de vous !"),
+        body: "Définissez votre zone d'action pour être tenu(e) informé(e) des actions dans votre quartier.",
+        action: "Définir ma zone",
+        author: User.find_by(email: "guillaume@entourage.social"),
+        webview: true,
+        position: 5
+      )
+
       announcements
+    end
+
+    def with_first_name text
+      if first_name.present?
+        "#{first_name}, #{text}"
+      else
+        text.capitalize
+      end
+    end
+
+    def first_name
+      @first_name ||=
+        (user.first_name || "")
+        .scan(/[[:alpha:]]+|[^[:alpha:]]+/)
+        .map(&:capitalize)
+        .join
+        .strip
+        .presence
     end
   end
 end

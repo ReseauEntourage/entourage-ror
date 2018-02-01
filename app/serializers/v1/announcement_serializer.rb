@@ -13,7 +13,7 @@ module V1
       return unless object.author
       author = object.author
       case object.id
-      when 4, 5
+      when 3, 4, 5
         avatar_url = url_for(:avatar, id: object.id)
       else
         avatar_url = UserServices::Avatar.new(user: author).thumbnail_url
