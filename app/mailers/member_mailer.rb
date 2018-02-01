@@ -7,6 +7,12 @@ class MemberMailer < ActionMailer::Base
 
   def welcome(user)
     @user = user
+
+    headers['X-MJ-EventPayload'] = JSON.fast_generate(
+      type: :welcome,
+      user_id: user.id
+    )
+
     mail(from: email_with_name(COMMUNITY_EMAIL, "Claire d'Entourage"), to: user.email, subject: 'Bienvenue sur Entourage !') if user.email.present?
   end
 
