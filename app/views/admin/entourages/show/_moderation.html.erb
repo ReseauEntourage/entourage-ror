@@ -112,6 +112,9 @@
           <div class="col-md-3 form-inline">
             <label>Messages :</label> <%= entourage.user.chat_messages.count %>
           </div>
+          <div class="col-md-3 form-inline">
+            <label>Actions rejointes :</label> <%= entourage.user.join_requests.count - entourage.user.entourages.count %>
+          </div>
         </div>
         <%= fields_for :user_moderation, user_moderation do |uf| %>
           <div class="row">

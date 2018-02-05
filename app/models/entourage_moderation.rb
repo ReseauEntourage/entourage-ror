@@ -51,6 +51,7 @@ class EntourageModeration < ActiveRecord::Base
     # Moyen de contact
     moderation_contact_channel: [
       "Appelé",
+      "SMS",
       "Message vocal laissé",
       "Mail envoyé",
       "Message via appli",
@@ -81,6 +82,7 @@ class EntourageModeration < ActiveRecord::Base
       'Oui',
       'Non',
       'Hors communauté',
+      'Échange de numéros',
       'Doublon',
       'Hors sujet',
     ],

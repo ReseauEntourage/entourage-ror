@@ -26,14 +26,18 @@ class UserModeration < ActiveRecord::Base
     ],
     # Contenu envoyé
     content_sent: [
-      'Facebook',
-      'Twitter',
-      'Instagram',
-      'Internet',
-      'TV',
-      'Connaissance',
-      'Autre',
-      'Média',
+      "Simple comme bonjour",
+      "Idées d’actions faciles",
+      "Devenir ambassadeur-relais",
+      "Vidéo de présentation d’1’30",
+      '"Les sans abris vous écrivent"',
+      "FAQ",
+      "Charte éthique",
+      "Les guides de solidarité",
+      "Mission de service civique",
+      "Stage chez entourage",
+      "Site Entourage",
+      "Blog Entourage",
     ],
     # Compétence
     skills: [
