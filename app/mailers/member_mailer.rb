@@ -13,7 +13,7 @@ class MemberMailer < ActionMailer::Base
       user_id: user.id
     )
 
-    mail(from: email_with_name(COMMUNITY_EMAIL, "Claire d'Entourage"), to: user.email, subject: 'Bienvenue sur Entourage !') if user.email.present?
+    mail(from: email_with_name("contact@entourage.social", "Claire d'Entourage"), to: user.email, subject: 'Bienvenue sur Entourage !') if user.email.present?
   end
 
   def tour_report(tour)
