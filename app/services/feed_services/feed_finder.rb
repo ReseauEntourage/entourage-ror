@@ -144,6 +144,9 @@ module FeedServices
       'tm' => 'tour_medical',
       'tb' => 'tour_barehands',
       'ta' => 'tour_alimentary',
+
+      # fix wrong key in iOS 4.1 - 4.3
+      'ts' => 'tour_barehands',
     }
 
     COMMON_TYPES = {
@@ -152,7 +155,7 @@ module FeedServices
       'am' => 'ask_for_help_mat_help',
       'ar' => 'ask_for_help_resource',
       'ai' => 'ask_for_help_info',
-      'aa' => 'ask_for_help_skill',
+      'ak' => 'ask_for_help_skill',
       'ao' => 'ask_for_help_other',
 
       'cs' => 'contribution_social',
@@ -160,8 +163,12 @@ module FeedServices
       'cm' => 'contribution_mat_help',
       'cr' => 'contribution_resource',
       'ci' => 'contribution_info',
-      'ca' => 'contribution_skill',
+      'ck' => 'contribution_skill',
       'co' => 'contribution_other',
+
+      # fix wrong keys in iOS 4.1 - 4.3
+      'ah' => 'ask_for_help_mat_help',
+      'ch' => 'contribution_mat_help',
     }
 
     def formated_types(types)
@@ -171,7 +178,7 @@ module FeedServices
       types = (types || "").split(',').map(&:strip)
       types = types.map { |t| allowed_types[t] || t }
 
-      types & allowed_types.values
+      (types & allowed_types.values).uniq
     end
 
     def formated_status(status)
