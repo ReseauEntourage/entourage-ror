@@ -38,9 +38,8 @@ module Api
             url += "&utm_source=APP-S2"
           end
         when 3
-          hex_id = current_user.id.to_s(16)
-          sig = OpenSSL::HMAC.hexdigest(OpenSSL::Digest.new('sha1'), '6db24fb6', hex_id).first(4)
-          url = "https://entourage-asso.typeform.com/to/WIg5A9?user_id=#{hex_id}#{sig}"
+          user_id = UserServices::EncodedId.encode(current_user.id)
+          url = "https://entourage-asso.typeform.com/to/WIg5A9?user_id=#{user_id}"
         when 4
           url = "http://www.simplecommebonjour.org/?p=153"
         when 6

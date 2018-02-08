@@ -6,14 +6,29 @@ class MemberMailer < ActionMailer::Base
   TOUR_REPORT_EMAIL = ENV["TOUR_REPORT_EMAIL"] || "maraudes@entourage.social"
 
   def welcome(user)
-    @user = user
+    return unless user.email.present?
 
-    headers['X-MJ-EventPayload'] = JSON.fast_generate(
-      type: :welcome,
-      user_id: user.id
+    # generate an email with an empty body
+    mail { nil }
+
+    # then overwrite the headers
+    headers(
+      from:    email_with_name("contact@entourage.social", "Le Réseau Entourage"),
+      to:      user.email,
+      subject: nil,
+
+      'X-MJ-TemplateID' => 311246,
+      'X-MJ-TemplateLanguage' => 1,
+
+      'X-MJ-Vars' => JSON.fast_generate(
+        first_name: user.first_name,
+        user_id: UserServices::EncodedId.encode(user.id)
+      ),
+      'X-MJ-EventPayload' => JSON.fast_generate(
+        type: :welcome,
+        user_id: user.id
+      )
     )
-
-    mail(from: email_with_name("contact@entourage.social", "Claire d'Entourage"), to: user.email, subject: 'Bienvenue sur Entourage !') if user.email.present?
   end
 
   def tour_report(tour)
