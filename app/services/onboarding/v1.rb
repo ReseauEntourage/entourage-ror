@@ -1,7 +1,37 @@
 module Onboarding
   module V1
     ENTOURAGES = {
-      'République' => 2675
+      'Clichy Levallois'=>2851,
+      'Marseille'=>2852,
+      'Toulouse'=>2853,
+      'Nice'=>2854,
+      'Nantes'=>2855,
+      'Strasbourg'=>2856,
+      'Montpellier'=>2857,
+      'Bordeaux'=>2858,
+      'Lille'=>2859,
+      'Rennes'=>2860,
+      'Reims'=>2861,
+      'Le Havre'=>2862,
+      'Saint-Étienne'=>2863,
+      'Toulon'=>2864,
+      'Grenoble'=>2865,
+      'Dijon'=>2866,
+      'Angers'=>2867,
+      'Nîmes'=>2868,
+      'Aix-en-Provence'=>2869,
+      'Saint-Denis 93'=>2870,
+      'Versailles'=>2871,
+      'Boulogne-Billancourt'=>2872,
+      'Nanterre'=>2873,
+      'Courbevoie'=>2874,
+      'Antony'=>2875,
+      'Lyon Ouest'=>2876,
+      'Lyon Est'=>2877,
+      'Paris République'=>2878,
+      'Paris 17 et 9'=>2879,
+      'Paris 15'=>2880,
+      'Paris 5'=>2881
     }
 
     def self.pinned_entourage_for area, user:
