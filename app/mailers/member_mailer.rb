@@ -31,6 +31,33 @@ class MemberMailer < ActionMailer::Base
     )
   end
 
+  def entourage_confirmation(entourage)
+    user = entourage.user
+    return unless user.email.present?
+
+    # generate an email with an empty body
+    mail { nil }
+
+    # then overwrite the headers
+    headers(
+      from:    email_with_name("guillaume@entourage.social", "Le Réseau Entourage"),
+      to:      user.email,
+      subject: nil,
+
+      'X-MJ-TemplateID' => 312279,
+      'X-MJ-TemplateLanguage' => 1,
+
+      'X-MJ-Vars' => JSON.fast_generate(
+        first_name: user.first_name,
+        entourage_title: entourage.title
+      ),
+      'X-MJ-EventPayload' => JSON.fast_generate(
+        type: :action_confirmation,
+        entourage_id: entourage.id
+      )
+    )
+  end
+
   def tour_report(tour)
     @tour = tour
     @user = tour.user
