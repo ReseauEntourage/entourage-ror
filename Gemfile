@@ -35,6 +35,7 @@ gem 'mailjet'
 gem 'safety_mailer'
 gem 'ransack'
 gem 'mixpanel-ruby'
+gem 'httparty'
 
 group :development, :test do
   gem 'annotate'
