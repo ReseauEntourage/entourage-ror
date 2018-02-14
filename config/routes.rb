@@ -245,6 +245,7 @@ Rails.application.routes.draw do
   get 'store_redirection' => 'home#store_redirection'
   get 'cgu' => 'home#cgu'
   get 'ping' => 'application#ping'
+  get 'redirect/:signature/*url' => 'redirection#redirect', format: false, as: :escaped_redirect
 
   #PUBLIC USER
   namespace :public_user do
