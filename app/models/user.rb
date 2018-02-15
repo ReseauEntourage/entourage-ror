@@ -34,6 +34,7 @@ class User < ActiveRecord::Base
   has_many :entourage_scores
   has_many :user_newsfeeds
   has_one :moderation, class_name: 'UserModeration'
+  has_many :action_zones
 
   enum device_type: [ :android, :ios ]
 

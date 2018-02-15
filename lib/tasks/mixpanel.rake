@@ -21,12 +21,6 @@ namespace :mixpanel do
     require 'typeform'
     require 'mixpanel_tools'
 
-    CP_LENGTH = {
-      'France'   => 5,
-      'Belgique' => 4,
-      'Suisse'   => 4
-    }
-
     updates = Typeform.get_responses('WIg5A9').map do |response|
       answers = Typeform.answers(response)
 
@@ -44,19 +38,24 @@ namespace :mixpanel do
           UserServices::EncodedId.decode(answers['user_id'])
         end
 
-      country = answers['68234976']
-      cp = answers['68233033'].to_s
-
-      next unless user_id.present?
-      next unless country.in?(CP_LENGTH.keys)
-      next unless cp.length == CP_LENGTH[country]
+      begin
+        zone = ActionZone.find_or_create_by!(
+          user_id: user_id,
+          country: answers['68234976'],
+          postal_code: answers['68233033']
+        )
+      rescue ActiveRecord::RecordInvalid,
+             ActiveRecord::RecordNotUnique,
+             ActiveRecord::InvalidForeignKey # no user for this user_id
+        next
+      end
 
       {
         '$distinct_id' => user_id,
         '$set' => {
-          "Zone d'action (pays)"        => country,
-          "Zone d'action (code postal)" => cp,
-          "Zone d'action (département)" => cp.first(2),
+          "Zone d'action (pays)"        => zone.country_name,
+          "Zone d'action (code postal)" => zone.postal_code,
+          "Zone d'action (département)" => zone.postal_code.first(2),
         }
       }
     end.compact
