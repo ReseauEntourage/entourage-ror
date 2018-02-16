@@ -119,6 +119,9 @@
   .conversation-content .glyphicon-question-sign {
     color: #717274;
   }
+  .text-danger {
+    color: #d72b3f !important;
+  }
 </style>
 
 <%
@@ -198,6 +201,13 @@
               <%= link_to "Marquer comme non lu",
                   moderator_read_admin_entourage_path(@entourage, read_at: message.created_at),
                   method: :post %>
+            </li>
+            <li>
+              <%= link_to "Supprimer le message",
+                  destroy_message_admin_entourages_path(type: message.full_object_type, id: message.full_object_id),
+                  method: :post,
+                  data: { confirm: "Voulez-vous vraiment supprimer ce message ? Cette opération est irréversible.\n\n#{message.user.full_name} :\n#{message.content}" },
+                  class: "text-danger" %>
             </li>
           </ul>
         </div>

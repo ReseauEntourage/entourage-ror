@@ -34,6 +34,9 @@ Rails.application.routes.draw do
           post :moderator_unread
           post :message
         end
+        collection do
+          post :destroy_message
+        end
       end
       resources :entourage_moderations, only: [:create]
 

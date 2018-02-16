@@ -160,6 +160,22 @@ module Admin
       end
     end
 
+    def destroy_message
+      case params[:type]
+      when 'ChatMessage'
+        chat_message = ChatMessage.find(params[:id])
+        chat_message.destroy
+        entourage = chat_message.messageable
+      when 'JoinRequest'
+        join_request = JoinRequest.find(params[:id])
+        join_request.message = nil
+        join_request.save
+        entourage = join_request.joinable
+      end
+
+      redirect_to [:admin, entourage]
+    end
+
     private
     def set_entourage
       @entourage = Entourage.find(params[:id])
