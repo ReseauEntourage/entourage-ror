@@ -27,7 +27,8 @@ class MemberMailer < ActionMailer::Base
       'X-MJ-EventPayload' => JSON.fast_generate(
         type: :welcome,
         user_id: user.id
-      )
+      ),
+      'X-Mailjet-Campaign' => :welcome
     )
   end
 
@@ -54,7 +55,8 @@ class MemberMailer < ActionMailer::Base
       'X-MJ-EventPayload' => JSON.fast_generate(
         type: :action_confirmation,
         entourage_id: entourage.id
-      )
+      ),
+      'X-Mailjet-Campaign' => :action_confirmation
     )
   end
 
@@ -67,9 +69,12 @@ class MemberMailer < ActionMailer::Base
     attachments['tour_points.csv'] = File.read(exporter.export_tour_points)
     attachments['encounters.csv'] = File.read(exporter.export_encounters)
 
-    headers['X-MJ-EventPayload'] = JSON.fast_generate(
-      type: :tour_report,
-      tour_id: tour.id
+    headers(
+      'X-MJ-EventPayload' => JSON.fast_generate(
+        type: :tour_report,
+        tour_id: tour.id
+      ),
+      'X-Mailjet-Campaign' => :tour_report
     )
 
     mail(from: TOUR_REPORT_EMAIL, to: @user.email, subject: 'Résumé de la maraude') if @user.email.present?
