@@ -16,8 +16,8 @@ class Geocoder::Lookup::Base
     _fetch_data(*args).tap do |response|
       begin
         Raven.breadcrumbs.record do |crumb|
-          crumb.data = response
-          crumb.category = 'geocoder.data'
+          crumb.data = { response: response }
+          crumb.category = 'geocoder.response'
         end
       rescue
       end
