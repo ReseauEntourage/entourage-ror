@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180219092935) do
+ActiveRecord::Schema.define(version: 20180219163423) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -21,7 +21,7 @@ ActiveRecord::Schema.define(version: 20180219092935) do
 
   create_table "action_zones", force: :cascade do |t|
     t.integer  "user_id",               null: false
-    t.string   "postal_code", limit: 5, null: false
+    t.string   "postal_code", limit: 8, null: false
     t.string   "country",     limit: 2, null: false
     t.datetime "created_at",            null: false
     t.datetime "updated_at",            null: false
@@ -199,7 +199,7 @@ ActiveRecord::Schema.define(version: 20180219092935) do
     t.boolean  "use_suggestions",             default: false,  null: false
     t.string   "display_category"
     t.string   "uuid_v2",          limit: 12,                  null: false
-    t.string   "postal_code",      limit: 5
+    t.string   "postal_code",      limit: 8
     t.string   "country",          limit: 2
   end
 
