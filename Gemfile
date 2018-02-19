@@ -36,6 +36,7 @@ gem 'safety_mailer'
 gem 'ransack'
 gem 'mixpanel-ruby'
 gem 'httparty'
+gem 'sentry-raven'
 
 group :development, :test do
   gem 'annotate'

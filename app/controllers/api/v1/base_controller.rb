@@ -5,6 +5,7 @@ module Api
       before_filter :allow_cors
       before_filter :validate_request!, only: [:check]
       before_filter :authenticate_user!, except: [:check]
+      before_filter :set_raven_context
 
       def allow_cors
         headers["Access-Control-Allow-Origin"] = "*"
@@ -91,6 +92,18 @@ module Api
       def append_info_to_payload(payload)
         super
         payload[:api_key] = api_request.api_key
+      end
+
+      private
+
+      def set_raven_context
+        Raven.user_context(id: current_user.try(:id))
+        Raven.extra_context(
+          params: params.to_unsafe_h,
+          url: request.url,
+          platform: api_request.key_infos.try(:[], :device),
+          app_version: api_request.key_infos.try(:[], :version),
+        )
       end
     end
   end

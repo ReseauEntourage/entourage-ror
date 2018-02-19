@@ -8,3 +8,19 @@ Geocoder.configure(
     language: :fr,
   }
 )
+
+class Geocoder::Lookup::Base
+  alias_method :_fetch_data, :fetch_data
+
+  def fetch_data(*args)
+    _fetch_data(*args).tap do |response|
+      begin
+        Raven.breadcrumbs.record do |crumb|
+          crumb.data = response
+          crumb.category = 'geocoder.data'
+        end
+      rescue
+      end
+    end
+  end
+end
