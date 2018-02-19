@@ -6,10 +6,16 @@ module EntourageServices
         params: { result_type: :postal_code }
       )
       result = results.find { |r| r.types.include? 'postal_code' }
-      entourage.update(
-        country:     result.country_code,
-        postal_code: result.postal_code
-      )
+
+      if result.nil?
+        country     = 'XX'
+        postal_code = '00000'
+      else
+        country     = result.country_code
+        postal_code = result.postal_code
+      end
+
+      entourage.update(country: country, postal_code: postal_code)
     end
 
     def self.enable_callback
