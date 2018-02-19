@@ -2,7 +2,10 @@ require 'rails_helper'
 
 describe EntourageServices::EntourageLocationRandomizer do
 
-  before { Rails.env.stub(:test?) { false } }
+  before do
+    Rails.env.stub(:test?) { false }
+    EntourageServices::GeocodingService.stub(:enable_callback) { false }
+  end
 
   let(:entourage) { FactoryGirl.create(:entourage) }
   let(:randomizer) { EntourageServices::EntourageLocationRandomizer.new(entourage: entourage) }

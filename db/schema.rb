@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180215164713) do
+ActiveRecord::Schema.define(version: 20180219092935) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -199,8 +199,11 @@ ActiveRecord::Schema.define(version: 20180215164713) do
     t.boolean  "use_suggestions",             default: false,  null: false
     t.string   "display_category"
     t.string   "uuid_v2",          limit: 12,                  null: false
+    t.string   "postal_code",      limit: 5
+    t.string   "country",          limit: 2
   end
 
+  add_index "entourages", ["country", "postal_code"], name: "index_entourages_on_country_and_postal_code", using: :btree
   add_index "entourages", ["latitude", "longitude"], name: "index_entourages_on_latitude_and_longitude", using: :btree
   add_index "entourages", ["user_id"], name: "index_entourages_on_user_id", using: :btree
   add_index "entourages", ["uuid"], name: "index_entourages_on_uuid", unique: true, using: :btree

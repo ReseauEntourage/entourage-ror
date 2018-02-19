@@ -5,7 +5,7 @@ describe Api::V1::Public::EntouragesController do
     let(:entourage) { create :entourage }
 
     before do
-      stub_request(:get,  %r'http://maps.googleapis.com/maps/api/geocode')
+      stub_request(:get,  %r'https://maps.googleapis.com/maps/api/geocode')
         .to_return(:status => 200, :body => '{}', :headers => {})
       get :show, uuid: identifier
     end

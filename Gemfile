@@ -66,6 +66,7 @@ group :test do
   gem 'webmock',                      '~> 1.20.4'
   gem 'coveralls',                    require: false
   gem 'fakeredis',                    '~> 0.5.0'
+  gem 'test_after_commit'
 end
 
 group :production do

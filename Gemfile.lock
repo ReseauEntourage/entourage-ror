@@ -366,6 +366,8 @@ GEM
     stackprof (0.2.8)
     term-ansicolor (1.3.2)
       tins (~> 1.0)
+    test_after_commit (1.1.0)
+      activerecord (>= 3.2)
     thin (1.6.4)
       daemons (~> 1.0, >= 1.0.9)
       eventmachine (~> 1.0, >= 1.0.4)
@@ -461,6 +463,7 @@ DEPENDENCIES
   spring (~> 1.3.6)
   spring-commands-rspec (~> 1.0.4)
   stackprof (~> 0.2.8)
+  test_after_commit
   thin (~> 1.6.3)
   timecop (~> 0.8.0)
   turbolinks (~> 2.5.3)
