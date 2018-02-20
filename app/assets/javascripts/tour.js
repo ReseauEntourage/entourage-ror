@@ -1,6 +1,11 @@
 function displayTourMapData(tour_id) {
   $.getJSON('/tours/'+tour_id+'/map_center', function (result) {
     result = result.tours
+
+    if (result.length === 0) {
+      return
+    }
+
     var map_center = new google.maps.LatLng(result[0], result[1]);
 
     map = new google.maps.Map(document.getElementById('map-maraudes'), {
