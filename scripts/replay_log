@@ -1,0 +1,36 @@
+#!/usr/bin/env ruby
+
+require 'URI'
+require 'json'
+require 'shellwords'
+
+string = ARGF.read.tr("\n", "")
+
+template = /\Amethod=(?<method>\w+) path=(?<path>\S+) format=(?<format>\S+) .+ params=(?<params>\{.*\}) API_KEY=(?<key>\h{24}?)\Z/
+
+data = template.match(string)
+request = Hash[data.names.map(&:to_sym).zip(data.captures)]
+
+method = request[:method]
+format = request[:format].to_sym
+host = 'http://localhost:5000'
+#host = 'https://entourage-back-preprod.herokuapp.com'
+path = request[:path]
+params = eval(request[:params])
+token = params.delete('token')
+
+p format
+
+path += ".#{request[:format]}" if format != :html && !(path =~ /.#{request[:format]}$/)
+url = URI(host)
+url.path = path
+url.query = "token=#{token}"
+
+command = ['curl', '-s']
+command.push '-X', method
+command.push '-H', "X-API-KEY: #{request[:key]}"
+command.push '-H', 'Content-Type: application/json' if format == :json
+command.push '-d', JSON.fast_generate(params) if format == :json
+command.push url.to_s
+
+exec command.shelljoin
