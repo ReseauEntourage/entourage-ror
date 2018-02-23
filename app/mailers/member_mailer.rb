@@ -2,6 +2,8 @@ class MemberMailer < ActionMailer::Base
   default from: "contact@entourage.social"
   add_template_helper(OrganizationHelper)
 
+  rescue_from Net::ProtocolError, with: :handle_delivery_error
+
   COMMUNITY_EMAIL   = ENV["COMMUNITY_EMAIL"]   || "communaute@entourage.social"
   TOUR_REPORT_EMAIL = ENV["TOUR_REPORT_EMAIL"] || "maraudes@entourage.social"
 
@@ -98,6 +100,17 @@ class MemberMailer < ActionMailer::Base
   end
 
   private
+
+  def handle_delivery_error exception
+    case exception.message
+    when '401 4.1.3 Bad recipient address syntax'
+      # Do nothing for now
+      # TODO: handle badly formatted email addresses
+    else
+      # This will let Sidekiq retry the later in case of an async job
+      raise exception
+    end
+  end
 
   def email_with_name(email, name)
     %("#{name}" <#{email}>)
