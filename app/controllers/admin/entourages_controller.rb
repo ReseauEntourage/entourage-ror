@@ -182,7 +182,7 @@ module Admin
     end
 
     def entourage_params
-      params.require(:entourage).permit(:status, :title, :description, :category, :display_category, :latitude, :longitude)
+      params.require(:entourage).permit(:status, :title, :description, :category, :entourage_type, :display_category, :latitude, :longitude)
     end
 
     def chat_messages_params
