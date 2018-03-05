@@ -41,3 +41,4 @@ db/sensitive-words/*.txt
 
 # Vagrant
 .vagrant
+ubuntu-xenial*
