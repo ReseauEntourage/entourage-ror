@@ -12,7 +12,7 @@ module JoinRequestsServices
 
       if join_request.save
 
-        title   = "Invitation accepté"
+        title   = "Invitation acceptée"
         content = "Un membre de l'équipe Entourage a rejoint votre action pour vous aider."
         meta    = { joinable_id: join_request.joinable_id,
                     joinable_type: join_request.joinable_type,
