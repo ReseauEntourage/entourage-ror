@@ -10,7 +10,10 @@ module Api
           join_requests = @entourage.join_requests.where(status: ["pending", "accepted"])
 
           if @entourage.id.in?(Onboarding::V1::ENTOURAGES.values)
-            join_requests = join_requests.unscope(where: :status).where(status: :accepted).map { |r| r.message = nil; r }
+            if current_user.id != @entourage.user_id
+              join_requests = join_requests.unscope(where: :status).where(status: :accepted)
+            end
+            join_requests = join_requests.map { |r| r.message = nil; r }
           end
 
           render json: join_requests, root: "users", each_serializer: ::V1::JoinRequestSerializer
