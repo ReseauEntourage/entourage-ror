@@ -1,6 +1,6 @@
 module Admin
   class EntouragesController < Admin::BaseController
-    before_action :set_entourage, only: [:show, :edit, :update, :moderator_read, :moderator_unread, :message]
+    before_action :set_entourage, only: [:show, :edit, :update, :moderator_read, :moderator_unread, :message, :sensitive_words, :sensitive_words_check]
 
     def index
       per_page = params[:per] || 50
@@ -20,6 +20,7 @@ module Admin
         .page(params[:page])
         .per(per_page)
         .with_moderator_reads_for(user: current_user)
+        .with_moderation
         .select(%(
           entourages.*,
           entourage_moderations.moderated_at is not null or entourages.created_at < '2018-01-01' as moderated,
@@ -27,8 +28,6 @@ module Admin
         ))
         .group("entourages.id, moderator_reads.id, entourage_moderations.id")
         .joins(:conversation_messages)
-        .with_moderator_reads_for(user: current_user)
-        .with_moderation
         .order(%(
           case
           when moderator_reads is null and entourages.created_at >= now() - interval '1 week' then 0
@@ -37,6 +36,7 @@ module Admin
           end
         ))
         .order("created_at DESC")
+        .includes(:sensitive_words_check)
         .to_a
 
       @entourages = Kaminari.paginate_array(@entourages, total_count: @q.result.count).page(params[:page]).per(per_page)
@@ -174,6 +174,22 @@ module Admin
       end
 
       redirect_to [:admin, entourage]
+    end
+
+    def sensitive_words
+      highlighted = SensitiveWordsService.highlight_entourage @entourage
+      @title = highlighted[:title]
+      @description = highlighted[:description]
+      @matches = highlighted[:matches]
+
+      render layout: 'admin_large'
+    end
+
+    def sensitive_words_check
+      check = @entourage.sensitive_words_check || @entourage.build_sensitive_words_check
+      check.status = params[:status]
+      check.save!
+      redirect_to [:admin, @entourage]
     end
 
     private

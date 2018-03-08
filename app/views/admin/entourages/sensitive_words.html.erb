@@ -1,0 +1,42 @@
+<style>
+  .highlight {
+    background: #fdb8c0;
+    border-radius: 0.2em;
+  }
+</style>
+
+<%
+  sensitive_word = Hash[
+    SensitiveWord
+      .where(id: @matches.values.flatten.uniq)
+      .map { |w| [w.id, w] }
+  ]
+%>
+
+<div class="container">
+  <ol class="breadcrumb">
+    <li><%= link_to "Actions", [:admin, :entourages] %></li>
+    <li><%= link_to "##{@entourage.id}", [:admin, @entourage] %></li>
+    <li class="active">Mots sensibles</li>
+  </ol>
+  <h4><%= @title %></h4>
+  <div><%= simple_format @description %></div>
+  <hr>
+  Mots sensibles :
+  <ul>
+  <% @matches.each do |words, matches| %>
+    <li>
+      <%= words.join(', ') rescue "???" %> :
+      <% matches.each.with_index(1) do |id, i| %>
+        <% word = sensitive_word[id] %>
+        <% if word.nil? %>
+          (supprimé)
+        <% else %>
+          <%= link_to [:admin, word] do %>
+            <%= word.raw %> (<%= word.category %>)
+          <% end %>
+        <% end %>
+        <% if i < matches.count %>●<% end %>
+      <% end %>
+  <% end %>
+</div>

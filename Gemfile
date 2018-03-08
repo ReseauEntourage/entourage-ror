@@ -37,6 +37,7 @@ gem 'ransack'
 gem 'mixpanel-ruby'
 gem 'httparty'
 gem 'sentry-raven'
+gem 'ruby-stemmer'
 
 group :development, :test do
   gem 'annotate'

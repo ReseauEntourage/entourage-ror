@@ -314,6 +314,7 @@ GEM
       rspec-mocks (~> 3.4.0)
       rspec-support (~> 3.4.0)
     rspec-support (3.4.1)
+    ruby-stemmer (0.9.6)
     safe_yaml (1.0.4)
     safety_mailer (0.0.10)
     sass (3.2.19)
@@ -454,6 +455,7 @@ DEPENDENCIES
   redis (~> 3.2.1)
   rpush (~> 2.7.0)
   rspec-rails (~> 3.1)
+  ruby-stemmer
   safety_mailer
   sass-rails (~> 4.0.3)
   sentry-raven

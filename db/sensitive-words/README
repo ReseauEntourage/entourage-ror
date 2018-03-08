@@ -1,0 +1,113 @@
+# Généré à partir de https://docs.google.com/spreadsheets/d/1SPcSqznSbewUd8suYy-fNj_RhC3eM-U6VG-wBDlgNXE
+# télécharger au format tsv (pas CSV car certaines entrées contiennes des virgules)
+
+cat      ~/Downloads/mots-sensibles.tsv | cut -f1  | tail -n +3 | sed 's| *([0-9]*) *$||' | sort | uniq > db/sensitive-words/exact-public-prenom.txt
+cat      ~/Downloads/mots-sensibles.tsv | cut -f2  | tail -n +3 | grep -vE '^ *$'                       > db/sensitive-words/stem-all-origine.txt
+cat      ~/Downloads/mots-sensibles.tsv | cut -f3  | tail -n +3 | grep -vE '^ *$'                       > db/sensitive-words/stem-public-lieux.txt
+mojibake ~/Downloads/mots-sensibles.tsv | cut -f4  | tail -n +3 | grep -vE '^ *$'                       > db/sensitive-words/stem-all-pays.txt
+cat      ~/Downloads/mots-sensibles.tsv | cut -f5  | tail -n +3 | grep -vE '^ *$'                       > db/sensitive-words/stem-public-habitation.txt
+cat      ~/Downloads/mots-sensibles.tsv | cut -f6  | tail -n +3 | grep -vE '^ *$'                       > db/sensitive-words/stem-all-mineur.txt
+cat      ~/Downloads/mots-sensibles.tsv | cut -f7  | tail -n +3 | grep -vE '^ *$'                       > db/sensitive-words/stem-public-personne.txt
+cat      ~/Downloads/mots-sensibles.tsv | cut -f8  | tail -n +3 | grep -vE '^ *$'                       > db/sensitive-words/stem-public-travail-social.txt
+cat      ~/Downloads/mots-sensibles.tsv | cut -f9  | tail -n +3 | grep -vE '^ *$'                       > db/sensitive-words/stem-all-violence-sexualite.txt
+cat      ~/Downloads/mots-sensibles.tsv | cut -f10 | tail -n +3 | grep -vE '^ *$'                       > db/sensitive-words/stem-all-insulte.txt
+cat      ~/Downloads/mots-sensibles.tsv | cut -f11 | tail -n +3 | grep -vE '^ *$'                       > db/sensitive-words/stem-all-maladie.txt
+cat      ~/Downloads/mots-sensibles.tsv | cut -f12 | tail -n +3 | grep -vE '^ *$'                       > db/sensitive-words/stem-all-medical.txt
+cat      ~/Downloads/mots-sensibles.tsv | cut -f13 | tail -n +3 | grep -vE '^ *$'                       > db/sensitive-words/stem-all-prison.txt
+cat      ~/Downloads/mots-sensibles.tsv | cut -f14 | tail -n +3 | grep -vE '^ *$'                       > db/sensitive-words/exact-public-telephone.txt
+cat      ~/Downloads/mots-sensibles.tsv | cut -f15 | tail -n +3 | grep -vE '^ *$'                       > db/sensitive-words/stem-all-religion.txt
+cat      ~/Downloads/mots-sensibles.tsv | cut -f16 | tail -n +3 | grep -vE '^ *$'                       > db/sensitive-words/stem-public-banque.txt
+cat      ~/Downloads/mots-sensibles.tsv | cut -f17 | tail -n +3 | grep -vE '^ *$'                       > db/sensitive-words/stem-all-sexe.txt
+cat      ~/Downloads/mots-sensibles.tsv | cut -f18 | tail -n +3 | tr -d $'\r' | grep -vE '^ *$'         > db/sensitive-words/stem-all-arme.txt
+
+# Import
+
+rails runner scripts/import_sensitive_words.rb db/sensitive-words/exact-public-prenom.txt         exact public "Prénom"
+rails runner scripts/import_sensitive_words.rb db/sensitive-words/stem-all-origine.txt            stem  all    "Origine"
+rails runner scripts/import_sensitive_words.rb db/sensitive-words/stem-public-lieux.txt           stem  public "Lieu"
+rails runner scripts/import_sensitive_words.rb db/sensitive-words/stem-all-pays.txt               stem  all    "Pays"
+rails runner scripts/import_sensitive_words.rb db/sensitive-words/stem-public-habitation.txt      stem  public "Habitation"
+rails runner scripts/import_sensitive_words.rb db/sensitive-words/stem-all-mineur.txt             stem  all    "Mineur"
+rails runner scripts/import_sensitive_words.rb db/sensitive-words/stem-public-personne.txt        stem  public "Personne"
+rails runner scripts/import_sensitive_words.rb db/sensitive-words/stem-public-travail-social.txt  stem  public "Travail social"
+rails runner scripts/import_sensitive_words.rb db/sensitive-words/stem-all-violence-sexualite.txt stem  all    "Violence / Sexualité / Famille"
+rails runner scripts/import_sensitive_words.rb db/sensitive-words/stem-all-insulte.txt            stem  all    "Insulte"
+rails runner scripts/import_sensitive_words.rb db/sensitive-words/stem-all-maladie.txt            stem  all    "Maladie"
+rails runner scripts/import_sensitive_words.rb db/sensitive-words/stem-all-medical.txt            stem  all    "Médical"
+rails runner scripts/import_sensitive_words.rb db/sensitive-words/stem-all-prison.txt             stem  all    "Prison"
+rails runner scripts/import_sensitive_words.rb db/sensitive-words/exact-public-telephone.txt      exact public "Téléphone"
+rails runner scripts/import_sensitive_words.rb db/sensitive-words/stem-all-religion.txt           stem  all    "Religion"
+rails runner scripts/import_sensitive_words.rb db/sensitive-words/stem-public-banque.txt          stem  public "Banque"
+rails runner scripts/import_sensitive_words.rb db/sensitive-words/stem-all-sexe.txt               stem  all    "Sexe"
+rails runner scripts/import_sensitive_words.rb db/sensitive-words/stem-all-arme.txt               stem  all    "Arme"
+
+# Cleanup / tweaks
+
+SensitiveWord.find_by(pattern: " les ", match_type: "exact").delete
+SensitiveWord.find_by(pattern: " sans ", match_type: "exact").delete
+SensitiveWord.find_by(pattern: " ai ", match_type: "exact").delete
+SensitiveWord.find_by(pattern: " ru ", match_type: "stem").delete
+SensitiveWord.find_by(pattern: " rue ", match_type: "exact").update_attributes(category: "Lieu")
+SensitiveWord.find_by(pattern: " maraud ", match_type: "stem").update_attributes(match_type: "exact")
+SensitiveWord.find_by(pattern: " don ", match_type: "exact").delete
+SensitiveWord.find_by(pattern: " belle ", match_type: "exact").delete
+SensitiveWord.find_by(pattern: " ami ", match_type: "exact").delete
+SensitiveWord.find_by(pattern: " paris ", match_type: "exact").delete
+SensitiveWord.find_by(pattern: " vit ", match_type: "exact").delete
+SensitiveWord.find_by(pattern: " mois ", match_type: "stem").update_attributes(pattern: " moise ", match_type: "exact")
+SensitiveWord.find_by(pattern: " signe ", match_type: "exact").delete
+SensitiveWord.find_by(pattern: " mars ", match_type: "exact").delete
+SensitiveWord.find_by(pattern: " deja ", match_type: "exact").delete
+SensitiveWord.find_by(pattern: " demi ", match_type: "exact").delete
+SensitiveWord.find_by(pattern: " elle ", match_type: "exact").delete
+SensitiveWord.find_by(pattern: " juste ", match_type: "exact").delete
+SensitiveWord.find_by(pattern: " aura ", match_type: "exact").delete
+SensitiveWord.find_by(pattern: " bras ", match_type: "exact").delete
+SensitiveWord.find_by(pattern: " salut ", match_type: "exact").delete
+SensitiveWord.find_by(pattern: " unique ", match_type: "exact").delete
+SensitiveWord.find_by(pattern: " kit ", match_type: "exact").delete
+SensitiveWord.find_by(pattern: " an ", match_type: "exact").delete
+SensitiveWord.find_by(pattern: " porter ", match_type: "exact").delete
+SensitiveWord.find_by(pattern: " page ", match_type: "exact").delete
+SensitiveWord.find_by(pattern: " ville ", match_type: "exact").delete
+SensitiveWord.find_by(pattern: " rois ", match_type: "exact").delete
+SensitiveWord.find_by(pattern: " ira ", match_type: "exact").delete
+SensitiveWord.find_by(pattern: " pris ", match_type: "exact").delete
+SensitiveWord.find_by(pattern: " ravi ", match_type: "exact").delete
+SensitiveWord.find_by(pattern: " cree ", match_type: "exact").delete
+SensitiveWord.find_by(pattern: " lien ", match_type: "exact").delete
+SensitiveWord.find_by(pattern: " bas ", match_type: "exact").delete
+SensitiveWord.find_by(pattern: " mai ", match_type: "exact").delete
+SensitiveWord.find_by(pattern: " mari ", match_type: "exact").delete
+
+SensitiveWord.find_by(pattern: " pet ", match_type: "stem").delete
+SensitiveWord.create!(raw: "Pétasse", match_type: "exact", scope: "all", category: "Insulte")
+SensitiveWord.create!(raw: "Pétasses", match_type: "exact", scope: "all", category: "Insulte")
+
+SensitiveWord.find_by(pattern: " con ", match_type: "stem").delete
+%w(Con Cons Conne Connes Connasse Connasses).each { |r| SensitiveWord.create!(raw: r, match_type: "exact", scope: "all", category: "Insulte") }
+
+SensitiveWord.find_by(pattern: " assist ", match_type: "stem").delete
+%w(Assisté Assistés Assistée Assistées).each { |r| SensitiveWord.create!(raw: r, match_type: "exact", scope: "all", category: "Insulte") }
+
+SensitiveWord.find_by(pattern: " assist ", match_type: "stem").delete
+%w(Assisté Assistés Assistée Assistées).each { |r| SensitiveWord.create!(raw: r, match_type: "exact", scope: "all", category: "Insulte") }
+
+SensitiveWord.find_by(pattern: " bit ", match_type: "stem").delete
+%w(bite bites).each { |r| SensitiveWord.create!(raw: r, match_type: "exact", scope: "all", category: "Sexe") }
+
+SensitiveWord.find_by(pattern: " crois ", match_type: "stem").update_attributes(match_type: :exact)
+SensitiveWord.find_by(pattern: " cour ", match_type: "stem").update_attributes(match_type: :exact)
+SensitiveWord.find_by(pattern: " dev ", match_type: "stem").update_attributes(match_type: :exact)
+SensitiveWord.find_by(pattern: " arret ", match_type: "stem").update_attributes(match_type: :exact)
+SensitiveWord.find_by(pattern: " alle ", match_type: "stem").update_attributes(match_type: :exact)
+
+# Export
+
+CSV.open("db/sensitive-words/all.csv", "w+") { |f| SensitiveWord.order(:category, :scope, :raw, :match_type).pluck(:category, :scope, :raw, :match_type).each { |w| f << w } }
+
+# Import from all.csv
+
+CSV.open("db/sensitive-words/all.csv", headers: %w(category scope raw match_type)).each { |w| SensitiveWord.create!(w.to_h) }
+
+Entourage.find_each { |e| SensitiveWordsService.analyze_entourage(e) }

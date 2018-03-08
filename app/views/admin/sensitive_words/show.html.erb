@@ -1,0 +1,5 @@
+<div class="container">
+  <%= debug @word.attributes %>
+  <%= link_to "Supprimer", [:admin, @word], method: :delete,
+              data: { confirm: "Supprimer ?" } %>
+</div>

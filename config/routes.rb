@@ -33,12 +33,15 @@ Rails.application.routes.draw do
           post :moderator_read
           post :moderator_unread
           post :message
+          get :sensitive_words
+          post :sensitive_words_check
         end
         collection do
           post :destroy_message
         end
       end
       resources :entourage_moderations, only: [:create]
+      resources :sensitive_words, only: [:show, :destroy]
 
       resources :marketing_referers, only: [:index, :edit, :update, :new, :create]
       resources :join_requests, only: [:create]

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180219163423) do
+ActiveRecord::Schema.define(version: 20180301135018) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -398,6 +398,27 @@ ActiveRecord::Schema.define(version: 20180219163423) do
   end
 
   add_index "rpush_notifications", ["delivered", "failed"], name: "index_rpush_notifications_multi", where: "((NOT delivered) AND (NOT failed))", using: :btree
+
+  create_table "sensitive_words", force: :cascade do |t|
+    t.string "raw",                         null: false
+    t.string "pattern",                     null: false
+    t.string "match_type", default: "stem", null: false
+    t.string "scope",      default: "all",  null: false
+    t.string "category"
+  end
+
+  add_index "sensitive_words", ["pattern"], name: "index_sensitive_words_on_pattern", unique: true, using: :btree
+
+  create_table "sensitive_words_checks", force: :cascade do |t|
+    t.string   "status",      null: false
+    t.integer  "record_id",   null: false
+    t.string   "record_type", null: false
+    t.text     "matches",     null: false
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+  end
+
+  add_index "sensitive_words_checks", ["record_type", "record_id"], name: "index_sensitive_words_checks_on_record_type_and_record_id", unique: true, using: :btree
 
   create_table "simplified_tour_points", force: :cascade do |t|
     t.float    "latitude",   null: false

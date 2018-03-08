@@ -35,3 +35,6 @@ use-node
 
 #ignore lambda zip files
 *.zip
+
+# sensitive words category files
+db/sensitive-words/*.txt

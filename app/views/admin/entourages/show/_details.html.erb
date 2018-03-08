@@ -1,6 +1,30 @@
 <div class="row">
   <div class='col-sm-8'>
-    <%= simple_format @entourage.description %>
+    <%= simple_format @highlighted[:description] %>
+    <hr>
+    <div class="small text-muted">
+      Mots sensibles :
+      <% case @entourage.sensitive_words_check&.status&.to_sym %>
+      <% when nil %>
+        <span class="text-warning">pas encore vérifiés</span>
+      <% when :validated %>
+        <span class="text-success">contenu validé</span>
+        –
+        <%= link_to "Signaler des mots sensible",
+                    [:sensitive_words_check, :admin, @entourage,
+                      status: :require_moderation],
+                    method: :post %>
+      <% when :require_moderation %>
+        <span class="text-danger">détectés</span>
+        –
+        <%= link_to "Valider le contenu",
+                    [:sensitive_words_check, :admin, @entourage,
+                      status: :validated],
+                    method: :post %>
+        |
+        <%= link_to "Détails", [:sensitive_words, :admin, @entourage] %>
+      <% end %>
+    </div>
   </div>
 
   <div class='col-sm-4 '>

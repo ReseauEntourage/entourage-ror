@@ -20,6 +20,7 @@ class Entourage < ActiveRecord::Base
   include UpdatedAtSkippable
   include EntourageServices::LocationApproximationService::Callback
   include EntourageServices::GeocodingService::Callback
+  include SensitiveWordsService::EntourageCallback
 
   ENTOURAGE_TYPES  = ['ask_for_help', 'contribution']
   ENTOURAGE_STATUS = ['open', 'closed', 'blacklisted']
@@ -38,6 +39,7 @@ class Entourage < ActiveRecord::Base
   has_one :entourage_score, dependent: :destroy
   has_one :moderation, class_name: 'EntourageModeration'
   has_one :user_moderation, primary_key: :user_id, foreign_key: :user_id
+  has_one :sensitive_words_check, as: :record, dependent: :destroy
 
   validates_presence_of :status, :title, :entourage_type, :user_id, :latitude, :longitude, :number_of_people
   validates_inclusion_of :status, in: ENTOURAGE_STATUS
