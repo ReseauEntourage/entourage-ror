@@ -12,7 +12,7 @@
 
 ### Local Hostnames Setup
 
-Some features of the Entourage backend app are only accessible through an `admin.*` subdomain. One way of setting this up is to edit your [hosts file] to have the `admin.entourage.dev` hostname resolve to your computer.
+Some features of the Entourage backend app are only accessible through an `admin.*` subdomain. One way of setting this up is to edit your [hosts file] to have the `admin.entourage.local` hostname resolve to your computer.
 
 ```bash
 $ sudo vim /etc/hostname
@@ -21,7 +21,7 @@ $ sudo vim /etc/hostname
 Then, tap on the `i` key and use the arrow keys on your keyboard to navigate the text area. Modify your hosts file so that it resembles the following:
 
 ```
-127.0.0.1 localhost entourage.dev admin.entourage.dev
+127.0.0.1 localhost entourage.local admin.entourage.local
 ```
 
 To save and exit, tap the `Esc` key, on your keyboard, followed by these keystrokes: `:`, `w`, `q`, and, finally, `Enter`.
@@ -60,7 +60,7 @@ You can start a rails instance using the following command from the `~/entourage
 $ bundle exec rails server -b 0.0.0.0
 ```
 
-In a few seconds, rails will start serving pages. To access them, open a web browser to http://entourage.dev:4000 - if it all worked you should see the Entourage app! Congratulations, you are ready to start working!
+In a few seconds, rails will start serving pages. To access them, open a web browser to http://entourage.local:4000 - if it all worked you should see the Entourage app! Congratulations, you are ready to start working!
 
 You can now edit files on your local file system, using your favorite text editor or IDE. When you reload your web browser, it should have the latest changes.
 
@@ -84,8 +84,8 @@ FactoryGirl.create :public_user, admin: true, phone: "+33600000001", sms_code: "
 This creates an admin account with the phone number `+33600000001` and the SMS code `123123`.
 Then type `Ctrl`+`D` to leave this console.
 
-Ensure that you have started the Rails server, and open http://admin.entourage.dev:4000/sessions/new in your browser.
-Log in with the credentials, and head to http://admin.entourage.dev:4000/admin to access the admin interface.
+Ensure that you have started the Rails server, and open http://admin.entourage.local:4000/sessions/new in your browser.
+Log in with the credentials, and head to http://admin.entourage.local:4000/admin to access the admin interface.
 
 
 ### Shutting down the VM

@@ -1,6 +1,10 @@
 [![Build Status](https://semaphoreci.com/api/v1/projects/e06001fd-34da-4414-9789-e09e3f28c67a/623094/badge.svg)](https://semaphoreci.com/vdaubry/entourage-ror)
 [![Coverage Status](https://coveralls.io/repos/ReseauEntourage/entourage-ror/badge.svg?branch=master&service=github)](https://coveralls.io/github/ReseauEntourage/entourage-ror?branch=master)
 
+# Vagrant
+
+See the [relevant documentation](docs/Vagrant.md) for installing with Vagrant.
+
 # Prerequisites
 
 Ruby 2.3.1
