@@ -27,7 +27,7 @@ module Admin
           moderator_reads is null and entourages.created_at >= now() - interval '1 week' as unread
         ))
         .group("entourages.id, moderator_reads.id, entourage_moderations.id")
-        .joins(:conversation_messages)
+        .joins("left join conversation_messages on conversation_messages.messageable_type = 'Entourage' and conversation_messages.messageable_id = entourages.id")
         .order(%(
           case
           when moderator_reads is null and entourages.created_at >= now() - interval '1 week' then 0
