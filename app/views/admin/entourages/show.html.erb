@@ -75,7 +75,7 @@
     <div class="panel-body">
       <%= render "admin/entourages/show/members_list", requests: @join_requests.find_all(&:is_accepted?) %>
       <%= render "admin/entourages/show/join_requests_list",
-                 requests: @join_requests.reject { |r| r.is_accepted? || r.entourage_invitation_id } %>
+                 requests: @join_requests.reject { |r| r.is_accepted? || (r.entourage_invitation_id && r.entourage_invitation_status != 'accepted') } %>
       <%= render "admin/entourages/show/invitations_list", invitations: @invitations %>
       <%= render partial: "admin/entourages/show/chat_messages_list", chat_messages: @chat_messages %>
 

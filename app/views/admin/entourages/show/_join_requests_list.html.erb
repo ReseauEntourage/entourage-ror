@@ -59,6 +59,9 @@
             <% if request.entourage_invitation_id.present? %>
               <span class="label label-default">invitation</span>
             <% end %>
+            <% unless request.is_accepted? %>
+              <%= user_state_label(request.entourage_invitation_status) %>
+            <% end %>
           </td>
           <td><%= entourage_invitation_type_label(request) %></td>
           <td><%= member.email %></td>

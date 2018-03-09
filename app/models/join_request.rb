@@ -28,7 +28,8 @@ class JoinRequest < ActiveRecord::Base
     ))
     .select(%(
       join_requests.*,
-      entourage_invitations.id as entourage_invitation_id
+      entourage_invitations.id as entourage_invitation_id,
+      entourage_invitations.status as entourage_invitation_status
     ))
   end
 
