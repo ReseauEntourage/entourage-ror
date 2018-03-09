@@ -10,6 +10,7 @@ module Api
           4 => :video,
           5 => :megaphone,
           6 => :megaphone,
+          7 => :trophy,
         }[params[:id].to_i]
 
         redirect_to view_context.asset_url("assets/announcements/icons/#{icon}.png")
@@ -44,6 +45,8 @@ module Api
           url = "http://www.simplecommebonjour.org/?p=153"
         when 6
           url = "https://blog.entourage.social/2018/01/15/securite-et-moderation/"
+        when 7
+          url = "https://blog.entourage.social/2018/03/02/top-5-des-actions-reussies/"
         end
 
         mixpanel.track("Opened Announcement", { "Announcement" => id })

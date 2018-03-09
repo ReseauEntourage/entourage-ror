@@ -41,10 +41,10 @@ module FeedServices
         @metadata.merge!(onboarding_announcement: true, area: area)
       else
         announcements.push Announcement.new(
-          id: 6,
-          title: "Le saviez-vous ? Chaque action est contrôlée.",
-          body: "L'équipe de modération d'Entourage veille au respect des personnes et de la vie privée.",
-          action: "En savoir plus",
+          id: 7,
+          title: "Le top 5 des belles actions !",
+          body: "Découvrez les initiatives solidaires qui ont abouti grâce au réseau",
+          action: "Inspirez-vous",
           author: User.find_by(email: "guillaume@entourage.social"),
           webview: true,
           position: 1
