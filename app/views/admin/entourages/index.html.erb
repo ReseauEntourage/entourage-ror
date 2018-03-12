@@ -16,6 +16,7 @@
   <th>Description</th>
   <th><span class="glyphicon glyphicon-user" aria-hidden="true"></span></th>
   <th><span class="glyphicon glyphicon-comment" aria-hidden="true"></span></th>
+  <th><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></th>
 
   <% @entourages.each do |entourage| %>
     <% unread_count = @message_count[entourage.id].unread %>
@@ -43,6 +44,14 @@
       <td><%= entourage_description_excerpt(entourage.description) %></td>
       <td><span class="badge"><%= @member_count[entourage.id] %></span></td>
       <td><span class="badge"><%= @message_count[entourage.id].total %></span></td>
+      <td>
+        <% requests_count = @requests_count[entourage.id] %>
+        <% if requests_count[:total] > 0 %>
+          <span class="badge" style="<%= 'background: #d9534f' if requests_count[:late] > 0 %>">
+            <%= requests_count[:total] %>
+          </span>
+        <% end %>
+      </td>
     </tr>
   <% end %>
 </table>

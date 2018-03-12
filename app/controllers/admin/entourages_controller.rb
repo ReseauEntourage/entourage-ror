@@ -49,6 +49,19 @@ module Admin
           .group(:joinable_id)
           .count
       @member_count.default = 0
+
+      @requests_count =
+        JoinRequest
+          .where(joinable_type: :Entourage, joinable_id: entourage_ids, status: :pending)
+          .group(:joinable_id)
+          .pluck(%(
+            joinable_id,
+            count(*),
+            count(case when updated_at >= now() - interval '24 hours' then 1 end)
+          ))
+      @requests_count = Hash[@requests_count.map { |id, total, late| [id, { total: total, late: late }]}]
+      @requests_count.default = { total: 0, late: 0 }
+
       @message_count =
         ConversationMessage
           .with_moderator_reads_for(user: current_user)
