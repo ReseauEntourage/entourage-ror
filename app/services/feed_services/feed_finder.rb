@@ -27,7 +27,7 @@ module FeedServices
       @user = user
       @page = page
       @per = per || DEFAULT_PER
-      @before = before
+      @before = before.present? ? (DateTime.parse(before) rescue Time.now) : nil
       @latitude = latitude
       @longitude = longitude
       @show_tours = show_tours
@@ -83,11 +83,10 @@ module FeedServices
         feeds.page(page).per(per)
       elsif version == :v2 && latitude && longitude && before
         # extract cursor from `before` parameter
-        date = DateTime.parse(before)
-        @cursor = date.to_i if date.year == 1970
+        @cursor = before.to_i if before.year == 1970
         feeds # pagination is handled later for clarity
       elsif before
-        feeds.before(DateTime.parse(before)).limit(25)
+        feeds.before(before).limit(25)
       else
         feeds.limit(25)
       end
