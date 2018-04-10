@@ -65,6 +65,19 @@ module Api
 
         "7d02a340c88e851bc87097a3" => {version: "4.5.0", device: "iOS", device_family: UserApplication::IOS},
         "76dd2c0eb8558fd6ce24a924" => {version: "4.5.0", device: "Android", device_family: UserApplication::ANDROID},
+
+        "69b3961a0d1e6b99c4b36a40" => {version: "4.6.0", device: "iOS", device_family: UserApplication::IOS},
+        "6fb0d70355e30b640378bf79" => {version: "4.6.0", device: "Android", device_family: UserApplication::ANDROID},
+
+        "2c139df443e3ba92573962f1" => {version: "5.0.0", device: "iOS",     device_family: UserApplication::IOS,     network: 'entourage'},
+        "2319683867b6c10281896aa6" => {version: "5.0.0", device: "Android", device_family: UserApplication::ANDROID, network: 'entourage'},
+        "2d5771c1d7273cb1817c4aaa" => {version: "5.0.0", device: "iOS",     device_family: UserApplication::IOS,     network: 'pfp'},
+        "2ab4573f2d1c370f084ed7db" => {version: "5.0.0", device: "Android", device_family: UserApplication::ANDROID, network: 'pfp'},
+
+        "8482f2d498799ed526738c0d" => {version: "5.1.0", device: "iOS",     device_family: UserApplication::IOS,     network: 'entourage'},
+        "8f7583e72131416c4ebc1e38" => {version: "5.1.0", device: "Android", device_family: UserApplication::ANDROID, network: 'entourage'},
+        "86786d91ac66766cc38f1490" => {version: "5.1.0", device: "iOS",     device_family: UserApplication::IOS,     network: 'pfp'},
+        "81054ed8deb402cb0e1162c6" => {version: "5.1.0", device: "Android", device_family: UserApplication::ANDROID, network: 'pfp'},
       }
     end
 
