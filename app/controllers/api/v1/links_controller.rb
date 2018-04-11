@@ -2,6 +2,7 @@ module Api
   module V1
     class LinksController < Api::V1::BaseController
       def redirect
+        user_id = UserServices::EncodedId.encode(current_user.id)
         redirections = {
           'pedagogic-content' =>
             'http://www.simplecommebonjour.org',
@@ -37,9 +38,11 @@ module Api
               end
             end,
           'feedback' =>
-            'https://entourage-asso.typeform.com/to/TUpltC',
+            "https://entourage-asso.typeform.com/to/TUpltC?user_id=#{user_id}",
           'volunteering' =>
-            'https://entourage-asso.typeform.com/to/U5MocH'
+            "https://entourage-asso.typeform.com/to/U5MocH?user_id=#{user_id}",
+          'propose-poi' =>
+            "https://entourage-asso.typeform.com/to/h4PDuZ?user_id=#{user_id}",
         }
 
         redirection = redirections[params[:id]]
