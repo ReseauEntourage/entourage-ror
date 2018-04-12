@@ -11,6 +11,7 @@ module Api
           5 => :megaphone,
           6 => :megaphone,
           7 => :trophy,
+          8 => :heart,
         }[params[:id].to_i]
 
         redirect_to view_context.asset_url("assets/announcements/icons/#{icon}.png")
@@ -47,6 +48,8 @@ module Api
           url = "https://blog.entourage.social/2018/01/15/securite-et-moderation/"
         when 7
           url = "https://blog.entourage.social/2018/03/02/top-5-des-actions-reussies/"
+        when 8
+          url = "https://blog.entourage.social/2017/07/28/le-comite-de-la-rue-quest-ce-que-cest/"
         end
 
         mixpanel.track("Opened Announcement", { "Announcement" => id })

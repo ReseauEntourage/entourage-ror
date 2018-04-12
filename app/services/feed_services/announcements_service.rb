@@ -41,10 +41,10 @@ module FeedServices
         @metadata.merge!(onboarding_announcement: true, area: area)
       else
         announcements.push Announcement.new(
-          id: 7,
-          title: "Le top 5 des belles actions !",
-          body: "Découvrez les initiatives solidaires qui ont abouti grâce au réseau",
-          action: "Inspirez-vous",
+          id: 8,
+          title: %(Le "Comité de la rue", qu'est-ce que c'est ?),
+          body: "Saviez-vous qu'Entourage est co-construit avec des personnes SDF ? ",
+          action: "En savoir plus",
           author: User.find_by(email: "guillaume@entourage.social"),
           webview: true,
           position: 1
