@@ -162,6 +162,7 @@ Rails.application.routes.draw do
 
         member do
           patch 'code'
+          post :report
         end
 
         resources :tours, :controller => 'users/tours', only: [:index]

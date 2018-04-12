@@ -342,6 +342,30 @@ When signing up a new user we genereate a new sms_code and send it via SMS
              Unknow phone number : no user with the given phone number could be found
 
 
+
+## Report an user [/users/{id}/report{?token}]
+
++ Parameters
+    + id (required, string, `1`) ... Identifier of the user to report.
+    + token (required, string, `FAKETOKEN`) ... Token identifying the current user
+
+### Report an user [POST]
+
++ Request (application/json)
+
+    + Body
+
+            {
+              "user_report": {
+                "message": "..."
+              }
+            }
+
++ Response 201
+
++ Response 401
+
+
 # Group Newsletter
 Newsletter subscription related resources of the **Entourage API**
 

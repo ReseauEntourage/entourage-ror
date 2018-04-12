@@ -410,4 +410,23 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
     it { expect(user.reload.email).to eq("foo@bar.com-2010-10-10 00:00:00") }
     it { expect(response.status).to eq(200) }
   end
+
+  describe 'POST #report' do
+    let(:reporting_user) { create :public_user }
+    let(:reported_user)  { create :public_user }
+    let(:message) { "MESSAGE" }
+
+    before { post 'report', token: reporting_user.token, id: reported_user.id, user_report: {message: message} }
+
+    context "valid params" do
+      it { expect(response.status).to eq 201 }
+      it { expect(ActionMailer::Base.deliveries.count).to eq 1 }
+    end
+
+    context "missing message" do
+      let(:message) { '' }
+      it { expect(response.status).to eq 400 }
+      it { expect(ActionMailer::Base.deliveries.count).to eq 0 }
+    end
+  end
 end

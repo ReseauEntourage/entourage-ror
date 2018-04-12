@@ -1,0 +1,18 @@
+<b>Utilisateur signalé :</b>
+<a href="https://admin.entourage.social/users/<%= @reported_user.id %>">
+  <%= @reported_user.first_name %>
+  <%= @reported_user.last_name %>
+  #<%= @reported_user.id %>
+</a>
+<br>
+
+<b>Signalé par :</b>
+<a href="https://admin.entourage.social/users/<%= @reporting_user.id %>">
+  <%= @reporting_user.first_name %>
+  <%= @reporting_user.last_name %>
+  #<%= @reporting_user.id %>
+</a>
+<br>
+
+<b>Message :</b><br>
+<%= simple_format @message %>

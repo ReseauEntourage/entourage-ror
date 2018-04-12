@@ -97,9 +97,27 @@ module Api
         render json: @current_user, status: 200, serializer: ::V1::UserSerializer, scope: { user: @current_user }
       end
 
+      def report
+        user = User.find(params[:id])
+        reporter = UserServices::ReportUserService.new(reported_user: user, params: user_report_params)
+        reporter.report(reporting_user: current_user) do |on|
+          on.success do
+            head :created
+          end
+
+          on.failure do |code|
+            render json: { code: 'CANNOT_REPORT_USER' }, status: :bad_request
+          end
+        end
+      end
+
       private
       def user_params
         @user_params ||= params.require(:user).permit(:first_name, :last_name, :email, :sms_code, :phone, :avatar_key, :about)
+      end
+
+      def user_report_params
+        params.require(:user_report).permit(:message)
       end
     end
   end
