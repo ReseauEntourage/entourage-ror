@@ -1,0 +1,42 @@
+version: '3.4'
+services:
+
+  postgresql:
+    image: mdillon/postgis:9.4
+    environment:
+      POSTGRES_PASSWORD: guest
+      POSTGRES_USER: guest
+      POSTGRES_DB: entourage-dev
+    ports:
+      - "5432/tcp"
+    restart: "always"
+    volumes:
+      - postgresql-data:/var/lib/postgresql/data:delegated
+
+  redis:
+    image: redis:latest
+    ports:
+      - "6379/tcp"
+
+  shell:
+    build:
+      context: .
+    volumes:
+      - .:/app
+      - /app/.git # protect .git from the container
+      - gems:/app/.gem:delegated
+    user: heroku-user
+    depends_on:
+      - postgresql
+      - redis
+    ports:
+      - "8080:8080"
+    environment:
+      DATABASE_URL: "postgres://guest:guest@postgresql:5432"
+      REDIS_URL: "redis://redis:6379"
+      PORT: 8080
+      RAILS_ENV: ${RAILS_ENV:-development}
+
+volumes:
+  postgresql-data:
+  gems:

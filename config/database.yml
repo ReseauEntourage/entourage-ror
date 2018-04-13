@@ -1,10 +1,9 @@
 default: &default
   adapter: postgresql
+  url: <%= ENV.fetch('DATABASE_URL', '') %>
   encoding: UTF8
   pool: <%= ENV['MAX_THREADS'] || 5 %>
   timeout: 5000
-  username: entourage
-  password:
 
 development:
   <<: *default
