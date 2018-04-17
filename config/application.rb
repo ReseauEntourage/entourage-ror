@@ -4,6 +4,13 @@ require 'rails/all'
 
 require File.expand_path('../community', __FILE__)
 
+# Define New Relic app_name dynamically based on $COMMUNITY.
+# Can't be done in an initializer because New Relic starts before app initialization.
+# examples: "PFP API", "Entourage API (Development)"
+new_relic_app_name = "#{$community.dev_name} API"
+new_relic_app_name += " (#{Rails.env.capitalize})" unless Rails.env.production?
+ENV['NEW_RELIC_APP_NAME'] = new_relic_app_name
+
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
