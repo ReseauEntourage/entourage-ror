@@ -5,7 +5,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
   render_views
 
   let(:result) { JSON.parse(response.body) }
-  
+
   describe 'POST #login' do
     before { ENV["DISABLE_CRYPT"]="FALSE" }
     after { ENV["DISABLE_CRYPT"]="TRUE" }
@@ -136,7 +136,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
     end
 
     context "public user with version 1.2.0" do
-      before { ApiRequest.any_instance.stub(:key_infos) { {version: "1.2.0"} } }
+      before { ApiRequest.any_instance.stub(:key_infos) { {version: "1.2.0", community: 'entourage'} } }
       let!(:user) { create :public_user, sms_code: "123456"}
       before { post 'login', user: {phone: user.phone, sms_code: "123456"}, format: 'json' }
       it { expect(response.status).to eq(200) }

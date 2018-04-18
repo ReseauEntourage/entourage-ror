@@ -3,7 +3,9 @@ module Api
     class BaseController < ApplicationController
       protect_from_forgery with: :null_session
       before_filter :allow_cors
+      before_filter :community_warning
       before_filter :validate_request!, only: [:check]
+      before_filter :ensure_community!, except: [:options]
       before_filter :authenticate_user!, except: [:check, :options]
       before_filter :set_raven_context
 
@@ -72,6 +74,17 @@ module Api
         @api_request ||= ApiRequest.new(params: params, headers: headers, env: request.env)
       end
 
+      def community
+        @community ||= begin
+          key_infos = api_request.key_infos
+          if key_infos
+            Community.new(api_request.key_infos[:community])
+          else
+            $server_community
+          end
+        end
+      end
+
       def mixpanel
         @mixpanel ||= MixpanelService.new(
           distinct_id: current_user.try(:id),
@@ -104,6 +117,22 @@ module Api
           platform: api_request.key_infos.try(:[], :device),
           app_version: api_request.key_infos.try(:[], :version),
         )
+      end
+
+      def ensure_community!
+        if api_request.key_infos.blank? && $server_community == :entourage
+          logger.warn "type=community.warning code=no_api_key controller=#{controller_path} action=#{action_name}"
+          return
+        end
+
+        if api_request.key_infos.blank? || $server_community != api_request.key_infos[:community]
+          return render json: { message: 'Unauthorized API key' }, status: :unauthorized
+        end
+      end
+
+      def community_warning
+        return if $server_community == :entourage
+        logger.warn "type=community.warning code=community_support_missing controller=#{controller_path} action=#{action_name}"
       end
     end
   end

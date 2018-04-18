@@ -1,12 +1,15 @@
+require 'pp'
+
 class Community < BasicObject
   include ::Kernel
-  include ::PP::ObjectMixin if defined?(::PP)
+  include ::PP::ObjectMixin
   attr_reader :community
 
+  @@struct = {}
+
   def initialize community
-    @community = community
-    @file = ::File.expand_path("../communities/#{community}.yml", __FILE__)
-    load!
+    @community = community.to_s
+    load_from_file
   end
 
   def method_missing name, *args
@@ -22,21 +25,17 @@ class Community < BasicObject
 
   def struct
     if ::Rails.env.development?
-      load!
+      load_from_file
     else
-      @struct || load!
+      @struct || from_global_memory || load_from_file
     end
-  end
-
-  def load!
-    @struct = ::OpenStruct.new(::YAML.load_file(@file))
-  rescue ::Errno::ENOENT
-    raise "Community '#{community}' is not defined"
   end
 
   def inspect
     "#<Community #{community}>"
   end
+
+  alias_method :to_s, :inspect
 
   def == other
     case other
@@ -44,11 +43,23 @@ class Community < BasicObject
       community == other.to_s
     when ::Community
       community == other.community
+    when ::NilClass
+      false
     else
       raise ::ArgumentError, "comparison of Community with #{other.class.name} failed"
     end
   end
-end
 
-raise "Environment variable COMMUNITY must be set" if ENV['COMMUNITY'].blank?
-$community = Community.new ENV['COMMUNITY']
+  private
+
+  def from_global_memory
+    @@struct[community]
+  end
+
+  def load_from_file
+    @file ||= ::File.expand_path("../communities/#{community}.yml", __FILE__)
+    @@struct[community] = @struct = ::OpenStruct.new(::YAML.load_file(@file))
+  rescue ::Errno::ENOENT
+    raise "Community '#{community}' is not defined"
+  end
+end
