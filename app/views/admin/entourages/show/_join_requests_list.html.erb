@@ -37,6 +37,7 @@
         <th>Status</th>
         <th>Email</th>
         <th>Phone</th>
+        <th>Attente</th>
       </tr>
     </thead>
 
@@ -66,6 +67,13 @@
           <td><%= entourage_invitation_type_label(request) %></td>
           <td><%= member.email %></td>
           <td><%= member.phone %></td>
+          <td>
+            <% if request.is_pending? %>
+              <span class="text-<%= request.updated_at <= 24.hours.ago ? :danger : :muted %>">
+                <%= time_ago_in_words request.updated_at %>
+              </span>
+            <% end %>
+          </td>
         </tr>
       <% end %>
     </tbody>
