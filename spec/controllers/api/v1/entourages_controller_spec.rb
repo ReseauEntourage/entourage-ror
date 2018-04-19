@@ -1,4 +1,5 @@
 require 'rails_helper'
+include CommunityHelper
 
 describe Api::V1::EntouragesController do
 
@@ -151,9 +152,15 @@ describe Api::V1::EntouragesController do
         it { expect(Entourage.last.latitude).to eq(4.567) }
         it { expect(Entourage.last.number_of_people).to eq(1) }
         it { expect(Entourage.last.category).to eq("mat_help") }
+        it { expect(Entourage.last.community).to eq("entourage") }
         it { expect(user.entourage_participations).to eq([Entourage.last]) }
         it { expect(JoinRequest.count).to eq(1) }
         it { expect(JoinRequest.last.status).to eq(JoinRequest::ACCEPTED_STATUS) }
+
+        context "community support" do
+          with_community :pfp
+          it { expect(Entourage.last.community).to eq("pfp") }
+        end
       end
 
       context "invalid params" do

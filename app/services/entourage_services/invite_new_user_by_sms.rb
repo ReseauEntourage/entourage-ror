@@ -38,7 +38,7 @@ module EntourageServices
 
     def invitee
       return @invitee if @invitee
-      @invitee = UserServices::PublicUserBuilder.new(params: {phone: phone_number}).create(send_sms: false, sms_code: @invitee_sms_code)
+      @invitee = UserServices::PublicUserBuilder.new(params: {phone: phone_number}, community: entourage.community).create(send_sms: false, sms_code: @invitee_sms_code)
       raise ActiveRecord::RecordInvalid.new(@invitee) unless @invitee.valid?
       @invitee
     end

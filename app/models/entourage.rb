@@ -47,11 +47,14 @@ class Entourage < ActiveRecord::Base
   validates_inclusion_of :category, in: CATEGORIES, allow_nil: true
   validates_inclusion_of :display_category, in: DISPLAY_CATEGORIES, allow_nil: true
   validates_uniqueness_of :uuid, on: :create
+  validates_inclusion_of :community, in: Community.slugs, allow_nil: true
 
   scope :visible, -> { where.not(status: 'blacklisted') }
   scope :social_category, -> { where(category: 'social') }
   scope :mat_help_category, -> { where(category: 'mat_help') }
   scope :non_mat_help_category, -> { where(category: 'non_mat_help') }
+
+  before_validation :set_community, on: :create
 
   after_create :check_moderation
   before_create :set_uuid
@@ -100,6 +103,22 @@ class Entourage < ActiveRecord::Base
       .approximated_location
   end
 
+  def community= community_or_slug
+    super Community.slug(community_or_slug)
+  end
+
+  def community
+    if Rails.env != 'production' && Entourage.columns_hash['community'].null == false
+      raise "This workaround must now be removed"
+    end
+
+    if super.present?
+      Community.new(super)
+    elsif user.present?
+      user.community
+    end
+  end
+
   protected
 
   def check_moderation
@@ -121,6 +140,11 @@ class Entourage < ActiveRecord::Base
                                .url_helpers
                                .admin_entourage_url(id, host: ENV['ADMIN_HOST'])
     notifier.ping "Un nouvel entourage doit être modéré : #{admin_entourage_url}", http_options: { open_timeout: 10 }
+  end
+
+  def set_community
+    return if user.nil?
+    self.community = user.community
   end
 
   def set_uuid

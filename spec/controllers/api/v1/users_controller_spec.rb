@@ -1,5 +1,6 @@
 require 'rails_helper'
 include AuthHelper
+include CommunityHelper
 
 RSpec.describe Api::V1::UsersController, :type => :controller do
   render_views
@@ -258,8 +259,14 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
     context "valid params" do
       before { post 'create', {user: {phone: "+33612345678"}} }
       it { expect(User.last.user_type).to eq("public") }
+      it { expect(User.last.community).to eq("entourage") }
       it { expect(User.last.phone).to eq("+33612345678") }
       it { expect(JSON.parse(response.body)["user"]["id"]).to eq(User.last.id) }
+
+      context "community support" do
+        with_community :pfp
+        it { expect(User.last.community).to eq("pfp") }
+      end
     end
 
     context "already has a user without email" do

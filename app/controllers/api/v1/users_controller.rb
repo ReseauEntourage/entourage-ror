@@ -27,7 +27,7 @@ module Api
 
       #curl -X PATCH -d '{"user": { "sms_code":"123456"}}' -H "Content-Type: application/json" "http://localhost:3000/api/v1/users/93.json?token=azerty"
       def update
-        builder = UserServices::PublicUserBuilder.new(params: user_params)
+        builder = UserServices::PublicUserBuilder.new(params: user_params, community: community)
         builder.update(user: @current_user) do |on|
           on.success do |user|
             mixpanel.sync_changes(user, {
@@ -46,7 +46,7 @@ module Api
 
       #curl -X POST -d '{"user": { "phone":"+4068999999999"}}' -H "Content-Type: application/json" "http://localhost:3000/api/v1/users.json?token=azerty"
       def create
-        builder = UserServices::PublicUserBuilder.new(params: user_params)
+        builder = UserServices::PublicUserBuilder.new(params: user_params, community: community)
         builder.create(send_sms: true) do |on|
           on.success do |user|
             mixpanel.distinct_id = user.id

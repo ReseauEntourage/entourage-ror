@@ -8,6 +8,7 @@ class User < ActiveRecord::Base
   validates_associated :organization, if: Proc.new { |u| u.pro? }
   validates :sms_code, length: { minimum: 6 }
   validates_length_of :about, maximum: 200, allow_nil: true
+  validates_inclusion_of :community, in: Community.slugs, allow_nil: true
 
   has_many :tours
   has_many :encounters, through: :tours
@@ -110,5 +111,21 @@ class User < ActiveRecord::Base
 
   def default_partner_id
     user_partners.where(default: true).limit(1).pluck(:partner_id).first
+  end
+
+  def community= community_or_slug
+    super Community.slug(community_or_slug)
+  end
+
+  def community
+    if Rails.env != 'production' && User.columns_hash['community'].null == false
+      raise "This workaround must now be removed"
+    end
+
+    if super.present?
+      Community.new(super)
+    else
+      $server_community
+    end
   end
 end

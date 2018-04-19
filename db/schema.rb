@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180309141722) do
+ActiveRecord::Schema.define(version: 20180418173317) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -201,6 +201,7 @@ ActiveRecord::Schema.define(version: 20180309141722) do
     t.string   "uuid_v2",          limit: 12,                  null: false
     t.string   "postal_code",      limit: 8
     t.string   "country",          limit: 2
+    t.string   "community",        limit: 9
   end
 
   add_index "entourages", ["country", "postal_code"], name: "index_entourages_on_country_and_postal_code", using: :btree
@@ -559,6 +560,7 @@ ActiveRecord::Schema.define(version: 20180309141722) do
     t.boolean  "atd_friend",                       default: false,       null: false
     t.boolean  "use_suggestions",                  default: false,       null: false
     t.string   "about",                limit: 200
+    t.string   "community",            limit: 9
   end
 
   add_index "users", ["organization_id"], name: "index_users_on_organization_id", using: :btree

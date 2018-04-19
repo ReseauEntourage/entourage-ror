@@ -1,9 +1,14 @@
 module UserServices
   class PublicUserBuilder < UserBuilder
+    def initialize(params:, community:)
+      @community = community
+      super(params: params)
+    end
 
     def new_user(sms_code=nil)
       user = User.new(params)
       user.user_type = 'public'
+      user.community = community.slug
       user.token = token
       user.sms_code = sms_code || UserServices::SmsCode.new.code
       user
@@ -28,5 +33,9 @@ module UserServices
         callback.on_failure.try(:call, user)
       end
     end
+
+    private
+    attr_reader :community
+
   end
 end

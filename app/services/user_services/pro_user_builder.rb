@@ -17,6 +17,7 @@ module UserServices
       user = User.new(params)
       user.token = token
       user.sms_code = sms_code || UserServices::SmsCode.new.code
+      user.community = 'entourage'
       set_pro(user)
       user
     end

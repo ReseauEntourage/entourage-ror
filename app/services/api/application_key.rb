@@ -5,7 +5,9 @@ module Api
     end
 
     def key_infos
-      return api_keys["api_debug"] if api_key.nil? && Rails.env.test?
+      if Rails.env.test? && api_key.nil?
+        return api_keys.find { |_, infos| infos[:device] == 'rspec' && infos[:community] == $server_community }[1]
+      end
 
       api_keys[api_key]
     end

@@ -3,12 +3,12 @@ require 'pp'
 class Community < BasicObject
   include ::Kernel
   include ::PP::ObjectMixin
-  attr_reader :community
+  attr_reader :slug
 
   @@struct = {}
 
-  def initialize community
-    @community = community.to_s
+  def initialize community_slug
+    @slug = community_slug.to_s
     load_from_file
   end
 
@@ -32,34 +32,49 @@ class Community < BasicObject
   end
 
   def inspect
-    "#<Community #{community}>"
+    "#<Community #{slug}>"
   end
 
   alias_method :to_s, :inspect
+  alias_method :to_str, :slug
 
   def == other
-    case other
-    when ::String, ::Symbol
-      community == other.to_s
+    ::Community.slug(other) == slug
+  rescue ::ArgumentError
+    false
+  end
+
+  def self.slug object
+    case object
     when ::Community
-      community == other.community
+      object.slug
+    when ::String
+      object
+    when ::Symbol
+      object.to_s
     when ::NilClass
-      false
+      nil
     else
-      raise ::ArgumentError, "comparison of Community with #{other.class.name} failed"
+      raise ::ArgumentError, "conversion to Community slug of #{object.class.name} failed"
+    end
+  end
+
+  def self.slugs
+    @list ||= ::Dir[::File.expand_path("../communities/*.yml", __FILE__)].map do |path|
+      ::File.basename(path, '.yml')
     end
   end
 
   private
 
   def from_global_memory
-    @@struct[community]
+    @@struct[slug]
   end
 
   def load_from_file
-    @file ||= ::File.expand_path("../communities/#{community}.yml", __FILE__)
-    @@struct[community] = @struct = ::OpenStruct.new(::YAML.load_file(@file))
+    @file ||= ::File.expand_path("../communities/#{slug}.yml", __FILE__)
+    @@struct[slug] = @struct = ::OpenStruct.new(::YAML.load_file(@file))
   rescue ::Errno::ENOENT
-    raise "Community '#{community}' is not defined"
+    raise "Community '#{slug}' is not defined"
   end
 end

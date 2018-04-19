@@ -13,6 +13,7 @@ FactoryGirl.define do
     latitude 1.122
     longitude 2.345
     number_of_people 1
+    community 'entourage'
 
     trait :joined do
       after(:create) do |entourage, evaluator|
