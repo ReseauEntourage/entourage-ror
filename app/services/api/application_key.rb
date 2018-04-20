@@ -12,6 +12,19 @@ module Api
       api_keys[api_key]
     end
 
+    def platform
+      @platform ||= begin
+        case key_infos.try(:[], :device_family)
+        when UserApplication::ANDROID, UserApplication::IOS
+          :mobile
+        when UserApplication::WEB
+          :web
+        else
+          nil
+        end
+      end
+    end
+
     private
     attr_reader :api_key
 

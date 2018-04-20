@@ -1,5 +1,10 @@
 #!/bin/bash
 
+function is_running {
+  docker-compose ps --services --filter status=running \
+   | grep $1 > /dev/null
+}
+
 function try_exec {
   docker-compose exec --env RAILS_ENV=${RAILS_ENV:-development} spring /entrypoint "$@"
 }
@@ -9,6 +14,10 @@ try_exec "$@"
 
 # if it fails, try to start the container and retry the command
 if [ $? -eq 1 ]; then
-  bin/docker/up
-  try_exec "$@"
+  $(is_running spring) || spring_not_running=true
+
+  if [ $spring_not_running ]; then
+    bin/docker/up
+    try_exec "$@"
+  fi
 fi

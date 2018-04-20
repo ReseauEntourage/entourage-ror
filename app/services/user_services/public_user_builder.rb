@@ -15,10 +15,14 @@ module UserServices
     end
 
 
-    def update(user:)
+    def update(user:, platform: nil)
       yield callback if block_given?
 
       return callback.on_failure.try(:call, user) if params.keys.include?("phone")
+
+      if params.key?('sms_code') && platform != :mobile
+        return callback.on_failure.try(:call, user)
+      end
 
       avatar_file = params.delete(:avatar)
       if avatar_file

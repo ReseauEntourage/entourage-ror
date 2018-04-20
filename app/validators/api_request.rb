@@ -12,7 +12,11 @@ class ApiRequest
   end
 
   def key_infos
-    Api::ApplicationKey.new(api_key: api_key).key_infos
+    key_object.key_infos
+  end
+
+  def platform
+    key_object.platform
   end
 
   def api_key
@@ -21,6 +25,10 @@ class ApiRequest
 
   private
   attr_reader :params, :headers, :env
+
+  def key_object
+    @key_object ||= Api::ApplicationKey.new(api_key: api_key)
+  end
 end
 
 class UnauthorisedApiKeyError < StandardError; end

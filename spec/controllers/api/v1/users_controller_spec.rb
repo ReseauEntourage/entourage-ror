@@ -63,6 +63,32 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
         it { expect(result).to eq({"error"=>{"code"=>"UNAUTHORIZED", "message" => "wrong phone / sms_code"}}) }
       end
 
+      describe "sms_code / password logic" do
+        def login_status params
+          post 'login', user: {phone: user.phone}.merge(params)
+          response.status
+        end
+
+        context "when the user doesn't have a password" do
+          it { expect(login_status sms_code: "123456").to eq 200 }
+        end
+
+        context "when the user has a password" do
+          before { user.update_attributes(password: "P@ssw0rd", password_confirmation: "P@ssw0rd") }
+
+          context "on the web" do
+            before { @request.env['X-API-KEY'] = 'api_debug_web' }
+            it { expect(login_status secret: "P@ssw0rd").to eq 200 }
+            it { expect(login_status secret: "123456"  ).to eq 401 }
+          end
+
+          context "on mobile" do
+            it { expect(login_status sms_code: "P@ssw0rd").to eq 200 }
+            it { expect(login_status sms_code: "123456"  ).to eq 200 }
+          end
+        end
+      end
+
       context 'invalid phone number format' do
         before { post 'login', user: {phone: "1234x"}, format: 'json' }
         it { expect(response.status).to eq(401) }
@@ -215,6 +241,45 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
         let!(:user) { create :public_user, email: "foo@bar.com" }
         before { expect_any_instance_of(MemberMailer).to receive(:welcome).never }
         it { patch 'update', token: user.token, user: { email:'new@e.mail' }, format: :json }
+      end
+    end
+
+    describe "update sms_code" do
+      before do
+        @request.env['X-API-KEY'] = api_key
+        patch 'update', token: user.token, user: { sms_code: '654321' }
+      end
+
+      context "on mobile" do
+        let(:api_key) { 'api_debug' }
+        it { expect(response.status).to eq 200 }
+      end
+
+      context "on web" do
+        let(:api_key) { 'api_debug_web' }
+        it { expect(response.status).to eq 400 }
+      end
+    end
+
+    describe "update password" do
+      before { patch 'update', token: user.token, user: params }
+      let(:error_message) { JSON.parse(response.body)['error']['message'] }
+
+      context "no confirmation" do
+        let(:params) { {password: "new password"} }
+        it { expect(response.status).to eq 400 }
+        it { expect(error_message).to include "Password confirmation doit être rempli(e)" }
+      end
+
+      context "wrong confirmation" do
+        let(:params) { {password: "new password", password_confirmation: "something else"} }
+        it { expect(response.status).to eq 400 }
+        it { expect(error_message).to include "Password confirmation ne concorde pas avec Password" }
+      end
+
+      context "valid parameters" do
+        let(:params) { {password: "new password", password_confirmation: "new password"} }
+        it { expect(response.status).to eq 200 }
       end
     end
   end

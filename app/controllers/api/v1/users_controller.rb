@@ -5,16 +5,27 @@ module Api
 
       #curl -H "X-API-KEY:adc86c761fa8" -H "Content-Type: application/json" -X POST -d '{"user": {"phone": "+3312345567", "sms_code": "11111"}}' "http://localhost:3000/api/v1/login.json"
       def login
-        user = UserServices::UserAuthenticator.authenticate_by_phone_and_sms(phone: user_params[:phone], sms_code: user_params[:sms_code])
-
         unless PhoneValidator.new(phone: user_params[:phone]).valid?
           Rails.logger.info "SIGNIN_FAILED: invalid phone number format - params: #{params.inspect}"
           return render_error(code: "INVALID_PHONE_FORMAT", message: "invalid phone number format", status: 401)
         end
 
+        secret_field =
+          if api_request.platform == :web
+            :secret
+          else
+            :sms_code
+          end
+
+        user = UserServices::UserAuthenticator.authenticate_by_phone_and_secret(
+          phone: user_params[:phone],
+          secret: user_params[secret_field],
+          platform: api_request.platform
+        )
+
         unless user
-          Rails.logger.info "SIGNIN_FAILED: wrong phone / sms_code combination - params: #{params.inspect}"
-          return render_error(code: "UNAUTHORIZED", message: "wrong phone / sms_code", status: 401)
+          Rails.logger.info "SIGNIN_FAILED: wrong phone / #{secret_field} combination - params: #{params.inspect}"
+          return render_error(code: "UNAUTHORIZED", message: "wrong phone / #{secret_field}", status: 401)
         end
 
         if user.deleted || user.blocked?
@@ -28,7 +39,7 @@ module Api
       #curl -X PATCH -d '{"user": { "sms_code":"123456"}}' -H "Content-Type: application/json" "http://localhost:3000/api/v1/users/93.json?token=azerty"
       def update
         builder = UserServices::PublicUserBuilder.new(params: user_params, community: community)
-        builder.update(user: @current_user) do |on|
+        builder.update(user: @current_user, platform: api_request.platform) do |on|
           on.success do |user|
             mixpanel.sync_changes(user, {
               'first_name' => '$first_name',
@@ -113,7 +124,7 @@ module Api
 
       private
       def user_params
-        @user_params ||= params.require(:user).permit(:first_name, :last_name, :email, :sms_code, :phone, :avatar_key, :about)
+        @user_params ||= params.require(:user).permit(:first_name, :last_name, :email, :sms_code, :password, :password_confirmation, :secret, :phone, :avatar_key, :about)
       end
 
       def user_report_params
