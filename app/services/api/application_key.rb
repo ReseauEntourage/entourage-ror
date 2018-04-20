@@ -20,6 +20,7 @@ module Api
       {
         "api_debug" => {version: "1.0", device: "rspec", device_family: UserApplication::ANDROID,                    community: 'entourage'},
         "api_debug_pfp" => {version: "1.0", device: "rspec", device_family: UserApplication::ANDROID,                community: 'pfp'},
+        "api_debug_web" => {version: "1.0", device: "rspec", device_family: UserApplication::WEB,                    community: 'entourage'},
         "b05e6d0d2be8" => {version: "1.0.3", device: "iOS", device_family: UserApplication::IOS,                     community: 'entourage'},
         "32e2ced9df89" => {version: "1.0.24", device: "Android", device_family: UserApplication::ANDROID,            community: 'entourage'},
         "d05394bcf705bbd4d6923bd9" => {version: "1.1.0", device: "iOS", device_family: UserApplication::IOS,         community: 'entourage'},
@@ -74,6 +75,7 @@ module Api
 
         "2c139df443e3ba92573962f1" => {version: "5.0.0", device: "iOS",     device_family: UserApplication::IOS,     community: 'entourage'},
         "2319683867b6c10281896aa6" => {version: "5.0.0", device: "Android", device_family: UserApplication::ANDROID, community: 'entourage'},
+        "26fb18404cb9d6afebc87349" => {version: "5.0.0", device: "web",     device_family: UserApplication::WEB,     community: 'entourage'},
         "2d5771c1d7273cb1817c4aaa" => {version: "5.0.0", device: "iOS",     device_family: UserApplication::IOS,     community: 'pfp'},
         "2ab4573f2d1c370f084ed7db" => {version: "5.0.0", device: "Android", device_family: UserApplication::ANDROID, community: 'pfp'},
 
