@@ -17,7 +17,7 @@ module Api
           return render_error(code: "UNAUTHORIZED", message: "wrong phone / sms_code", status: 401)
         end
 
-        if user.deleted
+        if user.deleted || user.blocked?
           Rails.logger.info "SIGNIN_FAILED: deleted user - params: #{params.inspect}"
           return render_error(code: "DELETED", message: "user is deleted", status: 401)
         end
@@ -78,7 +78,7 @@ module Api
         user_phone = Phone::PhoneBuilder.new(phone: user_params[:phone]).format
         user = User.where(phone: user_phone).first!
 
-        if params[:code][:action] == "regenerate" && !user.deleted
+        if params[:code][:action] == "regenerate" && !user.deleted && !user.blocked?
           UserServices::SMSSender.new(user: user).regenerate_sms!
           render json: user, status: 200, serializer: ::V1::UserSerializer, scope: { user: user }
         else

@@ -24,7 +24,7 @@ module Api
       end
 
       def authenticate_user!
-        if current_user && !current_user.deleted
+        if current_user && !current_user.deleted && !current_user.blocked?
           unless current_user.last_sign_in_at.try(:today?)
             first_session = current_user.last_sign_in_at.nil?
             reactivated = !first_session && current_user.last_sign_in_at <= 3.months.ago

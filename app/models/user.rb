@@ -104,6 +104,7 @@ class User < ActiveRecord::Base
   def validate!
     update(validation_status: "validated")
   end
+  alias_method :unblock!, :validate!
 
   def default_partner
     @default_partner ||= default_user_partners.first&.partner

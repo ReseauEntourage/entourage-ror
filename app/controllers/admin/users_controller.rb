@@ -1,6 +1,6 @@
 module Admin
   class UsersController < Admin::BaseController
-    before_action :set_user, only: [:show, :edit, :update, :banish, :validate]
+    before_action :set_user, only: [:show, :edit, :update, :block, :unblock, :banish, :validate]
 
     def index
       @users = User.type_pro.includes(:organization).order("last_name ASC").page(params[:page]).per(25)
@@ -51,6 +51,16 @@ module Admin
         User.validated
       end
       @users = @users.where("avatar_key IS NOT NULL").order("updated_at DESC").page(params[:page]).per(25)
+    end
+
+    def block
+      @user.block!
+      redirect_to [:admin, @user], flash: { success: "Utilisateur bloqué" }
+    end
+
+    def unblock
+      @user.unblock!
+      redirect_to [:admin, @user], flash: { success: "Utilisateur débloqué" }
     end
 
     def banish

@@ -16,6 +16,8 @@ Rails.application.routes.draw do
         end
 
         member do
+          put 'block'
+          put 'unblock'
           put 'banish'
           put 'validate'
         end
