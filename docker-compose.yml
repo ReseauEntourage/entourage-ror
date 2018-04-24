@@ -18,14 +18,14 @@ services:
     ports:
       - "6379/tcp"
 
-  shell:
+  spring:
     build:
       context: .
     volumes:
-      - .:/app
-      - /app/.git # protect .git from the container
-      - gems:/app/.gem:delegated
-    user: heroku-user
+      - .:/home/docker-user/app
+      - /home/docker-user/app/.git # protect .git from the container
+      - gems:/home/docker-user/.gem:delegated
+    user: docker-user
     depends_on:
       - postgresql
       - redis
@@ -36,6 +36,7 @@ services:
       REDIS_URL: "redis://redis:6379"
       PORT: 8080
       RAILS_ENV: ${RAILS_ENV:-development}
+    command: spring server
 
 volumes:
   postgresql-data:

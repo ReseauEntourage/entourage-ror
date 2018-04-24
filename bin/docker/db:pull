@@ -1,0 +1,86 @@
+#!/bin/bash
+
+set -o pipefail
+
+regex="postgres://(.+):(.+)@(.+):(.+)/(.+)"
+
+function password {
+  [[ $1 =~ $regex ]]
+  password=${BASH_REMATCH[2]}
+  echo $password
+}
+
+function options {
+  [[ $1 =~ $regex ]]
+  username=${BASH_REMATCH[1]}
+  host=${BASH_REMATCH[3]}
+  port=${BASH_REMATCH[4]}
+  database=${BASH_REMATCH[5]}
+  if [ "$2" = "-d" ]; then
+    echo -U $username -h $host -p $port -d $database
+  else
+    echo -U $username -h $host -p $port $database
+  fi
+}
+
+function dump {
+  docker-compose exec -T \
+    --env PGPASSWORD=$(password $1) \
+    --env PGSSLMODE=prefer \
+  postgresql pg_dump \
+    --verbose \
+    --format=custom \
+    --compress=0 \
+    $(options $1 -d) \
+    "${@:2}"
+}
+
+function restore {
+  docker-compose exec -T postgresql pg_restore \
+    --verbose --no-acl --no-owner -U guest \
+    --dbname=$1
+}
+
+function drop {
+  docker-compose exec -T postgresql dropdb \
+    --if-exists --echo -U guest \
+    $1
+}
+
+function create {
+  docker-compose exec  -T postgresql createdb \
+    --echo -U guest \
+    $1
+}
+
+function reset {
+  drop $1
+  create $1
+}
+
+function exclude {
+  for table in "$@"; do
+    echo -n "--exclude-table-data=$table "
+  done
+}
+
+function is_running {
+  docker-compose ps --services --filter status=running \
+   | grep $1 > /dev/null
+}
+
+source=$(heroku config:get DATABASE_URL -a entourage-back)
+target=entourage-dev
+excluded_tables=(entourage_scores rpush_notifications tour_points)
+
+$(is_running spring)     && spring_running=true
+$(is_running postgresql) && postgresql_running=true
+
+[ $postgresql_running ] || docker-compose up --detach postgresql
+[ $spring_running ]     && docker-compose stop spring
+
+reset $target
+dump $source $(exclude ${excluded_tables[*]}) | restore $target
+
+[ $postgresql_running ] || docker-compose stop  postgresql
+[ $spring_running ]     && docker-compose start spring
