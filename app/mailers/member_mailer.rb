@@ -62,6 +62,41 @@ class MemberMailer < ActionMailer::Base
     )
   end
 
+  def action_zone_suggestion(user, postal_code)
+    return unless user.email.present?
+    user_id = UserServices::EncodedId.encode(user.id)
+
+    # generate an email with an empty body
+    mail { nil }
+
+    # then overwrite the headers
+    headers(
+      from:    email_with_name("guillaume@entourage.social", "Le Réseau Entourage"),
+      to:      user.email,
+      subject: nil,
+
+      'X-MJ-TemplateID' => 355675,
+      'X-MJ-TemplateLanguage' => 1,
+
+      'X-MJ-Vars' => JSON.fast_generate(
+        first_name: user.first_name,
+        postal_code: postal_code,
+        user_id: user_id,
+        confirm_url: confirm_api_v1_action_zones_url(
+          host: API_HOST,
+          protocol: :https,
+          user_id: user_id,
+          postal_code: postal_code
+        )
+      ),
+      'X-MJ-EventPayload' => JSON.fast_generate(
+        type: :action_zone_suggestion,
+        user_id: user.id
+      ),
+      'X-Mailjet-Campaign' => :action_zone_suggestion
+    )
+  end
+
   def tour_report(tour)
     @tour = tour
     @user = tour.user

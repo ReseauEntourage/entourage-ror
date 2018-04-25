@@ -21,6 +21,32 @@ namespace :mixpanel do
     require 'typeform'
     require 'mixpanel_tools'
 
+    def save_and_build_update user_id:, country:, postal_code:
+      begin
+        zone = ActionZone.find_or_create_by!(
+          user_id: user_id,
+          country: country,
+          postal_code: postal_code
+        )
+      rescue ActiveRecord::RecordInvalid,
+             ActiveRecord::RecordNotUnique,
+             ActiveRecord::InvalidForeignKey # no user for this user_id
+        return
+      end
+
+      {
+        '$distinct_id' => user_id,
+        '$set' => {
+          "Zone d'action (pays)"        => zone.country_name,
+          "Zone d'action (code postal)" => zone.postal_code,
+          "Zone d'action (département)" => zone.postal_code.first(2),
+        }
+      }
+    end
+
+    #
+    # App form
+    #
     updates = Typeform.get_responses('WIg5A9').map do |response|
       answers = Typeform.answers(response)
 
@@ -38,26 +64,30 @@ namespace :mixpanel do
           UserServices::EncodedId.decode(answers['user_id'])
         end
 
-      begin
-        zone = ActionZone.find_or_create_by!(
-          user_id: user_id,
-          country: answers['68234976'],
-          postal_code: answers['68233033']
-        )
-      rescue ActiveRecord::RecordInvalid,
-             ActiveRecord::RecordNotUnique,
-             ActiveRecord::InvalidForeignKey # no user for this user_id
-        next
-      end
+      save_and_build_update(
+        user_id: user_id,
+        country: answers['68234976'],
+        postal_code: answers['68233033']
+      )
+    end.compact
 
-      {
-        '$distinct_id' => user_id,
-        '$set' => {
-          "Zone d'action (pays)"        => zone.country_name,
-          "Zone d'action (code postal)" => zone.postal_code,
-          "Zone d'action (département)" => zone.postal_code.first(2),
-        }
-      }
+    MixpanelTools.batch_update(updates)
+
+    #
+    # Email suggestion form
+    #
+    updates = Typeform.get_responses('ODMdxb').map do |response|
+      answers = Typeform.answers(response)
+
+      next unless answers['user_id'].present?
+
+      user_id = UserServices::EncodedId.decode(answers['user_id'])
+
+      save_and_build_update(
+        user_id: user_id,
+        country: answers['ACR7DCvtkEuM'],
+        postal_code: answers['tur0a09lYRlM']
+      )
     end.compact
 
     MixpanelTools.batch_update(updates)
