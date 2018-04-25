@@ -127,7 +127,8 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
     context "blocked user" do
       let!(:user) { create :pro_user, sms_code: "123456", validation_status: "blocked", avatar_key: nil }
       before { post 'login', user: {phone: user.phone, sms_code: "123456"}, format: 'json' }
-      it { expect(JSON.parse(response.body)["user"]["avatar_url"]).to be_nil }
+      it { expect(response.status).to eq(401) }
+      it { expect(result).to eq({"error"=>{"code"=>"DELETED", "message"=>"user is deleted"}}) }
     end
 
     context "no avatar" do
