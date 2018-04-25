@@ -57,4 +57,6 @@ Rails.application.configure do
 
   ENV["ATD_USERNAME"] = "name"
   ENV["ATD_PASSWORD"] = "password"
+
+  ENV["HOST"]='localhost'
 end
