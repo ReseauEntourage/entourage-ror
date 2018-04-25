@@ -24,7 +24,15 @@ class ActionZone < ActiveRecord::Base
     end
   end
 
+  after_create :notify_user
+
   def country_name
     COUNTRIES.find { |c| c[:code] == country }.try(:[], :name)
+  end
+
+  private
+
+  def notify_user
+    MemberMailer.action_zone_confirmation(user, postal_code).deliver_later
   end
 end

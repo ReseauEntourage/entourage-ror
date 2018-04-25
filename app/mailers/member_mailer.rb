@@ -97,6 +97,33 @@ class MemberMailer < ActionMailer::Base
     )
   end
 
+  def action_zone_confirmation(user, postal_code)
+    return unless user.email.present?
+
+    # generate an email with an empty body
+    mail { nil }
+
+    # then overwrite the headers
+    headers(
+      from:    email_with_name("guillaume@entourage.social", "Le Réseau Entourage"),
+      to:      user.email,
+      subject: nil,
+
+      'X-MJ-TemplateID' => 335020,
+      'X-MJ-TemplateLanguage' => 1,
+
+      'X-MJ-Vars' => JSON.fast_generate(
+        first_name: user.first_name,
+        postal_code: postal_code,
+      ),
+      'X-MJ-EventPayload' => JSON.fast_generate(
+        type: :action_zone_confirmation,
+        user_id: user.id
+      ),
+      'X-Mailjet-Campaign' => :action_zone_confirmation
+    )
+  end
+
   def tour_report(tour)
     @tour = tour
     @user = tour.user
