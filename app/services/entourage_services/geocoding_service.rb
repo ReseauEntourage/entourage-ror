@@ -8,6 +8,13 @@ module EntourageServices
       result = results.find { |r| r.types.include? 'postal_code' }
 
       if result.nil?
+        # try again without specifying a result_type
+        results = Geocoder.search([entourage.latitude, entourage.longitude])
+        # and keep the first that has a postal code
+        result = results.find { |r| r.postal_code.present? }
+      end
+
+      if result.nil?
         country     = 'XX'
         postal_code = '00000'
       else
