@@ -12,9 +12,13 @@ RUN apt-get update \
       libpq-dev \
       libsqlite3-dev \
       libssl-dev \
+      locales \
       nodejs \
       zlib1g-dev \
  && rm -rf /var/lib/apt/lists/*
+
+RUN localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
+ENV LANG en_US.utf8
 
 RUN mkdir -p /opt/rubies/2.3.1 \
  && curl -s http://s3.amazonaws.com/heroku-buildpack-ruby/heroku-16/ruby-2.3.1.tgz \
