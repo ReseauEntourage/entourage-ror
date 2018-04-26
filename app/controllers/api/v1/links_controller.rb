@@ -1,8 +1,15 @@
 module Api
   module V1
     class LinksController < Api::V1::BaseController
+      skip_before_filter :authenticate_user!
+
       def redirect
-        user_id = UserServices::EncodedId.encode(current_user.id)
+        if current_user.nil? && params[:id] != 'terms'
+          return render json: {message: 'unauthorized'}, status: :unauthorized
+        end
+
+        user_id = UserServices::EncodedId.encode(current_user.id) if current_user
+
         redirections = {
           'pedagogic-content' =>
             'http://www.simplecommebonjour.org',
@@ -43,6 +50,10 @@ module Api
             "https://entourage-asso.typeform.com/to/U5MocH?user_id=#{user_id}",
           'propose-poi' =>
             "https://entourage-asso.typeform.com/to/h4PDuZ?user_id=#{user_id}",
+          'terms' => {
+            'entourage' => 'https://docs.google.com/document/d/1Q8QC8ByEs8x837Df-lN-KQYHzxyx10awaEsD1Vk_JtM/pub',
+            'pfp'       => 'https://docs.google.com/document/d/e/2PACX-1vSSd0XDqr7YU4DiWZfubsl43j2EImvLX2XOJaFJ0Cx1uxE06H5PMfnHgj1bl9lEHONuXeB7fPsfL6rY/pub'
+          }[community.slug]
         }
 
         redirection = redirections[params[:id]]
