@@ -2,6 +2,7 @@ module Api
   module V1
     class LinksController < Api::V1::BaseController
       skip_before_filter :authenticate_user!
+      skip_before_filter :ensure_community!
 
       def redirect
         if current_user.nil? && params[:id] != 'terms'
