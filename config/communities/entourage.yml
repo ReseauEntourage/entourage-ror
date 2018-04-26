@@ -2,3 +2,4 @@ name: Entourage
 dev_name: Entourage
 mailjet_template:
   welcome: 311246
+store_short_url: https://bit.ly/applientourage
