@@ -1,2 +1,4 @@
 name: Entourage
 dev_name: Entourage
+mailjet_template:
+  welcome: 311246

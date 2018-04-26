@@ -9,6 +9,7 @@ class MemberMailer < ActionMailer::Base
 
   def welcome(user)
     return unless user.email.present?
+    community = user.community
 
     # generate an email with an empty body
     mail { nil }
@@ -19,7 +20,7 @@ class MemberMailer < ActionMailer::Base
       to:      user.email,
       subject: nil,
 
-      'X-MJ-TemplateID' => 311246,
+      'X-MJ-TemplateID' => community.mailjet_template['welcome'],
       'X-MJ-TemplateLanguage' => 1,
 
       'X-MJ-Vars' => JSON.fast_generate(
@@ -30,7 +31,7 @@ class MemberMailer < ActionMailer::Base
         type: :welcome,
         user_id: user.id
       ),
-      'X-Mailjet-Campaign' => :welcome
+      'X-Mailjet-Campaign' => community_prefix(community, :welcome)
     )
   end
 
@@ -176,5 +177,10 @@ class MemberMailer < ActionMailer::Base
 
   def email_with_name(email, name)
     %("#{name}" <#{email}>)
+  end
+
+  def community_prefix community, identifier
+    prefix = community == :entourage ? nil : community.slug
+    [prefix, identifier].compact.map(&:to_s).join('_')
   end
 end
