@@ -62,6 +62,13 @@ module Admin
       @requests_count = Hash[@requests_count.map { |id, total, late| [id, { total: total, late: late }]}]
       @requests_count.default = { total: 0, late: 0 }
 
+      @reminded_users =
+        Experimental::PendingRequestReminder
+          .recent
+          .where(user_id: @entourages.map(&:user_id))
+          .pluck('distinct user_id')
+      @reminded_users = Set.new(@reminded_users)
+
       @message_count =
         ConversationMessage
           .with_moderator_reads_for(user: current_user)

@@ -16,7 +16,7 @@
   @unread_content = true if unread.any?
 %>
 
-<h3>Demandes <span class="badge"><%= requests.count(&:is_pending?) %><span></h3>
+<h3 id="join_requests">Demandes <span class="badge"><%= requests.count(&:is_pending?) %><span></h3>
 
 <% if unread.count > 0 %>
   <div class="conversation-unread-status">
@@ -78,4 +78,53 @@
       <% end %>
     </tbody>
   </table>
+
+  <div class="text-right">
+    <span id="experimental_pending_request_reminder_label">
+      <b>Demandes en attente :</b>
+      <%
+        user = @entourage.user
+        reminders = user.experimental_pending_request_reminders
+        count = reminders.count
+        last_at = reminders.maximum(:created_at)
+      %>
+      <%= UserPresenter.new(user: user).display_name %>
+      <% case count %>
+      <% when 0 %>
+        n'a jamais reçu de relance par SMS.
+      <% when 1 %>
+        a reçu une relance par SMS, il y a <%= time_ago_in_words last_at %>.
+      <% else %>
+        a reçu <%= count %> relances par SMS. Dernière relance il y a <%= time_ago_in_words last_at %>.
+      <% end %>
+    </span>
+    <%= link_to "Relance envoyée",
+          experimental_pending_request_reminder_admin_user_path(user), method: :post,
+          class: "btn btn-primary", data: { disable_with: "Relance envoyée" }
+    %>
+  </div>
 <% end %>
+<script>
+  function scrollTo(id) {
+    console.log('scrollTo', id)
+    $('body, html').scrollTop($(id).position().top - $('#navbar').outerHeight())
+  }
+
+  $(function(){
+    var scrollTarget = location.search.slice(1),
+        pendingRequestReminderSent = <%= flash.key?(:_experimental_pending_request_reminder_created) %>;
+
+    if (pendingRequestReminderSent) {
+      scrollTarget = 'join_requests'
+    }
+
+    if (scrollTarget.length > 0) {
+      scrollTo('#' + scrollTarget)
+    }
+
+    if (pendingRequestReminderSent) {
+      $('#experimental_pending_request_reminder_label')
+        .css({backgroundColor: '#ffc'})
+    }
+  })
+</script>

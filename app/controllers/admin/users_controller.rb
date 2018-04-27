@@ -1,6 +1,6 @@
 module Admin
   class UsersController < Admin::BaseController
-    before_action :set_user, only: [:show, :edit, :update, :block, :unblock, :banish, :validate]
+    before_action :set_user, only: [:show, :edit, :update, :block, :unblock, :banish, :validate, :experimental_pending_request_reminder]
 
     def index
       @users = User.type_pro.includes(:organization).order("last_name ASC").page(params[:page]).per(25)
@@ -72,6 +72,13 @@ module Admin
     def validate
       @user.validate!
       redirect_to moderate_admin_users_path(validation_status: "validated")
+    end
+
+    def experimental_pending_request_reminder
+      reminders = @user.experimental_pending_request_reminders
+      last_reminder_at = reminders.maximum(:created_at)
+      reminders.create! if last_reminder_at.nil? || !last_reminder_at.today?
+      redirect_to :back, flash: { _experimental_pending_request_reminder_created: 1 }
     end
 
     def fake

@@ -47,9 +47,15 @@
       <td>
         <% requests_count = @requests_count[entourage.id] %>
         <% if requests_count[:total] > 0 %>
-          <span class="badge" style="<%= 'background: #d9534f' if requests_count[:late] > 0 %>">
-            <%= requests_count[:total] %>
-          </span>
+          <%
+            highlight =
+              requests_count[:late] > 0 &&
+              !@reminded_users.include?(entourage.user_id)
+          %>
+          <%= link_to requests_count[:total],
+                url_for([:admin, entourage]) + "?join_requests",
+                class: "badge",
+                style: ('background: #d9534f' if highlight) %>
         <% end %>
       </td>
     </tr>

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180420100204) do
+ActiveRecord::Schema.define(version: 20180427145055) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -220,6 +220,14 @@ ActiveRecord::Schema.define(version: 20180420100204) do
   end
 
   add_index "entourages_users", ["user_id", "entourage_id"], name: "index_entourages_users_on_user_id_and_entourage_id", unique: true, using: :btree
+
+  create_table "experimental_pending_request_reminders", force: :cascade do |t|
+    t.integer  "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "experimental_pending_request_reminders", ["user_id"], name: "index_experimental_pending_request_reminders_on_user_id", using: :btree
 
   create_table "join_requests", force: :cascade do |t|
     t.integer  "user_id",                               null: false
@@ -581,4 +589,5 @@ ActiveRecord::Schema.define(version: 20180420100204) do
   add_index "users_appetences", ["user_id"], name: "index_users_appetences_on_user_id", unique: true, using: :btree
 
   add_foreign_key "action_zones", "users"
+  add_foreign_key "experimental_pending_request_reminders", "users"
 end

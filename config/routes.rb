@@ -20,6 +20,7 @@ Rails.application.routes.draw do
           put 'unblock'
           put 'banish'
           put 'validate'
+          post 'experimental_pending_request_reminder'
         end
       end
 
