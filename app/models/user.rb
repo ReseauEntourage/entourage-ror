@@ -148,17 +148,8 @@ class User < ActiveRecord::Base
     user_partners.where(default: true).limit(1).pluck(:partner_id).first
   end
 
-  def community= community_or_slug
-    super Community.slug(community_or_slug)
-  end
-
-  def community
-    slug = super
-    return slug if slug.blank?
-    Community.new(slug)
-  rescue Community::NotFound
-    slug
-  end
+  # https://github.com/rails/rails/blob/v4.2.10/activerecord/lib/active_record/attributes.rb
+  attribute :community, Community::Type.new
 
   protected
 

@@ -1,6 +1,7 @@
 module Api
   module V1
     class FeedsController < Api::V1::BaseController
+      skip_before_filter :community_warning
 
       #curl -H "Content-Type: application/json" "https://entourage-back-preprod.herokuapp.com/api/v1/feeds.json?token=azerty"
       def index

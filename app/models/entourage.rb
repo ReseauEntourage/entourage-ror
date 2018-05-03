@@ -50,7 +50,7 @@ class Entourage < ActiveRecord::Base
   validates_inclusion_of :category, in: CATEGORIES, allow_nil: true
   validates_inclusion_of :display_category, in: DISPLAY_CATEGORIES, allow_nil: true
   validates_uniqueness_of :uuid, on: :create
-  validates_inclusion_of :community, in: Community.slugs, allow_nil: true
+  validates_inclusion_of :community, in: Community.slugs
 
   scope :visible, -> { where.not(status: 'blacklisted') }
   scope :social_category, -> { where(category: 'social') }
@@ -106,21 +106,8 @@ class Entourage < ActiveRecord::Base
       .approximated_location
   end
 
-  def community= community_or_slug
-    super Community.slug(community_or_slug)
-  end
-
-  def community
-    if Rails.env != 'production' && Entourage.columns_hash['community'].null == false
-      raise "This workaround must now be removed"
-    end
-
-    if super.present?
-      Community.new(super)
-    elsif user.present?
-      user.community
-    end
-  end
+  # https://github.com/rails/rails/blob/v4.2.10/activerecord/lib/active_record/attributes.rb
+  attribute :community, Community::Type.new
 
   protected
 

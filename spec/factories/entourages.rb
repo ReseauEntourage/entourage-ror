@@ -2,6 +2,7 @@ FactoryGirl.define do
   factory :entourage do
     transient do
       join_request_user nil
+      community 'entourage'
     end
 
     uuid { SecureRandom.uuid }
@@ -13,7 +14,11 @@ FactoryGirl.define do
     latitude 1.122
     longitude 2.345
     number_of_people 1
-    community 'entourage'
+
+    after(:build) do |entourage, stuff|
+      entourage.user.update_attributes!(community: stuff.community)
+      entourage.community = stuff.community
+    end
 
     trait :joined do
       after(:create) do |entourage, evaluator|

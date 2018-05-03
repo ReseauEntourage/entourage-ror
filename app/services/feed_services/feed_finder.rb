@@ -52,7 +52,8 @@ module FeedServices
     end
 
     def feeds
-      feeds = Feed.where.not(status: 'blacklisted')
+      feeds = user.community.feeds
+                  .where.not(status: 'blacklisted')
                   .includes(feedable: [{ user: { default_user_partners: :partner} }, :join_requests])
 
       if types != nil

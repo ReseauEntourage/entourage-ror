@@ -10,13 +10,21 @@ class Community < BasicObject
 
   @@struct = {}
 
-  def initialize community_slug
-    @slug = community_slug.to_s
+  def initialize slug
+    @slug = ::Community.slug(slug)
     load_from_file
   end
 
   def users
     ::User.where(community: slug)
+  end
+
+  def entourages
+    ::Entourage.where(community: slug)
+  end
+
+  def feeds
+    ::Feed.where(community: slug)
   end
 
   def memoize?
@@ -51,7 +59,12 @@ class Community < BasicObject
   end
 
   alias_method :to_s, :inspect
-  alias_method :to_str, :slug
+  alias_method :to_str, :slug # implicit comparison with strings
+
+  # https://github.com/rails/rails/blob/v4.2.10/activerecord/lib/active_record/sanitization.rb#L187
+  def quoted_id
+    ::ActiveRecord::Base.connection.quote Type.new.type_cast_for_database(slug)
+  end
 
   def == other
     ::Community.slug(other) == slug
@@ -92,6 +105,28 @@ class Community < BasicObject
     @file ||= ::File.expand_path("../communities/#{slug}.yml", __FILE__)
     @@struct[slug] = @struct = ::OpenStruct.new(::YAML.load_file(@file))
   rescue ::Errno::ENOENT
-    raise NotFound, "Community '#{slug}' is not defined"
+    raise NotFound, "Community #{slug.inspect} is not defined"
+  end
+
+  class Type < ::ActiveRecord::Type::String
+    # https://github.com/rails/rails/blob/v4.2.10/activerecord/lib/active_record/attributes.rb
+    # https://github.com/rails/rails/blob/v4.2.10/activerecord/lib/active_record/type/value.rb
+    # https://github.com/rails/rails/blob/v4.2.10/activerecord/lib/active_record/type/string.rb
+
+    def type_cast_from_database(value)
+      return value if value.blank?
+      Community.new(value)
+    rescue Community::NotFound
+      nil
+    end
+
+    def type_cast_from_user(value)
+      return nil if value.nil?
+      Community.new(value)
+    end
+
+    def type_cast_for_database(value)
+      Community.slug(value)
+    end
   end
 end

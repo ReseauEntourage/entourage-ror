@@ -38,9 +38,6 @@ describe User, :type => :model do
   it { should define_enum_for(:device_type) }
   it { should allow_value('a@a.a').for(:email) }
   it { should_not allow_value('a-a.a').for(:email) }
-  it { should_not allow_value(nil).for(:community) }
-  it { should_not allow_value('').for(:community) }
-  it { should_not allow_value(' ').for(:community) }
   it { should have_many :tours }
   it { should have_many :encounters }
   it { should have_many :entourages }
@@ -50,6 +47,14 @@ describe User, :type => :model do
   it { should belong_to :organization }
   it { should have_and_belong_to_many(:coordinated_organizations).class_name('Organization') }
   it { should belong_to :marketing_referer }
+
+  describe "community" do
+    let(:user) { create :public_user }
+    it { should_not allow_value(nil).for(:community) }
+    it { expect { user.community = '' }.to raise_error Community::NotFound }
+    it { expect { user.community = ' ' }.to raise_error Community::NotFound }
+    it { expect { user.community = 'invalid' }.to raise_error Community::NotFound }
+  end
 
   describe "phone number" do
     it { expect(FactoryGirl.build(:pro_user, phone: '+33123456789').save).to be true }

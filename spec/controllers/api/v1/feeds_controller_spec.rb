@@ -1,4 +1,5 @@
 require 'rails_helper'
+include CommunityHelper
 
   describe Api::V1::FeedsController do
 
@@ -257,6 +258,31 @@ require 'rails_helper'
         it do
           expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([my_old_entourage.id, my_entourage.id, entourage.id])
         end
+      end
+    end
+
+    context "community support" do
+      let(:user) { create :public_user }
+      let!(:entourage_action) { create :entourage, community: 'entourage', created_at: 1.hour.ago, updated_at: 1.hour.ago }
+      let!(:pfp_action)       { create :entourage, community: 'pfp',       created_at: 1.hour.ago, updated_at: 1.hour.ago }
+      let(:announcement) { build :announcement }
+      before do
+        allow_any_instance_of(FeedServices::AnnouncementsService)
+          .to receive(:select_announcements)
+          .and_return([announcement])
+      end
+      before { get :index, token: user.token, announcements: "v1" }
+
+      context "signed in as an user from another community" do
+        with_community 'pfp'
+        it { expect(response.status).to eq(200) }
+        it { expect(result['feeds'].map { |f| [f['type'], f['data']['id']] }).to eq [['Entourage', pfp_action.id], ['Announcement', announcement.id]] }
+      end
+
+      context "signed in as an user from another community (entourage)" do
+        with_community 'entourage'
+        it { expect(response.status).to eq(200) }
+        it { expect(result['feeds'].map { |f| [f['type'], f['data']['id']] }).to eq [['Entourage', entourage_action.id], ['Announcement', announcement.id]] }
       end
     end
   end
