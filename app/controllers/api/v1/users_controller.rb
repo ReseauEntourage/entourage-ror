@@ -2,6 +2,7 @@ module Api
   module V1
     class UsersController < Api::V1::BaseController
       skip_before_filter :authenticate_user!, only: [:login, :code, :create]
+      skip_before_filter :community_warning
 
       #curl -H "X-API-KEY:adc86c761fa8" -H "Content-Type: application/json" -X POST -d '{"user": {"phone": "+3312345567", "sms_code": "11111"}}' "http://localhost:3000/api/v1/login.json"
       def login
@@ -17,7 +18,8 @@ module Api
             :sms_code
           end
 
-        user = UserServices::UserAuthenticator.authenticate_by_phone_and_secret(
+        user = UserServices::UserAuthenticator.authenticate(
+          community: community,
           phone: user_params[:phone],
           secret: user_params[secret_field],
           platform: api_request.platform
@@ -87,7 +89,7 @@ module Api
           return render json: {error: "Missing phone number"}, status:400
         end
         user_phone = Phone::PhoneBuilder.new(phone: user_params[:phone]).format
-        user = User.where(phone: user_phone).first!
+        user = community.users.where(phone: user_phone).first!
 
         if params[:code][:action] == "regenerate" && !user.deleted && !user.blocked?
           UserServices::SMSSender.new(user: user).regenerate_sms!
@@ -99,7 +101,7 @@ module Api
 
       #curl -H "X-API-KEY:adc86c761fa8" -H "Content-Type: application/json" "http://localhost:3000/api/v1/users/me.json?token=azerty"
       def show
-        user = params[:id] == "me" ? current_user : User.find(params[:id])
+        user = params[:id] == "me" ? current_user : community.users.find(params[:id])
         render json: user, status: 200, serializer: ::V1::UserSerializer, scope: { user: current_user, full_partner: true }
       end
 
@@ -109,7 +111,7 @@ module Api
       end
 
       def report
-        user = User.find(params[:id])
+        user = community.users.find(params[:id])
         reporter = UserServices::ReportUserService.new(reported_user: user, params: user_report_params)
         reporter.report(reporting_user: current_user) do |on|
           on.success do

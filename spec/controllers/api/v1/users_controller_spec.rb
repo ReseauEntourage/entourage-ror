@@ -95,6 +95,23 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
         it { expect(result).to eq({"error"=>{"code"=>"INVALID_PHONE_FORMAT", "message"=>"invalid phone number format"}}) }
       end
     end
+
+    describe 'community support' do
+      let(:user) { create :public_user, community: 'pfp', sms_code: "123456" }
+      before { post 'login', user: {phone: user.phone, sms_code: "123456"} }
+
+      context "when using the user's community" do
+        with_community 'pfp'
+        it { expect(response.status).to eq(200) }
+      end
+
+      context "when using a different community than the user's" do
+        with_community 'entourage'
+        it { expect(response.status).to eq(401) }
+        it { expect(result).to eq({"error"=>{"code"=>"UNAUTHORIZED", "message" => "wrong phone / sms_code"}}) }
+      end
+    end
+
     context 'when user does not exist' do
       context 'using the email' do
         before { post 'login', user: {email: 'not_existing@nowhere.com', sms_code: 'sms code'}, format: 'json' }

@@ -11,7 +11,7 @@ class User < ActiveRecord::Base
   validates_presence_of [:password, :password_confirmation], if: :changing_password?
   validates_confirmation_of :password, if: :changing_password?
   validates_length_of :password, within: 8..256, allow_nil: true
-  validates_inclusion_of :community, in: Community.slugs, allow_nil: true
+  validates_inclusion_of :community, in: Community.slugs
 
   after_save :clean_up_passwords, if: :encrypted_password_changed?
 
@@ -136,15 +136,11 @@ class User < ActiveRecord::Base
   end
 
   def community
-    if Rails.env != 'production' && User.columns_hash['community'].null == false
-      raise "This workaround must now be removed"
-    end
-
-    if super.present?
-      Community.new(super)
-    else
-      $server_community
-    end
+    slug = super
+    return slug if slug.blank?
+    Community.new(slug)
+  rescue Community::NotFound
+    slug
   end
 
   protected

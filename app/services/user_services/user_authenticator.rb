@@ -1,9 +1,10 @@
 module UserServices
   class UserAuthenticator
-    def self.authenticate_by_phone_and_secret(phone:, secret:, platform:)
-      return nil if phone.blank? || secret.blank? || platform.blank?
+    def self.authenticate(community:, phone:, secret:, platform:)
+      return nil if [community, phone, secret, platform].any?(&:blank?)
 
-      user = find_user_by_phone phone
+      user_phone = Phone::PhoneBuilder.new(phone: phone).format
+      user = community.users.where(phone: user_phone).first
       return user if user.nil?
 
       auth_service = UserServices::AuthenticationService.new(user: user)
@@ -21,18 +22,12 @@ module UserServices
     def self.authenticate_by_phone_and_sms(phone:, sms_code:)
       return nil if phone.blank? || sms_code.blank?
 
-      user = find_user_by_phone phone
+      user_phone = Phone::PhoneBuilder.new(phone: phone).format
+      user = User.where(phone: user_phone).first
       return user if user.nil?
 
       valid_password = UserServices::AuthenticationService.new(user: user).check_sms_code(sms_code)
       valid_password ? user : nil
-    end
-
-    private
-
-    def self.find_user_by_phone phone
-      user_phone = Phone::PhoneBuilder.new(phone: phone).format
-      User.where(phone: user_phone).first
     end
   end
 end

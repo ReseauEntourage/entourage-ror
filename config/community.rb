@@ -12,6 +12,10 @@ class Community < BasicObject
     load_from_file
   end
 
+  def users
+    ::User.where(community: slug)
+  end
+
   def method_missing name, *args
     super if args.any?
     return self == $1 if name =~ /^(.*)\?$/
@@ -65,6 +69,8 @@ class Community < BasicObject
     end
   end
 
+  class NotFound < ::RuntimeError; end
+
   private
 
   def from_global_memory
@@ -75,6 +81,6 @@ class Community < BasicObject
     @file ||= ::File.expand_path("../communities/#{slug}.yml", __FILE__)
     @@struct[slug] = @struct = ::OpenStruct.new(::YAML.load_file(@file))
   rescue ::Errno::ENOENT
-    raise "Community '#{slug}' is not defined"
+    raise NotFound, "Community '#{slug}' is not defined"
   end
 end

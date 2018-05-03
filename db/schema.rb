@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180427145055) do
+ActiveRecord::Schema.define(version: 20180503155845) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -568,7 +568,7 @@ ActiveRecord::Schema.define(version: 20180427145055) do
     t.boolean  "atd_friend",                       default: false,       null: false
     t.boolean  "use_suggestions",                  default: false,       null: false
     t.string   "about",                limit: 200
-    t.string   "community",            limit: 9
+    t.string   "community",            limit: 9,                         null: false
     t.string   "encrypted_password"
   end
 

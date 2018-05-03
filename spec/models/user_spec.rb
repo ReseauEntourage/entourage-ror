@@ -38,6 +38,9 @@ describe User, :type => :model do
   it { should define_enum_for(:device_type) }
   it { should allow_value('a@a.a').for(:email) }
   it { should_not allow_value('a-a.a').for(:email) }
+  it { should_not allow_value(nil).for(:community) }
+  it { should_not allow_value('').for(:community) }
+  it { should_not allow_value(' ').for(:community) }
   it { should have_many :tours }
   it { should have_many :encounters }
   it { should have_many :entourages }

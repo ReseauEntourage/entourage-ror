@@ -20,7 +20,7 @@ module Api
       end
 
       def current_user
-        @current_user ||= User.find_by_token params[:token]
+        @current_user ||= community.users.find_by_token params[:token]
       end
 
       def authenticate_user!
