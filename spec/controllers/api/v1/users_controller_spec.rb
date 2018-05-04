@@ -30,6 +30,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                                   "about"=> nil,
                                   "token"=>user.token,
                                   "user_type"=>"pro",
+                                  "has_password"=>false,
                                   "avatar_url"=>"https://foobar.s3-eu-west-1.amazonaws.com/300x300/avatar.jpg",
                                   "organization"=>{"name"=>user.organization.name,
                                                    "description"=>"Association description",
@@ -64,27 +65,30 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
       end
 
       describe "sms_code / password logic" do
-        def login_status params
+        def login params
           post 'login', user: {phone: user.phone}.merge(params)
-          response.status
+          OpenStruct.new(status: response.status, body: JSON.parse(response.body))
         end
 
         context "when the user doesn't have a password" do
-          it { expect(login_status sms_code: "123456").to eq 200 }
+          it { expect(login(sms_code: "123456").status).to eq 200 }
+          it { expect(login(sms_code: "123456").body['user']['has_password']).to eq false }
         end
 
         context "when the user has a password" do
-          before { user.update_attributes(password: "P@ssw0rd", password_confirmation: "P@ssw0rd") }
+          before { user.update_attributes(password: "P@ssw0rd") }
 
           context "on the web" do
             before { @request.env['X-API-KEY'] = 'api_debug_web' }
-            it { expect(login_status secret: "P@ssw0rd").to eq 200 }
-            it { expect(login_status secret: "123456"  ).to eq 401 }
+            it { expect(login(secret: "P@ssw0rd").status).to eq 200 }
+            it { expect(login(secret: "P@ssw0rd").body['user']['has_password']).to eq true }
+            it { expect(login(secret: "123456"  ).status).to eq 401 }
           end
 
           context "on mobile" do
-            it { expect(login_status sms_code: "P@ssw0rd").to eq 200 }
-            it { expect(login_status sms_code: "123456"  ).to eq 200 }
+            it { expect(login(sms_code: "P@ssw0rd").status).to eq 200 }
+            it { expect(login(sms_code: "P@ssw0rd").body['user']['has_password']).to eq true }
+            it { expect(login(sms_code: "123456"  ).status).to eq 200 }
           end
         end
       end
@@ -153,6 +157,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                                                              "about" => nil,
                                                              "user_type"=>"pro",
                                                              "token"=>user.token,
+                                                             "has_password"=>false,
                                                              "avatar_url"=>"https://foobar.s3-eu-west-1.amazonaws.com/300x300/avatar.jpg",
                                                              "organization"=>{"name"=>user.organization.name,
                                                                               "description"=>"Association description",
@@ -282,20 +287,8 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
       before { patch 'update', token: user.token, user: params }
       let(:error_message) { JSON.parse(response.body)['error']['message'] }
 
-      context "no confirmation" do
-        let(:params) { {password: "new password"} }
-        it { expect(response.status).to eq 400 }
-        it { expect(error_message).to include "Password confirmation doit être rempli(e)" }
-      end
-
-      context "wrong confirmation" do
-        let(:params) { {password: "new password", password_confirmation: "something else"} }
-        it { expect(response.status).to eq 400 }
-        it { expect(error_message).to include "Password confirmation ne concorde pas avec Password" }
-      end
-
       context "valid parameters" do
-        let(:params) { {password: "new password", password_confirmation: "new password"} }
+        let(:params) { {password: "new password"} }
         it { expect(response.status).to eq 200 }
       end
     end
@@ -411,6 +404,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                                                            "token"=>user.token,
                                                            "user_type"=>"pro",
                                                            "avatar_url"=>nil,
+                                                           "has_password"=>false,
                                                            "organization"=>{"name"=>user.organization.name,
                                                                             "description"=>"Association description",
                                                                             "phone"=>user.organization.phone,
@@ -448,6 +442,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                                                            "token"=>user.token,
                                                            "user_type"=>"pro",
                                                            "avatar_url"=>nil,
+                                                           "has_password"=>false,
                                                            "organization"=>{"name"=>user.organization.name, "description"=>"Association description", "phone"=>user.organization.phone, "address"=>user.organization.address, "logo_url"=>nil},
                                                            "stats"=>{
                                                                "tour_count"=>0,

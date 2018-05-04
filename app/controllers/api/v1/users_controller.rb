@@ -126,7 +126,7 @@ module Api
 
       private
       def user_params
-        @user_params ||= params.require(:user).permit(:first_name, :last_name, :email, :sms_code, :password, :password_confirmation, :secret, :phone, :avatar_key, :about)
+        @user_params ||= params.require(:user).permit(:first_name, :last_name, :email, :sms_code, :password, :secret, :phone, :avatar_key, :about)
       end
 
       def user_report_params

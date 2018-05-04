@@ -9,8 +9,6 @@ class User < ActiveRecord::Base
   validates_associated :organization, if: Proc.new { |u| u.pro? }
   validates :sms_code, length: { minimum: 6 }
   validates_length_of :about, maximum: 200, allow_nil: true
-  validates_presence_of [:password, :password_confirmation], if: :changing_password?
-  validates_confirmation_of :password, if: :changing_password?
   validates_length_of :password, within: 8..256, allow_nil: true
   validates_inclusion_of :community, in: Community.slugs
 
@@ -92,7 +90,7 @@ class User < ActiveRecord::Base
 
   def password=(new_password)
     @password = new_password
-    self.encrypted_password = BCrypt::Password.create(new_password) if new_password.present?
+    self.encrypted_password = BCrypt::Password.create(new_password) if !new_password.nil?
   end
 
   def has_password?
@@ -146,11 +144,7 @@ class User < ActiveRecord::Base
 
   protected
 
-  def changing_password?
-    !password.nil? || !password_confirmation.nil?
-  end
-
   def clean_up_passwords
-    self.password = self.password_confirmation = nil
+    self.password = nil
   end
 end

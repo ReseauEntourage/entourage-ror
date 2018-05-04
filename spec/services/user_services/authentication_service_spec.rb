@@ -24,7 +24,7 @@ describe UserServices::AuthenticationService do
 
   describe 'check_password' do
     let(:password_service) { UserServices::AuthenticationService.new(user: user) }
-    let(:user) { create :public_user, password: "P@ssw0rd", password_confirmation: "P@ssw0rd" }
+    let(:user) { create :public_user, password: "P@ssw0rd" }
 
     context "valid user password" do
       it { expect(password_service.check_password("P@ssw0rd")).to be true }

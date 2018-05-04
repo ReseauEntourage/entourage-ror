@@ -135,7 +135,7 @@ describe User, :type => :model do
   end
 
   describe "password" do
-    let(:user) { create(:public_user, password: "something", password_confirmation: "something") }
+    let(:user) { create(:public_user, password: "something") }
 
     def update params={}
       if user.update(params)
@@ -147,13 +147,9 @@ describe User, :type => :model do
 
     it { expect(update updated_at: Time.now                           ).to be :unchanged }
     it { expect(update password: nil                                  ).to be :unchanged }
-    it { expect(update password: nil,    password_confirmation: nil   ).to be :unchanged }
-    it { expect(update password: ''                                   ).to include(password: "est trop court (au moins 8 caractères)") }
-    it { expect(update                   password_confirmation: ''    ).to include(password: "doit être rempli(e)") }
-    it { expect(update password: ' '*10, password_confirmation: ' '*10).to include(password: "doit être rempli(e)") }
-    it { expect(update password: 'x'*10                               ).to eq(password_confirmation: "doit être rempli(e)") }
-    it { expect(update password: 'x'*10, password_confirmation: 'y'*10).to eq(password_confirmation: "ne concorde pas avec Password") }
-    it { expect(update password: 'x'*10, password_confirmation: 'x'*10).to be :changed }
+    it { expect(update password: ''                                   ).to eq password: "est trop court (au moins 8 caractères)" }
+    it { expect(update password: ' '*10                               ).to be :changed }
+    it { expect(update password: 'x'*10                               ).to be :changed }
   end
 
   it "has many entourage_participations" do

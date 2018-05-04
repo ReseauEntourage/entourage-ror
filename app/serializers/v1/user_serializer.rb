@@ -9,13 +9,14 @@ module V1
                :token,
                :avatar_url,
                :user_type,
-               :partner
+               :partner,
+               :has_password
 
     has_one :organization
     has_one :stats, serializer: ActiveModel::DefaultSerializer
 
     def filter(keys)
-      me? ? keys : keys - [:token, :email]
+      me? ? keys : keys - [:token, :email, :has_password]
     end
 
     def stats
@@ -37,6 +38,10 @@ module V1
     def partner
       return nil unless object.default_partner
       JSON.parse(V1::PartnerSerializer.new(object.default_partner, scope: {user: object, full: scope[:full_partner] || false}, root: false).to_json)
+    end
+
+    def has_password
+      object.has_password?
     end
 
     def scope
