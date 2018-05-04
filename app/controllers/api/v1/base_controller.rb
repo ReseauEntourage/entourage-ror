@@ -9,6 +9,11 @@ module Api
       before_filter :authenticate_user!, except: [:check, :options]
       before_filter :set_raven_context
 
+      rescue_from ApiRequest::Unauthorised do |e|
+        Rails.logger.error e
+        render json: {message: 'Missing API Key or invalid key'}, status: 426
+      end
+
       def allow_cors
         headers["Access-Control-Allow-Origin"] = "*"
         headers["Access-Control-Allow-Methods"] = %w{GET POST PUT PATCH DELETE}.join(",")
@@ -49,12 +54,7 @@ module Api
       end
 
       def validate_request!
-        begin
-          api_request.validate!
-        rescue UnauthorisedApiKeyError => e
-          Rails.logger.error e
-          return render json: {message: 'Missing API Key or invalid key'}, status: 426
-        end
+        api_request.validate!
       end
 
       def render_error(code:, message:, status:)

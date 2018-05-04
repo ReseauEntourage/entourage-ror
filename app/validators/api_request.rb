@@ -8,7 +8,7 @@ class ApiRequest
   def validate!
     return if Rails.env.test?
 
-    raise UnauthorisedApiKeyError unless key_infos.present?
+    raise Unauthorised unless key_infos.present?
   end
 
   def key_infos
@@ -16,12 +16,15 @@ class ApiRequest
   end
 
   def platform
+    raise Unauthorised unless key_infos.present?
     key_object.platform
   end
 
   def api_key
     headers['X-API-KEY'] || env['X-API-KEY'] || env['HTTP_X_API_KEY'] || env['HTTP_API_KEY']
   end
+
+  class Unauthorised < StandardError; end
 
   private
   attr_reader :params, :headers, :env
@@ -31,4 +34,3 @@ class ApiRequest
   end
 end
 
-class UnauthorisedApiKeyError < StandardError; end
