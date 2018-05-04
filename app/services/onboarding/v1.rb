@@ -65,12 +65,6 @@ module Onboarding
       )
     end
 
-    def self.join_request_success join_request
-      AcceptJoinRequestJob
-        .set(wait_until: join_request.created_at + 15.seconds)
-        .perform_later(join_request)
-    end
-
     def self.entourage_metadata entourage
       area = ENTOURAGES.invert[entourage.id]
       is_onboarding = area.present?
@@ -84,14 +78,15 @@ module Onboarding
       ENTOURAGES.has_value? entourage.id
     end
 
-    class AcceptJoinRequestJob < ActiveJob::Base
-      def perform join_request
-        JoinRequestsServices::JoinRequestUpdater.new(
-          join_request: join_request,
-          status: 'accepted',
-          message: nil,
-          current_user: join_request.joinable.user
-        ).update
+    module Entourage
+      extend ActiveSupport::Concern
+
+      included do
+        raise unless included_modules.include?(Experimental::AutoAccept::Joinable)
+      end
+
+      def auto_accept_join_requests?
+        super || Onboarding::V1.is_onboarding?(self)
       end
     end
   end

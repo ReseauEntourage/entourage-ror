@@ -38,8 +38,6 @@ module Api
                 mixpanel.track("Requested to join Entourage", mp_params)
                 mixpanel.track("Wrote Message in Entourage") if message.present?
 
-                Onboarding::V1.join_request_success(join_request) if is_onboarding
-
                 render json: join_request, root: "user", status: 201, serializer: ::V1::JoinRequestSerializer
               end
 
@@ -59,8 +57,6 @@ module Api
             on.success do |join_request|
               mixpanel.track("Requested to join Entourage", mp_params)
               mixpanel.track("Wrote Message in Entourage") if message.present?
-
-              Onboarding::V1.join_request_success(join_request) if is_onboarding
 
               render json: join_request, root: "user", status: 201, serializer: ::V1::JoinRequestSerializer
             end

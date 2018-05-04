@@ -21,6 +21,8 @@ class Entourage < ActiveRecord::Base
   include EntourageServices::LocationApproximationService::Callback
   include EntourageServices::GeocodingService::Callback
   include SensitiveWordsService::EntourageCallback
+  include Experimental::AutoAccept::Joinable
+  include Onboarding::V1::Entourage
 
   ENTOURAGE_TYPES  = ['ask_for_help', 'contribution']
   ENTOURAGE_STATUS = ['open', 'closed', 'blacklisted']
