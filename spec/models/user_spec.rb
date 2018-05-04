@@ -95,6 +95,11 @@ describe User, :type => :model do
     expect(FactoryGirl.build(:pro_user, token: '+33123456789').save).to be false
   end
 
+  it "allows reuse of phone for different communities" do
+    expect(FactoryGirl.build(:public_user, phone: '+33123456789', community: 'entourage').save).to be true
+    expect(FactoryGirl.build(:public_user, phone: '+33123456789', community: 'pfp'      ).save).to be true
+  end
+
   describe '#full_name' do
     subject { User.new(first_name: 'John', last_name: 'Doe').full_name }
     it { should eq 'John Doe' }

@@ -1,7 +1,8 @@
 class User < ActiveRecord::Base
 
   validates_presence_of [:phone, :sms_code, :token, :validation_status, :marketing_referer_id]
-  validates_uniqueness_of [:token, :phone]
+  validates_uniqueness_of :phone, scope: :community
+  validates_uniqueness_of :token
   validate :validate_phone!
   validates_format_of :email, with: /@/, unless: "email.to_s.size.zero?"
   validates_presence_of [:first_name, :last_name, :organization, :email], if: Proc.new { |u| u.pro? }
