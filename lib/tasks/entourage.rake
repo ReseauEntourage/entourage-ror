@@ -29,19 +29,23 @@ namespace :entourage do
       ]
 
       entourages.includes(:user).find_each do |e|
-        location_randomizer = EntourageServices::EntourageLocationRandomizer.new(entourage: e)
-        csv.puts [
-          location_randomizer.random_latitude.round(5),
-          location_randomizer.random_longitude.round(5),
-          e.title,
-          e.description,
-          e.created_at.iso8601,
-          e.user.first_name,
-          UserServices::Avatar.new(user: e.user).thumbnail_url,
-          e.status,
-          e.uuid_v2,
-          e.uuid
-        ]
+        begin
+          location_randomizer = EntourageServices::EntourageLocationRandomizer.new(entourage: e)
+          csv.puts [
+            location_randomizer.random_latitude.round(5),
+            location_randomizer.random_longitude.round(5),
+            e.title,
+            e.description,
+            e.created_at.iso8601,
+            e.user.first_name,
+            UserServices::Avatar.new(user: e.user).thumbnail_url,
+            e.status,
+            e.uuid_v2,
+            e.uuid
+          ]
+        rescue => e
+          Raven.capture_exception(e, extra: { entourage_id: e.id })
+        end
       end
 
       gz.close
