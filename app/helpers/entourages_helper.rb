@@ -31,8 +31,12 @@ module EntouragesHelper
     "#{entourage.entourage_type}_#{entourage.display_category || :other}"
   end
 
+  def entourage_category_image_path entourage
+    "entourage/display_category/#{entourage_full_category entourage}.png"
+  end
+
   def entourage_category_image entourage, options={}
-    path = "entourage/display_category/#{entourage_full_category entourage}.png"
+    path = entourage_category_image_path(entourage)
     options[:title] ||= [entourage_type_phrase(entourage),
                          ' › ',
                          entourage_category_phrase(entourage)].join

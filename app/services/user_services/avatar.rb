@@ -10,11 +10,11 @@ module UserServices
       user.update(avatar_key: key)
     end
 
-    def thumbnail_url
+    def thumbnail_url expire: 1.day
       return unless user.avatar_key
       return if user.blocked?
       return "https://foobar.s3-eu-west-1.amazonaws.com/300x300/avatar.jpg" if Rails.env.test?
-      avatars.url_for(key: thumbnail_key, extra: {expire: 1.day})
+      avatars.url_for(key: thumbnail_key, extra: {expire: expire})
     end
 
     def destroy

@@ -90,6 +90,11 @@ Rails.application.routes.draw do
     get 'public_user_autocomplete' => "users_search#public_user_autocomplete"
     get 'pro_user_search' => "users_search#pro_user_search"
     delete 'user_relationships' => "user_relationships#destroy"
+
+    namespace :slack do
+      post :message_action
+      get 'entourage_links/:id' => :entourage_links, as: :entourage_links
+    end
   end
 
   #API
