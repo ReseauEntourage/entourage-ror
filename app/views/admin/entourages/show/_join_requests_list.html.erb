@@ -105,11 +105,6 @@
   </div>
 <% end %>
 <script>
-  function scrollTo(id) {
-    console.log('scrollTo', id)
-    $('body, html').scrollTop($(id).position().top - $('#navbar').outerHeight())
-  }
-
   $(function(){
     var scrollTarget = location.search.slice(1),
         pendingRequestReminderSent = <%= flash.key?(:_experimental_pending_request_reminder_created) %>;
@@ -119,7 +114,9 @@
     }
 
     if (scrollTarget.length > 0) {
-      scrollTo('#' + scrollTarget)
+      setTimeout(function(){
+        $('body, html').scrollTop($('#' + scrollTarget).position().top - $('#navbar').outerHeight())
+      }, 0)
     }
 
     if (pendingRequestReminderSent) {

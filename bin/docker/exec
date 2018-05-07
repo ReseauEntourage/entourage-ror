@@ -1,12 +1,24 @@
 #!/bin/bash
 
+function termoptions {
+  if [ -t 0 ]; then
+    echo --env COLUMNS=`tput cols` \
+         --env LINES=`tput lines`
+  else
+    echo -T
+  fi
+}
+
 function is_running {
   docker-compose ps --services --filter status=running \
    | grep $1 > /dev/null
 }
 
 function try_exec {
-  docker-compose exec --env RAILS_ENV=${RAILS_ENV:-development} spring /entrypoint "$@"
+  docker-compose exec \
+    --env RAILS_ENV=${RAILS_ENV:-development} \
+    $(termoptions) \
+    spring /entrypoint "$@"
 }
 
 # try to run the command in the container
