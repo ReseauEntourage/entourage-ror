@@ -11,12 +11,12 @@ module Admin
 
       case @payload['actions'].first['value']
       when 'validate'
-        status = :open
+        entourage.update_attribute(:status, :open) unless entourage.status == :closed
         color  = :good
         icon   = :white_check_mark
         action = 'validé'
       when 'block'
-        status = :blacklisted
+        entourage.update_attribute(:status, :blacklisted)
         color  = :danger
         icon   = :no_entry_sign
         action = 'bloqué'
@@ -24,12 +24,10 @@ module Admin
         return head :bad_request
       end
 
-      entourage.update_attribute(:status, status)
-
       response = Experimental::EntourageSlack.payload entourage
-      response[:attachments][0][:color] = color
-      response[:attachments][1][:text] +=
-        "\n\n*:#{icon}: <@#{@payload['user']['name']}> a #{action} cette action*"
+      response[:attachments].first[:color] = color
+      response[:attachments].last[:text] =
+        "*:#{icon}: <@#{@payload['user']['name']}> a #{action} cette action*"
 
       render json: response
     end

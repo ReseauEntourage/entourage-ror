@@ -22,9 +22,12 @@ module Experimental::EntourageSlack
           text: "#{h.entourage_type_name(e)} par _#{UserPresenter.new(user: e.user).display_name}_",
           mrkdwn_in: [:text]
         },
+        ({
+          text: e.description,
+        } if e.description.present?),
         {
           callback_id: [:entourage_validation, e.id].join(':'),
-          text: e.description.presence,
+          fallback: "",
           actions: [
             {
               text:  "Valider",
@@ -53,8 +56,7 @@ module Experimental::EntourageSlack
             }
           ]
         }
-
-      ]
+      ].compact
     }
   end
 
