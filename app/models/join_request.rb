@@ -10,6 +10,7 @@ class JoinRequest < ActiveRecord::Base
 
   belongs_to :user
   belongs_to :joinable, polymorphic: true
+  belongs_to :entourage, -> { where("join_requests.joinable_type = 'Entourage'") }, foreign_key: :joinable_id
 
   validates :user_id, :joinable_id, :joinable_type, :status, presence: true
   validates_uniqueness_of :joinable_id, {scope: [:joinable_type, :user_id], message: "a déjà été ajouté"}
