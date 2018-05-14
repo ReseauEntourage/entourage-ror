@@ -39,7 +39,7 @@ RUN su docker-user /bin/bash -c "\
       source /etc/profile.d/ruby.sh \
    && echo gem: --no-document > ~/.gemrc \
    && mkdir ~/.gem \
-   && gem install bundler"
+   && gem install bundler foreman"
 
 RUN echo '#!/bin/bash -l'      >> /entrypoint \
  && echo 'exec "$@"'           >> /entrypoint \

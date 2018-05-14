@@ -44,7 +44,6 @@ group :development, :test do
   gem 'byebug',                       '~> 5.0.0'
   gem 'spring',                       '~> 2.0.2'
   gem 'spring-commands-rspec',        '~> 1.0.4'
-  gem 'foreman'
 end
 
 group :development do
