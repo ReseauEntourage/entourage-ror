@@ -272,7 +272,7 @@ module FeedServices
       return time_range if latitude.nil? || longitude.nil?
 
 
-      if area.in?(['Lyon', 'Grenoble'])
+      if area.in?(['Lyon Est', 'Lyon Ouest', 'Grenoble'])
         720 # 30 days
       else
         time_range
