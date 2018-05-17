@@ -45,6 +45,7 @@ describe Api::V1::AuthenticationProvidersController do
                                                    "first_name"=>"John",
                                                    "last_name"=>"Doe",
                                                    "display_name"=>"John D",
+                                                   "roles"=>[],
                                                    "about"=>nil,
                                                    "avatar_url"=>nil,
                                                    "user_type"=>"public",

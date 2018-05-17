@@ -1,3 +1,5 @@
+require 'experimental/jsonb_set'
+
 class User < ActiveRecord::Base
 
   validates_presence_of [:phone, :sms_code, :token, :validation_status, :marketing_referer_id]
@@ -11,6 +13,7 @@ class User < ActiveRecord::Base
   validates_length_of :about, maximum: 200, allow_nil: true
   validates_length_of :password, within: 8..256, allow_nil: true
   validates_inclusion_of :community, in: Community.slugs
+  validate :validate_roles!
 
   after_save :clean_up_passwords, if: :encrypted_password_changed?
 
@@ -43,6 +46,7 @@ class User < ActiveRecord::Base
   has_many :experimental_pending_request_reminders, class_name: 'Experimental::PendingRequestReminder'
 
   enum device_type: [ :android, :ios ]
+  attribute :roles, Experimental::JsonbSet.new
 
   delegate :name, :description, to: :organization, prefix: true
 
@@ -61,6 +65,20 @@ class User < ActiveRecord::Base
     unless PhoneValidator.new(phone: self.phone).valid?
       errors.add(:phone, "devrait être au format +33... ou 06...")
     end
+  end
+
+  def validate_roles!
+    return if community.nil?
+
+    invalid = roles - community.roles
+    errors.add(
+      :roles,
+      [
+        invalid.map(&:inspect).to_sentence,
+        (invalid.one? ? "n'est" : "ne sont"),
+        "pas inclus dans la liste"
+      ].join(' ')
+    ) if invalid.any?
   end
 
   #Force all phone number to be inserted in DB in "+33" format

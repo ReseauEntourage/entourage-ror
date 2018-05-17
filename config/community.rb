@@ -1,8 +1,11 @@
 require 'pp'
+require_relative '../lib/experimental/memoize'
+require_relative '../lib/experimental/symbol_set'
 
 class Community < BasicObject
   include ::Kernel
   include ::PP::ObjectMixin
+  include ::Experimental::Memoize
   attr_reader :slug
 
   @@struct = {}
@@ -14,6 +17,14 @@ class Community < BasicObject
 
   def users
     ::User.where(community: slug)
+  end
+
+  def memoize?
+    ::Rails.env.development? == false
+  end
+
+  def roles
+    memoize(:roles) { ::Experimental::SymbolSet(struct.roles) }
   end
 
   def method_missing name, *args
@@ -28,10 +39,10 @@ class Community < BasicObject
   end
 
   def struct
-    if ::Rails.env.development?
-      load_from_file
-    else
+    if memoize?
       @struct || from_global_memory || load_from_file
+    else
+      load_from_file
     end
   end
 

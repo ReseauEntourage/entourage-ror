@@ -1,3 +1,4 @@
+require 'experimental'
 class Experimental::PendingRequestReminder < ActiveRecord::Base
   belongs_to :user
 

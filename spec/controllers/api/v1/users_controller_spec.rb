@@ -27,6 +27,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                                   "display_name"=>"John D",
                                   "first_name"=> "John",
                                   "last_name"=> "Doe",
+                                  "roles"=>[],
                                   "about"=> nil,
                                   "token"=>user.token,
                                   "user_type"=>"pro",
@@ -154,6 +155,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                                                              "display_name"=>"John D",
                                                              "first_name"=> "John",
                                                              "last_name"=> "Doe",
+                                                             "roles"=>[],
                                                              "about" => nil,
                                                              "user_type"=>"pro",
                                                              "token"=>user.token,
@@ -400,6 +402,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                                                            "display_name"=>"John D",
                                                            "first_name"=>"John",
                                                            "last_name"=>"Doe",
+                                                           "roles"=>[],
                                                            "about"=>nil,
                                                            "token"=>user.token,
                                                            "user_type"=>"pro",
@@ -438,6 +441,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                                                            "display_name"=>"John D",
                                                            "first_name"=>"John",
                                                            "last_name"=>"Doe",
+                                                           "roles"=>[],
                                                            "about"=>nil,
                                                            "token"=>user.token,
                                                            "user_type"=>"pro",
@@ -472,6 +476,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                                                            "display_name"=>"John D",
                                                            "first_name"=>"John",
                                                            "last_name"=>"Doe",
+                                                           "roles"=>[],
                                                            "about"=>"about",
                                                            "avatar_url"=>nil,
                                                            "user_type"=>"pro",
@@ -482,6 +487,13 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                                                                "entourage_count"=>0,
                                                            },
                                                            "partner"=>nil}}) }
+      end
+
+      context "roles" do
+        with_community :pfp
+        let(:other_user) { FactoryGirl.create(:public_user, roles: [:visitor, :coordinator]) }
+        before { get :show, id: other_user.id, token: user.token }
+        it { expect(JSON.parse(response.body)['user']['roles']).to eq ['coordinator', 'visitor'] }
       end
     end
   end
