@@ -19,8 +19,6 @@ module FeedServices
 
       feeds = @feeds.to_a
 
-      return [@feeds, @metadata] if feeds.empty?
-
       announcements.each do |announcement|
         position = [feeds.length, announcement.position].min
         feeds.insert(position, announcement.feed_object)
