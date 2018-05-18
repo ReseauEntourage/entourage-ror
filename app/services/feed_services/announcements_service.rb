@@ -41,10 +41,10 @@ module FeedServices
         @metadata.merge!(onboarding_announcement: true, area: area)
       else
         announcements.push Announcement.new(
-          id: 8,
-          title: %(Le "Comité de la rue", qu'est-ce que c'est ?),
-          body: "Saviez-vous qu'Entourage est co-construit avec des personnes SDF ? ",
-          action: "En savoir plus",
+          id: 9,
+          title: "Fête des Voisins 2018 : invitez vos voisins SDF !",
+          body: "vendredi 25 mai 2018, invitons TOUS les voisins à partager un moment : parlez-en aux personnes sans-abri de votre quartier",
+          action: "J'agis",
           author: User.find_by(email: "guillaume@entourage.social"),
           webview: true,
           position: 1
