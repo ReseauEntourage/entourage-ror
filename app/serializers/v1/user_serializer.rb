@@ -36,6 +36,10 @@ module V1
       UserPresenter.new(user: object).display_name
     end
 
+    def roles
+      object.roles.sort_by { |r| object.community.roles.index(r) }
+    end
+
     def partner
       return nil unless object.default_partner
       JSON.parse(V1::PartnerSerializer.new(object.default_partner, scope: {user: object, full: scope[:full_partner] || false}, root: false).to_json)

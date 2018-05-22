@@ -17,7 +17,7 @@ module Experimental
     private
 
     def format value
-      Experimental::SymbolSet(value)
+      Experimental::SymbolSet(value).sort
     end
   end
 end

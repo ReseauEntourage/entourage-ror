@@ -5,6 +5,6 @@ mailjet_template:
 store_short_url: https://bit.ly/applivoisinage
 roles:
   - not_validated
+  - coordinator
   - visitor
   - visited
-  - coordinator
