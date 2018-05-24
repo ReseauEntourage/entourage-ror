@@ -16,6 +16,9 @@ FactoryGirl.define do
     number_of_people 1
 
     after(:build) do |entourage, stuff|
+      user_specified = stuff.methods(false).include?(:user)
+      next if user_specified
+
       entourage.user.update_attributes!(community: stuff.community)
       entourage.community = stuff.community
     end

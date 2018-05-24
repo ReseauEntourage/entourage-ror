@@ -35,7 +35,7 @@ module Api
           return render_error(code: "DELETED", message: "user is deleted", status: 401)
         end
 
-        render json: user, status: 200, serializer: ::V1::UserSerializer, scope: { user: user, full_partner: true }
+        render json: user, status: 200, serializer: ::V1::UserSerializer, scope: full_user_serializer_options.merge(user: user)
       end
 
       #curl -X PATCH -d '{"user": { "sms_code":"123456"}}' -H "Content-Type: application/json" "http://localhost:3000/api/v1/users/93.json?token=azerty"
@@ -48,7 +48,7 @@ module Api
               'email' => '$email'
             })
 
-            render json: user, status: 200, serializer: ::V1::UserSerializer, scope: { user: @current_user, full_partner: true }
+            render json: user, status: 200, serializer: ::V1::UserSerializer, scope: full_user_serializer_options.merge(user: @current_user)
           end
 
           on.failure do |user|
@@ -102,7 +102,7 @@ module Api
       #curl -H "X-API-KEY:adc86c761fa8" -H "Content-Type: application/json" "http://localhost:3000/api/v1/users/me.json?token=azerty"
       def show
         user = params[:id] == "me" ? current_user : community.users.find(params[:id])
-        render json: user, status: 200, serializer: ::V1::UserSerializer, scope: { user: current_user, full_partner: true }
+        render json: user, status: 200, serializer: ::V1::UserSerializer, scope: full_user_serializer_options.merge(user: current_user)
       end
 
       def destroy
@@ -131,6 +131,13 @@ module Api
 
       def user_report_params
         params.require(:user_report).permit(:message)
+      end
+
+      # The apps cache the response to /login and /update for the currentUser
+      # so we want to make sure that all the fields necessary to render the profile
+      # are included in the responses to thos requests
+      def full_user_serializer_options
+        { full_partner: true, memberships: true }
       end
     end
   end

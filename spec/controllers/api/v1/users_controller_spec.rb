@@ -54,7 +54,8 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                                       "website_url"=>nil,
                                       "email"=>nil,
                                       "default"=>true
-                                  }
+                                  },
+                                  "memberships"=>[]
                                  }})
         end
       end
@@ -171,7 +172,9 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                                                                  "encounter_count"=>3,
                                                                  "entourage_count"=>1,
                                                              },
-                                                             "partner"=>nil}}) }
+                                                             "partner"=>nil,
+                                                             "memberships"=>[]
+                                                           }}) }
     end
 
     context "blocked user" do
@@ -429,7 +432,9 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                                                                "website_url"=>nil,
                                                                "email"=>nil,
                                                                "default"=>true
-                                                           }}}) }
+                                                           },
+                                                           "memberships"=>[]
+                                                         }}) }
       end
 
       context "get my profile with 'me' shortcut" do
@@ -464,7 +469,9 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                                                                "website_url"=>nil,
                                                                "email"=>nil,
                                                                "default"=>true
-                                                           }}}) }
+                                                           },
+                                                           "memberships"=>[]
+                                                         }}) }
       end
 
       context "get someone else profile" do
@@ -486,14 +493,18 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                                                                "encounter_count"=>0,
                                                                "entourage_count"=>0,
                                                            },
-                                                           "partner"=>nil}}) }
+                                                           "partner"=>nil,
+                                                           "memberships"=>[]
+                                                         }}) }
       end
 
       context "roles" do
         with_community :pfp
         let(:other_user) { FactoryGirl.create(:public_user, roles: [:visitor, :coordinator]) }
+        let!(:private_circle) { create :entourage, user: other_user }
         before { get :show, id: other_user.id, token: user.token }
         it { expect(JSON.parse(response.body)['user']['roles']).to eq ['coordinator', 'visitor'] }
+        it { expect(JSON.parse(response.body)['user']['memberships']).to eq [{"type"=>"private_circle", "list"=>[{"id"=>private_circle.id, "title"=>"foobar", "number_of_people"=>1}]}, {"type"=>"neighborhood", "list"=>[]}] }
       end
     end
   end

@@ -11,13 +11,16 @@ module V1
                :avatar_url,
                :user_type,
                :partner,
+               :memberships,
                :has_password
 
     has_one :organization
     has_one :stats, serializer: ActiveModel::DefaultSerializer
 
     def filter(keys)
-      me? ? keys : keys - [:token, :email, :has_password]
+      keys -= [:token, :email, :has_password] unless me?
+      keys -= [:memberships] unless scope[:memberships]
+      keys
     end
 
     def stats
@@ -47,6 +50,20 @@ module V1
 
     def has_password
       object.has_password?
+    end
+
+    def memberships
+      return [] if object.community != 'pfp'
+      [
+        {
+          type: :private_circle,
+          list: object.entourages.map { |e| e.attributes.slice('id', 'title', 'number_of_people') }
+        },
+        {
+          type: :neighborhood,
+          list: []
+        }
+      ]
     end
 
     def scope
