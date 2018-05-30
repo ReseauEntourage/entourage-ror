@@ -12,7 +12,7 @@ describe PushNotificationService, type: :service do
     let!(:content) { 'content' }
     before { UserServices::UnreadMessages.any_instance.stub(:number_of_unread_messages) { 1 } }
     subject! { PushNotificationService.new(android_notification_service, ios_notification_service).send_notification(sender, object, content, User.all) }
-    it { expect(android_notification_service).to have_received(:send_notification).with(sender, object, content, match_array([user_app1.push_token]), {}, 1) }
-    it { expect(ios_notification_service).to have_received(:send_notification).with(sender, object, content, match_array([user_app2.push_token]), {}, 1) }
+    it { expect(android_notification_service).to have_received(:send_notification).with(sender, object, content, match_array([user_app1.push_token]), user.community.slug, {}, 1) }
+    it { expect(ios_notification_service).to have_received(:send_notification).with(sender, object, content, match_array([user_app2.push_token]), user.community.slug, {}, 1) }
   end
 end

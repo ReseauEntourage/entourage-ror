@@ -3,13 +3,13 @@ namespace :push do
   task :ios, [:token] => [:environment] do |t, args|
     device_ids = [args[:token]]
     puts "device_ids = #{device_ids}"
-    IosNotificationService.new.send_notification("Expéditeur", "Objet", "Contenu du message", device_ids)
+    IosNotificationService.new.send_notification("Expéditeur", "Objet", "Contenu du message", device_ids, $server_community.slug)
   end
 
   task :android, [:token] => [:environment] do |t, args|
     device_ids = [args[:token]]
     puts "device_ids = #{device_ids}"
-    AndroidNotificationService.new.send_notification("Expéditeur", "Objet", "Contenu du message", device_ids)
+    AndroidNotificationService.new.send_notification("Expéditeur", "Objet", "Contenu du message", device_ids, $server_community.slug)
   end
 
   desc "create ios sandbox push app"

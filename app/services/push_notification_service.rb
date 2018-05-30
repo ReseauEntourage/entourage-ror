@@ -8,12 +8,12 @@ class PushNotificationService
     Rails.logger.info("Sending push notif to users : #{users.map(&:email)}, content: #{content}, sender: #{sender}, object: #{object}")
     users.each do |user|
       token = UserServices::UserApplications.new(user: user).android_app.try(:push_token)
-      android_notification_service.send_notification(sender, object, content, [token], extra, badge(user)) if token
+      android_notification_service.send_notification(sender, object, content, [token], user.community.slug, extra, badge(user)) if token
     end
 
     users.each do |user|
       token = UserServices::UserApplications.new(user: user).ios_app.try(:push_token)
-      ios_notification_service.send_notification(sender, object, content, [token], extra, badge(user)) if token
+      ios_notification_service.send_notification(sender, object, content, [token], user.community.slug, extra, badge(user)) if token
     end
   end
   
