@@ -3,6 +3,8 @@ dev_name: PFP
 mailjet_template:
   welcome: 373352
 store_short_url: https://bit.ly/applivoisinage
+links:
+  feedback: https://entourage-asso.typeform.com/to/Imi9sX?user_id=%{user_id}
 roles:
   - not_validated
   - coordinator

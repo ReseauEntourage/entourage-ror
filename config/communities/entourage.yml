@@ -3,3 +3,5 @@ dev_name: Entourage
 mailjet_template:
   welcome: 311246
 store_short_url: https://bit.ly/applientourage
+links:
+  feedback: https://entourage-asso.typeform.com/to/TUpltC?user_id=%{user_id}

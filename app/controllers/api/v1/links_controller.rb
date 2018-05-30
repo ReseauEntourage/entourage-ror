@@ -46,7 +46,9 @@ module Api
               end
             end,
           'feedback' =>
-            "https://entourage-asso.typeform.com/to/TUpltC?user_id=#{user_id}",
+            lambda do |user|
+              user.community.links['feedback'] % {user_id: user_id}
+            end,
           'volunteering' =>
             "https://entourage-asso.typeform.com/to/U5MocH?user_id=#{user_id}",
           'propose-poi' =>
