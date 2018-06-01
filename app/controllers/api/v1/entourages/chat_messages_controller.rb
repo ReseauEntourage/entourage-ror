@@ -59,7 +59,8 @@ module Api
         end
 
         def chat_messages_params
-          params.require(:chat_message).permit(:content)
+          metadata_keys = params.dig(:chat_message, :metadata).try(:keys) || []
+          params.require(:chat_message).permit(:content, :message_type, metadata: metadata_keys)
         end
 
         def join_request

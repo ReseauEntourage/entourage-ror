@@ -110,6 +110,15 @@ class Entourage < ActiveRecord::Base
   # https://github.com/rails/rails/blob/v4.2.10/activerecord/lib/active_record/attributes.rb
   attribute :community, Community::Type.new
 
+  def metadata
+    case community
+    when 'pfp'
+      { 'visited_user_first_name' => (title || "").gsub(/\ALes amis (de |d')/, '') }
+    else
+      {}
+    end
+  end
+
   protected
 
   def check_moderation

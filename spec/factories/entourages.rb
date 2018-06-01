@@ -2,7 +2,7 @@ FactoryGirl.define do
   factory :entourage do
     transient do
       join_request_user nil
-      community { $server_community }
+      community { $server_community.slug }
     end
 
     uuid { SecureRandom.uuid }

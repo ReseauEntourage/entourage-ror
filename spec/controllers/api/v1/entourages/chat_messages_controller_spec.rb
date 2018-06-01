@@ -1,4 +1,5 @@
 require 'rails_helper'
+include CommunityHelper
 
 describe Api::V1::Entourages::ChatMessagesController do
 
@@ -145,6 +146,40 @@ describe Api::V1::Entourages::ChatMessagesController do
         let!(:join_request) { FactoryGirl.create(:join_request, joinable: entourage, user: user, status: "cancelled") }
         before { post :create, entourage_id: entourage.to_param, chat_message: {content: "foobar"}, token: user.token }
         it { expect(response.status).to eq(401) }
+      end
+
+      context "pfp visit" do
+        with_community :pfp
+
+        let(:entourage) { create :entourage, title: "Les amis de Henriette" }
+        let(:user) { create :public_user }
+        let!(:join_request) { create :join_request, joinable: entourage, user: user, status: :accepted }
+
+        before { post :create, entourage_id: entourage.to_param, chat_message: payload, token: user.token }
+
+        context "valid payload" do
+          let(:payload) do
+            {
+              message_type: 'visit',
+              metadata: {
+                visited_at: Time.zone.now.iso8601
+              }
+            }
+          end
+
+          it { expect(response.status).to eq(201) }
+          it { expect(ChatMessage.count).to eq(1) }
+          it { expect(JSON.parse(response.body)).to eq({"chat_message"=>{
+                                                          "id"=>ChatMessage.last.id,
+                                                          "content"=>"J'ai voisiné Henriette aujourd'hui",
+                                                          "user"=>{
+                                                            "id"=>user.id,
+                                                            "avatar_url"=>nil,
+                                                            "display_name"=>"John D",
+                                                            "partner"=>nil
+                                                          },
+                                                          "created_at"=>ChatMessage.last.created_at.iso8601(3)}}) }
+        end
       end
     end
   end

@@ -91,12 +91,14 @@ ActiveRecord::Schema.define(version: 20180604091500) do
   end
 
   create_table "chat_messages", force: :cascade do |t|
-    t.integer  "messageable_id",   null: false
-    t.string   "messageable_type", null: false
-    t.text     "content",          null: false
-    t.integer  "user_id",          null: false
-    t.datetime "created_at",       null: false
-    t.datetime "updated_at",       null: false
+    t.integer  "messageable_id",                               null: false
+    t.string   "messageable_type",                             null: false
+    t.text     "content",                                      null: false
+    t.integer  "user_id",                                      null: false
+    t.datetime "created_at",                                   null: false
+    t.datetime "updated_at",                                   null: false
+    t.string   "message_type",     limit: 20, default: "text", null: false
+    t.jsonb    "metadata",                    default: {},     null: false
   end
 
   add_index "chat_messages", ["created_at"], name: "index_chat_messages_on_created_at", using: :btree

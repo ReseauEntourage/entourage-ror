@@ -172,6 +172,8 @@ GEM
     jquery-ui-rails (5.0.5)
       railties (>= 3.2.16)
     json (1.8.6)
+    json-schema (2.6.2)
+      addressable (~> 2.3.8)
     kaminari (0.16.3)
       actionpack (>= 3.0.0)
       activesupport (>= 3.0.0)
@@ -436,6 +438,7 @@ DEPENDENCIES
   httparty
   jquery-rails (~> 4.0.4)
   jquery-ui-rails (~> 5.0.5)
+  json-schema (~> 2.6.2)
   kaminari (~> 0.16.3)
   letter_opener (~> 1.4.1)
   lograge (~> 0.3.4)
