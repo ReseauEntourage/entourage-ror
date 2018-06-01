@@ -44,7 +44,6 @@ module FeedServices
       @distance = [(distance&.to_i || DEFAULT_DISTANCE), 40].min
       @announcements = announcements.try(:to_sym)
       @cursor = nil
-      @version = FeatureSwitch.new(user).variant(:feed)
       @area = FeedRequestArea.new(@latitude, @longitude)
       @metadata = {}
 
@@ -82,7 +81,7 @@ module FeedServices
 
       feeds = if page && per
         feeds.page(page).per(per)
-      elsif version == :v2 && latitude && longitude && before
+      elsif latitude && longitude && before
         # extract cursor from `before` parameter
         @cursor = before.to_i if before.year == 1970
         feeds # pagination is handled later for clarity
@@ -97,7 +96,7 @@ module FeedServices
                                          longitude: longitude)
 
       feeds =
-        if version == :v2 && latitude && longitude
+        if latitude && longitude
           order_by_distance(feeds: feeds).sort_by(&:updated_at).reverse
         else
           feeds.order("updated_at DESC")
@@ -117,16 +116,12 @@ module FeedServices
         feeds = pin(4029, feeds: feeds)
       end
 
-      if version == :v2
-        cursor = Time.at(cursor + 1).as_json if !cursor.nil?
-        FeedWithCursor.new(feeds, cursor: cursor, metadata: @metadata)
-      else
-        feeds
-      end
+      cursor = Time.at(cursor + 1).as_json if !cursor.nil?
+      FeedWithCursor.new(feeds, cursor: cursor, metadata: @metadata)
     end
 
     private
-    attr_reader :user, :page, :per, :before, :latitude, :longitude, :show_tours, :feed_type, :types, :show_my_entourages_only, :show_my_tours_only, :show_my_partner_only, :time_range, :tour_status, :entourage_status, :author, :invitee, :distance, :announcements, :cursor, :area, :version
+    attr_reader :user, :page, :per, :before, :latitude, :longitude, :show_tours, :feed_type, :types, :show_my_entourages_only, :show_my_tours_only, :show_my_partner_only, :time_range, :tour_status, :entourage_status, :author, :invitee, :distance, :announcements, :cursor, :area
 
     def box
       Geocoder::Calculations.bounding_box([latitude, longitude],

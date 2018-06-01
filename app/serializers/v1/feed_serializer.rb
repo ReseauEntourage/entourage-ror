@@ -1,14 +1,8 @@
 module V1
   class FeedSerializer
     def initialize(feeds:, user:, include_last_message: false, base_url: nil, key_infos: nil)
-      @feed_version = FeatureSwitch.new(user).variant(:feed)
-
-      if feed_version == :v2
-        @feeds = feeds.entries
-        @cursor = feeds.cursor
-      else
-        @feeds = feeds
-      end
+      @feeds = feeds.entries
+      @cursor = feeds.cursor
 
       @user = user
       @include_last_message = include_last_message
@@ -45,17 +39,15 @@ module V1
         end
       end
 
-      if feed_version == :v2
-        if !cursor.nil? && result.any?
-          # the apps use the last items's updated_at as cursor
-          result.last[:data]['updated_at'] = cursor
-        end
+      if !cursor.nil? && result.any?
+        # the apps use the last items's updated_at as cursor
+        result.last[:data]['updated_at'] = cursor
       end
 
       return {"feeds": result}
     end
 
     private
-    attr_reader :feeds, :user, :include_last_message, :base_url, :key_infos, :cursor, :feed_version
+    attr_reader :feeds, :user, :include_last_message, :base_url, :key_infos, :cursor
   end
 end

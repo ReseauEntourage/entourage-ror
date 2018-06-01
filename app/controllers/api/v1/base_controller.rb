@@ -35,8 +35,7 @@ module Api
             reactivated = !first_session && current_user.last_sign_in_at <= 3.months.ago
             current_user.update(last_sign_in_at: DateTime.now)
             mixpanel.track("Opened App", {
-              "First Session" => first_session,
-              "Feature / Feed" => FeatureSwitch.new(current_user).variant(:feed)
+              "First Session" => first_session
             })
             mixpanel.track("Reactivated", { "Threshold (Months)" => 3 }) if reactivated
             mixpanel.set_once("First Seen" => current_user.last_sign_in_at)
