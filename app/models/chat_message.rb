@@ -7,7 +7,6 @@ class ChatMessage < ActiveRecord::Base
   before_validation :generate_content
 
   validates :messageable_id, :messageable_type, :content, :user_id, presence: true
-  validates :message_type, inclusion: %w(text visit)
   validates_inclusion_of :message_type, in: -> (m) { m.messageable&.group_type_config&.dig('message_types') || [] }
   validates :metadata, schema: :metadata_schema
 
