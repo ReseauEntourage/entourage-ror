@@ -13,6 +13,7 @@ module Api
           7 => :trophy,
           8 => :heart,
           9 => :heart,
+          10 => :heart,
         }[params[:id].to_i]
 
         redirect_to view_context.asset_url("assets/announcements/icons/#{icon}.png")

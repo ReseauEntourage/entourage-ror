@@ -39,12 +39,13 @@ module FeedServices
         @metadata.merge!(onboarding_announcement: true, area: area)
       else
         announcements.push Announcement.new(
-          id: 9,
-          title: "Fête des Voisins 2018 : invitez vos voisins SDF !",
-          body: "vendredi 25 mai 2018, invitons TOUS les voisins à partager un moment : parlez-en aux personnes sans-abri de votre quartier",
-          action: "J'agis",
+          id: 10,
+          title: "Besoin d’aide pour agir ? Contactez Guillaume",
+          body: "Une question, une information ? Le modérateur de l’équipe est la pour répondre à toutes vos demandes !",
+          action: "Je contacte",
+          url: "mailto:guillaume@entourage.social",
           author: User.find_by(email: "guillaume@entourage.social"),
-          webview: true,
+          webview: false,
           position: 1
         )
       end
