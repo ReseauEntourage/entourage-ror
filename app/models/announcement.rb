@@ -36,6 +36,15 @@ class Announcement
     def initialize(announcement)
       @feedable = announcement
     end
+
+    def feedable_type
+      feedable.class.name
+    end
+
+    def feedable_id
+      feedable.id
+    end
+
     attr_reader :feedable
   end
 end
