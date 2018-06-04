@@ -54,14 +54,16 @@ module V1
 
     def memberships
       return [] if object.community != 'pfp'
+      groups = object.entourages.group_by(&:group_type)
+      groups.default = []
       [
         {
           type: :private_circle,
-          list: object.entourages.map { |e| e.attributes.slice('id', 'title', 'number_of_people') }
+          list: groups['private_circle'].map { |e| e.attributes.slice('id', 'title', 'number_of_people') }
         },
         {
           type: :neighborhood,
-          list: []
+          list: groups['neighborhood'].map { |e| e.attributes.slice('id', 'title', 'number_of_people') }
         }
       ]
     end

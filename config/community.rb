@@ -35,6 +35,10 @@ class Community < BasicObject
     memoize(:roles) { ::Experimental::SymbolSet(struct.roles) }
   end
 
+  def group_types
+    struct.group_types || []
+  end
+
   def method_missing name, *args
     super if args.any?
     return self == $1 if name =~ /^(.*)\?$/

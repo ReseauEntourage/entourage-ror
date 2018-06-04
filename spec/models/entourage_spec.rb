@@ -14,6 +14,12 @@ RSpec.describe Entourage, type: :model do
   it { should validate_inclusion_of(:category).in_array(['mat_help', 'non_mat_help', 'social']) }
   it { should belong_to(:user) }
 
+  describe "group_type" do
+    it { expect(build(:entourage, group_type: :invalid).save).to eq false }
+    it { expect(build(:entourage, group_type: :action).save).to eq true }
+    it { expect(build(:entourage, community: :pfp, group_type: :private_circle).save).to eq true }
+  end
+
   it "has many members" do
     user = FactoryGirl.create(:public_user)
     entourage = FactoryGirl.create(:entourage)

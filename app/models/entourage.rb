@@ -51,6 +51,7 @@ class Entourage < ActiveRecord::Base
   validates_inclusion_of :display_category, in: DISPLAY_CATEGORIES, allow_nil: true
   validates_uniqueness_of :uuid, on: :create
   validates_inclusion_of :community, in: Community.slugs
+  validates_inclusion_of :group_type, in: -> (e) { e.community&.group_types || [] }
 
   scope :visible, -> { where.not(status: 'blacklisted') }
   scope :social_category, -> { where(category: 'social') }

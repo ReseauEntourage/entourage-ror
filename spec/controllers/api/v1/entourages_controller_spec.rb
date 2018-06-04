@@ -159,7 +159,8 @@ describe Api::V1::EntouragesController do
 
         context "community support" do
           with_community :pfp
-          it { expect(Entourage.last.community).to eq("pfp") }
+          it { expect(response.status).to eq(400) }
+          it { expect(JSON.parse(response.body)).to eq({"message"=>"Could not create entourage", "reasons"=>["Group type n'est pas inclus(e) dans la liste"]}) }
         end
       end
 

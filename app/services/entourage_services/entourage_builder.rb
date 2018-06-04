@@ -10,6 +10,7 @@ module EntourageServices
       yield callback if block_given?
 
       entourage = Entourage.new(params.except(:location))
+      entourage.group_type = 'action'
       entourage.longitude = params.dig(:location, :longitude)
       entourage.latitude = params.dig(:location, :latitude)
       entourage.user = user

@@ -2,7 +2,7 @@ FactoryGirl.define do
   factory :entourage do
     transient do
       join_request_user nil
-      community 'entourage'
+      community { $server_community }
     end
 
     uuid { SecureRandom.uuid }
@@ -16,11 +16,17 @@ FactoryGirl.define do
     number_of_people 1
 
     after(:build) do |entourage, stuff|
-      user_specified = stuff.methods(false).include?(:user)
-      next if user_specified
+      user_specified = stuff.methods(false)
 
-      entourage.user.update_attributes!(community: stuff.community)
-      entourage.community = stuff.community
+      unless user_specified.include?(:user)
+        entourage.user.update_attributes!(community: stuff.community)
+        entourage.community = entourage.user.community
+      end
+
+      unless user_specified.include?(:group_type)
+        entourage.group_type =
+          entourage.user.community.group_types.first
+      end
     end
 
     trait :joined do

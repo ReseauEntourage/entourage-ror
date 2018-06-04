@@ -10,3 +10,6 @@ roles:
   - coordinator
   - visitor
   - visited
+group_types:
+  - private_circle
+  - neighborhood

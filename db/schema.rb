@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180517084932) do
+ActiveRecord::Schema.define(version: 20180604091500) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -202,6 +202,7 @@ ActiveRecord::Schema.define(version: 20180517084932) do
     t.string   "postal_code",      limit: 8
     t.string   "country",          limit: 2
     t.string   "community",        limit: 9,                   null: false
+    t.string   "group_type",       limit: 14,                  null: false
   end
 
   add_index "entourages", ["country", "postal_code"], name: "index_entourages_on_country_and_postal_code", using: :btree
