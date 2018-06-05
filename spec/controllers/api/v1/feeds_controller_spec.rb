@@ -31,6 +31,7 @@ include CommunityHelper
                                                      "id"=>entourage.id,
                                                      "status"=>"open",
                                                      "title"=>"foobar",
+                                                     "group_type"=>"action",
                                                      "entourage_type"=>"ask_for_help",
                                                      "display_category"=>"social",
                                                      "join_status"=>"not_requested",

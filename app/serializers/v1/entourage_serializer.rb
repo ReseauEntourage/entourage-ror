@@ -6,6 +6,7 @@ module V1
     attributes :id,
                :status,
                :title,
+               :group_type,
                :entourage_type,
                :display_category,
                :join_status,
