@@ -6,4 +6,5 @@ store_short_url: https://bit.ly/applientourage
 links:
   feedback: https://entourage-asso.typeform.com/to/TUpltC?user_id=%{user_id}
 group_types:
-  - action
+  action:
+    message_types: [text]

@@ -25,7 +25,7 @@ FactoryGirl.define do
 
       unless user_specified.include?(:group_type)
         entourage.group_type =
-          entourage.user.community.group_types.first
+          entourage.user.community.group_types.keys.first
       end
     end
 

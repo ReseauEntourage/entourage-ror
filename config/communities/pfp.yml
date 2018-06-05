@@ -11,5 +11,7 @@ roles:
   - visitor
   - visited
 group_types:
-  - private_circle
-  - neighborhood
+  private_circle:
+    message_types: [text, visit]
+  neighborhood:
+    message_types: [text]
