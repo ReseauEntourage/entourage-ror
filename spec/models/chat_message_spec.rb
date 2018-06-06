@@ -27,6 +27,7 @@ RSpec.describe ChatMessage, type: :model do
     it { expect(message(message_type: 'visit').save).to be false }
     it { expect(message(message_type: 'visit', metadata: { visited_at: 'not_a_date' }).save).to be false }
     it { expect(message(message_type: 'visit', metadata: { visited_at: '2018-05-31T00:00:00Z' }).save).to be true }
+    it { expect(message(message_type: 'visit', metadata: { visited_at: '2018-06-06T12:22:25.669+0300' }).save).to be true }
   end
 
   describe "visit_content" do

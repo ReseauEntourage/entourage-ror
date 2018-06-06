@@ -62,7 +62,7 @@ class ChatMessage < ActiveRecord::Base
       case message_type
       when 'visit'
         {
-          visited_at: { format: 'date-time' }
+          visited_at: { format: 'date-time-iso8601' }
         }
       else
         {}
