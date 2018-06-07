@@ -13,5 +13,7 @@ roles:
 group_types:
   private_circle:
     message_types: [text, visit]
+    roles: [visitor, visited]
   neighborhood:
     message_types: [text]
+    roles: [animator, member]

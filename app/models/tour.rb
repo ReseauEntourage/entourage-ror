@@ -74,7 +74,8 @@ class Tour < ActiveRecord::Base
 
   def group_type_config
     @group_type_config ||= {
-      'message_types' => ['text']
+      'message_types' => ['text'],
+      'roles' => ['creator', 'member']
     }
   end
 end

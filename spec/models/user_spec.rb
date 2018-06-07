@@ -160,14 +160,14 @@ describe User, :type => :model do
   it "has many entourage_participations" do
     user = FactoryGirl.create(:pro_user)
     entourage = FactoryGirl.create(:entourage)
-    JoinRequest.create(user: user, joinable: entourage)
+    create(:join_request, user: user, joinable: entourage)
     expect(user.entourage_participations).to eq([entourage])
   end
 
   it "has many tour_participations" do
     user = FactoryGirl.create(:pro_user)
     tour = FactoryGirl.create(:tour)
-    JoinRequest.create(user: user, joinable: tour)
+    create(:join_request, user: user, joinable: tour)
     expect(user.tour_participations).to eq([tour])
   end
 

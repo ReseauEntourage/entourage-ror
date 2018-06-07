@@ -12,6 +12,14 @@ module JoinRequestsServices
       yield callback if block_given?
 
       join_request = JoinRequest.new(joinable: joinable, user: user, message: message, distance: distance)
+
+      join_request.role =
+        case [joinable.community, joinable.group_type]
+        when ['entourage', 'tour']   then 'member'
+        when ['entourage', 'action'] then 'member'
+        else raise 'Unhandled'
+        end
+
       if join_request.save
         is_onboarding = joinable.is_a?(Entourage) && Onboarding::V1.is_onboarding?(joinable)
 

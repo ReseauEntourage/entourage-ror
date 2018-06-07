@@ -30,7 +30,7 @@ describe Api::V1::Entourages::UsersController do
       end
 
       context "request to join entourage after a cancel" do
-        before { JoinRequest.create(user: user, joinable: entourage, status: JoinRequest::CANCELLED_STATUS) }
+        before { create(:join_request, user: user, joinable: entourage, status: JoinRequest::CANCELLED_STATUS) }
         before { post :create, entourage_id: entourage.to_param, token: user.token }
         it { expect(entourage.members).to eq([user]) }
         it { expect(result).to eq("user"=>{
@@ -46,7 +46,7 @@ describe Api::V1::Entourages::UsersController do
       end
 
       context "duplicate request to join entourage" do
-        before { JoinRequest.create(user: user, joinable: entourage) }
+        before { create(:join_request, user: user, joinable: entourage) }
         before { post :create, entourage_id: entourage.to_param, token: user.token }
         it { expect(entourage.members).to eq([user]) }
         it { expect(result).to eq("user"=>{
@@ -62,12 +62,12 @@ describe Api::V1::Entourages::UsersController do
       end
 
       describe "push notif" do
-        let!(:entourage_join_request) { JoinRequest.create(user: entourage.user, joinable: entourage, status: "accepted") }
+        let!(:entourage_join_request) { create(:join_request, user: entourage.user, joinable: entourage, status: "accepted") }
 
         context "no join request message" do
           let!(:member) { FactoryGirl.create(:pro_user) }
-          let!(:member_join_request) { JoinRequest.create(user: member, joinable: entourage, status: "accepted") }
-          let!(:user_join_request) { JoinRequest.create(user: user, status: "accepted") }
+          let!(:member_join_request) { create(:join_request, user: member, joinable: entourage, status: "accepted") }
+          let!(:user_join_request) { create(:join_request, user: user, status: "accepted") }
 
           it "sends notif to all entourage members" do
             expect_any_instance_of(PushNotificationService).to receive(:send_notification).with("John D",
@@ -86,7 +86,7 @@ describe Api::V1::Entourages::UsersController do
 
         context "has join request message" do
           let!(:member) { FactoryGirl.create(:pro_user) }
-          let!(:member_join_request) { JoinRequest.create(user: member, joinable: entourage, status: "accepted") }
+          let!(:member_join_request) { create(:join_request, user: member, joinable: entourage, status: "accepted") }
 
           it "sends notif to all entourage members" do
             expect_any_instance_of(PushNotificationService).to receive(:send_notification).with("John D",
@@ -113,9 +113,7 @@ describe Api::V1::Entourages::UsersController do
     end
 
     context "signed in" do
-      let!(:join_request) { JoinRequest.create(user: user, joinable: entourage, status: "pending") }
-      let!(:join_request1) { JoinRequest.create(user: user, joinable: entourage, status: "canceled") }
-      let!(:join_request2) { JoinRequest.create(user: user, joinable: entourage, status: "rejected") }
+      let!(:join_request) { create(:join_request, user: user, joinable: entourage, status: "pending") }
       before { get :index, entourage_id: entourage.to_param, token: user.token }
       it { expect(result).to eq({"users"=>[{
                                                "id"=>user.id,
@@ -137,9 +135,9 @@ describe Api::V1::Entourages::UsersController do
     end
 
     context "signed in" do
-      let!(:join_request) { JoinRequest.create(user: user, joinable: entourage, status: "accepted") }
+      let!(:join_request) { create(:join_request, user: user, joinable: entourage, status: "accepted") }
       let(:requester) { FactoryGirl.create(:pro_user) }
-      let!(:requester_join_request) { JoinRequest.create(user: requester, joinable: entourage, status: "pending") }
+      let!(:requester_join_request) { create(:join_request, user: requester, joinable: entourage, status: "pending") }
 
       context "valid params" do
         before { patch :update, entourage_id: entourage.to_param, id: user.id, user: {status: "accepted"}, token: user.token }
@@ -159,13 +157,13 @@ describe Api::V1::Entourages::UsersController do
     end
 
     context "not accepted in tour" do
-      let!(:join_request) { JoinRequest.create(user: user, joinable: entourage, status: "pending") }
+      let!(:join_request) { create(:join_request, user: user, joinable: entourage, status: "pending") }
       before { patch :update, entourage_id: entourage.to_param, id: user.id, user: {status: "accepted"}, token: user.token }
       it { expect(response.status).to eq(401) }
     end
 
     context "invalid status" do
-      let!(:join_request) { JoinRequest.create(user: user, joinable: entourage, status: "accepted") }
+      let!(:join_request) { create(:join_request, user: user, joinable: entourage, status: "accepted") }
       before { patch :update, entourage_id: entourage.to_param, id: user.id, user: {status: "foo"}, token: user.token }
       it { expect(response.status).to eq(400) }
       it { expect(result).to eq({"message"=>"Invalid status : foo"}) }
@@ -180,7 +178,7 @@ describe Api::V1::Entourages::UsersController do
     end
 
     context "update my join request message" do
-      let!(:join_request) { JoinRequest.create(user: user, joinable: entourage, message: nil) }
+      let!(:join_request) { create(:join_request, user: user, joinable: entourage, message: nil) }
       before { patch :update, entourage_id: entourage.to_param, id: user.id, request: {message: "foobar"}, token: user.token }
       it { expect(response.status).to eq(204) }
       it { expect(join_request.reload.message).to eq("foobar") }
@@ -204,8 +202,8 @@ describe Api::V1::Entourages::UsersController do
     context "signed in" do
       context "reject someone from tour" do
         let!(:other_user) { FactoryGirl.create(:pro_user) }
-        let!(:other_join_request) { JoinRequest.create(user: other_user, joinable: entourage, status: "accepted") }
-        let!(:my_join_request) { JoinRequest.create(user: user, joinable: entourage, status: "accepted") }
+        let!(:other_join_request) { create(:join_request, user: other_user, joinable: entourage, status: "accepted") }
+        let!(:my_join_request) { create(:join_request, user: user, joinable: entourage, status: "accepted") }
         before { delete :destroy, entourage_id: entourage.to_param, id: other_user.id, token: user.token }
         it { expect(response.status).to eq(200) }
         it { expect(other_join_request.reload.status).to eq("rejected") }
@@ -224,7 +222,7 @@ describe Api::V1::Entourages::UsersController do
       end
 
       context "quit tour" do
-        let!(:my_join_request) { JoinRequest.create(user: user, joinable: entourage, status: "accepted") }
+        let!(:my_join_request) { create(:join_request, user: user, joinable: entourage, status: "accepted") }
         before { delete :destroy, entourage_id: entourage.to_param, id: user.id, token: user.token }
         it { expect(response.status).to eq(200) }
         it { expect(expect(my_join_request.reload.status).to eq('cancelled')) }
@@ -242,15 +240,15 @@ describe Api::V1::Entourages::UsersController do
     end
 
     context "quit tour when join request is pending acceptance" do
-      let!(:join_request) { JoinRequest.create(user: user, joinable: entourage, status: "pending") }
+      let!(:join_request) { create(:join_request, user: user, joinable: entourage, status: "pending") }
       before { delete :destroy, entourage_id: entourage.to_param, id: user.id, token: user.token }
       it { expect(response.status).to eq(200) }
     end
 
     context "reject someone from tour when join request is pending acceptance" do
       let!(:other_user) { FactoryGirl.create(:public_user) }
-      let!(:my_join_request) { JoinRequest.create(user: user, joinable: entourage, status: "pending") }
-      let!(:other_join_request) { JoinRequest.create(user: other_user, joinable: entourage, status: "pending") }
+      let!(:my_join_request) { create(:join_request, user: user, joinable: entourage, status: "pending") }
+      let!(:other_join_request) { create(:join_request, user: other_user, joinable: entourage, status: "pending") }
       before { delete :destroy, entourage_id: entourage.to_param, id: other_user.id, token: user.token }
       it { expect(response.status).to eq(401) }
     end

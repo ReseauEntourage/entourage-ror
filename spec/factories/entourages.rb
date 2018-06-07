@@ -31,7 +31,9 @@ FactoryGirl.define do
 
     trait :joined do
       after(:create) do |entourage, evaluator|
-        FactoryGirl.create(:join_request, joinable: entourage, user: evaluator.join_request_user || entourage.user, status: JoinRequest::ACCEPTED_STATUS)
+        user = evaluator.join_request_user || entourage.user
+        role = user == entourage.user ? :creator : :member
+        FactoryGirl.create(:join_request, joinable: entourage, user: user, role: role, status: JoinRequest::ACCEPTED_STATUS)
       end
     end
 

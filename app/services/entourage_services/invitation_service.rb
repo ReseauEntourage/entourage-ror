@@ -5,7 +5,7 @@ module EntourageServices
     end
 
     def accept!
-      if JoinRequest.create(user: invitation.invitee, joinable: invitation.invitable, status: JoinRequest::ACCEPTED_STATUS)
+      if build_join_request(status: JoinRequest::ACCEPTED_STATUS).save
         invitation.update(status: EntourageInvitation::ACCEPTED_STATUS)
         invitation.invitable.touch
         send_notif(title: "Invitation acceptée",
@@ -15,7 +15,7 @@ module EntourageServices
     end
 
     def reject!
-      if JoinRequest.create(user: invitation.invitee, joinable: invitation.invitable, status: JoinRequest::REJECTED_STATUS)
+      if build_join_request(status: JoinRequest::REJECTED_STATUS).save
         invitation.update(status: EntourageInvitation::REJECTED_STATUS)
         send_notif(title: "Invitation refusée",
                    content: "#{invitee_name} a refusé votre invitation",
@@ -24,7 +24,7 @@ module EntourageServices
     end
 
     def quit!
-      if JoinRequest.create(user: invitation.invitee, joinable: invitation.invitable, status: JoinRequest::CANCELLED_STATUS)
+      if build_join_request(status: JoinRequest::CANCELLED_STATUS).save
         invitation.update(status: EntourageInvitation::CANCELLED_STATUS)
         send_notif(title: "Invitation annulée",
                    content: "Vous avez annulé l'invitation de #{invitee_name}",
@@ -34,6 +34,20 @@ module EntourageServices
 
     private
     attr_reader :invitation
+
+    def build_join_request status:
+      join_request = JoinRequest.new(user: invitation.invitee, joinable: invitation.invitable, status: status)
+
+      joinable = invitation.invitable
+      join_request.role =
+        case [joinable.community, joinable.group_type]
+        when ['entourage', 'tour']   then 'member'
+        when ['entourage', 'action'] then 'member'
+        else raise 'Unhandled'
+        end
+
+      join_request
+    end
 
     def send_notif(title:, content:, accepted:)
       meta = {

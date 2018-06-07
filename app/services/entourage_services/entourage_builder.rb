@@ -22,6 +22,15 @@ module EntourageServices
       if entourage.save
         #When you start an entourage you are automatically added to members of the tour
         join_request = JoinRequest.create(joinable: entourage, user: user)
+
+        joinable = entourage
+        join_request.role =
+          case [joinable.community, joinable.group_type]
+          when ['entourage', 'tour']   then 'creator'
+          when ['entourage', 'action'] then 'creator'
+          else raise 'Unhandled'
+          end
+
         TourServices::JoinRequestStatus.new(join_request: join_request).accept!
         AsyncService.new(ModerationServices::EntourageModeration).on_create(entourage)
 

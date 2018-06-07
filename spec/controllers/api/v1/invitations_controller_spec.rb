@@ -52,21 +52,21 @@ describe Api::V1::InvitationsController do
 
     context "accepted invitation" do
       let!(:accepted_invitation) { FactoryGirl.create(:entourage_invitation, invitee: user) }
-      let!(:join_request) { JoinRequest.create(user: user, joinable: accepted_invitation.invitable, status: JoinRequest::ACCEPTED_STATUS) }
+      let!(:join_request) { create(:join_request, user: user, joinable: accepted_invitation.invitable, status: JoinRequest::ACCEPTED_STATUS) }
       before { get :index, token: user.token }
       it { expect(result["invitations"][0]["status"]).to eq("accepted")}
     end
 
     context "rejected invitation" do
       let!(:rejected_invitation) { FactoryGirl.create(:entourage_invitation, invitee: user) }
-      let!(:join_request) { JoinRequest.create(user: user, joinable: rejected_invitation.invitable, status: JoinRequest::REJECTED_STATUS) }
+      let!(:join_request) { create(:join_request, user: user, joinable: rejected_invitation.invitable, status: JoinRequest::REJECTED_STATUS) }
       before { get :index, token: user.token }
       it { expect(result["invitations"][0]["status"]).to eq("rejected")}
     end
 
     context "cancelled invitation" do
       let!(:cancelled_invitation) { FactoryGirl.create(:entourage_invitation, invitee: user) }
-      let!(:join_request) { JoinRequest.create(user: user, joinable: cancelled_invitation.invitable, status: JoinRequest::CANCELLED_STATUS) }
+      let!(:join_request) { create(:join_request, user: user, joinable: cancelled_invitation.invitable, status: JoinRequest::CANCELLED_STATUS) }
       before { get :index, token: user.token }
       it { expect(result["invitations"][0]["status"]).to eq("cancelled")}
     end

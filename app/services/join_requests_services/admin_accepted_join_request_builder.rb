@@ -10,6 +10,13 @@ module JoinRequestsServices
 
       join_request = JoinRequest.new(joinable: @joinable, user: @user,  status: JoinRequest::ACCEPTED_STATUS)
 
+      join_request.role =
+        case [joinable.community, joinable.group_type]
+        when ['entourage', 'tour']   then 'member'
+        when ['entourage', 'action'] then 'member'
+        else raise 'Unhandled'
+        end
+
       if join_request.save
 
         title   = "Invitation acceptée"
@@ -24,5 +31,9 @@ module JoinRequestsServices
 
       join_request
     end
+
+    private
+
+    attr_reader :joinable
   end
 end

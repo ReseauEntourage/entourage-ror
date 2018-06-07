@@ -8,3 +8,4 @@ links:
 group_types:
   action:
     message_types: [text]
+    roles: [creator, member]
