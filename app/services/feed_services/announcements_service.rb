@@ -39,13 +39,12 @@ module FeedServices
         @metadata.merge!(onboarding_announcement: true, area: area)
       else
         announcements.push Announcement.new(
-          id: 10,
-          title: "Besoin d’aide pour agir ? Contactez Guillaume",
-          body: "Une question, une information ? Le modérateur de l’équipe est la pour répondre à toutes vos demandes !",
-          action: "Je contacte",
-          url: "mailto:guillaume@entourage.social",
+          id: 11,
+          title: with_first_name("n'attendez plus pour agir !"),
+          body: "Conseils, rencontres, idées d'action auprès des SDF... Passez à l'action en discutant avec vos voisins solidaires.",
+          action: "J'agis",
           author: User.find_by(email: "guillaume@entourage.social"),
-          webview: false,
+          webview: true,
           position: 1
         )
       end
