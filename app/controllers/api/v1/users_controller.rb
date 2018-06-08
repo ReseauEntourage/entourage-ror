@@ -124,6 +124,34 @@ module Api
         end
       end
 
+      def presigned_avatar_upload
+        user = params[:id] == "me" ? current_user : community.users.find(params[:id])
+        if user != current_user
+          return render_error(code: "UNAUTHORIZED", message: "You can only update your own avatar.", status: 401)
+        end
+
+        allowed_types = %w(image/jpeg image/gif)
+
+        unless params[:content_type].in? allowed_types
+          type_list = allowed_types.to_sentence(two_words_connector: ' or ', last_word_connector: ', or ')
+          return render_error(code: "INVALID_CONTENT_TYPE", message: "Content-Type must be #{type_list}.", status: 400)
+        end
+
+        extension = MiniMime.lookup_by_content_type(params[:content_type]).extension
+        key = "#{SecureRandom.uuid}.#{extension}"
+        url = Storage::Client.avatars.send(:bucket)
+          .object("300x300/#{key}")
+          .presigned_url(
+            :put,
+            expires_in: 1.minute,
+            acl: :private,
+            content_type: params[:content_type],
+            cache_control: "max-age=#{365.days}"
+          )
+
+        render json: { avatar_key: key, presigned_url: url }
+      end
+
       private
       def user_params
         @user_params ||= params.require(:user).permit(:first_name, :last_name, :email, :sms_code, :password, :secret, :phone, :avatar_key, :about)

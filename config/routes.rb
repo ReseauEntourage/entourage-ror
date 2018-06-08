@@ -171,6 +171,7 @@ Rails.application.routes.draw do
         member do
           patch 'code'
           post :report
+          post :presigned_avatar_upload
         end
 
         resources :tours, :controller => 'users/tours', only: [:index]
