@@ -54,7 +54,7 @@ module V1
 
     def memberships
       return [] if object.community != 'pfp'
-      groups = object.entourages.group_by(&:group_type)
+      groups = object.entourage_participations.merge(JoinRequest.accepted).group_by(&:group_type)
       groups.default = []
       [
         {
