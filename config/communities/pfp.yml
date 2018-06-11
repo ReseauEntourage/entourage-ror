@@ -16,4 +16,4 @@ group_types:
     roles: [visitor, visited]
   neighborhood:
     message_types: [text]
-    roles: [animator, member]
+    roles: [coordinator, member]
