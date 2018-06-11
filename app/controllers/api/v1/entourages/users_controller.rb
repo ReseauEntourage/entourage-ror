@@ -16,6 +16,8 @@ module Api
             join_requests = join_requests.map { |r| r.message = nil; r }
           end
 
+          join_requests = join_requests.includes(user: { default_user_partners: :partner })
+
           render json: join_requests, root: "users", each_serializer: ::V1::JoinRequestSerializer
         end
 
