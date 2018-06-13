@@ -8,26 +8,13 @@ FactoryGirl.define do
     uuid { SecureRandom.uuid }
     status "open"
     title "foobar"
+    group_type "action"
     entourage_type "ask_for_help"
     display_category "social"
-    association :user, factory: :public_user
+    user { association :public_user, community: community }
     latitude 1.122
     longitude 2.345
     number_of_people 1
-
-    after(:build) do |entourage, stuff|
-      user_specified = stuff.methods(false)
-
-      unless user_specified.include?(:user)
-        entourage.user.update_attributes!(community: stuff.community)
-        entourage.community = entourage.user.community
-      end
-
-      unless user_specified.include?(:group_type)
-        entourage.group_type =
-          entourage.user.community.group_types.keys.first
-      end
-    end
 
     trait :joined do
       after(:create) do |entourage, evaluator|
@@ -39,6 +26,14 @@ FactoryGirl.define do
 
     trait :blacklisted do
       status "blacklisted"
+    end
+
+    factory :private_circle do
+      group_type "private_circle"
+    end
+
+    factory :neighborhood do
+      group_type "neighborhood"
     end
   end
 end

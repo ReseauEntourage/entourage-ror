@@ -501,8 +501,8 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
       context "roles" do
         with_community :pfp
         let(:other_user) { FactoryGirl.create(:public_user, roles: [:visitor, :coordinator]) }
-        let!(:join_request) { create :join_request, user: other_user, status: :accepted }
-        let!(:join_request2) { create :join_request, user: other_user, status: :pending }
+        let!(:join_request)  { create :join_request, user: other_user, joinable_factory: :private_circle, status: :accepted }
+        let!(:join_request2) { create :join_request, user: other_user, joinable_factory: :private_circle, status: :pending }
         before { get :show, id: other_user.id, token: user.token }
         it { expect(JSON.parse(response.body)['user']['roles']).to eq ['coordinator', 'visitor'] }
         it { expect(JSON.parse(response.body)['user']['memberships']).to eq [{"type"=>"private_circle", "list"=>[{"id"=>join_request.joinable_id, "title"=>"foobar", "number_of_people"=>1}]}, {"type"=>"neighborhood", "list"=>[]}] }

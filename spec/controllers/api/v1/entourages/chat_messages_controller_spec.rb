@@ -151,11 +151,11 @@ describe Api::V1::Entourages::ChatMessagesController do
       context "pfp visit" do
         with_community :pfp
 
-        let(:entourage) { create :entourage, title: "Les amis de Henriette" }
+        let(:circle) { create :private_circle, title: "Les amis de Henriette" }
         let(:user) { create :public_user }
-        let!(:join_request) { create :join_request, joinable: entourage, user: user, status: :accepted }
+        let!(:join_request) { create :join_request, joinable: circle, user: user, status: :accepted }
 
-        before { post :create, entourage_id: entourage.to_param, chat_message: payload, token: user.token }
+        before { post :create, entourage_id: circle.to_param, chat_message: payload, token: user.token }
 
         context "valid payload" do
           let(:payload) do

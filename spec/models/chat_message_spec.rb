@@ -12,12 +12,12 @@ RSpec.describe ChatMessage, type: :model do
 
   describe "custom type" do
     with_community :pfp
-    let(:entourage) { create :entourage, title: "Les amis de Henriette" }
+    let(:circle) { create :private_circle, title: "Les amis de Henriette" }
 
     def message attributes={}
       build(
         :chat_message,
-        attributes.merge(messageable: entourage)
+        attributes.merge(messageable: circle)
       )
     end
 
@@ -33,12 +33,12 @@ RSpec.describe ChatMessage, type: :model do
   describe "visit_content" do
     with_community :pfp
     let(:author) { create :public_user, roles: [role] }
-    let(:entourage) { create :entourage, title: "Les amis de Henriette" }
+    let(:circle) { create :private_circle, title: "Les amis de Henriette" }
 
     def message date
       create(
         :chat_message,
-        messageable: entourage,
+        messageable: circle,
         user: author,
         message_type: 'visit',
         metadata: { visited_at: date.iso8601 }

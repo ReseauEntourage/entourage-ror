@@ -1,7 +1,11 @@
 FactoryGirl.define do
   factory :join_request do
+    transient do
+      joinable_factory :entourage
+    end
+
     association :user, factory: :pro_user
-    association :joinable, factory: :entourage
+    joinable { association joinable_factory }
     status "pending"
     role :auto
 
