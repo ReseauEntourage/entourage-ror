@@ -3,6 +3,7 @@ module Api
     module Entourages
       class InvitationsController < Api::V1::BaseController
         before_action :set_entourage
+        before_action :restrict_group_types!
 
         #curl -X POST -d '{"invite": {"mode": "SMS", "phone_numbers": ["+33612345678", "+3361234569"]}}' -H "Content-Type: application/json" "http://localhost:3000/api/v1/entourages/139/invitations.json?token=azerty"
         def create
@@ -29,6 +30,12 @@ module Api
 
         def set_entourage
           @entourage = Entourage.visible.find_by_id_or_uuid(params[:entourage_id])
+        end
+
+        def restrict_group_types!
+          unless ['action'].include?(@entourage.group_type)
+            render json: {message: "This operation is not available for groups of type '#{@entourage.group_type}'"}, status: :bad_request
+          end
         end
 
         def invite_params

@@ -33,6 +33,7 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
       expect(res).to eq({"tours"=>[
           {
              "id"=>tours.first.id,
+             "uuid"=>tours.first.id.to_s,
              "tour_type"=>"medical",
              "status"=>"ongoing",
              "vehicle_type"=>"feet",
@@ -55,6 +56,7 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
           },
           {
              "id"=>tours.last.id,
+             "uuid"=>tours.last.id.to_s,
              "tour_type"=>"medical",
              "status"=>"ongoing",
              "vehicle_type"=>"feet",
@@ -184,7 +186,7 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
   describe "POST create" do
     let!(:user) { FactoryGirl.create :pro_user }
     let!(:tour) { FactoryGirl.build :tour }
-    
+
     context "with correct type" do
       before { FactoryGirl.create(:android_app) }
       before { post 'create', token: user.token , tour: {tour_type: tour.tour_type,
@@ -206,6 +208,7 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
         res = JSON.parse(response.body)
         last_tour = Tour.last
         expect(res).to eq({"tour"=>{"id"=>last_tour.id,
+                                    "uuid"=>last_tour.id.to_s,
                                     "tour_type"=>"medical",
                                     "status"=>"ongoing",
                                     "vehicle_type"=>"feet",
@@ -261,6 +264,7 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
         res = JSON.parse(response.body)
         last_tour = Tour.last
         expect(res).to eq({"tour"=>{"id"=>last_tour.id,
+                                    "uuid"=>last_tour.id.to_s,
                                     "tour_type"=>"medical",
                                     "status"=>"closed",
                                     "vehicle_type"=>"feet",
@@ -341,7 +345,7 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
     let!(:user) { FactoryGirl.create :pro_user }
     let!(:other_user) { FactoryGirl.create :pro_user }
     let(:tour) { FactoryGirl.create(:tour, :filled, user: user) }
-      
+
     context "with correct id" do
       before { put 'update', id: tour.id, token: user.token, tour:{tour_type:"medical", status:"closed", vehicle_type:"car", distance: 123.456}, format: :json }
 
@@ -352,7 +356,8 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
 
       it "responds with tour" do
         res = JSON.parse(response.body)
-        expect(res).to eq({"tour"=>{"id"=>tour.id, 
+        expect(res).to eq({"tour"=>{"id"=>tour.id,
+                                    "uuid"=>tour.id.to_s,
                                     "tour_type"=>"medical",
                                     "status"=>"closed",
                                     "vehicle_type"=>"car",
@@ -439,7 +444,7 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
           }.to raise_error(ActiveRecord::RecordNotFound)
         }
     end
-    
+
     context "with incorrect_user" do
       before { put 'update', id: tour.id, token: other_user.token, tour:{tour_type:"medical", status:"ongoing", vehicle_type:"car", distance: 123.456}, format: :json }
       it { expect(response.status).to eq(403) }

@@ -4,7 +4,7 @@ include CommunityHelper
 describe Api::V1::Entourages::ChatMessagesController do
 
   let(:entourage) { FactoryGirl.create(:entourage) }
-  
+
   describe 'GET index' do
     context "not signed in" do
       before { get :index, entourage_id: entourage.to_param }
@@ -78,6 +78,14 @@ describe Api::V1::Entourages::ChatMessagesController do
                                                                             "user"=>{"id"=>chat_message2.user.id, "avatar_url"=>nil, "display_name"=>"John D","partner"=>nil},
                                                                             "created_at"=>chat_message2.created_at.iso8601(3)
                                                                         }]}) }
+      end
+
+      context "from a null conversations by list uuid" do
+        with_community :pfp
+        let!(:entourage) { nil }
+        let(:other_user) { create :public_user, first_name: "Buzz", last_name: "Lightyear" }
+        before { get :index, entourage_id: "1_list_#{user.id}-#{other_user.id}", token: user.token }
+        it { expect(JSON.parse(response.body)).to eq("chat_messages"=>[]) }
       end
     end
   end
@@ -179,6 +187,44 @@ describe Api::V1::Entourages::ChatMessagesController do
                                                             "partner"=>nil
                                                           },
                                                           "created_at"=>ChatMessage.last.created_at.iso8601(3)}}) }
+        end
+      end
+
+      context "to a null conversations by list uuid" do
+        with_community :pfp
+        let!(:entourage) { nil }
+        let(:other_user) { create :public_user, first_name: "Buzz", last_name: "Lightyear" }
+        let(:join_requests) { Entourage.last.join_requests.map(&:attributes) }
+        before { post :create, entourage_id: "1_list_#{user.id}-#{other_user.id}", chat_message: {content: content}, token: user.token }
+
+        context "valid params" do
+          let(:content) { "foobar" }
+
+          it { expect(response.status).to eq(201) }
+          it { expect(ChatMessage.count).to eq(1) }
+          it { expect(JSON.parse(response.body)).to eq({"chat_message"=>{
+                                                          "id"=>ChatMessage.first.id,
+                                                          "content"=>"foobar",
+                                                          "user"=>{"id"=>user.id, "avatar_url"=>nil, "display_name"=>"John D","partner"=>nil},
+                                                          "created_at"=>ChatMessage.first.created_at.iso8601(3)
+                                                       }}) }
+          it { expect(Entourage.last.attributes).to include("user_id"=>user.id,
+                                                            "number_of_people"=>2,
+                                                            "community"=>'pfp',
+                                                            "group_type"=>"conversation"
+                                                           ) }
+          it { expect(Entourage.last.attributes['uuid_v2']).to start_with '1_hash_' }
+          it { expect(join_requests.map { |r| r['user_id'] }.sort).to eq([user.id, other_user.id]) }
+          it { expect(join_requests.map { |r| r.slice('status', 'role') }.uniq).to eq(["status"=>"accepted", "role"=>"participant"]) }
+        end
+
+        context "invalid params" do
+          let(:content) { nil }
+
+          it { expect(response.status).to eq(400) }
+          it { expect(ChatMessage.count).to eq(0) }
+          it { expect(Entourage.count).to eq(0) }
+          it { expect(JoinRequest.count).to eq(0) }
         end
       end
     end

@@ -4,6 +4,7 @@ module V1
     include V1::Entourages::Location
 
     attributes :id,
+               :uuid,
                :status,
                :title,
                :group_type,
@@ -21,8 +22,36 @@ module V1
     has_one :location, serializer: ActiveModel::DefaultSerializer
     has_one :last_message, serializer: ActiveModel::DefaultSerializer
 
+    def initialize(*)
+      super
+
+      # try to put other user as author if conversation
+      # and user's name as title
+      if object.group_type == 'conversation'
+        participant_ids =
+          if object.join_requests.loaded?
+            object.join_requests.map(&:user_id)
+          else
+            object.join_requests.pluck(:user_id)
+          end
+        other_user_id = participant_ids.find { |i| i != object.user_id }
+        object.user_id = other_user_id if other_user_id
+
+        object.title = UserPresenter.new(user: object.user).display_name
+      end
+    end
+
     def filter(keys)
       include_last_message? ? keys : keys - [:last_message]
+    end
+
+    def uuid
+      case object.group_type
+      when 'action', 'conversation'
+        object.uuid_v2
+      else
+        object.uuid
+      end
     end
 
     def author

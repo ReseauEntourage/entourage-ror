@@ -17,6 +17,7 @@ FactoryGirl.define do
         when ['entourage', 'tour'          ] then 'member'
         when ['entourage', 'action'        ] then 'member'
         when ['pfp',       'private_circle'] then 'visitor'
+        when ['pfp',       'conversation'  ] then 'participant'
         else raise 'Unhandled: %s:%s' % [joinable.community.slug, joinable.group_type]
         end
     end

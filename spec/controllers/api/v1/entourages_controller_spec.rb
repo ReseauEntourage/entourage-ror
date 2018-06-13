@@ -20,6 +20,7 @@ describe Api::V1::EntouragesController do
         expect(subject).to eq({"entourages"=>
                                    [{
                                        "id" => entourage.id,
+                                       "uuid"=>entourage.uuid_v2,
                                        "status"=>"open",
                                        "title"=>"foobar",
                                        "group_type"=>"action",
@@ -125,6 +126,7 @@ describe Api::V1::EntouragesController do
         before { post :create, entourage: { location: {longitude: 1.123, latitude: 4.567}, title: "foo", entourage_type: "ask_for_help", display_category: "mat_help", description: "foo bar", category: "mat_help"}, token: user.token }
         it { expect(JSON.parse(response.body)).to eq({"entourage"=>
                                                           {"id"=>Entourage.last.id,
+                                                           "uuid"=>Entourage.last.uuid_v2,
                                                            "status"=>"open",
                                                            "title"=>"foo",
                                                            "group_type"=>"action",
@@ -206,6 +208,7 @@ describe Api::V1::EntouragesController do
           before { get :show, id: entourage.to_param, token: user.token }
           it { expect(JSON.parse(response.body)).to eq({"entourage"=>
                                                             {"id"=>entourage.id,
+                                                             "uuid"=>entourage.uuid_v2,
                                                              "status"=>"open",
                                                              "title"=>"foobar",
                                                              "group_type"=>"action",
@@ -240,6 +243,42 @@ describe Api::V1::EntouragesController do
         context "find by v2 uuid" do
           before { get :show, id: entourage.uuid_v2.to_param, token: user.token }
           it { expect(JSON.parse(response.body)["entourage"]["id"]).to eq entourage.id }
+        end
+
+        context "find conversations by hash uuid" do
+          with_community :pfp
+          let!(:entourage) { nil }
+          let!(:conversation) { create :conversation, participants: [user] }
+          before { get :show, id: conversation.uuid_v2.to_param, token: user.token }
+          it { expect(JSON.parse(response.body)["entourage"]["id"]).to eq conversation.id }
+        end
+
+        context "find a null conversations by list uuid" do
+          with_community :pfp
+          let!(:entourage) { nil }
+          let(:other_user) { create :public_user, first_name: "Buzz", last_name: "Lightyear" }
+          before { get :show, id: "1_list_#{user.id}-#{other_user.id}", token: user.token }
+          it { expect(JSON.parse(response.body)).to eq({"entourage"=>{
+                                                          "id"=>nil,
+                                                          "uuid"=>nil,
+                                                          "status"=>"open",
+                                                          "title"=>"Buzz L",
+                                                          "group_type"=>"conversation",
+                                                          "entourage_type"=>"contribution",
+                                                          "display_category"=>nil,
+                                                          "join_status"=>"accepted",
+                                                          "number_of_unread_messages"=>0,
+                                                          "number_of_people"=>2,
+                                                          "created_at"=>nil,
+                                                          "updated_at"=>nil,
+                                                          "description"=>nil,
+                                                          "share_url"=>nil,
+                                                          "author"=>{
+                                                            "id"=>other_user.id,
+                                                            "display_name"=>"Buzz",
+                                                            "avatar_url"=>nil,
+                                                            "partner"=>nil},
+                                                          "location"=>{"latitude"=>0.0, "longitude"=>0.0}}}) }
         end
       end
 
@@ -291,6 +330,7 @@ describe Api::V1::EntouragesController do
         before { patch :update, id: user_entourage.to_param, entourage: {title: "new_title"}, token: user.token }
         it { expect(JSON.parse(response.body)).to eq({"entourage"=>
                                                           {"id"=>user_entourage.id,
+                                                           "uuid"=>user_entourage.uuid_v2,
                                                            "status"=>"open",
                                                            "title"=>"new_title",
                                                            "group_type"=>"action",

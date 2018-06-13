@@ -1,4 +1,5 @@
 require 'rails_helper'
+include CommunityHelper
 
 describe Api::V1::Entourages::UsersController do
 
@@ -129,6 +130,13 @@ describe Api::V1::Entourages::UsersController do
                                                "avatar_url"=>nil,
                                                "partner"=>nil
                                            }]}) }
+    end
+
+    context "from a null conversations by list uuid" do
+      with_community :pfp
+      let(:other_user) { create :public_user, first_name: "Buzz", last_name: "Lightyear" }
+      before { get :index, entourage_id: "1_list_#{user.id}-#{other_user.id}", token: user.token }
+      it { expect(JSON.parse(response.body)).to eq("users" => []) }
     end
   end
 

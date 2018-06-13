@@ -12,7 +12,8 @@ module V1
                :user_type,
                :partner,
                :memberships,
-               :has_password
+               :has_password,
+               :conversation
 
     has_one :organization
     has_one :stats, serializer: ActiveModel::DefaultSerializer
@@ -20,6 +21,7 @@ module V1
     def filter(keys)
       keys -= [:token, :email, :has_password] unless me?
       keys -= [:memberships] unless scope[:memberships]
+      keys -= [:conversation] unless scope[:conversation] && scope[:user]
       keys
     end
 
@@ -66,6 +68,12 @@ module V1
           list: groups['neighborhood'].map { |e| e.attributes.slice('id', 'title', 'number_of_people') }
         }
       ]
+    end
+
+    def conversation
+      {
+        uuid: ConversationService.uuid_for_participants([scope[:user].id, object.id], validated: false)
+      }
     end
 
     def scope

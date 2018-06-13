@@ -17,3 +17,6 @@ group_types:
   neighborhood:
     message_types: [text]
     roles: [coordinator, member]
+  conversation:
+    message_types: [text]
+    roles: [participant]

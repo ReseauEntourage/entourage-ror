@@ -55,7 +55,8 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                                       "email"=>nil,
                                       "default"=>true
                                   },
-                                  "memberships"=>[]
+                                  "memberships"=>[],
+                                  "conversation"=>{"uuid"=>"1_list_#{user.id}"}
                                  }})
         end
       end
@@ -173,7 +174,8 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                                                                  "entourage_count"=>1,
                                                              },
                                                              "partner"=>nil,
-                                                             "memberships"=>[]
+                                                             "memberships"=>[],
+                                                             "conversation"=>{"uuid"=>"1_list_#{user.id}"}
                                                            }}) }
     end
 
@@ -433,7 +435,8 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                                                                "email"=>nil,
                                                                "default"=>true
                                                            },
-                                                           "memberships"=>[]
+                                                           "memberships"=>[],
+                                                           "conversation"=>{"uuid"=>"1_list_#{user.id}"}
                                                          }}) }
       end
 
@@ -470,12 +473,14 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                                                                "email"=>nil,
                                                                "default"=>true
                                                            },
-                                                           "memberships"=>[]
+                                                           "memberships"=>[],
+                                                           "conversation"=>{"uuid"=>"1_list_#{user.id}"}
                                                          }}) }
       end
 
       context "get someone else profile" do
         let(:other_user) { FactoryGirl.create(:pro_user, about: "about") }
+        let!(:conversation) { nil }
         before { get :show, id: other_user.id, token: user.token }
         it { expect(response.status).to eq(200) }
         it { expect(JSON.parse(response.body)).to eq({"user"=>
@@ -494,8 +499,15 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                                                                "entourage_count"=>0,
                                                            },
                                                            "partner"=>nil,
-                                                           "memberships"=>[]
+                                                           "memberships"=>[],
+                                                           "conversation"=>{"uuid"=>"1_list_#{user.id}-#{other_user.id}"}
                                                          }}) }
+
+        context "when the two users have an existing conversation" do
+          with_community 'pfp'
+          let!(:conversation) { create :conversation, participants: [user, other_user] }
+          it { expect(result['user']['conversation']['uuid']).to eq conversation.uuid_v2 }
+        end
       end
 
       context "roles" do

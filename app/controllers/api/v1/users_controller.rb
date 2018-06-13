@@ -165,7 +165,7 @@ module Api
       # so we want to make sure that all the fields necessary to render the profile
       # are included in the responses to thos requests
       def full_user_serializer_options
-        { full_partner: true, memberships: true }
+        { full_partner: true, memberships: true, conversation: true }
       end
     end
   end

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180611132042) do
+ActiveRecord::Schema.define(version: 20180613115012) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -200,7 +200,7 @@ ActiveRecord::Schema.define(version: 20180611132042) do
     t.string   "category"
     t.boolean  "use_suggestions",             default: false,  null: false
     t.string   "display_category"
-    t.string   "uuid_v2",          limit: 12,                  null: false
+    t.string   "uuid_v2",          limit: 71,                  null: false
     t.string   "postal_code",      limit: 8
     t.string   "country",          limit: 2
     t.string   "community",        limit: 9,                   null: false

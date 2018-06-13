@@ -59,6 +59,7 @@ class Entourage < ActiveRecord::Base
   scope :non_mat_help_category, -> { where(category: 'non_mat_help') }
 
   before_validation :set_community, on: :create
+  before_validation :set_default_attributes, on: :create
 
   after_create :check_moderation
   before_create :set_uuid
@@ -82,12 +83,14 @@ class Entourage < ActiveRecord::Base
   end
 
   def self.find_by_id_or_uuid identifier
-    string = identifier.is_a?(String)
-
     key =
-      if string && identifier.length == 36
+      if !identifier.is_a?(String)
+        :id
+      elsif identifier.start_with?('1_hash_')
+        :uuid_v2
+      elsif identifier.length == 36
         :uuid
-      elsif string && identifier.length == 12
+      elsif identifier.length == 12
         :uuid_v2
       else
         :id
@@ -149,6 +152,18 @@ class Entourage < ActiveRecord::Base
   def set_community
     return if user.nil?
     self.community = user.community
+  end
+
+  def set_default_attributes
+    return if group_type.nil?
+    case group_type
+    when 'conversation'
+      self.status         = :open
+      self.title          = '(conversation)'
+      self.entourage_type = :contribution
+      self.latitude       = 0
+      self.longitude      = 0
+    end
   end
 
   def set_uuid

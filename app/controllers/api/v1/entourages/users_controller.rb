@@ -2,7 +2,9 @@ module Api
   module V1
     module Entourages
       class UsersController < Api::V1::BaseController
-        before_action :set_entourage
+        before_action :set_entourage_or_handle_conversation_uuid, only: [:index]
+        before_action :set_entourage, except: [:index]
+        before_action :restrict_group_types!, except: [:index]
         before_action :set_join_request, only: [:update, :destroy]
 
         #curl -H "Content-Type: application/json" "http://localhost:3000/api/v1/tours/1017/users.json?token=07ee026192ea722e66feb2340a05e3a8"
@@ -139,6 +141,23 @@ module Api
         private
         def set_entourage
           @entourage = Entourage.visible.find_by_id_or_uuid(params[:entourage_id])
+        end
+
+        def set_entourage_or_handle_conversation_uuid
+          set_entourage and return unless ConversationService.list_uuid?(params[:entourage_id])
+
+          participant_ids = ConversationService.participant_ids_from_list_uuid(params[:entourage_id])
+          raise ActiveRecord::RecordNotFound unless participant_ids.include?(current_user.id.to_s)
+          hash_uuid = ConversationService.hash_for_participants(participant_ids)
+          @entourage =
+            Entourage.find_by(uuid_v2: hash_uuid) ||
+            ConversationService.build_conversation(participant_ids: participant_ids)
+        end
+
+        def restrict_group_types!
+          unless ['action'].include?(@entourage.group_type)
+            render json: {message: "This operation is not available for groups of type '#{@entourage.group_type}'"}, status: :bad_request
+          end
         end
 
         def set_join_request

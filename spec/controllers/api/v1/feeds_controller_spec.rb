@@ -29,6 +29,7 @@ include CommunityHelper
                                                  "type"=>"Entourage",
                                                  "data"=>{
                                                      "id"=>entourage.id,
+                                                     "uuid"=>entourage.uuid_v2,
                                                      "status"=>"open",
                                                      "title"=>"foobar",
                                                      "group_type"=>"action",
@@ -59,6 +60,7 @@ include CommunityHelper
                                                  "type"=>"Announcement",
                                                  "data"=>{
                                                      "id"=>1,
+                                                     "uuid"=>"1",
                                                      "title"=>"Une autre façon de contribuer.",
                                                      "body"=>"Entourage a besoin de vous pour continuer à accompagner les sans-abri.",
                                                      "action"=>"Aider",
@@ -77,6 +79,7 @@ include CommunityHelper
                                                  "data"=>
                                                      {
                                                          "id"=>tour.id,
+                                                         "uuid"=>tour.id.to_s,
                                                          "tour_type"=>"medical",
                                                          "status"=>"ongoing",
                                                          "vehicle_type"=>"feet",

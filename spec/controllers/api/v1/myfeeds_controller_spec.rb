@@ -1,4 +1,5 @@
 require 'rails_helper'
+include CommunityHelper
 
 describe Api::V1::MyfeedsController do
 
@@ -146,6 +147,17 @@ describe Api::V1::MyfeedsController do
         let!(:other_tour) { FactoryGirl.create(:tour, :joined, join_request_user: user, updated_at: 3.hours.ago, status: :ongoing) }
         before { get :index, token: user.token, accepted_invitation: "true" }
         it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([invited_tour.id]) }
+      end
+
+      context "PFP" do
+        with_community :pfp
+        let!(:tour) { nil }
+        let!(:entourage) { nil }
+        let!(:circle) { create :private_circle, :joined, user: user, join_request_role: :visitor, title: "Les amis de Jean" }
+        let!(:neighborhood) { create :neighborhood, :joined, user: user, join_request_role: :member }
+        let!(:conversation) { create :conversation, participants: [user] }
+        before { get :index, token: user.token, status: "open" }
+        it { expect(result["feeds"].map {|feed| feed["data"]["uuid"]}.sort).to eq([circle.uuid, neighborhood.uuid, conversation.uuid_v2].sort) }
       end
     end
   end

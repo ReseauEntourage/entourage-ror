@@ -1,7 +1,8 @@
 module Api
   module V1
     class EntouragesController < Api::V1::BaseController
-      before_action :set_entourage, only: [:show, :update, :read]
+      before_action :set_entourage_or_handle_conversation_uuid, only: [:show]
+      before_action :set_entourage, only: [:update, :read]
 
       def index
         finder = EntourageServices::EntourageFinder.new(user: current_user,
@@ -46,6 +47,10 @@ module Api
       def update
         return render json: {message: 'unauthorized'}, status: :unauthorized if @entourage.user != current_user
 
+        unless ['action'].include?(@entourage.group_type)
+          return render json: {message: "This operation is not available for groups of type '#{@entourage.group_type}'"}, status: :bad_request
+        end
+
         entourage_builder = EntourageServices::EntourageBuilder.new(params: entourage_params, user: current_user)
         entourage_builder.update(entourage: @entourage) do |on|
           on.success do |entourage|
@@ -76,6 +81,17 @@ module Api
 
       def set_entourage
         @entourage = Entourage.visible.find_by_id_or_uuid(params[:id])
+      end
+
+      def set_entourage_or_handle_conversation_uuid
+        set_entourage and return unless ConversationService.list_uuid?(params[:id])
+
+        participant_ids = ConversationService.participant_ids_from_list_uuid(params[:id])
+        raise ActiveRecord::RecordNotFound unless participant_ids.include?(current_user.id.to_s)
+        hash_uuid = ConversationService.hash_for_participants(participant_ids)
+        @entourage =
+          Entourage.find_by(uuid_v2: hash_uuid) ||
+          ConversationService.build_conversation(participant_ids: participant_ids)
       end
     end
   end

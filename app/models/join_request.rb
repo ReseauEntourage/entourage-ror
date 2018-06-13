@@ -24,6 +24,9 @@ class JoinRequest < ActiveRecord::Base
   scope :rejected, -> {where(status: REJECTED_STATUS)}
   scope :cancelled, -> {where(status: CANCELLED_STATUS)}
 
+  after_save :joinable_callback
+  after_destroy :joinable_callback
+
   def self.with_entourage_invitations
     joins(%(
       left join entourage_invitations on (
@@ -43,5 +46,14 @@ class JoinRequest < ActiveRecord::Base
     define_method("is_#{check_status}?") do
       status == check_status
     end
+  end
+
+  private
+
+  def joinable_callback(*args)
+    return unless joinable.try(:group_type) == 'conversation'
+    # TODO: handle status?
+    return unless id_changed? || destroyed? # || status_changed?
+    joinable.update!(uuid_v2: ConversationService.hash_for_participants(joinable.join_requests.pluck(:user_id), validated: false))
   end
 end

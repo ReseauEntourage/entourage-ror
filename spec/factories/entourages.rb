@@ -2,6 +2,7 @@ FactoryGirl.define do
   factory :entourage do
     transient do
       join_request_user nil
+      join_request_role :auto
       community { $server_community.slug }
     end
 
@@ -19,7 +20,12 @@ FactoryGirl.define do
     trait :joined do
       after(:create) do |entourage, evaluator|
         user = evaluator.join_request_user || entourage.user
-        role = user == entourage.user ? :creator : :member
+        if evaluator.join_request_role == :auto && entourage.group_type == 'action' && user == entourage.user
+          role = :creator
+        else
+          role = evaluator.join_request_role
+        end
+
         FactoryGirl.create(:join_request, joinable: entourage, user: user, role: role, status: JoinRequest::ACCEPTED_STATUS)
       end
     end
@@ -34,6 +40,25 @@ FactoryGirl.define do
 
     factory :neighborhood do
       group_type "neighborhood"
+    end
+
+    factory :conversation do
+      group_type "conversation"
+
+      transient do
+        participants []
+      end
+
+      after(:build) do |conversation, stuff|
+        conversation.user = stuff.members.first if stuff.members.any?
+      end
+
+      after(:create) do |conversation, stuff|
+        stuff.participants.each do |participant|
+          create :join_request, joinable: conversation, user: participant, status: JoinRequest::ACCEPTED_STATUS
+        end
+        conversation.reload
+      end
     end
   end
 end

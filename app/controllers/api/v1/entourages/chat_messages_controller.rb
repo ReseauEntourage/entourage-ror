@@ -4,7 +4,8 @@ module Api
       class UnauthorisedEntourage < StandardError; end
 
       class ChatMessagesController < Api::V1::BaseController
-        before_action :set_entourage
+        before_action :set_entourage_or_handle_conversation_uuid, only: [:index, :create]
+        before_action :set_entourage, except: [:index, :create]
         before_action :authorised_to_see_messages?
 
         rescue_from Api::V1::Entourages::UnauthorisedEntourage do |exception|
@@ -56,6 +57,19 @@ module Api
         private
         def set_entourage
           @entourage = Entourage.visible.find_by_id_or_uuid(params[:entourage_id])
+        end
+
+        def set_entourage_or_handle_conversation_uuid
+          set_entourage and return unless ConversationService.list_uuid?(params[:entourage_id])
+
+          participant_ids = ConversationService.participant_ids_from_list_uuid(params[:entourage_id])
+          raise ActiveRecord::RecordNotFound unless participant_ids.include?(current_user.id.to_s)
+          hash_uuid = ConversationService.hash_for_participants(participant_ids)
+          @entourage = Entourage.find_by(uuid_v2: hash_uuid)
+          if @entourage.nil?
+            @entourage = ConversationService.build_conversation(participant_ids: participant_ids)
+            @join_request = @entourage.join_requests.to_a.find { |r| r.user_id == current_user.id }
+          end
         end
 
         def chat_messages_params

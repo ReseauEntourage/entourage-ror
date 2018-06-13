@@ -3,6 +3,7 @@ module V1
     include V1::Myfeeds::LastMessage
 
     attributes :id,
+               :uuid,
                :tour_type,
                :status,
                :vehicle_type,
@@ -22,6 +23,10 @@ module V1
 
     def filter(keys)
       include_last_message? ? keys : keys - [:last_message]
+    end
+
+    def uuid
+      object.id.to_s
     end
 
     def distance

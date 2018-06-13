@@ -1,6 +1,7 @@
 module V1
   class AnnouncementSerializer < ActiveModel::Serializer
     attributes :id,
+               :uuid,
                :title,
                :body,
                :action,
@@ -8,6 +9,10 @@ module V1
                :icon_url
 
     has_one :author, serializer: ActiveModel::DefaultSerializer
+
+    def uuid
+      object.id.to_s
+    end
 
     def author
       return unless object.author
