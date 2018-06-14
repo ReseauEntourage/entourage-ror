@@ -260,7 +260,7 @@ describe Api::V1::EntouragesController do
           before { get :show, id: "1_list_#{user.id}-#{other_user.id}", token: user.token }
           it { expect(JSON.parse(response.body)).to eq({"entourage"=>{
                                                           "id"=>nil,
-                                                          "uuid"=>nil,
+                                                          "uuid"=>"1_list_#{user.id}-#{other_user.id}",
                                                           "status"=>"open",
                                                           "title"=>"Buzz L",
                                                           "group_type"=>"conversation",

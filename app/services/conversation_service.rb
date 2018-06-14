@@ -18,6 +18,12 @@ module ConversationService
     "1_hash_" + id_list_digest(list)
   end
 
+  def self.list_for_participants participant_ids, validated: true
+    list = id_list(participant_ids)
+    validate_id_list!(list) unless validated == false
+    "1_list_" + list.join('-')
+  end
+
   def self.participant_ids_from_list_uuid list_uuid
     id_list(list_uuid[7..-1].split('-'))
   end
@@ -34,6 +40,7 @@ module ConversationService
       JoinRequest.new(joinable: conversation, user_id: participant_id, role: :participant, status: JoinRequest::ACCEPTED_STATUS)
     end
     conversation.number_of_people = participant_ids.count
+    conversation.uuid_v2 = list_for_participants(participant_ids, validated: false)
     conversation.readonly!
     conversation
   end
