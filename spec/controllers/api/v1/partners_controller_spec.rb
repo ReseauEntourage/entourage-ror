@@ -16,6 +16,11 @@ RSpec.describe Api::V1::PartnersController, type: :controller do
                                                         "name"=>"MyString",
                                                         "large_logo_url"=>"MyString",
                                                         "small_logo_url"=>"MyString",
+                                                        "description"=>"MyDescription",
+                                                        "phone"=>nil,
+                                                        "address"=>nil,
+                                                        "website_url"=>nil,
+                                                        "email"=>nil,
                                                         "default"=>true
                                                     },
                                                     {
@@ -23,6 +28,11 @@ RSpec.describe Api::V1::PartnersController, type: :controller do
                                                         "name"=>"MyString",
                                                         "large_logo_url"=>"MyString",
                                                         "small_logo_url"=>"MyString",
+                                                        "description"=>"MyDescription",
+                                                        "phone"=>nil,
+                                                        "address"=>nil,
+                                                        "website_url"=>nil,
+                                                        "email"=>nil,
                                                         "default"=>false
                                                     }]}
                                               ) }

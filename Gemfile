@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 ruby '2.3.1'
 
-gem 'rails',                          '~> 4.2.6'
+gem 'rails',                          '~> 4.2.10'
 gem 'sass-rails',                     '~> 4.0.3'
 gem 'uglifier',                       '>= 1.3.0'
 gem 'jquery-rails',                   '~> 4.0.4'
@@ -32,17 +32,24 @@ gem 'twitter',                        '~> 5.16.0'
 gem 'activerecord-postgis-adapter',   '~> 3.1.4'
 gem 'slack-notifier'
 gem 'mailjet'
+gem 'safety_mailer'
+gem 'ransack'
+gem 'mixpanel-ruby'
+gem 'httparty'
+gem 'sentry-raven'
+gem 'ruby-stemmer'
+gem 'json-schema',                    '~> 2.6.2'
 
 group :development, :test do
   gem 'annotate'
   gem 'byebug',                       '~> 5.0.0'
-  gem 'spring',                       '~> 1.3.6'
+  gem 'spring',                       '~> 2.0.2'
   gem 'spring-commands-rspec',        '~> 1.0.4'
 end
 
 group :development do
   gem 'dotenv-rails',                 '~> 2.0.2'
-  gem 'rack-mini-profiler',           '~> 0.9.8' #enable by requesting any page with '?pp=enable'
+  gem 'rack-mini-profiler',           '~> 0.10.1' #enable by requesting any page with '?pp=enable'
   gem 'pry-rails',                    '~> 0.3.4'
   gem 'bullet',                       '~> 4.14.7'
   gem 'thin',                         '~> 1.6.3'
@@ -51,7 +58,6 @@ group :development do
   gem 'derailed',                     '~> 0.1.0'
   gem 'stackprof',                    '~> 0.2.8'
   gem 'letter_opener',                '~> 1.4.1'
-  gem 'safety_mailer'
   gem 'mailcatcher'
 end
 
@@ -63,6 +69,7 @@ group :test do
   gem 'webmock',                      '~> 1.20.4'
   gem 'coveralls',                    require: false
   gem 'fakeredis',                    '~> 0.5.0'
+  gem 'test_after_commit'
 end
 
 group :production do

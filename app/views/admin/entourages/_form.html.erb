@@ -1,3 +1,12 @@
+<style>
+  .adress-maps {
+    margin-top: 10px;
+  }
+  .adress-maps img+img {
+    margin-left: 10px;
+  }
+</style>
+
 <%= form_for([:admin, @entourage], :method => :PATCH, html: { class: "form-horizontal", role: "form" }) do |f| %>
   <%= render partial: "layouts/errors", locals: {obj: @entourage} %>
 
@@ -11,7 +20,7 @@
   <div class="control-group">
     <%= f.label :description, "Description", class: "control-label" %>
     <div class="controls">
-      <%= f.text_field :description, class: "form-control", required: true %>
+      <%= f.text_area :description, rows: 6, class: "form-control", required: true %>
     </div>
   </div>
 
@@ -22,7 +31,71 @@
     </div>
   </div>
 
+  <div class="control-group">
+    <%= f.label :display_category, "Catégorie affichée", class: "control-label" %>
+    <div class="controls">
+      <%= f.select :entourage_type, Entourage::ENTOURAGE_TYPES %>
+      <%= f.select :display_category, Entourage::DISPLAY_CATEGORIES, include_blank: true %>
+    </div>
+  </div>
+
+  <div class="control-group">
+    <%= f.label :category, "Catégorie pour l'algorithme de recommandation", class: "control-label" %>
+    <div class="controls">
+      <%= f.select :category, Entourage::CATEGORIES, include_blank: true %>
+    </div>
+  </div>
+
+  <div class="control-group">
+    <label class="control-label">Adresse</label>
+    <div class="controls">
+      <input id="autocomplete" value="<%= @entourage.approximated_location %>"
+             type="text" class="form-control"></input>
+      <%= f.hidden_field :latitude, disabled: true %>
+      <%= f.hidden_field :longitude, disabled: true %>
+      <div class="adress-maps" id="addressMaps">
+        <img src="https://maps.googleapis.com/maps/api/staticmap?zoom=4&size=200x200&markers=<%= @entourage.latitude %>,<%= @entourage.longitude %>&key=AIzaSyDma7aHQ_gPjX55c-V4wEzoRd79LiCenzM" width="200" height="200" />
+        <img src="https://maps.googleapis.com/maps/api/staticmap?zoom=13&size=400x200&markers=<%= @entourage.latitude %>,<%= @entourage.longitude %>&key=AIzaSyDma7aHQ_gPjX55c-V4wEzoRd79LiCenzM&style=feature:road|element:labels|visibility:off&style=feature:water|element:labels|visibility:off" width="400" height="200" />
+      </div>
+    </div>
+  </div>
+
   <br>
   <%= f.submit "Sauver", class: "btn btn-success" %>
   <%= link_to "Annuler", admin_entourages_path, class: "btn btn-default" %>
 <% end %>
+
+<script>
+  var autocomplete;
+
+  function initAutocomplete() {
+    var $autocomplete = $('#autocomplete');
+    autocomplete = new google.maps.places.Autocomplete(
+      $autocomplete[0],
+      {
+        types: ['geocode']
+      }
+    );
+
+    autocomplete.addListener('place_changed', fillInLocation);
+    $autocomplete.on('keypress', function(e) {
+      if ((e.keyCode || e.which || e.charCode) === 13) {
+        e.preventDefault();
+      }
+    });
+  }
+
+  function fillInLocation() {
+    var location = autocomplete.getPlace().geometry.location,
+        lat = location.lat(),
+        lng = location.lng();
+
+    $('#entourage_latitude').val(lat).prop('disabled', false);
+    $('#entourage_longitude').val(lng).prop('disabled', false);
+    $('#addressMaps img').each(function(_, map) {
+      map.src = map.src.replace(/markers=[^&]*/, 'markers=' + lat + ',' + lng);
+    })
+  }
+
+  initAutocomplete();
+</script>

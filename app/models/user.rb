@@ -1,12 +1,21 @@
+require 'experimental/jsonb_set'
+
 class User < ActiveRecord::Base
 
   validates_presence_of [:phone, :sms_code, :token, :validation_status, :marketing_referer_id]
-  validates_uniqueness_of [:token, :phone]
+  validates_uniqueness_of :phone, scope: :community
+  validates_uniqueness_of :token
   validate :validate_phone!
-  validates_format_of :email, with: /@/, unless: "email.nil?"
+  validates_format_of :email, with: /@/, unless: "email.to_s.size.zero?"
   validates_presence_of [:first_name, :last_name, :organization, :email], if: Proc.new { |u| u.pro? }
   validates_associated :organization, if: Proc.new { |u| u.pro? }
   validates :sms_code, length: { minimum: 6 }
+  validates_length_of :about, maximum: 200, allow_nil: true
+  validates_length_of :password, within: 8..256, allow_nil: true
+  validates_inclusion_of :community, in: Community.slugs
+  validate :validate_roles!
+
+  after_save :clean_up_passwords, if: :encrypted_password_changed?
 
   has_many :tours
   has_many :encounters, through: :tours
@@ -26,9 +35,18 @@ class User < ActiveRecord::Base
   belongs_to :marketing_referer
   has_many :feeds
   has_many :user_partners, dependent: :destroy
+  has_many :default_user_partners, -> { where(default: true) }, class_name: :UserPartner
   has_many :partners, through: :user_partners
+  has_one :users_appetence
+  has_many :entourage_displays
+  has_many :entourage_scores
+  has_many :user_newsfeeds
+  has_one :moderation, class_name: 'UserModeration'
+  has_many :action_zones
+  has_many :experimental_pending_request_reminders, class_name: 'Experimental::PendingRequestReminder'
 
   enum device_type: [ :android, :ios ]
+  attribute :roles, Experimental::JsonbSet.new
 
   delegate :name, :description, to: :organization, prefix: true
 
@@ -41,11 +59,26 @@ class User < ActiveRecord::Base
                                                                     last_name,
                                                                     email,
                                                                     phone) }
+  scope :atd_friends, -> { where(atd_friend: true) }
 
   def validate_phone!
     unless PhoneValidator.new(phone: self.phone).valid?
       errors.add(:phone, "devrait être au format +33... ou 06...")
     end
+  end
+
+  def validate_roles!
+    return if community.nil?
+
+    invalid = roles - community.roles
+    errors.add(
+      :roles,
+      [
+        invalid.map(&:inspect).to_sentence,
+        (invalid.one? ? "n'est" : "ne sont"),
+        "pas inclus dans la liste"
+      ].join(' ')
+    ) if invalid.any?
   end
 
   #Force all phone number to be inserted in DB in "+33" format
@@ -71,6 +104,17 @@ class User < ActiveRecord::Base
     super(another_sms_code)
   end
 
+  attr_reader :password
+
+  def password=(new_password)
+    @password = new_password
+    self.encrypted_password = BCrypt::Password.create(new_password) if !new_password.nil?
+  end
+
+  def has_password?
+    !encrypted_password.nil?
+  end
+
   def pro?
     user_type=="pro"
   end
@@ -94,8 +138,22 @@ class User < ActiveRecord::Base
   def validate!
     update(validation_status: "validated")
   end
+  alias_method :unblock!, :validate!
 
   def default_partner
-    @default_partner ||= user_partners.where(default: true).first&.partner
+    @default_partner ||= default_user_partners.first&.partner
+  end
+
+  def default_partner_id
+    user_partners.where(default: true).limit(1).pluck(:partner_id).first
+  end
+
+  # https://github.com/rails/rails/blob/v4.2.10/activerecord/lib/active_record/attributes.rb
+  attribute :community, Community::Type.new
+
+  protected
+
+  def clean_up_passwords
+    self.password = nil
   end
 end

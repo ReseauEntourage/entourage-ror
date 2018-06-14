@@ -15,6 +15,14 @@ describe TourPointsServices::TourPointsBuilder do
         subject
         expect(TourPoint.last.passing_time).to eq(DateTime.parse("2016-03-08T19:41:06.953"))
       end
+
+      context "timezones and meridian indicators" do
+        let(:params) { [{"passing_time"=>"2018-01-22 8:05:52.879 PM +0800", "longitude"=>0.3, "latitude"=>49.1}] }
+        it "handles timezones correctly" do
+          subject
+          expect(TourPoint.last.passing_time).to eq(DateTime.new(2018, 1, 22, 12, 5, 52.879).in_time_zone)
+        end
+      end
     end
 
     context "missing passing time" do

@@ -1,11 +1,12 @@
 require 'rails_helper'
+include CommunityHelper
 
 RSpec.describe Api::V1::BaseController, :type => :controller do
   render_views
 
   describe 'validate_request!' do
     before { Rails.env.stub(:test?) { false } }
-    
+
     context "missing api key" do
       before { get :check }
       it { expect(response.status).to eq(426) }
@@ -51,6 +52,73 @@ RSpec.describe Api::V1::BaseController, :type => :controller do
       let(:user) { FactoryGirl.create(:pro_user, last_sign_in_at: DateTime.parse("2015-07-07T00:00:00.000")) }
       before { get :ping, {token: user.token} }
       it { expect(user.reload.last_sign_in_at).to eq(DateTime.parse("2015-07-07T00:00:00.000"))}
+    end
+  end
+
+  describe 'ensure_community!' do
+    before do
+      @request.env['X-API-KEY'] = api_key
+      allow(Rails.logger).to receive(:warn)
+      get :check
+    end
+    subject { response.status }
+
+    context "with a valid api key" do
+      context "on the entourage server" do
+        with_community :entourage
+        let(:api_key) { 'api_debug' }
+        it { is_expected.to eq(200) }
+      end
+
+      context "on the pfp server" do
+        with_community :pfp
+        let(:api_key) { 'api_debug_pfp' }
+        it { is_expected.to eq(200) }
+      end
+    end
+
+    context "with an api key for the wrong community" do
+      context "on the entourage server" do
+        with_community :entourage
+        let(:api_key) { 'api_debug_pfp' }
+        it { is_expected.to eq(401) }
+      end
+
+      context "on the pfp server" do
+        with_community :pfp
+        let(:api_key) { 'api_debug' }
+        it { is_expected.to eq(401) }
+      end
+    end
+
+    context "with an invalid api key" do
+      let(:api_key) { 'foobar' }
+
+      context "on the entourage server" do
+        with_community :entourage
+        it { is_expected.to eq(200) }
+        it { expect(Rails.logger).to have_received(:warn).with(/code=no_api_key/) }
+      end
+
+      context "on the pfp server" do
+        with_community :pfp
+        it { is_expected.to eq(401) }
+      end
+    end
+
+    context "with no api key" do
+      let(:api_key) { '' }
+
+      context "on the entourage server" do
+        with_community :entourage
+        it { is_expected.to eq(200) }
+        it { expect(Rails.logger).to have_received(:warn).with(/code=no_api_key/) }
+      end
+
+      context "on the pfp server" do
+        with_community :pfp
+        it { is_expected.to eq(401) }
+      end
     end
   end
 end

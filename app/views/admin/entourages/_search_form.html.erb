@@ -1,0 +1,70 @@
+<div class='panel panel-default'>
+  <div class="panel-body">
+    <%= search_form_for [:admin, @q], class: 'form-inline' do |f| %>
+
+      <div class='form-group'>
+        <%= f.label :title_cont, 'Titre' %>
+        <%= f.search_field :title_cont, class: 'form-control' %>
+      </div>
+
+      <div class='form-group'>
+        <%= f.label :description_cont, 'Description' %>
+        <%= f.search_field :description_cont, class: 'form-control' %>
+      </div>
+
+      <div class='form-group'>
+        <%= f.label :entourage_type_eq, 'Type' %>
+        <%= f.select :entourage_type_eq, Entourage::ENTOURAGE_TYPES, { include_blank: true, class: 'form-control'} %>
+      </div>
+
+      <div class='form-group'>
+        <%= f.label :status_eq, 'Status' %>
+        <%= f.select :status_eq, Entourage::ENTOURAGE_STATUS, { include_blank: true, class: 'form-control'} %>
+      </div>
+
+      <div class='form-group'>
+        <%= f.label :display_category_eq, 'Catégorie' %>
+        <%= f.select :display_category_eq, Entourage::DISPLAY_CATEGORIES + [EntouragesHelper::NO_CATEGORY], { include_blank: true, class: 'form-control'} %>
+      </div>
+
+      <%= f.hidden_field :country_eq if @q.country_eq %>
+      <% (@q.postal_code_start_any || []).each do |value| %>
+        <%= hidden_field_tag 'q[postal_code_start_any][]', value %>
+      <% end %>
+
+      <%= f.submit 'Rechercher', class: 'btn btn-default' %>
+    <% end %>
+
+  </div>
+</div>
+<div class="btn-group btn-group-sm" style="margin: -10px 0 10px">
+  <%
+    q = params[:q] || {}
+    rhone_alpes = {
+      country_eq: 'FR',
+      postal_code_start_any: ['01', '07', '26', '38', '42', '69', '73', '74']
+    }.stringify_keys
+    location_keys = [:country_eq, :postal_code_start_any]
+
+    case q.slice(*location_keys)
+    when rhone_alpes
+      active = :rhone_alpes
+    when {}
+      active = :everywhere
+    end
+  %>
+  <%=
+    link_to(
+      "Partout",
+      params.merge(q: q.except(*location_keys)),
+      class: "btn btn-#{active == :everywhere ? :primary : :default}"
+    )
+  %>
+  <%=
+    link_to(
+      "Rhône-Alpes",
+      params.merge(q: q.merge(rhone_alpes)),
+      class: "btn btn-#{active == :rhone_alpes ? :primary : :default}"
+    )
+  %>
+</div>

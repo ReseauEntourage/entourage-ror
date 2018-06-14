@@ -38,17 +38,30 @@ module EntourageServices
 
     def invitee
       return @invitee if @invitee
-      @invitee = UserServices::PublicUserBuilder.new(params: {phone: phone_number}).create(send_sms: false, sms_code: @invitee_sms_code)
+      @invitee = UserServices::PublicUserBuilder.new(params: {phone: phone_number}, community: entourage.community).create(send_sms: false, sms_code: @invitee_sms_code)
       raise ActiveRecord::RecordInvalid.new(@invitee) unless @invitee.valid?
       @invitee
     end
 
     def message
-      "Bonjour, vous êtes invité à rejoindre un Entourage. Votre code est #{invitee_sms_code}. Retrouvez l'application ici : #{link} ."
+      @message ||= begin
+        inviter_name = [inviter.first_name, inviter.last_name].map { |s| sms_transliterate(s || "").gsub(/\s+/, ' ').strip.presence }.compact.join(' ').presence || "un ami"
+        inviter_name = inviter_name.truncate(32, omission: '..')
+        "Bonjour, #{inviter_name} vous invite sur Entourage, le réseau solidaire. Votre code : #{invitee_sms_code}. Trouvez l'application ici : #{link}"
+      end
+    end
+
+    SMS_CHARSET = "@£$¥èéùìòÇ\nØø\rÅåΔ_ΦΓΛΩΠΨΣΘΞÆæßÉ !\"#¤%&'()*+,-./0123456789:;<=>?¡ABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÑÜ`¿abcdefghijklmnopqrstuvwxyzäöñüà"
+    def sms_transliterate string
+      string.tr('’', '\'')
+            .split('').map do |c|
+              c.in?(SMS_CHARSET) ? c : ActiveSupport::Inflector.transliterate(c, '')
+            end
+            .join
     end
 
     def link
-      link = Rails.env.test? ? "http://foo.bar" : "http://tinyurl.com/hfkhcpr"
+      link = Rails.env.test? ? "http://foo.bar" : "bit.ly/applientourage"
     end
   end
 end

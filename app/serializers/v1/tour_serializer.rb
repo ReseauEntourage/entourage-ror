@@ -3,6 +3,7 @@ module V1
     include V1::Myfeeds::LastMessage
 
     attributes :id,
+               :uuid,
                :tour_type,
                :status,
                :vehicle_type,
@@ -16,12 +17,16 @@ module V1
                :number_of_unread_messages,
                :updated_at
 
-    has_many :tour_points
-    has_one :author
-    has_one :last_message
+    has_many :tour_points, serializer: ActiveModel::DefaultSerializer
+    has_one :author, serializer: ActiveModel::DefaultSerializer
+    has_one :last_message, serializer: ActiveModel::DefaultSerializer
 
     def filter(keys)
       include_last_message? ? keys : keys - [:last_message]
+    end
+
+    def uuid
+      object.id.to_s
     end
 
     def distance
@@ -46,7 +51,7 @@ module V1
           id: tour_author.id,
           display_name: tour_author.first_name,
           avatar_url: UserServices::Avatar.new(user: tour_author).thumbnail_url,
-          partner: object.user.default_partner.nil? ? nil : JSON.parse(V1::PartnerSerializer.new(object.user.default_partner, scope: {user: object.user}, root: false).to_json)
+          partner: object.user.default_partner.nil? ? nil : V1::PartnerSerializer.new(object.user.default_partner, scope: {user: object.user}, root: false).as_json
       }
     end
 
@@ -55,8 +60,7 @@ module V1
     end
 
     def tour_points
-      cache_points = $redis.get("entourage:tours:#{object.id}:tour_points")
-      cache_points.present? ? JSON.parse(cache_points) : TourPointsServices::TourPointsSimplifier.new(tour_id: object.id).simplified_tour_points
+      TourPointsServices::TourPointsSimplifier.new(tour_id: object.id).simplified_tour_points
     end
 
     def join_status

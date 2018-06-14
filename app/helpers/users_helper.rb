@@ -9,4 +9,8 @@ module UsersHelper
     }
     content_tag :span, validation_status, class: "label #{state_to_class[validation_status]}"
   end
+
+  def user_avatar_image user, *args
+    image_tag UserServices::Avatar.new(user: @entourage.user).thumbnail_url, *args
+  end
 end

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0">
+    <meta charset="utf-8">
+    <style>
+      #map {
+        height: 100%;
+      }
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      .info-window {
+        text-align: center;
+        max-width: 300px;
+        margin: 10px 0 10px 23px;
+      }
+      .info-window-title {
+        font-size: 16px;
+      }
+      .info-window-button {
+        border-radius: 5px;
+        color: #fff;
+        background: #ef662f;
+        padding: 8px 10px;
+        font-size: 13px;
+        text-decoration: none;
+        display: inline-block;
+        margin-top: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="map"></div>
+    <div id="infoWindowTemplate" class="info-window">
+      <div class="info-window-title" data-value="title"></div>
+      <a class="info-window-button"
+         href="http://www.entourage.social/" target="_blank">
+        Rejoindre cette action !
+      </a>
+    </div>
+    <script>
+      var map;
+      var infoWindow;
+      var styles = [
+        {
+          "featureType": "administrative.land_parcel",
+          "elementType": "all",
+          "stylers": [{"visibility": "off"}]
+        },
+        {
+          "featureType": "landscape",
+          "elementType": "labels",
+          "stylers": [{"visibility": "off"}]
+        },
+        {
+          "featureType": "poi",
+          "elementType": "all",
+          "stylers": [{"visibility": "off"}]
+        },
+        {
+          "featureType": "road",
+          "elementType": "labels",
+          "stylers": [{"visibility": "off"}]
+        },
+        {
+          "featureType": "road.local",
+          "elementType": "all",
+          "stylers": [{"visibility": "off"}]
+        },
+        {
+          "featureType": "transit",
+          "elementType": "all",
+          "stylers": [{"visibility": "off"}]
+        },
+        {
+          "featureType": "water",
+          "elementType": "labels",
+          "stylers": [{"visibility": "off"}]
+        }
+      ]
+
+
+      function initMap() {
+        var params = new URLSearchParams(location.search);
+        var preset = params.get('preset');
+        fetch('/api/v1/public/entourages.json?preset=' + preset)
+        .then(function(response) {
+          return response.text()
+        })
+        .then(function(raw) {
+          drawMap(JSON.parse(raw), preset);
+        })
+      }
+
+      function drawMap(data, preset) {
+        map = new google.maps.Map(document.getElementById('map'), {
+          center: {lat: 48.856667, lng: 2.342222},
+          zoom: 11,
+          styles: styles,
+          mapTypeControl: false,
+          fullscreenControl: true,
+          streetViewControl: false
+        });
+
+        setMarkers(map, data, preset);
+
+        infoWindow = new google.maps.InfoWindow();
+        infoWindow.setOptions({pixelOffset: new google.maps.Size(0, -30)});
+      }
+
+      function setMarkers(map, data, preset) {
+        for (var i = 0; i < data.entourages.length; i++) {
+          var entourage = data.entourages[i];
+          var marker = new google.maps.Marker({
+            position: {
+              lat: entourage.location.latitude,
+              lng: entourage.location.longitude
+            },
+            map: map,
+            title: entourage.title,
+            icon: 'markers/' + preset + '.png'
+          });
+          marker.addListener('click', openInfoWindow);
+        }
+      }
+
+      function openInfoWindow() {
+        html = document.querySelector('#infoWindowTemplate').cloneNode(true);
+        html.querySelector('[data-value="title"]').textContent = this.title;
+        infoWindow.setContent(html);
+        infoWindow.setPosition(this.position);
+        infoWindow.open(map);
+      }
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/url-search-params/0.10.0/url-search-params.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fetch/2.0.3/fetch.min.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDma7aHQ_gPjX55c-V4wEzoRd79LiCenzM&callback=initMap"></script>
+  </body>
+</html>

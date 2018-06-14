@@ -1,0 +1,43 @@
+version: '3.4'
+services:
+
+  postgresql:
+    image: mdillon/postgis:10
+    environment:
+      POSTGRES_PASSWORD: guest
+      POSTGRES_USER: guest
+      POSTGRES_DB: entourage-dev
+    ports:
+      - "5432/tcp"
+    restart: "always"
+    volumes:
+      - postgresql-data:/var/lib/postgresql/data:delegated
+
+  redis:
+    image: redis:latest
+    ports:
+      - "6379/tcp"
+
+  spring:
+    build:
+      context: .
+    volumes:
+      - .:/home/docker-user/app:delegated
+      - /home/docker-user/app/.git # protect .git from the container
+      - gems:/home/docker-user/.gem:delegated
+    user: docker-user
+    depends_on:
+      - postgresql
+      - redis
+    ports:
+      - "8080:8080"
+    environment:
+      DATABASE_URL: "postgres://guest:guest@postgresql:5432"
+      REDIS_URL: "redis://redis:6379"
+      PORT: 8080
+      RAILS_ENV: ${RAILS_ENV:-development}
+    command: bin/docker/entrypoint
+
+volumes:
+  postgresql-data:
+  gems:

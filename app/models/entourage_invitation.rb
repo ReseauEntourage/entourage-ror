@@ -4,6 +4,9 @@ class EntourageInvitation < ActiveRecord::Base
   PENDING_STATUS="pending"
   ACCEPTED_STATUS="accepted"
   REJECTED_STATUS="rejected"
+  CANCELLED_STATUS="cancelled"
+
+  STATUS = [ACCEPTED_STATUS, PENDING_STATUS, REJECTED_STATUS, CANCELLED_STATUS]
 
   belongs_to :invitable, polymorphic: true
   belongs_to :inviter, class_name: "User"
@@ -14,4 +17,10 @@ class EntourageInvitation < ActiveRecord::Base
   validates_uniqueness_of :phone_number, scope: [:inviter_id, :invitable_id, :invitable_type]
 
   scope :status, -> (status) { where(status: status) }
+
+  STATUS.each do |check_status|
+    define_method("is_#{check_status}?") do
+      status == check_status
+    end
+  end
 end

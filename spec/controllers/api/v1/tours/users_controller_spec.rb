@@ -18,6 +18,7 @@ describe Api::V1::Tours::UsersController do
         it { expect(result).to eq("user"=>{"id"=>user.id,
                                                               "email"=>user.email,
                                                               "display_name"=>"John D",
+                                                              "role"=>"member",
                                                               "status" => "pending",
                                                               "message"=>nil,
                                                               "avatar_url"=>nil,
@@ -27,20 +28,28 @@ describe Api::V1::Tours::UsersController do
       end
 
       context "duplicate request to join tour" do
-        before { JoinRequest.create(user: user, joinable: tour) }
+        before { create(:join_request, user: user, joinable: tour) }
         before { post :create, tour_id: tour.to_param, token: user.token }
         it { expect(tour.members).to eq([user]) }
-        it { expect(result).to eq("message"=>"Could not create entourage participation request", "reasons"=>["Joinable a déjà été ajouté"]) }
-        it { expect(response.status).to eq(400) }
+        it { expect(result).to eq("user"=>{"id"=>user.id,
+                                           "email"=>user.email,
+                                           "display_name"=>"John D",
+                                           "role"=>"member",
+                                           "status" => "pending",
+                                           "message"=>nil,
+                                           "avatar_url"=>nil,
+                                           "requested_at"=>JoinRequest.last.created_at.iso8601(3),
+                                           "partner"=>nil}) }
+        it { expect(tour.reload.number_of_people).to eq(1) }
       end
 
-      it "sends a notifications to tour members" do
+      it "sends a notifications to tour owner" do
         new_member = FactoryGirl.create(:pro_user)
-        JoinRequest.create(user: user, joinable: tour, status: "accepted")
+        create(:join_request, user: user, joinable: tour, status: "accepted")
         expect_any_instance_of(PushNotificationService).to receive(:send_notification).with("John D",
                                                                                             "Demande en attente",
                                                                                             "Un nouveau membre souhaite rejoindre votre maraude",
-                                                                                            User.where(id: user.id),
+                                                                                            [tour.user],
                                                                                             {:joinable_id=>tour.id, :joinable_type=>"Tour", :type=>"NEW_JOIN_REQUEST", :user_id => new_member.id}
         )
         post :create, tour_id: tour.to_param, token: new_member.token
@@ -53,6 +62,7 @@ describe Api::V1::Tours::UsersController do
                                                               "email"=>user.email,
                                                               "display_name"=>"John D",
                                                               "status" => "pending",
+                                                              "role"=>"member",
                                                               "message"=> "foo",
                                                               "requested_at"=>JoinRequest.last.created_at.iso8601(3),
                                                               "avatar_url"=>nil,
@@ -74,6 +84,7 @@ describe Api::V1::Tours::UsersController do
                                                                "email"=>user.email,
                                                                "display_name"=>"John D",
                                                                "status"=>"pending",
+                                                               "role"=>"member",
                                                                "message"=>nil,
                                                                "requested_at"=>join_request.created_at.iso8601(3),
                                                                "avatar_url"=>nil,
@@ -89,8 +100,8 @@ describe Api::V1::Tours::UsersController do
 
     context "signed in as accepted member of the tour" do
       let(:requester) { FactoryGirl.create(:pro_user) }
-      let!(:tour_member) { JoinRequest.create(user: user, joinable: tour, status: "accepted") }
-      let!(:tour_requester) { JoinRequest.create(user: requester, joinable: tour, status: "pending") }
+      let!(:tour_member) { create(:join_request, user: user, joinable: tour, status: "accepted") }
+      let!(:tour_requester) { create(:join_request, user: requester, joinable: tour, status: "pending") }
 
       context "valid params" do
         before { FactoryGirl.create(:android_app) }
@@ -99,11 +110,11 @@ describe Api::V1::Tours::UsersController do
         it { expect(tour_requester.reload.status).to eq("accepted") }
       end
 
-      it "sends a notifications to tour members" do
+      it "sends a notification to the requester" do
         FactoryGirl.create(:android_app)
         expect_any_instance_of(PushNotificationService).to receive(:send_notification).with("John D",
                                                                                             "Demande acceptée",
-                                                                                            "Vous venez de rejoindre l'entourage de John D",
+                                                                                            "Vous venez de rejoindre la maraude de John D",
                                                                                             User.where(id: requester.id),
                                                                                             {:joinable_id=>tour.id, :joinable_type=>"Tour", :type=>"JOIN_REQUEST_ACCEPTED", :user_id => requester.id})
         patch :update, tour_id: tour.to_param, id: requester.id, user: {status: "accepted"}, token: user.token
@@ -124,8 +135,8 @@ describe Api::V1::Tours::UsersController do
 
     context "not member of the tour" do
       let(:requester) { FactoryGirl.create(:pro_user) }
-      let!(:other_tour_member) { JoinRequest.create(user: user, joinable: FactoryGirl.create(:tour), status: "accepted") }
-      let!(:tour_requested) { JoinRequest.create(user: requester, joinable: tour, status: "pending") }
+      let!(:other_tour_member) { create(:join_request, user: user, joinable: FactoryGirl.create(:tour), status: "accepted") }
+      let!(:tour_requested) { create(:join_request, user: requester, joinable: tour, status: "pending") }
       before { patch :update, tour_id: tour.to_param, id: requester.id, user: {status: "accepted"}, token: user.token }
       it { expect(response.status).to eq(401) }
       it { expect(tour_requested.reload.status).to eq("pending") }
@@ -133,8 +144,8 @@ describe Api::V1::Tours::UsersController do
 
     context "member of the tour but not accepted" do
       let(:requester) { FactoryGirl.create(:pro_user) }
-      let!(:tour_member) { JoinRequest.create(user: user, joinable: tour, status: "pending") }
-      let!(:tour_requested) { JoinRequest.create(user: requester, joinable: tour, status: "pending") }
+      let!(:tour_member) { create(:join_request, user: user, joinable: tour, status: "pending") }
+      let!(:tour_requested) { create(:join_request, user: requester, joinable: tour, status: "pending") }
       before { patch :update, tour_id: tour.to_param, id: requester.id, user: {status: "accepted"}, token: user.token }
       it { expect(response.status).to eq(401) }
       it { expect(tour_requested.reload.status).to eq("pending") }
@@ -157,14 +168,15 @@ describe Api::V1::Tours::UsersController do
 
     context "signed in as accepted member of the tour" do
       let(:requester) { FactoryGirl.create(:pro_user) }
-      let!(:tour_member) { JoinRequest.create(user: user, joinable: tour, status: "accepted") }
-      let!(:tour_requested) { JoinRequest.create(user: requester, joinable: tour, status: "pending") }
+      let!(:tour_member) { create(:join_request, user: user, joinable: tour, status: "accepted") }
+      let!(:tour_requested) { create(:join_request, user: requester, joinable: tour, status: "pending") }
       before { delete :destroy, tour_id: tour.to_param, id: requester.id, token: user.token }
       it { expect(response.status).to eq(200) }
       it { expect(result).to eq({"user"=>{
                                           "id"=>requester.id,
                                           "email"=>requester.email,
                                           "display_name"=>"John D",
+                                          "role"=>"member",
                                           "status"=>"rejected",
                                           "message"=>nil,
                                           "requested_at"=>JoinRequest.last.created_at.iso8601(3),
@@ -182,14 +194,15 @@ describe Api::V1::Tours::UsersController do
     end
 
     context "delete yourself" do
-      let!(:tour_member) { JoinRequest.create(user: user, joinable: tour, status: "accepted") }
+      let!(:tour_member) { create(:join_request, user: user, joinable: tour, status: "accepted") }
       before { delete :destroy, tour_id: tour.to_param, id: user.id, token: user.token }
       it { expect(response.status).to eq(200) }
       it { expect(result).to eq({"user"=>{
                                   "id"=>user.id,
                                   "email"=>user.email,
                                   "display_name"=>"John D",
-                                  "status"=>"not requested",
+                                  "role"=>"member",
+                                  "status"=>"cancelled",
                                   "message"=>nil,
                                   "requested_at"=>tour_member.created_at.iso8601(3),
                                   "avatar_url"=>nil,
@@ -199,8 +212,8 @@ describe Api::V1::Tours::UsersController do
     end
 
     context "delete the author of the tour" do
-      let!(:tour_author) { JoinRequest.create(user: tour.user, joinable: tour, status: "accepted") }
-      let!(:tour_member) { JoinRequest.create(user: user, joinable: tour, status: "accepted") }
+      let!(:tour_author) { create(:join_request, user: tour.user, joinable: tour, status: "accepted") }
+      let!(:tour_member) { create(:join_request, user: user, joinable: tour, status: "accepted") }
       before { delete :destroy, tour_id: tour.to_param, id: tour.user.id, token: user.token }
       it { expect(response.status).to eq(400) }
       it { expect(tour.reload.number_of_people).to eq(1) }
@@ -208,8 +221,8 @@ describe Api::V1::Tours::UsersController do
 
     context "not member of the tour" do
       let(:requester) { FactoryGirl.create(:pro_user) }
-      let!(:other_tour_member) { JoinRequest.create(user: user, joinable: FactoryGirl.create(:tour), status: "accepted") }
-      let!(:tour_requested) { JoinRequest.create(user: requester, joinable: tour, status: "pending") }
+      let!(:other_tour_member) { create(:join_request, user: user, joinable: FactoryGirl.create(:tour), status: "accepted") }
+      let!(:tour_requested) { create(:join_request, user: requester, joinable: tour, status: "pending") }
       before { delete :destroy, tour_id: tour.to_param, id: requester.id, token: user.token }
       it { expect(response.status).to eq(401) }
       it { expect(tour_requested.reload.status).to eq("pending") }
@@ -217,8 +230,8 @@ describe Api::V1::Tours::UsersController do
 
     context "member of the tour but not accepted" do
       let(:requester) { FactoryGirl.create(:pro_user) }
-      let!(:tour_member) { JoinRequest.create(user: user, joinable: tour, status: "pending") }
-      let!(:tour_requested) { JoinRequest.create(user: requester, joinable: tour, status: "pending") }
+      let!(:tour_member) { create(:join_request, user: user, joinable: tour, status: "pending") }
+      let!(:tour_requested) { create(:join_request, user: requester, joinable: tour, status: "pending") }
       before { delete :destroy, tour_id: tour.to_param, id: requester.id, token: user.token }
       it { expect(response.status).to eq(401) }
       it { expect(tour_requested.reload.status).to eq("pending") }

@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
 
   #ADMIN
-  constraints :subdomain => "admin" do
+  constraints :subdomain => /\A(admin|admin-preprod)\z/ do
     scope :module => "admin", :as => "admin" do
       get '/' => 'users#index'
       get 'logout' => 'sessions#logout'
@@ -16,8 +16,11 @@ Rails.application.routes.draw do
         end
 
         member do
+          put 'block'
+          put 'unblock'
           put 'banish'
           put 'validate'
+          post 'experimental_pending_request_reminder'
         end
       end
 
@@ -28,8 +31,23 @@ Rails.application.routes.draw do
       resources :newsletter_subscriptions, only: [:index]
       resources :ambassadors, only: [:index, :edit, :update, :new, :create]
       resources :entourage_invitations, only: [:index]
-      resources :entourages, only: [:index, :show, :edit, :update]
+      resources :entourages, only: [:index, :show, :edit, :update] do
+        member do
+          post :moderator_read
+          post :moderator_unread
+          post :message
+          get :sensitive_words
+          post :sensitive_words_check
+        end
+        collection do
+          post :destroy_message
+        end
+      end
+      resources :entourage_moderations, only: [:create]
+      resources :sensitive_words, only: [:show, :destroy]
+
       resources :marketing_referers, only: [:index, :edit, :update, :new, :create]
+      resources :join_requests, only: [:create]
 
       get 'public_user_search' => "users_search#public_user_search"
       get 'public_user_autocomplete' => "users_search#public_user_autocomplete"
@@ -66,11 +84,17 @@ Rails.application.routes.draw do
     resources :entourage_invitations, only: [:index]
     resources :entourages, only: [:index, :show, :edit, :update]
     resources :marketing_referers, only: [:index, :edit, :update, :new, :create]
+    resources :join_requests, only: [:create]
 
     get 'public_user_search' => "users_search#public_user_search"
     get 'public_user_autocomplete' => "users_search#public_user_autocomplete"
     get 'pro_user_search' => "users_search#pro_user_search"
     delete 'user_relationships' => "user_relationships#destroy"
+
+    namespace :slack do
+      post :message_action
+      get 'entourage_links/:id' => :entourage_links, as: :entourage_links
+    end
   end
 
   #API
@@ -109,16 +133,21 @@ Rails.application.routes.draw do
     end
 
     namespace :v1 do
+      match '(*path)' => 'base#options', via: [:options]
       resources :feeds, only: [:index]
       resources :myfeeds, only: [:index]
       resources :tours, only: [:index, :create, :show, :update] do
         resources :tour_points, only:[:create]
-        resources :encounters, only: [:index, :create]
+        resources :encounters, only: [:index, :create, :update], :shallow => true
         resources :users, :controller => 'tours/users', only: [:index, :destroy, :update, :create]
         resources :chat_messages, :controller => 'tours/chat_messages', only: [:index, :create]
 
         collection do
           delete 'delete_all' => 'tours#delete_all'
+        end
+
+        member do
+          put :read
         end
       end
       resources :stats, only: [:index]
@@ -141,6 +170,8 @@ Rails.application.routes.draw do
 
         member do
           patch 'code'
+          post :report
+          post :presigned_avatar_upload
         end
 
         resources :tours, :controller => 'users/tours', only: [:index]
@@ -153,16 +184,46 @@ Rails.application.routes.draw do
         resources :users, :controller => 'entourages/users', only: [:index, :destroy, :update, :create]
         resources :invitations, :controller => 'entourages/invitations', only: [:create]
         resources :chat_messages, :controller => 'entourages/chat_messages', only: [:index, :create]
+
+        member do
+          put :read
+        end
       end
       resources :invitations, only: [:index, :update, :destroy]
       resources :contacts, only: [:update]
       resources :partners, only: [:index]
+
+      resources :links, only: [] do
+        member do
+          get :redirect
+        end
+      end
+
+      resources :announcements, only: [] do
+        member do
+          get :icon
+          get :avatar
+          get 'redirect/:token' => :redirect, as: :redirect
+        end
+      end
+
+      resources :action_zones, only: [] do
+        collection do
+          get :confirm
+        end
+      end
 
       put 'applications' => 'user_applications#update'
       post 'login' => 'users#login'
       get 'check' => 'base#check'
       get 'ping' => 'base#ping'
       get 'csv_matching' => 'csv_matching#show'
+
+      namespace :public do
+        resources :stats, only: [:index]
+        resources :entourages, only: [:index]
+        match 'entourages/:uuid' => 'entourages#show', :via => :get
+      end
     end
   end
 
@@ -188,7 +249,7 @@ Rails.application.routes.draw do
       post 'send_sms'
     end
   end
-  resources :tours, only: [:show] do
+  resources :tours, only: [:show, :destroy] do
     member do
       get :map_center
       get :map_data
@@ -207,6 +268,7 @@ Rails.application.routes.draw do
   get 'store_redirection' => 'home#store_redirection'
   get 'cgu' => 'home#cgu'
   get 'ping' => 'application#ping'
+  get 'redirect/:signature/*url' => 'redirection#redirect', format: false, as: :escaped_redirect
 
   #PUBLIC USER
   namespace :public_user do

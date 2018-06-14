@@ -33,6 +33,7 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
       expect(res).to eq({"tours"=>[
           {
              "id"=>tours.first.id,
+             "uuid"=>tours.first.id.to_s,
              "tour_type"=>"medical",
              "status"=>"ongoing",
              "vehicle_type"=>"feet",
@@ -55,6 +56,7 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
           },
           {
              "id"=>tours.last.id,
+             "uuid"=>tours.last.id.to_s,
              "tour_type"=>"medical",
              "status"=>"ongoing",
              "vehicle_type"=>"feet",
@@ -184,7 +186,7 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
   describe "POST create" do
     let!(:user) { FactoryGirl.create :pro_user }
     let!(:tour) { FactoryGirl.build :tour }
-    
+
     context "with correct type" do
       before { FactoryGirl.create(:android_app) }
       before { post 'create', token: user.token , tour: {tour_type: tour.tour_type,
@@ -206,6 +208,7 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
         res = JSON.parse(response.body)
         last_tour = Tour.last
         expect(res).to eq({"tour"=>{"id"=>last_tour.id,
+                                    "uuid"=>last_tour.id.to_s,
                                     "tour_type"=>"medical",
                                     "status"=>"ongoing",
                                     "vehicle_type"=>"feet",
@@ -261,6 +264,7 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
         res = JSON.parse(response.body)
         last_tour = Tour.last
         expect(res).to eq({"tour"=>{"id"=>last_tour.id,
+                                    "uuid"=>last_tour.id.to_s,
                                     "tour_type"=>"medical",
                                     "status"=>"closed",
                                     "vehicle_type"=>"feet",
@@ -277,8 +281,8 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
                                     },
                                     "number_of_people"=> 1,
                                     "join_status"=>"not_requested",
-                                    "tour_points"=>[{"latitude"=>"49.40752907", "longitude"=>"0.26782405"},
-                                                    {"latitude"=>"49.40774009", "longitude"=>"0.26870057"}],
+                                    "tour_points"=>[{"latitude"=>49.40752907, "longitude"=>0.26782405},
+                                                    {"latitude"=>49.40774009, "longitude"=>0.26870057}],
                                     "number_of_unread_messages"=>nil,
                                     "updated_at"=>last_tour.updated_at.iso8601(3)}})
       end
@@ -341,7 +345,7 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
     let!(:user) { FactoryGirl.create :pro_user }
     let!(:other_user) { FactoryGirl.create :pro_user }
     let(:tour) { FactoryGirl.create(:tour, :filled, user: user) }
-      
+
     context "with correct id" do
       before { put 'update', id: tour.id, token: user.token, tour:{tour_type:"medical", status:"closed", vehicle_type:"car", distance: 123.456}, format: :json }
 
@@ -352,7 +356,8 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
 
       it "responds with tour" do
         res = JSON.parse(response.body)
-        expect(res).to eq({"tour"=>{"id"=>tour.id, 
+        expect(res).to eq({"tour"=>{"id"=>tour.id,
+                                    "uuid"=>tour.id.to_s,
                                     "tour_type"=>"medical",
                                     "status"=>"closed",
                                     "vehicle_type"=>"car",
@@ -369,8 +374,8 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
                                     },
                                     "number_of_people"=> 1,
                                     "join_status"=>"not_requested",
-                                    "tour_points"=>[{"latitude"=>"49.40752907", "longitude"=>"0.26782405"},
-                                                    {"latitude"=>"49.40774009", "longitude"=>"0.26870057"}],
+                                    "tour_points"=>[{"latitude"=>49.40752907, "longitude"=>0.26782405},
+                                                    {"latitude"=>49.40774009, "longitude"=>0.26870057}],
                                     "number_of_unread_messages"=>nil,
                                     "updated_at"=>tour.updated_at.iso8601(3)}})
       end
@@ -439,7 +444,7 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
           }.to raise_error(ActiveRecord::RecordNotFound)
         }
     end
-    
+
     context "with incorrect_user" do
       before { put 'update', id: tour.id, token: other_user.token, tour:{tour_type:"medical", status:"ongoing", vehicle_type:"car", distance: 123.456}, format: :json }
       it { expect(response.status).to eq(403) }
@@ -454,5 +459,31 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
     before { delete 'delete_all', token: user.token, format: :json }
     it { expect(response.status).to eq(200) }
     it { expect(Tour.count).to eq(0) }
+  end
+
+  describe "PUT read" do
+    let!(:user) { FactoryGirl.create(:pro_user) }
+    let!(:tour) { FactoryGirl.create(:tour) }
+
+    context "not signed in" do
+      before { put :read, id: tour.to_param }
+      it { expect(response.status).to eq(401) }
+    end
+
+    context "user is accepted in tour" do
+      let(:old_date) { DateTime.parse("15/10/2010") }
+      let!(:join_request) { FactoryGirl.create(:join_request, joinable: tour, user: user, status: JoinRequest::ACCEPTED_STATUS, last_message_read: old_date) }
+      before { put :read, id: tour.to_param, token: user.token }
+      it { expect(response.status).to eq(204) }
+      it { expect(join_request.reload.last_message_read).to be > old_date }
+    end
+
+    context "user is not accepted in tour" do
+      let(:old_date) { DateTime.parse("15/10/2010") }
+      let!(:join_request) { FactoryGirl.create(:join_request, joinable: tour, user: user, status: JoinRequest::PENDING_STATUS, last_message_read: old_date) }
+      before { put :read, id: tour.to_param, token: user.token }
+      it { expect(response.status).to eq(204) }
+      it { expect(join_request.reload.last_message_read).to eq(old_date) }
+    end
   end
 end

@@ -14,7 +14,7 @@ module Admin
     end
 
     def create
-      builder = UserServices::PublicUserBuilder.new(params: user_params)
+      builder = UserServices::PublicUserBuilder.new(params: user_params, community: community)
       builder.create(send_sms: params[:send_sms].present?) do |on|
         on.success do |user|
           @user = user
@@ -51,7 +51,7 @@ module Admin
     end
 
     def user_params
-      params.require(:user).permit(:first_name, :last_name, :email, :sms_code, :phone, :marketing_referer_id, :organization_id)
+      params.require(:user).permit(:first_name, :last_name, :email, :sms_code, :phone, :marketing_referer_id, :organization_id, :use_suggestions)
     end
 
     def add_relation(user_relation_id)

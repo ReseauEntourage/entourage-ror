@@ -1,7 +1,11 @@
-<h4>Liste des invitations <span class="badge"><%= @invitations.count %><span></h4>
+<% status_order = %w(pending rejected cancelled) %>
 
-<table id="invitations-list" class="table table-striped">
-  <%- if @invitations.any? %>
+<h3>Invitations <span class="badge"><%= invitations.count(&:is_pending?) %></span></h3>
+
+<% if @invitations.empty? %>
+  Il n'y a pas encore d'invitation.
+<% else %>
+  <table id="invitations-list" class="table table-striped">
     <thead>
       <tr>
         <th>Prénom / Nom</th>
@@ -12,7 +16,7 @@
     </thead>
 
     <tbody>
-      <% @invitations.each do |invitation| %>
+      <% invitations.sort_by { |i| [status_order.index(i.status), i.created_at] }.each do |invitation| %>
         <tr>
           <td><%= link_to "#{invitation.invitee.full_name} (##{invitation.invitee.id})", admin_user_path(invitation.invitee) %></td>
           <td><%= user_state_label(invitation.status) %></td>
@@ -21,8 +25,5 @@
         </tr>
       <% end %>
     </tbody>
-
-  <%- else %>
-    <caption><%= "Il n'y a pas encore d'invitations."%></caption>
-  <% end %>
-</table>
+  </table>
+<% end %>

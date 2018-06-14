@@ -17,7 +17,7 @@
     <div class="left-panel">
       <h3>Activité de la semaine</h3>
       <h4><%= @tours_presenter.total_length %> km parcourus</h4>
-      <h4><%= pluralize @tours_presenter.encounter_count, 'personne rencontrée', 'personnes rencontrées' %></h4>
+      <h4><%= pluralize @tours_presenter.encounter_count, 'rencontre' %></h4>
       <h4><%= pluralize @tours_presenter.tourer_count, 'maraudeur actif', 'maraudeurs actifs' %></h4>
       <h4><%= pluralize @tours_presenter.week_tours.count, 'maraude réalisée', 'maraudes réalisées' %></h4>
     </div>

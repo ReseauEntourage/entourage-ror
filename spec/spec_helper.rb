@@ -18,6 +18,10 @@ RSpec.configure do |config|
   config.tty = true
   config.color = true
   config.formatter = :documentation
+
+  config.before(:each) do
+    Timecop.return
+  end
 end
 
 ENV["DISABLE_CRYPT"]="TRUE"

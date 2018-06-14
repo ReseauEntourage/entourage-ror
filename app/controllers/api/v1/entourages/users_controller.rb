@@ -2,19 +2,67 @@ module Api
   module V1
     module Entourages
       class UsersController < Api::V1::BaseController
-        before_action :set_entourage
+        before_action :set_entourage_or_handle_conversation_uuid, only: [:index]
+        before_action :set_entourage, except: [:index]
+        before_action :restrict_group_types!, except: [:index]
         before_action :set_join_request, only: [:update, :destroy]
 
         #curl -H "Content-Type: application/json" "http://localhost:3000/api/v1/tours/1017/users.json?token=07ee026192ea722e66feb2340a05e3a8"
         def index
-          render json: @entourage.join_requests, root: "users", each_serializer: ::V1::JoinRequestSerializer
+          join_requests =
+            @entourage.join_requests
+            .where(status: ["pending", "accepted"])
+            .includes(user: { default_user_partners: :partner })
+
+          if @entourage.id.in?(Onboarding::V1::ENTOURAGES.values)
+            if current_user.id != @entourage.user_id
+              join_requests = join_requests.unscope(where: :status).where(status: :accepted)
+            end
+            join_requests = join_requests.map { |r| r.message = nil; r }
+          end
+
+          render json: join_requests, root: "users", each_serializer: ::V1::JoinRequestSerializer
         end
 
-        #curl -X POST -H "Content-Type: application/json" -d '{"request":{"message": "a join message"}}' "http://localhost:3000/api/v1/entourages/1017/users.json?token=azerty"
+        #curl -X POST -H "Content-Type: application/json" -d '{"distance": 987.65, "request":{"message": "a join message"}}' "http://localhost:3000/api/v1/entourages/1017/users.json?token=azerty"
         def create
-          join_request_builder = JoinRequestsServices::JoinRequestBuilder.new(joinable: @entourage, user: current_user, message: params.dig(:request, :message))
+          # first we check if the request is already existing
+          join_request = JoinRequest.where(joinable: @entourage, user: current_user).first
+
+          is_onboarding, mp_params = Onboarding::V1.entourage_metadata(@entourage)
+
+          if join_request.present?
+           message = params.dig(:request, :message)
+            updater = JoinRequestsServices::JoinRequestUpdater.new(join_request: join_request,
+                                                                   status: JoinRequest::PENDING_STATUS,
+                                                                   message: message,
+                                                                   current_user: current_user)
+
+            updater.update do |on|
+              on.success do
+                mixpanel.track("Requested to join Entourage", mp_params)
+                mixpanel.track("Wrote Message in Entourage") if message.present?
+
+                render json: join_request, root: "user", status: 201, serializer: ::V1::JoinRequestSerializer
+              end
+
+              on.failure do |join_request|
+                render json: {message: 'Could not create entourage participation request', reasons: join_request.errors.full_messages}, status: :bad_request
+              end
+
+              on.not_authorised do
+                render json: {message: 'Could not create entourage participation request', reasons: join_request.errors.full_messages}, status: :bad_request
+              end
+            end
+           return
+          end
+
+          join_request_builder = JoinRequestsServices::JoinRequestBuilder.new(joinable: @entourage, user: current_user, message: params.dig(:request, :message), distance: params[:distance])
           join_request_builder.create do |on|
             on.success do |join_request|
+              mixpanel.track("Requested to join Entourage", mp_params)
+              mixpanel.track("Wrote Message in Entourage") if message.present?
+
               render json: join_request, root: "user", status: 201, serializer: ::V1::JoinRequestSerializer
             end
 
@@ -40,6 +88,12 @@ module Api
             end
 
             on.success do
+              if status == JoinRequest::ACCEPTED_STATUS
+                mixpanel.track("Accepted Join Request to Entourage")
+              elsif message.present?
+                mixpanel.track("Wrote Message in Entourage")
+              end
+
               head :no_content
             end
 
@@ -86,7 +140,24 @@ module Api
 
         private
         def set_entourage
-          @entourage = Entourage.find(params[:entourage_id])
+          @entourage = Entourage.visible.find_by_id_or_uuid(params[:entourage_id])
+        end
+
+        def set_entourage_or_handle_conversation_uuid
+          set_entourage and return unless ConversationService.list_uuid?(params[:entourage_id])
+
+          participant_ids = ConversationService.participant_ids_from_list_uuid(params[:entourage_id])
+          raise ActiveRecord::RecordNotFound unless participant_ids.include?(current_user.id.to_s)
+          hash_uuid = ConversationService.hash_for_participants(participant_ids)
+          @entourage =
+            Entourage.find_by(uuid_v2: hash_uuid) ||
+            ConversationService.build_conversation(participant_ids: participant_ids)
+        end
+
+        def restrict_group_types!
+          unless ['action'].include?(@entourage.group_type)
+            render json: {message: "This operation is not available for groups of type '#{@entourage.group_type}'"}, status: :bad_request
+          end
         end
 
         def set_join_request

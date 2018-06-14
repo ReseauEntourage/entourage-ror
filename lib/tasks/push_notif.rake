@@ -3,19 +3,17 @@ namespace :push do
   task :ios, [:token] => [:environment] do |t, args|
     device_ids = [args[:token]]
     puts "device_ids = #{device_ids}"
-    IosNotificationService.new.send_notification("Expéditeur", "Objet", "Contenu du message", device_ids)
+    IosNotificationService.new.send_notification("Expéditeur", "Objet", "Contenu du message", device_ids, $server_community.slug)
   end
 
   task :android, [:token] => [:environment] do |t, args|
     device_ids = [args[:token]]
     puts "device_ids = #{device_ids}"
-    AndroidNotificationService.new.send_notification("Expéditeur", "Objet", "Contenu du message", device_ids)
+    AndroidNotificationService.new.send_notification("Expéditeur", "Objet", "Contenu du message", device_ids, $server_community.slug)
   end
 
   desc "create ios sandbox push app"
   task create_ios_sandbox_app: :environment do
-    Rpush::Apns::App.destroy_all
-
     app = Rpush::Apns::App.new
     app.name = "entourage"
     app.certificate = File.read File.join(Rails.root, 'certificates', 'ios_push_sandbox.pem')
@@ -27,8 +25,6 @@ namespace :push do
 
   desc "create ios production push app"
   task create_ios_production_app: :environment do
-    Rpush::Apns::App.destroy_all
-
     app = Rpush::Apns::App.new
     app.name = "entourage"
     app.certificate = File.read File.join(Rails.root, 'certificates', 'ios_push_production.pem')

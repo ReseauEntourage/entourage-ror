@@ -22,6 +22,10 @@ FactoryGirl.define do
       "foobar#{n}"
     end
 
+    community do
+      $server_community.slug
+    end
+
     trait :public do
       user_type 'public'
     end

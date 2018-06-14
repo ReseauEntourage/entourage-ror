@@ -20,6 +20,7 @@ RSpec.describe Api::V1::Users::ToursController, :type => :controller do
         expect(res).to eq({"tours"=>[
             {
                "id"=>tour1.id,
+               "uuid"=>tour1.id.to_s,
                "tour_type"=>"medical",
                "status"=>"ongoing",
                "vehicle_type"=>"feet",
@@ -42,6 +43,7 @@ RSpec.describe Api::V1::Users::ToursController, :type => :controller do
             },
             {
                "id"=>tour2.id,
+               "uuid"=>tour2.id.to_s,
                "tour_type"=>"medical",
                "status"=>"closed",
                "vehicle_type"=>"feet",

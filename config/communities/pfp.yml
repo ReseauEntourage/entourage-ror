@@ -1,0 +1,22 @@
+name: Voisin-Age
+dev_name: PFP
+mailjet_template:
+  welcome: 373352
+store_short_url: https://bit.ly/applivoisinage
+links:
+  feedback: https://entourage-asso.typeform.com/to/Imi9sX?user_id=%{user_id}
+roles:
+  - not_validated
+  - coordinator
+  - visitor
+  - visited
+group_types:
+  private_circle:
+    message_types: [text, visit]
+    roles: [visitor, visited]
+  neighborhood:
+    message_types: [text]
+    roles: [coordinator, member]
+  conversation:
+    message_types: [text]
+    roles: [participant]

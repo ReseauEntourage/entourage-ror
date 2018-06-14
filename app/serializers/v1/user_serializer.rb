@@ -5,16 +5,24 @@ module V1
                :display_name,
                :first_name,
                :last_name,
+               :roles,
+               :about,
                :token,
                :avatar_url,
                :user_type,
-               :partner
+               :partner,
+               :memberships,
+               :has_password,
+               :conversation
 
     has_one :organization
-    has_one :stats
+    has_one :stats, serializer: ActiveModel::DefaultSerializer
 
     def filter(keys)
-      me? ? keys : keys - [:token, :email]
+      keys -= [:token, :email, :has_password] unless me?
+      keys -= [:memberships] unless scope[:memberships]
+      keys -= [:conversation] unless scope[:conversation] && scope[:user]
+      keys
     end
 
     def stats
@@ -33,13 +41,47 @@ module V1
       UserPresenter.new(user: object).display_name
     end
 
+    def roles
+      object.roles.sort_by { |r| object.community.roles.index(r) }
+    end
+
     def partner
       return nil unless object.default_partner
-      JSON.parse(V1::PartnerSerializer.new(object.default_partner, scope: {user: object}, root: false).to_json)
+      JSON.parse(V1::PartnerSerializer.new(object.default_partner, scope: {user: object, full: scope[:full_partner] || false}, root: false).to_json)
+    end
+
+    def has_password
+      object.has_password?
+    end
+
+    def memberships
+      return [] if object.community != 'pfp'
+      groups = object.entourage_participations.merge(JoinRequest.accepted).group_by(&:group_type)
+      groups.default = []
+      [
+        {
+          type: :private_circle,
+          list: groups['private_circle'].map { |e| e.attributes.slice('id', 'title', 'number_of_people') }
+        },
+        {
+          type: :neighborhood,
+          list: groups['neighborhood'].map { |e| e.attributes.slice('id', 'title', 'number_of_people') }
+        }
+      ]
+    end
+
+    def conversation
+      {
+        uuid: ConversationService.uuid_for_participants([scope[:user].id, object.id], validated: false)
+      }
+    end
+
+    def scope
+      super || {}
     end
 
     def me?
-      scope && (object.id == scope.id)
+      scope[:user] && (object.id == scope[:user].id)
     end
   end
 end

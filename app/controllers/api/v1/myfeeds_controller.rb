@@ -1,7 +1,9 @@
 module Api
   module V1
     class MyfeedsController < FeedsController
-      #curl "http://localhost:3000/api/v1/myfeeds?page=1&per=2&token=azerty"
+      skip_before_filter :community_warning
+
+      #jcurl "http://localhost:3000/api/v1/myfeeds?page=1&per=100&token=6e06bb0e460145e6a3600bc723072c42&entourage_types=ask_for_help,contribution&status=all&tour_types=medical,social,distributive"
       def index
         feeds = FeedServices::FeedFinder.new(user: current_user,
                                              page: params[:page],
@@ -15,6 +17,7 @@ module Api
                                              tour_types: params[:tour_types],
                                              show_my_entourages_only: "true",
                                              show_my_tours_only: "true",
+                                             show_my_partner_only: params[:show_my_partner_only],
                                              tour_status: tour_status,
                                              entourage_status: entourage_status,
                                              author: author,
@@ -37,6 +40,8 @@ module Api
         if params[:status].try(:downcase)=="closed"
           entourage_status = "closed"
         elsif params[:status].try(:downcase)=="open"
+          entourage_status = "open"
+        elsif params[:status].try(:downcase)=="active"
           entourage_status = "open"
         else
           entourage_status = nil

@@ -3,6 +3,7 @@ module V1
     attributes :id,
                :email,
                :display_name,
+               :role,
                :status,
                :message,
                :requested_at,

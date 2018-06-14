@@ -1,22 +1,27 @@
 class IosNotificationJob < ActiveJob::Base
-  def perform(sender, object, content, device_token, extra={})
+  def perform(sender, object, content, device_token, community, extra={},badge=nil)
     return if device_token.blank?
 
     puts "device token = #{device_token}"
 
-    entourage = Rpush::Apns::App.where(name: 'entourage').first
+    apps = Rpush::Apns::App.where(name: community)
 
-    if entourage.nil?
-      raise 'No IOS notification has been sent. Please save a Rpush::Apns::App in database'
+    if apps.blank?
+      raise "No iOS notification has been sent: no '#{community}' certificate found."
     else
-      notification = Rpush::Apns::Notification.new
-      notification.app = entourage
-      notification.device_token = device_token.to_s
-      notification.alert = content
-      notification.data = { sender: sender, object: object, content: {message: content, extra: extra} }
-      notification.save!
-
-      Rpush.push unless Rails.env.test?
+      apps.each do |app|
+        begin
+          notification = Rpush::Apns::Notification.new
+          #notification.badge = badge if badge
+          notification.app = app
+          notification.device_token = device_token.to_s
+          notification.alert = content
+          notification.data = { sender: sender, object: object, content: {message: content, extra: extra} }
+          notification.save!
+        rescue ActiveRecord::RecordInvalid => e
+          Rails.logger.error e.message
+        end
+      end
     end
   end
 end

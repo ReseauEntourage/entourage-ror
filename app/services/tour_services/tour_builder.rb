@@ -14,6 +14,15 @@ module TourServices
       if tour.save
         #We you start a tour you are automatically added to members of the tour
         join_request = JoinRequest.create(joinable: tour, user: user)
+
+        joinable = tour
+        join_request.role =
+          case [joinable.community, joinable.group_type]
+          when ['entourage', 'tour']   then 'creator'
+          when ['entourage', 'action'] then 'creator'
+          else raise 'Unhandled'
+          end
+
         TourServices::JoinRequestStatus.new(join_request: join_request).accept!
 
         # When you start a tour we check if there was any messages scheduled to be delivered to people starting a tour on that day

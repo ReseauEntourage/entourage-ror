@@ -35,8 +35,26 @@ describe MemberMailer, type: :mailer do
   describe '#registration_request_accepted' do
     let!(:user) { create :pro_user }
     subject { MemberMailer.registration_request_accepted(user) }
-    it { expect(subject.from).to eq ['contact@entourage.social'] }
+    it { expect(subject.from).to eq ['communaute@entourage.social'] }
     it { expect(subject.to).to eq [user.email] }
     it { expect(subject.subject).to eq "Votre demande d'adhésion à la plateforme Entourage a été acceptée" }
+  end
+
+  describe '#welcome' do
+    let(:user) { create :public_user }
+    subject { MemberMailer.welcome(user) }
+
+    describe "community customization" do
+      before { allow(user).to receive(:community).and_return(community) }
+      let(:community) { OpenStruct.new(
+        slug: 'slug',
+        mailjet_template: {
+          'welcome' => 121212
+        }
+      )}
+
+      it { expect(subject['X-MJ-TemplateID'].value).to eq '121212' }
+      it { expect(subject['X-Mailjet-Campaign'].value).to eq 'slug_welcome' }
+    end
   end
 end

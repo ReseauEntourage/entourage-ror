@@ -6,7 +6,7 @@ describe AndroidNotificationService do
 
     context 'android app is present' do
       let!(:android_app) { FactoryGirl.create(:android_app, name: 'entourage') }
-      before { service.send_notification("sender", "object", "content", ["device_id_1", "device_id_2"]) }
+      before { service.send_notification("sender", "object", "content", ["device_id_1", "device_id_2"], 'entourage') }
       it { expect(Rpush::Gcm::Notification.count).to eq(1) }
       it { expect(Rpush::Gcm::Notification.last.app).to eq(android_app) }
       it { expect(Rpush::Gcm::Notification.last.registration_ids).to eq(["device_id_1", "device_id_2"]) }

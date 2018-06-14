@@ -43,9 +43,18 @@ describe User, :type => :model do
   it { should have_many :entourages }
   it { should have_many :user_applications }
   it { should have_many :authentication_providers }
+  it { should have_many :user_newsfeeds }
   it { should belong_to :organization }
   it { should have_and_belong_to_many(:coordinated_organizations).class_name('Organization') }
   it { should belong_to :marketing_referer }
+
+  describe "community" do
+    let(:user) { create :public_user }
+    it { should_not allow_value(nil).for(:community) }
+    it { expect { user.community = '' }.to raise_error Community::NotFound }
+    it { expect { user.community = ' ' }.to raise_error Community::NotFound }
+    it { expect { user.community = 'invalid' }.to raise_error Community::NotFound }
+  end
 
   describe "phone number" do
     it { expect(FactoryGirl.build(:pro_user, phone: '+33123456789').save).to be true }
@@ -91,6 +100,11 @@ describe User, :type => :model do
     expect(FactoryGirl.build(:pro_user, token: '+33123456789').save).to be false
   end
 
+  it "allows reuse of phone for different communities" do
+    expect(FactoryGirl.build(:public_user, phone: '+33123456789', community: 'entourage').save).to be true
+    expect(FactoryGirl.build(:public_user, phone: '+33123456789', community: 'pfp'      ).save).to be true
+  end
+
   describe '#full_name' do
     subject { User.new(first_name: 'John', last_name: 'Doe').full_name }
     it { should eq 'John Doe' }
@@ -125,17 +139,35 @@ describe User, :type => :model do
     end
   end
 
+  describe "password" do
+    let(:user) { create(:public_user, password: "something") }
+
+    def update params={}
+      if user.update(params)
+        user.previous_changes.key?('encrypted_password') ? :changed : :unchanged
+      else
+        user.errors.to_h
+      end
+    end
+
+    it { expect(update updated_at: Time.now                           ).to be :unchanged }
+    it { expect(update password: nil                                  ).to be :unchanged }
+    it { expect(update password: ''                                   ).to eq password: "est trop court (au moins 8 caractères)" }
+    it { expect(update password: ' '*10                               ).to be :changed }
+    it { expect(update password: 'x'*10                               ).to be :changed }
+  end
+
   it "has many entourage_participations" do
     user = FactoryGirl.create(:pro_user)
     entourage = FactoryGirl.create(:entourage)
-    JoinRequest.create(user: user, joinable: entourage)
+    create(:join_request, user: user, joinable: entourage)
     expect(user.entourage_participations).to eq([entourage])
   end
 
   it "has many tour_participations" do
     user = FactoryGirl.create(:pro_user)
     tour = FactoryGirl.create(:tour)
-    JoinRequest.create(user: user, joinable: tour)
+    create(:join_request, user: user, joinable: tour)
     expect(user.tour_participations).to eq([tour])
   end
 

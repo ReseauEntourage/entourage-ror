@@ -2,35 +2,53 @@ module Api
   module V1
     class UsersController < Api::V1::BaseController
       skip_before_filter :authenticate_user!, only: [:login, :code, :create]
+      skip_before_filter :community_warning
 
       #curl -H "X-API-KEY:adc86c761fa8" -H "Content-Type: application/json" -X POST -d '{"user": {"phone": "+3312345567", "sms_code": "11111"}}' "http://localhost:3000/api/v1/login.json"
       def login
-        user = UserServices::UserAuthenticator.authenticate_by_phone_and_sms(phone: user_params[:phone], sms_code: user_params[:sms_code])
-
         unless PhoneValidator.new(phone: user_params[:phone]).valid?
           Rails.logger.info "SIGNIN_FAILED: invalid phone number format - params: #{params.inspect}"
           return render_error(code: "INVALID_PHONE_FORMAT", message: "invalid phone number format", status: 401)
         end
 
+        secret_field =
+          if api_request.platform == :web
+            :secret
+          else
+            :sms_code
+          end
+
+        user = UserServices::UserAuthenticator.authenticate(
+          community: community,
+          phone: user_params[:phone],
+          secret: user_params[secret_field],
+          platform: api_request.platform
+        )
+
         unless user
-          Rails.logger.info "SIGNIN_FAILED: wrong phone / sms_code combination - params: #{params.inspect}"
-          return render_error(code: "UNAUTHORIZED", message: "wrong phone / sms_code", status: 401)
+          Rails.logger.info "SIGNIN_FAILED: wrong phone / #{secret_field} combination - params: #{params.inspect}"
+          return render_error(code: "UNAUTHORIZED", message: "wrong phone / #{secret_field}", status: 401)
         end
 
-        if user.deleted
+        if user.deleted || user.blocked?
           Rails.logger.info "SIGNIN_FAILED: deleted user - params: #{params.inspect}"
           return render_error(code: "DELETED", message: "user is deleted", status: 401)
         end
 
-        render json: user, status: 200, serializer: ::V1::UserSerializer, scope: user
+        render json: user, status: 200, serializer: ::V1::UserSerializer, scope: full_user_serializer_options.merge(user: user)
       end
 
       #curl -X PATCH -d '{"user": { "sms_code":"123456"}}' -H "Content-Type: application/json" "http://localhost:3000/api/v1/users/93.json?token=azerty"
       def update
-        builder = UserServices::PublicUserBuilder.new(params: user_params)
-        builder.update(user: @current_user) do |on|
+        builder = UserServices::PublicUserBuilder.new(params: user_params, community: community)
+        builder.update(user: @current_user, platform: api_request.platform) do |on|
           on.success do |user|
-            render json: user, status: 200, serializer: ::V1::UserSerializer, scope: @current_user
+            mixpanel.sync_changes(user, {
+              'first_name' => '$first_name',
+              'email' => '$email'
+            })
+
+            render json: user, status: 200, serializer: ::V1::UserSerializer, scope: full_user_serializer_options.merge(user: @current_user)
           end
 
           on.failure do |user|
@@ -41,10 +59,12 @@ module Api
 
       #curl -X POST -d '{"user": { "phone":"+4068999999999"}}' -H "Content-Type: application/json" "http://localhost:3000/api/v1/users.json?token=azerty"
       def create
-        builder = UserServices::PublicUserBuilder.new(params: user_params)
+        builder = UserServices::PublicUserBuilder.new(params: user_params, community: community)
         builder.create(send_sms: true) do |on|
           on.success do |user|
-            render json: user, status: 201, serializer: ::V1::UserSerializer, scope: user
+            mixpanel.distinct_id = user.id
+            mixpanel.track("Created Account")
+            render json: user, status: 201, serializer: ::V1::UserSerializer, scope: { user: user }
           end
 
           on.failure do |user|
@@ -69,29 +89,83 @@ module Api
           return render json: {error: "Missing phone number"}, status:400
         end
         user_phone = Phone::PhoneBuilder.new(phone: user_params[:phone]).format
-        user = User.where(phone: user_phone).first!
+        user = community.users.where(phone: user_phone).first!
 
-        if params[:code][:action] == "regenerate"
+        if params[:code][:action] == "regenerate" && !user.deleted && !user.blocked?
           UserServices::SMSSender.new(user: user).regenerate_sms!
-          render json: user, status: 200, serializer: ::V1::UserSerializer, scope: user
+          render json: user, status: 200, serializer: ::V1::UserSerializer, scope: { user: user }
         else
           render json: {error: "Unknown action"}, status:400
         end
       end
 
+      #curl -H "X-API-KEY:adc86c761fa8" -H "Content-Type: application/json" "http://localhost:3000/api/v1/users/me.json?token=azerty"
       def show
-        user = params[:id] == "me" ? current_user : User.find(params[:id])
-        render json: user, status: 200, serializer: ::V1::UserSerializer, scope: current_user
+        user = params[:id] == "me" ? current_user : community.users.find(params[:id])
+        render json: user, status: 200, serializer: ::V1::UserSerializer, scope: full_user_serializer_options.merge(user: current_user)
       end
 
       def destroy
         UserServices::DeleteUserService.new(user: @current_user).delete
-        render json: @current_user, status: 200, serializer: ::V1::UserSerializer, scope: @current_user
+        render json: @current_user, status: 200, serializer: ::V1::UserSerializer, scope: { user: @current_user }
+      end
+
+      def report
+        user = community.users.find(params[:id])
+        reporter = UserServices::ReportUserService.new(reported_user: user, params: user_report_params)
+        reporter.report(reporting_user: current_user) do |on|
+          on.success do
+            head :created
+          end
+
+          on.failure do |code|
+            render json: { code: 'CANNOT_REPORT_USER' }, status: :bad_request
+          end
+        end
+      end
+
+      def presigned_avatar_upload
+        user = params[:id] == "me" ? current_user : community.users.find(params[:id])
+        if user != current_user
+          return render_error(code: "UNAUTHORIZED", message: "You can only update your own avatar.", status: 401)
+        end
+
+        allowed_types = %w(image/jpeg image/gif)
+
+        unless params[:content_type].in? allowed_types
+          type_list = allowed_types.to_sentence(two_words_connector: ' or ', last_word_connector: ', or ')
+          return render_error(code: "INVALID_CONTENT_TYPE", message: "Content-Type must be #{type_list}.", status: 400)
+        end
+
+        extension = MiniMime.lookup_by_content_type(params[:content_type]).extension
+        key = "#{SecureRandom.uuid}.#{extension}"
+        url = Storage::Client.avatars.send(:bucket)
+          .object("300x300/#{key}")
+          .presigned_url(
+            :put,
+            expires_in: 1.minute,
+            acl: :private,
+            content_type: params[:content_type],
+            cache_control: "max-age=#{365.days}"
+          )
+
+        render json: { avatar_key: key, presigned_url: url }
       end
 
       private
       def user_params
-        @user_params ||= params.require(:user).permit(:first_name, :last_name, :email, :sms_code, :phone, :avatar_key)
+        @user_params ||= params.require(:user).permit(:first_name, :last_name, :email, :sms_code, :password, :secret, :phone, :avatar_key, :about)
+      end
+
+      def user_report_params
+        params.require(:user_report).permit(:message)
+      end
+
+      # The apps cache the response to /login and /update for the currentUser
+      # so we want to make sure that all the fields necessary to render the profile
+      # are included in the responses to thos requests
+      def full_user_serializer_options
+        { full_partner: true, memberships: true, conversation: true }
       end
     end
   end

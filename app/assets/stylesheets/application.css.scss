@@ -64,3 +64,24 @@ li.user-card {
   content:"*";
   color:red;
 }
+
+body.layout-index-large {
+  margin-top: 70px;
+}
+
+.entourages.index .table {
+  font-size: 80%;
+
+  tr.not-open:not(:hover) {
+    opacity: 0.33;
+  }
+
+  td {
+    padding: 6px;
+  }
+}
+
+textarea {
+  overflow: auto; // Remove the default vertical scrollbar in IE.
+  resize: vertical;
+}

@@ -3,7 +3,11 @@ module Admin
     before_action :set_poi, only: [:edit, :update, :destroy]
 
     def index
-      @pois = Poi.order("created_at DESC").page(params[:page]).per(25)
+      @q = Poi.ransack(params[:q])
+      @pois = @q.result(distinct: true)
+                         .page(params[:page])
+                         .per(25)
+                         .order("created_at DESC")
     end
 
     def new

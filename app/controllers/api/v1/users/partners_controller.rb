@@ -14,7 +14,8 @@ module Api
         def create
           partner = Partner.find(params[:partner][:id])
           current_user.user_partners.create(partner: partner, default: true)
-          render json: partner, status: 201, serializer: ::V1::PartnerSerializer, scope: {user: current_user}
+          mixpanel.set("Partner Badge" => partner.name)
+          render json: partner, status: 201, serializer: ::V1::PartnerSerializer, scope: {user: current_user, full: true}
         end
 
         #curl -H "Content-Type: application/json" -X PUT -d '{"partner" : { "default": true }}' "http://localhost:3000/api/v1/users/93/partners/3?token=153ad0b7ef67e5c44b8ef5afc12709e4"
@@ -22,12 +23,14 @@ module Api
           default = (params[:partner][:default].to_s == "true")
           partner = current_user.partners.where(partners: {id: params[:id]}).first
           current_user.user_partners.where(partner: partner).first&.update(default: default)
-          render json: partner, status: 201, serializer: ::V1::PartnerSerializer, scope: {user: current_user}
+          mixpanel.set("Partner Badge" => current_user.default_partner.try(:name))
+          render json: partner, status: 201, serializer: ::V1::PartnerSerializer, scope: {user: current_user, full: default}
         end
 
         #curl -H "Content-Type: application/json" -X DELETE "http://localhost:3000/api/v1/users/93/partners/3?token=153ad0b7ef67e5c44b8ef5afc12709e4"
         def destroy
           current_user.user_partners.where(partner_id: params[:id]).destroy_all
+          mixpanel.set("Partner Badge" => nil)
           head status: 204
         end
 

@@ -27,7 +27,7 @@ module TourPointsServices
         p["passing_time"] = now
       end
       {
-        passing_time: "'#{p["passing_time"]}'",
+        passing_time: "timestamp with time zone '#{p["passing_time"]}'",
         latitude: p["latitude"].to_s,
         longitude: p["longitude"].to_s,
         tour_id: tour.id,

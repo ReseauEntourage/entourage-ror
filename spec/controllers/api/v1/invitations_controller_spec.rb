@@ -27,6 +27,8 @@ describe Api::V1::InvitationsController do
                                                         "display_name"=>"John D",
                                                         "first_name"=>"John",
                                                         "last_name"=>"Doe",
+                                                        "roles"=>[],
+                                                        "about"=>nil,
                                                         "avatar_url"=>nil,
                                                         "user_type"=>"pro",
                                                         "organization"=>{
@@ -50,16 +52,23 @@ describe Api::V1::InvitationsController do
 
     context "accepted invitation" do
       let!(:accepted_invitation) { FactoryGirl.create(:entourage_invitation, invitee: user) }
-      let!(:join_request) { JoinRequest.create(user: user, joinable: accepted_invitation.invitable, status: JoinRequest::ACCEPTED_STATUS) }
+      let!(:join_request) { create(:join_request, user: user, joinable: accepted_invitation.invitable, status: JoinRequest::ACCEPTED_STATUS) }
       before { get :index, token: user.token }
       it { expect(result["invitations"][0]["status"]).to eq("accepted")}
     end
 
     context "rejected invitation" do
       let!(:rejected_invitation) { FactoryGirl.create(:entourage_invitation, invitee: user) }
-      let!(:join_request) { JoinRequest.create(user: user, joinable: rejected_invitation.invitable, status: JoinRequest::REJECTED_STATUS) }
+      let!(:join_request) { create(:join_request, user: user, joinable: rejected_invitation.invitable, status: JoinRequest::REJECTED_STATUS) }
       before { get :index, token: user.token }
       it { expect(result["invitations"][0]["status"]).to eq("rejected")}
+    end
+
+    context "cancelled invitation" do
+      let!(:cancelled_invitation) { FactoryGirl.create(:entourage_invitation, invitee: user) }
+      let!(:join_request) { create(:join_request, user: user, joinable: cancelled_invitation.invitable, status: JoinRequest::CANCELLED_STATUS) }
+      before { get :index, token: user.token }
+      it { expect(result["invitations"][0]["status"]).to eq("cancelled")}
     end
 
     context "belongs to entourage" do
@@ -74,6 +83,7 @@ describe Api::V1::InvitationsController do
       let!(:accepted_invitation) { FactoryGirl.create(:entourage_invitation, invitee: user, status: "accepted") }
       let!(:pending_invitation) { FactoryGirl.create(:entourage_invitation, invitee: user, status: "pending") }
       let!(:rejected_invitation) { FactoryGirl.create(:entourage_invitation, invitee: user, status: "rejected") }
+      let!(:cancelled_invitation) { FactoryGirl.create(:entourage_invitation, invitee: user, status: "cancelled") }
       before { get :index, token: user.token, status: "accepted" }
       it { expect(result["invitations"].map {|invite| invite["id"]}).to eq([accepted_invitation.id])}
     end
@@ -103,7 +113,7 @@ describe Api::V1::InvitationsController do
 
       it "sends notification for accepted invitation" do
         expect_any_instance_of(PushNotificationService).to receive(:send_notification).with("John D",
-                                                                                            "Invitation accepté",
+                                                                                            "Invitation acceptée",
                                                                                             "John D a accepté votre invitation",
                                                                                             [invitation.inviter],
                                                                                             {type: "INVITATION_STATUS",
@@ -141,7 +151,7 @@ describe Api::V1::InvitationsController do
 
       it "sends notification for accepted invitation" do
         expect_any_instance_of(PushNotificationService).to receive(:send_notification).with("John D",
-                                                                                            "Invitation refusé",
+                                                                                            "Invitation refusée",
                                                                                             "John D a refusé votre invitation",
                                                                                             [invitation.inviter],
                                                                                             {type: "INVITATION_STATUS",

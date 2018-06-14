@@ -1,24 +1,57 @@
 module V1
   class EntourageSerializer < ActiveModel::Serializer
     include V1::Myfeeds::LastMessage
+    include V1::Entourages::Location
 
     attributes :id,
+               :uuid,
                :status,
                :title,
+               :group_type,
                :entourage_type,
+               :display_category,
                :join_status,
                :number_of_unread_messages,
                :number_of_people,
                :created_at,
                :updated_at,
-               :description
-    
-    has_one :author
-    has_one :location
-    has_one :last_message
+               :description,
+               :share_url
+
+    has_one :author, serializer: ActiveModel::DefaultSerializer
+    has_one :location, serializer: ActiveModel::DefaultSerializer
+    has_one :last_message, serializer: ActiveModel::DefaultSerializer
+
+    def initialize(*)
+      super
+
+      # try to put other user as author if conversation
+      # and user's name as title
+      if object.group_type == 'conversation'
+        participant_ids =
+          if object.join_requests.loaded?
+            object.join_requests.map(&:user_id)
+          else
+            object.join_requests.pluck(:user_id)
+          end
+        other_user_id = participant_ids.find { |i| i != object.user_id }
+        object.user_id = other_user_id if other_user_id
+
+        object.title = UserPresenter.new(user: object.user).display_name
+      end
+    end
 
     def filter(keys)
       include_last_message? ? keys : keys - [:last_message]
+    end
+
+    def uuid
+      case object.group_type
+      when 'action', 'conversation'
+        object.uuid_v2
+      else
+        object.uuid
+      end
     end
 
     def author
@@ -28,14 +61,7 @@ module V1
           id: entourage_author.id,
           display_name: entourage_author.first_name,
           avatar_url: UserServices::Avatar.new(user: entourage_author).thumbnail_url,
-          partner: object.user.default_partner.nil? ? nil : JSON.parse(V1::PartnerSerializer.new(object.user.default_partner, scope: {user: object.user}, root: false).to_json)
-      }
-    end
-
-    def location
-      {
-          latitude: randomizer.random_latitude,
-          longitude: randomizer.random_longitude
+          partner: object.user.default_partner.nil? ? nil : V1::PartnerSerializer.new(object.user.default_partner, scope: {user: object.user}, root: false).as_json
       }
     end
 
@@ -58,8 +84,10 @@ module V1
       object.join_requests.select {|join_request| join_request.user_id == scope[:user]&.id}.first
     end
 
-    def randomizer
-      @randomizer ||= EntourageServices::EntourageLocationRandomizer.new(entourage: object)
+    def share_url
+      return unless object.uuid_v2
+      share_url_prefix = ENV['PUBLIC_SHARE_URL'] || 'http://entourage.social/entourages/'
+      "#{share_url_prefix}#{object.uuid_v2}"
     end
   end
 end

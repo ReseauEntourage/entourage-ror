@@ -64,6 +64,20 @@ class Tour < ActiveRecord::Base
     tour_points.count == 0
   end
 
+  def community
+    Community.new('entourage')
+  end
+
+  def group_type
+    'tour'
+  end
+
+  def group_type_config
+    @group_type_config ||= {
+      'message_types' => ['text'],
+      'roles' => ['creator', 'member']
+    }
+  end
 end
 
 class EmptyMap

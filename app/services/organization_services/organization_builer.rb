@@ -11,7 +11,7 @@ module OrganizationServices
       organization = Organization.new(params.except(:user))
       user_params = params[:user].merge({manager: true})
       user_builder = UserServices::ProUserBuilder.new(params: user_params, organization: organization)
-      user_builder.create(send_sms: false) do |on|
+      user_builder.create_or_upgrade(send_sms: false) do |on|
         on.success do |user|
           callback.on_success.try(:call, organization, user)
         end

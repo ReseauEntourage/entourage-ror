@@ -51,17 +51,27 @@ RSpec.describe Admin::RegistrationRequestsController, type: :controller do
     let(:registration_request) { FactoryGirl.create(:registration_request, status: "pending") }
 
     context "validate" do
-      describe "objects creation" do
-        before { put 'update', id: registration_request.to_param, validate: true }
-        it { expect(registration_request.reload.status).to eq("validated") }
-        #Already 1 user authenticated with organization
-        it { expect(Organization.count).to eq(2) }
-        it { expect(User.count).to eq(2) }
+      shared_examples "validate" do
+        describe "objects creation" do
+          before do
+            allow(MemberMailer).to receive(:registration_request_accepted)
+            put 'update', id: registration_request.to_param, validate: true
+          end
+          it { expect(registration_request.reload.status).to eq("validated") }
+          #Already 1 user authenticated with organization
+          it { expect(Organization.count).to eq(2) }
+          it { expect(User.type_pro.count).to eq(2) }
+          it { expect(MemberMailer).to have_received(:registration_request_accepted).once }
+        end
       end
 
-      it "sends mail" do
-        expect(MemberMailer).to receive(:registration_request_accepted).once
-        put 'update', id: registration_request.to_param, validate: true
+      context "for a new user" do
+        include_examples "validate"
+      end
+
+      context "with an existing user" do
+        before { create :public_user, phone: registration_request.user_field('phone'), first_name: nil, last_name: nil, email: nil }
+        include_examples "validate"
       end
     end
 

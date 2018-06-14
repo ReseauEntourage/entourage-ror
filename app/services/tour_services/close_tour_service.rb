@@ -8,7 +8,7 @@ module TourServices
     def close!
       return if tour.closed?
 
-      closed_at = params[:end_time] || tour.tour_points.last.try(:passing_time) || Time.now
+      closed_at = params[:end_time] || last_action_time || Time.now
       distance = params[:distance].try(:to_f) || 0
       tour.status = :closed
       tour.closed_at= closed_at
@@ -20,5 +20,12 @@ module TourServices
 
     private
     attr_reader :tour, :params
+
+    def last_action_time
+      [tour.tour_points.maximum(:passing_time),
+       tour.encounters.maximum(:date)]
+      .compact
+      .max
+    end
   end
 end

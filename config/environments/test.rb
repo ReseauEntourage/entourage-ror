@@ -34,8 +34,13 @@ Rails.application.configure do
   # Print deprecation notices to the stderr.
   config.active_support.deprecation = :stderr
 
+  # Raise errors in `after_rollback`/`after_commit`
+  config.active_record.raise_in_transactional_callbacks = true
+
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
+
+  config.active_record.logger.level = Logger::INFO
 
   # DEV / TEST CREDENTIALS
   ENV["BASIC_ADMIN_USER"] = "admin"
@@ -54,4 +59,9 @@ Rails.application.configure do
 
   ENV["ATD_USERNAME"] = "name"
   ENV["ATD_PASSWORD"] = "password"
+
+  ENV["HOST"]='localhost'
+
+  # Limit slow down due to password hashing
+  BCrypt::Engine.cost = BCrypt::Engine::MIN_COST
 end

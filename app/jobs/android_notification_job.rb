@@ -1,19 +1,18 @@
 class AndroidNotificationJob < ActiveJob::Base
-  def perform(sender, object, content, device_ids, extra={})
+  def perform(sender, object, content, device_ids, community, extra={},badge=nil)
     return if device_ids.blank?
 
-    entourage = Rpush::Gcm::App.where(name: 'entourage').first
+    app = Rpush::Gcm::App.where(name: community).first
 
-    if entourage.nil?
-      raise 'No android notification has been sent. Please save a Rpush::Gcm::App in database'
+    if app.nil?
+      raise "No Android notification has been sent: no '#{community}' certificate found."
     else
       notification = Rpush::Gcm::Notification.new
-      notification.app = entourage
+      #notification.badge = badge if badge
+      notification.app = app
       notification.registration_ids = device_ids
       notification.data = { sender: sender, object: object, content: {message: content, extra: extra} }
       notification.save!
-
-      Rpush.push unless Rails.env.test?
     end
   end
 end

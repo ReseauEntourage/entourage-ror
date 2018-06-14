@@ -4,7 +4,8 @@ module Api
       class UnauthorisedEntourage < StandardError; end
 
       class ChatMessagesController < Api::V1::BaseController
-        before_action :set_entourage
+        before_action :set_entourage_or_handle_conversation_uuid, only: [:index, :create]
+        before_action :set_entourage, except: [:index, :create]
         before_action :authorised_to_see_messages?
 
         rescue_from Api::V1::Entourages::UnauthorisedEntourage do |exception|
@@ -19,6 +20,15 @@ module Api
             join_request.update(last_message_read: messages.last.created_at)
           end
 
+          is_onboarding, mp_params = Onboarding::V1.entourage_metadata(@entourage)
+
+          if is_onboarding &&
+             @entourage.chat_messages.where(user_id: current_user.id).empty?
+            messages.push Onboarding::V1.chat_message_for(current_user)
+
+            mixpanel.track("Displayed Entourage Conversation", mp_params)
+          end
+
           render json: messages, each_serializer: ::V1::ChatMessageSerializer
         end
 
@@ -29,6 +39,8 @@ module Api
                                                               join_request: join_request)
           chat_builder.create do |on|
             on.success do |message|
+              is_onboarding, mp_params = Onboarding::V1.entourage_metadata(@entourage)
+              mixpanel.track("Wrote Message in Entourage", mp_params)
               render json: message, status: 201, serializer: ::V1::ChatMessageSerializer
             end
 
@@ -44,11 +56,25 @@ module Api
 
         private
         def set_entourage
-          @entourage = Entourage.find(params[:entourage_id])
+          @entourage = Entourage.visible.find_by_id_or_uuid(params[:entourage_id])
+        end
+
+        def set_entourage_or_handle_conversation_uuid
+          set_entourage and return unless ConversationService.list_uuid?(params[:entourage_id])
+
+          participant_ids = ConversationService.participant_ids_from_list_uuid(params[:entourage_id])
+          raise ActiveRecord::RecordNotFound unless participant_ids.include?(current_user.id.to_s)
+          hash_uuid = ConversationService.hash_for_participants(participant_ids)
+          @entourage = Entourage.find_by(uuid_v2: hash_uuid)
+          if @entourage.nil?
+            @entourage = ConversationService.build_conversation(participant_ids: participant_ids)
+            @join_request = @entourage.join_requests.to_a.find { |r| r.user_id == current_user.id }
+          end
         end
 
         def chat_messages_params
-          params.require(:chat_message).permit(:content)
+          metadata_keys = params.dig(:chat_message, :metadata).try(:keys) || []
+          params.require(:chat_message).permit(:content, :message_type, metadata: metadata_keys)
         end
 
         def join_request

@@ -1,45 +1,67 @@
-<h1>Liste des entourages</h1>
-
-<br><br>
-
-<div class="row">
-  <table class="table admin-table">
-    <!-- <th>id</th>
-    <th>Status</th>
-    <th>Titre</th>
-    <th>Type</th> -->
-    <th style="width:15%">Titre</th>
-    <th>Créé le</th>
-    <th style="width:20%">Description</th>
-    <th>Auteur</th>
-    <th>Organisation</th>
-    <th>Email</th>
-    <th>Phone</th>
-    <th>Membres</th>
-    <th>Invit. en attente</th>
-    <th>Invit. acceptées</th>
-    <th>Invit. rejetées</th>
-    <th>#Messages</th>
-
-    <% @entourages.each do |entourage| %>
-      <tr>
-        <td><%= link_to_entourage_with_infos(entourage) %></td>
-        <td><%= entourage.created_at.strftime('%d/%m/%Y') %></td>
-        <td><%= entourage_description_excerpt(entourage.description) %></td>
-        <td><%= link_to("#{entourage.user.full_name} (##{entourage.user.id})", admin_user_path(entourage.user)) %></td>
-        <td><%= entourage.user.organization.try(:name) %></td>
-        <td><%= entourage.user.email %></td>
-        <td><%= entourage.user.phone %></td>
-        <td><span class="badge"><%= entourage.members.count %></span></td>
-        <td><span class="badge"><%= entourage.entourage_invitations.status('pending').count %></span></td>
-        <td><span class="badge"><%= entourage.entourage_invitations.status('accepted').count %></span></td>
-        <td><span class="badge"><%= entourage.entourage_invitations.status('rejected').count %></span></td>
-        <td><span class="badge"><%= entourage.chat_messages.count %></span></td>
-      </tr>
-    <% end %>
-  </table>
+<div class="container">
+  <h1>Liste des entourages</h1>
+  <%= render 'search_form' %>
 </div>
 
-<div class="row">
+<table class="table admin-table" style="table-layout: auto">
+  <!-- <th>id</th>
+  <th>Status</th>
+  <th>Titre</th>
+  <th>Type</th> -->
+  <th></th>
+  <th></th>
+  <th></th>
+  <th>id</th>
+  <th>Titre</th>
+  <th>Description</th>
+  <th><span class="glyphicon glyphicon-user" aria-hidden="true"></span></th>
+  <th><span class="glyphicon glyphicon-comment" aria-hidden="true"></span></th>
+  <th><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></th>
+
+  <% @entourages.each do |entourage| %>
+    <% unread_count = @message_count[entourage.id].unread %>
+    <tr class="<%= 'not-open' if entourage.status != 'open' %>">
+      <td>
+        <% if !entourage.moderated %>
+          <span class="badge" style="background: #f0ad4e">●</span>
+        <% end %>
+      </td>
+      <td>
+        <% if entourage.unread %>
+          <span class="badge" style="background: #d9534f">●</span>
+        <% elsif unread_count > 0 %>
+          <span class="badge" style="background: #d9534f"><%= unread_count %></span>
+        <% end %>
+      </td>
+      <td>
+        <% case entourage.sensitive_words_check&.status&.to_sym %>
+        <% when :require_moderation %>
+          <span class="badge" style="background: #d9534f" title="contient des mots sensibles">!</span>
+        <% end %>
+      </td>
+      <td><%= entourage.id %></td>
+      <td><%= link_to entourage.title, [:admin, entourage] %></td>
+      <td><%= entourage_description_excerpt(entourage.description) %></td>
+      <td><span class="badge"><%= @member_count[entourage.id] %></span></td>
+      <td><span class="badge"><%= @message_count[entourage.id].total %></span></td>
+      <td>
+        <% requests_count = @requests_count[entourage.id] %>
+        <% if requests_count[:total] > 0 %>
+          <%
+            highlight =
+              requests_count[:late] > 0 &&
+              !@reminded_users.include?(entourage.user_id)
+          %>
+          <%= link_to requests_count[:total],
+                url_for([:admin, entourage]) + "?join_requests",
+                class: "badge",
+                style: ('background: #d9534f' if highlight) %>
+        <% end %>
+      </td>
+    </tr>
+  <% end %>
+</table>
+
+<div class="container">
   <%= paginate @entourages %>
 </div>

@@ -1,0 +1,32 @@
+#!/bin/bash
+
+if [ -z "$1" ]; then
+    echo "Shortcut to the bin/docker/* commands." >&2
+    echo "" >&2
+    echo "Usage: $0 [command <args>]" >&2
+    echo "       $0 [command_string]" >&2
+    echo >&2
+    echo "Commands:" >&2
+    echo "  up     Builds and starts the Docker containers." >&2
+    echo "  exec   Runs a command inside the container." >&2
+    echo "  down   Stops and removes the Docker containers." >&2
+    echo "" >&2
+    echo "If [command] is an executable in bin/docker/, <args> are passed to this executable:"
+    echo "  e.g. \`$ $0 up\`              is equivalent to \`$ bin/docker/up\`" >&2
+    echo "       \`$ $0 exec bundle\`     is equivalent to \`$ bin/docker/exec bundle\`" >&2
+    echo "" >&2
+    echo "Otherwise, [command_string] is passed to the \`exec\` command:" >&2
+    echo "  e.g. \`$ $0 rake db:migrate\` is equivalent to \`$ bin/docker/exec rake db:migrate\`" >&2
+    echo "" >&2
+    echo "The RAILS_ENV environment variable is transmitted to the \`exec\` command if set."
+    echo "It defaults to \"development\" otherwise." >&2
+    echo "  e.g. \`$ RAILS_ENV=test $0 rake db:create db:migrate\`" >&2
+    exit 1
+fi
+
+if [ -x "bin/docker/$1" ]; then
+  "bin/docker/$1" "${@:2}"
+else
+  bin/docker/exec "$@"
+fi
+

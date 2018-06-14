@@ -2,7 +2,8 @@ class ToursController < ApplicationController
   before_action :authenticate_user!
   before_action :set_tour
   before_action :set_tour_presenter
-  before_action :check_authorisations
+  before_action :check_authorisations, except: [:destroy]
+  before_action :check_destroy_authorisations, only: [:destroy]
 
   def show
     flash[:alert] = "Cette maraude n'a aucun point" if @tour.empty_points?
@@ -30,6 +31,16 @@ class ToursController < ApplicationController
                   "features" => features}
   end
 
+  def destroy
+    if @tour.destroy
+      flash[:success] = "La maraude a été supprimée"
+      redirect_to dashboard_organizations_path
+    else
+      flash[:error] = "Une erreur technique a empêché la suppression de cette maraude."
+      redirect_to @tour
+    end
+  end
+
   private
   def set_tour
     @tour = Tour.find(params[:id])
@@ -42,6 +53,13 @@ class ToursController < ApplicationController
   def check_authorisations
     unless Authentication::UserTourAuthenticator.new(user: current_user, tour: @tour).allowed_to_see?
       flash[:error] = "Vous ne pouvez pas consulter la maraude d'un autre utilisateur"
+      redirect_to root_path
+    end
+  end
+
+  def check_destroy_authorisations
+    unless Authentication::UserTourAuthenticator.new(user: current_user, tour: @tour).allowed_to_destroy?
+      flash[:error] = "Vous ne pouvez pas supprimer la maraude d'un autre utilisateur"
       redirect_to root_path
     end
   end
