@@ -36,7 +36,7 @@ services:
       REDIS_URL: "redis://redis:6379"
       PORT: 8080
       RAILS_ENV: ${RAILS_ENV:-development}
-    command: spring server
+    command: bin/docker/entrypoint
 
 volumes:
   postgresql-data:
