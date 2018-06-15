@@ -69,7 +69,7 @@ function is_running {
    | grep $1 > /dev/null
 }
 
-source=$(heroku config:get DATABASE_URL -a entourage-back)
+source=$(heroku config:get DATABASE_URL -a "${1:-entourage-back}")
 target=entourage-dev
 excluded_tables=(entourage_scores rpush_notifications tour_points)
 
