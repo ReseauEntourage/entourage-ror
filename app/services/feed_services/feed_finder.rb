@@ -10,6 +10,7 @@ module FeedServices
                    show_tours:,
                    entourage_types:,
                    tour_types:,
+                   context:,
                    types: nil,
                    latitude:,
                    longitude:,
@@ -33,6 +34,7 @@ module FeedServices
       @show_tours = show_tours
       @feed_type = join_types(entourage_types: entourage_types, tour_types: tour_types)
       @types = formated_types(types) if types != nil
+      @context = context.to_sym
       @show_my_entourages_only = show_my_entourages_only=="true"
       @show_my_tours_only = show_my_tours_only=="true"
       @show_my_partner_only = show_my_partner_only=="true"
@@ -54,6 +56,10 @@ module FeedServices
       feeds = user.community.feeds
                   .where.not(status: 'blacklisted')
                   .includes(feedable: [{ user: { default_user_partners: :partner} }, :join_requests])
+
+      if context == :feed
+        feeds = feeds.where.not(group_type: :conversation)
+      end
 
       if types != nil
         feeds = feeds.where(feed_category: types)
@@ -121,7 +127,7 @@ module FeedServices
     end
 
     private
-    attr_reader :user, :page, :per, :before, :latitude, :longitude, :show_tours, :feed_type, :types, :show_my_entourages_only, :show_my_tours_only, :show_my_partner_only, :time_range, :tour_status, :entourage_status, :author, :invitee, :distance, :announcements, :cursor, :area
+    attr_reader :user, :page, :per, :before, :latitude, :longitude, :show_tours, :feed_type, :types, :context, :show_my_entourages_only, :show_my_tours_only, :show_my_partner_only, :time_range, :tour_status, :entourage_status, :author, :invitee, :distance, :announcements, :cursor, :area
 
     def box
       Geocoder::Calculations.bounding_box([latitude, longitude],

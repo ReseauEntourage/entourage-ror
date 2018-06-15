@@ -5,7 +5,8 @@ module Api
 
       #jcurl "http://localhost:3000/api/v1/myfeeds?page=1&per=100&token=6e06bb0e460145e6a3600bc723072c42&entourage_types=ask_for_help,contribution&status=all&tour_types=medical,social,distributive"
       def index
-        feeds = FeedServices::FeedFinder.new(user: current_user,
+        feeds = FeedServices::FeedFinder.new(context: :myfeed,
+                                             user: current_user,
                                              page: params[:page],
                                              per: params[:per],
                                              before: params[:before],

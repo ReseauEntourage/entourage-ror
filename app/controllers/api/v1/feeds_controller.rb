@@ -5,7 +5,8 @@ module Api
 
       #curl -H "Content-Type: application/json" "https://entourage-back-preprod.herokuapp.com/api/v1/feeds.json?token=azerty"
       def index
-        feeds = FeedServices::FeedFinder.new(user: current_user,
+        feeds = FeedServices::FeedFinder.new(context: :feed,
+                                             user: current_user,
                                              page: params[:page],
                                              per: params[:per],
                                              before: params[:before],
