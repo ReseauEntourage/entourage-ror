@@ -1,0 +1,10 @@
+#!/bin/bash
+
+if [ -f /entrypoint ]; then
+  while :; do
+    nc -z postgresql 5432 && break
+    sleep 1
+  done
+else
+  bin/d exec "$0" "$@"
+fi

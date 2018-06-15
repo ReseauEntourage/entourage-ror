@@ -1,0 +1,31 @@
+#!/bin/bash
+
+set -o pipefail
+
+regex="postgres://(.+):(.+)@(.+):(.+)/(.+)"
+
+function password {
+  [[ $1 =~ $regex ]]
+  password=${BASH_REMATCH[2]}
+  echo $password
+}
+
+function options {
+  [[ $1 =~ $regex ]]
+  username=${BASH_REMATCH[1]}
+  host=${BASH_REMATCH[3]}
+  port=${BASH_REMATCH[4]}
+  database=${BASH_REMATCH[5]}
+  if [ "$2" = "-d" ]; then
+    echo -U $username -h $host -p $port -d $database
+  else
+    echo -U $username -h $host -p $port $database
+  fi
+}
+
+if [ -f /entrypoint ]; then
+  database_url="$DATABASE_URL/entourage-dev"
+  PGPASSWORD=$(password $database_url) psql $(options $database_url -d) "$@"
+else
+  bin/d exec "$0" "$@"
+fi
