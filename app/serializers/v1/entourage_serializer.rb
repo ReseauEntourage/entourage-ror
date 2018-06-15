@@ -34,7 +34,7 @@ module V1
           else
             object.join_requests.pluck(:user_id)
           end
-        other_user_id = participant_ids.find { |i| i != object.user_id }
+        other_user_id = participant_ids.find { |i| i != scope[:user]&.id }
         object.user_id = other_user_id if other_user_id
 
         object.title = UserPresenter.new(user: object.user).display_name
