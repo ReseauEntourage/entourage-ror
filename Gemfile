@@ -67,7 +67,6 @@ group :test do
   gem 'timecop',                      '~> 0.8.0'
   gem 'factory_girl_rails',           '~> 4.5.0'
   gem 'webmock',                      '~> 1.20.4'
-  gem 'coveralls',                    require: false
   gem 'fakeredis',                    '~> 0.5.0'
   gem 'test_after_commit'
 end

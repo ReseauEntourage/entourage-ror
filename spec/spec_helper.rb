@@ -1,12 +1,8 @@
-require 'simplecov'
-SimpleCov.start
 require 'factory_girl'
 require 'webmock/rspec'
 require 'fakeredis/rspec'
-require 'coveralls'
 require 'sidekiq/testing'
 Sidekiq::Testing.inline!
-Coveralls.wear!
 
 RSpec.configure do |config|
   config.include FactoryGirl::Syntax::Methods
