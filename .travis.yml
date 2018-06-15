@@ -12,3 +12,8 @@ services:
 before_script:
   - cp config/database.yml.travis config/database.yml
   - bundle exec rake db:create db:migrate RAILS_ENV=test
+notifications:
+  email: false
+  webhooks: https://hooks.zapier.com/hooks/catch/2532206/wbitzc/
+  on_success: change
+  on_failure: always
