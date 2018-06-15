@@ -139,7 +139,7 @@ module Api
 
         extension = MiniMime.lookup_by_content_type(params[:content_type]).extension
         key = "#{SecureRandom.uuid}.#{extension}"
-        url = Storage::Client.avatars.send(:bucket)
+        url = Storage::Client.avatars
           .object("300x300/#{key}")
           .presigned_url(
             :put,

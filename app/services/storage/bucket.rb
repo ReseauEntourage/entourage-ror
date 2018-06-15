@@ -10,15 +10,19 @@ module Storage
 
     def url_for(key:, extra: {})
       expire = extra[:expire] || 3600
-      bucket.object(key_with_folder(key)).presigned_url(:get, expires_in: expire)
+      object(key).presigned_url(:get, expires_in: expire)
     end
 
     def upload(file:, key:, extra: {})
-      bucket.object(key_with_folder(key)).upload_file(file, content_type: extra[:content_type])
+      object(key).upload_file(file, content_type: extra[:content_type])
     end
 
     def destroy(key:)
-      bucket.object(key_with_folder(key)).delete
+      object(key).delete
+    end
+
+    def object(key)
+      bucket.object(key_with_folder(key))
     end
 
     private
