@@ -45,6 +45,10 @@ module ConversationService
     conversation
   end
 
+  def self.conversations_allowed? from:, to:
+    to.id != 2910
+  end
+
   private
 
   def self.id_list array

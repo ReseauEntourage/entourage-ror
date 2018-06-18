@@ -508,6 +508,15 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
           let!(:conversation) { create :conversation, participants: [user, other_user] }
           it { expect(result['user']['conversation']['uuid']).to eq conversation.uuid_v2 }
         end
+
+        context "when conversations are disabled" do
+          let!(:conversation) {
+            expect(ConversationService)
+              .to receive(:conversations_allowed?).with(from: user, to: other_user)
+              .and_return(false)
+          }
+          it { expect(result['user']).not_to have_key 'conversation' }
+        end
       end
 
       context "roles" do
