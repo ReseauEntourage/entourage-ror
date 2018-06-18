@@ -61,6 +61,24 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
         end
       end
 
+      describe "first_sign_in_at" do
+        subject { post 'login', user: {phone: user.phone, sms_code: "123456"} }
+
+        context "on the first login" do
+          let(:time) { Time.zone.now.change(sec: 0) }
+          before { Timecop.freeze(time) }
+          before { subject }
+          it { expect(user.reload.first_sign_in_at).to eq time }
+        end
+
+        context "on subsequent logins" do
+          let(:time) { 1.week.ago.change(sec: 0) }
+          before { user.update_column(:first_sign_in_at, time) }
+          before { subject }
+          it { expect(user.reload.first_sign_in_at).to eq time }
+        end
+      end
+
       context 'invalid sms code' do
         before { post 'login', user: {phone: user.phone, sms_code: "invalid code"}, format: 'json' }
         it { expect(response.status).to eq(401) }
@@ -260,16 +278,37 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
     end
 
     describe "welcome email" do
+      subject { patch 'update', token: user.token, user: { email:'new@e.mail' } }
+      let(:deliveries_campaigns) { ActionMailer::Base.deliveries.map { |e| e['X-Mailjet-Campaign'].value } }
+
       context "user has no email" do
-        let!(:user) { create :public_user, email: nil }
-        before { expect_any_instance_of(MemberMailer).to receive(:welcome).once }
-        it { patch 'update', token: user.token, user: { email:'new@e.mail' }, format: :json }
+        let!(:user) { create :public_user, email: nil, first_sign_in_at: 30.seconds.ago }
+        let(:time) { Time.zone.now.change(sec: 0) }
+        before { Timecop.freeze(time) }
+        before { subject }
+        it { expect(deliveries_campaigns).to eq ['welcome'] }
+        it { expect(user.reload.onboarding_sequence_start_at).to eq time }
       end
 
       context "user has an email" do
-        let!(:user) { create :public_user, email: "foo@bar.com" }
-        before { expect_any_instance_of(MemberMailer).to receive(:welcome).never }
-        it { patch 'update', token: user.token, user: { email:'new@e.mail' }, format: :json }
+        let!(:user) { create :public_user, email: "foo@bar.com", first_sign_in_at: 30.seconds.ago }
+        before { subject }
+        it { expect(deliveries_campaigns).to be_empty }
+        it { expect(user.onboarding_sequence_start_at).to eq user.reload.onboarding_sequence_start_at }
+      end
+
+      context "user has no email but signed up more than a week ago" do
+        let!(:user) { create :public_user, email: nil, first_sign_in_at: 10.days.ago }
+        before { subject }
+        it { expect(deliveries_campaigns).to be_empty }
+      end
+
+      context "user has no email but already started the onboarding sequence" do
+        let(:onboarding_sequence_start_at) { 3.hours.ago.change(sec: 0) }
+        let!(:user) { create :public_user, email: nil, first_sign_in_at: 30.seconds.ago, onboarding_sequence_start_at: onboarding_sequence_start_at }
+        before { subject }
+        it { expect(deliveries_campaigns).to be_empty }
+        it { expect(user.reload.onboarding_sequence_start_at).to eq onboarding_sequence_start_at }
       end
     end
 

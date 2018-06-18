@@ -35,6 +35,8 @@ module Api
           return render_error(code: "DELETED", message: "user is deleted", status: 401)
         end
 
+        user.update_column(:first_sign_in_at, Time.zone.now) if user.first_sign_in_at.nil?
+
         render json: user, status: 200, serializer: ::V1::UserSerializer, scope: full_user_serializer_options(current_user: user, displayed_user: user)
       end
 

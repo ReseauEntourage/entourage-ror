@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180615164025) do
+ActiveRecord::Schema.define(version: 20180618150015) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -550,31 +550,33 @@ ActiveRecord::Schema.define(version: 20180615164025) do
   create_table "users", force: :cascade do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "email",                limit: 255
-    t.string   "first_name",           limit: 255
-    t.string   "last_name",            limit: 255
-    t.string   "phone",                                                  null: false
-    t.string   "token",                limit: 255
+    t.string   "email",                        limit: 255
+    t.string   "first_name",                   limit: 255
+    t.string   "last_name",                    limit: 255
+    t.string   "phone",                                                          null: false
+    t.string   "token",                        limit: 255
     t.string   "device_id"
     t.integer  "device_type"
     t.string   "sms_code"
     t.integer  "organization_id"
-    t.boolean  "manager",                          default: false,       null: false
+    t.boolean  "manager",                                  default: false,       null: false
     t.float    "default_latitude"
     t.float    "default_longitude"
-    t.boolean  "admin",                            default: false,       null: false
-    t.string   "user_type",                        default: "pro",       null: false
+    t.boolean  "admin",                                    default: false,       null: false
+    t.string   "user_type",                                default: "pro",       null: false
     t.string   "avatar_key"
-    t.string   "validation_status",                default: "validated", null: false
-    t.boolean  "deleted",                          default: false,       null: false
-    t.integer  "marketing_referer_id",             default: 1,           null: false
+    t.string   "validation_status",                        default: "validated", null: false
+    t.boolean  "deleted",                                  default: false,       null: false
+    t.integer  "marketing_referer_id",                     default: 1,           null: false
     t.datetime "last_sign_in_at"
-    t.boolean  "atd_friend",                       default: false,       null: false
-    t.boolean  "use_suggestions",                  default: false,       null: false
-    t.string   "about",                limit: 200
-    t.string   "community",            limit: 9,                         null: false
+    t.boolean  "atd_friend",                               default: false,       null: false
+    t.boolean  "use_suggestions",                          default: false,       null: false
+    t.string   "about",                        limit: 200
+    t.string   "community",                    limit: 9,                         null: false
     t.string   "encrypted_password"
-    t.jsonb    "roles",                            default: [],          null: false
+    t.jsonb    "roles",                                    default: [],          null: false
+    t.datetime "first_sign_in_at"
+    t.datetime "onboarding_sequence_start_at"
   end
 
   add_index "users", ["organization_id"], name: "index_users_on_organization_id", using: :btree

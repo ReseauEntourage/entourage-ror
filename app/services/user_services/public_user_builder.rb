@@ -29,9 +29,10 @@ module UserServices
         UserServices::Avatar.new(user: user).upload(file: avatar_file)
       end
 
-      should_send_email = params[:email] && user.email.nil?
+      start_onboarding_sequence = should_start_onboarding_sequence(user: user, params: params)
+      user.onboarding_sequence_start_at = Time.zone.now if start_onboarding_sequence
       if user.update_attributes(params)
-        MemberMailer.welcome(user).deliver_later if should_send_email
+        MemberMailer.welcome(user).deliver_later if start_onboarding_sequence
         callback.on_success.try(:call, user)
       else
         callback.on_failure.try(:call, user)
@@ -41,5 +42,10 @@ module UserServices
     private
     attr_reader :community
 
+    def should_start_onboarding_sequence(user:, params:)
+      user.onboarding_sequence_start_at.nil? &&
+      params[:email] && user.email.nil? &&
+      user.first_sign_in_at && user.first_sign_in_at >= 1.week.ago
+    end
   end
 end
