@@ -144,6 +144,7 @@ module SensitiveWordsService
 
     def check_sensitive_words
       return unless SensitiveWordsService.enable_callback
+      return unless community == 'entourage' && group_type == 'action'
       return unless (['title', 'description'] & previous_changes.keys).any?
       AsyncService.new(SensitiveWordsService).analyze_entourage(self)
     end

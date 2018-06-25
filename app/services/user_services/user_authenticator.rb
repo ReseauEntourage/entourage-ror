@@ -23,7 +23,7 @@ module UserServices
       return nil if phone.blank? || sms_code.blank?
 
       user_phone = Phone::PhoneBuilder.new(phone: phone).format
-      user = User.where(phone: user_phone).first
+      user = User.where(community: :entourage, phone: user_phone).first
       return user if user.nil?
 
       valid_password = UserServices::AuthenticationService.new(user: user).check_sms_code(sms_code)

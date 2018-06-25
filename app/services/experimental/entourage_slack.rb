@@ -86,6 +86,7 @@ module Experimental::EntourageSlack
 
     def notify_slack
       return unless Experimental::EntourageSlack.enable_callback
+      return unless community == 'entourage' && group_type == 'action'
       AsyncService.new(Experimental::EntourageSlack).notify(self)
     end
   end

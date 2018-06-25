@@ -14,7 +14,13 @@ module Admin
         ransack_params = params[:q]
       end
 
-      @q = Entourage.ransack(ransack_params)
+      community = params[:community] || :entourage
+      group_type = params[:group_type] || :action
+
+      @q = Entourage
+        .where(group_type: group_type, community: community)
+        .ransack(ransack_params)
+
       @entourages =
         @q.result
         .page(params[:page])
