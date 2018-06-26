@@ -46,7 +46,7 @@ module ConversationService
   end
 
   def self.conversations_allowed? from:, to:
-    to.id != 2910
+    from.community != :pfp && to.community != :pfp
   end
 
   private

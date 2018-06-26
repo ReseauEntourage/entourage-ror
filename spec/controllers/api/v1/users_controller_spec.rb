@@ -543,7 +543,6 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                                                          }}) }
 
         context "when the two users have an existing conversation" do
-          with_community 'pfp'
           let!(:conversation) { create :conversation, participants: [user, other_user] }
           it { expect(result['user']['conversation']['uuid']).to eq conversation.uuid_v2 }
         end
