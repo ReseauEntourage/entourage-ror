@@ -56,6 +56,10 @@ module Api
           'terms' => {
             'entourage' => 'https://docs.google.com/document/d/1Q8QC8ByEs8x837Df-lN-KQYHzxyx10awaEsD1Vk_JtM/pub',
             'pfp'       => 'https://docs.google.com/document/d/e/2PACX-1vSSd0XDqr7YU4DiWZfubsl43j2EImvLX2XOJaFJ0Cx1uxE06H5PMfnHgj1bl9lEHONuXeB7fPsfL6rY/pub'
+          }[community.slug],
+          'privacy-policy' => {
+            'entourage' => '',
+            'pfp'       => 'https://docs.google.com/document/d/e/2PACX-1vS9nOfDChubzKpL5gEz-6sOjYAJ1Y2nJjjC1nI1Y-Y7ewP9pg1Z8Qvd4e0UkrE_AkZWTbsCvFzkOrlq/pub'
           }[community.slug]
         }
 
