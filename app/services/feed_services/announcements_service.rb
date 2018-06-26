@@ -32,6 +32,8 @@ module FeedServices
     def select_announcements
       announcements = []
 
+      return announcements unless user.community == :entourage
+
       onboarding_announcement = Onboarding::V1.announcement_for(area, user: user)
 
       if onboarding_announcement
