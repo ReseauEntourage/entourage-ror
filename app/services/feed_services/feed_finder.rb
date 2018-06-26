@@ -70,7 +70,9 @@ module FeedServices
       feeds = filter_my_feeds_only(feeds: feeds)
       feeds = filter_my_partner_only(feeds: feeds) if show_my_partner_only
       feeds = feeds.where(user: author) if author
-      feeds = feeds.where("feeds.created_at > ?", time_range.hours.ago)
+      unless user.community == :pfp
+        feeds = feeds.where("feeds.created_at > ?", time_range.hours.ago)
+      end
       feeds = feeds.within_bounding_box(box) if latitude && longitude
 
       if tour_status && entourage_status
