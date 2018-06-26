@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180618150015) do
+ActiveRecord::Schema.define(version: 20180626160325) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -45,6 +45,17 @@ ActiveRecord::Schema.define(version: 20180618150015) do
   add_index "active_admin_comments", ["author_type", "author_id"], name: "index_active_admin_comments_on_author_type_and_author_id", using: :btree
   add_index "active_admin_comments", ["namespace"], name: "index_active_admin_comments_on_namespace", using: :btree
   add_index "active_admin_comments", ["resource_type", "resource_id"], name: "index_active_admin_comments_on_resource_type_and_resource_id", using: :btree
+
+  create_table "addresses", force: :cascade do |t|
+    t.string   "name",                        null: false
+    t.string   "formatted_address"
+    t.float    "latitude",                    null: false
+    t.float    "longitude",                   null: false
+    t.string   "postal_code",       limit: 8
+    t.string   "country",           limit: 2
+    t.datetime "created_at",                  null: false
+    t.datetime "updated_at",                  null: false
+  end
 
   create_table "answers", force: :cascade do |t|
     t.integer "question_id",  null: false
@@ -577,8 +588,10 @@ ActiveRecord::Schema.define(version: 20180618150015) do
     t.jsonb    "roles",                                    default: [],          null: false
     t.datetime "first_sign_in_at"
     t.datetime "onboarding_sequence_start_at"
+    t.integer  "address_id"
   end
 
+  add_index "users", ["address_id"], name: "index_users_on_address_id", using: :btree
   add_index "users", ["organization_id"], name: "index_users_on_organization_id", using: :btree
   add_index "users", ["phone", "community"], name: "index_users_on_phone_and_community", unique: true, using: :btree
   add_index "users", ["token"], name: "index_users_on_token", unique: true, using: :btree
@@ -597,4 +610,5 @@ ActiveRecord::Schema.define(version: 20180618150015) do
 
   add_foreign_key "action_zones", "users"
   add_foreign_key "experimental_pending_request_reminders", "users"
+  add_foreign_key "users", "addresses"
 end

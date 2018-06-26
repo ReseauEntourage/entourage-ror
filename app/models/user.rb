@@ -44,6 +44,7 @@ class User < ActiveRecord::Base
   has_one :moderation, class_name: 'UserModeration'
   has_many :action_zones
   has_many :experimental_pending_request_reminders, class_name: 'Experimental::PendingRequestReminder'
+  belongs_to :address, dependent: :destroy
 
   enum device_type: [ :android, :ios ]
   attribute :roles, Experimental::JsonbSet.new

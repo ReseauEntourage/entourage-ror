@@ -154,6 +154,25 @@ module Api
         render json: { avatar_key: key, presigned_url: url }
       end
 
+      def address
+        updater = UserServices::AddressService.new(user: current_user, params: address_params)
+
+        updater.update do |on|
+          on.success do
+            head :no_content
+          end
+
+          on.failure do |user, address|
+            render_error(
+              code: "CANNOT_UPDATE_ADDRESS",
+              message: address.errors.full_messages +
+                       user.errors.full_messages,
+              status: 400
+            )
+          end
+        end
+      end
+
       private
       def user_params
         @user_params ||= params.require(:user).permit(:first_name, :last_name, :email, :sms_code, :password, :secret, :phone, :avatar_key, :about)
@@ -161,6 +180,10 @@ module Api
 
       def user_report_params
         params.require(:user_report).permit(:message)
+      end
+
+      def address_params
+        params.require(:address).permit(:name, :formatted_address, :latitude, :longitude)
       end
 
       # The apps cache the response to /login and /update for the currentUser

@@ -172,6 +172,7 @@ Rails.application.routes.draw do
           patch 'code'
           post :report
           post :presigned_avatar_upload
+          post :address
         end
 
         resources :tours, :controller => 'users/tours', only: [:index]

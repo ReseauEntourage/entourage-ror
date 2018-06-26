@@ -597,4 +597,34 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
       it { expect(ActionMailer::Base.deliveries.count).to eq 0 }
     end
   end
+
+  describe 'POST #address' do
+    let(:user) { create :public_user }
+    subject { post 'address', address: address, id: user.id, token: user.token }
+    context "valid params" do
+      let(:address) { { name: "75012", latitude: 48.835085, longitude: 2.382165 } }
+      before { subject }
+      it { expect(response.status).to eq 204 }
+      it { expect(response.body).to be_blank }
+      it { expect(user.reload.address.attributes.symbolize_keys).to include address }
+    end
+
+    context "invalid params" do
+      let(:address) { { name: nil, latitude: nil, longitude: nil } }
+      before { subject }
+      it { expect(response.status).to eq 400 }
+      it { expect(JSON.parse(response.body)).to eq({
+        "error"=>{
+          "code"=>"CANNOT_UPDATE_ADDRESS",
+          "message"=>[
+            "Name doit être rempli(e)",
+            "Latitude doit être rempli(e)",
+            "Longitude doit être rempli(e)"
+          ]
+        }
+      }) }
+      it { expect(user.reload.address_id).to be_nil }
+      it { expect(Address.count).to eq 0 }
+    end
+  end
 end
