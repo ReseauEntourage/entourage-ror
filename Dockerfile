@@ -5,6 +5,8 @@ WORKDIR /home/docker-user/app
 RUN useradd docker-user \
  && chown -R docker-user:docker-user /home/docker-user
 
+RUN curl -sL https://deb.nodesource.com/setup_8.x | bash
+
 RUN apt-get update \
  && apt-get -y --no-install-recommends install \
       build-essential \
@@ -19,6 +21,8 @@ RUN apt-get update \
 
 RUN localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
 ENV LANG en_US.utf8
+
+RUN npm install -g aglio --unsafe
 
 RUN mkdir -p /opt/rubies/2.3.1 \
  && curl -s http://s3.amazonaws.com/heroku-buildpack-ruby/heroku-16/ruby-2.3.1.tgz \
