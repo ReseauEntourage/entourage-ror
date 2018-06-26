@@ -2,6 +2,7 @@ module Api
   module V1
     class AnnouncementsController < Api::V1::BaseController
       skip_before_filter :authenticate_user!, only: [:icon, :avatar]
+      skip_before_filter :ensure_community!,  only: [:icon, :avatar]
 
       def icon
         icon = {
