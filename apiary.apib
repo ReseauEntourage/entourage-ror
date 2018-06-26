@@ -315,6 +315,35 @@ When signing up a new user we genereate a new sms_code and send it via SMS
         {"error":{"status":401,"message":"Please sign-in"}}
 
 
+## User's address [/users/me/address{?token}]
+
+### Update my user's address [POST]
+
++ Parameters
+
+    + token (required, string, `FAKETOKEN`) ... Token identifying the current user
+
++ Request (application/json)
+
+    + Header
+
+            Accept: application/json
+
+    + Body
+
+            {
+              "address": {
+                "name": "Strasbourg - Saint-Denis",
+                "latitude": 48.868341,
+                "longitude": 2.35388,
+                "formatted_address": "75003 Paris, France",
+              }
+            }
+
++ Response 204
+
++ Response 400 (application/json; charset=utf-8)
+
 
 ## Regenerate user secret code [/users/me/code]
 
