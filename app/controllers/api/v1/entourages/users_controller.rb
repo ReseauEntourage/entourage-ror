@@ -9,10 +9,14 @@ module Api
 
         #curl -H "Content-Type: application/json" "http://localhost:3000/api/v1/tours/1017/users.json?token=07ee026192ea722e66feb2340a05e3a8"
         def index
-          join_requests =
-            @entourage.join_requests
-            .where(status: ["pending", "accepted"])
-            .includes(user: { default_user_partners: :partner })
+          if params[:context] == 'group_feed' && @entourage.group_type == 'conversation'
+            join_requests = []
+          else
+            join_requests =
+              @entourage.join_requests
+              .where(status: ["pending", "accepted"])
+              .includes(user: { default_user_partners: :partner })
+          end
 
           if @entourage.id.in?(Onboarding::V1::ENTOURAGES.values)
             if current_user.id != @entourage.user_id

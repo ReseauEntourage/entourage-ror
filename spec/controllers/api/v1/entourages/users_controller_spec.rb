@@ -132,6 +132,13 @@ describe Api::V1::Entourages::UsersController do
                                            }]}) }
     end
 
+    context "from a conversation" do
+      let(:other_user) { create :public_user }
+      let(:conversation) { create :conversation, participants: [user, other_user] }
+      before { get :index, entourage_id: conversation.to_param, context: 'group_feed', token: user.token }
+      it { expect(JSON.parse(response.body)).to eq("users" => []) }
+    end
+
     context "from a null conversations by list uuid" do
       with_community :pfp
       let(:other_user) { create :public_user, first_name: "Buzz", last_name: "Lightyear" }
