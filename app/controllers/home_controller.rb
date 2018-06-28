@@ -14,7 +14,14 @@ class HomeController < ApplicationController
   end
 
   def store_redirection
-    redirect_to "https://s3-eu-west-1.amazonaws.com/entourage-ressources/store_redirection.html"
+    case $server_community
+    when 'entourage'
+      redirect_to "https://s3-eu-west-1.amazonaws.com/entourage-ressources/store_redirection.html"
+    when 'pfp'
+      redirect_to "https://s3-eu-west-1.amazonaws.com/entourage-ressources/store_redirection_pfp.html"
+    else
+      raise AbstractController::ActionNotFound
+    end
   end
 
   def cgu
