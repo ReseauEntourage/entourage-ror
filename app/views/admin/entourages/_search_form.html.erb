@@ -40,31 +40,30 @@
 <div class="btn-group btn-group-sm" style="margin: -10px 0 10px">
   <%
     q = params[:q] || {}
-    rhone_alpes = {
-      country_eq: 'FR',
-      postal_code_start_any: ['01', '07', '26', '38', '42', '69', '73', '74']
-    }.stringify_keys
-    location_keys = [:country_eq, :postal_code_start_any]
+    presets = {
+      "Partout" => {},
+      "Lyon" => {
+        country_eq: 'FR', postal_code_start: '69'
+      },
+      "Grenoble" => {
+        country_eq: 'FR',postal_code_start: '38'
+      },
+      "Rhône-Alpes" => {
+        country_eq: 'FR',
+        postal_code_start_any: ['01', '07', '26', '38', '42', '69', '73', '74']
+      },
+    }
+    location_keys = [:country_eq, :postal_code_start_any, :postal_code_start]
 
-    case q.slice(*location_keys)
-    when rhone_alpes
-      active = :rhone_alpes
-    when {}
-      active = :everywhere
-    end
+    active = presets.key q.slice(*location_keys).compact.symbolize_keys
   %>
-  <%=
-    link_to(
-      "Partout",
-      params.merge(q: q.except(*location_keys)),
-      class: "btn btn-#{active == :everywhere ? :primary : :default}"
-    )
-  %>
-  <%=
-    link_to(
-      "Rhône-Alpes",
-      params.merge(q: q.merge(rhone_alpes)),
-      class: "btn btn-#{active == :rhone_alpes ? :primary : :default}"
-    )
-  %>
+  <% presets.each do |name, options| %>
+    <%=
+      link_to(
+        name,
+        params.merge(q: q.except(*location_keys).merge(options)),
+        class: "btn btn-#{active == name ? :primary : :default}"
+      )
+    %>
+  <% end %>
 </div>
