@@ -166,6 +166,7 @@ Rails.application.routes.draw do
       resources :users, only: [:show, :create, :destroy, :update] do
         collection do
           patch 'me' => 'users#update'
+          post 'lookup'
         end
 
         member do

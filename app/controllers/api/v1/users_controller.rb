@@ -1,7 +1,7 @@
 module Api
   module V1
     class UsersController < Api::V1::BaseController
-      skip_before_filter :authenticate_user!, only: [:login, :code, :create]
+      skip_before_filter :authenticate_user!, only: [:login, :code, :create, :lookup]
       skip_before_filter :community_warning
 
       #curl -H "X-API-KEY:adc86c761fa8" -H "Content-Type: application/json" -X POST -d '{"user": {"phone": "+3312345567", "sms_code": "11111"}}' "http://localhost:3000/api/v1/login.json"
@@ -171,6 +171,26 @@ module Api
             )
           end
         end
+      end
+
+      def lookup
+        unless PhoneValidator.new(phone: params[:phone]).valid?
+          return render_error(code: "INVALID_PHONE_FORMAT", message: "invalid phone number format", status: 401)
+        end
+
+        user_phone = Phone::PhoneBuilder.new(phone: params[:phone]).format
+        user = community.users.where(phone: user_phone).first
+
+        reponse =
+          if user.nil?
+            {status: :not_found}
+          elsif user.deleted || user.blocked?
+            {status: :unavailable}
+          else
+            {status: :found, secret_type: user.has_password? ? :password : :code}
+          end
+
+        render json: reponse
       end
 
       private
