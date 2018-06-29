@@ -120,10 +120,6 @@ module FeedServices
 
       feeds = insert_announcements(feeds: feeds) if announcements == :v1
 
-      if user.community == :entourage && page == 1 && area.in?(['Paris République', 'Paris 17 et 9', 'Paris 15', 'Paris 5'])
-        feeds = pin(4029, feeds: feeds)
-      end
-
       cursor = Time.at(cursor + 1).as_json if !cursor.nil?
       FeedWithCursor.new(feeds, cursor: cursor, metadata: @metadata)
     end
