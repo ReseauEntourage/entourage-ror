@@ -357,6 +357,19 @@ describe Api::V1::EntouragesController do
                                                      }) }
       end
 
+      context "closing with outcome" do
+        before { patch :update, id: user_entourage.to_param, entourage: {status: 'closed', outcome: {success: false}}, token: user.token }
+        it { expect(response.code).to eq '200' }
+        it { expect(user_entourage.reload.status).to eq 'closed' }
+        it { expect(user_entourage.moderation.action_outcome).to eq('Non') }
+        it { expect(JSON.parse(response.body)["entourage"]).to include(
+                                                                  "status"=>"closed",
+                                                                  "outcome"=>{
+                                                                    "success"=>false
+                                                                  }
+                                                                )}
+      end
+
       context "entourage does not belong to user" do
         before { patch :update, id: entourage.to_param, entourage: {title: "new_title"}, token: user.token }
         it { expect(response.status).to eq(401) }

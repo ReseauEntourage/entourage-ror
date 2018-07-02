@@ -57,6 +57,8 @@ module EntourageServices
     end
 
     def self.update(entourage:, params:)
+      moderation_params = params.delete(:outcome)
+
       entourage.assign_attributes(params)
 
       entourage.skip_updated_at! if
@@ -65,6 +67,15 @@ module EntourageServices
 
           attribute == 'status' && to == 'closed'
         end
+
+      if entourage.status == 'closed' && moderation_params.present?
+        entourage.moderation || entourage.build_moderation
+        outcome = {
+          true  => 'Oui',
+          false => 'Non'
+        }[moderation_params[:success]]
+        entourage.moderation.action_outcome = outcome unless outcome.nil?
+      end
 
       entourage.save
     end

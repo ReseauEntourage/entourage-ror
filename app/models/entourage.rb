@@ -40,7 +40,7 @@ class Entourage < ActiveRecord::Base
   has_many :moderator_reads, as: :moderatable, dependent: :destroy
   has_many :entourage_invitations, as: :invitable, dependent: :destroy
   has_one :entourage_score, dependent: :destroy
-  has_one :moderation, class_name: 'EntourageModeration'
+  has_one :moderation, class_name: 'EntourageModeration', autosave: true
   has_one :user_moderation, primary_key: :user_id, foreign_key: :user_id
   has_one :sensitive_words_check, as: :record, dependent: :destroy
 
@@ -124,6 +124,17 @@ class Entourage < ActiveRecord::Base
 
   def group_type_config
     @group_type_config ||= community.group_types[group_type]
+  end
+
+  def has_outcome?
+    group_type == 'action' && status == 'closed'
+  end
+
+  def outcome
+    return unless has_outcome?
+    {
+      success: moderation.try(:action_outcome) == 'Oui'
+    }
   end
 
   protected

@@ -6,6 +6,7 @@ module V1
     attributes :id,
                :uuid,
                :status,
+               :outcome,
                :title,
                :group_type,
                :entourage_type,
@@ -42,7 +43,9 @@ module V1
     end
 
     def filter(keys)
-      include_last_message? ? keys : keys - [:last_message]
+      keys.delete :last_message unless include_last_message?
+      keys.delete :outcome unless object.has_outcome?
+      keys
     end
 
     def uuid
