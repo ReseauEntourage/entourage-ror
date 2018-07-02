@@ -46,6 +46,7 @@ module ConversationService
   end
 
   def self.conversations_allowed? from:, to:
+    ENV['STAGING'] == 'true' ||
     from.community != :pfp && to.community != :pfp
   end
 
