@@ -265,6 +265,37 @@ include CommunityHelper
       end
     end
 
+    context "filter types" do
+      let(:user) { create :public_user }
+
+      def result_ids(params={})
+        get :index, {token: user.token}.merge(params)
+        result["feeds"].map {|feed| feed["data"]["id"] }
+      end
+
+      context "pfp" do
+        with_community :pfp
+        let!(:nh) { create :neighborhood }
+        let!(:pc) { create :private_circle }
+
+        it { expect(result_ids()).to eq [pc.id, nh.id] }
+        it { expect(result_ids(types: 'nh,pc')).to eq [pc.id, nh.id] }
+        it { expect(result_ids(types: 'nh')).to eq [nh.id] }
+        it { expect(result_ids(types: 'private_circle')).to eq [pc.id] }
+      end
+
+      context "entourage" do
+        with_community :entourage
+        let!(:as) { create :entourage, entourage_type: :ask_for_help, display_category: :social }
+        let!(:ci) { create :entourage, entourage_type: :contribution, display_category: :info }
+
+        it { expect(result_ids()).to eq [ci.id, as.id] }
+        it { expect(result_ids(types: 'as,ci')).to eq [ci.id, as.id] }
+        it { expect(result_ids(types: 'as')).to eq [as.id] }
+        it { expect(result_ids(types: 'contribution_info')).to eq [ci.id] }
+      end
+    end
+
     context "community support" do
       let(:user) { create :public_user }
       let!(:entourage_action) { create :entourage,    community: 'entourage', created_at: 1.hour.ago, updated_at: 1.hour.ago }

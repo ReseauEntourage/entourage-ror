@@ -143,40 +143,46 @@ module FeedServices
       types&.gsub(" ", "")&.split(",")
     end
 
-    PRO_TYPES = {
-      'tm' => 'tour_medical',
-      'tb' => 'tour_barehands',
-      'ta' => 'tour_alimentary',
+    TYPES = {
+      'entourage' => {
+        'as' => 'ask_for_help_social',
+        'ae' => 'ask_for_help_event',
+        'am' => 'ask_for_help_mat_help',
+        'ar' => 'ask_for_help_resource',
+        'ai' => 'ask_for_help_info',
+        'ak' => 'ask_for_help_skill',
+        'ao' => 'ask_for_help_other',
 
-      # fix wrong key in iOS 4.1 - 4.3
-      'ts' => 'tour_barehands',
-    }
+        'cs' => 'contribution_social',
+        'ce' => 'contribution_event',
+        'cm' => 'contribution_mat_help',
+        'cr' => 'contribution_resource',
+        'ci' => 'contribution_info',
+        'ck' => 'contribution_skill',
+        'co' => 'contribution_other',
 
-    COMMON_TYPES = {
-      'as' => 'ask_for_help_social',
-      'ae' => 'ask_for_help_event',
-      'am' => 'ask_for_help_mat_help',
-      'ar' => 'ask_for_help_resource',
-      'ai' => 'ask_for_help_info',
-      'ak' => 'ask_for_help_skill',
-      'ao' => 'ask_for_help_other',
+        # fix wrong keys in iOS 4.1 - 4.3
+        'ah' => 'ask_for_help_mat_help',
+        'ch' => 'contribution_mat_help',
+      },
+      'entourage_pro' => {
+        'tm' => 'tour_medical',
+        'tb' => 'tour_barehands',
+        'ta' => 'tour_alimentary',
 
-      'cs' => 'contribution_social',
-      'ce' => 'contribution_event',
-      'cm' => 'contribution_mat_help',
-      'cr' => 'contribution_resource',
-      'ci' => 'contribution_info',
-      'ck' => 'contribution_skill',
-      'co' => 'contribution_other',
-
-      # fix wrong keys in iOS 4.1 - 4.3
-      'ah' => 'ask_for_help_mat_help',
-      'ch' => 'contribution_mat_help',
+        # fix wrong key in iOS 4.1 - 4.3
+        'ts' => 'tour_barehands',
+      },
+      'pfp' => {
+        'nh' => 'neighborhood',
+        'pc' => 'private_circle',
+        'ou' => 'outing',
+      }
     }
 
     def formated_types(types)
-      allowed_types = COMMON_TYPES
-      allowed_types.merge!(PRO_TYPES) if user.pro?
+      allowed_types = TYPES[user.community.slug]
+      allowed_types.merge!(TYPES['entourage_pro']) if user.pro?
 
       types = (types || "").split(',').map(&:strip)
       types = types.map { |t| allowed_types[t] || t }
