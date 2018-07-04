@@ -114,9 +114,11 @@ class Entourage < ActiveRecord::Base
   attribute :community, Community::Type.new
 
   def metadata
-    case community
-    when 'pfp'
+    case group_type
+    when 'private_circle'
       { 'visited_user_first_name' => (title || "").gsub(/\ALes amis (de |d')/, '') }
+    when 'outing'
+      { 'starts_at' => 1.day.from_now.change(hour: 19, min: 30) }
     else
       {}
     end

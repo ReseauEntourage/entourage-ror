@@ -42,6 +42,10 @@ FactoryGirl.define do
       group_type "neighborhood"
     end
 
+    factory :outing do
+      group_type "outing"
+    end
+
     factory :conversation do
       group_type "conversation"
 

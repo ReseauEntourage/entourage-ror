@@ -9,6 +9,7 @@ module V1
                :outcome,
                :title,
                :group_type,
+               :metadata,
                :entourage_type,
                :display_category,
                :join_status,
