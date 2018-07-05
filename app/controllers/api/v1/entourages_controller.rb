@@ -22,7 +22,8 @@ module Api
         EntourageServices::EntourageDisplayService.new(entourage: @entourage, user: current_user, params: params).view
         is_onboarding, mp_params = Onboarding::V1.entourage_metadata(@entourage)
         mixpanel.track("Displayed Entourage", mp_params)
-        render json: @entourage, serializer: ::V1::EntourageSerializer, scope: {user: current_user}
+        include_last_message = params[:include_last_message] == 'true'
+        render json: @entourage, serializer: ::V1::EntourageSerializer, scope: {user: current_user, include_last_message: include_last_message}
       end
 
       #curl -H "Content-Type: application/json" -X POST -d '{"entourage": {"title": "entourage1", "entourage_type": "ask_for_help", "description": "lorem ipsum", "location": {"latitude": 37.4224764, "longitude": -122.0842499}}, "token": "azerty"}' "http://localhost:3000/api/v1/entourages.json"

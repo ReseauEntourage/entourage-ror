@@ -1613,12 +1613,13 @@ Entourages related resources of the **Entourage API**
     + id (required, string, `1`) ... Identifier of the entourage to be retrieved. Can be an integer or an UUID.
     + token (required, string, `FAKETOKEN`) ... Token identifying the current user
 
-### Retrieve an entourage [GET /{?distance,feed_rank,source}]
+### Retrieve an entourage [GET /{?distance,feed_rank,source,include_last_message}]
 
 + Parameters
     + distance (required, integer, `1`) ... Distance between user and entourage
     + feed_rank (required, string, `2`) ... Position of the entourage in the feed
     + source (required, string, `newsfeed`) ... data source
+    + include_last_message (optional, boolean, `true`) ... Include the last_message like in /myfeeds. Defaults to false.
 
 + Request (application/json)
 
