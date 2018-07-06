@@ -12,7 +12,7 @@ module Api
                                              before: params[:before],
                                              latitude: nil,
                                              longitude: nil,
-                                             show_tours: "true",
+                                             show_tours: show_tours,
                                              time_range: time_range,
                                              entourage_types: params[:entourage_types],
                                              tour_types: params[:tour_types],
@@ -49,6 +49,10 @@ module Api
           #here no filter should be applied on status
         end
         entourage_status
+      end
+
+      def show_tours
+        params[:show_tours] || "true"
       end
 
       def author
