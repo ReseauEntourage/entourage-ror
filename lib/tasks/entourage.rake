@@ -9,7 +9,11 @@ namespace :entourage do
   end
 
   task generate_public_map_csv: :environment do
-    entourages = Entourage.visible.where(group_type: :action, community: :entourage)
+    entourages = Entourage
+      .visible
+      .where(group_type: :action, community: :entourage)
+      .where(created_at: 3.months.ago..Time.now)
+
     begin
       file = Tempfile.new(encoding: 'ascii-8bit') # binary mode
       gz = Zlib::GzipWriter.new(file)
