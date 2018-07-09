@@ -22,4 +22,4 @@ group_types:
     roles: [participant]
   outing:
     message_types: [text]
-    roles: [participant]
+    roles: [organizer, participant]

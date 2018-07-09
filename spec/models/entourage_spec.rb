@@ -1,4 +1,5 @@
 require 'rails_helper'
+include CommunityHelper
 
 RSpec.describe Entourage, type: :model do
   it { expect(FactoryGirl.build(:entourage).save!).to be true }
@@ -49,6 +50,34 @@ RSpec.describe Entourage, type: :model do
       entourage.should_receive :ping_slack
       entourage.save
     end
+  end
+
+  describe "metadata" do
+    with_community :pfp
+    let(:now) { Time.now.change(sec: 42) }
+    let!(:outing) { create(:outing, metadata: {starts_at: now}).reload }
+
+    it { expect(Entourage.where("metadata->>'starts_at' < ?", now + 1)).to eq [outing] }
+    it { expect(Entourage.where("metadata->>'starts_at' > ?", now - 1)).to eq [outing] }
+    it { expect(Entourage.where("metadata->>'starts_at' = ?", now    )).to eq [outing] }
+    it { expect(Entourage.where("metadata->>'starts_at' between ? and ?", now - 1, now + 1)).to eq [outing] }
+
+    it { expect(outing.metadata[:starts_at]).to be_a ActiveSupport::TimeWithZone }
+    it { expect(outing.metadata[:starts_at].time_zone).to eq Time.zone }
+
+    it { expect(outing.metadata).to eq(
+      starts_at: now,
+      display_address: "Café la Renaissance, 44 rue de l’Assomption, 75016 Paris",
+      :$id=>"urn:entourage:outing:metadata"
+    ) }
+    it { expect(build(:outing, default_metadata: {}).tap(&:save).errors.messages).to eq(
+      metadata: ["did not contain a required property of 'starts_at'",
+                 "did not contain a required property of 'display_address'"]
+    ) }
+    it { expect(build(:outing, metadata: {starts_at: "lol", display_address: 42}).tap(&:save).errors.messages).to eq(
+      metadata: ["'starts_at' must be a valid ISO 8601 date/time string",
+                 "'display_address' of type Fixnum did not match the following type: string"]
+    ) }
   end
 
   it "has an uuid" do

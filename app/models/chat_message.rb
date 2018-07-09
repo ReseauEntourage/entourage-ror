@@ -8,7 +8,7 @@ class ChatMessage < ActiveRecord::Base
 
   validates :messageable_id, :messageable_type, :content, :user_id, presence: true
   validates_inclusion_of :message_type, in: -> (m) { m.messageable&.group_type_config&.dig('message_types') || [] }
-  validates :metadata, schema: :metadata_schema
+  validates :metadata, schema: -> (m) { "#{m.message_type}:metadata" }
 
   scope :ordered, -> { order("created_at DESC") }
 
@@ -51,24 +51,14 @@ class ChatMessage < ActiveRecord::Base
     end
   end
 
-  def metadata_schema
-    schema = {
-      type: :object,
-      additionalProperties: false
-    }
-
-    schema[:properties] =
-      case message_type
-      when 'visit'
+  def self.json_schema urn
+    JsonSchemaService.base do
+      case urn
+      when 'visit:metadata'
         {
           visited_at: { format: 'date-time-iso8601' }
         }
-      else
-        {}
       end
-
-    schema[:required] ||= schema[:properties].keys if schema[:properties].any?
-
-    schema
+    end
   end
 end

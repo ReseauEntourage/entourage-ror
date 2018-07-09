@@ -44,6 +44,15 @@ FactoryGirl.define do
 
     factory :outing do
       group_type "outing"
+
+      transient do
+        default_metadata starts_at: 1.day.from_now.change(hour: 19),
+                         display_address: "Café la Renaissance, 44 rue de l’Assomption, 75016 Paris"
+      end
+
+      after(:build) do |outing, stuff|
+        outing.metadata = (stuff.default_metadata || {}).symbolize_keys.merge(outing.metadata)
+      end
     end
 
     factory :conversation do

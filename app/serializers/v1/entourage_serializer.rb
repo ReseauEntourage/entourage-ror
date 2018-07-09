@@ -88,6 +88,10 @@ module V1
       object.join_requests.select {|join_request| join_request.user_id == scope[:user]&.id}.first
     end
 
+    def metadata
+      object.metadata.except(:$id)
+    end
+
     def share_url
       return unless object.uuid_v2
       return if object.group_type == 'conversation'

@@ -1,3 +1,4 @@
+require 'experimental/jsonb_with_schema'
 # == Schema Information
 #
 # Table name: entourages
@@ -52,6 +53,7 @@ class Entourage < ActiveRecord::Base
   validates_uniqueness_of :uuid, on: :create
   validates_inclusion_of :community, in: Community.slugs
   validates_inclusion_of :group_type, in: -> (e) { e.community&.group_types&.keys || [] }
+  validates :metadata, schema: -> (e) { "#{e.group_type}:metadata" }
 
   scope :visible, -> { where.not(status: 'blacklisted') }
   scope :social_category, -> { where(category: 'social') }
@@ -112,18 +114,14 @@ class Entourage < ActiveRecord::Base
 
   # https://github.com/rails/rails/blob/v4.2.10/activerecord/lib/active_record/attributes.rb
   attribute :community, Community::Type.new
+  attribute :metadata, Experimental::JsonbWithSchema.new
 
   def metadata
     case group_type
     when 'private_circle'
       { 'visited_user_first_name' => (title || "").gsub(/\ALes amis (de |d')/, '') }
-    when 'outing'
-      {
-        'starts_at' => 1.day.from_now.change(hour: 19, min: 30),
-        'display_address' => "Café la Renaissance, 44 rue de l’Assomption, 75016 Paris"
-      }
     else
-      {}
+      super
     end
   end
 
@@ -140,6 +138,22 @@ class Entourage < ActiveRecord::Base
     {
       success: moderation.try(:action_outcome) == 'Oui'
     }
+  end
+
+  def self.json_schema urn
+    JsonSchemaService.base do
+      case urn
+      when 'private_circle:metadata'
+        {
+          visited_user_first_name: { type: :string }
+        }
+      when 'outing:metadata'
+        {
+          starts_at: { format: 'date-time-iso8601' },
+          display_address: { type: :string }
+        }
+      end
+    end
   end
 
   protected

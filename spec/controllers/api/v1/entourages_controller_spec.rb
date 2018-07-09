@@ -288,11 +288,12 @@ describe Api::V1::EntouragesController do
         context "metadata" do
           with_community :pfp
           let!(:entourage) { nil }
-          let!(:outing) { create :outing }
+          let(:starts_at) { 1.day.from_now.change(hour: 19, min: 30) }
+          let!(:outing) { create :outing, metadata: {starts_at: starts_at} }
           before { get :show, id: outing.id, token: user.token }
           it { expect(JSON.parse(response.body)['entourage']).to include(
             "metadata"=>{
-              "starts_at"=>1.day.from_now.change(hour: 19, min: 30).iso8601(3),
+              "starts_at"=>starts_at.iso8601(3),
               "display_address"=>"Café la Renaissance, 44 rue de l’Assomption, 75016 Paris"
             }
           )}
