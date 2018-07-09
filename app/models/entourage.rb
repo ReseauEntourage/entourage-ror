@@ -118,7 +118,10 @@ class Entourage < ActiveRecord::Base
     when 'private_circle'
       { 'visited_user_first_name' => (title || "").gsub(/\ALes amis (de |d')/, '') }
     when 'outing'
-      { 'starts_at' => 1.day.from_now.change(hour: 19, min: 30) }
+      {
+        'starts_at' => 1.day.from_now.change(hour: 19, min: 30),
+        'display_address' => "Café la Renaissance, 44 rue de l’Assomption, 75016 Paris"
+      }
     else
       {}
     end

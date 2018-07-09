@@ -292,7 +292,8 @@ describe Api::V1::EntouragesController do
           before { get :show, id: outing.id, token: user.token }
           it { expect(JSON.parse(response.body)['entourage']).to include(
             "metadata"=>{
-              "starts_at"=>1.day.from_now.change(hour: 19, min: 30).iso8601(3)
+              "starts_at"=>1.day.from_now.change(hour: 19, min: 30).iso8601(3),
+              "display_address"=>"Café la Renaissance, 44 rue de l’Assomption, 75016 Paris"
             }
           )}
         end
