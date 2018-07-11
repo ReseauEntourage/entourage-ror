@@ -17,6 +17,7 @@ module FeedServices
                    show_my_entourages_only: "false",
                    show_my_tours_only: "false",
                    show_my_partner_only: "false",
+                   show_past_events: "false",
                    time_range: 24,
                    tour_status: nil,
                    entourage_status: nil,
@@ -38,6 +39,7 @@ module FeedServices
       @show_my_entourages_only = show_my_entourages_only=="true"
       @show_my_tours_only = show_my_tours_only=="true"
       @show_my_partner_only = show_my_partner_only=="true"
+      @show_past_events = show_past_events=="true"
       @time_range = time_range.to_i
       @tour_status = formated_status(tour_status)
       @entourage_status = formated_status(entourage_status)
@@ -69,6 +71,7 @@ module FeedServices
       end
       feeds = filter_my_feeds_only(feeds: feeds)
       feeds = filter_my_partner_only(feeds: feeds) if show_my_partner_only
+      feeds = filter_past_events(feeds: feeds) unless show_past_events
       feeds = feeds.where(user: author) if author
       unless user.community == :pfp
         feeds = feeds.where("feeds.created_at > ?", time_range.hours.ago)
@@ -125,7 +128,7 @@ module FeedServices
     end
 
     private
-    attr_reader :user, :page, :per, :before, :latitude, :longitude, :show_tours, :feed_type, :types, :context, :show_my_entourages_only, :show_my_tours_only, :show_my_partner_only, :time_range, :tour_status, :entourage_status, :author, :invitee, :distance, :announcements, :cursor, :area
+    attr_reader :user, :page, :per, :before, :latitude, :longitude, :show_tours, :feed_type, :types, :context, :show_my_entourages_only, :show_my_tours_only, :show_my_partner_only, :show_past_events, :time_range, :tour_status, :entourage_status, :author, :invitee, :distance, :announcements, :cursor, :area
 
     def box
       Geocoder::Calculations.bounding_box([latitude, longitude],
@@ -213,6 +216,10 @@ module FeedServices
       feeds
         .joins(user: :user_partners)
         .merge(UserPartner.where(default: true, partner_id: partner_id))
+    end
+
+    def filter_past_events(feeds:)
+      feeds.where("(group_type not in (?) or metadata->>'starts_at' >= ?)", [:outing], Time.now)
     end
 
     def filter_by_invitee(feeds:, inclusive:)

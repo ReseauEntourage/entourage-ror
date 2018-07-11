@@ -321,5 +321,21 @@ include CommunityHelper
         it { expect(result['feeds'].map { |f| [f['type'], f['data']['id']] }).to eq [['Entourage', entourage_action.id], ['Announcement', announcement.id]] }
       end
     end
+
+    context "show past events" do
+      with_community :pfp
+      let(:user) { create :public_user }
+      let!(:neighborhood) { create :neighborhood }
+      let!(:past_outing) { create :outing, metadata: {starts_at: 1.hour.ago} }
+      let!(:upcoming_outing) { create :outing, metadata: {starts_at: 1.hour.from_now} }
+
+      def feeds(filters={})
+        get :index, filters.merge(token: user.token)
+        result["feeds"].map {|feed| feed["data"]["id"]}
+      end
+
+      it { expect(feeds).to eq [upcoming_outing.id, neighborhood.id] }
+      it { expect(feeds(show_past_events: 'true')).to eq [upcoming_outing.id, past_outing.id, neighborhood.id] }
+    end
   end
 end
