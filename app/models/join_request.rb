@@ -42,6 +42,17 @@ class JoinRequest < ActiveRecord::Base
     ))
   end
 
+  def self.with_unread_messages
+    joins(%(
+      join chat_messages on (
+        messageable_id = joinable_id and
+        messageable_type = joinable_type and
+        (last_message_read is null or
+         chat_messages.created_at > last_message_read)
+      )
+    ))
+  end
+
   STATUS.each do |check_status|
     define_method("is_#{check_status}?") do
       status == check_status
