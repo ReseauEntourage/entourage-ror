@@ -216,6 +216,7 @@ ActiveRecord::Schema.define(version: 20180711082541) do
     t.string   "country",          limit: 2
     t.string   "community",        limit: 9,                   null: false
     t.string   "group_type",       limit: 14,                  null: false
+    t.jsonb    "metadata",                    default: {},     null: false
   end
 
   add_index "entourages", ["country", "postal_code"], name: "index_entourages_on_country_and_postal_code", using: :btree
