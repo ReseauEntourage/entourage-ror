@@ -1,6 +1,8 @@
 module EntourageServices
   module GeocodingService
     def self.geocode entourage
+      # this will raise in case of an API error
+      # see config/initializers/geocoder.rb
       results = Geocoder.search(
         [entourage.latitude, entourage.longitude],
         params: { result_type: :postal_code }

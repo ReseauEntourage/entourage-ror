@@ -27,7 +27,14 @@ module EntourageServices
     def location
       @location ||= begin
         coordinates = [@entourage.latitude, @entourage.longitude]
-        Geocoder.search(coordinates).first
+        begin
+          # this will raise in case of an API error
+          # see config/initializers/geocoder.rb
+          Geocoder.search(coordinates).first
+        rescue => e
+          Raven.capture_exception(e, extra: { entourage_id: @entourage.id })
+          nil
+        end
       end
     end
 

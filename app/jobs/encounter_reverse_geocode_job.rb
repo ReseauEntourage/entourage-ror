@@ -8,16 +8,17 @@ class EncounterReverseGeocodeJob
 
     encounter = Encounter.find(encounter_id)
 
+    # this will raise in case of an API error
+    # see config/initializers/geocoder.rb
     results = Geocoder.search(
       [encounter.latitude, encounter.longitude],
       language: :fr
     )
 
-    # retry the job
-    raise "Geocoding failed" if results.empty?
-
     best_result = results.find { |r| r.types.include? "point_of_interest" } ||
                   results.first
+
+    return if best_result.nil?
 
     encounter.address = best_result.address
     encounter.save
