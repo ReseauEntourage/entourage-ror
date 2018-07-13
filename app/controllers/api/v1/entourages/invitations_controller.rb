@@ -7,7 +7,15 @@ module Api
 
         #curl -X POST -d '{"invite": {"mode": "SMS", "phone_numbers": ["+33612345678", "+3361234569"]}}' -H "Content-Type: application/json" "http://localhost:3000/api/v1/entourages/139/invitations.json?token=azerty"
         def create
-          sms_invite = EntourageServices::BulkInvitationService.new(phone_numbers: params.dig("invite", "phone_numbers"),
+          phone_numbers = invite_params[:phone_numbers]
+
+          return render_error(
+            code: "MISSING_PHONE_NUMBERS",
+            message: "phone_numbers must be an array of phone numbers",
+            status: :bad_request
+          ) if phone_numbers.blank?
+
+          sms_invite = EntourageServices::BulkInvitationService.new(phone_numbers: phone_numbers,
                                                         entourage: entourage,
                                                         inviter: @current_user)
           sms_invite.send_invite do |on|
@@ -39,7 +47,7 @@ module Api
         end
 
         def invite_params
-          params.require(:invite).permit(:mode, :phone_numbers)
+          params.require(:invite).permit(:mode, phone_numbers:[])
         end
       end
     end
