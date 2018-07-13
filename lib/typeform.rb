@@ -8,7 +8,14 @@ module Typeform
       headers: {authorization: "bearer #{ENV['TYPEFORM_TOKEN']}"},
       query: params
     )
-    body = JSON.parse(response.body)
+
+    begin
+      body = JSON.parse(response.body)
+    rescue
+      puts response.body
+      raise ResponseError, response.body
+    end
+
     if response.code.to_s[0] != '2'
       p body
       raise ResponseError, body['description']
