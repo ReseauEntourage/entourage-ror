@@ -37,6 +37,9 @@ class Announcement
       @feedable = announcement
     end
 
+    attr_accessor :current_join_request,
+                  :number_of_unread_messages
+
     def feedable_type
       feedable.class.name
     end
