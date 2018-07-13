@@ -165,8 +165,9 @@ class MemberMailer < ActionMailer::Base
   private
 
   def handle_delivery_error exception
-    case exception.message
-    when '401 4.1.3 Bad recipient address syntax'
+    case exception.message.chomp
+    when '401 4.1.3 Bad recipient address syntax',
+         '501 5.1.3 Bad recipient address syntax'
       # Do nothing for now
       # TODO: handle badly formatted email addresses
     else
