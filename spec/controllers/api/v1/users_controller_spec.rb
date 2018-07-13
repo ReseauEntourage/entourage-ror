@@ -121,6 +121,12 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
       end
     end
 
+    describe 'invalid params' do
+      before { post 'login' }
+      it { expect(result).to eq("error"=>{"code"=>"PARAMETER_MISSING", "message"=>"param is missing or the value is empty: user"}) }
+      it { expect(response.status).to eq 400 }
+    end
+
     describe 'community support' do
       let(:user) { create :public_user, community: 'pfp', sms_code: "123456" }
       before { post 'login', user: {phone: user.phone, sms_code: "123456"} }

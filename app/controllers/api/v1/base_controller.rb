@@ -14,6 +14,11 @@ module Api
         render json: {message: 'Missing API Key or invalid key'}, status: 426
       end
 
+      rescue_from ActionController::ParameterMissing do |e|
+        Rails.logger.error e
+        render_error(code: "PARAMETER_MISSING", message: e.message, status: :bad_request)
+      end
+
       def allow_cors
         headers["Access-Control-Allow-Origin"] = "*"
         headers["Access-Control-Allow-Methods"] = %w{GET POST PUT PATCH DELETE}.join(",")
