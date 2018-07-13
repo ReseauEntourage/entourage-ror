@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180711082541) do
+ActiveRecord::Schema.define(version: 20180713135621) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -515,8 +515,8 @@ ActiveRecord::Schema.define(version: 20180711082541) do
     t.string   "device_family"
   end
 
-  add_index "user_applications", ["push_token"], name: "index_user_applications_on_push_token", using: :btree
-  add_index "user_applications", ["user_id", "device_os", "version"], name: "index_user_applications_on_user_id_and_device_os_and_version", unique: true, using: :btree
+  add_index "user_applications", ["push_token"], name: "index_user_applications_on_push_token", unique: true, using: :btree
+  add_index "user_applications", ["user_id", "device_family"], name: "index_user_applications_on_user_id_and_device_family", using: :btree
 
   create_table "user_moderations", force: :cascade do |t|
     t.integer "user_id",                     null: false
