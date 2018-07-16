@@ -68,15 +68,20 @@ RSpec.describe Entourage, type: :model do
     it { expect(outing.metadata).to eq(
       starts_at: now,
       display_address: "Café la Renaissance, 44 rue de l’Assomption, 75016 Paris",
+      place_name: "Café la Renaissance",
+      street_address: "44 rue de l’Assomption, 75016 Paris, France",
+      google_place_id: "foobar",
       :$id=>"urn:entourage:outing:metadata"
     ) }
     it { expect(build(:outing, default_metadata: {}).tap(&:save).errors.messages).to eq(
       metadata: ["did not contain a required property of 'starts_at'",
-                 "did not contain a required property of 'display_address'"]
+                 "did not contain a required property of 'place_name'",
+                 "did not contain a required property of 'street_address'",
+                 "did not contain a required property of 'google_place_id'"]
     ) }
-    it { expect(build(:outing, metadata: {starts_at: "lol", display_address: 42}).tap(&:save).errors.messages).to eq(
+    it { expect(build(:outing, metadata: {starts_at: "lol", street_address: 42}).tap(&:save).errors.messages).to eq(
       metadata: ["'starts_at' must be a valid ISO 8601 date/time string",
-                 "'display_address' of type Fixnum did not match the following type: string"]
+                 "'street_address' of type Fixnum did not match the following type: string"]
     ) }
   end
 

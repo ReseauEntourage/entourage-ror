@@ -175,6 +175,66 @@ describe Api::V1::EntouragesController do
         it { expect(JSON.parse(response.body)).to eq({"message"=>"Could not create entourage", "reasons"=>["Longitude doit être rempli(e)"]}) }
         it { expect(response.status).to eq(400) }
       end
+
+      context "metadata (outings)" do
+        with_community :pfp
+        let(:params) do
+          {
+            group_type: :outing,
+            title: "Apéro Entourage",
+            location: {
+              latitude: 48.868959,
+              longitude: 2.390184999999974
+            },
+            metadata: {
+              starts_at: "2018-09-04T19:30:00+02:00",
+              place_name: "Le Dorothy",
+              street_address: "85 bis rue de Ménilmontant, 75020 Paris, France",
+              google_place_id: "ChIJFzXXy-xt5kcRg5tztdINnp0"
+            }
+          }
+        end
+        before { post :create, entourage: params, token: user.token }
+        it do
+          outing = Entourage.last
+          expect(JSON.parse(response.body)).to eq(
+            "entourage"=>{
+              "id"=>outing.id,
+              "uuid"=>outing.uuid,
+              "status"=>"open",
+              "title"=>"Apéro Entourage",
+              "group_type"=>"outing",
+              "metadata"=>{
+                "starts_at"=>"2018-09-04T19:30:00.000+02:00",
+                "place_name"=>"Le Dorothy",
+                "street_address"=>"85 bis rue de Ménilmontant, 75020 Paris, France",
+                "google_place_id"=>"ChIJFzXXy-xt5kcRg5tztdINnp0",
+                "display_address"=>"Le Dorothy, 85 bis rue de Ménilmontant, 75020 Paris"
+              },
+              "entourage_type"=>"contribution",
+              "display_category"=>nil,
+              "join_status"=>"accepted",
+              "number_of_unread_messages"=>0,
+              "number_of_people"=>1,
+              "created_at"=>outing.created_at.iso8601(3),
+              "updated_at"=>outing.updated_at.iso8601(3),
+              "description"=>nil,
+              "share_url"=>"http://entourage.social/entourages/#{outing.uuid_v2}",
+              "author"=>{
+                "id"=>user.id,
+                "display_name"=>"John",
+                "avatar_url"=>nil,
+                "partner"=>nil
+              },
+              "location"=>{
+                "latitude"=>48.868959,
+                "longitude"=>2.39018499999997
+              }
+            }
+          )
+        end
+        it { expect(response.status).to eq(201) }
+      end
     end
 
     describe "welcome email" do
@@ -294,7 +354,10 @@ describe Api::V1::EntouragesController do
           it { expect(JSON.parse(response.body)['entourage']).to include(
             "metadata"=>{
               "starts_at"=>starts_at.iso8601(3),
-              "display_address"=>"Café la Renaissance, 44 rue de l’Assomption, 75016 Paris"
+              "display_address"=>"Café la Renaissance, 44 rue de l’Assomption, 75016 Paris",
+              "place_name"=>"Café la Renaissance",
+              "street_address"=>"44 rue de l’Assomption, 75016 Paris, France",
+              "google_place_id"=>"foobar"
             }
           )}
         end

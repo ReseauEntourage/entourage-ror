@@ -10,11 +10,19 @@ module EntourageServices
       yield callback if block_given?
 
       entourage = Entourage.new(params.except(:location))
-      entourage.group_type = 'action'
+      entourage.group_type ||= 'action'
+      entourage.entourage_type = 'contribution' if entourage.group_type != 'action'
       entourage.longitude = params.dig(:location, :longitude)
       entourage.latitude = params.dig(:location, :latitude)
       entourage.user = user
       entourage.uuid = SecureRandom.uuid
+
+      allowed_group_types =
+        case user.community
+        when 'entourage' then ['action']
+        when 'pfp'       then ['outing']
+        end
+      entourage.group_type = nil unless entourage.group_type.in? allowed_group_types
 
       text = "#{entourage.title} #{entourage.description}"
       entourage.category = EntourageServices::CategoryLexicon.new(text: text).category
@@ -28,6 +36,7 @@ module EntourageServices
           case [joinable.community, joinable.group_type]
           when ['entourage', 'tour']   then 'creator'
           when ['entourage', 'action'] then 'creator'
+          when ['pfp',       'outing'] then 'organizer'
           else raise 'Unhandled'
           end
 

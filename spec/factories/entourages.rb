@@ -47,7 +47,9 @@ FactoryGirl.define do
 
       transient do
         default_metadata starts_at: 1.day.from_now.change(hour: 19),
-                         display_address: "Café la Renaissance, 44 rue de l’Assomption, 75016 Paris"
+                         place_name: "Café la Renaissance",
+                         street_address: "44 rue de l’Assomption, 75016 Paris, France",
+                         google_place_id: "foobar"
       end
 
       after(:build) do |outing, stuff|

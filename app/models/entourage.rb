@@ -62,6 +62,7 @@ class Entourage < ActiveRecord::Base
 
   before_validation :set_community, on: :create
   before_validation :set_default_attributes, on: :create
+  before_validation :generate_display_address
 
   after_create :check_moderation
   before_create :set_uuid
@@ -150,6 +151,9 @@ class Entourage < ActiveRecord::Base
       when 'outing:metadata'
         {
           starts_at: { format: 'date-time-iso8601' },
+          place_name: { type: :string },
+          street_address: { type: :string },
+          google_place_id: { type: :string },
           display_address: { type: :string }
         }
       end
@@ -204,6 +208,20 @@ class Entourage < ActiveRecord::Base
 
   def self.generate_uuid_v2
     'e' + SecureRandom.urlsafe_base64(8)
+  end
+
+  def generate_display_address
+    return unless group_type == 'outing' && (metadata_changed? || new_record?)
+    address_fragments = metadata[:street_address].split(', ')
+    if metadata[:place_name] != address_fragments.first
+      address_fragments.unshift metadata[:place_name]
+    end
+    if address_fragments.last == 'France'
+      address_fragments.pop
+    end
+    metadata[:display_address] = address_fragments.join(', ')
+  rescue
+    metadata[:display_address] = ""
   end
 
   private

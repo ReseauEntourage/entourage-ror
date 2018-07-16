@@ -77,7 +77,8 @@ module Api
       private
 
       def entourage_params
-        params.require(:entourage).permit({location: [:longitude, :latitude]}, :title, :entourage_type, :display_category, :status, :description, :category, {outcome: [:success]})
+        metadata_keys = params.dig(:entourage, :metadata).try(:keys) || []
+        params.require(:entourage).permit(:group_type, {location: [:longitude, :latitude]}, :title, :entourage_type, :display_category, :status, :description, :category, {outcome: [:success]}, {metadata: metadata_keys})
       end
 
       def set_entourage
