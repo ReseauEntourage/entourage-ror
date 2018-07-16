@@ -52,6 +52,12 @@ class MemberMailer < ActionMailer::Base
                   }
   end
 
+  def onboarding_day_14(user)
+    mailjet_email to: user,
+                  template_id: 456172,
+                  campaign_name: :onboarding_j_14
+  end
+
   def mailjet_email to:, template_id:, campaign_name:,
                     from: email_with_name("guillaume@entourage.social", "Le Réseau Entourage"),
                     variables: {},

@@ -45,6 +45,20 @@ Rails.application.configure do
   if ENV['ENABLE_MAILCATCHER']
     config.action_mailer.delivery_method = :smtp
     config.action_mailer.smtp_settings   = { :address => "localhost", :port => 1025 }
+  elsif ENV['ENABLE_MAILJET'] == 'true'
+    config.action_mailer.delivery_method = :safety_mailer
+
+    config.action_mailer.safety_mailer_settings = {
+      allowed_matchers: [ /@entourage\.social\z/ ],
+      delivery_method: :smtp,
+      delivery_method_settings: {
+        :port =>           '587',
+        :address =>        'in-v3.mailjet.com',
+        :user_name =>      ENV['MAILJET_API_KEY'],
+        :password =>       ENV['MAILJET_SECRET_KEY'],
+        :authentication => :plain
+      }
+    }
   else
     config.action_mailer.delivery_method = :file
   end
