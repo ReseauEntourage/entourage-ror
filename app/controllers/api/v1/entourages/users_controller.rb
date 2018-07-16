@@ -159,7 +159,7 @@ module Api
         end
 
         def restrict_group_types!
-          unless ['action'].include?(@entourage.group_type)
+          unless ['action', 'outing'].include?(@entourage.group_type)
             render json: {message: "This operation is not available for groups of type '#{@entourage.group_type}'"}, status: :bad_request
           end
         end
