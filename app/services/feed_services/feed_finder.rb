@@ -123,9 +123,9 @@ module FeedServices
 
       feeds = insert_announcements(feeds: feeds) if announcements == :v1
 
-      if user.community == :entourage && page == 1 && area.in?(['Paris République', 'Paris 17 et 9', 'Paris 15', 'Paris 5'])
-        feeds = pin(4243, feeds: feeds)
-      end
+      # if user.community == :entourage && page == 1 && area.in?(['Paris République', 'Paris 17 et 9', 'Paris 15', 'Paris 5'])
+      #   feeds = pin(4243, feeds: feeds)
+      # end
 
       preload_user_join_requests(feeds)
       preload_entourage_moderations(feeds)
