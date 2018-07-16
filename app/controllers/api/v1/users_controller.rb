@@ -203,7 +203,7 @@ module Api
       end
 
       def address_params
-        params.require(:address).permit(:name, :formatted_address, :latitude, :longitude)
+        params.require(:address).permit(:place_name, :latitude, :longitude, :street_address, :google_place_id)
       end
 
       # The apps cache the response to /login and /update for the currentUser
