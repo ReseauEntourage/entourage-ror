@@ -2,10 +2,18 @@ module V1
   module Entourages
     module Location
       def location
-        {
-          latitude: randomizer.random_latitude,
-          longitude: randomizer.random_longitude
-        }
+        case object.group_type
+        when 'outing'
+          {
+            latitude: object.latitude,
+            longitude: object.longitude
+          }
+        else
+          {
+            latitude: randomizer.random_latitude,
+            longitude: randomizer.random_longitude
+          }
+        end
       end
 
       def randomizer
