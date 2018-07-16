@@ -98,8 +98,9 @@ Rpush.reflect do |on|
 
   # Called when the GCM returns a failure that indicates an invalid registration id.
   # You will need to delete the registration_id from your records.
-  # on.gcm_invalid_registration_id do |app, error, registration_id|
-  # end
+  on.gcm_invalid_registration_id do |app, error, registration_id|
+    Rails.logger.info "type=rpush.gcm_invalid_registration_id app_id=#{app.id} error=#{error.inspect} registration_id=#{registration_id}"
+  end
 
   # Called when an SSL certificate will expire within 1 month.
   # Implement on.error to catch errors raised when the certificate expires.

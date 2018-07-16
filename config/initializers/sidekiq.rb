@@ -18,7 +18,7 @@ module Rpush
               response_code: response.code.to_i,
               response_body: response.body,
             }
-          )
+          ) unless response.code.to_i == 200
           raise e
         end
       end
