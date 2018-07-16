@@ -1578,7 +1578,7 @@ Entourages related resources of the **Entourage API**
 
 
 ### Create an entourage [POST]
-+ Request (application/json)
++ Request create an action (application/json)
 
     + Header
 
@@ -1595,6 +1595,27 @@ Entourages related resources of the **Entourage API**
                 "location" : { "latitude" : 37.4224764, "longitude" : -122.0842499 },
                 "description": "lorem ipsum",
                 "category": "mat_help"
+                }
+            }
+
++ Request create an outing (application/json)
+
+    + Body
+
+            {
+            "entourage": {
+                "group_type": "outing",
+                "title": "Apéro Entourage",
+                "location": {
+                    "latitude": 48.868959,
+                    "longitude": 2.390184999999974
+                    },
+                "metadata": {
+                    "starts_at": "2018-09-04T19:30:00+02:00",
+                    "place_name": "Le Dorothy",
+                    "street_address": "85 bis rue de Ménilmontant, 75020 Paris, France",
+                    "google_place_id": "ChIJFzXXy-xt5kcRg5tztdINnp0"
+                    }
                 }
             }
 
