@@ -8,120 +8,82 @@ class MemberMailer < ActionMailer::Base
   TOUR_REPORT_EMAIL = ENV["TOUR_REPORT_EMAIL"] || "maraudes@entourage.social"
 
   def welcome(user)
-    return unless user.email.present?
     community = user.community
-
-    # generate an email with an empty body
-    mail { nil }
-
-    # then overwrite the headers
-    headers(
-      from:    email_with_name("contact@entourage.social", "Le Réseau Entourage"),
-      to:      user.email,
-      subject: nil,
-
-      'X-MJ-TemplateID' => community.mailjet_template['welcome'],
-      'X-MJ-TemplateLanguage' => 1,
-
-      'X-MJ-Vars' => JSON.fast_generate(
-        first_name: user.first_name,
-        user_id: UserServices::EncodedId.encode(user.id)
-      ),
-      'X-MJ-EventPayload' => JSON.fast_generate(
-        type: :welcome,
-        user_id: user.id
-      ),
-      'X-Mailjet-Campaign' => community_prefix(community, :welcome)
-    )
+    mailjet_email to: user,
+                  template_id: community.mailjet_template['welcome'],
+                  campaign_name: community_prefix(community, :welcome),
+                  from: email_with_name("contact@entourage.social", "Le Réseau Entourage")
   end
 
   def entourage_confirmation(entourage)
     user = entourage.user
-    return unless user.email.present?
-
-    # generate an email with an empty body
-    mail { nil }
-
-    # then overwrite the headers
-    headers(
-      from:    email_with_name("guillaume@entourage.social", "Le Réseau Entourage"),
-      to:      user.email,
-      subject: nil,
-
-      'X-MJ-TemplateID' => 312279,
-      'X-MJ-TemplateLanguage' => 1,
-
-      'X-MJ-Vars' => JSON.fast_generate(
-        first_name: user.first_name,
-        entourage_title: entourage.title
-      ),
-      'X-MJ-EventPayload' => JSON.fast_generate(
-        type: :action_confirmation,
-        entourage_id: entourage.id
-      ),
-      'X-Mailjet-Campaign' => :action_confirmation
-    )
+    mailjet_email to: user,
+                  template_id: 312279,
+                  campaign_name: :action_confirmation,
+                  variables: {
+                    entourage_title: entourage.title
+                  },
+                  payload: {
+                    entourage_id: entourage.id
+                  }
   end
 
   def action_zone_suggestion(user, postal_code)
-    return unless user.email.present?
-    user_id = UserServices::EncodedId.encode(user.id)
-
-    # generate an email with an empty body
-    mail { nil }
-
-    # then overwrite the headers
-    headers(
-      from:    email_with_name("guillaume@entourage.social", "Le Réseau Entourage"),
-      to:      user.email,
-      subject: nil,
-
-      'X-MJ-TemplateID' => 355675,
-      'X-MJ-TemplateLanguage' => 1,
-
-      'X-MJ-Vars' => JSON.fast_generate(
-        first_name: user.first_name,
-        postal_code: postal_code,
-        user_id: user_id,
-        confirm_url: confirm_api_v1_action_zones_url(
-          host: API_HOST,
-          protocol: :https,
-          user_id: user_id,
-          postal_code: postal_code
-        )
-      ),
-      'X-MJ-EventPayload' => JSON.fast_generate(
-        type: :action_zone_suggestion,
-        user_id: user.id
-      ),
-      'X-Mailjet-Campaign' => :action_zone_suggestion
-    )
+    mailjet_email to: user,
+                  template_id: 355675,
+                  campaign_name: :action_zone_suggestion,
+                  variables: {
+                    postal_code: postal_code,
+                    confirm_url: confirm_api_v1_action_zones_url(
+                      host: API_HOST,
+                      protocol: :https,
+                      user_id: UserServices::EncodedId.encode(user.id),
+                      postal_code: postal_code
+                    )
+                  }
   end
 
   def action_zone_confirmation(user, postal_code)
+    mailjet_email to: user,
+                  template_id: 335020,
+                  campaign_name: :action_zone_confirmation,
+                  variables: {
+                    postal_code: postal_code,
+                  }
+  end
+
+  def mailjet_email to:, template_id:, campaign_name:,
+                    from: email_with_name("guillaume@entourage.social", "Le Réseau Entourage"),
+                    variables: {},
+                    payload: {}
+    user = to
     return unless user.email.present?
+
+    variables.reverse_merge!(
+      first_name: user.first_name,
+      user_id: UserServices::EncodedId.encode(user.id),
+    )
+
+    payload.reverse_merge!(
+      type: campaign_name,
+      user_id: user.id,
+    )
 
     # generate an email with an empty body
     mail { nil }
 
     # then overwrite the headers
     headers(
-      from:    email_with_name("guillaume@entourage.social", "Le Réseau Entourage"),
+      from:    from,
       to:      user.email,
       subject: nil,
 
-      'X-MJ-TemplateID' => 335020,
+      'X-MJ-TemplateID' => template_id,
       'X-MJ-TemplateLanguage' => 1,
 
-      'X-MJ-Vars' => JSON.fast_generate(
-        first_name: user.first_name,
-        postal_code: postal_code,
-      ),
-      'X-MJ-EventPayload' => JSON.fast_generate(
-        type: :action_zone_confirmation,
-        user_id: user.id
-      ),
-      'X-Mailjet-Campaign' => :action_zone_confirmation
+      'X-MJ-Vars' => JSON.fast_generate(variables),
+      'X-MJ-EventPayload' => JSON.fast_generate(payload),
+      'X-Mailjet-Campaign' => campaign_name
     )
   end
 
