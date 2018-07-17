@@ -53,7 +53,6 @@ RSpec.describe Entourage, type: :model do
   end
 
   describe "metadata" do
-    with_community :pfp
     let(:now) { Time.now.change(sec: 42) }
     let!(:outing) { create(:outing, metadata: {starts_at: now}).reload }
 

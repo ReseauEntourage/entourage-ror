@@ -177,7 +177,6 @@ describe Api::V1::EntouragesController do
       end
 
       context "metadata (outings)" do
-        with_community :pfp
         let(:params) do
           {
             group_type: :outing,

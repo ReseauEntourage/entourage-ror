@@ -19,7 +19,7 @@ module EntourageServices
 
       allowed_group_types =
         case user.community
-        when 'entourage' then ['action']
+        when 'entourage' then ['action', 'outing']
         when 'pfp'       then ['outing']
         end
       entourage.group_type = nil unless entourage.group_type.in? allowed_group_types
@@ -36,6 +36,7 @@ module EntourageServices
           case [joinable.community, joinable.group_type]
           when ['entourage', 'tour']   then 'creator'
           when ['entourage', 'action'] then 'creator'
+          when ['entourage', 'outing'] then 'organizer'
           when ['pfp',       'outing'] then 'organizer'
           else raise 'Unhandled'
           end

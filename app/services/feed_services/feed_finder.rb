@@ -176,6 +176,8 @@ module FeedServices
         # fix wrong keys in iOS 4.1 - 4.3
         'ah' => 'ask_for_help_mat_help',
         'ch' => 'contribution_mat_help',
+
+        'ou' => 'outing',
       },
       'entourage_pro' => {
         'tm' => 'tour_medical',

@@ -12,3 +12,6 @@ group_types:
   conversation:
     message_types: [text]
     roles: [participant]
+  outing:
+    message_types: [text]
+    roles: [organizer, participant]
