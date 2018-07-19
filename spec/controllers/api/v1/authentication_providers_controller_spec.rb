@@ -56,6 +56,7 @@ describe Api::V1::AuthenticationProvidersController do
                                                        "entourage_count"=>0,
                                                    },
                                                    "partner"=>nil,
+                                                   "address"=>nil,
                                                    "has_password"=>false
                                                   }}) }
           it { expect(response.status).to eq(200) }

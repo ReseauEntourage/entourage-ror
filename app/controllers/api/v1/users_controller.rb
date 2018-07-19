@@ -158,8 +158,8 @@ module Api
         updater = UserServices::AddressService.new(user: current_user, params: address_params)
 
         updater.update do |on|
-          on.success do
-            head :no_content
+          on.success do |user, address|
+            render json: address, status: 200, serializer: ::V1::AddressSerializer
           end
 
           on.failure do |user, address|

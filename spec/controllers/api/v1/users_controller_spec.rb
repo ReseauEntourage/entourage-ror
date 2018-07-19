@@ -32,6 +32,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                                   "token"=>user.token,
                                   "user_type"=>"pro",
                                   "has_password"=>false,
+                                  "address"=>nil,
                                   "avatar_url"=>"https://foobar.s3-eu-west-1.amazonaws.com/300x300/avatar.jpg",
                                   "organization"=>{"name"=>user.organization.name,
                                                    "description"=>"Association description",
@@ -186,6 +187,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                                                              "user_type"=>"pro",
                                                              "token"=>user.token,
                                                              "has_password"=>false,
+                                                             "address"=>nil,
                                                              "avatar_url"=>"https://foobar.s3-eu-west-1.amazonaws.com/300x300/avatar.jpg",
                                                              "organization"=>{"name"=>user.organization.name,
                                                                               "description"=>"Association description",
@@ -458,6 +460,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                                                            "user_type"=>"pro",
                                                            "avatar_url"=>nil,
                                                            "has_password"=>false,
+                                                           "address"=>nil,
                                                            "organization"=>{"name"=>user.organization.name,
                                                                             "description"=>"Association description",
                                                                             "phone"=>user.organization.phone,
@@ -483,6 +486,18 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                                                            "memberships"=>[],
                                                            "conversation"=>{"uuid"=>"1_list_#{user.id}"}
                                                          }}) }
+
+        context "when you have an address" do
+          let(:address) { create :address }
+          let(:user) { create :public_user, address: address }
+          it {
+            expect(JSON.parse(response.body)['user']['address']).to eq(
+              "latitude" => 1.5,
+              "longitude" => 1.5,
+              "display_address" => "rue Pizza, 75020",
+            )
+          }
+        end
       end
 
       context "get my profile with 'me' shortcut" do
@@ -500,6 +515,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                                                            "user_type"=>"pro",
                                                            "avatar_url"=>nil,
                                                            "has_password"=>false,
+                                                           "address"=>nil,
                                                            "organization"=>{"name"=>user.organization.name, "description"=>"Association description", "phone"=>user.organization.phone, "address"=>user.organization.address, "logo_url"=>nil},
                                                            "stats"=>{
                                                                "tour_count"=>0,
@@ -610,8 +626,14 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
     context "valid params" do
       let(:address) { { place_name: "75012", latitude: 48.835085, longitude: 2.382165 } }
       before { subject }
-      it { expect(response.status).to eq 204 }
-      it { expect(response.body).to be_blank }
+      it { expect(response.status).to eq 200 }
+      it { expect(JSON.parse(response.body)).to eq(
+        "address"=>{
+          "display_address"=>"75012",
+          "latitude"=>48.835085,
+          "longitude"=>2.382165,
+        })
+      }
       it { expect(user.reload.address.attributes.symbolize_keys).to include address }
     end
 
@@ -631,6 +653,66 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
       }) }
       it { expect(user.reload.address_id).to be_nil }
       it { expect(Address.count).to eq 0 }
+    end
+
+    context "with a google place_id" do
+      before do
+        Geocoder.configure(api_key: 'something')
+        stub_request(:get, /maps.googleapis.com/)
+          .to_return(body: JSON.fast_generate(
+            status: :OK,
+            result: {
+              name: 'My Place',
+              geometry: {location: {lat: 1, lng: 2}},
+              address_components: [
+                {types: [:postal_code], long_name: '00001'},
+                {types: [:country], short_name: 'FR'}
+              ],
+              place_id: 'new-place-id'
+            }
+          ))
+      end
+
+      context "when required attributes are missing" do
+        let(:address) { { google_place_id: 'some-place-id' } }
+        it do
+          subject
+          expect(Address.last&.attributes).to include(
+            'place_name' => 'My Place',
+            'latitude'  => 1.0,
+            'longitude' => 2.0,
+            'postal_code' => '00001',
+            'country' => 'FR',
+            'google_place_id' => 'new-place-id',
+          )
+        end
+      end
+
+      context "when required attributes are present" do
+        let(:address) { { google_place_id: 'some-place-id', place_name: 'Some name', latitude: 4, longitude: 5 } }
+        it "doesn't update the address with Google Places data at first"do
+          Sidekiq::Testing.fake! { subject }
+          expect(Address.last&.attributes).to include(
+            'place_name' => 'Some name',
+            'latitude'  => 4.0,
+            'longitude' => 5.0,
+            'postal_code' => nil,
+            'country' => nil,
+            'google_place_id' => 'some-place-id',
+          )
+        end
+        it "updates the address queries with Google Places data asynchronously" do
+          subject
+          expect(Address.last&.attributes).to include(
+            'place_name' => 'My Place',
+            'latitude'  => 1.0,
+            'longitude' => 2.0,
+            'postal_code' => '00001',
+            'country' => 'FR',
+            'google_place_id' => 'new-place-id',
+          )
+        end
+      end
     end
   end
 end

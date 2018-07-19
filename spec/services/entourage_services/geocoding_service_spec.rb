@@ -33,7 +33,7 @@ describe EntourageServices::GeocodingService do
   context "geocoding" do
     let(:entourage) { build(:entourage, latitude: 48.839563, longitude: 2.395748) }
     before do
-      stub_request(:get, "https://maps.googleapis.com/maps/api/geocode/json?language=fr&latlng=#{entourage.latitude},#{entourage.longitude}&result_type=postal_code&sensor=false")
+      stub_request(:get, /maps.googleapis.com/)
         .to_return(status: 200, body: JSON.fast_generate("results"=>[{
           "address_components"=>[
             {"long_name"=>"75012", "short_name"=>"75012", "types"=>["postal_code"]},

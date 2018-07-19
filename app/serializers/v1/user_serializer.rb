@@ -17,9 +17,10 @@ module V1
 
     has_one :organization
     has_one :stats, serializer: ActiveModel::DefaultSerializer
+    has_one :address, serializer: AddressSerializer
 
     def filter(keys)
-      keys -= [:token, :email, :has_password] unless me?
+      keys -= [:token, :email, :has_password, :address] unless me?
       keys -= [:memberships] unless scope[:memberships]
       keys -= [:conversation] unless scope[:conversation] && scope[:user]
       keys
