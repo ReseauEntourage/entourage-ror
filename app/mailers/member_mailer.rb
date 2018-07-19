@@ -4,6 +4,8 @@ class MemberMailer < ActionMailer::Base
 
   rescue_from Net::ProtocolError, with: :handle_delivery_error
 
+  include EmailDeliveryHooks::Concern
+
   COMMUNITY_EMAIL   = ENV["COMMUNITY_EMAIL"]   || "communaute@entourage.social"
   TOUR_REPORT_EMAIL = ENV["TOUR_REPORT_EMAIL"] || "maraudes@entourage.social"
 
@@ -52,10 +54,32 @@ class MemberMailer < ActionMailer::Base
                   }
   end
 
+  def onboarding_day_8(user)
+    mailjet_email to: user,
+                  template_id: 452755,
+                  campaign_name: :onboarding_j_8
+  end
+
   def onboarding_day_14(user)
     mailjet_email to: user,
                   template_id: 456172,
                   campaign_name: :onboarding_j_14
+  end
+
+  def reactivation_day_20(user)
+    track_delivery user_id: user.id, campaign: :reactivation_day_20,
+                   deliver_only_once: true
+    mailjet_email to: user,
+                  template_id: 456175,
+                  campaign_name: :relance_j_20
+  end
+
+  def reactivation_day_40(user)
+    track_delivery user_id: user.id, campaign: :reactivation_day_40,
+                   deliver_only_once: true
+    mailjet_email to: user,
+                  template_id: 456194,
+                  campaign_name: :relance_j_40
   end
 
   def mailjet_email to:, template_id:, campaign_name:,
@@ -91,6 +115,11 @@ class MemberMailer < ActionMailer::Base
       'X-MJ-EventPayload' => JSON.fast_generate(payload),
       'X-Mailjet-Campaign' => campaign_name
     )
+
+    if ENV['MAILJET_SAMPLING_ADDRESS'].present?
+      rate = Float(ENV['MAILJET_SAMPLING_RATE'] || 0.02)
+      collect_samples rate: rate, address: ENV['MAILJET_SAMPLING_ADDRESS']
+    end
   end
 
   def tour_report(tour)

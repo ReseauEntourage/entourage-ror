@@ -1,14 +1,22 @@
 namespace :onboarding_sequence do
   task send_emails: :environment do
-    def at_day n, &block
-      User.where(onboarding_sequence_start_at: n.days.ago.all_day)
-        .find_each do |user|
-          begin
-            yield user
-          rescue => e
-            Raven.capture_exception(e, extra: { user_id: user.id })
-          end
+    def at_day n, after:, &block
+      scope = User.where(deleted: false)
+      scope =
+        case after
+        when :registration
+          scope.where(onboarding_sequence_start_at: n.days.ago.all_day)
+        when :last_session
+          scope.where(last_sign_in_at: n.days.ago.all_day)
         end
+
+      scope.find_each do |user|
+        begin
+          yield user
+        rescue => e
+          Raven.capture_exception(e, extra: { user_id: user.id })
+        end
+      end
     end
 
     def most_common_postal_code entourages
@@ -37,7 +45,9 @@ namespace :onboarding_sequence do
     # only run at or after target hour
     next unless ([current_run_at.hour, current_run_at.min] <=> target_hour) >= 0
 
-    at_day 3 do |user|
+    at_day 3, after: :registration do |user|
+      next if user.action_zones.exists?
+
       postal_code =
         most_common_postal_code(user.entourages) ||
         most_common_postal_code(user.entourage_participations) ||
@@ -46,8 +56,20 @@ namespace :onboarding_sequence do
       MemberMailer.action_zone_suggestion(user, postal_code).deliver_later
     end
 
-    at_day 14 do |user|
+    at_day 8, after: :registration do |user|
+      MemberMailer.onboarding_day_8(user).deliver_later
+    end
+
+    at_day 14, after: :registration do |user|
       MemberMailer.onboarding_day_14(user).deliver_later
+    end
+
+    at_day 20, after: :last_session do |user|
+      MemberMailer.reactivation_day_20(user).deliver_later
+    end
+
+    at_day 40, after: :last_session do |user|
+      MemberMailer.reactivation_day_40(user).deliver_later
     end
 
     $redis.set(redis_key, redis_date)
