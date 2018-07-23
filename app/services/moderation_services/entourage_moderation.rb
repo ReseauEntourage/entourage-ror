@@ -3,6 +3,7 @@ module ModerationServices
     module_function
 
     def moderator_for entourage
+      return if entourage.community != 'entourage'
       User.find_by email: 'guillaume@entourage.social'
     end
 

@@ -14,6 +14,7 @@ module JoinRequestsServices
         case [joinable.community, joinable.group_type]
         when ['entourage', 'tour']   then 'member'
         when ['entourage', 'action'] then 'member'
+        when ['entourage', 'outing'] then 'participant'
         else raise 'Unhandled'
         end
 
