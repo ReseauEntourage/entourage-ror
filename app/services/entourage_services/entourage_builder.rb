@@ -2,7 +2,7 @@ module EntourageServices
   class EntourageBuilder
     def initialize(params:, user:)
       @callback = Callback.new
-      @params = params
+      @params = params.with_indifferent_access
       @user = user
     end
 
@@ -53,6 +53,8 @@ module EntourageServices
 
     def update(entourage:)
       yield callback if block_given?
+
+      params.delete(:group_type)
 
       if params[:location]
         entourage.longitude = params.dig(:location, :longitude)

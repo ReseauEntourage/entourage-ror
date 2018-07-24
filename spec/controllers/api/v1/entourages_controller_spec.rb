@@ -485,6 +485,15 @@ describe Api::V1::EntouragesController do
         it { expect(user_entourage.reload.latitude).to eq(10.5) }
         it { expect(user_entourage.reload.longitude).to eq(20.1) }
       end
+
+      context "changing group type" do
+        let!(:user_entourage) { FactoryGirl.create(:entourage, user: user) }
+        before { patch :update, id: user_entourage.to_param, entourage: {group_type: :conversation}, token: user.token }
+        it "ignores the change" do
+          expect(user_entourage.reload.group_type).to eq 'action'
+        end
+        it { expect(response.code).to eq '200' }
+      end
     end
   end
 
