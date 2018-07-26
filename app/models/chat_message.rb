@@ -1,3 +1,5 @@
+require 'experimental/jsonb_with_schema'
+
 class ChatMessage < ActiveRecord::Base
   include FeedsConcern
 
@@ -12,6 +14,27 @@ class ChatMessage < ActiveRecord::Base
 
   scope :ordered, -> { order("created_at DESC") }
 
+  attribute :metadata, Experimental::JsonbWithSchema.new
+
+  def self.json_schema urn
+    JsonSchemaService.base do
+      case urn
+      when 'visit:metadata'
+        {
+          visited_at: { format: 'date-time-iso8601' }
+        }
+      when 'outing:metadata'
+        {
+          operation: { type: :string, enum: [:created, :updated] },
+          title: { type: :string },
+          starts_at: { format: 'date-time-iso8601' },
+          display_address: { type: :string },
+          uuid: { type: :string }
+        }
+      end
+    end
+  end
+
   private
 
   def generate_content
@@ -23,12 +46,13 @@ class ChatMessage < ActiveRecord::Base
   def generated_content
     case message_type
     when 'visit' then visit_content
+    when 'outing' then outing_content
     else content
     end
   end
 
   def visit_content
-    date = Time.zone.parse(metadata['visited_at']).to_date
+    date = Time.zone.parse(metadata[:visited_at]).to_date
     date_expr =
       case Time.zone.today - date
       when 0 then "aujourd'hui"
@@ -45,20 +69,26 @@ class ChatMessage < ActiveRecord::Base
     else
       [
         (date.future? ? "Je voisinerai" : "J'ai voisiné"),
-        messageable.metadata['visited_user_first_name'],
+        messageable.metadata[:visited_user_first_name],
         date_expr
       ].join(' ')
     end
   end
 
-  def self.json_schema urn
-    JsonSchemaService.base do
-      case urn
-      when 'visit:metadata'
-        {
-          visited_at: { format: 'date-time-iso8601' }
-        }
-      end
-    end
+  def outing_content
+    action = {
+      created: 'a créé',
+      updated: 'a modifié'
+    }[metadata[:operation].to_sym]
+    name = {
+      pfp: 'une sortie'
+    }[messageable.community.slug.to_sym] || 'un évènement'
+    starts_at = Time.zone.parse(metadata[:starts_at])
+    [
+      "#{action} #{name} :",
+      metadata[:title],
+      I18n.l(starts_at, format: "le %d/%m à %Hh%M,"),
+      metadata[:display_address]
+    ].join("\n")
   end
 end

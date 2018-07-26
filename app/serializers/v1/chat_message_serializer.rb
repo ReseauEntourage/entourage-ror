@@ -3,7 +3,14 @@ module V1
     attributes :id,
                :content,
                :user,
-               :created_at
+               :created_at,
+               :message_type,
+               :metadata
+
+    def filter(keys)
+      keys -= [:metadata] unless object.message_type.in?(['outing'])
+      keys
+    end
 
     def user
       {
@@ -20,6 +27,10 @@ module V1
 
     def chat_user
       object.user
+    end
+
+    def metadata
+      object.metadata.except(:$id)
     end
   end
 end

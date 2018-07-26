@@ -15,7 +15,7 @@ group_types:
     message_types: [text, visit]
     roles: [visitor, visited]
   neighborhood:
-    message_types: [text]
+    message_types: [text, outing]
     roles: [coordinator, member]
   conversation:
     message_types: [text]

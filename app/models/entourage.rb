@@ -120,7 +120,7 @@ class Entourage < ActiveRecord::Base
   def metadata
     case group_type
     when 'private_circle'
-      { 'visited_user_first_name' => (title || "").gsub(/\ALes amis (de |d')/, '') }
+      { visited_user_first_name: (title || "").gsub(/\ALes amis (de |d')/, '') }
     else
       super
     end

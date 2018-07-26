@@ -43,6 +43,7 @@ module EntourageServices
 
         TourServices::JoinRequestStatus.new(join_request: join_request).accept!
         AsyncService.new(ModerationServices::EntourageModeration).on_create(entourage)
+        AsyncService.new(EntourageServices::NeighborhoodAnnouncement).on_create(entourage)
 
         callback.on_success.try(:call, entourage.reload)
       else
@@ -62,7 +63,9 @@ module EntourageServices
       end
 
       if self.class.update(entourage: entourage, params: params.except(:location))
-        callback.on_success.try(:call, entourage.reload)
+        entourage.reload
+        AsyncService.new(EntourageServices::NeighborhoodAnnouncement).on_update(entourage)
+        callback.on_success.try(:call, entourage)
       else
         callback.on_failure.try(:call, entourage)
       end
@@ -70,6 +73,10 @@ module EntourageServices
 
     def self.update(entourage:, params:)
       moderation_params = params.delete(:outcome)
+
+      if params.key? :metadata
+        params[:metadata].reverse_merge! entourage.metadata
+      end
 
       entourage.assign_attributes(params)
 
