@@ -110,6 +110,7 @@ class MemberMailer < ActionMailer::Base
 
       'X-MJ-TemplateID' => template_id,
       'X-MJ-TemplateLanguage' => 1,
+      'X-MJ-TemplateErrorReporting' => 'jq3pq6ub@robot.zapier.com',
 
       'X-MJ-Vars' => JSON.fast_generate(variables),
       'X-MJ-EventPayload' => JSON.fast_generate(payload),
