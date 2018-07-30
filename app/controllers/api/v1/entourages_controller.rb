@@ -2,7 +2,8 @@ module Api
   module V1
     class EntouragesController < Api::V1::BaseController
       before_action :set_entourage_or_handle_conversation_uuid, only: [:show]
-      before_action :set_entourage, only: [:update, :read]
+      before_action :set_entourage, only: [:update, :read, :one_click_update]
+      skip_before_filter :authenticate_user!, only: [:one_click_update]
 
       def index
         finder = EntourageServices::EntourageFinder.new(user: current_user,
@@ -72,6 +73,22 @@ module Api
                   .where(user: current_user)
                   .update_all(last_message_read: DateTime.now)
         head :no_content
+      end
+
+      def one_click_update
+        @success = false
+
+        if SignatureService.validate(@entourage.id, params[:signature])
+          service = EntourageServices::EntourageBuilder.new(
+            params: {status: :closed, outcome: {success: true}},
+            user: @entourage.user
+          )
+          service.update(entourage: @entourage) do |on|
+            on.success { @success = true }
+          end
+        end
+
+        render layout: 'landing'
       end
 
       private

@@ -1,0 +1,13 @@
+<div class="text" style="padding-top: 30px">
+  <strong>Fantastique !</strong><br/>
+  <% if @success %>
+    Le fil de discussion de votre action a été fermé, et l'équipe de modération a été notifiée de votre succès.
+  <% else %>
+    Pour indiquer aux autres membres du réseau que votre action est un succès, accédez au fil de discussion de l'action, cliquez sur l'icône en haut à droite, puis sur le bouton <i>Clôturer</i>.
+  <% end %>
+</div>
+<div class="button-wrapper">
+  <a href="https://www.entourage.social/entourages/<%= @entourage.uuid_v2 %>"
+     class="button">
+    Afficher l'action</a>
+</div>

@@ -93,7 +93,18 @@ module EntourageServices
           true  => 'Oui',
           false => 'Non'
         }[moderation_params[:success]]
-        entourage.moderation.action_outcome = outcome unless outcome.nil?
+        if outcome != nil
+          entourage.moderation.action_outcome = outcome
+        end
+        if entourage.moderation.action_outcome_changed?
+          entourage.moderation.action_outcome_reported_at = Time.now
+          entourage.moderation.moderation_comment = (
+            (entourage.moderation.moderation_comment || '').lines.map(&:chomp) +
+            ["Aboutissement passé à \"#{outcome}\" " +
+             "par le créateur de l'action " +
+             "le #{I18n.l Time.now, format: '%-d %B %Y à %H:%M'}."]
+          ).join("\n")
+        end
       end
 
       entourage.save

@@ -15,7 +15,7 @@ module Api
         rescue ActiveRecord::RecordNotUnique
         end
 
-        render layout: false
+        render layout: 'landing'
       end
     end
   end

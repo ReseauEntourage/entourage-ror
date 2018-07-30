@@ -82,6 +82,37 @@ class MemberMailer < ActionMailer::Base
                   campaign_name: :relance_j_40
   end
 
+  def action_follow_up_day_10(action)
+    mailjet_email to: action.user,
+                  template_id: 452754,
+                  campaign_name: :action_suivi_j_10,
+                  variables: {
+                    action_title: action.title,
+                    action_url: "https://www.entourage.social/entourages/#{action.uuid_v2}",
+                  }
+  end
+
+  def action_follow_up_day_20(action)
+    action_url = "https://www.entourage.social/entourages/#{action.uuid_v2}"
+    mailjet_email to: action.user,
+                  template_id: 451123,
+                  campaign_name: :action_suivi_j_20,
+                  variables: {
+                    action_title: action.title,
+                    action_url: action_url,
+                    action_success_url: one_click_update_api_v1_entourage_url(
+                      host: API_HOST,
+                      protocol: :https,
+                      id: action.uuid_v2,
+                      signature: SignatureService.sign(action.id),
+                    ),
+                    action_support_url: "mailto:guillaume@entourage.social?" + {
+                      subject: "Demande d'aide pour mon action [##{action.id}]",
+                      body: "\n\n--\nLien vers l'action : #{action_url}"
+                    }.to_query
+                  }
+  end
+
   def mailjet_email to:, template_id:, campaign_name:,
                     from: email_with_name("guillaume@entourage.social", "Le Réseau Entourage"),
                     variables: {},
