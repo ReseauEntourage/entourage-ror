@@ -19,6 +19,17 @@ module UserServices
       valid_password ? user : nil
     end
 
+    def self.authenticate_with_token(auth_token:, platform:)
+      return nil if [auth_token, platform].any?(&:blank?)
+
+      token_data = parse_auth_token auth_token
+
+      return nil if token_data[:valid_signature] != true ||
+                    token_data[:expires_at].past?
+
+      token_data[:user]
+    end
+
     def self.authenticate_by_phone_and_sms(phone:, sms_code:)
       return nil if phone.blank? || sms_code.blank?
 
@@ -28,6 +39,32 @@ module UserServices
 
       valid_password = UserServices::AuthenticationService.new(user: user).check_sms_code(sms_code)
       valid_password ? user : nil
+    end
+
+    def self.auth_token user, expires_in: 7.days
+      payload = "#{user.id}-#{expires_in.from_now.to_i}"
+      signature = SignatureService.sign(payload, salt: user.token)
+      "1_#{payload}-#{signature}"
+    end
+
+    def self.parse_auth_token token
+      if token.starts_with? '1_'
+        user_id, expires_at, signature = token[2..-1].split('-')
+        user_id = user_id.to_i
+        user = User.find_by(id: user_id)
+        valid_signature = signature == SignatureService.sign("#{user_id}-#{expires_at}", salt: user&.token)
+        {
+          version: 1,
+          user_id: user_id,
+          expires_at: Time.zone.at(expires_at.to_i),
+          valid_signature: valid_signature,
+          user: user
+        }
+      else
+        {
+          valid_signature: false
+        }
+      end
     end
   end
 end

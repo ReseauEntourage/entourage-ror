@@ -6,28 +6,40 @@ module Api
 
       #curl -H "X-API-KEY:adc86c761fa8" -H "Content-Type: application/json" -X POST -d '{"user": {"phone": "+3312345567", "sms_code": "11111"}}' "http://localhost:3000/api/v1/login.json"
       def login
-        unless PhoneValidator.new(phone: user_params[:phone]).valid?
-          Rails.logger.info "SIGNIN_FAILED: invalid phone number format - params: #{params.inspect}"
-          return render_error(code: "INVALID_PHONE_FORMAT", message: "invalid phone number format", status: 401)
-        end
+        user =
+          if user_params.key?(:auth_token)
+            error_message = "invalid auth_token"
 
-        secret_field =
-          if api_request.platform == :web
-            :secret
+            UserServices::UserAuthenticator.authenticate_with_token(
+              auth_token: user_params[:auth_token],
+              platform: api_request.platform
+            )
           else
-            :sms_code
+            unless PhoneValidator.new(phone: user_params[:phone]).valid?
+              Rails.logger.info "SIGNIN_FAILED: invalid phone number format - params: #{params.inspect}"
+              return render_error(code: "INVALID_PHONE_FORMAT", message: "invalid phone number format", status: 401)
+            end
+
+            secret_field =
+              if api_request.platform == :web
+                :secret
+              else
+                :sms_code
+              end
+
+            error_message = "wrong phone / #{secret_field}"
+
+            UserServices::UserAuthenticator.authenticate(
+              community: community,
+              phone: user_params[:phone],
+              secret: user_params[secret_field],
+              platform: api_request.platform
+            )
           end
 
-        user = UserServices::UserAuthenticator.authenticate(
-          community: community,
-          phone: user_params[:phone],
-          secret: user_params[secret_field],
-          platform: api_request.platform
-        )
-
         unless user
-          Rails.logger.info "SIGNIN_FAILED: wrong phone / #{secret_field} combination - params: #{params.inspect}"
-          return render_error(code: "UNAUTHORIZED", message: "wrong phone / #{secret_field}", status: 401)
+          Rails.logger.info "SIGNIN_FAILED: #{error_message} - params: #{params.inspect}"
+          return render_error(code: "UNAUTHORIZED", message: error_message, status: 401)
         end
 
         if user.deleted || user.blocked?
@@ -195,7 +207,7 @@ module Api
 
       private
       def user_params
-        @user_params ||= params.require(:user).permit(:first_name, :last_name, :email, :sms_code, :password, :secret, :phone, :avatar_key, :about)
+        @user_params ||= params.require(:user).permit(:first_name, :last_name, :email, :sms_code, :password, :secret, :auth_token, :phone, :avatar_key, :about)
       end
 
       def user_report_params

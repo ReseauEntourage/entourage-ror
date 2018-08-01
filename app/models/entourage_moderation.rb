@@ -1,5 +1,6 @@
 class EntourageModeration < ActiveRecord::Base
   validates :entourage_id, presence: true
+  belongs_to :entourage
 
   VALUES = {
     # Emetteur

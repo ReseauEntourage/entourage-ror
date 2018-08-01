@@ -120,6 +120,39 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
         it { expect(response.status).to eq(401) }
         it { expect(result).to eq({"error"=>{"code"=>"INVALID_PHONE_FORMAT", "message"=>"invalid phone number format"}}) }
       end
+
+      context 'auth_token' do
+        let(:token_expiration) { 24.hours.from_now }
+        let(:token_user_id) { user.id }
+        let(:token_payload) { "#{token_user_id}-#{token_expiration.to_i}" }
+        let(:token_signature) { SignatureService.sign(token_payload, salt: user.token) }
+        let(:token) { "1_#{token_payload}-#{token_signature}" }
+
+        before { post 'login', user: {auth_token: token} }
+
+        context "valid token" do
+          it { expect(response.status).to eq(200) }
+          it { expect(result['user']['id']).to eq user.id }
+        end
+
+        context "expired token" do
+          let(:token_expiration) { 1.second.ago }
+          it { expect(response.status).to eq(401) }
+          it { expect(result['error']['message']).to eq 'invalid auth_token' }
+        end
+
+        context "user doesn't exist" do
+          let(:token_user_id) { 0 }
+          it { expect(response.status).to eq(401) }
+          it { expect(result['error']['message']).to eq 'invalid auth_token' }
+        end
+
+        context "user doesn't exist" do
+          let(:token_signature) { 'wrong_signature' }
+          it { expect(response.status).to eq(401) }
+          it { expect(result['error']['message']).to eq 'invalid auth_token' }
+        end
+      end
     end
 
     describe 'invalid params' do

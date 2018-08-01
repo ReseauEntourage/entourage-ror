@@ -21,3 +21,4 @@ RSpec.configure do |config|
 end
 
 ENV["DISABLE_CRYPT"]="TRUE"
+ENV['ENTOURAGE_SECRET'] = 'test_entourage_secret'

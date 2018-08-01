@@ -113,6 +113,23 @@ class MemberMailer < ActionMailer::Base
                   }
   end
 
+  def action_outcome_success(action)
+    mailjet_email to: action.user,
+                  template_id: 366621,
+                  campaign_name: :action_aboutie,
+                  variables: {
+                    action_title: action.title,
+                    action_author_type: action.moderation&.action_author_type,
+                    action_type: action.moderation&.action_type&.split(':')&.first&.strip,
+                    volunteering_form_url: redirect_api_v1_link_url(
+                      host: API_HOST,
+                      protocol: :https,
+                      id: :volunteering,
+                      token: action.user.token,
+                    )
+                  }
+  end
+
   def mailjet_email to:, template_id:, campaign_name:,
                     from: email_with_name("guillaume@entourage.social", "Le Réseau Entourage"),
                     variables: {},

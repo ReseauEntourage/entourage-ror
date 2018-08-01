@@ -5,10 +5,10 @@ module SignatureService
     signature == sign(key, length: length)
   end
 
-  def self.sign key, length: DEFAULT_SIGNATURE_LENGTH
+  def self.sign key, length: DEFAULT_SIGNATURE_LENGTH, salt: nil
     OpenSSL::HMAC.hexdigest(
       OpenSSL::Digest.new('sha1'),
-      ENV['ENTOURAGE_SECRET'],
+      [ENV['ENTOURAGE_SECRET'], salt].join,
       key.to_s
     )
     .first(length)
