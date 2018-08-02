@@ -30,7 +30,7 @@ module Api
 
         case id
         when 2
-          url = "https://www.entourage.social/don" +
+          url = "#{ENV['WEBSITE_URL']}/don" +
                   "?firstname=#{current_user.first_name}" +
                   "&lastname=#{current_user.last_name}" +
                   "&email=#{current_user.email}" +

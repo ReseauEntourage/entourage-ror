@@ -5,7 +5,7 @@
 </head>
 <body>
 <p>
-  <a href="https://www.entourage.social/deeplink/feed" style="border:0;outline:0">
+  <a href="<%= ENV['WEBSITE_URL'] %>/deeplink/feed" style="border:0;outline:0">
     <img src="https://s3-eu-west-1.amazonaws.com/entourage-ressources/assets/emails/welcome/header.png" alt="" width="472" height="111" style="max-width:100%;height:auto">
   </a>
   <br>
@@ -14,7 +14,7 @@
   Bienvenue <%= @user.first_name %> !
 </p>
 <p>
-  Je suis Claire du <a href="https://www.entourage.social/?utm_source=email&utm_medium=email&utm_campaign=welcome_email">Réseau Entourage</a>. Merci d&#39;avoir rejoint la communauté de voisins engagés contre la solitude des personnes sans-abri !
+  Je suis Claire du <a href="<%= ENV['WEBSITE_URL'] %>/?utm_source=email&utm_medium=email&utm_campaign=welcome_email">Réseau Entourage</a>. Merci d&#39;avoir rejoint la communauté de voisins engagés contre la solitude des personnes sans-abri !
 </p>
 <p><br></p>
 <p><b><span style="color:#dc5414;font-family:arial;font-size:14.6667px;white-space:pre-wrap">À plusieurs, c&#39;est plus facile d&#39;agir<br></span></b></p>

@@ -7,7 +7,7 @@
   <% end %>
 </div>
 <div class="button-wrapper">
-  <a href="https://www.entourage.social/entourages/<%= @entourage.uuid_v2 %>"
+  <a href="<%= ENV['WEBSITE_URL'] %>/entourages/<%= @entourage.uuid_v2 %>"
      class="button">
     Afficher l'action</a>
 </div>

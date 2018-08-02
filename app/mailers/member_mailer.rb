@@ -88,12 +88,12 @@ class MemberMailer < ActionMailer::Base
                   campaign_name: :action_suivi_j_10,
                   variables: {
                     action_title: action.title,
-                    action_url: "https://www.entourage.social/entourages/#{action.uuid_v2}",
+                    action_url: "#{ENV['WEBSITE_URL']}/entourages/#{action.uuid_v2}",
                   }
   end
 
   def action_follow_up_day_20(action)
-    action_url = "https://www.entourage.social/entourages/#{action.uuid_v2}"
+    action_url = "#{ENV['WEBSITE_URL']}/entourages/#{action.uuid_v2}"
     mailjet_email to: action.user,
                   template_id: 451123,
                   campaign_name: :action_suivi_j_20,
