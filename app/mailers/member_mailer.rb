@@ -137,9 +137,13 @@ class MemberMailer < ActionMailer::Base
     user = to
     return unless user.email.present?
 
+    auth_token = UserServices::UserAuthenticator.auth_token(user)
+
     variables.reverse_merge!(
       first_name: user.first_name,
       user_id: UserServices::EncodedId.encode(user.id),
+      webapp_login_link: (ENV['WEBSITE_URL'] + '/app?auth=' + auth_token),
+      login_link: (ENV['WEBSITE_URL'] + '/deeplink/feed?auth=' + auth_token)
     )
 
     payload.reverse_merge!(

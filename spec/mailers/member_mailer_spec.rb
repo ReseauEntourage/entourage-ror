@@ -11,9 +11,14 @@ def expect_mailjet_email opts={}, &block
       variables: {},
       payload: {}
     )
+
+    auth_token = UserServices::UserAuthenticator.auth_token(user)
+
     options[:variables].reverse_merge!(
       first_name: user.first_name,
       user_id: UserServices::EncodedId.encode(user.id),
+      webapp_login_link: "https://www.entourage.social/app?auth=#{auth_token}",
+      login_link: "https://www.entourage.social/deeplink/feed?auth=#{auth_token}",
     )
     options[:payload].reverse_merge!(
       type: options[:campaign_name],
