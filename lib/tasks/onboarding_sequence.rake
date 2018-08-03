@@ -56,9 +56,9 @@ namespace :onboarding_sequence do
       MemberMailer.action_zone_suggestion(user, postal_code).deliver_later
     end
 
-    at_day 8, after: :registration do |user|
-      MemberMailer.onboarding_day_8(user).deliver_later
-    end
+    # at_day 8, after: :registration do |user|
+    #   MemberMailer.onboarding_day_8(user).deliver_later
+    # end
 
     at_day 14, after: :registration do |user|
       MemberMailer.onboarding_day_14(user).deliver_later
