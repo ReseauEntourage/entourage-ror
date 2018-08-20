@@ -92,7 +92,7 @@ module SensitiveWordsService
   end
 
   def self.highlight string, expressions, &block
-    return string if expressions.empty?
+    return string if string.blank? || expressions.empty?
     regex = regex_for_expressions expressions
     string.gsub(regex, &block).html_safe
   end
