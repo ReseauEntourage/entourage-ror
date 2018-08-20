@@ -28,6 +28,8 @@ module Api
           user_application.skip_uniqueness_validation_of_push_token!
           user_application.save!
           head :no_content
+        rescue ActiveRecord::RecordNotUnique
+          head :no_content
         rescue => e
           Raven.capture_exception(e)
           render json: {message: 'Could not create user_application', reasons: user_application.errors.full_messages}, status: :bad_request
