@@ -26,6 +26,8 @@ module UserServices
         callback.on_failure.try(:call, user)
       end
       user
+    rescue ActiveRecord::RecordNotUnique
+      callback.on_duplicate(user)
     end
 
     private
