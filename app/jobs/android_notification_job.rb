@@ -12,6 +12,7 @@ class AndroidNotificationJob < ActiveJob::Base
       notification.app = app
       notification.registration_ids = device_ids
       notification.data = { sender: sender, object: object, content: {message: content, extra: extra} }
+      NotificationTruncationService.truncate_message! notification
       notification.save!
     end
   end
