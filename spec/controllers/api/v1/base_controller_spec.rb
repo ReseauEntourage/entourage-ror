@@ -53,6 +53,17 @@ RSpec.describe Api::V1::BaseController, :type => :controller do
       before { get :ping, {token: user.token} }
       it { expect(user.reload.last_sign_in_at).to eq(DateTime.parse("2015-07-07T00:00:00.000"))}
     end
+
+    describe "session tracking" do
+      before { SessionHistory.stub(:enable_tracking?) { true } }
+
+      context "logged-in user" do
+        let(:user) { create :public_user }
+        before { get :ping, {token: user.token} }
+        it { expect(SessionHistory.where(user_id: user.id, date: Time.zone.today, platform: 'rspec').count).to eq 1 }
+      end
+
+    end
   end
 
   describe 'ensure_community!' do

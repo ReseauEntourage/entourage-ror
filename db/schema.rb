@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180718125448) do
+ActiveRecord::Schema.define(version: 20180821093818) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -453,6 +453,14 @@ ActiveRecord::Schema.define(version: 20180718125448) do
   end
 
   add_index "sensitive_words_checks", ["record_type", "record_id"], name: "index_sensitive_words_checks_on_record_type_and_record_id", unique: true, using: :btree
+
+  create_table "session_histories", id: false, force: :cascade do |t|
+    t.integer "user_id",  null: false
+    t.date    "date",     null: false
+    t.string  "platform", null: false
+  end
+
+  add_index "session_histories", ["user_id", "platform", "date"], name: "index_session_histories_on_user_id_and_platform_and_date", unique: true, using: :btree
 
   create_table "simplified_tour_points", force: :cascade do |t|
     t.float    "latitude",   null: false

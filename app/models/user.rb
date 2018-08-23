@@ -20,6 +20,7 @@ class User < ActiveRecord::Base
   has_many :tours
   has_many :encounters, through: :tours
   has_many :login_histories
+  has_many :session_histories
   has_many :entourages
   has_many :join_requests
   has_many :entourage_participations, through: :join_requests, source: :joinable, source_type: "Entourage"
