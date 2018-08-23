@@ -4,7 +4,9 @@ module TourPointsServices
       begin
         sql = "INSERT INTO tour_points (passing_time, latitude, longitude, tour_id, created_at, updated_at) VALUES #{values}"
         ActiveRecord::Base.transaction do
-          ActiveRecord::Base.connection.execute(sql)
+          # see: config/initializers/pg_result_clear.rb
+          ActiveRecord::Base.connection.execute(sql).clear
+          true
         end
       rescue ActiveRecord::StatementInvalid => e
         Rails.logger.error "Received invalid tour points params. Tour_id : #{tour.id} , Tour points : #{params}"
