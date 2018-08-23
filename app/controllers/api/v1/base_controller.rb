@@ -89,11 +89,15 @@ module Api
         end
       end
 
+      def api_request_platform
+        @api_request_platform ||= api_request.key_infos.try(:[], :device)
+      end
+
       def mixpanel
         @mixpanel ||= MixpanelService.new(
           distinct_id: current_user.try(:id),
           default_properties: {
-            'Platform' => api_request.key_infos.try(:[], :device),
+            'Platform' => api_request_platform,
             '$app_version_string' => api_request.key_infos.try(:[], :version),
             'ip' => request.remote_ip
           },
@@ -118,7 +122,7 @@ module Api
         Raven.extra_context(
           params: params.to_unsafe_h,
           url: request.url,
-          platform: api_request.key_infos.try(:[], :device),
+          platform: api_request_platform,
           app_version: api_request.key_infos.try(:[], :version),
         )
       end
