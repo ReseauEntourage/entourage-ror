@@ -132,7 +132,7 @@ module FeedServices
       preload_tour_user_organizations(feeds)
       preload_chat_messages_counts(feeds)
 
-      cursor = Time.at(cursor + 1).as_json if !cursor.nil?
+      @cursor = Time.at(cursor + 1).as_json if !cursor.nil?
       FeedWithCursor.new(feeds, cursor: cursor, metadata: @metadata)
     end
 
