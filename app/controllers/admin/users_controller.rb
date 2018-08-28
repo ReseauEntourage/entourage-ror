@@ -1,6 +1,6 @@
 module Admin
   class UsersController < Admin::BaseController
-    before_action :set_user, only: [:show, :edit, :update, :block, :unblock, :banish, :validate, :experimental_pending_request_reminder]
+    before_action :set_user, only: [:show, :messages, :edit, :update, :block, :unblock, :banish, :validate, :experimental_pending_request_reminder]
 
     def index
       @users = User.type_pro.includes(:organization).order("last_name ASC").page(params[:page]).per(25)
@@ -8,6 +8,25 @@ module Admin
 
     def show
       render :edit
+    end
+
+    def messages
+      messages =
+        @user.conversation_messages
+        .where(messageable_type: :Entourage)
+        .select("created_at, content, messageable_id as entourage_id")
+
+      messages +=
+        @user.entourages
+        .select("created_at, description as content, id as entourage_id")
+
+      @entourage_messages =
+        messages
+        .group_by(&:entourage_id)
+        .sort_by { |_, ms| ms.map(&:created_at).max }
+        .reverse
+
+      @entourages = Hash[Entourage.where(id: @entourage_messages.map(&:first)).map { |e| [e.id, e] }]
     end
 
     def edit

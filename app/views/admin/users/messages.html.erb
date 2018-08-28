@@ -1,0 +1,51 @@
+<div class="h1">
+  <span><%= @user.first_name %> <%= @user.last_name %></span>
+</div>
+<% if @user.blocked? %>
+  <div class="panel panel-danger">
+    <div class="panel-heading">
+      Cet utilisateur est bloqué
+    </div>
+    <div class="panel-body">
+      Les utilisateurs bloqués ne peuvent pas se connecter ou utiliser l'application,<br>
+      et leur photo de profil est masquée.
+    </div>
+  </div>
+<% end %>
+
+<ul class="nav nav-tabs">
+  <li role="presentation"><%= link_to "Modifier", admin_user_path(@user) %></li>
+  <li role="presentation" class="active"><a href="#">Messages</a></li>
+</ul>
+
+<table class="table">
+  <% @entourage_messages.each do |entourage_id, messages| %>
+    <tr>
+      <td colspan="3" style="padding-top: 3em; border-top: 0">
+        <%= link_to @entourages[entourage_id].title, admin_entourage_path(entourage_id), class: "h4" %>
+      </td>
+    </tr>
+
+    <% block_date = nil %>
+    <% messages.sort_by(&:created_at).each do |message| %>
+      <% message_date = message.created_at.to_date %>
+      <% if message_date != block_date %>
+        <% block_date = message_date %>
+        <tr>
+          <td colspan="3" style="text-align: right; font-weight: bold">
+            <% if block_date == Time.zone.today %>
+              Aujourd'hui
+            <% else %>
+              <%= l block_date, format: "%A %-d %B" %>
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+
+      <tr>
+        <td><%= simple_format message.content %></td>
+        <td><%= l message.created_at, format: "%H:%M" %></td>
+      </tr>
+    <% end %>
+  <% end %>
+</table>

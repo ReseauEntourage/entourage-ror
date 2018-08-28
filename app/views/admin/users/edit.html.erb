@@ -1,5 +1,5 @@
 <div class="h1">
-  <span>Editer le user</span>
+  <span><%= @user.first_name %> <%= @user.last_name %></span>
   <div class="pull-right">
     <% if @user.blocked? %>
       <%= link_to "Débloquer", unblock_admin_user_path(@user), method: :put,
@@ -23,5 +23,10 @@
     </div>
   </div>
 <% end %>
+
+<ul class="nav nav-tabs">
+  <li role="presentation" class="active"><a href="#">Modifier</a></li>
+  <li role="presentation"><%= link_to "Messages", messages_admin_user_path(@user) %></li>
+</ul>
 
 <%= render partial: "form" %>

@@ -70,6 +70,7 @@ Rails.application.routes.draw do
       end
 
       member do
+        get 'messages'
         put 'banish'
         put 'validate'
       end
