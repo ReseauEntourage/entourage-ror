@@ -99,7 +99,7 @@ describe Api::V1::MyfeedsController do
         let!(:join_request) { FactoryGirl.create(:join_request, joinable: entourage, user: user, status: "accepted") }
         let!(:join_request2) { FactoryGirl.create(:join_request, joinable: entourage, status: "pending") }
         before { get :index, token: user.token, status: "all" }
-        it { expect(result["feeds"].map {|feed| feed["data"]["last_message"]} ).to eq([{"text"=>"1 nouvelle demande pour rejoindre votre entourage", "author"=>nil}]) }
+        it { expect(result["feeds"].map {|feed| feed["data"]["last_message"]} ).to eq([{"text"=>"1 nouvelle demande pour rejoindre votre action.", "author"=>nil}]) }
       end
 
       context "filter by status" do

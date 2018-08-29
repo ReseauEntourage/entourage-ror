@@ -21,9 +21,10 @@ module JoinRequestsServices
       if join_request.save
 
         title   = "Invitation acceptée"
-        content = "Un membre de l'équipe Entourage a rejoint votre action pour vous aider."
+        content = "Un membre de l'équipe Entourage a rejoint votre #{GroupService.name(joinable)} pour vous aider."
         meta    = { joinable_id: join_request.joinable_id,
                     joinable_type: join_request.joinable_type,
+                    group_type: joinable.group_type,
                     type: "JOIN_REQUEST_ACCEPTED",
                     user_id: @user.id }
 

@@ -40,10 +40,10 @@ module V1
           if last_element.user == scope[:user]
             "Votre demande est en attente."
           else
-            "1 nouvelle demande pour rejoindre votre entourage"
+            "1 nouvelle demande pour rejoindre votre #{GroupService.name(object)}."
           end
         elsif last_element.is_accepted?
-          return "Vous avez rejoint l'entourage."
+          return "Vous avez rejoint #{GroupService.name(object, :l)}."
         elsif last_element.is_cancelled?
           return "Vous avez annulé votre demande."
         elsif last_element.is_rejected?

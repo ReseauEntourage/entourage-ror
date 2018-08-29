@@ -20,6 +20,7 @@ RSpec.describe TourServices::JoinRequestStatus do
                                                                                             {
                                                                                                 joinable_id: entourage.id,
                                                                                                 joinable_type: entourage.class.name,
+                                                                                                group_type: 'action',
                                                                                                 type: "JOIN_REQUEST_CANCELED",
                                                                                                 user_id: requester.id
                                                                                             }) }
@@ -34,6 +35,7 @@ RSpec.describe TourServices::JoinRequestStatus do
                                                                                              {
                                                                                                  joinable_id: entourage.id,
                                                                                                  joinable_type: entourage.class.name,
+                                                                                                 group_type: 'action',
                                                                                                  type: "JOIN_REQUEST_CANCELED",
                                                                                                  user_id: requester.id
                                                                                              }) }

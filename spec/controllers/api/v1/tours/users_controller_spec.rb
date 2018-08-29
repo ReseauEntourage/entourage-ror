@@ -50,7 +50,7 @@ describe Api::V1::Tours::UsersController do
                                                                                             "Demande en attente",
                                                                                             "Un nouveau membre souhaite rejoindre votre maraude",
                                                                                             [tour.user],
-                                                                                            {:joinable_id=>tour.id, :joinable_type=>"Tour", :type=>"NEW_JOIN_REQUEST", :user_id => new_member.id}
+                                                                                            {:joinable_id=>tour.id, :joinable_type=>"Tour", :group_type=>'tour', :type=>"NEW_JOIN_REQUEST", :user_id => new_member.id}
         )
         post :create, tour_id: tour.to_param, token: new_member.token
       end
@@ -116,7 +116,7 @@ describe Api::V1::Tours::UsersController do
                                                                                             "Demande acceptée",
                                                                                             "Vous venez de rejoindre la maraude de John D",
                                                                                             User.where(id: requester.id),
-                                                                                            {:joinable_id=>tour.id, :joinable_type=>"Tour", :type=>"JOIN_REQUEST_ACCEPTED", :user_id => requester.id})
+                                                                                            {:joinable_id=>tour.id, :joinable_type=>"Tour", :group_type => 'tour', :type=>"JOIN_REQUEST_ACCEPTED", :user_id => requester.id})
         patch :update, tour_id: tour.to_param, id: requester.id, user: {status: "accepted"}, token: user.token
       end
 

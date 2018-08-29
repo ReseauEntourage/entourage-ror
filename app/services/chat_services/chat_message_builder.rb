@@ -47,6 +47,7 @@ module ChatServices
                                                       recipients,
                                                       {joinable_id: join_request.joinable_id,
                                                        joinable_type: join_request.joinable_type,
+                                                       group_type: joinable.group_type,
                                                        type: "NEW_CHAT_MESSAGE"})
         callback.on_success.try(:call, message)
       else

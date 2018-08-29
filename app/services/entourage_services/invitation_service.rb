@@ -56,6 +56,7 @@ module EntourageServices
           invitee_id: invitation.invitee.id,
           feed_id: invitation.invitable_id,
           feed_type: invitation.invitable_type,
+          group_type: invitation.invitable.group_type,
           accepted: accepted
       }
       PushNotificationService.new.send_notification(invitee_name, title, content, [invitation.inviter], meta)

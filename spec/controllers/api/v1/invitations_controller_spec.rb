@@ -121,6 +121,7 @@ describe Api::V1::InvitationsController do
                                                                                              invitee_id: invitation.invitee_id,
                                                                                              feed_id: invitation.invitable_id,
                                                                                              feed_type: "Entourage",
+                                                                                             group_type: 'action',
                                                                                              accepted: true})
         put :update, id: invitation.to_param, token: user.token
       end
@@ -159,6 +160,7 @@ describe Api::V1::InvitationsController do
                                                                                              invitee_id: invitation.invitee_id,
                                                                                              feed_id: invitation.invitable_id,
                                                                                              feed_type: "Entourage",
+                                                                                             group_type: 'action',
                                                                                              accepted: false})
         delete :destroy, id: invitation.to_param, token: user.token
       end

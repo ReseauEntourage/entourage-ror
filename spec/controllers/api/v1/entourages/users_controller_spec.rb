@@ -76,11 +76,12 @@ describe Api::V1::Entourages::UsersController do
           it "sends notif to all entourage members" do
             expect_any_instance_of(PushNotificationService).to receive(:send_notification).with("John D",
                                                                                                 'Demande en attente',
-                                                                                                "Un nouveau membre souhaite rejoindre votre entourage : foobar1",
+                                                                                                "Un nouveau membre souhaite rejoindre votre action : foobar1",
                                                                                                 [entourage.user],
                                                                                                 {
                                                                                                     joinable_type: "Entourage",
                                                                                                     joinable_id: entourage.id,
+                                                                                                    group_type: 'action',
                                                                                                     type: "NEW_JOIN_REQUEST",
                                                                                                     user_id: user.id
                                                                                                 })
@@ -100,6 +101,7 @@ describe Api::V1::Entourages::UsersController do
                                                                                                 {
                                                                                                     joinable_type: "Entourage",
                                                                                                     joinable_id: entourage.id,
+                                                                                                    group_type: 'action',
                                                                                                     type: "NEW_JOIN_REQUEST",
                                                                                                     user_id: user.id
                                                                                                 })
@@ -168,9 +170,9 @@ describe Api::V1::Entourages::UsersController do
         FactoryGirl.create(:android_app)
         expect_any_instance_of(PushNotificationService).to receive(:send_notification).with("John D",
                                                                                             "Demande acceptée",
-                                                                                            "Vous venez de rejoindre l'entourage de John D : foobar1",
+                                                                                            "Vous venez de rejoindre l’action de John D : foobar1",
                                                                                             User.where(id: requester.id),
-                                                                                            {:joinable_id=>entourage.id, :joinable_type=>"Entourage", :type=>"JOIN_REQUEST_ACCEPTED", :user_id => requester.id})
+                                                                                            {:joinable_id=>entourage.id, :joinable_type=>"Entourage", :group_type=>'action', :type=>"JOIN_REQUEST_ACCEPTED", :user_id => requester.id})
         patch :update, entourage_id: entourage.to_param, id: requester.id, user: {status: "accepted"}, token: user.token
       end
     end

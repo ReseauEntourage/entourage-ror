@@ -25,12 +25,13 @@ module EntourageServices
       if invitee.last_sign_in_at
         invitation_id = Rails.env.test? ? 123 : invite.id
         PushNotificationService.new.send_notification(inviter_name,
-                                                      "vous invite à rejoindre un entourage",
-                                                      "Vous êtes invité à rejoindre l'entourage de #{inviter_name}",
+                                                      "vous invite à rejoindre #{GroupService.name(entourage, :u)}",
+                                                      "Vous êtes invité à rejoindre #{GroupService.name(entourage, :l)} de #{inviter_name}",
                                                       User.where(id: invitee.id),
                                                       {
                                                           type: "ENTOURAGE_INVITATION",
                                                           entourage_id: entourage.id,
+                                                          group_type: entourage.group_type,
                                                           inviter_id: inviter.id,
                                                           invitee_id: invitee.id,
                                                           invitation_id: invitation_id

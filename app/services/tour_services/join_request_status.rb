@@ -30,12 +30,9 @@ module TourServices
       end
 
       if user != joinable_author
-        joinable_description =
-          if join_request.joinable_type == "Tour"
-            "la maraude de #{author_name}"
-          else
-            "l'entourage de #{author_name} : #{joinable.title}"
-          end
+        joinable_description = "#{GroupService.name joinable, :l} de #{author_name}"
+        joinable_description += " : #{joinable.title}" if joinable.respond_to?(:title)
+
         PushNotificationService.new.send_notification(author_name,
                                                       "Demande acceptée",
                                                       "Vous venez de rejoindre #{joinable_description}",
@@ -43,6 +40,7 @@ module TourServices
                                                       {
                                                           joinable_id: join_request.joinable_id,
                                                           joinable_type: join_request.joinable_type,
+                                                          group_type: joinable.group_type,
                                                           type: "JOIN_REQUEST_ACCEPTED",
                                                           user_id: user.id
                                                       })
@@ -134,6 +132,7 @@ module TourServices
                                                       {
                                                           joinable_id: joinable.id,
                                                           joinable_type: joinable.class.name,
+                                                          group_type: joinable.group_type,
                                                           type: "JOIN_REQUEST_CANCELED",
                                                           user_id: requester.id
                                                       })
