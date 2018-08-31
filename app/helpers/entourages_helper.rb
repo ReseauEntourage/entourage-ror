@@ -28,7 +28,11 @@ module EntouragesHelper
   end
 
   def entourage_full_category entourage
-    "#{entourage.entourage_type}_#{entourage.display_category || :other}"
+    if entourage.group_type == 'outing'
+      'contribution_event'
+    else
+      "#{entourage.entourage_type}_#{entourage.display_category || :other}"
+    end
   end
 
   def entourage_category_image_path entourage
@@ -44,10 +48,16 @@ module EntouragesHelper
   end
 
   def entourage_type_name entourage
-    {
-      'contribution' => "Contribution",
-      'ask_for_help' => "Demande"
-    }[entourage.entourage_type]
+    if entourage.group_type == 'action'
+      {
+        'contribution' => "Contribution",
+        'ask_for_help' => "Demande"
+      }[entourage.entourage_type]
+    else
+      {
+        'outing' => "Évènement",
+      }[entourage.group_type]
+    end
   end
 
   def entourage_type_phrase entourage
