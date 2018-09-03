@@ -2,7 +2,7 @@
   <div class='col-sm-8'>
     <% if @entourage.group_type == 'outing' %>
       <b>Date :</b> <%= l @entourage.metadata[:starts_at], format: "%A %d %B à %Hh%M" %><br/>
-      <b>Lieu :</b> <%= link_to @entourage.metadata[:display_address], "https://www.google.com/maps/place/?q=place_id:#{@entourage.metadata[:google_place_id]}" %><br><br>
+      <b>Lieu :</b> <%= link_to @entourage.metadata[:display_address], "https://www.google.com/maps/search/?api=1&query=#{@entourage.metadata[:display_address]}&query_place_id=#{@entourage.metadata[:google_place_id]}" %><br><br>
     <% end %>
     <%= simple_format @highlighted[:description] %>
     <hr>
