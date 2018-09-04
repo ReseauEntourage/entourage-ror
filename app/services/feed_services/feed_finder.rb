@@ -201,6 +201,8 @@ module FeedServices
       types = (types || "").split(',').map(&:strip)
       types = types.map { |t| allowed_types[t] || t }
 
+      types += ['ask_for_help_event', 'contribution_event'] if types.include?('outing')
+
       (types & allowed_types.values).uniq
     end
 
