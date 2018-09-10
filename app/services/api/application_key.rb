@@ -111,6 +111,21 @@ module Api
         "b8af267515fc5f33f4fa07c5" => {version: "5.4.0", device: "Android", device_family: UserApplication::ANDROID, community: 'entourage'},
         "b1c5269351e5405dafada829" => {version: "5.4.0", device: "iOS",     device_family: UserApplication::IOS,     community: 'pfp'},
         "b582828ba2e4d0f157d73595" => {version: "5.4.0", device: "Android", device_family: UserApplication::ANDROID, community: 'pfp'},
+
+        "fd4da3f7cbeed6cce026e276" => {version: "5.5.0", device: "iOS",     device_family: UserApplication::IOS,     community: 'entourage'},
+        "f30c711173105ee2dd7289eb" => {version: "5.5.0", device: "Android", device_family: UserApplication::ANDROID, community: 'entourage'},
+        "f7d90b14c6e2dc641e4343e8" => {version: "5.5.0", device: "iOS",     device_family: UserApplication::IOS,     community: 'pfp'},
+        "f27ed4fda9a2cbf199046047" => {version: "5.5.0", device: "Android", device_family: UserApplication::ANDROID, community: 'pfp'},
+
+        "b9a71efa52b897b4c4571317" => {version: "5.6.0", device: "iOS",     device_family: UserApplication::IOS,     community: 'entourage'},
+        "b6b94fc66f75b5006cb7214f" => {version: "5.6.0", device: "Android", device_family: UserApplication::ANDROID, community: 'entourage'},
+        "b967b44f99b26c25ad03b84f" => {version: "5.6.0", device: "iOS",     device_family: UserApplication::IOS,     community: 'pfp'},
+        "b6fce1b1fcd97325791e80bd" => {version: "5.6.0", device: "Android", device_family: UserApplication::ANDROID, community: 'pfp'},
+
+        "0755d181cdeaacecfd042676" => {version: "5.7.0", device: "iOS",     device_family: UserApplication::IOS,     community: 'entourage'},
+        "00e04e1ee35565b81fcff4fb" => {version: "5.7.0", device: "Android", device_family: UserApplication::ANDROID, community: 'entourage'},
+        "01c4a4deacf9db7d25058dda" => {version: "5.7.0", device: "iOS",     device_family: UserApplication::IOS,     community: 'pfp'},
+        "024ffc16d69059521b7b0caa" => {version: "5.7.0", device: "Android", device_family: UserApplication::ANDROID, community: 'pfp'},
       }
     end
 
