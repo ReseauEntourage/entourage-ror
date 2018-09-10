@@ -39,11 +39,11 @@ module Api
               'https://blog.entourage.social/comment-utiliser-l-application-entourage/',
           'ethics-charter' =>
             lambda do |user|
-              if user.pro?
-                'https://blog.entourage.social/charte-ethique-maraudeur/'
-              else
-                'https://blog.entourage.social/charte-ethique-grand-public/'
-              end
+              key = 'ethics-charter'
+              key += '-pro' if user.community == :entourage && user.pro?
+              key += '-preprod' if Rails.env != 'production' || ENV.key?('STAGING')
+
+              user.community.links[key] % {user_id: user_id}
             end,
           'feedback' =>
             lambda do |user|

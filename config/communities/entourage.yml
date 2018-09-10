@@ -5,6 +5,10 @@ mailjet_template:
 store_short_url: https://bit.ly/applientourage
 links:
   feedback: https://entourage-asso.typeform.com/to/TUpltC?user_id=%{user_id}
+  ethics-charter:             https://entourage-asso.typeform.com/to/EyAIut?user_id=%{user_id}
+  ethics-charter-preprod:     https://entourage-asso.typeform.com/to/whN9kq?user_id=%{user_id}
+  ethics-charter-pro:         https://entourage-asso.typeform.com/to/N4AqyO?user_id=%{user_id}
+  ethics-charter-pro-preprod: https://entourage-asso.typeform.com/to/LI7viw?user_id=%{user_id}
 group_types:
   action:
     message_types: [text]
