@@ -75,14 +75,22 @@ module UserServices
 
       raise if result.nil?
 
+      country, postal_code =
+        if result.postal_code
+          [result.country_code, result.postal_code]
+        else
+          EntourageServices::GeocodingService.search_approximate_postal_code(
+            result.latitude, result.longitude)
+        end
+
       {
         place_name: result.data['name'],
 
         latitude:  result.latitude,
         longitude: result.longitude,
 
-        postal_code: result.postal_code || '00000',
-        country:     result.country_code || 'XX',
+        postal_code: postal_code,
+        country:     country,
 
         google_place_id: result.place_id
       }

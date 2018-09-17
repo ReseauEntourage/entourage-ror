@@ -1,30 +1,46 @@
 module EntourageServices
   module GeocodingService
     def self.geocode entourage
+      country, postal_code = search_postal_code(entourage.latitude, entourage.longitude)
+      entourage.update(country: country, postal_code: postal_code)
+    end
+
+    def self.search_postal_code latitude, longitude
       # this will raise in case of an API error
       # see config/initializers/geocoder.rb
       results = Geocoder.search(
-        [entourage.latitude, entourage.longitude],
+        [latitude, longitude],
         params: { result_type: :postal_code }
       )
       result = results.find { |r| r.types.include? 'postal_code' }
 
-      if result.nil?
-        # try again without specifying a result_type
-        results = Geocoder.search([entourage.latitude, entourage.longitude])
-        # and keep the first that has a postal code
-        result = results.find { |r| r.postal_code.present? }
+      if result.present?
+        [result.country_code, result.postal_code]
+      else
+        search_approximate_postal_code(latitude, longitude)
       end
+    end
 
-      if result.nil?
+    def self.search_approximate_postal_code latitude, longitude
+      # try again without specifying a result_type
+      results = Geocoder.search([latitude, longitude])
+      # and keep the first that has a postal code
+      result = results.find { |r| r.postal_code.present? }
+
+      if result.present?
+        country = result.country_code
+        postal_code =
+          if country == 'FR'
+            result.postal_code.first(2) + 'XXX'
+          else
+            'XXXXX'
+          end
+      else
         country     = 'XX'
         postal_code = '00000'
-      else
-        country     = result.country_code
-        postal_code = result.postal_code
       end
 
-      entourage.update(country: country, postal_code: postal_code)
+      [country, postal_code]
     end
 
     def self.enable_callback
