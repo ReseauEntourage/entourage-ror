@@ -1388,6 +1388,61 @@ time_range should be a number of hours
         {"error":{"status":401,"message":"Please sign-in"}}
 
 
+### Get all outings (events) [GET /feeds/outings{?token,latitude,longitude,starting_after}]
+
++ Parameters
+    + token (required, string, `FAKETOKEN`) ... Token identifying the current user
+    + latitude (required, number) ... Filter feed by location
+    + longitude (required, number) ... Filter feed by location
+    + starting_after (optional, string) ... pagination : uuid of the last element of the previous page
+
++ Response 200 (application/json; charset=utf-8)
+
+    + Body
+
+            {
+                "feeds": [
+                    {
+                        "type": "Entourage",
+                        "data": {
+                            "id": 4772,
+                            "uuid": "ab507b7e-bfb0-41fa-aeea-0612c488d2ef",
+                            "status": "open",
+                            "title": "Meeting de la Cour des Miracles",
+                            "group_type": "outing",
+                            "metadata": {
+                                "starts_at": "2018-09-23T15:00:00.000+02:00",
+                                "place_name": "Parc de la Tête d'Or",
+                                "street_address": "69006 Lyon, France",
+                                "display_address": "Parc de la Tête d'Or, 69006 Lyon",
+                                "google_place_id": "ChIJRSpfGOvq9EcRPFTYvmRr9Q4"
+                            },
+                            "entourage_type": "contribution",
+                            "display_category": null,
+                            "join_status": "not_requested",
+                            "number_of_unread_messages": null,
+                            "number_of_people": 2,
+                            "created_at": "2018-09-16T22:15:54.366+02:00",
+                            "updated_at": "2018-09-18T16:04:29.670+02:00",
+                            "description": "Le but est de se rassembler et de s'organiser afin de lancer la première maraude musicale: chanter/danser de la musique traditionnelle avec des sans-abris dans des commerces/marchés afin de quémander notamment la récupération de la nourriture censée être jetée aux ordures. Parce qu'il y en a marre du gâchis, joignez-vous à nous les amis!",
+                            "share_url": "http://entourage.social/entourages/eTeePfJUjWN0",
+                            "author": {
+                                "id": 44617,
+                                "display_name": "Joffrey",
+                                "avatar_url": null,
+                                "partner": null
+                            },
+                            "location": {
+                                "latitude": 45.7774032,
+                                "longitude": 4.85521440000002
+                            }
+                        },
+                        "heatmap_size": 20
+                    }
+                ]
+            }
+
+
 # Group Myfeeds
 Feeds related resources of the **Entourage API**
 ## Feeds [/myfeeds]

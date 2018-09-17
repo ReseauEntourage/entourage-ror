@@ -27,10 +27,28 @@ module Api
         render json: ::V1::LegacyFeedSerializer.new(feeds: feeds, user: current_user, base_url: request.base_url, key_infos: api_request.key_infos).to_json, status: 200
       end
 
+      def outings
+        outings = FeedServices::OutingsFinder.new(
+          user: current_user,
+          latitude: outing_params[:latitude],
+          longitude: outing_params[:longitude],
+          starting_after: params[:starting_after],
+        ).feeds
+
+        render json: ::V1::FeedSerializer.new(feeds: outings, user: current_user, base_url: request.base_url).to_json, status: 200
+      end
+
       private
 
       def time_range
         params[:time_range] || 365*24
+      end
+
+      def outing_params
+        outing_params = params.permit(:latitude, :longitude, :starting_after)
+        outing_params.require(:latitude)
+        outing_params.require(:longitude)
+        outing_params
       end
     end
   end

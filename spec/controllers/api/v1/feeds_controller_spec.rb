@@ -338,4 +338,57 @@ include CommunityHelper
       it { expect(feeds(show_past_events: 'true')).to eq [upcoming_outing.id, past_outing.id, neighborhood.id] }
     end
   end
+
+  describe 'GET outings' do
+    let(:user) { create :public_user }
+    let(:params) { {} }
+    let(:coordinates) { {latitude: 1, longitude: 1} }
+    subject { get :outings, {token: user&.token}.merge(coordinates).merge(params) }
+
+    context "not signed in" do
+      let(:params) { {token: nil} }
+      it { subject; expect(response.status).to eq(401) }
+    end
+
+    context "signed in" do
+      let(:params) { {token: user.token} }
+      it { subject; expect(response.status).to eq(200) }
+    end
+
+    context "missing param" do
+      let(:params) { {latitude: nil} }
+      it { subject; expect(response.status).to eq(400) }
+    end
+
+    it "excludes outings that started more than 3 hours ago" do
+      create :outing, {metadata: {starts_at: 4.hours.ago}}.merge(coordinates)
+      subject
+      expect(result['feeds']).to eq []
+    end
+
+    it "includes outings that started less than 3 hours ago" do
+      outing = create :outing, {metadata: {starts_at: 2.hours.ago}}.merge(coordinates)
+      subject
+      expect(result['feeds'].map { |f| f['data']['id'] }).to eq [outing.id]
+    end
+
+    it "orders results by start date" do
+      outing_1 = create :outing, {metadata: {starts_at: 2.hours.from_now}}.merge(coordinates)
+      outing_2 = create :outing, {metadata: {starts_at: 2.hours.ago}}.merge(coordinates)
+      subject
+      expect(result['feeds'].map { |f| f['data']['id'] }).to eq [outing_2.id, outing_1.id]
+    end
+
+    context "pagination" do
+      let(:start_time) { 1.day.from_now.change(hour: 19, min: 30) }
+      let!(:outing_1) { create :outing, {metadata: {starts_at: start_time}}.merge(coordinates) }
+      let!(:outing_2) { create :outing, {metadata: {starts_at: start_time}}.merge(coordinates) }
+      let(:params) { {starting_after: outing_1.uuid} }
+
+      it "supports pagination" do
+        subject
+        expect(result['feeds'].map { |f| f['data']['id'] }).to eq [outing_2.id]
+      end
+    end
+  end
 end

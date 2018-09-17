@@ -135,7 +135,11 @@ Rails.application.routes.draw do
 
     namespace :v1 do
       match '(*path)' => 'base#options', via: [:options]
-      resources :feeds, only: [:index]
+      resources :feeds, only: [:index] do
+        collection do
+          get :outings
+        end
+      end
       resources :myfeeds, only: [:index]
       resources :tours, only: [:index, :create, :show, :update] do
         resources :tour_points, only:[:create]
