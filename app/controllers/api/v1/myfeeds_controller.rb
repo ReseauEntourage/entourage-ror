@@ -24,7 +24,7 @@ module Api
                                              entourage_status: entourage_status,
                                              author: author,
                                              invitee: invitee).feeds
-        render json: ::V1::FeedSerializer.new(feeds: feeds, user: current_user, include_last_message: true).to_json, status: 200
+        render json: ::V1::LegacyFeedSerializer.new(feeds: feeds, user: current_user, include_last_message: true).to_json, status: 200
       end
 
       def tour_status

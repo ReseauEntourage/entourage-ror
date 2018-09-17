@@ -24,7 +24,7 @@ module Api
                                              distance: params[:distance],
                                              announcements: params[:announcements]).feeds
 
-        render json: ::V1::FeedSerializer.new(feeds: feeds, user: current_user, base_url: request.base_url, key_infos: api_request.key_infos).to_json, status: 200
+        render json: ::V1::LegacyFeedSerializer.new(feeds: feeds, user: current_user, base_url: request.base_url, key_infos: api_request.key_infos).to_json, status: 200
       end
 
       private

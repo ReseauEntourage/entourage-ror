@@ -1,5 +1,5 @@
 module V1
-  class FeedSerializer
+  class LegacyFeedSerializer
     def initialize(feeds:, user:, include_last_message: false, base_url: nil, key_infos: nil)
       @feeds = feeds.entries
       @cursor = feeds.cursor
