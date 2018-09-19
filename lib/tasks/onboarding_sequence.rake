@@ -1,20 +1,18 @@
 namespace :onboarding_sequence do
   task send_emails: :environment do
-    def at_day n, after:, &block
-      scope = User.where(deleted: false)
-      scope =
-        case after
-        when :registration
-          scope.where(onboarding_sequence_start_at: n.days.ago.all_day)
-        when :last_session
-          scope.where(last_sign_in_at: n.days.ago.all_day)
-        end
-
-      scope.find_each do |user|
+    def at_day n, options={}, &block
+      UserSegmentService.at_day(n, options).find_each do |record|
         begin
-          yield user
+          yield record
         rescue => e
-          Raven.capture_exception(e, extra: { user_id: user.id })
+          Raven.capture_exception(
+            e,
+            extra: options.merge(
+              at_day: n,
+              record_class: record&.class,
+              record_id: record&.id
+            )
+          )
         end
       end
     end
@@ -70,6 +68,14 @@ namespace :onboarding_sequence do
 
     at_day 40, after: :last_session do |user|
       MemberMailer.reactivation_day_40(user).deliver_later
+    end
+
+    at_day 10, after: :action_creation do |action|
+      MemberMailer.action_follow_up_day_10(action).deliver_later
+    end
+
+    at_day 20, after: :action_creation do |action|
+      MemberMailer.action_follow_up_day_20(action).deliver_later
     end
 
     $redis.set(redis_key, redis_date)

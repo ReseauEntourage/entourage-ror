@@ -86,9 +86,8 @@ class MemberMailer < ActionMailer::Base
     mailjet_email to: action.user,
                   template_id: 452754,
                   campaign_name: :action_suivi_j_10,
-                  variables: {
-                    action_title: action.title,
-                    action_url: "#{ENV['WEBSITE_URL']}/entourages/#{action.uuid_v2}",
+                  groups: {
+                    action: action
                   }
   end
 
@@ -97,9 +96,10 @@ class MemberMailer < ActionMailer::Base
     mailjet_email to: action.user,
                   template_id: 451123,
                   campaign_name: :action_suivi_j_20,
+                  groups: {
+                    action: action
+                  },
                   variables: {
-                    action_title: action.title,
-                    action_url: action_url,
                     action_success_url: one_click_update_api_v1_entourage_url(
                       host: API_HOST,
                       protocol: :https,
@@ -132,19 +132,42 @@ class MemberMailer < ActionMailer::Base
 
   def mailjet_email to:, template_id:, campaign_name:,
                     from: email_with_name("guillaume@entourage.social", "Le Réseau Entourage"),
+                    groups: {},
                     variables: {},
                     payload: {}
     user = to
     return unless user.email.present?
 
-    auth_token = UserServices::UserAuthenticator.auth_token(user)
+    groups.each do |name, group|
+      variables.reverse_merge!(
+        "#{name}_title".to_sym => group.title,
+        "#{name}_url".to_sym => "#{ENV['WEBSITE_URL']}/entourages/#{group.uuid_v2}",
+        "#{name}_share_url".to_sym => "#{ENV['WEBSITE_URL']}/entourages/#{group.uuid_v2}?auth=false",
+      )
+    end
 
     variables.reverse_merge!(
       first_name: user.first_name,
       user_id: UserServices::EncodedId.encode(user.id),
-      webapp_login_link: (ENV['WEBSITE_URL'] + '/app?auth=' + auth_token),
-      login_link: (ENV['WEBSITE_URL'] + '/deeplink/feed?auth=' + auth_token)
+      webapp_login_link: (ENV['WEBSITE_URL'] + '/app'),
+      login_link: (ENV['WEBSITE_URL'] + '/deeplink/feed')
     )
+
+    # inject auth tokens in webapp URLs
+    webapp_regex = %r{^#{ENV['WEBSITE_URL']}/(app|deeplink|entourages)([/\?]|$)}
+    auth_token = UserServices::UserAuthenticator.auth_token(user)
+    variables.each_value do |value|
+      next unless value.is_a?(String) && value.match(webapp_regex) != nil
+      uri = URI(value)
+      params = CGI.parse(uri.query || '')
+      if params['auth'] == ['false']
+        params.delete('auth')
+      else
+        params['auth'] = auth_token
+      end
+      uri.query = params.any? ? URI.encode_www_form(params) : nil
+      value.replace uri.to_s
+    end
 
     payload.reverse_merge!(
       type: campaign_name,
