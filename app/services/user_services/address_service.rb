@@ -13,19 +13,7 @@ module UserServices
         fetch_google_place_details
       end
 
-      address = user.address || user.build_address
-
-      begin
-        ActiveRecord::Base.transaction do
-          address.update!(params)
-          if address.id != user.address_id
-            user.update_column(:address_id, address.id)
-          end
-        end
-        success = true
-      rescue ActiveRecord::ActiveRecordError
-        success = false
-      end
+      address, success = self.class.update_address(user: user, params: params)
 
       if !success
         callback.on_failure.try(:call, user, address)
@@ -51,6 +39,24 @@ module UserServices
 
     private
     attr_reader :user, :params, :callback
+
+    def self.update_address user:, params:
+      address = user.address || Address.new
+
+      begin
+        ActiveRecord::Base.transaction do
+          address.update!(params)
+          if address.id != user.address_id
+            user.update_column(:address_id, address.id)
+          end
+        end
+        success = true
+      rescue ActiveRecord::ActiveRecordError
+        success = false
+      end
+
+      [address, success]
+    end
 
     def fetch_google_place_details
       @params.merge! self.class.fetch_google_place_details(params[:google_place_id])
