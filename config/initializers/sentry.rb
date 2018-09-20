@@ -5,6 +5,7 @@ Raven.configure do |config|
   config.rails_activesupport_breadcrumbs = true
   config.sanitize_fields = Rails.application.config.filter_parameters.map(&:to_s)
   config.processors -= [Raven::Processor::PostData]
+  config.tags.merge(community: $server_community.dev_name)
 end
 
 
