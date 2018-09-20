@@ -1,0 +1,85 @@
+<style>
+  .overlay-container {
+    position: relative;
+  }
+
+  .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+  }
+
+  .overlay-container a:not(.overlay) {
+    position: relative;
+    z-index: 2;
+  }
+
+  .conversation:hover {
+    background-color: rgba(0, 0, 0, .05);
+  }
+
+  .conversation.unread {
+    font-weight: bold;
+  }
+
+  .truncate {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+</style>
+<div class="container">
+  <h1>Messages privés</h1>
+</div>
+
+<table class="table admin-table">
+  <% @conversations.each do |conversation| %>
+    <% last_message = @last_message[conversation.id] %>
+    <% recipient_ids = @recipient_ids[conversation.id] %>
+    <%
+      def display_name user
+        [user.first_name, user.last_name].map(&:presence).compact.join(' ')
+      end
+    %>
+    <tr class="overlay-container conversation <%= :unread if conversation.unread %>">
+      <td class="truncate" style="width: 20%">
+        <%
+          n = 3
+          recipient_names =
+            recipient_ids.first(n).map { |id| display_name @users[id] }
+          if recipient_ids.count == (n + 1)
+            recipient_names.push "1 autre personne"
+          elsif recipient_ids.count > (n + 1)
+            recipient_names.push "#{recipient_ids.count - n} autres personnes"
+          end
+        %>
+        <%= recipient_names.join(', ') %>
+      </td>
+      <td class="truncate" style="width: 73%">
+        <% if last_message.user_id == @user.id %>
+          Vous :
+        <% elsif recipient_ids.count > 1 %>
+          <%= display_name @users[last_message.user_id] %> :
+        <% end %>
+        <%= last_message.content %>
+      </td>
+      <td style="text-align: right">
+        <%= link_to "", [:admin, conversation], class: "overlay", target: :_blank %>
+        <% if last_message.created_at.today? %>
+          <%= l last_message.created_at, format: "%H:%M" %>
+        <% elsif last_message.created_at >= 7.days.ago.midnight %>
+          <%= l last_message.created_at, format: "%A" %>
+        <% else  %>
+          <%= l last_message.created_at, format: "%-d %b" %>
+        <% end %>
+      </td>
+    </tr>
+  <% end %>
+</table>
+
+<div class="container">
+  <%= paginate @conversations %>
+</div>
