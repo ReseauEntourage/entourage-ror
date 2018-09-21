@@ -45,7 +45,11 @@ Rails.application.routes.draw do
       end
       resources :entourage_moderations, only: [:create]
       resources :sensitive_words, only: [:show, :destroy]
-      resources :conversations, only: [:index]
+      resources :conversations, only: [:index, :show] do
+        member do
+          post :message
+        end
+      end
 
       resources :marketing_referers, only: [:index, :edit, :update, :new, :create]
       resources :join_requests, only: [:create]

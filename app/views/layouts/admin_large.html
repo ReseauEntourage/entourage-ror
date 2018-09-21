@@ -35,6 +35,8 @@
             <% end %>
           </ul>
         </li>
+        <li><%= link_to "Actions", admin_entourages_path %></li>
+        <li><%= link_to "Messages", admin_conversations_path %></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li><%= link_to 'Déconnexion', session_path(current_user), method: :delete %></li>
