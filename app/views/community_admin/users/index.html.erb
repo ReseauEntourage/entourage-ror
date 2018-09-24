@@ -1,0 +1,117 @@
+<style>
+  .overlay-container {
+    position: relative;
+  }
+
+  .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+  }
+
+  .overlay-container a:not(.overlay) {
+    position: relative;
+    z-index: 2;
+  }
+</style>
+
+<%= render 'nav', active: :users %>
+
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-lg-8 col-12">
+      <div id="filters">
+        <div class="d-flex align-items-end" style="margin-bottom: .75rem">
+          <div class="flex-grow-1">
+            Filtres :
+            <button type="button" class="btn <%= @filters[:neighborhoods][:is_filtered] ? 'btn-primary' : 'btn-outline-primary' %> btn-sm"
+                    data-toggle="collapse" data-target="#filterNeighborhoods">
+              <% if @filters[:neighborhoods][:is_filtered] == false %>
+                Voisinages
+              <% elsif @filters[:neighborhoods][:ids].count == 1 %>
+                <%= @neighborhoods[@filters[:neighborhoods][:ids].first].title %>
+              <% else %>
+                Voisinages <span class="badge badge-light"><%= @filters[:neighborhoods][:ids].count %></span>
+              <% end %>
+            </button>
+          </div>
+          <div>
+            <a href="<%= new_community_admin_user_path %>"
+                 class="btn btn-outline-secondary">Inscrire un nouveau membre</a>
+          </div>
+        </div>
+        <form class="collapse" id="filterNeighborhoods">
+          <div class="mb-4">
+            <div class="card card-body mb-2">
+              <div class="d-flex mb-2">
+                <a href="#" data-toggle="checkbox" data-type="all" data-target="filterNeighborhoods">Tous</a>
+                <a href="#" class="ml-2" data-toggle="checkbox" data-type="none" data-target="filterNeighborhoods">Aucun</a>
+              </div>
+              <% @neighborhoods.each do |id, neighborhood| %>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox"
+                         name="neighborhoods[]" value="<%= id %>"
+                         id="neighborhood_<%= id %>"
+                         <%= :checked if id.in?(@filters[:neighborhoods][:ids]) %>>
+                  <label class="form-check-label"
+                         for="neighborhood_<%= id %>">
+                    <%= neighborhood.title %>
+                  </label>
+                </div>
+              <% end %>
+            </div>
+            <div class="text-right">
+              <button type="submit" class="btn btn-primary">
+                Filtrer
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+      <table class="table table-hover">
+        <% @users.each do |user| %>
+          <tr class="overlay-container">
+            <td class="pl-2 py-2 pr-0" style="width: 40px">
+              <img class="rounded-circle"
+                   width="32" height="32"
+                   src="<%= UserServices::Avatar.new(user: user).thumbnail_url %>"
+                   style="display: inline-block; background-image: url('<%= asset_path 'user/default_avatar.png' %>'); background-size: contain; background-color: #fff;"
+                   alt="">
+            </td>
+            <td>
+              <%= link_to "", community_admin_user_path(user), class: "overlay" %>
+              <%= user.first_name %> <%= user.last_name %>
+            </td>
+            <td>
+              <% user.roles.sort_by { |r| current_user.community.roles.index(r) }
+                           .each do |role| %>
+                <% role_color = CommunityAdminService.role_color(community, role) %>
+                <% next if role_color.nil? %>
+                <span class="badge badge-<%= role_color %>"><%= t "community.#{community.slug}.roles.#{role}" %></span>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+      </table>
+    </div>
+  </div>
+</div>
+
+<% content_for :scripts do %>
+  <script>
+    var $filters = $('#filters')
+    $filters.on('show.bs.collapse hide.bs.collapse', function(e) {
+      $filters.find('[data-target="#' + e.target.id + '"]')
+              .toggleClass('active', e.type === 'show')
+    })
+    $('[data-toggle="checkbox"]').on('click', function(e) {
+      e.preventDefault()
+      var data = $(e.target).data()
+      $('#' + data.target + ' input[type=checkbox]')
+        .attr('checked', data.type === 'all')
+    })
+  </script>
+<% end %>

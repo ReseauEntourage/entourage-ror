@@ -12,6 +12,7 @@ roles:
   - coordinator
   - visitor
   - visited
+  - admin
 group_types:
   private_circle:
     message_types: [text, visit]

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180920171032) do
+ActiveRecord::Schema.define(version: 20180921125637) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -471,6 +471,15 @@ ActiveRecord::Schema.define(version: 20180920171032) do
 
   add_index "simplified_tour_points", ["tour_id"], name: "index_simplified_tour_points_on_tour_id", using: :btree
 
+  create_table "store_daily_reports", force: :cascade do |t|
+    t.string   "store_id"
+    t.string   "app_name"
+    t.date     "report_date"
+    t.integer  "nb_downloads"
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
+  end
+
   create_table "suggestion_compute_histories", force: :cascade do |t|
     t.integer  "user_number",                               null: false
     t.integer  "total_user_number",                         null: false
@@ -612,6 +621,7 @@ ActiveRecord::Schema.define(version: 20180920171032) do
   add_index "users", ["address_id"], name: "index_users_on_address_id", using: :btree
   add_index "users", ["organization_id"], name: "index_users_on_organization_id", using: :btree
   add_index "users", ["phone", "community"], name: "index_users_on_phone_and_community", unique: true, using: :btree
+  add_index "users", ["roles"], name: "index_users_on_roles", using: :gin
   add_index "users", ["token"], name: "index_users_on_token", unique: true, using: :btree
 
   create_table "users_appetences", force: :cascade do |t|

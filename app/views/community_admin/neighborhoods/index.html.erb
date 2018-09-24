@@ -1,0 +1,46 @@
+<style>
+  .overlay-container {
+    position: relative;
+  }
+
+  .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+  }
+
+  .overlay-container a:not(.overlay) {
+    position: relative;
+    z-index: 2;
+  }
+</style>
+
+<%= render 'nav', active: :neighborhoods %>
+
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-lg-8 col-12">
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <td class="text-right pr-0 pt-0 border-top-0">
+              <a href="<%= new_community_admin_neighborhood_path %>"
+                 class="btn btn-outline-secondary">Créer un voisinage</a>
+            </td>
+          </tr>
+        </thead>
+        <% @neighborhoods.each do |neighborhood| %>
+          <tr class="overlay-container">
+            <td>
+              <%= link_to "", community_admin_neighborhood_path(neighborhood), class: "overlay" %>
+              <%= neighborhood.title %>
+            </td>
+          </tr>
+        <% end %>
+      </table>
+    </div>
+  </div>
+</div>

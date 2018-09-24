@@ -1,0 +1,10 @@
+---
+fr:
+  community:
+    pfp:
+      roles:
+        not_validated: Non validé
+        coordinator: Animateur
+        visitor: Voisineur
+        visited: Voisiné
+        admin: Administrateur

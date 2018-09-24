@@ -1,0 +1,83 @@
+<style>
+  .overlay-container {
+    position: relative;
+  }
+
+  .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+  }
+
+  .overlay-container a:not(.overlay) {
+    position: relative;
+    z-index: 2;
+  }
+</style>
+
+<%= render 'nav', active: :neighborhoods %>
+
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-lg-8 col-12">
+      <div class="h2 mb-4 d-flex flex-nowrap">
+        <span class="flex-grow-1"><%= @neighborhood.title %></span>
+        <a href="<%= edit_community_admin_neighborhood_path(@neighborhood) %>"
+           class="btn btn-outline-secondary">Modifier</a>
+      </div>
+
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <td colspan="3" class="p-0 border-top-0">
+              <h4>Animateurs</h4>
+            </td>
+          </tr>
+          <% if @users[:coordinators].empty? %>
+            <td colspan="3" class="text-muted text-center">
+              Il n'y a pas d'animateur pour le moment.
+            </td>
+          <% end %>
+        </thead>
+        <% @users[:coordinators].each do |user| %>
+          <%= render 'community_admin/users/list_item', user: user %>
+        <% end %>
+
+        <thead>
+          <tr>
+            <td colspan="3" class="p-0 pt-4">
+              <h4>Membres</h4>
+            </td>
+          </tr>
+          <% if @users[:members].empty? %>
+            <td colspan="3" class="text-muted text-center">
+              Il n'y a pas de membre pour le moment.
+            </td>
+          <% end %>
+        </thead>
+        <% @users[:members].each do |user| %>
+          <%= render 'community_admin/users/list_item', user: user %>
+        <% end %>
+      </table>
+    </div>
+  </div>
+</div>
+
+<% content_for :scripts do %>
+  <script>
+    var $filters = $('#filters')
+    $filters.on('show.bs.collapse hide.bs.collapse', function(e) {
+      $filters.find('[data-target="#' + e.target.id + '"]')
+              .toggleClass('active', e.type === 'show')
+    })
+    $('[data-toggle="checkbox"]').on('click', function(e) {
+      e.preventDefault()
+      var data = $(e.target).data()
+      $('#' + data.target + ' input[type=checkbox]')
+        .attr('checked', data.type === 'all')
+    })
+  </script>
+<% end %>

@@ -1,0 +1,1 @@
+SELECT "users".* FROM "users" WHERE "users"."community" = 'entourage' AND (roles ? 'coordinator' or admin)

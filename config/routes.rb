@@ -240,6 +240,23 @@ Rails.application.routes.draw do
     end
   end
 
+  community_admin_url = URI(ENV['COMMUNITY_ADMIN_URL'] || 'community_admin')
+  scope host: community_admin_url.host, path: community_admin_url.path,
+        as: :community_admin, :module => :community_admin do
+    get '/' => 'base#root'
+    resources :sessions, only: [:new, :create] do
+      collection do
+        post :logout, action: :destroy
+      end
+    end
+    resources :users, only: [:index, :show, :edit, :update, :new, :create] do
+      post :neighborhood_role, action: :update_neighborhood_role
+      post :neighborhoods, action: :add_to_neighborhood
+      delete :neighborhoods, action: :remove_from_neighborhood
+    end
+    resources :neighborhoods, only: [:index, :show, :edit, :update, :new, :create]
+  end
+
   #WEB
   resources :sessions, only: [:new, :create, :destroy] do
     collection do
