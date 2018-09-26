@@ -1,0 +1,7 @@
+DATABASE_URL: postgres://<user>:<pass>@localhost:5432
+RAILS_ENV: development
+COMMUNITY: entourage
+HOST: entourage.localhost:8080
+API_HOST: api.entourage.localhost:8080
+ADMIN_HOST: admin.entourage.localhost:8080
+WEBSITE_URL: http://www.entourage.localhost:8081
