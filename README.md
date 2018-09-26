@@ -15,18 +15,69 @@ aglio -i apiary.apib -o public/developer.html
 ```
 
 ### Install aglio:
+
 ```
 npm install -g aglio
 ```
 
+# Docker
+
+You can run this application using Docker.
+
+There is a wrapper, `bin/d`, that allows you to run command in the correct
+container.
+
+Example :
+
+```bash
+bin/d # Shows help
+bin/d up # Setup needed containers
+bin/d rake db:migrate
+bin/d rails server -i 0.0.0.0 -p 8080 # Options needed to acces application outside of the container
+```
+
+You can run below commands prepending `bin/d` to them and it will run in the
+container !
+
+# Environment variables
+
+Some environment variables are needed to run this application.
+
+```bash
+DATABASE_URL=postgres://<user>:<pass>@localhost:5432 # The database URL
+HOST=entourage.localhost # The Host that is used in Nginx routing if multiple app exists behind the same port
+```
+
+You can source these environment variables in multiple ways :
+- (local and docker) Copy `application.yml` from `application.yml.dist`
+and fill in the missing informations.
+- (docker) Copy `.env` from `.env.dist` and fill in the missing informations.
+
 # Resolve dependencies and run server
 
-```
+```bash
 $ gem install bundler
 $ bundle install --without production
+$ bundle exec rake db:create
 $ bundle exec rake db:migrate
 $ bundle exec rails server
 ```
+
+# Accessing admin panel
+
+To access the admin panel, you need to set an entry in your `/etc/hosts` :
+
+```
+127.0.0.1 admin.entourage.localhost
+```
+
+You also need to create an admin user :
+
+```bash
+echo "UserServices::PublicUserBuilder.new(params: {phone: '+33606060606', admin: true}, community: Community.new(:entourage)).create(sms_code: '123456')" | rails c
+```
+
+Then, browse `admin.entourage.localhost:<port>`.
 
 # Rspec tests
 
@@ -36,7 +87,7 @@ Run tests with
 $ rspec
 ```
 
-# Dredd tests
+# Dredd tests (Deprecated)
 
 Test the API documentation compliance with [Dredd](https://github.com/apiaryio/dredd)
 
