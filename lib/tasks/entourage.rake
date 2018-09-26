@@ -11,7 +11,7 @@ namespace :entourage do
   task generate_public_map_csv: :environment do
     entourages = Entourage
       .visible
-      .where(group_type: :action, community: :entourage)
+      .where(group_type: [:action, :outing], community: :entourage)
       .where(created_at: 3.months.ago..Time.now)
 
     begin
