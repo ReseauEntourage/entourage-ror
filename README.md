@@ -33,7 +33,7 @@ Example :
 bin/d # Shows help
 bin/d up # Setup needed containers
 bin/d rake db:migrate
-bin/d rails server -i 0.0.0.0 -p 8080 # Options needed to acces application outside of the container
+bin/d foreman start web # Options needed to acces application outside of the container
 ```
 
 You can run below commands prepending `bin/d` to them and it will run in the
@@ -49,15 +49,17 @@ HOST=entourage.localhost # The Host that is used in Nginx routing if multiple ap
 ```
 
 You can source these environment variables in multiple ways :
-- (local and docker) Copy `application.yml` from `application.yml.dist`
-and fill in the missing informations.
+- (local) Copy `application.yml` from `application.yml.dist`
+and fill in the missing informations. **NOTE** Environment variables will take
+precedence over `application.yml` values.
 - (docker) Copy `.env` from `.env.dist` and fill in the missing informations.
+It takess precedence over `application.yml` file.
 
 # Resolve dependencies and run server
 
 ```bash
 $ gem install bundler
-$ bundle install --without production
+$ bundle install
 $ bundle exec rake db:create
 $ bundle exec rake db:migrate
 $ bundle exec rails server
