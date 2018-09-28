@@ -1,5 +1,7 @@
 <table class="table table-hover">
   <% users.each do |user| %>
-    <%= render 'community_admin/users/list_item', user: user %>
+    <tr class="overlay-container">
+      <%= render 'community_admin/users/list_item', user: user %>
+    </tr>
   <% end %>
 </table>

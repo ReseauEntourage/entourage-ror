@@ -92,6 +92,36 @@ module CommunityAdminService
       .uniq
   end
 
+  def self.coordinator_private_circles(user)
+    if user.roles.include?(:admin)
+      user.community.entourages
+        .where(group_type: :private_circle)
+    else
+      neighborhood_ids = coordinator_neighborhoods(user).pluck(:id)
+      Entourage
+        .where(group_type: :private_circle)
+        .joins(%{
+          join
+            join_requests as member_to_private_circle
+          on
+            member_to_private_circle.joinable_id = entourages.id and
+            member_to_private_circle.joinable_type = 'Entourage' and
+            member_to_private_circle.status = 'accepted' and
+            member_to_private_circle.role in ('visitor', 'visited')
+        })
+        .joins(%{
+          join
+            join_requests as member_to_neighborhood
+          on
+            member_to_neighborhood.user_id = member_to_private_circle.user_id and
+            member_to_neighborhood.joinable_type = 'Entourage' and
+            member_to_neighborhood.status = 'accepted'
+        })
+        .where(member_to_neighborhood: {joinable_id: neighborhood_ids})
+        .uniq
+    end
+  end
+
   def self.role_color(community, role)
     case role
     when :coordinator then 'success'
@@ -119,8 +149,36 @@ module CommunityAdminService
     end
   end
 
-  def self.leaving_neigborhood_will_lock_out(user)
-    !user.roles.include?(:admin) &&
-    user.join_requests.accepted.where(role: :coordinator).count == 1
+  def self.add_to_group(user:, group:, role: nil)
+    join_request = JoinRequest.find_or_initialize_by(
+      user_id: user.id,
+      joinable: group
+    )
+
+    role ||=
+      case group.group_type.to_sym
+      when :neighborhood
+        :member
+      when :private_circle
+        user.roles.include?(:visited) ? :visited : :visitor
+      end
+
+    join_request.status = :accepted
+    join_request.role ||= role
+
+    join_request.save! if join_request.new_record? || join_request.changed?
+
+    adjust_coordinator_role(user) if group.group_type == 'neighborhood'
+  end
+
+  def self.adjust_coordinator_role(user)
+    should_be_coordinator = user.join_requests.accepted.where(role: :coordinator).exists?
+    is_coordinator = user.roles.include?(:coordinator)
+    if should_be_coordinator && !is_coordinator
+      user.roles.push :coordinator
+    elsif !should_be_coordinator && is_coordinator
+      user.roles.delete :coordinator
+    end
+    user.save! if user.changed?
   end
 end

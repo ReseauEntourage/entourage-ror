@@ -1,0 +1,69 @@
+<style>
+  .overlay-container {
+    position: relative;
+  }
+
+  .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+  }
+
+  .overlay-container a:not(.overlay) {
+    position: relative;
+    z-index: 2;
+  }
+
+  .fixed-footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 3;
+  }
+</style>
+
+<%
+  method, path, confirm, cancel_path =
+    if @private_circle.new_record?
+      [
+        :post, community_admin_private_circles_path,
+        "Créer le voisinage",
+        community_admin_private_circles_path
+      ]
+    else
+      [
+        :put, community_admin_private_circle_path(@private_circle),
+        "Enregister les modifications",
+        community_admin_private_circle_path(@private_circle)
+      ]
+    end
+%>
+<div class="container mt-5">
+  <div class="row justify-content-md-center">
+    <%= form_for @private_circle, url: path, method: method,
+            html: {class: "col-8"} do |f| %>
+      <div class="d-flex flex-nowrap mb-4">
+        <div class="flex-grow-1">
+          <div class="form-group">
+            <%= label_tag :visited_user_first_name, "Nom de la personne voisinée" %>
+            <%= text_field_tag :visited_user_first_name, @private_circle.metadata[:visited_user_first_name], class: "form-control", required: true %>
+            <small class="form-text text-muted">Le nom du cercle privé sera <i>Les amis de [nom]</i>, par exemple : <i>Les amis d'Henriette</i>.</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="fixed-footer p-3 bg-light d-flex justify-content-end">
+        <a href="<%= cancel_path %>" class="btn btn-outline-secondary mr-3">Annuler</a>
+        <button type="submit" class="btn btn-success"><%= confirm %></button>
+      </div>
+
+      <% if params.key?(:for_user) %>
+        <input type="hidden" name="for_user" value="<%= params[:for_user] %>" />
+      <% end %>
+    <% end %>
+  </div>
+</div>

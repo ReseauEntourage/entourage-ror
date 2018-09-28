@@ -255,11 +255,12 @@ Rails.application.routes.draw do
       end
     end
     resources :users, only: [:index, :show, :edit, :update, :new, :create] do
-      post :neighborhood_role, action: :update_neighborhood_role
-      post :neighborhoods, action: :add_to_neighborhood
-      delete :neighborhoods, action: :remove_from_neighborhood
+      post :group_role, action: :update_group_role
+      post :groups, action: :add_to_group
+      delete :groups, action: :remove_from_group
     end
     resources :neighborhoods, only: [:index, :show, :edit, :update, :new, :create]
+    resources :private_circles, only: [:index, :show, :edit, :update, :new, :create]
   end
 
   #WEB

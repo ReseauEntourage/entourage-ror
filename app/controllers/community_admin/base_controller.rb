@@ -4,7 +4,7 @@ module CommunityAdmin
 
     before_action :authenticate_user!
 
-    helper_method :current_user, :community
+    helper_method :current_user, :community, :community_admin_group_path
 
     layout 'community_admin'
 
@@ -48,6 +48,17 @@ module CommunityAdmin
     def community
       @community ||= begin
         $server_community
+      end
+    end
+
+    def community_admin_group_path group
+      case group.group_type
+      when 'neighborhood'
+        community_admin_neighborhood_path(group)
+      when 'private_circle'
+        community_admin_private_circle_path(group)
+      else
+        raise
       end
     end
   end
