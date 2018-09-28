@@ -5,7 +5,7 @@ module Api
       skip_before_filter :ensure_community!
 
       def redirect
-        if current_user.nil? && params[:id] != 'terms'
+        if current_user.nil? && !params[:id].in?(['terms', 'privacy-policy'])
           return render json: {message: 'unauthorized'}, status: :unauthorized
         end
 
