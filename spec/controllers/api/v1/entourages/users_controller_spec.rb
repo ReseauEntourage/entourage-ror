@@ -20,7 +20,6 @@ describe Api::V1::Entourages::UsersController do
         it { expect(entourage.members).to eq([user]) }
         it { expect(result).to eq("user"=>{
                                             "id"=>user.id,
-                                            "email"=>user.email,
                                             "display_name"=>"John D",
                                             "role"=>"member",
                                             "status"=>"pending",
@@ -37,7 +36,6 @@ describe Api::V1::Entourages::UsersController do
         it { expect(entourage.members).to eq([user]) }
         it { expect(result).to eq("user"=>{
             "id"=>user.id,
-            "email"=>user.email,
             "display_name"=>"John D",
             "status"=>"pending",
             "role"=>"member",
@@ -54,7 +52,6 @@ describe Api::V1::Entourages::UsersController do
         it { expect(entourage.members).to eq([user]) }
         it { expect(result).to eq("user"=>{
             "id"=>user.id,
-            "email"=>user.email,
             "display_name"=>"John D",
             "role"=>"member",
             "status"=>"pending",
@@ -123,7 +120,6 @@ describe Api::V1::Entourages::UsersController do
       before { get :index, entourage_id: entourage.to_param, token: user.token }
       it { expect(result).to eq({"users"=>[{
                                                "id"=>user.id,
-                                               "email"=>user.email,
                                                "display_name"=>"John D",
                                                "role"=>"member",
                                                "status"=>"pending",
@@ -231,7 +227,6 @@ describe Api::V1::Entourages::UsersController do
         it { expect(my_join_request.reload.status).to eq("accepted") }
         it { expect(result).to eq({"user"=>{
                                             "id"=>other_user.id,
-                                            "email"=>other_user.email,
                                             "display_name"=>"John D",
                                             "role"=>"member",
                                             "status"=>"rejected",
@@ -250,7 +245,6 @@ describe Api::V1::Entourages::UsersController do
         it { expect(expect(my_join_request.reload.status).to eq('cancelled')) }
         it { expect(result).to eq({"user"=>{
                                       "id"=>user.id,
-                                      "email"=>user.email,
                                       "display_name"=>"John D",
                                       "role"=>"member",
                                       "status"=>"cancelled",

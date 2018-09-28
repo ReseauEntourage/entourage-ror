@@ -11,7 +11,7 @@ module V1
               text: last_element.content,
               author: {
                   first_name: last_element.user.first_name,
-                  last_name: last_element.user.last_name
+                  last_name: last_element.user.last_name.presence&.first
               }
           }
         elsif last_element.is_a?(JoinRequest)

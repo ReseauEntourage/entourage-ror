@@ -16,7 +16,6 @@ describe Api::V1::Tours::UsersController do
         before { post :create, tour_id: tour.to_param, token: user.token }
         it { expect(tour.members).to eq([user]) }
         it { expect(result).to eq("user"=>{"id"=>user.id,
-                                                              "email"=>user.email,
                                                               "display_name"=>"John D",
                                                               "role"=>"member",
                                                               "status" => "pending",
@@ -32,7 +31,6 @@ describe Api::V1::Tours::UsersController do
         before { post :create, tour_id: tour.to_param, token: user.token }
         it { expect(tour.members).to eq([user]) }
         it { expect(result).to eq("user"=>{"id"=>user.id,
-                                           "email"=>user.email,
                                            "display_name"=>"John D",
                                            "role"=>"member",
                                            "status" => "pending",
@@ -59,7 +57,6 @@ describe Api::V1::Tours::UsersController do
         before { post :create, tour_id: tour.to_param, request: {message: "foo"}, token: user.token }
         it { expect(tour.members).to eq([user]) }
         it { expect(result).to eq("user"=>{"id"=>user.id,
-                                                              "email"=>user.email,
                                                               "display_name"=>"John D",
                                                               "status" => "pending",
                                                               "role"=>"member",
@@ -81,7 +78,6 @@ describe Api::V1::Tours::UsersController do
       let!(:join_request) { FactoryGirl.create(:join_request, user: user, joinable: tour) }
       before { get :index, tour_id: tour.to_param, token: user.token }
       it { expect(result).to eq({"users"=>[{"id"=>user.id,
-                                                               "email"=>user.email,
                                                                "display_name"=>"John D",
                                                                "status"=>"pending",
                                                                "role"=>"member",
@@ -174,7 +170,6 @@ describe Api::V1::Tours::UsersController do
       it { expect(response.status).to eq(200) }
       it { expect(result).to eq({"user"=>{
                                           "id"=>requester.id,
-                                          "email"=>requester.email,
                                           "display_name"=>"John D",
                                           "role"=>"member",
                                           "status"=>"rejected",
@@ -199,7 +194,6 @@ describe Api::V1::Tours::UsersController do
       it { expect(response.status).to eq(200) }
       it { expect(result).to eq({"user"=>{
                                   "id"=>user.id,
-                                  "email"=>user.email,
                                   "display_name"=>"John D",
                                   "role"=>"member",
                                   "status"=>"cancelled",

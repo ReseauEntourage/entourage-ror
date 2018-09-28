@@ -26,7 +26,7 @@ describe Api::V1::InvitationsController do
                                                         "id"=>invitation.inviter_id,
                                                         "display_name"=>"John D",
                                                         "first_name"=>"John",
-                                                        "last_name"=>"Doe",
+                                                        "last_name"=>"D",
                                                         "roles"=>[],
                                                         "about"=>nil,
                                                         "avatar_url"=>nil,
