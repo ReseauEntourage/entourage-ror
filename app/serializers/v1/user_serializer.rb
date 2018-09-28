@@ -42,6 +42,14 @@ module V1
       UserPresenter.new(user: object).display_name
     end
 
+    def last_name
+      if me?
+        object.last_name
+      else
+        object.last_name.presence&.first
+      end
+    end
+
     def roles
       object.roles.sort_by { |r| object.community.roles.index(r) }
     end

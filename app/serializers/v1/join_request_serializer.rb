@@ -1,7 +1,6 @@
 module V1
   class JoinRequestSerializer < ActiveModel::Serializer
     attributes :id,
-               :email,
                :display_name,
                :role,
                :status,
@@ -12,10 +11,6 @@ module V1
 
     def id
       object.user.id
-    end
-
-    def email
-      object.user.email
     end
 
     def requested_at

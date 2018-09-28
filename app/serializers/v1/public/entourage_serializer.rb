@@ -7,9 +7,9 @@ module V1
                  :title,
                  :description,
                  :created_at,
-                 :description,
                  :location,
-                 :approximated_location
+                 :approximated_location,
+                 :number_of_people
 
       has_one :author
 

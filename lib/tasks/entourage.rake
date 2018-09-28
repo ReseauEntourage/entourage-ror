@@ -23,13 +23,11 @@ namespace :entourage do
         :latitude,
         :longitude,
         :title,
-        :description,
         :creation_date,
         :author_name,
         :author_avatar_url,
         :status,
         :uuid,
-        :uuid_v1
       ]
 
       entourages.includes(:user).find_each do |e|
@@ -39,13 +37,11 @@ namespace :entourage do
             location_randomizer.random_latitude.round(5),
             location_randomizer.random_longitude.round(5),
             e.title,
-            e.description,
             e.created_at.iso8601,
             e.user.first_name,
             UserServices::Avatar.new(user: e.user).thumbnail_url,
             e.status,
             e.uuid_v2,
-            e.uuid
           ]
         rescue => e
           Raven.capture_exception(e, extra: { entourage_id: e.id })
