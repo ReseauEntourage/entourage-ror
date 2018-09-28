@@ -241,8 +241,13 @@ Rails.application.routes.draw do
   end
 
   community_admin_url = URI(ENV['COMMUNITY_ADMIN_URL'] || 'community_admin')
-  scope host: community_admin_url.host, path: community_admin_url.path,
-        as: :community_admin, :module => :community_admin do
+  community_admin_scope = {
+    host: community_admin_url.host,
+    path: community_admin_url.path
+  }.compact
+
+  scope community_admin_scope.merge(
+        as: :community_admin, :module => :community_admin) do
     get '/' => 'base#root'
     resources :sessions, only: [:new, :create] do
       collection do
