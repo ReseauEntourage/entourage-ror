@@ -64,7 +64,6 @@ namespace :entourage do
         content_type: 'text/csv',
         content_encoding: 'gzip',
         acl: 'public-read',
-        expires: 24.hours.from_now
       )
 
       puts s3_object.public_url
