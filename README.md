@@ -29,6 +29,10 @@ DATABASE_URL=postgres://<user>:<pass>@localhost:5432 # The database URL
 HOST=entourage.localhost # The Host that is used in Nginx routing if multiple app exists behind the same port
 ```
 
+You can source these environment variables froms a `.env` file.
+
+To get started : `cp .env.dist .env` and fill in the missing informations !
+
 # Docker
 
 You can run this application using Docker.
