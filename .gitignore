@@ -32,6 +32,7 @@ use-node
 .env
 *.dump
 .netrc
+/application.yml
 
 #ignore lambda zip files
 *.zip
