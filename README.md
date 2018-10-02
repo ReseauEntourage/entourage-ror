@@ -52,14 +52,27 @@ bin/d foreman start web
 You can run below commands prepending `bin/d` to them and it will run in the
 container !
 
-# Resolve dependencies and run server
+# Local install
+
+## Resolve dependencies and database migration :
 
 ```bash
-$ gem install bundler
-$ bundle install
-$ bundle exec rake db:create
-$ bundle exec rake db:migrate
-$ bundle exec rails server
+gem install bundler
+bundle install
+bundle exec rake db:create
+bundle exec rake db:migrate
+```
+## Launch application
+
+```bash
+bundle exec rails server
+```
+
+Or, with `foreman` :
+
+```bash
+# gem install foreman
+foreman start web
 ```
 
 # Accessing admin panel
