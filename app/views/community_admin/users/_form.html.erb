@@ -86,6 +86,11 @@
         <a href="<%= cancel_path %>" class="btn btn-outline-secondary mr-3">Annuler</a>
         <button type="submit" class="btn btn-success"><%= confirm %></button>
       </div>
+
+      <% if params.key?(:for_group) %>
+        <input type="hidden" name="for_group" value="<%= params[:for_group] %>" />
+        <input type="hidden" name="for_role" value="<%= params[:for_role] %>" />
+      <% end %>
     <% end %>
   </div>
 </div>

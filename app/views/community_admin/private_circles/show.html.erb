@@ -42,14 +42,14 @@
   }
 </style>
 
-<%= render 'nav', active: :neighborhoods %>
+<%= render 'nav', active: :private_circles %>
 
 <div class="container">
   <div class="row justify-content-center">
     <div class="col-lg-8 col-12">
       <div class="h2 mb-4 d-flex flex-nowrap">
-        <span class="flex-grow-1"><%= @neighborhood.title %></span>
-        <a href="<%= edit_community_admin_neighborhood_path(@neighborhood) %>"
+        <span class="flex-grow-1"><%= @private_circle.title %></span>
+        <a href="<%= edit_community_admin_private_circle_path(@private_circle) %>"
            class="btn btn-outline-secondary">Modifier</a>
       </div>
 
@@ -57,31 +57,30 @@
         <thead>
           <tr>
             <td colspan="4" class="p-0 border-top-0">
-              <h4>Animateurs</h4>
+              <h4>Voisinés</h4>
             </td>
           </tr>
-          <% if @users[:coordinators].empty? %>
+          <% if @users[:visited].empty? %>
             <td colspan="4" class="text-muted text-center">
-              Il n'y a pas d'animateur dans ce voisinage.
+              Il n'y a pas de voisiné dans ce cercle privé.
             </td>
           <% end %>
         </thead>
-        <% @users[:coordinators].each do |user| %>
+        <% @users[:visited].each do |user| %>
           <tr class="overlay-container">
             <%= render 'community_admin/users/list_item', user: user %>
             <td class="text-right">
               <div class="dropdown">
                 <span class="btn-sm btn btn-ellipsis" data-toggle="dropdown"></span>
                 <div class="dropdown-menu dropdown-menu-right">
-                  <% role = user.role.to_sym %>
-                  <%= button_to "Retirer le rôle d'animateur",
+                  <%= button_to "Attribuer le rôle de voisineur",
                         community_admin_user_group_role_path(user,
-                          group_id: @neighborhood.id, role: :member),
+                          group_id: @private_circle.id, role: :visitor),
                         method: :post,
                         class: "dropdown-item" %>
-                  <%= button_to "Retirer du voisinage",
+                  <%= button_to "Retirer du cercle privé",
                         community_admin_user_groups_path(user,
-                          group_id: @neighborhood.id, redirect: :group),
+                          group_id: @private_circle.id, redirect: :group),
                         method: :delete,
                         class: "dropdown-item text-danger" %>
                 </div>
@@ -93,8 +92,8 @@
         <thead>
           <tr>
             <td colspan="4" class="text-right px-0">
-              <a href="<%= community_admin_users_path(for_group: @neighborhood.id, for_role: :coordinator, roles: [:coordinator]) %>" class="btn btn-outline-secondary">
-                Ajouter un animateur
+              <a href="<%= community_admin_users_path(for_group: @private_circle.id, for_role: :visited, roles: [:visited]) %>" class="btn btn-outline-secondary">
+                Ajouter un voisiné
               </a>
             </td>
           </tr>
@@ -103,31 +102,30 @@
         <thead>
           <tr>
             <td colspan="4" class="p-0 pt-4 border-top-0">
-              <h4>Membres</h4>
+              <h4>Voisineurs</h4>
             </td>
           </tr>
-          <% if @users[:members].empty? %>
+          <% if @users[:visitors].empty? %>
             <td colspan="4" class="text-muted text-center">
-              Il n'y a pas de membre pour le moment.
+              Il n'y a pas de voisineur dans ce cercle privé.
             </td>
           <% end %>
         </thead>
-        <% @users[:members].each do |user| %>
+        <% @users[:visitors].each do |user| %>
           <tr class="overlay-container">
             <%= render 'community_admin/users/list_item', user: user %>
             <td class="text-right">
               <div class="dropdown">
                 <span class="btn-sm btn btn-ellipsis" data-toggle="dropdown"></span>
                 <div class="dropdown-menu dropdown-menu-right">
-                  <% role = user.role.to_sym %>
-                  <%= button_to "Attribuer le rôle d'animateur",
+                  <%= button_to "Attribuer le rôle de voisiné",
                         community_admin_user_group_role_path(user,
-                          group_id: @neighborhood.id, role: :coordinator),
+                          group_id: @private_circle.id, role: :visited),
                         method: :post,
                         class: "dropdown-item" %>
-                  <%= button_to "Retirer du voisinage",
+                  <%= button_to "Retirer du cercle privé",
                         community_admin_user_groups_path(user,
-                          group_id: @neighborhood.id, redirect: :group),
+                          group_id: @private_circle.id, redirect: :group),
                         method: :delete,
                         class: "dropdown-item text-danger" %>
                 </div>
@@ -135,17 +133,15 @@
             </td>
           </tr>
         <% end %>
-
         <thead>
           <tr>
             <td colspan="4" class="text-right px-0">
-              <a href="<%= community_admin_users_path(for_group: @neighborhood.id, for_role: :member) %>" class="btn btn-outline-secondary">
-                Ajouter un membre
+              <a href="<%= community_admin_users_path(for_group: @private_circle.id, for_role: :visitor, roles: [:visitor]) %>" class="btn btn-outline-secondary">
+                Ajouter un voisineur
               </a>
             </td>
           </tr>
         </thead>
-
       </table>
     </div>
   </div>

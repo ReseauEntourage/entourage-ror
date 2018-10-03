@@ -89,25 +89,51 @@ module EntourageServices
 
       if entourage.status == 'closed' && moderation_params.present?
         entourage.moderation || entourage.build_moderation
-        outcome = {
-          true  => 'Oui',
-          false => 'Non'
-        }[moderation_params[:success]]
-        if outcome != nil
-          entourage.moderation.action_outcome = outcome
-        end
+
+        entourage.moderation.action_outcome =
+          case moderation_params[:success]
+          when *ActiveRecord::ConnectionAdapters::Column::TRUE_VALUES
+            'Oui'
+          when *ActiveRecord::ConnectionAdapters::Column::FALSE_VALUES
+            'Non'
+          else
+            entourage.errors.add(:base, "outcome.success must be a boolean")
+            return false
+          end
+
         if entourage.moderation.action_outcome_changed?
           entourage.moderation.action_outcome_reported_at = Time.now
           entourage.moderation.moderation_comment = (
             (entourage.moderation.moderation_comment || '').lines.map(&:chomp) +
-            ["Aboutissement passé à \"#{outcome}\" " +
+            ["Aboutissement passé à \"#{entourage.moderation.action_outcome}\" " +
              "par le créateur de l'action " +
              "le #{I18n.l Time.now, format: '%-d %B %Y à %H:%M'}."]
           ).join("\n")
         end
       end
 
-      entourage.save
+      publish_status_update =
+        entourage.status == 'closed' &&
+        (entourage.status_changed? || entourage.moderation&.action_outcome_changed?)
+
+      success = entourage.save
+
+      if success && publish_status_update
+        ChatMessage.create(
+          messageable: entourage,
+          user_id: entourage.user_id,
+          message_type: :status_update,
+          metadata: {
+            status: entourage.status,
+            outcome_success: {
+              'Oui' => true,
+              'Non' => false,
+            }[entourage.moderation&.action_outcome]
+          }
+        )
+      end
+
+      success
     end
 
     private

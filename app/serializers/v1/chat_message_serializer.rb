@@ -8,7 +8,7 @@ module V1
                :metadata
 
     def filter(keys)
-      keys -= [:metadata] unless object.message_type.in?(['outing'])
+      keys -= [:metadata] unless object.message_type.in?(['outing', 'status_update'])
       keys
     end
 

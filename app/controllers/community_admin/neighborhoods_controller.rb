@@ -50,7 +50,15 @@ module CommunityAdmin
         group_type: :neighborhood
       )
       neighborhood.assign_attributes(neighborhood_params)
-      neighborhood.save!
+
+      ActiveRecord::Base.transaction do
+        neighborhood.save!
+        unless current_user.roles.include?(:admin)
+          CommunityAdminService.add_to_group(
+            user: current_user, group: neighborhood, role: :coordinator)
+        end
+      end
+
       redirect_to community_admin_neighborhood_path(neighborhood)
     end
 

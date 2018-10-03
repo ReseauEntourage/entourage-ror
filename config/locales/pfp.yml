@@ -8,3 +8,6 @@ fr:
         visitor: Voisineur
         visited: Voisiné
         admin: Administrateur
+      group_types:
+        private_circle: cercle privé
+        neighborhood: voisinage

@@ -11,6 +11,13 @@ module UserServices
       user.community = community.slug
       user.token = token
       user.sms_code = sms_code || UserServices::SmsCode.new.code
+      user.roles =
+        case user.community
+        when 'pfp'
+          [:not_validated]
+        else
+          []
+        end
       user
     end
 

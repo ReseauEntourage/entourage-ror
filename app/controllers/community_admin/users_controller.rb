@@ -18,10 +18,17 @@ module CommunityAdmin
                          .uniq & all_neighborhoods
       neighborhood_ids = all_neighborhoods if neighborhood_ids.empty?
 
+      roles = Array(params[:roles]).map(&:to_sym).uniq & community.roles
+      roles = community.roles if roles.empty?
+
       @filters = {
         neighborhoods: {
           ids: neighborhood_ids,
           is_filtered: neighborhood_ids != all_neighborhoods
+        },
+        roles: {
+          list: roles,
+          is_filtered: roles.count != community.roles.count
         }
       }
 
@@ -29,8 +36,13 @@ module CommunityAdmin
         @users = CommunityAdminService
           .coordinator_users_filtered(current_user, neighborhood_ids)
       end
+      if @filters[:roles][:is_filtered]
+        @users = @users.where("roles ?| array[#{ roles.map { |r| ActiveRecord::Base.connection.quote(r) }.join(',') }]")
+      end
       @users = @users.select(
         :id, :first_name, :last_name, :avatar_key, :validation_status, :roles)
+
+      @for_group = find_group(params[:for_group]) if params.key?(:for_group)
     end
 
     def show
@@ -38,6 +50,15 @@ module CommunityAdmin
 
       @user_neighborhoods =
         @coordinator_neighborhoods
+        .joins(:join_requests)
+        .merge(@user.join_requests.accepted)
+        .select("entourages.id, entourages.title, join_requests.role")
+
+      @coordinator_private_circles =
+        CommunityAdminService.coordinator_private_circles(current_user)
+
+      @user_private_circles =
+        @coordinator_private_circles
         .joins(:join_requests)
         .merge(@user.join_requests.accepted)
         .select("entourages.id, entourages.title, join_requests.role")
@@ -74,76 +95,74 @@ module CommunityAdmin
       redirect_to community_admin_user_path(user)
     end
 
-    def update_neighborhood_role
-      raise unless CommunityAdminService.coordinator_neighborhoods(current_user)
-                                        .where(id: params[:neighborhood_id])
-                                        .exists?
+    def update_group_role
+      group, user = find_group_and_user
 
-      user = User.find(params[:user_id])
-
-      raise if params[:role] == 'member' &&
-               user == current_user &&
-               CommunityAdminService.leaving_neigborhood_will_lock_out(user)
-
-      join_request = user.join_requests.accepted.find_by!(
-        joinable_id: params[:neighborhood_id]
-      )
-
-      raise unless params[:role].in? ['coordinator', 'member']
-
-      join_request.update_column(:role, params[:role])
-
-      should_be_coordinator = user.join_requests.accepted.where(role: :coordinator).exists?
-      is_coordinator = user.roles.include?(:coordinator)
-      if should_be_coordinator && !is_coordinator
-        user.roles.push :coordinator
-      elsif !should_be_coordinator && is_coordinator
-        user.roles.delete :coordinator
+      if group.group_type == 'neighborhood' &&
+         params[:role] == 'member' &&
+         user == current_user &&
+         !user.roles.include?(:admin)
+        return redirect_to community_admin_user_path(user),
+                           alert: "Vous ne pouvez pas vous retirer vous-même le rôle d'animateur."
       end
-      user.save! if user.changed?
-
-      redirect_to community_admin_user_path(user)
-    end
-
-    def add_to_neighborhood
-      raise unless CommunityAdminService.coordinator_neighborhoods(current_user)
-                                        .where(id: params[:neighborhood_id])
-                                        .exists?
-
-      user = find_user(params[:user_id])
-
-      join_request = JoinRequest.find_or_initialize_by(
-        user_id: params[:user_id],
-        joinable_id: params[:neighborhood_id],
-        joinable_type: :Entourage
-      )
-
-      join_request.status = :accepted
-      join_request.role ||= :member
-
-      join_request.save! if join_request.new_record? || join_request.changed?
-
-      redirect_to community_admin_user_path(user)
-    end
-
-    def remove_from_neighborhood
-      raise unless CommunityAdminService.coordinator_neighborhoods(current_user)
-                                        .where(id: params[:neighborhood_id])
-                                        .exists?
-
-      user = User.find(params[:user_id])
 
       join_request = user.join_requests.accepted.find_by!(
-        joinable_id: params[:neighborhood_id]
+        joinable_id: params[:group_id]
       )
 
-      raise if join_request.role == 'coordinator' &&
-               user == current_user &&
-               CommunityAdminService.leaving_neigborhood_will_lock_out(user)
+      join_request.update!(role: params[:role])
+
+      if group.group_type == 'neighborhood'
+        CommunityAdminService.adjust_coordinator_role(user)
+      end
+
+      redirect_to request.referrer || community_admin_user_path(user)
+    end
+
+    def add_to_group
+      group, user = find_group_and_user
+
+      CommunityAdminService.add_to_group(user: user, group: group, role: params[:role])
+
+      if params[:redirect] == 'group'
+        redirect_to community_admin_group_path(group)
+      else
+        redirect_to community_admin_user_path(user)
+      end
+    end
+
+    def remove_from_group
+      group, user = find_group_and_user
+
+      join_request = user.join_requests.accepted.find_by!(
+        joinable_id: group.id
+      )
+
+      if group.group_type == 'neighborhood' &&
+         join_request.role == 'coordinator' &&
+         user == current_user &&
+         !current_user.roles.include?(:admin)
+        return redirect_to community_admin_user_path(user),
+                           alert: "Vous ne pouvez pas vous retirer vous-même d'un voisinage dont vous êtes animateur."
+      end
+
+      if group.group_type == 'neighborhood' &&
+         !(user.roles.include?(:admin) || current_user.roles.include?(:admin)) &&
+         user.entourage_participations.where(group_type: :neighborhood).merge(JoinRequest.accepted).count == 1
+        return redirect_to community_admin_user_path(user),
+                           alert: "Vous ne pouvez pas retirer une personne de son seul voisinage."
+      end
+
+      if !current_user.roles.include?(:admin) &&
+         group.join_requests.accepted.count == 1
+        group_name = t "community.#{community.slug}.group_types.#{group.group_type}", default: "groupe"
+        return redirect_to community_admin_group_path(group),
+                           alert: "Vous devez conserver au moins un membre dans le #{group_name}."
+      end
 
       join_request.destroy
 
-      if join_request.role == 'coordinator'
+      if group.group_type == 'neighborhood' && join_request.role == 'coordinator'
         should_be_coordinator = user.join_requests.accepted.where(role: :coordinator).exists?
         is_coordinator = user.roles.include?(:coordinator)
         if  !should_be_coordinator && is_coordinator
@@ -152,7 +171,11 @@ module CommunityAdmin
         user.save! if user.changed?
       end
 
-      redirect_to community_admin_user_path(user)
+      if params[:redirect] == 'group'
+        redirect_to community_admin_group_path(group)
+      else
+        redirect_to community_admin_user_path(user)
+      end
     end
 
     def new
@@ -161,12 +184,41 @@ module CommunityAdmin
 
     def create
       builder = UserServices::PublicUserBuilder.new(params: user_params, community: community)
+      user = nil
       builder.create(send_sms: false, sms_code: '123456') do |on|
-        on.success do |user|
-          return redirect_to community_admin_user_path(user)
-        end
+        on.success { |new_user| user = new_user }
       end
-      raise :error
+      raise :error unless user
+
+      groups = []
+      for_group = nil
+
+      if params.key?(:for_group)
+        for_group = find_group(params[:for_group])
+        groups.push [
+          for_group,
+          params[:for_role]
+        ]
+      end
+
+      if !current_user.roles.include?(:admin) &&
+         groups.none? { |g, _| g.group_type == 'neighborhood' }
+
+        groups.push [
+          CommunityAdminService.coordinator_neighborhoods(current_user).first,
+          nil
+        ]
+      end
+
+      groups.each do |group, role|
+        CommunityAdminService.add_to_group(user: user, group: group, role: role)
+      end
+
+      if for_group
+        redirect_to community_admin_group_path(for_group)
+      else
+        redirect_to community_admin_user_path(user)
+      end
     end
 
 
@@ -185,6 +237,30 @@ module CommunityAdmin
         :phone, :email,
         roles: []
       )
+    end
+
+    def find_group group_id
+      group = Entourage.find(group_id)
+
+      scope =
+        case group.group_type
+        when 'neighborhood'
+          CommunityAdminService.coordinator_neighborhoods(current_user)
+        when 'private_circle'
+          CommunityAdminService.coordinator_private_circles(current_user)
+        else
+          raise
+        end
+
+      raise unless scope.where(id: group_id).exists?
+
+      group
+    end
+
+    def find_group_and_user
+      group = find_group(params[:group_id])
+      user = find_user(params[:user_id])
+      [group, user]
     end
   end
 end

@@ -448,16 +448,39 @@ describe Api::V1::EntouragesController do
       end
 
       context "closing with outcome" do
-        before { patch :update, id: user_entourage.to_param, entourage: {status: 'closed', outcome: {success: false}}, token: user.token }
-        it { expect(response.code).to eq '200' }
-        it { expect(user_entourage.reload.status).to eq 'closed' }
-        it { expect(user_entourage.moderation.action_outcome).to eq('Non') }
-        it { expect(JSON.parse(response.body)["entourage"]).to include(
-                                                                  "status"=>"closed",
-                                                                  "outcome"=>{
-                                                                    "success"=>false
-                                                                  }
-                                                                )}
+        before { patch :update, id: user_entourage.to_param, entourage: {status: 'closed', outcome: {success: success}}, token: user.token }
+
+        context "valid success value" do
+          let(:success) { false }
+          it { expect(response.code).to eq '200' }
+          it { expect(user_entourage.reload.status).to eq 'closed' }
+          it { expect(user_entourage.moderation.action_outcome).to eq('Non') }
+          it { expect(JSON.parse(response.body)["entourage"]).to include(
+                                                                    "status"=>"closed",
+                                                                    "outcome"=>{
+                                                                      "success"=>false
+                                                                    }
+                                                                  )}
+          it { expect(user_entourage.chat_messages.last.attributes).to include(
+                                                                          "content"=>"a clôturé l’action",
+                                                                          "user_id"=>user.id,
+                                                                          "message_type"=>"status_update",
+                                                                          "metadata"=>{
+                                                                            :$id=>"urn:chat_message:status_update:metadata",
+                                                                            :status=>"closed",
+                                                                            :outcome_success=>false
+                                                                          }
+                                                                        ) }
+        end
+
+        context "invalid success value" do
+          let(:success) { 'lol' }
+          it { expect(response.code).to eq '400' }
+          it { expect(user_entourage.reload.status).to eq 'open' }
+          it { expect(user_entourage.moderation).to be_nil }
+          it { expect(JSON.parse(response.body)).to eq("message"=>"Could not update entourage",
+                                                       "reasons"=>["outcome.success must be a boolean"]) }
+        end
       end
 
       context "entourage does not belong to user" do

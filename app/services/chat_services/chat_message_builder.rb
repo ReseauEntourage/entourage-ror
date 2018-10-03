@@ -14,6 +14,10 @@ module ChatServices
 
       return callback.on_freezed_tour.try(:call, message) if joinable.freezed?
 
+      if message.message_type == 'status_update'
+        message.errors.add(:message_type, :inclusion)
+        return callback.on_failure.try(:call, message)
+      end
 
       success = false
       if joinable.new_record?
