@@ -423,12 +423,14 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
       before { post 'create', {user: {phone: "+33612345678"}} }
       it { expect(User.last.user_type).to eq("public") }
       it { expect(User.last.community).to eq("entourage") }
+      it { expect(User.last.roles).to eq([]) }
       it { expect(User.last.phone).to eq("+33612345678") }
       it { expect(JSON.parse(response.body)["user"]["id"]).to eq(User.last.id) }
 
       context "community support" do
         with_community :pfp
         it { expect(User.last.community).to eq("pfp") }
+        it { expect(User.last.roles).to eq([:not_validated]) }
       end
     end
 
