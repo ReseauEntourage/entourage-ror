@@ -461,6 +461,16 @@ describe Api::V1::EntouragesController do
                                                                       "success"=>false
                                                                     }
                                                                   )}
+          it { expect(user_entourage.chat_messages.last.attributes).to include(
+                                                                          "content"=>"a clôturé l’action",
+                                                                          "user_id"=>user.id,
+                                                                          "message_type"=>"status_update",
+                                                                          "metadata"=>{
+                                                                            :$id=>"urn:chat_message:status_update:metadata",
+                                                                            :status=>"closed",
+                                                                            :outcome_success=>false
+                                                                          }
+                                                                        ) }
         end
 
         context "invalid success value" do

@@ -112,7 +112,28 @@ module EntourageServices
         end
       end
 
-      entourage.save
+      publish_status_update =
+        entourage.status == 'closed' &&
+        (entourage.status_changed? || entourage.moderation&.action_outcome_changed?)
+
+      success = entourage.save
+
+      if success && publish_status_update
+        ChatMessage.create(
+          messageable: entourage,
+          user_id: entourage.user_id,
+          message_type: :status_update,
+          metadata: {
+            status: entourage.status,
+            outcome_success: {
+              'Oui' => true,
+              'Non' => false,
+            }[entourage.moderation&.action_outcome]
+          }
+        )
+      end
+
+      success
     end
 
     private

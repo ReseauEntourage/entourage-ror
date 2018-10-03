@@ -9,7 +9,7 @@ class ChatMessage < ActiveRecord::Base
   before_validation :generate_content
 
   validates :messageable_id, :messageable_type, :content, :user_id, presence: true
-  validates_inclusion_of :message_type, in: -> (m) { m.messageable&.group_type_config&.dig('message_types') || [] }
+  validates_inclusion_of :message_type, in: -> (m) { m.message_types }
   validates :metadata, schema: -> (m) { "#{m.message_type}:metadata" }
 
   scope :ordered, -> { order("created_at DESC") }
@@ -31,8 +31,17 @@ class ChatMessage < ActiveRecord::Base
           display_address: { type: :string },
           uuid: { type: :string }
         }
+      when 'status_update:metadata'
+        {
+          status: { type: :string },
+          outcome_success: { type: :boolean }
+        }
       end
     end
+  end
+
+  def message_types
+    @message_types ||= ['status_update', *messageable&.group_type_config&.dig('message_types')]
   end
 
   private
@@ -47,6 +56,7 @@ class ChatMessage < ActiveRecord::Base
     case message_type
     when 'visit' then visit_content
     when 'outing' then outing_content
+    when 'status_update' then status_update_content
     else content
     end
   end
@@ -90,5 +100,9 @@ class ChatMessage < ActiveRecord::Base
       I18n.l(starts_at, format: "le %d/%m à %Hh%M,"),
       metadata[:display_address]
     ].join("\n")
+  end
+
+  def status_update_content
+    "a clôturé #{GroupService.name messageable, :l}"
   end
 end

@@ -160,6 +160,14 @@ describe Api::V1::Entourages::ChatMessagesController do
         it { expect(response.status).to eq(401) }
       end
 
+      context "invalid message type" do
+        let!(:join_request) { FactoryGirl.create(:join_request, joinable: entourage, user: user, status: "accepted") }
+        before { post :create, entourage_id: entourage.to_param, chat_message: {content: "foobar", message_type: "status_update"}, token: user.token }
+        it { expect(response.status).to eq(400) }
+        it { expect(JSON.parse(response.body)).to eq("message"=>"Could not create chat message",
+                                                     "reasons"=>["Message type n'est pas inclus(e) dans la liste"]) }
+      end
+
       context "pfp visit" do
         with_community :pfp
 
