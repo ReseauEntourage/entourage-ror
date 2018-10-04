@@ -34,31 +34,14 @@ module FeedServices
 
       return announcements unless user.community == :entourage
 
-      onboarding_announcement = Onboarding::V1.announcement_for(area, user: user)
-
-      if onboarding_announcement
-        announcements.push onboarding_announcement
-        @metadata.merge!(onboarding_announcement: true, area: area)
-      else
-        announcements.push Announcement.new(
-          id: 11,
-          title: with_first_name("n'attendez plus pour agir !"),
-          body: "Conseils, rencontres, idées d'action auprès des SDF... Passez à l'action en discutant avec vos voisins solidaires.",
-          action: "J'agis",
-          author: User.find_by(email: "guillaume@entourage.social"),
-          webview: true,
-          position: 1
-        )
-      end
-
       announcements.push Announcement.new(
-        id: 3,
-        title: with_first_name("ne manquez pas les actions autour de vous !"),
-        body: "Définissez votre zone d'action pour être tenu(e) informé(e) des actions dans votre quartier.",
-        action: "Définir ma zone",
+        id: 12,
+        title: with_first_name("découvrez les belles histoires sur notre blog !"),
+        body: "Aujourd’hui, on vous partage la belle histoire de Roya-Rose (riveraine) et de Michael (sans-abri) 👌",
+        action: "Découvrir",
         author: User.find_by(email: "guillaume@entourage.social"),
         webview: true,
-        position: 5
+        position: 1
       )
 
       announcements

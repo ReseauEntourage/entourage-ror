@@ -16,13 +16,22 @@ module Api
           9 => :heart,
           10 => :heart,
           11 => :megaphone,
+          12 => :text,
         }[params[:id].to_i]
 
         redirect_to view_context.asset_url("assets/announcements/icons/#{icon}.png")
       end
 
       def avatar
-        redirect_to view_context.asset_url("assets/announcements/avatars/1.jpg")
+        avatar =
+          case params[:id].to_i
+          when 12
+            'apero.png'
+          else
+            '1.jpg'
+          end
+
+        redirect_to view_context.asset_url("assets/announcements/avatars/#{avatar}")
       end
 
       def redirect
@@ -58,6 +67,8 @@ module Api
           url = "https://blog.entourage.social/2018/05/17/fete-des-voisins-2018-invitons-aussi-nos-voisins-sdf/"
         when 11
           url = "https://blog.entourage.social/2017/04/28/quelles-actions-faire-avec-entourage/"
+        when 12
+          url = "https://blog.entourage.social/2018/07/27/roya-michael-il-avait-besoin-dun-semblant-de-famille/"
         end
 
         mixpanel.track("Opened Announcement", { "Announcement" => id })
