@@ -34,7 +34,7 @@ class ChatMessage < ActiveRecord::Base
       when 'status_update:metadata'
         {
           status: { type: :string },
-          outcome_success: { type: :boolean }
+          outcome_success: { type: [:boolean, :null] }
         }
       end
     end
