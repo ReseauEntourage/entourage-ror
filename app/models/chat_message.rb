@@ -3,7 +3,7 @@ require 'experimental/jsonb_with_schema'
 class ChatMessage < ActiveRecord::Base
   include FeedsConcern
 
-  belongs_to :messageable, polymorphic: true, touch: true
+  belongs_to :messageable, polymorphic: true
   belongs_to :user
 
   before_validation :generate_content
@@ -15,6 +15,10 @@ class ChatMessage < ActiveRecord::Base
   scope :ordered, -> { order("created_at DESC") }
 
   attribute :metadata, Experimental::JsonbWithSchema.new
+
+  after_create do |message|
+    message.messageable.touch unless message.message_type == 'status_update'
+  end
 
   def self.json_schema urn
     JsonSchemaService.base do
