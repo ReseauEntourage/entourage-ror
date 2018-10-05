@@ -140,4 +140,30 @@ namespace :mixpanel do
 
     MixpanelTools.batch_update(updates)
   end
+
+  task sync_addresses: :environment do
+    require 'mixpanel_tools'
+
+    current_run_at = Time.zone.now
+    redis_key = 'mixpanel:sync_addresses:last_run'
+    redis_date = current_run_at.to_datetime.rfc3339
+    last_run_at = Time.zone.parse($redis.get(redis_key)) rescue nil
+
+    if ENV['ALL'] == 'true'
+      puts 'scope: all addresses without restriction (ALL=true)'
+      addresses = Address.all
+    elsif last_run_at.nil?
+      puts 'scope: all addresses without restriction (redis key nil)'
+      addresses = Address.all
+    else
+      puts 'scope: addresses with updated_at > %s (from redis)' % last_run_at
+      addresses = Address.where("updated_at > ?", last_run_at)
+    end
+
+    addresses = addresses.includes(:user)
+
+    MixpanelService.sync_addresses(addresses.find_each)
+
+    $redis.set(redis_key, redis_date)
+  end
 end
