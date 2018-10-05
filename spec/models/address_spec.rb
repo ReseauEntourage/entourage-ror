@@ -22,7 +22,7 @@ RSpec.describe Address, type: :model do
               "Zone d'action (département)"=>"75"
             }
           }])
-        end
+        end.and_return([])
         address.save
       end
     end
