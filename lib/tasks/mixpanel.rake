@@ -157,10 +157,10 @@ namespace :mixpanel do
       addresses = Address.all
     else
       puts 'scope: addresses with updated_at > %s (from redis)' % last_run_at
-      addresses = Address.where("updated_at > ?", last_run_at)
+      addresses = Address.where("addresses.updated_at > ?", last_run_at)
     end
 
-    addresses = addresses.includes(:user)
+    addresses = addresses.joins(:user).merge($server_community.users).includes(:user)
 
     MixpanelService.sync_addresses(addresses.find_each)
 
