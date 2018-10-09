@@ -1,0 +1,11 @@
+#!/bin/bash
+
+set -o pipefail
+
+source "${BASH_SOURCE%/*}/pg-lib.sh"
+
+dump=${1:-snapshot.dump}
+target=entourage-dev
+
+reset $target
+cat $dump | restore $target

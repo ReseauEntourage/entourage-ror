@@ -99,6 +99,24 @@ Run tests with
 $ rspec
 ```
 
+# Database dump
+
+## Import a database dump
+
+```bash
+bin/d db-restore path/to/snapshot.dump
+```
+
+## Generate a stripped database dump from production data
+
+You need to have access to the `entourage-back` Heroku application.
+
+```bash
+bin/d db-pull entourage-back
+bin/d rake db:strip
+bin/d db-dump path/to/snapshot.dump
+```
+
 # Dredd tests (Deprecated)
 
 Test the API documentation compliance with [Dredd](https://github.com/apiaryio/dredd)

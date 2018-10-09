@@ -38,3 +38,6 @@ use-node
 
 # sensitive words category files
 db/sensitive-words/*.txt
+
+# data science exports
+data_export/*.csv

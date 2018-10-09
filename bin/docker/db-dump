@@ -1,0 +1,12 @@
+#!/bin/bash
+
+set -o pipefail
+
+source "${BASH_SOURCE%/*}/pg-lib.sh"
+
+dump=${1:-snapshot.dump}
+source=$(docker-compose exec -T postgresql bin/sh -c 'echo \
+  postgres://$POSTGRES_USER:$POSTGRES_PASSWORD@localhost:5432/$POSTGRES_DB \
+')
+
+dump $source $(exclude spatial_ref_sys) > $dump
