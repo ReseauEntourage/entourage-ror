@@ -42,9 +42,11 @@
     q = params[:q] || {}
     presets = {
       "Partout" => {},
-      "Paris, 92, Lille" => {
-        country_eq: 'FR',
-        postal_code_start_any: ['75', '92', '59']
+      "Paris" => {
+        country_eq: 'FR', postal_code_start: '75'
+      },
+      "Hauts-de-Seine" => {
+        country_eq: 'FR', postal_code_start: '92'
       },
       "Lyon" => {
         country_eq: 'FR', postal_code_start: '69'
@@ -59,6 +61,9 @@
       "Bretagne" => {
         country_eq: 'FR',
         postal_code_start_any: ['22', '29', '35', '44', '56']
+      },
+      "Lille" => {
+        country_eq: 'FR', postal_code_start: '59'
       },
     }
     location_keys = [:country_eq, :postal_code_start_any, :postal_code_start]
