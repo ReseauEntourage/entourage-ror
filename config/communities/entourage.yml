@@ -9,6 +9,9 @@ links:
   ethics-charter-preprod:     https://entourage-asso.typeform.com/to/whN9kq?user_id=%{user_id}
   ethics-charter-pro:         https://entourage-asso.typeform.com/to/N4AqyO?user_id=%{user_id}
   ethics-charter-pro-preprod: https://entourage-asso.typeform.com/to/LI7viw?user_id=%{user_id}
+roles:
+  - ethics_charter_signed
+  - ambassador
 group_types:
   action:
     message_types: [text]

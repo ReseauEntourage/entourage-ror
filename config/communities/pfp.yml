@@ -9,6 +9,7 @@ links:
   ethics-charter-preprod: https://entourage-asso.typeform.com/to/uBxsHI?user_id=%{user_id}
 roles:
   - not_validated
+  - ethics_charter_signed
   - coordinator
   - visitor
   - visited
