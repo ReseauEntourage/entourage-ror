@@ -177,6 +177,7 @@ Rails.application.routes.draw do
         collection do
           patch 'me' => 'users#update'
           post 'lookup'
+          post :ethics_charter_signed
         end
 
         member do

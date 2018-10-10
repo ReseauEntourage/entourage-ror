@@ -54,7 +54,9 @@ module Typeform
   end
 
   def self.answers response
-    answers = response['answers'].map do |answer|
+    answers = {}
+
+    response['answers'].map do |answer|
       type = answer['type']
       value =
         case type
@@ -66,9 +68,11 @@ module Typeform
           answer[type]
         end
 
-      [answer['field']['id'], value]
-    end
+      answers[answer['field']['id']] = value
+    end if response['answers'].present?
 
-    response['hidden'].merge Hash[answers]
+    answers.merge!(response['hidden']) if response['hidden'].present?
+
+    answers
   end
 end

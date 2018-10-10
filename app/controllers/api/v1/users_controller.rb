@@ -1,8 +1,12 @@
+require 'typeform'
+
 module Api
   module V1
     class UsersController < Api::V1::BaseController
-      skip_before_filter :authenticate_user!, only: [:login, :code, :create, :lookup]
+      skip_before_filter :authenticate_user!, only: [:login, :code, :create, :lookup, :ethics_charter_signed]
       skip_before_filter :community_warning
+      skip_before_filter :ensure_community!, only: :ethics_charter_signed
+      skip_before_filter :protect_from_forgery, only: :ethics_charter_signed
 
       #curl -H "X-API-KEY:adc86c761fa8" -H "Content-Type: application/json" -X POST -d '{"user": {"phone": "+3312345567", "sms_code": "11111"}}' "http://localhost:3000/api/v1/login.json"
       def login
@@ -203,6 +207,18 @@ module Api
           end
 
         render json: reponse
+      end
+
+      def ethics_charter_signed
+        answers = Typeform.answers params[:form_response]
+        user_id = UserServices::EncodedId.decode answers['user_id']
+        user = User.find(user_id)
+        user.roles.push :ethics_charter_signed
+        user.save!
+      rescue => e
+        Raven.capture_exception(e)
+      ensure
+        render nothing: true
       end
 
       private
