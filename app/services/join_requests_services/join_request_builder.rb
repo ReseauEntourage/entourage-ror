@@ -22,10 +22,35 @@ module JoinRequestsServices
         else raise 'Unhandled'
         end
 
+      join_request.status = JoinRequest::ACCEPTED_STATUS if joinable.public
+
       if join_request.save
         is_onboarding = joinable.is_a?(Entourage) && Onboarding::V1.is_onboarding?(joinable)
 
-        unless is_onboarding
+        if join_request.is_accepted?
+          joinable.class.increment_counter(:number_of_people, joinable.id)
+
+          display_name = user.first_name.strip
+          display_name += " " + user.last_name.strip.first + "." if user.last_name.present?
+          join_message = "#{display_name} vient de rejoindre votre #{GroupService.name joinable}"
+          join_message += ' "' + joinable.title + '"' if joinable.is_a?(Entourage)
+
+          PushNotificationService.new.send_notification(
+            display_name,
+            "Nouveau membre",
+            join_message,
+            [joinable.user],
+            {
+              joinable_id: joinable.id,
+              joinable_type: join_request.joinable_type,
+              group_type: joinable.group_type,
+              type: "JOIN_REQUEST_ACCEPTED",
+              user_id: user.id
+            }
+          )
+        elsif is_onboarding
+          # nothing!
+        else
           NewJoinRequestNotifyJob.set(wait: 1.minute).perform_later(joinable.class.name,
                                              joinable.id,
                                              user.id,

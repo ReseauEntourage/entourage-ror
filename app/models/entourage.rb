@@ -53,6 +53,7 @@ class Entourage < ActiveRecord::Base
   validates_uniqueness_of :uuid, on: :create
   validates_inclusion_of :community, in: Community.slugs
   validates_inclusion_of :group_type, in: -> (e) { e.community&.group_types&.keys || [] }
+  validates_inclusion_of :public, in: -> (e) { e.public_accessibility_options }
   validates :metadata, schema: -> (e) { "#{e.group_type}:metadata" }
 
   scope :visible, -> { where.not(status: 'blacklisted') }
@@ -128,6 +129,17 @@ class Entourage < ActiveRecord::Base
 
   def group_type_config
     @group_type_config ||= community.group_types[group_type]
+  end
+
+  def public_accessibility_options
+    case
+    when group_type == 'outing'
+      [true, false]
+    when group_type == 'action' && entourage_type == 'contribution'
+      [true, false]
+    else
+      [false]
+    end
   end
 
   def has_outcome?

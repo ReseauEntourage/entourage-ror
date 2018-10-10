@@ -24,6 +24,7 @@ describe Api::V1::EntouragesController do
                                        "status"=>"open",
                                        "title"=>"foobar",
                                        "group_type"=>"action",
+                                       "public"=>false,
                                        "metadata"=>{},
                                        "entourage_type"=>"ask_for_help",
                                        "display_category"=>"social",
@@ -131,6 +132,7 @@ describe Api::V1::EntouragesController do
                                                            "status"=>"open",
                                                            "title"=>"foo",
                                                            "group_type"=>"action",
+                                                           "public"=>false,
                                                            "metadata"=>{},
                                                            "entourage_type"=>"ask_for_help",
                                                            "display_category"=>"mat_help",
@@ -159,6 +161,7 @@ describe Api::V1::EntouragesController do
         it { expect(Entourage.last.number_of_people).to eq(1) }
         it { expect(Entourage.last.category).to eq("mat_help") }
         it { expect(Entourage.last.community).to eq("entourage") }
+        it { expect(Entourage.last.public).to eq(false) }
         it { expect(user.entourage_participations).to eq([Entourage.last]) }
         it { expect(JoinRequest.count).to eq(1) }
         it { expect(JoinRequest.last.status).to eq(JoinRequest::ACCEPTED_STATUS) }
@@ -203,6 +206,7 @@ describe Api::V1::EntouragesController do
               "status"=>"open",
               "title"=>"Apéro Entourage",
               "group_type"=>"outing",
+              "public"=>false,
               "metadata"=>{
                 "starts_at"=>"2018-09-04T19:30:00.000+02:00",
                 "place_name"=>"Le Dorothy",
@@ -273,6 +277,7 @@ describe Api::V1::EntouragesController do
                                                              "status"=>"open",
                                                              "title"=>"foobar",
                                                              "group_type"=>"action",
+                                                             "public"=>false,
                                                              "metadata"=>{},
                                                              "entourage_type"=>"ask_for_help",
                                                              "display_category"=>"social",
@@ -326,6 +331,7 @@ describe Api::V1::EntouragesController do
                                                           "status"=>"open",
                                                           "title"=>"Buzz L",
                                                           "group_type"=>"conversation",
+                                                          "public"=>false,
                                                           "metadata"=>{},
                                                           "entourage_type"=>"contribution",
                                                           "display_category"=>nil,
@@ -423,6 +429,7 @@ describe Api::V1::EntouragesController do
                                                            "status"=>"open",
                                                            "title"=>"new_title",
                                                            "group_type"=>"action",
+                                                           "public"=>false,
                                                            "metadata"=>{},
                                                            "entourage_type"=>"ask_for_help",
                                                            "display_category"=>"social",

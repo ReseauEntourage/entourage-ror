@@ -78,6 +78,10 @@ class Tour < ActiveRecord::Base
       'roles' => ['creator', 'member']
     }
   end
+
+  def public
+    false
+  end
 end
 
 class EmptyMap

@@ -62,6 +62,12 @@ describe Api::V1::Entourages::UsersController do
         }) }
       end
 
+      context "public group" do
+        let(:entourage) { FactoryGirl.create(:entourage, title: "foobar1", entourage_type: :contribution, public: true) }
+        before { post :create, entourage_id: entourage.to_param, token: user.token, distance: 123.45 }
+        it { expect(result['user']['status']).to eq('accepted') }
+      end
+
       describe "push notif" do
         let!(:entourage_join_request) { create(:join_request, user: entourage.user, joinable: entourage, status: "accepted") }
 
@@ -103,6 +109,28 @@ describe Api::V1::Entourages::UsersController do
                                                                                                     user_id: user.id
                                                                                                 })
             post :create, { entourage_id: entourage.to_param, request: {message: "foobar"}, token: user.token}
+          end
+        end
+
+        context "public group" do
+          let(:entourage) { FactoryGirl.create(:entourage, title: "foobar1", entourage_type: :contribution, public: true) }
+          let!(:member) { FactoryGirl.create(:pro_user) }
+          let!(:member_join_request) { create(:join_request, user: member, joinable: entourage, status: "accepted") }
+          let!(:user_join_request) { create(:join_request, user: user, status: "accepted") }
+
+          it "sends notif to all entourage members" do
+            expect_any_instance_of(PushNotificationService).to receive(:send_notification).with("John D.",
+                                                                                                'Nouveau membre',
+                                                                                                "John D. vient de rejoindre votre action \"foobar1\"",
+                                                                                                [entourage.user],
+                                                                                                {
+                                                                                                    joinable_type: "Entourage",
+                                                                                                    joinable_id: entourage.id,
+                                                                                                    group_type: 'action',
+                                                                                                    type: "JOIN_REQUEST_ACCEPTED",
+                                                                                                    user_id: user.id
+                                                                                                })
+            post :create, entourage_id: entourage.to_param, token: user.token
           end
         end
       end

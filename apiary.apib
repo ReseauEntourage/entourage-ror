@@ -1410,6 +1410,7 @@ time_range should be a number of hours
                             "status": "open",
                             "title": "Meeting de la Cour des Miracles",
                             "group_type": "outing",
+                            "public": true,
                             "metadata": {
                                 "starts_at": "2018-09-23T15:00:00.000+02:00",
                                 "place_name": "Parc de la Tête d'Or",
@@ -1649,7 +1650,8 @@ Entourages related resources of the **Entourage API**
                 "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
                 "location" : { "latitude" : 37.4224764, "longitude" : -122.0842499 },
                 "description": "lorem ipsum",
-                "category": "mat_help"
+                "category": "mat_help",
+                "public": false
                 }
             }
 
@@ -1660,6 +1662,7 @@ Entourages related resources of the **Entourage API**
             {
             "entourage": {
                 "group_type": "outing",
+                "public": true,
                 "title": "Apéro Entourage",
                 "location": {
                     "latitude": 48.868959,
@@ -1676,7 +1679,7 @@ Entourages related resources of the **Entourage API**
 
 + Response 201 (application/json; charset=utf-8)
 
-        { "id": 567, "updated_at": "2015-07-07T10:31:43.000+02:00", "created_at": "2015-07-07T10:31:43.000+02:00", "status": "open", "title": "entourage1", "entourage_type": "ask_for_help", "display_category": "social", "author": { "id": 123, "name": "Seb", "avatar_url": "https://s3.amazonaws.com/entourage-avatars/image.jpeg" }, "number_of_people": 2, "location": { "latitude": 37.4224764, "longitude": -122.0842499 } },"description": "lorem ipsum"
+        { "id": 567, "updated_at": "2015-07-07T10:31:43.000+02:00", "created_at": "2015-07-07T10:31:43.000+02:00", "status": "open", "title": "entourage1", "group_type": "action", "public": false, "entourage_type": "ask_for_help", "display_category": "social", "author": { "id": 123, "name": "Seb", "avatar_url": "https://s3.amazonaws.com/entourage-avatars/image.jpeg" }, "number_of_people": 2, "location": { "latitude": 37.4224764, "longitude": -122.0842499 } },"description": "lorem ipsum"
 
 + Response 400 (application/json; charset=utf-8)
 

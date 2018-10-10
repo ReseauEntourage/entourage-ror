@@ -33,6 +33,7 @@ include CommunityHelper
                                                      "status"=>"open",
                                                      "title"=>"foobar",
                                                      "group_type"=>"action",
+                                                     "public"=>false,
                                                      "metadata"=>{},
                                                      "entourage_type"=>"ask_for_help",
                                                      "display_category"=>"social",
