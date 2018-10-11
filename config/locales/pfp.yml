@@ -4,6 +4,7 @@ fr:
     pfp:
       roles:
         not_validated: Non validé
+        ethics_charter_signed: Charte signée
         coordinator: Animateur
         visitor: Voisineur
         visited: Voisiné

@@ -8,7 +8,7 @@ module CommunityAdminService
     if continue.present?
       continue
     else
-      :community_admin_users
+      :community_admin_dashboard
     end
   end
 
@@ -43,8 +43,8 @@ module CommunityAdminService
     [neighborhoods, users]
   end
 
-  def self.coordinator_users_filtered(user, neighborhoods)
-    unless user.roles.include?(:admin) && neighborhoods.include?(:none)
+  def self.coordinator_users_filtered(user, neighborhoods, has_private_circle: nil)
+    if user.roles.include?(:admin) && !neighborhoods.include?(:none) && !has_private_circle.nil?
       return users(neighborhoods)
     end
 
@@ -70,6 +70,7 @@ module CommunityAdminService
       .group(:id)
 
     clauses = []
+
     if neighborhood_ids.delete(:none).present?
       clauses.push "cardinality(array_remove(array_agg(neighborhoods.id), null)) = 0"
     end
@@ -77,7 +78,22 @@ module CommunityAdminService
       clauses.push "array_agg(neighborhoods.id) && ARRAY[%s]" %
         neighborhood_ids.map { |id| ActiveRecord::Base.connection.quote(id) }.join(',')
     end
-    scope.having(clauses.join(" or "))
+
+    clauses = [clauses.join(" or ")]
+
+    if has_private_circle != nil
+      scope = scope.joins(%{
+        left join
+          entourages private_circles
+        on
+          private_circles.group_type = 'private_circle' and
+          private_circles.id = join_requests.joinable_id
+      })
+      condition = has_private_circle ? "> 0" : "= 0"
+      clauses.push "cardinality(array_remove(array_agg(private_circles.id), null)) #{condition}"
+    end
+
+    scope.having(clauses.map { |c| "(#{c})" }.join(" and "))
   end
 
   def self.users(neighborhoods)
@@ -126,6 +142,7 @@ module CommunityAdminService
     case role
     when :coordinator then 'success'
     when :admin then 'dark'
+    when :not_validated then 'warning'
     when :visitor, :member then nil
     else 'info'
     end

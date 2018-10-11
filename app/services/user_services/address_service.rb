@@ -45,7 +45,12 @@ module UserServices
 
       begin
         ActiveRecord::Base.transaction do
-          address.update!(params)
+          address.assign_attributes(params)
+          if address.google_place_id_changed?
+            address.postal_code = nil
+            address.country = nil
+          end
+          address.save!
           if address.id != user.address_id
             user.update_column(:address_id, address.id)
           end

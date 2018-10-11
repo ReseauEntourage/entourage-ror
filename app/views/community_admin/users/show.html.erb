@@ -60,6 +60,12 @@
           <div class="mb-2">
             <div><%= link_to (@user.phone || ''), "tel:#{@user.phone}" %></div>
             <div><%= link_to (@user.email || ''), "mailto:#{@user.email}" %></div>
+            <% if @user.address.present? %>
+              <div>
+                <%= link_to @user.address.display_address,
+                      "https://www.google.com/maps/search/?api=1&query=#{@user.address.display_address}&query_place_id=#{@user.address.google_place_id}", target: :_blank %>
+              </div>
+            <% end %>
           </div>
           <div class="h5">
             <% @user.roles.sort_by { |r| current_user.community.roles.index(r) }

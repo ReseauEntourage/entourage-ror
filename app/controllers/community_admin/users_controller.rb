@@ -21,6 +21,18 @@ module CommunityAdmin
       roles = Array(params[:roles]).map(&:to_sym).uniq & community.roles
       roles = community.roles if roles.empty?
 
+      roles_operator = params[:roles_op] == 'and' ? :and : :or
+
+      has_private_circle =
+        case params[:has_private_circle]
+        when *ActiveRecord::ConnectionAdapters::Column::TRUE_VALUES
+          true
+        when *ActiveRecord::ConnectionAdapters::Column::FALSE_VALUES
+          false
+        else
+          nil
+        end
+
       @filters = {
         neighborhoods: {
           ids: neighborhood_ids,
@@ -28,16 +40,23 @@ module CommunityAdmin
         },
         roles: {
           list: roles,
-          is_filtered: roles.count != community.roles.count
+          operator: roles_operator,
+          is_filtered: roles_operator == :and || roles.count != community.roles.count
+        },
+        has_private_circle: {
+          value: has_private_circle,
+          is_filtered: has_private_circle != nil
         }
       }
 
-      if @filters[:neighborhoods][:is_filtered]
+      if @filters[:neighborhoods][:is_filtered] ||
+         @filters[:has_private_circle][:is_filtered]
         @users = CommunityAdminService
-          .coordinator_users_filtered(current_user, neighborhood_ids)
+          .coordinator_users_filtered(current_user, neighborhood_ids, has_private_circle: has_private_circle)
       end
       if @filters[:roles][:is_filtered]
-        @users = @users.where("roles ?| array[#{ roles.map { |r| ActiveRecord::Base.connection.quote(r) }.join(',') }]")
+        operator = roles_operator == :and ? '?&' : '?|'
+        @users = @users.where("roles #{operator} array[#{ roles.map { |r| ActiveRecord::Base.connection.quote(r) }.join(',') }]")
       end
       @users = @users.select(
         :id, :first_name, :last_name, :avatar_key, :validation_status, :roles)
@@ -90,6 +109,13 @@ module CommunityAdmin
             .merge(@coordinator_neighborhoods)
             .where(role: :coordinator)
             .update_all(role: :member)
+      end
+
+      if params.dig(:user, :address).present?
+        updater = UserServices::AddressService.new(user: user, params: address_params)
+        updater.update do |on|
+          on.failure { raise "Could not update address" }
+        end
       end
 
       redirect_to community_admin_user_path(user)
@@ -236,6 +262,14 @@ module CommunityAdmin
         :first_name, :last_name,
         :phone, :email,
         roles: []
+      )
+    end
+
+    def address_params
+      params.require(:user).require(:address).permit(
+        :place_name,
+        :latitude, :longitude,
+        :google_place_id
       )
     end
 

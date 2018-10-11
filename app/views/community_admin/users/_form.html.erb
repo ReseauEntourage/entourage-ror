@@ -17,6 +17,10 @@
     z-index: 2;
   }
 
+  .has-fixed-footer {
+    margin-bottom: 70px;
+  }
+
   .fixed-footer {
     position: fixed;
     bottom: 0;
@@ -26,7 +30,7 @@
   }
 </style>
 
-<div class="container mt-5">
+<div class="container mt-5 has-fixed-footer">
   <div class="row justify-content-md-center">
     <%= form_for [:community_admin, @user],
             html: {class: "col-8"} do |f| %>
@@ -72,6 +76,19 @@
               </div>
             <% end %>
           </div>
+
+          <div class="form-group">
+            <label for="user_address">
+              Adresse
+              <small class="text-muted">(facultatif)</small>
+            </label>
+            <%= text_field_tag nil, @user.address&.display_address, id: :user_address, class: "form-control", data: { last_valid: @user.address&.display_address } %>
+            <% [:place_name, :google_place_id, :latitude, :longitude]
+                 .each do |attribute| %>
+              <%= hidden_field_tag "user[address][#{attribute}]", nil,
+                                   disabled: true %>
+            <% end %>
+          </div>
         </div>
         <div class="ml-4">
           <img class="rounded-circle"
@@ -94,3 +111,56 @@
     <% end %>
   </div>
 </div>
+
+
+<% content_for :scripts do %>
+  <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=<%= ENV['GOOGLE_FRONTEND_API_KEY'] %>&libraries=places&region=fr&language=fr"></script>
+
+  <script>
+    var input = document.getElementById('user_address');
+    var $input = $(input);
+    var options = {
+      types: ['address'],
+      fields: ['name', 'place_id', 'geometry.location'],
+      componentRestrictions: {country: ['fr']}
+    };
+
+    autocomplete = new google.maps.places.Autocomplete(input, options);
+    autocomplete.addListener('place_changed', function() {
+      var place = this.getPlace();
+
+      if (typeof place.place_id === 'undefined') {
+        $input.removeClass('is-valid').addClass('is-invalid');
+        $('input[name^="user[address]"]').prop('disabled', true);
+      }
+      else {
+        $input.data('last-valid', $input.val());
+        $input.removeClass('is-invalid').addClass('is-valid');
+        $('input[name^="user[address]"]').prop('disabled', false);
+        var details = {
+          place_name: place.name,
+          google_place_id: place.place_id,
+          latitude: place.geometry.location.lat(),
+          longitude: place.geometry.location.lng()
+        };
+        for (var attribute in details) {
+          $('input[name="user[address][' + attribute + ']"]')
+            .val(details[attribute]);
+        }
+      }
+    });
+
+    $input.on('blur', function() {
+      $input.val($input.data('last-valid'));
+      $input.removeClass('is-invalid is-valid');
+    });
+  </script>
+
+  <script>
+    $('form').on('keydown', function(e) {
+      if (e.keyCode === 13) {
+        e.preventDefault();
+      }
+    })
+  </script>
+<% end %>

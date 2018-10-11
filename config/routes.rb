@@ -255,6 +255,9 @@ Rails.application.routes.draw do
         post :logout, action: :destroy
       end
     end
+    namespace :dashboard do
+      get '', action: :index, as: ''
+    end
     resources :users, only: [:index, :show, :edit, :update, :new, :create] do
       post :group_role, action: :update_group_role
       post :groups, action: :add_to_group

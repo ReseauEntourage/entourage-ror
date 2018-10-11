@@ -17,6 +17,10 @@
     z-index: 2;
   }
 
+  .has-fixed-footer {
+    margin-bottom: 70px;
+  }
+
   .fixed-footer {
     position: fixed;
     bottom: 0;
@@ -42,7 +46,7 @@
       ]
     end
 %>
-<div class="container mt-5">
+<div class="container mt-5 has-fixed-footer">
   <div class="row justify-content-md-center">
     <%= form_for @private_circle, url: path, method: method,
             html: {class: "col-8"} do |f| %>

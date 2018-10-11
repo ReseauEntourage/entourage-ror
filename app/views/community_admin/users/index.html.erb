@@ -27,6 +27,10 @@
     cursor: pointer;
   }
 
+  .has-fixed-footer {
+    margin-bottom: 70px;
+  }
+
   .fixed-footer {
     position: fixed;
     bottom: 0;
@@ -72,15 +76,15 @@
   <%= render 'nav', active: :users %>
 <% end %>
 
-<div class="container">
+<div class="container <%= 'has-fixed-footer' if @for_group %>">
   <div class="row justify-content-center">
     <div class="col-lg-8 col-12">
       <div id="filters">
         <div class="d-flex align-items-end" style="margin-bottom: .75rem">
           <div class="flex-grow-1">
             Filtres :
-            <div class="d-inline-flex">
-              <div class="btn <%= @filters[:neighborhoods][:is_filtered] ? 'btn-primary order-0' : 'btn-outline-primary order-1' %> btn-sm mr-2"
+            <div class="d-inline-flex flex-wrap" style="margin-bottom: -.25rem">
+              <div class="btn <%= @filters[:neighborhoods][:is_filtered] ? 'btn-primary order-0' : 'btn-outline-primary order-1' %> btn-sm mr-1 mb-1"
                       data-toggle="collapse" data-target="#filterNeighborhoods">
                 <% if @filters[:neighborhoods][:is_filtered] == false %>
                   Voisinage
@@ -93,17 +97,32 @@
                   <span class="remove-filter" data-target="#filterNeighborhoods">&times</span>
                 <% end %>
               </div>
-              <div class="btn <%= @filters[:roles][:is_filtered] ? 'btn-primary order-0' : 'btn-outline-primary order-1' %> btn-sm mr-2"
+              <div class="btn <%= @filters[:roles][:is_filtered] ? 'btn-primary order-0' : 'btn-outline-primary order-1' %> btn-sm mr-1 mb-1"
                       data-toggle="collapse" data-target="#filterRoles">
                 <% if @filters[:roles][:is_filtered] == false %>
                   Rôle
                 <% elsif @filters[:roles][:list].count == 1 %>
                   Rôle : <%= t "community.#{community.slug}.roles.#{@filters[:roles][:list].first}" %>
+                <% elsif @filters[:roles][:list].count == 2 && @filters[:roles][:operator] == :and %>
+                  Rôle : <%= @filters[:roles][:list].map { |role| t "community.#{community.slug}.roles.#{role}" }.join(' et ') %>
                 <% else %>
                   Rôles <span class="badge badge-light"><%= @filters[:roles][:list].count %></span>
                 <% end %>
                 <% if @filters[:roles][:is_filtered] %>
                   <span class="remove-filter" data-target="#filterRoles">&times</span>
+                <% end %>
+              </div>
+              <div class="btn <%= @filters[:has_private_circle][:is_filtered] ? 'btn-primary order-0' : 'btn-outline-primary order-1' %> btn-sm mr-1 mb-1"
+                      data-toggle="collapse" data-target="#filterPrivateCircles">
+                <% if @filters[:has_private_circle][:is_filtered] == false %>
+                  Cercle privés
+                <% elsif @filters[:has_private_circle][:value] == true %>
+                  Membre d'un cercle privé
+                <% elsif @filters[:has_private_circle][:value] == false %>
+                  Membre d'aucun cercle privé
+                <% end %>
+                <% if @filters[:has_private_circle][:is_filtered] %>
+                  <span class="remove-filter" data-target="#filterPrivateCircles">&times</span>
                 <% end %>
               </div>
             </div>
@@ -152,18 +171,109 @@
                   <a href="#" data-toggle="checkbox" data-type="all" data-target="#filterRoles">Tous</a>
                   <a href="#" class="ml-2" data-toggle="checkbox" data-type="none" data-target="#filterRoles">Aucun</a>
                 </div>
-                <% community.roles.each do |role| %>
-                  <div class="form-check">
-                    <input class="form-check-input" type="checkbox"
-                           name="roles[]" value="<%= role %>"
-                           id="role_<%= role %>"
-                           <%= :checked if role.in?(@filters[:roles][:list]) %>>
-                    <label class="form-check-label"
-                           for="role_<%= role %>">
-                      <%= t "community.#{community.slug}.roles.#{role}" %>
-                    </label>
+                <div class="d-flex align-items-center">
+                  <style>
+                    .has-left-bracket {
+                      position: relative;
+                      padding-right: 20px;
+                      margin-right: 10px;
+                    }
+
+                    .has-left-bracket:after {
+                      content: "";
+                      border: 1px solid #ccc;
+                      border-left-width: 0;
+                      width: 10px;
+                      position: absolute;
+                      top: 0;
+                      right: 0;
+                      bottom: 0;
+                    }
+                  </style>
+                  <div class="has-left-bracket">
+                    <% community.roles.each do |role| %>
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox"
+                               name="roles[]" value="<%= role %>"
+                               id="role_<%= role %>"
+                               <%= :checked if role.in?(@filters[:roles][:list]) %>>
+                        <label class="form-check-label"
+                               for="role_<%= role %>">
+                          <%= t "community.#{community.slug}.roles.#{role}" %>
+                        </label>
+                      </div>
+                    <% end %>
                   </div>
-                <% end %>
+                  <div class="flex-grow-1">
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio"
+                             name="roles_op" value="or"
+                             id="roles_op_or"
+                             data-default
+                             <%= :checked if @filters[:roles][:operator] == :or %>>
+                      <label class="form-check-label"
+                             for="roles_op_or">
+                        <b style="display: inline-block; width: 1.75em">OU</b> <small class="text-muted"><b>au moins un</b> des rôles sélectionnés</small>
+                      </label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio"
+                             name="roles_op" value="and"
+                             id="roles_op_and"
+                             <%= :checked if @filters[:roles][:operator] == :and %>>
+                      <label class="form-check-label"
+                             for="roles_op_and">
+                        <b style="display: inline-block; width: 1.75em">ET</b> <small class="text-muted"><b>tous</b> les rôles sélectionnés</small>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <% if @for_group %>
+                <input type="hidden" name="for_group" value="<%= @for_group.id %>" />
+                <input type="hidden" name="for_role" value="<%= params[:for_role] %>" />
+              <% end %>
+              <div class="text-right">
+                <button type="submit" class="btn btn-primary">
+                  Filtrer
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="collapse" id="filterPrivateCircles">
+            <div class="mb-4">
+              <div class="card card-body mb-2">
+                <div class="form-check">
+                  <input class="form-check-input" type="radio"
+                         name="has_private_circle" value="1"
+                         id="has_private_circle_true"
+                         <%= :checked if @filters[:has_private_circle][:value] == true %>>
+                  <label class="form-check-label"
+                         for="has_private_circle_true">
+                    Membre d'<b>au moins un</b> cercle privé
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio"
+                         name="has_private_circle" value="0"
+                         id="has_private_circle_false"
+                         <%= :checked if @filters[:has_private_circle][:value] == false %>>
+                  <label class="form-check-label"
+                         for="has_private_circle_false">
+                    Membre d'<b>aucun</b> cercle privé
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio"
+                         name="has_private_circle" value=""
+                         id="has_private_circle_true"
+                         data-default
+                         <%= :checked if @filters[:has_private_circle][:value] == nil %>>
+                  <label class="form-check-label"
+                         for="has_private_circle_true">
+                    Peu importe
+                  </label>
+                </div>
               </div>
               <% if @for_group %>
                 <input type="hidden" name="for_group" value="<%= @for_group.id %>" />
@@ -210,6 +320,7 @@
                            .each do |role| %>
                 <% role_color = CommunityAdminService.role_color(community, role) %>
                 <% next if role_color.nil? %>
+                <% next if role == :ethics_charter_signed && !user.roles.include?(:not_validated) %>
                 <span class="badge badge-<%= role_color %>"><%= t "community.#{community.slug}.roles.#{role}" %></span>
               <% end %>
             </td>
@@ -250,6 +361,9 @@
 
     function toggleFilter(target, op) {
       $(target + ' input[type=checkbox]').attr('checked', op === 'all')
+      if (op === 'none') {
+        $(target + ' input[type=radio][data-default]').attr('checked', true)
+      }
     }
 
     $filters.on('click', '.remove-filter', function(e) {
