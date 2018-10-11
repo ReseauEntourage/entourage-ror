@@ -4,8 +4,22 @@ set -o pipefail
 
 source "${BASH_SOURCE%/*}/pg-lib.sh"
 
+function is_running {
+  docker-compose ps --services --filter status=running \
+   | grep $1 > /dev/null
+}
+
 dump=${1:-snapshot.dump}
 target=entourage-dev
 
+$(is_running spring)     && spring_running=true
+$(is_running postgresql) && postgresql_running=true
+
+[ $postgresql_running ] || docker-compose up --detach postgresql
+[ $spring_running ]     && docker-compose stop spring
+
 reset $target
 cat $dump | restore $target
+
+[ $postgresql_running ] || docker-compose stop  postgresql
+[ $spring_running ]     && docker-compose start spring
