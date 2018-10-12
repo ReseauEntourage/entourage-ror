@@ -19,6 +19,8 @@ module JoinRequestsServices
         when ['entourage', 'action'] then 'member'
         when ['entourage', 'outing'] then 'participant'
         when ['pfp',       'outing'] then 'participant'
+        when ['pfp', 'neighborhood'] then 'member'
+        when ['pfp', 'private_circle'] then 'visitor'
         else raise 'Unhandled'
         end
 

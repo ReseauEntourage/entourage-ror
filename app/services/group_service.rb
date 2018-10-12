@@ -7,7 +7,8 @@ module GroupService
 
   COMMUNITY_NAME = {
     [:pfp, :outing] => ['la ', 'une ', 'sortie'],
-    [:pfp, :neighborhood] => ['le ', 'un ', 'voisinage']
+    [:pfp, :neighborhood] => ['le ', 'un ', 'voisinage'],
+    [:pfp, :private_circle] => ['le ', 'un ', 'voisinage']
   }
 
   def self.name group, form=nil
