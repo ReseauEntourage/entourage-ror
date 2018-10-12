@@ -88,6 +88,13 @@ module TourServices
           decrement_counter
           join_request.update!(status: "pending")
         end
+      elsif cancelled? && joinable.public?
+        ActiveRecord::Base.transaction do
+          increment_counter
+          join_request.update!(status: "accepted")
+        end
+        JoinRequestsServices::JoinRequestBuilder.notify_auto_join_to_creator(join_request)
+        true
       elsif cancelled?
         join_request.update(status: "pending")
       end
