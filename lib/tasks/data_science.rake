@@ -42,7 +42,7 @@ namespace :data_science do
       end
     end
 
-    groups = Entourage.where(group_type: [:action, :outing]).where.not(status: :blacklisted)
+    groups = Entourage.where(group_type: [:action, :outing, :conversation]).where.not(status: :blacklisted)
 
     CSV.open("groups.csv", "wb") do |csv|
       csv.puts [
@@ -70,11 +70,11 @@ namespace :data_science do
           if group.display_category == 'event' || group.group_type == 'outing'
             :event
           else
-            :action
+            group.group_type.to_sym
           end
 
         offer_or_demand =
-          if type == :event
+          if type != :action
             nil
           elsif group.entourage_type == 'contribution'
             :offer
@@ -86,20 +86,20 @@ namespace :data_science do
           group.id,
           type,
           group.title,
-          group.description,
+          group.description.presence,
           group.created_at.to_date,
           group.user_id,
-          group.country,
-          group.postal_code,
+          group.country.presence,
+          group.postal_code.presence,
           offer_or_demand,
           (group.display_category unless type == :event),
-          group.moderation&.action_type,
-          group.moderation&.action_author_type,
-          group.moderation&.action_recipient_type,
-          group.moderation&.action_outcome_reported_at,
-          group.moderation&.action_outcome,
-          group.moderation&.action_success_reason,
-          group.moderation&.action_failure_reason
+          group.moderation&.action_type.presence,
+          group.moderation&.action_author_type.presence,
+          group.moderation&.action_recipient_type.presence,
+          group.moderation&.action_outcome_reported_at.presence,
+          group.moderation&.action_outcome.presence,
+          group.moderation&.action_success_reason.presence,
+          group.moderation&.action_failure_reason.presence
         ]
       end
     end

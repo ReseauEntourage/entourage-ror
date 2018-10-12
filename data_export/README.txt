@@ -12,7 +12,7 @@ sessions (each entry indicates that the user used the app on that date)
 
 groups
   id
-  type (action or event)
+  type (action, event or conversation. conversations are private messages)
   title
   description
   created_at
