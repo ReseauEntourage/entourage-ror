@@ -4,6 +4,18 @@ module EntourageServices
       @callback = Callback.new
       @params = params.with_indifferent_access
       @user = user
+
+      @recipient_consent_obtained =
+        case @params.delete(:recipient_consent_obtained)
+        when *ActiveRecord::ConnectionAdapters::Column::TRUE_VALUES
+          true
+        when *ActiveRecord::ConnectionAdapters::Column::FALSE_VALUES
+          false
+        when nil
+          nil
+        else
+          :invalid
+        end
     end
 
     def create
@@ -23,6 +35,21 @@ module EntourageServices
         when 'pfp'       then ['outing']
         end
       entourage.group_type = nil unless entourage.group_type.in? allowed_group_types
+
+      if recipient_consent_obtained == :invalid
+        entourage.errors.add(:base, "recipient_consent_obtained must be a boolean")
+        callback.on_failure.try(:call, entourage)
+        return false
+      end
+
+      entourage.status =
+        if entourage.group_type     == 'action' &&
+           entourage.entourage_type == 'ask_for_help' &&
+           recipient_consent_obtained == false
+          :suspended
+        else
+          :open
+        end
 
       text = "#{entourage.title} #{entourage.description}"
       entourage.category = EntourageServices::CategoryLexicon.new(text: text).category
@@ -44,6 +71,15 @@ module EntourageServices
         TourServices::JoinRequestStatus.new(join_request: join_request).accept!
         AsyncService.new(ModerationServices::EntourageModeration).on_create(entourage)
         AsyncService.new(EntourageServices::NeighborhoodAnnouncement).on_create(entourage)
+
+        if recipient_consent_obtained != nil
+          entourage.moderation || entourage.build_moderation
+          entourage.moderation.action_recipient_consent_obtained = {
+            true  => 'Oui',
+            false => 'Non',
+          }[recipient_consent_obtained]
+          entourage.moderation.save
+        end
 
         callback.on_success.try(:call, entourage.reload)
       else
@@ -137,6 +173,6 @@ module EntourageServices
     end
 
     private
-    attr_reader :tour, :user, :callback, :params
+    attr_reader :tour, :user, :callback, :params, :recipient_consent_obtained
   end
 end

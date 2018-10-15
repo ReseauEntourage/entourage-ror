@@ -125,7 +125,7 @@ describe Api::V1::EntouragesController do
 
       context "valid params" do
         before { allow_any_instance_of(EntourageServices::CategoryLexicon).to receive(:category) { "mat_help" } }
-        before { post :create, entourage: { location: {longitude: 1.123, latitude: 4.567}, title: "foo", entourage_type: "ask_for_help", display_category: "mat_help", description: "foo bar", category: "mat_help"}, token: user.token }
+        before { post :create, entourage: { location: {longitude: 1.123, latitude: 4.567}, title: "foo", entourage_type: "ask_for_help", display_category: "mat_help", description: "foo bar", category: "mat_help", recipient_consent_obtained: true}, token: user.token }
         it { expect(JSON.parse(response.body)).to eq({"entourage"=>
                                                           {"id"=>Entourage.last.id,
                                                            "uuid"=>Entourage.last.uuid_v2,
@@ -237,6 +237,44 @@ describe Api::V1::EntouragesController do
           )
         end
         it { expect(response.status).to eq(201) }
+      end
+
+      context "recipient consent" do
+        let(:group_details) { {entourage_type: "ask_for_help"} }
+        let(:entourage) { Entourage.last }
+        let(:consent_obtained) { entourage.moderation&.action_recipient_consent_obtained }
+        before { post :create, entourage: group_details.merge(location: {longitude: 1.123, latitude: 4.567}, title: "foo", recipient_consent_obtained: recipient_consent_obtained), token: user.token }
+
+        context "invalid param" do
+          let(:recipient_consent_obtained) { "lol" }
+          it { expect(JSON.parse(response.body)['reasons']).to eq(["recipient_consent_obtained must be a boolean"]) }
+          it { expect(response.status).to eq 400 }
+        end
+
+        context "missing param" do
+          let(:recipient_consent_obtained) { nil }
+          it { expect(entourage.status).to eq 'open' }
+          it { expect(entourage.moderation).to be_nil }
+        end
+
+        context "consent not obtained" do
+          let(:recipient_consent_obtained) { false }
+          it { expect(Entourage.last.status).to eq 'suspended' }
+          it { expect(consent_obtained).to eq 'Non' }
+        end
+
+        context "consent obtained" do
+          let(:recipient_consent_obtained) { true }
+          it { expect(Entourage.last.status).to eq 'open' }
+          it { expect(consent_obtained).to eq 'Oui' }
+        end
+
+        context "not an ask_for_help action" do
+          let(:group_details) { {entourage_type: "contribution"} }
+          let(:recipient_consent_obtained) { nil }
+          it { expect(Entourage.last.status).to eq 'open' }
+          it { expect(entourage.moderation).to be_nil }
+        end
       end
     end
 
