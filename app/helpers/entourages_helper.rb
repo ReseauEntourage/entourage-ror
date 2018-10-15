@@ -103,4 +103,15 @@ module EntouragesHelper
 
     content_tag(:span, content)
   end
+
+  def distance_in_words(meters)
+    distance = meters.round
+    case distance
+    when 0..99 then "#{distance} m"
+    when 100..299 then "#{(distance / 10.0).ceil * 10} m"
+    when 300..999 then "#{(distance / 50.0).ceil * 50} m"
+    when 1000..5000 then ("%1.1f km" % ((distance / 100.0).ceil / 10.0)).tr('.', ',')
+    else "#{(distance / 1000.0).ceil} km"
+    end
+  end
 end

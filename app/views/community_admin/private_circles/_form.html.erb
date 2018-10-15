@@ -53,9 +53,30 @@
       <div class="d-flex flex-nowrap mb-4">
         <div class="flex-grow-1">
           <div class="form-group">
-            <%= label_tag :visited_user_first_name, "Nom de la personne voisinée" %>
-            <%= text_field_tag :visited_user_first_name, @private_circle.metadata[:visited_user_first_name], class: "form-control", required: true %>
+            <%= label_tag :entourage_metadata_visited_user_first_name,
+                "Nom de la personne voisinée" %>
+            <%= text_field_tag 'entourage[metadata][visited_user_first_name]',
+                  @private_circle.metadata[:visited_user_first_name],
+                  class: "form-control", required: true %>
             <small class="form-text text-muted">Le nom du cercle privé sera <i>Les amis de [nom]</i>, par exemple : <i>Les amis d'Henriette</i>.</small>
+          </div>
+
+          <div class="form-group">
+            <label for="private_circle_address">
+              Adresse
+              <small class="text-muted">(facultatif)</small>
+            </label>
+            <%= text_field_tag nil, @private_circle.metadata[:street_address],
+                id: :private_circle_address,
+                class: "form-control",
+                required: true,
+                data: { last_valid: @private_circle.metadata[:street_address] } %>
+            <%= hidden_field_tag 'entourage[latitude]', nil, disabled: true %>
+            <%= hidden_field_tag 'entourage[longitude]', nil, disabled: true %>
+            <%= hidden_field_tag 'entourage[country]', nil, disabled: true %>
+            <%= hidden_field_tag 'entourage[postal_code]', nil, disabled: true %>
+            <%= hidden_field_tag 'entourage[metadata][street_address]', nil, disabled: true %>
+            <%= hidden_field_tag 'entourage[metadata][google_place_id]', nil, disabled: true %>
           </div>
         </div>
       </div>
@@ -71,3 +92,70 @@
     <% end %>
   </div>
 </div>
+
+
+<% content_for :scripts do %>
+  <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=<%= ENV['GOOGLE_FRONTEND_API_KEY'] %>&libraries=places&region=fr&language=fr"></script>
+
+  <script>
+    var input = document.getElementById('private_circle_address');
+    var $input = $(input);
+    var options = {
+      types: ['address'],
+      fields: ['name', 'place_id', 'geometry.location', 'formatted_address', 'address_components'],
+      componentRestrictions: {country: ['fr']}
+    };
+
+    autocomplete = new google.maps.places.Autocomplete(input, options);
+    autocomplete.addListener('place_changed', function() {
+      var place = this.getPlace();
+
+      if (typeof place.place_id === 'undefined') {
+        $input.removeClass('is-valid').addClass('is-invalid');
+        $('input[name^="user[address]"]').prop('disabled', true);
+      }
+      else {
+        $input.data('last-valid', $input.val());
+        $input.removeClass('is-invalid').addClass('is-valid');
+        $input.siblings('input[type=hidden]').prop('disabled', true);
+        var details = {
+          google_place_id: place.place_id,
+          latitude: place.geometry.location.lat(),
+          longitude: place.geometry.location.lng(),
+          street_address: place.formatted_address,
+        };
+        var component;
+        for (var i in place.address_components) {
+          component = place.address_components[i];
+
+          if (component.types.indexOf('country') !== -1) {
+            details.country = component.short_name;
+          }
+          else if (component.types.indexOf('postal_code') !== -1) {
+            details.postal_code = component.short_name;
+          }
+        }
+        window.place = place
+        window.details = details
+        for (var attribute in details) {
+          $input.siblings('input[type=hidden][name*="[' + attribute + ']"]')
+            .prop('disabled', false)
+            .val(details[attribute]);
+        }
+      }
+    });
+
+    $input.on('blur', function() {
+      $input.val($input.data('last-valid'));
+      $input.removeClass('is-invalid is-valid');
+    });
+  </script>
+
+  <script>
+    $('form').on('keydown', function(e) {
+      if (e.keyCode === 13) {
+        e.preventDefault();
+      }
+    })
+  </script>
+<% end %>

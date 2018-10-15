@@ -47,10 +47,18 @@
 <div class="container">
   <div class="row justify-content-center">
     <div class="col-lg-8 col-12">
-      <div class="h2 mb-4 d-flex flex-nowrap">
-        <span class="flex-grow-1"><%= @private_circle.title %></span>
-        <a href="<%= edit_community_admin_private_circle_path(@private_circle) %>"
-           class="btn btn-outline-secondary">Modifier</a>
+      <div class="mb-4">
+        <div class="h2 d-flex flex-nowrap">
+          <span class="flex-grow-1"><%= @private_circle.title %></span>
+          <a href="<%= edit_community_admin_private_circle_path(@private_circle) %>"
+             class="btn btn-outline-secondary">Modifier</a>
+        </div>
+        <% if @private_circle.metadata[:street_address].present? %>
+          <div>
+            <%= link_to @private_circle.metadata[:street_address],
+                  "https://www.google.com/maps/search/?api=1&query=#{@private_circle.metadata[:street_address]}&query_place_id=#{@private_circle.metadata[:google_place_id]}", target: :_blank %>
+          </div>
+        <% end %>
       </div>
 
       <table class="table table-hover">

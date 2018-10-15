@@ -11,7 +11,7 @@ module CommunityAdmin
 
       @private_circle =
         @coordinator_private_circles
-        .select(:id, :title)
+        .select(:id, :title, :metadata)
         .find(params[:id])
 
       @users =
@@ -32,7 +32,11 @@ module CommunityAdmin
         CommunityAdminService.coordinator_private_circles(current_user)
         .find(params[:id])
 
-      private_circle.update!(private_circle_params)
+      private_circle.assign_attributes(private_circle_params)
+      private_circle.metadata.merge!(private_circle_metadata_params.compact)
+      private_circle.title = PrivateCircleService.generate_title(private_circle)
+
+      private_circle.save!
 
       redirect_to community_admin_private_circle_path(private_circle)
     end
@@ -45,11 +49,11 @@ module CommunityAdmin
       private_circle = Entourage.new(
         entourage_type: :contribution,
         user_id: current_user.id,
-        latitude: 0,
-        longitude: 0,
         group_type: :private_circle
       )
       private_circle.assign_attributes(private_circle_params)
+      private_circle.metadata.merge!(private_circle_metadata_params.compact)
+      private_circle.title = generate_title(private_circle)
 
       user =
         if params.key?(:for_user)
@@ -74,21 +78,16 @@ module CommunityAdmin
 
     private
 
-    def generate_title first_name
-      if "aehiouy".include?(first_name.first.downcase)
-        "Les amis d'#{first_name}"
-      else
-        "Les amis de #{first_name}"
-      end
+    def private_circle_params
+      params.require(:entourage).permit(
+        :latitude, :longitude, :country, :postal_code
+      )
     end
 
-    def private_circle_params
-      begin
-        params[:entourage] ||= {}
-        params[:entourage][:title] = generate_title(params[:visited_user_first_name])
-      rescue
-      end
-      params.require(:entourage).permit(:title)
+    def private_circle_metadata_params
+      params.require(:entourage).require(:metadata).permit(
+        :visited_user_first_name, :street_address, :google_place_id
+      )
     end
 
     def find_user id

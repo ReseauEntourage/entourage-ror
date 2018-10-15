@@ -118,15 +118,6 @@ class Entourage < ActiveRecord::Base
   attribute :community, Community::Type.new
   attribute :metadata, Experimental::JsonbWithSchema.new
 
-  def metadata
-    case group_type
-    when 'private_circle'
-      { visited_user_first_name: (title || "").gsub(/\ALes amis (de |d')/, '') }
-    else
-      super
-    end
-  end
-
   def group_type_config
     @group_type_config ||= community.group_types[group_type]
   end
@@ -158,7 +149,9 @@ class Entourage < ActiveRecord::Base
       case urn
       when 'private_circle:metadata'
         {
-          visited_user_first_name: { type: :string }
+          visited_user_first_name: { type: :string },
+          street_address: { type: :string },
+          google_place_id: { type: :string },
         }
       when 'outing:metadata'
         {

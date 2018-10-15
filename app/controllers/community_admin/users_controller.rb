@@ -49,8 +49,11 @@ module CommunityAdmin
         }
       }
 
+      @for_group = find_group(params[:for_group]) if params.key?(:for_group)
+
       if @filters[:neighborhoods][:is_filtered] ||
-         @filters[:has_private_circle][:is_filtered]
+         @filters[:has_private_circle][:is_filtered] ||
+         @for_group
         @users = CommunityAdminService
           .coordinator_users_filtered(current_user, neighborhood_ids, has_private_circle: has_private_circle)
       end
@@ -58,10 +61,24 @@ module CommunityAdmin
         operator = roles_operator == :and ? '?&' : '?|'
         @users = @users.where("roles #{operator} array[#{ roles.map { |r| ActiveRecord::Base.connection.quote(r) }.join(',') }]")
       end
+
       @users = @users.select(
         :id, :first_name, :last_name, :avatar_key, :validation_status, :roles)
 
-      @for_group = find_group(params[:for_group]) if params.key?(:for_group)
+      if @for_group
+        group = "ST_SetSRID(ST_MakePoint(#{@for_group.longitude}, #{@for_group.latitude}), 4326)"
+        user  = "ST_SetSRID(ST_MakePoint(addresses.longitude, addresses.latitude), 4326)"
+        @users = @users
+          .joins("left join addresses on addresses.id = users.address_id")
+          .select(%{
+            case
+            when addresses is null then null
+            else ST_Distance(#{group}, #{user}, false)
+            end as distance
+          })
+          .group("addresses, addresses.latitude, addresses.longitude")
+          .order("#{group} <-> #{user}")
+      end
     end
 
     def show
@@ -81,6 +98,19 @@ module CommunityAdmin
         .joins(:join_requests)
         .merge(@user.join_requests.accepted)
         .select("entourages.id, entourages.title, join_requests.role")
+
+      @more_private_circles = @user_private_circles.to_a.count < @coordinator_private_circles.count
+
+      if params.key?(:add_private_circle) && @user.address
+        address = @user.address
+        group = "ST_SetSRID(ST_MakePoint(longitude, latitude), 4326)"
+        user  = "ST_SetSRID(ST_MakePoint(#{address.longitude}, #{address.latitude}), 4326)"
+        @coordinator_private_circles = @coordinator_private_circles
+          .select(:id, :title)
+          .select("ST_Distance(#{group}, #{user}, false) as distance")
+          .select("#{group} <-> #{user}")
+          .order("#{group} <-> #{user}")
+      end
     end
 
     def edit

@@ -36,6 +36,17 @@ FactoryGirl.define do
 
     factory :private_circle do
       group_type "private_circle"
+
+      transient do
+        default_metadata visited_user_first_name: "Henriette",
+                         street_address: "44 rue de l’Assomption, 75016 Paris, France",
+                         google_place_id: "foobar"
+      end
+
+      after(:build) do |circle, stuff|
+        circle.metadata = (stuff.default_metadata || {}).symbolize_keys.merge(circle.metadata.symbolize_keys)
+        circle.title = PrivateCircleService.generate_title(circle)
+      end
     end
 
     factory :neighborhood do
@@ -53,7 +64,7 @@ FactoryGirl.define do
       end
 
       after(:build) do |outing, stuff|
-        outing.metadata = (stuff.default_metadata || {}).symbolize_keys.merge(outing.metadata)
+        outing.metadata = (stuff.default_metadata || {}).symbolize_keys.merge(outing.metadata.symbolize_keys)
       end
     end
 

@@ -639,7 +639,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
         let!(:join_request2) { create :join_request, user: other_user, joinable_factory: :private_circle, status: :pending }
         before { get :show, id: other_user.id, token: user.token }
         it { expect(JSON.parse(response.body)['user']['roles']).to eq ['coordinator', 'visitor'] }
-        it { expect(JSON.parse(response.body)['user']['memberships']).to eq [{"type"=>"private_circle", "list"=>[{"id"=>join_request.joinable_id, "title"=>"foobar", "number_of_people"=>1}]}, {"type"=>"neighborhood", "list"=>[]}] }
+        it { expect(JSON.parse(response.body)['user']['memberships']).to eq [{"type"=>"private_circle", "list"=>[{"id"=>join_request.joinable_id, "title"=>"Les amis d'Henriette", "number_of_people"=>1}]}, {"type"=>"neighborhood", "list"=>[]}] }
       end
     end
   end

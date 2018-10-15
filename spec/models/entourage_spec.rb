@@ -18,7 +18,7 @@ RSpec.describe Entourage, type: :model do
   describe "group_type" do
     it { expect(build(:entourage, group_type: :invalid).save).to eq false }
     it { expect(build(:entourage, group_type: :action).save).to eq true }
-    it { expect(build(:entourage, community: :pfp, group_type: :private_circle).save).to eq true }
+    it { expect(build(:entourage, community: :pfp, group_type: :neighborhood).save).to eq true }
   end
 
   it "has many members" do

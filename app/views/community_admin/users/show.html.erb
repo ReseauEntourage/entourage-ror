@@ -229,7 +229,7 @@
             </tr>
           <% end %>
 
-          <% if @user_private_circles.to_a.count == @coordinator_private_circles.count %>
+          <% if @more_private_circles == false %>
           <% elsif params.key?(:add_private_circle) %>
             <thead>
               <tr>
@@ -247,8 +247,14 @@
               <% next if private_circle.id.in?(user_private_circle_ids) %>
               <tr class="overlay-container">
                 <td>
+                  <%= link_to "", community_admin_private_circle_path(private_circle), class: "overlay" %>
                   <%= private_circle.title %>
                 </td>
+                <% if private_circle.respond_to?(:distance) %>
+                  <td>
+                    <%= distance_in_words private_circle.distance %>
+                  </td>
+                <% end %>
                 <td colspan="2" class="text-right py-0 align-middle">
                   <%= button_to "Ajouter",
                         community_admin_user_groups_path(@user,
