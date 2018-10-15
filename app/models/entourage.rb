@@ -27,7 +27,7 @@ class Entourage < ActiveRecord::Base
   include Experimental::EntourageSlack::Callback
 
   ENTOURAGE_TYPES  = ['ask_for_help', 'contribution']
-  ENTOURAGE_STATUS = ['open', 'closed', 'blacklisted']
+  ENTOURAGE_STATUS = ['open', 'closed', 'blacklisted', 'suspended']
   BLACKLIST_WORDS  = ['rue', 'avenue', 'boulevard', 'en face de', 'vend', 'loue', '06', '07', '01']
   CATEGORIES  = ['mat_help', 'non_mat_help', 'social']
   DISPLAY_CATEGORIES = ['social', 'event', 'mat_help', 'resource', 'info', 'skill', 'other']
@@ -56,7 +56,7 @@ class Entourage < ActiveRecord::Base
   validates_inclusion_of :public, in: -> (e) { e.public_accessibility_options }
   validates :metadata, schema: -> (e) { "#{e.group_type}:metadata" }
 
-  scope :visible, -> { where.not(status: 'blacklisted') }
+  scope :visible, -> { where.not(status: ['blacklisted', 'suspended']) }
   scope :social_category, -> { where(category: 'social') }
   scope :mat_help_category, -> { where(category: 'mat_help') }
   scope :non_mat_help_category, -> { where(category: 'non_mat_help') }

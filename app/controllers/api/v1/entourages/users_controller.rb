@@ -154,7 +154,7 @@ module Api
           raise ActiveRecord::RecordNotFound unless participant_ids.include?(current_user.id.to_s)
           hash_uuid = ConversationService.hash_for_participants(participant_ids)
           @entourage =
-            Entourage.find_by(uuid_v2: hash_uuid) ||
+            Entourage.visible.find_by(uuid_v2: hash_uuid) ||
             ConversationService.build_conversation(participant_ids: participant_ids)
         end
 

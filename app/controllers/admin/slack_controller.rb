@@ -16,7 +16,7 @@ module Admin
         icon   = :white_check_mark
         action = 'validé'
       when 'block'
-        entourage.update_attribute(:status, :blacklisted)
+        entourage.update_attribute(:status, :blacklisted) unless entourage.status == :suspended
         color  = :danger
         icon   = :no_entry_sign
         action = 'bloqué'

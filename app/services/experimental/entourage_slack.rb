@@ -25,6 +25,11 @@ module Experimental::EntourageSlack
         ({
           text: e.description,
         } if e.description.present?),
+        ({
+          color: :danger,
+          title: "Consentement non obtenu",
+          text: "Cette action est suspendue (invisible dans le feed) en attendant la confirmation du consentement.",
+        } if e.status = 'suspended'),
         {
           callback_id: [:entourage_validation, e.id].join(':'),
           fallback: "",

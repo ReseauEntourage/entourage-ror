@@ -221,6 +221,19 @@ include CommunityHelper
         it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([my_entourage.id, my_old_entourage.id, entourage.id]) }
       end
 
+      context "filter by status" do
+        let!(:entourage) { nil } # ignore the top-level entourage for clarity
+
+        let!(:entourage_open)        { create(:entourage, updated_at: 1.hour.ago, status: :open) }
+        let!(:entourage_closed)      { create(:entourage, updated_at: 2.hour.ago, status: :closed) }
+        let!(:entourage_blacklisted) { create(:entourage, updated_at: 3.hour.ago, status: :blacklisted) }
+        let!(:entourage_suspended)   { create(:entourage, updated_at: 4.hour.ago, status: :suspended) }
+
+        before { get :index, token: user.token }
+
+        it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([entourage_open.id, entourage_closed.id]) }
+      end
+
       context "touch chat message association" do
         let!(:my_entourage) {
           FactoryGirl.create(:entourage,

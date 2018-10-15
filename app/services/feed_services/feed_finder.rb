@@ -78,12 +78,29 @@ module FeedServices
       end
       feeds = feeds.within_bounding_box(box) if latitude && longitude
 
-      if tour_status && entourage_status
-        feeds = feeds.where("(feedable_type='Entourage' AND feeds.status IN (?)) OR (feedable_type='Tour' AND feeds.status IN (?))", entourage_status, tour_status)
-      elsif tour_status
-          feeds = feeds.where("feedable_type='Tour' AND feeds.status IN (?)", tour_status)
-      elsif entourage_status
-          feeds = feeds.where("feedable_type='Entourage' AND feeds.status IN (?)", entourage_status)
+      status_clauses = []
+      status_bindings = []
+      if tour_status
+        status_clauses.push "feedable_type='Tour' AND feeds.status IN (?)"
+        status_bindings.push tour_status
+      else
+        status_clauses.push "feedable_type='Tour'"
+      end
+      if entourage_status
+        status_clauses.push "feedable_type='Entourage' AND feeds.status IN (?)"
+        status_bindings.push entourage_status
+      else
+        status_clauses.push "feedable_type='Entourage' AND feeds.status != 'suspended'"
+      end
+      if context == :myfeed && (entourage_status.nil? || entourage_status&.include?('open'))
+        status_clauses.push "feedable_type='Entourage' AND feeds.status = 'suspended' AND feeds.user_id = ?"
+        status_bindings.push user.id
+      end
+      if status_clauses.any?
+        feeds = feeds.where(
+          status_clauses.map { |clause| "(#{clause})" }.join(" OR "),
+          *status_bindings
+        )
       end
 
       #If we have both created_by_me filter AND invited_in filter, then we look for created_by_me OR invited_in feeds

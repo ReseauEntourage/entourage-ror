@@ -10,7 +10,7 @@ RSpec.describe Entourage, type: :model do
   it { should validate_presence_of(:latitude) }
   it { should validate_presence_of(:longitude) }
   it { should validate_presence_of(:number_of_people) }
-  it { should validate_inclusion_of(:status).in_array(["open", "closed"]) }
+  it { should validate_inclusion_of(:status).in_array(["open", "closed", "blacklisted", "suspended"]) }
   it { should validate_inclusion_of(:entourage_type).in_array(["ask_for_help", "contribution"]) }
   it { should validate_inclusion_of(:category).in_array(['mat_help', 'non_mat_help', 'social']) }
   it { should belong_to(:user) }
