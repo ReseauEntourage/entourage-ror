@@ -9,7 +9,11 @@ module Api
         @pois = Poi.validated
 
         if params[:category_ids].present?
-          @pois = @pois.where(category_id: params[:category_ids].split(","))
+          categories = params[:category_ids].split(",").map(&:to_i).uniq
+          category_count = categories.count
+          @pois = @pois.where(category_id: categories)
+        else
+          category_count = @categories.count
         end
 
         # distance was calculated incorrectly on Android before 3.6.0
@@ -19,8 +23,25 @@ module Api
         end
 
         if params[:latitude].present? and params[:longitude].present?
-          distance = params[:distance] ? (params[:distance].to_f / 2) : nil
+
+          min_distance =
+            if category_count <= 2
+              5
+            else
+              2
+            end
+
+          if params[:distance]
+            distance = params[:distance].to_f / 2
+            distance = min_distance if distance < min_distance
+          else
+            distance = nil
+          end
+
           @pois = @pois.around params[:latitude], params[:longitude], distance
+
+          @pois = @pois
+            .order(PostgisHelper.distance_from(params[:latitude], params[:longitude]))
         else
           @pois = @pois.limit(25)
         end

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181010132857) do
+ActiveRecord::Schema.define(version: 20181022101520) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -354,6 +354,7 @@ ActiveRecord::Schema.define(version: 20181010132857) do
     t.boolean  "validated",               default: false, null: false
   end
 
+  add_index "pois", ["category_id", "latitude", "longitude"], name: "index_pois_on_category_id_and_latitude_and_longitude", where: "validated", using: :btree
   add_index "pois", ["latitude", "longitude"], name: "index_pois_on_latitude_and_longitude", using: :btree
 
   create_table "questions", force: :cascade do |t|

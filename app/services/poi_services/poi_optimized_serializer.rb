@@ -1,7 +1,7 @@
 module PoiServices
   class PoiOptimizedSerializer
     CACHE_KEY_PREFIX = "json_cache/#{Poi.model_name.cache_key}".freeze
-    CACHE_KEY_FORMAT = "#{CACHE_KEY_PREFIX}/%d-%d".freeze
+    CACHE_KEY_FORMAT = "#{CACHE_KEY_PREFIX}/%s-%s".freeze
 
     def initialize(pois_scope, box_size:, &serializer)
       @pois = pois_scope
@@ -10,18 +10,18 @@ module PoiServices
     end
 
     def serialize
-      pois_metadata = @pois.pluck(with_clustering(:id, :updated_at))
+      pois_metadata = metadata_with_clustering(@pois)
 
       return [] if pois_metadata.empty?
 
       cache_keys_by_id = {}
       pois_metadata.each do |id, timestamp|
-        cache_keys_by_id[id] = CACHE_KEY_FORMAT % [id, timestamp.utc.to_s(:nsec)]
+        cache_keys_by_id[id.to_i] = CACHE_KEY_FORMAT % [id, timestamp]
       end
 
       cached_values = $redis.mget(*cache_keys_by_id.values)
 
-      ids = pois_metadata.map(&:first)
+      ids = cache_keys_by_id.keys
       pois_by_id = {}
       ids_to_fetch_from_database = []
 
@@ -51,28 +51,57 @@ module PoiServices
 
     private
     # Divides the area in a grid of squares and keep only one POI per square
-    def with_clustering *projections
+    def metadata_with_clustering scope
       if @box_size >= 10
         grid_size = @box_size / 15
       elsif @box_size >= 5
         grid_size = @box_size / 30
       else
         # no clustering
-        return projections.join(", ")
+        grid_size = nil
       end
 
-      %(
-        distinct on (
-          ST_SnapToGrid(
-            ST_Transform(
-              ST_SetSRID(
-                ST_MakePoint(longitude, latitude),
-                4326),
-              3785),
-            #{grid_size * 1000})
-        )
-        #{projections.join(", ")}
-      )
+      scope = scope.unscope(:select)
+      projections = [
+        :id,
+        "to_char(updated_at, 'YYYYMMDDHH24MISSUS000')"
+      ]
+
+      if grid_size
+        # The sorting expression of the `distinct on` clause conflicts
+        # with the one we want to use to sort the results globally.
+        # To solve this, we cluster in a CTE, then sort again in the main query.
+
+        cte_projections = [
+          :id, :updated_at,     # for the metadata
+          :latitude, :longitude # for the sorting by distance
+        ]
+
+        # prefix a `distinct on` clause to the first expression for clustering
+        cte_projections[0] = %{
+          distinct on (
+            ST_SnapToGrid(
+              #{PostgisHelper.point(:latitude, :longitude)},
+              #{grid_size * 1000})
+          )
+          #{cte_projections[0]}
+        }
+
+        sql = %(
+          with pois as (
+            #{scope.unscope(:order, :limit).select(*cte_projections).to_sql}
+          )
+          #{scope.unscope(:where).select(*projections).to_sql}
+        ).squish
+      else
+        sql = scope.select(*projections).to_sql
+      end
+
+      result = ActiveRecord::Base.connection.execute(sql)
+      metadata = result.values
+      result.clear
+
+      metadata
     end
 
     # wraps a JSON fragment to prevent the encoder to re-serialize it
