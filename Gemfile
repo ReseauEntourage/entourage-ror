@@ -62,6 +62,7 @@ group :development do
 end
 
 group :test do
+  gem 'dotenv-rails',                 '~> 2.0.2'
   gem 'rspec-rails',                  '~> 3.1'
   gem 'shoulda-matchers',             '~> 3.0.1'
   gem 'timecop',                      '~> 0.8.0'
