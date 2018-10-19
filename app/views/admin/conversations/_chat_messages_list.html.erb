@@ -170,7 +170,7 @@
       <%= link_to @messages_author.full_name, admin_user_path(@messages_author), class: "conversation-sender" %>
       <span class="glyphicon glyphicon-question-sign" aria-hidden="true" data-toggle="tooltip" data-placement="top" title="Les messages envoyés depuis l'admin utilisent toujours le compte <%= @messages_author.email %>"></span>
     </div>
-    <%= form_for ChatMessage.new, url: message_admin_conversation_path(@conversation) do |f| %>
+    <%= form_for ChatMessage.new, url: message_admin_conversation_path(@conversation.id || @conversation.uuid_v2) do |f| %>
       <%= f.text_area :content, class: "conversation-message-box" %>
       <%= f.submit 'Envoyer', class: "btn btn-primary", disabled: true %>
     <% end %>

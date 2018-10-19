@@ -1,22 +1,4 @@
-<div class="h1">
-  <span><%= @user.first_name %> <%= @user.last_name %></span>
-</div>
-<% if @user.blocked? %>
-  <div class="panel panel-danger">
-    <div class="panel-heading">
-      Cet utilisateur est bloqué
-    </div>
-    <div class="panel-body">
-      Les utilisateurs bloqués ne peuvent pas se connecter ou utiliser l'application,<br>
-      et leur photo de profil est masquée.
-    </div>
-  </div>
-<% end %>
-
-<ul class="nav nav-tabs">
-  <li role="presentation"><%= link_to "Modifier", admin_user_path(@user) %></li>
-  <li role="presentation" class="active"><a href="#">Messages</a></li>
-</ul>
+<%= render 'header', tab: :messages %>
 
 <table class="table">
   <% @entourage_messages.each do |entourage_id, messages| %>

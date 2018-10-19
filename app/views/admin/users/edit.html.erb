@@ -1,32 +1,3 @@
-<div class="h1">
-  <span><%= @user.first_name %> <%= @user.last_name %></span>
-  <div class="pull-right">
-    <% if @user.blocked? %>
-      <%= link_to "Débloquer", unblock_admin_user_path(@user), method: :put,
-            class: "btn btn-success",
-            data: { confirm: "Débloquer #{@user.first_name} #{@user.last_name} (#{@user.email}) ?" } %>
-    <% else %>
-      <%= link_to "Bloquer", block_admin_user_path(@user), method: :put,
-            class: "btn btn-danger",
-            data: { confirm: "Bloquer #{@user.first_name} #{@user.last_name} (#{@user.email}) ?" } %>
-    <% end %>
-  </div>
-</div>
-<% if @user.blocked? %>
-  <div class="panel panel-danger">
-    <div class="panel-heading">
-      Cet utilisateur est bloqué
-    </div>
-    <div class="panel-body">
-      Les utilisateurs bloqués ne peuvent pas se connecter ou utiliser l'application,<br>
-      et leur photo de profil est masquée.
-    </div>
-  </div>
-<% end %>
-
-<ul class="nav nav-tabs">
-  <li role="presentation" class="active"><a href="#">Modifier</a></li>
-  <li role="presentation"><%= link_to "Messages", messages_admin_user_path(@user) %></li>
-</ul>
+<%= render 'header', tab: :edit %>
 
 <%= render partial: "form" %>

@@ -34,7 +34,7 @@
             <%= entourage_type_name @entourage %> par
             <span style="font-weight: bold">
               <%= user_avatar_image @entourage.user, size: '24x24', style: "border-radius: 50%; display: inline-block; background-image: url('#{asset_path "user/default_avatar.png"}'); background-size: contain; background-color: #fff;", alt: '' %>
-              <%= UserPresenter.new(user: @entourage.user).display_name %>
+              <%= link_to UserPresenter.new(user: @entourage.user).display_name, admin_user_path(@entourage.user), style: "color: inherit" %>
             </span>
             —
             Créée il y a <%= time_ago_in_words @entourage.created_at %>
