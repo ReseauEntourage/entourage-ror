@@ -3,8 +3,12 @@ users
   created_at
   first_sign_in_at (apparently only tracked since 2018-06-18)
   last_sign_in_at (apparently only tracked since 2016-08-25)
+  has_email
   country
   postal_code (those ending with XXX indicate that only the department is known)
+
+  Note: users country and postal_code have started to be collected on 2018-02-19
+        and became a part of user onboarding on 2018-08-01
 
 sessions (each entry indicates that the user used the app on that date)
   user_id

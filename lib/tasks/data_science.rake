@@ -12,6 +12,7 @@ namespace :data_science do
         :created_at,
         :first_sign_in_at,
         :last_sign_in_at,
+        :has_email,
         :country,
         :postal_code
       ]
@@ -22,6 +23,7 @@ namespace :data_science do
           user.created_at.to_date,
           user.first_sign_in_at&.to_date,
           user.last_sign_in_at&.to_date,
+          user.email.present?,
           user.address&.country,
           user.address&.postal_code
         ]
