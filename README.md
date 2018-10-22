@@ -33,6 +33,10 @@ You can source these environment variables froms a `.env` file.
 
 To get started : `cp .env.dist .env` and fill in the missing informations !
 
+Note that the `.env` file is used for all Rails environments. If you want to target only one (e.g. the `development` environment but not the `test` environment), use a file named `.env.{environment_name}` (e.g `.env.development`).
+
+You will find more informations about this in the `dotenv` gem's [README](https://github.com/bkeepers/dotenv/blob/master/README.md).
+
 # Docker
 
 You can run this application using Docker.
