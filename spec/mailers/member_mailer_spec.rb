@@ -38,7 +38,7 @@ def expect_mailjet_email opts={}, &block
   it { expect(mail.subject).to be nil }
   it { expect(mail['X-MJ-TemplateID'].value).to eq options[:template_id].to_s }
   it { expect(mail['X-MJ-TemplateLanguage'].value).to eq '1' }
-  it { expect_json_eq mail['X-MJ-Vars'].value, options[:variables] }
+  it { Timecop.freeze; expect_json_eq mail['X-MJ-Vars'].value, options[:variables] }
   it { expect_json_eq mail['X-MJ-EventPayload'].value, options[:payload] }
   it { expect(mail['X-Mailjet-Campaign'].value).to eq options[:campaign_name].to_s }
 end
