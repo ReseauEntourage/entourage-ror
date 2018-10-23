@@ -108,7 +108,7 @@ class OrganizationsController < ApplicationController
   end
   
   def organization_params
-    params.require(:organization).permit(:name, :description, :phone, :address, :logo_url, :test_organization, user: [:first_name, :last_name, :phone, :email])
+    params.require(:organization).permit(:name, :description, :phone, :address, :logo_url, :test_organization, tour_report_cc: [], user: [:first_name, :last_name, :phone, :email])
   end
 
   def set_organization

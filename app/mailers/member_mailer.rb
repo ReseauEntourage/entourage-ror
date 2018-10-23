@@ -215,7 +215,12 @@ class MemberMailer < ActionMailer::Base
       'X-Mailjet-Campaign' => :tour_report
     )
 
-    mail(from: TOUR_REPORT_EMAIL, to: @user.email, subject: 'Résumé de la maraude') if @user.email.present?
+    mail(
+      from: TOUR_REPORT_EMAIL,
+      to: @user.email,
+      cc: @user.organization.tour_report_cc,
+      subject: 'Résumé de la maraude'
+    ) if @user.email.present? || @user.organization.tour_report_cc.present?
   end
 
   def poi_report(poi, user, message)
