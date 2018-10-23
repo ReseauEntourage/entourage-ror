@@ -393,6 +393,24 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
       end
     end
 
+    describe "reset password" do
+      before do
+        user.update!(password: "P@ssw0rd")
+        @request.env['X-API-KEY'] = api_key
+        patch 'code', {id: "me", user: { phone: user.phone }, code: {action: "regenerate"}, format: :json}
+      end
+
+      context "from web" do
+        let(:api_key) { 'api_debug_web' }
+        it { expect(user.reload.encrypted_password).to be_nil }
+      end
+
+      context "from mobile" do
+        let(:api_key) { 'api_debug' }
+        it { expect(user.reload.encrypted_password).to be_present }
+      end
+    end
+
     describe "missing phone" do
       before { patch 'code', {id: "me", user: { foo: "bar" }, code: {action: "regenerate"}, format: :json} }
       it { expect(response.status).to eq(400) }

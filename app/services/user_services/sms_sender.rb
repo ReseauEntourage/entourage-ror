@@ -4,8 +4,8 @@ module UserServices
       @user = user
     end
 
-    def regenerate_sms!
-      new_sms = UserServices::SmsCode.new.regenerate_sms!(user: user)
+    def regenerate_sms!(clear_password: false)
+      new_sms = UserServices::SmsCode.new.regenerate_sms!(user: user, clear_password: clear_password)
       send_welcome_sms(new_sms)
     end
 

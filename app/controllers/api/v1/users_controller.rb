@@ -110,7 +110,7 @@ module Api
         user = community.users.where(phone: user_phone).first!
 
         if params[:code][:action] == "regenerate" && !user.deleted && !user.blocked?
-          UserServices::SMSSender.new(user: user).regenerate_sms!
+          UserServices::SMSSender.new(user: user).regenerate_sms!(clear_password: api_request.platform == :web)
           render json: user, status: 200, serializer: ::V1::UserSerializer, scope: { user: user }
         else
           render json: {error: "Unknown action"}, status:400
