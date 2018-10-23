@@ -277,23 +277,12 @@ module FeedServices
     end
 
     def order_by_distance(feeds:)
-      center   = "ST_SetSRID(ST_MakePoint(#{longitude}, #{latitude}), 4326)"
-      feedable = "ST_SetSRID(ST_MakePoint(longitude, latitude), 4326)"
-      feeds = feeds
-        .select(%{
-          feeds.*,
-          ST_Distance(#{center}, #{feedable}, false) as distance
-        })
-        .order("#{center} <-> #{feedable}")
+      distance_from_center = PostgisHelper.distance_from(latitude, longitude)
+      feeds = feeds.order(distance_from_center)
 
-      # the `<->` operator is fast but gives only an approximate ordering
-      # so we overshoot a bit, then re-sort and paginate manually
       @cursor ||= 1
       @page = cursor
-      feeds = feeds.limit(25 * cursor + 5)
-                   .sort_by(&:distance)
-                   .drop((cursor - 1) * 25)
-                   .take(25)
+      feeds = feeds.offset((cursor - 1) * 25).limit(25 * cursor)
     end
 
     def pin entourage_id, feeds:
