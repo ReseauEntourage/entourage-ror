@@ -212,7 +212,8 @@ class MemberMailer < ActionMailer::Base
         type: :tour_report,
         tour_id: tour.id
       ),
-      'X-Mailjet-Campaign' => :tour_report
+      'X-Mailjet-Campaign' => :tour_report,
+      'X-MJ-CustomID' => "tour_report-#{tour.id}"
     )
 
     mail(
