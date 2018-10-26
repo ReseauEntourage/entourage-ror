@@ -53,10 +53,10 @@
           <a href="<%= edit_community_admin_neighborhood_path(@neighborhood) %>"
              class="btn btn-outline-secondary">Modifier</a>
         </div>
-        <% if @neighborhood.postal_code.present? %>
+        <% if @neighborhood.metadata[:address].present? %>
           <div>
-            <%= link_to @neighborhood.postal_code,
-                  "https://www.google.com/maps/search/#{@neighborhood.postal_code}/@#{@neighborhood.latitude},#{@neighborhood.longitude},14z", target: :_blank %>
+            <%= link_to @neighborhood.metadata[:address],
+                  "https://www.google.com/maps/search/?api=1&query=#{@neighborhood.metadata[:address]}&query_place_id=#{@neighborhood.metadata[:google_place_id]}", target: :_blank %>
           </div>
         <% end %>
       </div>

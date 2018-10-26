@@ -118,7 +118,7 @@
 
       if (typeof place.place_id === 'undefined') {
         $input.removeClass('is-valid').addClass('is-invalid');
-        $('input[name^="user[address]"]').prop('disabled', true);
+        $input.siblings('input[type=hidden]').prop('disabled', true);
       }
       else {
         $input.data('last-valid', $input.val());
@@ -141,8 +141,6 @@
             details.postal_code = component.short_name;
           }
         }
-        window.place = place
-        window.details = details
         for (var attribute in details) {
           $input.siblings('input[type=hidden][name*="[' + attribute + ']"]')
             .prop('disabled', false)

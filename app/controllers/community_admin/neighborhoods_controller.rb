@@ -11,7 +11,7 @@ module CommunityAdmin
 
       @neighborhood =
         @coordinator_neighborhoods
-        .select(:id, :title, :postal_code, :latitude, :longitude)
+        .select(:id, :title, :metadata)
         .find(params[:id])
 
       @users =
@@ -32,7 +32,10 @@ module CommunityAdmin
         CommunityAdminService.coordinator_neighborhoods(current_user)
         .find(params[:id])
 
-      neighborhood.update!(neighborhood_params)
+      neighborhood.assign_attributes(neighborhood_params)
+      neighborhood.metadata.merge!(neighborhood_metadata_params.compact)
+
+      neighborhood.save!
 
       redirect_to community_admin_neighborhood_path(neighborhood)
     end
@@ -50,6 +53,7 @@ module CommunityAdmin
         group_type: :neighborhood
       )
       neighborhood.assign_attributes(neighborhood_params)
+      neighborhood.metadata.merge!(neighborhood_metadata_params.compact)
 
       ActiveRecord::Base.transaction do
         neighborhood.save!
@@ -65,7 +69,16 @@ module CommunityAdmin
     private
 
     def neighborhood_params
-      params.require(:entourage).permit(:title)
+      params.require(:entourage).permit(
+        :title,
+        :latitude, :longitude, :country, :postal_code
+      )
+    end
+
+    def neighborhood_metadata_params
+      params.require(:entourage).require(:metadata).permit(
+        :address, :google_place_id
+      )
     end
   end
 end

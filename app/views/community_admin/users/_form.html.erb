@@ -131,12 +131,12 @@
 
       if (typeof place.place_id === 'undefined') {
         $input.removeClass('is-valid').addClass('is-invalid');
-        $('input[name^="user[address]"]').prop('disabled', true);
+        $input.siblings('input[type=hidden]').prop('disabled', true);
       }
       else {
         $input.data('last-valid', $input.val());
         $input.removeClass('is-invalid').addClass('is-valid');
-        $('input[name^="user[address]"]').prop('disabled', false);
+        $input.siblings('input[type=hidden]').prop('disabled', true);
         var details = {
           place_name: place.name,
           google_place_id: place.place_id,
@@ -144,7 +144,8 @@
           longitude: place.geometry.location.lng()
         };
         for (var attribute in details) {
-          $('input[name="user[address][' + attribute + ']"]')
+          $input.siblings('input[type=hidden][name*="[' + attribute + ']"]')
+            .prop('disabled', false)
             .val(details[attribute]);
         }
       }
