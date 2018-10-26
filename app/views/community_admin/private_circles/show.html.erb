@@ -61,6 +61,13 @@
         <% end %>
       </div>
 
+      <% if @private_circle.status == 'blacklisted' %>
+        <div class="alert alert-primary mb-4" role="alert">
+          <strong>Ce cercle privé est archivé.</strong><br>
+          Il n'est pas visible par les membres et ils n'ont plus accès à la conversation de ce groupe.
+        </div>
+      <% end %>
+
       <table class="table table-hover">
         <thead>
           <tr>

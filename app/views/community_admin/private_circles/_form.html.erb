@@ -45,6 +45,25 @@
         community_admin_private_circle_path(@private_circle)
       ]
     end
+
+  status_change_op, next_status, status_change_desc, status_change_long_desc =
+    if @private_circle.new_record?
+      nil
+    elsif @private_circle.status == 'blacklisted'
+      [
+        "Restaurer",
+        :open,
+        "Ce cercle privé sera à nouveau visible par les membres.",
+        "Le cercle privé %{title} sera à nouveau visible par les membres. Ils pourront accéder à la conversation de ce groupe."
+      ]
+    else
+      [
+        "Archiver",
+        :blacklisted,
+        "Ce cercle privé ne sera plus visible.",
+        "Le cercle privé %{title} ne sera plus visible par les membres. Ils ne pourront plus accéder à la conversation de ce groupe."
+      ]
+    end
 %>
 <div class="container mt-5 has-fixed-footer">
   <div class="row justify-content-md-center">
@@ -84,6 +103,25 @@
             <small class="text-muted">(facultatif)</small>
             <%= f.text_area :description, class: "form-control" %>
           </div>
+
+          <% if @private_circle.persisted? %>
+            <hr class="my-5">
+
+            <div class="form-group d-flex align-items-center">
+              <div>
+                <label class="text-danger mb-0"><%= status_change_op %> ce cercle privé</label><br>
+                <small class="text-muted">
+                  <%= status_change_desc %> Cette action est réversible.
+                </small>
+              </div>
+              <div class="flex-grow-1 text-right">
+                <button type="button" data-toggle="modal" data-target="#archive"
+                        class="btn btn-sm btn-outline-danger">
+                  <%= status_change_op %>
+                </button>
+              </div>
+            </div>
+          <% end %>
         </div>
       </div>
 
@@ -99,6 +137,37 @@
   </div>
 </div>
 
+<% if @private_circle.persisted? %>
+  <div class="modal" tabindex="-1" role="dialog" id="archive">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title"><%= status_change_op %> le cercle privé ?</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>
+            <%=
+              (
+                status_change_long_desc %
+                {title: "<strong>«&nbsp;#{@private_circle.title}&nbsp;»</strong>"}
+              ).html_safe
+            %>
+          </p>
+          <p>Cette action est réversible.</p>
+        </div>
+        <%= form_for @private_circle, url: path, method: method,
+                     html: {class: "modal-footer"} do |f| %>
+          <%= f.hidden_field :status, value: next_status %>
+          <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Annuler</button>
+          <button type="submit" class="btn btn-danger"><%= status_change_op %></button>
+        <% end %>
+      </div>
+    </div>
+  </div>
+<% end %>
 
 <% content_for :scripts do %>
   <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=<%= ENV['GOOGLE_FRONTEND_API_KEY'] %>&libraries=places&region=fr&language=fr"></script>

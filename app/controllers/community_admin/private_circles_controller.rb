@@ -3,6 +3,12 @@ module CommunityAdmin
     def index
       @private_circles =
         CommunityAdminService.coordinator_private_circles(current_user)
+
+      if params.key?(:archived)
+        @private_circles = @private_circles.where(status: :blacklisted)
+      else
+        @private_circles = @private_circles.where.not(status: :blacklisted)
+      end
     end
 
     def show
@@ -11,7 +17,7 @@ module CommunityAdmin
 
       @private_circle =
         @coordinator_private_circles
-        .select(:id, :title, :metadata)
+        .select(:id, :title, :metadata, :status)
         .find(params[:id])
 
       @users =
@@ -80,11 +86,12 @@ module CommunityAdmin
 
     def private_circle_params
       params.require(:entourage).permit(
-        :latitude, :longitude, :country, :postal_code
+        :latitude, :longitude, :country, :postal_code, :status
       )
     end
 
     def private_circle_metadata_params
+      return {} if params.dig(:entourage, :metadata).nil?
       params.require(:entourage).require(:metadata).permit(
         :visited_user_first_name, :street_address, :google_place_id
       )
