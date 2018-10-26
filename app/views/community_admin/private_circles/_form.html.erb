@@ -78,6 +78,12 @@
             <%= hidden_field_tag 'entourage[metadata][street_address]', nil, disabled: true %>
             <%= hidden_field_tag 'entourage[metadata][google_place_id]', nil, disabled: true %>
           </div>
+
+          <div class="form-group">
+            <%= f.label :description %>
+            <small class="text-muted">(facultatif)</small>
+            <%= f.text_area :description, class: "form-control" %>
+          </div>
         </div>
       </div>
 

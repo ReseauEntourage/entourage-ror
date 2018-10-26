@@ -59,6 +59,12 @@
         </div>
       </div>
 
+      <div class="form-group">
+        <%= f.label :description %>
+        <small class="text-muted">(facultatif)</small>
+        <%= f.text_area :description, class: "form-control" %>
+      </div>
+
       <div class="fixed-footer p-3 bg-light d-flex justify-content-end">
         <a href="<%= cancel_path %>" class="btn btn-outline-secondary mr-3">Annuler</a>
         <button type="submit" class="btn btn-success"><%= confirm %></button>
