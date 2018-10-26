@@ -47,10 +47,18 @@
 <div class="container">
   <div class="row justify-content-center">
     <div class="col-lg-8 col-12">
-      <div class="h2 mb-4 d-flex flex-nowrap">
-        <span class="flex-grow-1"><%= @neighborhood.title %></span>
-        <a href="<%= edit_community_admin_neighborhood_path(@neighborhood) %>"
-           class="btn btn-outline-secondary">Modifier</a>
+      <div class="mb-4">
+        <div class="h2 d-flex flex-nowrap">
+          <span class="flex-grow-1"><%= @neighborhood.title %></span>
+          <a href="<%= edit_community_admin_neighborhood_path(@neighborhood) %>"
+             class="btn btn-outline-secondary">Modifier</a>
+        </div>
+        <% if @neighborhood.postal_code.present? %>
+          <div>
+            <%= link_to @neighborhood.postal_code,
+                  "https://www.google.com/maps/search/#{@neighborhood.postal_code}/@#{@neighborhood.latitude},#{@neighborhood.longitude},14z", target: :_blank %>
+          </div>
+        <% end %>
       </div>
 
       <table class="table table-hover">

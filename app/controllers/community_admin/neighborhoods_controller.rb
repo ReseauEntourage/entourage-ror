@@ -11,7 +11,7 @@ module CommunityAdmin
 
       @neighborhood =
         @coordinator_neighborhoods
-        .select(:id, :title)
+        .select(:id, :title, :postal_code, :latitude, :longitude)
         .find(params[:id])
 
       @users =
