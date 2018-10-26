@@ -1,12 +1,16 @@
 namespace :data_science do
   task export: :environment do
     output_path = 'data_export'
+    options = {
+      col_sep: "\t",
+      row_sep: "\r\n"
+    }
     FileUtils.mkdir_p output_path
     FileUtils.cd output_path
 
     users = User.where(community: :entourage, deleted: false, validation_status: :validated)
 
-    CSV.open("users.csv", "wb") do |csv|
+    CSV.open("users.csv", "wb", options) do |csv|
       csv.puts [
         :id,
         :created_at,
@@ -30,7 +34,7 @@ namespace :data_science do
       end
     end
 
-    CSV.open("sessions.csv", "wb") do |csv|
+    CSV.open("sessions.csv", "wb", options) do |csv|
       csv.puts [
         :user_id,
         :date
@@ -46,7 +50,7 @@ namespace :data_science do
 
     groups = Entourage.where(group_type: [:action, :outing, :conversation]).where.not(status: :blacklisted)
 
-    CSV.open("groups.csv", "wb") do |csv|
+    CSV.open("groups.csv", "wb", options) do |csv|
       csv.puts [
         :id,
         :type,
@@ -87,8 +91,8 @@ namespace :data_science do
         csv.puts [
           group.id,
           type,
-          group.title,
-          group.description.presence,
+          group.title.presence&.squish,
+          group.description.presence&.squish,
           group.created_at.to_date,
           group.user_id,
           group.country.presence,
@@ -106,7 +110,7 @@ namespace :data_science do
       end
     end
 
-    CSV.open("users_groups.csv", "wb") do |csv|
+    CSV.open("users_groups.csv", "wb", options) do |csv|
       csv.puts [
         :user_id,
         :group_id,
@@ -128,7 +132,7 @@ namespace :data_science do
       end
     end
 
-    CSV.open("messages.csv", "wb") do |csv|
+    CSV.open("messages.csv", "wb", options) do |csv|
       csv.puts [
         :user_id,
         :group_id,
