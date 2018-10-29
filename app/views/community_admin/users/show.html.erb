@@ -86,12 +86,12 @@
           <thead>
             <tr>
               <td colspan="3" class="p-0 border-top-0">
-                <h4>Voisinages</h4>
+                <h4>Voisinages de quartier</h4>
               </td>
             </tr>
             <% if @user_neighborhoods.empty? %>
               <td colspan="3" class="text-muted text-center">
-                Cette personne n'appartient à aucun voisinage.
+                Cette personne n'appartient à aucun voisinage de quartier.
               </td>
             <% end %>
           </thead>
@@ -145,7 +145,7 @@
               <tr>
                 <td colspan="3" class="pt-4 pb-0 pl-0">
                   <div class="h4 d-flex flex-nowrap">
-                    <span class="flex-grow-1">Ajouter à un voisinage</span>
+                    <span class="flex-grow-1">Ajouter à un voisinage de quartier</span>
                     <a href="?" class="btn btn-outline-secondary btn-sm">Annuler</a>
                   </div>
                 </td>
@@ -174,9 +174,9 @@
                 <td colspan="3" class="text-right px-0">
                   <a href="?add_neighborhood" class="btn btn-outline-secondary">
                     <% if @user_neighborhoods.any? %>
-                      Ajouter à un autre voisinage
+                      Ajouter à un autre voisinage de quartier
                     <% else %>
-                      Ajouter à un voisinage
+                      Ajouter à un voisinage de quartier
                     <% end %>
                   </a>
                 </td>
@@ -191,12 +191,12 @@
           <thead>
             <tr>
               <td colspan="3" class="p-0 border-top-0">
-                <h4>Cercles privés</h4>
+                <h4>Voisinages de personne</h4>
               </td>
             </tr>
             <% if @user_private_circles.empty? %>
               <td colspan="3" class="text-muted text-center">
-                Cette personne n'appartient à aucun cercle privé.
+                Cette personne n'appartient à aucun voisinage de personne.
               </td>
             <% end %>
           </thead>
@@ -218,7 +218,7 @@
                 <div class="dropdown">
                   <span class="btn-sm btn btn-ellipsis" data-toggle="dropdown"></span>
                   <div class="dropdown-menu dropdown-menu-right">
-                    <%= button_to "Retirer du cercle privé",
+                    <%= button_to "Retirer du voisinage",
                           community_admin_user_groups_path(@user,
                             group_id: private_circle.id),
                           method: :delete,
@@ -235,7 +235,7 @@
               <tr>
                 <td colspan="3" class="pt-4 pb-0 pl-0">
                   <div class="h4 d-flex flex-nowrap">
-                    <span class="flex-grow-1">Ajouter à un cercle privé</span>
+                    <span class="flex-grow-1">Ajouter à un voisinage de personne</span>
                     <a href="?" class="btn btn-outline-secondary btn-sm">Annuler</a>
                   </div>
                 </td>
@@ -269,7 +269,7 @@
               <tr>
                 <td colspan="3">
                   <div class="text-right">
-                    <a href="<%= new_community_admin_private_circle_path(for_user: @user.id) %>" class="btn btn-outline-success btn-sm">Créer un nouveau cercle privé</a>
+                    <a href="<%= new_community_admin_private_circle_path(for_user: @user.id) %>" class="btn btn-outline-success btn-sm">Créer un nouveau voisinage de personne</a>
                   </div>
                 </td>
               </tr>
@@ -281,9 +281,9 @@
                 <td colspan="3" class="text-right px-0">
                   <a href="?add_private_circle" class="btn btn-outline-secondary">
                     <% if @user_private_circles.any? %>
-                      Ajouter à un autre cercle privé
+                      Ajouter à un autre voisinage de personne
                     <% else %>
-                      Ajouter à un cercle privé
+                      Ajouter à un voisinage de personne
                     <% end %>
                   </a>
                 </td>

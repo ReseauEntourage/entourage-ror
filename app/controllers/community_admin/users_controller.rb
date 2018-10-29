@@ -9,7 +9,7 @@ module CommunityAdmin
 
       if current_user.roles.include?(:admin)
         @neighborhoods =
-          {none: Entourage.new(title: "Membre d'aucun voisinage")}.merge(@neighborhoods)
+          {none: Entourage.new(title: "Membre d'aucun voisinage de quartier")}.merge(@neighborhoods)
       end
 
       all_neighborhoods = @neighborhoods.keys
@@ -199,14 +199,14 @@ module CommunityAdmin
          user == current_user &&
          !current_user.roles.include?(:admin)
         return redirect_to community_admin_user_path(user),
-                           alert: "Vous ne pouvez pas vous retirer vous-même d'un voisinage dont vous êtes animateur."
+                           alert: "Vous ne pouvez pas vous retirer vous-même d'un voisinage de quartier dont vous êtes animateur."
       end
 
       if group.group_type == 'neighborhood' &&
          !(user.roles.include?(:admin) || current_user.roles.include?(:admin)) &&
          user.entourage_participations.where(group_type: :neighborhood).merge(JoinRequest.accepted).count == 1
         return redirect_to community_admin_user_path(user),
-                           alert: "Vous ne pouvez pas retirer une personne de son seul voisinage."
+                           alert: "Vous ne pouvez pas retirer une personne de son seul voisinage de quartier."
       end
 
       if !current_user.roles.include?(:admin) &&

@@ -53,15 +53,15 @@
       [
         "Restaurer",
         :open,
-        "Ce cercle privé sera à nouveau visible par les membres.",
-        "Le cercle privé %{title} sera à nouveau visible par les membres. Ils pourront accéder à la conversation de ce groupe."
+        "Ce voisinage de personne sera à nouveau visible par les membres.",
+        "Le voisinage de personne %{title} sera à nouveau visible par les membres. Ils pourront accéder à la conversation de ce groupe."
       ]
     else
       [
         "Archiver",
         :blacklisted,
-        "Ce cercle privé ne sera plus visible.",
-        "Le cercle privé %{title} ne sera plus visible par les membres. Ils ne pourront plus accéder à la conversation de ce groupe."
+        "Ce voisinage de personne ne sera plus visible.",
+        "Le voisinage de personne %{title} ne sera plus visible par les membres. Ils ne pourront plus accéder à la conversation de ce groupe."
       ]
     end
 %>
@@ -77,7 +77,7 @@
             <%= text_field_tag 'entourage[metadata][visited_user_first_name]',
                   @private_circle.metadata[:visited_user_first_name],
                   class: "form-control", required: true %>
-            <small class="form-text text-muted">Le nom du cercle privé sera <i>Les amis de [nom]</i>, par exemple : <i>Les amis d'Henriette</i>.</small>
+            <small class="form-text text-muted">Le nom du voisinage de personne sera <i>Les amis de [nom]</i>, par exemple : <i>Les amis d'Henriette</i>.</small>
           </div>
 
           <div class="form-group">
@@ -109,7 +109,7 @@
 
             <div class="form-group d-flex align-items-center">
               <div>
-                <label class="text-danger mb-0"><%= status_change_op %> ce cercle privé</label><br>
+                <label class="text-danger mb-0"><%= status_change_op %> ce voisinage de personne</label><br>
                 <small class="text-muted">
                   <%= status_change_desc %> Cette action est réversible.
                 </small>
@@ -142,7 +142,7 @@
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title"><%= status_change_op %> le cercle privé ?</h5>
+          <h5 class="modal-title"><%= status_change_op %> le voisinage de personne ?</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>

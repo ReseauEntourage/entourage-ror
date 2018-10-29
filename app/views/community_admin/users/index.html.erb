@@ -87,11 +87,11 @@
               <div class="btn <%= @filters[:neighborhoods][:is_filtered] ? 'btn-primary order-0' : 'btn-outline-primary order-1' %> btn-sm mr-1 mb-1"
                       data-toggle="collapse" data-target="#filterNeighborhoods">
                 <% if @filters[:neighborhoods][:is_filtered] == false %>
-                  Voisinage
+                  Voisinage de quartier
                 <% elsif @filters[:neighborhoods][:ids].count == 1 %>
                   <%= @neighborhoods[@filters[:neighborhoods][:ids].first].title %>
                 <% else %>
-                  Voisinages <span class="badge badge-light"><%= @filters[:neighborhoods][:ids].count %></span>
+                  Voisinages de quartier <span class="badge badge-light"><%= @filters[:neighborhoods][:ids].count %></span>
                 <% end %>
                 <% if @filters[:neighborhoods][:is_filtered] %>
                   <span class="remove-filter" data-target="#filterNeighborhoods">&times</span>
@@ -115,11 +115,11 @@
               <div class="btn <%= @filters[:has_private_circle][:is_filtered] ? 'btn-primary order-0' : 'btn-outline-primary order-1' %> btn-sm mr-1 mb-1"
                       data-toggle="collapse" data-target="#filterPrivateCircles">
                 <% if @filters[:has_private_circle][:is_filtered] == false %>
-                  Cercle privés
+                  Voisinage de personne
                 <% elsif @filters[:has_private_circle][:value] == true %>
-                  Membre d'un cercle privé
+                  Membre d'un voisinage de personne
                 <% elsif @filters[:has_private_circle][:value] == false %>
-                  Membre d'aucun cercle privé
+                  Membre d'aucun voisinage de personne
                 <% end %>
                 <% if @filters[:has_private_circle][:is_filtered] %>
                   <span class="remove-filter" data-target="#filterPrivateCircles">&times</span>
@@ -250,7 +250,7 @@
                          <%= :checked if @filters[:has_private_circle][:value] == true %>>
                   <label class="form-check-label"
                          for="has_private_circle_true">
-                    Membre d'<b>au moins un</b> cercle privé
+                    Membre d'<b>au moins un</b> voisinage de personne
                   </label>
                 </div>
                 <div class="form-check">
@@ -260,7 +260,7 @@
                          <%= :checked if @filters[:has_private_circle][:value] == false %>>
                   <label class="form-check-label"
                          for="has_private_circle_false">
-                    Membre d'<b>aucun</b> cercle privé
+                    Membre d'<b>aucun</b> voisinage de personne
                   </label>
                 </div>
                 <div class="form-check">

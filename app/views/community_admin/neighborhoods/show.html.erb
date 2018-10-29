@@ -55,6 +55,7 @@
         </div>
         <% if @neighborhood.metadata[:address].present? %>
           <div>
+            Autour de
             <%= link_to @neighborhood.metadata[:address],
                   "https://www.google.com/maps/search/?api=1&query=#{@neighborhood.metadata[:address]}&query_place_id=#{@neighborhood.metadata[:google_place_id]}", target: :_blank %>
           </div>

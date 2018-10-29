@@ -10,5 +10,5 @@ fr:
         visited: Voisiné
         admin: Administrateur
       group_types:
-        private_circle: cercle privé
-        neighborhood: voisinage
+        private_circle: voisinage de personne
+        neighborhood: voisinage de quartier
