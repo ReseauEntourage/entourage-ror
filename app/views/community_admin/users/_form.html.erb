@@ -51,6 +51,9 @@
             <%= f.label :phone %>
             <%= f.phone_field :phone, class: "form-control", required: true %>
             <small class="form-text text-muted">Uniquement utilisé pour la connexion, jamais visible publiquement.</small>
+            <% if @user.new_record? %>
+              <small class="form-text text-muted">La personne recevra sur ce numéro un SMS d’invitation contentant un code lui permettant de se connecter.</small>
+            <% end %>
           </div>
 
           <div class="form-group">

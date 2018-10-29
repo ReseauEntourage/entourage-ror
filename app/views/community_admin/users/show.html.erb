@@ -44,6 +44,18 @@
 
 <%= render 'nav', active: :users %>
 
+<% if params.key?(:post_create) %>
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-8 col-12 mb-3">
+        <div class="alert alert-primary" role="alert">
+          Cette personne va reçevoir un SMS d’invitation contenant le code lui permettant de se connecter.
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>
+
 <div class="container">
   <div class="row justify-content-md-center">
     <div class="col-8">

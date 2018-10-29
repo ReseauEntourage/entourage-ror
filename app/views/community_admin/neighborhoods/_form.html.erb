@@ -66,7 +66,7 @@
                 class: "form-control",
                 required: true,
                 data: { last_valid: @neighborhood.metadata[:address] } %>
-            <small class="text-muted">Cette adresse précise n'est pas montrée mais elle permet l'affichage sur la carte</small>
+            <small class="form-text text-muted">Cette adresse précise n'est pas montrée mais elle permet l'affichage sur la carte.</small>
             <%= hidden_field_tag 'entourage[latitude]', nil, disabled: true %>
             <%= hidden_field_tag 'entourage[longitude]', nil, disabled: true %>
             <%= hidden_field_tag 'entourage[country]', nil, disabled: true %>

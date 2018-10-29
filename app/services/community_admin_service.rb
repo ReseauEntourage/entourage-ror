@@ -157,10 +157,12 @@ module CommunityAdminService
   end
 
   def self.modifiable_roles(by:, of:)
-    base = readable_roles(by) - [:coordinator]
+    base = readable_roles(by)
 
     if by == of && by.roles.include?(:admin)
       base - [:admin]
+    elsif by == of && by.roles.include?(:coordinator)
+      base - [:coordinator]
     else
       base
     end

@@ -241,7 +241,7 @@ module CommunityAdmin
     def create
       builder = UserServices::PublicUserBuilder.new(params: user_params, community: community)
       user = nil
-      builder.create(send_sms: false, sms_code: '123456') do |on|
+      builder.create(send_sms: true) do |on|
         on.success { |new_user| user = new_user }
       end
       raise :error unless user
@@ -273,7 +273,7 @@ module CommunityAdmin
       if for_group
         redirect_to community_admin_group_path(for_group)
       else
-        redirect_to community_admin_user_path(user)
+        redirect_to community_admin_user_path(user, post_create: 1)
       end
     end
 

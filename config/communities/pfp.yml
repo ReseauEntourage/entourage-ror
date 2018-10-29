@@ -2,7 +2,7 @@ name: Voisin-Age
 dev_name: PFP
 mailjet_template:
   welcome: 373352
-store_short_url: https://bit.ly/applivoisinage
+store_short_url: https://bit.ly/applivoisin-age
 links:
   feedback: https://entourage-asso.typeform.com/to/Imi9sX?user_id=%{user_id}
   ethics-charter:         https://entourage-asso.typeform.com/to/aEf9pJ?user_id=%{user_id}
