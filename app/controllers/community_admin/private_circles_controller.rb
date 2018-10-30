@@ -2,13 +2,15 @@ module CommunityAdmin
   class PrivateCirclesController < BaseController
     def index
       @private_circles =
-        CommunityAdminService.coordinator_private_circles(current_user)
+        CommunityAdminService.coordinator_private_circles(current_user, has_pending_field: true)
 
       if params.key?(:archived)
         @private_circles = @private_circles.where(status: :blacklisted)
       else
         @private_circles = @private_circles.where.not(status: :blacklisted)
       end
+
+      @private_circles = @private_circles.select(:id, :title)
     end
 
     def show
@@ -22,7 +24,8 @@ module CommunityAdmin
 
       @users =
         CommunityAdminService.users(@private_circle)
-        .select(:id, :first_name, :last_name, :avatar_key, :validation_status, :roles, :role)
+        .select(:id, :first_name, :last_name, :avatar_key, :validation_status, :roles, :role, 'join_requests.status')
+        .order("join_requests.status desc")
         .group_by { |u| u.role == 'visited' ? :visited : :visitors }
       @users.default = []
     end

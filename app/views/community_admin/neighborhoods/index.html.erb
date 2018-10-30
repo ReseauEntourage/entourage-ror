@@ -26,7 +26,7 @@
       <table class="table table-hover">
         <thead>
           <tr>
-            <td class="text-right pr-0 pt-0 border-top-0">
+            <td colspan="2" class="text-right pr-0 pt-0 border-top-0">
               <a href="<%= new_community_admin_neighborhood_path %>"
                  class="btn btn-outline-secondary">Créer un voisinage de quartier</a>
             </td>
@@ -37,6 +37,11 @@
             <td>
               <%= link_to "", community_admin_neighborhood_path(neighborhood), class: "overlay" %>
               <%= neighborhood.title %>
+            </td>
+            <td>
+              <% if neighborhood.has_pending %>
+                <span class="badge badge-primary">En attente</span>
+              <% end %>
             </td>
           </tr>
         <% end %>

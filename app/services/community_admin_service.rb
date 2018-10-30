@@ -43,8 +43,8 @@ module CommunityAdminService
     [neighborhoods, users]
   end
 
-  def self.coordinator_users_filtered(user, neighborhoods, has_private_circle: nil)
-    if user.roles.include?(:admin) && !neighborhoods.include?(:none) && !has_private_circle.nil?
+  def self.coordinator_users_filtered(user, neighborhoods, has_private_circle: nil, neighborhood_status: nil)
+    if user.roles.include?(:admin) && !neighborhoods.include?(:none) && has_private_circle.nil? && neighborhood_status.nil?
       return users(neighborhoods)
     end
 
@@ -57,7 +57,6 @@ module CommunityAdminService
           join_requests
         on
           join_requests.joinable_type = 'Entourage' and
-          join_requests.status = 'accepted' and
           join_requests.user_id = users.id
       })
       .joins(%{
@@ -81,16 +80,24 @@ module CommunityAdminService
 
     clauses = [clauses.join(" or ")]
 
+    scope = scope.joins(%{
+      left join
+        entourages private_circles
+      on
+        private_circles.group_type = 'private_circle' and
+        private_circles.id = join_requests.joinable_id
+    })
+
     if has_private_circle != nil
-      scope = scope.joins(%{
-        left join
-          entourages private_circles
-        on
-          private_circles.group_type = 'private_circle' and
-          private_circles.id = join_requests.joinable_id
-      })
       condition = has_private_circle ? "> 0" : "= 0"
       clauses.push "cardinality(array_remove(array_agg(private_circles.id), null)) #{condition}"
+    end
+
+    case neighborhood_status
+    when nil
+      scope = scope.where("join_requests.status in ('pending', 'accepted')")
+    else
+      scope = scope.where("neighborhoods is null or join_requests.status = ?", neighborhood_status)
     end
 
     scope.having(clauses.map { |c| "(#{c})" }.join(" and "))
@@ -102,19 +109,32 @@ module CommunityAdminService
       .joins(:join_requests)
       .merge(
         JoinRequest
-        .accepted
+        .where(status: [:pending, :accepted])
         .where(joinable_type: :Entourage, joinable_id: neighborhood_ids)
       )
       .uniq
   end
 
-  def self.coordinator_private_circles(user)
+  def self.coordinator_private_circles(user, has_pending_field: false)
     if user.roles.include?(:admin)
-      user.community.entourages
+      scope = user.community.entourages
         .where(group_type: :private_circle)
+
+      if has_pending_field
+        scope = scope.joins(%{
+          left join
+            join_requests as member_to_private_circle
+          on
+            member_to_private_circle.joinable_id = entourages.id and
+            member_to_private_circle.joinable_type = 'Entourage' and
+            member_to_private_circle.status = 'pending' and
+            member_to_private_circle.role in ('visitor', 'visited')
+        })
+        .uniq
+      end
     else
       neighborhood_ids = coordinator_neighborhoods(user).pluck(:id)
-      Entourage
+      scope = Entourage
         .where(group_type: :private_circle)
         .joins(%{
           join
@@ -122,7 +142,7 @@ module CommunityAdminService
           on
             member_to_private_circle.joinable_id = entourages.id and
             member_to_private_circle.joinable_type = 'Entourage' and
-            member_to_private_circle.status = 'accepted' and
+            member_to_private_circle.status in ('pending', 'accepted') and
             member_to_private_circle.role in ('visitor', 'visited')
         })
         .joins(%{
@@ -136,6 +156,21 @@ module CommunityAdminService
         .where(member_to_neighborhood: {joinable_id: neighborhood_ids})
         .uniq
     end
+
+    if has_pending_field
+      has_pending = %{
+        count(
+          case when member_to_private_circle.status = 'pending' then 1 end
+        ) > 0
+      }
+
+      scope = scope
+        .group(:id)
+        .select("#{has_pending} as has_pending")
+        .order("#{has_pending} desc")
+    end
+
+    scope
   end
 
   def self.role_color(community, role)

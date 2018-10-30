@@ -13,7 +13,8 @@
   }
 
   .overlay-container a:not(.overlay),
-  .overlay-container .btn {
+  .overlay-container .btn,
+  .overlay-container .hover-toggle {
     position: relative;
     z-index: 2;
   }
@@ -40,6 +41,47 @@
   form.button_to input[type="submit"] {
     cursor: pointer;
   }
+
+  .hover-toggle {
+    display: inline-block;
+  }
+
+  .overlay-container:not(:hover) .hover-show {
+    height: 0;
+    overflow: hidden;
+  }
+
+  .overlay-container:hover .hover-hide {
+    display: none;
+  }
+
+  .row-highlight td {
+    background-color: rgba(204, 229, 255, .5);
+    border-color: #b8daff;
+    background-clip: padding-box;
+  }
+
+  .table-hover .row-highlight:hover td {
+    background-color: #cce5ff;
+  }
+
+  .row-highlight .btn[class*="btn-outline-"]:not(:hover) {
+    background-color: #fff;
+  }
+
+  .btn-group > .button_to:not(:first-child) {
+    margin-left: -1px;
+  }
+
+  .btn-group > .button_to:not(:first-child) .btn {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+
+  .btn-group > .button_to:not(:last-child) .btn {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
 </style>
 
 <%= render 'nav', active: :neighborhoods %>
@@ -65,43 +107,65 @@
       <table class="table table-hover">
         <thead>
           <tr>
-            <td colspan="4" class="p-0 border-top-0">
+            <td colspan="5" class="p-0 border-top-0">
               <h4>Animateurs</h4>
             </td>
           </tr>
           <% if @users[:coordinators].empty? %>
-            <td colspan="4" class="text-muted text-center">
-              Il n'y a pas d'animateur dans ce voisinage.
-            </td>
+            <tr>
+              <td colspan="5" class="text-muted text-center">
+                Il n'y a pas d'animateur dans ce voisinage.
+              </td>
+            </tr>
           <% end %>
         </thead>
         <% @users[:coordinators].each do |user| %>
-          <tr class="overlay-container">
+          <tr class="overlay-container <%= 'row-highlight' if user.status == 'pending' %>">
             <%= render 'community_admin/users/list_item', user: user %>
-            <td class="text-right">
-              <div class="dropdown">
-                <span class="btn-sm btn btn-ellipsis" data-toggle="dropdown"></span>
-                <div class="dropdown-menu dropdown-menu-right">
-                  <% role = user.role.to_sym %>
-                  <%= button_to "Retirer le rôle d'animateur",
-                        community_admin_user_group_role_path(user,
-                          group_id: @neighborhood.id, role: :member),
-                        method: :post,
-                        class: "dropdown-item" %>
-                  <%= button_to "Retirer du voisinage",
-                        community_admin_user_groups_path(user,
-                          group_id: @neighborhood.id, redirect: :group),
-                        method: :delete,
-                        class: "dropdown-item text-danger" %>
+            <td class="text-right py-0 align-middle">
+              <% if user.status == 'pending' %>
+                <div class="hover-toggle">
+                  <span class="badge badge-primary hover-hide">En attente</span>
+                  <div class="hover-show">
+                    <div class="btn-group">
+                      <%= button_to "Refuser",
+                            community_admin_user_groups_path(user,
+                              group_id: @neighborhood.id, redirect: :group),
+                            method: :delete,
+                            class: "btn btn-sm btn-outline-secondary" %>
+                      <%= button_to "Accepter",
+                            community_admin_user_groups_path(user,
+                              group_id: @neighborhood.id, redirect: :group),
+                            method: :post,
+                            class: "btn btn-sm btn-outline-primary" %>
+                    </div>
+                  </div>
                 </div>
-              </div>
+              <% else %>
+                <div class="dropdown">
+                  <span class="btn-sm btn btn-ellipsis" data-toggle="dropdown"></span>
+                  <div class="dropdown-menu dropdown-menu-right">
+                    <% role = user.role.to_sym %>
+                    <%= button_to "Retirer le rôle d'animateur",
+                          community_admin_user_group_role_path(user,
+                            group_id: @neighborhood.id, role: :member),
+                          method: :post,
+                          class: "dropdown-item" %>
+                    <%= button_to "Retirer du voisinage",
+                          community_admin_user_groups_path(user,
+                            group_id: @neighborhood.id, redirect: :group),
+                          method: :delete,
+                          class: "dropdown-item text-danger" %>
+                  </div>
+                </div>
+              <% end %>
             </td>
           </tr>
         <% end %>
 
         <thead>
           <tr>
-            <td colspan="4" class="text-right px-0">
+            <td colspan="5" class="text-right px-0">
               <a href="<%= community_admin_users_path(for_group: @neighborhood.id, for_role: :coordinator, roles: [:coordinator]) %>" class="btn btn-outline-secondary">
                 Ajouter un animateur
               </a>
@@ -111,43 +175,65 @@
 
         <thead>
           <tr>
-            <td colspan="4" class="p-0 pt-4 border-top-0">
+            <td colspan="5" class="p-0 pt-4 border-top-0">
               <h4>Membres</h4>
             </td>
           </tr>
           <% if @users[:members].empty? %>
-            <td colspan="4" class="text-muted text-center">
-              Il n'y a pas de membre pour le moment.
-            </td>
+            <tr>
+              <td colspan="5" class="text-muted text-center">
+                Il n'y a pas de membre pour le moment.
+              </td>
+            </tr>
           <% end %>
         </thead>
         <% @users[:members].each do |user| %>
-          <tr class="overlay-container">
+          <tr class="overlay-container <%= 'row-highlight' if user.status == 'pending' %>">
             <%= render 'community_admin/users/list_item', user: user %>
-            <td class="text-right">
-              <div class="dropdown">
-                <span class="btn-sm btn btn-ellipsis" data-toggle="dropdown"></span>
-                <div class="dropdown-menu dropdown-menu-right">
-                  <% role = user.role.to_sym %>
-                  <%= button_to "Attribuer le rôle d'animateur",
-                        community_admin_user_group_role_path(user,
-                          group_id: @neighborhood.id, role: :coordinator),
-                        method: :post,
-                        class: "dropdown-item" %>
-                  <%= button_to "Retirer du voisinage",
-                        community_admin_user_groups_path(user,
-                          group_id: @neighborhood.id, redirect: :group),
-                        method: :delete,
-                        class: "dropdown-item text-danger" %>
+            <td class="text-right py-0 align-middle">
+              <% if user.status == 'pending' %>
+                <div class="hover-toggle">
+                  <span class="badge badge-primary hover-hide">En attente</span>
+                  <div class="hover-show">
+                    <div class="btn-group">
+                      <%= button_to "Refuser",
+                            community_admin_user_groups_path(user,
+                              group_id: @neighborhood.id, redirect: :group),
+                            method: :delete,
+                            class: "btn btn-sm btn-outline-secondary" %>
+                      <%= button_to "Accepter",
+                            community_admin_user_groups_path(user,
+                              group_id: @neighborhood.id, redirect: :group),
+                            method: :post,
+                            class: "btn btn-sm btn-outline-primary" %>
+                    </div>
+                  </div>
                 </div>
-              </div>
+              <% else %>
+                <div class="dropdown">
+                  <span class="btn-sm btn btn-ellipsis" data-toggle="dropdown"></span>
+                  <div class="dropdown-menu dropdown-menu-right">
+                    <% role = user.role.to_sym %>
+                    <%= button_to "Attribuer le rôle d'animateur",
+                          community_admin_user_group_role_path(user,
+                            group_id: @neighborhood.id, role: :coordinator),
+                          method: :post,
+                          class: "dropdown-item" %>
+                    <%= button_to "Retirer du voisinage",
+                          community_admin_user_groups_path(user,
+                            group_id: @neighborhood.id, redirect: :group),
+                          method: :delete,
+                          class: "dropdown-item text-danger" %>
+                  </div>
+                </div>
+              <% end %>
             </td>
           </tr>
         <% end %>
 
         <thead>
           <tr>
-            <td colspan="4" class="text-right px-0">
+            <td colspan="5" class="text-right px-0">
               <a href="<%= community_admin_users_path(for_group: @neighborhood.id, for_role: :member) %>" class="btn btn-outline-secondary">
                 Ajouter un membre
               </a>

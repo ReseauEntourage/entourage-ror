@@ -3,6 +3,26 @@ module CommunityAdmin
     def index
       @neighborhoods =
         CommunityAdminService.coordinator_neighborhoods(current_user)
+
+      has_pending = %{
+        count(
+          case when member_join_requests.status = 'pending' then 1 end
+        ) > 0
+      }
+
+      @neighborhoods = @neighborhoods
+        .joins(%{
+          left join
+            join_requests member_join_requests
+          on
+            member_join_requests.joinable_id = entourages.id and
+            member_join_requests.joinable_type = 'Entourage' and
+            member_join_requests.status = 'pending'
+        })
+        .select(:id, :title)
+        .group(:id)
+        .select("#{has_pending} as has_pending")
+        .order("#{has_pending} desc")
     end
 
     def show
@@ -16,7 +36,8 @@ module CommunityAdmin
 
       @users =
         CommunityAdminService.users(@neighborhood)
-        .select(:id, :first_name, :last_name, :avatar_key, :validation_status, :roles, :role)
+        .select(:id, :first_name, :last_name, :avatar_key, :validation_status, :roles, :role, 'join_requests.status')
+        .order("join_requests.status desc")
         .group_by { |u| u.role == 'coordinator' ? :coordinators : :members }
       @users.default = []
     end

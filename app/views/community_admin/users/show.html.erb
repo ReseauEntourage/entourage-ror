@@ -40,6 +40,47 @@
   form.button_to input[type="submit"] {
     cursor: pointer;
   }
+
+  .hover-toggle {
+    display: inline-block;
+  }
+
+  .overlay-container:not(:hover) .hover-show {
+    height: 0;
+    overflow: hidden;
+  }
+
+  .overlay-container:hover .hover-hide {
+    display: none;
+  }
+
+  .row-highlight td {
+    background-color: rgba(204, 229, 255, .5);
+    border-color: #b8daff;
+    background-clip: padding-box;
+  }
+
+  .table-hover .row-highlight:hover td {
+    background-color: #cce5ff;
+  }
+
+  .row-highlight .btn[class*="btn-outline-"]:not(:hover) {
+    background-color: #fff;
+  }
+
+  .btn-group > .button_to:not(:first-child) {
+    margin-left: -1px;
+  }
+
+  .btn-group > .button_to:not(:first-child) .btn {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+
+  .btn-group > .button_to:not(:last-child) .btn {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
 </style>
 
 <%= render 'nav', active: :users %>
@@ -110,7 +151,7 @@
 
           <% @user_neighborhoods.each do |neighborhood| %>
             <% role = neighborhood.role.to_sym %>
-            <tr class="overlay-container">
+            <tr class="overlay-container <%= 'row-highlight' if neighborhood.status == 'pending' %>">
               <td>
                 <%= link_to "", community_admin_neighborhood_path(neighborhood), class: "overlay" %>
                 <%= neighborhood.title %>
@@ -121,32 +162,52 @@
                   <span class="badge badge-<%= role_color %>"><%= t "community.#{community.slug}.roles.#{role}" %></span>
                 <% end %>
               </td>
-              <td class="text-right">
-                <div class="dropdown">
-                  <span class="btn-sm btn btn-ellipsis" data-toggle="dropdown"></span>
-                  <div class="dropdown-menu dropdown-menu-right">
-                    <% if role == :coordinator %>
-                      <%= button_to "Retirer le rôle d'animateur",
-                            community_admin_user_group_role_path(@user,
-                              group_id: neighborhood.id, role: :member),
-                            method: :post,
-                            class: "dropdown-item" %>
-                    <% else %>
-                      <%= button_to "Attribuer le rôle d'animateur",
-                            community_admin_user_group_role_path(@user,
-                              group_id: neighborhood.id, role: :coordinator),
-                            method: :post,
-                            class: "dropdown-item" %>
-                    <% end %>
-                    <% unless @user_neighborhoods.length == 1 %>
-                      <%= button_to "Retirer du voisinage",
-                            community_admin_user_groups_path(@user,
-                              group_id: neighborhood.id),
-                            method: :delete,
-                            class: "dropdown-item text-danger" %>
-                    <% end %>
+              <td class="text-right py-0 align-middle">
+                <% if neighborhood.status == 'pending' %>
+                  <div class="hover-toggle">
+                    <span class="badge badge-primary hover-hide">En attente</span>
+                    <div class="hover-show">
+                      <div class="btn-group">
+                        <%= button_to "Refuser",
+                              community_admin_user_groups_path(@user,
+                                group_id: neighborhood.id),
+                              method: :delete,
+                              class: "btn btn-sm btn-outline-secondary" %>
+                        <%= button_to "Accepter",
+                              community_admin_user_groups_path(@user,
+                                group_id: neighborhood.id),
+                              method: :post,
+                              class: "btn btn-sm btn-outline-primary" %>
+                      </div>
+                    </div>
                   </div>
-                </div>
+                <% else %>
+                  <div class="dropdown">
+                    <span class="btn-sm btn btn-ellipsis" data-toggle="dropdown"></span>
+                    <div class="dropdown-menu dropdown-menu-right">
+                      <% if role == :coordinator %>
+                        <%= button_to "Retirer le rôle d'animateur",
+                              community_admin_user_group_role_path(@user,
+                                group_id: neighborhood.id, role: :member),
+                              method: :post,
+                              class: "dropdown-item" %>
+                      <% else %>
+                        <%= button_to "Attribuer le rôle d'animateur",
+                              community_admin_user_group_role_path(@user,
+                                group_id: neighborhood.id, role: :coordinator),
+                              method: :post,
+                              class: "dropdown-item" %>
+                      <% end %>
+                      <% unless @user_neighborhoods.length == 1 %>
+                        <%= button_to "Retirer du voisinage",
+                              community_admin_user_groups_path(@user,
+                                group_id: neighborhood.id),
+                              method: :delete,
+                              class: "dropdown-item text-danger" %>
+                      <% end %>
+                    </div>
+                  </div>
+                <% end %>
               </td>
             </tr>
           <% end %>
@@ -155,7 +216,7 @@
           <% elsif params.key?(:add_neighborhood) %>
             <thead>
               <tr>
-                <td colspan="3" class="pt-4 pb-0 pl-0">
+                <td colspan="3" class="pt-4 border-top-0 pb-0 pl-0">
                   <div class="h4 d-flex flex-nowrap">
                     <span class="flex-grow-1">Ajouter à un voisinage de quartier</span>
                     <a href="?" class="btn btn-outline-secondary btn-sm">Annuler</a>
@@ -195,14 +256,10 @@
               </tr>
             </thead>
           <% end %>
-        </table>
-      </div>
 
-      <div>
-        <table class="table table-hover">
           <thead>
             <tr>
-              <td colspan="3" class="p-0 border-top-0">
+              <td colspan="3" class="p-0 border-top-0 pt-4">
                 <h4>Voisinages de personne</h4>
               </td>
             </tr>
@@ -215,7 +272,7 @@
 
           <% @user_private_circles.each do |private_circle| %>
             <% role = private_circle.role.to_sym %>
-            <tr class="overlay-container">
+            <tr class="overlay-container <%= 'row-highlight' if private_circle.status == 'pending' %>">
               <td>
                 <%= link_to "", community_admin_private_circle_path(private_circle), class: "overlay" %>
                 <%= private_circle.title %>
@@ -226,17 +283,37 @@
                   <span class="badge badge-<%= role_color %>"><%= t "community.#{community.slug}.roles.#{role}" %></span>
                 <% end %>
               </td>
-              <td class="text-right">
-                <div class="dropdown">
-                  <span class="btn-sm btn btn-ellipsis" data-toggle="dropdown"></span>
-                  <div class="dropdown-menu dropdown-menu-right">
-                    <%= button_to "Retirer du voisinage",
-                          community_admin_user_groups_path(@user,
-                            group_id: private_circle.id),
-                          method: :delete,
-                          class: "dropdown-item text-danger" %>
+              <td class="text-right py-0 align-middle">
+                <% if private_circle.status == 'pending' %>
+                  <div class="hover-toggle">
+                    <span class="badge badge-primary hover-hide">En attente</span>
+                    <div class="hover-show">
+                      <div class="btn-group btn-group-sm">
+                        <%= button_to "Refuser",
+                              community_admin_user_groups_path(@user,
+                                group_id: private_circle.id),
+                              method: :delete,
+                              class: "btn btn-sm btn-outline-secondary" %>
+                        <%= button_to "Accepter",
+                              community_admin_user_groups_path(@user,
+                                group_id: private_circle.id),
+                              method: :post,
+                              class: "btn btn-sm btn-outline-primary" %>
+                      </div>
+                    </div>
                   </div>
-                </div>
+                <% else %>
+                  <div class="dropdown">
+                    <span class="btn-sm btn btn-ellipsis" data-toggle="dropdown"></span>
+                    <div class="dropdown-menu dropdown-menu-right">
+                      <%= button_to "Retirer du voisinage",
+                            community_admin_user_groups_path(@user,
+                              group_id: private_circle.id),
+                            method: :delete,
+                            class: "dropdown-item text-danger" %>
+                    </div>
+                  </div>
+                <% end %>
               </td>
             </tr>
           <% end %>
@@ -245,7 +322,7 @@
           <% elsif params.key?(:add_private_circle) %>
             <thead>
               <tr>
-                <td colspan="3" class="pt-4 pb-0 pl-0">
+                <td colspan="3" class="border-top-0 pt-4 pb-0 pl-0">
                   <div class="h4 d-flex flex-nowrap">
                     <span class="flex-grow-1">Ajouter à un voisinage de personne</span>
                     <a href="?" class="btn btn-outline-secondary btn-sm">Annuler</a>
@@ -262,12 +339,12 @@
                   <%= link_to "", community_admin_private_circle_path(private_circle), class: "overlay" %>
                   <%= private_circle.title %>
                 </td>
-                <% if private_circle.respond_to?(:distance) %>
-                  <td>
+                <td>
+                  <% if private_circle.respond_to?(:distance) %>
                     <%= distance_in_words private_circle.distance %>
-                  </td>
-                <% end %>
-                <td colspan="2" class="text-right py-0 align-middle">
+                  <% end %>
+                </td>
+                <td class="text-right py-0 align-middle">
                   <%= button_to "Ajouter",
                         community_admin_user_groups_path(@user,
                           group_id: private_circle.id),

@@ -1,8 +1,7 @@
 module CommunityAdmin
   class UsersController < BaseController
     def index
-      @neighborhoods, @users = CommunityAdminService
-        .coordinator_neighborhoods_and_users(current_user)
+      @neighborhoods = CommunityAdminService.coordinator_neighborhoods(current_user)
 
       @neighborhoods = @neighborhoods.select(:id, :title)
       @neighborhoods = Hash[@neighborhoods.map { |n| [n.id, n] }]
@@ -17,6 +16,9 @@ module CommunityAdmin
                          .map { |p| p == 'none' ? :none : p.to_i }
                          .uniq & all_neighborhoods
       neighborhood_ids = all_neighborhoods if neighborhood_ids.empty?
+
+      neighborhood_status = params[:neighborhood_status]&.to_sym
+      neighborhood_status = nil unless neighborhood_status.in?([:accepted, :pending])
 
       roles = Array(params[:roles]).map(&:to_sym).uniq & community.roles
       roles = community.roles if roles.empty?
@@ -36,7 +38,9 @@ module CommunityAdmin
       @filters = {
         neighborhoods: {
           ids: neighborhood_ids,
-          is_filtered: neighborhood_ids != all_neighborhoods
+          status: neighborhood_status,
+          ids_filtered: neighborhood_ids != all_neighborhoods,
+          is_filtered: neighborhood_ids != all_neighborhoods || neighborhood_status != nil
         },
         roles: {
           list: roles,
@@ -51,12 +55,13 @@ module CommunityAdmin
 
       @for_group = find_group(params[:for_group]) if params.key?(:for_group)
 
-      if @filters[:neighborhoods][:is_filtered] ||
-         @filters[:has_private_circle][:is_filtered] ||
-         @for_group
-        @users = CommunityAdminService
-          .coordinator_users_filtered(current_user, neighborhood_ids, has_private_circle: has_private_circle)
-      end
+      @users = CommunityAdminService.coordinator_users_filtered(
+        current_user,
+        neighborhood_ids,
+        has_private_circle: has_private_circle,
+        neighborhood_status: neighborhood_status
+      )
+
       if @filters[:roles][:is_filtered]
         operator = roles_operator == :and ? '?&' : '?|'
         @users = @users.where("roles #{operator} array[#{ roles.map { |r| ActiveRecord::Base.connection.quote(r) }.join(',') }]")
@@ -78,6 +83,19 @@ module CommunityAdmin
           })
           .group("addresses, addresses.latitude, addresses.longitude")
           .order("#{group} <-> #{user}")
+      else
+        join_request_pending = %{
+          array_position(
+            array_agg(
+              case when coalesce(neighborhoods.id, private_circles.id) is not null then
+                join_requests.status
+              end),
+            'pending')
+          is not null
+        }
+        @users = @users
+          .select("#{join_request_pending} as join_request_pending")
+          .order("#{join_request_pending} desc", :last_name, :first_name)
       end
     end
 
@@ -87,8 +105,9 @@ module CommunityAdmin
       @user_neighborhoods =
         @coordinator_neighborhoods
         .joins(:join_requests)
-        .merge(@user.join_requests.accepted)
-        .select("entourages.id, entourages.title, join_requests.role")
+        .merge(@user.join_requests.where(status: [:pending, :accepted]))
+        .select("entourages.id, entourages.title, join_requests.role, join_requests.status")
+        .order("join_requests.status desc")
 
       @coordinator_private_circles =
         CommunityAdminService.coordinator_private_circles(current_user)
@@ -96,8 +115,9 @@ module CommunityAdmin
       @user_private_circles =
         @coordinator_private_circles
         .joins(:join_requests)
-        .merge(@user.join_requests.accepted)
-        .select("entourages.id, entourages.title, join_requests.role")
+        .merge(@user.join_requests.where(status: [:pending, :accepted]))
+        .select("entourages.id, entourages.title, join_requests.role, join_requests.status")
+        .order("join_requests.status desc")
 
       @more_private_circles = @user_private_circles.to_a.count < @coordinator_private_circles.count
 
@@ -190,7 +210,7 @@ module CommunityAdmin
     def remove_from_group
       group, user = find_group_and_user
 
-      join_request = user.join_requests.accepted.find_by!(
+      join_request = user.join_requests.find_by!(
         joinable_id: group.id
       )
 
