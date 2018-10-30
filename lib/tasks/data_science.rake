@@ -8,7 +8,7 @@ namespace :data_science do
     FileUtils.mkdir_p output_path
     FileUtils.cd output_path
 
-    users = User.where(community: :entourage, deleted: false, validation_status: :validated)
+    users = User.where(community: :entourage, validation_status: :validated)
 
     CSV.open("users.csv", "wb", options) do |csv|
       csv.puts [
@@ -40,12 +40,16 @@ namespace :data_science do
         :date
       ]
 
-      SessionHistory.select(:user_id, :date).uniq.order(:date, :user_id).joins(:user).merge(users).each do |session|
-        csv.puts [
-          session.user_id,
-          session.date
-        ]
-      end
+      SessionHistory
+        .joins(:user).merge(users)
+        .select(:user_id, :date).uniq
+        .order(:date, :user_id)
+        .each do |session|
+          csv.puts [
+            session.user_id,
+            session.date
+          ]
+        end
     end
 
     groups = Entourage.where(group_type: [:action, :outing, :conversation]).where.not(status: :blacklisted)
@@ -71,43 +75,46 @@ namespace :data_science do
         :failure_reason
       ]
 
-      groups.joins(:user).merge(users).includes(:moderation).find_each do |group|
-        type =
-          if group.display_category == 'event' || group.group_type == 'outing'
-            :event
-          else
-            group.group_type.to_sym
-          end
+      groups
+        .joins(:user).merge(users)
+        .includes(:moderation)
+        .find_each do |group|
+          type =
+            if group.display_category == 'event' || group.group_type == 'outing'
+              :event
+            else
+              group.group_type.to_sym
+            end
 
-        offer_or_demand =
-          if type != :action
-            nil
-          elsif group.entourage_type == 'contribution'
-            :offer
-          else
-            :demand
-          end
+          offer_or_demand =
+            if type != :action
+              nil
+            elsif group.entourage_type == 'contribution'
+              :offer
+            else
+              :demand
+            end
 
-        csv.puts [
-          group.id,
-          type,
-          group.title.presence&.squish,
-          group.description.presence&.squish,
-          group.created_at.to_date,
-          group.user_id,
-          group.country.presence,
-          group.postal_code.presence,
-          offer_or_demand,
-          (group.display_category unless type == :event),
-          group.moderation&.action_type.presence,
-          group.moderation&.action_author_type.presence,
-          group.moderation&.action_recipient_type.presence,
-          group.moderation&.action_outcome_reported_at.presence,
-          group.moderation&.action_outcome.presence,
-          group.moderation&.action_success_reason.presence,
-          group.moderation&.action_failure_reason.presence
-        ]
-      end
+          csv.puts [
+            group.id,
+            type,
+            group.title.presence&.squish,
+            group.description.presence&.squish,
+            group.created_at.to_date,
+            group.user_id,
+            group.country.presence,
+            group.postal_code.presence,
+            offer_or_demand,
+            (group.display_category unless type == :event),
+            group.moderation&.action_type.presence,
+            group.moderation&.action_author_type.presence,
+            group.moderation&.action_recipient_type.presence,
+            group.moderation&.action_outcome_reported_at.presence,
+            group.moderation&.action_outcome.presence,
+            group.moderation&.action_success_reason.presence,
+            group.moderation&.action_failure_reason.presence
+          ]
+        end
     end
 
     CSV.open("users_groups.csv", "wb", options) do |csv|
@@ -119,9 +126,13 @@ namespace :data_science do
         :last_read_at
       ]
 
-      JoinRequest.where(status: [:pending, :accepted])
-                 .joins(:entourage, :user).merge(groups).merge(users)
-                 .find_each do |request|
+      scope = JoinRequest
+        .where(status: [:pending, :accepted])
+        .joins(:user).merge(users)
+        .joins(:entourage).merge(groups)
+        .joins(entourage: :user).where(users_entourages: users.where_values_hash)
+
+      scope.find_each do |request|
         csv.puts [
           request.user_id,
           request.joinable_id,
@@ -139,17 +150,18 @@ namespace :data_science do
         :created_at
       ]
 
-      ChatMessage.where(message_type: :text)
-                 .joins(:user)
-                 .joins("join entourages on messageable_type = 'Entourage' and entourages.id = messageable_id")
-                 .merge(groups).merge(users)
-                 .find_each do |message|
-        csv.puts [
-          message.user_id,
-          message.messageable_id,
-          message.created_at.to_date
-        ]
-      end
+      ChatMessage
+        .where(message_type: :text)
+        .joins(:user).merge(users)
+        .joins("join entourages on messageable_type = 'Entourage' and entourages.id = messageable_id").merge(groups)
+        .joins("join users users_entourages on users_entourages.id = entourages.user_id").where(users_entourages: users.where_values_hash)
+        .find_each do |message|
+          csv.puts [
+            message.user_id,
+            message.messageable_id,
+            message.created_at.to_date
+          ]
+        end
     end
   end
 end
