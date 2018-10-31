@@ -51,6 +51,20 @@ FactoryGirl.define do
 
     factory :neighborhood do
       group_type "neighborhood"
+
+      transient do
+        default_metadata address: "Saint Ambroise, 75011 Paris",
+                         google_place_id: "foobar"
+      end
+
+      after(:build) do |circle, stuff|
+        circle.metadata = (stuff.default_metadata || {}).symbolize_keys.merge(circle.metadata.symbolize_keys)
+        circle.title = [
+          "Voisinage ",
+          ("aehiouy".include?(circle.metadata[:address].first.downcase) ? "d'" : "de "),
+          circle.metadata[:address]
+        ].join
+      end
     end
 
     factory :outing do
