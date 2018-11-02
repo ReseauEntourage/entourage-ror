@@ -45,14 +45,7 @@ module ChatServices
 
       if success
         join_request.update(last_message_read: message.created_at)
-        PushNotificationService.new.send_notification(UserPresenter.new(user: user).display_name,
-                                                      "Nouveau message",
-                                                      message.content,
-                                                      recipients,
-                                                      {joinable_id: join_request.joinable_id,
-                                                       joinable_type: join_request.joinable_type,
-                                                       group_type: joinable.group_type,
-                                                       type: "NEW_CHAT_MESSAGE"})
+        AsyncService.new(self.class).send_notification(message)
         callback.on_success.try(:call, message)
       else
         callback.on_failure.try(:call, message)
@@ -63,8 +56,25 @@ module ChatServices
     private
     attr_reader :message, :user, :joinable, :join_request, :callback
 
-    def recipients
-      joinable.members.where("users.id != ? AND status = ?", user.id, "accepted")
+    def self.send_notification(message)
+      group = message.messageable
+
+      PushNotificationService.new.send_notification(
+        UserPresenter.new(user: message.user).display_name,
+        "Nouveau message",
+        message.content,
+        recipients(message),
+        {
+          joinable_id: group.id,
+          joinable_type: group.class.name,
+          group_type: group.group_type,
+          type: "NEW_CHAT_MESSAGE"
+        }
+      )
+    end
+
+    def self.recipients(message)
+      message.messageable.members.where("users.id != ? AND status = ?", message.user_id, "accepted")
     end
   end
 
