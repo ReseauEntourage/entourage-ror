@@ -42,3 +42,6 @@ db/sensitive-words/*.txt
 
 # data science exports
 data_export/*.csv
+
+# optional local initializer
+config/initializers/local.rb
