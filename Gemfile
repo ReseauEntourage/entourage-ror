@@ -45,10 +45,10 @@ group :development, :test do
   gem 'byebug',                       '~> 5.0.0'
   gem 'spring',                       '~> 2.0.2'
   gem 'spring-commands-rspec',        '~> 1.0.4'
+  gem 'dotenv-rails',                 '~> 2.0.2'
 end
 
 group :development do
-  gem 'dotenv-rails',                 '~> 2.0.2'
   gem 'rack-mini-profiler',           '~> 0.10.1' #enable by requesting any page with '?pp=enable'
   gem 'pry-rails',                    '~> 0.3.4'
   gem 'bullet',                       '~> 4.14.7'
@@ -62,7 +62,6 @@ group :development do
 end
 
 group :test do
-  gem 'dotenv-rails',                 '~> 2.0.2'
   gem 'rspec-rails',                  '~> 3.1'
   gem 'shoulda-matchers',             '~> 3.0.1'
   gem 'timecop',                      '~> 0.8.0'
