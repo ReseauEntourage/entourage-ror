@@ -9,5 +9,7 @@ class Feed < ActiveRecord::Base
   belongs_to :feedable, polymorphic: true
 
   attr_accessor :current_join_request,
-                :number_of_unread_messages
+                :number_of_unread_messages,
+                :last_chat_message,
+                :last_join_request
 end

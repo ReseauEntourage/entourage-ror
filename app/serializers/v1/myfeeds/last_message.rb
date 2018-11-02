@@ -22,22 +22,35 @@ module V1
         end
       end
 
+      def last_chat_message
+        if scope.key?(:last_chat_message)
+          scope[:last_chat_message]
+        else
+          object.chat_messages.includes(:user).order("created_at ASC").last
+        end
+      end
+
+      def last_join_request
+        if scope.key?(:last_join_request)
+          scope[:last_join_request]
+        else
+          object.join_requests.pending.order("created_at ASC").last
+        end
+      end
+
       def last_element
         @last_element ||= begin
-          user_join_request = object.join_requests.includes(:user).where(user_id: scope[:user].id).last
-          if user_join_request.is_accepted?
-            last_chat_message = object.chat_messages.includes(:user).order("created_at ASC").last
-            last_join_request = object.join_requests.pending.order("created_at ASC").last
+          if current_join_request.is_accepted?
             [last_chat_message, last_join_request].compact.sort_by {|o| o.created_at}.reverse[0]
           else
-            user_join_request
+            current_join_request
           end
         end
       end
 
       def last_join_request_text
         if last_element.is_pending?
-          if last_element.user == scope[:user]
+          if last_element.user_id == scope[:user].id
             "Votre demande est en attente."
           else
             "1 nouvelle demande pour rejoindre votre #{GroupService.name(object)}."

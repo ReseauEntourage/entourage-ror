@@ -53,7 +53,9 @@ module V1
     def preloaded_attributes(feed)
       {
         current_join_request: feed.current_join_request,
-        number_of_unread_messages: feed.number_of_unread_messages
+        number_of_unread_messages: feed.number_of_unread_messages,
+        last_chat_message: feed.last_chat_message,
+        last_join_request: feed.last_join_request
       }
     end
   end

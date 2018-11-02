@@ -23,7 +23,8 @@ module Api
                                              tour_status: tour_status,
                                              entourage_status: entourage_status,
                                              author: author,
-                                             invitee: invitee).feeds
+                                             invitee: invitee,
+                                             preload_last_message: true).feeds
         render json: ::V1::LegacyFeedSerializer.new(feeds: feeds, user: current_user, include_last_message: true).to_json, status: 200
       end
 

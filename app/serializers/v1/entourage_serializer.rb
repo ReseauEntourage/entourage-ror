@@ -31,14 +31,16 @@ module V1
       # try to put other user as author if conversation
       # and user's name as title
       if object.group_type == 'conversation'
-        participant_ids =
+        other_participants =
           if object.join_requests.loaded?
-            object.join_requests.map(&:user_id)
+            User.where(id: object.join_requests.map(&:user_id) - [scope[:user]&.id])
           else
-            object.join_requests.pluck(:user_id)
+            object.members.where.not(id: scope[:user]&.id)
           end
-        other_user_id = participant_ids.find { |i| i != scope[:user]&.id }
-        object.user_id = other_user_id if other_user_id
+        other_participant = other_participants
+          .includes(default_user_partners: :partner)
+          .first
+        object.user = other_participant if other_participant
 
         object.title = UserPresenter.new(user: object.user).display_name
       end

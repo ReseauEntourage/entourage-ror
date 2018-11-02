@@ -25,7 +25,8 @@ module FeedServices
                    author: nil,
                    invitee: nil,
                    distance: nil,
-                   announcements: nil)
+                   announcements: nil,
+                   preload_last_message: false)
       @user = user
       @page = page
       @per = per || DEFAULT_PER
@@ -50,6 +51,7 @@ module FeedServices
       @cursor = nil
       @area = FeedRequestArea.new(@latitude, @longitude)
       @metadata = {}
+      @preload_last_message = preload_last_message
 
       @time_range = lyon_grenoble_timerange_workaround
     end
@@ -148,13 +150,15 @@ module FeedServices
       preload_entourage_moderations(feeds)
       preload_tour_user_organizations(feeds)
       preload_chat_messages_counts(feeds)
+      preload_last_chat_messages(feeds) if preload_last_message
+      preload_last_join_requests(feeds) if preload_last_message
 
       @cursor = Time.at(cursor + 1).as_json if !cursor.nil?
       FeedWithCursor.new(feeds, cursor: cursor, metadata: @metadata)
     end
 
     private
-    attr_reader :user, :page, :per, :before, :latitude, :longitude, :show_tours, :feed_type, :types, :context, :show_my_entourages_only, :show_my_tours_only, :show_my_partner_only, :show_past_events, :time_range, :tour_status, :entourage_status, :author, :invitee, :distance, :announcements, :cursor, :area
+    attr_reader :user, :page, :per, :before, :latitude, :longitude, :show_tours, :feed_type, :types, :context, :show_my_entourages_only, :show_my_tours_only, :show_my_partner_only, :show_past_events, :time_range, :tour_status, :entourage_status, :author, :invitee, :distance, :announcements, :cursor, :area, :preload_last_message
 
     def box
       Geocoder::Calculations.bounding_box([latitude, longitude],
@@ -369,6 +373,56 @@ module FeedServices
         join_request_id = feed.try(:current_join_request)&.id
         next if join_request_id.nil?
         feed.number_of_unread_messages = counts[join_request_id]
+      end
+    end
+
+    def preload_last_chat_messages(feeds)
+      feedable_ids = {}
+      feeds.each do |feed|
+        join_request_status = feed.try(:current_join_request)&.status
+        next unless join_request_status == 'accepted'
+        (feedable_ids[feed.feedable_type] ||= []).push feed.feedable_id
+      end
+      feedable_ids.delete 'Announcement'
+      return if feedable_ids.empty?
+      clause = ["(messageable_type = ? and messageable_id in (?))"]
+      last_chat_messages = ChatMessage
+        .select("distinct on (messageable_type, messageable_id) messageable_type, messageable_id")
+        .order("messageable_type, messageable_id, created_at desc")
+        .select(:id, :content, :user_id, :created_at)
+        .includes(:user)
+        .where((clause * feedable_ids.count).join(" OR "), *feedable_ids.flatten)
+      last_chat_messages =
+        Hash[last_chat_messages.map { |m| [[m.messageable_type, m.messageable_id], m] }]
+      feeds.each do |feed|
+        next if feed.feedable.is_a?(Announcement)
+        feed.last_chat_message =
+          last_chat_messages[[feed.feedable_type, feed.feedable_id]]
+      end
+    end
+
+    def preload_last_join_requests(feeds)
+      feedable_ids = {}
+      feeds.each do |feed|
+        join_request_status = feed.try(:current_join_request)&.status
+        next unless join_request_status == 'accepted'
+        (feedable_ids[feed.feedable_type] ||= []).push feed.feedable_id
+      end
+      feedable_ids.delete 'Announcement'
+      return if feedable_ids.empty?
+      clause = ["(joinable_type = ? and joinable_id in (?))"]
+      last_join_requests = JoinRequest
+        .select("distinct on (joinable_type, joinable_id) joinable_type, joinable_id")
+        .order("joinable_type, joinable_id, created_at desc")
+        .select(:id, :status, :user_id, :created_at)
+        .where(status: :pending)
+        .where((clause * feedable_ids.count).join(" OR "), *feedable_ids.flatten)
+      last_join_requests =
+        Hash[last_join_requests.map { |r| [[r.joinable_type, r.joinable_id], r] }]
+      feeds.each do |feed|
+        next if feed.feedable.is_a?(Announcement)
+        feed.last_join_request =
+          last_join_requests[[feed.feedable_type, feed.feedable_id]]
       end
     end
   end
