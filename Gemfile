@@ -74,6 +74,6 @@ end
 group :production do
   gem 'rails_12factor',               '~> 0.0.3'
   gem 'rails_stdout_logging',         '~> 0.0.5'
-  gem 'puma',                         '~> 2.12.2'
+  gem 'puma',                         '~> 3.12'
   gem 'rack-timeout',                 '~> 0.4.2'
 end

@@ -63,6 +63,10 @@ Rails.application.configure do
     config.action_mailer.delivery_method = :file
   end
 
+  if ENV['LOG_TO_STDOUT'] == 'true'
+    config.logger = ActiveSupport::TaggedLogging.new(ActiveSupport::Logger.new(STDOUT))
+  end
+
   #Bullet gem config
   config.after_initialize do
     Bullet.enable = true
