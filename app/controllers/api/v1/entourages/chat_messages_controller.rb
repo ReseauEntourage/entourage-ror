@@ -14,7 +14,7 @@ module Api
 
         def index
           before = params[:before] ? DateTime.parse(params[:before]) : DateTime.now
-          messages = @entourage.chat_messages.includes(:user).ordered.before(before).limit(25)
+          messages = @entourage.chat_messages.includes(user: {default_user_partners: :partner}).ordered.before(before).limit(25)
           #TODO: move into a LastMessageRead class
           if messages.present? && (join_request.last_message_read.nil? || join_request.last_message_read < messages.last.created_at)
             join_request.update(last_message_read: messages.last.created_at)

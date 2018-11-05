@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181023134559) do
+ActiveRecord::Schema.define(version: 20181105102819) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -581,6 +581,7 @@ ActiveRecord::Schema.define(version: 20181023134559) do
   end
 
   add_index "user_partners", ["user_id", "partner_id"], name: "index_user_partners_on_user_id_and_partner_id", unique: true, using: :btree
+  add_index "user_partners", ["user_id"], name: "index_user_partners_on_user_id", where: "\"default\"", using: :btree
 
   create_table "user_relationships", force: :cascade do |t|
     t.integer "source_user_id", null: false
@@ -624,6 +625,7 @@ ActiveRecord::Schema.define(version: 20181023134559) do
   end
 
   add_index "users", ["address_id"], name: "index_users_on_address_id", using: :btree
+  add_index "users", ["email"], name: "index_users_on_email", using: :btree
   add_index "users", ["organization_id"], name: "index_users_on_organization_id", using: :btree
   add_index "users", ["phone", "community"], name: "index_users_on_phone_and_community", unique: true, using: :btree
   add_index "users", ["roles"], name: "index_users_on_roles", using: :gin
