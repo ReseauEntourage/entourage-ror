@@ -27,6 +27,7 @@ class Address < ActiveRecord::Base
   def mixpanel_sync(synchronous: false)
     return unless self.class.enable_mixpanel_sync?
     return unless (['country', 'postal_code'] & previous_changes.keys).any?
+    return unless [country, postal_code].all?(&:present?)
     AsyncService.new(MixpanelService).sync_address(self)
   end
 end
