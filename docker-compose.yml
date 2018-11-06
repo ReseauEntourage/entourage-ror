@@ -36,6 +36,9 @@ services:
       REDIS_URL: "redis://redis:6379"
       PORT: 8080
       RAILS_ENV: ${RAILS_ENV:-development}
+      PUMA_PIDFILE: tmp/puma.pid
+    cap_add:
+      - SYS_PTRACE
     command: bin/docker/entrypoint
 
 volumes:

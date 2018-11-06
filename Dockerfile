@@ -45,6 +45,12 @@ RUN su docker-user /bin/bash -c "\
    && mkdir ~/.gem \
    && gem install bundler foreman"
 
+RUN \
+  repo=https://github.com/rbspy/rbspy; \
+  tag=$(curl -sLI -o /dev/null -w %{url_effective} $repo/releases/latest | cut -d/ -f8); \
+  tar=$repo/releases/download/$tag/rbspy-$tag-x86_64-unknown-linux-musl.tar.gz; \
+  curl -sL $tar | tar xzC /usr/local/bin
+
 RUN echo '#!/bin/bash -l'      >> /entrypoint \
  && echo 'exec "$@"'           >> /entrypoint \
  && chmod +x                      /entrypoint \

@@ -15,10 +15,30 @@ function is_running {
 }
 
 function try_exec {
+  options=()
+  command=()
+
+  while [[ $# -gt 0 && $1 != '--' ]]; do
+    options+=($1)
+    shift
+  done
+
+  if [[ $1 == '--' ]]; then
+    shift
+  fi
+
+  if [[ $# -gt 0 ]]; then
+    command=$@
+  else
+    command=${options[@]}
+    options=()
+  fi
+
   docker-compose exec \
     --env RAILS_ENV=${RAILS_ENV:-development} \
     $(termoptions) \
-    spring /entrypoint "$@"
+    ${options[@]} \
+    spring /entrypoint ${command[@]}
 }
 
 # try to run the command in the container

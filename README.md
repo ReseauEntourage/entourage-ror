@@ -121,6 +121,15 @@ bin/d rake db:strip
 bin/d db-dump path/to/snapshot.dump
 ```
 
+# Profiling
+
+## rbspy
+
+To profile a request (in a puma worker):
+```bash
+bin/d -u root -- rbspy record --pid $(cat tmp/puma.pid) --subprocesses --file flamegraph
+```
+
 # Dredd tests (Deprecated)
 
 Test the API documentation compliance with [Dredd](https://github.com/apiaryio/dredd)
