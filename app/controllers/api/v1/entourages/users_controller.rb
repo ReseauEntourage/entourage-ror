@@ -15,7 +15,6 @@ module Api
             join_requests =
               @entourage.join_requests
               .where(status: ["pending", "accepted"])
-              .includes(user: { default_user_partners: :partner })
           end
 
           if @entourage.id.in?(Onboarding::V1::ENTOURAGES.values)
@@ -24,6 +23,15 @@ module Api
             end
             join_requests = join_requests.map { |r| r.message = nil; r }
           end
+
+          users = User
+            .where(id: join_requests.map(&:user_id).uniq)
+            .includes(default_user_partners: :partner)
+            .select(:id, :first_name, :last_name, :avatar_key, :validation_status)
+
+          users = Hash[users.map { |u| [u.id, u] }]
+
+          join_requests.each { |r| r.user = users[r.user_id] }
 
           render json: join_requests, root: "users", each_serializer: ::V1::JoinRequestSerializer
         end
