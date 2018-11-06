@@ -69,7 +69,7 @@ Rails.application.configure do
 
   #Bullet gem config
   config.after_initialize do
-    Bullet.enable = true
+    Bullet.enable = ENV['DISABLE_BULLET'] != 'true'
     Bullet.alert = true
     Bullet.bullet_logger = true
     Bullet.console = true
