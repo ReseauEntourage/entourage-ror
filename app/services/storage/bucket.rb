@@ -10,7 +10,7 @@ module Storage
 
     def url_for(key:, extra: {})
       expire = extra[:expire] || 3600
-      object(key).presigned_url(:get, expires_in: expire)
+      object(key).presigned_url(:get, expires_in: expire.to_i)
     end
 
     def upload(file:, key:, extra: {})

@@ -161,7 +161,7 @@ module Api
           .object("300x300/#{key}")
           .presigned_url(
             :put,
-            expires_in: 1.minute,
+            expires_in: 1.minute.to_i,
             acl: :private,
             content_type: params[:content_type],
             cache_control: "max-age=#{365.days}"
