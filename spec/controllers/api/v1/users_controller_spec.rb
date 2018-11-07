@@ -417,11 +417,9 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
     end
 
     describe "unknown phone" do
-      it "returns 404" do
-        expect {
-          patch 'code', {id: "me", user: { phone: "0000" }, code: {action: "regenerate"}, format: :json}
-        }.to raise_error(ActiveRecord::RecordNotFound)
-      end
+      before { patch 'code', {id: "me", user: { phone: "0000" }, code: {action: "regenerate"}, format: :json} }
+      it { expect(response.status).to eq(404) }
+      it { expect(JSON.parse(response.body)['error']['code']).to eq 'USER_NOT_FOUND' }
     end
 
     describe "unknown action" do
