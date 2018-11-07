@@ -31,12 +31,30 @@ module EntourageBack
     #lograge
     config.lograge.enabled = true
     config.lograge.custom_options = lambda do |event|
-      params = event.payload[:params].reject do |k|
+      payload = event.payload
+
+      params = payload[:params].reject do |k|
         ['controller', 'action'].include? k
       end
+
+      if payload[:controller] == 'Api::V1::TourPointsController' &&
+         payload[:action]     == 'create' &&
+         params['tour_points'] != nil
+
+        tour_points = params['tour_points']
+        count = tour_points.count
+
+        params['tour_points'] = [
+          tour_points.first,
+          ("1 tour_point" if count == 3),
+          ("#{count - 2} tour_points" if count >= 4),
+          (tour_points.last if count >= 2)
+        ].compact
+      end
+
       {
           "params" => params,
-          "API_KEY" => event.payload[:api_key]
+          "API_KEY" => payload[:api_key]
       }
     end
     config.log_tags = [ lambda {|req| Time.now.to_s(:db) }, :remote_ip ]
