@@ -107,7 +107,11 @@ module Api
           return render json: {error: "Missing phone number"}, status:400
         end
         user_phone = Phone::PhoneBuilder.new(phone: user_params[:phone]).format
-        user = community.users.where(phone: user_phone).first!
+        user = community.users.where(phone: user_phone).first
+
+        if user.nil?
+          return render_error(code: "USER_NOT_FOUND", message: "", status: 404)
+        end
 
         if params[:code][:action] == "regenerate" && !user.deleted && !user.blocked?
           UserServices::SMSSender.new(user: user).regenerate_sms!(clear_password: api_request.platform == :web)
