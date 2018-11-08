@@ -1,24 +1,4 @@
 <style>
-  .overlay-container {
-    position: relative;
-  }
-
-  .overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 1;
-  }
-
-  .overlay-container a:not(.overlay),
-  .overlay-container .btn,
-  .overlay-container .hover-toggle {
-    position: relative;
-    z-index: 2;
-  }
-
   .btn-ellipsis {
     color: #6c757d;
     background-color: transparent;
@@ -46,12 +26,12 @@
     display: inline-block;
   }
 
-  .overlay-container:not(:hover) .hover-show {
+  .table-hover tr:not(:hover) .hover-show {
     height: 0;
     overflow: hidden;
   }
 
-  .overlay-container:hover .hover-hide {
+  .table-hover tr:hover .hover-hide {
     display: none;
   }
 
@@ -120,7 +100,7 @@
           <% end %>
         </thead>
         <% @users[:coordinators].each do |user| %>
-          <tr class="overlay-container <%= 'row-highlight' if user.status == 'pending' %>">
+          <tr class="js-overlay-container <%= 'row-highlight' if user.status == 'pending' %>">
             <%= render 'community_admin/users/list_item', user: user %>
             <td class="text-right py-0 align-middle">
               <% if user.status == 'pending' %>
@@ -188,7 +168,7 @@
           <% end %>
         </thead>
         <% @users[:members].each do |user| %>
-          <tr class="overlay-container <%= 'row-highlight' if user.status == 'pending' %>">
+          <tr class="js-overlay-container <%= 'row-highlight' if user.status == 'pending' %>">
             <%= render 'community_admin/users/list_item', user: user %>
             <td class="text-right py-0 align-middle">
               <% if user.status == 'pending' %>

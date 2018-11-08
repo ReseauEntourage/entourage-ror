@@ -1,23 +1,4 @@
 <style>
-  .overlay-container {
-    position: relative;
-  }
-
-  .overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 1;
-  }
-
-  .overlay-container a:not(.overlay),
-  .overlay-container .btn {
-    position: relative;
-    z-index: 2;
-  }
-
   .btn-ellipsis {
     color: #6c757d;
     background-color: transparent;
@@ -45,12 +26,12 @@
     display: inline-block;
   }
 
-  .overlay-container:not(:hover) .hover-show {
+  .table-hover tr:not(:hover) .hover-show {
     height: 0;
     overflow: hidden;
   }
 
-  .overlay-container:hover .hover-hide {
+  .table-hover tr:hover .hover-hide {
     display: none;
   }
 
@@ -151,9 +132,9 @@
 
           <% @user_neighborhoods.each do |neighborhood| %>
             <% role = neighborhood.role.to_sym %>
-            <tr class="overlay-container <%= 'row-highlight' if neighborhood.status == 'pending' %>">
+            <tr class="js-overlay-container <%= 'row-highlight' if neighborhood.status == 'pending' %>">
               <td>
-                <%= link_to "", community_admin_neighborhood_path(neighborhood), class: "overlay" %>
+                <%= link_to "", community_admin_neighborhood_path(neighborhood), class: "js-overlay" %>
                 <%= neighborhood.title %>
               </td>
               <td>
@@ -228,7 +209,7 @@
             <% user_neighborhood_ids = @user_neighborhoods.map(&:id) %>
             <% @coordinator_neighborhoods.each do |neighborhood| %>
               <% next if neighborhood.id.in?(user_neighborhood_ids) %>
-              <tr class="overlay-container">
+              <tr class="js-overlay-container">
                 <td>
                   <%= neighborhood.title %>
                 </td>
@@ -272,9 +253,9 @@
 
           <% @user_private_circles.each do |private_circle| %>
             <% role = private_circle.role.to_sym %>
-            <tr class="overlay-container <%= 'row-highlight' if private_circle.status == 'pending' %>">
+            <tr class="js-overlay-container <%= 'row-highlight' if private_circle.status == 'pending' %>">
               <td>
-                <%= link_to "", community_admin_private_circle_path(private_circle), class: "overlay" %>
+                <%= link_to "", community_admin_private_circle_path(private_circle), class: "js-overlay" %>
                 <%= private_circle.title %>
               </td>
               <td>
@@ -334,9 +315,9 @@
             <% user_private_circle_ids = @user_private_circles.map(&:id) %>
             <% @coordinator_private_circles.each do |private_circle| %>
               <% next if private_circle.id.in?(user_private_circle_ids) %>
-              <tr class="overlay-container">
+              <tr class="js-overlay-container">
                 <td>
-                  <%= link_to "", community_admin_private_circle_path(private_circle), class: "overlay" %>
+                  <%= link_to "", community_admin_private_circle_path(private_circle), class: "js-overlay" %>
                   <%= private_circle.title %>
                 </td>
                 <td>

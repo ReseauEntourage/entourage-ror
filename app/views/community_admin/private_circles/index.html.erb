@@ -1,22 +1,4 @@
 <style>
-  .overlay-container {
-    position: relative;
-  }
-
-  .overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 1;
-  }
-
-  .overlay-container a:not(.overlay) {
-    position: relative;
-    z-index: 2;
-  }
-
   .remove-filter {
     position: relative;
     display: inline-block;
@@ -68,9 +50,9 @@
           </tr>
         </thead>
         <% @private_circles.each do |private_circle| %>
-          <tr class="overlay-container">
+          <tr class="js-overlay-container">
             <td>
-              <%= link_to "", community_admin_private_circle_path(private_circle), class: "overlay" %>
+              <%= link_to "", community_admin_private_circle_path(private_circle), class: "js-overlay" %>
               <%= private_circle.title %>
             </td>
             <td>
