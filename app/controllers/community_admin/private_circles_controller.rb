@@ -62,7 +62,7 @@ module CommunityAdmin
       )
       private_circle.assign_attributes(private_circle_params)
       private_circle.metadata.merge!(private_circle_metadata_params.compact)
-      private_circle.title = generate_title(private_circle)
+      private_circle.title = PrivateCircleService.generate_title(private_circle)
 
       user =
         if params.key?(:for_user)
