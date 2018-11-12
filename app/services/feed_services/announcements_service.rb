@@ -35,10 +35,11 @@ module FeedServices
       return announcements unless user.community == :entourage
 
       announcements.push Announcement.new(
-        id: 12,
-        title: with_first_name("découvrez les belles histoires sur notre blog !"),
-        body: "Aujourd’hui, on vous partage la belle histoire de Roya-Rose (riveraine) et de Michael (sans-abri) 👌",
-        action: "Découvrir",
+        id: 13,
+        title: "Entourage recrute ses ambassadeurs",
+        body: "Vous voulez vous engager pour rendre votre quartier plus humain avec les personnes SDF ? Devenez ambassadeur Entourage, une mission de bénévolat exaltante !",
+        image_url: false,
+        action: "Je postule",
         author: User.find_by(email: "guillaume@entourage.social"),
         webview: true,
         position: 1

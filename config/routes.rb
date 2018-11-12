@@ -217,6 +217,7 @@ Rails.application.routes.draw do
         member do
           get :icon
           get :avatar
+          get :image
           get 'redirect/:token' => :redirect, as: :redirect
         end
       end

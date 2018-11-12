@@ -65,6 +65,7 @@ include CommunityHelper
                                                      "uuid"=>"1",
                                                      "title"=>"Une autre façon de contribuer.",
                                                      "body"=>"Entourage a besoin de vous pour continuer à accompagner les sans-abri.",
+                                                     "image_url"=>nil,
                                                      "action"=>"Aider",
                                                      "url"=>"http://test.host/api/v1/announcements/1/redirect/#{user.token}",
                                                      "icon_url"=>"http://test.host/api/v1/announcements/1/icon",

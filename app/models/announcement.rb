@@ -5,6 +5,7 @@ class Announcement
     :id,
     :title,
     :body,
+    :image_url,
     :action,
     :url,
     :icon_url,

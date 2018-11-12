@@ -4,6 +4,7 @@ module V1
                :uuid,
                :title,
                :body,
+               :image_url,
                :action,
                :url,
                :icon_url
@@ -44,6 +45,11 @@ module V1
 
     def icon_url
       url_for(:icon, id: object.id)
+    end
+
+    def image_url
+      return if object.image_url != true
+      url_for(:image, id: object.id)
     end
 
     def url_for action, options={}
