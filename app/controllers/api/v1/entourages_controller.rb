@@ -36,7 +36,6 @@ module Api
             mixpanel.track("Requested to join Entourage")
             mixpanel.track("Wrote Message in Entourage")
             mixpanel.track("Created Entourage")
-            MemberMailer.entourage_confirmation(entourage).deliver_later if entourage.user.email.present?
             render json: entourage, status: 201, serializer: ::V1::EntourageSerializer, scope: {user: current_user}
           end
 

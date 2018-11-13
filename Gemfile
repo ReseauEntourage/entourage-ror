@@ -39,6 +39,7 @@ gem 'httparty'
 gem 'sentry-raven'
 gem 'ruby-stemmer'
 gem 'json-schema',                    '~> 2.6.2'
+gem 'icalendar'
 
 group :development, :test do
   gem 'annotate'

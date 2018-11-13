@@ -2,8 +2,8 @@ class MemberMailer < ActionMailer::Base
   default from: "contact@entourage.social"
   add_template_helper(OrganizationHelper)
 
-  rescue_from Net::ProtocolError, with: :handle_delivery_error
-
+  include MailerErrorHandling
+  include MailerHelpers
   include EmailDeliveryHooks::Concern
 
   COMMUNITY_EMAIL   = ENV["COMMUNITY_EMAIL"]   || "communaute@entourage.social"
@@ -15,19 +15,6 @@ class MemberMailer < ActionMailer::Base
                   template_id: community.mailjet_template['welcome'],
                   campaign_name: community_prefix(community, :welcome),
                   from: email_with_name("contact@entourage.social", "Le Réseau Entourage")
-  end
-
-  def entourage_confirmation(entourage)
-    user = entourage.user
-    mailjet_email to: user,
-                  template_id: 312279,
-                  campaign_name: :action_confirmation,
-                  variables: {
-                    entourage_title: entourage.title
-                  },
-                  payload: {
-                    entourage_id: entourage.id
-                  }
   end
 
   def action_zone_suggestion(user, postal_code)
@@ -138,20 +125,89 @@ class MemberMailer < ActionMailer::Base
     user = to
     return unless user.email.present?
 
-    groups.each do |name, group|
-      variables.reverse_merge!(
-        "#{name}_title".to_sym => group.title,
-        "#{name}_url".to_sym => "#{ENV['WEBSITE_URL']}/entourages/#{group.uuid_v2}",
-        "#{name}_share_url".to_sym => "#{ENV['WEBSITE_URL']}/entourages/#{group.uuid_v2}?auth=false",
-      )
-    end
-
-    variables.reverse_merge!(
+    merge_default_variables = true
+    default_variables = {
       first_name: user.first_name,
       user_id: UserServices::EncodedId.encode(user.id),
       webapp_login_link: (ENV['WEBSITE_URL'] + '/app'),
       login_link: (ENV['WEBSITE_URL'] + '/deeplink/feed')
-    )
+    }
+
+    group_variables = {
+      '_title'     => ->(group) { group.title },
+      '_url'       => ->(group) { "#{ENV['WEBSITE_URL']}/entourages/#{group.uuid_v2}" },
+      '_share_url' => ->(group) { "#{ENV['WEBSITE_URL']}/entourages/#{group.uuid_v2}?auth=false" }
+    }
+    # reorder by suffix length for longest-suffix match
+    group_variables = Hash[group_variables.sort_by { |s, _| s.length }.reverse]
+
+
+    # converts
+    #   variables: [
+    #     :first_name,
+    #     :login_link,
+    #     other_var: :some_value
+    #   ]
+    # to
+    #   variables: {
+    #     first_name: default_variables[:first_name],
+    #     login_link: default_variables[:login_link],
+    #     other_var: :some_value
+    #   }
+    if variables.is_a?(Array)
+      array = variables
+      variables = {}
+      array.each do |var|
+        case
+        when var.is_a?(Hash)
+          variables.merge! var
+        when default_variables.key?(var)
+          variables[var] = default_variables[var]
+          merge_default_variables = false
+        else
+          raise "variable #{var.inspect} can't be generated automatically"
+        end
+      end
+    end
+
+
+    # converts
+    #   variables: {
+    #     entourage => [:event_url, :event_share_url]
+    #   }
+    # to
+    #   variables: {
+    #     event_url: group_url(entourage),
+    #     event_share_url: group_share_url(event)
+    #   }
+    new_variables = {}
+    variables.each do |group, variable_names|
+      next unless group.is_a?(Entourage)
+      Array(variable_names).each do |variable_name|
+        _, f = group_variables.find { |suffix, _| variable_name.to_s.ends_with?(suffix) }
+
+        if f.nil?
+          raise "#{variable_name.inspect} doesn't match any known suffix. " \
+                "Possible suffixes are: #{group_variables.keys.join(', ')}."
+        end
+
+        if variables.key?(variable_name)
+          raise "Variable #{variable_name.inspect} is already defined."
+        end
+
+        variables.delete(group)
+        new_variables[variable_name] = f[group]
+      end
+    end
+    variables.reverse_merge!(new_variables)
+
+    groups.each do |name, group|
+      group_variables.each do |suffix, f|
+        variables["#{name}#{suffix}".to_sym] ||= f[group]
+      end
+    end
+
+    variables.reverse_merge!(default_variables) if merge_default_variables
 
     # inject auth tokens in webapp URLs
     webapp_regex = %r{^#{ENV['WEBSITE_URL']}/(app|deeplink|entourages)([/\?]|$)}
@@ -239,28 +295,5 @@ class MemberMailer < ActionMailer::Base
   def registration_request_accepted(user)
     @user = user
     mail(from: COMMUNITY_EMAIL, to: @user.email, subject: "Votre demande d'adhésion à la plateforme Entourage a été acceptée") if @user.email.present?
-  end
-
-  private
-
-  def handle_delivery_error exception
-    case exception.message.chomp
-    when '401 4.1.3 Bad recipient address syntax',
-         '501 5.1.3 Bad recipient address syntax'
-      # Do nothing for now
-      # TODO: handle badly formatted email addresses
-    else
-      # This will let Sidekiq retry the later in case of an async job
-      raise exception
-    end
-  end
-
-  def email_with_name(email, name)
-    %("#{name}" <#{email}>)
-  end
-
-  def community_prefix community, identifier
-    prefix = community == :entourage ? nil : community.slug
-    [prefix, identifier].compact.map(&:to_s).join('_')
   end
 end

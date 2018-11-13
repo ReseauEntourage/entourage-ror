@@ -165,6 +165,9 @@ GEM
       multi_xml (>= 0.5.2)
     i18n (0.9.5)
       concurrent-ruby (~> 1.0)
+    icalendar (2.5.1)
+      ice_cube (~> 0.16)
+    ice_cube (0.16.3)
     jmespath (1.4.0)
     jquery-rails (4.0.5)
       rails-dom-testing (~> 1.0)
@@ -428,6 +431,7 @@ DEPENDENCIES
   googlestaticmap!
   handlebars_assets (~> 0.20.2)
   httparty
+  icalendar
   jquery-rails (~> 4.0.4)
   jquery-ui-rails (~> 5.0.5)
   json-schema (~> 2.6.2)

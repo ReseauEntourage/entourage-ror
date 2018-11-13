@@ -12,7 +12,9 @@ class Community < BasicObject
 
   def initialize slug
     @slug = ::Community.slug(slug)
-    load_from_file
+
+    # load immediately to detect if name is invalid
+    struct
   end
 
   def users

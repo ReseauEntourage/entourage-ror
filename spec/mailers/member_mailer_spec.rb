@@ -4,6 +4,17 @@ def expect_json_eq a, b
   expect(JSON.parse(a)).to eq JSON.parse(JSON.fast_generate(b))
 end
 
+def default_variables
+  auth_token = UserServices::UserAuthenticator.auth_token(user)
+
+  {
+    first_name: user.first_name,
+    user_id: UserServices::EncodedId.encode(user.id),
+    webapp_login_link: "https://www.entourage.social/app?auth=#{auth_token}",
+    login_link: "https://www.entourage.social/deeplink/feed?auth=#{auth_token}",
+  }
+end
+
 def expect_mailjet_email opts={}, &block
   let(:options) do
     options = opts.merge(instance_eval &block).reverse_merge(
@@ -12,14 +23,8 @@ def expect_mailjet_email opts={}, &block
       payload: {}
     )
 
-    auth_token = UserServices::UserAuthenticator.auth_token(user)
+    options[:variables].reverse_merge!(default_variables)
 
-    options[:variables].reverse_merge!(
-      first_name: user.first_name,
-      user_id: UserServices::EncodedId.encode(user.id),
-      webapp_login_link: "https://www.entourage.social/app?auth=#{auth_token}",
-      login_link: "https://www.entourage.social/deeplink/feed?auth=#{auth_token}",
-    )
     options[:payload].reverse_merge!(
       type: options[:campaign_name],
       user_id: user.id
@@ -110,24 +115,6 @@ describe MemberMailer, type: :mailer do
     end
   end
 
-  describe '#entourage_confirmation' do
-    let(:entourage) { create :entourage, user: user }
-    let(:mail) { MemberMailer.entourage_confirmation(entourage) }
-
-    expect_mailjet_email do
-      {
-        template_id: 312279,
-        campaign_name: :action_confirmation,
-        variables: {
-          entourage_title: entourage.title
-        },
-        payload: {
-          entourage_id: entourage.id
-        }
-      }
-    end
-  end
-
   describe '#action_zone_suggestion' do
     let(:postal_code) { '75012' }
     let(:user_id) { UserServices::EncodedId.encode(user.id) }
@@ -162,6 +149,56 @@ describe MemberMailer, type: :mailer do
           postal_code: postal_code,
         }
       }
+    end
+  end
+
+  describe 'select default variables' do
+    it do
+      Timecop.freeze
+
+      mail = MemberMailer.mailjet_email(
+        to: user,
+        template_id: 123,
+        campaign_name: :foobar,
+        variables: [
+          :first_name,
+          :login_link,
+          entourage_title: "foobaz"
+        ]
+      )
+
+      expect_json_eq(
+        mail['X-MJ-Vars'].value,
+        default_variables.slice(:first_name, :login_link)
+                         .merge(entourage_title: "foobaz")
+      )
+
+    end
+  end
+
+  describe 'group variables' do
+    let(:event) { build :outing, title: "lol", uuid_v2: "e12345" }
+
+    it do
+      Timecop.freeze
+
+      mail = MemberMailer.mailjet_email(
+        to: user,
+        template_id: 123,
+        campaign_name: :foobar,
+        variables: {
+          event => [:event_title, :event_share_url]
+        }
+      )
+
+      expect_json_eq(
+        mail['X-MJ-Vars'].value,
+        default_variables.merge(
+          event_title: "lol",
+          event_share_url: "https://www.entourage.social/entourages/e12345"
+        )
+      )
+
     end
   end
 end

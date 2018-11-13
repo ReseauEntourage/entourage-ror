@@ -1,20 +1,7 @@
 namespace :onboarding_sequence do
   task send_emails: :environment do
     def at_day n, options={}, &block
-      UserSegmentService.at_day(n, options).find_each do |record|
-        begin
-          yield record
-        rescue => e
-          Raven.capture_exception(
-            e,
-            extra: options.merge(
-              at_day: n,
-              record_class: record&.class,
-              record_id: record&.id
-            )
-          )
-        end
-      end
+      DailyTaskHelper.at_day n, options, &block
     end
 
     def most_common_postal_code entourages
@@ -77,6 +64,8 @@ namespace :onboarding_sequence do
     at_day 20, after: :action_creation do |action|
       MemberMailer.action_follow_up_day_20(action).deliver_later
     end
+
+    CommunityLogic.for($server_community).morning_emails
 
     $redis.set(redis_key, redis_date)
   end

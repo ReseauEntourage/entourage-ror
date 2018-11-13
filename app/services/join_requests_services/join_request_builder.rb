@@ -33,6 +33,7 @@ module JoinRequestsServices
           joinable.class.increment_counter(:number_of_people, joinable.id)
 
           self.class.notify_auto_join_to_creator(join_request)
+          CommunityLogic.for(joinable).group_joined(join_request)
         elsif is_onboarding
           # nothing!
         else

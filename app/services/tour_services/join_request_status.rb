@@ -44,6 +44,8 @@ module TourServices
                                                           type: "JOIN_REQUEST_ACCEPTED",
                                                           user_id: user.id
                                                       })
+
+        CommunityLogic.for(joinable).group_joined(join_request)
       end
 
       true

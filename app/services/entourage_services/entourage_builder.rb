@@ -71,6 +71,7 @@ module EntourageServices
         TourServices::JoinRequestStatus.new(join_request: join_request).accept!
         AsyncService.new(ModerationServices::EntourageModeration).on_create(entourage)
         AsyncService.new(EntourageServices::NeighborhoodAnnouncement).on_create(entourage)
+        CommunityLogic.for(entourage).group_created(entourage)
 
         if recipient_consent_obtained != nil
           entourage.moderation || entourage.build_moderation

@@ -5,12 +5,16 @@ module EntourageServices
     end
 
     def accept!
-      if build_join_request(status: JoinRequest::ACCEPTED_STATUS).save
+      join_request = build_join_request(status: JoinRequest::ACCEPTED_STATUS)
+      if join_request.save
         invitation.update(status: EntourageInvitation::ACCEPTED_STATUS)
-        invitation.invitable.touch
+
+        group = invitation.invitable
+        group.touch
         send_notif(title: "Invitation acceptée",
                    content: "#{invitee_name} a accepté votre invitation",
                    accepted: true)
+        CommunityLogic.for(group).group_joined(join_request)
       end
     end
 
