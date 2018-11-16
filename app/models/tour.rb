@@ -44,10 +44,13 @@ class Tour < ActiveRecord::Base
 
     map = GoogleStaticMap.new(width: 300, height: 300, api_key:ENV["ANDROID_GCM_API_KEY"])
 
-    self.encounters.first(encounter_limit).each_with_index do |e,index|
-      label = ApplicationController.helpers.marker_index(index)
-      map.markers << MapMarker.new(label: label, color:'blue', location: MapLocation.new(latitude: e.latitude.round(precision), longitude: e.longitude.round(precision)))
-    end
+    self.encounters
+      .where.not(latitude: nil, longitude: nil)
+      .first(encounter_limit)
+      .each_with_index do |e,index|
+        label = ApplicationController.helpers.marker_index(index)
+        map.markers << MapMarker.new(label: label, color:'blue', location: MapLocation.new(latitude: e.latitude.round(precision), longitude: e.longitude.round(precision)))
+      end
 
     return map
   end
