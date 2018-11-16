@@ -97,7 +97,10 @@ class GroupMailer < MailjetMailer
       variables: [
         :first_name,
         :login_link,
-        event => :entourage_title
+        event => [
+          :entourage_url,
+          :entourage_title
+        ]
       ]
     )
   end
