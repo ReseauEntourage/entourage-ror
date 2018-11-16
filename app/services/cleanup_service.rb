@@ -25,7 +25,9 @@ class CleanupService
     }
 
     tour_ids.each do |tour_id|
-      report_emails = Mailjet::Message.all(custom_id: "tour_report-#{tour_id}")
+      report_emails = get_mailjet_messages(tour_id)
+      next if report_emails.nil?
+
       email_status = Hash[report_emails.map { |m| [m.id, m.status] }]
 
       decision =
@@ -54,6 +56,30 @@ class CleanupService
                   address: nil)
 
     send_slack_alert(bins[:keep]) if bins[:keep].any?
+  end
+
+  def self.get_mailjet_messages tour_id
+    report_emails = nil
+    last_exception = nil
+
+    3.times do
+      begin
+        report_emails = Mailjet::Message.all(custom_id: "tour_report-#{tour_id}")
+        break
+      rescue => e
+        last_exception = e
+      end
+    end
+
+    if report_emails.nil?
+      Rails.logger.info JSON.fast_generate(
+        type: 'cleanup_service.remove_old_encounter_message',
+        error_class: last_exception.class.name,
+        error_message: last_exception.message,
+      )
+    end
+
+    report_emails
   end
 
   def self.send_slack_alert tour_ids
