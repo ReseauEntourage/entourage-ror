@@ -30,16 +30,16 @@ namespace :onboarding_sequence do
     # only run at or after target hour
     next unless ([current_run_at.hour, current_run_at.min] <=> target_hour) >= 0
 
-    at_day 3, after: :registration do |user|
-      next if user.address.present? || user.action_zones.exists?
-
-      postal_code =
-        most_common_postal_code(user.entourages) ||
-        most_common_postal_code(user.entourage_participations) ||
-        "75001"
-
-      MemberMailer.action_zone_suggestion(user, postal_code).deliver_later
-    end
+    # at_day 3, after: :registration do |user|
+    #   next if user.address.present? || user.action_zones.exists?
+    #
+    #   postal_code =
+    #     most_common_postal_code(user.entourages) ||
+    #     most_common_postal_code(user.entourage_participations) ||
+    #     "75001"
+    #
+    #   MemberMailer.action_zone_suggestion(user, postal_code).deliver_later
+    # end
 
     # at_day 8, after: :registration do |user|
     #   MemberMailer.onboarding_day_8(user).deliver_later
