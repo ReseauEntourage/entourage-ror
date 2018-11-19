@@ -23,7 +23,7 @@ namespace :db do
     MarketingReferer.where("id > 1").delete_all
 
     [
-      ActionZone, Address, Answer, AtdSynchronization, AtdUser,
+      Address, Answer, AtdSynchronization, AtdUser,
       AuthenticationProvider, EmailDelivery, Encounter, EntourageDisplay,
       EntourageModeration, EntourageScore, Experimental::PendingRequestReminder,
       LoginHistory, Message, ModeratorRead, NewsletterSubscription,

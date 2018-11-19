@@ -222,12 +222,6 @@ Rails.application.routes.draw do
         end
       end
 
-      resources :action_zones, only: [] do
-        collection do
-          get :confirm
-        end
-      end
-
       put 'applications' => 'user_applications#update'
       post 'login' => 'users#login'
       get 'check' => 'base#check'

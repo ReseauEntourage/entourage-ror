@@ -11,24 +11,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181105102819) do
+ActiveRecord::Schema.define(version: 20181119151637) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "pg_stat_statements"
   enable_extension "pgcrypto"
   enable_extension "postgis"
-
-  create_table "action_zones", force: :cascade do |t|
-    t.integer  "user_id",               null: false
-    t.string   "postal_code", limit: 8, null: false
-    t.string   "country",     limit: 2, null: false
-    t.datetime "created_at",            null: false
-    t.datetime "updated_at",            null: false
-  end
-
-  add_index "action_zones", ["country", "postal_code", "user_id"], name: "index_action_zones_on_country_and_postal_code_and_user_id", unique: true, using: :btree
-  add_index "action_zones", ["user_id"], name: "index_action_zones_on_user_id", using: :btree
 
   create_table "active_admin_comments", id: false, force: :cascade do |t|
     t.integer  "id",                        default: "nextval('active_admin_comments_id_seq'::regclass)", null: false
@@ -643,7 +632,6 @@ ActiveRecord::Schema.define(version: 20181105102819) do
 
   add_index "users_appetences", ["user_id"], name: "index_users_appetences_on_user_id", unique: true, using: :btree
 
-  add_foreign_key "action_zones", "users"
   add_foreign_key "experimental_pending_request_reminders", "users"
   add_foreign_key "users", "addresses"
 end

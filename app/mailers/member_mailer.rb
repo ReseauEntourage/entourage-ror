@@ -17,30 +17,6 @@ class MemberMailer < ActionMailer::Base
                   from: email_with_name("contact@entourage.social", "Le Réseau Entourage")
   end
 
-  def action_zone_suggestion(user, postal_code)
-    mailjet_email to: user,
-                  template_id: 355675,
-                  campaign_name: :action_zone_suggestion,
-                  variables: {
-                    postal_code: postal_code,
-                    confirm_url: confirm_api_v1_action_zones_url(
-                      host: API_HOST,
-                      protocol: :https,
-                      user_id: UserServices::EncodedId.encode(user.id),
-                      postal_code: postal_code
-                    )
-                  }
-  end
-
-  def action_zone_confirmation(user, postal_code)
-    mailjet_email to: user,
-                  template_id: 335020,
-                  campaign_name: :action_zone_confirmation,
-                  variables: {
-                    postal_code: postal_code,
-                  }
-  end
-
   def onboarding_day_8(user)
     mailjet_email to: user,
                   template_id: 452755,

@@ -115,43 +115,6 @@ describe MemberMailer, type: :mailer do
     end
   end
 
-  describe '#action_zone_suggestion' do
-    let(:postal_code) { '75012' }
-    let(:user_id) { UserServices::EncodedId.encode(user.id) }
-    let(:mail) { MemberMailer.action_zone_suggestion(user, postal_code) }
-
-    expect_mailjet_email do
-      {
-        template_id: 355675,
-        campaign_name: :action_zone_suggestion,
-        variables: {
-          postal_code: postal_code,
-          confirm_url: confirm_api_v1_action_zones_url(
-            host: API_HOST,
-            protocol: :https,
-            user_id: user_id,
-            postal_code: postal_code
-          )
-        }
-      }
-    end
-  end
-
-  describe '#action_zone_confirmation' do
-    let(:postal_code) { '75012' }
-    let(:mail) { MemberMailer.action_zone_confirmation(user, postal_code) }
-
-    expect_mailjet_email do
-      {
-        template_id: 335020,
-        campaign_name: :action_zone_confirmation,
-        variables: {
-          postal_code: postal_code,
-        }
-      }
-    end
-  end
-
   describe 'select default variables' do
     it do
       Timecop.freeze
