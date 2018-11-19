@@ -67,6 +67,11 @@ Rails.application.configure do
     config.logger = ActiveSupport::TaggedLogging.new(ActiveSupport::Logger.new(STDOUT))
   end
 
+  if ENV['LOG_ACTIVE_RECORD_QUERIES'] == 'false'
+    config.active_record.logger = ActiveSupport::TaggedLogging.new(ActiveSupport::Logger.new(STDOUT))
+    config.active_record.logger.level = Logger::INFO
+  end
+
   #Bullet gem config
   config.after_initialize do
     Bullet.enable = ENV['DISABLE_BULLET'] != 'true'
