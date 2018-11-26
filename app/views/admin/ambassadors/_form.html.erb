@@ -23,6 +23,20 @@
   </div>
 
   <div class="control-group">
+    <%= f.label :accepts_emails, class: "control-label" %>
+    <div class="controls">
+      <label class="radio-inline" style="padding-top: 0; margin-bottom: 5px;">
+        <%= f.radio_button :accepts_emails, true %>
+        Oui
+      </label>
+      <label class="radio-inline" style="padding-top: 0; margin-bottom: 5px;">
+        <%= f.radio_button :accepts_emails, false %>
+        Non
+      </label>
+    </div>
+  </div>
+
+  <div class="control-group">
     <%= f.label :phone,"Téléphone", class: "control-label" %>
     <div class="controls">
       <%= f.text_field :phone, class: "form-control", required: true %>

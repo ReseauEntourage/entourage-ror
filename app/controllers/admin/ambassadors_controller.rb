@@ -51,7 +51,7 @@ module Admin
     end
 
     def user_params
-      params.require(:user).permit(:first_name, :last_name, :email, :sms_code, :phone, :marketing_referer_id, :organization_id, :use_suggestions)
+      params.require(:user).permit(:first_name, :last_name, :email, :sms_code, :phone, :marketing_referer_id, :organization_id, :use_suggestions, :accepts_emails)
     end
 
     def add_relation(user_relation_id)

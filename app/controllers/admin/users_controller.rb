@@ -124,7 +124,7 @@ module Admin
     end
 
     def user_params
-      params.require(:user).permit(:first_name, :last_name, :email, :sms_code, :phone, :organization_id, :marketing_referer_id, :use_suggestions, :about)
+      params.require(:user).permit(:first_name, :last_name, :email, :sms_code, :phone, :organization_id, :marketing_referer_id, :use_suggestions, :about, :accepts_emails)
     end
 
     def set_coordinated_organizations(user)
