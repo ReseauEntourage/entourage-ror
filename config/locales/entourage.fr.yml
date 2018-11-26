@@ -9,6 +9,7 @@ fr:
         phone: Téléphone
         organization: Association
         about: À propos
+        accepts_emails: Accepte de reçevoir des emails
       organization:
         name: Nom
         description: Description

@@ -37,6 +37,11 @@ def expect_mailjet_email opts={}, &block
     it { expect(mail.message).to be_a ActionMailer::Base::NullMail }
   end
 
+  context "when user doesn't accept emails" do
+    before { user.update_column(:accepts_emails, false) }
+    it { expect(mail.message).to be_a ActionMailer::Base::NullMail }
+  end
+
   it { expect(mail.subject).to be nil }
   it { expect(mail[:from].value).to eq options[:from] }
   it { expect(mail.to).to eq [user.email] }

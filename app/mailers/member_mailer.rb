@@ -99,7 +99,7 @@ class MemberMailer < ActionMailer::Base
                     variables: {},
                     payload: {}
     user = to
-    return unless user.email.present?
+    return unless user.email.present? && user.accepts_emails
 
     merge_default_variables = true
     default_variables = {
