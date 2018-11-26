@@ -185,6 +185,7 @@ Rails.application.routes.draw do
           post :report
           post :presigned_avatar_upload
           post :address
+          get :email_preferences, action: :update_email_preferences
         end
 
         resources :tours, :controller => 'users/tours', only: [:index]

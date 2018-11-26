@@ -12,6 +12,7 @@ def default_variables
     user_id: UserServices::EncodedId.encode(user.id),
     webapp_login_link: "https://www.entourage.social/app?auth=#{auth_token}",
     login_link: "https://www.entourage.social/deeplink/feed?auth=#{auth_token}",
+    unsubscribe_url: UserServices::EmailPreferences.update_url(user: user, accepts_emails: false)
   }
 end
 
@@ -137,7 +138,7 @@ describe MemberMailer, type: :mailer do
 
       expect_json_eq(
         mail['X-MJ-Vars'].value,
-        default_variables.slice(:first_name, :login_link)
+        default_variables.slice(:first_name, :login_link, :unsubscribe_url)
                          .merge(entourage_title: "foobaz")
       )
 

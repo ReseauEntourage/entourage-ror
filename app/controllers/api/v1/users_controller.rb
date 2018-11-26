@@ -3,7 +3,7 @@ require 'typeform'
 module Api
   module V1
     class UsersController < Api::V1::BaseController
-      skip_before_filter :authenticate_user!, only: [:login, :code, :create, :lookup, :ethics_charter_signed]
+      skip_before_filter :authenticate_user!, only: [:login, :code, :create, :lookup, :ethics_charter_signed, :update_email_preferences]
       skip_before_filter :community_warning
       skip_before_filter :ensure_community!, only: :ethics_charter_signed
       skip_before_filter :protect_from_forgery, only: :ethics_charter_signed
@@ -211,6 +211,19 @@ module Api
           end
 
         render json: reponse
+      end
+
+      def update_email_preferences
+        @user = User.find(params[:id])
+
+        if SignatureService.validate(@user.id, params[:signature]) &&
+           @user.update(accepts_emails: params[:accepts_emails])
+          @success = true
+        else
+          @success = false
+        end
+
+        render layout: 'landing'
       end
 
       def ethics_charter_signed

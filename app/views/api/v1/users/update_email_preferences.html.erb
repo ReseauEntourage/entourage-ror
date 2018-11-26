@@ -1,0 +1,39 @@
+<% if @success == false %>
+  <div class="text" style="padding-top: 30px">
+    <strong>Erreur !</strong><br/>
+    Nous n'avons pas réussi à modifier vos préférences.<br/>
+    Le lien que vous avez utilisé semble incorrect.
+    <div class="button-wrapper">
+      <%= link_to "Contacter l'équipe Entourage",
+          "mailto:contact@entourage.social?" + {
+            subject: "Je souhaite modifier mes préférences de communication",
+            body: "\n\n--\nAdresse email du compte Entourage : #{@user.email}"
+          }.to_query,
+          class: "button" %>
+    </div>
+  </div>
+<% elsif @user.accepts_emails == false %>
+  <div class="text" style="padding-top: 30px">
+    <strong>Désabonnement effectué !</strong><br/>
+    Vous ne recevrez plus d'emails de la part d'Entourage sur votre adresse<br/>
+    <strong><%= @user.email %></strong>
+  </div>
+  <div class="button-wrapper">
+    <%= link_to "Je souhaite me réabonner",
+          UserServices::EmailPreferences.update_url(
+            user: @user, accepts_emails: true),
+          class: "button" %>
+  </div>
+<% elsif @user.accepts_emails == true %>
+  <div class="text" style="padding-top: 30px">
+    <strong>Abonnement effectué !</strong><br/>
+    Vous recevrez désormais les emails envoyés par Entourage sur votre adresse<br/>
+    <strong><%= @user.email %></strong>
+  </div>
+  <div class="button-wrapper">
+    <%= link_to "Je souhaite me désabonner",
+          UserServices::EmailPreferences.update_url(
+            user: @user, accepts_emails: false),
+          class: "button" %>
+  </div>
+<% end %>

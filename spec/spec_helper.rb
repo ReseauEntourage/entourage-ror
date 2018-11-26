@@ -22,3 +22,4 @@ end
 
 ENV["DISABLE_CRYPT"]="TRUE"
 ENV['ENTOURAGE_SECRET'] = 'test_entourage_secret'
+API_HOST = 'api.entourage.test'
