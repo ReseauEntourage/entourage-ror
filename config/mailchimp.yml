@@ -3,3 +3,8 @@ production:
   lists:
     newsletter:
       id: f096e25002
+staging:
+  api_key: <%= ENV['MAILCHIMP_API_KEY'] %>
+  lists:
+    newsletter:
+      id: 224e0dc509

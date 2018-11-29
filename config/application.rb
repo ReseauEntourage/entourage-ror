@@ -59,7 +59,15 @@ module EntourageBack
     end
     config.log_tags = [ lambda {|req| Time.now.to_s(:db) }, :remote_ip ]
 
-    config.x.mailchimp = config_for(:mailchimp)
+    # Our staging env is not a proper distinct Rails env. We hack around this.
+    require File.join(Rails.root, 'app/services/environment_helper')
+    if EnvironmentHelper.env.to_s == Rails.env
+      config.x.mailchimp = config_for(:mailchimp)
+    else
+      # https://github.com/rails/rails/blob/v4.2.11/railties/lib/rails/application.rb#L232
+      config.x.mailchimp =
+        YAML.load(ERB.new(File.read("config/mailchimp.yml")).result)[EnvironmentHelper.env.to_s]
+    end
 
     #Enabling Profiling on GC
     GC::Profiler.enable
