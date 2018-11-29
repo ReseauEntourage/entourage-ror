@@ -59,6 +59,8 @@ module EntourageBack
     end
     config.log_tags = [ lambda {|req| Time.now.to_s(:db) }, :remote_ip ]
 
+    config.x.mailchimp = config_for(:mailchimp)
+
     #Enabling Profiling on GC
     GC::Profiler.enable
   end
