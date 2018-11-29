@@ -29,7 +29,7 @@
             <li><%= link_to "Invitations à rejoindre un entourage", admin_entourage_invitations_path %></li>
             <li><%= link_to "Entourages", admin_entourages_path %></li>
             <li><%= link_to "Marketing referers", admin_marketing_referers_path %></li>
-            <% if ENV["STAGING"] %>
+            <% if EnvironmentHelper.staging? %>
               <li><%= link_to "Maraudes de test", admin_generate_tours_path %></li>
               <li><%= link_to "Utilisateurs de test", fake_admin_users_path %></li>
             <% end %>

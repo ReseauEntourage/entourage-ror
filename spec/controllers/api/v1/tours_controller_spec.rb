@@ -452,8 +452,7 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
   end
 
   describe "DELETE delete_all" do
-    before { ENV["STAGING"]="true" }
-    after { ENV["STAGING"]="false" }
+    before { EnvironmentHelper.stub(:env) { :staging } }
     let!(:user) { FactoryGirl.create(:pro_user) }
     let!(:tours) { FactoryGirl.create_list(:tour, 2) }
     before { delete 'delete_all', token: user.token, format: :json }

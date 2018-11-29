@@ -60,16 +60,10 @@ module IcalService
   end
 
   def self.env_suffix
-    if Rails.env != 'production'
-      env = Rails.env
-    elsif ENV['STAGING']
-      env = 'preprod'
-    end
-
-    if env
-      "-#{env}"
-    else
+    if EnvironmentHelper.production?
       ''
+    else
+      "-#{EnvironmentHelper.env}"
     end
   end
 end

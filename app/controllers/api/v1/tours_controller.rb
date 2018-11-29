@@ -58,7 +58,7 @@ module Api
 
       #curl -X DELETE -H "Content-Type: application/json" "http://localhost:3000/api/v1/tours/delete_all.json?token=azerty"
       def delete_all
-        Tour.destroy_all if ENV["STAGING"]=="true"
+        Tour.destroy_all if EnvironmentHelper.staging?
         render json: {status: :ok}, status: 200
       end
 

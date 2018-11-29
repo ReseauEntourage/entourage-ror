@@ -2,7 +2,7 @@ namespace :community do
   task update_typeform_webhooks: :environment do
     $server_community.links
       .find_all { |key, _|
-        key =~ /^ethics-charter(-pro)?#{ '-preprod' if ENV['STAGING'] }$/
+        key =~ /^ethics-charter(-pro)?#{ '-preprod' if EnvironmentHelper.env != :production }$/
       }
       .each do |key, url|
         form_id = URI(url).path.match(%r(/to/(?<id>[^/]*)))[:id]

@@ -85,7 +85,7 @@ Rails.application.configure do
 
   config.action_mailer.delivery_method = :smtp
 
-  if ENV['STAGING']
+  if EnvironmentHelper.staging?
     config.action_mailer.delivery_method = :safety_mailer
 
     config.action_mailer.safety_mailer_settings = {

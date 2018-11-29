@@ -41,7 +41,7 @@ module Api
             lambda do |user|
               key = 'ethics-charter'
               key += '-pro' if user.community == :entourage && user.pro?
-              key += '-preprod' if Rails.env != 'production' || ENV.key?('STAGING')
+              key += '-preprod' if EnvironmentHelper.env != :production
 
               user.community.links[key] % {user_id: user_id}
             end,
