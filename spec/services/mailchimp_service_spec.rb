@@ -131,6 +131,19 @@ describe MailchimpService, type: :service do
     end
   end
 
+  describe :update do
+    it "makes the request when the email is whitelisted" do
+      service.stub(:safety_mailer_whitelisted?) { true }
+      expect(service).to receive(:request)
+      service.update(:some_list, 'some@email.com')
+    end
+    it "drops the request when the email is not whitelisted" do
+      service.stub(:safety_mailer_whitelisted?) { false }
+      expect(service).not_to receive(:request)
+      service.update(:some_list, 'some@email.com')
+    end
+  end
+
   describe :set_interest do
     subject do
       -> { service.set_interest(list: :some_list, email: unformatted_email, interest: :some_interest, value: true) }
@@ -149,6 +162,28 @@ describe MailchimpService, type: :service do
       )
 
       subject.call
+    end
+  end
+
+  describe :safety_mailer_whitelisted? do
+    context "when safety_mailer is in use" do
+      around do |example|
+        old_delivery_method = ActionMailer::Base.delivery_method
+        ActionMailer::Base.delivery_method = :safety_mailer
+        ActionMailer::Base.safety_mailer_settings = {
+          allowed_matchers: [ /@entourage\.social\z/ ],
+        }
+        example.run
+        ActionMailer::Base.deliveries.clear
+        ActionMailer::Base.delivery_method = old_delivery_method
+      end
+
+      it { expect(service.safety_mailer_whitelisted?('contact@entourage.social')).to be true }
+      it { expect(service.safety_mailer_whitelisted?('test@gmail.com')).to be false }
+    end
+
+    context "when safety_mailer is not in use" do
+      it { expect(service.safety_mailer_whitelisted?('test@gmail.com')).to be true }
     end
   end
 end

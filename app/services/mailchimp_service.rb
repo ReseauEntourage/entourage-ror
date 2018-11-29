@@ -50,6 +50,8 @@ module MailchimpService
     email = normalize_email(email)
     return if email.nil?
 
+    return unless safety_mailer_whitelisted?(email)
+
     if method == :put
       body[:email_address] = email
     end
@@ -67,6 +69,18 @@ module MailchimpService
   def self.normalize_email email
     return if email.nil?
     email.to_s.strip.downcase.presence
+  end
+
+  def self.safety_mailer_whitelisted? email
+    return true if ActionMailer::Base.delivery_method != :safety_mailer
+
+    klass = ActionMailer::Base.delivery_methods[:safety_mailer]
+    settings = ActionMailer::Base.safety_mailer_settings
+
+    return true if klass.new(settings).whitelisted?(email)
+
+    Rails.logger.warn("*** suppressed MailChimp operation for #{email}")
+    return false
   end
 
   def self.request method, path, body
