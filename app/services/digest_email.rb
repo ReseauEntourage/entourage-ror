@@ -1,9 +1,9 @@
-module WeeklyEmail
+module DigestEmail
   module TextHelper
     extend ActionView::Helpers::TextHelper
   end
 
-  def self.delivery(user_id, group_ids)
+  def self.delivery(user_id, group_ids, content_id: nil)
     user = User.find(Integer(user_id))
 
     group_ids = group_ids
@@ -25,21 +25,27 @@ module WeeklyEmail
       g.postal_code&.starts_with?('75')
     end
 
-    auth_token = UserServices::UserAuthenticator.auth_token(user)
+    url_parameters = {
+      utm_source: :digest_email,
+      utm_medium: :email,
+      utm_content: content_id
+    }.compact
 
-    groups = groups.map { |g| group_payload(g, auth_token: auth_token) }
+    campaign_name = [:digest_email, content_id].compact.join('_')
+
+    groups = groups.map { |g| group_payload(g, url_parameters: url_parameters) }
 
     MemberMailer.mailjet_email(
       to: user,
       template_id: 592472,
-      campaign_name: :weekly_email,
+      campaign_name: campaign_name,
       variables: {
         actions: groups
       }
     )
   end
 
-  def self.group_payload group, auth_token:
+  def self.group_payload group, url_parameters: {}
     participant_count = group.join_requests.accepted.count
     description = TextHelper.pluralize(participant_count, "participant")
 
@@ -64,12 +70,16 @@ module WeeklyEmail
         group.postal_code
       end
 
+    url = "#{ENV['WEBSITE_URL']}/entourages/#{group.uuid_v2}"
+    url_parameters.compact!
+    url += "?" + url_parameters.compact.to_query if url_parameters.any?
+
     {
       title: group.title,
       description: description,
       icon: icon,
       location: location,
-      url: "#{ENV['WEBSITE_URL']}/entourages/#{group.uuid_v2}?auth=#{auth_token}"
+      url: url
     }
   end
 end
