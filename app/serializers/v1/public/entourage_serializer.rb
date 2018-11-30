@@ -5,6 +5,7 @@ module V1
 
       attributes :uuid,
                  :title,
+                 :group_type,
                  :description,
                  :created_at,
                  :location,
