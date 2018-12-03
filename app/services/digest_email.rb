@@ -6,6 +6,8 @@ module DigestEmail
   def self.delivery(user_id, group_ids, content_id: nil)
     user = User.find(Integer(user_id))
 
+    return if user.deleted
+
     group_ids = group_ids
       .map(&:presence)
       .compact
