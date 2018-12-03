@@ -8,6 +8,8 @@ module UserServices
       user.update_columns(deleted: true,
                           phone: add_timestamp(:phone),
                           email: add_timestamp(:email))
+      # use `update` to trigger post-update MailChimp sync
+      user.update(accepts_emails: false)
     end
 
     private
