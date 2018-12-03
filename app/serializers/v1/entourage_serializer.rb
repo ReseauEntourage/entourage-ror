@@ -54,7 +54,7 @@ module V1
 
     def uuid
       case object.group_type
-      when 'action', 'conversation'
+      when 'action', 'conversation', 'outing'
         object.uuid_v2
       else
         object.uuid

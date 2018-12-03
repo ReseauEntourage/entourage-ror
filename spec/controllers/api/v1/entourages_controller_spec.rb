@@ -202,7 +202,7 @@ describe Api::V1::EntouragesController do
           expect(JSON.parse(response.body)).to eq(
             "entourage"=>{
               "id"=>outing.id,
-              "uuid"=>outing.uuid,
+              "uuid"=>outing.uuid_v2,
               "status"=>"open",
               "title"=>"Apéro Entourage",
               "group_type"=>"outing",
