@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181120135504) do
+ActiveRecord::Schema.define(version: 20181204180303) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -447,9 +447,9 @@ ActiveRecord::Schema.define(version: 20181120135504) do
   add_index "sensitive_words_checks", ["record_type", "record_id"], name: "index_sensitive_words_checks_on_record_type_and_record_id", unique: true, using: :btree
 
   create_table "session_histories", id: false, force: :cascade do |t|
-    t.integer "user_id",  null: false
-    t.date    "date",     null: false
-    t.string  "platform", null: false
+    t.integer "user_id",            null: false
+    t.date    "date",               null: false
+    t.string  "platform", limit: 7, null: false
   end
 
   add_index "session_histories", ["user_id", "platform", "date"], name: "index_session_histories_on_user_id_and_platform_and_date", unique: true, using: :btree
