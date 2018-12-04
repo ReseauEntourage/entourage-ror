@@ -7,6 +7,7 @@ class JoinRequest < ActiveRecord::Base
   STATUS = [ACCEPTED_STATUS, PENDING_STATUS, REJECTED_STATUS, CANCELLED_STATUS]
 
   include Experimental::AutoAccept::JoinRequestCallback
+  include JoinRequestAcceptTracking
 
   belongs_to :user
   belongs_to :joinable, polymorphic: true

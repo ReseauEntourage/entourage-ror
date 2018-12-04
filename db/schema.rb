@@ -254,6 +254,8 @@ ActiveRecord::Schema.define(version: 20181204180303) do
     t.datetime "updated_at",                                       null: false
     t.float    "distance"
     t.string   "role",              limit: 11,                     null: false
+    t.datetime "requested_at"
+    t.datetime "accepted_at"
   end
 
   add_index "join_requests", ["joinable_type", "joinable_id", "status"], name: "index_join_requests_on_joinable_type_and_joinable_id_and_status", using: :btree
