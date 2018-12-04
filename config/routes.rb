@@ -313,5 +313,9 @@ Rails.application.routes.draw do
     resources :users, only: [:edit, :update]
   end
 
+  namespace :mailjet do
+    post :event
+  end
+
   root 'home#index'
 end
