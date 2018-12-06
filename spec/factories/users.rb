@@ -35,7 +35,16 @@ FactoryGirl.define do
       user_type 'pro'
     end
 
+    trait :admin do
+      first_name 'pouet'
+      email 'guillaume@entourage.social'
+      organization
+      user_type 'pro'
+      admin true
+    end
+
     factory :pro_user,    traits: [:pro]
     factory :public_user, traits: [:public]
+    factory :admin_user,  traits: [:admin]
   end
 end
