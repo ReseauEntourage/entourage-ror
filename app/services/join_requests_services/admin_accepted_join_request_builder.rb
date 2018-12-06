@@ -17,6 +17,8 @@ module JoinRequestsServices
         when ['entourage', 'outing'] then 'participant'
         else raise 'Unhandled'
         end
+      
+      join_request.joinable.number_of_people += 1
 
       if join_request.save
 
