@@ -97,6 +97,12 @@ Then, browse `admin.entourage.localhost:<port>`.
 
 # Rspec tests
 
+Setup database :
+
+```
+rake db:drop db:create db:migrate RAILS_ENV=test
+```
+
 Run tests with
 
 ```
