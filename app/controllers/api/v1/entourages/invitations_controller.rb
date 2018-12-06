@@ -27,8 +27,8 @@ module Api
               render json: {"successfull_numbers": successfull_invites, "failed_numbers": failed_invites}, status: 400
             end
 
-            on.not_part_of_entourage do
-              render json: {message: 'You are not accepted in this entourage, you cannot invite another user'}, status: 403
+            on.not_authorised do
+              render json: {message: 'You cannot invite another user'}, status: 403
             end
           end
         end
@@ -37,7 +37,7 @@ module Api
         attr_reader :entourage
 
         def set_entourage
-          @entourage = Entourage.visible.find_by_id_or_uuid(params[:entourage_id])
+          @entourage = Entourage.find_by_id_or_uuid(params[:entourage_id])
         end
 
         def restrict_group_types!

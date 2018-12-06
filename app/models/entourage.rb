@@ -57,6 +57,7 @@ class Entourage < ActiveRecord::Base
   validates :metadata, schema: -> (e) { "#{e.group_type}:metadata" }
 
   scope :visible, -> { where.not(status: ['blacklisted', 'suspended']) }
+  scope :findable, -> { where.not(status: ['blacklisted']) }
   scope :social_category, -> { where(category: 'social') }
   scope :mat_help_category, -> { where(category: 'mat_help') }
   scope :non_mat_help_category, -> { where(category: 'non_mat_help') }
@@ -100,7 +101,7 @@ class Entourage < ActiveRecord::Base
         :id
       end
 
-    @entourage = Entourage.visible.find_by!(key => identifier)
+    @entourage = Entourage.findable.find_by!(key => identifier)
   end
 
   #An entourage can never be freezed

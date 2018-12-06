@@ -60,6 +60,11 @@ module JoinRequestsServices
         return callback.on_not_authorised.try(:call)
       end
 
+      if !joinable.status.in?(['open', 'ongoing']) &&
+         !(current_user.admin? || join_request.user.admin?)
+        return callback.on_not_authorised.try(:call)
+      end
+
       user_status = TourServices::JoinRequestStatus.new(join_request: join_request)
       if user_status.accept!
         callback.on_success.try(:call, join_request)
@@ -94,6 +99,11 @@ module JoinRequestsServices
         return callback.on_not_authorised.try(:call)
       end
 
+      if !joinable.status.in?(['open', 'ongoing']) &&
+         !join_request.user.admin?
+        return callback.on_not_authorised.try(:call)
+      end
+
       user_status = TourServices::JoinRequestStatus.new(join_request: join_request)
       if user_status.pending!
         callback.on_success.try(:call, join_request)
@@ -114,8 +124,12 @@ module JoinRequestsServices
       end
     end
 
+    def joinable
+      join_request.joinable
+    end
+
     def current_user_authorised?
-      current_join_request = JoinRequest.where(joinable: join_request.joinable, user: current_user).first
+      current_join_request = JoinRequest.where(joinable: joinable, user: current_user).first
       current_join_request && TourServices::JoinRequestStatus.new(join_request: current_join_request).accepted?
     end
   end

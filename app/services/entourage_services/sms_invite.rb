@@ -10,8 +10,12 @@ module EntourageServices
     def send_invite
       yield callback if block_given?
 
+      if entourage.status != 'open' && !inviter.admin?
+        return callback.on_not_authorised.try(:call)
+      end
+
       if JoinRequest.where(user: inviter, joinable: entourage, status: JoinRequest::ACCEPTED_STATUS).blank?
-        return callback.on_not_part_of_entourage.try(:call)
+        return callback.on_not_authorised.try(:call)
       end
 
       if invitee

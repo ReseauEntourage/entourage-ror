@@ -20,6 +20,7 @@ module Api
 
       #curl -H "Content-Type: application/json" "http://localhost:3000/api/v1/entourages/951.json?token=e4fdc865bc7a91c34daea849e7d73349&distance=123.45&feed_rank=2"
       def show
+        ensure_permission! :can_read_public_content?
         EntourageServices::EntourageDisplayService.new(entourage: @entourage, user: current_user, params: params).view
         is_onboarding, mp_params = Onboarding::V1.entourage_metadata(@entourage)
         mixpanel.track("Displayed Entourage", mp_params)
@@ -98,7 +99,7 @@ module Api
       end
 
       def set_entourage
-        @entourage = Entourage.visible.find_by_id_or_uuid(params[:id])
+        @entourage = Entourage.find_by_id_or_uuid(params[:id])
       end
 
       def set_entourage_or_handle_conversation_uuid
@@ -108,8 +109,17 @@ module Api
         raise ActiveRecord::RecordNotFound unless participant_ids.include?(current_user.id.to_s)
         hash_uuid = ConversationService.hash_for_participants(participant_ids)
         @entourage =
-          Entourage.visible.find_by(uuid_v2: hash_uuid) ||
+          Entourage.findable.find_by(uuid_v2: hash_uuid) ||
           ConversationService.build_conversation(participant_ids: participant_ids)
+      end
+
+      def ensure_permission! permission
+        has_permission = GroupAccessService.send(
+          permission,
+          user: current_user,
+          group: @entourage
+        )
+        raise ActiveRecord::RecordNotFound unless has_permission
       end
     end
   end

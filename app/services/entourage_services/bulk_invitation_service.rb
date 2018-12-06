@@ -23,8 +23,8 @@ module EntourageServices
             failed_invites << phone_number
           end
 
-          on.not_part_of_entourage do
-            return callback.on_not_part_of_entourage.try(:call)
+          on.not_authorised do
+            return callback.on_not_authorised.try(:call)
           end
         end
       end

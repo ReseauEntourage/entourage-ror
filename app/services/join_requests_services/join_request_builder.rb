@@ -13,6 +13,12 @@ module JoinRequestsServices
 
       join_request = JoinRequest.new(joinable: joinable, user: user, message: message, distance: distance)
 
+      if !joinable.status.in?(['open', 'ongoing']) &&
+         !user.admin?
+        join_request.errors.add(:joinable, "is not opened (#{joinable.status})")
+        return callback.on_failure.try(:call, join_request)
+      end
+
       join_request.role =
         case [joinable.community, joinable.group_type]
         when ['entourage', 'tour']   then 'member'

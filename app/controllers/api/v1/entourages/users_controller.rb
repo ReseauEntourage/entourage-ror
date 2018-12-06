@@ -114,7 +114,7 @@ module Api
             end
 
             on.not_authorised do
-              return render json: {message: "You are not accepted in this entourage, you don't have rights to manage users of this entourage"}, status: :unauthorized
+              return render json: {message: "You don't have rights to manage users of this entourage"}, status: :unauthorized
             end
           end
         end
@@ -152,7 +152,7 @@ module Api
 
         private
         def set_entourage
-          @entourage = Entourage.visible.find_by_id_or_uuid(params[:entourage_id])
+          @entourage = Entourage.find_by_id_or_uuid(params[:entourage_id])
         end
 
         def set_entourage_or_handle_conversation_uuid
@@ -162,7 +162,7 @@ module Api
           raise ActiveRecord::RecordNotFound unless participant_ids.include?(current_user.id.to_s)
           hash_uuid = ConversationService.hash_for_participants(participant_ids)
           @entourage =
-            Entourage.visible.find_by(uuid_v2: hash_uuid) ||
+            Entourage.findable.find_by(uuid_v2: hash_uuid) ||
             ConversationService.build_conversation(participant_ids: participant_ids)
         end
 

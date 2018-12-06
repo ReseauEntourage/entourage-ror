@@ -1,9 +1,9 @@
 module EntourageServices
   class SmsInviteCallback < Callback
-    attr_accessor :on_not_part_of_entourage
+    attr_accessor :on_not_authorised
 
-    def not_part_of_entourage(&block)
-      @on_not_part_of_entourage = block
+    def not_authorised(&block)
+      @on_not_authorised = block
     end
   end
 end
