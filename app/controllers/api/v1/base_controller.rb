@@ -38,8 +38,8 @@ module Api
           track_session
 
           unless current_user.last_sign_in_at.try(:today?)
-            current_user.update_column(:last_sign_in_at, Time.zone.now)
             first_session = current_user.last_sign_in_at.nil?
+            current_user.update_column(:last_sign_in_at, Time.zone.now)
             reactivated = !first_session && current_user.last_sign_in_at <= 3.months.ago
             mixpanel.track("Opened App", {
               "First Session" => first_session
