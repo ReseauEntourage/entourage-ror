@@ -18,7 +18,9 @@ namespace :data_science do
         :last_sign_in_at,
         :has_email,
         :country,
-        :postal_code
+        :postal_code,
+        :email_domain,
+        :user_type
       ]
 
       users.includes(:address).find_each do |user|
@@ -29,7 +31,9 @@ namespace :data_science do
           user.last_sign_in_at&.to_date,
           user.email.present?,
           user.address&.country,
-          user.address&.postal_code
+          user.address&.postal_code,
+          user.email&.split('@')&.last&.squish&.gsub(/\-\d{4}-\d\d-\d\d.*/, '')&.presence,
+          user.user_type
         ]
       end
     end
