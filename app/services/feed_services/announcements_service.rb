@@ -35,6 +35,28 @@ module FeedServices
       return announcements unless user.community == :entourage
 
       announcements.push Announcement.new(
+        id: 14,
+        title: "Don de Chaleur Humaine",
+        body: "Aidez-nous à réchauffer le cœur des sans-abri en cette période particulière des fêtes de Noël",
+        image_url: true,
+        action: "Je fais un don",
+        author: User.find_by(email: "guillaume@entourage.social"),
+        webview: false,
+        position: 2
+      )
+
+      announcements.push Announcement.new(
+        id: 15,
+        title: "Opé calendrier de l'avent inversé",
+        body: "L’idée ? Chaque jour du mois de Décembre, mettez un petit cadeau dans une boîte que vous irez offrir à un voisin démuni le jour de Noël",
+        image_url: false,
+        action: "Je me lance",
+        author: User.find_by(email: "guillaume@entourage.social"),
+        webview: true,
+        position: 6
+      )
+
+      announcements.push Announcement.new(
         id: 13,
         title: "Entourage recrute ses ambassadeurs",
         body: "Vous voulez vous engager pour rendre votre quartier plus humain avec les personnes SDF ? Devenez ambassadeur Entourage, une mission de bénévolat exaltante !",
@@ -42,7 +64,7 @@ module FeedServices
         action: "Je postule",
         author: User.find_by(email: "guillaume@entourage.social"),
         webview: true,
-        position: 1
+        position: 11
       )
 
       announcements

@@ -18,6 +18,8 @@ module Api
           11 => :megaphone,
           12 => :text,
           13 => :megaphone,
+          14 => :heart,
+          15 => :megaphone,
         }[params[:id].to_i]
 
         redirect_to view_context.asset_url("assets/announcements/icons/#{icon}.png")
@@ -38,6 +40,7 @@ module Api
       def image
         image = {
           13 => '2.png',
+          14 => 'collecte-2018.jpg'
         }[params[:id].to_i]
 
         return render nothing: true, status: :not_found if image.nil?
@@ -82,6 +85,10 @@ module Api
           url = "https://blog.entourage.social/2018/07/27/roya-michael-il-avait-besoin-dun-semblant-de-famille/"
         when 13
           url = "https://www.entourage.social/devenir-ambassadeur"
+        when 14
+          url = "https://entourage.iraiser.eu/mon-don/~mon-don"
+        when 15
+          url = "https://blog.entourage.social/2018/11/30/noel-solidaire-faisons-tous-le-calendrier-de-lavent-inverse/"
         end
 
         mixpanel.track("Opened Announcement", { "Announcement" => id })
