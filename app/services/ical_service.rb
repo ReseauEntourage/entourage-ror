@@ -6,7 +6,7 @@ module IcalService
     cal = Icalendar::Calendar.new
     cal.prodid = '-//entourage.social//entourage-ror//FR'
 
-    cal.publish
+    cal.ip_method = 'REQUEST'
 
     cal.event do |e|
       e.uid = "#{group.uuid_v2}#{env_suffix}@entourage.social"
@@ -50,7 +50,7 @@ module IcalService
 
   def self.attach_ical group:, to:, for_user: nil
     to.attachments[file_name(group)] = {
-      mime_type: 'text/calendar; charset=UTF-8; method=PUBLISH',
+      mime_type: 'text/calendar; charset=UTF-8; method=REQUEST',
       content: IcalService.generate_ical(group, for_user: for_user)
     }
   end
