@@ -8,6 +8,8 @@ users
   postal_code (those ending with XXX indicate that only the department is known)
   email_domain
   user_type (pro = membre d'une association de maraude)
+  accepts_emails
+  deleted
 
   Note: users country and postal_code have started to be collected on 2018-02-19
         and became a part of user onboarding on 2018-08-01
