@@ -176,4 +176,41 @@ RSpec.describe Entourage, type: :model do
       end
     end
   end
+
+  describe 'updated_at' do
+    let!(:group) { create :entourage, updated_at: 1.hour.ago }
+
+    shared_examples "is updated" do
+      it "is updated" do
+        expect { subject }.to change { group.reload.updated_at }
+      end
+    end
+
+    shared_examples "is not updated" do
+      it "is not updated" do
+        expect { subject }.not_to change { group.reload.updated_at }
+      end
+    end
+
+    describe "on new pending join requests" do
+      subject { create :join_request, status: :pending, joinable: group }
+      include_examples "is updated"
+    end
+
+    describe "when an existing join request is made pending again" do
+      let!(:join_request) { create :join_request, status: :cancelled, joinable: group }
+      subject { join_request.update(status: :pending) }
+      include_examples "is updated"
+    end
+
+    describe "on new chat_messages" do
+      subject { create :chat_message, messageable: group }
+      include_examples "is updated"
+    end
+
+    describe "on new chat_message of type status_update" do
+      subject { create :chat_message, :closed_as_success, messageable: group }
+      include_examples "is not updated"
+    end
+  end
 end

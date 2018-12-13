@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181204180303) do
+ActiveRecord::Schema.define(version: 20181211133039) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -244,18 +244,19 @@ ActiveRecord::Schema.define(version: 20181204180303) do
   add_index "experimental_pending_request_reminders", ["user_id"], name: "index_experimental_pending_request_reminders_on_user_id", using: :btree
 
   create_table "join_requests", force: :cascade do |t|
-    t.integer  "user_id",                                          null: false
-    t.integer  "joinable_id",                                      null: false
-    t.string   "joinable_type",                                    null: false
-    t.string   "status",                       default: "pending", null: false
+    t.integer  "user_id",                                                   null: false
+    t.integer  "joinable_id",                                               null: false
+    t.string   "joinable_type",                                             null: false
+    t.string   "status",                                default: "pending", null: false
     t.text     "message"
     t.datetime "last_message_read"
-    t.datetime "created_at",                                       null: false
-    t.datetime "updated_at",                                       null: false
+    t.datetime "created_at",                                                null: false
+    t.datetime "updated_at",                                                null: false
     t.float    "distance"
-    t.string   "role",              limit: 11,                     null: false
+    t.string   "role",                       limit: 11,                     null: false
     t.datetime "requested_at"
     t.datetime "accepted_at"
+    t.datetime "email_notification_sent_at"
   end
 
   add_index "join_requests", ["joinable_type", "joinable_id", "status"], name: "index_join_requests_on_joinable_type_and_joinable_id_and_status", using: :btree

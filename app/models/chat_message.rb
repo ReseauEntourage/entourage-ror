@@ -4,6 +4,7 @@ class ChatMessage < ActiveRecord::Base
   include FeedsConcern
 
   belongs_to :messageable, polymorphic: true
+  belongs_to :entourage, -> { where("chat_messages.messageable_type = 'Entourage'") }, foreign_key: :messageable_id
   belongs_to :user
 
   before_validation :generate_content
@@ -18,6 +19,13 @@ class ChatMessage < ActiveRecord::Base
 
   after_create do |message|
     message.messageable.touch unless message.message_type == 'status_update'
+  end
+
+  def self.joins_group_join_requests
+    joins(%(
+      join join_requests on joinable_id   = messageable_id
+                        and joinable_type = messageable_type
+    ))
   end
 
   def self.json_schema urn
