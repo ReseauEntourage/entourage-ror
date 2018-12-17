@@ -35,36 +35,36 @@ module FeedServices
       return announcements unless user.community == :entourage
 
       announcements.push Announcement.new(
+        id: 13,
+        title: "Entourage recrute ses ambassadeurs",
+        body: "Devenez ambassadeur Entourage, une mission de bénévolat exaltante ! Pour s'engager et rendre votre quartier plus humain avec les personnes SDF.",
+        image_url: true,
+        action: "Je postule",
+        author: User.find_by(email: "guillaume@entourage.social"),
+        webview: true,
+        position: 1
+      )
+
+      announcements.push Announcement.new(
         id: 14,
         title: "Don de Chaleur Humaine",
-        body: "Aidez-nous à réchauffer le cœur des sans-abri en cette période particulière des fêtes de Noël",
+        body: "C'est Noël : aidez Entourage à réchauffer le cœur des sans-abri et à déployer nos actions partout en France",
         image_url: true,
         action: "Je fais un don",
         author: User.find_by(email: "guillaume@entourage.social"),
         webview: false,
-        position: 2
+        position: 5
       )
 
       announcements.push Announcement.new(
-        id: 15,
-        title: "Opé calendrier de l'avent inversé",
-        body: "L’idée ? Chaque jour du mois de Décembre, mettez un petit cadeau dans une boîte que vous irez offrir à un voisin démuni le jour de Noël",
-        image_url: false,
-        action: "Je me lance",
+        id: 16,
+        title: "Où passer des fêtes solidaires ?",
+        body: "Passer un réveillon entouré(e) de voisins avec et sans abri, près de chez vous ? Oui c'est possible, on a recensé pour vous toutes les initiatives solidaires !",
+        image_url: true,
+        action: "Découvrir",
         author: User.find_by(email: "guillaume@entourage.social"),
         webview: true,
-        position: 6
-      )
-
-      announcements.push Announcement.new(
-        id: 13,
-        title: "Entourage recrute ses ambassadeurs",
-        body: "Vous voulez vous engager pour rendre votre quartier plus humain avec les personnes SDF ? Devenez ambassadeur Entourage, une mission de bénévolat exaltante !",
-        image_url: false,
-        action: "Je postule",
-        author: User.find_by(email: "guillaume@entourage.social"),
-        webview: true,
-        position: 11
+        position: 10
       )
 
       announcements
