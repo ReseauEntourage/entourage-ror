@@ -80,7 +80,7 @@ RSpec.describe Entourage, type: :model do
     ) }
     it { expect(build(:outing, metadata: {starts_at: "lol", street_address: 42}).tap(&:save).errors.messages).to eq(
       metadata: ["'starts_at' must be a valid ISO 8601 date/time string",
-                 "'street_address' of type Fixnum did not match the following type: string"]
+                 "'street_address' of type Integer did not match the following type: string"]
     ) }
   end
 
