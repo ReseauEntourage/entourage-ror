@@ -232,7 +232,7 @@ GEM
     naught (1.1.0)
     net-http-persistent (2.9.4)
     netrc (0.11.0)
-    newrelic_rpm (3.12.1.298)
+    newrelic_rpm (5.6.0.349)
     nokogiri (1.8.5)
       mini_portile2 (~> 2.3.0)
     pg (0.21.0)
@@ -449,7 +449,7 @@ DEPENDENCIES
   mailjet
   mixpanel-ruby
   momentjs-rails (~> 2.10.3)
-  newrelic_rpm (~> 3.12.1.298)
+  newrelic_rpm (~> 5.6.0)
   pg (~> 0.21)
   pry-rails (~> 0.3.4)
   puma (~> 3.12)
