@@ -66,4 +66,13 @@ module ConversationService
   def self.id_list_digest list
     Digest::SHA256.hexdigest(list.join(','))[0, 32]
   end
+
+  def self.unread_count_for user
+    Entourage
+    .where(group_type: :conversation)
+    .joins(:join_requests)
+    .merge(user.join_requests.accepted)
+    .where("entourages.feed_updated_at > last_message_read or last_message_read is null")
+    .uniq.count
+  end
 end

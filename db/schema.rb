@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181211133039) do
+ActiveRecord::Schema.define(version: 20181218165427) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -216,6 +216,7 @@ ActiveRecord::Schema.define(version: 20181211133039) do
     t.string   "group_type",       limit: 14,                  null: false
     t.jsonb    "metadata",                    default: {},     null: false
     t.boolean  "public",                      default: false
+    t.datetime "feed_updated_at"
   end
 
   add_index "entourages", ["country", "postal_code"], name: "index_entourages_on_country_and_postal_code", using: :btree
@@ -512,6 +513,7 @@ ActiveRecord::Schema.define(version: 20181211133039) do
     t.integer  "number_of_people", default: 0, null: false
     t.float    "latitude"
     t.float    "longitude"
+    t.datetime "feed_updated_at"
   end
 
   add_index "tours", ["latitude", "longitude"], name: "index_tours_on_latitude_and_longitude", using: :btree

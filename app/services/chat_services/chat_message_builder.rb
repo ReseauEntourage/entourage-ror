@@ -44,7 +44,7 @@ module ChatServices
       end
 
       if success
-        join_request.update(last_message_read: message.created_at)
+        join_request.update_column(:last_message_read, message.created_at)
         AsyncService.new(self.class).send_notification(message)
         callback.on_success.try(:call, message)
       else

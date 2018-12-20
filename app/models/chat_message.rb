@@ -18,7 +18,13 @@ class ChatMessage < ActiveRecord::Base
   attribute :metadata, Experimental::JsonbWithSchema.new
 
   after_create do |message|
-    message.messageable.touch unless message.message_type == 'status_update'
+    unless message.message_type == 'status_update'
+      FeedUpdatedAt.update(
+        message.messageable_type,
+        message.messageable_id,
+        message.created_at
+      )
+    end
   end
 
   def self.joins_group_join_requests

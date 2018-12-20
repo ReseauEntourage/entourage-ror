@@ -67,7 +67,7 @@ class JoinRequest < ActiveRecord::Base
 
     # touch the group for new pending join requests
     if (id_changed? || status_changed?) && status == 'pending'
-      joinable.touch
+      FeedUpdatedAt.update(joinable_type, joinable_id, requested_at || created_at)
     end
 
     if joinable.group_type == 'conversation'

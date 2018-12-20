@@ -56,6 +56,23 @@
 </style>
 <div class="container">
   <h1>Messages privés</h1>
+
+  <div class="btn-group btn-group-sm" style="margin-bottom: 15px">
+    <%=
+      link_to(
+        "Tous",
+        params.except(:unread),
+        class: "btn btn-#{params.key?(:unread) == false ? :primary : :default}"
+      )
+    %>
+    <%=
+      link_to(
+        "Non-lus",
+        params.merge(unread: true),
+        class: "btn btn-#{params.key?(:unread) == true ? :primary : :default}"
+      )
+    %>
+  </div>
 </div>
 
 <div class="conversations">

@@ -48,6 +48,7 @@ Rails.application.routes.draw do
       resources :conversations, only: [:index, :show] do
         member do
           post :message
+          post :read_status
         end
       end
 

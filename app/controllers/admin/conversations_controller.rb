@@ -9,17 +9,27 @@ module Admin
         .where(group_type: :conversation)
         .joins(:join_requests)
         .merge(@user.join_requests.accepted)
-        .joins("join last_chat_messages on last_chat_messages.entourage_id = entourages.id")
-        .order("last_chat_messages.created_at desc")
         .select(%(
           entourages.*,
-          last_chat_messages.id as last_message_id,
-          last_message_read is null or last_message_read < last_chat_messages.created_at as unread
+          last_message_read < feed_updated_at or last_message_read is null as unread
         ))
+        .order("feed_updated_at desc")
         .page(params[:page])
         .per(50)
 
-      @last_message = Hash[ChatMessage.where(id: @conversations.map(&:last_message_id)).map { |m| [m.messageable_id, m] }]
+      if params.key?(:unread)
+        @conversations = @conversations
+          .where("last_message_read < feed_updated_at or last_message_read is null")
+      end
+
+      @last_message =
+        ChatMessage
+        .select('distinct on (messageable_id) *')
+        .where(messageable_type: :Entourage)
+        .where(messageable_id: @conversations.map(&:id))
+        .order(:messageable_id, created_at: :desc)
+
+      @last_message = Hash[@last_message.map { |m| [m.messageable_id, m] }]
 
       @recipient_ids = JoinRequest.accepted.where(joinable_type: :Entourage, joinable_id: @conversations.map(&:id)).where.not(user_id: @user.id).pluck(:joinable_id, :user_id).group_by(&:first).each { |_, a| a.replace a.map(&:last) }
 
@@ -29,6 +39,9 @@ module Admin
     def show
       user = moderator
       @conversation = find_conversation params[:id], user: user
+      join_request = user.join_requests.where(joinable: @conversation).first!
+      @read = join_request.last_message_read.present? &&
+              join_request.last_message_read >= @conversation.feed_updated_at
 
       @recipients =
         if @conversation.new_record?
@@ -62,7 +75,7 @@ module Admin
 
       chat_builder.create do |on|
         on.success do |message|
-          join_request.touch(:last_message_read)
+          join_request.update_column(:last_message_read, message.created_at)
           redirect_to admin_conversation_path(conversation)
         end
 
@@ -70,6 +83,28 @@ module Admin
           redirect_to admin_conversation_path(conversation), alert: "Erreur lors de l'envoi du message : #{message.errors.full_messages.to_sentence}"
         end
       end
+    end
+
+    def read_status
+      status = params[:status]&.to_sym
+      raise unless status.in?([:read, :unread])
+
+      user = moderator
+      @conversation = find_conversation params[:id], user: user
+
+      timestamp =
+        case status
+        when :read
+          Time.now
+        when :unread
+          nil
+        end
+
+      JoinRequest.where(joinable: @conversation).update_all(last_message_read: timestamp)
+
+      filters = {}
+      filters[:unread] = true if status == :unread
+      redirect_to admin_conversations_path(filters)
     end
 
     private
