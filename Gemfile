@@ -38,7 +38,7 @@ gem 'mixpanel-ruby'
 gem 'httparty'
 gem 'sentry-raven'
 gem 'ruby-stemmer'
-gem 'json-schema',                    '~> 2.6.2'
+gem 'json-schema',                    '~> 2.8.1'
 gem 'icalendar'
 
 group :development, :test do
