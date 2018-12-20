@@ -21,7 +21,7 @@ gem 'mailchimp-api',                  '~> 2.0.6'
 gem 'pg',                             '~> 0.21'
 gem 'newrelic_rpm',                   '~> 5.6.0'
 gem 'kaminari',                       '~> 0.16.3'
-gem 'redis',                          '~> 3.2.1'
+gem 'redis',                          '~> 4.1.0'
 gem 'bcrypt',                         '~> 3.1.10'
 gem 'sidekiq',                        '~> 3.4.1'
 gem 'simplify_rb',                    '~> 0.1.2'
@@ -68,7 +68,7 @@ group :test do
   gem 'timecop',                      '~> 0.8.0'
   gem 'factory_girl_rails',           '~> 4.5.0'
   gem 'webmock'
-  gem 'fakeredis',                    '~> 0.5.0'
+  gem 'fakeredis',                    '~> 0.7.0'
   gem 'test_after_commit'
 end
 
