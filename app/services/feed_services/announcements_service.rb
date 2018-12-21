@@ -19,7 +19,7 @@ module FeedServices
 
       feeds = @feeds.to_a
 
-      announcements.each do |announcement|
+      announcements.sort_by(&:position).each do |announcement|
         position = [feeds.length, announcement.position].min
         feeds.insert(position, announcement.feed_object)
       end
@@ -42,29 +42,29 @@ module FeedServices
         action: "Je postule",
         author: User.find_by(email: "guillaume@entourage.social"),
         webview: true,
-        position: 1
+        position: 8
       )
 
       announcements.push Announcement.new(
         id: 14,
-        title: "Don de Chaleur Humaine",
-        body: "C'est Noël : aidez Entourage à réchauffer le cœur des sans-abri et à déployer nos actions partout en France",
+        title: "Participez à l'élan de générosité",
+        body: "Entourage a besoin de votre soutien pour réchauffer le cœur des sans-abri en cette fin d'année",
         image_url: true,
         action: "Je fais un don",
         author: User.find_by(email: "guillaume@entourage.social"),
         webview: false,
-        position: 5
+        position: 2
       )
 
       announcements.push Announcement.new(
         id: 16,
-        title: "Où passer des fêtes solidaires ?",
-        body: "Passer un réveillon entouré(e) de voisins avec et sans abri, près de chez vous ? Oui c'est possible, on a recensé pour vous toutes les initiatives solidaires !",
+        title: "Où passer un réveillon solidaire ?",
+        body: "On a répertorié pour vous les initiatives qui ont besoin de vous, auprès des personnes SDF",
         image_url: true,
         action: "Découvrir",
         author: User.find_by(email: "guillaume@entourage.social"),
         webview: true,
-        position: 10
+        position: 14
       )
 
       announcements
