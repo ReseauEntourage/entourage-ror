@@ -84,6 +84,11 @@ module DigestEmail
         group.postal_code
       end
 
+    if group.group_type == 'outing'
+      date = I18n.l group.metadata[:starts_at], format: "le %A %-d %B"
+      location = "#{date}, à #{location}"
+    end
+
     url = "#{ENV['WEBSITE_URL']}/entourages/#{group.uuid_v2}"
     url_parameters.compact!
     url += "?" + url_parameters.compact.to_query if url_parameters.any?
