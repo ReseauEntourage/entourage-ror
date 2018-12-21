@@ -37,12 +37,24 @@ module DigestEmail
 
     groups = groups.map { |g| group_payload(g, url_parameters: url_parameters) }
 
+    return unless user.address &&
+                  user.address.country == 'FR' &&
+                  user.address.postal_code&.starts_with?('75')
+
+    if user.address.postal_code =~ /\A750\d\d\z/
+      arrondissement = user.address.postal_code.last(2).gsub(/^0/, '')
+      area_name = "Paris #{arrondissement}e"
+    else
+      area_name = "Paris"
+    end
+
     MemberMailer.mailjet_email(
       to: user,
       template_id: 592472,
       campaign_name: campaign_name,
       variables: {
-        actions: groups
+        actions: groups,
+        area_name: area_name
       }
     )
   end
