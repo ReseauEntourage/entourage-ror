@@ -36,6 +36,8 @@ groups
   outcome
   success_reason
   failure_reason
+  status
+  event_date (only for events, gradually introduced since 2018-08-29)
 
 users_groups (indicates that a user has joined a group)
   user_id

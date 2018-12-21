@@ -80,7 +80,9 @@ namespace :data_science do
         :outcome_reported_at,
         :outcome,
         :success_reason,
-        :failure_reason
+        :failure_reason,
+        :status,
+        :event_date
       ]
 
       groups
@@ -120,7 +122,9 @@ namespace :data_science do
             group.moderation&.action_outcome_reported_at.presence,
             group.moderation&.action_outcome.presence,
             group.moderation&.action_success_reason.presence,
-            group.moderation&.action_failure_reason.presence
+            group.moderation&.action_failure_reason.presence,
+            group.status,
+            (group.metadata[:starts_at].to_date if group.group_type == 'outing')
           ]
         end
     end
@@ -144,7 +148,7 @@ namespace :data_science do
         csv.puts [
           request.user_id,
           request.joinable_id,
-          request.created_at.to_date,
+          (request.requested_at || request.created_at).to_date,
           request.status,
           request.last_message_read&.to_date
         ]
