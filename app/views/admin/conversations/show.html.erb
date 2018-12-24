@@ -31,7 +31,9 @@
     <% end %>
   </h2>
 
-  <% if @read %>
+  <% if @new_conversation %>
+    <% # no (un)read management %>
+  <% elsif @read %>
     <%= button_to "Marquer comme non-lu",
           read_status_admin_conversation_path(
             @conversation.id || @conversation.uuid_v2,

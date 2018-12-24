@@ -39,8 +39,10 @@ module Admin
     def show
       user = moderator
       @conversation = find_conversation params[:id], user: user
-      join_request = user.join_requests.where(joinable: @conversation).first!
-      @read = join_request.last_message_read.present? &&
+      join_request = user.join_requests.where(joinable: @conversation).first
+      @new_conversation = join_request.nil?
+      @read = join_request.present? &&
+              join_request.last_message_read.present? &&
               join_request.last_message_read >= @conversation.feed_updated_at
 
       @recipients =
