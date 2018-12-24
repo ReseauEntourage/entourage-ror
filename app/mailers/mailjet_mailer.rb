@@ -112,7 +112,7 @@ class MailjetMailer < ActionMailer::Base
     end
 
     variables.reverse_merge!(
-      unsubscribe_url: UserServices::EmailPreferences.update_url(
+      unsubscribe_url: EmailPreferencesService.update_url(
                          user: user, accepts_emails: false)
     )
 

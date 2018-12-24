@@ -1,7 +1,7 @@
 require 'experimental/jsonb_set'
 
 class User < ActiveRecord::Base
-  include UserServices::EmailPreferences::Callback
+  include EmailPreferencesService::Callback
 
   validates_presence_of [:phone, :sms_code, :token, :validation_status, :marketing_referer_id]
   validates_uniqueness_of :phone, scope: :community

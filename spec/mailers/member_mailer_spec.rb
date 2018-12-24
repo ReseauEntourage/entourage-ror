@@ -12,7 +12,7 @@ def default_variables
     user_id: UserServices::EncodedId.encode(user.id),
     webapp_login_link: "https://www.entourage.social/app?auth=#{auth_token}",
     login_link: "https://www.entourage.social/deeplink/feed?auth=#{auth_token}",
-    unsubscribe_url: UserServices::EmailPreferences.update_url(user: user, accepts_emails: false)
+    unsubscribe_url: EmailPreferencesService.update_url(user: user, accepts_emails: false)
   }
 end
 

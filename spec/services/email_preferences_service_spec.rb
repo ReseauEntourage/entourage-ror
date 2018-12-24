@@ -1,7 +1,7 @@
 require 'rails_helper'
 
-describe UserServices::EmailPreferences do
-  let(:service) { UserServices::EmailPreferences }
+describe EmailPreferencesService do
+  let(:service) { EmailPreferencesService }
   before do
     service.stub(:enable_callback?) { true }
     allow(MailchimpService).to receive(:update)

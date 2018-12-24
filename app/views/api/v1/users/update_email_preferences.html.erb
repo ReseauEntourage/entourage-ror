@@ -20,7 +20,7 @@
   </div>
   <div class="button-wrapper">
     <%= link_to "Je souhaite me réabonner",
-          UserServices::EmailPreferences.update_url(
+          EmailPreferencesService.update_url(
             user: @user, accepts_emails: true),
           class: "button" %>
   </div>
@@ -32,7 +32,7 @@
   </div>
   <div class="button-wrapper">
     <%= link_to "Je souhaite me désabonner",
-          UserServices::EmailPreferences.update_url(
+          EmailPreferencesService.update_url(
             user: @user, accepts_emails: false),
           class: "button" %>
   </div>
