@@ -2,9 +2,8 @@ module JoinRequestAcceptTracking
   extend ActiveSupport::Concern
 
   included do
-    after_initialize { reset_accept_tracking }
+    include CustomTimestampAttributesForUpdate
     before_save :track_accept
-    after_save :reset_accept_tracking
   end
 
   private
@@ -22,14 +21,6 @@ module JoinRequestAcceptTracking
       timestamps_to_update.push :accepted_at
     end
 
-    @accept_tracking_timestamp_attributes_for_update = timestamps_to_update
-  end
-
-  def timestamp_attributes_for_update
-    super + @accept_tracking_timestamp_attributes_for_update
-  end
-
-  def reset_accept_tracking
-    @accept_tracking_timestamp_attributes_for_update = []
+    @custom_timestamp_attributes_for_update = timestamps_to_update
   end
 end
