@@ -7,9 +7,12 @@ class MailjetMailer < ActionMailer::Base
                     from: email_with_name("guillaume@entourage.social", "Le Réseau Entourage"),
                     groups: {},
                     variables: {},
-                    payload: {}
+                    payload: {},
+                    unsubscribe_category: :default
     user = to
-    return unless user.email.present? && user.accepts_emails
+    return unless user.email.present? &&
+                  EmailPreferencesService.accepts_emails?(
+                    user: user, category: unsubscribe_category)
 
     merge_default_variables = true
     default_variables = {
@@ -113,12 +116,13 @@ class MailjetMailer < ActionMailer::Base
 
     variables.reverse_merge!(
       unsubscribe_url: EmailPreferencesService.update_url(
-                         user: user, accepts_emails: false)
+                         user: user, accepts_emails: false, category: unsubscribe_category)
     )
 
     payload.reverse_merge!(
       type: campaign_name,
       user_id: user.id,
+      unsubscribe_category: unsubscribe_category
     )
 
     # Generate an email with an empty part.

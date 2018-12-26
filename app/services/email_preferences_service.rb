@@ -1,49 +1,124 @@
 module EmailPreferencesService
-  def self.update_url(user:, accepts_emails:)
+  def self.update_url user:, accepts_emails:, category:
     Rails.application.routes.url_helpers.email_preferences_api_v1_user_url(
-      user, accepts_emails: accepts_emails,
+      user, accepts_emails: accepts_emails, category: category,
       signature: SignatureService.sign(user.id),
       host: API_HOST,
-      protocol: :https
+      protocol: (Rails.env.development? ? :http : :https)
     )
   end
 
-  def self.enable_callback?
+  def self.enable_mailchimp_callback?
     !Rails.env.test?
   end
 
-  def self.sync_mailchimp_subscription_status user
-    if user.accepts_emails
+  def self.sync_mailchimp_subscription_status email_preference
+    return unless email_preference.email_category_id == category_id('newsletter')
+
+    if email_preference.subscribed
       MailchimpService.update(
-        :newsletter, user.email,
+        :newsletter, email_preference.user.email,
         status: :subscribed
       ) rescue MailchimpService::ResourceNotFound
     else
-      MailchimpService.add_or_update(
-        :newsletter, user.email,
-        status: :unsubscribed,
-        status_if_new: :unsubscribed,
-        unsubscribe_reason: "via le site"
-      ) rescue MailchimpService::ForgottenEmailNotSubscribed
+      MailchimpService.strong_unsubscribe(
+        list: :newsletter,
+        email: email_preference.user.email,
+        reason: "via le site"
+      )
     end
   rescue MailchimpService::ConfigError => e
     Raven.capture_exception(e)
   end
 
-  module Callback
-    extend ActiveSupport::Concern
+  def self.reload_categories
+    @categories = Hash[EmailCategory.pluck(:name, :id)].symbolize_keys
+  end
 
-    included do
-      after_commit :sync_mailchimp_subscription_status_async
+  def self.categories_ids
+    (@categories || reload_categories)
+  end
+
+  def self.categories
+    categories_ids.keys
+  end
+
+  def self.category_id name
+    categories_ids[name&.to_sym]
+  end
+
+  def self.user_preferences user
+    EmailCategory
+      .joins(%(
+        left join email_preferences
+          on email_preferences.email_category_id = email_categories.id and
+             email_preferences.user_id = #{Integer(user.id)}
+      ))
+      .select(:name, :description, "coalesce(subscribed, true) as subscribed")
+  end
+
+  def self.update_subscription user:, subscribed:, category:
+    category = category.to_sym
+
+    if category == :all
+      EmailPreference.transaction do
+        categories.each do |category|
+            update_subscription(
+              user: user, subscribed: subscribed, category: category)
+        end
+      end
+    else
+      ensure_category_exists!(category)
+      EmailPreference
+        .find_or_initialize_by(user: user, email_category_id: category_id(category))
+        .update(subscribed: subscribed)
+    end
+  end
+
+  def self.update user:, preferences:
+    preferences.symbolize_keys
+    current_value = Hash[user_preferences(user).map { |c| [c.name.to_sym, c.subscribed] }]
+    updates = {}
+    EmailPreferencesService.categories.each do |category|
+      requested_value = preferences[category].in?(ActiveRecord::ConnectionAdapters::Column::TRUE_VALUES)
+      if requested_value != current_value[category]
+        updates[category] = requested_value
+      end
     end
 
-    private
+    success = true
 
-    def sync_mailchimp_subscription_status_async
-      return unless EmailPreferencesService.enable_callback?
-      return unless previous_changes.keys.include?('accepts_emails')
-      AsyncService.new(EmailPreferencesService)
-        .sync_mailchimp_subscription_status(self)
+    EmailPreference.transaction do
+      updates.each do |category, requested_value|
+        success &&= update_subscription(
+          user: user, subscribed: requested_value, category: category)
+      end
+    end if updates.any?
+
+    success
+  end
+
+  def self.ensure_category_exists! category
+    category = category&.to_sym
+
+    return true if category == :all || category_id(category) != nil
+
+    exception = RuntimeError.new("EmailCategory #{category.inspect} not found")
+    if Rails.env.development?
+      raise exception
+    else
+      Raven.capture_exception(exception)
     end
+
+    false
+  end
+
+  def self.accepts_emails? user:, category:
+    unsubscribes = EmailPreference.where(user: user, subscribed: false)
+    ensure_category_exists!(category)
+    if category != :all
+      unsubscribes = unsubscribes.where(email_category_id: category_id(category))
+    end
+    unsubscribes.exists? == false
   end
 end

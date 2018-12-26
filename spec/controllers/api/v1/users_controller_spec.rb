@@ -644,12 +644,22 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
 
   describe "DELETE destroy" do
     before { Timecop.freeze(Time.parse("10/10/2010").at_beginning_of_day) }
+    before { MailchimpService.stub(:strong_unsubscribe) }
     let!(:user) { FactoryGirl.create(:pro_user, deleted: false, phone: "0612345678", email: "foo@bar.com") }
     before { delete :destroy, id: user.to_param, token: user.token }
     it { expect(user.reload.deleted).to be true }
     it { expect(user.reload.phone).to eq("+33612345678-2010-10-10 00:00:00") }
     it { expect(user.reload.email).to eq("foo@bar.com-2010-10-10 00:00:00") }
     it { expect(response.status).to eq(200) }
+    it do
+      expect(MailchimpService)
+      .to have_received(:strong_unsubscribe)
+      .with(
+        list: :newsletter,
+        email: user.email,
+        reason: "compte supprimé dans l'app"
+      )
+    end
   end
 
   describe 'POST #report' do
@@ -763,6 +773,50 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
             'google_place_id' => 'new-place-id',
           )
         end
+      end
+    end
+  end
+
+  describe 'GET #email_preferences' do
+    let(:category) { create :email_category }
+    let(:other_category) { create :email_category }
+
+    let(:user) { create :public_user}
+
+    context "unsubscribe from a specific category" do
+      subject { get :update_email_preferences, id: user.id, category: category.name, accepts_emails: false, signature: SignatureService.sign(user.id) }
+
+      it do
+        expect { subject }
+        .to change { EmailPreferencesService.accepts_emails?(category: category.name, user: user) }
+        .to(false)
+      end
+
+      it do
+        subject
+        expect(response.body).to match category.description
+      end
+
+      it do
+        expect { subject }
+        .not_to change { EmailPreferencesService.accepts_emails?(category: other_category.name, user: user) }
+        .from(true)
+      end
+    end
+
+    context "unsubscribe from all emails" do
+      subject { get :update_email_preferences, id: user.id, category: :all, accepts_emails: false, signature: SignatureService.sign(user.id) }
+
+      it do
+        expect { subject }
+        .to change { EmailPreferencesService.accepts_emails?(category: category.name, user: user) }
+        .to(false)
+      end
+
+      it do
+        expect { subject }
+        .to change { EmailPreferencesService.accepts_emails?(category: other_category.name, user: user) }
+        .to(false)
       end
     end
   end

@@ -13,8 +13,10 @@ module MailjetService
 
   def self.handle_unsub payload
     return unless payload['event'] == 'unsub'
+    category = JSON.parse(payload['Payload'])['unsubscribe_category'] rescue :all
     User.where(email: payload['email']).each do |user|
-      user.update(accepts_emails: false)
+      EmailPreferencesService.update_subscription(
+        user: user, subscribed: false, category: category)
     end
   end
 end

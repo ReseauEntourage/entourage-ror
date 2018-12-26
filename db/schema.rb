@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181218165427) do
+ActiveRecord::Schema.define(version: 20181224161107) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -111,6 +111,13 @@ ActiveRecord::Schema.define(version: 20181218165427) do
     t.integer "organization_id"
   end
 
+  create_table "email_categories", force: :cascade do |t|
+    t.string "name",        limit: 30,  null: false
+    t.string "description", limit: 100, null: false
+  end
+
+  add_index "email_categories", ["name"], name: "index_email_categories_on_name", unique: true, using: :btree
+
   create_table "email_deliveries", force: :cascade do |t|
     t.integer  "user_id",  null: false
     t.string   "campaign", null: false
@@ -118,6 +125,15 @@ ActiveRecord::Schema.define(version: 20181218165427) do
   end
 
   add_index "email_deliveries", ["user_id", "campaign"], name: "index_email_deliveries_on_user_id_and_campaign", using: :btree
+
+  create_table "email_preferences", force: :cascade do |t|
+    t.integer  "user_id",                 null: false
+    t.integer  "email_category_id",       null: false
+    t.boolean  "subscribed",              null: false
+    t.datetime "subscription_changed_at", null: false
+  end
+
+  add_index "email_preferences", ["user_id", "email_category_id"], name: "index_email_preferences_on_user_id_and_email_category_id", unique: true, using: :btree
 
   create_table "encounters", force: :cascade do |t|
     t.datetime "date"
@@ -616,7 +632,7 @@ ActiveRecord::Schema.define(version: 20181218165427) do
     t.datetime "first_sign_in_at"
     t.datetime "onboarding_sequence_start_at"
     t.integer  "address_id"
-    t.boolean  "accepts_emails",                           default: true,        null: false
+    t.boolean  "accepts_emails_deprecated",                default: true,        null: false
   end
 
   add_index "users", ["address_id"], name: "index_users_on_address_id", using: :btree

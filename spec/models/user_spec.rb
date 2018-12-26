@@ -183,18 +183,4 @@ describe User, :type => :model do
     invitation = FactoryGirl.create(:entourage_invitation, invitee: user)
     expect(user.invitations).to eq([invitation])
   end
-
-  describe "accepts emails" do
-    it "accepts emails by default" do
-      user = create :public_user
-      expect(user.accepts_emails).to be true
-    end
-
-    it "can't be null" do
-      user = create :public_user
-      user.accepts_emails = nil
-      expect(user.save).to be false
-      expect(user.errors.full_messages).to eq(["Accepte de reçevoir des emails n'est pas inclus(e) dans la liste"])
-    end
-  end
 end

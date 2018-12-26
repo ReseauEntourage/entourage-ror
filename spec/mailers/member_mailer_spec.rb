@@ -12,7 +12,7 @@ def default_variables
     user_id: UserServices::EncodedId.encode(user.id),
     webapp_login_link: "https://www.entourage.social/app?auth=#{auth_token}",
     login_link: "https://www.entourage.social/deeplink/feed?auth=#{auth_token}",
-    unsubscribe_url: EmailPreferencesService.update_url(user: user, accepts_emails: false)
+    unsubscribe_url: EmailPreferencesService.update_url(user: user, accepts_emails: false, category: :default)
   }
 end
 
@@ -28,18 +28,14 @@ def expect_mailjet_email opts={}, &block
 
     options[:payload].reverse_merge!(
       type: options[:campaign_name],
-      user_id: user.id
+      user_id: user.id,
+      unsubscribe_category: :default
     )
     options
   end
 
   context "when user has no email" do
     before { user.update_column(:email, nil) }
-    it { expect(mail.message).to be_a ActionMailer::Base::NullMail }
-  end
-
-  context "when user doesn't accept emails" do
-    before { user.update_column(:accepts_emails, false) }
     it { expect(mail.message).to be_a ActionMailer::Base::NullMail }
   end
 

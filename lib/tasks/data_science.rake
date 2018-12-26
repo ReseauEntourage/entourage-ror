@@ -25,6 +25,8 @@ namespace :data_science do
         :deleted
       ]
 
+      unsubscribes = EmailPreference.for_category(:default).where(subscribed: false).pluck(:user_id)
+
       users.includes(:address).find_each do |user|
         csv.puts [
           user.id,
@@ -36,7 +38,7 @@ namespace :data_science do
           user.address&.postal_code,
           user.email&.split('@')&.last&.squish&.gsub(/\-\d{4}-\d\d-\d\d.*/, '')&.presence,
           user.user_type,
-          user.accepts_emails,
+          !unsubscribes.include?(user.id),
           user.deleted
         ]
       end

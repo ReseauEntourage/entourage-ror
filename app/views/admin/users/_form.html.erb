@@ -29,19 +29,26 @@
     </div>
   </div>
 
-  <div class="control-group">
-    <%= f.label :accepts_emails, class: "control-label" %>
-    <div class="controls">
-      <label class="radio-inline" style="padding-top: 0; margin-bottom: 5px;">
-        <%= f.radio_button :accepts_emails, true %>
-        Oui
-      </label>
-      <label class="radio-inline" style="padding-top: 0; margin-bottom: 5px;">
-        <%= f.radio_button :accepts_emails, false %>
-        Non
-      </label>
+  <% unless @user.new_record? %>
+    <div class="control-group">
+      <label class="control-label">Préférences email</label>
+      <table class="table" style="width: auto">
+        <% EmailPreferencesService.user_preferences(@user).each do |category| %>
+          <tr>
+            <td>
+              <%= category.description %>
+              <i class="text-muted">(<%= category.name %>)</i>
+            </td>
+            <td style="font-weight: bold">
+              <%= check_box_tag(
+                    "email_preferences[#{category.name}]", "1",
+                    category.subscribed) %>
+            </td>
+          </tr>
+        <% end %>
+      </table>
     </div>
-  </div>
+  <% end %>
 
   <div class="control-group">
     <%= f.label :phone,"Téléphone", class: "control-label" %>

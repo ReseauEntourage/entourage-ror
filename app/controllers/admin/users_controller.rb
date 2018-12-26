@@ -55,7 +55,10 @@ module Admin
     end
 
     def update
-      if @user.update(user_params)
+      email_prefs_success = EmailPreferencesService.update(
+        user: user, preferences: params[:email_preferences])
+
+      if email_prefs_success && @user.update(user_params)
         set_coordinated_organizations(user)
         render :edit, notice: "utilisateur mis à jour"
       else

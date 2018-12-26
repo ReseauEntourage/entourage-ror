@@ -216,9 +216,20 @@ module Api
       def update_email_preferences
         @user = User.find(params[:id])
 
+        @category = params.key?(:category) ? params[:category]&.to_sym : :all
+
+        unless EmailPreferencesService.categories.include?(@category) ||
+               @category == :all
+          @success = false
+          return render layout: 'landing'
+        end
+
         if SignatureService.validate(@user.id, params[:signature]) &&
-           @user.update(accepts_emails: params[:accepts_emails])
+           EmailPreferencesService.update_subscription(
+            user: @user, category: @category, subscribed: params[:accepts_emails])
           @success = true
+          @accepts_emails = EmailPreferencesService.accepts_emails?(
+            user: @user, category: @category)
         else
           @success = false
         end

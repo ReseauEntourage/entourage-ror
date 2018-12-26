@@ -1,3 +1,12 @@
+<style>
+  .link-button-wrapper {
+    margin: 12px 0 30px;
+  }
+
+  .gray {
+    color: #999;
+  }
+</style>
 <% if @success == false %>
   <div class="text" style="padding-top: 30px">
     <strong>Erreur !</strong><br/>
@@ -12,28 +21,48 @@
           class: "button" %>
     </div>
   </div>
-<% elsif @user.accepts_emails == false %>
+<% elsif @accepts_emails == false %>
   <div class="text" style="padding-top: 30px">
     <strong>Désabonnement effectué !</strong><br/>
-    Vous ne recevrez plus d'emails de la part d'Entourage sur votre adresse<br/>
-    <strong><%= @user.email %></strong>
+    Vous ne recevrez plus d'emails
+    <% if @category == :all %>
+      de la part d'Entourage
+    <% else %>
+      du type <strong><%= EmailCategory.find_by(name: @category).description %></strong>
+    <% end %>
+    <br/>
+    sur votre adresse <strong><%= @user.email %></strong>
   </div>
   <div class="button-wrapper">
     <%= link_to "Je souhaite me réabonner",
           EmailPreferencesService.update_url(
-            user: @user, accepts_emails: true),
+            user: @user, accepts_emails: true, category: @category),
           class: "button" %>
   </div>
-<% elsif @user.accepts_emails == true %>
+  <% if @category != :all %>
+    <div class="link-button-wrapper">
+      <%= link_to "Je souhaite me désabonner de tous les emails d'Entourage",
+            EmailPreferencesService.update_url(
+              user: @user, accepts_emails: false, category: :all),
+            class: "text gray" %>
+    </div>
+  <% end %>
+<% elsif @accepts_emails == true %>
   <div class="text" style="padding-top: 30px">
     <strong>Abonnement effectué !</strong><br/>
-    Vous recevrez désormais les emails envoyés par Entourage sur votre adresse<br/>
-    <strong><%= @user.email %></strong>
+    Vous recevrez désormais les emails
+    <% if @category == :all %>
+       envoyés par Entourage
+    <% else %>
+      du type <strong><%= t "email_preferences.category.#{@category}" %></strong>
+    <% end %>
+    <br/>
+    sur votre adresse <strong><%= @user.email %></strong>
   </div>
   <div class="button-wrapper">
     <%= link_to "Je souhaite me désabonner",
           EmailPreferencesService.update_url(
-            user: @user, accepts_emails: false),
+            user: @user, accepts_emails: false, category: @category),
           class: "button" %>
   </div>
 <% end %>

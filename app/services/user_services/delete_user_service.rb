@@ -5,11 +5,19 @@ module UserServices
     end
 
     def delete
+      email = user.email
       user.update_columns(deleted: true,
                           phone: add_timestamp(:phone),
                           email: add_timestamp(:email))
-      # use `update` to trigger post-update MailChimp sync
-      user.update(accepts_emails: false)
+      AsyncService.new(self.class).mailchimp_unsubscribe(email)
+    end
+
+    def self.mailchimp_unsubscribe email
+      MailchimpService.strong_unsubscribe(
+        list: :newsletter,
+        email: email,
+        reason: "compte supprimé dans l'app"
+      )
     end
 
     private

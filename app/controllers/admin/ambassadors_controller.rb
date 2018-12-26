@@ -35,7 +35,10 @@ module Admin
         user.organization_id = user_params["organization_id"]
       end
 
-      if @user.update(user_params)
+      email_prefs_success = EmailPreferencesService.update(
+        user: user, preferences: params[:email_preferences])
+
+      if email_prefs_success && @user.update(user_params)
         add_relation(params[:user_relation_id])
         render :edit, notice: "Ambassadeur mis à jour"
       else
