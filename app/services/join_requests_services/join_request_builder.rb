@@ -43,11 +43,9 @@ module JoinRequestsServices
         elsif is_onboarding
           # nothing!
         else
-          NewJoinRequestNotifyJob.set(wait: 1.minute).perform_later(joinable.class.name,
+          NewJoinRequestNotifyJob.perform_later(joinable.class.name,
                                              joinable.id,
-                                             user.id,
-                                             "NEW_JOIN_REQUEST",
-                                             message)
+                                             user.id)
         end
 
         if joinable.is_a?(Entourage)
@@ -66,12 +64,13 @@ module JoinRequestsServices
 
       display_name = user.first_name.strip
       display_name += " " + user.last_name.strip.first if user.last_name.present?
+
+      object = joinable.respond_to?(:title) ? joinable.title : "Nouveau membre"
       join_message = "#{display_name} vient de rejoindre votre #{GroupService.name joinable}"
-      join_message += ' "' + joinable.title + '"' if joinable.is_a?(Entourage)
 
       PushNotificationService.new.send_notification(
         display_name,
-        "Nouveau membre",
+        object,
         join_message,
         [joinable.user],
         {

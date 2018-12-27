@@ -47,7 +47,7 @@ describe Api::V1::Tours::UsersController do
         create(:join_request, user: user, joinable: tour, status: "accepted")
         expect_any_instance_of(PushNotificationService).to receive(:send_notification).with("John D",
                                                                                             "Demande en attente",
-                                                                                            "Un nouveau membre souhaite rejoindre votre maraude",
+                                                                                            "John D souhaite rejoindre votre maraude",
                                                                                             [tour.user],
                                                                                             {:joinable_id=>tour.id, :joinable_type=>"Tour", :group_type=>'tour', :type=>"NEW_JOIN_REQUEST", :user_id => new_member.id}
         )

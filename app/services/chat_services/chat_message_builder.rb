@@ -59,9 +59,16 @@ module ChatServices
     def self.send_notification(message)
       group = message.messageable
 
+      group_title =
+        if !group.respond_to?(:title) || group.group_type == 'conversation'
+          nil
+        else
+          group.title
+        end
+
       PushNotificationService.new.send_notification(
         UserPresenter.new(user: message.user).display_name,
-        "Nouveau message",
+        group_title,
         message.content,
         recipients(message),
         {

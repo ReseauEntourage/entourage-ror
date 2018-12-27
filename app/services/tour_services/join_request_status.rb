@@ -30,12 +30,12 @@ module TourServices
       end
 
       if user != joinable_author
-        joinable_description = "#{GroupService.name joinable, :l} de #{author_name}"
-        joinable_description += " : #{joinable.title}" if joinable.respond_to?(:title)
+        object = joinable.respond_to?(:title) ? joinable.title : "Demande acceptée"
+        message = "Vous venez de rejoindre #{GroupService.name joinable, :l} de #{author_name}"
 
         PushNotificationService.new.send_notification(author_name,
-                                                      "Demande acceptée",
-                                                      "Vous venez de rejoindre #{joinable_description}",
+                                                      object,
+                                                      message,
                                                       User.where(id: user.id),
                                                       {
                                                           joinable_id: join_request.joinable_id,

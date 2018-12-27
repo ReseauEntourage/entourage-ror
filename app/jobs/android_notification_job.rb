@@ -11,6 +11,12 @@ class AndroidNotificationJob < ActiveJob::Base
       #notification.badge = badge if badge
       notification.app = app
       notification.registration_ids = device_ids
+
+      if extra[:type].in?(['JOIN_REQUEST_ACCEPTED', 'ENTOURAGE_INVITATION', 'INVITATION_STATUS'])
+        # the Android app displays the sender as title, we want the group title
+        sender = object
+      end
+
       notification.data = { sender: sender, object: object, content: {message: content, extra: extra} }
       NotificationTruncationService.truncate_message! notification
       notification.save!

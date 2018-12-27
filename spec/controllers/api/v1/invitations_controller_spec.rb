@@ -115,7 +115,7 @@ describe Api::V1::InvitationsController do
 
       it "sends notification for accepted invitation" do
         expect_any_instance_of(PushNotificationService).to receive(:send_notification).with("John D",
-                                                                                            "Invitation acceptée",
+                                                                                            "foobar",
                                                                                             "John D a accepté votre invitation",
                                                                                             [invitation.inviter],
                                                                                             {type: "INVITATION_STATUS",
@@ -154,7 +154,7 @@ describe Api::V1::InvitationsController do
 
       it "sends notification for accepted invitation" do
         expect_any_instance_of(PushNotificationService).to receive(:send_notification).with("John D",
-                                                                                            "Invitation refusée",
+                                                                                            "foobar",
                                                                                             "John D a refusé votre invitation",
                                                                                             [invitation.inviter],
                                                                                             {type: "INVITATION_STATUS",
