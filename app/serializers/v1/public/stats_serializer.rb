@@ -4,7 +4,7 @@ module V1
       def initialize()
       end
 
-      def to_json
+      def as_json
         stats
       end
 

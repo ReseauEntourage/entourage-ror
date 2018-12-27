@@ -5,7 +5,7 @@ module Api
         def index
           json_stats = $redis.get("entourage::stats")
           if json_stats.blank?
-            json_stats = ::V1::Public::StatsSerializer.new.to_json
+            json_stats = JSON.fast_generate(::V1::Public::StatsSerializer.new.as_json)
             $redis.setex("entourage::stats", 1.hour, json_stats)
           end
           render json: json_stats, status: 200
