@@ -17,11 +17,15 @@ module JoinRequestsServices
         when ['entourage', 'outing'] then 'participant'
         else raise 'Unhandled'
         end
-      
-      join_request.joinable.number_of_people += 1
 
-      if join_request.save
+      success = true
+      ActiveRecord::Base.transaction do
+        success &&= joinable.class.increment_counter(:number_of_people, joinable.id) == 1
+        success &&= join_request.save
+        raise ActiveRecord::Rollback unless success
+      end
 
+      if success
         title   = "Invitation acceptée"
         content = "Un membre de l'équipe Entourage a rejoint votre #{GroupService.name(joinable)} pour vous aider."
         meta    = { joinable_id: join_request.joinable_id,

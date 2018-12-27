@@ -12,7 +12,7 @@ describe Api::V1::EntouragesController do
     end
 
     context "signed in" do
-      let!(:entourage) { FactoryGirl.create(:entourage, user: user, status: "open") }
+      let!(:entourage) { FactoryGirl.create(:entourage, :joined, user: user, status: "open") }
       subject { JSON.parse(response.body) }
 
       it "renders JSON response" do
@@ -39,8 +39,8 @@ describe Api::V1::EntouragesController do
                                            "latitude"=>1.122,
                                            "longitude"=>2.345
                                        },
-                                       "join_status"=>"not_requested",
-                                       "number_of_unread_messages"=>nil,
+                                       "join_status"=>"accepted",
+                                       "number_of_unread_messages"=>0,
                                        "created_at"=> entourage.created_at.iso8601(3),
                                        "updated_at"=> entourage.updated_at.iso8601(3),
                                        "description" => nil,
@@ -457,7 +457,7 @@ describe Api::V1::EntouragesController do
     end
 
     context "signed in" do
-      let!(:user_entourage) { FactoryGirl.create(:entourage, user: user) }
+      let!(:user_entourage) { FactoryGirl.create(:entourage, :joined, user: user) }
 
       context "entourage exists" do
         before { patch :update, id: user_entourage.to_param, entourage: {title: "new_title"}, token: user.token }
@@ -482,8 +482,8 @@ describe Api::V1::EntouragesController do
                                                                "latitude"=>1.122,
                                                                "longitude"=>2.345
                                                            },
-                                                           "join_status"=>"not_requested",
-                                                           "number_of_unread_messages"=>nil,
+                                                           "join_status"=>"accepted",
+                                                           "number_of_unread_messages"=>0,
                                                            "created_at"=> user_entourage.created_at.iso8601(3),
                                                            "updated_at"=> user_entourage.reload.updated_at.iso8601(3),
                                                            "description" => nil,

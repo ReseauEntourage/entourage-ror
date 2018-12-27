@@ -10,7 +10,7 @@ describe ModerationServices::EntourageModeration do
       let!(:admin) { create :admin_user }
 
       it 'should change number_of_people by 1' do
-        expect { subject }.to change { entourage.number_of_people }.by(1) 
+        expect { subject }.to change { entourage.reload.number_of_people }.by(1)
       end
 
       let(:admin_join_request) { entourage.join_requests.find_by(user: admin) }

@@ -30,8 +30,9 @@ FactoryGirl.define do
 
     trait :joined do
       after(:create) do |tour, evaluator|
-        role = evaluator.join_request_user == tour.user ? :creator : :member
-        evaluator.join_request_user.join_requests.create!(joinable: tour, role: role, status: JoinRequest::ACCEPTED_STATUS)
+        user = evaluator.join_request_user || tour.user
+        role = user == tour.user ? :creator : :member
+        user.join_requests.create!(joinable: tour, role: role, status: JoinRequest::ACCEPTED_STATUS)
       end
     end
   end

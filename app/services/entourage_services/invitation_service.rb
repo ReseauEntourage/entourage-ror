@@ -6,7 +6,15 @@ module EntourageServices
 
     def accept!
       join_request = build_join_request(status: JoinRequest::ACCEPTED_STATUS)
-      if join_request.save
+
+      success = true
+      ActiveRecord::Base.transaction do
+        success &&= invitable.class.increment_counter(:number_of_people, invitable.id) == 1
+        success &&= join_request.save
+        raise ActiveRecord::Rollback unless success
+      end
+
+      if success
         invitation.update(status: EntourageInvitation::ACCEPTED_STATUS)
 
         group = invitation.invitable
@@ -38,6 +46,10 @@ module EntourageServices
 
     private
     attr_reader :invitation
+
+    def invitable
+      @invitable ||= invitation.invitable
+    end
 
     def build_join_request status:
       join_request = JoinRequest.new(user: invitation.invitee, joinable: invitation.invitable, status: status)

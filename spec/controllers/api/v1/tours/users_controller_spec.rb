@@ -27,6 +27,7 @@ describe Api::V1::Tours::UsersController do
       end
 
       context "duplicate request to join tour" do
+        let(:tour) { create :tour }
         before { create(:join_request, user: user, joinable: tour) }
         before { post :create, tour_id: tour.to_param, token: user.token }
         it { expect(tour.members).to eq([user]) }
@@ -38,7 +39,7 @@ describe Api::V1::Tours::UsersController do
                                            "avatar_url"=>nil,
                                            "requested_at"=>JoinRequest.last.created_at.iso8601(3),
                                            "partner"=>nil}) }
-        it { expect(tour.reload.number_of_people).to eq(1) }
+        it { expect(tour.reload.number_of_people).to eq(0) }
       end
 
       it "sends a notifications to tour owner" do
@@ -210,7 +211,7 @@ describe Api::V1::Tours::UsersController do
       let!(:tour_member) { create(:join_request, user: user, joinable: tour, status: "accepted") }
       before { delete :destroy, tour_id: tour.to_param, id: tour.user.id, token: user.token }
       it { expect(response.status).to eq(400) }
-      it { expect(tour.reload.number_of_people).to eq(1) }
+      it { expect(tour.reload.number_of_people).to eq(2) }
     end
 
     context "not member of the tour" do

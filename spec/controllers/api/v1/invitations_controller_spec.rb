@@ -90,7 +90,8 @@ describe Api::V1::InvitationsController do
   end
 
   describe "PUT update" do
-    let!(:invitation) { FactoryGirl.create(:entourage_invitation, invitee: user) }
+    let(:group) { create :entourage, :joined }
+    let!(:invitation) { FactoryGirl.create(:entourage_invitation, invitee: user, invitable: group) }
     context "user not signed in" do
       before { put :update, id: invitation.to_param}
       it { expect(response.status).to eq(401) }
@@ -102,6 +103,7 @@ describe Api::V1::InvitationsController do
         it { expect(response.status).to eq(204) }
         it { expect(JoinRequest.where(user: invitation.invitee, joinable: invitation.invitable, status: JoinRequest::ACCEPTED_STATUS).count).to eq(1) }
         it { expect(EntourageInvitation.last.status).to eq(EntourageInvitation::ACCEPTED_STATUS) }
+        it { expect(invitation.invitable.reload.number_of_people).to eq invitation.invitable.join_requests.accepted.count }
       end
 
       context "accept another user invite" do

@@ -23,6 +23,11 @@ FactoryGirl.define do
         else raise 'Unhandled: %s:%s' % [joinable.community.slug, joinable.group_type]
         end
     end
+
+    after(:create) do |join_request, _|
+      group = join_request.joinable
+      group.update_column(:number_of_people, group.join_requests.accepted.count)
+    end
   end
 
 end
