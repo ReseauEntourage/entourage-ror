@@ -21,6 +21,8 @@ module Api
           14 => :heart,
           15 => :megaphone,
           16 => :pin,
+          17 => :heart,
+          18 => :video,
         }[params[:id].to_i]
 
         redirect_to view_context.asset_url("assets/announcements/icons/#{icon}.png")
@@ -43,6 +45,8 @@ module Api
           13 => 'ambassadors.jpg',
           14 => 'collecte-2018.jpg',
           16 => 'noel.jpg',
+          17 => '2.png',
+          18 => 'scb.png',
         }[params[:id].to_i]
 
         return render nothing: true, status: :not_found if image.nil?
@@ -93,6 +97,10 @@ module Api
           url = "https://blog.entourage.social/2018/11/30/noel-solidaire-faisons-tous-le-calendrier-de-lavent-inverse/"
         when 16
           url = "https://blog.entourage.social/2018/11/29/noel-solidaire-2018-aupres-des-personnes-sdf-du-benevolat-pour-le-reveillon/"
+        when 17
+          url = "https://www.entourage.social/"
+        when 18
+          url = "http://www.simplecommebonjour.org/?p=8"
         end
 
         mixpanel.track("Opened Announcement", { "Announcement" => id })

@@ -35,33 +35,33 @@ module FeedServices
       return announcements unless user.community == :entourage
 
       announcements.push Announcement.new(
-        id: 13,
-        title: "Entourage recrute ses ambassadeurs",
-        body: "Devenez ambassadeur Entourage, une mission de bénévolat exaltante ! Pour s'engager et rendre votre quartier plus humain avec les personnes SDF.",
+        id: 17,
+        title: "3,2,1 ... Bonne année 🎉",
+        body: "Toute l'équipe Entourage vous souhaite une bonne année 2019 ! Que celle-ci vous remplisse de joix et de bonheur 👌 Ensemble répandons la chaleur humaine dans nos rues 👫",
         image_url: true,
-        action: "Je postule",
+        action: "#chaleurhumaine",
+        author: User.find_by(email: "guillaume@entourage.social"),
+        webview: true,
+        position: 2
+      )
+
+      announcements.push Announcement.new(
+        id: 18,
+        title: "Bonne résolution #1",
+        body: "Et si on commencait 2019, en s'intéressant au monde de la rue pour le comprendre ? Découvrez notre guide pédagogique \"Simple comme Bonjour\" pour créer du lien avec vos voisins sans-abri et avoir des conseils concrets !",
+        image_url: true,
+        action: "Voir la vidéo",
         author: User.find_by(email: "guillaume@entourage.social"),
         webview: true,
         position: 8
       )
 
       announcements.push Announcement.new(
-        id: 14,
-        title: "Participez à l'élan de générosité",
-        body: "Entourage a besoin de votre soutien pour réchauffer le cœur des sans-abri en cette fin d'année",
+        id: 13,
+        title: "Entourage recrute ses ambassadeurs",
+        body: "Devenez ambassadeur Entourage, une mission de bénévolat exaltante ! Pour s'engager et rendre votre quartier plus humain avec les personnes SDF.",
         image_url: true,
-        action: "Je fais un don",
-        author: User.find_by(email: "guillaume@entourage.social"),
-        webview: false,
-        position: 2
-      )
-
-      announcements.push Announcement.new(
-        id: 16,
-        title: "Où passer un réveillon solidaire ?",
-        body: "On a répertorié pour vous les initiatives qui ont besoin de vous, auprès des personnes SDF",
-        image_url: true,
-        action: "Découvrir",
+        action: "Je postule",
         author: User.find_by(email: "guillaume@entourage.social"),
         webview: true,
         position: 14
