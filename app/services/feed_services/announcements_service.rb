@@ -37,7 +37,7 @@ module FeedServices
       announcements.push Announcement.new(
         id: 17,
         title: "3,2,1 ... Bonne année 🎉",
-        body: "Toute l'équipe Entourage vous souhaite une bonne année 2019 ! Que celle-ci vous remplisse de joix et de bonheur 👌 Ensemble répandons la chaleur humaine dans nos rues 👫",
+        body: "Toute l'équipe Entourage vous souhaite une bonne année 2019 ! Que celle-ci vous remplisse de joie et de bonheur 👌 Ensemble répandons la chaleur humaine dans nos rues 👫",
         image_url: true,
         action: "#chaleurhumaine",
         author: User.find_by(email: "guillaume@entourage.social"),
