@@ -5,7 +5,9 @@ task unread_reminder_email: :environment do
     )
     .uniq.pluck(:user_id)
 
-  users.find_each do |user|
-    UnreadReminderEmail.deliver_to(user)
+  user_ids.each_slice(1000) do |id_slice|
+    User.where(id: id_slice).each do |user|
+      UnreadReminderEmail.deliver_to(user)
+    end
   end
 end
