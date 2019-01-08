@@ -26,19 +26,17 @@ class MemberMailer < MailjetMailer
   end
 
   def reactivation_day_20(user)
-    track_delivery user_id: user.id, campaign: :reactivation_day_20,
-                   deliver_only_once: true
     mailjet_email to: user,
                   template_id: 456175,
-                  campaign_name: :relance_j_20
+                  campaign_name: :relance_j_20,
+                  deliver_only_once: true
   end
 
   def reactivation_day_40(user)
-    track_delivery user_id: user.id, campaign: :reactivation_day_40,
-                   deliver_only_once: true
     mailjet_email to: user,
                   template_id: 456194,
-                  campaign_name: :relance_j_40
+                  campaign_name: :relance_j_40,
+                  deliver_only_once: true
   end
 
   def action_follow_up_day_10(action)
@@ -105,6 +103,12 @@ class MemberMailer < MailjetMailer
       ),
       'X-Mailjet-Campaign' => :tour_report,
       'X-MJ-CustomID' => "tour_report-#{tour.id}"
+    )
+
+    track_delivery(
+      user_id: @user.id,
+      campaign: :tour_report,
+      detailed: true
     )
 
     mail(

@@ -11,8 +11,13 @@ describe EmailDeliveryHooks do
         mail { nil }
       end
 
-      def tracked_email user_id
+      def timestamp_tracked_email user_id
         track_delivery user_id: user_id, campaign: :tracked_email
+        mail { nil }
+      end
+
+      def fully_tracked_email user_id
+        track_delivery user_id: user_id, campaign: :tracked_email, detailed: true
         mail { nil }
       end
 
@@ -29,28 +34,57 @@ describe EmailDeliveryHooks do
     end
   end
 
-  let(:user_id) { 42 }
+  let(:user) { create :public_user }
 
   describe "email tracking" do
-    describe "sending tracked_email" do
-      subject { -> { @mailer.tracked_email(user_id).deliver_now } }
+    describe "sending timestamp_tracked_email" do
+      subject { -> { @mailer.timestamp_tracked_email(user.id).deliver_now } }
+
+      it "doesn't create an EmailDelivery" do
+        expect { subject.call }.not_to change { EmailDelivery.count }
+      end
+
+      it "updates the user's last_email_sent_at" do
+        # rounding seconds to ignore differences nanoseconds precision in db
+        time = Time.at(Time.now.to_i)
+        expect { Timecop.freeze(time) { subject.call } }
+        .to change { user.reload.last_email_sent_at }
+        .to(time)
+      end
+    end
+
+    describe "sending fully_tracked_email" do
+      subject { -> { @mailer.fully_tracked_email(user.id).deliver_now } }
+
+      it "updates the user's last_email_sent_at" do
+        # rounding seconds to ignore differences nanoseconds precision in db
+        time = Time.at(Time.now.to_i)
+        expect { Timecop.freeze(time) { subject.call } }
+        .to change { user.reload.last_email_sent_at }
+        .to(time)
+      end
+
       it "creates a correct EmailDelivery" do
         # rounding seconds to ignore differences nanoseconds precision in db
         time = Time.at(Time.now.to_i)
         Timecop.freeze(time) { subject.call }
 
         expect(EmailDelivery.last&.attributes&.symbolize_keys).to include(
-          user_id: user_id,
-          campaign: 'tracked_email',
+          user_id: user.id,
           sent_at: time
         )
+        expect(EmailDelivery.last&.campaign&.name).to eq 'tracked_email'
       end
     end
 
     describe "sending 2 unique_email" do
-      subject { -> { 2.times { @mailer.unique_email(user_id).deliver_now } } }
+      subject { -> { 2.times { @mailer.unique_email(user.id).deliver_now } } }
       it "delivers only one email" do
         expect(subject).to change { ActionMailer::Base.deliveries.count }.by 1
+      end
+
+      it "creates only one EmailDelivery" do
+        expect(subject).to change { EmailDelivery.count }.by 1
       end
     end
 

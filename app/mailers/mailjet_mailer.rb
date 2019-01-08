@@ -8,7 +8,9 @@ class MailjetMailer < ActionMailer::Base
                     groups: {},
                     variables: {},
                     payload: {},
-                    unsubscribe_category: :default
+                    unsubscribe_category: :default,
+                    deliver_only_once: false
+
     user = to
     return unless user.email.present? &&
                   EmailPreferencesService.accepts_emails?(
@@ -145,6 +147,13 @@ class MailjetMailer < ActionMailer::Base
       'X-MJ-Vars' => JSON.fast_generate(variables),
       'X-MJ-EventPayload' => JSON.fast_generate(payload),
       'X-Mailjet-Campaign' => campaign_name
+    )
+
+    track_delivery(
+      user_id: user.id,
+      campaign: campaign_name,
+      deliver_only_once: deliver_only_once,
+      detailed: true
     )
 
     if ENV['MAILJET_SAMPLING_ADDRESS'].present?

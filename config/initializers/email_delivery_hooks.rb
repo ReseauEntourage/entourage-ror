@@ -10,22 +10,39 @@ module EmailDeliveryHooks
       register_observer    EmailDeliveryHooks
     end
 
-    def track_delivery user_id:, campaign:, deliver_only_once: false
-      headers(
-        TRACKING_HEADER => EmailDeliveryHooks.serialize(
+    def set_delivery_hook_data data={}
+      existing = @_message.instance_variable_get(:@delivery_hooks_data) || {}
+      updated = existing.merge(data)
+      @_message.instance_variable_set(:@delivery_hooks_data, updated)
+    end
+
+    def track_delivery user_id:, campaign: nil, deliver_only_once: false, detailed: :auto
+      detailed = deliver_only_once if detailed == :auto
+
+      if deliver_only_once && campaign.blank?
+        raise "`deliver_only_once` requires campaign to be present"
+      end
+
+      if deliver_only_once && !detailed
+        raise "`deliver_only_once` can not be used without `detailed` tracking"
+      end
+
+      set_delivery_hook_data(
+        tracking: {
           user_id: user_id,
-          campaign: campaign
-        ),
-        ONLY_ONCE_HEADER => deliver_only_once
+          campaign: campaign,
+          detailed: detailed
+        },
+        deliver_only_once: deliver_only_once
       )
     end
 
     def collect_samples rate:, address:
-      headers(
-        SAMPLING_HEADER => EmailDeliveryHooks.serialize(
+      set_delivery_hook_data(
+        sampling: {
           rate: rate,
           address: address
-        )
+        }
       )
     end
   end
@@ -36,11 +53,6 @@ module EmailDeliveryHooks
   def self.delivering_email(message)
     sample_emails(message) if sampling_required?(message)
     drop_duplicates(message) if deliver_only_once?(message)
-
-    # delete the header that are not needed anymore
-    [SAMPLING_HEADER, ONLY_ONCE_HEADER].each do |h|
-      message[h] = nil
-    end
   rescue => e
     handle_exception(e, message)
   end
@@ -49,10 +61,9 @@ module EmailDeliveryHooks
   # for a subset of the recipients,
   # send a copy of every email sent to these users
   # to a secondary address for debugging
-  SAMPLING_HEADER = 'X-Entourage-Sampling'
 
   def self.sample_emails(message)
-    options = parse(message[SAMPLING_HEADER].value)
+    options = data(message)[:sampling]
     if Array(message.to).any? { |email| sample(rate: options[:rate],
                                                key: email.downcase) }
       message.bcc = [*message.bcc, options[:address]].uniq
@@ -60,7 +71,7 @@ module EmailDeliveryHooks
   end
 
   def self.sampling_required?(message)
-    message[SAMPLING_HEADER].present?
+    data(message).key?(:sampling)
   end
 
   def self.sample(rate:, key:)
@@ -73,40 +84,55 @@ module EmailDeliveryHooks
   # Only-once delivery :
   # make sure that certain emails are never sent more than once to
   # an user. This requires Delivery tracking (see below)
-  TRACKING_HEADER  = 'X-Entourage-Track'
-  ONLY_ONCE_HEADER = 'X-Entourage-Only-Once'
 
   def self.drop_duplicates(message)
-    attributes = message[TRACKING_HEADER].try(:value)
+    attributes = data(message)[:tracking]&.slice(:user_id, :campaign)
     raise "Tracking header required to drop duplicates" if attributes.nil?
 
-    if EmailDelivery.exists?(parse(attributes))
+    if EmailDelivery.for_campaign(attributes[:campaign])
+                    .exists?(user_id: attributes[:user_id])
       message.perform_deliveries = false
     end
   end
 
   def self.deliver_only_once?(message)
-    message[ONLY_ONCE_HEADER].try(:value) == 'true'
+    data(message)[:deliver_only_once] == true
   end
 
   #
   # After delivery
   #
   def self.delivered_email(message)
-    track_delivery(message) if tracking_required?(message)
+    return unless message.perform_deliveries
+    track_delivery_timestamp(message)
+    track_detailed_delivery(message) if detailed_tracking_required?(message)
   rescue => e
     handle_exception(e, message)
   end
 
-  # Delivery tracking:
-  # for some campaigns, keep a record in the database that
-  # a given user has been sent the message
-  def self.track_delivery(message)
-    EmailDelivery.create!(parse(message[TRACKING_HEADER].value))
+  # Delivery tracking
+
+  # update users.last_email_sent_at
+  def self.track_delivery_timestamp(message)
+    user_id = data(message).dig(:tracking, :user_id)
+    if user_id
+      User.where(id: user_id).update_all([
+        "last_email_sent_at = greatest(last_email_sent_at, ?)",
+        Time.now
+      ])
+    end
   end
 
-  def self.tracking_required?(message)
-    message[TRACKING_HEADER].present?
+  # for some campaigns, keep a record in the database that
+  # a given user has been sent the message
+  def self.detailed_tracking_required?(message)
+    data(message).dig(:tracking, :detailed) == true
+  end
+
+  def self.track_detailed_delivery(message)
+    tracking = data(message)[:tracking]
+    campaign = EmailCampaign.find_or_create_by!(name: tracking[:campaign])
+    campaign.deliveries.create!(user_id: tracking[:user_id])
   end
 
 
@@ -123,7 +149,7 @@ module EmailDeliveryHooks
     JSON.fast_generate(value)
   end
 
-  def self.parse(value)
-    JSON.parse(value).symbolize_keys
+  def self.data(message)
+    message.instance_variable_get(:@delivery_hooks_data) || {}
   end
 end

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181224161107) do
+ActiveRecord::Schema.define(version: 20190108145617) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -111,6 +111,10 @@ ActiveRecord::Schema.define(version: 20181224161107) do
     t.integer "organization_id"
   end
 
+  create_table "email_campaigns", force: :cascade do |t|
+    t.string "name", limit: 40, null: false
+  end
+
   create_table "email_categories", force: :cascade do |t|
     t.string "name",        limit: 30,  null: false
     t.string "description", limit: 100, null: false
@@ -119,12 +123,12 @@ ActiveRecord::Schema.define(version: 20181224161107) do
   add_index "email_categories", ["name"], name: "index_email_categories_on_name", unique: true, using: :btree
 
   create_table "email_deliveries", force: :cascade do |t|
-    t.integer  "user_id",  null: false
-    t.string   "campaign", null: false
-    t.datetime "sent_at",  null: false
+    t.integer  "user_id",           null: false
+    t.datetime "sent_at",           null: false
+    t.integer  "email_campaign_id", null: false
   end
 
-  add_index "email_deliveries", ["user_id", "campaign"], name: "index_email_deliveries_on_user_id_and_campaign", using: :btree
+  add_index "email_deliveries", ["user_id", "email_campaign_id"], name: "index_email_deliveries_on_user_id_and_email_campaign_id", using: :btree
 
   create_table "email_preferences", force: :cascade do |t|
     t.integer  "user_id",                 null: false
@@ -633,6 +637,7 @@ ActiveRecord::Schema.define(version: 20181224161107) do
     t.datetime "onboarding_sequence_start_at"
     t.integer  "address_id"
     t.boolean  "accepts_emails_deprecated",                default: true,        null: false
+    t.datetime "last_email_sent_at"
   end
 
   add_index "users", ["address_id"], name: "index_users_on_address_id", using: :btree
