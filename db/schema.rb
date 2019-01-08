@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190108145617) do
+ActiveRecord::Schema.define(version: 20190108172700) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -114,6 +114,8 @@ ActiveRecord::Schema.define(version: 20190108145617) do
   create_table "email_campaigns", force: :cascade do |t|
     t.string "name", limit: 40, null: false
   end
+
+  add_index "email_campaigns", ["name"], name: "index_email_campaigns_on_name", unique: true, using: :btree
 
   create_table "email_categories", force: :cascade do |t|
     t.string "name",        limit: 30,  null: false
