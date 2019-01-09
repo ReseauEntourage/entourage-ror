@@ -238,7 +238,7 @@ module Admin
     def entourage_params
       metadata_keys = params.dig(:entourage, :metadata).try(:keys) || []
       metadata_keys -= [:starts_at]
-      params.require(:entourage).permit(:status, :title, :description, :category, :entourage_type, :display_category, :latitude, :longitude, metadata: metadata_keys)
+      params.require(:entourage).permit(:status, :title, :description, :category, :entourage_type, :display_category, :latitude, :longitude, :public, metadata: metadata_keys)
     end
 
     def metadata_starts_at

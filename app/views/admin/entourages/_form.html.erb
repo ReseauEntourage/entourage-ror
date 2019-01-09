@@ -31,6 +31,22 @@
     </div>
   </div>
 
+  <% if @entourage.public_accessibility_options.count > 1 %>
+    <div class="control-group">
+      <label class="control-label">Public (pas de join request)</label>
+      <div class="controls">
+        <label class="radio-inline" style="padding-top: 0; margin-bottom: 5px;">
+          <%= f.radio_button :public, true %>
+          Oui
+        </label>
+        <label class="radio-inline" style="padding-top: 0; margin-bottom: 5px;">
+          <%= f.radio_button :public, false %>
+          Non
+        </label>
+      </div>
+    </div>
+  <% end %>
+
   <% if @entourage.group_type == 'outing' %>
     <div class="control-group">
       <label class="control-label">Date et heure</label>
