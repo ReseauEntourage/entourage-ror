@@ -150,7 +150,19 @@ module Admin
     end
 
     def update
-      if EntourageServices::EntourageBuilder.update(entourage: @entourage, params: entourage_params)
+      update_params = entourage_params.to_h.with_indifferent_access
+      if metadata_starts_at.present?
+        update_params[:metadata] ||= {}
+        update_params[:metadata][:starts_at] =
+          Date
+            .strptime(metadata_starts_at[:date])
+            .in_time_zone
+            .change(
+              hour: metadata_starts_at[:hour],
+              min:  metadata_starts_at[:min]
+            )
+      end
+      if EntourageServices::EntourageBuilder.update(entourage: @entourage, params: update_params)
         redirect_to [:edit, :admin, @entourage], notice: "Entourage mis à jour"
       else
         render :edit, alert: "Erreur lors de la mise à jour"
@@ -224,7 +236,13 @@ module Admin
     end
 
     def entourage_params
-      params.require(:entourage).permit(:status, :title, :description, :category, :entourage_type, :display_category, :latitude, :longitude)
+      metadata_keys = params.dig(:entourage, :metadata).try(:keys) || []
+      metadata_keys -= [:starts_at]
+      params.require(:entourage).permit(:status, :title, :description, :category, :entourage_type, :display_category, :latitude, :longitude, metadata: metadata_keys)
+    end
+
+    def metadata_starts_at
+      params.dig(:metadata, :starts_at)&.slice(:date, :hour, :min)
     end
 
     def chat_messages_params

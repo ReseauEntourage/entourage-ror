@@ -31,6 +31,46 @@
     </div>
   </div>
 
+  <% if @entourage.group_type == 'outing' %>
+    <div class="control-group">
+      <label class="control-label">Date et heure</label>
+      <div class="controls">
+        <%= date_field_tag(
+              "metadata[starts_at][date]",
+              @entourage.metadata[:starts_at]&.to_date&.to_s,
+              required: true) %>
+        <%= select_hour(
+              @entourage.metadata[:starts_at]&.hour,
+              {},
+              name: "metadata[starts_at][hour]",
+              required: true) %>
+        <%= select_minute(
+              @entourage.metadata[:starts_at]&.min,
+              {},
+              name: "metadata[starts_at][min]",
+              required: true) %>
+      </div>
+    </div>
+
+    <div class="control-group">
+      <label class="control-label" for="metadata_address">Adresse</label>
+      <%= text_field_tag nil, @entourage.metadata[:display_address],
+          id: :metadata_address,
+          class: "form-control",
+          required: true,
+          data: { last_valid: @entourage.metadata[:display_address] } %>
+      <%= hidden_field_tag 'entourage[latitude]', nil, disabled: true %>
+      <%= hidden_field_tag 'entourage[longitude]', nil, disabled: true %>
+      <%= hidden_field_tag 'entourage[country]', nil, disabled: true %>
+      <%= hidden_field_tag 'entourage[postal_code]', nil, disabled: true %>
+      <%= hidden_field_tag 'entourage[metadata][place_name]', nil, disabled: true %>
+      <%= hidden_field_tag 'entourage[metadata][street_address]', nil, disabled: true %>
+      <%= hidden_field_tag 'entourage[metadata][google_place_id]', nil, disabled: true %>
+    </div>
+
+  <% end %>
+
+  <% if @entourage.group_type == 'action' %>
   <div class="control-group">
     <%= f.label :display_category, "Catégorie affichée", class: "control-label" %>
     <div class="controls">
@@ -59,12 +99,75 @@
       </div>
     </div>
   </div>
+  <% end %>
 
   <br>
   <%= f.submit "Sauver", class: "btn btn-success" %>
   <%= link_to "Annuler", admin_entourages_path, class: "btn btn-default" %>
 <% end %>
 
+<% if @entourage.group_type == 'outing' %>
+  <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=<%= ENV['GOOGLE_FRONTEND_API_KEY'] %>&libraries=places&region=fr&language=fr"></script>
+
+  <script>
+    var input = document.getElementById('metadata_address');
+    var $input = $(input);
+    var options = {
+      fields: ['name', 'place_id', 'geometry.location', 'formatted_address', 'address_components']
+    };
+
+    autocomplete = new google.maps.places.Autocomplete(input, options);
+    autocomplete.addListener('place_changed', function() {
+      var place = this.getPlace();
+
+      if (typeof place.place_id === 'undefined') {
+        $input.removeClass('is-valid').addClass('is-invalid');
+        $input.siblings('input[type=hidden]').prop('disabled', true);
+      }
+      else {
+        $input.data('last-valid', $input.val());
+        $input.removeClass('is-invalid').addClass('is-valid');
+        $input.siblings('input[type=hidden]').prop('disabled', true);
+        var details = {
+          google_place_id: place.place_id,
+          latitude: place.geometry.location.lat(),
+          longitude: place.geometry.location.lng(),
+          place_name: place.name,
+          street_address: place.formatted_address,
+        };
+        var component;
+        for (var i in place.address_components) {
+          component = place.address_components[i];
+
+          if (component.types.indexOf('country') !== -1) {
+            details.country = component.short_name;
+          }
+          else if (component.types.indexOf('postal_code') !== -1) {
+            details.postal_code = component.short_name;
+          }
+        }
+        for (var attribute in details) {
+          $input.siblings('input[type=hidden][name*="[' + attribute + ']"]')
+            .prop('disabled', false)
+            .val(details[attribute]);
+        }
+      }
+    });
+
+    $input.on('blur', function() {
+      $input.val($input.data('last-valid'));
+      $input.removeClass('is-invalid is-valid');
+    });
+
+    $input.on('keydown', function(e) {
+      if (e.keyCode === 13) {
+        e.preventDefault();
+      }
+    })
+  </script>
+<% end %>
+
+<% if @entourage.group_type == 'action' %>
 <script>
   var autocomplete;
 
@@ -99,3 +202,4 @@
 
   initAutocomplete();
 </script>
+<% end %>
