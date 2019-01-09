@@ -77,9 +77,9 @@ describe Api::V1::Entourages::UsersController do
           it { expect(result['user']['status']).to eq('accepted') }
           it {
             expect(notif_service).to have_received(:send_notification).with(
-              "John D.",
+              "John D",
               'Nouveau membre',
-              "John D. vient de rejoindre votre action \"foobar1\"",
+              "John D vient de rejoindre votre action \"foobar1\"",
               [entourage.user],
               {
                 joinable_type: "Entourage",
@@ -98,9 +98,9 @@ describe Api::V1::Entourages::UsersController do
           it { pp result; expect(result['user']['status']).to eq('accepted') }
           it {
             expect(notif_service).to have_received(:send_notification).with(
-              "John D.",
+              "John D",
               'Nouveau membre',
-              "John D. vient de rejoindre votre action \"foobar1\"",
+              "John D vient de rejoindre votre action \"foobar1\"",
               [entourage.user],
               {
                 joinable_type: "Entourage",

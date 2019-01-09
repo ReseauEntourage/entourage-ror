@@ -65,7 +65,7 @@ module JoinRequestsServices
       joinable = join_request.joinable
 
       display_name = user.first_name.strip
-      display_name += " " + user.last_name.strip.first + "." if user.last_name.present?
+      display_name += " " + user.last_name.strip.first if user.last_name.present?
       join_message = "#{display_name} vient de rejoindre votre #{GroupService.name joinable}"
       join_message += ' "' + joinable.title + '"' if joinable.is_a?(Entourage)
 
