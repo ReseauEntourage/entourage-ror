@@ -39,7 +39,8 @@ module Admin
     def show
       user = moderator
       @conversation = find_conversation params[:id], user: user
-      join_request = user.join_requests.where(joinable: @conversation).first
+      join_requests = @conversation.join_requests.accepted.to_a
+      join_request = join_requests.find { |r| r.user_id == user.id }
       @new_conversation = join_request.nil?
       @read = join_request.present? &&
               join_request.last_message_read.present? &&
@@ -54,6 +55,21 @@ module Admin
 
       @recipients = @recipients.select(:id, :first_name, :last_name).to_a
       @chat_messages = @conversation.chat_messages.order(:created_at).includes(:user)
+
+      reads = join_requests
+        .reject { |r| r.last_message_read.nil? || r.user_id == user.id }
+        .reject { |r| r.last_message_read < @chat_messages.first.created_at if @chat_messages.any? }
+        .sort_by(&:last_message_read)
+      @last_reads = Hash.new { |h, k| h[k] = [] }
+      (@chat_messages + [nil]).each_cons(2) do |message, next_message|
+        while reads.any? &&
+              reads.first.last_message_read >= message.created_at &&
+              (!next_message ||
+               reads.first.last_message_read < next_message.created_at) do
+          @last_reads[message.id].push reads.shift
+        end
+      end
+
       @messages_author = moderator
     end
 

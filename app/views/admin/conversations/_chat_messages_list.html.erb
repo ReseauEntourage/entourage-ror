@@ -36,6 +36,7 @@
     font-size: 18px;
     border-radius: 0.2em;
     margin-top: 2px;
+    white-space: nowrap;
   }
   .conversation-actions {
     position: absolute;
@@ -154,6 +155,18 @@
         <span class="conversation-timestamp"><%= l message.created_at, format: "%H h %M" %></span>
       </div>
       <%= simple_format message.content %>
+
+      <% if @last_reads[message.id].any? %>
+        <div style="display: flex; align-items: center; font-size: 12px; margin-top: -10px; margin-right: -40px; justify-content: end; ; padding-right: 2px;">
+          <% @last_reads[message.id].each do |participation| %>
+            <% color[participation.user_id] ||= (color.count * 0.381966011 * 360).round %>
+
+            <div style="background-color: hsl(<%= color[participation.user_id] %>, 70%, 75%); font-size: 10px; margin-top: 0; margin-left: 2px;" class="conversation-icon" title="Lu par <%= participation.user.full_name %> <%= l participation.last_message_read, format: "%A %-d %B à %H:%M" %>">
+              <%= [participation.user.first_name.try(:first), participation.user.last_name.try(:first)].compact.join.upcase %>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
     </div>
   </div>
 <% end %>

@@ -119,6 +119,21 @@ module Admin
 
       @messages_author = User.find_by email: 'guillaume@entourage.social'
 
+      reads = @entourage.join_requests.accepted
+        .reject { |r| r.last_message_read.nil? || r.user_id == @messages_author.id }
+        .reject { |r| r.last_message_read < @chat_messages.first.created_at if @chat_messages.any? }
+        .sort_by(&:last_message_read)
+
+      @last_reads = Hash.new { |h, k| h[k] = [] }
+      (@chat_messages + [nil]).each_cons(2) do |message, next_message|
+        while reads.any? &&
+              reads.first.last_message_read >= message.created_at &&
+              (!next_message ||
+               reads.first.last_message_read < next_message.created_at) do
+          @last_reads[message.full_object_id].push reads.shift
+        end
+      end
+
       @unread_content = @moderator_read.nil?
 
       render layout: 'admin_large'
