@@ -63,7 +63,7 @@ module Admin
           .pluck(%(
             joinable_id,
             count(*),
-            count(case when updated_at <= now() - interval '24 hours' then 1 end)
+            count(case when updated_at <= now() - interval '48 hours' then 1 end)
           ))
       @requests_count = Hash[@requests_count.map { |id, total, late| [id, { total: total, late: late }]}]
       @requests_count.default = { total: 0, late: 0 }

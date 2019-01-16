@@ -69,7 +69,7 @@
           <td><%= member.phone %></td>
           <td>
             <% if request.is_pending? %>
-              <span class="text-<%= request.updated_at <= 24.hours.ago ? :danger : :muted %>">
+              <span class="text-<%= request.updated_at <= 48.hours.ago ? :danger : :muted %>">
                 <%= time_ago_in_words request.updated_at %>
               </span>
             <% end %>
