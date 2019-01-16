@@ -35,7 +35,7 @@ describe Api::V1::Tours::ChatMessagesController do
                                                                "created_at"=>chat_message2.created_at.iso8601(3)
                                                            }]}) }
 
-        it { expect(join_request.reload.last_message_read).to eq(chat_message2.created_at)}
+        it { expect(join_request.reload.last_message_read).to eq(chat_message1.created_at)}
       end
 
       context "i request older messages" do
