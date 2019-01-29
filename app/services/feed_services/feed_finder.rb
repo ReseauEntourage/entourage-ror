@@ -121,6 +121,7 @@ module FeedServices
       elsif before
         feeds.before(before).limit(25)
       else
+        @page = 1
         feeds.limit(25)
       end
 
@@ -271,11 +272,12 @@ module FeedServices
     end
 
     def insert_announcements(feeds:)
+      return feeds unless page.is_a?(Integer) && page > 0 && per.is_a?(Integer)
       feeds, announcements_metadata = AnnouncementsService.new(
         feeds: feeds,
         user: user,
-        page: page,
-        area: area
+        offset: (page - 1) * per,
+        area: area,
       ).feeds
 
       @metadata.merge!(announcements_metadata)
@@ -289,6 +291,7 @@ module FeedServices
 
       @cursor ||= 1
       @page = cursor
+      @per = 25
       feeds = feeds.offset((cursor - 1) * 25).limit(25 * cursor)
     end
 

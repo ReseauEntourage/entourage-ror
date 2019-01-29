@@ -23,6 +23,9 @@ module Api
           16 => :pin,
           17 => :heart,
           18 => :video,
+          19 => :megaphone,
+          20 => :video,
+          21 => :heart,
         }[params[:id].to_i]
 
         redirect_to view_context.asset_url("assets/announcements/icons/#{icon}.png")
@@ -42,11 +45,15 @@ module Api
 
       def image
         image = {
+          10 => 'guillaume.png',
           13 => 'ambassadors.jpg',
           14 => 'collecte-2018.jpg',
           16 => 'noel.jpg',
           17 => '2.png',
           18 => 'scb.png',
+          19 => 'grand-froid.png',
+          20 => 'paroles-de-femmes.jpg',
+          21 => 'talents-2018.jpg'
         }[params[:id].to_i]
 
         return render nothing: true, status: :not_found if image.nil?
@@ -101,6 +108,27 @@ module Api
           url = "https://www.entourage.social/"
         when 18
           url = "http://www.simplecommebonjour.org/?p=8"
+        when 19
+          url = "https://blog.entourage.social/2017/01/17/grand-froid-comment-aider-les-personnes-sans-abri-a-son-echelle/#site-content"
+        when 20
+          url = "http://www.simplecommebonjour.org/?p=12"
+        when 21
+          url = "https://blog.entourage.social/2019/01/02/soiree-de-noel-entourage-x-refettorio-la-rue-est-pleine-de-talents/#site-content"
+        end
+
+        begin
+          uri = URI(url)
+          url_params = CGI.parse(uri.query || '')
+          {
+            utm_source: 'app',
+            utm_medium: 'announcement-card'
+          }.each do |key, value|
+            url_params[key] = value unless url_params.key?(key)
+          end
+          uri.query = URI.encode_www_form(url_params).presence
+          url = uri.to_s
+        rescue => e
+          Raven.capture_exception(e)
         end
 
         mixpanel.track("Opened Announcement", { "Announcement" => id })
