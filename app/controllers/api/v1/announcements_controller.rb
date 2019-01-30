@@ -45,13 +45,13 @@ module Api
 
       def image
         image = {
-          10 => 'guillaume.png',
+          10 => 'guillaume.png?2',
           13 => 'ambassadors.jpg',
           14 => 'collecte-2018.jpg',
           16 => 'noel.jpg',
           17 => '2.png',
           18 => 'scb.png',
-          19 => 'grand-froid.png',
+          19 => 'grand-froid.png?2',
           20 => 'paroles-de-femmes.jpg',
           21 => 'talents-2018.jpg'
         }[params[:id].to_i]
