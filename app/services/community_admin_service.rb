@@ -44,10 +44,6 @@ module CommunityAdminService
   end
 
   def self.coordinator_users_filtered(user, neighborhoods, has_private_circle: nil, neighborhood_status: nil)
-    if user.roles.include?(:admin) && !neighborhoods.include?(:none) && has_private_circle.nil? && neighborhood_status.nil?
-      return users(neighborhoods)
-    end
-
     neighborhood_ids = Array(neighborhoods).map { |n| n.is_a?(Entourage) ? n.id : n }
 
     scope = User
@@ -95,7 +91,7 @@ module CommunityAdminService
 
     case neighborhood_status
     when nil
-      scope = scope.where("join_requests.status in ('pending', 'accepted')")
+      scope = scope.where("neighborhoods is null or join_requests.status in ('pending', 'accepted')")
     else
       scope = scope.where("neighborhoods is null or join_requests.status = ?", neighborhood_status)
     end
