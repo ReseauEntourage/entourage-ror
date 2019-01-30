@@ -18,7 +18,7 @@ module FeedServices
       feeds = @feeds.to_a
 
       announcements.sort_by(&:position).each do |announcement|
-        if announcement.position <= offset
+        if announcement.position < offset
           @offset += 1
         elsif announcement.position > offset + feeds.length
           break
@@ -59,13 +59,22 @@ module FeedServices
         position: 8
       )
 
+      conversation_uuid = ConversationService.uuid_for_participants(
+        [
+          User.find_by(email: "guillaume@entourage.social").id,
+          user.id
+        ],
+        validated: false
+      )
+      conversation_url = "#{ENV['DEEPLINK_SCHEME']}://entourage/#{conversation_uuid}"
+
       announcements.push Announcement.new(
         id: 10,
         title: "Besoin d’aide pour agir ? Contactez Guillaume",
         body: "Une question, une information ? Le modérateur de l’équipe est la pour répondre à toutes vos demandes !",
         image_url: true,
         action: "Je contacte",
-        url: "mailto:guillaume@entourage.social",
+        url: conversation_url,
         author: User.find_by(email: "guillaume@entourage.social"),
         webview: false,
         position: 14
