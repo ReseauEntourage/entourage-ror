@@ -20,6 +20,7 @@ namespace :entourage do
       csv = CSV.new(gz)
 
       csv.puts [
+        :group_type,
         :latitude,
         :longitude,
         :title,
@@ -28,13 +29,18 @@ namespace :entourage do
         :author_name,
         :author_avatar_url,
         :status,
+        :number_of_people,
         :uuid,
+        :event_starts_at,
+        :event_display_address,
+        :google_place_id
       ]
 
       entourages.includes(:user).find_each do |e|
         begin
           location_randomizer = EntourageServices::EntourageLocationRandomizer.new(entourage: e)
           csv.puts [
+            e.group_type,
             location_randomizer.random_latitude.round(5),
             location_randomizer.random_longitude.round(5),
             e.title,
@@ -43,7 +49,11 @@ namespace :entourage do
             e.user.first_name,
             UserServices::Avatar.new(user: e.user).thumbnail_url,
             e.status,
+            e.number_of_people,
             e.uuid_v2,
+            e.metadata&.dig(:starts_at).presence&.iso8601,
+            e.metadata&.dig(:display_address),
+            e.metadata&.dig(:google_place_id)
           ]
         rescue => e
           Raven.capture_exception(e, extra: { entourage_id: e.id })
