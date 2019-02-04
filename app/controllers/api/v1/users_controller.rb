@@ -3,7 +3,7 @@ require 'typeform'
 module Api
   module V1
     class UsersController < Api::V1::BaseController
-      skip_before_filter :authenticate_user!, only: [:login, :code, :create, :lookup, :ethics_charter_signed, :update_email_preferences]
+      skip_before_filter :authenticate_user!, only: [:login, :code, :create, :lookup, :ethics_charter_signed, :update_email_preferences, :confirm_address_suggestion]
       skip_before_filter :community_warning
       skip_before_filter :ensure_community!, only: :ethics_charter_signed
       skip_before_filter :protect_from_forgery, only: :ethics_charter_signed
@@ -232,6 +232,53 @@ module Api
             user: @user, category: @category)
         else
           @success = false
+        end
+
+        render layout: 'landing'
+      end
+
+      def confirm_address_suggestion
+        @user = User.find(params[:id])
+        @postal_code = params[:postal_code]
+
+        unless @postal_code.match?(/\A\d[1-9]\d\d\d\z/)
+          @status = :error
+          return render layout: 'landing'
+        end
+
+        signature_key = UserServices::AddressService.confirm_url_key(
+          user_id: @user.id, postal_code: @postal_code)
+        unless SignatureService.validate(signature_key, params[:signature])
+          @status = :error
+          return render layout: 'landing'
+        end
+
+        if @user.address&.postal_code == @postal_code
+          @status = :success
+          return render layout: 'landing'
+        end
+
+        if request.post?
+          address_params = {
+            place_name: @postal_code,
+            postal_code: @postal_code,
+            country: :FR
+          }
+
+          updater = UserServices::AddressService.new(user: @user, params: address_params)
+
+          updater.update do |on|
+            on.success do |user, address|
+              return redirect_to UserServices::AddressService.confirm_url(
+                user: @user, postal_code: @postal_code)
+            end
+
+            on.failure do |user, address|
+              @status = :error
+            end
+          end
+        else
+          @status = :display_form
         end
 
         render layout: 'landing'

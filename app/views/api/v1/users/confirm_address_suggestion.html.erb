@@ -1,0 +1,57 @@
+<style>
+  .link-button-wrapper {
+    margin: 12px 0 30px;
+  }
+
+  .gray {
+    color: #999;
+  }
+</style>
+<% if @status == :success %>
+  <div class="text" style="padding-top: 30px">
+    <div class="text" style="padding-top: 30px">
+      <strong>Votre code postal a été mis à jour !</strong><br/>
+      Nous vous recommanderons bientôt des actions et évènements solidaires pour le code postal <strong><%= @postal_code %></strong>.
+    </div>
+    <div class="button-wrapper">
+      <a href="<%= ENV['WEBSITE_URL'] %>/app" class="button">Retour au site</a>
+    </div>
+  </div>
+<% elsif @status == :display_form %>
+  <div class="text" style="padding-top: 30px">
+    <strong>Mettre à jour votre code postal ?</strong><br/>
+    Confirmez-vous que vous souhaitez reçevoir des recommandations d'actions et évènements solidaires pour le code postal <strong><%= @postal_code %></strong> ?
+  </div>
+  <div class="button-wrapper">
+    <%= link_to "Je confirme",
+          "javascript:submitForm()",
+          class: "button" %>
+  </div><br/><br/>
+  <div class="text gray">
+    <% if @user.address&.postal_code.present? %>
+      Votre code postal actuel est <strong><%= @user.address.postal_code %></strong>.
+    <% end %>
+  </div>
+  <%= form_tag UserServices::AddressService.confirm_url(
+          user: @user, postal_code: @postal_code), id: :confirm %>
+  <script>
+    function submitForm() {
+      document.querySelector('form#confirm').submit();
+    }
+    <% if params[:auto] == '1' %>
+      submitForm()
+    <% end %>
+  </script>
+<% else %>
+  <strong>Erreur !</strong><br/>
+  Nous n'avons pas réussi à enregistrer vos préférences.<br/>
+  Le lien que vous avez utilisé semble incorrect.
+  <div class="button-wrapper">
+    <%= link_to "Contacter l'équipe Entourage",
+        "mailto:contact@entourage.social?" + {
+          subject: "Je souhaite modifier mon code postal",
+          body: "\n\n--\nAdresse email du compte Entourage : #{@user.email}"
+        }.to_query,
+        class: "button" %>
+  </div>
+<% end %>
