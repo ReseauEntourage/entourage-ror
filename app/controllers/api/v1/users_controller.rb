@@ -241,6 +241,11 @@ module Api
         @user = User.find(params[:id])
         @postal_code = params[:postal_code]
 
+        # temporary workaround for a borked email
+        if @postal_code.nil? && @user.address&.postal_code.present?
+          @postal_code = @user.address&.postal_code
+        end
+
         unless @postal_code.match?(/\A\d[1-9]\d\d\d\z/)
           @status = :error
           return render layout: 'landing'

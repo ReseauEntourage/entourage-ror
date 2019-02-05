@@ -9,7 +9,8 @@ module DigestEmail
     return if user.deleted
 
     user_postal_code    = suggested_postal_code || user.address&.postal_code
-    suggest_postal_code = suggested_postal_code != user.address&.postal_code
+    suggest_postal_code = suggested_postal_code.present? &&
+                          suggested_postal_code != user.address&.postal_code
 
     return unless user_postal_code&.first(2).in?(['75', '69'])
 
