@@ -168,7 +168,7 @@ RSpec.describe UsersController, :type => :controller do
 
       it "sends sms" do
         UserServices::SmsCode.any_instance.stub(:code) { "666666" }
-        expect_any_instance_of(SmsNotificationService).to receive(:send_notification).with(target_user.phone, "Bienvenue dans le réseau Entourage. 666666 est votre code de connexion. Téléchargez l'application ici: http://foo.bar .")
+        expect_any_instance_of(SmsNotificationService).to receive(:send_notification).with(target_user.phone, "Bienvenue dans le réseau Entourage. 666666 est votre code de connexion. Téléchargez l'application ici: http://foo.bar .", 'regenerate')
         post 'send_sms', id: target_user.id
       end
     end

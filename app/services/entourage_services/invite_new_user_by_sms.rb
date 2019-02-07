@@ -23,7 +23,7 @@ module EntourageServices
           relationship.save!
 
           Rails.logger.info "InviteNewUserBySMS : sending #{message} to #{phone_number}"
-          SmsSenderJob.perform_later(phone_number, message)
+          SmsSenderJob.perform_later(phone_number, message, 'invite')
           invite
         end
       rescue ActiveRecord::RecordInvalid => e

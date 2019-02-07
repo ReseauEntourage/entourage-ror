@@ -4,7 +4,7 @@
 # Prerequisites
 
 Ruby 2.5.3
-Rails 4.2.6
+Rails 4.2.11
 
 rbenv or rvm recommanded
 

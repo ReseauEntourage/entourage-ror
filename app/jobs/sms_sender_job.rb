@@ -3,13 +3,13 @@ class SmsSenderJob
   include Sidekiq::Worker
   sidekiq_options :retry => false
 
-  def perform(phone, message)
-    Rails.logger.info "SmsSenderJob : sending #{message} to #{phone}"
-    SmsNotificationService.new.send_notification(phone, message)
+  def perform(phone, message, sms_type)
+    Rails.logger.info "SmsSenderJob (#{sms_type}) : sending #{message} to #{phone}"
+    SmsNotificationService.new.send_notification(phone, message, sms_type)
   end
 
   #Activejob adapter
-  def self.perform_later(phone, message)
-    SmsSenderJob.perform_async(phone, message)
+  def self.perform_later(phone, message, sms_type)
+    SmsSenderJob.perform_async(phone, message, sms_type)
   end
 end

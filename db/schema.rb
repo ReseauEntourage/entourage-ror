@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190108172700) do
+ActiveRecord::Schema.define(version: 20190207125906) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -488,6 +488,14 @@ ActiveRecord::Schema.define(version: 20190108172700) do
   end
 
   add_index "simplified_tour_points", ["tour_id"], name: "index_simplified_tour_points_on_tour_id", using: :btree
+
+  create_table "sms_deliveries", force: :cascade do |t|
+    t.string   "phone_number"
+    t.integer  "status"
+    t.string   "sms_type"
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
+  end
 
   create_table "store_daily_reports", force: :cascade do |t|
     t.string   "store_id"

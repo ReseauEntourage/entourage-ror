@@ -38,7 +38,7 @@ module EntourageServices
                                                       })
       else
         Rails.logger.info "InviteExistingUser : sending #{message} to #{phone_number}"
-        SmsSenderJob.perform_later(phone_number, message)
+        SmsSenderJob.perform_later(phone_number, message, 'invite')
       end
     end
 
