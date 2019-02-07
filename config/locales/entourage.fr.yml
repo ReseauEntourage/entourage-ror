@@ -9,6 +9,7 @@ fr:
         phone: Téléphone
         organization: Association
         about: À propos
+        roles: Rôles
       organization:
         name: Nom
         description: Description
@@ -40,3 +41,7 @@ fr:
         accepts_event_invitations: Apéro Entourage
         accepts_volunteering_offers: Bénévolat
         ambassador: Ambassadeur relais
+  community:
+    entourage:
+      roles:
+        ambassador: Ambassadeur

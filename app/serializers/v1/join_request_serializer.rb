@@ -3,6 +3,8 @@ module V1
     attributes :id,
                :display_name,
                :role,
+               :group_role,
+               :community_roles,
                :status,
                :message,
                :requested_at,
@@ -19,6 +21,15 @@ module V1
 
     def display_name
       UserPresenter.new(user: object.user).display_name
+    end
+
+    def group_role
+      object.role
+    end
+
+    def community_roles
+      user = object.user
+      user.roles.sort_by { |r| user.community.roles.index(r) }
     end
 
     def status

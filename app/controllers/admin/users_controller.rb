@@ -33,7 +33,7 @@ module Admin
     end
 
     def new
-      @user = User.new
+      @user = User.new(community: current_user.community)
     end
 
     def create
@@ -58,7 +58,16 @@ module Admin
       email_prefs_success = EmailPreferencesService.update(
         user: user, preferences: params[:email_preferences])
 
-      if email_prefs_success && @user.update(user_params)
+      user.assign_attributes(user_params)
+
+      if user_params.key?(:roles)
+        # the "placeholder" role is used in the view to make sure
+        # that the user[roles][] parameter is sent even where no role
+        # is selected
+        user.roles = (user_params[:roles] || []) - ["placeholder"]
+      end
+
+      if email_prefs_success && @user.save
         set_coordinated_organizations(user)
         render :edit, notice: "utilisateur mis à jour"
       else
@@ -127,7 +136,7 @@ module Admin
     end
 
     def user_params
-      params.require(:user).permit(:first_name, :last_name, :email, :sms_code, :phone, :organization_id, :marketing_referer_id, :use_suggestions, :about, :accepts_emails)
+      params.require(:user).permit(:first_name, :last_name, :email, :sms_code, :phone, :organization_id, :marketing_referer_id, :use_suggestions, :about, :accepts_emails, roles: [])
     end
 
     def set_coordinated_organizations(user)
