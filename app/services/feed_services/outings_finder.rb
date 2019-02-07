@@ -27,7 +27,7 @@ module FeedServices
         .includes(user: {default_user_partners: :partner})
 
       if starting_after != nil
-        last_of_previous_page = outings.find_by!(uuid: starting_after)
+        last_of_previous_page = outings.find_by!(uuid_v2: starting_after)
         feeds = feeds.where(
           "ARRAY[metadata->>'starts_at', id::text] > ARRAY[?, ?::text]",
           last_of_previous_page.metadata[:starts_at], last_of_previous_page.id

@@ -398,7 +398,7 @@ include CommunityHelper
       let(:start_time) { 1.day.from_now.change(hour: 19, min: 30) }
       let!(:outing_1) { create :outing, {metadata: {starts_at: start_time}}.merge(coordinates) }
       let!(:outing_2) { create :outing, {metadata: {starts_at: start_time}}.merge(coordinates) }
-      let(:params) { {starting_after: outing_1.uuid} }
+      let(:params) { {starting_after: outing_1.uuid_v2} }
 
       it "supports pagination" do
         subject
