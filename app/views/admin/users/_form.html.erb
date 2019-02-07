@@ -80,12 +80,14 @@
     </div>
   </div>
 
+  <% if @user.pro? %>
   <div class="control-group">
     <%= f.label :organization,"Association", class: "control-label" %>
     <div class="controls">
       <%= f.collection_select(:organization_id, Organization.all, :id, :name, {selected: @user.try(:organization).try(:id) }, {class: "organizations-select"}) %>
     </div>
   </div>
+  <% end %>
 
   <div class="control-group">
     <%= f.label :coordinated_organizations,"Associations coordonées", class: "control-label" %>
