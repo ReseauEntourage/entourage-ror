@@ -1,3 +1,5 @@
+require 'digest/sha2'
+
 module ConversationService
   # validated: false is faster but ids should be valid
   def self.uuid_for_participants participant_ids, validated: true
