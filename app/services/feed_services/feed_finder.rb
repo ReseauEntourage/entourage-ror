@@ -131,7 +131,7 @@ module FeedServices
 
       feeds =
         if latitude && longitude
-          order_by_distance(feeds: feeds).sort_by(&:updated_at).reverse
+          order_by_distance(feeds: feeds).sort_by(&:created_at).reverse
         else
           feeds.order("updated_at DESC")
         end
