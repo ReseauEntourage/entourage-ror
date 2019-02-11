@@ -7,7 +7,7 @@ describe MailjetController do
     let(:category) { create :email_category }
 
     context "'unsub'" do
-      let(:event) { {event: :unsub, email: user.email, Payload: {unsubscribe_category: category.name}} }
+      let(:event) { {event: :unsub, email: user.email, Payload: {unsubscribe_category: category.name}.to_json} }
 
       it "unsubscribes the user from that category" do
         expect { subject }
