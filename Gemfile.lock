@@ -354,7 +354,6 @@ GEM
       rack (~> 1.5)
       rack-protection (~> 1.4)
       tilt (>= 1.3, < 3)
-    sinch_sms (2.1)
     skinny (0.2.4)
       eventmachine (~> 1.0.0)
       thin (>= 1.5, < 1.7)
@@ -467,7 +466,6 @@ DEPENDENCIES
   shoulda-matchers (~> 3.0.1)
   sidekiq (~> 3.4.1)
   simplify_rb (~> 0.1.2)
-  sinch_sms (~> 2.1)
   slack-notifier
   spring (~> 2.0.2)
   spring-commands-rspec (~> 1.0.4)
