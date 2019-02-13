@@ -66,6 +66,18 @@ module FeedServices
 
       if context == :feed
         feeds = feeds.where.not(group_type: :conversation)
+        feeds = feeds
+          .joins(%(
+            left join entourage_moderations on
+              feedable_type = 'Entourage' and
+              entourage_moderations.entourage_id = feedable_id
+
+          ))
+          .where(%(
+            feeds.status != 'closed' or
+            feedable_type = 'Tour' or
+            entourage_moderations.action_outcome in ('Oui')
+          ))
       end
 
       if types != nil

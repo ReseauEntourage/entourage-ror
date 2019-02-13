@@ -229,10 +229,15 @@ include CommunityHelper
         let!(:entourage_closed)      { create(:entourage, updated_at: 2.hour.ago, status: :closed) }
         let!(:entourage_blacklisted) { create(:entourage, updated_at: 3.hour.ago, status: :blacklisted) }
         let!(:entourage_suspended)   { create(:entourage, updated_at: 4.hour.ago, status: :suspended) }
+        let!(:entourage_closed_success) do
+          entourage = create(:entourage, updated_at: 5.hour.ago, status: :closed)
+          EntourageModeration.create!(entourage: entourage, action_outcome: 'Oui')
+          entourage
+        end
 
         before { get :index, token: user.token }
 
-        it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([entourage_open.id, entourage_closed.id]) }
+        it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([entourage_open.id, entourage_closed_success.id]) }
       end
 
       context "touch chat message association" do
