@@ -37,28 +37,6 @@ module FeedServices
 
       return announcements unless user.community == :entourage
 
-      announcements.push Announcement.new(
-        id: 19,
-        title: "❄️❄️ Grrrr ❄️❄️",
-        body: "Le grand froid est arrivé ! Comment faire pour aider les personnes sans-abri à son échelle ? Pas d'inquiétude on vous explique. 👌",
-        image_url: true,
-        action: "En savoir plus",
-        author: User.find_by(email: "guillaume@entourage.social"),
-        webview: true,
-        position: 2
-      )
-
-      announcements.push Announcement.new(
-        id: 20,
-        title: "Bonne résolution #2",
-        body: "Comprendre la rue passe aussi par écouter les témoignages de ceux qui l'ont vécu. Cette semaine, parole aux femmes SDF 👩🏽.",
-        image_url: true,
-        action: "Voir la vidéo",
-        author: User.find_by(email: "guillaume@entourage.social"),
-        webview: true,
-        position: 8
-      )
-
       conversation_uuid = ConversationService.uuid_for_participants(
         [
           User.find_by(email: "guillaume@entourage.social").id,
@@ -77,7 +55,40 @@ module FeedServices
         url: conversation_url,
         author: User.find_by(email: "guillaume@entourage.social"),
         webview: false,
+        position: 2
+      )
+
+      announcements.push Announcement.new(
+        id: 22,
+        title: "Envie d'en savoir plus ?",
+        body: %("Simple comme Bonjour" le guide pour aller à la rencontre des personnes sans-abri ! Décrouvrez les vidéos, les interviews, les témoignages et le guide),
+        image_url: true,
+        action: "Voir",
+        author: User.find_by(email: "guillaume@entourage.social"),
+        webview: true,
+        position: 8
+      )
+
+      announcements.push Announcement.new(
+        id: 23,
+        title: "Suivez-nous sur les réseaux !",
+        body: "Retrouvez Entourage également sur tous vos réseaux sociaux ! Suivez toute nos actualités, photos, vidéos, belles histoires !",
+        image_url: true,
+        action: "Je rejoins",
+        author: User.find_by(email: "guillaume@entourage.social"),
+        webview: false,
         position: 14
+      )
+
+      announcements.push Announcement.new(
+        id: 24,
+        title: "Entourage débarque sur votre ordinateur !",
+        body: "Retrouvez dès maintenant l'application Entourage sur votre ordinateur, directement sur le site internet www.entourage.social/app !",
+        image_url: true,
+        action: "Voir",
+        author: User.find_by(email: "guillaume@entourage.social"),
+        webview: false,
+        position: 24
       )
 
       announcements.push Announcement.new(
@@ -88,7 +99,7 @@ module FeedServices
         action: "Je postule",
         author: User.find_by(email: "guillaume@entourage.social"),
         webview: true,
-        position: 24
+        position: 34
       )
 
       announcements.push Announcement.new(
@@ -99,7 +110,7 @@ module FeedServices
         action: "Je regarde",
         author: User.find_by(email: "guillaume@entourage.social"),
         webview: true,
-        position: 34
+        position: 44
       )
 
       announcements

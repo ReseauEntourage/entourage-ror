@@ -26,6 +26,9 @@ module Api
           19 => :megaphone,
           20 => :video,
           21 => :heart,
+          22 => :megaphone,
+          23 => :megaphone,
+          24 => :trophy,
         }[params[:id].to_i]
 
         redirect_to view_context.asset_url("assets/announcements/icons/#{icon}.png")
@@ -45,15 +48,18 @@ module Api
 
       def image
         image = {
-          10 => 'guillaume.png?2',
+          10 => 'guillaume.png?3',
           13 => 'ambassadors.jpg',
           14 => 'collecte-2018.jpg',
           16 => 'noel.jpg',
           17 => '2.png',
-          18 => 'scb.png',
+          18 => 'scb.jpg',
           19 => 'grand-froid.png?2',
           20 => 'paroles-de-femmes.jpg',
-          21 => 'talents-2018.jpg'
+          21 => 'talents-2018.jpg',
+          22 => 'scb.jpg',
+          23 => 'reseaux-sociaux.jpg',
+          24 => 'webapp.jpg',
         }[params[:id].to_i]
 
         return render nothing: true, status: :not_found if image.nil?
@@ -114,6 +120,12 @@ module Api
           url = "http://www.simplecommebonjour.org/?p=12"
         when 21
           url = "https://blog.entourage.social/2019/01/02/soiree-de-noel-entourage-x-refettorio-la-rue-est-pleine-de-talents/#site-content"
+        when 22
+          url = "http://www.simplecommebonjour.org/"
+        when 23
+          url = "https://www.facebook.com/EntourageReseauCivique/"
+        when 24
+          url = "https://www.entourage.social/app"
         end
 
         begin
