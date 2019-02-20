@@ -90,13 +90,6 @@
   <% end %>
 
   <div class="control-group">
-    <%= f.label :coordinated_organizations,"Associations coordonées", class: "control-label" %>
-    <div class="controls">
-      <%= f.collection_select(:coordinated_organizations, Organization.all, :id, :name, {selected: @user.coordinated_organizations.map(&:id)}, {multiple: true, class: "organizations-select"}) %>
-    </div>
-  </div>
-
-  <div class="control-group">
     <%= f.label :marketing_referer,"Marketing referer", class: "control-label" %>
     <div class="controls">
       <%= f.collection_select(:marketing_referer_id, MarketingReferer.all, :id, :name, {selected: @user.marketing_referer_id }, {class: "organizations-select"}) %>

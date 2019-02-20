@@ -43,7 +43,6 @@ module Admin
       builder.create(send_sms: params[:send_sms].present?) do |on|
         on.success do |user|
           @user = user
-          set_coordinated_organizations(user)
           redirect_to admin_users_path, notice: "utilisateur créé"
         end
 
@@ -68,7 +67,6 @@ module Admin
       end
 
       if email_prefs_success && @user.save
-        set_coordinated_organizations(user)
         render :edit, notice: "utilisateur mis à jour"
       else
         render :edit, alert: "Erreur lors de la mise à jour"
@@ -137,14 +135,6 @@ module Admin
 
     def user_params
       params.require(:user).permit(:first_name, :last_name, :email, :sms_code, :phone, :organization_id, :marketing_referer_id, :use_suggestions, :about, :accepts_emails, roles: [])
-    end
-
-    def set_coordinated_organizations(user)
-      coordinated_organizations = params.dig(:user, :coordinated_organizations)
-      if coordinated_organizations
-        user.coordinated_organizations = Organization.where(id: coordinated_organizations.select {|o| o.present?})
-        user.save
-      end
     end
   end
 
