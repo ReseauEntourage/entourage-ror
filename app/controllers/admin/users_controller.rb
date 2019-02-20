@@ -3,7 +3,7 @@ module Admin
     before_action :set_user, only: [:show, :messages, :edit, :update, :block, :unblock, :banish, :validate, :experimental_pending_request_reminder]
 
     def index
-      @users = User.type_pro.includes(:organization).order("last_name ASC").page(params[:page]).per(25)
+      @users = User.includes(:organization).order("last_name ASC").page(params[:page]).per(25)
     end
 
     def show

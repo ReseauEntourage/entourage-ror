@@ -29,7 +29,7 @@ Rails.application.routes.draw do
       resources :messages, only: [:index, :destroy]
       resources :organizations, only: [:index, :edit, :update]
       resources :newsletter_subscriptions, only: [:index]
-      resources :ambassadors, only: [:index, :edit, :update, :new, :create]
+      resources :ambassadors, only: [:edit, :update, :new, :create]
       resources :entourage_invitations, only: [:index]
       resources :entourages, only: [:index, :show, :edit, :update] do
         member do
@@ -55,9 +55,8 @@ Rails.application.routes.draw do
       resources :marketing_referers, only: [:index, :edit, :update, :new, :create]
       resources :join_requests, only: [:create]
 
-      get 'public_user_search' => "users_search#public_user_search"
       get 'public_user_autocomplete' => "users_search#public_user_autocomplete"
-      get 'pro_user_search' => "users_search#pro_user_search"
+      get 'user_search' => "users_search#user_search"
       delete 'user_relationships' => "user_relationships#destroy"
     end
   end
@@ -87,15 +86,14 @@ Rails.application.routes.draw do
     resources :messages, only: [:index, :destroy]
     resources :organizations, only: [:index, :edit, :update]
     resources :newsletter_subscriptions, only: [:index]
-    resources :ambassadors, only: [:index, :edit, :update, :new, :create]
+    resources :ambassadors, only: [:edit, :update, :new, :create]
     resources :entourage_invitations, only: [:index]
     resources :entourages, only: [:index, :show, :edit, :update]
     resources :marketing_referers, only: [:index, :edit, :update, :new, :create]
     resources :join_requests, only: [:create]
 
-    get 'public_user_search' => "users_search#public_user_search"
     get 'public_user_autocomplete' => "users_search#public_user_autocomplete"
-    get 'pro_user_search' => "users_search#pro_user_search"
+    get 'user_search' => "users_search#user_search"
     delete 'user_relationships' => "user_relationships#destroy"
 
     namespace :slack do

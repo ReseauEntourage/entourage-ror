@@ -2,10 +2,6 @@ module Admin
   class AmbassadorsController < Admin::BaseController
     before_action :set_user, only: [:edit, :update]
 
-    def index
-      @users = User.type_public.page(params[:page]).per(params[:per]).order(:created_at)
-    end
-
     def edit
     end
 
@@ -19,7 +15,7 @@ module Admin
         on.success do |user|
           @user = user
           add_relation(params[:user_relation_id])
-          redirect_to admin_ambassadors_path, notice: "Ambassadeur créé"
+          redirect_to admin_users_path, notice: "Ambassadeur créé"
         end
 
         on.failure do |user|

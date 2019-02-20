@@ -1,7 +1,7 @@
-<h1>Liste des utilisateurs pro</h1>
+<h1>Liste des utilisateurs</h1>
 
 <div class="row">
-  <%= form_tag(admin_pro_user_search_path, method: :get, html: { class: "form-horizontal", role: "form" }) do %>
+  <%= form_tag(admin_user_search_path, method: :get, html: { class: "form-horizontal", role: "form" }) do %>
     <div class="col-lg-4 pull-right">
       <div class="input-group">
         <%= text_field_tag :search, nil, class: "form-control", placeholder: "nom, prénom, email..." %>
@@ -23,7 +23,9 @@
     <th>Nom</th>
     <th>Prénom</th>
     <th>Association</th>
+    <th>Date de création</th>
     <th>Date de dernière connexion</th>
+    <th>Nombre d'entourages</th>
     <th>Nombre de maraudes</th>
     <th></th>
 
@@ -32,9 +34,23 @@
         <td><%= user.id %></td>
         <td><%= user.last_name %></td>
         <td><%= user.first_name %></td>
-        <td><%= user.organization.name %></td>
+        <td>
+          <% if user.pro? %>
+            <%= user.organization.name %>
+          <% else %>
+            <span class="text-muted">&mdash;</span>
+          <% end %>
+        </td>
+        <td><%= user.created_at.to_formatted_s(:long) %></td>
         <td><%= user.last_sign_in_at.try(:to_formatted_s, :long) %></td>
-        <td><%= user.tours.count %></td>
+        <td><%= user.entourages.count %></td>
+        <td>
+          <% if user.pro? %>
+            <%= user.tours.count %>
+          <% else %>
+            <span class="text-muted">&mdash;</span>
+          <% end %>
+        </td>
         <td><%= link_to "Modifier", edit_admin_user_path(user), class: "btn btn-danger" %></td>
       </tr>
     <% end %>
