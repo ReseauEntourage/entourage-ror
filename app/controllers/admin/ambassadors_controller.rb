@@ -1,10 +1,5 @@
 module Admin
   class AmbassadorsController < Admin::BaseController
-    before_action :set_user, only: [:edit, :update]
-
-    def edit
-    end
-
     def new
       @user = User.new
     end
@@ -25,29 +20,8 @@ module Admin
       end
     end
 
-    def update
-      if(user_params["organization_id"])
-        user.user_type = "pro"
-        user.organization_id = user_params["organization_id"]
-      end
-
-      email_prefs_success = EmailPreferencesService.update(
-        user: user, preferences: params[:email_preferences])
-
-      if email_prefs_success && @user.update(user_params)
-        add_relation(params[:user_relation_id])
-        render :edit, notice: "Ambassadeur mis à jour"
-      else
-        render :edit
-      end
-    end
-
     private
     attr_reader :user
-
-    def set_user
-      @user = User.find(params[:id])
-    end
 
     def user_params
       params.require(:user).permit(:first_name, :last_name, :email, :sms_code, :phone, :marketing_referer_id, :organization_id, :use_suggestions, :accepts_emails)

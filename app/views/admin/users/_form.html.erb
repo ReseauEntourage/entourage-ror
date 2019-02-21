@@ -4,14 +4,14 @@
   <div class="control-group">
     <%= f.label :first_name,"Prénom", class: "control-label" %>
     <div class="controls">
-      <%= f.text_field :first_name, class: "form-control", required: true %>
+      <%= f.text_field :first_name, class: "form-control", required: @user.pro? %>
     </div>
   </div>
 
   <div class="control-group">
     <%= f.label :last_name,"Nom", class: "control-label" %>
     <div class="controls">
-      <%= f.text_field :last_name, class: "form-control", required: true %>
+      <%= f.text_field :last_name, class: "form-control", required: @user.pro? %>
     </div>
   </div>
 
@@ -48,7 +48,7 @@
   <div class="control-group">
     <%= f.label :email,"Email", class: "control-label" %>
     <div class="controls">
-      <%= f.email_field :email, class: "form-control", required: true %>
+      <%= f.email_field :email, class: "form-control", required: @user.pro? %>
     </div>
   </div>
 
@@ -79,20 +79,28 @@
       <%= f.text_field :phone, class: "form-control", required: true %>
     </div>
   </div>
+  <br>
 
-  <% if @user.pro? %>
   <div class="control-group">
-    <%= f.label :organization,"Association", class: "control-label" %>
+    <%= f.label :organization,"Association de maraude", class: "control-label" %>
     <div class="controls">
-      <%= f.collection_select(:organization_id, Organization.all, :id, :name, {selected: @user.try(:organization).try(:id) }, {class: "organizations-select"}) %>
+      <%= f.collection_select :organization_id,
+          Organization.order("name ASC"), :id, :name,
+          {include_blank: @user.pro? ? false : "(Aucune)"},
+          {id: :pro_user, class: (:hide unless @user.pro?), disabled: !@user.pro?} %>
+      <% if !@user.pro? %>
+        <div id="change_status">
+          Aucune &mdash; <%= link_to "Passer l'utilisateur en pro", "#" %>
+        </div>
+      <% end %>
     </div>
   </div>
-  <% end %>
+  <br>
 
   <div class="control-group">
     <%= f.label :marketing_referer,"Marketing referer", class: "control-label" %>
     <div class="controls">
-      <%= f.collection_select(:marketing_referer_id, MarketingReferer.all, :id, :name, {selected: @user.marketing_referer_id }, {class: "organizations-select"}) %>
+      <%= f.collection_select(:marketing_referer_id, MarketingReferer.all, :id, :name, {selected: @user.marketing_referer_id }) %>
     </div>
   </div>
 

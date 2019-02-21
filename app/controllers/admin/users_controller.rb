@@ -7,7 +7,7 @@ module Admin
     end
 
     def show
-      render :edit
+      redirect_to edit_admin_user_path(user)
     end
 
     def messages
@@ -54,6 +54,11 @@ module Admin
     end
 
     def update
+      if !user.pro? && user_params[:organization_id].present?
+        user.user_type = 'pro'
+        user.organization_id = user_params[:organization_id]
+      end
+
       email_prefs_success = EmailPreferencesService.update(
         user: user, preferences: params[:email_preferences])
 
@@ -67,9 +72,10 @@ module Admin
       end
 
       if email_prefs_success && @user.save
-        render :edit, notice: "utilisateur mis à jour"
+        redirect_to [:admin, user], notice: "utilisateur mis à jour"
       else
-        render :edit, alert: "Erreur lors de la mise à jour"
+        flash.now[:error] = "Erreur lors de la mise à jour"
+        render :edit
       end
     end
 

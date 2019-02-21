@@ -52,7 +52,6 @@ class User < ActiveRecord::Base
   delegate :name, :description, to: :organization, prefix: true
 
   scope :type_pro, -> { where(user_type: "pro") }
-  scope :type_public, -> { where(user_type: "public") }
   scope :validated, -> { where(validation_status: "validated") }
   scope :blocked, -> { where(validation_status: "blocked") }
   scope :search_by, ->(first_name, last_name, email, phone) { where("first_name ILIKE ? OR last_name ILIKE ? OR email ILIKE ? OR phone = ?",

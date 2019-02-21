@@ -1,4 +1,4 @@
-<%= form_for(@user, url: @user.new_record? ? admin_ambassadors_path : admin_ambassador_path(@user), html: { class: "form-horizontal", role: "form" }) do |f| %>
+<%= form_for(@user, url: admin_ambassadors_path, html: { class: "form-horizontal", role: "form" }) do |f| %>
   <%= render partial: "layouts/errors", locals: {obj: @user} %>
 
   <div class="control-group">
@@ -76,7 +76,7 @@
   <div class="control-group">
     <%= f.label :marketing_referer,"Marketing referer", class: "control-label" %>
     <div class="controls">
-      <%= f.collection_select(:marketing_referer_id, MarketingReferer.all, :id, :name, {selected: @user.marketing_referer_id }, {class: "organizations-select"}) %>
+      <%= f.collection_select(:marketing_referer_id, MarketingReferer.all, :id, :name, {selected: @user.marketing_referer_id }) %>
     </div>
   </div>
 
@@ -91,7 +91,7 @@
   <div class="control-group" id="pro_user">
     <%= f.label :organization,"Association", class: "control-label" %>
     <div class="controls">
-      <%= f.collection_select(:organization_id, Organization.order("name ASC"), :id, :name, {selected: @user.try(:organization).try(:id) }, {class: "organizations-select"}) %>
+      <%= f.collection_select(:organization_id, Organization.order("name ASC"), :id, :name, {selected: @user.try(:organization).try(:id) }) %>
     </div>
   </div>
   <%= link_to "Passer l'utilisateur en pro", "#", id: "change_status" %>

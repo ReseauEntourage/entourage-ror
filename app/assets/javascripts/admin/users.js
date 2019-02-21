@@ -1,19 +1,29 @@
 var ready = function() {
-  if ($(".admin.users.new")[0] || $(".admin.users.edit")[0] || $(".admin.users.update")[0] || $(".admin.ambassadors.new")[0] || $(".admin.ambassadors.edit")[0] || $(".admin.ambassadors.update")[0]) {
+  if ($(".admin.users.new")[0] || $(".admin.users.edit")[0] || $(".admin.users.update")[0]) {
     $("#sms_group").hide();
     $("#sms_group :input")[0].setAttribute("disabled", "disabled");
     $("#sms_group :input").val("");
-    $("#change_password").click(function() {
+    $("#change_password").click(function(e) {
+      e.preventDefault();
+      $("#change_password").hide();
       $("#sms_group").show();
       $("#sms_group :input")[0].removeAttribute("disabled");
     });
 
-    $("#pro_user").hide();
-    $("#pro_user :input")[0].setAttribute("disabled", "disabled");
-    $("#pro_user :input").val("");
-    $("#change_status").click(function() {
-      $("#pro_user").show();
-      $("#pro_user :input")[0].removeAttribute("disabled");
+    $("#change_status a").click(function(e) {
+      e.preventDefault();
+      $("#change_status").hide();
+      $("#pro_user").removeClass('hide').attr('disabled', false);
+    });
+
+    function requireProAttributes(require) {
+      ['first_name', 'last_name', 'email'].forEach(function(attr) {
+        $('[name="user[' + attr + ']"]').attr('required', require);
+      });
+    }
+
+    $("#pro_user").on('change', function() {
+      requireProAttributes(this.value !== '');
     });
   }
 };
