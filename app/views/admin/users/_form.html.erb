@@ -109,13 +109,6 @@
   <br>
 
   <div class="control-group">
-    <%= f.label :marketing_referer,"Marketing referer", class: "control-label" %>
-    <div class="controls">
-      <%= f.collection_select(:marketing_referer_id, MarketingReferer.all, :id, :name, {selected: @user.marketing_referer_id }) %>
-    </div>
-  </div>
-
-  <div class="control-group">
     <%= f.label :use_suggestions, "Calcul des suggestions", class: "control-label" %>
     <div class="controls">
       <%= f.check_box :use_suggestions %>

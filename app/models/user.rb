@@ -1,7 +1,7 @@
 require 'experimental/jsonb_set'
 
 class User < ActiveRecord::Base
-  validates_presence_of [:phone, :sms_code, :token, :validation_status, :marketing_referer_id]
+  validates_presence_of [:phone, :sms_code, :token, :validation_status]
   validates_uniqueness_of :phone, scope: :community
   validates_uniqueness_of :token
   validate :validate_phone!
@@ -33,7 +33,6 @@ class User < ActiveRecord::Base
   has_many :relations, through: :user_relationships, source: "target_user"
   has_many :invitations, class_name: "EntourageInvitation", foreign_key: "invitee_id"
   has_many :authentication_providers, dependent: :destroy
-  belongs_to :marketing_referer
   has_many :feeds
   has_many :user_partners, dependent: :destroy
   has_many :default_user_partners, -> { where(default: true) }, class_name: :UserPartner

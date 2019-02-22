@@ -51,7 +51,6 @@ Rails.application.routes.draw do
         end
       end
 
-      resources :marketing_referers, only: [:index, :edit, :update, :new, :create]
       resources :join_requests, only: [:create]
 
       get 'public_user_autocomplete' => "users_search#public_user_autocomplete"
@@ -87,7 +86,6 @@ Rails.application.routes.draw do
     resources :newsletter_subscriptions, only: [:index]
     resources :entourage_invitations, only: [:index]
     resources :entourages, only: [:index, :show, :edit, :update]
-    resources :marketing_referers, only: [:index, :edit, :update, :new, :create]
     resources :join_requests, only: [:create]
 
     get 'public_user_autocomplete' => "users_search#public_user_autocomplete"

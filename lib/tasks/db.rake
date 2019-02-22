@@ -20,7 +20,6 @@ namespace :db do
     end
 
     User.update_all(address_id: nil)
-    MarketingReferer.where("id > 1").delete_all
 
     [
       Address, Answer, AtdSynchronization, AtdUser,
@@ -36,7 +35,8 @@ namespace :db do
     ].each(&:delete_all)
 
     [
-      :active_admin_comments, :coordination, :entourages_users, :tours_users
+      :active_admin_comments, :coordination, :entourages_users, :tours_users,
+      :marketing_referers
     ].each do|table|
       ActiveRecord::Base.connection.execute("DELETE FROM #{table}").clear
     end
