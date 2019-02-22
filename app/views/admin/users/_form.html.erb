@@ -39,23 +39,26 @@
           </div>
         </div>
 
-        <% groups_created_count = @user.groups.count %>
-        <div class="control-group" style="margin-left: 30px">
-          <label class="control-label">Groupes créés</label>
-          <div class="controls">
-            <%= groups_created_count %>
-            <%= link_to '(Voir)', admin_entourages_path(q: { user_id_eq: @user.id }), target: :_blank %>
+        <% unless @user.new_record? %>
+          <% groups_created_count = @user.groups.count %>
+          <div class="control-group" style="margin-left: 30px">
+            <label class="control-label">Groupes créés</label>
+            <div class="controls">
+              <%= groups_created_count %>
+              <%= link_to '(Voir)', admin_entourages_path(q: { user_id_eq: @user.id }), target: :_blank %>
+            </div>
           </div>
-        </div>
 
-        <div class="control-group" style="margin-left: 30px">
-          <label class="control-label">Groupes rejoints</label>
-          <div class="controls">
-            <%= @user.joined_groups.count - groups_created_count %>
+          <div class="control-group" style="margin-left: 30px">
+            <label class="control-label">Groupes rejoints</label>
+            <div class="controls">
+              <%= @user.joined_groups.count - groups_created_count %>
+            </div>
           </div>
-        </div>
+        <% end %>
       </div>
 
+      <% unless @user.new_record? %>
       <div class="control-group">
         <%= f.label :roles, class: "control-label" %>
         <table class="table" style="width: auto">
@@ -78,6 +81,8 @@
         </table>
         <%= hidden_field_tag "user[roles][]", "placeholder" %>
       </div>
+      <% end %>
+
     </div>
     <div style="padding: 27px 0 0 27px;">
       <% if @user.avatar_key.present? %>
