@@ -105,6 +105,10 @@ module DigestEmail
         69 => 'Lyon'
       }[postal_code.first(2).to_i]
       "#{city} #{arrondissement}"
+    when '75116'
+      'Paris 16ème'
+    when /\A75...\z/
+      'Paris'
     else
       postal_code
     end
