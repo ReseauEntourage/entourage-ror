@@ -24,17 +24,35 @@
         </div>
       </div>
 
-      <div class="control-group">
-        <label class="control-label">Zone d'action</label>
-        <div class="controls">
-          <% if @user.address&.postal_code.present? %>
-            <%= @user.address.postal_code %>
-            <% if @user.address.country != 'FR' %>
-              (<%= @user.address.country %>)
+      <div style="display: flex">
+        <div class="control-group">
+          <label class="control-label">Zone d'action</label>
+          <div class="controls">
+            <% if @user.address&.postal_code.present? %>
+              <%= @user.address.postal_code %>
+              <% if @user.address.country != 'FR' %>
+                (<%= @user.address.country %>)
+              <% end %>
+            <% else %>
+              <span class="text-muted">Non définie</span>
             <% end %>
-          <% else %>
-            <span class="text-muted">Non définie</span>
-          <% end %>
+          </div>
+        </div>
+
+        <% groups_created_count = @user.groups.count %>
+        <div class="control-group" style="margin-left: 30px">
+          <label class="control-label">Groupes créés</label>
+          <div class="controls">
+            <%= groups_created_count %>
+            <%= link_to '(Voir)', admin_entourages_path(q: { user_id_eq: @user.id }), target: :_blank %>
+          </div>
+        </div>
+
+        <div class="control-group" style="margin-left: 30px">
+          <label class="control-label">Groupes rejoints</label>
+          <div class="controls">
+            <%= @user.joined_groups.count - groups_created_count %>
+          </div>
         </div>
       </div>
 
