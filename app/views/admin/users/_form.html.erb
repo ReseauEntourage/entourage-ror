@@ -25,6 +25,20 @@
       </div>
 
       <div class="control-group">
+        <label class="control-label">Zone d'action</label>
+        <div class="controls">
+          <% if @user.address&.postal_code.present? %>
+            <%= @user.address.postal_code %>
+            <% if @user.address.country != 'FR' %>
+              (<%= @user.address.country %>)
+            <% end %>
+          <% else %>
+            <span class="text-muted">Non définie</span>
+          <% end %>
+        </div>
+      </div>
+
+      <div class="control-group">
         <%= f.label :roles, class: "control-label" %>
         <table class="table" style="width: auto">
           <% @user.community.roles.each do |role| %>
