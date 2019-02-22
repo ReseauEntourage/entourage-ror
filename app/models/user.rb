@@ -21,6 +21,7 @@ class User < ActiveRecord::Base
   has_many :login_histories
   has_many :session_histories
   has_many :entourages
+  has_many :groups, -> { except_conversations }, class_name: :Entourage
   has_many :join_requests
   has_many :entourage_participations, through: :join_requests, source: :joinable, source_type: "Entourage"
   has_many :tour_participations, through: :join_requests, source: :joinable, source_type: "Tour"
@@ -149,6 +150,17 @@ class User < ActiveRecord::Base
 
   # https://github.com/rails/rails/blob/v4.2.10/activerecord/lib/active_record/attributes.rb
   attribute :community, Community::Type.new
+
+  def joined_groups(status: :accepted, group_type: :except_conversations)
+    scope = entourage_participations
+    if group_type == :except_conversations
+      scope = scope.except_conversations
+    else
+      scope = scope.where(group_type: group_type)
+    end
+    scope = scope.merge(JoinRequest.where(status: status)) unless status == :all
+    scope
+  end
 
   protected
 

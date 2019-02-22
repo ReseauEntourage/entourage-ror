@@ -30,7 +30,7 @@ module V1
       {
           tour_count: object.tours.count,
           encounter_count: object.encounters.count,
-          entourage_count: object.entourages.count
+          entourage_count: object.groups.count
       }
     end
 

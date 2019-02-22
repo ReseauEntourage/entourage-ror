@@ -106,14 +106,15 @@
       <div class="panel-body">
         <div class="row" style="margin-bottom: 2px;">
           <div class="col-md-3 form-inline">
-            <label>Actions :</label> <%= entourage.user.entourages.count %>
+            <% user_group_count = entourage.user.groups.count %>
+            <label>Actions :</label> <%= entourage.user.groups.count %>
             <%= link_to '(Voir)', admin_entourages_path(q: { user_id_eq: entourage.user_id }), target: :_blank %>
           </div>
           <div class="col-md-3 form-inline">
             <label>Messages :</label> <%= entourage.user.chat_messages.count %>
           </div>
           <div class="col-md-3 form-inline">
-            <label>Actions rejointes :</label> <%= entourage.user.join_requests.count - entourage.user.entourages.count %>
+            <label>Actions rejointes :</label> <%= entourage.user.joined_groups.count - user_group_count %>
           </div>
         </div>
         <%= fields_for :user_moderation, user_moderation do |uf| %>
