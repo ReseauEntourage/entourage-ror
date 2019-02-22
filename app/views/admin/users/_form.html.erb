@@ -1,48 +1,59 @@
 <%= form_for([:admin, @user], html: { class: "form-horizontal", role: "form" }) do |f| %>
   <%= render partial: "layouts/errors", locals: {obj: @user} %>
 
-  <div class="control-group">
-    <%= f.label :first_name,"Prénom", class: "control-label" %>
-    <div class="controls">
-      <%= f.text_field :first_name, class: "form-control", required: @user.pro? %>
-    </div>
-  </div>
+  <div style="display: flex">
+    <div style="flex-grow: 1">
+      <div class="control-group">
+        <%= f.label :first_name,"Prénom", class: "control-label" %>
+        <div class="controls">
+          <%= f.text_field :first_name, class: "form-control", required: @user.pro? %>
+        </div>
+      </div>
 
-  <div class="control-group">
-    <%= f.label :last_name,"Nom", class: "control-label" %>
-    <div class="controls">
-      <%= f.text_field :last_name, class: "form-control", required: @user.pro? %>
-    </div>
-  </div>
+      <div class="control-group">
+        <%= f.label :last_name,"Nom", class: "control-label" %>
+        <div class="controls">
+          <%= f.text_field :last_name, class: "form-control", required: @user.pro? %>
+        </div>
+      </div>
 
-  <div class="control-group">
-    <%= f.label :about, class: "control-label" %>
-    <div class="controls">
-      <%= f.text_area :about, class: "form-control", maxlength: 200 %>
-    </div>
-  </div>
+      <div class="control-group">
+        <%= f.label :about, class: "control-label" %>
+        <div class="controls">
+          <%= f.text_area :about, class: "form-control", maxlength: 200 %>
+        </div>
+      </div>
 
-  <div class="control-group">
-    <%= f.label :roles, class: "control-label" %>
-    <table class="table" style="width: auto">
-      <% @user.community.roles.each do |role| %>
-        <tr>
-          <td>
-            <label class="form-check-label" style="font-weight: normal"
-                   for="role<%= role.capitalize %>">
-              <%= t "community.#{@user.community.slug}.roles.#{role}" %>
-            </label>
-          </td>
-          <td>
-            <%= check_box_tag(
-                  "user[roles][]", role,
-                  @user.roles.include?(role),
-                  id: "role#{role.capitalize}") %>
-          </td>
-        </tr>
+      <div class="control-group">
+        <%= f.label :roles, class: "control-label" %>
+        <table class="table" style="width: auto">
+          <% @user.community.roles.each do |role| %>
+            <tr>
+              <td>
+                <label class="form-check-label" style="font-weight: normal"
+                       for="role<%= role.capitalize %>">
+                  <%= t "community.#{@user.community.slug}.roles.#{role}" %>
+                </label>
+              </td>
+              <td>
+                <%= check_box_tag(
+                      "user[roles][]", role,
+                      @user.roles.include?(role),
+                      id: "role#{role.capitalize}") %>
+              </td>
+            </tr>
+          <% end %>
+        </table>
+        <%= hidden_field_tag "user[roles][]", "placeholder" %>
+      </div>
+    </div>
+    <div style="padding: 27px 0 0 27px;">
+      <% if @user.avatar_key.present? %>
+        <%= user_avatar_image @user, size: '200x200', alt: '' %>
+      <% else %>
+        <%= image_tag "user/default_avatar.png", size: '200x200', alt: '' %>
       <% end %>
-    </table>
-    <%= hidden_field_tag "user[roles][]", "placeholder" %>
+    </div>
   </div>
 
   <div class="control-group">
