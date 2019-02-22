@@ -33,24 +33,34 @@ module Admin
     end
 
     def new
-      @user = User.new(community: current_user.community)
+      @user = new_user
     end
 
     def create
-      organization = Organization.find(params[:user][:organization_id])
-      builder = UserServices::ProUserBuilder.new(params: user_params, organization: organization)
+      if user_params[:organization_id].present?
+        organization = Organization.find(user_params[:organization_id])
+        builder = UserServices::ProUserBuilder.new(params: user_params, organization: organization)
+      else
+        builder = UserServices::PublicUserBuilder.new(params: user_params, community: community)
+      end
 
       builder.create(send_sms: params[:send_sms].present?) do |on|
         on.success do |user|
-          @user = user
-          redirect_to admin_users_path, notice: "utilisateur créé"
+          return redirect_to admin_users_path, notice: "utilisateur créé"
         end
 
-        on.failure do |user|
-          @user = user
-          render :new
+        on.invalid_phone_format do
+          @user = new_user
+          @user.assign_attributes(user_params)
+          @user.errors.add(:phone)
         end
+
+        on.duplicate { |user| @user = user }
+        on.failure   { |user| @user = user }
       end
+
+      # if we reach here, there was an error
+      render :new
     end
 
     def update
@@ -137,6 +147,10 @@ module Admin
 
     def set_user
       @user = User.find(params[:id])
+    end
+
+    def new_user
+      User.new(community: current_user.community, user_type: :public)
     end
 
     def user_params

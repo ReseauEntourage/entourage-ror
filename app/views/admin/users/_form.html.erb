@@ -82,11 +82,11 @@
   <br>
 
   <div class="control-group">
-    <%= f.label :organization,"Association de maraude", class: "control-label" %>
+    <%= f.label :organization, class: "control-label" %>
     <div class="controls">
       <%= f.collection_select :organization_id,
           Organization.order("name ASC"), :id, :name,
-          {include_blank: @user.pro? ? false : "(Aucune)"},
+          {include_blank: @user.organization_id.present? ? false : "(Aucune)"},
           {id: :pro_user, class: (:hide unless @user.pro?), disabled: !@user.pro?} %>
       <% if !@user.pro? %>
         <div id="change_status">
