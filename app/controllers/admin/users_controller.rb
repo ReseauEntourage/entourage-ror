@@ -3,7 +3,7 @@ module Admin
     before_action :set_user, only: [:show, :messages, :edit, :update, :block, :unblock, :banish, :validate, :experimental_pending_request_reminder]
 
     def index
-      @users = User.includes(:organization).order("last_name ASC").page(params[:page]).per(25)
+      @users = current_user.community.users.includes(:organization).order("last_name ASC").page(params[:page]).per(25)
     end
 
     def show
@@ -146,7 +146,7 @@ module Admin
     attr_reader :user
 
     def set_user
-      @user = User.find(params[:id])
+      @user = current_user.community.users.find(params[:id])
     end
 
     def new_user
