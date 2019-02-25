@@ -15,7 +15,7 @@ module Api
           8 => :heart,
           9 => :heart,
           10 => :heart,
-          11 => :megaphone,
+          11 => :trophy,
           12 => :text,
           13 => :megaphone,
           14 => :heart,
@@ -28,7 +28,11 @@ module Api
           21 => :heart,
           22 => :megaphone,
           23 => :megaphone,
-          24 => :trophy,
+          24 => :heart,
+          25 => :video,
+          26 => :megaphone,
+          27 => :heart,
+          28 => :video,
         }[params[:id].to_i]
 
         redirect_to view_context.asset_url("assets/announcements/icons/#{icon}.png")
@@ -48,7 +52,8 @@ module Api
 
       def image
         image = {
-          10 => 'guillaume.png?3',
+          10 => 'guillaume.jpg',
+          11 => 'action.jpg',
           13 => 'ambassadors.jpg',
           14 => 'collecte-2018.jpg',
           16 => 'noel.jpg',
@@ -60,6 +65,10 @@ module Api
           22 => 'scb.jpg',
           23 => 'reseaux-sociaux.jpg',
           24 => 'webapp.jpg',
+          25 => 'video-eric.jpg',
+          26 => 'paperboard.jpg',
+          27 => 'conversation.jpg',
+          28 => 'video-nolwenn.jpg',
         }[params[:id].to_i]
 
         return render nothing: true, status: :not_found if image.nil?
@@ -99,7 +108,7 @@ module Api
         when 9
           url = "https://blog.entourage.social/2018/05/17/fete-des-voisins-2018-invitons-aussi-nos-voisins-sdf/"
         when 11
-          url = "https://blog.entourage.social/2017/04/28/quelles-actions-faire-avec-entourage/"
+          url = "https://blog.entourage.social/2017/04/28/quelles-actions-faire-avec-entourage/#site-content"
         when 12
           url = "https://blog.entourage.social/2018/07/27/roya-michael-il-avait-besoin-dun-semblant-de-famille/"
         when 13
@@ -126,6 +135,14 @@ module Api
           url = "https://www.facebook.com/EntourageReseauCivique/"
         when 24
           url = "https://www.entourage.social/app"
+        when 25
+          url = "https://www.youtube.com/watch?v=AsUyal44DXk"
+        when 26
+          url = "http://bit.ly/2tvGgcH"
+        when 27
+          url = "https://blog.entourage.social/category/belles-histoires/#nav-search"
+        when 28
+          url = "https://www.youtube.com/watch?v=UcODKwV9bO8&list=PLwLEgqe22sVYuK9ySGExo8JfgAzlqWUV9"
         end
 
         begin
