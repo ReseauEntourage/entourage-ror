@@ -7,6 +7,11 @@
 
   user_values = UserModeration::VALUES
   user_column_type = Hash[UserModeration.columns_hash.map { |n, c| [n.to_sym, c.type] }]
+
+  user_community = entourage.user.community
+  targeting_profile_values = user_community.targeting_profiles.map do |key|
+    [t("community.#{user_community.slug}.targeting_profiles.#{key}"), key]
+  end
 %>
 
 <style>
@@ -119,24 +124,22 @@
             <label>Messages :</label> <%= entourage.user.chat_messages.count %>
           </div>
         </div>
-        <%= fields_for :user_moderation, user_moderation do |uf| %>
-          <div class="row">
-            <% [:expectations, :acquisition_channel, :content_sent, :skills].each do |field| %>
-              <div class="col-md-3 form-group">
-                <%= uf.label field %>
-                <%= uf.select field, user_values[field], { include_blank: true }, { class: "form-control" } %>
-              </div>
-            <% end %>
-          </div>
-          <div class="row" style="margin-bottom: -9px; overflow: hidden;">
-            <% [:accepts_event_invitations, :accepts_volunteering_offers, :ambassador].each do |field| %>
-              <div class="col-md-3 form-inline">
-                <%= uf.label field %>
-                <%= uf.check_box field %>
-              </div>
-            <% end %>
-          </div>
-        <% end %>
+        <div class="row">
+          <%= fields_for :user, entourage.user do |uf| %>
+            <div class="col-md-3">
+              <%= uf.label :targeting_profile %>
+              <%= uf.select :targeting_profile, targeting_profile_values, { include_blank: true }, { class: "form-control" } %>
+            </div>
+          <% end %>
+          <%= fields_for :user_moderation, user_moderation do |uf| %>
+              <% [:skills].each do |field| %>
+                <div class="col-md-3">
+                  <%= uf.label field %>
+                  <%= uf.select field, user_values[field], { include_blank: true }, { class: "form-control" } %>
+                </div>
+              <% end %>
+          <% end %>
+        </div>
       </div>
     </div>
 
