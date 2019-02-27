@@ -151,15 +151,22 @@ class User < ActiveRecord::Base
   # https://github.com/rails/rails/blob/v4.2.10/activerecord/lib/active_record/attributes.rb
   attribute :community, Community::Type.new
 
-  def joined_groups(status: :accepted, group_type: :except_conversations)
+  def joined_groups(status: :accepted, group_type: :except_conversations, exclude_created: false)
     scope = entourage_participations
     if group_type == :except_conversations
       scope = scope.except_conversations
     else
       scope = scope.where(group_type: group_type)
     end
+    if exclude_created
+      scope = scope.where.not(user_id: self.id)
+    end
     scope = scope.merge(JoinRequest.where(status: status)) unless status == :all
     scope
+  end
+
+  def conversations(status: :accepted, group_type: :except_conversations)
+    joined_groups(group_type: :conversation)
   end
 
   protected

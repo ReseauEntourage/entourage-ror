@@ -40,19 +40,32 @@
         </div>
 
         <% unless @user.new_record? %>
-          <% groups_created_count = @user.groups.count %>
           <div class="control-group" style="margin-left: 30px">
-            <label class="control-label">Groupes créés</label>
+            <label class="control-label">Action créées</label>
             <div class="controls">
-              <%= groups_created_count %>
+              <%= @user.groups.count %>
               <%= link_to '(Voir)', admin_entourages_path(q: { user_id_eq: @user.id }), target: :_blank %>
             </div>
           </div>
 
           <div class="control-group" style="margin-left: 30px">
-            <label class="control-label">Groupes rejoints</label>
+            <label class="control-label">Actions rejointes</label>
             <div class="controls">
-              <%= @user.joined_groups.count - groups_created_count %>
+              <%= @user.joined_groups(exclude_created: true).count %>
+            </div>
+          </div>
+
+          <div class="control-group" style="margin-left: 30px">
+            <label class="control-label">Conversations</label>
+            <div class="controls">
+              <%= @user.conversations.count %>
+            </div>
+          </div>
+
+          <div class="control-group" style="margin-left: 30px">
+            <label class="control-label">Messages</label>
+            <div class="controls">
+              <%= @user.chat_messages.count %>
             </div>
           </div>
         <% end %>
