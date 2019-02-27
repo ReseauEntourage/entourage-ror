@@ -57,6 +57,16 @@
           </div>
         <% end %>
       </div>
+
+      <div class="control-group">
+        <%= f.label :targeting_profile, class: "control-label" %>
+        <div class="controls">
+          <%= f.select :targeting_profile,
+              @user.community.targeting_profiles.map { |key| [t("community.#{@user.community.slug}.targeting_profiles.#{key}"), key] },
+              {include_blank: "(Non défini)"}
+          %>
+        </div>
+      </div>
     </div>
     <div style="padding: 27px 0 0 27px;">
       <% if @user.avatar_key.present? %>
@@ -67,6 +77,7 @@
     </div>
   </div>
 
+  <br/>
   <div class="control-group">
     <%= f.label :email,"Email", class: "control-label" %>
     <div class="controls">
