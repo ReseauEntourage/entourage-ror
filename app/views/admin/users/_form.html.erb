@@ -70,32 +70,6 @@
           </div>
         </div>
       <% end %>
-
-
-      <div style="display: flex">
-        <div class="control-group">
-          <%= f.label :targeting_profile, class: "control-label" %>
-          <div class="controls">
-            <%= f.select :targeting_profile,
-                @user.community.targeting_profiles.map { |key| [t("community.#{@user.community.slug}.targeting_profiles.#{key}"), key] },
-                {include_blank: "(Non défini)"}
-            %>
-          </div>
-        </div>
-
-        <% unless @user.new_record? %>
-          <%= fields_for :user_moderation, @user.moderation do |uf| %>
-            <% [:skills, :expectations, :acquisition_channel].each do |field| %>
-              <div class="control-group" style="margin-left: 30px">
-                <%= uf.label field, class: "control-label" %>
-                <div class="controls">
-                  <%= uf.select field, UserModeration::VALUES[field], { include_blank: true } %>
-                </div>
-              </div>
-            <% end %>
-          <% end %>
-        <% end %>
-      </div>
     </div>
     <div style="padding: 27px 0 0 27px;">
       <% if @user.avatar_key.present? %>
@@ -104,6 +78,32 @@
         <%= image_tag "user/default_avatar.png", size: '200x200', alt: '' %>
       <% end %>
     </div>
+  </div>
+
+  <div style="display: flex">
+    <div class="control-group">
+      <%= f.label :targeting_profile, class: "control-label" %>
+      <div class="controls">
+        <%= f.select :targeting_profile,
+            @user.community.targeting_profiles.map { |key| [t("community.#{@user.community.slug}.targeting_profiles.#{key}"), key] },
+            {include_blank: "(Non défini)"}
+        %>
+      </div>
+    </div>
+
+    <% @user.moderation || @user.build_moderation %>
+    <% unless @user.new_record? %>
+      <%= fields_for :user_moderation, @user.moderation do |uf| %>
+        <% [:skills, :expectations, :acquisition_channel].each do |field| %>
+          <div class="control-group" style="margin-left: 30px">
+            <%= uf.label field, class: "control-label" %>
+            <div class="controls">
+              <%= uf.select field, UserModeration::VALUES[field], { include_blank: true } %>
+            </div>
+          </div>
+        <% end %>
+      <% end %>
+    <% end %>
   </div>
 
   <br/>

@@ -1,9 +1,3 @@
-<!DOCTYPE html>
-<html>
-<%= render partial: "layouts/head" %>
-
-<body class="admin <%= controller_name %> <%= action_name %> layout-index-large">
-
 <nav class="navbar navbar-inverse navbar-fixed-top">
   <div class="container-fluid">
     <div class="navbar-header">
@@ -18,7 +12,6 @@
             <span class="caret"></span>
           </a>
           <ul class="dropdown-menu">
-            <li><%= link_to "Utilisateurs", admin_users_path %></li>
             <li><%= link_to "Associations", admin_organizations_path %></li>
             <li><%= link_to "Pois", admin_pois_path %></li>
             <li><%= link_to "Demandes d'adhésions", admin_registration_requests_path %></li>
@@ -26,15 +19,16 @@
             <li><%= link_to "Modération des photos de profils", moderate_admin_users_path %></li>
             <li><%= link_to "Inscription à la newsletter", admin_newsletter_subscriptions_path %></li>
             <li><%= link_to "Invitations à rejoindre un entourage", admin_entourage_invitations_path %></li>
-            <li><%= link_to "Entourages", admin_entourages_path %></li>
             <% if EnvironmentHelper.staging? %>
               <li><%= link_to "Maraudes de test", admin_generate_tours_path %></li>
               <li><%= link_to "Utilisateurs de test", fake_admin_users_path %></li>
             <% end %>
           </ul>
         </li>
-        <li><%= link_to "Actions", admin_entourages_path %></li>
-        <li>
+        <li class="<%= :active if controller_name == 'entourages' %>">
+          <%= link_to "Actions", admin_entourages_path %>
+        </li>
+        <li class="<%= :active if controller_name == 'conversations' %>">
           <%
             moderator = User.find_by email: 'guillaume@entourage.social', community: :entourage
             unread_count = ConversationService.unread_count_for(moderator)
@@ -46,6 +40,9 @@
             <% end %>
           <% end %>
         </li>
+        <li class="<%= :active if controller_name == 'users' %>">
+          <%= link_to "Utilisateurs", admin_users_path %>
+        </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li><%= link_to 'Déconnexion', session_path(current_user), method: :delete %></li>
@@ -56,6 +53,3 @@
 <div id="flash">
   <%= display_flash_messages %>
 </div>
-<%= yield %>
-</body>
-</html>

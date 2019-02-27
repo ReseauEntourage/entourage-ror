@@ -1,5 +1,11 @@
 <div class="h1">
-  <span><%= @user.first_name %> <%= @user.last_name %></span>
+  <span>
+    <% if [@user.first_name, @user.last_name].any?(&:present?) %>
+      <%= @user.first_name %> <%= @user.last_name %>
+    <% else %>
+      Utilisateur #<%= @user.id %>
+    <% end %>
+  </span>
   <div class="pull-right">
     <%
       moderator = User.find_by(email: "guillaume@entourage.social")
