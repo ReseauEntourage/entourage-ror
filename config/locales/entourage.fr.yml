@@ -18,7 +18,8 @@ fr:
         address: Adresse
       entourage_moderation:
         action_author_type: Emetteur
-        action_recipient_type: Destinataire
+        action_recipient_type: Audience
+        action_target_type: Cible
         action_type: Type d’action
         action_recipient_consent_obtained: Consentement
 

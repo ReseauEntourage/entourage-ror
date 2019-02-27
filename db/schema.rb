@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190226174304) do
+ActiveRecord::Schema.define(version: 20190227153518) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -201,6 +201,7 @@ ActiveRecord::Schema.define(version: 20190226174304) do
     t.string  "action_outcome"
     t.string  "action_success_reason"
     t.string  "action_failure_reason"
+    t.string  "action_target_type"
   end
 
   add_index "entourage_moderations", ["entourage_id"], name: "index_entourage_moderations_on_entourage_id", unique: true, using: :btree

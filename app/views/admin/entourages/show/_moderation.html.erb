@@ -17,6 +17,11 @@
   if moderation.action_author_type.nil? && entourage.user.targeting_profile.present?
     moderation.action_author_type ||= entourage.user.targeting_profile
   end
+
+  label_info = {
+    action_recipient_type: "à qui recommander l'action",
+    action_target_type: "qui sera aidé par l'action"
+  }
 %>
 
 <style>
@@ -74,9 +79,16 @@
         Nature de l’action
       </div>
       <div class="panel-body row">
-        <% [:action_author_type, :action_recipient_type, :action_type, :action_recipient_consent_obtained].each do |field| %>
+        <% [:action_author_type, :action_recipient_type, :action_target_type, :action_type].each do |field| %>
           <div class="col-md-3">
-            <%= f.label field %>
+            <% if label_info.key?(field) %>
+              <%= f.label field do %>
+                <%= f.object.class.human_attribute_name(field) %>
+                <span class="glyphicon glyphicon-question-sign" aria-hidden="true" data-toggle="tooltip" data-placement="right" title="<%= label_info[field] %>"></span>
+              <% end %>
+            <% else %>
+              <%= f.label field %>
+            <% end %>
             <%= f.select field, values[field], { include_blank: true }, { class: "form-control" } %>
           </div>
         <% end %>
@@ -89,7 +101,7 @@
       </div>
       <div class="panel-body">
         <div class="row">
-          <% [:moderated_at, :moderation_contact_channel, :moderator, :moderation_action].each do |field| %>
+          <% [:moderated_at, :moderation_contact_channel, :moderator, :action_recipient_consent_obtained].each do |field| %>
             <div class="col-md-3 form-group">
               <%= f.label field %>
               <% case column_type[field] %>

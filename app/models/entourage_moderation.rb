@@ -4,19 +4,19 @@ class EntourageModeration < ActiveRecord::Base
 
   VALUES = {
     # Emetteur
-    action_author_type: [
-      'Riverain',
-      'SDF',
-      'Association',
-      'Réseau ATD',
-      'Réseau Entourage',
-    ],
-    # Destinataire
+    action_author_type: [],
+    # Audience
     action_recipient_type: [
       'SDF',
       'Riverain',
+      'Tout le monde',
+    ],
+    # Cible
+    action_target_type: [
+      'SDF',
       'Association',
-      'Réseau Entourage',
+      'Riverain',
+      'Équipe Entourage',
       'Tout le monde',
     ],
     # Type d’action
