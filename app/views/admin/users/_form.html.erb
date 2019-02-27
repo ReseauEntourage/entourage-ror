@@ -57,32 +57,6 @@
           </div>
         <% end %>
       </div>
-
-      <% unless @user.new_record? %>
-      <div class="control-group">
-        <%= f.label :roles, class: "control-label" %>
-        <table class="table" style="width: auto">
-          <% @user.community.roles.each do |role| %>
-            <tr>
-              <td>
-                <label class="form-check-label" style="font-weight: normal"
-                       for="role<%= role.capitalize %>">
-                  <%= t "community.#{@user.community.slug}.roles.#{role}" %>
-                </label>
-              </td>
-              <td>
-                <%= check_box_tag(
-                      "user[roles][]", role,
-                      @user.roles.include?(role),
-                      id: "role#{role.capitalize}") %>
-              </td>
-            </tr>
-          <% end %>
-        </table>
-        <%= hidden_field_tag "user[roles][]", "placeholder" %>
-      </div>
-      <% end %>
-
     </div>
     <div style="padding: 27px 0 0 27px;">
       <% if @user.avatar_key.present? %>

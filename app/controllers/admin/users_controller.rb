@@ -72,16 +72,7 @@ module Admin
       email_prefs_success = EmailPreferencesService.update(
         user: user, preferences: params[:email_preferences])
 
-      user.assign_attributes(user_params)
-
-      if user_params.key?(:roles)
-        # the "placeholder" role is used in the view to make sure
-        # that the user[roles][] parameter is sent even where no role
-        # is selected
-        user.roles = (user_params[:roles] || []) - ["placeholder"]
-      end
-
-      if email_prefs_success && @user.save
+      if email_prefs_success && user.update(user_params)
         redirect_to [:admin, user], notice: "utilisateur mis à jour"
       else
         flash.now[:error] = "Erreur lors de la mise à jour"
@@ -154,7 +145,7 @@ module Admin
     end
 
     def user_params
-      params.require(:user).permit(:first_name, :last_name, :email, :sms_code, :phone, :organization_id, :use_suggestions, :about, :accepts_emails, roles: [])
+      params.require(:user).permit(:first_name, :last_name, :email, :sms_code, :phone, :organization_id, :use_suggestions, :about, :accepts_emails)
     end
   end
 
