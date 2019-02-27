@@ -13,9 +13,23 @@
     [t("community.#{user_community.slug}.targeting_profiles.#{key}"), key]
   end
 
-  values[:action_author_type] = targeting_profile_values
+  values[:action_author_type] = targeting_profile_values.map(&:first)
   if moderation.action_author_type.nil? && entourage.user.targeting_profile.present?
     moderation.action_author_type ||= entourage.user.targeting_profile
+  end
+
+  moderation.moderator = "Guillaume" if moderation.moderator.blank?
+
+  def safe_options standard_values, current_value
+    if current_value.blank? || current_value.in?(standard_values)
+      return standard_values, false
+    end
+
+    safe_options = standard_values + [
+      ['Non-standard :', disabled: true],
+      current_value
+    ]
+    return safe_options, true
   end
 
   label_info = {
@@ -74,22 +88,26 @@
   </div>
 
   <div class="panel panel-default">
-    <div class="panel-row">
+    <div class="panel-row" style="overflow: visible;">
       <div class="panel-heading">
         Nature de l’action
       </div>
       <div class="panel-body row">
         <% [:action_author_type, :action_recipient_type, :action_target_type, :action_type].each do |field| %>
           <div class="col-md-3">
-            <% if label_info.key?(field) %>
-              <%= f.label field do %>
-                <%= f.object.class.human_attribute_name(field) %>
-                <span class="glyphicon glyphicon-question-sign" aria-hidden="true" data-toggle="tooltip" data-placement="right" title="<%= label_info[field] %>"></span>
+            <% current_value = f.object[field] %>
+            <% options, non_standard = safe_options(values[field], current_value) %>
+
+            <%= f.label field do %>
+              <%= f.object.class.human_attribute_name(field) %>
+              <% if non_standard %>
+                <span class="glyphicon glyphicon-warning-sign text-danger" aria-hidden="true" data-toggle="tooltip" data-placement="top" title="la valeur &quot;<%= current_value %>&quot; n'est pas standard"></span>
               <% end %>
-            <% else %>
-              <%= f.label field %>
+              <% if label_info.key?(field) %>
+                <span class="glyphicon glyphicon-question-sign" aria-hidden="true" data-toggle="tooltip" data-placement="top" title="<%= label_info[field] %>"></span>
+              <% end %>
             <% end %>
-            <%= f.select field, values[field], { include_blank: true }, { class: "form-control" } %>
+            <%= f.select field, options, { include_blank: true }, { class: "form-control" } %>
           </div>
         <% end %>
       </div>
@@ -108,7 +126,9 @@
               <% when :date %>
                 <%= f.date_field field, class: "form-control js-datepicker" %>
               <% else %>
-                <%= f.select field, values[field], { include_blank: true }, { class: "form-control" } %>
+                <% current_value = f.object[field] %>
+                <% options, _ = safe_options(values[field], current_value) %>
+                <%= f.select field, options, { include_blank: true }, { class: "form-control" } %>
               <% end %>
             </div>
           <% end %>

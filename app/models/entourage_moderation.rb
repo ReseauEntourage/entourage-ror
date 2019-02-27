@@ -10,14 +10,16 @@ class EntourageModeration < ActiveRecord::Base
       'SDF',
       'Riverain',
       'Tout le monde',
+      'Autre',
+      'Test'
     ],
     # Cible
     action_target_type: [
       'SDF',
       'Association',
       'Riverain',
-      'Équipe Entourage',
       'Tout le monde',
+      'Autre'
     ],
     # Type d’action
     action_type: [
@@ -63,11 +65,10 @@ class EntourageModeration < ActiveRecord::Base
     # Interlocuteur
     moderator: [
       'Guillaume',
-      'Célia',
-      'Jade',
-      'Lucie',
-      'Axelle',
       'Claire',
+      'Clémence',
+      'Anne-Sophie',
+      'Valentine',
     ],
     # Action
     moderation_action: [
