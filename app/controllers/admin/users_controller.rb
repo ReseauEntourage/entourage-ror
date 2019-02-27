@@ -73,10 +73,19 @@ module Admin
         user: user, preferences: params[:email_preferences])
 
       user.assign_attributes(user_params)
-
       UserService.sync_roles(user)
 
-      if email_prefs_success && user.save
+      moderation = user.moderation || user.build_moderation
+      moderation.assign_attributes(moderation_params)
+
+      saved = false
+      ActiveRecord::Base.transaction do
+        user.save! if user.changed?
+        moderation.save! if moderation.changed?
+        saved = true
+      end
+
+      if email_prefs_success && saved
         redirect_to [:admin, user], notice: "utilisateur mis à jour"
       else
         flash.now[:error] = "Erreur lors de la mise à jour"
@@ -150,6 +159,12 @@ module Admin
 
     def user_params
       params.require(:user).permit(:first_name, :last_name, :email, :sms_code, :phone, :organization_id, :use_suggestions, :about, :accepts_emails, :targeting_profile)
+    end
+
+    def moderation_params
+      params.require(:user_moderation).permit(
+        :skills, :expectations, :acquisition_channel
+      )
     end
   end
 
