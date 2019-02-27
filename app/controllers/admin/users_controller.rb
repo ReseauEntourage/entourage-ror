@@ -72,7 +72,11 @@ module Admin
       email_prefs_success = EmailPreferencesService.update(
         user: user, preferences: params[:email_preferences])
 
-      if email_prefs_success && user.update(user_params)
+      user.assign_attributes(user_params)
+
+      UserService.sync_roles(user)
+
+      if email_prefs_success && user.save
         redirect_to [:admin, user], notice: "utilisateur mis à jour"
       else
         flash.now[:error] = "Erreur lors de la mise à jour"

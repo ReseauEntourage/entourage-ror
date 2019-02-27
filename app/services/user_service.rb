@@ -10,4 +10,11 @@ module UserService
   def self.join_and_capitalize first, last
     [first, last].map(&:presence).compact.map(&:capitalize).join(' ').squish
   end
+
+  def self.sync_roles user
+    return unless user.community == :entourage
+    roles = user.roles - [:ambassador]
+    roles.push :ambassador if user.targeting_profile == 'ambassador'
+    user.roles = roles.sort_by { |r| user.community.roles.index(r) }
+  end
 end
