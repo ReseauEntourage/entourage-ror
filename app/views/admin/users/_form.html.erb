@@ -51,7 +51,7 @@
           <div class="control-group" style="margin-left: 30px">
             <label class="control-label">Actions rejointes</label>
             <div class="controls">
-              <%= @user.joined_groups(exclude_created: true).count %>
+              <%= @user.joined_groups(exclude_created: true, status: [:pending, :accepted]).count %>
             </div>
           </div>
 

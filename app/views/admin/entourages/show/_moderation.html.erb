@@ -132,7 +132,7 @@
             <%= link_to '(Voir)', admin_entourages_path(q: { user_id_eq: entourage.user_id }), target: :_blank %>
           </div>
           <div class="col-md-3 form-inline">
-            <label>Actions rejointes :</label> <%= entourage.user.joined_groups(exclude_created: true).count %>
+            <label>Actions rejointes :</label> <%= entourage.user.joined_groups(exclude_created: true, status: [:pending, :accepted]).count %>
           </div>
           <div class="col-md-3 form-inline">
             <label>Conversations :</label> <%= entourage.user.conversations.count %>
