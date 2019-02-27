@@ -21,3 +21,9 @@ group_types:
   outing:
     message_types: [text]
     roles: [organizer, participant]
+targeting_profiles:
+  - offers_help
+  - asks_for_help
+  - partner
+  - ambassador
+  - team

@@ -10,6 +10,7 @@ fr:
         organization: Association de maraude
         about: À propos
         roles: Rôles
+        targeting_profile: Profil
       organization:
         name: Nom
         description: Description
@@ -45,3 +46,9 @@ fr:
     entourage:
       roles:
         ambassador: Ambassadeur
+      targeting_profiles:
+        offers_help: Riverain
+        asks_for_help: SDF
+        partner: Association
+        ambassador: Ambassadeur
+        team: Équipe Entourage
