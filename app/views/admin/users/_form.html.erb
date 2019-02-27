@@ -24,22 +24,22 @@
         </div>
       </div>
 
-      <div style="display: flex">
-        <div class="control-group">
-          <label class="control-label">Zone d'action</label>
-          <div class="controls">
-            <% if @user.address&.postal_code.present? %>
-              <%= @user.address.postal_code %>
-              <% if @user.address.country != 'FR' %>
-                (<%= @user.address.country %>)
+      <% unless @user.new_record? %>
+        <div style="display: flex">
+          <div class="control-group">
+            <label class="control-label">Zone d'action</label>
+            <div class="controls">
+              <% if @user.address&.postal_code.present? %>
+                <%= @user.address.postal_code %>
+                <% if @user.address.country != 'FR' %>
+                  (<%= @user.address.country %>)
+                <% end %>
+              <% else %>
+                <span class="text-muted">Non définie</span>
               <% end %>
-            <% else %>
-              <span class="text-muted">Non définie</span>
-            <% end %>
+            </div>
           </div>
-        </div>
 
-        <% unless @user.new_record? %>
           <div class="control-group" style="margin-left: 30px">
             <label class="control-label">Action créées</label>
             <div class="controls">
@@ -68,8 +68,8 @@
               <%= @user.chat_messages.count %>
             </div>
           </div>
-        <% end %>
-      </div>
+        </div>
+      <% end %>
 
 
       <div style="display: flex">
