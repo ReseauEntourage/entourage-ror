@@ -3,8 +3,15 @@ class EntourageModeration < ActiveRecord::Base
   belongs_to :entourage
 
   VALUES = {
-    # Emetteur
-    action_author_type: [],
+    # Emetteur. community.targeting_profiles + the following:
+    action_author_type: [
+      'Riverain',
+      'SDF',
+      'Association',
+      'Ambassadeur',
+      'Comité de la rue',
+      'Équipe Entourage',
+    ],
     # Audience
     action_recipient_type: [
       'SDF',

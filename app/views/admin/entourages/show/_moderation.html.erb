@@ -13,7 +13,6 @@
     [t("community.#{user_community.slug}.targeting_profiles.#{key}"), key]
   end
 
-  values[:action_author_type] = targeting_profile_values.map(&:first)
   if moderation.action_author_type.nil? && entourage.user.targeting_profile.present?
     moderation.action_author_type ||= entourage.user.targeting_profile
   end
