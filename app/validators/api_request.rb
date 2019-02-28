@@ -33,4 +33,3 @@ class ApiRequest
     @key_object ||= Api::ApplicationKey.new(api_key: api_key)
   end
 end
-

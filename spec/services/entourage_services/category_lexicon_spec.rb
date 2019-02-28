@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe EntourageServices::CategoryLexicon do
-  
+
   describe 'category' do
     subject { EntourageServices::CategoryLexicon.new(text: text).category }
 

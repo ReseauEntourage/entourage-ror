@@ -42,7 +42,7 @@ module TourPointsServices
       FROM (
         SELECT ST_DumpPoints(simplified_path.simplifiedLine) AS points
         FROM (
-          SELECT ST_Simplify(ST_MakeLine(path.point), #{TOLERANCE}) as simplifiedLine 
+          SELECT ST_Simplify(ST_MakeLine(path.point), #{TOLERANCE}) as simplifiedLine
           FROM (
             SELECT ST_SetSRID(ST_MakePoint(latitude, longitude),4326) AS point
             FROM tour_points

@@ -16,17 +16,17 @@ class PushNotificationService
       ios_notification_service.send_notification(sender, object, content, [token], user.community.slug, extra, badge(user)) if token
     end
   end
-  
+
   private
 
   def badge(user)
     UserServices::UnreadMessages.new(user: user).number_of_unread_messages
   end
-  
+
   def android_notification_service
     @android_notification_service || AndroidNotificationService.new
   end
-  
+
   def ios_notification_service
     @ios_notification_service || IosNotificationService.new
   end

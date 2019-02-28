@@ -3,7 +3,7 @@ include AuthHelper
 
 RSpec.describe OrganizationsController, :type => :controller do
   render_views
-  
+
   context 'correct authentication' do
     let!(:user) { manager_basic_login }
     describe 'edit' do

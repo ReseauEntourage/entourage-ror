@@ -12,11 +12,11 @@ class Encounter < ActiveRecord::Base
   def to_s
     "#{id} - Entre #{tour.user.full_name} et #{street_person_name}"
   end
-  
+
   def crypting_key
     ENV['DB_CRYPTING_KEY']
   end
-  
+
   def crypting_key_present?
     crypting_key.present?
   end

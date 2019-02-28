@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe Api::V1::PoisController, :type => :controller do
   render_views
-  
+
   context 'authorized' do
     let!(:user) { create :pro_user }
 
@@ -76,7 +76,7 @@ describe Api::V1::PoisController, :type => :controller do
         end
       end
     end
-    
+
     describe 'create' do
       let!(:poi) { build :poi }
       before { post :create, token: user.token, poi: { name: poi.name, latitude: poi.latitude, longitude: poi.longitude, adress: poi.adress, phone: poi.phone, website: poi.website, email: poi.email, audience: poi.audience, category_id: poi.category_id }, format: :json}
@@ -98,7 +98,7 @@ describe Api::V1::PoisController, :type => :controller do
         expect(res).to eq({"poi"=>{"id"=>poi.id, "name"=>"Dede", "description"=>nil, "longitude"=>2.30681949999996, "latitude"=>48.870424, "adress"=>"Au 50 75008 Paris", "phone"=>"0000000000", "website"=>"entourage.com", "email"=>"entourage@entourage.com", "audience"=>"Mon audience", "validated"=>false, "category_id"=>poi.category_id, "category"=>{"id"=>poi.category.id, "name"=>poi.category.name}}})
       end
     end
-    
+
     describe 'report' do
       let!(:poi) { create :poi }
       let!(:mail) { spy('mail') }
@@ -125,9 +125,9 @@ describe Api::V1::PoisController, :type => :controller do
         it { expect(response.status).to eq(400) }
       end
     end
-    
+
   end
-    
+
   context "unauthorized" do
     describe '#index' do
       before { get 'index', :format => :json }

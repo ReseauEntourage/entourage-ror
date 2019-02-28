@@ -4,7 +4,7 @@ RSpec.describe Api::V1::MapController, :type => :controller do
   render_views
 
   let!(:user) { FactoryGirl.create :pro_user }
-  
+
   describe "GET index" do
     context "Access control" do
       it "returns http success if user is logged in" do

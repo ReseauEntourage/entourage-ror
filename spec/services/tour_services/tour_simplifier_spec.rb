@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe TourServices::TourSimplifier do
-  
+
   describe 'simplified_points' do
     let!(:tour) { FactoryGirl.create(:tour) }
     let(:simplifier) { TourServices::TourSimplifier.new(tour: tour) }

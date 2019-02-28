@@ -9,7 +9,7 @@ Rails.application.load_tasks
 begin
   require 'dredd/rack'
   Dredd::Rack.app = Rails.application
-  
+
   Dredd::Rack::RakeTask.new(:dredd) do |task|
     task.runner.configure do |dredd|
       dredd.paths_to_blueprints './*.apib', 'blueprints/*.apib'

@@ -3,7 +3,7 @@ class UsersController < ApplicationController
   before_filter :authenticate_user!
   before_filter :authenticate_manager!, only: [:index, :edit, :update]
   before_filter :set_user, only: [:edit, :update, :destroy, :send_sms]
-  
+
   def edit
     @user_presenter = UserPresenter.new(user: @current_user)
   end
@@ -57,14 +57,14 @@ class UsersController < ApplicationController
   end
 
   private
-  
+
   def set_user
     @user = User.find(params[:id])
     if @user.organization != current_user.organization
       head :forbidden
     end
   end
-  
+
   def user_params
     params.require(:user).permit(:first_name, :last_name, :phone, :email, :manager, :simplified_tour)
   end
