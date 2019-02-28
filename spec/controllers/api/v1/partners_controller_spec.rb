@@ -7,7 +7,7 @@ RSpec.describe Api::V1::PartnersController, type: :controller do
   describe 'GET index' do
     let!(:partner1) { FactoryGirl.create(:partner) }
     let!(:partner2) { FactoryGirl.create(:partner) }
-    before { FactoryGirl.create(:user_partner, user: user, partner: partner1) }
+    # before { FactoryGirl.create(:user_partner, user: user, partner: partner1) }
 
     before { get 'index', token: user.token }
     # TODO(partner)

@@ -35,9 +35,8 @@ class User < ActiveRecord::Base
   has_many :invitations, class_name: "EntourageInvitation", foreign_key: "invitee_id"
   has_many :authentication_providers, dependent: :destroy
   has_many :feeds
-  has_many :user_partners, dependent: :destroy
-  has_many :default_user_partners, -> { where(default: true) }, class_name: :UserPartner
-  has_many :partners, through: :user_partners
+  # TODO(partner)
+  # belongs_to :partner
   has_one :users_appetence
   has_many :entourage_displays
   has_many :entourage_scores
@@ -140,12 +139,14 @@ class User < ActiveRecord::Base
   end
   alias_method :unblock!, :validate!
 
+  # TODO(partner)
   def default_partner
-    @default_partner ||= default_user_partners.first&.partner
+    nil # @default_partner ||= default_user_partners.first&.partner
   end
 
+  # TODO(partner)
   def default_partner_id
-    user_partners.where(default: true).limit(1).pluck(:partner_id).first
+    nil # user_partners.where(default: true).limit(1).pluck(:partner_id).first
   end
 
   # https://github.com/rails/rails/blob/v4.2.10/activerecord/lib/active_record/attributes.rb

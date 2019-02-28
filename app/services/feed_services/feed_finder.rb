@@ -58,9 +58,10 @@ module FeedServices
       excluded_status = ['blacklisted']
       excluded_status += ['suspended'] unless context == :myfeed
 
+      # TODO(partner): includes(feedable: [{ user: { default_user_partners: :partner} }])
       feeds = user.community.feeds
                   .where.not(status: excluded_status)
-                  .includes(feedable: [{ user: { default_user_partners: :partner} }])
+                  .includes(feedable: :user)
 
       if context == :feed
         feeds = feeds.where.not(group_type: :conversation)
