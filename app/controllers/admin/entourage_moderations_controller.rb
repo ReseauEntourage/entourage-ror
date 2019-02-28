@@ -32,16 +32,15 @@ module Admin
     def moderation_params
       params.require(:entourage_moderation).permit(
         :entourage_id,
-        :action_author_type, :action_recipient_type, :action_type, :action_recipient_consent_obtained,
-        :moderated_at, :moderation_contact_channel, :moderator, :moderation_action, :moderation_comment,
+        :action_author_type, :action_recipient_type, :action_target_type, :action_type, :action_recipient_consent_obtained,
+        :moderated_at, :moderation_contact_channel, :moderator, :moderation_comment,
         :action_outcome_reported_at, :action_outcome, :action_success_reason, :action_failure_reason,
       )
     end
 
     def user_moderation_params
       params.require(:user_moderation).permit(
-        :expectations, :acquisition_channel, :content_sent, :skills,
-        :accepts_event_invitations, :accepts_volunteering_offers, :ambassador
+        :skills
       )
     end
 
