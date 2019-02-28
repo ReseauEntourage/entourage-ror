@@ -105,7 +105,7 @@ module Admin
         end
 
         on.failure do |message|
-          redirect_to admin_conversation_path(conversation), alert: "Erreur lors de l'envoi du message : #{message.errors.full_messages.to_sentence}"
+          redirect_to admin_conversation_path(params[:id]), alert: "Erreur lors de l'envoi du message : #{message.errors.full_messages.to_sentence}"
         end
       end
     end
