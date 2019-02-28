@@ -48,7 +48,8 @@ module ChatServices
             message.save!
           end
           true
-        rescue
+        rescue => e
+          Raven.capture_exception(e)
           false
         end
       else
