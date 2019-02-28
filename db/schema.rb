@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190228154024) do
+ActiveRecord::Schema.define(version: 20190228162227) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -639,11 +639,13 @@ ActiveRecord::Schema.define(version: 20190228154024) do
     t.boolean  "accepts_emails_deprecated",                default: true,        null: false
     t.datetime "last_email_sent_at"
     t.string   "targeting_profile"
+    t.integer  "partner_id"
   end
 
   add_index "users", ["address_id"], name: "index_users_on_address_id", using: :btree
   add_index "users", ["email"], name: "index_users_on_email", using: :btree
   add_index "users", ["organization_id"], name: "index_users_on_organization_id", using: :btree
+  add_index "users", ["partner_id"], name: "index_users_on_partner_id", using: :btree
   add_index "users", ["phone", "community"], name: "index_users_on_phone_and_community", unique: true, using: :btree
   add_index "users", ["roles"], name: "index_users_on_roles", using: :gin
   add_index "users", ["token"], name: "index_users_on_token", unique: true, using: :btree

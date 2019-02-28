@@ -35,8 +35,7 @@ class User < ActiveRecord::Base
   has_many :invitations, class_name: "EntourageInvitation", foreign_key: "invitee_id"
   has_many :authentication_providers, dependent: :destroy
   has_many :feeds
-  # TODO(partner)
-  # belongs_to :partner
+  belongs_to :partner
   has_one :users_appetence
   has_many :entourage_displays
   has_many :entourage_scores
