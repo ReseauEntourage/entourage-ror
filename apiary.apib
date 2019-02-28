@@ -1277,7 +1277,7 @@ tour_types should be a list of values separated by coma, ex: , `tour_types=medic
 entourage_types should be a list of values separated by coma, ex: , `entourage_types=ask_for_help,contribution`
 time_range should be a number of hours
 
-### Get all feeds [GET /feeds{?token,longitude,latitude,before,page,per,tour_types,entourage_types,time_range,show_my_entourages_only,show_my_partner_only,show_past_events,distance,announcements}]
+### Get all feeds [GET /feeds{?token,longitude,latitude,before,page,per,tour_types,entourage_types,time_range,show_my_entourages_only,show_past_events,distance,announcements}]
 
 + Parameters
     + token (required, string, `FAKETOKEN`) ... Token identifying the current user
@@ -1289,7 +1289,6 @@ time_range should be a number of hours
     + tour_types (optional, list) ... Types of tours separated by coma
     + entourage_types (optional, list) ... Types of tours separated by coma
     + show_my_entourages_only (optional, boolean) ... Return only my entourages
-    + show_my_partner_only (optional, boolean) ... Return only feed items created by users that support the same partner as me
     + show_past_events (optional, boolean) ... Show past events (defaults to `false`)
     + time_range  (optional, number) ... Number of hours to filter
     + distance (optional, number) ... Feed perimeter
@@ -1455,7 +1454,7 @@ status :
 active: either created by me or that I joined
 closed: either (created and closed by me)
 
-### Get all feeds [GET /myfeeds{?token,page,per,tour_types,entourage_types,time_range,status,created_by_me,show_my_partner_only,accepted_invitation}]
+### Get all feeds [GET /myfeeds{?token,page,per,tour_types,entourage_types,time_range,status,created_by_me,accepted_invitation}]
 
 + Parameters
     + token (required, string, `FAKETOKEN`) ... Token identifying the current user
@@ -1466,7 +1465,6 @@ closed: either (created and closed by me)
     + time_range (optional, number) ... Number of hours to filter
     + status (optional, string) ... all, active, closed
     + created_by_me (optional, boolean) ... current_user is the author
-    + show_my_partner_only (optional, boolean) ... Return only feed items created by users that support the same partner as me
     + accepted_invitation (optional, boolean) ...
       current_user has accepted an invite to join
 
