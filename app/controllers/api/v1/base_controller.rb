@@ -46,12 +46,13 @@ module Api
             })
             mixpanel.track("Reactivated", { "Threshold (Months)" => 2 }) if reactivated
             mixpanel.set_once("First Seen" => current_user.last_sign_in_at)
+            # TODO(partner)
+            # "Partner Badge" => current_user.default_partner.try(:name)
             mixpanel.set(
               '$first_name' => current_user.first_name,
               '$last_name' => current_user.last_name,
               '$email' => current_user.email,
-              'user_id' => UserServices::EncodedId.encode(current_user.id),
-              "Partner Badge" => current_user.default_partner.try(:name)
+              'user_id' => UserServices::EncodedId.encode(current_user.id)
             )
           end
         else

@@ -21,6 +21,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
         it { expect(response.status).to eq(200) }
 
         it "renders user" do
+          # TODO(partner)
           expect(result).to eq({"user"=>
                                  {"id"=>user.id,
                                   "email"=>user.email,
@@ -44,18 +45,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                                       "encounter_count"=>0,
                                       "entourage_count"=>0,
                                   },
-                                  "partner"=>{
-                                      "id"=>partner.id,
-                                      "name"=>"MyString",
-                                      "large_logo_url"=>"MyString",
-                                      "small_logo_url"=>"MyString",
-                                      "description"=>"MyDescription",
-                                      "phone"=>nil,
-                                      "address"=>nil,
-                                      "website_url"=>nil,
-                                      "email"=>nil,
-                                      "default"=>true
-                                  },
+                                  "partner"=>nil,
                                   "memberships"=>[],
                                   "conversation"=>{"uuid"=>"1_list_#{user.id}"}
                                  }})
@@ -499,6 +489,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
       context "get your own profile" do
         before { get :show, id: user.id, token: user.token }
         it { expect(response.status).to eq(200) }
+        # TODO(partner)
         it { expect(JSON.parse(response.body)).to eq({"user"=>
                                                           {"id"=>user.id,
                                                            "email"=>user.email,
@@ -522,18 +513,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                                                                "encounter_count"=>0,
                                                                "entourage_count"=>0,
                                                            },
-                                                           "partner"=>{
-                                                               "id"=>partner.id,
-                                                               "name"=>"MyString",
-                                                               "large_logo_url"=>"MyString",
-                                                               "small_logo_url"=>"MyString",
-                                                               "description"=>"MyDescription",
-                                                               "phone"=>nil,
-                                                               "address"=>nil,
-                                                               "website_url"=>nil,
-                                                               "email"=>nil,
-                                                               "default"=>true
-                                                           },
+                                                           "partner"=>nil,
                                                            "memberships"=>[],
                                                            "conversation"=>{"uuid"=>"1_list_#{user.id}"}
                                                          }}) }
@@ -554,6 +534,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
       context "get my profile with 'me' shortcut" do
         before { get :show, id: "me", token: user.token }
         it { expect(response.status).to eq(200) }
+        # TODO(partner)
         it { expect(JSON.parse(response.body)).to eq({"user"=>
                                                           {"id"=>user.id,
                                                            "email"=>user.email,
@@ -573,18 +554,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                                                                "encounter_count"=>0,
                                                                "entourage_count"=>0,
                                                            },
-                                                           "partner"=>{
-                                                               "id"=>partner.id,
-                                                               "name"=>"MyString",
-                                                               "large_logo_url"=>"MyString",
-                                                               "small_logo_url"=>"MyString",
-                                                               "description"=>"MyDescription",
-                                                               "phone"=>nil,
-                                                               "address"=>nil,
-                                                               "website_url"=>nil,
-                                                               "email"=>nil,
-                                                               "default"=>true
-                                                           },
+                                                           "partner"=>nil,
                                                            "memberships"=>[],
                                                            "conversation"=>{"uuid"=>"1_list_#{user.id}"}
                                                          }}) }
