@@ -6,77 +6,6 @@ describe Api::V1::PoisController, :type => :controller do
   context 'authorized' do
     let!(:user) { create :pro_user }
 
-    describe 'index' do
-      context 'without parameters' do
-        let!(:category1) { create :category }
-        let!(:category2) { create :category }
-        let!(:category3) { create :category }
-        let!(:poi1) { create :poi, category: category1, validated: true }
-        let!(:poi2) { create :poi, category: category2, validated: false }
-        let!(:poi3) { create :poi, category: category2, validated: true }
-        let!(:poi4) { create :poi, category: category3, validated: true }
-        before { get 'index', token: user.token, category_ids: [category1.id, category2.id].join(","), :format => :json }
-        it { expect(assigns(:categories)).to eq([category1, category2, category3]) }
-        it { expect(assigns(:pois)).to eq([poi1, poi3]) }
-
-        it "renders POI" do
-          res = JSON.parse(response.body)
-          expect(res).to eq({"categories"=>[
-              {"id"=>category1.id, "name"=>category1.name},
-              {"id"=>category2.id, "name"=>category2.name},
-              {"id"=>category3.id, "name"=>category3.name}],
-                             "pois"=>[
-                                 {"id"=>poi1.id,
-                                  "name"=>"Dede",
-                                  "description"=>nil,
-                                  "longitude"=>2.30681949999996,
-                                  "latitude"=>48.870424,
-                                  "adress"=>"Au 50 75008 Paris",
-                                  "phone"=>"0000000000",
-                                  "website"=>"entourage.com",
-                                  "email"=>"entourage@entourage.com",
-                                  "audience"=>"Mon audience",
-                                  "validated"=>true,
-                                  "category_id"=>poi1.category_id,
-                                  "category"=>{"id"=>poi1.category.id, "name"=>poi1.category.name}},
-                                 {"id"=>poi3.id,
-                                  "name"=>"Dede",
-                                  "description"=>nil,
-                                  "longitude"=>2.30681949999996,
-                                  "latitude"=>48.870424,
-                                  "adress"=>"Au 50 75008 Paris",
-                                  "phone"=>"0000000000",
-                                  "website"=>"entourage.com",
-                                  "email"=>"entourage@entourage.com",
-                                  "audience"=>"Mon audience",
-                                  "validated"=>true,
-                                  "category_id"=>poi3.category_id,
-                                  "category"=>{"id"=>poi3.category.id, "name"=>poi3.category.name}}
-                             ]})
-        end
-      end
-
-      context 'with location parameters' do
-        let!(:poi1) { create :poi, latitude: 10, longitude: 12 }
-        let!(:poi2) { create :poi, latitude: 9.9, longitude: 10.1 }
-        let!(:poi3) { create :poi, latitude: 10, longitude: 10 }
-        let!(:poi4) { create :poi, latitude: 10.05, longitude: 9.95 }
-        let!(:poi5) { create :poi, latitude: 12, longitude: 10 }
-
-        context 'without distance' do
-          before { get :index, token: user.token, latitude: 10.0, longitude: 10.0, format: :json }
-          it { expect(response.status).to eq(200) }
-          it { expect(assigns[:pois]).to eq [poi3, poi4] }
-        end
-
-        context 'with distance' do
-          before { get :index, token: user.token, latitude: 10.0, longitude: 10.0, distance: 40.0, format: :json }
-          it { expect(response.status).to eq(200) }
-          it { expect(assigns[:pois]).to eq [poi3, poi4, poi2] }
-        end
-      end
-    end
-
     describe 'create' do
       let!(:poi) { build :poi }
       before { post :create, token: user.token, poi: { name: poi.name, latitude: poi.latitude, longitude: poi.longitude, adress: poi.adress, phone: poi.phone, website: poi.website, email: poi.email, audience: poi.audience, category_id: poi.category_id }, format: :json}
@@ -129,9 +58,75 @@ describe Api::V1::PoisController, :type => :controller do
   end
 
   context "unauthorized" do
-    describe '#index' do
-      before { get 'index', :format => :json }
-      it { expect(response.status).to eq(401) }
+    describe 'index' do
+      context 'without parameters' do
+        let!(:category1) { create :category }
+        let!(:category2) { create :category }
+        let!(:category3) { create :category }
+        let!(:poi1) { create :poi, category: category1, validated: true }
+        let!(:poi2) { create :poi, category: category2, validated: false }
+        let!(:poi3) { create :poi, category: category2, validated: true }
+        let!(:poi4) { create :poi, category: category3, validated: true }
+        before { get 'index', category_ids: [category1.id, category2.id].join(","), :format => :json }
+        it { expect(assigns(:categories)).to eq([category1, category2, category3]) }
+        it { expect(assigns(:pois)).to eq([poi1, poi3]) }
+
+        it "renders POI" do
+          res = JSON.parse(response.body)
+          expect(res).to eq({"categories"=>[
+              {"id"=>category1.id, "name"=>category1.name},
+              {"id"=>category2.id, "name"=>category2.name},
+              {"id"=>category3.id, "name"=>category3.name}],
+                             "pois"=>[
+                                 {"id"=>poi1.id,
+                                  "name"=>"Dede",
+                                  "description"=>nil,
+                                  "longitude"=>2.30681949999996,
+                                  "latitude"=>48.870424,
+                                  "adress"=>"Au 50 75008 Paris",
+                                  "phone"=>"0000000000",
+                                  "website"=>"entourage.com",
+                                  "email"=>"entourage@entourage.com",
+                                  "audience"=>"Mon audience",
+                                  "validated"=>true,
+                                  "category_id"=>poi1.category_id,
+                                  "category"=>{"id"=>poi1.category.id, "name"=>poi1.category.name}},
+                                 {"id"=>poi3.id,
+                                  "name"=>"Dede",
+                                  "description"=>nil,
+                                  "longitude"=>2.30681949999996,
+                                  "latitude"=>48.870424,
+                                  "adress"=>"Au 50 75008 Paris",
+                                  "phone"=>"0000000000",
+                                  "website"=>"entourage.com",
+                                  "email"=>"entourage@entourage.com",
+                                  "audience"=>"Mon audience",
+                                  "validated"=>true,
+                                  "category_id"=>poi3.category_id,
+                                  "category"=>{"id"=>poi3.category.id, "name"=>poi3.category.name}}
+                             ]})
+        end
+      end
+
+      context 'with location parameters' do
+        let!(:poi1) { create :poi, latitude: 10, longitude: 12 }
+        let!(:poi2) { create :poi, latitude: 9.9, longitude: 10.1 }
+        let!(:poi3) { create :poi, latitude: 10, longitude: 10 }
+        let!(:poi4) { create :poi, latitude: 10.05, longitude: 9.95 }
+        let!(:poi5) { create :poi, latitude: 12, longitude: 10 }
+
+        context 'without distance' do
+          before { get :index, latitude: 10.0, longitude: 10.0, format: :json }
+          it { expect(response.status).to eq(200) }
+          it { expect(assigns[:pois]).to eq [poi3, poi4] }
+        end
+
+        context 'with distance' do
+          before { get :index, latitude: 10.0, longitude: 10.0, distance: 40.0, format: :json }
+          it { expect(response.status).to eq(200) }
+          it { expect(assigns[:pois]).to eq [poi3, poi4, poi2] }
+        end
+      end
     end
   end
 end
