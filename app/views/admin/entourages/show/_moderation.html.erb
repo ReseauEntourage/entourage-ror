@@ -14,7 +14,7 @@
   end
 
   if moderation.action_author_type.nil? && entourage.user.targeting_profile.present?
-    moderation.action_author_type ||= entourage.user.targeting_profile
+    moderation.action_author_type ||= t("community.#{user_community.slug}.targeting_profiles.#{entourage.user.targeting_profile}")
   end
 
   moderation.moderator = "Guillaume" if moderation.moderator.blank?
