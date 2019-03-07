@@ -1,13 +1,13 @@
 # Variables dans Mailjet
 
-Elles s'insèrent en écrivant {{var: nom_variable:”valeur par défaut”}} 
+Elles s'insèrent en écrivant {{var: nom_variable:”valeur par défaut”}}
 
-2 types de variables : 
+2 types de variables :
 - celles partagées par tous les mails
 - celles qu’un certain mail peut utiliser (une variable peut être utilisée dans plusieurs mails bien sur)
 
 
-Tous les templates partagent les variables mentionnées dans GitHub dans la section qui commence par:  
+Tous les templates partagent les variables mentionnées dans GitHub dans la section qui commence par:
 `variables.reverse_merge!(
 first_name: user.first_name,
 user_id: UserServices::EncodedId.encode(user.id),
@@ -17,8 +17,8 @@ login_link: (ENV['WEBSITE_URL'] + '/deeplink/feed?auth=' + auth_token)
  `
 
 ## Variables partagées
-- first_name prénom     
-- user_id 
+- first_name prénom
+- user_id
 - login_link: sert à auto-logger le user dans la webapp s’il est sur desktop, ou s’il est sur mobile mais sans l’app, et à ouvrir sa session dans l’app s’il est sur mobile avec l’app. Il expire au bout de 7 jours.
 - webapp_login_link: sert à auto-logger le user forcément dans la webapp, même s’il a l’app et ouvre le mail sur son tel. Pratique pour faire découvrir la webapp. Il expire au bout de 7 jours. En vue de sécuriser le réseau, et parce que la plupart des mails sont ouverts dans les 2h après réception, ce temps d'expiration pourra être réduit à 2h (EN-961).
 
@@ -27,14 +27,14 @@ login_link: (ENV['WEBSITE_URL'] + '/deeplink/feed?auth=' + auth_token)
 Toutes les autres variables sont définies au niveau de chaque mail. Pour trouver celles disponibles pour un mail, chercher son id sur la page [URL]
 L’id du mail est dans l’URL de son mode édition dans Mailjet, par exemple https://app.mailjet.com/template/311246/build pour le mail de bienvenue, id = 311246.
 
-En cherchant 312279 sur la page “mailer”???[URL] , on voit qu’il a comme variable entourage_title (uniquement, pas entourage_id). 
+En cherchant 312279 sur la page “mailer”???[URL] , on voit qu’il a comme variable entourage_title (uniquement, pas entourage_id).
 
-- entourage_id	
+- entourage_id
 - entourage_url: contient un token d'auto-login qui expire au bout de 7 jours
-- entourage_title	
+- entourage_title
 - action_url: égal à entourage_url, ce serait bien d'avoir entourage_url partout (EN-960)
 - action_title: égal à entourage_title, ce serait bien d'avoir entourage_title partout (EN-960)
-- action_share_url: deeplink vers l'entourage, SANS lien d'auto login. 
+- action_share_url: deeplink vers l'entourage, SANS lien d'auto login.
 
 ### Répartition de ces variables dans les templates à date (07/03/2019)
 | Nom dans Mailjet                                                                                                                               | campagne                                                                           | template                                                          | first_name | unsubscribe_url | login_link | user_id | webapp_login_link | entourage_title | action_title | entourage_share_url | action_share_url | entourage_url | action_url | action_success_url | action_support_url | action_type | action_author_type | volunteering_form_url | event_date_time | event_place_name | event_json_ld | event_address_url | nb_1 | nb_2 | group     | groups | subject | nb_1_text | nb_2_text | items_summary | author_summary | action    | actions | area_name | confirm_url |
