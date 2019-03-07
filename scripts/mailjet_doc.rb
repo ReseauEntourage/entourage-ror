@@ -136,7 +136,7 @@ end
 
 vars = vars
   .sort_by do |var, metadata|
-    [metadata[:first_occurence], -metadata[:count], var.length]
+    [-metadata[:count], metadata[:first_occurence], var.length]
   end
   .map(&:first)
 
@@ -217,8 +217,31 @@ def spacer widths
   "|" + widths.map {|w| '-' * (w+2) }.join("|") + "|\n"
 end
 
-puts line(lines[0], widths)
-puts spacer(widths)
+start_comment = "<!--generated:start-->"
+end_comment   = "<!--generated:end-->"
+timestamp = Time.zone.now.strftime("%d/%m/%Y")
+
+table = StringIO.new
+
+table.puts start_comment
+table.puts "### Répartition de ces variables dans les templates à date (#{timestamp})"
+table.puts line(lines[0], widths)
+table.puts spacer(widths)
 lines[1..-1].each do |line|
-  puts line(line, widths)
+  table.puts line(line, widths)
+end
+table.print end_comment
+
+regexp = Regexp.new(
+  [Regexp.quote(start_comment), ".*", Regexp.quote(end_comment)].join,
+  Regexp::MULTILINE
+)
+
+File.open("#{Rails.root}/docs/mailjet_emails.md", 'r+') do |file|
+  content = file.read
+  table.rewind
+  file.rewind
+  file.write content.gsub(regexp, table.read)
+  file.flush
+  file.truncate(file.pos)
 end

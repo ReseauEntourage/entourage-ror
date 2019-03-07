@@ -48,9 +48,6 @@ class MemberMailer < MailjetMailer
                       :entourage_title,
                       :entourage_url,
                       :entourage_share_url,
-                      :action_title,
-                      :action_url,
-                      :action_share_url
                     ]
                   }
   end
@@ -65,9 +62,6 @@ class MemberMailer < MailjetMailer
                       :entourage_title,
                       :entourage_url,
                       :entourage_share_url,
-                      :action_title,
-                      :action_url,
-                      :action_share_url
                     ],
                     action_success_url: one_click_update_api_v1_entourage_url(
                       host: API_HOST,
@@ -87,9 +81,6 @@ class MemberMailer < MailjetMailer
                   template_id: 366621,
                   campaign_name: :action_aboutie,
                   variables: {
-                    action_title: action.title,
-                    action_author_type: action.moderation&.action_author_type,
-                    action_type: action.moderation&.action_type&.split(':')&.first&.strip,
                     action => [
                       :entourage_title,
                       :entourage_share_url,

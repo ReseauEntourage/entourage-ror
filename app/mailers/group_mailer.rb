@@ -87,6 +87,7 @@ class GroupMailer < MailjetMailer
       template_id: 513115,
       variables: [
         :first_name,
+        :login_link,
         event => [
           :entourage_url,
           :entourage_title,
@@ -113,7 +114,8 @@ class GroupMailer < MailjetMailer
         :login_link,
         event => [
           :entourage_url,
-          :entourage_title
+          :entourage_title,
+          :entourage_share_url,
         ],
         event_date_time: I18n.l(event.metadata[:starts_at], format: "%A %-d %B à %H:%M"),
         event_place_name: event.metadata[:display_address],
@@ -134,7 +136,6 @@ class GroupMailer < MailjetMailer
         :login_link,
         event => [
           :entourage_title,
-          :entourage_share_url,
         ]
       ]
     )
