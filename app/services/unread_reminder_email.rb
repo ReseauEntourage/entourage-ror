@@ -27,7 +27,7 @@ module UnreadReminderEmail
       .where(greater_than 'join_requests.requested_at', 'last_message_read')
   end
 
-  def self.deliver_to user
+  def self.delivery user
     now = Time.now
     presenter = Presenter.new(user)
 
@@ -48,7 +48,11 @@ module UnreadReminderEmail
         author_summary: presenter.author_summary,
         groups: presenter.groups
       }
-    ).deliver_now
+    )
+  end
+
+  def self.deliver_to user
+    delivery(user).deliver_now
 
     JoinRequest
       .where(user: user, joinable_id: presenter.group_ids, joinable_type: :Entourage)

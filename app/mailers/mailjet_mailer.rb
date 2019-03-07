@@ -5,7 +5,6 @@ class MailjetMailer < ActionMailer::Base
 
   def mailjet_email to:, template_id:, campaign_name:,
                     from: email_with_name("guillaume@entourage.social", "Le Réseau Entourage"),
-                    groups: {},
                     variables: {},
                     payload: {},
                     unsubscribe_category: :default,
@@ -91,13 +90,6 @@ class MailjetMailer < ActionMailer::Base
       end
     end
     variables.reverse_merge!(new_variables)
-
-    groups.each do |name, group|
-      group_variables.each do |suffix, f|
-        variables["#{name}#{suffix}".to_sym] ||= f[group]
-      end
-    end
-
     variables.reverse_merge!(default_variables) if merge_default_variables
 
     # inject auth tokens in webapp URLs

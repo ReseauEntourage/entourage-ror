@@ -13,7 +13,10 @@ class GroupMailer < MailjetMailer
       variables: [
         :first_name,
         :login_link,
-        entourage_title: action.title
+        action => [
+          :entourage_title,
+          :entourage_share_url,
+        ],
       ]
     )
   end
@@ -30,7 +33,12 @@ class GroupMailer < MailjetMailer
       variables: [
         :first_name,
         :login_link,
-        entourage_title: event.title
+        event => [
+          :entourage_title,
+          :entourage_share_url,
+        ],
+        event_date_time: I18n.l(event.metadata[:starts_at], format: "%A %-d %B à %H:%M"),
+        event_place_name: event.metadata[:display_address],
       ]
     )
   end
@@ -52,7 +60,10 @@ class GroupMailer < MailjetMailer
       variables: [
         :first_name,
         :login_link,
-        entourage_title: event.title,
+        event => [
+          :entourage_title,
+          :entourage_share_url,
+        ],
         event_date_time: I18n.l(event.metadata[:starts_at], format: "%A %-d %B à %H:%M"),
         event_place_name: event.metadata[:display_address],
         event_address_url: "https://www.google.com/maps/search/?api=1&query=#{event.metadata[:display_address]}&query_place_id=#{event.metadata[:google_place_id]}",
@@ -78,8 +89,11 @@ class GroupMailer < MailjetMailer
         :first_name,
         event => [
           :entourage_url,
-          :entourage_title
-        ]
+          :entourage_title,
+          :entourage_share_url,
+        ],
+        event_date_time: I18n.l(event.metadata[:starts_at], format: "%A %-d %B à %H:%M"),
+        event_place_name: event.metadata[:display_address],
       ]
     )
   end
@@ -100,7 +114,9 @@ class GroupMailer < MailjetMailer
         event => [
           :entourage_url,
           :entourage_title
-        ]
+        ],
+        event_date_time: I18n.l(event.metadata[:starts_at], format: "%A %-d %B à %H:%M"),
+        event_place_name: event.metadata[:display_address],
       ]
     )
   end
@@ -116,7 +132,10 @@ class GroupMailer < MailjetMailer
       variables: [
         :first_name,
         :login_link,
-        event => :entourage_title
+        event => [
+          :entourage_title,
+          :entourage_share_url,
+        ]
       ]
     )
   end
