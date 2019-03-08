@@ -27,14 +27,11 @@ module UnreadReminderEmail
       .where(greater_than 'join_requests.requested_at', 'last_message_read')
   end
 
-  def self.delivery user
-    now = Time.now
-    presenter = Presenter.new(user)
-
+  def self.delivery presenter
     return unless presenter.deliver?
 
     MemberMailer.mailjet_email(
-      to: user,
+      to: presenter.user,
       template_id: 604694,
       campaign_name: :unread_reminder,
       unsubscribe_category: :unread_reminder,
@@ -52,7 +49,12 @@ module UnreadReminderEmail
   end
 
   def self.deliver_to user
-    delivery(user).deliver_now
+    now = Time.now
+    presenter = Presenter.new(user)
+
+    return unless presenter.deliver?
+
+    delivery(presenter).deliver_now
 
     JoinRequest
       .where(user: user, joinable_id: presenter.group_ids, joinable_type: :Entourage)
@@ -130,7 +132,7 @@ module UnreadReminderEmail
   end
 
   class Presenter
-    attr_reader :summary
+    attr_reader :summary, :user
 
     def initialize user
       @user = user
