@@ -337,6 +337,29 @@ module FeedServices
       )
 
       # announcements.push Announcement.new(
+      #   id: 29,
+      #   title: "Agissez avec nous pour faire grandir le réseau de la solidarité !",
+      #   body: "Nous vous avons concocté des petits outils qui vont vous permettre d'inviter les personnes sans-abri à rejoidnre le réseau Entourage 👌",
+      #   image_url: true,
+      #   action: "Voir",
+      #   author: User.find_by(email: "guillaume@entourage.social"),
+      #   webview: true,
+      #   position: 1
+      # )
+
+      # announcements.push Announcement.new(
+      #   id: 30,
+      #   title: "Vous recherchez un emploi ? Entourage peut vous aider !",
+      #   body: "Vous êtes demandeur d'emploi, vous accompagnez une personne qui est prête à travailler, vous connaissez quelqu'un qui recherche un emploi ... Nous lançons notre dispositif au service de l’emploi des personnes sans-abri !",
+      #   image_url: true,
+      #   action: "En savoir plus",
+      #   url: "#{ENV['DEEPLINK_SCHEME']}://entourage/eeDYzdwp6di8",
+      #   author: User.find_by(email: "guillaume@entourage.social"),
+      #   webview: true,
+      #   position: 2
+      # )
+
+      # announcements.push Announcement.new(
       #   id: ,
       #   title: "",
       #   body: "",

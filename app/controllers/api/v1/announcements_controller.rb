@@ -33,6 +33,8 @@ module Api
           26 => :megaphone,
           27 => :heart,
           28 => :video,
+          29 => :text,
+          30 => :megaphone,
         }[params[:id].to_i]
 
         redirect_to view_context.asset_url("assets/announcements/icons/#{icon}.png")
@@ -69,6 +71,8 @@ module Api
           26 => 'paperboard.jpg',
           27 => 'conversation.jpg',
           28 => 'video-nolwenn.jpg',
+          29 => 'conversation-2.jpg',
+          30 => 'ordinateur.jpg',
         }[params[:id].to_i]
 
         return render nothing: true, status: :not_found if image.nil?
@@ -143,6 +147,8 @@ module Api
           url = "https://blog.entourage.social/category/belles-histoires/#nav-search"
         when 28
           url = "https://www.youtube.com/watch?v=UcODKwV9bO8&list=PLwLEgqe22sVYuK9ySGExo8JfgAzlqWUV9"
+        when 29
+          url = "https://blog.entourage.social/2019/03/04/comment-puis-je-inviter-des-personnes-sdf-sur-le-reseau-entourage/#site-content"
         end
 
         begin
