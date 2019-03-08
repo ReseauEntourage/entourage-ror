@@ -134,29 +134,38 @@ data.each.with_index do |m, i|
   end
 end
 
-vars = vars
-  .sort_by do |var, metadata|
-    [-metadata[:count], metadata[:first_occurence], var.length]
-  end
-  .map(&:first)
-
-vars2 = []
-loop do
-  break if vars.empty?
-  var = vars.shift
-  vars2.push var
-  match = var.match(/^(action|entourage)_/)
-  next if match.nil?
-  other = (['action', 'entourage'] - [match[1]])[0]
-  subst = var.gsub(match[1], other)
-  var = vars.delete subst
-  vars2.push var if var
+vars = vars.sort_by do |var, metadata|
+  [-metadata[:count], metadata[:first_occurence], var.length]
 end
 
-vars = vars2
+shared_vars = []
+unique_vars = []
+vars.each do |var, metadata|
+  if metadata[:count] > 1
+    shared_vars.push var
+  else
+    unique_vars.push var
+  end
+end
+
+# put side to side the columns for similarly named (entourage|action)_ vars
+#
+# vars2 = []
+# loop do
+#   break if vars.empty?
+#   var = vars.shift
+#   vars2.push var
+#   match = var.match(/^(action|entourage)_/)
+#   next if match.nil?
+#   other = (['action', 'entourage'] - [match[1]])[0]
+#   subst = var.gsub(match[1], other)
+#   var = vars.delete subst
+#   vars2.push var if var
+# end
+# vars = vars2
 
 lines = []
-r = ["Nom dans Mailjet", :campagne, :template] + vars
+r = ["Nom dans Mailjet", :campagne, :template] + shared_vars
 lines.push r
 
 def mailjet_id decimal
@@ -180,7 +189,7 @@ data.each do |m|
     "[#{m[:campaign]}](https://app.mailjet.com/stats/campaigns-basic/#{mailjet_id m[:campaign_id]})",
     "[#{m[:template]}](https://app.mailjet.com/resource/template/#{m[:template]}/render)"
   ]
-  vars.each do |var|
+  shared_vars.each do |var|
     used = var.in?(m[:template_vars])
     defined = var.in?(m[:vars])
     val =
@@ -199,14 +208,38 @@ data.each do |m|
     a.push val
   end
   lines.push a
+
+  m[:unique_vars] = {}
+
+  unique_vars.each do |var|
+    used = var.in?(m[:template_vars])
+    defined = var.in?(m[:vars])
+    val =
+      if defined && used
+        "Oui"
+      elsif defined && !used
+        "(Oui)"
+      elsif !defined && used
+        "Manquante"
+      elsif !defined && !used
+        nil
+      else
+        raise
+      end
+
+    m[:unique_vars][var] = val if val
+  end
 end
 
-widths = []
-lines.each do |line|
-  line.each.with_index do |col, i|
-    widths[i] ||= 0
-    widths[i] = [widths[i], col.to_s.length].max
+def calc_widths lines
+  widths = []
+  lines.each do |line|
+    line.each.with_index do |col, i|
+      widths[i] ||= 0
+      widths[i] = [widths[i], col.to_s.length].max
+    end
   end
+  widths
 end
 
 def line a, widths
@@ -220,16 +253,37 @@ end
 start_comment = "<!--generated:start-->"
 end_comment   = "<!--generated:end-->"
 timestamp = Time.zone.now.strftime("%d/%m/%Y")
+widths = calc_widths(lines)
 
 table = StringIO.new
 
 table.puts start_comment
-table.puts "### Répartition de ces variables dans les templates à date (#{timestamp})"
+table.puts "### Répartition de ces variables dans les templates"
+table.puts "_Mis à jour le #{timestamp}_"
+table.puts
 table.puts line(lines[0], widths)
 table.puts spacer(widths)
 lines[1..-1].each do |line|
   table.puts line(line, widths)
 end
+
+table.puts
+table.puts "(Oui) : variable disponible mais pas utilisée dans le template"
+table.puts
+
+table.puts "### Variables uniques"
+data.each do |m|
+  next unless m[:unique_vars].any?
+  table.puts "#### #{template_names[m[:template]]} (#{m[:campaign]}, #{m[:template]})"
+  lines = m[:unique_vars].to_a.transpose
+  widths = calc_widths(lines)
+  table.puts
+  table.puts line(lines[0], widths)
+  table.puts spacer(widths)
+  table.puts line(lines[1], widths)
+  table.puts
+end
+
 table.print end_comment
 
 regexp = Regexp.new(
