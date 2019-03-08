@@ -89,7 +89,8 @@ module FeedServices
       feeds = filter_past_events(feeds: feeds) unless show_past_events
       feeds = feeds.where(user: author) if author
       unless user.community == :pfp
-        feeds = feeds.where("feeds.updated_at > ?", time_range.hours.ago)
+        # outings are not filtered out based on update date
+        feeds = feeds.where("group_type = 'outing' or feeds.updated_at > ?", time_range.hours.ago)
       end
       feeds = feeds.within_bounding_box(box) if latitude && longitude
 
