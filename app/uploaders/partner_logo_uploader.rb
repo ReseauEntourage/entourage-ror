@@ -54,7 +54,7 @@ module PartnerLogoUploader
   end
 
   def self.delete_s3_object_with_public_url url
-    s3_object_with_public_url(url).delete
+    s3_object_with_public_url(url)&.delete
   end
 
   private

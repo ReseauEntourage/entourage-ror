@@ -12,6 +12,6 @@ class Partner < ActiveRecord::Base
   CHECKMARK_URL = "https://s3-eu-west-1.amazonaws.com/entourage-ressources/check-small.png"
 
   def small_logo_url
-    CHECKMARK_URL
+    super.presence || CHECKMARK_URL
   end
 end
