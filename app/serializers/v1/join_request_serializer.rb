@@ -43,8 +43,8 @@ module V1
     def partner
       return nil
       # TODO(partner)
-      return nil unless object.user.default_partner
-      V1::PartnerSerializer.new(object.user.default_partner, scope: {user: object.user}, root: false).as_json
+      return nil unless object.user.partner
+      V1::PartnerSerializer.new(object.user.partner, scope: {user: object.user}, root: false).as_json
     end
   end
 end

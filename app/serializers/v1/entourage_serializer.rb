@@ -37,8 +37,7 @@ module V1
           else
             object.members.where.not(id: scope[:user]&.id)
           end
-        # TODO(partner): .includes(default_user_partners: :partner)
-        other_participant = other_participants.first
+        other_participant = other_participants.includes(:partner).first
         object.user = other_participant if other_participant
 
         object.title = UserPresenter.new(user: object.user).display_name
@@ -68,7 +67,7 @@ module V1
           id: entourage_author.id,
           display_name: entourage_author.first_name,
           avatar_url: UserServices::Avatar.new(user: entourage_author).thumbnail_url,
-          partner: nil # object.user.default_partner.nil? ? nil : V1::PartnerSerializer.new(object.user.default_partner, scope: {user: object.user}, root: false).as_json
+          partner: nil # object.user.partner.nil? ? nil : V1::PartnerSerializer.new(object.user.partner, scope: {user: object.user}, root: false).as_json
       }
     end
 

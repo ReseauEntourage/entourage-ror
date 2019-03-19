@@ -18,7 +18,7 @@ module V1
         id: chat_user.id,
         avatar_url: UserServices::Avatar.new(user: chat_user).thumbnail_url,
         display_name: display_name,
-        partner: nil # chat_user.default_partner.nil? ? nil : JSON.parse(V1::PartnerSerializer.new(chat_user.default_partner, scope: {user: chat_user}, root: false).to_json)
+        partner: nil # chat_user.partner.nil? ? nil : V1::PartnerSerializer.new(chat_user.partner, scope: {user: chat_user}, root: false).as_json
       }
     end
 

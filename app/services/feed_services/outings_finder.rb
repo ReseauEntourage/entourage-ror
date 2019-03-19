@@ -19,13 +19,12 @@ module FeedServices
       outings = user.community.entourages
         .where(group_type: :outing, status: :open)
 
-      # TODO(partner): includes(user: {default_user_partners: :partner})
       feeds = outings
         .within_bounding_box(box)
         .where("metadata->>'starts_at' >= ?", ESTIMATED_DURATION.ago)
         .order("metadata->>'starts_at' asc, id")
         .limit(LIMIT)
-        .includes(:user)
+        .includes(user: :partner)
 
       if starting_after != nil
         last_of_previous_page = outings.find_by!(uuid_v2: starting_after)

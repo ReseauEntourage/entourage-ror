@@ -91,11 +91,24 @@
       </div>
     </div>
 
+    <% is_partner = @user.targeting_profile == 'partner' %>
+    <div class="control-group <%= :hide unless is_partner %>"
+         style="margin-left: 30px"
+         id="partner-fieldset">
+      <%= f.label :partner, class: "control-label" %>
+      <div class="controls">
+        <%= f.collection_select :partner_id, Partner.all, :id, :name, { include_blank: true }, { required: true, disabled: !is_partner }
+        %>
+      </div>
+    </div>
+  </div>
+
+  <% unless @user.new_record? %>
     <% @user.moderation || @user.build_moderation %>
-    <% unless @user.new_record? %>
+    <div style="display: flex">
       <%= fields_for :user_moderation, @user.moderation do |uf| %>
-        <% [:skills, :expectations, :acquisition_channel].each do |field| %>
-          <div class="control-group" style="margin-left: 30px">
+        <% [:skills, :expectations, :acquisition_channel].each.with_index do |field, index| %>
+          <div class="control-group" style="<%= 'margin-left: 30px' unless index == 0 %>">
             <%= uf.label field, class: "control-label" %>
             <div class="controls">
               <%= uf.select field, UserModeration::VALUES[field], { include_blank: true } %>
@@ -103,8 +116,8 @@
           </div>
         <% end %>
       <% end %>
-    <% end %>
-  </div>
+    </div>
+  <% end %>
 
   <br/>
   <div class="control-group">
@@ -182,3 +195,22 @@
   <%= f.submit "Sauver", class: "btn btn-success" %>
   <%= link_to "Annuler", admin_users_path, class: "btn btn-default" %>
 <% end %>
+
+<script>
+  var $profileField = $('#user_targeting_profile'),
+      $partnerField = $('#user_partner_id'),
+      $partnerFieldset = $('#partner-fieldset');
+
+  function togglePartnerFieldset() {
+    if ($profileField.val() === 'partner') {
+      $partnerFieldset.removeClass('hide')
+      $partnerField.prop('disabled', false)
+    }
+    else {
+      $partnerFieldset.addClass('hide')
+      $partnerField.prop('disabled', true)
+    }
+  }
+
+  $profileField.on('change', togglePartnerFieldset)
+</script>

@@ -12,18 +12,19 @@ module Admin
       user_moderation.assign_attributes(user_moderation_params)
       user.assign_attributes(user_params)
 
-      saved = false
-      ActiveRecord::Base.transaction do
-        moderation.save! if moderation.changed?
-        user_moderation.save! if user_moderation.changed?
-        user.save! if user.changed?
-        saved = true
-      end
+      saved = true
+      saved &&= moderation.save if moderation.changed?
+      saved &&= user_moderation.save if user_moderation.changed?
+      saved &&= user.save if user.changed?
 
       if saved
         head :ok
       else
-        head :unprocessable_entity
+        render status: :unprocessable_entity, json: {
+          entourage_moderation: moderation.errors.messages,
+          user_moderation: user_moderation.errors.messages,
+          user: user.errors.messages
+        }
       end
     end
 
@@ -46,7 +47,7 @@ module Admin
 
     def user_params
       params.require(:user).permit(
-        :targeting_profile
+        :targeting_profile, :partner_id
       )
     end
   end

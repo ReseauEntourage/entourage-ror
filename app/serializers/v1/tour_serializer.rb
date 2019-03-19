@@ -52,7 +52,7 @@ module V1
           id: tour_author.id,
           display_name: tour_author.first_name,
           avatar_url: UserServices::Avatar.new(user: tour_author).thumbnail_url,
-          partner: nil # object.user.default_partner.nil? ? nil : V1::PartnerSerializer.new(object.user.default_partner, scope: {user: object.user}, root: false).as_json
+          partner: nil # object.user.partner.nil? ? nil : V1::PartnerSerializer.new(object.user.partner, scope: {user: object.user}, root: false).as_json
       }
     end
 

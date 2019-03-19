@@ -13,6 +13,7 @@ class User < ActiveRecord::Base
   validates_length_of :password, within: 8..256, allow_nil: true
   validates_inclusion_of :community, in: Community.slugs
   validate :validate_roles!
+  validate :validate_partner!
 
   after_save :clean_up_passwords, if: :encrypted_password_changed?
 
@@ -59,6 +60,10 @@ class User < ActiveRecord::Base
                                                                     phone) }
   scope :atd_friends, -> { where(atd_friend: true) }
 
+  before_validation do
+    self.partner_id = nil if targeting_profile != 'partner'
+  end
+
   def validate_phone!
     unless PhoneValidator.new(phone: self.phone).valid?
       errors.add(:phone, "devrait être au format +33... ou 06...")
@@ -77,6 +82,16 @@ class User < ActiveRecord::Base
         "pas inclus dans la liste"
       ].join(' ')
     ) if invalid.any?
+  end
+
+  def validate_partner!
+    if targeting_profile == 'partner' && partner_id.blank?
+      errors.add(:partner_id, :blank)
+    end
+
+    if targeting_profile != 'partner' && partner_id != nil
+      errors.add(:partner_id, :present)
+    end
   end
 
   #Force all phone number to be inserted in DB in "+33" format

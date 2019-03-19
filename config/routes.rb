@@ -28,6 +28,20 @@ Rails.application.routes.draw do
       resources :registration_requests, only: [:index, :show, :update, :destroy]
       resources :messages, only: [:index, :destroy]
       resources :organizations, only: [:index, :edit, :update]
+      resources :partners, except: [:create, :update] do
+        collection { post '/new', action: :create, as: nil }
+        member do
+          match '/edit', via: [:patch, :put], action: :update, as: nil
+          get '/edit/logo', action: :edit_logo
+          get '/logo_upload_success', action: :logo_upload_success
+        end
+      end
+
+      resources :uploads, only: :new
+      namespace :uploads do
+        get '/success', to: :update
+      end
+
       resources :newsletter_subscriptions, only: [:index]
       resources :entourage_invitations, only: [:index]
       resources :entourages, only: [:index, :show, :edit, :update] do

@@ -11,6 +11,7 @@ fr:
         about: À propos
         roles: Rôles
         targeting_profile: Profil
+        partner: Association
       organization:
         name: Nom
         description: Description
@@ -43,6 +44,15 @@ fr:
         accepts_event_invitations: Apéro Entourage
         accepts_volunteering_offers: Bénévolat
         ambassador: Ambassadeur relais
+
+      partner:
+        name: Nom
+        description: Description
+        phone: Téléphone
+        address: Adresse
+        website_url: Site Web
+        email: Email
+
   community:
     entourage:
       roles:

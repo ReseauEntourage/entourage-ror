@@ -166,6 +166,11 @@
               <%= uf.label :targeting_profile %>
               <%= uf.select :targeting_profile, targeting_profile_values, { include_blank: true }, { class: "form-control" } %>
             </div>
+            <% is_partner = entourage.user.targeting_profile == 'partner' %>
+            <div class="col-md-3 <%= :hide unless is_partner %>" id="partner-fieldset">
+              <%= uf.label :partner %>
+              <%= uf.collection_select :partner_id, Partner.all, :id, :name, { include_blank: true }, { required: true, disabled: !is_partner, class: "form-control" } %>
+            </div>
           <% end %>
           <%= fields_for :user_moderation, user_moderation do |uf| %>
               <% [:skills].each do |field| %>
@@ -234,10 +239,36 @@
       }
     })
     .on('ajax:before', function() {
+      $('.has-error').removeClass('has-error')
       setSaveModerationStatus('saving')
       pendingSave = contentVersion
     })
-    .on('ajax:error', function(){
+    .on('ajax:error', function(e, jqXHR){
+      var errors = jqXHR.responseJSON;
+      var invalidForms = [];
+
+      Object.keys(errors).forEach(function(object) {
+        Object.keys(errors[object]).forEach(function(attribute) {
+          var fieldName = object + '[' + attribute + ']',
+              $field = $('[name="' + fieldName + '"]')
+
+          if ($field.length === 0) {
+            return
+          }
+
+          var field = $field[0],
+              message = errors[object][attribute].join(', '),
+              form = field.form;
+
+          $field.parent().addClass('has-error')
+          field.setCustomValidity(message)
+          if (invalidForms.indexOf(form) === -1) {
+            invalidForms.push(form)
+          }
+        })
+      })
+      invalidForms.forEach(function(f) { f.reportValidity() })
+
       setSaveModerationStatus('error')
       contentVersion = pendingSave
       pendingSave = null
@@ -262,6 +293,23 @@
     e.preventDefault()
     saveModeration()
   })
+
+  var $profileField = $('#user_targeting_profile'),
+      $partnerField = $('#user_partner_id'),
+      $partnerFieldset = $('#partner-fieldset');
+
+  function togglePartnerFieldset() {
+    if ($profileField.val() === 'partner') {
+      $partnerFieldset.removeClass('hide')
+      $partnerField.prop('disabled', false)
+    }
+    else {
+      $partnerFieldset.addClass('hide')
+      $partnerField.prop('disabled', true)
+    }
+  }
+
+  $profileField.on('change', togglePartnerFieldset)
 
   window.onbeforeunload = function (e) {
     var message = "Are you sure?"
