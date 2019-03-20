@@ -12,6 +12,27 @@
   }
 </style>
 
+<%
+  archive_op, archive_op_path, status_change_desc, status_change_long_desc =
+    if @user.new_record?
+      nil
+    elsif @user.deleted
+      [
+        "Restaurer",
+        unarchive_community_admin_user_path(@user),
+        "Le membre pourra à nouveau s'y connecter, et ce compte ne sera plus masqué.",
+        "%{name} pourra à nouveau se connecter à Voisin-Age, et ce compte ne sera plus masqué dans les outils d'administration."
+      ]
+    else
+      [
+        "Archiver",
+        archive_community_admin_user_path(@user),
+        "Ce compte sera masqué dans certaines listes, et le membre ne pourra plus s'y connecter.",
+        "Le compte %{name} sera masqué dans certaines interfaces des outils d'administration, et cette personne ne pourra plus se connecter à Voisin-Age."
+      ]
+    end
+%>
+
 <div class="container mt-5 has-fixed-footer">
   <div class="row justify-content-md-center">
     <%= form_for [:community_admin, @user],
@@ -74,6 +95,27 @@
                                    disabled: true %>
             <% end %>
           </div>
+
+          <% if @user.persisted? %>
+            <hr class="my-5">
+
+            <div class="form-group d-flex align-items-center">
+              <div>
+                <label class="text-danger mb-0"><%= archive_op %> ce compte</label><br>
+                <small class="text-muted">
+                  <%= status_change_desc %><br/>
+                  Cette action est réversible.
+                </small>
+              </div>
+              <div class="flex-grow-1 text-right">
+                <button type="button" data-toggle="modal" data-target="#archive"
+                        class="btn btn-sm btn-outline-danger">
+                  <%= archive_op %>
+                </button>
+              </div>
+            </div>
+          <% end %>
+
         </div>
         <div class="ml-4">
           <img class="rounded-circle"
@@ -97,6 +139,36 @@
   </div>
 </div>
 
+<% if @user.persisted? %>
+  <div class="modal" tabindex="-1" role="dialog" id="archive">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title"><%= archive_op %> le compte de ce membre ?</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>
+            <%=
+              (
+                status_change_long_desc %
+                {name: "<strong>«&nbsp;#{@user.first_name} #{@user.last_name}&nbsp;»</strong>"}
+              ).html_safe
+            %>
+          </p>
+          <p>Cette action est réversible.</p>
+        </div>
+        <%= form_for @user, url: archive_op_path, method: :post,
+                     html: {class: "modal-footer"} do |f| %>
+          <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Annuler</button>
+          <button type="submit" class="btn btn-danger"><%= archive_op %></button>
+        <% end %>
+      </div>
+    </div>
+  </div>
+<% end %>
 
 <% content_for :scripts do %>
   <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=<%= ENV['GOOGLE_FRONTEND_API_KEY'] %>&libraries=places&region=fr&language=fr"></script>

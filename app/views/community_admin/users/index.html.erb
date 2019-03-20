@@ -368,6 +368,18 @@
             <% end %>
           </tr>
         <% end %>
+
+        <% if !@for_group && !params.key?(:archived) %>
+          <thead style="display: table-row-group;">
+            <tr>
+              <td colspan="4">
+                <a href="<%= archived_community_admin_users_path %>" class="text-muted">
+                  Afficher les comptes archivés
+                </a>
+              </td>
+            </tr>
+          </thead>
+        <% end %>
       </table>
     </div>
   </div>

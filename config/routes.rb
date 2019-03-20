@@ -274,6 +274,13 @@ Rails.application.routes.draw do
       post :group_role, action: :update_group_role
       post :groups, action: :add_to_group
       delete :groups, action: :remove_from_group
+      collection do
+        get :archived
+      end
+      member do
+        post :archive, action: :archive
+        post :unarchive, action: :unarchive
+      end
     end
     resources :neighborhoods, only: [:index, :show, :edit, :update, :new, :create]
     resources :private_circles, only: [:index, :show, :edit, :update, :new, :create]

@@ -115,6 +115,13 @@
         </div>
       </div>
 
+      <% if @user.deleted %>
+        <div class="alert alert-primary mb-4" role="alert">
+          <strong>Ce compte est archivé.</strong><br>
+          Il est masqué dans certaines interfaces des outils d'administration, et cette personne ne peut plus se connecter à Voisin-Age.
+        </div>
+      <% end %>
+
       <div>
         <table class="table table-hover">
           <thead>

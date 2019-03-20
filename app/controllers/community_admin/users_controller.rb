@@ -99,6 +99,11 @@ module CommunityAdmin
       end
     end
 
+    def archived
+      _, @users = CommunityAdminService.coordinator_neighborhoods_and_users(current_user)
+      @users = @users.where(deleted: true)
+    end
+
     def show
       @user = find_user(params[:id])
 
@@ -252,6 +257,18 @@ module CommunityAdmin
       else
         redirect_to community_admin_user_path(user)
       end
+    end
+
+    def archive
+      user = find_user(params[:id])
+      UserServices::DeleteUserService.new(user: user).delete
+      redirect_to community_admin_user_path(user)
+    end
+
+    def unarchive
+      user = find_user(params[:id])
+      UserServices::DeleteUserService.new(user: user).undelete
+      redirect_to community_admin_user_path(user)
     end
 
     def new

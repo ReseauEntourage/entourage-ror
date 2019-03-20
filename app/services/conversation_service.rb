@@ -48,7 +48,7 @@ module ConversationService
   end
 
   def self.conversations_allowed? from:, to:
-    true
+    !to.deleted
   end
 
   private

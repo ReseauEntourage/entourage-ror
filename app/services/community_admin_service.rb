@@ -43,7 +43,7 @@ module CommunityAdminService
     [neighborhoods, users]
   end
 
-  def self.coordinator_users_filtered(user, neighborhoods, has_private_circle: nil, neighborhood_status: nil)
+  def self.coordinator_users_filtered(user, neighborhoods, has_private_circle: nil, neighborhood_status: nil, archived: false)
     neighborhood_ids = Array(neighborhoods).map { |n| n.is_a?(Entourage) ? n.id : n }
 
     scope = User
@@ -63,6 +63,8 @@ module CommunityAdminService
           neighborhoods.id = join_requests.joinable_id
       })
       .group(:id)
+
+    scope = scope.where(deleted: archived)
 
     clauses = []
 
