@@ -211,6 +211,7 @@
               <% next if neighborhood.id.in?(user_neighborhood_ids) %>
               <tr class="js-overlay-container">
                 <td>
+                  <%= link_to "", community_admin_neighborhood_path(neighborhood), class: "js-overlay" %>
                   <%= neighborhood.title %>
                 </td>
                 <td colspan="2" class="text-right py-0 align-middle">
