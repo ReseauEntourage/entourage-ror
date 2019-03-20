@@ -180,10 +180,12 @@ module CommunityAdminService
   end
 
   def self.readable_roles(user)
+    base = [:not_validated, :ethics_charter_signed, :visitor, :visited, :coordinator]
+
     if user.roles.include?(:admin)
-      [:visitor, :visited, :coordinator, :admin]
+      base + [:admin]
     else
-      [:visitor, :visited, :coordinator]
+      base
     end
   end
 
