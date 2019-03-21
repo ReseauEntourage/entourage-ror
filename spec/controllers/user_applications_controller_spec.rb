@@ -48,17 +48,17 @@ RSpec.describe Api::V1::UserApplicationsController, type: :controller do
       end
       
       context "remove ios application token" do
-        let!(:ios_user_application_old) { FactoryGirl.create(:user_application, user: user, push_token: "old_token2", device_os: "ios", version: "1.0") }
-        let!(:ios_user_application) { FactoryGirl.create(:user_application, user: user, push_token: "old_token", device_os: "ios", version: "1.1") }
-        before { delete :destroy, application: {push_token: "old_token", device_os: "ios", version: "1.1"}, token: user.token }
+        let!(:ios_user_application_old) { FactoryGirl.create(:user_application, user: user, push_token: "old_token2", device_os: "ios", device_family: UserApplication::IOS, version: "1.0") }
+        let!(:ios_user_application) { FactoryGirl.create(:user_application, user: user, push_token: "old_token", device_os: "ios", device_family: UserApplication::IOS, version: "1.1") }
+        before { delete :destroy, application: {push_token: "old_token", device_os: "ios", device_family: UserApplication::IOS, version: "1.1"}, token: user.token }
         it { expect(user.user_applications.count).to eq(1) }
         it { expect(user.user_applications.last.push_token).to eq("old_token2") }
       end
 
       context "remove android application token" do
-        let!(:ios_user_application_old) { FactoryGirl.create(:user_application, user: user, push_token: "old_token2", device_os: "android", version: "1.0") }
-        let!(:ios_user_application) { FactoryGirl.create(:user_application, user: user, push_token: "old_token", device_os: "android", version: "1.1") }
-        before { delete :destroy, application: {push_token: "old_token", device_os: "android", version: "1.1"}, token: user.token }
+        let!(:ios_user_application_old) { FactoryGirl.create(:user_application, user: user, push_token: "old_token2", device_os: "android", device_family: UserApplication::ANDROID, version: "1.0") }
+        let!(:ios_user_application) { FactoryGirl.create(:user_application, user: user, push_token: "old_token", device_os: "android", device_family: UserApplication::ANDROID, version: "1.1") }
+        before { delete :destroy, application: {push_token: "old_token", device_os: "android", device_family: UserApplication::ANDROID, version: "1.1"}, token: user.token }
         it { expect(user.user_applications.count).to eq(1) }
         it { expect(user.user_applications.last.push_token).to eq("old_token2") }
       end
