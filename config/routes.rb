@@ -3,7 +3,7 @@ Rails.application.routes.draw do
   #ADMIN
   constraints :subdomain => /\A(admin|admin-preprod)\z/ do
     scope :module => "admin", :as => "admin" do
-      get '/' => redirect('entourages')
+      get '/' => 'base#home'
       get 'logout' => 'sessions#logout'
 
       resources :generate_tours, only: [:index, :create]

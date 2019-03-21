@@ -13,7 +13,7 @@ describe Admin::SessionsController do
   describe 'GET switch_user' do
     context "not logged in with an admin" do
       before { get :switch_user, id: 2 }
-      it { should redirect_to new_session_path }
+      it { should redirect_to new_session_path(continue: request.fullpath) }
     end
 
     context "admin logged in" do

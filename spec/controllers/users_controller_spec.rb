@@ -8,7 +8,7 @@ RSpec.describe UsersController, :type => :controller do
   describe 'GET index' do
     context 'not logged in as admin' do
       before { get :index }
-      it { should redirect_to new_session_path }
+      it { should redirect_to new_session_path(continue: request.fullpath) }
     end
 
     context "logged in as admin" do
@@ -23,7 +23,7 @@ RSpec.describe UsersController, :type => :controller do
   describe 'GET edit' do
     context 'not logged in as admin' do
       before { get :edit, id: 0 }
-      it { should redirect_to new_session_path }
+      it { should redirect_to new_session_path(continue: request.fullpath) }
     end
 
     context 'logged in as admin' do

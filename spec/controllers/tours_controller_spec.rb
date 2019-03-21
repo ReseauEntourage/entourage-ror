@@ -9,7 +9,7 @@ RSpec.describe ToursController, :type => :controller do
   describe 'GET show' do
     context "not logged in" do
       before { get 'show', id: tour.to_param }
-      it { should redirect_to new_session_path }
+      it { should redirect_to new_session_path(continue: request.fullpath) }
     end
 
     context "logged in as user" do
@@ -72,7 +72,7 @@ RSpec.describe ToursController, :type => :controller do
     context "has tour points" do
       context "not logged in" do
         before { get :map_center, id: tour.to_param }
-        it { should redirect_to new_session_path }
+        it { should redirect_to new_session_path(continue: request.fullpath) }
       end
 
       context "logged in as user" do
@@ -99,7 +99,7 @@ RSpec.describe ToursController, :type => :controller do
     context "has tour points" do
       context "not logged in" do
         before { get :map_data, id: tour.to_param, format: :json }
-        it { should redirect_to new_session_path }
+        it { should redirect_to new_session_path(continue: request.fullpath) }
       end
 
       context "logged in as user" do

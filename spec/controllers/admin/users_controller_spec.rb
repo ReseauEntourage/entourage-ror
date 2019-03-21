@@ -10,7 +10,7 @@ describe Admin::UsersController do
   describe 'GET moderate' do
     context "not signed in" do
       before { get :moderate }
-      it { should redirect_to new_session_path }
+      it { should redirect_to new_session_path(continue: request.fullpath) }
     end
 
     context "signed in" do
