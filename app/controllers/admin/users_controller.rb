@@ -78,6 +78,10 @@ module Admin
       moderation = user.moderation || user.build_moderation
       moderation.assign_attributes(moderation_params)
 
+      # the browser can transform \n to \r\n and push the text over the
+      # 200 char limit.
+      user.about.gsub!(/\r\n/, "\n")
+
       saved = false
       ActiveRecord::Base.transaction do
         user.save! if user.changed?
