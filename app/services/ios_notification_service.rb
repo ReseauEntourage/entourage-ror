@@ -1,9 +1,7 @@
 class IosNotificationService
-  def send_notification(sender, object, content, device_ids, community, extra={}, badge=nil)
-    return if device_ids.blank?
-    device_ids.each do |device_token|
-      IosNotificationJob.perform_later(sender, object, content, device_token, community, extra, badge)
-    end
+  def send_notification(sender, object, content, device_id, community, extra={}, badge=nil)
+    return if device_id.blank?
+    IosNotificationJob.perform_later(sender, object, content, device_id, community, extra, badge)
   end
 
   def unregister_token(device_token)
