@@ -44,6 +44,10 @@ Rails.application.configure do
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
   config.force_ssl = (ENV["FORCE_SSL"] == "false") ? false : true
 
+  if ENV['DISABLE_HSTS'] == 'true'
+    config.ssl_options.merge!(hsts: {expire: 0})
+  end
+
   # Set to :debug to see everything in the log.
   config.log_level = :info
 
