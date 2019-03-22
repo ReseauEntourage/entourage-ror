@@ -1,14 +1,15 @@
 module FeedServices
   class AnnouncementsService
-    def initialize(feeds:, user:, offset:, area:)
+    def initialize(feeds:, user:, offset:, area:, last_page: false)
       @feeds = feeds
       @user = user
       @offset = offset.try(:to_i) || 0
       @area = area
+      @last_page = last_page
       @metadata = {}
     end
 
-    attr_reader :user, :offset, :area
+    attr_reader :user, :offset, :area, :last_page
 
     def feeds
       announcements = select_announcements
@@ -21,10 +22,12 @@ module FeedServices
         position = announcement.position - 1
         if position < offset
           @offset += 1
-        elsif position > offset + feeds.length
-          break
-        else
+        elsif position - offset <= feeds.length
           feeds.insert(position - offset, announcement.feed_object)
+        elsif last_page
+          feeds.push(announcement.feed_object)
+        else
+          break
         end
       end
 

@@ -4,6 +4,8 @@ module FeedServices
     DEFAULT_DISTANCE=10
     DEFAULT_PER=25
 
+    LAST_PAGE_CURSOR = -1
+
     def initialize(user:,
                    page:,
                    per:,
@@ -28,7 +30,7 @@ module FeedServices
                    preload_last_message: false)
       @user = user
       @page = page
-      @per = per || DEFAULT_PER
+      @per = per.presence&.to_i || DEFAULT_PER
       @before = before.present? ? (DateTime.parse(before) rescue Time.now) : nil
       @latitude = latitude
       @longitude = longitude
@@ -52,9 +54,33 @@ module FeedServices
       @preload_last_message = preload_last_message
 
       @time_range = lyon_grenoble_timerange_workaround
+      @last_page = false
     end
 
     def feeds
+      if context == :feed && latitude && longitude && before
+        # extract cursor from `before` parameter
+        if before.year <= 1970
+          @cursor = before.to_i
+        else
+          @cursor = 1
+        end
+        @page = cursor
+      else
+        @cursor = nil
+        @page ||= 1
+      end
+
+      if cursor == LAST_PAGE_CURSOR
+        return FeedWithCursor.new([], cursor: nil)
+      end
+
+      if context == :feed && page == 1 && latitude && longitude
+        UserServices::NewsfeedHistory.save(user: user,
+                                           latitude: latitude,
+                                           longitude: longitude)
+      end
+
       excluded_status = ['blacklisted']
       excluded_status += ['suspended'] unless context == :myfeed
 
@@ -122,31 +148,23 @@ module FeedServices
       inclusive = author.blank? || invitee.blank?
       feeds = filter_by_invitee(feeds: feeds, inclusive: inclusive)
 
-      feeds = if page && per
-        feeds.page(page).per(per)
-      elsif latitude && longitude && before
-        # extract cursor from `before` parameter
-        @cursor = before.to_i if before.year == 1970
-        feeds # pagination is handled later for clarity
-      elsif before
-        feeds.before(before).limit(25)
-      else
-        @page = 1
-        feeds.limit(25)
-      end
-
-      UserServices::NewsfeedHistory.save(user: user,
-                                         latitude: latitude,
-                                         longitude: longitude)
-
       feeds =
-        if latitude && longitude
+        if context == :feed && cursor
           order_by_distance(feeds: feeds).sort_by(&:created_at).reverse
         else
-          feeds.order("updated_at DESC")
+          feeds = feeds.before(before) if before
+          feeds.order("updated_at DESC").page(page).per(per)
         end
 
-      if latitude && longitude && page == 1
+      # execute SQL query: feeds is now an Array.
+      feeds = feeds.to_a
+
+      # detect if this was the last page (less items than requested)
+      if feeds.count < per
+        @last_page = true
+      end
+
+      if user.community == :entourage && context == :feed && latitude && longitude && page == 1
         pinned = Onboarding::V1.pinned_entourage_for area, user: user
         if !pinned.nil?
           feeds = pin(pinned, feeds: feeds)
@@ -154,11 +172,11 @@ module FeedServices
         end
       end
 
-      feeds = insert_announcements(feeds: feeds) if announcements == :v1
-
-      # if user.community == :entourage && page == 1 && area.in?(['Paris République', 'Paris 17 et 9', 'Paris 15', 'Paris 5'])
+      # if user.community == :entourage && context == :feed && latitude && longitude && page == 1 && area.in?(['Paris République', 'Paris 17 et 9', 'Paris 15', 'Paris 5'])
       #   feeds = pin(8218, feeds: feeds)
       # end
+
+      feeds = insert_announcements(feeds: feeds) if announcements == :v1
 
       preload_user_join_requests(feeds)
       preload_entourage_moderations(feeds)
@@ -167,8 +185,16 @@ module FeedServices
       preload_last_chat_messages(feeds) if preload_last_message
       preload_last_join_requests(feeds) if preload_last_message
 
-      @cursor = Time.at(cursor + 1).as_json if !cursor.nil?
-      FeedWithCursor.new(feeds, cursor: cursor, metadata: @metadata)
+      next_cursor =
+        if cursor.nil?
+          nil
+        elsif @last_page
+          Time.at(LAST_PAGE_CURSOR).as_json
+        else
+          Time.at(cursor + 1).as_json
+        end
+
+      FeedWithCursor.new(feeds, cursor: next_cursor, metadata: @metadata)
     end
 
     private
@@ -278,6 +304,7 @@ module FeedServices
         user: user,
         offset: (page - 1) * per,
         area: area,
+        last_page: @last_page,
       ).feeds
 
       @metadata.merge!(announcements_metadata)
