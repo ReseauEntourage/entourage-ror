@@ -47,8 +47,25 @@ class UsersController < ApplicationController
   end
 
   def destroy
-    @user.destroy
-    redirect_to users_url, notice: "L'utilisateur a bien été supprimé"
+    if @user == current_user
+      flash[:notice] = "Vous ne pouvez pas vous retirer vous-même de l'organisation"
+      redirect_to users_url
+      return
+    end
+
+    @user.assign_attributes(
+      user_type: :public,
+      organization: nil,
+      manager: false
+    )
+
+    if @user.save
+      flash[:success] = "L'utilisateur a été retiré de votre organisation"
+      redirect_to users_url
+    else
+      flash[:error] = "Erreur : #{@user.errors.full_messages.to_sentence}"
+      redirect_to users_url
+    end
   end
 
   def send_sms
