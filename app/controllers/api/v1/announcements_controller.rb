@@ -35,6 +35,14 @@ module Api
           28 => :video,
           29 => :text,
           30 => :megaphone,
+          31 => :pin,
+          32 => :video,
+          33 => :heart,
+          34 => :heart,
+          35 => :megaphone,
+          36 => :video,
+          37 => :trophy,
+          38 => :video,
         }[params[:id].to_i]
 
         redirect_to view_context.asset_url("assets/announcements/icons/#{icon}.png")
@@ -73,6 +81,14 @@ module Api
           28 => 'video-nolwenn.jpg',
           29 => 'conversation-2.jpg',
           30 => 'ordinateur.jpg',
+          31 => '31.jpg',
+          32 => '32.jpg',
+          33 => '33.jpg',
+          34 => '34.jpg',
+          35 => '35.jpg',
+          36 => '36.jpg',
+          37 => '37.jpg',
+          38 => '38.jpg',
         }[params[:id].to_i]
 
         return render nothing: true, status: :not_found if image.nil?
@@ -149,6 +165,18 @@ module Api
           url = "https://www.youtube.com/watch?v=UcODKwV9bO8&list=PLwLEgqe22sVYuK9ySGExo8JfgAzlqWUV9"
         when 29
           url = "https://blog.entourage.social/2019/03/04/comment-puis-je-inviter-des-personnes-sdf-sur-le-reseau-entourage/#site-content"
+        when 32
+          url = "https://www.youtube.com/watch?v=QXcUptypnOY"
+        when 33
+          url = "https://blog.entourage.social/2017/07/06/appli-entourage-les-10-plus-belles-actions/#site-content"
+        when 34
+          url = "https://blog.entourage.social/2017/07/28/le-comite-de-la-rue-entourage/#site-content"
+        when 36
+          url = "https://www.youtube.com/watch?v=IYUo5WAZxXs"
+        when 37
+          url = "https://blog.entourage.social/2017/04/28/quelles-actions-faire-avec-entourage/#site-content"
+        when 38
+          url = "https://www.youtube.com/watch?v=Dk3bo__5dvs"
         end
 
         begin
