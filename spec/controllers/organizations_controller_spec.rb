@@ -293,6 +293,16 @@ RSpec.describe OrganizationsController, :type => :controller do
       it { expect(User.last.manager).to be true }
     end
 
+    context "upgrades existing user" do
+      let!(:existing_user) { create :public_user, first_name: "Joe", last_name: nil, phone: "0612345678", email: nil }
+      let(:post_organization) { post :create, { "organization" => {"name"=>"gvjbh", "description"=>"gvj", "phone"=>"gvj", "address"=>"gjv", "logo_url"=>"", "user"=>{"first_name"=>"jvgh", "last_name"=>"gjv", "phone"=>"0612345678", "email"=>"gvj@hgvj.com"}}} }
+      it { expect { post_organization }.not_to change { User.count } }
+      it { expect { post_organization }.to change { existing_user.reload.manager }.to true }
+      it { expect { post_organization }.not_to change { existing_user.reload.first_name } }
+      it { expect { post_organization }.to change { existing_user.reload.last_name }.to "gjv" }
+      it { expect { post_organization }.to change { existing_user.reload.email }.to "gvj@hgvj.com" }
+    end
+
     context "invalid user" do
       let(:post_organization) { post :create, { "organization" => {"name"=>"gvjbh", "description"=>"gvj", "phone"=>"gvj", "address"=>"gjv", "logo_url"=>"", "user"=>{"first_name"=>"jvgh", "last_name"=>"gjv", "phone"=>"cfghgvj", "email"=>"gvj@hgvj.com"}} } }
       it { expect { post_organization }.to change { Organization.count }.by(0) }
