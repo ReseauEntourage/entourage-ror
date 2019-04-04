@@ -59,6 +59,16 @@ class User < ActiveRecord::Base
                                                                     email,
                                                                     phone) }
   scope :atd_friends, -> { where(atd_friend: true) }
+  scope :accepts_email_category, -> (category_name) {
+    email_category_id = EmailPreferencesService.category_id(category_name)
+    joins(%{
+      left join email_preferences
+        on email_preferences.user_id = users.id
+       and email_preferences.email_category_id = #{email_category_id}
+       and email_preferences.subscribed = false
+    })
+    .where("email_preferences is null")
+  }
 
   before_validation do
     self.partner_id = nil if targeting_profile != 'partner'

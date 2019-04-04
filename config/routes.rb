@@ -67,6 +67,12 @@ Rails.application.routes.draw do
 
       resources :join_requests, only: [:create]
 
+      resources :digest_emails, only: [:index, :show, :edit, :update] do
+        member do
+          post :send_test
+        end
+      end
+
       get 'public_user_autocomplete' => "users_search#public_user_autocomplete"
       get 'user_search' => "users_search#user_search"
       delete 'user_relationships' => "user_relationships#destroy"

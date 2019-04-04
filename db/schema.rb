@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190318174248) do
+ActiveRecord::Schema.define(version: 20190402132655) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -109,6 +109,13 @@ ActiveRecord::Schema.define(version: 20190318174248) do
   create_table "coordination", id: false, force: :cascade do |t|
     t.integer "user_id"
     t.integer "organization_id"
+  end
+
+  create_table "digest_emails", force: :cascade do |t|
+    t.datetime "deliver_at",                     null: false
+    t.jsonb    "data",              default: {}, null: false
+    t.string   "status",                         null: false
+    t.datetime "status_changed_at",              null: false
   end
 
   create_table "email_campaigns", force: :cascade do |t|
