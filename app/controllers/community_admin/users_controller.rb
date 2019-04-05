@@ -174,6 +174,16 @@ module CommunityAdmin
       end
 
       redirect_to community_admin_user_path(user)
+    rescue => e
+      if e.is_a?(ActiveRecord::RecordInvalid)
+        message = user.errors.full_messages.to_sentence
+      else
+        Raven.capture_exception(e)
+        message = e.message
+      end
+
+      flash[:error] = "Erreur : #{message}"
+      redirect_to edit_community_admin_user_path(user)
     end
 
     def update_group_role

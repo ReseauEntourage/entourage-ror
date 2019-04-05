@@ -37,6 +37,13 @@
   <div class="row justify-content-md-center">
     <%= form_for [:community_admin, @user],
             html: {class: "col-8"} do |f| %>
+
+      <% flash.each do |msg_type, message| %>
+        <div class="alert <%= bootstrap_class_for(msg_type) %>" role="alert">
+          <%= message %>
+        </div>
+      <% end %>
+
       <div class="d-flex flex-nowrap mb-4">
         <div class="flex-grow-1">
           <div class="form-group">
