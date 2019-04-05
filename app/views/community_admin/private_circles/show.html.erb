@@ -80,6 +80,7 @@
             <%= link_to @private_circle.metadata[:street_address],
                   "https://www.google.com/maps/search/?api=1&query=#{@private_circle.metadata[:street_address]}&query_place_id=#{@private_circle.metadata[:google_place_id]}", target: :_blank %>
           </div>
+          <small class="text-muted">Cette adresse n'est pas montrée dans l'application.</small>
         <% end %>
       </div>
 
