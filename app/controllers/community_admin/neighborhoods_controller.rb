@@ -54,7 +54,9 @@ module CommunityAdmin
         .find(params[:id])
 
       neighborhood.assign_attributes(neighborhood_params)
-      neighborhood.metadata.merge!(neighborhood_metadata_params.compact)
+      if params[:entourage].key?(:metadata)
+        neighborhood.metadata.merge!(neighborhood_metadata_params.compact)
+      end
 
       neighborhood.save!
 
@@ -91,7 +93,7 @@ module CommunityAdmin
 
     def neighborhood_params
       params.require(:entourage).permit(
-        :title,
+        :title, :description,
         :latitude, :longitude, :country, :postal_code
       )
     end

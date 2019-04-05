@@ -89,7 +89,8 @@ module CommunityAdmin
 
     def private_circle_params
       params.require(:entourage).permit(
-        :latitude, :longitude, :country, :postal_code, :status
+        :latitude, :longitude, :country, :postal_code, :status,
+        :description
       )
     end
 
