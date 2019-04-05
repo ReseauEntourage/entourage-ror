@@ -145,12 +145,8 @@ module CommunityAdmin
     def update
       user = find_user(params[:id])
 
-      modifiable_roles = CommunityAdminService.modifiable_roles(by: current_user, of: user)
-      persisted_roles = user.roles - modifiable_roles
-      submitted_roles = (user_params[:roles] || []).map(&:to_sym)
-
       user.assign_attributes(user_params)
-      user.roles = (submitted_roles & modifiable_roles) + persisted_roles
+      user.roles = updated_roles_for_user(roles: user_params[:roles], user: user)
 
       downgrade_neighborhood_roles =
         user.roles_change &&
@@ -293,6 +289,9 @@ module CommunityAdmin
       end
       raise :error unless user
 
+      user.roles = updated_roles_for_user(roles: user_params[:roles], user: user)
+      user.save
+
       groups = []
       for_group = nil
 
@@ -372,6 +371,15 @@ module CommunityAdmin
       group = find_group(params[:group_id])
       user = find_user(params[:user_id])
       [group, user]
+    end
+
+    private
+
+    def updated_roles_for_user roles:, user:
+      modifiable_roles = CommunityAdminService.modifiable_roles(by: current_user, of: user)
+      persisted_roles = user.roles - modifiable_roles
+      submitted_roles = (roles || []).map(&:to_sym)
+      (submitted_roles & modifiable_roles) + persisted_roles
     end
   end
 end
