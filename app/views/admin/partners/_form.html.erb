@@ -1,0 +1,66 @@
+<style>
+  .aspect-ratio-container-1-1 {
+    padding-top: 100%;
+  }
+  .rounded {
+    border-radius: 50%;
+  }
+  .border-grey {
+    border: 1px solid #ccc;
+  }
+  .logo-as-background {
+    background: url(<%= @partner.large_logo_url %>) center/contain no-repeat, #fff;
+  }
+</style>
+
+<%= render partial: 'common/errors', locals: {obj: @partner} %>
+<%= form_for @partner, url: "" do |f| %>
+  <div class="row">
+    <div class="col-md-9">
+      <div class="form-group">
+        <%= f.label :name %>
+        <%= f.text_field :name, required: true, class: "form-control" %>
+      </div>
+      <div class="form-group">
+        <%= f.label :description %>
+        <%= f.text_area :description, class: "form-control", rows: 8 %>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="form-group">
+        <% if @partner.new_record? %>
+          <label>Logo</label>
+          <div class="text-muted">
+            Vous pourrez ajouter un logo une fois que l'association sera créée.
+          </div>
+        <% else %>
+          <label></label>
+          <div class="aspect-ratio-container-1-1 logo-as-background rounded border-grey"></div>
+          <div class="text-center" style="margin-top: 15px;">
+            <%= link_to "Modifier",
+                  edit_logo_admin_partner_path,
+                  class: "btn btn-default" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+  <div class="form-group">
+    <%= f.label :phone %>
+    <%= f.phone_field :phone, class: "form-control" %>
+  </div>
+  <div class="form-group">
+    <%= f.label :address %>
+    <%= f.text_field :address, class: "form-control" %>
+  </div>
+  <div class="form-group">
+    <%= f.label :website_url %>
+    <%= f.url_field :website_url, class: "form-control" %>
+  </div>
+  <div class="form-group">
+    <%= f.label :email %>
+    <%= f.email_field :email, class: "form-control" %>
+  </div>
+  <%= f.submit @partner.new_record? ? "Créer" : "Modifier",
+        class: "btn btn-success" %>
+<% end %>

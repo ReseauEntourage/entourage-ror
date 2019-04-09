@@ -5,7 +5,7 @@ RSpec.describe Api::V0::BaseController, :type => :controller do
 
   describe 'validate_request!' do
     before { Rails.env.stub(:test?) { false } }
-    
+
     context "missing api key" do
       before { get :check }
       it { expect(response.status).to eq(426) }

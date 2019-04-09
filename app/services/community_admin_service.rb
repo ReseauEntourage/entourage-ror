@@ -169,6 +169,38 @@ module CommunityAdminService
     scope
   end
 
+  def self.coordinator_outings(user)
+    if user.roles.include?(:admin)
+      scope = user.community.entourages
+        .where(group_type: :outing)
+    else
+      neighborhood_ids = coordinator_neighborhoods(user).pluck(:id)
+      scope = Entourage
+        .where(group_type: :outing)
+        .joins(%{
+          join
+            join_requests as member_to_outing
+          on
+            member_to_outing.joinable_id = entourages.id and
+            member_to_outing.joinable_type = 'Entourage' and
+            member_to_outing.status = 'accepted' and
+            member_to_outing.role = 'organizer'
+        })
+        .joins(%{
+          join
+            join_requests as member_to_neighborhood
+          on
+            member_to_neighborhood.user_id = member_to_outing.user_id and
+            member_to_neighborhood.joinable_type = 'Entourage' and
+            member_to_neighborhood.status = 'accepted'
+        })
+        .where(member_to_neighborhood: {joinable_id: neighborhood_ids})
+        .uniq
+    end
+
+    scope
+  end
+
   def self.role_color(community, role)
     case role
     when :coordinator then 'success'
@@ -180,10 +212,12 @@ module CommunityAdminService
   end
 
   def self.readable_roles(user)
+    base = [:not_validated, :ethics_charter_signed, :visitor, :visited, :coordinator]
+
     if user.roles.include?(:admin)
-      [:visitor, :visited, :coordinator, :admin]
+      base + [:admin]
     else
-      [:visitor, :visited, :coordinator]
+      base
     end
   end
 

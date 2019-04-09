@@ -11,5 +11,5 @@ describe Poi, :type => :model do
       it { should be_valid }
     end
   end
-  
+
 end

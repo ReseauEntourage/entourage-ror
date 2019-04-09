@@ -3,7 +3,7 @@ module Admin
     before_action :set_user, only: [:show, :messages, :edit, :update, :block, :unblock, :banish, :validate, :experimental_pending_request_reminder]
 
     def index
-      @users = User.includes(:organization).order("last_name ASC").page(params[:page]).per(25)
+      @users = current_user.community.users.includes(:organization).order("last_name ASC").page(params[:page]).per(25)
     end
 
     def show
@@ -33,24 +33,34 @@ module Admin
     end
 
     def new
-      @user = User.new(community: current_user.community)
+      @user = new_user
     end
 
     def create
-      organization = Organization.find(params[:user][:organization_id])
-      builder = UserServices::ProUserBuilder.new(params: user_params, organization: organization)
+      if user_params[:organization_id].present?
+        organization = Organization.find(user_params[:organization_id])
+        builder = UserServices::ProUserBuilder.new(params: user_params, organization: organization)
+      else
+        builder = UserServices::PublicUserBuilder.new(params: user_params, community: community)
+      end
 
       builder.create(send_sms: params[:send_sms].present?) do |on|
         on.success do |user|
-          @user = user
-          redirect_to admin_users_path, notice: "utilisateur créé"
+          return redirect_to admin_users_path, notice: "utilisateur créé"
         end
 
-        on.failure do |user|
-          @user = user
-          render :new
+        on.invalid_phone_format do
+          @user = new_user
+          @user.assign_attributes(user_params)
+          @user.errors.add(:phone)
         end
+
+        on.duplicate { |user| @user = user }
+        on.failure   { |user| @user = user }
       end
+
+      # if we reach here, there was an error
+      render :new
     end
 
     def update
@@ -63,15 +73,23 @@ module Admin
         user: user, preferences: params[:email_preferences])
 
       user.assign_attributes(user_params)
+      UserService.sync_roles(user)
 
-      if user_params.key?(:roles)
-        # the "placeholder" role is used in the view to make sure
-        # that the user[roles][] parameter is sent even where no role
-        # is selected
-        user.roles = (user_params[:roles] || []) - ["placeholder"]
+      moderation = user.moderation || user.build_moderation
+      moderation.assign_attributes(moderation_params)
+
+      # the browser can transform \n to \r\n and push the text over the
+      # 200 char limit.
+      user.about.gsub!(/\r\n/, "\n")
+
+      saved = false
+      ActiveRecord::Base.transaction do
+        user.save! if user.changed?
+        moderation.save! if moderation.changed?
+        saved = true
       end
 
-      if email_prefs_success && @user.save
+      if email_prefs_success && saved
         redirect_to [:admin, user], notice: "utilisateur mis à jour"
       else
         flash.now[:error] = "Erreur lors de la mise à jour"
@@ -136,11 +154,21 @@ module Admin
     attr_reader :user
 
     def set_user
-      @user = User.find(params[:id])
+      @user = current_user.community.users.find(params[:id])
+    end
+
+    def new_user
+      User.new(community: current_user.community, user_type: :public)
     end
 
     def user_params
-      params.require(:user).permit(:first_name, :last_name, :email, :sms_code, :phone, :organization_id, :marketing_referer_id, :use_suggestions, :about, :accepts_emails, roles: [])
+      params.require(:user).permit(:first_name, :last_name, :email, :sms_code, :phone, :organization_id, :use_suggestions, :about, :accepts_emails, :targeting_profile, :partner_id)
+    end
+
+    def moderation_params
+      params.require(:user_moderation).permit(
+        :skills, :expectations, :acquisition_channel
+      )
     end
   end
 

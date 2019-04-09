@@ -70,6 +70,7 @@ module ConversationService
   end
 
   def self.unread_count_for user
+    return 0 if user.nil?
     Entourage
     .where(group_type: :conversation)
     .joins(:join_requests)

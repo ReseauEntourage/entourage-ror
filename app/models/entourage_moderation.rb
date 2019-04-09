@@ -3,21 +3,30 @@ class EntourageModeration < ActiveRecord::Base
   belongs_to :entourage
 
   VALUES = {
-    # Emetteur
+    # Emetteur. community.targeting_profiles + the following:
     action_author_type: [
       'Riverain',
       'SDF',
       'Association',
-      'Réseau ATD',
-      'Réseau Entourage',
+      'Ambassadeur',
+      'Comité de la rue',
+      'Équipe Entourage',
     ],
-    # Destinataire
+    # Audience
     action_recipient_type: [
       'SDF',
       'Riverain',
-      'Association',
-      'Réseau Entourage',
       'Tout le monde',
+      'Autre',
+      'Test'
+    ],
+    # Cible
+    action_target_type: [
+      'SDF',
+      'Association',
+      'Riverain',
+      'Tout le monde',
+      'Autre'
     ],
     # Type d’action
     action_type: [
@@ -63,11 +72,10 @@ class EntourageModeration < ActiveRecord::Base
     # Interlocuteur
     moderator: [
       'Guillaume',
-      'Célia',
-      'Jade',
-      'Lucie',
-      'Axelle',
       'Claire',
+      'Clémence',
+      'Anne-Sophie',
+      'Valentine',
     ],
     # Action
     moderation_action: [

@@ -33,7 +33,13 @@ class ApplicationController < ActionController::Base
 
   def login_error(message)
     flash[:error] = message
-    return redirect_to new_session_path
+    redirect_path =
+      if request.get? && request.fullpath.presence != '/'
+        new_session_path(continue: request.fullpath)
+      else
+        new_session_path
+      end
+    return redirect_to redirect_path
   end
 
   def ping

@@ -61,6 +61,7 @@ class Entourage < ActiveRecord::Base
   scope :social_category, -> { where(category: 'social') }
   scope :mat_help_category, -> { where(category: 'mat_help') }
   scope :non_mat_help_category, -> { where(category: 'non_mat_help') }
+  scope :except_conversations, -> { where.not(group_type: :conversation) }
 
   before_validation :set_community, on: :create
   before_validation :set_default_attributes, on: :create

@@ -7,7 +7,7 @@ RSpec.describe Api::V0::ToursController, :type => :controller do
 
   describe "POST create" do
     let!(:tour) { FactoryGirl.build :tour }
-    
+
     context "with correct type" do
       before { FactoryGirl.create(:android_app) }
       before { post 'create', token: user.token , tour: {tour_type: tour.tour_type, status:tour.status, vehicle_type:tour.vehicle_type, distance: 123.456}, format: :json }
@@ -94,7 +94,7 @@ RSpec.describe Api::V0::ToursController, :type => :controller do
     before { Timecop.freeze(DateTime.parse("10/10/2010").at_beginning_of_day) }
     let!(:other_user) { FactoryGirl.create :pro_user }
     let(:tour) { FactoryGirl.create(:tour, :filled, user: user) }
-      
+
     context "with correct id" do
       before { put 'update', id: tour.id, token: user.token, tour:{tour_type:"medical", status:"closed", vehicle_type:"car", distance: 123.456}, format: :json }
 
@@ -107,7 +107,7 @@ RSpec.describe Api::V0::ToursController, :type => :controller do
         res = JSON.parse(response.body)
         start_time = tour.tour_points.first.passing_time.iso8601(3)
         end_time = tour.tour_points.last.passing_time.iso8601(3)
-        expect(res).to eq({"tour"=>{"id"=>tour.id, 
+        expect(res).to eq({"tour"=>{"id"=>tour.id,
                                     "tour_type"=>"medical",
                                     "status"=>"closed",
                                     "vehicle_type"=>"car",
@@ -148,14 +148,14 @@ RSpec.describe Api::V0::ToursController, :type => :controller do
           }.to raise_error(ActiveRecord::RecordNotFound)
         }
     end
-    
+
     context "with incorrect_user" do
       before { put 'update', id: tour.id, token: other_user.token, tour:{tour_type:"medical", status:"ongoing", vehicle_type:"car", distance: 123.456}, format: :json }
       it { expect(response.status).to eq(403) }
     end
 
   end
-  
+
   describe "GET index" do
     let(:date) { Date.parse("10/10/2010") }
     before { Timecop.freeze(Time.parse("10/10/2010").at_beginning_of_day) }
@@ -168,7 +168,7 @@ RSpec.describe Api::V0::ToursController, :type => :controller do
       end
 
       before { get 'index', token: user.token, format: :json }
-         
+
       it { expect(response.status).to eq 200 }
       it { expect(assigns(:tours).count).to eq(10) }
       it { expect(assigns(:tours).all? {|t| t.updated_at >= Date.parse("10/10/2010").at_beginning_of_day }).to be true }
@@ -205,67 +205,67 @@ RSpec.describe Api::V0::ToursController, :type => :controller do
            "user_id"=>tours.last.user_id,
            "tour_points"=>[]}]})
     end
-     
+
     context "with limit parameter" do
       before(:each) do
         5.times do |i|
           FactoryGirl.create :tour, updated_at:date+i.days
         end
       end
-         
+
       it "returns status 200" do
         get 'index', token: user.token, limit: 3, :format => :json
         expect(response.status).to eq 200
       end
-      
+
       it "returns last 3 tours" do
         get 'index', token: user.token, limit: 3, :format => :json
         expect(assigns(:tours).count).to eq(3)
         expect(assigns(:tours).all? {|t| t.updated_at >= Date.parse("10/10/2010")+1.days }).to be true
       end
-       
+
     end
-     
-    context "with type parameter" do 
-     
+
+    context "with type parameter" do
+
       let!(:tour1) { FactoryGirl.create :tour, tour_type:'medical' }
       let!(:tour2) { FactoryGirl.create :tour, tour_type:'medical' }
       let!(:tour3) { FactoryGirl.create :tour, tour_type:'alimentary' }
       let!(:tour4) { FactoryGirl.create :tour, tour_type:'alimentary' }
       let!(:tour5) { FactoryGirl.create :tour, tour_type:'medical' }
-         
+
       it "returns status 200" do
         get 'index', token: user.token, type:'alimentary', :format => :json
         expect(response.status).to eq 200
       end
-      
+
       it "returns only matching type tours" do
         get 'index', token: user.token, type:'alimentary', :format => :json
         expect(assigns(:tours)).to match_array([tour4, tour3])
       end
-       
+
     end
-    
-    context "with vehicle type parameter" do 
-     
+
+    context "with vehicle type parameter" do
+
       let!(:tour1) { FactoryGirl.create :tour, vehicle_type:'feet' }
       let!(:tour2) { FactoryGirl.create :tour, vehicle_type:'feet' }
       let!(:tour3) { FactoryGirl.create :tour, vehicle_type:'car' }
       let!(:tour4) { FactoryGirl.create :tour, vehicle_type:'car' }
       let!(:tour5) { FactoryGirl.create :tour, vehicle_type:'feet' }
-         
+
       it "returns status 200" do
         get 'index', token: user.token, vehicle_type:'car', :format => :json
         expect(response.status).to eq 200
       end
-      
+
       it "returns only matching vehicle type tours" do
         get 'index', token: user.token, vehicle_type:'car', :format => :json
         expect(assigns(:tours)).to match_array([tour4, tour3])
       end
-       
+
     end
-    
+
     context "with location parameter" do
       let!(:tour1) { FactoryGirl.create :tour }
       let!(:tour_point1) { FactoryGirl.create :tour_point, tour: tour1, latitude: 10, longitude: 12 }
@@ -277,17 +277,17 @@ RSpec.describe Api::V0::ToursController, :type => :controller do
       let!(:tour_point4) { FactoryGirl.create :tour_point, tour: tour4, latitude: 10.05, longitude: 9.95 }
       let!(:tour5) { FactoryGirl.create :tour }
       let!(:tour_point5) { FactoryGirl.create :tour_point, tour: tour5, latitude: 12, longitude: 10 }
-         
+
       it "returns status 200" do
         get 'index', token: user.token, latitude: 10.0, longitude: 10.0, :format => :json
         expect(response.status).to eq 200
       end
-      
+
       it "returns only matching location tours" do
         get 'index', token: user.token, latitude: 10.0, longitude: 10.0, :format => :json
         expect(assigns(:tours)).to match_array([tour4, tour3])
       end
-      
+
       it "returns only matching location tours with provided distance" do
         get 'index', token: user.token, latitude: 10.0, longitude: 10.0, distance: 20.0, :format => :json
         expect(assigns(:tours)).to match_array([tour4, tour3, tour2])

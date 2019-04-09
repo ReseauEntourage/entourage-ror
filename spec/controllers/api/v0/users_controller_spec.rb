@@ -4,7 +4,7 @@ include Requests::JsonHelpers
 
 RSpec.describe Api::V0::UsersController, :type => :controller do
   render_views
-  
+
   describe 'POST #login' do
     context 'when the user exists' do
       before { ENV["DISABLE_CRYPT"]="FALSE" }

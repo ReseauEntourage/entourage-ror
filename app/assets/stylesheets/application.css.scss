@@ -19,10 +19,10 @@ $buttons-color: #ef662f;
 
 body.with-navbar { padding-top: $navbar-height; }
 .navbar-brand { padding: 5px; }
-h1, h2, h3, h4, h5, h6, body:not(.layout-index-large) .navbar-nav, select, button {
+h1, h2, h3, h4, h5, h6, body:not(.fix-legacy-layout) .navbar-nav, select, button {
   font-family: 'Asap', sans-serif;
 }
-body:not(.layout-index-large) .navbar-nav {
+body:not(.fix-legacy-layout) .navbar-nav {
   font-size: 15px;
   text-transform: uppercase;
 }
@@ -64,7 +64,7 @@ li.user-card {
   color:red;
 }
 
-body.layout-index-large {
+body.fix-legacy-layout {
   margin-top: 70px;
 }
 

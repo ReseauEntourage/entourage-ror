@@ -99,21 +99,24 @@
         <%= recipient_names.join(', ') %>
       </div>
       <div class="cell truncate conversation-content">
-        <% if last_message.user_id == @user.id %>
+        <% if last_message.nil? %>
+          <span class="text-muted">(pas de messages)</span>
+        <% elsif last_message.user_id == @user.id %>
           Vous :
         <% elsif recipient_ids.count > 1 %>
           <%= display_name @users[last_message.user_id] %> :
         <% end %>
-        <%= last_message.content %>
+        <%= last_message.content unless last_message.nil? %>
       </div>
       <div class="cell conversation-timestamp" style="text-align: right">
         <%= link_to "", admin_conversation_path(conversation), class: "overlay" %>
-        <% if last_message.created_at.today? %>
-          <%= l last_message.created_at, format: "%H:%M" %>
-        <% elsif last_message.created_at >= 7.days.ago.midnight %>
-          <%= l last_message.created_at, format: "%A" %>
+        <% timestamp = last_message&.created_at || conversation.created_at %>
+        <% if timestamp.today? %>
+          <%= l timestamp, format: "%H:%M" %>
+        <% elsif timestamp >= 7.days.ago.midnight %>
+          <%= l timestamp, format: "%A" %>
         <% else  %>
-          <%= l last_message.created_at, format: "%-d %b" %>
+          <%= l timestamp, format: "%-d %b" %>
         <% end %>
       </div>
     </div>

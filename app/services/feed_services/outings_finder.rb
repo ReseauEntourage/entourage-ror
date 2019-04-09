@@ -24,7 +24,7 @@ module FeedServices
         .where("metadata->>'starts_at' >= ?", ESTIMATED_DURATION.ago)
         .order("metadata->>'starts_at' asc, id")
         .limit(LIMIT)
-        .includes(user: {default_user_partners: :partner})
+        .includes(user: :partner)
 
       if starting_after != nil
         last_of_previous_page = outings.find_by!(uuid_v2: starting_after)

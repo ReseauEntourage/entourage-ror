@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe SessionsController do
   render_views
-  
+
   describe 'GET new' do
     before { get :new }
     it { expect(response.status).to eq(200) }

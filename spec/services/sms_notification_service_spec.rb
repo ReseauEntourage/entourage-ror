@@ -21,7 +21,7 @@ describe SmsNotificationService do
       end
       it { expect(sinch_mock).to have_received(:send).with('key', 'secret', message, phone_number) }
     end
-        
+
     context "aws as sms provider and api key and secret are provided as env variables" do
       before do
         ENV["SMS_PROVIDER"] = "AWS"
@@ -33,7 +33,7 @@ describe SmsNotificationService do
       end
       it { expect(stub_client).to have_received(:publish).with({phone_number: phone_number, message: message}) }
     end
-    
+
     context "sinch as sms provider and api key and secret are not provided as env variables" do
       before do
         ENV["SMS_PROVIDER"] = "SINCH"
@@ -44,7 +44,7 @@ describe SmsNotificationService do
       end
       it { expect(Rails.logger).to have_received(:warn).with('No SMS has been sent. Please provide SINCH_API_KEY and SINCH_API_SECRET environment variables') }
     end
-    
+
     context "aws as sms provider and api key and secret are not provided as env variables" do
       before do
         ENV["SMS_PROVIDER"] = "AWS"

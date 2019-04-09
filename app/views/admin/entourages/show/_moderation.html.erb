@@ -7,6 +7,34 @@
 
   user_values = UserModeration::VALUES
   user_column_type = Hash[UserModeration.columns_hash.map { |n, c| [n.to_sym, c.type] }]
+
+  user_community = entourage.user.community
+  targeting_profile_values = user_community.targeting_profiles.map do |key|
+    [t("community.#{user_community.slug}.targeting_profiles.#{key}"), key]
+  end
+
+  if moderation.action_author_type.nil? && entourage.user.targeting_profile.present?
+    moderation.action_author_type ||= t("community.#{user_community.slug}.targeting_profiles.#{entourage.user.targeting_profile}")
+  end
+
+  moderation.moderator = "Guillaume" if moderation.moderator.blank?
+
+  def safe_options standard_values, current_value
+    if current_value.blank? || current_value.in?(standard_values)
+      return standard_values, false
+    end
+
+    safe_options = standard_values + [
+      ['Non-standard :', disabled: true],
+      current_value
+    ]
+    return safe_options, true
+  end
+
+  label_info = {
+    action_recipient_type: "à qui recommander l'action",
+    action_target_type: "qui sera aidé par l'action"
+  }
 %>
 
 <style>
@@ -59,15 +87,26 @@
   </div>
 
   <div class="panel panel-default">
-    <div class="panel-row">
+    <div class="panel-row" style="overflow: visible;">
       <div class="panel-heading">
         Nature de l’action
       </div>
       <div class="panel-body row">
-        <% [:action_author_type, :action_recipient_type, :action_type, :action_recipient_consent_obtained].each do |field| %>
+        <% [:action_author_type, :action_recipient_type, :action_target_type, :action_type].each do |field| %>
           <div class="col-md-3">
-            <%= f.label field %>
-            <%= f.select field, values[field], { include_blank: true }, { class: "form-control" } %>
+            <% current_value = f.object[field] %>
+            <% options, non_standard = safe_options(values[field], current_value) %>
+
+            <%= f.label field do %>
+              <%= f.object.class.human_attribute_name(field) %>
+              <% if non_standard %>
+                <span class="glyphicon glyphicon-warning-sign text-danger" aria-hidden="true" data-toggle="tooltip" data-placement="top" title="la valeur &quot;<%= current_value %>&quot; n'est pas standard"></span>
+              <% end %>
+              <% if label_info.key?(field) %>
+                <span class="glyphicon glyphicon-question-sign" aria-hidden="true" data-toggle="tooltip" data-placement="top" title="<%= label_info[field] %>"></span>
+              <% end %>
+            <% end %>
+            <%= f.select field, options, { include_blank: true }, { class: "form-control" } %>
           </div>
         <% end %>
       </div>
@@ -79,14 +118,16 @@
       </div>
       <div class="panel-body">
         <div class="row">
-          <% [:moderated_at, :moderation_contact_channel, :moderator, :moderation_action].each do |field| %>
+          <% [:moderated_at, :moderation_contact_channel, :moderator, :action_recipient_consent_obtained].each do |field| %>
             <div class="col-md-3 form-group">
               <%= f.label field %>
               <% case column_type[field] %>
               <% when :date %>
                 <%= f.date_field field, class: "form-control js-datepicker" %>
               <% else %>
-                <%= f.select field, values[field], { include_blank: true }, { class: "form-control" } %>
+                <% current_value = f.object[field] %>
+                <% options, _ = safe_options(values[field], current_value) %>
+                <%= f.select field, options, { include_blank: true }, { class: "form-control" } %>
               <% end %>
             </div>
           <% end %>
@@ -106,34 +147,40 @@
       <div class="panel-body">
         <div class="row" style="margin-bottom: 2px;">
           <div class="col-md-3 form-inline">
-            <label>Actions :</label> <%= entourage.user.entourages.count %>
+            <label>Actions créées :</label> <%= entourage.user.groups.count %>
             <%= link_to '(Voir)', admin_entourages_path(q: { user_id_eq: entourage.user_id }), target: :_blank %>
+          </div>
+          <div class="col-md-3 form-inline">
+            <label>Actions rejointes :</label> <%= entourage.user.joined_groups(exclude_created: true, status: [:pending, :accepted]).count %>
+          </div>
+          <div class="col-md-3 form-inline">
+            <label>Conversations :</label> <%= entourage.user.conversations.count %>
           </div>
           <div class="col-md-3 form-inline">
             <label>Messages :</label> <%= entourage.user.chat_messages.count %>
           </div>
-          <div class="col-md-3 form-inline">
-            <label>Actions rejointes :</label> <%= entourage.user.join_requests.count - entourage.user.entourages.count %>
-          </div>
         </div>
-        <%= fields_for :user_moderation, user_moderation do |uf| %>
-          <div class="row">
-            <% [:expectations, :acquisition_channel, :content_sent, :skills].each do |field| %>
-              <div class="col-md-3 form-group">
-                <%= uf.label field %>
-                <%= uf.select field, user_values[field], { include_blank: true }, { class: "form-control" } %>
-              </div>
-            <% end %>
-          </div>
-          <div class="row" style="margin-bottom: -9px; overflow: hidden;">
-            <% [:accepts_event_invitations, :accepts_volunteering_offers, :ambassador].each do |field| %>
-              <div class="col-md-3 form-inline">
-                <%= uf.label field %>
-                <%= uf.check_box field %>
-              </div>
-            <% end %>
-          </div>
-        <% end %>
+        <div class="row">
+          <%= fields_for :user, entourage.user do |uf| %>
+            <div class="col-md-3">
+              <%= uf.label :targeting_profile %>
+              <%= uf.select :targeting_profile, targeting_profile_values, { include_blank: true }, { class: "form-control" } %>
+            </div>
+            <% is_partner = entourage.user.targeting_profile == 'partner' %>
+            <div class="col-md-3 <%= :hide unless is_partner %>" id="partner-fieldset">
+              <%= uf.label :partner %>
+              <%= uf.collection_select :partner_id, Partner.all, :id, :name, { include_blank: true }, { required: true, disabled: !is_partner, class: "form-control" } %>
+            </div>
+          <% end %>
+          <%= fields_for :user_moderation, user_moderation do |uf| %>
+              <% [:skills].each do |field| %>
+                <div class="col-md-3">
+                  <%= uf.label field %>
+                  <%= uf.select field, user_values[field], { include_blank: true }, { class: "form-control" } %>
+                </div>
+              <% end %>
+          <% end %>
+        </div>
       </div>
     </div>
 
@@ -192,10 +239,36 @@
       }
     })
     .on('ajax:before', function() {
+      $('.has-error').removeClass('has-error')
       setSaveModerationStatus('saving')
       pendingSave = contentVersion
     })
-    .on('ajax:error', function(){
+    .on('ajax:error', function(e, jqXHR){
+      var errors = jqXHR.responseJSON;
+      var invalidForms = [];
+
+      Object.keys(errors).forEach(function(object) {
+        Object.keys(errors[object]).forEach(function(attribute) {
+          var fieldName = object + '[' + attribute + ']',
+              $field = $('[name="' + fieldName + '"]')
+
+          if ($field.length === 0) {
+            return
+          }
+
+          var field = $field[0],
+              message = errors[object][attribute].join(', '),
+              form = field.form;
+
+          $field.parent().addClass('has-error')
+          field.setCustomValidity(message)
+          if (invalidForms.indexOf(form) === -1) {
+            invalidForms.push(form)
+          }
+        })
+      })
+      invalidForms.forEach(function(f) { f.reportValidity() })
+
       setSaveModerationStatus('error')
       contentVersion = pendingSave
       pendingSave = null
@@ -220,6 +293,23 @@
     e.preventDefault()
     saveModeration()
   })
+
+  var $profileField = $('#user_targeting_profile'),
+      $partnerField = $('#user_partner_id'),
+      $partnerFieldset = $('#partner-fieldset');
+
+  function togglePartnerFieldset() {
+    if ($profileField.val() === 'partner') {
+      $partnerFieldset.removeClass('hide')
+      $partnerField.prop('disabled', false)
+    }
+    else {
+      $partnerFieldset.addClass('hide')
+      $partnerField.prop('disabled', true)
+    }
+  }
+
+  $profileField.on('change', togglePartnerFieldset)
 
   window.onbeforeunload = function (e) {
     var message = "Are you sure?"

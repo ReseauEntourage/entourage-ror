@@ -30,7 +30,7 @@ module V1
       {
           tour_count: object.tours.count,
           encounter_count: object.encounters.count,
-          entourage_count: object.entourages.count
+          entourage_count: object.groups.count
       }
     end
 
@@ -55,8 +55,10 @@ module V1
     end
 
     def partner
-      return nil unless object.default_partner
-      JSON.parse(V1::PartnerSerializer.new(object.default_partner, scope: {user: object, full: scope[:full_partner] || false}, root: false).to_json)
+      return nil
+      # TODO(partner)
+      return nil unless object.partner
+      V1::PartnerSerializer.new(object.partner, scope: {user: object, full: scope[:full_partner] || false}, root: false).as_json
     end
 
     def has_password

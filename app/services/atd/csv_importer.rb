@@ -69,6 +69,7 @@ module Atd
     end
 
     def atd_partner
+      raise "Deprecated"
       @atd_partner ||= Partner.first
     end
   end

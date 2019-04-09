@@ -7,13 +7,13 @@ RSpec.describe Api::V0::TourPointsController, :type => :controller do
     let!(:user) { FactoryGirl.create :pro_user }
     let!(:tour) { FactoryGirl.create :tour }
     let!(:tour_point) { FactoryGirl.build :tour_point }
-    
+
     context "within existing tour" do
       before { post 'create', tour_id: tour.id, token: user.token, tour_points: [{latitude: tour_point.latitude, longitude: tour_point.longitude, passing_time: tour_point.passing_time.iso8601(3)}], format: :json }
       it { expect(response.status).to eq(201) }
       it { expect(JSON.parse(response.body)["tour"]).to_not be_nil }
     end
-    
+
     context "with multiple tour points" do
       before { post 'create', tour_id: tour.id, token: user.token, tour_points: [{latitude: tour_point.latitude, longitude: tour_point.longitude, passing_time: tour_point.passing_time.iso8601(3)}, {latitude: tour_point.latitude, longitude: tour_point.longitude, passing_time: tour_point.passing_time.iso8601(3)}], format: :json }
       it { expect(response.status).to eq(201) }

@@ -60,6 +60,24 @@ class JoinRequest < ActiveRecord::Base
     end
   end
 
+
+  # these 3 methods manage the skip_conversation_uuid_update flag.
+  # see join_callback and ChatMessageBuilder#create
+  def initialize(*)
+    @skip_conversation_uuid_update = false
+    super
+  end
+
+  def skip_conversation_uuid_update!
+    @skip_conversation_uuid_update = true
+  end
+
+  def _update_record(*)
+    super.tap do
+      @skip_conversation_uuid_update = false
+    end
+  end
+
   private
 
   def joinable_callback(*args)
@@ -70,9 +88,10 @@ class JoinRequest < ActiveRecord::Base
       FeedUpdatedAt.update(joinable_type, joinable_id, requested_at || created_at)
     end
 
+    # update the conversation's uuid_v2 to match the list of participants
     if joinable.group_type == 'conversation'
-      # TODO: handle status?
-      if id_changed? || destroyed? # || status_changed?
+      # TODO: handle status? (status_changed?)
+      if @skip_conversation_uuid_update != true && (id_changed? || destroyed?)
         joinable.update!(
           uuid_v2: ConversationService.hash_for_participants(
             joinable.join_requests.pluck(:user_id), validated: false))

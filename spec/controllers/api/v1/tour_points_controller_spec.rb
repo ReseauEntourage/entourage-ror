@@ -7,7 +7,7 @@ RSpec.describe Api::V1::TourPointsController, :type => :controller do
     let!(:user) { FactoryGirl.create :pro_user }
     let!(:tour) { FactoryGirl.create :tour }
     let!(:tour_point) { FactoryGirl.build :tour_point }
-    
+
     context "within existing tour" do
       before { post 'create', tour_id: tour.id, token: user.token, tour_points: [{latitude: tour_point.latitude, longitude: tour_point.longitude, passing_time: tour_point.passing_time.iso8601(3)}], :format => :json }
       it { expect(response.status).to eq(201) }
@@ -26,7 +26,7 @@ RSpec.describe Api::V1::TourPointsController, :type => :controller do
       it { expect(tour_with_location.reload.longitude).to eq(3.0) }
       it { expect(tour_with_location.reload.latitude).to eq(2.0) }
     end
-    
+
     context "with multiple tour points" do
       before { post 'create', tour_id: tour.id, token: user.token, tour_points: [{latitude: tour_point.latitude, longitude: tour_point.longitude, passing_time: tour_point.passing_time.iso8601(3)}, {latitude: tour_point.latitude, longitude: tour_point.longitude, passing_time: tour_point.passing_time.iso8601(3)}], :format => :json }
       it { expect(response.status).to eq(201) }

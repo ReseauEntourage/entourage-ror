@@ -1,50 +1,125 @@
 <%= form_for([:admin, @user], html: { class: "form-horizontal", role: "form" }) do |f| %>
   <%= render partial: "layouts/errors", locals: {obj: @user} %>
 
-  <div class="control-group">
-    <%= f.label :first_name,"Prénom", class: "control-label" %>
-    <div class="controls">
-      <%= f.text_field :first_name, class: "form-control", required: @user.pro? %>
-    </div>
-  </div>
+  <div style="display: flex">
+    <div style="flex-grow: 1">
+      <div class="control-group">
+        <%= f.label :first_name,"Prénom", class: "control-label" %>
+        <div class="controls">
+          <%= f.text_field :first_name, class: "form-control", required: @user.pro? %>
+        </div>
+      </div>
 
-  <div class="control-group">
-    <%= f.label :last_name,"Nom", class: "control-label" %>
-    <div class="controls">
-      <%= f.text_field :last_name, class: "form-control", required: @user.pro? %>
-    </div>
-  </div>
+      <div class="control-group">
+        <%= f.label :last_name,"Nom", class: "control-label" %>
+        <div class="controls">
+          <%= f.text_field :last_name, class: "form-control", required: @user.pro? %>
+        </div>
+      </div>
 
-  <div class="control-group">
-    <%= f.label :about, class: "control-label" %>
-    <div class="controls">
-      <%= f.text_area :about, class: "form-control", maxlength: 200 %>
-    </div>
-  </div>
+      <div class="control-group">
+        <%= f.label :about, class: "control-label" %>
+        <div class="controls">
+          <%= f.text_area :about, class: "form-control", maxlength: 200 %>
+        </div>
+      </div>
 
-  <div class="control-group">
-    <%= f.label :roles, class: "control-label" %>
-    <table class="table" style="width: auto">
-      <% @user.community.roles.each do |role| %>
-        <tr>
-          <td>
-            <label class="form-check-label" style="font-weight: normal"
-                   for="role<%= role.capitalize %>">
-              <%= t "community.#{@user.community.slug}.roles.#{role}" %>
-            </label>
-          </td>
-          <td>
-            <%= check_box_tag(
-                  "user[roles][]", role,
-                  @user.roles.include?(role),
-                  id: "role#{role.capitalize}") %>
-          </td>
-        </tr>
+      <% unless @user.new_record? %>
+        <div style="display: flex">
+          <div class="control-group">
+            <label class="control-label">Zone d'action</label>
+            <div class="controls">
+              <% if @user.address&.postal_code.present? %>
+                <%= @user.address.postal_code %>
+                <% if @user.address.country != 'FR' %>
+                  (<%= @user.address.country %>)
+                <% end %>
+              <% else %>
+                <span class="text-muted">Non définie</span>
+              <% end %>
+            </div>
+          </div>
+
+          <div class="control-group" style="margin-left: 30px">
+            <label class="control-label">Action créées</label>
+            <div class="controls">
+              <%= @user.groups.count %>
+              <%= link_to '(Voir)', admin_entourages_path(q: { user_id_eq: @user.id }), target: :_blank %>
+            </div>
+          </div>
+
+          <div class="control-group" style="margin-left: 30px">
+            <label class="control-label">Actions rejointes</label>
+            <div class="controls">
+              <%= @user.joined_groups(exclude_created: true, status: [:pending, :accepted]).count %>
+            </div>
+          </div>
+
+          <div class="control-group" style="margin-left: 30px">
+            <label class="control-label">Conversations</label>
+            <div class="controls">
+              <%= @user.conversations.count %>
+            </div>
+          </div>
+
+          <div class="control-group" style="margin-left: 30px">
+            <label class="control-label">Messages</label>
+            <div class="controls">
+              <%= @user.chat_messages.count %>
+            </div>
+          </div>
+        </div>
       <% end %>
-    </table>
-    <%= hidden_field_tag "user[roles][]", "placeholder" %>
+    </div>
+    <div style="padding: 27px 0 0 27px;">
+      <% if @user.avatar_key.present? %>
+        <%= user_avatar_image @user, size: '200x200', alt: '' %>
+      <% else %>
+        <%= image_tag "user/default_avatar.png", size: '200x200', alt: '' %>
+      <% end %>
+    </div>
   </div>
 
+  <div style="display: flex">
+    <div class="control-group">
+      <%= f.label :targeting_profile, class: "control-label" %>
+      <div class="controls">
+        <%= f.select :targeting_profile,
+            @user.community.targeting_profiles.map { |key| [t("community.#{@user.community.slug}.targeting_profiles.#{key}"), key] },
+            {include_blank: "(Non défini)"}
+        %>
+      </div>
+    </div>
+
+    <% is_partner = @user.targeting_profile == 'partner' %>
+    <div class="control-group <%= :hide unless is_partner %>"
+         style="margin-left: 30px"
+         id="partner-fieldset">
+      <%= f.label :partner, class: "control-label" %>
+      <div class="controls">
+        <%= f.collection_select :partner_id, Partner.all, :id, :name, { include_blank: true }, { required: true, disabled: !is_partner }
+        %>
+      </div>
+    </div>
+  </div>
+
+  <% unless @user.new_record? %>
+    <% @user.moderation || @user.build_moderation %>
+    <div style="display: flex">
+      <%= fields_for :user_moderation, @user.moderation do |uf| %>
+        <% [:skills, :expectations, :acquisition_channel].each.with_index do |field, index| %>
+          <div class="control-group" style="<%= 'margin-left: 30px' unless index == 0 %>">
+            <%= uf.label field, class: "control-label" %>
+            <div class="controls">
+              <%= uf.select field, UserModeration::VALUES[field], { include_blank: true } %>
+            </div>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
+  <% end %>
+
+  <br/>
   <div class="control-group">
     <%= f.label :email,"Email", class: "control-label" %>
     <div class="controls">
@@ -82,11 +157,11 @@
   <br>
 
   <div class="control-group">
-    <%= f.label :organization,"Association de maraude", class: "control-label" %>
+    <%= f.label :organization, class: "control-label" %>
     <div class="controls">
       <%= f.collection_select :organization_id,
           Organization.order("name ASC"), :id, :name,
-          {include_blank: @user.pro? ? false : "(Aucune)"},
+          {include_blank: @user.organization_id.present? ? false : "(Aucune)"},
           {id: :pro_user, class: (:hide unless @user.pro?), disabled: !@user.pro?} %>
       <% if !@user.pro? %>
         <div id="change_status">
@@ -96,20 +171,6 @@
     </div>
   </div>
   <br>
-
-  <div class="control-group">
-    <%= f.label :marketing_referer,"Marketing referer", class: "control-label" %>
-    <div class="controls">
-      <%= f.collection_select(:marketing_referer_id, MarketingReferer.all, :id, :name, {selected: @user.marketing_referer_id }) %>
-    </div>
-  </div>
-
-  <div class="control-group">
-    <%= f.label :use_suggestions, "Calcul des suggestions", class: "control-label" %>
-    <div class="controls">
-      <%= f.check_box :use_suggestions %>
-    </div>
-  </div>
 
   <% if @user.new_record? %>
     <div class="control-group">
@@ -134,3 +195,22 @@
   <%= f.submit "Sauver", class: "btn btn-success" %>
   <%= link_to "Annuler", admin_users_path, class: "btn btn-default" %>
 <% end %>
+
+<script>
+  var $profileField = $('#user_targeting_profile'),
+      $partnerField = $('#user_partner_id'),
+      $partnerFieldset = $('#partner-fieldset');
+
+  function togglePartnerFieldset() {
+    if ($profileField.val() === 'partner') {
+      $partnerFieldset.removeClass('hide')
+      $partnerField.prop('disabled', false)
+    }
+    else {
+      $partnerFieldset.addClass('hide')
+      $partnerField.prop('disabled', true)
+    }
+  }
+
+  $profileField.on('change', togglePartnerFieldset)
+</script>

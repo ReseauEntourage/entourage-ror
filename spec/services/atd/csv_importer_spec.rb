@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Atd::CsvImporter do
-  
+
   describe 'match' do
 
     let(:csv) { File.read("spec/fixtures/atd/atd_entourage_20170410_complet.csv") }

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190207125906) do
+ActiveRecord::Schema.define(version: 20190402132655) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -111,6 +111,13 @@ ActiveRecord::Schema.define(version: 20190207125906) do
     t.integer "organization_id"
   end
 
+  create_table "digest_emails", force: :cascade do |t|
+    t.datetime "deliver_at",                     null: false
+    t.jsonb    "data",              default: {}, null: false
+    t.string   "status",                         null: false
+    t.datetime "status_changed_at",              null: false
+  end
+
   create_table "email_campaigns", force: :cascade do |t|
     t.string "name", limit: 40, null: false
   end
@@ -201,6 +208,7 @@ ActiveRecord::Schema.define(version: 20190207125906) do
     t.string  "action_outcome"
     t.string  "action_success_reason"
     t.string  "action_failure_reason"
+    t.string  "action_target_type"
   end
 
   add_index "entourage_moderations", ["entourage_id"], name: "index_entourage_moderations_on_entourage_id", unique: true, using: :btree
@@ -343,8 +351,8 @@ ActiveRecord::Schema.define(version: 20190207125906) do
 
   create_table "partners", force: :cascade do |t|
     t.string   "name",           null: false
-    t.string   "large_logo_url", null: false
-    t.string   "small_logo_url", null: false
+    t.string   "large_logo_url"
+    t.string   "small_logo_url"
     t.datetime "created_at",     null: false
     t.datetime "updated_at",     null: false
     t.text     "description"
@@ -404,11 +412,15 @@ ActiveRecord::Schema.define(version: 20190207125906) do
     t.string   "client_secret"
     t.string   "access_token"
     t.datetime "access_token_expiration"
+    t.text     "apn_key"
+    t.string   "apn_key_id"
+    t.string   "team_id"
+    t.string   "bundle_id"
   end
 
   create_table "rpush_feedback", force: :cascade do |t|
-    t.string   "device_token", limit: 64, null: false
-    t.datetime "failed_at",               null: false
+    t.string   "device_token"
+    t.datetime "failed_at",    null: false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "app_id"
@@ -418,38 +430,41 @@ ActiveRecord::Schema.define(version: 20190207125906) do
 
   create_table "rpush_notifications", force: :cascade do |t|
     t.integer  "badge"
-    t.string   "device_token",      limit: 64
-    t.string   "sound",                        default: "default"
+    t.string   "device_token"
+    t.string   "sound"
     t.text     "alert"
     t.text     "data"
-    t.integer  "expiry",                       default: 86400
-    t.boolean  "delivered",                    default: false,     null: false
+    t.integer  "expiry",             default: 86400
+    t.boolean  "delivered",          default: false, null: false
     t.datetime "delivered_at"
-    t.boolean  "failed",                       default: false,     null: false
+    t.boolean  "failed",             default: false, null: false
     t.datetime "failed_at"
     t.integer  "error_code"
     t.text     "error_description"
     t.datetime "deliver_after"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "alert_is_json",                default: false
-    t.string   "type",                                             null: false
+    t.boolean  "alert_is_json",      default: false, null: false
+    t.string   "type",                               null: false
     t.string   "collapse_key"
-    t.boolean  "delay_while_idle",             default: false,     null: false
+    t.boolean  "delay_while_idle",   default: false, null: false
     t.text     "registration_ids"
-    t.integer  "app_id",                                           null: false
-    t.integer  "retries",                      default: 0
+    t.integer  "app_id",                             null: false
+    t.integer  "retries",            default: 0
     t.string   "uri"
     t.datetime "fail_after"
-    t.boolean  "processing",                   default: false,     null: false
+    t.boolean  "processing",         default: false, null: false
     t.integer  "priority"
     t.text     "url_args"
     t.string   "category"
-    t.boolean  "content_available",            default: false
+    t.boolean  "content_available",  default: false, null: false
     t.text     "notification"
+    t.boolean  "mutable_content",    default: false, null: false
+    t.string   "external_device_id"
+    t.string   "thread_id"
   end
 
-  add_index "rpush_notifications", ["delivered", "failed"], name: "index_rpush_notifications_multi", where: "((NOT delivered) AND (NOT failed))", using: :btree
+  add_index "rpush_notifications", ["delivered", "failed", "processing", "deliver_after", "created_at"], name: "index_rpush_notifications_multi", where: "((NOT delivered) AND (NOT failed))", using: :btree
 
   create_table "sensitive_words", force: :cascade do |t|
     t.string "raw",                         null: false
@@ -596,17 +611,6 @@ ActiveRecord::Schema.define(version: 20190207125906) do
 
   add_index "user_newsfeeds", ["user_id"], name: "index_user_newsfeeds_on_user_id", using: :btree
 
-  create_table "user_partners", force: :cascade do |t|
-    t.integer  "user_id",                    null: false
-    t.integer  "partner_id",                 null: false
-    t.boolean  "default",    default: false, null: false
-    t.datetime "created_at",                 null: false
-    t.datetime "updated_at",                 null: false
-  end
-
-  add_index "user_partners", ["user_id", "partner_id"], name: "index_user_partners_on_user_id_and_partner_id", unique: true, using: :btree
-  add_index "user_partners", ["user_id"], name: "index_user_partners_on_user_id", where: "\"default\"", using: :btree
-
   create_table "user_relationships", force: :cascade do |t|
     t.integer "source_user_id", null: false
     t.integer "target_user_id", null: false
@@ -648,11 +652,14 @@ ActiveRecord::Schema.define(version: 20190207125906) do
     t.integer  "address_id"
     t.boolean  "accepts_emails_deprecated",                default: true,        null: false
     t.datetime "last_email_sent_at"
+    t.string   "targeting_profile"
+    t.integer  "partner_id"
   end
 
   add_index "users", ["address_id"], name: "index_users_on_address_id", using: :btree
   add_index "users", ["email"], name: "index_users_on_email", using: :btree
   add_index "users", ["organization_id"], name: "index_users_on_organization_id", using: :btree
+  add_index "users", ["partner_id"], name: "index_users_on_partner_id", using: :btree
   add_index "users", ["phone", "community"], name: "index_users_on_phone_and_community", unique: true, using: :btree
   add_index "users", ["roles"], name: "index_users_on_roles", using: :gin
   add_index "users", ["token"], name: "index_users_on_token", unique: true, using: :btree

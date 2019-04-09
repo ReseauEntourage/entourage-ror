@@ -7,9 +7,11 @@ fr:
         last_name: Nom
         email: Email
         phone: Téléphone
-        organization: Association
+        organization: Association de maraude
         about: À propos
         roles: Rôles
+        targeting_profile: Profil
+        partner: Association
       organization:
         name: Nom
         description: Description
@@ -17,7 +19,8 @@ fr:
         address: Adresse
       entourage_moderation:
         action_author_type: Emetteur
-        action_recipient_type: Destinataire
+        action_recipient_type: Audience
+        action_target_type: Cible
         action_type: Type d’action
         action_recipient_consent_obtained: Consentement
 
@@ -41,7 +44,22 @@ fr:
         accepts_event_invitations: Apéro Entourage
         accepts_volunteering_offers: Bénévolat
         ambassador: Ambassadeur relais
+
+      partner:
+        name: Nom
+        description: Description
+        phone: Téléphone
+        address: Adresse
+        website_url: Site Web
+        email: Email
+
   community:
     entourage:
       roles:
         ambassador: Ambassadeur
+      targeting_profiles:
+        offers_help: Riverain
+        asks_for_help: SDF
+        partner: Association
+        ambassador: Ambassadeur
+        team: Équipe Entourage

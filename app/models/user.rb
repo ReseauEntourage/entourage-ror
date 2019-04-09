@@ -1,7 +1,7 @@
 require 'experimental/jsonb_set'
 
 class User < ActiveRecord::Base
-  validates_presence_of [:phone, :sms_code, :token, :validation_status, :marketing_referer_id]
+  validates_presence_of [:phone, :sms_code, :token, :validation_status]
   validates_uniqueness_of :phone, scope: :community
   validates_uniqueness_of :token
   validate :validate_phone!
@@ -13,6 +13,7 @@ class User < ActiveRecord::Base
   validates_length_of :password, within: 8..256, allow_nil: true
   validates_inclusion_of :community, in: Community.slugs
   validate :validate_roles!
+  validate :validate_partner!
 
   after_save :clean_up_passwords, if: :encrypted_password_changed?
 
@@ -21,6 +22,7 @@ class User < ActiveRecord::Base
   has_many :login_histories
   has_many :session_histories
   has_many :entourages
+  has_many :groups, -> { except_conversations }, class_name: :Entourage
   has_many :join_requests
   has_many :entourage_participations, through: :join_requests, source: :joinable, source_type: "Entourage"
   has_many :tour_participations, through: :join_requests, source: :joinable, source_type: "Tour"
@@ -33,11 +35,8 @@ class User < ActiveRecord::Base
   has_many :relations, through: :user_relationships, source: "target_user"
   has_many :invitations, class_name: "EntourageInvitation", foreign_key: "invitee_id"
   has_many :authentication_providers, dependent: :destroy
-  belongs_to :marketing_referer
   has_many :feeds
-  has_many :user_partners, dependent: :destroy
-  has_many :default_user_partners, -> { where(default: true) }, class_name: :UserPartner
-  has_many :partners, through: :user_partners
+  belongs_to :partner
   has_one :users_appetence
   has_many :entourage_displays
   has_many :entourage_scores
@@ -60,6 +59,20 @@ class User < ActiveRecord::Base
                                                                     email,
                                                                     phone) }
   scope :atd_friends, -> { where(atd_friend: true) }
+  scope :accepts_email_category, -> (category_name) {
+    email_category_id = EmailPreferencesService.category_id(category_name)
+    joins(%{
+      left join email_preferences
+        on email_preferences.user_id = users.id
+       and email_preferences.email_category_id = #{email_category_id}
+       and email_preferences.subscribed = false
+    })
+    .where("email_preferences is null")
+  }
+
+  before_validation do
+    self.partner_id = nil if targeting_profile != 'partner'
+  end
 
   def validate_phone!
     unless PhoneValidator.new(phone: self.phone).valid?
@@ -79,6 +92,16 @@ class User < ActiveRecord::Base
         "pas inclus dans la liste"
       ].join(' ')
     ) if invalid.any?
+  end
+
+  def validate_partner!
+    if targeting_profile == 'partner' && partner_id.blank?
+      errors.add(:partner_id, :blank)
+    end
+
+    if targeting_profile != 'partner' && partner_id != nil
+      errors.add(:partner_id, :present)
+    end
   end
 
   #Force all phone number to be inserted in DB in "+33" format
@@ -140,16 +163,36 @@ class User < ActiveRecord::Base
   end
   alias_method :unblock!, :validate!
 
+  # TODO(partner)
   def default_partner
-    @default_partner ||= default_user_partners.first&.partner
+    nil # @default_partner ||= default_user_partners.first&.partner
   end
 
+  # TODO(partner)
   def default_partner_id
-    user_partners.where(default: true).limit(1).pluck(:partner_id).first
+    nil # user_partners.where(default: true).limit(1).pluck(:partner_id).first
   end
 
   # https://github.com/rails/rails/blob/v4.2.10/activerecord/lib/active_record/attributes.rb
   attribute :community, Community::Type.new
+
+  def joined_groups(status: :accepted, group_type: :except_conversations, exclude_created: false)
+    scope = entourage_participations
+    if group_type == :except_conversations
+      scope = scope.except_conversations
+    else
+      scope = scope.where(group_type: group_type)
+    end
+    if exclude_created
+      scope = scope.where.not(user_id: self.id)
+    end
+    scope = scope.merge(JoinRequest.where(status: status)) unless status == :all
+    scope
+  end
+
+  def conversations(status: :accepted, group_type: :except_conversations)
+    joined_groups(group_type: :conversation)
+  end
 
   protected
 

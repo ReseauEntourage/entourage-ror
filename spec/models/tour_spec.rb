@@ -18,7 +18,7 @@ RSpec.describe Tour, :type => :model do
     FactoryGirl.create(:join_request, user: user, joinable: tour)
     expect(tour.members).to eq([user])
   end
-  
+
   describe '#static_path_map' do
     context 'filled tour' do
       let!(:tour) { create :tour }
@@ -65,7 +65,7 @@ RSpec.describe Tour, :type => :model do
       it { should eq '' }
     end
   end
-  
+
   describe 'static_encounters_map' do
     context 'filled tour' do
       let!(:tour) { create :tour }
@@ -106,7 +106,7 @@ RSpec.describe Tour, :type => :model do
       it { should eq '' }
     end
   end
-  
+
   describe '#force_close' do
     before { Timecop.freeze(Time.parse("10/12/2016")) }
 

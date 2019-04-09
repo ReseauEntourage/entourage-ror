@@ -38,7 +38,7 @@ class OrganizationsController < ApplicationController
 
   def edit
   end
-  
+
   def update
     flash[:notice]= "L'association a bien été mise à jour" if @organization.update(organization_params)
     render :edit
@@ -86,11 +86,11 @@ class OrganizationsController < ApplicationController
                           tourer_count: @tour_count }
                   }
   end
-  
+
   def map_center
     render json: [user_default.latitude ||= 48.858859, user_default.longitude ||= 2.3470599], root: false
   end
-  
+
   def send_message
     send_message_service = TourServices::SendMessageService.new(params: params, current_user: @current_user)
     if send_message_service.should_send_now?
@@ -100,13 +100,13 @@ class OrganizationsController < ApplicationController
       redirect_to dashboard_organizations_path, notice: 'message programmé'
     end
   end
-  
+
   private
 
   def is_number? string
     true if Float(string) rescue false
   end
-  
+
   def organization_params
     params.require(:organization).permit(:name, :description, :phone, :address, :logo_url, :test_organization, tour_report_cc: [], user: [:first_name, :last_name, :phone, :email])
   end
@@ -114,7 +114,7 @@ class OrganizationsController < ApplicationController
   def set_organization
     @organization = @current_user.organization
   end
-  
+
   def push_notification_service
     @push_notification_service ||= PushNotificationService.new
   end

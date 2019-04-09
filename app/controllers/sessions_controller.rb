@@ -14,10 +14,16 @@ class SessionsController < ApplicationController
         return redirect_to edit_public_user_user_path(user)
       end
 
-      redirect_to root_url
+      redirect_to(params[:continue].presence || root_path)
     else
       flash[:error] = "Identifiants incorrects"
-      redirect_to new_session_path
+      redirect_path =
+        if params[:continue].present?
+          new_session_path(continue: params[:continue])
+        else
+          new_session_path
+        end
+      redirect_to redirect_path
     end
   end
 

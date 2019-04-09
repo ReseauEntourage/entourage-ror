@@ -3,7 +3,7 @@ Rails.application.routes.draw do
   #ADMIN
   constraints :subdomain => /\A(admin|admin-preprod)\z/ do
     scope :module => "admin", :as => "admin" do
-      get '/' => redirect('entourages')
+      get '/' => 'base#home'
       get 'logout' => 'sessions#logout'
 
       resources :generate_tours, only: [:index, :create]
@@ -28,8 +28,21 @@ Rails.application.routes.draw do
       resources :registration_requests, only: [:index, :show, :update, :destroy]
       resources :messages, only: [:index, :destroy]
       resources :organizations, only: [:index, :edit, :update]
+      resources :partners, except: [:create, :update] do
+        collection { post '/new', action: :create, as: nil }
+        member do
+          match '/edit', via: [:patch, :put], action: :update, as: nil
+          get '/edit/logo', action: :edit_logo
+          get '/logo_upload_success', action: :logo_upload_success
+        end
+      end
+
+      resources :uploads, only: :new
+      namespace :uploads do
+        get '/success', to: :update
+      end
+
       resources :newsletter_subscriptions, only: [:index]
-      resources :ambassadors, only: [:new, :create]
       resources :entourage_invitations, only: [:index]
       resources :entourages, only: [:index, :show, :edit, :update] do
         member do
@@ -52,8 +65,13 @@ Rails.application.routes.draw do
         end
       end
 
-      resources :marketing_referers, only: [:index, :edit, :update, :new, :create]
       resources :join_requests, only: [:create]
+
+      resources :digest_emails, only: [:index, :show, :edit, :update] do
+        member do
+          post :send_test
+        end
+      end
 
       get 'public_user_autocomplete' => "users_search#public_user_autocomplete"
       get 'user_search' => "users_search#user_search"
@@ -86,10 +104,8 @@ Rails.application.routes.draw do
     resources :messages, only: [:index, :destroy]
     resources :organizations, only: [:index, :edit, :update]
     resources :newsletter_subscriptions, only: [:index]
-    resources :ambassadors, only: [:new, :create]
     resources :entourage_invitations, only: [:index]
     resources :entourages, only: [:index, :show, :edit, :update]
-    resources :marketing_referers, only: [:index, :edit, :update, :new, :create]
     resources :join_requests, only: [:create]
 
     get 'public_user_autocomplete' => "users_search#public_user_autocomplete"

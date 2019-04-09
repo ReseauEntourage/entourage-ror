@@ -1,6 +1,6 @@
 Rpush.configure do |config|
 
-  # Supported clients are :active_record, :redis and :mongoid
+  # Supported clients are :active_record and :redis
   config.client = :active_record
 
   # Options passed to Redis.new
@@ -26,8 +26,8 @@ Rpush.configure do |config|
   # Define a custom logger.
   # config.logger = MyLogger.new
 
-  # config.apns.feedback_receiver.enabled = true
-  # config.apns.feedback_receiver.frequency = 60
+  config.apns.feedback_receiver.enabled = true
+  config.apns.feedback_receiver.frequency = 60
 
 end
 
@@ -36,8 +36,9 @@ Rpush.reflect do |on|
   # Called with a Rpush::Apns::Feedback instance when feedback is received
   # from the APNs that a notification has failed to be delivered.
   # Further notifications should not be sent to the device.
-  # on.apns_feedback do |feedback|
-  # end
+  on.apns_feedback do |feedback|
+    IosNotificationService.new.unregister_token(feedback.device_token)
+  end
 
   # Called when a notification is queued internally for delivery.
   # The internal queue for each app runner can be inspected:
@@ -93,13 +94,14 @@ Rpush.reflect do |on|
 
   # Called when the GCM returns a canonical registration ID.
   # You will need to replace old_id with canonical_id in your records.
-  # on.gcm_canonical_id do |old_id, canonical_id|
-  # end
+  on.gcm_canonical_id do |old_id, canonical_id|
+    AndroidNotificationService.new.update_canonical_id(old_id, canonical_id)
+  end
 
   # Called when the GCM returns a failure that indicates an invalid registration id.
   # You will need to delete the registration_id from your records.
   on.gcm_invalid_registration_id do |app, error, registration_id|
-    Rails.logger.info "type=rpush.gcm_invalid_registration_id app_id=#{app.id} error=#{error.inspect} registration_id=#{registration_id}"
+    AndroidNotificationService.new.unregister_token(registration_id)
   end
 
   # Called when an SSL certificate will expire within 1 month.

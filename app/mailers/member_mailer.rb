@@ -43,8 +43,12 @@ class MemberMailer < MailjetMailer
     mailjet_email to: action.user,
                   template_id: 452754,
                   campaign_name: :action_suivi_j_10,
-                  groups: {
-                    action: action
+                  variables: {
+                    action => [
+                      :entourage_title,
+                      :entourage_url,
+                      :entourage_share_url,
+                    ]
                   }
   end
 
@@ -53,10 +57,12 @@ class MemberMailer < MailjetMailer
     mailjet_email to: action.user,
                   template_id: 451123,
                   campaign_name: :action_suivi_j_20,
-                  groups: {
-                    action: action
-                  },
                   variables: {
+                    action => [
+                      :entourage_title,
+                      :entourage_url,
+                      :entourage_share_url,
+                    ],
                     action_success_url: one_click_update_api_v1_entourage_url(
                       host: API_HOST,
                       protocol: :https,
@@ -75,9 +81,10 @@ class MemberMailer < MailjetMailer
                   template_id: 366621,
                   campaign_name: :action_aboutie,
                   variables: {
-                    action_title: action.title,
-                    action_author_type: action.moderation&.action_author_type,
-                    action_type: action.moderation&.action_type&.split(':')&.first&.strip,
+                    action => [
+                      :entourage_title,
+                      :entourage_share_url,
+                    ],
                     volunteering_form_url: redirect_api_v1_link_url(
                       host: API_HOST,
                       protocol: :https,

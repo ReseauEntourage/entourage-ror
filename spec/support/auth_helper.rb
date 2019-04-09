@@ -4,7 +4,7 @@ module AuthHelper
     session[:admin_user_id] = user.id
     basic_login(user)
   end
-  
+
   def manager_basic_login
     basic_login(create :pro_user, manager: true)
   end

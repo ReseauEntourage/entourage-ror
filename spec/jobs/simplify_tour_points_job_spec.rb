@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe SimplifyTourPointsJob do
-  
+
   describe 'close!' do
     let!(:tour) { FactoryGirl.create(:tour) }
     before do

@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe UserServices::ProUserBuilder do
-  
+
   describe 'create' do
     before { UserServices::SmsCode.any_instance.stub(:code) { "123456" }}
     let(:params) do FactoryGirl.build(:user).attributes.select {|k, v| ["email", "first_name", "last_name", "phone"].include?(k) } end

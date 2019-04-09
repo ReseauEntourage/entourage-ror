@@ -26,8 +26,8 @@ module Api
 
           users = User
             .where(id: join_requests.map(&:user_id).uniq)
-            .includes(default_user_partners: :partner)
-            .select(:id, :first_name, :last_name, :avatar_key, :validation_status, :roles, :community)
+            .includes(:partner)
+            .select(:id, :first_name, :last_name, :avatar_key, :validation_status, :roles, :community, :partner_id)
 
           users = Hash[users.map { |u| [u.id, u] }]
 

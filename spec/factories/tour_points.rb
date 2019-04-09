@@ -6,7 +6,7 @@ FactoryGirl.define do
     longitude 1.5
     tour
     passing_time "2015-07-07 12:31:43"
-    
+
     trait :in_paris do
       latitude 48.83
       longitude 2.29

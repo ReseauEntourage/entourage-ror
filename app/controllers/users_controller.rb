@@ -3,7 +3,7 @@ class UsersController < ApplicationController
   before_filter :authenticate_user!
   before_filter :authenticate_manager!, only: [:index, :edit, :update]
   before_filter :set_user, only: [:edit, :update, :destroy, :send_sms]
-  
+
   def edit
     @user_presenter = UserPresenter.new(user: @current_user)
   end
@@ -47,8 +47,25 @@ class UsersController < ApplicationController
   end
 
   def destroy
-    @user.destroy
-    redirect_to users_url, notice: "L'utilisateur a bien été supprimé"
+    if @user == current_user
+      flash[:notice] = "Vous ne pouvez pas vous retirer vous-même de l'organisation"
+      redirect_to users_url
+      return
+    end
+
+    @user.assign_attributes(
+      user_type: :public,
+      organization: nil,
+      manager: false
+    )
+
+    if @user.save
+      flash[:success] = "L'utilisateur a été retiré de votre organisation"
+      redirect_to users_url
+    else
+      flash[:error] = "Erreur : #{@user.errors.full_messages.to_sentence}"
+      redirect_to users_url
+    end
   end
 
   def send_sms
@@ -57,14 +74,14 @@ class UsersController < ApplicationController
   end
 
   private
-  
+
   def set_user
     @user = User.find(params[:id])
     if @user.organization != current_user.organization
       head :forbidden
     end
   end
-  
+
   def user_params
     params.require(:user).permit(:first_name, :last_name, :phone, :email, :manager, :simplified_tour)
   end

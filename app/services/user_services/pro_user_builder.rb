@@ -57,6 +57,7 @@ module UserServices
       [:first_name, :last_name, :email].each do |attribute|
         user[attribute] ||= params[attribute]
       end
+      user.manager = params.key?(:manager) ? params[:manager] : false
       user.user_type = 'pro'
       # TODO: what if already member/manager of another org?
       user.organization = organization

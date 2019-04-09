@@ -32,6 +32,7 @@ module Admin
       @last_message = Hash[@last_message.map { |m| [m.messageable_id, m] }]
 
       @recipient_ids = JoinRequest.accepted.where(joinable_type: :Entourage, joinable_id: @conversations.map(&:id)).where.not(user_id: @user.id).pluck(:joinable_id, :user_id).group_by(&:first).each { |_, a| a.replace a.map(&:last) }
+      @recipient_ids.default = [@user.id] # if no recipient, it must be a conversation with self
 
       @users = Hash[(User.where(id: @recipient_ids.values.map{ |a| a.first(3) }.flatten + @last_message.values.map(&:user_id)).uniq).select(:id, :first_name, :last_name).map { |u| [u.id, u] }]
     end
@@ -48,12 +49,18 @@ module Admin
 
       @recipients =
         if @conversation.new_record?
-          User.where(id: @conversation.join_requests.map(&:user_id) - [moderator.id])
+          User.where(id: @conversation.join_requests.map(&:user_id) - [user.id])
         else
           @conversation.members.where.not(id: moderator.id).merge(JoinRequest.accepted)
         end
 
       @recipients = @recipients.select(:id, :first_name, :last_name).to_a
+
+      # if no recipient, it must be a conversation with self
+      if @recipients.empty?
+        @recipients = [user]
+      end
+
       @chat_messages = @conversation.chat_messages.order(:created_at).includes(:user)
 
       reads = join_requests
@@ -98,7 +105,7 @@ module Admin
         end
 
         on.failure do |message|
-          redirect_to admin_conversation_path(conversation), alert: "Erreur lors de l'envoi du message : #{message.errors.full_messages.to_sentence}"
+          redirect_to admin_conversation_path(params[:id]), alert: "Erreur lors de l'envoi du message : #{message.errors.full_messages.to_sentence}"
         end
       end
     end

@@ -19,7 +19,6 @@ module Api
                                              time_range: time_range,
                                              show_my_entourages_only: params[:show_my_entourages_only],
                                              show_my_tours_only: params[:show_my_tours_only],
-                                             show_my_partner_only: params[:show_my_partner_only],
                                              show_past_events: params[:show_past_events],
                                              distance: params[:distance],
                                              announcements: params[:announcements]).feeds

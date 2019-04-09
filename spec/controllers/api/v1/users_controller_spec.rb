@@ -14,13 +14,14 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
     context 'when the user exists' do
       let!(:user) { create :pro_user, sms_code: "123456", avatar_key: "avatar" }
       let(:partner) { create :partner }
-      before { UserPartner.create!(user: user, partner: partner, default: true) }
+      # TODO(partner)
 
       context 'when the phone number and sms code are valid' do
         before { post 'login', user: {phone: user.phone, sms_code: "123456"}, format: 'json' }
         it { expect(response.status).to eq(200) }
 
         it "renders user" do
+          # TODO(partner)
           expect(result).to eq({"user"=>
                                  {"id"=>user.id,
                                   "email"=>user.email,
@@ -44,18 +45,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                                       "encounter_count"=>0,
                                       "entourage_count"=>0,
                                   },
-                                  "partner"=>{
-                                      "id"=>partner.id,
-                                      "name"=>"MyString",
-                                      "large_logo_url"=>"MyString",
-                                      "small_logo_url"=>"MyString",
-                                      "description"=>"MyDescription",
-                                      "phone"=>nil,
-                                      "address"=>nil,
-                                      "website_url"=>nil,
-                                      "email"=>nil,
-                                      "default"=>true
-                                  },
+                                  "partner"=>nil,
                                   "memberships"=>[],
                                   "conversation"=>{"uuid"=>"1_list_#{user.id}"}
                                  }})
@@ -488,7 +478,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
   describe 'GET show' do
     let!(:user) { create :pro_user}
     let(:partner) { create :partner }
-    before { UserPartner.create!(user: user, partner: partner, default: true) }
+    # TODO(partner)
 
     context "not signed in" do
       before { get :show, id: user.id }
@@ -499,6 +489,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
       context "get your own profile" do
         before { get :show, id: user.id, token: user.token }
         it { expect(response.status).to eq(200) }
+        # TODO(partner)
         it { expect(JSON.parse(response.body)).to eq({"user"=>
                                                           {"id"=>user.id,
                                                            "email"=>user.email,
@@ -522,18 +513,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                                                                "encounter_count"=>0,
                                                                "entourage_count"=>0,
                                                            },
-                                                           "partner"=>{
-                                                               "id"=>partner.id,
-                                                               "name"=>"MyString",
-                                                               "large_logo_url"=>"MyString",
-                                                               "small_logo_url"=>"MyString",
-                                                               "description"=>"MyDescription",
-                                                               "phone"=>nil,
-                                                               "address"=>nil,
-                                                               "website_url"=>nil,
-                                                               "email"=>nil,
-                                                               "default"=>true
-                                                           },
+                                                           "partner"=>nil,
                                                            "memberships"=>[],
                                                            "conversation"=>{"uuid"=>"1_list_#{user.id}"}
                                                          }}) }
@@ -554,6 +534,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
       context "get my profile with 'me' shortcut" do
         before { get :show, id: "me", token: user.token }
         it { expect(response.status).to eq(200) }
+        # TODO(partner)
         it { expect(JSON.parse(response.body)).to eq({"user"=>
                                                           {"id"=>user.id,
                                                            "email"=>user.email,
@@ -573,18 +554,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                                                                "encounter_count"=>0,
                                                                "entourage_count"=>0,
                                                            },
-                                                           "partner"=>{
-                                                               "id"=>partner.id,
-                                                               "name"=>"MyString",
-                                                               "large_logo_url"=>"MyString",
-                                                               "small_logo_url"=>"MyString",
-                                                               "description"=>"MyDescription",
-                                                               "phone"=>nil,
-                                                               "address"=>nil,
-                                                               "website_url"=>nil,
-                                                               "email"=>nil,
-                                                               "default"=>true
-                                                           },
+                                                           "partner"=>nil,
                                                            "memberships"=>[],
                                                            "conversation"=>{"uuid"=>"1_list_#{user.id}"}
                                                          }}) }

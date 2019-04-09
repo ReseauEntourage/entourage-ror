@@ -11,6 +11,6 @@ module UsersHelper
   end
 
   def user_avatar_image user, *args
-    image_tag UserServices::Avatar.new(user: @entourage.user).thumbnail_url, *args
+    image_tag UserServices::Avatar.new(user: user).thumbnail_url, *args
   end
 end

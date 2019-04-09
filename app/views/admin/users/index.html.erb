@@ -43,7 +43,7 @@
         </td>
         <td><%= user.created_at.to_formatted_s(:long) %></td>
         <td><%= user.last_sign_in_at.try(:to_formatted_s, :long) %></td>
-        <td><%= user.entourages.count %></td>
+        <td><%= user.groups.count %></td>
         <td>
           <% if user.pro? %>
             <%= user.tours.count %>

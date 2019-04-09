@@ -18,6 +18,7 @@ module UserServices
 
       sms_code = sms_code || UserServices::SmsCode.new.code
       user = new_user(sms_code)
+      UserService.sync_roles(user)
       if user.save
         UserServices::SMSSender.new(user: user).send_welcome_sms(sms_code) if send_sms
         callback.on_success.try(:call, user)

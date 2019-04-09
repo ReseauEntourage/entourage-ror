@@ -29,4 +29,3 @@ if [ -x "bin/docker/$1" ]; then
 else
   bin/docker/exec "$@"
 fi
-

@@ -12,6 +12,7 @@
       <div class="field form-group">
         <%= password_field_tag :sms_code, nil, placeholder: "code reçu par SMS", class: 'form-control' %>
       </div>
+      <%= hidden_field_tag :continue, params[:continue] %>
       <div class="actions form-group">
         <%= submit_tag "Connexion", class: "btn btn-lg btn-entourage" %>
       </div>

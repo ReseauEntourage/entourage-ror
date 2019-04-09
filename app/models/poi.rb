@@ -3,7 +3,7 @@ class Poi < ActiveRecord::Base
   validates_presence_of :name, :category
   validates :latitude, :longitude, numericality: true
   belongs_to :category
-  
+
   geocoded_by :adress
 
   scope :validated, -> { where(validated: true) }

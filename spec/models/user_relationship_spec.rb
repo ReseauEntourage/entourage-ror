@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe UserRelationship do
-  
+
   describe 'validations' do
     it { should belong_to :source_user }
     it { should belong_to :target_user }

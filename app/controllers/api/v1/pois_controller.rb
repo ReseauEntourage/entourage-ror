@@ -1,6 +1,8 @@
 module Api
   module V1
     class PoisController < Api::V1::BaseController
+      skip_before_filter :authenticate_user!, only: :index
+
       attr_writer :member_mailer
 
       #curl -H "Content-Type: application/json" "https://entourage-back-preprod.herokuapp.com/api/v1/pois.json?token=153ad0b7ef67e5c44b8ef5afc12709e4&category_ids=1,2"

@@ -11,7 +11,7 @@ FactoryGirl.define do
     status "ongoing"
     number_of_people 1
     association :user, factory: :pro_user
-    
+
     trait :filled do
       transient do
         point_count 10

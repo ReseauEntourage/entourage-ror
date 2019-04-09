@@ -8,7 +8,7 @@ RSpec.describe UsersController, :type => :controller do
   describe 'GET index' do
     context 'not logged in as admin' do
       before { get :index }
-      it { should redirect_to new_session_path }
+      it { should redirect_to new_session_path(continue: request.fullpath) }
     end
 
     context "logged in as admin" do
@@ -23,7 +23,7 @@ RSpec.describe UsersController, :type => :controller do
   describe 'GET edit' do
     context 'not logged in as admin' do
       before { get :edit, id: 0 }
-      it { should redirect_to new_session_path }
+      it { should redirect_to new_session_path(continue: request.fullpath) }
     end
 
     context 'logged in as admin' do
@@ -148,11 +148,13 @@ RSpec.describe UsersController, :type => :controller do
         expect(response.status).to eq(302)
       end
 
-      it "destroys user" do
-        user = admin_basic_login
+      it "removes the user from the organization and disable it's pro features" do
+        admin = admin_basic_login
+        user = create :pro_user, organization: admin.organization
         delete 'destroy', id: user.id
         deleted_user = User.find_by(id: user.id)
-        expect(deleted_user).to eq(nil)
+        expect(deleted_user.organization_id).to eq(nil)
+        expect(deleted_user.user_type).to eq('public')
       end
     end
 

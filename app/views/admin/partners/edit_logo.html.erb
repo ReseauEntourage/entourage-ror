@@ -1,0 +1,81 @@
+<style>
+  .aspect-ratio-container-1-1 {
+    padding-top: 100%;
+  }
+  .rounded {
+    border-radius: 50%;
+  }
+  .border-grey {
+    border: 1px solid #ccc;
+  }
+  .logo-as-background {
+    background: url(<%= @partner.large_logo_url %>) center/contain no-repeat, #fff;
+  }
+</style>
+
+<div class="container">
+  <div class="row">
+    <div class="col-xs-offset-2 col-xs-8">
+      <ol class="breadcrumb">
+        <li><%= link_to "Associations", admin_partners_path %></li>
+        <li><%= link_to @partner.name, admin_partner_path %></li>
+        <li class="active">Logo</li>
+      </ol>
+
+      <h1>Modifier le logo</h1>
+
+      <div class="row">
+        <div class="col-md-3">
+          <div class="aspect-ratio-container-1-1 logo-as-background rounded border-grey"></div>
+        </div>
+        <div class="col-md-9">
+          <form class="form-inline" id="upload-form"
+                action="#" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+              <input type="file" class="btn btn-default"
+                     name="file" accept="<%= @form.content_types %>"/>
+            </div>
+            <input type="submit" value="Enregistrer" class="btn btn-success" disabled/>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function() {
+    var $form = $('#upload-form'),
+        $fileInput = $form.find('input[type=file]'),
+        $submit = $form.find('[type=submit]');
+
+    $fileInput.on('change', function() {
+      var file = this.files[0],
+          $field = null;
+
+      $submit.prop('disabled', true);
+
+      $.ajax(
+        '<%= new_admin_upload_path %>', {
+        data: {
+          uploader: 'partner_logo',
+          partner_id: '<%= @partner.id %>',
+          redirect_url: '<%= logo_upload_success_admin_partner_url %>',
+          filetype: file.type
+        }
+      })
+      .done(function(data) {
+        $form.attr('action', data.url);
+        Object.keys(data.fields).forEach(function(key) {
+          $field = $form.find('input[name=' + key + ']');
+          if ($field.length === 0) {
+            $field = $('<input>', {name: key, type: 'hidden'})
+                     .insertBefore($fileInput); // 'file' must be the last field
+          }
+          $field.val(data.fields[key]);
+        });
+        $submit.prop('disabled', false);
+      });
+    });
+  })();
+</script>

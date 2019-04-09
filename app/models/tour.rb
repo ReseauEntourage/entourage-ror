@@ -38,7 +38,7 @@ class Tour < ActiveRecord::Base
     map.markers << MapMarker.new(label: 'A', color:'red', location: MapLocation.new(latitude: last_point.latitude.round(precision), longitude: last_point.longitude.round(precision)))
     return map
   end
-  
+
   def static_encounters_map(encounter_limit: 40, precision: 4)
     return EmptyMap.new unless self.encounters.count > 0
 

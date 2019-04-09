@@ -29,7 +29,11 @@
             $target.is('button[type=submit]')) {
           return
         }
-        location.href = $(this).find('.js-overlay').attr('href');
+
+        var $overlay = $(this).find('.js-overlay')
+        if ($overlay.length === 1) {
+          location.href = $overlay.attr('href');
+        }
       })
     </script>
     <style>
