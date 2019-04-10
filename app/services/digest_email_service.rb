@@ -29,7 +29,7 @@ module DigestEmailService
 
   def self.deliver_scheduled!
     DigestEmail.to_deliver.sorted.each do |email|
-      deliver(email)
+      AsyncService.new(self).deliver(email)
     end
   end
 
@@ -76,6 +76,10 @@ module DigestEmailService
       raise "email deliver_at must be past (got '#{email.deliver_at}')"
     end
 
+    email.update_column(:status, :delivering)
+    email.data['delivery_started_at'] = now.iso8601
+    email.save
+
     city_group_ids = {}
 
     config.cities.values.each do |department_code|
@@ -88,14 +92,9 @@ module DigestEmailService
 
       next if city_group_ids[department_code].empty?
 
-      targeted = 0
-      sent     = 0
-
       users_for_city(department_code).includes(:address).find_each do |user|
         begin
           Raven.user_context(id: user&.id)
-
-          targeted += 1
 
           user_delivery = delivery(
             user,
@@ -108,21 +107,15 @@ module DigestEmailService
 
           user_delivery.deliver_now
 
-          sent += 1
         rescue => e
           Raven.capture_exception(e)
         end
       end
-
-      if sent > 0
-        email.update_column(:status, :delivered)
-        email.data['targeted_users_count'] = targeted
-        email.data['emails_sent_count']    = sent
-        email.data['delivery_started_at'] = now.iso8601
-        email.data['delivery_ended_at']   = Time.zone.now.iso8601
-        email.save
-      end
     end
+
+    email.update_column(:status, :delivered)
+    email.data['delivery_ended_at'] = Time.zone.now.iso8601
+    email.save
   end
 
   def self.users_for_city department_code

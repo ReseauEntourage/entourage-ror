@@ -1,5 +1,5 @@
 class DigestEmail < ActiveRecord::Base
-  validates :status, inclusion: { in: ['scheduled', 'delivered'] }
+  validates :status, inclusion: { in: ['scheduled', 'delivering', 'delivered'] }
 
   include CustomTimestampAttributesForUpdate
   before_save :track_status_change
