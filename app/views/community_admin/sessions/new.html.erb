@@ -48,6 +48,17 @@
   <% case params[:error] %>
   <% when 'login_failure' %>
     <div class="text-danger mb-3">Numéro de téléphone ou mot de passe incorrect.</div>
+  <% when 'not_coordinator' %>
+    <div class="alert alert-info text-left mb-3">
+      <p class="alert-heading font-weight-bold">
+        Vous ne faites pas partie des utilisateurs habilités à se connecter à ce site.
+      </p>
+      <p class="small">
+        Contactez un Voisineur-Animateur de votre quartier ou l'adresse<br>
+        <a href="mailto:voisin-age@petitsfreresdespauvres.fr">voisin-age@petitsfreresdespauvres.fr</a><br>
+        si vous souhaitez vous aussi devenir Voisineur-Animateur.
+      </p>
+    </div>
   <% end %>
   <input name="phone" value="<%= params[:phone] %>" type="tel" class="form-control" placeholder="Numéro de téléphone" required autofocus>
   <input name="password" type="password" class="form-control" placeholder="Saisissez votre mot de passe" required>

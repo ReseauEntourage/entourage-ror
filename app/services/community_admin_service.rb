@@ -4,6 +4,10 @@ module CommunityAdminService
         .where("roles ?| array['coordinator', 'admin']")
   end
 
+  def self.coordinator?(user)
+    (user.roles & [:coordinator, :admin]).any?
+  end
+
   def self.after_sign_in_url(user:, continue: nil)
     if continue.present?
       continue

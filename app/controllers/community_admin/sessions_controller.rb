@@ -13,22 +13,31 @@ module CommunityAdmin
         community: community,
         phone: params[:phone],
         secret: params[:password],
-        platform: :web
+        platform: :mobile # to allow for sms_code or full web password.
       )
 
-      sign_in(user) if !user.nil?
-
-      if current_user.nil?
+      if user.nil?
         redirect_to new_community_admin_session_path(
           phone: params[:phone],
           error: :login_failure
         )
-      else
-        redirect_to CommunityAdminService.after_sign_in_url(
-          user: user,
-          continue: params[:continue]
-        )
+        return
       end
+
+      unless CommunityAdminService.coordinator?(user)
+        redirect_to new_community_admin_session_path(
+          phone: params[:phone],
+          error: :not_coordinator
+        )
+        return
+      end
+
+      sign_in(user)
+
+      redirect_to CommunityAdminService.after_sign_in_url(
+        user: user,
+        continue: params[:continue]
+      )
     end
 
     def destroy
