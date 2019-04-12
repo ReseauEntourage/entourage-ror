@@ -54,7 +54,7 @@
     <% if @category == :all %>
        envoyés par Entourage
     <% else %>
-      du type <strong><%= t "email_preferences.category.#{@category}" %></strong>
+      du type <strong><%= EmailCategory.find_by(name: @category).description %></strong>
     <% end %>
     <br/>
     sur votre adresse <strong><%= @user.email %></strong>
