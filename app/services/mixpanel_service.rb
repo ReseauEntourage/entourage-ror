@@ -66,15 +66,19 @@ class MixpanelService
 
   def self.sync_addresses addresses
     updates = addresses.lazy.map do |address|
-      next if address.user.nil?
-      {
-        '$distinct_id' => address.user.id,
-        '$set' => {
-          "Zone d'action (pays)"        => address.country_name,
-          "Zone d'action (code postal)" => address.postal_code,
-          "Zone d'action (département)" => address.postal_code.first(2),
+      begin
+        next if address.user.nil?
+        {
+          '$distinct_id' => address.user.id,
+          '$set' => {
+            "Zone d'action (pays)"        => address.country_name,
+            "Zone d'action (code postal)" => address.postal_code,
+            "Zone d'action (département)" => address.postal_code.first(2),
+          }
         }
-      }
+      rescue => e
+        Raven.capture_exception(e)
+      end
     end
     updates = updates.reject(&:nil?)
     MixpanelTools.batch_update(updates).to_a
