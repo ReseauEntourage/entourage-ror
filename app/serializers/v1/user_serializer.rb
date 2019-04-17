@@ -14,7 +14,8 @@ module V1
                :memberships,
                :has_password,
                :conversation,
-               :anonymous
+               :anonymous,
+               :uuid
 
     has_one :organization
     has_one :stats, serializer: ActiveModel::DefaultSerializer
@@ -88,6 +89,10 @@ module V1
 
     def anonymous
       object.anonymous?
+    end
+
+    def uuid
+      UserService.external_uuid(object)
     end
 
     def scope

@@ -3,6 +3,7 @@ module Api
     class AnnouncementsController < Api::V1::BaseController
       skip_before_filter :authenticate_user!, only: [:icon, :avatar, :image]
       skip_before_filter :ensure_community!,  only: [:icon, :avatar, :image]
+      allow_anonymous_access only: [:redirect]
 
       def icon
         icon = {
@@ -101,21 +102,30 @@ module Api
 
         case id
         when 2
-          url = "#{ENV['WEBSITE_URL']}/don" +
-                  "?firstname=#{current_user.first_name}" +
-                  "&lastname=#{current_user.last_name}" +
-                  "&email=#{current_user.email}" +
-                  "&external_id=#{current_user.id}" +
-                  "&utm_medium=APP" +
-                  "&utm_campaign=DEC2017"
+          url = "#{ENV['WEBSITE_URL']}/don"
 
-          if current_user.id % 2 == 0
-            url += "&utm_source=APP-S1"
-          else
-            url += "&utm_source=APP-S2"
+          if current_user
+            url +=
+              "?firstname=#{current_user.first_name}" +
+              "&lastname=#{current_user.last_name}" +
+              "&email=#{current_user.email}" +
+              "&external_id=#{current_user.id}" +
+              "&utm_medium=APP" +
+              "&utm_campaign=DEC2017"
+
+            if current_user.id % 2 == 0
+              url += "&utm_source=APP-S1"
+            else
+              url += "&utm_source=APP-S2"
+            end
           end
         when 3
-          user_id = UserServices::EncodedId.encode(current_user.id)
+          user_id =
+            if current_user
+              UserServices::EncodedId.encode(current_user.id)
+            else
+              "anonymous"
+            end
           url = "https://entourage-asso.typeform.com/to/WIg5A9?user_id=#{user_id}"
         when 4
           url = "http://www.simplecommebonjour.org/?p=153"
@@ -194,7 +204,9 @@ module Api
           Raven.capture_exception(e)
         end
 
-        mixpanel.track("Opened Announcement", { "Announcement" => id })
+        unless current_user_or_anonymous.anonymous?
+          mixpanel.track("Opened Announcement", { "Announcement" => id })
+        end
 
         redirect_to url
       end

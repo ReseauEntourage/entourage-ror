@@ -1,33 +1,48 @@
 module AnonymousUserService
   def self.create_user community
-    uuid = SecureRandom.uuid
-    signature = SignatureService.sign(uuid, salt: salt(community))
-    version = 1
-    token = [:anonymous, version, uuid, signature].join('.')
     AnonymousUser.new(
-      token: token,
+      uuid: SecureRandom.uuid,
       community: community
     )
+  end
+
+  def self.token_from_uuid uuid, community:
+    version = 1
+    signature = SignatureService.sign(uuid, salt: salt(community))
+    [version, :anonymous, uuid, signature].join('_')
+  end
+
+  def self.uuid_from_token token, community:
+    return false unless token.respond_to? :to_str
+    token = token.to_str
+
+    return false unless token.starts_with?('1_anonymous_')
+
+    _version, _prefix, uuid, signature = token.split('_', 4)
+
+    return false if uuid.length != 36 || signature.length != 40
+
+    return false unless SignatureService.validate(uuid, signature, salt: salt(community))
+
+    uuid
   end
 
   def self.find_user_by_token token, community:
-    return nil unless token?(token, community: community)
+    uuid = uuid_from_token(token, community: community)
+
+    return nil if uuid == false
     AnonymousUser.new(
-      token: token,
+      uuid: uuid,
       community: community
     )
   end
 
+  def self.potential_token? token
+    token.to_s.starts_with?('1_anonymous_')
+  end
+
   def self.token? string, community:
-    return false unless string.respond_to? :to_str
-    string = string.to_str
-    return false unless string.starts_with?("anonymous.")
-    _, version, uuid, signature = string.split('.', 4)
-    return false if [version, uuid, signature].any?(&:nil?)
-    version = Integer(version) rescue nil
-    return false if version != 1
-    return false if uuid.length != 36 || signature.length != 40
-    SignatureService.validate(uuid, signature, salt: salt(community))
+    uuid_from_token(string, community: community) != false
   end
 
   def self.salt community

@@ -2,6 +2,7 @@ class AnonymousUser
   include ActiveModel::Serialization
 
   ATTRIBUTES = [
+    :uuid,
     :token,
     :community,
   ].freeze
@@ -10,8 +11,16 @@ class AnonymousUser
 
   def initialize(attributes={})
     attributes.symbolize_keys!
-    @token = attributes[:token].to_str
+
+    @uuid = attributes[:uuid].to_str
+    raise "uuid must be present" if @uuid.blank?
+
     @community = Community.new(attributes[:community])
+    raise "community must be present" if @community.blank?
+
+    if attributes.key?(:token)
+      @token = attributes[:token].to_str
+    end
   end
 
   def attributes
@@ -24,6 +33,10 @@ class AnonymousUser
 
   def anonymous?
     true
+  end
+
+  def token
+    @token ||= AnonymousUserService.token_from_uuid(uuid, community: community)
   end
 
   def id; nil; end
@@ -41,4 +54,5 @@ class AnonymousUser
   def email; nil; end
   def has_password?; false; end
   def address; nil; end
+  def deleted; false; end
 end

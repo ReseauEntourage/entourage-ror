@@ -29,13 +29,13 @@ module Api
 
       def outings
         outings = FeedServices::OutingsFinder.new(
-          user: current_user,
+          user: current_user_or_anonymous,
           latitude: outing_params[:latitude],
           longitude: outing_params[:longitude],
           starting_after: params[:starting_after],
         ).feeds
 
-        render json: ::V1::FeedSerializer.new(feeds: outings, user: current_user, base_url: request.base_url).to_json, status: 200
+        render json: ::V1::FeedSerializer.new(feeds: outings, user: current_user_or_anonymous, base_url: request.base_url).to_json, status: 200
       end
 
       private

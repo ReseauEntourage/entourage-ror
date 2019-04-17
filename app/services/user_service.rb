@@ -17,4 +17,12 @@ module UserService
     roles.push :ambassador if user.targeting_profile == 'ambassador'
     user.roles = roles.sort_by { |r| user.community.roles.index(r) }
   end
+
+  def self.external_uuid user
+    if user.anonymous?
+      "1_anonymous_#{user.uuid}"
+    else
+      user.id.to_s
+    end
+  end
 end

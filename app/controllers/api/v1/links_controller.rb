@@ -5,40 +5,50 @@ module Api
       skip_before_filter :ensure_community!
 
       def redirect
-        if current_user.nil? && !params[:id].in?(['terms', 'privacy-policy'])
+        if current_user_or_anonymous.nil? && !params[:id].in?(['terms', 'privacy-policy'])
           return render json: {message: 'unauthorized'}, status: :unauthorized
         end
 
-        user_id = UserServices::EncodedId.encode(current_user.id) if current_user
+        user_id =
+          if current_user
+            UserServices::EncodedId.encode(current_user.id)
+          else
+            "anonymous"
+          end
 
         redirections = {
           'pedagogic-content' =>
             'http://www.simplecommebonjour.org',
           'action-examples' =>
-            'http://blog.entourage.social/quelles-actions-faire-avec-entourage',
+            'https://blog.entourage.social/quelles-actions-faire-avec-entourage/#site-content',
           'devenir-ambassadeur' =>
             'https://ambassadeurs.entourage.social',
           'donation' =>
             lambda do |user|
-              url = "#{ENV['WEBSITE_URL']}/don" +
-                      "?firstname=#{current_user.first_name}" +
-                      "&lastname=#{current_user.last_name}" +
-                      "&email=#{current_user.email}" +
-                      "&external_id=#{current_user.id}" +
-                      "&utm_medium=APP" +
-                      "&utm_campaign=DEC2017"
+              url = "#{ENV['WEBSITE_URL']}/don"
 
-              mixpanel.track("Clicked Menu Link", { "Link" => "Donation", "Campaign" => "Donation DEC2017" })
-              if user.id % 2 == 0
-                url + "&utm_source=APP-S1"
-              else
-                url + "&utm_source=APP-S2"
+              if !user.anonymous?
+                url +=
+                  "?firstname=#{user.first_name}" +
+                  "&lastname=#{user.last_name}" +
+                  "&email=#{user.email}" +
+                  "&external_id=#{user.id}" +
+                  "&utm_medium=APP" +
+                  "&utm_campaign=DEC2017"
+
+                  mixpanel.track("Clicked Menu Link", { "Link" => "Donation", "Campaign" => "Donation DEC2017" })
+                if user.id % 2 == 0
+                  url + "&utm_source=APP-S1"
+                else
+                  url + "&utm_source=APP-S2"
+                end
               end
+              url
             end,
           'atd-partnership' =>
             'https://www.atd-quartmonde.fr/entourage/',
           'faq' =>
-              'https://blog.entourage.social/comment-utiliser-l-application-entourage/',
+              'https://blog.entourage.social/comment-utiliser-l-application-entourage/#site-content',
           'ethics-charter' =>
             lambda do |user|
               key = 'ethics-charter'
@@ -69,7 +79,7 @@ module Api
 
         return head :not_found if redirection.nil?
 
-        redirection = redirection.call(current_user) if redirection.respond_to?(:call)
+        redirection = redirection.call(current_user_or_anonymous) if redirection.respond_to?(:call)
 
         redirect_to redirection
       end

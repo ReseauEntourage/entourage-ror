@@ -4,6 +4,7 @@ module Api
       before_action :set_entourage_or_handle_conversation_uuid, only: [:show]
       before_action :set_entourage, only: [:update, :read, :one_click_update]
       skip_before_filter :authenticate_user!, only: [:one_click_update]
+      allow_anonymous_access only: [:show]
 
       def index
         finder = EntourageServices::EntourageFinder.new(user: current_user,
@@ -21,11 +22,11 @@ module Api
       #curl -H "Content-Type: application/json" "http://localhost:3000/api/v1/entourages/951.json?token=e4fdc865bc7a91c34daea849e7d73349&distance=123.45&feed_rank=2"
       def show
         ensure_permission! :can_read_public_content?
-        EntourageServices::EntourageDisplayService.new(entourage: @entourage, user: current_user, params: params).view
+        EntourageServices::EntourageDisplayService.new(entourage: @entourage, user: current_user_or_anonymous, params: params).view
         is_onboarding, mp_params = Onboarding::V1.entourage_metadata(@entourage)
-        mixpanel.track("Displayed Entourage", mp_params)
+        mixpanel.track("Displayed Entourage", mp_params) unless current_user_or_anonymous.anonymous?
         include_last_message = params[:include_last_message] == 'true'
-        render json: @entourage, serializer: ::V1::EntourageSerializer, scope: {user: current_user, include_last_message: include_last_message}
+        render json: @entourage, serializer: ::V1::EntourageSerializer, scope: {user: current_user_or_anonymous, include_last_message: include_last_message}
       end
 
       #curl -H "Content-Type: application/json" -X POST -d '{"entourage": {"title": "entourage1", "entourage_type": "ask_for_help", "description": "lorem ipsum", "location": {"latitude": 37.4224764, "longitude": -122.0842499}}, "token": "azerty"}' "http://localhost:3000/api/v1/entourages.json"
@@ -104,6 +105,13 @@ module Api
 
       def set_entourage_or_handle_conversation_uuid
         set_entourage and return unless ConversationService.list_uuid?(params[:id])
+
+        if current_user_or_anonymous.anonymous?
+          return render json: {
+            message: "Anonymous user can't access this resource.",
+            code: 'ANONYMOUS_USER_AUTHENTICATION_REQUIRED'
+          }, status: :unauthorized
+        end
 
         participant_ids = ConversationService.participant_ids_from_list_uuid(params[:id])
         raise ActiveRecord::RecordNotFound unless participant_ids.include?(current_user.id.to_s)

@@ -6,6 +6,7 @@ module Api
         before_action :set_entourage, except: [:index]
         before_action :restrict_group_types!, except: [:index]
         before_action :set_join_request, only: [:update, :destroy]
+        allow_anonymous_access only: [:index]
 
         #curl -H "Content-Type: application/json" "http://localhost:3000/api/v1/tours/1017/users.json?token=07ee026192ea722e66feb2340a05e3a8"
         def index
@@ -17,7 +18,8 @@ module Api
               .where(status: ["pending", "accepted"])
           end
 
-          if @entourage.id.in?(Onboarding::V1::ENTOURAGES.values)
+          if @entourage.id.in?(Onboarding::V1::ENTOURAGES.values) &&
+             !current_user_or_anonymous.anonymous?
             if current_user.id != @entourage.user_id
               join_requests = join_requests.unscope(where: :status).where(status: :accepted)
             end

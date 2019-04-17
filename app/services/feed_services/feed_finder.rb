@@ -110,7 +110,7 @@ module FeedServices
         feeds = feeds.where(feedable_type: "Entourage") unless (show_tours=="true" && user.pro?)
         feeds = feeds.where(feed_type: feed_type) if feed_type
       end
-      feeds = filter_my_feeds_only(feeds: feeds)
+      feeds = filter_my_feeds_only(feeds: feeds) unless user.anonymous?
       feeds = filter_past_events(feeds: feeds) unless show_past_events
       feeds = feeds.where(user: author) if author
       unless user.community == :pfp
