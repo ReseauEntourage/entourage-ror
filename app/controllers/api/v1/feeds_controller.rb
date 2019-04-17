@@ -2,11 +2,12 @@ module Api
   module V1
     class FeedsController < Api::V1::BaseController
       skip_before_filter :community_warning
+      allow_anonymous_access only: [:index, :outings]
 
       #curl -H "Content-Type: application/json" "https://entourage-back-preprod.herokuapp.com/api/v1/feeds.json?token=azerty"
       def index
         feeds = FeedServices::FeedFinder.new(context: :feed,
-                                             user: current_user,
+                                             user: current_user_or_anonymous,
                                              page: params[:page],
                                              per: params[:per],
                                              before: params[:before],
@@ -23,7 +24,7 @@ module Api
                                              distance: params[:distance],
                                              announcements: params[:announcements]).feeds
 
-        render json: ::V1::LegacyFeedSerializer.new(feeds: feeds, user: current_user, base_url: request.base_url, key_infos: api_request.key_infos).to_json, status: 200
+        render json: ::V1::LegacyFeedSerializer.new(feeds: feeds, user: current_user_or_anonymous, base_url: request.base_url, key_infos: api_request.key_infos).to_json, status: 200
       end
 
       def outings

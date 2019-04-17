@@ -204,6 +204,10 @@ class User < ActiveRecord::Base
     joined_groups(group_type: :conversation)
   end
 
+  def anonymous?
+    false
+  end
+
   protected
 
   def clean_up_passwords

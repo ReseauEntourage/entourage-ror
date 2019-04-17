@@ -343,6 +343,65 @@ include CommunityHelper
       it { expect(feeds).to eq [upcoming_outing.id, neighborhood.id] }
       it { expect(feeds(show_past_events: 'true')).to eq [upcoming_outing.id, past_outing.id, neighborhood.id] }
     end
+
+    context "loginless" do
+      let(:user) { AnonymousUserService.create_user $server_community }
+      let!(:entourage) { create :entourage }
+      let(:announcement) { build :announcement }
+
+      before do
+        allow_any_instance_of(FeedServices::AnnouncementsService)
+          .to receive(:select_announcements)
+          .and_return([announcement])
+      end
+
+      before { get :index, token: user.token, latitude: entourage.latitude, longitude: entourage.longitude, announcements: :v1 }
+      it { expect(response.status).to eq(200) }
+      it { expect(result).to eq({"feeds"=>[
+        {"type"=>"Entourage",
+         "data"=>{
+           "id"=>entourage.id,
+           "uuid"=>entourage.uuid_v2,
+           "status"=>"open",
+           "title"=>"foobar",
+           "group_type"=>"action",
+           "public"=>false,
+           "metadata"=>{},
+           "entourage_type"=>"ask_for_help",
+           "display_category"=>"social",
+           "join_status"=>"not_requested",
+           "number_of_unread_messages"=>nil,
+           "number_of_people"=>1,
+           "created_at"=>entourage.created_at.iso8601(3),
+           "updated_at"=>entourage.updated_at.iso8601(3),
+           "description"=>nil,
+           "share_url"=>"http://entourage.social/entourages/#{entourage.uuid_v2}",
+           "author"=>{
+             "id"=>entourage.user_id,
+             "display_name"=>"John",
+             "avatar_url"=>nil,
+             "partner"=>nil},
+           "location"=>{
+             "latitude"=>1.122,
+             "longitude"=>2.345}},
+         "heatmap_size"=>20},
+        {"type"=>"Announcement",
+         "data"=>{
+           "id"=>1,
+           "uuid"=>"1",
+           "title"=>"Une autre façon de contribuer.",
+           "body"=>"Entourage a besoin de vous pour continuer à accompagner les sans-abri.",
+           "image_url"=>nil,
+           "action"=>"Aider",
+           "url"=>"http://test.host/api/v1/announcements/1/redirect/#{user.token}",
+           "icon_url"=>"http://test.host/api/v1/announcements/1/icon",
+           "author"=>{
+             "id"=>announcement.author.id,
+             "display_name"=>"John",
+             "avatar_url"=>nil,
+             "partner"=>nil}}}
+      ]})}
+    end
   end
 
   describe 'GET outings' do

@@ -13,7 +13,8 @@ module V1
                :partner,
                :memberships,
                :has_password,
-               :conversation
+               :conversation,
+               :anonymous
 
     has_one :organization
     has_one :stats, serializer: ActiveModel::DefaultSerializer
@@ -83,6 +84,10 @@ module V1
       {
         uuid: ConversationService.uuid_for_participants([scope[:user].id, object.id], validated: false)
       }
+    end
+
+    def anonymous
+      object.anonymous?
     end
 
     def scope

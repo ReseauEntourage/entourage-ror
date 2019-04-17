@@ -75,7 +75,7 @@ module FeedServices
         return FeedWithCursor.new([], cursor: nil)
       end
 
-      if context == :feed && page == 1 && latitude && longitude
+      if context == :feed && page == 1 && latitude && longitude && !user.anonymous?
         UserServices::NewsfeedHistory.save(user: user,
                                            latitude: latitude,
                                            longitude: longitude)

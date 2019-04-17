@@ -1,8 +1,8 @@
 module SignatureService
   DEFAULT_SIGNATURE_LENGTH = 40
 
-  def self.validate key, signature, length: DEFAULT_SIGNATURE_LENGTH
-    signature == sign(key, length: length)
+  def self.validate key, signature, length: DEFAULT_SIGNATURE_LENGTH, salt: nil
+    signature == sign(key, length: length, salt: salt)
   end
 
   def self.sign key, length: DEFAULT_SIGNATURE_LENGTH, salt: nil

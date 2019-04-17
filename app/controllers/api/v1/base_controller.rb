@@ -33,6 +33,15 @@ module Api
         @current_user ||= community.users.find_by_token params[:token]
       end
 
+      def current_anonymous_user
+        if @anonymous_token != nil
+          return @current_anonymous_user
+        end
+        @anonymous_token = AnonymousUserService.token?(params[:token], community: community)
+        return unless @anonymous_token
+        @current_anonymous_user = AnonymousUserService.find_user_by_token(params[:token], community: community)
+      end
+
       def authenticate_user!
         if current_user && !current_user.deleted && !current_user.blocked?
           track_session
@@ -58,6 +67,23 @@ module Api
         else
           render json: {message: 'unauthorized'}, status: :unauthorized
         end
+      end
+
+      def authenticate_user_or_anonymous!
+        if current_anonymous_user
+          # ok
+        else
+          authenticate_user!
+        end
+      end
+
+      def current_user_or_anonymous
+        current_anonymous_user || current_user
+      end
+
+      def self.allow_anonymous_access only:
+        skip_before_filter :authenticate_user!, only: only
+        before_filter :authenticate_user_or_anonymous!, only: only
       end
 
       def validate_request!

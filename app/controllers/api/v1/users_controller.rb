@@ -7,6 +7,7 @@ module Api
       skip_before_filter :community_warning
       skip_before_filter :ensure_community!, only: :ethics_charter_signed
       skip_before_filter :protect_from_forgery, only: :ethics_charter_signed
+      allow_anonymous_access only: [:show]
 
       #curl -H "X-API-KEY:adc86c761fa8" -H "Content-Type: application/json" -X POST -d '{"user": {"phone": "+3312345567", "sms_code": "11111"}}' "http://localhost:3000/api/v1/login.json"
       def login

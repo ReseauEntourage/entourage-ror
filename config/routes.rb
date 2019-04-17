@@ -239,6 +239,8 @@ Rails.application.routes.draw do
         end
       end
 
+      resources :anonymous_users, only: [:create]
+
       put 'applications' => 'user_applications#update'
       delete 'applications' => 'user_applications#destroy'
 
