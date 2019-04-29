@@ -40,17 +40,18 @@ class Tour < ActiveRecord::Base
   end
 
   def static_encounters_map(encounter_limit: 40, precision: 4)
-    return EmptyMap.new unless self.encounters.count > 0
+    encounters = self.encounters
+      .where.not(latitude: nil, longitude: nil)
+      .first(encounter_limit)
+
+    return EmptyMap.new unless encounters.count > 0
 
     map = GoogleStaticMap.new(width: 300, height: 300, api_key:ENV["ANDROID_GCM_API_KEY"])
 
-    self.encounters
-      .where.not(latitude: nil, longitude: nil)
-      .first(encounter_limit)
-      .each_with_index do |e,index|
-        label = ApplicationController.helpers.marker_index(index)
-        map.markers << MapMarker.new(label: label, color:'blue', location: MapLocation.new(latitude: e.latitude.round(precision), longitude: e.longitude.round(precision)))
-      end
+    encounters.each_with_index do |e,index|
+      label = ApplicationController.helpers.marker_index(index)
+      map.markers << MapMarker.new(label: label, color:'blue', location: MapLocation.new(latitude: e.latitude.round(precision), longitude: e.longitude.round(precision)))
+    end
 
     return map
   end
