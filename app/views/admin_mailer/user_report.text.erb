@@ -1,4 +1,4 @@
-Utilisateur signalé : <%= @reported_user.first_name %> <%= @reported_user.last_name %> #<%= @reported_user.id %> (https://admin.entourage.social/users/<%= @reported_user.id %>)
-Signalé par : <%= @reporting_user.first_name %> <%= @reporting_user.last_name %> #<%= @reporting_user.id %> (https://admin.entourage.social/users/<%= @reporting_user.id %>)
+Utilisateur signalé :<%= @reported_user.first_name %> <%= @reported_user.last_name %> #<%= @reported_user.id %> (https://admin.entourage.social/users/<%= @reported_user.id %>)
+Signalé par :<% if @reporting_user.anonymous? %> utilisateur anonyme<% else %> <%= @reporting_user.first_name %> <%= @reporting_user.last_name %> #<%= @reporting_user.id %> (https://admin.entourage.social/users/<%= @reporting_user.id %>) <% end %>
 Message :
 <%= @message %>

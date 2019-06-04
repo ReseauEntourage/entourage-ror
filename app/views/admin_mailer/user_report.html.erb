@@ -7,11 +7,15 @@
 <br>
 
 <b>Signalé par :</b>
-<a href="https://admin.entourage.social/users/<%= @reporting_user.id %>">
-  <%= @reporting_user.first_name %>
-  <%= @reporting_user.last_name %>
-  #<%= @reporting_user.id %>
-</a>
+<% if @reporting_user.anonymous? %>
+  utilisateur anonyme
+<% else %>
+  <a href="https://admin.entourage.social/users/<%= @reporting_user.id %>">
+    <%= @reporting_user.first_name %>
+    <%= @reporting_user.last_name %>
+    #<%= @reporting_user.id %>
+  </a>
+<% end %>
 <br>
 
 <b>Message :</b><br>

@@ -18,6 +18,9 @@ module UserServices
         return callback.on_failure.try(:call)
       end
 
+      # ActiveJob can't serialize AnonymousUser, it's not an ActiveRecord model.
+      reporting_user = reporting_user.token if reporting_user.anonymous?
+
       AdminMailer.user_report(
         reported_user:  reported_user,
         reporting_user: reporting_user,

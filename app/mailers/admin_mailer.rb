@@ -14,7 +14,15 @@ class AdminMailer < ActionMailer::Base
 
   def user_report(reported_user:, reporting_user:, message:)
     @reported_user  = reported_user
-    @reporting_user = reporting_user
+
+    if reporting_user.is_a?(User)
+      @reporting_user = reporting_user
+    elsif AnonymousUserService.token?(reporting_user, community: $server_community)
+      @reporting_user = AnonymousUserService.find_user_by_token(reporting_user, community: $server_community)
+    else
+      raise "unexpected value for `reporting_user`"
+    end
+
     @message        = message
     mail to: "contact@entourage.social",
          subject: "Signalement d'un utilisateur - #{reported_user.first_name} #{reported_user.last_name}"
