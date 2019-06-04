@@ -10,8 +10,7 @@ module UserServices
     end
 
     def send_welcome_sms(sms_code, sms_type='welcome')
-      link = Rails.env.test? ? "http://foo.bar" : user.community.store_short_url.sub(%r{^https?://}, '')
-      message = "Bienvenue dans le réseau #{user.community.name}. #{sms_code} est votre code de connexion. Téléchargez l'application ici: #{link} ."
+      message = "#{sms_code} est votre code de connexion #{user.community.name}. Bienvenue dans le réseau solidaire."
       SmsSenderJob.perform_later(user.phone, message, sms_type)
     end
 
