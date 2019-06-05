@@ -16,6 +16,8 @@ module Api
             'http://www.simplecommebonjour.org',
           'action-examples' =>
             'http://blog.entourage.social/quelles-actions-faire-avec-entourage',
+          'devenir-ambassadeur' =>
+            'https://ambassadeurs.entourage.social',
           'donation' =>
             lambda do |user|
               url = "#{ENV['WEBSITE_URL']}/don" +
