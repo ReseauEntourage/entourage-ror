@@ -23,6 +23,12 @@ module V1
 
     def filter(keys)
       keys -= [:token, :email, :has_password, :address] unless me?
+
+      # uuid and anonymous are not confidential but right now we only need
+      # them for current_user in the clients so we don't return it in other
+      # contexts
+      keys -= [:anonymous, :uuid] unless me?
+
       keys -= [:memberships] unless scope[:memberships]
       keys -= [:conversation] unless scope[:conversation] && scope[:user]
       keys

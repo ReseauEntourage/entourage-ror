@@ -22,6 +22,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
         it "renders user" do
           expect(result).to eq({"user"=>
                                  {"id"=>user.id,
+                                  "uuid"=>user.id.to_s,
                                   "email"=>user.email,
                                   "display_name"=>"John D",
                                   "first_name"=> "John",
@@ -55,8 +56,11 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                                     "email"=>nil,
                                     "default"=>true},
                                   "memberships"=>[],
-                                  "conversation"=>{"uuid"=>"1_list_#{user.id}"}
-                                 }})
+                                  "conversation"=>{"uuid"=>"1_list_#{user.id}"},
+                                  "anonymous"=>false
+                                 },
+                                "first_sign_in"=>true
+                               })
         end
       end
 
@@ -68,6 +72,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
           before { Timecop.freeze(time) }
           before { subject }
           it { expect(user.reload.first_sign_in_at).to eq time }
+          it { expect(result['first_sign_in']).to be true }
         end
 
         context "on subsequent logins" do
@@ -75,6 +80,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
           before { user.update_column(:first_sign_in_at, time) }
           before { subject }
           it { expect(user.reload.first_sign_in_at).to eq time }
+          it { expect(result['first_sign_in']).to be false }
         end
       end
 
@@ -209,6 +215,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
 
       before { post 'login', user: {phone: user.phone, sms_code: "123456"}, format: 'json' }
       it { expect(JSON.parse(response.body)).to eq({"user"=>{"id"=>user.id,
+                                                             "uuid"=>user.id.to_s,
                                                              "email"=>user.email,
                                                              "display_name"=>"John D",
                                                              "first_name"=> "John",
@@ -232,8 +239,10 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                                                              },
                                                              "partner"=>nil,
                                                              "memberships"=>[],
-                                                             "conversation"=>{"uuid"=>"1_list_#{user.id}"}
-                                                           }}) }
+                                                             "conversation"=>{"uuid"=>"1_list_#{user.id}"},
+                                                             "anonymous"=>false
+                                                           },
+                                                    "first_sign_in"=>true})}
     end
 
     context "blocked user" do
@@ -498,6 +507,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
         it { expect(response.status).to eq(200) }
         it { expect(JSON.parse(response.body)).to eq({"user"=>
                                                           {"id"=>user.id,
+                                                           "uuid"=>user.id.to_s,
                                                            "email"=>user.email,
                                                            "display_name"=>"John D",
                                                            "first_name"=>"John",
@@ -531,7 +541,8 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                                                               "email"=>nil,
                                                               "default"=>true},
                                                            "memberships"=>[],
-                                                           "conversation"=>{"uuid"=>"1_list_#{user.id}"}
+                                                           "conversation"=>{"uuid"=>"1_list_#{user.id}"},
+                                                           "anonymous"=>false
                                                          }}) }
 
         context "when you have an address" do
@@ -552,6 +563,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
         it { expect(response.status).to eq(200) }
         it { expect(JSON.parse(response.body)).to eq({"user"=>
                                                           {"id"=>user.id,
+                                                           "uuid"=>user.id.to_s,
                                                            "email"=>user.email,
                                                            "display_name"=>"John D",
                                                            "first_name"=>"John",
@@ -581,7 +593,8 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                                                               "email"=>nil,
                                                               "default"=>true},
                                                            "memberships"=>[],
-                                                           "conversation"=>{"uuid"=>"1_list_#{user.id}"}
+                                                           "conversation"=>{"uuid"=>"1_list_#{user.id}"},
+                                                           "anonymous"=>false
                                                          }}) }
       end
 

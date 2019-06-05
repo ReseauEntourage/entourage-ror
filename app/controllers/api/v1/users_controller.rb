@@ -52,9 +52,17 @@ module Api
           return render_error(code: "DELETED", message: "user is deleted", status: 401)
         end
 
-        user.update_column(:first_sign_in_at, Time.zone.now) if user.first_sign_in_at.nil?
+        if user.first_sign_in_at.nil?
+          user.update_column(:first_sign_in_at, Time.zone.now)
+          first_sign_in = true
+        else
+          first_sign_in = false
+        end
 
-        render json: user, status: 200, serializer: ::V1::UserSerializer, scope: full_user_serializer_options(current_user: user, displayed_user: user)
+        render status: 200, json: {
+          user: ::V1::UserSerializer.new(user, scope: full_user_serializer_options(current_user: user, displayed_user: user), root: false),
+          first_sign_in: first_sign_in
+        }
       end
 
       #curl -X PATCH -d '{"user": { "sms_code":"123456"}}' -H "Content-Type: application/json" "http://localhost:3000/api/v1/users/93.json?token=azerty"

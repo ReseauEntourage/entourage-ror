@@ -40,6 +40,7 @@ describe Api::V1::AuthenticationProvidersController do
           before { post :create, user_id: logged_user.id, authentification_provider: {source: "facebook", token: "foobar"} }
           it { expect(parsed_response).to eq({"user" =>
                                                   {"id"=>logged_user.id,
+                                                   "uuid"=>logged_user.id.to_s,
                                                    "email"=>logged_user.email,
                                                    "token"=>logged_user.reload.token,
                                                    "first_name"=>"John",
@@ -57,7 +58,8 @@ describe Api::V1::AuthenticationProvidersController do
                                                    },
                                                    "partner"=>nil,
                                                    "address"=>nil,
-                                                   "has_password"=>false
+                                                   "has_password"=>false,
+                                                   "anonymous"=>false
                                                   }}) }
           it { expect(response.status).to eq(200) }
           it { expect(User.count).to eq(1) }

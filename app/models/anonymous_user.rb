@@ -55,4 +55,5 @@ class AnonymousUser
   def has_password?; false; end
   def address; nil; end
   def deleted; false; end
+  def partner; nil; end
 end
