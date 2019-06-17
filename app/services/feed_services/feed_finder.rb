@@ -172,9 +172,18 @@ module FeedServices
         end
       end
 
-      # if user.community == :entourage && context == :feed && latitude && longitude && page == 1 && area.in?(['Paris République', 'Paris 17 et 9', 'Paris 15', 'Paris 5'])
-      #   feeds = pin(8218, feeds: feeds)
-      # end
+      if user.community == :entourage && context == :feed && latitude && longitude && page == 1
+        case area
+        when 'Paris République', 'Paris 17 et 9', 'Paris 15', 'Paris 5', 'Paris'
+          feeds = pin(10140, feeds: feeds)
+        when 'Lille'
+          feeds = pin(10141, feeds: feeds)
+        when 'Rennes'
+          feeds = pin(10142, feeds: feeds)
+        when 'Lyon Ouest', 'Lyon Est', 'Lyon'
+          feeds = pin(10143, feeds: feeds)
+        end
+      end
 
       feeds = insert_announcements(feeds: feeds) if announcements == :v1
 
@@ -499,6 +508,8 @@ module FeedServices
       { name: 'Paris 17 et 9',        lat: 48.8818, lng:  2.314,  radius:  3.0, coeff: 0.65761 },
       { name: 'Paris 15',             lat: 48.8426, lng:  2.2812, radius:  3.0, coeff: 0.65813 },
       { name: 'Paris 5',              lat: 48.8593, lng:  2.3266, radius:  3.0, coeff: 0.65791 },
+      { name: 'Paris',                lat: 48.8593, lng:  2.3522, radius: 20.0, coeff: 0.65791 },
+      { name: 'Lyon',                 lat: 45.7602, lng:  4.8521, radius: 20.0, coeff: 0.69766 },
     ]
     UNKNOWN_AREA = 'UNKNOWN_AREA'.freeze
     KM_PER_DEG = 110.25
