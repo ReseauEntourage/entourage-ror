@@ -362,13 +362,34 @@ module FeedServices
       #   position: 2
       # )
 
+      # announcements.push Announcement.new(
+      #   id: 31,
+      #   title: "Vous êtes en précarité et vous cherchez un job ? Participez à l'expérimentation Entourage.",
+      #   body: "Nous croyons au pouvoir du réseau : et si les voisins pouvaient relayer les CV des personnes en précarité ? Rejoignez cette action si vous cherchez du travail, ou si vous êtes prêts à entourer ceux qui en cherchent !",
+      #   image_url: true,
+      #   action: "Rejoindre",
+      #   url: "#{ENV['DEEPLINK_SCHEME']}://entourage/eeDYzdwp6di8",
+      #   author: User.find_by(email: "guillaume@entourage.social"),
+      #   webview: true,
+      #   position: 3
+      # )
+
+      conversation_uuid = ConversationService.uuid_for_participants(
+        [
+          User.find_by(email: "guillaume@entourage.social").id,
+          user.id
+        ],
+        validated: false
+      )
+      conversation_url = "#{ENV['DEEPLINK_SCHEME']}://entourage/#{conversation_uuid}"
+
       announcements.push Announcement.new(
-        id: 31,
-        title: "Vous êtes en précarité et vous cherchez un job ? Participez à l'expérimentation Entourage.",
-        body: "Nous croyons au pouvoir du réseau : et si les voisins pouvaient relayer les CV des personnes en précarité ? Rejoignez cette action si vous cherchez du travail, ou si vous êtes prêts à entourer ceux qui en cherchent !",
+        id: 35,
+        title: "Guillaume, toujours à votre écoute.",
+        body: "Hello, je suis le modérateur du réseau : je suis là pour vous accompagner et vous orienter. Contactez-moi si vous avez la moindre question !",
         image_url: true,
-        action: "Rejoindre",
-        url: "#{ENV['DEEPLINK_SCHEME']}://entourage/eeDYzdwp6di8",
+        action: "Contacter Guillaume",
+        url: conversation_url,
         author: User.find_by(email: "guillaume@entourage.social"),
         webview: true,
         position: 3
@@ -407,27 +428,6 @@ module FeedServices
         position: 22
       )
 
-      conversation_uuid = ConversationService.uuid_for_participants(
-        [
-          User.find_by(email: "guillaume@entourage.social").id,
-          user.id
-        ],
-        validated: false
-      )
-      conversation_url = "#{ENV['DEEPLINK_SCHEME']}://entourage/#{conversation_uuid}"
-
-      announcements.push Announcement.new(
-        id: 35,
-        title: "Guillaume, toujours à votre écoute.",
-        body: "Hello, je suis le modérateur du réseau : je suis là pour vous accompagner et vous orienter. Contactez-moi si vous avez la moindre question !",
-        image_url: true,
-        action: "Contacter Guillaume",
-        url: conversation_url,
-        author: User.find_by(email: "guillaume@entourage.social"),
-        webview: true,
-        position: 29
-      )
-
       announcements.push Announcement.new(
         id: 36,
         title: "La philosophie de notre asso en 1'30",
@@ -436,7 +436,7 @@ module FeedServices
         action: "Regarder",
         author: User.find_by(email: "guillaume@entourage.social"),
         webview: true,
-        position: 36
+        position: 29
       )
 
       announcements.push Announcement.new(
@@ -447,7 +447,7 @@ module FeedServices
         action: "Je m'inspire",
         author: User.find_by(email: "guillaume@entourage.social"),
         webview: true,
-        position: 43
+        position: 36
       )
 
       announcements.push Announcement.new(
@@ -458,7 +458,7 @@ module FeedServices
         action: "Mieux comprendre",
         author: User.find_by(email: "guillaume@entourage.social"),
         webview: true,
-        position: 50
+        position: 43
       )
 
       # announcements.push Announcement.new(
