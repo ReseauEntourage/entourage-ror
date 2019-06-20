@@ -55,8 +55,7 @@ module FeedServices
       #   body: "Entourage a besoin de votre soutien pour continuer sa mission.",
       #   action: "Aider",
       #   author: User.find_by(email: "guillaume@entourage.social"),
-      #   webview: false,
-      #   position: 5
+      #   webview: false
       # )
 
       # announcements.push Announcement.new(
@@ -65,8 +64,7 @@ module FeedServices
       #   body: "Définissez votre zone d'action pour être tenu(e) informé(e) des actions dans votre quartier.",
       #   action: "Définir ma zone",
       #   author: User.find_by(email: "guillaume@entourage.social"),
-      #   webview: true,
-      #   position: 5
+      #   webview: true
       # )
 
       # announcements.push Announcement.new(
@@ -75,8 +73,7 @@ module FeedServices
       #   body: "Découvrez des conseils concrets pour aller vers les personnes sans-abri.",
       #   action: "Voir",
       #   author: User.find_by(email: "guillaume@entourage.social"),
-      #   webview: true,
-      #   position: 1
+      #   webview: true
       # )
 
       # 5?
@@ -87,8 +84,7 @@ module FeedServices
       #   body: "L'équipe de modération d'Entourage veille au respect des personnes et de la vie privée.",
       #   action: "En savoir plus",
       #   author: User.find_by(email: "guillaume@entourage.social"),
-      #   webview: true,
-      #   position: 1
+      #   webview: true
       # )
 
       # announcements.push Announcement.new(
@@ -97,8 +93,7 @@ module FeedServices
       #   body: "Découvrez les initiatives solidaires qui ont abouti grâce au réseau",
       #   action: "Inspirez-vous",
       #   author: User.find_by(email: "guillaume@entourage.social"),
-      #   webview: true,
-      #   position: 1
+      #   webview: true
       # )
 
       # announcements.push Announcement.new(
@@ -107,8 +102,7 @@ module FeedServices
       #   body: "Saviez-vous qu'Entourage est co-construit avec des personnes SDF ? ",
       #   action: "En savoir plus",
       #   author: User.find_by(email: "guillaume@entourage.social"),
-      #   webview: true,
-      #   position: 1
+      #   webview: true
       # )
 
       # announcements.push Announcement.new(
@@ -117,8 +111,7 @@ module FeedServices
       #   body: "vendredi 25 mai 2018, invitons TOUS les voisins à partager un moment : parlez-en aux personnes sans-abri de votre quartier",
       #   action: "J'agis",
       #   author: User.find_by(email: "guillaume@entourage.social"),
-      #   webview: true,
-      #   position: 1
+      #   webview: true
       # )
 
       # conversation_uuid = ConversationService.uuid_for_participants(
@@ -138,8 +131,7 @@ module FeedServices
       #   action: "Je contacte",
       #   url: conversation_url,
       #   author: User.find_by(email: "guillaume@entourage.social"),
-      #   webview: false,
-      #   position: 9
+      #   webview: false
       # )
 
       # announcements.push Announcement.new(
@@ -149,8 +141,7 @@ module FeedServices
       #   image_url: true,
       #   action: "J'agis",
       #   author: User.find_by(email: "guillaume@entourage.social"),
-      #   webview: true,
-      #   position: 29
+      #   webview: true
       # )
 
       # announcements.push Announcement.new(
@@ -159,8 +150,7 @@ module FeedServices
       #   body: "Aujourd’hui, on vous partage la belle histoire de Roya-Rose (riveraine) et de Michael (sans-abri) 👌",
       #   action: "Découvrir",
       #   author: User.find_by(email: "guillaume@entourage.social"),
-      #   webview: true,
-      #   position: 1
+      #   webview: true
       # )
 
       # announcements.push Announcement.new(
@@ -170,8 +160,7 @@ module FeedServices
       #   image_url: true,
       #   action: "Je postule",
       #   author: User.find_by(email: "guillaume@entourage.social"),
-      #   webview: true,
-      #   position: 50
+      #   webview: true
       # )
 
       # announcements.push Announcement.new(
@@ -181,8 +170,7 @@ module FeedServices
       #   image_url: true,
       #   action: "Je fais un don",
       #   author: User.find_by(email: "guillaume@entourage.social"),
-      #   webview: false,
-      #   position: 2
+      #   webview: false
       # )
 
       # announcements.push Announcement.new(
@@ -192,8 +180,7 @@ module FeedServices
       #   image_url: false,
       #   action: "Je me lance",
       #   author: User.find_by(email: "guillaume@entourage.social"),
-      #   webview: true,
-      #   position: 6
+      #   webview: true
       # )
 
       # announcements.push Announcement.new(
@@ -203,8 +190,7 @@ module FeedServices
       #   image_url: true,
       #   action: "Découvrir",
       #   author: User.find_by(email: "guillaume@entourage.social"),
-      #   webview: true,
-      #   position: 14
+      #   webview: true
       # )
 
       # announcements.push Announcement.new(
@@ -214,8 +200,7 @@ module FeedServices
       #   image_url: true,
       #   action: "#chaleurhumaine",
       #   author: User.find_by(email: "guillaume@entourage.social"),
-      #   webview: true,
-      #   position: 2
+      #   webview: true
       # )
 
       # announcements.push Announcement.new(
@@ -225,8 +210,7 @@ module FeedServices
       #   image_url: true,
       #   action: "Voir la vidéo",
       #   author: User.find_by(email: "guillaume@entourage.social"),
-      #   webview: true,
-      #   position: 8
+      #   webview: true
       # )
 
       # announcements.push Announcement.new(
@@ -236,8 +220,7 @@ module FeedServices
       #   image_url: true,
       #   action: "En savoir plus",
       #   author: User.find_by(email: "guillaume@entourage.social"),
-      #   webview: true,
-      #   position: 2
+      #   webview: true
       # )
 
       # announcements.push Announcement.new(
@@ -247,8 +230,7 @@ module FeedServices
       #   image_url: true,
       #   action: "Voir la vidéo",
       #   author: User.find_by(email: "guillaume@entourage.social"),
-      #   webview: true,
-      #   position: 8
+      #   webview: true
       # )
 
       # announcements.push Announcement.new(
@@ -258,8 +240,7 @@ module FeedServices
       #   image_url: true,
       #   action: "Je regarde",
       #   author: User.find_by(email: "guillaume@entourage.social"),
-      #   webview: true,
-      #   position: 34
+      #   webview: true
       # )
 
       # announcements.push Announcement.new(
@@ -269,8 +250,7 @@ module FeedServices
       #   image_url: true,
       #   action: "Voir",
       #   author: User.find_by(email: "guillaume@entourage.social"),
-      #   webview: true,
-      #   position: 22
+      #   webview: true
       # )
 
       # announcements.push Announcement.new(
@@ -280,8 +260,7 @@ module FeedServices
       #   image_url: true,
       #   action: "Je rejoins",
       #   author: User.find_by(email: "guillaume@entourage.social"),
-      #   webview: false,
-      #   position: 57
+      #   webview: false
       # )
 
       # announcements.push Announcement.new(
@@ -291,8 +270,7 @@ module FeedServices
       #   image_url: true,
       #   action: "Voir",
       #   author: User.find_by(email: "guillaume@entourage.social"),
-      #   webview: false,
-      #   position: 64
+      #   webview: false
       # )
 
       # announcements.push Announcement.new(
@@ -302,8 +280,7 @@ module FeedServices
       #   image_url: true,
       #   action: "Voir",
       #   author: User.find_by(email: "guillaume@entourage.social"),
-      #   webview: true,
-      #   position: 15
+      #   webview: true
       # )
 
       # announcements.push Announcement.new(
@@ -313,8 +290,7 @@ module FeedServices
       #   image_url: true,
       #   action: "Répondre",
       #   author: User.find_by(email: "guillaume@entourage.social"),
-      #   webview: true,
-      #   position: 73
+      #   webview: true
       # )
 
       # announcements.push Announcement.new(
@@ -324,8 +300,7 @@ module FeedServices
       #   image_url: true,
       #   action: "Lire",
       #   author: User.find_by(email: "guillaume@entourage.social"),
-      #   webview: true,
-      #   position: 43
+      #   webview: true
       # )
 
       # announcements.push Announcement.new(
@@ -335,8 +310,7 @@ module FeedServices
       #   image_url: true,
       #   action: "Voir la vidéo",
       #   author: User.find_by(email: "guillaume@entourage.social"),
-      #   webview: true,
-      #   position: 36
+      #   webview: true
       # )
 
       # announcements.push Announcement.new(
@@ -346,8 +320,7 @@ module FeedServices
       #   image_url: true,
       #   action: "Voir",
       #   author: User.find_by(email: "guillaume@entourage.social"),
-      #   webview: true,
-      #   position: 1
+      #   webview: true
       # )
 
       # announcements.push Announcement.new(
@@ -358,8 +331,7 @@ module FeedServices
       #   action: "En savoir plus",
       #   url: "#{ENV['DEEPLINK_SCHEME']}://entourage/eeDYzdwp6di8",
       #   author: User.find_by(email: "guillaume@entourage.social"),
-      #   webview: true,
-      #   position: 2
+      #   webview: true
       # )
 
       # announcements.push Announcement.new(
@@ -370,9 +342,30 @@ module FeedServices
       #   action: "Rejoindre",
       #   url: "#{ENV['DEEPLINK_SCHEME']}://entourage/eeDYzdwp6di8",
       #   author: User.find_by(email: "guillaume@entourage.social"),
-      #   webview: true,
-      #   position: 3
+      #   webview: true
       # )
+
+      service_civique_id =
+        case area
+        when 'Paris République', 'Paris 17 et 9', 'Paris 15', 'Paris 5', 'Paris'
+          39
+        when 'Lyon Ouest', 'Lyon Est', 'Lyon'
+          40
+        when 'Lille'
+          41
+        else
+          42
+        end
+
+      announcements.push Announcement.new(
+        id: service_civique_id,
+        title: "Entourage recrute ses futurs volontaires en Service Civique",
+        body: "Tu as entre 18 et 25 ans, et l’expérience en association te motive ? Deviens volontaire en service civique chez Entourage !",
+        image_url: true,
+        action: "Découvrir l’offre !",
+        author: User.find_by(email: "guillaume@entourage.social"),
+        webview: false
+      )
 
       conversation_uuid = ConversationService.uuid_for_participants(
         [
@@ -391,8 +384,7 @@ module FeedServices
         action: "Contacter Guillaume",
         url: conversation_url,
         author: User.find_by(email: "guillaume@entourage.social"),
-        webview: true,
-        position: 3
+        webview: true
       )
 
       announcements.push Announcement.new(
@@ -402,8 +394,7 @@ module FeedServices
         image_url: true,
         action: "Voir la vidéo",
         author: User.find_by(email: "guillaume@entourage.social"),
-        webview: true,
-        position: 9
+        webview: true
       )
 
       announcements.push Announcement.new(
@@ -413,8 +404,7 @@ module FeedServices
         image_url: true,
         action: "Lire les succès",
         author: User.find_by(email: "guillaume@entourage.social"),
-        webview: true,
-        position: 15
+        webview: true
       )
 
       announcements.push Announcement.new(
@@ -424,8 +414,7 @@ module FeedServices
         image_url: true,
         action: "Les rencontrer",
         author: User.find_by(email: "guillaume@entourage.social"),
-        webview: true,
-        position: 22
+        webview: true
       )
 
       announcements.push Announcement.new(
@@ -435,8 +424,7 @@ module FeedServices
         image_url: true,
         action: "Regarder",
         author: User.find_by(email: "guillaume@entourage.social"),
-        webview: true,
-        position: 29
+        webview: true
       )
 
       announcements.push Announcement.new(
@@ -446,8 +434,7 @@ module FeedServices
         image_url: true,
         action: "Je m'inspire",
         author: User.find_by(email: "guillaume@entourage.social"),
-        webview: true,
-        position: 36
+        webview: true
       )
 
       announcements.push Announcement.new(
@@ -457,8 +444,7 @@ module FeedServices
         image_url: true,
         action: "Mieux comprendre",
         author: User.find_by(email: "guillaume@entourage.social"),
-        webview: true,
-        position: 43
+        webview: true
       )
 
       # announcements.push Announcement.new(
@@ -468,9 +454,20 @@ module FeedServices
       #   image_url: true,
       #   action: "",
       #   author: User.find_by(email: "guillaume@entourage.social"),
-      #   webview: true,
-      #   position:
+      #   webview: true
       # )
+
+      # 3   9  15  22  29  36  ...
+      #  +6  +6  +7  +7  +7  ...
+      position = 3
+      announcements.each do |a|
+        a.position = position
+        if position < 15
+          position += 6
+        else
+          position += 7
+        end
+      end
 
       announcements
     end

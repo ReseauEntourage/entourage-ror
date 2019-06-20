@@ -528,6 +528,10 @@ module FeedServices
       _area == other
     end
 
+    def to_str
+      _area
+    end
+
     def present?
       _area != UNKNOWN_AREA
     end

@@ -44,6 +44,10 @@ module Api
           36 => :video,
           37 => :trophy,
           38 => :video,
+          39 => :megaphone,
+          40 => :megaphone,
+          41 => :megaphone,
+          42 => :megaphone,
         }[params[:id].to_i]
 
         redirect_to view_context.asset_url("assets/announcements/icons/#{icon}.png")
@@ -90,6 +94,10 @@ module Api
           36 => '36.jpg',
           37 => '37.jpg',
           38 => '38.jpg',
+          39 => 'service-civique.jpg',
+          40 => 'service-civique.jpg',
+          41 => 'service-civique.jpg',
+          42 => 'service-civique.jpg',
         }[params[:id].to_i]
 
         return render nothing: true, status: :not_found if image.nil?
@@ -187,6 +195,14 @@ module Api
           url = "https://blog.entourage.social/2017/04/28/quelles-actions-faire-avec-entourage/#site-content"
         when 38
           url = "https://www.youtube.com/watch?v=Dk3bo__5dvs"
+        when 39
+          url = "https://www.service-civique.gouv.fr/missions/paris-creer-du-lien-social-autour-des-personnes-sans-abri"
+        when 40
+          url = "https://www.service-civique.gouv.fr/missions/lyon-creer-du-lien-social-autour-des-personnes-sans-abri"
+        when 41
+          url = "https://www.service-civique.gouv.fr/missions/lille-creer-du-lien-social-autour-des-personnes-sans-abri"
+        when 42
+          url = "https://www.welcometothejungle.co/fr/companies/entourage/jobs"
         end
 
         begin
