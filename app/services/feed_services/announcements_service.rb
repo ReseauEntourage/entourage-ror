@@ -345,6 +345,16 @@ module FeedServices
       #   webview: true
       # )
 
+      announcements.push Announcement.new(
+        id: 43,
+        title: "Alerte canicule ! Soyons vigilants à tous les voisins 👌",
+        body: "Comment aider les personnes sans-abri en cas de grandes chaleurs ? Voici quelques conseils pour aider au mieux les personnes SDF à supporter la chaleur…",
+        image_url: true,
+        action: "En savoir plus !",
+        author: User.find_by(email: "guillaume@entourage.social"),
+        webview: true
+      )
+
       service_civique_id =
         case area
         when 'Paris République', 'Paris 17 et 9', 'Paris 15', 'Paris 5', 'Paris'

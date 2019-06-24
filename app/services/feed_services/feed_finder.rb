@@ -172,18 +172,18 @@ module FeedServices
         end
       end
 
-      if user.community == :entourage && context == :feed && latitude && longitude && page == 1
-        case area
-        when 'Paris République', 'Paris 17 et 9', 'Paris 15', 'Paris 5', 'Paris'
-          feeds = pin(10140, feeds: feeds)
-        when 'Lille'
-          feeds = pin(10141, feeds: feeds)
-        when 'Rennes'
-          feeds = pin(10142, feeds: feeds)
-        when 'Lyon Ouest', 'Lyon Est', 'Lyon'
-          feeds = pin(10143, feeds: feeds)
-        end
-      end
+      # if user.community == :entourage && context == :feed && latitude && longitude && page == 1
+      #   case area
+      #   when 'Paris République', 'Paris 17 et 9', 'Paris 15', 'Paris 5', 'Paris'
+      #     feeds = pin(10140, feeds: feeds)
+      #   when 'Lille'
+      #     feeds = pin(10141, feeds: feeds)
+      #   when 'Rennes'
+      #     feeds = pin(10142, feeds: feeds)
+      #   when 'Lyon Ouest', 'Lyon Est', 'Lyon'
+      #     feeds = pin(10143, feeds: feeds)
+      #   end
+      # end
 
       feeds = insert_announcements(feeds: feeds) if announcements == :v1
 

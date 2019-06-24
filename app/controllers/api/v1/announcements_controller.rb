@@ -48,6 +48,7 @@ module Api
           40 => :megaphone,
           41 => :megaphone,
           42 => :megaphone,
+          43 => :megaphone,
         }[params[:id].to_i]
 
         redirect_to view_context.asset_url("assets/announcements/icons/#{icon}.png")
@@ -98,6 +99,7 @@ module Api
           40 => 'service-civique.jpg',
           41 => 'service-civique.jpg',
           42 => 'service-civique.jpg',
+          43 => 'conversation-2.jpg',
         }[params[:id].to_i]
 
         return render nothing: true, status: :not_found if image.nil?
@@ -203,6 +205,8 @@ module Api
           url = "https://www.service-civique.gouv.fr/missions/lille-creer-du-lien-social-autour-des-personnes-sans-abri"
         when 42
           url = "https://www.welcometothejungle.co/fr/companies/entourage/jobs"
+        when 43
+          url = "https://blog.entourage.social/2017/06/19/charles-aznavour-avait-tort-la-misere-nest-pas-moins-penible-au-soleil/#site-content"
         end
 
         begin
