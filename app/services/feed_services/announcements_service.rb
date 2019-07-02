@@ -345,14 +345,24 @@ module FeedServices
       #   webview: true
       # )
 
+      # announcements.push Announcement.new(
+      #   id: 43,
+      #   title: "Alerte canicule ! Soyons vigilants à tous les voisins 👌",
+      #   body: "Comment aider les personnes sans-abri en cas de grandes chaleurs ? Voici quelques conseils pour aider au mieux les personnes SDF à supporter la chaleur…",
+      #   image_url: true,
+      #   action: "En savoir plus !",
+      #   author: User.find_by(email: "guillaume@entourage.social"),
+      #   webview: true
+      # )
+
       announcements.push Announcement.new(
-        id: 43,
-        title: "Alerte canicule ! Soyons vigilants à tous les voisins 👌",
-        body: "Comment aider les personnes sans-abri en cas de grandes chaleurs ? Voici quelques conseils pour aider au mieux les personnes SDF à supporter la chaleur…",
+        id: 44,
+        title: "Un partage peut tout changer",
+        body: "Trouvons du travail à ces 15 personnes en précarité, en partageant leur CV sur nos réseaux !",
         image_url: true,
-        action: "En savoir plus !",
+        action: "Partagez un CV",
         author: User.find_by(email: "guillaume@entourage.social"),
-        webview: true
+        webview: false
       )
 
       service_civique_id =
