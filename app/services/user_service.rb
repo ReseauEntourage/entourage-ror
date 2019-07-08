@@ -25,4 +25,36 @@ module UserService
       user.id.to_s
     end
   end
+
+  def self.firebase_properties user
+    # Names should contain 1 to 24 alphanumeric characters or underscores
+    # and must start with an alphabetic character.
+    # The "firebase_", "google_", and "ga_" prefixes are reserved.
+    #
+    # Values can be up to 36 characters long.
+    # Setting the value to nil removes the user property.
+    #
+    # As much as possible, we must always return the same property names
+    # so that we overwrite the previous values when the user changes.
+
+    address = user.address
+
+    postal_code, department =
+      if address.nil? || address.postal_code.nil?
+        [:not_set, :not_set]
+      elsif address.country != 'FR'
+        [:not_FR,  :not_FR]
+      elsif address.postal_code.last == 'X'
+        [:not_set,
+         address.postal_code.first(2)]
+      else
+        [address.postal_code,
+         address.postal_code.first(2)]
+      end
+
+    {
+      ActionZoneDep: department,
+      ActionZoneCP:  postal_code
+    }
+  end
 end

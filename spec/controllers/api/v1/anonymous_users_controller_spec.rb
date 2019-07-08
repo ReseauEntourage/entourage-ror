@@ -36,7 +36,12 @@ describe Api::V1::AnonymousUsersController do
           "encounter_count"=>0,
           "entourage_count"=>0
         },
-        "address"=>nil
+        "address"=>nil,
+        "firebase_properties"=>{
+          "ActionZoneDep"=>"not_set",
+          "ActionZoneCP"=>"not_set"
+        },
+        "placeholders"=>["firebase_properties", "address"]
       }
     )}
   end

@@ -3,9 +3,10 @@ module Api
     class InvitationsController < Api::V1::BaseController
       before_action :set_invitation, only: [:update, :destroy]
       before_action :check_invitation, only: [:update, :destroy]
+      allow_anonymous_access only: [:index]
 
       def index
-        invitations = current_user.invitations
+        invitations = current_user_or_anonymous.invitations
         if params[:status]
           invitations = invitations.status(params[:status])
         end

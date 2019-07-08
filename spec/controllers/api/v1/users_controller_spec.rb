@@ -57,6 +57,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                                     "default"=>true},
                                   "memberships"=>[],
                                   "conversation"=>{"uuid"=>"1_list_#{user.id}"},
+                                  "firebase_properties"=>{"ActionZoneDep"=>"not_set","ActionZoneCP"=>"not_set"},
                                   "anonymous"=>false
                                  },
                                 "first_sign_in"=>true
@@ -240,6 +241,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                                                              "partner"=>nil,
                                                              "memberships"=>[],
                                                              "conversation"=>{"uuid"=>"1_list_#{user.id}"},
+                                                             "firebase_properties"=>{"ActionZoneDep"=>"not_set","ActionZoneCP"=>"not_set"},
                                                              "anonymous"=>false
                                                            },
                                                     "first_sign_in"=>true})}
@@ -542,6 +544,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                                                               "default"=>true},
                                                            "memberships"=>[],
                                                            "conversation"=>{"uuid"=>"1_list_#{user.id}"},
+                                                           "firebase_properties"=>{"ActionZoneDep"=>"not_set","ActionZoneCP"=>"not_set"},
                                                            "anonymous"=>false
                                                          }}) }
 
@@ -594,8 +597,15 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                                                               "default"=>true},
                                                            "memberships"=>[],
                                                            "conversation"=>{"uuid"=>"1_list_#{user.id}"},
+                                                           "firebase_properties"=>{"ActionZoneDep"=>"not_set","ActionZoneCP"=>"not_set"},
                                                            "anonymous"=>false
                                                          }}) }
+      end
+
+      context "get my profile as an anonymous user" do
+        let(:user) { AnonymousUserService.create_user($server_community) }
+        before { get :show, id: "me", token: user.token }
+        it { expect(result['user']['placeholders']).to eq ["firebase_properties", "address"] }
       end
 
       context "get someone else profile" do
@@ -647,6 +657,38 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
         it { expect(JSON.parse(response.body)['user']['roles']).to eq ['coordinator', 'visitor'] }
         it { expect(JSON.parse(response.body)['user']['memberships']).to eq [{"type"=>"private_circle", "list"=>[{"id"=>join_request.joinable_id, "title"=>"Les amis d'Henriette", "number_of_people"=>1}]}, {"type"=>"neighborhood", "list"=>[]}] }
       end
+
+      context "firebase_properties" do
+        context "action zone" do
+          let(:user) { create :public_user, address: address }
+          before { get :show, id: user.id, token: user.token }
+          let(:firebase_properties) { result['user']['firebase_properties'] }
+
+          context "no action zone" do
+            let(:address) { nil }
+            it { expect(firebase_properties).to eq('ActionZoneDep' => 'not_set',
+                                                   'ActionZoneCP'  => 'not_set') }
+          end
+
+          context "outside of FR" do
+            let(:address) { create :address, country: :BE }
+            it { expect(firebase_properties).to eq('ActionZoneDep' => 'not_FR',
+                                                   'ActionZoneCP'  => 'not_FR') }
+          end
+
+          context "only department" do
+            let(:address) { create :address, country: :FR, postal_code: '69XXX' }
+            it { expect(firebase_properties).to eq('ActionZoneDep' => '69',
+                                                   'ActionZoneCP'  => 'not_set') }
+          end
+
+          context "full postal code" do
+            let(:address) { create :address, country: :FR, postal_code: '75012' }
+            it { expect(firebase_properties).to eq('ActionZoneDep' => '75',
+                                                   'ActionZoneCP'  => '75012') }
+          end
+        end
+      end
     end
   end
 
@@ -691,7 +733,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
 
   describe 'POST #address' do
     let(:user) { create :public_user }
-    subject { post 'address', address: address, id: user.id, token: user.token }
+    subject { post 'address', address: address, id: UserService.external_uuid(user), token: user.token }
     context "valid params" do
       let(:address) { { place_name: "75012", latitude: 48.835085, longitude: 2.382165 } }
       before { subject }
@@ -701,6 +743,10 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
           "display_address"=>"75012",
           "latitude"=>48.835085,
           "longitude"=>2.382165,
+        },
+        "firebase_properties"=>{
+          "ActionZoneDep"=>"not_set",
+          "ActionZoneCP"=>"not_set"
         })
       }
       it { expect(user.reload.address.attributes.symbolize_keys).to include address }
@@ -709,19 +755,31 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
     context "invalid params" do
       let(:address) { { place_name: nil, latitude: nil, longitude: nil } }
       before { subject }
-      it { expect(response.status).to eq 400 }
-      it { expect(JSON.parse(response.body)).to eq({
-        "error"=>{
-          "code"=>"CANNOT_UPDATE_ADDRESS",
-          "message"=>[
-            "Place name doit être rempli(e)",
-            "Latitude doit être rempli(e)",
-            "Longitude doit être rempli(e)"
-          ]
-        }
-      }) }
-      it { expect(user.reload.address_id).to be_nil }
-      it { expect(Address.count).to eq 0 }
+
+      shared_examples "common tests" do
+        it { expect(response.status).to eq 400 }
+        it { expect(JSON.parse(response.body)).to eq({
+          "error"=>{
+            "code"=>"CANNOT_UPDATE_ADDRESS",
+            "message"=>[
+              "Place name doit être rempli(e)",
+              "Latitude doit être rempli(e)",
+              "Longitude doit être rempli(e)"
+            ]
+          }
+        }) }
+        it { expect(Address.count).to eq 0 }
+      end
+
+      context "with a standard user" do
+        include_examples "common tests"
+        it { expect(user.reload.address_id).to be_nil }
+      end
+
+      context "with an anonymous user" do
+        let(:user) { AnonymousUserService.create_user($server_community) }
+        include_examples "common tests"
+      end
     end
 
     context "with a google place_id" do
@@ -744,16 +802,38 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
 
       context "when required attributes are missing" do
         let(:address) { { google_place_id: 'some-place-id' } }
-        it do
-          subject
-          expect(Address.last&.attributes).to include(
-            'place_name' => 'My Place',
-            'latitude'  => 1.0,
-            'longitude' => 2.0,
-            'postal_code' => '00001',
-            'country' => 'FR',
-            'google_place_id' => 'new-place-id',
-          )
+
+        context "with a standard user" do
+          it do
+            subject
+            expect(Address.last&.attributes).to include(
+              'place_name' => 'My Place',
+              'latitude'  => 1.0,
+              'longitude' => 2.0,
+              'postal_code' => '00001',
+              'country' => 'FR',
+              'google_place_id' => 'new-place-id',
+            )
+          end
+        end
+
+        context "with an anonymous user" do
+          let(:user) { AnonymousUserService.create_user($server_community) }
+          it do
+            subject
+            expect(result).to eq(
+              "address"=>{
+                "display_address"=>"My Place, 00001",
+                "latitude"=>1.0,
+                "longitude"=>2.0,
+              },
+              "firebase_properties"=>{
+                "ActionZoneDep"=>"00",
+                "ActionZoneCP"=>"00001"
+              }
+            )
+          end
+          it { expect { subject }.not_to change { Address.count } }
         end
       end
 

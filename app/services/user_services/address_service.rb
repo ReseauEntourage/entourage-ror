@@ -68,21 +68,28 @@ module UserServices
     def self.update_address user:, params:
       address = user.address || Address.new
 
-      begin
-        ActiveRecord::Base.transaction do
-          if params[:google_place_id] != address.google_place_id
-            address.postal_code = nil
-            address.country = nil
+      if params[:google_place_id] != address.google_place_id
+        address.postal_code = nil
+        address.country = nil
+      end
+
+      address.assign_attributes(params)
+
+      if user.anonymous?
+        success = address.valid?
+        user.address = address
+      else
+        begin
+          ActiveRecord::Base.transaction do
+            address.save!
+            if address.id != user.address_id
+              user.update_column(:address_id, address.id)
+            end
           end
-          address.assign_attributes(params)
-          address.save!
-          if address.id != user.address_id
-            user.update_column(:address_id, address.id)
-          end
+          success = true
+        rescue ActiveRecord::ActiveRecordError
+          success = false
         end
-        success = true
-      rescue ActiveRecord::ActiveRecordError
-        success = false
       end
 
       [address, success]

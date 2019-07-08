@@ -7,7 +7,7 @@ module Api
       skip_before_filter :community_warning
       skip_before_filter :ensure_community!, only: :ethics_charter_signed
       skip_before_filter :protect_from_forgery, only: :ethics_charter_signed
-      allow_anonymous_access only: [:show, :report]
+      allow_anonymous_access only: [:show, :report, :address]
 
       #curl -H "X-API-KEY:adc86c761fa8" -H "Content-Type: application/json" -X POST -d '{"user": {"phone": "+3312345567", "sms_code": "11111"}}' "http://localhost:3000/api/v1/login.json"
       def login
@@ -191,11 +191,18 @@ module Api
       end
 
       def address
-        updater = UserServices::AddressService.new(user: current_user, params: address_params)
+        if !params[:id].in?(['me', UserService.external_uuid(current_user_or_anonymous)])
+          return render_error(code: "UNAUTHORIZED", message: "You can only update your own address.", status: 401)
+        end
+
+        updater = UserServices::AddressService.new(user: current_user_or_anonymous, params: address_params)
 
         updater.update do |on|
           on.success do |user, address|
-            render json: address, status: 200, serializer: ::V1::AddressSerializer
+            render status: 200, json: {
+              address: ::V1::AddressSerializer.new(address, root: false),
+              firebase_properties: UserService.firebase_properties(user)
+            }
           end
 
           on.failure do |user, address|

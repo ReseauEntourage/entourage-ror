@@ -58,6 +58,10 @@ describe Api::V1::AuthenticationProvidersController do
                                                    },
                                                    "partner"=>nil,
                                                    "address"=>nil,
+                                                   "firebase_properties"=>{
+                                                       "ActionZoneDep"=>"not_set",
+                                                       "ActionZoneCP"=>"not_set"
+                                                   },
                                                    "has_password"=>false,
                                                    "anonymous"=>false
                                                   }}) }

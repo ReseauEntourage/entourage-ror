@@ -15,19 +15,24 @@ module V1
                :has_password,
                :conversation,
                :anonymous,
-               :uuid
+               :uuid,
+               :firebase_properties,
+               :placeholders
 
     has_one :organization
     has_one :stats, serializer: ActiveModel::DefaultSerializer
     has_one :address, serializer: AddressSerializer
 
     def filter(keys)
-      keys -= [:token, :email, :has_password, :address] unless me?
+      keys -= [:token, :email, :has_password, :address, :firebase_properties] unless me?
 
       # uuid and anonymous are not confidential but right now we only need
       # them for current_user in the clients so we don't return it in other
       # contexts
       keys -= [:anonymous, :uuid] unless me?
+
+      # FIXME: see comment above the definition of placeholder
+      keys -= [:placeholders] unless me? && scope[:user].anonymous?
 
       keys -= [:memberships] unless scope[:memberships]
       keys -= [:conversation] unless scope[:conversation] && scope[:user]
@@ -99,6 +104,18 @@ module V1
 
     def uuid
       UserService.external_uuid(object)
+    end
+
+    def firebase_properties
+      UserService.firebase_properties(object)
+    end
+
+    # FIXME: the placeholders attribute is a hack. It indicates to the clients
+    # that if there is a value in local storage for the attributes listed,
+    # the local value should be used instead of the one provided by the server.
+    # This allows to have some persistence of the attributes of anonymous users.
+    def placeholders
+      [:firebase_properties, :address]
     end
 
     def scope
