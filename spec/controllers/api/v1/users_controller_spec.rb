@@ -293,6 +293,13 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
         end
       end
 
+      context 'strips first_name, last_name and email' do
+        before { patch 'update', token:user.token, user: { first_name: 'Claude ', last_name: 'Shannon ', email:'cs@bell.com '} }
+        it { expect(user.reload.first_name).to eq('Claude') }
+        it { expect(user.reload.last_name).to eq('Shannon') }
+        it { expect(user.reload.email).to eq('cs@bell.com') }
+      end
+
       context 'try to update phone number' do
         before { patch 'update', token:user.token, user: { phone:'+33654876754' }, format: :json }
         it { expect(response.status).to eq(400) }

@@ -38,6 +38,11 @@ module UserServices
 
       start_onboarding_sequence = should_start_onboarding_sequence(user: user, params: params)
       user.onboarding_sequence_start_at = Time.zone.now if start_onboarding_sequence
+
+      [:first_name, :last_name, :email].each do |key|
+        params[key] = params[key]&.strip if params.key?(key)
+      end
+
       if user.update_attributes(params)
         MemberMailer.welcome(user).deliver_later if start_onboarding_sequence
         callback.on_success.try(:call, user)
