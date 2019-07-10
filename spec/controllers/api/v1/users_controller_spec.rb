@@ -126,6 +126,12 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
         it { expect(result).to eq({"error"=>{"code"=>"INVALID_PHONE_FORMAT", "message"=>"invalid phone number format"}}) }
       end
 
+      context 'phone format handling' do
+        let!(:user) { create :public_user, phone: "+33600000001", sms_code: "123456" }
+        before { post 'login', user: {phone: "+33 (0) 6 00 00 00 01 ", sms_code: "123456"}, format: 'json' }
+        it { expect(response.status).to eq(200) }
+      end
+
       context 'auth_token' do
         let(:token_expiration) { 24.hours.from_now }
         let(:token_user_id) { user.id }
