@@ -322,6 +322,43 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
         it { expect(response.status).to eq(400) }
         it { expect(result).to eq({"error"=>{"code"=>"CANNOT_UPDATE_USER", "message"=>["À propos est trop long (pas plus de 200 caractères)"]}}) }
       end
+
+      context 'onboarding event tracking' do
+        let(:request_timestamp) { 1.day.from_now.advance(seconds: rand(24.hours)) }
+
+        before do
+          Onboarding::UserEventsTracking.stub(:enable_tracking?) { true }
+          user.save
+        end
+
+        subject do
+          Timecop.freeze(request_timestamp) do
+            patch 'update', user: {first_name: 'Joe'}, token: user.token
+          end
+        end
+
+        def event
+          Event.where(name: 'onboarding.profile.first_name.entered', user_id: user.id).first
+        end
+
+        context "user doesn't have a first_name" do
+          let(:user) { build :public_user, first_name: nil }
+          it do
+            expect { subject }.to change { event.present? }.to(true)
+          end
+          it do
+            subject
+            expect(event.created_at).to be_within(1.second).of(request_timestamp)
+          end
+        end
+
+        context "user already has a first_name" do
+          let(:user) { build :public_user, first_name: 'Bill' }
+          it do
+            expect { subject }.not_to change { event.created_at }
+          end
+        end
+      end
     end
 
     context 'bad authentication' do

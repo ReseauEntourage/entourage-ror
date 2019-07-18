@@ -1,6 +1,8 @@
 require 'experimental/jsonb_set'
 
 class User < ActiveRecord::Base
+  include Onboarding::UserEventsTracking
+
   validates_presence_of [:phone, :sms_code, :token, :validation_status]
   validates_uniqueness_of :phone, scope: :community
   validates_uniqueness_of :token
@@ -68,6 +70,25 @@ class User < ActiveRecord::Base
        and email_preferences.subscribed = false
     })
     .where("email_preferences is null")
+  }
+
+  scope :with_event, -> (event_name, table_alias=nil) {
+    table_alias ||= 'required_events_' + Digest::MD5.hexdigest(event_name).first(4)
+    joins(%(
+      join events #{table_alias}
+        on #{table_alias}.user_id = users.id
+       and #{table_alias}.name = '#{event_name}'
+    ))
+  }
+
+  scope :without_event, -> (event_name, table_alias=nil) {
+    table_alias ||= 'excluded_events_' + Digest::MD5.hexdigest(event_name).first(4)
+    joins(%(
+      left join events #{table_alias}
+        on #{table_alias}.user_id = users.id
+       and #{table_alias}.name = '#{event_name}'
+    ))
+    .where("#{table_alias} is null")
   }
 
   before_validation do

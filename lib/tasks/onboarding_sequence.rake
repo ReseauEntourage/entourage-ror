@@ -48,4 +48,8 @@ namespace :onboarding_sequence do
 
     $redis.set(redis_key, redis_date)
   end
+
+  task send_welcome_messages: :environment do
+    Onboarding::ChatMessagesService.deliver_welcome_message
+  end
 end

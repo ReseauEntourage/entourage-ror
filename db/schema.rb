@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190402132655) do
+ActiveRecord::Schema.define(version: 20190716141116) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -265,6 +265,9 @@ ActiveRecord::Schema.define(version: 20190402132655) do
   end
 
   add_index "entourages_users", ["user_id", "entourage_id"], name: "index_entourages_users_on_user_id_and_entourage_id", unique: true, using: :btree
+
+# Could not dump table "events" because of following StandardError
+#   Unknown type 'event_name' for column 'name'
 
   create_table "experimental_pending_request_reminders", force: :cascade do |t|
     t.integer  "user_id"
