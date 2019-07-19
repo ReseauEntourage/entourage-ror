@@ -7,6 +7,7 @@ class DigestEmail < ActiveRecord::Base
   scope :scheduled, -> { where(status: :scheduled) }
   scope :sorted, -> { order(deliver_at: :asc) }
   scope :past_delivery, -> { where("deliver_at <= now()") }
+  scope :upcoming_delivery, -> { where("deliver_at >= now()") }
   scope :to_deliver, -> { scheduled.past_delivery }
 
   private

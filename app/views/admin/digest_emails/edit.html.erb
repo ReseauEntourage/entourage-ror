@@ -14,6 +14,7 @@
 
       <%= form_for [:admin, @email] do |f| %>
         <% @cities.each do |name, department| %>
+          <% name_with_preposition = DigestEmailService.city_name_with_preposition(department) %>
           <div>
             <div class="h2" style="display: flex; align-items: center;">
               <div style="flex-grow: 1">
@@ -24,7 +25,7 @@
                 </span>
               </div>
               <div>
-                <%= link_to "Voir les actions à #{name}",
+                <%= link_to "Voir les actions #{name_with_preposition}",
                       admin_entourages_path(
                         q: {country_eq: 'FR', postal_code_start: department}),
                       target: :_blank,

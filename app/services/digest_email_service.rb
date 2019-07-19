@@ -100,7 +100,7 @@ module DigestEmailService
             user,
             city_group_ids[department_code],
             suggested_postal_code: nil,
-            content_id: department_code
+            content_id: "#{department_code}_#{email.deliver_at.date}"
           )
 
           next if user_delivery.nil?
@@ -227,9 +227,11 @@ module DigestEmailService
       template_id: 662271,
       campaign_name: campaign_name,
       unsubscribe_category: UNSUBSCRIBE_CATEGORY,
+      deliver_only_once: content_id == :test ? false : true,
       variables: {
         actions: groups,
         area_name: arrondissement_or_city_name(user_postal_code),
+        area_name_with_preposition: city_name_with_preposition(user_postal_code),
         confirm_url: confirm_url
       }
     )
@@ -267,6 +269,15 @@ module DigestEmailService
 
   def self.city_name postal_code
     config.cities.invert[postal_code.first(2).to_i].to_s
+  end
+
+  def self.city_name_with_preposition postal_code
+    city_name = self.arrondissement_or_city_name postal_code
+    if city_name == 'Hauts-de-Seine'
+      "dans les #{city_name}"
+    else
+      "à #{city_name}"
+    end
   end
 
   def self.maybe_arrondissement_name postal_code

@@ -1,7 +1,7 @@
 module Admin
   class DigestEmailsController < Admin::BaseController
     def index
-      @emails = DigestEmail.scheduled.sorted
+      @emails = DigestEmail.scheduled.upcoming_delivery.sorted
     end
 
     def show
