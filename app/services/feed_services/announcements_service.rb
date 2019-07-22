@@ -355,6 +355,18 @@ module FeedServices
       #   webview: true
       # )
 
+      if Time.zone.today.to_s <= '2019-07-28'
+        announcements.push Announcement.new(
+          id: 45,
+          title: "Alerte canicule ! Vigilance pour les plus fragiles 👌",
+          body: "Comment aider les personnes sans-abri en cas de grandes chaleurs ? Quelques conseils pour aider au mieux les personnes SDF !",
+          image_url: true,
+          action: "En savoir plus",
+          author: User.find_by(email: "guillaume@entourage.social"),
+          webview: true
+        )
+      end
+
       announcements.push Announcement.new(
         id: 44,
         title: "Un partage peut tout changer",

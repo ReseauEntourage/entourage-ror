@@ -50,6 +50,7 @@ module Api
           42 => :megaphone,
           43 => :megaphone,
           44 => :megaphone,
+          45 => :megaphone,
         }[params[:id].to_i]
 
         redirect_to view_context.asset_url("assets/announcements/icons/#{icon}.png")
@@ -102,6 +103,7 @@ module Api
           42 => 'service-civique.jpg',
           43 => 'conversation-2.jpg',
           44 => 'linkedout.jpg',
+          45 => 'canicule.jpg',
         }[params[:id].to_i]
 
         return render nothing: true, status: :not_found if image.nil?
@@ -211,6 +213,8 @@ module Api
           url = "https://blog.entourage.social/2017/06/19/charles-aznavour-avait-tort-la-misere-nest-pas-moins-penible-au-soleil/#site-content"
         when 44
           url = "https://www.linkedout.fr/"
+        when 45
+          url = "https://blog.entourage.social/2017/06/19/charles-aznavour-avait-tort-la-misere-nest-pas-moins-penible-au-soleil/#site-content"
         end
 
         begin
