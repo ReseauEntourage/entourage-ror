@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe Onboarding::ChatMessagesService, type: :service do
   describe '.deliver_welcome_message' do
-    let(:run_time) { 1.day.from_now.change(hour: 10, minute: rand(60)) }
+    let(:run_time) { 1.week.from_now.monday.change(hour: 10, minute: rand(60)) }
     let(:onboarding_time) { run_time.advance(seconds: -rand(3.hours..4.hours)) }
     let!(:admin) { create :admin_user }
     let!(:user) { create :public_user, first_name: nil }
@@ -41,8 +41,13 @@ describe Onboarding::ChatMessagesService, type: :service do
       }
     end
 
-    describe 'outside of activity window' do
-      let(:run_time) { 1.day.from_now.change(hour: 7, minute: 59) }
+    describe 'outside of active hours' do
+      let(:run_time) { 1.week.from_now.monday.change(hour: 7, minute: 59) }
+      it { expect { subject }.not_to change { ChatMessage.count } }
+    end
+
+    describe 'outside of active days' do
+      let(:run_time) { 1.week.from_now.sunday.change(hour: 14, minute: 25) }
       it { expect { subject }.not_to change { ChatMessage.count } }
     end
 

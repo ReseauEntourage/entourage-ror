@@ -1,7 +1,8 @@
 module Onboarding
   module ChatMessagesService
     MIN_DELAY = 2.hours
-    ACTIVITY_WINDOW = '09:00'..'18:30'
+    ACTIVE_DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
+    ACTIVE_HOURS = '09:00'..'18:30'
 
     def self.welcome_messages_for user
       first_name = user.first_name
@@ -31,7 +32,8 @@ module Onboarding
 
     def self.deliver_welcome_message
       now = Time.zone.now
-      return unless now.strftime('%H:%M').in?(ACTIVITY_WINDOW)
+      return unless now.strftime('%A').in?(ACTIVE_DAYS)
+      return unless now.strftime('%H:%M').in?(ACTIVE_HOURS)
 
       author = User.find_by(email: "guillaume@entourage.social",
                             community: :entourage, admin: true)
