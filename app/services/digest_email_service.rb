@@ -100,7 +100,7 @@ module DigestEmailService
             user,
             city_group_ids[department_code],
             suggested_postal_code: nil,
-            content_id: "#{department_code}_#{email.deliver_at.date}"
+            content_id: "#{department_code}_#{email.deliver_at.to_date}"
           )
 
           next if user_delivery.nil?
