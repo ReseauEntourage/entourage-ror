@@ -96,7 +96,7 @@ namespace :db do
       roles: []
     }
 
-    team = User.find_by email: 'guillaume@entourage.social'
+    team = ModerationServices.moderator(community: Community.new(:entourage))
     standard_users = User.where("id != ?", team.id)
     first_names = standard_users.where("first_name <> ''").uniq.pluck(:first_name)
     last_names  = standard_users.where("last_name  <> ''").uniq.pluck(:last_name)

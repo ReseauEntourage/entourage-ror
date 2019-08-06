@@ -21,6 +21,7 @@ describe Admin::EntouragesController do
 
   describe "GET #show" do
     let!(:entourage) { FactoryGirl.create(:entourage) }
+    let!(:moderator) { create :admin_user }
     before { get :show, id: entourage.to_param }
     it { expect(assigns(:entourage)).to eq(entourage) }
   end

@@ -38,6 +38,7 @@ FactoryGirl.define do
     trait :admin do
       first_name 'pouet'
       email 'guillaume@entourage.social'
+      phone '+33768037348'
       organization
       user_type 'pro'
       admin true

@@ -135,7 +135,7 @@ module Admin
     private
 
     def moderator
-      @moderator ||= User.find_by email: 'guillaume@entourage.social', community: :entourage
+      @moderator ||= ModerationServices.moderator(community: community)
     end
 
     def chat_messages_params

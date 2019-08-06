@@ -52,14 +52,14 @@ module Onboarding
         body: "Conseils, rencontres, idées d'action... Rentrez en contact avec les personnes du quartier.",
         action: "C'est parti !",
         url: "#{ENV['DEEPLINK_SCHEME']}://entourage/#{entourage_id}",
-        author: User.find_by(email: "guillaume@entourage.social"),
+        author: ModerationServices.moderator(community: user.community),
         position: 1
       )
     end
 
     def self.chat_message_for user
       ChatMessage.new(
-        user_id: User.find_by(email: 'guillaume@entourage.social').id,
+        user_id: ModerationServices.moderator(community: user.community).id,
         content: "Bienvenue dans la conversation de groupe, #{user.first_name} !\n\nParlez un peu de vous aux autres membres : quel est votre quartier, avez vous des idées d'actions, avez-vous besoin d'aide...",
         created_at: Time.now
       )

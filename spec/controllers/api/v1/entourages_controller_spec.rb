@@ -4,6 +4,7 @@ include CommunityHelper
 describe Api::V1::EntouragesController do
 
   let(:user) { FactoryGirl.create(:public_user) }
+  before { ModerationServices.stub(:moderator) { nil } }
 
   describe 'GET index' do
     context "not signed in" do

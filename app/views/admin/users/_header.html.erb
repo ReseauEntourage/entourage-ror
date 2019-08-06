@@ -8,7 +8,7 @@
   </span>
   <div class="pull-right">
     <%
-      moderator = User.find_by(email: "guillaume@entourage.social")
+      moderator = ModerationServices.moderator(community: @user.community)
       uuid = ConversationService.list_for_participants([moderator.id, @user.id])
     %>
     <%= link_to "Contacter", admin_conversation_path(uuid),

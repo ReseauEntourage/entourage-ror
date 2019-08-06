@@ -4,6 +4,7 @@ include AuthHelper
 RSpec.describe Admin::RegistrationRequestsController, type: :controller do
   render_views
 
+  before { ModerationServices.stub(:moderator) { nil } }
   let!(:user) { admin_basic_login }
 
   describe "GET #index" do

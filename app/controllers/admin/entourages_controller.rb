@@ -117,7 +117,7 @@ module Admin
 
       @moderator_read  = @entourage.moderator_read_for(user: current_user)
 
-      @messages_author = User.find_by email: 'guillaume@entourage.social'
+      @messages_author = ModerationServices.moderator(community: @entourage.community)
 
       reads = @entourage.join_requests.accepted
         .reject { |r| r.last_message_read.nil? || r.user_id == @messages_author.id }
@@ -185,7 +185,7 @@ module Admin
     end
 
     def message
-      user = User.find_by email: 'guillaume@entourage.social'
+      user = ModerationServices.moderator(community: @entourage.community)
 
       join_request =
         user.join_requests.find_or_create_by!(joinable: @entourage) do |join_request|

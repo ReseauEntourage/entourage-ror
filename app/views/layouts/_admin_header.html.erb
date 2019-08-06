@@ -32,7 +32,7 @@
         </li>
         <li class="<%= :active if controller_name == 'conversations' %>">
           <%
-            moderator = User.find_by email: 'guillaume@entourage.social', community: :entourage
+            moderator = ModerationServices.moderator(community: current_admin.community)
             unread_count = ConversationService.unread_count_for(moderator)
           %>
           <%= link_to admin_conversations_path do %>

@@ -4,13 +4,14 @@ describe Experimental::AutoAccept do
   let(:entourage) { create :entourage, :joined }
   let(:user) { create :public_user }
   let(:join_request) { build :join_request, joinable: entourage, user: user }
+  let!(:moderator) { create :admin_user }
 
   before do
     Experimental::AutoAccept.stub(:enable_callback) { true }
   end
 
   context "when the entourage owner is Équipe Entourage" do
-    before { entourage.user.stub(:email) { 'guillaume@entourage.social' } }
+    let(:entourage) { create :entourage, :joined, user: moderator }
 
     it do
       expect(entourage.auto_accept_join_requests?).to be true

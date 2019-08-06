@@ -35,8 +35,7 @@ module Onboarding
       return unless now.strftime('%A').in?(ACTIVE_DAYS)
       return unless now.strftime('%H:%M').in?(ACTIVE_HOURS)
 
-      author = User.find_by(email: "guillaume@entourage.social",
-                            community: :entourage, admin: true)
+      author = ModerationServices.moderator(community: Community.new(:entourage))
 
       user_ids = User
         .where(community: :entourage, deleted: false)

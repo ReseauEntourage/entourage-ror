@@ -4,6 +4,7 @@ describe Onboarding::V1 do
   let(:entourage) { create :entourage, :joined }
   let(:user) { create :public_user }
   let(:join_request) { build :join_request, joinable: entourage, user: user }
+  let!(:moderator) { create :admin_user }
 
   before do
     Onboarding::V1.stub(:is_onboarding?) { true }
