@@ -16,12 +16,13 @@ class HomeController < ApplicationController
   def store_redirection
     case $server_community
     when 'entourage'
-      redirect_to "https://s3-eu-west-1.amazonaws.com/entourage-ressources/store_redirection.html"
+      url = "https://s3-eu-west-1.amazonaws.com/entourage-ressources/store_redirection.html"
     when 'pfp'
-      redirect_to "https://s3-eu-west-1.amazonaws.com/entourage-ressources/store_redirection_pfp.html"
+      url = "https://s3-eu-west-1.amazonaws.com/entourage-ressources/store_redirection_pfp.html"
     else
       raise AbstractController::ActionNotFound
     end
+    redirect_to url, status: 301
   end
 
   def cgu
