@@ -70,7 +70,7 @@ module Admin
       end
 
       email_prefs_success = EmailPreferencesService.update(
-        user: user, preferences: params[:email_preferences])
+        user: user, preferences: (params[:email_preferences] || {}))
 
       user.assign_attributes(user_params)
       UserService.sync_roles(user)
