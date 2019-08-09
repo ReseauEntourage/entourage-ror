@@ -37,7 +37,7 @@ module Admin
       @email.data['group_ids'] = {}
       params[:group_ids].each do |department, values|
         group_ids = values.scan(/\d+/).map(&:to_i).uniq
-        @email.data['group_ids'][department.to_s] = group_ids
+        @email.data['group_ids'][department.to_s] = Entourage.where(id: group_ids).pluck(:id)
       end
 
       if !@email.save

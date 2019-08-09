@@ -72,6 +72,7 @@
               <% else %>
                 <% @group_ids[department].each do |group_id| %>
                   <% group = @groups[group_id] %>
+                  <% next if group.nil? # id was not found %>
                   <tr>
                     <td class="text-muted"><%= group.id %></td>
                     <td>
