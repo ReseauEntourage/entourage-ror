@@ -37,6 +37,7 @@ describe EntourageServices::GeocodingService do
         .to_return(status: 200, body: JSON.fast_generate("results"=>[{
           "address_components"=>[
             {"long_name"=>"75012", "short_name"=>"75012", "types"=>["postal_code"]},
+            {"long_name"=>"Paris", "short_name"=>"Paris", "types"=>["locality"]},
             {"long_name"=>"France", "short_name"=>"FR", "types"=>["country"]}
           ],
           "types"=>["postal_code"]
@@ -48,6 +49,8 @@ describe EntourageServices::GeocodingService do
       entourage.reload
       expect(entourage.postal_code).to eq '75012'
       expect(entourage.country).to eq 'FR'
+      expect(entourage.metadata[:city]).to eq 'Paris'
+      expect(entourage.metadata[:display_address]).to eq 'Paris (75012)'
     end
   end
 end

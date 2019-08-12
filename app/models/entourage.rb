@@ -150,6 +150,11 @@ class Entourage < ActiveRecord::Base
   def self.json_schema urn
     JsonSchemaService.base do
       case urn
+      when 'action:metadata'
+        {
+          city: { type: :string },
+          display_address: { type: :string },
+        }
       when 'private_circle:metadata'
         {
           visited_user_first_name: { type: :string },
@@ -210,6 +215,10 @@ class Entourage < ActiveRecord::Base
       self.entourage_type = :contribution
       self.latitude       = 0
       self.longitude      = 0
+    when 'action'
+      self.metadata = {
+        city: ''
+      }
     end
   end
 
@@ -224,7 +233,26 @@ class Entourage < ActiveRecord::Base
   end
 
   def generate_display_address
-    return unless group_type == 'outing' && (metadata_changed? || new_record?)
+    return unless (metadata_changed? || new_record?)
+    case group_type
+    when 'action'
+      generate_action_display_address
+    when 'outing'
+      generate_outing_display_address
+    end
+  end
+
+  def generate_action_display_address
+    return unless group_type == 'action'
+    if metadata[:city].present? && postal_code.present?
+      metadata[:display_address] = "#{metadata[:city]} (#{postal_code})"
+    else
+      metadata[:display_address] = ""
+    end
+  end
+
+  def generate_outing_display_address
+    return unless group_type == 'outing'
     address_fragments = metadata[:street_address].split(', ')
     if metadata[:place_name] != address_fragments.first
       address_fragments.unshift metadata[:place_name]

@@ -1,8 +1,16 @@
 module EntourageServices
   module GeocodingService
     def self.geocode entourage
-      country, postal_code = search_postal_code(entourage.latitude, entourage.longitude)
-      entourage.update(country: country, postal_code: postal_code)
+      country, postal_code, city = search_postal_code(entourage.latitude, entourage.longitude)
+
+      updates = {country: country, postal_code: postal_code}
+
+      if entourage.group_type == 'action'
+        city ||= ''
+        updates[:metadata] = entourage.metadata.merge(city: city)
+      end
+
+      entourage.update(updates)
     end
 
     def self.search_postal_code latitude, longitude
@@ -15,7 +23,7 @@ module EntourageServices
       result = results.find { |r| r.types.include? 'postal_code' }
 
       if result.present?
-        [result.country_code, result.postal_code]
+        [result.country_code, result.postal_code, result.city]
       else
         search_approximate_postal_code(latitude, longitude)
       end
@@ -29,6 +37,7 @@ module EntourageServices
 
       if result.present?
         country = result.country_code
+        city = result.city
         postal_code =
           if country == 'FR'
             result.postal_code.first(2) + 'XXX'
@@ -38,9 +47,10 @@ module EntourageServices
       else
         country     = 'XX'
         postal_code = '00000'
+        city        = ''
       end
 
-      [country, postal_code]
+      [country, postal_code, city]
     end
 
     def self.enable_callback
