@@ -19,7 +19,7 @@ function try_exec {
   command=()
 
   while [[ $# -gt 0 && $1 != '--' ]]; do
-    options+=($1)
+    options+=("$1")
     shift
   done
 
@@ -28,17 +28,17 @@ function try_exec {
   fi
 
   if [[ $# -gt 0 ]]; then
-    command=$@
+    command=("$@")
   else
-    command=${options[@]}
+    command=("${options[@]}")
     options=()
   fi
 
   docker-compose exec \
     --env RAILS_ENV=${RAILS_ENV:-development} \
     $(termoptions) \
-    ${options[@]} \
-    spring /entrypoint ${command[@]}
+    "${options[@]}" \
+    spring /entrypoint "${command[@]}"
 }
 
 # try to run the command in the container
