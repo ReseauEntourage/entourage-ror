@@ -2,6 +2,7 @@ require 'factory_girl'
 require 'webmock/rspec'
 require 'fakeredis/rspec'
 require 'sidekiq/testing'
+require 'super_diff/rspec'
 Sidekiq::Testing.inline!
 
 RSpec.configure do |config|

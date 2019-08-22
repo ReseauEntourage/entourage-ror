@@ -64,13 +64,14 @@ group :development do
 end
 
 group :test do
-  gem 'rspec-rails',                  '~> 3.1'
+  gem 'rspec-rails',                  '~> 3.8'
   gem 'shoulda-matchers',             '~> 3.0.1'
   gem 'timecop',                      '~> 0.8.0'
   gem 'factory_girl_rails',           '~> 4.5.0'
   gem 'webmock'
   gem 'fakeredis',                    '~> 0.7.0'
   gem 'test_after_commit'
+  gem 'super_diff'
 end
 
 group :production do
