@@ -66,6 +66,7 @@ class Entourage < ActiveRecord::Base
   before_validation :set_community, on: :create
   before_validation :set_default_attributes, on: :create
   before_validation :generate_display_address
+  before_validation :reformat_content
 
   after_create :check_moderation
   before_create :set_uuid
@@ -234,6 +235,11 @@ class Entourage < ActiveRecord::Base
     metadata[:display_address] = address_fragments.join(', ')
   rescue
     metadata[:display_address] = ""
+  end
+
+  def reformat_content(force: false)
+    self.title = title&.squish if force || title_changed?
+    self.description = description&.strip if force || description_changed?
   end
 
   private
