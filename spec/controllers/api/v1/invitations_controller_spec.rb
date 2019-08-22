@@ -24,7 +24,7 @@ describe Api::V1::InvitationsController do
                                                     "status"=>"pending",
                                                     "inviter"=>{
                                                         "id"=>invitation.inviter_id,
-                                                        "display_name"=>"John D",
+                                                        "display_name"=>"John D.",
                                                         "first_name"=>"John",
                                                         "last_name"=>"D",
                                                         "roles"=>[],
@@ -114,9 +114,9 @@ describe Api::V1::InvitationsController do
       end
 
       it "sends notification for accepted invitation" do
-        expect_any_instance_of(PushNotificationService).to receive(:send_notification).with("John D",
+        expect_any_instance_of(PushNotificationService).to receive(:send_notification).with("John D.",
                                                                                             "foobar",
-                                                                                            "John D a accepté votre invitation",
+                                                                                            "John D. a accepté votre invitation",
                                                                                             [invitation.inviter],
                                                                                             {type: "INVITATION_STATUS",
                                                                                              inviter_id: invitation.inviter_id,
@@ -153,9 +153,9 @@ describe Api::V1::InvitationsController do
       end
 
       it "sends notification for accepted invitation" do
-        expect_any_instance_of(PushNotificationService).to receive(:send_notification).with("John D",
+        expect_any_instance_of(PushNotificationService).to receive(:send_notification).with("John D.",
                                                                                             "foobar",
-                                                                                            "John D a refusé votre invitation",
+                                                                                            "John D. a refusé votre invitation",
                                                                                             [invitation.inviter],
                                                                                             {type: "INVITATION_STATUS",
                                                                                              inviter_id: invitation.inviter_id,

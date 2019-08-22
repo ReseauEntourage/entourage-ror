@@ -32,7 +32,7 @@ describe Api::V1::EntouragesController do
                                        "number_of_people"=>1,
                                        "author"=>{
                                            "id"=>entourage.user.id,
-                                           "display_name"=>"John",
+                                           "display_name"=>"John D.",
                                            "avatar_url"=>nil,
                                            "partner"=>nil
                                        },
@@ -140,7 +140,7 @@ describe Api::V1::EntouragesController do
                                                            "number_of_people"=>1,
                                                            "author"=>{
                                                                "id"=>user.id,
-                                                               "display_name"=>"John",
+                                                               "display_name"=>"John D.",
                                                                "avatar_url"=>nil,
                                                                "partner"=>nil
                                                            },
@@ -226,7 +226,7 @@ describe Api::V1::EntouragesController do
               "share_url"=>"http://entourage.social/entourages/#{outing.uuid_v2}",
               "author"=>{
                 "id"=>user.id,
-                "display_name"=>"John",
+                "display_name"=>"John D.",
                 "avatar_url"=>nil,
                 "partner"=>nil
               },
@@ -323,7 +323,7 @@ describe Api::V1::EntouragesController do
                                                              "number_of_people"=>1,
                                                              "author"=>{
                                                                  "id"=>entourage.user.id,
-                                                                 "display_name"=>"John",
+                                                                 "display_name"=>"John D.",
                                                                  "avatar_url"=>nil,
                                                                  "partner"=>nil
                                                              },
@@ -368,7 +368,7 @@ describe Api::V1::EntouragesController do
                                                           "id"=>nil,
                                                           "uuid"=>"1_list_#{user.id}-#{other_user.id}",
                                                           "status"=>"open",
-                                                          "title"=>"Buzz L",
+                                                          "title"=>"Buzz L.",
                                                           "group_type"=>"conversation",
                                                           "public"=>false,
                                                           "metadata"=>{},
@@ -383,7 +383,7 @@ describe Api::V1::EntouragesController do
                                                           "share_url"=>nil,
                                                           "author"=>{
                                                             "id"=>other_user.id,
-                                                            "display_name"=>"Buzz",
+                                                            "display_name"=>"Buzz L.",
                                                             "avatar_url"=>nil,
                                                             "partner"=>nil},
                                                           "location"=>{"latitude"=>0.0, "longitude"=>0.0}}}) }
@@ -475,7 +475,7 @@ describe Api::V1::EntouragesController do
                                                            "number_of_people"=>1,
                                                            "author"=>{
                                                                "id"=>user.id,
-                                                               "display_name"=>"John",
+                                                               "display_name"=>"John D.",
                                                                "avatar_url"=>nil,
                                                                "partner"=>nil
                                                            },

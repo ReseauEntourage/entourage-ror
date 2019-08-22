@@ -31,7 +31,7 @@ RSpec.describe Api::V1::Users::ToursController, :type => :controller do
                "organization_description"=>"Association description",
                "author"=>{
                    "id"=>tour1.user.id,
-                   "display_name"=>"John",
+                   "display_name"=>"John D.",
                    "avatar_url"=>nil,
                    "partner"=>nil
                },
@@ -54,7 +54,7 @@ RSpec.describe Api::V1::Users::ToursController, :type => :controller do
                "organization_description"=>"Association description",
                "author"=>{
                    "id"=>tour2.user.id,
-                   "display_name"=>"John",
+                   "display_name"=>"John D.",
                    "avatar_url"=>nil,
                    "partner"=>nil
                },

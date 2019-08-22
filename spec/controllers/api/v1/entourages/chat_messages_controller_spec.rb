@@ -25,14 +25,14 @@ describe Api::V1::Entourages::ChatMessagesController do
                                                                "id"=>chat_message1.id,
                                                                "message_type"=>"text",
                                                                "content"=>"MyText",
-                                                               "user"=> {"id"=>chat_message1.user_id, "avatar_url"=>nil, "display_name"=>"John D","partner"=>nil},
+                                                               "user"=> {"id"=>chat_message1.user_id, "avatar_url"=>nil, "display_name"=>"John D.","partner"=>nil},
                                                                "created_at"=>chat_message1.created_at.iso8601(3)
                                                            },
                                                            {
                                                                "id"=>chat_message2.id,
                                                                "message_type"=>"text",
                                                                "content"=>"MyText",
-                                                               "user"=> {"id"=>chat_message2.user_id, "avatar_url"=>nil, "display_name"=>"John D","partner"=>nil},
+                                                               "user"=> {"id"=>chat_message2.user_id, "avatar_url"=>nil, "display_name"=>"John D.","partner"=>nil},
                                                                "created_at"=>chat_message2.created_at.iso8601(3)
                                                            }]}) }
 
@@ -78,7 +78,7 @@ describe Api::V1::Entourages::ChatMessagesController do
                                                                             "id"=>chat_message2.id,
                                                                             "message_type"=>"text",
                                                                             "content"=>"MyText",
-                                                                            "user"=>{"id"=>chat_message2.user.id, "avatar_url"=>nil, "display_name"=>"John D","partner"=>nil},
+                                                                            "user"=>{"id"=>chat_message2.user.id, "avatar_url"=>nil, "display_name"=>"John D.","partner"=>nil},
                                                                             "created_at"=>chat_message2.created_at.iso8601(3)
                                                                         }]}) }
       end
@@ -115,7 +115,7 @@ describe Api::V1::Entourages::ChatMessagesController do
                                                           {"id"=>ChatMessage.first.id,
                                                            "message_type"=>"text",
                                                            "content"=>"foobar",
-                                                           "user"=>{"id"=>user.id, "avatar_url"=>nil, "display_name"=>"John D","partner"=>nil},
+                                                           "user"=>{"id"=>user.id, "avatar_url"=>nil, "display_name"=>"John D.","partner"=>nil},
                                                            "created_at"=>ChatMessage.first.created_at.iso8601(3)
                                                           }}) }
       end
@@ -125,7 +125,7 @@ describe Api::V1::Entourages::ChatMessagesController do
           join_request = FactoryGirl.create(:join_request, joinable: entourage, user: user, status: "accepted")
           join_request2 = FactoryGirl.create(:join_request, joinable: entourage, status: "accepted")
           FactoryGirl.create(:join_request, joinable: entourage, status: "pending")
-          expect_any_instance_of(PushNotificationService).to receive(:send_notification).with("John D", 'foobar', 'foobaz', [join_request2.user], {:joinable_id=>entourage.id, :joinable_type=>"Entourage", :group_type=>'action', :type=>"NEW_CHAT_MESSAGE"})
+          expect_any_instance_of(PushNotificationService).to receive(:send_notification).with("John D.", 'foobar', 'foobaz', [join_request2.user], {:joinable_id=>entourage.id, :joinable_type=>"Entourage", :group_type=>'action', :type=>"NEW_CHAT_MESSAGE"})
           post :create, entourage_id: entourage.to_param, chat_message: {content: "foobaz"}, token: user.token
         end
       end
@@ -196,7 +196,7 @@ describe Api::V1::Entourages::ChatMessagesController do
                                                           "user"=>{
                                                             "id"=>user.id,
                                                             "avatar_url"=>nil,
-                                                            "display_name"=>"John D",
+                                                            "display_name"=>"John D.",
                                                             "partner"=>nil
                                                           },
                                                           "created_at"=>ChatMessage.last.created_at.iso8601(3)}}) }
@@ -219,7 +219,7 @@ describe Api::V1::Entourages::ChatMessagesController do
                                                           "id"=>ChatMessage.first.id,
                                                           "message_type"=>"text",
                                                           "content"=>"foobar",
-                                                          "user"=>{"id"=>user.id, "avatar_url"=>nil, "display_name"=>"John D","partner"=>nil},
+                                                          "user"=>{"id"=>user.id, "avatar_url"=>nil, "display_name"=>"John D.","partner"=>nil},
                                                           "created_at"=>ChatMessage.first.created_at.iso8601(3)
                                                        }}) }
           it { expect(Entourage.last.attributes).to include("user_id"=>user.id,

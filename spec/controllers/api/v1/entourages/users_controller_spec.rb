@@ -20,7 +20,7 @@ describe Api::V1::Entourages::UsersController do
         it { expect(entourage.members).to eq([user]) }
         it { expect(result).to eq("user"=>{
                                             "id"=>user.id,
-                                            "display_name"=>"John D",
+                                            "display_name"=>"John D.",
                                             "role"=>"member",
                                             "group_role"=>"member",
                                             "community_roles"=>[],
@@ -38,7 +38,7 @@ describe Api::V1::Entourages::UsersController do
         it { expect(entourage.members).to eq([user]) }
         it { expect(result).to eq("user"=>{
             "id"=>user.id,
-            "display_name"=>"John D",
+            "display_name"=>"John D.",
             "status"=>"pending",
             "role"=>"member",
             "group_role"=>"member",
@@ -56,7 +56,7 @@ describe Api::V1::Entourages::UsersController do
         it { expect(entourage.members).to eq([user]) }
         it { expect(result).to eq("user"=>{
             "id"=>user.id,
-            "display_name"=>"John D",
+            "display_name"=>"John D.",
             "role"=>"member",
             "group_role"=>"member",
             "community_roles"=>[],
@@ -83,9 +83,9 @@ describe Api::V1::Entourages::UsersController do
           it { expect(result['user']['status']).to eq('accepted') }
           it {
             expect(notif_service).to have_received(:send_notification).with(
-              "John D",
+              "John D.",
               "foobar1",
-              "John D vient de rejoindre votre action",
+              "John D. vient de rejoindre votre action",
               [entourage.user],
               {
                 joinable_type: "Entourage",
@@ -104,9 +104,9 @@ describe Api::V1::Entourages::UsersController do
           it { pp result; expect(result['user']['status']).to eq('accepted') }
           it {
             expect(notif_service).to have_received(:send_notification).with(
-              "John D",
+              "John D.",
               "foobar1",
-              "John D vient de rejoindre votre action",
+              "John D. vient de rejoindre votre action",
               [entourage.user],
               {
                 joinable_type: "Entourage",
@@ -129,9 +129,9 @@ describe Api::V1::Entourages::UsersController do
           let!(:user_join_request) { create(:join_request, user: user, status: "accepted") }
 
           it "sends notif to all entourage members" do
-            expect_any_instance_of(PushNotificationService).to receive(:send_notification).with("John D",
+            expect_any_instance_of(PushNotificationService).to receive(:send_notification).with("John D.",
                                                                                                 "foobar1",
-                                                                                                "John D souhaite rejoindre votre action",
+                                                                                                "John D. souhaite rejoindre votre action",
                                                                                                 [entourage.user],
                                                                                                 {
                                                                                                     joinable_type: "Entourage",
@@ -149,9 +149,9 @@ describe Api::V1::Entourages::UsersController do
           let!(:member_join_request) { create(:join_request, user: member, joinable: entourage, status: "accepted") }
 
           it "sends notif to all entourage members" do
-            expect_any_instance_of(PushNotificationService).to receive(:send_notification).with("John D",
+            expect_any_instance_of(PushNotificationService).to receive(:send_notification).with("John D.",
                                                                                                 "foobar1",
-                                                                                                "John D souhaite rejoindre votre action",
+                                                                                                "John D. souhaite rejoindre votre action",
                                                                                                 [entourage.user],
                                                                                                 {
                                                                                                     joinable_type: "Entourage",
@@ -178,7 +178,7 @@ describe Api::V1::Entourages::UsersController do
       before { get :index, entourage_id: entourage.to_param, token: user.token }
       it { expect(result).to eq({"users"=>[{
                                                "id"=>user.id,
-                                               "display_name"=>"John D",
+                                               "display_name"=>"John D.",
                                                "role"=>"member",
                                                "group_role"=>"member",
                                                "community_roles"=>[],
@@ -224,9 +224,9 @@ describe Api::V1::Entourages::UsersController do
 
       it "sends a notification to the requester" do
         FactoryGirl.create(:android_app)
-        expect_any_instance_of(PushNotificationService).to receive(:send_notification).with("John D",
+        expect_any_instance_of(PushNotificationService).to receive(:send_notification).with("John D.",
                                                                                             "foobar1",
-                                                                                            "Vous venez de rejoindre l’action de John D",
+                                                                                            "Vous venez de rejoindre l’action de John D.",
                                                                                             User.where(id: requester.id),
                                                                                             {:joinable_id=>entourage.id, :joinable_type=>"Entourage", :group_type=>'action', :type=>"JOIN_REQUEST_ACCEPTED", :user_id => requester.id})
         patch :update, entourage_id: entourage.to_param, id: requester.id, user: {status: "accepted"}, token: user.token
@@ -287,7 +287,7 @@ describe Api::V1::Entourages::UsersController do
         it { expect(my_join_request.reload.status).to eq("accepted") }
         it { expect(result).to eq({"user"=>{
                                             "id"=>other_user.id,
-                                            "display_name"=>"John D",
+                                            "display_name"=>"John D.",
                                             "role"=>"member",
                                             "group_role"=>"member",
                                             "community_roles"=>[],
@@ -307,7 +307,7 @@ describe Api::V1::Entourages::UsersController do
         it { expect(expect(my_join_request.reload.status).to eq('cancelled')) }
         it { expect(result).to eq({"user"=>{
                                       "id"=>user.id,
-                                      "display_name"=>"John D",
+                                      "display_name"=>"John D.",
                                       "role"=>"member",
                                       "group_role"=>"member",
                                       "community_roles"=>[],

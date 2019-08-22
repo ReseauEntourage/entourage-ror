@@ -27,7 +27,7 @@ module V1
 
       {
           id: author.id,
-          display_name: author.first_name,
+          display_name: UserPresenter.new(user: object.author).display_name,
           avatar_url: avatar_url,
           partner: nil
       }

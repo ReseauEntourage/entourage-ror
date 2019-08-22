@@ -62,8 +62,7 @@ module JoinRequestsServices
       user = join_request.user
       joinable = join_request.joinable
 
-      display_name = user.first_name.strip
-      display_name += " " + user.last_name.strip.first if user.last_name.present?
+      display_name = UserPresenter.new(user: user).display_name
 
       object = joinable.respond_to?(:title) ? joinable.title : "Nouveau membre"
       join_message = "#{display_name} vient de rejoindre votre #{GroupService.name joinable}"

@@ -65,7 +65,7 @@ module V1
       # TODO(partner)
       {
           id: entourage_author.id,
-          display_name: entourage_author.first_name,
+          display_name: UserPresenter.new(user: object.user).display_name,
           avatar_url: UserServices::Avatar.new(user: entourage_author).thumbnail_url,
           partner: object.user.partner.nil? ? nil : V1::PartnerSerializer.new(object.user.partner, scope: {user: object.user}, root: false).as_json
       }

@@ -44,7 +44,7 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
              "organization_description"=>"Association description",
              "author"=>{
                  "id"=>tours.first.user.id,
-                 "display_name"=>"John",
+                 "display_name"=>"John D.",
                  "avatar_url"=>nil,
                  "partner"=>nil
              },
@@ -67,7 +67,7 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
              "organization_description"=>"Association description",
              "author"=>{
                  "id"=>tours.last.user.id,
-                 "display_name"=>"John",
+                 "display_name"=>"John D.",
                  "avatar_url"=>nil,
                  "partner"=>nil
              },
@@ -219,7 +219,7 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
                                     "end_time"=>last_tour.closed_at,
                                     "author"=>{
                                         "id"=>user.id,
-                                        "display_name"=>"John",
+                                        "display_name"=>"John D.",
                                         "avatar_url"=>nil,
                                         "partner"=>nil
                                     },
@@ -275,7 +275,7 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
                                     "end_time"=>last_tour.closed_at.iso8601(3),
                                     "author"=>{
                                         "id"=>last_tour.user.id,
-                                        "display_name"=>"John",
+                                        "display_name"=>"John D.",
                                         "avatar_url"=>nil,
                                         "partner"=>nil
                                     },
@@ -368,7 +368,7 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
                                     "end_time"=>tour.closed_at.iso8601(3),
                                     "author"=>{
                                         "id"=>tour.user.id,
-                                        "display_name"=>"John",
+                                        "display_name"=>"John D.",
                                         "avatar_url"=>nil,
                                         "partner"=>nil
                                     },

@@ -13,7 +13,7 @@ RSpec.describe TourServices::JoinRequestStatus do
   after { ENV["QUIT_ENTOURAGE_NOTIFICATION"]="false" }
 
   describe 'reject!' do
-    it { expect_any_instance_of(PushNotificationService).to receive(:send_notification).with("foo b",
+    it { expect_any_instance_of(PushNotificationService).to receive(:send_notification).with("Foo B.",
                                                                                             "Demande annulée",
                                                                                             "Demande annulée",
                                                                                             [owner],
@@ -28,7 +28,7 @@ RSpec.describe TourServices::JoinRequestStatus do
   end
 
   describe 'quit!' do
-    it { expect_any_instance_of(PushNotificationService).to receive(:send_notification).with("foo b",
+    it { expect_any_instance_of(PushNotificationService).to receive(:send_notification).with("Foo B.",
                                                                                              "Demande annulée",
                                                                                              "Demande annulée",
                                                                                              [owner],

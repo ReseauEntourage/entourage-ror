@@ -19,7 +19,7 @@ describe EntourageServices::NeighborhoodAnnouncement do
         user: {
           id: user.id,
           avatar_url: nil,
-          display_name: "John D",
+          display_name: "John D.",
           partner: nil
         },
         created_at: chat_message.created_at,
@@ -48,7 +48,7 @@ describe EntourageServices::NeighborhoodAnnouncement do
         user: {
           id: user.id,
           avatar_url: nil,
-          display_name: "John D",
+          display_name: "John D.",
           partner: nil
         },
         created_at: chat_message.created_at,

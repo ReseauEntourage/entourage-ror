@@ -42,7 +42,7 @@ include CommunityHelper
                                                      "number_of_people"=>1,
                                                      "author"=>{
                                                          "id"=>entourage.user.id,
-                                                         "display_name"=>"John",
+                                                         "display_name"=>"John D.",
                                                          "avatar_url"=>nil,
                                                          "partner"=>nil
                                                      },
@@ -71,7 +71,7 @@ include CommunityHelper
                                                      "icon_url"=>"http://test.host/api/v1/announcements/1/icon",
                                                      "author"=>{
                                                          "id"=>announcement.author.id,
-                                                         "display_name"=>"John",
+                                                         "display_name"=>"John D.",
                                                          "avatar_url"=>nil,
                                                          "partner"=>nil
                                                      }
@@ -96,7 +96,7 @@ include CommunityHelper
                                                          "number_of_unread_messages"=>nil,
                                                          "tour_points"=>[],
                                                          "author"=>{"id"=>tour.user.id,
-                                                                    "display_name"=>"John",
+                                                                    "display_name"=>"John D.",
                                                                     "avatar_url"=>nil,
                                                                     "partner"=>nil
                                                          },
@@ -378,7 +378,7 @@ include CommunityHelper
            "share_url"=>"http://entourage.social/entourages/#{entourage.uuid_v2}",
            "author"=>{
              "id"=>entourage.user_id,
-             "display_name"=>"John",
+             "display_name"=>"John D.",
              "avatar_url"=>nil,
              "partner"=>nil},
            "location"=>{
@@ -397,7 +397,7 @@ include CommunityHelper
            "icon_url"=>"http://test.host/api/v1/announcements/1/icon",
            "author"=>{
              "id"=>announcement.author.id,
-             "display_name"=>"John",
+             "display_name"=>"John D.",
              "avatar_url"=>nil,
              "partner"=>nil}}}
       ]})}

@@ -24,14 +24,14 @@ describe Api::V1::Tours::ChatMessagesController do
                                                                "id"=>chat_message1.id,
                                                                "message_type"=>"text",
                                                                "content"=>"MyText",
-                                                               "user"=> {"id"=>chat_message1.user_id, "avatar_url"=>nil, "display_name"=>"John D","partner"=>nil},
+                                                               "user"=> {"id"=>chat_message1.user_id, "avatar_url"=>nil, "display_name"=>"John D.","partner"=>nil},
                                                                "created_at"=>chat_message1.created_at.iso8601(3)
                                                            },
                                                            {
                                                                "id"=>chat_message2.id,
                                                                "message_type"=>"text",
                                                                "content"=>"MyText",
-                                                               "user"=> {"id"=>chat_message2.user_id, "avatar_url"=>nil, "display_name"=>"John D","partner"=>nil},
+                                                               "user"=> {"id"=>chat_message2.user_id, "avatar_url"=>nil, "display_name"=>"John D.","partner"=>nil},
                                                                "created_at"=>chat_message2.created_at.iso8601(3)
                                                            }]}) }
 
@@ -77,7 +77,7 @@ describe Api::V1::Tours::ChatMessagesController do
                                                                            "id"=>chat_message2.id,
                                                                            "message_type"=>"text",
                                                                            "content"=>"MyText",
-                                                                           "user"=>{"id"=>chat_message2.user.id, "avatar_url"=>nil, "display_name"=>"John D","partner"=>nil},
+                                                                           "user"=>{"id"=>chat_message2.user.id, "avatar_url"=>nil, "display_name"=>"John D.","partner"=>nil},
                                                                            "created_at"=>chat_message2.created_at.iso8601(3)
                                                                        }]}) }
       end
@@ -106,7 +106,7 @@ describe Api::V1::Tours::ChatMessagesController do
                                                           {"id"=>ChatMessage.first.id,
                                                            "message_type"=>"text",
                                                            "content"=>"foobar",
-                                                           "user"=>{"id"=>user.id, "avatar_url"=>nil, "display_name"=>"John D","partner"=>nil},
+                                                           "user"=>{"id"=>user.id, "avatar_url"=>nil, "display_name"=>"John D.","partner"=>nil},
                                                            "created_at"=>ChatMessage.first.created_at.iso8601(3)
                                                           }}) }
       end
@@ -116,7 +116,7 @@ describe Api::V1::Tours::ChatMessagesController do
           join_request = FactoryGirl.create(:join_request, joinable: tour, user: user, status: "accepted")
           join_request2 = FactoryGirl.create(:join_request, joinable: tour, status: "accepted")
           FactoryGirl.create(:join_request, joinable: tour, status: "pending")
-          expect_any_instance_of(PushNotificationService).to receive(:send_notification).with("John D", nil, 'foobar', [join_request2.user], {:joinable_id=>tour.id, :joinable_type=>"Tour", :group_type=>'tour', :type=>"NEW_CHAT_MESSAGE"})
+          expect_any_instance_of(PushNotificationService).to receive(:send_notification).with("John D.", nil, 'foobar', [join_request2.user], {:joinable_id=>tour.id, :joinable_type=>"Tour", :group_type=>'tour', :type=>"NEW_CHAT_MESSAGE"})
           post :create, tour_id: tour.to_param, chat_message: {content: "foobar"}, token: user.token
         end
       end

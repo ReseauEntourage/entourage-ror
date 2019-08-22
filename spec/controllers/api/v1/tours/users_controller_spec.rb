@@ -16,7 +16,7 @@ describe Api::V1::Tours::UsersController do
         before { post :create, tour_id: tour.to_param, token: user.token }
         it { expect(tour.members).to eq([user]) }
         it { expect(result).to eq("user"=>{"id"=>user.id,
-                                                              "display_name"=>"John D",
+                                                              "display_name"=>"John D.",
                                                               "role"=>"member",
                                                               "group_role"=>"member",
                                                               "community_roles"=>[],
@@ -34,7 +34,7 @@ describe Api::V1::Tours::UsersController do
         before { post :create, tour_id: tour.to_param, token: user.token }
         it { expect(tour.members).to eq([user]) }
         it { expect(result).to eq("user"=>{"id"=>user.id,
-                                           "display_name"=>"John D",
+                                           "display_name"=>"John D.",
                                            "role"=>"member",
                                            "group_role"=>"member",
                                            "community_roles"=>[],
@@ -49,9 +49,9 @@ describe Api::V1::Tours::UsersController do
       it "sends a notifications to tour owner" do
         new_member = FactoryGirl.create(:pro_user)
         create(:join_request, user: user, joinable: tour, status: "accepted")
-        expect_any_instance_of(PushNotificationService).to receive(:send_notification).with("John D",
+        expect_any_instance_of(PushNotificationService).to receive(:send_notification).with("John D.",
                                                                                             "Demande en attente",
-                                                                                            "John D souhaite rejoindre votre maraude",
+                                                                                            "John D. souhaite rejoindre votre maraude",
                                                                                             [tour.user],
                                                                                             {:joinable_id=>tour.id, :joinable_type=>"Tour", :group_type=>'tour', :type=>"NEW_JOIN_REQUEST", :user_id => new_member.id}
         )
@@ -62,7 +62,7 @@ describe Api::V1::Tours::UsersController do
         before { post :create, tour_id: tour.to_param, request: {message: "foo"}, token: user.token }
         it { expect(tour.members).to eq([user]) }
         it { expect(result).to eq("user"=>{"id"=>user.id,
-                                                              "display_name"=>"John D",
+                                                              "display_name"=>"John D.",
                                                               "status" => "pending",
                                                               "role"=>"member",
                                                               "group_role"=>"member",
@@ -85,7 +85,7 @@ describe Api::V1::Tours::UsersController do
       let!(:join_request) { FactoryGirl.create(:join_request, user: user, joinable: tour) }
       before { get :index, tour_id: tour.to_param, token: user.token }
       it { expect(result).to eq({"users"=>[{"id"=>user.id,
-                                                               "display_name"=>"John D",
+                                                               "display_name"=>"John D.",
                                                                "status"=>"pending",
                                                                "role"=>"member",
                                                                "group_role"=>"member",
@@ -117,9 +117,9 @@ describe Api::V1::Tours::UsersController do
 
       it "sends a notification to the requester" do
         FactoryGirl.create(:android_app)
-        expect_any_instance_of(PushNotificationService).to receive(:send_notification).with("John D",
+        expect_any_instance_of(PushNotificationService).to receive(:send_notification).with("John D.",
                                                                                             "Demande acceptée",
-                                                                                            "Vous venez de rejoindre la maraude de John D",
+                                                                                            "Vous venez de rejoindre la maraude de John D.",
                                                                                             User.where(id: requester.id),
                                                                                             {:joinable_id=>tour.id, :joinable_type=>"Tour", :group_type => 'tour', :type=>"JOIN_REQUEST_ACCEPTED", :user_id => requester.id})
         patch :update, tour_id: tour.to_param, id: requester.id, user: {status: "accepted"}, token: user.token
@@ -179,7 +179,7 @@ describe Api::V1::Tours::UsersController do
       it { expect(response.status).to eq(200) }
       it { expect(result).to eq({"user"=>{
                                           "id"=>requester.id,
-                                          "display_name"=>"John D",
+                                          "display_name"=>"John D.",
                                           "role"=>"member",
                                           "group_role"=>"member",
                                           "community_roles"=>[],
@@ -205,7 +205,7 @@ describe Api::V1::Tours::UsersController do
       it { expect(response.status).to eq(200) }
       it { expect(result).to eq({"user"=>{
                                   "id"=>user.id,
-                                  "display_name"=>"John D",
+                                  "display_name"=>"John D.",
                                   "role"=>"member",
                                   "group_role"=>"member",
                                   "community_roles"=>[],
