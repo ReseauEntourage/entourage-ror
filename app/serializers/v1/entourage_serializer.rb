@@ -91,6 +91,10 @@ module V1
       end
     end
 
+    def updated_at
+      res = [object.updated_at, object.feed_updated_at].compact.max
+    end
+
     def current_join_request
       if scope[:user].nil?
         nil
