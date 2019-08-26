@@ -22,7 +22,7 @@ module FeedServices
         position = announcement.position - 1
         if position < offset
           @offset += 1
-        elsif position - offset <= feeds.length
+        elsif position - offset < feeds.length
           feeds.insert(position - offset, announcement.feed_object)
         elsif last_page
           feeds.push(announcement.feed_object)
@@ -357,27 +357,17 @@ module FeedServices
       #   webview: true
       # )
 
-      if Time.zone.today.to_s <= '2019-07-28'
-        announcements.push Announcement.new(
-          id: 45,
-          title: "Alerte canicule ! Vigilance pour les plus fragiles 👌",
-          body: "Comment aider les personnes sans-abri en cas de grandes chaleurs ? Quelques conseils pour aider au mieux les personnes SDF !",
-          image_url: true,
-          action: "En savoir plus",
-          author: moderator,
-          webview: true
-        )
-      end
-
-      announcements.push Announcement.new(
-        id: 44,
-        title: "Un partage peut tout changer",
-        body: "Trouvons du travail à ces 15 personnes en précarité, en partageant leur CV sur nos réseaux !",
-        image_url: true,
-        action: "Partagez un CV",
-        author: moderator,
-        webview: false
-      )
+      # if Time.zone.today.to_s <= '2019-07-28'
+      #   announcements.push Announcement.new(
+      #     id: 45,
+      #     title: "Alerte canicule ! Vigilance pour les plus fragiles 👌",
+      #     body: "Comment aider les personnes sans-abri en cas de grandes chaleurs ? Quelques conseils pour aider au mieux les personnes SDF !",
+      #     image_url: true,
+      #     action: "En savoir plus",
+      #     author: moderator,
+      #     webview: true
+      #   )
+      # end
 
       service_civique_id =
         case area
@@ -419,6 +409,16 @@ module FeedServices
         url: conversation_url,
         author: moderator,
         webview: true
+      )
+
+      announcements.push Announcement.new(
+        id: 44,
+        title: "Un partage peut tout changer",
+        body: "Trouvons du travail à ces 15 personnes en précarité, en partageant leur CV sur nos réseaux !",
+        image_url: true,
+        action: "Partagez un CV",
+        author: moderator,
+        webview: false
       )
 
       announcements.push Announcement.new(

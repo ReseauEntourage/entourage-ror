@@ -202,13 +202,17 @@ module Api
         when 38
           url = "https://www.youtube.com/watch?v=Dk3bo__5dvs"
         when 39
-          url = "https://www.service-civique.gouv.fr/missions/paris-creer-du-lien-social-autour-des-personnes-sans-abri"
+          # url = "https://www.service-civique.gouv.fr/missions/paris-creer-du-lien-social-autour-des-personnes-sans-abri"
+          url = "https://www.welcometothejungle.co/fr/companies/entourage/jobs/developpement-de-communaute-voisins-avec-et-sans-abri_paris"
         when 40
-          url = "https://www.service-civique.gouv.fr/missions/lyon-creer-du-lien-social-autour-des-personnes-sans-abri"
+          # url = "https://www.service-civique.gouv.fr/missions/lyon-creer-du-lien-social-autour-des-personnes-sans-abri"
+          url = "https://www.welcometothejungle.co/fr/companies/entourage/jobs/animation-de-communaute-terrain_lyon"
         when 41
-          url = "https://www.service-civique.gouv.fr/missions/lille-creer-du-lien-social-autour-des-personnes-sans-abri"
+          # url = "https://www.service-civique.gouv.fr/missions/lille-creer-du-lien-social-autour-des-personnes-sans-abri"
+          url = "https://www.welcometothejungle.co/fr/companies/entourage/jobs/developpement-de-communaute-voisins-avec-et-sans-abri_paris"
         when 42
-          url = "https://www.welcometothejungle.co/fr/companies/entourage/jobs"
+          # url = "https://www.welcometothejungle.co/fr/companies/entourage/jobs"
+          url = "https://www.welcometothejungle.co/fr/companies/entourage/jobs/developpement-de-communaute-voisins-avec-et-sans-abri_paris"
         when 43
           url = "https://blog.entourage.social/2017/06/19/charles-aznavour-avait-tort-la-misere-nest-pas-moins-penible-au-soleil/#site-content"
         when 44
