@@ -23,7 +23,7 @@ namespace :db do
 
     [
       Address, Answer, AtdSynchronization, AtdUser,
-      AuthenticationProvider, EmailDelivery, Encounter, EntourageDisplay,
+      EmailDelivery, Encounter, EntourageDisplay,
       EntourageModeration, EntourageScore, Experimental::PendingRequestReminder,
       LoginHistory, Message, ModeratorRead, NewsletterSubscription,
       Organization, Partner, Question, RegistrationRequest,

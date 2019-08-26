@@ -36,7 +36,6 @@ class User < ActiveRecord::Base
   has_many :user_relationships, foreign_key: "source_user_id", dependent: :destroy
   has_many :relations, through: :user_relationships, source: "target_user"
   has_many :invitations, class_name: "EntourageInvitation", foreign_key: "invitee_id"
-  has_many :authentication_providers, dependent: :destroy
   has_many :feeds
   belongs_to :partner
   has_one :users_appetence
