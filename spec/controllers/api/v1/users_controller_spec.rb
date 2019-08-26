@@ -448,7 +448,11 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
       it { expect(response.status).to eq(200) }
       it { expect(user.reload.sms_code).to_not eq("123456") }
       it "renders user" do
-        expect(JSON.parse(response.body)["user"]["id"]).to eq(user.id)
+        expect(JSON.parse(response.body)).to eq(
+          "user" => {
+            "phone" => user.phone
+          }
+        )
       end
     end
 
@@ -500,7 +504,13 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
       it { expect(User.last.community).to eq("entourage") }
       it { expect(User.last.roles).to eq([]) }
       it { expect(User.last.phone).to eq("+33612345678") }
-      it { expect(JSON.parse(response.body)["user"]["id"]).to eq(User.last.id) }
+      it {
+        expect(JSON.parse(response.body)).to eq(
+          "user" => {
+            "phone" => User.last.phone
+          }
+        )
+      }
 
       context "community support" do
         with_community :pfp

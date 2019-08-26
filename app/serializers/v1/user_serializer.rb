@@ -1,6 +1,7 @@
 module V1
   class UserSerializer < ActiveModel::Serializer
     attributes :id,
+               :phone,
                :email,
                :display_name,
                :first_name,
@@ -24,6 +25,12 @@ module V1
     has_one :address, serializer: AddressSerializer
 
     def filter(keys)
+      if scope[:phone_only] == true
+        return [:phone]
+      else
+        keys -= [:phone]
+      end
+
       keys -= [:token, :email, :has_password, :address, :firebase_properties] unless me?
 
       # uuid and anonymous are not confidential but right now we only need
