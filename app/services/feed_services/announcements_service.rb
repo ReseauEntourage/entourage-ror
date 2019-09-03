@@ -369,6 +369,16 @@ module FeedServices
       #   )
       # end
 
+      announcements.push Announcement.new(
+        id: 32,
+        title: "Vous êtes victimes ou témoins de violences conjugales, appelez le 3919",
+        body: "Le 3919 est le numéro national unique 7 jours sur 7 de 9h à 22h et de 9h à 18h les samedi, dimanche et jours fériés. En cas de danger immédiat, contactez la police (17) ou le SAMU (15).",
+        image_url: true,
+        action: "Plus d’informations",
+        author: moderator,
+        webview: true
+      )
+
       service_civique_id =
         case area
         when 'Paris République', 'Paris 17 et 9', 'Paris 15', 'Paris 5', 'Paris'
