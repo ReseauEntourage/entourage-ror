@@ -3,6 +3,7 @@ module V1
     def initialize(feeds:, user:, include_last_message: false, base_url: nil, key_infos: nil)
       @feeds = feeds.entries
       @cursor = feeds.cursor
+      @next_page_token = feeds.next_page_token
 
       @user = user
       @include_last_message = include_last_message
@@ -32,8 +33,8 @@ module V1
         end
       end
 
-      # the iOS app reorders the feed by updated_at
-      if key_infos[:device] == 'iOS'
+      # the iOS app used to reorder the feed by updated_at
+      if key_infos[:device] == 'iOS' && !cursor.nil?
         result.each.with_index do |f, i|
           f[:data]['updated_at'] = Time.at(100 + result.count - i).as_json
         end
@@ -44,7 +45,13 @@ module V1
         result.last[:data]['updated_at'] = cursor
       end
 
-      return {"feeds": result}
+      payload = {feeds: result}
+
+      if @next_page_token != nil
+        payload[:next_page_token] = @next_page_token
+      end
+
+      return payload
     end
 
     private

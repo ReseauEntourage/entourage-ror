@@ -2,177 +2,129 @@ module FeedServices
   class FeedFinder
 
     DEFAULT_DISTANCE=10
-    DEFAULT_PER=25
+    ITEMS_PER_PAGE=25
 
-    LAST_PAGE_CURSOR = -1
+    LAST_PAGE_CURSOR = 0xff
 
     def initialize(user:,
-                   page:,
-                   per:,
-                   show_tours:,
-                   entourage_types:,
-                   tour_types:,
-                   context:,
-                   types: nil,
                    latitude:,
                    longitude:,
-                   show_my_entourages_only: "false",
-                   show_my_tours_only: "false",
+                   types: nil,
                    show_past_events: "false",
                    time_range: 24,
-                   tour_status: nil,
-                   entourage_status: nil,
-                   before: nil,
-                   author: nil,
-                   invitee: nil,
                    distance: nil,
                    announcements: nil,
-                   preload_last_message: false)
+                   page_token: nil,
+                   legacy_pagination:,
+                   before: nil)
       @user = user
-      @page = page
-      @per = per.presence&.to_i || DEFAULT_PER
-      @before = before.present? ? (DateTime.parse(before) rescue Time.now) : nil
       @latitude = latitude
       @longitude = longitude
-      @show_tours = show_tours
-      @feed_type = join_types(entourage_types: entourage_types, tour_types: tour_types)
-      @types = formated_types(types) if types != nil
-      @context = context.to_sym
-      @show_my_entourages_only = show_my_entourages_only=="true"
-      @show_my_tours_only = show_my_tours_only=="true"
+      @types = formated_types(types)
       @show_past_events = show_past_events=="true"
       @time_range = time_range.to_i
-      @tour_status = formated_status(tour_status)
-      @entourage_status = formated_status(entourage_status)
-      @author = author
-      @invitee = invitee
       @distance = [(distance&.to_i || DEFAULT_DISTANCE), 40].min
       @announcements = announcements.try(:to_sym)
-      @cursor = nil
-      @area = FeedRequestArea.new(@latitude, @longitude)
-      @metadata = {}
-      @preload_last_message = preload_last_message
+      @page_token = page_token
+
+      @legacy_pagination = legacy_pagination
+      @before = before.present? ? (DateTime.parse(before) rescue Time.now) : nil
 
       @time_range = lyon_grenoble_timerange_workaround
+
+      @page = nil
       @last_page = false
+      @metadata = {}
     end
 
     def feeds
-      if context == :feed && latitude && longitude && before
+      begin
+        @latitude  = Float(latitude)
+        @longitude = Float(longitude)
+      rescue
+        raise Api::V1::ApiError, "Invalid latitude/longitude."
+      end
+
+      @area = FeedRequestArea.new(@latitude, @longitude)
+
+      if page_token.present?
+        @page = self.class.decode_page_token(params_sig: params_sig, token: page_token)
+        raise Api::V1::ApiError, "Invalid page token." if page.nil?
+
+      elsif before
         # extract cursor from `before` parameter
         if before.year <= 1970
-          @cursor = before.to_i
+          @page = before.to_i
         else
-          @cursor = 1
+          @page = 1
         end
-        @page = cursor
+
+        if page == LAST_PAGE_CURSOR
+          return FeedWithCursor.new([], cursor: nil, next_page_token: nil)
+        end
+
       else
-        @cursor = nil
-        @page ||= 1
+        @page = 1
       end
 
-      if cursor == LAST_PAGE_CURSOR
-        return FeedWithCursor.new([], cursor: nil)
-      end
-
-      if context == :feed && page == 1 && latitude && longitude && !user.anonymous?
+      if page == 1 && !user.anonymous?
         UserServices::NewsfeedHistory.save(user: user,
                                            latitude: latitude,
                                            longitude: longitude)
       end
 
-      excluded_status = ['blacklisted']
-      excluded_status += ['suspended'] unless context == :myfeed
-
       feeds = user.community.feeds
-                  .where.not(status: excluded_status)
-                  .includes(feedable: {user: :partner})
 
-      if context == :feed
-        feeds = feeds.where.not(group_type: :conversation)
-        feeds = feeds
-          .joins(%(
-            left join entourage_moderations on
-              feedable_type = 'Entourage' and
-              entourage_moderations.entourage_id = feedable_id
+      feeds = feeds.where.not(status: [:blacklisted, :suspended])
 
-          ))
-          .where(%(
-            feeds.status != 'closed' or
-            feedable_type = 'Tour' or
-            entourage_moderations.action_outcome in ('Oui')
-          ))
-      end
+      feeds = feeds.where.not(group_type: :conversation)
+      feeds = feeds
+        .joins(%(
+          left join entourage_moderations on
+            feedable_type = 'Entourage' and
+            entourage_moderations.entourage_id = feedable_id
+        ))
+        .where(%(
+          feeds.status != 'closed' or
+          feedable_type = 'Tour' or
+          entourage_moderations.action_outcome in ('Oui')
+        ))
 
       if types != nil
         feeds = feeds.where(feed_category: types)
-      else
-        feeds = feeds.where(feedable_type: "Entourage") unless (show_tours=="true" && user.pro?)
-        feeds = feeds.where(feed_type: feed_type) if feed_type
-      end
-      feeds = filter_my_feeds_only(feeds: feeds) unless user.anonymous?
-      feeds = filter_past_events(feeds: feeds) unless show_past_events
-      feeds = feeds.where(user: author) if author
-      unless user.community == :pfp
-        # outings are not filtered out based on update date
-        feeds = feeds.where("group_type = 'outing' or feeds.updated_at > ?", time_range.hours.ago)
-      end
-      feeds = feeds.within_bounding_box(box) if latitude && longitude
-
-      status_clauses = []
-      status_bindings = []
-      if tour_status
-        status_clauses.push "feedable_type='Tour' AND feeds.status IN (?)"
-        status_bindings.push tour_status
-      else
-        status_clauses.push "feedable_type='Tour'"
-      end
-      if entourage_status
-        status_clauses.push "feedable_type='Entourage' AND feeds.status IN (?)"
-        status_bindings.push entourage_status
-      else
-        status_clauses.push "feedable_type='Entourage' AND feeds.status != 'suspended'"
-      end
-      if context == :myfeed && (entourage_status.nil? || entourage_status&.include?('open'))
-        status_clauses.push "feedable_type='Entourage' AND feeds.status = 'suspended' AND feeds.user_id = ?"
-        status_bindings.push user.id
-      end
-      if status_clauses.any?
-        feeds = feeds.where(
-          status_clauses.map { |clause| "(#{clause})" }.join(" OR "),
-          *status_bindings
-        )
+      elsif !user.pro?
+        feeds = feeds.where(feedable_type: "Entourage")
       end
 
-      #If we have both created_by_me filter AND invited_in filter, then we look for created_by_me OR invited_in feeds
-      inclusive = author.blank? || invitee.blank?
-      feeds = filter_by_invitee(feeds: feeds, inclusive: inclusive)
+      unless show_past_events
+        feeds = feeds.where("group_type not in (?) or metadata->>'starts_at' >= ?", [:outing], OutingsFinder::ESTIMATED_DURATION.ago)
+      end
 
-      feeds =
-        if context == :feed && cursor
-          order_by_distance(feeds: feeds).sort_by(&:created_at).reverse
-        else
-          feeds = feeds.before(before) if before
-          feeds.order("updated_at DESC").page(page).per(per)
-        end
+      # actions are filtered out based on update date
+      feeds = feeds.where("group_type not in (?) or feeds.updated_at >= ?", [:action, :tour], time_range.hours.ago)
 
-      # execute SQL query: feeds is now an Array.
-      feeds = feeds.to_a
+      feeds = feeds.within_bounding_box(box)
+
+      feeds = order_by_distance(feeds: feeds)
+      feeds = feeds.page(page).per(per)
+
+      feeds = feeds.preload(feedable: {user: :partner})
+
+      feeds = feeds.sort_by(&:created_at).reverse
+      # Note: feeds is now an Array.
 
       # detect if this was the last page (less items than requested)
       if feeds.count < per
         @last_page = true
       end
 
-      if user.community == :entourage && context == :feed && latitude && longitude && page == 1
-        pinned = Onboarding::V1.pinned_entourage_for area, user: user
-        if !pinned.nil?
-          feeds = pin(pinned, feeds: feeds)
-          @metadata.merge!(onboarding_entourage_pinned: true, area: area)
-        end
-      end
-
-      # if user.community == :entourage && context == :feed && latitude && longitude && page == 1
+      if user.community == :entourage && page == 1
+      #   pinned = Onboarding::V1.pinned_entourage_for area, user: user
+      #   if !pinned.nil?
+      #     feeds = pin(pinned, feeds: feeds)
+      #     @metadata.merge!(onboarding_entourage_pinned: true, area: area)
+      #   end
+      #
       #   case area
       #   when 'Paris République', 'Paris 17 et 9', 'Paris 15', 'Paris 5', 'Paris'
       #     feeds = pin(10140, feeds: feeds)
@@ -183,7 +135,7 @@ module FeedServices
       #   when 'Lyon Ouest', 'Lyon Est', 'Lyon'
       #     feeds = pin(10143, feeds: feeds)
       #   end
-      # end
+      end
 
       feeds = insert_announcements(feeds: feeds) if announcements == :v1
 
@@ -191,38 +143,85 @@ module FeedServices
       preload_entourage_moderations(feeds)
       preload_tour_user_organizations(feeds)
       preload_chat_messages_counts(feeds)
-      preload_last_chat_messages(feeds) if preload_last_message
-      preload_last_join_requests(feeds) if preload_last_message
 
       next_cursor =
-        if cursor.nil?
+        if !legacy_pagination
           nil
         elsif @last_page
           Time.at(LAST_PAGE_CURSOR).as_json
         else
-          Time.at(cursor + 1).as_json
+          Time.at(page + 1).as_json
         end
 
-      FeedWithCursor.new(feeds, cursor: next_cursor, metadata: @metadata)
+      next_page_token =
+        if @last_page
+          nil
+        else
+          self.class.generate_page_token(params_sig: params_sig, cursor: page + 1)
+        end
+
+      FeedWithCursor.new(
+        feeds,
+        cursor: next_cursor,
+        next_page_token: next_page_token,
+        metadata: @metadata
+      )
+    end
+
+    def params
+      {
+        user: UserService.external_uuid(user),
+        types: types,
+        latitude: latitude,
+        longitude: longitude,
+        show_past_events: show_past_events,
+        time_range: time_range,
+        distance: distance,
+        announcements: announcements,
+      }
+    end
+
+    def params_sig
+      @params_sig ||= Digest::MD5.hexdigest(JSON.fast_generate(params))
+    end
+
+    def self.reformat_legacy_types(entourage_types, show_tours, tour_types)
+      if entourage_types.nil?
+        entourage_types = Entourage::ENTOURAGE_TYPES
+      else
+        entourage_types = entourage_types.gsub(' ', '').split(',') & Entourage::ENTOURAGE_TYPES
+      end
+
+      entourage_types = entourage_types.flat_map do |entourage_type|
+        prefix = "#{entourage_type}_"
+        TYPES['entourage'].values.find_all { |type| type.starts_with?(prefix) }
+      end
+
+      if show_tours != "true"
+        tour_types = []
+      elsif tour_types.nil?
+        tour_types = Tour::TOUR_TYPES
+      else
+        tour_types = tour_types.gsub(' ', '').split(',') & Tour::TOUR_TYPES
+      end
+
+      tour_types = tour_types.map { |tour_type| "tour_#{tour_type}" }
+
+      return (entourage_types + tour_types).join(",").presence
     end
 
     private
-    attr_reader :user, :page, :per, :before, :latitude, :longitude, :show_tours, :feed_type, :types, :context, :show_my_entourages_only, :show_my_tours_only, :show_past_events, :time_range, :tour_status, :entourage_status, :author, :invitee, :distance, :announcements, :cursor, :area, :preload_last_message
+    attr_reader :user, :page, :before, :latitude, :longitude, :types, :show_past_events, :time_range, :distance, :announcements, :cursor, :area, :page_token, :legacy_pagination
+
+    def self.per
+      ITEMS_PER_PAGE
+    end
+    def per; self.class.per; end
 
     def box
       Geocoder::Calculations.bounding_box([latitude, longitude],
                                           distance,
                                           units: :km)
-    end
-
-    def join_types(entourage_types:, tour_types:)
-      entourage_types = formated_type(entourage_types) || Entourage::ENTOURAGE_TYPES
-      tour_types = formated_type(tour_types) || Tour::TOUR_TYPES
-      entourage_types + tour_types
-    end
-
-    def formated_type(types)
-      types&.gsub(" ", "")&.split(",")
     end
 
     TYPES = {
@@ -265,6 +264,8 @@ module FeedServices
     }
 
     def formated_types(types)
+      return if types.nil?
+
       allowed_types = TYPES[user.community.slug]
       allowed_types.merge!(TYPES['entourage_pro']) if user.pro?
 
@@ -274,36 +275,6 @@ module FeedServices
       types += ['ask_for_help_event', 'contribution_event'] if types.include?('outing')
 
       (types & allowed_types.values).uniq
-    end
-
-    def formated_status(status)
-      [status].flatten if status
-    end
-
-    def filter_my_feeds_only(feeds:)
-      if show_my_entourages_only && show_my_tours_only
-        feeds = feeds.joins("INNER JOIN join_requests ON ((join_requests.joinable_type='Entourage' AND feeds.feedable_type='Entourage' AND join_requests.joinable_id=feeds.feedable_id AND join_requests.user_id = #{user.id}  AND join_requests.status <> 'cancelled') OR (join_requests.joinable_type='Tour' AND feeds.feedable_type='Tour' AND join_requests.joinable_id=feeds.feedable_id AND join_requests.user_id = #{user.id}) AND join_requests.status='accepted')")
-      elsif show_my_entourages_only
-        feeds = feeds.joins("INNER JOIN join_requests ON ((join_requests.joinable_type='Entourage' AND feeds.feedable_type='Entourage' AND join_requests.joinable_id=feeds.feedable_id AND join_requests.status='accepted' AND join_requests.user_id = #{user.id}) OR (join_requests.joinable_type='Tour' AND feeds.feedable_type='Tour' AND join_requests.joinable_id=feeds.feedable_id AND join_requests.user_id = #{user.id}))")
-      elsif show_my_tours_only
-        feeds = feeds.joins("INNER JOIN join_requests ON ((join_requests.joinable_type='Entourage' AND feeds.feedable_type='Entourage' AND join_requests.joinable_id=feeds.feedable_id AND join_requests.user_id = #{user.id}) OR (join_requests.joinable_type='Tour' AND feeds.feedable_type='Tour' AND join_requests.joinable_id=feeds.feedable_id AND join_requests.status='accepted' AND join_requests.user_id = #{user.id}))")
-      end
-      feeds
-    end
-
-    def filter_past_events(feeds:)
-      feeds.where("(group_type not in (?) or metadata->>'starts_at' >= ?)", [:outing], Time.now)
-    end
-
-    def filter_by_invitee(feeds:, inclusive:)
-      return feeds unless invitee
-
-      feeds = feeds.joins("#{join_type(inclusive)} entourage_invitations ON ((entourage_invitations.invitable_type='Entourage' AND feeds.feedable_type='Entourage' AND entourage_invitations.invitable_id=feeds.feedable_id AND entourage_invitations.status='accepted') OR (entourage_invitations.invitable_type='Tour' AND feeds.feedable_type='Tour' AND entourage_invitations.invitable_id=feeds.feedable_id  AND entourage_invitations.status='accepted')  AND entourage_invitations.invitee_id=#{invitee.id})")
-      feeds
-    end
-
-    def join_type(inclusive)
-      inclusive ? "INNER JOIN" : "LEFT OUTER JOIN"
     end
 
     def insert_announcements(feeds:)
@@ -323,12 +294,7 @@ module FeedServices
 
     def order_by_distance(feeds:)
       distance_from_center = PostgisHelper.distance_from(latitude, longitude)
-      feeds = feeds.order(distance_from_center)
-
-      @cursor ||= 1
-      @page = cursor
-      @per = 25
-      feeds = feeds.offset((cursor - 1) * 25).limit(25 * cursor)
+      feeds.order(distance_from_center, created_at: :desc)
     end
 
     def pin entourage_id, feeds:
@@ -351,7 +317,6 @@ module FeedServices
 
     def lyon_grenoble_timerange_workaround
       return time_range if time_range != 192 # only workaround the '8 days' setting
-      return time_range if latitude.nil? || longitude.nil?
 
 
       if area.in?(['Lyon Est', 'Lyon Ouest', 'Grenoble'])
@@ -467,6 +432,45 @@ module FeedServices
           last_join_requests[[feed.feedable_type, feed.feedable_id]]
       end
     end
+
+    # This is just for the sake of making the cursor seemingly random and hard
+    # to decode, to discourage clients of caching tokens or forging them.
+    def self.encode_cursor cursor
+      raise ArgumentError unless cursor.in?(0..0xff)
+      random_a, random_b = SecureRandom.bytes(2).unpack('C*')
+      mask = random_a ^ random_b
+      masked_cursor = cursor ^ mask
+      bytes = [random_a, random_b, masked_cursor]
+      cursor_bytes = bytes.pack('C*')
+    end
+
+    def self.decode_cursor cursor_bytes
+      bytes = cursor_bytes.unpack('C*')
+      return if bytes.count != 3
+      random_a, random_b, masked_cursor = bytes
+      mask = random_a ^ random_b
+      cursor = masked_cursor ^ mask
+    end
+
+    def self.generate_page_token params_sig:, cursor:
+      short_params_sig = params_sig.to_str.first(8)
+      cursor_bytes = encode_cursor(cursor)
+      payload = [short_params_sig, cursor_bytes].join('.')
+      Base64.urlsafe_encode64(payload, padding: false)
+    end
+
+    def self.parse_page_token token
+      payload = Base64.urlsafe_decode64(token.to_str)
+      short_params_sig, cursor_bytes = payload.split('.', 2)
+    rescue
+      []
+    end
+
+    def self.decode_page_token params_sig:, token:
+      short_params_sig, cursor_bytes = parse_page_token(token)
+      return nil if short_params_sig != params_sig.first(8)
+      cursor = decode_cursor(cursor_bytes)
+    end
   end
 
   # lazily evaluates if the coordinates are inside one of the pre-defined areas
@@ -568,15 +572,5 @@ module FeedServices
       y = (@lng - lng) * coeff
       KM_PER_DEG * ::Math.sqrt(x**2 + y**2)
     end
-  end
-
-  class FeedWithCursor
-    def initialize entries, cursor:, metadata:{}
-      @cursor = cursor
-      @entries = entries
-      @metadata = metadata
-    end
-
-    attr_reader :entries, :cursor, :metadata
   end
 end

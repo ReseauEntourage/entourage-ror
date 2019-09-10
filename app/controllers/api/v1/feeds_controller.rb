@@ -6,23 +6,19 @@ module Api
 
       #curl -H "Content-Type: application/json" "https://entourage-back-preprod.herokuapp.com/api/v1/feeds.json?token=azerty"
       def index
-        feeds = FeedServices::FeedFinder.new(context: :feed,
-                                             user: current_user_or_anonymous,
-                                             page: params[:page],
-                                             per: params[:per],
-                                             before: params[:before],
-                                             latitude: params[:latitude],
-                                             longitude: params[:longitude],
-                                             show_tours: params[:show_tours],
-                                             entourage_types: params[:entourage_types],
-                                             tour_types: params[:tour_types],
-                                             types: params[:types],
-                                             time_range: time_range,
-                                             show_my_entourages_only: params[:show_my_entourages_only],
-                                             show_my_tours_only: params[:show_my_tours_only],
-                                             show_past_events: params[:show_past_events],
-                                             distance: params[:distance],
-                                             announcements: params[:announcements]).feeds
+        feeds = FeedServices::FeedFinder.new(
+          user: current_user_or_anonymous,
+          latitude: params[:latitude],
+          longitude: params[:longitude],
+          types: types,
+          show_past_events: params[:show_past_events],
+          time_range: time_range,
+          distance: params[:distance],
+          announcements: params[:announcements],
+          page_token: params[:page_token],
+          legacy_pagination: legacy_pagination,
+          before: params[:before],
+        ).feeds
 
         render json: ::V1::LegacyFeedSerializer.new(feeds: feeds, user: current_user_or_anonymous, base_url: request.base_url, key_infos: api_request.key_infos).to_json, status: 200
       end
@@ -49,6 +45,18 @@ module Api
         outing_params.require(:latitude)
         outing_params.require(:longitude)
         outing_params
+      end
+
+      def types
+        if params.key?(:show_tours) || params.key?(:entourage_types)
+          FeedServices::FeedFinder.reformat_legacy_types(params[:entourage_types], params[:show_tours], params[:tour_types])
+        else
+          params[:types]
+        end
+      end
+
+      def legacy_pagination
+        params.key?(:before)
       end
     end
   end

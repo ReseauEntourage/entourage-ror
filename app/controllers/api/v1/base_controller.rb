@@ -1,3 +1,5 @@
+require_dependency 'api/v1/api_error'
+
 module Api
   module V1
     class BaseController < ApplicationController
@@ -12,6 +14,11 @@ module Api
       rescue_from ApiRequest::Unauthorised do |e|
         Rails.logger.error e
         render json: {message: 'Missing API Key or invalid key'}, status: 426
+      end
+
+      rescue_from ApiError do |e|
+        Rails.logger.error e
+        render json: e.as_json, status: e.code
       end
 
       rescue_from ActionController::ParameterMissing do |e|
