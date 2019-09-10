@@ -1,8 +1,11 @@
 module Api
   module V1
     class UserApplicationsController < Api::V1::BaseController
+      allow_anonymous_access only: [:update, :destroy]
+
       #curl -X PUT -H 'API_KEY:2b8259ac4aad2cfd0b46be77' -d '{ "application": {"device_family": "ANDROID", "device_os": "android 6.0.1", "push_token": "fSxmlgKhWuY:APA91bEgeYtJsRRwZQAJxaeoelG42N9NuDH8Im3Mor8F1_TplGhRnXUrI6MhZRppXOwyuHKjWVWTn1Cu0zCdO_U8DjR2VQFE0rDx4d4PLQ123Tixw-tfxLi2gB6QraZBCPE1Q9F2lijy", "version": "1.2.608" }}' -H "Content-Type: application/json" "http://localhost:3000/api/v1/applications.json?token=0cb4507e970462ca0b11320131e96610"
       def update
+        return head :no_content if current_user_or_anonymous.anonymous?
         if user_application_params[:push_token].in?(['0', ''])
           # we don't delete tokens anymore
           return head :no_content
