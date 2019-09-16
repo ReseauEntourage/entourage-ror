@@ -57,10 +57,13 @@ module Api
 
               user.community.links[key] % {user_id: user_id}
             end,
+          'suggestion' =>
+            "https://entourage-asso.typeform.com/to/TUpltC?user_id=#{user_id}",
           'feedback' =>
             lambda do |user|
               user.community.links['feedback'] % {user_id: user_id}
             end,
+          'jobs' => 'https://www.entourage.social/nous-rejoindre/',
           'volunteering' =>
             "https://entourage-asso.typeform.com/to/U5MocH?user_id=#{user_id}",
           'propose-poi' =>
