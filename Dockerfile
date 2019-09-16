@@ -21,7 +21,7 @@ ENV LANG en_US.utf8
 
 RUN npm install -g aglio --unsafe
 
-ENV RUBY_VERSION 2.5.3
+ENV RUBY_VERSION 2.5.6
 
 RUN mkdir -p /opt/rubies/$RUBY_VERSION \
  && curl -s http://s3.amazonaws.com/heroku-buildpack-ruby/$HEROKU_STACK/ruby-$RUBY_VERSION.tgz \
@@ -45,7 +45,7 @@ RUN su docker-user -s /bin/bash -c "\
       source /etc/profile.d/ruby.sh \
    && echo gem: --no-document > ~/.gemrc \
    && mkdir ~/.gem \
-   && gem install bundler foreman"
+   && gem install 'bundler:~>1' foreman"
 
 RUN \
   repo=https://github.com/rbspy/rbspy; \
