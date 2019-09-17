@@ -92,6 +92,7 @@ module EmailDeliveryHooks
     if EmailDelivery.for_campaign(attributes[:campaign])
                     .exists?(user_id: attributes[:user_id])
       message.perform_deliveries = false
+      Rails.logger.debug "type=email_delivery_hook.dropped_duplicate campaign=#{attributes[:campaign]} user_id=#{attributes[:user_id]}"
     end
   end
 
@@ -104,6 +105,9 @@ module EmailDeliveryHooks
   #
   def self.delivered_email(message)
     return unless message.perform_deliveries
+    if !Rails.env.production?
+      Rails.logger.debug "type=email_delivery.delivery_method method=#{ActionMailer::Base.delivery_methods.invert[message.delivery_method.class]} campaign=#{data(message).dig(:tracking, :campaign)} user_id=#{data(message).dig(:tracking, :user_id)}"
+    end
     track_delivery_timestamp(message)
     track_detailed_delivery(message) if detailed_tracking_required?(message)
   rescue => e

@@ -20,10 +20,11 @@ end
 
 cleanup_db
 
-action = create :entourage
 user = create :public_user
+action = create :entourage
+action_join_request = create :join_request, user: user, joinable: action, role: :member, status: :accepted
 event = create(:outing).reload
-join_request = create :join_request, user: user, joinable: event, role: :participant, status: :accepted
+event_join_request = create :join_request, user: user, joinable: event, role: :participant, status: :accepted
 create :chat_message, messageable: event, user: event.user
 
 headers = []
@@ -37,12 +38,12 @@ headers = []
   GroupMailer.action_confirmation(action),
   MemberMailer.action_follow_up_day_10(action),
   MemberMailer.action_follow_up_day_20(action),
-  MemberMailer.action_outcome_success(action),
+  GroupMailer.action_success_creator(action_join_request),
   GroupMailer.event_created_confirmation(event),
-  GroupMailer.event_joined_confirmation(join_request),
-  GroupMailer.event_reminder_organizer(join_request),
-  GroupMailer.event_reminder_participant(join_request),
-  GroupMailer.event_followup_organizer(join_request),
+  GroupMailer.event_joined_confirmation(event_join_request),
+  GroupMailer.event_reminder_organizer(event_join_request),
+  GroupMailer.event_reminder_participant(event_join_request),
+  GroupMailer.event_followup_organizer(event_join_request),
   UnreadReminderEmail.delivery(UnreadReminderEmail::Presenter.new(user)),
   DigestEmailService.delivery(user, [action.id, event.id], suggested_postal_code: '75001'),
 ].each do |delivery|
@@ -121,8 +122,14 @@ data.each do |mdata|
     custom_campaign: mdata[:campaign],
     from: mdata[:from]
   )
-  raise if campaigns.count != 1
-  mdata[:campaign_id] = campaigns.first.id
+  case campaigns.count
+  when 1
+    mdata[:campaign_id] = campaigns.first.id
+  when 0
+    mdata[:campaign_id] = nil
+  else
+    raise "campaigns.count = #{campaigns.count} for #{mdata[:campaign]}"
+  end
 end
 
 vars = {}
@@ -186,7 +193,7 @@ end
 data.each do |m|
   a = [
     "[#{nbsp template_names[m[:template]]}](https://app.mailjet.com/template/#{m[:template]}/build)",
-    "[#{m[:campaign]}](https://app.mailjet.com/stats/campaigns-basic/#{mailjet_id m[:campaign_id]})",
+    m[:campaign_id] ? "[#{m[:campaign]}](https://app.mailjet.com/stats/campaigns-basic/#{mailjet_id m[:campaign_id]})" : m[:campaign],
     "[#{m[:template]}](https://app.mailjet.com/resource/template/#{m[:template]}/render)"
   ]
   shared_vars.each do |var|

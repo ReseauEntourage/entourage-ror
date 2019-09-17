@@ -21,6 +21,32 @@ class GroupMailer < MailjetMailer
     )
   end
 
+  def action_success_creator join_request
+    creator = join_request.user
+    action = join_request.joinable
+
+    mailjet_email(
+      to: creator,
+      campaign_name: :action_success_creator,
+      deliver_only_once: true,
+      template_id: 366621,
+      variables: [
+        :first_name,
+        :login_link,
+        action => [
+          :entourage_title,
+        ],
+        targeting_profile: creator.targeting_profile.presence || "null",
+        volunteering_form_url: redirect_api_v1_link_url(
+          host: API_HOST,
+          protocol: :https,
+          id: :volunteering,
+          token: action.user.token,
+        )
+      ]
+    )
+  end
+
   def event_created_confirmation event
     event_creator = event.user
 

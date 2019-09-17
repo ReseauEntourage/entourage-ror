@@ -76,24 +76,6 @@ class MemberMailer < MailjetMailer
                   }
   end
 
-  def action_outcome_success(action)
-    mailjet_email to: action.user,
-                  template_id: 366621,
-                  campaign_name: :action_aboutie,
-                  variables: {
-                    action => [
-                      :entourage_title,
-                      :entourage_share_url,
-                    ],
-                    volunteering_form_url: redirect_api_v1_link_url(
-                      host: API_HOST,
-                      protocol: :https,
-                      id: :volunteering,
-                      token: action.user.token,
-                    )
-                  }
-  end
-
   def tour_report(tour)
     @tour = tour
     @user = tour.user
