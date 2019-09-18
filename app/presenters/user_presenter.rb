@@ -35,8 +35,24 @@ class UserPresenter < ApplicationPresenter
     (user.coordinated_organizations + [user.organization]).compact.sort_by(&:name)
   end
 
+  def self.format_first_name first_name
+    first_name = first_name&.squish.presence
+    return nil if first_name.nil?
+
+    if first_name.match?(/^[[:alpha:]]/)
+      first_name[0] = first_name[0].upcase
+    end
+
+    first_name
+  end
+
   def display_name
-    "#{user.first_name} #{user.last_name[0, 1]}" if [user.first_name, user.last_name].compact.present?
+    first_name = UserPresenter.format_first_name(user.first_name)
+    last_name_first = user.last_name&.strip&.first.presence
+    if last_name_first&.match?(/^[[:alpha:]]/)
+      last_name_first = last_name_first.capitalize + '.'
+    end
+    [first_name, last_name_first].compact.join(' ').presence
   end
 
   private

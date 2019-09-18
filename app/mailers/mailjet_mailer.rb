@@ -17,7 +17,7 @@ class MailjetMailer < ActionMailer::Base
 
     merge_default_variables = true
     default_variables = {
-      first_name: user.first_name,
+      first_name: UserPresenter.format_first_name(user.first_name),
       user_id: UserServices::EncodedId.encode(user.id),
       webapp_login_link: (ENV['WEBSITE_URL'] + '/app'),
       login_link: (ENV['WEBSITE_URL'] + '/deeplink/feed')

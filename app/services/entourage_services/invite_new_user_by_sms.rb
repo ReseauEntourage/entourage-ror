@@ -45,8 +45,8 @@ module EntourageServices
 
     def message
       @message ||= begin
-        inviter_name = [inviter.first_name, inviter.last_name].map { |s| sms_transliterate(s || "").gsub(/\s+/, ' ').strip.presence }.compact.join(' ').presence || "un ami"
-        inviter_name = inviter_name.truncate(32, omission: '..')
+        inviter_name = UserPresenter.new(user: inviter).display_name || "un ami"
+        inviter_name = sms_transliterate(inviter_name).truncate(32, omission: '..')
         "Bonjour, #{inviter_name} vous invite sur Entourage, le réseau solidaire. Votre code : #{invitee_sms_code}. Trouvez l'application ici : #{link}"
       end
     end

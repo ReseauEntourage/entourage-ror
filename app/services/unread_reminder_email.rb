@@ -142,8 +142,7 @@ module UnreadReminderEmail
       @many_authors = author_ids.count > 1
 
       if author_ids.count > 0
-        @first_author = UserService.name(
-          User.select(:first_name, :last_name).find(author_ids.first))
+        @first_author = UserPresenter.new(user: User.select(:first_name, :last_name).find(author_ids.first)).display_name
       end
     end
 
@@ -265,7 +264,7 @@ module UnreadReminderEmail
           other = group.members.where.not(id: @user.id).first
           image_url = UserServices::Avatar.new(user: other).thumbnail_url(expire: 7.days)
           type = image_url ? 'conversation_with_image_url' : 'conversation'
-          title = UserService.name(other)
+          title = UserPresenter.new(user: other).display_name
         end
 
         type ||= 'other'

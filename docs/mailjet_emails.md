@@ -8,16 +8,17 @@ Elles s'insèrent en écrivant {{var: nom_variable:”valeur par défaut”}}
 
 
 Tous les templates partagent les variables mentionnées dans GitHub dans la section qui commence par:
-`variables.reverse_merge!(
-first_name: user.first_name,
-user_id: UserServices::EncodedId.encode(user.id),
-webapp_login_link: (ENV['WEBSITE_URL'] + '/app?auth=' + auth_token),
-login_link: (ENV['WEBSITE_URL'] + '/deeplink/feed?auth=' + auth_token)
- )
- `
+```ruby
+default_variables = {
+  first_name: UserPresenter.format_first_name(user.first_name),
+  user_id: UserServices::EncodedId.encode(user.id),
+  webapp_login_link: (ENV['WEBSITE_URL'] + '/app'),
+  login_link: (ENV['WEBSITE_URL'] + '/deeplink/feed')
+}
+```
 
 ## Variables partagées
-- first_name prénom
+- first_name prénom avec une majuscule
 - user_id
 - login_link: sert à auto-logger le user dans la webapp s’il est sur desktop, ou s’il est sur mobile mais sans l’app, et à ouvrir sa session dans l’app s’il est sur mobile avec l’app. Il expire au bout de 7 jours.
 - webapp_login_link: sert à auto-logger le user forcément dans la webapp, même s’il a l’app et ouvre le mail sur son tel. Pratique pour faire découvrir la webapp. Il expire au bout de 7 jours. En vue de sécuriser le réseau, et parce que la plupart des mails sont ouverts dans les 2h après réception, ce temps d'expiration pourra être réduit à 2h (EN-961).

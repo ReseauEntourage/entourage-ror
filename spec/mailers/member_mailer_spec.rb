@@ -53,6 +53,13 @@ end
 describe MemberMailer, type: :mailer do
   let(:user) { create :public_user }
 
+  context "when first_name is not capitalized" do
+    let(:user) { create :public_user, first_name: " bob" }
+    let(:mail) { MemberMailer.mailjet_email(to: user, template_id: 0, campaign_name: :c) }
+    let(:json_variables) { JSON.parse(mail['X-MJ-Vars'].value) }
+    it { expect(json_variables['first_name']).to eq "Bob" }
+  end
+
   describe '#tour_report' do
     let!(:tour) { FactoryGirl.create :tour, :filled }
     let!(:mail) { MemberMailer.tour_report(tour) }
