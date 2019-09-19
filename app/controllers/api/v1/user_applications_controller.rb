@@ -24,6 +24,7 @@ module Api
           version:       user_application_params[:version],
           device_os:     user_application_params[:device_os],
           device_family: device_family,
+          notifications_permissions: user_application_params[:notifications_permissions],
           user_id:       current_user.id,
         }
 
@@ -48,7 +49,7 @@ module Api
       private
 
       def user_application_params
-        params.require(:application).permit(:push_token, :device_os, :version)
+        params.require(:application).permit(:push_token, :device_os, :version, :notifications_permissions)
       end
     end
   end
