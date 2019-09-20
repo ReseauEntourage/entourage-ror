@@ -28,6 +28,12 @@ module Api
           user_id:       current_user.id,
         }
 
+        SessionHistory.track_notifications_permissions(
+          user_id: current_user.id,
+          platform: api_request_platform,
+          notifications_permissions: user_application_params[:notifications_permissions]
+        )
+
         begin
           user_application.skip_uniqueness_validation_of_push_token!
           user_application.save!

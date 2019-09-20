@@ -154,9 +154,7 @@ module Api
       private
 
       def track_session
-        platform = api_request_platform
-        return unless platform.present?
-        SessionHistory.track user_id: current_user.id, platform: platform
+        SessionHistory.track user_id: current_user.id, platform: api_request_platform
       rescue => e
         Raven.capture_exception(e)
       end
