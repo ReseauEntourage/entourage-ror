@@ -44,7 +44,8 @@ class JoinRequest < ActiveRecord::Base
   end
 
   def self.with_unread_messages
-    joins(%(
+    where(status: :accepted)
+    .joins(%(
       join chat_messages on (
         messageable_id = joinable_id and
         messageable_type = joinable_type and
