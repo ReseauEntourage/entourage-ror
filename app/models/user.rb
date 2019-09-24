@@ -49,8 +49,6 @@ class User < ActiveRecord::Base
   enum device_type: [ :android, :ios ]
   attribute :roles, Experimental::JsonbSet.new
 
-  delegate :name, :description, to: :organization, prefix: true
-
   scope :type_pro, -> { where(user_type: "pro") }
   scope :validated, -> { where(validation_status: "validated") }
   scope :blocked, -> { where(validation_status: "blocked") }
@@ -226,6 +224,14 @@ class User < ActiveRecord::Base
 
   def anonymous?
     false
+  end
+
+  def organization_name
+    organization.name if organization_id
+  end
+
+  def organization_description
+    organization.description if organization_id
   end
 
   protected
