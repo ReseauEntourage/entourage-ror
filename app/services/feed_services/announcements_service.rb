@@ -156,16 +156,6 @@ module FeedServices
       # )
 
       # announcements.push Announcement.new(
-      #   id: 13,
-      #   title: "Entourage recrute ses ambassadeurs",
-      #   body: "Devenez ambassadeur Entourage, une mission de bénévolat exaltante ! Pour s'engager et rendre votre quartier plus humain avec les personnes SDF.",
-      #   image_url: true,
-      #   action: "Je postule",
-      #   author: moderator,
-      #   webview: true
-      # )
-
-      # announcements.push Announcement.new(
       #   id: 14,
       #   title: "Participez à l'élan de générosité",
       #   body: "Entourage a besoin de votre soutien pour réchauffer le cœur des sans-abri en cette fin d'année",
@@ -369,12 +359,83 @@ module FeedServices
       #   )
       # end
 
+      # announcements.push Announcement.new(
+      #   id: 46,
+      #   title: "Vous êtes victimes ou témoins de violences conjugales, appelez le 3919",
+      #   body: "Le 3919 est le numéro national unique 7 jours sur 7 de 9h à 22h et de 9h à 18h les samedi, dimanche et jours fériés. En cas de danger immédiat, contactez la police (17) ou le SAMU (15).",
+      #   image_url: true,
+      #   action: "Plus d’informations",
+      #   author: moderator,
+      #   webview: true
+      # )
+
+      # announcements.push Announcement.new(
+      #   id: 34,
+      #   title: "Au coeur d'Entourage : le Comité de la rue !",
+      #   body: %(Ils sont 9 personnes et ont tous connu la rue (ou y vivent encore actuellement) : ils sont le "poumon" du projet.),
+      #   image_url: true,
+      #   action: "Les rencontrer",
+      #   author: moderator,
+      #   webview: true
+      # )
+
       announcements.push Announcement.new(
-        id: 46,
-        title: "Vous êtes victimes ou témoins de violences conjugales, appelez le 3919",
-        body: "Le 3919 est le numéro national unique 7 jours sur 7 de 9h à 22h et de 9h à 18h les samedi, dimanche et jours fériés. En cas de danger immédiat, contactez la police (17) ou le SAMU (15).",
+        id: 13,
+        title: "Allez plus loin en devenant bénévole !",
+        body: "Le réseau a besoin de vous pour faire vivre la solidarité. Mission selon vos disponibilités (env 2h/semaine) !",
         image_url: true,
-        action: "Plus d’informations",
+        action: "Je veux plus d’info",
+        author: moderator,
+        webview: true
+      )
+
+      conversation_uuid = ConversationService.uuid_for_participants(
+        [
+          moderator.id,
+          user.id
+        ],
+        validated: false
+      )
+      conversation_url = "#{ENV['DEEPLINK_SCHEME']}://entourage/#{conversation_uuid}"
+
+      announcements.push Announcement.new(
+        id: 35,
+        title: "Guillaume à votre écoute !",
+        body: "Vous avez une question sur le monde de la rue, vous avez besoin d'aide ? Je suis là pour vous aider !",
+        image_url: true,
+        action: "Contactez-moi",
+        url: conversation_url,
+        author: moderator,
+        webview: true
+      )
+
+      announcements.push Announcement.new(
+        id: 47,
+        title: "Un smartphone dans un tiroir ?",
+        body: "À la rue, c'est très utile. Entourage s'engage à les redistribuer aux personnes qui en ont besoin !",
+        image_url: true,
+        action: "Donner mon smartphone",
+        author: moderator,
+        webview: false,
+        url: "mailto:guillaume@entourage.social"
+      )
+
+      announcements.push Announcement.new(
+        id: 49,
+        title: "Salon SEIS #4 à Rennes",
+        body: "RDV le 10 octobre de 9h à 17h au salon des Innovations Solidaires à Askoria (M° Villejean - Université)",
+        image_url: true,
+        action: "En savoir plus",
+        author: moderator,
+        webview: true
+      ) if Time.zone.today.to_s <= '2019-10-10' && area == 'Rennes'
+
+      announcements.push Announcement.new(
+        id: 48,
+        title: "On vous tend le micro",
+        body: "Comme Louis et Sarah, dites-nous ce que le réseau Entourage vous a apporté !",
+        image_url: true,
+        action: "Je raconte",
         author: moderator,
         webview: true
       )
@@ -399,26 +460,6 @@ module FeedServices
         action: "Découvrir l’offre !",
         author: moderator,
         webview: false
-      )
-
-      conversation_uuid = ConversationService.uuid_for_participants(
-        [
-          moderator.id,
-          user.id
-        ],
-        validated: false
-      )
-      conversation_url = "#{ENV['DEEPLINK_SCHEME']}://entourage/#{conversation_uuid}"
-
-      announcements.push Announcement.new(
-        id: 35,
-        title: "Guillaume, toujours à votre écoute.",
-        body: "Hello, je suis le modérateur du réseau : je suis là pour vous accompagner et vous orienter. Contactez-moi si vous avez la moindre question !",
-        image_url: true,
-        action: "Contacter Guillaume",
-        url: conversation_url,
-        author: moderator,
-        webview: true
       )
 
       announcements.push Announcement.new(
@@ -447,16 +488,6 @@ module FeedServices
         body: "Ça fait toujours du bien de s'inspirer de ce qui fonctionne ! Voici les initiatives du réseau Entourage qui ont abouti, et créé plus de chaleur humaine dans les rues.",
         image_url: true,
         action: "Lire les succès",
-        author: moderator,
-        webview: true
-      )
-
-      announcements.push Announcement.new(
-        id: 34,
-        title: "Au coeur d'Entourage : le Comité de la rue !",
-        body: %(Ils sont 9 personnes et ont tous connu la rue (ou y vivent encore actuellement) : ils sont le "poumon" du projet.),
-        image_url: true,
-        action: "Les rencontrer",
         author: moderator,
         webview: true
       )

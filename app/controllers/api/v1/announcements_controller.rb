@@ -52,6 +52,9 @@ module Api
           44 => :megaphone,
           45 => :megaphone,
           46 => :megaphone,
+          47 => :heart,
+          48 => :info,
+          49 => :info,
         }[params[:id].to_i]
 
         redirect_to view_context.asset_url("assets/announcements/icons/#{icon}.png")
@@ -73,7 +76,7 @@ module Api
         image = {
           10 => 'guillaume.jpg',
           11 => 'action.jpg',
-          13 => 'ambassadors.jpg',
+          13 => 'ambassadors-2.jpg',
           14 => 'collecte-2018.jpg',
           16 => 'noel.jpg',
           17 => '2.png',
@@ -94,7 +97,7 @@ module Api
           32 => '32.jpg',
           33 => '33.jpg',
           34 => '34.jpg',
-          35 => '35.jpg',
+          35 => 'guillaume-2.jpg',
           36 => '36.jpg',
           37 => '37.jpg',
           38 => '38.jpg',
@@ -106,6 +109,9 @@ module Api
           44 => 'linkedout.jpg',
           45 => 'canicule.jpg',
           46 => '3919.png',
+          47 => 'stat-smartphone.png',
+          48 => 'verbatims.png',
+          49 => 'seis-4.png',
         }[params[:id].to_i]
 
         return render nothing: true, status: :not_found if image.nil?
@@ -223,6 +229,16 @@ module Api
           url = "https://blog.entourage.social/2017/06/19/charles-aznavour-avait-tort-la-misere-nest-pas-moins-penible-au-soleil/#site-content"
         when 46
           url = "http://www.solidaritefemmes.org/"
+        when 48
+          user_id =
+            if current_user
+              UserServices::EncodedId.encode(current_user.id)
+            else
+              "anonymous"
+            end
+          url = "https://entourage-asso.typeform.com/to/QeQ4X7?user_id=#{user_id}"
+        when 49
+          url = "https://www.askoria.eu/seis/"
         end
 
         begin
