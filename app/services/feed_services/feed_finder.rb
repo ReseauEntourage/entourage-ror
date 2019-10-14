@@ -125,16 +125,18 @@ module FeedServices
       #     @metadata.merge!(onboarding_entourage_pinned: true, area: area)
       #   end
       #
-      #   case area
-      #   when 'Paris République', 'Paris 17 et 9', 'Paris 15', 'Paris 5', 'Paris'
-      #     feeds = pin(10140, feeds: feeds)
-      #   when 'Lille'
-      #     feeds = pin(10141, feeds: feeds)
-      #   when 'Rennes'
-      #     feeds = pin(10142, feeds: feeds)
-      #   when 'Lyon Ouest', 'Lyon Est', 'Lyon'
-      #     feeds = pin(10143, feeds: feeds)
-      #   end
+        case area
+        when 'Paris République', 'Paris 17 et 9', 'Paris 15', 'Paris 5', 'Paris'
+          feeds = pin(13812, feeds: feeds)
+        when 'Lille'
+          feeds = pin(13814, feeds: feeds)
+        when 'Rennes'
+          feeds = pin(13817, feeds: feeds)
+        when 'Lyon Ouest', 'Lyon Est', 'Lyon'
+          feeds = pin(13815, feeds: feeds)
+        when 'La Défense'
+          feeds = pin(13813, feeds: feeds)
+        end
       end
 
       feeds = insert_announcements(feeds: feeds) if announcements == :v1
@@ -480,7 +482,10 @@ module FeedServices
     # coeff is for the length of a degree of longitude depending on the latitude
     # area[:coeff] = Math.cos(area[:lat] * (::Math::PI / 180)).round(5)
     # see: http://jonisalonen.com/2014/computing-distance-between-coordinates-can-be-simple-and-fast/
+    #
+    # to plot: https://www.calcmaps.com/map-radius/
     AREAS = [
+      { name: 'La Défense',           lat: 48.8918, lng:  2.2384, radius:  1.2, coeff: 0.65748 },
       { name: 'Clichy Levallois',     lat: 48.9,    lng:  2.2833, radius:  2.0, coeff: 0.65738 },
       { name: 'Marseille',            lat: 43.2967, lng:  5.3764, radius: 10.0, coeff: 0.72781 },
       { name: 'Toulouse',             lat: 43.6,    lng:  1.4333, radius: 10.0, coeff: 0.72417 },
