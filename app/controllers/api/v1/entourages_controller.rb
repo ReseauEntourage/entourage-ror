@@ -124,7 +124,7 @@ module Api
       def ensure_permission! permission
         has_permission = GroupAccessService.send(
           permission,
-          user: current_user,
+          user: current_user_or_anonymous,
           group: @entourage
         )
         raise ActiveRecord::RecordNotFound unless has_permission

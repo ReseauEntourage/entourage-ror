@@ -307,7 +307,7 @@ module FeedServices
       if index != nil
         item = feeds.delete_at(index)
       else
-        item = Announcement::Feed.new(Entourage.find_by(id: entourage_id))
+        item = Announcement::Feed.new(Entourage.visible.find_by(id: entourage_id))
       end
 
       if item.feedable.nil?
