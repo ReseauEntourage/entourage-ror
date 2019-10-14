@@ -21,7 +21,7 @@ ENV LANG en_US.utf8
 
 RUN npm install -g aglio --unsafe
 
-ENV RUBY_VERSION 2.5.6
+ENV RUBY_VERSION 2.5.7
 
 RUN mkdir -p /opt/rubies/$RUBY_VERSION \
  && curl -s http://s3.amazonaws.com/heroku-buildpack-ruby/$HEROKU_STACK/ruby-$RUBY_VERSION.tgz \
