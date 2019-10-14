@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20191003120900) do
+ActiveRecord::Schema.define(version: 20191014140942) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -190,7 +190,7 @@ ActiveRecord::Schema.define(version: 20191003120900) do
     t.string  "action_recipient_consent_obtained"
     t.date    "moderated_at"
     t.string  "moderation_contact_channel"
-    t.string  "moderator"
+    t.string  "legacy_moderator"
     t.string  "moderation_action"
     t.text    "moderation_comment"
     t.date    "action_outcome_reported_at"
@@ -198,9 +198,11 @@ ActiveRecord::Schema.define(version: 20191003120900) do
     t.string  "action_success_reason"
     t.string  "action_failure_reason"
     t.string  "action_target_type"
+    t.integer "moderator_id"
   end
 
   add_index "entourage_moderations", ["entourage_id"], name: "index_entourage_moderations_on_entourage_id", unique: true, using: :btree
+  add_index "entourage_moderations", ["moderator_id"], name: "index_entourage_moderations_on_moderator_id", using: :btree
 
   create_table "entourage_scores", force: :cascade do |t|
     t.integer  "entourage_id", null: false

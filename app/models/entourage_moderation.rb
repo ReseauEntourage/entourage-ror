@@ -1,6 +1,7 @@
 class EntourageModeration < ActiveRecord::Base
   validates :entourage_id, presence: true
   belongs_to :entourage
+  belongs_to :moderator, class_name: :User
 
   VALUES = {
     # Emetteur. community.targeting_profiles + the following:

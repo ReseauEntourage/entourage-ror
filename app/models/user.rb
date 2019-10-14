@@ -43,6 +43,7 @@ class User < ActiveRecord::Base
   has_many :entourage_scores
   has_many :user_newsfeeds
   has_one :moderation, class_name: 'UserModeration'
+  has_many :entourage_moderations, foreign_key: :moderator_id
   has_many :experimental_pending_request_reminders, class_name: 'Experimental::PendingRequestReminder'
   belongs_to :address, dependent: :destroy
 
