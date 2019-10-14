@@ -88,6 +88,8 @@ class User < ActiveRecord::Base
     .where("#{table_alias} is null")
   }
 
+  scope :moderators, -> { where(admin: true).where("roles ? 'moderator'") }
+
   before_validation do
     if targeting_profile == 'team'
       self.partner_id ||= Partner.where(name: 'Entourage').pluck(:id).first
@@ -108,6 +110,8 @@ class User < ActiveRecord::Base
     return if community.nil?
 
     invalid = roles - community.roles
+    invalid -= community.admin_roles if admin?
+
     errors.add(
       :roles,
       [

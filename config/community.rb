@@ -37,6 +37,10 @@ class Community < BasicObject
     memoize(:roles) { ::Experimental::SymbolSet(struct.roles) }
   end
 
+  def admin_roles
+    memoize(:admin_roles) { ::Experimental::SymbolSet(struct.admin_roles) }
+  end
+
   def targeting_profiles
     memoize(:targeting_profiles) { ::Experimental::SymbolSet(struct.targeting_profiles) }
   end

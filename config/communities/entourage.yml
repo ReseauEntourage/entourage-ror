@@ -11,6 +11,8 @@ links:
   ethics-charter-pro-preprod: https://entourage-asso.typeform.com/to/LI7viw?user_id=%{user_id}
 roles:
   - ambassador
+admin_roles:
+  - moderator
 group_types:
   action:
     message_types: [text]
