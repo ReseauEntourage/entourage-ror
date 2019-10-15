@@ -8,8 +8,7 @@
   </span>
   <div class="pull-right">
     <%
-      moderator = ModerationServices.moderator(community: @user.community)
-      uuid = ConversationService.list_for_participants([moderator.id, @user.id])
+      uuid = ConversationService.list_for_participants([current_admin.id, @user.id])
     %>
     <%= link_to "Contacter", admin_conversation_path(uuid),
           class: "btn btn-primary" %>

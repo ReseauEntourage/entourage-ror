@@ -3,7 +3,7 @@ module Admin
     layout 'admin_large'
 
     def index
-      @user = moderator
+      @user = current_admin
 
       @conversations = Entourage
         .where(group_type: :conversation)
@@ -38,7 +38,7 @@ module Admin
     end
 
     def show
-      user = moderator
+      user = current_admin
       @conversation = find_conversation params[:id], user: user
       join_requests = @conversation.join_requests.accepted.to_a
       join_request = join_requests.find { |r| r.user_id == user.id }
@@ -51,7 +51,7 @@ module Admin
         if @conversation.new_record?
           User.where(id: @conversation.join_requests.map(&:user_id) - [user.id])
         else
-          @conversation.members.where.not(id: moderator.id).merge(JoinRequest.accepted)
+          @conversation.members.where.not(id: user.id).merge(JoinRequest.accepted)
         end
 
       @recipients = @recipients.select(:id, :first_name, :last_name).to_a
@@ -77,11 +77,11 @@ module Admin
         end
       end
 
-      @messages_author = moderator
+      @messages_author = current_admin
     end
 
     def message
-      user = moderator
+      user = current_admin
       conversation = find_conversation params[:id], user: user
 
       join_request =
@@ -114,7 +114,7 @@ module Admin
       status = params[:status]&.to_sym
       raise unless status.in?([:read, :unread])
 
-      user = moderator
+      user = current_admin
       @conversation = find_conversation params[:id], user: user
 
       timestamp =
@@ -133,10 +133,6 @@ module Admin
     end
 
     private
-
-    def moderator
-      @moderator ||= ModerationServices.moderator(community: community)
-    end
 
     def chat_messages_params
       params.require(:chat_message).permit(:content)

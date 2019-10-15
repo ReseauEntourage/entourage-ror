@@ -32,8 +32,7 @@
         </li>
         <li class="<%= :active if controller_name == 'conversations' %>">
           <%
-            moderator = ModerationServices.moderator(community: current_admin.community)
-            unread_count = ConversationService.unread_count_for(moderator)
+            unread_count = ConversationService.unread_count_for(current_admin)
           %>
           <%= link_to admin_conversations_path do %>
             Messages
