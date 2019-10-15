@@ -17,7 +17,17 @@ module Admin
         .page(params[:page])
         .per(50)
 
-      if params.key?(:unread)
+      params.delete(:filter) unless params[:filter].in?(['archived', 'unread'])
+
+      if params[:filter] == 'archived'
+        @conversations = @conversations
+          .where("archived_at >= feed_updated_at")
+      else
+        @conversations = @conversations
+          .where("archived_at < feed_updated_at or archived_at is null")
+      end
+
+      if params[:filter] == 'unread'
         @conversations = @conversations
           .where("last_message_read < feed_updated_at or last_message_read is null")
       end
@@ -46,6 +56,9 @@ module Admin
       @read = join_request.present? &&
               join_request.last_message_read.present? &&
               join_request.last_message_read >= @conversation.feed_updated_at
+      @archived = join_request.present? &&
+                  join_request.archived_at.present? &&
+                  join_request.archived_at >= @conversation.feed_updated_at
 
       @recipients =
         if @conversation.new_record?
@@ -128,8 +141,28 @@ module Admin
       JoinRequest.where(joinable: @conversation).update_all(last_message_read: timestamp)
 
       filters = {}
-      filters[:unread] = true if status == :unread
+      filters[:filter] = :unread if status == :unread
       redirect_to admin_conversations_path(filters)
+    end
+
+    def archive_status
+      status = params[:status]&.to_sym
+      raise unless status.in?([:archived, :inbox])
+
+      user = current_admin
+      @conversation = find_conversation params[:id], user: user
+
+      timestamp =
+        case status
+        when :archived
+          Time.now
+        when :inbox
+          nil
+        end
+
+      JoinRequest.where(joinable: @conversation).update_all(archived_at: timestamp)
+
+      redirect_to admin_conversations_path()
     end
 
     private

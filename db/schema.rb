@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20191014140942) do
+ActiveRecord::Schema.define(version: 20191015151336) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -282,6 +282,7 @@ ActiveRecord::Schema.define(version: 20191014140942) do
     t.datetime "requested_at"
     t.datetime "accepted_at"
     t.datetime "email_notification_sent_at"
+    t.datetime "archived_at"
   end
 
   add_index "join_requests", ["joinable_type", "joinable_id", "status"], name: "index_join_requests_on_joinable_type_and_joinable_id_and_status", using: :btree

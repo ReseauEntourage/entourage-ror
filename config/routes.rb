@@ -62,6 +62,7 @@ Rails.application.routes.draw do
         member do
           post :message
           post :read_status
+          post :archive_status
         end
       end
 

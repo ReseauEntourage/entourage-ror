@@ -57,19 +57,28 @@
 <div class="container">
   <h1>Messages privés</h1>
 
-  <div class="btn-group btn-group-sm" style="margin-bottom: 15px">
+  <div style="margin-bottom: 15px">
+    <div class="btn-group btn-group-sm">
+      <%=
+        link_to(
+          "Tous",
+          params.except(:filter),
+          class: "btn btn-#{params.key?(:filter) ? :default : :primary}"
+        )
+      %>
+      <%=
+        link_to(
+          "Non-lus",
+          params.merge(filter: :unread),
+          class: "btn btn-#{params[:filter] == 'unread' ? :primary : :default}"
+        )
+      %>
+    </div>
     <%=
       link_to(
-        "Tous",
-        params.except(:unread),
-        class: "btn btn-#{params.key?(:unread) == false ? :primary : :default}"
-      )
-    %>
-    <%=
-      link_to(
-        "Non-lus",
-        params.merge(unread: true),
-        class: "btn btn-#{params.key?(:unread) == true ? :primary : :default}"
+        "Archivés",
+        params.merge(filter: :archived),
+        class: "btn btn-#{params[:filter] == 'archived' ? :primary : :default} btn-sm"
       )
     %>
   </div>
