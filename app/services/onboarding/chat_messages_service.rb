@@ -78,14 +78,17 @@ module Onboarding
               params: {content: message}
             )
 
+            success = true
             builder.create do |on|
-              on.success do
-                Event.track('onboarding.chat_messages.welcome.sent', user_id: user.id)
-              end
-
               on.failure do |message|
+                success = false
                 raise ActiveRecord::RecordNotSaved.new("Failed to save the record", message)
               end
+            end
+
+            if success
+              Event.track('onboarding.chat_messages.welcome.sent', user_id: user.id)
+              join_request.update_column(:archived_at, Time.zone.now)
             end
           end
 

@@ -39,6 +39,11 @@ describe Onboarding::ChatMessagesService, type: :service do
       it {
         expect(messages.first.content).to include "Lily-Rose"
       }
+
+      it {
+        admin_join_request = messages.first.messageable.join_requests.find_by(user: admin)
+        expect(admin_join_request).to be_archived
+      }
     end
 
     describe 'outside of active hours' do
@@ -62,8 +67,8 @@ describe Onboarding::ChatMessagesService, type: :service do
     end
 
     describe 'user has already sent a message to the moderator' do
+      let(:conversation) { create :conversation, participants: [user, admin] }
       before do
-        conversation = create :conversation, participants: [user, admin]
         create :chat_message, user: user, messageable: conversation
       end
 
@@ -73,6 +78,10 @@ describe Onboarding::ChatMessagesService, type: :service do
 
       it { expect { subject }.not_to change { ChatMessage.count } }
       it { expect { subject }.to change { event.present? }.to true }
+      it {
+        admin_join_request = conversation.join_requests.find_by(user: admin)
+        expect(admin_join_request).to_not be_archived
+      }
     end
   end
 end
