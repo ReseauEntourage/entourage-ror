@@ -70,14 +70,6 @@ class EntourageModeration < ActiveRecord::Base
       "Message vocal + Mail",
       "Pas besoin d'accompagnement",
     ],
-    # Interlocuteur
-    moderator: [
-      'Guillaume',
-      'Claire',
-      'Clémence',
-      'Anne-Sophie',
-      'Valentine',
-    ],
     # Action
     moderation_action: [
       'Orthographe',

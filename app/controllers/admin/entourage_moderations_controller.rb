@@ -34,7 +34,7 @@ module Admin
       params.require(:entourage_moderation).permit(
         :entourage_id,
         :action_author_type, :action_recipient_type, :action_target_type, :action_type, :action_recipient_consent_obtained,
-        :moderated_at, :moderation_contact_channel, :moderator, :moderation_comment,
+        :moderated_at, :moderation_contact_channel, :moderator_id, :moderation_comment,
         :action_outcome_reported_at, :action_outcome, :action_success_reason, :action_failure_reason,
       )
     end

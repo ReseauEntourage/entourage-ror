@@ -26,7 +26,7 @@ fr:
 
         moderated_at: Date de modération
         moderation_contact_channel: Moyen de contact
-        moderator: Interlocuteur
+        moderator_id: Interlocuteur
         moderation_action: Action
         moderation_comment: Notes
 

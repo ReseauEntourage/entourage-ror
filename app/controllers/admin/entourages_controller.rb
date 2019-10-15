@@ -19,14 +19,30 @@ module Admin
 
       @q = Entourage
         .where(group_type: group_types, community: community)
-        .ransack(ransack_params)
+        .with_moderation
+
+      if (params.keys - ['controller', 'action']).none? && current_user.roles.include?(:moderator)
+        params[:moderator_id] = current_user.id
+      end
+
+      if params[:moderator_id] == 'none'
+        @q = @q.where(entourage_moderations: {moderator_id: nil})
+      elsif params[:moderator_id] == 'any'
+        # default
+      elsif params[:moderator_id].present?
+        @q = @q.where(entourage_moderations: {moderator_id: params[:moderator_id]})
+      else
+        # make it explicit
+        params[:moderator_id] = 'any'
+      end
+
+      @q = @q.ransack(ransack_params)
 
       @entourages =
         @q.result
         .page(params[:page])
         .per(per_page)
         .with_moderator_reads_for(user: current_user)
-        .with_moderation
         .select(%(
           entourages.*,
           entourage_moderations.moderated_at is not null or entourages.created_at < '2018-01-01' as moderated,

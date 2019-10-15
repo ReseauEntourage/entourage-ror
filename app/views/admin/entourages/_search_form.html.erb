@@ -37,46 +37,65 @@
 
   </div>
 </div>
-<div class="btn-group btn-group-sm" style="margin: -10px 0 10px">
-  <%
-    q = params[:q] || {}
-    presets = {
-      "Partout" => {},
-      "Paris" => {
-        country_eq: 'FR', postal_code_start: '75'
-      },
-      "Hauts-de-Seine" => {
-        country_eq: 'FR', postal_code_start: '92'
-      },
-      "Lyon" => {
-        country_eq: 'FR', postal_code_start: '69'
-      },
-      "Grenoble" => {
-        country_eq: 'FR',postal_code_start: '38'
-      },
-      "Rhône-Alpes" => {
-        country_eq: 'FR',
-        postal_code_start_any: ['01', '07', '26', '38', '42', '69', '73', '74']
-      },
-      "Bretagne" => {
-        country_eq: 'FR',
-        postal_code_start_any: ['22', '29', '35', '44', '56']
-      },
-      "Lille" => {
-        country_eq: 'FR', postal_code_start: '59'
-      },
-    }
-    location_keys = [:country_eq, :postal_code_start_any, :postal_code_start]
+<div style="display: flex; margin: -10px 0 10px">
+  <div class="btn-group btn-group-sm" style="flex-grow: 1">
+    <%
+      q = params[:q] || {}
+      presets = {
+        "Partout" => {},
+        "Paris" => {
+          country_eq: 'FR', postal_code_start: '75'
+        },
+        "Hauts-de-Seine" => {
+          country_eq: 'FR', postal_code_start: '92'
+        },
+        "Lyon" => {
+          country_eq: 'FR', postal_code_start: '69'
+        },
+        "Grenoble" => {
+          country_eq: 'FR',postal_code_start: '38'
+        },
+        "Rhône-Alpes" => {
+          country_eq: 'FR',
+          postal_code_start_any: ['01', '07', '26', '38', '42', '69', '73', '74']
+        },
+        "Bretagne" => {
+          country_eq: 'FR',
+          postal_code_start_any: ['22', '29', '35', '44', '56']
+        },
+        "Lille" => {
+          country_eq: 'FR', postal_code_start: '59'
+        },
+      }
+      location_keys = [:country_eq, :postal_code_start_any, :postal_code_start]
 
-    active = presets.key q.slice(*location_keys).compact.symbolize_keys
-  %>
-  <% presets.each do |name, options| %>
-    <%=
-      link_to(
-        name,
-        params.merge(q: q.except(*location_keys).merge(options)),
-        class: "btn btn-#{active == name ? :primary : :default}"
-      )
+      active = presets.key q.slice(*location_keys).compact.symbolize_keys
     %>
-  <% end %>
+    <% presets.each do |name, options| %>
+      <%=
+        link_to(
+          name,
+          params.merge(q: q.except(*location_keys).merge(options)),
+          class: "btn btn-#{active == name ? :primary : :default}"
+        )
+      %>
+    <% end %>
+  </div>
+  <form action="<%= admin_entourages_path %>" class="form-inline" id="moderator_form">
+    <%
+      current_value = params[:moderator_id]
+      options = current_user.community.users.moderators.map { |u| [u.first_name, u.id] }
+      options.unshift ['', :any],
+                      ['Non assigné', :none]
+    %>
+    <%= label_tag :moderator_id, t("activerecord.attributes.entourage_moderation.moderator_id") %>
+    <%= select_tag :moderator_id, options_for_select(options, params[:moderator_id]), class: "form-control" %>
+  </div>
 </div>
+<script>
+  $(function(){
+    $('#moderator_id').on('change', function() {
+      $('#moderator_form').submit()
+    })
+  })
+</script>
