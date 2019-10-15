@@ -56,7 +56,8 @@
                 </ul>
               </div>
             <% end %>
-            <%- unless @entourage.members.include?(current_user)%>
+            <%- if !@entourage.members.include?(current_user) &&
+                   @messages_author.roles.include?(:moderator) %>
               <%= link_to "Rejoindre", admin_join_requests_path(joinable_id: @entourage), class: "btn btn-info", method: :post %>
             <% end %>
             <%= link_to "Modifier", edit_admin_entourage_path(@entourage), class: "btn btn-success" %>

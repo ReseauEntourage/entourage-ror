@@ -17,5 +17,13 @@ module Admin
         $server_community
       end
     end
+
+    protected
+
+    def ensure_moderator!
+      unless current_user.roles.include?(:moderator)
+        render text: "Cette action nécessite d'être modérateur", status: :unauthorized
+      end
+    end
   end
 end

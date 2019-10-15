@@ -1,6 +1,7 @@
 module Admin
   class EntouragesController < Admin::BaseController
     before_action :set_entourage, only: [:show, :edit, :update, :moderator_read, :moderator_unread, :message, :sensitive_words, :sensitive_words_check]
+    before_filter :ensure_moderator!, only: [:message]
 
     def index
       per_page = params[:per] || 50
@@ -133,7 +134,7 @@ module Admin
 
       @moderator_read  = @entourage.moderator_read_for(user: current_user)
 
-      @messages_author = ModerationServices.moderator(community: @entourage.community)
+      @messages_author = current_user
 
       reads = @entourage.join_requests.accepted
         .reject { |r| r.last_message_read.nil? || r.user_id == @messages_author.id }
@@ -201,10 +202,11 @@ module Admin
     end
 
     def message
-      user = ModerationServices.moderator(community: @entourage.community)
+      user = current_user
 
       join_request =
         user.join_requests.find_or_create_by!(joinable: @entourage) do |join_request|
+          join_request.role = JoinRequestsServices::JoinRequestBuilder.default_role(@entourage)
           join_request.status = JoinRequest::ACCEPTED_STATUS
         end
 

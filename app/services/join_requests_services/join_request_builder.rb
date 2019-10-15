@@ -8,6 +8,18 @@ module JoinRequestsServices
       @callback = Callback.new
     end
 
+    def self.default_role joinable
+        case [joinable.community, joinable.group_type]
+        when ['entourage', 'tour']   then 'member'
+        when ['entourage', 'action'] then 'member'
+        when ['entourage', 'outing'] then 'participant'
+        when ['pfp',       'outing'] then 'participant'
+        when ['pfp', 'neighborhood'] then 'member'
+        when ['pfp', 'private_circle'] then 'visitor'
+        else raise 'Unhandled'
+        end
+    end
+
     def create
       yield callback if block_given?
 
@@ -19,16 +31,7 @@ module JoinRequestsServices
         return callback.on_failure.try(:call, join_request)
       end
 
-      join_request.role =
-        case [joinable.community, joinable.group_type]
-        when ['entourage', 'tour']   then 'member'
-        when ['entourage', 'action'] then 'member'
-        when ['entourage', 'outing'] then 'participant'
-        when ['pfp',       'outing'] then 'participant'
-        when ['pfp', 'neighborhood'] then 'member'
-        when ['pfp', 'private_circle'] then 'visitor'
-        else raise 'Unhandled'
-        end
+      join_request.role = self.class.default_role(joinable)
 
       join_request.status = JoinRequest::ACCEPTED_STATUS if joinable.public
 
