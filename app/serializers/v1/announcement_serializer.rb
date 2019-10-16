@@ -34,7 +34,7 @@ module V1
     end
 
     def url
-      if object.url =~ /^#{ENV['DEEPLINK_SCHEME']}:\/\// || object.url =~ /^mailto:/ || object.url =~ /^https:\/\/wa.me\/\?/
+      if object.url =~ /^#{ENV['DEEPLINK_SCHEME']}:\/\// || object.url =~ /^mailto:/
         url = object.url
       else
         url = url_for(:redirect, id: object.id, token: scope[:user].token)
