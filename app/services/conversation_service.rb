@@ -76,6 +76,7 @@ module ConversationService
     .joins(:join_requests)
     .merge(user.join_requests.accepted)
     .where("entourages.feed_updated_at > last_message_read or last_message_read is null")
+    .where("entourages.feed_updated_at > archived_at or archived_at is null")
     .uniq.count
   end
 end

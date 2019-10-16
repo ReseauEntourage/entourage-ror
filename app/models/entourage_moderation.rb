@@ -82,11 +82,13 @@ class EntourageModeration < ActiveRecord::Base
     # Aboutissement
     action_outcome: [
       'Oui',
+      'Échange de coordonnées',
+      'Orientation via modérateur',
       'Non',
       'Hors communauté',
-      'Échange de numéros',
-      'Doublon',
       'Hors sujet',
+      'Blacklisté',
+      'Doublon',
     ],
     # Raison de la réussite
     action_success_reason: [

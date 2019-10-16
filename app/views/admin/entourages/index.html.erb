@@ -53,6 +53,25 @@
       </td>
     </tr>
   <% end %>
+
+  <% if @entourages.none? && @entourages.current_page == 1 &&
+        params[:moderator_id].present? && params[:moderator_id].to_i != 0 %>
+    <% filtered_moderator = current_user.community.users.find(params[:moderator_id]) %>
+    <tr>
+      <td colspan="8" style="text-align: center">
+        <h4>
+          <% if filtered_moderator == current_user %>
+            Aucune action ne vous est assignée pour le moment.
+          <% else %>
+            Aucune action n'est assignée à <%= filtered_moderator.first_name %> pour le moment.
+          <% end %>
+        </h4>
+        <h4>
+          <%= link_to "Voir toutes les actions", admin_entourages_path(moderator_id: :any) %>
+        </h4>
+      </td>
+    </tr>
+  <% end %>
 </table>
 
 <div class="container">

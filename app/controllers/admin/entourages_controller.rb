@@ -22,7 +22,8 @@ module Admin
         .where(group_type: group_types, community: community)
         .with_moderation
 
-      if (params.keys - ['controller', 'action']).none? && current_user.roles.include?(:moderator)
+      main_moderator = ModerationServices.moderator(community: current_user.community)
+      if current_user != main_moderator && (params.keys - ['controller', 'action']).none? && current_user.roles.include?(:moderator)
         params[:moderator_id] = current_user.id
       end
 

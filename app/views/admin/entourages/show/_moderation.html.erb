@@ -118,7 +118,7 @@
       </div>
       <div class="panel-body">
         <div class="row">
-          <% [:moderated_at, :moderation_contact_channel, :moderator_id, :action_recipient_consent_obtained].each do |field| %>
+          <% [:moderated_at, :moderator_id, :action_recipient_consent_obtained].each do |field| %>
             <div class="col-md-3 form-group">
               <% case %>
               <% when column_type[field] == :date %>
@@ -209,7 +209,7 @@
         Finalité de l’action
       </div>
       <div class="panel-body row">
-        <% [:action_outcome_reported_at, :action_outcome, :action_success_reason, :action_failure_reason].each do |field| %>
+        <% [:action_outcome_reported_at, :action_outcome].each do |field| %>
           <div class="col-md-3">
             <%= f.label field %>
             <% case column_type[field] %>
