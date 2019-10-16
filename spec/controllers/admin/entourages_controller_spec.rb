@@ -4,24 +4,24 @@ include AuthHelper
 describe Admin::EntouragesController do
 
   let!(:user) { admin_basic_login }
+  let!(:main_moderator) { create :admin_user }
 
   describe 'GET #index' do
     context "has entourages" do
       let!(:entourage_list) { FactoryGirl.create_list(:entourage, 2, :joined) }
-      before { get :index }
+      before { get :index, moderator_id: :any }
 
       it { expect(assigns(:entourages)).to match_array(entourage_list) }
     end
 
     context "has no entourages" do
-      before { get :index }
+      before { get :index, moderator_id: :any }
       it { expect(assigns(:entourages)).to eq([]) }
     end
   end
 
   describe "GET #show" do
     let!(:entourage) { FactoryGirl.create(:entourage) }
-    let!(:moderator) { create :admin_user }
     before { get :show, id: entourage.to_param }
     it { expect(assigns(:entourage)).to eq(entourage) }
   end
