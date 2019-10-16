@@ -19,19 +19,16 @@
 
 <div class="row">
   <table class="table">
-    <th>id</th>
     <th>Nom</th>
     <th>Prénom</th>
     <th>Association</th>
     <th>Date de création</th>
     <th>Date de dernière connexion</th>
     <th>Nombre d'entourages</th>
-    <th>Nombre de maraudes</th>
     <th></th>
 
     <% @users.each do |user| %>
       <tr>
-        <td><%= user.id %></td>
         <td><%= user.last_name %></td>
         <td><%= user.first_name %></td>
         <td>
@@ -41,16 +38,15 @@
             <span class="text-muted">&mdash;</span>
           <% end %>
         </td>
-        <td><%= user.created_at.to_formatted_s(:long) %></td>
-        <td><%= user.last_sign_in_at.try(:to_formatted_s, :long) %></td>
-        <td><%= user.groups.count %></td>
+        <td><%= l user.created_at, format: "%-d %B %Y" %></td>
         <td>
-          <% if user.pro? %>
-            <%= user.tours.count %>
+          <% if user.last_sign_in_at %>
+            <%= l user.last_sign_in_at, format: "%-d %B %Y" %>
           <% else %>
             <span class="text-muted">&mdash;</span>
           <% end %>
         </td>
+        <td><%= user.groups.count %></td>
         <td><%= link_to "Modifier", edit_admin_user_path(user), class: "btn btn-danger" %></td>
       </tr>
     <% end %>

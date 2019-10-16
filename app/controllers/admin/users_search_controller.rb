@@ -13,7 +13,7 @@ module Admin
       @users = User.includes(:organization)
                    .where(community: current_user.community.slug)
                    .search_by(search_param, search_param, search_param, params[:search])
-                   .order("last_name ASC")
+                   .order("last_sign_in_at desc nulls last")
                    .page(params[:page])
                    .per(25)
       render "admin/users/index"
