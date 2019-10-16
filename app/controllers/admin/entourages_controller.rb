@@ -59,7 +59,6 @@ module Admin
           end
         ))
         .order("created_at DESC")
-        .includes(:sensitive_words_check)
         .to_a
 
       @entourages = Kaminari.paginate_array(@entourages, total_count: @q.result.count).page(params[:page]).per(per_page)

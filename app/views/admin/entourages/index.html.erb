@@ -10,7 +10,6 @@
   <th>Type</th> -->
   <th></th>
   <th></th>
-  <th></th>
   <th>id</th>
   <th>Titre</th>
   <th>Description</th>
@@ -31,12 +30,6 @@
           <span class="badge" style="background: #d9534f">●</span>
         <% elsif unread_count > 0 %>
           <span class="badge" style="background: #d9534f"><%= unread_count %></span>
-        <% end %>
-      </td>
-      <td>
-        <% case entourage.sensitive_words_check&.status&.to_sym %>
-        <% when :require_moderation %>
-          <span class="badge" style="background: #d9534f" title="contient des mots sensibles">!</span>
         <% end %>
       </td>
       <td><%= entourage.id %></td>
