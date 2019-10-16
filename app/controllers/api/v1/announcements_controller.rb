@@ -55,6 +55,7 @@ module Api
           47 => :heart,
           48 => :info,
           49 => :info,
+          50 => :heart,
         }[params[:id].to_i]
 
         redirect_to view_context.asset_url("assets/announcements/icons/#{icon}.png")
@@ -112,6 +113,7 @@ module Api
           47 => 'stat-smartphone.png',
           48 => 'verbatims.png',
           49 => 'seis-4.png',
+          50 => 'chalumos-2019.jpg',
         }[params[:id].to_i]
 
         return render nothing: true, status: :not_found if image.nil?

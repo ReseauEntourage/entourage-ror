@@ -380,6 +380,17 @@ module FeedServices
       # )
 
       announcements.push Announcement.new(
+        id: 50,
+        title: "Je parle d'Entourage à mon entourage",
+        body: "Mes proches vont pouvoir à leur tour se rendre utiles en un clic",
+        image_url: true,
+        action: "Partage WhatsApp",
+        author: moderator,
+        url: "https://wa.me/?text=J%E2%80%99ai%20d%C3%A9couvert%20une%20super%20app%20qui%20permet%20d%E2%80%99aider%20facilement%20les%20personnes%20SDF%20pr%C3%A8s%20de%20chez%20soi%2C%20Entourage.%20Tu%20devrais%20la%20t%C3%A9l%C3%A9charger%20aussi%20%C3%A7a%20prend%2030%20secondes%20!%20bit.ly%2Fappentourage-w",
+        webview: false
+      ) if Time.zone.today.to_s <= '2019-11-08'
+
+      announcements.push Announcement.new(
         id: 13,
         title: "Allez plus loin en devenant bénévole !",
         body: "Le réseau a besoin de vous pour faire vivre la solidarité. Mission selon vos disponibilités (env 2h/semaine) !",
