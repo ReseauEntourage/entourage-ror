@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-ruby '2.5.7'
+ruby '2.6.5'
 
 gem 'rails',                          '~> 4.2.11'
 gem 'sass-rails',                     '~> 4.0.3'
@@ -74,8 +74,8 @@ group :test do
 end
 
 group :production do
-  gem 'rails_12factor',               '~> 0.0.3'
-  gem 'rails_stdout_logging',         '~> 0.0.5'
-  gem 'puma',                         '~> 3.12'
-  gem 'rack-timeout',                 '~> 0.4.2'
+  gem 'rails_12factor'
+  gem 'rails_stdout_logging'
+  gem 'puma'
+  gem 'rack-timeout', require: 'rack/timeout/base'
 end

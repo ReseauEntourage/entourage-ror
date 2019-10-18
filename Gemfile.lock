@@ -229,6 +229,7 @@ GEM
       http-2 (= 0.9.0)
     netrc (0.11.0)
     newrelic_rpm (5.6.0.349)
+    nio4r (2.5.2)
     nokogiri (1.10.4)
       mini_portile2 (~> 2.4.0)
     patience_diff (1.1.0)
@@ -244,7 +245,8 @@ GEM
     pry-rails (0.3.4)
       pry (>= 0.9.10)
     public_suffix (3.0.3)
-    puma (3.12.0)
+    puma (4.2.1)
+      nio4r (~> 2.0)
     rack (1.6.11)
     rack-mini-profiler (0.10.7)
       rack (>= 1.2.0)
@@ -252,7 +254,7 @@ GEM
       rack
     rack-test (0.6.3)
       rack (>= 1.0)
-    rack-timeout (0.4.2)
+    rack-timeout (0.5.1)
     rails (4.2.11)
       actionmailer (= 4.2.11)
       actionpack (= 4.2.11)
@@ -275,7 +277,7 @@ GEM
     rails_12factor (0.0.3)
       rails_serve_static_assets
       rails_stdout_logging
-    rails_serve_static_assets (0.0.4)
+    rails_serve_static_assets (0.0.5)
     rails_stdout_logging (0.0.5)
     railties (4.2.11)
       actionpack (= 4.2.11)
@@ -445,12 +447,12 @@ DEPENDENCIES
   newrelic_rpm (~> 5.6.0)
   pg (~> 0.21)
   pry-rails (~> 0.3.4)
-  puma (~> 3.12)
+  puma
   rack-mini-profiler (~> 0.10.1)
-  rack-timeout (~> 0.4.2)
+  rack-timeout
   rails (~> 4.2.11)
-  rails_12factor (~> 0.0.3)
-  rails_stdout_logging (~> 0.0.5)
+  rails_12factor
+  rails_stdout_logging
   ransack
   redis (~> 4.1.0)
   rpush
@@ -477,7 +479,7 @@ DEPENDENCIES
   webmock
 
 RUBY VERSION
-   ruby 2.5.7p206
+   ruby 2.6.5p114
 
 BUNDLED WITH
    1.17.3

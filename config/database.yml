@@ -17,3 +17,8 @@ production:
   url: <%= ENV.fetch('DATABASE_URL', '').sub(/^postgres/, "postgis") %>
   pool: <%= ENV['MAX_THREADS'] || 5 %>
   prepared_statements: false
+  checkout_timeout: 3 # active_record: obtaining a connection from the pool
+  connect_timeout: 3 # libpq: obtaining a connection from the server
+  variables:
+    # connection: max duration of a single SQL statement
+    statement_timeout: <%= ENV['ACTIVERECORD_STATEMENT_TIMEOUT'] || '2s' %>
