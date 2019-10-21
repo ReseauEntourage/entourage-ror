@@ -7,10 +7,10 @@
   <div class="col-md-3">
     <div class="left-panel">
       <h3>Derniers Evènements</h3>
-      <% @tours_presenter.latest_tours.each do |day, tours| %>
+      <% @tours_presenter.latest_tours.each do |collection_cache, day, tours| %>
         <h4><%= day %></h4>
         <% tours.each do |tour| %>
-            <%= TourPresenter.new(tour: tour).tour_summary(current_user) %><br>
+            <%= TourPresenter.new(tour: tour).tour_summary(current_user, collection_cache) %><br>
         <% end %>
       <% end %>
     </div>

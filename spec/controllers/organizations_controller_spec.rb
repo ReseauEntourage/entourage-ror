@@ -49,9 +49,9 @@ RSpec.describe OrganizationsController, :type => :controller do
       it { expect(assigns(:tours_presenter).tourer_count).to eq 2 }
       it { expect(assigns(:tours_presenter).encounter_count).to eq 4 }
       it { expect(assigns(:tours_presenter).total_length).to eq "6,006 km" }
-      it { expect(assigns(:tours_presenter).latest_tours[last_sunday]).to match_array([tour4]) }
-      it { expect(assigns(:tours_presenter).latest_tours[last_tuesday]).to match_array([tour1]) }
-      it { expect(assigns(:tours_presenter).latest_tours[last_wednesday]).to match_array([tour2, tour3]) }
+      it { expect(assigns(:tours_presenter).latest_tours.find { |collection_cache, day, tour| day == last_sunday    }[2]).to match_array([tour4]) }
+      it { expect(assigns(:tours_presenter).latest_tours.find { |collection_cache, day, tour| day == last_tuesday   }[2]).to match_array([tour1]) }
+      it { expect(assigns(:tours_presenter).latest_tours.find { |collection_cache, day, tour| day == last_wednesday }[2]).to match_array([tour2, tour3]) }
     end
     describe 'tours' do
       let!(:time) { Time.new(2009, 3, 11, 8, 25, 00) }

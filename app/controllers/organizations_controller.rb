@@ -7,7 +7,7 @@ class OrganizationsController < ApplicationController
   before_filter :authenticate_admin!, only: [:new, :create]
 
   def dashboard
-    tours = Tour.joins(user: :organization).where(users: { organization_id: @organization.id })
+    tours = Tour.joins(:user).where(users: { organization_id: @organization.id })
     @tours_presenter = TourCollectionPresenter.new(tours: tours)
     @user_presenter = UserPresenter.new(user: @current_user)
   end
@@ -68,7 +68,7 @@ class OrganizationsController < ApplicationController
 
   def encounters
     @tours = TourServices::SimplifiedTourFilter.new(params: params, organization: @organization, user: @current_user).filter
-    @encounters = Encounter.includes(tour: :user).where(tour: @tours)
+    @encounters = Encounter.includes(tour: :user).where(tour: @tours).order(:id)
     if @box
       @encounters = @encounters.within_bounding_box(@box)
     end

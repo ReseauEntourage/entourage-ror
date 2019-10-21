@@ -29,10 +29,16 @@ class TourPresenter
     Authentication::UserTourAuthenticator.new(user: current_user, tour: @tour).allowed_to_see?
   end
 
-  def duration
-    return "-" if tour.tour_points.count == 0
+  def duration(collection_cache=nil)
+    if collection_cache
+      duration = collection_cache.duration(tour)
+    else
+      duration = TourPoint.where(tour_id: tour.id).pluck("extract(epoch from max(created_at) - min(created_at))").first
+    end
 
-    duration = (tour.tour_points.last.created_at - tour.tour_points.first.created_at).to_i
+    return "-" if duration.nil?
+
+    duration = duration.to_i
     if duration < 3600
       "environ "+distance_of_time_in_words(duration)
     else
@@ -46,9 +52,10 @@ class TourPresenter
     number_to_human(tour.length, precision: 4, units: {unit: "m", thousand: "km"})
   end
 
-  def tour_summary(current_user)
-    summary_text = "#{tour.user.full_name} a réalisé une maraude de #{duration}"
-    summary_text += " et a fait #{pluralize tour.encounters.size, 'rencontre'}" if tour.encounters.size > 0
+  def tour_summary(current_user, collection_cache)
+    summary_text = "#{tour.user.full_name} a réalisé une maraude de #{duration(collection_cache)}"
+    encounters_count = collection_cache.encounters_count(tour)
+    summary_text += " et a fait #{pluralize encounters_count, 'rencontre'}" if encounters_count > 0
     if Authentication::UserTourAuthenticator.new(user: current_user, tour: tour).allowed_to_see?
       link_to summary_text, Rails.application.routes.url_helpers.tour_path(tour)
     else

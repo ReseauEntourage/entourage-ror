@@ -20,10 +20,12 @@ class ApplicationController < ActionController::Base
   end
 
   def current_user
+    return if session[:user_id].nil?
     @current_user ||= User.where(id: session[:user_id]).first
   end
 
   def current_admin
+    return if session[:admin_user_id].nil?
     @current_admin ||= User.where(id: session[:admin_user_id]).first
   end
 

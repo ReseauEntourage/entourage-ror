@@ -65,7 +65,7 @@ class Tour < ActiveRecord::Base
   end
 
   def empty_points?
-    tour_points.count == 0
+    tour_points.empty?
   end
 
   def community

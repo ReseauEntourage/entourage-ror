@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20191015151336) do
+ActiveRecord::Schema.define(version: 20191021143541) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -150,6 +150,8 @@ ActiveRecord::Schema.define(version: 20191015151336) do
     t.string   "encrypted_message"
     t.string   "address"
   end
+
+  add_index "encounters", ["tour_id"], name: "index_encounters_on_tour_id", using: :btree
 
   create_table "entourage_displays", force: :cascade do |t|
     t.integer  "entourage_id"
@@ -498,6 +500,7 @@ ActiveRecord::Schema.define(version: 20191015151336) do
     t.datetime "created_at"
   end
 
+  add_index "simplified_tour_points", ["latitude", "longitude", "tour_id"], name: "index_simplified_tour_points_on_coordinates_and_tour_id", using: :btree
   add_index "simplified_tour_points", ["tour_id"], name: "index_simplified_tour_points_on_tour_id", using: :btree
 
   create_table "sms_deliveries", force: :cascade do |t|
@@ -539,6 +542,8 @@ ActiveRecord::Schema.define(version: 20191015151336) do
     t.datetime "updated_at"
   end
 
+  add_index "tour_points", ["tour_id", "created_at"], name: "index_tour_points_on_tour_id_and_created_at", using: :btree
+  add_index "tour_points", ["tour_id", "id"], name: "index_tour_points_on_tour_id_and_id", using: :btree
   add_index "tour_points", ["tour_id", "latitude", "longitude"], name: "index_tour_points_on_tour_id_and_latitude_and_longitude", using: :btree
 
   create_table "tours", force: :cascade do |t|

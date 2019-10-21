@@ -11,7 +11,13 @@ class TourCollectionPresenter < ApplicationPresenter
   end
 
   def latest_tours
-    @latest_tours ||= tours.includes(:user => :organization).order('tours.updated_at DESC').limit(8).group_by { |t| t.updated_at.to_date }
+    return @latest_tours if @latest_tours != nil
+
+    collection = tours.includes(:user => :organization).order('tours.updated_at DESC').limit(8).to_a
+    collection_cache = CollectionCache.new(collection)
+    @latest_tours = collection
+      .group_by { |t| t.updated_at.to_date }
+      .map { |day, tours| [collection_cache, day, tours] }
   end
 
   def week_tours
@@ -32,4 +38,32 @@ class TourCollectionPresenter < ApplicationPresenter
 
   private
   attr_reader :tours
+
+  class CollectionCache
+    def initialize(tours)
+      @tour_ids = tours.map(&:id)
+    end
+
+    def encounters_count(tour)
+      raise "Tour##{tour.id} is not part of this collection" unless tour.id.in?(@tour_ids)
+      @encounter_counts ||= collection_encounters_counts
+      @encounter_counts[tour.id]
+    end
+
+    def collection_encounters_counts
+      counts = Encounter.where(tour_id: @tour_ids).group(:tour_id).count
+      counts.default = 0
+      counts
+    end
+
+    def duration(tour)
+      raise "Tour##{tour.id} is not part of this collection" unless tour.id.in?(@tour_ids)
+      @durations ||= collection_durations
+      @durations[tour.id]
+    end
+
+    def collection_durations
+      Hash[TourPoint.where(tour_id: @tour_ids).group(:tour_id).pluck("tour_id, extract(epoch from max(created_at) - min(created_at))")]
+    end
+  end
 end

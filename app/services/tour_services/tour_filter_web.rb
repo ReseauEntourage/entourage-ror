@@ -10,10 +10,10 @@ module TourServices
     end
 
     def filter
-      filter_box
       filter_org
       filter_date
       filter_type
+      filter_box
 
       @tours
     end
