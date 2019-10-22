@@ -144,7 +144,8 @@ GEM
     get_process_mem (0.2.0)
     globalid (0.4.1)
       activesupport (>= 4.2.0)
-    haml (4.0.7)
+    haml (5.1.2)
+      temple (>= 0.8.0)
       tilt
     handlebars_assets (0.20.2)
       execjs (~> 2.0)
@@ -379,6 +380,7 @@ GEM
     super_diff (0.1.0)
       diff-lcs
       patience_diff
+    temple (0.8.2)
     test_after_commit (1.1.0)
       activerecord (>= 3.2)
     thin (1.6.4)
