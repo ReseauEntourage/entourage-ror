@@ -1,0 +1,80 @@
+<div class="container-s mt-6 mb-2">
+  <div class="flex mb-2">
+    <div class="text-large flex-grow">Invitations</div>
+    <%= link_to "Inviter un membre", new_organization_admin_invitation_path, class: "btn btn-primary" %>
+  </div>
+  <div class="mb-2">
+    <a href="<%= organization_admin_invitations_path %>"
+       class="btn btn-<%= @status == :pending ? :grey : :outline %>">
+      En attente (<%= @counts[:pending] %>)
+    </a>
+    <a href="?status=accepted"
+       class="btn btn-<%= @status == :accepted ? :grey : :outline %>">
+      Acceptées (<%= @counts[:accepted] %>)
+    </a>
+  </div>
+  <% if @counts[@status] == 0 %>
+    <div>Vous n'avez aucune invitation <%= {pending: "en attente", accepted: "acceptée"}[@status] %>.</div>
+  <% end %>
+  <% @invitations.each do |invitation| %>
+    <div class="border-bottom py-1" data-role="toggle-context">
+      <div class="flex <%= "cursor-pointer" if invitation.pending? %>" data-role="toggle-trigger">
+        <div class="flex-grow color-grey">
+          <% if invitation.accepted? %>
+            <% invitee = invitation.invitee %>
+            <div class="text-bold color-black"><%= UserPresenter.full_name(invitee) %></div>
+            <div><%= invitee.email.presence || Phonelib.parse(@phone).national %></div>
+            <div>Invité(e) par <span class="color-black"><%= UserPresenter.full_name(invitation.inviter) %></span></div>
+            <div>Est membre depuis le <%= l invitation.accepted_at, format: "%-d %B %Y" %></div>
+          <% else %>
+            <% if invitation.invitee_name.present? %>
+              <div class="text-bold color-black"><%= invitation.invitee_name %></div>
+            <% end %>
+            <div><%= invitation.invitee_email %></div>
+            <div>Invité(e) par <span class="color-black"><%= UserPresenter.full_name(invitation.inviter) %></span></div>
+            <div>Envoyée le <%= l invitation.invited_at, format: "%-d %B %Y" %></div>
+          <% end %>
+        </div>
+        <% if invitation.pending? %>
+          <i class="material-icons" data-role="toggle-icon" data-toggle-on="keyboard_arrow_down" data-toggle-off="keyboard_arrow_right">keyboard_arrow_right</i>
+        <% end %>
+      </div>
+      <% if invitation.pending? %>
+        <div class="color-black mt-1 hide" data-role="toggle-content">
+          <div>
+            <%= button_to "Révoquer l'invitation", organization_admin_invitation_path(invitation), method: :delete, class: "btn btn-outline" %>
+            <%= button_to "Renvoyer l'invitation", resend_organization_admin_invitation_path(invitation), class: "btn btn-outline" %>
+          </div>
+          <div class="flex flex-align-center mt-1">
+            <label for="link-<%= invitation.id %>" class="flex-no-shrink mb-0 mr-1">
+              Lien d'invitation
+            </label>
+            <input type="text" readonly class="form-control" data-role="invite-url"
+                   id="link-<%= invitation.id %>"
+                   value="<%= join_organization_admin_invitation_url(token: invitation.token) %>">
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+</div>
+
+<% content_for :scripts do %>
+  <script>
+    console.log('script')
+    $(document).on('click', '[data-role="toggle-trigger"]', function() {
+      console.log('click')
+      var $context = $(this).closest('[data-role=toggle-context]'),
+          $icon    = $context.find('[data-role="toggle-icon"]'),
+          $content = $context.find('[data-role="toggle-content"]'),
+          state    = $content.hasClass('hide') === false;
+
+      $content.toggleClass('hide', state);
+      $icon.text($icon.data('toggle-' + (state ? 'off' : 'on')));
+    });
+
+    $(document).on('focus, click', '[data-role="invite-url"]', function() {
+      this.setSelectionRange(0, this.value.length, 'backward');
+    });
+  </script>
+<% end %>

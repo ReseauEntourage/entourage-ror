@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <title><%= community.name %></title>
+    <link href="https://fonts.googleapis.com/icon?family=Roboto:400,700|Material+Icons"
+      rel="stylesheet">
+    <%= stylesheet_link_tag 'organization_admin', media: :all %>
+  </head>
+  <body class="font-sans-serif color-black">
+    <div class="page-header flex box-shadow">
+      <%= image_tag "organization_admin/logo-entourage-orange.png", class: "page-header-logo" %>
+    </div>
+    <%= yield %>
+    <script
+        src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+        integrity="sha256-pasqAKBDmFT4eHoN2ndd6lN370kFiGUFyTiUHWhU7k8="
+        crossorigin="anonymous"></script>
+    <%= content_for :scripts %>
+  </body>
+</html>

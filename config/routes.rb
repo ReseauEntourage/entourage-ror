@@ -248,6 +248,7 @@ Rails.application.routes.draw do
       get 'check' => 'base#check'
       get 'ping' => 'base#ping'
       get 'csv_matching' => 'csv_matching#show'
+      get 'organization_admin_redirect' => 'users#organization_admin_redirect'
 
       namespace :public do
         resources :stats, only: [:index]
@@ -288,6 +289,37 @@ Rails.application.routes.draw do
     end
     resources :neighborhoods, only: [:index, :show, :edit, :update, :new, :create]
     resources :private_circles, only: [:index, :show, :edit, :update, :new, :create]
+  end
+
+  organization_admin_url = URI(ENV['ORGANIZATION_ADMIN_URL'] || 'organization_admin')
+  organization_admin_scope = {
+    host: organization_admin_url.host || ENV['HOST'],
+    path: organization_admin_url.path
+  }.compact
+
+  scope organization_admin_scope.merge(
+        as: :organization_admin, :module => :organization_admin) do
+    get '/' => 'base#home'
+    get 'auth' => 'base#auth'
+    get 'webapp_redirect' => 'base#webapp_redirect'
+    resource :session, only: [:new] do
+      collection do
+        match :identify, via: [:post, :get]
+        post :authenticate
+        post :reset_password
+      end
+    end
+    resources :invitations, only: [:new, :create, :index, :destroy] do
+      member do
+        post :resend
+      end
+      with_scope_level(:member) do
+        scope(parent_resource.collection_scope) do
+          get ':token/join', action: :join, as: :join
+          post ':token/accept', action: :accept, as: :accept
+        end
+      end
+    end
   end
 
   #WEB

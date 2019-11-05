@@ -357,6 +357,24 @@ ActiveRecord::Schema.define(version: 20191209095733) do
 
   add_index "organizations", ["name"], name: "index_organizations_on_name", unique: true, using: :btree
 
+  create_table "partner_invitations", force: :cascade do |t|
+    t.integer  "partner_id",         null: false
+    t.integer  "inviter_id",         null: false
+    t.string   "invitee_email",      null: false
+    t.string   "invitee_name"
+    t.string   "invitee_role_title"
+    t.integer  "invitee_id"
+    t.string   "token",              null: false
+    t.datetime "invited_at",         null: false
+    t.datetime "accepted_at"
+    t.datetime "deleted_at"
+    t.string   "status",             null: false
+  end
+
+  add_index "partner_invitations", ["partner_id", "invitee_email"], name: "index_pending_partner_invitations_on_partner_and_invitee_email", unique: true, where: "((status)::text = 'pending'::text)", using: :btree
+  add_index "partner_invitations", ["partner_id", "invitee_id"], name: "index_accepted_partner_invitations_on_partner_and_invitee_id", unique: true, where: "((status)::text = 'accepted'::text)", using: :btree
+  add_index "partner_invitations", ["token"], name: "index_partner_invitations_on_token", unique: true, using: :btree
+
   create_table "partners", force: :cascade do |t|
     t.string   "name",           null: false
     t.string   "large_logo_url"
@@ -662,6 +680,8 @@ ActiveRecord::Schema.define(version: 20191209095733) do
     t.datetime "last_email_sent_at"
     t.string   "targeting_profile"
     t.integer  "partner_id"
+    t.boolean  "partner_admin",                            default: false,       null: false
+    t.string   "partner_role_title"
   end
 
   add_index "users", ["address_id"], name: "index_users_on_address_id", using: :btree

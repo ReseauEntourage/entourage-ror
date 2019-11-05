@@ -1,0 +1,93 @@
+<% if @invitation.nil? %>
+  <div class="container-s mt-6 mb-2">
+    <div class="text-large mb-2">
+      Oups...
+    </div>
+
+    <div class="mb-2">
+      Il semble que vous essayiez d'accepter une invitation, mais l'URL que vous avez utilisée n'est pas valide.
+    </div>
+  </div>
+<% elsif current_user.nil? || params.key?(:change_account) %>
+  <div class="container-s mt-6 mb-2">
+    <div class="mb-2">
+      <strong><%= UserPresenter.full_name(@invitation.inviter) %></strong> vous invite à rejoindre l'organisation <strong><%= @invitation.partner.name %></strong> sur Entourage.
+    </div>
+
+    <div>
+      <%= form_tag identify_organization_admin_session_path do |f| %>
+        <div class="mb-2">
+          <label>Pour commencer, saisissez votre numéro de téléphone.</label>
+          <%= phone_field_tag :phone, params[:phone], class: 'form-control', placeholder: "Numéro de téléphone", required: true, autocomplete: :tel %>
+          <% if params[:error] == 'invalid_phone_format' %>
+            <div class="text-small color-error mt-05">Saisissez un numéro de téléphone valide</div>
+          <% end %>
+        </div>
+        <div class="text-right">
+          <%= submit_tag "Inscription ou Connexion", class: "btn btn-primary" %>
+        </div>
+        <%= hidden_field_tag :continue, request.path %>
+      <% end %>
+    </div>
+  </div>
+<% elsif current_user.partner.present? %>
+  <div class="container-s mt-6 mb-2">
+    <div class="mb-4 text-center">
+      <div class="text-large">Bonjour</div>
+      <div class="oa-session-account-identifier overlay-container mt-1">
+        <i class="material-icons oa-s-ai-icon-account">account_circle</i>
+        <span class="oa-s-ai-text"><%= UserPresenter.full_name(current_user) %></span>
+        <i class="material-icons oa-s-ai-icon-arrow">keyboard_arrow_down</i>
+        <%= link_to "", [params[:continue], '?change_account'].join, class: "overlay" %>
+      </div>
+    </div>
+
+    <div class="mb-2">
+      <strong><%= UserPresenter.full_name(@invitation.inviter) %></strong> vous invite à rejoindre l'organisation <strong><%= @invitation.partner.name %></strong> sur Entourage.
+    </div>
+
+    <div class="mb-2">
+      Cependant, vous êtes déjà membre de l'organisation <%= current_user.partner.name %>.
+    </div>
+
+    <div>
+      Écrivez-nous à <a href="mailto:associations@entourage.social" target="_blank">associations@entourage.social</a> si vous souhaitez changer d'organisation.
+    </div>
+  </div>
+<% else %>
+  <div class="container-s mt-6 mb-2">
+    <div class="text-large mb-2">Rejoindre l'organisation <strong><%= @invitation.partner.name %></strong> sur Entourage</div>
+    <%= form_tag accept_organization_admin_invitation_path do %>
+      <% if params[:error] == 'unknown' %>
+        <div class="color-error mb-2">
+          Une erreur s'est produite. Veuillez vérifier vos réponses et réessayer. Si le problème persiste, écrivez-nous à <a href="mailto:associations@entourage.social" target="_blank">associations@entourage.social</a>.
+        </div>
+      <% end %>
+
+      <div class="mb-2">
+        <%= label_tag :first_name, "Prénom" %>
+        <%= text_field_tag :first_name, current_user.first_name, required: true, autocomplete: 'given-name', class: 'form-control' %>
+      </div>
+      <div class="mb-2">
+        <%= label_tag :last_name, "Nom" %>
+        <%= text_field_tag :last_name, current_user.last_name, required: true, autocomplete: 'family-name', class: 'form-control' %>
+        <div class="text-small mt-05">Seule l'initiale de votre nom sera affichée.</div>
+      </div>
+      <div class="mb-2">
+        <%= label_tag :email, "Adresse e-mail" %>
+        <%= text_field_tag :email, current_user.email.presence || @invitation.invitee_email, required: true, autocomplete: 'email', class: 'form-control' %>
+      </div>
+      <% unless current_user.has_password? %>
+        <div class="mb-2">
+          <%= label_tag :password, "Mot de passe" %>
+          <%= password_field_tag :password, nil, required: true, minlength: 8, maxlength: 256, autocomplete: 'new-password', class: 'form-control' %>
+          <div class="text-small mt-05">Les mots de passe doivent comporter au moins 8 caractères et ne doivent pas être faciles à deviner. « Motdepasse », « 123456 » ou « abcdef » sont par exemple à éviter.</div>
+        </div>
+      <% end %>
+      <div class="text-right mb-2">
+        <%= submit_tag "Continuer", class: 'btn btn-primary' %>
+      </div>
+    <% end %>
+    <div class="text-small">En continuant, vous acceptez les <a href="https://www.entourage.social/cgu/" target="_blank">Conditions Générales d'Utilisation</a> d'Entourage</div>
+  </div>
+<% end %>

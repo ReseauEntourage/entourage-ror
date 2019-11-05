@@ -1,4 +1,4 @@
-class PhoneValidator
+class LegacyPhoneValidator
   def initialize(phone:)
     @phone = phone
   end

@@ -15,10 +15,10 @@ module Phone
 
     def add_international_code_for_french_numbers
       #ignore invalid phone numbers
-      return unless PhoneValidator.new(phone: @phone).valid?
+      return unless LegacyPhoneValidator.new(phone: @phone).valid?
 
       #ignore foreign phone numbers
-      return if PhoneValidator.new(phone: @phone).foreign_number?
+      return if LegacyPhoneValidator.new(phone: @phone).foreign_number?
 
       #ignore french number that do not start with regional code
       return unless @phone.match(/\A([0][1-9])/).present?

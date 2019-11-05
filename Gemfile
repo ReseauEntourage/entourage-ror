@@ -39,6 +39,7 @@ gem 'sentry-raven'
 gem 'ruby-stemmer'
 gem 'json-schema',                    '~> 2.8.1'
 gem 'icalendar'
+gem 'phonelib'
 
 group :development, :test do
   gem 'annotate'

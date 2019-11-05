@@ -14,7 +14,7 @@ module UserServices
     def create(send_sms: false, sms_code: nil)
       yield callback if block_given?
 
-      return callback.on_invalid_phone_format unless PhoneValidator.new(phone: params.with_indifferent_access["phone"]).valid?
+      return callback.on_invalid_phone_format unless LegacyPhoneValidator.new(phone: params.with_indifferent_access["phone"]).valid?
 
       sms_code = sms_code || UserServices::SmsCode.new.code
       user = new_user(sms_code)

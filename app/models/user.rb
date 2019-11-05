@@ -102,7 +102,7 @@ class User < ActiveRecord::Base
   end
 
   def validate_phone!
-    unless PhoneValidator.new(phone: self.phone).valid?
+    unless LegacyPhoneValidator.new(phone: self.phone).valid?
       errors.add(:phone, "devrait être au format +33... ou 06...")
     end
   end

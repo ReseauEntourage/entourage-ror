@@ -1,0 +1,26 @@
+<div class="container-s mt-6 mb-2">
+  <div class="text-large mb-2">Inviter un membre</div>
+  <%= form_for @invitation, url: organization_admin_invitations_path do |f| %>
+    <div class="mb-2">
+      <%= f.label :invitee_email, "Adresse e-mail" %>
+      <%= f.email_field :invitee_email, required: true, placeholder: "nom@exemple.com", class: "form-control" %>
+    </div>
+
+    <div class="mb-2">
+      <%= f.label :invitee_name, "Nom (facultatif)" %>
+      <%= f.text_field :invitee_name, placeholder: "Facultatif", class: "form-control" %>
+    </div>
+
+    <% if false %>
+    <div class="mb-2">
+      <%= f.label :invitee_role_title %>
+      <%= f.text_field :invitee_role_title %>
+    </div>
+    <% end %>
+
+    <div class="text-right mb-2">
+      <%= f.submit "Envoyer une invitation", class: "btn btn-primary" %>
+    </div>
+  <% end %>
+  <%= link_to "Afficher les invitations en attente et acceptées", organization_admin_invitations_path, class: "color-grey" %>
+</div>

@@ -36,14 +36,18 @@ class UserPresenter < ApplicationPresenter
   end
 
   def self.format_first_name first_name
-    first_name = first_name&.squish.presence
-    return nil if first_name.nil?
+    self.format_name_part first_name
+  end
 
-    if first_name.match?(/^[[:alpha:]]/)
-      first_name[0] = first_name[0].upcase
+  def self.format_name_part name_part
+    name_part = name_part&.squish.presence
+    return nil if name_part.nil?
+
+    if name_part.match?(/^[[:alpha:]]/)
+      name_part[0] = name_part[0].upcase
     end
 
-    first_name
+    name_part
   end
 
   def display_name
@@ -53,6 +57,16 @@ class UserPresenter < ApplicationPresenter
       last_name_first = last_name_first.capitalize + '.'
     end
     [first_name, last_name_first].compact.join(' ').presence
+  end
+
+  def self.full_name user
+    [user.first_name, user.last_name].map { |name_part|
+      format_name_part(name_part)
+    }.compact.join(' ').presence
+  end
+
+  def full_name
+    self.class.full_name(user)
   end
 
   private

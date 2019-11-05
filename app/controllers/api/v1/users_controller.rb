@@ -20,7 +20,7 @@ module Api
               platform: api_request.platform
             )
           else
-            unless PhoneValidator.new(phone: user_params[:phone]).valid?
+            unless LegacyPhoneValidator.new(phone: user_params[:phone]).valid?
               Rails.logger.info "SIGNIN_FAILED: invalid phone number format - params: #{params.inspect}"
               return render_error(code: "INVALID_PHONE_FORMAT", message: "invalid phone number format", status: 401)
             end
@@ -217,7 +217,7 @@ module Api
       end
 
       def lookup
-        unless PhoneValidator.new(phone: params[:phone]).valid?
+        unless LegacyPhoneValidator.new(phone: params[:phone]).valid?
           return render_error(code: "INVALID_PHONE_FORMAT", message: "invalid phone number format", status: 401)
         end
 
@@ -322,6 +322,17 @@ module Api
         Raven.capture_exception(e)
       ensure
         render nothing: true
+      end
+
+      def organization_admin_redirect
+        if current_user.partner.nil?
+          return render nothing: true
+        end
+
+        message = params[:message] if params[:message].in?(['webapp_logout'])
+
+        auth_token = UserServices::UserAuthenticator.auth_token(current_user, expires_in: 5.seconds)
+        redirect_to organization_admin_auth_url(auth_token: auth_token, message: message)
       end
 
       private

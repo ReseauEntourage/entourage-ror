@@ -1,0 +1,5 @@
+<h1>Rejoindre <%= @invitation.partner.name %> sur Entourage</h1>
+
+<%= @inviter_name %> vous a invité(e) à rejoindre l'organisation <%= @invitation.partner.name %> sur Entourage. Rejoignez l'équipe dès maintenant pour commencer le travail en collaboration dans l'application Entourage !
+
+<%= link_to "Rejoindre maintenant", join_organization_admin_invitation_url(token: @invitation.token) %>
