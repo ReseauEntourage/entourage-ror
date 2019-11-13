@@ -1,7 +1,8 @@
 module OrganizationAdmin
   class SessionsController < BaseController
-    before_action :authenticate_user!, only: []
-    before_action :ensure_org_member!, only: []
+    skip_before_action :authenticate_user!, :ensure_org_member!
+
+    layout_options(menu: false, partner_name: false, exit_admin: false)
 
     def identify
       @phone = Phone::PhoneBuilder.new(phone: params[:phone]).format

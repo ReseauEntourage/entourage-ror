@@ -10,6 +10,7 @@ class User < ActiveRecord::Base
   validates_format_of :email, with: /@/, unless: "email.to_s.size.zero?"
   validates_presence_of [:first_name, :last_name, :organization, :email], if: Proc.new { |u| u.pro? }
   validates_associated :organization, if: Proc.new { |u| u.pro? }
+  validates_presence_of [:first_name, :last_name, :email], if: Proc.new { |u| u.org_member? }
   validates :sms_code, length: { minimum: 6 }
   validates_length_of :about, maximum: 200, allow_nil: true
   validates_length_of :password, within: 8..256, allow_nil: true
@@ -173,6 +174,10 @@ class User < ActiveRecord::Base
 
   def pro?
     user_type=="pro"
+  end
+
+  def org_member?
+    partner_id != nil
   end
 
   def public?

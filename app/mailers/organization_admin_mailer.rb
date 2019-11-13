@@ -11,6 +11,7 @@ class OrganizationAdminMailer < ActionMailer::Base
     )
 
     @inviter_name = UserPresenter.full_name(@invitation.inviter)
+    @inviter_email = @invitation.inviter.email.squish.downcase
     mail(
       from: "associations@entourage.social",
       to: @invitation.invitee_email,

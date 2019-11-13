@@ -1,5 +1,1 @@
-<h1><%= current_user.partner.name %></h1>
-<%= link_to "Retour à l'application", organization_admin_webapp_redirect_path %>
-<% if current_user.partner_admin? %>
-  <%= link_to "Inviter", new_organization_admin_invitation_path %>
-<% end %>
+<% layout_options(active_menu: :dashboard) %>

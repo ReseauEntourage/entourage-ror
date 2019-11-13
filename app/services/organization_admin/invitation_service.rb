@@ -2,7 +2,10 @@ module OrganizationAdmin
   module InvitationService
     def self.create_invitation invitee_email:, partner_id:, inviter_id:, invitee_attributes: {}
       inviter = User.find(inviter_id)
-      raise unless inviter.partner_id == partner_id || inviter.admin?
+      unless inviter.admin?
+        raise unless inviter.partner_id == partner_id
+        raise unless OrganizationAdmin::Permissions.can_invite_member?(inviter)
+      end
 
       invitation = PartnerInvitation.find_or_initialize_by(
         invitee_email: invitee_email,

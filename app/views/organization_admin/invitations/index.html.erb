@@ -1,5 +1,7 @@
-<div class="container-s mt-6 mb-2">
-  <div class="flex mb-2">
+<div class="container-s mt-6 mb-2 px-3">
+  <%= render 'organization_admin/flashes' %>
+
+  <div class="flex mb-2 flex-align-center">
     <div class="text-large flex-grow">Invitations</div>
     <%= link_to "Inviter un membre", new_organization_admin_invitation_path, class: "btn btn-primary" %>
   </div>
@@ -22,7 +24,11 @@
         <div class="flex-grow color-grey">
           <% if invitation.accepted? %>
             <% invitee = invitation.invitee %>
-            <div class="text-bold color-black"><%= UserPresenter.full_name(invitee) %></div>
+            <div>
+              <%= link_to UserPresenter.full_name(invitee),
+                    organization_admin_member_path(invitee),
+                    class: "text-bold color-black hover-underline" %>
+            </div>
             <div><%= invitee.email.presence || Phonelib.parse(@phone).national %></div>
             <div>Invité(e) par <span class="color-black"><%= UserPresenter.full_name(invitation.inviter) %></span></div>
             <div>Est membre depuis le <%= l invitation.accepted_at, format: "%-d %B %Y" %></div>
@@ -59,9 +65,9 @@
   <% end %>
 </div>
 
+<% layout_options(jquery: true) %>
 <% content_for :scripts do %>
   <script>
-    console.log('script')
     $(document).on('click', '[data-role="toggle-trigger"]', function() {
       console.log('click')
       var $context = $(this).closest('[data-role=toggle-context]'),

@@ -320,6 +320,14 @@ Rails.application.routes.draw do
         end
       end
     end
+    resources :members, only: [:index, :show, :edit, :update, :destroy]
+    resource :description, only: [:edit, :update] do
+      member do
+        get '/edit/logo', action: :edit_logo
+        get '/logo_upload', action: :new_logo_upload
+        get '/logo_upload_success', action: :logo_upload_success
+      end
+    end
   end
 
   #WEB

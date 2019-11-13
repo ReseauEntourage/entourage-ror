@@ -1,0 +1,66 @@
+<style>
+  .aspect-ratio-container-1-1 {
+    padding-top: 100%;
+  }
+  .logo-as-background {
+    background: url(<%= @partner.large_logo_url %>) center/contain no-repeat, #fff;
+  }
+</style>
+
+<div class="container-s mt-6 mb-2 px-3">
+  <%= render 'organization_admin/flashes' %>
+
+  <%= form_for @partner, url: organization_admin_description_path(@partner) do |f| %>
+
+    <div class="flex">
+      <div class="flex-grow">
+        <div class="text-large mb-2">Description</div>
+        <div class="mb-2">
+          <label>Logo</label>
+          <div>
+            <%= link_to "Modifier le logo",
+                  edit_logo_organization_admin_description_path,
+                  class: "btn btn-outline" %>
+          </div>
+        </div>
+      </div>
+      <div style="width: 8rem">
+        <div class="aspect-ratio-container-1-1 logo-as-background rounded border"></div>
+      </div>
+    </div>
+
+    <div class="mb-2">
+      <%= f.label :name, "Nom" %>
+      <%= f.text_field :name, required: true, class: "form-control" %>
+    </div>
+
+    <div class="mb-2">
+      <%= f.label :description, "Description" %>
+      <%= f.text_area :description, rows: 8, class: "form-control" %>
+    </div>
+
+    <div class="mb-2">
+      <%= f.label :phone, "Numéro de téléphone" %>
+      <%= f.phone_field :phone, class: "form-control" %>
+    </div>
+
+    <div class="mb-2">
+      <%= f.label :address, "Adresse" %>
+      <%= f.text_field :address, class: "form-control" %>
+    </div>
+
+    <div class="mb-2">
+      <%= f.label :website_url, "Site web" %>
+      <%= f.text_field :website_url, class: "form-control" %>
+    </div>
+
+    <div class="mb-2">
+      <%= f.label :email, "Adresse e-mail" %>
+      <%= f.email_field :email, class: "form-control" %>
+    </div>
+
+    <div class="text-right mb-6">
+      <%= f.submit "Enregistrer", class: "btn btn-primary" %>
+    </div>
+  <% end %>
+</div>

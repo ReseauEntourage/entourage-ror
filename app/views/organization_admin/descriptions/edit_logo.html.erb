@@ -1,0 +1,82 @@
+<style>
+  .aspect-ratio-container-1-1 {
+    padding-top: 100%;
+  }
+  .logo-as-background {
+    background: url(<%= @partner.large_logo_url %>) center/contain no-repeat, #fff;
+  }
+</style>
+
+<div class="container-s mt-6 mb-2 px-3">
+  <%= render 'organization_admin/flashes' %>
+
+  <div class="flex">
+    <div class="flex-grow">
+      <div class="text-large mb-2">Modifier le logo</div>
+      <label>Choisissez un fichier</label>
+    </div>
+    <div style="width: 4.5rem" class="ml-2 flex-no-shrink">
+      <div class="aspect-ratio-container-1-1 logo-as-background rounded border"
+           id="image-preview"></div>
+    </div>
+  </div>
+  <form id="upload-form"
+        action="#" method="post" enctype="multipart/form-data">
+    <div class="mb-2">
+      <input type="file" class="btn btn-outline"
+             name="file" accept="<%= @form.content_types %>"/>
+    </div>
+    <div class="text-right">
+      <input type="submit" value="Enregistrer" class="btn btn-primary" disabled/>
+    </div>
+  </form>
+</div>
+
+<% layout_options(jquery: :full) %>
+<% content_for :scripts do %>
+  <script>
+    (function() {
+      var $form = $('#upload-form'),
+          $fileInput = $form.find('input[type=file]'),
+          $submit = $form.find('[type=submit]');
+
+      $fileInput.on('change', function() {
+        var file = this.files[0],
+            $field = null,
+            reader;
+
+        if (!file) { return }
+
+        $submit.prop('disabled', true);
+
+        $.ajax(
+          '<%= logo_upload_organization_admin_description_path %>', {
+          data: {filetype: file.type}
+        })
+        .done(function(data) {
+          $form.attr('action', data.url);
+          Object.keys(data.fields).forEach(function(key) {
+            $field = $form.find('input[name=' + key + ']');
+            if ($field.length === 0) {
+              $field = $('<input>', {name: key, type: 'hidden'})
+                       .insertBefore($fileInput); // 'file' must be the last field
+            }
+            $field.val(data.fields[key]);
+          });
+          $submit.prop('disabled', false);
+
+          try {
+            reader = new FileReader();
+            reader.onload = function(e) {
+              $('#image-preview')[0].style.backgroundImage = 'url('+e.target.result+')';
+            }
+            reader.readAsDataURL(file);
+          } catch (e) {
+            (console.error || console.log).call(console, e.stack || e);
+          }
+
+        });
+      });
+    })();
+  </script>
+<% end %>

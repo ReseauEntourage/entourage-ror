@@ -1,4 +1,4 @@
-<div class="container-s mt-6 mb-2">
+<div class="container-s mt-6 mb-2 px-3">
   <div class="mb-2 text-center">
     <div class="text-large">Bienvenue</div>
     <div class="oa-session-account-identifier overlay-container mt-1">
@@ -15,7 +15,7 @@
         <%= label_tag :password, "Saisissez votre mot de passe" %>
         <%= password_field_tag :password, nil, required: true, autocomplete: 'current-password', class: 'form-control' %>
         <% if params[:error] == 'login_failure' %>
-          <div class="text-small color-error mt-05">Mot de passe incorrect. Réessayez ou cliquez sur "Mot de passe oublié" pour le réinitialiser.</div>
+          <div class="text-small color-danger mt-05">Mot de passe incorrect. Réessayez ou cliquez sur "Mot de passe oublié" pour le réinitialiser.</div>
         <% end %>
       </div>
       <div class="text-right">
@@ -49,7 +49,7 @@
         <% end %>
         <%= password_field_tag :sms_code, nil, required: true, class: 'form-control' %>
         <% if params[:error] == 'login_failure' %>
-          <div class="text-small color-error mt-05">
+          <div class="text-small color-danger mt-05">
             <% case @context %>
             <% when :new_sms_code %>
               Code de validation incorrect. Réessayez ou cliquez sur "Redemander un code" pour le réinitialiser.
@@ -67,7 +67,9 @@
       <%= hidden_field_tag :method, :sms_code %>
       <%= hidden_field_tag(:continue, params[:continue]) if params.key?(:continue) %>
     <% end %>
-    <% unless @new_sms_code_second_try %>
+    <% if @new_sms_code_second_try %>
+      <div class="mb-2"></div>
+    <% else %>
       <div class="mt-negative-btn mb-2">
         <%= form_tag reset_password_organization_admin_session_path do %>
           <%= hidden_field_tag :phone, @phone %>

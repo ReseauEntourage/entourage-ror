@@ -69,6 +69,14 @@ class UserPresenter < ApplicationPresenter
     self.class.full_name(user)
   end
 
+  def self.has_partner_role_title? user
+    format_name_part(user.partner_role_title) != nil
+  end
+
+  def self.partner_role_title user
+    format_name_part(user.partner_role_title) || "Membre"
+  end
+
   private
   attr_reader :user
 end

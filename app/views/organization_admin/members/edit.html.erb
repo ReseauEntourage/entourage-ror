@@ -1,0 +1,92 @@
+<% layout_options javascript_lib: true %>
+
+<div class="container-s mt-6 mb-2 px-3">
+  <%= render 'organization_admin/flashes' %>
+
+  <%= form_for @member, url: organization_admin_member_path(@member) do |f| %>
+    <div class="flex">
+      <div class="flex-grow">
+        <div class="text-large mb-2"><%= UserPresenter.full_name(@member) %></div>
+        <%= f.label :first_name, "Prénom" %>
+      </div>
+      <div style="width: 4.5rem; height: 4.5rem; border-radius: 50%; background-image: url('<%= asset_path "user/default_avatar.png" %>'); background-size: contain; background-color: #fff">
+        <% if @member.avatar_key %>
+          <img style="width: 4.5rem; height: 4.5rem; border-radius: 50%;" alt=""
+             src="<%= UserServices::Avatar.new(user: @member).thumbnail_url %>"/>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="mb-2">
+      <%= f.text_field :first_name, required: true, class: "form-control" %>
+    </div>
+
+    <div class="mb-2">
+      <%= f.label :last_name, "Nom" %>
+      <%= f.text_field :last_name, required: true, class: "form-control" %>
+    </div>
+
+    <div class="mb-2">
+      <%= f.label :partner_role_title, "Rôle" %>
+      <%= f.text_field :partner_role_title, placeholder: "Travailleur social, Bénévole, Maraudeur, ...", class: "form-control"  %>
+    </div>
+
+    <div class="mb-2">
+      <%= f.label :email, "Adresse e-mail" %>
+      <%= f.email_field :email, required: true, class: "form-control" %>
+    </div>
+
+    <% if OrganizationAdmin::Permissions.can_manage_admins?(current_user) %>
+      <div class="mb-2">
+        <div class="flex flex-align-center">
+          <label class="mb-0 mr-2">Administrateur</label>
+          <%= f.radio_button :partner_admin, true,
+                disabled: (@member == current_user),
+                class: "mr-05" %>
+          <label class="mb-0 mr-2" for="user_partner_admin_true">Oui</label>
+          <%= f.radio_button :partner_admin, false,
+                disabled: (@member == current_user),
+                class: "mr-05" %>
+          <label class="mb-0 mr-2" for="user_partner_admin_false">Non</label>
+        </div>
+        <div class="text-small mt-05">Les administrateurs peuvent inviter des membres dans l'organisation, modifier la description de l'organisation, et nommer d'autres administrateurs.</div>
+        <% if @member == current_user %>
+          <div class="text-small mt-05">
+            <i class="material-icons material-icons-inline">error_outline</i>
+            Vous ne pouvez pas vous retirer vous-même le rôle d'administrateur.
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+
+    <div class="text-right mb-2">
+      <%= f.submit "Enregistrer", class: "btn btn-primary" %>
+    </div>
+    <%= link_to "Afficher la liste des membres", organization_admin_members_path, class: "color-grey" %>
+
+  <% end %>
+
+  <hr class="my-5">
+
+  <div class="mb-2">
+    <div class="flex flex-align-center">
+      <div>
+        <label class="mb-0">Retirer ce membre de l'organisation</label><br>
+        <div class="text-small">Vous pourrez toujours ré-inviter ce membre à rejoindre l'organisation.</div>
+      </div>
+      <div class="flex-grow flex-no-shrink text-right">
+        <%= button_to "Retirer de l'organisation",
+              organization_admin_member_path(@member), method: :delete,
+              data: {confirm: "Retirer #{UserPresenter.full_name(@member)} de l'organisation #{current_user.partner.name} ?"},
+              class: "btn btn-outline", disabled: (@member == current_user) %>
+      </div>
+    </div>
+    <% if @member == current_user %>
+      <div class="text-small mt-05">
+        <i class="material-icons material-icons-inline">error_outline</i>
+        Vous ne pouvez pas vous retirer vous-même de l'organisation.
+      </div>
+    <% end %>
+  </div>
+
+</div>

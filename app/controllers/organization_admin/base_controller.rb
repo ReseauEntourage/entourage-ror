@@ -1,12 +1,17 @@
+require 'layout_options'
+
 module OrganizationAdmin
   class BaseController < ActionController::Base
     protect_from_forgery with: :exception
 
-    before_action :authenticate_user!, except: :auth
-    before_action :ensure_org_member!, except: :auth
+    before_action :authenticate_user!
+    before_action :ensure_org_member!
+
+    skip_before_action :authenticate_user!, :ensure_org_member!, only: :auth
 
     helper_method :current_user, :community
 
+    include LayoutOptions
     layout 'organization_admin'
 
     def home

@@ -1,8 +1,11 @@
 module OrganizationAdmin
   class InvitationsController < BaseController
-    before_action :authenticate_user!, except: :join
-    before_action :ensure_org_admin!, except: [:join, :accept]
-    before_action :ensure_org_member!, except: [:join, :accept]
+    before_action :ensure_can_invite_member!, except: [:join, :accept]
+
+    skip_before_action :authenticate_user!, only: [:join]
+    skip_before_action :ensure_org_member!, only: [:join, :accept]
+
+    layout_options active_menu: :invitations
 
     def index
       partner_id = current_user.partner_id
@@ -43,7 +46,8 @@ module OrganizationAdmin
 
       OrganizationAdmin::InvitationService.deliver(@invitation)
 
-      render text: "OK"
+      flash[:success] = "Invitation envoyée !"
+      redirect_to organization_admin_invitations_path
     end
 
     # DELETE organization_admin_invitation_path
@@ -51,6 +55,8 @@ module OrganizationAdmin
       invitation = PartnerInvitation.where(partner_id: current_user.partner_id).find(params[:id])
       raise "Invitation is not pending" unless invitation.pending?
       invitation.update_column(:deleted_at, Time.zone.now)
+
+      flash[:success] = "Invitation révoquée !"
       redirect_to organization_admin_invitations_path
     end
 
@@ -59,6 +65,8 @@ module OrganizationAdmin
       invitation = PartnerInvitation.where(partner_id: current_user.partner_id).find(params[:id])
       raise "Invitation is not pending" unless invitation.pending?
       OrganizationAdmin::InvitationService.deliver(invitation)
+
+      flash[:success] = "Invitation envoyée à nouveau !"
       redirect_to organization_admin_invitations_path
     end
 
@@ -110,6 +118,12 @@ module OrganizationAdmin
     end
 
     protected
+
+    def ensure_can_invite_member!
+      unless OrganizationAdmin::Permissions.can_invite_member?(current_user)
+        render text: "Vous n'avez pas la permission d'inviter un membre", status: :unauthorized
+      end
+    end
 
     def invitation_params
       params.require(:partner_invitation).permit(

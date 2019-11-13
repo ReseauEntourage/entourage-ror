@@ -1,0 +1,49 @@
+<div class="container-s mt-6 mb-2 px-3">
+  <%= render 'organization_admin/flashes' %>
+
+  <div class="flex mb-2 flex-align-center">
+    <div class="text-large flex-grow">Membres</div>
+    <% if OrganizationAdmin::Permissions.can_invite_member?(current_user) %>
+      <%= link_to "Inviter un membre", new_organization_admin_invitation_path,
+                  class: "btn btn-primary" %>
+    <% end %>
+  </div>
+  <div class="mb-2">
+    <% can_edit = OrganizationAdmin::Permissions.can_edit_member?(current_user) %>
+    <% @members.each do |member| %>
+      <div class="border-bottom py-1 flex flex-align-center overlay-container">
+        <div style="width: 3rem; height: 3rem; border-radius: 50%; background-image: url('<%= asset_path "user/default_avatar.png" %>'); background-size: contain; background-color: #fff"
+             class="mr-2">
+          <% if member.avatar_key %>
+            <img style="width: 3rem; height: 3rem; border-radius: 50%;" alt=""
+               src="<%= UserServices::Avatar.new(user: member).thumbnail_url %>"/>
+          <% end %>
+        </div>
+        <div class="flex-grow">
+          <div class="flex">
+            <div class="flex-grow text-bold">
+              <%= link_to_if can_edit, UserPresenter.full_name(member),
+                  edit_organization_admin_member_path(member),
+                  class: "hover-underline" %>
+            </div>
+            <% if member.partner_admin? %>
+              <div>Administrateur</div>
+            <% end %>
+          </div>
+          <% if UserPresenter.has_partner_role_title?(member) %>
+            <div>
+              <%= UserPresenter.partner_role_title(member) %>
+            </div>
+          <% end %>
+          <div class="color-grey">
+            <% if member.email.present? %>
+              <span><%= member.email %></span> •
+            <% end %>
+            <span><%= Phonelib.parse(member.phone).national %></span>
+          </div>
+        </div>
+        <%= link_to_if can_edit, "", edit_organization_admin_member_path(member), class: "overlay" %>
+      </div>
+    <% end %>
+  </div>
+</div>

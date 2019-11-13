@@ -1,3 +1,13 @@
+<%
+  default_layout_options(
+    menu: true,
+    partner_name: true,
+    exit_admin: true,
+    jquery: false,
+    javascript_lib: false,
+  )
+%>
+
 <!doctype html>
 <html lang="fr">
   <head>
@@ -10,12 +20,71 @@
   <body class="font-sans-serif color-black">
     <div class="page-header flex box-shadow">
       <%= image_tag "organization_admin/logo-entourage-orange.png", class: "page-header-logo" %>
+      <% if current_user&.partner_id && layout_options[:partner_name] %>
+        <div class="text-large page-header-text"><%= current_user.partner.name %></div>
+      <% end %>
+      <% if layout_options[:exit_admin] %>
+        <div class="flex-grow"></div>
+        <div class="flex flex-align-center px-3">
+          <%= link_to "Retourner à la carte des actions",
+                      organization_admin_webapp_redirect_path,
+                      class: "hover-underline" %>
+        </div>
+      <% end %>
     </div>
-    <%= yield %>
-    <script
-        src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
-        integrity="sha256-pasqAKBDmFT4eHoN2ndd6lN370kFiGUFyTiUHWhU7k8="
-        crossorigin="anonymous"></script>
+    <% if layout_options[:menu] %>
+      <div class="flex">
+        <div class="flex-25">
+          <div class="page-sidebar pt-5" style="width: 14rem">
+            <div class="px-3 border-right">
+            <div class="text-large">
+              <div>
+                <%= link_to "Tableau de bord", organization_admin_path,
+                      class: "hover-underline #{'color-primary' if layout_options[:active_menu] == :dashboard}" %>
+              </div>
+              <div>
+                <%= link_to "Membres", organization_admin_members_path,
+                      class: "hover-underline #{'color-primary' if layout_options[:active_menu] == :members}" %>
+              </div>
+              <% if OrganizationAdmin::Permissions.can_invite_member?(current_user) %>
+                <div>
+                  <%= link_to "Invitations", new_organization_admin_invitation_path,
+                      class: "hover-underline #{'color-primary' if layout_options[:active_menu] == :invitations}" %>
+                </div>
+              <% end %>
+              <% if OrganizationAdmin::Permissions.can_edit_description?(current_user) %>
+                <div>
+                  <%= link_to "Description", edit_organization_admin_description_path,
+                      class: "hover-underline #{'color-primary' if layout_options[:active_menu] == :description}" %>
+                </div>
+              <% end %>
+            </div>
+            </div>
+          </div>
+        </div>
+        <div class="flex-50">
+          <%= yield %>
+        </div>
+      </div>
+    <% else %>
+      <%= yield %>
+    <% end %>
+    <% case layout_options[:jquery] %>
+    <% when false %>
+    <% when true %>
+      <script
+          src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+          integrity="sha256-pasqAKBDmFT4eHoN2ndd6lN370kFiGUFyTiUHWhU7k8="
+          crossorigin="anonymous"></script>
+    <% when :full %>
+      <script
+          src="https://code.jquery.com/jquery-3.4.1.min.js"
+          integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+          crossorigin="anonymous"></script>
+    <% end %>
+    <% if layout_options[:javascript_lib] %>
+      <%= javascript_include_tag 'organization_admin' %>
+    <% end %>
     <%= content_for :scripts %>
   </body>
 </html>
