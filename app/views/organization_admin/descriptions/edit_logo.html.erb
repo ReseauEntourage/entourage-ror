@@ -1,7 +1,4 @@
 <style>
-  .aspect-ratio-container-1-1 {
-    padding-top: 100%;
-  }
   .logo-as-background {
     background: url(<%= @partner.large_logo_url %>) center/contain no-repeat, #fff;
   }
@@ -10,26 +7,25 @@
 <div class="container-s mt-6 mb-2 px-3">
   <%= render 'organization_admin/flashes' %>
 
-  <div class="flex">
-    <div class="flex-grow">
-      <div class="text-large mb-2">Modifier le logo</div>
-      <label>Choisissez un fichier</label>
-    </div>
-    <div style="width: 4.5rem" class="ml-2 flex-no-shrink">
-      <div class="aspect-ratio-container-1-1 logo-as-background rounded border"
-           id="image-preview"></div>
-    </div>
+  <div class="text-large mb-2">Modifier le logo</div>
+  <div class="mb-2">
+    <div style="width: 8rem; height: 8rem;"
+         class="mx-auto logo-as-background rounded border"
+         id="image-preview"></div>
   </div>
+  <label>Choisissez un fichier</label>
   <form id="upload-form"
         action="#" method="post" enctype="multipart/form-data">
     <div class="mb-2">
       <input type="file" class="btn btn-outline"
-             name="file" accept="<%= @form.content_types %>"/>
+             name="file" accept="<%= @form.content_types %>"
+             style="width: 100%; text-align: left;"/>
     </div>
     <div class="text-right">
       <input type="submit" value="Enregistrer" class="btn btn-primary" disabled/>
     </div>
   </form>
+  <%= link_to "Revenir à la description de l'organisation", edit_organization_admin_description_path, class: "color-grey" %>
 </div>
 
 <% layout_options(jquery: :full) %>

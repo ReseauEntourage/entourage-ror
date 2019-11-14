@@ -33,8 +33,9 @@ module OrganizationAdmin
     end
 
     def logo_upload_success
-      partner = PartnerLogoUploader.handle_success(params)
-      redirect_to [:admin, partner], notice: "Association mise à jour"
+      PartnerLogoUploader.handle_success(params)
+      flash[:success] = "Logo modifié !"
+      redirect_to edit_organization_admin_description_path
     end
 
     private

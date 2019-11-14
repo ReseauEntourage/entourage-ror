@@ -10,6 +10,7 @@ module OrganizationAdmin
       invitation = PartnerInvitation.find_or_initialize_by(
         invitee_email: invitee_email,
         partner_id: partner_id,
+        status: :pending,
       )
 
       invitation.assign_attributes(
@@ -33,6 +34,50 @@ module OrganizationAdmin
     def self.deliver invitation
       raise "Invitation is not pending" unless invitation.pending?
       OrganizationAdminMailer.invitation(invitation.id).deliver_later
+    end
+
+    def self.delete_invitation invitation
+      raise "Invitation is not pending" unless invitation.pending?
+      invitation.status = :deleted
+      invitation.save
+    end
+
+    def self.mark_accepted_invitations_as_outdated user_id:, partner_id:
+      previous_accepted_invitations =
+        PartnerInvitation.where(
+          partner_id: partner_id,
+          invitee_id: user_id,
+          status: :accepted
+        )
+      previous_accepted_invitations.each do |i|
+        i.status = :outdated
+        i.save
+      end
+    end
+
+    def self.accept_invitation! invitation:, user:
+      raise "Invitation is not pending" unless invitation.pending?
+      raise "Already a member" if user.partner_id == invitation.partner_id
+
+      user.assign_attributes(
+        partner_id: invitation.partner_id,
+        partner_admin: invitation.partner.users.empty?,
+        partner_role_title: invitation.invitee_role_title,
+      )
+
+      invitation.assign_attributes(
+        status: :accepted,
+        invitee_id: user.id,
+      )
+
+      ActiveRecord::Base.transaction do
+        mark_accepted_invitations_as_outdated(
+          user_id: invitation.invitee_id,
+          partner_id: invitation.partner_id
+        )
+        user.save!
+        invitation.save!
+      end
     end
   end
 end

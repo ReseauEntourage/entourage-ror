@@ -14,13 +14,12 @@ module OrganizationAdmin
       @status = params[:status] == 'accepted' ? :accepted : :pending
 
       accepted_invitations = invitations
-        .where.not(accepted_at: nil)
+        .where(status: :accepted)
         .joins(:invitee).where(users: {partner_id: partner_id})
         .order(accepted_at: :desc)
 
       pending_invitations = invitations
-          .where(invitee_id: nil, accepted_at: nil)
-          .where("deleted_at is null or deleted_at > now()")
+          .where(status: :pending)
           .order(invited_at: :desc)
 
       @invitations = @status == :accepted ? accepted_invitations : pending_invitations
@@ -53,10 +52,12 @@ module OrganizationAdmin
     # DELETE organization_admin_invitation_path
     def destroy
       invitation = PartnerInvitation.where(partner_id: current_user.partner_id).find(params[:id])
-      raise "Invitation is not pending" unless invitation.pending?
-      invitation.update_column(:deleted_at, Time.zone.now)
 
-      flash[:success] = "Invitation révoquée !"
+      if OrganizationAdmin::InvitationService.delete_invitation(invitation)
+        flash[:success] = "Invitation révoquée !"
+      else
+        flash[:error] = invitation.errors.full_messages.to_sentence
+      end
       redirect_to organization_admin_invitations_path
     end
 
@@ -81,17 +82,13 @@ module OrganizationAdmin
     def accept
       invitation = PartnerInvitation.find_by(token: params[:token])
 
-      raise "Invitation is not pending" unless invitation.pending?
-
       if current_user.partner_id == invitation.partner_id
         return redirect_to organization_admin_path
       end
 
-      current_user.assign_attributes(
-        partner_id: invitation.partner_id,
-        partner_admin: invitation.partner.users.empty?,
-        partner_role_title: invitation.invitee_role_title,
+      raise "Invitation is not pending" unless invitation.pending?
 
+      current_user.assign_attributes(
         first_name: params[:first_name],
         last_name:  params[:last_name],
         email:      params[:email],
@@ -100,15 +97,10 @@ module OrganizationAdmin
         current_user.password = params[:password]
       end
 
-      invitation.assign_attributes(
-        invitee_id: current_user.id
-      )
-
       begin
-        ActiveRecord::Base.transaction do
-          current_user.save!
-          invitation.save!
-        end
+        current_user.save
+        OrganizationAdmin::InvitationService.accept_invitation!(
+          invitation: invitation, user: current_user)
       rescue ActiveRecord::RecordInvalid => e
         Raven.capture_exception(e)
         return redirect_to join_organization_admin_invitation_path(token: invitation.token, error: :unknown)
