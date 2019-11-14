@@ -1,17 +1,23 @@
 class SmsNotificationService
   def send_notification(phone_number, message, sms_type)
-    if(ENV['SMS_PROVIDER']=='AWS')
-      send_aws_sms(phone_number, message, sms_type)
-    end
-  end
-
-  private
-  def send_aws_sms(phone_number, message, sms_type)
     unless ENV.key?('SMS_SENDER_NAME')
       Rails.logger.warn 'No SMS has been sent. Please provide SMS_SENDER_NAME environment variables'
       return
     end
 
+    case ENV['SMS_PROVIDER']
+    when 'AWS'
+      deliveryState = send_aws_sms(phone_number, message, sms_type)
+    else
+      Rails.logger.warn 'No SMS has been sent. Please set SMS_PROVIDER to a valid value'
+      return
+    end
+
+    SmsDelivery.create(phone_number: phone_number, status: deliveryState, sms_type: sms_type)
+  end
+
+  private
+  def send_aws_sms(phone_number, message, sms_type)
     deliveryState='Ok'
     begin
       sns = Aws::SNS::Client.new({
@@ -36,6 +42,6 @@ class SmsNotificationService
       Rails.logger.error "Error trying to send SMS to #{phone_number} error=#{e.message}"
       deliveryState='Sending Error'
     end
-    SmsDelivery.create(phone_number: phone_number, status: deliveryState, sms_type: sms_type)
+    return deliveryState
   end
 end

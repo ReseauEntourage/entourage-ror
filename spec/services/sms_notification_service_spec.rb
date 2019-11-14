@@ -15,10 +15,11 @@ describe SmsNotificationService do
         ENV["SMS_SENDER_NAME"] = "Entourage"
         # intercept the AWS client’s constructor and substitute our stub client
         expect(Aws::SNS::Client).to receive(:new).and_return(stub_client)
-        stub_client.stub(:publish)
+        allow(stub_client).to receive(:publish).and_call_original
         sms_notification_service.send_notification(phone_number, message, sms_type)
       end
       it { expect(stub_client).to have_received(:publish).with({phone_number: phone_number, message: message}) }
+      it { expect(SmsDelivery.where(phone_number: phone_number, sms_type: sms_type).last&.status).to eq 'Ok' }
     end
 
     context "aws as sms provider and api key and secret are not provided as env variables" do

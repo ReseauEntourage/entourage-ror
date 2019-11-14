@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20191021143541) do
+ActiveRecord::Schema.define(version: 20191114093910) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -503,13 +503,8 @@ ActiveRecord::Schema.define(version: 20191021143541) do
   add_index "simplified_tour_points", ["latitude", "longitude", "tour_id"], name: "index_simplified_tour_points_on_coordinates_and_tour_id", using: :btree
   add_index "simplified_tour_points", ["tour_id"], name: "index_simplified_tour_points_on_tour_id", using: :btree
 
-  create_table "sms_deliveries", force: :cascade do |t|
-    t.string   "phone_number"
-    t.integer  "status"
-    t.string   "sms_type"
-    t.datetime "created_at",   null: false
-    t.datetime "updated_at",   null: false
-  end
+# Could not dump table "sms_deliveries" because of following StandardError
+#   Unknown type 'sms_delivery_status' for column 'status'
 
   create_table "store_daily_reports", force: :cascade do |t|
     t.string   "store_id"
