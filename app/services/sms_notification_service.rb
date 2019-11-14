@@ -8,6 +8,8 @@ class SmsNotificationService
     case ENV['SMS_PROVIDER']
     when 'AWS'
       deliveryState = send_aws_sms(phone_number, message, sms_type)
+    when 'Slack'
+      deliveryState = send_slack_message(phone_number, message, sms_type)
     else
       Rails.logger.warn 'No SMS has been sent. Please set SMS_PROVIDER to a valid value'
       return
@@ -43,5 +45,21 @@ class SmsNotificationService
       deliveryState='Sending Error'
     end
     return deliveryState
+  end
+
+  def send_slack_message(phone_number, message, sms_type)
+    return if ENV['SLACK_WEBHOOK_URL'].blank?
+
+    Slack::Notifier.new(ENV['SLACK_WEBHOOK_URL']).ping(
+      channel: '#test-env-sms',
+      username: ENV['SMS_SENDER_NAME'],
+      icon_emoji: ':speech_balloon:',
+      text: "À #{phone_number}\n"\
+            "```\n"\
+            "#{message}"\
+            "```"
+    )
+
+    return 'Ok'
   end
 end
