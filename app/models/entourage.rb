@@ -178,6 +178,13 @@ class Entourage < ActiveRecord::Base
     end
   end
 
+  def share_url
+    return unless uuid_v2
+    return if group_type == 'conversation'
+    share_url_prefix = ENV['PUBLIC_SHARE_URL'] || 'http://entourage.social/entourages/'
+    "#{share_url_prefix}#{uuid_v2}"
+  end
+
   protected
 
   def check_moderation

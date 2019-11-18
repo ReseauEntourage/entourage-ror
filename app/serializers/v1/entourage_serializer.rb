@@ -112,12 +112,5 @@ module V1
     def metadata
       object.metadata.except(:$id)
     end
-
-    def share_url
-      return unless object.uuid_v2
-      return if object.group_type == 'conversation'
-      share_url_prefix = ENV['PUBLIC_SHARE_URL'] || 'http://entourage.social/entourages/'
-      "#{share_url_prefix}#{object.uuid_v2}"
-    end
   end
 end

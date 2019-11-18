@@ -1,1 +1,55 @@
 <% layout_options(active_menu: :dashboard) %>
+
+<div class="container-s mt-6 mb-2 px-3">
+  <%= render 'organization_admin/flashes' %>
+
+  <div class="mb-6">
+    <div class="text-large mb-2">Actions en cours (<%= @actions.count %>)</div>
+
+    <% if @actions.any? %>
+      <% @actions.each do |action| %>
+        <div class="flex mb-1">
+          <div style="width: 5em" class="flex-no-shrink text-right mr-2 color-grey">
+            <% date = action.created_at %>
+            <% if date.midnight > 3.months.ago.midnight %>
+              <%= l date, format: "%-d %b" %>
+            <% else %>
+              <%= l date, format: "%b %Y" %>
+            <% end %>
+          </div>
+          <div>
+            <%= link_to action.title, action.share_url, target: :_blank, class: "hover-underline" %>
+          </div>
+        </div>
+      <% end %>
+    <% else %>
+      <div class="color-grey">Vous n'avez aucune action en cours.</div>
+    <% end %>
+  </div>
+
+  <div class="mb-6">
+    <div class="text-large mb-2">Évènements à venir (<%= @events.count %>)</div>
+
+    <% if @events.any? %>
+      <% @events.each do |event| %>
+        <div class="flex mb-1">
+          <div style="width: 5em" class="flex-no-shrink text-right mr-2 color-grey">
+            <% date = event.metadata[:starts_at] %>
+            <% if date.today? %>
+              <%= l date, format: "%H:%M" %>
+            <% elsif date.midnight < 14.days.from_now.midnight %>
+              <%= l date, format: "%a. %d" %>
+            <% else %>
+              <%= l date, format: "%-d %b" %>
+            <% end %>
+          </div>
+          <div>
+            <%= link_to event.title, event.share_url, target: :_blank, class: "hover-underline" %>
+          </div>
+        </div>
+      <% end %>
+    <% else %>
+      <div class="color-grey">Vous n'avez aucun évènement à venir.</div>
+    <% end %>
+  </div>
+</div>

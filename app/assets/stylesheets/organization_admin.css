@@ -248,6 +248,7 @@ textarea.form-control:invalid {
 .mt-5  { margin-top: 3rem; }
 .mt-6  { margin-top: 4.5rem; }
 .mb-0  { margin-bottom: 0; }
+.mb-1  { margin-bottom: 0.5rem; }
 .mb-2  { margin-bottom: 1rem; }
 .mb-4  { margin-bottom: 2rem; }
 .mb-6  { margin-bottom: 4.5rem; }
