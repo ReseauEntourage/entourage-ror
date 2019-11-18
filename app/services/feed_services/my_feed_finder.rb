@@ -10,11 +10,11 @@ module FeedServices
     end
 
     def feeds
+      feeds = user.community.feeds
+
       if user.anonymous?
         return FeedWithCursor.new(feeds.none, cursor: nil, next_page_token: nil)
       end
-
-      feeds = user.community.feeds
 
       feeds = feeds.where.not(status: :blacklisted)
       feeds = feeds.where("feeds.status != 'suspended' OR feeds.user_id = ?", user.id)
