@@ -28,14 +28,15 @@ module Api
               url = "https://entourage.social/don?utm_medium=menu&utm_source=app&utm_campaign=dons2019"
 
               if !user.anonymous?
-                url +=
-                  "?firstname=#{user.first_name}" +
-                  "&lastname=#{user.last_name}" +
-                  "&email=#{user.email}" +
-                  "&postcode=#{user.address&.postal_code}" +
-                  "&external_id=db#{UserServices::EncodedId.encode(user.id)}"
+                url += "&" + {
+                  firstname: user.first_name,
+                  lastname: user.last_name,
+                  email: user.email,
+                  postcode: user.address&.postal_code,
+                  external_id: "db#{UserServices::EncodedId.encode(user.id)}"
+                }.to_query
 
-                  mixpanel.track("Clicked Menu Link", { "Link" => "Donation", "Campaign" => "dons2019" })
+                mixpanel.track("Clicked Menu Link", { "Link" => "Donation", "Campaign" => "dons2019" })
               end
               url
             end,

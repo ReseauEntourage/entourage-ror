@@ -259,7 +259,7 @@ module Api
             utm_source: 'app',
             utm_medium: 'announcement-card'
           }.each do |key, value|
-            url_params[key] = value unless url_params.key?(key)
+            url_params[key] = value unless url_params.key?(key.to_s)
           end
           uri.query = URI.encode_www_form(url_params).presence
           url = uri.to_s
