@@ -380,6 +380,16 @@ module FeedServices
       # )
 
       announcements.push Announcement.new(
+        id: 51,
+        title: "Propagez l'Effet Entourage, faites un don",
+        body: "En cette fin d'année, nous avons besoin de vous pour faire grandir le réseau solidaire et développer nos actions !",
+        image_url: true,
+        action: "Faire un don",
+        author: moderator,
+        webview: false
+      )
+
+      announcements.push Announcement.new(
         id: 50,
         title: "Je parle d'Entourage à mon entourage",
         body: "Mes proches vont pouvoir à leur tour se rendre utiles en un clic",
