@@ -33,11 +33,14 @@ module Api
                   lastname: user.last_name,
                   email: user.email,
                   postcode: user.address&.postal_code,
-                  external_id: "db#{UserServices::EncodedId.encode(user.id)}"
+                  utm_term: "db#{UserServices::EncodedId.encode(user.id)}"
                 }.to_query
 
                 mixpanel.track("Clicked Menu Link", { "Link" => "Donation", "Campaign" => "dons2019" })
+              else
+                url += "&utm_term=anonymous"
               end
+
               url
             end,
           'atd-partnership' =>

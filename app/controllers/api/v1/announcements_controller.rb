@@ -248,7 +248,9 @@ module Api
         when 51
           url = "https://www.effet.entourage.social/?utm_medium=carteannonce&utm_source=app&utm_campaign=dons2019"
           if current_user
-            url += "&external_id=db#{UserServices::EncodedId.encode(current_user.id)}"
+            url += "&utm_term=db#{UserServices::EncodedId.encode(current_user.id)}"
+          else
+            url += "&utm_term=anonymous"
           end
         end
 
