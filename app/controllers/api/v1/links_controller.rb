@@ -25,23 +25,17 @@ module Api
             'https://ambassadeurs.entourage.social',
           'donation' =>
             lambda do |user|
-              url = "#{ENV['WEBSITE_URL']}/don"
+              url = "https://entourage.social/don?utm_medium=menu&utm_source=app&utm_campaign=dons2019"
 
               if !user.anonymous?
                 url +=
                   "?firstname=#{user.first_name}" +
                   "&lastname=#{user.last_name}" +
                   "&email=#{user.email}" +
-                  "&external_id=#{user.id}" +
-                  "&utm_medium=APP" +
-                  "&utm_campaign=DEC2017"
+                  "&postcode=#{user.address&.postal_code}" +
+                  "&external_id=db#{UserServices::EncodedId.encode(user.id)}"
 
-                  mixpanel.track("Clicked Menu Link", { "Link" => "Donation", "Campaign" => "Donation DEC2017" })
-                if user.id % 2 == 0
-                  url + "&utm_source=APP-S1"
-                else
-                  url + "&utm_source=APP-S2"
-                end
+                  mixpanel.track("Clicked Menu Link", { "Link" => "Donation", "Campaign" => "dons2019" })
               end
               url
             end,
