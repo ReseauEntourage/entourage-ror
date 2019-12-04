@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20191114093910) do
+ActiveRecord::Schema.define(version: 20191204102654) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -105,6 +105,15 @@ ActiveRecord::Schema.define(version: 20191114093910) do
     t.jsonb    "data",              default: {}, null: false
     t.string   "status",                         null: false
     t.datetime "status_changed_at",              null: false
+  end
+
+  create_table "donations", force: :cascade do |t|
+    t.date    "date",                              null: false
+    t.integer "amount",                            null: false
+    t.string  "donation_type",                     null: false
+    t.string  "reference",                         null: false
+    t.string  "channel"
+    t.jsonb   "protected_attributes", default: [], null: false
   end
 
   create_table "email_campaigns", force: :cascade do |t|
