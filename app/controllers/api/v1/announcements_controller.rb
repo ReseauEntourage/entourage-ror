@@ -6,6 +6,10 @@ module Api
       allow_anonymous_access only: [:redirect]
 
       def icon
+        # https://material.io/resources/icons/
+        # white 48dp png
+        # convert [...]-white-48dp/2x/[...]_white_48dp.png -gravity center -crop 84x84+0+0 [...].png
+        # ImageOptim
         icon = {
           2 => :heart,
           3 => :pin,
@@ -40,7 +44,7 @@ module Api
           32 => :video,
           33 => :heart,
           34 => :heart,
-          35 => :megaphone,
+          35 => :chat,
           36 => :video,
           37 => :trophy,
           38 => :video,
@@ -53,10 +57,18 @@ module Api
           45 => :megaphone,
           46 => :megaphone,
           47 => :heart,
-          48 => :info,
+          48 => :heart,
           49 => :info,
-          50 => :heart,
-          51 => :heart,
+          50 => :chat,
+          51 => :video,
+          52 => :question,
+          53 => :heart,
+          54 => :vidéo,
+          55 => :question,
+          56 => :video,
+          57 => :heart,
+          58 => :heart,
+          59 => :chat,
         }[params[:id].to_i]
 
         redirect_to view_context.asset_url("assets/announcements/icons/#{icon}.png")
@@ -78,7 +90,7 @@ module Api
         image = {
           10 => 'guillaume.jpg',
           11 => 'action.jpg',
-          13 => 'ambassadors-2.jpg',
+          13 => 'ambassadors-3.jpg',
           14 => 'collecte-2018.jpg',
           16 => 'noel.jpg',
           17 => '2.png',
@@ -99,7 +111,7 @@ module Api
           32 => '32.jpg',
           33 => '33.jpg',
           34 => '34.jpg',
-          35 => 'guillaume-2.jpg',
+          35 => 'guillaume-3.jpg',
           36 => '36.jpg',
           37 => '37.jpg',
           38 => '38.jpg',
@@ -112,10 +124,18 @@ module Api
           45 => 'canicule.jpg',
           46 => '3919.png',
           47 => 'stat-smartphone.png',
-          48 => 'verbatims.png',
+          48 => 'verbatims-2.jpg',
           49 => 'seis-4.png',
-          50 => 'chalumos-2019.jpg',
-          51 => 'don-2019.jpg',
+          50 => '50.jpg',
+          51 => '51.jpg',
+          52 => '52.jpg',
+          53 => '53.jpg',
+          54 => '54.jpg',
+          55 => '55.jpg',
+          56 => '56.jpg',
+          57 => '57.jpg',
+          58 => '58.jpg',
+          59 => '59.jpg',
         }[params[:id].to_i]
 
         return render nothing: true, status: :not_found if image.nil?
@@ -252,6 +272,18 @@ module Api
           else
             url += "&utm_term=anonymous"
           end
+        when 52
+          url = "https://entourage-asso.typeform.com/to/pdm0w3"
+        when 53
+          url = "https://blog.entourage.social/2019/12/04/noel-solidaire-2019-aupres-des-personnes-sdf-du-benevolat-pour-le-reveillon/#site-content"
+        when 54
+          url = "http://www.simplecommebonjour.org/?p=169"
+        when 55
+          url = "https://entourage-asso.typeform.com/to/MgHVyc?mc_user_id=#{current_user&.id}"
+        when 56
+          url = "https://www.facebook.com/watch/?v=402957420659669"
+        when 57
+          url = "https://blog.entourage.social/2019/11/28/calendrier-de-lavent-solidaire-2019-24-jours-guides-par-entourage/#site-content"
         end
 
         begin

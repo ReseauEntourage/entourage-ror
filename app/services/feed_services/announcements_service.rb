@@ -379,32 +379,165 @@ module FeedServices
       #   webview: true
       # )
 
+      # announcements.push Announcement.new(
+      #   id: 47,
+      #   title: "Un smartphone dans un tiroir ?",
+      #   body: "À la rue, c'est très utile. Entourage s'engage à les redistribuer aux personnes qui en ont besoin !",
+      #   image_url: true,
+      #   action: "Donner mon smartphone",
+      #   author: moderator,
+      #   webview: false,
+      #   url: "mailto:guillaume@entourage.social"
+      # )
+
+      # announcements.push Announcement.new(
+      #   id: 49,
+      #   title: "Salon SEIS #4 à Rennes",
+      #   body: "RDV le 10 octobre de 9h à 17h au salon des Innovations Solidaires à Askoria (M° Villejean - Université)",
+      #   image_url: true,
+      #   action: "En savoir plus",
+      #   author: moderator,
+      #   webview: true
+      # ) if Time.zone.today.to_s <= '2019-10-10' && area == 'Rennes'
+
+      # service_civique_id =
+      #   case area
+      #   when 'Paris République', 'Paris 17 et 9', 'Paris 15', 'Paris 5', 'Paris'
+      #     39
+      #   when 'Lyon Ouest', 'Lyon Est', 'Lyon'
+      #     40
+      #   when 'Lille'
+      #     41
+      #   else
+      #     42
+      #   end
+
+      # announcements.push Announcement.new(
+      #   id: service_civique_id,
+      #   title: "Entourage recrute ses futurs volontaires en Service Civique",
+      #   body: "Tu as entre 18 et 25 ans, et l’expérience en association te motive ? Deviens volontaire en service civique chez Entourage !",
+      #   image_url: true,
+      #   action: "Découvrir l’offre !",
+      #   author: moderator,
+      #   webview: false
+      # )
+
+      # announcements.push Announcement.new(
+      #   id: 44,
+      #   title: "Un partage peut tout changer",
+      #   body: "Trouvons du travail à ces 15 personnes en précarité, en partageant leur CV sur nos réseaux !",
+      #   image_url: true,
+      #   action: "Partagez un CV",
+      #   author: moderator,
+      #   webview: false
+      # )
+
+      # announcements.push Announcement.new(
+      #   id: 32,
+      #   title: "Rachid est une personne SDF, Marie une voisine... ils témoignent de leur rencontre !",
+      #   body: "Regards croisés sur une main tendue.",
+      #   image_url: true,
+      #   action: "Voir la vidéo",
+      #   author: moderator,
+      #   webview: true
+      # )
+
+      # announcements.push Announcement.new(
+      #   id: 33,
+      #   title: "Ces actions ont été de vrais succès !",
+      #   body: "Ça fait toujours du bien de s'inspirer de ce qui fonctionne ! Voici les initiatives du réseau Entourage qui ont abouti, et créé plus de chaleur humaine dans les rues.",
+      #   image_url: true,
+      #   action: "Lire les succès",
+      #   author: moderator,
+      #   webview: true
+      # )
+
+      # announcements.push Announcement.new(
+      #   id: 36,
+      #   title: "La philosophie de notre asso en 1'30",
+      #   body: "On l'aime beaucoup cette vidéo : elle illustre parfaitement notre mission de création de lien social entre voisins avec et sans-abri.",
+      #   image_url: true,
+      #   action: "Regarder",
+      #   author: moderator,
+      #   webview: true
+      # )
+
+      # announcements.push Announcement.new(
+      #   id: 37,
+      #   title: "En panne d'inspiration ?",
+      #   body: "On vous donne ici plein d'idées d'actions à créer pour favoriser la solidarité dans le quartier.",
+      #   image_url: true,
+      #   action: "Je m'inspire",
+      #   author: moderator,
+      #   webview: true
+      # )
+
+      # announcements.push Announcement.new(
+      #   id: 38,
+      #   title: "Comment devient-on SDF ?",
+      #   body: "Une vidéo d'animation pour montrer comment la rupture des liens mène progressivement à la rue.",
+      #   image_url: true,
+      #   action: "Mieux comprendre",
+      #   author: moderator,
+      #   webview: true
+      # )
+
       announcements.push Announcement.new(
-        id: 51,
-        title: "Propagez l'Effet Entourage, faites un don",
-        body: "En cette fin d'année, nous avons besoin de vous pour faire grandir le réseau solidaire et développer nos actions !",
+        id: 52,
+        title: "Quelles sont VOS questions sur la rue",
+        body: "De nouveaux contenus à venir, basés sur vos besoins !",
         image_url: true,
-        action: "Faire un don",
+        action: "Je réponds",
+        author: moderator,
+        webview: true
+      )
+
+      announcements.push Announcement.new(
+        id: 53,
+        title: "Bénévolat de fin d'année",
+        body: "Une liste des réveillons solidaires qui ont besoin de vous",
+        image_url: true,
+        action: "En savoir plus",
+        author: moderator,
+        webview: true
+      )
+
+      announcements.push Announcement.new(
+        id: 54,
+        title: "Aider : des idées d'exemples concrets",
+        body: "Une vidéo de 3 min' pour mieux comprendre son rôle de voisin",
+        image_url: true,
+        action: "Je regarde la vidéo",
+        author: moderator,
+        webview: true
+      )
+
+      announcements.push Announcement.new(
+        id: 55,
+        title: "Votre asso organise un réveillon ?",
+        body: "Partagez-nous vos infos pour qu'on les mette en valeur",
+        image_url: true,
+        action: "Je réponds",
+        author: moderator,
+        webview: true
+      )
+
+      announcements.push Announcement.new(
+        id: 56,
+        title: "Vidéo Brut : Kenny, ex SDF",
+        body: "Le président du Comité de la rue raconte sa 1ère nuit à la rue",
+        image_url: true,
+        action: "Je regarde",
         author: moderator,
         webview: false
       )
 
       announcements.push Announcement.new(
-        id: 50,
-        title: "Je parle d'Entourage à mon entourage",
-        body: "Mes proches vont pouvoir à leur tour se rendre utiles en un clic",
+        id: 57,
+        title: "Calendrier de l'avent solidaire",
+        body: "Soyez gourmands de conseils avec ces 24 étapes pour créer plus du lien",
         image_url: true,
-        action: "Partage WhatsApp",
-        author: moderator,
-        webview: false
-      ) if Time.zone.today.to_s <= '2019-11-08'
-
-      announcements.push Announcement.new(
-        id: 13,
-        title: "Allez plus loin en devenant bénévole !",
-        body: "Le réseau a besoin de vous pour faire vivre la solidarité. Mission selon vos disponibilités (env 2h/semaine) !",
-        image_url: true,
-        action: "Je veux plus d’info",
+        action: "Je découvre",
         author: moderator,
         webview: true
       )
@@ -420,126 +553,76 @@ module FeedServices
 
       announcements.push Announcement.new(
         id: 35,
-        title: "Guillaume à votre écoute !",
-        body: "Vous avez une question sur le monde de la rue, vous avez besoin d'aide ? Je suis là pour vous aider !",
+        title: "Guillaume, modérateur à votre écoute",
+        body: "Je suis là pour répondre à toutes vos questions et vous orienter",
         image_url: true,
-        action: "Contactez-moi",
+        action: "J'échange avec Guillaume",
         url: conversation_url,
         author: moderator,
         webview: true
       )
 
       announcements.push Announcement.new(
-        id: 47,
-        title: "Un smartphone dans un tiroir ?",
-        body: "À la rue, c'est très utile. Entourage s'engage à les redistribuer aux personnes qui en ont besoin !",
+        id: 58,
+        title: "Sportif ?",
+        body: "Rejoignez notre communauté d'entraide autour du sport !",
         image_url: true,
-        action: "Donner mon smartphone",
+        action: "En savoir plus",
+        url: "#{ENV['DEEPLINK_SCHEME']}://entourage/esL6R5Az6MeU",
         author: moderator,
-        webview: false,
-        url: "mailto:guillaume@entourage.social"
+        webview: false
       )
 
       announcements.push Announcement.new(
-        id: 49,
-        title: "Salon SEIS #4 à Rennes",
-        body: "RDV le 10 octobre de 9h à 17h au salon des Innovations Solidaires à Askoria (M° Villejean - Université)",
+        id: 59,
+        title: "Engager votre entreprise",
+        body: "Vous souhaitez engager votre boîte avec Entourage ? Nous avons des actions spéciales collaborateurs !",
+        image_url: true,
+        action: "En savoir plus",
+        author: moderator,
+        webview: false,
+        url: "mailto:jonathan@entourage.social"
+      )
+
+      announcements.push Announcement.new(
+        id: 13,
+        title: "On recrute des bénévoles",
+        body: "Devenez ambassadeur dans votre quartier, 2h par semaine !",
         image_url: true,
         action: "En savoir plus",
         author: moderator,
         webview: true
-      ) if Time.zone.today.to_s <= '2019-10-10' && area == 'Rennes'
+      )
+
+      announcements.push Announcement.new(
+        id: 51,
+        title: "D'un parking à un toit",
+        body: "Partagez l'histoire de Mélanie, sortie de la rue grâce aux mains tendues du réseau",
+        image_url: true,
+        action: "Je partage",
+        author: moderator,
+        webview: true
+      )
 
       announcements.push Announcement.new(
         id: 48,
-        title: "On vous tend le micro",
-        body: "Comme Louis et Sarah, dites-nous ce que le réseau Entourage vous a apporté !",
+        title: "Votre histoire ?",
+        body: "Un beau moment partagé ? Racontez-nous.",
         image_url: true,
-        action: "Je raconte",
+        action: "Je partage",
+        url: conversation_url,
         author: moderator,
         webview: true
       )
 
-      service_civique_id =
-        case area
-        when 'Paris République', 'Paris 17 et 9', 'Paris 15', 'Paris 5', 'Paris'
-          39
-        when 'Lyon Ouest', 'Lyon Est', 'Lyon'
-          40
-        when 'Lille'
-          41
-        else
-          42
-        end
-
       announcements.push Announcement.new(
-        id: service_civique_id,
-        title: "Entourage recrute ses futurs volontaires en Service Civique",
-        body: "Tu as entre 18 et 25 ans, et l’expérience en association te motive ? Deviens volontaire en service civique chez Entourage !",
+        id: 50,
+        title: "Je parle d'Entourage",
+        body: "à mon entourage, pour les inciter à passer à l'action.",
         image_url: true,
-        action: "Découvrir l’offre !",
+        action: "Je relaie",
         author: moderator,
         webview: false
-      )
-
-      announcements.push Announcement.new(
-        id: 44,
-        title: "Un partage peut tout changer",
-        body: "Trouvons du travail à ces 15 personnes en précarité, en partageant leur CV sur nos réseaux !",
-        image_url: true,
-        action: "Partagez un CV",
-        author: moderator,
-        webview: false
-      )
-
-      announcements.push Announcement.new(
-        id: 32,
-        title: "Rachid est une personne SDF, Marie une voisine... ils témoignent de leur rencontre !",
-        body: "Regards croisés sur une main tendue.",
-        image_url: true,
-        action: "Voir la vidéo",
-        author: moderator,
-        webview: true
-      )
-
-      announcements.push Announcement.new(
-        id: 33,
-        title: "Ces actions ont été de vrais succès !",
-        body: "Ça fait toujours du bien de s'inspirer de ce qui fonctionne ! Voici les initiatives du réseau Entourage qui ont abouti, et créé plus de chaleur humaine dans les rues.",
-        image_url: true,
-        action: "Lire les succès",
-        author: moderator,
-        webview: true
-      )
-
-      announcements.push Announcement.new(
-        id: 36,
-        title: "La philosophie de notre asso en 1'30",
-        body: "On l'aime beaucoup cette vidéo : elle illustre parfaitement notre mission de création de lien social entre voisins avec et sans-abri.",
-        image_url: true,
-        action: "Regarder",
-        author: moderator,
-        webview: true
-      )
-
-      announcements.push Announcement.new(
-        id: 37,
-        title: "En panne d'inspiration ?",
-        body: "On vous donne ici plein d'idées d'actions à créer pour favoriser la solidarité dans le quartier.",
-        image_url: true,
-        action: "Je m'inspire",
-        author: moderator,
-        webview: true
-      )
-
-      announcements.push Announcement.new(
-        id: 38,
-        title: "Comment devient-on SDF ?",
-        body: "Une vidéo d'animation pour montrer comment la rupture des liens mène progressivement à la rue.",
-        image_url: true,
-        action: "Mieux comprendre",
-        author: moderator,
-        webview: true
       )
 
       # announcements.push Announcement.new(
