@@ -15,30 +15,57 @@ ensure
 end
 
 def process_csv csv
-  csv.each { |row| process_row row }
+  regular_setups, regular_setups_by_renew_key = extract_regular_setups csv
+  csv.rewind
+  csv.each { |row| process_row row, regular_setups, regular_setups_by_renew_key }
 end
 
-def process_row row
+def extract_regular_setups csv
+  regular_setups = {}
+  regular_setups_by_renew_key = {}
+  csv.each do |row|
+    next if row[:payment_gateway_account].in? %w[iraisertest test]
+    next unless row[:payment_succeeded] == '1'
+    next unless row[:donation_type] == 'setup'
+
+    regular_setups[row[:donation_reference]] = row
+    regular_setups_by_renew_key[row[:payment_card_renew_key]] = row
+  end
+  [regular_setups, regular_setups_by_renew_key]
+end
+
+def process_row row, regular_setups, regular_setups_by_renew_key
+  return if row[:payment_gateway_account].in? %w[iraisertest test]
   return unless row[:payment_succeeded] == '1'
   return unless row[:donation_type].in? %w[once regular]
-  return if row[:payment_gateway_account].in? %w[iraisertest test]
-
-  raise unless row[:donation_type].in? %[once regular]
 
   donation_type =
     if row[:donation_type] == 'once'
       'once'
-    elsif row[:donation_next_transaction_date].nil?
+    elsif row[:campaign_type] != 'upgrade' &&
+          row[:donation_next_transaction_date].nil?
       'first_regular'
     else
       'regular'
     end
 
+  # emails = extract_emails row
+  # p emails if emails.count != 1
+
+  if row[:donation_type] == 'regular'
+    context_row = regular_setups[row[:donation_setup_number]]
+    while context_row[:campaign_type] == 'upgrade' do
+      context_row = regular_setups_by_renew_key[CGI.parse(context_row[:context_query_string])['h'][0]]
+    end
+  else
+    context_row = row
+  end
+
   source = nil
   medium = nil
   host = nil
-  if row[:context_referer]
-    row[:context_referer].split(" -> ").each do |url|
+  if context_row[:context_referer]
+    context_row[:context_referer].split(" -> ").each do |url|
       url = URI(url)
       query = CGI.parse(url.query || '')
       source = query['utm_source']&.first if source.nil?
@@ -46,16 +73,25 @@ def process_row row
       host = url.host if host.nil?
     end
   end
-  if row[:context_query_string]
+  if context_row[:context_query_string]
     begin
-      params = JSON.parse(row[:context_query_string])
+      params = JSON.parse(context_row[:context_query_string])
     rescue
-      params = CGI.parse(row[:context_query_string])
+      params = CGI.parse(context_row[:context_query_string])
     end
-    source = params['utm_source']&.first if source.nil?
-    medium = params['utm_medium']&.first if medium.nil?
+    source = Array(params['utm_source']).first if source.nil?
+    medium = Array(params['utm_medium']).first if medium.nil?
   end
   channel = source.nil? ? host : "#{source}/#{medium || '(none)'}"
+
+  if row[:donation_validation_date].start_with?("2019-12-05") &&
+     donation_type == 'first_regular'
+    p channel
+    p context_row[:context_referer]
+    p context_row[:context_query_string]
+    p context_row[:donation_validation_date]
+    puts
+  end
 
   d = Donation.find_or_initialize_by(reference: row[:donation_reference])
   d.assign_attributes(
@@ -67,6 +103,38 @@ def process_row row
   if d.save == false
     puts "#{d.reference}: #{d.error.full_messages.to_sentence}"
   end
+end
+
+def extract_emails row
+  candidates = []
+
+  candidates << row[:donator_email]
+  candidates << row[:payment_gateway_ticket_metadata_donator_email]
+  candidates << row[:payment_gateway_ticket_RECEIVERBUSINESS]
+  candidates << row[:payment_gateway_ticket_RECEIVEREMAIL]
+  candidates << row[:payment_gateway_ticket_EMAIL]
+
+  if row[:context_referer]
+    row[:context_referer].split(" -> ").each do |url|
+      params = CGI.parse(URI(url).query || '')
+      candidates += params.values.flatten.uniq
+    end
+  end
+
+  if row[:context_query_string]
+    begin
+      params = JSON.parse(row[:context_query_string])
+    rescue
+      params = CGI.parse(row[:context_query_string])
+    end
+    candidates += params.values.flatten.uniq
+  end
+
+  candidates = candidates
+    .compact
+    .map { |c| c.gsub(/\s+/, '').downcase.presence }
+    .compact.uniq
+    .select { |c| c.match?(/\A[^@]+@[^@]+\.[^@]+\z/) }
 end
 
 open_path(path) { |csv| process_csv csv }
