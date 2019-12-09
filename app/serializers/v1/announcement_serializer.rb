@@ -48,8 +48,9 @@ module V1
     end
 
     def image_url
-      return if object.image_url != true
-      url_for(:image, id: object.id)
+      return if object.image_url.nil? || object.image_url == false
+      v = object.image_url if object.image_url.is_a?(String)
+      url_for(:image, id: object.id, v: v)
     end
 
     def url_for action, options={}
