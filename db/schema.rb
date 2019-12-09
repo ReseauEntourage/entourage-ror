@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20191204102654) do
+ActiveRecord::Schema.define(version: 20191209095733) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -108,12 +108,14 @@ ActiveRecord::Schema.define(version: 20191204102654) do
   end
 
   create_table "donations", force: :cascade do |t|
-    t.date    "date",                              null: false
-    t.integer "amount",                            null: false
-    t.string  "donation_type",                     null: false
-    t.string  "reference",                         null: false
+    t.date    "date",                                 null: false
+    t.integer "amount",                               null: false
+    t.string  "donation_type",                        null: false
+    t.string  "reference",                            null: false
     t.string  "channel"
-    t.jsonb   "protected_attributes", default: [], null: false
+    t.jsonb   "protected_attributes", default: [],    null: false
+    t.boolean "first_time_donator",   default: false, null: false
+    t.integer "app_user_id"
   end
 
   create_table "email_campaigns", force: :cascade do |t|

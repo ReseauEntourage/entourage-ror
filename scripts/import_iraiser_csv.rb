@@ -17,7 +17,9 @@ end
 def process_csv csv
   regular_setups, regular_setups_by_renew_key = extract_regular_setups csv
   csv.rewind
-  csv.each { |row| process_row row, regular_setups, regular_setups_by_renew_key }
+  first_donations = extract_first_donations csv
+  csv.rewind
+  csv.each { |row| process_row row, regular_setups, regular_setups_by_renew_key, first_donations }
 end
 
 def extract_regular_setups csv
@@ -34,7 +36,22 @@ def extract_regular_setups csv
   [regular_setups, regular_setups_by_renew_key]
 end
 
-def process_row row, regular_setups, regular_setups_by_renew_key
+def extract_first_donations csv
+  first_donations = {}
+  csv.each do |row|
+    next if row[:payment_gateway_account].in? %w[iraisertest test]
+    next unless row[:payment_succeeded] == '1'
+    next unless row[:donation_type].in? %w[once regular]
+
+    if first_donations[row[:sympathizer_id]].nil? ||
+       first_donations[row[:sympathizer_id]] > row[:donation_validation_date]
+      first_donations[row[:sympathizer_id]] = row[:donation_validation_date]
+    end
+  end
+  first_donations
+end
+
+def process_row row, regular_setups, regular_setups_by_renew_key, first_donations
   return if row[:payment_gateway_account].in? %w[iraisertest test]
   return unless row[:payment_succeeded] == '1'
   return unless row[:donation_type].in? %w[once regular]
@@ -48,9 +65,6 @@ def process_row row, regular_setups, regular_setups_by_renew_key
     else
       'regular'
     end
-
-  # emails = extract_emails row
-  # p emails if emails.count != 1
 
   if row[:donation_type] == 'regular'
     context_row = regular_setups[row[:donation_setup_number]]
@@ -84,21 +98,25 @@ def process_row row, regular_setups, regular_setups_by_renew_key
   end
   channel = source.nil? ? host : "#{source}/#{medium || '(none)'}"
 
-  if row[:donation_validation_date].start_with?("2019-12-05") &&
-     donation_type == 'first_regular'
-    p channel
-    p context_row[:context_referer]
-    p context_row[:context_query_string]
-    p context_row[:donation_validation_date]
-    puts
-  end
+  first_donation = row[:donation_validation_date] == first_donations[row[:sympathizer_id]]
+
+  emails = extract_emails row
+  app_user_id = User
+    .where(community: :entourage)
+    .where("lower(email) in (?)", emails)
+    .order("last_sign_in_at desc nulls last, created_at desc")
+    .limit(1)
+    .pluck(:id)
+    .first
 
   d = Donation.find_or_initialize_by(reference: row[:donation_reference])
   d.assign_attributes(
     date: Time.zone.parse(row[:donation_validation_date]).to_date,
     amount: (row[:donation_amount].to_i / 100.0).round,
     donation_type: donation_type,
-    channel: channel
+    channel: channel,
+    first_time_donator: first_donation,
+    app_user_id: app_user_id
   )
   if d.save == false
     puts "#{d.reference}: #{d.error.full_messages.to_sentence}"
