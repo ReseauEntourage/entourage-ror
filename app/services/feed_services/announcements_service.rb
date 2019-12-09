@@ -483,6 +483,16 @@ module FeedServices
       # )
 
       announcements.push Announcement.new(
+        id: 51,
+        title: "Propagez l'Effet Entourage, faites un don",
+        body: "En cette fin d'année, nous avons besoin de vous pour faire grandir le réseau solidaire et développer nos actions !",
+        image_url: true,
+        action: "Faire un don",
+        author: moderator,
+        webview: false
+      )
+
+      announcements.push Announcement.new(
         id: 52,
         title: "Quelles sont VOS questions sur la rue",
         body: "De nouveaux contenus à venir, basés sur vos besoins !",
@@ -595,13 +605,13 @@ module FeedServices
       )
 
       announcements.push Announcement.new(
-        id: 51,
+        id: 60,
         title: "D'un parking à un toit",
         body: "Partagez l'histoire de Mélanie, sortie de la rue grâce aux mains tendues du réseau",
         image_url: true,
         action: "Je partage",
         author: moderator,
-        webview: true
+        webview: false
       )
 
       announcements.push Announcement.new(

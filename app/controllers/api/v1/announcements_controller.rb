@@ -60,7 +60,7 @@ module Api
           48 => :heart,
           49 => :info,
           50 => :chat,
-          51 => :video,
+          51 => :heart,
           52 => :question,
           53 => :heart,
           54 => :vidéo,
@@ -69,6 +69,7 @@ module Api
           57 => :heart,
           58 => :heart,
           59 => :chat,
+          60 => :video,
         }[params[:id].to_i]
 
         redirect_to view_context.asset_url("assets/announcements/icons/#{icon}.png")
@@ -127,7 +128,7 @@ module Api
           48 => 'verbatims-2.jpg',
           49 => 'seis-4.png',
           50 => '50.jpg',
-          51 => '51.jpg',
+          51 => 'don-2019.jpg',
           52 => '52.jpg',
           53 => '53.jpg',
           54 => '54.jpg',
@@ -136,6 +137,7 @@ module Api
           57 => '57.jpg',
           58 => '58.jpg',
           59 => '59.jpg',
+          60 => '60.jpg',
         }[params[:id].to_i]
 
         return render nothing: true, status: :not_found if image.nil?
@@ -265,7 +267,7 @@ module Api
           url = "https://www.askoria.eu/seis/"
         when 50
           url = "https://wa.me/?text=J%E2%80%99ai%20d%C3%A9couvert%20une%20super%20app%20qui%20permet%20d%E2%80%99aider%20facilement%20les%20personnes%20SDF%20pr%C3%A8s%20de%20chez%20soi%2C%20Entourage.%20Tu%20devrais%20la%20t%C3%A9l%C3%A9charger%20aussi%20%C3%A7a%20prend%2030%20secondes%20!%20bit.ly%2Fappentourage-w"
-        when 51
+        when 51, 60
           url = "https://www.effet.entourage.social/?utm_medium=carteannonce&utm_source=app&utm_campaign=dons2019"
           if current_user
             url += "&utm_term=db#{UserServices::EncodedId.encode(current_user.id)}"
