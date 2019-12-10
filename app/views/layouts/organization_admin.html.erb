@@ -36,7 +36,7 @@
     <% if layout_options[:menu] %>
       <div class="flex">
         <div class="flex-25">
-          <div class="page-sidebar pt-5" style="width: 14rem">
+          <div class="page-sidebar pt-5" style="width: 17.5rem">
             <div class="px-3 border-right">
             <div class="text-large">
               <div>
@@ -44,7 +44,7 @@
                       class: "hover-underline #{'color-primary' if layout_options[:active_menu] == :dashboard}" %>
               </div>
               <div>
-                <%= link_to "Membres", organization_admin_members_path,
+                <%= link_to "Équipe", organization_admin_members_path,
                       class: "hover-underline #{'color-primary' if layout_options[:active_menu] == :members}" %>
               </div>
               <% if OrganizationAdmin::Permissions.can_invite_member?(current_user) %>
@@ -55,10 +55,17 @@
               <% end %>
               <% if OrganizationAdmin::Permissions.can_edit_description?(current_user) %>
                 <div>
-                  <%= link_to "Description", edit_organization_admin_description_path,
+                  <%= link_to "Fiche de présentation",edit_organization_admin_description_path,
                       class: "hover-underline #{'color-primary' if layout_options[:active_menu] == :description}" %>
                 </div>
               <% end %>
+              <div>
+                <a href="https://blog.entourage.social/category/associations/"
+                   target="_blank"
+                   class="hover-underline">
+                  Guides et ressources
+                </a>
+              </div>
             </div>
             </div>
           </div>

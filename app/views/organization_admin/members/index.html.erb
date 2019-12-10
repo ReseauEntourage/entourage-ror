@@ -2,7 +2,7 @@
   <%= render 'organization_admin/flashes' %>
 
   <div class="flex mb-2 flex-align-center">
-    <div class="text-large flex-grow">Membres</div>
+    <div class="text-large flex-grow">Équipe</div>
     <% if OrganizationAdmin::Permissions.can_invite_member?(current_user) %>
       <%= link_to "Inviter un membre", new_organization_admin_invitation_path,
                   class: "btn btn-primary" %>
