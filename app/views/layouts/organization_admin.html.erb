@@ -36,36 +36,35 @@
     <% if layout_options[:menu] %>
       <div class="flex">
         <div class="flex-25">
-          <div class="page-sidebar pt-5" style="width: 17.5rem">
-            <div class="px-3 border-right">
-              <div class="text-large">
+          <div class="page-sidebar pt-5">
+            <div class="px-3 border-right text-medium"
+                 style="display: inline-block; white-space: nowrap">
+              <div>
+                <%= link_to "Tableau de bord", organization_admin_path,
+                      class: "hover-underline #{'color-primary' if layout_options[:active_menu] == :dashboard}" %>
+              </div>
+              <div>
+                <%= link_to "Équipe", organization_admin_members_path,
+                      class: "hover-underline #{'color-primary' if layout_options[:active_menu] == :members}" %>
+              </div>
+              <% if OrganizationAdmin::Permissions.can_invite_member?(current_user) %>
                 <div>
-                  <%= link_to "Tableau de bord", organization_admin_path,
-                        class: "hover-underline #{'color-primary' if layout_options[:active_menu] == :dashboard}" %>
+                  <%= link_to "Inviter un membre", new_organization_admin_invitation_path,
+                      class: "hover-underline #{'color-primary' if layout_options[:active_menu] == :invitations}" %>
                 </div>
+              <% end %>
+              <% if OrganizationAdmin::Permissions.can_edit_description?(current_user) %>
                 <div>
-                  <%= link_to "Équipe", organization_admin_members_path,
-                        class: "hover-underline #{'color-primary' if layout_options[:active_menu] == :members}" %>
+                  <%= link_to "Fiche de présentation",edit_organization_admin_description_path,
+                      class: "hover-underline #{'color-primary' if layout_options[:active_menu] == :description}" %>
                 </div>
-                <% if OrganizationAdmin::Permissions.can_invite_member?(current_user) %>
-                  <div>
-                    <%= link_to "Invitations", new_organization_admin_invitation_path,
-                        class: "hover-underline #{'color-primary' if layout_options[:active_menu] == :invitations}" %>
-                  </div>
-                <% end %>
-                <% if OrganizationAdmin::Permissions.can_edit_description?(current_user) %>
-                  <div>
-                    <%= link_to "Fiche de présentation",edit_organization_admin_description_path,
-                        class: "hover-underline #{'color-primary' if layout_options[:active_menu] == :description}" %>
-                  </div>
-                <% end %>
-                <div>
-                  <a href="https://blog.entourage.social/category/associations/"
-                     target="_blank"
-                     class="hover-underline">
-                    Guides et ressources
-                  </a>
-                </div>
+              <% end %>
+              <div>
+                <a href="https://blog.entourage.social/category/associations/"
+                   target="_blank"
+                   class="hover-underline">
+                  Guides et ressources
+                </a>
               </div>
             </div>
             <div class="px-3 py-2 page-sidebar-bottom">
