@@ -307,6 +307,7 @@ Rails.application.routes.draw do
         match :identify, via: [:post, :get]
         post :authenticate
         post :reset_password
+        post :logout
       end
     end
     resources :invitations, only: [:new, :create, :index, :destroy] do

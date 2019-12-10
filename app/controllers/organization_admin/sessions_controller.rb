@@ -104,5 +104,10 @@ module OrganizationAdmin
         context: context
       )
     end
+
+    def logout
+      sign_out
+      redirect_to ENV['WEBSITE_URL'] + '/app?org_admin_logout'
+    end
   end
 end
