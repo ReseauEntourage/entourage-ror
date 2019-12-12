@@ -58,7 +58,8 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                                   "memberships"=>[],
                                   "conversation"=>{"uuid"=>"1_list_#{user.id}"},
                                   "firebase_properties"=>{"ActionZoneDep"=>"not_set","ActionZoneCP"=>"not_set"},
-                                  "anonymous"=>false
+                                  "anonymous"=>false,
+                                  "feature_flags"=>{"organization_admin"=>false}
                                  },
                                 "first_sign_in"=>true
                                })
@@ -248,7 +249,8 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                                                              "memberships"=>[],
                                                              "conversation"=>{"uuid"=>"1_list_#{user.id}"},
                                                              "firebase_properties"=>{"ActionZoneDep"=>"not_set","ActionZoneCP"=>"not_set"},
-                                                             "anonymous"=>false
+                                                             "anonymous"=>false,
+                                                             "feature_flags"=>{"organization_admin"=>false}
                                                            },
                                                     "first_sign_in"=>true})}
     end
@@ -605,7 +607,8 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                                                            "memberships"=>[],
                                                            "conversation"=>{"uuid"=>"1_list_#{user.id}"},
                                                            "firebase_properties"=>{"ActionZoneDep"=>"not_set","ActionZoneCP"=>"not_set"},
-                                                           "anonymous"=>false
+                                                           "anonymous"=>false,
+                                                           "feature_flags"=>{"organization_admin"=>false}
                                                          }}) }
 
         context "when you have an address" do
@@ -658,7 +661,8 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                                                            "memberships"=>[],
                                                            "conversation"=>{"uuid"=>"1_list_#{user.id}"},
                                                            "firebase_properties"=>{"ActionZoneDep"=>"not_set","ActionZoneCP"=>"not_set"},
-                                                           "anonymous"=>false
+                                                           "anonymous"=>false,
+                                                           "feature_flags"=>{"organization_admin"=>false}
                                                          }}) }
       end
 

@@ -55,6 +55,7 @@ class AnonymousUser
   def has_password?; false; end
   attr_accessor :address
   def deleted; false; end
+  def partner_id; nil; end
   def partner; nil; end
   def invitations; EntourageInvitation.none; end
   def errors; ActiveModel::Errors.new(nil); end

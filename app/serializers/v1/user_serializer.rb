@@ -18,7 +18,8 @@ module V1
                :anonymous,
                :uuid,
                :firebase_properties,
-               :placeholders
+               :placeholders,
+               :feature_flags
 
     has_one :organization
     has_one :stats, serializer: ActiveModel::DefaultSerializer
@@ -36,7 +37,7 @@ module V1
       # uuid and anonymous are not confidential but right now we only need
       # them for current_user in the clients so we don't return it in other
       # contexts
-      keys -= [:anonymous, :uuid] unless me?
+      keys -= [:anonymous, :uuid, :feature_flags] unless me?
 
       # FIXME: see comment above the definition of placeholder
       keys -= [:placeholders] unless me? && scope[:user].anonymous?
@@ -123,6 +124,12 @@ module V1
     # This allows to have some persistence of the attributes of anonymous users.
     def placeholders
       [:firebase_properties, :address]
+    end
+
+    def feature_flags
+      {
+        organization_admin: (object.partner_id.present? && User.where(partner_id: object.partner_id, partner_admin: true).exists?)
+      }
     end
 
     def scope
