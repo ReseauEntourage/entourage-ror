@@ -7,11 +7,15 @@ custom:
   bucket_suffix:
     dev: 'production-thumb'
     prod: 'production-thumb'
+    partners-dev: 'production-thumb'
+    partners-prod: 'production-thumb'
     pfp-dev: 'production-thumb'
     pfp-prod: 'production-thumb'
   dir_prefix:
     dev: 'staging/'
     prod: ''
+    partners-dev: 'partners/staging/'
+    partners-prod: 'partners/'
     pfp-dev: 'pfp/staging/'
     pfp-prod: 'pfp/'
 
