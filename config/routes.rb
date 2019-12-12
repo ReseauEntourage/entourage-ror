@@ -29,7 +29,10 @@ Rails.application.routes.draw do
       resources :messages, only: [:index, :destroy]
       resources :organizations, only: [:index, :edit, :update]
       resources :partners, except: [:create, :update] do
-        collection { post '/new', action: :create, as: nil }
+        collection do
+          post '/new', action: :create, as: nil
+          post :change_admin_role
+        end
         member do
           match '/edit', via: [:patch, :put], action: :update, as: nil
           get '/edit/logo', action: :edit_logo

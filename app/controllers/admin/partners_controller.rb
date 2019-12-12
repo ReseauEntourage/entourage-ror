@@ -21,7 +21,8 @@ module Admin
     end
 
     def show
-      redirect_to edit_admin_partner_path(params[:id])
+      @partner = Partner.find(params[:id])
+      @admins, @members = @partner.users.order(:last_name, :first_name).partition(&:partner_admin)
     end
 
     def edit
@@ -58,6 +59,14 @@ module Admin
       else
         redirect_to [:admin, @partner], error: "Erreur"
       end
+    end
+
+    def change_admin_role
+      user = User.find(params[:user_id])
+      raise unless user.partner.present?
+      user.partner_admin = params[:admin]
+      user.save
+      redirect_to admin_partner_path(user.partner)
     end
 
     private

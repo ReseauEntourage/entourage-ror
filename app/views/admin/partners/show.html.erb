@@ -1,0 +1,67 @@
+<div class="container">
+  <div class="row">
+    <div class="col-xs-offset-2 col-xs-8">
+      <ol class="breadcrumb">
+        <li><%= link_to "Associations", admin_partners_path %></li>
+        <li><%= @partner.name %></li>
+      </ol>
+
+      <ul class="nav nav-tabs" role="tablist" style="margin-bottom: 2rem">
+        <li role="presentation" class="active"><%= link_to "Membres", admin_partner_path(@partner) %></li>
+        <li role="presentation"><%= link_to "Description", edit_admin_partner_path(@partner) %></li>
+      </ul>
+
+      <table class="table">
+        <tr>
+          <th colspan="2" style="border-top: none">
+            <h2>Administrateurs</h2>
+          </th>
+        </tr>
+
+        <% if @admins.empty? %>
+          <tr>
+            <td colspan="2">
+              Cette organisation n'a pas d'administrateur.
+            </td>
+          </tr>
+        <% end %>
+
+        <% @admins.each do |user| %>
+          <tr>
+            <td>
+              <%= link_to UserPresenter.full_name(user), admin_user_path(user) %>
+            </td>
+            <td>
+              <%= link_to "Retirer des administrateurs", change_admin_role_admin_partners_path(user_id: user.id, admin: false), method: :post %>
+            </td>
+          </tr>
+        <% end %>
+
+        <tr>
+          <th colspan="2" style="border-top: none">
+            <h2>Membres</h2>
+          </th>
+        </tr>
+
+        <% if @members.empty? %>
+          <tr>
+            <td colspan="2">
+              Cette organisation n'a pas de membres.
+            </td>
+          </tr>
+        <% end %>
+
+        <% @members.each do |user| %>
+          <tr>
+            <td>
+              <%= link_to UserPresenter.full_name(user), admin_user_path(user) %>
+            </td>
+            <td>
+              <%= link_to "Ajouter aux administrateurs", change_admin_role_admin_partners_path(user_id: user.id, admin: true), method: :post %>
+            </td>
+          </tr>
+        <% end %>
+      </table>
+    </div>
+  </div>
+</div>

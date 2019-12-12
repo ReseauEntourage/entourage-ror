@@ -3,10 +3,13 @@
     <div class="col-xs-offset-2 col-xs-8">
       <ol class="breadcrumb">
         <li><%= link_to "Associations", admin_partners_path %></li>
-        <li class="active"><%= @partner.name %></li>
+        <li><%= @partner.name %></li>
       </ol>
 
-      <h1><%= @partner.name %></h1>
+      <ul class="nav nav-tabs" role="tablist" style="margin-bottom: 2rem">
+        <li role="presentation"><%= link_to "Membres", admin_partner_path(@partner) %></li>
+        <li role="presentation" class="active"><%= link_to "Description", edit_admin_partner_path(@partner) %></li>
+      </ul>
 
       <%= render partial: 'form' %>
     </div>
