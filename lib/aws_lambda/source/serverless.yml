@@ -20,6 +20,7 @@ provider:
   runtime: nodejs10.x
   stage: ${opt:stage, 'dev'}
   region: eu-west-1
+  logRetentionInDays: 30
   environment :
     watch_bucket: "entourage-avatars-production-thumb"
     watch_dir: "${self:custom.dir_prefix.${self:provider.stage}}300x300/"
