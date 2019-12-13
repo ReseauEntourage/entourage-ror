@@ -48,7 +48,9 @@ module OrganizationAdmin
 
     def partner_params
       params.require(:partner).permit(
-        :name, :description, :phone, :address, :website_url, :email
+        :name,
+        :description, :donations_needs, :volunteers_needs,
+        :phone, :address, :website_url, :email
       )
     end
   end

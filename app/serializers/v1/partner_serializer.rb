@@ -27,6 +27,10 @@ module V1
       define_method(attr_name) { object[attr_name].presence }
     end
 
+    def description
+      object.description_with_needs
+    end
+
     def default
       return true
     end

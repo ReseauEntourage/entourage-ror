@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20191209095733) do
+ActiveRecord::Schema.define(version: 20191212171604) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -376,16 +376,18 @@ ActiveRecord::Schema.define(version: 20191209095733) do
   add_index "partner_invitations", ["token"], name: "index_partner_invitations_on_token", unique: true, using: :btree
 
   create_table "partners", force: :cascade do |t|
-    t.string   "name",           null: false
+    t.string   "name",             null: false
     t.string   "large_logo_url"
     t.string   "small_logo_url"
-    t.datetime "created_at",     null: false
-    t.datetime "updated_at",     null: false
+    t.datetime "created_at",       null: false
+    t.datetime "updated_at",       null: false
     t.text     "description"
     t.string   "phone"
     t.string   "address"
     t.string   "website_url"
     t.string   "email"
+    t.text     "volunteers_needs"
+    t.text     "donations_needs"
   end
 
   create_table "pois", force: :cascade do |t|

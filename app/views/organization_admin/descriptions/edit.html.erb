@@ -37,6 +37,23 @@
     </div>
 
     <div class="mb-2">
+      <%= f.label :donations_needs, "Dons acceptés", class: "mb-0" %>
+      <div class="text-small mb-05">
+        Si vous acceptez des dons matériels de particuliers, vous pouvez compléter ce champ pour le détailler. Sinon, laissez-le vide.
+      </div>
+      <%= f.text_area :donations_needs, rows: 3, class: "form-control",
+            placeholder: "jeux, produits d'hygiène, sous-vêtements, collations..." %>
+    </div>
+
+    <div class="mb-2">
+      <%= f.label :volunteers_needs, "Bénévoles recherchés", class: "mb-0" %>
+      <div class="text-small mb-05">
+        Si vous recherchez actuellement des bénévoles, vous pouvez compléter ce champ pour le détailler. Sinon, laissez-le vide.
+      </div>
+      <%= f.text_area :volunteers_needs, rows: 3, class: "form-control" %>
+    </div>
+
+    <div class="mb-2">
       <%= f.label :phone, "Numéro de téléphone" %>
       <%= f.phone_field :phone, class: "form-control" %>
     </div>
