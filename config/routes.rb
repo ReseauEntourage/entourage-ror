@@ -388,5 +388,9 @@ Rails.application.routes.draw do
     post :event
   end
 
+  namespace :iraiser do
+    post :notification
+  end
+
   root 'home#index'
 end
