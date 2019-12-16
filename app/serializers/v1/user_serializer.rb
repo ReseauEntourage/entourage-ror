@@ -77,7 +77,9 @@ module V1
 
     def partner
       return nil unless object.partner
-      V1::PartnerSerializer.new(object.partner, scope: {user: object, full: scope[:full_partner] || false}, root: false).as_json
+      partner = V1::PartnerSerializer.new(object.partner, scope: {user: object, full: scope[:full_partner] || false}, root: false).as_json
+      partner[:user_role_title] = object.partner_role_title.presence
+      partner
     end
 
     def has_password
