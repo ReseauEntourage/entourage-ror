@@ -55,7 +55,7 @@ class CleanupService
                   longitude:nil,
                   address: nil)
 
-    send_slack_alert(bins[:keep]) if bins[:keep].any?
+    send_slack_alert(bins[:keep]) if bins[:keep].any? &&  EnvironmentHelper.production?
   end
 
   def self.get_mailjet_messages tour_id
