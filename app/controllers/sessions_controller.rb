@@ -10,7 +10,7 @@ class SessionsController < ApplicationController
       session[:user_id] = user.id
       session[:admin_user_id] = user.admin ? user.id : nil
 
-      if user.public?
+      if user.public? && !user.admin
         return redirect_to edit_public_user_user_path(user)
       end
 
