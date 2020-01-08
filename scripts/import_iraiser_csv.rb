@@ -40,7 +40,9 @@ def extract_first_donations csv
   first_donations = {}
   csv.each do |row|
     next if row[:payment_gateway_account].in? %w[iraisertest test]
-    next unless row[:payment_succeeded] == '1'
+    next unless (row[:payment_succeeded] == '1' ||
+                 (row[:donation_category] == 'pledge' &&
+                  row[:donation_status] == 'validated'))
     next unless row[:donation_type].in? %w[once regular]
 
     if first_donations[row[:sympathizer_id]].nil? ||
@@ -53,7 +55,9 @@ end
 
 def process_row row, regular_setups, regular_setups_by_renew_key, first_donations
   return if row[:payment_gateway_account].in? %w[iraisertest test]
-  return unless row[:payment_succeeded] == '1'
+  return unless (row[:payment_succeeded] == '1' ||
+                 (row[:donation_category] == 'pledge' &&
+                  row[:donation_status] == 'validated'))
   return unless row[:donation_type].in? %w[once regular]
 
   donation_type =
