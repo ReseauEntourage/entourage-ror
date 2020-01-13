@@ -3,7 +3,7 @@
 
 # Prerequisites
 
-Ruby 2.5.3
+Ruby 2.6.5
 Rails 4.2.11
 
 rbenv or rvm recommanded
@@ -61,7 +61,7 @@ container !
 ## Resolve dependencies and database migration :
 
 ```bash
-gem install bundler
+gem install 'bundler:~>1'
 bundle install
 bundle exec rake db:create
 bundle exec rake db:migrate
