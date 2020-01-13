@@ -13,13 +13,14 @@ module Api
 
         user_application = UserApplication.find_or_initialize_by(push_token: user_application_params[:push_token])
 
-        device_family =
+        device_family_fallback =
           case user_application_params[:push_token].length
           when 152 then UserApplication::ANDROID
           when 174 then UserApplication::ANDROID
           when  64 then UserApplication::IOS
-          else api_request.key_infos.try(:[], :device_family)
           end
+
+        device_family = api_request.key_infos.try(:[], :device_family) || device_family_fallback
 
         user_application.attributes = {
           version:       user_application_params[:version],
