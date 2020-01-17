@@ -141,6 +141,11 @@ module Api
         "d2e4767cb77fafdca80fd59b" => {version: "6.1.0", device: "Android", device_family: UserApplication::ANDROID, community: 'entourage'},
         "dee6d662ff91b0b4d1412d1f" => {version: "6.1.0", device: "iOS",     device_family: UserApplication::IOS,     community: 'pfp'},
         "da45a612b1f1b085a86976e6" => {version: "6.1.0", device: "Android", device_family: UserApplication::ANDROID, community: 'pfp'},
+
+        "13f7d4ed0009b761df1c9400" => {version: "6.2.0", device: "iOS",     device_family: UserApplication::IOS,     community: 'entourage'},
+        "145afedd05482e1e91ed2990" => {version: "6.2.0", device: "Android", device_family: UserApplication::ANDROID, community: 'entourage'},
+        "11aabfa5967deb0d7a2ea16e" => {version: "6.2.0", device: "iOS",     device_family: UserApplication::IOS,     community: 'pfp'},
+        "14fe3580873758c2a63f14aa" => {version: "6.2.0", device: "Android", device_family: UserApplication::ANDROID, community: 'pfp'},
       }
     end
 
