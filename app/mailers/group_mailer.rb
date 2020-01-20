@@ -11,8 +11,6 @@ class GroupMailer < MailjetMailer
       campaign_name: :action_confirmation,
       template_id: 312279,
       variables: [
-        :first_name,
-        :login_link,
         action => [
           :entourage_title,
           :entourage_share_url,
@@ -31,18 +29,10 @@ class GroupMailer < MailjetMailer
       deliver_only_once: true,
       template_id: 366621,
       variables: [
-        :first_name,
-        :login_link,
         action => [
           :entourage_title,
         ],
         targeting_profile: creator.targeting_profile.presence || "null",
-        volunteering_form_url: redirect_api_v1_link_url(
-          host: API_HOST,
-          protocol: :https,
-          id: :volunteering,
-          token: action.user.token,
-        )
       ]
     )
   end
@@ -57,8 +47,6 @@ class GroupMailer < MailjetMailer
       campaign_name: :event_created_confirmation,
       template_id: 491291,
       variables: [
-        :first_name,
-        :login_link,
         event => [
           :entourage_title,
           :entourage_share_url,
@@ -73,6 +61,23 @@ class GroupMailer < MailjetMailer
   # Group joined
   #
 
+  def action_joined_confirmation join_request
+    action = join_request.joinable
+    new_member = join_request.user
+
+    mailjet_email(
+      to: new_member,
+      campaign_name: :action_joined_confirmation,
+      template_id: 583998,
+      variables: [
+        action => [
+          :entourage_title,
+          :entourage_share_url,
+        ],
+      ]
+    )
+  end
+
   def event_joined_confirmation join_request
     event = join_request.joinable
     new_member = join_request.user
@@ -84,8 +89,6 @@ class GroupMailer < MailjetMailer
       campaign_name: :event_joined_confirmation,
       template_id: 478397,
       variables: [
-        :first_name,
-        :login_link,
         event => [
           :entourage_title,
           :entourage_share_url,
@@ -112,8 +115,6 @@ class GroupMailer < MailjetMailer
       campaign_name: :event_reminder_organizer,
       template_id: 513115,
       variables: [
-        :first_name,
-        :login_link,
         event => [
           :entourage_url,
           :entourage_title,
@@ -136,8 +137,6 @@ class GroupMailer < MailjetMailer
       campaign_name: :event_reminder_participant,
       template_id: 491289,
       variables: [
-        :first_name,
-        :login_link,
         event => [
           :entourage_url,
           :entourage_title,
@@ -158,8 +157,6 @@ class GroupMailer < MailjetMailer
       campaign_name: :event_followup_organizer,
       template_id: 491294,
       variables: [
-        :first_name,
-        :login_link,
         event => [
           :entourage_title,
         ]

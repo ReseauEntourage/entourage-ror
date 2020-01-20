@@ -36,6 +36,7 @@ headers = []
   MemberMailer.reactivation_day_20(user),
   MemberMailer.reactivation_day_40(user),
   GroupMailer.action_confirmation(action),
+  GroupMailer.action_joined_confirmation(action_join_request),
   MemberMailer.action_follow_up_day_10(action),
   MemberMailer.action_follow_up_day_20(action),
   GroupMailer.action_success_creator(action_join_request),
@@ -58,7 +59,7 @@ def template_tags template_id
   # the SDK is completely broken on this endpoint so this is an awful workaround
   Mailjet::Template_detailcontent.resource_path = 'REST/template/id/detailcontent'
   Mailjet::Template_detailcontent.action = 'detailcontent'
-  Mailjet::Template_detailcontent.find(template_id)
+  Mailjet::Template_detailcontent.find(template_id) rescue nil
   template = Mailjet::Template_detailcontent.all.first
 
   template.html_part.scan(/\{\{.*?\}\}|\{%.*?%\}/)

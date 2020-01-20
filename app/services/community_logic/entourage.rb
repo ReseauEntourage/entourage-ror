@@ -14,9 +14,11 @@ class CommunityLogic::Entourage < CommunityLogic::Common
     group = join_request.joinable
 
     case group.group_type
+    when 'action'
+      GroupMailer.action_joined_confirmation(join_request).deliver_later
     when 'outing' # event
       GroupMailer.event_joined_confirmation(join_request).deliver_later
-    else
+    else # not an action or an event. shouldn't happen.
       # nothing for now
     end
   end
