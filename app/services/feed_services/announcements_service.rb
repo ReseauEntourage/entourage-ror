@@ -482,15 +482,15 @@ module FeedServices
       #   webview: true
       # )
 
-      announcements.push Announcement.new(
-        id: 51,
-        title: "Propagez l'Effet Entourage, faites un don",
-        body: "En cette fin d'année, nous avons besoin de vous pour faire grandir le réseau solidaire et développer nos actions !",
-        image_url: 'v2',
-        action: "Faire un don",
-        author: moderator,
-        webview: false
-      )
+      # announcements.push Announcement.new(
+      #   id: 51,
+      #   title: "Propagez l'Effet Entourage, faites un don",
+      #   body: "En cette fin d'année, nous avons besoin de vous pour faire grandir le réseau solidaire et développer nos actions !",
+      #   image_url: 'v2',
+      #   action: "Faire un don",
+      #   author: moderator,
+      #   webview: false
+      # )
 
       announcements.push Announcement.new(
         id: 52,
@@ -502,15 +502,15 @@ module FeedServices
         webview: true
       )
 
-      announcements.push Announcement.new(
-        id: 53,
-        title: "Bénévolat de fin d'année",
-        body: "Une liste des réveillons solidaires qui ont besoin de vous",
-        image_url: true,
-        action: "En savoir plus",
-        author: moderator,
-        webview: true
-      )
+      # announcements.push Announcement.new(
+      #   id: 53,
+      #   title: "Bénévolat de fin d'année",
+      #   body: "Une liste des réveillons solidaires qui ont besoin de vous",
+      #   image_url: true,
+      #   action: "En savoir plus",
+      #   author: moderator,
+      #   webview: true
+      # )
 
       announcements.push Announcement.new(
         id: 54,
@@ -522,15 +522,15 @@ module FeedServices
         webview: true
       )
 
-      announcements.push Announcement.new(
-        id: 55,
-        title: "Votre asso organise un réveillon ?",
-        body: "Partagez-nous vos infos pour qu'on les mette en valeur",
-        image_url: true,
-        action: "Je réponds",
-        author: moderator,
-        webview: true
-      )
+      # announcements.push Announcement.new(
+      #   id: 55,
+      #   title: "Votre asso organise un réveillon ?",
+      #   body: "Partagez-nous vos infos pour qu'on les mette en valeur",
+      #   image_url: true,
+      #   action: "Je réponds",
+      #   author: moderator,
+      #   webview: true
+      # )
 
       announcements.push Announcement.new(
         id: 56,
@@ -542,15 +542,15 @@ module FeedServices
         webview: false
       )
 
-      announcements.push Announcement.new(
-        id: 57,
-        title: "Calendrier de l'avent solidaire",
-        body: "Soyez gourmands de conseils avec ces 24 étapes pour créer plus du lien",
-        image_url: true,
-        action: "Je découvre",
-        author: moderator,
-        webview: true
-      )
+      # announcements.push Announcement.new(
+      #   id: 57,
+      #   title: "Calendrier de l'avent solidaire",
+      #   body: "Soyez gourmands de conseils avec ces 24 étapes pour créer plus du lien",
+      #   image_url: true,
+      #   action: "Je découvre",
+      #   author: moderator,
+      #   webview: true
+      # )
 
       conversation_uuid = ConversationService.uuid_for_participants(
         [
@@ -604,15 +604,15 @@ module FeedServices
         webview: true
       )
 
-      announcements.push Announcement.new(
-        id: 60,
-        title: "D'un parking à un toit",
-        body: "Partagez l'histoire de Mélanie, sortie de la rue grâce aux mains tendues du réseau",
-        image_url: true,
-        action: "Je partage",
-        author: moderator,
-        webview: false
-      )
+      # announcements.push Announcement.new(
+      #   id: 60,
+      #   title: "D'un parking à un toit",
+      #   body: "Partagez l'histoire de Mélanie, sortie de la rue grâce aux mains tendues du réseau",
+      #   image_url: true,
+      #   action: "Je partage",
+      #   author: moderator,
+      #   webview: false
+      # )
 
       announcements.push Announcement.new(
         id: 48,

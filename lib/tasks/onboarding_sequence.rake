@@ -25,15 +25,15 @@ namespace :onboarding_sequence do
     # end
 
     at_day 14, after: :registration do |user|
-      #MemberMailer.onboarding_day_14(user).deliver_later
+      MemberMailer.onboarding_day_14(user).deliver_later
     end
 
     at_day 20, after: :last_session do |user|
-      #MemberMailer.reactivation_day_20(user).deliver_later
+      MemberMailer.reactivation_day_20(user).deliver_later
     end
 
     at_day 40, after: :last_session do |user|
-      #MemberMailer.reactivation_day_40(user).deliver_later
+      MemberMailer.reactivation_day_40(user).deliver_later
     end
 
     at_day 10, after: :action_creation do |action|
