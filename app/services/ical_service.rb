@@ -28,7 +28,7 @@ module IcalService
       end
 
       e.dtstart = utc(group.metadata[:starts_at].change(sec: 0))
-      e.dtend   = utc(group.metadata[:starts_at].change(sec: 0).advance(hours: 2))
+      e.dtend   = utc(group.metadata[:ends_at].change(sec: 0))
 
       e.location = group.metadata[:display_address]
       e.geo = [group.latitude.round(6), group.longitude.round(6)]

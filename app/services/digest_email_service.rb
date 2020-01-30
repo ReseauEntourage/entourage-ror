@@ -136,7 +136,7 @@ module DigestEmailService
       .where(group_type: :outing)
       .where("country = 'FR'")
       .where("substring(postal_code for 2) = ?", department_code.to_s)
-      .where("metadata->>'starts_at' >= ?", date.in_time_zone.advance(days: 2).midnight)
+      .where("metadata->>'ends_at' >= ?", date.in_time_zone.advance(days: 2).midnight)
       .order("metadata->>'starts_at'")
       .limit(5)
   end
@@ -250,7 +250,13 @@ module DigestEmailService
     location = arrondissement_name_or_postal_code(group.postal_code)
 
     if group.group_type == 'outing'
-      date = I18n.l group.metadata[:starts_at], format: "le %A %-d %B"
+      date =
+        if group.metadata[:starts_at].midnight == group.metadata[:ends_at].midnight
+          I18n.l group.metadata[:starts_at], format: "le %A %-d %B"
+        else
+          [I18n.l(group.metadata[:starts_at], format: "du %A %-d %B "),
+           I18n.l(group.metadata[:ends_at],   format: "au %A %-d %B")].join
+        end
       location = "#{date}, à #{location}"
     end
 

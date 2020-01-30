@@ -97,7 +97,7 @@ module FeedServices
       end
 
       unless show_past_events
-        feeds = feeds.where("group_type not in (?) or metadata->>'starts_at' >= ?", [:outing], OutingsFinder::ESTIMATED_DURATION.ago)
+        feeds = feeds.where("group_type not in (?) or metadata->>'ends_at' >= ?", [:outing], Time.zone.now)
       end
 
       # actions are filtered out based on update date

@@ -125,6 +125,12 @@ describe UserSegmentService do
           let(:user_attributes) { {deleted: true} }
           it { expect(segment.pluck(:user_id)).to eq [] }
         end
+
+        context "event end date" do
+          let(:segment) { UserSegmentService.at_day(n, after: :event, role: :organizer) }
+          let(:group_attributes) { {metadata: {starts_at: (n + 3).day.ago, ends_at: n.day.ago} } }
+          it { expect(segment.pluck(:user_id)).to eq [organizer.id] }
+        end
       end
 
       describe 'participant' do

@@ -127,9 +127,8 @@
         <% @upcoming_outings.each do |outing| %>
           <div class="mb-2">
             <div><b><%= outing.title %></b></div>
+            <div><%= outing.metadata_datetimes_formatted %></div>
             <div>
-              <%= l outing.metadata[:starts_at], format: "%A %-d %B à %Hh%M" %>
-              &ndash;
               <%= link_to outing.metadata[:display_address], "https://www.google.com/maps/search/?api=1&query=#{outing.metadata[:display_address]}&query_place_id=#{outing.metadata[:google_place_id]}" %>
             </div>
           </div>

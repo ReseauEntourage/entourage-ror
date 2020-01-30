@@ -372,14 +372,15 @@ include CommunityHelper
       let!(:neighborhood) { create :neighborhood, latitude: latitude, longitude: longitude }
       let!(:past_outing) { create :outing, metadata: {starts_at: 5.hour.ago}, latitude: latitude, longitude: longitude }
       let!(:upcoming_outing) { create :outing, metadata: {starts_at: 1.hour.from_now}, latitude: latitude, longitude: longitude }
+      let!(:custom_end_outing) { create :outing, metadata: {starts_at: 2.days.ago, ends_at: 3.hours.from_now}, latitude: latitude, longitude: longitude }
 
       def feeds(filters={})
         get :index, filters.merge(token: user.token, latitude: latitude, longitude: longitude)
         result["feeds"].map {|feed| feed["data"]["id"]}
       end
 
-      it { expect(feeds).to eq [upcoming_outing.id, neighborhood.id] }
-      it { expect(feeds(show_past_events: 'true')).to eq [upcoming_outing.id, past_outing.id, neighborhood.id] }
+      it { expect(feeds).to eq [custom_end_outing.id, upcoming_outing.id, neighborhood.id] }
+      it { expect(feeds(show_past_events: 'true')).to eq [custom_end_outing.id, upcoming_outing.id, past_outing.id, neighborhood.id] }
     end
 
     context "loginless" do
@@ -465,16 +466,18 @@ include CommunityHelper
       it { subject; expect(response.status).to eq(400) }
     end
 
-    it "excludes outings that started more than 3 hours ago" do
+    it "excludes outings that have ended" do
       create :outing, {metadata: {starts_at: 4.hours.ago}}.merge(coordinates)
+      create :outing, {metadata: {starts_at: 1.hour.ago, ends_at: 1.minute.ago}}.merge(coordinates)
       subject
       expect(result['feeds']).to eq []
     end
 
-    it "includes outings that started less than 3 hours ago" do
-      outing = create :outing, {metadata: {starts_at: 2.hours.ago}}.merge(coordinates)
+    it "includes outings that have not ended" do
+      outing_1 = create :outing, {metadata: {starts_at: 2.hours.ago}}.merge(coordinates)
+      outing_2 = create :outing, {metadata: {starts_at: 3.days.ago, ends_at: 1.minutes.from_now}}.merge(coordinates)
       subject
-      expect(result['feeds'].map { |f| f['data']['id'] }).to eq [outing.id]
+      expect(result['feeds'].map { |f| f['data']['id'] }).to eq [outing_2.id, outing_1.id]
     end
 
     it "orders results by start date" do

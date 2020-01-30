@@ -35,6 +35,7 @@ module UserSegmentService
       .merge(user_scope)
       .preload(:user)
     when :event
+      reference_datetime = options[:before] ? :starts_at : :ends_at
       JoinRequest
       .accepted
       .where(({ role: options[:role] } if options.key?(:role)))
@@ -45,7 +46,7 @@ module UserSegmentService
         .where(
           group_type: :outing,
         )
-        .where("metadata->>'starts_at' between ? and ?", date.begin, date.end)
+        .where("metadata->>'#{reference_datetime}' between ? and ?", date.begin, date.end)
       )
       .preload(:user, :joinable)
     end

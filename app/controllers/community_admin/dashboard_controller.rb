@@ -55,8 +55,8 @@ module CommunityAdmin
 
       @upcoming_outings =
         CommunityAdminService.coordinator_outings(current_user)
-          .where("metadata->>'starts_at' between ? and ?",
-                 0.day.ago.midnight, 1.week.from_now.end_of_day)
+          .where("metadata->>'ends_at'   >= ?", Time.zone.now)
+          .where("metadata->>'starts_at' <= ?", 1.week.from_now.end_of_day)
           .select(:title, :metadata, "metadata->>'starts_at'") # required for select distinct + order
           .order("metadata->>'starts_at'")
           .to_a

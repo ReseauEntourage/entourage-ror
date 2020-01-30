@@ -51,7 +51,7 @@ class GroupMailer < MailjetMailer
           :entourage_title,
           :entourage_share_url,
         ],
-        event_date_time: I18n.l(event.metadata[:starts_at], format: "%A %-d %B à %H:%M"),
+        event_date_time: event.metadata_datetimes_formatted,
         event_place_name: event.metadata[:display_address],
       ]
     )
@@ -93,7 +93,7 @@ class GroupMailer < MailjetMailer
           :entourage_title,
           :entourage_share_url,
         ],
-        event_date_time: I18n.l(event.metadata[:starts_at], format: "%A %-d %B à %H:%M"),
+        event_date_time: event.metadata_datetimes_formatted,
         event_place_name: event.metadata[:display_address],
         event_address_url: "https://www.google.com/maps/search/?api=1&query=#{event.metadata[:display_address]}&query_place_id=#{event.metadata[:google_place_id]}",
       ]
@@ -120,7 +120,7 @@ class GroupMailer < MailjetMailer
           :entourage_title,
           :entourage_share_url,
         ],
-        event_date_time: I18n.l(event.metadata[:starts_at], format: "%A %-d %B à %H:%M"),
+        event_date_time: event.metadata_datetimes_formatted,
         event_place_name: event.metadata[:display_address],
       ]
     )
@@ -142,7 +142,7 @@ class GroupMailer < MailjetMailer
           :entourage_title,
           :entourage_share_url,
         ],
-        event_date_time: I18n.l(event.metadata[:starts_at], format: "%A %-d %B à %H:%M"),
+        event_date_time: event.metadata_datetimes_formatted,
         event_place_name: event.metadata[:display_address],
       ]
     )

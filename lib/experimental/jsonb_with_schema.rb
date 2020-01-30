@@ -46,14 +46,26 @@ module Experimental
       value = super(value)
       value = value.symbolize_keys
       cast_datetime_properties(value) do |datetime|
-        timezone_converter.type_cast_from_database(datetime)
+        converted = timezone_converter.type_cast_from_database(datetime)
+        # keep invalid user-supplied values for clearer validation errors
+        if converted.nil? && !datetime.nil?
+          datetime
+        else
+          converted
+        end
       end
     end
 
     def type_cast_from_user(value)
       value = value.symbolize_keys
       value = cast_datetime_properties(value) do |datetime|
-        timezone_converter.type_cast_from_user(datetime)
+        converted = timezone_converter.type_cast_from_user(datetime)
+        # keep invalid user-supplied values for clearer validation errors
+        if converted.nil? && !datetime.nil?
+          datetime
+        else
+          converted
+        end
       end
       super(value)
     end
@@ -61,9 +73,15 @@ module Experimental
     def type_cast_for_database(value)
       value = value.symbolize_keys
       value = cast_datetime_properties(value) do |datetime|
+        next if datetime.nil?
         # re-casts in case the shema was absent/different on assignment
-        datetime = timezone_converter.type_cast_from_user(datetime)
-        connection_adapter.quoted_date(datetime)
+        converted = timezone_converter.type_cast_from_user(datetime)
+        # keep invalid user-supplied values for clearer validation errors
+        if converted.nil?
+          datetime
+        else
+          connection_adapter.quoted_date(converted)
+        end
       end
       super(value)
     end

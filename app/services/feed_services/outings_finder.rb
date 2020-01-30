@@ -2,7 +2,6 @@ module FeedServices
   class OutingsFinder
 
     LIMIT = 25
-    ESTIMATED_DURATION = 3.hours
     RADIUS = [10, units: :km]
 
     def initialize(user:,
@@ -21,7 +20,7 @@ module FeedServices
 
       feeds = outings
         .within_bounding_box(box)
-        .where("metadata->>'starts_at' >= ?", ESTIMATED_DURATION.ago)
+        .where("metadata->>'ends_at' >= ?", Time.zone.now)
         .order("metadata->>'starts_at' asc, id")
         .limit(LIMIT)
         .includes(user: :partner)

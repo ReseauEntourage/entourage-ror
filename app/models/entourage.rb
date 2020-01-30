@@ -31,6 +31,7 @@ class Entourage < ActiveRecord::Base
   BLACKLIST_WORDS  = ['rue', 'avenue', 'boulevard', 'en face de', 'vend', 'loue', '06', '07', '01']
   CATEGORIES  = ['mat_help', 'non_mat_help', 'social']
   DISPLAY_CATEGORIES = ['social', 'event', 'mat_help', 'resource', 'info', 'skill', 'other']
+  DEFAULT_EVENT_DURATION = 3.hours
 
   belongs_to :user
   has_many :join_requests, as: :joinable, dependent: :destroy
@@ -55,6 +56,7 @@ class Entourage < ActiveRecord::Base
   validates_inclusion_of :group_type, in: -> (e) { e.community&.group_types&.keys || [] }
   validates_inclusion_of :public, in: -> (e) { e.public_accessibility_options }
   validates :metadata, schema: -> (e) { "#{e.group_type}:metadata" }
+  validate :validate_outings_ends_at
 
   scope :visible, -> { where.not(status: ['blacklisted', 'suspended']) }
   scope :findable, -> { where.not(status: ['blacklisted']) }
@@ -65,6 +67,7 @@ class Entourage < ActiveRecord::Base
 
   before_validation :set_community, on: :create
   before_validation :set_default_attributes, on: :create
+  before_validation :set_outings_ends_at
   before_validation :generate_display_address
   before_validation :reformat_content
 
@@ -169,6 +172,7 @@ class Entourage < ActiveRecord::Base
       when 'outing:metadata'
         {
           starts_at: { format: 'date-time-iso8601' },
+          ends_at: { format: 'date-time-iso8601' },
           place_name: { type: :string },
           street_address: { type: :string },
           google_place_id: { type: :string },
@@ -183,6 +187,33 @@ class Entourage < ActiveRecord::Base
     return if group_type == 'conversation'
     share_url_prefix = ENV['PUBLIC_SHARE_URL'] || 'http://entourage.social/entourages/'
     "#{share_url_prefix}#{uuid_v2}"
+  end
+
+  def metadata= value
+    value = add_metadata_schema_urn(value)
+    super(value)
+  end
+
+  def group_type= value
+    self.metadata = add_metadata_schema_urn(metadata)
+    super(value)
+  end
+
+  def add_metadata_schema_urn(value)
+    value = {} if value.nil?
+    value['$id'] = "urn:entourage:#{group_type}:metadata" if group_type
+    value
+  end
+
+  def metadata_datetimes_formatted
+    formats =
+      if metadata[:ends_at].midnight == metadata[:starts_at].midnight
+        ["%A %-d %B de %H:%M ", "à %H:%M"]
+      else
+        ["%A %-d %B à %H:%M — ", "%A %-d %B à %H:%M"]
+      end
+    [I18n.l(metadata[:starts_at], format: formats[0]),
+     I18n.l(metadata[:ends_at],   format: formats[1])].join
   end
 
   protected
@@ -226,6 +257,27 @@ class Entourage < ActiveRecord::Base
       self.metadata = {
         city: ''
       }
+    end
+  end
+
+  def set_outings_ends_at
+    return unless group_type == 'outing'
+    return unless metadata_changed?
+    return unless metadata
+    return unless metadata[:starts_at].present?
+    return unless metadata[:ends_at].nil?
+
+    ends_at = self.metadata[:starts_at] + DEFAULT_EVENT_DURATION rescue nil
+    self.metadata[:ends_at] = ends_at if ends_at
+  end
+
+  def validate_outings_ends_at
+    return unless group_type == 'outing'
+    return unless metadata[:starts_at].present?
+    return unless metadata[:ends_at].present?
+
+    if metadata[:ends_at] < metadata[:starts_at]
+      errors.add(:metadata, "'ends_at' must not be before 'starts_at'")
     end
   end
 

@@ -111,11 +111,20 @@ module EntourageServices
     def self.update(entourage:, params:)
       moderation_params = params.delete(:outcome)
 
+      sent_metadata = params[:metadata]
       if params.key? :metadata
-        params[:metadata].reverse_merge! entourage.metadata
+        params[:metadata] = params[:metadata].reverse_merge entourage.metadata
       end
 
       entourage.assign_attributes(params)
+
+      # reset ends_at if only starts_at was set
+      if entourage.group_type == 'outing' &&
+         sent_metadata&.key?(:starts_at) &&
+         !sent_metadata&.key?(:ends_at)
+
+        entourage.metadata[:ends_at] = nil
+      end
 
       entourage.skip_updated_at! if
         entourage.changes.all? do |attribute, change|

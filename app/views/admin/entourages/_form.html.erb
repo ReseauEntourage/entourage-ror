@@ -48,25 +48,36 @@
   <% end %>
 
   <% if @entourage.group_type == 'outing' %>
-    <div class="control-group">
-      <label class="control-label">Date et heure</label>
-      <div class="controls">
-        <%= date_field_tag(
-              "metadata[starts_at][date]",
-              @entourage.metadata[:starts_at]&.to_date&.to_s,
-              required: true) %>
-        <%= select_hour(
-              @entourage.metadata[:starts_at]&.hour,
-              {},
-              name: "metadata[starts_at][hour]",
-              required: true) %>
-        <%= select_minute(
-              @entourage.metadata[:starts_at]&.min,
-              {},
-              name: "metadata[starts_at][min]",
-              required: true) %>
+    <%
+      timestamps = {
+        starts_at: "Date et heure de début",
+        ends_at:   "Date et heure de fin"
+      }
+      minute_step = 5
+    %>
+    <% timestamps.each do |timestamp, label| %>
+      <% datetime = @entourage.metadata[timestamp] %>
+      <div class="control-group">
+        <label class="control-label"><%= label %></label>
+        <div class="controls">
+          <%= date_field_tag(
+                "metadata[#{timestamp}][date]",
+                datetime&.to_date&.to_s,
+                required: true) %>
+          <%= select_hour(
+                datetime&.hour,
+                {},
+                name: "metadata[#{timestamp}][hour]",
+                required: true) %>
+          <% minutes = (datetime&.min / minute_step.to_f).round * minute_step %>
+          <%= select_minute(
+                minutes,
+                {minute_step: 5},
+                name: "metadata[#{timestamp}][min]",
+                required: true) %>
+        </div>
       </div>
-    </div>
+    <% end %>
 
     <div class="control-group">
       <label class="control-label" for="metadata_address">Adresse</label>
