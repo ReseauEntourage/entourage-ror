@@ -54,6 +54,7 @@ Rails.application.routes.draw do
           post :message
           get :sensitive_words
           post :sensitive_words_check
+          get :edit_type
         end
         collection do
           post :destroy_message

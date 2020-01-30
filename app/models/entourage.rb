@@ -66,7 +66,7 @@ class Entourage < ActiveRecord::Base
   scope :except_conversations, -> { where.not(group_type: :conversation) }
 
   before_validation :set_community, on: :create
-  before_validation :set_default_attributes, on: :create
+  before_validation :set_default_attributes, if: :group_type_changed?
   before_validation :set_outings_ends_at
   before_validation :generate_display_address
   before_validation :reformat_content

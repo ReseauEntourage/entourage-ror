@@ -1,6 +1,6 @@
 module Admin
   class EntouragesController < Admin::BaseController
-    before_action :set_entourage, only: [:show, :edit, :update, :moderator_read, :moderator_unread, :message, :sensitive_words, :sensitive_words_check]
+    before_action :set_entourage, only: [:show, :edit, :update, :moderator_read, :moderator_unread, :message, :sensitive_words, :sensitive_words_check, :edit_type]
     before_filter :ensure_moderator!, only: [:message]
 
     def index
@@ -226,10 +226,60 @@ module Admin
               )
         end
       end
+
+      group_type_change = [
+        @entourage.group_type&.to_sym,
+        update_params[:group_type]&.to_sym
+      ]
+      group_type_change = nil if group_type_change.uniq.count == 1
+
+      if group_type_change
+        authorized_group_changes = [
+          [:outing, :action],
+          [:action, :outing]
+        ]
+        raise unless group_type_change.in?(authorized_group_changes)
+
+        @entourage.metadata = {}
+      end
+
       if EntourageServices::EntourageBuilder.update(entourage: @entourage, params: update_params)
+
+        Entourage.transaction do
+          group_roles = {
+            action: [:creator,   :member],
+            outing: [:organizer, :participant]
+          }
+          role_changes = group_type_change.map { |type| group_roles[type] }.reduce(&:zip)
+          role_changes.each do |old_role, new_role|
+            @entourage.join_requests.where(role: old_role).update_all(role: new_role)
+          end
+        end if group_type_change
+
         redirect_to [:edit, :admin, @entourage], notice: "Entourage mis à jour"
       else
         render :edit, alert: "Erreur lors de la mise à jour"
+      end
+    end
+
+    def edit_type
+      new_type = params[:to]&.to_sym
+      current_type = @entourage.group_type.to_sym
+      case [current_type, new_type]
+      when [:action, :outing]
+        @entourage.group_type = :outing
+        @entourage.entourage_type = :contribution
+        @entourage.display_category = :event
+        @entourage.public = nil
+        @entourage.metadata = {}
+      when [:outing, :action]
+        @entourage.group_type = :action
+        @entourage.entourage_type = nil
+        @entourage.display_category = nil
+        @entourage.public = nil
+        @entourage.metadata = {}
+      else
+        raise "Changing #{current_type} to #{new_type} is not allowed"
       end
     end
 
@@ -303,7 +353,7 @@ module Admin
     def entourage_params
       metadata_keys = params.dig(:entourage, :metadata).try(:keys) || []
       metadata_keys -= [:starts_at]
-      params.require(:entourage).permit(:status, :title, :description, :category, :entourage_type, :display_category, :latitude, :longitude, :public, metadata: metadata_keys)
+      params.require(:entourage).permit(:group_type, :status, :title, :description, :category, :entourage_type, :display_category, :latitude, :longitude, :public, metadata: metadata_keys)
     end
 
     def chat_messages_params

@@ -10,6 +10,8 @@
 <%= form_for([:admin, @entourage], :method => :PATCH, html: { class: "form-horizontal", role: "form" }) do |f| %>
   <%= render partial: "layouts/errors", locals: {obj: @entourage} %>
 
+  <%= f.hidden_field :group_type %>
+
   <div class="control-group">
     <%= f.label :title, "Titre", class: "control-label" %>
     <div class="controls">
@@ -31,21 +33,19 @@
     </div>
   </div>
 
-  <% if @entourage.public_accessibility_options.count > 1 %>
-    <div class="control-group">
-      <label class="control-label">Public (pas de join request)</label>
-      <div class="controls">
-        <label class="radio-inline" style="padding-top: 0; margin-bottom: 5px;">
-          <%= f.radio_button :public, true %>
-          Oui
-        </label>
-        <label class="radio-inline" style="padding-top: 0; margin-bottom: 5px;">
-          <%= f.radio_button :public, false %>
-          Non
-        </label>
-      </div>
+  <div class="control-group">
+    <label class="control-label">Public (pas de join request)</label>
+    <div class="controls">
+      <label class="radio-inline" style="padding-top: 0; margin-bottom: 5px;">
+        <%= f.radio_button :public, true, required: true %>
+        Oui
+      </label>
+      <label class="radio-inline" style="padding-top: 0; margin-bottom: 5px;">
+        <%= f.radio_button :public, false, required: true %>
+        Non
+      </label>
     </div>
-  <% end %>
+  </div>
 
   <% if @entourage.group_type == 'outing' %>
     <%
@@ -66,10 +66,10 @@
                 required: true) %>
           <%= select_hour(
                 datetime&.hour,
-                {},
+                {include_blank: true},
                 name: "metadata[#{timestamp}][hour]",
                 required: true) %>
-          <% minutes = (datetime&.min / minute_step.to_f).round * minute_step %>
+          <% minutes = datetime ? (datetime.min / minute_step.to_f).round * minute_step : nil %>
           <%= select_minute(
                 minutes,
                 {minute_step: 5},
@@ -78,7 +78,37 @@
         </div>
       </div>
     <% end %>
+  <% end %>
 
+  <% if @entourage.group_type == 'action' %>
+  <div class="control-group">
+    <%= f.label :display_category, "Catégorie affichée", class: "control-label" %>
+    <div class="controls">
+      <%= f.select :entourage_type, [["Demande", :ask_for_help], ["Contribution", :contribution]], {include_blank: true}, required: true %>
+      <%= f.select :display_category, Entourage::DISPLAY_CATEGORIES, {include_blank: true}, required: true %>
+    </div>
+  </div>
+  <% else %>
+    <%= f.hidden_field :entourage_type %>
+    <%= f.hidden_field :display_category %>
+  <% end %>
+
+  <% if @entourage.group_type == 'action' %>
+  <div class="control-group">
+    <label class="control-label">Adresse</label>
+    <div class="controls">
+      <input id="autocomplete" value="<%= @entourage.metadata[:display_address] %>"
+             type="text" class="form-control"></input>
+      <%= f.hidden_field :latitude, disabled: true %>
+      <%= f.hidden_field :longitude, disabled: true %>
+      <div class="adress-maps" id="addressMaps">
+        <img src="https://maps.googleapis.com/maps/api/staticmap?zoom=6&size=200x200&markers=<%= @entourage.latitude %>,<%= @entourage.longitude %>&key=<%= ENV['GOOGLE_FRONTEND_API_KEY'] %>" width="200" height="200" />
+        <img src="https://maps.googleapis.com/maps/api/staticmap?zoom=13&size=400x200&markers=<%= @entourage.latitude %>,<%= @entourage.longitude %>&key=<%= ENV['GOOGLE_FRONTEND_API_KEY'] %>&style=feature:road|element:labels|visibility:off&style=feature:water|element:labels|visibility:off" width="400" height="200" />
+      </div>
+    </div>
+  </div>
+  <% end %>
+  <% if @entourage.group_type == 'outing' %>
     <div class="control-group">
       <label class="control-label" for="metadata_address">Adresse</label>
       <%= text_field_tag nil, @entourage.metadata[:display_address],
@@ -95,37 +125,6 @@
       <%= hidden_field_tag 'entourage[metadata][google_place_id]', nil, disabled: true %>
     </div>
 
-  <% end %>
-
-  <% if @entourage.group_type == 'action' %>
-  <div class="control-group">
-    <%= f.label :display_category, "Catégorie affichée", class: "control-label" %>
-    <div class="controls">
-      <%= f.select :entourage_type, Entourage::ENTOURAGE_TYPES %>
-      <%= f.select :display_category, Entourage::DISPLAY_CATEGORIES, include_blank: true %>
-    </div>
-  </div>
-
-  <div class="control-group">
-    <%= f.label :category, "Catégorie pour l'algorithme de recommandation", class: "control-label" %>
-    <div class="controls">
-      <%= f.select :category, Entourage::CATEGORIES, include_blank: true %>
-    </div>
-  </div>
-
-  <div class="control-group">
-    <label class="control-label">Adresse</label>
-    <div class="controls">
-      <input id="autocomplete" value="<%= @entourage.approximated_location %>"
-             type="text" class="form-control"></input>
-      <%= f.hidden_field :latitude, disabled: true %>
-      <%= f.hidden_field :longitude, disabled: true %>
-      <div class="adress-maps" id="addressMaps">
-        <img src="https://maps.googleapis.com/maps/api/staticmap?zoom=4&size=200x200&markers=<%= @entourage.latitude %>,<%= @entourage.longitude %>&key=AIzaSyDma7aHQ_gPjX55c-V4wEzoRd79LiCenzM" width="200" height="200" />
-        <img src="https://maps.googleapis.com/maps/api/staticmap?zoom=13&size=400x200&markers=<%= @entourage.latitude %>,<%= @entourage.longitude %>&key=AIzaSyDma7aHQ_gPjX55c-V4wEzoRd79LiCenzM&style=feature:road|element:labels|visibility:off&style=feature:water|element:labels|visibility:off" width="400" height="200" />
-      </div>
-    </div>
-  </div>
   <% end %>
 
   <br>
@@ -190,6 +189,11 @@
       if (e.keyCode === 13) {
         e.preventDefault();
       }
+    })
+
+    $('#metadata_starts_at_date').on('blur', function() {
+      var $endsAt = $('#metadata_ends_at_date')
+      if ($endsAt.val() === '') $endsAt.val(this.value)
     })
   </script>
 <% end %>
