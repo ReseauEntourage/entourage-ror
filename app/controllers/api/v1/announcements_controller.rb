@@ -63,7 +63,7 @@ module Api
           51 => :heart,
           52 => :question,
           53 => :heart,
-          54 => :vidéo,
+          54 => :video,
           55 => :question,
           56 => :video,
           57 => :heart,
