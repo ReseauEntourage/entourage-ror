@@ -185,6 +185,7 @@ class Entourage < ActiveRecord::Base
   def share_url
     return unless uuid_v2
     return if group_type == 'conversation'
+    return community.store_short_url unless community.entourage?
     share_url_prefix = ENV['PUBLIC_SHARE_URL'] || 'http://entourage.social/entourages/'
     "#{share_url_prefix}#{uuid_v2}"
   end
