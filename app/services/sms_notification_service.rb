@@ -27,11 +27,13 @@ class SmsNotificationService
         credentials: Aws::Credentials.new(ENV['ENTOURAGE_AWS_ACCESS_KEY_ID'], ENV['ENTOURAGE_AWS_SECRET_ACCESS_KEY']),
         })
 
-      sns.set_sms_attributes(attributes: { 'DefaultSenderID' => ENV['SMS_SENDER_NAME'],'DefaultSMSType' => 'Transactional'  })
-
       response = sns.publish({
         phone_number: phone_number,
-        message: message
+        message: message,
+        message_attributes: {
+          'AWS.SNS.SMS.SenderID' => {string_value: ENV['SMS_SENDER_NAME'], data_type: 'String'},
+          'AWS.SNS.SMS.SMSType' => {string_value: 'Transactional', data_type: 'String'},
+        },
       })
 
       if response.message_id
