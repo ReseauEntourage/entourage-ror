@@ -87,7 +87,7 @@ module FeedServices
         .where(%(
           feeds.status != 'closed' or
           feedable_type = 'Tour' or
-          entourage_moderations.action_outcome in ('Oui')
+          (group_type = 'action' and entourage_moderations.action_outcome in ('Oui'))
         ))
 
       if types != nil
