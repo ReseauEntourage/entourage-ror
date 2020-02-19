@@ -73,6 +73,7 @@ module Admin
         user: user, preferences: (params[:email_preferences] || {}))
 
       user.assign_attributes(user_params)
+      user.encrypted_password = nil if user.sms_code_changed?
       UserService.sync_roles(user)
 
       moderation = user.moderation || user.build_moderation
