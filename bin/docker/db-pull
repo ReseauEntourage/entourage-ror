@@ -11,7 +11,28 @@ function is_running {
 
 source=$(heroku config:get DATABASE_URL -a "${1:-entourage-back}")
 target=entourage-dev
-excluded_tables=(entourage_scores rpush_notifications tour_points)
+excluded_tables=(
+  stats.*
+  user_newsfeeds
+  email_deliveries
+  rpush_notifications
+  session_histories
+  user_applications
+  events
+  tour_points
+  users_appetences
+  sms_deliveries
+  entourage_displays
+  rpush_feedback
+  simplified_tour_points
+  email_preferences
+  sensitive_words_checks
+  newsletter_subscriptions
+  experimental_pending_request_reminders
+  login_histories
+  user_relationships
+  entourage_scores
+)
 
 $(is_running spring)     && spring_running=true
 $(is_running postgresql) && postgresql_running=true
