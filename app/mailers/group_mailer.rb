@@ -68,6 +68,7 @@ class GroupMailer < MailjetMailer
     mailjet_email(
       to: new_member,
       campaign_name: :action_joined_confirmation,
+      deliver_only_once: true,
       template_id: 583998,
       variables: [
         action => [
