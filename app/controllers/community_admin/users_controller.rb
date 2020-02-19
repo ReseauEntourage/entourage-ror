@@ -145,7 +145,7 @@ module CommunityAdmin
     def update
       user = find_user(params[:id])
 
-      user.assign_attributes(user_params)
+      user.assign_attributes(user_params.except(:roles))
       user.roles = updated_roles_for_user(roles: user_params[:roles], user: user)
 
       downgrade_neighborhood_roles =
