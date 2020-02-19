@@ -10,7 +10,7 @@ module DigestEmailConfig
   SCHEDULE = {
     day: :sunday,
     time: 9,
-    min_interval: 2.weeks
+    min_interval: 2.months
   }
 
   def self.cities
