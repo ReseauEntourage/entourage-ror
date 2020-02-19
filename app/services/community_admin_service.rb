@@ -50,6 +50,10 @@ module CommunityAdminService
   def self.coordinator_users_filtered(user, neighborhoods, has_private_circle: nil, neighborhood_status: nil, archived: false)
     neighborhood_ids = Array(neighborhoods).map { |n| n.is_a?(Entourage) ? n.id : n }
 
+    if neighborhood_ids.none?
+      return User.none
+    end
+
     scope = User
       .where(community: user.community)
       .joins(%{
