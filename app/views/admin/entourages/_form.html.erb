@@ -90,7 +90,7 @@
   </div>
   <% else %>
     <%= f.hidden_field :entourage_type %>
-    <%= f.hidden_field :display_category %>
+    <%= f.hidden_field :display_category if @entourage.display_category.present? %>
   <% end %>
 
   <% if @entourage.group_type == 'action' %>
