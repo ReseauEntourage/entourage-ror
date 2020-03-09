@@ -56,7 +56,7 @@ group :development do
   gem 'thin',                         '~> 1.6.3'
   gem 'better_errors',                '~> 2.1.1'
   gem 'binding_of_caller',            '~> 0.8.0'
-  gem 'derailed',                     '~> 0.1.0'
+  gem 'derailed_benchmarks'
   gem 'stackprof',                    '~> 0.2.8'
   gem 'letter_opener',                '~> 1.4.1'
   gem 'mailcatcher'
