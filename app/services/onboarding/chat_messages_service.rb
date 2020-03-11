@@ -16,7 +16,7 @@ module Onboarding
         Bonjour #{first_name},
         Bienvenue sur le réseau Entourage !
         Je m’appelle Guillaume, je m’occupe de l’accompagnement : je réponds à vos questions, je vous oriente, et veille au respect de la charte éthique de l’association.
-        De belles actions n’attendent que vous sur le réseau... qui promettent de belles rencontres ! Et si vous avez la moindre question, contactez moi par message ou par téléphone au 07 68 03 73 48
+        De belles actions n’attendent que vous sur le réseau... qui promettent de belles rencontres ! Et si vous avez la moindre question, contactez moi directement ici par message.
         À bientôt !
       MESSAGE
 
