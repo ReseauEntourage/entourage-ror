@@ -581,7 +581,7 @@ module FeedServices
         url: "#{ENV['DEEPLINK_SCHEME']}://entourage/esL6R5Az6MeU",
         author: moderator,
         webview: false
-      )
+      ) if area.in?(['La Défense', 'Clichy Levallois', 'Saint-Denis 93', 'Versailles', 'Boulogne-Billancourt', 'Nanterre', 'Courbevoie', 'Antony', 'Paris République', 'Paris 17 et 9', 'Paris 15', 'Paris 5', 'Paris'])
 
       announcements.push Announcement.new(
         id: 59,
