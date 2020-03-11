@@ -45,8 +45,10 @@ module Api
             end,
           'atd-partnership' =>
             'https://www.atd-quartmonde.fr/entourage/',
-          'faq' =>
-              'https://blog.entourage.social/comment-utiliser-l-application-entourage/#site-content',
+          'faq' => {
+            'entourage' => 'https://blog.entourage.social/comment-utiliser-l-application-entourage/#site-content',
+            'pfp'       => 'https://docs.google.com/document/d/1fR6pEmhmCIBUJgzZ0CmFy9gzbMTXW5lFh7zxLDmbUco'
+          }[community.slug],
           'ethics-charter' =>
             lambda do |user|
               key = 'ethics-charter'
