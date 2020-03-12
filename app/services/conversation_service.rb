@@ -51,6 +51,24 @@ module ConversationService
     !to.deleted
   end
 
+  def self.recipients conversation:, user:
+    recipients =
+      if conversation.new_record?
+        User.where(id: conversation.join_requests.map(&:user_id) - [user.id])
+      else
+        conversation.members.where.not(id: user.id).merge(JoinRequest.accepted)
+      end
+
+    recipients = recipients.select(:id, :first_name, :last_name).to_a
+
+    # if no recipient, it must be a conversation with self
+    if recipients.empty?
+      recipients = [user]
+    end
+
+    recipients
+  end
+
   private
 
   def self.id_list array

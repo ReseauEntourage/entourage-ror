@@ -90,7 +90,7 @@ module Admin
         end
       end
 
-      @messages_author = current_admin
+      @messages_author = current_admin if join_request.present?
     end
 
     def message
@@ -179,7 +179,7 @@ module Admin
         Entourage.find_by(uuid_v2: hash_uuid) ||
           ConversationService.build_conversation(participant_ids: participant_ids)
       else
-        user.entourage_participations.where(group_type: :conversation).find_by_id_or_uuid(params[:id])
+        Entourage.where(group_type: :conversation).find_by_id_or_uuid(params[:id])
       end
     end
   end
