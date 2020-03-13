@@ -492,15 +492,15 @@ module FeedServices
       #   webview: false
       # )
 
-      announcements.push Announcement.new(
-        id: 52,
-        title: "Quelles sont VOS questions sur la rue",
-        body: "De nouveaux contenus à venir, basés sur vos besoins !",
-        image_url: true,
-        action: "Je réponds",
-        author: moderator,
-        webview: true
-      )
+      # announcements.push Announcement.new(
+      #   id: 52,
+      #   title: "Quelles sont VOS questions sur la rue",
+      #   body: "De nouveaux contenus à venir, basés sur vos besoins !",
+      #   image_url: true,
+      #   action: "Je réponds",
+      #   author: moderator,
+      #   webview: true
+      # )
 
       # announcements.push Announcement.new(
       #   id: 53,
@@ -511,6 +511,16 @@ module FeedServices
       #   author: moderator,
       #   webview: true
       # )
+
+      announcements.push Announcement.new(
+        id: 61,
+        title: "Coronavirus et SDF, quelques conseils",
+        body: "Les personnes SDF sont particulièrement à risque : difficultés d’accès à l’hygiène, santé souvent fragile. Restons vigilants mais solidaires !",
+        image_url: true,
+        action: "En savoir plus",
+        author: moderator,
+        webview: true
+      )
 
       announcements.push Announcement.new(
         id: 54,

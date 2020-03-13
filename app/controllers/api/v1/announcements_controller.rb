@@ -70,6 +70,7 @@ module Api
           58 => :heart,
           59 => :chat,
           60 => :video,
+          61 => :megaphone,
         }[params[:id].to_i]
 
         redirect_to view_context.asset_url("assets/announcements/icons/#{icon}.png")
@@ -138,6 +139,7 @@ module Api
           58 => '58.jpg',
           59 => '59.jpg',
           60 => '60.jpg',
+          61 => '61.png',
         }[params[:id].to_i]
 
         return render nothing: true, status: :not_found if image.nil?
@@ -286,6 +288,8 @@ module Api
           url = "https://www.facebook.com/watch/?v=402957420659669"
         when 57
           url = "https://blog.entourage.social/2019/11/28/calendrier-de-lavent-solidaire-2019-24-jours-guides-par-entourage/#site-content"
+        when 61
+          url = "https://blog.entourage.social/2020/03/13/covid-19-et-personnes-sdf-quelques-conseils/#site-content"
         end
 
         begin
