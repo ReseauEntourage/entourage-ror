@@ -90,7 +90,7 @@ module Admin
         end
       end
 
-      @messages_author = current_admin if join_request.present?
+      @messages_author = current_admin if join_request.present? || @conversation.new_record?
     end
 
     def message
