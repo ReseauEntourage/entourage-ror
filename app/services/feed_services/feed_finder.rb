@@ -126,18 +126,18 @@ module FeedServices
       #   end
       #
 
-        # case area
-        # when 'Paris République', 'Paris 17 et 9', 'Paris 15', 'Paris 5', 'Paris'
-        #   feeds = pin(13812, feeds: feeds)
-        # when 'Lille'
-        #   feeds = pin(13814, feeds: feeds)
-        # when 'Rennes'
-        #   feeds = pin(13817, feeds: feeds)
-        # when 'Lyon Ouest', 'Lyon Est', 'Lyon'
-        #   feeds = pin(13815, feeds: feeds)
-        # when 'La Défense'
-        #   feeds = pin(13813, feeds: feeds)
-        # end
+        case area
+        when 'Paris République', 'Paris 17 et 9', 'Paris 15', 'Paris 5', 'Paris'
+          feeds = pin(45922, feeds: feeds)
+        when 'Lille'
+          feeds = pin(45905, feeds: feeds)
+        when 'Rennes'
+          feeds = pin(45880, feeds: feeds)
+        when 'Lyon Ouest', 'Lyon Est', 'Lyon'
+          feeds = pin(45876, feeds: feeds)
+        when 'La Défense'
+          feeds = pin(45904, feeds: feeds)
+        end
       end
 
       feeds = insert_announcements(feeds: feeds) if announcements == :v1
