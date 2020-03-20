@@ -70,7 +70,10 @@ module Api
           58 => :heart,
           59 => :chat,
           60 => :video,
-          61 => :megaphone,
+          61 => :heart,
+          62 => :question,
+          63 => :heart,
+          64 => :chat,
         }[params[:id].to_i]
 
         redirect_to view_context.asset_url("assets/announcements/icons/#{icon}.png")
@@ -139,7 +142,10 @@ module Api
           58 => '58.jpg',
           59 => '59.jpg',
           60 => '60.jpg',
-          61 => '61.png',
+          61 => '61-2.jpg',
+          62 => '62.jpg',
+          63 => '63.jpg',
+          64 => '64.jpg',
         }[params[:id].to_i]
 
         return render nothing: true, status: :not_found if image.nil?
@@ -290,6 +296,12 @@ module Api
           url = "https://blog.entourage.social/2019/11/28/calendrier-de-lavent-solidaire-2019-24-jours-guides-par-entourage/#site-content"
         when 61
           url = "https://blog.entourage.social/2020/03/13/covid-19-et-personnes-sdf-quelques-conseils/#site-content"
+        when 62
+          url = "http://www.solinum.org/category/info-coronavirus/"
+        when 63
+          url = "https://blog.entourage.social/2020/03/20/gardons-le-moral-convivialite-100-digitale-loin-des-yeux-pres-du-coeur-%f0%9f%a7%a1/#site-content"
+        when 64
+          url = "https://blog.entourage.social/2020/03/18/journal-du-confinement-de-personnes-sdf/#site-content"
         end
 
         begin

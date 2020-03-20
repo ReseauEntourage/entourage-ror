@@ -514,10 +514,40 @@ module FeedServices
 
       announcements.push Announcement.new(
         id: 61,
-        title: "Coronavirus et SDF, quelques conseils",
-        body: "Les personnes SDF sont particulièrement à risque : difficultés d’accès à l’hygiène, santé souvent fragile. Restons vigilants mais solidaires !",
+        title: "Coronavirus : comment aider ?",
+        body: "Nos conseils pour se rendre utile malgré le confinement.",
         image_url: true,
-        action: "En savoir plus",
+        action: "J'aide",
+        author: moderator,
+        webview: true
+      )
+
+      announcements.push Announcement.new(
+        id: 62,
+        title: "Orienter : quelles assos encore ouvertes ?",
+        body: "Distribution alimentaire, permanences... Tout est chamboulé. Soliguide vous oriente pour trouver des structures encore ouvertes.",
+        image_url: true,
+        action: "Je m'informe",
+        author: moderator,
+        webview: true
+      )
+
+      announcements.push Announcement.new(
+        id: 63,
+        title: "Gardons le lien malgré le Covid-19 ! ",
+        body: "Vous avez envie de parler à du monde, d'échanger ? Un cercle d'entraide s'est créé : écrivez au 07 68 03 73 48",
+        image_url: true,
+        action: "Je garde le lien",
+        author: moderator,
+        webview: true
+      )
+
+      announcements.push Announcement.new(
+        id: 64,
+        title: "Journal du confinement",
+        body: "Le témoignage quotidien d'une personne SDF qui raconte sa façon de vivre le confinement.",
+        image_url: true,
+        action: "Je découvre",
         author: moderator,
         webview: true
       )
