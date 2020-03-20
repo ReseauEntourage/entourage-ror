@@ -17,7 +17,7 @@ include CommunityHelper
       let(:latitude) { entourage.latitude }
       let(:longitude) { entourage.longitude }
       let!(:tour) { FactoryGirl.create(:tour, updated_at: 5.hours.ago, created_at: 5.hours.ago, tour_type: "medical", latitude: latitude, longitude: longitude) }
-      let(:announcement) { FactoryGirl.build(:announcement, author: user) }
+      let(:announcement) { FactoryGirl.build(:announcement) }
       before do
         allow_any_instance_of(FeedServices::AnnouncementsService)
           .to receive(:select_announcements)
@@ -71,12 +71,7 @@ include CommunityHelper
                                                      "action"=>"Aider",
                                                      "url"=>"http://test.host/api/v1/announcements/1/redirect/#{user.token}",
                                                      "icon_url"=>"http://test.host/api/v1/announcements/1/icon",
-                                                     "author"=>{
-                                                         "id"=>announcement.author.id,
-                                                         "display_name"=>"John D.",
-                                                         "avatar_url"=>nil,
-                                                         "partner"=>nil
-                                                     }
+                                                     "author"=>nil
                                                  }
                                              },
                                              {
@@ -436,11 +431,7 @@ include CommunityHelper
            "action"=>"Aider",
            "url"=>"http://test.host/api/v1/announcements/1/redirect/#{user.token}",
            "icon_url"=>"http://test.host/api/v1/announcements/1/icon",
-           "author"=>{
-             "id"=>announcement.author.id,
-             "display_name"=>"John D.",
-             "avatar_url"=>nil,
-             "partner"=>nil}}}
+           "author"=>nil}}
       ]})}
     end
   end

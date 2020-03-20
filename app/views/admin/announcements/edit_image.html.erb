@@ -1,0 +1,62 @@
+<div class="container">
+  <div style="width: 750px; margin: auto">
+    <ol class="breadcrumb">
+      <li><%= link_to "Cartes d'annonce", admin_announcements_path %></li>
+      <li><%= link_to @announcement.title, edit_admin_announcement_path(@announcement) %></li>
+      <li class="active">Image</li>
+    </ol>
+
+    <h1>Modifier l'image</h1>
+
+    <div class="margin-bottom: 15px">
+      <%= image_tag @announcement.image_url, size: '750x320' %>
+    </div>
+
+    <form class="form-inline" id="upload-form"
+          action="#" method="post" enctype="multipart/form-data">
+      <div>PNG ou JPEG, 750x320</div>
+      <div class="form-group">
+        <input type="file" class="btn btn-default"
+               name="file" accept="<%= @form.content_types %>"/>
+      </div>
+      <input type="submit" value="Enregistrer" class="btn btn-success" disabled/>
+    </form>
+  </div>
+</div>
+
+<script>
+  (function() {
+    var $form = $('#upload-form'),
+        $fileInput = $form.find('input[type=file]'),
+        $submit = $form.find('[type=submit]');
+
+    $fileInput.on('change', function() {
+      var file = this.files[0],
+          $field = null;
+
+      $submit.prop('disabled', true);
+
+      $.ajax(
+        '<%= new_admin_upload_path %>', {
+        data: {
+          uploader: 'announcement_image',
+          announcement_id: '<%= @announcement.id %>',
+          redirect_url: '<%= image_upload_success_admin_announcement_url %>',
+          filetype: file.type
+        }
+      })
+      .done(function(data) {
+        $form.attr('action', data.url);
+        Object.keys(data.fields).forEach(function(key) {
+          $field = $form.find('input[name=' + key + ']');
+          if ($field.length === 0) {
+            $field = $('<input>', {name: key, type: 'hidden'})
+                     .insertBefore($fileInput); // 'file' must be the last field
+          }
+          $field.val(data.fields[key]);
+        });
+        $submit.prop('disabled', false);
+      });
+    });
+  })();
+</script>

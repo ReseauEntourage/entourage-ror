@@ -46,15 +46,15 @@ module Onboarding
       return if user.pro?
       entourage_id = ENTOURAGES[area]
       return if entourage_id.nil?
-      Announcement.new(
-        id: 5,
-        title: "#{user.first_name}, on n'attend plus que vous !",
-        body: "Conseils, rencontres, idées d'action... Rentrez en contact avec les personnes du quartier.",
-        action: "C'est parti !",
-        url: "#{ENV['DEEPLINK_SCHEME']}://entourage/#{entourage_id}",
-        author: ModerationServices.moderator(community: user.community),
-        position: 1
-      )
+      # LegacyAnnouncement.new(
+      #   id: 5,
+      #   title: "#{user.first_name}, on n'attend plus que vous !",
+      #   body: "Conseils, rencontres, idées d'action... Rentrez en contact avec les personnes du quartier.",
+      #   action: "C'est parti !",
+      #   url: "#{ENV['DEEPLINK_SCHEME']}://entourage/#{entourage_id}",
+      #   author: ModerationServices.moderator(community: user.community),
+      #   position: 1
+      # )
     end
 
     def self.chat_message_for user

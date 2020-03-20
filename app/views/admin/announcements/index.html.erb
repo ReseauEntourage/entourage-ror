@@ -1,0 +1,298 @@
+<style>
+  .overlay-container {
+    position: relative;
+  }
+
+  .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+  }
+
+  .overlay-container a:not(.overlay) {
+    position: relative;
+    z-index: 2;
+  }
+
+  #announcements {
+    background-color: #ddd;
+    padding-top: 1px; /* top separator */
+  }
+  .announcement {
+    display: flex;
+    background-color: #fff;
+  }
+  #announcements.animate,
+  #announcements.animate .announcement {
+    transition-duration: 200ms;
+  }
+  .announcement + .announcement {
+    margin-top: 1px; /* separators */
+  }
+  .announcement > * {
+    padding: 8px;
+  }
+  .announcement-id {
+    width: 40px;
+  }
+  .announcement-content {
+    flex-grow: 1;
+  }
+  .announcement-image {
+    width: calc(255px + 8px * 2);
+  }
+
+  #announcements.reorder {
+    padding: 8px;
+    margin: -7px -8px 0;
+    background-color: #ebecf0;
+    border-radius: 3px;
+  }
+  .reorder .announcement {
+    box-shadow: 0 1px 0 rgba(9,30,66,.25);
+    border-radius: 3px;
+    cursor: grab;
+  }
+  .reorder .announcement + .announcement {
+    margin-top: 8px;
+  }
+  .reorder .announcement:hover {
+    background-color: #f4f5f7;
+  }
+  .reorder .overlay,
+  .announcement.gu-mirror .overlay {
+    display: none;
+  }
+  .reorder a,
+  .announcement.gu-mirror a {
+    pointer-events: none;
+  }
+
+  /* hover?*/
+  .announcement.gu-transit {
+    background-color: rgba(9,30,66,.04);
+    box-shadow: none;
+  }
+  .announcement.gu-transit > * {
+    visibility: hidden;
+  }
+  .announcement.gu-mirror {
+    position: fixed !important;
+    z-index: 3;
+    transform: rotate(1deg);
+    border-radius: 3px;
+    box-shadow: 0 12px 24px -6px rgba(9,30,66,.25),0 0 0 1px rgba(9,30,66,.08) !important;
+    cursor: grabbing;
+  }
+
+  .gu-hide {
+    display: none !important;
+  }
+  .gu-unselectable {
+    -webkit-user-select: none !important;
+    -moz-user-select: none !important;
+    -ms-user-select: none !important;
+    user-select: none !important;
+  }
+
+  .invisible-searchable-block {
+    display: inline-flex;
+    width: 20px;
+    overflow-y: scroll;
+    white-space: nowrap;
+    color: transparent;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE */
+  }
+  .invisible-searchable-block::-webkit-scrollbar {
+      display: none; /* Chrome Safari */
+  }
+</style>
+
+<div class="container">
+  <div style="width: 750px; margin: auto">
+    <h1>Cartes d'annonce</h1>
+
+    <div style="margin-bottom: 15px; display: flex">
+      <div class="btn-group btn-group-sm">
+        <%=
+          link_to(
+            "Brouillons",
+            params.merge(status: :draft),
+            class: "btn btn-#{@status == :draft ? :primary : :default}"
+          )
+        %>
+        <%=
+          link_to(
+            "Actives",
+            params.except(:status),
+            class: "btn btn-#{@status == :active ? :primary : :default}"
+          )
+        %>
+        <%=
+          link_to(
+            "Archivées",
+            params.merge(status: :archived),
+            class: "btn btn-#{@status == :archived ? :primary : :default}"
+          )
+        %>
+      </div>
+      <div style="margin-left: 15px">
+        <%=
+          link_to(
+            "Nouvelle carte",
+            new_admin_announcement_path,
+            class: "btn btn-default btn-sm"
+          )
+        %>
+      </div>
+      <% if @status == :active %>
+        <div style="margin-left: auto">
+          <a href="#" class="btn btn-default btn-sm" id="start-reorder">Modifier l'ordre des cartes</a>
+          <a href="#" class="btn btn-default btn-sm hide" id="cancel-reorder">Annuler</a>
+          <a href="#" class="btn btn-success btn-sm hide" id="save-reorder">Enregistrer l'ordre des cartes</a>
+        </div>
+      <% end %>
+    </div>
+
+    <div id="announcements">
+      <% @announcements.each do |announcement| %>
+        <div class="announcement overlay-container" data-id="<%= announcement.id %>">
+          <div class="announcement-id text-muted">
+            #<%= announcement.id %>
+          </div>
+          <div class="announcement-content" style="width: 100%">
+            <div style="font-weight: bold"><%= link_to announcement.title, edit_admin_announcement_path(announcement) %></div>
+            <div><%= announcement.body.presence || "(pas de description)" %></div>
+            <div style="display: flex">
+              <span style="text-decoration: underline; flex-shrink: 0">
+                <%= announcement.action.presence || "(pas de CTA)" %>
+              </span>
+              <span class="text-muted">
+                <%
+                  preview =
+                    begin
+                      url = URI(announcement.url)
+                      case url.scheme
+                      when 'mailto' then url.to
+                      when 'http', 'https' then url.host
+                      else url.to_s
+                      end
+                    rescue
+                      preview = announcement.url
+                    end
+                    preview = "(pas de lien)" if announcement.url.blank?
+                %>
+                &nbsp;→ <%= truncate preview, length: 35 %>
+                <span class="invisible-searchable-block">
+                  <%= announcement.url %>
+                </span>
+              </span>
+            </div>
+          </div>
+          <div class="announcement-image">
+            <%= image_tag announcement.image_url, size: '225x96' %>
+          </div>
+          <%= link_to "", edit_admin_announcement_path(announcement), class: "overlay" %>
+        </div>
+      <% end %>
+
+      <% if @announcements.none? %>
+        <div class="announcement">
+          <div>
+            Pas de cartes d'annonce <%= {draft: "en brouillon", active: "actives", archived: "archivées"}[@status] %>.
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<%= form_tag reorder_admin_announcements_path, class: "hide", id: "reorder-form" do %>
+  <%= hidden_field_tag :ordered_ids %>
+<% end %>
+
+<% if @status == :active %>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/dragula/3.7.2/dragula.min.js"></script>
+  <script>
+    var Entourage = {} // global state object
+    Entourage.reordering = false;
+
+    var announcements = document.querySelector('#announcements');
+
+    dragula(
+      [announcements],
+      {
+        moves: function() {
+          return Entourage.reordering
+        }
+      }
+    )
+
+    function toggleReordering(isActive) {
+      if (typeof isActive === 'undefined') {
+        isActive = !Entourage.reordering
+      } else if (isActive == Entourage.reordering) {
+        return
+      }
+      clearTimeout(Entourage.reorderingAnimationTimeout)
+      announcements.classList.add('animate')
+      if (isActive) {
+        announcements.classList.add('reorder')
+      } else {
+        announcements.classList.remove('reorder')
+      }
+      Entourage.reorderingAnimationTimeout = setTimeout(function() {
+        announcements.classList.remove('animate')
+      }, 200)
+      Entourage.reordering = isActive;
+    }
+
+    function getOrderedIds() {
+      var ids = []
+      for (const announcement of announcements.querySelectorAll('.announcement')) {
+        ids.push(announcement.getAttribute('data-id'))
+      }
+      return ids
+    }
+
+    var $startReorder = $('#start-reorder'),
+        $saveReorder  = $('#save-reorder'),
+        $cancelReorder  = $('#cancel-reorder')
+    $startReorder.on('click', function(e) {
+      e.preventDefault()
+      Entourage.orderBackup = getOrderedIds()
+      toggleReordering(true)
+      $startReorder.addClass('hide')
+      $cancelReorder.removeClass('hide')
+      $saveReorder.removeClass('hide')
+    })
+    $saveReorder.on('click', function(e) {
+      e.preventDefault()
+      Entourage.reordering = false;
+      $cancelReorder.addClass('hide')
+      $saveReorder.addClass('disabled')
+      var form = document.querySelector('#reorder-form')
+      form.querySelector('[name="ordered_ids"]').value = getOrderedIds().join(',')
+      form.submit()
+    })
+    $cancelReorder.on('click', function(e) {
+      e.preventDefault()
+      toggleReordering(false)
+      $saveReorder.addClass('hide')
+      $cancelReorder.addClass('hide')
+      $startReorder.removeClass('hide')
+      var sorted = []
+      for (const announcement of announcements.querySelectorAll('.announcement')) {
+        var index = Entourage.orderBackup.indexOf(announcement.getAttribute('data-id'))
+        sorted[index] = announcement
+      }
+      for (const announcement of sorted) {
+        announcements.appendChild(announcement)
+      }
+    })
+  </script>
+<% end %>

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20191212171604) do
+ActiveRecord::Schema.define(version: 20200317143927) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -45,6 +45,18 @@ ActiveRecord::Schema.define(version: 20191212171604) do
     t.datetime "created_at",                null: false
     t.datetime "updated_at",                null: false
     t.string   "google_place_id"
+  end
+
+  create_table "announcements", force: :cascade do |t|
+    t.string  "title"
+    t.string  "body"
+    t.string  "image_url"
+    t.string  "action"
+    t.string  "url"
+    t.string  "icon"
+    t.boolean "webview"
+    t.integer "position"
+    t.string  "status",    default: "draft", null: false
   end
 
   create_table "answers", force: :cascade do |t|

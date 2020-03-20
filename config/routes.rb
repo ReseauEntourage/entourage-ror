@@ -78,6 +78,18 @@ Rails.application.routes.draw do
         end
       end
 
+      resources :announcements, only: [:index, :new, :edit] do
+        collection do
+          post '/new', action: :create, as: nil
+          post :reorder
+        end
+        member do
+          match '/edit', via: [:patch, :put], action: :update, as: nil
+          get '/edit/image', action: :edit_image
+          get '/image_upload_success', action: :image_upload_success
+        end
+      end
+
       get 'public_user_autocomplete' => "users_search#public_user_autocomplete"
       get 'user_search' => "users_search#user_search"
       delete 'user_relationships' => "user_relationships#destroy"
@@ -237,8 +249,6 @@ Rails.application.routes.draw do
       resources :announcements, only: [] do
         member do
           get :icon
-          get :avatar
-          get :image
           get 'redirect/:token' => :redirect, as: :redirect
         end
       end

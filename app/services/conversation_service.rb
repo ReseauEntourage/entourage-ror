@@ -26,8 +26,19 @@ module ConversationService
     "1_list_" + list.join('-')
   end
 
-  def self.participant_ids_from_list_uuid list_uuid
-    id_list(list_uuid[7..-1].split('-'))
+  def self.participant_ids_from_list_uuid list_uuid, current_user: nil
+    id_list(list_uuid[7..-1].split('-')).map do |id|
+      case id
+      when 'moderator'
+        raise unless current_user
+        ModerationServices.moderator(community: current_user.community).id.to_s
+      when 'me'
+        raise unless current_user
+        current_user.id.to_s
+      else
+        id
+      end
+    end
   end
 
   def self.list_uuid? uuid

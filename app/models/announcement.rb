@@ -1,32 +1,24 @@
-class Announcement
-  include ActiveModel::Serializers::JSON
+class Announcement < ActiveRecord::Base
+  STATUS = %w[draft active archived].freeze
 
-  ATTRIBUTES = [
-    :id,
-    :title,
-    :body,
-    :image_url,
-    :action,
-    :url,
-    :icon_url,
-    :author,
-    :webview,
-    :position
-  ].freeze
-  attr_accessor *ATTRIBUTES
+  validates :title, presence: true
 
-  def initialize(attributes={})
-    self.attributes = attributes
-  end
+  validates :body, :image_url, :action, :url, :icon,
+            presence: true, if: :active?
+  validates :webview, inclusion: [true, false], allow_nil: false, if: :active?
 
-  def attributes=(hash)
-    hash.each do |key, value|
-      send("#{key}=", value)
+  validates :status, inclusion: STATUS
+  validates :image_url, format: { with: %r(\Ahttps?://\S+\z) }, allow_blank: true
+  validates :url, format: { with: %r(\A(https?|mailto|entourage):\S+\z) }, allow_blank: true
+
+  scope :ordered, -> { order(:position, :id) }
+
+  STATUS.each do |status|
+    scope status, -> { where(status: status) }
+
+    define_method("#{status}?") do
+      self.status == status
     end
-  end
-
-  def attributes
-    Hash[ATTRIBUTES.map { |key| [key.to_s, send(key)] }]
   end
 
   def feed_object

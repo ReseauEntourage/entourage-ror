@@ -16,25 +16,16 @@ module V1
     end
 
     def author
-      return unless object.author
-      author = object.author
-      case object.id
-      when 3, 4, 5, 12
-        avatar_url = url_for(:avatar, id: object.id)
-      else
-        avatar_url = UserServices::Avatar.new(user: author).thumbnail_url
-      end
-
-      {
-          id: author.id,
-          display_name: UserPresenter.new(user: object.author).display_name,
-          avatar_url: avatar_url,
-          partner: nil
-      }
+      return nil
     end
 
     def url
-      if object.url =~ /^#{ENV['DEEPLINK_SCHEME']}:\/\// || object.url =~ /^mailto:/
+      if object.url.starts_with?('entourage:')
+        url = object.url
+        if EnvironmentHelper.env != :production
+          url.gsub!(/^entourage/, ENV['DEEPLINK_SCHEME'])
+        end
+      elsif object.url.starts_with?('mailto:')
         url = object.url
       else
         url = url_for(:redirect, id: object.id, token: scope[:user].token)
@@ -45,12 +36,6 @@ module V1
 
     def icon_url
       url_for(:icon, id: object.id)
-    end
-
-    def image_url
-      return if object.image_url.nil? || object.image_url == false
-      v = object.image_url if object.image_url.is_a?(String)
-      url_for(:image, id: object.id, v: v)
     end
 
     def url_for action, options={}

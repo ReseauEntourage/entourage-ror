@@ -1,0 +1,123 @@
+<%= render partial: 'common/errors', locals: {obj: @announcement} %>
+<%= form_for @announcement, url: "" do |f| %>
+  <% case @announcement.status %>
+  <% when 'draft'  %>
+    <div class="alert alert-info" role="alert" style="display: flex; align-items: center">
+      <div style="flex-grow: 1">
+        <b>Brouillon</b><br>
+        Cette carte n'est pas encore visible dans le feed.
+      </div>
+      <%= f.submit "Publier cette carte", name: :publish, class: "btn btn-success" %>
+    </div>
+  <% when 'active'  %>
+    <div class="alert alert-success" role="alert" style="display: flex; align-items: center">
+      <div style="flex-grow: 1">
+        <b>Active</b><br>
+        Cette carte est visible dans le feed.
+      </div>
+      <%= f.submit "Archiver cette carte", name: :archive, class: "btn btn-danger" %>
+    </div>
+  <% when 'archived'  %>
+    <div class="alert alert-info" role="alert" style="display: flex; align-items: center">
+      <div style="flex-grow: 1">
+        <b>Archivée</b><br>
+        Cette carte n'est plus visible dans le feed.
+      </div>
+      <%= f.submit "Republier cette carte", name: :publish, class: "btn btn-success" %>
+    </div>
+  <% end if @announcement.persisted? %>
+
+  <div class="row">
+    <div class="col-xs-3 form-group">
+      <%
+       icons = [
+        ["haut-parleur", :megaphone],
+        ["message", :chat],
+        ["coeur", :heart],
+        ["info", :info],
+        ["pin lieu", :pin],
+        ["question", :question],
+        ["texte", :text],
+        ["coupe", :trophy],
+        ["vidéo", :video]]
+      %>
+      <%= f.label :icon %>
+      <%= f.select :icon,
+          options_for_select(icons, @announcement.icon),
+          {include_blank: false},
+          class: "form-control",
+          required: !@announcement.draft?, disabled: @announcement.archived? %>
+    </div>
+    <div class="col-xs-9 form-group">
+      <%= f.label :title %>
+      <%= f.text_field :title, class: "form-control", required: true, readonly: @announcement.archived? %>
+    </div>
+  </div>
+  <div class="form-group">
+    <%= f.label :body %>
+    <%= f.text_area :body, class: "form-control", rows: 2, required: !@announcement.draft?, readonly: @announcement.archived? %>
+  </div>
+  <div class="form-group">
+    <%= f.label :image_url %>
+    <% if @announcement.new_record? %>
+      <div class="text-muted">
+        Vous pourrez ajouter une image une fois que la carte sera créée.
+      </div>
+    <% else %>
+      <% if @announcement.image_url %>
+        <div style="margin-bottom: 15px">
+          <%= image_tag @announcement.image_url, size: '750x320' %>
+        </div>
+      <% end %>
+      <% unless @announcement.archived? %>
+        <div>
+          <%= link_to "Modifier",
+                edit_image_admin_announcement_path,
+                class: "btn btn-default btn-sm" %>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+  <div class="form-group">
+    <%= f.label :action %>
+    <%= f.text_field :action, class: "form-control", required: !@announcement.draft?, readonly: @announcement.archived? %>
+  </div>
+  <div class="form-group">
+    <%= f.label :url %>
+    <%= f.url_field :url, class: "form-control", required: !@announcement.draft?, readonly: @announcement.archived? %>
+  </div>
+  <div class="control-group form-group">
+    <label class="control-label">Ouvrir</label>
+    <div class="controls">
+      <label class="radio-inline" style="padding-top: 0; margin-bottom: 5px;">
+        <%= f.radio_button :webview, true, required: !@announcement.draft?, disabled: @announcement.archived? %>
+        dans l'app (ex : webview)
+      </label>
+      <label class="radio-inline" style="padding-top: 0; margin-bottom: 5px;">
+        <%= f.radio_button :webview, false, required: !@announcement.draft?, disabled: @announcement.archived? %>
+        hors de l'app (ex : navigateur)
+      </label>
+    </div>
+  </div>
+
+
+  <%
+    action = @announcement.new_record? ? :create : :update
+    status = @announcement.status.to_sym
+    submit_text =
+      case
+      when [action, status] == [:create, :draft]
+        "Créer un brouillon"
+      when [action, status] == [:update, :draft]
+        "Modifier le brouillon"
+      when action == :update
+        "Modifier la carte"
+      when action == :create
+        "Créer une carte"
+      end
+  %>
+
+  <% unless @announcement.archived? %>
+    <%= f.submit submit_text, class: "btn btn-primary" %>
+  <% end %>
+<% end %>
