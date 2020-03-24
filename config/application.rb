@@ -57,7 +57,7 @@ module EntourageBack
           "API_KEY" => payload[:api_key]
       }
     end
-    config.log_tags = [ lambda {|req| Time.now.to_s(:db) }, :remote_ip ]
+    config.log_tags = [ lambda {|req| Time.now.to_s(:db) }, :uuid, :remote_ip ]
 
     # Our staging env is not a proper distinct Rails env. We hack around this.
     require File.join(Rails.root, 'app/services/environment_helper')
