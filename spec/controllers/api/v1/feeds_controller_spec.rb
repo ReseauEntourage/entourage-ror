@@ -185,7 +185,7 @@ include CommunityHelper
 
         before { get :index, token: user.token, latitude: latitude, longitude: longitude }
 
-        it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([entourage_open.id, entourage_closed_success.id]) }
+        it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([entourage_open.id]) }
       end
 
       context "touch chat message association" do
