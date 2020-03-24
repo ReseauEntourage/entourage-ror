@@ -6,6 +6,7 @@ Raven.configure do |config|
   config.sanitize_fields = Rails.application.config.filter_parameters.map(&:to_s)
   config.processors -= [Raven::Processor::PostData]
   config.tags.merge(community: $server_community.dev_name)
+  config.excluded_exceptions += ['Rack::Timeout::RequestTimeoutException']
 end
 
 
