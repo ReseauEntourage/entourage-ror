@@ -35,7 +35,7 @@ module Api
         end
 
         unless current_user_or_anonymous.anonymous?
-          mixpanel.track("Opened Announcement", { "Announcement" => id })
+          mixpanel.track("Opened Announcement", { "Announcement" => announcement.id })
         end
 
         redirect_to url
