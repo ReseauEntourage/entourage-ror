@@ -142,6 +142,8 @@ module FeedServices
         when 'La Défense'
           feeds = pin(45904, feeds: feeds)
         end
+
+        feeds = pin(47532, feeds: feeds)
       end
 
       feeds = insert_announcements(feeds: feeds) if announcements == :v1
