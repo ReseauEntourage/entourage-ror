@@ -69,6 +69,11 @@ module EntourageBack
         YAML.load(ERB.new(File.read("config/mailchimp.yml")).result)[EnvironmentHelper.env.to_s]
     end
 
+    if defined?(Skylight)
+      # https://www.skylight.io/support/advanced-setup#probes
+      config.skylight.probes += %w(active_model_serializers excon faraday redis)
+    end
+
     #Enabling Profiling on GC
     GC::Profiler.enable
   end
