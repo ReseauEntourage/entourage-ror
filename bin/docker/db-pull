@@ -32,6 +32,14 @@ excluded_tables=(
   login_histories
   user_relationships
   entourage_scores
+  atd_users
+  tours_user
+  coordination
+  suggestion_compute_histories
+  messages
+  active_admin_comments
+  atd_synchronizations
+  questions
 )
 
 $(is_running spring)     && spring_running=true
