@@ -91,7 +91,7 @@ RSpec.describe Entourage, type: :model do
   end
 
   describe "public accessibility" do
-    it { expect(build(:entourage, group_type: :action, entourage_type: :ask_for_help, public: true).tap(&:save).errors.messages).to eq(
+    it { expect(build(:entourage, group_type: :conversation, public: true).tap(&:save).errors.messages).to eq(
       public: ["n'est pas inclus(e) dans la liste"]
     ) }
   end

@@ -129,10 +129,8 @@ class Entourage < ActiveRecord::Base
   end
 
   def public_accessibility_options
-    case
-    when group_type == 'outing'
-      [true, false]
-    when group_type == 'action' && entourage_type == 'contribution'
+    case group_type
+    when 'outing', 'action'
       [true, false]
     else
       [false]
