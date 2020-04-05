@@ -38,7 +38,7 @@ function try_exec {
     --env RAILS_ENV=${RAILS_ENV:-development} \
     $(termoptions) \
     "${options[@]}" \
-    spring /entrypoint "${command[@]}"
+    spring "${command[@]}"
 }
 
 # try to run the command in the container
