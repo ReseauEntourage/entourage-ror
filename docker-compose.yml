@@ -21,10 +21,6 @@ services:
   spring:
     build:
       context: .
-    volumes:
-      - .:/home/docker-user/app:delegated
-      - /home/docker-user/app/.git # protect .git from the container
-      - gems:/home/docker-user/.gem:delegated
     user: docker-user
     depends_on:
       - postgresql

@@ -1,4 +1,11 @@
 #!/bin/bash
 
-# $@ is here so we can pass additional arguments, e.g. bin/d up --build (to rebuild container)
-docker-compose up "$@" --detach spring
+if [[ -z "$BUILD_ENV" ]]; then
+  # we use an override docker-compose.dev file to add the mounting of local volumes
+  # $@ is here so we can pass additional arguments, e.g. bin/d up --build (to rebuild container)
+  docker-compose -f docker-compose.yml -f docker-compose.dev.yml up "$@" --detach spring
+
+else
+  # Build env
+  docker-compose up --detach spring
+fi

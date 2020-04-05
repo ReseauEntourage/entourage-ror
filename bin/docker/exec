@@ -41,7 +41,7 @@ function try_exec {
     spring "${command[@]}"
 }
 
-# if we are in build env, we do not perfrom a retry
+# if we are not in build/CI env, we perform a retry
 if [[ -z "$BUILD_ENV" ]]; then
 
   # try to run the command in the container

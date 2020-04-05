@@ -1,0 +1,10 @@
+# Override file for docker compose for local dev
+
+version: '3.4'
+
+services:
+  spring:
+    volumes:
+      - .:/home/docker-user/app:delegated
+      - /home/docker-user/app/.git # protect .git from the container
+      - gems:/home/docker-user/.gem:delegated
