@@ -4,6 +4,8 @@ version: '3.4'
 
 services:
   spring:
+    build:
+      target: dev # use the dev image
     volumes:
       - .:/home/docker-user/app:delegated
       - /home/docker-user/app/.git # protect .git from the container

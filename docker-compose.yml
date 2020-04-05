@@ -21,6 +21,8 @@ services:
   spring:
     build:
       context: .
+      target: prod
+    image: entourage-ror:latest
     user: docker-user
     depends_on:
       - postgresql

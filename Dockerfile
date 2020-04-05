@@ -54,7 +54,7 @@ RUN su docker-user -c "bundle install"
 USER docker-user
 
 #
-# Stage DEV (default if you do docker built -t .) - we add al the dev dependencies here
+# Stage DEV (default if you do docker built -t .) - we add all the dev dependencies here
 # build command: docker build --target dev -t <image_name> .
 #
 
