@@ -1,51 +1,80 @@
-FROM heroku/heroku:18-build
-ENV HEROKU_STACK heroku-18
+##################################################################################
+# This is a multi stage dockerfile
+# https://docs.docker.com/develop/develop-images/multistage-build/
+#
+# The first main stage is prod. If you want a dev container, it will build prod,
+# and from there add dependecies inside this container.
+##################################################################################
+
+#
+# Stage PROD - minimal env
+# build command: docker build --target prod -t <image_name> .
+#
+
+FROM ruby:2.6.5 as prod
+
+# Define workdir
 
 WORKDIR /home/docker-user/app
+
+# Copy files
+COPY . /home/docker-user/app
+
+# Create base user
 
 RUN useradd docker-user \
  && chown -R docker-user:docker-user /home/docker-user
 
-RUN curl -sL https://deb.nodesource.com/setup_8.x | bash
+# Install debian dependencies
 
 ENV DEBIAN_FRONTEND noninteractive
 
 RUN apt-get update \
  && apt-get -y --no-install-recommends install \
+      locales \
       libsqlite3-dev \
       nodejs \
  && rm -rf /var/lib/apt/lists/*
 
+# Setup locales
+
 RUN localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
 ENV LANG en_US.utf8
 
-RUN npm install -g aglio --unsafe
+# Setup gem config, install bundler, foreman and all Gemfile dependencies
 
-ENV RUBY_VERSION 2.6.5
-
-RUN mkdir -p /opt/rubies/$RUBY_VERSION \
- && curl -s http://s3.amazonaws.com/heroku-buildpack-ruby/$HEROKU_STACK/ruby-$RUBY_VERSION.tgz \
-  | tar xzC /opt/rubies/$RUBY_VERSION
-
-# https://github.com/postmodern/chruby/releases
-ENV CHRUBY_VERSION 0.3.9
-
-RUN mkdir /tmp/chruby \
- && curl -sL https://github.com/postmodern/chruby/archive/v$CHRUBY_VERSION.tar.gz \
-  | tar xzC /tmp/chruby --strip-components=1 \
- && su docker-user -s /bin/bash -c "\
-      source /tmp/chruby/share/chruby/chruby.sh \
-   && chruby $RUBY_VERSION \
-   && export PATH=bin:\$PATH \
-   && env" \
-  | grep -E '^(GEM|RUBY|PATH)' | sort | sed 's|^|export |' > /etc/profile.d/ruby.sh \
- && rm -r /tmp/chruby
-
-RUN su docker-user -s /bin/bash -c "\
-      source /etc/profile.d/ruby.sh \
-   && echo gem: --no-document > ~/.gemrc \
-   && mkdir ~/.gem \
+RUN su docker-user -c "\
+   echo gem: --no-document > ~/.gemrc \
    && gem install 'bundler:~>1' foreman"
+
+RUN su docker-user -c "bundle install"
+
+# Run all future commands with this user
+
+USER docker-user
+
+#
+# Stage DEV (default if you do docker built -t .) - we add al the dev dependencies here
+# build command: docker build --target dev -t <image_name> .
+#
+
+FROM prod as dev
+
+# Become root again so we can install all the dependecies we want
+
+USER root
+
+# Install npm resources
+
+# FIXME: add this back if we use aglio again
+#RUN curl -L https://npmjs.org/install.sh | sh
+
+# Install aglio
+
+# FIXME: do we really need this? all the time? takes 2mins to build out of the 4 mins (lib is out of date)
+# RUN npm install -g aglio --unsafe
+
+# Install ruby spy
 
 RUN \
   repo=https://github.com/rbspy/rbspy; \
@@ -53,11 +82,6 @@ RUN \
   tar=$repo/releases/download/$tag/rbspy-$tag-x86_64-unknown-linux-musl.tar.gz; \
   curl -sL $tar | tar xzC /usr/local/bin
 
-RUN echo '#!/bin/bash -l'      >> /entrypoint \
- && echo 'exec "$@"'           >> /entrypoint \
- && chmod +x                      /entrypoint \
- && chown docker-user:docker-user /entrypoint
+# Run all future commands with this user
 
-ENTRYPOINT ["/entrypoint"]
-
-CMD ["bash"]
+USER docker-user

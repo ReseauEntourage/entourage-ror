@@ -49,12 +49,19 @@ Example :
 ```bash
 bin/d # Shows help
 bin/d up # Setup needed containers
-bin/d rake db:migrate
+bin/d bundle exec rake db:migrate
 bin/d foreman start web
 ```
 
 You can run below commands prepending `bin/d` to them and it will run in the
 container !
+
+# Docker - Tests
+
+```bash
+RAILS_ENV=test bin/d bundle exec rake db:drop db:create db:migrate
+RAILS_ENV=test bin/d bundle exec rspec
+```
 
 # Local install
 
@@ -66,6 +73,7 @@ bundle install
 bundle exec rake db:create
 bundle exec rake db:migrate
 ```
+
 ## Launch application
 
 ```bash

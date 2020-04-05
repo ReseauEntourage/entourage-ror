@@ -1,3 +1,4 @@
 #!/bin/bash
 
-docker-compose up --detach spring
+# $@ is here so we can pass additional arguments, e.g. bin/d up --build (to rebuild container)
+docker-compose up "$@" --detach spring
