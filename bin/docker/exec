@@ -41,15 +41,22 @@ function try_exec {
     spring "${command[@]}"
 }
 
-# try to run the command in the container
-try_exec "$@"
+# if we are in build env, we do not perfrom a retry
+if [[ -z "$BUILD_ENV" ]]; then
 
-# if it fails, try to start the container and retry the command
-if [ $? -eq 1 ]; then
-  $(is_running spring) || spring_not_running=true
+  # try to run the command in the container
+  try_exec "$@"
 
-  if [ $spring_not_running ]; then
-    bin/docker/up
-    try_exec "$@"
+  # if it fails, try to start the container and retry the command
+  if [[ $? -eq 1 ]]; then
+    $(is_running spring) || spring_not_running=true
+
+    if [ $spring_not_running ]; then
+      bin/docker/up
+      try_exec "$@"
+    fi
   fi
+
+else
+  try_exec "$@"
 fi
