@@ -3,6 +3,11 @@ language: generic
 services:
   - docker
 
+env:
+  global:
+    # In order to report exit code
+    - BUILD_ENV=1
+
 before_install:
   - bin/d up
   - docker ps -a
