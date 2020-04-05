@@ -10,6 +10,7 @@ env:
 
 before_install:
   - bin/d up
+  - bin/d ls -la
   - docker ps -a
 
 script:
