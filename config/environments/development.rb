@@ -72,6 +72,21 @@ Rails.application.configure do
     config.active_record.logger.level = Logger::INFO
   end
 
+  # lograge: override default config from application.rb
+  config.lograge.custom_options = lambda do |event|
+    payload = event.payload
+
+    params = payload[:params].reject do |k|
+      ['controller', 'action'].include? k
+    end
+
+    {
+      "params" => params,
+      "API_KEY" => payload[:api_key]
+    }
+  end
+  config.lograge.formatter = Lograge::Formatters::KeyValue.new
+
   #Bullet gem config
   config.after_initialize do
     Bullet.enable = ENV['DISABLE_BULLET'] != 'true'

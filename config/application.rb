@@ -28,7 +28,8 @@ module EntourageBack
     Rails.application.routes.default_url_options[:host] = ENV["HOST"]
     config.action_mailer.default_url_options = { :host => ENV["HOST"] }
 
-    #lograge
+    # lograge
+    # note: development.rb overrides this config
     config.lograge.enabled = true
     config.lograge.custom_options = lambda do |event|
       payload = event.payload
@@ -53,11 +54,16 @@ module EntourageBack
       end
 
       {
-          "params" => params,
-          "API_KEY" => payload[:api_key]
+        params: params,
+        platform: payload[:platform],
+        version: payload[:version],
+        user: payload[:user],
+        ip: payload[:ip],
+        API_KEY: payload[:api_key],
+        request_id: payload[:request_id],
       }
     end
-    config.log_tags = [ lambda {|req| Time.now.to_s(:db) }, :uuid, :remote_ip ]
+    config.lograge.formatter = Lograge::Formatters::Logstash.new
 
     # Our staging env is not a proper distinct Rails env. We hack around this.
     require File.join(Rails.root, 'app/services/environment_helper')

@@ -148,6 +148,11 @@ module Api
       # For logging API_KEY with lograge
       def append_info_to_payload(payload)
         super
+        payload[:ip] = request.remote_ip
+        payload[:request_id] = request.uuid
+        payload[:platform] = api_request.key_infos.try(:[], :device)
+        payload[:version] = api_request.key_infos.try(:[], :version)
+        payload[:user] = current_user_or_anonymous&.uuid
         payload[:api_key] = api_request.api_key
       end
 

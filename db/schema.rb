@@ -16,8 +16,8 @@ ActiveRecord::Schema.define(version: 20200317143927) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "pg_stat_statements"
-  enable_extension "pgcrypto"
   enable_extension "postgis"
+  enable_extension "pgcrypto"
 
   create_table "active_admin_comments", id: false, force: :cascade do |t|
     t.integer  "id",                        default: "nextval('active_admin_comments_id_seq'::regclass)", null: false
