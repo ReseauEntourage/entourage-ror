@@ -3,10 +3,11 @@ module FeedServices
 
     DEFAULT_PER=25
 
-    def initialize(user:, page:, per:)
+    def initialize(user:, page:, per:, unread_only: false)
       @user = user
       @page = page.presence&.to_i || 1
       @per = per.presence&.to_i || DEFAULT_PER
+      @unread_only = unread_only
     end
 
     def feeds
@@ -20,12 +21,34 @@ module FeedServices
       feeds = feeds.where("feeds.status != 'suspended' OR feeds.user_id = ?", user.id)
 
       feeds = feeds.joins(:join_requests)
+      join_status =
+        if @unread_only
+          [:accepted]
+        else
+          [:accepted, :pending, :rejected]
+        end
       feeds = feeds.where(
         join_requests: {
           user_id: user.id,
-          status: [:accepted, :pending, :rejected]
+          status: join_status
         }
       )
+
+      if @unread_only
+        clauses = ["(last_message_read < feed_updated_at or last_message_read is null)"]
+
+        entourage_ids_for_pending_join_requests =
+          JoinRequest
+          .where(status: :pending)
+          .joins(:entourage).merge(user.entourages.findable)
+          .pluck("distinct joinable_id")
+
+        if entourage_ids_for_pending_join_requests.any?
+          clauses << "feedable_id in (%s)" % entourage_ids_for_pending_join_requests.join(',')
+        end
+
+        feeds = feeds.where(clauses.join(" or "))
+      end
 
       feeds = feeds.order(updated_at: :desc) # TODO: account for feed_updated_at?
       feeds = feeds.page(page).per(per) # TODO: cursor would be better

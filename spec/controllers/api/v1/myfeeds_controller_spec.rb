@@ -132,5 +132,51 @@ describe Api::V1::MyfeedsController do
         it { expect(result["feeds"].map {|feed| feed["data"]["uuid"]}.sort).to eq([circle.uuid, neighborhood.uuid, conversation.uuid_v2].sort) }
       end
     end
+
+    context "unread tab" do
+      let(:user) { create :public_user }
+      let(:action_creator) { create :public_user }
+      let(:entourage) { create :entourage, user: action_creator, feed_updated_at: feed_updated_at }
+      let(:join_status) { :accepted }
+      let!(:join_request) { create :join_request, user: user, joinable: entourage, status: join_status, last_message_read: last_message_read }
+
+      let(:feed_objects) do
+        get :index, token: user.token, unread_only: true
+        result["feeds"].map { |f| [f["type"], f["data"]["id"]]}
+      end
+
+      context "member of the group" do
+        context "read" do
+          let(:feed_updated_at) { 1.hour.ago }
+          let(:last_message_read) { 1.minute.ago }
+
+          it { expect(feed_objects).to eq [] }
+        end
+
+        context "unread" do
+          let(:feed_updated_at) { 1.minute.ago }
+          let(:last_message_read) { 1.hour.ago }
+
+          it { expect(feed_objects).to eq [["Entourage", entourage.id]] }
+        end
+      end
+
+      context "unread but pending" do
+        let(:join_status) { :pending }
+        let(:feed_updated_at) { 1.minute.ago }
+        let(:last_message_read) { 1.hour.ago }
+
+        it { expect(feed_objects).to eq [] }
+      end
+
+      context "read but user is creator and join request pending" do
+        let(:action_creator) { user }
+        let(:feed_updated_at) { 1.hour.ago }
+        let(:last_message_read) { 1.minute.ago }
+        let!(:pending_join_request) { create :join_request, joinable: entourage, status: :pending }
+
+        it { expect(feed_objects).to eq [["Entourage", entourage.id]] }
+      end
+    end
   end
 end

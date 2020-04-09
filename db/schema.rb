@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20200317143927) do
+ActiveRecord::Schema.define(version: 20200408084504) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -665,37 +665,38 @@ ActiveRecord::Schema.define(version: 20200317143927) do
     t.string   "email",                        limit: 255
     t.string   "first_name",                   limit: 255
     t.string   "last_name",                    limit: 255
-    t.string   "phone",                                                          null: false
+    t.string   "phone",                                                                  null: false
     t.string   "token",                        limit: 255
     t.string   "device_id"
     t.integer  "device_type"
     t.string   "sms_code"
     t.integer  "organization_id"
-    t.boolean  "manager",                                  default: false,       null: false
+    t.boolean  "manager",                                  default: false,               null: false
     t.float    "default_latitude"
     t.float    "default_longitude"
-    t.boolean  "admin",                                    default: false,       null: false
-    t.string   "user_type",                                default: "pro",       null: false
+    t.boolean  "admin",                                    default: false,               null: false
+    t.string   "user_type",                                default: "pro",               null: false
     t.string   "avatar_key"
-    t.string   "validation_status",                        default: "validated", null: false
-    t.boolean  "deleted",                                  default: false,       null: false
-    t.integer  "marketing_referer_id",                     default: 1,           null: false
+    t.string   "validation_status",                        default: "validated",         null: false
+    t.boolean  "deleted",                                  default: false,               null: false
+    t.integer  "marketing_referer_id",                     default: 1,                   null: false
     t.datetime "last_sign_in_at"
-    t.boolean  "atd_friend",                               default: false,       null: false
-    t.boolean  "use_suggestions",                          default: false,       null: false
+    t.boolean  "atd_friend",                               default: false,               null: false
+    t.boolean  "use_suggestions",                          default: false,               null: false
     t.string   "about",                        limit: 200
-    t.string   "community",                    limit: 9,                         null: false
+    t.string   "community",                    limit: 9,                                 null: false
     t.string   "encrypted_password"
-    t.jsonb    "roles",                                    default: [],          null: false
+    t.jsonb    "roles",                                    default: [],                  null: false
     t.datetime "first_sign_in_at"
     t.datetime "onboarding_sequence_start_at"
     t.integer  "address_id"
-    t.boolean  "accepts_emails_deprecated",                default: true,        null: false
+    t.boolean  "accepts_emails_deprecated",                default: true,                null: false
     t.datetime "last_email_sent_at"
     t.string   "targeting_profile"
     t.integer  "partner_id"
-    t.boolean  "partner_admin",                            default: false,       null: false
+    t.boolean  "partner_admin",                            default: false,               null: false
     t.string   "partner_role_title"
+    t.uuid     "uuid",                                     default: "gen_random_uuid()"
   end
 
   add_index "users", ["address_id"], name: "index_users_on_address_id", using: :btree
@@ -705,6 +706,7 @@ ActiveRecord::Schema.define(version: 20200317143927) do
   add_index "users", ["phone", "community"], name: "index_users_on_phone_and_community", unique: true, using: :btree
   add_index "users", ["roles"], name: "index_users_on_roles", using: :gin
   add_index "users", ["token"], name: "index_users_on_token", unique: true, using: :btree
+  add_index "users", ["uuid"], name: "index_users_on_uuid", unique: true, using: :btree
 
   create_table "users_appetences", force: :cascade do |t|
     t.integer  "user_id",                                null: false
