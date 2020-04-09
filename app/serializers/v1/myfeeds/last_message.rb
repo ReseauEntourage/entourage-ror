@@ -6,6 +6,17 @@ module V1
       end
 
       def last_message
+        if object.user_id == current_join_request.user_id && object.status == 'open'
+          pending_requests = object.join_requests.where(status: :pending).count
+          if pending_requests > 0
+            requests_text = pending_requests == 1 ? "1 personne demande" : "#{pending_requests} personnes demandent"
+            return {
+              text: "#{requests_text} à rejoindre votre #{GroupService.name(object)}.",
+              author: nil
+            }
+          end
+        end
+
         if last_element.is_a?(ChatMessage)
           {
               text: last_element.content,
