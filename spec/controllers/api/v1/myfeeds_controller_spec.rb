@@ -32,9 +32,29 @@ describe Api::V1::MyfeedsController do
         it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([entourage_i_created.id, entourage_i_joined.id]) }
       end
 
+      context "last_message i'm creator" do
+        let!(:entourage) { create :entourage, :joined, user: user }
+        context "has pending join_request and messages" do
+          context "messages more recent that join requests" do
+            let!(:join_request) { create :join_request, joinable: entourage }
+            let!(:chat_message) { create :chat_message, messageable: entourage }
+            before { get :index, token: user.token }
+            it { expect(result["feeds"].map {|feed| feed["data"]["last_message"]} ).to eq([{"text"=>"1 personne demande à rejoindre votre action.", "author"=>nil}]) }
+          end
+
+          context "join requests more recent that messages" do
+            let!(:chat_message) { create :chat_message, messageable: entourage }
+            let!(:join_request) { create :join_request, joinable: entourage }
+            before { get :index, token: user.token }
+            it { expect(result["feeds"].map {|feed| feed["data"]["last_message"]} ).to eq([{"text"=>"1 personne demande à rejoindre votre action.", "author"=>nil}]) }
+          end
+        end
+      end
+
       context "last_message i'm accepted in" do
-        let!(:entourage) { FactoryGirl.create(:entourage, :joined, join_request_user: user, user: user, created_at: 1.hour.ago) }
-        let!(:tour) { FactoryGirl.create(:tour, :joined, join_request_user: user, user: user, created_at: 1.hour.ago) }
+        let(:other_user) { create :public_user }
+        let!(:entourage) { FactoryGirl.create(:entourage, :joined, join_request_user: user, user: other_user, created_at: 1.hour.ago) }
+        let!(:tour) { FactoryGirl.create(:tour, :joined, join_request_user: user, user: other_user, created_at: 1.hour.ago) }
 
         context "has messages" do
           let!(:chat_message1) { FactoryGirl.create(:chat_message, messageable: entourage, created_at: DateTime.parse("25/01/2000"), updated_at: DateTime.parse("25/01/2000"), content: "foo") }
