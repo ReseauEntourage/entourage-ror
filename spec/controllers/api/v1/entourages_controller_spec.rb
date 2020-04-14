@@ -45,7 +45,7 @@ describe Api::V1::EntouragesController do
                                        "created_at"=> entourage.created_at.iso8601(3),
                                        "updated_at"=> entourage.updated_at.iso8601(3),
                                        "description" => nil,
-                                       "share_url" => "http://entourage.social/entourages/#{entourage.uuid_v2}"
+                                       "share_url" => "https://www.entourage.social/entourages/#{entourage.uuid_v2}"
                                     }]
                               })
       end
@@ -153,7 +153,7 @@ describe Api::V1::EntouragesController do
                                                            "created_at"=> Entourage.last.created_at.iso8601(3),
                                                            "updated_at"=> Entourage.last.updated_at.iso8601(3),
                                                            "description"=> "foo bar",
-                                                           "share_url" => "http://entourage.social/entourages/#{Entourage.last.uuid_v2}"
+                                                           "share_url" => "https://www.entourage.social/entourages/#{Entourage.last.uuid_v2}"
                                                           }
                                                      }) }
         it { expect(response.status).to eq(201) }
@@ -224,7 +224,7 @@ describe Api::V1::EntouragesController do
               "created_at"=>outing.created_at.iso8601(3),
               "updated_at"=>outing.updated_at.iso8601(3),
               "description"=>nil,
-              "share_url"=>"http://entourage.social/entourages/#{outing.uuid_v2}",
+              "share_url"=>"https://www.entourage.social/entourages/#{outing.uuid_v2}",
               "author"=>{
                 "id"=>user.id,
                 "display_name"=>"John D.",
@@ -337,7 +337,7 @@ describe Api::V1::EntouragesController do
                                                              "created_at"=> entourage.created_at.iso8601(3),
                                                              "updated_at"=> entourage.updated_at.iso8601(3),
                                                              "description" => nil,
-                                                             "share_url" => "http://entourage.social/entourages/#{entourage.uuid_v2}"
+                                                             "share_url" => "https://www.entourage.social/entourages/#{entourage.uuid_v2}"
                                                             }
                                                        }) }
         end
@@ -490,7 +490,7 @@ describe Api::V1::EntouragesController do
                                                            "created_at"=> user_entourage.created_at.iso8601(3),
                                                            "updated_at"=> user_entourage.reload.updated_at.iso8601(3),
                                                            "description" => nil,
-                                                           "share_url" => "http://entourage.social/entourages/#{user_entourage.uuid_v2}"
+                                                           "share_url" => "https://www.entourage.social/entourages/#{user_entourage.uuid_v2}"
                                                           }
                                                      }) }
       end

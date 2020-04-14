@@ -55,7 +55,7 @@ include CommunityHelper
                                                      "created_at"=> entourage.created_at.iso8601(3),
                                                      "updated_at"=> entourage.updated_at.iso8601(3),
                                                      "description" => nil,
-                                                     "share_url" => "http://entourage.social/entourages/#{entourage.uuid_v2}"
+                                                     "share_url" => "https://www.entourage.social/entourages/#{entourage.uuid_v2}"
 
                                                  },
                                                  "heatmap_size" => 20
@@ -411,7 +411,7 @@ include CommunityHelper
            "created_at"=>entourage.created_at.iso8601(3),
            "updated_at"=>entourage.updated_at.iso8601(3),
            "description"=>nil,
-           "share_url"=>"http://entourage.social/entourages/#{entourage.uuid_v2}",
+           "share_url"=>"https://www.entourage.social/entourages/#{entourage.uuid_v2}",
            "author"=>{
              "id"=>entourage.user_id,
              "display_name"=>"John D.",
