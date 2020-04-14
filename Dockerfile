@@ -41,17 +41,16 @@ RUN apt-get update \
 RUN localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
 ENV LANG en_US.utf8
 
-# Setup gem config, install bundler, foreman and all Gemfile dependencies
-
-RUN su docker-user -c "\
-   echo gem: --no-document > ~/.gemrc \
-   && gem install 'bundler:~>1' foreman"
-
-RUN su docker-user -c "bundle install"
-
 # Run all future commands with this user
 
 USER docker-user
+
+# Setup gem config, install bundler, foreman and all Gemfile dependencies
+
+RUN echo gem: --no-document > ~/.gemrc \
+ && gem install 'bundler:~>1' foreman
+
+RUN bundle install
 
 #
 # Stage DEV (default if you do docker built -t .) - we add all the dev dependencies here
