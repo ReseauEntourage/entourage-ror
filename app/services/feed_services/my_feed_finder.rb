@@ -35,7 +35,7 @@ module FeedServices
       )
 
       if @unread_only
-        clauses = ["(last_message_read < feed_updated_at or last_message_read is null)"]
+        clauses = ["(feed_updated_at is not null and (last_message_read < feed_updated_at or last_message_read is null))"]
 
         entourage_ids_for_pending_join_requests =
           JoinRequest
