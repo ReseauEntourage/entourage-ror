@@ -66,8 +66,11 @@
         "Lille" => {
           country_eq: 'FR', postal_code_start: '59'
         },
+        "Hors zone" => {
+          postal_code_not_start_all: ['75', '92', '69', '35', '59']
+        }
       }
-      location_keys = [:country_eq, :postal_code_start_any, :postal_code_start]
+      location_keys = [:country_eq, :postal_code_start_any, :postal_code_start, :postal_code_not_start_all]
 
       active = presets.key q.slice(*location_keys).compact.symbolize_keys
     %>
