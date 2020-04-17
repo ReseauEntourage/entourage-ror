@@ -8,21 +8,29 @@ module FeedServices
       @page = page.presence&.to_i || 1
       @per = per.presence&.to_i || DEFAULT_PER
       @unread_only = unread_only
+      @metadata = {}
     end
 
-    def feeds
-      feeds = user.community.feeds
+    def self.user_feeds user:, unread_only:, entourages_only:
+      return Feed.none if user.anonymous?
 
-      if user.anonymous?
-        return FeedWithCursor.new(feeds.none, cursor: nil, next_page_token: nil)
+      if entourages_only
+        feeds = user.community.entourages
+      else
+        feeds = user.community.feeds
       end
 
+      if entourages_only
+        k = "entourages"
+      else
+        k = "feeds"
+      end
       feeds = feeds.where.not(status: :blacklisted)
-      feeds = feeds.where("feeds.status != 'suspended' OR feeds.user_id = ?", user.id)
+      feeds = feeds.where("#{k}.status != 'suspended' OR #{k}.user_id = ?", user.id)
 
       feeds = feeds.joins(:join_requests)
       join_status =
-        if @unread_only
+        if unread_only
           [:accepted]
         else
           [:accepted, :pending, :rejected]
@@ -34,7 +42,7 @@ module FeedServices
         }
       )
 
-      if @unread_only
+      if unread_only
         clauses = ["(feed_updated_at is not null and (last_message_read < feed_updated_at or last_message_read is null))"]
 
         entourage_ids_for_pending_join_requests =
@@ -44,21 +52,59 @@ module FeedServices
           .pluck("distinct joinable_id")
 
         if entourage_ids_for_pending_join_requests.any?
-          clauses << "feedable_id in (%s)" % entourage_ids_for_pending_join_requests.join(',')
+          if entourages_only
+            l = "entourages.id"
+          else
+            l = "feedable_id"
+          end
+          clauses << "#{l} in (%s)" % entourage_ids_for_pending_join_requests.join(',')
         end
 
         feeds = feeds.where(clauses.join(" or "))
       end
 
+      feeds
+    end
+
+    def self.unread_count user:
+      entourages_only = true
+      user_feeds(user: user, unread_only: true, entourages_only: entourages_only)
+        .limit(99) # for performance in extreme cases
+        .count("distinct entourages.id")
+    end
+
+    def feeds
+      entourages_only = @unread_only
+
+      feeds = self.class.user_feeds user: user, unread_only: @unread_only, entourages_only: entourages_only
+
+      if @page == 1
+        @metadata[:unread_count] = UserServices::UnreadMessages.new(user: user).number_of_unread_messages
+      end
+
+      if feeds.none?
+        return FeedWithCursor.new(feeds, cursor: nil, next_page_token: nil, metadata: @metadata)
+      end
+
       feeds = feeds.order(updated_at: :desc) # TODO: account for feed_updated_at?
       feeds = feeds.page(page).per(per) # TODO: cursor would be better
 
-      feeds = feeds.preload(feedable: {user: :partner})
+      if entourages_only
+        feeds = feeds.preload(user: :partner)
+      else
+        feeds = feeds.preload(feedable: {user: :partner})
+      end
+
+      if entourages_only
+        feeds = feeds.map { |entourage| Announcement::Feed.new(entourage) }
+      end
 
       feeds = feeds.to_a # feeds is now an Array.
       preload_user_join_requests(feeds)
       preload_entourage_moderations(feeds)
-      preload_tour_user_organizations(feeds)
+      unless entourages_only
+        preload_tour_user_organizations(feeds)
+      end
       preload_chat_messages_counts(feeds)
       preload_last_chat_messages(feeds)
       preload_last_join_requests(feeds)

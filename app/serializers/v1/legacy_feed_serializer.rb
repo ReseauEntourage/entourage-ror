@@ -4,6 +4,7 @@ module V1
       @feeds = feeds.entries
       @cursor = feeds.cursor
       @next_page_token = feeds.next_page_token
+      @metadata = feeds.metadata
 
       @user = user
       @include_last_message = include_last_message
@@ -49,6 +50,10 @@ module V1
 
       if @next_page_token != nil
         payload[:next_page_token] = @next_page_token
+      end
+
+      if @metadata[:unread_count] != nil
+        payload[:unread_count] = @metadata[:unread_count]
       end
 
       return payload

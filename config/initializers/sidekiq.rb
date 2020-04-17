@@ -26,6 +26,25 @@ module Rpush
   end
 end
 
+# TODO: this is a hack to quickfix my dev env
+#       we must figure out the right way to fix the issue
+module Rpush
+  module Daemon
+    class TcpConnection
+      protected
+
+      alias_method :_setup_ssl_context, :setup_ssl_context
+
+      def setup_ssl_context
+        _setup_ssl_context.tap do |context|
+          # https://www.openssl.org/docs/man1.1.0/man3/SSL_CTX_get_security_level.html
+          context.security_level = 1 # was 2
+        end
+      end
+    end
+  end
+end if Rails.env.development?
+
 Sidekiq.configure_server do |config|
   ActiveSupport.on_load(:after_initialize) do
     Rpush.embed unless Rails.env.test? || ENV['DISABLE_RPUSH'] == 'true'

@@ -10,7 +10,7 @@ class IosNotificationJob < ActiveJob::Base
       apps.each do |app|
         begin
           notification = Rpush::Apns::Notification.new
-          #notification.badge = badge if badge
+          notification.badge = badge if badge
           notification.app = app
           notification.device_token = device_token.to_s
           notification.alert =

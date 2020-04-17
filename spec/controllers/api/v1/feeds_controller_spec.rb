@@ -27,81 +27,85 @@ include CommunityHelper
       context "get all" do
         before { get :index, token: user.token, announcements: "v1", latitude: latitude, longitude: longitude }
         it { expect(response.status).to eq(200) }
-        it { expect(result).to eq({"feeds"=>[{
-                                                 "type"=>"Entourage",
-                                                 "data"=>{
-                                                     "id"=>entourage.id,
-                                                     "uuid"=>entourage.uuid_v2,
-                                                     "status"=>"open",
-                                                     "title"=>"foobar",
-                                                     "group_type"=>"action",
-                                                     "public"=>false,
-                                                     "metadata"=>{"city"=>"", "display_address"=>""},
-                                                     "entourage_type"=>"ask_for_help",
-                                                     "display_category"=>"social",
-                                                     "join_status"=>"not_requested",
-                                                     "number_of_unread_messages"=>nil,
-                                                     "number_of_people"=>1,
-                                                     "author"=>{
-                                                         "id"=>entourage.user.id,
-                                                         "display_name"=>"John D.",
-                                                         "avatar_url"=>nil,
-                                                         "partner"=>nil
-                                                     },
-                                                     "location"=>{
-                                                         "latitude"=>1.122,
-                                                         "longitude"=>2.345
-                                                     },
-                                                     "created_at"=> entourage.created_at.iso8601(3),
-                                                     "updated_at"=> entourage.updated_at.iso8601(3),
-                                                     "description" => nil,
-                                                     "share_url" => "https://www.entourage.social/entourages/#{entourage.uuid_v2}"
+        it { expect(result).to eq({
+          "feeds"=>[
+            {
+              "type"=>"Entourage",
+              "data"=>{
+                "id"=>entourage.id,
+                "uuid"=>entourage.uuid_v2,
+                "status"=>"open",
+                "title"=>"foobar",
+                "group_type"=>"action",
+                "public"=>false,
+                "metadata"=>{"city"=>"", "display_address"=>""},
+                "entourage_type"=>"ask_for_help",
+                "display_category"=>"social",
+                "join_status"=>"not_requested",
+                "number_of_unread_messages"=>nil,
+                "number_of_people"=>1,
+                "author"=>{
+                  "id"=>entourage.user.id,
+                  "display_name"=>"John D.",
+                  "avatar_url"=>nil,
+                  "partner"=>nil
+                },
+                "location"=>{
+                  "latitude"=>1.122,
+                  "longitude"=>2.345
+                },
+                "created_at"=> entourage.created_at.iso8601(3),
+                "updated_at"=> entourage.updated_at.iso8601(3),
+                "description" => nil,
+                "share_url" => "https://www.entourage.social/entourages/#{entourage.uuid_v2}"
 
-                                                 },
-                                                 "heatmap_size" => 20
-                                             },
-                                             {
-                                                 "type"=>"Announcement",
-                                                 "data"=>{
-                                                     "id"=>1,
-                                                     "uuid"=>"1",
-                                                     "title"=>"Une autre façon de contribuer.",
-                                                     "body"=>"Entourage a besoin de vous pour continuer à accompagner les sans-abri.",
-                                                     "image_url"=>nil,
-                                                     "action"=>"Aider",
-                                                     "url"=>"http://test.host/api/v1/announcements/1/redirect/#{user.token}",
-                                                     "icon_url"=>"http://test.host/api/v1/announcements/1/icon",
-                                                     "author"=>nil
-                                                 }
-                                             },
-                                             {
-                                                 "type"=>"Tour",
-                                                 "data"=>
-                                                     {
-                                                         "id"=>tour.id,
-                                                         "uuid"=>tour.id.to_s,
-                                                         "tour_type"=>"medical",
-                                                         "status"=>"ongoing",
-                                                         "vehicle_type"=>"feet",
-                                                         "distance"=>0,
-                                                         "organization_name"=>tour.organization_name,
-                                                         "organization_description"=>"Association description",
-                                                         "start_time"=>tour.created_at.iso8601(3),
-                                                         "end_time"=>nil,
-                                                         "number_of_people"=>1,
-                                                         "join_status"=>"not_requested",
-                                                         "number_of_unread_messages"=>nil,
-                                                         "tour_points"=>[],
-                                                         "author"=>{"id"=>tour.user.id,
-                                                                    "display_name"=>"John D.",
-                                                                    "avatar_url"=>nil,
-                                                                    "partner"=>nil
-                                                         },
-                                                         "updated_at"=>tour.updated_at.iso8601(3)
-                                                     },
-                                                    "heatmap_size" => 20
-                                             }
-        ]}) }
+              },
+              "heatmap_size" => 20
+            },
+            {
+              "type"=>"Announcement",
+              "data"=>{
+                "id"=>1,
+                "uuid"=>"1",
+                "title"=>"Une autre façon de contribuer.",
+                "body"=>"Entourage a besoin de vous pour continuer à accompagner les sans-abri.",
+                "image_url"=>nil,
+                "action"=>"Aider",
+                "url"=>"http://test.host/api/v1/announcements/1/redirect/#{user.token}",
+                "icon_url"=>"http://test.host/api/v1/announcements/1/icon",
+                "author"=>nil
+              }
+            },
+            {
+              "type"=>"Tour",
+              "data"=>
+              {
+                "id"=>tour.id,
+                "uuid"=>tour.id.to_s,
+                "tour_type"=>"medical",
+                "status"=>"ongoing",
+                "vehicle_type"=>"feet",
+                "distance"=>0,
+                "organization_name"=>tour.organization_name,
+                "organization_description"=>"Association description",
+                "start_time"=>tour.created_at.iso8601(3),
+                "end_time"=>nil,
+                "number_of_people"=>1,
+                "join_status"=>"not_requested",
+                "number_of_unread_messages"=>nil,
+                "tour_points"=>[],
+                "author"=>{"id"=>tour.user.id,
+                  "display_name"=>"John D.",
+                  "avatar_url"=>nil,
+                  "partner"=>nil
+                },
+                "updated_at"=>tour.updated_at.iso8601(3)
+              },
+              "heatmap_size" => 20
+            }
+          ],
+          "unread_count" => 0
+        }) }
       end
 
       context "get entourages around location" do
@@ -393,46 +397,48 @@ include CommunityHelper
 
       before { get :index, token: user.token, latitude: latitude, longitude: longitude, announcements: :v1 }
       it { expect(response.status).to eq(200) }
-      it { expect(result).to eq({"feeds"=>[
-        {"type"=>"Entourage",
-         "data"=>{
-           "id"=>entourage.id,
-           "uuid"=>entourage.uuid_v2,
-           "status"=>"open",
-           "title"=>"foobar",
-           "group_type"=>"action",
-           "public"=>false,
-           "metadata"=>{"city"=>"", "display_address"=>""},
-           "entourage_type"=>"ask_for_help",
-           "display_category"=>"social",
-           "join_status"=>"not_requested",
-           "number_of_unread_messages"=>nil,
-           "number_of_people"=>1,
-           "created_at"=>entourage.created_at.iso8601(3),
-           "updated_at"=>entourage.updated_at.iso8601(3),
-           "description"=>nil,
-           "share_url"=>"https://www.entourage.social/entourages/#{entourage.uuid_v2}",
-           "author"=>{
-             "id"=>entourage.user_id,
-             "display_name"=>"John D.",
-             "avatar_url"=>nil,
-             "partner"=>nil},
-           "location"=>{
-             "latitude"=>1.122,
-             "longitude"=>2.345}},
-         "heatmap_size"=>20},
-        {"type"=>"Announcement",
-         "data"=>{
-           "id"=>1,
-           "uuid"=>"1",
-           "title"=>"Une autre façon de contribuer.",
-           "body"=>"Entourage a besoin de vous pour continuer à accompagner les sans-abri.",
-           "image_url"=>nil,
-           "action"=>"Aider",
-           "url"=>"http://test.host/api/v1/announcements/1/redirect/#{user.token}",
-           "icon_url"=>"http://test.host/api/v1/announcements/1/icon",
-           "author"=>nil}}
-      ]})}
+      it { expect(result).to eq({
+        "feeds"=>[
+          {"type"=>"Entourage",
+           "data"=>{
+             "id"=>entourage.id,
+             "uuid"=>entourage.uuid_v2,
+             "status"=>"open",
+             "title"=>"foobar",
+             "group_type"=>"action",
+             "public"=>false,
+             "metadata"=>{"city"=>"", "display_address"=>""},
+             "entourage_type"=>"ask_for_help",
+             "display_category"=>"social",
+             "join_status"=>"not_requested",
+             "number_of_unread_messages"=>nil,
+             "number_of_people"=>1,
+             "created_at"=>entourage.created_at.iso8601(3),
+             "updated_at"=>entourage.updated_at.iso8601(3),
+             "description"=>nil,
+             "share_url"=>"https://www.entourage.social/entourages/#{entourage.uuid_v2}",
+             "author"=>{
+               "id"=>entourage.user_id,
+               "display_name"=>"John D.",
+               "avatar_url"=>nil,
+               "partner"=>nil},
+             "location"=>{
+               "latitude"=>1.122,
+               "longitude"=>2.345}},
+           "heatmap_size"=>20},
+          {"type"=>"Announcement",
+           "data"=>{
+             "id"=>1,
+             "uuid"=>"1",
+             "title"=>"Une autre façon de contribuer.",
+             "body"=>"Entourage a besoin de vous pour continuer à accompagner les sans-abri.",
+             "image_url"=>nil,
+             "action"=>"Aider",
+             "url"=>"http://test.host/api/v1/announcements/1/redirect/#{user.token}",
+             "icon_url"=>"http://test.host/api/v1/announcements/1/icon",
+             "author"=>nil}}],
+        "unread_count" => 0
+    })}
     end
   end
 

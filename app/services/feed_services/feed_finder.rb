@@ -170,6 +170,10 @@ module FeedServices
           self.class.generate_page_token(params_sig: params_sig, cursor: page + 1)
         end
 
+      if page == 1
+        @metadata[:unread_count] = UserServices::UnreadMessages.new(user: user).number_of_unread_messages
+      end
+
       FeedWithCursor.new(
         feeds,
         cursor: next_cursor,
@@ -297,7 +301,7 @@ module FeedServices
         last_page: @last_page,
       ).feeds
 
-      @metadata.merge!(announcements_metadata)
+      # @metadata.merge!(announcements_metadata)
 
       feeds
     end
