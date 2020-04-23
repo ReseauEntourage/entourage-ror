@@ -19,7 +19,7 @@ describe Api::V1::MyfeedsController do
       context "get entourages i'm not part of" do
         before { get :index, token: user.token }
         it { expect(response.status).to eq(200) }
-        it { expect(result).to eq({"feeds"=>[]}) }
+        it { expect(result).to eq({"feeds"=>[], "unread_count" => 0}) }
       end
 
       context "get my entourages" do

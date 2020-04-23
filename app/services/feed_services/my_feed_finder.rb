@@ -74,7 +74,7 @@ module FeedServices
     end
 
     def feeds
-      entourages_only = @unread_only
+      entourages_only = !user.pro? || @unread_only
 
       feeds = self.class.user_feeds user: user, unread_only: @unread_only, entourages_only: entourages_only
 
@@ -112,7 +112,8 @@ module FeedServices
       FeedWithCursor.new(
         feeds,
         cursor: nil,
-        next_page_token: nil
+        next_page_token: nil,
+        metadata: @metadata
       )
     end
 
