@@ -50,7 +50,7 @@ module Api
       def update
         return render json: {message: 'unauthorized'}, status: :unauthorized if @entourage.user != current_user
 
-        unless ['action', 'outing'].include?(@entourage.group_type)
+        unless ['action', 'outing', 'group'].include?(@entourage.group_type)
           return render json: {message: "This operation is not available for groups of type '#{@entourage.group_type}'"}, status: :bad_request
         end
 

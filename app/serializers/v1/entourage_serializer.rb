@@ -52,10 +52,19 @@ module V1
 
     def uuid
       case object.group_type
-      when 'action', 'conversation', 'outing'
+      when 'action', 'conversation', 'outing', 'group'
         object.uuid_v2
       else
         object.uuid
+      end
+    end
+
+    def group_type
+      # good_waves cheat
+      if object.group_type == 'group'
+        'action'
+      else
+        object.group_type
       end
     end
 

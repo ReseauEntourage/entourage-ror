@@ -5,6 +5,10 @@ class PushNotificationService
   end
 
   def send_notification(sender, object, content, users, extra={})
+    # good_waves hack
+    if extra[:group_type] == 'group'
+      extra[:group_type] = 'action'
+    end
     Rails.logger.info("Sending push notif to users : #{users.map(&:email)}, content: #{content}, sender: #{sender}, object: #{object}")
     users.each do |user|
       android_tokens = UserServices::UserApplications.new(user: user).android_app_tokens

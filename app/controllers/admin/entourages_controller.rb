@@ -16,7 +16,7 @@ module Admin
       end
 
       community = params[:community] || :entourage
-      group_types = (params[:group_type] || 'action,outing').split(',')
+      group_types = (params[:group_type] || 'action,outing,group').split(',')
 
       @q = Entourage
         .where(group_type: group_types, community: community)
@@ -236,7 +236,8 @@ module Admin
       if group_type_change
         authorized_group_changes = [
           [:outing, :action],
-          [:action, :outing]
+          [:action, :outing],
+          [:action, :group]
         ]
         raise unless group_type_change.in?(authorized_group_changes)
 
@@ -248,7 +249,8 @@ module Admin
         Entourage.transaction do
           group_roles = {
             action: [:creator,   :member],
-            outing: [:organizer, :participant]
+            outing: [:organizer, :participant],
+            group:  [:admin,     :member]
           }
           role_changes = group_type_change.map { |type| group_roles[type] }.reduce(&:zip)
           role_changes.each do |old_role, new_role|
@@ -278,6 +280,12 @@ module Admin
         @entourage.display_category = nil
         @entourage.public = nil
         @entourage.metadata = {}
+      when [:action, :group]
+        @entourage.group_type = :group
+        @entourage.entourage_type = :contribution
+        @entourage.display_category = :social
+        @entourage.public = false
+        # @entourage.metadata = {} # keep it!
       else
         raise "Changing #{current_type} to #{new_type} is not allowed"
       end

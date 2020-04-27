@@ -8,6 +8,9 @@
         <%= link_to "Changer en évènement",
                     edit_type_admin_entourage_path(@entourage, to: :outing),
                     class: "btn btn-primary" %>
+        <%= link_to "Changer en groupe",
+                    edit_type_admin_entourage_path(@entourage, to: :group),
+                    class: "btn btn-primary" %>
       <% when 'outing' %>
         <%= link_to "Changer en action",
                     edit_type_admin_entourage_path(@entourage, to: :action),

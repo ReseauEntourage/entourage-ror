@@ -28,6 +28,15 @@ module V1
         }
       end
 
+      def group_type
+        # good_waves cheat
+        if object.group_type == 'group'
+          'action'
+        else
+          object.group_type
+        end
+      end
+
       def filter(keys)
         if scope == :map
           [:title, :location]

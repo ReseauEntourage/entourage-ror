@@ -36,7 +36,7 @@ module V1
       def actions_count
         Entourage
           .where(community: :entourage)
-          .where(%(group_type = 'action' and coalesce(display_category, 'other') != 'event'))
+          .where(%(group_type in ('action', 'group') and coalesce(display_category, 'other') != 'event'))
           .where.not(status: :blacklisted)
           .count
       end

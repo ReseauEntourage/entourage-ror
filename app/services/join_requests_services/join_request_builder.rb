@@ -13,6 +13,7 @@ module JoinRequestsServices
         when ['entourage', 'tour']   then 'member'
         when ['entourage', 'action'] then 'member'
         when ['entourage', 'outing'] then 'participant'
+        when ['entourage', 'group']  then 'member'
         when ['pfp',       'outing'] then 'participant'
         when ['pfp', 'neighborhood'] then 'member'
         when ['pfp', 'private_circle'] then 'visitor'

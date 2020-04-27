@@ -5,7 +5,7 @@ module EntourageServices
 
       updates = {country: country, postal_code: postal_code}
 
-      if entourage.group_type == 'action'
+      if entourage.group_type.in?(['action', 'group'])
         city ||= ''
         updates[:metadata] = entourage.metadata.merge(city: city)
       end

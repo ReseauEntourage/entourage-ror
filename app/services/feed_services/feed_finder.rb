@@ -77,7 +77,7 @@ module FeedServices
 
       feeds = feeds.where.not(status: [:blacklisted, :suspended])
 
-      feeds = feeds.where.not(group_type: :conversation)
+      feeds = feeds.where.not(group_type: [:conversation, :group])
 
       # NO_SUCCESSES (EN-1996)
       # feeds = feeds

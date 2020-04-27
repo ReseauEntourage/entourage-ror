@@ -3,6 +3,7 @@ module GroupService
     tour: ['la ', 'une ', 'maraude'],
     action: ['l’', 'une ', 'action'],
     outing: ['l’', 'un ', 'évènement'],
+    group: ['le ', 'un ', 'groupe'],
   }
 
   COMMUNITY_NAME = {

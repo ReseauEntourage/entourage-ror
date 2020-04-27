@@ -23,6 +23,9 @@ group_types:
   outing:
     message_types: [text]
     roles: [organizer, participant]
+  group:
+    message_types: [text]
+    roles: [admin, member]
 targeting_profiles:
   - offers_help
   - asks_for_help

@@ -22,7 +22,7 @@
   <div class="control-group">
     <%= f.label :description, "Description", class: "control-label" %>
     <div class="controls">
-      <%= f.text_area :description, rows: 6, class: "form-control", required: true %>
+      <%= f.text_area :description, rows: 6, class: "form-control" %>
     </div>
   </div>
 
@@ -93,7 +93,7 @@
     <%= f.hidden_field :display_category if @entourage.display_category.present? %>
   <% end %>
 
-  <% if @entourage.group_type == 'action' %>
+  <% if @entourage.group_type.in?(['action', 'group']) %>
   <div class="control-group">
     <label class="control-label">Adresse</label>
     <div class="controls">
@@ -198,7 +198,7 @@
   </script>
 <% end %>
 
-<% if @entourage.group_type == 'action' %>
+<% if @entourage.group_type.in?(['action', 'group']) %>
 <script>
   var autocomplete;
 

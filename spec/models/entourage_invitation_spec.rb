@@ -5,7 +5,6 @@ RSpec.describe EntourageInvitation, type: :model do
   it { should validate_presence_of :invitable_id }
   it { should validate_presence_of :invitable_type }
   it { should validate_presence_of :inviter }
-  it { should validate_presence_of :invitee }
   it { should validate_presence_of :phone_number }
   it { should validate_presence_of :invitation_mode }
   it { should validate_inclusion_of(:invitation_mode).in_array([EntourageInvitation::MODE_SMS]) }
@@ -15,8 +14,6 @@ RSpec.describe EntourageInvitation, type: :model do
     let(:entourage_invitation) { FactoryGirl.create(:entourage_invitation, invitable: entourage) }
     it { expect(entourage.entourage_invitations).to eq([entourage_invitation]) }
   end
-
-  context "create "
 
   context "belongs to a user" do
     let(:user) { FactoryGirl.create(:pro_user) }
@@ -32,5 +29,31 @@ RSpec.describe EntourageInvitation, type: :model do
     it { expect(FactoryGirl.build(:entourage_invitation, inviter: user, invitable: entourage, phone_number: "+33699999999").save).to be true}
     it { expect(FactoryGirl.build(:entourage_invitation, inviter: user, phone_number: "+33612345678").save).to be true}
     it { expect(FactoryGirl.build(:entourage_invitation, invitable: entourage, phone_number: "+33612345678").save).to be true}
+  end
+
+  context "SMS" do
+    let(:error_messages) { build(:entourage_invitation, invitee: nil).tap(&:save).errors.messages }
+    it { expect(error_messages).to eq(
+      invitee: ["doit être rempli(e)"]
+    )}
+  end
+
+  context "good_waves" do
+    let(:error_messages) { build(:entourage_invitation, invitation_mode: :good_waves, metadata: metadata).tap(&:save).errors.messages }
+
+    context "no metadata" do
+      let(:metadata) { {} }
+      it { expect(error_messages).to eq(
+        metadata: ["did not contain a required property of 'name'",
+                   "did not contain a required property of 'email'"]
+      )}
+    end
+
+    context "null metadata values" do
+      let(:metadata) { {name:nil, email:nil} }
+      it { expect(error_messages).to eq(
+        metadata: ["'name' of type null did not match the following type: string"]
+      )}
+    end
   end
 end

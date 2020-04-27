@@ -51,6 +51,10 @@ class UserPresenter < ApplicationPresenter
   end
 
   def display_name
+    self.class.display_name user
+  end
+
+  def self.display_name user
     first_name = UserPresenter.format_first_name(user.first_name)
     last_name_first = user.last_name&.strip&.first.presence
     if last_name_first&.match?(/^[[:alpha:]]/)

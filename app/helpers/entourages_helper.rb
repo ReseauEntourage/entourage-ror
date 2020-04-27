@@ -29,8 +29,11 @@ module EntouragesHelper
   end
 
   def entourage_full_category entourage
-    if entourage.group_type == 'outing'
+    case entourage.group_type
+    when 'outing'
       'contribution_event'
+    when 'group'
+      'contribution_social'
     else
       "#{entourage.entourage_type}_#{entourage.display_category || :other}"
     end
@@ -57,6 +60,7 @@ module EntouragesHelper
     else
       {
         'outing' => "Évènement",
+        'group' => "Groupe",
       }[entourage.group_type]
     end
   end

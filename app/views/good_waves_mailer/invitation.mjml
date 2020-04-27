@@ -1,0 +1,29 @@
+<mjml>
+  <mj-head>
+    <mj-attributes>
+      <mj-text font-size="16px" line-height="1.5" color="#454545"
+               font-family="Roboto, Helvetica, Ubuntu, Arial, sans-serif" />
+      <mj-class name="text-large" font-size="24px" />
+      <mj-button color="#fff" background-color="#f55f24" font-size="16px"
+                 line-height="1.5" inner-padding="4px 12px"
+                 border-radius="16px" />
+    </mj-attributes>
+  </mj-head>
+  <mj-body>
+    <mj-section>
+      <mj-column>
+        <mj-image width="24px" align="left" src="<%= ENV['HOST'] %>/assets/organization_admin/logo-entourage-orange.png" />
+        <mj-text mj-class="text-large">
+          Rejoins ta bande de Bonnes Ondes sur l'app Entourage
+        </mj-text>
+        <mj-text>
+          Hey, ta bande de Bonnes Ondes a été créée !<br/>
+          Pour une diffusion maximal de chaleur humaine, rejoins dès maintenant votre groupe de discussion sur l’app Entourage.
+        </mj-text>
+        <mj-button align="left" href="<%= @invite_url %>">
+          Rejoindre maintenant
+        </mj-button>
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>

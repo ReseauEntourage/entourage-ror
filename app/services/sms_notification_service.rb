@@ -10,6 +10,8 @@ class SmsNotificationService
       deliveryState = send_aws_sms(phone_number, message, sms_type)
     when 'Slack'
       deliveryState = send_slack_message(phone_number, message, sms_type)
+    when 'logs'
+      deliveryState = debug_to_logs(phone_number, message, sms_type)
     else
       Rails.logger.warn 'No SMS has been sent. Please set SMS_PROVIDER to a valid value'
       return
@@ -62,6 +64,11 @@ class SmsNotificationService
             "```"
     )
 
+    return 'Ok'
+  end
+
+  def debug_to_logs(phone_number, message, sms_type)
+    Rails.logger.debug "\nSMS to #{phone_number.inspect}: #{message.inspect}"
     return 'Ok'
   end
 end

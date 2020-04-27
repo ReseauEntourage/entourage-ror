@@ -130,7 +130,7 @@ class Entourage < ActiveRecord::Base
 
   def public_accessibility_options
     case group_type
-    when 'outing', 'action'
+    when 'outing', 'action', 'group'
       [true, false]
     else
       [false]
@@ -151,7 +151,7 @@ class Entourage < ActiveRecord::Base
   def self.json_schema urn
     JsonSchemaService.base do
       case urn
-      when 'action:metadata'
+      when 'action:metadata', 'group:metadata'
         {
           city: { type: :string },
           display_address: { type: :string },
@@ -252,7 +252,7 @@ class Entourage < ActiveRecord::Base
       self.entourage_type = :contribution
       self.latitude       = 0
       self.longitude      = 0
-    when 'action'
+    when 'action', 'group'
       self.metadata = {
         city: ''
       }
@@ -293,7 +293,7 @@ class Entourage < ActiveRecord::Base
   def generate_display_address
     return unless (metadata_changed? || new_record?)
     case group_type
-    when 'action'
+    when 'action', 'group'
       generate_action_display_address
     when 'outing'
       generate_outing_display_address
@@ -301,7 +301,7 @@ class Entourage < ActiveRecord::Base
   end
 
   def generate_action_display_address
-    return unless group_type == 'action'
+    return unless group_type.in?(['action', 'group'])
     if metadata[:city].present? && postal_code.present?
       metadata[:display_address] = "#{metadata[:city]} (#{postal_code})"
     else
