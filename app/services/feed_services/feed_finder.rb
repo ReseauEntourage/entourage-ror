@@ -143,7 +143,7 @@ module FeedServices
           feeds = pin(45904, feeds: feeds)
         end
 
-        feeds = pin(74655, feeds: feeds)
+        feeds = pin(85634, feeds: feeds)
       end
 
       feeds = insert_announcements(feeds: feeds) if announcements == :v1
