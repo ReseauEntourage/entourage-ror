@@ -365,6 +365,7 @@ Rails.application.routes.draw do
       member do
         get :invitation, action: :new_invitation
         post :invitation, action: :create_invitation
+        post :remove_member
       end
     end
 

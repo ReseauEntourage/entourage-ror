@@ -11,7 +11,7 @@ module GoodWaves
 
     def show
       @group = current_user.entourages.where(group_type: :group).find(params[:id])
-      @members = @group.members.order('join_requests.accepted_at')
+      @members = @group.members.where("status = 'accepted'").order('join_requests.accepted_at')
       @invitations = @group.entourage_invitations.where(status: :pending).order(:created_at).to_a
     end
 
@@ -242,6 +242,14 @@ module GoodWaves
         flash[:success] = "Invitation envoyée !"
       end
 
+      redirect_to good_waves_group_path(group)
+    end
+
+    def remove_member
+      group = current_user.entourages.where(group_type: :group).find(params[:id])
+      join_requests = group.join_requests.where(user_id: params[:user_id])
+      join_requests.update_all(status: :cancelled)
+      flash[:success] = "Membre retiré du groupe"
       redirect_to good_waves_group_path(group)
     end
   end

@@ -218,7 +218,7 @@ textarea.form-control:invalid {
 
 .color-black { color: #454545; }
 .color-grey  { color: #858484; }
-.color-danger { color: #dc3545; }
+.color-danger { color: #dc3545 !important; }
 .color-primary { color: #f55f24; }
 
 .color-black-hover:hover { color: #454545; }
