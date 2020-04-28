@@ -18,7 +18,7 @@
         </mj-text>
         <mj-text>
           Hey, ta bande de Bonnes Ondes a été créée !<br/>
-          Pour une diffusion maximal de chaleur humaine, rejoins dès maintenant votre groupe de discussion sur l’app Entourage.
+          Pour une diffusion maximale de chaleur humaine, rejoins dès maintenant votre groupe de discussion sur l’app Entourage.
         </mj-text>
         <mj-button align="left" href="<%= @invite_url %>">
           Rejoindre maintenant

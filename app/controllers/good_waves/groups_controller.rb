@@ -43,6 +43,9 @@ module GoodWaves
         members_by_phone[phone][:email] ||= (member[:email] || '').strip.downcase.presence
       end
 
+      # prevent group creator from adding themselves again
+      members_by_phone.delete(current_user.phone)
+
       phones = members_by_phone.keys
       members = members_by_phone.values
 
@@ -104,7 +107,8 @@ module GoodWaves
 
       # error
       if !group
-        redirect_to good_waves_group_path(group)
+        flash[:erreur] = "Erreur ! Si le problème persiste, contactez lesbonnesondes@entourage.social"
+        redirect_to new_good_waves_group_path
       end
 
       short_uuid = group.uuid_v2[1..]
@@ -137,6 +141,7 @@ module GoodWaves
         }
       )
 
+      flash[:success] = "Groupe créé ! Des invitations ont été envoyées aux membres par SMS et email."
       redirect_to good_waves_group_path(group)
     end
   end

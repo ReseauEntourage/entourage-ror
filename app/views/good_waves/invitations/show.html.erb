@@ -1,61 +1,21 @@
-<script>
-  isiOS = navigator.userAgent.match(/\b(iPhone|iPod)\b/) !== null
-  isAndroid = navigator.userAgent.match(/Android/) !== null
-  isMobile = isiOS || isAndroid
-
-  if (isMobile) {
-    document.body.classList.add('is-mobile')
-  } else {
-    document.body.classList.add('is-desktop')
-  }
-</script>
-
-<style>
-  .is-mobile .desktop-only,
-  .is-desktop .mobile-only {
-    display: none;
-  }
-</style>
-
 <div class="container-s mt-6">
   <div class="text-center mb-4">
     <div class="text-large"><%= @group.title %></div>
     <div class="mb-4">Invitation à un groupe Entourage</div>
-    <%= link_to "Rejoindre la discussion", good_waves_invitation_path(@group.uuid_v2), class: "btn btn-primary mobile-only" %>
-    <%= link_to "Rejoindre la discussion", "https://www.entourage.social/entourages/#{@group.uuid_v2}", class: "btn btn-primary desktop-only" %>
+    <a href="<%= @open_url %>" class="btn btn-primary">Rejoindre la discussion</a>
   </div>
-  <div class="mobile-only">
+  <% if @store_url %>
     <hr>
     <div class="text-center mt-4">
       <div>Vous n'avez pas encore l'application Entourage ?</div>
-        <a href="#" id="open-store">Télécharger</a>
+        <a href="<%= @store_url %>">Télécharger</a>
       </div>
     </div>
-  </div>
+  <% end %>
 </div>
 
-<% layout_options(jquery: true) %>
 <% content_for :scripts do %>
   <script>
-    storeURL = null
-    if (isiOS) {
-      storeURL = 'https://apps.apple.com/app/apple-store/id1072244410?pt=118066461&mt=8';
-    }
-    if (isAndroid) {
-      storeURL = 'https://play.google.com/store/apps/details?id=social.entourage.android';
-    }
-
-    if (storeURL) {
-      $('#open-store').attr('href', storeURL)
-    }
-  </script>
-
-  <script>
-    $(document).ready(function() {
-      if (isMobile) {
-        location.href = "<%= ENV['DEEPLINK_SCHEME'] %>://entourage/<%= @group.uuid_v2 %>"
-        location.href = storeURL
-      }
-    })
+    window.location = "<%= @open_url %>"
   </script>
 <% end %>
