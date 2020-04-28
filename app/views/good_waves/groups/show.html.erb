@@ -4,7 +4,10 @@
   <div class="text-large mb-2"><%= @group.title %></div>
 
   <div class="mb-4">
-    <div class="text-medium mb-1">Membres</div>
+    <div class="flex flex-align-center mb-1">
+      <div class="text-medium flex-grow">Membres</div>
+      <%= link_to "Ajouter un membre", invitation_good_waves_group_path(@group), class: "btn btn-outline" %>
+    </div>
     <% @members.each do |member| %>
       <% can_edit = false # member.id != @group.user_id %>
       <div class="border-bottom" data-role="toggle-context">

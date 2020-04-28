@@ -144,5 +144,105 @@ module GoodWaves
       flash[:success] = "Groupe créé ! Des invitations ont été envoyées aux membres par SMS et email."
       redirect_to good_waves_group_path(group)
     end
+
+    def new_invitation
+      @group = current_user.entourages.where(group_type: :group).find(params[:id])
+    end
+
+    def create_invitation
+      group = current_user.entourages.where(group_type: :group).find(params[:id])
+
+      phone = Phonelib.parse(params[:phone]).e164
+      name = UserPresenter.format_name_part(params[:name])
+      email = (params[:email] || '').strip.downcase.presence
+
+      existing = community.users.find_by(phone: phone)
+
+      if existing.nil?
+        invitation = EntourageInvitation.find_or_initialize_by(
+          invitable: group,
+          phone_number: phone
+        )
+        invitation.assign_attributes(
+          inviter: group.user,
+          status: :pending,
+          invitation_mode: :good_waves,
+          metadata: {
+            name: name,
+            email: email
+          }
+        )
+        if invitation.persisted?
+          invitation.save
+          flash[:notice] = "Cette personne a déjà une invitation en attente pour ce groupe."
+          return redirect_to good_waves_group_path(group)
+        elsif invitation.save
+          # continue below
+        else
+          Raven.capture_exception(ActiveRecord::RecordInvalid.new(invitation))
+          flash[:error] = invitation.errors.full_messages.to_sentence
+          return redirect_to good_waves_group_path(group)
+        end
+      else
+        join_request = JoinRequest.find_or_initialize_by(
+          joinable: group,
+          user_id: existing.id,
+        )
+
+        if join_request.persisted? && join_request.status == 'accepted'
+          flash[:notice] = "Cette personne a déjà membre de ce groupe."
+          return redirect_to good_waves_group_path(group)
+        end
+
+        join_request.assign_attributes(
+          role: :member,
+          status: :accepted
+        )
+
+        if join_request.save
+          # continue below
+        else
+          Raven.capture_exception(ActiveRecord::RecordInvalid.new(join_request))
+          flash[:error] = join_request.errors.full_messages.to_sentence
+          return redirect_to good_waves_group_path(group)
+        end
+      end
+
+      short_uuid = group.uuid_v2[1..]
+      message = "Hey, ta bande de Bonnes Ondes a été créée ! Pour une diffuser la chaleur humaine, rejoins ton groupe sur l'app Entourage : http://entourage.social/i/#{short_uuid}"
+      SmsSenderJob.perform_later(phone, message, 'invite')
+
+      alternate_email = (existing&.email || '').strip.downcase.presence
+      email, alternate_email = [email, alternate_email].compact.uniq
+      GoodWavesMailer.invitation(email, alternate_email, short_uuid).deliver_later
+
+      if existing
+        author_name = UserPresenter.display_name(group.user)
+        object = group.title
+        message = "Vous venez de rejoindre le groupe de #{author_name}"
+
+        PushNotificationService.new.send_notification(
+          author_name,
+          object,
+          message,
+          [existing],
+          {
+            joinable_id: group.id,
+            joinable_type: group.class.name,
+            group_type: group.group_type,
+            type: "JOIN_REQUEST_ACCEPTED",
+            user_id: nil
+          }
+        )
+      end
+
+      if existing
+        flash[:success] = "Membre ajouté !"
+      else
+        flash[:success] = "Invitation envoyée !"
+      end
+
+      redirect_to good_waves_group_path(group)
+    end
   end
 end

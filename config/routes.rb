@@ -362,6 +362,10 @@ Rails.application.routes.draw do
       collection do
         post :parse_members
       end
+      member do
+        get :invitation, action: :new_invitation
+        post :invitation, action: :create_invitation
+      end
     end
 
     resource :session, only: [:new] do
