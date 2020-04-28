@@ -16,7 +16,7 @@ module Admin
       end
 
       community = params[:community] || :entourage
-      group_types = (params[:group_type] || 'action,outing,group').split(',')
+      group_types = (params[:group_type] || 'action,outing').split(',')
 
       @q = Entourage
         .where(group_type: group_types, community: community)
