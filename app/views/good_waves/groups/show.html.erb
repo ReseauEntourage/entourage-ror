@@ -60,7 +60,7 @@
         <div class="gw-ml-email">Adresse e-mail</div>
       </div>
       <% @invitations.each do |invitation| %>
-        <% can_edit = false %>
+        <% can_edit = true %>
         <div class="border-bottom" data-role="toggle-context">
           <div class="gw-ml-line py-1 <%= 'cursor-pointer' if can_edit %>" data-role="toggle-trigger">
             <div class="gw-ml-name"><%= invitation.metadata[:name] %></div>
@@ -72,7 +72,7 @@
           </div>
           <% if can_edit %>
             <div class="mb-1 hide text-right" data-role="toggle-content">
-              <a href="#" class="color-danger">Révoquer l'invitation</a>
+              <%= button_to "Annuler l'invitation", cancel_invitation_good_waves_group_path(@group, invitation_id: invitation.id), class: "text-button color-danger hover-underline" %>
             </div>
           <% end %>
         </div>

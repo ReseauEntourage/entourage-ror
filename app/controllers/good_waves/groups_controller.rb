@@ -252,5 +252,13 @@ module GoodWaves
       flash[:success] = "Membre retiré du groupe"
       redirect_to good_waves_group_path(group)
     end
+
+    def cancel_invitation
+      group = current_user.entourages.where(group_type: :group).find(params[:id])
+      invitations = group.entourage_invitations.where(id: params[:invitation_id])
+      invitations.update_all(status: :cancelled)
+      flash[:success] = "Invitation annulée !"
+      redirect_to good_waves_group_path(group)
+    end
   end
 end
