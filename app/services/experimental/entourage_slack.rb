@@ -67,7 +67,7 @@ module Experimental::EntourageSlack
 
   def self.channel entourage
     channel = nil
-    if entourage.country != 'FR' && entourage.postal_code.present?
+    if entourage.country == 'FR' && entourage.postal_code.present?
       channel = {
         '75' => '#modération_paris',
         '92' => '#modération_92',
