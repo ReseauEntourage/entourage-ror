@@ -1,6 +1,6 @@
 module Experimental::EntourageSlack
   def self.notify entourage
-    notifier&.ping(payload(entourage))
+    notifier&.ping(payload(entourage), channel: channel(entourage))
   end
 
   def self.notifier
@@ -63,6 +63,23 @@ module Experimental::EntourageSlack
         }
       ].compact
     }
+  end
+
+  def self.channel entourage
+    channel = nil
+    if entourage.country != 'FR' && entourage.postal_code.present?
+      channel = {
+        '75' => '#modération_paris',
+        '92' => '#modération_92',
+        '59' => '#modération_lille',
+        '35' => '#modération_rennes',
+        '69' => '#modération_lyon',
+      }[entourage.postal_code.first(2)]
+    end
+
+    channel ||= '#modération_horszone'
+
+    return channel
   end
 
   def self.h
