@@ -1,17 +1,24 @@
 module Experimental::EntourageSlack
   def self.notify entourage
-    notifier&.ping(payload(entourage))
+    notifier(entourage)&.ping(payload(entourage))
   end
 
-  def self.notifier
-    return if ENV['SLACK_APP_WEBHOOK_URL'].blank?
-    @notifier ||= Slack::Notifier.new(ENV['SLACK_APP_WEBHOOK_URL'])
+  def self.notifier entourage
+    return if ENV['SLACK_APP_WEBHOOKS'].blank?
+    config = JSON.parse(ENV['SLACK_APP_WEBHOOKS']) rescue nil
+    return if config.nil?
+    channel = nil
+    if entourage.country == 'FR' && entourage.postal_code.present?
+      channel = config[entourage.postal_code.first(2)]
+    end
+    channel ||= config['default']
+    url = config['prefix'] + channel
+    Slack::Notifier.new(url)
   end
 
   def self.payload entourage
     e = entourage
     {
-      channel: channel(entourage),
       text: "Nouvelle action",
       attachments: [
         {
@@ -64,23 +71,6 @@ module Experimental::EntourageSlack
         }
       ].compact
     }
-  end
-
-  def self.channel entourage
-    channel = nil
-    if entourage.country == 'FR' && entourage.postal_code.present?
-      channel = {
-        '75' => '#modération_paris',
-        '92' => '#modération_92',
-        '59' => '#modération_lille',
-        '35' => '#modération_rennes',
-        '69' => '#modération_lyon',
-      }[entourage.postal_code.first(2)]
-    end
-
-    channel ||= '#modération_horszone'
-
-    return channel
   end
 
   def self.h
