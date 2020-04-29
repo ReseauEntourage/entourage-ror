@@ -1,6 +1,6 @@
 module Experimental::EntourageSlack
   def self.notify entourage
-    notifier&.ping(payload(entourage), channel: channel(entourage))
+    notifier&.ping(payload(entourage))
   end
 
   def self.notifier
@@ -11,6 +11,7 @@ module Experimental::EntourageSlack
   def self.payload entourage
     e = entourage
     {
+      channel: channel(entourage),
       text: "Nouvelle action",
       attachments: [
         {
