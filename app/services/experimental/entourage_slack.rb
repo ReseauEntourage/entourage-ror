@@ -92,14 +92,21 @@ module Experimental::EntourageSlack
     extend ActiveSupport::Concern
 
     included do
-      after_commit :notify_slack, on: :create
+      after_commit :notify_slack
     end
 
     private
 
+    def departement_changed?
+      return false unless previous_changes.key?('postal_code')
+      previous_changes['postal_code'].map { |pc| pc.to_s.first(2) }.uniq.many?
+    end
+
     def notify_slack
       return unless Experimental::EntourageSlack.enable_callback
       return unless community == 'entourage' && group_type == 'action'
+      return unless [country, postal_code].all?(&:present?)
+      return unless previous_changes.key?('country') || departement_changed?
       AsyncService.new(Experimental::EntourageSlack).notify(self)
     end
   end
