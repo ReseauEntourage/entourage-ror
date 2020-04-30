@@ -158,6 +158,9 @@ module FeedServices
         # table ronde
         pinned << 88984
 
+        # évènements digitaux
+        pinned << 88999
+
         pinned.compact.uniq.reverse.each do |action|
           feeds = pin(action, feeds: feeds)
         end
