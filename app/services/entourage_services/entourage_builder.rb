@@ -69,7 +69,7 @@ module EntourageServices
           end
 
         TourServices::JoinRequestStatus.new(join_request: join_request).accept!
-        AsyncService.new(ModerationServices::EntourageModeration).on_create(entourage)
+        # AsyncService.new(ModerationServices::EntourageModeration).on_create(entourage)
         AsyncService.new(EntourageServices::NeighborhoodAnnouncement).on_create(entourage)
         CommunityLogic.for(entourage).group_created(entourage)
 
