@@ -130,20 +130,34 @@ module FeedServices
       #   end
       #
 
-        case area
-        when 'Paris République', 'Paris 17 et 9', 'Paris 15', 'Paris 5', 'Paris'
-          feeds = pin(45922, feeds: feeds)
-        when 'Lille'
-          feeds = pin(45905, feeds: feeds)
-        when 'Rennes'
-          feeds = pin(45880, feeds: feeds)
-        when 'Lyon Ouest', 'Lyon Est', 'Lyon'
-          feeds = pin(45876, feeds: feeds)
-        when 'La Défense'
-          feeds = pin(45904, feeds: feeds)
+        dep = nil
+        if user.address&.country == 'FR'
+          dep = user.address.postal_code.to_s.first(2)
         end
 
-        feeds = pin(85634, feeds: feeds)
+        pinned = []
+
+        # Willy
+        if dep.in?(['59', '62', '80', '02'])
+          pinned << 85035
+        end
+
+        # sensib
+        pinned << 85634
+
+        # covid
+        covid_action = {
+          '75' => 45922,
+          '59' => 45905,
+          '35' => 45880,
+          '69' => 45876,
+          '92' => 45904
+        }[dep]
+        pinned << covid_action if pinned.count < 2
+
+        pinned.compact.uniq.reverse.each do |action|
+          feeds = pin(action, feeds: feeds)
+        end
       end
 
       feeds = insert_announcements(feeds: feeds) if announcements == :v1
