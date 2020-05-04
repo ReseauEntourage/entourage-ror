@@ -25,6 +25,7 @@ class Entourage < ActiveRecord::Base
   include Experimental::AutoAccept::Joinable
   include Onboarding::V1::Entourage
   include Experimental::EntourageSlack::Callback
+  include ModerationServices::EntourageModeration::Callback
 
   ENTOURAGE_TYPES  = ['ask_for_help', 'contribution']
   ENTOURAGE_STATUS = ['open', 'closed', 'blacklisted', 'suspended']
