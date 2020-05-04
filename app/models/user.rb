@@ -93,8 +93,8 @@ class User < ActiveRecord::Base
   scope :moderators, -> { where(admin: true).where("roles ? 'moderator'") }
 
   before_validation do
-    if targeting_profile == 'team'
-      self.partner_id ||= Partner.where(name: 'Entourage').pluck(:id).first
+    if targeting_profile_changed? && targeting_profile == 'team'
+      self.partner_id = Partner.where(name: 'Entourage').pluck(:id).first
     elsif targeting_profile_changed? && targeting_profile != 'partner'
       self.partner_id = nil
     elsif partner_id_changed? && partner_id.present?
