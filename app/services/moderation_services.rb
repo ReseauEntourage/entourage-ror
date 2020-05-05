@@ -44,4 +44,38 @@ module ModerationServices
     moderator, error = moderator_with_error(community: community)
     return moderator
   end
+
+  def self.moderation_area_query_for_departement departement, community:
+    return ModerationArea.none if departement.nil?
+    return ModerationArea.none if community != :entourage
+    user_id = ModerationArea
+      .where(departement: [departement, '*'])
+      .order("case departement when '*' then 1 else 0 end")
+      .limit(1)
+  end
+
+  def self.moderator_for_departement departement, community:
+    user_id = moderation_area_query_for_departement(departement, community: community)
+      .pluck(:moderator_id)
+      .first
+    User.find_by(user_id)
+  end
+
+  def self.departement_for_object object
+    if object.nil? || object.postal_code.nil?
+      nil
+    elsif object.country == 'FR'
+      object.postal_code.first(2)
+    else
+      '*'
+    end
+  end
+
+  def self.moderator_for_entourage entourage
+    return unless entourage.group_type.in?(['action', 'outing'])
+    moderator_for_departement(
+      departement_for_object(entourage),
+      community: entourage.community
+    )
+  end
 end

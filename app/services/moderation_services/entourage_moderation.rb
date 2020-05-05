@@ -14,26 +14,10 @@ module ModerationServices
         .create
     end
 
-    def self.moderator_for_departement departement
-      phone = {
-        '75' => '+33111111111',
-        '92' => '+33222222222',
-        '69' => '+33333333333',
-        '35' => '+33444444444',
-        '59' => '+33666666666',
-        nil  => '+33777777777'
-      }
-      phone = phone[departement] || phone[nil]
-      User.find_by(community: :entourage, admin: true, phone: phone)
-    end
-
     def assign_to_area_moderator entourage
-      return unless entourage.group_type.in?(['action', 'outing'])
-      return if entourage.country != 'FR'
-      return if entourage.postal_code.nil?
+      moderator = ModerationServices.moderator_for_entourage(entourage)
 
-      departement = entourage.postal_code.first(2)
-      moderator = ModerationServices::EntourageModeration.moderator_for_departement(departement)
+      return if moderator.nil?
 
       entourage.moderation || entourage.build_moderation
       entourage.moderation.moderator_id = moderator.id
@@ -56,7 +40,8 @@ module ModerationServices
       def assign_to_area_moderator
         return unless ModerationServices::EntourageModeration.enable_callback
         return unless group_type.in?(['action', 'outing'])
-        return unless postal_code.present?
+        return unless (['country', 'postal_code'] & previous_changes.keys).any?
+        return unless [country, postal_code].all?(&:present?)
         return if ::EntourageModeration.where(entourage_id: id).where.not(moderator_id: nil).exists?
         AsyncService.new(ModerationServices::EntourageModeration).assign_to_area_moderator(self)
       end
