@@ -11,13 +11,91 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20200423113249) do
+ActiveRecord::Schema.define(version: 20200504135808) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "pg_stat_statements"
-  enable_extension "postgis"
   enable_extension "pgcrypto"
+  enable_extension "postgis"
+
+  create_table "TEST_events_20181112_copy", id: false, force: :cascade do |t|
+    t.string  "event_date",                    limit: 65535
+    t.integer "event_timestamp",               limit: 8
+    t.string  "event_name",                    limit: 65535
+    t.string  "event_params",                  limit: 65535
+    t.integer "event_previous_timestamp",      limit: 8
+    t.float   "event_value_in_usd"
+    t.integer "event_bundle_sequence_id",      limit: 8
+    t.integer "event_server_timestamp_offset", limit: 8
+    t.string  "user_id",                       limit: 65535
+    t.string  "user_pseudo_id",                limit: 65535
+    t.string  "user_properties",               limit: 65535
+    t.integer "user_first_touch_timestamp",    limit: 8
+    t.string  "user_ltv",                      limit: 65535
+    t.string  "device",                        limit: 65535
+    t.string  "geo",                           limit: 65535
+    t.string  "app_info",                      limit: 65535
+    t.string  "traffic_source",                limit: 65535
+    t.string  "stream_id",                     limit: 65535
+    t.string  "platform",                      limit: 65535
+    t.string  "event_dimensions",              limit: 65535
+  end
+
+  create_table "TEST_users_prepared", id: false, force: :cascade do |t|
+    t.integer  "id",                           limit: 8
+    t.text     "created_at"
+    t.datetime "created_at_parsed"
+    t.integer  "created_at_parsed_year",       limit: 8
+    t.integer  "created_at_parsed_month",      limit: 8
+    t.integer  "created_at_parsed_day",        limit: 8
+    t.integer  "since_created_at_parsed_days", limit: 8
+    t.text     "updated_at"
+    t.string   "email",                        limit: 255
+    t.text     "email_localpart"
+    t.text     "email_domain"
+    t.string   "first_name",                   limit: 255
+    t.string   "last_name",                    limit: 255
+    t.text     "phone"
+    t.string   "token",                        limit: 255
+    t.text     "device_id"
+    t.integer  "device_type",                  limit: 8
+    t.text     "sms_code"
+    t.integer  "organization_id",              limit: 8
+    t.boolean  "manager"
+    t.float    "default_latitude"
+    t.float    "default_longitude"
+    t.boolean  "admin"
+    t.text     "user_type"
+    t.text     "avatar_key"
+    t.text     "validation_status"
+    t.boolean  "deleted"
+    t.integer  "marketing_referer_id",         limit: 8
+    t.text     "last_sign_in_at"
+    t.boolean  "atd_friend"
+    t.boolean  "use_suggestions"
+    t.string   "about",                        limit: 200
+    t.string   "community",                    limit: 9
+    t.text     "encrypted_password"
+    t.text     "roles"
+    t.text     "first_sign_in_at"
+    t.text     "onboarding_sequence_start_at"
+    t.integer  "address_id",                   limit: 8
+    t.boolean  "accepts_emails_deprecated"
+    t.text     "last_email_sent_at"
+    t.text     "targeting_profile"
+    t.text     "partner_id"
+    t.boolean  "partner_admin"
+    t.text     "partner_role_title"
+  end
+
+  create_table "TEST_users_prepared_by_device_type", id: false, force: :cascade do |t|
+    t.integer "device_type",         limit: 8
+    t.integer "organization_id_min", limit: 8
+    t.boolean "manager_min"
+    t.float   "use_suggestions_avg"
+    t.integer "count",               limit: 8
+  end
 
   create_table "active_admin_comments", id: false, force: :cascade do |t|
     t.integer  "id",                        default: "nextval('active_admin_comments_id_seq'::regclass)", null: false

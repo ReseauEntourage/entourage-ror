@@ -1,4 +1,6 @@
 class Address < ActiveRecord::Base
+  include Onboarding::UserEventsTracking::AddressConcern
+
   validates_presence_of :place_name, :latitude, :longitude
 
   has_one :user
