@@ -1,0 +1,33 @@
+<div class="container">
+  <div class="row">
+    <div class="col-xs-offset-2 col-xs-8">
+      <ol class="breadcrumb">
+        <li><%= link_to "Zones de modération", admin_moderation_areas_path %></li>
+        <li><%= @area.name %> (<%= @area.departement %>)</li>
+      </ol>
+
+      <%= render partial: 'common/errors', locals: {obj: @area} %>
+      <%= form_for @area, url: "" do |f| %>
+        <div class="form-group">
+          <%= f.label :moderator_id %>
+          <div>
+            <%= link_to UserPresenter.full_name(@area.moderator), [:admin, @area.moderator] %>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <%= f.label :welcome_message_1 %>
+          <%= f.text_area :welcome_message_1, rows: 10, class: "form-control" %>
+          Utilisez <code>{{first_name}}</code> pour insérer le prénom du destinataire.
+        </div>
+        <div class="form-group">
+          <%= f.label :welcome_message_2 %>
+          <%= f.text_area :welcome_message_2, rows: 10, class: "form-control" %>
+        </div>
+        <div class="text-right">
+          <%= f.submit "Enregistrer", class: "btn btn-success" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

@@ -65,7 +65,7 @@ fr:
       moderation_area:
         moderator_id: Modérateur
         welcome_message_1: Message de bienvenue 1
-        welcome_message_1: Message de bienvenue 2
+        welcome_message_2: Message de bienvenue 2
 
   community:
     entourage:

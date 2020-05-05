@@ -1,0 +1,24 @@
+<div class="container">
+  <div class="row">
+    <div class="col-xs-offset-2 col-xs-8">
+
+
+      <div class="h1" style="display: flex; align-items: center;">
+        <div style="flex-grow: 1">Zones de modération</div>
+      </div>
+
+      <table class="table">
+        <% @areas.each do |area| %>
+          <tr>
+            <td style="width: 3em">
+              <%= area.departement %>
+            </td>
+            <td>
+              <%= link_to area.name, edit_admin_moderation_area_path(area) %>
+            </td>
+          </tr>
+        <% end %>
+      </table>
+    </div>
+  </div>
+</div>
