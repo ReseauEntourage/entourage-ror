@@ -156,7 +156,7 @@ module FeedServices
         # pinned << covid_action if pinned.count < 2
 
         # table ronde
-        pinned << 88984
+        pinned << 89732
 
         # évènements digitaux
         pinned << 88999
