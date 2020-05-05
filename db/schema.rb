@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20200504135808) do
+ActiveRecord::Schema.define(version: 20200505082018) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -414,6 +414,17 @@ ActiveRecord::Schema.define(version: 20200504135808) do
     t.string   "last_name"
     t.string   "email"
   end
+
+  create_table "moderation_areas", force: :cascade do |t|
+    t.string  "departement",       limit: 2,  null: false
+    t.string  "name",                         null: false
+    t.integer "moderator_id"
+    t.text    "welcome_message_1"
+    t.text    "welcome_message_2"
+    t.string  "slack_channel",     limit: 80
+  end
+
+  add_index "moderation_areas", ["departement"], name: "index_moderation_areas_on_departement", unique: true, using: :btree
 
   create_table "moderator_reads", force: :cascade do |t|
     t.integer  "user_id",          null: false
