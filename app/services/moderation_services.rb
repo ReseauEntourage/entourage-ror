@@ -62,7 +62,7 @@ module ModerationServices
     user_id = moderation_area_query_for_departement(departement, community: community)
       .pluck(:moderator_id)
       .first
-    User.find_by(user_id)
+    User.find_by(id: user_id)
   end
 
   def self.departement_for_object object
