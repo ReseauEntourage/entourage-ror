@@ -54,6 +54,10 @@ module ModerationServices
       .limit(1)
   end
 
+  def self.moderation_area_for_departement departement, community:
+    moderation_area_query_for_departement(departement, community: community).first
+  end
+
   def self.moderator_for_departement departement, community:
     user_id = moderation_area_query_for_departement(departement, community: community)
       .pluck(:moderator_id)
@@ -69,6 +73,13 @@ module ModerationServices
     else
       '*'
     end
+  end
+
+  def self.moderation_area_for_user user
+    moderation_area_for_departement(
+      departement_for_object(user.address),
+      community: user.community,
+    )
   end
 
   def self.moderator_for_entourage entourage

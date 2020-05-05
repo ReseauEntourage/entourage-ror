@@ -5,11 +5,17 @@ describe Onboarding::ChatMessagesService, type: :service do
     let(:run_time) { 1.week.from_now.monday.change(hour: 10, minute: rand(60)) }
     let(:onboarding_time) { run_time.advance(seconds: -rand(3.hours..4.hours)) }
     let!(:admin) { create :admin_user }
+    let(:moderation_area) { create :moderation_area, moderator: admin, welcome_message_1: "Bonjour {{first_name}}" }
     let!(:user) { create :public_user, first_name: nil }
+    let(:address) { build :address }
 
     before do
       Onboarding::UserEventsTracking.stub(:enable_tracking?) { true }
-      Timecop.freeze(onboarding_time) { user.update(first_name: 'lily-rose') }
+      ModerationServices.stub(:moderation_area_for_user) { moderation_area }
+      Timecop.freeze(onboarding_time) do
+        user.update(first_name: 'lily-rose')
+        address.update(user: user)
+      end
     end
 
     subject { Timecop.freeze(run_time) { Onboarding::ChatMessagesService.deliver_welcome_message } }
@@ -37,7 +43,7 @@ describe Onboarding::ChatMessagesService, type: :service do
       end }
 
       it {
-        expect(messages.first.content).to include "Lily-Rose"
+        expect(messages.first.content).to eq "Bonjour Lily-rose"
       }
 
       it {

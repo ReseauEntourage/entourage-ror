@@ -4,50 +4,26 @@ module Onboarding
     ACTIVE_DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
     ACTIVE_HOURS = '09:00'..'18:30'
 
-    def self.welcome_messages_for user
-      first_name = user.first_name
-        .scan(/[[:alpha:]]+|[^[:alpha:]]+/)
-        .map(&:capitalize)
-        .join
-        .strip
-
-      messages = []
-      messages.push <<-MESSAGE.strip_heredoc.strip
-        Bonjour #{first_name},
-        Bienvenue sur le réseau Entourage !
-        Je m’appelle Guillaume, je m’occupe de l’accompagnement : je réponds à vos questions, je vous oriente, et veille au respect de la charte éthique de l’association.
-        De belles actions n’attendent que vous sur le réseau... qui promettent de belles rencontres ! Et si vous avez la moindre question, contactez moi directement ici par message, ou par téléphone au 01 88 24 70 70.
-        À bientôt !
-      MESSAGE
-
-      messages.push <<-MESSAGE.strip_heredoc.strip
-        Ah oui, j’oubliais, voici les autres outils à votre dispo👌 :
-        - “Simple comme Bonjour”, 🎥 un guide qui vous donne des conseils concrets pour mieux comprendre le monde de la rue : www.simplecommebonjour.org
-        - Un annuaire des structures solidaires directement dans l’app📱: bains-douches, distributions alimentaires...
-        Pas mal, n’est-ce pas ?
-      MESSAGE
-
-      messages
-    end
-
     def self.deliver_welcome_message
       now = Time.zone.now
       return unless now.strftime('%A').in?(ACTIVE_DAYS)
       return unless now.strftime('%H:%M').in?(ACTIVE_HOURS)
 
-      author = ModerationServices.moderator(community: Community.new(:entourage))
-
       user_ids = User
         .where(community: :entourage, deleted: false)
-        .with_event('onboarding.profile.first_name.entered', :trigger_events)
+        .with_event('onboarding.profile.first_name.entered', :name_entered)
+        .with_event('onboarding.profile.postal_code.entered', :postal_code_entered)
         .without_event('onboarding.chat_messages.welcome.sent')
         .without_event('onboarding.chat_messages.welcome.skipped')
-        .where("trigger_events.created_at <= ?", MIN_DELAY.ago)
+        .where("greatest(name_entered.created_at, postal_code_entered.created_at) <= ?", MIN_DELAY.ago)
         .pluck(:id)
 
       User.where(id: user_ids).find_each do |user|
         begin
           Raven.user_context(id: user&.id)
+
+          moderation_area = ModerationServices.moderation_area_for_user(user)
+          author = moderation_area.moderator
 
           participant_ids = [author.id, user.id]
 
@@ -68,9 +44,16 @@ module Onboarding
             return
           end
 
-          messages = welcome_messages_for(user)
+          messages = [
+            moderation_area.welcome_message_1,
+            moderation_area.welcome_message_2
+          ].map(&:presence)
+
+          first_name = UserPresenter.format_first_name user.first_name
 
           messages.each do |message|
+            message = message.gsub(/\{\{\s*first_name\s*\}\}/, first_name)
+
             builder = ChatServices::ChatMessageBuilder.new(
               user: author,
               joinable: conversation,
