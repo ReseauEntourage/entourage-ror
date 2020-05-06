@@ -4,6 +4,16 @@ module Experimental::EntourageSlack
   end
 
   def self.notifier entourage
+    # New webhooks can be created at
+    # https://api.slack.com/apps/AAJQG6LDP/general
+    # > Install your app to your workspace
+    #
+    # Existing webhooks are listed here
+    # https://api.slack.com/apps/AAJQG6LDP/install-on-team
+    #
+    # They can be revoked here
+    # https://my.slack.com/apps/AAJQG6LDP
+
     return if ENV['SLACK_APP_WEBHOOKS'].blank?
     config = JSON.parse(ENV['SLACK_APP_WEBHOOKS']) rescue nil
     return if config.nil?
@@ -18,18 +28,59 @@ module Experimental::EntourageSlack
 
   def self.payload entourage
     e = entourage
+    subtitle =
+      case e.group_type
+      when 'action'
+        "#{h.entourage_type_phrase(e)} › #{h.entourage_category_phrase(e)} • #{e.metadata[:display_address]}"
+      when 'outing'
+        address_fragments = e.metadata[:street_address].split(', ')
+        address_fragments.pop if address_fragments.last == 'France'
+        maybe_city = address_fragments.last
+        subtitle_place =
+          if maybe_city
+            maybe_city.gsub!(/^#{e.postal_code} /, '')
+            "#{maybe_city} (#{e.postal_code})"
+          else
+            e.postal_code
+          end
+        "Évènement • #{subtitle_place}"
+      end
+
+    text =
+      case e.group_type
+      when 'action'
+        "#{h.entourage_type_name(e)} par _#{UserPresenter.new(user: e.user).display_name}_"
+      when 'outing'
+        "par _#{UserPresenter.new(user: e.user).display_name}_"
+      end
+
+    event_metadata =
+      if e.group_type == 'outing'
+        url = "https://www.google.com/maps/search/?api=1&" + {
+          query: e.metadata[:display_address],
+          query_place_id: e.metadata[:google_place_id]
+        }.to_query
+
+        event_metadata_text = [
+          "📅 #{e.metadata_datetimes_formatted}",
+          "📍 <#{url}|#{e.metadata[:display_address]}>"
+        ].join("\n")
+
+        {text: event_metadata_text}
+      end
+
     {
-      text: "Nouvelle action",
       attachments: [
         {
           color: "#3AA3E3",
           author_icon: asset_url(e.user.avatar_key.present? ? h.entourage_category_image_path(e) : "user/default_avatar.png"),
-          author_name: "#{h.entourage_type_phrase(e)} › #{h.entourage_category_phrase(e)} • #{e.approximated_location}",
+          author_name: subtitle,
           thumb_url: UserServices::Avatar.new(user: entourage.user).thumbnail_url(expire: 7.days),
           title: entourage.title,
-          text: "#{h.entourage_type_name(e)} par _#{UserPresenter.new(user: e.user).display_name}_",
+          text: text,
           mrkdwn_in: [:text]
         },
+        event_metadata,
         ({
           text: e.description,
         } if e.description.present?),
@@ -104,7 +155,7 @@ module Experimental::EntourageSlack
 
     def notify_slack
       return unless Experimental::EntourageSlack.enable_callback
-      return unless community == 'entourage' && group_type == 'action'
+      return unless community == 'entourage' && group_type.in?(['action', 'outing'])
       return unless [country, postal_code].all?(&:present?)
       return unless previous_changes.key?('country') || departement_changed?
       AsyncService.new(Experimental::EntourageSlack).notify(self)
