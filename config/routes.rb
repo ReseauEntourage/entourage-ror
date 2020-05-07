@@ -357,7 +357,9 @@ Rails.application.routes.draw do
   }.compact
 
   scope good_waves_scope.merge(
-        as: :good_waves, :module => :good_waves) do
+    as: :good_waves, :module => :good_waves,
+    constraints: good_waves_scope.slice(:host)) do
+
     get '/' => 'base#home'
     get '/onboarding' => 'base#onboarding'
     post '/onboarding' => 'base#update_profile'
