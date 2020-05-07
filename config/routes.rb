@@ -277,14 +277,16 @@ Rails.application.routes.draw do
     end
   end
 
-  community_admin_url = URI(ENV['COMMUNITY_ADMIN_URL'] || 'community_admin')
+  community_admin_url = URI(ENV['COMMUNITY_ADMIN_URL'] || "//#{ENV['HOST']}/community_admin")
   community_admin_scope = {
     host: community_admin_url.host,
     path: community_admin_url.path
   }.compact
 
   scope community_admin_scope.merge(
-        as: :community_admin, :module => :community_admin) do
+    as: :community_admin, :module => :community_admin,
+    constraints: community_admin_scope.slice(:host)) do
+
     get '/' => 'base#root'
     resources :sessions, only: [:new, :create] do
       collection do
@@ -310,14 +312,16 @@ Rails.application.routes.draw do
     resources :private_circles, only: [:index, :show, :edit, :update, :new, :create]
   end
 
-  organization_admin_url = URI(ENV['ORGANIZATION_ADMIN_URL'] || 'organization_admin')
+  organization_admin_url = URI(ENV['ORGANIZATION_ADMIN_URL'] || "//#{ENV['HOST']}/organization_admin")
   organization_admin_scope = {
-    host: organization_admin_url.host || ENV['HOST'],
+    host: organization_admin_url.host,
     path: organization_admin_url.path
   }.compact
 
   scope organization_admin_scope.merge(
-        as: :organization_admin, :module => :organization_admin) do
+    as: :organization_admin, :module => :organization_admin,
+    constraints: community_admin_scope.slice(:host)) do
+
     get '/' => 'base#home'
     get 'auth' => 'base#auth'
     get 'webapp_redirect' => 'base#webapp_redirect'
@@ -350,9 +354,9 @@ Rails.application.routes.draw do
     end
   end
 
-  good_waves_url = URI(ENV['GOOD_WAVES_URL'] || 'good_waves')
+  good_waves_url = URI(ENV['GOOD_WAVES_URL'] || "//#{ENV['HOST']}/good_waves")
   good_waves_scope = {
-    host: good_waves_url.host || ENV['HOST'],
+    host: good_waves_url.host,
     path: good_waves_url.path
   }.compact
 
