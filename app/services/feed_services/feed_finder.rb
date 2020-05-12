@@ -153,11 +153,6 @@ module FeedServices
         # évènements digitaux
         pinned << 88999
 
-        # Willy
-        if dep.in?(['59', '62', '80', '02'])
-          pinned << 85035
-        end
-
         pinned.compact.uniq.reverse.each do |action|
           feeds = pin(action, feeds: feeds)
         end
