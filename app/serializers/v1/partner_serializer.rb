@@ -9,15 +9,18 @@ module V1
                :volunteers_needs,
                :phone,
                :address,
+               :postal_code,
                :website_url,
                :email,
                :default
 
     def filter(keys)
       if scope[:full] == true
-        keys
+        keys - [:postal_code]
+      elsif scope[:minimal] == true
+        [:id, :name, :postal_code]
       else
-        keys - [:description, :donations_needs, :volunteers_needs, :phone, :address, :website_url, :email]
+        keys - [:description, :donations_needs, :volunteers_needs, :phone, :address, :website_url, :email, :postal_code]
       end
     end
 
