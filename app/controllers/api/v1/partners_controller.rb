@@ -6,6 +6,21 @@ module Api
         @partners = Partner.order(:name)
         render json: @partners, status: 200, each_serializer: ::V1::PartnerSerializer, scope: {minimal: true}
       end
+
+      def join_request
+        partner_join_request = current_user.partner_join_requests.new(partner_join_request_params)
+        if partner_join_request.save
+          render json: {}, status: 200
+        else
+          render_error(code: "INVALID_PARTNER_JOIN_REQUEST", message: partner_join_request.errors.full_messages, status: 400)
+        end
+      end
+
+      private
+
+      def partner_join_request_params
+        params.permit(:partner_id, :new_partner_name, :postal_code, :partner_role_title)
+      end
     end
   end
 end

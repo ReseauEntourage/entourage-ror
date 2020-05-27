@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20200527130536) do
+ActiveRecord::Schema.define(version: 20200527134749) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -476,6 +476,18 @@ ActiveRecord::Schema.define(version: 20200527130536) do
   add_index "partner_invitations", ["partner_id", "invitee_email"], name: "index_pending_partner_invitations_on_partner_and_invitee_email", unique: true, where: "((status)::text = 'pending'::text)", using: :btree
   add_index "partner_invitations", ["partner_id", "invitee_id"], name: "index_accepted_partner_invitations_on_partner_and_invitee_id", unique: true, where: "((status)::text = 'accepted'::text)", using: :btree
   add_index "partner_invitations", ["token"], name: "index_partner_invitations_on_token", unique: true, using: :btree
+
+  create_table "partner_join_requests", force: :cascade do |t|
+    t.integer  "user_id",            null: false
+    t.integer  "partner_id"
+    t.string   "postal_code"
+    t.string   "new_partner_name"
+    t.string   "partner_role_title"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "partner_join_requests", ["user_id"], name: "index_partner_join_requests_on_user_id", using: :btree
 
   create_table "partners", force: :cascade do |t|
     t.string   "name",                       null: false

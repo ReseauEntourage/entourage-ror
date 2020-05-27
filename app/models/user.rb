@@ -48,6 +48,7 @@ class User < ActiveRecord::Base
   has_many :entourage_moderations, foreign_key: :moderator_id
   has_many :experimental_pending_request_reminders, class_name: 'Experimental::PendingRequestReminder'
   belongs_to :address, dependent: :destroy
+  has_many :partner_join_requests
 
   enum device_type: [ :android, :ios ]
   attribute :roles, Experimental::JsonbSet.new

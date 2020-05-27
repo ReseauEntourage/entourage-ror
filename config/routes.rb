@@ -214,7 +214,11 @@ Rails.application.routes.draw do
       end
       resources :invitations, only: [:index, :update, :destroy]
       # resources :contacts, only: [:update]
-      resources :partners, only: [:index]
+      resources :partners, only: [:index] do
+        collection do
+          post :join_request
+        end
+      end
 
       resources :links, only: [] do
         member do
