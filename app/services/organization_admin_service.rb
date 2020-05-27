@@ -11,6 +11,7 @@ module OrganizationAdminService
       partner_admin:      User.column_defaults['partner_admin'],
       partner_role_title: User.column_defaults['partner_role_title'],
       targeting_profile:  User.column_defaults['targeting_profile'],
+      goal:               :offer_help,
     )
 
     OrganizationAdmin::InvitationService.mark_accepted_invitations_as_outdated(

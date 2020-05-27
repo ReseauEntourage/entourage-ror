@@ -42,7 +42,8 @@ describe Api::V1::AnonymousUsersController do
           "ActionZoneCP"=>"not_set"
         },
         "placeholders"=>["firebase_properties", "address"],
-        "feature_flags"=>{"organization_admin"=>false}
+        "feature_flags"=>{"organization_admin"=>false},
+        "goal" => nil,
       }
     )}
   end

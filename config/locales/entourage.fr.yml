@@ -11,6 +11,7 @@ fr:
         about: À propos
         roles: Rôles
         targeting_profile: Profil
+        goal: Objectif
         partner: Association
       organization:
         name: Nom
@@ -77,3 +78,7 @@ fr:
         partner: Association
         ambassador: Ambassadeur
         team: Équipe Entourage
+      goals:
+        offer_help: Voisin solidaire
+        ask_for_help: Personne isolée ou en précarité
+        organization: Association ou service public

@@ -62,7 +62,8 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                                   "conversation"=>{"uuid"=>"1_list_#{user.id}"},
                                   "firebase_properties"=>{"ActionZoneDep"=>"not_set","ActionZoneCP"=>"not_set"},
                                   "anonymous"=>false,
-                                  "feature_flags"=>{"organization_admin"=>false}
+                                  "feature_flags"=>{"organization_admin"=>false},
+                                  "goal" => nil,
                                  },
                                 "first_sign_in"=>true
                                })
@@ -253,7 +254,8 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                                                              "conversation"=>{"uuid"=>"1_list_#{user.id}"},
                                                              "firebase_properties"=>{"ActionZoneDep"=>"not_set","ActionZoneCP"=>"not_set"},
                                                              "anonymous"=>false,
-                                                             "feature_flags"=>{"organization_admin"=>false}
+                                                             "feature_flags"=>{"organization_admin"=>false},
+                                                             "goal" => nil,
                                                            },
                                                     "first_sign_in"=>true})}
     end
@@ -362,6 +364,13 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
           it do
             expect { subject }.not_to change { event.created_at }
           end
+        end
+      end
+
+      context 'goals' do
+        context 'good value' do
+          before { patch 'update', token: user.token, user: { goal: :organization } }
+          it { expect(response.status).to eq(200) }
         end
       end
     end
@@ -614,7 +623,8 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                                                            "conversation"=>{"uuid"=>"1_list_#{user.id}"},
                                                            "firebase_properties"=>{"ActionZoneDep"=>"not_set","ActionZoneCP"=>"not_set"},
                                                            "anonymous"=>false,
-                                                           "feature_flags"=>{"organization_admin"=>false}
+                                                           "feature_flags"=>{"organization_admin"=>false},
+                                                           "goal" => nil,
                                                          }}) }
 
         context "when you have an address" do
@@ -671,7 +681,8 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                                                            "conversation"=>{"uuid"=>"1_list_#{user.id}"},
                                                            "firebase_properties"=>{"ActionZoneDep"=>"not_set","ActionZoneCP"=>"not_set"},
                                                            "anonymous"=>false,
-                                                           "feature_flags"=>{"organization_admin"=>false}
+                                                           "feature_flags"=>{"organization_admin"=>false},
+                                                           "goal" => nil,
                                                          }}) }
       end
 

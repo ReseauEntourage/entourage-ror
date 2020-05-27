@@ -58,5 +58,6 @@ class AnonymousUser
   def partner_id; nil; end
   def partner; nil; end
   def invitations; EntourageInvitation.none; end
+  def goal; nil; end
   def errors; ActiveModel::Errors.new(nil); end
 end

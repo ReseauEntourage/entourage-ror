@@ -15,6 +15,7 @@ class User < ActiveRecord::Base
   validates_length_of :about, maximum: 200, allow_nil: true
   validates_length_of :password, within: 8..256, allow_nil: true
   validates_inclusion_of :community, in: Community.slugs
+  validates_inclusion_of :goal, in: -> (u) { (u.community&.goals || []).map(&:to_s) }, allow_nil: true
   validate :validate_roles!
   validate :validate_partner!
 
@@ -93,6 +94,8 @@ class User < ActiveRecord::Base
   scope :moderators, -> { where(admin: true).where("roles ? 'moderator'") }
 
   before_validation do
+    self.goal = nil if goal.blank?
+
     if targeting_profile_changed? && targeting_profile == 'team'
       self.partner_id = Partner.where(name: 'Entourage').pluck(:id).first
     elsif targeting_profile_changed? && targeting_profile != 'partner'
