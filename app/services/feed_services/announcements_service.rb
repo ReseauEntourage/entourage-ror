@@ -39,7 +39,18 @@ module FeedServices
     def select_announcements
       return [] unless user.community == :entourage
 
-      announcements = Announcement.active.ordered.to_a
+      dep = nil
+      if user.address&.country == 'FR'
+        dep = user.address.postal_code.to_s.first(2)
+      end
+
+      announcements = Announcement.active
+
+      unless dep.in?(['75', '93', '92'])
+        announcements = announcements.where.not(id: [103, 104])
+      end
+
+      announcements = announcements.ordered.to_a
 
       # 3   9  15  22  29  36  ...
       #  +6  +6  +7  +7  +7  ...
