@@ -18,6 +18,7 @@ class User < ActiveRecord::Base
   validates_inclusion_of :goal, in: -> (u) { (u.community&.goals || []).map(&:to_s) }, allow_nil: true
   validate :validate_roles!
   validate :validate_partner!
+  validate :validate_interests!
 
   after_save :clean_up_passwords, if: :encrypted_password_changed?
 
@@ -52,6 +53,7 @@ class User < ActiveRecord::Base
 
   enum device_type: [ :android, :ios ]
   attribute :roles, Experimental::JsonbSet.new
+  attribute :interests, Experimental::JsonbSet.new
 
   scope :type_pro, -> { where(user_type: "pro") }
   scope :validated, -> { where(validation_status: "validated") }
@@ -112,20 +114,32 @@ class User < ActiveRecord::Base
     end
   end
 
-  def validate_roles!
+  def validate_set_attr attribute
     return if community.nil?
+    attribute = attribute.to_sym
 
-    invalid = roles - community.roles
-    invalid -= community.admin_roles if admin?
+    invalid = self[attribute] - community.send(attribute)
+    invalid = yield invalid if block_given?
 
     errors.add(
-      :roles,
+      attribute,
       [
         invalid.map(&:inspect).to_sentence,
         (invalid.one? ? "n'est" : "ne sont"),
         "pas inclus dans la liste"
       ].join(' ')
     ) if invalid.any?
+  end
+
+  def validate_roles!
+    validate_set_attr :roles do |invalid|
+      invalid -= community.admin_roles if admin?
+      invalid
+    end
+  end
+
+  def validate_interests!
+    validate_set_attr :interests
   end
 
   def validate_partner!

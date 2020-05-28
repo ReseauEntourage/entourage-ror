@@ -64,6 +64,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                                   "anonymous"=>false,
                                   "feature_flags"=>{"organization_admin"=>false},
                                   "goal" => nil,
+                                  "interests" => []
                                  },
                                 "first_sign_in"=>true
                                })
@@ -256,6 +257,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                                                              "anonymous"=>false,
                                                              "feature_flags"=>{"organization_admin"=>false},
                                                              "goal" => nil,
+                                                             "interests" => []
                                                            },
                                                     "first_sign_in"=>true})}
     end
@@ -367,10 +369,10 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
         end
       end
 
-      context 'goals' do
+      context 'interests' do
         context 'good value' do
-          before { patch 'update', token: user.token, user: { goal: :organization } }
-          it { expect(response.status).to eq(200) }
+          before { patch 'update', token: user.token, user: { interests: [:event_sdf, :aide_sdf] } }
+          it { expect(result['user']).to include('interests' => ['aide_sdf', 'event_sdf']) }
         end
       end
     end
@@ -625,6 +627,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                                                            "anonymous"=>false,
                                                            "feature_flags"=>{"organization_admin"=>false},
                                                            "goal" => nil,
+                                                           "interests" => []
                                                          }}) }
 
         context "when you have an address" do
@@ -683,6 +686,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                                                            "anonymous"=>false,
                                                            "feature_flags"=>{"organization_admin"=>false},
                                                            "goal" => nil,
+                                                           "interests" => []
                                                          }}) }
       end
 

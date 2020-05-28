@@ -180,4 +180,22 @@ describe User, :type => :model do
     invitation = FactoryGirl.create(:entourage_invitation, invitee: user)
     expect(user.invitations).to eq([invitation])
   end
+
+  def build_or_error *args
+    o = build(*args)
+    o.save || o.errors.to_h
+  end
+
+  describe 'roles' do
+    it { expect(build_or_error :public_user, roles: [:moderator]).to eq(roles: ":moderator n'est pas inclus dans la liste") }
+    it { expect(build_or_error :public_user, admin: true, roles: [:moderator]).to be true }
+    it { expect(build_or_error :public_user, roles: [:lol]).to eq(roles: ":lol n'est pas inclus dans la liste") }
+    it { expect(build_or_error :public_user, roles: [:ambassador]).to be true }
+  end
+
+  describe 'interests' do
+    it { expect(build_or_error :public_user, interests: []).to be true }
+    it { expect(build_or_error :public_user, interests: [:event_riverain, 'entourer_riverain']).to be true }
+    it { expect(build_or_error :public_user, interests: [:aide_sdf, :lol]).to eq(interests: ":lol n'est pas inclus dans la liste") }
+  end
 end

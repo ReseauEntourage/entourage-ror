@@ -18,6 +18,7 @@ module V1
                :anonymous,
                :uuid,
                :goal,
+               :interests,
                :firebase_properties,
                :placeholders,
                :feature_flags
@@ -33,7 +34,7 @@ module V1
         keys -= [:phone]
       end
 
-      keys -= [:token, :email, :has_password, :address, :firebase_properties, :goal] unless me?
+      keys -= [:token, :email, :has_password, :address, :firebase_properties, :goal, :interests] unless me?
 
       # uuid and anonymous are not confidential but right now we only need
       # them for current_user in the clients so we don't return it in other
