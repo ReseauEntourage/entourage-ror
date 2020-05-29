@@ -172,7 +172,7 @@ Rails.application.routes.draw do
       resources :messages, only: [:create]
       resources :registration_requests, only: [:create]
       resources :map, only: [:index]
-      resources :newsletter_subscriptions
+      resources :newsletter_subscriptions, only: [:create]
       resources :questions, only: [:index]
 
       resources :pois, only: [:index, :create] do
@@ -199,7 +199,7 @@ Rails.application.routes.draw do
 
         resources :tours, :controller => 'users/tours', only: [:index]
         resources :entourages, :controller => 'users/entourages', only: [:index]
-        resources :partners, :controller => 'users/partners'
+        # resources :partners, :controller => 'users/partners'
       end
 
       resources :entourages, only: [:index, :show, :create, :update] do
@@ -213,7 +213,7 @@ Rails.application.routes.draw do
         end
       end
       resources :invitations, only: [:index, :update, :destroy]
-      resources :contacts, only: [:update]
+      # resources :contacts, only: [:update]
       resources :partners, only: [:index]
 
       resources :links, only: [] do
@@ -237,7 +237,7 @@ Rails.application.routes.draw do
       post 'login' => 'users#login'
       get 'check' => 'base#check'
       get 'ping' => 'base#ping'
-      get 'csv_matching' => 'csv_matching#show'
+      # get 'csv_matching' => 'csv_matching#show'
       get 'organization_admin_redirect' => 'users#organization_admin_redirect'
 
       namespace :public do
