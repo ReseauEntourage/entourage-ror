@@ -4,12 +4,16 @@ module Api
       protect_from_forgery with: :null_session
       before_filter :allow_cors
       before_filter :validate_request!, only: [:check]
-      before_filter :authenticate_user!, except: [:check]
+      before_filter :authenticate_user!, except: [:check, :deprecated]
 
       def allow_cors
         headers["Access-Control-Allow-Origin"] = "*"
         headers["Access-Control-Allow-Methods"] = %w{GET POST PUT DELETE}.join(",")
         headers["Access-Control-Allow-Headers"] = %w{Origin Accept Content-Type X-Requested-With X-CSRF-Token X-API-Auth-Token}.join(",")
+      end
+
+      def deprecated
+        render status: 404, json: {message: :deprecated}
       end
 
       def options
