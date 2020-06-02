@@ -5,7 +5,13 @@ class SmsNotificationService
       return
     end
 
-    case ENV['SMS_PROVIDER']
+    provider = ENV['SMS_PROVIDER']
+
+    if audit_phone_number?(phone_number)
+      provider = 'Slack'
+    end
+
+    case provider
     when 'AWS'
       deliveryState = send_aws_sms(phone_number, message, sms_type)
     when 'Slack'
@@ -54,8 +60,14 @@ class SmsNotificationService
   def send_slack_message(phone_number, message, sms_type)
     return if ENV['SLACK_WEBHOOK_URL'].blank?
 
+    channel = '#test-env-sms'
+
+    if audit_phone_number?(phone_number)
+      channel = '#audit-linkedout-entourage'
+    end
+
     Slack::Notifier.new(ENV['SLACK_WEBHOOK_URL']).ping(
-      channel: '#test-env-sms',
+      channel: channel,
       username: ENV['SMS_SENDER_NAME'],
       icon_emoji: ':speech_balloon:',
       text: "À #{phone_number}\n"\
@@ -70,5 +82,12 @@ class SmsNotificationService
   def debug_to_logs(phone_number, message, sms_type)
     Rails.logger.debug "\nSMS to #{phone_number.inspect}: #{message.inspect}"
     return 'Ok'
+  end
+
+  private
+
+  def audit_phone_number? phone_number
+    ENV['AUDIT_PHONE_PREFIXES'].present? &&
+    ENV['AUDIT_PHONE_PREFIXES'].split(',').any? { |prefix| phone_number.start_with?(prefix) }
   end
 end
