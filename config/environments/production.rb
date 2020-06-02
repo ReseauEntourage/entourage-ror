@@ -93,7 +93,7 @@ Rails.application.configure do
     config.action_mailer.delivery_method = :safety_mailer
 
     config.action_mailer.safety_mailer_settings = {
-      allowed_matchers: [ /@entourage\.social\z/, /@tecknoworks\.com\z/ ],
+      allowed_matchers: [ /@entourage\.social\z/, /\Aabn\.audit\.[123]@advens\.fr\z/ ],
       delivery_method: :smtp,
       delivery_method_settings: {
         :port =>           '587',
