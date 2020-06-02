@@ -4,17 +4,6 @@ RSpec.describe Api::V1::Users::PartnersController, type: :controller do
 
   let!(:user) { FactoryGirl.create :pro_user }
 
-  describe 'GET index' do
-    let!(:partner1) { FactoryGirl.create(:partner) }
-    let!(:partner2) { FactoryGirl.create(:partner) }
-    # before { FactoryGirl.create(:user_partner, user: user, partner: partner1) }
-
-    before { get 'index', {user_id: user.id, token: user.token} }
-
-    # TODO(partner)
-    it { expect(JSON.parse(response.body)["partners"].map{|p| p["id"]}).to eq([])}
-  end
-
   describe 'POST create' do
     pending
     let!(:partner) { FactoryGirl.create(:partner) }
