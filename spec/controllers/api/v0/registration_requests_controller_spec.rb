@@ -1,7 +1,7 @@
 require 'rails_helper'
 include AuthHelper
 
-RSpec.describe Api::V0::RegistrationRequestsController, type: :controller do
+RSpec.describe Api::V0::RegistrationRequestsController, type: :controller, skip: true do
   render_views
 
   let(:valid_attributes) {

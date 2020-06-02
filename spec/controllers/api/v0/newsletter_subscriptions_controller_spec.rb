@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Api::V0::NewsletterSubscriptionsController, :type => :controller do
+RSpec.describe Api::V0::NewsletterSubscriptionsController, :type => :controller, skip: true do
 
   describe "POST create" do
 

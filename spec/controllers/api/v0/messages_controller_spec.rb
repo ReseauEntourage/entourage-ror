@@ -1,7 +1,7 @@
 require 'rails_helper'
 include AuthHelper
 
-RSpec.describe Api::V0::MessagesController, :type => :controller do
+RSpec.describe Api::V0::MessagesController, :type => :controller, skip: true do
 
   describe 'create' do
     context "valid message" do

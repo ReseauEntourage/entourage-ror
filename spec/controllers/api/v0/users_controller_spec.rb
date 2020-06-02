@@ -2,7 +2,7 @@ require 'rails_helper'
 include AuthHelper
 include Requests::JsonHelpers
 
-RSpec.describe Api::V0::UsersController, :type => :controller do
+RSpec.describe Api::V0::UsersController, :type => :controller, skip: true do
   render_views
 
   describe 'POST #login' do

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Api::V0::MapController, :type => :controller do
+RSpec.describe Api::V0::MapController, :type => :controller, skip: true do
   render_views
 
   let!(:user) { FactoryGirl.create :pro_user }

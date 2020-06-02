@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Api::V0::Users::ToursController, :type => :controller do
+RSpec.describe Api::V0::Users::ToursController, :type => :controller, skip: true do
   render_views
 
   describe 'GET index' do
