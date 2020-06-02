@@ -70,7 +70,7 @@ class SmsNotificationService
       channel: channel,
       username: ENV['SMS_SENDER_NAME'],
       icon_emoji: ':speech_balloon:',
-      text: "À #{phone_number}\n"\
+      text: "À #{phone_number} (#{EnvironmentHelper.env})\n"\
             "```\n"\
             "#{message}"\
             "```"
