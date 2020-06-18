@@ -21,6 +21,8 @@ module Api
             'http://www.simplecommebonjour.org',
           'action-examples' =>
             'https://blog.entourage.social/quelles-actions-faire-avec-entourage/#site-content',
+          'events-guide' =>
+            'https://blog.entourage.social/2018/11/12/le-coin-des-assos-creer-un-evenement-sur-entourage/#site-content',
           'devenir-ambassadeur' =>
             'https://ambassadeurs.entourage.social',
           'donation' =>
