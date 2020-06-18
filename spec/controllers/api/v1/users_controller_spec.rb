@@ -33,6 +33,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                                   "user_type"=>"pro",
                                   "has_password"=>false,
                                   "address"=>nil,
+                                  "address_2"=>nil,
                                   "avatar_url"=>"https://foobar.s3-eu-west-1.amazonaws.com/300x300/avatar.jpg",
                                   "organization"=>{"name"=>user.organization.name,
                                                    "description"=>"Association description",
@@ -239,6 +240,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                                                              "token"=>user.token,
                                                              "has_password"=>false,
                                                              "address"=>nil,
+                                                             "address_2"=>nil,
                                                              "avatar_url"=>"https://foobar.s3-eu-west-1.amazonaws.com/300x300/avatar.jpg",
                                                              "organization"=>{"name"=>user.organization.name,
                                                                               "description"=>"Association description",
@@ -597,6 +599,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                                                            "avatar_url"=>nil,
                                                            "has_password"=>false,
                                                            "address"=>nil,
+                                                           "address_2"=>nil,
                                                            "organization"=>{"name"=>user.organization.name,
                                                                             "description"=>"Association description",
                                                                             "phone"=>user.organization.phone,
@@ -638,6 +641,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
               "latitude" => 1.5,
               "longitude" => 1.5,
               "display_address" => "rue Pizza, 75020",
+              "position"=>1,
             )
           }
         end
@@ -660,6 +664,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                                                            "avatar_url"=>nil,
                                                            "has_password"=>false,
                                                            "address"=>nil,
+                                                           "address_2"=>nil,
                                                            "organization"=>{"name"=>user.organization.name, "description"=>"Association description", "phone"=>user.organization.phone, "address"=>user.organization.address, "logo_url"=>nil},
                                                            "stats"=>{
                                                                "tour_count"=>0,
@@ -693,7 +698,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
       context "get my profile as an anonymous user" do
         let(:user) { AnonymousUserService.create_user($server_community) }
         before { get :show, id: "me", token: user.token }
-        it { expect(result['user']['placeholders']).to eq ["firebase_properties", "address"] }
+        it { expect(result['user']['placeholders']).to eq ["firebase_properties", "address", "address_2"] }
       end
 
       context "get someone else profile" do
@@ -831,6 +836,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
           "display_address"=>"75012",
           "latitude"=>48.835085,
           "longitude"=>2.382165,
+          "position"=>1,
         },
         "firebase_properties"=>{
           "ActionZoneDep"=>"not_set",
@@ -914,6 +920,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                 "display_address"=>"My Place, 00001",
                 "latitude"=>1.0,
                 "longitude"=>2.0,
+                "position"=>1,
               },
               "firebase_properties"=>{
                 "ActionZoneDep"=>"00",

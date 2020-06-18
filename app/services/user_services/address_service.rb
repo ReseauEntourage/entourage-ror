@@ -1,7 +1,8 @@
 module UserServices
   class AddressService
-    def initialize(user:, params:)
+    def initialize(user:, position:, params:)
       @user = user
+      @position = position
       @params = params.with_indifferent_access
       @callback = Callback.new
     end
@@ -23,7 +24,7 @@ module UserServices
         fetched_google_place_details = true
       end
 
-      address, success = self.class.update_address(user: user, params: params)
+      address, success = self.class.update_address(user: user, position: position, params: params)
 
       if !success
         callback.on_failure.try(:call, user, address)
@@ -63,14 +64,19 @@ module UserServices
     end
 
     private
-    attr_reader :user, :params, :callback
+    attr_reader :user, :position, :params, :callback
 
-    def self.update_address user:, params:
-      address = user.address || Address.new
+    def self.update_address user:, position:, params:
+      if user.anonymous?
+        address = Address.new(user_id: 0, position: position)
+      else
+        address = user.addresses.find_or_initialize_by(position: position)
+      end
 
       if params[:google_place_id] != address.google_place_id
         address.postal_code = nil
         address.country = nil
+        address.google_place_id = nil
       end
 
       address.assign_attributes(params)
@@ -79,17 +85,7 @@ module UserServices
         success = address.valid?
         user.address = address
       else
-        begin
-          ActiveRecord::Base.transaction do
-            address.save!
-            if address.id != user.address_id
-              user.update_column(:address_id, address.id)
-            end
-          end
-          success = true
-        rescue ActiveRecord::ActiveRecordError
-          success = false
-        end
+        success = address.save
       end
 
       [address, success]

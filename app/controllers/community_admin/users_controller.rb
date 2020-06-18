@@ -163,7 +163,7 @@ module CommunityAdmin
       end
 
       if params.dig(:user, :address).present?
-        updater = UserServices::AddressService.new(user: user, params: address_params)
+        updater = UserServices::AddressService.new(user: user, position: 1, params: address_params)
         updater.update do |on|
           on.failure { raise "Could not update address" }
         end

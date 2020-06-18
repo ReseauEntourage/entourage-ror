@@ -6,5 +6,14 @@ FactoryGirl.define do
     postal_code "75020"
     country 'FR'
     user { association :public_user }
+
+    trait :blank do
+      place_name nil
+      latitude nil
+      longitude nil
+      postal_code nil
+      country nil
+      user nil
+    end
   end
 end

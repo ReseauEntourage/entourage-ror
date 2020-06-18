@@ -37,11 +37,12 @@ describe Api::V1::AnonymousUsersController do
           "entourage_count"=>0
         },
         "address"=>nil,
+        "address_2"=>nil,
         "firebase_properties"=>{
           "ActionZoneDep"=>"not_set",
           "ActionZoneCP"=>"not_set"
         },
-        "placeholders"=>["firebase_properties", "address"],
+        "placeholders"=>["firebase_properties", "address", "address_2"],
         "feature_flags"=>{"organization_admin"=>false},
         "goal" => nil,
         "interests" => []

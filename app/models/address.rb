@@ -1,11 +1,14 @@
 class Address < ActiveRecord::Base
   include Onboarding::UserEventsTracking::AddressConcern
 
-  validates_presence_of :place_name, :latitude, :longitude
+  USER_MAX_ADDRESSES = 2
 
-  has_one :user
+  validates_presence_of :place_name, :latitude, :longitude, :user_id
+  validates :position, numericality: { only_integer: true, greater_than_or_equal_to: 1, less_than_or_equal_to: USER_MAX_ADDRESSES }
 
-  after_commit :mixpanel_sync
+  belongs_to :user
+
+  after_create :set_user_address_id_if_primary!
 
   def display_address
     [place_name, postal_code].compact.uniq.join(', ')
@@ -21,9 +24,8 @@ class Address < ActiveRecord::Base
     COUNTRIES.find { |c| c[:code] == country }.try(:[], :name) || country
   end
 
-
   def self.enable_mixpanel_sync?
-    !Rails.env.test?
+    false
   end
 
   def mixpanel_sync(synchronous: false)
@@ -31,5 +33,11 @@ class Address < ActiveRecord::Base
     return unless (['country', 'postal_code'] & previous_changes.keys).any?
     return unless [country, postal_code].all?(&:present?)
     AsyncService.new(MixpanelService).sync_address(self)
+  end
+
+  private
+
+  def set_user_address_id_if_primary!
+    user.update!(address_id: id) if position == 1
   end
 end

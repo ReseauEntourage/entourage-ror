@@ -26,6 +26,7 @@ module V1
     has_one :organization
     has_one :stats, serializer: ActiveModel::DefaultSerializer
     has_one :address, serializer: AddressSerializer
+    has_one :address_2, serializer: AddressSerializer
 
     def filter(keys)
       if scope[:phone_only] == true
@@ -34,7 +35,7 @@ module V1
         keys -= [:phone]
       end
 
-      keys -= [:token, :email, :has_password, :address, :firebase_properties, :goal, :interests] unless me?
+      keys -= [:token, :email, :has_password, :address, :address_2, :firebase_properties, :goal, :interests] unless me?
 
       # uuid and anonymous are not confidential but right now we only need
       # them for current_user in the clients so we don't return it in other
@@ -127,7 +128,7 @@ module V1
     # the local value should be used instead of the one provided by the server.
     # This allows to have some persistence of the attributes of anonymous users.
     def placeholders
-      [:firebase_properties, :address]
+      [:firebase_properties, :address, :address_2]
     end
 
     def feature_flags

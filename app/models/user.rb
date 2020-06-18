@@ -48,7 +48,8 @@ class User < ActiveRecord::Base
   has_one :moderation, class_name: 'UserModeration'
   has_many :entourage_moderations, foreign_key: :moderator_id
   has_many :experimental_pending_request_reminders, class_name: 'Experimental::PendingRequestReminder'
-  belongs_to :address, dependent: :destroy
+  belongs_to :address
+  has_many :addresses, -> { order(:position) }, dependent: :destroy
   has_many :partner_join_requests
 
   enum device_type: [ :android, :ios ]
@@ -260,6 +261,10 @@ class User < ActiveRecord::Base
 
   def organization_description
     organization.description if organization_id
+  end
+
+  def address_2
+    addresses.find_by(position: 2)
   end
 
   protected

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20200527155149) do
+ActiveRecord::Schema.define(version: 20200618081906) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -114,16 +114,20 @@ ActiveRecord::Schema.define(version: 20200527155149) do
   add_index "active_admin_comments", ["resource_type", "resource_id"], name: "index_active_admin_comments_on_resource_type_and_resource_id", using: :btree
 
   create_table "addresses", force: :cascade do |t|
-    t.string   "place_name",                null: false
+    t.string   "place_name",                            null: false
     t.string   "street_address"
-    t.float    "latitude",                  null: false
-    t.float    "longitude",                 null: false
+    t.float    "latitude",                              null: false
+    t.float    "longitude",                             null: false
     t.string   "postal_code",     limit: 8
     t.string   "country",         limit: 2
-    t.datetime "created_at",                null: false
-    t.datetime "updated_at",                null: false
+    t.datetime "created_at",                            null: false
+    t.datetime "updated_at",                            null: false
     t.string   "google_place_id"
+    t.integer  "user_id",                               null: false
+    t.integer  "position",                  default: 1, null: false
   end
+
+  add_index "addresses", ["user_id", "position"], name: "index_addresses_on_user_id_and_position", unique: true, using: :btree
 
   create_table "announcements", force: :cascade do |t|
     t.string  "title"

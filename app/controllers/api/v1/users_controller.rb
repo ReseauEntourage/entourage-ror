@@ -195,7 +195,7 @@ module Api
           return render_error(code: "UNAUTHORIZED", message: "You can only update your own address.", status: 401)
         end
 
-        updater = UserServices::AddressService.new(user: current_user_or_anonymous, params: address_params)
+        updater = UserServices::AddressService.new(user: current_user_or_anonymous, position: 1, params: address_params)
 
         updater.update do |on|
           on.success do |user, address|
@@ -293,7 +293,7 @@ module Api
             country: :FR
           }
 
-          updater = UserServices::AddressService.new(user: @user, params: address_params)
+          updater = UserServices::AddressService.new(user: @user, position: 1, params: address_params)
 
           updater.update do |on|
             on.success do |user, address|

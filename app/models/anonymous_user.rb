@@ -39,6 +39,14 @@ class AnonymousUser
     @token ||= AnonymousUserService.token_from_uuid(uuid, community: community)
   end
 
+  attr_accessor :address
+
+  def addresses
+    [address]
+  end
+
+  def address_2; nil; end
+
   def id; nil; end
   def first_name; nil; end
   def last_name; nil; end
@@ -53,7 +61,6 @@ class AnonymousUser
   def pro?; false; end
   def email; nil; end
   def has_password?; false; end
-  attr_accessor :address
   def deleted; false; end
   def partner_id; nil; end
   def partner; nil; end
