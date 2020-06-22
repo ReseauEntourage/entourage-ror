@@ -137,21 +137,13 @@ module FeedServices
 
         pinned = []
 
-        # sensib
-        pinned << 90650
+        if dep != '35'
+          # sensib
+          pinned << 90650
 
-        # covid
-        # covid_action = {
-        #   '75' => 45922,
-        #   '59' => 45905,
-        #   '35' => 45880,
-        #   '69' => 45876,
-        #   '92' => 45904
-        # }[dep]
-        # pinned << covid_action if pinned.count < 2
-
-        # évènements digitaux
-        pinned << 88999
+          # évènements digitaux
+          pinned << 88999
+        end
 
         pinned.compact.uniq.reverse.each do |action|
           feeds = pin(action, feeds: feeds)
