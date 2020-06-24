@@ -203,7 +203,8 @@ Rails.application.routes.draw do
 
         resources :addresses, controller: 'users/addresses', only: [] do
           collection do
-            post ':position' => :create_or_update
+            post   ':position' => :create_or_update
+            delete ':position' => :destroy
           end
         end
       end

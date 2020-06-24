@@ -31,6 +31,20 @@ module Api
           end
         end
 
+        def destroy
+          position = params[:position]&.to_i
+          if position.blank? || position < 2 || position > Address::USER_MAX_ADDRESSES
+            return render_error(
+                code: "CANNOT_DELETE_ADDRESS",
+                message: "Invalid address id",
+                status: 400
+            )
+          end
+          address = current_user.addresses.find_by(position: position)
+          address.destroy! if address
+          head :no_content
+        end
+
         private
 
         def address_params
