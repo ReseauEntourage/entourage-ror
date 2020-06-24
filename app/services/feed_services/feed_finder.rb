@@ -140,9 +140,10 @@ module FeedServices
         if dep != '35'
           # sensib
           pinned << 90650
+        end
 
-          # évènements digitaux
-          pinned << 88999
+        if dep == '69'
+          pinned << 93113 # Collecte "Camping Paradis"
         end
 
         pinned.compact.uniq.reverse.each do |action|
