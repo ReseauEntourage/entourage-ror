@@ -5,6 +5,8 @@ module V1
                :large_logo_url,
                :small_logo_url,
                :description,
+               :donations_needs,
+               :volunteers_needs,
                :phone,
                :address,
                :website_url,
@@ -15,7 +17,7 @@ module V1
       if scope[:full] == true
         keys
       else
-        keys - [:description, :phone, :address, :website_url, :email]
+        keys - [:description, :donations_needs, :volunteers_needs, :phone, :address, :website_url, :email]
       end
     end
 
@@ -25,10 +27,6 @@ module V1
     # to simplify front-end handling
     OPTIONAL_ATTRIBUTES.each do |attr_name|
       define_method(attr_name) { object[attr_name].presence }
-    end
-
-    def description
-      object.description_with_needs
     end
 
     def default
