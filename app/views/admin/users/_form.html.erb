@@ -199,16 +199,19 @@
 <script>
   var $profileField = $('#user_targeting_profile'),
       $partnerField = $('#user_partner_id'),
-      $partnerFieldset = $('#partner-fieldset');
+      $partnerFieldset = $('#partner-fieldset'),
+      $partnerUserFields = $('#user_first_name, #user_last_name, #user_email');
 
   function togglePartnerFieldset() {
     if ($profileField.val() === 'partner') {
       $partnerFieldset.removeClass('hide')
       $partnerField.prop('disabled', false)
+      $partnerUserFields.prop('required', true)
     }
     else {
       $partnerFieldset.addClass('hide')
       $partnerField.prop('disabled', true)
+      $partnerUserFields.prop('required', <%= @user.pro? %>)
     }
   }
 

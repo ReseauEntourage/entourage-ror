@@ -84,10 +84,13 @@ module Admin
       user.about.gsub!(/\r\n/, "\n")
 
       saved = false
-      ActiveRecord::Base.transaction do
-        user.save! if user.changed?
-        moderation.save! if moderation.changed?
-        saved = true
+      begin
+        ActiveRecord::Base.transaction do
+          user.save! if user.changed?
+          moderation.save! if moderation.changed?
+          saved = true
+        end
+      rescue ActiveRecord::RecordInvalid
       end
 
       if email_prefs_success && saved
