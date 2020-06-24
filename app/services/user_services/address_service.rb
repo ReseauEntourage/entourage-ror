@@ -45,6 +45,30 @@ module UserServices
       true
     end
 
+    def synchronous_update
+      yield callback if block_given?
+
+      if params[:google_place_id].present?
+        @params.merge! self.class.fetch_google_place_details(params[:google_place_id])
+
+      elsif params[:latitude].present? && params[:longitude].present?
+        country, postal_code, city = EntourageServices::GeocodingService.search_postal_code(
+          params[:latitude], params[:longitude])
+
+        @params.merge!(country: country, postal_code: postal_code)
+      end
+
+      address, success = self.class.update_address(user: user, position: position, params: params)
+
+      if !success
+        callback.on_failure.try(:call, user, address)
+        return false
+      end
+
+      callback.on_success.try(:call, user, address)
+      true
+    end
+
     def self.update_with_google_place_details address
       address.update!(fetch_google_place_details(address.google_place_id))
     end

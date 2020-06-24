@@ -11,13 +11,10 @@ module Api
             params: address_params
           )
 
-          updater.update do |on|
-            on.success do |user, address|
-              render status: 200, json: {
-                address: ::V1::AddressSerializer.new(address, root: false)
-              }
-              # TODO
-              # firebase_properties: UserService.firebase_properties(user.reload)
+          updater.synchronous_update do |on|
+            on.success do
+              current_user.reload
+              render json: current_user, status: 200, serializer: ::V1::UserSerializer, scope: full_user_serializer_options
             end
 
             on.failure do |user, address|
@@ -42,7 +39,9 @@ module Api
           end
           address = current_user.addresses.find_by(position: position)
           address.destroy! if address
-          head :no_content
+
+          current_user.reload
+          render json: current_user, status: 200, serializer: ::V1::UserSerializer, scope: full_user_serializer_options
         end
 
         private
@@ -56,6 +55,15 @@ module Api
             render_error(code: "UNAUTHORIZED", message: "You can only update your own address.", status: 401)
           end
         end
+
+      def full_user_serializer_options
+        {
+          full_partner: true,
+          memberships: true,
+          user: current_user,
+          conversation: ConversationService.conversations_allowed?(from: current_user, to: current_user)
+        }
+      end
       end
     end
   end

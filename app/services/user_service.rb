@@ -33,24 +33,38 @@ module UserService
     # As much as possible, we must always return the same property names
     # so that we overwrite the previous values when the user changes.
 
-    address = user.address
+    departments = []
+    postal_codes = []
 
-    postal_code, department =
-      if address.nil? || address.postal_code.nil?
-        [:not_set, :not_set]
-      elsif address.country != 'FR'
-        [:not_FR,  :not_FR]
-      elsif address.postal_code.last == 'X'
-        [:not_set,
-         address.postal_code.first(2)]
-      else
-        [address.postal_code,
-         address.postal_code.first(2)]
-      end
+    user.addresses.each do |address|
+      postal_code, department =
+        if address.postal_code.nil?
+          [:not_set, :not_set]
+        elsif address.country != 'FR'
+          [:not_FR,  :not_FR]
+        elsif address.postal_code.last == 'X'
+          [:not_set,
+           address.postal_code.first(2)]
+        else
+          [address.postal_code,
+           address.postal_code.first(2)]
+        end
+
+      departments << department
+      postal_codes << postal_code
+    end
+
+    [departments, postal_codes].each do |list|
+      list.uniq!
+      list.delete :not_set if (list - [:not_set]).any?
+      list.delete :not_FR  if (list - [:not_FR]).any?
+      list.push :not_set if list.empty?
+      list.sort!
+    end
 
     {
-      ActionZoneDep: department,
-      ActionZoneCP:  postal_code
+      ActionZoneDep: departments.join(','),
+      ActionZoneCP:  postal_codes.join(',')
     }
   end
 end
