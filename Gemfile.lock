@@ -5,6 +5,13 @@ GIT
     googlestaticmap (1.2.2)
       polylines (>= 0.3.0)
 
+GIT
+  remote: https://github.com/rails-lts/rack.git
+  revision: e3b4fcc9be202f4131ad41976014c1a6041d8741
+  branch: lts-1-6-stable
+  specs:
+    rack (1.6.13)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -265,7 +272,6 @@ GEM
     public_suffix (3.0.3)
     puma (4.3.5)
       nio4r (~> 2.0)
-    rack (1.6.13)
     rack-mini-profiler (0.10.7)
       rack (>= 1.2.0)
     rack-protection (1.5.5)
@@ -477,6 +483,7 @@ DEPENDENCIES
   phonelib
   pry-rails (~> 0.3.4)
   puma
+  rack!
   rack-mini-profiler (~> 0.10.1)
   rack-timeout
   rails (~> 4.2.11.1)

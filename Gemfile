@@ -3,6 +3,10 @@ source 'https://rubygems.org'
 ruby '2.6.5'
 
 gem 'rails',                          '~> 4.2.11.1'
+
+# custom version of rack with backported security fixes
+gem 'rack', git: 'https://github.com/rails-lts/rack.git', branch: 'lts-1-6-stable'
+
 gem 'sass-rails',                     '~> 4.0.3'
 gem 'uglifier',                       '>= 1.3.0'
 gem 'jquery-rails',                   '~> 4.0.4'
