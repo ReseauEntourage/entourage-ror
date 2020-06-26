@@ -2,7 +2,7 @@ module Api
   module V1
     class EntouragesController < Api::V1::BaseController
       before_action :set_entourage_or_handle_conversation_uuid, only: [:show]
-      before_action :set_entourage, only: [:update, :read, :one_click_update]
+      before_action :set_entourage, only: [:update, :read, :one_click_update, :report]
       skip_before_filter :authenticate_user!, only: [:one_click_update]
       allow_anonymous_access only: [:show]
 
@@ -92,11 +92,34 @@ module Api
         render layout: 'landing'
       end
 
+      def report
+        message = entourage_report_params[:message]
+        if message.blank?
+          render json: { code: 'CANNOT_REPORT_ENTOURAGE' }, status: :bad_request
+          return
+        end
+
+        reporting_user = current_user_or_anonymous
+        reporting_user = reporting_user.token if reporting_user.anonymous?
+
+        AdminMailer.group_report(
+          reported_group: @entourage,
+          reporting_user: reporting_user,
+          message:        message
+        ).deliver_later
+
+        head :created
+      end
+
       private
 
       def entourage_params
         metadata_keys = params.dig(:entourage, :metadata).try(:keys) || []
         params.require(:entourage).permit(:group_type, {location: [:longitude, :latitude]}, :title, :entourage_type, :display_category, :status, :description, :category, :public, {outcome: [:success]}, {metadata: metadata_keys}, :recipient_consent_obtained)
+      end
+
+      def entourage_report_params
+        params.require(:entourage_report).permit(:message)
       end
 
       def set_entourage

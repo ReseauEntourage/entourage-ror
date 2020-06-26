@@ -599,4 +599,23 @@ describe Api::V1::EntouragesController do
       it { expect(join_request.reload.last_message_read).to eq(old_date) }
     end
   end
+
+  describe 'POST #report' do
+    let(:reporting_user) { create :public_user }
+    let(:reported_group) { create :entourage }
+    let(:message) { "MESSAGE" }
+
+    before { post 'report', token: reporting_user.token, id: reported_group.id, entourage_report: {message: message} }
+
+    context "valid params" do
+      it { expect(response.status).to eq 201 }
+      it { expect(ActionMailer::Base.deliveries.count).to eq 1 }
+    end
+
+    context "missing message" do
+      let(:message) { '' }
+      it { expect(response.status).to eq 400 }
+      it { expect(ActionMailer::Base.deliveries.count).to eq 0 }
+    end
+  end
 end

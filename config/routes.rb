@@ -217,6 +217,7 @@ Rails.application.routes.draw do
         member do
           put :read
           get 'update', action: :one_click_update, as: :one_click_update
+          post :report
         end
       end
       resources :invitations, only: [:index, :update, :destroy]

@@ -1,0 +1,21 @@
+<b><%= GroupService.name(@reported_group).capitalize %> <%= GroupService.g @reported_group, "signalé.e" %> :</b>
+<a href="https://admin.entourage.social/entourages/<%= @reported_group.id %>">
+  "<%= @reported_group.title %>"
+  #<%= @reported_group.id %>
+</a>
+<br>
+
+<b><%= GroupService.g @reported_group, "Signalé.e" %> par :</b>
+<% if @reporting_user.anonymous? %>
+  utilisateur anonyme
+<% else %>
+  <a href="https://admin.entourage.social/users/<%= @reporting_user.id %>">
+    <%= @reporting_user.first_name %>
+    <%= @reporting_user.last_name %>
+    #<%= @reporting_user.id %>
+  </a>
+<% end %>
+<br>
+
+<b>Message :</b><br>
+<%= simple_format @message %>
