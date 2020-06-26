@@ -5,6 +5,7 @@ module V1
                :phone_number,
                :status,
                :entourage_id,
+               :title,
                :inviter
 
     def inviter
@@ -13,6 +14,10 @@ module V1
 
     def entourage_id
       object.invitable_id
+    end
+
+    def title
+      object.invitable.title
     end
 
     def status

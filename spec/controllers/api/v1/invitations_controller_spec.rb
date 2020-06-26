@@ -21,6 +21,7 @@ describe Api::V1::InvitationsController do
                                                     "invitation_mode"=>"SMS",
                                                     "phone_number"=>"+33612345678",
                                                     "entourage_id"=>invitation.invitable_id,
+                                                    "title"=>invitation.invitable.title,
                                                     "status"=>"pending",
                                                     "inviter"=>{
                                                         "id"=>invitation.inviter_id,
