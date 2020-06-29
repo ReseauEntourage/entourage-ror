@@ -8,7 +8,7 @@ class Address < ActiveRecord::Base
 
   belongs_to :user
 
-  after_create :set_user_address_id_if_primary!
+  after_save :set_user_address_id_if_primary!
 
   def display_address
     [place_name, postal_code].compact.uniq.join(', ')
@@ -38,6 +38,7 @@ class Address < ActiveRecord::Base
   private
 
   def set_user_address_id_if_primary!
+    return unless position_changed? || user_id_changed?
     user.update!(address_id: id) if position == 1
   end
 end

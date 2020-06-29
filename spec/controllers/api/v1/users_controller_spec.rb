@@ -635,7 +635,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
 
         context "when you have an address" do
           let(:address) { create :address }
-          let(:user) { create :public_user, address: address }
+          let(:user) { create :public_user, addresses: [address] }
           it {
             expect(JSON.parse(response.body)['user']['address']).to eq(
               "latitude" => 1.5,
@@ -753,7 +753,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
 
       context "firebase_properties" do
         context "action zone" do
-          let(:user) { create :public_user, address: address }
+          let(:user) { create :public_user, addresses: [address].compact }
           before { get :show, id: user.id, token: user.token }
           let(:firebase_properties) { result['user']['firebase_properties'] }
 

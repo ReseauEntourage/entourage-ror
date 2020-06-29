@@ -42,7 +42,7 @@ class AnonymousUser
   attr_accessor :address
 
   def addresses
-    [address]
+    [address].compact
   end
 
   def address_2; nil; end
