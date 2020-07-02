@@ -68,4 +68,5 @@ class AnonymousUser
   def goal; nil; end
   def interests; []; end
   def errors; ActiveModel::Errors.new(nil); end
+  def entourage_participations; JoinRequest.none; end
 end

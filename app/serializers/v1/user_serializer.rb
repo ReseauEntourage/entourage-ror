@@ -51,10 +51,15 @@ module V1
     end
 
     def stats
+      groups = object.entourage_participations.merge(JoinRequest.accepted).group(:group_type).count
+      groups.default = 0
       {
           tour_count: object.tours.count,
           encounter_count: object.encounters.count,
-          entourage_count: object.groups.count
+          entourage_count: object.groups.count,
+          actions_count: groups['action'],
+          events_count: groups['outing'],
+          good_waves_participation: groups['group'] > 0
       }
     end
 

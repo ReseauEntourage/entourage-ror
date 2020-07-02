@@ -43,6 +43,9 @@ describe Api::V1::InvitationsController do
                                                             "tour_count"=>0,
                                                             "encounter_count"=>0,
                                                             "entourage_count"=>0,
+                                                            "actions_count" => 0,
+                                                            "events_count" => 0,
+                                                            "good_waves_participation" => false,
                                                         },
                                                         "partner"=>nil
                                                     }
