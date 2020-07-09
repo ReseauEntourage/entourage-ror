@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20200618081906) do
+ActiveRecord::Schema.define(version: 20200624154447) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -138,8 +138,13 @@ ActiveRecord::Schema.define(version: 20200618081906) do
     t.string  "icon"
     t.boolean "webview"
     t.integer "position"
-    t.string  "status",    default: "draft", null: false
+    t.string  "status",     default: "draft", null: false
+    t.jsonb   "areas",      default: [],      null: false
+    t.jsonb   "user_goals", default: [],      null: false
   end
+
+  add_index "announcements", ["areas"], name: "index_announcements_on_areas", using: :gin
+  add_index "announcements", ["user_goals"], name: "index_announcements_on_user_goals", using: :gin
 
   create_table "answers", force: :cascade do |t|
     t.integer "question_id",  null: false

@@ -17,6 +17,10 @@ module Admin
 
     def new
       @announcement = Announcement.new
+
+      # pre-fill targeting
+      @announcement.areas = ModerationArea.all_slugs
+      @announcement.user_goals = UserGoalPresenter.all_slugs(community)
     end
 
     def create
@@ -77,7 +81,7 @@ module Admin
 
     def announcement_params
       params.require(:announcement).permit(
-        :title, :icon, :body, :action, :url, :webview
+        :title, :icon, :body, :action, :url, :webview, areas: [], user_goals: []
       )
     end
   end

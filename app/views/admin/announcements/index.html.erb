@@ -159,10 +159,20 @@
     </div>
 
     <div id="announcements">
+      <% areas = ModerationArea.by_slug %>
+      <% all_areas = areas.keys.sort %>
       <% @announcements.each do |announcement| %>
         <div class="announcement overlay-container" data-id="<%= announcement.id %>">
           <div class="announcement-id text-muted">
-            #<%= announcement.id %>
+            <div>#<%= announcement.id %></div>
+            <% if announcement.areas != all_areas %>
+              <div>
+                <% announcement.areas.each do |slug| %>
+                  <% area = areas[slug] %>
+                  <span class="label label-default" title="<%= area.name %>"><%= area.short_name %></span>
+                <% end %>
+              </div>
+            <% end %>
           </div>
           <div class="announcement-content" style="width: 100%">
             <div style="font-weight: bold"><%= link_to announcement.title, edit_admin_announcement_path(announcement) %></div>

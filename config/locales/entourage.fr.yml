@@ -62,6 +62,8 @@ fr:
         action: CTA
         url: Lien
         webview: Ouvrir dans
+        areas: Zones géographiques
+        user_goals: Publics
 
       moderation_area:
         moderator_id: Modérateur
@@ -82,3 +84,4 @@ fr:
         offer_help: Voisin solidaire
         ask_for_help: Personne isolée ou en précarité
         organization: Association ou service public
+        goal_not_known: Non renseigné

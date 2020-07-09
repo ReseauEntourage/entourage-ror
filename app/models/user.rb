@@ -52,6 +52,22 @@ class User < ActiveRecord::Base
   has_many :addresses, -> { order(:position) }, dependent: :destroy
   has_many :partner_join_requests
 
+  def departements
+    addresses.where("country = 'FR' and postal_code <> ''").pluck("distinct left(postal_code, 2)")
+  end
+
+  def departement_slugs
+    departements = addresses.pluck(:country, :postal_code).map do |country, postal_code|
+      if country != 'FR' || postal_code.nil?
+        departement = '*' # hors_zone
+      else
+        departement = postal_code.first(2)
+      end
+    end
+    departements = ['_'] if departements.none? # sans_zone
+    departements.uniq.map { |d| ModerationArea.departement_slug(d) }
+  end
+
   enum device_type: [ :android, :ios ]
   attribute :roles, Experimental::JsonbSet.new
   attribute :interests, Experimental::JsonbSet.new

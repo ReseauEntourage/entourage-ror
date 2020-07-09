@@ -39,17 +39,16 @@ module FeedServices
     def select_announcements
       return [] unless user.community == :entourage
 
-      dep = nil
-      if user.address&.country == 'FR'
-        dep = user.address.postal_code.to_s.first(2)
+      areas = user.departement_slugs
+      if areas.any?
+        areas &= ModerationArea.all_slugs
+      else
+        areas = [:sans_zone]
       end
 
-      announcements = Announcement.active
+      user_goal = user.goal || :goal_not_known
 
-      unless dep.in?(['75', '93', '92'])
-        announcements = announcements.where.not(id: [103, 104])
-      end
-
+      announcements = Announcement.active.for_areas(areas).for_user_goal(user_goal)
       announcements = announcements.ordered.to_a
 
       # 3   9  15  22  29  36  ...
