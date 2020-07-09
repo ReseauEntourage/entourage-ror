@@ -42,6 +42,7 @@ module FeedServices
       areas = user.departement_slugs
       if areas.any?
         areas &= ModerationArea.all_slugs
+        areas = [:hors_zone] if areas.none?
       else
         areas = [:sans_zone]
       end
