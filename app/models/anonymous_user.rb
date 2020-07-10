@@ -45,6 +45,18 @@ class AnonymousUser
     [address].compact
   end
 
+  def departement_slugs
+    departements = addresses.map do |address|
+      if country != 'FR' || postal_code.nil?
+        departement = '*' # hors_zone
+      else
+        departement = postal_code.first(2)
+      end
+    end
+    departements = ['_'] if departements.none? # sans_zone
+    departements.uniq.map { |d| ModerationArea.departement_slug(d) }
+  end
+
   def address_2; nil; end
 
   def id; nil; end
