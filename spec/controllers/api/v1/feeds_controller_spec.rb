@@ -148,6 +148,13 @@ include CommunityHelper
         it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([entourage_contribution.id]) }
       end
 
+      context "get partners entourages only" do
+        let(:partner_user) { create :partner_user }
+        let!(:partner_entourage) { create(:entourage, latitude: latitude, longitude: longitude, user: partner_user) }
+        before { get :index, partners_only: 'true', token: user.token, latitude: latitude, longitude: longitude }
+        it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([partner_entourage.id, tour.id]) }
+      end
+
       context "filter by timerange" do
         let!(:entourage1) { FactoryGirl.create(:entourage, updated_at: 3.day.ago, created_at: 3.day.ago, latitude: latitude, longitude: longitude) }
         let!(:entourage2) { FactoryGirl.create(:entourage, updated_at: 3.day.ago, created_at: 3.day.ago, latitude: latitude, longitude: longitude) }

@@ -12,6 +12,7 @@ module Api
           longitude: params[:longitude],
           types: types,
           show_past_events: params[:show_past_events],
+          partners_only: params[:partners_only],
           time_range: time_range,
           distance: params[:distance],
           announcements: params[:announcements],

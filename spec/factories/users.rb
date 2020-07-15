@@ -35,6 +35,10 @@ FactoryGirl.define do
       user_type 'pro'
     end
 
+    trait :partner do
+      partner { create :partner }
+    end
+
     trait :admin do
       first_name 'pouet'
       email 'guillaume@entourage.social'
@@ -46,6 +50,7 @@ FactoryGirl.define do
 
     factory :pro_user,    traits: [:pro]
     factory :public_user, traits: [:public]
+    factory :partner_user, traits: [:public, :partner]
     factory :admin_user,  traits: [:admin]
   end
 end

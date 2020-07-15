@@ -11,6 +11,7 @@ module FeedServices
                    longitude:,
                    types: nil,
                    show_past_events: "false",
+                   partners_only: "false",
                    time_range: 24,
                    distance: nil,
                    announcements: nil,
@@ -22,6 +23,7 @@ module FeedServices
       @longitude = longitude
       @types = formated_types(types)
       @show_past_events = show_past_events=="true"
+      @partners_only = partners_only=="true"
       @time_range = time_range.to_i
       @distance = [(distance&.to_i || DEFAULT_DISTANCE), 40].min
       @announcements = announcements.try(:to_sym)
@@ -102,6 +104,10 @@ module FeedServices
 
       unless show_past_events
         feeds = feeds.where("group_type not in (?) or metadata->>'ends_at' >= ?", [:outing], Time.zone.now)
+      end
+
+      if partners_only
+        feeds = feeds.joins(:user).where("users.partner_id is not null or feedable_type != 'Entourage'")
       end
 
       # actions are filtered out based on update date
@@ -239,7 +245,7 @@ module FeedServices
     end
 
     private
-    attr_reader :user, :page, :before, :latitude, :longitude, :types, :show_past_events, :time_range, :distance, :announcements, :cursor, :area, :page_token, :legacy_pagination
+    attr_reader :user, :page, :before, :latitude, :longitude, :types, :show_past_events, :partners_only, :time_range, :distance, :announcements, :cursor, :area, :page_token, :legacy_pagination
 
     def self.per
       ITEMS_PER_PAGE
