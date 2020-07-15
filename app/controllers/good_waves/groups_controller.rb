@@ -119,7 +119,9 @@ module GoodWaves
 
       members.each do |member|
         email, alternate_email = [member[:account_email], member[:email]].compact.uniq
-        GoodWavesMailer.invitation(email, alternate_email, short_uuid).deliver_later
+        if email.present?
+          GoodWavesMailer.invitation(email, alternate_email, short_uuid).deliver_later
+        end
       end
 
       existing_ids = existing.map { |member| member[:user_id] }
@@ -214,7 +216,9 @@ module GoodWaves
 
       alternate_email = (existing&.email || '').strip.downcase.presence
       email, alternate_email = [email, alternate_email].compact.uniq
-      GoodWavesMailer.invitation(email, alternate_email, short_uuid).deliver_later
+      if email.present?
+        GoodWavesMailer.invitation(email, alternate_email, short_uuid).deliver_later
+      end
 
       if existing
         author_name = UserPresenter.display_name(group.user)
