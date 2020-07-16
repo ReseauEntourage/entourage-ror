@@ -153,7 +153,7 @@ module FeedServices
         end
 
         if dep == '92'
-          pinned << 93651 # après-midi jeux
+          pinned << 94599 # Rencontres Nomades
         end
 
         unless dep.in?(['35', '59']) # Rennes, Lille
