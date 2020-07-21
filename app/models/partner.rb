@@ -6,6 +6,10 @@ class Partner < ActiveRecord::Base
 
   before_save :reformat_url, if: :website_url_changed?
   before_save :reformat_needs, if: :needs_changed?
+  before_save :geocode, if: :address_changed?
+  after_commit :sync_poi
+
+  geocoded_by :address
 
   PLACEHOLDER_URL = "https://s3-eu-west-1.amazonaws.com/entourage-ressources/partner-placeholder.png".freeze
 
@@ -38,6 +42,24 @@ class Partner < ActiveRecord::Base
     blocks << "Dons acceptés :\n#{donations_needs}" if donations_needs
     blocks << "Bénévoles recherchés :\n#{volunteers_needs}" if volunteers_needs
     blocks.join("\n\n")
+  end
+
+  def sync_poi
+    poi = Poi.find_or_initialize_by(partner_id: self.id)
+
+    poi.name        = self.name
+    poi.description = self.description
+    poi.latitude    = self.latitude
+    poi.longitude   = self.longitude
+    poi.adress      = self.address
+    poi.phone       = self.phone
+    poi.website     = self.website_url
+    poi.email       = self.email
+    poi.audience    = nil
+    poi.category_id = 8
+    poi.validated   = self.geocoded?
+
+    poi.save
   end
 
   private

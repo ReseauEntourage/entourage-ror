@@ -512,6 +512,8 @@ ActiveRecord::Schema.define(version: 20200724154044) do
     t.text     "volunteers_needs"
     t.text     "donations_needs"
     t.string   "postal_code",      limit: 8
+    t.float    "latitude"
+    t.float    "longitude"
   end
 
   create_table "pois", force: :cascade do |t|
@@ -528,10 +530,12 @@ ActiveRecord::Schema.define(version: 20200724154044) do
     t.string   "audience",    limit: 255
     t.integer  "category_id"
     t.boolean  "validated",               default: false, null: false
+    t.integer  "partner_id"
   end
 
   add_index "pois", ["category_id", "latitude", "longitude"], name: "index_pois_on_category_id_and_latitude_and_longitude", where: "validated", using: :btree
   add_index "pois", ["latitude", "longitude"], name: "index_pois_on_latitude_and_longitude", using: :btree
+  add_index "pois", ["partner_id"], name: "index_pois_on_partner_id", unique: true, using: :btree
 
   create_table "questions", force: :cascade do |t|
     t.string   "title",           null: false
