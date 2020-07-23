@@ -24,6 +24,6 @@ class AddCoordinatesToPartners < ActiveRecord::Migration
         Poi.where(category_id: 8).delete_all
         Category.delete(8)
       end
-    end
+    end unless Rails.env.test?
   end
 end
