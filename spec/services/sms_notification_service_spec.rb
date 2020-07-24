@@ -28,7 +28,7 @@ describe SmsNotificationService do
           }
         }
       )}
-      it { expect(SmsDelivery.where(phone_number: phone_number, sms_type: sms_type).last&.status).to eq 'Ok' }
+      it { expect(SmsDelivery.where(phone_number: phone_number, sms_type: sms_type, provider: 'AWS').last&.status).to eq 'Ok' }
     end
 
     context "aws as sms provider and api key and secret are not provided as env variables" do

@@ -37,7 +37,7 @@ class SmsNotificationService
       return
     end
 
-    SmsDelivery.create(phone_number: phone_number, status: deliveryState, sms_type: sms_type)
+    SmsDelivery.create(phone_number: phone_number, status: deliveryState, sms_type: sms_type, provider: provider)
   end
 
   private
