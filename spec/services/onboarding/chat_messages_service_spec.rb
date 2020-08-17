@@ -5,7 +5,7 @@ describe Onboarding::ChatMessagesService, type: :service do
     let(:run_time) { 1.week.from_now.monday.change(hour: 10, minute: rand(60)) }
     let(:onboarding_time) { run_time.advance(seconds: -rand(3.hours..4.hours)) }
     let!(:admin) { create :admin_user }
-    let(:moderation_area) { create :moderation_area, moderator: admin, welcome_message_1: "Bonjour {{first_name}}" }
+    let(:moderation_area) { create :moderation_area, moderator: admin, welcome_message_1_offer_help: "Bonjour {{first_name}}" }
     let!(:user) { create :public_user, first_name: nil }
     let(:address) { build :address }
 
@@ -13,7 +13,7 @@ describe Onboarding::ChatMessagesService, type: :service do
       Onboarding::UserEventsTracking.stub(:enable_tracking?) { true }
       ModerationServices.stub(:moderation_area_for_user) { moderation_area }
       Timecop.freeze(onboarding_time) do
-        user.update(first_name: 'lily-rose')
+        user.update(first_name: 'lily-rose', goal: :offer_help)
         address.update(user: user)
       end
     end

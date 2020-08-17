@@ -85,3 +85,7 @@ fr:
         ask_for_help: Personne isolée ou en précarité
         organization: Association ou service public
         goal_not_known: Non renseigné
+      goals_compact:
+        offer_help: Riverain
+        ask_for_help: SDF
+        organization: Association

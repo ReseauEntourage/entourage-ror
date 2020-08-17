@@ -13,13 +13,21 @@ module Onboarding
 
       private
 
+      def filled_blank_attribute?(changes, attribute)
+        changes.key?(attribute) &&
+        changes[attribute].first.blank? &&
+        changes[attribute].last.present?
+      end
+
       def track_onboarding_events
         return unless Onboarding::UserEventsTracking.enable_tracking?
-        return unless previous_changes.key?('first_name') &&
-                      previous_changes['first_name'].first.blank? &&
-                      previous_changes['first_name'].last.present?
+        if filled_blank_attribute?(previous_changes, 'first_name')
+          Event.track('onboarding.profile.first_name.entered', user_id: self.id)
+        end
 
-        Event.track('onboarding.profile.first_name.entered', user_id: self.id)
+        if filled_blank_attribute?(previous_changes, 'goal')
+          Event.track('onboarding.profile.goal.entered', user_id: self.id)
+        end
       end
     end
 

@@ -13,9 +13,10 @@ module Onboarding
         .where(community: :entourage, deleted: false)
         .with_event('onboarding.profile.first_name.entered', :name_entered)
         .with_event('onboarding.profile.postal_code.entered', :postal_code_entered)
+        .with_event('onboarding.profile.goal.entered', :goal_entered)
         .without_event('onboarding.chat_messages.welcome.sent')
         .without_event('onboarding.chat_messages.welcome.skipped')
-        .where("greatest(name_entered.created_at, postal_code_entered.created_at) <= ?", MIN_DELAY.ago)
+        .where("greatest(name_entered.created_at, postal_code_entered.created_at, goal_entered.created_at) <= ?", MIN_DELAY.ago)
         .pluck(:id)
 
       User.where(id: user_ids).find_each do |user|
@@ -45,8 +46,8 @@ module Onboarding
           end
 
           messages = [
-            moderation_area.welcome_message_1,
-            moderation_area.welcome_message_2
+            moderation_area["welcome_message_1_#{user.goal}"],
+            moderation_area["welcome_message_2_#{user.goal}"]
           ].map(&:presence)
 
           first_name = UserPresenter.format_first_name user.first_name
