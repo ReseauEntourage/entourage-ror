@@ -1,3 +1,5 @@
+<% layout_options jquery: :full %>
+
 <style>
   .logo-as-background {
     background: url(<%= @partner.large_logo_url %>) center/contain no-repeat, #fff;
@@ -7,7 +9,9 @@
 <div class="container-s mt-6 mb-2 px-3">
   <%= render 'organization_admin/flashes' %>
 
-  <%= form_for @partner, url: organization_admin_description_path(@partner) do |f| %>
+  <%= form_for @partner,
+        url: organization_admin_description_path(@partner),
+        html: {id: "partner-form"} do |f| %>
 
     <div class="flex">
       <div class="flex-grow">
@@ -59,8 +63,11 @@
     </div>
 
     <div class="mb-2">
-      <%= f.label :address, "Adresse" %>
-      <%= f.text_field :address, class: "form-control" %>
+      <%= label_tag :address, "Adresse" %>
+      <%= text_field_tag :address, f.object.address, class: "form-control", data: { 'last-valid' => f.object.address } %>
+      <%= f.hidden_field :address %>
+      <%= f.hidden_field :latitude %>
+      <%= f.hidden_field :longitude %>
     </div>
 
     <div class="mb-2">
@@ -78,3 +85,61 @@
     </div>
   <% end %>
 </div>
+
+<% content_for :scripts do %>
+  <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=<%= ENV['GOOGLE_FRONTEND_API_KEY'] %>&libraries=places&region=fr&language=fr"></script>
+
+  <script>
+    var input = document.getElementById('address');
+    var $input = $(input);
+    var options = {
+      types: ['address'],
+      fields: ['geometry.location', 'formatted_address'],
+      componentRestrictions: {country: ['fr']}
+    };
+
+    autocomplete = new google.maps.places.Autocomplete(input, options);
+    autocomplete.addListener('place_changed', function() {
+      var place = this.getPlace();
+
+      if (typeof place.geometry === 'undefined') {
+        $input.siblings('input[type=hidden]').val(null);
+      }
+      else {
+        $input.data('last-valid', $input.val())
+        input.setCustomValidity('')
+        $input.siblings('input[type=hidden]').val(null);
+        var details = {
+          address: place.formatted_address,
+          latitude: place.geometry.location.lat(),
+          longitude: place.geometry.location.lng(),
+        };
+        for (var attribute in details) {
+          $input.siblings('input[type=hidden][name="partner[' + attribute + ']"]')
+            .val(details[attribute]);
+        }
+      }
+    });
+
+    $input.on('input', function() {
+      if ($input.val() === '') {
+        $input.siblings('input[type=hidden]').val(null);
+        $input.data('last-valid', $input.val());
+      }
+    })
+
+    $('#partner-form').on('submit', function(e) {
+      if (typeof $input.data('last-valid') === 'undefined' ||
+          $input.val() !== $input.data('last-valid')) {
+        input.setCustomValidity("Sélectionnez une adresse")
+        e.preventDefault()
+      }
+    })
+
+    $('#partner-form').on('keydown', 'input[type=text]', function(e) {
+      if (e.keyCode === 13) {
+        e.preventDefault();
+      }
+    })
+  </script>
+<% end %>

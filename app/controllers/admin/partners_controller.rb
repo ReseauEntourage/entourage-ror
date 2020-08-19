@@ -73,7 +73,8 @@ module Admin
 
     def partner_params
       params.require(:partner).permit(
-        :name, :description, :phone, :address, :website_url, :email
+        :name, :description, :phone, :address, :website_url, :email,
+        :latitude, :longitude
       )
     end
   end

@@ -14,7 +14,7 @@
 </style>
 
 <%= render partial: 'common/errors', locals: {obj: @partner} %>
-<%= form_for @partner, url: "" do |f| %>
+<%= form_for @partner, url: "", html: {id: "partner-form"} do |f| %>
   <div class="row">
     <div class="col-md-9">
       <div class="form-group">
@@ -50,8 +50,11 @@
     <%= f.phone_field :phone, class: "form-control" %>
   </div>
   <div class="form-group">
-    <%= f.label :address %>
-    <%= f.text_field :address, class: "form-control" %>
+    <%= label_tag :address, "Adresse" %>
+    <%= text_field_tag :address, f.object.address, class: "form-control", data: { 'last-valid' => f.object.address } %>
+    <%= f.hidden_field :address %>
+    <%= f.hidden_field :latitude %>
+    <%= f.hidden_field :longitude %>
   </div>
   <div class="form-group">
     <%= f.label :website_url %>
@@ -64,3 +67,57 @@
   <%= f.submit @partner.new_record? ? "Créer" : "Modifier",
         class: "btn btn-success" %>
 <% end %>
+
+<script>
+  var input = document.getElementById('address');
+  var $input = $(input);
+  var options = {
+    types: ['address'],
+    fields: ['geometry.location', 'formatted_address'],
+    componentRestrictions: {country: ['fr']}
+  };
+
+  autocomplete = new google.maps.places.Autocomplete(input, options);
+  autocomplete.addListener('place_changed', function() {
+    var place = this.getPlace();
+
+    if (typeof place.geometry === 'undefined') {
+      $input.siblings('input[type=hidden]').val(null);
+    }
+    else {
+      $input.data('last-valid', $input.val())
+      input.setCustomValidity('')
+      $input.siblings('input[type=hidden]').val(null);
+      var details = {
+        address: place.formatted_address,
+        latitude: place.geometry.location.lat(),
+        longitude: place.geometry.location.lng(),
+      };
+      for (var attribute in details) {
+        $input.siblings('input[type=hidden][name="partner[' + attribute + ']"]')
+          .val(details[attribute]);
+      }
+    }
+  });
+
+  $input.on('input', function() {
+    if ($input.val() === '') {
+      $input.siblings('input[type=hidden]').val(null);
+      $input.data('last-valid', $input.val());
+    }
+  })
+
+  $('#partner-form').on('submit', function(e) {
+    if (typeof $input.data('last-valid') === 'undefined' ||
+        $input.val() !== $input.data('last-valid')) {
+      input.setCustomValidity("Sélectionnez une adresse")
+      e.preventDefault()
+    }
+  })
+
+  $('#partner-form').on('keydown', 'input[type=text]', function(e) {
+    if (e.keyCode === 13) {
+      e.preventDefault();
+    }
+  })
+</script>

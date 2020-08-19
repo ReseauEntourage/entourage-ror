@@ -50,7 +50,8 @@ module OrganizationAdmin
       params.require(:partner).permit(
         :name,
         :description, :donations_needs, :volunteers_needs,
-        :phone, :address, :website_url, :email
+        :phone, :address, :website_url, :email,
+        :latitude, :longitude
       )
     end
   end
