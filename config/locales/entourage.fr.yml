@@ -10,8 +10,8 @@ fr:
         organization: Association de maraude
         about: À propos
         roles: Rôles
-        targeting_profile: Profil
-        goal: Objectif
+        targeting_profile: Profil modération
+        goal: Profil déclaré
         partner: Association
       organization:
         name: Nom
@@ -84,8 +84,9 @@ fr:
         offer_help: Voisin solidaire
         ask_for_help: Personne isolée ou en précarité
         organization: Association ou service public
-        goal_not_known: Non renseigné
+        goal_not_known: Non défini
       goals_compact:
         offer_help: Riverain
         ask_for_help: SDF
         organization: Association
+        goal_not_known: Non défini

@@ -82,6 +82,13 @@
 
   <div style="display: flex">
     <div class="control-group">
+      <%= f.label :goal, class: "control-label" %>
+      <div class="controls">
+        <%= t "community.entourage.goals_compact.#{f.object.goal || :goal_not_known}" %>
+      </div>
+    </div>
+
+    <div class="control-group" style="margin-left: 30px">
       <%= f.label :targeting_profile, class: "control-label" %>
       <div class="controls">
         <%= f.select :targeting_profile,
