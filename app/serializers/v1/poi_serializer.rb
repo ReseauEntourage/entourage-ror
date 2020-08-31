@@ -11,7 +11,8 @@ module V1
                :email,
                :audience,
                :validated,
-               :category_id
+               :category_id,
+               :partner_id
 
     has_one :category
   end
