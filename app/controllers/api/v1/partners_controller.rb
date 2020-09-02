@@ -7,6 +7,11 @@ module Api
         render json: @partners, status: 200, each_serializer: ::V1::PartnerSerializer, scope: {minimal: true}
       end
 
+      def show
+        partner = Partner.find(params[:id])
+        render json: partner, status: 200, serializer: ::V1::PartnerSerializer, scope: {full: true}
+      end
+
       def join_request
         partner_join_request = current_user.partner_join_requests.new(partner_join_request_params)
         if partner_join_request.save

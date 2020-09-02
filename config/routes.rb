@@ -222,7 +222,7 @@ Rails.application.routes.draw do
       end
       resources :invitations, only: [:index, :update, :destroy]
       # resources :contacts, only: [:update]
-      resources :partners, only: [:index] do
+      resources :partners, only: [:index, :show] do
         collection do
           post :join_request
         end

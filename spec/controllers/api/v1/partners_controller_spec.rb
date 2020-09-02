@@ -27,6 +27,29 @@ RSpec.describe Api::V1::PartnersController, type: :controller do
     )}
   end
 
+  describe 'GET show' do
+    let!(:partner1) { FactoryGirl.create(:partner, name: "Partner A", postal_code: "75008") }
+
+    before { get 'show', id: partner1.id, token: user.token }
+    # TODO(partner)
+    it { expect(JSON.parse(response.body)).to eq(
+      "partner" => {
+        "id" => partner1.id,
+        "name" => "Partner A",
+        "large_logo_url" => "MyString",
+        "small_logo_url" => "https://s3-eu-west-1.amazonaws.com/entourage-ressources/check-small.png",
+        "description" => "MyDescription",
+        "donations_needs" => nil,
+        "volunteers_needs" => nil,
+        "phone" => nil,
+        "address" => nil,
+        "website_url" => nil,
+        "email" => nil,
+        "default" => true
+      }
+    )}
+  end
+
   describe 'POST join_request' do
     before { post :join_request, {token: user.token, postal_code: "75008", partner_role_title: "Senior VP of Meme Warfare"}.merge(params) }
     let(:join_request) { user.partner_join_requests.last }
