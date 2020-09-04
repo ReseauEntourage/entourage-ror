@@ -143,22 +143,12 @@ module FeedServices
 
         pinned = []
 
-        if dep == '69' # Lyon
-          pinned << 93113 # Collecte "Camping Paradis"
-        end
+        # sensib
+        pinned << 96725
 
         if dep == '59' # Lille
           pinned << 93115 # rencontres nomades
           pinned << 93114 # midi ludique
-        end
-
-        if dep == '92'
-          pinned << 94599 # Rencontres Nomades
-        end
-
-        unless dep.in?(['35', '59']) # Rennes, Lille
-          # sensib
-          pinned << 90650
         end
 
         pinned.compact.uniq.reverse.each do |action|
