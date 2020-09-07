@@ -45,6 +45,15 @@ module V1
     end
 
     def filter(keys)
+      if scope[:sharing_selection]
+        return [
+          :id, :uuid,
+          :title,
+          :group_type, :entourage_type, :display_category,
+          :author
+        ]
+      end
+
       keys.delete :last_message unless include_last_message?
       keys.delete :outcome unless object.has_outcome?
       keys

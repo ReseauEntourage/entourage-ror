@@ -228,6 +228,10 @@ Rails.application.routes.draw do
         end
       end
 
+      resource :sharing, controller: 'sharing', only: [] do
+        get :groups
+      end
+
       resources :links, only: [] do
         member do
           get :redirect

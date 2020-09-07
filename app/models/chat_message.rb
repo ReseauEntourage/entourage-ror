@@ -54,6 +54,11 @@ class ChatMessage < ActiveRecord::Base
           status: { type: :string },
           outcome_success: { type: [:boolean, :null] }
         }
+      when 'share:metadata'
+        {
+          type: { type: :string, enum: [:entourage] },
+          uuid: { type: :string }
+        }
       end
     end
   end
@@ -75,6 +80,7 @@ class ChatMessage < ActiveRecord::Base
     when 'visit' then visit_content
     when 'outing' then outing_content
     when 'status_update' then status_update_content
+    when 'share' then share_content
     else content
     end
   end
@@ -122,5 +128,15 @@ class ChatMessage < ActiveRecord::Base
 
   def status_update_content
     "a clôturé #{GroupService.name messageable, :l}"
+  end
+
+  def share_content
+    case metadata[:type]
+    when 'entourage'
+      group = Entourage.find_by(uuid_v2: metadata[:uuid])
+      group.share_url
+    else
+      nil
+    end
   end
 end

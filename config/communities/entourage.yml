@@ -15,16 +15,16 @@ admin_roles:
   - moderator
 group_types:
   action:
-    message_types: [text]
+    message_types: [text, share]
     roles: [creator, member]
   conversation:
-    message_types: [text]
+    message_types: [text, share]
     roles: [participant]
   outing:
-    message_types: [text]
+    message_types: [text, share]
     roles: [organizer, participant]
   group:
-    message_types: [text]
+    message_types: [text, share]
     roles: [admin, member]
 targeting_profiles:
   - offers_help
