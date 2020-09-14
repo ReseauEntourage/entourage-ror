@@ -42,6 +42,15 @@ module Api
 
           @pois = @pois.around params[:latitude], params[:longitude], distance
 
+          partners_filters = (params[:partners_filters] || "").split(",").compact.uniq.map(&:to_sym) & [:donations, :volunteers]
+          if partners_filters.any?
+            @pois = @pois.joins("left join partners on partners.id = partner_id")
+            clauses = ["partner_id is null"]
+            clauses << "donations_needs is not null"  if partners_filters.include?(:donations)
+            clauses << "volunteers_needs is not null" if partners_filters.include?(:volunteers)
+            @pois = @pois.where(clauses.join(" OR "))
+          end
+
           @pois = @pois
             .order(PostgisHelper.distance_from(params[:latitude], params[:longitude]))
         else
