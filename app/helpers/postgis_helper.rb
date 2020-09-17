@@ -9,7 +9,13 @@ module PostgisHelper
     "ST_Distance(#{point(*a)}, #{point(*b)})"
   end
 
-  def self.distance_from(latitude, longitude)
-    distance_between([latitude, longitude], [:latitude, :longitude])
+  def self.distance_from(latitude, longitude, table_name=nil)
+    keys =
+      if table_name != nil
+        [:"#{table_name}.latitude", :"#{table_name}.longitude"]
+      else
+        [:latitude, :longitude]
+      end
+    distance_between([latitude, longitude], keys)
   end
 end

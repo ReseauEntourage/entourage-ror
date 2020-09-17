@@ -52,7 +52,7 @@ module Api
           end
 
           @pois = @pois
-            .order(PostgisHelper.distance_from(params[:latitude], params[:longitude]))
+            .order(PostgisHelper.distance_from(params[:latitude], params[:longitude], :pois))
         else
           @pois = @pois.limit(25)
         end
