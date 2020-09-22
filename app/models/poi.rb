@@ -4,6 +4,7 @@ class Poi < ActiveRecord::Base
   validates :latitude, :longitude, numericality: true
   validates :partner_id, presence: true, allow_nil: true
   belongs_to :category
+  has_and_belongs_to_many :categories
 
   geocoded_by :adress
 

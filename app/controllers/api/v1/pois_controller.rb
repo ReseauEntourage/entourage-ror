@@ -10,10 +10,16 @@ module Api
         @categories = Category.all
         @pois = Poi.validated
 
+        version = params[:v] == '2' ? :v2 : :v1
+
         if params[:category_ids].present?
           categories = params[:category_ids].split(",").map(&:to_i).uniq
           category_count = categories.count
-          @pois = @pois.where(category_id: categories)
+          if version == :v1
+            @pois = @pois.where(category_id: categories)
+          else
+            @pois = @pois.joins(:pois_categories).where(categories_pois: {category_id: categories})
+          end
         else
           category_count = @categories.count
         end
@@ -56,8 +62,6 @@ module Api
         else
           @pois = @pois.limit(25)
         end
-
-        version = params[:v] == '2' ? :v2 : :v1
 
         #TODO : refactor API to return 1 top level POI ressources and associated categories ressources
         poi_json = PoiServices::PoiOptimizedSerializer.new(@pois, box_size: params[:distance], version: version) do |pois|

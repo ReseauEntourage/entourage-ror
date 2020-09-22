@@ -31,7 +31,8 @@ module V1
     end
 
     def category_id
-      if version == :v1
+      case version
+      when :v1_list
         {
           40 => 4,
           41 => 4,
@@ -41,12 +42,12 @@ module V1
           62 => 6
         }[object.category_id] || object.category_id
       else
-        object.category_id
+        category_ids.many? ? 0 : category_ids.first
       end
     end
 
     def category_ids
-      [category_id]
+      @category_ids ||= CategoryPoi.where(poi_id: object.id).pluck(:category_id)
     end
 
     private

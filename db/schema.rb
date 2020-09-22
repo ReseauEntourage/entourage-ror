@@ -179,6 +179,14 @@ ActiveRecord::Schema.define(version: 20200924130803) do
     t.string   "name",       limit: 255
   end
 
+  create_table "categories_pois", id: false, force: :cascade do |t|
+    t.integer "poi_id"
+    t.integer "category_id"
+  end
+
+  add_index "categories_pois", ["category_id"], name: "index_categories_pois_on_category_id", using: :btree
+  add_index "categories_pois", ["poi_id"], name: "index_categories_pois_on_poi_id", using: :btree
+
   create_table "chat_messages", force: :cascade do |t|
     t.integer  "messageable_id",                               null: false
     t.string   "messageable_type",                             null: false
