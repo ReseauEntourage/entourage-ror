@@ -89,7 +89,10 @@ module Api
                 first_name: user&.first_name
               }.to_query
             end,
-          'action_faq' => 'https://blog.entourage.social/2017/04/28/comment-utiliser-l-application-entourage/#site-content?utm_source=app&utm_medium=page_desc'
+          'action_faq' => 'https://blog.entourage.social/2017/04/28/comment-utiliser-l-application-entourage/#site-content?utm_source=app&utm_medium=page_desc',
+          'hub_1' => 'https://blog.entourage.social/',
+          'hub_2' => 'https://www.simplecommebonjour.org/',
+          'hub_3' => 'https://www.facebook.com/EntourageReseauCivique/events/',
         }
 
         redirection = redirections[params[:id]]
