@@ -44,10 +44,10 @@ RSpec.describe Api::V1::Users::AddressesController, type: :controller do
             "longitude"=>3.7,
             "position"=>1
           },
-          "firebase_properties"=>{
+          "firebase_properties"=>hash_including(
             "ActionZoneCP"=>"75011",
             "ActionZoneDep"=>"75"
-          }
+          )
         )
       )}
     end
@@ -67,10 +67,10 @@ RSpec.describe Api::V1::Users::AddressesController, type: :controller do
             "longitude"=>3.1,
             "position"=>2,
           },
-          "firebase_properties"=>{
+          "firebase_properties"=>hash_including(
             "ActionZoneCP"=>"75011,92001",
             "ActionZoneDep"=>"75,92"
-          }
+          )
         )
       )}
     end
@@ -100,10 +100,10 @@ RSpec.describe Api::V1::Users::AddressesController, type: :controller do
             "longitude"=>3.1,
             "position"=>1
           },
-          "firebase_properties"=>{
+          "firebase_properties"=>hash_including(
             "ActionZoneCP"=>"92001",
             "ActionZoneDep"=>"92"
-          }
+          )
         )
       )}
     end
@@ -121,10 +121,10 @@ RSpec.describe Api::V1::Users::AddressesController, type: :controller do
             "longitude"=>3.7,
             "position"=>2,
           },
-          "firebase_properties"=>{
+          "firebase_properties"=>hash_including(
             "ActionZoneCP"=>"75011",
             "ActionZoneDep"=>"75"
-          }
+          )
         )
       )}
     end
@@ -155,10 +155,10 @@ RSpec.describe Api::V1::Users::AddressesController, type: :controller do
         "user" => hash_including(
           "address"=>hash_including("display_address"=>"Maison, 75011"),
           "address_2"=>nil,
-          "firebase_properties"=>{
+          "firebase_properties"=>hash_including(
             "ActionZoneCP"=>"75011",
             "ActionZoneDep"=>"75"
-          }
+          )
         )
       )}
     end

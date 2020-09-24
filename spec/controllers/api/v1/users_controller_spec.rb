@@ -64,7 +64,12 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                                     "user_role_title"=>nil},
                                   "memberships"=>[],
                                   "conversation"=>{"uuid"=>"1_list_#{user.id}"},
-                                  "firebase_properties"=>{"ActionZoneDep"=>"not_set","ActionZoneCP"=>"not_set"},
+                                  "firebase_properties"=>{
+                                    "ActionZoneDep"=>"not_set",
+                                    "ActionZoneCP"=>"not_set",
+                                    "Goal" => "no_set",
+                                    "Interests" => "none"
+                                  },
                                   "anonymous"=>false,
                                   "feature_flags"=>{"organization_admin"=>false},
                                   "goal" => nil,
@@ -261,7 +266,12 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                                                              "partner"=>nil,
                                                              "memberships"=>[],
                                                              "conversation"=>{"uuid"=>"1_list_#{user.id}"},
-                                                             "firebase_properties"=>{"ActionZoneDep"=>"not_set","ActionZoneCP"=>"not_set"},
+                                                             "firebase_properties"=>{
+                                                               "ActionZoneDep"=>"not_set",
+                                                               "ActionZoneCP"=>"not_set",
+                                                               "Goal" => "no_set",
+                                                               "Interests" => "none"
+                                                             },
                                                              "anonymous"=>false,
                                                              "feature_flags"=>{"organization_admin"=>false},
                                                              "goal" => nil,
@@ -635,7 +645,12 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                                                               "user_role_title"=>nil},
                                                            "memberships"=>[],
                                                            "conversation"=>{"uuid"=>"1_list_#{user.id}"},
-                                                           "firebase_properties"=>{"ActionZoneDep"=>"not_set","ActionZoneCP"=>"not_set"},
+                                                           "firebase_properties"=>{
+                                                             "ActionZoneDep"=>"not_set",
+                                                             "ActionZoneCP"=>"not_set",
+                                                             "Goal" => "no_set",
+                                                             "Interests" => "none"
+                                                           },
                                                            "anonymous"=>false,
                                                            "feature_flags"=>{"organization_admin"=>false},
                                                            "goal" => nil,
@@ -699,7 +714,12 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                                                               "user_role_title"=>nil},
                                                            "memberships"=>[],
                                                            "conversation"=>{"uuid"=>"1_list_#{user.id}"},
-                                                           "firebase_properties"=>{"ActionZoneDep"=>"not_set","ActionZoneCP"=>"not_set"},
+                                                           "firebase_properties"=>{
+                                                             "ActionZoneDep"=>"not_set",
+                                                             "ActionZoneCP"=>"not_set",
+                                                             "Goal" => "no_set",
+                                                             "Interests" => "none"
+                                                           },
                                                            "anonymous"=>false,
                                                            "feature_flags"=>{"organization_admin"=>false},
                                                            "goal" => nil,
@@ -774,26 +794,26 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
 
           context "no action zone" do
             let(:address) { nil }
-            it { expect(firebase_properties).to eq('ActionZoneDep' => 'not_set',
-                                                   'ActionZoneCP'  => 'not_set') }
+            it { expect(firebase_properties).to include('ActionZoneDep' => 'not_set',
+                                                        'ActionZoneCP'  => 'not_set') }
           end
 
           context "outside of FR" do
             let(:address) { create :address, country: :BE }
-            it { expect(firebase_properties).to eq('ActionZoneDep' => 'not_FR',
-                                                   'ActionZoneCP'  => 'not_FR') }
+            it { expect(firebase_properties).to include('ActionZoneDep' => 'not_FR',
+                                                        'ActionZoneCP'  => 'not_FR') }
           end
 
           context "only department" do
             let(:address) { create :address, country: :FR, postal_code: '69XXX' }
-            it { expect(firebase_properties).to eq('ActionZoneDep' => '69',
-                                                   'ActionZoneCP'  => 'not_set') }
+            it { expect(firebase_properties).to include('ActionZoneDep' => '69',
+                                                        'ActionZoneCP'  => 'not_set') }
           end
 
           context "full postal code" do
             let(:address) { create :address, country: :FR, postal_code: '75012' }
-            it { expect(firebase_properties).to eq('ActionZoneDep' => '75',
-                                                   'ActionZoneCP'  => '75012') }
+            it { expect(firebase_properties).to include('ActionZoneDep' => '75',
+                                                        'ActionZoneCP'  => '75012') }
           end
         end
       end
@@ -855,7 +875,9 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
         },
         "firebase_properties"=>{
           "ActionZoneDep"=>"not_set",
-          "ActionZoneCP"=>"not_set"
+          "ActionZoneCP"=>"not_set",
+          "Goal" => "no_set",
+          "Interests" => "none",
         })
       }
       it { expect(user.reload.address.attributes.symbolize_keys).to include address }
@@ -939,7 +961,9 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
               },
               "firebase_properties"=>{
                 "ActionZoneDep"=>"00",
-                "ActionZoneCP"=>"00001"
+                "ActionZoneCP"=>"00001",
+                "Goal" => "no_set",
+                "Interests" => "none"
               }
             )
           end

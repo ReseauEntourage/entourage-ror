@@ -62,9 +62,16 @@ module UserService
       list.sort!
     end
 
+    goal = user.goal.presence || :no_set
+
+    interests = (user.interests || []).sort.uniq
+    interests = [:none] if interests.empty?
+
     {
       ActionZoneDep: departments.join(','),
-      ActionZoneCP:  postal_codes.join(',')
+      ActionZoneCP:  postal_codes.join(','),
+      Goal: goal.to_s,
+      Interests: interests.join(',')
     }
   end
 end
