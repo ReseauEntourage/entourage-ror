@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20200817140115) do
+ActiveRecord::Schema.define(version: 20200924130803) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -380,6 +380,15 @@ ActiveRecord::Schema.define(version: 20200817140115) do
   end
 
   add_index "experimental_pending_request_reminders", ["user_id"], name: "index_experimental_pending_request_reminders_on_user_id", using: :btree
+
+  create_table "followings", force: :cascade do |t|
+    t.integer "user_id",                   null: false
+    t.integer "partner_id",                null: false
+    t.boolean "active",     default: true, null: false
+  end
+
+  add_index "followings", ["partner_id"], name: "index_followings_on_partner_id", using: :btree
+  add_index "followings", ["user_id", "partner_id"], name: "index_followings_on_user_id_and_partner_id", unique: true, using: :btree
 
   create_table "join_requests", force: :cascade do |t|
     t.integer  "user_id",                                                   null: false

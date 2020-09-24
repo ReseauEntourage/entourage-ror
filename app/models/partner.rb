@@ -11,6 +11,8 @@ class Partner < ActiveRecord::Base
 
   geocoded_by :address
 
+  attr_accessor :following # see api/v1/partners#show
+
   PLACEHOLDER_URL = "https://s3-eu-west-1.amazonaws.com/entourage-ressources/partner-placeholder.png".freeze
 
   def large_logo_url

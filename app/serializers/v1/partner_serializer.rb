@@ -12,16 +12,23 @@ module V1
                :postal_code,
                :website_url,
                :email,
-               :default
+               :default,
+               :following
 
     def filter(keys)
       if scope[:full] == true
-        keys - [:postal_code]
+        keys -= [:postal_code]
       elsif scope[:minimal] == true
-        [:id, :name, :postal_code]
+        keys = [:id, :name, :postal_code]
       else
-        keys - [:description, :donations_needs, :volunteers_needs, :phone, :address, :website_url, :email, :postal_code]
+        keys -= [:description, :donations_needs, :volunteers_needs, :phone, :address, :website_url, :email, :postal_code]
       end
+
+      if scope[:following] != true
+        keys -= [:following]
+      end
+
+      keys
     end
 
     OPTIONAL_ATTRIBUTES = [:phone, :address, :website_url, :email].freeze

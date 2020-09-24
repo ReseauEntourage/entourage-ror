@@ -195,6 +195,7 @@ Rails.application.routes.draw do
           post :address
           get :email_preferences, action: :update_email_preferences
           match :address_suggestion, via: [:get, :post], action: :confirm_address_suggestion
+          post :following
         end
 
         resources :tours, :controller => 'users/tours', only: [:index]

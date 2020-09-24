@@ -29,6 +29,7 @@ RSpec.describe Api::V1::PartnersController, type: :controller do
 
   describe 'GET show' do
     let!(:partner1) { FactoryGirl.create(:partner, name: "Partner A", postal_code: "75008") }
+    let!(:following) { nil }
 
     before { get 'show', id: partner1.id, token: user.token }
     # TODO(partner)
@@ -45,9 +46,19 @@ RSpec.describe Api::V1::PartnersController, type: :controller do
         "address" => nil,
         "website_url" => nil,
         "email" => nil,
-        "default" => true
+        "default" => true,
+        "following" => false
       }
     )}
+
+    context "followed" do
+      let!(:following) { create :following, user: user, partner: partner1 }
+      it { expect(JSON.parse(response.body)).to match(
+        "partner" => hash_including(
+          "following" => true
+        )
+      )}
+    end
   end
 
   describe 'POST join_request' do

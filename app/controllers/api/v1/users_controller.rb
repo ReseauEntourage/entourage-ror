@@ -216,6 +216,34 @@ module Api
         end
       end
 
+      def following
+        if !params[:id].in?(['me', UserService.external_uuid(current_user_or_anonymous)])
+          return render_error(code: "UNAUTHORIZED", message: "You can only update your own followings.", status: 401)
+        end
+
+        partner_id = following_params[:partner_id]
+        if Partner.where(id: partner_id).exists? == false
+          return render_error(code: "PARTNER_NOT_FOUND", message: "Partner not found for partner_id: #{partner_id.inspect}.", status: 404)
+        end
+
+        following = Following.find_or_initialize_by(user_id: current_user.id, partner_id: partner_id)
+        following.active = following_params[:active]
+
+        success =
+          if following.new_record? && following.active == false
+            # no need to create an inactive following
+            true
+          else
+            following.save
+          end
+
+        if success
+          render status: 200, json: {following: {partner_id: following.partner_id, active: following.active}}
+        else
+          render_error(code: "CANNOT_UPDATE_FOLLOWING", message: following.errors.full_messages, status: 400)
+        end
+      end
+
       def lookup
         unless LegacyPhoneValidator.new(phone: params[:phone]).valid?
           return render_error(code: "INVALID_PHONE_FORMAT", message: "invalid phone number format", status: 401)
@@ -346,6 +374,10 @@ module Api
 
       def address_params
         params.require(:address).permit(:place_name, :latitude, :longitude, :street_address, :google_place_id)
+      end
+
+      def following_params
+        params.require(:following).permit(:partner_id, :active)
       end
 
       # The apps cache the response to /login and /update for the currentUser

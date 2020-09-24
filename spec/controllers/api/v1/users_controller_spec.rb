@@ -999,6 +999,40 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
     end
   end
 
+  describe 'POST following' do
+    let(:user) { create :public_user }
+    let(:partner) { create :partner }
+
+    subject { post 'following', following: following, id: 'me', token: user.token }
+
+    context "create" do
+      let(:following) { { partner_id: partner.id, active: true } }
+      before { subject }
+      it { expect(response.status).to eq 200 }
+      it { expect(JSON.parse(response.body)).to eq(
+        "following" => {
+          "partner_id" => partner.id,
+          "active" => true
+        }
+      )}
+      it { expect(Following.where(user: user, partner: partner).pluck(:active)).to eq [true] }
+    end
+
+    context "unfollow" do
+      let!(:existing) { create :following, user: user, partner: partner }
+      let(:following) { { partner_id: partner.id, active: false } }
+      before { subject }
+      it { expect(response.status).to eq 200 }
+      it { expect(JSON.parse(response.body)).to eq(
+        "following" => {
+          "partner_id" => partner.id,
+          "active" => false
+        }
+      )}
+      it { expect(Following.where(user: user, partner: partner).pluck(:active)).to eq [false] }
+    end
+  end
+
   describe 'GET #email_preferences' do
     let(:category) { create :email_category }
     let(:other_category) { create :email_category }
