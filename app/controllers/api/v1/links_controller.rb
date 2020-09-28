@@ -93,6 +93,7 @@ module Api
           'hub_1' => 'https://blog.entourage.social/',
           'hub_2' => 'https://www.simplecommebonjour.org/',
           'hub_3' => 'https://www.facebook.com/EntourageReseauCivique/events/',
+          'hub_faq'  => 'https://blog.entourage.social/comment-utiliser-l-application-entourage/',
         }
 
         redirection = redirections[params[:id]]
