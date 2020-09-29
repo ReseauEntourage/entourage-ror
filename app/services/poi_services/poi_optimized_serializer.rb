@@ -1,11 +1,12 @@
 module PoiServices
   class PoiOptimizedSerializer
     CACHE_KEY_PREFIX = "json_cache/#{Poi.model_name.cache_key}".freeze
-    CACHE_KEY_FORMAT = "#{CACHE_KEY_PREFIX}/%s-%s".freeze
+    CACHE_KEY_FORMAT = "#{CACHE_KEY_PREFIX}/%s/%s-%s".freeze
 
-    def initialize(pois_scope, box_size:, &serializer)
+    def initialize(pois_scope, box_size:, version:, &serializer)
       @pois = pois_scope
       @box_size = box_size.to_f
+      @version = version
       @serializer = serializer
     end
 
@@ -16,7 +17,7 @@ module PoiServices
 
       cache_keys_by_id = {}
       pois_metadata.each do |id, timestamp|
-        cache_keys_by_id[id.to_i] = CACHE_KEY_FORMAT % [id, timestamp]
+        cache_keys_by_id[id.to_i] = CACHE_KEY_FORMAT % [@version, id, timestamp]
       end
 
       cached_values = $redis.mget(*cache_keys_by_id.values)

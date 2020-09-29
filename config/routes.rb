@@ -175,7 +175,7 @@ Rails.application.routes.draw do
       resources :newsletter_subscriptions, only: [:create]
       resources :questions, only: [:index]
 
-      resources :pois, only: [:index, :create] do
+      resources :pois, only: [:index, :show, :create] do
         member do
           post 'report'
         end

@@ -57,17 +57,33 @@ module Api
           @pois = @pois.limit(25)
         end
 
-        #TODO : refactor API to return 1 top level POI ressources and associated categories ressources
-        poi_json = PoiServices::PoiOptimizedSerializer.new(@pois, box_size: params[:distance]) do |pois|
-          # manually preload the :category association to prevent n+1 queries
-          category_by_id = Hash[@categories.map { |c| [c.id, c] }]
-          pois.each { |p| p.category = category_by_id[p.category_id] }
+        version = params[:v] == '2' ? :v2 : :v1
 
-          ActiveModel::ArraySerializer.new(pois, each_serializer: ::V1::PoiSerializer).as_json
+        #TODO : refactor API to return 1 top level POI ressources and associated categories ressources
+        poi_json = PoiServices::PoiOptimizedSerializer.new(@pois, box_size: params[:distance], version: version) do |pois|
+          if version == :v1
+            # manually preload the :category association to prevent n+1 queries
+            category_by_id = Hash[@categories.map { |c| [c.id, c] }]
+            pois.each { |p| p.category = category_by_id[p.category_id] }
+          end
+
+          ActiveModel::ArraySerializer.new(pois, each_serializer: ::V1::PoiSerializer, scope: {version: :"#{version}_list"}).as_json
         end.serialize
 
-        categorie_json = ActiveModel::ArraySerializer.new(@categories, each_serializer: ::V1::CategorySerializer).as_json
-        render json: {pois: poi_json, categories: categorie_json }, status: 200
+        payload =
+          case version
+          when :v1
+            categorie_json = ActiveModel::ArraySerializer.new(@categories, each_serializer: ::V1::CategorySerializer).as_json
+            {pois: poi_json, categories: categorie_json}
+          when :v2
+            {pois: poi_json}
+          end
+        render json: payload, status: 200
+      end
+
+      def show
+        poi = Poi.validated.find(params[:id])
+        render json: poi, serializer: ::V1::PoiSerializer, scope: {version: :v2}
       end
 
       def create
