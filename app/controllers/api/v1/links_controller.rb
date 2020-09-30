@@ -92,7 +92,7 @@ module Api
           'action_faq' => 'https://blog.entourage.social/2017/04/28/comment-utiliser-l-application-entourage/#site-content?utm_source=app&utm_medium=page_desc',
           'hub_1' => 'https://blog.entourage.social/',
           'hub_2' => 'https://www.simplecommebonjour.org/',
-          'hub_3' => 'https://www.facebook.com/EntourageReseauCivique/events/',
+          'hub_3' => 'https://www.eventbrite.fr/o/entourage-29770425367',
           'hub_faq'  => 'https://blog.entourage.social/comment-utiliser-l-application-entourage/',
         }
 
