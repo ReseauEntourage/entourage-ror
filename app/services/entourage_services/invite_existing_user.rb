@@ -1,8 +1,7 @@
 module EntourageServices
   class InviteExistingUser
 
-    def initialize(phone_number:, entourage:, inviter:, invitee:)
-      @phone_number = phone_number
+    def initialize(entourage:, inviter:, invitee:)
       @entourage = entourage
       @inviter = inviter
       @invitee = invitee
@@ -11,7 +10,7 @@ module EntourageServices
     def send_invite
       invite = EntourageInvitation.where(invitable: entourage,
                                          inviter: inviter,
-                                         phone_number: phone_number,
+                                         invitee: invitee,
                                          invitation_mode: EntourageInvitation::MODE_SMS).first
       invite = create_invite! if invite.nil?
       notify_user!(invite: invite) unless invite.nil?
@@ -19,7 +18,7 @@ module EntourageServices
     end
 
     private
-    attr_reader :phone_number, :entourage, :inviter, :invitee
+    attr_reader :entourage, :inviter, :invitee
 
     def notify_user!(invite:)
       if invitee.last_sign_in_at
@@ -37,8 +36,8 @@ module EntourageServices
                                                           invitation_id: invitation_id
                                                       })
       else
-        Rails.logger.info "InviteExistingUser : sending #{message} to #{phone_number}"
-        SmsSenderJob.perform_later(phone_number, message, 'invite')
+        Rails.logger.info "InviteExistingUser : sending #{message} to #{invitee.phone}"
+        SmsSenderJob.perform_later(invitee.phone, message, 'invite')
       end
     end
 
@@ -47,7 +46,7 @@ module EntourageServices
         invite = EntourageInvitation.where(invitable: entourage,
                                          inviter: inviter,
                                          invitee: invitee,
-                                         phone_number: phone_number,
+                                         phone_number: invitee.phone,
                                          invitation_mode: EntourageInvitation::MODE_SMS).first_or_initialize
         relationship = UserRelationship.where(source_user: inviter,
                                             target_user: invitee,

@@ -35,7 +35,7 @@ module EntourageServices
     attr_reader :phone_number, :entourage, :callback, :inviter
 
     def invite_existing_user
-      EntourageServices::InviteExistingUser.new(phone_number: phone_number, entourage: entourage, inviter: inviter, invitee: invitee)
+      EntourageServices::InviteExistingUser.new(entourage: entourage, inviter: inviter, invitee: invitee)
     end
 
     def invite_new_user_by_sms

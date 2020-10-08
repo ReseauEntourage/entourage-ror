@@ -41,5 +41,10 @@ describe EntourageServices::EntourageBuilder do
       expect(EntourageServices::NeighborhoodAnnouncement).to receive(:on_create)
       entourage = service.create
     end
+
+    it "FollowingService.on_create_entourage" do
+      expect(FollowingService).to receive(:on_create_entourage)
+      entourage = service.create
+    end
   end
 end
