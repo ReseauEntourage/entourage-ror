@@ -3,7 +3,7 @@ module Admin
     layout 'admin_large'
 
     def index
-      @partners = Partner.all
+      @partners = Partner.order(:name)
     end
 
     def new
@@ -91,7 +91,8 @@ module Admin
     def partner_params
       params.require(:partner).permit(
         :name, :description, :phone, :address, :website_url, :email,
-        :latitude, :longitude
+        :latitude, :longitude,
+        :donations_needs, :volunteers_needs
       )
     end
   end
