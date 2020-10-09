@@ -13,12 +13,9 @@ class SmsNotificationService
     end
 
     if secondary_provider != nil
-      number_of_deliveries_in_the_last_hour = SmsDelivery.where(
-        phone_number: phone_number,
-        created_at: 1.hour.ago..Time.now
-      ).count
+      number_of_deliveries = SmsDelivery.where(phone_number: phone_number).count
 
-      if number_of_deliveries_in_the_last_hour.odd?
+      if number_of_deliveries.odd?
         provider = secondary_provider
       end
     end
