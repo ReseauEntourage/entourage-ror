@@ -48,7 +48,7 @@ module Api
           'atd-partnership' =>
             'https://www.atd-quartmonde.fr/entourage/',
           'faq' => {
-            'entourage' => 'https://blog.entourage.social/comment-utiliser-l-application-entourage/#site-content',
+            'entourage' => 'https://blog.entourage.social/2017/04/28/comment-utiliser-l-application-entourage/#index-faq',
             'pfp'       => 'https://docs.google.com/document/d/1fR6pEmhmCIBUJgzZ0CmFy9gzbMTXW5lFh7zxLDmbUco'
           }[community.slug],
           'ethics-charter' =>
@@ -89,11 +89,11 @@ module Api
                 first_name: user&.first_name
               }.to_query
             end,
-          'action_faq' => 'https://blog.entourage.social/2017/04/28/comment-utiliser-l-application-entourage/#site-content?utm_source=app&utm_medium=page_desc',
+          'action_faq' => 'https://blog.entourage.social/2017/04/28/comment-utiliser-l-application-entourage/#publier-une-action-solidaire',
           'hub_1' => 'https://blog.entourage.social/',
           'hub_2' => 'https://www.simplecommebonjour.org/',
           'hub_3' => 'https://www.eventbrite.fr/o/entourage-29770425367',
-          'hub_faq'  => 'https://blog.entourage.social/comment-utiliser-l-application-entourage/',
+          'hub_faq'  => 'https://blog.entourage.social/2017/04/28/comment-utiliser-l-application-entourage/#index-faq',
         }
 
         redirection = redirections[params[:id]]
