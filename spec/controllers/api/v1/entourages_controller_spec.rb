@@ -531,6 +531,23 @@ describe Api::V1::EntouragesController do
         end
       end
 
+      context "reopening" do
+        let!(:user_entourage) { create :entourage, :joined, user: user, status: :closed }
+        before { patch :update, id: user_entourage.to_param, entourage: {status: 'open'}, token: user.token }
+
+        it { expect(response.code).to eq '200' }
+        it { expect(user_entourage.chat_messages.last.attributes).to include(
+          "content"=>"a rouvert l’action",
+          "user_id"=>user.id,
+          "message_type"=>"status_update",
+          "metadata"=>{
+            :$id=>"urn:chat_message:status_update:metadata",
+            :status=>"open",
+            :outcome_success=>nil
+          }
+        )}
+      end
+
       context "entourage does not belong to user" do
         before { patch :update, id: entourage.to_param, entourage: {title: "new_title"}, token: user.token }
         it { expect(response.status).to eq(401) }

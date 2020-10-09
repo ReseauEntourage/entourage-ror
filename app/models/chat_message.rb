@@ -127,7 +127,11 @@ class ChatMessage < ActiveRecord::Base
   end
 
   def status_update_content
-    "a clôturé #{GroupService.name messageable, :l}"
+    op = {
+      closed: "a clôturé",
+      open: "a rouvert",
+    }[metadata[:status].to_sym]
+    "#{op} #{GroupService.name messageable, :l}"
   end
 
   def share_content
