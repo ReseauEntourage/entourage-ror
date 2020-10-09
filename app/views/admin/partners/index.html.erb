@@ -15,6 +15,9 @@
             <td>
               <%= link_to partner.name, [:admin, partner] %>
             </td>
+            <td>
+              <%= link_to "Supprimer", [:admin, partner], method: :delete, class: "text-danger", data: { confirm: "Supprimer l'association \"#{partner.name}\" ?" } %>
+            </td>
           </tr>
         <% end %>
       </table>

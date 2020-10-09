@@ -54,7 +54,24 @@ module Admin
     def destroy
       @partner = Partner.find(params[:id])
 
-      if @partner.destroy
+      Rails.logger.warn "type=partner.delete partner_id=#{@partner.id} attributes=#{JSON.fast_generate(@partner.attributes)}"
+      Rails.logger.warn "type=partner.delete partner_id=#{@partner.id} admins=#{JSON.fast_generate(@partner.users.where(partner_admin: true).pluck(:id))} members=#{JSON.fast_generate(@partner.users.where(partner_admin: false).pluck(:id))}"
+      Rails.logger.warn "type=partner.delete partner_id=#{@partner.id} followers=#{JSON.fast_generate(@partner.followings.where(active: true).pluck(:user_id))}"
+
+      success = false
+      ActiveRecord::Base.transaction do
+        @partner.destroy!
+        @partner.users.update_all(
+          partner_id:         User.column_defaults['partner_id'],
+          partner_admin:      User.column_defaults['partner_admin'],
+          partner_role_title: User.column_defaults['partner_role_title'],
+          targeting_profile:  User.column_defaults['targeting_profile'],
+          goal:               :offer_help,
+        )
+        success = true
+      end
+
+      if success
         redirect_to admin_partners_path, notice: "Association supprimée"
       else
         redirect_to [:admin, @partner], error: "Erreur"

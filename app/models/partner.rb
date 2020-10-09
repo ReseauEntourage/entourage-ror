@@ -2,6 +2,11 @@ class Partner < ActiveRecord::Base
   has_many :users
   has_many :groups, through: :users
 
+  has_many :followings, dependent: :delete_all
+  has_many :partner_invitations, dependent: :delete_all
+  has_many :partner_join_requests, dependent: :delete_all
+  has_one :poi, dependent: :delete
+
   validates :name, presence: true
 
   before_save :reformat_url, if: :website_url_changed?
@@ -47,6 +52,8 @@ class Partner < ActiveRecord::Base
   end
 
   def sync_poi
+    return if self.destroyed?
+
     poi = Poi.find_or_initialize_by(partner_id: self.id)
 
     poi.name        = self.name
