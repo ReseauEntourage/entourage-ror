@@ -45,6 +45,18 @@
       </div>
     </div>
   </div>
+
+  <div class="form-group">
+    <%= f.label :donations_needs %>
+    <%= f.text_area :donations_needs, rows: 3, class: "form-control",
+          placeholder: "jeux, produits d'hygiène, sous-vêtements, collations..." %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :volunteers_needs %>
+    <%= f.text_area :volunteers_needs, rows: 3, class: "form-control" %>
+  </div>
+
   <div class="form-group">
     <%= f.label :phone %>
     <%= f.phone_field :phone, class: "form-control" %>

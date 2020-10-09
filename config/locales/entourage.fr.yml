@@ -53,6 +53,8 @@ fr:
         address: Adresse
         website_url: Site Web
         email: Email
+        donations_needs: Dons acceptés
+        volunteers_needs: Bénévoles recherchés
 
       announcement:
         title: Titre
