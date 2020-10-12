@@ -56,7 +56,7 @@ class ChatMessage < ActiveRecord::Base
         }
       when 'share:metadata'
         {
-          type: { type: :string, enum: [:entourage] },
+          type: { type: :string, enum: [:entourage, :poi] },
           uuid: { type: :string }
         }
       end
@@ -139,6 +139,9 @@ class ChatMessage < ActiveRecord::Base
     when 'entourage'
       group = Entourage.find_by(uuid_v2: metadata[:uuid])
       group.share_url
+    when 'poi'
+      poi = Poi.find_by(id: metadata[:uuid])
+      [poi.name, poi.adress].map(&:strip).map(&:presence).compact.join("\n")
     else
       nil
     end

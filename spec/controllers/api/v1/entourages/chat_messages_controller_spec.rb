@@ -244,12 +244,12 @@ describe Api::V1::Entourages::ChatMessagesController do
 
       context "share" do
         let(:user) { create :public_user }
-        let(:entourage) { create :entourage }
         let(:conversation) { create :conversation, participants: [user] }
 
         before { post :create, entourage_id: conversation.to_param, chat_message: payload, token: user.token }
 
-        context "valid payload" do
+        context "entourage" do
+          let(:entourage) { create :entourage }
           let(:payload) do
             {
               message_type: 'share',
@@ -277,6 +277,41 @@ describe Api::V1::Entourages::ChatMessagesController do
               "metadata" => {
                 "type" => "entourage",
                 "uuid" => entourage.uuid_v2,
+                "$id" => "urn:chat_message:share:metadata"
+              }
+            }
+          })}
+        end
+
+        context "poi" do
+          let(:poi) { create :poi }
+          let(:payload) do
+            {
+              message_type: 'share',
+              metadata: {
+                type: 'poi',
+                uuid: poi.id
+              }
+            }
+          end
+
+          it { expect(response.status).to eq(201) }
+          it { expect(ChatMessage.count).to eq(1) }
+          it { expect(JSON.parse(response.body)).to eq({
+            "chat_message" => {
+              "id" => ChatMessage.last.id,
+              "content" => "Dede\nAu 50 75008 Paris",
+              "user" => {
+                "id" => user.id,
+                "avatar_url" => nil,
+                "display_name" => "John D.",
+                "partner" => nil
+              },
+              "created_at" => ChatMessage.last.created_at.iso8601(3),
+              "message_type" => "share",
+              "metadata" => {
+                "type" => "poi",
+                "uuid" => poi.id.to_s,
                 "$id" => "urn:chat_message:share:metadata"
               }
             }
