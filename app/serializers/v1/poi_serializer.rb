@@ -1,15 +1,21 @@
 module V1
   class PoiSerializer < ActiveModel::Serializer
     attributes :id,
+               :uuid,
+               :source,
+               :source_url,
                :name,
                :description,
                :longitude,
                :latitude,
                :adress,
+               :address,
                :phone,
                :website,
                :email,
                :audience,
+               :hours,
+               :languages,
                :validated,
                :category_id,
                :partner_id,
@@ -20,11 +26,13 @@ module V1
     def filter(keys)
       case version
       when :v1_list
-        keys - [:category_ids]
+        keys & [:id, :name, :description, :longitude, :latitude, :adress,
+                :phone, :website, :email, :audience, :validated, :category_id,
+                :partner_id, :category]
       when :v2_list
-        keys & [:id, :name, :latitude, :longitude, :adress, :phone, :category_id, :partner_id]
+        keys & [:uuid, :name, :latitude, :longitude, :address, :phone, :category_id, :partner_id]
       when :v2
-        keys - [:validated, :category]
+        keys - [:id, :adress, :validated, :category, :category_id]
       else
         keys
       end

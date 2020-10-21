@@ -13,5 +13,9 @@ FactoryGirl.define do
     category_id 1
     validated true
     category
+
+    after(:create) do |poi, _|
+      poi.categories << poi.category
+    end
   end
 end

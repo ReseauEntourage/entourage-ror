@@ -24,7 +24,24 @@ describe Api::V1::PoisController, :type => :controller do
       it "renders POI" do
         poi = Poi.last
         res = JSON.parse(response.body)
-        expect(res).to eq({"poi"=>{"id"=>poi.id, "name"=>"Dede", "description"=>nil, "longitude"=>2.30681949999996, "latitude"=>48.870424, "adress"=>"Au 50 75008 Paris", "phone"=>"0000000000", "website"=>"entourage.com", "email"=>"entourage@entourage.com", "audience"=>"Mon audience", "validated"=>false, "category_id"=>poi.category_id, "category"=>{"id"=>poi.category.id, "name"=>poi.category.name}, "partner_id"=>nil, "category_ids"=>[poi.category_id]}})
+        expect(res).to eq("poi"=>{
+          "uuid"=>poi.id.to_s,
+          "source"=>"entourage",
+          "source_url"=>nil,
+          "name"=>"Dede",
+          "description"=>nil,
+          "longitude"=>2.30681949999996,
+          "latitude"=>48.870424,
+          "address"=>"Au 50 75008 Paris",
+          "phone"=>"0000000000",
+          "website"=>"entourage.com",
+          "email"=>"entourage@entourage.com",
+          "audience"=>"Mon audience",
+          "hours"=>nil,
+          "languages"=>nil,
+          "partner_id"=>nil,
+          "category_ids"=>[poi.category_id]
+        })
       end
     end
 
@@ -61,17 +78,20 @@ describe Api::V1::PoisController, :type => :controller do
       it { expect(response.status).to eq 200 }
       it { expect(JSON.parse(response.body)).to eq(
         "poi" => {
-          "id" => poi.id,
+          "uuid" => poi.id.to_s,
+          "source" => "entourage",
+          "source_url" => nil,
           "name" => "Dede",
           "description" => nil,
           "longitude" => 2.30681949999996,
           "latitude" => 48.870424,
-          "adress" => "Au 50 75008 Paris",
+          "address" => "Au 50 75008 Paris",
           "phone" => "0000000000",
           "website" => "entourage.com",
           "email" => "entourage@entourage.com",
           "audience" => "Mon audience",
-          "category_id" => poi.category_id,
+          "hours" => nil,
+          "languages" => nil,
           "partner_id" => nil,
           "category_ids" => [poi.category_id]
         }
@@ -141,21 +161,21 @@ describe Api::V1::PoisController, :type => :controller do
             expect(res).to eq(
               "pois"=>[
                 {
-                  "id"=>poi1.id,
+                  "uuid"=>poi1.uuid,
                   "name"=>"Dede",
                   "longitude"=>2.30681949999996,
                   "latitude"=>48.870424,
-                  "adress"=>"Au 50 75008 Paris",
+                  "address"=>"Au 50 75008 Paris",
                   "phone"=>"0000000000",
                   "category_id"=>poi1.category_id,
                   "partner_id"=>nil
                 },
                 {
-                  "id"=>poi3.id,
+                  "uuid"=>poi3.uuid,
                   "name"=>"Dede",
                   "longitude"=>2.30681949999996,
                   "latitude"=>48.870424,
-                  "adress"=>"Au 50 75008 Paris",
+                  "address"=>"Au 50 75008 Paris",
                   "phone"=>"0000000000",
                   "category_id"=>poi3.category_id,
                   "partner_id"=>nil

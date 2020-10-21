@@ -16,4 +16,27 @@ class Poi < ActiveRecord::Base
     within_bounding_box(box)
   end
 
+  def uuid
+    id.to_s unless id.nil?
+  end
+
+  def source
+    :entourage
+  end
+
+  def source_url
+    nil
+  end
+
+  def address
+    adress
+  end
+
+  def hours
+    nil
+  end
+
+  def languages
+    nil
+  end
 end

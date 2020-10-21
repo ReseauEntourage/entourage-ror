@@ -176,6 +176,9 @@ Rails.application.routes.draw do
       resources :questions, only: [:index]
 
       resources :pois, only: [:index, :show, :create] do
+        collection do
+          get :soliguide_test
+        end
         member do
           post 'report'
         end

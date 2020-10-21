@@ -38,10 +38,15 @@ module PoiServices
         pois_from_database = Poi.where(id: ids_to_fetch_from_database)
         cache_writes = []
 
-        @serializer.call(pois_from_database).each do |poi|
-          json = poi.to_json
-          pois_by_id[poi[:id]] = json
-          cache_writes.push(cache_keys_by_id[poi[:id]], json)
+        @serializer.call(pois_from_database).each_with_index do |serialized_poi, i|
+          json = serialized_poi.to_json
+
+          # This assumes that the serializer respects the order of the pois
+          # which is true for ActiveModel::ArraySerializer
+          poi_id = pois_from_database[i].id
+
+          pois_by_id[poi_id] = json
+          cache_writes.push(cache_keys_by_id[poi_id], json)
         end
 
         $redis.mset(*cache_writes)
