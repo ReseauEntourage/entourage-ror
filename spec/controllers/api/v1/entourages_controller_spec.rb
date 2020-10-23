@@ -29,6 +29,7 @@ describe Api::V1::EntouragesController do
                                        "metadata"=>{"city"=>"", "display_address"=>""},
                                        "entourage_type"=>"ask_for_help",
                                        "display_category"=>"social",
+                                       "postal_code"=>nil,
                                        "number_of_people"=>1,
                                        "author"=>{
                                            "id"=>entourage.user.id,
@@ -137,6 +138,7 @@ describe Api::V1::EntouragesController do
                                                            "metadata"=>{"city"=>"", "display_address"=>""},
                                                            "entourage_type"=>"ask_for_help",
                                                            "display_category"=>"mat_help",
+                                                           "postal_code"=>nil,
                                                            "number_of_people"=>1,
                                                            "author"=>{
                                                                "id"=>user.id,
@@ -218,6 +220,7 @@ describe Api::V1::EntouragesController do
               },
               "entourage_type"=>"contribution",
               "display_category"=>nil,
+              "postal_code"=>nil,
               "join_status"=>"accepted",
               "number_of_unread_messages"=>0,
               "number_of_people"=>1,
@@ -321,6 +324,7 @@ describe Api::V1::EntouragesController do
                                                              "metadata"=>{"city"=>"", "display_address"=>""},
                                                              "entourage_type"=>"ask_for_help",
                                                              "display_category"=>"social",
+                                                             "postal_code"=>nil,
                                                              "number_of_people"=>1,
                                                              "author"=>{
                                                                  "id"=>entourage.user.id,
@@ -375,6 +379,7 @@ describe Api::V1::EntouragesController do
                                                           "metadata"=>{},
                                                           "entourage_type"=>"contribution",
                                                           "display_category"=>nil,
+                                                          "postal_code"=>nil,
                                                           "join_status"=>"accepted",
                                                           "number_of_unread_messages"=>0,
                                                           "number_of_people"=>2,
@@ -474,6 +479,7 @@ describe Api::V1::EntouragesController do
                                                            "metadata"=>{"city"=>"", "display_address"=>""},
                                                            "entourage_type"=>"ask_for_help",
                                                            "display_category"=>"social",
+                                                           "postal_code"=>nil,
                                                            "number_of_people"=>1,
                                                            "author"=>{
                                                                "id"=>user.id,

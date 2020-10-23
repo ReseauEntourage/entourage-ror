@@ -265,7 +265,7 @@ describe Api::V1::Entourages::ChatMessagesController do
           it { expect(JSON.parse(response.body)).to eq({
             "chat_message" => {
               "id" => ChatMessage.last.id,
-              "content" => "https://www.entourage.social/entourages/#{entourage.uuid_v2}",
+              "content" => "#{entourage.title}\nhttps://www.entourage.social/entourages/#{entourage.uuid_v2}",
               "user" => {
                 "id" => user.id,
                 "avatar_url" => nil,

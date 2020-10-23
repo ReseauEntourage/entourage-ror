@@ -13,6 +13,7 @@ module V1
                :metadata,
                :entourage_type,
                :display_category,
+               :postal_code,
                :join_status,
                :number_of_unread_messages,
                :number_of_people,
