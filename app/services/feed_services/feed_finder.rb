@@ -144,10 +144,9 @@ module FeedServices
         pinned = []
 
         # sensib
-        pinned << 96725
+        pinned << 99603
 
         if dep == '59' # Lille
-          pinned << 93115 # rencontres nomades
           pinned << 93114 # midi ludique
         end
 
