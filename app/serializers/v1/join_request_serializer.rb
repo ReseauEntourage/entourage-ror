@@ -9,7 +9,8 @@ module V1
                :message,
                :requested_at,
                :avatar_url,
-               :partner
+               :partner,
+               :partner_role_title
 
     def id
       object.user.id
@@ -43,6 +44,11 @@ module V1
     def partner
       return nil unless object.user.partner
       V1::PartnerSerializer.new(object.user.partner, scope: {user: object.user}, root: false).as_json
+    end
+
+    def partner_role_title
+      user = object.user
+      user.partner_role_title.presence if user.partner_id
     end
   end
 end

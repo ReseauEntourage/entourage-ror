@@ -24,7 +24,8 @@ describe Api::V1::Tours::UsersController do
                                                               "message"=>nil,
                                                               "avatar_url"=>nil,
                                                               "requested_at"=>JoinRequest.last.created_at.iso8601(3),
-                                                              "partner"=>nil}) }
+                                                              "partner"=>nil,
+                                                              "partner_role_title"=>nil}) }
         it { expect(tour.reload.number_of_people).to eq(1) }
       end
 
@@ -42,7 +43,8 @@ describe Api::V1::Tours::UsersController do
                                            "message"=>nil,
                                            "avatar_url"=>nil,
                                            "requested_at"=>JoinRequest.last.created_at.iso8601(3),
-                                           "partner"=>nil}) }
+                                           "partner"=>nil,
+                                           "partner_role_title"=>nil}) }
         it { expect(tour.reload.number_of_people).to eq(0) }
       end
 
@@ -70,7 +72,8 @@ describe Api::V1::Tours::UsersController do
                                                               "message"=> "foo",
                                                               "requested_at"=>JoinRequest.last.created_at.iso8601(3),
                                                               "avatar_url"=>nil,
-                                                              "partner"=>nil}) }
+                                                              "partner"=>nil,
+                                                              "partner_role_title"=>nil}) }
       end
     end
   end
@@ -93,7 +96,8 @@ describe Api::V1::Tours::UsersController do
                                                                "message"=>nil,
                                                                "requested_at"=>join_request.created_at.iso8601(3),
                                                                "avatar_url"=>nil,
-                                                               "partner"=>nil}]}) }
+                                                               "partner"=>nil,
+                                                               "partner_role_title"=>nil}]}) }
     end
   end
 
@@ -187,7 +191,8 @@ describe Api::V1::Tours::UsersController do
                                           "message"=>nil,
                                           "requested_at"=>JoinRequest.last.created_at.iso8601(3),
                                           "avatar_url"=>nil,
-                                          "partner"=>nil
+                                          "partner"=>nil,
+                                          "partner_role_title"=>nil
                                           }}) }
       it { expect(tour_requested.reload.status).to eq("rejected") }
       it { expect(tour.reload.number_of_people).to eq(1) }
@@ -213,7 +218,8 @@ describe Api::V1::Tours::UsersController do
                                   "message"=>nil,
                                   "requested_at"=>tour_member.created_at.iso8601(3),
                                   "avatar_url"=>nil,
-                                  "partner"=>nil}
+                                  "partner"=>nil,
+                                  "partner_role_title"=>nil}
                                 }) }
       it { expect(tour.reload.number_of_people).to eq(0) }
     end
