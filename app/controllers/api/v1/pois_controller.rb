@@ -7,10 +7,22 @@ module Api
 
       #curl -H "Content-Type: application/json" "https://entourage-back-preprod.herokuapp.com/api/v1/pois.json?token=153ad0b7ef67e5c44b8ef5afc12709e4&category_ids=1,2"
       def index
+        version = params[:v] == '2' ? :v2 : :v1
+
+        if version == :v2 && EnvironmentHelper.env.in?([:development, :staging]) && params[:no_redirect] != 'true'
+          redirect_params = {
+            latitude:  params[:latitude],
+            longitude: params[:longitude],
+            distance:  params[:distance]
+          }
+          categories = (params[:category_ids] || "").split(",").map(&:to_i).uniq
+          redirect_params[:categories] = categories.first if categories.one?
+
+          return redirect_to "https://entourage-soliguide-preprod.herokuapp.com/api/v1/pois?" + redirect_params.to_query
+        end
+
         @categories = Category.all
         @pois = Poi.validated
-
-        version = params[:v] == '2' ? :v2 : :v1
 
         if params[:category_ids].present?
           categories = params[:category_ids].split(",").map(&:to_i).uniq
@@ -74,7 +86,7 @@ module Api
           ActiveModel::ArraySerializer.new(pois, each_serializer: ::V1::PoiSerializer, scope: {version: :"#{version}_list"}).as_json
         end.serialize
 
-        if :v2 && EnvironmentHelper.env.in?([:development, :staging])
+        if version == :v2 && EnvironmentHelper.env.in?([:development, :staging])
           poi_json.unshift(
             uuid: "s114",
             name: "Café Social Dejean - Association Ayyem Zamen",
