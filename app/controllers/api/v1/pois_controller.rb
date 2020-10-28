@@ -18,7 +18,7 @@ module Api
           categories = (params[:category_ids] || "").split(",").map(&:to_i).uniq
           redirect_params[:categories] = categories.first if categories.one?
 
-          return redirect_to "https://entourage-soliguide-preprod.herokuapp.com/api/v1/pois?" + redirect_params.to_query
+          return head status: 302, location:  "https://entourage-soliguide-preprod.herokuapp.com/api/v1/pois?" + redirect_params.to_query
         end
 
         @categories = Category.all
@@ -111,8 +111,8 @@ module Api
       end
 
       def show
-        if params[:id] === "s114"
-          return head status: 302, location: soliguide_test_api_v1_pois_path(params: params.except(:action, :controller, :id))
+        if params[:id].start_with?('s')
+          return head status: 302, location: "https://entourage-soliguide-preprod.herokuapp.com/api/v1/pois/#{params[:id]}?" + params.except(:action, :controller, :id).to_query
         end
 
         poi = Poi.validated.find(params[:id])
