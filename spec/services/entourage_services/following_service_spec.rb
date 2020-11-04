@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe FollowingService do
 
-  let(:partner) { create :partner }
+  let(:partner) { create :partner, name: "PARTNER_NAME" }
   let(:partner_user) { create :public_user, partner: partner }
   let!(:following) { create :following, partner: partner }
   let(:action) { create :entourage, user: partner_user }
@@ -21,10 +21,28 @@ describe FollowingService do
         "invitable_type" => "Entourage",
         "inviter_id" => partner_user.id,
         "invitee_id" => following.user.id,
-        "invitation_mode" => "SMS",
+        "invitation_mode" => "partner_following",
         "phone_number" => following.user.phone,
         "status" => "pending"
       )
+    }
+
+    it {
+      expect_any_instance_of(PushNotificationService).to receive(:send_notification).with(
+        "PARTNER_NAME",
+        "foobar",
+        "PARTNER_NAME vous invite à rejoindre une action.",
+        [following.user],
+        {
+          type: "ENTOURAGE_INVITATION",
+          entourage_id: action.id,
+          group_type: 'action',
+          inviter_id: partner_user.id,
+          invitee_id: following.user.id,
+          invitation_id: 123
+        }
+      )
+      subject
     }
   end
 end

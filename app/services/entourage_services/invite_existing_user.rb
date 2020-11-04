@@ -1,31 +1,40 @@
 module EntourageServices
   class InviteExistingUser
 
-    def initialize(entourage:, inviter:, invitee:)
+    def initialize(entourage:, inviter:, invitee:, mode: nil)
       @entourage = entourage
       @inviter = inviter
       @invitee = invitee
+      @mode = (mode || EntourageInvitation::MODE_SMS).to_s
     end
 
     def send_invite
-      invite = EntourageInvitation.where(invitable: entourage,
-                                         inviter: inviter,
-                                         invitee: invitee,
-                                         invitation_mode: EntourageInvitation::MODE_SMS).first
-      invite = create_invite! if invite.nil?
+      invite =
+        EntourageInvitation
+        .where(
+          invitable: entourage,
+          inviter: inviter
+        )
+        .where("(invitee_id = ? OR phone_number = ?)", invitee.id, invitee.phone)
+        .first
+      if invite.nil?
+        invite = create_invite!
+      else
+        invite.update(invitee: invitee, phone_number: invitee.phone)
+      end
       notify_user!(invite: invite) unless invite.nil?
       invite
     end
 
     private
-    attr_reader :entourage, :inviter, :invitee
+    attr_reader :entourage, :inviter, :invitee, :mode
 
     def notify_user!(invite:)
       if invitee.last_sign_in_at
         invitation_id = Rails.env.test? ? 123 : invite.id
         PushNotificationService.new.send_notification(inviter_name,
                                                       entourage.title,
-                                                      "Vous êtes invité à rejoindre #{GroupService.name(entourage, :l)} de #{inviter_name}",
+                                                      "#{inviter_name} vous invite à rejoindre #{GroupService.name(entourage, :u)}.",
                                                       User.where(id: invitee.id),
                                                       {
                                                           type: "ENTOURAGE_INVITATION",
@@ -43,11 +52,17 @@ module EntourageServices
 
     def create_invite!
       begin
-        invite = EntourageInvitation.where(invitable: entourage,
-                                         inviter: inviter,
-                                         invitee: invitee,
-                                         phone_number: invitee.phone,
-                                         invitation_mode: EntourageInvitation::MODE_SMS).first_or_initialize
+        invite =
+          EntourageInvitation
+          .where(
+            invitable: entourage,
+            inviter: inviter,
+            invitee: invitee,
+          )
+          .first_or_initialize do |invite|
+            invite.phone_number = invitee.phone
+            invite.invitation_mode = mode
+          end
         relationship = UserRelationship.where(source_user: inviter,
                                             target_user: invitee,
                                             relation_type: UserRelationship::TYPE_INVITE).first_or_initialize
@@ -64,7 +79,11 @@ module EntourageServices
     end
 
     def inviter_name
-      UserPresenter.new(user: inviter).display_name
+      if mode == 'partner_following'
+        inviter.partner.name
+      else
+        UserPresenter.new(user: inviter).display_name
+      end
     end
 
     def message

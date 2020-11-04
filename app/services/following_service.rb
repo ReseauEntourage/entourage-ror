@@ -7,7 +7,8 @@ module FollowingService
       EntourageServices::InviteExistingUser.new(
         entourage: entourage,
         inviter: entourage.user,
-        invitee: following.user
+        invitee: following.user,
+        mode: :partner_following
       ).send_invite
     end
   end
