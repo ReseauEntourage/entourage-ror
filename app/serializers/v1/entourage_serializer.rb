@@ -20,7 +20,10 @@ module V1
                :created_at,
                :updated_at,
                :description,
-               :share_url
+               :share_url,
+               :image_url,
+               :online,
+               :event_url
 
     has_one :author, serializer: ActiveModel::DefaultSerializer
     has_one :location, serializer: ActiveModel::DefaultSerializer
@@ -86,7 +89,8 @@ module V1
           id: entourage_author.id,
           display_name: UserPresenter.new(user: object.user).display_name,
           avatar_url: UserServices::Avatar.new(user: entourage_author).thumbnail_url,
-          partner: object.user.partner.nil? ? nil : V1::PartnerSerializer.new(object.user.partner, scope: {user: object.user}, root: false).as_json
+          partner: object.user.partner.nil? ? nil : V1::PartnerSerializer.new(object.user.partner, scope: {user: object.user}, root: false).as_json,
+          partner_role_title: object.user.partner.nil? ? nil : object.user.partner_role_title.presence
       }
     end
 

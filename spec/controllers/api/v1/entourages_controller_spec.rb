@@ -35,7 +35,8 @@ describe Api::V1::EntouragesController do
                                            "id"=>entourage.user.id,
                                            "display_name"=>"John D.",
                                            "avatar_url"=>nil,
-                                           "partner"=>nil
+                                           "partner"=>nil,
+                                           "partner_role_title" => nil
                                        },
                                        "location"=>{
                                            "latitude"=>1.122,
@@ -46,7 +47,10 @@ describe Api::V1::EntouragesController do
                                        "created_at"=> entourage.created_at.iso8601(3),
                                        "updated_at"=> entourage.updated_at.iso8601(3),
                                        "description" => nil,
-                                       "share_url" => "https://www.entourage.social/entourages/#{entourage.uuid_v2}"
+                                       "share_url" => "https://www.entourage.social/entourages/#{entourage.uuid_v2}",
+                                       "image_url"=>nil,
+                                       "online"=>false,
+                                       "event_url"=>nil
                                     }]
                               })
       end
@@ -144,7 +148,8 @@ describe Api::V1::EntouragesController do
                                                                "id"=>user.id,
                                                                "display_name"=>"John D.",
                                                                "avatar_url"=>nil,
-                                                               "partner"=>nil
+                                                               "partner"=>nil,
+                                                               "partner_role_title" => nil
                                                            },
                                                            "location"=>{
                                                                "latitude"=>4.567,
@@ -155,7 +160,10 @@ describe Api::V1::EntouragesController do
                                                            "created_at"=> Entourage.last.created_at.iso8601(3),
                                                            "updated_at"=> Entourage.last.updated_at.iso8601(3),
                                                            "description"=> "foo bar",
-                                                           "share_url" => "https://www.entourage.social/entourages/#{Entourage.last.uuid_v2}"
+                                                           "share_url" => "https://www.entourage.social/entourages/#{Entourage.last.uuid_v2}",
+                                                           "image_url"=>nil,
+                                                           "online"=>false,
+                                                           "event_url"=>nil
                                                           }
                                                      }) }
         it { expect(response.status).to eq(201) }
@@ -228,11 +236,15 @@ describe Api::V1::EntouragesController do
               "updated_at"=>outing.updated_at.iso8601(3),
               "description"=>nil,
               "share_url"=>"https://www.entourage.social/entourages/#{outing.uuid_v2}",
+              "image_url"=>nil,
+              "online"=>false,
+              "event_url"=>nil,
               "author"=>{
                 "id"=>user.id,
                 "display_name"=>"John D.",
                 "avatar_url"=>nil,
-                "partner"=>nil
+                "partner"=>nil,
+                "partner_role_title" => nil
               },
               "location"=>{
                 "latitude"=>48.868959,
@@ -330,7 +342,8 @@ describe Api::V1::EntouragesController do
                                                                  "id"=>entourage.user.id,
                                                                  "display_name"=>"John D.",
                                                                  "avatar_url"=>nil,
-                                                                 "partner"=>nil
+                                                                 "partner"=>nil,
+                                                                 "partner_role_title" => nil
                                                              },
                                                              "location"=>{
                                                                  "latitude"=>1.122,
@@ -341,7 +354,10 @@ describe Api::V1::EntouragesController do
                                                              "created_at"=> entourage.created_at.iso8601(3),
                                                              "updated_at"=> entourage.updated_at.iso8601(3),
                                                              "description" => nil,
-                                                             "share_url" => "https://www.entourage.social/entourages/#{entourage.uuid_v2}"
+                                                             "share_url" => "https://www.entourage.social/entourages/#{entourage.uuid_v2}",
+                                                             "image_url"=>nil,
+                                                             "online"=>false,
+                                                             "event_url"=>nil
                                                             }
                                                        }) }
         end
@@ -387,11 +403,15 @@ describe Api::V1::EntouragesController do
                                                           "updated_at"=>nil,
                                                           "description"=>nil,
                                                           "share_url"=>nil,
+                                                          "image_url"=>nil,
+                                                          "online"=>false,
+                                                          "event_url"=>nil,
                                                           "author"=>{
                                                             "id"=>other_user.id,
                                                             "display_name"=>"Buzz L.",
                                                             "avatar_url"=>nil,
-                                                            "partner"=>nil},
+                                                            "partner"=>nil,
+                                                            "partner_role_title" => nil},
                                                           "location"=>{"latitude"=>0.0, "longitude"=>0.0}}}) }
         end
 
@@ -485,7 +505,8 @@ describe Api::V1::EntouragesController do
                                                                "id"=>user.id,
                                                                "display_name"=>"John D.",
                                                                "avatar_url"=>nil,
-                                                               "partner"=>nil
+                                                               "partner"=>nil,
+                                                               "partner_role_title" => nil
                                                            },
                                                            "location"=>{
                                                                "latitude"=>1.122,
@@ -496,7 +517,10 @@ describe Api::V1::EntouragesController do
                                                            "created_at"=> user_entourage.created_at.iso8601(3),
                                                            "updated_at"=> user_entourage.reload.updated_at.iso8601(3),
                                                            "description" => nil,
-                                                           "share_url" => "https://www.entourage.social/entourages/#{user_entourage.uuid_v2}"
+                                                           "share_url" => "https://www.entourage.social/entourages/#{user_entourage.uuid_v2}",
+                                                           "image_url"=>nil,
+                                                           "online"=>false,
+                                                           "event_url"=>nil
                                                           }
                                                      }) }
       end

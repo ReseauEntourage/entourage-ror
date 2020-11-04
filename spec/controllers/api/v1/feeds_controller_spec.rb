@@ -49,7 +49,8 @@ include CommunityHelper
                   "id"=>entourage.user.id,
                   "display_name"=>"John D.",
                   "avatar_url"=>nil,
-                  "partner"=>nil
+                  "partner"=>nil,
+                  "partner_role_title" => nil
                 },
                 "location"=>{
                   "latitude"=>1.122,
@@ -58,8 +59,10 @@ include CommunityHelper
                 "created_at"=> entourage.created_at.iso8601(3),
                 "updated_at"=> entourage.updated_at.iso8601(3),
                 "description" => nil,
-                "share_url" => "https://www.entourage.social/entourages/#{entourage.uuid_v2}"
-
+                "share_url" => "https://www.entourage.social/entourages/#{entourage.uuid_v2}",
+                "image_url"=>nil,
+                "online"=>false,
+                "event_url"=>nil
               },
               "heatmap_size" => 20
             },
@@ -426,11 +429,18 @@ include CommunityHelper
              "updated_at"=>entourage.updated_at.iso8601(3),
              "description"=>nil,
              "share_url"=>"https://www.entourage.social/entourages/#{entourage.uuid_v2}",
+             "image_url"=>nil,
+             "online"=>false,
+             "event_url"=>nil,
+             "image_url"=>nil,
+             "online"=>false,
+             "event_url"=>nil,
              "author"=>{
                "id"=>entourage.user_id,
                "display_name"=>"John D.",
                "avatar_url"=>nil,
-               "partner"=>nil},
+               "partner"=>nil,
+               "partner_role_title" => nil},
              "location"=>{
                "latitude"=>1.122,
                "longitude"=>2.345}},
