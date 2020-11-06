@@ -24,30 +24,7 @@ describe Api::V1::InvitationsController do
                                                     "title"=>invitation.invitable.title,
                                                     "status"=>"pending",
                                                     "inviter"=>{
-                                                        "id"=>invitation.inviter_id,
-                                                        "display_name"=>"John D.",
-                                                        "first_name"=>"John",
-                                                        "last_name"=>"D",
-                                                        "roles"=>[],
-                                                        "about"=>nil,
-                                                        "avatar_url"=>nil,
-                                                        "user_type"=>"pro",
-                                                        "organization"=>{
-                                                            "name"=>invitation.inviter.organization.name,
-                                                            "description"=>"Association description",
-                                                            "phone"=>invitation.inviter.organization.phone,
-                                                            "address"=>invitation.inviter.organization.address,
-                                                            "logo_url"=>nil
-                                                        },
-                                                        "stats"=>{
-                                                            "tour_count"=>0,
-                                                            "encounter_count"=>0,
-                                                            "entourage_count"=>0,
-                                                            "actions_count" => 0,
-                                                            "events_count" => 0,
-                                                            "good_waves_participation" => false,
-                                                        },
-                                                        "partner"=>nil
+                                                        "display_name"=>"John D."
                                                     }
                                                   }
                                                 ]}) }

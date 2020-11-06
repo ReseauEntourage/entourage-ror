@@ -5,7 +5,13 @@ module UserServices
     end
 
     def number_of_unread_messages
-      FeedServices::MyFeedFinder.unread_count(user: user)
+      count =
+        FeedServices::MyFeedFinder.unread_count(user: user) +
+        EntourageServices::InvitationService.unread_count(user: user)
+
+      count = 99 if count > 99
+
+      count
     end
 
     private

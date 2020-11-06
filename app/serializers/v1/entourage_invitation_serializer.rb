@@ -9,7 +9,15 @@ module V1
                :inviter
 
     def inviter
-      UserSerializer.new(object.inviter, root: false)
+      inviter_name =
+        if object.invitation_mode == 'partner_following'
+          object.inviter.partner.name
+        else
+          UserPresenter.new(user: object.inviter).display_name
+        end
+      {
+        display_name: inviter_name
+      }
     end
 
     def entourage_id

@@ -44,6 +44,12 @@ module EntourageServices
       end
     end
 
+    def self.unread_count user:
+      user.invitations.status(:pending)
+        .limit(99) # for performance in extreme cases
+        .count("distinct invitable_id")
+    end
+
     private
     attr_reader :invitation
 
