@@ -19,7 +19,7 @@ module Onboarding
         .where("greatest(name_entered.created_at, postal_code_entered.created_at, goal_entered.created_at) <= ?", MIN_DELAY.ago)
         .pluck(:id)
 
-      User.where(id: user_ids).find_each do |user|
+      User.where(id: user_ids).where("goal is not null").find_each do |user|
         begin
           Raven.user_context(id: user&.id)
 
