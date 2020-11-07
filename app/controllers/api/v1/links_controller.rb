@@ -90,7 +90,7 @@ module Api
               }.to_query
             end,
           'action_faq' => 'https://blog.entourage.social/2017/04/28/comment-utiliser-l-application-entourage/#publier-une-action-solidaire',
-          'hub_1' => 'https://blog.entourage.social/',
+          'hub_1' => 'https://entourage-asso.typeform.com/to/RyxV8mhG',
           'hub_2' => 'https://www.simplecommebonjour.org/',
           'hub_3' => 'https://www.eventbrite.fr/o/entourage-29770425367',
           'hub_faq'  => 'https://blog.entourage.social/2017/04/28/comment-utiliser-l-application-entourage/#index-faq',
