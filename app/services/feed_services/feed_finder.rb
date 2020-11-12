@@ -146,6 +146,9 @@ module FeedServices
         # sensib
         pinned << 99603
 
+        # çafé du bien
+        pinned << 105920
+
         if dep == '59' # Lille
           pinned << 93114 # midi ludique
         end
