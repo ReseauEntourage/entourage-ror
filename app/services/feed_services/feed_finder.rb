@@ -1,3 +1,5 @@
+require 'geocoder/sql'
+
 module FeedServices
   class FeedFinder
 
@@ -113,7 +115,8 @@ module FeedServices
       # actions are filtered out based on update date
       feeds = feeds.where("group_type not in (?) or feeds.updated_at >= ?", [:action, :tour], time_range.hours.ago)
 
-      feeds = feeds.within_bounding_box(box)
+      bounding_box_sql = Geocoder::Sql.within_bounding_box(*box, :latitude, :longitude)
+      feeds = feeds.where("(#{bounding_box_sql}) OR online = true")
 
       feeds = order_by_distance(feeds: feeds)
       feeds = feeds.page(page).per(per)

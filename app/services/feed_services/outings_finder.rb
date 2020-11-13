@@ -1,3 +1,5 @@
+require 'geocoder/sql'
+
 module FeedServices
   class OutingsFinder
 
@@ -18,8 +20,10 @@ module FeedServices
       outings = user.community.entourages
         .where(group_type: :outing, status: :open)
 
+      bounding_box_sql = Geocoder::Sql.within_bounding_box(*box, :latitude, :longitude)
+
       feeds = outings
-        .within_bounding_box(box)
+        .where("(#{bounding_box_sql}) OR online = true")
         .where("metadata->>'ends_at' >= ?", Time.zone.now)
         .order("metadata->>'starts_at' asc, id")
         .limit(LIMIT)

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20201104160118) do
+ActiveRecord::Schema.define(version: 20201113153056) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -581,14 +581,14 @@ ActiveRecord::Schema.define(version: 20201104160118) do
   end
 
   create_table "rpush_apps", force: :cascade do |t|
-    t.string   "name",                                null: false
+    t.string   "name",                                   null: false
     t.string   "environment"
     t.text     "certificate"
     t.string   "password"
-    t.integer  "connections",             default: 1, null: false
+    t.integer  "connections",             default: 1,    null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "type",                                null: false
+    t.string   "type",                                   null: false
     t.string   "auth_key"
     t.string   "client_id"
     t.string   "client_secret"
@@ -598,6 +598,7 @@ ActiveRecord::Schema.define(version: 20201104160118) do
     t.string   "apn_key_id"
     t.string   "team_id"
     t.string   "bundle_id"
+    t.boolean  "feedback_enabled",        default: true
   end
 
   create_table "rpush_feedback", force: :cascade do |t|
@@ -644,6 +645,8 @@ ActiveRecord::Schema.define(version: 20201104160118) do
     t.boolean  "mutable_content",    default: false, null: false
     t.string   "external_device_id"
     t.string   "thread_id"
+    t.boolean  "dry_run",            default: false, null: false
+    t.boolean  "sound_is_json",      default: false
   end
 
   add_index "rpush_notifications", ["delivered", "failed", "processing", "deliver_after", "created_at"], name: "index_rpush_notifications_multi", where: "((NOT delivered) AND (NOT failed))", using: :btree

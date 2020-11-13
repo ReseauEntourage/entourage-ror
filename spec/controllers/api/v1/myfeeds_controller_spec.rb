@@ -114,7 +114,7 @@ describe Api::V1::MyfeedsController do
 
         context "request is rejected" do
           let(:status) { "rejected" }
-          it { is_expected.to eq [{"text"=>"Votre demande a été rejetée.", "author"=>nil}] }
+          it { is_expected.to eq [] }
         end
       end
 
