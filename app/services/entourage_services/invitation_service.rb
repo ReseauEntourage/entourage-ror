@@ -58,7 +58,11 @@ module EntourageServices
     end
 
     def build_join_request status:
-      join_request = JoinRequest.new(user: invitation.invitee, joinable: invitation.invitable, status: status)
+      join_request = JoinRequest.find_or_initialize_by(
+        user: invitation.invitee,
+        joinable: invitation.invitable
+      )
+      join_request.status = status
 
       joinable = invitation.invitable
       join_request.role =
