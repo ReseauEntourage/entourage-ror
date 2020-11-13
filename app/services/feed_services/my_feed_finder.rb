@@ -33,7 +33,7 @@ module FeedServices
         if unread_only
           [:accepted]
         else
-          [:accepted, :pending, :rejected]
+          [:accepted, :pending]
         end
       feeds = feeds.where(
         join_requests: {
