@@ -4,6 +4,7 @@ module FollowingService
     return if partner.nil?
     followings = Following.where(partner_id: partner.id, active: true)
     followings.preload(:user).find_each do |following|
+      next if following.user == entourage.user
       EntourageServices::InviteExistingUser.new(
         entourage: entourage,
         inviter: entourage.user,
