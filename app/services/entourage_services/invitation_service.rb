@@ -19,9 +19,11 @@ module EntourageServices
 
         group = invitation.invitable
         group.touch
-        send_notif(title: group.title,
-                   content: "#{invitee_name} a accepté votre invitation",
-                   accepted: true)
+        unless invitation.invitation_mode == 'partner_following'
+          send_notif(title: group.title,
+                     content: "#{invitee_name} a accepté votre invitation",
+                     accepted: true)
+        end
         CommunityLogic.for(group).group_joined(join_request)
       end
     end
@@ -29,18 +31,22 @@ module EntourageServices
     def reject!
       if build_join_request(status: JoinRequest::REJECTED_STATUS).save
         invitation.update(status: EntourageInvitation::REJECTED_STATUS)
-        send_notif(title: group.title,
-                   content: "#{invitee_name} a refusé votre invitation",
-                   accepted: false)
+        unless invitation.invitation_mode == 'partner_following'
+          send_notif(title: group.title,
+                     content: "#{invitee_name} a refusé votre invitation",
+                     accepted: false)
+        end
       end
     end
 
     def quit!
       if build_join_request(status: JoinRequest::CANCELLED_STATUS).save
         invitation.update(status: EntourageInvitation::CANCELLED_STATUS)
-        send_notif(title: group.title,
-                   content: "Vous avez annulé l'invitation de #{invitee_name}",
-                   accepted: false)
+        unless invitation.invitation_mode == 'partner_following'
+          send_notif(title: group.title,
+                     content: "Vous avez annulé l'invitation de #{invitee_name}",
+                     accepted: false)
+        end
       end
     end
 
