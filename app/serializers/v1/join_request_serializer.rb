@@ -34,7 +34,7 @@ module V1
     end
 
     def status
-      object.persisted? ? object.status : "not requested"
+      object.simplified_status
     end
 
     def avatar_url
