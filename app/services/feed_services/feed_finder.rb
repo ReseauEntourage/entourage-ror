@@ -147,7 +147,7 @@ module FeedServices
         pinned = []
 
         # sensib
-        pinned << 99603
+        pinned << 107083
 
         # çafé du bien
         pinned << 105920
