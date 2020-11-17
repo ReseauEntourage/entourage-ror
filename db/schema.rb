@@ -11,13 +11,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20201113153056) do
+ActiveRecord::Schema.define(version: 20201116161746) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "pg_stat_statements"
   enable_extension "pgcrypto"
   enable_extension "postgis"
+  enable_extension "unaccent"
 
   create_table "TEST_events_20181112_copy", id: false, force: :cascade do |t|
     t.string  "event_date",                    limit: 65535
@@ -557,11 +558,13 @@ ActiveRecord::Schema.define(version: 20201113153056) do
     t.integer  "category_id"
     t.boolean  "validated",               default: false, null: false
     t.integer  "partner_id"
+    t.tsvector "textsearch"
   end
 
   add_index "pois", ["category_id", "latitude", "longitude"], name: "index_pois_on_category_id_and_latitude_and_longitude", where: "validated", using: :btree
   add_index "pois", ["latitude", "longitude"], name: "index_pois_on_latitude_and_longitude", using: :btree
   add_index "pois", ["partner_id"], name: "index_pois_on_partner_id", unique: true, using: :btree
+  add_index "pois", ["textsearch"], name: "index_pois_on_textsearch", using: :gin
 
   create_table "questions", force: :cascade do |t|
     t.string   "title",           null: false

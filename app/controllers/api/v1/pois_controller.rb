@@ -75,6 +75,10 @@ module Api
           @pois = @pois.limit(25)
         end
 
+        if params[:query].present?
+          @pois = @pois.text_search(params[:query])
+        end
+
         #TODO : refactor API to return 1 top level POI ressources and associated categories ressources
         poi_json = PoiServices::PoiOptimizedSerializer.new(@pois, box_size: params[:distance], version: version) do |pois|
           if version == :v1
