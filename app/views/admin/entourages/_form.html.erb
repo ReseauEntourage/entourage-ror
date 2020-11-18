@@ -93,8 +93,31 @@
     <%= f.hidden_field :display_category if @entourage.display_category.present? %>
   <% end %>
 
+  <% if @entourage.online_setting_options.many? %>
+    <div class="control-group">
+      <label class="control-label">En ligne (pas d'adresse physique, visible partout)</label>
+      <div class="controls">
+        <label class="radio-inline" style="padding-top: 0; margin-bottom: 5px;">
+          <%= f.radio_button :online, true, required: true %>
+          Oui
+        </label>
+        <label class="radio-inline" style="padding-top: 0; margin-bottom: 5px;">
+          <%= f.radio_button :online, false, required: true %>
+          Non
+        </label>
+      </div>
+    </div>
+
+    <div class="control-group <%= :hide unless @entourage.online %>" id="url-block">
+      <%= f.label :event_url, "Lien de la visioconférence", class: "control-label" %>
+      <div class="controls">
+        <%= f.url_field :event_url, class: "form-control" %>
+      </div>
+    </div>
+  <% end %>
+
   <% if @entourage.group_type.in?(['action', 'group']) %>
-  <div class="control-group">
+  <div class="control-group <%= :hide if @entourage.online %>" id="address-block">
     <label class="control-label">Adresse</label>
     <div class="controls">
       <input id="autocomplete" value="<%= @entourage.metadata[:display_address] %>"
@@ -109,13 +132,13 @@
   </div>
   <% end %>
   <% if @entourage.group_type == 'outing' %>
-    <div class="control-group">
+    <div class="control-group <%= :hide if @entourage.online %>" id="address-block">
       <label class="control-label" for="metadata_address">Adresse</label>
-      <%= text_field_tag nil, @entourage.metadata[:display_address],
+      <%= text_field_tag nil, (@entourage.metadata[:display_address] unless @entourage.online?),
           id: :metadata_address,
           class: "form-control",
           required: true,
-          data: { last_valid: @entourage.metadata[:display_address] } %>
+          data: { last_valid: (@entourage.metadata[:display_address] unless @entourage.online?) } %>
       <%= hidden_field_tag 'entourage[latitude]', nil, disabled: true %>
       <%= hidden_field_tag 'entourage[longitude]', nil, disabled: true %>
       <%= hidden_field_tag 'entourage[country]', nil, disabled: true %>
@@ -233,4 +256,33 @@
 
   initAutocomplete();
 </script>
+<% end %>
+
+<% if @entourage.online_setting_options.many? %>
+  <script>
+    function toggleOnlineFields() {
+      var online = $('input[name="entourage[online]"]:checked').val() === 'true'
+      var $block
+
+      $block = $('#url-block')
+      $block.toggleClass('hide', !online)
+      $block.find('input').attr('disabled', !online)
+
+      $block = $('#address-block')
+      $block.toggleClass('hide', online)
+      // only disable inputs that weren't and keep track of them because address metadata uses disabled fields
+      if (online) {
+        $block.find('input:not([disabled])').attr('online_disabled', true).attr('disabled', true)
+      }
+      else {
+        $block.find('input[online_disabled]').removeAttr('online_disabled').attr('disabled', false)
+      }
+    }
+
+    $(document).on('change', 'input[name="entourage[online]"]', function() {
+      toggleOnlineFields()
+    })
+
+    toggleOnlineFields()
+  </script>
 <% end %>

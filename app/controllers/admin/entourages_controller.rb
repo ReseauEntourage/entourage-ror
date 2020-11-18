@@ -274,18 +274,21 @@ module Admin
         @entourage.display_category = :event
         @entourage.public = nil
         @entourage.metadata = {}
+        @entourage.online = false
       when [:outing, :action]
         @entourage.group_type = :action
         @entourage.entourage_type = nil
         @entourage.display_category = nil
         @entourage.public = nil
         @entourage.metadata = {}
+        @entourage.online = false
       when [:action, :group]
         @entourage.group_type = :group
         @entourage.entourage_type = :contribution
         @entourage.display_category = :social
         @entourage.public = false
         # @entourage.metadata = {} # keep it!
+        @entourage.online = false
       else
         raise "Changing #{current_type} to #{new_type} is not allowed"
       end
@@ -361,7 +364,7 @@ module Admin
     def entourage_params
       metadata_keys = params.dig(:entourage, :metadata).try(:keys) || []
       metadata_keys -= [:starts_at]
-      params.require(:entourage).permit(:group_type, :status, :title, :description, :category, :entourage_type, :display_category, :latitude, :longitude, :public, metadata: metadata_keys)
+      params.require(:entourage).permit(:group_type, :status, :title, :description, :category, :entourage_type, :display_category, :latitude, :longitude, :public, :online, :event_url, metadata: metadata_keys)
     end
 
     def chat_messages_params

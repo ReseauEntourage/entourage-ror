@@ -2,7 +2,16 @@
   <div class='col-sm-8'>
     <% if @entourage.group_type == 'outing' %>
       <b>Date :</b> <%= @entourage.metadata_datetimes_formatted %><br/>
-      <b>Lieu :</b> <%= link_to @entourage.metadata[:display_address], "https://www.google.com/maps/search/?api=1&query=#{@entourage.metadata[:display_address]}&query_place_id=#{@entourage.metadata[:google_place_id]}" %><br>
+      <b>Lieu :</b>
+      <% if @entourage.online? %>
+        <% if @entourage.event_url.present? %>
+          <%= link_to @entourage.event_url %> (<%= @entourage.metadata[:display_address] %>)
+        <% else %>
+          <%= @entourage.metadata[:display_address] %> (pas de lien actuellement)
+        <% end %>
+      <% else %>
+        <%= link_to @entourage.metadata[:display_address], "https://www.google.com/maps/search/?api=1&query=#{@entourage.metadata[:display_address]}&query_place_id=#{@entourage.metadata[:google_place_id]}" %>
+      <% end %><br>
     <% end %>
     <% if @entourage.public_accessibility_options.count > 1 %>
       <% if @entourage.public? %>
@@ -44,8 +53,13 @@
   <div class='col-sm-4 '>
     <div class='pull-right'>
       <div>
-        <span class="glyphicon glyphicon-map-marker" aria-hidden="true"></span>
-        <%= @entourage.approximated_location %>
+        <% if @entourage.online? %>
+          <span class="glyphicon glyphicon-link" aria-hidden="true"></span>
+          En ligne
+        <% else %>
+          <span class="glyphicon glyphicon-map-marker" aria-hidden="true"></span>
+          <%= @entourage.approximated_location %>
+        <% end %>
       </div>
       <div>
         <%= l @entourage.created_at, format: "%A %-d %B à %H h %M" %>

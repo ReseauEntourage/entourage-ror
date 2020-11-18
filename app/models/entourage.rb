@@ -56,6 +56,7 @@ class Entourage < ActiveRecord::Base
   validates_inclusion_of :community, in: Community.slugs
   validates_inclusion_of :group_type, in: -> (e) { e.community&.group_types&.keys || [] }
   validates_inclusion_of :public, in: -> (e) { e.public_accessibility_options }
+  validates_inclusion_of :online, in: -> (e) { e.online_setting_options }
   validates :metadata, schema: -> (e) { "#{e.group_type}:metadata" }
   validate :validate_outings_ends_at
 
@@ -71,6 +72,7 @@ class Entourage < ActiveRecord::Base
   before_validation :set_outings_ends_at
   before_validation :generate_display_address
   before_validation :reformat_content
+  before_validation :set_default_online_attributes, if: :online_changed?
 
   after_create :check_moderation
   before_create :set_uuid
@@ -132,6 +134,15 @@ class Entourage < ActiveRecord::Base
   def public_accessibility_options
     case group_type
     when 'outing', 'action', 'group'
+      [true, false]
+    else
+      [false]
+    end
+  end
+
+  def online_setting_options
+    case group_type
+    when 'outing'
       [true, false]
     else
       [false]
@@ -327,6 +338,21 @@ class Entourage < ActiveRecord::Base
   def reformat_content(force: false)
     self.title = title&.squish if force || title_changed?
     self.description = description&.strip if force || description_changed?
+  end
+
+  def set_default_online_attributes
+    if online?
+      metadata.merge!(
+        place_name:      "Visioconférence en ligne",
+        street_address:  "Visioconférence en ligne",
+        display_address: "Visioconférence en ligne",
+        google_place_id: "_online_"
+      )
+      self.latitude = 0
+      self.longitude = 0
+    else
+      self.event_url = nil
+    end
   end
 
   private
