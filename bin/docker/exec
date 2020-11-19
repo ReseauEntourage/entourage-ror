@@ -34,6 +34,10 @@ function try_exec {
     options=()
   fi
 
+  if [ -x "bin/${command[0]}" ]; then
+    command[0]="bin/${command[0]}"
+  fi
+
   docker-compose exec \
     --env RAILS_ENV=${RAILS_ENV:-development} \
     $(termoptions) \
