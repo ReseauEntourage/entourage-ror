@@ -9,7 +9,18 @@ module Api
       def index
         version = params[:v] == '2' ? :v2 : :v1
 
-        if version == :v2 && EnvironmentHelper.env.in?([:development, :staging]) && params[:no_redirect] != 'true'
+        use_soliguide = version == :v2 && params[:no_redirect] != 'true'
+        use_soliguide &&= EnvironmentHelper.env.in?([:development, :staging])
+
+        if use_soliguide
+          # use only in a radius of 20 km around the center of Paris
+          x = 48.8593 - params[:latitude].to_f
+          y = (2.3522 - params[:longitude].to_f) * 0.65791 # Math.cos(48.8593 * Math::PI / 180)
+          paris_distance = Math.sqrt(x**2 + y**2) * 110.25 # km/deg
+          use_soliguide = paris_distance <= 20
+        end
+
+        if use_soliguide
           redirect_params = {
             latitude:  params[:latitude],
             longitude: params[:longitude],
