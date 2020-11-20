@@ -1,7 +1,24 @@
 <div class="container">
   <div class="row">
     <div class="col-xs-offset-2 col-xs-8">
+      <div class="h1" style="display: flex; align-items: center;">
+        <div style="flex-grow: 1">Équipes internes</div>
+        <%= link_to "Créer une équipe", new_admin_partner_path(staff: true),
+              class: "btn btn-success" %>
+      </div>
 
+      <table class="table">
+        <% @staff_teams.each do |partner| %>
+          <tr>
+            <td>
+              <%= link_to partner.name, [:admin, partner] %>
+            </td>
+            <td>
+              <%= link_to "Supprimer", [:admin, partner], method: :delete, class: "text-danger", data: { confirm: "Supprimer l'équipe \"#{partner.name}\" ?" } %>
+            </td>
+          </tr>
+        <% end %>
+      </table>
 
       <div class="h1" style="display: flex; align-items: center;">
         <div style="flex-grow: 1">Associations</div>

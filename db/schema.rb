@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20201116161746) do
+ActiveRecord::Schema.define(version: 20201119143313) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -526,11 +526,11 @@ ActiveRecord::Schema.define(version: 20201116161746) do
   add_index "partner_join_requests", ["user_id"], name: "index_partner_join_requests_on_user_id", using: :btree
 
   create_table "partners", force: :cascade do |t|
-    t.string   "name",                       null: false
+    t.string   "name",                                       null: false
     t.string   "large_logo_url"
     t.string   "small_logo_url"
-    t.datetime "created_at",                 null: false
-    t.datetime "updated_at",                 null: false
+    t.datetime "created_at",                                 null: false
+    t.datetime "updated_at",                                 null: false
     t.text     "description"
     t.string   "phone"
     t.string   "address"
@@ -541,6 +541,7 @@ ActiveRecord::Schema.define(version: 20201116161746) do
     t.string   "postal_code",      limit: 8
     t.float    "latitude"
     t.float    "longitude"
+    t.boolean  "staff",                      default: false, null: false
   end
 
   create_table "pois", force: :cascade do |t|

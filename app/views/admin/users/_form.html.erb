@@ -6,14 +6,14 @@
       <div class="control-group">
         <%= f.label :first_name,"Prénom", class: "control-label" %>
         <div class="controls">
-          <%= f.text_field :first_name, class: "form-control", required: @user.pro? %>
+          <%= f.text_field :first_name, class: "form-control", required: @user.pro? || @user.org_member? %>
         </div>
       </div>
 
       <div class="control-group">
         <%= f.label :last_name,"Nom", class: "control-label" %>
         <div class="controls">
-          <%= f.text_field :last_name, class: "form-control", required: @user.pro? %>
+          <%= f.text_field :last_name, class: "form-control", required: @user.pro? || @user.org_member? %>
         </div>
       </div>
 
@@ -104,7 +104,18 @@
          id="partner-fieldset">
       <%= f.label :partner, class: "control-label" %>
       <div class="controls">
-        <%= f.collection_select :partner_id, Partner.all, :id, :name, { include_blank: true }, { required: true, disabled: !is_partner }
+        <%= f.collection_select :partner_id, Partner.where(staff: false), :id, :name, { include_blank: true }, { required: true, disabled: !is_partner }
+        %>
+      </div>
+    </div>
+
+    <% is_staff = @user.targeting_profile == 'team' %>
+    <div class="control-group <%= :hide unless is_staff %>"
+         style="margin-left: 30px"
+         id="staff-fieldset">
+      <%= label_tag :partner, "Équipe", class: "control-label" %>
+      <div class="controls">
+        <%= f.collection_select :partner_id, Partner.where(staff: true), :id, :name, { include_blank: true }, { required: true, disabled: !is_staff }
         %>
       </div>
     </div>
@@ -205,21 +216,22 @@
 
 <script>
   var $profileField = $('#user_targeting_profile'),
-      $partnerField = $('#user_partner_id'),
       $partnerFieldset = $('#partner-fieldset'),
-      $partnerUserFields = $('#user_first_name, #user_last_name, #user_email');
+      $staffFieldset = $('#staff-fieldset'),
+      $partnerUserFields = $('#user_first_name, #user_last_name, #user_email'),
+      partnerSelect = 'select[name="user[partner_id]"]';
 
   function togglePartnerFieldset() {
-    if ($profileField.val() === 'partner') {
-      $partnerFieldset.removeClass('hide')
-      $partnerField.prop('disabled', false)
-      $partnerUserFields.prop('required', true)
-    }
-    else {
-      $partnerFieldset.addClass('hide')
-      $partnerField.prop('disabled', true)
-      $partnerUserFields.prop('required', <%= @user.pro? %>)
-    }
+    var partner = $profileField.val() === 'partner',
+        staff = $profileField.val() === 'team';
+
+    $partnerFieldset.toggleClass('hide', !partner)
+    $partnerFieldset.find(partnerSelect).prop('disabled', !partner)
+
+    $staffFieldset.toggleClass('hide', !staff)
+    $staffFieldset.find(partnerSelect).prop('disabled', !staff)
+
+    $partnerUserFields.prop('required', partner || staff ? true : <%= @user.pro? %>)
   }
 
   $profileField.on('change', togglePartnerFieldset)

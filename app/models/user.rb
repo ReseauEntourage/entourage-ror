@@ -121,7 +121,7 @@ class User < ActiveRecord::Base
     elsif targeting_profile_changed? && targeting_profile != 'partner'
       self.partner_id = nil
     elsif partner_id_changed? && partner_id.present?
-      self.targeting_profile = 'partner'
+      self.targeting_profile = partner.staff ? 'team' : 'partner'
     end
   end
 
@@ -160,16 +160,15 @@ class User < ActiveRecord::Base
   end
 
   def validate_partner!
-    if targeting_profile == 'team'
-      return
-    end
-
-    if targeting_profile == 'partner' && partner_id.blank?
-      errors.add(:partner_id, :blank)
-    end
-
-    if targeting_profile != 'partner' && partner_id != nil
-      errors.add(:partner_id, :present)
+    if targeting_profile.in?(['partner', 'team'])
+      if partner_id.blank?
+        errors.add(:partner_id, :blank)
+      else
+        expected_targeting_profile = partner.staff ? 'team' : 'partner'
+        errors.add(:targeting_profile) if targeting_profile != expected_targeting_profile
+      end
+    else
+      errors.add(:partner_id, :present) unless partner_id.nil?
     end
   end
 

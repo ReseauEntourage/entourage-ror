@@ -3,11 +3,12 @@ module Admin
     layout 'admin_large'
 
     def index
-      @partners = Partner.order(:name)
+      @staff_teams = Partner.where(staff: true).order(:name)
+      @partners = Partner.where(staff: false).order(:name)
     end
 
     def new
-      @partner = Partner.new
+      @partner = Partner.new(staff: params[:staff])
     end
 
     def create
@@ -92,7 +93,8 @@ module Admin
       params.require(:partner).permit(
         :name, :description, :phone, :address, :website_url, :email,
         :latitude, :longitude,
-        :donations_needs, :volunteers_needs
+        :donations_needs, :volunteers_needs,
+        :staff
       )
     end
   end
