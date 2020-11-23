@@ -28,6 +28,7 @@ module Api
           }
           categories = (params[:category_ids] || "").split(",").map(&:to_i).uniq
           redirect_params[:categories] = categories.first if categories.one?
+          redirect_params[:query] = params[:query] if params[:query].present?
 
           return head status: 302, location:  "https://entourage-soliguide-preprod.herokuapp.com/api/v1/pois?" + redirect_params.to_query
         end
@@ -100,19 +101,6 @@ module Api
 
           ActiveModel::ArraySerializer.new(pois, each_serializer: ::V1::PoiSerializer, scope: {version: :"#{version}_list"}).as_json
         end.serialize
-
-        if version == :v2 && EnvironmentHelper.env.in?([:development, :staging])
-          poi_json.unshift(
-            uuid: "s114",
-            name: "Café Social Dejean - Association Ayyem Zamen",
-            longitude: 2.350839,
-            latitude: 48.887142,
-            address: "1 Rue Dejean, 75018 Paris, France",
-            phone: "0142230593",
-            category_id: 0,
-            partner_id: nil
-          )
-        end
 
         payload =
           case version
