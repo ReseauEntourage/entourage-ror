@@ -27,7 +27,7 @@ module Api
             'https://ambassadeurs.entourage.social',
           'donation' =>
             lambda do |user|
-              url = "https://entourage.social/don?utm_medium=menu&utm_source=app&utm_campaign=dons2019"
+              url = "https://entourage.iraiser.eu/jedonne/~mon-don?utm_source=appentourage&utm_medium=formulaire&utm_campaign=dons2020"
 
               if !user.anonymous?
                 url += "&" + {
