@@ -1,12 +1,20 @@
-# Override file for docker compose for local dev
+# Override file for docker compose for local dev	
 
-version: '3.4'
+version: '3.4'	
 
 services:
-  spring:
+  job:
     build:
       target: dev # use the dev image
     volumes:
       - .:/home/docker-user/app:delegated
       - /home/docker-user/app/.git # protect .git from the container
+      - gems:/home/docker-user/.gem:delegated
+
+  spring:	
+    build:	
+      target: dev # use the dev image	
+    volumes:	
+      - .:/home/docker-user/app:delegated	
+      - /home/docker-user/app/.git # protect .git from the container	
       - gems:/home/docker-user/.gem:delegated
