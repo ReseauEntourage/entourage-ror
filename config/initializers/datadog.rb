@@ -4,5 +4,8 @@ if EnvironmentHelper.staging? || EnvironmentHelper.production?
   Datadog.configure do |c|
     # This will activate auto-instrumentation for Rails
     c.use :rails, analytics_enabled: true, service_name: 'entourage-backend', log_injection: true
+
+    # add sidekiq integration
+    c.use :sidekiq, analytics_enabled: true, service_name: 'sidekiq'
   end
 end
