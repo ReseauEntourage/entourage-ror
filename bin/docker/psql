@@ -23,7 +23,8 @@ function options {
   fi
 }
 
-if [ -f /entrypoint ]; then
+# detect if we are inside the docker container (spring)
+if [[ $(whoami) = docker-user ]]; then
   database_url="$DATABASE_URL/entourage-dev"
   PGPASSWORD=$(password $database_url) psql $(options $database_url -d) "$@"
 else

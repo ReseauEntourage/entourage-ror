@@ -13,13 +13,17 @@ module Onboarding
         .where(community: :entourage, deleted: false)
         .with_event('onboarding.profile.first_name.entered', :name_entered)
         .with_event('onboarding.profile.postal_code.entered', :postal_code_entered)
-        .with_event('onboarding.profile.goal.entered', :goal_entered)
         .without_event('onboarding.chat_messages.welcome.sent')
         .without_event('onboarding.chat_messages.welcome.skipped')
-        .where("greatest(name_entered.created_at, postal_code_entered.created_at, goal_entered.created_at) <= ?", MIN_DELAY.ago)
+        .where("greatest(name_entered.created_at, postal_code_entered.created_at) <= ?", MIN_DELAY.ago)
         .pluck(:id)
 
-      User.where(id: user_ids).where("goal is not null").find_each do |user|
+      # TODO: remove this, it's a switch used at the launch of the feature
+      if ENV['DISABLE_GENERIC_WELCOME_MESSAGE'] == 'true'
+        user_ids = User.where(id: user_ids).where("goal is not null").pluck(:id)
+      end
+
+      User.where(id: user_ids).find_each do |user|
         begin
           Raven.user_context(id: user&.id)
 
@@ -45,10 +49,14 @@ module Onboarding
             return
           end
 
+          variant = user.goal || :goal_not_known
+
           messages = [
-            moderation_area["welcome_message_1_#{user.goal}"],
-            moderation_area["welcome_message_2_#{user.goal}"]
-          ].map(&:presence)
+            moderation_area["welcome_message_1_#{variant}"],
+            moderation_area["welcome_message_2_#{variant}"]
+          ].map(&:presence).compact
+
+          next if messages.empty?
 
           first_name = UserPresenter.format_first_name user.first_name
 
