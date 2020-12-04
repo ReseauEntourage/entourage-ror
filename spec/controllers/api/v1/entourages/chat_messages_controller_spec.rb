@@ -230,6 +230,7 @@ describe Api::V1::Entourages::ChatMessagesController do
           it { expect(Entourage.last.attributes['uuid_v2']).to start_with '1_hash_' }
           it { expect(join_requests.map { |r| r['user_id'] }.sort).to eq([user.id, other_user.id]) }
           it { expect(join_requests.map { |r| r.slice('status', 'role') }.uniq).to eq(["status"=>"accepted", "role"=>"participant"]) }
+          it { expect(join_requests.find {|r| r['user_id'] == other_user.id }['report_prompt_status']).to eq 'display' }
         end
 
         context "invalid params" do

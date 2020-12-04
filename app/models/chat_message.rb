@@ -27,6 +27,9 @@ class ChatMessage < ActiveRecord::Base
     end
   end
 
+  after_create :update_sender_report_prompt_status
+  after_create :update_recipients_report_prompt_status
+
   def self.joins_group_join_requests
     joins(%(
       join join_requests on joinable_id   = messageable_id
@@ -145,5 +148,28 @@ class ChatMessage < ActiveRecord::Base
     else
       nil
     end
+  end
+
+  def update_sender_report_prompt_status
+    JoinRequest.where(
+      joinable_type: messageable_type,
+      joinable_id: messageable_id,
+      user_id: user_id,
+      report_prompt_status: 'display'
+    )
+    .update_all(report_prompt_status: 'dismissed')
+  end
+
+  def update_recipients_report_prompt_status
+    return if messageable.group_type != 'conversation'
+    return if ChatMessage.where(messageable: messageable).where("id < ?", id).exists?
+
+    return if user.moderator?
+    return if user.ambassador?
+    return if user.org_member?
+
+    messageable.join_requests
+      .where.not(user_id: user_id)
+      .update_all(report_prompt_status: 'display')
   end
 end

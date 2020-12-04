@@ -222,6 +222,7 @@ Rails.application.routes.draw do
           put :read
           get 'update', action: :one_click_update, as: :one_click_update
           post :report
+          delete :report_prompt, action: :dismiss_report_prompt
         end
       end
       resources :invitations, only: [:index, :update, :destroy]
