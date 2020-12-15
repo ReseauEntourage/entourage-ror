@@ -2,7 +2,6 @@ module FollowingService
   def self.on_create_entourage(entourage)
     partner = entourage.user.partner
     return if partner.nil?
-    return if EnvironmentHelper.production? # feature disabled temporarily
     followings = Following.where(partner_id: partner.id, active: true)
     followings.preload(:user).find_each do |following|
       next if following.user == entourage.user
