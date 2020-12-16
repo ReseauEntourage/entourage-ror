@@ -27,7 +27,7 @@ module FeedServices
       @show_past_events = show_past_events=="true"
       @partners_only = partners_only=="true"
       @time_range = time_range.to_i
-      @distance = [(distance&.to_i || DEFAULT_DISTANCE), 40].min
+      @distance = [(distance&.to_f || DEFAULT_DISTANCE), 40].min
       @announcements = announcements.try(:to_sym)
       @page_token = page_token
 
