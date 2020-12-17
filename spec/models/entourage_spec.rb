@@ -27,6 +27,11 @@ RSpec.describe Entourage, type: :model do
       entourage.save
       expect(entourage.title).to eq('Title')
     end
+    it "should uppercase only first character" do
+      entourage = FactoryGirl.create(:entourage, title: 'title FOO Bar')
+      entourage.save
+      expect(entourage.title).to eq('Title FOO Bar')
+    end
     it "should not uppercase first character on emoji" do
       entourage = FactoryGirl.create(:entourage, title: '👌title')
       entourage.save
