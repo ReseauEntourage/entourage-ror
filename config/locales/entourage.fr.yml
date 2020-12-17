@@ -92,3 +92,9 @@ fr:
         ask_for_help: SDF
         organization: Association
         goal_not_known: Non défini
+      icons:
+        offer_help: user
+        ask_for_help: street-view
+        organization: sitemap
+        goal_not_known: question
+
