@@ -62,7 +62,8 @@ include CommunityHelper
                 "share_url" => "https://www.entourage.social/entourages/#{entourage.uuid_v2}",
                 "image_url"=>nil,
                 "online"=>false,
-                "event_url"=>nil
+                "event_url"=>nil,
+                "display_report_prompt" => false
               },
               "heatmap_size" => 20
             },
@@ -443,7 +444,8 @@ include CommunityHelper
                "partner_role_title" => nil},
              "location"=>{
                "latitude"=>1.122,
-               "longitude"=>2.345}},
+               "longitude"=>2.345},
+             "display_report_prompt" => false},
            "heatmap_size"=>20},
           {"type"=>"Announcement",
            "data"=>{

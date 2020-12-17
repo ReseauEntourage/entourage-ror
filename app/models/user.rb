@@ -214,6 +214,14 @@ class User < ActiveRecord::Base
     partner_id != nil
   end
 
+  def moderator?
+    roles.include?(:moderator)
+  end
+
+  def ambassador?
+    targeting_profile == 'ambassador'
+  end
+
   def public?
     user_type=="public"
   end

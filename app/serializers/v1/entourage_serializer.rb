@@ -23,7 +23,8 @@ module V1
                :share_url,
                :image_url,
                :online,
-               :event_url
+               :event_url,
+               :display_report_prompt
 
     has_one :author, serializer: ActiveModel::DefaultSerializer
     has_one :location, serializer: ActiveModel::DefaultSerializer
@@ -130,6 +131,11 @@ module V1
 
     def metadata
       object.metadata.except(:$id)
+    end
+
+    def display_report_prompt
+      return false if current_join_request.nil?
+      current_join_request.report_prompt_status == 'display'
     end
   end
 end

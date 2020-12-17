@@ -27,7 +27,7 @@ module FeedServices
       @show_past_events = show_past_events=="true"
       @partners_only = partners_only=="true"
       @time_range = time_range.to_i
-      @distance = [(distance&.to_i || DEFAULT_DISTANCE), 40].min
+      @distance = [(distance&.to_f || DEFAULT_DISTANCE), 40].min
       @announcements = announcements.try(:to_sym)
       @page_token = page_token
 
@@ -132,28 +132,26 @@ module FeedServices
       end
 
       if user.community == :entourage && page == 1
-      #   pinned = Onboarding::V1.pinned_entourage_for area, user: user
-      #   if !pinned.nil?
-      #     feeds = pin(pinned, feeds: feeds)
-      #     @metadata.merge!(onboarding_entourage_pinned: true, area: area)
-      #   end
-      #
+        pinned = []
+
+        if (types.nil? || types.any? { |t| t.starts_with?('ask_for_help_') || t.starts_with?('contribution_') })
+          pinned << self.class.neighborhood_group_for(user)
+        end
 
         dep = nil
         if user.address&.country == 'FR'
           dep = user.address.postal_code.to_s.first(2)
         end
 
-        pinned = []
-
         # sensib
-        pinned << 107083
+        pinned << 107083 if (types.nil? || types.include?('outing'))
 
         # çafé du bien
-        pinned << 105920
+        pinned << 105920 if (types.nil? || types.include?('outing'))
 
         if dep == '59' # Lille
-          pinned << 93114 # midi ludique
+          # midi ludique
+          pinned << 93114 if (types.nil? || types.include?('outing'))
         end
 
         pinned.compact.uniq.reverse.each do |action|
@@ -460,6 +458,29 @@ module FeedServices
         feed.last_join_request =
           last_join_requests[[feed.feedable_type, feed.feedable_id]]
       end
+    end
+
+    NEIGHBORHOOD_GROUPS = Hash[{
+      ['75005', '75006', '75007', '75013', '75014', '75015'] => 110026, # Paris Sud
+      ['75001', '75002', '75008', '75009', '75016', '75017', '75018'] => 110032, # Paris Ouest
+      ['75003', '75004', '75010', '75011', '75012', '75019', '75020'] => 110033, # Paris Est
+      ['92110', '92300', '92600'] => 110016, # Clichy-Levallois
+      ['92000', '92400', '92800', '92200', '92250', '92700', '92150'] => 110060, # La Défense
+      ['69'] => 110057, # Lyon
+      ['59'] => 110059, # Lille
+      ['35'] => 110053, # Rennes
+    }.flat_map { |ks, v| ks.map { |k| [k, v] }}].freeze
+
+    def self.neighborhood_group_for user
+      return if user.address.nil?
+      return if user.address.country != 'FR'
+
+      postal_code = user.address.postal_code.to_s
+      departement = postal_code.first(2)
+
+      entourage_id = NEIGHBORHOOD_GROUPS[postal_code] || NEIGHBORHOOD_GROUPS[departement]
+      return if entourage_id.nil?
+      entourage_id
     end
 
     # This is just for the sake of making the cursor seemingly random and hard
