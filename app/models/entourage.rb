@@ -336,7 +336,7 @@ class Entourage < ActiveRecord::Base
   end
 
   def reformat_content(force: false)
-    self.title = title&.squish if force || title_changed?
+    self.title = title&.squish&.capitalize if force || title_changed?
     self.description = description&.strip if force || description_changed?
   end
 
