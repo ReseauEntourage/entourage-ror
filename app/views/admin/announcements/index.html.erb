@@ -163,7 +163,7 @@
               <div>
                 <% announcement.areas.each do |slug| %>
                   <% area = areas[slug] %>
-                  <span class="label label-default" title="<%= area.name %>"><%= area.short_name %></span>
+                  <span class="label label-default" title="<%= area&.name %>"><%= area&.short_name %></span>
                 <% end %>
               </div>
             <% end %>
