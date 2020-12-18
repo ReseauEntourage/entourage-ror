@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20201203133152) do
+ActiveRecord::Schema.define(version: 20201218093721) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -363,6 +363,7 @@ ActiveRecord::Schema.define(version: 20201203133152) do
     t.string   "image_url"
     t.boolean  "online",                      default: false
     t.string   "event_url"
+    t.boolean  "admin_pin"
   end
 
   add_index "entourages", ["country", "postal_code"], name: "index_entourages_on_country_and_postal_code", using: :btree

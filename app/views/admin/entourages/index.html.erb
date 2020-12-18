@@ -21,6 +21,11 @@
     <% unread_count = @message_count[entourage.id].unread %>
     <tr class="<%= 'not-open' if entourage.status != 'open' %>">
       <td>
+        <% if entourage.admin_pin? %>
+          <i class="fa fa-star"></i>
+        <% end %>
+      </td>
+      <td>
         <% if !entourage.moderated %>
           <span class="badge" style="background: #f0ad4e">●</span>
         <% end %>
