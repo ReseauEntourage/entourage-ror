@@ -144,7 +144,9 @@ module FeedServices
         end
 
         # sensib
-        pinned << 107083 if (types.nil? || types.include?('outing'))
+        unless user.apple?
+          pinned << 107083 if (types.nil? || types.include?('outing'))
+        end
 
         # çafé du bien
         pinned << 105920 if (types.nil? || types.include?('outing'))
