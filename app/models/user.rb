@@ -278,6 +278,10 @@ class User < ActiveRecord::Base
     false
   end
 
+  def apple?
+    id == 101 || address&.country == 'US'
+  end
+
   def organization_name
     organization.name if organization_id
   end
