@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20201203133152) do
+ActiveRecord::Schema.define(version: 20201221150001) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -202,6 +202,19 @@ ActiveRecord::Schema.define(version: 20201203133152) do
   add_index "chat_messages", ["created_at"], name: "index_chat_messages_on_created_at", using: :btree
   add_index "chat_messages", ["messageable_id", "messageable_type"], name: "index_chat_messages_on_messageable_id_and_messageable_type", using: :btree
   add_index "chat_messages", ["user_id"], name: "index_chat_messages_on_user_id", using: :btree
+
+  create_table "conversation_message_broadcasts", force: :cascade do |t|
+    t.integer  "moderation_area_id", null: false
+    t.text     "content",            null: false
+    t.string   "goal",               null: false
+    t.datetime "created_at",         null: false
+    t.datetime "updated_at",         null: false
+    t.string   "title"
+    t.datetime "archived_at"
+  end
+
+  add_index "conversation_message_broadcasts", ["goal"], name: "index_conversation_message_broadcasts_on_goal", using: :btree
+  add_index "conversation_message_broadcasts", ["moderation_area_id"], name: "index_conversation_message_broadcasts_on_moderation_area_id", using: :btree
 
   create_table "coordination", id: false, force: :cascade do |t|
     t.integer "user_id"

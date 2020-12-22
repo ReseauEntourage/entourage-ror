@@ -1,0 +1,51 @@
+<div class="container">
+  <div style="width: 750px; margin: auto">
+    <h1>Broadcasts</h1>
+
+    <div style="margin-bottom: 15px; display: flex">
+      <div class="btn-group btn-group-sm">
+        <%= link_to("Tous", params.merge(area: :all), class: "btn btn-#{@area == :all ? :primary : :default}") %>
+        <% ModerationArea.by_slug.sort.each do |slug, area| %>
+          <%= link_to(area.short_name, params.merge(area: slug), class: "btn btn-#{@area == slug ? :primary : :default}") %>
+        <% end %>
+      </div>
+
+      <div class="btn-group btn-group-sm" style="margin-left: 15px">
+        <%= link_to("Tous", params.merge(goal: :all), class: "btn btn-#{@goal == :all ? :primary : :default}") %>
+        <% UserGoalPresenter.all(current_user.community).each do |goal| %>
+          <%= link_to("", params.merge(goal: goal.slug), class: "btn btn-#{@goal == goal.slug ? :primary : :default} fa fa-#{goal.icon}") %>
+        <% end %>
+      </div>
+
+      <div style="margin-left: 15px">
+        <%= link_to("Nouveau broadcast", new_admin_conversation_message_broadcast_path, class: "btn btn-default btn-sm") %>
+      </div>
+    </div>
+
+    <div id="conversation_message_broadcasts">
+      <% @conversation_message_broadcasts.each do |conversation_message_broadcast| %>
+        <div class="conversation_message_broadcast overlay-container" data-id="<%= conversation_message_broadcast.id %>">
+          <div class="conversation_message_broadcast-id text-muted">
+            <div>#<%= conversation_message_broadcast.id %></div>
+          </div>
+          <div class="conversation_message_broadcast-content" style="width: 100%">
+            <div style="font-weight: bold"><%= link_to conversation_message_broadcast.content, edit_admin_conversation_message_broadcast_path(conversation_message_broadcast) %></div>
+          </div>
+          <%= link_to "", edit_admin_conversation_message_broadcast_path(conversation_message_broadcast), class: "overlay" %>
+        </div>
+      <% end %>
+
+      <% if @conversation_message_broadcasts.none? %>
+        <div class="conversation_message_broadcast">
+          <div>
+            Pas de broadcast.
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<%= form_tag reorder_admin_announcements_path, class: "hide", id: "reorder-form" do %>
+  <%= hidden_field_tag :ordered_ids %>
+<% end %>
