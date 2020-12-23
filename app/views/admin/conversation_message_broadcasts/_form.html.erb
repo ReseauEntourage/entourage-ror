@@ -27,7 +27,7 @@
         L'envoi sera effectué auprès de <%= @conversation_message_broadcast.users.count %> utilisateurs correspondants aux filtres configurés.<br>
         Le broadcast sera automatiquement archivé.
       </div>
-        <%= link_to("Envoyer", send_admin_conversation_message_broadcast_path, method: :post, class: "btn btn-success") %>
+        <%= link_to("Envoyer", broadcast_admin_conversation_message_broadcast_path, method: :post, class: "btn btn-success") %>
     </div>
   <% end %>
 

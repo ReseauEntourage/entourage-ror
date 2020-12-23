@@ -131,7 +131,7 @@ Rails.application.routes.draw do
     resources :join_requests, only: [:create]
     resources :conversation_message_broadcasts do
       member do
-        post 'send'
+        post 'broadcast'
       end
     end
 

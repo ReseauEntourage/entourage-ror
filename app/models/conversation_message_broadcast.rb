@@ -17,9 +17,19 @@ class ConversationMessageBroadcast < ActiveRecord::Base
     !!archived_at
   end
 
+  def user_ids
+    users.select('users.id').map(&:id)
+  end
+
   def users
     return 0 unless valid?
 
-    User.joins(:addresses).where('users.goal': goal, 'users.deleted': false).where(["addresses.country = 'FR' AND left(addresses.postal_code, 2) = ?", moderation_area.departement])
+    User.joins(:addresses).where('users.goal': goal, 'users.deleted': false).where(["addresses.country = 'FR' AND left(addresses.postal_code, 2) = ?", moderation_area.departement]).group('users.id')
   end
+
+  # def succeeded(user, recipient)
+  # end
+
+  # def failed(user, recipient)
+  # end
 end
