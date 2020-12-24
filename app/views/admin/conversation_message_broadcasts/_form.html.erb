@@ -9,15 +9,16 @@
     <div class="alert alert-info" role="alert" style="display: flex; align-items: center">
       <div style="flex-grow: 1">
         <b>Archivé</b><br>
-        Ce broadcast est archivé. Vous pouvez le dupliquer pour planifier une diffusion similaire.
+        Cette diffusion de MP est archivée. Vous pouvez la dupliquer pour planifier une diffusion similaire.
       </div>
       <%= link_to("Dupliquer", clone_admin_conversation_message_broadcast_path, method: :post, class: "btn btn-success") %>
     </div>
   <% elsif @conversation_message_broadcast.persisted? %>
     <div class="alert alert-success" role="alert" style="display: flex; align-items: center">
       <div style="flex-grow: 1">
-        <b>Actif</b><br>
-        Ce broadcast est actif.
+        <b>Brouillon</b><br>
+        Cette diffusion de MP est configurable avant envoi.<br>
+        Vous pouvez également choisir de l'archiver mais cette action n'est pas réversible.
       </div>
       <%= f.submit "Archiver", name: :archive, class: "btn btn-danger" %>
     </div>
@@ -25,7 +26,7 @@
       <div style="flex-grow: 1">
         <b>Envoyer</b><br>
         L'envoi sera effectué auprès de <%= @conversation_message_broadcast.user_ids.count %> utilisateurs correspondants aux filtres configurés.<br>
-        Le broadcast sera automatiquement archivé.
+        La diffusion de MP sera automatiquement archivée après envoi.
       </div>
         <%= link_to("Envoyer", broadcast_admin_conversation_message_broadcast_path, method: :post, class: "btn btn-success") %>
     </div>

@@ -1,6 +1,6 @@
 <div class="container">
   <div style="width: 750px; margin: auto">
-    <h1>Broadcasts</h1>
+    <h1>Diffusions de messages privés</h1>
 
     <div style="margin-bottom: 15px; display: flex">
       <div class="btn-group btn-group-sm">
@@ -26,13 +26,13 @@
       </div>
 
       <div style="margin-left: 15px">
-        <%= link_to("Nouveau broadcast", new_admin_conversation_message_broadcast_path, class: "btn btn-default btn-sm") %>
+        <%= link_to("Nouvelle diffusion", new_admin_conversation_message_broadcast_path, class: "btn btn-default btn-sm") %>
       </div>
     </div>
 
     <div class="row">
       <% if @conversation_message_broadcasts.none? %>
-        Pas de broadcast.
+        Pas de diffusions de MP.
       <% else %>
         <table class="table">
           <th>Id</th>
