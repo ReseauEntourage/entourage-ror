@@ -4,6 +4,14 @@
 
     <div style="margin-bottom: 15px; display: flex">
       <div class="btn-group btn-group-sm">
+        <%= link_to("Brouillons", params.merge(status: :draft), class: "btn btn-#{@status == :draft ? :primary : :default}") %>
+        <%= link_to("Archivées", params.merge(status: :archived), class: "btn btn-#{@status == :archived ? :primary : :default}") %>
+        <%= link_to("En cours d'envoi", params.merge(status: :sending), class: "btn btn-#{@status == :sending ? :primary : :default}") %>
+      </div>
+    </div>
+
+    <div style="margin-bottom: 15px; display: flex">
+      <div class="btn-group btn-group-sm">
         <%= link_to("Tous", params.merge(area: :all), class: "btn btn-#{@area == :all ? :primary : :default}") %>
         <% ModerationArea.by_slug.sort.each do |slug, area| %>
           <%= link_to(area.short_name, params.merge(area: slug), class: "btn btn-#{@area == slug ? :primary : :default}") %>

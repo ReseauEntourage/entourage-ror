@@ -3,15 +3,19 @@ require 'experimental/jsonb_set'
 class ConversationMessageBroadcast < ActiveRecord::Base
   validates_presence_of :area, :goal, :content, :title
 
-  scope :archived, -> { where('archived_at != NULL') }
-  scope :not_archived, -> { where(archived_at: nil) }
-
   def name
     if moderation_area
       "#{title} (#{area.departement}, #{goal})"
     else
       title
     end
+  end
+
+  def status= status
+    if status == :archived
+      self['archived_at'] = Time.now
+    end
+    super(status)
   end
 
   def archived?

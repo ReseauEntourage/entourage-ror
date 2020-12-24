@@ -5,15 +5,10 @@ module Admin
     def index
       @goal = params[:goal].presence&.to_sym || :all
       @area = params[:area].presence&.to_sym || :all
-      @archived = params[:archived].presence || false
+      @status = params[:status].presence&.to_sym || :draft
       @areas = ModerationArea.by_slug
 
-      @conversation_message_broadcasts =
-        if @archived
-          ConversationMessageBroadcast.archived
-        else
-          ConversationMessageBroadcast.not_archived
-        end
+      @conversation_message_broadcasts = ConversationMessageBroadcast.where(status: @status)
 
       @conversation_message_broadcasts = @conversation_message_broadcasts.where(goal: @goal) if @goal and @goal != :all
       @conversation_message_broadcasts = @conversation_message_broadcasts.where(area: @area) if @area and @area != :all
@@ -41,7 +36,7 @@ module Admin
       @conversation_message_broadcast.assign_attributes(conversation_message_broadcast_params)
 
       if params.key?(:archive)
-        @conversation_message_broadcast.archived_at = Time.now
+        @conversation_message_broadcast.status = :archived
       end
 
       if @conversation_message_broadcast.save
