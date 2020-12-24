@@ -40,9 +40,7 @@ module Admin
       @conversation_message_broadcast = ConversationMessageBroadcast.find(params[:id])
       @conversation_message_broadcast.assign_attributes(conversation_message_broadcast_params)
 
-      if params.key?(:unarchive)
-        @conversation_message_broadcast.archived_at = nil
-      elsif params.key?(:archive)
+      if params.key?(:archive)
         @conversation_message_broadcast.archived_at = Time.now
       end
 
@@ -52,6 +50,12 @@ module Admin
         @conversation_message_broadcast.status = @conversation_message_broadcast.status_was
         render :edit
       end
+    end
+
+    def clone
+      @conversation_message_broadcast = ConversationMessageBroadcast.find(params[:id]).clone
+
+      render :new
     end
 
     def broadcast

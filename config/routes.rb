@@ -132,6 +132,7 @@ Rails.application.routes.draw do
     resources :conversation_message_broadcasts do
       member do
         post 'broadcast'
+        post 'clone'
       end
     end
 

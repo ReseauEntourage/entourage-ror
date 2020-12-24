@@ -41,6 +41,12 @@ class ConversationMessageBroadcast < ActiveRecord::Base
   # def succeeded(user, recipient)
   # end
 
-  # def failed(user, recipient)
-  # end
+  def clone
+    ConversationMessageBroadcast.new(
+      area: area,
+      content: content,
+      goal: goal,
+      title: title
+    )
+  end
 end

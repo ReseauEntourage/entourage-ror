@@ -9,9 +9,9 @@
     <div class="alert alert-info" role="alert" style="display: flex; align-items: center">
       <div style="flex-grow: 1">
         <b>Archivé</b><br>
-        Ce broadcast est archivé. Pour (r)envoyer le message, merci de le désarchiver.
+        Ce broadcast est archivé. Vous pouvez le dupliquer pour planifier une diffusion similaire.
       </div>
-      <%= f.submit "Désarchiver", name: :unarchive, class: "btn btn-success" %>
+      <%= link_to("Dupliquer", clone_admin_conversation_message_broadcast_path, method: :post, class: "btn btn-success") %>
     </div>
   <% elsif @conversation_message_broadcast.persisted? %>
     <div class="alert alert-success" role="alert" style="display: flex; align-items: center">
