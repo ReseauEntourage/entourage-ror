@@ -1,13 +1,14 @@
 require 'experimental/jsonb_set'
 
 class ConversationMessageBroadcast < ActiveRecord::Base
-  belongs_to :moderation_area
+  validates_presence_of :area, :goal, :content, :title
 
-  validates_presence_of :moderation_area_id, :goal, :content, :title
+  scope :archived, -> { where('archived_at != NULL') }
+  scope :not_archived, -> { where(archived_at: nil) }
 
   def name
     if moderation_area
-      "#{title} (#{moderation_area.departement}, #{goal})"
+      "#{title} (#{area.departement}, #{goal})"
     else
       title
     end
@@ -24,7 +25,17 @@ class ConversationMessageBroadcast < ActiveRecord::Base
   def users
     return 0 unless valid?
 
-    User.joins(:addresses).where('users.goal': goal, 'users.deleted': false).where(["addresses.country = 'FR' AND left(addresses.postal_code, 2) = ?", moderation_area.departement]).group('users.id')
+    users = User.joins(:addresses).where('users.goal': goal, 'users.deleted': false)
+
+    if area.to_sym == :sans_zone
+      users = users.where(["addresses.id IS NULL"])
+    elsif area.to_sym == :hors_zone
+      users = users.where(["addresses.country != 'FR' OR addresses.postal_code IS NULL"])
+    else
+      users = users.where(["addresses.country = 'FR' AND left(addresses.postal_code, 2) = ?", ModerationArea.departement(area)])
+    end
+
+    users.group('users.id')
   end
 
   # def succeeded(user, recipient)

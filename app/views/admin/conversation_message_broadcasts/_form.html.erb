@@ -24,7 +24,7 @@
     <div class="alert alert-danger" role="alert" style="display: flex; align-items: center">
       <div style="flex-grow: 1">
         <b>Envoyer</b><br>
-        L'envoi sera effectué auprès de <%= @conversation_message_broadcast.users.count %> utilisateurs correspondants aux filtres configurés.<br>
+        L'envoi sera effectué auprès de <%= @conversation_message_broadcast.user_ids.count %> utilisateurs correspondants aux filtres configurés.<br>
         Le broadcast sera automatiquement archivé.
       </div>
         <%= link_to("Envoyer", broadcast_admin_conversation_message_broadcast_path, method: :post, class: "btn btn-success") %>
@@ -40,9 +40,9 @@
 
   <div class="row">
     <div class="col-xs-6 form-group">
-      <% areas = ModerationArea.all.map {|area| [area.name_with_departement, area.id]} %>
-      <%= f.label :moderation_area_id %>
-      <%= f.select :moderation_area_id, options_for_select(areas, @conversation_message_broadcast.moderation_area_id), { include_blank: false }, class: "form-control" %>
+      <% areas = ModerationArea.all.map {|area| [area.name_with_departement, area.departement_slug]} %>
+      <%= f.label :area %>
+      <%= f.select :area, options_for_select(areas, @conversation_message_broadcast.area), { include_blank: false }, class: "form-control" %>
     </div>
     <div class="col-xs-6 form-group">
       <% goals = UserGoalPresenter.all(current_user.community).map {|goal| [goal.name, goal.slug]} %>

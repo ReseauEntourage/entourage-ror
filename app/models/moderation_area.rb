@@ -38,6 +38,14 @@ class ModerationArea < ActiveRecord::Base
     end
   end
 
+  def self.departement slug
+    return '*' if slug.to_sym == :hors_zone
+    return '_' if slug.to_sym == :sans_zone
+    raise "Unhandled slug #{slug.inspect}" unless slug.start_with? 'dep_'
+
+    slug[4..-1]
+  end
+
   def self.no_zone
     new(name: "Sans zone", departement: "_")
   end

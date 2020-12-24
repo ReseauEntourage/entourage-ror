@@ -22,25 +22,30 @@
       </div>
     </div>
 
-    <div id="conversation_message_broadcasts">
-      <% @conversation_message_broadcasts.each do |conversation_message_broadcast| %>
-        <div class="conversation_message_broadcast overlay-container" data-id="<%= conversation_message_broadcast.id %>">
-          <div class="conversation_message_broadcast-id text-muted">
-            <div>#<%= conversation_message_broadcast.id %></div>
-          </div>
-          <div class="conversation_message_broadcast-content" style="width: 100%">
-            <div style="font-weight: bold"><%= link_to conversation_message_broadcast.content, edit_admin_conversation_message_broadcast_path(conversation_message_broadcast) %></div>
-          </div>
-          <%= link_to "", edit_admin_conversation_message_broadcast_path(conversation_message_broadcast), class: "overlay" %>
-        </div>
-      <% end %>
-
+    <div class="row">
       <% if @conversation_message_broadcasts.none? %>
-        <div class="conversation_message_broadcast">
-          <div>
-            Pas de broadcast.
-          </div>
-        </div>
+        Pas de broadcast.
+      <% else %>
+        <table class="table">
+          <th>Id</th>
+          <th>Titre</th>
+          <th>Archivé</th>
+          <th>Zone de modération</th>
+          <th>Public</th>
+          <th>Dernière mise à jour</th>
+          <th>Actions</th>
+          <% @conversation_message_broadcasts.each do |conversation_message_broadcast| %>
+            <tr>
+              <td><%= conversation_message_broadcast.id %></td>
+              <td><%= conversation_message_broadcast.title %></td>
+              <td><%= check_box_tag '', '', conversation_message_broadcast.archived?, disabled: true %></td>
+              <td><%= @areas[conversation_message_broadcast.area.to_sym].name_with_departement %></td>
+              <td><%= UserGoalPresenter.new(conversation_message_broadcast.goal, community: current_user.community).name %></td>
+              <td><%= l(conversation_message_broadcast.updated_at, format: :short) if conversation_message_broadcast.updated_at %></td>
+              <td><%= link_to "Modifier", edit_admin_conversation_message_broadcast_path(conversation_message_broadcast), class: "btn btn-danger" %></td>
+            </tr>
+          <% end %>
+        </table>
       <% end %>
     </div>
   </div>

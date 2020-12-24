@@ -3,10 +3,20 @@ module Admin
     layout 'admin_large'
 
     def index
-      @conversation_message_broadcasts = ConversationMessageBroadcast.all
+      @goal = params[:goal].presence&.to_sym || :all
+      @area = params[:area].presence&.to_sym || :all
+      @archived = params[:archived].presence || false
+      @areas = ModerationArea.by_slug
 
-      @area = params[:area]
-      @goal = params[:goal]
+      @conversation_message_broadcasts =
+        if @archived
+          ConversationMessageBroadcast.archived
+        else
+          ConversationMessageBroadcast.not_archived
+        end
+
+      @conversation_message_broadcasts = @conversation_message_broadcasts.where(goal: @goal) if @goal and @goal != :all
+      @conversation_message_broadcasts = @conversation_message_broadcasts.where(area: @area) if @area and @area != :all
     end
 
     def new
@@ -83,7 +93,7 @@ module Admin
 
     def conversation_message_broadcast_params
       params.require(:conversation_message_broadcast).permit(
-        :moderation_area_id, :moderation_area, :goal, :content, :title
+        :area, :goal, :content, :title
       )
     end
 
