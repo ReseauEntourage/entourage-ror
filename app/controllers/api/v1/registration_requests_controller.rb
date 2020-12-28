@@ -1,7 +1,7 @@
 module Api
   module V1
     class RegistrationRequestsController < Api::V1::BaseController
-      skip_before_filter :authenticate_user!, only: [:create]
+      skip_before_action :authenticate_user!, only: [:create]
 
       def create
         validator = RegistrationRequestValidator.new(params: registration_request_params)

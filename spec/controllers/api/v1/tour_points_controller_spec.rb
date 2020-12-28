@@ -4,9 +4,9 @@ RSpec.describe Api::V1::TourPointsController, :type => :controller do
   render_views
 
   describe "POST create" do
-    let!(:user) { FactoryGirl.create :pro_user }
-    let!(:tour) { FactoryGirl.create :tour }
-    let!(:tour_point) { FactoryGirl.build :tour_point }
+    let!(:user) { FactoryBot.create :pro_user }
+    let!(:tour) { FactoryBot.create :tour }
+    let!(:tour_point) { FactoryBot.build :tour_point }
 
     context "within existing tour" do
       before { post 'create', tour_id: tour.id, token: user.token, tour_points: [{latitude: tour_point.latitude, longitude: tour_point.longitude, passing_time: tour_point.passing_time.iso8601(3)}], :format => :json }
@@ -21,7 +21,7 @@ RSpec.describe Api::V1::TourPointsController, :type => :controller do
     end
 
     context "tour has location" do
-      let!(:tour_with_location) { FactoryGirl.create(:tour, latitude: 2, longitude: 3) }
+      let!(:tour_with_location) { FactoryBot.create(:tour, latitude: 2, longitude: 3) }
       before { post 'create', tour_id: tour_with_location.id, token: user.token, tour_points: [{latitude: tour_point.latitude, longitude: tour_point.longitude, passing_time: tour_point.passing_time.iso8601(3)}], :format => :json }
       it { expect(tour_with_location.reload.longitude).to eq(3.0) }
       it { expect(tour_with_location.reload.latitude).to eq(2.0) }

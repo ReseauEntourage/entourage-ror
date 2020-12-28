@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :following do
     association :user, factory: :public_user
     association :partner

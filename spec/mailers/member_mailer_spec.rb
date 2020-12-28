@@ -61,7 +61,7 @@ describe MemberMailer, type: :mailer do
   end
 
   describe '#tour_report' do
-    let!(:tour) { FactoryGirl.create :tour, :filled }
+    let!(:tour) { FactoryBot.create :tour, :filled }
     let!(:mail) { MemberMailer.tour_report(tour) }
     it { expect(mail.from).to eq ['maraudes@entourage.social'] }
     it { expect(mail.to).to eq [tour.user.email] }
@@ -70,8 +70,8 @@ describe MemberMailer, type: :mailer do
     it { expect(mail.body.encoded).to match "<a href=\"http://localhost/tours/#{tour.id}\">Cliquez ici</a> pour retrouver votre maraude sur le web" }
 
     context "encounter has answers" do
-      let!(:question) { FactoryGirl.create(:question) }
-      let!(:answer) { FactoryGirl.create(:answer, question: question, encounter: tour.encounters.first) }
+      let!(:question) { FactoryBot.create(:question) }
+      let!(:answer) { FactoryBot.create(:answer, question: question, encounter: tour.encounters.first) }
       it { expect(mail.body.encoded).to match "aux questions" }
     end
   end

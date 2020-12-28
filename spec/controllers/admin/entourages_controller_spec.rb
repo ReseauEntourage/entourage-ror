@@ -8,7 +8,7 @@ describe Admin::EntouragesController do
 
   describe 'GET #index' do
     context "has entourages" do
-      let!(:entourage_list) { FactoryGirl.create_list(:entourage, 2, :joined) }
+      let!(:entourage_list) { FactoryBot.create_list(:entourage, 2, :joined) }
       before { get :index, moderator_id: :any }
 
       it { expect(assigns(:entourages)).to match_array(entourage_list) }

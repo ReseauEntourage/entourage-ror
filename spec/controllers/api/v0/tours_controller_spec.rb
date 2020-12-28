@@ -3,13 +3,13 @@ require 'rails_helper'
 RSpec.describe Api::V0::ToursController, :type => :controller, skip: true do
   render_views
 
-  let!(:user) { FactoryGirl.create :pro_user }
+  let!(:user) { FactoryBot.create :pro_user }
 
   describe "POST create" do
-    let!(:tour) { FactoryGirl.build :tour }
+    let!(:tour) { FactoryBot.build :tour }
 
     context "with correct type" do
-      before { FactoryGirl.create(:android_app) }
+      before { FactoryBot.create(:android_app) }
       before { post 'create', token: user.token , tour: {tour_type: tour.tour_type, status:tour.status, vehicle_type:tour.vehicle_type, distance: 123.456}, format: :json }
 
       it { expect(response.status).to eq(201) }
@@ -28,7 +28,7 @@ RSpec.describe Api::V0::ToursController, :type => :controller, skip: true do
     end
 
     it "sends scheduled push" do
-      FactoryGirl.create(:android_app)
+      FactoryBot.create(:android_app)
       expect_any_instance_of(TourServices::SchedulePushService).to receive(:send_to)
       post 'create', token: user.token , tour: {tour_type: tour.tour_type, status:tour.status, vehicle_type:tour.vehicle_type, distance: 123.456}, format: :json
     end
@@ -43,7 +43,7 @@ RSpec.describe Api::V0::ToursController, :type => :controller, skip: true do
     before { Timecop.freeze(Time.parse("10/10/2010").at_beginning_of_day) }
 
     context "with correct id" do
-      let!(:tour) { FactoryGirl.create :tour, :filled }
+      let!(:tour) { FactoryBot.create :tour, :filled }
       before { get 'show', id: tour.id, token: user.token , format: :json }
       it { expect(response.status).to eq(200) }
 
@@ -75,16 +75,16 @@ RSpec.describe Api::V0::ToursController, :type => :controller, skip: true do
     end
 
     context "has simplified tour points" do
-      let!(:tour) { FactoryGirl.create(:tour)}
-      let!(:tour_points) { FactoryGirl.create_list(:tour_point, 2, tour: tour)}
-      let!(:simplified_tour_points) { FactoryGirl.create(:simplified_tour_point, tour: tour)}
+      let!(:tour) { FactoryBot.create(:tour)}
+      let!(:tour_points) { FactoryBot.create_list(:tour_point, 2, tour: tour)}
+      let!(:simplified_tour_points) { FactoryBot.create(:simplified_tour_point, tour: tour)}
       before { get 'show', id: tour.id, token: user.token , format: :json }
       it { expect(JSON.parse(response.body)["tour"]["tour_points"].count).to eq(1) }
     end
 
     context "don't have simplified tour points" do
-      let!(:tour) { FactoryGirl.create(:tour)}
-      let!(:tour_points) { FactoryGirl.create_list(:tour_point, 2, tour: tour)}
+      let!(:tour) { FactoryBot.create(:tour)}
+      let!(:tour_points) { FactoryBot.create_list(:tour_point, 2, tour: tour)}
       before { get 'show', id: tour.id, token: user.token , format: :json }
       it { expect(JSON.parse(response.body)["tour"]["tour_points"].count).to eq(2) }
     end
@@ -92,8 +92,8 @@ RSpec.describe Api::V0::ToursController, :type => :controller, skip: true do
 
   describe "PUT update" do
     before { Timecop.freeze(DateTime.parse("10/10/2010").at_beginning_of_day) }
-    let!(:other_user) { FactoryGirl.create :pro_user }
-    let(:tour) { FactoryGirl.create(:tour, :filled, user: user) }
+    let!(:other_user) { FactoryBot.create :pro_user }
+    let(:tour) { FactoryBot.create(:tour, :filled, user: user) }
 
     context "with correct id" do
       before { put 'update', id: tour.id, token: user.token, tour:{tour_type:"medical", status:"closed", vehicle_type:"car", distance: 123.456}, format: :json }
@@ -123,7 +123,7 @@ RSpec.describe Api::V0::ToursController, :type => :controller, skip: true do
 
     context "close tour" do
       context "tour open" do
-        let(:open_tour) { FactoryGirl.create(:tour, user: user, status: :ongoing) }
+        let(:open_tour) { FactoryBot.create(:tour, user: user, status: :ongoing) }
         before { put 'update', id: open_tour.id, token: user.token, tour:{tour_type:"medical", status:"closed", vehicle_type:"car", distance: 633.0878}, format: :json }
         it "somthe" do
           expect(open_tour.reload.closed?).to be true
@@ -133,7 +133,7 @@ RSpec.describe Api::V0::ToursController, :type => :controller, skip: true do
       end
 
       context "tour closed" do
-        let(:closed_tour) { FactoryGirl.create(:tour, user: user, status: :closed) }
+        let(:closed_tour) { FactoryBot.create(:tour, user: user, status: :closed) }
         before { put 'update', id: closed_tour.id, token: user.token, tour:{tour_type:"medical", status:"closed", vehicle_type:"car", distance: 123.456}, format: :json }
         it { expect(closed_tour.reload.closed?).to be true }
         it { expect(ActionMailer::Base.deliveries.last).to be nil}
@@ -163,7 +163,7 @@ RSpec.describe Api::V0::ToursController, :type => :controller, skip: true do
     context "without parameter" do
       before(:each) do
         11.times do |i|
-          FactoryGirl.create :tour, updated_at:date+i.hours
+          FactoryBot.create :tour, updated_at:date+i.hours
         end
       end
 
@@ -176,7 +176,7 @@ RSpec.describe Api::V0::ToursController, :type => :controller, skip: true do
 
     it "responds with tours" do
       Timecop.freeze(DateTime.parse("10/10/2010").at_beginning_of_day)
-      tours = FactoryGirl.create_list :tour, 2
+      tours = FactoryBot.create_list :tour, 2
 
       get 'index', token: user.token, format: :json
 
@@ -209,7 +209,7 @@ RSpec.describe Api::V0::ToursController, :type => :controller, skip: true do
     context "with limit parameter" do
       before(:each) do
         5.times do |i|
-          FactoryGirl.create :tour, updated_at:date+i.days
+          FactoryBot.create :tour, updated_at:date+i.days
         end
       end
 
@@ -228,11 +228,11 @@ RSpec.describe Api::V0::ToursController, :type => :controller, skip: true do
 
     context "with type parameter" do
 
-      let!(:tour1) { FactoryGirl.create :tour, tour_type:'medical' }
-      let!(:tour2) { FactoryGirl.create :tour, tour_type:'medical' }
-      let!(:tour3) { FactoryGirl.create :tour, tour_type:'alimentary' }
-      let!(:tour4) { FactoryGirl.create :tour, tour_type:'alimentary' }
-      let!(:tour5) { FactoryGirl.create :tour, tour_type:'medical' }
+      let!(:tour1) { FactoryBot.create :tour, tour_type:'medical' }
+      let!(:tour2) { FactoryBot.create :tour, tour_type:'medical' }
+      let!(:tour3) { FactoryBot.create :tour, tour_type:'alimentary' }
+      let!(:tour4) { FactoryBot.create :tour, tour_type:'alimentary' }
+      let!(:tour5) { FactoryBot.create :tour, tour_type:'medical' }
 
       it "returns status 200" do
         get 'index', token: user.token, type:'alimentary', :format => :json
@@ -248,11 +248,11 @@ RSpec.describe Api::V0::ToursController, :type => :controller, skip: true do
 
     context "with vehicle type parameter" do
 
-      let!(:tour1) { FactoryGirl.create :tour, vehicle_type:'feet' }
-      let!(:tour2) { FactoryGirl.create :tour, vehicle_type:'feet' }
-      let!(:tour3) { FactoryGirl.create :tour, vehicle_type:'car' }
-      let!(:tour4) { FactoryGirl.create :tour, vehicle_type:'car' }
-      let!(:tour5) { FactoryGirl.create :tour, vehicle_type:'feet' }
+      let!(:tour1) { FactoryBot.create :tour, vehicle_type:'feet' }
+      let!(:tour2) { FactoryBot.create :tour, vehicle_type:'feet' }
+      let!(:tour3) { FactoryBot.create :tour, vehicle_type:'car' }
+      let!(:tour4) { FactoryBot.create :tour, vehicle_type:'car' }
+      let!(:tour5) { FactoryBot.create :tour, vehicle_type:'feet' }
 
       it "returns status 200" do
         get 'index', token: user.token, vehicle_type:'car', :format => :json
@@ -267,16 +267,16 @@ RSpec.describe Api::V0::ToursController, :type => :controller, skip: true do
     end
 
     context "with location parameter" do
-      let!(:tour1) { FactoryGirl.create :tour }
-      let!(:tour_point1) { FactoryGirl.create :tour_point, tour: tour1, latitude: 10, longitude: 12 }
-      let!(:tour2) { FactoryGirl.create :tour }
-      let!(:tour_point2) { FactoryGirl.create :tour_point, tour: tour2, latitude: 9.9, longitude: 10.1 }
-      let!(:tour3) { FactoryGirl.create :tour }
-      let!(:tour_point3) { FactoryGirl.create :tour_point, tour: tour3, latitude: 10, longitude: 10 }
-      let!(:tour4) { FactoryGirl.create :tour }
-      let!(:tour_point4) { FactoryGirl.create :tour_point, tour: tour4, latitude: 10.05, longitude: 9.95 }
-      let!(:tour5) { FactoryGirl.create :tour }
-      let!(:tour_point5) { FactoryGirl.create :tour_point, tour: tour5, latitude: 12, longitude: 10 }
+      let!(:tour1) { FactoryBot.create :tour }
+      let!(:tour_point1) { FactoryBot.create :tour_point, tour: tour1, latitude: 10, longitude: 12 }
+      let!(:tour2) { FactoryBot.create :tour }
+      let!(:tour_point2) { FactoryBot.create :tour_point, tour: tour2, latitude: 9.9, longitude: 10.1 }
+      let!(:tour3) { FactoryBot.create :tour }
+      let!(:tour_point3) { FactoryBot.create :tour_point, tour: tour3, latitude: 10, longitude: 10 }
+      let!(:tour4) { FactoryBot.create :tour }
+      let!(:tour_point4) { FactoryBot.create :tour_point, tour: tour4, latitude: 10.05, longitude: 9.95 }
+      let!(:tour5) { FactoryBot.create :tour }
+      let!(:tour_point5) { FactoryBot.create :tour_point, tour: tour5, latitude: 12, longitude: 10 }
 
       it "returns status 200" do
         get 'index', token: user.token, latitude: 10.0, longitude: 10.0, :format => :json

@@ -3,10 +3,10 @@ require 'rails_helper'
 RSpec.describe SimplifyTourPointsJob do
 
   describe 'close!' do
-    let!(:tour) { FactoryGirl.create(:tour) }
+    let!(:tour) { FactoryBot.create(:tour) }
     before do
-      FactoryGirl.create(:tour_point, tour: tour, latitude: "49.40752907", longitude: "0.26782405")
-      FactoryGirl.create(:tour_point, tour: tour, latitude: "49.40774009", longitude: "0.26870057")
+      FactoryBot.create(:tour_point, tour: tour, latitude: "49.40752907", longitude: "0.26782405")
+      FactoryBot.create(:tour_point, tour: tour, latitude: "49.40774009", longitude: "0.26870057")
     end
     before { SimplifyTourPointsJob.new.perform(tour.id, false) }
     it { expect($redis.get("entourage:tours:#{tour.id}:tour_points")).to eq("[{\"latitude\":49.40752907,\"longitude\":0.26782405},{\"latitude\":49.40774009,\"longitude\":0.26870057}]") }

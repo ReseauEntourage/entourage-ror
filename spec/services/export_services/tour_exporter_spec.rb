@@ -1,10 +1,10 @@
 require 'rails_helper'
 
 describe ExportServices::TourExporter do
-  let!(:tour) { FactoryGirl.create(:tour) }
+  let!(:tour) { FactoryBot.create(:tour) }
 
   describe 'export_tour_points' do
-    let!(:tour_points) { FactoryGirl.create_list(:tour_point, 3, tour: tour) }
+    let!(:tour_points) { FactoryBot.create_list(:tour_point, 3, tour: tour) }
     let(:exporter) { ExportServices::TourExporter.new(tour: tour) }
 
     it 'generates a csv with tour points' do
@@ -19,7 +19,7 @@ describe ExportServices::TourExporter do
   end
 
   describe 'export_encounters' do
-    let!(:tour_points) { FactoryGirl.create_list(:encounter, 3, tour: tour, message: "foobar", address: "2 rue de l'église") }
+    let!(:tour_points) { FactoryBot.create_list(:encounter, 3, tour: tour, message: "foobar", address: "2 rue de l'église") }
     let(:exporter) { ExportServices::TourExporter.new(tour: tour) }
 
     it 'generates a csv with tour points' do

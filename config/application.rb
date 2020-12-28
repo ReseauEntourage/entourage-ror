@@ -15,12 +15,12 @@ module EntourageBack
     config.i18n.default_locale = :fr
 
      config.generators do |g|
-       g.fixture_replacement :factory_girl
+       g.fixture_replacement :factory_bot
        g.test_framework :rspec
        g.view_specs false
        g.helper_specs false
        g.routing_specs false
-       g.factory_girl dir: 'spec/factories'
+       g.factory_bot dir: 'spec/factories'
      end
 
     config.active_job.queue_adapter = :sidekiq

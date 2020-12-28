@@ -2,12 +2,12 @@ require 'rails_helper'
 
 RSpec.describe Api::V1::PartnersController, type: :controller do
 
-  let!(:user) { FactoryGirl.create :pro_user }
+  let!(:user) { FactoryBot.create :pro_user }
 
   describe 'GET index' do
-    let!(:partner1) { FactoryGirl.create(:partner, name: "Partner B") }
-    let!(:partner2) { FactoryGirl.create(:partner, name: "Partner A", postal_code: "75008") }
-    # before { FactoryGirl.create(:user_partner, user: user, partner: partner1) }
+    let!(:partner1) { FactoryBot.create(:partner, name: "Partner B") }
+    let!(:partner2) { FactoryBot.create(:partner, name: "Partner A", postal_code: "75008") }
+    # before { FactoryBot.create(:user_partner, user: user, partner: partner1) }
 
     before { get 'index', token: user.token }
     # TODO(partner)
@@ -28,7 +28,7 @@ RSpec.describe Api::V1::PartnersController, type: :controller do
   end
 
   describe 'GET show' do
-    let!(:partner1) { FactoryGirl.create(:partner, name: "Partner A", postal_code: "75008") }
+    let!(:partner1) { FactoryBot.create(:partner, name: "Partner A", postal_code: "75008") }
     let!(:following) { nil }
 
     before { get 'show', id: partner1.id, token: user.token }

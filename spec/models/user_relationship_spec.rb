@@ -14,8 +14,8 @@ describe UserRelationship do
 
 
   describe "has unique relationship" do
-    let(:user1) {FactoryGirl.create(:public_user)}
-    let(:user2) {FactoryGirl.create(:public_user)}
+    let(:user1) {FactoryBot.create(:public_user)}
+    let(:user2) {FactoryBot.create(:public_user)}
 
     context "first relationship" do
       it "saves the relationship" do
@@ -50,7 +50,7 @@ describe UserRelationship do
       end
 
       it "accepts relationship with different user" do
-        ur = UserRelationship.new(source_user: FactoryGirl.create(:public_user),
+        ur = UserRelationship.new(source_user: FactoryBot.create(:public_user),
 
                                   target_user: user2,
                                   relation_type: UserRelationship::TYPE_INVITE)

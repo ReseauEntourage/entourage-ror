@@ -215,13 +215,13 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
       end
     end
     context 'when user is deleted' do
-      let(:deleted_user) { FactoryGirl.create(:pro_user, deleted: true, sms_code: "123456") }
+      let(:deleted_user) { FactoryBot.create(:pro_user, deleted: true, sms_code: "123456") }
       before { post 'login', user: {phone: deleted_user.phone, sms_code: "123456"}, format: 'json' }
       it { expect(response.status).to eq(401) }
       it { expect(result).to eq({"error"=>{"code"=>"DELETED", "message"=>"user is deleted"}}) }
     end
     context 'when user is not deleted' do
-      let(:not_deleted_user) { FactoryGirl.create(:pro_user, deleted: false, sms_code: "123456") }
+      let(:not_deleted_user) { FactoryBot.create(:pro_user, deleted: false, sms_code: "123456") }
       before { post 'login', user: {phone: not_deleted_user.phone, sms_code: "123456"}, format: 'json' }
       it { expect(response.status).to eq(200) }
     end
@@ -556,7 +556,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
     end
 
     context "already has a user without email" do
-      let!(:previous_user) { FactoryGirl.create(:public_user, email: nil) }
+      let!(:previous_user) { FactoryBot.create(:public_user, email: nil) }
       before { post 'create', {user: {phone: "+33612345678"}} }
       it { expect(response.status).to eq(201) }
     end
@@ -582,7 +582,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
     end
 
     context "phone already exists" do
-      let!(:existing_user) { FactoryGirl.create(:public_user, phone: "+33612345678") }
+      let!(:existing_user) { FactoryBot.create(:public_user, phone: "+33612345678") }
       before { post 'create', {user: {phone: "+33612345678"}} }
       it { expect(User.count).to eq(1) }
       it { expect(response.status).to eq(400) }
@@ -738,7 +738,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
       end
 
       context "get someone else profile" do
-        let(:other_user) { FactoryGirl.create(:pro_user, about: "about") }
+        let(:other_user) { FactoryBot.create(:pro_user, about: "about") }
         let!(:conversation) { nil }
         before { get :show, id: other_user.id, token: user.token }
         it { expect(response.status).to eq(200) }
@@ -783,7 +783,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
 
       context "roles" do
         with_community :pfp
-        let(:other_user) { FactoryGirl.create(:public_user, roles: [:visitor, :coordinator]) }
+        let(:other_user) { FactoryBot.create(:public_user, roles: [:visitor, :coordinator]) }
         let!(:join_request)  { create :join_request, user: other_user, joinable_factory: :private_circle, status: :accepted }
         let!(:join_request2) { create :join_request, user: other_user, joinable_factory: :private_circle, status: :pending }
         before { get :show, id: other_user.id, token: user.token }
@@ -828,7 +828,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
   describe "DELETE destroy" do
     before { Timecop.freeze(Time.parse("10/10/2010").at_beginning_of_day) }
     before { MailchimpService.stub(:strong_unsubscribe) }
-    let!(:user) { FactoryGirl.create(:pro_user, deleted: false, phone: "0612345678", email: "foo@bar.com") }
+    let!(:user) { FactoryBot.create(:pro_user, deleted: false, phone: "0612345678", email: "foo@bar.com") }
     before { delete :destroy, id: user.to_param, token: user.token }
     it { expect(user.reload.deleted).to be true }
     it { expect(user.reload.phone).to eq("+33612345678-2010-10-10 00:00:00") }

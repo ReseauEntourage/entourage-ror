@@ -1,7 +1,7 @@
 module Api
   module V1
     class MessagesController < Api::V1::BaseController
-      skip_before_filter :authenticate_user!
+      skip_before_action :authenticate_user!
 
       #curl -H "Content-Type: application/json" -X POST -d '{"message": {"content": "foo bar", "first_name": "foo", "last_name": "bar", "email": "foo@bar.com"}}' "http://localhost:3000/api/v1/messages"
       def create

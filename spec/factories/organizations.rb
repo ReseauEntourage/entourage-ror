@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :organization do
     sequence :name do |n|
       "Association #{n}"
@@ -12,6 +12,6 @@ FactoryGirl.define do
     sequence :address do |n|
       "#{n} avenue des Champs Elysées 75008 Paris France"
     end
-    test_organization false
+    test_organization { false }
   end
 end

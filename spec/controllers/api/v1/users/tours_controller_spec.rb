@@ -4,10 +4,10 @@ RSpec.describe Api::V1::Users::ToursController, :type => :controller do
   render_views
 
   describe 'GET index' do
-    let!(:user) { FactoryGirl.create(:pro_user) }
-    let!(:tour1) { FactoryGirl.create(:tour, user: user, updated_at: Date.parse("10/10/2010"), status: "ongoing") }
-    let!(:tour2) { FactoryGirl.create(:tour, user: user, updated_at: Date.parse("09/10/2010"), status: "closed") }
-    let!(:other_tours) { FactoryGirl.create(:tour) }
+    let!(:user) { FactoryBot.create(:pro_user) }
+    let!(:tour1) { FactoryBot.create(:tour, user: user, updated_at: Date.parse("10/10/2010"), status: "ongoing") }
+    let!(:tour2) { FactoryBot.create(:tour, user: user, updated_at: Date.parse("09/10/2010"), status: "closed") }
+    let!(:other_tours) { FactoryBot.create(:tour) }
 
     context "without pagination params" do
       before { get 'index', user_id: user.id, token: user.token, format: :json }
@@ -75,7 +75,7 @@ RSpec.describe Api::V1::Users::ToursController, :type => :controller do
 
     context "with location filter" do
       context "has tour around point" do
-        let!(:tour_point) { FactoryGirl.create(:tour_point, tour: tour1, latitude: 48.2, longitude: 2.2) }
+        let!(:tour_point) { FactoryBot.create(:tour_point, tour: tour1, latitude: 48.2, longitude: 2.2) }
         before { get 'index', user_id: user.id, token: user.token, format: :json, distance: 1000, latitude: 48.2, longitude: 2.2 }
         it { expect(JSON.parse(response.body)["tours"].count).to eq 1 }
       end

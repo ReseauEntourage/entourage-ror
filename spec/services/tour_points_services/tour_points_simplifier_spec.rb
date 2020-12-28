@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe TourPointsServices::TourPointsSimplifier do
 
-  let(:tour) { FactoryGirl.create(:tour, :filled) }
+  let(:tour) { FactoryBot.create(:tour, :filled) }
 
   describe 'simplified_tour_points' do
     context "valid params" do

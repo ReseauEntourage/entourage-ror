@@ -3,8 +3,8 @@ include CommunityHelper
 
 describe Api::V1::Entourages::UsersController do
 
-  let(:user) { FactoryGirl.create(:public_user) }
-  let(:entourage) { FactoryGirl.create(:entourage, title: "foobar1") }
+  let(:user) { FactoryBot.create(:public_user) }
+  let(:entourage) { FactoryBot.create(:entourage, title: "foobar1") }
   let(:result) { JSON.parse(response.body) }
 
   describe 'POST create' do
@@ -127,7 +127,7 @@ describe Api::V1::Entourages::UsersController do
         let!(:entourage_join_request) { create(:join_request, user: entourage.user, joinable: entourage, status: "accepted") }
 
         context "no join request message" do
-          let!(:member) { FactoryGirl.create(:pro_user) }
+          let!(:member) { FactoryBot.create(:pro_user) }
           let!(:member_join_request) { create(:join_request, user: member, joinable: entourage, status: "accepted") }
           let!(:user_join_request) { create(:join_request, user: user, status: "accepted") }
 
@@ -148,7 +148,7 @@ describe Api::V1::Entourages::UsersController do
         end
 
         context "has join request message" do
-          let!(:member) { FactoryGirl.create(:pro_user) }
+          let!(:member) { FactoryBot.create(:pro_user) }
           let!(:member_join_request) { create(:join_request, user: member, joinable: entourage, status: "accepted") }
 
           it "sends notif to all entourage members" do
@@ -217,7 +217,7 @@ describe Api::V1::Entourages::UsersController do
 
     context "signed in" do
       let!(:join_request) { create(:join_request, user: user, joinable: entourage, status: "accepted") }
-      let(:requester) { FactoryGirl.create(:pro_user) }
+      let(:requester) { FactoryBot.create(:pro_user) }
       let!(:requester_join_request) { create(:join_request, user: requester, joinable: entourage, status: "pending") }
 
       context "valid params" do
@@ -227,7 +227,7 @@ describe Api::V1::Entourages::UsersController do
       end
 
       it "sends a notification to the requester" do
-        FactoryGirl.create(:android_app)
+        FactoryBot.create(:android_app)
         expect_any_instance_of(PushNotificationService).to receive(:send_notification).with("John D.",
                                                                                             "Foobar1",
                                                                                             "Vous venez de rejoindre l’action de John D.",
@@ -266,9 +266,9 @@ describe Api::V1::Entourages::UsersController do
     end
 
     context "update someone else request message" do
-      let(:other_user) { FactoryGirl.create(:pro_user) }
-      let!(:other_join_request) { FactoryGirl.create(:join_request, user: other_user, joinable: entourage, status: "accepted") }
-      let!(:join_request) { FactoryGirl.create(:join_request, user: user, joinable: entourage, message: "foobar") }
+      let(:other_user) { FactoryBot.create(:pro_user) }
+      let!(:other_join_request) { FactoryBot.create(:join_request, user: other_user, joinable: entourage, status: "accepted") }
+      let!(:join_request) { FactoryBot.create(:join_request, user: user, joinable: entourage, message: "foobar") }
       before { patch :update, entourage_id: entourage.to_param, id: user.id, request: {message: "something"}, token: other_user.token }
       it { expect(response.status).to eq(401) }
     end
@@ -282,7 +282,7 @@ describe Api::V1::Entourages::UsersController do
 
     context "signed in" do
       context "reject someone from tour" do
-        let!(:other_user) { FactoryGirl.create(:pro_user) }
+        let!(:other_user) { FactoryBot.create(:pro_user) }
         let!(:other_join_request) { create(:join_request, user: other_user, joinable: entourage, status: "accepted") }
         let!(:my_join_request) { create(:join_request, user: user, joinable: entourage, status: "accepted") }
         before { delete :destroy, entourage_id: entourage.to_param, id: other_user.id, token: user.token }
@@ -333,7 +333,7 @@ describe Api::V1::Entourages::UsersController do
     end
 
     context "reject someone from tour when join request is pending acceptance" do
-      let!(:other_user) { FactoryGirl.create(:public_user) }
+      let!(:other_user) { FactoryBot.create(:public_user) }
       let!(:my_join_request) { create(:join_request, user: user, joinable: entourage, status: "pending") }
       let!(:other_join_request) { create(:join_request, user: other_user, joinable: entourage, status: "pending") }
       before { delete :destroy, entourage_id: entourage.to_param, id: other_user.id, token: user.token }

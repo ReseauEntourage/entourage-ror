@@ -7,7 +7,7 @@ describe Admin::PoisController do
 
   describe 'GET #index' do
     context "has pois" do
-      let!(:poi_list) { FactoryGirl.create_list(:poi, 2) }
+      let!(:poi_list) { FactoryBot.create_list(:poi, 2) }
       before { get :index, moderator_id: :any }
 
       it { expect(assigns(:pois)).to match_array(poi_list) }
@@ -21,9 +21,9 @@ describe Admin::PoisController do
   end
 
   describe "PUT #update" do
-    let!(:category_1) { FactoryGirl.create(:category) }
-    let!(:category_2) { FactoryGirl.create(:category) }
-    let!(:poi) { FactoryGirl.create(:poi, latitude: 1, longitude: 1) }
+    let!(:category_1) { FactoryBot.create(:category) }
+    let!(:category_2) { FactoryBot.create(:category) }
+    let!(:poi) { FactoryBot.create(:poi, latitude: 1, longitude: 1) }
     before { put :update, id: poi.id, poi: { latitude: 1, longitude: 1, category_ids: [category_1.id, category_2.id] } }
     it { expect(poi.reload.categories).to eq([category_1, category_2]) }
   end

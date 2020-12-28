@@ -12,7 +12,7 @@ describe SessionsController do
     context "Valid credentials" do
       before { ENV["DISABLE_CRYPT"]="FALSE" }
       after { ENV["DISABLE_CRYPT"]="TRUE" }
-      let!(:user) { FactoryGirl.create(:pro_user, phone: "+33612345678", sms_code: "123456") }
+      let!(:user) { FactoryBot.create(:pro_user, phone: "+33612345678", sms_code: "123456") }
       before { post :create, phone: "+33612345678", sms_code: "123456" }
       it { expect(session[:user_id]).to eq(user.id) }
       it { should redirect_to root_url }
@@ -26,7 +26,7 @@ describe SessionsController do
     describe "public user" do
       before { ENV["DISABLE_CRYPT"]="FALSE" }
       after { ENV["DISABLE_CRYPT"]="TRUE" }
-      let!(:user) { FactoryGirl.create(:public_user, phone: "+33612345678", sms_code: "123456", admin: false) }
+      let!(:user) { FactoryBot.create(:public_user, phone: "+33612345678", sms_code: "123456", admin: false) }
       before { post :create, phone: "+33612345678", sms_code: "123456" }
       it { expect(session[:admin_user_id]).to be_nil }
       it { expect(session[:user_id]).to eq(user.id) }
@@ -39,7 +39,7 @@ describe SessionsController do
       it { should redirect_to new_session_path }
 
       context "login with wrong 06 and phone saved as +33" do
-        let!(:user) { FactoryGirl.create(:pro_user, phone: "+33612345678", sms_code: "123456") }
+        let!(:user) { FactoryBot.create(:pro_user, phone: "+33612345678", sms_code: "123456") }
         before { post :create, phone: "0612345679", sms_code: "123456" }
         it { expect(session[:user_id]).to be_nil }
       end
@@ -47,7 +47,7 @@ describe SessionsController do
 
     describe "admin authent" do
       context "not admin" do
-        let!(:user) { FactoryGirl.create(:pro_user, phone: "+33612345678", sms_code: "123456", admin: false) }
+        let!(:user) { FactoryBot.create(:pro_user, phone: "+33612345678", sms_code: "123456", admin: false) }
         before { post :create, phone: "+33612345678", sms_code: "123456" }
         it { expect(session[:admin_user_id]).to be_nil }
       end
@@ -55,7 +55,7 @@ describe SessionsController do
       context "admin" do
         before { ENV["DISABLE_CRYPT"]="FALSE" }
         after { ENV["DISABLE_CRYPT"]="TRUE" }
-        let!(:user) { FactoryGirl.create(:pro_user, phone: "+33612345678", sms_code: "123456", admin: true) }
+        let!(:user) { FactoryBot.create(:pro_user, phone: "+33612345678", sms_code: "123456", admin: true) }
         before { post :create, phone: "+33612345678", sms_code: "123456" }
         it { expect(session[:admin_user_id]).to eq(user.id) }
       end
@@ -64,11 +64,11 @@ describe SessionsController do
         before { ENV["DISABLE_CRYPT"]="FALSE" }
         after { ENV["DISABLE_CRYPT"]="TRUE" }
         it "doesn't log as admin" do
-          admin = FactoryGirl.create(:pro_user, phone: "+33612345678", sms_code: "123456", admin: true)
+          admin = FactoryBot.create(:pro_user, phone: "+33612345678", sms_code: "123456", admin: true)
           post :create, phone: "+33612345678", sms_code: "123456"
           expect(session[:admin_user_id]).to eq(admin.id)
 
-          user = FactoryGirl.create(:pro_user, phone: "+33612345679", sms_code: "123456", admin: false)
+          user = FactoryBot.create(:pro_user, phone: "+33612345679", sms_code: "123456", admin: false)
           post :create, phone: "+33612345679", sms_code: "123456"
           expect(session[:admin_user_id]).to be_nil
         end

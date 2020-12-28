@@ -1,8 +1,8 @@
 require 'rails_helper'
 
 describe Api::V1::Tours::UsersController do
-  let(:user) { FactoryGirl.create(:pro_user) }
-  let(:tour) { FactoryGirl.create(:tour) }
+  let(:user) { FactoryBot.create(:pro_user) }
+  let(:tour) { FactoryBot.create(:tour) }
   let(:result) { JSON.parse(response.body) }
 
   describe 'POST create' do
@@ -49,7 +49,7 @@ describe Api::V1::Tours::UsersController do
       end
 
       it "sends a notifications to tour owner" do
-        new_member = FactoryGirl.create(:pro_user)
+        new_member = FactoryBot.create(:pro_user)
         create(:join_request, user: user, joinable: tour, status: "accepted")
         expect_any_instance_of(PushNotificationService).to receive(:send_notification).with("John D.",
                                                                                             "Demande en attente",
@@ -85,7 +85,7 @@ describe Api::V1::Tours::UsersController do
     end
 
     context "signed in" do
-      let!(:join_request) { FactoryGirl.create(:join_request, user: user, joinable: tour) }
+      let!(:join_request) { FactoryBot.create(:join_request, user: user, joinable: tour) }
       before { get :index, tour_id: tour.to_param, token: user.token }
       it { expect(result).to eq({"users"=>[{"id"=>user.id,
                                                                "display_name"=>"John D.",
@@ -108,19 +108,19 @@ describe Api::V1::Tours::UsersController do
     end
 
     context "signed in as accepted member of the tour" do
-      let(:requester) { FactoryGirl.create(:pro_user) }
+      let(:requester) { FactoryBot.create(:pro_user) }
       let!(:tour_member) { create(:join_request, user: user, joinable: tour, status: "accepted") }
       let!(:tour_requester) { create(:join_request, user: requester, joinable: tour, status: "pending") }
 
       context "valid params" do
-        before { FactoryGirl.create(:android_app) }
+        before { FactoryBot.create(:android_app) }
         before { patch :update, tour_id: tour.to_param, id: requester.id, user: {status: "accepted"}, token: user.token }
         it { expect(response.status).to eq(204) }
         it { expect(tour_requester.reload.status).to eq("accepted") }
       end
 
       it "sends a notification to the requester" do
-        FactoryGirl.create(:android_app)
+        FactoryBot.create(:android_app)
         expect_any_instance_of(PushNotificationService).to receive(:send_notification).with("John D.",
                                                                                             "Demande acceptée",
                                                                                             "Vous venez de rejoindre la maraude de John D.",
@@ -143,8 +143,8 @@ describe Api::V1::Tours::UsersController do
     end
 
     context "not member of the tour" do
-      let(:requester) { FactoryGirl.create(:pro_user) }
-      let!(:other_tour_member) { create(:join_request, user: user, joinable: FactoryGirl.create(:tour), status: "accepted") }
+      let(:requester) { FactoryBot.create(:pro_user) }
+      let!(:other_tour_member) { create(:join_request, user: user, joinable: FactoryBot.create(:tour), status: "accepted") }
       let!(:tour_requested) { create(:join_request, user: requester, joinable: tour, status: "pending") }
       before { patch :update, tour_id: tour.to_param, id: requester.id, user: {status: "accepted"}, token: user.token }
       it { expect(response.status).to eq(401) }
@@ -152,7 +152,7 @@ describe Api::V1::Tours::UsersController do
     end
 
     context "member of the tour but not accepted" do
-      let(:requester) { FactoryGirl.create(:pro_user) }
+      let(:requester) { FactoryBot.create(:pro_user) }
       let!(:tour_member) { create(:join_request, user: user, joinable: tour, status: "pending") }
       let!(:tour_requested) { create(:join_request, user: requester, joinable: tour, status: "pending") }
       before { patch :update, tour_id: tour.to_param, id: requester.id, user: {status: "accepted"}, token: user.token }
@@ -176,7 +176,7 @@ describe Api::V1::Tours::UsersController do
     end
 
     context "signed in as accepted member of the tour" do
-      let(:requester) { FactoryGirl.create(:pro_user) }
+      let(:requester) { FactoryBot.create(:pro_user) }
       let!(:tour_member) { create(:join_request, user: user, joinable: tour, status: "accepted") }
       let!(:tour_requested) { create(:join_request, user: requester, joinable: tour, status: "pending") }
       before { delete :destroy, tour_id: tour.to_param, id: requester.id, token: user.token }
@@ -233,8 +233,8 @@ describe Api::V1::Tours::UsersController do
     end
 
     context "not member of the tour" do
-      let(:requester) { FactoryGirl.create(:pro_user) }
-      let!(:other_tour_member) { create(:join_request, user: user, joinable: FactoryGirl.create(:tour), status: "accepted") }
+      let(:requester) { FactoryBot.create(:pro_user) }
+      let!(:other_tour_member) { create(:join_request, user: user, joinable: FactoryBot.create(:tour), status: "accepted") }
       let!(:tour_requested) { create(:join_request, user: requester, joinable: tour, status: "pending") }
       before { delete :destroy, tour_id: tour.to_param, id: requester.id, token: user.token }
       it { expect(response.status).to eq(401) }
@@ -242,7 +242,7 @@ describe Api::V1::Tours::UsersController do
     end
 
     context "member of the tour but not accepted" do
-      let(:requester) { FactoryGirl.create(:pro_user) }
+      let(:requester) { FactoryBot.create(:pro_user) }
       let!(:tour_member) { create(:join_request, user: user, joinable: tour, status: "pending") }
       let!(:tour_requested) { create(:join_request, user: requester, joinable: tour, status: "pending") }
       before { delete :destroy, tour_id: tour.to_param, id: requester.id, token: user.token }

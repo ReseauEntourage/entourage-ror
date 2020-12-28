@@ -4,9 +4,9 @@ RSpec.describe Api::V0::EncountersController, :type => :controller, skip: true d
   render_views
 
   describe "POST create with tour" do
-    let!(:user) { FactoryGirl.create :pro_user }
-    let!(:tour) { FactoryGirl.create :tour, user: user }
-    let!(:encounter) { FactoryGirl.build :encounter, tour: tour }
+    let!(:user) { FactoryBot.create :pro_user }
+    let!(:tour) { FactoryBot.create :tour, user: user }
+    let!(:encounter) { FactoryBot.build :encounter, tour: tour }
 
     describe "response" do
       before { post 'create', tour_id: tour.id, token: user.token , encounter: {street_person_name: encounter.street_person_name, date: encounter.date, latitude: encounter.latitude, longitude: encounter.longitude, message: encounter.message, voice_message: encounter.voice_message_url }, :format => :json }

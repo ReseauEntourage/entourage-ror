@@ -7,7 +7,7 @@ describe EntourageServices::EntourageLocationRandomizer do
     EntourageServices::GeocodingService.stub(:enable_callback) { false }
   end
 
-  let(:entourage) { FactoryGirl.create(:entourage) }
+  let(:entourage) { FactoryBot.create(:entourage) }
   let(:randomizer) { EntourageServices::EntourageLocationRandomizer.new(entourage: entourage) }
 
   #sin and cos max value is 1

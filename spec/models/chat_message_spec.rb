@@ -2,7 +2,7 @@ require 'rails_helper'
 include CommunityHelper
 
 RSpec.describe ChatMessage, type: :model do
-  it { expect(FactoryGirl.build(:chat_message).save).to be true }
+  it { expect(FactoryBot.build(:chat_message).save).to be true }
   it { should belong_to :messageable }
   it { should belong_to :user }
   it { should validate_presence_of :messageable_id }

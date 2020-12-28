@@ -2,7 +2,7 @@ require 'rails_helper'
 include CommunityHelper
 
 RSpec.describe JoinRequest, type: :model do
-  it { expect(FactoryGirl.build(:join_request).save).to be true }
+  it { expect(FactoryBot.build(:join_request).save).to be true }
   it { should belong_to :user }
   it { should belong_to :joinable }
   it { should validate_presence_of :user_id }
@@ -12,12 +12,12 @@ RSpec.describe JoinRequest, type: :model do
   it { should validate_inclusion_of(:status).in_array(["pending", "accepted", "rejected", "cancelled"]) }
 
   it "has unique join request per user and tour" do
-    user = FactoryGirl.create(:pro_user)
-    tour = FactoryGirl.create(:tour, id: 1)
-    entourage = FactoryGirl.create(:entourage, id: 1)
-    expect(FactoryGirl.build(:join_request, user: user, joinable: tour).save).to be true
-    expect(FactoryGirl.build(:join_request, user: user, joinable: tour).save).to be false
-    expect(FactoryGirl.build(:join_request, user: user, joinable: entourage).save).to be true
+    user = FactoryBot.create(:pro_user)
+    tour = FactoryBot.create(:tour, id: 1)
+    entourage = FactoryBot.create(:entourage, id: 1)
+    expect(FactoryBot.build(:join_request, user: user, joinable: tour).save).to be true
+    expect(FactoryBot.build(:join_request, user: user, joinable: tour).save).to be false
+    expect(FactoryBot.build(:join_request, user: user, joinable: entourage).save).to be true
   end
 
   describe "conversation uuids" do

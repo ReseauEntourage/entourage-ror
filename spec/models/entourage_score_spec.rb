@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe EntourageScore, type: :model do
-  it { expect(FactoryGirl.build(:entourage_score).save).to be true }
+  it { expect(FactoryBot.build(:entourage_score).save).to be true }
   it { should belong_to :entourage }
   it { should belong_to :user }
   it { should validate_presence_of :entourage_id }

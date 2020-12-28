@@ -30,14 +30,14 @@ RSpec.describe Api::V1::BaseController, :type => :controller do
     before { @controller.stub(:mixpanel) { mixpanel } }
 
     context "nil last_sign_in_at" do
-      let(:user) { FactoryGirl.create(:pro_user, last_sign_in_at: nil) }
+      let(:user) { FactoryBot.create(:pro_user, last_sign_in_at: nil) }
       before { get :ping, {token: user.token} }
       it { expect(user.reload.last_sign_in_at).to_not be_nil }
       it { expect(mixpanel).to have_received(:track).with('Opened App', {'First Session'=>true}) }
     end
 
     context "last_sign_in_at yesterday" do
-      let(:user) { FactoryGirl.create(:pro_user, last_sign_in_at: 1.day.ago) }
+      let(:user) { FactoryBot.create(:pro_user, last_sign_in_at: 1.day.ago) }
       before { get :ping, {token: user.token} }
       it { expect(user.reload.last_sign_in_at.today?).to be true}
       it { expect(mixpanel).to have_received(:track).with('Opened App', {'First Session'=>false}) }
@@ -46,7 +46,7 @@ RSpec.describe Api::V1::BaseController, :type => :controller do
     context "last_sign_in_at yesterday" do
       let(:date) { DateTime.parse("2015-07-07T10:31:43.000+02:00") }
       before { Timecop.freeze(date) }
-      let(:user) { FactoryGirl.create(:pro_user, last_sign_in_at: DateTime.parse("2014-07-07T00:00:00.000")) }
+      let(:user) { FactoryBot.create(:pro_user, last_sign_in_at: DateTime.parse("2014-07-07T00:00:00.000")) }
       before { get :ping, {token: user.token} }
       it { expect(user.reload.last_sign_in_at).to eq(date)}
     end
@@ -54,7 +54,7 @@ RSpec.describe Api::V1::BaseController, :type => :controller do
     context "last_sign_in_at today" do
       let(:date) { DateTime.parse("2015-07-07T10:31:43.000+02:00") }
       before { Timecop.freeze(date) }
-      let(:user) { FactoryGirl.create(:pro_user, last_sign_in_at: DateTime.parse("2015-07-07T00:00:00.000")) }
+      let(:user) { FactoryBot.create(:pro_user, last_sign_in_at: DateTime.parse("2015-07-07T00:00:00.000")) }
       before { get :ping, {token: user.token} }
       it { expect(user.reload.last_sign_in_at).to eq(DateTime.parse("2015-07-07T00:00:00.000"))}
       it { expect(mixpanel).not_to have_received(:track).with('Opened App', anything) }

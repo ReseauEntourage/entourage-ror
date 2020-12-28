@@ -2,18 +2,18 @@ require 'rails_helper'
 
 RSpec.describe EntourageServices::UsersAppetenceBuilder do
 
-  let(:user) { FactoryGirl.create(:public_user) }
+  let(:user) { FactoryBot.create(:public_user) }
 
   describe 'create' do
     context "has entourages" do
-      let!(:uncategorized_entourage) { FactoryGirl.create(:entourage, user: user) }
-      let!(:social_entourage) { FactoryGirl.create(:entourage, user: user, category: 'social') }
-      let!(:mat_help_entourage) { FactoryGirl.create(:entourage, user: user, category: 'mat_help') }
-      let!(:non_mat_help_entourage) { FactoryGirl.create(:entourage, user: user, category: 'non_mat_help') }
-      let!(:join_request1) { FactoryGirl.create(:join_request, user: user, joinable: uncategorized_entourage, distance: nil) }
-      let!(:join_request2) { FactoryGirl.create(:join_request, user: user, joinable: social_entourage, distance: 40) }
-      let!(:join_request3) { FactoryGirl.create(:join_request, user: user, joinable: mat_help_entourage, distance: 40) }
-      let!(:join_request4) { FactoryGirl.create(:join_request, user: user, joinable: non_mat_help_entourage, distance: 20) }
+      let!(:uncategorized_entourage) { FactoryBot.create(:entourage, user: user) }
+      let!(:social_entourage) { FactoryBot.create(:entourage, user: user, category: 'social') }
+      let!(:mat_help_entourage) { FactoryBot.create(:entourage, user: user, category: 'mat_help') }
+      let!(:non_mat_help_entourage) { FactoryBot.create(:entourage, user: user, category: 'non_mat_help') }
+      let!(:join_request1) { FactoryBot.create(:join_request, user: user, joinable: uncategorized_entourage, distance: nil) }
+      let!(:join_request2) { FactoryBot.create(:join_request, user: user, joinable: social_entourage, distance: 40) }
+      let!(:join_request3) { FactoryBot.create(:join_request, user: user, joinable: mat_help_entourage, distance: 40) }
+      let!(:join_request4) { FactoryBot.create(:join_request, user: user, joinable: non_mat_help_entourage, distance: 20) }
 
       describe "create new user_appetence" do
         before { EntourageServices::UsersAppetenceBuilder.new(user: user).create }
@@ -27,7 +27,7 @@ RSpec.describe EntourageServices::UsersAppetenceBuilder do
       end
 
       describe "update existing user_appetence" do
-        let!(:users_appetence) { FactoryGirl.create(:users_appetence, user: user, appetence_social: 5, appetence_mat_help: 5, appetence_non_mat_help: 5, avg_dist: 5) }
+        let!(:users_appetence) { FactoryBot.create(:users_appetence, user: user, appetence_social: 5, appetence_mat_help: 5, appetence_non_mat_help: 5, avg_dist: 5) }
         before { EntourageServices::UsersAppetenceBuilder.new(user: user).create }
 
         let(:user_appetence) { UsersAppetence.last }
@@ -54,10 +54,10 @@ RSpec.describe EntourageServices::UsersAppetenceBuilder do
   end
 
   describe "join entourage" do
-    let!(:social_entourage) { FactoryGirl.create(:entourage, user: user, category: 'social') }
+    let!(:social_entourage) { FactoryBot.create(:entourage, user: user, category: 'social') }
 
     context "entourage without category" do
-      let!(:unkown_entourage) { FactoryGirl.create(:entourage, user: user) }
+      let!(:unkown_entourage) { FactoryBot.create(:entourage, user: user) }
       before { EntourageServices::UsersAppetenceBuilder.new(user: user).join_entourage(entourage: unkown_entourage) }
 
       describe "create new user_appetence" do
@@ -85,7 +85,7 @@ RSpec.describe EntourageServices::UsersAppetenceBuilder do
 
 
     context "has previous user appetence" do
-      let!(:users_appetence) { FactoryGirl.create(:users_appetence, user: user, appetence_social: 5, appetence_mat_help: 5, appetence_non_mat_help: 5, avg_dist: 5) }
+      let!(:users_appetence) { FactoryBot.create(:users_appetence, user: user, appetence_social: 5, appetence_mat_help: 5, appetence_non_mat_help: 5, avg_dist: 5) }
       before { EntourageServices::UsersAppetenceBuilder.new(user: user).join_entourage(entourage: social_entourage) }
 
       describe "create new user_appetence" do
@@ -101,10 +101,10 @@ RSpec.describe EntourageServices::UsersAppetenceBuilder do
 
 
   describe "view entourage" do
-    let!(:social_entourage) { FactoryGirl.create(:entourage, user: user, category: 'social') }
+    let!(:social_entourage) { FactoryBot.create(:entourage, user: user, category: 'social') }
 
     context "entourage without category" do
-      let!(:unkown_entourage) { FactoryGirl.create(:entourage, user: user) }
+      let!(:unkown_entourage) { FactoryBot.create(:entourage, user: user) }
       before { EntourageServices::UsersAppetenceBuilder.new(user: user).view_entourage(entourage: unkown_entourage) }
 
       describe "create new user_appetence" do
@@ -132,7 +132,7 @@ RSpec.describe EntourageServices::UsersAppetenceBuilder do
 
 
     context "has previous user appetence" do
-      let!(:users_appetence) { FactoryGirl.create(:users_appetence, user: user, appetence_social: 5, appetence_mat_help: 5, appetence_non_mat_help: 5, avg_dist: 5) }
+      let!(:users_appetence) { FactoryBot.create(:users_appetence, user: user, appetence_social: 5, appetence_mat_help: 5, appetence_non_mat_help: 5, avg_dist: 5) }
       before { EntourageServices::UsersAppetenceBuilder.new(user: user).view_entourage(entourage: social_entourage) }
 
       describe "create new user_appetence" do

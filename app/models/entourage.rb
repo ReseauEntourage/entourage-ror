@@ -1,4 +1,3 @@
-require 'experimental/jsonb_with_schema'
 # == Schema Information
 #
 # Table name: entourages
@@ -138,9 +137,9 @@ class Entourage < ApplicationRecord
       .approximated_location
   end
 
-  # https://github.com/rails/rails/blob/v4.2.10/activerecord/lib/active_record/attributes.rb
-  attribute :community, Community::Type.new
-  attribute :metadata, Experimental::JsonbWithSchema.new
+  # https://github.com/rails/rails/blob/v5.0.7.2/activerecord/lib/active_record/attributes.rb#L114
+  attribute :community, :community
+  attribute :metadata, :jsonb_with_schema
 
   def group_type_config
     @group_type_config ||= community.group_types[group_type]

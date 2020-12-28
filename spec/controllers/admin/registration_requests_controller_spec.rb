@@ -9,8 +9,8 @@ RSpec.describe Admin::RegistrationRequestsController, type: :controller do
 
   describe "GET #index" do
     context "has registration requests" do
-      let!(:pending_registration_requests) { FactoryGirl.create_list(:registration_request, 2, status: "pending") }
-      let!(:validated_registration_requests) { FactoryGirl.create_list(:registration_request, 2, status: "validated") }
+      let!(:pending_registration_requests) { FactoryBot.create_list(:registration_request, 2, status: "pending") }
+      let!(:validated_registration_requests) { FactoryBot.create_list(:registration_request, 2, status: "validated") }
       before { get :index }
       it { expect(assigns(:registration_requests)).to eq(pending_registration_requests) }
     end
@@ -22,7 +22,7 @@ RSpec.describe Admin::RegistrationRequestsController, type: :controller do
   end
 
   describe "GET show" do
-    let(:registration_request) { FactoryGirl.create(:registration_request) }
+    let(:registration_request) { FactoryBot.create(:registration_request) }
 
     context "valid registration request" do
       before { get 'show', id: registration_request.to_param }
@@ -41,7 +41,7 @@ RSpec.describe Admin::RegistrationRequestsController, type: :controller do
   end
 
   describe "DELETE destroy" do
-    let(:registration_request) { FactoryGirl.create(:registration_request, status: "pending") }
+    let(:registration_request) { FactoryBot.create(:registration_request, status: "pending") }
     before { delete 'destroy', id: registration_request.to_param }
     it { expect(RegistrationRequest.count).to eq(1) }
     it { expect(registration_request.reload.status).to eq("rejected") }
@@ -49,7 +49,7 @@ RSpec.describe Admin::RegistrationRequestsController, type: :controller do
   end
 
   describe "PUT update" do
-    let(:registration_request) { FactoryGirl.create(:registration_request, status: "pending") }
+    let(:registration_request) { FactoryBot.create(:registration_request, status: "pending") }
 
     context "validate" do
       shared_examples "validate" do

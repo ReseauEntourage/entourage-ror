@@ -1,5 +1,3 @@
-require 'experimental/jsonb_with_schema'
-
 class EntourageInvitation < ApplicationRecord
   MODE_SMS="SMS"
 
@@ -28,7 +26,7 @@ class EntourageInvitation < ApplicationRecord
     end
   end
 
-  attribute :metadata, Experimental::JsonbWithSchema.new
+  attribute :metadata, :jsonb_with_schema
 
   def self.json_schema urn
     JsonSchemaService.base do

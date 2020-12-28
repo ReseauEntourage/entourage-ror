@@ -1,5 +1,3 @@
-require 'experimental/jsonb_with_schema'
-
 class ChatMessage < ApplicationRecord
   include FeedsConcern
 
@@ -15,7 +13,7 @@ class ChatMessage < ApplicationRecord
 
   scope :ordered, -> { order("created_at DESC") }
 
-  attribute :metadata, Experimental::JsonbWithSchema.new
+  attribute :metadata, :jsonb_with_schema
 
   after_create do |message|
     unless message.message_type == 'status_update'

@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
 
   sequence :email do |n|
     "subscriber#{n}@newsletter.com"
@@ -6,7 +6,7 @@ FactoryGirl.define do
 
   factory :newsletter_subscription do
     email
-    active true
+    active { true }
   end
 
 end

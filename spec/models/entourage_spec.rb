@@ -2,7 +2,7 @@ require 'rails_helper'
 include CommunityHelper
 
 RSpec.describe Entourage, type: :model do
-  it { expect(FactoryGirl.build(:entourage).save!).to be true }
+  it { expect(FactoryBot.build(:entourage).save!).to be true }
   it { should validate_presence_of(:status) }
   it { should validate_presence_of(:title) }
   it { should validate_presence_of(:entourage_type) }
@@ -23,43 +23,43 @@ RSpec.describe Entourage, type: :model do
 
   describe "reformat_content" do
     it "should uppercase first character" do
-      entourage = FactoryGirl.create(:entourage, title: 'title')
+      entourage = FactoryBot.create(:entourage, title: 'title')
       entourage.save
       expect(entourage.title).to eq('Title')
     end
     it "should uppercase only first character" do
-      entourage = FactoryGirl.create(:entourage, title: 'title FOO Bar')
+      entourage = FactoryBot.create(:entourage, title: 'title FOO Bar')
       entourage.save
       expect(entourage.title).to eq('Title FOO Bar')
     end
     it "should not uppercase first character on emoji" do
-      entourage = FactoryGirl.create(:entourage, title: '👌title')
+      entourage = FactoryBot.create(:entourage, title: '👌title')
       entourage.save
       expect(entourage.title).to eq('👌title')
     end
   end
 
   it "has many members" do
-    user = FactoryGirl.create(:public_user)
-    entourage = FactoryGirl.create(:entourage)
-    FactoryGirl.create(:join_request, user: user, joinable: entourage)
+    user = FactoryBot.create(:public_user)
+    entourage = FactoryBot.create(:entourage)
+    FactoryBot.create(:join_request, user: user, joinable: entourage)
     expect(entourage.members).to eq([user])
   end
 
   it "has many chat messages" do
-    entourage = FactoryGirl.create(:entourage)
-    chat_message = FactoryGirl.create(:chat_message, messageable: entourage)
+    entourage = FactoryBot.create(:entourage)
+    chat_message = FactoryBot.create(:chat_message, messageable: entourage)
     expect(entourage.chat_messages).to eq([chat_message])
   end
 
   describe 'moderate after create' do
     it 'should not ping Slack if description is acceptable' do
-      entourage = FactoryGirl.create(:entourage, description: 'Coucou, je veux donner des jouets.')
+      entourage = FactoryBot.create(:entourage, description: 'Coucou, je veux donner des jouets.')
       expect(entourage).not_to receive(:ping_slack)
     end
 
     it 'should ping Slack if description is unacceptable' do
-      entourage = FactoryGirl.build(
+      entourage = FactoryBot.build(
         :entourage,
         description: 'Hello, je veux donner des jouets au 9 rue Marcel Sembat.'
       )
@@ -115,7 +115,7 @@ RSpec.describe Entourage, type: :model do
   end
 
   it "has an uuid" do
-    entourage = FactoryGirl.create(:entourage)
+    entourage = FactoryBot.create(:entourage)
 
     expect(entourage.uuid).to_not be nil
   end

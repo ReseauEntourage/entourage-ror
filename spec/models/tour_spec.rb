@@ -13,9 +13,9 @@ RSpec.describe Tour, :type => :model do
   it { should have_many(:tour_points).dependent(:delete_all) }
 
   it "has many members" do
-    user = FactoryGirl.create(:pro_user)
-    tour = FactoryGirl.create(:tour)
-    FactoryGirl.create(:join_request, user: user, joinable: tour)
+    user = FactoryBot.create(:pro_user)
+    tour = FactoryBot.create(:tour)
+    FactoryBot.create(:join_request, user: user, joinable: tour)
     expect(tour.members).to eq([user])
   end
 
@@ -133,8 +133,8 @@ RSpec.describe Tour, :type => :model do
   end
 
   describe "#closed?" do
-    let(:open_tour) { FactoryGirl.build(:tour, status: :ongoing) }
-    let(:closed_tour) { FactoryGirl.build(:tour, status: :closed) }
+    let(:open_tour) { FactoryBot.build(:tour, status: :ongoing) }
+    let(:closed_tour) { FactoryBot.build(:tour, status: :closed) }
     it { expect(open_tour.closed?).to be false }
     it { expect(closed_tour.closed?).to be true }
   end

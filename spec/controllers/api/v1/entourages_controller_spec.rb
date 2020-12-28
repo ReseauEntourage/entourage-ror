@@ -3,7 +3,7 @@ include CommunityHelper
 
 describe Api::V1::EntouragesController do
 
-  let(:user) { FactoryGirl.create(:public_user) }
+  let(:user) { FactoryBot.create(:public_user) }
   before { ModerationServices.stub(:moderator) { nil } }
 
   describe 'GET index' do
@@ -13,7 +13,7 @@ describe Api::V1::EntouragesController do
     end
 
     context "signed in" do
-      let!(:entourage) { FactoryGirl.create(:entourage, :joined, user: user, status: "open") }
+      let!(:entourage) { FactoryBot.create(:entourage, :joined, user: user, status: "open") }
       subject { JSON.parse(response.body) }
 
       it "renders JSON response" do
@@ -62,66 +62,75 @@ describe Api::V1::EntouragesController do
       end
 
       context "order recents entourages" do
-        let!(:entourage1) { FactoryGirl.create(:entourage, updated_at: entourage.created_at - 2.hours, created_at: entourage.created_at - 2.hours) }
-        let!(:entourage2) { FactoryGirl.create(:entourage, updated_at: entourage.created_at - 3.days, created_at: entourage.created_at - 3.days) }
+        let!(:entourage1) { FactoryBot.create(:entourage, updated_at: entourage.created_at - 2.hours, created_at: entourage.created_at - 2.hours) }
+        let!(:entourage2) { FactoryBot.create(:entourage, updated_at: entourage.created_at - 3.days, created_at: entourage.created_at - 3.days) }
         before { get :index, token: user.token }
         it { expect(subject["entourages"].count).to eq(2) }
         it { expect(subject["entourages"].map{|h|h['id']}.sort).to eq([entourage.id, entourage1.id].sort) }
       end
 
       context "entourages made by other users" do
-        let!(:another_entourage) { FactoryGirl.create(:entourage, status: "open") }
+        let!(:another_entourage) { FactoryBot.create(:entourage, status: "open") }
         before { get :index, token: user.token }
         it { expect(subject["entourages"].count).to eq(2) }
       end
 
       context "scope by visible state" do
-        let!(:open_entourage)        { FactoryGirl.create(:entourage, status: "open") }
-        let!(:closed_entourage)      { FactoryGirl.create(:entourage, status: "closed") }
-        let!(:blacklisted_entourage) { FactoryGirl.create(:entourage, status: "blacklisted") }
+        let!(:open_entourage)        { FactoryBot.create(:entourage, status: "open") }
+        let!(:closed_entourage)      { FactoryBot.create(:entourage, status: "closed") }
+        let!(:blacklisted_entourage) { FactoryBot.create(:entourage, status: "blacklisted") }
 
         before { get :index, token: user.token }
-        it { expect(subject["entourages"].map{ |e| e['id'] }).to match_array([entourage.id, open_entourage.id]) }
+        it { expect(subject["entourages"].map{ |e| e['id'] }).to match_array([entourage.id, open_entourage.id, closed_entourage.id]) }
+        # it { expect(subject["entourages"].map{ |e| e['id'] }).to match_array([entourage.id, open_entourage.id]) } # conflict
+      end
+
+      context "filter status" do
+        let!(:closed_entourage) { FactoryBot.create(:entourage, status: "closed") }
+        before { get :index, status: "closed", token: user.token }
+        it { expect(subject["entourages"].count).to eq(1) }
+        it { expect(subject["entourages"][0]["id"]).to eq(closed_entourage.id) }
       end
 
       # types
       context "filter entourage_type" do
-        let!(:help_entourage) { FactoryGirl.create(:entourage, entourage_type: "ask_for_help", display_category: "event", updated_at: entourage.created_at-1.hours, created_at: entourage.created_at-1.hours) }
-        before { get :index, types: "as, ae", token: user.token }
+        let!(:help_entourage) { FactoryBot.create(:entourage, entourage_type: "ask_for_help", display_category: "event", updated_at: entourage.created_at-1.hours, created_at: entourage.created_at-1.hours) }
+        before { get :index, type: "ask_for_help", token: user.token }
+        # before { get :index, types: "as, ae", token: user.token } # conflict
         it { expect(subject["entourages"].count).to eq(2) }
         it { expect(subject["entourages"].map{|h|h['id']}.sort).to eq([entourage.id, help_entourage.id].sort) }
       end
 
       context "filter wrong entourage_type" do
-        let!(:help_entourage) { FactoryGirl.create(:entourage, entourage_type: "ask_for_help", display_category: "event", updated_at: entourage.created_at-1.hours, created_at: entourage.created_at-1.hours) }
+        let!(:help_entourage) { FactoryBot.create(:entourage, entourage_type: "ask_for_help", display_category: "event", updated_at: entourage.created_at-1.hours, created_at: entourage.created_at-1.hours) }
         before { get :index, types: "cs, ce", token: user.token }
         it { expect(subject["entourages"].count).to eq(0) }
       end
 
       # position
       context "filter position" do
-        let!(:near_entourage) { FactoryGirl.create(:entourage, latitude: 2.48, longitude: 40.5) }
+        let!(:near_entourage) { FactoryBot.create(:entourage, latitude: 2.48, longitude: 40.5) }
         before { get :index, latitude: 2.48, longitude: 40.5, token: user.token }
         it { expect(subject["entourages"].count).to eq(1) }
         it { expect(subject["entourages"][0]["id"]).to eq(near_entourage.id) }
       end
 
       context "filter wrong position" do
-        let!(:near_entourage) { FactoryGirl.create(:entourage, latitude: 2.48, longitude: 40.5) }
+        let!(:near_entourage) { FactoryBot.create(:entourage, latitude: 2.48, longitude: 40.5) }
         before { get :index, latitude: 12.48, longitude: 40.5, token: user.token }
         it { expect(subject["entourages"].count).to eq(0) }
       end
 
       # time_range
       context "filter time_range" do
-        let!(:timed_entourage) { FactoryGirl.create(:entourage, created_at: entourage.created_at - 2.hours) }
+        let!(:timed_entourage) { FactoryBot.create(:entourage, created_at: entourage.created_at - 2.hours) }
         before { get :index, time_range: 24, token: user.token } # default time_range
         it { expect(subject["entourages"].count).to eq(2) }
         it { expect(subject["entourages"].map{|h|h['id']}.sort).to eq([entourage.id, timed_entourage.id].sort) }
       end
 
       context "filter wrong time_range" do
-        let!(:timed_entourage) { FactoryGirl.create(:entourage, created_at: entourage.created_at - 2.hours) }
+        let!(:timed_entourage) { FactoryBot.create(:entourage, created_at: entourage.created_at - 2.hours) }
         before { get :index, time_range: 1, token: user.token }
         it { expect(subject["entourages"].count).to eq(1) }
         it { expect(subject["entourages"][0]["id"]).to eq(entourage.id) }
@@ -129,14 +138,14 @@ describe Api::V1::EntouragesController do
 
       # group_type
       context "filter group_type" do
-        let!(:action_entourage) { FactoryGirl.create(:entourage, group_type: :action) }
+        let!(:action_entourage) { FactoryBot.create(:entourage, group_type: :action) }
         before { get :index, token: user.token }
         it { expect(subject["entourages"].count).to eq(2) }
         it { expect(subject["entourages"].map{|h|h['id']}.sort).to eq([entourage.id, action_entourage.id].sort) }
       end
 
       context "filter group_type" do
-        let!(:conversation_entourage) { FactoryGirl.create(:entourage, group_type: :conversation) }
+        let!(:conversation_entourage) { FactoryBot.create(:entourage, group_type: :conversation) }
         before { get :index, token: user.token }
         it { expect(subject["entourages"].count).to eq(1) }
         it { expect(subject["entourages"][0]["id"]).to eq(entourage.id) }
@@ -144,9 +153,9 @@ describe Api::V1::EntouragesController do
 
       # sort
       context "sort by distance and created_at" do
-        let!(:closest_entourage) { FactoryGirl.create(:entourage, latitude: 2.4801, longitude: 40.5, created_at: entourage.created_at - 2.minutes) }
-        let!(:middle_entourage) { FactoryGirl.create(:entourage, latitude: 2.4802, longitude: 40.5, created_at: entourage.created_at - 1.minute) }
-        let!(:farthest_entourage) { FactoryGirl.create(:entourage, latitude: 2.4803, longitude: 40.5, created_at: entourage.created_at) }
+        let!(:closest_entourage) { FactoryBot.create(:entourage, latitude: 2.4801, longitude: 40.5, created_at: entourage.created_at - 2.minutes) }
+        let!(:middle_entourage) { FactoryBot.create(:entourage, latitude: 2.4802, longitude: 40.5, created_at: entourage.created_at - 1.minute) }
+        let!(:farthest_entourage) { FactoryBot.create(:entourage, latitude: 2.4803, longitude: 40.5, created_at: entourage.created_at) }
         before { get :index, per: 2, latitude: 2.48, longitude: 40.5, token: user.token }
         it { expect(subject["entourages"].count).to eq(2) }
         it { expect(subject["entourages"].map{|h|h['id']}).to eq([middle_entourage.id, closest_entourage.id]) }
@@ -155,12 +164,12 @@ describe Api::V1::EntouragesController do
   end
 
   describe 'GET mine' do
-    let!(:entourage) { FactoryGirl.create(:entourage, status: :open) }
-    let(:other_user) { FactoryGirl.create(:public_user) }
+    let!(:entourage) { FactoryBot.create(:entourage, status: :open) }
+    let(:other_user) { FactoryBot.create(:public_user) }
     subject { JSON.parse(response.body) }
 
     context "filter show_my_entourages_only" do
-      let!(:join_request) { FactoryGirl.create(:join_request, joinable: entourage, user: user, status: "accepted") }
+      let!(:join_request) { FactoryBot.create(:join_request, joinable: entourage, user: user, status: "accepted") }
 
       before { get :mine, token: user.token }
       it { expect(subject["entourages"].count).to eq(1) }
@@ -168,14 +177,14 @@ describe Api::V1::EntouragesController do
     end
 
     context "filter wrong user show_my_entourages_only" do
-      let!(:join_request) { FactoryGirl.create(:join_request, joinable: entourage, user: other_user, status: "accepted") }
+      let!(:join_request) { FactoryBot.create(:join_request, joinable: entourage, user: other_user, status: "accepted") }
 
       before { get :mine, token: user.token }
       it { expect(subject["entourages"].count).to eq(0) }
     end
 
     context "filter wrong status show_my_entourages_only" do
-      let!(:join_request) { FactoryGirl.create(:join_request, joinable: entourage, user: user, status: "pending") }
+      let!(:join_request) { FactoryBot.create(:join_request, joinable: entourage, user: user, status: "pending") }
 
       before { get :mine, token: user.token }
       it { expect(subject["entourages"].count).to eq(0) }
@@ -183,11 +192,11 @@ describe Api::V1::EntouragesController do
   end
 
   describe 'GET owns' do
-    let(:other_user) { FactoryGirl.create(:public_user) }
+    let(:other_user) { FactoryBot.create(:public_user) }
     subject { JSON.parse(response.body) }
 
     context "filter author" do
-      let!(:entourage) { FactoryGirl.create(:entourage, status: :open, user: user) }
+      let!(:entourage) { FactoryBot.create(:entourage, status: :open, user: user) }
 
       before { get :owns, token: user.token }
       it { expect(subject["entourages"].count).to eq(1) }
@@ -195,7 +204,7 @@ describe Api::V1::EntouragesController do
     end
 
     context "filter wrong author" do
-      let!(:entourage) { FactoryGirl.create(:entourage, status: :open, user: other_user) }
+      let!(:entourage) { FactoryBot.create(:entourage, status: :open, user: other_user) }
 
       before { get :owns, token: user.token }
       it { expect(subject["entourages"].count).to eq(0) }
@@ -203,12 +212,12 @@ describe Api::V1::EntouragesController do
   end
 
   describe 'GET invitees' do
-    let!(:entourage) { FactoryGirl.create(:entourage, status: :open) }
-    let(:other_user) { FactoryGirl.create(:public_user) }
+    let!(:entourage) { FactoryBot.create(:entourage, status: :open) }
+    let(:other_user) { FactoryBot.create(:public_user) }
     subject { JSON.parse(response.body) }
 
     context "filter invitee" do
-      let!(:entourage_invitations) { FactoryGirl.create(:entourage_invitation, invitable: entourage, invitee: user, status: "accepted") }
+      let!(:entourage_invitations) { FactoryBot.create(:entourage_invitation, invitable: entourage, invitee: user, status: "accepted") }
 
       before { get :invitees, token: user.token }
       it { expect(subject["entourages"].count).to eq(1) }
@@ -216,14 +225,14 @@ describe Api::V1::EntouragesController do
     end
 
     context "filter wrong invitee invitee" do
-      let!(:entourage_invitations) { FactoryGirl.create(:entourage_invitation, invitable: entourage, invitee: other_user, status: "accepted") }
+      let!(:entourage_invitations) { FactoryBot.create(:entourage_invitation, invitable: entourage, invitee: other_user, status: "accepted") }
 
       before { get :invitees, token: user.token }
       it { expect(subject["entourages"].count).to eq(0) }
     end
 
     context "filter wrong status invitee" do
-      let!(:entourage_invitations) { FactoryGirl.create(:entourage_invitation, invitable: entourage, invitee: user, status: "pending") }
+      let!(:entourage_invitations) { FactoryBot.create(:entourage_invitation, invitable: entourage, invitee: user, status: "pending") }
 
       before { get :invitees, token: user.token }
       it { expect(subject["entourages"].count).to eq(0) }
@@ -432,7 +441,7 @@ describe Api::V1::EntouragesController do
   end
 
   describe 'GET show' do
-    let!(:entourage) { FactoryGirl.create(:entourage) }
+    let!(:entourage) { FactoryBot.create(:entourage) }
 
     context "not signed in" do
       before { get :show, id: entourage.to_param }
@@ -600,7 +609,7 @@ describe Api::V1::EntouragesController do
   end
 
   describe 'PATCH update' do
-    let!(:entourage) { FactoryGirl.create(:entourage) }
+    let!(:entourage) { FactoryBot.create(:entourage) }
 
     context "not signed in" do
       before { patch :update, id: entourage.to_param, entourage: {title: "new_title"} }
@@ -608,7 +617,7 @@ describe Api::V1::EntouragesController do
     end
 
     context "signed in" do
-      let!(:user_entourage) { FactoryGirl.create(:entourage, :joined, user: user) }
+      let!(:user_entourage) { FactoryBot.create(:entourage, :joined, user: user) }
 
       context "entourage exists" do
         before { patch :update, id: user_entourage.to_param, entourage: {title: "new_title"}, token: user.token }
@@ -722,14 +731,14 @@ describe Api::V1::EntouragesController do
       end
 
       context "update location" do
-        let!(:user_entourage) { FactoryGirl.create(:entourage, user: user) }
+        let!(:user_entourage) { FactoryBot.create(:entourage, user: user) }
         before { patch :update, id: user_entourage.to_param, entourage: {location: {latitude: 10.5, longitude: 20.1}}, token: user.token }
         it { expect(user_entourage.reload.latitude).to eq(10.5) }
         it { expect(user_entourage.reload.longitude).to eq(20.1) }
       end
 
       context "changing group type" do
-        let!(:user_entourage) { FactoryGirl.create(:entourage, user: user) }
+        let!(:user_entourage) { FactoryBot.create(:entourage, user: user) }
         before { patch :update, id: user_entourage.to_param, entourage: {group_type: :conversation}, token: user.token }
         it "ignores the change" do
           expect(user_entourage.reload.group_type).to eq 'action'
@@ -747,7 +756,7 @@ describe Api::V1::EntouragesController do
   end
 
   describe "PUT read" do
-    let!(:entourage) { FactoryGirl.create(:entourage) }
+    let!(:entourage) { FactoryBot.create(:entourage) }
 
     context "not signed in" do
       before { put :read, id: entourage.to_param }
@@ -756,7 +765,7 @@ describe Api::V1::EntouragesController do
 
     context "user is accepted in entourage" do
       let(:old_date) { DateTime.parse("15/10/2010") }
-      let!(:join_request) { FactoryGirl.create(:join_request, joinable: entourage, user: user, status: JoinRequest::ACCEPTED_STATUS, last_message_read: old_date) }
+      let!(:join_request) { FactoryBot.create(:join_request, joinable: entourage, user: user, status: JoinRequest::ACCEPTED_STATUS, last_message_read: old_date) }
       before { put :read, id: entourage.to_param, token: user.token }
       it { expect(response.status).to eq(204) }
       it { expect(join_request.reload.last_message_read).to be > old_date }
@@ -764,7 +773,7 @@ describe Api::V1::EntouragesController do
 
     context "user is not accepted in entourage" do
       let(:old_date) { DateTime.parse("15/10/2010") }
-      let!(:join_request) { FactoryGirl.create(:join_request, joinable: entourage, user: user, status: JoinRequest::PENDING_STATUS, last_message_read: old_date) }
+      let!(:join_request) { FactoryBot.create(:join_request, joinable: entourage, user: user, status: JoinRequest::PENDING_STATUS, last_message_read: old_date) }
       before { put :read, id: entourage.to_param, token: user.token }
       it { expect(response.status).to eq(204) }
       it { expect(join_request.reload.last_message_read).to eq(old_date) }
@@ -791,10 +800,10 @@ describe Api::V1::EntouragesController do
   end
 
   describe "DELETE report_prompt" do
-    let!(:entourage) { FactoryGirl.create(:entourage) }
+    let!(:entourage) { FactoryBot.create(:entourage) }
 
     context "user is accepted in entourage" do
-      let!(:join_request) { FactoryGirl.create(:join_request, joinable: entourage, user: user, report_prompt_status: :display, status: :accepted ) }
+      let!(:join_request) { FactoryBot.create(:join_request, joinable: entourage, user: user, report_prompt_status: :display, status: :accepted ) }
       before { delete :dismiss_report_prompt, id: entourage.to_param, token: user.token }
       it { expect(response.status).to eq(204) }
       it { expect(join_request.reload.report_prompt_status).to eq 'dismissed' }

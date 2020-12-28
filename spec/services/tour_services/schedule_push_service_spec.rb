@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe TourServices::SchedulePushService do
   before { Timecop.freeze(Time.parse("08/10/2010").at_beginning_of_day) }
-  let(:organization) { FactoryGirl.create(:organization) }
+  let(:organization) { FactoryBot.create(:organization) }
 
   describe "initialize" do
     it "raises exception if date is in the past" do
@@ -34,7 +34,7 @@ describe TourServices::SchedulePushService do
     end
 
     it "returns nil for another organisation" do
-      other_org_service = TourServices::SchedulePushService.new(organization: FactoryGirl.create(:organization),
+      other_org_service = TourServices::SchedulePushService.new(organization: FactoryBot.create(:organization),
                                                                date: Date.parse("10/10/2010"))
       expect(other_org_service.scheduled_message).to eq({})
     end

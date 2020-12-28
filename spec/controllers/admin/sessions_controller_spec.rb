@@ -17,7 +17,7 @@ describe Admin::SessionsController do
     end
 
     context "admin logged in" do
-      let(:another_user) { FactoryGirl.create(:pro_user) }
+      let(:another_user) { FactoryBot.create(:pro_user) }
       let!(:admin) { admin_basic_login }
       before { get :switch_user, user_id: another_user.id }
       it { expect(session[:user_id]).to eq(another_user.id) }

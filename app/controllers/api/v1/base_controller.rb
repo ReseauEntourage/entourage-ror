@@ -89,7 +89,7 @@ module Api
       end
 
       def self.allow_anonymous_access only:
-        skip_before_filter :authenticate_user!, only: only
+        skip_before_action :authenticate_user!, only: only
         before_action :authenticate_user_or_anonymous!, only: only
       end
 

@@ -1,7 +1,7 @@
 module Api
   module V1
     class FeedsController < Api::V1::BaseController
-      skip_before_filter :community_warning
+      skip_before_action :community_warning
       allow_anonymous_access only: [:index, :outings]
 
       #curl -H "Content-Type: application/json" "https://entourage-back-preprod.herokuapp.com/api/v1/feeds.json?token=azerty"

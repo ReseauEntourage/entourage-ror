@@ -1,5 +1,3 @@
-require 'experimental/jsonb_set'
-
 class User < ApplicationRecord
   include Onboarding::UserEventsTracking::UserConcern
   include UserServices::Engagement
@@ -73,8 +71,8 @@ class User < ApplicationRecord
   end
 
   enum device_type: [ :android, :ios ]
-  attribute :roles, Experimental::JsonbSet.new
-  attribute :interests, Experimental::JsonbSet.new
+  attribute :roles, :jsonb_set
+  attribute :interests, :jsonb_set
 
   scope :type_pro, -> { where(user_type: "pro") }
   scope :validated, -> { where(validation_status: "validated") }
@@ -308,8 +306,8 @@ class User < ApplicationRecord
     nil # user_partners.where(default: true).limit(1).pluck(:partner_id).first
   end
 
-  # https://github.com/rails/rails/blob/v4.2.10/activerecord/lib/active_record/attributes.rb
-  attribute :community, Community::Type.new
+  # https://github.com/rails/rails/blob/v5.0.7.2/activerecord/lib/active_record/attributes.rb#L114
+  attribute :community, :community
 
   def joined_groups(status: :accepted, group_type: :except_conversations, exclude_created: false)
     scope = entourage_participations

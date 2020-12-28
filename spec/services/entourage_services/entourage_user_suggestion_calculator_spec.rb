@@ -16,10 +16,10 @@ RSpec.describe EntourageServices::EntourageUserSuggestionsCalculator do
     end
 
     context "2 users and 3 entourages" do
-      let!(:users_suggestion) { FactoryGirl.create_list(:public_user, 2, use_suggestions: true) }
-      let!(:users_no_suggestion) { FactoryGirl.create(:public_user, use_suggestions: false) }
-      let!(:entourages_suggestion) { FactoryGirl.create_list(:entourage, 3, use_suggestions: true) }
-      let!(:entourages_no_suggestion) { FactoryGirl.create(:entourage, use_suggestions: false) }
+      let!(:users_suggestion) { FactoryBot.create_list(:public_user, 2, use_suggestions: true) }
+      let!(:users_no_suggestion) { FactoryBot.create(:public_user, use_suggestions: false) }
+      let!(:entourages_suggestion) { FactoryBot.create_list(:entourage, 3, use_suggestions: true) }
+      let!(:entourages_no_suggestion) { FactoryBot.create(:entourage, use_suggestions: false) }
 
       it "computes user entourage score" do
         calculator = double()

@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe PreferenceServices::UserDefault do
 
-  let(:user) { FactoryGirl.create(:pro_user) }
+  let(:user) { FactoryBot.create(:pro_user) }
 
   describe 'tour types' do
     context "has tours" do

@@ -4,9 +4,9 @@ RSpec.describe Api::V0::TourPointsController, :type => :controller, skip: true d
   render_views
 
   describe "POST create" do
-    let!(:user) { FactoryGirl.create :pro_user }
-    let!(:tour) { FactoryGirl.create :tour }
-    let!(:tour_point) { FactoryGirl.build :tour_point }
+    let!(:user) { FactoryBot.create :pro_user }
+    let!(:tour) { FactoryBot.create :tour }
+    let!(:tour_point) { FactoryBot.build :tour_point }
 
     context "within existing tour" do
       before { post 'create', tour_id: tour.id, token: user.token, tour_points: [{latitude: tour_point.latitude, longitude: tour_point.longitude, passing_time: tour_point.passing_time.iso8601(3)}], format: :json }

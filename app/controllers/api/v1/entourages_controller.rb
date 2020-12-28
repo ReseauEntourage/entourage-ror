@@ -3,7 +3,7 @@ module Api
     class EntouragesController < Api::V1::BaseController
       before_action :set_entourage_or_handle_conversation_uuid, only: [:show]
       before_action :set_entourage, only: [:update, :read, :one_click_update, :report, :dismiss_report_prompt]
-      skip_before_filter :authenticate_user!, only: [:one_click_update]
+      skip_before_action :authenticate_user!, only: [:one_click_update]
       allow_anonymous_access only: [:show]
 
       def index

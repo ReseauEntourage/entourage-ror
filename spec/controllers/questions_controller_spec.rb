@@ -30,7 +30,7 @@ describe QuestionsController do
   end
 
   describe "DELETE destroy" do
-    let(:question) { FactoryGirl.create(:question) }
+    let(:question) { FactoryBot.create(:question) }
 
     context "not logged in" do
       before { delete 'destroy', id: question.to_param }

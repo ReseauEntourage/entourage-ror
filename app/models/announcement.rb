@@ -1,5 +1,3 @@
-require 'experimental/jsonb_set'
-
 class Announcement < ApplicationRecord
   STATUS = %w[draft active archived].freeze
 
@@ -26,8 +24,8 @@ class Announcement < ApplicationRecord
     end
   end
 
-  attribute :areas,      Experimental::JsonbSet.new
-  attribute :user_goals, Experimental::JsonbSet.new
+  attribute :areas,      :jsonb_set
+  attribute :user_goals, :jsonb_set
 
   before_validation do
     areas.reject!(&:blank?)

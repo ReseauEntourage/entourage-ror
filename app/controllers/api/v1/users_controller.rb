@@ -3,10 +3,9 @@ require 'typeform'
 module Api
   module V1
     class UsersController < Api::V1::BaseController
-      skip_before_filter :authenticate_user!, only: [:login, :code, :create, :lookup, :ethics_charter_signed, :update_email_preferences, :confirm_address_suggestion]
-      skip_before_filter :community_warning
-      skip_before_filter :ensure_community!, only: :ethics_charter_signed
-      skip_before_filter :protect_from_forgery, only: :ethics_charter_signed
+      skip_before_action :authenticate_user!, only: [:login, :code, :create, :lookup, :ethics_charter_signed, :update_email_preferences, :confirm_address_suggestion]
+      skip_before_action :community_warning
+      skip_before_action :ensure_community!, only: :ethics_charter_signed
       allow_anonymous_access only: [:show, :report, :address]
 
       #curl -H "X-API-KEY:adc86c761fa8" -H "Content-Type: application/json" -X POST -d '{"user": {"phone": "+3312345567", "sms_code": "11111"}}' "http://localhost:3000/api/v1/login.json"

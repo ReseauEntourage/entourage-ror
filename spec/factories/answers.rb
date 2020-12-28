@@ -1,7 +1,7 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :answer do
     question
     encounter
-    value "foobar"
+    value { "foobar" }
   end
 end
