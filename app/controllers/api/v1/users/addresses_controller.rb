@@ -2,7 +2,7 @@ module Api
   module V1
     module Users
       class AddressesController < Api::V1::BaseController
-        before_filter :enforce_id
+        before_action :enforce_id
 
         def create_or_update
           updater = UserServices::AddressService.new(

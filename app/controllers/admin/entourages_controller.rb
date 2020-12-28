@@ -1,7 +1,7 @@
 module Admin
   class EntouragesController < Admin::BaseController
     before_action :set_entourage, only: [:show, :edit, :update, :moderator_read, :moderator_unread, :message, :sensitive_words, :sensitive_words_check, :edit_type, :admin_pin, :admin_unpin, :pin, :unpin]
-    before_filter :ensure_moderator!, only: [:message]
+    before_action :ensure_moderator!, only: [:message]
 
     def index
       per_page = params[:per] || 50

@@ -1,6 +1,6 @@
 module Admin
   class SensitiveWordsController < Admin::BaseController
-    before_filter :set_word
+    before_action :set_word
     layout 'admin_large'
 
     def destroy

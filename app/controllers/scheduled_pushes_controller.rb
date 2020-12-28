@@ -1,5 +1,5 @@
 class ScheduledPushesController < ApplicationController
-  before_filter :authenticate_user!
+  before_action :authenticate_user!
 
   def index
     @scheduled_pushes = TourServices::SchedulePushService.all_scheduled_pushes(organization: current_user.organization)

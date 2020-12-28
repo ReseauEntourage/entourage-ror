@@ -2,9 +2,9 @@ module Api
   module V0
     class BaseController < ApplicationController
       protect_from_forgery with: :null_session
-      before_filter :allow_cors
-      before_filter :validate_request!, only: [:check]
-      before_filter :authenticate_user!, except: [:check, :deprecated]
+      before_action :allow_cors
+      before_action :validate_request!, only: [:check]
+      before_action :authenticate_user!, except: [:check, :deprecated]
 
       def allow_cors
         headers["Access-Control-Allow-Origin"] = "*"
