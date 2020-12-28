@@ -7,7 +7,7 @@ RSpec.describe Api::V1::Users::PartnersController, type: :controller do
   describe 'POST create' do
     pending
     let!(:partner) { FactoryBot.create(:partner) }
-    before { post :create, {partner: { id: partner.to_param }, user_id: user.id, token: user.token } }
+    before { post :create, params: { partner: { id: partner.to_param }, user_id: user.id, token: user.token } }
 
     # TODO(partner)
     # it { expect(user.partners).to eq([]) }
@@ -21,7 +21,7 @@ RSpec.describe Api::V1::Users::PartnersController, type: :controller do
       pending
       # before { FactoryBot.create(:user_partner, user: user, partner: partner, default: false) }
 
-      before { put :update, {id: partner.to_param, partner: { default: true }, user_id: user.id, token: user.token } }
+      before { put :update, params: { id: partner.to_param, partner: { default: true }, user_id: user.id, token: user.token } }
 
       # TODO(partner)
       # it { expect(user.user_partners.first.default).to be false}
@@ -31,7 +31,7 @@ RSpec.describe Api::V1::Users::PartnersController, type: :controller do
       pending
       # before { FactoryBot.create(:user_partner, user: user, partner: partner, default: true) }
 
-      before { put :update, {id: partner.to_param, partner: { default: false }, user_id: user.id, token: user.token } }
+      before { put :update, params: { id: partner.to_param, partner: { default: false }, user_id: user.id, token: user.token } }
 
       # TODO(partner)
       # it { expect(user.user_partners.first.default).to be true}
@@ -43,7 +43,7 @@ RSpec.describe Api::V1::Users::PartnersController, type: :controller do
     let!(:partner) { FactoryBot.create(:partner) }
     # before { FactoryBot.create(:user_partner, user: user, partner: partner, default: false) }
 
-    before { delete :destroy, {id: partner.to_param, user_id: user.id, token: user.token } }
+    before { delete :destroy, params: { id: partner.to_param, user_id: user.id, token: user.token } }
 
     # TODO(partner)
     # it { expect(user.partners).to eq([partner]) }

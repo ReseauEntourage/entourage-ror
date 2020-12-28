@@ -25,7 +25,7 @@ RSpec.describe Admin::RegistrationRequestsController, type: :controller do
     let(:registration_request) { FactoryBot.create(:registration_request) }
 
     context "valid registration request" do
-      before { get 'show', id: registration_request.to_param }
+      before { get 'show', params: { id: registration_request.to_param } }
       it { expect(assigns(:registration_request)).to eq(registration_request) }
       it { should render_template('show') }
     end
@@ -35,14 +35,14 @@ RSpec.describe Admin::RegistrationRequestsController, type: :controller do
         RegistrationRequest.any_instance.stub(:organization_field).and_call_original
         RegistrationRequest.any_instance.stub(:organization_field).with("logo_key") { "" }
       end
-      before { get 'show', id: registration_request.to_param }
+      before { get 'show', params: { id: registration_request.to_param } }
       it { expect(response.status).to eq(200) }
     end
   end
 
   describe "DELETE destroy" do
     let(:registration_request) { FactoryBot.create(:registration_request, status: "pending") }
-    before { delete 'destroy', id: registration_request.to_param }
+    before { delete 'destroy', params: { id: registration_request.to_param } }
     it { expect(RegistrationRequest.count).to eq(1) }
     it { expect(registration_request.reload.status).to eq("rejected") }
     it { should redirect_to admin_registration_requests_path }
@@ -56,7 +56,7 @@ RSpec.describe Admin::RegistrationRequestsController, type: :controller do
         describe "objects creation" do
           before do
             allow(MemberMailer).to receive(:registration_request_accepted)
-            put 'update', id: registration_request.to_param, validate: true
+            put 'update', params: { id: registration_request.to_param, validate: true }
           end
           it { expect(registration_request.reload.status).to eq("validated") }
           #Already 1 user authenticated with organization
@@ -77,7 +77,7 @@ RSpec.describe Admin::RegistrationRequestsController, type: :controller do
     end
 
     context "don't validate" do
-      before { put 'update', id: registration_request.to_param }
+      before { put 'update', params: { id: registration_request.to_param } }
       it { expect(registration_request.reload.status).to eq("pending") }
       #Already 1 user authenticated with organization
       it { expect(Organization.count).to eq(1) }
@@ -86,7 +86,7 @@ RSpec.describe Admin::RegistrationRequestsController, type: :controller do
 
     it "doesn't send mail" do
       expect(MemberMailer).to receive(:registration_request_accepted).never
-      put 'update', id: registration_request.to_param
+      put 'update', params: { id: registration_request.to_param }
     end
   end
 end

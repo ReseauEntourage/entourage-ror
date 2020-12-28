@@ -12,7 +12,7 @@ describe Api::V1::QuestionsController do
 
     context "signed in" do
       let!(:questions) { FactoryBot.create_list(:question, 2, organization: user.organization) }
-      before { get :index, token: user.token }
+      before { get :index, params: { token: user.token } }
       it { expect(JSON.parse(response.body)).to eq({"questions"=>[{"id"=>questions.first.id, "title"=>"MyString", "answer_type"=>"MyString"},
                                                                   {"id"=>questions.last.id, "title"=>"MyString", "answer_type"=>"MyString"}]}) }
     end

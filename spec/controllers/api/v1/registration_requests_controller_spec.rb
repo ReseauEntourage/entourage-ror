@@ -29,7 +29,7 @@ RSpec.describe Api::V1::RegistrationRequestsController, type: :controller do
     context "with valid params" do
 
       shared_examples "with valid params" do
-        before { post :create, {registration_request: valid_attributes} }
+        before { post :create, params: { registration_request: valid_attributes } }
         it { expect(RegistrationRequest.count).to eq(1) }
         it { expect(response.status).to eq(201) }
         it { expect(AdminMailer).to have_received(:registration_request).with(RegistrationRequest.last.id).once }
@@ -46,7 +46,7 @@ RSpec.describe Api::V1::RegistrationRequestsController, type: :controller do
     end
 
     context "with invalid params" do
-      before { post :create, {registration_request: invalid_attributes} }
+      before { post :create, params: { registration_request: invalid_attributes } }
       it { expect(RegistrationRequest.count).to eq(0) }
       it { expect(response.status).to eq(400) }
       it { expect(JSON.parse(response.body)).to eq({"errors"=>{"organization"=>["Nom doit être rempli(e)", "Adresse doit être rempli(e)"], "user"=>["Téléphone doit être rempli(e)", "Téléphone devrait être au format +33... ou 06...", "Prénom doit être rempli(e)", "Nom doit être rempli(e)", "Email doit être rempli(e)", "Association de maraude n'est pas valide"]}}) }

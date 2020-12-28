@@ -7,7 +7,7 @@ describe Api::V1::Public::EntouragesController do
     before do
       stub_request(:get,  %r'https://maps.googleapis.com/maps/api/geocode')
         .to_return(:status => 200, :body => '{}', :headers => {})
-      get :show, uuid: identifier
+      get :show, params: { uuid: identifier }
     end
 
     context "could get entourage with v1 uuid" do

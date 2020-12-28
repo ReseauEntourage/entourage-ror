@@ -9,7 +9,7 @@ RSpec.describe Api::V1::PartnersController, type: :controller do
     let!(:partner2) { FactoryBot.create(:partner, name: "Partner A", postal_code: "75008") }
     # before { FactoryBot.create(:user_partner, user: user, partner: partner1) }
 
-    before { get 'index', token: user.token }
+    before { get 'index', params: { token: user.token } }
     # TODO(partner)
     it { expect(JSON.parse(response.body)).to eq(
       {"partners"=>[
@@ -31,7 +31,7 @@ RSpec.describe Api::V1::PartnersController, type: :controller do
     let!(:partner1) { FactoryBot.create(:partner, name: "Partner A", postal_code: "75008") }
     let!(:following) { nil }
 
-    before { get 'show', id: partner1.id, token: user.token }
+    before { get 'show', params: { id: partner1.id, token: user.token } }
     # TODO(partner)
     it { expect(JSON.parse(response.body)).to eq(
       "partner" => {
@@ -62,7 +62,7 @@ RSpec.describe Api::V1::PartnersController, type: :controller do
   end
 
   describe 'POST join_request' do
-    before { post :join_request, {token: user.token, postal_code: "75008", partner_role_title: "Senior VP of Meme Warfare"}.merge(params) }
+    before { post :join_request, params: {token: user.token, postal_code: "75008", partner_role_title: "Senior VP of Meme Warfare"}.merge(params) }
     let(:join_request) { user.partner_join_requests.last }
 
     describe 'new partner' do

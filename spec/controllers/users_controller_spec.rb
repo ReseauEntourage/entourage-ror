@@ -22,13 +22,13 @@ RSpec.describe UsersController, :type => :controller do
 
   describe 'GET edit' do
     context 'not logged in as admin' do
-      before { get :edit, id: 0 }
+      before { get :edit, params: { id: 0 } }
       it { should redirect_to new_session_path(continue: request.fullpath) }
     end
 
     context 'logged in as admin' do
       let!(:user) { manager_basic_login }
-      before { get :edit, id: user.id }
+      before { get :edit, params: { id: user.id } }
       it { should render_template 'edit' }
     end
 
@@ -45,7 +45,7 @@ RSpec.describe UsersController, :type => :controller do
 
       context 'with incorrect parameters' do
         it "retuns 302" do
-          post 'create', user: {key: "value"}
+          post 'create', params: { user: {key: "value"} }
           expect(response.status).to eq(200)
           expect(response).to render_template('index')
           expect(User.count).to eq(1)
@@ -58,7 +58,7 @@ RSpec.describe UsersController, :type => :controller do
           allow(SmsNotificationService).to receive(:new).and_return(sms_service)
         end
         subject do
-          post 'create', user: {email: "test@rspec.com", first_name:"tester", last_name:"tested", phone:'+33102030405'}, send_sms: '1'
+          post 'create', params: { user: {email: "test@rspec.com", first_name:"tester", last_name:"tested", phone:'+33102030405'}, send_sms: '1' }
         end
 
         context 'for a new user' do
@@ -89,14 +89,14 @@ RSpec.describe UsersController, :type => :controller do
 
       it "doesn't sends sms" do
         expect_any_instance_of(SmsNotificationService).to_not receive(:send_notification)
-        post 'create', user: {email: "test@rspec.com", first_name:"tester", last_name:"tested", phone:'+33102030405'}, send_sms: "0"
+        post 'create', params: { user: {email: "test@rspec.com", first_name:"tester", last_name:"tested", phone:'+33102030405'}, send_sms: "0" }
       end
 
       context 'with incorrect parameters' do
         let!(:user_already_exist) { FactoryBot.create(:pro_user, phone: '+33102030405') }
         it "never sends sms" do
           expect_any_instance_of(SmsNotificationService).to_not receive(:send_notification)
-          post 'create', user: {email: "test@rspec.com", first_name:"tester", last_name:"tested", phone:'+33102030405'}, send_sms: "1"
+          post 'create', params: { user: {email: "test@rspec.com", first_name:"tester", last_name:"tested", phone:'+33102030405'}, send_sms: "1" }
         end
       end
     end
@@ -108,7 +108,7 @@ RSpec.describe UsersController, :type => :controller do
       it "retuns 404" do
         admin_basic_login
         expect {
-          put 'update', id: 1, user: {key: "value"}
+          put 'update', params: { id: 1, user: {key: "value"} }
         }.to raise_error(ActiveRecord::RecordNotFound)
       end
     end
@@ -118,7 +118,7 @@ RSpec.describe UsersController, :type => :controller do
 
       context 'with correct user id and parameters' do
         before do
-          put 'update', id: user.id, user: {email: "change#{user.email}", first_name:"change#{user.first_name}", last_name:"change#{user.last_name}"}
+          put 'update', params: { id: user.id, user: {email: "change#{user.email}", first_name:"change#{user.first_name}", last_name:"change#{user.last_name}"} }
         end
 
         it { expect(response.status).to eq(302) }
@@ -136,7 +136,7 @@ RSpec.describe UsersController, :type => :controller do
       it "retuns 404" do
         admin_basic_login
         expect {
-          delete 'destroy', id: 1
+          delete 'destroy', params: { id: 1 }
         }.to raise_error(ActiveRecord::RecordNotFound)
       end
     end
@@ -144,14 +144,14 @@ RSpec.describe UsersController, :type => :controller do
     context 'with correct user id' do
       it "Redirects" do
         user = admin_basic_login
-        delete 'destroy', id: user.id
+        delete 'destroy', params: { id: user.id }
         expect(response.status).to eq(302)
       end
 
       it "removes the user from the organization and disable it's pro features" do
         admin = admin_basic_login
         user = create :pro_user, organization: admin.organization
-        delete 'destroy', id: user.id
+        delete 'destroy', params: { id: user.id }
         deleted_user = User.find_by(id: user.id)
         expect(deleted_user.organization_id).to eq(nil)
         expect(deleted_user.user_type).to eq('public')
@@ -165,20 +165,20 @@ RSpec.describe UsersController, :type => :controller do
     let!(:target_user) { FactoryBot.create(:pro_user, organization: user.organization) }
 
     context 'the user exists' do
-      before { post 'send_sms', id: target_user.id }
+      before { post 'send_sms', params: { id: target_user.id } }
       it { expect(response.status).to eq(302) }
 
       it "sends sms" do
         UserServices::SmsCode.any_instance.stub(:code) { "666666" }
         expect_any_instance_of(SmsNotificationService).to receive(:send_notification).with(target_user.phone, "666666 est votre code de connexion Entourage. Bienvenue dans le réseau solidaire.", 'regenerate')
-        post 'send_sms', id: target_user.id
+        post 'send_sms', params: { id: target_user.id }
       end
     end
 
     context 'the user does not exists' do
       it "retuns 404" do
         expect {
-          post 'send_sms', id: 0
+          post 'send_sms', params: { id: 0 }
         }.to raise_error(ActiveRecord::RecordNotFound)
       end
     end

@@ -9,21 +9,20 @@ describe Admin::EntouragesController do
   describe 'GET #index' do
     context "has entourages" do
       let!(:entourage_list) { FactoryBot.create_list(:entourage, 2, :joined) }
-      before { get :index, moderator_id: :any }
+      before { get :index, params: { moderator_id: :any } }
 
       it { expect(assigns(:entourages)).to match_array(entourage_list) }
     end
 
     context "has no entourages" do
-      before { get :index, moderator_id: :any }
+      before { get :index, params: { moderator_id: :any } }
       it { expect(assigns(:entourages)).to eq([]) }
     end
   end
 
   describe "GET #show" do
-    let(:entourage) { FactoryGirl.create(:entourage) }
-    before { get :show, id: entourage.to_param }
-
+    let(:entourage) { FactoryBot.create(:entourage) }
+    before { get :show, params: { id: entourage.to_param } }
     it { expect(assigns(:entourage)).to eq(entourage) }
   end
 

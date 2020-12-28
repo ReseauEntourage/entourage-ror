@@ -10,11 +10,11 @@ RSpec.describe Api::V1::Users::ToursController, :type => :controller do
     let!(:other_tours) { FactoryBot.create(:tour) }
 
     context "without pagination params" do
-      before { get 'index', user_id: user.id, token: user.token, format: :json }
+      before { get 'index', params: { user_id: user.id, token: user.token, format: :json } }
       it { expect(response.status).to eq 200 }
 
       it "responds with tours" do
-        get 'index', user_id: user.id, token: user.token, format: :json
+        get 'index', params: { user_id: user.id, token: user.token, format: :json }
 
         res = JSON.parse(response.body)
         expect(res).to eq({"tours"=>[
@@ -68,7 +68,7 @@ RSpec.describe Api::V1::Users::ToursController, :type => :controller do
     end
 
     context "with pagination params" do
-      before { get 'index', user_id: user.id, token: user.token, format: :json, page: 1, per: 1 }
+      before { get 'index', params: { user_id: user.id, token: user.token, format: :json, page: 1, per: 1 } }
       it { expect(response.status).to eq 200 }
       it { expect(JSON.parse(response.body)["tours"].count).to eq 1 }
     end
@@ -76,18 +76,18 @@ RSpec.describe Api::V1::Users::ToursController, :type => :controller do
     context "with location filter" do
       context "has tour around point" do
         let!(:tour_point) { FactoryBot.create(:tour_point, tour: tour1, latitude: 48.2, longitude: 2.2) }
-        before { get 'index', user_id: user.id, token: user.token, format: :json, distance: 1000, latitude: 48.2, longitude: 2.2 }
+        before { get 'index', params: { user_id: user.id, token: user.token, format: :json, distance: 1000, latitude: 48.2, longitude: 2.2 } }
         it { expect(JSON.parse(response.body)["tours"].count).to eq 1 }
       end
 
       context "don't have any tour around point" do
-        before { get 'index', user_id: user.id, token: user.token, format: :json, distance: 1000, latitude: 48.2, longitude: 2.2 }
+        before { get 'index', params: { user_id: user.id, token: user.token, format: :json, distance: 1000, latitude: 48.2, longitude: 2.2 } }
         it { expect(JSON.parse(response.body)["tours"].count).to eq 0 }
       end
     end
 
     context "with status parameter" do
-      before { get 'index', user_id: user.id, token: user.token, status: "ongoing", format: :json }
+      before { get 'index', params: { user_id: user.id, token: user.token, status: "ongoing", format: :json } }
       it { expect(JSON.parse(response.body)["tours"].count).to eq(1) }
       it { expect(JSON.parse(response.body)["tours"].first["id"]).to eq(tour1.id) }
     end

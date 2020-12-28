@@ -7,7 +7,7 @@ describe Api::V1::Entourages::ChatMessagesController do
 
   describe 'GET index' do
     context "not signed in" do
-      before { get :index, entourage_id: entourage.to_param }
+      before { get :index, params: { entourage_id: entourage.to_param } }
       it { expect(response.status).to eq(401) }
     end
 
@@ -18,7 +18,7 @@ describe Api::V1::Entourages::ChatMessagesController do
         let!(:chat_message1) { FactoryBot.create(:chat_message, messageable: entourage, created_at: DateTime.parse("10/01/2000"), updated_at: DateTime.parse("10/01/2000")) }
         let!(:chat_message2) { FactoryBot.create(:chat_message, messageable: entourage, created_at: DateTime.parse("09/01/2000"), updated_at: DateTime.parse("09/01/2000")) }
         let!(:join_request) { FactoryBot.create(:join_request, joinable: entourage, user: user, status: "accepted") }
-        before { get :index, entourage_id: entourage.to_param, token: user.token }
+        before { get :index, params: { entourage_id: entourage.to_param, token: user.token } }
         it { expect(response.status).to eq(200) }
         it { expect(JSON.parse(response.body)).to eq({"chat_messages"=>
                                                           [{
@@ -42,30 +42,30 @@ describe Api::V1::Entourages::ChatMessagesController do
       context "i request older messages" do
         let!(:chat_messages) { FactoryBot.create_list(:chat_message, 2, messageable: entourage, created_at: DateTime.parse("10/01/2016")) }
         let!(:join_request) { FactoryBot.create(:join_request, joinable: entourage, user: user, status: "accepted", last_message_read: DateTime.parse("20/01/2016")) }
-        before { get :index, entourage_id: entourage.to_param, token: user.token }
+        before { get :index, params: { entourage_id: entourage.to_param, token: user.token } }
         it { expect(join_request.reload.last_message_read).to eq(DateTime.parse("20/01/2016"))}
       end
 
       context "i don't belong to the tour" do
-        before { get :index, entourage_id: entourage.to_param, token: user.token }
+        before { get :index, params: { entourage_id: entourage.to_param, token: user.token } }
         it { expect(response.status).to eq(401) }
       end
 
       context "i am still in pending status" do
         let!(:join_request) { FactoryBot.create(:join_request, joinable: entourage, user: user, status: "pending") }
-        before { get :index, entourage_id: entourage.to_param, token: user.token }
+        before { get :index, params: { entourage_id: entourage.to_param, token: user.token } }
         it { expect(response.status).to eq(401) }
       end
 
       context "i am rejected from the tour" do
         let!(:join_request) { FactoryBot.create(:join_request, joinable: entourage, user: user, status: "rejected") }
-        before { get :index, entourage_id: entourage.to_param, token: user.token }
+        before { get :index, params: { entourage_id: entourage.to_param, token: user.token } }
         it { expect(response.status).to eq(401) }
       end
 
       context "i quit the tour" do
         let!(:join_request) { FactoryBot.create(:join_request, joinable: entourage, user: user, status: "cancelled") }
-        before { get :index, entourage_id: entourage.to_param, token: user.token }
+        before { get :index, params: { entourage_id: entourage.to_param, token: user.token } }
         it { expect(response.status).to eq(401) }
       end
 
@@ -73,7 +73,7 @@ describe Api::V1::Entourages::ChatMessagesController do
         let!(:chat_message1) { FactoryBot.create(:chat_message, messageable: entourage, updated_at: DateTime.parse("11/01/2016")) }
         let!(:chat_message2) { FactoryBot.create(:chat_message, messageable: entourage, updated_at: DateTime.parse("09/01/2016")) }
         let!(:join_request) { FactoryBot.create(:join_request, joinable: entourage, user: user, status: "accepted") }
-        before { get :index, entourage_id: entourage.to_param, token: user.token, before: "10/01/2016" }
+        before { get :index, params: { entourage_id: entourage.to_param, token: user.token, before: "10/01/2016" } }
         it { expect(JSON.parse(response.body)).to eq({"chat_messages"=>[{
                                                                             "id"=>chat_message2.id,
                                                                             "message_type"=>"text",
@@ -87,7 +87,7 @@ describe Api::V1::Entourages::ChatMessagesController do
         with_community :pfp
         let!(:entourage) { nil }
         let(:other_user) { create :public_user, first_name: "Buzz", last_name: "Lightyear" }
-        before { get :index, entourage_id: "1_list_#{user.id}-#{other_user.id}", token: user.token }
+        before { get :index, params: { entourage_id: "1_list_#{user.id}-#{other_user.id}", token: user.token } }
         it { expect(JSON.parse(response.body)).to eq("chat_messages"=>[]) }
       end
     end
@@ -95,7 +95,7 @@ describe Api::V1::Entourages::ChatMessagesController do
 
   describe 'POST create' do
     context "not signed in" do
-      before { post :create, entourage_id: entourage.to_param, chat_message: {content: "foobar"} }
+      before { post :create, params: { entourage_id: entourage.to_param, chat_message: {content: "foobar"} } }
       it { expect(response.status).to eq(401) }
       it { expect(ChatMessage.count).to eq(0) }
     end
@@ -108,7 +108,7 @@ describe Api::V1::Entourages::ChatMessagesController do
       context "valid params" do
         let!(:join_request) { FactoryBot.create(:join_request, joinable: entourage, user: user, status: "accepted") }
         let!(:join_request2) { FactoryBot.create(:join_request, joinable: entourage, status: "accepted") }
-        before { post :create, entourage_id: entourage.to_param, chat_message: {content: "foobar"}, token: user.token }
+        before { post :create, params: { entourage_id: entourage.to_param, chat_message: {content: "foobar"}, token: user.token } }
         it { expect(response.status).to eq(201) }
         it { expect(ChatMessage.count).to eq(1) }
         it { expect(JSON.parse(response.body)).to eq({"chat_message"=>
@@ -126,43 +126,43 @@ describe Api::V1::Entourages::ChatMessagesController do
           join_request2 = FactoryBot.create(:join_request, joinable: entourage, status: "accepted")
           FactoryBot.create(:join_request, joinable: entourage, status: "pending")
           expect_any_instance_of(PushNotificationService).to receive(:send_notification).with("John D.", 'Foobar', 'foobaz', [join_request2.user], {:joinable_id=>entourage.id, :joinable_type=>"Entourage", :group_type=>'action', :type=>"NEW_CHAT_MESSAGE"})
-          post :create, entourage_id: entourage.to_param, chat_message: {content: "foobaz"}, token: user.token
+          post :create, params: { entourage_id: entourage.to_param, chat_message: {content: "foobaz"}, token: user.token }
         end
       end
 
       context "invalid params" do
         let!(:join_request) { FactoryBot.create(:join_request, joinable: entourage, user: user, status: "accepted") }
-        before { post :create, entourage_id: entourage.to_param, chat_message: {content: nil}, token: user.token }
+        before { post :create, params: { entourage_id: entourage.to_param, chat_message: {content: nil}, token: user.token } }
         it { expect(response.status).to eq(400) }
         it { expect(ChatMessage.count).to eq(0) }
       end
 
       context "post in a entourage i don't belong to" do
-        before { post :create, entourage_id: entourage.to_param, chat_message: {content: "foobar"}, token: user.token }
+        before { post :create, params: { entourage_id: entourage.to_param, chat_message: {content: "foobar"}, token: user.token } }
         it { expect(response.status).to eq(401) }
       end
 
       context "post in a entourage i am still in pending status" do
         let!(:join_request) { FactoryBot.create(:join_request, joinable: entourage, user: user, status: "pending") }
-        before { post :create, entourage_id: entourage.to_param, chat_message: {content: "foobar"}, token: user.token }
+        before { post :create, params: { entourage_id: entourage.to_param, chat_message: {content: "foobar"}, token: user.token } }
         it { expect(response.status).to eq(401) }
       end
 
       context "post in a entourage i am rejected from" do
         let!(:join_request) { FactoryBot.create(:join_request, joinable: entourage, user: user, status: "rejected") }
-        before { post :create, entourage_id: entourage.to_param, chat_message: {content: "foobar"}, token: user.token }
+        before { post :create, params: { entourage_id: entourage.to_param, chat_message: {content: "foobar"}, token: user.token } }
         it { expect(response.status).to eq(401) }
       end
 
       context "post in a entourage i have quit" do
         let!(:join_request) { FactoryBot.create(:join_request, joinable: entourage, user: user, status: "cancelled") }
-        before { post :create, entourage_id: entourage.to_param, chat_message: {content: "foobar"}, token: user.token }
+        before { post :create, params: { entourage_id: entourage.to_param, chat_message: {content: "foobar"}, token: user.token } }
         it { expect(response.status).to eq(401) }
       end
 
       context "invalid message type" do
         let!(:join_request) { FactoryBot.create(:join_request, joinable: entourage, user: user, status: "accepted") }
-        before { post :create, entourage_id: entourage.to_param, chat_message: {content: "foobar", message_type: "status_update"}, token: user.token }
+        before { post :create, params: { entourage_id: entourage.to_param, chat_message: {content: "foobar", message_type: "status_update"}, token: user.token } }
         it { expect(response.status).to eq(400) }
         it { expect(JSON.parse(response.body)).to eq("message"=>"Could not create chat message",
                                                      "reasons"=>["Message type n'est pas inclus(e) dans la liste"]) }
@@ -175,7 +175,7 @@ describe Api::V1::Entourages::ChatMessagesController do
         let(:user) { create :public_user }
         let!(:join_request) { create :join_request, joinable: circle, user: user, status: :accepted }
 
-        before { post :create, entourage_id: circle.to_param, chat_message: payload, token: user.token }
+        before { post :create, params: { entourage_id: circle.to_param, chat_message: payload, token: user.token } }
 
         context "valid payload" do
           let(:payload) do
@@ -208,7 +208,7 @@ describe Api::V1::Entourages::ChatMessagesController do
         let!(:entourage) { nil }
         let(:other_user) { create :public_user, first_name: "Buzz", last_name: "Lightyear" }
         let(:join_requests) { Entourage.last.join_requests.map(&:attributes) }
-        before { post :create, entourage_id: "1_list_#{user.id}-#{other_user.id}", chat_message: {content: content}, token: user.token }
+        before { post :create, params: { entourage_id: "1_list_#{user.id}-#{other_user.id}", chat_message: {content: content}, token: user.token } }
 
         context "valid params" do
           let(:content) { "foobar" }
@@ -247,7 +247,7 @@ describe Api::V1::Entourages::ChatMessagesController do
         let(:user) { create :public_user }
         let(:conversation) { create :conversation, participants: [user] }
 
-        before { post :create, entourage_id: conversation.to_param, chat_message: payload, token: user.token }
+        before { post :create, params: { entourage_id: conversation.to_param, chat_message: payload, token: user.token } }
 
         context "entourage" do
           let(:entourage) { create :entourage }

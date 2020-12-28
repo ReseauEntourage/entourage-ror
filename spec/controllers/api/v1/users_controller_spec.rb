@@ -16,7 +16,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
       let!(:user) { create :pro_user, sms_code: "123456", avatar_key: "avatar", partner: partner }
 
       context 'when the phone number and sms code are valid' do
-        before { post 'login', user: {phone: user.phone, sms_code: "123456"}, format: 'json' }
+        before { post 'login', params: { user: {phone: user.phone, sms_code: "123456"}, format: 'json' } }
         it { expect(response.status).to eq(200) }
 
         it "renders user" do
@@ -82,7 +82,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
       end
 
       describe "first_sign_in_at" do
-        subject { post 'login', user: {phone: user.phone, sms_code: "123456"} }
+        subject { post 'login', params: { user: {phone: user.phone, sms_code: "123456"} } }
 
         context "on the first login" do
           let(:time) { Time.zone.now.change(sec: 0) }
@@ -102,14 +102,14 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
       end
 
       context 'invalid sms code' do
-        before { post 'login', user: {phone: user.phone, sms_code: "invalid code"}, format: 'json' }
+        before { post 'login', params: { user: {phone: user.phone, sms_code: "invalid code"}, format: 'json' } }
         it { expect(response.status).to eq(401) }
         it { expect(result).to eq({"error"=>{"code"=>"UNAUTHORIZED", "message" => "wrong phone / sms_code"}}) }
       end
 
       describe "sms_code / password logic" do
         def login params
-          post 'login', user: {phone: user.phone}.merge(params)
+          post 'login', params: { user: {phone: user.phone}.merge(params) }
           OpenStruct.new(status: response.status, body: JSON.parse(response.body))
         end
 
@@ -137,14 +137,14 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
       end
 
       context 'invalid phone number format' do
-        before { post 'login', user: {phone: "1234x"}, format: 'json' }
+        before { post 'login', params: { user: {phone: "1234x"}, format: 'json' } }
         it { expect(response.status).to eq(401) }
         it { expect(result).to eq({"error"=>{"code"=>"INVALID_PHONE_FORMAT", "message"=>"invalid phone number format"}}) }
       end
 
       context 'phone format handling' do
         let!(:user) { create :public_user, phone: "+33600000001", sms_code: "123456" }
-        before { post 'login', user: {phone: "+33 (0) 6 00 00 00 01 ", sms_code: "123456"}, format: 'json' }
+        before { post 'login', params: { user: {phone: "+33 (0) 6 00 00 00 01 ", sms_code: "123456"}, format: 'json' } }
         it { expect(response.status).to eq(200) }
       end
 
@@ -155,7 +155,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
         let(:token_signature) { SignatureService.sign(token_payload, salt: user.token) }
         let(:token) { "1_#{token_payload}-#{token_signature}" }
 
-        before { post 'login', user: {auth_token: token} }
+        before { post 'login', params: { user: {auth_token: token} } }
 
         context "valid token" do
           it { expect(response.status).to eq(200) }
@@ -190,7 +190,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
 
     describe 'community support' do
       let(:user) { create :public_user, community: 'pfp', sms_code: "123456" }
-      before { post 'login', user: {phone: user.phone, sms_code: "123456"} }
+      before { post 'login', params: { user: {phone: user.phone, sms_code: "123456"} } }
 
       context "when using the user's community" do
         with_community 'pfp'
@@ -206,23 +206,23 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
 
     context 'when user does not exist' do
       context 'using the email' do
-        before { post 'login', user: {email: 'not_existing@nowhere.com', sms_code: 'sms code'}, format: 'json' }
+        before { post 'login', params: { user: {email: 'not_existing@nowhere.com', sms_code: 'sms code'}, format: 'json' } }
         it { expect(response.status).to eq(401) }
       end
       context 'using the phone number and sms code' do
-        before { post 'login', user: {phone: 'phone', sms_code: 'sms code'}, format: 'json' }
+        before { post 'login', params: { user: {phone: 'phone', sms_code: 'sms code'}, format: 'json' } }
         it { expect(response.status).to eq(401) }
       end
     end
     context 'when user is deleted' do
       let(:deleted_user) { FactoryBot.create(:pro_user, deleted: true, sms_code: "123456") }
-      before { post 'login', user: {phone: deleted_user.phone, sms_code: "123456"}, format: 'json' }
+      before { post 'login', params: { user: {phone: deleted_user.phone, sms_code: "123456"}, format: 'json' } }
       it { expect(response.status).to eq(401) }
       it { expect(result).to eq({"error"=>{"code"=>"DELETED", "message"=>"user is deleted"}}) }
     end
     context 'when user is not deleted' do
       let(:not_deleted_user) { FactoryBot.create(:pro_user, deleted: false, sms_code: "123456") }
-      before { post 'login', user: {phone: not_deleted_user.phone, sms_code: "123456"}, format: 'json' }
+      before { post 'login', params: { user: {phone: not_deleted_user.phone, sms_code: "123456"}, format: 'json' } }
       it { expect(response.status).to eq(200) }
     end
     context "user with tours and encounters" do
@@ -236,7 +236,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
       let!(:encounter4) { create :encounter, tour: tour3 }
       let!(:entourage) { create :entourage, user: user }
 
-      before { post 'login', user: {phone: user.phone, sms_code: "123456"}, format: 'json' }
+      before { post 'login', params: { user: {phone: user.phone, sms_code: "123456"}, format: 'json' } }
       it { expect(JSON.parse(response.body)).to eq({"user"=>{"id"=>user.id,
                                                              "uuid"=>user.id.to_s,
                                                              "email"=>user.email,
@@ -284,27 +284,27 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
 
     context "blocked user" do
       let!(:user) { create :pro_user, sms_code: "123456", validation_status: "blocked", avatar_key: nil }
-      before { post 'login', user: {phone: user.phone, sms_code: "123456"}, format: 'json' }
+      before { post 'login', params: { user: {phone: user.phone, sms_code: "123456"}, format: 'json' } }
       it { expect(response.status).to eq(401) }
       it { expect(result).to eq({"error"=>{"code"=>"DELETED", "message"=>"user is deleted"}}) }
     end
 
     context "no avatar" do
       let!(:user) { create :pro_user, sms_code: "123456", validation_status: "validated", avatar_key: nil }
-      before { post 'login', user: {phone: user.phone, sms_code: "123456"}, format: 'json' }
+      before { post 'login', params: { user: {phone: user.phone, sms_code: "123456"}, format: 'json' } }
       it { expect(JSON.parse(response.body)["user"]["avatar_url"]).to be_nil }
     end
 
     context "public user with version 1.2.0" do
       before { ApiRequest.any_instance.stub(:key_infos) { {version: "1.2.0", community: 'entourage'} } }
       let!(:user) { create :public_user, sms_code: "123456"}
-      before { post 'login', user: {phone: user.phone, sms_code: "123456"}, format: 'json' }
+      before { post 'login', params: { user: {phone: user.phone, sms_code: "123456"}, format: 'json' } }
       it { expect(response.status).to eq(200) }
     end
 
     context "apple formatted phone number" do
       let!(:user) { create :public_user, phone: "+40724593579", sms_code: "123456"}
-      before { post 'login', user: {phone: "+40 (724) 593 579", sms_code: "123456"}, format: 'json' }
+      before { post 'login', params: { user: {phone: "+40 (724) 593 579", sms_code: "123456"}, format: 'json' } }
       it { expect(response.status).to eq(200) }
     end
   end
@@ -317,7 +317,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
       after { ENV["DISABLE_CRYPT"]="TRUE" }
 
       context 'params are valid' do
-        before { patch 'update', token:user.token, user: { email:'new@e.mail', sms_code:'654321', device_id: 'foo', device_type: 'android', avatar_key: 'foo.jpg'}, format: :json }
+        before { patch 'update', params: { token:user.token, user: { email:'new@e.mail', sms_code:'654321', device_id: 'foo', device_type: 'android', avatar_key: 'foo.jpg'}, format: :json } }
         it { expect(response.status).to eq(200) }
         it { expect(user.reload.email).to eq('new@e.mail') }
         it { expect(user.reload.avatar_key).to eq('foo.jpg') }
@@ -329,25 +329,25 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
       end
 
       context 'strips first_name, last_name and email' do
-        before { patch 'update', token:user.token, user: { first_name: 'Claude ', last_name: 'Shannon ', email:'cs@bell.com '} }
+        before { patch 'update', params: { token:user.token, user: { first_name: 'Claude ', last_name: 'Shannon ', email:'cs@bell.com '} } }
         it { expect(user.reload.first_name).to eq('Claude') }
         it { expect(user.reload.last_name).to eq('Shannon') }
         it { expect(user.reload.email).to eq('cs@bell.com') }
       end
 
       context 'try to update phone number' do
-        before { patch 'update', token:user.token, user: { phone:'+33654876754' }, format: :json }
+        before { patch 'update', params: { token:user.token, user: { phone:'+33654876754' }, format: :json } }
         it { expect(response.status).to eq(400) }
       end
 
       context 'params are invalid' do
-        before { patch 'update', token:user.token, user: { email:'bademail', sms_code:'badcode' }, format: :json }
+        before { patch 'update', params: { token:user.token, user: { email:'bademail', sms_code:'badcode' }, format: :json } }
         it { expect(response.status).to eq(400) }
         it { expect(result).to eq({"error"=>{"code"=>"CANNOT_UPDATE_USER", "message"=>["Email n'est pas valide"]}}) }
       end
 
       context 'about is too long' do
-        before { patch 'update', token:user.token, user: { about: "x" * 201 }, format: :json }
+        before { patch 'update', params: { token:user.token, user: { about: "x" * 201 }, format: :json } }
         it { expect(response.status).to eq(400) }
         it { expect(result).to eq({"error"=>{"code"=>"CANNOT_UPDATE_USER", "message"=>["À propos est trop long (pas plus de 200 caractères)"]}}) }
       end
@@ -362,7 +362,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
 
         subject do
           Timecop.freeze(request_timestamp) do
-            patch 'update', user: {first_name: 'Joe'}, token: user.token
+            patch 'update', params: { user: {first_name: 'Joe'}, token: user.token }
           end
         end
 
@@ -391,14 +391,14 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
 
       context 'interests' do
         context 'good value' do
-          before { patch 'update', token: user.token, user: { interests: [:event_sdf, :aide_sdf] } }
+          before { patch 'update', params: { token: user.token, user: { interests: [:event_sdf, :aide_sdf] } } }
           it { expect(result['user']).to include('interests' => ['aide_sdf', 'event_sdf']) }
         end
       end
     end
 
     context 'bad authentication' do
-      before { patch 'update', token:'badtoken', user: { email:'new@e.mail', sms_code:'654321' }, format: :json }
+      before { patch 'update', params: { token:'badtoken', user: { email:'new@e.mail', sms_code:'654321' }, format: :json } }
       it { expect(response.status).to eq(401) }
     end
 
@@ -407,14 +407,14 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
 
       context "valid params" do
         it "sets user avatar key" do
-          patch 'update', token:user.token, user: { avatar: avatar }, format: :json
+          patch 'update', params: { token:user.token, user: { avatar: avatar }, format: :json }
           expect(user.reload.avatar_key).to eq("avatar")
         end
       end
     end
 
     describe "welcome email" do
-      subject { patch 'update', token: user.token, user: { email:'new@e.mail' } }
+      subject { patch 'update', params: { token: user.token, user: { email:'new@e.mail' } } }
       let(:deliveries_campaigns) { ActionMailer::Base.deliveries.map { |e| e['X-Mailjet-Campaign'].value } }
 
       context "user has no email" do
@@ -451,7 +451,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
     describe "update sms_code" do
       before do
         @request.env['X-API-KEY'] = api_key
-        patch 'update', token: user.token, user: { sms_code: '654321' }
+        patch 'update', params: { token: user.token, user: { sms_code: '654321' } }
       end
 
       context "on mobile" do
@@ -466,7 +466,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
     end
 
     describe "update password" do
-      before { patch 'update', token: user.token, user: params }
+      before { patch 'update', params: { token: user.token, user: params } }
       let(:error_message) { JSON.parse(response.body)['error']['message'] }
 
       context "valid parameters" do
@@ -480,7 +480,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
     let!(:user) { create :pro_user, sms_code: "123456", avatar_key: "avatar" }
 
     describe "regenerate sms code" do
-      before { patch 'code', {id: "me", user: { phone: user.phone }, code: {action: "regenerate"}, format: :json} }
+      before { patch 'code', params: { id: "me", user: { phone: user.phone }, code: {action: "regenerate"}, format: :json } }
       it { expect(response.status).to eq(200) }
       it { expect(user.reload.sms_code).to_not eq("123456") }
       it "renders user" do
@@ -496,7 +496,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
       before do
         user.update!(password: "P@ssw0rd")
         @request.env['X-API-KEY'] = api_key
-        patch 'code', {id: "me", user: { phone: user.phone }, code: {action: "regenerate"}, format: :json}
+        patch 'code', params: { id: "me", user: { phone: user.phone }, code: {action: "regenerate"}, format: :json }
       end
 
       context "from web" do
@@ -511,18 +511,18 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
     end
 
     describe "missing phone" do
-      before { patch 'code', {id: "me", user: { foo: "bar" }, code: {action: "regenerate"}, format: :json} }
+      before { patch 'code', params: { id: "me", user: { foo: "bar" }, code: {action: "regenerate"}, format: :json } }
       it { expect(response.status).to eq(400) }
     end
 
     describe "unknown phone" do
-      before { patch 'code', {id: "me", user: { phone: "0000" }, code: {action: "regenerate"}, format: :json} }
+      before { patch 'code', params: { id: "me", user: { phone: "0000" }, code: {action: "regenerate"}, format: :json } }
       it { expect(response.status).to eq(404) }
       it { expect(JSON.parse(response.body)['error']['code']).to eq 'USER_NOT_FOUND' }
     end
 
     describe "unknown action" do
-      before { patch 'code', {id: "me", user: { phone: user.phone }, code: {action: "foo"}, format: :json} }
+      before { patch 'code', params: { id: "me", user: { phone: user.phone }, code: {action: "foo"}, format: :json } }
       it { expect(response.status).to eq(400) }
     end
   end
@@ -530,12 +530,12 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
   describe "POST create" do
     it "creates a new user" do
       expect {
-        post 'create', {user: {phone: "+33612345678"}}
+        post 'create', params: { user: {phone: "+33612345678"} }
       }.to change { User.count }.by(1)
     end
 
     context "valid params" do
-      before { post 'create', {user: {phone: "+33612345678"}} }
+      before { post 'create', params: { user: {phone: "+33612345678"} } }
       it { expect(User.last.user_type).to eq("public") }
       it { expect(User.last.community).to eq("entourage") }
       it { expect(User.last.roles).to eq([]) }
@@ -557,24 +557,24 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
 
     context "already has a user without email" do
       let!(:previous_user) { FactoryBot.create(:public_user, email: nil) }
-      before { post 'create', {user: {phone: "+33612345678"}} }
+      before { post 'create', params: { user: {phone: "+33612345678"} } }
       it { expect(response.status).to eq(201) }
     end
 
     context "user with Apple formated phone number" do
-      before { post 'create', {user: {phone: "+40 (724) 593 579"}} }
+      before { post 'create', params: { user: {phone: "+40 (724) 593 579"} } }
       it { expect(User.last.phone).to eq("+40724593579") }
     end
 
     context "invalid params" do
       it "doesn't create a new user" do
         expect {
-          post 'create', {user: {phone: "123"}}
+          post 'create', params: { user: {phone: "123"} }
         }.to change { User.count }.by(0)
       end
 
       it "returns error" do
-        post 'create', {user: {phone: "123"}}
+        post 'create', params: { user: {phone: "123"} }
         user = User.last
         expect(response.status).to eq(400)
         expect(result).to eq({"error"=>{"code"=>"INVALID_PHONE_FORMAT", "message"=>"Phone devrait être au format +33... ou 06..."}})
@@ -583,7 +583,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
 
     context "phone already exists" do
       let!(:existing_user) { FactoryBot.create(:public_user, phone: "+33612345678") }
-      before { post 'create', {user: {phone: "+33612345678"}} }
+      before { post 'create', params: { user: {phone: "+33612345678"} } }
       it { expect(User.count).to eq(1) }
       it { expect(response.status).to eq(400) }
       it { expect(result).to eq({"error"=>{"code"=>"PHONE_ALREADY_EXIST", "message"=>"Phone +33612345678 n'est pas disponible"}}) }
@@ -595,13 +595,13 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
     let!(:user) { create :pro_user, partner: partner }
 
     context "not signed in" do
-      before { get :show, id: user.id }
+      before { get :show, params: { id: user.id } }
       it { expect(response.status).to eq(401) }
     end
 
     context "user signed in" do
       context "get your own profile" do
-        before { get :show, id: user.id, token: user.token }
+        before { get :show, params: { id: user.id, token: user.token } }
         it { expect(response.status).to eq(200) }
         it { expect(JSON.parse(response.body)).to eq({"user"=>
                                                           {"id"=>user.id,
@@ -675,7 +675,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
       end
 
       context "get my profile with 'me' shortcut" do
-        before { get :show, id: "me", token: user.token }
+        before { get :show, params: { id: "me", token: user.token } }
         it { expect(response.status).to eq(200) }
         it { expect(JSON.parse(response.body)).to eq({"user"=>
                                                           {"id"=>user.id,
@@ -733,14 +733,14 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
 
       context "get my profile as an anonymous user" do
         let(:user) { AnonymousUserService.create_user($server_community) }
-        before { get :show, id: "me", token: user.token }
+        before { get :show, params: { id: "me", token: user.token } }
         it { expect(result['user']['placeholders']).to eq ["firebase_properties", "address", "address_2"] }
       end
 
       context "get someone else profile" do
         let(:other_user) { FactoryBot.create(:pro_user, about: "about") }
         let!(:conversation) { nil }
-        before { get :show, id: other_user.id, token: user.token }
+        before { get :show, params: { id: other_user.id, token: user.token } }
         it { expect(response.status).to eq(200) }
         it { expect(JSON.parse(response.body)).to eq({"user"=>
                                                           {"id"=>other_user.id,
@@ -786,7 +786,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
         let(:other_user) { FactoryBot.create(:public_user, roles: [:visitor, :coordinator]) }
         let!(:join_request)  { create :join_request, user: other_user, joinable_factory: :private_circle, status: :accepted }
         let!(:join_request2) { create :join_request, user: other_user, joinable_factory: :private_circle, status: :pending }
-        before { get :show, id: other_user.id, token: user.token }
+        before { get :show, params: { id: other_user.id, token: user.token } }
         it { expect(JSON.parse(response.body)['user']['roles']).to eq ['coordinator', 'visitor'] }
         it { expect(JSON.parse(response.body)['user']['memberships']).to eq [{"type"=>"private_circle", "list"=>[{"id"=>join_request.joinable_id, "title"=>"Les amis d'Henriette", "number_of_people"=>1}]}, {"type"=>"neighborhood", "list"=>[]}] }
       end
@@ -794,7 +794,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
       context "firebase_properties" do
         context "action zone" do
           let(:user) { create :public_user, addresses: [address].compact }
-          before { get :show, id: user.id, token: user.token }
+          before { get :show, params: { id: user.id, token: user.token } }
           let(:firebase_properties) { result['user']['firebase_properties'] }
 
           context "no action zone" do
@@ -829,7 +829,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
     before { Timecop.freeze(Time.parse("10/10/2010").at_beginning_of_day) }
     before { MailchimpService.stub(:strong_unsubscribe) }
     let!(:user) { FactoryBot.create(:pro_user, deleted: false, phone: "0612345678", email: "foo@bar.com") }
-    before { delete :destroy, id: user.to_param, token: user.token }
+    before { delete :destroy, params: { id: user.to_param, token: user.token } }
     it { expect(user.reload.deleted).to be true }
     it { expect(user.reload.phone).to eq("+33612345678-2010-10-10 00:00:00") }
     it { expect(user.reload.email).to eq("foo@bar.com-2010-10-10 00:00:00") }
@@ -850,7 +850,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
     let(:reported_user)  { create :public_user }
     let(:message) { "MESSAGE" }
 
-    before { post 'report', token: reporting_user.token, id: reported_user.id, user_report: {message: message} }
+    before { post 'report', params: { token: reporting_user.token, id: reported_user.id, user_report: {message: message} } }
 
     context "valid params" do
       it { expect(response.status).to eq 201 }
@@ -866,7 +866,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
 
   describe 'POST #address' do
     let(:user) { create :public_user }
-    subject { post 'address', address: address, id: UserService.external_uuid(user), token: user.token }
+    subject { post 'address', params: { address: address, id: UserService.external_uuid(user), token: user.token } }
     context "valid params" do
       let(:address) { { place_name: "75012", latitude: 48.835085, longitude: 2.382165 } }
       before { subject }
@@ -1008,7 +1008,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
     let(:user) { create :public_user }
     let(:partner) { create :partner }
 
-    subject { post 'following', following: following, id: 'me', token: user.token }
+    subject { post 'following', params: { following: following, id: 'me', token: user.token } }
 
     context "create" do
       let(:following) { { partner_id: partner.id, active: true } }
@@ -1045,7 +1045,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
     let(:user) { create :public_user}
 
     context "unsubscribe from a specific category" do
-      subject { get :update_email_preferences, id: user.id, category: category.name, accepts_emails: false, signature: SignatureService.sign(user.id) }
+      subject { get :update_email_preferences, params: { id: user.id, category: category.name, accepts_emails: false, signature: SignatureService.sign(user.id) } }
 
       it do
         expect { subject }
@@ -1066,7 +1066,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
     end
 
     context "unsubscribe from all emails" do
-      subject { get :update_email_preferences, id: user.id, category: :all, accepts_emails: false, signature: SignatureService.sign(user.id) }
+      subject { get :update_email_preferences, params: { id: user.id, category: :all, accepts_emails: false, signature: SignatureService.sign(user.id) } }
 
       it do
         expect { subject }

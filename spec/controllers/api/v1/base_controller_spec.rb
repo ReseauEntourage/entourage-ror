@@ -31,14 +31,14 @@ RSpec.describe Api::V1::BaseController, :type => :controller do
 
     context "nil last_sign_in_at" do
       let(:user) { FactoryBot.create(:pro_user, last_sign_in_at: nil) }
-      before { get :ping, {token: user.token} }
+      before { get :ping, params: { token: user.token } }
       it { expect(user.reload.last_sign_in_at).to_not be_nil }
       it { expect(mixpanel).to have_received(:track).with('Opened App', {'First Session'=>true}) }
     end
 
     context "last_sign_in_at yesterday" do
       let(:user) { FactoryBot.create(:pro_user, last_sign_in_at: 1.day.ago) }
-      before { get :ping, {token: user.token} }
+      before { get :ping, params: { token: user.token } }
       it { expect(user.reload.last_sign_in_at.today?).to be true}
       it { expect(mixpanel).to have_received(:track).with('Opened App', {'First Session'=>false}) }
     end
@@ -47,7 +47,7 @@ RSpec.describe Api::V1::BaseController, :type => :controller do
       let(:date) { DateTime.parse("2015-07-07T10:31:43.000+02:00") }
       before { Timecop.freeze(date) }
       let(:user) { FactoryBot.create(:pro_user, last_sign_in_at: DateTime.parse("2014-07-07T00:00:00.000")) }
-      before { get :ping, {token: user.token} }
+      before { get :ping, params: { token: user.token } }
       it { expect(user.reload.last_sign_in_at).to eq(date)}
     end
 
@@ -55,7 +55,7 @@ RSpec.describe Api::V1::BaseController, :type => :controller do
       let(:date) { DateTime.parse("2015-07-07T10:31:43.000+02:00") }
       before { Timecop.freeze(date) }
       let(:user) { FactoryBot.create(:pro_user, last_sign_in_at: DateTime.parse("2015-07-07T00:00:00.000")) }
-      before { get :ping, {token: user.token} }
+      before { get :ping, params: { token: user.token } }
       it { expect(user.reload.last_sign_in_at).to eq(DateTime.parse("2015-07-07T00:00:00.000"))}
       it { expect(mixpanel).not_to have_received(:track).with('Opened App', anything) }
     end
@@ -65,7 +65,7 @@ RSpec.describe Api::V1::BaseController, :type => :controller do
 
       context "logged-in user" do
         let(:user) { create :public_user }
-        before { get :ping, {token: user.token} }
+        before { get :ping, params: { token: user.token } }
         it { expect(SessionHistory.where(user_id: user.id, date: Time.zone.today, platform: 'rspec').count).to eq 1 }
       end
 

@@ -10,13 +10,13 @@ RSpec.describe Api::V0::Users::ToursController, :type => :controller, skip: true
     let!(:other_tours) { FactoryBot.create(:tour) }
 
     context "without pagination params" do
-      before { get 'index', user_id: user.id, token: user.token, format: :json }
+      before { get 'index', params: { user_id: user.id, token: user.token, format: :json } }
       it { expect(response.status).to eq 200 }
 
       it "responds with tours" do
         Timecop.freeze(DateTime.parse("10/10/2010").at_beginning_of_day)
 
-        get 'index', user_id: user.id, token: user.token, format: :json
+        get 'index', params: { user_id: user.id, token: user.token, format: :json }
 
         res = JSON.parse(response.body)
         expect(res).to eq({"tours"=>[
@@ -46,7 +46,7 @@ RSpec.describe Api::V0::Users::ToursController, :type => :controller, skip: true
     end
 
     context "with pagination params" do
-      before { get 'index', user_id: user.id, token: user.token, format: :json, page: 1, per: 1 }
+      before { get 'index', params: { user_id: user.id, token: user.token, format: :json, page: 1, per: 1 } }
       it { expect(response.status).to eq 200 }
       it { expect(JSON.parse(response.body)["tours"].count).to eq 1 }
     end

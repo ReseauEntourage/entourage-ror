@@ -16,7 +16,7 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
         end
       end
 
-      before { get 'index', token: user.token, format: :json }
+      before { get 'index', params: { token: user.token, format: :json } }
 
       it { expect(response.status).to eq 200 }
       it { expect(assigns(:tours).count).to eq(10) }
@@ -27,7 +27,7 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
       Timecop.freeze(DateTime.parse("10/10/2010").at_beginning_of_day)
       tours = FactoryBot.create_list :tour, 2
 
-      get 'index', token: user.token, format: :json
+      get 'index', params: { token: user.token, format: :json }
 
       res = JSON.parse(response.body)
       expect(res).to eq({"tours"=>[
@@ -86,7 +86,7 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
       end
 
       it "returns limit tours" do
-        get 'index', token: user.token, per: 2, :format => :json
+        get 'index', params: { token: user.token, per: 2, :format => :json }
         expect(JSON.parse(response.body)["tours"].count).to eq(2)
       end
     end
@@ -100,12 +100,12 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
       let!(:tour5) { FactoryBot.create :tour, tour_type:'medical' }
 
       it "returns status 200" do
-        get 'index', token: user.token, type:'alimentary', :format => :json
+        get 'index', params: { token: user.token, type:'alimentary', :format => :json }
         expect(response.status).to eq 200
       end
 
       it "returns only matching type tours" do
-        get 'index', token: user.token, type:'alimentary', :format => :json
+        get 'index', params: { token: user.token, type:'alimentary', :format => :json }
         expect(assigns(:tours)).to match_array([tour4, tour3])
       end
 
@@ -120,12 +120,12 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
       let!(:tour5) { FactoryBot.create :tour, vehicle_type:'feet' }
 
       it "returns status 200" do
-        get 'index', token: user.token, vehicle_type:'car', :format => :json
+        get 'index', params: { token: user.token, vehicle_type:'car', :format => :json }
         expect(response.status).to eq 200
       end
 
       it "returns only matching vehicle type tours" do
-        get 'index', token: user.token, vehicle_type:'car', :format => :json
+        get 'index', params: { token: user.token, vehicle_type:'car', :format => :json }
         expect(assigns(:tours)).to match_array([tour4, tour3])
       end
 
@@ -145,17 +145,17 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
       let!(:tour_point5) { FactoryBot.create :tour_point, tour: tour5, latitude: 12, longitude: 10 }
 
       it "returns status 200" do
-        get 'index', token: user.token, latitude: 10.0, longitude: 10.0, :format => :json
+        get 'index', params: { token: user.token, latitude: 10.0, longitude: 10.0, :format => :json }
         expect(response.status).to eq 200
       end
 
       it "returns only matching location tours" do
-        get 'index', token: user.token, latitude: 10.0, longitude: 10.0, :format => :json
+        get 'index', params: { token: user.token, latitude: 10.0, longitude: 10.0, :format => :json }
         expect(assigns(:tours)).to match_array([tour4, tour3])
       end
 
       it "returns only matching location tours with provided distance" do
-        get 'index', token: user.token, latitude: 10.0, longitude: 10.0, distance: 20.0, :format => :json
+        get 'index', params: { token: user.token, latitude: 10.0, longitude: 10.0, distance: 20.0, :format => :json }
         expect(assigns(:tours)).to match_array([tour4, tour3, tour2])
       end
 
@@ -166,19 +166,19 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
       let!(:closed_tour) { FactoryBot.create :tour, status: "closed" }
 
       context "ongoing" do
-        before { get 'index', token: user.token, status: "ongoing", format: :json }
+        before { get 'index', params: { token: user.token, status: "ongoing", format: :json } }
         it { expect(JSON.parse(response.body)["tours"].map{|t| t["id"]}).to eq([ongoing_tour.id]) }
       end
 
       context "closed" do
-        before { get 'index', token: user.token, status: "closed", format: :json }
+        before { get 'index', params: { token: user.token, status: "closed", format: :json } }
         it { expect(JSON.parse(response.body)["tours"].map{|t| t["id"]}).to eq([closed_tour.id]) }
       end
     end
 
     context "public user" do
       let(:public_user) { FactoryBot.create(:public_user) }
-      before { get 'index', token: public_user.token, status: "ongoing", format: :json }
+      before { get 'index', params: { token: public_user.token, status: "ongoing", format: :json } }
       it { expect(response.status).to eq(403) }
     end
   end
@@ -189,11 +189,11 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
 
     context "with correct type" do
       before { FactoryBot.create(:android_app) }
-      before { post 'create', token: user.token , tour: {tour_type: tour.tour_type,
+      before { post 'create', params: { token: user.token, tour: {tour_type: tour.tour_type,
                                                          status:tour.status,
                                                          vehicle_type:tour.vehicle_type,
                                                          distance: 123.456,
-                                                         start_time: "2016-01-01T19:09:06.000+01:00"}, format: :json }
+                                                         start_time: "2016-01-01T19:09:06.000+01:00"}, format: :json } }
 
       it { expect(response.status).to eq(201) }
       it { expect(Tour.last.tour_type).to eq(tour.tour_type) }
@@ -234,18 +234,18 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
     it "sends scheduled push" do
       FactoryBot.create(:android_app)
       expect_any_instance_of(TourServices::SchedulePushService).to receive(:send_to)
-      post 'create', token: user.token , tour: {tour_type: tour.tour_type, status:tour.status, vehicle_type:tour.vehicle_type, distance: 123.456}, format: :json
+      post 'create', params: { token: user.token, tour: {tour_type: tour.tour_type, status:tour.status, vehicle_type:tour.vehicle_type, distance: 123.456}, format: :json }
     end
 
     it "doesn't send join request accepted push" do
       FactoryBot.create(:android_app)
       expect_any_instance_of(IosNotificationService).to_not receive(:send_notification)
       expect_any_instance_of(AndroidNotificationService).to_not receive(:send_notification)
-      post 'create', token: user.token , tour: {tour_type: tour.tour_type, status:tour.status, vehicle_type:tour.vehicle_type, distance: 123.456}, format: :json
+      post 'create', params: { token: user.token, tour: {tour_type: tour.tour_type, status:tour.status, vehicle_type:tour.vehicle_type, distance: 123.456}, format: :json }
     end
 
     context "with incorrect type" do
-      before { post 'create', token: user.token , tour: {tour_type: 'invalid', status:tour.status, vehicle_type:tour.vehicle_type, distance: 123.456}, :format => :json }
+      before { post 'create', params: { token: user.token, tour: {tour_type: 'invalid', status:tour.status, vehicle_type:tour.vehicle_type, distance: 123.456}, :format => :json } }
       it { expect(response.status).to eq(400) }
     end
 
@@ -257,7 +257,7 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
 
     context "with correct id" do
       let!(:tour) { FactoryBot.create :tour, :filled }
-      before { get 'show', id: tour.id, token: user.token, format: :json }
+      before { get 'show', params: { id: tour.id, token: user.token, format: :json } }
       it { expect(response.status).to eq(200) }
 
       it "responds with tour" do
@@ -294,7 +294,7 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
 
       it "returns error 404" do
         expect {
-          get 'show', id: 0, token: user.token , format: :json
+          get 'show', params: { id: 0, token: user.token, format: :json }
         }.to raise_error(ActiveRecord::RecordNotFound)
       end
     end
@@ -304,13 +304,13 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
       let!(:tour_points) { FactoryBot.create_list(:tour_point, 2, tour: tour)}
       let!(:simplified_tour_points) { FactoryBot.create(:simplified_tour_point, tour: tour)}
       before { $redis.set("entourage:tours:#{tour.id}:tour_points", [{lat: 1.0, lng: 1.0}].to_json) }
-      before { get 'show', id: tour.id, token: user.token , format: :json }
+      before { get 'show', params: { id: tour.id, token: user.token, format: :json } }
       it { expect(JSON.parse(response.body)["tour"]["tour_points"].count).to eq(1) }
     end
 
     context "don't have simplified tour points" do
       let!(:tour) { FactoryBot.create(:tour, :filled)}
-      before { get 'show', id: tour.id, token: user.token , format: :json }
+      before { get 'show', params: { id: tour.id, token: user.token, format: :json } }
       it { expect(JSON.parse(response.body)["tour"]["tour_points"].count).to eq(2) }
     end
 
@@ -319,7 +319,7 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
       let!(:join_request) { FactoryBot.create(:join_request, joinable: tour, user: user, status: "accepted", last_message_read: DateTime.parse("20/10/2015")) }
       let!(:new_chat_messages) { FactoryBot.create_list(:chat_message, 2, created_at: DateTime.parse("21/10/2015"), messageable: tour)}
       let!(:old_chat_message) { FactoryBot.create(:chat_message, created_at: DateTime.parse("19/10/2015"), messageable: tour)}
-      before { get 'show', id: tour.id, token: user.token , format: :json }
+      before { get 'show', params: { id: tour.id, token: user.token, format: :json } }
       it { expect(JSON.parse(response.body)["tour"]["number_of_unread_messages"]).to eq(2) }
     end
 
@@ -327,7 +327,7 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
       let!(:tour) { FactoryBot.create :tour }
       let!(:join_request) { FactoryBot.create(:join_request, joinable: tour, user: user, status: "accepted", last_message_read: DateTime.parse("20/10/2015")) }
       let!(:old_chat_message) { FactoryBot.create(:chat_message, created_at: DateTime.parse("19/10/2015"), messageable: tour)}
-      before { get 'show', id: tour.id, token: user.token , format: :json }
+      before { get 'show', params: { id: tour.id, token: user.token, format: :json } }
       it { expect(JSON.parse(response.body)["tour"]["number_of_unread_messages"]).to eq(0) }
     end
 
@@ -335,7 +335,7 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
       let!(:tour) { FactoryBot.create :tour }
       let!(:join_request) { FactoryBot.create(:join_request, joinable: tour, user: user, status: "accepted", last_message_read: nil) }
       let!(:old_chat_message) { FactoryBot.create(:chat_message, created_at: DateTime.parse("19/10/2015"), messageable: tour)}
-      before { get 'show', id: tour.id, token: user.token , format: :json }
+      before { get 'show', params: { id: tour.id, token: user.token, format: :json } }
       it { expect(JSON.parse(response.body)["tour"]["number_of_unread_messages"]).to eq(1) }
     end
   end
@@ -347,7 +347,7 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
     let(:tour) { FactoryBot.create(:tour, :filled, user: user) }
 
     context "with correct id" do
-      before { put 'update', id: tour.id, token: user.token, tour:{tour_type:"medical", status:"closed", vehicle_type:"car", distance: 123.456}, format: :json }
+      before { put 'update', params: { id: tour.id, token: user.token, tour:{tour_type:"medical", status:"closed", vehicle_type:"car", distance: 123.456}, format: :json } }
 
       it { expect(response.status).to eq(200) }
       it { expect(tour.reload.status).to eq("closed") }
@@ -384,7 +384,7 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
     context "close tour" do
       context "tour open" do
         let(:open_tour) { FactoryBot.create(:tour, user: user, status: :ongoing) }
-        before { put 'update', id: open_tour.id, token: user.token, tour:{tour_type:"medical", status:"closed", vehicle_type:"car", distance: 633.0878, end_time: "2016-01-01T20:09:06.000+01:00"}, format: :json }
+        before { put 'update', params: { id: open_tour.id, token: user.token, tour:{tour_type:"medical", status:"closed", vehicle_type:"car", distance: 633.0878, end_time: "2016-01-01T20:09:06.000+01:00"}, format: :json } }
         it { expect(open_tour.reload.closed?).to be true }
         it { expect(ActionMailer::Base.deliveries.last.to).to eq([user.email])}
         it { expect(open_tour.reload.length).to eq(633)}
@@ -392,28 +392,28 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
 
       context "tour closed" do
         let(:closed_tour) { FactoryBot.create(:tour, user: user, status: :closed) }
-        before { put 'update', id: closed_tour.id, token: user.token, tour:{tour_type:"medical", status:"closed", vehicle_type:"car", distance: 123.456, end_time: "2016-01-01T20:09:06.000+01:00"}, format: :json }
+        before { put 'update', params: { id: closed_tour.id, token: user.token, tour:{tour_type:"medical", status:"closed", vehicle_type:"car", distance: 123.456, end_time: "2016-01-01T20:09:06.000+01:00"}, format: :json } }
         it { expect(closed_tour.reload.closed?).to be true }
         it { expect(ActionMailer::Base.deliveries.last).to be nil}
       end
 
       context "sends end_time" do
         let(:open_tour) { FactoryBot.create(:tour, user: user, status: :ongoing) }
-        before { put 'update', id: open_tour.id, token: user.token, tour:{tour_type:"medical", status:"closed", vehicle_type:"car", distance: 633.0878, end_time: "2016-01-01T20:09:06.000+01:00"}, format: :json }
+        before { put 'update', params: { id: open_tour.id, token: user.token, tour:{tour_type:"medical", status:"closed", vehicle_type:"car", distance: 633.0878, end_time: "2016-01-01T20:09:06.000+01:00"}, format: :json } }
         it { expect(open_tour.reload.closed_at).to eq(DateTime.parse("2016-01-01T20:09:06.000+01:00"))}
       end
 
       context "doesn't send end_time and has tour_points" do
         let(:open_tour) { FactoryBot.create(:tour, user: user, status: :ongoing) }
         let!(:last_point) { FactoryBot.create(:tour_point, tour: open_tour, passing_time: DateTime.parse("2016-01-01T20:09:06.000+01:00")) }
-        before { put 'update', id: open_tour.id, token: user.token, tour:{tour_type:"medical", status:"closed", vehicle_type:"car", distance: 633.0878}, format: :json }
+        before { put 'update', params: { id: open_tour.id, token: user.token, tour:{tour_type:"medical", status:"closed", vehicle_type:"car", distance: 633.0878}, format: :json } }
         it { expect(open_tour.reload.closed_at).to eq(DateTime.parse("2016-01-01T20:09:06.000+01:00"))}
       end
 
       context "doesn't send end_time and no tour_points" do
         Timecop.freeze(DateTime.parse("10/10/2010"))
         let(:open_tour) { FactoryBot.create(:tour, user: user, status: :ongoing) }
-        before { put 'update', id: open_tour.id, token: user.token, tour:{tour_type:"medical", status:"closed", vehicle_type:"car", distance: 633.0878}, format: :json }
+        before { put 'update', params: { id: open_tour.id, token: user.token, tour:{tour_type:"medical", status:"closed", vehicle_type:"car", distance: 633.0878}, format: :json } }
         it { expect(open_tour.reload.closed_at).to eq(DateTime.parse("10/10/2010"))}
       end
     end
@@ -421,32 +421,32 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
     context "freeze tour" do
       context "tour open" do
         let(:open_tour) { FactoryBot.create(:tour, user: user, status: :ongoing) }
-        before { put 'update', id: open_tour.id, token: user.token, tour:{tour_type:"medical", status:"freezed", vehicle_type:"car", distance: 633.0878, end_time: "2016-01-01T20:09:06.000+01:00"}, format: :json }
+        before { put 'update', params: { id: open_tour.id, token: user.token, tour:{tour_type:"medical", status:"freezed", vehicle_type:"car", distance: 633.0878, end_time: "2016-01-01T20:09:06.000+01:00"}, format: :json } }
         it { expect(open_tour.reload.frozen?).to be false }
       end
 
       context "not the author tour of the tour" do
         let(:open_tour) { FactoryBot.create(:tour, status: :closed) }
-        before { put 'update', id: open_tour.id, token: user.token, tour:{tour_type:"medical", status:"freezed", vehicle_type:"car", distance: 633.0878, end_time: "2016-01-01T20:09:06.000+01:00"}, format: :json }
+        before { put 'update', params: { id: open_tour.id, token: user.token, tour:{tour_type:"medical", status:"freezed", vehicle_type:"car", distance: 633.0878, end_time: "2016-01-01T20:09:06.000+01:00"}, format: :json } }
         it { expect(open_tour.reload.freezed?).to be false }
       end
 
       context "tour closed" do
         let(:open_tour) { FactoryBot.create(:tour, user: user, status: :closed) }
-        before { put 'update', id: open_tour.id, token: user.token, tour:{tour_type:"medical", status:"freezed", vehicle_type:"car", distance: 633.0878, end_time: "2016-01-01T20:09:06.000+01:00"}, format: :json }
+        before { put 'update', params: { id: open_tour.id, token: user.token, tour:{tour_type:"medical", status:"freezed", vehicle_type:"car", distance: 633.0878, end_time: "2016-01-01T20:09:06.000+01:00"}, format: :json } }
         it { expect(open_tour.reload.freezed?).to be true }
       end
     end
 
     context "with unexisting id" do
       it { expect {
-            put 'update', id: 0, token: user.token, tour:{tour_type:"medical", status:"ongoing", vehicle_type:"car", distance: 123.456}, format: :json
+            put 'update', params: { id: 0, token: user.token, tour:{tour_type:"medical", status:"ongoing", vehicle_type:"car", distance: 123.456}, format: :json }
           }.to raise_error(ActiveRecord::RecordNotFound)
         }
     end
 
     context "with incorrect_user" do
-      before { put 'update', id: tour.id, token: other_user.token, tour:{tour_type:"medical", status:"ongoing", vehicle_type:"car", distance: 123.456}, format: :json }
+      before { put 'update', params: { id: tour.id, token: other_user.token, tour:{tour_type:"medical", status:"ongoing", vehicle_type:"car", distance: 123.456}, format: :json } }
       it { expect(response.status).to eq(403) }
     end
   end
@@ -455,7 +455,7 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
     before { EnvironmentHelper.stub(:env) { :staging } }
     let!(:user) { FactoryBot.create(:pro_user) }
     let!(:tours) { FactoryBot.create_list(:tour, 2) }
-    before { delete 'delete_all', token: user.token, format: :json }
+    before { delete 'delete_all', params: { token: user.token, format: :json } }
     it { expect(response.status).to eq(200) }
     it { expect(Tour.count).to eq(0) }
   end
@@ -465,14 +465,14 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
     let!(:tour) { FactoryBot.create(:tour) }
 
     context "not signed in" do
-      before { put :read, id: tour.to_param }
+      before { put :read, params: { id: tour.to_param } }
       it { expect(response.status).to eq(401) }
     end
 
     context "user is accepted in tour" do
       let(:old_date) { DateTime.parse("15/10/2010") }
       let!(:join_request) { FactoryBot.create(:join_request, joinable: tour, user: user, status: JoinRequest::ACCEPTED_STATUS, last_message_read: old_date) }
-      before { put :read, id: tour.to_param, token: user.token }
+      before { put :read, params: { id: tour.to_param, token: user.token } }
       it { expect(response.status).to eq(204) }
       it { expect(join_request.reload.last_message_read).to be > old_date }
     end
@@ -480,7 +480,7 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
     context "user is not accepted in tour" do
       let(:old_date) { DateTime.parse("15/10/2010") }
       let!(:join_request) { FactoryBot.create(:join_request, joinable: tour, user: user, status: JoinRequest::PENDING_STATUS, last_message_read: old_date) }
-      before { put :read, id: tour.to_param, token: user.token }
+      before { put :read, params: { id: tour.to_param, token: user.token } }
       it { expect(response.status).to eq(204) }
       it { expect(join_request.reload.last_message_read).to eq(old_date) }
     end

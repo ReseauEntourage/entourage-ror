@@ -7,11 +7,11 @@ RSpec.describe OrganizationsController, :type => :controller do
   context 'correct authentication' do
     let!(:user) { manager_basic_login }
     describe 'edit' do
-      before { get :edit, id: user.organization }
+      before { get :edit, params: { id: user.organization } }
       it { expect(response.status).to eq(200) }
     end
     describe '#update' do
-      before { get :update, id: user.organization, organization:{name: 'newname', description: 'newdescription', phone: 'newphone', address:'newaddress'} }
+      before { get :update, params: { id: user.organization, organization:{name: 'newname', description: 'newdescription', phone: 'newphone', address:'newaddress'} } }
       it { expect(User.find(user.id).organization.name).to eq 'newname' }
       it { expect(User.find(user.id).organization.description).to eq 'newdescription' }
       it { expect(User.find(user.id).organization.phone).to eq 'newphone' }
@@ -74,35 +74,35 @@ RSpec.describe OrganizationsController, :type => :controller do
         it { expect(assigns[:tours]).to match_array([tour1, tour2, tour5]) }
       end
       context 'with type filter' do
-        before { get :tours, tour_type: 'alimentary', format: :json }
+        before { get :tours, params: { tour_type: 'alimentary', format: :json } }
         it { expect(response.status).to eq(200) }
         it { expect(assigns[:tours]).to eq [tour2]}
       end
       context 'with multiple type filter' do
-        before { get :tours, tour_type: 'alimentary,medical', format: :json }
+        before { get :tours, params: { tour_type: 'alimentary,medical', format: :json } }
         it { expect(assigns[:tours]).to match_array([tour1, tour2, tour5])}
       end
       context 'with date range' do
-        before { get :tours, date_range:'10/03/2009-11/03/2009', format: :json }
+        before { get :tours, params: { date_range:'10/03/2009-11/03/2009', format: :json } }
         it { expect(response.status).to eq(200) }
         it { expect(assigns[:tours]).to eq [tour2]}
       end
       context 'with org filter' do
-        before { get :tours, org:user4.organization.id, format: :json }
+        before { get :tours, params: { org:user4.organization.id, format: :json } }
         it { expect(response.status).to eq(200) }
         it { expect(assigns[:tours]).to eq [tour5]}
       end
       context 'with incorrect org filter' do
-        before { get :tours, org:user3.organization.id, format: :json }
+        before { get :tours, params: { org:user3.organization.id, format: :json } }
         it { expect(response.status).to eq(200) }
         it { expect(assigns[:tours]).to eq []}
       end
       context 'with valid box filter' do
-        before { get :tours, sw:"48.615629449762814_1.8729114532470703", ne:"49.24715808228131_2.8177356719970703", format: :json }
+        before { get :tours, params: { sw:"48.615629449762814_1.8729114532470703", ne:"49.24715808228131_2.8177356719970703", format: :json } }
         it { expect(response.status).to eq(200) }
       end
       context 'with invalid box filter' do
-        before { get :tours, sw:"48.615629449762814-1.8729114532470703", ne:"49.24715808228131-2.8177356719970703", format: :json }
+        before { get :tours, params: { sw:"48.615629449762814-1.8729114532470703", ne:"49.24715808228131-2.8177356719970703", format: :json } }
         it { expect(response.status).to eq(200) }
       end
 
@@ -158,7 +158,7 @@ RSpec.describe OrganizationsController, :type => :controller do
         it { expect(assigns[:tour_count]).to eq 3 }
       end
       context 'with type filter' do
-        before { get :encounters, tour_type: 'medical', format: :json }
+        before { get :encounters, params: { tour_type: 'medical', format: :json } }
         it { expect(response.status).to eq(200) }
         it { expect(assigns[:encounters]).to eq [encounter3, encounter4]}
         it { expect(assigns[:encounter_count]).to eq 2 }
@@ -166,7 +166,7 @@ RSpec.describe OrganizationsController, :type => :controller do
         it { expect(assigns[:tour_count]).to eq 1 }
       end
       context 'with date range' do
-        before { get :encounters, date_range:'10/03/2009-11/03/2009', format: :json }
+        before { get :encounters, params: { date_range:'10/03/2009-11/03/2009', format: :json } }
         it { expect(response.status).to eq(200) }
         it { expect(assigns[:encounters]).to eq [encounter3, encounter4]}
         it { expect(assigns[:encounter_count]).to eq 2 }
@@ -174,7 +174,7 @@ RSpec.describe OrganizationsController, :type => :controller do
         it { expect(assigns[:tour_count]).to eq 1 }
       end
       context 'with org filter' do
-        before { get :encounters, org: user4.organization.id, format: :json }
+        before { get :encounters, params: { org: user4.organization.id, format: :json } }
         it { expect(response.status).to eq(200) }
         it { expect(assigns[:encounters]).to eq [encounter7]}
         it { expect(assigns[:encounter_count]).to eq 1 }
@@ -182,7 +182,7 @@ RSpec.describe OrganizationsController, :type => :controller do
         it { expect(assigns[:tour_count]).to eq 1 }
       end
       context 'with incorrect org filter' do
-        before { get :encounters, org: user3.organization.id, format: :json }
+        before { get :encounters, params: { org: user3.organization.id, format: :json } }
         it { expect(response.status).to eq(200) }
         it { expect(assigns[:encounters]).to eq []}
         it { expect(assigns[:encounter_count]).to eq 0 }
@@ -206,13 +206,13 @@ RSpec.describe OrganizationsController, :type => :controller do
       before { controller.push_notification_service = push_notification_service }
 
       context "send message without recipients" do
-        before { post :send_message, id: user.organization.to_param, object:'object', message: 'message' }
+        before { post :send_message, params: { id: user.organization.to_param, object:'object', message: 'message' } }
         it { should redirect_to dashboard_organizations_path }
         it { expect(push_notification_service).to have_received(:send_notification).with(user.full_name, 'object', 'message', user.organization.users) }
       end
 
       context "send message to all organization user" do
-        before { post :send_message, id: user.organization.to_param, object:'object', message: 'message', recipients: 'all' }
+        before { post :send_message, params: { id: user.organization.to_param, object:'object', message: 'message', recipients: 'all' } }
         it { should redirect_to dashboard_organizations_path }
         it { expect(push_notification_service).to have_received(:send_notification).with(user.full_name, 'object', 'message', user.organization.users) }
       end
@@ -226,7 +226,7 @@ RSpec.describe OrganizationsController, :type => :controller do
           FactoryBot.create(:tour, status: :closed, user: @user_in_tour, created_at: Date.parse("10/10/2010")) #user in same organization, with closed tour started the same day
           FactoryBot.create(:tour, status: :ongoing, created_at: Date.parse("10/10/2010")) #user in different organization, with an ongoing tour started the same day
         end
-        before { post :send_message, id: user.organization.to_param, object:'object', message: 'message', recipients: 'in_tour' }
+        before { post :send_message, params: { id: user.organization.to_param, object:'object', message: 'message', recipients: 'in_tour' } }
         it { expect(push_notification_service).to have_received(:send_notification).with(user.full_name, 'object', 'message', [@user_in_tour]) }
       end
 
@@ -238,7 +238,7 @@ RSpec.describe OrganizationsController, :type => :controller do
           user_in_tour2 = FactoryBot.create(:user, organization: user.organization)
           FactoryBot.create(:tour, status: :ongoing, user: user_in_tour2, created_at: Date.parse("10/10/2010"))
         end
-        before { post :send_message, id: user.organization.to_param, object:'object', message: 'message', recipients: ["user_id_#{@user_in_tour.id}"] }
+        before { post :send_message, params: { id: user.organization.to_param, object:'object', message: 'message', recipients: ["user_id_#{@user_in_tour.id}"] } }
         it { should redirect_to dashboard_organizations_path }
         it { expect(push_notification_service).to have_received(:send_notification).with(user.full_name, 'object', 'message', [@user_in_tour]) }
       end
@@ -246,11 +246,11 @@ RSpec.describe OrganizationsController, :type => :controller do
   end
   context 'no authentication' do
     describe '#edit' do
-      before { get :edit, id: 0  }
+      before { get :edit, params: { id: 0 }  }
       it { expect(response.status).to eq(302) }
     end
     describe '#update' do
-      before { put :update, id: 0 }
+      before { put :update, params: { id: 0 } }
       it { expect(response.status).to eq(302) }
     end
     describe '#dashboard' do
@@ -283,19 +283,19 @@ RSpec.describe OrganizationsController, :type => :controller do
     let!(:user) { admin_basic_login }
 
     context "valid params" do
-      let(:post_organization) { post :create, { "organization" => {"name"=>"gvjbh", "description"=>"gvj", "phone"=>"gvj", "address"=>"gjv", "logo_url"=>"", "user"=>{"first_name"=>"jvgh", "last_name"=>"gjv", "phone"=>"0612345678", "email"=>"gvj@hgvj.com"}} } }
+      let(:post_organization) { post :create, params: { "organization" => {"name"=>"gvjbh", "description"=>"gvj", "phone"=>"gvj", "address"=>"gjv", "logo_url"=>"", "user"=>{"first_name"=>"jvgh", "last_name"=>"gjv", "phone"=>"0612345678", "email"=>"gvj@hgvj.com"}} } }
       it { expect { post_organization }.to change { Organization.count }.by(1) }
       it { expect { post_organization }.to change { User.count }.by(1) }
     end
 
     context "creates user" do
-      before { post :create, { "organization" => {"name"=>"gvjbh", "description"=>"gvj", "phone"=>"gvj", "address"=>"gjv", "logo_url"=>"", "user"=>{"first_name"=>"jvgh", "last_name"=>"gjv", "phone"=>"0612345678", "email"=>"gvj@hgvj.com"}} } }
+      before { post :create, params: { "organization" => {"name"=>"gvjbh", "description"=>"gvj", "phone"=>"gvj", "address"=>"gjv", "logo_url"=>"", "user"=>{"first_name"=>"jvgh", "last_name"=>"gjv", "phone"=>"0612345678", "email"=>"gvj@hgvj.com"}} } }
       it { expect(User.last.manager).to be true }
     end
 
     context "upgrades existing user" do
       let!(:existing_user) { create :public_user, first_name: "Joe", last_name: nil, phone: "0612345678", email: nil }
-      let(:post_organization) { post :create, { "organization" => {"name"=>"gvjbh", "description"=>"gvj", "phone"=>"gvj", "address"=>"gjv", "logo_url"=>"", "user"=>{"first_name"=>"jvgh", "last_name"=>"gjv", "phone"=>"0612345678", "email"=>"gvj@hgvj.com"}}} }
+      let(:post_organization) { post :create, params: { "organization" => {"name"=>"gvjbh", "description"=>"gvj", "phone"=>"gvj", "address"=>"gjv", "logo_url"=>"", "user"=>{"first_name"=>"jvgh", "last_name"=>"gjv", "phone"=>"0612345678", "email"=>"gvj@hgvj.com"}} } }
       it { expect { post_organization }.not_to change { User.count } }
       it { expect { post_organization }.to change { existing_user.reload.manager }.to true }
       it { expect { post_organization }.not_to change { existing_user.reload.first_name } }
@@ -304,13 +304,13 @@ RSpec.describe OrganizationsController, :type => :controller do
     end
 
     context "invalid user" do
-      let(:post_organization) { post :create, { "organization" => {"name"=>"gvjbh", "description"=>"gvj", "phone"=>"gvj", "address"=>"gjv", "logo_url"=>"", "user"=>{"first_name"=>"jvgh", "last_name"=>"gjv", "phone"=>"cfghgvj", "email"=>"gvj@hgvj.com"}} } }
+      let(:post_organization) { post :create, params: { "organization" => {"name"=>"gvjbh", "description"=>"gvj", "phone"=>"gvj", "address"=>"gjv", "logo_url"=>"", "user"=>{"first_name"=>"jvgh", "last_name"=>"gjv", "phone"=>"cfghgvj", "email"=>"gvj@hgvj.com"}} } }
       it { expect { post_organization }.to change { Organization.count }.by(0) }
       it { expect { post_organization }.to change { User.count }.by(0) }
     end
 
     context "invalid organization" do
-      let(:post_organization) { post :create, { "organization" => {"description"=>"gvj", "phone"=>"gvj", "address"=>"gjv", "logo_url"=>"", "user"=>{"first_name"=>"jvgh", "last_name"=>"gjv", "phone"=>"0612345678", "email"=>"gvj@hgvj.com"}} } }
+      let(:post_organization) { post :create, params: { "organization" => {"description"=>"gvj", "phone"=>"gvj", "address"=>"gjv", "logo_url"=>"", "user"=>{"first_name"=>"jvgh", "last_name"=>"gjv", "phone"=>"0612345678", "email"=>"gvj@hgvj.com"}} } }
       it { expect { post_organization }.to change { Organization.count }.by(0) }
       it { expect { post_organization }.to change { User.count }.by(0) }
     end

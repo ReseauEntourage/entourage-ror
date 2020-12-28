@@ -5,7 +5,7 @@ RSpec.describe Api::V0::MessagesController, :type => :controller, skip: true do
 
   describe 'create' do
     context "valid message" do
-      before { post 'create', {message: {content: "abcf", first_name: "john", last_name: "doe", email: "some@mail.com"} } }
+      before { post 'create', params: { message: {content: "abcf", first_name: "john", last_name: "doe", email: "some@mail.com"} } }
       it { expect(response.status).to eq(201) }
       it { expect(Message.last.content).to eq("abcf") }
       it { expect(Message.last.first_name).to eq("john") }
@@ -14,7 +14,7 @@ RSpec.describe Api::V0::MessagesController, :type => :controller, skip: true do
     end
 
     context "invalid message" do
-      subject { post 'create', {message: {content: ""} } }
+      subject { post 'create', params: { message: {content: ""} } }
       it { expect(lambda { subject }).to change {Message.count}.by(0) }
       it "returns 400" do
         subject
