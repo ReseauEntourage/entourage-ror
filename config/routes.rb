@@ -51,7 +51,7 @@ Rails.application.routes.draw do
 
       resources :uploads, only: :new
       namespace :uploads do
-        get '/success', to: :update
+        get '/success', action: :update
       end
 
       resources :newsletter_subscriptions, only: [:index]
