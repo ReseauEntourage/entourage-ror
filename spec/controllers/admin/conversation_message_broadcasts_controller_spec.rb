@@ -82,7 +82,7 @@ describe Admin::ConversationMessageBroadcastsController do
         goal: 'ask_for_help',
         title: 'Titre du broadcast'
       } } }
-        it { expect { conversation_message_broadcast }.to change { ConversationMessageBroadcast.count }.by(1) }
+      it { expect { conversation_message_broadcast }.to change { ConversationMessageBroadcast.count }.by(1) }
     end
 
     context "create failure" do
