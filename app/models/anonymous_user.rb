@@ -35,6 +35,10 @@ class AnonymousUser
     true
   end
 
+  def apple?
+    address&.country == 'US'
+  end
+
   def token
     @token ||= AnonymousUserService.token_from_uuid(uuid, community: community)
   end
