@@ -87,7 +87,7 @@ describe Api::V1::Entourages::UsersController do
           it {
             expect(notif_service).to have_received(:send_notification).with(
               "John D.",
-              "foobar1",
+              "Foobar1",
               "John D. vient de rejoindre votre action",
               [entourage.user],
               {
@@ -108,7 +108,7 @@ describe Api::V1::Entourages::UsersController do
           it {
             expect(notif_service).to have_received(:send_notification).with(
               "John D.",
-              "foobar1",
+              "Foobar1",
               "John D. vient de rejoindre votre action",
               [entourage.user],
               {
@@ -133,7 +133,7 @@ describe Api::V1::Entourages::UsersController do
 
           it "sends notif to all entourage members" do
             expect_any_instance_of(PushNotificationService).to receive(:send_notification).with("John D.",
-                                                                                                "foobar1",
+                                                                                                "Foobar1",
                                                                                                 "John D. souhaite rejoindre votre action",
                                                                                                 [entourage.user],
                                                                                                 {
@@ -153,7 +153,7 @@ describe Api::V1::Entourages::UsersController do
 
           it "sends notif to all entourage members" do
             expect_any_instance_of(PushNotificationService).to receive(:send_notification).with("John D.",
-                                                                                                "foobar1",
+                                                                                                "Foobar1",
                                                                                                 "John D. souhaite rejoindre votre action",
                                                                                                 [entourage.user],
                                                                                                 {
@@ -229,7 +229,7 @@ describe Api::V1::Entourages::UsersController do
       it "sends a notification to the requester" do
         FactoryGirl.create(:android_app)
         expect_any_instance_of(PushNotificationService).to receive(:send_notification).with("John D.",
-                                                                                            "foobar1",
+                                                                                            "Foobar1",
                                                                                             "Vous venez de rejoindre l’action de John D.",
                                                                                             User.where(id: requester.id),
                                                                                             {:joinable_id=>entourage.id, :joinable_type=>"Entourage", :group_type=>'action', :type=>"JOIN_REQUEST_ACCEPTED", :user_id => requester.id})
