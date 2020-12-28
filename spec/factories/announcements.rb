@@ -7,7 +7,7 @@ FactoryGirl.define do
     url "https://blog.entourage.social/"
     image_url "https://blog.entourage.social/"
     icon "https://blog.entourage.social/"
-    webview true
+    webview false
     position 2
     status :active
   end
