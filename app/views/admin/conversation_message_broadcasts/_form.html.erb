@@ -13,6 +13,13 @@
       </div>
       <%= link_to("Dupliquer", clone_admin_conversation_message_broadcast_path, method: :post, class: "btn btn-success") %>
     </div>
+  <% elsif @conversation_message_broadcast.sending? %>
+    <div class="alert alert-info" role="alert" style="display: flex; align-items: center">
+      <div style="flex-grow: 1">
+        <b>En cours d'envoi</b><br>
+        Cette diffusion de MP est en cours d'envoi. La diffusion sera archivée une fois les envois effectués.
+      </div>
+    </div>
   <% elsif @conversation_message_broadcast.persisted? %>
     <div class="alert alert-success" role="alert" style="display: flex; align-items: center">
       <div style="flex-grow: 1">
@@ -57,7 +64,7 @@
       <%= f.text_area :content, class: "form-control", rows: 5, required: true %>
     </div>
 
-  <% unless @conversation_message_broadcast.archived? %>
+  <% if @conversation_message_broadcast.draft? %>
     <%= f.submit 'Enregistrer', class: "btn btn-primary" %>
     <%= link_to "Annuler", admin_conversation_message_broadcasts_path, class: "btn btn-default" %>
   <% else %>

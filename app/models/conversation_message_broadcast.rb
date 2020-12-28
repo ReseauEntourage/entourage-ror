@@ -22,6 +22,10 @@ class ConversationMessageBroadcast < ActiveRecord::Base
     !!archived_at
   end
 
+  def sending?
+    status&.to_sym == :sending
+  end
+
   def user_ids
     users.select('users.id').map(&:id)
   end
