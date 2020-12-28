@@ -1,6 +1,6 @@
 class Poi < ActiveRecord::Base
 
-  validates_presence_of :name, :category
+  validates_presence_of :name, :category_ids
   validates :latitude, :longitude, numericality: true
   validates :partner_id, presence: true, allow_nil: true
   belongs_to :category
