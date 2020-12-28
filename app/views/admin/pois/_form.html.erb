@@ -60,7 +60,7 @@
     <%= f.label :category,"Categorie", class: "control-label" %>
     <a href="#" rel="tooltip" title="Catégorie du POI" class="tooltip-infos"><i class="fa fa-question-circle"></i></a>
     <div class="controls">
-      <%= f.collection_select :category_id, Category.all, :id, :name, required: true %>
+      <%= f.collection_select :category_ids, Category.all, :id, :name, { required: true }, { multiple: true } %>
     </div>
   </div>
 
