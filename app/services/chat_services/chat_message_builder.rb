@@ -66,6 +66,44 @@ module ChatServices
       joinable
     end
 
+    def self.create_broadcast sender:, recipients:, content:
+      user = sender
+      success_users = []
+      failure_users = []
+
+      # refactoriser : code quasi identique dans Admin::ConversationsController.message
+      recipients.each do |recipient|
+        conversation = self.find_conversation recipient.id, user_id: user.id
+
+        join_request =
+          if conversation.new_record?
+            conversation.join_requests.to_a.find { |r| r.user_id == user.id }
+          else
+            user.join_requests.accepted.find_by!(joinable: conversation)
+          end
+
+        chat_builder = ChatServices::ChatMessageBuilder.new(
+            user: user,
+            joinable: conversation,
+            join_request: join_request,
+            params: {content: content}
+        )
+
+        chat_builder.create do |on|
+          on.success do |message|
+            join_request.update_column(:last_message_read, message.created_at)
+            success_users << recipient.id
+          end
+          on.failure do |message|
+            conversation_message_broadcast.failed(user, recipient)
+            failure_users << recipient.id
+          end
+        end
+      end
+
+      yield success_users, failure_users
+    end
+
     private
     attr_reader :message, :user, :joinable, :join_request, :callback
 
@@ -95,6 +133,14 @@ module ChatServices
 
     def self.recipients(message)
       message.messageable.members.where("users.id != ? AND status = ?", message.user_id, "accepted")
+    end
+
+    def self.find_conversation recipient_id, user_id:
+      participants = [recipient_id, user_id]
+      uuid_v2 = ConversationService.hash_for_participants(participants)
+
+      Entourage.where(group_type: :conversation).find_by(uuid_v2: uuid_v2) ||
+        ConversationService.build_conversation(participant_ids: participants)
     end
   end
 

@@ -27,7 +27,7 @@ class ConversationMessageBroadcast < ActiveRecord::Base
   end
 
   def users
-    return 0 unless valid?
+    return [] unless valid?
 
     users = User.joins(:addresses).where('users.goal': goal, 'users.deleted': false)
 

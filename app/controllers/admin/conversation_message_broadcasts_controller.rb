@@ -54,38 +54,16 @@ module Admin
     end
 
     def broadcast
-      conversation_message_broadcast = ConversationMessageBroadcast.find(params[:id])
-      content = conversation_message_broadcast.content
-      user = current_admin
+      @conversation_message_broadcast = ConversationMessageBroadcast.find(params[:id])
 
-      conversation_message_broadcast.users.each do |recipient|
-        conversation = find_conversation recipient.id, user_id: user.id
+      ConversationMessageBroadcastJob.perform_later(
+        conversation_message_broadcast_id: @conversation_message_broadcast.id,
+        sender_id: current_admin.id,
+        recipient_ids: @conversation_message_broadcast.user_ids,
+        content: @conversation_message_broadcast.content
+      )
 
-        join_request =
-          if conversation.new_record?
-            conversation.join_requests.to_a.find { |r| r.user_id == user.id }
-          else
-            user.join_requests.accepted.find_by!(joinable: conversation)
-          end
-
-        chat_builder = ChatServices::ChatMessageBuilder.new(
-            user: user,
-            joinable: conversation,
-            join_request: join_request,
-            params: {content: content}
-        )
-
-        chat_builder.create do |on|
-          on.success do |message|
-            join_request.update_column(:last_message_read, message.created_at)
-            # conversation_message_broadcast.succeeded(user, recipient)
-          end
-
-          on.failure do |message|
-            # conversation_message_broadcast.failed(user, recipient)
-          end
-        end
-      end
+      redirect_to edit_admin_conversation_message_broadcast_path(@conversation_message_broadcast)
     end
 
     private
@@ -94,14 +72,6 @@ module Admin
       params.require(:conversation_message_broadcast).permit(
         :area, :goal, :content, :title
       )
-    end
-
-    def find_conversation recipient_id, user_id:
-      participants = [recipient_id, user_id]
-      uuid_v2 = ConversationService.hash_for_participants(participants)
-
-      Entourage.where(group_type: :conversation).find_by(uuid_v2: uuid_v2) ||
-        ConversationService.build_conversation(participant_ids: participants)
     end
   end
 end
