@@ -3,7 +3,7 @@
 #
 # Inspired by the implementation found in Rails 5.2.1.rc1
 
-if Rails.version > '4.2.x'
+if Rails.version > '5.0.x'
   raise "This patch was done for Rails 4.2. " \
         "There might be a better solution in #{Rails.version}."
 end
