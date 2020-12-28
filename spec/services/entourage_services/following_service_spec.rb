@@ -30,7 +30,7 @@ describe FollowingService do
     it {
       expect_any_instance_of(PushNotificationService).to receive(:send_notification).with(
         "PARTNER_NAME",
-        "foobar",
+        "Foobar",
         "PARTNER_NAME vous invite à rejoindre une action.",
         [following.user],
         {
