@@ -18,7 +18,7 @@ module EntourageServices
         relationship = UserRelationship.new(source_user: inviter,
                                             target_user: invitee,
                                             relation_type: UserRelationship::TYPE_INVITE)
-        ActiveRecord::Base.transaction do
+        ApplicationRecord.transaction do
           invite.save!
           relationship.save!
 

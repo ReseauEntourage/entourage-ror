@@ -71,7 +71,7 @@ module CommunityAdmin
           current_user
         end
 
-      ActiveRecord::Base.transaction do
+      ApplicationRecord.transaction do
         private_circle.save!
         if user
           CommunityAdminService.add_to_group(user: user, group: private_circle)

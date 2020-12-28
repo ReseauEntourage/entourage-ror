@@ -16,7 +16,7 @@ require 'experimental/jsonb_with_schema'
 #  description      :string
 #
 
-class Entourage < ActiveRecord::Base
+class Entourage < ApplicationRecord
   include FeedsConcern
   include UpdatedAtSkippable
   include EntourageServices::LocationApproximationService::Callback

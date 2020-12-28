@@ -81,7 +81,7 @@ module CommunityAdminService
     end
     if neighborhood_ids.any?
       clauses.push "array_agg(neighborhoods.id) && ARRAY[%s]" %
-        neighborhood_ids.map { |id| ActiveRecord::Base.connection.quote(id) }.join(',')
+        neighborhood_ids.map { |id| ApplicationRecord.connection.quote(id) }.join(',')
     end
 
     clauses = [clauses.join(" or ")]

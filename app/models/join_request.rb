@@ -1,4 +1,4 @@
-class JoinRequest < ActiveRecord::Base
+class JoinRequest < ApplicationRecord
   ACCEPTED_STATUS="accepted"
   PENDING_STATUS="pending"
   REJECTED_STATUS="rejected"

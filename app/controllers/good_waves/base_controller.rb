@@ -74,7 +74,7 @@ module GoodWaves
 
       group = nil
 
-      ActiveRecord::Base.transaction do
+      ApplicationRecord.transaction do
         group = Entourage.create!(
           group_type: :group,
           entourage_type: :contribution,

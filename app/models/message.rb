@@ -1,3 +1,3 @@
-class Message < ActiveRecord::Base
+class Message < ApplicationRecord
   validates :content, presence: true
 end

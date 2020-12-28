@@ -1,6 +1,6 @@
 require 'experimental/jsonb_set'
 
-class Announcement < ActiveRecord::Base
+class Announcement < ApplicationRecord
   STATUS = %w[draft active archived].freeze
 
   validates :title, presence: true
@@ -15,8 +15,8 @@ class Announcement < ActiveRecord::Base
   validates :url, format: { with: %r(\A(https?|mailto|entourage):\S+\z) }, allow_blank: true
 
   scope :ordered, -> { order(:position, :id) }
-  scope :for_areas, -> (area_slugs) { where("areas ?| array[%s]" % area_slugs.map { |a| ActiveRecord::Base.connection.quote(a) }.join(',')) }
-  scope :for_user_goal, -> (user_goal) { where("user_goals ? %s" % ActiveRecord::Base.connection.quote(user_goal)) }
+  scope :for_areas, -> (area_slugs) { where("areas ?| array[%s]" % area_slugs.map { |a| ApplicationRecord.connection.quote(a) }.join(',')) }
+  scope :for_user_goal, -> (user_goal) { where("user_goals ? %s" % ApplicationRecord.connection.quote(user_goal)) }
 
   STATUS.each do |status|
     scope status, -> { where(status: status) }

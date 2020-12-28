@@ -107,7 +107,7 @@ module Admin
 
       saved = false
       begin
-        ActiveRecord::Base.transaction do
+        ApplicationRecord.transaction do
           user.save! if user.changed?
           moderation.save! if moderation.changed?
           saved = true

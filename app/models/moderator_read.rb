@@ -1,4 +1,4 @@
-class ModeratorRead < ActiveRecord::Base
+class ModeratorRead < ApplicationRecord
   belongs_to :moderatable, polymorphic: true
   belongs_to :user
 

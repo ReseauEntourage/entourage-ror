@@ -8,7 +8,7 @@ module RegistrationRequestServices
       organization = Organization.new(registration_request.extra["organization"].except("logo_key"))
       builder = UserServices::ProUserBuilder.new(params:registration_request.extra["user"], organization:organization)
 
-      ActiveRecord::Base.transaction do
+      ApplicationRecord.transaction do
         organization.save!
         builder.create_or_upgrade(send_sms: true) do |on|
           on.success do |user|

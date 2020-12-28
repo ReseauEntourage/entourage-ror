@@ -1,6 +1,6 @@
 require 'experimental/jsonb_with_schema'
 
-class ChatMessage < ActiveRecord::Base
+class ChatMessage < ApplicationRecord
   include FeedsConcern
 
   belongs_to :messageable, polymorphic: true

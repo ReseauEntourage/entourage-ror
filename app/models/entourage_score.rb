@@ -1,4 +1,4 @@
-class EntourageScore < ActiveRecord::Base
+class EntourageScore < ApplicationRecord
   belongs_to :entourage
   belongs_to :user
 

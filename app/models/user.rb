@@ -1,6 +1,6 @@
 require 'experimental/jsonb_set'
 
-class User < ActiveRecord::Base
+class User < ApplicationRecord
   include Onboarding::UserEventsTracking::UserConcern
   include UserServices::Engagement
 

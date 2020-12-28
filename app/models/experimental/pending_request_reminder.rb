@@ -1,5 +1,5 @@
 require 'experimental'
-class Experimental::PendingRequestReminder < ActiveRecord::Base
+class Experimental::PendingRequestReminder < ApplicationRecord
   belongs_to :user
 
   RECENCY_DEFINITION = 1.week

@@ -1,4 +1,4 @@
-class Feed < ActiveRecord::Base
+class Feed < ApplicationRecord
   include FeedsConcern
   reverse_geocoded_by :latitude, :longitude
 

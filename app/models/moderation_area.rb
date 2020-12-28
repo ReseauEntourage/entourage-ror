@@ -1,4 +1,4 @@
-class ModerationArea < ActiveRecord::Base
+class ModerationArea < ApplicationRecord
   belongs_to :moderator, class_name: :User
 
   def departement_slug

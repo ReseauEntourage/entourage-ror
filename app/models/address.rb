@@ -1,4 +1,4 @@
-class Address < ActiveRecord::Base
+class Address < ApplicationRecord
   include Onboarding::UserEventsTracking::AddressConcern
 
   USER_MAX_ADDRESSES = 2

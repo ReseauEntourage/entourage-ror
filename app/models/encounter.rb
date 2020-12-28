@@ -1,4 +1,4 @@
-class Encounter < ActiveRecord::Base
+class Encounter < ApplicationRecord
   belongs_to :tour, counter_cache: true
   has_many :answers
 

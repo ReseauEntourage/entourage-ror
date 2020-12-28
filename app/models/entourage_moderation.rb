@@ -1,4 +1,4 @@
-class EntourageModeration < ActiveRecord::Base
+class EntourageModeration < ApplicationRecord
   validates :entourage_id, presence: true
   belongs_to :entourage
   belongs_to :moderator, class_name: :User

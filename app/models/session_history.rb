@@ -1,4 +1,4 @@
-class SessionHistory < ActiveRecord::Base
+class SessionHistory < ApplicationRecord
   belongs_to :user
 
   INSERT_SQL = "insert into session_histories (user_id, platform, date) values (%s, %s, %s) on conflict do nothing".freeze

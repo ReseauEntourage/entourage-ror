@@ -1,4 +1,4 @@
-class TourPoint < ActiveRecord::Base
+class TourPoint < ApplicationRecord
 
   validates_numericality_of :latitude, :longitude
   belongs_to :tour

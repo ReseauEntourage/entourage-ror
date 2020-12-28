@@ -1,4 +1,4 @@
-class PartnerInvitation < ActiveRecord::Base
+class PartnerInvitation < ApplicationRecord
   validates :partner_id, :inviter_id, :invitee_email, :invited_at, :token, presence: true
   validates :invitee_email, format: { with: /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i }
   validates :token, format: { with: /\A[a-zA-Z0-9]{64}\z/ }

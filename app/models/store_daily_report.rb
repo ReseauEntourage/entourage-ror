@@ -1,2 +1,2 @@
-class StoreDailyReport < ActiveRecord::Base
+class StoreDailyReport < ApplicationRecord
 end

@@ -1,4 +1,4 @@
-class PartnerJoinRequest < ActiveRecord::Base
+class PartnerJoinRequest < ApplicationRecord
   belongs_to :user
 
   validates :user_id, presence: true

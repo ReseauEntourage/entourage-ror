@@ -1,4 +1,4 @@
-class EmailPreference < ActiveRecord::Base
+class EmailPreference < ApplicationRecord
   belongs_to :user
   belongs_to :category, class_name: :EmailCategory, foreign_key: :email_category_id
 

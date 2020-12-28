@@ -1,6 +1,6 @@
 require 'experimental/jsonb_with_schema'
 
-class EntourageInvitation < ActiveRecord::Base
+class EntourageInvitation < ApplicationRecord
   MODE_SMS="SMS"
 
   PENDING_STATUS="pending"

@@ -1,4 +1,4 @@
-class Tour < ActiveRecord::Base
+class Tour < ApplicationRecord
   include FeedsConcern
 
   TOUR_TYPES=%w(medical barehands alimentary)

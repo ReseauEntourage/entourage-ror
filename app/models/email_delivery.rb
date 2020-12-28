@@ -1,4 +1,4 @@
-class EmailDelivery < ActiveRecord::Base
+class EmailDelivery < ApplicationRecord
   belongs_to :user
   belongs_to :campaign, class_name: :EmailCampaign, foreign_key: :email_campaign_id
   validates_presence_of :user_id, :email_campaign_id, :sent_at

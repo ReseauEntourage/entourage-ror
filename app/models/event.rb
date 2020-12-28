@@ -1,4 +1,4 @@
-class Event < ActiveRecord::Base
+class Event < ApplicationRecord
   belongs_to :user
 
   INSERT_SQL = "insert into events (name, user_id, created_at) values (%s, %s, %s) on conflict do nothing".freeze

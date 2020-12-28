@@ -90,7 +90,7 @@ module Admin
     def reorder
       ordered_ids = (params[:ordered_ids] || "").to_s.split(',').map(&:to_i).uniq.reject(&:zero?)
 
-      ActiveRecord::Base.transaction do
+      ApplicationRecord.transaction do
         Announcement
           .active.where(id: ordered_ids)
           .sort_by { |a| ordered_ids.index(a.id) }

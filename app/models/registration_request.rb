@@ -1,4 +1,4 @@
-class RegistrationRequest < ActiveRecord::Base
+class RegistrationRequest < ApplicationRecord
   serialize :extra, JSON
 
   validates :status, :extra, presence: true

@@ -2,7 +2,7 @@
 #
 # Usage:
 #
-#   class MyModel < ActiveRecord::Base
+#   class MyModel < ApplicationRecord
 #     include CustomTimestampAttributesForUpdate
 #
 #     before_save do

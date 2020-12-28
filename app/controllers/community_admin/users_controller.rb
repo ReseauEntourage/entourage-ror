@@ -64,7 +64,7 @@ module CommunityAdmin
 
       if @filters[:roles][:is_filtered]
         operator = roles_operator == :and ? '?&' : '?|'
-        @users = @users.where("roles #{operator} array[#{ roles.map { |r| ActiveRecord::Base.connection.quote(r) }.join(',') }]")
+        @users = @users.where("roles #{operator} array[#{ roles.map { |r| ApplicationRecord.connection.quote(r) }.join(',') }]")
       end
 
       @users = @users.select(

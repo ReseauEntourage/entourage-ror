@@ -1,4 +1,4 @@
-class LoginHistory < ActiveRecord::Base
+class LoginHistory < ApplicationRecord
   belongs_to :user
 
   validates :user_id, :connected_at, presence: true
