@@ -22,6 +22,10 @@ class ConversationMessageBroadcast < ActiveRecord::Base
     !!archived_at
   end
 
+  def draft?
+    status&.to_sym == :draft
+  end
+
   def sending?
     status&.to_sym == :sending
   end
