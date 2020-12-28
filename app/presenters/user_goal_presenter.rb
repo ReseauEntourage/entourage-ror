@@ -10,6 +10,10 @@ class UserGoalPresenter
     I18n.t "community.#{@community.slug}.goals.#{slug}"
   end
 
+  def icon
+    I18n.t "community.#{@community.slug}.icons.#{slug}", default: 'times'
+  end
+
   def self.all_slugs community
     community.goals + [:goal_not_known]
   end
