@@ -1,4 +1,4 @@
-class NewJoinRequestNotifyJob < ActiveJob::Base
+class NewJoinRequestNotifyJob < ApplicationJob
   def perform(joinable_type, joinable_id, user_id)
     user = User.find(user_id)
     joinable = joinable_type.constantize.find(joinable_id)
