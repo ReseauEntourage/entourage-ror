@@ -66,7 +66,7 @@ module ChatServices
       joinable
     end
 
-    def self.create_broadcast sender:, recipients:, content:
+    def self.create_broadcast conversation_message_broadcast:, sender:, recipients:, content:
       user = sender
       success_users = []
       failure_users = []
@@ -86,7 +86,11 @@ module ChatServices
             user: user,
             joinable: conversation,
             join_request: join_request,
-            params: {content: content}
+            params: {
+              message_type: :broadcast,
+              conversation_message_broadcast_id: conversation_message_broadcast.id,
+              content: content,
+            }
         )
 
         chat_builder.create do |on|
@@ -95,7 +99,6 @@ module ChatServices
             success_users << recipient.id
           end
           on.failure do |message|
-            conversation_message_broadcast.failed(user, recipient)
             failure_users << recipient.id
           end
         end

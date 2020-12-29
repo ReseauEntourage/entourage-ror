@@ -21,6 +21,14 @@
       </div>
       <%= link_to("Rafraîchir", edit_admin_conversation_message_broadcast_path(@conversation_message_broadcast), class: "btn btn-success") %>
     </div>
+  <% elsif @conversation_message_broadcast.sent? %>
+    <div class="alert alert-info" role="alert" style="display: flex; align-items: center">
+      <div style="flex-grow: 1">
+        <b>Envoyé</b><br>
+        Votre message a été diffusé à <%= @conversation_message_broadcast.sent_count %> utilisateurs le <%= l @conversation_message_broadcast.sent_at %>.
+      </div>
+      <%= link_to("Rafraîchir", edit_admin_conversation_message_broadcast_path(@conversation_message_broadcast), class: "btn btn-success") %>
+    </div>
   <% elsif @conversation_message_broadcast.persisted? %>
     <div class="alert alert-success" role="alert" style="display: flex; align-items: center">
       <div style="flex-grow: 1">

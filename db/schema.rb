@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20201224150001) do
+ActiveRecord::Schema.define(version: 20201224150002) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -212,6 +212,7 @@ ActiveRecord::Schema.define(version: 20201224150001) do
     t.datetime "created_at",                    null: false
     t.datetime "updated_at",                    null: false
     t.string   "status",      default: "draft", null: false
+    t.datetime "sent_at"
   end
 
   add_index "conversation_message_broadcasts", ["area"], name: "index_conversation_message_broadcasts_on_area", using: :btree

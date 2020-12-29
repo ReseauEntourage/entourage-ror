@@ -8,8 +8,13 @@ class ConversationMessageBroadcastJob
     sender = User.find(sender_id)
     recipients = User.find(recipient_ids)
 
-    ChatServices::ChatMessageBuilder.create_broadcast(sender: sender, recipients: recipients, content: content) do |success_users, failure_users|
-      conversation_message_broadcast.update_attribute(:status, :archived)
+    ChatServices::ChatMessageBuilder.create_broadcast(
+      conversation_message_broadcast: conversation_message_broadcast,
+      sender: sender,
+      recipients: recipients,
+      content: content
+    ) do |success_users, failure_users|
+      conversation_message_broadcast.update_attribute(:status, :sent)
     end
   end
 

@@ -62,12 +62,20 @@ class ChatMessage < ActiveRecord::Base
           type: { type: :string, enum: [:entourage, :poi] },
           uuid: { type: :string }
         }
+      when 'broadcast:metadata'
+        {
+          conversation_message_broadcast_id: { type: :integer }
+        }
       end
     end
   end
 
   def message_types
     @message_types ||= ['status_update', *messageable&.group_type_config&.dig('message_types')]
+  end
+
+  def conversation_message_broadcast_id= id
+    metadata[:conversation_message_broadcast_id] = id
   end
 
   private
