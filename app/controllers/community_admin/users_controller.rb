@@ -27,12 +27,12 @@ module CommunityAdmin
 
       has_private_circle =
         case params[:has_private_circle]
-        when *ActiveRecord::ConnectionAdapters::Column::TRUE_VALUES
-          true
-        when *ActiveRecord::ConnectionAdapters::Column::FALSE_VALUES
+        when nil
+          nil
+        when *ActiveModel::Type::Boolean:::FALSE_VALUES
           false
         else
-          nil
+          true
         end
 
       @filters = {

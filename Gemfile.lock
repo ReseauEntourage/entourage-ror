@@ -62,6 +62,25 @@ GEM
     attr_encrypted (1.4.0)
       encryptor (~> 1.3.0)
     attr_extras (6.2.4)
+    aws-eventstream (1.1.1)
+    aws-partitions (1.447.0)
+    aws-sdk-core (3.114.0)
+      aws-eventstream (~> 1, >= 1.0.2)
+      aws-partitions (~> 1, >= 1.239.0)
+      aws-sigv4 (~> 1.1)
+      jmespath (~> 1.0)
+    aws-sdk-kms (1.43.0)
+      aws-sdk-core (~> 3, >= 3.112.0)
+      aws-sigv4 (~> 1.1)
+    aws-sdk-s3 (1.93.1)
+      aws-sdk-core (~> 3, >= 3.112.0)
+      aws-sdk-kms (~> 1)
+      aws-sigv4 (~> 1.1)
+    aws-sdk-sns (1.40.0)
+      aws-sdk-core (~> 3, >= 3.112.0)
+      aws-sigv4 (~> 1.1)
+    aws-sigv4 (1.2.3)
+      aws-eventstream (~> 1, >= 1.0.2)
     barnes (0.0.9)
       multi_json (~> 1)
       statsd-ruby (~> 1.1)
@@ -90,11 +109,14 @@ GEM
       railties (>= 3.2)
     encryptor (1.3.0)
     erubis (2.7.0)
+    excon (0.80.1)
     factory_bot (4.11.1)
       activesupport (>= 3.0.0)
     factory_bot_rails (4.11.1)
       factory_bot (~> 4.11.1)
       railties (>= 3.0.0)
+    faker (2.17.0)
+      i18n (>= 1.6, < 2)
     fakeredis (0.8.0)
       redis (~> 4.1)
     faraday (1.4.1)
@@ -121,20 +143,40 @@ GEM
       multi_xml (>= 0.5.2)
     i18n (1.8.10)
       concurrent-ruby (~> 1.0)
+    icalendar (2.7.1)
+      ice_cube (~> 0.16)
+    ice_cube (0.16.3)
+    jmespath (1.4.0)
     json (2.5.1)
     json-schema (2.8.1)
       addressable (>= 2.4)
     jwt (2.2.3)
+    kaminari (1.2.1)
+      activesupport (>= 4.1.0)
+      kaminari-actionview (= 1.2.1)
+      kaminari-activerecord (= 1.2.1)
+      kaminari-core (= 1.2.1)
+    kaminari-actionview (1.2.1)
+      actionview
+      kaminari-core (= 1.2.1)
+    kaminari-activerecord (1.2.1)
+      activerecord
+      kaminari-core (= 1.2.1)
+    kaminari-core (1.2.1)
     lograge (0.11.2)
       actionpack (>= 4)
       activesupport (>= 4)
       railties (>= 4)
       request_store (~> 1.0)
+    logstash-event (1.2.02)
     loofah (2.9.1)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
     mail (2.7.1)
       mini_mime (>= 0.1.1)
+    mailchimp-api (2.0.7)
+      excon (>= 0.16.0)
+      json (>= 1.7.7)
     mailjet (1.6.0)
       activesupport (>= 3.1.0)
       rack (>= 1.4.0)
@@ -146,6 +188,8 @@ GEM
     mini_mime (1.1.0)
     minitest (5.14.4)
     mixpanel-ruby (2.2.2)
+    momentjs-rails (2.20.1)
+      railties (>= 3.1)
     msgpack (1.4.2)
     multi_json (1.15.0)
     multi_xml (0.6.0)
@@ -156,6 +200,12 @@ GEM
       http-2 (~> 0.11)
     netrc (0.11.0)
     newrelic_rpm (5.7.0.350)
+    nexmo (7.2.1)
+      nexmo-jwt (~> 0.1.1)
+      sorbet-runtime (~> 0.5)
+      zeitwerk (~> 2, >= 2.2)
+    nexmo-jwt (0.1.2)
+      jwt (~> 2)
     nio4r (2.5.7)
     nokogiri (1.11.3-x86_64-linux)
       racc (~> 1.4)
@@ -167,6 +217,8 @@ GEM
       optimist (~> 3.0)
     pg (0.21.0)
     phonelib (0.6.49)
+    polyamorous (2.3.0)
+      activerecord (>= 5.0)
     polylines (0.4.0)
     public_suffix (4.0.6)
     puma (5.2.2)
@@ -208,6 +260,12 @@ GEM
       thor (>= 0.18.1, < 2.0)
     rainbow (3.0.0)
     rake (13.0.3)
+    ransack (2.3.0)
+      actionpack (>= 5.0)
+      activerecord (>= 5.0)
+      activesupport (>= 5.0)
+      i18n
+      polyamorous (= 2.3.0)
     redis (4.2.5)
     redis-namespace (1.8.1)
       redis (>= 3.0.4)
@@ -269,9 +327,12 @@ GEM
       rubocop (~> 1.0)
       rubocop-ast (>= 1.1.0)
     ruby-progressbar (1.11.0)
+    ruby-stemmer (3.0.0)
     ruby2_keywords (0.0.4)
+    safety_mailer (0.0.10)
     sentry-raven (3.1.2)
       faraday (>= 1.0)
+    shorturl (1.0.0)
     shoulda-matchers (4.5.1)
       activesupport (>= 4.2.0)
     sidekiq (3.4.1)
@@ -280,10 +341,13 @@ GEM
       json
       redis (>= 3.0.6)
       redis-namespace (>= 1.3.1)
+    simplify_rb (0.4.0)
     skylight (4.3.2)
       skylight-core (= 4.3.2)
     skylight-core (4.3.2)
       activesupport (>= 4.2.0)
+    slack-notifier (2.3.2)
+    sorbet-runtime (0.5.6389)
     spring (2.1.1)
     spring-commands-rspec (1.0.4)
       spring (>= 0.9.1)
@@ -320,6 +384,7 @@ GEM
     websocket-extensions (0.1.5)
     whenever (1.0.0)
       chronic (>= 0.6.3)
+    zeitwerk (2.4.2)
 
 PLATFORMS
   x86_64-linux
@@ -329,21 +394,30 @@ DEPENDENCIES
   activerecord-postgis-adapter (~> 3)
   airrecord (~> 1)
   attr_encrypted (~> 1)
+  aws-sdk-s3 (~> 1)
+  aws-sdk-sns (~> 1)
   barnes
   bcrypt (~> 3)
   bullet
   ddtrace
   dotenv-rails
   factory_bot_rails (~> 4)
+  faker
   fakeredis
   geocoder (~> 1)
   googlestaticmap!
   httparty
+  icalendar
   json-schema (~> 2.8.1)
+  kaminari (~> 1)
   lograge
+  logstash-event
+  mailchimp-api (~> 2)
   mailjet
   mixpanel-ruby
+  momentjs-rails (~> 2)
   newrelic_rpm (~> 5)
+  nexmo
   pg (~> 0)
   phonelib
   puma
@@ -352,15 +426,21 @@ DEPENDENCIES
   rails-observers
   rails_12factor
   rails_stdout_logging
+  ransack
   redis (~> 4)
   rpush (~> 3)
   rspec-rails
   rubocop-rails
   rubocop-rspec
+  ruby-stemmer
+  safety_mailer
   sentry-raven
+  shorturl (~> 1.0.0)
   shoulda-matchers
   sidekiq (~> 3)
+  simplify_rb (~> 0)
   skylight
+  slack-notifier
   spring
   spring-commands-rspec
   super_diff

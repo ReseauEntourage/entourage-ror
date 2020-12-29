@@ -1,4 +1,4 @@
-require_dependency 'api/v1/api_error'
+require 'api/v1/api_error'
 
 module Api
   module V1
