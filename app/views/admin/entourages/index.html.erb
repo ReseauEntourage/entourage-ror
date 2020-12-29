@@ -10,6 +10,7 @@
   <th>Type</th> -->
   <th></th>
   <th></th>
+  <th></th>
   <th>id</th>
   <th>Titre</th>
   <th>Description</th>
@@ -22,26 +23,26 @@
     <tr class="<%= 'not-open' if entourage.status != 'open' %>">
       <td>
         <% if entourage.admin_pin? %>
-          <i class="fa fa-star"></i>
+          <i class="fa fa-star" title="Prioritaire"></i>
         <% end %>
       </td>
       <td>
         <% if !entourage.moderated %>
-          <span class="badge" style="background: #f0ad4e">●</span>
+          <span class="badge" style="background: #f0ad4e" title="Non modéré">●</span>
         <% end %>
       </td>
       <td>
         <% if entourage.unread %>
-          <span class="badge" style="background: #d9534f">●</span>
+          <span class="badge" style="background: #d9534f" title="Non lu">●</span>
         <% elsif unread_count > 0 %>
-          <span class="badge" style="background: #d9534f"><%= unread_count %></span>
+          <span class="badge" style="background: #d9534f" title="Non lus"><%= unread_count %></span>
         <% end %>
       </td>
       <td><%= entourage.id %></td>
       <td><%= link_to entourage.title, [:admin, entourage] %></td>
       <td><%= entourage_description_excerpt(entourage.description) %></td>
-      <td><span class="badge"><%= @member_count[entourage.id] %></span></td>
-      <td><span class="badge"><%= @message_count[entourage.id].total %></span></td>
+      <td><span class="badge" title="Membres"><%= @member_count[entourage.id] %></span></td>
+      <td><span class="badge" title="Messages"><%= @message_count[entourage.id].total %></span></td>
       <td>
         <% requests_count = @requests_count[entourage.id] %>
         <% if requests_count[:total] > 0 %>
