@@ -3,6 +3,7 @@ require "securerandom"
 module UserServices
   class UserBuilder
     def initialize(params:)
+      params ||= {}
       @params = params.is_a?(HashWithIndifferentAccess) ? params : params.with_indifferent_access
       @callback = UserServices::UserBuilderCallback.new
     end

@@ -21,7 +21,7 @@ RSpec.describe Api::V1::RegistrationRequestsController, type: :controller do
   }
 
   let(:invalid_attributes) {
-    {organization: {}, user: {}}
+    {organization: {name: ""}, user: {}}
   }
 
   describe "POST #create" do
