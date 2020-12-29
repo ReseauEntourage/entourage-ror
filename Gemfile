@@ -54,6 +54,7 @@ group :development, :test do
   gem 'spring'#,                       '~> 2.0.2'
   gem 'spring-commands-rspec'#,        '~> 1.0.4'
   gem 'dotenv-rails'#,                 '~> 2.0.2'
+  gem 'rails-controller-testing'
 end
 
 group :development do
