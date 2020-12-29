@@ -22,7 +22,7 @@
       <div class="btn-group btn-group-sm" style="margin-left: 15px">
         <%= link_to("Tous", params.merge(goal: :all), class: "btn btn-#{@goal == :all ? :primary : :default}") %>
         <% UserGoalPresenter.all(current_user.community).each do |goal| %>
-          <%= link_to("", params.merge(goal: goal.slug), class: "btn btn-#{@goal == goal.slug ? :primary : :default} fa fa-#{goal.icon}") %>
+          <%= link_to("", params.merge(goal: goal.slug), class: "btn btn-#{@goal == goal.slug ? :primary : :default} fa fa-#{goal.icon}", title: "#{goal.name}") %>
         <% end %>
       </div>
 
@@ -51,7 +51,13 @@
               <td><%= @areas[conversation_message_broadcast.area.to_sym].name_with_departement %></td>
               <td><%= UserGoalPresenter.new(conversation_message_broadcast.goal, community: current_user.community).name %></td>
               <td><%= l(conversation_message_broadcast.updated_at, format: :short) if conversation_message_broadcast.updated_at %></td>
-              <td><%= link_to "Modifier", edit_admin_conversation_message_broadcast_path(conversation_message_broadcast), class: "btn btn-danger" %></td>
+              <td>
+                <% if conversation_message_broadcast.draft? %>
+                  <%= link_to "Modifier", edit_admin_conversation_message_broadcast_path(conversation_message_broadcast), class: "btn btn-danger" %>
+                <% elsif !conversation_message_broadcast.sending? %>
+                  <%= link_to "Dupliquer", clone_admin_conversation_message_broadcast_path(conversation_message_broadcast), method: :post, class: "btn btn-danger" %>
+                <% end %>
+              </td>
             </tr>
           <% end %>
         </table>
