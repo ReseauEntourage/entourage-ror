@@ -113,6 +113,18 @@ class User < ActiveRecord::Base
 
   scope :moderators, -> { where(admin: true).where("roles ? 'moderator'") }
 
+  scope :left_joins_addresses, -> { joins('LEFT OUTER JOIN addresses ON addresses.user_id = users.id') }
+
+  scope :in_area, -> (area) {
+    if area.to_sym == :sans_zone
+      left_joins_addresses.where("addresses.id IS NULL OR addresses.postal_code IS NULL")
+    elsif area.to_sym == :hors_zone
+      joins(:addresses).where("addresses.country != 'FR' OR left(addresses.postal_code, 2) NOT IN (?)", ModerationArea.only_departements)
+    else
+      joins(:addresses).where("addresses.country = 'FR' AND left(addresses.postal_code, 2) = ?", ModerationArea.departement(area))
+    end
+  }
+
   before_validation do
     self.goal = nil if goal.blank?
 

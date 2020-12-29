@@ -61,4 +61,8 @@ class ModerationArea < ActiveRecord::Base
   def self.by_slug
     Hash[all_with_no_zone.map { |a| [a.departement_slug, a] }]
   end
+
+  def self.only_departements
+    pluck(:departement) - ['*', '_']
+  end
 end
