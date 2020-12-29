@@ -44,7 +44,7 @@ class TourPresenter
     else
       hours = duration/3600
       minutes = (duration % 3600)/60
-      "#{pluralize(hours, "heure")} #{pluralize(minutes, "minute")}"
+      "#{pluralize(hours, "heure", "heures")} #{pluralize(minutes, "minute", "minutes")}"
     end
   end
 
