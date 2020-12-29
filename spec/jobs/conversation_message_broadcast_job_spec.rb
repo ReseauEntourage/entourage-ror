@@ -9,11 +9,11 @@ RSpec.describe ConversationMessageBroadcastJob do
     let!(:admin) { FactoryGirl.create(:user, admin: true, organization: organization) }
 
     let(:job) {
-      ConversationMessageBroadcastJob.perform_now(
-        conversation_message_broadcast_id: conversation_message_broadcast.id,
-        sender_id: admin.id,
-        recipient_ids: users.map(&:id),
-        content: conversation_message_broadcast.content
+      ConversationMessageBroadcastJob.new.perform(
+        conversation_message_broadcast.id,
+        admin.id,
+        users.map(&:id),
+        conversation_message_broadcast.content
       )
       users.map(&:reload)
       admin.reload
