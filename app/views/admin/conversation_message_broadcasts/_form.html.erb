@@ -19,6 +19,7 @@
         <b>En cours d'envoi</b><br>
         Cette diffusion de MP est en cours d'envoi. La diffusion sera archivée une fois les envois effectués.
       </div>
+      <%= link_to("Rafraîchir", edit_admin_conversation_message_broadcast_path(@conversation_message_broadcast), class: "btn btn-success") %>
     </div>
   <% elsif @conversation_message_broadcast.persisted? %>
     <div class="alert alert-success" role="alert" style="display: flex; align-items: center">
