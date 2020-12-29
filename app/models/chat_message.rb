@@ -71,7 +71,7 @@ class ChatMessage < ActiveRecord::Base
   end
 
   def message_types
-    @message_types ||= ['status_update', *messageable&.group_type_config&.dig('message_types')]
+    @message_types ||= ['status_update', 'broadcast', *messageable&.group_type_config&.dig('message_types')]
   end
 
   def conversation_message_broadcast_id= id
