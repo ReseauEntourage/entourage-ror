@@ -264,6 +264,16 @@ module Admin
       end
     end
 
+    def edit_image
+      @entourage = Entourage.find(params[:id])
+      @form = EntourageImageUploader
+    end
+
+    def image_upload_success
+      entourage = EntourageImageUploader.handle_success(params)
+      redirect_to edit_admin_entourage_path(entourage)
+    end
+
     def pin
       @entourage.update_column(:admin_pin, true)
       redirect_to [:admin, @entourage]
@@ -374,7 +384,7 @@ module Admin
     def entourage_params
       metadata_keys = params.dig(:entourage, :metadata).try(:keys) || []
       metadata_keys -= [:starts_at]
-      params.require(:entourage).permit(:group_type, :status, :title, :description, :category, :entourage_type, :display_category, :latitude, :longitude, :public, :online, :event_url, metadata: metadata_keys)
+      params.require(:entourage).permit(:group_type, :status, :title, :description, :category, :entourage_type, :display_category, :latitude, :longitude, :public, :online, :url, :event_url, metadata: metadata_keys)
     end
 
     def chat_messages_params
