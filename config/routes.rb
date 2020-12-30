@@ -129,6 +129,12 @@ Rails.application.routes.draw do
     resources :entourage_invitations, only: [:index]
     resources :entourages, only: [:index, :show, :edit, :update]
     resources :join_requests, only: [:create]
+    resources :conversation_message_broadcasts do
+      member do
+        post 'broadcast'
+        post 'clone'
+      end
+    end
 
     get 'public_user_autocomplete' => "users_search#public_user_autocomplete"
     get 'user_search' => "users_search#user_search"

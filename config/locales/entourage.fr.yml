@@ -72,6 +72,13 @@ fr:
         welcome_message_1: Message de bienvenue 1
         welcome_message_2: Message de bienvenue 2
 
+      conversation_message_broadcast:
+        moderation_area_id: Zone de modération
+        content: Contenu
+        goal: Public
+        title: Titre
+        archived_at: Archivé le
+
   community:
     entourage:
       roles:
@@ -97,4 +104,3 @@ fr:
         ask_for_help: street-view
         organization: sitemap
         goal_not_known: question
-

@@ -23,6 +23,7 @@
             <li><%= link_to "Inscription à la newsletter", admin_newsletter_subscriptions_path %></li>
             <li><%= link_to "Invitations à rejoindre un entourage", admin_entourage_invitations_path %></li>
             <li><%= link_to "Zones de modération", admin_moderation_areas_path %></li>
+            <li><%= link_to "Diffusions de MP", admin_conversation_message_broadcasts_path %></li>
             <% if EnvironmentHelper.staging? %>
               <li><%= link_to "Maraudes de test", admin_generate_tours_path %></li>
               <li><%= link_to "Utilisateurs de test", fake_admin_users_path %></li>
