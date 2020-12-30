@@ -378,6 +378,7 @@ ActiveRecord::Schema.define(version: 20201224150002) do
     t.string   "image_url"
     t.boolean  "online",                      default: false
     t.string   "event_url"
+    t.boolean  "admin_pin"
   end
 
   add_index "entourages", ["country", "postal_code"], name: "index_entourages_on_country_and_postal_code", using: :btree

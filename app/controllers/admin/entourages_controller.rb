@@ -1,6 +1,6 @@
 module Admin
   class EntouragesController < Admin::BaseController
-    before_action :set_entourage, only: [:show, :edit, :update, :moderator_read, :moderator_unread, :message, :sensitive_words, :sensitive_words_check, :edit_type]
+    before_action :set_entourage, only: [:show, :edit, :update, :moderator_read, :moderator_unread, :message, :sensitive_words, :sensitive_words_check, :edit_type, :pin, :unpin]
     before_filter :ensure_moderator!, only: [:message]
 
     def index
@@ -88,7 +88,7 @@ module Admin
       end
 
       @entourages = @entourages
-        .order("created_at DESC")
+        .order("admin_pin DESC, created_at DESC")
         .to_a
 
       @entourages = Kaminari.paginate_array(@entourages, total_count: @q.result.count).page(params[:page]).per(per_page)
@@ -262,6 +262,16 @@ module Admin
       else
         render :edit, alert: "Erreur lors de la mise à jour"
       end
+    end
+
+    def pin
+      @entourage.update_column(:admin_pin, true)
+      redirect_to [:admin, @entourage]
+    end
+
+    def unpin
+      @entourage.update_column(:admin_pin, false)
+      redirect_to [:admin, @entourage]
     end
 
     def edit_type
