@@ -3,59 +3,74 @@
 <div class="container-s mt-6 mb-2 px-3">
   <%= render 'organization_admin/flashes' %>
 
-  <div class="mb-6">
+  <div class="mb-2">
     <div class="text-large mb-2">Actions en cours (<%= @actions.count %>)</div>
-
-    <% if @actions.any? %>
+    <% if @actions.empty? %>
+      <div class="color-grey">Vous n'avez aucune action en cours.</div>
+    <% else %>
       <% @actions.each do |action| %>
-        <div class="flex mb-1">
-          <div style="width: 5em" class="flex-no-shrink text-right mr-2 color-grey">
-            <% date = action.created_at %>
-            <% if date.midnight > 3.months.ago.midnight %>
-              <%= l date, format: "%-d %b" %>
-            <% else %>
-              <%= l date, format: "%b %Y" %>
-            <% end %>
+        <div class="border-bottom py-1 flex flex-align-center overlay-container">
+          <div style="width: 3rem; height: 3rem; border-radius: 50%; background-image: url('<%= action.image_url %>'); background-size: contain; background-color: #fff"
+               class="mr-2">
           </div>
-          <div>
-            <%= link_to action.title, action.share_url, target: :_blank, class: "hover-underline" %>
-          </div>
-          <div style="margin: 0px 30px">
-            <%= link_to "Modifier l'image", edit_image_organization_admin_entourage_path(action.id), class: "btn btn-primary" %>
+          <div class="flex-grow">
+            <div class="flex">
+              <div class="flex-grow text-bold">
+                <% date = action.created_at %>
+                <% if date.midnight > 3.months.ago.midnight %>
+                  <%= l date, format: "%-d %b" %>
+                <% else %>
+                  <%= l date, format: "%b %Y" %>
+                <% end %>
+              </div>
+              <div>
+                <%= link_to "Modifier l'image", edit_image_organization_admin_entourage_path(action.id), class: "hover-underline" %>
+              </div>
+            </div>
+
+            <div class="color-grey">
+              <%= link_to action.title, action.share_url, target: :_blank, class: "hover-underline" %>
+            </div>
           </div>
         </div>
       <% end %>
-    <% else %>
-      <div class="color-grey">Vous n'avez aucune action en cours.</div>
     <% end %>
   </div>
 
   <div class="mb-6">
     <div class="text-large mb-2">Évènements à venir (<%= @events.count %>)</div>
 
-    <% if @events.any? %>
+    <% if @events.empty? %>
+      <div class="color-grey">Vous n'avez aucun évènement à venir.</div>
+    <% else %>
       <% @events.each do |event| %>
-        <div class="flex mb-1">
-          <div style="width: 5em" class="flex-no-shrink text-right mr-2 color-grey">
-            <% date = event.metadata[:starts_at] %>
-            <% if date.today? %>
-              <%= l date, format: "%H:%M" %>
-            <% elsif date.midnight < 14.days.from_now.midnight %>
-              <%= l date, format: "%a. %d" %>
-            <% else %>
-              <%= l date, format: "%-d %b" %>
-            <% end %>
+        <div class="border-bottom py-1 flex flex-align-center overlay-container">
+          <div style="width: 3rem; height: 3rem; border-radius: 50%; background-image: url('<%= event.image_url %>'); background-size: contain; background-color: #fff"
+               class="mr-2">
           </div>
-          <div>
-            <%= link_to event.title, event.share_url, target: :_blank, class: "hover-underline" %>
-          </div>
-          <div style="margin: 0px 30px">
-            <%= link_to "Modifier l'image", edit_image_organization_admin_entourage_path(event.id), class: "btn btn-primary" %>
+          <div class="flex-grow">
+            <div class="flex">
+              <div class="flex-grow text-bold">
+                <% date = event.metadata[:starts_at] %>
+                <% if date.today? %>
+                  <%= l date, format: "%H:%M" %>
+                <% elsif date.midnight < 14.days.from_now.midnight %>
+                  <%= l date, format: "%a. %d" %>
+                <% else %>
+                  <%= l date, format: "%-d %b" %>
+                <% end %>
+              </div>
+              <div>
+                <%= link_to "Modifier l'image", edit_image_organization_admin_entourage_path(event.id), class: "hover-underline" %>
+              </div>
+            </div>
+
+            <div class="color-grey">
+              <%= link_to event.title, event.share_url, target: :_blank, class: "hover-underline" %>
+            </div>
           </div>
         </div>
       <% end %>
-    <% else %>
-      <div class="color-grey">Vous n'avez aucun évènement à venir.</div>
     <% end %>
   </div>
 </div>
