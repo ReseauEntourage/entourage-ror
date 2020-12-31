@@ -352,6 +352,16 @@ Rails.application.routes.draw do
         get '/logo_upload_success', action: :logo_upload_success
       end
     end
+    resources :entourages, only: [:edit] do
+      member do
+        get '/edit/image', action: :edit_image
+        get '/image_upload_success', action: :image_upload_success
+      end
+    end
+    resources :uploads, only: :new
+    namespace :uploads do
+      get '/success', action: :update
+    end
   end
 
   good_waves_url = URI(ENV['GOOD_WAVES_URL'] || "//#{ENV['HOST']}/good_waves")

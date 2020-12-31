@@ -20,6 +20,9 @@
           <div>
             <%= link_to action.title, action.share_url, target: :_blank, class: "hover-underline" %>
           </div>
+          <div style="margin: 0px 30px">
+            <%= link_to "Modifier l'image", edit_image_organization_admin_entourage_path(action.id), class: "btn btn-primary" %>
+          </div>
         </div>
       <% end %>
     <% else %>
@@ -45,6 +48,9 @@
           </div>
           <div>
             <%= link_to event.title, event.share_url, target: :_blank, class: "hover-underline" %>
+          </div>
+          <div style="margin: 0px 30px">
+            <%= link_to "Modifier l'image", edit_image_organization_admin_entourage_path(event.id), class: "btn btn-primary" %>
           </div>
         </div>
       <% end %>
