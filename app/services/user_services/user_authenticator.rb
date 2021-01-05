@@ -41,6 +41,19 @@ module UserServices
       valid_password ? user : nil
     end
 
+    def self.authenticate_by_phone_and_password(phone:, password:)
+      return nil if phone.blank? || password.nil?
+
+      user_phone = Phone::PhoneBuilder.new(phone: phone).format
+      user = User.where(community: :entourage, phone: user_phone).first
+      return nil if user.nil?
+
+      valid_password = UserServices::AuthenticationService.new(user: user).check_admin_password(password)
+      return nil unless valid_password
+
+      user
+    end
+
     def self.auth_token user, expires_in: 7.days
       payload = "#{user.id}-#{expires_in.from_now.to_i}"
       signature = SignatureService.sign(payload, salt: user.token)

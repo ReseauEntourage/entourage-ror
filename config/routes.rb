@@ -107,6 +107,8 @@ Rails.application.routes.draw do
     get '/' => 'users#index'
     get 'logout' => 'sessions#logout'
 
+    resources :sessions, only: [:new, :create]
+
     resources :generate_tours, only: [:index, :create]
 
     resources :users, only: [:index, :edit, :update, :new, :create] do
