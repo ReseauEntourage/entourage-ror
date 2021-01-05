@@ -62,6 +62,8 @@ Rails.application.routes.draw do
           get :edit_type
           post :pin
           post :unpin
+          get '/edit/image', action: :edit_image
+          get '/image_upload_success', action: :image_upload_success
         end
         collection do
           post :destroy_message
