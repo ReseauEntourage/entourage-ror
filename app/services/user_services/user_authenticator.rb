@@ -41,14 +41,14 @@ module UserServices
       valid_password ? user : nil
     end
 
-    def self.authenticate_by_phone_and_password(phone:, password:)
-      return nil if phone.blank? || password.nil?
+    def self.authenticate_by_phone_and_admin_password(phone:, admin_password:)
+      return nil if phone.blank? || admin_password.nil?
 
       user_phone = Phone::PhoneBuilder.new(phone: phone).format
       user = User.where(community: :entourage, phone: user_phone).first
       return nil if user.nil?
 
-      valid_password = UserServices::AuthenticationService.new(user: user).check_admin_password(password)
+      valid_password = UserServices::AuthenticationService.new(user: user).check_admin_password(admin_password)
       return nil unless valid_password
 
       user

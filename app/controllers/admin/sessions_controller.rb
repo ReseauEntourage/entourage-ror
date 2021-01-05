@@ -7,7 +7,7 @@ module Admin
     end
 
     def create
-      user = UserServices::UserAuthenticator.authenticate_by_phone_and_password(phone: params[:phone], password: params[:password])
+      user = UserServices::UserAuthenticator.authenticate_by_phone_and_admin_password(phone: params[:phone], admin_password: params[:admin_password])
 
       if user && user.admin
         session[:user_id] = user.id

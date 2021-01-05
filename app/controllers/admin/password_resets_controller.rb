@@ -32,23 +32,31 @@ module Admin
     end
 
     def update
-      token = params[:token].to_s
+      token = params[:id].to_s
 
-      if params[:email].blank?
-        return render json: { error: 'Token not present' }
+      @user = User.find_by(reset_admin_password_token: token)
+
+      # token validation
+      unless @user.present? && @user.admin_password_token_valid?
+        flash[:error] = "Le lien n'est pas valide ou a expiré. Merci de générer un nouveau lien"
+        redirect_to new_admin_session_path and return
       end
 
-      user = User.find_by(reset_admin_password_token: token)
+      @user.assign_attributes(user_params)
 
-      if user.present? && user.admin_password_token_valid?
-        if user.reset_admin_password!(params[:admin_password])
-          render json: { status: 'ok' }, status: :ok
-        else
-          render json: { error: user.errors.full_messages }, status: :unprocessable_entity
-        end
+      # form and reset validation
+      if @user.valid? && @user.reset_admin_password!
+        flash[:notice] = 'Votre mot de passe a été mis à jour.'
+        redirect_to new_admin_session_path
       else
-        render json: { error:  ['Link not valid or expired. Try generating a new link.'] }, status: :not_found
+        flash[:error] = @user.errors.full_messages.to_sentence
+        redirect_to edit_admin_password_reset_path(params[:id])
       end
+    end
+
+    private
+    def user_params
+      params.require(:user).permit(:admin_password, :admin_password_confirmation)
     end
   end
 end
