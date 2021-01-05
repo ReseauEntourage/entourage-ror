@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20201224150002) do
+ActiveRecord::Schema.define(version: 20210104140000) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -865,6 +865,9 @@ ActiveRecord::Schema.define(version: 20201224150002) do
     t.uuid     "uuid",                                     default: "gen_random_uuid()"
     t.string   "goal"
     t.jsonb    "interests",                                default: [],                  null: false
+    t.string   "encrypted_admin_password"
+    t.string   "reset_admin_password_token"
+    t.datetime "reset_admin_password_sent_at"
   end
 
   add_index "users", ["address_id"], name: "index_users_on_address_id", using: :btree

@@ -109,6 +109,8 @@ Rails.application.routes.draw do
 
     resources :sessions, only: [:new, :create]
 
+    resources :password_resets, only: [:new, :create, :edit, :update]
+
     resources :generate_tours, only: [:index, :create]
 
     resources :users, only: [:index, :edit, :update, :new, :create] do

@@ -218,6 +218,22 @@ class User < ActiveRecord::Base
     !encrypted_password.nil?
   end
 
+  def generate_admin_password_token!
+   self.reset_admin_password_token = SecureRandom.hex(10)
+   self.reset_admin_password_sent_at = Time.now.utc
+   save!
+  end
+
+  def admin_password_token_valid?
+   (self.reset_admin_password_sent_at + 4.hours) > Time.now.utc
+  end
+
+  def reset_admin_password!(admin_password)
+   self.reset_admin_password_token = nil
+   self.encrypted_admin_password = admin_password
+   save!
+  end
+
   def pro?
     user_type=="pro"
   end

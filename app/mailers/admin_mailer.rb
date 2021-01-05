@@ -45,4 +45,12 @@ class AdminMailer < ActionMailer::Base
     mail to: "contact@entourage.social",
          subject: %(Signalement d'#{group_name} : "#{reported_group.title}")
   end
+
+  def forgot_password(user:)
+    @user = user
+    @token = user.reset_admin_password_token
+
+    mail to: user.email,
+         subject: "Réinitialiser votre mot de passe - #{user.first_name} #{user.last_name}"
+  end
 end
