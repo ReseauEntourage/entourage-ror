@@ -35,18 +35,13 @@ class ApplicationController < ActionController::Base
 
   def login_error(message)
     flash[:error] = message
-
-    if EnvironmentHelper.admin_host? request
-      default_path = new_admin_session_path
-      continue_path = new_admin_session_path(continue: request.fullpath)
-    else
-      default_path = new_session_path
-      continue_path = new_session_path(continue: request.fullpath)
-    end
-
-    redirect_path = request.get? && request.fullpath.presence != '/' ? continue_path : default_path
-
-    redirect_to redirect_path
+    redirect_path =
+      if request.get? && request.fullpath.presence != '/'
+        new_session_path(continue: request.fullpath)
+      else
+        new_session_path
+      end
+    return redirect_to redirect_path
   end
 
   def ping
