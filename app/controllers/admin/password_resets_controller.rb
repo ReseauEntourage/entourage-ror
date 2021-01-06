@@ -14,14 +14,16 @@ module Admin
       phone = Phone::PhoneBuilder.new(phone: params[:phone]).format
       user = User.find_by(phone: phone)
 
-      if user.present?
-        user.generate_admin_password_token!
+      if user.nil?
+        flash[:error] = 'Identifiant incorrect'
+      elsif user.generate_admin_password_token.save
         AdminMailer.forgot_password(user: user).deliver_now
         flash[:notice] = 'Un mail vient de vous être envoyé avec les instructions de réinitialisation'
       else
-        flash[:error] = 'Identifiant incorrect'
+        flash[:error] = user.errors.full_messages.to_sentence
       end
-        redirect_to new_admin_password_reset_path
+
+      redirect_to new_admin_password_reset_path
     end
 
     def edit

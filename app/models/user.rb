@@ -227,10 +227,10 @@ class User < ActiveRecord::Base
     !encrypted_password.nil?
   end
 
-  def generate_admin_password_token!
+  def generate_admin_password_token
    self.reset_admin_password_token = SecureRandom.hex(10)
    self.reset_admin_password_sent_at = Time.now.utc
-   save!
+   self
   end
 
   def admin_password_token_valid?
