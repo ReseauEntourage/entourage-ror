@@ -277,8 +277,7 @@ describe Api::V1::Entourages::ChatMessagesController do
               "message_type" => "share",
               "metadata" => {
                 "type" => "entourage",
-                "uuid" => entourage.uuid_v2,
-                "$id" => "urn:chat_message:share:metadata"
+                "uuid" => entourage.uuid_v2
               }
             }
           })}
@@ -312,8 +311,7 @@ describe Api::V1::Entourages::ChatMessagesController do
               "message_type" => "share",
               "metadata" => {
                 "type" => "poi",
-                "uuid" => poi.id.to_s,
-                "$id" => "urn:chat_message:share:metadata"
+                "uuid" => poi.id.to_s
               }
             }
           })}

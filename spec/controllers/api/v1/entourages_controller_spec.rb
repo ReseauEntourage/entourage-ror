@@ -388,12 +388,6 @@ describe Api::V1::EntouragesController do
         let(:consent_obtained) { entourage.moderation&.action_recipient_consent_obtained }
         before { post :create, params: { entourage: group_details.merge(location: {longitude: 1.123, latitude: 4.567}, title: "foo", recipient_consent_obtained: recipient_consent_obtained), token: user.token } }
 
-        context "invalid param" do
-          let(:recipient_consent_obtained) { "lol" }
-          it { expect(JSON.parse(response.body)['reasons']).to eq(["recipient_consent_obtained must be a boolean"]) }
-          it { expect(response.status).to eq 400 }
-        end
-
         context "missing param" do
           let(:recipient_consent_obtained) { nil }
           it { expect(entourage.status).to eq 'open' }
