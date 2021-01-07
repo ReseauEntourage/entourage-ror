@@ -4,7 +4,7 @@
   <div style="width: 750px; margin: auto">
     <h1>Modifier l'image</h1>
 
-    <div class="margin-bottom: 15px">
+    <div style="margin-bottom: 15px">
       <%= image_tag @entourage.image_url, size: '750x320' %>
     </div>
 
@@ -15,7 +15,7 @@
         <input type="file" class="btn btn-default"
                name="file" accept="<%= @form.content_types %>"/>
       </div>
-      <input type="submit" value="Enregistrer" class="btn btn-success" disabled/>
+      <input type="submit" value="Enregistrer" class="btn btn-primary" style="margin: 5px" disabled/>
     </form>
   </div>
 </div>
