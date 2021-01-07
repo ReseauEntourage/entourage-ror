@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# bin/d db-pull entourage-back-preprod
+
 set -o pipefail
 
 source "${BASH_SOURCE%/*}/pg-lib.sh"

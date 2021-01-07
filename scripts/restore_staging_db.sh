@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+
+# deprecated pour faire un dump de la db de prod pour le mettre en préprod
+
 set -e
 
 echo "Snapshot production db"
