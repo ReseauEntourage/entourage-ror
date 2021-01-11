@@ -23,6 +23,7 @@ module Admin
       elsif user.generate_admin_password_token.save
         AdminMailer.forgot_password(user: user).deliver_now
         flash[:notice] = 'Un mail vient de vous être envoyé avec les instructions de réinitialisation'
+        redirect_to new_admin_session_path and return
       else
         flash[:error] = user.errors.full_messages.to_sentence
       end
