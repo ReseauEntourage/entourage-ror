@@ -15,7 +15,7 @@ module Admin
 
         redirect_to(params[:continue].presence || root_path)
       else
-        flash[:error] = "Identifiants incorrects"
+        flash[:error] = user.admin ? "Identifiants incorrects" : "Votre profil doit être admin"
         redirect_path =
           if params[:continue].present?
             new_admin_session_path(continue: params[:continue])

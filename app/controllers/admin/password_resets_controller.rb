@@ -16,6 +16,10 @@ module Admin
 
       if user.nil?
         flash[:error] = 'Identifiant incorrect'
+      elsif !user.email
+        flash[:error] = 'Le compte associé au téléphone doit définir un email'
+      elsif !user.admin
+        flash[:error] = 'Votre profil doit être admin'
       elsif user.generate_admin_password_token.save
         AdminMailer.forgot_password(user: user).deliver_now
         flash[:notice] = 'Un mail vient de vous être envoyé avec les instructions de réinitialisation'
