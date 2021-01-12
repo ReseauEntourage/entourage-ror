@@ -1,0 +1,18 @@
+<div class="row">
+  <div class="sign-in-block col-md-4 center-block" style="float: none">
+    <div id="flash">
+      <%= display_flash_messages %>
+    </div>
+
+    <p><b>Modification du mot de passe</b></p>
+    <%= form_for @user, :url => admin_password_reset_path(params[:id]) do |f| %>
+      <div class="field form-group">
+        <%= f.password_field :admin_password, placeholder: t('activerecord.attributes.user.admin_password'), class: 'form-control' %>
+      </div>
+      <div class="field form-group">
+        <%= f.password_field :admin_password_confirmation, placeholder: t('activerecord.attributes.user.admin_password_confirmation'), class: 'form-control' %>
+      </div>
+      <div class='actions form-group'><%= f.submit 'Mise à jour', class: "btn btn-lg btn-entourage" %></div>
+    <% end %>
+  </div>
+</div>

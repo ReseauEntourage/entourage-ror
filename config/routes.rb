@@ -5,6 +5,7 @@ Rails.application.routes.draw do
     scope :module => "admin", :as => "admin" do
       get '/' => 'base#home'
       get 'logout' => 'sessions#logout'
+      get '/sessions/new', to: redirect('/admin/sessions/new')
 
       resources :generate_tours, only: [:index, :create]
 
@@ -108,6 +109,10 @@ Rails.application.routes.draw do
   namespace :admin do
     get '/' => 'users#index'
     get 'logout' => 'sessions#logout'
+
+    resources :sessions, only: [:new, :create]
+
+    resources :password_resets, only: [:new, :create, :edit, :update]
 
     resources :generate_tours, only: [:index, :create]
 

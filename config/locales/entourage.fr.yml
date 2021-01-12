@@ -13,6 +13,8 @@ fr:
         targeting_profile: Profil modération
         goal: Profil déclaré
         partner: Association
+        admin_password: Mot de passe
+        admin_password_confirmation: Confirmation de mot de passe
       organization:
         name: Nom
         description: Description

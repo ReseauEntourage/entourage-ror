@@ -52,6 +52,10 @@ class User < ActiveRecord::Base
   has_many :addresses, -> { order(:position) }, dependent: :destroy
   has_many :partner_join_requests
 
+  attr_reader :admin_password
+  validates_length_of :admin_password, within: 8..256, allow_nil: true
+  validates :admin_password, confirmation: true, presence: false, if: Proc.new { |u| u.admin_password.present? }
+
   def departements
     addresses.where("country = 'FR' and postal_code <> ''").pluck("distinct left(postal_code, 2)")
   end
@@ -214,8 +218,28 @@ class User < ActiveRecord::Base
     self.encrypted_password = BCrypt::Password.create(new_password) if !new_password.nil?
   end
 
+  def admin_password=(new_password)
+    @admin_password = new_password
+    self.encrypted_admin_password = BCrypt::Password.create(new_password) if new_password.present?
+  end
+
   def has_password?
     !encrypted_password.nil?
+  end
+
+  def generate_admin_password_token
+   self.reset_admin_password_token = SecureRandom.hex(10)
+   self.reset_admin_password_sent_at = Time.now.utc
+   self
+  end
+
+  def admin_password_token_valid?
+   (self.reset_admin_password_sent_at + 4.hours) > Time.now.utc
+  end
+
+  def reset_admin_password!
+   self.reset_admin_password_token = nil
+   save!
   end
 
   def pro?

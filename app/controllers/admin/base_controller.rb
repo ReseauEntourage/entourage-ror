@@ -8,7 +8,7 @@ module Admin
       if current_admin
         redirect_to admin_entourages_path
       else
-        redirect_to new_session_path
+        redirect_to new_admin_session_path
       end
     end
 
