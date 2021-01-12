@@ -27,9 +27,9 @@ module CommunityAdmin
 
       has_private_circle =
         case params[:has_private_circle]
-        when nil
+        when nil, ''
           nil
-        when *ActiveModel::Type::Boolean:::FALSE_VALUES
+        when *ActiveModel::Type::Boolean::FALSE_VALUES
           false
         else
           true

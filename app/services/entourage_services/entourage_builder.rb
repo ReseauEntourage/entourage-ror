@@ -7,7 +7,7 @@ module EntourageServices
 
       @recipient_consent_obtained =
         case @params.delete(:recipient_consent_obtained)
-        when nil
+        when nil, ''
           nil
         when *ActiveModel::Type::Boolean::FALSE_VALUES
           false
@@ -138,7 +138,7 @@ module EntourageServices
 
         entourage.moderation.action_outcome =
           case moderation_params[:success]
-          when nil
+          when nil, ''
             entourage.errors.add(:base, "outcome.success must be a boolean")
             return false
           when *ActiveModel::Type::Boolean::FALSE_VALUES
