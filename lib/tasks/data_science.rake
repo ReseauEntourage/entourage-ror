@@ -52,7 +52,7 @@ namespace :data_science do
 
       SessionHistory
         .joins(:user).merge(users)
-        .select(:user_id, :date).uniq
+        .select(:user_id, :date).distinct
         .order(:date, :user_id)
         .each do |session|
           csv.puts [

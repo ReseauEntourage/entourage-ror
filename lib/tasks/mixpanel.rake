@@ -40,12 +40,12 @@ namespace :mixpanel do
       .merge(join_request_scope)
       .merge(entourage_scope)
       .select(:id)
-      .uniq
+      .distinct
 
     updates = []
 
     users.find_each do |user|
-      postal_codes = user.entourage_participations.merge(entourage_scope).uniq.pluck(:postal_code)
+      postal_codes = user.entourage_participations.merge(entourage_scope).distinct.pluck(:postal_code)
       updates.push(
         '$distinct_id' => user.id,
         '$set' => {

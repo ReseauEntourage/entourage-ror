@@ -17,7 +17,7 @@ class CleanupService
                'street_person_name IS NOT NULL OR '\
                'latitude IS NOT NULL')
 
-    tour_ids = encounters.uniq.pluck(:tour_id)
+    tour_ids = encounters.distinct.pluck(:tour_id)
 
     bins = {
       delete: [],

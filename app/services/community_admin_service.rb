@@ -118,7 +118,7 @@ module CommunityAdminService
         .where(status: [:pending, :accepted])
         .where(joinable_type: :Entourage, joinable_id: neighborhood_ids)
       )
-      .uniq
+      .distinct
   end
 
   def self.coordinator_private_circles(user, has_pending_field: false)
@@ -136,7 +136,7 @@ module CommunityAdminService
             member_to_private_circle.status = 'pending' and
             member_to_private_circle.role in ('visitor', 'visited')
         })
-        .uniq
+        .distinct
       end
     else
       neighborhood_ids = coordinator_neighborhoods(user).pluck(:id)
@@ -160,7 +160,7 @@ module CommunityAdminService
             member_to_neighborhood.status = 'accepted'
         })
         .where(member_to_neighborhood: {joinable_id: neighborhood_ids})
-        .uniq
+        .distinct
     end
 
     if has_pending_field
@@ -205,7 +205,7 @@ module CommunityAdminService
             member_to_neighborhood.status = 'accepted'
         })
         .where(member_to_neighborhood: {joinable_id: neighborhood_ids})
-        .uniq
+        .distinct
     end
 
     scope

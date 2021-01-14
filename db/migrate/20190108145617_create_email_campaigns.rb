@@ -8,7 +8,7 @@ class CreateEmailCampaigns < ActiveRecord::Migration
 
     EmailDelivery.reset_column_information
 
-    EmailDelivery.uniq.pluck(:campaign).each do |name|
+    EmailDelivery.distinct.pluck(:campaign).each do |name|
       campaign = EmailCampaign.find_or_create_by!(name: name)
       EmailDelivery.where(campaign: name).update_all(email_campaign_id: campaign.id)
     end
@@ -24,7 +24,7 @@ class CreateEmailCampaigns < ActiveRecord::Migration
 
     EmailDelivery.reset_column_information
 
-    EmailDelivery.uniq.pluck(:email_campaign_id).each do |id|
+    EmailDelivery.distinct.pluck(:email_campaign_id).each do |id|
       campaign = EmailCampaign.find_by!(id: id)
       EmailDelivery.where(email_campaign_id: id).update_all(campaign: campaign.name)
     end
