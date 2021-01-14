@@ -6,7 +6,7 @@ module RegistrationRequestServices
 
     def validate!
       organization = Organization.new(registration_request.extra["organization"].except("logo_key"))
-      builder = UserServices::ProUserBuilder.new(params:registration_request.extra["user"], organization:organization)
+      builder = UserServices::ProUserBuilder.new(params:registration_request.extra["user"].with_indifferent_access, organization:organization)
 
       ApplicationRecord.transaction do
         organization.save!

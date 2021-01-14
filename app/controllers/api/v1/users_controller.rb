@@ -348,12 +348,12 @@ module Api
       rescue => e
         Raven.capture_exception(e)
       ensure
-        render nothing: true
+        head :ok
       end
 
       def organization_admin_redirect
         if current_user.partner.nil?
-          return render nothing: true
+          return head :ok
         end
 
         message = params[:message] if params[:message].in?(['webapp_logout'])

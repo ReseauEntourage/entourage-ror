@@ -2,7 +2,7 @@ module EntourageServices
   class EntourageBuilder
     def initialize(params:, user:)
       @callback = Callback.new
-      @params = params.with_indifferent_access
+      @params = params
       @user = user
 
       @recipient_consent_obtained =
@@ -106,7 +106,7 @@ module EntourageServices
 
       sent_metadata = params[:metadata]
       if params.key? :metadata
-        params[:metadata] = params[:metadata].reverse_merge entourage.metadata
+        params[:metadata] = params[:metadata].to_h.reverse_merge entourage.metadata
       end
 
       # prevent category change for groups (good_waves)

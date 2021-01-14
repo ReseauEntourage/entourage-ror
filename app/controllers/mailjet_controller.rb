@@ -6,6 +6,6 @@ class MailjetController < ActionController::Base
     events.each do |event|
       AsyncService.new(MailjetService).handle_event(event.as_json)
     end
-    render nothing: true
+    head :ok
   end
 end

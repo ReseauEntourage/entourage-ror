@@ -25,9 +25,9 @@ module UserServices
     def update(user:, platform: nil)
       yield callback if block_given?
 
-      return callback.on_failure.try(:call, user) if params.keys.include?("phone")
+      return callback.on_failure.try(:call, user) if params.keys.include?(:phone)
 
-      if params.key?('sms_code') && platform != :mobile
+      if params.key?(:sms_code) && platform != :mobile
         return callback.on_failure.try(:call, user)
       end
 
