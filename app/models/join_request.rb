@@ -110,14 +110,14 @@ class JoinRequest < ApplicationRecord
     return if joinable.nil?
 
     # touch the group for new pending join requests
-    if (id_changed? || status_changed?) && status == 'pending'
+    if (saved_change_to_id? || saved_change_to_status?) && status == 'pending'
       FeedUpdatedAt.update(joinable_type, joinable_id, requested_at || created_at)
     end
 
     # update the conversation's uuid_v2 to match the list of participants
     if joinable.group_type == 'conversation'
-      # TODO: handle status? (status_changed?)
-      if @skip_conversation_uuid_update != true && (id_changed? || destroyed?)
+      # TODO: handle status? (saved_change_to_status?)
+      if @skip_conversation_uuid_update != true && (saved_change_to_id? || destroyed?)
         joinable.update!(
           uuid_v2: ConversationService.hash_for_participants(
             joinable.join_requests.pluck(:user_id), validated: false))

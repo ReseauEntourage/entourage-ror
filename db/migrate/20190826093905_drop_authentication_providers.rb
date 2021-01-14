@@ -1,4 +1,4 @@
-class DropAuthenticationProviders < ActiveRecord::Migration
+class DropAuthenticationProviders < ActiveRecord::Migration[4.2]
   def up
     drop_table :authentication_providers
   end

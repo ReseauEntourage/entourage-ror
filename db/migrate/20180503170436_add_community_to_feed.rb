@@ -1,4 +1,4 @@
-class AddCommunityToFeed < ActiveRecord::Migration
+class AddCommunityToFeed < ActiveRecord::Migration[4.2]
   def up
     sql = <<-SQL
       DROP VIEW IF EXISTS feeds;

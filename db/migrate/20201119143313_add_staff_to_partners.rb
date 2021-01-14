@@ -1,4 +1,4 @@
-class AddStaffToPartners < ActiveRecord::Migration
+class AddStaffToPartners < ActiveRecord::Migration[4.2]
   def change
     add_column :partners, :staff, :boolean, null: false, default: false
     reversible do |dir|

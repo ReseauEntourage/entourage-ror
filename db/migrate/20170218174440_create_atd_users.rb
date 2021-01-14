@@ -1,4 +1,4 @@
-class CreateAtdUsers < ActiveRecord::Migration
+class CreateAtdUsers < ActiveRecord::Migration[4.2]
   def change
     create_table :atd_users do |t|
       t.integer :user_id,   null: true

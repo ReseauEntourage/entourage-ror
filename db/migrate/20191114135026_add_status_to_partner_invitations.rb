@@ -1,4 +1,4 @@
-class AddStatusToPartnerInvitations < ActiveRecord::Migration
+class AddStatusToPartnerInvitations < ActiveRecord::Migration[4.2]
   def up
     PartnerInvitation.delete_all
     add_column :partner_invitations, :status, :string, null: false

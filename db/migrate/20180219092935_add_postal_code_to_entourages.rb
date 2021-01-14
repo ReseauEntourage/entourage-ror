@@ -1,4 +1,4 @@
-class AddPostalCodeToEntourages < ActiveRecord::Migration
+class AddPostalCodeToEntourages < ActiveRecord::Migration[4.2]
   def change
     change_table :entourages do |t|
       t.string   "postal_code", limit: 5

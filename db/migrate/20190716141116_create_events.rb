@@ -1,4 +1,4 @@
-class CreateEvents < ActiveRecord::Migration
+class CreateEvents < ActiveRecord::Migration[4.2]
   def up
     execute <<-SQL
       create type event_name as enum (

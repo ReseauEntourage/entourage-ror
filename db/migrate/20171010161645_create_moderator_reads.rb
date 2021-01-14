@@ -1,4 +1,4 @@
-class CreateModeratorReads < ActiveRecord::Migration
+class CreateModeratorReads < ActiveRecord::Migration[4.2]
   def change
     create_table :moderator_reads do |t|
       t.integer  :user_id,          null: false

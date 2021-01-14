@@ -1,4 +1,4 @@
-class CreatePois < ActiveRecord::Migration
+class CreatePois < ActiveRecord::Migration[4.2]
 
   def change
     create_table :pois do |t|

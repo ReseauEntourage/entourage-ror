@@ -1,4 +1,4 @@
-class AddGroupTypeToEntourages < ActiveRecord::Migration
+class AddGroupTypeToEntourages < ActiveRecord::Migration[4.2]
   def up
     add_column :entourages, :group_type, :string, limit: 14
     Entourage.where(community: :entourage).update_all(group_type: :action)

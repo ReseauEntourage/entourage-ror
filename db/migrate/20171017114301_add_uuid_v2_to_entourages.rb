@@ -1,4 +1,4 @@
-class AddUuidV2ToEntourages < ActiveRecord::Migration
+class AddUuidV2ToEntourages < ActiveRecord::Migration[4.2]
   def up
     add_column :entourages, :uuid_v2, :string, limit: 12
     Entourage.reset_column_information

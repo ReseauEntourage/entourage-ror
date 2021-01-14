@@ -1,4 +1,4 @@
-class EntouragesExtendedViewFix1 < ActiveRecord::Migration
+class EntouragesExtendedViewFix1 < ActiveRecord::Migration[4.2]
   def up
     sql = <<-SQL
       create or replace view entourages_extended as

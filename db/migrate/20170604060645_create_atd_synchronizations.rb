@@ -1,4 +1,4 @@
-class CreateAtdSynchronizations < ActiveRecord::Migration
+class CreateAtdSynchronizations < ActiveRecord::Migration[4.2]
   def change
     create_table :atd_synchronizations do |t|
       t.string :filename, null: false

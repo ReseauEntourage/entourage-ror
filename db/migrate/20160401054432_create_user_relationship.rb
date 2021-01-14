@@ -1,4 +1,4 @@
-class CreateUserRelationship < ActiveRecord::Migration
+class CreateUserRelationship < ActiveRecord::Migration[4.2]
   def change
     create_table :user_relationships do |t|
       t.integer :source_user_id, null: false

@@ -1,4 +1,4 @@
-class CreateEmailDeliveries < ActiveRecord::Migration
+class CreateEmailDeliveries < ActiveRecord::Migration[4.2]
   def change
     create_table :email_deliveries do |t|
       t.integer :user_id, null: false

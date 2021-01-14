@@ -1,4 +1,4 @@
-class RemoveUserIdFromEncounter < ActiveRecord::Migration
+class RemoveUserIdFromEncounter < ActiveRecord::Migration[4.2]
   def change
   end
 end

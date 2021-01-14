@@ -1,4 +1,4 @@
-class RemoveDistinctOnFeedTours < ActiveRecord::Migration
+class RemoveDistinctOnFeedTours < ActiveRecord::Migration[4.2]
   def up
     sql = <<-SQL
       CREATE OR REPLACE VIEW feeds AS

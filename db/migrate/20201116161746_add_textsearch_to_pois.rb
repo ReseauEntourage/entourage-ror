@@ -1,4 +1,4 @@
-class AddTextsearchToPois < ActiveRecord::Migration
+class AddTextsearchToPois < ActiveRecord::Migration[4.2]
   def change
     enable_extension :unaccent
     add_column :pois, :textsearch, :tsvector

@@ -1,4 +1,4 @@
-class AddDefaultToUser < ActiveRecord::Migration
+class AddDefaultToUser < ActiveRecord::Migration[4.2]
   def up
     change_column :users, :manager,         :boolean, null: false, default: false
     change_column :users, :phone,           :string,  null: false

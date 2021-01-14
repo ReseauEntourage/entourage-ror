@@ -1,4 +1,4 @@
-class CreateSessionHistories < ActiveRecord::Migration
+class CreateSessionHistories < ActiveRecord::Migration[4.2]
   def change
     create_table :session_histories, id: false do |t|
       t.integer :user_id,  null: false

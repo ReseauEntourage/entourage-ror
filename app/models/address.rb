@@ -42,7 +42,7 @@ class Address < ApplicationRecord
   private
 
   def set_user_address_id_if_primary!
-    return unless position_changed? || user_id_changed?
+    return unless saved_change_to_position? || saved_change_to_user_id?
     user.update!(address_id: id) if position == 1
   end
 end

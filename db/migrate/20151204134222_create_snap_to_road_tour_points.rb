@@ -1,4 +1,4 @@
-class CreateSnapToRoadTourPoints < ActiveRecord::Migration
+class CreateSnapToRoadTourPoints < ActiveRecord::Migration[4.2]
   def change
     create_table :snap_to_road_tour_points do |t|
       t.float :latitude, null: false

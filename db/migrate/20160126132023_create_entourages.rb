@@ -1,4 +1,4 @@
-class CreateEntourages < ActiveRecord::Migration
+class CreateEntourages < ActiveRecord::Migration[4.2]
   def change
     create_table :entourages do |t|
       t.string :status,               null: false, default: "open"

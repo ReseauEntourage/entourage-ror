@@ -1,4 +1,4 @@
-class FeedCategoryForNonActions < ActiveRecord::Migration
+class FeedCategoryForNonActions < ActiveRecord::Migration[4.2]
   def up
     sql = <<-SQL
       CREATE OR REPLACE VIEW feeds AS

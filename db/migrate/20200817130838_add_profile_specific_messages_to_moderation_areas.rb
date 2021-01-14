@@ -1,4 +1,4 @@
-class AddProfileSpecificMessagesToModerationAreas < ActiveRecord::Migration
+class AddProfileSpecificMessagesToModerationAreas < ActiveRecord::Migration[4.2]
   def change
     change_table :moderation_areas do |t|
       t.text :welcome_message_1_offer_help

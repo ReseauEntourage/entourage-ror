@@ -1,4 +1,4 @@
-class CreatePartnerInvitations < ActiveRecord::Migration
+class CreatePartnerInvitations < ActiveRecord::Migration[4.2]
   def change
     create_table :partner_invitations do |t|
       t.integer  :partner_id,         null: false

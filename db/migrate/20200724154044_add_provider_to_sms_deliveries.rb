@@ -1,4 +1,4 @@
-class AddProviderToSmsDeliveries < ActiveRecord::Migration
+class AddProviderToSmsDeliveries < ActiveRecord::Migration[4.2]
   def up
     execute <<-SQL
       create type sms_delivery_provider as enum (

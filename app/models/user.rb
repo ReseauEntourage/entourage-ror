@@ -6,7 +6,7 @@ class User < ApplicationRecord
   validates_uniqueness_of :phone, scope: :community
   validates_uniqueness_of :token
   validate :validate_phone!
-  validates_format_of :email, with: /@/, unless: "email.to_s.size.zero?"
+  validates_format_of :email, with: /@/, unless: -> (u) { u.email.to_s.size.zero? }
   validates_presence_of [:first_name, :last_name, :organization, :email], if: Proc.new { |u| u.pro? }
   validates_associated :organization, if: Proc.new { |u| u.pro? }
   validates_presence_of [:first_name, :last_name, :email], if: Proc.new { |u| u.org_member? }
@@ -19,7 +19,7 @@ class User < ApplicationRecord
   validate :validate_partner!
   validate :validate_interests!
 
-  after_save :clean_up_passwords, if: :encrypted_password_changed?
+  after_save :clean_up_passwords, if: :saved_change_to_encrypted_password?
 
   has_many :tours
   has_many :encounters, through: :tours

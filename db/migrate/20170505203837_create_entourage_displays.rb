@@ -1,4 +1,4 @@
-class CreateEntourageDisplays < ActiveRecord::Migration
+class CreateEntourageDisplays < ActiveRecord::Migration[4.2]
   def change
     create_table :entourage_displays do |t|
       t.integer :entourage_id

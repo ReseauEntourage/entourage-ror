@@ -1,4 +1,4 @@
-class AddFeedUpdatedAtToGroups < ActiveRecord::Migration
+class AddFeedUpdatedAtToGroups < ActiveRecord::Migration[4.2]
   def change
     [Entourage, Tour].each do |klass|
       add_column klass, :feed_updated_at, :datetime

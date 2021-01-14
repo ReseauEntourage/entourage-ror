@@ -1,4 +1,4 @@
-class RequiredCommunityForEntourages < ActiveRecord::Migration
+class RequiredCommunityForEntourages < ActiveRecord::Migration[4.2]
   def up
     Entourage.where(community: nil).update_all(community: 'entourage')
     change_column_null :entourages, :community, false

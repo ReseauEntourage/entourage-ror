@@ -1,4 +1,4 @@
-class GetLocationFromTourForFeed < ActiveRecord::Migration
+class GetLocationFromTourForFeed < ActiveRecord::Migration[4.2]
   def up
     sql = <<-SQL
       CREATE OR REPLACE VIEW feeds AS

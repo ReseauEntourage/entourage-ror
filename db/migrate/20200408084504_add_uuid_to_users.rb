@@ -1,4 +1,4 @@
-class AddUuidToUsers < ActiveRecord::Migration
+class AddUuidToUsers < ActiveRecord::Migration[4.2]
   def change
     enable_extension :pgcrypto
     add_column :users, :uuid, :uuid, default: "gen_random_uuid()", null: false

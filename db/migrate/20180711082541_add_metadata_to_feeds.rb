@@ -1,4 +1,4 @@
-class AddMetadataToFeeds < ActiveRecord::Migration
+class AddMetadataToFeeds < ActiveRecord::Migration[4.2]
   def up
     sql = <<-SQL
       DROP VIEW IF EXISTS feeds;

@@ -1,4 +1,4 @@
-class CreatePartnerJoinRequests < ActiveRecord::Migration
+class CreatePartnerJoinRequests < ActiveRecord::Migration[4.2]
   def change
     create_table :partner_join_requests do |t|
       t.integer :user_id, null: false

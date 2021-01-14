@@ -1,4 +1,4 @@
-class CreateSmsDeliveries < ActiveRecord::Migration
+class CreateSmsDeliveries < ActiveRecord::Migration[4.2]
   def change
     create_table :sms_deliveries do |t|
       t.string :phone_number

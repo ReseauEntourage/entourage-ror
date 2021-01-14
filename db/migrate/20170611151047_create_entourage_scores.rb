@@ -1,4 +1,4 @@
-class CreateEntourageScores < ActiveRecord::Migration
+class CreateEntourageScores < ActiveRecord::Migration[4.2]
   def change
     create_table :entourage_scores do |t|
       t.integer :entourage_id,  null: false
