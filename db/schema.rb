@@ -1,4 +1,3 @@
-# encoding: UTF-8
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -15,104 +14,23 @@ ActiveRecord::Schema.define(version: 20210326150000) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
-  enable_extension "pg_stat_statements"
-  enable_extension "pgcrypto"
   enable_extension "postgis"
+  enable_extension "pgcrypto"
   enable_extension "unaccent"
 
-  create_table "TEST_events_20181112_copy", id: false, force: :cascade do |t|
-    t.string  "event_date",                    limit: 65535
-    t.integer "event_timestamp",               limit: 8
-    t.string  "event_name",                    limit: 65535
-    t.string  "event_params",                  limit: 65535
-    t.integer "event_previous_timestamp",      limit: 8
-    t.float   "event_value_in_usd"
-    t.integer "event_bundle_sequence_id",      limit: 8
-    t.integer "event_server_timestamp_offset", limit: 8
-    t.string  "user_id",                       limit: 65535
-    t.string  "user_pseudo_id",                limit: 65535
-    t.string  "user_properties",               limit: 65535
-    t.integer "user_first_touch_timestamp",    limit: 8
-    t.string  "user_ltv",                      limit: 65535
-    t.string  "device",                        limit: 65535
-    t.string  "geo",                           limit: 65535
-    t.string  "app_info",                      limit: 65535
-    t.string  "traffic_source",                limit: 65535
-    t.string  "stream_id",                     limit: 65535
-    t.string  "platform",                      limit: 65535
-    t.string  "event_dimensions",              limit: 65535
-  end
-
-  create_table "TEST_users_prepared", id: false, force: :cascade do |t|
-    t.integer  "id",                           limit: 8
-    t.text     "created_at"
-    t.datetime "created_at_parsed"
-    t.integer  "created_at_parsed_year",       limit: 8
-    t.integer  "created_at_parsed_month",      limit: 8
-    t.integer  "created_at_parsed_day",        limit: 8
-    t.integer  "since_created_at_parsed_days", limit: 8
-    t.text     "updated_at"
-    t.string   "email",                        limit: 255
-    t.text     "email_localpart"
-    t.text     "email_domain"
-    t.string   "first_name",                   limit: 255
-    t.string   "last_name",                    limit: 255
-    t.text     "phone"
-    t.string   "token",                        limit: 255
-    t.text     "device_id"
-    t.integer  "device_type",                  limit: 8
-    t.text     "sms_code"
-    t.integer  "organization_id",              limit: 8
-    t.boolean  "manager"
-    t.float    "default_latitude"
-    t.float    "default_longitude"
-    t.boolean  "admin"
-    t.text     "user_type"
-    t.text     "avatar_key"
-    t.text     "validation_status"
-    t.boolean  "deleted"
-    t.integer  "marketing_referer_id",         limit: 8
-    t.text     "last_sign_in_at"
-    t.boolean  "atd_friend"
-    t.boolean  "use_suggestions"
-    t.string   "about",                        limit: 200
-    t.string   "community",                    limit: 9
-    t.text     "encrypted_password"
-    t.text     "roles"
-    t.text     "first_sign_in_at"
-    t.text     "onboarding_sequence_start_at"
-    t.integer  "address_id",                   limit: 8
-    t.boolean  "accepts_emails_deprecated"
-    t.text     "last_email_sent_at"
-    t.text     "targeting_profile"
-    t.text     "partner_id"
-    t.boolean  "partner_admin"
-    t.text     "partner_role_title"
-  end
-
-  create_table "TEST_users_prepared_by_device_type", id: false, force: :cascade do |t|
-    t.integer "device_type",         limit: 8
-    t.integer "organization_id_min", limit: 8
-    t.boolean "manager_min"
-    t.float   "use_suggestions_avg"
-    t.integer "count",               limit: 8
-  end
-
-  create_table "active_admin_comments", id: false, force: :cascade do |t|
-    t.integer  "id",                        default: "nextval('active_admin_comments_id_seq'::regclass)", null: false
-    t.string   "namespace",     limit: 255
+  create_table "active_admin_comments", force: :cascade do |t|
+    t.string   "namespace"
     t.text     "body"
-    t.string   "resource_id",   limit: 255,                                                               null: false
-    t.string   "resource_type", limit: 255,                                                               null: false
+    t.string   "resource_id",   null: false
+    t.string   "resource_type", null: false
+    t.string   "author_type"
     t.integer  "author_id"
-    t.string   "author_type",   limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.index ["author_type", "author_id"], name: "index_active_admin_comments_on_author_type_and_author_id", using: :btree
+    t.index ["namespace"], name: "index_active_admin_comments_on_namespace", using: :btree
+    t.index ["resource_type", "resource_id"], name: "index_active_admin_comments_on_resource_type_and_resource_id", using: :btree
   end
-
-  add_index "active_admin_comments", ["author_type", "author_id"], name: "index_active_admin_comments_on_author_type_and_author_id", using: :btree
-  add_index "active_admin_comments", ["namespace"], name: "index_active_admin_comments_on_namespace", using: :btree
-  add_index "active_admin_comments", ["resource_type", "resource_id"], name: "index_active_admin_comments_on_resource_type_and_resource_id", using: :btree
 
   create_table "addresses", force: :cascade do |t|
     t.string   "place_name",                            null: false
@@ -126,9 +44,8 @@ ActiveRecord::Schema.define(version: 20210326150000) do
     t.string   "google_place_id"
     t.integer  "user_id",                               null: false
     t.integer  "position",                  default: 1, null: false
+    t.index ["user_id", "position"], name: "index_addresses_on_user_id_and_position", unique: true, using: :btree
   end
-
-  add_index "addresses", ["user_id", "position"], name: "index_addresses_on_user_id_and_position", unique: true, using: :btree
 
   create_table "announcements", force: :cascade do |t|
     t.string  "title"
@@ -144,27 +61,24 @@ ActiveRecord::Schema.define(version: 20210326150000) do
     t.jsonb   "user_goals", default: [],      null: false
     t.string  "category"
     t.string  "image_portrait_url"
+    t.index ["areas"], name: "index_announcements_on_areas", using: :gin
+    t.index ["user_goals"], name: "index_announcements_on_user_goals", using: :gin
+    t.index ["image_portrait_url"], name: "index_announcements_on_user_image_portrait_url", using: :btree
   end
-
-  add_index "announcements", ["areas"], name: "index_announcements_on_areas", using: :gin
-  add_index "announcements", ["image_portrait_url"], name: "index_announcements_on_image_portrait_url", using: :btree
-  add_index "announcements", ["user_goals"], name: "index_announcements_on_user_goals", using: :gin
 
   create_table "answers", force: :cascade do |t|
     t.integer "question_id",  null: false
     t.integer "encounter_id", null: false
     t.string  "value",        null: false
+    t.index ["encounter_id", "question_id"], name: "index_answers_on_encounter_id_and_question_id", using: :btree
   end
-
-  add_index "answers", ["encounter_id", "question_id"], name: "index_answers_on_encounter_id_and_question_id", using: :btree
 
   create_table "atd_synchronizations", force: :cascade do |t|
     t.string   "filename",   null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["filename"], name: "index_atd_synchronizations_on_filename", unique: true, using: :btree
   end
-
-  add_index "atd_synchronizations", ["filename"], name: "index_atd_synchronizations_on_filename", unique: true, using: :btree
 
   create_table "atd_users", force: :cascade do |t|
     t.integer  "user_id"
@@ -173,23 +87,21 @@ ActiveRecord::Schema.define(version: 20210326150000) do
     t.string   "mail_hash"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["atd_id", "user_id"], name: "index_atd_users_on_atd_id_and_user_id", unique: true, using: :btree
   end
-
-  add_index "atd_users", ["atd_id", "user_id"], name: "index_atd_users_on_atd_id_and_user_id", unique: true, using: :btree
 
   create_table "categories", force: :cascade do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "name",       limit: 255
+    t.string   "name"
   end
 
   create_table "categories_pois", id: false, force: :cascade do |t|
     t.integer "poi_id"
     t.integer "category_id"
+    t.index ["category_id"], name: "index_categories_pois_on_category_id", using: :btree
+    t.index ["poi_id"], name: "index_categories_pois_on_poi_id", using: :btree
   end
-
-  add_index "categories_pois", ["category_id"], name: "index_categories_pois_on_category_id", using: :btree
-  add_index "categories_pois", ["poi_id"], name: "index_categories_pois_on_poi_id", using: :btree
 
   create_table "chat_messages", force: :cascade do |t|
     t.integer  "messageable_id",                               null: false
@@ -200,11 +112,10 @@ ActiveRecord::Schema.define(version: 20210326150000) do
     t.datetime "updated_at",                                   null: false
     t.string   "message_type",     limit: 20, default: "text", null: false
     t.jsonb    "metadata",                    default: {},     null: false
+    t.index ["created_at"], name: "index_chat_messages_on_created_at", using: :btree
+    t.index ["messageable_id", "messageable_type"], name: "index_chat_messages_on_messageable_id_and_messageable_type", using: :btree
+    t.index ["user_id"], name: "index_chat_messages_on_user_id", using: :btree
   end
-
-  add_index "chat_messages", ["created_at"], name: "index_chat_messages_on_created_at", using: :btree
-  add_index "chat_messages", ["messageable_id", "messageable_type"], name: "index_chat_messages_on_messageable_id_and_messageable_type", using: :btree
-  add_index "chat_messages", ["user_id"], name: "index_chat_messages_on_user_id", using: :btree
 
   create_table "conversation_message_broadcasts", force: :cascade do |t|
     t.string   "area",                          null: false
@@ -217,11 +128,10 @@ ActiveRecord::Schema.define(version: 20210326150000) do
     t.string   "status",      default: "draft", null: false
     t.datetime "sent_at"
     t.integer  "sent_users_count"
+    t.index ["area"], name: "index_conversation_message_broadcasts_on_area", using: :btree
+    t.index ["goal"], name: "index_conversation_message_broadcasts_on_goal", using: :btree
+    t.index ["status"], name: "index_conversation_message_broadcasts_on_status", using: :btree
   end
-
-  add_index "conversation_message_broadcasts", ["area"], name: "index_conversation_message_broadcasts_on_area", using: :btree
-  add_index "conversation_message_broadcasts", ["goal"], name: "index_conversation_message_broadcasts_on_goal", using: :btree
-  add_index "conversation_message_broadcasts", ["status"], name: "index_conversation_message_broadcasts_on_status", using: :btree
 
   create_table "coordination", id: false, force: :cascade do |t|
     t.integer "user_id"
@@ -248,49 +158,44 @@ ActiveRecord::Schema.define(version: 20210326150000) do
 
   create_table "email_campaigns", force: :cascade do |t|
     t.string "name", limit: 40, null: false
+    t.index ["name"], name: "index_email_campaigns_on_name", unique: true, using: :btree
   end
-
-  add_index "email_campaigns", ["name"], name: "index_email_campaigns_on_name", unique: true, using: :btree
 
   create_table "email_categories", force: :cascade do |t|
     t.string "name",        limit: 30,  null: false
     t.string "description", limit: 100, null: false
+    t.index ["name"], name: "index_email_categories_on_name", unique: true, using: :btree
   end
-
-  add_index "email_categories", ["name"], name: "index_email_categories_on_name", unique: true, using: :btree
 
   create_table "email_deliveries", force: :cascade do |t|
     t.integer  "user_id",           null: false
     t.datetime "sent_at",           null: false
     t.integer  "email_campaign_id", null: false
+    t.index ["user_id", "email_campaign_id"], name: "index_email_deliveries_on_user_id_and_email_campaign_id", using: :btree
   end
-
-  add_index "email_deliveries", ["user_id", "email_campaign_id"], name: "index_email_deliveries_on_user_id_and_email_campaign_id", using: :btree
 
   create_table "email_preferences", force: :cascade do |t|
     t.integer  "user_id",                 null: false
     t.integer  "email_category_id",       null: false
     t.boolean  "subscribed",              null: false
     t.datetime "subscription_changed_at", null: false
+    t.index ["user_id", "email_category_id"], name: "index_email_preferences_on_user_id_and_email_category_id", unique: true, using: :btree
   end
-
-  add_index "email_preferences", ["user_id", "email_category_id"], name: "index_email_preferences_on_user_id_and_email_category_id", unique: true, using: :btree
 
   create_table "encounters", force: :cascade do |t|
     t.datetime "date"
     t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "street_person_name", limit: 255
+    t.string   "street_person_name"
     t.float    "latitude"
     t.float    "longitude"
-    t.string   "voice_message_url",  limit: 255
+    t.string   "voice_message_url"
     t.integer  "tour_id"
     t.string   "encrypted_message"
     t.string   "address"
+    t.index ["tour_id"], name: "index_encounters_on_tour_id", using: :btree
   end
-
-  add_index "encounters", ["tour_id"], name: "index_encounters_on_tour_id", using: :btree
 
   create_table "entourage_denorms", force: :cascade do |t|
     t.integer  "entourage_id",                  null: false
@@ -310,9 +215,8 @@ ActiveRecord::Schema.define(version: 20210326150000) do
     t.datetime "updated_at",                        null: false
     t.string   "source",       default: "newsfeed"
     t.integer  "user_id",                           null: false
+    t.index ["entourage_id"], name: "index_entourage_displays_on_entourage_id", using: :btree
   end
-
-  add_index "entourage_displays", ["entourage_id"], name: "index_entourage_displays_on_entourage_id", using: :btree
 
   create_table "entourage_invitations", force: :cascade do |t|
     t.integer  "invitable_id",                        null: false
@@ -325,13 +229,12 @@ ActiveRecord::Schema.define(version: 20210326150000) do
     t.datetime "updated_at",                          null: false
     t.string   "status",          default: "pending", null: false
     t.jsonb    "metadata",        default: {},        null: false
+    t.index ["invitable_id", "invitable_type"], name: "index_entourage_invitations_on_invitable_id_and_invitable_type", using: :btree
+    t.index ["invitee_id"], name: "index_entourage_invitations_on_invitee_id", using: :btree
+    t.index ["inviter_id", "phone_number", "invitable_id", "invitable_type"], name: "unique_invitation_by_entourage", unique: true, using: :btree
+    t.index ["inviter_id"], name: "index_entourage_invitations_on_inviter_id", using: :btree
+    t.index ["phone_number"], name: "index_entourage_invitations_on_phone_number", using: :btree
   end
-
-  add_index "entourage_invitations", ["invitable_id", "invitable_type"], name: "index_entourage_invitations_on_invitable_id_and_invitable_type", using: :btree
-  add_index "entourage_invitations", ["invitee_id"], name: "index_entourage_invitations_on_invitee_id", using: :btree
-  add_index "entourage_invitations", ["inviter_id", "phone_number", "invitable_id", "invitable_type"], name: "unique_invitation_by_entourage", unique: true, using: :btree
-  add_index "entourage_invitations", ["inviter_id"], name: "index_entourage_invitations_on_inviter_id", using: :btree
-  add_index "entourage_invitations", ["phone_number"], name: "index_entourage_invitations_on_phone_number", using: :btree
 
   create_table "entourage_moderations", force: :cascade do |t|
     t.integer "entourage_id",                                      null: false
@@ -351,10 +254,9 @@ ActiveRecord::Schema.define(version: 20210326150000) do
     t.string  "action_failure_reason"
     t.string  "action_target_type"
     t.integer "moderator_id"
+    t.index ["entourage_id"], name: "index_entourage_moderations_on_entourage_id", unique: true, using: :btree
+    t.index ["moderator_id"], name: "index_entourage_moderations_on_moderator_id", using: :btree
   end
-
-  add_index "entourage_moderations", ["entourage_id"], name: "index_entourage_moderations_on_entourage_id", unique: true, using: :btree
-  add_index "entourage_moderations", ["moderator_id"], name: "index_entourage_moderations_on_moderator_id", using: :btree
 
   create_table "entourage_scores", force: :cascade do |t|
     t.integer  "entourage_id", null: false
@@ -363,9 +265,8 @@ ActiveRecord::Schema.define(version: 20210326150000) do
     t.float    "final_score",  null: false
     t.datetime "created_at",   null: false
     t.datetime "updated_at",   null: false
+    t.index ["entourage_id"], name: "index_entourage_scores_on_entourage_id", using: :btree
   end
-
-  add_index "entourage_scores", ["entourage_id"], name: "index_entourage_scores_on_entourage_id", using: :btree
 
   create_table "entourages", force: :cascade do |t|
     t.string   "status",                      default: "open", null: false
@@ -396,14 +297,13 @@ ActiveRecord::Schema.define(version: 20210326150000) do
     t.boolean  "admin_pin",                   default: false,  null: false
     t.boolean  "pin",                         default: false
     t.jsonb    "pins",                        default: [],     null: false
+    t.index "st_setsrid(st_makepoint(longitude, latitude), 4326)", name: "index_entourages_on_coordinates", using: :gist
+    t.index ["country", "postal_code"], name: "index_entourages_on_country_and_postal_code", using: :btree
+    t.index ["latitude", "longitude"], name: "index_entourages_on_latitude_and_longitude", using: :btree
+    t.index ["user_id"], name: "index_entourages_on_user_id", using: :btree
+    t.index ["uuid"], name: "index_entourages_on_uuid", unique: true, using: :btree
+    t.index ["uuid_v2"], name: "index_entourages_on_uuid_v2", unique: true, using: :btree
   end
-
-  add_index "entourages", ["country", "postal_code"], name: "index_entourages_on_country_and_postal_code", using: :btree
-  add_index "entourages", ["latitude", "longitude"], name: "index_entourages_on_latitude_and_longitude", using: :btree
-  add_index "entourages", ["pin"], name: "index_entourages_on_pin", using: :btree
-  add_index "entourages", ["user_id"], name: "index_entourages_on_user_id", using: :btree
-  add_index "entourages", ["uuid"], name: "index_entourages_on_uuid", unique: true, using: :btree
-  add_index "entourages", ["uuid_v2"], name: "index_entourages_on_uuid_v2", unique: true, using: :btree
 
   create_table "entourages_users", force: :cascade do |t|
     t.integer  "user_id",                               null: false
@@ -412,9 +312,8 @@ ActiveRecord::Schema.define(version: 20210326150000) do
     t.datetime "created_at",                            null: false
     t.datetime "updated_at",                            null: false
     t.datetime "last_message_read"
+    t.index ["user_id", "entourage_id"], name: "index_entourages_users_on_user_id_and_entourage_id", unique: true, using: :btree
   end
-
-  add_index "entourages_users", ["user_id", "entourage_id"], name: "index_entourages_users_on_user_id_and_entourage_id", unique: true, using: :btree
 
 # Could not dump table "events" because of following StandardError
 #   Unknown type 'event_name' for column 'name'
@@ -423,18 +322,16 @@ ActiveRecord::Schema.define(version: 20210326150000) do
     t.integer  "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_experimental_pending_request_reminders_on_user_id", using: :btree
   end
-
-  add_index "experimental_pending_request_reminders", ["user_id"], name: "index_experimental_pending_request_reminders_on_user_id", using: :btree
 
   create_table "followings", force: :cascade do |t|
     t.integer "user_id",                   null: false
     t.integer "partner_id",                null: false
     t.boolean "active",     default: true, null: false
+    t.index ["partner_id"], name: "index_followings_on_partner_id", using: :btree
+    t.index ["user_id", "partner_id"], name: "index_followings_on_user_id_and_partner_id", unique: true, using: :btree
   end
-
-  add_index "followings", ["partner_id"], name: "index_followings_on_partner_id", using: :btree
-  add_index "followings", ["user_id", "partner_id"], name: "index_followings_on_user_id_and_partner_id", unique: true, using: :btree
 
   create_table "join_requests", force: :cascade do |t|
     t.integer  "user_id",                                                   null: false
@@ -452,18 +349,16 @@ ActiveRecord::Schema.define(version: 20210326150000) do
     t.datetime "email_notification_sent_at"
     t.datetime "archived_at"
     t.string   "report_prompt_status"
+    t.index ["joinable_type", "joinable_id", "status"], name: "index_join_requests_on_joinable_type_and_joinable_id_and_status", using: :btree
+    t.index ["user_id", "joinable_id", "joinable_type", "status"], name: "index_user_joinable_on_join_requests", using: :btree
+    t.index ["user_id", "joinable_id", "joinable_type"], name: "index_join_requests_on_user_id_and_joinable_id", using: :btree
   end
-
-  add_index "join_requests", ["joinable_type", "joinable_id", "status"], name: "index_join_requests_on_joinable_type_and_joinable_id_and_status", using: :btree
-  add_index "join_requests", ["user_id", "joinable_id", "joinable_type", "status"], name: "index_user_joinable_on_join_requests", using: :btree
-  add_index "join_requests", ["user_id", "joinable_id", "joinable_type"], name: "index_join_requests_on_user_id_and_joinable_id", using: :btree
 
   create_table "login_histories", force: :cascade do |t|
     t.integer  "user_id",      null: false
     t.datetime "connected_at", null: false
+    t.index "date_trunc('hour'::text, connected_at), user_id", name: "index_login_histories_on_connected_at_by_hour", unique: true, using: :btree
   end
-
-  add_index "login_histories", ["user_id"], name: "index_login_histories_on_connected_at_by_hour", unique: true, using: :btree
 
   create_table "marketing_referers", force: :cascade do |t|
     t.string   "name",       null: false
@@ -493,21 +388,19 @@ ActiveRecord::Schema.define(version: 20210326150000) do
     t.text    "welcome_message_2_organization"
     t.text    "welcome_message_1_goal_not_known"
     t.text    "welcome_message_2_goal_not_known"
+    t.index ["departement"], name: "index_moderation_areas_on_departement", unique: true, using: :btree
   end
-
-  add_index "moderation_areas", ["departement"], name: "index_moderation_areas_on_departement", unique: true, using: :btree
 
   create_table "moderator_reads", force: :cascade do |t|
     t.integer  "user_id",          null: false
     t.integer  "moderatable_id",   null: false
     t.string   "moderatable_type", null: false
     t.datetime "read_at",          null: false
+    t.index ["user_id", "moderatable_id", "moderatable_type"], name: "index_moderator_reads_on_user_id_and_moderatable", using: :btree
   end
 
-  add_index "moderator_reads", ["user_id", "moderatable_id", "moderatable_type"], name: "index_moderator_reads_on_user_id_and_moderatable", using: :btree
-
   create_table "newsletter_subscriptions", force: :cascade do |t|
-    t.string   "email",      limit: 255
+    t.string   "email"
     t.boolean  "active"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -526,9 +419,8 @@ ActiveRecord::Schema.define(version: 20210326150000) do
     t.string   "website_url"
     t.boolean  "test_organization", default: false, null: false
     t.text     "tour_report_cc"
+    t.index ["name"], name: "index_organizations_on_name", unique: true, using: :btree
   end
-
-  add_index "organizations", ["name"], name: "index_organizations_on_name", unique: true, using: :btree
 
   create_table "partner_invitations", force: :cascade do |t|
     t.integer  "partner_id",         null: false
@@ -542,11 +434,10 @@ ActiveRecord::Schema.define(version: 20210326150000) do
     t.datetime "accepted_at"
     t.datetime "deleted_at"
     t.string   "status",             null: false
+    t.index ["partner_id", "invitee_email"], name: "index_pending_partner_invitations_on_partner_and_invitee_email", unique: true, where: "((status)::text = 'pending'::text)", using: :btree
+    t.index ["partner_id", "invitee_id"], name: "index_accepted_partner_invitations_on_partner_and_invitee_id", unique: true, where: "((status)::text = 'accepted'::text)", using: :btree
+    t.index ["token"], name: "index_partner_invitations_on_token", unique: true, using: :btree
   end
-
-  add_index "partner_invitations", ["partner_id", "invitee_email"], name: "index_pending_partner_invitations_on_partner_and_invitee_email", unique: true, where: "((status)::text = 'pending'::text)", using: :btree
-  add_index "partner_invitations", ["partner_id", "invitee_id"], name: "index_accepted_partner_invitations_on_partner_and_invitee_id", unique: true, where: "((status)::text = 'accepted'::text)", using: :btree
-  add_index "partner_invitations", ["token"], name: "index_partner_invitations_on_token", unique: true, using: :btree
 
   create_table "partner_join_requests", force: :cascade do |t|
     t.integer  "user_id",            null: false
@@ -556,9 +447,8 @@ ActiveRecord::Schema.define(version: 20210326150000) do
     t.string   "partner_role_title"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.index ["user_id"], name: "index_partner_join_requests_on_user_id", using: :btree
   end
-
-  add_index "partner_join_requests", ["user_id"], name: "index_partner_join_requests_on_user_id", using: :btree
 
   create_table "partners", force: :cascade do |t|
     t.string   "name",                                       null: false
@@ -580,27 +470,26 @@ ActiveRecord::Schema.define(version: 20210326150000) do
   end
 
   create_table "pois", force: :cascade do |t|
-    t.string   "name",        limit: 255
+    t.string   "name"
     t.text     "description"
     t.float    "latitude"
     t.float    "longitude"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "adress",      limit: 255
-    t.string   "phone",       limit: 255
-    t.string   "website",     limit: 255
-    t.string   "email",       limit: 255
-    t.string   "audience",    limit: 255
+    t.string   "adress"
+    t.string   "phone"
+    t.string   "website"
+    t.string   "email"
+    t.string   "audience"
     t.integer  "category_id"
-    t.boolean  "validated",               default: false, null: false
+    t.boolean  "validated",   default: false, null: false
     t.integer  "partner_id"
     t.tsvector "textsearch"
+    t.index ["category_id", "latitude", "longitude"], name: "index_pois_on_category_id_and_latitude_and_longitude", where: "validated", using: :btree
+    t.index ["latitude", "longitude"], name: "index_pois_on_latitude_and_longitude", using: :btree
+    t.index ["partner_id"], name: "index_pois_on_partner_id", unique: true, using: :btree
+    t.index ["textsearch"], name: "index_pois_on_textsearch", using: :gin
   end
-
-  add_index "pois", ["category_id", "latitude", "longitude"], name: "index_pois_on_category_id_and_latitude_and_longitude", where: "validated", using: :btree
-  add_index "pois", ["latitude", "longitude"], name: "index_pois_on_latitude_and_longitude", using: :btree
-  add_index "pois", ["partner_id"], name: "index_pois_on_partner_id", unique: true, using: :btree
-  add_index "pois", ["textsearch"], name: "index_pois_on_textsearch", using: :gin
 
   create_table "questions", force: :cascade do |t|
     t.string   "title",           null: false
@@ -608,9 +497,8 @@ ActiveRecord::Schema.define(version: 20210326150000) do
     t.integer  "organization_id", null: false
     t.datetime "created_at",      null: false
     t.datetime "updated_at",      null: false
+    t.index ["organization_id"], name: "index_questions_on_organization_id", using: :btree
   end
-
-  add_index "questions", ["organization_id"], name: "index_questions_on_organization_id", using: :btree
 
   create_table "registration_requests", force: :cascade do |t|
     t.string   "status",     default: "pending", null: false
@@ -620,14 +508,14 @@ ActiveRecord::Schema.define(version: 20210326150000) do
   end
 
   create_table "rpush_apps", force: :cascade do |t|
-    t.string   "name",                                   null: false
+    t.string   "name",                                null: false
     t.string   "environment"
     t.text     "certificate"
     t.string   "password"
-    t.integer  "connections",             default: 1,    null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.string   "type",                                   null: false
+    t.integer  "connections",             default: 1, null: false
+    t.datetime "created_at",                          null: false
+    t.datetime "updated_at",                          null: false
+    t.string   "type",                                null: false
     t.string   "auth_key"
     t.string   "client_id"
     t.string   "client_secret"
@@ -637,18 +525,16 @@ ActiveRecord::Schema.define(version: 20210326150000) do
     t.string   "apn_key_id"
     t.string   "team_id"
     t.string   "bundle_id"
-    t.boolean  "feedback_enabled",        default: true
   end
 
   create_table "rpush_feedback", force: :cascade do |t|
     t.string   "device_token"
     t.datetime "failed_at",    null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
     t.integer  "app_id"
+    t.index ["device_token"], name: "index_rpush_feedback_on_device_token", using: :btree
   end
-
-  add_index "rpush_feedback", ["device_token"], name: "index_rpush_feedback_on_device_token", using: :btree
 
   create_table "rpush_notifications", force: :cascade do |t|
     t.integer  "badge"
@@ -664,8 +550,8 @@ ActiveRecord::Schema.define(version: 20210326150000) do
     t.integer  "error_code"
     t.text     "error_description"
     t.datetime "deliver_after"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",                         null: false
+    t.datetime "updated_at",                         null: false
     t.boolean  "alert_is_json",      default: false, null: false
     t.string   "type",                               null: false
     t.string   "collapse_key"
@@ -684,11 +570,8 @@ ActiveRecord::Schema.define(version: 20210326150000) do
     t.boolean  "mutable_content",    default: false, null: false
     t.string   "external_device_id"
     t.string   "thread_id"
-    t.boolean  "dry_run",            default: false, null: false
-    t.boolean  "sound_is_json",      default: false
+    t.index ["delivered", "failed", "processing", "deliver_after", "created_at"], name: "index_rpush_notifications_multi", where: "((NOT delivered) AND (NOT failed))", using: :btree
   end
-
-  add_index "rpush_notifications", ["delivered", "failed", "processing", "deliver_after", "created_at"], name: "index_rpush_notifications_multi", where: "((NOT delivered) AND (NOT failed))", using: :btree
 
   create_table "sensitive_words", force: :cascade do |t|
     t.string "raw",                         null: false
@@ -696,39 +579,35 @@ ActiveRecord::Schema.define(version: 20210326150000) do
     t.string "match_type", default: "stem", null: false
     t.string "scope",      default: "all",  null: false
     t.string "category"
+    t.index ["pattern"], name: "index_sensitive_words_on_pattern", unique: true, using: :btree
   end
-
-  add_index "sensitive_words", ["pattern"], name: "index_sensitive_words_on_pattern", unique: true, using: :btree
 
   create_table "sensitive_words_checks", force: :cascade do |t|
     t.string   "status",      null: false
-    t.integer  "record_id",   null: false
     t.string   "record_type", null: false
+    t.integer  "record_id",   null: false
     t.text     "matches",     null: false
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
+    t.index ["record_type", "record_id"], name: "index_sensitive_words_checks_on_record_type_and_record_id", unique: true, using: :btree
   end
-
-  add_index "sensitive_words_checks", ["record_type", "record_id"], name: "index_sensitive_words_checks_on_record_type_and_record_id", unique: true, using: :btree
 
   create_table "session_histories", id: false, force: :cascade do |t|
     t.integer "user_id",                              null: false
     t.date    "date",                                 null: false
     t.string  "platform",                  limit: 7,  null: false
     t.string  "notifications_permissions", limit: 14
+    t.index ["user_id", "platform", "date"], name: "index_session_histories_on_user_id_and_platform_and_date", unique: true, using: :btree
   end
-
-  add_index "session_histories", ["user_id", "platform", "date"], name: "index_session_histories_on_user_id_and_platform_and_date", unique: true, using: :btree
 
   create_table "simplified_tour_points", force: :cascade do |t|
     t.float    "latitude",   null: false
     t.float    "longitude",  null: false
     t.integer  "tour_id",    null: false
     t.datetime "created_at"
+    t.index ["latitude", "longitude", "tour_id"], name: "index_simplified_tour_points_on_coordinates_and_tour_id", using: :btree
+    t.index ["tour_id"], name: "index_simplified_tour_points_on_tour_id", using: :btree
   end
-
-  add_index "simplified_tour_points", ["latitude", "longitude", "tour_id"], name: "index_simplified_tour_points_on_coordinates_and_tour_id", using: :btree
-  add_index "simplified_tour_points", ["tour_id"], name: "index_simplified_tour_points_on_tour_id", using: :btree
 
 # Could not dump table "sms_deliveries" because of following StandardError
 #   Unknown type 'sms_delivery_status' for column 'status'
@@ -740,9 +619,8 @@ ActiveRecord::Schema.define(version: 20210326150000) do
     t.integer  "nb_downloads"
     t.datetime "created_at",   null: false
     t.datetime "updated_at",   null: false
+    t.index ["report_date", "app_name", "store_id"], name: "index_store_daily_reports_date_store_app", unique: true, using: :btree
   end
-
-  add_index "store_daily_reports", ["report_date", "app_name", "store_id"], name: "index_store_daily_reports_date_store_app", unique: true, using: :btree
 
   create_table "suggestion_compute_histories", force: :cascade do |t|
     t.integer  "user_number",                               null: false
@@ -762,11 +640,10 @@ ActiveRecord::Schema.define(version: 20210326150000) do
     t.datetime "passing_time", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.index ["tour_id", "created_at"], name: "index_tour_points_on_tour_id_and_created_at", using: :btree
+    t.index ["tour_id", "id"], name: "index_tour_points_on_tour_id_and_id", using: :btree
+    t.index ["tour_id", "latitude", "longitude"], name: "index_tour_points_on_tour_id_and_latitude_and_longitude", using: :btree
   end
-
-  add_index "tour_points", ["tour_id", "created_at"], name: "index_tour_points_on_tour_id_and_created_at", using: :btree
-  add_index "tour_points", ["tour_id", "id"], name: "index_tour_points_on_tour_id_and_id", using: :btree
-  add_index "tour_points", ["tour_id", "latitude", "longitude"], name: "index_tour_points_on_tour_id_and_latitude_and_longitude", using: :btree
 
   create_table "tours", force: :cascade do |t|
     t.string   "tour_type"
@@ -782,10 +659,10 @@ ActiveRecord::Schema.define(version: 20210326150000) do
     t.float    "latitude"
     t.float    "longitude"
     t.datetime "feed_updated_at"
+    t.index "st_setsrid(st_makepoint(longitude, latitude), 4326)", name: "index_tours_on_coordinates", using: :gist
+    t.index ["latitude", "longitude"], name: "index_tours_on_latitude_and_longitude", using: :btree
+    t.index ["user_id", "updated_at", "tour_type"], name: "index_tours_on_user_id_and_updated_at_and_tour_type", using: :btree
   end
-
-  add_index "tours", ["latitude", "longitude"], name: "index_tours_on_latitude_and_longitude", using: :btree
-  add_index "tours", ["user_id", "updated_at", "tour_type"], name: "index_tours_on_user_id_and_updated_at_and_tour_type", using: :btree
 
   create_table "tours_users", force: :cascade do |t|
     t.integer  "user_id",                               null: false
@@ -794,9 +671,8 @@ ActiveRecord::Schema.define(version: 20210326150000) do
     t.datetime "created_at",                            null: false
     t.datetime "updated_at",                            null: false
     t.datetime "last_message_read"
+    t.index ["user_id", "tour_id"], name: "index_tours_users_on_user_id_and_tour_id", unique: true, using: :btree
   end
-
-  add_index "tours_users", ["user_id", "tour_id"], name: "index_tours_users_on_user_id_and_tour_id", unique: true, using: :btree
 
   create_table "user_applications", force: :cascade do |t|
     t.string   "push_token",                null: false
@@ -807,10 +683,9 @@ ActiveRecord::Schema.define(version: 20210326150000) do
     t.datetime "updated_at",                null: false
     t.string   "device_family"
     t.string   "notifications_permissions"
+    t.index ["push_token"], name: "index_user_applications_on_push_token", unique: true, using: :btree
+    t.index ["user_id", "device_family"], name: "index_user_applications_on_user_id_and_device_family", using: :btree
   end
-
-  add_index "user_applications", ["push_token"], name: "index_user_applications_on_push_token", unique: true, using: :btree
-  add_index "user_applications", ["user_id", "device_family"], name: "index_user_applications_on_user_id_and_device_family", using: :btree
 
   create_table "user_denorms", force: :cascade do |t|
     t.integer  "user_id",                      null: false
@@ -837,6 +712,7 @@ ActiveRecord::Schema.define(version: 20210326150000) do
     t.boolean "accepts_event_invitations"
     t.boolean "accepts_volunteering_offers"
     t.boolean "ambassador"
+    t.index ["user_id"], name: "index_user_moderations_on_user_id", unique: true, using: :btree
   end
 
   add_index "user_moderations", ["user_id"], name: "index_user_moderations_on_user_id", unique: true, using: :btree
@@ -845,63 +721,61 @@ ActiveRecord::Schema.define(version: 20210326150000) do
     t.integer "source_user_id", null: false
     t.integer "target_user_id", null: false
     t.string  "relation_type",  null: false
+    t.index ["source_user_id", "target_user_id", "relation_type"], name: "unique_user_relationship", unique: true, using: :btree
   end
-
-  add_index "user_relationships", ["source_user_id", "target_user_id", "relation_type"], name: "unique_user_relationship", unique: true, using: :btree
 
   create_table "users", force: :cascade do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "email",                        limit: 255
-    t.string   "first_name",                   limit: 255
-    t.string   "last_name",                    limit: 255
-    t.string   "phone",                                                                  null: false
-    t.string   "token",                        limit: 255
+    t.string   "email"
+    t.string   "first_name"
+    t.string   "last_name"
+    t.string   "phone",                                                                         null: false
+    t.string   "token"
     t.string   "device_id"
     t.integer  "device_type"
     t.string   "sms_code"
     t.integer  "organization_id"
-    t.boolean  "manager",                                  default: false,               null: false
+    t.boolean  "manager",                                  default: false,                      null: false
     t.float    "default_latitude"
     t.float    "default_longitude"
-    t.boolean  "admin",                                    default: false,               null: false
-    t.string   "user_type",                                default: "pro",               null: false
+    t.boolean  "admin",                                    default: false,                      null: false
+    t.string   "user_type",                                default: "pro",                      null: false
     t.string   "avatar_key"
-    t.string   "validation_status",                        default: "validated",         null: false
-    t.boolean  "deleted",                                  default: false,               null: false
-    t.integer  "marketing_referer_id",                     default: 1,                   null: false
+    t.string   "validation_status",                        default: "validated",                null: false
+    t.boolean  "deleted",                                  default: false,                      null: false
+    t.integer  "marketing_referer_id",                     default: 1,                          null: false
     t.datetime "last_sign_in_at"
-    t.boolean  "atd_friend",                               default: false,               null: false
-    t.boolean  "use_suggestions",                          default: false,               null: false
+    t.boolean  "atd_friend",                               default: false,                      null: false
+    t.boolean  "use_suggestions",                          default: false,                      null: false
     t.string   "about",                        limit: 200
-    t.string   "community",                    limit: 9,                                 null: false
+    t.string   "community",                    limit: 9,                                        null: false
     t.string   "encrypted_password"
-    t.jsonb    "roles",                                    default: [],                  null: false
+    t.jsonb    "roles",                                    default: [],                         null: false
     t.datetime "first_sign_in_at"
     t.datetime "onboarding_sequence_start_at"
     t.integer  "address_id"
-    t.boolean  "accepts_emails_deprecated",                default: true,                null: false
+    t.boolean  "accepts_emails_deprecated",                default: true,                       null: false
     t.datetime "last_email_sent_at"
     t.string   "targeting_profile"
     t.integer  "partner_id"
-    t.boolean  "partner_admin",                            default: false,               null: false
+    t.boolean  "partner_admin",                            default: false,                      null: false
     t.string   "partner_role_title"
-    t.uuid     "uuid",                                     default: "gen_random_uuid()"
+    t.uuid     "uuid",                                     default: -> { "gen_random_uuid()" }, null: false
     t.string   "goal"
-    t.jsonb    "interests",                                default: [],                  null: false
+    t.jsonb    "interests",                                default: [],                         null: false
     t.string   "encrypted_admin_password"
     t.string   "reset_admin_password_token"
     t.datetime "reset_admin_password_sent_at"
+    t.index ["address_id"], name: "index_users_on_address_id", using: :btree
+    t.index ["email"], name: "index_users_on_email", using: :btree
+    t.index ["organization_id"], name: "index_users_on_organization_id", using: :btree
+    t.index ["partner_id"], name: "index_users_on_partner_id", using: :btree
+    t.index ["phone", "community"], name: "index_users_on_phone_and_community", unique: true, using: :btree
+    t.index ["roles"], name: "index_users_on_roles", using: :gin
+    t.index ["token"], name: "index_users_on_token", unique: true, using: :btree
+    t.index ["uuid"], name: "index_users_on_uuid", unique: true, using: :btree
   end
-
-  add_index "users", ["address_id"], name: "index_users_on_address_id", using: :btree
-  add_index "users", ["email"], name: "index_users_on_email", using: :btree
-  add_index "users", ["organization_id"], name: "index_users_on_organization_id", using: :btree
-  add_index "users", ["partner_id"], name: "index_users_on_partner_id", using: :btree
-  add_index "users", ["phone", "community"], name: "index_users_on_phone_and_community", unique: true, using: :btree
-  add_index "users", ["roles"], name: "index_users_on_roles", using: :gin
-  add_index "users", ["token"], name: "index_users_on_token", unique: true, using: :btree
-  add_index "users", ["uuid"], name: "index_users_on_uuid", unique: true, using: :btree
 
   create_table "users_appetences", force: :cascade do |t|
     t.integer  "user_id",                                null: false
@@ -911,9 +785,8 @@ ActiveRecord::Schema.define(version: 20210326150000) do
     t.float    "avg_dist",               default: 150.0, null: false
     t.datetime "created_at",                             null: false
     t.datetime "updated_at",                             null: false
+    t.index ["user_id"], name: "index_users_appetences_on_user_id", unique: true, using: :btree
   end
-
-  add_index "users_appetences", ["user_id"], name: "index_users_appetences_on_user_id", unique: true, using: :btree
 
   add_foreign_key "experimental_pending_request_reminders", "users"
   add_foreign_key "users", "addresses"

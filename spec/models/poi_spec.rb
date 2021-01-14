@@ -15,7 +15,7 @@ describe Poi, :type => :model do
     context 'should not succeed when the categories are blank' do
       it {
         expect {
-          FactoryGirl.create :poi, category: nil, category_ids: []
+          FactoryBot.create :poi, category: nil, category_ids: []
         }.to raise_error (ActiveRecord::RecordInvalid)
       }
     end
