@@ -13,7 +13,7 @@ module Airtable
     end
 
     Storage::Client.csv.upload(file: file, key: file)
-    url = Storage::Client.csv.url_for(key: file)
+    url = Storage::Client.csv.url_for(key: file, extra: { expire: 5.days.to_i })
 
     to_slack channel, url, dpts, stade
   end
