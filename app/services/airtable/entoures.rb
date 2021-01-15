@@ -3,14 +3,14 @@ module Airtable
     def self.map
       {
         mobile: 'Téléphone portable',
-        email: 'Mail',
-        lastname: 'Nom',
-        firstname: 'Prénom'
+        name: 'Prénom Nom',
+        dpt: 'Dépt',
+        stade: 'Stade ?',
       }
     end
 
     def self.headers
-      %w(Mobile Email Nom Prénom)
+      %w(Mobile Email Nom Prénom Département)
     end
 
     self.base_key = BonnesOndesRestartAbstractTable.base_key

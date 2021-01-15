@@ -6,18 +6,17 @@ module Airtable
 
     def self.by_dpt_and_stade dpts, stade
       dpts = dpts.map do |dpt|
-        "{Dépt} = '#{dpt}'"
+        "{#{self.map[:dpt]}} = '#{dpt}'"
       end.join(', ')
 
-      all(filter: "AND({Stade ?} = '#{stade}', OR(#{dpts}))")
+      all(filter: "AND({#{self.map[:stade]}} = '#{stade}', OR(#{dpts}))")
     end
 
     def self.from_airtable dpts, stade
-      # map = self.map
-      # by_dpt_and_stade(dpt, stade).map(&:fields).map do |entoure|
-      #   entoure.slice(map[:mobile], map[:email], map[:lastname], map[:firstname])
-      # end.map(&:values)
-      by_dpt_and_stade(dpts, stade).map(&:fields).map(&:values)
+      map = self.map
+      by_dpt_and_stade(dpts, stade).map(&:fields).map do |entoure|
+        entoure.slice(map[:mobile], map[:name], map[:dpt])
+      end.map(&:values)
     end
   end
 end
