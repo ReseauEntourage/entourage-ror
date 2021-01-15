@@ -78,4 +78,4 @@ done
 
 rails runner scripts/import_iraiser_csv.rb export.csv
 
-rm iraiser_cookie export.csv
+# rm iraiser_cookie export.csv
