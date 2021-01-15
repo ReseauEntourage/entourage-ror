@@ -467,7 +467,7 @@ DEPENDENCIES
   rails-observers
   rails_12factor
   rails_stdout_logging
-  ransack
+  ransack (~> 2)
   redis (~> 4)
   rpush (~> 3)
   rspec-rails
