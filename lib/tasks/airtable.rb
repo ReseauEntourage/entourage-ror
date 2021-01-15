@@ -5,8 +5,8 @@ module Airtable
 
   def self.upload channel, dpts, stade
     ensure_directory_exist
-    file = path dpts
-    object = Storage::Client.avatars.object(s3_path dpts)
+    file = path dpts, stade
+    object = Storage::Client.avatars.object(s3_path dpts, stade)
 
     CSV.open(file, 'w+', write_headers: true, headers: Airtable::Entoures.headers) do |writer|
       Airtable::Entoures.from_airtable(dpts, stade).each do |csv|
@@ -25,12 +25,12 @@ module Airtable
     Dir.mkdir(DEFAULT_PATH) unless Dir.exist?(DEFAULT_PATH)
   end
 
-  def self.path dpts
-    "#{DEFAULT_PATH}/#{Date.today}-#{dpts.join('-')}-#{Time.now.to_i}.csv"
+  def self.path dpts, stade
+    "#{DEFAULT_PATH}/#{Date.today}-#{stade.parameterize}-#{dpts.join('-')}-#{Time.now.to_i}.csv"
   end
 
-  def self.s3_path dpts
-    "airtable/#{Date.today}-#{dpts.join('-')}-#{Time.now.to_i}.csv"
+  def self.s3_path dpts, stade
+    "airtable/#{Date.today}-#{stade.parameterize}-#{dpts.join('-')}-#{Time.now.to_i}.csv"
   end
 
   def self.to_slack channel, url, dpts, stade
