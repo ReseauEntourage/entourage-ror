@@ -405,6 +405,8 @@ GEM
       coffee-rails
     tzinfo (1.2.9)
       thread_safe (~> 0.1)
+    uglifier (4.2.0)
+      execjs (>= 0.3.0, < 3)
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.7.7)
@@ -486,6 +488,7 @@ DEPENDENCIES
   super_diff
   timecop
   turbolinks (~> 2)
+  uglifier
   webmock
   whenever
 

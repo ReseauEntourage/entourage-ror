@@ -5,7 +5,7 @@ ruby '2.6.6'
 gem 'rails',                          '~> 5.1.7'
 
 gem 'sass-rails'
-# gem 'uglifier'
+gem 'uglifier'
 gem 'jquery-rails',                   '~> 4'
 gem 'jquery-ui-rails',                '~> 5'
 gem 'turbolinks',                     '~> 2'
