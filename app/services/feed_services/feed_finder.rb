@@ -143,18 +143,7 @@ module FeedServices
           dep = user.address.postal_code.to_s.first(2)
         end
 
-        # sensib
-        unless user.apple?
-          pinned << 107083 if (types.nil? || types.include?('outing'))
-        end
-
-        # çafé du bien
-        pinned << 105920 if (types.nil? || types.include?('outing'))
-
-        if dep == '59' # Lille
-          # midi ludique
-          pinned << 93114 if (types.nil? || types.include?('outing'))
-        end
+        pinned << 112297 if (types.nil? || types.include?('outing'))
 
         pinned.compact.uniq.reverse.each do |action|
           feeds = pin(action, feeds: feeds)
