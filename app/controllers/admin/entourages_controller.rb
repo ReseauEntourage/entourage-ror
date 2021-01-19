@@ -70,6 +70,7 @@ module Admin
             left join chat_messages
               on chat_messages.messageable_type = 'Entourage'
              and chat_messages.messageable_id = entourages.id
+             and chat_messages.created_at >= moderator_reads.read_at
           ))
           .joins(%(
             left join join_requests
@@ -77,6 +78,7 @@ module Admin
              and join_requests.joinable_id = entourages.id
              and join_requests.status in ('pending', 'accepted')
              and join_requests.message <> ''
+             and join_requests.created_at >= moderator_reads.read_at
           ))
           .order(%(
             case
