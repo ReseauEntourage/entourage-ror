@@ -22,7 +22,9 @@ module V1
               text: last_element.content,
               author: {
                   first_name: last_element.user.first_name,
-                  last_name: last_element.user.last_name.presence&.first
+                  last_name: last_element.user.last_name.presence&.first,
+                  display_name: UserPresenter.new(user: last_element.user).display_name,
+                  id: last_element.user.id
               }
           }
         elsif last_element.is_a?(JoinRequest)

@@ -47,6 +47,7 @@ gem 'json-schema',                    '~> 2.8.1'
 gem 'icalendar'
 gem 'phonelib'
 gem 'ddtrace'
+gem 'airrecord',                      '~> 1'
 
 group :development, :test do
   gem 'annotate'

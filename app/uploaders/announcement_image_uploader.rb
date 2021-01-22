@@ -4,7 +4,7 @@ class AnnouncementImageUploader < S3ImageUploader
   end
 
   def self.generate_s3_path params, extension
-    "announcements/images/#{params[:announcement_id]}.#{extension}"
+    "announcements/images/#{params[:announcement_id]}-#{Time.now.to_i}.#{extension}"
   end
 
   def self.upload_options

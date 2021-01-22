@@ -20,9 +20,16 @@ script:
   - RAILS_ENV=test bin/d bundle exec rake db:drop db:create db:migrate
   - RAILS_ENV=test bin/d bundle exec rspec
 
-deploy:
-  provider: script
-  script: sh scripts/deploy_ecr.sh
-  on:
-    branch: staging
-#    all_branches: true
+# We don't use deploy anymore as it triggers only on success
+# while we want to be able to deploy despite failing tests is some situations
+# (e.g. on staging currently)
+
+# deploy:
+#   provider: script
+#   script: sh scripts/deploy_ecr.sh
+#   on:
+#     branch: staging
+#     # all_branches: true
+
+after_script:
+  - if bash scripts/travis_should_deploy.sh; then sh scripts/deploy_ecr.sh; fi

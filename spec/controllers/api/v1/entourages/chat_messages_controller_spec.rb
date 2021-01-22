@@ -125,7 +125,7 @@ describe Api::V1::Entourages::ChatMessagesController do
           join_request = FactoryGirl.create(:join_request, joinable: entourage, user: user, status: "accepted")
           join_request2 = FactoryGirl.create(:join_request, joinable: entourage, status: "accepted")
           FactoryGirl.create(:join_request, joinable: entourage, status: "pending")
-          expect_any_instance_of(PushNotificationService).to receive(:send_notification).with("John D.", 'foobar', 'foobaz', [join_request2.user], {:joinable_id=>entourage.id, :joinable_type=>"Entourage", :group_type=>'action', :type=>"NEW_CHAT_MESSAGE"})
+          expect_any_instance_of(PushNotificationService).to receive(:send_notification).with("John D.", 'Foobar', 'foobaz', [join_request2.user], {:joinable_id=>entourage.id, :joinable_type=>"Entourage", :group_type=>'action', :type=>"NEW_CHAT_MESSAGE"})
           post :create, entourage_id: entourage.to_param, chat_message: {content: "foobaz"}, token: user.token
         end
       end
@@ -230,6 +230,7 @@ describe Api::V1::Entourages::ChatMessagesController do
           it { expect(Entourage.last.attributes['uuid_v2']).to start_with '1_hash_' }
           it { expect(join_requests.map { |r| r['user_id'] }.sort).to eq([user.id, other_user.id]) }
           it { expect(join_requests.map { |r| r.slice('status', 'role') }.uniq).to eq(["status"=>"accepted", "role"=>"participant"]) }
+          it { expect(join_requests.find {|r| r['user_id'] == other_user.id }['report_prompt_status']).to eq 'display' }
         end
 
         context "invalid params" do

@@ -25,6 +25,8 @@ module Onboarding
           Event.track('onboarding.profile.first_name.entered', user_id: self.id)
         end
 
+        # This event isn't used anymore but I left it as it may be interesting
+        # for analytics or later use.
         if filled_blank_attribute?(previous_changes, 'goal')
           Event.track('onboarding.profile.goal.entered', user_id: self.id)
         end

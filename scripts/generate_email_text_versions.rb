@@ -1,5 +1,9 @@
 #!/usr/bin/env ruby
 
+# Permet de générer des emails avec des templates du projet
+# Par exemple, dans la version mobile, quand on reporte un utilisateur, on fait un appel à l'api
+# cet appel permet de notifier un modérateur sur le "report" de cet utilisateur, cf AdminMailer.user_report
+
 require 'open3'
 require 'tempfile'
 

@@ -1,0 +1,17 @@
+<div class="row">
+  <div class="sign-in-block col-md-4 center-block" style="float: none">
+    <div id="flash">
+      <%= display_flash_messages %>
+    </div>
+
+    <p><b>Veuillez renseigner votre identifiant :</b></p>
+    <%= form_tag admin_password_resets_path, html: {class: 'form-horizontal'} do %>
+      <div class="field form-group">
+        <%= text_field_tag :phone, nil, placeholder: "téléphone", class: 'form-control' %>
+      </div>
+      <div class="actions form-group">
+        <%= submit_tag "Reset", class: "btn btn-lg btn-entourage" %>
+      </div>
+    <% end %>
+  </div>
+</div>

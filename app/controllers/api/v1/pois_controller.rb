@@ -13,11 +13,12 @@ module Api
         use_soliguide &&= EnvironmentHelper.env.in?([:development, :staging])
 
         if use_soliguide
-          # use only in a radius of 20 km around the center of Paris
-          x = 48.8593 - params[:latitude].to_f
-          y = (2.3522 - params[:longitude].to_f) * 0.65791 # Math.cos(48.8593 * Math::PI / 180)
-          paris_distance = Math.sqrt(x**2 + y**2) * 110.25 # km/deg
-          use_soliguide = paris_distance <= 20
+          # use only in a radius of ~6 km around the center of Paris
+          # https://www.mapsdirections.info/en/measure-map-radius/?lat=48.8586&lng=2.3411&radius=5965
+          x = 48.8586 - params[:latitude].to_f
+          y = (2.3411 - params[:longitude].to_f) * 0.65792 # Math.cos(48.8586 * Math::PI / 180)
+          paris_distance = Math.sqrt(x**2 + y**2) * 110_250 # meters/degree
+          use_soliguide = paris_distance <= 5_965 # meters
         end
 
         if use_soliguide

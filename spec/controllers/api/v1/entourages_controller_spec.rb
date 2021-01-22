@@ -23,7 +23,7 @@ describe Api::V1::EntouragesController do
                                        "id" => entourage.id,
                                        "uuid"=>entourage.uuid_v2,
                                        "status"=>"open",
-                                       "title"=>"foobar",
+                                       "title"=>"Foobar",
                                        "group_type"=>"action",
                                        "public"=>false,
                                        "metadata"=>{"city"=>"", "display_address"=>""},
@@ -50,7 +50,8 @@ describe Api::V1::EntouragesController do
                                        "share_url" => "https://www.entourage.social/entourages/#{entourage.uuid_v2}",
                                        "image_url"=>nil,
                                        "online"=>false,
-                                       "event_url"=>nil
+                                       "event_url"=>nil,
+                                       "display_report_prompt" => false
                                     }]
                               })
       end
@@ -136,7 +137,7 @@ describe Api::V1::EntouragesController do
                                                           {"id"=>Entourage.last.id,
                                                            "uuid"=>Entourage.last.uuid_v2,
                                                            "status"=>"open",
-                                                           "title"=>"foo",
+                                                           "title"=>"Foo",
                                                            "group_type"=>"action",
                                                            "public"=>false,
                                                            "metadata"=>{"city"=>"", "display_address"=>""},
@@ -163,7 +164,8 @@ describe Api::V1::EntouragesController do
                                                            "share_url" => "https://www.entourage.social/entourages/#{Entourage.last.uuid_v2}",
                                                            "image_url"=>nil,
                                                            "online"=>false,
-                                                           "event_url"=>nil
+                                                           "event_url"=>nil,
+                                                           "display_report_prompt" => false
                                                           }
                                                      }) }
         it { expect(response.status).to eq(201) }
@@ -249,7 +251,8 @@ describe Api::V1::EntouragesController do
               "location"=>{
                 "latitude"=>48.868959,
                 "longitude"=>2.39018499999997
-              }
+              },
+              "display_report_prompt" => false
             }
           )
         end
@@ -330,7 +333,7 @@ describe Api::V1::EntouragesController do
                                                             {"id"=>entourage.id,
                                                              "uuid"=>entourage.uuid_v2,
                                                              "status"=>"open",
-                                                             "title"=>"foobar",
+                                                             "title"=>"Foobar",
                                                              "group_type"=>"action",
                                                              "public"=>false,
                                                              "metadata"=>{"city"=>"", "display_address"=>""},
@@ -357,7 +360,8 @@ describe Api::V1::EntouragesController do
                                                              "share_url" => "https://www.entourage.social/entourages/#{entourage.uuid_v2}",
                                                              "image_url"=>nil,
                                                              "online"=>false,
-                                                             "event_url"=>nil
+                                                             "event_url"=>nil,
+                                                             "display_report_prompt" => false
                                                             }
                                                        }) }
         end
@@ -412,7 +416,8 @@ describe Api::V1::EntouragesController do
                                                             "avatar_url"=>nil,
                                                             "partner"=>nil,
                                                             "partner_role_title" => nil},
-                                                          "location"=>{"latitude"=>0.0, "longitude"=>0.0}}}) }
+                                                          "location"=>{"latitude"=>0.0, "longitude"=>0.0},
+                                                          "display_report_prompt" => false}}) }
         end
 
         context "metadata" do
@@ -493,7 +498,7 @@ describe Api::V1::EntouragesController do
                                                           {"id"=>user_entourage.id,
                                                            "uuid"=>user_entourage.uuid_v2,
                                                            "status"=>"open",
-                                                           "title"=>"new_title",
+                                                           "title"=>"New_title",
                                                            "group_type"=>"action",
                                                            "public"=>false,
                                                            "metadata"=>{"city"=>"", "display_address"=>""},
@@ -520,7 +525,8 @@ describe Api::V1::EntouragesController do
                                                            "share_url" => "https://www.entourage.social/entourages/#{user_entourage.uuid_v2}",
                                                            "image_url"=>nil,
                                                            "online"=>false,
-                                                           "event_url"=>nil
+                                                           "event_url"=>nil,
+                                                           "display_report_prompt" => false
                                                           }
                                                      }) }
       end
@@ -665,4 +671,16 @@ describe Api::V1::EntouragesController do
       it { expect(ActionMailer::Base.deliveries.count).to eq 0 }
     end
   end
+
+  describe "DELETE report_prompt" do
+    let!(:entourage) { FactoryGirl.create(:entourage) }
+
+    context "user is accepted in entourage" do
+      let!(:join_request) { FactoryGirl.create(:join_request, joinable: entourage, user: user, report_prompt_status: :display, status: :accepted ) }
+      before { delete :dismiss_report_prompt, id: entourage.to_param, token: user.token }
+      it { expect(response.status).to eq(204) }
+      it { expect(join_request.reload.report_prompt_status).to eq 'dismissed' }
+    end
+  end
+
 end
