@@ -46,6 +46,7 @@ gem 'ruby-stemmer'
 gem 'json-schema',                    '~> 2.8.1'
 gem 'icalendar'
 gem 'phonelib'
+gem 'airrecord',                      '~> 1'
 
 group :development, :test do
   gem 'annotate'

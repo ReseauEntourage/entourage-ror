@@ -52,6 +52,10 @@ class User < ActiveRecord::Base
   has_many :addresses, -> { order(:position) }, dependent: :destroy
   has_many :partner_join_requests
 
+  attr_reader :admin_password
+  validates_length_of :admin_password, within: 8..256, allow_nil: true
+  validates :admin_password, confirmation: true, presence: false, if: Proc.new { |u| u.admin_password.present? }
+
   def departements
     addresses.where("country = 'FR' and postal_code <> ''").pluck("distinct left(postal_code, 2)")
   end
@@ -112,6 +116,18 @@ class User < ActiveRecord::Base
   }
 
   scope :moderators, -> { where(admin: true).where("roles ? 'moderator'") }
+
+  scope :left_joins_addresses, -> { joins('LEFT OUTER JOIN addresses ON addresses.user_id = users.id') }
+
+  scope :in_area, -> (area) {
+    if area.to_sym == :sans_zone
+      left_joins_addresses.where("addresses.id IS NULL OR addresses.postal_code IS NULL")
+    elsif area.to_sym == :hors_zone
+      joins(:addresses).where("addresses.country != 'FR' OR left(addresses.postal_code, 2) NOT IN (?)", ModerationArea.only_departements)
+    else
+      joins(:addresses).where("addresses.country = 'FR' AND left(addresses.postal_code, 2) = ?", ModerationArea.departement(area))
+    end
+  }
 
   before_validation do
     self.goal = nil if goal.blank?
@@ -202,8 +218,28 @@ class User < ActiveRecord::Base
     self.encrypted_password = BCrypt::Password.create(new_password) if !new_password.nil?
   end
 
+  def admin_password=(new_password)
+    @admin_password = new_password
+    self.encrypted_admin_password = BCrypt::Password.create(new_password) if new_password.present?
+  end
+
   def has_password?
     !encrypted_password.nil?
+  end
+
+  def generate_admin_password_token
+   self.reset_admin_password_token = SecureRandom.hex(10)
+   self.reset_admin_password_sent_at = Time.now.utc
+   self
+  end
+
+  def admin_password_token_valid?
+   (self.reset_admin_password_sent_at + 4.hours) > Time.now.utc
+  end
+
+  def reset_admin_password!
+   self.reset_admin_password_token = nil
+   save!
   end
 
   def pro?
@@ -212,6 +248,14 @@ class User < ActiveRecord::Base
 
   def org_member?
     partner_id != nil
+  end
+
+  def moderator?
+    roles.include?(:moderator)
+  end
+
+  def ambassador?
+    targeting_profile == 'ambassador'
   end
 
   def public?
@@ -268,6 +312,10 @@ class User < ActiveRecord::Base
 
   def anonymous?
     false
+  end
+
+  def apple?
+    id == 101 || address&.country == 'US'
   end
 
   def organization_name

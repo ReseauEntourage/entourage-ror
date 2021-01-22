@@ -18,11 +18,6 @@ module Onboarding
         .where("greatest(name_entered.created_at, postal_code_entered.created_at) <= ?", MIN_DELAY.ago)
         .pluck(:id)
 
-      # TODO: remove this, it's a switch used at the launch of the feature
-      if ENV['DISABLE_GENERIC_WELCOME_MESSAGE'] == 'true'
-        user_ids = User.where(id: user_ids).where("goal is not null").pluck(:id)
-      end
-
       User.where(id: user_ids).find_each do |user|
         begin
           Raven.user_context(id: user&.id)

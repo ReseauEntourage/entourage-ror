@@ -1,3 +1,8 @@
+# script utilisé par travis ci
+# on peut aussi utiliser en local pour push une image docker sur amazon ecr pour déclencher la pipeline de déploiement
+# pour ce dernier point, il faudrait modifier le script car il installe awscli
+# le fichier est appelé par travis.yml après l'exécution des tests
+
 # Setup tools
 pip3 install awscli # install aws cli w/o sudo
 export PATH=$PATH:$HOME/.local/bin # put aws in the path

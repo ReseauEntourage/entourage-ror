@@ -1,0 +1,71 @@
+<div class="container">
+  <div style="width: 750px; margin: auto">
+    <h1>Diffusions de messages privés</h1>
+
+    <div style="margin-bottom: 15px; display: flex">
+      <div class="btn-group btn-group-sm">
+        <%= link_to("Brouillons", params.merge(status: :draft), class: "btn btn-#{@status == :draft ? :primary : :default}") %>
+        <%= link_to("Archivées", params.merge(status: :archived), class: "btn btn-#{@status == :archived ? :primary : :default}") %>
+        <%= link_to("En cours d'envoi", params.merge(status: :sending), class: "btn btn-#{@status == :sending ? :primary : :default}") %>
+        <%= link_to("Envoyés", params.merge(status: :sent), class: "btn btn-#{@status == :sent ? :primary : :default}") %>
+      </div>
+    </div>
+
+    <div style="margin-bottom: 15px; display: flex">
+      <div class="btn-group btn-group-sm">
+        <%= link_to("Tous", params.merge(area: :all), class: "btn btn-#{@area == :all ? :primary : :default}") %>
+        <% ModerationArea.by_slug.sort.each do |slug, area| %>
+          <%= link_to(area.short_name, params.merge(area: slug), class: "btn btn-#{@area == slug ? :primary : :default}") %>
+        <% end %>
+      </div>
+
+      <div class="btn-group btn-group-sm" style="margin-left: 15px">
+        <%= link_to("Tous", params.merge(goal: :all), class: "btn btn-#{@goal == :all ? :primary : :default}") %>
+        <% UserGoalPresenter.all(current_user.community).each do |goal| %>
+          <%= link_to("", params.merge(goal: goal.slug), class: "btn btn-#{@goal == goal.slug ? :primary : :default} fa fa-#{goal.icon}", title: "#{goal.name}") %>
+        <% end %>
+      </div>
+
+      <div style="margin-left: 15px">
+        <%= link_to("Nouvelle diffusion", new_admin_conversation_message_broadcast_path, class: "btn btn-default btn-sm") %>
+      </div>
+    </div>
+
+    <div class="row">
+      <% if @conversation_message_broadcasts.none? %>
+        Pas de diffusions de MP.
+      <% else %>
+        <table class="table">
+          <th>Id</th>
+          <th>Titre</th>
+          <th>Archivé</th>
+          <th>Zone de modération</th>
+          <th>Public</th>
+          <th>Dernière mise à jour</th>
+          <th>Actions</th>
+          <% @conversation_message_broadcasts.each do |conversation_message_broadcast| %>
+            <tr>
+              <td><%= conversation_message_broadcast.id %></td>
+              <td><%= conversation_message_broadcast.title %></td>
+              <td><%= check_box_tag '', '', conversation_message_broadcast.archived?, disabled: true %></td>
+              <td><%= @areas[conversation_message_broadcast.area.to_sym].name_with_departement %></td>
+              <td><%= UserGoalPresenter.new(conversation_message_broadcast.goal, community: current_user.community).name %></td>
+              <td><%= l(conversation_message_broadcast.updated_at, format: :short) if conversation_message_broadcast.updated_at %></td>
+              <td>
+                <% if conversation_message_broadcast.draft? %>
+                  <%= link_to "Modifier", edit_admin_conversation_message_broadcast_path(conversation_message_broadcast), class: "btn btn-danger" %>
+                <% elsif !conversation_message_broadcast.sending? %>
+                  <%= link_to "Dupliquer", clone_admin_conversation_message_broadcast_path(conversation_message_broadcast), method: :post, class: "btn btn-danger" %>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        </table>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<%= form_tag reorder_admin_announcements_path, class: "hide", id: "reorder-form" do %>
+  <%= hidden_field_tag :ordered_ids %>
+<% end %>

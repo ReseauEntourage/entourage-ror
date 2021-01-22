@@ -5,6 +5,7 @@ Rails.application.routes.draw do
     scope :module => "admin", :as => "admin" do
       get '/' => 'base#home'
       get 'logout' => 'sessions#logout'
+      get '/sessions/new', to: redirect('/admin/sessions/new')
 
       resources :generate_tours, only: [:index, :create]
 
@@ -60,6 +61,10 @@ Rails.application.routes.draw do
           get :sensitive_words
           post :sensitive_words_check
           get :edit_type
+          post :pin
+          post :unpin
+          get '/edit/image', action: :edit_image
+          get '/image_upload_success', action: :image_upload_success
         end
         collection do
           post :destroy_message
@@ -105,6 +110,10 @@ Rails.application.routes.draw do
     get '/' => 'users#index'
     get 'logout' => 'sessions#logout'
 
+    resources :sessions, only: [:new, :create]
+
+    resources :password_resets, only: [:new, :create, :edit, :update]
+
     resources :generate_tours, only: [:index, :create]
 
     resources :users, only: [:index, :edit, :update, :new, :create] do
@@ -129,6 +138,12 @@ Rails.application.routes.draw do
     resources :entourage_invitations, only: [:index]
     resources :entourages, only: [:index, :show, :edit, :update]
     resources :join_requests, only: [:create]
+    resources :conversation_message_broadcasts do
+      member do
+        post 'broadcast'
+        post 'clone'
+      end
+    end
 
     get 'public_user_autocomplete' => "users_search#public_user_autocomplete"
     get 'user_search' => "users_search#user_search"
@@ -222,6 +237,7 @@ Rails.application.routes.draw do
           put :read
           get 'update', action: :one_click_update, as: :one_click_update
           post :report
+          delete :report_prompt, action: :dismiss_report_prompt
         end
       end
       resources :invitations, only: [:index, :update, :destroy]
@@ -343,6 +359,16 @@ Rails.application.routes.draw do
         get '/logo_upload_success', action: :logo_upload_success
       end
     end
+    resources :entourages, only: [:edit] do
+      member do
+        get '/edit/image', action: :edit_image
+        get '/image_upload_success', action: :image_upload_success
+      end
+    end
+    resources :uploads, only: :new
+    namespace :uploads do
+      get '/success', action: :update
+    end
   end
 
   good_waves_url = URI(ENV['GOOD_WAVES_URL'] || "//#{ENV['HOST']}/good_waves")
@@ -423,7 +449,6 @@ Rails.application.routes.draw do
   get 'store_redirection' => 'home#store_redirection'
   get 'cgu' => 'home#cgu'
   get 'ping' => 'application#ping'
-  get 'redirect/:signature/*url' => 'redirection#redirect', format: false, as: :escaped_redirect
 
   #PUBLIC USER
   namespace :public_user do

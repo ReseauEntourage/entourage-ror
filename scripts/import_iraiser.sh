@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# se connecte au compte iraiser pour faire un exportCsv
+
 login=$(echo "$IRAISER_CREDENTIALS" | cut -d: -f1)
 password=$(echo "$IRAISER_CREDENTIALS" | cut -d: -f2)
 
@@ -76,4 +78,4 @@ done
 
 rails runner scripts/import_iraiser_csv.rb export.csv
 
-rm iraiser_cookie export.csv
+# rm iraiser_cookie export.csv

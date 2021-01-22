@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
 
+# permet de rejouer une ligne de log provenant de papertrail pour étudier un bug
+
 require 'uri'
 require 'json'
 require 'shellwords'

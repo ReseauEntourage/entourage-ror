@@ -60,6 +60,10 @@
                    @messages_author.roles.include?(:moderator) %>
               <%= link_to "Rejoindre", admin_join_requests_path(joinable_id: @entourage), class: "btn btn-info", method: :post %>
             <% end %>
+            <div class="btn-group btn-group-sm">
+              <%= link_to("Prioritaire", pin_admin_entourage_path(@entourage), method: :post, class: "btn btn-#{@entourage.admin_pin? ? :primary : :default}") %>
+              <%= link_to("Non prioritaire", unpin_admin_entourage_path(@entourage), method: :post, class: "btn btn-#{@entourage.admin_pin? ? :default : :primary}") %>
+            </div>
             <%= link_to "Modifier", edit_admin_entourage_path(@entourage), class: "btn btn-success" %>
           </div>
         </div>

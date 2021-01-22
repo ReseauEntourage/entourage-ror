@@ -59,6 +59,7 @@ class Entourage < ActiveRecord::Base
   validates_inclusion_of :online, in: -> (e) { e.online_setting_options }
   validates :metadata, schema: -> (e) { "#{e.group_type}:metadata" }
   validate :validate_outings_ends_at
+  validates :image_url, format: { with: %r(\Ahttps?://\S+\z) }, allow_blank: true
 
   scope :visible, -> { where.not(status: ['blacklisted', 'suspended']) }
   scope :findable, -> { where.not(status: ['blacklisted']) }
@@ -336,7 +337,7 @@ class Entourage < ActiveRecord::Base
   end
 
   def reformat_content(force: false)
-    self.title = title&.squish if force || title_changed?
+    self.title = title&.squish&.sub(/\S/, &:upcase) if force || title_changed?
     self.description = description&.strip if force || description_changed?
   end
 

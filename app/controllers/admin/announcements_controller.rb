@@ -6,7 +6,15 @@ module Admin
       @status = params[:status].presence&.to_sym
       @status = :active unless @status.in?([:draft, :archived])
 
+      @area = params[:area].presence&.to_sym
+      @area = :all unless @area.in?(ModerationArea.all_slugs)
+
+      @user_goal = params[:user_goal].presence&.to_sym
+      @user_goal = :all unless @user_goal.in?(UserGoalPresenter.all_slugs(community))
+
       @announcements = Announcement.where(status: @status)
+      @announcements = @announcements.for_areas([@area]) if @area && @area != :all
+      @announcements = @announcements.for_user_goal(@user_goal) if @user_goal && @user_goal != :all
 
       if @status == :active
         @announcements = @announcements.ordered

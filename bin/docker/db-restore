@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# restore snapshot.dump dans la db locale
+
 set -o pipefail
 
 source "${BASH_SOURCE%/*}/pg-lib.sh"

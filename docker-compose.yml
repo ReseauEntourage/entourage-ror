@@ -2,7 +2,7 @@ version: '3.4'
 services:
 
   postgresql:
-    image: mdillon/postgis:10
+    image: mdillon/postgis:11
     environment:
       POSTGRES_PASSWORD: guest
       POSTGRES_USER: guest
