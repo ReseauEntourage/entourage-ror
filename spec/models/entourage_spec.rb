@@ -21,6 +21,24 @@ RSpec.describe Entourage, type: :model do
     it { expect(build(:entourage, community: :pfp, group_type: :neighborhood, metadata: {address: "foo", google_place_id: "bar"}).save).to eq true }
   end
 
+  describe "reformat_content" do
+    it "should uppercase first character" do
+      entourage = FactoryGirl.create(:entourage, title: 'title')
+      entourage.save
+      expect(entourage.title).to eq('Title')
+    end
+    it "should uppercase only first character" do
+      entourage = FactoryGirl.create(:entourage, title: 'title FOO Bar')
+      entourage.save
+      expect(entourage.title).to eq('Title FOO Bar')
+    end
+    it "should not uppercase first character on emoji" do
+      entourage = FactoryGirl.create(:entourage, title: '👌title')
+      entourage.save
+      expect(entourage.title).to eq('👌title')
+    end
+  end
+
   it "has many members" do
     user = FactoryGirl.create(:public_user)
     entourage = FactoryGirl.create(:entourage)

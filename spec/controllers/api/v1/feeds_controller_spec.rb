@@ -35,7 +35,7 @@ include CommunityHelper
                 "id"=>entourage.id,
                 "uuid"=>entourage.uuid_v2,
                 "status"=>"open",
-                "title"=>"foobar",
+                "title"=>"Foobar",
                 "group_type"=>"action",
                 "public"=>false,
                 "metadata"=>{"city"=>"", "display_address"=>""},
@@ -62,7 +62,8 @@ include CommunityHelper
                 "share_url" => "https://www.entourage.social/entourages/#{entourage.uuid_v2}",
                 "image_url"=>nil,
                 "online"=>false,
-                "event_url"=>nil
+                "event_url"=>nil,
+                "display_report_prompt" => false
               },
               "heatmap_size" => 20
             },
@@ -73,7 +74,7 @@ include CommunityHelper
                 "uuid"=>"1",
                 "title"=>"Une autre façon de contribuer.",
                 "body"=>"Entourage a besoin de vous pour continuer à accompagner les sans-abri.",
-                "image_url"=>nil,
+                "image_url"=>"https://blog.entourage.social/",
                 "action"=>"Aider",
                 "url"=>"http://test.host/api/v1/announcements/1/redirect/#{user.token}",
                 "icon_url"=>"http://test.host/api/v1/announcements/1/icon",
@@ -415,7 +416,7 @@ include CommunityHelper
              "id"=>entourage.id,
              "uuid"=>entourage.uuid_v2,
              "status"=>"open",
-             "title"=>"foobar",
+             "title"=>"Foobar",
              "group_type"=>"action",
              "public"=>false,
              "metadata"=>{"city"=>"", "display_address"=>""},
@@ -443,7 +444,8 @@ include CommunityHelper
                "partner_role_title" => nil},
              "location"=>{
                "latitude"=>1.122,
-               "longitude"=>2.345}},
+               "longitude"=>2.345},
+             "display_report_prompt" => false},
            "heatmap_size"=>20},
           {"type"=>"Announcement",
            "data"=>{
@@ -451,7 +453,7 @@ include CommunityHelper
              "uuid"=>"1",
              "title"=>"Une autre façon de contribuer.",
              "body"=>"Entourage a besoin de vous pour continuer à accompagner les sans-abri.",
-             "image_url"=>nil,
+             "image_url"=>"https://blog.entourage.social/",
              "action"=>"Aider",
              "url"=>"http://test.host/api/v1/announcements/1/redirect/#{user.token}",
              "icon_url"=>"http://test.host/api/v1/announcements/1/icon",

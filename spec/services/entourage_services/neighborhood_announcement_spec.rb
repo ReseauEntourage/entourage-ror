@@ -15,7 +15,7 @@ describe EntourageServices::NeighborhoodAnnouncement do
     it { expect(V1::ChatMessageSerializer.new(chat_message).as_json).to eq(
       'chat_message' => {
         id: chat_message.id,
-        content: "a créé une sortie :\nfoobar\nle 26/07 à 19h00,\nCafé la Renaissance, 44 rue de l’Assomption, 75016 Paris",
+        content: "a créé une sortie :\nFoobar\nle 26/07 à 19h00,\nCafé la Renaissance, 44 rue de l’Assomption, 75016 Paris",
         user: {
           id: user.id,
           avatar_url: nil,
@@ -26,7 +26,7 @@ describe EntourageServices::NeighborhoodAnnouncement do
         message_type: 'outing',
         metadata: {
           uuid: outing.uuid_v2,
-          title: "foobar",
+          title: "Foobar",
           operation: 'created',
           starts_at: outing.metadata[:starts_at],
           display_address: "Café la Renaissance, 44 rue de l’Assomption, 75016 Paris"
@@ -37,14 +37,14 @@ describe EntourageServices::NeighborhoodAnnouncement do
 
   describe ".on_update" do
     before do
-      outing.update(title: "plop")
+      outing.update(title: "Plop")
       EntourageServices::NeighborhoodAnnouncement.on_update(outing)
     end
 
     it { expect(V1::ChatMessageSerializer.new(chat_message).as_json).to eq(
       'chat_message' => {
         id: chat_message.id,
-        content: "a modifié une sortie :\nplop\nle 26/07 à 19h00,\nCafé la Renaissance, 44 rue de l’Assomption, 75016 Paris",
+        content: "a modifié une sortie :\nPlop\nle 26/07 à 19h00,\nCafé la Renaissance, 44 rue de l’Assomption, 75016 Paris",
         user: {
           id: user.id,
           avatar_url: nil,
@@ -55,7 +55,7 @@ describe EntourageServices::NeighborhoodAnnouncement do
         message_type: 'outing',
         metadata: {
           uuid: outing.uuid_v2,
-          title: "plop",
+          title: "Plop",
           operation: 'updated',
           starts_at: outing.metadata[:starts_at],
           display_address: "Café la Renaissance, 44 rue de l’Assomption, 75016 Paris"

@@ -5,7 +5,7 @@ module Api
       skip_before_filter :ensure_community!
 
       def redirect
-        if current_user_or_anonymous.nil? && !params[:id].in?(['terms', 'privacy-policy', 'good_waves', 'action_faq'])
+        if current_user_or_anonymous.nil? && !params[:id].in?(['terms', 'privacy-policy', 'good_waves', 'action_faq', 'propose-poi'])
           return render json: {message: 'unauthorized'}, status: :unauthorized
         end
 
@@ -27,7 +27,7 @@ module Api
             'https://ambassadeurs.entourage.social',
           'donation' =>
             lambda do |user|
-              url = "https://entourage.social/don?utm_medium=menu&utm_source=app&utm_campaign=dons2019"
+              url = "https://entourage.iraiser.eu/jedonne/~mon-don?utm_source=appentourage&utm_medium=formulaire&utm_campaign=dons2020"
 
               if !user.anonymous?
                 url += "&" + {
@@ -94,6 +94,8 @@ module Api
           'hub_2' => 'https://www.simplecommebonjour.org/',
           'hub_3' => 'https://www.eventbrite.fr/o/entourage-29770425367',
           'hub_faq'  => 'https://blog.entourage.social/2017/04/28/comment-utiliser-l-application-entourage/#index-faq',
+          'how-to-present' => 'https://blog.entourage.social/2019/08/06/comment-mieux-presenter-entourage-a-une-personne-sdf/',
+          'partner_action_faq' => 'https://blog.entourage.social/category/associations/'
         }
 
         redirection = redirections[params[:id]]

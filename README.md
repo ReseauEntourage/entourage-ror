@@ -56,6 +56,13 @@ bin/d foreman start web
 You can run below commands prepending `bin/d` to them and it will run in the
 container !
 
+*Note:* after modifying the `Dockerfile`, you might need to run
+```bash
+docker-compose -f docker-compose.yml -f docker-compose.dev.yml build spring
+```
+This commands mirrors what happens in `bin/docker/up` to build the `dev` variant of the Docker image.
+TODO: there has to be a simple way to do this. We should update the `bin/docker/*` script as needed or at least create one for this.
+
 # Docker - Tests
 
 ```bash

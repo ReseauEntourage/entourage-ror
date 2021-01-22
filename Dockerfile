@@ -65,13 +65,16 @@ USER root
 
 # Install npm resources
 
-# FIXME: add this back if we use aglio again
 #RUN curl -L https://npmjs.org/install.sh | sh
 
-# Install aglio
-
 # FIXME: do we really need this? all the time? takes 2mins to build out of the 4 mins (lib is out of date)
-# RUN npm install -g aglio --unsafe
+
+# Install psql. See bin/docker/psql
+
+RUN apt-get update \
+ && apt-get -y --no-install-recommends install \
+      postgresql-client \
+ && rm -rf /var/lib/apt/lists/*
 
 # Install ruby spy
 

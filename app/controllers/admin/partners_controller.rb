@@ -8,7 +8,8 @@ module Admin
     end
 
     def new
-      @partner = Partner.new(staff: params[:staff])
+      @partner = Partner.new
+      @partner.staff = params[:staff] unless params[:staff].nil?
     end
 
     def create

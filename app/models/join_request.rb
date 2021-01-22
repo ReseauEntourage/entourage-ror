@@ -19,6 +19,7 @@ class JoinRequest < ActiveRecord::Base
   validates_inclusion_of :status, in: ["pending", "accepted", "rejected", "cancelled"]
   validates :role, presence: true,
                    inclusion: { in: -> (r) { r.joinable&.group_type_config&.dig('roles') || [] }, allow_nil: true }
+  validates_inclusion_of :report_prompt_status, in: ['display', 'dismissed', 'reported'], allow_nil: true
 
   scope :accepted, -> {where(status: ACCEPTED_STATUS)}
   scope :pending,  -> {where(status: PENDING_STATUS)}

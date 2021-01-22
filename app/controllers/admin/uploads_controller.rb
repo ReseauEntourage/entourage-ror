@@ -5,7 +5,8 @@ module Admin
     def new
       uploader = {
         'partner_logo' => PartnerLogoUploader,
-        'announcement_image' => AnnouncementImageUploader
+        'announcement_image' => AnnouncementImageUploader,
+        'entourage_image' => EntourageImageUploader
       }[params[:uploader]]
 
       raise if uploader.nil?

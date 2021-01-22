@@ -1,0 +1,24 @@
+<div class="row">
+  <div class="sign-in-block col-md-4 center-block" style="float: none">
+    <div id="flash">
+      <%= display_flash_messages %>
+    </div>
+
+    <p><b>Veuillez renseigner vos identifiants :</b></p>
+    <%= form_tag admin_sessions_path, html: {class: 'form-horizontal'} do %>
+      <div class="field form-group">
+        <%= text_field_tag :phone, nil, placeholder: "téléphone", class: 'form-control' %>
+      </div>
+      <div class="field form-group">
+        <%= password_field_tag :admin_password, nil, placeholder: "mot de passe", class: 'form-control' %>
+      </div>
+      <%= hidden_field_tag :continue, params[:continue] %>
+      <div class="actions form-group">
+        <%= link_to "Mot de passe oublié", new_admin_password_reset_path %>
+      </div>
+      <div class="actions form-group">
+        <%= submit_tag "Connexion", class: "btn btn-lg btn-entourage" %>
+      </div>
+    <% end %>
+  </div>
+</div>
