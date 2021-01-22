@@ -62,8 +62,8 @@ describe Api::V1::MyfeedsController do
           let!(:chat_message3) { FactoryGirl.create(:chat_message, messageable: tour, created_at: DateTime.parse("11/01/2000"), updated_at: DateTime.parse("11/01/2000"), content: "tour_foo") }
           before { get :index, token: user.token }
           it { expect(result["feeds"].map {|feed| feed["data"]["last_message"]} ).to eq([
-            {"text"=>"foo",      "author"=>{"first_name"=>"John", "last_name"=>"D"}},
-            {"text"=>"tour_foo", "author"=>{"first_name"=>"John", "last_name"=>"D"}}
+            {"text"=>"foo",      "author"=>{"first_name"=>"John", "last_name"=>"D", "display_name"=>"John D.", "id"=>chat_message1.user_id}},
+            {"text"=>"tour_foo", "author"=>{"first_name"=>"John", "last_name"=>"D", "display_name"=>"John D.", "id"=>chat_message3.user_id}}
           ]) }
         end
 

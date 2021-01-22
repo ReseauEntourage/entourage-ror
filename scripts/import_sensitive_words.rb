@@ -1,3 +1,5 @@
+# importe une liste de mots sensibles à intégrer en base de données
+
 def usage
   $stderr.puts "Usage: rails runner #{$PROGRAM_NAME} file match_type scope [category]"
   exit 1 unless defined? Rails

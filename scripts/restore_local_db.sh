@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+
+# deprecated pour l'import en local de la db
+
 set -e
 
 PROD="entourage-back"

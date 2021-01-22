@@ -24,10 +24,11 @@ class Partner < ActiveRecord::Base
     super.presence || PLACEHOLDER_URL
   end
 
-  CHECKMARK_URL = "https://s3-eu-west-1.amazonaws.com/entourage-ressources/check-small.png"
+  CHECKMARK_URL = "https://s3-eu-west-1.amazonaws.com/entourage-ressources/check-small.png".freeze
+  STAFF_BADGE_URL = "https://s3-eu-west-1.amazonaws.com/entourage-ressources/entourage-logo-small.png".freeze
 
   def small_logo_url
-    super.presence || CHECKMARK_URL
+    super.presence || (staff ? STAFF_BADGE_URL : CHECKMARK_URL)
   end
 
   def reformat_url

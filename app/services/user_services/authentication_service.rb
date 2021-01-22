@@ -12,11 +12,15 @@ module UserServices
       check_secret submitted_password, attribute: :encrypted_password
     end
 
+    def check_admin_password(submitted_password)
+      check_secret submitted_password, attribute: :encrypted_admin_password
+    end
+
     private
     attr_reader :user
 
     def check_secret submitted_secret, attribute:
-      raise AttributeError unless attribute.in?([:sms_code, :encrypted_password])
+      raise AttributeError unless attribute.in?([:sms_code, :encrypted_password, :encrypted_admin_password])
 
       user_secret_hash = user.send attribute
       return false if user_secret_hash.nil?

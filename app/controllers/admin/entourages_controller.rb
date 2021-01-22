@@ -1,6 +1,6 @@
 module Admin
   class EntouragesController < Admin::BaseController
-    before_action :set_entourage, only: [:show, :edit, :update, :moderator_read, :moderator_unread, :message, :sensitive_words, :sensitive_words_check, :edit_type]
+    before_action :set_entourage, only: [:show, :edit, :update, :moderator_read, :moderator_unread, :message, :sensitive_words, :sensitive_words_check, :edit_type, :pin, :unpin]
     before_filter :ensure_moderator!, only: [:message]
 
     def index
@@ -22,7 +22,7 @@ module Admin
         .where(group_type: group_types, community: community)
         .with_moderation
 
-      main_moderator = ModerationServices.moderator(community: current_user.community)
+      main_moderator = ModerationServices.moderator_if_exists(community: current_user.community)
       if current_user != main_moderator && (params.keys - ['controller', 'action']).none? && current_user.roles.include?(:moderator)
         params[:moderator_id] = current_user.id
       end
@@ -70,6 +70,7 @@ module Admin
             left join chat_messages
               on chat_messages.messageable_type = 'Entourage'
              and chat_messages.messageable_id = entourages.id
+             and chat_messages.created_at >= moderator_reads.read_at
           ))
           .joins(%(
             left join join_requests
@@ -77,6 +78,7 @@ module Admin
              and join_requests.joinable_id = entourages.id
              and join_requests.status in ('pending', 'accepted')
              and join_requests.message <> ''
+             and join_requests.requested_at >= moderator_reads.read_at
           ))
           .order(%(
             case
@@ -88,7 +90,7 @@ module Admin
       end
 
       @entourages = @entourages
-        .order("created_at DESC")
+        .order("admin_pin DESC, created_at DESC")
         .to_a
 
       @entourages = Kaminari.paginate_array(@entourages, total_count: @q.result.count).page(params[:page]).per(per_page)
@@ -264,6 +266,26 @@ module Admin
       end
     end
 
+    def edit_image
+      @entourage = Entourage.find(params[:id])
+      @form = EntourageImageUploader
+    end
+
+    def image_upload_success
+      entourage = EntourageImageUploader.handle_success(params)
+      redirect_to edit_admin_entourage_path(entourage)
+    end
+
+    def pin
+      @entourage.update_column(:admin_pin, true)
+      redirect_to [:admin, @entourage]
+    end
+
+    def unpin
+      @entourage.update_column(:admin_pin, false)
+      redirect_to [:admin, @entourage]
+    end
+
     def edit_type
       new_type = params[:to]&.to_sym
       current_type = @entourage.group_type.to_sym
@@ -364,7 +386,7 @@ module Admin
     def entourage_params
       metadata_keys = params.dig(:entourage, :metadata).try(:keys) || []
       metadata_keys -= [:starts_at]
-      params.require(:entourage).permit(:group_type, :status, :title, :description, :category, :entourage_type, :display_category, :latitude, :longitude, :public, :online, :event_url, metadata: metadata_keys)
+      params.require(:entourage).permit(:group_type, :status, :title, :description, :category, :entourage_type, :display_category, :latitude, :longitude, :public, :online, :url, :event_url, metadata: metadata_keys)
     end
 
     def chat_messages_params

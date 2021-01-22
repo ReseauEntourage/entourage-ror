@@ -26,10 +26,11 @@ module Admin
 
     def area_params
       params.require(:moderation_area).permit(
-        :moderator_id, :welcome_message_1, :welcome_message_2,
-        :welcome_message_1_offer_help,   :welcome_message_2_offer_help,
-        :welcome_message_1_ask_for_help, :welcome_message_2_ask_for_help,
-        :welcome_message_1_organization, :welcome_message_2_organization,
+        :moderator_id,
+        :welcome_message_1_offer_help,     :welcome_message_2_offer_help,
+        :welcome_message_1_ask_for_help,   :welcome_message_2_ask_for_help,
+        :welcome_message_1_organization,   :welcome_message_2_organization,
+        :welcome_message_1_goal_not_known, :welcome_message_2_goal_not_known,
       )
     end
   end

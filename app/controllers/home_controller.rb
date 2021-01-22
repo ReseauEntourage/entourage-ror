@@ -22,6 +22,8 @@ class HomeController < ApplicationController
     else
       raise AbstractController::ActionNotFound
     end
+    query_string = params.except(:action, :controller).to_query
+    url = "#{url}?#{query_string}" if query_string.present?
     redirect_to url, status: 301
   end
 

@@ -12,8 +12,8 @@ class SmsNotificationService
       provider = 'Slack'
     end
 
-    if secondary_provider != nil
-      number_of_deliveries = SmsDelivery.where(phone_number: phone_number).count
+    if secondary_provider != nil && sms_type == 'regenerate'
+      number_of_deliveries = SmsDelivery.where(phone_number: phone_number, sms_type: sms_type).where("created_at > '#{Time.now - 60.minutes}'").count
 
       if number_of_deliveries.odd?
         provider = secondary_provider

@@ -2,7 +2,7 @@ module Api
   module V1
     class EntouragesController < Api::V1::BaseController
       before_action :set_entourage_or_handle_conversation_uuid, only: [:show]
-      before_action :set_entourage, only: [:update, :read, :one_click_update, :report]
+      before_action :set_entourage, only: [:update, :read, :one_click_update, :report, :dismiss_report_prompt]
       skip_before_filter :authenticate_user!, only: [:one_click_update]
       allow_anonymous_access only: [:show]
 
@@ -109,6 +109,14 @@ module Api
         ).deliver_later
 
         head :created
+      end
+
+      def dismiss_report_prompt
+        @entourage.join_requests
+                  .accepted
+                  .where(user: current_user)
+                  .update_all(report_prompt_status: 'dismissed')
+        head :no_content
       end
 
       private

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20201119143313) do
+ActiveRecord::Schema.define(version: 20210104140000) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -203,6 +203,21 @@ ActiveRecord::Schema.define(version: 20201119143313) do
   add_index "chat_messages", ["messageable_id", "messageable_type"], name: "index_chat_messages_on_messageable_id_and_messageable_type", using: :btree
   add_index "chat_messages", ["user_id"], name: "index_chat_messages_on_user_id", using: :btree
 
+  create_table "conversation_message_broadcasts", force: :cascade do |t|
+    t.string   "area",                          null: false
+    t.text     "content",                       null: false
+    t.string   "goal",                          null: false
+    t.string   "title",                         null: false
+    t.datetime "archived_at"
+    t.datetime "created_at",                    null: false
+    t.datetime "updated_at",                    null: false
+    t.string   "status",      default: "draft", null: false
+    t.datetime "sent_at"
+  end
+
+  add_index "conversation_message_broadcasts", ["area"], name: "index_conversation_message_broadcasts_on_area", using: :btree
+  add_index "conversation_message_broadcasts", ["goal"], name: "index_conversation_message_broadcasts_on_goal", using: :btree
+
   create_table "coordination", id: false, force: :cascade do |t|
     t.integer "user_id"
     t.integer "organization_id"
@@ -363,6 +378,7 @@ ActiveRecord::Schema.define(version: 20201119143313) do
     t.string   "image_url"
     t.boolean  "online",                      default: false
     t.string   "event_url"
+    t.boolean  "admin_pin"
   end
 
   add_index "entourages", ["country", "postal_code"], name: "index_entourages_on_country_and_postal_code", using: :btree
@@ -417,6 +433,7 @@ ActiveRecord::Schema.define(version: 20201119143313) do
     t.datetime "accepted_at"
     t.datetime "email_notification_sent_at"
     t.datetime "archived_at"
+    t.string   "report_prompt_status"
   end
 
   add_index "join_requests", ["joinable_type", "joinable_id", "status"], name: "index_join_requests_on_joinable_type_and_joinable_id_and_status", using: :btree
@@ -446,18 +463,18 @@ ActiveRecord::Schema.define(version: 20201119143313) do
   end
 
   create_table "moderation_areas", force: :cascade do |t|
-    t.string  "departement",                    limit: 2,  null: false
-    t.string  "name",                                      null: false
+    t.string  "departement",                      limit: 2,  null: false
+    t.string  "name",                                        null: false
     t.integer "moderator_id"
-    t.text    "welcome_message_1"
-    t.text    "welcome_message_2"
-    t.string  "slack_channel",                  limit: 80
+    t.string  "slack_channel",                    limit: 80
     t.text    "welcome_message_1_offer_help"
     t.text    "welcome_message_2_offer_help"
     t.text    "welcome_message_1_ask_for_help"
     t.text    "welcome_message_2_ask_for_help"
     t.text    "welcome_message_1_organization"
     t.text    "welcome_message_2_organization"
+    t.text    "welcome_message_1_goal_not_known"
+    t.text    "welcome_message_2_goal_not_known"
   end
 
   add_index "moderation_areas", ["departement"], name: "index_moderation_areas_on_departement", unique: true, using: :btree
@@ -848,6 +865,9 @@ ActiveRecord::Schema.define(version: 20201119143313) do
     t.uuid     "uuid",                                     default: "gen_random_uuid()"
     t.string   "goal"
     t.jsonb    "interests",                                default: [],                  null: false
+    t.string   "encrypted_admin_password"
+    t.string   "reset_admin_password_token"
+    t.datetime "reset_admin_password_sent_at"
   end
 
   add_index "users", ["address_id"], name: "index_users_on_address_id", using: :btree

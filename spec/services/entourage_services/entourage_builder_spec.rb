@@ -26,12 +26,12 @@ describe EntourageServices::EntourageBuilder do
 
   describe '#create' do
     let(:user) { create :public_user }
-    let(:params) { {title: "foo", entourage_type: :contribution, location: {latitude: 1, longitude: 2}} }
+    let(:params) { {title: "Foo", entourage_type: :contribution, location: {latitude: 1, longitude: 2}} }
     let(:service) { EntourageServices::EntourageBuilder.new(params: params, user: user) }
 
     it { expect(service.create).to be_persisted }
     it { expect(service.create.attributes.symbolize_keys).to include(
-      title: "foo",
+      title: "Foo",
       entourage_type: 'contribution',
       latitude: 1,
       longitude: 2

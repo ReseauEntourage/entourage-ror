@@ -1,0 +1,67 @@
+<div class="container">
+  <div style="width: 750px; margin: auto">
+    <ol class="breadcrumb">
+      <li><%= link_to "Événements", admin_entourages_path %></li>
+      <li><%= link_to @entourage.title, edit_admin_entourage_path(@entourage) %></li>
+      <li class="active">Image</li>
+    </ol>
+
+    <h1>Modifier l'image</h1>
+    <div class="alert alert-info" role="alert" style="display: flex; align-items: center">
+      <div style="flex-grow: 1">
+        Merci de privilégier les images <b>sans texte</b> et en <b>16:9</b>.
+      </div>
+    </div>
+
+    <div class="margin-bottom: 15px">
+      <%= image_tag @entourage.image_url, size: '750x320' %>
+    </div>
+
+    <form class="form-inline" id="upload-form"
+          action="#" method="post" enctype="multipart/form-data">
+      <div>PNG ou JPEG, 750x320</div>
+      <div class="form-group">
+        <input type="file" class="btn btn-default"
+               name="file" accept="<%= @form.content_types %>"/>
+      </div>
+      <input type="submit" value="Enregistrer" class="btn btn-success" disabled/>
+    </form>
+  </div>
+</div>
+
+<script>
+  (function() {
+    var $form = $('#upload-form'),
+        $fileInput = $form.find('input[type=file]'),
+        $submit = $form.find('[type=submit]');
+
+    $fileInput.on('change', function() {
+      var file = this.files[0],
+          $field = null;
+
+      $submit.prop('disabled', true);
+
+      $.ajax(
+        '<%= new_admin_upload_path %>', {
+        data: {
+          uploader: 'entourage_image',
+          entourage_id: '<%= @entourage.id %>',
+          redirect_url: '<%= image_upload_success_admin_entourage_url %>',
+          filetype: file.type
+        }
+      })
+      .done(function(data) {
+        $form.attr('action', data.url);
+        Object.keys(data.fields).forEach(function(key) {
+          $field = $form.find('input[name=' + key + ']');
+          if ($field.length === 0) {
+            $field = $('<input>', {name: key, type: 'hidden'})
+                     .insertBefore($fileInput); // 'file' must be the last field
+          }
+          $field.val(data.fields[key]);
+        });
+        $submit.prop('disabled', false);
+      });
+    });
+  })();
+</script>
