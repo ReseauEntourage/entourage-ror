@@ -119,6 +119,8 @@ GEM
     crack (0.4.5)
       rexml
     crass (1.0.6)
+    ddtrace (0.43.0)
+      msgpack
     daemons (1.3.1)
     debug_inspector (1.0.0)
     derailed_benchmarks (1.8.1)
@@ -255,6 +257,7 @@ GEM
     mixpanel-ruby (2.2.2)
     momentjs-rails (2.10.6)
       railties (>= 3.1)
+    msgpack (1.3.3)
     multi_json (1.15.0)
     multi_xml (0.6.0)
     multipart-post (2.1.1)
@@ -476,6 +479,7 @@ DEPENDENCIES
   binding_of_caller (~> 0.8.0)
   bullet (~> 4.14.7)
   byebug (~> 5.0.0)
+  ddtrace
   derailed_benchmarks
   dotenv-rails (~> 2.0.2)
   factory_girl_rails (~> 4.5.0)
