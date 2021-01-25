@@ -53,6 +53,9 @@ jobs:
         POSTGRES_PASSWORD: postgres
         REDIS_URL: redis://localhost:6379/0
 
+    # - name: Setup rpush
+    #   run: bundle exec rpush init # expects and answer "Y"
+
     - name: Run tests
       env:
         RAILS_ENV: test
