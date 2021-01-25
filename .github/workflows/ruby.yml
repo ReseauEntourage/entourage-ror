@@ -30,6 +30,11 @@ jobs:
           --health-timeout 5s
           --health-retries 5
 
+      redis:
+        image: redis
+        options: --entrypoint redis-server
+        ports: ['6379:6379']
+
     steps:
     - uses: actions/checkout@v2
     - name: Set up Ruby
@@ -52,5 +57,6 @@ jobs:
         RAILS_ENV: test
         POSTGRES_USER: postgres
         POSTGRES_PASSWORD: postgres
+        REDIS_URL: redis://localhost:6379/0
       run: bundle exec rake
 
