@@ -1,4 +1,5 @@
 regex="postgres://(.+):(.+)@(.+)/(.+)"
+# regex="postgres://(.+):(.+)@(.+):(.+)/(.+)" # when port is defined
 
 function password {
   [[ $1 =~ $regex ]]
@@ -11,6 +12,8 @@ function options {
   username=${BASH_REMATCH[1]}
   host=${BASH_REMATCH[3]}
   database=${BASH_REMATCH[4]}
+  # port=${BASH_REMATCH[4]} # when port is defined
+  # database=${BASH_REMATCH[5]} # when port is defined
   if [ "$2" = "-d" ]; then
     echo -U $username -h $host -d $database
   else
