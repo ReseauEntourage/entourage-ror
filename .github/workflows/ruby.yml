@@ -40,17 +40,18 @@ jobs:
     - name: Set up Ruby
       uses: ruby/setup-ruby@v1
       with:
-        ruby-version: 2.6
+        ruby-version: 2.6.6
         bundler-cache: true # runs 'bundle install' and caches installed gems automatically
 
     - name: Setup Database
       run: |
         cp config/database.yml.github-actions config/database.yml
-        RAILS_ENV=test bundle exec rake db:drop db:create db:migrate
+        bundle exec rake db:drop db:create db:migrate
       env:
         RAILS_ENV: test
         POSTGRES_USER: postgres
         POSTGRES_PASSWORD: postgres
+        REDIS_URL: redis://localhost:6379/0
 
     - name: Run tests
       env:
