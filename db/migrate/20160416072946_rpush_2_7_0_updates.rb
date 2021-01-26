@@ -9,3 +9,4 @@ class Rpush270Updates < ActiveRecord::VERSION::MAJOR >= 5 ? ActiveRecord::Migrat
     remove_column :rpush_notifications, :notification
   end
 end
+
