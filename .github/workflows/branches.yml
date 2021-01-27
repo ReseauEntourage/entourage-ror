@@ -5,7 +5,9 @@ name: Ruby
 
 on:
   push:
-    branches: [ master ]
+    branches-ignore:
+      - master
+      - staging
 
 jobs:
   test:
@@ -53,9 +55,3 @@ jobs:
         POSTGRES_PASSWORD: postgres
         REDIS_URL: redis://redis:6379
       run: bundle exec rake
-
-    - uses: akhileshns/heroku-deploy@v3.8.9
-      with:
-        heroku_api_key: ${{secrets.HEROKU_API_KEY}}
-        heroku_app_name: entourage-back
-        heroku_email: nicolas.chafai@entourage.social
