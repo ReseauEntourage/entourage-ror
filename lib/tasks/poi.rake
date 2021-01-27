@@ -2,7 +2,7 @@ namespace :poi do
   # id ,Nom,Adresse,Adresse,Public(s) bénéficiaire(s),Description,Email,Téléphone,Site web,Catégorie 1,Catégorie 2,Catégorie 3,Catégorie 4,Catégorie 5,Catégorie 6,Catégorie 7
   desc "import poi.csv file"
   task import: :environment do
-    CSV.read('rennes.csv', headers: true).each do |row|
+    CSV.read('docs/rennes.csv', headers: true).each do |row|
       category_ids = category_ids_from_row(row)
 
       attributes = {
