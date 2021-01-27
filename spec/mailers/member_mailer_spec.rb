@@ -149,7 +149,7 @@ describe MemberMailer, type: :mailer do
   end
 
   describe 'group variables' do
-    let(:event) { build :outing, title: "lol", uuid_v2: "e12345" }
+    let(:event) { build :outing, title: "lol", uuid_v2: "e12345", community: "entourage" }
 
     it do
       Timecop.freeze
@@ -167,7 +167,7 @@ describe MemberMailer, type: :mailer do
         mail['X-MJ-Vars'].value,
         default_variables.merge(
           event_title: "lol",
-          event_share_url: "https://www.entourage.social/entourages/e12345"
+          event_share_url: "https://app.entourage.social/actions/e12345"
         )
       )
 
