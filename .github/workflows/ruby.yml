@@ -11,7 +11,7 @@ name: Ruby
 
 on:
   push:
-    branches: [ EN-3441-from-travis-ci-to-github-actions ]
+    branches: [ master ]
 
 jobs:
   test:
@@ -63,5 +63,5 @@ jobs:
     - uses: akhileshns/heroku-deploy@v3.8.9
       with:
         heroku_api_key: ${{secrets.HEROKU_API_KEY}}
-        heroku_app_name: entourage-back-preprod
+        heroku_app_name: entourage-back
         heroku_email: nicolas.chafai@entourage.social
