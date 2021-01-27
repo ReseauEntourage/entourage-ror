@@ -53,7 +53,7 @@ class MemberMailer < MailjetMailer
   end
 
   def action_follow_up_day_20(action)
-    action_url = "#{ENV['WEBSITE_URL']}/entourages/#{action.uuid_v2}"
+    action_url = action.share_url
     mailjet_email to: action.user,
                   template_id: 451123,
                   campaign_name: :action_suivi_j_20,

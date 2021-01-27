@@ -1,7 +1,7 @@
 module IcalService
   def self.generate_ical group, for_user: nil
     now = Time.now
-    url = "#{ENV['WEBSITE_URL']}/entourages/#{group.uuid_v2}"
+    url = group.share_url
 
     cal = Icalendar::Calendar.new
     cal.prodid = '-//entourage.social//entourage-ror//FR'

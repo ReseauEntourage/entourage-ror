@@ -276,7 +276,7 @@ module UnreadReminderEmail
           type: type,
           image_url: image_url,
           summary: group_summary(group, type),
-          url: "#{ENV['WEBSITE_URL']}/entourages/#{group.uuid_v2}?auth=#{auth_token}"
+          url: "#{group.share_url}?auth=#{auth_token}"
         }
       end
     end

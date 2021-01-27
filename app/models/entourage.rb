@@ -197,7 +197,7 @@ class Entourage < ActiveRecord::Base
     return unless uuid_v2
     return if group_type == 'conversation'
     return community.store_short_url unless community.entourage?
-    share_url_prefix = ENV['PUBLIC_SHARE_URL'] || 'https://www.entourage.social/entourages/'
+    share_url_prefix = ENV['PUBLIC_SHARE_URL'] || "#{ENV['WEBSITE_APP_URL']}/actions/"
     "#{share_url_prefix}#{uuid_v2}"
   end
 
