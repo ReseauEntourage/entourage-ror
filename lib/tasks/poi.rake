@@ -1,8 +1,26 @@
 namespace :poi do
-  # id ,Nom,Adresse,Adresse,Public(s) bénéficiaire(s),Description,Email,Téléphone,Site web,Catégorie 1,Catégorie 2,Catégorie 3,Catégorie 4,Catégorie 5,Catégorie 6,Catégorie 7
+  # 0 - id
+  # 2 - A actualiser
+  # 3 - Date d'actualisation
+  # 4 - Nom
+  # 5 - Adresse
+  # 6 - Public(s) bénéficiaire(s)
+  # 7 - Description
+  # 8 - Email
+  # 9 - Téléphone
+  # 10 - Site web
+  # 11 - Catégorie 1
+  # 12 - Catégorie 2
+  # 13 - Catégorie 3
+  # 14 - Catégorie 4
+  # 15 - Catégorie 5
+  # 16 - Catégorie 6
+  # 17 - Catégorie 7
   desc "import poi.csv file"
   task import: :environment do
     CSV.read('docs/rennes.csv', headers: true).each do |row|
+      row = row.to_hash.map { |k,v| [k, v&.strip] }.to_h # remove surrounding spaces or carriage returns
+
       category_ids = category_ids_from_row(row)
 
       attributes = {
@@ -19,13 +37,7 @@ namespace :poi do
         audience: row['Public(s) bénéficiaire(s)']
       }
 
-      if row['id'].present? && Poi.find_by_id(row['id'])
-        poi = Poi.find(row['id'])
-        poi.assign_attributes(attributes)
-      else
-        poi = Poi.new(attributes)
-      end
-
+      poi = Poi.new(attributes)
       poi = PoiServices::PoiGeocoder.new(poi: poi, params: attributes).geocode
 
       if poi.valid?
@@ -39,14 +51,31 @@ namespace :poi do
   end
 
   def category_ids_from_row row
+    mapping = {
+      "Se nourrir" =>           1,
+      "Se loger" =>             2,
+      "Se soigner" =>           3,
+      "Se rafraîchir" =>        4,
+      "S'orienter" =>           5,
+      "S'occuper de soi" =>     6,
+      "Se réinsérer" =>         7,
+      "Partenaires" =>          8,
+      "Se déplacer" =>          9,
+      "Toilettes" =>           40,
+      "Fontaines" =>           41,
+      "Douches" =>             42,
+      "Laver son linge" =>     43,
+      "Vêtements, matériel" => 61,
+      "Boîtes à dons" =>       62,
+      "Bagageries" =>          63,
+    }
+
     categorie_names = [
       row['Catégorie 1'], row['Catégorie 2'], row['Catégorie 3'], row['Catégorie 4'], row['Catégorie5'], row['Catégorie 6'], row['Catégorie 7']
     ].reject(&:blank?)
 
-    categories = categorie_names.map do |category_name|
-      Category.find_by_name(category_name)
+    categorie_names.map do |category_name|
+      mapping[category_name]
     end.reject(&:blank?)
-
-    categories.map(&:id)
   end
 end
