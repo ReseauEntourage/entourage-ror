@@ -85,10 +85,9 @@ class MailjetMailer < ActionMailer::Base
           raise "Variable #{variable_name.inspect} is already defined."
         end
 
+        variables.delete(group)
         new_variables[variable_name] = f[group]
       end
-
-      variables.delete(group)
     end
 
     variables.reverse_merge!(new_variables)
