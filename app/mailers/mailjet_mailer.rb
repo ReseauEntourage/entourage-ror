@@ -25,8 +25,8 @@ class MailjetMailer < ActionMailer::Base
 
     group_variables = {
       '_title'     => ->(group) { group.title },
-      '_url'       => ->(group) { group.share_url },
-      '_share_url' => ->(group) { "#{group.share_url}/?auth=false" }
+      '_url'       => ->(group) { "#{ENV['WEBSITE_APP_URL']}/actions/#{group.uuid_v2}" },
+      '_share_url' => ->(group) { "#{ENV['WEBSITE_APP_URL']}/actions/#{group.uuid_v2}?auth=false" }
     }
     # reorder by suffix length for longest-suffix match
     group_variables = Hash[group_variables.sort_by { |s, _| s.length }.reverse]

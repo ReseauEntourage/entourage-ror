@@ -149,7 +149,7 @@ describe MemberMailer, type: :mailer do
   end
 
   describe 'group variables' do
-    let(:event) { build :outing, title: "lol", uuid_v2: "e12345", community: "entourage" }
+    let(:event) { build :outing, title: "lol", uuid_v2: "e12345" }
 
     it do
       Timecop.freeze
