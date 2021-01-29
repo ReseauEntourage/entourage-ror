@@ -34,7 +34,8 @@ namespace :poi do
         phone: row['Téléphone'],
         website: row['Site web'],
         email: row['Email'],
-        audience: row['Public(s) bénéficiaire(s)']
+        audience: row['Public(s) bénéficiaire(s)'],
+        validated: true
       }
 
       poi = Poi.new(attributes)
