@@ -10,7 +10,7 @@ module Api
         version = params[:v] == '2' ? :v2 : :v1
 
         use_soliguide = version == :v2 && params[:no_redirect] != 'true'
-        use_soliguide &&= EnvironmentHelper.env.in?([:development, :staging])
+        use_soliguide &&= EnvironmentHelper.env.in?([:development])
 
         if use_soliguide
           # use only in a radius of ~6 km around the center of Paris
