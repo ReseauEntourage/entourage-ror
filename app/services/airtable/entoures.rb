@@ -10,7 +10,7 @@ module Airtable
     end
 
     def self.headers
-      %w(Mobile Email Nom Prénom Département)
+      %w(Mobile Email Nom Prenom Departement)
     end
 
     self.base_key = BonnesOndesRestartAbstractTable.base_key
