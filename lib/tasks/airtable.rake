@@ -43,12 +43,12 @@ namespace :airtable do
     Airtable.upload(Airtable::Entoureurs, '#respo-bo-35', [35], '1.b bande lancée')
 
     # Entoures, 93
-    Airtable.upload(Airtable::Entoures, '#respo-bo-idf', [93], '1.b Matché à compléter')
-    Airtable.upload(Airtable::Entoures, '#respo-bo-idf', [93], '2.a Matché')
-    Airtable.upload(Airtable::Entoures, '#respo-bo-idf', [93], '2.b bande lancée')
+    Airtable.upload(Airtable::Entoures, '#respo-bo-93', [93], '1.b Matché à compléter')
+    Airtable.upload(Airtable::Entoures, '#respo-bo-93', [93], '2.a Matché')
+    Airtable.upload(Airtable::Entoures, '#respo-bo-93', [93], '2.b bande lancée')
     # Entoureurs, 93
-    Airtable.upload(Airtable::Entoureurs, '#respo-bo-idf', [93], '1.a Matché')
-    Airtable.upload(Airtable::Entoureurs, '#respo-bo-idf', [93], '1.b bande lancée')
+    Airtable.upload(Airtable::Entoureurs, '#respo-bo-93', [93], '1.a Matché')
+    Airtable.upload(Airtable::Entoureurs, '#respo-bo-93', [93], '1.b bande lancée')
 
     # Entoures, 91, 94, 95
     Airtable.upload(Airtable::Entoures, '#respo-bo-idf', [91, 94, 95], '1.b Matché à compléter')
