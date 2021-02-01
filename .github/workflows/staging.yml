@@ -60,3 +60,12 @@ jobs:
         # deploy to entourage-back-preprod
         heroku_app_name: entourage-back-preprod
         heroku_email: nicolas.chafai@entourage.social
+        
+    - uses: Terranovax/aws-ecr-deploy@v1
+      with:
+        access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        account_id: ${{ secrets.AWS_ACCOUNT_ID }}
+        region: eu-west-1
+        repo: entourage-ror
+        tags: latest,${{ github.sha }}
