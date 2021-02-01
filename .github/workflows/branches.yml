@@ -8,6 +8,7 @@ on:
     branches-ignore:
       - master
       - staging
+      - test-deploy-staging-to-aws
 
 jobs:
   test:
