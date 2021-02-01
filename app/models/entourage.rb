@@ -201,6 +201,14 @@ class Entourage < ActiveRecord::Base
     "#{share_url_prefix}#{uuid_v2}"
   end
 
+  def share_conversation_url
+    return unless uuid_v2
+    return unless group_type == 'conversation'
+    return unless community.entourage?
+    share_url_prefix = ENV['PUBLIC_SHARE_URL'] || "#{ENV['WEBSITE_APP_URL']}/actions/"
+    "#{share_url_prefix}#{uuid_v2}"
+  end
+
   def metadata= value
     value = add_metadata_schema_urn(value)
     super(value)

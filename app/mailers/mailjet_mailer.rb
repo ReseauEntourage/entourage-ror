@@ -99,7 +99,7 @@ class MailjetMailer < ActionMailer::Base
 
     auth_token = UserServices::UserAuthenticator.auth_token(user)
     variables.each_value do |value|
-      next unless value.is_a?(String) && (value.match(webapp_regex) || value.match(website_app_regex)) != nil
+      next unless value.is_a?(String) && (value.match(webapp_regex) != nil || value.match(website_app_regex) != nil)
       uri = URI(value)
       params = CGI.parse(uri.query || '')
       if params['auth'] == ['false']
