@@ -61,7 +61,7 @@ jobs:
         heroku_app_name: entourage-back-preprod
         heroku_email: nicolas.chafai@entourage.social
         
-    - uses: Terranovax/aws-ecr-deploy@v1
+    - uses: Terranovax/aws-ecr-deploy@v1.1
       with:
         access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
