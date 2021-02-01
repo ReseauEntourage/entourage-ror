@@ -1,0 +1,29 @@
+# @see https://github.com/marketplace/actions/setup-ruby-jruby-and-truffleruby
+# @see https://www.pibit.nl/github/actions/rails/postgres/rspec/tutorial/example/2019/09/23/github-actions-with-rails-postgres-and-rspec/
+
+name: Ruby
+
+on:
+  push:
+    branches: [ test-deploy-staging-to-aws ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: 2.6.6
+        bundler-cache: true # runs 'bundle install' and caches installed gems automatically
+
+    - uses: nicolas-entourage/aws-ecr-deploy@v1
+      with:
+        access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        account_id: ${{ secrets.AWS_ACCOUNT_ID }}
+        region: eu-west-1
+        repo: entourage-ror
+        tags: latest,${{ github.sha }}
