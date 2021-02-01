@@ -19,7 +19,7 @@ jobs:
         ruby-version: 2.6.6
         bundler-cache: true # runs 'bundle install' and caches installed gems automatically
 
-    - uses: nicolas-entourage/aws-ecr-deploy@08acfc15090d42cd2692a4b1eded8299783720b2
+    - uses: nicolas-entourage/aws-ecr-deploy@e71877ffc1dc0aebfb7b8eebd37cc295ea4bfc42
       with:
         access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
