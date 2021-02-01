@@ -1,7 +1,7 @@
 <div class="container">
   <%= link_to('<- Retourner à la liste des messages', admin_conversations_path) %>
   <div class="pull-right">
-    <%= link_to nil, "http://www.entourage.social/entourages/#{@conversation.uuid_v2}", target: :_blank %>
+    <%= link_to nil, @conversation.share_conversation_url, target: :_blank %>
   </div>
   <%
     def display_name user

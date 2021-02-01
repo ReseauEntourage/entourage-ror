@@ -25,8 +25,8 @@ class MailjetMailer < ActionMailer::Base
 
     group_variables = {
       '_title'     => ->(group) { group.title },
-      '_url'       => ->(group) { "#{ENV['WEBSITE_URL']}/entourages/#{group.uuid_v2}" },
-      '_share_url' => ->(group) { "#{ENV['WEBSITE_URL']}/entourages/#{group.uuid_v2}?auth=false" }
+      '_url'       => ->(group) { "#{ENV['WEBSITE_APP_URL']}/actions/#{group.uuid_v2}" },
+      '_share_url' => ->(group) { "#{ENV['WEBSITE_APP_URL']}/actions/#{group.uuid_v2}?auth=false" }
     }
     # reorder by suffix length for longest-suffix match
     group_variables = Hash[group_variables.sort_by { |s, _| s.length }.reverse]
@@ -89,14 +89,17 @@ class MailjetMailer < ActionMailer::Base
         new_variables[variable_name] = f[group]
       end
     end
+
     variables.reverse_merge!(new_variables)
     variables.reverse_merge!(default_variables) if merge_default_variables
 
     # inject auth tokens in webapp URLs
     webapp_regex = %r{^#{ENV['WEBSITE_URL']}/(app|deeplink|entourages)([/\?]|$)}
+    website_app_regex = %r{^#{ENV['WEBSITE_APP_URL']}/actions([/\?]|$)}
+
     auth_token = UserServices::UserAuthenticator.auth_token(user)
     variables.each_value do |value|
-      next unless value.is_a?(String) && value.match(webapp_regex) != nil
+      next unless value.is_a?(String) && (value.match(webapp_regex) != nil || value.match(website_app_regex) != nil)
       uri = URI(value)
       params = CGI.parse(uri.query || '')
       if params['auth'] == ['false']

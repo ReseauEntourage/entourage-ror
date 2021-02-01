@@ -14,7 +14,7 @@ module GoodWaves
         if is_mobile
           "#{ENV['DEEPLINK_SCHEME']}://entourage/#{@group.uuid_v2}"
         else
-          "https://www.entourage.social/entourages/#{@group.uuid_v2}"
+          @group.share_url
         end
 
       @store_url =

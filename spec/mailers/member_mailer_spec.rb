@@ -167,7 +167,7 @@ describe MemberMailer, type: :mailer do
         mail['X-MJ-Vars'].value,
         default_variables.merge(
           event_title: "lol",
-          event_share_url: "https://www.entourage.social/entourages/e12345"
+          event_share_url: "https://app.entourage.social/actions/e12345"
         )
       )
 
