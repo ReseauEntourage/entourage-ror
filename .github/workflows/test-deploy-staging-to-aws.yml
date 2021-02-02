@@ -19,7 +19,7 @@ jobs:
         ruby-version: 2.6.6
         bundler-cache: true # runs 'bundle install' and caches installed gems automatically
 
-    - uses: Terranovax/aws-ecr-deploy@v1.1
+    - uses: kciter/aws-ecr-action@master
       with:
         access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
