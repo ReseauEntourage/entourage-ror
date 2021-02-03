@@ -141,7 +141,9 @@ module PoiServices
     ActiveSupport.json_encoder.prepend(EncoderMixin)
 
     def self.clear_cache
-      $redis.del($redis.keys("#{CACHE_KEY_PREFIX}/*"))
+      $redis.keys(CACHE_KEY_FORMAT % ['*', '*', '*']).each do |k|
+        $redis.del(k)
+      end
     end
   end
 end
