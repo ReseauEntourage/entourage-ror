@@ -1,7 +1,7 @@
 module Api
   module V1
     class PoisController < Api::V1::BaseController
-      skip_before_filter :authenticate_user!, only: :index
+      skip_before_filter :authenticate_user!, only: [:index, :show]
 
       attr_writer :member_mailer
 
