@@ -71,12 +71,6 @@ module FeedServices
         @page = 1
       end
 
-      if page == 1 && !user.anonymous?
-        UserServices::NewsfeedHistory.save(user: user,
-                                           latitude: latitude,
-                                           longitude: longitude)
-      end
-
       feeds = user.community.feeds
 
       feeds = feeds.where.not(status: [:blacklisted, :suspended])

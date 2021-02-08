@@ -30,7 +30,7 @@ namespace :db do
       Rpush::Apns::Feedback, Rpush::App, Rpush::Notification, SensitiveWord,
       SensitiveWordsCheck, SessionHistory, SimplifiedTourPoint,
       StoreDailyReport, SuggestionComputeHistory, Tour, TourPoint,
-      UserApplication, UserModeration, UserNewsfeed,
+      UserApplication, UserModeration,
       UserRelationship, UsersAppetence
     ].each(&:delete_all)
 
