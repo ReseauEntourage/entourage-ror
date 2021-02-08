@@ -12,7 +12,7 @@ module FeedServices
     attr_reader :user, :offset, :area, :last_page
 
     def feeds
-      announcements = select_announcements
+      announcements = repositionned_announcements
 
       return [@feeds, @metadata] if announcements.empty?
 
@@ -34,9 +34,7 @@ module FeedServices
       [feeds, @metadata]
     end
 
-    private
-
-    def select_announcements
+    def self.announcements_for_user(user)
       return [] unless user.community == :entourage
 
       areas = user.departement_slugs
@@ -49,13 +47,18 @@ module FeedServices
 
       user_goal = user.goal || :goal_not_known
 
-      announcements = Announcement.active.for_areas(areas).for_user_goal(user_goal)
-      announcements = announcements.ordered.to_a
+      Announcement.active.for_areas(areas).for_user_goal(user_goal).ordered.to_a
+    end
+
+    private
+
+    def repositionned_announcements
+      selection = self.announcements_for_user(user)
 
       # 3   9  15  22  29  36  ...
       #  +6  +6  +7  +7  +7  ...
       position = 3
-      announcements.each do |a|
+      selection.each do |a|
         a.position = position
         if position < 15
           position += 6
@@ -64,7 +67,7 @@ module FeedServices
         end
       end
 
-      announcements
+      selection
     end
   end
 end

@@ -261,7 +261,7 @@ Rails.application.routes.draw do
         end
       end
 
-      resources :announcements, only: [] do
+      resources :announcements, only: [:index] do
         member do
           get :icon
           get 'redirect/:token' => :redirect, as: :redirect
