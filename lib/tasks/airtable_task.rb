@@ -1,4 +1,4 @@
-module Airtable
+module AirtableTask
   DEFAULT_PATH = "#{Rails.root}/tmp"
   USERNAME = 'Airtable-backend'
   TEXT = "C’est l'heure de votre envoi de masse de SMS de suivi ! Importez ce csv dans vos Google Contacts pour ensuite utiliser votre app (DoItLater)"
