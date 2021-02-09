@@ -15,7 +15,6 @@ source=$(heroku config:get DATABASE_URL -a "${1:-entourage-back}")
 target=entourage-dev
 excluded_tables=(
   stats.*
-  user_newsfeeds
   email_deliveries
   rpush_notifications
   session_histories
