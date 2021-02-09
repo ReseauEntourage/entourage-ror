@@ -40,21 +40,21 @@ module EntourageServices
       entourages = entourages.where(users: {atd_friend: true}) if atd
 
       if show_my_entourages_only
-        entourages = entourages.where(join_requests:
-                                          {
-                                              user: @user,
-                                              status: JoinRequest::ACCEPTED_STATUS
-                                          })
+        entourages = entourages.where(join_requests: {
+          user: @user,
+          status: JoinRequest::ACCEPTED_STATUS
+        })
       end
 
       if invitee
-        entourages = entourages.where(entourage_invitations:
-                                          {
-                                              invitee: invitee,
-                                              status: EntourageInvitation::ACCEPTED_STATUS
-                                          })
+        entourages = entourages.where(entourage_invitations: {
+          invitee: invitee,
+          status: EntourageInvitation::ACCEPTED_STATUS
+        })
       end
+
       entourages = entourages.order("entourages.updated_at DESC")
+
       if page || per
         entourages.page(page).per(per)
       elsif before
