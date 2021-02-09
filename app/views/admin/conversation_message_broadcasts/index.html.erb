@@ -46,14 +46,14 @@
           <% @conversation_message_broadcasts.each do |conversation_message_broadcast| %>
             <tr>
               <td><%= conversation_message_broadcast.id %></td>
-              <td><%= conversation_message_broadcast.title %></td>
+              <td><%= link_to conversation_message_broadcast.title, edit_admin_conversation_message_broadcast_path(conversation_message_broadcast) %></td>
               <td><%= check_box_tag '', '', conversation_message_broadcast.archived?, disabled: true %></td>
               <td><%= @areas[conversation_message_broadcast.area.to_sym].name_with_departement %></td>
               <td><%= UserGoalPresenter.new(conversation_message_broadcast.goal, community: current_user.community).name %></td>
               <td><%= l(conversation_message_broadcast.updated_at, format: :short) if conversation_message_broadcast.updated_at %></td>
               <td>
                 <% if conversation_message_broadcast.draft? %>
-                  <%= link_to "Modifier", edit_admin_conversation_message_broadcast_path(conversation_message_broadcast), class: "btn btn-danger" %>
+                  <%= link_to "Modifier", edit_admin_conversation_message_broadcast_path(conversation_message_broadcast), class: "btn btn-primary" %>
                 <% elsif !conversation_message_broadcast.sending? %>
                   <%= link_to "Dupliquer", clone_admin_conversation_message_broadcast_path(conversation_message_broadcast), method: :post, class: "btn btn-danger" %>
                 <% end %>
