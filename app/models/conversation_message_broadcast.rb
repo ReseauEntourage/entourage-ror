@@ -47,7 +47,7 @@ class ConversationMessageBroadcast < ActiveRecord::Base
   def users
     return [] unless valid?
 
-    User.where('users.goal': goal, 'users.deleted': false).in_area(area).group('users.id')
+    User.where('users.goal': goal, 'users.deleted': false, 'users.validation_status': :validated).in_area(area).group('users.id')
   end
 
   def clone
