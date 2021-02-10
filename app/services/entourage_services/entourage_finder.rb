@@ -34,11 +34,25 @@ module EntourageServices
       entourages = entourages.where(entourage_type: formated_types) if type
       entourages = entourages.within_bounding_box(box) if latitude && longitude
       entourages = entourages.where("entourages.created_at > ?", time_range.hours.ago)
-      entourages = entourages.where(user: author) if author
+
+      if latitude && longitude
+        bounding_box_sql = Geocoder::Sql.within_bounding_box(*box, :latitude, :longitude)
+        entourages = entourages.where("(#{bounding_box_sql}) OR online = true")
+      end
+
+      # outings should be in the future
+      unless show_past_events
+        entourages = entourages.where("group_type not in (?) or metadata->>'ends_at' >= ?", [:outing], Time.zone.now)
+      end
 
       # having types
       if types != nil
         entourages = entourages.where("#{FEED_CATEGORY_EXPR} IN (?)", types)
+      end
+
+      # as author
+      if author
+        entourages = entourages.where(user: author)
       end
 
       # as owner
@@ -49,6 +63,7 @@ module EntourageServices
         })
       end
 
+      # as invitee
       if invitee
         entourages = entourages.where(entourage_invitations: {
           invitee: invitee,
@@ -56,6 +71,12 @@ module EntourageServices
         })
       end
 
+      # only partners
+      if partners_only
+        entourages = entourages.joins(:user).where("users.partner_id is not null")
+      end
+
+      # pagination
       entourages = entourages.order("entourages.updated_at DESC")
 
       if page || per
@@ -68,7 +89,7 @@ module EntourageServices
     end
 
     private
-    attr_reader :user, :type, :latitude, :longitude, :distance, :show_my_entourages_only, :time_range, :page, :per, :before, :author, :invitee
+    attr_reader :user, :types, :latitude, :longitude, :distance, :show_my_entourages_only, :time_range, :page, :per, :before, :author, :invitee, :show_past_events, :partners_only
 
     def box
       Geocoder::Calculations.bounding_box([latitude, longitude],

@@ -105,6 +105,42 @@ describe Api::V1::EntouragesController do
         it { expect(subject["entourages"].count).to eq(1) }
         it { expect(subject["entourages"][0]["id"]).to eq(near_entourage.id) }
       end
+
+      context "filter wrong position" do
+        let!(:near_entourage) { FactoryGirl.create(:entourage, latitude: 2.48, longitude: 40.5) }
+        before { get :index, latitude: 12.48, longitude: 40.5, token: user.token }
+        it { expect(subject["entourages"].count).to eq(0) }
+      end
+
+      # time_range
+      context "filter time_range" do
+        let!(:timed_entourage) { FactoryGirl.create(:entourage, created_at: entourage.created_at - 2.hours) }
+        before { get :index, time_range: 24, token: user.token } # default time_range
+        it { expect(subject["entourages"].count).to eq(2) }
+        it { expect(subject["entourages"][0]["id"]).to eq(timed_entourage.id) }
+      end
+
+      context "filter wrong time_range" do
+        let!(:timed_entourage) { FactoryGirl.create(:entourage, created_at: entourage.created_at - 2.hours) }
+        before { get :index, time_range: 1, token: user.token }
+        it { expect(subject["entourages"].count).to eq(1) }
+        it { expect(subject["entourages"][0]["id"]).to eq(entourage.id) }
+      end
+
+      # group_type
+      context "filter group_type" do
+        let!(:action_entourage) { FactoryGirl.create(:entourage, group_type: :action) }
+        before { get :index, token: user.token }
+        it { expect(subject["entourages"].count).to eq(2) }
+        it { expect(subject["entourages"][0]["id"]).to eq(action_entourage.id) }
+      end
+
+      context "filter group_type" do
+        let!(:conversation_entourage) { FactoryGirl.create(:entourage, group_type: :conversation) }
+        before { get :index, token: user.token }
+        it { expect(subject["entourages"].count).to eq(1) }
+        it { expect(subject["entourages"][0]["id"]).to eq(entourage.id) }
+      end
     end
   end
 
