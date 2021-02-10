@@ -260,31 +260,6 @@ module FeedServices
       @params_sig ||= Digest::MD5.hexdigest(JSON.fast_generate(params))
     end
 
-    def self.reformat_legacy_types(entourage_types, show_tours, tour_types)
-      if entourage_types.nil?
-        entourage_types = Entourage::ENTOURAGE_TYPES
-      else
-        entourage_types = entourage_types.gsub(' ', '').split(',') & Entourage::ENTOURAGE_TYPES
-      end
-
-      entourage_types = entourage_types.flat_map do |entourage_type|
-        prefix = "#{entourage_type}_"
-        TYPES['entourage'].values.find_all { |type| type.starts_with?(prefix) }
-      end
-
-      if show_tours != "true"
-        tour_types = []
-      elsif tour_types.nil?
-        tour_types = Tour::TOUR_TYPES
-      else
-        tour_types = tour_types.gsub(' ', '').split(',') & Tour::TOUR_TYPES
-      end
-
-      tour_types = tour_types.map { |tour_type| "tour_#{tour_type}" }
-
-      return (entourage_types + tour_types).join(",").presence
-    end
-
     private
     attr_reader :user, :page, :before, :latitude, :longitude, :types, :show_past_events, :partners_only, :time_range, :distance, :announcements, :cursor, :area, :page_token, :legacy_pagination
 
@@ -299,57 +274,8 @@ module FeedServices
                                           units: :km)
     end
 
-    TYPES = {
-      'entourage' => {
-        'as' => 'ask_for_help_social',
-        'ae' => 'ask_for_help_event',
-        'am' => 'ask_for_help_mat_help',
-        'ar' => 'ask_for_help_resource',
-        'ai' => 'ask_for_help_info',
-        'ak' => 'ask_for_help_skill',
-        'ao' => 'ask_for_help_other',
-
-        'cs' => 'contribution_social',
-        'ce' => 'contribution_event',
-        'cm' => 'contribution_mat_help',
-        'cr' => 'contribution_resource',
-        'ci' => 'contribution_info',
-        'ck' => 'contribution_skill',
-        'co' => 'contribution_other',
-
-        # fix wrong keys in iOS 4.1 - 4.3
-        'ah' => 'ask_for_help_mat_help',
-        'ch' => 'contribution_mat_help',
-
-        'ou' => 'outing',
-      },
-      'entourage_pro' => {
-        'tm' => 'tour_medical',
-        'tb' => 'tour_barehands',
-        'ta' => 'tour_alimentary',
-
-        # fix wrong key in iOS 4.1 - 4.3
-        'ts' => 'tour_barehands',
-      },
-      'pfp' => {
-        'nh' => 'neighborhood',
-        'pc' => 'private_circle',
-        'ou' => 'outing',
-      }
-    }
-
     def formated_types(types)
-      return if types.nil?
-
-      allowed_types = TYPES[user.community.slug]
-      allowed_types.merge!(TYPES['entourage_pro']) if user.pro?
-
-      types = (types || "").split(',').map(&:strip)
-      types = types.map { |t| allowed_types[t] || t }
-
-      types += ['ask_for_help_event', 'contribution_event'] if types.include?('outing')
-
-      (types & allowed_types.values).uniq
+      FeedServices::Types.formated_for_user(types: types, user: user)
     end
 
     def insert_announcements(feeds:)
