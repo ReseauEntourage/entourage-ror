@@ -29,10 +29,9 @@ module EntourageServices
     end
 
     def entourages
-      entourages = Entourage.visible.includes(:join_requests, :entourage_invitations, :user)
-      entourages = entourages.where(status: status) if status
-      entourages = entourages.where(entourage_type: formated_types) if type
-      entourages = entourages.within_bounding_box(box) if latitude && longitude
+      entourages = Entourage.includes(:join_requests, :entourage_invitations, :user)
+      entourages = entourages.where(status: :open) # status
+      entourages = entourages.where.not(group_type: [:conversation, :group]) # group_type
       entourages = entourages.where("entourages.created_at > ?", time_range.hours.ago)
 
       if latitude && longitude
