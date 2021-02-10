@@ -66,7 +66,7 @@ describe Api::V1::EntouragesController do
         let!(:entourage2) { FactoryGirl.create(:entourage, updated_at: entourage.created_at - 3.days, created_at: entourage.created_at - 3.days) }
         before { get :index, token: user.token }
         it { expect(subject["entourages"].count).to eq(2) }
-        it { expect(subject["entourages"][0]["id"]).to eq(entourage.id) }
+        it { expect(subject["entourages"].map{|h|h['id']}.sort).to eq([entourage.id, entourage1.id].sort) }
       end
 
       context "entourages made by other users" do
@@ -89,7 +89,7 @@ describe Api::V1::EntouragesController do
         let!(:help_entourage) { FactoryGirl.create(:entourage, entourage_type: "ask_for_help", display_category: "event", updated_at: entourage.created_at-1.hours, created_at: entourage.created_at-1.hours) }
         before { get :index, types: "as, ae", token: user.token }
         it { expect(subject["entourages"].count).to eq(2) }
-        it { expect(subject["entourages"][0]["id"]).to eq(entourage.id) }
+        it { expect(subject["entourages"].map{|h|h['id']}.sort).to eq([entourage.id, help_entourage.id].sort) }
       end
 
       context "filter wrong entourage_type" do
@@ -117,7 +117,7 @@ describe Api::V1::EntouragesController do
         let!(:timed_entourage) { FactoryGirl.create(:entourage, created_at: entourage.created_at - 2.hours) }
         before { get :index, time_range: 24, token: user.token } # default time_range
         it { expect(subject["entourages"].count).to eq(2) }
-        it { expect(subject["entourages"][0]["id"]).to eq(timed_entourage.id) }
+        it { expect(subject["entourages"].map{|h|h['id']}.sort).to eq([entourage.id, timed_entourage.id].sort) }
       end
 
       context "filter wrong time_range" do
@@ -132,7 +132,7 @@ describe Api::V1::EntouragesController do
         let!(:action_entourage) { FactoryGirl.create(:entourage, group_type: :action) }
         before { get :index, token: user.token }
         it { expect(subject["entourages"].count).to eq(2) }
-        it { expect(subject["entourages"][0]["id"]).to eq(action_entourage.id) }
+        it { expect(subject["entourages"].map{|h|h['id']}.sort).to eq([entourage.id, action_entourage.id].sort) }
       end
 
       context "filter group_type" do
