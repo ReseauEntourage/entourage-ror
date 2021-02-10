@@ -1,30 +1,44 @@
 module EntourageServices
   class EntourageFinder
+    DEFAULT_DISTANCE=10
     FEED_CATEGORY_EXPR = "(case when group_type = 'action' then concat(entourage_type, '_', coalesce(display_category, 'other')) else group_type::text end)"
 
-    def initialize(user:,
-                   type:,
-                   latitude:,
-                   longitude:,
-                   distance:,
-                   show_my_entourages_only: false,
-                   time_range: 24,
-                   page:,
-                   per:,
-                   before: nil,
-                   author: nil,
-                   invitee: nil)
+    def initialize(
+      user:,
+      types: nil,
+      latitude: nil,
+      longitude: nil,
+      distance: nil,
+      page:,
+      per:,
+      show_past_events: false,
+      time_range: 24,
+      before: nil,
+      partners_only: false,
+      # mine
+      show_my_entourages_only: false,
+      # owns
+      author: nil,
+      # invitations
+      invitee: nil
+    )
       @user = user
       @types = formated_types(types)
       @latitude = latitude
       @longitude = longitude
-      @distance = distance
-      @show_my_entourages_only = show_my_entourages_only
-      @time_range = (time_range || 24).to_i
+      @distance = [(distance&.to_f || DEFAULT_DISTANCE), 40].min
       @page = page
       @per = per
-      @before = before
+      @show_past_events = show_past_events=="true"
+      @time_range = (time_range || 24).to_i
+      @before = before.present? ? (DateTime.parse(before) rescue Time.now) : nil
+      @partners_only = partners_only=="true"
+
+      # mine
+      @show_my_entourages_only = show_my_entourages_only
+      # owns
       @author = author
+      # invitations
       @invitee = invitee
     end
 
@@ -54,7 +68,7 @@ module EntourageServices
         entourages = entourages.where(user: author)
       end
 
-      # as owner
+      # as participant
       if show_my_entourages_only
         entourages = entourages.where(join_requests: {
           user: @user,
@@ -91,9 +105,7 @@ module EntourageServices
     attr_reader :user, :types, :latitude, :longitude, :distance, :show_my_entourages_only, :time_range, :page, :per, :before, :author, :invitee, :show_past_events, :partners_only
 
     def box
-      Geocoder::Calculations.bounding_box([latitude, longitude],
-                                          (distance || 10),
-                                          units: :km)
+      Geocoder::Calculations.bounding_box([latitude, longitude], distance, units: :km)
     end
 
     def formated_types(types)
