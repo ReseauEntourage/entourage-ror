@@ -55,7 +55,7 @@ module EntourageServices
 
       # outings should be in the future
       unless show_past_events
-        entourages = entourages.where("group_type not in (?) or metadata->>'ends_at' >= ?", [:outing], Time.zone.now)
+        entourages = entourages.where("group_type not in (?) or entourages.metadata->>'ends_at' >= ?", [:outing], Time.zone.now)
       end
 
       # having types
