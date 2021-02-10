@@ -7,16 +7,62 @@ module Api
       allow_anonymous_access only: [:show]
 
       def index
-        finder = EntourageServices::EntourageFinder.new(user: current_user,
-                                                        status: params[:status],
-                                                        type: params[:type],
-                                                        latitude: params[:latitude],
-                                                        longitude: params[:longitude],
-                                                        distance: params[:distance],
-                                                        page: params[:page],
-                                                        per: per,
-                                                        atd: params[:atd])
-        render json: finder.entourages, each_serializer: ::V1::EntourageSerializer, scope: {user: current_user}
+        entourages = EntourageServices::EntourageFinder.new(
+          user: current_user,
+          types: params[:types],
+          latitude: params[:latitude],
+          longitude: params[:longitude],
+          distance: params[:distance],
+          page: params[:page],
+          per: per,
+          show_past_events: params[:show_past_events],
+          time_range: params[:time_range],
+          before: params[:before],
+          partners_only: params[:partners_only]
+        ).entourages
+
+        render json: entourages, each_serializer: ::V1::EntourageSerializer, scope: {
+          user: current_user
+        }
+      end
+
+      def mine
+        entourages = EntourageServices::EntourageFinder.new(
+          user: current_user,
+          page: params[:page],
+          per: per,
+          show_my_entourages_only: true
+        ).entourages
+
+        render json: entourages, each_serializer: ::V1::EntourageSerializer, scope: {
+          user: current_user
+        }
+      end
+
+      def owns
+        entourages = EntourageServices::EntourageFinder.new(
+          user: current_user,
+          page: params[:page],
+          per: per,
+          author: current_user
+        ).entourages
+
+        render json: entourages, each_serializer: ::V1::EntourageSerializer, scope: {
+          user: current_user
+        }
+      end
+
+      def invitations
+        entourages = EntourageServices::EntourageFinder.new(
+          user: current_user,
+          page: params[:page],
+          per: per,
+          invitee: current_user
+        ).entourages
+
+        render json: entourages, each_serializer: ::V1::EntourageSerializer, scope: {
+          user: current_user
+        }
       end
 
       #curl -H "Content-Type: application/json" "http://localhost:3000/api/v1/entourages/951.json?token=e4fdc865bc7a91c34daea849e7d73349&distance=123.45&feed_rank=2"
