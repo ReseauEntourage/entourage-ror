@@ -81,14 +81,7 @@ describe Api::V1::EntouragesController do
         let!(:blacklisted_entourage) { FactoryGirl.create(:entourage, status: "blacklisted") }
 
         before { get :index, token: user.token }
-        it { expect(subject["entourages"].map{ |e| e['id'] }).to match_array([entourage.id, open_entourage.id, closed_entourage.id]) }
-      end
-
-      context "filter status" do
-        let!(:closed_entourage) { FactoryGirl.create(:entourage, status: "closed") }
-        before { get :index, status: "closed", token: user.token }
-        it { expect(subject["entourages"].count).to eq(1) }
-        it { expect(subject["entourages"][0]["id"]).to eq(closed_entourage.id) }
+        it { expect(subject["entourages"].map{ |e| e['id'] }).to match_array([entourage.id, open_entourage.id]) }
       end
 
       context "filter entourage_type" do
@@ -103,16 +96,6 @@ describe Api::V1::EntouragesController do
         before { get :index, latitude: 2.48, longitude: 40.5, token: user.token }
         it { expect(subject["entourages"].count).to eq(1) }
         it { expect(subject["entourages"][0]["id"]).to eq(near_entourage.id) }
-      end
-
-      context "filter atd friends" do
-        let(:atd_user) { FactoryGirl.create(:public_user, atd_friend: true) }
-        let(:user) { FactoryGirl.create(:public_user, atd_friend: false) }
-        let!(:entourage_from_atd) { FactoryGirl.create(:entourage, user: atd_user) }
-        let!(:entourage) { FactoryGirl.create(:entourage, user: user) }
-        before { get :index, atd: true, token: user.token }
-        it { expect(subject["entourages"].count).to eq(1) }
-        it { expect(subject["entourages"][0]["id"]).to eq(entourage_from_atd.id) }
       end
     end
   end
