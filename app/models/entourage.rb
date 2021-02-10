@@ -47,6 +47,8 @@ class Entourage < ActiveRecord::Base
   has_one :user_moderation, primary_key: :user_id, foreign_key: :user_id
   has_one :sensitive_words_check, as: :record, dependent: :destroy
 
+  attr_accessor :current_join_request, :number_of_unread_messages
+
   validates_presence_of :status, :title, :entourage_type, :user_id, :latitude, :longitude, :number_of_people
   validates_inclusion_of :status, in: ENTOURAGE_STATUS
   validates_inclusion_of :entourage_type, in: ENTOURAGE_TYPES

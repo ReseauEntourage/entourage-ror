@@ -99,6 +99,10 @@ module EntourageServices
       end
 
       entourages = entourages.sort_by(&:created_at).reverse
+      # Note: entourages is now an Array.
+
+      preload_user_join_requests(entourages)
+      preload_chat_messages_counts(entourages)
 
       entourages
     end
@@ -120,6 +124,41 @@ module EntourageServices
         entourages.order("case when online then 1 else 2 end", distance_from_center, created_at: :desc)
       else
         entourages
+      end
+    end
+
+    def preload_user_join_requests(entourages)
+      entourage_ids = entourages.map(&:id)
+
+      return if entourage_ids.empty?
+
+      user_join_requests = user.join_requests.where(joinable_type: 'Entourage').where(joinable_id: entourage_ids)
+      user_join_requests = user_join_requests.map do |join_request|
+        [join_request.joinable_id, join_request]
+      end.to_h
+
+      entourages.each do |entourage|
+        entourage.current_join_request = user_join_requests[entourage.id]
+      end
+    end
+
+    def preload_chat_messages_counts(entourages)
+      user_join_request_ids = entourages.map do |entourage|
+        entourage.try(:current_join_request)&.id
+      end
+
+      counts = JoinRequest
+        .with_unread_messages
+        .where(id: user_join_request_ids)
+        .group(:id)
+        .count
+
+      counts.default = 0
+
+      entourages.each do |entourage|
+        join_request_id = entourage.try(:current_join_request)&.id
+        next if join_request_id.nil?
+        entourage.number_of_unread_messages = counts[join_request_id]
       end
     end
   end
