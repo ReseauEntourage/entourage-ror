@@ -1,5 +1,7 @@
 module EntourageServices
   class EntourageFinder
+    FEED_CATEGORY_EXPR = "(case when group_type = 'action' then concat(entourage_type, '_', coalesce(display_category, 'other')) else group_type::text end)"
+
     def initialize(user:,
                    type:,
                    latitude:,
@@ -13,7 +15,7 @@ module EntourageServices
                    author: nil,
                    invitee: nil)
       @user = user
-      @type = type
+      @types = formated_types(types)
       @latitude = latitude
       @longitude = longitude
       @distance = distance
@@ -34,6 +36,12 @@ module EntourageServices
       entourages = entourages.where("entourages.created_at > ?", time_range.hours.ago)
       entourages = entourages.where(user: author) if author
 
+      # having types
+      if types != nil
+        entourages = entourages.where("#{FEED_CATEGORY_EXPR} IN (?)", types)
+      end
+
+      # as owner
       if show_my_entourages_only
         entourages = entourages.where(join_requests: {
           user: @user,
@@ -68,8 +76,8 @@ module EntourageServices
                                           units: :km)
     end
 
-    def formated_types
-      type.gsub(" ", "").split(",")
+    def formated_types(types)
+      FeedServices::Types.formated_for_user(types: types, user: user)
     end
   end
 end

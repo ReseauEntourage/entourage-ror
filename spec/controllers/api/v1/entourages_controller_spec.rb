@@ -84,13 +84,21 @@ describe Api::V1::EntouragesController do
         it { expect(subject["entourages"].map{ |e| e['id'] }).to match_array([entourage.id, open_entourage.id]) }
       end
 
+      # types
       context "filter entourage_type" do
-        let!(:help_entourage) { FactoryGirl.create(:entourage, entourage_type: "ask_for_help", updated_at: entourage.created_at-1.hours, created_at: entourage.created_at-1.hours) }
-        before { get :index, type: "ask_for_help", token: user.token }
+        let!(:help_entourage) { FactoryGirl.create(:entourage, entourage_type: "ask_for_help", display_category: "event", updated_at: entourage.created_at-1.hours, created_at: entourage.created_at-1.hours) }
+        before { get :index, types: "as, ae", token: user.token }
         it { expect(subject["entourages"].count).to eq(2) }
         it { expect(subject["entourages"][0]["id"]).to eq(entourage.id) }
       end
 
+      context "filter wrong entourage_type" do
+        let!(:help_entourage) { FactoryGirl.create(:entourage, entourage_type: "ask_for_help", display_category: "event", updated_at: entourage.created_at-1.hours, created_at: entourage.created_at-1.hours) }
+        before { get :index, types: "cs, ce", token: user.token }
+        it { expect(subject["entourages"].count).to eq(0) }
+      end
+
+      # position
       context "filter position" do
         let!(:near_entourage) { FactoryGirl.create(:entourage, latitude: 2.48, longitude: 40.5) }
         before { get :index, latitude: 2.48, longitude: 40.5, token: user.token }
