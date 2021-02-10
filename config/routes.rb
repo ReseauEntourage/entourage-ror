@@ -232,6 +232,11 @@ Rails.application.routes.draw do
       end
 
       resources :entourages, only: [:index, :show, :create, :update] do
+        collection do
+          get :mine
+          get :owns
+          get :invitees
+        end
         resources :users, :controller => 'entourages/users', only: [:index, :destroy, :update, :create]
         resources :invitations, :controller => 'entourages/invitations', only: [:create]
         resources :chat_messages, :controller => 'entourages/chat_messages', only: [:index, :create]

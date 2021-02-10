@@ -144,6 +144,82 @@ describe Api::V1::EntouragesController do
     end
   end
 
+  describe 'GET mine' do
+    let!(:entourage) { FactoryGirl.create(:entourage, status: :open) }
+    let(:other_user) { FactoryGirl.create(:public_user) }
+    subject { JSON.parse(response.body) }
+
+    context "filter show_my_entourages_only" do
+      let!(:join_request) { FactoryGirl.create(:join_request, joinable: entourage, user: user, status: "accepted") }
+
+      before { get :mine, token: user.token }
+      it { expect(subject["entourages"].count).to eq(1) }
+      it { expect(subject["entourages"][0]["id"]).to eq(entourage.id) }
+    end
+
+    context "filter wrong user show_my_entourages_only" do
+      let!(:join_request) { FactoryGirl.create(:join_request, joinable: entourage, user: other_user, status: "accepted") }
+
+      before { get :mine, token: user.token }
+      it { expect(subject["entourages"].count).to eq(0) }
+    end
+
+    context "filter wrong status show_my_entourages_only" do
+      let!(:join_request) { FactoryGirl.create(:join_request, joinable: entourage, user: user, status: "pending") }
+
+      before { get :mine, token: user.token }
+      it { expect(subject["entourages"].count).to eq(0) }
+    end
+  end
+
+  describe 'GET owns' do
+    let(:other_user) { FactoryGirl.create(:public_user) }
+    subject { JSON.parse(response.body) }
+
+    context "filter author" do
+      let!(:entourage) { FactoryGirl.create(:entourage, status: :open, user: user) }
+
+      before { get :owns, token: user.token }
+      it { expect(subject["entourages"].count).to eq(1) }
+      it { expect(subject["entourages"][0]["id"]).to eq(entourage.id) }
+    end
+
+    context "filter wrong author" do
+      let!(:entourage) { FactoryGirl.create(:entourage, status: :open, user: other_user) }
+
+      before { get :owns, token: user.token }
+      it { expect(subject["entourages"].count).to eq(0) }
+    end
+  end
+
+  describe 'GET invitees' do
+    let!(:entourage) { FactoryGirl.create(:entourage, status: :open) }
+    let(:other_user) { FactoryGirl.create(:public_user) }
+    subject { JSON.parse(response.body) }
+
+    context "filter invitee" do
+      let!(:entourage_invitations) { FactoryGirl.create(:entourage_invitation, invitable: entourage, invitee: user, status: "accepted") }
+
+      before { get :invitees, token: user.token }
+      it { expect(subject["entourages"].count).to eq(1) }
+      it { expect(subject["entourages"][0]["id"]).to eq(entourage.id) }
+    end
+
+    context "filter wrong invitee invitee" do
+      let!(:entourage_invitations) { FactoryGirl.create(:entourage_invitation, invitable: entourage, invitee: other_user, status: "accepted") }
+
+      before { get :invitees, token: user.token }
+      it { expect(subject["entourages"].count).to eq(0) }
+    end
+
+    context "filter wrong status invitee" do
+      let!(:entourage_invitations) { FactoryGirl.create(:entourage_invitation, invitable: entourage, invitee: user, status: "pending") }
+
+      before { get :invitees, token: user.token }
+      it { expect(subject["entourages"].count).to eq(0) }
+    end
+  end
+
   describe 'POST create' do
     context "not signed in" do
       before { post :create, entourage: { location: {longitude: 1.123, latitude: 4.567}, title: "foo", entourage_type: "ask_for_help", display_category: "social" } }

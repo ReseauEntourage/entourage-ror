@@ -52,7 +52,7 @@ module Api
         }
       end
 
-      def invitations
+      def invitees
         entourages = EntourageServices::EntourageFinder.new(
           user: current_user,
           page: params[:page],
