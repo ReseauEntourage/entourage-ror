@@ -141,6 +141,16 @@ describe Api::V1::EntouragesController do
         it { expect(subject["entourages"].count).to eq(1) }
         it { expect(subject["entourages"][0]["id"]).to eq(entourage.id) }
       end
+
+      # sort
+      context "sort by distance and created_at" do
+        let!(:closest_entourage) { FactoryGirl.create(:entourage, latitude: 2.4801, longitude: 40.5, created_at: entourage.created_at - 2.minutes) }
+        let!(:middle_entourage) { FactoryGirl.create(:entourage, latitude: 2.4802, longitude: 40.5, created_at: entourage.created_at - 1.minute) }
+        let!(:farthest_entourage) { FactoryGirl.create(:entourage, latitude: 2.4803, longitude: 40.5, created_at: entourage.created_at) }
+        before { get :index, per: 2, latitude: 2.48, longitude: 40.5, token: user.token }
+        it { expect(subject["entourages"].count).to eq(2) }
+        it { expect(subject["entourages"].map{|h|h['id']}).to eq([middle_entourage.id, closest_entourage.id]) }
+      end
     end
   end
 

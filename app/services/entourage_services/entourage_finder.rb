@@ -90,15 +90,17 @@ module EntourageServices
       end
 
       # pagination
-      entourages = entourages.order("entourages.updated_at DESC")
+      entourages = order_by_distance(entourages: entourages)
 
       if page || per
-        entourages.page(page).per(per)
+        entourages = entourages.page(page).per(per)
       elsif before
-        entourages.before(DateTime.parse(before)).limit(25)
-      else
-        entourages
+        entourages = entourages.before(DateTime.parse(before)).limit(25)
       end
+
+      entourages = entourages.sort_by(&:created_at).reverse
+
+      entourages
     end
 
     private
@@ -110,6 +112,15 @@ module EntourageServices
 
     def formated_types(types)
       FeedServices::Types.formated_for_user(types: types, user: user)
+    end
+
+    def order_by_distance(entourages:)
+      if latitude && longitude
+        distance_from_center = PostgisHelper.distance_from(latitude, longitude)
+        entourages.order("case when online then 1 else 2 end", distance_from_center, created_at: :desc)
+      else
+        entourages
+      end
     end
   end
 end
