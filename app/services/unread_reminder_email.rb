@@ -276,7 +276,7 @@ module UnreadReminderEmail
           type: type,
           image_url: image_url,
           summary: group_summary(group, type),
-          url: "#{group.share_url}?auth=#{auth_token}"
+          url: "#{ENV['WEBSITE_APP_URL']}/actions/#{group.uuid_v2}?auth=#{auth_token}"
         }
       end
     end
