@@ -53,7 +53,7 @@ module FeedServices
     private
 
     def repositionned_announcements
-      selection = self.announcements_for_user(user)
+      selection = self.class.announcements_for_user(user)
 
       # 3   9  15  22  29  36  ...
       #  +6  +6  +7  +7  +7  ...
