@@ -132,12 +132,46 @@ module FeedServices
           pinned << self.class.neighborhood_group_for(user)
         end
 
-        dep = nil
-        if user.address&.country == 'FR'
-          dep = user.address.postal_code.to_s.first(2)
-        end
+        if (types.nil? || types.include?('outing'))
+          postal_code = ''
+          if user.address&.country == 'FR'
+            postal_code = user.address.postal_code.to_s
+          end
 
-        pinned << 112297 if (types.nil? || types.include?('outing'))
+          pinned << 112297
+
+          if ['75003', '75004', '75010', '75011', '75012', '75019', '75020'].include?(postal_code.first(5))
+            pinned << 110033
+          end
+
+          if ['75001', '75002', '75008', '75009', '75016', '75017', '75018'].include?(postal_code.first(5))
+            pinned << 110032
+          end
+
+          if ['75005', '75006', '75007', '75013', '75014', '75015'].include?(postal_code.first(5))
+            pinned << 110026
+          end
+
+          if ['59'].include?(postal_code.first(2))
+            pinned << 110059
+          end
+
+          if ['69'].include?(postal_code.first(2))
+            pinned << 110057
+          end
+
+          if ['35'].include?(postal_code.first(2))
+            pinned << 110053
+          end
+
+          if ['92000', '92400', '92700', '92250', '92800', '92200'].include?(postal_code.first(5))
+            pinned << 110060
+          end
+
+          if ['92110', '92600', '92300', '92230'].include?(postal_code.first(5))
+            pinned << 110016
+          end
+        end
 
         pinned.compact.uniq.reverse.each do |action|
           feeds = pin(action, feeds: feeds)
