@@ -11,14 +11,21 @@ module Admin
     end
 
     def messages
-      messages =
-        @user.conversation_messages
-        .where(messageable_type: :Entourage)
-        .select("created_at, content, messageable_id as entourage_id")
+      entourages = Entourage
+        .joins("LEFT JOIN conversation_messages on conversation_messages.messageable_type = 'Entourage' and conversation_messages.messageable_id = entourages.id and conversation_messages.user_id = #{current_user.id}")
+        .where([
+          'conversation_messages.user_id is not null or entourages.user_id = ?',
+          current_user.id
+        ])
+        .group('entourages.id')
+        .order('GREATEST(entourages.created_at, MAX(conversation_messages.created_at)) desc')
+        .page(params[:page]).per(10)
 
-      messages +=
-        @user.entourages
-        .select("created_at, description as content, id as entourage_id")
+      messages = ConversationMessage
+        .where(user_id: current_user.id, messageable_type: :Entourage, messageable_id: entourages)
+        .select('created_at, content, messageable_id as entourage_id')
+
+      messages += entourages.select('entourages.created_at, entourages.description as content, entourages.id as entourage_id')
 
       @entourage_messages =
         messages
@@ -26,7 +33,8 @@ module Admin
         .sort_by { |_, ms| ms.map(&:created_at).max }
         .reverse
 
-      @entourages = Hash[Entourage.where(id: @entourage_messages.map(&:first)).map { |e| [e.id, e] }]
+      @entourages = Hash[entourages.map { |e| [e.id, e] }]
+      @entourages_paginate = entourages
     end
 
     def edit
