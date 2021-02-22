@@ -11,18 +11,21 @@ module Admin
     end
 
     def messages
+      user_id = params[:id]
+      sanitized_user_id = ActiveRecord::Base.connection.quote user_id
+
       entourages = Entourage
-        .joins("LEFT JOIN conversation_messages on conversation_messages.messageable_type = 'Entourage' and conversation_messages.messageable_id = entourages.id and conversation_messages.user_id = #{current_user.id}")
+        .joins("LEFT JOIN conversation_messages on conversation_messages.messageable_type = 'Entourage' and conversation_messages.messageable_id = entourages.id and conversation_messages.user_id = #{sanitized_user_id}")
         .where([
           'conversation_messages.user_id is not null or entourages.user_id = ?',
-          current_user.id
+          user_id
         ])
         .group('entourages.id')
         .order('GREATEST(entourages.created_at, MAX(conversation_messages.created_at)) desc')
         .page(params[:page]).per(10)
 
       messages = ConversationMessage
-        .where(user_id: current_user.id, messageable_type: :Entourage, messageable_id: entourages)
+        .where(user_id: user_id, messageable_type: :Entourage, messageable_id: entourages)
         .select('created_at, content, messageable_id as entourage_id')
 
       messages += entourages.select('entourages.created_at, entourages.description as content, entourages.id as entourage_id')
