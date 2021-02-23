@@ -26,7 +26,7 @@
               <% if block_date == Time.zone.today %>
                 Aujourd'hui
               <% else %>
-                <%= l block_date, format: "%A %-d %B" %>
+                <%= l block_date, format: "%A %-d %B %Y" %>
               <% end %>
             </td>
           </tr>
