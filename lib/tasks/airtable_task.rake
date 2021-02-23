@@ -1,9 +1,7 @@
 require 'tasks/airtable_task'
-# require 'app/services/airtable/entoures'
-# require 'app/services/airtable/entoureurs'
 
 namespace :airtable_task do
-  task :export_test do
+  task export_test: :environment do
     AirtableTask.upload(::Airtable::Entoureurs, '#test-nicolas', [59], '1. b Bande lancée')
     # AirtableTask.upload(::Airtable::Entoureurs, '#respo-bo-92-78', [92, 78], '1. b Bande lancée')
     # AirtableTask.upload(::Airtable::Entoureurs, '#respo-bo-75', [75], '1. b Bande lancée')
@@ -15,7 +13,7 @@ namespace :airtable_task do
     # AirtableTask.upload(::Airtable::Entoureurs, '#respo-bo-hz', [75,91,92,93,94,95,78,35,59,69], '1. b Bande lancée', hors_zone: true)
   end
 
-  task :export_all do
+  task export_all: :environment do
     # Entoures, 92, 78
     AirtableTask.upload(::Airtable::Entoures, '#respo-bo-92-78', [92, 78], '1.b Matché à compléter')
     AirtableTask.upload(::Airtable::Entoures, '#respo-bo-92-78', [92, 78], '2.a Matché')
