@@ -166,11 +166,14 @@ Rails.application.routes.draw do
 
     namespace :v1 do
       match '(*path)' => 'base#options', via: [:options]
+      resources :home, only: [:index]
+
       resources :feeds, only: [:index] do
         collection do
           get :outings
         end
       end
+
       resources :myfeeds, only: [:index]
       resources :tours, only: [:index, :create, :show, :update] do
         resources :tour_points, only:[:create]
@@ -186,6 +189,7 @@ Rails.application.routes.draw do
           put :read
         end
       end
+
       resources :stats, only: [:index]
       resources :messages, only: [:create]
       resources :registration_requests, only: [:create]
