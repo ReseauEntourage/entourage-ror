@@ -109,7 +109,7 @@ module EntourageServices
         pinned = EntourageServices::Pins.find(user, types)
 
         pinned.compact.uniq.reverse.each do |action|
-          entourages = pin(action, feeds: entourages)
+          entourages = pin(action, entourages: entourages)
         end
       end
 
@@ -180,6 +180,7 @@ module EntourageServices
         entourage = entourages.delete_at(index)
       else
         entourage = Entourage.visible.find_by(id: entourage_id)
+        return entourages unless entourage
         entourage.current_join_request = nil
         entourage.number_of_unread_messages = 0
       end
