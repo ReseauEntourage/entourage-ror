@@ -98,11 +98,20 @@ module EntourageServices
         entourages = entourages.before(DateTime.parse(before)).limit(25)
       end
 
+      # entourages = entourages.preload(user: :partner)
       entourages = entourages.sort_by(&:created_at).reverse
       # Note: entourages is now an Array.
 
       preload_user_join_requests(entourages)
       preload_chat_messages_counts(entourages)
+
+      if page == 1
+        pinned = EntourageServices::Pins.find(user, types)
+
+        pinned.compact.uniq.reverse.each do |action|
+          entourages = pin(action, feeds: entourages)
+        end
+      end
 
       entourages
     end
@@ -160,6 +169,23 @@ module EntourageServices
         next if join_request_id.nil?
         entourage.number_of_unread_messages = counts[join_request_id]
       end
+    end
+
+    def pin entourage_id, entourages:
+      entourages = entourages.to_a
+
+      index = entourages.index { |e| e.id == entourage_id }
+
+      if index
+        entourage = entourages.delete_at(index)
+      else
+        entourage = Entourage.visible.find_by(id: entourage_id)
+        entourage.current_join_request = nil
+        entourage.number_of_unread_messages = 0
+      end
+
+      entourages.insert(0, entourage)
+      entourages
     end
   end
 end
