@@ -229,6 +229,10 @@
   <% end %>
 <% end %>
 
+<div class="row">
+  <%= paginate @chat_messages %>
+</div>
+
 <% if @messages_author.roles.include?(:moderator) %>
   <% color[@messages_author.id] ||= (color.count * 0.381966011 * 360).round %>
   <div class="conversation-message is-message-form">

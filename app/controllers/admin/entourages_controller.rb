@@ -161,7 +161,8 @@ module Admin
         @entourage
           .conversation_messages.ordered.includes(:user)
           .with_content
-          .to_a
+          .page(params[:page])
+          .per(params[:per])
 
       @moderator_read  = @entourage.moderator_read_for(user: current_user)
 
