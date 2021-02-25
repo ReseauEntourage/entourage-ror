@@ -14,7 +14,7 @@ module Api
             user: current_user,
             latitude: params[:latitude],
             longitude: params[:longitude],
-            starting_after: params[:starting_after],
+            starting_after: params[:starting_after]
           ).feeds
         else
           outings = []
@@ -22,14 +22,14 @@ module Api
 
         entourages = EntourageServices::EntourageFinder.new(
           user: current_user,
-          types: params[:types],
+          types: params[:types] || params[:entourage_types],
           latitude: params[:latitude],
           longitude: params[:longitude],
           distance: params[:distance],
           page: page,
           per: per,
           show_past_events: params[:show_past_events],
-          time_range: time_range,
+          time_range: params[:time_range],
           before: params[:before],
           partners_only: params[:partners_only],
           no_outings: true
@@ -41,7 +41,7 @@ module Api
           tours = TourServices::TourFilterApi.new(
             user: current_user,
             status: params[:status],
-            type: params[:type],
+            type: params[:type] || params[:tour_type],
             vehicle_type: params[:vehicle_type],
             latitude: params[:latitude],
             longitude: params[:longitude],
@@ -80,12 +80,6 @@ module Api
             scope: { user: current_user }
           )
         }.to_json, status: 200
-      end
-
-      private
-
-      def time_range
-        params[:time_range] || 365*24
       end
     end
   end
