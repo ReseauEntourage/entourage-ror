@@ -47,24 +47,17 @@ module Api
         FeedServices::OutingsFinder.new(
           user: current_user,
           latitude: params[:latitude],
-          longitude: params[:longitude],
-          starting_after: params[:starting_after]
+          longitude: params[:longitude]
         ).feeds.map(&:feedable)
       end
 
       def get_entourages
         EntourageServices::EntourageFinder.new(
           user: current_user,
-          types: params[:types] || params[:entourage_types],
           latitude: params[:latitude],
           longitude: params[:longitude],
-          distance: params[:distance],
           page: params[:page],
           per: per,
-          show_past_events: params[:show_past_events],
-          time_range: params[:time_range],
-          before: params[:before],
-          partners_only: params[:partners_only],
           no_outings: true
         ).entourages
       end
@@ -74,12 +67,8 @@ module Api
 
         TourServices::TourFilterApi.new(
           user: current_user,
-          status: params[:status],
-          type: params[:type] || params[:tour_type],
-          vehicle_type: params[:vehicle_type],
           latitude: params[:latitude],
           longitude: params[:longitude],
-          distance: params[:distance],
           page: params[:page],
           per: per
         ).tours
