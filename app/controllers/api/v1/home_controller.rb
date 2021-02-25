@@ -31,7 +31,8 @@ module Api
           show_past_events: params[:show_past_events],
           time_range: time_range,
           before: params[:before],
-          partners_only: params[:partners_only]
+          partners_only: params[:partners_only],
+          no_outings: true
         ).entourages
 
         if current_user.public?
@@ -62,7 +63,7 @@ module Api
           ),
 
           outings: ::ActiveModel::ArraySerializer.new(
-            outings,
+            outings.map(&:feedable), # requires OutingsFinder refactor on Object mapping
             each_serializer: ::V1::EntourageSerializer,
             scope: { user: current_user }
           ),

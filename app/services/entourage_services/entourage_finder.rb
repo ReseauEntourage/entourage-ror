@@ -3,6 +3,8 @@ module EntourageServices
     DEFAULT_DISTANCE=10
     FEED_CATEGORY_EXPR = "(case when group_type = 'action' then concat(entourage_type, '_', coalesce(display_category, 'other')) else group_type::text end)"
 
+    attr_reader :user, :types, :latitude, :longitude, :distance, :page, :per, :show_past_events, :time_range, :before, :partners_only, :no_outings, :show_my_entourages_only, :author, :invitee
+
     def initialize(
       user:,
       types: nil,
@@ -15,6 +17,7 @@ module EntourageServices
       time_range: 24,
       before: nil,
       partners_only: false,
+      no_outings: false,
       # mine
       show_my_entourages_only: false,
       # owns
@@ -33,6 +36,7 @@ module EntourageServices
       @time_range = (time_range || 24).to_i
       @before = before.present? ? (DateTime.parse(before) rescue Time.now) : nil
       @partners_only = partners_only=="true"
+      @no_outings = no_outings
 
       # mine
       @show_my_entourages_only = show_my_entourages_only
@@ -46,6 +50,7 @@ module EntourageServices
       entourages = Entourage.includes(:join_requests, :entourage_invitations, :user)
       entourages = entourages.where(status: :open) # status
       entourages = entourages.where.not(group_type: [:conversation, :group]) # group_type
+      entourages = entourages.where.not(group_type: [:outing]) if no_outings
       entourages = entourages.where("entourages.created_at > ?", time_range.hours.ago)
 
       if latitude && longitude
@@ -117,7 +122,6 @@ module EntourageServices
     end
 
     private
-    attr_reader :user, :types, :latitude, :longitude, :distance, :show_my_entourages_only, :time_range, :page, :per, :before, :author, :invitee, :show_past_events, :partners_only
 
     def box
       Geocoder::Calculations.bounding_box([latitude, longitude], distance, units: :km)
