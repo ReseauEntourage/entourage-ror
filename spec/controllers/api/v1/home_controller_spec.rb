@@ -4,6 +4,7 @@ include CommunityHelper
 describe Api::V1::HomeController do
 
   let(:user) { FactoryGirl.create(:offer_help_user) }
+  let(:pro_user) { FactoryGirl.create(:pro_user) }
 
   describe 'GET index' do
     context "not signed in" do
@@ -20,6 +21,8 @@ describe Api::V1::HomeController do
       # announcements
       let!(:announcement) { FactoryGirl.create(:announcement, user_goals: [:offer_help], areas: [:sans_zone]) }
       let!(:announcement_ask) { FactoryGirl.create(:announcement, user_goals: [:ask_for_help], areas: [:sans_zone], id: 2) }
+      # tours
+      let!(:tour) { FactoryGirl.create(:tour) }
 
       subject { JSON.parse(response.body) }
 
@@ -85,6 +88,18 @@ describe Api::V1::HomeController do
         get :index, token: user.token, latitude: 48.854367553784954, longitude: 2.270340589096274
 
         expect(subject["outings"].count).to eq(1)
+      end
+
+      it "renders tours, with no-pro user" do
+        get :index, token: user.token
+
+        expect(subject["tours"].count).to eq(0)
+      end
+
+      it "renders tours, with pro user" do
+        get :index, token: pro_user.token
+
+        expect(subject["tours"].count).to eq(1)
       end
 
       it "renders announcements" do

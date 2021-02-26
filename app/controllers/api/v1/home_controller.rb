@@ -70,7 +70,12 @@ module Api
           latitude: params[:latitude],
           longitude: params[:longitude],
           page: params[:page],
-          per: per
+          per: per,
+          # default arguments
+          status: nil,
+          type: nil,
+          vehicle_type: nil,
+          distance: nil
         ).tours
       end
     end
