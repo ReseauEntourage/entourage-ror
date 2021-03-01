@@ -61,4 +61,16 @@ RSpec.describe ChatMessage, type: :model do
       it { expect(message(2.years.from_now.change(month: 9, day: 27))).to eq "Je serai voisiné(e) le 27 septembre" }
     end
   end
+
+  describe "after_create update entourage" do
+    let(:conversation) { create :conversation }
+    let(:chat_message) { create :chat_message, messageable: conversation }
+
+    it do
+      max_chat_message_created_at = Entourage.find(chat_message.messageable_id).max_chat_message_created_at
+
+      expect(max_chat_message_created_at).to be_kind_of Time
+      expect(max_chat_message_created_at.change(usec: 0)).to eq(chat_message.created_at.change(usec: 0))
+    end
+  end
 end

@@ -44,4 +44,61 @@ RSpec.describe JoinRequest, type: :model do
       end
     end
   end
+
+  describe "after_save join_request" do
+    let(:conversation) { create :conversation }
+
+    describe "no requested_at for accepted" do
+      let(:join_request) { create :join_request, joinable: conversation, status: 'accepted' }
+
+      # requested_at should be nil
+      it do
+        expect(join_request.requested_at).to eq nil
+        expect(
+          Entourage.find(join_request.joinable_id).max_join_request_requested_at
+        ).to eq nil
+      end
+    end
+
+    describe "requested_at for pending" do
+      let(:join_request) { create :join_request, joinable: conversation, status: 'pending' }
+
+      it do
+      # requested_at should be a date
+        expect(join_request.requested_at).not_to eq nil
+        expect(join_request.requested_at).to be_kind_of Time
+        expect(
+          Entourage.find(join_request.joinable_id).max_join_request_requested_at.change(usec: 0)
+        ).to eq(join_request.requested_at.change(usec: 0))
+      end
+    end
+
+    describe "from accepted to pending" do
+      let(:join_request) { create :join_request, joinable: conversation, status: 'accepted' }
+
+      # requested_at should change from nil to date
+      it do
+        join_request.update_attribute(:status, 'pending')
+        expect(join_request.requested_at).not_to eq nil
+        expect(join_request.requested_at).to be_kind_of Time
+        expect(
+          Entourage.find(join_request.joinable_id).max_join_request_requested_at.change(usec: 0)
+        ).to eq(join_request.requested_at.change(usec: 0))
+      end
+    end
+
+    describe "from pending to accepted" do
+      let(:join_request) { create :join_request, joinable: conversation, status: 'pending' }
+
+      # requested_at should not change but stays a date
+      it do
+        join_request.update_attribute(:status, 'accepted')
+        expect(join_request.requested_at).not_to eq nil
+        expect(join_request.requested_at).to be_kind_of Time
+        expect(
+          Entourage.find(join_request.joinable_id).max_join_request_requested_at.change(usec: 0)
+        ).to eq(join_request.requested_at.change(usec: 0))
+      end
+    end
+  end
 end

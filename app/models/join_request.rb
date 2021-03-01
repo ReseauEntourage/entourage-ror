@@ -29,6 +29,16 @@ class JoinRequest < ActiveRecord::Base
   after_save :joinable_callback
   after_destroy :joinable_callback
 
+  after_save do |join_request|
+    if join_request.entourage? && join_request.requested_at && (join_request.new_record? || join_request.requested_at_changed?)
+      Entourage.find(join_request.joinable_id).update_attribute(:max_join_request_requested_at, join_request.requested_at)
+    end
+  end
+
+  def entourage?
+    joinable_type == 'Entourage'
+  end
+
   def self.with_entourage_invitations
     joins(%(
       left join entourage_invitations on (

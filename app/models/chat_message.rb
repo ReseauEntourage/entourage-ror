@@ -27,6 +27,12 @@ class ChatMessage < ActiveRecord::Base
     end
   end
 
+  after_create do |message|
+    if message.messageable_type == 'Entourage'
+      Entourage.find(message.messageable_id).update_attribute(:max_chat_message_created_at, message.created_at)
+    end
+  end
+
   after_create :update_sender_report_prompt_status
   after_create :update_recipients_report_prompt_status
 
