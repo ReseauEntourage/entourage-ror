@@ -10,6 +10,10 @@ class Address < ActiveRecord::Base
 
   after_save :set_user_address_id_if_primary!
 
+  def to_s
+    display_address
+  end
+
   def display_address
     [place_name, postal_code].compact.uniq.join(', ')
   end
