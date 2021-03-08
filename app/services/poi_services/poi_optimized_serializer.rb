@@ -2,6 +2,7 @@ module PoiServices
   class PoiOptimizedSerializer
     CACHE_KEY_PREFIX = "json_cache/#{Poi.model_name.cache_key}".freeze
     CACHE_KEY_FORMAT = "#{CACHE_KEY_PREFIX}/%s/%s-%s".freeze
+    TTL = 3.hours
 
     def initialize(pois_scope, box_size:, version:, &serializer)
       @pois = pois_scope
@@ -47,9 +48,17 @@ module PoiServices
 
           pois_by_id[poi_id] = json
           cache_writes.push(cache_keys_by_id[poi_id], json)
+
+          $redis.keys(CACHE_KEY_FORMAT % [@version, poi_id, '*']).each do |k|
+            $redis.del(k)
+          end
         end
 
         $redis.mset(*cache_writes)
+        # set ttl
+        cache_writes.each do |k|
+          $redis.expire(k, TTL)
+        end
       end
 
       ids.map { |id| SerializedJSON.new(pois_by_id[id]) }
@@ -141,7 +150,9 @@ module PoiServices
     ActiveSupport.json_encoder.prepend(EncoderMixin)
 
     def self.clear_cache
-      $redis.del($redis.keys("#{CACHE_KEY_PREFIX}/*"))
+      $redis.keys(CACHE_KEY_FORMAT % ['*', '*', '*']).each do |k|
+        $redis.del(k)
+      end
     end
   end
 end
