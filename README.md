@@ -94,6 +94,10 @@ Or, with `foreman` :
 foreman start web
 ```
 
+# Running scheduled jobs
+
+Scheduled jobs documentation is accessible [here](config/scheduler/Jobs.md) 
+
 # Accessing admin panel
 
 To access the admin panel, you need to set an entry in your `/etc/hosts` :

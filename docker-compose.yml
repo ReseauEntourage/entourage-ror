@@ -18,6 +18,24 @@ services:
     ports:
       - "6379/tcp"
 
+  job:
+    build:
+      context: .
+      target: prod
+    image: entourage-ror:latest
+    user: docker-user
+    depends_on:
+      - postgresql
+      - redis
+    environment:
+      DATABASE_URL: "postgres://guest:guest@postgresql:5432"
+      REDIS_URL: "redis://redis:6379"
+      RAILS_ENV: ${RAILS_ENV:-development}
+      JOB_FILE: "config/scheduler/development.rb"
+    cap_add:
+      - SYS_PTRACE
+    command: bin/docker/job_entrypoint.sh
+
   spring:
     build:
       context: .
@@ -27,6 +45,7 @@ services:
     depends_on:
       - postgresql
       - redis
+      - job
     ports:
       - "8080:8080"
     environment:
