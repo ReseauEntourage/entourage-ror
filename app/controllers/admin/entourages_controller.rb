@@ -66,31 +66,18 @@ module Admin
           ))
       else
         @entourages = @entourages
-          .joins(%(
-            left join chat_messages
-              on chat_messages.messageable_type = 'Entourage'
-             and chat_messages.messageable_id = entourages.id
-             and chat_messages.created_at >= moderator_reads.read_at
-          ))
-          .joins(%(
-            left join join_requests
-              on join_requests.joinable_type = 'Entourage'
-             and join_requests.joinable_id = entourages.id
-             and join_requests.status in ('pending', 'accepted')
-             and join_requests.message <> ''
-             and join_requests.requested_at >= moderator_reads.read_at
-          ))
+          .joins(%(join entourage_denorms on entourage_denorms.entourage_id = entourages.id))
           .order(%(
             case
             when moderator_reads is null and entourages.created_at >= now() - interval '1 week' then 0
-            when greatest(max(chat_messages.created_at), max(join_requests.requested_at)) >= moderator_reads.read_at then 1
+            when greatest(max(max_chat_message_created_at), max(max_join_request_requested_at)) >= moderator_reads.read_at then 1
             else 2
             end
           ))
       end
 
       @entourages = @entourages
-        .order("admin_pin DESC, created_at DESC")
+        .order("admin_pin DESC, entourages.created_at DESC")
         .to_a
 
       @entourages = Kaminari.paginate_array(@entourages, total_count: @q.result.count).page(params[:page]).per(per_page)
