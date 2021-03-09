@@ -29,9 +29,23 @@ class JoinRequest < ActiveRecord::Base
   after_save :joinable_callback
   after_destroy :joinable_callback
 
-  after_save do |join_request|
-    if join_request.entourage? && join_request.requested_at && (join_request.new_record? || join_request.requested_at_changed?)
-      Entourage.find(join_request.joinable_id).update_attribute(:max_join_request_requested_at, join_request.requested_at)
+  after_save :requested_at_callback
+
+  def requested_at_callback
+    return unless entourage?
+    return unless requested_at
+    return unless message.present?
+    return unless new_record? || requested_at_changed? || status_changed?
+
+    if ['pending', 'accepted'].include?(status)
+      Entourage.find(joinable_id).update_attribute(:max_join_request_requested_at, requested_at)
+    else
+      # could be achieved in a job
+      join_request = JoinRequest.select('joinable_id, max(requested_at) as max_requested_at')
+        .where(joinable_type: 'Entourage', joinable_id: joinable_id, status: ['pending', 'accepted'])
+        .group('joinable_id').order('joinable_id').first
+
+      Entourage.find(joinable_id).update_attribute(:max_join_request_requested_at, join_request&.max_requested_at)
     end
   end
 
