@@ -169,6 +169,35 @@ module FeedServices
           if ['92110', '92600', '92300', '92230'].include?(postal_code.first(5))
             pinned << 110016
           end
+
+          # hors zone
+          if postal_code.first(5).to_i >= 13000 && postal_code.first(5).to_i <= 13016
+            pinned << 113230 # Marseille
+          end
+
+          if ['33000', '33100', '33200', '33300', '33800'].include?(postal_code.first(5))
+            pinned << 112941 # Bordeaux
+          end
+
+          if ['31000', '31100', '31200', '31300', '31400', '31500'].include?(postal_code.first(5))
+            pinned << 112945 # Toulouse
+          end
+
+          if ['34000', '34070', '34080', '34090'].include?(postal_code.first(5))
+            pinned << 113231 # Montpellier
+          end
+
+          if ['44000', '44100', '44200', '44300'].include?(postal_code.first(5))
+            pinned << 113233 # Nantes
+          end
+
+          if ['06000', '06100', '06200', '06300'].include?(postal_code.first(5))
+            pinned << 113234 # Nice
+          end
+
+          if ['67000', '67100', '67200'].include?(postal_code.first(5))
+            pinned << 113232 # Strasbourg
+          end
         end
 
         pinned.compact.uniq.reverse.each do |action|
