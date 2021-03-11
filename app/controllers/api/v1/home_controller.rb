@@ -6,14 +6,10 @@ module Api
       def index
         render json: {
           metadata: {
-            order: [:announcements, :outings, :entourages, :tours],
+            order: [:headlines, :outings, :entourages],
           },
 
-          announcements: ::ActiveModel::ArraySerializer.new(
-            get_announcements,
-            each_serializer: ::V1::AnnouncementSerializer,
-            scope: { user: current_user, base_url: request.base_url }
-          ),
+          headlines: get_headlines,
 
           outings: ::ActiveModel::ArraySerializer.new(
             get_outings,
@@ -25,20 +21,48 @@ module Api
             get_entourages,
             each_serializer: ::V1::EntourageSerializer,
             scope: { user: current_user }
-          ),
-
-          tours: ::ActiveModel::ArraySerializer.new(
-            get_tours,
-            each_serializer: ::V1::TourSerializer,
-            scope: { user: current_user }
           )
         }.to_json, status: 200
       end
 
       private
 
+      def get_headlines
+        pin_1 = get_entourages.first
+        pin_2 = get_entourages.second
+        announcement_1 = get_announcements.first
+        announcement_2 = get_announcements.second
+        entourage = get_entourages.third
+
+        {
+          metadata: {
+            order: [:pin_1, :announcement_1, :entourage, :pin_2, :announcement_2],
+          },
+          pin_1: {
+            type: 'Entourage',
+            data: ::V1::EntourageSerializer.new(pin_1, {scope: {user: current_user}, root: false}).as_json,
+          },
+          pin_2: {
+            type: 'Entourage',
+            data: ::V1::EntourageSerializer.new(pin_2, {scope: {user: current_user}, root: false}).as_json,
+          },
+          announcement_1: {
+            type: 'Announcement',
+            data: ::V1::AnnouncementSerializer.new(announcement_1, scope: { user: current_user, base_url: request.base_url }, root: false).as_json,
+          },
+          announcement_2: {
+            type: 'Announcement',
+            data: ::V1::AnnouncementSerializer.new(announcement_2, scope: { user: current_user, base_url: request.base_url }, root: false).as_json,
+          },
+          entourage: {
+            type: 'Entourage',
+            data: ::V1::EntourageSerializer.new(entourage, {scope: {user: current_user}, root: false}).as_json,
+          }
+        }
+      end
+
       def get_announcements
-        FeedServices::AnnouncementsService.announcements_for_user(current_user)
+        FeedServices::AnnouncementsService.announcements_for_user(current_user)[0..1]
       end
 
       def get_outings
@@ -60,23 +84,6 @@ module Api
           per: per,
           no_outings: true
         ).entourages
-      end
-
-      def get_tours
-        return [] if current_user.public?
-
-        TourServices::TourFilterApi.new(
-          user: current_user,
-          latitude: params[:latitude],
-          longitude: params[:longitude],
-          page: params[:page],
-          per: per,
-          # default arguments
-          status: nil,
-          type: nil,
-          vehicle_type: nil,
-          distance: nil
-        ).tours
       end
     end
   end
