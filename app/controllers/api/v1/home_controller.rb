@@ -32,7 +32,7 @@ module Api
         pin_2 = get_entourages.second
         announcement_1 = get_announcements.first
         announcement_2 = get_announcements.second
-        entourage = get_entourages.third
+        outing = get_outings.first
 
         headlines = {
           metadata: { order: [] }
@@ -54,11 +54,11 @@ module Api
           }
         end
 
-        if entourage
-          headlines[:metadata][:order] << :entourage
-          headlines[:entourage] =  {
+        if outing
+          headlines[:metadata][:order] << :outing
+          headlines[:outing] =  {
             type: 'Entourage',
-            data: ::V1::EntourageSerializer.new(entourage, {scope: {user: current_user}, root: false}).as_json,
+            data: ::V1::EntourageSerializer.new(outing, {scope: {user: current_user}, root: false}).as_json,
           }
         end
 
