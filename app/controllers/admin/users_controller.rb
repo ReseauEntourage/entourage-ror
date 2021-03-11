@@ -1,6 +1,6 @@
 module Admin
   class UsersController < Admin::BaseController
-    before_action :set_user, only: [:show, :messages, :edit, :update, :block, :unblock, :banish, :validate, :experimental_pending_request_reminder]
+    before_action :set_user, only: [:show, :messages, :edit, :update, :block, :unblock, :anonymize, :banish, :validate, :experimental_pending_request_reminder]
 
     def index
       @users = current_user.community.users.includes(:organization).order("last_name ASC").page(params[:page]).per(25)
@@ -115,6 +115,8 @@ module Admin
     def moderate
       @users = if params[:validation_status] == "blocked"
         User.blocked
+      elsif params[:validation_status] == "anonymized"
+        User.anonymized
       else
         User.validated
       end
@@ -147,6 +149,20 @@ module Admin
       last_reminder_at = reminders.maximum(:created_at)
       reminders.create! if last_reminder_at.nil? || !last_reminder_at.today?
       redirect_to :back, flash: { _experimental_pending_request_reminder_created: 1 }
+    end
+
+    def download_export
+      redirect_to [:admin, @user]
+    end
+
+    def send_export
+      redirect_to [:admin, @user], flash: { success: "Export envoyé par mail" }
+    end
+
+    def anonymize
+      @user.anonymize!
+      UserServices::Avatar.new(user: @user).destroy
+      redirect_to [:admin, @user], flash: { success: "Utilisateur anonymisé" }
     end
 
     def fake

@@ -78,6 +78,7 @@ class User < ActiveRecord::Base
   scope :type_pro, -> { where(user_type: "pro") }
   scope :validated, -> { where(validation_status: "validated") }
   scope :blocked, -> { where(validation_status: "blocked") }
+  scope :anonymized, -> { where(validation_status: "anonymized") }
   scope :search_by, ->(first_name, last_name, email, phone) { where("first_name ILIKE ? OR last_name ILIKE ? OR email ILIKE ? OR phone = ?",
                                                                     first_name,
                                                                     last_name,
@@ -269,6 +270,10 @@ class User < ActiveRecord::Base
     validation_status=="blocked"
   end
 
+  def anonymized?
+    validation_status=="anonymized"
+  end
+
   def block!
     update(validation_status: "blocked")
   end
@@ -277,6 +282,20 @@ class User < ActiveRecord::Base
     update(validation_status: "validated")
   end
   alias_method :unblock!, :validate!
+
+  def anonymize!
+    update_attributes(
+      validation_status: "anonymized",
+      email: "anonymized@#{Time.now.to_i}",
+      phone: "+33100000000-#{Time.now.to_i}",
+      first_name: "This user has been anonymized",
+      last_name: nil,
+      deleted: true,
+      address_id: nil
+    )
+
+    Address.where(user_id: id).delete_all
+  end
 
   # TODO(partner)
   def default_partner

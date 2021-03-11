@@ -35,6 +35,18 @@
   </div>
 <% end %>
 
+<% if @user.anonymized? %>
+  <div class="panel panel-danger">
+    <div class="panel-heading">
+      Cet utilisateur est anonymisé
+    </div>
+    <div class="panel-body">
+      Les utilisateurs anonymisé ne peuvent pas se connecter ou utiliser l'application,<br>
+      et leur photo de profil est supprimée.
+    </div>
+  </div>
+<% end %>
+
 <ul class="nav nav-tabs">
   <li role="presentation" class="<%= :active if tab == :edit %>">
     <%= link_to "Modifier", admin_user_path(@user) %>
