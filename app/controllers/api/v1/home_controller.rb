@@ -34,31 +34,51 @@ module Api
         announcement_2 = get_announcements.second
         entourage = get_entourages.third
 
-        {
-          metadata: {
-            order: [:pin_1, :announcement_1, :entourage, :pin_2, :announcement_2],
-          },
-          pin_1: {
+        headlines = {
+          metadata: { order: [] }
+        }
+
+        if pin_1
+          headlines[:metadata][:order] << :pin_1
+          headlines[:pin_1] =  {
             type: 'Entourage',
             data: ::V1::EntourageSerializer.new(pin_1, {scope: {user: current_user}, root: false}).as_json,
-          },
-          pin_2: {
-            type: 'Entourage',
-            data: ::V1::EntourageSerializer.new(pin_2, {scope: {user: current_user}, root: false}).as_json,
-          },
-          announcement_1: {
+          }
+        end
+
+        if announcement_1
+          headlines[:metadata][:order] << :announcement_1
+          headlines[:announcement_1] =  {
             type: 'Announcement',
             data: ::V1::AnnouncementSerializer.new(announcement_1, scope: { user: current_user, base_url: request.base_url }, root: false).as_json,
-          },
-          announcement_2: {
-            type: 'Announcement',
-            data: ::V1::AnnouncementSerializer.new(announcement_2, scope: { user: current_user, base_url: request.base_url }, root: false).as_json,
-          },
-          entourage: {
+          }
+        end
+
+        if entourage
+          headlines[:metadata][:order] << :entourage
+          headlines[:entourage] =  {
             type: 'Entourage',
             data: ::V1::EntourageSerializer.new(entourage, {scope: {user: current_user}, root: false}).as_json,
           }
-        }
+        end
+
+        if pin_2
+          headlines[:metadata][:order] << :pin_2
+          headlines[:pin_2] =  {
+            type: 'Entourage',
+            data: ::V1::EntourageSerializer.new(pin_2, {scope: {user: current_user}, root: false}).as_json,
+          }
+        end
+
+        if announcement_2
+          headlines[:metadata][:order] << :announcement_2
+          headlines[:announcement_2] =  {
+            type: 'Announcement',
+            data: ::V1::AnnouncementSerializer.new(announcement_2, scope: { user: current_user, base_url: request.base_url }, root: false).as_json,
+          }
+        end
+
+        headlines
       end
 
       def get_announcements

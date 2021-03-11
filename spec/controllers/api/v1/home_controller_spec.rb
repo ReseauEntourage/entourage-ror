@@ -30,10 +30,9 @@ describe Api::V1::HomeController do
         get :index, token: user.token
 
         expect(subject).to have_key("metadata")
-        expect(subject).to have_key("announcements")
+        expect(subject).to have_key("headlines")
         expect(subject).to have_key("outings")
         expect(subject).to have_key("entourages")
-        expect(subject).to have_key("tours")
       end
 
       it "renders entourages" do
@@ -90,23 +89,11 @@ describe Api::V1::HomeController do
         expect(subject["outings"].count).to eq(1)
       end
 
-      it "renders tours, with no-pro user" do
-        get :index, token: user.token
-
-        expect(subject["tours"].count).to eq(0)
-      end
-
-      it "renders tours, with pro user" do
-        get :index, token: pro_user.token
-
-        expect(subject["tours"].count).to eq(1)
-      end
-
       it "renders announcements" do
         get :index, token: user.token
-        expect(subject["announcements"].count).to eq(1)
-        expect(subject["announcements"]).to eq(
-          [{
+        expect(subject["headlines"]["metadata"]["order"]).to include("announcement_1")
+        expect(subject["headlines"]["announcement_1"]["data"]).to eq(
+          {
             "id" => announcement.id,
             "uuid" => "#{announcement.id}",
             "title" => "Une autre façon de contribuer.",
@@ -116,7 +103,7 @@ describe Api::V1::HomeController do
             "url" => "http://test.host/api/v1/announcements/#{announcement.id}/redirect/#{user.token}",
             "icon_url" => "http://test.host/api/v1/announcements/#{announcement.id}/icon",
             "author" => nil
-          }]
+          }
         )
       end
     end
