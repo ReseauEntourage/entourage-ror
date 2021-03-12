@@ -19,7 +19,7 @@ module UserServices
         end
 
         GROUP_TYPES.each do |group_type|
-          t_group_type = I18n.t("activerecord.attributes.entourage.group_type.#{group_type}")
+          t_group_type = I18n.t("activerecord.attributes.entourage.group_types.#{group_type}")
 
           entourages = Entourage.select('
             entourages.*,

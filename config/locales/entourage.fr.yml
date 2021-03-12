@@ -23,7 +23,7 @@ fr:
         phone: Téléphone
         address: Adresse
       entourage:
-        group_type:
+        group_types:
           action: Action
           outing: Événement
           conversation: Conversation
