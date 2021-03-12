@@ -124,4 +124,14 @@ class MemberMailer < MailjetMailer
     @user = user
     mail(from: COMMUNITY_EMAIL, to: @user.email, subject: "Votre demande d'adhésion à la plateforme Entourage a été acceptée") if @user.email.present?
   end
+
+  def user_export csv:, recipient:, cci:
+    attachments["user-export.csv"] = File.read(csv)
+
+    mail(
+      to: recipient,
+      cci: cci,
+      subject: "Export des données personnelles d'Entourage"
+    )
+  end
 end

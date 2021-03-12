@@ -1,6 +1,6 @@
 module Admin
   class UsersController < Admin::BaseController
-    before_action :set_user, only: [:show, :messages, :edit, :update, :block, :unblock, :anonymize, :banish, :validate, :experimental_pending_request_reminder]
+    before_action :set_user, only: [:show, :messages, :edit, :update, :block, :unblock, :download_export, :send_export, :anonymize, :banish, :validate, :experimental_pending_request_reminder]
 
     def index
       @users = current_user.community.users.includes(:organization).order("last_name ASC").page(params[:page]).per(25)
@@ -152,10 +152,11 @@ module Admin
     end
 
     def download_export
-      redirect_to [:admin, @user]
+      send_file UserServices::Exporter.new(user: @user).csv, filename: "users-personal-data-#{@user.phone.parameterize}.csv", type: "application/csv"
     end
 
     def send_export
+      UserServices::Exporter.new(user: @user).export(cci: current_user)
       redirect_to [:admin, @user], flash: { success: "Export envoyé par mail" }
     end
 
