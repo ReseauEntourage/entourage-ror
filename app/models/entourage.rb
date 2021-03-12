@@ -211,6 +211,10 @@ class Entourage < ActiveRecord::Base
     super(value)
   end
 
+  def conversation?
+    group_type == 'conversation'
+  end
+
   def add_metadata_schema_urn(value)
     value = {} if value.nil?
     value['$id'] = "urn:entourage:#{group_type}:metadata" if group_type

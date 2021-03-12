@@ -2,7 +2,7 @@ module UserServices
   class Exporter
     DEFAULT_PATH = "#{Rails.root}/tmp"
     FIELDS = %w{email phone address created_at}
-    TEXT = "Un utilisateur a requis son effacement de l'application Entourage. Merci de lui transmettre ses informations personnelles que vous pourrez trouver dans le CSV"
+    GROUP_TYPES = %w{outing action conversation}
 
     def initialize(user:)
       @user = user
@@ -15,7 +15,28 @@ module UserServices
 
       CSV.open(file, 'w+') do |writer|
         FIELDS.each do |field|
-          writer << [user.send(field)]
+          writer << [I18n.t("activerecord.attributes.user.#{field}"), user.send(field)]
+        end
+
+        GROUP_TYPES.each do |group_type|
+          t_group_type = I18n.t("activerecord.attributes.entourage.group_type.#{group_type}")
+
+          entourages = Entourage.select('
+            entourages.*,
+            join_requests.created_at as join_request_created_at,
+            chat_messages.content as chat_message_content,
+            chat_messages.created_at as chat_message_created_at
+          ').joins(:join_requests).joins(:chat_messages).where(
+            ['join_requests.user_id = ? and chat_messages.user_id = ?', user.id, user.id]
+          ).where(group_type: group_type)
+
+          if entourages.any?
+            entourages.each do |entourage|
+              writer << [""]
+              writer << [t_group_type, "Rejoint(e) le #{entourage.join_request_created_at}", (entourage.conversation? ? nil : entourage.title)]
+              writer << ["Message", entourage.chat_message_created_at, entourage.chat_message_content]
+            end
+          end
         end
       end
 
