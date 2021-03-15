@@ -26,7 +26,9 @@ module UserServices
             join_requests.created_at as join_request_created_at,
             chat_messages.content as chat_message_content,
             chat_messages.created_at as chat_message_created_at
-          ').joins(:join_requests).joins(:chat_messages).where(
+          ').joins(:join_requests).joins(
+            "left join chat_messages on chat_messages.messageable_type = 'Entourage' and chat_messages.messageable_id = entourages.id"
+          ).where(
             ['join_requests.user_id = ? and chat_messages.user_id = ?', user.id, user.id]
           ).where(group_type: group_type)
 
