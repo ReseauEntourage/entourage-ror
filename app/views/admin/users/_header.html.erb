@@ -10,16 +10,15 @@
     <%
       uuid = ConversationService.list_for_participants([current_admin.id, @user.id])
     %>
-    <%= link_to "Contacter", admin_conversation_path(uuid),
-          class: "btn btn-primary" %>
+    <%= link_to "Contacter", admin_conversation_path(uuid), class: "btn btn-primary" %>
     <% if @user.blocked? %>
-      <%= link_to "Débloquer", unblock_admin_user_path(@user), method: :put,
-            class: "btn btn-success",
-            data: { confirm: "Débloquer #{@user.first_name} #{@user.last_name} (#{@user.email}) ?" } %>
+      <%= link_to "Débloquer", unblock_admin_user_path(@user), method: :put, class: "btn btn-success", data: {
+        confirm: "Débloquer #{@user.first_name} #{@user.last_name} (#{@user.email}) ?"
+      } %>
     <% else %>
-      <%= link_to "Bloquer", block_admin_user_path(@user), method: :put,
-            class: "btn btn-danger",
-            data: { confirm: "Bloquer #{@user.first_name} #{@user.last_name} (#{@user.email}) ?" } %>
+      <%= link_to "Bloquer", block_admin_user_path(@user), method: :put, class: "btn btn-danger", data: {
+        confirm: "Bloquer #{@user.first_name} #{@user.last_name} (#{@user.email}) ?"
+      } %>
     <% end %>
   </div>
 </div>
@@ -31,6 +30,18 @@
     <div class="panel-body">
       Les utilisateurs bloqués ne peuvent pas se connecter ou utiliser l'application,<br>
       et leur photo de profil est masquée.
+    </div>
+  </div>
+<% end %>
+
+<% if @user.anonymized? %>
+  <div class="panel panel-danger">
+    <div class="panel-heading">
+      Cet utilisateur est anonymisé
+    </div>
+    <div class="panel-body">
+      Les utilisateurs anonymisé ne peuvent pas se connecter ou utiliser l'application,<br>
+      et leur photo de profil est supprimée.
     </div>
   </div>
 <% end %>

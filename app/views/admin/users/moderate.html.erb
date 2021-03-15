@@ -7,6 +7,9 @@
   <li role="presentation" class="<%= active_class(moderate_admin_users_path(validation_status: "blocked"))%>">
     <%= link_to "Bloqués", moderate_admin_users_path(validation_status: "blocked") %>
   </li>
+  <li role="presentation" class="<%= active_class(moderate_admin_users_path(validation_status: "anonymized"))%>">
+    <%= link_to "Anonymisés", moderate_admin_users_path(validation_status: "anonymized") %>
+  </li>
 </ul>
 
 <table class="table">

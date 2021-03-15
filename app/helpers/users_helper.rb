@@ -5,7 +5,8 @@ module UsersHelper
       "validated" => "label-success",
       "pending"   => "label-warning",
       "rejected"  => "label-danger",
-      "blocked"   => "label-danger"
+      "blocked"   => "label-danger",
+      "anonymized"=> "label-danger"
     }
     content_tag :span, validation_status, class: "label #{state_to_class[validation_status]}"
   end

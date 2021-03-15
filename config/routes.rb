@@ -21,6 +21,9 @@ Rails.application.routes.draw do
           put 'unblock'
           put 'banish'
           put 'validate'
+          get 'download_export'
+          get 'send_export'
+          put 'anonymize'
           post 'experimental_pending_request_reminder'
         end
       end

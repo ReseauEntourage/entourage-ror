@@ -190,6 +190,38 @@
   </div>
   <br>
 
+  <div class="control-group">
+    <label class="control-label">CNIL</label>
+      <table class="table" style="width: auto">
+        <tr>
+          <td>Télécharger l'export de données</td>
+          <td>
+            <%= link_to "Télécharger", download_export_admin_user_path(@user), method: :get, class: "btn btn-default" %>
+          </td>
+        </tr>
+        <tr>
+          <td>Lui envoyer un export de données par mail</td>
+          <td>
+            <%= link_to "Envoyer par mail", send_export_admin_user_path(@user), method: :get, class: "btn btn-default", data: {
+              confirm: "Envoyer à l'utilisateur un export de ses données personnelles ? Vous serez en copie cachée de cet email."
+            } %>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Anonymiser l'utilisateur
+            <i class="text-muted" style="color: red">(attention, action irréversible)</i>
+          </td>
+          <td>
+            <%= link_to "Anonymiser", anonymize_admin_user_path(@user), method: :put, class: "btn btn-default", data: {
+              confirm: "Cette action va anonymiser les email, nom, prénom, téléphone de l'utilisateur ainsi que supprimer sa photo de profil, ses adresses. Son compte sera également marqué comme supprimé. Souhaitez-vous continuer ?"
+            } %>
+          </td>
+        </tr>
+      </table>
+  </div>
+  <br>
+
   <% if @user.new_record? %>
     <div class="control-group">
       <%= f.label :sends, "Envoi SMS", class: "control-label" %>

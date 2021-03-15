@@ -15,11 +15,18 @@ fr:
         partner: Association
         admin_password: Mot de passe
         admin_password_confirmation: Confirmation de mot de passe
+        created_at: Date de création
+        address: Adresse
       organization:
         name: Nom
         description: Description
         phone: Téléphone
         address: Adresse
+      entourage:
+        group_types:
+          action: Action
+          outing: Événement
+          conversation: Conversation
       entourage_moderation:
         action_author_type: Emetteur
         action_recipient_type: Audience
