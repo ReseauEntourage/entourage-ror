@@ -33,10 +33,14 @@ module UserServices
           ).where(group_type: group_type)
 
           if entourages.any?
+            former_entourage_id = entourages.first.id
+
             entourages.each do |entourage|
-              writer << [""]
-              writer << [t_group_type, "Rejoint(e) le #{entourage.join_request_created_at}", (entourage.conversation? ? nil : entourage.title)]
+              writer << [""] unless entourage.id == former_entourage_id
+              writer << [t_group_type, "Rejoint(e) le #{entourage.join_request_created_at}", (entourage.conversation? ? nil : entourage.title)] unless entourage.id == former_entourage_id
               writer << ["Message", entourage.chat_message_created_at, entourage.chat_message_content]
+
+              former_entourage_id = entourage.id
             end
           end
         end
