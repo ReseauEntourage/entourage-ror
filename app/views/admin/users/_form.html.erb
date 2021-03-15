@@ -203,7 +203,7 @@
           <td>Lui envoyer un export de données par mail</td>
           <td>
             <%= link_to "Envoyer par mail", send_export_admin_user_path(@user), method: :get, class: "btn btn-default", data: {
-              confirm: "Confirmer ?"
+              confirm: "Envoyer à l'utilisateur un export de ses données personnelles ? Vous serez en copie cachée de cet email."
             } %>
           </td>
         </tr>
