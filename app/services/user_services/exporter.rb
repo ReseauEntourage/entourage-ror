@@ -33,7 +33,7 @@ module UserServices
           ).where(group_type: group_type)
 
           if entourages.any?
-            former_entourage_id = entourages.first.id
+            former_entourage_id = nil
 
             entourages.each do |entourage|
               writer << [""] unless entourage.id == former_entourage_id
