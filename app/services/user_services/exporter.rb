@@ -53,7 +53,7 @@ module UserServices
       raise "User with phone #{user.phone} should have an email" unless user.email
       raise "User with phone #{cci.phone} should have an email" unless cci.email
 
-      MemberMailer.user_export(csv: csv, recipient: user.email, cci: cci.email).deliver_later
+      MemberMailer.user_export(user_id: user.id, recipient: user.email, cci: cci.email).deliver_later
     end
 
     private
