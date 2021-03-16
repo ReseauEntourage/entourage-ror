@@ -30,6 +30,15 @@ class ChatMessage < ActiveRecord::Base
   after_create :update_sender_report_prompt_status
   after_create :update_recipients_report_prompt_status
 
+  def entourage?
+    messageable_type == 'Entourage'
+  end
+
+  def entourage_id
+    nil unless entourage?
+    messageable_id
+  end
+
   def self.joins_group_join_requests
     joins(%(
       join join_requests on joinable_id   = messageable_id

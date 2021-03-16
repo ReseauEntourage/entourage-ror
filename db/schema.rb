@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20210208170000) do
+ActiveRecord::Schema.define(version: 20210301140000) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -287,6 +287,16 @@ ActiveRecord::Schema.define(version: 20210208170000) do
 
   add_index "encounters", ["tour_id"], name: "index_encounters_on_tour_id", using: :btree
 
+  create_table "entourage_denorms", force: :cascade do |t|
+    t.integer  "entourage_id",                  null: false
+    t.datetime "max_join_request_requested_at"
+    t.datetime "max_chat_message_created_at"
+    t.datetime "created_at",                    null: false
+    t.datetime "updated_at",                    null: false
+  end
+
+  add_index "entourage_denorms", ["entourage_id"], name: "index_entourage_denorms_on_entourage_id", using: :btree
+
   create_table "entourage_displays", force: :cascade do |t|
     t.integer  "entourage_id"
     t.float    "distance"
@@ -378,7 +388,9 @@ ActiveRecord::Schema.define(version: 20210208170000) do
     t.string   "image_url"
     t.boolean  "online",                      default: false
     t.string   "event_url"
-    t.boolean  "admin_pin"
+    t.boolean  "admin_pin",                                default: false,  null: false
+    t.datetime "max_chat_message_created_at"
+    t.datetime "max_join_request_requested_at"
   end
 
   add_index "entourages", ["country", "postal_code"], name: "index_entourages_on_country_and_postal_code", using: :btree

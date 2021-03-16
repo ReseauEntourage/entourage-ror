@@ -25,6 +25,8 @@ module EntourageBack
 
     config.active_job.queue_adapter = :sidekiq
 
+    config.active_record.observers = :entourage_denorm_observer
+
     Rails.application.routes.default_url_options[:host] = ENV["HOST"]
     config.action_mailer.default_url_options = { :host => ENV["HOST"] }
 

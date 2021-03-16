@@ -49,6 +49,7 @@ gem 'phonelib'
 gem 'whenever'
 gem 'ddtrace'
 gem 'airrecord',                      '~> 1'
+gem 'rails-observers'
 
 group :development, :test do
   gem 'annotate'

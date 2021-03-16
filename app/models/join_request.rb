@@ -29,6 +29,15 @@ class JoinRequest < ActiveRecord::Base
   after_save :joinable_callback
   after_destroy :joinable_callback
 
+  def entourage?
+    joinable_type == 'Entourage'
+  end
+
+  def entourage_id
+    nil unless entourage?
+    joinable_id
+  end
+
   def self.with_entourage_invitations
     joins(%(
       left join entourage_invitations on (
