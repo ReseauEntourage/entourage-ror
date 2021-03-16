@@ -1,15 +1,13 @@
-require 'tasks/entourage_task'
-
 namespace :entourage do
   task set_entourage_user_suggestion: :environment do
     EntourageServices::UserEntourageSuggestion.perform
   end
 
-  task set_max_chat_message_created_at_in_batch: :environment do
-    EntourageTask.set_max_chat_message_created_at_in_batch
-  end
-
-  task set_max_join_request_requested_at_in_batch: :environment do
-    EntourageTask.set_max_join_request_requested_at_in_batch
+  task compute_all_denorms: :environment do
+    Entourage.select('id').where(group_type: [:action, :outing]).find_in_batches(batch_size: 100) do |entourages|
+      entourages.each do |entourage|
+        EntourageDenorm.find_or_create_by(entourage_id: entourage.id).recompute_and_save
+      end
+    end
   end
 end

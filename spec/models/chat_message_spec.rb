@@ -63,14 +63,15 @@ RSpec.describe ChatMessage, type: :model do
   end
 
   describe "after_create update entourage" do
-    let(:conversation) { create :conversation }
-    let(:chat_message) { create :chat_message, messageable: conversation }
+    let(:entourage) { create :entourage }
+    let(:chat_message) { create :chat_message, messageable: entourage }
 
     it do
-      max_chat_message_created_at = Entourage.find(chat_message.messageable_id).max_chat_message_created_at
+      denorm = EntourageDenorm.find_by(entourage_id: chat_message.messageable_id)
 
-      expect(max_chat_message_created_at).to be_kind_of Time
-      expect(max_chat_message_created_at.change(usec: 0)).to eq(chat_message.created_at.change(usec: 0))
+      expect(denorm).to be_kind_of EntourageDenorm
+      expect(denorm.max_chat_message_created_at).to be_kind_of Time
+      expect(denorm.max_chat_message_created_at.change(usec: 0)).to eq(chat_message.created_at.change(usec: 0))
     end
   end
 end
