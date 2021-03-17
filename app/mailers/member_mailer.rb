@@ -125,8 +125,10 @@ class MemberMailer < MailjetMailer
     mail(from: COMMUNITY_EMAIL, to: @user.email, subject: "Votre demande d'adhésion à la plateforme Entourage a été acceptée") if @user.email.present?
   end
 
-  def user_export csv:, recipient:, cci:
-    attachments["user-export.csv"] = File.read(csv)
+  def user_export user_id:, recipient:, cci:
+    attachments["user-export.csv"] = File.read(
+      UserServices::Exporter.new(user: User.find(user_id)).csv
+    )
 
     mail(
       to: recipient,
