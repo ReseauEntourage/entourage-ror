@@ -25,12 +25,15 @@ module UserServices
             entourages.*,
             join_requests.created_at as join_request_created_at,
             chat_messages.content as chat_message_content,
-            chat_messages.created_at as chat_message_created_at
-          ').joins(:join_requests).joins(
-            "left join chat_messages on chat_messages.messageable_type = 'Entourage' and chat_messages.messageable_id = entourages.id"
-          ).where(
-            ['join_requests.user_id = ? and chat_messages.user_id = ?', user.id, user.id]
-          ).where(group_type: group_type)
+            chat_messages.created_at as chat_message_created_at,
+            users.email
+          ')
+          .joins(:join_requests)
+          .joins("left join chat_messages on chat_messages.messageable_type = 'Entourage' and chat_messages.messageable_id = entourages.id")
+          .joins("left join users on users.id = chat_messages.user_id")
+          .where(["join_requests.user_id = ? and (chat_messages.user_id = ? or group_type = 'conversation')", user.id, user.id])
+          .where(group_type: group_type)
+          .order('entourages.id, chat_messages.created_at')
 
           if entourages.any?
             former_entourage_id = nil
@@ -38,7 +41,7 @@ module UserServices
             entourages.each do |entourage|
               writer << [""] unless entourage.id == former_entourage_id
               writer << [t_group_type, "Rejoint(e) le #{entourage.join_request_created_at}", (entourage.conversation? ? nil : entourage.title)] unless entourage.id == former_entourage_id
-              writer << ["Message", entourage.chat_message_created_at, entourage.chat_message_content]
+              writer << [entourage.email, entourage.chat_message_created_at, entourage.chat_message_content]
 
               former_entourage_id = entourage.id
             end
