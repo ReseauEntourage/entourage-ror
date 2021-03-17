@@ -21,7 +21,8 @@ module V1
                :interests,
                :firebase_properties,
                :placeholders,
-               :feature_flags
+               :feature_flags,
+               :engaged
 
     has_one :organization
     has_one :stats, serializer: ActiveModel::DefaultSerializer
@@ -140,6 +141,10 @@ module V1
       {
         organization_admin: (object.partner_id.present? && User.where(partner_id: object.partner_id, partner_admin: true).exists?)
       }
+    end
+
+    def engaged
+      object.engaged?
     end
 
     def scope
