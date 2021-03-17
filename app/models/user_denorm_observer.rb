@@ -21,12 +21,20 @@ class UserDenormObserver < ActiveRecord::Observer
   # return sends a directive to UserDenorm to update a specific field
   def action(verb, record)
     return unless user_id = record.user_id
+    return unless entourage_id = record.instance_of? Entourage ? record.id : record.entourage_id
+    return unless entourage = record.instance_of? Entourage ? record : Entourage.find(entourage_id)
+
+    if record.instance_of? ChatMessage
+      return unless [:action, :outing, :conversation].include?(group_type)
+    else
+      return unless [:action, :outing].include?(group_type)
+    end
 
     denorm = UserDenorm.find_or_create_by(user_id: user_id)
     method = "#{record.class.name.underscore}_on_#{verb.to_s}".to_sym
     return unless UserDenorm.instance_methods.include?(method)
 
-    denorm.send(method, record)
+    denorm.send(method, record, entourage: entourage)
     denorm.save
   rescue => e
     # we do not want any error raising; this class should be as quiet as possible
