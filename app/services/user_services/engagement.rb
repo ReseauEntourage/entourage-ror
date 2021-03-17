@@ -7,6 +7,8 @@ module UserServices
     end
 
     def engaged?
+      return false unless user_denorm
+
       user_denorm.last_created_action_id.present? ||
         user_denorm.last_join_request_id.present? ||
         user_denorm.last_private_chat_message_id.present? ||

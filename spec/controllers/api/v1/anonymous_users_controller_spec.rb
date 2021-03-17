@@ -49,6 +49,7 @@ describe Api::V1::AnonymousUsersController do
         },
         "placeholders"=>["firebase_properties", "address", "address_2"],
         "feature_flags"=>{"organization_admin"=>false},
+        "engaged"=>false,
         "goal" => nil,
         "interests" => []
       }
