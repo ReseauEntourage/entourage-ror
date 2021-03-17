@@ -14,7 +14,7 @@ class ConversationMessageBroadcastJob
       recipients: recipients,
       content: content
     ) do |success_users, failure_users|
-      conversation_message_broadcast.update_attribute(:status, :sent)
+      conversation_message_broadcast.update_attributes(status: :sent, sent_users_count: success_users.count)
     end
   end
 
