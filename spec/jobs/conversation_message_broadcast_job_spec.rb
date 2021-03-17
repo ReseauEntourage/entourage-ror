@@ -25,6 +25,7 @@ RSpec.describe ConversationMessageBroadcastJob do
     it {
       job
       expect(ConversationMessage.ordered.last.content).to eq("Contenu de la diffusion")
+      expect(conversation_message_broadcast.reload.sent_users_count).to eq(2)
     }
   end
 end
