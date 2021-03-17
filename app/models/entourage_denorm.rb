@@ -30,6 +30,7 @@ class EntourageDenorm < ActiveRecord::Base
   def chat_message_on_destroy chat_message
   end
 
+  # recompute_and_save
   def recompute_and_save
     recompute_max_join_request_requested_at
     recompute_max_chat_message_created_at

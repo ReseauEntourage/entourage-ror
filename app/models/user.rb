@@ -2,6 +2,7 @@ require 'experimental/jsonb_set'
 
 class User < ActiveRecord::Base
   include Onboarding::UserEventsTracking::UserConcern
+  include UserServices::Engagement
 
   validates_presence_of [:phone, :sms_code, :token, :validation_status]
   validates_uniqueness_of :phone, scope: :community

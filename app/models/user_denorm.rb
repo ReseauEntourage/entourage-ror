@@ -7,38 +7,57 @@ class UserDenorm < ActiveRecord::Base
   belongs_to :chat_message, primary_key: :last_group_chat_message_id
 
   # create
-  def join_request_on_create join_request, entourage:
-    self[:last_join_request_id] = join_request.created_at
+  def entourage_on_create entourage, group_type:
+    self[:last_created_action_id] = entourage.id
   end
 
-  def chat_message_on_create chat_message, entourage:
+  def join_request_on_create join_request, group_type:
+    self[:last_join_request_id] = join_request.id
   end
 
-  def entourage_on_create _, entourage:
+  def chat_message_on_create chat_message, group_type:
+    if group_type.to_sym == :conversation
+      self[:last_private_chat_message_id] = chat_message.id
+    else
+      self[:last_group_chat_message_id] = chat_message.id
+    end
   end
 
   # update
-  def join_request_on_update join_request, entourage:
+  def entourage_on_update entourage, group_type:
     recompute_last_created_action_id
   end
 
-  def chat_message_on_update chat_message, entourage:
+  def join_request_on_update join_request, group_type:
+    recompute_last_join_request_id
   end
 
-  def entourage_on_update _, entourage:
+  def chat_message_on_update chat_message, group_type:
+    if group_type.to_sym == :conversation
+      recompute_last_private_chat_message_id
+    else
+      recompute_last_group_chat_message_id
+    end
   end
 
   # destroy
-  def join_request_on_destroy join_request, entourage:
+  def entourage_on_destroy entourage, group_type:
     recompute_last_created_action_id
   end
 
-  def chat_message_on_destroy chat_message, entourage:
+  def join_request_on_destroy join_request, group_type:
+    recompute_last_join_request_id
   end
 
-  def entourage_on_destroy _, entourage:
+  def chat_message_on_destroy chat_message, group_type:
+    if group_type.to_sym == :conversation
+      recompute_last_private_chat_message_id
+    else
+      recompute_last_group_chat_message_id
+    end
   end
 
+  # recompute_and_save
   def recompute_and_save
     recompute_last_created_action_id
     recompute_last_join_request_id
@@ -50,7 +69,7 @@ class UserDenorm < ActiveRecord::Base
   private
 
   def recompute_last_created_action_id
-    self[:last_join_request_id] = JoinRequest.select(:created_at, :joinable_id)
+    self[:last_created_action_id] = JoinRequest.select(:created_at, :joinable_id)
     .where(joinable_type: 'Entourage', user_id: user_id)
     .order('created_at desc')
     .first
@@ -58,12 +77,30 @@ class UserDenorm < ActiveRecord::Base
   end
 
   def recompute_last_join_request_id
+    self[:last_join_request_id] = JoinRequest.select(:id)
+    .where(user_id: user_id)
+    .order(:created_at)
+    .first
+    &.id
   end
 
   def recompute_last_private_chat_message_id
+    self[:last_private_chat_message_id] = ChatMessage.select(:id)
+    .joins("left join entourages on entourages.id = chat_messages.messageable_id and chat_messages.messageable_type = 'Entourage'")
+    .where(['chat_messages.user_id = ?', user_id])
+    .where(['entourages.group_type = ?', 'conversation'])
+    .order('chat_messages.created_at desc')
+    .first
+    &.id
   end
 
   def recompute_last_group_chat_message_id
+    self[:last_group_chat_message_id] = ChatMessage.select(:id)
+    .joins("left join entourages on entourages.id = chat_messages.messageable_id and chat_messages.messageable_type = 'Entourage'")
+    .where(['chat_messages.user_id = ?', user_id])
+    .where(['entourages.group_type IN (?)', ['action', 'outing']])
+    .order('chat_messages.created_at desc')
+    .first
+    &.id
   end
-
 end
