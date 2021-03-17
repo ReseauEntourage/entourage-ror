@@ -47,7 +47,23 @@ class ConversationMessageBroadcast < ActiveRecord::Base
   def users
     return [] unless valid?
 
-    User.where('users.goal': goal, 'users.deleted': false, 'users.validation_status': :validated).in_area(area).group('users.id')
+    # targeting_profile prevails on goal
+    # whenever broadcast goal is 'organization' then ambassador and partner' targeting_profiles are valids
+    User
+    .where('users.deleted': false, 'users.validation_status': :validated)
+    .where([
+      %(
+        (users.targeting_profile = ? or
+          (users.targeting_profile is null and users.goal = ?) or
+          (users.targeting_profile in ('ambassador', 'partner') and 'organization' = ?)
+        )
+      ),
+      goal,
+      goal,
+      goal
+    ])
+    .in_area(area)
+    .group('users.id')
   end
 
   def clone
