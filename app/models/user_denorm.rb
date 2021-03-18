@@ -69,17 +69,19 @@ class UserDenorm < ActiveRecord::Base
   private
 
   def recompute_last_created_action_id
-    self[:last_created_action_id] = JoinRequest.select(:created_at, :joinable_id)
-    .where(joinable_type: 'Entourage', user_id: user_id)
+    self[:last_created_action_id] = Entourage.select(:id)
+    .where(user_id: user_id, group_type: ['action', 'outing'])
     .order('created_at desc')
     .first
-    &.joinable_id
+    &.id
   end
 
   def recompute_last_join_request_id
     self[:last_join_request_id] = JoinRequest.select(:id)
-    .where(user_id: user_id)
-    .order(:created_at)
+    .joins("join entourages on entourages.id = join_requests.joinable_id and join_requests.joinable_type = 'Entourage'")
+    .where(['join_requests.user_id = ?', user_id])
+    .where(['entourages.group_type IN (?)', ['action', 'outing']])
+    .order('join_requests.created_at desc')
     .first
     &.id
   end
