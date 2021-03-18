@@ -25,7 +25,12 @@
     <div class="alert alert-info" role="alert" style="display: flex; align-items: center">
       <div style="flex-grow: 1">
         <b>Envoyé</b><br>
-        Votre message a été diffusé à <%= @conversation_message_broadcast.sent_count %> utilisateurs le <%= l @conversation_message_broadcast.sent_at %>.<br>
+        Votre message a été :
+        <ul>
+          <li>diffusé à <%= @conversation_message_broadcast.sent_count %> utilisateurs</li>
+          <li>lus par <%= @conversation_message_broadcast.read_count %> utilisateurs</li>
+          <li>le <%= l @conversation_message_broadcast.sent_at %>.</li>
+        </ul>
         Si vous souhaitez le renvoyer, vous pouvez dupliquer cette diffusion.
       </div>
       <%= link_to("Dupliquer", clone_admin_conversation_message_broadcast_path, method: :post, class: "btn btn-success") %>

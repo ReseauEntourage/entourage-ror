@@ -36,8 +36,21 @@ class ConversationMessageBroadcast < ActiveRecord::Base
     status&.to_sym == :sent
   end
 
+  def sent
+    ChatMessage
+    .where(messageable_type: 'Entourage', message_type: :broadcast)
+    .where('metadata @> ?', { conversation_message_broadcast_id: id }.to_json)
+  end
+
   def sent_count
-    ChatMessage.where(message_type: :broadcast).where('metadata @> ?', { conversation_message_broadcast_id: id }.to_json).count
+    sent.count
+  end
+
+  def read_count
+    sent.joins_group_join_requests
+    .where('join_requests.last_message_read >= chat_messages.created_at')
+    .where('join_requests.user_id != chat_messages.user_id')
+    .count
   end
 
   def user_ids
