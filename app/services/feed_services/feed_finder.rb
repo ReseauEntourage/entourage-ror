@@ -138,6 +138,8 @@ module FeedServices
             postal_code = user.address.postal_code.to_s
           end
 
+          pinned << 121064 # Atelier solidaire : 1h pour comprendre comment aider les personnes SDF
+
           if ['75003', '75004', '75010', '75011', '75012', '75019', '75020'].include?(postal_code.first(5))
             pinned << 110033
           end
