@@ -42,6 +42,9 @@
           <th>Zone de modération</th>
           <th>Public</th>
           <th>Dernière mise à jour</th>
+          <% if @status == :sent %>
+            <th>Envoyés</th>
+          <% end %>
           <th>Actions</th>
           <% @conversation_message_broadcasts.each do |conversation_message_broadcast| %>
             <tr>
@@ -51,6 +54,9 @@
               <td><%= @areas[conversation_message_broadcast.area.to_sym].name_with_departement %></td>
               <td><%= UserGoalPresenter.new(conversation_message_broadcast.goal, community: current_user.community).name %></td>
               <td><%= l(conversation_message_broadcast.updated_at, format: :short) if conversation_message_broadcast.updated_at %></td>
+              <% if @status == :sent %>
+                <td><%= conversation_message_broadcast.sent_users_count %></td>
+              <% end %>
               <td>
                 <% if conversation_message_broadcast.draft? %>
                   <%= link_to "Modifier", edit_admin_conversation_message_broadcast_path(conversation_message_broadcast), class: "btn btn-primary" %>

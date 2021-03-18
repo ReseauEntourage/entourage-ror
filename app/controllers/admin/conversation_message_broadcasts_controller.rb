@@ -8,7 +8,7 @@ module Admin
       @status = params[:status].presence&.to_sym || :draft
       @areas = ModerationArea.by_slug
 
-      @conversation_message_broadcasts = ConversationMessageBroadcast.where(status: @status)
+      @conversation_message_broadcasts = ConversationMessageBroadcast.where(status: @status).order(:created_at)
 
       @conversation_message_broadcasts = @conversation_message_broadcasts.where(goal: @goal) if @goal and @goal != :all
       @conversation_message_broadcasts = @conversation_message_broadcasts.where(area: @area) if @area and @area != :all
