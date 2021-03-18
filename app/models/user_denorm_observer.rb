@@ -21,8 +21,8 @@ class UserDenormObserver < ActiveRecord::Observer
   # return sends a directive to UserDenorm to update a specific field
   def action(verb, record)
     return unless user_id = record.user_id
-    return unless entourage_id = record.instance_of? Entourage ? record.id : record.entourage_id
-    return unless entourage = record.instance_of? Entourage ? record : Entourage.find(entourage_id)
+    return unless entourage_id = record.instance_of?(Entourage) ? record.id : record.entourage_id
+    return unless entourage = record.instance_of?(Entourage) ? record : Entourage.find(entourage_id)
 
     if record.instance_of? ChatMessage
       return unless [:action, :outing, :conversation].include?(entourage.group_type)
