@@ -25,19 +25,18 @@ class UserDenorm < ActiveRecord::Base
 
   # update
   def entourage_on_update entourage, group_type:
+    return unless entourage.group_type_changed?
+
     recompute_last_created_action_id
+    recompute_last_join_request_id # if group_type_changed? then the last_join_request_id may change
+    recompute_last_group_chat_message_id # if group_type_changed? then the last_group_chat_message_id may change
+    # no need to recompute_last_private_chat_message_id: we can not change to/from a conversation
   end
 
   def join_request_on_update join_request, group_type:
-    recompute_last_join_request_id
   end
 
   def chat_message_on_update chat_message, group_type:
-    if group_type.to_sym == :conversation
-      recompute_last_private_chat_message_id
-    else
-      recompute_last_group_chat_message_id
-    end
   end
 
   # destroy
