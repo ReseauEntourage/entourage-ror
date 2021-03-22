@@ -25,9 +25,9 @@ class UserDenormObserver < ActiveRecord::Observer
     return unless entourage = record.instance_of?(Entourage) ? record : Entourage.find(entourage_id)
 
     if record.instance_of? ChatMessage
-      return unless [:action, :outing, :conversation].include?(entourage.group_type)
+      return unless [:action, :outing, :conversation].include?(entourage.group_type.to_sym)
     else
-      return unless [:action, :outing].include?(entourage.group_type) || entourage.group_type_changed?
+      return unless [:action, :outing].include?(entourage.group_type.to_sym) || (entourage.group_type_changed? && verb == :update)
     end
 
     denorm = UserDenorm.find_or_create_by(user_id: user_id)

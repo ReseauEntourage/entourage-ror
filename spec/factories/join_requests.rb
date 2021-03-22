@@ -20,6 +20,7 @@ FactoryGirl.define do
         when ['pfp',       'conversation'  ] then 'participant'
         when ['pfp',       'neighborhood'  ] then 'member'
         when ['entourage', 'conversation'  ] then 'participant'
+        when ['entourage', 'group'         ] then 'member'
         else raise 'Unhandled: %s:%s' % [joinable.community.slug, joinable.group_type]
         end
     end

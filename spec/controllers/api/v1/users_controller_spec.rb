@@ -275,7 +275,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                                                              },
                                                              "anonymous"=>false,
                                                              "feature_flags"=>{"organization_admin"=>false},
-                                                             "engaged"=>false,
+                                                             "engaged"=>true,
                                                              "goal" => nil,
                                                              "interests" => []
                                                            },
