@@ -32,7 +32,7 @@ class UserDenorm < ActiveRecord::Base
     recompute_last_group_chat_message_id # if group_type_changed? then the last_group_chat_message_id may change
     # no need to recompute_last_private_chat_message_id: we can not change to/from a conversation
 
-    UserDenormJob.perform_now(entourage_id: entourage.id, user_id: nil)
+    UserDenormJob.perform_later(entourage_id: entourage.id, user_id: nil)
   end
 
   def join_request_on_update join_request, group_type:

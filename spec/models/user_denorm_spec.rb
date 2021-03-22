@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe UserDenorm, type: :model do
+  include ActiveJob::TestHelper
+
   # after_create
   describe "after_create entourage" do
     let(:user) { create :public_user }
@@ -122,8 +124,16 @@ RSpec.describe UserDenorm, type: :model do
 
     describe "updates a denorm if action" do
       it do
+        # we update to group
         # group entourages are not considered in engagement computation; everything should be nil
+        expect(UserDenormJob).to receive(:perform_later).with(entourage_id: action.id, user_id: nil)
+
         action.update_attribute(:group_type, :group)
+
+        # calls explicitely
+        perform_enqueued_jobs do
+          UserDenormJob.perform_now(entourage_id: action.id, user_id: nil)
+        end
 
         # denorm_pro
         denorm_pro = UserDenorm.find_by(user_id: pro.id)
@@ -139,11 +149,16 @@ RSpec.describe UserDenorm, type: :model do
         expect(denorm_user.last_join_request_id).to eq(nil)
         expect(denorm_user.last_private_chat_message_id).to eq(nil)
         expect(denorm_user.last_group_chat_message_id).to eq(nil)
-      end
 
-      it do
-        # we should go back to initial expectations
+        # then we update back to action
+        # expectations are that we should go back to initial state
+        expect(UserDenormJob).to receive(:perform_later).with(entourage_id: action.id, user_id: nil)
+
         action.update_attribute(:group_type, :action)
+
+        perform_enqueued_jobs do
+          UserDenormJob.perform_now(entourage_id: action.id, user_id: nil)
+        end
 
         # denorm_pro
         denorm_pro = UserDenorm.find_by(user_id: pro.id)
