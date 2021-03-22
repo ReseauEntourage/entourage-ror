@@ -55,6 +55,18 @@ RSpec.describe UserDenorm, type: :model do
         expect(denorm).to eq nil
       end
     end
+
+    describe "does not create a denorm if rejected" do
+      let(:action) { create :entourage }
+      let!(:join_request) { create :join_request, joinable: action, user_id: user.id, status: :rejected }
+
+      it do
+        puts UserDenorm.find_by(user_id: user.id).inspect
+        denorm = UserDenorm.find_by(user_id: user.id)
+
+        expect(denorm).to eq nil
+      end
+    end
   end
 
   describe "after_create chat_message" do

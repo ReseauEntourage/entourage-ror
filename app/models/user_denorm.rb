@@ -12,6 +12,8 @@ class UserDenorm < ActiveRecord::Base
   end
 
   def join_request_on_create join_request, group_type:
+    return unless [:pending, :accepted].include?(join_request.status.to_sym)
+
     self[:last_join_request_id] = join_request.id
   end
 
@@ -36,6 +38,9 @@ class UserDenorm < ActiveRecord::Base
   end
 
   def join_request_on_update join_request, group_type:
+    return unless join_request.group_changed?
+
+    recompute_last_join_request_id
   end
 
   def chat_message_on_update chat_message, group_type:
@@ -81,6 +86,7 @@ class UserDenorm < ActiveRecord::Base
     self[:last_join_request_id] = JoinRequest.select(:id)
     .joins("join entourages on entourages.id = join_requests.joinable_id and join_requests.joinable_type = 'Entourage'")
     .where(['join_requests.user_id = ?', user_id])
+    .where(['join_requests.status IN (?)', ['pending', 'accepted']])
     .where(['entourages.group_type IN (?)', ['action', 'outing']])
     .order('join_requests.created_at desc')
     .first

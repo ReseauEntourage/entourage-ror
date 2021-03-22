@@ -26,7 +26,13 @@ class UserDenormObserver < ActiveRecord::Observer
 
     if record.instance_of? ChatMessage
       return unless [:action, :outing, :conversation].include?(entourage.group_type.to_sym)
-    else
+    end
+
+    if record.instance_of? JoinRequest
+      return unless [:pending, :accepted].include?(record.status.to_sym) || (record.status_changed? && verb == :update)
+    end
+
+    if record.instance_of?(JoinRequest) || record.instance_of?(Entourage)
       return unless [:action, :outing].include?(entourage.group_type.to_sym) || (entourage.group_type_changed? && verb == :update)
     end
 
