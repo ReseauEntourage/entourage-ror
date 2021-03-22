@@ -38,7 +38,7 @@ class UserDenorm < ActiveRecord::Base
   end
 
   def join_request_on_update join_request, group_type:
-    return unless join_request.group_changed?
+    return unless join_request.status_changed?
 
     recompute_last_join_request_id
   end
