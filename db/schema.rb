@@ -808,6 +808,22 @@ ActiveRecord::Schema.define(version: 20210317150000) do
   add_index "user_applications", ["push_token"], name: "index_user_applications_on_push_token", unique: true, using: :btree
   add_index "user_applications", ["user_id", "device_family"], name: "index_user_applications_on_user_id_and_device_family", using: :btree
 
+  create_table "user_denorms", force: :cascade do |t|
+    t.integer  "user_id",                      null: false
+    t.integer  "last_created_action_id"
+    t.integer  "last_join_request_id"
+    t.integer  "last_private_chat_message_id"
+    t.integer  "last_group_chat_message_id"
+    t.datetime "created_at",                   null: false
+    t.datetime "updated_at",                   null: false
+  end
+
+  add_index "user_denorms", ["last_created_action_id"], name: "index_user_denorms_on_last_created_action_id", using: :btree
+  add_index "user_denorms", ["last_group_chat_message_id"], name: "index_user_denorms_on_last_group_chat_message_id", using: :btree
+  add_index "user_denorms", ["last_join_request_id"], name: "index_user_denorms_on_last_join_request_id", using: :btree
+  add_index "user_denorms", ["last_private_chat_message_id"], name: "index_user_denorms_on_last_private_chat_message_id", using: :btree
+  add_index "user_denorms", ["user_id"], name: "index_user_denorms_on_user_id", using: :btree
+
   create_table "user_moderations", force: :cascade do |t|
     t.integer "user_id",                     null: false
     t.string  "expectations"
