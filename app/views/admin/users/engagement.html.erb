@@ -14,9 +14,9 @@
         <input type="checkbox" disabled="disabled" <% if @user.last_created_action_id.present? %>checked="checked"<% end %>>
       </td>
       <td>
-        Dernière action créée
+        A créé une action
         <% if @user.last_created_action_id.present? %>
-          <i class="text-muted">(<%= @user.last_created_action&.created_at %>)</i>
+          <i class="text-muted">(dernière action créée le <%= @user.last_created_action&.created_at %>)</i>
         <% end %>
       </td>
     </tr>
@@ -26,9 +26,9 @@
         <input type="checkbox" disabled="disabled" <% if @user.last_join_request_id.present? %>checked="checked"<% end %>>
       </td>
       <td>
-        Dernière action rejointe
+        A rejoint une action
         <% if @user.last_join_request_id.present? %>
-          <i class="text-muted">(<%= @user.last_join_request&.created_at %>)</i>
+          <i class="text-muted">(dernière action rejointe le <%= @user.last_join_request&.created_at %>)</i>
         <% end %>
       </td>
     </tr>
@@ -38,9 +38,9 @@
         <input type="checkbox" disabled="disabled" <% if @user.last_private_chat_message_id.present? %>checked="checked"<% end %>>
       </td>
       <td>
-        Dernier message privé
+        A envoyé un message privé
         <% if @user.last_private_chat_message_id.present? %>
-          <i class="text-muted">(<%= @user.last_private_chat_message&.created_at %>)</i>
+          <i class="text-muted">(dernier message le <%= @user.last_private_chat_message&.created_at %>)</i>
         <% end %>
       </td>
     </tr>
@@ -50,9 +50,9 @@
         <input type="checkbox" disabled="disabled" <% if @user.last_group_chat_message_id.present? %>checked="checked"<% end %>>
       </td>
       <td>
-        Dernier message d'action, événement
+        A envoyé un message d'action, événement
         <% if @user.last_group_chat_message_id.present? %>
-          <i class="text-muted">(<%= @user.last_group_chat_message&.created_at %>)</i>
+          <i class="text-muted">(dernier message le <%= @user.last_group_chat_message&.created_at %>)</i>
         <% end %>
       </td>
     </tr>
