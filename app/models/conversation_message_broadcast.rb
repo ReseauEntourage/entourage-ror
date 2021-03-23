@@ -60,6 +60,10 @@ class ConversationMessageBroadcast < ActiveRecord::Base
   def users
     return [] unless valid?
 
+    targeting_profile = goal
+    targeting_profile = 'asks_for_help' if goal.to_s == 'ask_for_help'
+    targeting_profile = 'offers_help' if goal.to_s == 'offer_help'
+
     # targeting_profile prevails on goal
     # whenever broadcast goal is 'organization' then ambassador and partner' targeting_profiles are valids
     User
@@ -71,7 +75,7 @@ class ConversationMessageBroadcast < ActiveRecord::Base
           (users.targeting_profile in ('ambassador', 'partner') and 'organization' = ?)
         )
       ),
-      goal,
+      targeting_profile,
       goal,
       goal
     ])
