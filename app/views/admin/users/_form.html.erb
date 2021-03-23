@@ -190,8 +190,9 @@
   </div>
   <br>
 
-  <div class="control-group">
-    <label class="control-label">CNIL</label>
+  <% unless @user.new_record? %>
+    <div class="control-group">
+      <label class="control-label">CNIL</label>
       <table class="table" style="width: auto">
         <tr>
           <td>Télécharger l'export de données</td>
@@ -219,7 +220,8 @@
           </td>
         </tr>
       </table>
-  </div>
+    </div>
+  <% end %>
   <br>
 
   <% if @user.new_record? %>
