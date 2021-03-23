@@ -1,0 +1,60 @@
+<%= render 'header', tab: :engagement %>
+
+<div class="alert alert-info" role="alert" style="display: flex; align-items: center">
+  <div style="flex-grow: 1">
+    Cet utilisateur est considéré comme <b><%= @user.engaged? ? 'engagé' : 'non engagé' %></b>
+  </div>
+</div>
+
+<div class="control-group">
+  <label class="control-label">Critères d'engagement</label>
+  <table class="table" style="width: auto">
+    <tr>
+      <td style="font-weight: bold">
+        <input type="checkbox" disabled="disabled" <% if @user.last_created_action_id.present? %>checked="checked"<% end %>>
+      </td>
+      <td>
+        Dernière action créée
+        <% if @user.last_created_action_id.present? %>
+          <i class="text-muted">(<%= @user.last_created_action&.created_at %>)</i>
+        <% end %>
+      </td>
+    </tr>
+
+    <tr>
+      <td style="font-weight: bold">
+        <input type="checkbox" disabled="disabled" <% if @user.last_join_request_id.present? %>checked="checked"<% end %>>
+      </td>
+      <td>
+        Dernière action rejointe
+        <% if @user.last_join_request_id.present? %>
+          <i class="text-muted">(<%= @user.last_join_request&.created_at %>)</i>
+        <% end %>
+      </td>
+    </tr>
+
+    <tr>
+      <td style="font-weight: bold">
+        <input type="checkbox" disabled="disabled" <% if @user.last_private_chat_message_id.present? %>checked="checked"<% end %>>
+      </td>
+      <td>
+        Dernier message privé
+        <% if @user.last_private_chat_message_id.present? %>
+          <i class="text-muted">(<%= @user.last_private_chat_message&.created_at %>)</i>
+        <% end %>
+      </td>
+    </tr>
+
+    <tr>
+      <td style="font-weight: bold">
+        <input type="checkbox" disabled="disabled" <% if @user.last_group_chat_message_id.present? %>checked="checked"<% end %>>
+      </td>
+      <td>
+        Dernier message d'action, événement
+        <% if @user.last_group_chat_message_id.present? %>
+          <i class="text-muted">(<%= @user.last_group_chat_message&.created_at %>)</i>
+        <% end %>
+      </td>
+    </tr>
+  </table>
+</div>
