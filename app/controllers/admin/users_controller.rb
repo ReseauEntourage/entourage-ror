@@ -1,9 +1,17 @@
 module Admin
   class UsersController < Admin::BaseController
-    before_action :set_user, only: [:show, :messages, :edit, :update, :block, :unblock, :download_export, :send_export, :anonymize, :banish, :validate, :experimental_pending_request_reminder]
+    before_action :set_user, only: [:show, :messages, :engagement, :edit, :update, :block, :unblock, :download_export, :send_export, :anonymize, :banish, :validate, :experimental_pending_request_reminder]
 
     def index
-      @users = current_user.community.users.includes(:organization).order("last_name ASC").page(params[:page]).per(25)
+      @status = params[:status].presence&.to_sym
+      @status = :all unless @status.in?([:engaged, :not_engaged])
+
+      @users = current_user.community.users
+
+      @users = @users.engaged if @status && @status == :engaged
+      @users = @users.not_engaged if @status && @status == :not_engaged
+
+      @users = @users.includes(:organization).order("last_name ASC").page(params[:page]).per(25)
     end
 
     def show
@@ -38,6 +46,9 @@ module Admin
 
       @entourages = Hash[entourages.map { |e| [e.id, e] }]
       @entourages_paginate = entourages
+    end
+
+    def engagement
     end
 
     def edit

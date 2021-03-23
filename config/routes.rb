@@ -128,6 +128,7 @@ Rails.application.routes.draw do
 
       member do
         get 'messages'
+        get 'engagement'
         put 'banish'
         put 'validate'
       end
