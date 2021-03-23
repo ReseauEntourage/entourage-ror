@@ -14,12 +14,16 @@ module UserServices
         })
       }
 
-      scope :not_engaged, -> { joins(:user_denorm).where.not(%{
-          last_created_action_id is not null or
-          last_join_request_id is not null or
-          last_private_chat_message_id is not null or
-          last_group_chat_message_id is not null
-        }) }
+      scope :not_engaged, -> {
+        joins('left join user_denorms on user_denorms.user_id = users.id').where(%{
+          user_denorms.id is null or (
+            last_created_action_id is null and
+            last_join_request_id is null and
+            last_private_chat_message_id is null and
+            last_group_chat_message_id is null
+          )
+        })
+      }
     end
 
     def engaged?
