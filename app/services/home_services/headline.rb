@@ -169,7 +169,7 @@ module HomeServices
       feeds = user.community.entourages.where(group_type: :outing, status: :open)
         .where("(#{Geocoder::Sql.within_bounding_box(*box, :latitude, :longitude)}) OR online = true")
         .where("metadata->>'ends_at' >= ?", Time.zone.now)
-        .order("metadata->>'starts_at' asc, id")
+        .order_by_distance_from(latitude, longitude)
         .offset(offset)
         .first
     end
@@ -183,7 +183,7 @@ module HomeServices
         .where("(#{
           Geocoder::Sql.within_bounding_box(*box, :latitude, :longitude)
         }) OR online = true")
-        .order('created_at desc')
+        .order_by_distance_from(latitude, longitude)
 
       return entourages.where(category: category).offset(offset).first if category.present?
 

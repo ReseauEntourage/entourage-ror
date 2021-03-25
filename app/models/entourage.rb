@@ -69,6 +69,13 @@ class Entourage < ActiveRecord::Base
   scope :mat_help_category, -> { where(category: 'mat_help') }
   scope :non_mat_help_category, -> { where(category: 'non_mat_help') }
   scope :except_conversations, -> { where.not(group_type: :conversation) }
+  scope :order_by_distance_from, -> (latitude, longitude) {
+    if latitude && longitude
+      order("case when online then 1 else 2 end", PostgisHelper.distance_from(latitude, longitude), created_at: :desc)
+    else
+      order(created_at: :desc)
+    end
+  }
 
   before_validation :set_community, on: :create
   before_validation :set_default_attributes, if: :group_type_changed?

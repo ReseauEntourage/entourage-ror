@@ -48,11 +48,7 @@ module Api
       def get_outings
         return [] unless params[:latitude] && params[:longitude]
 
-        FeedServices::OutingsFinder.new(
-          user: current_user,
-          latitude: params[:latitude],
-          longitude: params[:longitude]
-        ).feeds.map(&:feedable)
+        HomeServices::Outing.new(user: current_user, latitude: params[:latitude], longitude: params[:longitude]).find_all
       end
 
       def get_entourages
