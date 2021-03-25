@@ -35,7 +35,7 @@ module FeedServices
     end
 
     def self.announcements_for_user(user)
-      self.class.announcements_scope_for_user(user).ordered.to_a
+      self.announcements_scope_for_user(user).ordered.to_a
     end
 
     def self.announcements_scope_for_user(user)
