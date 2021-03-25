@@ -91,8 +91,9 @@ describe Api::V1::HomeController do
 
       it "renders announcements" do
         get :index, token: user.token
-        expect(subject["headlines"]["metadata"]["order"]).to include("announcement_1")
-        expect(subject["headlines"]["announcement_1"]["data"]).to eq(
+
+        expect(subject["headlines"]["metadata"]["order"]).to include("announcement_0")
+        expect(subject["headlines"]["announcement_0"]["data"]).to eq(
           {
             "id" => announcement.id,
             "uuid" => "#{announcement.id}",

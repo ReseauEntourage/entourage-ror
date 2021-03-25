@@ -35,6 +35,10 @@ module FeedServices
     end
 
     def self.announcements_for_user(user)
+      self.class.announcements_scope_for_user(user).ordered.to_a
+    end
+
+    def self.announcements_scope_for_user(user)
       return [] unless user.community == :entourage
 
       areas = user.departement_slugs
@@ -47,7 +51,7 @@ module FeedServices
 
       user_goal = user.goal || :goal_not_known
 
-      Announcement.active.for_areas(areas).for_user_goal(user_goal).ordered.to_a
+      Announcement.active.for_areas(areas).for_user_goal(user_goal)
     end
 
     private
