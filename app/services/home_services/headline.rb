@@ -151,7 +151,7 @@ module HomeServices
       entourage_id = EntourageServices::Pins.neighborhood_group_for(user)
       return unless entourage_id
 
-      Entourage.find(entourage_id)
+      Entourage.find_by(id: entourage_id)
     end
 
     def find_announcement category: nil, offset: 0
