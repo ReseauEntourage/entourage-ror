@@ -200,7 +200,7 @@ module HomeServices
       return :ask_for_help if user.targeting_profile&.to_sym == :asks_for_help
       return :offer_help if user.targeting_profile&.to_sym == :offers_help
 
-      profile = (user.targeting_profile || user.goal).to_sym
+      profile = (user.targeting_profile || user.goal || :default).to_sym
 
       return :default unless STRUCTURE.keys.include?(profile)
 
