@@ -140,8 +140,10 @@ module HomeServices
           type: element[:type] == :announcement ? 'Announcement' : 'Entourage',
           instance: send(method, category: element[:category], offset: element[:offset])
         }
-      end.compact[0..(MAX_LENGTH-1)].each do |record|
-        yield record if record[:instance].present?
+      end.filter do |record|
+        record[:instance].present?
+      end[0..(MAX_LENGTH-1)].each do |record|
+        yield record
       end
     end
 
