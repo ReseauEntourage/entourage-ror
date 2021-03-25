@@ -52,14 +52,7 @@ module Api
       end
 
       def get_entourages
-        EntourageServices::EntourageFinder.new(
-          user: current_user,
-          latitude: params[:latitude],
-          longitude: params[:longitude],
-          page: params[:page],
-          per: per,
-          no_outings: true
-        ).entourages
+        HomeServices::Action.new(user: current_user, latitude: params[:latitude], longitude: params[:longitude]).find_all
       end
     end
   end
