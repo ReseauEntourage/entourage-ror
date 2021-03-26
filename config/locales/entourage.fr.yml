@@ -69,6 +69,7 @@ fr:
         title: Titre
         icon: Picto
         image_url: Image
+        image_portrait_url: Image 600x792
         body: Description
         action: CTA
         url: Lien

@@ -100,6 +100,8 @@ Rails.application.routes.draw do
           match '/edit', via: [:patch, :put], action: :update, as: nil
           get '/edit/image', action: :edit_image
           get '/image_upload_success', action: :image_upload_success
+          get '/edit/image_portrait', action: :edit_image_portrait
+          get '/image_portrait_upload_success', action: :image_portrait_upload_success
         end
       end
 
