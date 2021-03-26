@@ -14,8 +14,8 @@ describe Api::V1::HomeController do
 
     context "signed in" do
       # entourages
-      let!(:entourage) { FactoryGirl.create(:entourage, :joined, user: user, status: "open") }
-      let!(:entourage_closed) { FactoryGirl.create(:entourage, :joined, user: user, status: "closed") }
+      let!(:entourage) { FactoryGirl.create(:entourage, :joined, user: user, status: "open", latitude: 48.85436, longitude: 2.270340) }
+      let!(:entourage_closed) { FactoryGirl.create(:entourage, :joined, user: user, status: "closed", latitude: 48.85436, longitude: 2.270340) }
       # outings
       let!(:outing) { FactoryGirl.create(:outing) }
       # announcements
@@ -36,7 +36,7 @@ describe Api::V1::HomeController do
       end
 
       it "renders entourages" do
-        get :index, token: user.token
+        get :index, token: user.token, latitude: 48.854367553784954, longitude: 2.270340589096274
 
         expect(subject["entourages"].count).to eq(1)
         expect(subject["entourages"]).to eq(
@@ -60,8 +60,8 @@ describe Api::V1::HomeController do
               "partner_role_title" => nil
             },
             "location"=>{
-              "latitude"=>1.122,
-              "longitude"=>2.345
+              "latitude"=>48.85436,
+              "longitude"=>2.270340
             },
             "join_status"=>"accepted",
             "number_of_unread_messages"=>0,
