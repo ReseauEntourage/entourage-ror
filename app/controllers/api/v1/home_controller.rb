@@ -37,7 +37,7 @@ module Api
           headlines[record[:name]] = {
             type: record[:type],
             data: record[:type] == 'Announcement' ?
-              ::V1::AnnouncementSerializer.new(record[:instance], scope: { user: current_user, base_url: request.base_url }, root: false).as_json :
+              ::V1::AnnouncementSerializer.new(record[:instance], scope: { user: current_user, base_url: request.base_url, portrait: true }, root: false).as_json :
               ::V1::EntourageSerializer.new(record[:instance], {scope: {user: current_user}, root: false}).as_json
           }
         end
