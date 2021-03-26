@@ -58,6 +58,10 @@ class ModerationArea < ActiveRecord::Base
     (pluck(:departement) + [no_zone.departement]).map { |d| ModerationArea.departement_slug(d) }
   end
 
+  def self.slugs
+    (pluck(:departement) - ['*']).map { |d| ModerationArea.departement_slug(d) }
+  end
+
   def self.by_slug
     Hash[all_with_no_zone.map { |a| [a.departement_slug, a] }]
   end

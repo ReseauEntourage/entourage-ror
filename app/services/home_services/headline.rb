@@ -215,6 +215,7 @@ module HomeServices
       departement_slugs = user.departement_slugs
 
       return :dead if [[:sans_zone], [:hors_zone]].include?(departement_slugs)
+      return :dead if (departement_slugs & ModerationArea.slugs).empty?
 
       :active
     end
