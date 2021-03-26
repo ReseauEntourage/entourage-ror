@@ -113,11 +113,11 @@ describe HomeServices::Headline do
 
   describe 'each' do
     let!(:pin) { FactoryGirl.create(:entourage, id: 110033) }
-    let!(:announcement_0) { FactoryGirl.create(:announcement, id: 1, user_goals: ['goal_not_known'], areas: ['dep_75']) }
-    let!(:announcement_1) { FactoryGirl.create(:announcement, id: 2, user_goals: ['goal_not_known'], areas: ['dep_75']) }
-    let!(:announcement_online) { FactoryGirl.create(:announcement, id: 3, user_goals: ['goal_not_known'], areas: ['dep_75'], category: :online) }
-    let!(:announcement_poi_map) { FactoryGirl.create(:announcement, id: 4, user_goals: ['goal_not_known'], areas: ['dep_75'], category: :poi_map) }
-    let!(:announcement_ambassador) { FactoryGirl.create(:announcement, id: 5, user_goals: ['goal_not_known'], areas: ['dep_75'], category: :ambassador) }
+    let!(:announcement_0) { FactoryGirl.create(:announcement, id: 1, position: 1, user_goals: ['goal_not_known'], areas: ['dep_75']) }
+    let!(:announcement_1) { FactoryGirl.create(:announcement, id: 2, position: 2, user_goals: ['goal_not_known'], areas: ['dep_75']) }
+    let!(:announcement_online) { FactoryGirl.create(:announcement, id: 3, position: 3, user_goals: ['goal_not_known'], areas: ['dep_75'], category: :online) }
+    let!(:announcement_poi_map) { FactoryGirl.create(:announcement, id: 4, position: 4, user_goals: ['goal_not_known'], areas: ['dep_75'], category: :poi_map) }
+    let!(:announcement_ambassador) { FactoryGirl.create(:announcement, id: 5, position: 5, user_goals: ['goal_not_known'], areas: ['dep_75'], category: :ambassador) }
     let!(:outing) { FactoryGirl.create(:outing) }
     let!(:action) { FactoryGirl.create(:entourage, latitude: 48.854367553784954, longitude: 2.270340589096274) }
     let!(:headline) { HomeServices::Headline.new(user: user, latitude: 48.854367553784954, longitude: 2.270340589096274) }
