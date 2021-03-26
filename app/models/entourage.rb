@@ -69,11 +69,16 @@ class Entourage < ActiveRecord::Base
   scope :mat_help_category, -> { where(category: 'mat_help') }
   scope :non_mat_help_category, -> { where(category: 'non_mat_help') }
   scope :except_conversations, -> { where.not(group_type: :conversation) }
+  scope :order_by_profile, -> (profile) {
+    if profile == :ask_for_help
+      order("case when category = 'mat_help' then 1 else 2 end")
+    else
+      order("case when category != 'mat_help' then 1 else 2 end")
+    end
+  }
   scope :order_by_distance_from, -> (latitude, longitude) {
     if latitude && longitude
-      order("case when online then 1 else 2 end", PostgisHelper.distance_from(latitude, longitude), created_at: :desc)
-    else
-      order(created_at: :desc)
+      order(PostgisHelper.distance_from(latitude, longitude))
     end
   }
 

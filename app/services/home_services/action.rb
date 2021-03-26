@@ -21,7 +21,10 @@ module HomeServices
         .where.not(group_type: [:conversation, :group, :outing])
         .where("entourages.created_at > ?", time_range.hours.ago)
         .where("(#{Geocoder::Sql.within_bounding_box(*box, :latitude, :longitude)}) OR online = true")
+        .order("case when online then 1 else 2 end")
+        .order_by_profile(profile)
         .order_by_distance_from(latitude, longitude)
+        .order(created_at: :desc)
         .limit(MAX_LENGTH)
     end
 
@@ -29,6 +32,17 @@ module HomeServices
 
     def box
       Geocoder::Calculations.bounding_box([latitude, longitude], distance, units: :km)
+    end
+
+    def profile
+      return :ask_for_help if user.targeting_profile&.to_sym == :asks_for_help
+      return :offer_help if user.targeting_profile&.to_sym == :offers_help
+
+      profile = (user.targeting_profile || user.goal || :default).to_sym
+
+      return :default unless [:ask_for_help, :offer_help].include?(profile)
+
+      profile
     end
   end
 end
