@@ -159,6 +159,7 @@ module HomeServices
     def find_announcement category: nil, offset: 0
       FeedServices::AnnouncementsService.announcements_scope_for_user(user)
         .where(category: category)
+        .order(:position)
         .offset(offset)
         .first
     end
