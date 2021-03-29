@@ -150,7 +150,7 @@ module HomeServices
     def find_pin category:, offset: 0
       return unless category == :neighborhood
 
-      entourage_id = EntourageServices::Pins.neighborhood_group_for(user)
+      entourage_id = EntourageServices::Pins.pinned_for(user)
       return unless entourage_id
 
       Entourage.find_by(id: entourage_id)
