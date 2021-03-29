@@ -26,6 +26,15 @@
     </div>
   </div>
 
+  <% if @entourage.pin? %>
+    <div class="control-group">
+      <%= f.label :pins, "À épingler aux codes postaux", class: "control-label" %>
+      <div class="controls">
+        <%= f.text_field :pins, class: "form-control", required: true %>
+      </div>
+    </div>
+  <% end %>
+
   <div class="control-group">
     <%= f.label :image_url %>
     <% if @entourage.new_record? %>

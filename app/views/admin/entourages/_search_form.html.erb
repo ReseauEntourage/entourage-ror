@@ -68,9 +68,18 @@
         },
         "Hors zone" => {
           postal_code_not_start_all: ['75', '92', '69', '35', '59']
+        },
+        "Épinglées" => {
+          pin_eq: 'true'
+        },
+        "Actions" => {
+          group_type_eq: 'action'
+        },
+        "Événements" => {
+          group_type_eq: 'outing'
         }
       }
-      location_keys = [:country_eq, :postal_code_start_any, :postal_code_start, :postal_code_not_start_all]
+      location_keys = [:country_eq, :postal_code_start_any, :postal_code_start, :postal_code_not_start_all, :pin_eq, :group_type_eq]
 
       active = presets.key q.slice(*location_keys).compact.symbolize_keys
     %>
@@ -79,7 +88,8 @@
         link_to(
           name,
           params.merge(q: q.except(*location_keys).merge(options)),
-          class: "btn btn-#{active == name ? :primary : :default}"
+          class: "btn btn-#{active == name ? :primary : :default}",
+            style: options.has_key?(:pin_eq) ? "margin-left: 10px;" : ""
         )
       %>
     <% end %>
