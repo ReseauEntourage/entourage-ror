@@ -71,9 +71,9 @@ class Entourage < ActiveRecord::Base
   scope :except_conversations, -> { where.not(group_type: :conversation) }
   scope :order_by_profile, -> (profile) {
     if profile == :ask_for_help
-      order("case when category = 'mat_help' then 1 else 2 end")
+      order("case when entourage_type = 'contribution' then 1 else 2 end")
     else
-      order("case when category != 'mat_help' then 1 else 2 end")
+      order("case when entourage_type = 'ask_for_help' then 1 else 2 end")
     end
   }
   scope :order_by_distance_from, -> (latitude, longitude) {
