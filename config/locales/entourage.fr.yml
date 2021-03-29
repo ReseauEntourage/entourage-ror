@@ -76,6 +76,10 @@ fr:
         webview: Ouvrir dans
         areas: Zones géographiques
         user_goals: Publics
+        categories:
+          online: Événement en ligne
+          ambassador: Programme ambassadeur
+          poi_map: Lieux solidaires
 
       moderation_area:
         moderator_id: Modérateur
