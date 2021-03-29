@@ -73,10 +73,10 @@
           pin_eq: 'true'
         },
         "Actions" => {
-          group_type_eq: 'action'
+          group_type_eq: 'action', pin_eq: 'false'
         },
         "Événements" => {
-          group_type_eq: 'outing'
+          group_type_eq: 'outing', pin_eq: 'false'
         }
       }
       location_keys = [:country_eq, :postal_code_start_any, :postal_code_start, :postal_code_not_start_all, :pin_eq, :group_type_eq]
@@ -89,7 +89,7 @@
           name,
           params.merge(q: q.except(*location_keys).merge(options)),
           class: "btn btn-#{active == name ? :primary : :default}",
-            style: options.has_key?(:pin_eq) ? "margin-left: 10px;" : ""
+            style: options[:pin_eq] == 'true' ? "margin-left: 10px;" : ""
         )
       %>
     <% end %>
