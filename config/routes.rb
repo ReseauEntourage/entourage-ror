@@ -100,6 +100,8 @@ Rails.application.routes.draw do
           match '/edit', via: [:patch, :put], action: :update, as: nil
           get '/edit/image', action: :edit_image
           get '/image_upload_success', action: :image_upload_success
+          get '/edit/image_portrait', action: :edit_image_portrait
+          get '/image_portrait_upload_success', action: :image_portrait_upload_success
         end
       end
 
@@ -167,11 +169,14 @@ Rails.application.routes.draw do
 
     namespace :v1 do
       match '(*path)' => 'base#options', via: [:options]
+      resources :home, only: [:index]
+
       resources :feeds, only: [:index] do
         collection do
           get :outings
         end
       end
+
       resources :myfeeds, only: [:index]
       resources :tours, only: [:index, :create, :show, :update] do
         resources :tour_points, only:[:create]
@@ -187,6 +192,7 @@ Rails.application.routes.draw do
           put :read
         end
       end
+
       resources :stats, only: [:index]
       resources :messages, only: [:create]
       resources :registration_requests, only: [:create]
@@ -233,6 +239,11 @@ Rails.application.routes.draw do
       end
 
       resources :entourages, only: [:index, :show, :create, :update] do
+        collection do
+          get :mine
+          get :owns
+          get :invitees
+        end
         resources :users, :controller => 'entourages/users', only: [:index, :destroy, :update, :create]
         resources :invitations, :controller => 'entourages/invitations', only: [:create]
         resources :chat_messages, :controller => 'entourages/chat_messages', only: [:index, :create]
@@ -262,7 +273,7 @@ Rails.application.routes.draw do
         end
       end
 
-      resources :announcements, only: [] do
+      resources :announcements, only: [:index] do
         member do
           get :icon
           get 'redirect/:token' => :redirect, as: :redirect

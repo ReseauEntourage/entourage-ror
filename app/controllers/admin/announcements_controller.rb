@@ -64,11 +64,26 @@ module Admin
 
     def edit_image
       @announcement = Announcement.find(params[:id])
-      @form = AnnouncementImageUploader
+      @image = @announcement.image_url
+      @redirect_url = image_upload_success_admin_announcement_url
+      @form = AnnouncementImageUploader # @dead-code?
+    end
+
+    def edit_image_portrait
+      @announcement = Announcement.find(params[:id])
+      @image = @announcement.image_portrait_url
+      @redirect_url = image_portrait_upload_success_admin_announcement_url
+      @form = AnnouncementImagePortraitUploader # @dead-code?
+      render :edit_image
     end
 
     def image_upload_success
       announcement = AnnouncementImageUploader.handle_success(params)
+      redirect_to edit_admin_announcement_path(announcement)
+    end
+
+    def image_portrait_upload_success
+      announcement = AnnouncementImagePortraitUploader.handle_success(params)
       redirect_to edit_admin_announcement_path(announcement)
     end
 
@@ -89,7 +104,7 @@ module Admin
 
     def announcement_params
       params.require(:announcement).permit(
-        :title, :icon, :body, :action, :url, :webview, areas: [], user_goals: []
+        :title, :icon, :body, :action, :url, :webview, :category, areas: [], user_goals: []
       )
     end
   end

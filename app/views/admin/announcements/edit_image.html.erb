@@ -9,7 +9,7 @@
     <h1>Modifier l'image</h1>
 
     <div class="margin-bottom: 15px">
-      <%= image_tag @announcement.image_url, size: '750x320' %>
+      <%= image_tag @image, size: '750x320' %>
     </div>
 
     <form class="form-inline" id="upload-form"
@@ -41,7 +41,7 @@
         data: {
           uploader: 'announcement_image',
           announcement_id: '<%= @announcement.id %>',
-          redirect_url: '<%= image_upload_success_admin_announcement_url %>',
+          redirect_url: '<%= @redirect_url %>',
           filetype: file.type
         }
       })

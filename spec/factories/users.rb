@@ -35,6 +35,10 @@ FactoryGirl.define do
       user_type 'pro'
     end
 
+    trait :paris do
+      address
+    end
+
     trait :partner do
       partner { create :partner }
     end
@@ -48,9 +52,15 @@ FactoryGirl.define do
       admin true
     end
 
+    trait :offer_help do
+      goal 'offer_help'
+    end
+
     factory :pro_user,    traits: [:pro]
     factory :public_user, traits: [:public]
     factory :partner_user, traits: [:public, :partner]
     factory :admin_user,  traits: [:admin]
+    factory :offer_help_user,  traits: [:public, :offer_help]
+    factory :pro_user_paris, traits: [:pro, :paris]
   end
 end

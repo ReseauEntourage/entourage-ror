@@ -68,7 +68,8 @@ fr:
       announcement:
         title: Titre
         icon: Picto
-        image_url: Image
+        image_url: Image horizontale
+        image_portrait_url: Image verticale
         body: Description
         action: CTA
         url: Lien

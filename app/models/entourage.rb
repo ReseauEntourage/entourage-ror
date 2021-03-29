@@ -47,6 +47,8 @@ class Entourage < ActiveRecord::Base
   has_one :user_moderation, primary_key: :user_id, foreign_key: :user_id
   has_one :sensitive_words_check, as: :record, dependent: :destroy
 
+  attr_accessor :current_join_request, :number_of_unread_messages
+
   validates_presence_of :status, :title, :entourage_type, :user_id, :latitude, :longitude, :number_of_people
   validates_inclusion_of :status, in: ENTOURAGE_STATUS
   validates_inclusion_of :entourage_type, in: ENTOURAGE_TYPES
@@ -67,6 +69,18 @@ class Entourage < ActiveRecord::Base
   scope :mat_help_category, -> { where(category: 'mat_help') }
   scope :non_mat_help_category, -> { where(category: 'non_mat_help') }
   scope :except_conversations, -> { where.not(group_type: :conversation) }
+  scope :order_by_profile, -> (profile) {
+    if profile == :ask_for_help
+      order("case when category = 'mat_help' then 1 else 2 end")
+    else
+      order("case when category != 'mat_help' then 1 else 2 end")
+    end
+  }
+  scope :order_by_distance_from, -> (latitude, longitude) {
+    if latitude && longitude
+      order(PostgisHelper.distance_from(latitude, longitude))
+    end
+  }
 
   before_validation :set_community, on: :create
   before_validation :set_default_attributes, if: :group_type_changed?
