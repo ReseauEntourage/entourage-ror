@@ -181,6 +181,7 @@ module HomeServices
       entourages = Entourage.where(status: :open)
         .where.not(group_type: [:conversation, :group, :outing])
         .where("entourages.created_at > ?", time_range.hours.ago)
+        .where(pin: false)
         .where("(#{
           Geocoder::Sql.within_bounding_box(*box, :latitude, :longitude)
         }) OR online = true")
