@@ -185,7 +185,6 @@ module HomeServices
         .where("(#{
           Geocoder::Sql.within_bounding_box(*box, :latitude, :longitude)
         }) OR online = true")
-        .order("case when online then 1 else 2 end")
         .order_by_distance_from(latitude, longitude)
         .order(created_at: :desc)
 
