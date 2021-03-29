@@ -6,7 +6,7 @@ module EntourageServices
       pinned = []
 
       if (types.nil? || types.any? { |t| t.starts_with?('ask_for_help_') || t.starts_with?('contribution_') })
-        pinned << self.neighborhood_group_for(user)
+        # pinned << self.neighborhood_group_for(user)
         pinned << self.pinned_for(user)
       end
 
