@@ -14,6 +14,9 @@
   <th>id</th>
   <th>Titre</th>
   <th>Description</th>
+  <% if params[:q] && params[:q][:pin_eq] %>
+    <th>Actions épinglées pour</th>
+  <% end %>
   <th><span class="glyphicon glyphicon-user" aria-hidden="true"></span></th>
   <th><span class="glyphicon glyphicon-comment" aria-hidden="true"></span></th>
   <th><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></th>
@@ -41,6 +44,13 @@
       <td><%= entourage.id %></td>
       <td><%= link_to entourage.title, [:admin, entourage] %></td>
       <td><%= entourage_description_excerpt(entourage.description) %></td>
+      <% if params[:q] && params[:q][:pin_eq] %>
+        <td>
+          <% entourage.pins.map do |pin| %>
+            <span class="badge"><%= pin %></span>
+          <% end %>
+        </td>
+      <% end %>
       <td><span class="badge" title="Membres"><%= @member_count[entourage.id] %></span></td>
       <td><span class="badge" title="Messages"><%= @message_count[entourage.id].total %></span></td>
       <td>

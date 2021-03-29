@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20210317150000) do
+ActiveRecord::Schema.define(version: 20210326150000) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -390,13 +390,14 @@ ActiveRecord::Schema.define(version: 20210317150000) do
     t.string   "image_url"
     t.boolean  "online",                      default: false
     t.string   "event_url"
-    t.boolean  "admin_pin",                                default: false,  null: false
-    t.datetime "max_chat_message_created_at"
-    t.datetime "max_join_request_requested_at"
+    t.boolean  "admin_pin",                   default: false,  null: false
+    t.boolean  "pin",                         default: false
+    t.jsonb    "pins",                        default: [],     null: false
   end
 
   add_index "entourages", ["country", "postal_code"], name: "index_entourages_on_country_and_postal_code", using: :btree
   add_index "entourages", ["latitude", "longitude"], name: "index_entourages_on_latitude_and_longitude", using: :btree
+  add_index "entourages", ["pin"], name: "index_entourages_on_pin", using: :btree
   add_index "entourages", ["user_id"], name: "index_entourages_on_user_id", using: :btree
   add_index "entourages", ["uuid"], name: "index_entourages_on_uuid", unique: true, using: :btree
   add_index "entourages", ["uuid_v2"], name: "index_entourages_on_uuid_v2", unique: true, using: :btree

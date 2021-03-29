@@ -1,6 +1,6 @@
 module Admin
   class EntouragesController < Admin::BaseController
-    before_action :set_entourage, only: [:show, :edit, :update, :moderator_read, :moderator_unread, :message, :sensitive_words, :sensitive_words_check, :edit_type, :admin_pin, :admin_unpin]
+    before_action :set_entourage, only: [:show, :edit, :update, :moderator_read, :moderator_unread, :message, :sensitive_words, :sensitive_words_check, :edit_type, :admin_pin, :admin_unpin, :pin, :unpin]
     before_filter :ensure_moderator!, only: [:message]
 
     def index
@@ -274,6 +274,16 @@ module Admin
       redirect_to [:admin, @entourage]
     end
 
+    def pin
+      @entourage.update_column(:pin, true)
+      redirect_to [:admin, @entourage]
+    end
+
+    def unpin
+      @entourage.update_column(:pin, false)
+      redirect_to [:admin, @entourage]
+    end
+
     def edit_type
       new_type = params[:to]&.to_sym
       current_type = @entourage.group_type.to_sym
@@ -374,7 +384,7 @@ module Admin
     def entourage_params
       metadata_keys = params.dig(:entourage, :metadata).try(:keys) || []
       metadata_keys -= [:starts_at]
-      params.require(:entourage).permit(:group_type, :status, :title, :description, :category, :entourage_type, :display_category, :latitude, :longitude, :public, :online, :url, :event_url, metadata: metadata_keys)
+      params.require(:entourage).permit(:group_type, :status, :title, :description, :category, :entourage_type, :display_category, :latitude, :longitude, :public, :online, :url, :event_url, :pins, metadata: metadata_keys)
     end
 
     def chat_messages_params
