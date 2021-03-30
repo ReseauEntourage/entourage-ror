@@ -46,7 +46,7 @@
       <td><%= entourage_description_excerpt(entourage.description) %></td>
       <% if params[:q] && params[:q][:pin_eq] %>
         <td>
-          <% entourage.pins.map do |pin| %>
+          <% entourage[:pins].map do |pin| %>
             <span class="badge"><%= pin %></span>
           <% end %>
         </td>
