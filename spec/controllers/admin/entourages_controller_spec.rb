@@ -29,9 +29,9 @@ describe Admin::EntouragesController do
 
   describe "POST update pins" do
     let(:entourage) { FactoryGirl.create(:entourage, pin: true) }
-    before { post :update, id: entourage.to_param, entourage: { pins: '75000 44', group_type: :action } }
+    before { post :update, id: entourage.to_param, entourage: { pins: '75000,44', group_type: :action } }
 
-    it { expect(assigns(:entourage).pins).to match_array(['75000', '44']) }
+    it { expect(assigns(:entourage)[:pins]).to match_array(['75000', '44']) }
   end
 
   describe "POST pin" do
