@@ -21,9 +21,30 @@ describe Admin::EntouragesController do
   end
 
   describe "GET #show" do
-    let!(:entourage) { FactoryGirl.create(:entourage) }
+    let(:entourage) { FactoryGirl.create(:entourage) }
     before { get :show, id: entourage.to_param }
+
     it { expect(assigns(:entourage)).to eq(entourage) }
   end
 
+  describe "POST update pins" do
+    let(:entourage) { FactoryGirl.create(:entourage, pin: true) }
+    before { post :update, id: entourage.to_param, entourage: { pins: '75000 44', group_type: :action } }
+
+    it { expect(assigns(:entourage).pins).to match_array(['75000', '44']) }
+  end
+
+  describe "POST pin" do
+    let(:entourage) { FactoryGirl.create(:entourage, pin: false) }
+    before { post :pin, id: entourage.to_param }
+
+    it { expect(assigns(:entourage).pin?).to eq(true) }
+  end
+
+  describe "POST unpin" do
+    let(:entourage) { FactoryGirl.create(:entourage, pin: true) }
+    before { post :unpin, id: entourage.to_param }
+
+    it { expect(assigns(:entourage).pin?).to eq(false) }
+  end
 end
