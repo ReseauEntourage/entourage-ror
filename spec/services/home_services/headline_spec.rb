@@ -4,7 +4,7 @@ describe HomeServices::Headline do
   let(:user) { FactoryGirl.create(:pro_user_paris) }
 
   describe 'find_pin' do
-    let!(:pin) { FactoryGirl.create(:entourage, pin: true, pins: '75') }
+    let!(:pin) { FactoryGirl.create(:entourage, pin: true, pins: ['75']) }
 
     it 'should find a pin' do
       expect(Entourage).to receive(:find_by).with(id: pin.id)
@@ -114,7 +114,7 @@ describe HomeServices::Headline do
   end
 
   describe 'each' do
-    let!(:pin) { FactoryGirl.create(:entourage, pin: true, pins: '75') }
+    let!(:pin) { FactoryGirl.create(:entourage, pin: true, pins: ['75']) }
     let!(:announcement_0) { FactoryGirl.create(:announcement, id: 1, position: 1, user_goals: ['goal_not_known'], areas: ['dep_75']) }
     let!(:announcement_1) { FactoryGirl.create(:announcement, id: 2, position: 2, user_goals: ['goal_not_known'], areas: ['dep_75']) }
     let!(:announcement_online) { FactoryGirl.create(:announcement, id: 3, position: 3, user_goals: ['goal_not_known'], areas: ['dep_75'], category: :online) }

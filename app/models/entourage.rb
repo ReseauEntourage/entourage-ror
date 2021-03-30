@@ -19,7 +19,6 @@ require 'experimental/jsonb_with_schema'
 class Entourage < ActiveRecord::Base
   include FeedsConcern
   include UpdatedAtSkippable
-  include Pins
   include EntourageServices::LocationApproximationService::Callback
   include EntourageServices::GeocodingService::Callback
   include SensitiveWordsService::EntourageCallback
