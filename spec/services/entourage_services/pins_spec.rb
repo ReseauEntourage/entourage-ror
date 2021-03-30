@@ -3,7 +3,7 @@ require 'rails_helper'
 describe EntourageServices::Pins do
   let(:user) { FactoryGirl.create(:pro_user_paris) }
   let!(:pin) { FactoryGirl.create(:entourage, pin: true, pins: '75') }
-  let!(:outing) { FactoryGirl.create(:outing, pin: true) }
+  let!(:outing) { FactoryGirl.create(:outing, status: :open, online: true) }
 
   describe 'pinned_for' do
     it 'should find a pin' do
@@ -24,13 +24,13 @@ describe EntourageServices::Pins do
   end
 
   describe 'outing_pinned' do
-    it 'should find a pin' do
+    it 'should find outing' do
       expect(EntourageServices::Pins.outing_pinned).to eq(outing.id)
     end
 
-    it 'should find 121064 if no pinned outing is configured' do
-      outing.update_attribute(:pin, false)
-      expect(EntourageServices::Pins.outing_pinned).to eq(121064)
+    it 'should not find outing if closed' do
+      outing.update_attribute(:status, :closed)
+      expect(EntourageServices::Pins.outing_pinned).to be_nil
     end
   end
 

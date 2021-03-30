@@ -25,8 +25,7 @@ module EntourageServices
       departement = postal_code.first(2)
 
       Entourage.select(:id)
-        .where(pin: true)
-        .where(group_type: :action)
+        .where(pin: true, group_type: :action)
         .where('pins ? :postal_code OR pins ? :departement',
           postal_code: postal_code,
           departement: departement
@@ -34,12 +33,12 @@ module EntourageServices
         .first
     end
 
+    # Atelier solidaire : 1h pour comprendre comment aider les personnes SDF
     def self.outing_pinned
       Entourage.select(:id)
-        .where(pin: true)
-        .where(group_type: :outing)
+        .where(status: :open, group_type: :outing, online: true)
         .map(&:id)
-        .first || 121064 # Atelier solidaire : 1h pour comprendre comment aider les personnes SDF
+        .first
     end
   end
 end
