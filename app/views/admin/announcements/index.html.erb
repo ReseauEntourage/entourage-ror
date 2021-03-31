@@ -196,9 +196,15 @@
                 </span>
               </span>
             </div>
+            <% if announcement.category.present? %>
+              <span class="label label-default"><%= I18n.t("activerecord.attributes.announcement.categories.#{announcement.category}") %></span>
+            <% end %>
           </div>
           <div class="announcement-image">
             <%= image_tag announcement.image_url, size: '225x96' %>
+          </div>
+          <div class="announcement-image">
+            <%= image_tag announcement.image_portrait_url, size: '60x79' %>
           </div>
           <%= link_to "", edit_admin_announcement_path(announcement), class: "overlay" %>
         </div>

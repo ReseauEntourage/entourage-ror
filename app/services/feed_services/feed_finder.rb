@@ -125,82 +125,8 @@ module FeedServices
         @last_page = true
       end
 
-      if user.community == :entourage && page == 1
-        pinned = []
-
-        if (types.nil? || types.any? { |t| t.starts_with?('ask_for_help_') || t.starts_with?('contribution_') })
-          pinned << self.class.neighborhood_group_for(user)
-        end
-
-        if (types.nil? || types.include?('outing'))
-          postal_code = ''
-          if user.address&.country == 'FR'
-            postal_code = user.address.postal_code.to_s
-          end
-
-          pinned << 121064 # Atelier solidaire : 1h pour comprendre comment aider les personnes SDF
-
-          if ['75003', '75004', '75010', '75011', '75012', '75019', '75020'].include?(postal_code.first(5))
-            pinned << 110033
-          end
-
-          if ['75001', '75002', '75008', '75009', '75016', '75017', '75018'].include?(postal_code.first(5))
-            pinned << 110032
-          end
-
-          if ['75005', '75006', '75007', '75013', '75014', '75015'].include?(postal_code.first(5))
-            pinned << 110026
-          end
-
-          if ['59'].include?(postal_code.first(2))
-            pinned << 110059
-          end
-
-          if ['69'].include?(postal_code.first(2))
-            pinned << 110057
-          end
-
-          if ['35'].include?(postal_code.first(2))
-            pinned << 110053
-          end
-
-          if ['92000', '92400', '92700', '92250', '92800', '92200'].include?(postal_code.first(5))
-            pinned << 110060
-          end
-
-          if ['92110', '92600', '92300', '92230'].include?(postal_code.first(5))
-            pinned << 110016
-          end
-
-          # hors zone
-          if postal_code.first(5).to_i >= 13000 && postal_code.first(5).to_i <= 13016
-            pinned << 113230 # Marseille
-          end
-
-          if ['33000', '33100', '33200', '33300', '33800'].include?(postal_code.first(5))
-            pinned << 112941 # Bordeaux
-          end
-
-          if ['31000', '31100', '31200', '31300', '31400', '31500'].include?(postal_code.first(5))
-            pinned << 112945 # Toulouse
-          end
-
-          if ['34000', '34070', '34080', '34090'].include?(postal_code.first(5))
-            pinned << 113231 # Montpellier
-          end
-
-          if ['44000', '44100', '44200', '44300'].include?(postal_code.first(5))
-            pinned << 113233 # Nantes
-          end
-
-          if ['06000', '06100', '06200', '06300'].include?(postal_code.first(5))
-            pinned << 113234 # Nice
-          end
-
-          if ['67000', '67100', '67200'].include?(postal_code.first(5))
-            pinned << 113232 # Strasbourg
-          end
-        end
+      if page == 1
+        pinned = EntourageServices::Pins.find(user, types)
 
         pinned.compact.uniq.reverse.each do |action|
           feeds = pin(action, feeds: feeds)
@@ -260,31 +186,6 @@ module FeedServices
       @params_sig ||= Digest::MD5.hexdigest(JSON.fast_generate(params))
     end
 
-    def self.reformat_legacy_types(entourage_types, show_tours, tour_types)
-      if entourage_types.nil?
-        entourage_types = Entourage::ENTOURAGE_TYPES
-      else
-        entourage_types = entourage_types.gsub(' ', '').split(',') & Entourage::ENTOURAGE_TYPES
-      end
-
-      entourage_types = entourage_types.flat_map do |entourage_type|
-        prefix = "#{entourage_type}_"
-        TYPES['entourage'].values.find_all { |type| type.starts_with?(prefix) }
-      end
-
-      if show_tours != "true"
-        tour_types = []
-      elsif tour_types.nil?
-        tour_types = Tour::TOUR_TYPES
-      else
-        tour_types = tour_types.gsub(' ', '').split(',') & Tour::TOUR_TYPES
-      end
-
-      tour_types = tour_types.map { |tour_type| "tour_#{tour_type}" }
-
-      return (entourage_types + tour_types).join(",").presence
-    end
-
     private
     attr_reader :user, :page, :before, :latitude, :longitude, :types, :show_past_events, :partners_only, :time_range, :distance, :announcements, :cursor, :area, :page_token, :legacy_pagination
 
@@ -299,57 +200,8 @@ module FeedServices
                                           units: :km)
     end
 
-    TYPES = {
-      'entourage' => {
-        'as' => 'ask_for_help_social',
-        'ae' => 'ask_for_help_event',
-        'am' => 'ask_for_help_mat_help',
-        'ar' => 'ask_for_help_resource',
-        'ai' => 'ask_for_help_info',
-        'ak' => 'ask_for_help_skill',
-        'ao' => 'ask_for_help_other',
-
-        'cs' => 'contribution_social',
-        'ce' => 'contribution_event',
-        'cm' => 'contribution_mat_help',
-        'cr' => 'contribution_resource',
-        'ci' => 'contribution_info',
-        'ck' => 'contribution_skill',
-        'co' => 'contribution_other',
-
-        # fix wrong keys in iOS 4.1 - 4.3
-        'ah' => 'ask_for_help_mat_help',
-        'ch' => 'contribution_mat_help',
-
-        'ou' => 'outing',
-      },
-      'entourage_pro' => {
-        'tm' => 'tour_medical',
-        'tb' => 'tour_barehands',
-        'ta' => 'tour_alimentary',
-
-        # fix wrong key in iOS 4.1 - 4.3
-        'ts' => 'tour_barehands',
-      },
-      'pfp' => {
-        'nh' => 'neighborhood',
-        'pc' => 'private_circle',
-        'ou' => 'outing',
-      }
-    }
-
     def formated_types(types)
-      return if types.nil?
-
-      allowed_types = TYPES[user.community.slug]
-      allowed_types.merge!(TYPES['entourage_pro']) if user.pro?
-
-      types = (types || "").split(',').map(&:strip)
-      types = types.map { |t| allowed_types[t] || t }
-
-      types += ['ask_for_help_event', 'contribution_event'] if types.include?('outing')
-
-      (types & allowed_types.values).uniq
+      FeedServices::Types.formated_for_user(types: types, user: user)
     end
 
     def insert_announcements(feeds:)
@@ -458,6 +310,7 @@ module FeedServices
       end
     end
 
+    # @deprecated: no call
     def preload_last_chat_messages(feeds)
       feedable_ids = {}
       feeds.each do |feed|
@@ -483,6 +336,7 @@ module FeedServices
       end
     end
 
+    # @deprecated: no call
     def preload_last_join_requests(feeds)
       feedable_ids = {}
       feeds.each do |feed|
@@ -506,29 +360,6 @@ module FeedServices
         feed.last_join_request =
           last_join_requests[[feed.feedable_type, feed.feedable_id]]
       end
-    end
-
-    NEIGHBORHOOD_GROUPS = Hash[{
-      ['75005', '75006', '75007', '75013', '75014', '75015'] => 110026, # Paris Sud
-      ['75001', '75002', '75008', '75009', '75016', '75017', '75018'] => 110032, # Paris Ouest
-      ['75003', '75004', '75010', '75011', '75012', '75019', '75020'] => 110033, # Paris Est
-      ['92110', '92300', '92600'] => 110016, # Clichy-Levallois
-      ['92000', '92400', '92800', '92200', '92250', '92700', '92150'] => 110060, # La Défense
-      ['69'] => 110057, # Lyon
-      ['59'] => 110059, # Lille
-      ['35'] => 110053, # Rennes
-    }.flat_map { |ks, v| ks.map { |k| [k, v] }}].freeze
-
-    def self.neighborhood_group_for user
-      return if user.address.nil?
-      return if user.address.country != 'FR'
-
-      postal_code = user.address.postal_code.to_s
-      departement = postal_code.first(2)
-
-      entourage_id = NEIGHBORHOOD_GROUPS[postal_code] || NEIGHBORHOOD_GROUPS[departement]
-      return if entourage_id.nil?
-      entourage_id
     end
 
     # This is just for the sake of making the cursor seemingly random and hard

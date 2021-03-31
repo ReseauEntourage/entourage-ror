@@ -3,7 +3,16 @@ module Api
     class AnnouncementsController < Api::V1::BaseController
       skip_before_filter :authenticate_user!, only: [:icon]
       skip_before_filter :ensure_community!,  only: [:icon]
-      allow_anonymous_access only: [:redirect]
+      allow_anonymous_access only: [:index, :redirect]
+
+      def index
+        announcements = FeedServices::AnnouncementsService.announcements_for_user(current_user_or_anonymous)
+
+        render json: announcements, each_serializer: ::V1::AnnouncementSerializer, scope: {
+          user: current_user_or_anonymous,
+          base_url: request.base_url
+        }
+      end
 
       def icon
         # https://material.io/resources/icons/

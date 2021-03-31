@@ -3,6 +3,7 @@
 </style>
 
 <%= render partial: 'common/errors', locals: {obj: @announcement} %>
+
 <%= form_for @announcement, url: "", html: {id: "announcement_form"} do |f| %>
   <% case @announcement.status %>
   <% when 'draft'  %>
@@ -57,10 +58,12 @@
       <%= f.text_field :title, class: "form-control", required: true, readonly: @announcement.archived? %>
     </div>
   </div>
+
   <div class="form-group">
     <%= f.label :body %>
     <%= f.text_area :body, class: "form-control", rows: 2, required: !@announcement.draft?, readonly: @announcement.archived? %>
   </div>
+
   <div class="form-group">
     <%= f.label :image_url %>
     <% if @announcement.new_record? %>
@@ -75,21 +78,42 @@
       <% end %>
       <% unless @announcement.archived? %>
         <div>
-          <%= link_to "Modifier",
-                edit_image_admin_announcement_path,
-                class: "btn btn-default btn-sm" %>
+          <%= link_to "Modifier", edit_image_admin_announcement_path, class: "btn btn-default btn-sm" %>
         </div>
       <% end %>
     <% end %>
   </div>
+
+  <div class="form-group">
+    <%= f.label :image_portrait_url %>
+    <% if @announcement.new_record? %>
+      <div class="text-muted">
+        Vous pourrez ajouter une image portrait une fois que la carte sera créée.
+      </div>
+    <% else %>
+      <% if @announcement.image_portrait_url %>
+        <div style="margin-bottom: 15px">
+          <%= image_tag @announcement.image_portrait_url, size: '600x792' %>
+        </div>
+      <% end %>
+      <% unless @announcement.archived? %>
+        <div>
+          <%= link_to "Modifier", edit_image_portrait_admin_announcement_path, class: "btn btn-default btn-sm" %>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+
   <div class="form-group">
     <%= f.label :action %>
     <%= f.text_field :action, class: "form-control", required: !@announcement.draft?, readonly: @announcement.archived? %>
   </div>
+
   <div class="form-group">
     <%= f.label :url %>
     <%= f.url_field :url, class: "form-control", required: !@announcement.draft?, readonly: @announcement.archived? %>
   </div>
+
   <div class="control-group form-group">
     <label class="control-label">Ouvrir</label>
     <div class="controls">
@@ -103,6 +127,7 @@
       </label>
     </div>
   </div>
+
   <div class="form-group">
     <%= f.label :areas, style: "margin-right: .7em" %>
     <a href="#" data-role="select-areas" data-select="all">Tout sélectionner</a> ·
@@ -128,6 +153,28 @@
           b.label(class: "checkbox-inline") { b.check_box + b.text }
         end
       %>
+    </div>
+  </div>
+
+  <div class="control-group form-group">
+    <label class="control-label">Catégorie</label>
+    <div class="controls">
+      <label class="radio-inline" style="padding-top: 0; margin-bottom: 5px;">
+        <%= f.radio_button :category, nil, disabled: @announcement.archived? %>
+        Aucune
+      </label>
+      <label class="radio-inline" style="padding-top: 0; margin-bottom: 5px;">
+        <%= f.radio_button :category, :online, disabled: @announcement.archived? %>
+        Événement en ligne
+      </label>
+      <label class="radio-inline" style="padding-top: 0; margin-bottom: 5px;">
+        <%= f.radio_button :category, :ambassador, disabled: @announcement.archived? %>
+        Programme ambassadeur
+      </label>
+      <label class="radio-inline" style="padding-top: 0; margin-bottom: 5px;">
+        <%= f.radio_button :category, :poi_map, disabled: @announcement.archived? %>
+        Lieux solidaires
+      </label>
     </div>
   </div>
 

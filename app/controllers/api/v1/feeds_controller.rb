@@ -50,7 +50,7 @@ module Api
 
       def types
         if params.key?(:show_tours) || params.key?(:entourage_types)
-          FeedServices::FeedFinder.reformat_legacy_types(params[:entourage_types], params[:show_tours], params[:tour_types])
+          FeedServices::Types.reformat_legacy_types(params[:entourage_types], params[:show_tours], params[:tour_types])
         else
           params[:types]
         end

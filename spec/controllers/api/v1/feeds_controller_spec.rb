@@ -20,7 +20,7 @@ include CommunityHelper
       let(:announcement) { FactoryGirl.build(:announcement) }
       before do
         allow_any_instance_of(FeedServices::AnnouncementsService)
-          .to receive(:select_announcements)
+          .to receive(:repositionned_announcements)
           .and_return([announcement])
       end
 
@@ -357,7 +357,7 @@ include CommunityHelper
       let(:announcement) { build :announcement }
       before do
         allow_any_instance_of(FeedServices::AnnouncementsService)
-          .to receive(:select_announcements)
+          .to receive(:repositionned_announcements)
           .and_return([announcement])
       end
       before { get :index, token: user.token, announcements: "v1", latitude: latitude, longitude: longitude }
@@ -403,7 +403,7 @@ include CommunityHelper
 
       before do
         allow_any_instance_of(FeedServices::AnnouncementsService)
-          .to receive(:select_announcements)
+          .to receive(:repositionned_announcements)
           .and_return([announcement])
       end
 

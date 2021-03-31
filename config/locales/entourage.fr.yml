@@ -68,13 +68,18 @@ fr:
       announcement:
         title: Titre
         icon: Picto
-        image_url: Image
+        image_url: Image horizontale
+        image_portrait_url: Image verticale
         body: Description
         action: CTA
         url: Lien
         webview: Ouvrir dans
         areas: Zones géographiques
         user_goals: Publics
+        categories:
+          online: Événement en ligne
+          ambassador: Programme ambassadeur
+          poi_map: Lieux solidaires
 
       moderation_area:
         moderator_id: Modérateur

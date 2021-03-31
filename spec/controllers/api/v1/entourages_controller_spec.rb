@@ -18,42 +18,42 @@ describe Api::V1::EntouragesController do
 
       it "renders JSON response" do
         get :index, token: user.token
-        expect(subject).to eq({"entourages"=>
-                                   [{
-                                       "id" => entourage.id,
-                                       "uuid"=>entourage.uuid_v2,
-                                       "status"=>"open",
-                                       "title"=>"Foobar",
-                                       "group_type"=>"action",
-                                       "public"=>false,
-                                       "metadata"=>{"city"=>"", "display_address"=>""},
-                                       "entourage_type"=>"ask_for_help",
-                                       "display_category"=>"social",
-                                       "postal_code"=>nil,
-                                       "number_of_people"=>1,
-                                       "author"=>{
-                                           "id"=>entourage.user.id,
-                                           "display_name"=>"John D.",
-                                           "avatar_url"=>nil,
-                                           "partner"=>nil,
-                                           "partner_role_title" => nil
-                                       },
-                                       "location"=>{
-                                           "latitude"=>1.122,
-                                           "longitude"=>2.345
-                                       },
-                                       "join_status"=>"accepted",
-                                       "number_of_unread_messages"=>0,
-                                       "created_at"=> entourage.created_at.iso8601(3),
-                                       "updated_at"=> entourage.updated_at.iso8601(3),
-                                       "description" => nil,
-                                       "share_url" => "https://app.entourage.social/actions/#{entourage.uuid_v2}",
-                                       "image_url"=>nil,
-                                       "online"=>false,
-                                       "event_url"=>nil,
-                                       "display_report_prompt" => false
-                                    }]
-                              })
+        expect(subject).to eq({
+          "entourages"=> [{
+            "id" => entourage.id,
+            "uuid"=>entourage.uuid_v2,
+            "status"=>"open",
+            "title"=>"Foobar",
+            "group_type"=>"action",
+            "public"=>false,
+            "metadata"=>{"city"=>"", "display_address"=>""},
+            "entourage_type"=>"ask_for_help",
+            "display_category"=>"social",
+            "postal_code"=>nil,
+            "number_of_people"=>1,
+            "author"=>{
+              "id"=>entourage.user.id,
+              "display_name"=>"John D.",
+              "avatar_url"=>nil,
+              "partner"=>nil,
+              "partner_role_title" => nil
+            },
+            "location"=>{
+              "latitude"=>1.122,
+              "longitude"=>2.345
+            },
+            "join_status"=>"accepted",
+            "number_of_unread_messages"=>0,
+            "created_at"=> entourage.created_at.iso8601(3),
+            "updated_at"=> entourage.updated_at.iso8601(3),
+            "description" => nil,
+            "share_url" => "https://app.entourage.social/actions/#{entourage.uuid_v2}",
+            "image_url"=>nil,
+            "online"=>false,
+            "event_url"=>nil,
+            "display_report_prompt" => false
+          }]
+        })
       end
 
       context "no params" do
@@ -66,7 +66,7 @@ describe Api::V1::EntouragesController do
         let!(:entourage2) { FactoryGirl.create(:entourage, updated_at: entourage.created_at - 3.days, created_at: entourage.created_at - 3.days) }
         before { get :index, token: user.token }
         it { expect(subject["entourages"].count).to eq(2) }
-        it { expect(subject["entourages"][0]["id"]).to eq(entourage.id) }
+        it { expect(subject["entourages"].map{|h|h['id']}.sort).to eq([entourage.id, entourage1.id].sort) }
       end
 
       context "entourages made by other users" do
@@ -81,23 +81,24 @@ describe Api::V1::EntouragesController do
         let!(:blacklisted_entourage) { FactoryGirl.create(:entourage, status: "blacklisted") }
 
         before { get :index, token: user.token }
-        it { expect(subject["entourages"].map{ |e| e['id'] }).to match_array([entourage.id, open_entourage.id, closed_entourage.id]) }
+        it { expect(subject["entourages"].map{ |e| e['id'] }).to match_array([entourage.id, open_entourage.id]) }
       end
 
-      context "filter status" do
-        let!(:closed_entourage) { FactoryGirl.create(:entourage, status: "closed") }
-        before { get :index, status: "closed", token: user.token }
-        it { expect(subject["entourages"].count).to eq(1) }
-        it { expect(subject["entourages"][0]["id"]).to eq(closed_entourage.id) }
-      end
-
+      # types
       context "filter entourage_type" do
-        let!(:help_entourage) { FactoryGirl.create(:entourage, entourage_type: "ask_for_help", updated_at: entourage.created_at-1.hours, created_at: entourage.created_at-1.hours) }
-        before { get :index, type: "ask_for_help", token: user.token }
+        let!(:help_entourage) { FactoryGirl.create(:entourage, entourage_type: "ask_for_help", display_category: "event", updated_at: entourage.created_at-1.hours, created_at: entourage.created_at-1.hours) }
+        before { get :index, types: "as, ae", token: user.token }
         it { expect(subject["entourages"].count).to eq(2) }
-        it { expect(subject["entourages"][0]["id"]).to eq(entourage.id) }
+        it { expect(subject["entourages"].map{|h|h['id']}.sort).to eq([entourage.id, help_entourage.id].sort) }
       end
 
+      context "filter wrong entourage_type" do
+        let!(:help_entourage) { FactoryGirl.create(:entourage, entourage_type: "ask_for_help", display_category: "event", updated_at: entourage.created_at-1.hours, created_at: entourage.created_at-1.hours) }
+        before { get :index, types: "cs, ce", token: user.token }
+        it { expect(subject["entourages"].count).to eq(0) }
+      end
+
+      # position
       context "filter position" do
         let!(:near_entourage) { FactoryGirl.create(:entourage, latitude: 2.48, longitude: 40.5) }
         before { get :index, latitude: 2.48, longitude: 40.5, token: user.token }
@@ -105,15 +106,127 @@ describe Api::V1::EntouragesController do
         it { expect(subject["entourages"][0]["id"]).to eq(near_entourage.id) }
       end
 
-      context "filter atd friends" do
-        let(:atd_user) { FactoryGirl.create(:public_user, atd_friend: true) }
-        let(:user) { FactoryGirl.create(:public_user, atd_friend: false) }
-        let!(:entourage_from_atd) { FactoryGirl.create(:entourage, user: atd_user) }
-        let!(:entourage) { FactoryGirl.create(:entourage, user: user) }
-        before { get :index, atd: true, token: user.token }
-        it { expect(subject["entourages"].count).to eq(1) }
-        it { expect(subject["entourages"][0]["id"]).to eq(entourage_from_atd.id) }
+      context "filter wrong position" do
+        let!(:near_entourage) { FactoryGirl.create(:entourage, latitude: 2.48, longitude: 40.5) }
+        before { get :index, latitude: 12.48, longitude: 40.5, token: user.token }
+        it { expect(subject["entourages"].count).to eq(0) }
       end
+
+      # time_range
+      context "filter time_range" do
+        let!(:timed_entourage) { FactoryGirl.create(:entourage, created_at: entourage.created_at - 2.hours) }
+        before { get :index, time_range: 24, token: user.token } # default time_range
+        it { expect(subject["entourages"].count).to eq(2) }
+        it { expect(subject["entourages"].map{|h|h['id']}.sort).to eq([entourage.id, timed_entourage.id].sort) }
+      end
+
+      context "filter wrong time_range" do
+        let!(:timed_entourage) { FactoryGirl.create(:entourage, created_at: entourage.created_at - 2.hours) }
+        before { get :index, time_range: 1, token: user.token }
+        it { expect(subject["entourages"].count).to eq(1) }
+        it { expect(subject["entourages"][0]["id"]).to eq(entourage.id) }
+      end
+
+      # group_type
+      context "filter group_type" do
+        let!(:action_entourage) { FactoryGirl.create(:entourage, group_type: :action) }
+        before { get :index, token: user.token }
+        it { expect(subject["entourages"].count).to eq(2) }
+        it { expect(subject["entourages"].map{|h|h['id']}.sort).to eq([entourage.id, action_entourage.id].sort) }
+      end
+
+      context "filter group_type" do
+        let!(:conversation_entourage) { FactoryGirl.create(:entourage, group_type: :conversation) }
+        before { get :index, token: user.token }
+        it { expect(subject["entourages"].count).to eq(1) }
+        it { expect(subject["entourages"][0]["id"]).to eq(entourage.id) }
+      end
+
+      # sort
+      context "sort by distance and created_at" do
+        let!(:closest_entourage) { FactoryGirl.create(:entourage, latitude: 2.4801, longitude: 40.5, created_at: entourage.created_at - 2.minutes) }
+        let!(:middle_entourage) { FactoryGirl.create(:entourage, latitude: 2.4802, longitude: 40.5, created_at: entourage.created_at - 1.minute) }
+        let!(:farthest_entourage) { FactoryGirl.create(:entourage, latitude: 2.4803, longitude: 40.5, created_at: entourage.created_at) }
+        before { get :index, per: 2, latitude: 2.48, longitude: 40.5, token: user.token }
+        it { expect(subject["entourages"].count).to eq(2) }
+        it { expect(subject["entourages"].map{|h|h['id']}).to eq([middle_entourage.id, closest_entourage.id]) }
+      end
+    end
+  end
+
+  describe 'GET mine' do
+    let!(:entourage) { FactoryGirl.create(:entourage, status: :open) }
+    let(:other_user) { FactoryGirl.create(:public_user) }
+    subject { JSON.parse(response.body) }
+
+    context "filter show_my_entourages_only" do
+      let!(:join_request) { FactoryGirl.create(:join_request, joinable: entourage, user: user, status: "accepted") }
+
+      before { get :mine, token: user.token }
+      it { expect(subject["entourages"].count).to eq(1) }
+      it { expect(subject["entourages"][0]["id"]).to eq(entourage.id) }
+    end
+
+    context "filter wrong user show_my_entourages_only" do
+      let!(:join_request) { FactoryGirl.create(:join_request, joinable: entourage, user: other_user, status: "accepted") }
+
+      before { get :mine, token: user.token }
+      it { expect(subject["entourages"].count).to eq(0) }
+    end
+
+    context "filter wrong status show_my_entourages_only" do
+      let!(:join_request) { FactoryGirl.create(:join_request, joinable: entourage, user: user, status: "pending") }
+
+      before { get :mine, token: user.token }
+      it { expect(subject["entourages"].count).to eq(0) }
+    end
+  end
+
+  describe 'GET owns' do
+    let(:other_user) { FactoryGirl.create(:public_user) }
+    subject { JSON.parse(response.body) }
+
+    context "filter author" do
+      let!(:entourage) { FactoryGirl.create(:entourage, status: :open, user: user) }
+
+      before { get :owns, token: user.token }
+      it { expect(subject["entourages"].count).to eq(1) }
+      it { expect(subject["entourages"][0]["id"]).to eq(entourage.id) }
+    end
+
+    context "filter wrong author" do
+      let!(:entourage) { FactoryGirl.create(:entourage, status: :open, user: other_user) }
+
+      before { get :owns, token: user.token }
+      it { expect(subject["entourages"].count).to eq(0) }
+    end
+  end
+
+  describe 'GET invitees' do
+    let!(:entourage) { FactoryGirl.create(:entourage, status: :open) }
+    let(:other_user) { FactoryGirl.create(:public_user) }
+    subject { JSON.parse(response.body) }
+
+    context "filter invitee" do
+      let!(:entourage_invitations) { FactoryGirl.create(:entourage_invitation, invitable: entourage, invitee: user, status: "accepted") }
+
+      before { get :invitees, token: user.token }
+      it { expect(subject["entourages"].count).to eq(1) }
+      it { expect(subject["entourages"][0]["id"]).to eq(entourage.id) }
+    end
+
+    context "filter wrong invitee invitee" do
+      let!(:entourage_invitations) { FactoryGirl.create(:entourage_invitation, invitable: entourage, invitee: other_user, status: "accepted") }
+
+      before { get :invitees, token: user.token }
+      it { expect(subject["entourages"].count).to eq(0) }
+    end
+
+    context "filter wrong status invitee" do
+      let!(:entourage_invitations) { FactoryGirl.create(:entourage_invitation, invitable: entourage, invitee: user, status: "pending") }
+
+      before { get :invitees, token: user.token }
+      it { expect(subject["entourages"].count).to eq(0) }
     end
   end
 
@@ -133,41 +246,42 @@ describe Api::V1::EntouragesController do
       context "valid params" do
         before { allow_any_instance_of(EntourageServices::CategoryLexicon).to receive(:category) { "mat_help" } }
         before { post :create, entourage: { location: {longitude: 1.123, latitude: 4.567}, title: "foo", entourage_type: "ask_for_help", display_category: "mat_help", description: "foo bar", category: "mat_help", recipient_consent_obtained: true}, token: user.token }
-        it { expect(JSON.parse(response.body)).to eq({"entourage"=>
-                                                          {"id"=>Entourage.last.id,
-                                                           "uuid"=>Entourage.last.uuid_v2,
-                                                           "status"=>"open",
-                                                           "title"=>"Foo",
-                                                           "group_type"=>"action",
-                                                           "public"=>false,
-                                                           "metadata"=>{"city"=>"", "display_address"=>""},
-                                                           "entourage_type"=>"ask_for_help",
-                                                           "display_category"=>"mat_help",
-                                                           "postal_code"=>nil,
-                                                           "number_of_people"=>1,
-                                                           "author"=>{
-                                                               "id"=>user.id,
-                                                               "display_name"=>"John D.",
-                                                               "avatar_url"=>nil,
-                                                               "partner"=>nil,
-                                                               "partner_role_title" => nil
-                                                           },
-                                                           "location"=>{
-                                                               "latitude"=>4.567,
-                                                               "longitude"=>1.123
-                                                           },
-                                                           "join_status"=>"accepted",
-                                                           "number_of_unread_messages"=>0,
-                                                           "created_at"=> Entourage.last.created_at.iso8601(3),
-                                                           "updated_at"=> Entourage.last.updated_at.iso8601(3),
-                                                           "description"=> "foo bar",
-                                                           "share_url" => "https://app.entourage.social/actions/#{Entourage.last.uuid_v2}",
-                                                           "image_url"=>nil,
-                                                           "online"=>false,
-                                                           "event_url"=>nil,
-                                                           "display_report_prompt" => false
-                                                          }
-                                                     }) }
+        it { expect(JSON.parse(response.body)).to eq({
+          "entourage"=> {
+            "id"=>Entourage.last.id,
+            "uuid"=>Entourage.last.uuid_v2,
+            "status"=>"open",
+            "title"=>"Foo",
+            "group_type"=>"action",
+            "public"=>false,
+            "metadata"=>{"city"=>"", "display_address"=>""},
+            "entourage_type"=>"ask_for_help",
+            "display_category"=>"mat_help",
+            "postal_code"=>nil,
+            "number_of_people"=>1,
+            "author"=>{
+               "id"=>user.id,
+               "display_name"=>"John D.",
+               "avatar_url"=>nil,
+               "partner"=>nil,
+               "partner_role_title" => nil
+            },
+            "location"=>{
+               "latitude"=>4.567,
+               "longitude"=>1.123
+            },
+            "join_status"=>"accepted",
+            "number_of_unread_messages"=>0,
+            "created_at"=> Entourage.last.created_at.iso8601(3),
+            "updated_at"=> Entourage.last.updated_at.iso8601(3),
+            "description"=> "foo bar",
+            "share_url" => "https://app.entourage.social/actions/#{Entourage.last.uuid_v2}",
+            "image_url"=>nil,
+            "online"=>false,
+            "event_url"=>nil,
+            "display_report_prompt" => false
+          }
+        })}
         it { expect(response.status).to eq(201) }
         it { expect(Entourage.last.longitude).to eq(1.123) }
         it { expect(Entourage.last.latitude).to eq(4.567) }
@@ -329,41 +443,42 @@ describe Api::V1::EntouragesController do
       context "entourage exists" do
         context "find by id" do
           before { get :show, id: entourage.to_param, token: user.token }
-          it { expect(JSON.parse(response.body)).to eq({"entourage"=>
-                                                            {"id"=>entourage.id,
-                                                             "uuid"=>entourage.uuid_v2,
-                                                             "status"=>"open",
-                                                             "title"=>"Foobar",
-                                                             "group_type"=>"action",
-                                                             "public"=>false,
-                                                             "metadata"=>{"city"=>"", "display_address"=>""},
-                                                             "entourage_type"=>"ask_for_help",
-                                                             "display_category"=>"social",
-                                                             "postal_code"=>nil,
-                                                             "number_of_people"=>1,
-                                                             "author"=>{
-                                                                 "id"=>entourage.user.id,
-                                                                 "display_name"=>"John D.",
-                                                                 "avatar_url"=>nil,
-                                                                 "partner"=>nil,
-                                                                 "partner_role_title" => nil
-                                                             },
-                                                             "location"=>{
-                                                                 "latitude"=>1.122,
-                                                                 "longitude"=>2.345
-                                                             },
-                                                             "join_status"=>"not_requested",
-                                                             "number_of_unread_messages"=>nil,
-                                                             "created_at"=> entourage.created_at.iso8601(3),
-                                                             "updated_at"=> entourage.updated_at.iso8601(3),
-                                                             "description" => nil,
-                                                             "share_url" => "https://app.entourage.social/actions/#{entourage.uuid_v2}",
-                                                             "image_url"=>nil,
-                                                             "online"=>false,
-                                                             "event_url"=>nil,
-                                                             "display_report_prompt" => false
-                                                            }
-                                                       }) }
+          it { expect(JSON.parse(response.body)).to eq({
+            "entourage"=> {
+              "id"=>entourage.id,
+              "uuid"=>entourage.uuid_v2,
+              "status"=>"open",
+              "title"=>"Foobar",
+              "group_type"=>"action",
+              "public"=>false,
+              "metadata"=>{"city"=>"", "display_address"=>""},
+              "entourage_type"=>"ask_for_help",
+              "display_category"=>"social",
+              "postal_code"=>nil,
+              "number_of_people"=>1,
+              "author"=>{
+                "id"=>entourage.user.id,
+                "display_name"=>"John D.",
+                "avatar_url"=>nil,
+                "partner"=>nil,
+                "partner_role_title" => nil
+              },
+              "location"=>{
+                "latitude"=>1.122,
+                "longitude"=>2.345
+              },
+              "join_status"=>"not_requested",
+              "number_of_unread_messages"=>nil,
+              "created_at"=> entourage.created_at.iso8601(3),
+              "updated_at"=> entourage.updated_at.iso8601(3),
+              "description" => nil,
+              "share_url" => "https://app.entourage.social/actions/#{entourage.uuid_v2}",
+              "image_url"=>nil,
+              "online"=>false,
+              "event_url"=>nil,
+              "display_report_prompt" => false
+            }
+          })}
         end
 
         context "find by v1 uuid" do
@@ -389,35 +504,38 @@ describe Api::V1::EntouragesController do
           let!(:entourage) { nil }
           let(:other_user) { create :public_user, first_name: "Buzz", last_name: "Lightyear" }
           before { get :show, id: "1_list_#{user.id}-#{other_user.id}", token: user.token }
-          it { expect(JSON.parse(response.body)).to eq({"entourage"=>{
-                                                          "id"=>nil,
-                                                          "uuid"=>"1_list_#{user.id}-#{other_user.id}",
-                                                          "status"=>"open",
-                                                          "title"=>"Buzz L.",
-                                                          "group_type"=>"conversation",
-                                                          "public"=>false,
-                                                          "metadata"=>{},
-                                                          "entourage_type"=>"contribution",
-                                                          "display_category"=>nil,
-                                                          "postal_code"=>nil,
-                                                          "join_status"=>"accepted",
-                                                          "number_of_unread_messages"=>0,
-                                                          "number_of_people"=>2,
-                                                          "created_at"=>nil,
-                                                          "updated_at"=>nil,
-                                                          "description"=>nil,
-                                                          "share_url"=>nil,
-                                                          "image_url"=>nil,
-                                                          "online"=>false,
-                                                          "event_url"=>nil,
-                                                          "author"=>{
-                                                            "id"=>other_user.id,
-                                                            "display_name"=>"Buzz L.",
-                                                            "avatar_url"=>nil,
-                                                            "partner"=>nil,
-                                                            "partner_role_title" => nil},
-                                                          "location"=>{"latitude"=>0.0, "longitude"=>0.0},
-                                                          "display_report_prompt" => false}}) }
+          it { expect(JSON.parse(response.body)).to eq({
+            "entourage"=>{
+              "id"=>nil,
+              "uuid"=>"1_list_#{user.id}-#{other_user.id}",
+              "status"=>"open",
+              "title"=>"Buzz L.",
+              "group_type"=>"conversation",
+              "public"=>false,
+              "metadata"=>{},
+              "entourage_type"=>"contribution",
+              "display_category"=>nil,
+              "postal_code"=>nil,
+              "join_status"=>"accepted",
+              "number_of_unread_messages"=>0,
+              "number_of_people"=>2,
+              "created_at"=>nil,
+              "updated_at"=>nil,
+              "description"=>nil,
+              "share_url"=>nil,
+              "image_url"=>nil,
+              "online"=>false,
+              "event_url"=>nil,
+              "author"=>{
+                "id"=>other_user.id,
+                "display_name"=>"Buzz L.",
+                "avatar_url"=>nil,
+                "partner"=>nil,
+                "partner_role_title" => nil},
+              "location"=>{"latitude"=>0.0, "longitude"=>0.0},
+              "display_report_prompt" => false
+            }
+          })}
         end
 
         context "metadata" do
@@ -494,41 +612,42 @@ describe Api::V1::EntouragesController do
 
       context "entourage exists" do
         before { patch :update, id: user_entourage.to_param, entourage: {title: "new_title"}, token: user.token }
-        it { expect(JSON.parse(response.body)).to eq({"entourage"=>
-                                                          {"id"=>user_entourage.id,
-                                                           "uuid"=>user_entourage.uuid_v2,
-                                                           "status"=>"open",
-                                                           "title"=>"New_title",
-                                                           "group_type"=>"action",
-                                                           "public"=>false,
-                                                           "metadata"=>{"city"=>"", "display_address"=>""},
-                                                           "entourage_type"=>"ask_for_help",
-                                                           "display_category"=>"social",
-                                                           "postal_code"=>nil,
-                                                           "number_of_people"=>1,
-                                                           "author"=>{
-                                                               "id"=>user.id,
-                                                               "display_name"=>"John D.",
-                                                               "avatar_url"=>nil,
-                                                               "partner"=>nil,
-                                                               "partner_role_title" => nil
-                                                           },
-                                                           "location"=>{
-                                                               "latitude"=>1.122,
-                                                               "longitude"=>2.345
-                                                           },
-                                                           "join_status"=>"accepted",
-                                                           "number_of_unread_messages"=>0,
-                                                           "created_at"=> user_entourage.created_at.iso8601(3),
-                                                           "updated_at"=> user_entourage.reload.updated_at.iso8601(3),
-                                                           "description" => nil,
-                                                           "share_url" => "https://app.entourage.social/actions/#{user_entourage.uuid_v2}",
-                                                           "image_url"=>nil,
-                                                           "online"=>false,
-                                                           "event_url"=>nil,
-                                                           "display_report_prompt" => false
-                                                          }
-                                                     }) }
+        it { expect(JSON.parse(response.body)).to eq({
+          "entourage"=> {
+            "id"=>user_entourage.id,
+            "uuid"=>user_entourage.uuid_v2,
+            "status"=>"open",
+            "title"=>"New_title",
+            "group_type"=>"action",
+            "public"=>false,
+            "metadata"=>{"city"=>"", "display_address"=>""},
+            "entourage_type"=>"ask_for_help",
+            "display_category"=>"social",
+            "postal_code"=>nil,
+            "number_of_people"=>1,
+            "author"=>{
+              "id"=>user.id,
+              "display_name"=>"John D.",
+              "avatar_url"=>nil,
+              "partner"=>nil,
+              "partner_role_title" => nil
+            },
+            "location"=>{
+              "latitude"=>1.122,
+              "longitude"=>2.345
+            },
+            "join_status"=>"accepted",
+            "number_of_unread_messages"=>0,
+            "created_at"=> user_entourage.created_at.iso8601(3),
+            "updated_at"=> user_entourage.reload.updated_at.iso8601(3),
+            "description" => nil,
+            "share_url" => "https://app.entourage.social/actions/#{user_entourage.uuid_v2}",
+            "image_url"=>nil,
+            "online"=>false,
+            "event_url"=>nil,
+            "display_report_prompt" => false
+          }
+        })}
       end
 
       context "closing with outcome" do
@@ -546,15 +665,15 @@ describe Api::V1::EntouragesController do
                                                                     }
                                                                   )}
           it { expect(user_entourage.chat_messages.last.attributes).to include(
-                                                                          "content"=>"a clôturé l’action",
-                                                                          "user_id"=>user.id,
-                                                                          "message_type"=>"status_update",
-                                                                          "metadata"=>{
-                                                                            :$id=>"urn:chat_message:status_update:metadata",
-                                                                            :status=>"closed",
-                                                                            :outcome_success=>false
-                                                                          }
-                                                                        ) }
+            "content"=>"a clôturé l’action",
+            "user_id"=>user.id,
+            "message_type"=>"status_update",
+            "metadata"=>{
+              :$id=>"urn:chat_message:status_update:metadata",
+              :status=>"closed",
+              :outcome_success=>false
+            }
+          ) }
         end
 
         context "invalid success value" do
@@ -562,8 +681,7 @@ describe Api::V1::EntouragesController do
           it { expect(response.code).to eq '400' }
           it { expect(user_entourage.reload.status).to eq 'open' }
           it { expect(user_entourage.moderation).to be_nil }
-          it { expect(JSON.parse(response.body)).to eq("message"=>"Could not update entourage",
-                                                       "reasons"=>["outcome.success must be a boolean"]) }
+          it { expect(JSON.parse(response.body)).to eq("message"=>"Could not update entourage", "reasons"=>["outcome.success must be a boolean"]) }
         end
       end
 

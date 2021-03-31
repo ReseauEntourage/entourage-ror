@@ -11,6 +11,7 @@ class Announcement < ActiveRecord::Base
 
   validates :status, inclusion: STATUS
   validates :image_url, format: { with: %r(\Ahttps?://\S+\z) }, allow_blank: true
+  validates :image_portrait_url, format: { with: %r(\Ahttps?://\S+\z) }, allow_blank: true
   validates :url, format: { with: %r(\A(https?|mailto|entourage):\S+\z) }, allow_blank: true
 
   scope :ordered, -> { order(:position, :id) }

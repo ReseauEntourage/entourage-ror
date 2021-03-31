@@ -44,5 +44,11 @@ module V1
         options.reverse_merge(host: scope[:base_url])
       )
     end
+
+    def image_url
+      return object.image_portrait_url if scope[:portrait] && object.image_portrait_url.present?
+
+      object.image_url
+    end
   end
 end
