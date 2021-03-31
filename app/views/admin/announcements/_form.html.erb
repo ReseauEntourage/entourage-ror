@@ -160,7 +160,7 @@
     <label class="control-label">Catégorie</label>
     <div class="controls">
       <label class="radio-inline" style="padding-top: 0; margin-bottom: 5px;">
-        <%= f.radio_button :category, nil, disabled: @announcement.archived? %>
+        <%= f.radio_button :category, '', disabled: @announcement.archived? %>
         Aucune
       </label>
       <label class="radio-inline" style="padding-top: 0; margin-bottom: 5px;">
