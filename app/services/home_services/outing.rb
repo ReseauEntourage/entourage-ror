@@ -21,7 +21,6 @@ module HomeServices
         { offset: 0 },
         { offset: 1 },
         { offset: 2 },
-        { category: :contact },
       ],
       default: [
         { offset: 0 },
@@ -54,14 +53,13 @@ module HomeServices
       outing = user.community.entourages.where(group_type: :outing, status: :open)
         .where("(#{Geocoder::Sql.within_bounding_box(*box, :latitude, :longitude)}) OR online = true")
         .where("metadata->>'ends_at' >= ?", Time.zone.now)
-        .order("case when online then 1 else 2 end")
         .order_by_distance_from(latitude, longitude)
         .order(created_at: :desc)
 
       return outing.where(online: true).offset(offset).first if category == :online
       return outing.where(category: category).offset(offset).first if category.present?
 
-      outing.offset(offset).first
+      outing.where(category: nil, online: false).offset(offset).first
     end
 
     private

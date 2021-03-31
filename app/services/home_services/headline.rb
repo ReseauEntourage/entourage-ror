@@ -150,7 +150,7 @@ module HomeServices
     def find_pin category:, offset: 0
       return unless category == :neighborhood
 
-      entourage_id = EntourageServices::Pins.neighborhood_group_for(user)
+      entourage_id = EntourageServices::Pins.pinned_for(user)
       return unless entourage_id
 
       Entourage.find_by(id: entourage_id)
@@ -181,10 +181,10 @@ module HomeServices
       entourages = Entourage.where(status: :open)
         .where.not(group_type: [:conversation, :group, :outing])
         .where("entourages.created_at > ?", time_range.hours.ago)
+        .where(pin: false)
         .where("(#{
           Geocoder::Sql.within_bounding_box(*box, :latitude, :longitude)
         }) OR online = true")
-        .order("case when online then 1 else 2 end")
         .order_by_distance_from(latitude, longitude)
         .order(created_at: :desc)
 

@@ -15,6 +15,7 @@ $buttons-color: #ef662f;
 @import "jquery-ui/datepicker";
 @import "settings";
 @import "utils";
+@import "bootstrap-tagsinput";
 
 
 body.with-navbar { padding-top: $navbar-height; }

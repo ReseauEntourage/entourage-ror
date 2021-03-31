@@ -46,7 +46,7 @@ module V1
     end
 
     def image_url
-      return object.image_portrait_url if scope[:portrait] && object.image_portrait_url.present?
+      return object.image_portrait_url if scope[:portrait]
 
       object.image_url
     end
