@@ -99,7 +99,7 @@ describe Api::V1::HomeController do
             "uuid" => "#{announcement.id}",
             "title" => "Une autre façon de contribuer.",
             "body" => "Entourage a besoin de vous pour continuer à accompagner les sans-abri.",
-            "image_url" => "https://blog.entourage.social/",
+            "image_url" => nil,
             "action" => "Aider",
             "url" => "http://test.host/api/v1/announcements/#{announcement.id}/redirect/#{user.token}",
             "icon_url" => "http://test.host/api/v1/announcements/#{announcement.id}/icon",
