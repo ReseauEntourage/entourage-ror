@@ -59,7 +59,7 @@ module HomeServices
       return outing.where(online: true).offset(offset).first if category == :online
       return outing.where(category: category).offset(offset).first if category.present?
 
-      outing.where(category: nil, online: false).offset(offset).first
+      outing.where(online: false).offset(offset).first
     end
 
     private
