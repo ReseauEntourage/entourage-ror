@@ -34,6 +34,14 @@ class Announcement < ActiveRecord::Base
     user_goals.reject!(&:blank?)
   end
 
+  def category= category
+    if category.present?
+      super category
+    else
+      self[:category] = nil
+    end
+  end
+
   def feed_object
     Feed.new(self)
   end
