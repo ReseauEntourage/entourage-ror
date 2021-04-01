@@ -2,7 +2,7 @@ module HomeServices
   class Action
     DISTANCE = 10
     MAX_LENGTH = 4
-    TIME_RANGE = 24
+    TIME_RANGE = 24 * 30
 
     attr_reader :user, :latitude, :longitude, :time_range, :distance
 
