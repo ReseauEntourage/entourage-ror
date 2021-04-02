@@ -289,7 +289,7 @@ class User < ActiveRecord::Base
       validation_status: "anonymized",
       email: "anonymized@#{Time.now.to_i}",
       phone: "+33100000000-#{Time.now.to_i}",
-      first_name: "This user has been anonymized",
+      first_name: "Cet utilisateur a été anonymisé",
       last_name: nil,
       deleted: true,
       address_id: nil
