@@ -1,7 +1,7 @@
 module Api
   module V1
     class HomeController < Api::V1::BaseController
-      skip_before_filter :community_warning
+      skip_before_action :community_warning
 
       def index
         render json: {

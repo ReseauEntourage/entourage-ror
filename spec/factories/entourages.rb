@@ -68,9 +68,9 @@ FactoryBot.define do
     end
 
     factory :outing do
-      group_type "outing"
-      latitude 48.854367553784954
-      longitude 2.270340589096274
+      group_type { "outing" }
+      latitude { 48.854367553784954 }
+      longitude { 2.270340589096274 }
 
       transient do
         default_metadata { { starts_at: 1.day.from_now.change(hour: 19),

@@ -32,7 +32,7 @@ describe ExportServices::TourExporter do
       expect(columns[1]).to eq("2 rue de l'église")
       expect(columns[2]).to eq("foobar")
       expect(columns[3]).to eq("48.870424")
-      expect(columns[4]).to eq("2.30681949999996")
+      expect(columns[4]).to eq("2.30682")
     end
   end
 end

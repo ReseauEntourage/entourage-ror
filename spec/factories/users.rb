@@ -53,7 +53,7 @@ FactoryBot.define do
     end
 
     trait :offer_help do
-      goal 'offer_help'
+      goal { 'offer_help' }
     end
 
     factory :pro_user,    traits: [:pro]

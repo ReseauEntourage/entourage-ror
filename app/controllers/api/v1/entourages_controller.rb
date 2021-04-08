@@ -18,7 +18,8 @@ module Api
           show_past_events: params[:show_past_events],
           time_range: params[:time_range],
           before: params[:before],
-          partners_only: params[:partners_only]
+          partners_only: params[:partners_only],
+          status: params[:status]
         ).entourages
 
         render json: entourages, each_serializer: ::V1::EntourageSerializer, scope: {

@@ -1,12 +1,12 @@
 require 'rails_helper'
 
 describe HomeServices::Outing do
-  let(:user) { FactoryGirl.create(:pro_user_paris) }
+  let(:user) { FactoryBot.create(:pro_user_paris) }
 
   describe 'find_all' do
-    let!(:outing) { FactoryGirl.create(:outing) }
-    let!(:second) { FactoryGirl.create(:outing) }
-    let!(:online) { FactoryGirl.create(:outing, online: true) }
+    let!(:outing) { FactoryBot.create(:outing) }
+    let!(:second) { FactoryBot.create(:outing) }
+    let!(:online) { FactoryBot.create(:outing, online: true) }
 
     it 'should find online for :offer_help' do
       allow(user).to receive(:goal) { :offer_help }

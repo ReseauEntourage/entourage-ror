@@ -17,7 +17,7 @@ RSpec.describe Api::V0::EncountersController, :type => :controller, skip: true d
       it "renders encounter" do
         resp = JSON.parse(response.body)
         encounter = Encounter.last
-        expect(resp).to eq({"encounter"=>{"id"=>encounter.id, "date"=>"2014-10-11T15:19:45.000+02:00", "latitude"=>48.870424, "longitude"=>2.3068194999999605, "user_id"=>encounter.tour.user.id, "user_name"=>"John", "street_person_name"=>"Toto", "message"=>"Toto fait du velo.", "voice_message"=>"https://www.google.com"}})
+        expect(resp).to eq({"encounter"=>{"id"=>encounter.id, "date"=>"2014-10-11T15:19:45.000+02:00", "latitude"=>48.870424, "longitude"=>2.30682, "user_id"=>encounter.tour.user.id, "user_name"=>"John", "street_person_name"=>"Toto", "message"=>"Toto fait du velo.", "voice_message"=>"https://www.google.com"}})
       end
     end
 

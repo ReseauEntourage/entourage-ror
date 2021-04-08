@@ -1,4 +1,4 @@
-class AddDenormDatesToEntourages < ActiveRecord::Migration
+class AddDenormDatesToEntourages < ActiveRecord::Migration[4.2]
   def up
     create_table :entourage_denorms do |t|
       t.integer :entourage_id, null: false

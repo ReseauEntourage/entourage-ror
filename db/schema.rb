@@ -59,11 +59,12 @@ ActiveRecord::Schema.define(version: 20210326150000) do
     t.string "status", default: "draft", null: false
     t.jsonb "areas", default: [], null: false
     t.jsonb "user_goals", default: [], null: false
-    t.string  "category"
-    t.string  "image_portrait_url"
+    t.string "category"
+    t.string "image_portrait_url"
     t.index ["areas"], name: "index_announcements_on_areas", using: :gin
+    t.index ["category"], name: "index_announcements_on_category"
+    t.index ["image_portrait_url"], name: "index_announcements_on_image_portrait_url"
     t.index ["user_goals"], name: "index_announcements_on_user_goals", using: :gin
-    t.index ["image_portrait_url"], name: "index_announcements_on_user_image_portrait_url", using: :btree
   end
 
   create_table "answers", id: :serial, force: :cascade do |t|
@@ -127,7 +128,7 @@ ActiveRecord::Schema.define(version: 20210326150000) do
     t.datetime "updated_at", null: false
     t.string "status", default: "draft", null: false
     t.datetime "sent_at"
-    t.integer  "sent_users_count"
+    t.integer "sent_users_count"
     t.index ["area"], name: "index_conversation_message_broadcasts_on_area"
     t.index ["goal"], name: "index_conversation_message_broadcasts_on_goal"
     t.index ["status"], name: "index_conversation_message_broadcasts_on_status"
@@ -197,15 +198,14 @@ ActiveRecord::Schema.define(version: 20210326150000) do
     t.index ["tour_id"], name: "index_encounters_on_tour_id"
   end
 
-  create_table "entourage_denorms", force: :cascade do |t|
-    t.integer  "entourage_id",                  null: false
+  create_table "entourage_denorms", id: :serial, force: :cascade do |t|
+    t.integer "entourage_id", null: false
     t.datetime "max_join_request_requested_at"
     t.datetime "max_chat_message_created_at"
-    t.datetime "created_at",                    null: false
-    t.datetime "updated_at",                    null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["entourage_id"], name: "index_entourage_denorms_on_entourage_id"
   end
-
-  add_index "entourage_denorms", ["entourage_id"], name: "index_entourage_denorms_on_entourage_id", using: :btree
 
   create_table "entourage_displays", id: :serial, force: :cascade do |t|
     t.integer "entourage_id"
@@ -295,11 +295,12 @@ ActiveRecord::Schema.define(version: 20210326150000) do
     t.boolean "online", default: false
     t.string "event_url"
     t.boolean "admin_pin", default: false, null: false
-    t.boolean  "pin",                         default: false
-    t.jsonb    "pins",                        default: [],     null: false
+    t.boolean "pin", default: false
+    t.jsonb "pins", default: [], null: false
     t.index "st_setsrid(st_makepoint(longitude, latitude), 4326)", name: "index_entourages_on_coordinates", using: :gist
     t.index ["country", "postal_code"], name: "index_entourages_on_country_and_postal_code"
     t.index ["latitude", "longitude"], name: "index_entourages_on_latitude_and_longitude"
+    t.index ["pin"], name: "index_entourages_on_pin"
     t.index ["user_id"], name: "index_entourages_on_user_id"
     t.index ["uuid"], name: "index_entourages_on_uuid", unique: true
     t.index ["uuid_v2"], name: "index_entourages_on_uuid_v2", unique: true
@@ -525,6 +526,7 @@ ActiveRecord::Schema.define(version: 20210326150000) do
     t.string "apn_key_id"
     t.string "team_id"
     t.string "bundle_id"
+    t.boolean "feedback_enabled", default: true
   end
 
   create_table "rpush_feedback", force: :cascade do |t|
@@ -570,6 +572,8 @@ ActiveRecord::Schema.define(version: 20210326150000) do
     t.boolean "mutable_content", default: false, null: false
     t.string "external_device_id"
     t.string "thread_id"
+    t.boolean "dry_run", default: false, null: false
+    t.boolean "sound_is_json", default: false
     t.index ["delivered", "failed", "processing", "deliver_after", "created_at"], name: "index_rpush_notifications_multi", where: "((NOT delivered) AND (NOT failed))"
   end
 
@@ -687,21 +691,20 @@ ActiveRecord::Schema.define(version: 20210326150000) do
     t.index ["user_id", "device_family"], name: "index_user_applications_on_user_id_and_device_family"
   end
 
-  create_table "user_denorms", force: :cascade do |t|
-    t.integer  "user_id",                      null: false
-    t.integer  "last_created_action_id"
-    t.integer  "last_join_request_id"
-    t.integer  "last_private_chat_message_id"
-    t.integer  "last_group_chat_message_id"
-    t.datetime "created_at",                   null: false
-    t.datetime "updated_at",                   null: false
+  create_table "user_denorms", id: :serial, force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "last_created_action_id"
+    t.integer "last_join_request_id"
+    t.integer "last_private_chat_message_id"
+    t.integer "last_group_chat_message_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["last_created_action_id"], name: "index_user_denorms_on_last_created_action_id"
+    t.index ["last_group_chat_message_id"], name: "index_user_denorms_on_last_group_chat_message_id"
+    t.index ["last_join_request_id"], name: "index_user_denorms_on_last_join_request_id"
+    t.index ["last_private_chat_message_id"], name: "index_user_denorms_on_last_private_chat_message_id"
+    t.index ["user_id"], name: "index_user_denorms_on_user_id"
   end
-
-  add_index "user_denorms", ["last_created_action_id"], name: "index_user_denorms_on_last_created_action_id", using: :btree
-  add_index "user_denorms", ["last_group_chat_message_id"], name: "index_user_denorms_on_last_group_chat_message_id", using: :btree
-  add_index "user_denorms", ["last_join_request_id"], name: "index_user_denorms_on_last_join_request_id", using: :btree
-  add_index "user_denorms", ["last_private_chat_message_id"], name: "index_user_denorms_on_last_private_chat_message_id", using: :btree
-  add_index "user_denorms", ["user_id"], name: "index_user_denorms_on_user_id", using: :btree
 
   create_table "user_moderations", id: :serial, force: :cascade do |t|
     t.integer "user_id", null: false

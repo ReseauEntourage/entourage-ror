@@ -1,4 +1,4 @@
-class AddUsersCountToConversationMessageBroadcasts < ActiveRecord::Migration
+class AddUsersCountToConversationMessageBroadcasts < ActiveRecord::Migration[4.2]
   def up
     add_column :conversation_message_broadcasts, :sent_users_count, :integer
 

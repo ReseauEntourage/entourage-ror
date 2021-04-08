@@ -3,7 +3,7 @@ module EntourageServices
     DEFAULT_DISTANCE=10
     FEED_CATEGORY_EXPR = "(case when group_type = 'action' then concat(entourage_type, '_', coalesce(display_category, 'other')) else group_type::text end)"
 
-    attr_reader :user, :types, :latitude, :longitude, :distance, :page, :per, :show_past_events, :time_range, :before, :partners_only, :no_outings, :show_my_entourages_only, :author, :invitee
+    attr_reader :user, :types, :latitude, :longitude, :distance, :page, :per, :show_past_events, :time_range, :before, :partners_only, :no_outings, :show_my_entourages_only, :author, :invitee, :status
 
     def initialize(
       user:,
@@ -23,7 +23,8 @@ module EntourageServices
       # owns
       author: nil,
       # invitations
-      invitee: nil
+      invitee: nil,
+      status: nil
     )
       @user = user
       @types = formated_types(types)
@@ -44,11 +45,12 @@ module EntourageServices
       @author = author
       # invitations
       @invitee = invitee
+      @status = status
     end
 
     def entourages
       entourages = Entourage.includes(:join_requests, :entourage_invitations, :user)
-      entourages = entourages.where(status: :open) # status
+      entourages = entourages.where(status: status || :open) # status
       entourages = entourages.where.not(group_type: [:conversation, :group]) # group_type
       entourages = entourages.where.not(group_type: [:outing]) if no_outings
       entourages = entourages.where("entourages.created_at > ?", time_range.hours.ago)

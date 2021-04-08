@@ -1,10 +1,10 @@
 require 'rails_helper'
 
 describe HomeServices::Action do
-  let(:user) { FactoryGirl.create(:pro_user_paris) }
-  let!(:ask_for_help) { FactoryGirl.create(:entourage, entourage_type: :ask_for_help, title: 'ask_for_help') }
-  let!(:contribution) { FactoryGirl.create(:entourage, entourage_type: :contribution, title: 'contribution') }
-  let!(:pin) { FactoryGirl.create(:entourage, pin: true, pins: '75', title: 'pin') }
+  let(:user) { FactoryBot.create(:pro_user_paris) }
+  let!(:ask_for_help) { FactoryBot.create(:entourage, entourage_type: :ask_for_help, title: 'ask_for_help') }
+  let!(:contribution) { FactoryBot.create(:entourage, entourage_type: :contribution, title: 'contribution') }
+  let!(:pin) { FactoryBot.create(:entourage, pin: true, pins: '75', title: 'pin') }
 
   describe 'find_all' do
     it 'ask_for_help firsts for :offer_help' do

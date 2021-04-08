@@ -1,9 +1,9 @@
 require 'rails_helper'
 
 describe EntourageServices::Pins do
-  let(:user) { FactoryGirl.create(:pro_user_paris) }
-  let!(:pin) { FactoryGirl.create(:entourage, pin: true, pins: ['75']) }
-  let!(:outing) { FactoryGirl.create(:outing, status: :open, online: true) }
+  let(:user) { FactoryBot.create(:pro_user_paris) }
+  let!(:pin) { FactoryBot.create(:entourage, pin: true, pins: ['75']) }
+  let!(:outing) { FactoryBot.create(:outing, status: :open, online: true) }
 
   describe 'pinned_for' do
     it 'should find a pin' do

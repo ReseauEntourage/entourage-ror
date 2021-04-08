@@ -81,8 +81,7 @@ describe Api::V1::EntouragesController do
         let!(:blacklisted_entourage) { FactoryBot.create(:entourage, status: "blacklisted") }
 
         before { get :index, params: { token: user.token } }
-        it { expect(subject["entourages"].map{ |e| e['id'] }).to match_array([entourage.id, open_entourage.id, closed_entourage.id]) }
-        # it { expect(subject["entourages"].map{ |e| e['id'] }).to match_array([entourage.id, open_entourage.id]) } # conflict
+        it { expect(subject["entourages"].map{ |e| e['id'] }).to match_array([entourage.id, open_entourage.id]) } # conflict
       end
 
       context "filter status" do
@@ -103,7 +102,7 @@ describe Api::V1::EntouragesController do
 
       context "filter wrong entourage_type" do
         let!(:help_entourage) { FactoryBot.create(:entourage, entourage_type: "ask_for_help", display_category: "event", updated_at: entourage.created_at-1.hours, created_at: entourage.created_at-1.hours) }
-        before { get :index, types: "cs, ce", token: user.token }
+        before { get :index, params: { types: "cs, ce", token: user.token } }
         it { expect(subject["entourages"].count).to eq(0) }
       end
 
@@ -117,21 +116,21 @@ describe Api::V1::EntouragesController do
 
       context "filter wrong position" do
         let!(:near_entourage) { FactoryBot.create(:entourage, latitude: 2.48, longitude: 40.5) }
-        before { get :index, latitude: 12.48, longitude: 40.5, token: user.token }
+        before { get :index, params: { latitude: 12.48, longitude: 40.5, token: user.token } }
         it { expect(subject["entourages"].count).to eq(0) }
       end
 
       # time_range
       context "filter time_range" do
         let!(:timed_entourage) { FactoryBot.create(:entourage, created_at: entourage.created_at - 2.hours) }
-        before { get :index, time_range: 24, token: user.token } # default time_range
+        before { get :index, params: { time_range: 24, token: user.token } } # default time_range
         it { expect(subject["entourages"].count).to eq(2) }
         it { expect(subject["entourages"].map{|h|h['id']}.sort).to eq([entourage.id, timed_entourage.id].sort) }
       end
 
       context "filter wrong time_range" do
         let!(:timed_entourage) { FactoryBot.create(:entourage, created_at: entourage.created_at - 2.hours) }
-        before { get :index, time_range: 1, token: user.token }
+        before { get :index, params: { time_range: 1, token: user.token } }
         it { expect(subject["entourages"].count).to eq(1) }
         it { expect(subject["entourages"][0]["id"]).to eq(entourage.id) }
       end
@@ -139,14 +138,14 @@ describe Api::V1::EntouragesController do
       # group_type
       context "filter group_type" do
         let!(:action_entourage) { FactoryBot.create(:entourage, group_type: :action) }
-        before { get :index, token: user.token }
+        before { get :index, params: { token: user.token } }
         it { expect(subject["entourages"].count).to eq(2) }
         it { expect(subject["entourages"].map{|h|h['id']}.sort).to eq([entourage.id, action_entourage.id].sort) }
       end
 
       context "filter group_type" do
         let!(:conversation_entourage) { FactoryBot.create(:entourage, group_type: :conversation) }
-        before { get :index, token: user.token }
+        before { get :index, params: { token: user.token } }
         it { expect(subject["entourages"].count).to eq(1) }
         it { expect(subject["entourages"][0]["id"]).to eq(entourage.id) }
       end
@@ -156,7 +155,7 @@ describe Api::V1::EntouragesController do
         let!(:closest_entourage) { FactoryBot.create(:entourage, latitude: 2.4801, longitude: 40.5, created_at: entourage.created_at - 2.minutes) }
         let!(:middle_entourage) { FactoryBot.create(:entourage, latitude: 2.4802, longitude: 40.5, created_at: entourage.created_at - 1.minute) }
         let!(:farthest_entourage) { FactoryBot.create(:entourage, latitude: 2.4803, longitude: 40.5, created_at: entourage.created_at) }
-        before { get :index, per: 2, latitude: 2.48, longitude: 40.5, token: user.token }
+        before { get :index, params: { per: 2, latitude: 2.48, longitude: 40.5, token: user.token } }
         it { expect(subject["entourages"].count).to eq(2) }
         it { expect(subject["entourages"].map{|h|h['id']}).to eq([middle_entourage.id, closest_entourage.id]) }
       end
@@ -171,7 +170,7 @@ describe Api::V1::EntouragesController do
     context "filter show_my_entourages_only" do
       let!(:join_request) { FactoryBot.create(:join_request, joinable: entourage, user: user, status: "accepted") }
 
-      before { get :mine, token: user.token }
+      before { get :mine, params: { token: user.token } }
       it { expect(subject["entourages"].count).to eq(1) }
       it { expect(subject["entourages"][0]["id"]).to eq(entourage.id) }
     end
@@ -179,14 +178,14 @@ describe Api::V1::EntouragesController do
     context "filter wrong user show_my_entourages_only" do
       let!(:join_request) { FactoryBot.create(:join_request, joinable: entourage, user: other_user, status: "accepted") }
 
-      before { get :mine, token: user.token }
+      before { get :mine, params: { token: user.token } }
       it { expect(subject["entourages"].count).to eq(0) }
     end
 
     context "filter wrong status show_my_entourages_only" do
       let!(:join_request) { FactoryBot.create(:join_request, joinable: entourage, user: user, status: "pending") }
 
-      before { get :mine, token: user.token }
+      before { get :mine, params: { token: user.token } }
       it { expect(subject["entourages"].count).to eq(0) }
     end
   end
@@ -198,7 +197,7 @@ describe Api::V1::EntouragesController do
     context "filter author" do
       let!(:entourage) { FactoryBot.create(:entourage, status: :open, user: user) }
 
-      before { get :owns, token: user.token }
+      before { get :owns, params: { token: user.token } }
       it { expect(subject["entourages"].count).to eq(1) }
       it { expect(subject["entourages"][0]["id"]).to eq(entourage.id) }
     end
@@ -206,7 +205,7 @@ describe Api::V1::EntouragesController do
     context "filter wrong author" do
       let!(:entourage) { FactoryBot.create(:entourage, status: :open, user: other_user) }
 
-      before { get :owns, token: user.token }
+      before { get :owns, params: { token: user.token } }
       it { expect(subject["entourages"].count).to eq(0) }
     end
   end
@@ -219,7 +218,7 @@ describe Api::V1::EntouragesController do
     context "filter invitee" do
       let!(:entourage_invitations) { FactoryBot.create(:entourage_invitation, invitable: entourage, invitee: user, status: "accepted") }
 
-      before { get :invitees, token: user.token }
+      before { get :invitees, params: { token: user.token } }
       it { expect(subject["entourages"].count).to eq(1) }
       it { expect(subject["entourages"][0]["id"]).to eq(entourage.id) }
     end
@@ -227,14 +226,14 @@ describe Api::V1::EntouragesController do
     context "filter wrong invitee invitee" do
       let!(:entourage_invitations) { FactoryBot.create(:entourage_invitation, invitable: entourage, invitee: other_user, status: "accepted") }
 
-      before { get :invitees, token: user.token }
+      before { get :invitees, params: { token: user.token } }
       it { expect(subject["entourages"].count).to eq(0) }
     end
 
     context "filter wrong status invitee" do
       let!(:entourage_invitations) { FactoryBot.create(:entourage_invitation, invitable: entourage, invitee: user, status: "pending") }
 
-      before { get :invitees, token: user.token }
+      before { get :invitees, params: { token: user.token } }
       it { expect(subject["entourages"].count).to eq(0) }
     end
   end
@@ -322,7 +321,7 @@ describe Api::V1::EntouragesController do
             title: "Apéro Entourage",
             location: {
               latitude: 48.868959,
-              longitude: 2.390184999999974
+              longitude: 2.390185
             },
             metadata: {
               starts_at: "2018-09-04T19:30:00+02:00",
@@ -373,7 +372,7 @@ describe Api::V1::EntouragesController do
               },
               "location"=>{
                 "latitude"=>48.868959,
-                "longitude"=>2.39018499999997
+                "longitude"=>2.390185
               },
               "display_report_prompt" => false
             }
@@ -679,8 +678,31 @@ describe Api::V1::EntouragesController do
           ) }
         end
 
-        context "invalid success value" do
+        context "any string is a truthy success value" do
           let(:success) { 'lol' }
+          it { expect(response.code).to eq '200' }
+          it { expect(user_entourage.reload.status).to eq 'closed' }
+          it { expect(user_entourage.moderation.action_outcome).to eq('Oui') }
+          it { expect(JSON.parse(response.body)["entourage"]).to include(
+                                                                    "status"=>"closed",
+                                                                    "outcome"=>{
+                                                                      "success"=>true
+                                                                    }
+                                                                  )}
+          it { expect(user_entourage.chat_messages.last.attributes).to include(
+            "content"=>"a clôturé l’action",
+            "user_id"=>user.id,
+            "message_type"=>"status_update",
+            "metadata"=>{
+              :$id=>"urn:chat_message:status_update:metadata",
+              :status=>"closed",
+              :outcome_success=>true
+            }
+          ) }
+        end
+
+        context "invalid success value" do
+          let(:success) { '' }
           it { expect(response.code).to eq '400' }
           it { expect(user_entourage.reload.status).to eq 'open' }
           it { expect(user_entourage.moderation).to be_nil }

@@ -3,8 +3,8 @@ include CommunityHelper
 
 describe Api::V1::HomeController do
 
-  let(:user) { FactoryGirl.create(:offer_help_user) }
-  let(:pro_user) { FactoryGirl.create(:pro_user) }
+  let(:user) { FactoryBot.create(:offer_help_user) }
+  let(:pro_user) { FactoryBot.create(:pro_user) }
 
   describe 'GET index' do
     context "not signed in" do
@@ -14,20 +14,20 @@ describe Api::V1::HomeController do
 
     context "signed in" do
       # entourages
-      let!(:entourage) { FactoryGirl.create(:entourage, :joined, user: user, status: "open", latitude: 48.85436, longitude: 2.270340) }
-      let!(:entourage_closed) { FactoryGirl.create(:entourage, :joined, user: user, status: "closed", latitude: 48.85436, longitude: 2.270340) }
+      let!(:entourage) { FactoryBot.create(:entourage, :joined, user: user, status: "open", latitude: 48.85436, longitude: 2.270340) }
+      let!(:entourage_closed) { FactoryBot.create(:entourage, :joined, user: user, status: "closed", latitude: 48.85436, longitude: 2.270340) }
       # outings
-      let!(:outing) { FactoryGirl.create(:outing) }
+      let!(:outing) { FactoryBot.create(:outing) }
       # announcements
-      let!(:announcement) { FactoryGirl.create(:announcement, user_goals: [:offer_help], areas: [:sans_zone]) }
-      let!(:announcement_ask) { FactoryGirl.create(:announcement, user_goals: [:ask_for_help], areas: [:sans_zone], id: 2) }
+      let!(:announcement) { FactoryBot.create(:announcement, user_goals: [:offer_help], areas: [:sans_zone]) }
+      let!(:announcement_ask) { FactoryBot.create(:announcement, user_goals: [:ask_for_help], areas: [:sans_zone], id: 2) }
       # tours
-      let!(:tour) { FactoryGirl.create(:tour) }
+      let!(:tour) { FactoryBot.create(:tour) }
 
       subject { JSON.parse(response.body) }
 
       it "renders json keys" do
-        get :index, token: user.token
+        get :index, params: { token: user.token }
 
         expect(subject).to have_key("metadata")
         expect(subject).to have_key("headlines")
@@ -36,7 +36,7 @@ describe Api::V1::HomeController do
       end
 
       it "renders entourages" do
-        get :index, token: user.token, latitude: 48.854367553784954, longitude: 2.270340589096274
+        get :index, params: { token: user.token, latitude: 48.854367553784954, longitude: 2.270340589096274 }
 
         expect(subject["entourages"].count).to eq(1)
         expect(subject["entourages"]).to eq(
@@ -78,19 +78,19 @@ describe Api::V1::HomeController do
       end
 
       it "renders outings, no coordinate" do
-        get :index, token: user.token
+        get :index, params: { token: user.token }
 
         expect(subject["outings"].count).to eq(0)
       end
 
       it "renders outings, with coordinate" do
-        get :index, token: user.token, latitude: 48.854367553784954, longitude: 2.270340589096274
+        get :index, params: { token: user.token, latitude: 48.854367553784954, longitude: 2.270340589096274 }
 
         expect(subject["outings"].count).to eq(1)
       end
 
       it "renders announcements" do
-        get :index, token: user.token
+        get :index, params: { token: user.token }
 
         expect(subject["headlines"]["metadata"]["order"]).to include("announcement_0")
         expect(subject["headlines"]["announcement_0"]["data"]).to eq(

@@ -13,7 +13,7 @@ RSpec.describe Api::V1::EncountersController, :type => :controller do
       it { expect(JSON.parse(response.body)).to eq({"encounters"=>[{"id"=>encounters.first.id,
                                                                     "date"=>"2014-10-11T15:19:45.000+02:00",
                                                                     "latitude"=>48.870424,
-                                                                    "longitude"=>2.30681949999996,
+                                                                    "longitude"=>2.306820,
                                                                     "user_id"=>user.id,
                                                                     "user_name"=>"John",
                                                                     "street_person_name"=>"Toto",
@@ -23,7 +23,7 @@ RSpec.describe Api::V1::EncountersController, :type => :controller do
                                                                    {"id"=>encounters.last.id,
                                                                     "date"=>"2014-10-11T15:19:45.000+02:00",
                                                                     "latitude"=>48.870424,
-                                                                    "longitude"=>2.30681949999996,
+                                                                    "longitude"=>2.306820,
                                                                     "user_id"=>user.id,
                                                                     "user_name"=>"John",
                                                                     "street_person_name"=>"Toto",
@@ -69,7 +69,7 @@ RSpec.describe Api::V1::EncountersController, :type => :controller do
       it "renders encounter" do
         resp = JSON.parse(response.body)
         encounter = Encounter.last
-        expect(resp).to eq({"encounter"=>{"id"=>encounter.id, "date"=>"2014-10-11T15:19:45.000+02:00", "latitude"=>48.870424, "longitude"=>2.3068194999999605, "user_id"=>encounter.tour.user.id, "user_name"=>"John", "street_person_name"=>"Toto", "message"=>"Toto fait du velo.", "voice_message"=>"https://www.google.com"}})
+        expect(resp).to eq({"encounter"=>{"id"=>encounter.id, "date"=>"2014-10-11T15:19:45.000+02:00", "latitude"=>48.870424, "longitude"=>2.30682, "user_id"=>encounter.tour.user.id, "user_name"=>"John", "street_person_name"=>"Toto", "message"=>"Toto fait du velo.", "voice_message"=>"https://www.google.com"}})
       end
 
       describe "create answers to encounter questions" do

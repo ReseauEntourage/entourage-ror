@@ -5,7 +5,7 @@ FactoryBot.define do
     message { "Toto fait du velo." }
     voice_message_url { "https://www.google.com" }
     latitude { 48.870424 }
-    longitude { 2.3068194999999605 }
+    longitude { 2.306820 }
     tour
 
     trait :in_paris do
