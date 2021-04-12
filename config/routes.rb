@@ -204,7 +204,11 @@ Rails.application.routes.draw do
       resources :newsletter_subscriptions, only: [:create]
       resources :questions, only: [:index]
 
-      resources :tour_areas, only: [:index, :show]
+      resources :tour_areas, only: [:index, :show] do
+        member do
+          get :request, action: :tour_request
+        end
+      end
 
       resources :pois, only: [:index, :show, :create] do
         collection do

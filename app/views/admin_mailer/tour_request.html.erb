@@ -1,0 +1,27 @@
+<p>Bonjour <%= @user.email %>,</p>
+
+<p>
+  Un utilisateur souhaite avoir des informations à propos des maraudes dans votre zone
+  <%= "#{@tour_area.area} (#{@tour_area.departement})" %>
+</p>
+
+<p>
+  Vous trouverez ci-après le message laissé par l'utilisateur <%= @user.full_name %>
+  <ul>
+    <li>Id <%= @user.id %></li>
+    <li>Email <%= @user.email %></li>
+    <li>Téléphone <%= @user.phone %></li>
+  </ul>
+</p>
+
+<p><b>Message</b></p>
+<p>
+  <% if @message.present %>
+    <%= @message %>
+  <% else %>
+    L'utilisateur n'a pas laissé de message
+  <% end %>
+</p>
+
+<p>Cordialement,</p>
+<p>L'équipe Entourage</p>
