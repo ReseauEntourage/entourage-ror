@@ -204,6 +204,8 @@ Rails.application.routes.draw do
       resources :newsletter_subscriptions, only: [:create]
       resources :questions, only: [:index]
 
+      resources :tour_areas, only: [:index, :show]
+
       resources :pois, only: [:index, :show, :create] do
         collection do
           get :soliguide_test
