@@ -49,6 +49,8 @@ Rails.application.routes.draw do
         end
       end
 
+      resources :tour_areas
+
       resources :uploads, only: :new
       namespace :uploads do
         get '/success', to: :update
