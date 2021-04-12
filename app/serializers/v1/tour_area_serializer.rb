@@ -3,9 +3,6 @@ module V1
     attributes :id,
                :departement,
                :area,
-               :status,
-               :email,
-               :created_at,
-               :updated_at
+               :status
   end
 end
