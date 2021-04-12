@@ -1,14 +1,16 @@
-<p>Bonjour <%= @user.email %>,</p>
+<p>Bonjour <%= @user.full_name %>,</p>
 
 <p>
   Un utilisateur souhaite avoir des informations à propos des maraudes dans votre zone
   <%= "#{@tour_area.area} (#{@tour_area.departement})" %>
 </p>
 
+<p>Vous trouverez ci-après les informations relatives à l'utilisateur <%= @user.full_name %> ainsi que le message qu'il vous a laissé</p>
+
+<p><b>Informations</b></p>
 <p>
-  Vous trouverez ci-après le message laissé par l'utilisateur <%= @user.full_name %>
   <ul>
-    <li>Id <%= @user.id %></li>
+    <li><%= link_to 'Lien vers sa fiche', edit_admin_user_url(@user.id, host: ENV['ADMIN_HOST']) %></li>
     <li>Email <%= @user.email %></li>
     <li>Téléphone <%= @user.phone %></li>
   </ul>
@@ -16,7 +18,7 @@
 
 <p><b>Message</b></p>
 <p>
-  <% if @message.present %>
+  <% if @message.present? %>
     <%= @message %>
   <% else %>
     L'utilisateur n'a pas laissé de message

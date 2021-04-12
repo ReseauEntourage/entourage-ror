@@ -18,7 +18,7 @@ module Api
         AdminMailer.tour_request(
           id: params[:id],
           user_id: current_user.id,
-          params: request_params
+          message: request_params[:message]
         ).deliver_later
 
         render json: { message: 'Un email a été envoyé avec votre demande au modérateur de la zone.' }
@@ -27,7 +27,7 @@ module Api
       private
 
       def request_params
-        params.require(:request).permit(:message)
+        params.permit(:message)
       end
     end
   end

@@ -1,10 +1,12 @@
-Bonjour <%= @user.email %>,
+Bonjour <%= @user.full_name %>,
 
 Un utilisateur souhaite avoir des informations à propos des maraudes dans votre zone : <%= "#{@tour_area.area} (#{@tour_area.departement})" %>
 
-Vous trouverez ci-après le message laissé par l'utilisateur <%= @user.full_name %> (Id <%= @user.id %>, Email <%= @user.email %>, Téléphone <%= @user.phone %>)
+Vous trouverez ci-après les informations relatives à l'utilisateur <%= @user.full_name %> ainsi que le message qu'il vous a laissé.
 
-Message : <% if @message.present %> <%= @message %> <% else %> L'utilisateur n'a pas laissé de message <% end %>
+Utilisateur : <%= @user.full_name %> (<%= link_to 'Lien vers sa fiche', edit_admin_user_url(@user.id, host: ENV['ADMIN_HOST']) %>, Email <%= @user.email %>, Téléphone <%= @user.phone %>)
+
+Message : <% if @message.present? %> <%= @message %> <% else %> L'utilisateur n'a pas laissé de message <% end %>
 
 Cordialement,
 L'équipe Entourage

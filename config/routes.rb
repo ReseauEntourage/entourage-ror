@@ -206,7 +206,7 @@ Rails.application.routes.draw do
 
       resources :tour_areas, only: [:index, :show] do
         member do
-          get :request, action: :tour_request
+          post :request, action: :tour_request
         end
       end
 
