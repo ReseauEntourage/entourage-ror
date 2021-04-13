@@ -19,6 +19,7 @@ module Api
         redirections = {
           'pedagogic-content' =>
             'http://www.simplecommebonjour.org',
+          'event-brite' => 'https://www.eventbrite.fr/o/entourage-29770425367',
           'action-examples' =>
             'https://blog.entourage.social/quelles-actions-faire-avec-entourage/#site-content',
           'events-guide' =>
