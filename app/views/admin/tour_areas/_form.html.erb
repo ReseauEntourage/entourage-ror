@@ -5,13 +5,19 @@
 <%= render partial: 'common/errors', locals: { obj: @tour_area } %>
 
 <%= form_for [:admin, @tour_area], html: { role: "form" } do |f| %>
+  <div class="alert alert-info" role="alert" style="display: flex; align-items: center">
+    <div style="flex-grow: 1">
+      Les champs "Département" et "Zone" seront utilisés dans les applications mobiles pour présenter les zones de maraudes aux utilisateurs. Merci de les renseigner précisément.
+    </div>
+  </div>
+
   <div class="row">
     <div class="col-xs-3 form-group">
       <%= f.label :departement, "Département" %>
       <%= f.text_field :departement, class: "form-control", required: true, maxlength: 5 %>
     </div>
     <div class="col-xs-9 form-group">
-      <%= f.label :area, "Ville" %>
+      <%= f.label :area, "Zone" %>
       <%= f.text_field :area, class: "form-control", required: true, maxlength: 50 %>
     </div>
   </div>
@@ -22,7 +28,7 @@
   </div>
 
   <div class="form-group">
-    <%= f.label 'Activation de la maraude' %>
+    <%= f.label 'État' %>
     <%= f.check_box :status, { checked: @tour_area.active? }, :active, :inactive %>
   </div>
 

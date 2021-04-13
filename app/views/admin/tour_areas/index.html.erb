@@ -3,7 +3,7 @@
     <div class="col-xs-offset-2 col-xs-8">
       <div class="h1" style="display: flex; align-items: center;">
         <div style="flex-grow: 1">Zones de maraudes</div>
-        <%= link_to "Ajouter une ville", new_admin_tour_area_path, class: "btn btn-default" %>
+        <%= link_to "Ajouter une zone", new_admin_tour_area_path, class: "btn btn-default" %>
       </div>
 
       <% if @tour_areas.empty? %>
@@ -16,7 +16,7 @@
         <table class="table">
           <th></th>
           <th></th>
-          <th>Activation de la maraude</th>
+          <th>État</th>
           <th>Email associé</th>
           <th></th>
           <% @tour_areas.each do |tour_area| %>
@@ -28,7 +28,7 @@
                 <%= link_to tour_area.area, edit_admin_tour_area_path(tour_area) %>
               </td>
               <td>
-                <div class="btn btn-<%= tour_area.active? ? 'success' : 'danger' %>">
+                <div class="btn btn-<%= tour_area.active? ? 'success' : 'danger' %>" disabled="disabled">
                   <%= I18n.t "activerecord.attributes.tour_area.statuses.#{tour_area.status}" %>
                 </div>
               </td>

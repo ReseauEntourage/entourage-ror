@@ -13,7 +13,7 @@ module Admin
     def create
       @tour_area = TourArea.new(tour_area_params)
       if @tour_area.save
-        redirect_to edit_admin_tour_area_path(@tour_area)
+        redirect_to admin_tour_areas_path
       else
         render :new
       end
