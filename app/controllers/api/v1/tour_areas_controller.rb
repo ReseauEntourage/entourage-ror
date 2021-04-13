@@ -11,7 +11,7 @@ module Api
 
       def tour_request
         render json: {
-          message: 'Could not find tour area',
+          message: "La zone de maraude fournie est incorrecte",
           code: :tour_area_not_found
         }, status: 400 and return unless TourArea.find_by_id(params[:id])
 
