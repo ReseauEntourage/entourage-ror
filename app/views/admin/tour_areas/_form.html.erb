@@ -7,8 +7,20 @@
 <%= form_for [:admin, @tour_area], html: { role: "form" } do |f| %>
   <div class="alert alert-info" role="alert" style="display: flex; align-items: center">
     <div style="flex-grow: 1">
-      Les champs "Département" et "Zone" seront utilisés dans les applications mobiles pour présenter les zones de maraudes aux utilisateurs. Merci de les renseigner précisément.
+      Le champ “Zone” correspond au nom affiché pour les utilisateurs sur l'application mobile Entourage.
     </div>
+  </div>
+
+  <div class="form-group">
+    <%= f.label 'État' %><br>
+    <%= f.check_box :status, {
+      checked: @tour_area.active?,
+      'data-toggle': :toggle,
+      'data-on': "Active",
+      'data-off': "Inactive",
+      'data-onstyle': :success,
+      'data-offstyle': :danger
+    }, :active, :inactive %>
   </div>
 
   <div class="row">
@@ -18,18 +30,13 @@
     </div>
     <div class="col-xs-9 form-group">
       <%= f.label :area, "Zone" %>
-      <%= f.text_field :area, class: "form-control", required: true, maxlength: 50 %>
+      <%= f.text_field :area, class: "form-control", required: true, maxlength: 50, placeholder: 'ex : Paris' %>
     </div>
   </div>
 
   <div class="form-group">
     <%= f.label :email %>
     <%= f.text_field :email, class: "form-control", required: true, maxlength: 50 %>
-  </div>
-
-  <div class="form-group">
-    <%= f.label 'État' %>
-    <%= f.check_box :status, { checked: @tour_area.active? }, :active, :inactive %>
   </div>
 
   <%= f.submit 'Enregistrer', class: "btn btn-primary" %>
