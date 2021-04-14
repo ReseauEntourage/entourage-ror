@@ -18,7 +18,7 @@ class AdminMailer < ActionMailer::Base
     @message = message
 
     mail to: @tour_area.email,
-         subject: "Nouvelle demande de maraudes pour #{@tour_area.area} (#{@tour_area.departement})"
+         subject: "Nouvelle demande de maraude pour #{@tour_area.area} (#{@tour_area.departement})"
   end
 
   def user_report(reported_user:, reporting_user:, message:)

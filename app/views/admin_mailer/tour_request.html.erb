@@ -10,9 +10,10 @@
 <p><b>Informations</b></p>
 <p>
   <ul>
-    <li><%= link_to 'Lien vers sa fiche', edit_admin_user_url(@user.id, host: ENV['ADMIN_HOST']) %></li>
+    <li><%= @user.full_name %></li>
     <li>Email <%= @user.email %></li>
     <li>Téléphone <%= @user.phone %></li>
+    <li><%= link_to 'Lien vers sa fiche', edit_admin_user_url(@user.id, host: ENV['ADMIN_HOST']) %></li>
   </ul>
 </p>
 
