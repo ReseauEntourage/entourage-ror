@@ -11,7 +11,7 @@ namespace :poi do
   # 9 - Catégorie (int) category_id
   # 10 - Date de création (ignore)
   desc "import poi.csv file"
-  task import: :environment do
+  task import_bordeaux: :environment do
     CSV.read('docs/pois-bordeaux.csv', headers: true).each do |row|
       row = row.to_hash.map { |k,v| [k, v&.strip] }.to_h # remove surrounding spaces or carriage returns
 
