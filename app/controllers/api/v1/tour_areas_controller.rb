@@ -2,7 +2,7 @@ module Api
   module V1
     class TourAreasController < Api::V1::BaseController
       def index
-        render json: TourArea.all, each_serializer: ::V1::TourAreaSerializer
+        render json: TourArea.active, each_serializer: ::V1::TourAreaSerializer
       end
 
       def show
@@ -14,6 +14,11 @@ module Api
           message: "La zone de maraude fournie est incorrecte",
           code: :tour_area_not_found
         }, status: 400 and return unless TourArea.find_by_id(params[:id])
+
+        render json: {
+          message: "La zone de maraude fournie est inactive",
+          code: :tour_area_inactive
+        }, status: 400 and return unless TourArea.find_by_id(params[:id]).active?
 
         AdminMailer.tour_request(
           id: params[:id],

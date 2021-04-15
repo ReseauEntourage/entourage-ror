@@ -36,12 +36,19 @@ describe Api::V1::TourAreasController do
 
   describe "POST tour_request" do
     let(:tour_area) { FactoryGirl.create(:tour_area) }
+    let(:tour_area_inactive) { FactoryGirl.create(:tour_area, status: :inactive) }
     subject { JSON.parse(response.body) }
 
     context "wrong id" do
       before { post :tour_request, token: user.token, id: 0, message: 'I have a dream' }
       it { expect(response.status).to eq(400) }
       it { expect(subject['code']).to eq('tour_area_not_found') }
+    end
+
+    context "wrong status" do
+      before { post :tour_request, token: user.token, id: tour_area_inactive.id, message: 'I have a dream' }
+      it { expect(response.status).to eq(400) }
+      it { expect(subject['code']).to eq('tour_area_inactive') }
     end
 
     context "correct id" do
