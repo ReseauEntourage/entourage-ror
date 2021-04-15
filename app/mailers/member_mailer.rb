@@ -132,7 +132,7 @@ class MemberMailer < MailjetMailer
 
     mail(
       to: recipient,
-      cci: cci,
+      bcc: cci,
       subject: "Export des données personnelles d'Entourage"
     )
   end
