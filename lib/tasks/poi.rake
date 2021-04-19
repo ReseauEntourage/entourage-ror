@@ -26,6 +26,7 @@ namespace :poi do
         website: row['website'],
         phone: row['Téléphone'],
         category_id: row['Catégorie'],
+        categories: [row['Catégorie']],
 
         validated: true
       }
