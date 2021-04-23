@@ -756,7 +756,7 @@ ActiveRecord::Schema.define(version: 20210409145000) do
   end
 
   create_table "tour_areas", force: :cascade do |t|
-    t.string   "departement", limit: 2
+    t.string   "departement", limit: 5
     t.string   "area",                                       null: false
     t.string   "status",                default: "inactive", null: false
     t.string   "email",                                      null: false
