@@ -30,8 +30,8 @@ class User < ApplicationRecord
   has_many :join_requests
   has_many :entourage_participations, through: :join_requests, source: :joinable, source_type: "Entourage"
   has_many :tour_participations, through: :join_requests, source: :joinable, source_type: "Tour"
-  belongs_to :organization
-  has_and_belongs_to_many :coordinated_organizations, -> { distinct }, class_name: "Organization", join_table: "coordination"
+  belongs_to :organization, optional: true
+  has_and_belongs_to_many :coordinated_organizations, -> { distinct }, class_name: "Organization", join_table: "coordination", optional: true
   has_many :chat_messages
   has_many :conversation_messages
   has_many :user_applications
@@ -39,14 +39,14 @@ class User < ApplicationRecord
   has_many :relations, through: :user_relationships, source: "target_user"
   has_many :invitations, class_name: "EntourageInvitation", foreign_key: "invitee_id"
   has_many :feeds
-  belongs_to :partner
+  belongs_to :partner, optional: true
   has_one :users_appetence
   has_many :entourage_displays
   has_many :entourage_scores
   has_one :moderation, class_name: 'UserModeration'
   has_many :entourage_moderations, foreign_key: :moderator_id
   has_many :experimental_pending_request_reminders, class_name: 'Experimental::PendingRequestReminder'
-  belongs_to :address
+  belongs_to :address, optional: true
   has_many :addresses, -> { order(:position) }, dependent: :destroy
   has_many :partner_join_requests
 

@@ -1,7 +1,7 @@
 class EntourageModeration < ApplicationRecord
   validates :entourage_id, presence: true
   belongs_to :entourage
-  belongs_to :moderator, class_name: :User
+  belongs_to :moderator, class_name: :User, optional: true # about 30% of records have null moderator_id
 
   VALUES = {
     # Emetteur. community.targeting_profiles + the following:

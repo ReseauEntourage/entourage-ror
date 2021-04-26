@@ -1,10 +1,10 @@
 class UserDenorm < ApplicationRecord
   # observes :join_request, :chat_message, :entourage
   belongs_to :user
-  belongs_to :entourage, primary_key: :last_created_action_id
-  belongs_to :join_request, primary_key: :last_join_request_id
-  belongs_to :chat_message, primary_key: :last_private_chat_message_id
-  belongs_to :chat_message, primary_key: :last_group_chat_message_id
+  belongs_to :entourage, primary_key: :last_created_action_id, optional: true
+  belongs_to :join_request, primary_key: :last_join_request_id, optional: true
+  belongs_to :chat_message, primary_key: :last_private_chat_message_id, optional: true
+  belongs_to :chat_message, primary_key: :last_group_chat_message_id, optional: true
 
   # create
   def entourage_on_create entourage, group_type:

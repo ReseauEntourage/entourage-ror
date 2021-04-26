@@ -3,8 +3,8 @@ class Poi < ApplicationRecord
   validates_presence_of :name, :category
   validates :latitude, :longitude, numericality: true
   validates :partner_id, presence: true, allow_nil: true
-  belongs_to :category
-  has_and_belongs_to_many :categories
+  belongs_to :category, optional: true
+  has_and_belongs_to_many :categories, optional: true
 
   geocoded_by :adress
 

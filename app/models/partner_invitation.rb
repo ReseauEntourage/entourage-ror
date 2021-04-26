@@ -12,7 +12,7 @@ class PartnerInvitation < ApplicationRecord
 
   belongs_to :partner
   belongs_to :inviter, class_name: :User
-  belongs_to :invitee, class_name: :User
+  belongs_to :invitee, class_name: :User, optional: true # some records have null invitee_id
 
   include CustomTimestampAttributesForUpdate
   before_save :track_accept
