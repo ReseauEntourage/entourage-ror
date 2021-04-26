@@ -131,6 +131,22 @@ table th, table td {
                   <span class="description"> token</span>
                 </td>
               </tr>
+              <tr>
+                <td>
+                    <span class="name">latitude</span>
+                </td>
+                <td>
+                  <span class="description"> latitude</span>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                    <span class="name">longitude</span>
+                </td>
+                <td>
+                  <span class="description"> longitude</span>
+                </td>
+              </tr>
             </tbody>
           </table>
 
@@ -143,10 +159,12 @@ Host: example.org
 Cookie: </pre>
 
           <h4>Route</h4>
-          <pre class="request route highlight">GET /api/v1/home?token=foobar1</pre>
+          <pre class="request route highlight">GET /api/v1/home?token=foobar1&amp;latitude=48.854367553784954&amp;longitude=2.270340589096274</pre>
 
             <h4>Query Parameters</h4>
-            <pre class="request query_parameters highlight">token: foobar1</pre>
+            <pre class="request query_parameters highlight">token: foobar1
+latitude: 48.854367553784954
+longitude: 2.270340589096274</pre>
 
 
 
@@ -159,11 +177,11 @@ Access-Control-Allow-Origin: *
 Access-Control-Allow-Methods: GET,POST,PUT,PATCH,DELETE
 Access-Control-Allow-Headers: Origin,Accept,Content-Type,X-Requested-With,X-CSRF-Token,X-API-KEY
 Content-Type: application/json; charset=utf-8
-ETag: W/&quot;9e77410d757f2dd8f727ae62ef080551&quot;
+ETag: W/&quot;c77a185f4276f309fe94f2d4dfa3217d&quot;
 Cache-Control: max-age=0, private, must-revalidate
-X-Request-Id: c888e2aa-8878-4429-8254-a36a2ef2edf7
-X-Runtime: 0.113004
-Content-Length: 126</pre>
+X-Request-Id: af9563f3-167d-4016-b99a-37496d178044
+X-Runtime: 0.171803
+Content-Length: 4004</pre>
             <h4>Status</h4>
             <pre class="response status">200 OK</pre>
               <h4>Body</h4>
@@ -178,15 +196,191 @@ Content-Length: 126</pre>
   &quot;headlines&quot;: {
     &quot;metadata&quot;: {
       &quot;order&quot;: [
-
+        &quot;announcement_0&quot;,
+        &quot;outing&quot;,
+        &quot;action&quot;
       ]
+    },
+    &quot;announcement_0&quot;: {
+      &quot;type&quot;: &quot;Announcement&quot;,
+      &quot;data&quot;: {
+        &quot;id&quot;: 1,
+        &quot;uuid&quot;: &quot;1&quot;,
+        &quot;title&quot;: &quot;Une autre façon de contribuer.&quot;,
+        &quot;body&quot;: &quot;Entourage a besoin de vous pour continuer à accompagner les sans-abri.&quot;,
+        &quot;image_url&quot;: null,
+        &quot;action&quot;: &quot;Aider&quot;,
+        &quot;url&quot;: &quot;http://example.org/api/v1/announcements/1/redirect/foobar1&quot;,
+        &quot;icon_url&quot;: &quot;http://example.org/api/v1/announcements/1/icon&quot;,
+        &quot;author&quot;: null
+      }
+    },
+    &quot;outing&quot;: {
+      &quot;type&quot;: &quot;Entourage&quot;,
+      &quot;data&quot;: {
+        &quot;id&quot;: 6,
+        &quot;uuid&quot;: &quot;eTpijswxdY4c&quot;,
+        &quot;status&quot;: &quot;open&quot;,
+        &quot;title&quot;: &quot;Foobar&quot;,
+        &quot;group_type&quot;: &quot;outing&quot;,
+        &quot;public&quot;: false,
+        &quot;metadata&quot;: {
+          &quot;ends_at&quot;: &quot;2021-04-27T22:00:00.000+02:00&quot;,
+          &quot;starts_at&quot;: &quot;2021-04-27T19:00:00.000+02:00&quot;,
+          &quot;place_name&quot;: &quot;Café la Renaissance&quot;,
+          &quot;street_address&quot;: &quot;44 rue de l’Assomption, 75016 Paris, France&quot;,
+          &quot;display_address&quot;: &quot;Café la Renaissance, 44 rue de l’Assomption, 75016 Paris&quot;,
+          &quot;google_place_id&quot;: &quot;foobar&quot;
+        },
+        &quot;entourage_type&quot;: &quot;ask_for_help&quot;,
+        &quot;display_category&quot;: &quot;social&quot;,
+        &quot;postal_code&quot;: null,
+        &quot;join_status&quot;: &quot;not_requested&quot;,
+        &quot;number_of_unread_messages&quot;: null,
+        &quot;number_of_people&quot;: 1,
+        &quot;created_at&quot;: &quot;2021-04-26T10:06:41.000+02:00&quot;,
+        &quot;updated_at&quot;: &quot;2021-04-26T10:06:41.000+02:00&quot;,
+        &quot;description&quot;: null,
+        &quot;share_url&quot;: &quot;https://app.entourage.social/actions/eTpijswxdY4c&quot;,
+        &quot;image_url&quot;: null,
+        &quot;online&quot;: false,
+        &quot;event_url&quot;: null,
+        &quot;display_report_prompt&quot;: false,
+        &quot;author&quot;: {
+          &quot;id&quot;: 15,
+          &quot;display_name&quot;: &quot;John D.&quot;,
+          &quot;avatar_url&quot;: null,
+          &quot;partner&quot;: null,
+          &quot;partner_role_title&quot;: null
+        },
+        &quot;location&quot;: {
+          &quot;latitude&quot;: 48.854367553785,
+          &quot;longitude&quot;: 2.27034058909627
+        }
+      }
+    },
+    &quot;action&quot;: {
+      &quot;type&quot;: &quot;Entourage&quot;,
+      &quot;data&quot;: {
+        &quot;id&quot;: 5,
+        &quot;uuid&quot;: &quot;etNcss2brSFA&quot;,
+        &quot;status&quot;: &quot;open&quot;,
+        &quot;title&quot;: &quot;Foobar&quot;,
+        &quot;group_type&quot;: &quot;action&quot;,
+        &quot;public&quot;: false,
+        &quot;metadata&quot;: {
+          &quot;city&quot;: &quot;&quot;,
+          &quot;display_address&quot;: &quot;&quot;
+        },
+        &quot;entourage_type&quot;: &quot;ask_for_help&quot;,
+        &quot;display_category&quot;: &quot;social&quot;,
+        &quot;postal_code&quot;: null,
+        &quot;join_status&quot;: &quot;accepted&quot;,
+        &quot;number_of_unread_messages&quot;: 0,
+        &quot;number_of_people&quot;: 1,
+        &quot;created_at&quot;: &quot;2021-04-26T10:06:40.879+02:00&quot;,
+        &quot;updated_at&quot;: &quot;2021-04-26T10:06:40.879+02:00&quot;,
+        &quot;description&quot;: null,
+        &quot;share_url&quot;: &quot;https://app.entourage.social/actions/etNcss2brSFA&quot;,
+        &quot;image_url&quot;: null,
+        &quot;online&quot;: false,
+        &quot;event_url&quot;: null,
+        &quot;display_report_prompt&quot;: false,
+        &quot;author&quot;: {
+          &quot;id&quot;: 14,
+          &quot;display_name&quot;: &quot;John D.&quot;,
+          &quot;avatar_url&quot;: null,
+          &quot;partner&quot;: null,
+          &quot;partner_role_title&quot;: null
+        },
+        &quot;location&quot;: {
+          &quot;latitude&quot;: 48.85436,
+          &quot;longitude&quot;: 2.27034
+        }
+      }
     }
   },
   &quot;outings&quot;: [
-
+    {
+      &quot;id&quot;: 6,
+      &quot;uuid&quot;: &quot;eTpijswxdY4c&quot;,
+      &quot;status&quot;: &quot;open&quot;,
+      &quot;title&quot;: &quot;Foobar&quot;,
+      &quot;group_type&quot;: &quot;outing&quot;,
+      &quot;public&quot;: false,
+      &quot;metadata&quot;: {
+        &quot;ends_at&quot;: &quot;2021-04-27T22:00:00.000+02:00&quot;,
+        &quot;starts_at&quot;: &quot;2021-04-27T19:00:00.000+02:00&quot;,
+        &quot;place_name&quot;: &quot;Café la Renaissance&quot;,
+        &quot;street_address&quot;: &quot;44 rue de l’Assomption, 75016 Paris, France&quot;,
+        &quot;display_address&quot;: &quot;Café la Renaissance, 44 rue de l’Assomption, 75016 Paris&quot;,
+        &quot;google_place_id&quot;: &quot;foobar&quot;
+      },
+      &quot;entourage_type&quot;: &quot;ask_for_help&quot;,
+      &quot;display_category&quot;: &quot;social&quot;,
+      &quot;postal_code&quot;: null,
+      &quot;join_status&quot;: &quot;not_requested&quot;,
+      &quot;number_of_unread_messages&quot;: null,
+      &quot;number_of_people&quot;: 1,
+      &quot;created_at&quot;: &quot;2021-04-26T10:06:41.000+02:00&quot;,
+      &quot;updated_at&quot;: &quot;2021-04-26T10:06:41.000+02:00&quot;,
+      &quot;description&quot;: null,
+      &quot;share_url&quot;: &quot;https://app.entourage.social/actions/eTpijswxdY4c&quot;,
+      &quot;image_url&quot;: null,
+      &quot;online&quot;: false,
+      &quot;event_url&quot;: null,
+      &quot;display_report_prompt&quot;: false,
+      &quot;author&quot;: {
+        &quot;id&quot;: 15,
+        &quot;display_name&quot;: &quot;John D.&quot;,
+        &quot;avatar_url&quot;: null,
+        &quot;partner&quot;: null,
+        &quot;partner_role_title&quot;: null
+      },
+      &quot;location&quot;: {
+        &quot;latitude&quot;: 48.854367553785,
+        &quot;longitude&quot;: 2.27034058909627
+      }
+    }
   ],
   &quot;entourages&quot;: [
-
+    {
+      &quot;id&quot;: 5,
+      &quot;uuid&quot;: &quot;etNcss2brSFA&quot;,
+      &quot;status&quot;: &quot;open&quot;,
+      &quot;title&quot;: &quot;Foobar&quot;,
+      &quot;group_type&quot;: &quot;action&quot;,
+      &quot;public&quot;: false,
+      &quot;metadata&quot;: {
+        &quot;city&quot;: &quot;&quot;,
+        &quot;display_address&quot;: &quot;&quot;
+      },
+      &quot;entourage_type&quot;: &quot;ask_for_help&quot;,
+      &quot;display_category&quot;: &quot;social&quot;,
+      &quot;postal_code&quot;: null,
+      &quot;join_status&quot;: &quot;accepted&quot;,
+      &quot;number_of_unread_messages&quot;: 0,
+      &quot;number_of_people&quot;: 1,
+      &quot;created_at&quot;: &quot;2021-04-26T10:06:40.879+02:00&quot;,
+      &quot;updated_at&quot;: &quot;2021-04-26T10:06:40.879+02:00&quot;,
+      &quot;description&quot;: null,
+      &quot;share_url&quot;: &quot;https://app.entourage.social/actions/etNcss2brSFA&quot;,
+      &quot;image_url&quot;: null,
+      &quot;online&quot;: false,
+      &quot;event_url&quot;: null,
+      &quot;display_report_prompt&quot;: false,
+      &quot;author&quot;: {
+        &quot;id&quot;: 14,
+        &quot;display_name&quot;: &quot;John D.&quot;,
+        &quot;avatar_url&quot;: null,
+        &quot;partner&quot;: null,
+        &quot;partner_role_title&quot;: null
+      },
+      &quot;location&quot;: {
+        &quot;latitude&quot;: 48.85436,
+        &quot;longitude&quot;: 2.27034
+      }
+    }
   ]
 }</pre>
       </div>

@@ -143,10 +143,10 @@ Host: example.org
 Cookie: </pre>
 
           <h4>Route</h4>
-          <pre class="request route highlight">GET /api/v1/tour_areas?token=foobar2</pre>
+          <pre class="request route highlight">GET /api/v1/tour_areas?token=foobar4</pre>
 
             <h4>Query Parameters</h4>
-            <pre class="request query_parameters highlight">token: foobar2</pre>
+            <pre class="request query_parameters highlight">token: foobar4</pre>
 
 
 
@@ -159,17 +159,28 @@ Access-Control-Allow-Origin: *
 Access-Control-Allow-Methods: GET,POST,PUT,PATCH,DELETE
 Access-Control-Allow-Headers: Origin,Accept,Content-Type,X-Requested-With,X-CSRF-Token,X-API-KEY
 Content-Type: application/json; charset=utf-8
-ETag: W/&quot;6a6c4ced334d38230155d717c6483f31&quot;
+ETag: W/&quot;55ce48c59f6422cfe83c3ef1d000e278&quot;
 Cache-Control: max-age=0, private, must-revalidate
-X-Request-Id: 9e588bcd-63cb-44d5-9372-998f3e840c8d
-X-Runtime: 0.010272
-Content-Length: 17</pre>
+X-Request-Id: af32158d-c212-4ff8-9132-707234559c5a
+X-Runtime: 0.012019
+Content-Length: 144</pre>
             <h4>Status</h4>
             <pre class="response status">200 OK</pre>
               <h4>Body</h4>
               <pre class="response body">{
   &quot;tour_areas&quot;: [
-
+    {
+      &quot;id&quot;: 4,
+      &quot;departement&quot;: &quot;75000&quot;,
+      &quot;area&quot;: &quot;Paris&quot;,
+      &quot;status&quot;: &quot;active&quot;
+    },
+    {
+      &quot;id&quot;: 5,
+      &quot;departement&quot;: &quot;75000&quot;,
+      &quot;area&quot;: &quot;Paris&quot;,
+      &quot;status&quot;: &quot;active&quot;
+    }
   ]
 }</pre>
       </div>

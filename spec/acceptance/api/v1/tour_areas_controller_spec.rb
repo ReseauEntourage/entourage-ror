@@ -10,6 +10,7 @@ resource Api::V1::TourAreasController do
 
     let(:user) { FactoryGirl.create(:offer_help_user) }
     let(:token) { user.token }
+    let!(:tour_area_list) { FactoryGirl.create_list(:tour_area, 2) }
 
     context '200' do
       example_request 'Getting tour_areas' do
