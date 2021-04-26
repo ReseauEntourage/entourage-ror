@@ -1,4 +1,4 @@
-class UserDenorm < ActiveRecord::Base
+class UserDenorm < ApplicationRecord
   # observes :join_request, :chat_message, :entourage
   belongs_to :user
   belongs_to :entourage, primary_key: :last_created_action_id

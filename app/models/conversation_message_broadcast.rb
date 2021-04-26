@@ -1,6 +1,6 @@
 require 'experimental/jsonb_set'
 
-class ConversationMessageBroadcast < ActiveRecord::Base
+class ConversationMessageBroadcast < ApplicationRecord
   validates_presence_of :area, :goal, :content, :title
 
   def name
