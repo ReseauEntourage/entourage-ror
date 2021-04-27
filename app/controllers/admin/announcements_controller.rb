@@ -3,6 +3,7 @@ module Admin
     layout 'admin_large'
 
     def index
+      @params = params.permit([:status, :area, :user_goal]).to_h
       @status = params[:status].presence&.to_sym
       @status = :active unless @status.in?([:draft, :archived])
 

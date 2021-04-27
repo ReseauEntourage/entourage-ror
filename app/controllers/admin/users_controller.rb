@@ -3,6 +3,7 @@ module Admin
     before_action :set_user, only: [:show, :messages, :engagement, :edit, :update, :block, :unblock, :download_export, :send_export, :anonymize, :banish, :validate, :experimental_pending_request_reminder]
 
     def index
+      @params = params.permit([:status]).to_h
       @status = params[:status].presence&.to_sym
       @status = :all unless @status.in?([:engaged, :not_engaged])
 

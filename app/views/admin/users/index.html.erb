@@ -3,9 +3,9 @@
 <div class="row">
   <div style="margin-left: 15px; margin-bottom: 15px; display: flex">
     <div class="btn-group btn-group-sm">
-      <%= link_to("Tous", params.merge(status: :all), class: "btn btn-#{@status == :all ? :primary : :default}") %>
-      <%= link_to("Engagés", params.merge(status: :engaged), class: "btn btn-#{@status == :engaged ? :primary : :default}") %>
-      <%= link_to("Non engagés", params.merge(status: :not_engaged), class: "btn btn-#{@status == :not_engaged ? :primary : :default}") %>
+      <%= link_to("Tous", @params.merge(status: :all), class: "btn btn-#{@status == :all ? :primary : :default}") %>
+      <%= link_to("Engagés", @params.merge(status: :engaged), class: "btn btn-#{@status == :engaged ? :primary : :default}") %>
+      <%= link_to("Non engagés", @params.merge(status: :not_engaged), class: "btn btn-#{@status == :not_engaged ? :primary : :default}") %>
     </div>
 
     <div style="margin-left: auto">

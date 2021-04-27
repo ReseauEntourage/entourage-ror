@@ -3,6 +3,7 @@ module Admin
     layout 'admin_large'
 
     def index
+      @params = params.permit([:filter])
       @user = current_admin
 
       @conversations = Entourage
