@@ -48,6 +48,8 @@ module EntouragesHelper
     options[:title] ||= [entourage_type_phrase(entourage),
                          ' › ',
                          entourage_category_phrase(entourage)].join
+    return unless path
+
     image_tag path, options
   end
 

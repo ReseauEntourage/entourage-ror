@@ -20,7 +20,10 @@ class UserPresenter < ApplicationPresenter
   end
 
   def avatar
-    image_tag(UserServices::Avatar.new(user: user).thumbnail_url, height: '128', width: '128')
+    url = UserServices::Avatar.new(user: user).thumbnail_url
+    return unless url
+
+    image_tag(url, height: '128', width: '128')
   end
 
   def validation_status_action_link

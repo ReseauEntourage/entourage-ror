@@ -14,7 +14,7 @@
     </div>
 
     <div class="margin-bottom: 15px">
-      <%= image_tag @entourage.image_url, size: '750x320' %>
+      <%= image_tag(@entourage.image_url, size: '750x320') if @entourage.image_url.present? %>
     </div>
 
     <form class="form-inline" id="upload-form"

@@ -11,7 +11,7 @@
     <% size = controller.action_name == :edit_image_portrait ? '750x320' : '600x792' %>
 
     <div class="margin-bottom: 15px">
-      <%= image_tag @image, size: size %>
+      <%= image_tag(@image, size: size) if @image.present? %>
     </div>
 
     <form class="form-inline" id="upload-form" action="#" method="post" enctype="multipart/form-data">
