@@ -201,10 +201,10 @@
             <% end %>
           </div>
           <div class="announcement-image">
-            <%= image_tag announcement.image_url, size: '225x96' %>
+            <%= image_tag(announcement.image_url, size: '225x96') if announcement.image_url.present? %>
           </div>
           <div class="announcement-image">
-            <%= image_tag announcement.image_portrait_url, size: '60x79' %>
+            <%= image_tag(announcement.image_portrait_url, size: '60x79') if announcement.image_portrait_url.present? %>
           </div>
           <%= link_to "", edit_admin_announcement_path(announcement), class: "overlay" %>
         </div>
