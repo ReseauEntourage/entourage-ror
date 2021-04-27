@@ -6,6 +6,9 @@ require 'rails/all'
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 
+# https://guides.rubyonrails.org/upgrading_ruby_on_rails.html#halting-callback-chains-via-throw-abort
+# ActiveSupport.halt_callback_chains_on_return_false = false
+
 module EntourageBack
   class Application < Rails::Application
     config.time_zone = 'Paris'
@@ -29,6 +32,9 @@ module EntourageBack
 
     Rails.application.routes.default_url_options[:host] = ENV["HOST"]
     config.action_mailer.default_url_options = { :host => ENV["HOST"] }
+
+    # https://guides.rubyonrails.org/upgrading_ruby_on_rails.html#per-form-csrf-tokens
+    # config.action_controller.per_form_csrf_tokens = true
 
     # lograge
     # note: development.rb overrides this config
