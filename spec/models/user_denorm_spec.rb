@@ -144,7 +144,7 @@ RSpec.describe UserDenorm, type: :model do
 
         # calls explicitely
         perform_enqueued_jobs do
-          UserDenormJob.perform_now(entourage_id: action.id, user_id: nil)
+          UserDenormJob.new.perform(entourage_id: action.id, user_id: nil)
         end
 
         # denorm_pro
@@ -169,7 +169,7 @@ RSpec.describe UserDenorm, type: :model do
         action.update_attribute(:group_type, :action)
 
         perform_enqueued_jobs do
-          UserDenormJob.perform_now(entourage_id: action.id, user_id: nil)
+          UserDenormJob.new.perform(entourage_id: action.id, user_id: nil)
         end
 
         # denorm_pro
