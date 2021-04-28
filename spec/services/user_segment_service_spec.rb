@@ -105,7 +105,7 @@ describe UserSegmentService do
       let(:user_attributes) { {} }
 
       let!(:organizer_participation)   { create :join_request, {user: organizer,   joinable: group, status: :accepted, role: :organizer}.merge(participation_attributes) }
-      let!(:participant_participation) { create :join_request, {user: participant, joinable: group, status: :accepted, role: :participant}.merge(participation_attributes) }
+      let!(:participant_participation) { create :join_request, {user: participant, joinable: group, status: :accepted, role: :participant, requested_at: 1.day.ago}.merge(participation_attributes) }
       let(:participation_attributes) { {} }
 
       describe 'organizer' do
@@ -139,6 +139,16 @@ describe UserSegmentService do
         context "valid event" do
           let(:group_attributes) { {metadata: {starts_at: n.day.from_now} } }
           it { expect(segment.pluck(:user_id)).to eq [participant.id] }
+        end
+
+        context "valid event with a valid previous_at" do
+          let(:group_attributes) { {metadata: {starts_at: n.day.from_now, previous_at: 2.days.ago} } }
+          it { expect(segment.pluck(:user_id)).to eq [participant.id] }
+        end
+
+        context "valid event with an invalid previous_at" do
+          let(:group_attributes) { {metadata: {starts_at: n.day.from_now, previous_at: 2.hour.ago} } }
+          it { expect(segment.pluck(:user_id)).to eq [] }
         end
 
         context "join request is not accepted" do

@@ -39,6 +39,7 @@ module UserSegmentService
       JoinRequest
       .accepted
       .where(({ role: options[:role] } if options.key?(:role)))
+      .where(("metadata->>'previous_at' is null or metadata->>'previous_at' < requested_at::text" if options.key?(:role) && options[:role] == :participant))
       .joins(:user, :entourage)
       .merge(user_scope)
       .merge(
