@@ -198,6 +198,7 @@ class Entourage < ActiveRecord::Base
         {
           starts_at: { format: 'date-time-iso8601' },
           ends_at: { format: 'date-time-iso8601' },
+          previous_at: { format: 'date-time-iso8601' },
           place_name: { type: :string },
           street_address: { type: :string },
           google_place_id: { type: :string },

@@ -65,6 +65,9 @@
               <%= link_to("Non prioritaire", admin_unpin_admin_entourage_path(@entourage), method: :post, class: "btn btn-#{@entourage.admin_pin? ? :default : :primary}") %>
             </div>
             <%= link_to "Modifier", edit_admin_entourage_path(@entourage), class: "btn btn-success" %>
+            <% if @entourage.group_type == 'outing' %>
+              <%= link_to "Renouveler l'événement", renew_admin_entourage_path(@entourage), class: "btn btn-primary" %>
+            <% end %>
           </div>
         </div>
       </div>

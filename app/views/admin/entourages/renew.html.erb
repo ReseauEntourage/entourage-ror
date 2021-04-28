@@ -1,0 +1,42 @@
+
+<div class="alert alert-info" role="alert" style="display: flex; align-items: center">
+  <div style="flex-grow: 1">
+    <b>Vous souhaitez renouveler l'événement</b><br>
+    Merci de noter que seuls les utilisateurs qui auront rejoint l'événement après la date du dernier recevront les mails de rappel pour le prochain événement.
+  </div>
+</div>
+
+<%= form_for([:admin, @entourage], :method => :PATCH, html: { class: "form-horizontal", role: "form" }) do |f| %>
+  <%= render partial: "layouts/errors", locals: {obj: @entourage} %>
+
+  <%= f.hidden_field :group_type %>
+  <%= f.hidden_field :previous_at, value: @entourage.metadata[:starts_at] %>
+
+  <% if @entourage.group_type == 'outing' %>
+    <%
+      timestamps = {
+        starts_at: "Date et heure de début",
+        ends_at:   "Date et heure de fin"
+      }
+      minute_step = 5
+    %>
+    <% timestamps.each do |timestamp, label| %>
+      <% datetime = @entourage.metadata[timestamp] %>
+      <div class="control-group">
+        <label class="control-label"><%= label %></label>
+        <div class="controls">
+          <%= date_field_tag("metadata[#{timestamp}][date]", datetime&.to_date&.to_s, required: true) %>
+          <%= select_hour(datetime&.hour, { include_blank: true }, name: "metadata[#{timestamp}][hour]", required: true) %>
+          <% minutes = datetime ? (datetime.min / minute_step.to_f).round * minute_step : nil %>
+          <%= select_minute(minutes, { minute_step: 5 }, name: "metadata[#{timestamp}][min]", required: true) %>
+        </div>
+      </div>
+    <% end %>
+
+    <br>
+    <%= f.submit "Sauver", class: "btn btn-success" %>
+  <% else %>
+  <% end %>
+
+  <%= link_to "Annuler", [:admin, @entourage], class: "btn btn-default" %>
+<% end %>
