@@ -10,6 +10,7 @@ module Admin
     end
 
     def user_search
+      @params = params.permit([:status]).to_h
       @users = User.includes(:organization)
                    .where(community: current_user.community.slug)
                    .search_by(search_param, search_param, search_param, params[:search])
