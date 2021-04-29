@@ -10,7 +10,7 @@
   <%= render partial: "layouts/errors", locals: {obj: @entourage} %>
 
   <%= f.hidden_field :group_type %>
-  <%= f.hidden_field :previous_at, value: @entourage.metadata[:starts_at] %>
+  <%= hidden_field_tag 'metadata[previous_at]', @entourage.metadata[:starts_at] %>
 
   <% if @entourage.group_type == 'outing' %>
     <%

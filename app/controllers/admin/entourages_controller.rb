@@ -217,8 +217,9 @@ module Admin
         end
       end
 
-      if @entourage.group_type == 'outing' && update_params[:metadata].present?
-        update_params[:metadata][:previous_at] = params[:entourage][:previous_at]
+      if @entourage.group_type == 'outing' && params[:metadata].present?
+        update_params[:metadata] ||= {}
+        update_params[:metadata][:previous_at] = params[:metadata][:previous_at]
       end
 
       group_type_change = [
