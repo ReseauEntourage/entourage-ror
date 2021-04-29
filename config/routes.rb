@@ -49,6 +49,8 @@ Rails.application.routes.draw do
         end
       end
 
+      resources :tour_areas
+
       resources :uploads, only: :new
       namespace :uploads do
         get '/success', to: :update
@@ -201,6 +203,12 @@ Rails.application.routes.draw do
       resources :map, only: [:index]
       resources :newsletter_subscriptions, only: [:create]
       resources :questions, only: [:index]
+
+      resources :tour_areas, only: [:index, :show] do
+        member do
+          post :request, action: :tour_request
+        end
+      end
 
       resources :pois, only: [:index, :show, :create] do
         collection do

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20210326150000) do
+ActiveRecord::Schema.define(version: 20210409145000) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -754,6 +754,18 @@ ActiveRecord::Schema.define(version: 20210326150000) do
     t.datetime "created_at",                                null: false
     t.datetime "updated_at",                                null: false
   end
+
+  create_table "tour_areas", force: :cascade do |t|
+    t.string   "departement", limit: 5
+    t.string   "area",                                       null: false
+    t.string   "status",                default: "inactive", null: false
+    t.string   "email",                                      null: false
+    t.datetime "created_at",                                 null: false
+    t.datetime "updated_at",                                 null: false
+  end
+
+  add_index "tour_areas", ["area"], name: "index_tour_areas_on_area", using: :btree
+  add_index "tour_areas", ["status"], name: "index_tour_areas_on_status", using: :btree
 
   create_table "tour_points", force: :cascade do |t|
     t.float    "latitude",     null: false
