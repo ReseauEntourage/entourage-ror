@@ -337,6 +337,7 @@ describe Api::V1::EntouragesController do
               "metadata"=>{
                 "starts_at"=>"2018-09-04T19:30:00.000+02:00",
                 "ends_at"=>"2018-09-04T22:30:00.000+02:00",
+                "previous_at"=>nil,
                 "place_name"=>"Le Dorothy",
                 "street_address"=>"85 bis rue de Ménilmontant, 75020 Paris, France",
                 "google_place_id"=>"ChIJFzXXy-xt5kcRg5tztdINnp0",
@@ -548,6 +549,7 @@ describe Api::V1::EntouragesController do
             "metadata"=>{
               "starts_at"=>starts_at.iso8601(3),
               "ends_at"=>(starts_at + 3.hours).iso8601(3),
+              "previous_at"=>nil,
               "display_address"=>"Café la Renaissance, 44 rue de l’Assomption, 75016 Paris",
               "place_name"=>"Café la Renaissance",
               "street_address"=>"44 rue de l’Assomption, 75016 Paris, France",

@@ -85,6 +85,7 @@ RSpec.describe Entourage, type: :model do
     it { expect(outing.metadata).to eq(
       starts_at: now,
       ends_at: now + 3.hours,
+      previous_at: nil,
       display_address: "Café la Renaissance, 44 rue de l’Assomption, 75016 Paris",
       place_name: "Café la Renaissance",
       street_address: "44 rue de l’Assomption, 75016 Paris, France",

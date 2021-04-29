@@ -85,6 +85,7 @@ class Entourage < ActiveRecord::Base
   before_validation :set_community, on: :create
   before_validation :set_default_attributes, if: :group_type_changed?
   before_validation :set_outings_ends_at
+  before_validation :set_outings_previous_at
   before_validation :generate_display_address
   before_validation :reformat_content
   before_validation :set_default_online_attributes, if: :online_changed?
@@ -198,6 +199,7 @@ class Entourage < ActiveRecord::Base
         {
           starts_at: { format: 'date-time-iso8601' },
           ends_at: { format: 'date-time-iso8601' },
+          previous_at: { format: 'date-time-iso8601' },
           place_name: { type: :string },
           street_address: { type: :string },
           google_place_id: { type: :string },
@@ -299,6 +301,14 @@ class Entourage < ActiveRecord::Base
 
     ends_at = self.metadata[:starts_at] + DEFAULT_EVENT_DURATION rescue nil
     self.metadata[:ends_at] = ends_at if ends_at
+  end
+
+  def set_outings_previous_at
+    return unless group_type == 'outing'
+    return unless metadata_changed?
+    return unless metadata
+    return unless metadata[:previous_at].nil?
+    self.metadata[:previous_at] = nil
   end
 
   def validate_outings_ends_at
