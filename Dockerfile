@@ -62,7 +62,7 @@ USER docker-user
 # Setup gem config, install bundler, foreman and all Gemfile dependencies
 
 RUN echo gem: --no-document > ~/.gemrc \
- && gem install 'bundler:~>1' foreman
+ && gem install 'bundler:~>2' foreman
 
 RUN bundle install
 

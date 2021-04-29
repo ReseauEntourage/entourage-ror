@@ -202,7 +202,7 @@ module Admin
     end
 
     def update
-      update_params = entourage_params
+      update_params = entourage_params.to_h.with_indifferent_access
       [:starts_at, :ends_at].each do |timestamp|
         datetime = params.dig(:metadata, timestamp)&.slice(:date, :hour, :min)
         if datetime.present?
