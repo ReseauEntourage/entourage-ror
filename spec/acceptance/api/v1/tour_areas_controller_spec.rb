@@ -6,7 +6,7 @@ resource Api::V1::TourAreasController do
   header "Content-Type", "application/json"
 
   get '/api/v1/tour_areas' do
-    parameter :token, type: :string
+    parameter :token, type: :string, required: true
 
     let(:user) { FactoryGirl.create(:offer_help_user) }
     let(:token) { user.token }

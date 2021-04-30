@@ -6,9 +6,9 @@ resource Api::V1::HomeController do
   header "Content-Type", "application/json"
 
   get '/api/v1/home' do
-    parameter :token, type: :string
-    parameter :latitude, type: :number
-    parameter :longitude, type: :number
+    parameter :token, type: :string, required: true
+    parameter :latitude, type: :number, required: true
+    parameter :longitude, type: :number, required: true
 
     let(:user) { FactoryGirl.create(:offer_help_user) }
     let(:token) { user.token }
