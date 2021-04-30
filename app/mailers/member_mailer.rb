@@ -116,7 +116,7 @@ class MemberMailer < MailjetMailer
 
       mail(to: ENV["POI_REPORT_EMAIL"], subject: 'Correction de POI')
     else
-      logger.warn "Could not deliver POI report. Please provide POI_REPORT_EMAIL as an environment variable".red
+      logger.warn "Could not deliver POI report. Please provide POI_REPORT_EMAIL as an environment variable"
     end
   end
 
