@@ -22,7 +22,7 @@ resource Api::V1::HomeController do
     let!(:tour) { FactoryGirl.create(:tour) }
 
     context '200' do
-      example_request 'Getting home' do
+      example_request 'Get home' do
         expect(status).to eq(200)
       end
     end

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Api::V1::TourAreasController API</title>
+    <title>Api::V1::EntouragesController API</title>
     <meta charset="utf-8">
     <style>
       
@@ -106,13 +106,13 @@ table th, table td {
   </head>
   <body>
     <div class="container">
-      <h1>Api::V1::TourAreasController API</h1>
+      <h1>Api::V1::EntouragesController API</h1>
 
-        <p class="explanation">Tour areas</p>
+        <p class="explanation">Entourages</p>
 
       <div class="article">
-        <h2>Getting tour_areas</h2>
-        <h3>GET /api/v1/tour_areas</h3>
+        <h2>Get owned entourages</h2>
+        <h3>GET api/v1/entourages/owns</h3>
 
           <h3>Parameters</h3>
           <table class="parameters table table-striped table-bordered table-condensed">
@@ -124,7 +124,7 @@ table th, table td {
             </thead>
             <tbody>
               <tr>
-                <td>
+                <td class="required">
                     <span class="name">token</span>
                 </td>
                 <td>
@@ -143,10 +143,10 @@ Host: example.org
 Cookie: </pre>
 
           <h4>Route</h4>
-          <pre class="request route highlight">GET /api/v1/tour_areas?token=foobar14</pre>
+          <pre class="request route highlight">GET api/v1/entourages/owns?token=foobar5</pre>
 
             <h4>Query Parameters</h4>
-            <pre class="request query_parameters highlight">token: foobar14</pre>
+            <pre class="request query_parameters highlight">token: foobar5</pre>
 
 
 
@@ -159,28 +159,17 @@ Access-Control-Allow-Origin: *
 Access-Control-Allow-Methods: GET,POST,PUT,PATCH,DELETE
 Access-Control-Allow-Headers: Origin,Accept,Content-Type,X-Requested-With,X-CSRF-Token,X-API-KEY
 Content-Type: application/json; charset=utf-8
-ETag: W/&quot;0b46f08325b6104092a3a9ca9ed32f2b&quot;
+ETag: W/&quot;b8dc5aceca4ec944f14d6e0905368b9c&quot;
 Cache-Control: max-age=0, private, must-revalidate
-X-Request-Id: 23af9b10-8cb9-4646-9155-36187614bdbb
-X-Runtime: 0.010241
-Content-Length: 148</pre>
+X-Request-Id: 81621f25-9d37-4b86-95d2-7fc1d5b15043
+X-Runtime: 0.005623
+Content-Length: 17</pre>
             <h4>Status</h4>
             <pre class="response status">200 OK</pre>
               <h4>Body</h4>
               <pre class="response body">{
-  &quot;tour_areas&quot;: [
-    {
-      &quot;id&quot;: 175,
-      &quot;departement&quot;: &quot;75000&quot;,
-      &quot;area&quot;: &quot;Paris&quot;,
-      &quot;status&quot;: &quot;active&quot;
-    },
-    {
-      &quot;id&quot;: 176,
-      &quot;departement&quot;: &quot;75000&quot;,
-      &quot;area&quot;: &quot;Paris&quot;,
-      &quot;status&quot;: &quot;active&quot;
-    }
+  &quot;entourages&quot;: [
+
   ]
 }</pre>
       </div>
