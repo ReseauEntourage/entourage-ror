@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Api::V1::TourAreasController API</title>
+    <title>Api::V1::PoisController API</title>
     <meta charset="utf-8">
     <style>
       
@@ -106,13 +106,13 @@ table th, table td {
   </head>
   <body>
     <div class="container">
-      <h1>Api::V1::TourAreasController API</h1>
+      <h1>Api::V1::PoisController API</h1>
 
-        <p class="explanation">Tour areas</p>
+        <p class="explanation">Pois</p>
 
       <div class="article">
-        <h2>Getting tour_areas</h2>
-        <h3>GET /api/v1/tour_areas</h3>
+        <h2>Get poi</h2>
+        <h3>GET api/v1/pois/:id</h3>
 
           <h3>Parameters</h3>
           <table class="parameters table table-striped table-bordered table-condensed">
@@ -125,10 +125,10 @@ table th, table td {
             <tbody>
               <tr>
                 <td>
-                    <span class="name">token</span>
+                    <span class="name">id</span>
                 </td>
                 <td>
-                  <span class="description"> token</span>
+                  <span class="description">POI id</span>
                 </td>
               </tr>
             </tbody>
@@ -143,10 +143,8 @@ Host: example.org
 Cookie: </pre>
 
           <h4>Route</h4>
-          <pre class="request route highlight">GET /api/v1/tour_areas?token=foobar6</pre>
+          <pre class="request route highlight">GET api/v1/pois/142</pre>
 
-            <h4>Query Parameters</h4>
-            <pre class="request query_parameters highlight">token: foobar6</pre>
 
 
 
@@ -159,29 +157,35 @@ Access-Control-Allow-Origin: *
 Access-Control-Allow-Methods: GET,POST,PUT,PATCH,DELETE
 Access-Control-Allow-Headers: Origin,Accept,Content-Type,X-Requested-With,X-CSRF-Token,X-API-KEY
 Content-Type: application/json; charset=utf-8
-ETag: W/&quot;fca477c6e2bd645e15c3a83410fb06e8&quot;
+ETag: W/&quot;97204b8831d9cac98e53acd84af34b83&quot;
 Cache-Control: max-age=0, private, must-revalidate
-X-Request-Id: b8a9f0fa-095c-4b07-a46b-eb7281b24bd0
-X-Runtime: 0.009325
-Content-Length: 148</pre>
+X-Request-Id: 50f111d2-e648-4124-91fb-86540cd0b9b4
+X-Runtime: 0.008041
+Content-Length: 350</pre>
             <h4>Status</h4>
             <pre class="response status">200 OK</pre>
               <h4>Body</h4>
               <pre class="response body">{
-  &quot;tour_areas&quot;: [
-    {
-      &quot;id&quot;: 139,
-      &quot;departement&quot;: &quot;75000&quot;,
-      &quot;area&quot;: &quot;Paris&quot;,
-      &quot;status&quot;: &quot;active&quot;
-    },
-    {
-      &quot;id&quot;: 140,
-      &quot;departement&quot;: &quot;75000&quot;,
-      &quot;area&quot;: &quot;Paris&quot;,
-      &quot;status&quot;: &quot;active&quot;
-    }
-  ]
+  &quot;poi&quot;: {
+    &quot;uuid&quot;: &quot;142&quot;,
+    &quot;source&quot;: &quot;entourage&quot;,
+    &quot;source_url&quot;: null,
+    &quot;name&quot;: &quot;Dede&quot;,
+    &quot;description&quot;: null,
+    &quot;longitude&quot;: 2.30681949999996,
+    &quot;latitude&quot;: 48.870424,
+    &quot;address&quot;: &quot;Au 50 75008 Paris&quot;,
+    &quot;phone&quot;: &quot;0000000000&quot;,
+    &quot;website&quot;: &quot;entourage.com&quot;,
+    &quot;email&quot;: &quot;entourage@entourage.com&quot;,
+    &quot;audience&quot;: &quot;Mon audience&quot;,
+    &quot;hours&quot;: null,
+    &quot;languages&quot;: null,
+    &quot;partner_id&quot;: null,
+    &quot;category_ids&quot;: [
+      163
+    ]
+  }
 }</pre>
       </div>
     </div>

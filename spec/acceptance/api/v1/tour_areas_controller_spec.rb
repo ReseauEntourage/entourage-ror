@@ -2,7 +2,7 @@ require 'rails_helper'
 require 'rspec_api_documentation/dsl'
 
 resource Api::V1::TourAreasController do
-  explanation "api/v1/tour_areas"
+  explanation "Tour areas"
   header "Content-Type", "application/json"
 
   get '/api/v1/tour_areas' do

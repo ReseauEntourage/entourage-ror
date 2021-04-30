@@ -2,7 +2,7 @@ require 'rails_helper'
 require 'rspec_api_documentation/dsl'
 
 resource Api::V1::HomeController do
-  explanation "api/v1/home"
+  explanation "Home"
   header "Content-Type", "application/json"
 
   get '/api/v1/home' do
