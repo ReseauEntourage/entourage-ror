@@ -35,7 +35,7 @@ resource Api::V1::EntouragesController do
   get 'api/v1/entourages/:id' do
     route_summary "Get an entourage"
 
-    parameter :id, "Entourage id", required: true
+    parameter :id, required: true
     parameter :token, type: :string, required: true
 
     let(:entourage) { create :entourage }
@@ -102,6 +102,160 @@ resource Api::V1::EntouragesController do
       example_request 'Get invited entourages' do
         expect(status).to eq(200)
         expect(JSON.parse(response_body)).to have_key('entourages')
+      end
+    end
+  end
+
+  post 'api/v1/entourages' do
+    route_summary "Creates an entourage"
+
+    parameter :token, type: :string, required: true
+
+    with_options :scope => :entourage, :required => true do
+      parameter :title
+      with_options :scope => "entourage[location]", :required => true do
+        parameter :latitude
+        parameter :longitude
+      end
+      parameter :entourage_type
+      parameter :display_category, required: false
+      parameter :description, required: false
+      parameter :category, required: false
+      parameter :recipient_consent_obtained, required: false
+    end
+
+    let(:entourage) { build :entourage }
+    let(:user) { FactoryGirl.create(:pro_user) }
+
+    let(:raw_post) { {
+      token: user.token,
+      entourage: {
+        title: entourage.title,
+        location: {
+          latitude: entourage.latitude,
+          longitude: entourage.longitude,
+        },
+        entourage_type: entourage.entourage_type,
+        display_category: entourage.display_category,
+        description: entourage.description,
+        category: entourage.category,
+        recipient_consent_obtained: true
+      }
+    }.to_json }
+
+    context '201' do
+      example_request 'Create entourage' do
+        expect(status).to eq(201)
+        expect(JSON.parse(response_body)).to have_key('entourage')
+      end
+    end
+  end
+
+  patch 'api/v1/entourages/:id' do
+    route_summary "Updates an entourage"
+
+    parameter :id, required: true
+    parameter :token, type: :string, required: true
+
+    with_options :scope => :entourage, :required => true do
+      parameter :title, required: false
+      with_options :scope => "entourage[location]" do
+        parameter :latitude, required: false
+        parameter :longitude, required: false
+      end
+      parameter :entourage_type, required: false
+      parameter :display_category, required: false
+      parameter :description, required: false
+      parameter :category, required: false
+      parameter :recipient_consent_obtained, required: false
+    end
+
+    let(:user) { FactoryGirl.create(:pro_user) }
+    let(:entourage) { FactoryGirl.create(:entourage, :joined, user: user) }
+
+    let(:id) { entourage.id }
+    let(:raw_post) { {
+      token: user.token,
+      entourage: {
+        title: entourage.title
+      }
+    }.to_json }
+
+    context '200' do
+      example_request 'Update entourage' do
+        expect(status).to eq(200)
+        expect(JSON.parse(response_body)).to have_key('entourage')
+      end
+    end
+  end
+
+  put 'api/v1/entourages/:id/read' do
+    route_summary "Reads an entourage"
+
+    parameter :id, required: true
+    parameter :token, type: :string, required: true
+
+    let(:entourage) { create :entourage }
+    let(:user) { FactoryGirl.create(:public_user) }
+    let(:old_date) { DateTime.parse("15/10/2010") }
+    let!(:join_request) { FactoryGirl.create(:join_request, joinable: entourage, user: user, status: JoinRequest::ACCEPTED_STATUS, last_message_read: old_date) }
+
+    let(:id) { entourage.id }
+    let(:raw_post) { {
+      token: user.token
+    }.to_json }
+
+    context '204' do
+      example_request 'Read entourage' do
+        expect(status).to eq(204)
+      end
+    end
+  end
+
+  post 'api/v1/entourages/:id/report' do
+    route_summary "Reports an entourage"
+
+    parameter :id, required: true
+    parameter :token, type: :string, required: true
+    with_options :scope => :entourage_report, :required => true do
+      parameter :message, type: :string
+    end
+
+    let(:entourage) { create :entourage }
+    let(:user) { FactoryGirl.create(:public_user) }
+
+    let(:id) { entourage.id }
+    let(:raw_post) { {
+      token: user.token,
+      entourage_report: {
+        message: 'message'
+      }
+    }.to_json }
+
+    context '201' do
+      example_request 'Report entourage' do
+        expect(status).to eq(201)
+      end
+    end
+  end
+
+  delete 'api/v1/entourages/:id/report_prompt' do
+    route_summary "Deletes a report prompt"
+
+    parameter :id, required: true
+    parameter :token, type: :string, required: true
+
+    let(:entourage) { create :entourage }
+    let(:user) { FactoryGirl.create(:public_user) }
+
+    let(:id) { entourage.id }
+    let(:raw_post) { {
+      token: user.token,
+    }.to_json }
+
+    context '204' do
+      example_request 'Delete entourage report_prompt' do
+        expect(status).to eq(204)
       end
     end
   end

@@ -111,8 +111,8 @@ table th, table td {
         <p class="explanation">Entourages</p>
 
       <div class="article">
-        <h2>Get entourage</h2>
-        <h3>GET api/v1/entourages/:id</h3>
+        <h2>Create entourage</h2>
+        <h3>POST api/v1/entourages</h3>
 
           <h3>Parameters</h3>
           <table class="parameters table table-striped table-bordered table-condensed">
@@ -125,18 +125,74 @@ table th, table td {
             <tbody>
               <tr>
                 <td class="required">
-                    <span class="name">id</span>
-                </td>
-                <td>
-                  <span class="description"> id</span>
-                </td>
-              </tr>
-              <tr>
-                <td class="required">
                     <span class="name">token</span>
                 </td>
                 <td>
                   <span class="description"> token</span>
+                </td>
+              </tr>
+              <tr>
+                <td class="required">
+                    <span class="name">entourage[title]</span>
+                </td>
+                <td>
+                  <span class="description">Entourage title</span>
+                </td>
+              </tr>
+              <tr>
+                <td class="required">
+                    <span class="name">entourage[location][latitude]</span>
+                </td>
+                <td>
+                  <span class="description">Entourage[location] latitude</span>
+                </td>
+              </tr>
+              <tr>
+                <td class="required">
+                    <span class="name">entourage[location][longitude]</span>
+                </td>
+                <td>
+                  <span class="description">Entourage[location] longitude</span>
+                </td>
+              </tr>
+              <tr>
+                <td class="required">
+                    <span class="name">entourage[entourage_type]</span>
+                </td>
+                <td>
+                  <span class="description">Entourage entourage type</span>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                    <span class="name">entourage[display_category]</span>
+                </td>
+                <td>
+                  <span class="description">Entourage display category</span>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                    <span class="name">entourage[description]</span>
+                </td>
+                <td>
+                  <span class="description">Entourage description</span>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                    <span class="name">entourage[category]</span>
+                </td>
+                <td>
+                  <span class="description">Entourage category</span>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                    <span class="name">entourage[recipient_consent_obtained]</span>
+                </td>
+                <td>
+                  <span class="description">Entourage recipient consent obtained</span>
                 </td>
               </tr>
             </tbody>
@@ -151,11 +207,11 @@ Host: example.org
 Cookie: </pre>
 
           <h4>Route</h4>
-          <pre class="request route highlight">GET api/v1/entourages/557?token=foobar3</pre>
+          <pre class="request route highlight">POST api/v1/entourages</pre>
 
-            <h4>Query Parameters</h4>
-            <pre class="request query_parameters highlight">token: foobar3</pre>
 
+            <h4>Body</h4>
+            <pre class="request body">{"token":"foobar9","entourage":{"title":"foobar","location":{"latitude":1.122,"longitude":2.345},"entourage_type":"ask_for_help","display_category":"social","description":null,"category":null,"recipient_consent_obtained":true}}</pre>
 
 
             <h3>Response</h3>
@@ -167,18 +223,19 @@ Access-Control-Allow-Origin: *
 Access-Control-Allow-Methods: GET,POST,PUT,PATCH,DELETE
 Access-Control-Allow-Headers: Origin,Accept,Content-Type,X-Requested-With,X-CSRF-Token,X-API-KEY
 Content-Type: application/json; charset=utf-8
-ETag: W/&quot;06b5ddda3e2ce380a7a069a0adc25922&quot;
+ETag: W/&quot;80a420c7c8e2fc7fc01e4d05548e653f&quot;
 Cache-Control: max-age=0, private, must-revalidate
-X-Request-Id: f7251b2c-bf8e-4625-8422-8b4671fee749
-X-Runtime: 0.036260
-Content-Length: 728</pre>
+Set-Cookie: request_method=POST; path=/
+X-Request-Id: 83cecda0-aaba-4311-8843-0a83d50e1eab
+X-Runtime: 0.567798
+Content-Length: 720</pre>
             <h4>Status</h4>
-            <pre class="response status">200 OK</pre>
+            <pre class="response status">201 Created</pre>
               <h4>Body</h4>
               <pre class="response body">{
   &quot;entourage&quot;: {
-    &quot;id&quot;: 557,
-    &quot;uuid&quot;: &quot;eri5xrQOBWGo&quot;,
+    &quot;id&quot;: 559,
+    &quot;uuid&quot;: &quot;eIRn-586lOdk&quot;,
     &quot;status&quot;: &quot;open&quot;,
     &quot;title&quot;: &quot;Foobar&quot;,
     &quot;group_type&quot;: &quot;action&quot;,
@@ -190,19 +247,19 @@ Content-Length: 728</pre>
     &quot;entourage_type&quot;: &quot;ask_for_help&quot;,
     &quot;display_category&quot;: &quot;social&quot;,
     &quot;postal_code&quot;: null,
-    &quot;join_status&quot;: &quot;not_requested&quot;,
-    &quot;number_of_unread_messages&quot;: null,
+    &quot;join_status&quot;: &quot;accepted&quot;,
+    &quot;number_of_unread_messages&quot;: 0,
     &quot;number_of_people&quot;: 1,
-    &quot;created_at&quot;: &quot;2021-05-03T10:22:35.585+02:00&quot;,
-    &quot;updated_at&quot;: &quot;2021-05-03T10:22:35.585+02:00&quot;,
+    &quot;created_at&quot;: &quot;2021-05-03T10:22:35.785+02:00&quot;,
+    &quot;updated_at&quot;: &quot;2021-05-03T10:22:35.785+02:00&quot;,
     &quot;description&quot;: null,
-    &quot;share_url&quot;: &quot;https://app.entourage.social/actions/eri5xrQOBWGo&quot;,
+    &quot;share_url&quot;: &quot;https://app.entourage.social/actions/eIRn-586lOdk&quot;,
     &quot;image_url&quot;: null,
     &quot;online&quot;: false,
     &quot;event_url&quot;: null,
     &quot;display_report_prompt&quot;: false,
     &quot;author&quot;: {
-      &quot;id&quot;: 1290,
+      &quot;id&quot;: 1297,
       &quot;display_name&quot;: &quot;John D.&quot;,
       &quot;avatar_url&quot;: null,
       &quot;partner&quot;: null,

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Api::V1::TourAreasController API</title>
+    <title>Api::V1::EntouragesController API</title>
     <meta charset="utf-8">
     <style>
       
@@ -106,13 +106,13 @@ table th, table td {
   </head>
   <body>
     <div class="container">
-      <h1>Api::V1::TourAreasController API</h1>
+      <h1>Api::V1::EntouragesController API</h1>
 
-        <p class="explanation">Tour areas</p>
+        <p class="explanation">Entourages</p>
 
       <div class="article">
-        <h2>Getting tour_areas</h2>
-        <h3>GET /api/v1/tour_areas</h3>
+        <h2>Report entourage</h2>
+        <h3>POST api/v1/entourages/:id/report</h3>
 
           <h3>Parameters</h3>
           <table class="parameters table table-striped table-bordered table-condensed">
@@ -125,10 +125,26 @@ table th, table td {
             <tbody>
               <tr>
                 <td class="required">
+                    <span class="name">id</span>
+                </td>
+                <td>
+                  <span class="description"> id</span>
+                </td>
+              </tr>
+              <tr>
+                <td class="required">
                     <span class="name">token</span>
                 </td>
                 <td>
                   <span class="description"> token</span>
+                </td>
+              </tr>
+              <tr>
+                <td class="required">
+                    <span class="name">entourage_report[message]</span>
+                </td>
+                <td>
+                  <span class="description">Entourage report message</span>
                 </td>
               </tr>
             </tbody>
@@ -143,11 +159,11 @@ Host: example.org
 Cookie: </pre>
 
           <h4>Route</h4>
-          <pre class="request route highlight">GET /api/v1/tour_areas?token=foobar23</pre>
+          <pre class="request route highlight">POST api/v1/entourages/562/report</pre>
 
-            <h4>Query Parameters</h4>
-            <pre class="request query_parameters highlight">token: foobar23</pre>
 
+            <h4>Body</h4>
+            <pre class="request body">{"token":"foobar15","entourage_report":{"message":"message"}}</pre>
 
 
             <h3>Response</h3>
@@ -158,31 +174,14 @@ X-Content-Type-Options: nosniff
 Access-Control-Allow-Origin: *
 Access-Control-Allow-Methods: GET,POST,PUT,PATCH,DELETE
 Access-Control-Allow-Headers: Origin,Accept,Content-Type,X-Requested-With,X-CSRF-Token,X-API-KEY
-Content-Type: application/json; charset=utf-8
-ETag: W/&quot;09ef5298ca8480d83380c4ef829301aa&quot;
-Cache-Control: max-age=0, private, must-revalidate
-X-Request-Id: 68cd21d5-e758-4690-9aab-6004516b15fc
-X-Runtime: 0.010894
-Content-Length: 148</pre>
+Content-Type: text/html
+Cache-Control: no-cache
+Set-Cookie: request_method=POST; path=/
+X-Request-Id: da3791b9-d33b-4269-b15c-b6355553ec57
+X-Runtime: 0.061413
+Content-Length: 0</pre>
             <h4>Status</h4>
-            <pre class="response status">200 OK</pre>
-              <h4>Body</h4>
-              <pre class="response body">{
-  &quot;tour_areas&quot;: [
-    {
-      &quot;id&quot;: 274,
-      &quot;departement&quot;: &quot;75000&quot;,
-      &quot;area&quot;: &quot;Paris&quot;,
-      &quot;status&quot;: &quot;active&quot;
-    },
-    {
-      &quot;id&quot;: 275,
-      &quot;departement&quot;: &quot;75000&quot;,
-      &quot;area&quot;: &quot;Paris&quot;,
-      &quot;status&quot;: &quot;active&quot;
-    }
-  ]
-}</pre>
+            <pre class="response status">201 Created</pre>
       </div>
     </div>
   </body>

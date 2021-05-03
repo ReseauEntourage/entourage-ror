@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Api::V1::PoisController API</title>
+    <title>Api::V1::EntouragesController API</title>
     <meta charset="utf-8">
     <style>
       
@@ -106,13 +106,13 @@ table th, table td {
   </head>
   <body>
     <div class="container">
-      <h1>Api::V1::PoisController API</h1>
+      <h1>Api::V1::EntouragesController API</h1>
 
-        <p class="explanation">Pois</p>
+        <p class="explanation">Entourages</p>
 
       <div class="article">
-        <h2>Get pois</h2>
-        <h3>GET /api/v1/pois</h3>
+        <h2>Update entourage</h2>
+        <h3>PATCH api/v1/entourages/:id</h3>
 
           <h3>Parameters</h3>
           <table class="parameters table table-striped table-bordered table-condensed">
@@ -124,67 +124,83 @@ table th, table td {
             </thead>
             <tbody>
               <tr>
-                <td>
-                    <span class="name">v</span>
+                <td class="required">
+                    <span class="name">id</span>
                 </td>
                 <td>
-                  <span class="description">Version to be used, 1 or 2 (default 1)</span>
+                  <span class="description"> id</span>
+                </td>
+              </tr>
+              <tr>
+                <td class="required">
+                    <span class="name">token</span>
+                </td>
+                <td>
+                  <span class="description"> token</span>
                 </td>
               </tr>
               <tr>
                 <td>
-                    <span class="name">latitude</span>
+                    <span class="name">entourage[title]</span>
                 </td>
                 <td>
-                  <span class="description">User latitude</span>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                    <span class="name">longitude</span>
-                </td>
-                <td>
-                  <span class="description">User longitude</span>
+                  <span class="description">Entourage title</span>
                 </td>
               </tr>
               <tr>
                 <td>
-                    <span class="name">distance</span>
+                    <span class="name">entourage[location][latitude]</span>
                 </td>
                 <td>
-                  <span class="description">Distance from GPS coordinates from which POI should be found</span>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                    <span class="name">category_ids</span>
-                </td>
-                <td>
-                  <span class="description">Comma separated category_ids</span>
+                  <span class="description">Entourage[location] latitude</span>
                 </td>
               </tr>
               <tr>
                 <td>
-                    <span class="name">partners_filters</span>
+                    <span class="name">entourage[location][longitude]</span>
                 </td>
                 <td>
-                  <span class="description">Comma separated partners (either donations or volunteers)</span>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                    <span class="name">query</span>
-                </td>
-                <td>
-                  <span class="description">Filter POI by name</span>
+                  <span class="description">Entourage[location] longitude</span>
                 </td>
               </tr>
               <tr>
                 <td>
-                    <span class="name">no_redirect</span>
+                    <span class="name">entourage[entourage_type]</span>
                 </td>
                 <td>
-                  <span class="description"> no redirect</span>
+                  <span class="description">Entourage entourage type</span>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                    <span class="name">entourage[display_category]</span>
+                </td>
+                <td>
+                  <span class="description">Entourage display category</span>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                    <span class="name">entourage[description]</span>
+                </td>
+                <td>
+                  <span class="description">Entourage description</span>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                    <span class="name">entourage[category]</span>
+                </td>
+                <td>
+                  <span class="description">Entourage category</span>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                    <span class="name">entourage[recipient_consent_obtained]</span>
+                </td>
+                <td>
+                  <span class="description">Entourage recipient consent obtained</span>
                 </td>
               </tr>
             </tbody>
@@ -199,14 +215,11 @@ Host: example.org
 Cookie: </pre>
 
           <h4>Route</h4>
-          <pre class="request route highlight">GET /api/v1/pois?v=1&amp;latitude=48.870424&amp;longitude=2.30681949999996&amp;category_ids=344</pre>
+          <pre class="request route highlight">PATCH api/v1/entourages/560</pre>
 
-            <h4>Query Parameters</h4>
-            <pre class="request query_parameters highlight">v: 1
-latitude: 48.870424
-longitude: 2.30681949999996
-category_ids: 344</pre>
 
+            <h4>Body</h4>
+            <pre class="request body">{"token":"foobar11","entourage":{"title":"Foobar"}}</pre>
 
 
             <h3>Response</h3>
@@ -218,42 +231,53 @@ Access-Control-Allow-Origin: *
 Access-Control-Allow-Methods: GET,POST,PUT,PATCH,DELETE
 Access-Control-Allow-Headers: Origin,Accept,Content-Type,X-Requested-With,X-CSRF-Token,X-API-KEY
 Content-Type: application/json; charset=utf-8
-ETag: W/&quot;046fd9a1cbb84bcf8b8ca44053f5bf3b&quot;
+ETag: W/&quot;1283dc57efb910b2b9f42ec254b375f6&quot;
 Cache-Control: max-age=0, private, must-revalidate
-X-Request-Id: 5689569e-7927-469a-af27-2e7b235b1c66
-X-Runtime: 0.016710
-Content-Length: 383</pre>
+Set-Cookie: request_method=PATCH; path=/
+X-Request-Id: 22adfac9-a3cf-4604-a833-cf79eb3a055f
+X-Runtime: 0.020376
+Content-Length: 720</pre>
             <h4>Status</h4>
             <pre class="response status">200 OK</pre>
               <h4>Body</h4>
               <pre class="response body">{
-  &quot;pois&quot;: [
-    {
-      &quot;id&quot;: 323,
-      &quot;name&quot;: &quot;Dede&quot;,
-      &quot;description&quot;: null,
-      &quot;longitude&quot;: 2.30681949999996,
-      &quot;latitude&quot;: 48.870424,
-      &quot;adress&quot;: &quot;Au 50 75008 Paris&quot;,
-      &quot;phone&quot;: &quot;0000000000&quot;,
-      &quot;website&quot;: &quot;entourage.com&quot;,
-      &quot;email&quot;: &quot;entourage@entourage.com&quot;,
-      &quot;audience&quot;: &quot;Mon audience&quot;,
-      &quot;validated&quot;: true,
-      &quot;category_id&quot;: 344,
-      &quot;partner_id&quot;: null,
-      &quot;category&quot;: {
-        &quot;id&quot;: 344,
-        &quot;name&quot;: &quot;Categorie 1&quot;
-      }
+  &quot;entourage&quot;: {
+    &quot;id&quot;: 560,
+    &quot;uuid&quot;: &quot;eo4d5_Jm_yWc&quot;,
+    &quot;status&quot;: &quot;open&quot;,
+    &quot;title&quot;: &quot;Foobar&quot;,
+    &quot;group_type&quot;: &quot;action&quot;,
+    &quot;public&quot;: false,
+    &quot;metadata&quot;: {
+      &quot;city&quot;: &quot;&quot;,
+      &quot;display_address&quot;: &quot;&quot;
+    },
+    &quot;entourage_type&quot;: &quot;ask_for_help&quot;,
+    &quot;display_category&quot;: &quot;social&quot;,
+    &quot;postal_code&quot;: null,
+    &quot;join_status&quot;: &quot;accepted&quot;,
+    &quot;number_of_unread_messages&quot;: 0,
+    &quot;number_of_people&quot;: 1,
+    &quot;created_at&quot;: &quot;2021-05-03T10:22:36.377+02:00&quot;,
+    &quot;updated_at&quot;: &quot;2021-05-03T10:22:36.377+02:00&quot;,
+    &quot;description&quot;: null,
+    &quot;share_url&quot;: &quot;https://app.entourage.social/actions/eo4d5_Jm_yWc&quot;,
+    &quot;image_url&quot;: null,
+    &quot;online&quot;: false,
+    &quot;event_url&quot;: null,
+    &quot;display_report_prompt&quot;: false,
+    &quot;author&quot;: {
+      &quot;id&quot;: 1299,
+      &quot;display_name&quot;: &quot;John D.&quot;,
+      &quot;avatar_url&quot;: null,
+      &quot;partner&quot;: null,
+      &quot;partner_role_title&quot;: null
+    },
+    &quot;location&quot;: {
+      &quot;latitude&quot;: 1.122,
+      &quot;longitude&quot;: 2.345
     }
-  ],
-  &quot;categories&quot;: [
-    {
-      &quot;id&quot;: 344,
-      &quot;name&quot;: &quot;Categorie 1&quot;
-    }
-  ]
+  }
 }</pre>
       </div>
     </div>
