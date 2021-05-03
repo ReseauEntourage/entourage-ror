@@ -29,11 +29,11 @@ class UserDenormObserver < ActiveRecord::Observer
     end
 
     if record.instance_of? JoinRequest
-      return unless [:pending, :accepted].include?(record.status.to_sym) || (record.status_changed? && verb == :update)
+      return unless [:pending, :accepted].include?(record.status.to_sym) || (record.saved_change_to_status? && verb == :update)
     end
 
     if record.instance_of?(JoinRequest) || record.instance_of?(Entourage)
-      return unless [:action, :outing].include?(entourage.group_type.to_sym) || (entourage.group_type_changed? && verb == :update)
+      return unless [:action, :outing].include?(entourage.group_type.to_sym) || (entourage.saved_change_to_group_type? && verb == :update)
     end
 
     denorm = UserDenorm.find_or_create_by(user_id: user_id)

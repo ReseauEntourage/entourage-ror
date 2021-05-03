@@ -27,7 +27,8 @@ class UserDenorm < ApplicationRecord
 
   # update
   def entourage_on_update entourage, group_type:
-    return unless entourage.group_type_changed?
+    # return unless entourage.group_type_changed?
+    return unless entourage.saved_change_to_group_type?
 
     recompute_last_created_action_id
     recompute_last_join_request_id # if group_type_changed? then the last_join_request_id may change
@@ -38,7 +39,7 @@ class UserDenorm < ApplicationRecord
   end
 
   def join_request_on_update join_request, group_type:
-    return unless join_request.status_changed?
+    return unless join_request.saved_change_to_status?
 
     recompute_last_join_request_id
   end
