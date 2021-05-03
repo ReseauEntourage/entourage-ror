@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Api::V1::PoisController API</title>
+    <title>Api::V1::MessagesController API</title>
     <meta charset="utf-8">
     <style>
       
@@ -106,13 +106,13 @@ table th, table td {
   </head>
   <body>
     <div class="container">
-      <h1>Api::V1::PoisController API</h1>
+      <h1>Api::V1::MessagesController API</h1>
 
-        <p class="explanation">Pois</p>
+        <p class="explanation">Messages</p>
 
       <div class="article">
-        <h2>Get poi</h2>
-        <h3>GET api/v1/pois/:id</h3>
+        <h2>Create message</h2>
+        <h3>POST api/v1/messages</h3>
 
           <h3>Parameters</h3>
           <table class="parameters table table-striped table-bordered table-condensed">
@@ -124,11 +124,43 @@ table th, table td {
             </thead>
             <tbody>
               <tr>
-                <td>
-                    <span class="name">id</span>
+                <td class="required">
+                    <span class="name">token</span>
                 </td>
                 <td>
-                  <span class="description">POI id</span>
+                  <span class="description"> token</span>
+                </td>
+              </tr>
+              <tr>
+                <td class="required">
+                    <span class="name">message[content]</span>
+                </td>
+                <td>
+                  <span class="description">Message content</span>
+                </td>
+              </tr>
+              <tr>
+                <td class="required">
+                    <span class="name">message[first_name]</span>
+                </td>
+                <td>
+                  <span class="description">Message first name</span>
+                </td>
+              </tr>
+              <tr>
+                <td class="required">
+                    <span class="name">message[last_name]</span>
+                </td>
+                <td>
+                  <span class="description">Message last name</span>
+                </td>
+              </tr>
+              <tr>
+                <td class="required">
+                    <span class="name">message[email]</span>
+                </td>
+                <td>
+                  <span class="description">Message email</span>
                 </td>
               </tr>
             </tbody>
@@ -143,9 +175,11 @@ Host: example.org
 Cookie: </pre>
 
           <h4>Route</h4>
-          <pre class="request route highlight">GET api/v1/pois/368</pre>
+          <pre class="request route highlight">POST api/v1/messages</pre>
 
 
+            <h4>Body</h4>
+            <pre class="request body">{"token":"foobar25","message":{"content":"content","first_name":"first_name","last_name":"last_name","email":"some@email.com"}}</pre>
 
 
             <h3>Response</h3>
@@ -157,35 +191,23 @@ Access-Control-Allow-Origin: *
 Access-Control-Allow-Methods: GET,POST,PUT,PATCH,DELETE
 Access-Control-Allow-Headers: Origin,Accept,Content-Type,X-Requested-With,X-CSRF-Token,X-API-KEY
 Content-Type: application/json; charset=utf-8
-ETag: W/&quot;9c153283f5d5ba08ce73d79e2ec16edc&quot;
+ETag: W/&quot;56c1785b409751a940191ba81b075ac2&quot;
 Cache-Control: max-age=0, private, must-revalidate
-X-Request-Id: 176c21dd-80bd-4aac-9bb4-68608e945a82
-X-Runtime: 0.006582
-Content-Length: 350</pre>
+Set-Cookie: request_method=POST; path=/
+X-Request-Id: 6acd3a16-05e2-4532-bfe9-ee242184eeab
+X-Runtime: 0.018702
+Content-Length: 194</pre>
             <h4>Status</h4>
-            <pre class="response status">200 OK</pre>
+            <pre class="response status">201 Created</pre>
               <h4>Body</h4>
               <pre class="response body">{
-  &quot;poi&quot;: {
-    &quot;uuid&quot;: &quot;368&quot;,
-    &quot;source&quot;: &quot;entourage&quot;,
-    &quot;source_url&quot;: null,
-    &quot;name&quot;: &quot;Dede&quot;,
-    &quot;description&quot;: null,
-    &quot;longitude&quot;: 2.30681949999996,
-    &quot;latitude&quot;: 48.870424,
-    &quot;address&quot;: &quot;Au 50 75008 Paris&quot;,
-    &quot;phone&quot;: &quot;0000000000&quot;,
-    &quot;website&quot;: &quot;entourage.com&quot;,
-    &quot;email&quot;: &quot;entourage@entourage.com&quot;,
-    &quot;audience&quot;: &quot;Mon audience&quot;,
-    &quot;hours&quot;: null,
-    &quot;languages&quot;: null,
-    &quot;partner_id&quot;: null,
-    &quot;category_ids&quot;: [
-      389
-    ]
-  }
+  &quot;id&quot;: 10,
+  &quot;content&quot;: &quot;content&quot;,
+  &quot;created_at&quot;: &quot;2021-05-03T11:34:23.366+02:00&quot;,
+  &quot;updated_at&quot;: &quot;2021-05-03T11:34:23.366+02:00&quot;,
+  &quot;first_name&quot;: &quot;first_name&quot;,
+  &quot;last_name&quot;: &quot;last_name&quot;,
+  &quot;email&quot;: &quot;some@email.com&quot;
 }</pre>
       </div>
     </div>
