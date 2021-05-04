@@ -226,7 +226,7 @@ module DigestEmailService
       to: user,
       template_id: 662271,
       campaign_name: campaign_name,
-      unsubscribe_category: UNSUBSCRIBE_CATEGORY,
+      unsubscribe_category: UNSUBSCRIBE_CATEGORY.to_s,
       deliver_only_once: content_id == :test ? false : true,
       variables: {
         actions: groups,
@@ -267,7 +267,7 @@ module DigestEmailService
     {
       title: group.title,
       description: description,
-      icon: icon,
+      icon: icon.to_s,
       location: location,
       url: url
     }

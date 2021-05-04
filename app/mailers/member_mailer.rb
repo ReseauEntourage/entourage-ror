@@ -16,33 +16,33 @@ class MemberMailer < MailjetMailer
   def onboarding_day_8(user)
     mailjet_email to: user,
                   template_id: 452755,
-                  campaign_name: :onboarding_j_8
+                  campaign_name: 'onboarding_j_8'
   end
 
   def onboarding_day_14(user)
     mailjet_email to: user,
                   template_id: 456172,
-                  campaign_name: :onboarding_j_14
+                  campaign_name: 'onboarding_j_14'
   end
 
   def reactivation_day_20(user)
     mailjet_email to: user,
                   template_id: 456175,
-                  campaign_name: :relance_j_20,
+                  campaign_name: 'relance_j_20',
                   deliver_only_once: true
   end
 
   def reactivation_day_40(user)
     mailjet_email to: user,
                   template_id: 456194,
-                  campaign_name: :relance_j_40,
+                  campaign_name: 'relance_j_40',
                   deliver_only_once: true
   end
 
   def action_follow_up_day_10(action)
     mailjet_email to: action.user,
                   template_id: 452754,
-                  campaign_name: :action_suivi_j_10,
+                  campaign_name: 'action_suivi_j_10',
                   variables: {
                     action => [
                       :entourage_title,
@@ -56,16 +56,16 @@ class MemberMailer < MailjetMailer
     action_url = action.share_url
     mailjet_email to: action.user,
                   template_id: 451123,
-                  campaign_name: :action_suivi_j_20,
+                  campaign_name: 'action_suivi_j_20',
                   variables: {
                     action => [
-                      :entourage_title,
-                      :entourage_url,
-                      :entourage_share_url,
+                      'entourage_title',
+                      'entourage_url',
+                      'entourage_share_url',
                     ],
                     action_success_url: one_click_update_api_v1_entourage_url(
                       host: API_HOST,
-                      protocol: :https,
+                      protocol: 'https',
                       id: action.uuid_v2,
                       signature: SignatureService.sign(action.id),
                     ),
@@ -87,16 +87,16 @@ class MemberMailer < MailjetMailer
 
     headers(
       'X-MJ-EventPayload' => JSON.fast_generate(
-        type: :tour_report,
+        type: 'tour_report',
         tour_id: tour.id
       ),
-      'X-Mailjet-Campaign' => :tour_report,
+      'X-Mailjet-Campaign' => 'tour_report',
       'X-MJ-CustomID' => "tour_report-#{tour.id}"
     )
 
     track_delivery(
       user_id: @user.id,
-      campaign: :tour_report,
+      campaign: 'tour_report',
       detailed: true
     )
 
