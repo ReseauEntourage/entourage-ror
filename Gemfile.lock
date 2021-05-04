@@ -474,7 +474,7 @@ DEPENDENCIES
   simplify_rb (~> 0)
   skylight
   slack-notifier
-  spring
+  spring (~> 2.1.0)
   spring-commands-rspec
   super_diff
   timecop
