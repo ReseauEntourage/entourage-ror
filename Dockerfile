@@ -95,7 +95,7 @@ RUN apt-get update \
 RUN \
   repo=https://github.com/rbspy/rbspy; \
   tag=$(curl -sLI -o /dev/null -w %{url_effective} $repo/releases/latest | cut -d/ -f8); \
-  tar=$repo/releases/download/$tag/rbspy-$tag-x86_64-unknown-linux-gnu.tar.gz; \
+  tar=$repo/releases/download/$tag/rbspy-x86_64-unknown-linux-gnu.tar.gz; \
   curl -sL $tar | tar xzC /usr/local/bin
 
 # Run all future commands with this user
