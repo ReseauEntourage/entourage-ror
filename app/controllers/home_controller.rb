@@ -22,7 +22,9 @@ class HomeController < ApplicationController
     else
       raise AbstractController::ActionNotFound
     end
-    query_string = params.except(:action, :controller).to_query
+
+    # @fixme which params should be permitted?
+    query_string = params.permit([:action, :controller]).except(:action, :controller).to_query
     url = "#{url}?#{query_string}" if query_string.present?
     redirect_to url, status: 301
   end
