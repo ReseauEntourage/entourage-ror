@@ -116,7 +116,7 @@ module Api
 
       def show
         if params[:id].start_with?('s')
-          return head status: 302, location: "https://entourage-soliguide-preprod.herokuapp.com/api/v1/pois/#{params[:id]}?" + params.except(:action, :controller, :id).to_query
+          return head status: 302, location: "https://entourage-soliguide-preprod.herokuapp.com/api/v1/pois/#{params[:id]}?" + show_params.except(:action, :controller, :id).to_query
         end
 
         poi = Poi.validated.find(params[:id])
@@ -183,6 +183,10 @@ module Api
 
       def member_mailer
         @member_mailer ||= MemberMailer
+      end
+
+      def show_params
+        params.permit([:id, :action, :controller, :token])
       end
     end
   end
