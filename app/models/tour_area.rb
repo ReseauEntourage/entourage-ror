@@ -1,4 +1,4 @@
-class TourArea < ActiveRecord::Base
+class TourArea < ApplicationRecord
   AREA_STATUS = ['active', 'inactive']
 
   validates_presence_of [:area, :status, :email]

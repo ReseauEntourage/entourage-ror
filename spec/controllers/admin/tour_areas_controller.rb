@@ -6,7 +6,7 @@ describe Admin::TourAreasController do
 
   describe 'GET #index' do
     context "has tour_areas" do
-      let!(:tour_area_list) { FactoryGirl.create_list(:tour_area, 2) }
+      let!(:tour_area_list) { FactoryBot.create_list(:tour_area, 2) }
       before { get :index }
 
       it { expect(assigns(:tour_areas)).to match_array(tour_area_list) }
@@ -46,13 +46,13 @@ describe Admin::TourAreasController do
   end
 
   describe "GET #edit" do
-    let!(:tour_area) { FactoryGirl.create(:tour_area) }
+    let!(:tour_area) { FactoryBot.create(:tour_area) }
     before { get :edit, id: tour_area.to_param }
     it { expect(assigns(:tour_area)).to eq(tour_area) }
   end
 
   describe "PUT #update" do
-    let!(:tour_area) { FactoryGirl.create(:tour_area) }
+    let!(:tour_area) { FactoryBot.create(:tour_area) }
 
     context "common field" do
       before {
@@ -64,7 +64,7 @@ describe Admin::TourAreasController do
   end
 
   describe "DELETE destroy" do
-    let!(:tour_area) { FactoryGirl.create(:tour_area) }
+    let!(:tour_area) { FactoryBot.create(:tour_area) }
     before { delete :destroy, id: tour_area.id }
     it { expect(TourArea.count).to eq(0) }
   end

@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe TourArea, type: :model do
-  it { expect(FactoryGirl.build(:tour_area).save!).to be true }
+  it { expect(FactoryBot.build(:tour_area).save!).to be true }
 
   it { should validate_presence_of(:area) }
   it { should validate_presence_of(:status) }

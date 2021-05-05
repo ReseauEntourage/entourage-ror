@@ -1,10 +1,10 @@
 require 'rails_helper'
 
 describe Api::V1::TourAreasController do
-  let(:user) { FactoryGirl.create(:public_user) }
+  let(:user) { FactoryBot.create(:public_user) }
 
   describe "GET index" do
-    let!(:tour_area_list) { FactoryGirl.create_list(:tour_area, 2) }
+    let!(:tour_area_list) { FactoryBot.create_list(:tour_area, 2) }
 
     context "not signed in" do
       before { get :index }
@@ -27,7 +27,7 @@ describe Api::V1::TourAreasController do
   end
 
   describe "GET show" do
-    let(:tour_area) { FactoryGirl.create(:tour_area) }
+    let(:tour_area) { FactoryBot.create(:tour_area) }
 
     before { get :show, token: user.token, id: tour_area.id }
     subject { JSON.parse(response.body) }
@@ -35,8 +35,8 @@ describe Api::V1::TourAreasController do
   end
 
   describe "POST tour_request" do
-    let(:tour_area) { FactoryGirl.create(:tour_area) }
-    let(:tour_area_inactive) { FactoryGirl.create(:tour_area, status: :inactive) }
+    let(:tour_area) { FactoryBot.create(:tour_area) }
+    let(:tour_area_inactive) { FactoryBot.create(:tour_area, status: :inactive) }
     subject { JSON.parse(response.body) }
 
     context "wrong id" do

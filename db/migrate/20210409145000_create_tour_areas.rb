@@ -1,4 +1,4 @@
-class CreateTourAreas < ActiveRecord::Migration
+class CreateTourAreas < ActiveRecord::Migration[4.2]
   def up
     create_table :tour_areas do |t|
       t.string :departement, limit: 5

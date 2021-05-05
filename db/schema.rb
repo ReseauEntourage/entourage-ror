@@ -638,16 +638,15 @@ ActiveRecord::Schema.define(version: 20210409145000) do
   end
 
   create_table "tour_areas", id: :serial, force: :cascade do |t|
-    t.string   "departement", limit: 5
-    t.string   "area",                                       null: false
-    t.string   "status",                default: "inactive", null: false
-    t.string   "email",                                      null: false
-    t.datetime "created_at",                                 null: false
-    t.datetime "updated_at",                                 null: false
+    t.string "departement", limit: 5
+    t.string "area", null: false
+    t.string "status", default: "inactive", null: false
+    t.string "email", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["area"], name: "index_tour_areas_on_area"
+    t.index ["status"], name: "index_tour_areas_on_status"
   end
-
-  add_index "tour_areas", ["area"], name: "index_tour_areas_on_area", using: :btree
-  add_index "tour_areas", ["status"], name: "index_tour_areas_on_status", using: :btree
 
   create_table "tour_points", id: :serial, force: :cascade do |t|
     t.float "latitude", null: false
