@@ -93,7 +93,7 @@ module Admin
       end
 
       email_prefs_success = EmailPreferencesService.update(
-        user: user, preferences: (params[:email_preferences] || {}))
+        user: user, preferences: (params.permit([:email_preferences])[:email_preferences] || {}))
 
       user.assign_attributes(user_params)
       user.encrypted_password = nil if user.sms_code_changed?
