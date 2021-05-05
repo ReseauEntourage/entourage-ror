@@ -119,7 +119,7 @@ module Experimental
     def timezone_converter
       @timezone_converter ||=
         ActiveRecord::AttributeMethods::TimeZoneConversion::TimeZoneConverter.new(
-          connection_adapter.type_map.fetch(
+          connection_adapter.send(:type_map).fetch(
             connection_adapter.type_to_sql(:datetime)
           )
         )
