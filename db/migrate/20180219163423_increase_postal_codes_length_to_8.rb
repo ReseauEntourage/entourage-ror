@@ -1,4 +1,4 @@
-class IncreasePostalCodesLengthTo8 < ActiveRecord::Migration
+class IncreasePostalCodesLengthTo8 < ActiveRecord::Migration[4.2]
   def up
     change_column :entourages, :postal_code, :string, limit: 8
     change_column :action_zones, :postal_code, :string, limit: 8, null: false

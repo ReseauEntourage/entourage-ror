@@ -1,4 +1,4 @@
-class CreateJoinRequests < ActiveRecord::Migration
+class CreateJoinRequests < ActiveRecord::Migration[4.2]
   def change
     create_table :join_requests do |t|
       t.integer   :user_id,             null: false

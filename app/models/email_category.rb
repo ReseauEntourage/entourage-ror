@@ -1,2 +1,2 @@
-class EmailCategory < ActiveRecord::Base
+class EmailCategory < ApplicationRecord
 end

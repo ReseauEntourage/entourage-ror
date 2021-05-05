@@ -1,9 +1,9 @@
-class Feed < ActiveRecord::Base
+class Feed < ApplicationRecord
   include FeedsConcern
   reverse_geocoded_by :latitude, :longitude
 
-  # https://github.com/rails/rails/blob/v4.2.10/activerecord/lib/active_record/attributes.rb
-  attribute :community, Community::Type.new
+  # https://github.com/rails/rails/blob/v5.0.7.2/activerecord/lib/active_record/attributes.rb#L114
+  attribute :community, :community
 
   belongs_to :user
   belongs_to :feedable, polymorphic: true

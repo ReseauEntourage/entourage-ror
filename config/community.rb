@@ -83,9 +83,9 @@ class Community < BasicObject
   alias_method :to_s, :inspect
   alias_method :to_str, :slug # implicit comparison with strings
 
-  # https://github.com/rails/rails/blob/v4.2.10/activerecord/lib/active_record/sanitization.rb#L187
+  # https://github.com/rails/rails/blob/v5.0.7.2/activerecord/lib/active_record/sanitization.rb#L226
   def quoted_id
-    ::ActiveRecord::Base.connection.quote Type.new.type_cast_for_database(slug)
+    ::ActiveRecord::Base.connection.quote Type.new.serialize(slug)
   end
 
   def == other
@@ -130,24 +130,24 @@ class Community < BasicObject
     raise NotFound, "Community #{slug.inspect} is not defined"
   end
 
-  class Type < ::ActiveRecord::Type::String
-    # https://github.com/rails/rails/blob/v4.2.10/activerecord/lib/active_record/attributes.rb
-    # https://github.com/rails/rails/blob/v4.2.10/activerecord/lib/active_record/type/value.rb
-    # https://github.com/rails/rails/blob/v4.2.10/activerecord/lib/active_record/type/string.rb
+  class Type < ::ActiveModel::Type::String
+    # https://github.com/rails/rails/blob/v5.0.7.2/activerecord/lib/active_record/attributes.rb
+    # https://github.com/rails/rails/blob/v5.0.7.2/activemodel/lib/active_model/type/value.rb
+    # https://github.com/rails/rails/blob/v5.0.7.2/activemodel/lib/active_model/type/string.rb
 
-    def type_cast_from_database(value)
+    def deserialize(value)
       return value if value.blank?
       Community.new(value)
     rescue Community::NotFound
       nil
     end
 
-    def type_cast_from_user(value)
+    def cast(value)
       return nil if value.nil?
       Community.new(value)
     end
 
-    def type_cast_for_database(value)
+    def serialize(value)
       Community.slug(value)
     end
   end

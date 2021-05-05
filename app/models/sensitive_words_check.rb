@@ -1,4 +1,4 @@
-class SensitiveWordsCheck < ActiveRecord::Base
+class SensitiveWordsCheck < ApplicationRecord
   belongs_to :record
   serialize :matches
 end

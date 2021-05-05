@@ -1,4 +1,4 @@
-class AddGenericWelcomeMessagesToModerationAreas < ActiveRecord::Migration
+class AddGenericWelcomeMessagesToModerationAreas < ActiveRecord::Migration[4.2]
   def change
     remove_column :moderation_areas, :welcome_message_1, :text
     remove_column :moderation_areas, :welcome_message_2, :text

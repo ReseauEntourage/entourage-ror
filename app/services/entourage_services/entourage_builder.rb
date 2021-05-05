@@ -2,19 +2,17 @@ module EntourageServices
   class EntourageBuilder
     def initialize(params:, user:)
       @callback = Callback.new
-      @params = params.with_indifferent_access
+      @params = params
       @user = user
 
       @recipient_consent_obtained =
         case @params.delete(:recipient_consent_obtained)
-        when *ActiveRecord::ConnectionAdapters::Column::TRUE_VALUES
-          true
-        when *ActiveRecord::ConnectionAdapters::Column::FALSE_VALUES
-          false
-        when nil
+        when nil, ''
           nil
+        when *ActiveModel::Type::Boolean::FALSE_VALUES
+          false
         else
-          :invalid
+          true
         end
     end
 
@@ -35,12 +33,6 @@ module EntourageServices
         when 'pfp'       then ['outing']
         end
       entourage.group_type = nil unless entourage.group_type.in? allowed_group_types
-
-      if recipient_consent_obtained == :invalid
-        entourage.errors.add(:base, "recipient_consent_obtained must be a boolean")
-        callback.on_failure.try(:call, entourage)
-        return false
-      end
 
       entourage.status =
         if entourage.group_type     == 'action' &&
@@ -114,7 +106,7 @@ module EntourageServices
 
       sent_metadata = params[:metadata]
       if params.key? :metadata
-        params[:metadata] = params[:metadata].reverse_merge entourage.metadata
+        params[:metadata] = params[:metadata].to_h.reverse_merge entourage.metadata
       end
 
       # prevent category change for groups (good_waves)
@@ -146,13 +138,13 @@ module EntourageServices
 
         entourage.moderation.action_outcome =
           case moderation_params[:success]
-          when *ActiveRecord::ConnectionAdapters::Column::TRUE_VALUES
-            'Oui'
-          when *ActiveRecord::ConnectionAdapters::Column::FALSE_VALUES
-            'Non'
-          else
+          when nil, ''
             entourage.errors.add(:base, "outcome.success must be a boolean")
             return false
+          when *ActiveModel::Type::Boolean::FALSE_VALUES
+            'Non'
+          else
+            'Oui'
           end
 
         if entourage.moderation.action_outcome_changed?

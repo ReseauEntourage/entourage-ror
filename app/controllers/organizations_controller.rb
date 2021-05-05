@@ -1,10 +1,10 @@
 class OrganizationsController < ApplicationController
   attr_writer :push_notification_service
 
-  before_filter :authenticate_user!
-  before_filter :authenticate_manager!, only: [:edit, :update]
-  before_filter :set_organization, except: [:new, :create]
-  before_filter :authenticate_admin!, only: [:new, :create]
+  before_action :authenticate_user!
+  before_action :authenticate_manager!, only: [:edit, :update]
+  before_action :set_organization, except: [:new, :create]
+  before_action :authenticate_admin!, only: [:new, :create]
 
   def dashboard
     tours = Tour.joins(:user).where(users: { organization_id: @organization.id })

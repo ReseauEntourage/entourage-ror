@@ -1,4 +1,4 @@
-class CreateUserDenorms < ActiveRecord::Migration
+class CreateUserDenorms < ActiveRecord::Migration[4.2]
   def up
     create_table :user_denorms do |t|
       t.integer :user_id, null: false

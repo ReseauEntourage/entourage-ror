@@ -33,8 +33,8 @@ module UnreadReminderEmail
     MemberMailer.mailjet_email(
       to: presenter.user,
       template_id: 604694,
-      campaign_name: :unread_reminder,
-      unsubscribe_category: :unread_reminder,
+      campaign_name: 'unread_reminder',
+      unsubscribe_category: 'unread_reminder',
       variables: {
         subject: presenter.subject,
         nb_1: presenter.nb_1,

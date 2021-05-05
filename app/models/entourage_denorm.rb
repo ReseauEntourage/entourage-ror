@@ -1,4 +1,4 @@
-class EntourageDenorm < ActiveRecord::Base
+class EntourageDenorm < ApplicationRecord
   belongs_to :entourage
 
   # create

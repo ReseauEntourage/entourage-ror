@@ -20,7 +20,7 @@ RSpec.describe ScheduledPushesController, type: :controller do
         before { service.new(organization: user.organization, date: Date.parse("10/10/2016")).schedule(object: "foo1", message: "bar", sender: "me") }
         before { service.new(organization: user.organization, date: Date.parse("11/10/2016")).schedule(object: "foo2", message: "bar", sender: "me") }
         before { service.new(organization: user.organization, date: Date.parse("09/10/2016")).schedule(object: "foo3", message: "bar", sender: "me") }
-        before { service.new(organization: FactoryGirl.create(:organization), date: Date.parse("09/10/2016")).schedule(object: "foo3", message: "bar", sender: "me") }
+        before { service.new(organization: FactoryBot.create(:organization), date: Date.parse("09/10/2016")).schedule(object: "foo3", message: "bar", sender: "me") }
         before { get :index }
         it { expect(assigns(:scheduled_pushes)).to eq([{"object"=>"foo3", "message"=>"bar", "sender"=>"me", "date"=>"2016-10-09"},
                                                        {"object"=>"foo1", "message"=>"bar", "sender"=>"me", "date"=>"2016-10-10"},
@@ -36,7 +36,7 @@ RSpec.describe ScheduledPushesController, type: :controller do
 
   describe 'DELETE destroy' do
     context "user not logged in" do
-      before { delete :destroy, date: "10/10/2016" }
+      before { delete :destroy, params: { date: "10/10/2016" } }
       it { should redirect_to new_session_path  }
     end
 
@@ -44,7 +44,7 @@ RSpec.describe ScheduledPushesController, type: :controller do
       let!(:user) { user_basic_login }
       before { service.new(organization: user.organization, date: Date.parse("10/10/2016")).schedule(object: "foo1", message: "bar", sender: "me") }
       before { service.new(organization: user.organization, date: Date.parse("11/10/2016")).schedule(object: "foo2", message: "bar", sender: "me") }
-      before { delete :destroy, date: "10/10/2016" }
+      before { delete :destroy, params: { date: "10/10/2016" } }
       it { expect(TourServices::SchedulePushService.all_scheduled_pushes(organization: user.organization)).to eq([{"object"=>"foo2", "message"=>"bar", "sender"=>"me", "date"=>"2016-10-11"}]) }
     end
   end

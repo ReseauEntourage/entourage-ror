@@ -1,4 +1,4 @@
-class CreateUserApplications < ActiveRecord::Migration
+class CreateUserApplications < ActiveRecord::Migration[4.2]
   def change
     create_table :user_applications do |t|
       t.string :push_token, null: false

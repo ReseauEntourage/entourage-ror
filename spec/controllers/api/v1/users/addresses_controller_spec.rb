@@ -33,7 +33,7 @@ RSpec.describe Api::V1::Users::AddressesController, type: :controller do
 
   describe 'POST :position' do
     describe "create first address" do
-      before { post :create_or_update, position: 1, address: home, user_id: 'me', token: user.token }
+      before { post :create_or_update, params: { position: 1, address: home, user_id: 'me', token: user.token } }
 
       it { expect(response.status).to eq(200) }
       it { expect(result).to match(
@@ -55,7 +55,7 @@ RSpec.describe Api::V1::Users::AddressesController, type: :controller do
     describe "create second address" do
       let!(:first_address) { create(:address, :blank, home.merge(position: 1, country: 'FR', postal_code: '75011', user_id: user.id)) }
 
-      before { post :create_or_update, position: 2, address: work, user_id: 'me', token: user.token }
+      before { post :create_or_update, params: { position: 2, address: work, user_id: 'me', token: user.token } }
 
       it { expect(response.status).to eq(200) }
       it { expect(result).to match(
@@ -76,7 +76,7 @@ RSpec.describe Api::V1::Users::AddressesController, type: :controller do
     end
 
     describe "create third address" do
-      before { post :create_or_update, position: 3, address: work, user_id: 'me', token: user.token }
+      before { post :create_or_update, params: { position: 3, address: work, user_id: 'me', token: user.token } }
 
       it { expect(response.status).to eq(400) }
       it { expect(result).to eq(
@@ -89,7 +89,7 @@ RSpec.describe Api::V1::Users::AddressesController, type: :controller do
 
     describe "update first address" do
       let!(:first_address) { create(:address, :blank, home.merge(position: 1, user_id: user.id)).reload }
-      before { post :create_or_update, position: 1, address: work, user_id: 'me', token: user.token }
+      before { post :create_or_update, params: { position: 1, address: work, user_id: 'me', token: user.token } }
 
       it { expect(response.status).to eq(200) }
       it { expect(result).to match(
@@ -110,7 +110,7 @@ RSpec.describe Api::V1::Users::AddressesController, type: :controller do
 
     describe "update second address" do
       let!(:second_address) { create(:address, :blank, work.merge(position: 2, user_id: user.id)).reload }
-      before { post :create_or_update, position: 2, address: home, user_id: 'me', token: user.token }
+      before { post :create_or_update, params: { position: 2, address: home, user_id: 'me', token: user.token } }
 
       it { expect(response.status).to eq(200) }
       it { expect(result).to match(
@@ -135,7 +135,7 @@ RSpec.describe Api::V1::Users::AddressesController, type: :controller do
     let!(:second_address) { create(:address, :blank, work.merge(position: 2, country: 'FR', postal_code: '92001', user_id: user.id)).reload }
 
     describe "delete first address" do
-      before { delete :destroy, position: 1, user_id: 'me', token: user.token }
+      before { delete :destroy, params: { position: 1, user_id: 'me', token: user.token } }
 
       it { expect(response.status).to eq(400) }
       it { expect(result).to eq(
@@ -148,7 +148,7 @@ RSpec.describe Api::V1::Users::AddressesController, type: :controller do
     end
 
     describe "delete second address when it exists" do
-      before { delete :destroy, position: 2, user_id: 'me', token: user.token }
+      before { delete :destroy, params: { position: 2, user_id: 'me', token: user.token } }
 
       it { expect(response.status).to eq(200) }
       it { expect(result).to match(
@@ -165,7 +165,7 @@ RSpec.describe Api::V1::Users::AddressesController, type: :controller do
 
 
     describe "delete second address when it doesn't exist" do
-      before { delete :destroy, position: 2, user_id: 'me', token: user.token }
+      before { delete :destroy, params: { position: 2, user_id: 'me', token: user.token } }
       it { expect(response.status).to eq(200) }
     end
   end

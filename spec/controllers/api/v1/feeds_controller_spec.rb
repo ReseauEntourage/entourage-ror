@@ -12,12 +12,12 @@ include CommunityHelper
     end
 
     context "signed in" do
-      let(:user) { FactoryGirl.create(:pro_user) }
-      let!(:entourage) { FactoryGirl.create(:entourage, updated_at: 4.hours.ago, created_at: 4.hours.ago, entourage_type: "ask_for_help") }
+      let(:user) { FactoryBot.create(:pro_user) }
+      let!(:entourage) { FactoryBot.create(:entourage, updated_at: 4.hours.ago, created_at: 4.hours.ago, entourage_type: "ask_for_help") }
       let(:latitude) { entourage.latitude }
       let(:longitude) { entourage.longitude }
-      let!(:tour) { FactoryGirl.create(:tour, updated_at: 5.hours.ago, created_at: 5.hours.ago, tour_type: "medical", latitude: latitude, longitude: longitude) }
-      let(:announcement) { FactoryGirl.build(:announcement) }
+      let!(:tour) { FactoryBot.create(:tour, updated_at: 5.hours.ago, created_at: 5.hours.ago, tour_type: "medical", latitude: latitude, longitude: longitude) }
+      let(:announcement) { FactoryBot.build(:announcement) }
       before do
         allow_any_instance_of(FeedServices::AnnouncementsService)
           .to receive(:repositionned_announcements)
@@ -25,7 +25,7 @@ include CommunityHelper
       end
 
       context "get all" do
-        before { get :index, token: user.token, announcements: "v1", latitude: latitude, longitude: longitude }
+        before { get :index, params: { token: user.token, announcements: "v1", latitude: latitude, longitude: longitude } }
         it { expect(response.status).to eq(200) }
         it { expect(result).to eq({
           "feeds"=>[
@@ -114,71 +114,71 @@ include CommunityHelper
       end
 
       context "get entourages around location" do
-        let!(:paris_entourage) { FactoryGirl.create(:entourage, created_at: 4.hours.ago, updated_at: 4.hours.ago, latitude: 48.8566, longitude: 2.3522) }
-        let!(:suburbs_entourage) { FactoryGirl.create(:entourage, created_at: 5.hours.ago, updated_at: 5.hours.ago, latitude: 48.752552, longitude: 2.294402) }
-        let!(:south_of_france) { FactoryGirl.create(:entourage, created_at: 6.hours.ago, updated_at: 6.hours.ago, latitude: 43.716691, longitude: 7.258083) }
+        let!(:paris_entourage) { FactoryBot.create(:entourage, created_at: 4.hours.ago, updated_at: 4.hours.ago, latitude: 48.8566, longitude: 2.3522) }
+        let!(:suburbs_entourage) { FactoryBot.create(:entourage, created_at: 5.hours.ago, updated_at: 5.hours.ago, latitude: 48.752552, longitude: 2.294402) }
+        let!(:south_of_france) { FactoryBot.create(:entourage, created_at: 6.hours.ago, updated_at: 6.hours.ago, latitude: 43.716691, longitude: 7.258083) }
 
         context "default distance" do
-          before { get :index, token: user.token, latitude: 48.8566, longitude: 2.3522 }
+          before { get :index, params: { token: user.token, latitude: 48.8566, longitude: 2.3522 } }
           it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([paris_entourage.id]) }
         end
 
         context "30km distance" do
-          before { get :index, token: user.token, latitude: 48.8566, longitude: 2.3522, distance: 30 }
+          before { get :index, params: { token: user.token, latitude: 48.8566, longitude: 2.3522, distance: 30 } }
           it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([paris_entourage.id, suburbs_entourage.id]) }
         end
 
         context "max distance is 40km" do
-          before { get :index, token: user.token, latitude: 48.8566, longitude: 2.3522, distance: 1000 }
+          before { get :index, params: { token: user.token, latitude: 48.8566, longitude: 2.3522, distance: 1000 } }
           it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([paris_entourage.id, suburbs_entourage.id]) }
         end
       end
 
       context "get entourages only" do
-        before { get :index, token: user.token, types: 'as', latitude: latitude, longitude: longitude }
+        before { get :index, params: { token: user.token, types: 'as', latitude: latitude, longitude: longitude } }
         it { expect(result["feeds"].count).to eq(1) }
         it { expect(result["feeds"][0]["type"]).to eq("Entourage") }
       end
 
       context "get tour types only" do
-        let!(:tour_alimentary) { FactoryGirl.create(:tour, updated_at: 2.hours.ago, created_at: 2.hours.ago, tour_type: "alimentary", latitude: latitude, longitude: longitude) }
-        let!(:tour_barehands) { FactoryGirl.create(:tour, updated_at: 3.hours.ago, created_at: 3.hours.ago, tour_type: "barehands", latitude: latitude, longitude: longitude) }
-        before { get :index, token: user.token, types: "ta,tb", latitude: latitude, longitude: longitude }
+        let!(:tour_alimentary) { FactoryBot.create(:tour, updated_at: 2.hours.ago, created_at: 2.hours.ago, tour_type: "alimentary", latitude: latitude, longitude: longitude) }
+        let!(:tour_barehands) { FactoryBot.create(:tour, updated_at: 3.hours.ago, created_at: 3.hours.ago, tour_type: "barehands", latitude: latitude, longitude: longitude) }
+        before { get :index, params: { token: user.token, types: "ta,tb", latitude: latitude, longitude: longitude } }
         it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([tour_alimentary.id, tour_barehands.id]) }
       end
 
       context "get entourages types only" do
-        let!(:entourage_contribution) { FactoryGirl.create(:entourage, created_at: 1.hour.ago, entourage_type: "contribution", latitude: latitude, longitude: longitude) }
-        before { get :index, token: user.token, types: "cs", latitude: latitude, longitude: longitude }
+        let!(:entourage_contribution) { FactoryBot.create(:entourage, created_at: 1.hour.ago, entourage_type: "contribution", latitude: latitude, longitude: longitude) }
+        before { get :index, params: { token: user.token, types: "cs", latitude: latitude, longitude: longitude } }
         it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([entourage_contribution.id]) }
       end
 
       context "get partners entourages only" do
         let(:partner_user) { create :partner_user }
         let!(:partner_entourage) { create(:entourage, latitude: latitude, longitude: longitude, user: partner_user) }
-        before { get :index, partners_only: 'true', token: user.token, latitude: latitude, longitude: longitude }
+        before { get :index, params: { partners_only: 'true', token: user.token, latitude: latitude, longitude: longitude } }
         it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([partner_entourage.id, tour.id]) }
       end
 
       context "filter by timerange" do
-        let!(:entourage1) { FactoryGirl.create(:entourage, updated_at: 3.day.ago, created_at: 3.day.ago, latitude: latitude, longitude: longitude) }
-        let!(:entourage2) { FactoryGirl.create(:entourage, updated_at: 3.day.ago, created_at: 3.day.ago, latitude: latitude, longitude: longitude) }
-        let!(:tour2) { FactoryGirl.create(:tour, updated_at: 3.hours.ago, created_at: 3.hours.ago, tour_type: "medical", latitude: latitude, longitude: longitude) }
-        before { get :index, token: user.token, time_range: 47, latitude: latitude, longitude: longitude }
+        let!(:entourage1) { FactoryBot.create(:entourage, updated_at: 3.day.ago, created_at: 3.day.ago, latitude: latitude, longitude: longitude) }
+        let!(:entourage2) { FactoryBot.create(:entourage, updated_at: 3.day.ago, created_at: 3.day.ago, latitude: latitude, longitude: longitude) }
+        let!(:tour2) { FactoryBot.create(:tour, updated_at: 3.hours.ago, created_at: 3.hours.ago, tour_type: "medical", latitude: latitude, longitude: longitude) }
+        before { get :index, params: { token: user.token, time_range: 47, latitude: latitude, longitude: longitude } }
         it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([tour2.id, entourage.id, tour.id]) }
       end
 
       context "public user doesn't see tours" do
-        let(:public_user) { FactoryGirl.create(:public_user) }
-        before { get :index, token: public_user.token, time_range: 47, latitude: latitude, longitude: longitude }
+        let(:public_user) { FactoryBot.create(:public_user) }
+        before { get :index, params: { token: public_user.token, time_range: 47, latitude: latitude, longitude: longitude } }
         it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([entourage.id]) }
       end
 
       context "filter timerange" do
-        let!(:my_entourage) { FactoryGirl.create(:entourage, :joined, join_request_user: user, user: user, updated_at: 1.hour.ago, created_at: 1.hour.ago, status: :open, latitude: latitude, longitude: longitude) }
-        let!(:my_old_entourage) { FactoryGirl.create(:entourage, :joined, join_request_user: user, user: user, updated_at: 2.hour.ago, created_at: 72.hour.ago, status: :open, latitude: latitude, longitude: longitude) }
-        let!(:my_older_entourage) { FactoryGirl.create(:entourage, :joined, join_request_user: user, user: user, updated_at: 50.hour.ago, created_at: 72.hour.ago, status: :open, latitude: latitude, longitude: longitude) }
-        before { get :index, token: user.token, types: 'as', time_range: 48, latitude: latitude, longitude: longitude }
+        let!(:my_entourage) { FactoryBot.create(:entourage, :joined, join_request_user: user, user: user, updated_at: 1.hour.ago, created_at: 1.hour.ago, status: :open, latitude: latitude, longitude: longitude) }
+        let!(:my_old_entourage) { FactoryBot.create(:entourage, :joined, join_request_user: user, user: user, updated_at: 2.hour.ago, created_at: 72.hour.ago, status: :open, latitude: latitude, longitude: longitude) }
+        let!(:my_older_entourage) { FactoryBot.create(:entourage, :joined, join_request_user: user, user: user, updated_at: 50.hour.ago, created_at: 72.hour.ago, status: :open, latitude: latitude, longitude: longitude) }
+        before { get :index, params: { token: user.token, types: 'as', time_range: 48, latitude: latitude, longitude: longitude } }
         it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([my_entourage.id, entourage.id, my_old_entourage.id]) }
       end
 
@@ -199,14 +199,14 @@ include CommunityHelper
           entourage
         end
 
-        before { get :index, token: user.token, latitude: latitude, longitude: longitude }
+        before { get :index, params: { token: user.token, latitude: latitude, longitude: longitude } }
 
         it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([entourage_open.id]) }
       end
 
       context "touch chat message association" do
         let!(:my_entourage) {
-          FactoryGirl.create(:entourage,
+          FactoryBot.create(:entourage,
                              :joined,
                              join_request_user: user,
                              user: user,
@@ -218,7 +218,7 @@ include CommunityHelper
         }
 
         let!(:my_old_entourage) {
-          FactoryGirl.create(:entourage,
+          FactoryBot.create(:entourage,
                              :joined,
                              join_request_user: user,
                              user: user,
@@ -230,8 +230,8 @@ include CommunityHelper
         }
 
         before do
-          FactoryGirl.create(:chat_message, messageable: my_old_entourage, created_at: DateTime.now, updated_at: DateTime.now, content: "foo")
-          get :index, token: user.token, time_range: 12, types: 'as', latitude: latitude, longitude: longitude
+          FactoryBot.create(:chat_message, messageable: my_old_entourage, created_at: DateTime.now, updated_at: DateTime.now, content: "foo")
+          get :index, params: { token: user.token, time_range: 12, types: 'as', latitude: latitude, longitude: longitude }
         end
 
         it do
@@ -240,12 +240,12 @@ include CommunityHelper
       end
 
       context "touch entourage invitation association" do
-        let!(:my_entourage) { FactoryGirl.create(:entourage, :joined, join_request_user: user, user: user, updated_at: 1.hour.ago, created_at: 1.hour.ago, status: :open, latitude: latitude, longitude: longitude) }
-        let!(:my_old_entourage) { FactoryGirl.create(:entourage, :joined, join_request_user: user, user: user, updated_at: 2.hour.ago, created_at: 24.hour.ago, status: :open, latitude: latitude, longitude: longitude) }
-        let!(:entourage_invitation) { FactoryGirl.create(:entourage_invitation, invitable: my_old_entourage, inviter: user, phone_number: "+40744219491") }
+        let!(:my_entourage) { FactoryBot.create(:entourage, :joined, join_request_user: user, user: user, updated_at: 1.hour.ago, created_at: 1.hour.ago, status: :open, latitude: latitude, longitude: longitude) }
+        let!(:my_old_entourage) { FactoryBot.create(:entourage, :joined, join_request_user: user, user: user, updated_at: 2.hour.ago, created_at: 24.hour.ago, status: :open, latitude: latitude, longitude: longitude) }
+        let!(:entourage_invitation) { FactoryBot.create(:entourage_invitation, invitable: my_old_entourage, inviter: user, phone_number: "+40744219491") }
         before do
           EntourageServices::InvitationService.new(invitation: entourage_invitation).accept!
-          get :index, token: user.token, time_range: 48, types: 'as', latitude: latitude, longitude: longitude
+          get :index, params: { token: user.token, time_range: 48, types: 'as', latitude: latitude, longitude: longitude }
         end
 
         it do
@@ -260,7 +260,7 @@ include CommunityHelper
       let(:longitude) { 10.528 }
 
       def result_ids(params={})
-        get :index, {token: user.token, latitude: latitude, longitude: longitude}.merge(params)
+        get :index, params: {token: user.token, latitude: latitude, longitude: longitude}.merge(params)
         result["feeds"].map {|feed| feed["data"]["id"] }
       end
 
@@ -304,7 +304,7 @@ include CommunityHelper
       describe "single-request tests" do
         before {
           FeedServices::FeedFinder.stub(:per) { per_page } if per_page != :default
-          get :index, {token: user.token}.merge(params)
+          get :index, params: {token: user.token}.merge(params)
         }
 
         context "when no page token is given" do
@@ -337,11 +337,11 @@ include CommunityHelper
         let(:params) { default_params.merge(token: user.token) }
         before { FeedServices::FeedFinder.stub(:per) { 1 } }
         it do
-          get :index, params
+          get :index, params: params
           page_1 = JSON.parse(response.body)
           expect(item_ids(page_1)).to eq [entourage_1.id]
 
-          r = get :index, params.merge(page_token: result['next_page_token'])
+          r = get :index, params: params.merge(page_token: result['next_page_token'])
           page_2 = JSON.parse(r.body)
           expect(item_ids(page_2)).to eq [entourage_2.id]
         end
@@ -360,7 +360,7 @@ include CommunityHelper
           .to receive(:repositionned_announcements)
           .and_return([announcement])
       end
-      before { get :index, token: user.token, announcements: "v1", latitude: latitude, longitude: longitude }
+      before { get :index, params: { token: user.token, announcements: "v1", latitude: latitude, longitude: longitude } }
 
       context "signed in as an user from another community" do
         with_community 'pfp'
@@ -386,7 +386,7 @@ include CommunityHelper
       let!(:custom_end_outing) { create :outing, metadata: {starts_at: 2.days.ago, ends_at: 3.hours.from_now}, latitude: latitude, longitude: longitude }
 
       def feeds(filters={})
-        get :index, filters.merge(token: user.token, latitude: latitude, longitude: longitude)
+        get :index, params: filters.merge(token: user.token, latitude: latitude, longitude: longitude)
         result["feeds"].map {|feed| feed["data"]["id"]}
       end
 
@@ -407,7 +407,7 @@ include CommunityHelper
           .and_return([announcement])
       end
 
-      before { get :index, token: user.token, latitude: latitude, longitude: longitude, announcements: :v1 }
+      before { get :index, params: { token: user.token, latitude: latitude, longitude: longitude, announcements: :v1 } }
       it { expect(response.status).to eq(200) }
       it { expect(result).to eq({
         "feeds"=>[
@@ -467,7 +467,7 @@ include CommunityHelper
     let(:user) { create :public_user }
     let(:params) { {} }
     let(:coordinates) { {latitude: 1, longitude: 1} }
-    subject { get :outings, {token: user&.token}.merge(coordinates).merge(params) }
+    subject { get :outings, params: {token: user&.token}.merge(coordinates).merge(params) }
 
     context "not signed in" do
       let(:params) { {token: nil} }

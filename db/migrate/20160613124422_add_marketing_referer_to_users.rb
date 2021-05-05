@@ -1,4 +1,4 @@
-class AddMarketingRefererToUsers < ActiveRecord::Migration
+class AddMarketingRefererToUsers < ActiveRecord::Migration[4.2]
   def change
     create_table :marketing_referers do |t|
       t.string :name,   null: false

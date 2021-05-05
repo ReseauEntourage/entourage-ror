@@ -1,10 +1,10 @@
-class UserDenorm < ActiveRecord::Base
+class UserDenorm < ApplicationRecord
   # observes :join_request, :chat_message, :entourage
   belongs_to :user
-  belongs_to :entourage, primary_key: :last_created_action_id
-  belongs_to :join_request, primary_key: :last_join_request_id
-  belongs_to :chat_message, primary_key: :last_private_chat_message_id
-  belongs_to :chat_message, primary_key: :last_group_chat_message_id
+  belongs_to :entourage, primary_key: :last_created_action_id, optional: true
+  belongs_to :join_request, primary_key: :last_join_request_id, optional: true
+  belongs_to :chat_message, primary_key: :last_private_chat_message_id, optional: true
+  belongs_to :chat_message, primary_key: :last_group_chat_message_id, optional: true
 
   # create
   def entourage_on_create entourage, group_type:
@@ -27,7 +27,8 @@ class UserDenorm < ActiveRecord::Base
 
   # update
   def entourage_on_update entourage, group_type:
-    return unless entourage.group_type_changed?
+    # return unless entourage.group_type_changed?
+    return unless entourage.saved_change_to_group_type?
 
     recompute_last_created_action_id
     recompute_last_join_request_id # if group_type_changed? then the last_join_request_id may change
@@ -38,7 +39,7 @@ class UserDenorm < ActiveRecord::Base
   end
 
   def join_request_on_update join_request, group_type:
-    return unless join_request.status_changed?
+    return unless join_request.saved_change_to_status?
 
     recompute_last_join_request_id
   end

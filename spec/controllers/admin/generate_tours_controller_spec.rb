@@ -13,7 +13,7 @@ describe Admin::GenerateToursController do
 
     context "has coordinates" do
       before { Timecop.freeze(Time.parse("10/10/2010").at_beginning_of_day) }
-      subject { post :create, {coordinates: [{lat: -35.1, lng: 49.1}, {lat: -35.2, lng: 49.2}]} }
+      subject { post :create, params: { coordinates: [{lat: -35.1, lng: 49.1}, {lat: -35.2, lng: 49.2}] } }
 
       it { expect(lambda { subject }).to change {Tour.count}.by(1) }
       it { expect(lambda { subject }).to change {SimplifiedTourPoint.count}.by(2) }

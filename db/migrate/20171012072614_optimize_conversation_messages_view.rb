@@ -1,4 +1,4 @@
-class OptimizeConversationMessagesView < ActiveRecord::Migration
+class OptimizeConversationMessagesView < ActiveRecord::Migration[4.2]
   def up
     sql = <<-SQL
       create or replace view conversation_messages as

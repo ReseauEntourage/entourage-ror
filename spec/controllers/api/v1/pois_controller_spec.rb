@@ -8,7 +8,7 @@ describe Api::V1::PoisController, :type => :controller do
 
     describe 'create' do
       let!(:poi) { build :poi }
-      before { post :create, token: user.token, poi: { name: poi.name, latitude: poi.latitude, longitude: poi.longitude, adress: poi.adress, phone: poi.phone, website: poi.website, email: poi.email, audience: poi.audience, category_id: poi.category_id }, format: :json}
+      before { post :create, params: { token: user.token, poi: { name: poi.name, latitude: poi.latitude, longitude: poi.longitude, adress: poi.adress, phone: poi.phone, website: poi.website, email: poi.email, audience: poi.audience, category_id: poi.category_id }, format: :json }}
       it { expect(response.status).to eq(201) }
       it { expect(Poi.last.name).to eq poi.name }
       it { expect(Poi.last.latitude).to eq poi.latitude }
@@ -54,7 +54,7 @@ describe Api::V1::PoisController, :type => :controller do
       describe 'correct request' do
         before do
           controller.member_mailer = member_mailer
-          post :report, id: poi.id, token: user.token, message: message, format: :json
+          post :report, params: { id: poi.id, token: user.token, message: message, format: :json }
         end
         it { expect(response.status).to eq(201) }
         it { expect(member_mailer).to have_received(:poi_report).with poi, user, message }
@@ -62,19 +62,19 @@ describe Api::V1::PoisController, :type => :controller do
       end
 
       describe 'wrong poi id' do
-        before { post :report, id: -1, token: user.token, message: message, format: :json }
+        before { post :report, params: { id: -1, token: user.token, message: message, format: :json } }
         it { expect(response.status).to eq(404) }
       end
 
       describe 'no message' do
-        before { post :report, id: poi.id, token: user.token, format: :json }
+        before { post :report, params: { id: poi.id, token: user.token, format: :json } }
         it { expect(response.status).to eq(400) }
       end
     end
 
     describe 'show' do
       let(:poi) { create :poi }
-      before { get 'show', id: poi.id, token: user.token }
+      before { get 'show', params: { id: poi.id, token: user.token } }
       it { expect(response.status).to eq 200 }
       it { expect(JSON.parse(response.body)).to eq(
         "poi" => {
@@ -111,7 +111,7 @@ describe Api::V1::PoisController, :type => :controller do
         let!(:poi4) { create :poi, category: category3, validated: true }
 
         context 'v1' do
-          before { get 'index', category_ids: [category1.id, category2.id].join(","), :format => :json }
+          before { get 'index', params: { category_ids: [category1.id, category2.id].join(","), :format => :json } }
           it { expect(assigns(:categories)).to eq([category1, category2, category3]) }
           it { expect(assigns(:pois)).to eq([poi1, poi3]) }
 
@@ -155,7 +155,7 @@ describe Api::V1::PoisController, :type => :controller do
         end
 
         context 'v2' do
-          before { get 'index', category_ids: [category1.id, category2.id].join(","), v: 2 }
+          before { get 'index', params: { category_ids: [category1.id, category2.id].join(","), v: 2 } }
           it "renders POI" do
             res = JSON.parse(response.body)
             expect(res).to eq(
@@ -194,13 +194,13 @@ describe Api::V1::PoisController, :type => :controller do
         let!(:poi5) { create :poi, latitude: 12, longitude: 10 }
 
         context 'without distance' do
-          before { get :index, latitude: 10.0, longitude: 10.0, format: :json }
+          before { get :index, params: { latitude: 10.0, longitude: 10.0, format: :json } }
           it { expect(response.status).to eq(200) }
           it { expect(assigns[:pois]).to eq [poi3, poi4] }
         end
 
         context 'with distance' do
-          before { get :index, latitude: 10.0, longitude: 10.0, distance: 40.0, format: :json }
+          before { get :index, params: { latitude: 10.0, longitude: 10.0, distance: 40.0, format: :json } }
           it { expect(response.status).to eq(200) }
           it { expect(assigns[:pois]).to eq [poi3, poi4, poi2] }
         end

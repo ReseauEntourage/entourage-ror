@@ -22,7 +22,7 @@ module ChatServices
       success = false
       if joinable.new_record?
         success = begin
-          ActiveRecord::Base.connection.transaction do
+          ApplicationRecord.connection.transaction do
             join_requests = joinable.join_requests.to_a
             joinable.join_requests = []
             joinable.chat_messages = []

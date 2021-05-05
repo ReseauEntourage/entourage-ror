@@ -1,4 +1,4 @@
-class AddRoleToJoinRequests < ActiveRecord::Migration
+class AddRoleToJoinRequests < ActiveRecord::Migration[4.2]
   def up
     add_column :join_requests, :role, :string, limit: 8
 

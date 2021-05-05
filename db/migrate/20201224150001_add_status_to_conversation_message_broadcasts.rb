@@ -1,4 +1,4 @@
-class AddStatusToConversationMessageBroadcasts < ActiveRecord::Migration
+class AddStatusToConversationMessageBroadcasts < ActiveRecord::Migration[4.2]
   def change
     add_column :conversation_message_broadcasts, :status, :string, default: :draft, null: false
 

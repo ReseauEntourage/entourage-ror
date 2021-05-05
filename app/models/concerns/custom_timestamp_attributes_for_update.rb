@@ -1,8 +1,9 @@
 # Allows to touch additional timestamps when saving/updating a record.
+# See https://github.com/rails/rails/blob/v5.1.7/activerecord/lib/active_record/timestamp.rb
 #
 # Usage:
 #
-#   class MyModel < ActiveRecord::Base
+#   class MyModel < ApplicationRecord
 #     include CustomTimestampAttributesForUpdate
 #
 #     before_save do
@@ -22,7 +23,11 @@ module CustomTimestampAttributesForUpdate
 
   private
 
-  def timestamp_attributes_for_update
+  def all_timestamp_attributes_in_model
+    super + @custom_timestamp_attributes_for_update
+  end
+
+  def timestamp_attributes_for_update_in_model
     super + @custom_timestamp_attributes_for_update
   end
 

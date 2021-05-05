@@ -3,7 +3,7 @@ include CommunityHelper
 
 describe Api::V1::EntouragesController do
 
-  let(:user) { FactoryGirl.create(:public_user) }
+  let(:user) { FactoryBot.create(:public_user) }
   before { ModerationServices.stub(:moderator) { nil } }
 
   describe 'GET index' do
@@ -13,11 +13,11 @@ describe Api::V1::EntouragesController do
     end
 
     context "signed in" do
-      let!(:entourage) { FactoryGirl.create(:entourage, :joined, user: user, status: "open") }
+      let!(:entourage) { FactoryBot.create(:entourage, :joined, user: user, status: "open") }
       subject { JSON.parse(response.body) }
 
       it "renders JSON response" do
-        get :index, token: user.token
+        get :index, params: { token: user.token }
         expect(subject).to eq({
           "entourages"=> [{
             "id" => entourage.id,
@@ -57,97 +57,105 @@ describe Api::V1::EntouragesController do
       end
 
       context "no params" do
-        before { get :index, token: user.token }
+        before { get :index, params: { token: user.token } }
         it { expect(subject["entourages"].count).to eq(1) }
       end
 
       context "order recents entourages" do
-        let!(:entourage1) { FactoryGirl.create(:entourage, updated_at: entourage.created_at - 2.hours, created_at: entourage.created_at - 2.hours) }
-        let!(:entourage2) { FactoryGirl.create(:entourage, updated_at: entourage.created_at - 3.days, created_at: entourage.created_at - 3.days) }
-        before { get :index, token: user.token }
+        let!(:entourage1) { FactoryBot.create(:entourage, updated_at: entourage.created_at - 2.hours, created_at: entourage.created_at - 2.hours) }
+        let!(:entourage2) { FactoryBot.create(:entourage, updated_at: entourage.created_at - 3.days, created_at: entourage.created_at - 3.days) }
+        before { get :index, params: { token: user.token } }
         it { expect(subject["entourages"].count).to eq(2) }
         it { expect(subject["entourages"].map{|h|h['id']}.sort).to eq([entourage.id, entourage1.id].sort) }
       end
 
       context "entourages made by other users" do
-        let!(:another_entourage) { FactoryGirl.create(:entourage, status: "open") }
-        before { get :index, token: user.token }
+        let!(:another_entourage) { FactoryBot.create(:entourage, status: "open") }
+        before { get :index, params: { token: user.token } }
         it { expect(subject["entourages"].count).to eq(2) }
       end
 
       context "scope by visible state" do
-        let!(:open_entourage)        { FactoryGirl.create(:entourage, status: "open") }
-        let!(:closed_entourage)      { FactoryGirl.create(:entourage, status: "closed") }
-        let!(:blacklisted_entourage) { FactoryGirl.create(:entourage, status: "blacklisted") }
+        let!(:open_entourage)        { FactoryBot.create(:entourage, status: "open") }
+        let!(:closed_entourage)      { FactoryBot.create(:entourage, status: "closed") }
+        let!(:blacklisted_entourage) { FactoryBot.create(:entourage, status: "blacklisted") }
 
-        before { get :index, token: user.token }
-        it { expect(subject["entourages"].map{ |e| e['id'] }).to match_array([entourage.id, open_entourage.id]) }
+        before { get :index, params: { token: user.token } }
+        it { expect(subject["entourages"].map{ |e| e['id'] }).to match_array([entourage.id, open_entourage.id]) } # conflict
+      end
+
+      context "filter status" do
+        let!(:closed_entourage) { FactoryBot.create(:entourage, status: "closed") }
+        before { get :index, params: { status: "closed", token: user.token } }
+        it { expect(subject["entourages"].count).to eq(1) }
+        it { expect(subject["entourages"][0]["id"]).to eq(closed_entourage.id) }
       end
 
       # types
       context "filter entourage_type" do
-        let!(:help_entourage) { FactoryGirl.create(:entourage, entourage_type: "ask_for_help", display_category: "event", updated_at: entourage.created_at-1.hours, created_at: entourage.created_at-1.hours) }
-        before { get :index, types: "as, ae", token: user.token }
+        let!(:help_entourage) { FactoryBot.create(:entourage, entourage_type: "ask_for_help", display_category: "event", updated_at: entourage.created_at-1.hours, created_at: entourage.created_at-1.hours) }
+        # before { get :index, types: "as, ae", token: user.token } # conflict
+        before { get :index, params: { type: "ask_for_help", token: user.token } }
         it { expect(subject["entourages"].count).to eq(2) }
         it { expect(subject["entourages"].map{|h|h['id']}.sort).to eq([entourage.id, help_entourage.id].sort) }
       end
 
       context "filter wrong entourage_type" do
-        let!(:help_entourage) { FactoryGirl.create(:entourage, entourage_type: "ask_for_help", display_category: "event", updated_at: entourage.created_at-1.hours, created_at: entourage.created_at-1.hours) }
-        before { get :index, types: "cs, ce", token: user.token }
+        let!(:help_entourage) { FactoryBot.create(:entourage, entourage_type: "ask_for_help", display_category: "event", updated_at: entourage.created_at-1.hours, created_at: entourage.created_at-1.hours) }
+        before { get :index, params: { types: "cs, ce", token: user.token } }
         it { expect(subject["entourages"].count).to eq(0) }
       end
 
       # position
       context "filter position" do
-        let!(:near_entourage) { FactoryGirl.create(:entourage, latitude: 2.48, longitude: 40.5) }
-        before { get :index, latitude: 2.48, longitude: 40.5, token: user.token }
+        let!(:near_entourage) { FactoryBot.create(:entourage, latitude: 2.48, longitude: 40.5) }
+        before { get :index, params: { latitude: 2.48, longitude: 40.5, token: user.token } }
         it { expect(subject["entourages"].count).to eq(1) }
         it { expect(subject["entourages"][0]["id"]).to eq(near_entourage.id) }
       end
 
       context "filter wrong position" do
-        let!(:near_entourage) { FactoryGirl.create(:entourage, latitude: 2.48, longitude: 40.5) }
-        before { get :index, latitude: 12.48, longitude: 40.5, token: user.token }
+        let!(:near_entourage) { FactoryBot.create(:entourage, latitude: 2.48, longitude: 40.5) }
+        before { get :index, params: { latitude: 12.48, longitude: 40.5, token: user.token } }
         it { expect(subject["entourages"].count).to eq(0) }
       end
 
       # time_range
       context "filter time_range" do
-        let!(:timed_entourage) { FactoryGirl.create(:entourage, created_at: entourage.created_at - 2.hours) }
-        before { get :index, time_range: 24, token: user.token } # default time_range
+        let!(:timed_entourage) { FactoryBot.create(:entourage, created_at: entourage.created_at - 2.hours) }
+        before { get :index, params: { time_range: 24, token: user.token } } # default time_range
         it { expect(subject["entourages"].count).to eq(2) }
         it { expect(subject["entourages"].map{|h|h['id']}.sort).to eq([entourage.id, timed_entourage.id].sort) }
       end
 
       context "filter wrong time_range" do
-        let!(:timed_entourage) { FactoryGirl.create(:entourage, created_at: entourage.created_at - 2.hours) }
-        before { get :index, time_range: 1, token: user.token }
+        let!(:timed_entourage) { FactoryBot.create(:entourage, created_at: entourage.created_at - 2.hours) }
+        before { get :index, params: { time_range: 1, token: user.token } }
         it { expect(subject["entourages"].count).to eq(1) }
         it { expect(subject["entourages"][0]["id"]).to eq(entourage.id) }
       end
 
       # group_type
       context "filter group_type" do
-        let!(:action_entourage) { FactoryGirl.create(:entourage, group_type: :action) }
-        before { get :index, token: user.token }
+        let!(:action_entourage) { FactoryBot.create(:entourage, group_type: :action) }
+        before { get :index, params: { token: user.token } }
         it { expect(subject["entourages"].count).to eq(2) }
         it { expect(subject["entourages"].map{|h|h['id']}.sort).to eq([entourage.id, action_entourage.id].sort) }
       end
 
       context "filter group_type" do
-        let!(:conversation_entourage) { FactoryGirl.create(:entourage, group_type: :conversation) }
-        before { get :index, token: user.token }
+        let!(:conversation_entourage) { FactoryBot.create(:entourage, group_type: :conversation) }
+        before { get :index, params: { token: user.token } }
         it { expect(subject["entourages"].count).to eq(1) }
         it { expect(subject["entourages"][0]["id"]).to eq(entourage.id) }
       end
 
       # sort
       context "sort by distance and created_at" do
-        let!(:closest_entourage) { FactoryGirl.create(:entourage, latitude: 2.4801, longitude: 40.5, created_at: entourage.created_at - 2.minutes) }
-        let!(:middle_entourage) { FactoryGirl.create(:entourage, latitude: 2.4802, longitude: 40.5, created_at: entourage.created_at - 1.minute) }
-        let!(:farthest_entourage) { FactoryGirl.create(:entourage, latitude: 2.4803, longitude: 40.5, created_at: entourage.created_at) }
-        before { get :index, per: 2, latitude: 2.48, longitude: 40.5, token: user.token }
+        let!(:closest_entourage) { FactoryBot.create(:entourage, latitude: 2.4801, longitude: 40.5, created_at: entourage.created_at - 2.minutes) }
+        let!(:middle_entourage) { FactoryBot.create(:entourage, latitude: 2.4802, longitude: 40.5, created_at: entourage.created_at - 1.minute) }
+        let!(:farthest_entourage) { FactoryBot.create(:entourage, latitude: 2.4803, longitude: 40.5, created_at: entourage.created_at) }
+        before { get :index, params: { per: 2, latitude: 2.48, longitude: 40.5, token: user.token } }
         it { expect(subject["entourages"].count).to eq(2) }
         it { expect(subject["entourages"].map{|h|h['id']}).to eq([middle_entourage.id, closest_entourage.id]) }
       end
@@ -155,97 +163,97 @@ describe Api::V1::EntouragesController do
   end
 
   describe 'GET mine' do
-    let!(:entourage) { FactoryGirl.create(:entourage, status: :open) }
-    let(:other_user) { FactoryGirl.create(:public_user) }
+    let!(:entourage) { FactoryBot.create(:entourage, status: :open) }
+    let(:other_user) { FactoryBot.create(:public_user) }
     subject { JSON.parse(response.body) }
 
     context "filter show_my_entourages_only" do
-      let!(:join_request) { FactoryGirl.create(:join_request, joinable: entourage, user: user, status: "accepted") }
+      let!(:join_request) { FactoryBot.create(:join_request, joinable: entourage, user: user, status: "accepted") }
 
-      before { get :mine, token: user.token }
+      before { get :mine, params: { token: user.token } }
       it { expect(subject["entourages"].count).to eq(1) }
       it { expect(subject["entourages"][0]["id"]).to eq(entourage.id) }
     end
 
     context "filter wrong user show_my_entourages_only" do
-      let!(:join_request) { FactoryGirl.create(:join_request, joinable: entourage, user: other_user, status: "accepted") }
+      let!(:join_request) { FactoryBot.create(:join_request, joinable: entourage, user: other_user, status: "accepted") }
 
-      before { get :mine, token: user.token }
+      before { get :mine, params: { token: user.token } }
       it { expect(subject["entourages"].count).to eq(0) }
     end
 
     context "filter wrong status show_my_entourages_only" do
-      let!(:join_request) { FactoryGirl.create(:join_request, joinable: entourage, user: user, status: "pending") }
+      let!(:join_request) { FactoryBot.create(:join_request, joinable: entourage, user: user, status: "pending") }
 
-      before { get :mine, token: user.token }
+      before { get :mine, params: { token: user.token } }
       it { expect(subject["entourages"].count).to eq(0) }
     end
   end
 
   describe 'GET owns' do
-    let(:other_user) { FactoryGirl.create(:public_user) }
+    let(:other_user) { FactoryBot.create(:public_user) }
     subject { JSON.parse(response.body) }
 
     context "filter author" do
-      let!(:entourage) { FactoryGirl.create(:entourage, status: :open, user: user) }
+      let!(:entourage) { FactoryBot.create(:entourage, status: :open, user: user) }
 
-      before { get :owns, token: user.token }
+      before { get :owns, params: { token: user.token } }
       it { expect(subject["entourages"].count).to eq(1) }
       it { expect(subject["entourages"][0]["id"]).to eq(entourage.id) }
     end
 
     context "filter wrong author" do
-      let!(:entourage) { FactoryGirl.create(:entourage, status: :open, user: other_user) }
+      let!(:entourage) { FactoryBot.create(:entourage, status: :open, user: other_user) }
 
-      before { get :owns, token: user.token }
+      before { get :owns, params: { token: user.token } }
       it { expect(subject["entourages"].count).to eq(0) }
     end
   end
 
   describe 'GET invitees' do
-    let!(:entourage) { FactoryGirl.create(:entourage, status: :open) }
-    let(:other_user) { FactoryGirl.create(:public_user) }
+    let!(:entourage) { FactoryBot.create(:entourage, status: :open) }
+    let(:other_user) { FactoryBot.create(:public_user) }
     subject { JSON.parse(response.body) }
 
     context "filter invitee" do
-      let!(:entourage_invitations) { FactoryGirl.create(:entourage_invitation, invitable: entourage, invitee: user, status: "accepted") }
+      let!(:entourage_invitations) { FactoryBot.create(:entourage_invitation, invitable: entourage, invitee: user, status: "accepted") }
 
-      before { get :invitees, token: user.token }
+      before { get :invitees, params: { token: user.token } }
       it { expect(subject["entourages"].count).to eq(1) }
       it { expect(subject["entourages"][0]["id"]).to eq(entourage.id) }
     end
 
     context "filter wrong invitee invitee" do
-      let!(:entourage_invitations) { FactoryGirl.create(:entourage_invitation, invitable: entourage, invitee: other_user, status: "accepted") }
+      let!(:entourage_invitations) { FactoryBot.create(:entourage_invitation, invitable: entourage, invitee: other_user, status: "accepted") }
 
-      before { get :invitees, token: user.token }
+      before { get :invitees, params: { token: user.token } }
       it { expect(subject["entourages"].count).to eq(0) }
     end
 
     context "filter wrong status invitee" do
-      let!(:entourage_invitations) { FactoryGirl.create(:entourage_invitation, invitable: entourage, invitee: user, status: "pending") }
+      let!(:entourage_invitations) { FactoryBot.create(:entourage_invitation, invitable: entourage, invitee: user, status: "pending") }
 
-      before { get :invitees, token: user.token }
+      before { get :invitees, params: { token: user.token } }
       it { expect(subject["entourages"].count).to eq(0) }
     end
   end
 
   describe 'POST create' do
     context "not signed in" do
-      before { post :create, entourage: { location: {longitude: 1.123, latitude: 4.567}, title: "foo", entourage_type: "ask_for_help", display_category: "social" } }
+      before { post :create, params: { entourage: { location: {longitude: 1.123, latitude: 4.567}, title: "foo", entourage_type: "ask_for_help", display_category: "social" } } }
       it { expect(response.status).to eq(401) }
     end
 
     context "signed in" do
       it "creates an entourage" do
         expect {
-          post :create, entourage: { location: {longitude: 1.123, latitude: 4.567}, title: "foo", entourage_type: "ask_for_help", display_category: "social" }, token: user.token
+          post :create, params: { entourage: { location: {longitude: 1.123, latitude: 4.567}, title: "foo", entourage_type: "ask_for_help", display_category: "social" }, token: user.token }
         }.to change { Entourage.count }.by(1)
       end
 
       context "valid params" do
         before { allow_any_instance_of(EntourageServices::CategoryLexicon).to receive(:category) { "mat_help" } }
-        before { post :create, entourage: { location: {longitude: 1.123, latitude: 4.567}, title: "foo", entourage_type: "ask_for_help", display_category: "mat_help", description: "foo bar", category: "mat_help", recipient_consent_obtained: true}, token: user.token }
+        before { post :create, params: { entourage: { location: {longitude: 1.123, latitude: 4.567}, title: "foo", entourage_type: "ask_for_help", display_category: "mat_help", description: "foo bar", category: "mat_help", recipient_consent_obtained: true}, token: user.token } }
         it { expect(JSON.parse(response.body)).to eq({
           "entourage"=> {
             "id"=>Entourage.last.id,
@@ -260,15 +268,15 @@ describe Api::V1::EntouragesController do
             "postal_code"=>nil,
             "number_of_people"=>1,
             "author"=>{
-               "id"=>user.id,
-               "display_name"=>"John D.",
-               "avatar_url"=>nil,
-               "partner"=>nil,
-               "partner_role_title" => nil
+              "id"=>user.id,
+              "display_name"=>"John D.",
+              "avatar_url"=>nil,
+              "partner"=>nil,
+              "partner_role_title" => nil
             },
             "location"=>{
-               "latitude"=>4.567,
-               "longitude"=>1.123
+              "latitude"=>4.567,
+              "longitude"=>1.123
             },
             "join_status"=>"accepted",
             "number_of_unread_messages"=>0,
@@ -301,7 +309,7 @@ describe Api::V1::EntouragesController do
       end
 
       context "invalid params" do
-        before { post :create, entourage: { location: {longitude: "", latitude: 4.567}, title: "foo", entourage_type: "ask_for_help", display_category: "social" }, token: user.token }
+        before { post :create, params: { entourage: { location: {longitude: "", latitude: 4.567}, title: "foo", entourage_type: "ask_for_help", display_category: "social" }, token: user.token } }
         it { expect(JSON.parse(response.body)).to eq({"message"=>"Could not create entourage", "reasons"=>["Longitude doit être rempli(e)"]}) }
         it { expect(response.status).to eq(400) }
       end
@@ -313,7 +321,7 @@ describe Api::V1::EntouragesController do
             title: "Apéro Entourage",
             location: {
               latitude: 48.868959,
-              longitude: 2.390184999999974
+              longitude: 2.390185
             },
             metadata: {
               starts_at: "2018-09-04T19:30:00+02:00",
@@ -323,7 +331,7 @@ describe Api::V1::EntouragesController do
             }
           }
         end
-        before { post :create, entourage: params, token: user.token }
+        before { post :create, params: { entourage: params, token: user.token } }
         it do
           outing = Entourage.last
           expect(JSON.parse(response.body)).to eq(
@@ -365,7 +373,7 @@ describe Api::V1::EntouragesController do
               },
               "location"=>{
                 "latitude"=>48.868959,
-                "longitude"=>2.39018499999997
+                "longitude"=>2.390185
               },
               "display_report_prompt" => false
             }
@@ -378,13 +386,7 @@ describe Api::V1::EntouragesController do
         let(:group_details) { {entourage_type: "ask_for_help"} }
         let(:entourage) { Entourage.last }
         let(:consent_obtained) { entourage.moderation&.action_recipient_consent_obtained }
-        before { post :create, entourage: group_details.merge(location: {longitude: 1.123, latitude: 4.567}, title: "foo", recipient_consent_obtained: recipient_consent_obtained), token: user.token }
-
-        context "invalid param" do
-          let(:recipient_consent_obtained) { "lol" }
-          it { expect(JSON.parse(response.body)['reasons']).to eq(["recipient_consent_obtained must be a boolean"]) }
-          it { expect(response.status).to eq 400 }
-        end
+        before { post :create, params: { entourage: group_details.merge(location: {longitude: 1.123, latitude: 4.567}, title: "foo", recipient_consent_obtained: recipient_consent_obtained), token: user.token } }
 
         context "missing param" do
           let(:recipient_consent_obtained) { nil }
@@ -414,7 +416,7 @@ describe Api::V1::EntouragesController do
     end
 
     describe "welcome email" do
-      subject { -> { post :create, entourage: { location: {longitude: 1.123, latitude: 4.567}, title: "foo", entourage_type: "ask_for_help", display_category: "mat_help", description: "foo bar", category: "mat_help"}, token: user.token } }
+      subject { -> { post :create, params: { entourage: { location: {longitude: 1.123, latitude: 4.567}, title: "foo", entourage_type: "ask_for_help", display_category: "mat_help", description: "foo bar", category: "mat_help"}, token: user.token } } }
       context "user has no email" do
         let(:user) { create :public_user, email: nil }
         it { is_expected.to change { ActionMailer::Base.deliveries.count }.by 0 }
@@ -433,17 +435,17 @@ describe Api::V1::EntouragesController do
   end
 
   describe 'GET show' do
-    let!(:entourage) { FactoryGirl.create(:entourage) }
+    let!(:entourage) { FactoryBot.create(:entourage) }
 
     context "not signed in" do
-      before { get :show, id: entourage.to_param }
+      before { get :show, params: { id: entourage.to_param } }
       it { expect(response.status).to eq(401) }
     end
 
     context "signed in" do
       context "entourage exists" do
         context "find by id" do
-          before { get :show, id: entourage.to_param, token: user.token }
+          before { get :show, params: { id: entourage.to_param, token: user.token } }
           it { expect(JSON.parse(response.body)).to eq({
             "entourage"=> {
               "id"=>entourage.id,
@@ -483,12 +485,12 @@ describe Api::V1::EntouragesController do
         end
 
         context "find by v1 uuid" do
-          before { get :show, id: entourage.uuid.to_param, token: user.token }
+          before { get :show, params: { id: entourage.uuid.to_param, token: user.token } }
           it { expect(JSON.parse(response.body)["entourage"]["id"]).to eq entourage.id }
         end
 
         context "find by v2 uuid" do
-          before { get :show, id: entourage.uuid_v2.to_param, token: user.token }
+          before { get :show, params: { id: entourage.uuid_v2.to_param, token: user.token } }
           it { expect(JSON.parse(response.body)["entourage"]["id"]).to eq entourage.id }
         end
 
@@ -496,7 +498,7 @@ describe Api::V1::EntouragesController do
           with_community :pfp
           let!(:entourage) { nil }
           let!(:conversation) { create :conversation, participants: [user] }
-          before { get :show, id: conversation.uuid_v2.to_param, token: user.token }
+          before { get :show, params: { id: conversation.uuid_v2.to_param, token: user.token } }
           it { expect(JSON.parse(response.body)["entourage"]["id"]).to eq conversation.id }
         end
 
@@ -504,7 +506,7 @@ describe Api::V1::EntouragesController do
           with_community :pfp
           let!(:entourage) { nil }
           let(:other_user) { create :public_user, first_name: "Buzz", last_name: "Lightyear" }
-          before { get :show, id: "1_list_#{user.id}-#{other_user.id}", token: user.token }
+          before { get :show, params: { id: "1_list_#{user.id}-#{other_user.id}", token: user.token } }
           it { expect(JSON.parse(response.body)).to eq({
             "entourage"=>{
               "id"=>nil,
@@ -544,7 +546,7 @@ describe Api::V1::EntouragesController do
           let!(:entourage) { nil }
           let(:starts_at) { 1.day.from_now.change(hour: 19, min: 30) }
           let!(:outing) { create :outing, metadata: {starts_at: starts_at} }
-          before { get :show, id: outing.id, token: user.token }
+          before { get :show, params: { id: outing.id, token: user.token } }
           it { expect(JSON.parse(response.body)['entourage']).to include(
             "metadata"=>{
               "starts_at"=>starts_at.iso8601(3),
@@ -560,7 +562,7 @@ describe Api::V1::EntouragesController do
 
         context "last_message" do
           let!(:join_request) { create :join_request, joinable: entourage, user: user, status: :pending }
-          before { get :show, id: entourage.uuid.to_param, include_last_message: 'true', token: user.token }
+          before { get :show, params: { id: entourage.uuid.to_param, include_last_message: 'true', token: user.token } }
           it { expect(JSON.parse(response.body)["entourage"]["last_message"]).to eq(
             "text"=>"Votre demande est en attente.",
             "author"=>nil
@@ -571,14 +573,14 @@ describe Api::V1::EntouragesController do
       context "entourage doesn't exists" do
         it "return not found" do
           expect {
-              get :show, id: 0, token: user.token
+              get :show, params: { id: 0, token: user.token }
             }.to raise_error(ActiveRecord::RecordNotFound)
         end
       end
 
       describe "create entourage display" do
         context "has distance and feed_rank and source" do
-          before { get :show, id: entourage.to_param, token: user.token, distance: 123.45, feed_rank: 2, source: "foo" }
+          before { get :show, params: { id: entourage.to_param, token: user.token, distance: 123.45, feed_rank: 2, source: "foo" } }
           it { expect(EntourageDisplay.count).to eq(1) }
           it { expect(EntourageDisplay.last.distance).to eq(123.45) }
           it { expect(EntourageDisplay.last.feed_rank).to eq(2) }
@@ -586,7 +588,7 @@ describe Api::V1::EntouragesController do
         end
 
         context "has distance and feed_rank but no source" do
-          before { get :show, id: entourage.to_param, token: user.token, distance: 123.45, feed_rank: 2 }
+          before { get :show, params: { id: entourage.to_param, token: user.token, distance: 123.45, feed_rank: 2 } }
           it { expect(EntourageDisplay.count).to eq(1) }
           it { expect(EntourageDisplay.last.distance).to eq(123.45) }
           it { expect(EntourageDisplay.last.feed_rank).to eq(2) }
@@ -594,7 +596,7 @@ describe Api::V1::EntouragesController do
         end
 
         context "no distance or feed_rank" do
-          before { get :show, id: entourage.to_param, token: user.token }
+          before { get :show, params: { id: entourage.to_param, token: user.token } }
           it { expect(EntourageDisplay.count).to eq(0) }
         end
       end
@@ -602,18 +604,18 @@ describe Api::V1::EntouragesController do
   end
 
   describe 'PATCH update' do
-    let!(:entourage) { FactoryGirl.create(:entourage) }
+    let!(:entourage) { FactoryBot.create(:entourage) }
 
     context "not signed in" do
-      before { patch :update, id: entourage.to_param, entourage: {title: "new_title"} }
+      before { patch :update, params: { id: entourage.to_param, entourage: {title: "new_title"} } }
       it { expect(response.status).to eq(401) }
     end
 
     context "signed in" do
-      let!(:user_entourage) { FactoryGirl.create(:entourage, :joined, user: user) }
+      let!(:user_entourage) { FactoryBot.create(:entourage, :joined, user: user) }
 
       context "entourage exists" do
-        before { patch :update, id: user_entourage.to_param, entourage: {title: "new_title"}, token: user.token }
+        before { patch :update, params: { id: user_entourage.to_param, entourage: {title: "new_title"}, token: user.token } }
         it { expect(JSON.parse(response.body)).to eq({
           "entourage"=> {
             "id"=>user_entourage.id,
@@ -653,7 +655,7 @@ describe Api::V1::EntouragesController do
       end
 
       context "closing with outcome" do
-        before { patch :update, id: user_entourage.to_param, entourage: {status: 'closed', outcome: {success: success}}, token: user.token }
+        before { patch :update, params: { id: user_entourage.to_param, entourage: {status: 'closed', outcome: {success: success}}, token: user.token } }
 
         context "valid success value" do
           let(:success) { false }
@@ -678,8 +680,31 @@ describe Api::V1::EntouragesController do
           ) }
         end
 
-        context "invalid success value" do
+        context "any string is a truthy success value" do
           let(:success) { 'lol' }
+          it { expect(response.code).to eq '200' }
+          it { expect(user_entourage.reload.status).to eq 'closed' }
+          it { expect(user_entourage.moderation.action_outcome).to eq('Oui') }
+          it { expect(JSON.parse(response.body)["entourage"]).to include(
+                                                                    "status"=>"closed",
+                                                                    "outcome"=>{
+                                                                      "success"=>true
+                                                                    }
+                                                                  )}
+          it { expect(user_entourage.chat_messages.last.attributes).to include(
+            "content"=>"a clôturé l’action",
+            "user_id"=>user.id,
+            "message_type"=>"status_update",
+            "metadata"=>{
+              :$id=>"urn:chat_message:status_update:metadata",
+              :status=>"closed",
+              :outcome_success=>true
+            }
+          ) }
+        end
+
+        context "invalid success value" do
+          let(:success) { '' }
           it { expect(response.code).to eq '400' }
           it { expect(user_entourage.reload.status).to eq 'open' }
           it { expect(user_entourage.moderation).to be_nil }
@@ -689,7 +714,7 @@ describe Api::V1::EntouragesController do
 
       context "reopening" do
         let!(:user_entourage) { create :entourage, :joined, user: user, status: :closed }
-        before { patch :update, id: user_entourage.to_param, entourage: {status: 'open'}, token: user.token }
+        before { patch :update, params: { id: user_entourage.to_param, entourage: {status: 'open'}, token: user.token } }
 
         it { expect(response.code).to eq '200' }
         it { expect(user_entourage.chat_messages.last.attributes).to include(
@@ -705,34 +730,34 @@ describe Api::V1::EntouragesController do
       end
 
       context "entourage does not belong to user" do
-        before { patch :update, id: entourage.to_param, entourage: {title: "new_title"}, token: user.token }
+        before { patch :update, params: { id: entourage.to_param, entourage: {title: "new_title"}, token: user.token } }
         it { expect(response.status).to eq(401) }
       end
 
       context "entourage doesn't exists" do
         it "return not found" do
           expect {
-            patch :update, id: 0, entourage: {title: "new_title"}, token: user.token
+            patch :update, params: { id: 0, entourage: {title: "new_title"}, token: user.token }
           }.to raise_error(ActiveRecord::RecordNotFound)
         end
       end
 
       context "invalid params" do
-        before { patch :update, id: user_entourage.to_param, entourage: {status: "not exist"}, token: user.token }
+        before { patch :update, params: { id: user_entourage.to_param, entourage: {status: "not exist"}, token: user.token } }
         it { expect(JSON.parse(response.body)).to eq({"message"=>"Could not update entourage", "reasons"=>["Status n'est pas inclus(e) dans la liste"]}) }
         it { expect(response.status).to eq(400) }
       end
 
       context "update location" do
-        let!(:user_entourage) { FactoryGirl.create(:entourage, user: user) }
-        before { patch :update, id: user_entourage.to_param, entourage: {location: {latitude: 10.5, longitude: 20.1}}, token: user.token }
+        let!(:user_entourage) { FactoryBot.create(:entourage, user: user) }
+        before { patch :update, params: { id: user_entourage.to_param, entourage: {location: {latitude: 10.5, longitude: 20.1}}, token: user.token } }
         it { expect(user_entourage.reload.latitude).to eq(10.5) }
         it { expect(user_entourage.reload.longitude).to eq(20.1) }
       end
 
       context "changing group type" do
-        let!(:user_entourage) { FactoryGirl.create(:entourage, user: user) }
-        before { patch :update, id: user_entourage.to_param, entourage: {group_type: :conversation}, token: user.token }
+        let!(:user_entourage) { FactoryBot.create(:entourage, user: user) }
+        before { patch :update, params: { id: user_entourage.to_param, entourage: {group_type: :conversation}, token: user.token } }
         it "ignores the change" do
           expect(user_entourage.reload.group_type).to eq 'action'
         end
@@ -742,32 +767,32 @@ describe Api::V1::EntouragesController do
       context "update outing starts_at" do
         let(:new_start) { 12.day.from_now.change(hour: 19, min: 30) }
         let!(:user_entourage) { create :outing, user: user }
-        before { patch :update, id: user_entourage.to_param, entourage: {metadata: {starts_at: new_start}}, token: user.token }
+        before { patch :update, params: { id: user_entourage.to_param, entourage: {metadata: {starts_at: new_start}}, token: user.token } }
         it { expect(user_entourage.reload.metadata[:ends_at]).to eq(new_start + 3.hours) }
       end
     end
   end
 
   describe "PUT read" do
-    let!(:entourage) { FactoryGirl.create(:entourage) }
+    let!(:entourage) { FactoryBot.create(:entourage) }
 
     context "not signed in" do
-      before { put :read, id: entourage.to_param }
+      before { put :read, params: { id: entourage.to_param } }
       it { expect(response.status).to eq(401) }
     end
 
     context "user is accepted in entourage" do
       let(:old_date) { DateTime.parse("15/10/2010") }
-      let!(:join_request) { FactoryGirl.create(:join_request, joinable: entourage, user: user, status: JoinRequest::ACCEPTED_STATUS, last_message_read: old_date) }
-      before { put :read, id: entourage.to_param, token: user.token }
+      let!(:join_request) { FactoryBot.create(:join_request, joinable: entourage, user: user, status: JoinRequest::ACCEPTED_STATUS, last_message_read: old_date) }
+      before { put :read, params: { id: entourage.to_param, token: user.token } }
       it { expect(response.status).to eq(204) }
       it { expect(join_request.reload.last_message_read).to be > old_date }
     end
 
     context "user is not accepted in entourage" do
       let(:old_date) { DateTime.parse("15/10/2010") }
-      let!(:join_request) { FactoryGirl.create(:join_request, joinable: entourage, user: user, status: JoinRequest::PENDING_STATUS, last_message_read: old_date) }
-      before { put :read, id: entourage.to_param, token: user.token }
+      let!(:join_request) { FactoryBot.create(:join_request, joinable: entourage, user: user, status: JoinRequest::PENDING_STATUS, last_message_read: old_date) }
+      before { put :read, params: { id: entourage.to_param, token: user.token } }
       it { expect(response.status).to eq(204) }
       it { expect(join_request.reload.last_message_read).to eq(old_date) }
     end
@@ -778,7 +803,7 @@ describe Api::V1::EntouragesController do
     let(:reported_group) { create :entourage }
     let(:message) { "MESSAGE" }
 
-    before { post 'report', token: reporting_user.token, id: reported_group.id, entourage_report: {message: message} }
+    before { post 'report', params: { token: reporting_user.token, id: reported_group.id, entourage_report: {message: message} } }
 
     context "valid params" do
       it { expect(response.status).to eq 201 }
@@ -793,11 +818,11 @@ describe Api::V1::EntouragesController do
   end
 
   describe "DELETE report_prompt" do
-    let!(:entourage) { FactoryGirl.create(:entourage) }
+    let!(:entourage) { FactoryBot.create(:entourage) }
 
     context "user is accepted in entourage" do
-      let!(:join_request) { FactoryGirl.create(:join_request, joinable: entourage, user: user, report_prompt_status: :display, status: :accepted ) }
-      before { delete :dismiss_report_prompt, id: entourage.to_param, token: user.token }
+      let!(:join_request) { FactoryBot.create(:join_request, joinable: entourage, user: user, report_prompt_status: :display, status: :accepted ) }
+      before { delete :dismiss_report_prompt, params: { id: entourage.to_param, token: user.token } }
       it { expect(response.status).to eq(204) }
       it { expect(join_request.reload.report_prompt_status).to eq 'dismissed' }
     end

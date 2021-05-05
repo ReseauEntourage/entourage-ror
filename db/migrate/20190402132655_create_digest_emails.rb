@@ -1,4 +1,4 @@
-class CreateDigestEmails < ActiveRecord::Migration
+class CreateDigestEmails < ActiveRecord::Migration[4.2]
   def up
     create_table :digest_emails do |t|
       t.datetime :deliver_at, null: false

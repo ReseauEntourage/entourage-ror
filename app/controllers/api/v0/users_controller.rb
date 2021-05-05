@@ -1,7 +1,7 @@
 module Api
   module V0
     class UsersController < Api::V0::BaseController
-      skip_before_filter :authenticate_user!, except: [:update_me]
+      skip_before_action :authenticate_user!, except: [:update_me]
 
       def login
         user = UserServices::UserAuthenticator.authenticate_by_phone_and_sms(phone: params[:phone], sms_code: params[:sms_code])

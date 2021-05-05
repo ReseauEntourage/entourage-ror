@@ -1,4 +1,4 @@
-class CreateToursEntouragesView < ActiveRecord::Migration
+class CreateToursEntouragesView < ActiveRecord::Migration[4.2]
   def up
     sql = <<-SQL
       CREATE VIEW feeds AS

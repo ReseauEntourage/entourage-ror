@@ -4,7 +4,7 @@ describe Poi, :type => :model do
   it { should validate_presence_of(:name) }
 
   describe 'poi validation' do
-    let!(:poi) { FactoryGirl.create :poi }
+    let!(:poi) { FactoryBot.create :poi }
     subject { poi }
     context 'should succeed when the fields are not blank' do
       it { should be_valid }
@@ -15,7 +15,7 @@ describe Poi, :type => :model do
     context 'should not succeed when the categories are blank' do
       it {
         expect {
-          FactoryGirl.create :poi, category: nil, category_ids: []
+          FactoryBot.create :poi, category: nil, category_ids: []
         }.to raise_error (ActiveRecord::RecordInvalid)
       }
     end

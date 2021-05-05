@@ -1,7 +1,7 @@
 module Admin
   class SlackController < ActionController::Base
-    before_filter :parse_payload, only: [:message_action]
-    before_filter :authenticate!, only: [:message_action]
+    before_action :parse_payload, only: [:message_action]
+    before_action :authenticate!, only: [:message_action]
 
     def message_action
       callback_type, *callback_params = @payload['callback_id']&.split(':')

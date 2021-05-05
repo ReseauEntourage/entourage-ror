@@ -4,8 +4,8 @@ describe UserServices::ProUserBuilder do
 
   describe 'create' do
     before { UserServices::SmsCode.any_instance.stub(:code) { "123456" }}
-    let(:params) do FactoryGirl.build(:user).attributes.select {|k, v| ["email", "first_name", "last_name", "phone"].include?(k) } end
-    let(:organization) { FactoryGirl.build(:organization) }
+    let(:params) do FactoryBot.build(:user).attributes.select {|k, v| ["email", "first_name", "last_name", "phone"].include?(k) }.with_indifferent_access end
+    let(:organization) { FactoryBot.build(:organization) }
 
     it 'sends sms with created code' do
       expect_any_instance_of(UserServices::SMSSender).to receive(:send_welcome_sms).with("123456").once

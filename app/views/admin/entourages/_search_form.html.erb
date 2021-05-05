@@ -40,7 +40,7 @@
 <div style="display: flex; margin: -10px 0 10px">
   <div class="btn-group btn-group-sm" style="flex-grow: 1">
     <%
-      q = params[:q] || {}
+      q = @params[:q] || {}
       presets = {
         "Partout" => {},
         "Paris" => {
@@ -87,7 +87,7 @@
       <%=
         link_to(
           name,
-          params.merge(q: q.except(*location_keys).merge(options)),
+          @params.merge(q: q.except(*location_keys).merge(options)),
           class: "btn btn-#{active == name ? :primary : :default}",
             style: options[:pin_eq] == 'true' ? "margin-left: 10px;" : ""
         )

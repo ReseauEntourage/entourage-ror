@@ -1,4 +1,4 @@
-class AddAreasAndUserGoalsToAnnouncements < ActiveRecord::Migration
+class AddAreasAndUserGoalsToAnnouncements < ActiveRecord::Migration[4.2]
   def change
     add_column :announcements, :areas, :jsonb, default: [], null: false
     add_index  :announcements, :areas, using: :gin

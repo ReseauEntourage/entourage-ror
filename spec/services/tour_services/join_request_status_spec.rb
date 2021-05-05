@@ -2,9 +2,9 @@ require 'rails_helper'
 
 RSpec.describe TourServices::JoinRequestStatus do
 
-  let(:owner) { FactoryGirl.create(:public_user) }
-  let(:requester) { FactoryGirl.create(:public_user, first_name: "foo", last_name: "bar") }
-  let(:entourage) { FactoryGirl.create(:entourage, user: owner) }
+  let(:owner) { FactoryBot.create(:public_user) }
+  let(:requester) { FactoryBot.create(:public_user, first_name: "foo", last_name: "bar") }
+  let(:entourage) { FactoryBot.create(:entourage, user: owner) }
   let!(:join_request) { JoinRequest.create(user: requester, joinable: entourage, status: "pending") }
 
   subject { TourServices::JoinRequestStatus.new(join_request: join_request) }

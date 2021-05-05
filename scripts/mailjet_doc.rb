@@ -9,7 +9,7 @@ ENV['MAILJET_API_KEY']    ||= dev_env['MAILJET_API_KEY']
 ENV['MAILJET_SECRET_KEY'] ||= dev_env['MAILJET_SECRET_KEY']
 load 'config/initializers/mailjet.rb'
 
-include FactoryGirl::Syntax::Methods
+include FactoryBot::Syntax::Methods
 
 def cleanup_db
   User.delete_all

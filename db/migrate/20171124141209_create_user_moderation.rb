@@ -1,4 +1,4 @@
-class CreateUserModeration < ActiveRecord::Migration
+class CreateUserModeration < ActiveRecord::Migration[4.2]
   def change
     create_table :user_moderations do |t|
       t.integer :user_id, null: false

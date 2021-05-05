@@ -3,9 +3,9 @@ include AuthHelper
 
 describe Admin::UsersController do
 
-  let(:validated_user_with_avatar) { FactoryGirl.create(:public_user, validation_status: "validated", avatar_key: "avatar_123") }
-  let(:validated_user_without_avatar) { FactoryGirl.create(:public_user, validation_status: "validated", avatar_key: nil) }
-  let(:blocked_user) { FactoryGirl.create(:public_user, validation_status: "blocked", avatar_key: "avatar_456") }
+  let(:validated_user_with_avatar) { FactoryBot.create(:public_user, validation_status: "validated", avatar_key: "avatar_123") }
+  let(:validated_user_without_avatar) { FactoryBot.create(:public_user, validation_status: "validated", avatar_key: nil) }
+  let(:blocked_user) { FactoryBot.create(:public_user, validation_status: "blocked", avatar_key: "avatar_456") }
 
   describe 'GET moderate' do
     context "not signed in" do
@@ -23,7 +23,7 @@ describe Admin::UsersController do
 
   describe 'PUT banish' do
     context "not signed in" do
-      before { put :banish, id: validated_user_with_avatar.to_param }
+      before { put :banish, params: { id: validated_user_with_avatar.to_param } }
       it { should redirect_to new_session_path }
     end
 
@@ -35,7 +35,7 @@ describe Admin::UsersController do
         stub_request(:delete, "https://foobar.s3.eu-west-1.amazonaws.com/300x300/#{validated_user_with_avatar.avatar_key}").
             to_return(:status => 200, :body => "", :headers => {})
 
-        put :banish, id: validated_user_with_avatar.to_param
+        put :banish, params: { id: validated_user_with_avatar.to_param }
       end
       it { should redirect_to moderate_admin_users_path(validation_status: "blocked") }
       it { expect(validated_user_with_avatar.reload.validation_status).to eq("blocked") }
@@ -44,13 +44,13 @@ describe Admin::UsersController do
 
   describe 'PUT validate' do
     context "not signed in" do
-      before { put :validate, id: blocked_user.to_param }
+      before { put :validate, params: { id: blocked_user.to_param } }
       it { should redirect_to new_session_path }
     end
 
     context "signed in" do
       let!(:user) { admin_basic_login }
-      before { put :validate, id: blocked_user.to_param }
+      before { put :validate, params: { id: blocked_user.to_param } }
       it { should redirect_to moderate_admin_users_path(validation_status: "validated") }
       it { expect(blocked_user.reload.validation_status).to eq("validated") }
     end

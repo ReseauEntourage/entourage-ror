@@ -1,4 +1,4 @@
-class UserRelationship < ActiveRecord::Base
+class UserRelationship < ApplicationRecord
   TYPE_INVITE="TYPE_INVITE"
   TYPE_FACEBOOK="TYPE_FACEBOOK"
 

@@ -1,4 +1,4 @@
-class AndroidNotificationJob < ActiveJob::Base
+class AndroidNotificationJob < ApplicationJob
   def perform(sender, object, content, device_ids, community, extra={},badge=nil)
     return if device_ids.blank?
 

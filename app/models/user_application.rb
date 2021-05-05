@@ -1,4 +1,4 @@
-class UserApplication < ActiveRecord::Base
+class UserApplication < ApplicationRecord
   ANDROID="ANDROID"
   IOS="IOS"
   WEB="WEB"

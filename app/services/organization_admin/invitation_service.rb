@@ -70,7 +70,7 @@ module OrganizationAdmin
         invitee_id: user.id,
       )
 
-      ActiveRecord::Base.transaction do
+      ApplicationRecord.transaction do
         mark_accepted_invitations_as_outdated(
           user_id: invitation.invitee_id,
           partner_id: invitation.partner_id

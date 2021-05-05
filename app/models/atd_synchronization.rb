@@ -1,3 +1,3 @@
-class AtdSynchronization < ActiveRecord::Base
+class AtdSynchronization < ApplicationRecord
   validates :filename, presence: true, uniqueness: true
 end

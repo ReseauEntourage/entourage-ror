@@ -48,7 +48,7 @@
     <% else %>
       <% if @entourage.image_url %>
         <div style="margin-bottom: 15px">
-          <%= image_tag @entourage.image_url, size: '750x320' %>
+          <%= image_tag(@entourage.image_url, size: '750x320') if @entourage.image_url.present? %>
         </div>
       <% end %>
       <% if @entourage.status == 'open' %>

@@ -1,4 +1,4 @@
-class CreateSuggestionComputeHistories < ActiveRecord::Migration
+class CreateSuggestionComputeHistories < ActiveRecord::Migration[4.2]
   def change
     create_table :suggestion_compute_histories do |t|
       t.integer :user_number,             null: false

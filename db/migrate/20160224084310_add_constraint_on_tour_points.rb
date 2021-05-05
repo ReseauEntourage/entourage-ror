@@ -1,4 +1,4 @@
-class AddConstraintOnTourPoints < ActiveRecord::Migration
+class AddConstraintOnTourPoints < ActiveRecord::Migration[4.2]
   def change
     change_column :tour_points, :latitude,      :float,     null: false
     change_column :tour_points, :longitude,     :float,     null: false

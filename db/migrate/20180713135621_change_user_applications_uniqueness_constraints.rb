@@ -1,4 +1,4 @@
-class ChangeUserApplicationsUniquenessConstraints < ActiveRecord::Migration
+class ChangeUserApplicationsUniquenessConstraints < ActiveRecord::Migration[4.2]
   def up
     remove_index :user_applications, :push_token
     add_index    :user_applications, :push_token, unique: true

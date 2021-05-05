@@ -4,7 +4,7 @@ describe EntourageServices::EntourageBuilder do
 
   describe '.update' do
     describe "don't touch updated_at when closing" do
-      let(:entourage) { FactoryGirl.create(:entourage, updated_at: 10.hours.ago) }
+      let(:entourage) { FactoryBot.create(:entourage, updated_at: 10.hours.ago) }
       subject { -> { described_class.update(entourage: entourage, params: params) } }
 
       context 'the status changed to closed' do

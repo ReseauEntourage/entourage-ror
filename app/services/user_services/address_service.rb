@@ -3,7 +3,7 @@ module UserServices
     def initialize(user:, position:, params:)
       @user = user
       @position = position
-      @params = params.with_indifferent_access
+      @params = params
       @callback = Callback.new
     end
 

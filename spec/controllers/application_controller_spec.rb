@@ -37,9 +37,9 @@ describe ApplicationController, :type => :controller do
 
 
   describe "authorisations" do
-    let(:admin) { FactoryGirl.create(:pro_user, admin: true) }
-    let(:manager) { FactoryGirl.create(:pro_user, manager: true) }
-    let(:user) { FactoryGirl.create(:pro_user) }
+    let(:admin) { FactoryBot.create(:pro_user, admin: true) }
+    let(:manager) { FactoryBot.create(:pro_user, manager: true) }
+    let(:user) { FactoryBot.create(:pro_user) }
 
     context "admin" do
       before { session[:admin_user_id] = admin.id }

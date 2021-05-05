@@ -1,4 +1,4 @@
-class CreateEmailPreferences < ActiveRecord::Migration
+class CreateEmailPreferences < ActiveRecord::Migration[4.2]
   def up
     create_table :email_categories do |t|
       t.string :name, limit: 30, null: false

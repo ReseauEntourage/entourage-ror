@@ -1,4 +1,4 @@
-class ConversationMessage < ActiveRecord::Base
+class ConversationMessage < ApplicationRecord
   belongs_to :messageable, polymorphic: true
   belongs_to :user
   belongs_to :full_object, polymorphic: true

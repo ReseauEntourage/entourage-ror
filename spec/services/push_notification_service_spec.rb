@@ -4,9 +4,9 @@ describe PushNotificationService, type: :service do
   describe '#send_notification' do
     let!(:android_notification_service) { spy('android_notification_service') }
     let!(:ios_notification_service) { spy('ios_notification_service') }
-    let!(:user_app1) { FactoryGirl.create :user_application, device_family: UserApplication::ANDROID, push_token: 'token 1' }
-    let!(:user_app2) { FactoryGirl.create :user_application, device_family: UserApplication::IOS, push_token: 'token 2' }
-    let!(:user) { FactoryGirl.create(:pro_user) }
+    let!(:user_app1) { FactoryBot.create :user_application, device_family: UserApplication::ANDROID, push_token: 'token 1' }
+    let!(:user_app2) { FactoryBot.create :user_application, device_family: UserApplication::IOS, push_token: 'token 2' }
+    let!(:user) { FactoryBot.create(:pro_user) }
     let!(:sender) { 'sender' }
     let!(:object) { 'object' }
     let!(:content) { 'content' }
@@ -18,8 +18,8 @@ describe PushNotificationService, type: :service do
   describe '#send_notification_android_only' do
     let!(:android_notification_service) { spy('android_notification_service') }
     let!(:ios_notification_service) { spy('ios_notification_service') }
-    let!(:user_app) { FactoryGirl.create :user_application, device_family: UserApplication::ANDROID, push_token: 'token 1' }
-    let!(:user) { FactoryGirl.create(:pro_user) }
+    let!(:user_app) { FactoryBot.create :user_application, device_family: UserApplication::ANDROID, push_token: 'token 1' }
+    let!(:user) { FactoryBot.create(:pro_user) }
     let!(:sender) { 'sender' }
     let!(:object) { 'object' }
     let!(:content) { 'content' }
@@ -30,8 +30,8 @@ describe PushNotificationService, type: :service do
   describe '#send_notification_ios_only' do
     let!(:android_notification_service) { spy('android_notification_service') }
     let!(:ios_notification_service) { spy('ios_notification_service') }
-    let!(:user_app) { FactoryGirl.create :user_application, device_family: UserApplication::IOS, push_token: 'token 2' }
-    let!(:user) { FactoryGirl.create(:pro_user) }
+    let!(:user_app) { FactoryBot.create :user_application, device_family: UserApplication::IOS, push_token: 'token 2' }
+    let!(:user) { FactoryBot.create(:pro_user) }
     let!(:sender) { 'sender' }
     let!(:object) { 'object' }
     let!(:content) { 'content' }
@@ -42,11 +42,11 @@ describe PushNotificationService, type: :service do
   describe '#send_notification_4ios_tokens' do
     let!(:android_notification_service) { spy('android_notification_service') }
     let!(:ios_notification_service) { spy('ios_notification_service') }
-    let!(:user_app1) { FactoryGirl.create :user_application, device_family: UserApplication::IOS, push_token: 'token 1' }
-    let!(:user_app2) { FactoryGirl.create :user_application, device_family: UserApplication::IOS, push_token: 'token 2' }
-    let!(:user_app3) { FactoryGirl.create :user_application, device_family: UserApplication::IOS, push_token: 'token 3' }
-    let!(:user_app4) { FactoryGirl.create :user_application, device_family: UserApplication::IOS, push_token: 'token 4' }
-    let!(:user) { FactoryGirl.create(:pro_user) }
+    let!(:user_app1) { FactoryBot.create :user_application, device_family: UserApplication::IOS, push_token: 'token 1' }
+    let!(:user_app2) { FactoryBot.create :user_application, device_family: UserApplication::IOS, push_token: 'token 2' }
+    let!(:user_app3) { FactoryBot.create :user_application, device_family: UserApplication::IOS, push_token: 'token 3' }
+    let!(:user_app4) { FactoryBot.create :user_application, device_family: UserApplication::IOS, push_token: 'token 4' }
+    let!(:user) { FactoryBot.create(:pro_user) }
     let!(:sender) { 'sender' }
     let!(:object) { 'object' }
     let!(:content) { 'content' }

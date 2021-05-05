@@ -21,7 +21,7 @@ module Experimental
   #        end
   #      end
   #
-  #      attribute :metadata, Experimental::JsonbWithSchema.new
+  #      attribute :metadata, :jsonb_with_schema
   #    end
   #
   #  enables this behavior for the `metadata` jsonb attribute:
@@ -42,11 +42,11 @@ module Experimental
   #                            :$id =>"urn:entourage:outing:metadata"}
   #
   class JsonbWithSchema < ActiveRecord::ConnectionAdapters::PostgreSQL::OID::Jsonb
-    def type_cast_from_database(value)
+    def deserialize(value)
       value = super(value)
       value = value.symbolize_keys
       cast_datetime_properties(value) do |datetime|
-        converted = timezone_converter.type_cast_from_database(datetime)
+        converted = timezone_converter.deserialize(datetime)
         # keep invalid user-supplied values for clearer validation errors
         if converted.nil? && !datetime.nil?
           datetime
@@ -56,10 +56,10 @@ module Experimental
       end
     end
 
-    def type_cast_from_user(value)
+    def cast(value)
       value = value.symbolize_keys
       value = cast_datetime_properties(value) do |datetime|
-        converted = timezone_converter.type_cast_from_user(datetime)
+        converted = timezone_converter.cast(datetime)
         # keep invalid user-supplied values for clearer validation errors
         if converted.nil? && !datetime.nil?
           datetime
@@ -70,12 +70,12 @@ module Experimental
       super(value)
     end
 
-    def type_cast_for_database(value)
+    def serialize(value)
       value = value.symbolize_keys
       value = cast_datetime_properties(value) do |datetime|
         next if datetime.nil?
         # re-casts in case the shema was absent/different on assignment
-        converted = timezone_converter.type_cast_from_user(datetime)
+        converted = timezone_converter.cast(datetime)
         # keep invalid user-supplied values for clearer validation errors
         if converted.nil?
           datetime

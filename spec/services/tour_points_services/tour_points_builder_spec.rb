@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe TourPointsServices::TourPointsBuilder do
 
-  let(:tour) { FactoryGirl.create(:tour) }
+  let(:tour) { FactoryBot.create(:tour) }
 
   describe 'create' do
     context "valid params" do

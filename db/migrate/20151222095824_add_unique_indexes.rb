@@ -1,4 +1,4 @@
-class AddUniqueIndexes < ActiveRecord::Migration
+class AddUniqueIndexes < ActiveRecord::Migration[4.2]
   def change
     User.where(phone: "").update_all(phone: nil)
     add_index :users, :email, unique: true

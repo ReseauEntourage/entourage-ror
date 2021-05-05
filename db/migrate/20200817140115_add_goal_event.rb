@@ -1,4 +1,4 @@
-class AddGoalEvent < ActiveRecord::Migration
+class AddGoalEvent < ActiveRecord::Migration[4.2]
   disable_ddl_transaction!
 
   def up

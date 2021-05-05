@@ -1,4 +1,4 @@
-class SubscribeNewsletterMailchimpJob < ActiveJob::Base
+class SubscribeNewsletterMailchimpJob < ApplicationJob
 
   def perform(email, active)
     if ENV.key?("MAILCHIMP_LIST_ID")

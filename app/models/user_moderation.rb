@@ -1,4 +1,4 @@
-class UserModeration < ActiveRecord::Base
+class UserModeration < ApplicationRecord
   validates :user_id, presence: true
 
   VALUES = {

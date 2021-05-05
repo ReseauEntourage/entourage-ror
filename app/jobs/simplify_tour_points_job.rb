@@ -1,4 +1,4 @@
-class SimplifyTourPointsJob < ActiveJob::Base
+class SimplifyTourPointsJob < ApplicationJob
 
   def perform(tour_id, should_send_mail=false)
     tour = Tour.find(tour_id)

@@ -1,8 +1,8 @@
 module Api
   module V1
     class AnnouncementsController < Api::V1::BaseController
-      skip_before_filter :authenticate_user!, only: [:icon]
-      skip_before_filter :ensure_community!,  only: [:icon]
+      skip_before_action :authenticate_user!, only: [:icon]
+      skip_before_action :ensure_community!,  only: [:icon]
       allow_anonymous_access only: [:index, :redirect]
 
       def index

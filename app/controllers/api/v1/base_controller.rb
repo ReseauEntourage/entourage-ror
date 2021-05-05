@@ -1,15 +1,15 @@
-require_dependency 'api/v1/api_error'
+require 'api/v1/api_error'
 
 module Api
   module V1
     class BaseController < ApplicationController
       skip_before_action :verify_authenticity_token
-      before_filter :allow_cors
-      before_filter :community_warning
-      before_filter :validate_request!, only: [:check]
-      before_filter :ensure_community!, except: [:options]
-      before_filter :authenticate_user!, except: [:check, :options]
-      before_filter :set_raven_context
+      before_action :allow_cors
+      before_action :community_warning
+      before_action :validate_request!, only: [:check]
+      before_action :ensure_community!, except: [:options]
+      before_action :authenticate_user!, except: [:check, :options]
+      before_action :set_raven_context
 
       rescue_from ApiRequest::Unauthorised do |e|
         Rails.logger.error e
@@ -89,8 +89,8 @@ module Api
       end
 
       def self.allow_anonymous_access only:
-        skip_before_filter :authenticate_user!, only: only
-        before_filter :authenticate_user_or_anonymous!, only: only
+        skip_before_action :authenticate_user!, only: only
+        before_action :authenticate_user_or_anonymous!, only: only
       end
 
       def validate_request!

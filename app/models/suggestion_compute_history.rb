@@ -1,4 +1,4 @@
-class SuggestionComputeHistory < ActiveRecord::Base
+class SuggestionComputeHistory < ApplicationRecord
   validates :user_number,
             :total_user_number,
             :entourage_number,

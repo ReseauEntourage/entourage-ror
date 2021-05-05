@@ -1,4 +1,4 @@
-class FixSmsDeliveryStatus < ActiveRecord::Migration
+class FixSmsDeliveryStatus < ActiveRecord::Migration[4.2]
   def up
     execute <<-SQL
       create type sms_delivery_status as enum (

@@ -2,15 +2,15 @@ require 'experimental/symbol_set'
 
 module Experimental
   class JsonbSet < ActiveRecord::ConnectionAdapters::PostgreSQL::OID::Jsonb
-    def type_cast_from_database(value)
+    def deserialize(value)
       format(super(value))
     end
 
-    def type_cast_from_user(value)
+    def cast(value)
       super format(value)
     end
 
-    def type_cast_for_database(value)
+    def serialize(value)
       super format(value)
     end
 

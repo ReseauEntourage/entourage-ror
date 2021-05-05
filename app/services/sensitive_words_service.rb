@@ -128,7 +128,7 @@ module SensitiveWordsService
   def self.predicate_for pattern, match_type
     return if pattern.blank?
 
-    pattern = ActiveRecord::Base.connection.quote(pattern)
+    pattern = ApplicationRecord.connection.quote(pattern)
     "(match_type = '%s' and position(pattern in %s) > 0)" % [match_type, pattern]
   end
 

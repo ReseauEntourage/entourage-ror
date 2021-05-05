@@ -61,7 +61,7 @@ module Admin
       Rails.logger.warn "type=partner.delete partner_id=#{@partner.id} followers=#{JSON.fast_generate(@partner.followings.where(active: true).pluck(:user_id))}"
 
       success = false
-      ActiveRecord::Base.transaction do
+      ApplicationRecord.transaction do
         @partner.destroy!
         @partner.users.update_all(
           partner_id:         User.column_defaults['partner_id'],

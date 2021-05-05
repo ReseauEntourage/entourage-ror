@@ -1,4 +1,4 @@
-class CreateSensitiveWordsChecks < ActiveRecord::Migration
+class CreateSensitiveWordsChecks < ActiveRecord::Migration[4.2]
   def change
     create_table :sensitive_words_checks do |t|
       t.string :status, null: false

@@ -19,7 +19,7 @@ module TourPointsServices
       if cached_points.present?
         points = JSON.parse(cached_points)
       else
-        pg_result = ActiveRecord::Base.connection.execute(sql)
+        pg_result = ApplicationRecord.connection.execute(sql)
         points = pg_result.map { |point| format_point(point) }
         # see: config/initializers/pg_result_clear.rb
         pg_result.clear

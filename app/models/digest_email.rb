@@ -1,4 +1,4 @@
-class DigestEmail < ActiveRecord::Base
+class DigestEmail < ApplicationRecord
   validates :status, inclusion: { in: ['scheduled', 'delivering', 'delivered'] }
 
   include CustomTimestampAttributesForUpdate

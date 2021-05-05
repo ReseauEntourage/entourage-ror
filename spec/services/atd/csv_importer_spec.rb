@@ -25,12 +25,12 @@ RSpec.describe Atd::CsvImporter do
     # end
 
     context "Code action 'created'" do
-      let!(:user1) { FactoryGirl.create(:public_user, email: "foo@bar.com", created_at: Date.parse(Atd::CsvImporter::ATD_COMMUNICATION_DATE)-1.day) }
-      let!(:user2) { FactoryGirl.create(:public_user, email: "foo1@bar.com", created_at: Date.parse(Atd::CsvImporter::ATD_COMMUNICATION_DATE)+1.day) }
-      let!(:user3) { FactoryGirl.create(:public_user, phone: "+33612345679", created_at: Date.parse(Atd::CsvImporter::ATD_COMMUNICATION_DATE)+31.day) }
-      let!(:user4) { FactoryGirl.create(:pro_user, phone: "+33612345675") }
-      let!(:user5) { FactoryGirl.create(:public_user) }
-      let!(:partner) { FactoryGirl.create(:partner) }
+      let!(:user1) { FactoryBot.create(:public_user, email: "foo@bar.com", created_at: Date.parse(Atd::CsvImporter::ATD_COMMUNICATION_DATE)-1.day) }
+      let!(:user2) { FactoryBot.create(:public_user, email: "foo1@bar.com", created_at: Date.parse(Atd::CsvImporter::ATD_COMMUNICATION_DATE)+1.day) }
+      let!(:user3) { FactoryBot.create(:public_user, phone: "+33612345679", created_at: Date.parse(Atd::CsvImporter::ATD_COMMUNICATION_DATE)+31.day) }
+      let!(:user4) { FactoryBot.create(:pro_user, phone: "+33612345675") }
+      let!(:user5) { FactoryBot.create(:public_user) }
+      let!(:partner) { FactoryBot.create(:partner) }
 
       describe "create atd_users" do
         before { Atd::CsvImporter.new(csv: csv).match }
@@ -47,11 +47,11 @@ RSpec.describe Atd::CsvImporter do
     end
 
     context "code action 'modified'" do
-      let!(:user6) { FactoryGirl.create(:public_user, email: "foo2@bar.com")  }
-      let!(:matched_atd_user) { FactoryGirl.create(:atd_user, user: user6, atd_id: 1014, mail_hash: "foobar") }
+      let!(:user6) { FactoryBot.create(:public_user, email: "foo2@bar.com")  }
+      let!(:matched_atd_user) { FactoryBot.create(:atd_user, user: user6, atd_id: 1014, mail_hash: "foobar") }
 
-      let!(:user7) { FactoryGirl.create(:public_user, email: "foo3@bar.com")  }
-      let!(:unmatched_atd_user) { FactoryGirl.create(:atd_user, atd_id: 5678, mail_hash: "foobar") }
+      let!(:user7) { FactoryBot.create(:public_user, email: "foo3@bar.com")  }
+      let!(:unmatched_atd_user) { FactoryBot.create(:atd_user, atd_id: 5678, mail_hash: "foobar") }
 
       before { Atd::CsvImporter.new(csv: csv).match }
       it { expect(matched_atd_user.reload.mail_hash).to eq("f2fd6bd59f5c2f3cb04c90b432721715a4ecc204") }

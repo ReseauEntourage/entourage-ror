@@ -24,7 +24,7 @@ module TourServices
       return true if accepted?
       return false if cancelled?
 
-      ActiveRecord::Base.transaction do
+      ApplicationRecord.transaction do
         increment_counter
         join_request.update!(status: "accepted")
       end
@@ -58,7 +58,7 @@ module TourServices
       if pending?
         join_request.update(status: "rejected")
       elsif accepted?
-        ActiveRecord::Base.transaction do
+        ApplicationRecord.transaction do
           decrement_counter
           join_request.update!(status: "rejected")
         end
@@ -73,7 +73,7 @@ module TourServices
       if pending?
         join_request.update(status: "cancelled")
       elsif accepted?
-        ActiveRecord::Base.transaction do
+        ApplicationRecord.transaction do
           decrement_counter
           join_request.update!(status: "cancelled")
         end
@@ -86,12 +86,12 @@ module TourServices
       return true if pending?
 
       if accepted?
-        ActiveRecord::Base.transaction do
+        ApplicationRecord.transaction do
           decrement_counter
           join_request.update!(status: "pending")
         end
       elsif joinable.public?
-        ActiveRecord::Base.transaction do
+        ApplicationRecord.transaction do
           increment_counter
           join_request.update!(status: "accepted")
         end

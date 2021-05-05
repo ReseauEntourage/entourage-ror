@@ -3,6 +3,7 @@ module Admin
     layout 'admin_large'
 
     def index
+      @params = params.permit([:status, :area, :goal]).to_h
       @goal = params[:goal].presence&.to_sym || :all
       @area = params[:area].presence&.to_sym || :all
       @status = params[:status].presence&.to_sym || :draft

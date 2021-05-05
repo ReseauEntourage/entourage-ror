@@ -3,14 +3,14 @@ require 'rails_helper'
 RSpec.describe TourPresenter do
   def duration_presenter(duration:)
     time = Time.parse("2010/10/10")
-    tour = FactoryGirl.build(:tour, created_at: time, closed_at: time+duration.seconds)
-    tp1 = FactoryGirl.create(:tour_point, tour: tour, created_at: time)
-    tp2 = FactoryGirl.create(:tour_point, tour: tour, created_at: (time+duration.seconds))
+    tour = FactoryBot.build(:tour, created_at: time, closed_at: time+duration.seconds)
+    tp1 = FactoryBot.create(:tour_point, tour: tour, created_at: time)
+    tp2 = FactoryBot.create(:tour_point, tour: tour, created_at: (time+duration.seconds))
     TourPresenter.new(tour: tour)
   end
 
   def distance_presenter(distance:)
-    TourPresenter.new(tour: FactoryGirl.build(:tour, length: distance))
+    TourPresenter.new(tour: FactoryBot.build(:tour, length: distance))
   end
 
   describe 'duration' do

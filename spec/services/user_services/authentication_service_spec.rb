@@ -6,7 +6,7 @@ describe UserServices::AuthenticationService do
     context "valid user password" do
       before { ENV["DISABLE_CRYPT"]="FALSE" }
       after { ENV["DISABLE_CRYPT"]="TRUE" }
-      let(:user) { FactoryGirl.create(:pro_user, sms_code: "foobar") }
+      let(:user) { FactoryBot.create(:pro_user, sms_code: "foobar") }
       let(:password_service) { UserServices::AuthenticationService.new(user: user) }
       it { expect(password_service.check_sms_code("foobar")).to be true }
       it { expect(password_service.check_sms_code("toto")).to be false }
@@ -14,7 +14,7 @@ describe UserServices::AuthenticationService do
 
     context "invalid password" do
       it "returns false" do
-        user = FactoryGirl.create(:pro_user)
+        user = FactoryBot.create(:pro_user)
         user.update_columns(sms_code: "foobar")
         password_service = UserServices::AuthenticationService.new(user: user)
         expect(password_service.check_sms_code("toto")).to be false

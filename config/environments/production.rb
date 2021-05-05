@@ -44,6 +44,8 @@ Rails.application.configure do
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
   config.force_ssl = (ENV["FORCE_SSL"] == "false") ? false : true
 
+  # https://guides.rubyonrails.org/upgrading_ruby_on_rails.html#configure-ssl-options-to-enable-hsts-with-subdomains
+  config.ssl_options = { hsts: { subdomains: true } }
   if ENV['DISABLE_HSTS'] == 'true'
     config.ssl_options.merge!(hsts: {expire: 0})
   end

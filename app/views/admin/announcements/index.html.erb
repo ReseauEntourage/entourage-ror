@@ -118,9 +118,9 @@
 
     <div style="margin-bottom: 15px; display: flex">
       <div class="btn-group btn-group-sm">
-        <%= link_to("Brouillons", params.merge(status: :draft), class: "btn btn-#{@status == :draft ? :primary : :default}") %>
-        <%= link_to("Actives", params.except(:status), class: "btn btn-#{@status == :active ? :primary : :default}") %>
-        <%= link_to("Archivées", params.merge(status: :archived), class: "btn btn-#{@status == :archived ? :primary : :default}") %>
+        <%= link_to("Brouillons", @params.merge(status: :draft), class: "btn btn-#{@status == :draft ? :primary : :default}") %>
+        <%= link_to("Actives", @params.except(:status), class: "btn btn-#{@status == :active ? :primary : :default}") %>
+        <%= link_to("Archivées", @params.merge(status: :archived), class: "btn btn-#{@status == :archived ? :primary : :default}") %>
       </div>
 
       <div style="margin-left: 15px">
@@ -138,16 +138,16 @@
 
     <div style="margin-bottom: 15px; display: flex">
       <div class="btn-group btn-group-sm">
-        <%= link_to("Tous", params.merge(area: :all), class: "btn btn-#{@area == :all ? :primary : :default}") %>
+        <%= link_to("Tous", @params.merge(area: :all), class: "btn btn-#{@area == :all ? :primary : :default}") %>
         <% ModerationArea.by_slug.sort.each do |slug, area| %>
-          <%= link_to(area.short_name, params.merge(area: slug), class: "btn btn-#{@area == slug ? :primary : :default}") %>
+          <%= link_to(area.short_name, @params.merge(area: slug), class: "btn btn-#{@area == slug ? :primary : :default}") %>
         <% end %>
       </div>
 
       <div class="btn-group btn-group-sm" style="margin-left: 15px">
-        <%= link_to("Tous", params.merge(user_goal: :all), class: "btn btn-#{@user_goal == :all ? :primary : :default}") %>
+        <%= link_to("Tous", @params.merge(user_goal: :all), class: "btn btn-#{@user_goal == :all ? :primary : :default}") %>
         <% UserGoalPresenter.all(current_user.community).each do |user_goal| %>
-          <%= link_to("", params.merge(user_goal: user_goal.slug), class: "btn btn-#{@user_goal == user_goal.slug ? :primary : :default} fa fa-#{user_goal.icon}") %>
+          <%= link_to("", @params.merge(user_goal: user_goal.slug), class: "btn btn-#{@user_goal == user_goal.slug ? :primary : :default} fa fa-#{user_goal.icon}") %>
         <% end %>
       </div>
     </div>
@@ -201,10 +201,10 @@
             <% end %>
           </div>
           <div class="announcement-image">
-            <%= image_tag announcement.image_url, size: '225x96' %>
+            <%= image_tag(announcement.image_url, size: '225x96') if announcement.image_url.present? %>
           </div>
           <div class="announcement-image">
-            <%= image_tag announcement.image_portrait_url, size: '60x79' %>
+            <%= image_tag(announcement.image_portrait_url, size: '60x79') if announcement.image_portrait_url.present? %>
           </div>
           <%= link_to "", edit_admin_announcement_path(announcement), class: "overlay" %>
         </div>

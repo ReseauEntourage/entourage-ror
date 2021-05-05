@@ -68,11 +68,11 @@ namespace :db do
 
     user_ids = []
     user_ids += User.where("created_at >= ?", time_limit).pluck(:id)
-    user_ids += Entourage.uniq.pluck(:user_id)
-    user_ids += JoinRequest.uniq.pluck(:user_id)
-    user_ids += EntourageInvitation.uniq.pluck(:inviter_id)
-    user_ids += EntourageInvitation.uniq.pluck(:invitee_id)
-    user_ids += ChatMessage.uniq.pluck(:user_id)
+    user_ids += Entourage.distinct.pluck(:user_id)
+    user_ids += JoinRequest.distinct.pluck(:user_id)
+    user_ids += EntourageInvitation.distinct.pluck(:inviter_id)
+    user_ids += EntourageInvitation.distinct.pluck(:invitee_id)
+    user_ids += ChatMessage.distinct.pluck(:user_id)
 
     User.where.not(community: :entourage).delete_all
     User.where.not(id: user_ids.uniq).delete_all
@@ -98,8 +98,8 @@ namespace :db do
 
     team = ModerationServices.moderator(community: Community.new(:entourage))
     standard_users = User.where("id != ?", team.id)
-    first_names = standard_users.where("first_name <> ''").uniq.pluck(:first_name)
-    last_names  = standard_users.where("last_name  <> ''").uniq.pluck(:last_name)
+    first_names = standard_users.where("first_name <> ''").distinct.pluck(:first_name)
+    last_names  = standard_users.where("last_name  <> ''").distinct.pluck(:last_name)
     total = User.count
 
     User.find_each.with_index(1) do |user, i|

@@ -1,4 +1,4 @@
-class CreateStoreDailyReports < ActiveRecord::Migration
+class CreateStoreDailyReports < ActiveRecord::Migration[4.2]
   def change
     create_table :store_daily_reports do |t|
       t.string :store_id

@@ -78,7 +78,7 @@ module CommunityAdmin
       neighborhood.assign_attributes(neighborhood_params)
       neighborhood.metadata.merge!(neighborhood_metadata_params.compact)
 
-      ActiveRecord::Base.transaction do
+      ApplicationRecord.transaction do
         neighborhood.save!
         unless current_user.roles.include?(:admin)
           CommunityAdminService.add_to_group(

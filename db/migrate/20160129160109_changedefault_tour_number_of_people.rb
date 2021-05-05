@@ -1,4 +1,4 @@
-class ChangedefaultTourNumberOfPeople < ActiveRecord::Migration
+class ChangedefaultTourNumberOfPeople < ActiveRecord::Migration[4.2]
   def change
     change_column :tours, :number_of_people, :integer, null: false, default: 0
     change_column :entourages, :number_of_people, :integer, null: false, default: 0

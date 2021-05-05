@@ -1,6 +1,6 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :partner_invitation do
-    
+
   end
 
 end

@@ -1,4 +1,4 @@
-class CreateEncounters < ActiveRecord::Migration
+class CreateEncounters < ActiveRecord::Migration[4.2]
   def change
     create_table :encounters do |t|
       t.datetime :date

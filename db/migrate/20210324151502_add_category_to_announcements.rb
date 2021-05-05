@@ -1,4 +1,4 @@
-class AddCategoryToAnnouncements < ActiveRecord::Migration
+class AddCategoryToAnnouncements < ActiveRecord::Migration[4.2]
   def up
     add_column :announcements, :category, :string, default: nil
     add_index  :announcements, :category

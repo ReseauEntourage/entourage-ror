@@ -1,4 +1,4 @@
-class CreateLastChatMessagesView < ActiveRecord::Migration
+class CreateLastChatMessagesView < ActiveRecord::Migration[4.2]
   def up
     sql = <<-SQL
       drop view if exists last_chat_messages;

@@ -1,6 +1,4 @@
-require 'experimental/jsonb_set'
-
-class User < ActiveRecord::Base
+class User < ApplicationRecord
   include Onboarding::UserEventsTracking::UserConcern
   include UserServices::Engagement
 
@@ -8,7 +6,7 @@ class User < ActiveRecord::Base
   validates_uniqueness_of :phone, scope: :community
   validates_uniqueness_of :token
   validate :validate_phone!
-  validates_format_of :email, with: /@/, unless: "email.to_s.size.zero?"
+  validates_format_of :email, with: /@/, unless: -> (u) { u.email.to_s.size.zero? }
   validates_presence_of [:first_name, :last_name, :organization, :email], if: Proc.new { |u| u.pro? }
   validates_associated :organization, if: Proc.new { |u| u.pro? }
   validates_presence_of [:first_name, :last_name, :email], if: Proc.new { |u| u.org_member? }
@@ -21,7 +19,7 @@ class User < ActiveRecord::Base
   validate :validate_partner!
   validate :validate_interests!
 
-  after_save :clean_up_passwords, if: :encrypted_password_changed?
+  after_save :clean_up_passwords, if: :saved_change_to_encrypted_password?
 
   has_many :tours
   has_many :encounters, through: :tours
@@ -32,8 +30,8 @@ class User < ActiveRecord::Base
   has_many :join_requests
   has_many :entourage_participations, through: :join_requests, source: :joinable, source_type: "Entourage"
   has_many :tour_participations, through: :join_requests, source: :joinable, source_type: "Tour"
-  belongs_to :organization
-  has_and_belongs_to_many :coordinated_organizations, -> { uniq }, class_name: "Organization", join_table: "coordination"
+  belongs_to :organization, optional: true
+  has_and_belongs_to_many :coordinated_organizations, -> { distinct }, class_name: "Organization", join_table: "coordination", optional: true
   has_many :chat_messages
   has_many :conversation_messages
   has_many :user_applications
@@ -41,14 +39,14 @@ class User < ActiveRecord::Base
   has_many :relations, through: :user_relationships, source: "target_user"
   has_many :invitations, class_name: "EntourageInvitation", foreign_key: "invitee_id"
   has_many :feeds
-  belongs_to :partner
+  belongs_to :partner, optional: true
   has_one :users_appetence
   has_many :entourage_displays
   has_many :entourage_scores
   has_one :moderation, class_name: 'UserModeration'
   has_many :entourage_moderations, foreign_key: :moderator_id
   has_many :experimental_pending_request_reminders, class_name: 'Experimental::PendingRequestReminder'
-  belongs_to :address
+  belongs_to :address, optional: true
   has_many :addresses, -> { order(:position) }, dependent: :destroy
   has_many :partner_join_requests
 
@@ -73,8 +71,8 @@ class User < ActiveRecord::Base
   end
 
   enum device_type: [ :android, :ios ]
-  attribute :roles, Experimental::JsonbSet.new
-  attribute :interests, Experimental::JsonbSet.new
+  attribute :roles, :jsonb_set
+  attribute :interests, :jsonb_set
 
   scope :type_pro, -> { where(user_type: "pro") }
   scope :validated, -> { where(validation_status: "validated") }
@@ -308,8 +306,8 @@ class User < ActiveRecord::Base
     nil # user_partners.where(default: true).limit(1).pluck(:partner_id).first
   end
 
-  # https://github.com/rails/rails/blob/v4.2.10/activerecord/lib/active_record/attributes.rb
-  attribute :community, Community::Type.new
+  # https://github.com/rails/rails/blob/v5.0.7.2/activerecord/lib/active_record/attributes.rb#L114
+  attribute :community, :community
 
   def joined_groups(status: :accepted, group_type: :except_conversations, exclude_created: false)
     scope = entourage_participations

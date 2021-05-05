@@ -8,7 +8,7 @@ module EntourageServices
       join_request = build_join_request(status: JoinRequest::ACCEPTED_STATUS)
 
       success = true
-      ActiveRecord::Base.transaction do
+      ApplicationRecord.transaction do
         success &&= invitable.class.increment_counter(:number_of_people, invitable.id) == 1
         success &&= join_request.save
         raise ActiveRecord::Rollback unless success

@@ -20,7 +20,7 @@ module JoinRequestsServices
         end
 
       success = true
-      ActiveRecord::Base.transaction do
+      ApplicationRecord.transaction do
         success &&= joinable.class.increment_counter(:number_of_people, joinable.id) == 1
         success &&= join_request.save
         raise ActiveRecord::Rollback unless success

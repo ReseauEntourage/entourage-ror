@@ -1,4 +1,4 @@
-class AddMultipleAddresses < ActiveRecord::Migration
+class AddMultipleAddresses < ActiveRecord::Migration[4.2]
   def change
     add_column :addresses, :user_id,  :integer
     add_column :addresses, :position, :integer, default: 1, null: false

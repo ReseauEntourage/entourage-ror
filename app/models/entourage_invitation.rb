@@ -1,6 +1,4 @@
-require 'experimental/jsonb_with_schema'
-
-class EntourageInvitation < ActiveRecord::Base
+class EntourageInvitation < ApplicationRecord
   MODE_SMS="SMS"
 
   PENDING_STATUS="pending"
@@ -28,7 +26,7 @@ class EntourageInvitation < ActiveRecord::Base
     end
   end
 
-  attribute :metadata, Experimental::JsonbWithSchema.new
+  attribute :metadata, :jsonb_with_schema
 
   def self.json_schema urn
     JsonSchemaService.base do

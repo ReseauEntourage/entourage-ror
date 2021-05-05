@@ -1,7 +1,7 @@
 module Api
   module V1
     class NewsletterSubscriptionsController < Api::V1::BaseController
-      skip_before_filter :authenticate_user!
+      skip_before_action :authenticate_user!
 
       #curl -X POST -d '{"newsletter_subscription": {"email": "foofoo@bar.com", "active": true}}' -H "Content-Type: application/json" "http://localhost:3000/api/v1/newsletter_subscriptions.json?token=azerty"
       def create

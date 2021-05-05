@@ -62,14 +62,14 @@
       <%=
         link_to(
           "Tous",
-          params.except(:filter),
+          @params.except(:filter),
           class: "btn btn-#{params.key?(:filter) ? :default : :primary}"
         )
       %>
       <%=
         link_to(
           "Non-lus",
-          params.merge(filter: :unread),
+          @params.merge(filter: :unread),
           class: "btn btn-#{params[:filter] == 'unread' ? :primary : :default}"
         )
       %>
@@ -77,7 +77,7 @@
     <%=
       link_to(
         "Archivés",
-        params.merge(filter: :archived),
+        @params.merge(filter: :archived),
         class: "btn btn-#{params[:filter] == 'archived' ? :primary : :default} btn-sm"
       )
     %>

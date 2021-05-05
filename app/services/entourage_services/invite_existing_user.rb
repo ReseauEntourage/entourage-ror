@@ -66,7 +66,7 @@ module EntourageServices
         relationship = UserRelationship.where(source_user: inviter,
                                             target_user: invitee,
                                             relation_type: UserRelationship::TYPE_INVITE).first_or_initialize
-        ActiveRecord::Base.transaction do
+        ApplicationRecord.transaction do
           invite.save!
           relationship.save!
         end

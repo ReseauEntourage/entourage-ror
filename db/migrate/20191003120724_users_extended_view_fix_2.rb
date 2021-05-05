@@ -1,4 +1,4 @@
-class UsersExtendedViewFix2 < ActiveRecord::Migration
+class UsersExtendedViewFix2 < ActiveRecord::Migration[4.2]
   def up
     sql = <<-SQL
       create or replace view users_extended as

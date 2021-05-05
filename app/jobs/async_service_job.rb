@@ -1,4 +1,4 @@
-class AsyncServiceJob < ActiveJob::Base
+class AsyncServiceJob < ApplicationJob
   queue_as :default
 
   def perform(klass, symbol, *args)

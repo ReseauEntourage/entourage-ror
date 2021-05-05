@@ -1,10 +1,10 @@
 require 'rails_helper'
 
 describe HomeServices::Headline do
-  let(:user) { FactoryGirl.create(:pro_user_paris) }
+  let(:user) { FactoryBot.create(:pro_user_paris) }
 
   describe 'find_pin' do
-    let!(:pin) { FactoryGirl.create(:entourage, pin: true, pins: ['75']) }
+    let!(:pin) { FactoryBot.create(:entourage, pin: true, pins: ['75']) }
 
     it 'should find a pin' do
       expect(Entourage).to receive(:find_by).with(id: pin.id)
@@ -30,7 +30,7 @@ describe HomeServices::Headline do
   end
 
   describe 'find_announcement' do
-    let!(:announcement) { FactoryGirl.create(:announcement, user_goals: ['goal_not_known'], areas: ['dep_75']) }
+    let!(:announcement) { FactoryBot.create(:announcement, user_goals: ['goal_not_known'], areas: ['dep_75']) }
 
     it 'should find default announcement' do
       allow(ModerationArea).to receive(:all_slugs) { [:dep_75] }
@@ -65,8 +65,8 @@ describe HomeServices::Headline do
   end
 
   describe 'find_outing' do
-    let!(:outing) { FactoryGirl.create(:outing) }
-    let!(:second) { FactoryGirl.create(:outing) }
+    let!(:outing) { FactoryBot.create(:outing) }
+    let!(:second) { FactoryBot.create(:outing) }
 
     it 'should find an outing' do
       expect(
@@ -91,8 +91,8 @@ describe HomeServices::Headline do
   end
 
   describe 'find_action' do
-    let!(:action) { FactoryGirl.create(:entourage) }
-    let!(:second) { FactoryGirl.create(:entourage) }
+    let!(:action) { FactoryBot.create(:entourage) }
+    let!(:second) { FactoryBot.create(:entourage) }
 
     it 'should find an action' do
       expect(
@@ -114,14 +114,14 @@ describe HomeServices::Headline do
   end
 
   describe 'each' do
-    let!(:pin) { FactoryGirl.create(:entourage, pin: true, pins: ['75']) }
-    let!(:announcement_0) { FactoryGirl.create(:announcement, id: 1, position: 1, user_goals: ['goal_not_known'], areas: ['dep_75']) }
-    let!(:announcement_1) { FactoryGirl.create(:announcement, id: 2, position: 2, user_goals: ['goal_not_known'], areas: ['dep_75']) }
-    let!(:announcement_online) { FactoryGirl.create(:announcement, id: 3, position: 3, user_goals: ['goal_not_known'], areas: ['dep_75'], category: :online) }
-    let!(:announcement_poi_map) { FactoryGirl.create(:announcement, id: 4, position: 4, user_goals: ['goal_not_known'], areas: ['dep_75'], category: :poi_map) }
-    let!(:announcement_ambassador) { FactoryGirl.create(:announcement, id: 5, position: 5, user_goals: ['goal_not_known'], areas: ['dep_75'], category: :ambassador) }
-    let!(:outing) { FactoryGirl.create(:outing) }
-    let!(:action) { FactoryGirl.create(:entourage, latitude: 48.854367553784954, longitude: 2.270340589096274) }
+    let!(:pin) { FactoryBot.create(:entourage, pin: true, pins: ['75']) }
+    let!(:announcement_0) { FactoryBot.create(:announcement, id: 1, position: 1, user_goals: ['goal_not_known'], areas: ['dep_75']) }
+    let!(:announcement_1) { FactoryBot.create(:announcement, id: 2, position: 2, user_goals: ['goal_not_known'], areas: ['dep_75']) }
+    let!(:announcement_online) { FactoryBot.create(:announcement, id: 3, position: 3, user_goals: ['goal_not_known'], areas: ['dep_75'], category: :online) }
+    let!(:announcement_poi_map) { FactoryBot.create(:announcement, id: 4, position: 4, user_goals: ['goal_not_known'], areas: ['dep_75'], category: :poi_map) }
+    let!(:announcement_ambassador) { FactoryBot.create(:announcement, id: 5, position: 5, user_goals: ['goal_not_known'], areas: ['dep_75'], category: :ambassador) }
+    let!(:outing) { FactoryBot.create(:outing) }
+    let!(:action) { FactoryBot.create(:entourage, latitude: 48.854367553784954, longitude: 2.270340589096274) }
     let!(:headline) { HomeServices::Headline.new(user: user, latitude: 48.854367553784954, longitude: 2.270340589096274) }
 
     it 'offer_help & active' do

@@ -1,6 +1,6 @@
 require 'lingua/stemmer'
 
-class SensitiveWord < ActiveRecord::Base
+class SensitiveWord < ApplicationRecord
   MATCH_TYPES = %w(stem exact)
   SCOPES = %w(all public)
 

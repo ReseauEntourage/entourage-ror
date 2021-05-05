@@ -1,5 +1,5 @@
 class QuestionsController < ApplicationController
-  before_filter :authenticate_manager!
+  before_action :authenticate_manager!
 
   def create
     question = @current_user.organization.questions.build(question_params)

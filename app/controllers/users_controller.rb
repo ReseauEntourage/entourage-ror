@@ -1,8 +1,8 @@
 class UsersController < ApplicationController
   attr_writer :sms_notification_service, :url_shortener
-  before_filter :authenticate_user!
-  before_filter :authenticate_manager!, only: [:index, :edit, :update]
-  before_filter :set_user, only: [:edit, :update, :destroy, :send_sms]
+  before_action :authenticate_user!
+  before_action :authenticate_manager!, only: [:index, :edit, :update]
+  before_action :set_user, only: [:edit, :update, :destroy, :send_sms]
 
   def edit
     @user_presenter = UserPresenter.new(user: @current_user)

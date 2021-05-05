@@ -1,7 +1,7 @@
 module Admin
   class RegistrationRequestsController < Admin::BaseController
-    before_filter :authenticate_admin!
-    before_filter :set_registration_request, only: [:show, :destroy, :update]
+    before_action :authenticate_admin!
+    before_action :set_registration_request, only: [:show, :destroy, :update]
 
     def index
       @registration_requests = if params[:status] == "validated"

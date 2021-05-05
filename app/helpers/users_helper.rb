@@ -12,6 +12,9 @@ module UsersHelper
   end
 
   def user_avatar_image user, *args
-    image_tag UserServices::Avatar.new(user: user).thumbnail_url, *args
+    url = UserServices::Avatar.new(user: user).thumbnail_url
+    return unless url
+
+    image_tag(url, *args)
   end
 end

@@ -1,4 +1,4 @@
-class CreateToursUsers < ActiveRecord::Migration
+class CreateToursUsers < ActiveRecord::Migration[4.2]
   def change
     create_table :tours_users do |t|
       t.integer :user_id, null: false

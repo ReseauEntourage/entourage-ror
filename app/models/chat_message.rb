@@ -1,10 +1,10 @@
-require 'experimental/jsonb_with_schema'
-
-class ChatMessage < ActiveRecord::Base
+class ChatMessage < ApplicationRecord
   include FeedsConcern
 
   belongs_to :messageable, polymorphic: true
-  belongs_to :entourage, -> { where("chat_messages.messageable_type = 'Entourage'") }, foreign_key: :messageable_id
+  belongs_to :entourage, -> {
+    where("chat_messages.messageable_type = 'Entourage'")
+  }, foreign_key: :messageable_id, optional: true # why optional? Cause it might belongs_to Tour
   belongs_to :user
 
   before_validation :generate_content
@@ -15,7 +15,7 @@ class ChatMessage < ActiveRecord::Base
 
   scope :ordered, -> { order("created_at DESC") }
 
-  attribute :metadata, Experimental::JsonbWithSchema.new
+  attribute :metadata, :jsonb_with_schema
 
   after_create do |message|
     unless message.message_type == 'status_update'

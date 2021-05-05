@@ -13,18 +13,18 @@ RSpec.describe Api::V0::NewsletterSubscriptionsController, :type => :controller,
       let(:newsletter_subscription_attributes) { attributes_for(:newsletter_subscription) }
 
       it "renders 201" do
-        post 'create', newsletter_subscription: {email: newsletter_subscription_attributes[:email], active: newsletter_subscription_attributes[:active]}, format: :json
+        post 'create', params: { newsletter_subscription: {email: newsletter_subscription_attributes[:email], active: newsletter_subscription_attributes[:active]}, format: :json }
         expect(response.status).to eq(201)
       end
 
       it "creates new subscription" do
         newsletter_subscription_count = NewsletterSubscription.count
-        post 'create', newsletter_subscription: {email: newsletter_subscription_attributes[:email], active: newsletter_subscription_attributes[:active]}, format: :json
+        post 'create', params: { newsletter_subscription: {email: newsletter_subscription_attributes[:email], active: newsletter_subscription_attributes[:active]}, format: :json }
         expect(NewsletterSubscription.count).to be(newsletter_subscription_count + 1)
       end
 
       it "renders newsletter subscription" do
-        post 'create', newsletter_subscription: {email: newsletter_subscription_attributes[:email], active: newsletter_subscription_attributes[:active]}, format: :json
+        post 'create', params: { newsletter_subscription: {email: newsletter_subscription_attributes[:email], active: newsletter_subscription_attributes[:active]}, format: :json }
         expect(JSON.parse(response.body)).to eq("newsletter_subscription"=>{"email"=>newsletter_subscription_attributes[:email], "active"=>true})
       end
 
@@ -33,7 +33,7 @@ RSpec.describe Api::V0::NewsletterSubscriptionsController, :type => :controller,
     context "with incorrect parameters" do
 
       it "renders 400" do
-        post 'create', newsletter_subscription: {not_email_param: "subscriber@newsletter.com", not_active_param: true}, :format => :json
+        post 'create', params: { newsletter_subscription: {not_email_param: "subscriber@newsletter.com", not_active_param: true}, :format => :json }
         expect(response.status).to eq(400)
       end
     end

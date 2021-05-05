@@ -1,7 +1,7 @@
-class IosNotificationJob < ActiveJob::Base
+class IosNotificationJob < ApplicationJob
   def perform(sender, object, content, device_token, community, extra={},badge=nil)
     return if device_token.blank?
-    
+
     apps = Rpush::Apns::App.where(name: community)
 
     if apps.blank?

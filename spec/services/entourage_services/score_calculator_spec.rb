@@ -3,8 +3,8 @@ require 'rails_helper'
 RSpec.describe EntourageServices::ScoreCalculator do
 
   describe 'calculate' do
-    let(:entourage) { FactoryGirl.create(:entourage) }
-    let(:user) { FactoryGirl.create(:public_user) }
+    let(:entourage) { FactoryBot.create(:entourage) }
+    let(:user) { FactoryBot.create(:public_user) }
 
     context "first score" do
       before { EntourageServices::ScoreCalculator.new(entourage: entourage, user: user).calculate }
@@ -17,7 +17,7 @@ RSpec.describe EntourageServices::ScoreCalculator do
     end
 
     context "update existing score" do
-      let!(:existing_entourage_score) { FactoryGirl.create(:entourage_score, user: user, entourage: entourage, base_score: 3.3, final_score: 4.5) }
+      let!(:existing_entourage_score) { FactoryBot.create(:entourage_score, user: user, entourage: entourage, base_score: 3.3, final_score: 4.5) }
 
       before { EntourageServices::ScoreCalculator.new(entourage: entourage, user: user).calculate }
       let(:entourage_score) { EntourageScore.last }
@@ -31,12 +31,12 @@ RSpec.describe EntourageServices::ScoreCalculator do
 
   describe "base_score" do
     let(:date) { DateTime.parse("25/10/2015 14:59:59") }
-    let(:entourage_creator) { FactoryGirl.create(:public_user) }
-    let(:entourage) { FactoryGirl.create(:entourage, :joined, join_request_user: entourage_creator, created_at: date) }
+    let(:entourage_creator) { FactoryBot.create(:public_user) }
+    let(:entourage) { FactoryBot.create(:entourage, :joined, join_request_user: entourage_creator, created_at: date) }
 
-    let!(:old_connected_user) { FactoryGirl.create(:public_user, last_sign_in_at: date-1.day) }
-    let!(:new_connected_user) { FactoryGirl.create(:public_user, last_sign_in_at: date+1.day) }
-    let!(:user) { FactoryGirl.create(:public_user, last_sign_in_at: date+1.day) }
+    let!(:old_connected_user) { FactoryBot.create(:public_user, last_sign_in_at: date-1.day) }
+    let!(:new_connected_user) { FactoryBot.create(:public_user, last_sign_in_at: date+1.day) }
+    let!(:user) { FactoryBot.create(:public_user, last_sign_in_at: date+1.day) }
     subject { EntourageServices::ScoreCalculator.new(entourage: entourage, user: entourage_creator).base_score }
 
     it { should eq(0.25) }
@@ -44,24 +44,24 @@ RSpec.describe EntourageServices::ScoreCalculator do
 
   describe "final_score" do
     context "closed entourage" do
-      let(:entourage) { FactoryGirl.create(:entourage, status: 'closed') }
-      let(:user) { FactoryGirl.create(:public_user) }
+      let(:entourage) { FactoryBot.create(:entourage, status: 'closed') }
+      let(:user) { FactoryBot.create(:public_user) }
       subject { EntourageServices::ScoreCalculator.new(entourage: entourage, user: user).final_score }
 
       it { should eq(0.0) }
     end
 
     context "old entourage" do
-      let(:entourage) { FactoryGirl.create(:entourage, updated_at: 1.year.ago) }
-      let(:user) { FactoryGirl.create(:public_user) }
+      let(:entourage) { FactoryBot.create(:entourage, updated_at: 1.year.ago) }
+      let(:user) { FactoryBot.create(:public_user) }
       subject { EntourageServices::ScoreCalculator.new(entourage: entourage, user: user).final_score }
 
       it { should eq(0.0) }
     end
 
     describe "by appetence" do
-      let!(:entourage_user) { FactoryGirl.create(:public_user) }
-      let!(:entourage) { FactoryGirl.create(:entourage, user: entourage_user, category: "mat_help") }
+      let!(:entourage_user) { FactoryBot.create(:public_user) }
+      let!(:entourage) { FactoryBot.create(:entourage, user: entourage_user, category: "mat_help") }
 
       context "no appettence" do
         subject { EntourageServices::ScoreCalculator.new(entourage: entourage, user: entourage_user).final_score }
@@ -70,7 +70,7 @@ RSpec.describe EntourageServices::ScoreCalculator do
       end
 
       context "with appettence" do
-        let!(:user_appetence) { FactoryGirl.create(:users_appetence, user: entourage_user, appetence_social: 1, appetence_mat_help: 2, appetence_non_mat_help: 3) }
+        let!(:user_appetence) { FactoryBot.create(:users_appetence, user: entourage_user, appetence_social: 1, appetence_mat_help: 2, appetence_non_mat_help: 3) }
         subject {  }
 
         it "" do
@@ -81,10 +81,10 @@ RSpec.describe EntourageServices::ScoreCalculator do
     end
 
     context "Entourage from entourage organization" do
-      let!(:entourage_assos) { FactoryGirl.create(:organization, id: 1) }
-      let!(:entourage_user) { FactoryGirl.create(:pro_user, organization: entourage_assos) }
-      let!(:entourage) { FactoryGirl.create(:entourage, user: entourage_user, category: "mat_help") }
-      let!(:user_appetence) { FactoryGirl.create(:users_appetence, user: entourage_user, appetence_social: 1, appetence_mat_help: 2, appetence_non_mat_help: 3) }
+      let!(:entourage_assos) { FactoryBot.create(:organization, id: 1) }
+      let!(:entourage_user) { FactoryBot.create(:pro_user, organization: entourage_assos) }
+      let!(:entourage) { FactoryBot.create(:entourage, user: entourage_user, category: "mat_help") }
+      let!(:user_appetence) { FactoryBot.create(:users_appetence, user: entourage_user, appetence_social: 1, appetence_mat_help: 2, appetence_non_mat_help: 3) }
 
       subject { EntourageServices::ScoreCalculator.new(entourage: entourage, user: entourage_user).final_score }
 
@@ -92,13 +92,13 @@ RSpec.describe EntourageServices::ScoreCalculator do
     end
 
     context "Entourage from atd friend" do
-      let!(:atd_user1) { FactoryGirl.create(:public_user, atd_friend: true) }
-      let!(:atd_user2) { FactoryGirl.create(:public_user, atd_friend: true) }
-      let!(:user1) { FactoryGirl.create(:public_user, atd_friend: false) }
-      let!(:user_appetence) { FactoryGirl.create(:users_appetence, user: user1, appetence_social: 1, appetence_mat_help: 2, appetence_non_mat_help: 3) }
-      let!(:user_appetence2) { FactoryGirl.create(:users_appetence, user: atd_user2, appetence_social: 1, appetence_mat_help: 2, appetence_non_mat_help: 3) }
-      let!(:entourage_by_atd) { FactoryGirl.create(:entourage, user: atd_user1, category: "mat_help") }
-      let!(:entourage) { FactoryGirl.create(:entourage, user: user1, category: "mat_help") }
+      let!(:atd_user1) { FactoryBot.create(:public_user, atd_friend: true) }
+      let!(:atd_user2) { FactoryBot.create(:public_user, atd_friend: true) }
+      let!(:user1) { FactoryBot.create(:public_user, atd_friend: false) }
+      let!(:user_appetence) { FactoryBot.create(:users_appetence, user: user1, appetence_social: 1, appetence_mat_help: 2, appetence_non_mat_help: 3) }
+      let!(:user_appetence2) { FactoryBot.create(:users_appetence, user: atd_user2, appetence_social: 1, appetence_mat_help: 2, appetence_non_mat_help: 3) }
+      let!(:entourage_by_atd) { FactoryBot.create(:entourage, user: atd_user1, category: "mat_help") }
+      let!(:entourage) { FactoryBot.create(:entourage, user: user1, category: "mat_help") }
 
       subject { EntourageServices::ScoreCalculator }
 

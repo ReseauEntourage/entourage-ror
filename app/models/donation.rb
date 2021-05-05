@@ -1,2 +1,2 @@
-class Donation < ActiveRecord::Base
+class Donation < ApplicationRecord
 end

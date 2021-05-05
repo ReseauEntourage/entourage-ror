@@ -18,7 +18,7 @@ RSpec.describe Atd::AtdSynchronizer do
     end
 
     context "second file to synchronize" do
-      let!(:atd_synchronization) { FactoryGirl.create(:atd_synchronization, filename: "foobar.csv") }
+      let!(:atd_synchronization) { FactoryBot.create(:atd_synchronization, filename: "foobar.csv") }
       before do
         allow(Atd::AtdFtp).to receive(:list_files) { ["foobar.csv", "foobar2.csv"] }
         described_class.synchronize
@@ -28,7 +28,7 @@ RSpec.describe Atd::AtdSynchronizer do
     end
 
     context "no file to synchronize" do
-      let!(:atd_synchronization) { FactoryGirl.create(:atd_synchronization, filename: "foobar.csv") }
+      let!(:atd_synchronization) { FactoryBot.create(:atd_synchronization, filename: "foobar.csv") }
       before do
         allow(Atd::AtdFtp).to receive(:list_files) { ["foobar.csv"] }
         described_class.synchronize

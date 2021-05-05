@@ -1,4 +1,4 @@
-class UserDenormJob < ActiveJob::Base
+class UserDenormJob
   include Sidekiq::Worker
   def perform(entourage_id:, user_id:)
     if entourage_id

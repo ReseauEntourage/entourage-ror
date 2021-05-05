@@ -1,4 +1,4 @@
-class CreateTourPoints < ActiveRecord::Migration
+class CreateTourPoints < ActiveRecord::Migration[4.2]
   def change
     create_table :tour_points do |t|
       t.float :latitude

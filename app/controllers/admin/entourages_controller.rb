@@ -1,9 +1,10 @@
 module Admin
   class EntouragesController < Admin::BaseController
     before_action :set_entourage, only: [:show, :edit, :update, :renew, :moderator_read, :moderator_unread, :message, :sensitive_words, :sensitive_words_check, :edit_type, :admin_pin, :admin_unpin, :pin, :unpin]
-    before_filter :ensure_moderator!, only: [:message]
+    before_action :ensure_moderator!, only: [:message]
 
     def index
+      @params = params.permit([q: [:country_eq, :postal_code_start, :pin_eq, :group_type_eq, postal_code_start_any: [], postal_code_not_start_all: []]]).to_h
       per_page = params[:per] || 50
 
       # workaround for the 'null' option

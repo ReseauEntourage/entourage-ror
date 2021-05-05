@@ -1,4 +1,4 @@
-class SimplifiedTourPoint < ActiveRecord::Base
+class SimplifiedTourPoint < ApplicationRecord
   belongs_to :tour
   geocoded_by :address
 

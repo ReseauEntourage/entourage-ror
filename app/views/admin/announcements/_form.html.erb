@@ -73,7 +73,7 @@
     <% else %>
       <% if @announcement.image_url %>
         <div style="margin-bottom: 15px">
-          <%= image_tag @announcement.image_url, size: '750x320' %>
+          <%= image_tag(@announcement.image_url, size: '750x320') if @announcement.image_url.present? %>
         </div>
       <% end %>
       <% unless @announcement.archived? %>
@@ -93,7 +93,7 @@
     <% else %>
       <% if @announcement.image_portrait_url %>
         <div style="margin-bottom: 15px">
-          <%= image_tag @announcement.image_portrait_url, size: '600x792' %>
+          <%= image_tag(@announcement.image_portrait_url, size: '600x792') if @announcement.image_portrait_url.present? %>
         </div>
       <% end %>
       <% unless @announcement.archived? %>

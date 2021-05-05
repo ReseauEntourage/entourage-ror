@@ -1,21 +1,21 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :entourage do
     transient do
-      join_request_user nil
-      join_request_role :auto
+      join_request_user { nil }
+      join_request_role { :auto }
       community { $server_community.slug }
     end
 
     uuid { SecureRandom.uuid }
-    status "open"
-    title "foobar"
-    group_type "action"
-    entourage_type "ask_for_help"
-    display_category "social"
+    status { "open" }
+    title { "foobar" }
+    group_type { "action" }
+    entourage_type { "ask_for_help" }
+    display_category { "social" }
     user { association :public_user, community: community }
-    latitude 1.122
-    longitude 2.345
-    number_of_people 1
+    latitude { 1.122 }
+    longitude { 2.345 }
+    number_of_people { 1 }
 
     trait :joined do
       after(:create) do |entourage, evaluator|
@@ -26,21 +26,21 @@ FactoryGirl.define do
           role = evaluator.join_request_role
         end
 
-        FactoryGirl.create(:join_request, joinable: entourage, user: user, role: role, status: JoinRequest::ACCEPTED_STATUS)
+        FactoryBot.create(:join_request, joinable: entourage, user: user, role: role, status: JoinRequest::ACCEPTED_STATUS)
       end
     end
 
     trait :blacklisted do
-      status "blacklisted"
+      status { "blacklisted" }
     end
 
     factory :private_circle do
-      group_type "private_circle"
+      group_type { "private_circle" }
 
       transient do
-        default_metadata visited_user_first_name: "Henriette",
+        default_metadata { { visited_user_first_name: "Henriette",
                          street_address: "44 rue de l’Assomption, 75016 Paris, France",
-                         google_place_id: "foobar"
+                         google_place_id: "foobar" } }
       end
 
       after(:build) do |circle, stuff|
@@ -50,11 +50,11 @@ FactoryGirl.define do
     end
 
     factory :neighborhood do
-      group_type "neighborhood"
+      group_type { "neighborhood" }
 
       transient do
-        default_metadata address: "Saint Ambroise, 75011 Paris",
-                         google_place_id: "foobar"
+        default_metadata { { address: "Saint Ambroise, 75011 Paris",
+                         google_place_id: "foobar" } }
       end
 
       after(:build) do |circle, stuff|
@@ -68,15 +68,15 @@ FactoryGirl.define do
     end
 
     factory :outing do
-      group_type "outing"
-      latitude 48.854367553784954
-      longitude 2.270340589096274
+      group_type { "outing" }
+      latitude { 48.854367553784954 }
+      longitude { 2.270340589096274 }
 
       transient do
-        default_metadata starts_at: 1.day.from_now.change(hour: 19),
+        default_metadata { { starts_at: 1.day.from_now.change(hour: 19),
                          place_name: "Café la Renaissance",
                          street_address: "44 rue de l’Assomption, 75016 Paris, France",
-                         google_place_id: "foobar"
+                         google_place_id: "foobar" } }
       end
 
       after(:build) do |outing, stuff|
@@ -85,10 +85,10 @@ FactoryGirl.define do
     end
 
     factory :conversation do
-      group_type "conversation"
+      group_type { "conversation" }
 
       transient do
-        participants []
+        participants { [] }
       end
 
       after(:build) do |conversation, stuff|

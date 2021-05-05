@@ -1,4 +1,4 @@
-class CreateConversationMessageBroadcasts < ActiveRecord::Migration
+class CreateConversationMessageBroadcasts < ActiveRecord::Migration[4.2]
   def change
     create_table :conversation_message_broadcasts do |t|
       t.string :area, null: false

@@ -1,4 +1,4 @@
-class AddDescriptionToPartners < ActiveRecord::Migration
+class AddDescriptionToPartners < ActiveRecord::Migration[4.2]
   def change
     add_column :partners, :description, :text
     add_column :partners, :phone, :string

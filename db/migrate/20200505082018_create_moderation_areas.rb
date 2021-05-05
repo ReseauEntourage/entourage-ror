@@ -1,4 +1,4 @@
-class CreateModerationAreas < ActiveRecord::Migration
+class CreateModerationAreas < ActiveRecord::Migration[4.2]
   def change
     create_table :moderation_areas do |t|
       t.string  :departement,       limit: 2,  null: false

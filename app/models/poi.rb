@@ -1,11 +1,10 @@
-class Poi < ActiveRecord::Base
+class Poi < ApplicationRecord
 
-  validates_presence_of :name
-  validate :category_xor_category_ids
+  validates_presence_of :name, :category
   validates :latitude, :longitude, numericality: true
   validates :partner_id, presence: true, allow_nil: true
-  belongs_to :category
-  has_and_belongs_to_many :categories
+  belongs_to :category, optional: true
+  has_and_belongs_to_many :categories, optional: true
 
   geocoded_by :adress
 
@@ -75,12 +74,4 @@ class Poi < ActiveRecord::Base
   after_commit :update_textsearch!
 
   scope :text_search, -> (query) { where("textsearch @@ plainto_tsquery('french', unaccent(?))", query) }
-
-  private
-
-  def category_xor_category_ids
-    if category.blank? && category_ids.blank?
-      errors.add(:base, "Catégorie doit être rempli")
-    end
-  end
 end

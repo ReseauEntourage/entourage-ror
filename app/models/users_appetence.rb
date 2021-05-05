@@ -1,4 +1,4 @@
-class UsersAppetence < ActiveRecord::Base
+class UsersAppetence < ApplicationRecord
   belongs_to :user
   validates :appetence_social,
             :appetence_mat_help,

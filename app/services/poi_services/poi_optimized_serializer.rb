@@ -112,7 +112,7 @@ module PoiServices
         sql = scope.select(*projections).to_sql
       end
 
-      result = ActiveRecord::Base.connection.execute(sql)
+      result = ApplicationRecord.connection.execute(sql)
       metadata = result.values
       result.clear
 

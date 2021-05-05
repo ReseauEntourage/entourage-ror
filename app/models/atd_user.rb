@@ -1,4 +1,4 @@
-class AtdUser < ActiveRecord::Base
+class AtdUser < ApplicationRecord
   belongs_to :user
 
   validates :atd_id, presence: true

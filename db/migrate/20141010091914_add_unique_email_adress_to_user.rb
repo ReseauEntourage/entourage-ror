@@ -1,4 +1,4 @@
-class AddUniqueEmailAdressToUser < ActiveRecord::Migration
+class AddUniqueEmailAdressToUser < ActiveRecord::Migration[4.2]
   def change
     add_column :users, :email, :string
   end

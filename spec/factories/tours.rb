@@ -1,24 +1,24 @@
-# Read about factories at https://github.com/thoughtbot/factory_girl
+# Read about factories at https://github.com/thoughtbot/factory_bot
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :tour do
     transient do
-      join_request_user nil
+      join_request_user { nil }
     end
 
-    tour_type "medical"
-    vehicle_type "feet"
-    status "ongoing"
-    number_of_people 1
+    tour_type { "medical" }
+    vehicle_type { "feet" }
+    status { "ongoing" }
+    number_of_people { 1 }
     association :user, factory: :pro_user
 
     trait :filled do
       transient do
-        point_count 10
-        encounter_count 2
+        point_count { 10 }
+        encounter_count { 2 }
       end
-      status 'closed'
-      length 123
+      status { 'closed' }
+      length { 123 }
       created_at { Time.now - 3 * 60 * 60 }
       closed_at { Time.now - 2 * 60 * 60 }
       after(:create) do |tour, evaluator|
