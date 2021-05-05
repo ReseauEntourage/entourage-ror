@@ -76,11 +76,14 @@ module EmailPreferencesService
   end
 
   def self.update user:, preferences:
+    # @fixme Ugly quick fix
+    true_values = Set.new([true, 1, "1", "t", "T", "true", "TRUE", "on", "ON"])
+
     preferences.symbolize_keys
     current_value = Hash[user_preferences(user).map { |c| [c.name.to_sym, c.subscribed] }]
     updates = {}
     EmailPreferencesService.categories.each do |category|
-      requested_value = preferences[category].in?(ActiveRecord::ConnectionAdapters::Column::TRUE_VALUES)
+      requested_value = preferences[category].in?(true_values)
       if requested_value != current_value[category]
         updates[category] = requested_value
       end
