@@ -49,7 +49,6 @@
       <%= f.label :icon %>
       <%= f.select :icon,
           options_for_select(icons, @announcement.icon),
-          {include_blank: false},
           class: "form-control",
           required: !@announcement.draft?, disabled: @announcement.archived? %>
     </div>
