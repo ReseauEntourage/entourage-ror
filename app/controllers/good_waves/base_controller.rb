@@ -4,7 +4,6 @@ module GoodWaves
   class BaseController < ActionController::Base
     protect_from_forgery with: :exception
 
-    before_action :ensure_canonical_url!
     before_action :authenticate_user!
     before_action :ensure_profile_complete!, except: [:onboarding, :update_profile]
 
@@ -127,13 +126,6 @@ module GoodWaves
     end
 
     protected
-
-    def ensure_canonical_url!
-      if request.get?
-        canonical_url = url_for(params)
-        redirect_to canonical_url if request.url != canonical_url
-      end
-    end
 
     def authenticate_user!
       if current_user.nil?
