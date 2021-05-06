@@ -39,9 +39,16 @@ describe EntourageServices::Pins do
       expect(EntourageServices::Pins.find user, nil).to eq([pin.id, outing.id])
     end
 
-    it 'should find action pins for contributions or ask_for_helps' do
-      expect(EntourageServices::Pins.find user, ['contribution_']).to eq([pin.id])
-      expect(EntourageServices::Pins.find user, ['ask_for_help_']).to eq([pin.id])
+    it 'should find action pins for ask_for_helps' do
+      expect(EntourageServices::Pins.find user, ['contribution_social']).to eq([])
+      expect(EntourageServices::Pins.find user, ['ask_for_help_social']).to eq([pin.id])
+    end
+
+    it 'should find action pins for contributions' do
+      pin.update_attribute(:entourage_type, 'contribution')
+
+      expect(EntourageServices::Pins.find user, ['contribution_social']).to eq([pin.id])
+      expect(EntourageServices::Pins.find user, ['ask_for_help_social']).to eq([])
     end
 
     it 'should find outing pin' do

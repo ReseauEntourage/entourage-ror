@@ -6,8 +6,7 @@ module EntourageServices
       pinned = []
 
       if (types.nil? || types.any? { |t| t.starts_with?('ask_for_help_') || t.starts_with?('contribution_') })
-        # pinned << self.neighborhood_group_for(user)
-        pinned << self.pinned_for(user)
+        pinned << self.pinned_for(user, types)
       end
 
       if (types.nil? || types.include?('outing'))
@@ -17,7 +16,7 @@ module EntourageServices
       pinned.uniq.compact
     end
 
-    def self.pinned_for user
+    def self.pinned_for user, types = nil
       return if user.address.nil?
       return if user.address.country != 'FR'
 
@@ -26,6 +25,7 @@ module EntourageServices
 
       Entourage.select(:id)
         .where(pin: true, group_type: :action)
+        .where((["concat(entourage_type, '_', coalesce(display_category, 'other')) IN (?)", types] if types.present?))
         .where('pins ? :postal_code OR pins ? :departement',
           postal_code: postal_code,
           departement: departement
