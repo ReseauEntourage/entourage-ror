@@ -5,6 +5,12 @@ module AuthHelper
     basic_login(user)
   end
 
+  def organization_admin_basic_login
+    user = create :partner_user, partner_admin: true
+    session[:org_admin_user_id] = user.id
+    basic_login(user)
+  end
+
   def manager_basic_login
     basic_login(create :pro_user, manager: true)
   end
