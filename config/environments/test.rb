@@ -59,6 +59,7 @@ Rails.application.configure do
   ENV["ATD_PASSWORD"] = "password"
 
   ENV["HOST"]='localhost'
+  ENV["ORGANIZATION_ADMIN_URL"]="localhost"
 
   # Limit slow down due to password hashing
   BCrypt::Engine.cost = BCrypt::Engine::MIN_COST
