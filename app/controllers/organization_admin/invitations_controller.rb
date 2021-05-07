@@ -38,7 +38,7 @@ module OrganizationAdmin
         invitee_email: invitation_params[:invitee_email],
         partner_id: current_user.partner_id,
         inviter_id: current_user.id,
-        invitee_attributes: invitation_params.except(:invitee_email)
+        invitee_attributes: invitation_params.except(:invitee_email).to_h
       )
 
       return render :new if @invitation.errors.any?
