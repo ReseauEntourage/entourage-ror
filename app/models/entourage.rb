@@ -85,6 +85,7 @@ class Entourage < ApplicationRecord
   before_validation :set_default_attributes, if: :group_type_changed?
   before_validation :set_outings_ends_at
   before_validation :set_outings_previous_at
+  before_validation :set_outings_entourage_image_id
   before_validation :generate_display_address
   before_validation :reformat_content
   before_validation :set_default_online_attributes, if: :online_changed?
@@ -309,6 +310,14 @@ class Entourage < ApplicationRecord
     return unless metadata
     return unless metadata[:previous_at].nil?
     self.metadata[:previous_at] = nil
+  end
+
+  def set_outings_entourage_image_id
+    return unless group_type == 'outing'
+    return unless metadata_changed?
+    return unless metadata
+    return unless metadata[:entourage_image_id].nil?
+    self.metadata[:entourage_image_id] = nil
   end
 
   def validate_outings_ends_at
