@@ -44,7 +44,7 @@ module Admin
         }
       else
         redirect_to edit_admin_tour_area_path(@tour_area), flash: {
-          notice: "La zone de maraude #{@tour_area.area} n'a pas pu être supprimée supprimée"
+          notice: "La zone de maraude #{@tour_area.area} n'a pas pu être supprimée"
         }
       end
     end

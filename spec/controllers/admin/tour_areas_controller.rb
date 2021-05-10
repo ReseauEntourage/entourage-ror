@@ -25,7 +25,7 @@ describe Admin::TourAreasController do
 
   describe "POST #create" do
     context "create success" do
-      let(:tour_area) { post :create, { 'tour_area' => {
+      let(:tour_area) { post :create, params: { 'tour_area' => {
         departement: '75',
         area: 'Paris',
         status: 'active',
@@ -35,7 +35,7 @@ describe Admin::TourAreasController do
     end
 
     context "create failure" do
-      let(:tour_area) { post :create, { 'tour_area' => {
+      let(:tour_area) { post :create, params: { 'tour_area' => {
         departement: nil,
         area: 'Paris',
         status: 'active',
@@ -47,7 +47,7 @@ describe Admin::TourAreasController do
 
   describe "GET #edit" do
     let!(:tour_area) { FactoryBot.create(:tour_area) }
-    before { get :edit, id: tour_area.to_param }
+    before { get :edit, params: { id: tour_area.to_param } }
     it { expect(assigns(:tour_area)).to eq(tour_area) }
   end
 
@@ -56,7 +56,7 @@ describe Admin::TourAreasController do
 
     context "common field" do
       before {
-        put :update, id: tour_area.id, tour_area: { area: 'Nantes' }
+        put :update, params: { id: tour_area.id, tour_area: { area: 'Nantes' } }
         tour_area.reload
       }
       it { expect(tour_area.area).to eq('Nantes')}
@@ -65,7 +65,7 @@ describe Admin::TourAreasController do
 
   describe "DELETE destroy" do
     let!(:tour_area) { FactoryBot.create(:tour_area) }
-    before { delete :destroy, id: tour_area.id }
+    before { delete :destroy, params: { id: tour_area.id } }
     it { expect(TourArea.count).to eq(0) }
   end
 end
