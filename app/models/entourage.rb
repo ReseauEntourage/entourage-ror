@@ -202,7 +202,8 @@ class Entourage < ApplicationRecord
           place_name: { type: :string },
           street_address: { type: :string },
           google_place_id: { type: :string },
-          display_address: { type: :string }
+          display_address: { type: :string },
+          entourage_image_id: { type: [:integer, :null] }
         }
       end
     end

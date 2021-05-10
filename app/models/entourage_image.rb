@@ -1,0 +1,2 @@
+class EntourageImage < ApplicationRecord
+end
