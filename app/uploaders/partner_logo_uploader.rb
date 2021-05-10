@@ -41,7 +41,7 @@ module PartnerLogoUploader
   end
 
   def self.handle_success params
-    payload = PartnerLogoUploader.payload(params)
+    payload = PartnerLogoUploader.payload(authorized_params params)
     raise if payload.nil?
 
     partner = Partner.find(payload[:partner_id])
@@ -51,6 +51,12 @@ module PartnerLogoUploader
     AsyncService.new(self).delete_s3_object_with_public_url(previous_logo)
 
     partner
+  end
+
+  def self.authorized_params(params)
+    params.permit(
+      S3ImageUploader::AUTHORIZED_PARAMS.push(:partner_id)
+    ).to_h
   end
 
   def self.delete_s3_object_with_public_url url
