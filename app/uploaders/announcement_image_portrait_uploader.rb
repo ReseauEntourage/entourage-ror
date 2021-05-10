@@ -14,12 +14,20 @@ class AnnouncementImagePortraitUploader < S3ImageUploader
   end
 
   def self.handle_success params
-    payload = self.payload(params)
+    payload = self.payload(authorized_params params)
     raise if payload.nil?
 
     announcement = Announcement.find(payload[:announcement_id])
     announcement.update_column(:image_portrait_url, payload[:object_url])
 
     announcement
+  end
+
+  private
+
+  def self.authorized_params(params)
+    params.permit(
+      S3ImageUploader::AUTHORIZED_PARAMS.push(:announcement_id)
+    ).to_h
   end
 end
