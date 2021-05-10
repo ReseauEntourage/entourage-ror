@@ -28,7 +28,6 @@ module Admin
       if @entourage_image.save
         redirect_to edit_admin_entourage_image_path(@entourage_image)
       else
-        @entourage_image.status = @entourage_image.status_was
         render :edit
       end
     end
@@ -37,7 +36,7 @@ module Admin
       @entourage_image = EntourageImage.find(params[:id])
       @image = @entourage_image.landscape_url
       @redirect_url = landscape_upload_success_admin_entourage_image_url
-      @form = EntourageImageLandscapeUploader # @dead-code?
+      @form = EntourageImageLandscapeUploader
       render :edit_image
     end
 
@@ -45,7 +44,7 @@ module Admin
       @entourage_image = EntourageImage.find(params[:id])
       @image = @entourage_image.portrait_url
       @redirect_url = portrait_upload_success_admin_entourage_image_url
-      @form = EntourageImagePortraitUploader # @dead-code?
+      @form = EntourageImagePortraitUploader
       render :edit_image
     end
 
@@ -57,6 +56,20 @@ module Admin
     def portrait_upload_success
       entourage_image = EntourageImagePortraitUploader.handle_success(params)
       redirect_to edit_admin_entourage_image_path(entourage_image)
+    end
+
+    def destroy
+      @entourage_image = EntourageImage.find(params[:id])
+
+      if @entourage_image.destroy
+        redirect_to admin_entourage_images_path, flash: {
+          success: "Photo d'événement #{@entourage_image.title} supprimée"
+        }
+      else
+        redirect_to edit_admin_entourage_image_path(@entourage_image), flash: {
+          notice: "La photo d'événement #{@entourage_image.title} n'a pas pu être supprimée"
+        }
+      end
     end
 
     private
