@@ -26,7 +26,7 @@ module Api
 
           if is_onboarding &&
              @entourage.chat_messages.where(user_id: current_user.id).empty?
-            messages.push Onboarding::V1.chat_message_for(current_user)
+            messages.to_a.push Onboarding::V1.chat_message_for(current_user)
 
             mixpanel.track("Displayed Entourage Conversation", mp_params)
           end

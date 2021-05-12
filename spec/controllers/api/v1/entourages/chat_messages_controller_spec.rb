@@ -11,6 +11,15 @@ describe Api::V1::Entourages::ChatMessagesController do
       it { expect(response.status).to eq(401) }
     end
 
+    context "onboarding entourage" do
+      let(:moderator) { FactoryBot.create(:pro_user, admin: true, phone: '+33768037348') }
+      let(:nantes) { FactoryBot.create(:entourage, id: 3347) }
+      let!(:join_request) { FactoryBot.create(:join_request, joinable: nantes, user: moderator, status: "accepted") }
+
+      before { get :index, params: { entourage_id: nantes.to_param, token: moderator.token } }
+      it { expect(response.status).to eq(200) }
+    end
+
     context "signed in" do
       let(:user) { FactoryBot.create(:pro_user) }
 
