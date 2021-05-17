@@ -160,7 +160,7 @@ module Admin
       reminders = @user.experimental_pending_request_reminders
       last_reminder_at = reminders.maximum(:created_at)
       reminders.create! if last_reminder_at.nil? || !last_reminder_at.today?
-      redirect_to :back, flash: { _experimental_pending_request_reminder_created: 1 }
+      redirect_back(fallback_location: root_path, flash: { _experimental_pending_request_reminder_created: 1 })
     end
 
     def download_export
