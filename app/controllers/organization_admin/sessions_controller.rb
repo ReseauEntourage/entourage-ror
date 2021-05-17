@@ -33,7 +33,7 @@ module OrganizationAdmin
           # for now this flow is only used in the context of an invitation
           raise unless params[:continue].present?
 
-          # ugly. for now, params[:continue] will always be a path without query string
+          # @caution ugly. for now, params[:continue] will always be a path without query string
           return redirect_to [params[:continue], '?', {error: error, phone: params[:phone]}.to_query].join
         end
 
