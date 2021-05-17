@@ -2,7 +2,7 @@ Raven.configure do |config|
   config.dsn = ENV['SENTRY_DSN']
   config.current_environment = Rails.env
   config.environments = ['production']
-  config.rails_activesupport_breadcrumbs = true
+  config.breadcrumbs_logger = [:active_support_logger]
   config.sanitize_fields = Rails.application.config.filter_parameters.map(&:to_s)
   config.processors -= [Raven::Processor::PostData]
   config.tags.merge(community: $server_community.dev_name)
