@@ -27,6 +27,10 @@ fr:
           action: Action
           outing: Événement
           conversation: Conversation
+      entourage_image:
+        title: Titre
+        landscape_url: Photo horizontale
+        portrait_url: Photo verticale
       entourage_moderation:
         action_author_type: Emetteur
         action_recipient_type: Audience
