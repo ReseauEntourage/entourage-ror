@@ -17,7 +17,7 @@ resource Api::V1::MessagesController do
       parameter :email
     end
 
-    let(:user) { FactoryGirl.create(:pro_user) }
+    let(:user) { FactoryBot.create(:pro_user) }
 
     let(:raw_post) { {
       token: user.token,

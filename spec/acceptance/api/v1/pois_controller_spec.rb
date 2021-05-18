@@ -68,7 +68,7 @@ resource Api::V1::PoisController do
     end
 
     let(:poi) { build :poi }
-    let(:user) { FactoryGirl.create(:pro_user) }
+    let(:user) { FactoryBot.create(:pro_user) }
 
     let(:raw_post) { {
       token: user.token,
@@ -104,7 +104,7 @@ resource Api::V1::PoisController do
     let!(:member_mailer) { spy('member_mailer', poi_report: mail) }
 
     let!(:poi) { create :poi }
-    let(:user) { FactoryGirl.create(:pro_user) }
+    let(:user) { FactoryBot.create(:pro_user) }
 
     let(:id) { poi.id }
     let(:raw_post) { {

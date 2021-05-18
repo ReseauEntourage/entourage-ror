@@ -20,8 +20,8 @@ resource Api::V1::EntouragesController do
     parameter :before, type: :datetime
     parameter :partners_only, type: :boolean
 
-    let(:user) { FactoryGirl.create(:public_user) }
-    let!(:entourage) { FactoryGirl.create(:entourage, :joined, user: user, status: "open") }
+    let(:user) { FactoryBot.create(:public_user) }
+    let!(:entourage) { FactoryBot.create(:entourage, :joined, user: user, status: "open") }
     let(:token) { user.token }
 
     context '200' do
@@ -40,7 +40,7 @@ resource Api::V1::EntouragesController do
 
     let(:entourage) { create :entourage }
     let(:id) { entourage.id }
-    let(:user) { FactoryGirl.create(:public_user) }
+    let(:user) { FactoryBot.create(:public_user) }
     let(:token) { user.token }
 
     context '200' do
@@ -58,7 +58,7 @@ resource Api::V1::EntouragesController do
 
     let(:entourage) { create :entourage }
     let(:id) { entourage.id }
-    let(:user) { FactoryGirl.create(:public_user) }
+    let(:user) { FactoryBot.create(:public_user) }
     let(:token) { user.token }
 
     context '200' do
@@ -76,7 +76,7 @@ resource Api::V1::EntouragesController do
 
     let(:entourage) { create :entourage }
     let(:id) { entourage.id }
-    let(:user) { FactoryGirl.create(:public_user) }
+    let(:user) { FactoryBot.create(:public_user) }
     let(:token) { user.token }
 
     context '200' do
@@ -92,9 +92,9 @@ resource Api::V1::EntouragesController do
 
     parameter :token, type: :string, required: true
 
-    let(:user) { FactoryGirl.create(:public_user) }
-    let(:entourage) { FactoryGirl.create(:entourage, status: :open) }
-    let!(:entourage_invitations) { FactoryGirl.create(:entourage_invitation, invitable: entourage, invitee: user, status: "accepted") }
+    let(:user) { FactoryBot.create(:public_user) }
+    let(:entourage) { FactoryBot.create(:entourage, status: :open) }
+    let!(:entourage_invitations) { FactoryBot.create(:entourage_invitation, invitable: entourage, invitee: user, status: "accepted") }
     let(:id) { entourage.id }
     let(:token) { user.token }
 
@@ -125,7 +125,7 @@ resource Api::V1::EntouragesController do
     end
 
     let(:entourage) { build :entourage }
-    let(:user) { FactoryGirl.create(:pro_user) }
+    let(:user) { FactoryBot.create(:pro_user) }
 
     let(:raw_post) { {
       token: user.token,
@@ -170,8 +170,8 @@ resource Api::V1::EntouragesController do
       parameter :recipient_consent_obtained, required: false
     end
 
-    let(:user) { FactoryGirl.create(:pro_user) }
-    let(:entourage) { FactoryGirl.create(:entourage, :joined, user: user) }
+    let(:user) { FactoryBot.create(:pro_user) }
+    let(:entourage) { FactoryBot.create(:entourage, :joined, user: user) }
 
     let(:id) { entourage.id }
     let(:raw_post) { {
@@ -196,9 +196,9 @@ resource Api::V1::EntouragesController do
     parameter :token, type: :string, required: true
 
     let(:entourage) { create :entourage }
-    let(:user) { FactoryGirl.create(:public_user) }
+    let(:user) { FactoryBot.create(:public_user) }
     let(:old_date) { DateTime.parse("15/10/2010") }
-    let!(:join_request) { FactoryGirl.create(:join_request, joinable: entourage, user: user, status: JoinRequest::ACCEPTED_STATUS, last_message_read: old_date) }
+    let!(:join_request) { FactoryBot.create(:join_request, joinable: entourage, user: user, status: JoinRequest::ACCEPTED_STATUS, last_message_read: old_date) }
 
     let(:id) { entourage.id }
     let(:raw_post) { {
@@ -222,7 +222,7 @@ resource Api::V1::EntouragesController do
     end
 
     let(:entourage) { create :entourage }
-    let(:user) { FactoryGirl.create(:public_user) }
+    let(:user) { FactoryBot.create(:public_user) }
 
     let(:id) { entourage.id }
     let(:raw_post) { {
@@ -246,7 +246,7 @@ resource Api::V1::EntouragesController do
     parameter :token, type: :string, required: true
 
     let(:entourage) { create :entourage }
-    let(:user) { FactoryGirl.create(:public_user) }
+    let(:user) { FactoryBot.create(:public_user) }
 
     let(:id) { entourage.id }
     let(:raw_post) { {

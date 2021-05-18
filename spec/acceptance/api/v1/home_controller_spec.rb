@@ -10,16 +10,16 @@ resource Api::V1::HomeController do
     parameter :latitude, type: :number, required: true
     parameter :longitude, type: :number, required: true
 
-    let(:user) { FactoryGirl.create(:offer_help_user) }
+    let(:user) { FactoryBot.create(:offer_help_user) }
     let(:token) { user.token }
     let(:latitude) { 48.854367553784954 }
     let(:longitude) { 2.270340589096274 }
 
-    let!(:entourage) { FactoryGirl.create(:entourage, :joined, user: user, status: "open", latitude: 48.85436, longitude: 2.270340) }
-    let!(:outing) { FactoryGirl.create(:outing) }
-    let!(:announcement) { FactoryGirl.create(:announcement, user_goals: [:offer_help], areas: [:sans_zone]) }
-    let!(:announcement_ask) { FactoryGirl.create(:announcement, user_goals: [:ask_for_help], areas: [:sans_zone], id: 2) }
-    let!(:tour) { FactoryGirl.create(:tour) }
+    let!(:entourage) { FactoryBot.create(:entourage, :joined, user: user, status: "open", latitude: 48.85436, longitude: 2.270340) }
+    let!(:outing) { FactoryBot.create(:outing) }
+    let!(:announcement) { FactoryBot.create(:announcement, user_goals: [:offer_help], areas: [:sans_zone]) }
+    let!(:announcement_ask) { FactoryBot.create(:announcement, user_goals: [:ask_for_help], areas: [:sans_zone], id: 2) }
+    let!(:tour) { FactoryBot.create(:tour) }
 
     context '200' do
       example_request 'Get home' do

@@ -20,8 +20,8 @@ resource Api::V1::FeedsController do
     parameter :before, type: :boolean
     parameter :time_range, type: :integer
 
-    let(:user) { FactoryGirl.create(:pro_user) }
-    let(:entourage) { FactoryGirl.create(:entourage, updated_at: 4.hours.ago, created_at: 4.hours.ago, entourage_type: "ask_for_help") }
+    let(:user) { FactoryBot.create(:pro_user) }
+    let(:entourage) { FactoryBot.create(:entourage, updated_at: 4.hours.ago, created_at: 4.hours.ago, entourage_type: "ask_for_help") }
 
     let(:token) { user.token }
     let(:announcements) { 'v1' }
@@ -44,9 +44,9 @@ resource Api::V1::FeedsController do
     parameter :longitude, type: :number, required: true
     parameter :starting_after, type: :datetime
 
-    let(:user) { FactoryGirl.create(:pro_user) }
+    let(:user) { FactoryBot.create(:pro_user) }
     let(:token) { user.token }
-    let!(:outing) { FactoryGirl.create(:outing, {metadata: {starts_at: 2.hours.ago}, latitude: 1, longitude: 1}) }
+    let!(:outing) { FactoryBot.create(:outing, {metadata: {starts_at: 2.hours.ago}, latitude: 1, longitude: 1}) }
     let(:latitude) { 1 }
     let(:longitude) { 1 }
 

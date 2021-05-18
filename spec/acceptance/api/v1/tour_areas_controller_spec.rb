@@ -8,9 +8,9 @@ resource Api::V1::TourAreasController do
   get '/api/v1/tour_areas' do
     parameter :token, type: :string, required: true
 
-    let(:user) { FactoryGirl.create(:offer_help_user) }
+    let(:user) { FactoryBot.create(:offer_help_user) }
     let(:token) { user.token }
-    let!(:tour_area_list) { FactoryGirl.create_list(:tour_area, 2) }
+    let!(:tour_area_list) { FactoryBot.create_list(:tour_area, 2) }
 
     context '200' do
       example_request 'Getting tour_areas' do
@@ -23,9 +23,9 @@ resource Api::V1::TourAreasController do
     parameter :id, type: :integer
     parameter :token, type: :string
 
-    let(:user) { FactoryGirl.create(:offer_help_user) }
+    let(:user) { FactoryBot.create(:offer_help_user) }
     let(:token) { user.token }
-    let(:tour_area) { FactoryGirl.create(:tour_area) }
+    let(:tour_area) { FactoryBot.create(:tour_area) }
     let(:id) { tour_area.id }
 
     context '200' do
