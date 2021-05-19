@@ -274,13 +274,17 @@ Rails.application.routes.draw do
           delete :report_prompt, action: :dismiss_report_prompt
         end
       end
+
       resources :invitations, only: [:index, :update, :destroy]
+
       # resources :contacts, only: [:update]
       resources :partners, only: [:index, :show] do
         collection do
           post :join_request
         end
       end
+
+      resources :entourage_images, only: [:index, :show]
 
       resource :sharing, controller: 'sharing', only: [] do
         get :groups
