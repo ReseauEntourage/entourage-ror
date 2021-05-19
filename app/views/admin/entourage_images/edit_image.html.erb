@@ -8,9 +8,10 @@
 
     <h1>Modifier l'image</h1>
 
-    <% size = controller.action_name == :edit_portrait ? '750x320' : '600x792' %>
+    <% size = controller.action_name.to_s == 'edit_portrait' ? '300x492' : '1125x375' %>
 
     <div class="margin-bottom: 15px">
+      <p><i><%= size %> px</i></p>
       <%= image_tag(@image, size: size) if @image.present? %>
     </div>
 
@@ -34,6 +35,12 @@
       var file = this.files[0],
           $field = null;
 
+      // Check file size
+      if (file.size > 2 * 1024 * 1024) {
+        return alert("L'image ne peut excéder 2Mo");
+      }
+
+      // Upload
       $submit.prop('disabled', true);
 
       $.ajax(

@@ -85,7 +85,7 @@ class Entourage < ApplicationRecord
   before_validation :set_default_attributes, if: :group_type_changed?
   before_validation :set_outings_ends_at
   before_validation :set_outings_previous_at
-  before_validation :set_outings_entourage_image_id
+  before_validation :set_outings_image_urls
   before_validation :generate_display_address
   before_validation :reformat_content
   before_validation :set_default_online_attributes, if: :online_changed?
@@ -204,7 +204,8 @@ class Entourage < ApplicationRecord
           street_address: { type: :string },
           google_place_id: { type: :string },
           display_address: { type: :string },
-          entourage_image_id: { type: [:integer, :null] }
+          landscape_url: { type: [:string, :null] },
+          portrait_url: { type: [:string, :null] }
         }
       end
     end
@@ -312,12 +313,18 @@ class Entourage < ApplicationRecord
     self.metadata[:previous_at] = nil
   end
 
-  def set_outings_entourage_image_id
+  def set_outings_image_urls
     return unless group_type == 'outing'
     return unless metadata_changed?
     return unless metadata
-    return unless metadata[:entourage_image_id].nil?
-    self.metadata[:entourage_image_id] = nil
+
+    if metadata[:landscape_url].nil?
+      self.metadata[:landscape_url] = nil
+    end
+
+    if metadata[:portrait_url].nil?
+      self.metadata[:portrait_url] = nil
+    end
   end
 
   def validate_outings_ends_at
