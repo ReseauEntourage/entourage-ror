@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Api::V1::PoisController API</title>
+    <title>Api::V1::EntourageImagesController API</title>
     <meta charset="utf-8">
     <style>
       
@@ -106,13 +106,13 @@ table th, table td {
   </head>
   <body>
     <div class="container">
-      <h1>Api::V1::PoisController API</h1>
+      <h1>Api::V1::EntourageImagesController API</h1>
 
-        <p class="explanation">Pois</p>
+        <p class="explanation">Galerie de photos d'événements</p>
 
       <div class="article">
-        <h2>Get pois</h2>
-        <h3>GET /api/v1/pois</h3>
+        <h2>Get entourage image</h2>
+        <h3>GET api/v1/entourage_images/:id</h3>
 
           <h3>Parameters</h3>
           <table class="parameters table table-striped table-bordered table-condensed">
@@ -124,67 +124,19 @@ table th, table td {
             </thead>
             <tbody>
               <tr>
-                <td>
-                    <span class="name">v</span>
+                <td class="required">
+                    <span class="name">id</span>
                 </td>
                 <td>
-                  <span class="description">Version to be used, 1 or 2 (default 1)</span>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                    <span class="name">latitude</span>
-                </td>
-                <td>
-                  <span class="description">User latitude</span>
+                  <span class="description"> id</span>
                 </td>
               </tr>
               <tr>
-                <td>
-                    <span class="name">longitude</span>
+                <td class="required">
+                    <span class="name">token</span>
                 </td>
                 <td>
-                  <span class="description">User longitude</span>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                    <span class="name">distance</span>
-                </td>
-                <td>
-                  <span class="description">Distance from GPS coordinates from which POI should be found</span>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                    <span class="name">category_ids</span>
-                </td>
-                <td>
-                  <span class="description">Comma separated category_ids</span>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                    <span class="name">partners_filters</span>
-                </td>
-                <td>
-                  <span class="description">Comma separated partners (either donations or volunteers)</span>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                    <span class="name">query</span>
-                </td>
-                <td>
-                  <span class="description">Filter POI by name</span>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                    <span class="name">no_redirect</span>
-                </td>
-                <td>
-                  <span class="description"> no redirect</span>
+                  <span class="description"> token</span>
                 </td>
               </tr>
             </tbody>
@@ -199,13 +151,10 @@ Host: example.org
 Cookie: </pre>
 
           <h4>Route</h4>
-          <pre class="request route highlight">GET /api/v1/pois?v=1&amp;latitude=48.870424&amp;longitude=2.30681949999996&amp;category_ids=1319</pre>
+          <pre class="request route highlight">GET api/v1/entourage_images/175?token=foobar2</pre>
 
             <h4>Query Parameters</h4>
-            <pre class="request query_parameters highlight">v: 1
-latitude: 48.870424
-longitude: 2.30681949999996
-category_ids: 1319</pre>
+            <pre class="request query_parameters highlight">token: foobar2</pre>
 
 
 
@@ -218,15 +167,22 @@ Access-Control-Allow-Origin: *
 Access-Control-Allow-Methods: GET,POST,PUT,PATCH,DELETE
 Access-Control-Allow-Headers: Origin,Accept,Content-Type,X-Requested-With,X-CSRF-Token,X-API-KEY
 Content-Type: application/json; charset=utf-8
-ETag: W/&quot;fe91a000bd378ff71eff795432bfb2fb&quot;
+ETag: W/&quot;0cc2e329357c8f6e6a07b18d90c9db35&quot;
 Cache-Control: max-age=0, private, must-revalidate
-X-Request-Id: 10a05b9c-3c01-4961-89a8-85ba77d53cfb
-X-Runtime: 0.010007
-Content-Length: 387</pre>
+X-Request-Id: 07e60870-7743-45ad-95ab-b8fc0b3e96d7
+X-Runtime: 0.014483
+Content-Length: 97</pre>
             <h4>Status</h4>
             <pre class="response status">200 OK</pre>
               <h4>Body</h4>
-              <pre class="response body">[binary data]</pre>
+              <pre class="response body">{
+  &quot;entourage_image&quot;: {
+    &quot;id&quot;: 175,
+    &quot;title&quot;: &quot;Café solidaire&quot;,
+    &quot;landscape_url&quot;: null,
+    &quot;portrait_url&quot;: null
+  }
+}</pre>
       </div>
     </div>
   </body>
