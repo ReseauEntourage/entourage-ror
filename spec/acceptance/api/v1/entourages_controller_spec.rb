@@ -151,6 +151,58 @@ resource Api::V1::EntouragesController do
     end
   end
 
+  post 'api/v1/entourages' do
+    route_summary "Creates an outing"
+
+    parameter :token, type: :string, required: true
+
+    with_options :scope => :entourage, :required => true do
+      parameter :title
+      with_options :scope => "entourage[location]", :required => true do
+        parameter :latitude
+        parameter :longitude
+      end
+      with_options :scope => "entourage[metadata]", :required => true do
+        parameter :starts_at
+        parameter :place_name
+        parameter :street_address
+        parameter :google_place_id
+        parameter :landscape_url, required: false
+        parameter :portrait_url, required: false
+      end
+    end
+
+    let(:outing) { build :outing }
+    let(:user) { FactoryBot.create(:pro_user) }
+
+    let(:raw_post) { {
+      token: user.token,
+      entourage: {
+        group_type: :outing,
+        title: outing.title,
+        location: {
+          latitude: outing.latitude,
+          longitude: outing.longitude,
+        },
+        metadata: {
+          starts_at: outing.metadata[:starts_at],
+          place_name: outing.metadata[:place_name],
+          street_address: outing.metadata[:street_address],
+          google_place_id: outing.metadata[:google_place_id],
+          landscape_url: outing.metadata[:landscape_url],
+          portrait_url: outing.metadata[:portrait_url],
+        }
+      }
+    }.to_json }
+
+    context '201' do
+      example_request 'Create outing' do
+        expect(status).to eq(201)
+        expect(JSON.parse(response_body)).to have_key('entourage')
+      end
+    end
+  end
+
   patch 'api/v1/entourages/:id' do
     route_summary "Updates an entourage"
 
@@ -183,6 +235,50 @@ resource Api::V1::EntouragesController do
 
     context '200' do
       example_request 'Update entourage' do
+        expect(status).to eq(200)
+        expect(JSON.parse(response_body)).to have_key('entourage')
+      end
+    end
+  end
+
+  patch 'api/v1/entourages/:id' do
+    route_summary "Updates an outing"
+
+    parameter :id, required: true
+    parameter :token, type: :string, required: true
+
+    with_options :scope => :entourage, :required => true do
+      parameter :title, required: false
+      with_options :scope => "entourage[location]" do
+        parameter :latitude, required: false
+        parameter :longitude, required: false
+      end
+      with_options :scope => "entourage[metadata]", :required => true do
+        parameter :starts_at, required: false
+        parameter :place_name, required: false
+        parameter :street_address, required: false
+        parameter :google_place_id, required: false
+        parameter :landscape_url, required: false
+        parameter :portrait_url, required: false
+      end
+    end
+
+    let(:user) { FactoryBot.create(:pro_user) }
+    let(:outing) { FactoryBot.create(:outing, user: user) }
+
+    let(:id) { outing.id }
+    let(:raw_post) { {
+      token: user.token,
+      entourage: {
+        metadata: {
+          landscape_url: "path/to/landscape_url",
+          portrait_url: "path/to/portrait_url",
+        }
+      }
+    }.to_json }
+
+    context '200' do
+      example_request 'Update outing' do
         expect(status).to eq(200)
         expect(JSON.parse(response_body)).to have_key('entourage')
       end
