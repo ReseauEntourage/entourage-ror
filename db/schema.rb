@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20210409145000) do
+ActiveRecord::Schema.define(version: 20210507153000) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -216,6 +216,14 @@ ActiveRecord::Schema.define(version: 20210409145000) do
     t.string "source", default: "newsfeed"
     t.integer "user_id", null: false
     t.index ["entourage_id"], name: "index_entourage_displays_on_entourage_id"
+  end
+
+  create_table "entourage_images", force: :cascade do |t|
+    t.string "title"
+    t.string "landscape_url"
+    t.string "portrait_url"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "entourage_invitations", id: :serial, force: :cascade do |t|

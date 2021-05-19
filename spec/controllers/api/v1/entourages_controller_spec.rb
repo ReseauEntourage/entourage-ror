@@ -349,7 +349,8 @@ describe Api::V1::EntouragesController do
                 "place_name"=>"Le Dorothy",
                 "street_address"=>"85 bis rue de Ménilmontant, 75020 Paris, France",
                 "google_place_id"=>"ChIJFzXXy-xt5kcRg5tztdINnp0",
-                "display_address"=>"Le Dorothy, 85 bis rue de Ménilmontant, 75020 Paris"
+                "display_address"=>"Le Dorothy, 85 bis rue de Ménilmontant, 75020 Paris",
+                "entourage_image_id"=>nil
               },
               "entourage_type"=>"contribution",
               "display_category"=>nil,
@@ -555,7 +556,8 @@ describe Api::V1::EntouragesController do
               "display_address"=>"Café la Renaissance, 44 rue de l’Assomption, 75016 Paris",
               "place_name"=>"Café la Renaissance",
               "street_address"=>"44 rue de l’Assomption, 75016 Paris, France",
-              "google_place_id"=>"foobar"
+              "google_place_id"=>"foobar",
+              "entourage_image_id"=>nil
             }
           )}
         end

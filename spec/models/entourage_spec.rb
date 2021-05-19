@@ -90,6 +90,7 @@ RSpec.describe Entourage, type: :model do
       place_name: "Café la Renaissance",
       street_address: "44 rue de l’Assomption, 75016 Paris, France",
       google_place_id: "foobar",
+      entourage_image_id: nil,
       :$id=>"urn:entourage:outing:metadata"
     ) }
     it { expect(build(:outing, default_metadata: {}).tap(&:save).errors.messages).to eq(

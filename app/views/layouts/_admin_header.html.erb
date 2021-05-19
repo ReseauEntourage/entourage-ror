@@ -6,31 +6,43 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav navbar-left">
         <li class="navbar-text"> Bonjour, <%= current_admin.try(:first_name) %></li>
+
         <li class="dropdown" style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; text-transform: none">
           <a class="dropdown-toggle" type="button" data-toggle="dropdown">
-            Menu
+            Administrer
             <span class="caret"></span>
           </a>
           <ul class="dropdown-menu">
             <li><%= link_to "Cartes d'annonce", admin_announcements_path %></li>
+            <li><%= link_to "Photos d'événements", admin_entourage_images_path %></li>
             <li><%= link_to "Emails de récap", admin_digest_emails_path %></li>
+            <li><%= link_to "Pois", admin_pois_path %></li>
+            <li><%= link_to "Zones de modération", admin_moderation_areas_path %></li>
+            <li><%= link_to "Zones de maraudes", admin_tour_areas_path %></li>
+            <li><%= link_to "Diffusions de MP", admin_conversation_message_broadcasts_path %></li>
+          </ul>
+        </li>
+
+        <li class="dropdown" style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; text-transform: none">
+          <a class="dropdown-toggle" type="button" data-toggle="dropdown">
+            Modérer
+            <span class="caret"></span>
+          </a>
+          <ul class="dropdown-menu">
             <li><%= link_to "Associations", admin_partners_path %></li>
             <li><%= link_to "Associations de maraude", admin_organizations_path %></li>
-            <li><%= link_to "Pois", admin_pois_path %></li>
             <li><%= link_to "Demandes d'adhésions", admin_registration_requests_path %></li>
             <li><%= link_to "Messages pour Entourage", admin_messages_path %></li>
             <li><%= link_to "Modération des photos de profils", moderate_admin_users_path %></li>
             <li><%= link_to "Inscription à la newsletter", admin_newsletter_subscriptions_path %></li>
             <li><%= link_to "Invitations à rejoindre un entourage", admin_entourage_invitations_path %></li>
-            <li><%= link_to "Zones de modération", admin_moderation_areas_path %></li>
-            <li><%= link_to "Zones de maraudes", admin_tour_areas_path %></li>
-            <li><%= link_to "Diffusions de MP", admin_conversation_message_broadcasts_path %></li>
             <% if EnvironmentHelper.staging? %>
               <li><%= link_to "Maraudes de test", admin_generate_tours_path %></li>
               <li><%= link_to "Utilisateurs de test", fake_admin_users_path %></li>
             <% end %>
           </ul>
         </li>
+
         <li class="<%= :active if controller_name == 'entourages' %>">
           <%= link_to "Actions", admin_entourages_path %>
         </li>

@@ -7,6 +7,16 @@ class S3ImageUploader
     'image/jpeg'
   ].freeze
 
+  AUTHORIZED_PARAMS = [
+    :object_url,
+    :signature_expiration,
+    :signature,
+    :bucket,
+    :key,
+    :etag,
+    :id,
+  ]
+
   def self.content_types
     CONTENT_TYPES.join(', ')
   end

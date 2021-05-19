@@ -1,0 +1,72 @@
+<style>
+  .field_with_errors { display: inline-block }
+</style>
+
+<div class="alert alert-info" role="alert" style="display: flex; align-items: center">
+  <div style="flex-grow: 1">
+    <b>Galérie de photos</b><br>
+    <p>
+      La création de photos d'événements permet de proposer aux utilisateurs de créer des événements en leur associant une photo.
+    </p>
+    <p>
+      Ces photos sont proposées par Entourage afin de contrôler les images utilisées pour diffuser un événement particulier. Elles sont proposées en deux formats pour les applications mobiles :
+    </p>
+    <ul>
+      <li>un format vertical pour s'adapter à la vue "Bloc" de la page d'accueil</li>
+      <li>un format horizontal pour s'adapter au détail d'un événement.</li>
+    </ul>
+  </div>
+</div>
+
+<%= render partial: 'common/errors', locals: {obj: @entourage_image} %>
+
+<%= form_for [:admin, @entourage_image], html: { role: "form" } do |f| %>
+  <div class="form-group">
+    <%= f.label :title %>
+    <%= f.text_field :title, class: "form-control", required: true %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :landscape_url %>
+    <% if @entourage_image.new_record? %>
+      <div class="text-muted">
+        Vous pourrez ajouter une image une fois que vous aurez enregistré un titre.
+      </div>
+    <% else %>
+      <% if @entourage_image.landscape_url %>
+        <div style="margin-bottom: 15px">
+          <%= image_tag(@entourage_image.landscape_url, size: '750x320') if @entourage_image.landscape_url.present? %>
+        </div>
+      <% end %>
+      <div>
+        <%= link_to "Modifier", edit_landscape_admin_entourage_image_path, class: "btn btn-default btn-sm" %>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :portrait_url %>
+    <% if @entourage_image.new_record? %>
+      <div class="text-muted">
+        Vous pourrez ajouter une image une fois que vous aurez enregistré un titre.
+      </div>
+    <% else %>
+      <% if @entourage_image.portrait_url %>
+        <div style="margin-bottom: 15px">
+          <%= image_tag(@entourage_image.portrait_url, size: '600x792') if @entourage_image.portrait_url.present? %>
+        </div>
+      <% end %>
+      <div>
+        <%= link_to "Modifier", edit_portrait_admin_entourage_image_path, class: "btn btn-default btn-sm" %>
+      </div>
+    <% end %>
+  </div>
+
+  <%= f.submit 'Enregistrer', class: "btn btn-primary" %>
+
+  <% unless @entourage_image.new_record? %>
+    <%= link_to "Supprimer", admin_entourage_image_path(@entourage_image), method: :DELETE, class: "btn btn-danger", style: 'float: right;', data: {
+      confirm: "Êtes-vous sûr de vouloir supprimer ces photos d'événement ?"
+    } %>
+  <% end %>
+<% end %>
