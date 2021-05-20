@@ -124,7 +124,7 @@ table th, table td {
             </thead>
             <tbody>
               <tr>
-                <td>
+                <td class="required">
                     <span class="name">id</span>
                 </td>
                 <td>
@@ -132,7 +132,7 @@ table th, table td {
                 </td>
               </tr>
               <tr>
-                <td>
+                <td class="required">
                     <span class="name">token</span>
                 </td>
                 <td>
@@ -151,10 +151,10 @@ Host: example.org
 Cookie: </pre>
 
           <h4>Route</h4>
-          <pre class="request route highlight">GET /api/v1/tour_areas/95?token=foobar34</pre>
+          <pre class="request route highlight">GET /api/v1/tour_areas/93?token=foobar35</pre>
 
             <h4>Query Parameters</h4>
-            <pre class="request query_parameters highlight">token: foobar34</pre>
+            <pre class="request query_parameters highlight">token: foobar35</pre>
 
 
 
@@ -167,15 +167,22 @@ Access-Control-Allow-Origin: *
 Access-Control-Allow-Methods: GET,POST,PUT,PATCH,DELETE
 Access-Control-Allow-Headers: Origin,Accept,Content-Type,X-Requested-With,X-CSRF-Token,X-API-KEY
 Content-Type: application/json; charset=utf-8
-ETag: W/&quot;6c9e4f0361a0a084a948bf148156492e&quot;
+ETag: W/&quot;935b7bfb69843011954af3650dc87a82&quot;
 Cache-Control: max-age=0, private, must-revalidate
-X-Request-Id: 29845ad1-86b0-458b-8def-cd0c7a24053d
-X-Runtime: 0.006538
+X-Request-Id: 234d4905-bf22-4880-84bd-e7e1f197e8ea
+X-Runtime: 0.008635
 Content-Length: 78</pre>
             <h4>Status</h4>
             <pre class="response status">200 OK</pre>
               <h4>Body</h4>
-              <pre class="response body">[binary data]</pre>
+              <pre class="response body">{
+  &quot;tour_area&quot;: {
+    &quot;id&quot;: 93,
+    &quot;departement&quot;: &quot;75000&quot;,
+    &quot;area&quot;: &quot;Paris&quot;,
+    &quot;status&quot;: &quot;active&quot;
+  }
+}</pre>
       </div>
     </div>
   </body>

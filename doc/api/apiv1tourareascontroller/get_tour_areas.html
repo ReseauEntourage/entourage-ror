@@ -111,7 +111,7 @@ table th, table td {
         <p class="explanation">Tour areas</p>
 
       <div class="article">
-        <h2>Getting tour_areas</h2>
+        <h2>Get tour_areas</h2>
         <h3>GET /api/v1/tour_areas</h3>
 
           <h3>Parameters</h3>
@@ -143,10 +143,10 @@ Host: example.org
 Cookie: </pre>
 
           <h4>Route</h4>
-          <pre class="request route highlight">GET /api/v1/tour_areas?token=foobar33</pre>
+          <pre class="request route highlight">GET /api/v1/tour_areas?token=foobar34</pre>
 
             <h4>Query Parameters</h4>
-            <pre class="request query_parameters highlight">token: foobar33</pre>
+            <pre class="request query_parameters highlight">token: foobar34</pre>
 
 
 
@@ -159,15 +159,30 @@ Access-Control-Allow-Origin: *
 Access-Control-Allow-Methods: GET,POST,PUT,PATCH,DELETE
 Access-Control-Allow-Headers: Origin,Accept,Content-Type,X-Requested-With,X-CSRF-Token,X-API-KEY
 Content-Type: application/json; charset=utf-8
-ETag: W/&quot;6df9aaa0e39ded652f96172271433a8f&quot;
+ETag: W/&quot;7b035368abc941ce8fd08c5a69350f9c&quot;
 Cache-Control: max-age=0, private, must-revalidate
-X-Request-Id: ed79acee-a8b1-41f7-b73c-9c91e5a2f55d
-X-Runtime: 0.010000
+X-Request-Id: d0651e8a-dfe3-48eb-81eb-bdff0fd9b4aa
+X-Runtime: 0.007781
 Content-Length: 146</pre>
             <h4>Status</h4>
             <pre class="response status">200 OK</pre>
               <h4>Body</h4>
-              <pre class="response body">[binary data]</pre>
+              <pre class="response body">{
+  &quot;tour_areas&quot;: [
+    {
+      &quot;id&quot;: 91,
+      &quot;departement&quot;: &quot;75000&quot;,
+      &quot;area&quot;: &quot;Paris&quot;,
+      &quot;status&quot;: &quot;active&quot;
+    },
+    {
+      &quot;id&quot;: 92,
+      &quot;departement&quot;: &quot;75000&quot;,
+      &quot;area&quot;: &quot;Paris&quot;,
+      &quot;status&quot;: &quot;active&quot;
+    }
+  ]
+}</pre>
       </div>
     </div>
   </body>

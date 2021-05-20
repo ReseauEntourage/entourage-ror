@@ -136,7 +136,7 @@ table th, table td {
                     <span class="name">entourage[title]</span>
                 </td>
                 <td>
-                  <span class="description">Entourage title</span>
+                  <span class="description">Title</span>
                 </td>
               </tr>
               <tr>
@@ -144,7 +144,7 @@ table th, table td {
                     <span class="name">entourage[location][latitude]</span>
                 </td>
                 <td>
-                  <span class="description">Entourage[location] latitude</span>
+                  <span class="description">Latitude</span>
                 </td>
               </tr>
               <tr>
@@ -152,7 +152,7 @@ table th, table td {
                     <span class="name">entourage[location][longitude]</span>
                 </td>
                 <td>
-                  <span class="description">Entourage[location] longitude</span>
+                  <span class="description">Longitude</span>
                 </td>
               </tr>
               <tr>
@@ -160,7 +160,7 @@ table th, table td {
                     <span class="name">entourage[metadata][starts_at]</span>
                 </td>
                 <td>
-                  <span class="description">Entourage[metadata] starts at</span>
+                  <span class="description">Start date</span>
                 </td>
               </tr>
               <tr>
@@ -168,7 +168,7 @@ table th, table td {
                     <span class="name">entourage[metadata][place_name]</span>
                 </td>
                 <td>
-                  <span class="description">Entourage[metadata] place name</span>
+                  <span class="description">Place name</span>
                 </td>
               </tr>
               <tr>
@@ -176,7 +176,7 @@ table th, table td {
                     <span class="name">entourage[metadata][street_address]</span>
                 </td>
                 <td>
-                  <span class="description">Entourage[metadata] street address</span>
+                  <span class="description">Street address</span>
                 </td>
               </tr>
               <tr>
@@ -184,7 +184,7 @@ table th, table td {
                     <span class="name">entourage[metadata][google_place_id]</span>
                 </td>
                 <td>
-                  <span class="description">Entourage[metadata] google place</span>
+                  <span class="description">Google place ID</span>
                 </td>
               </tr>
               <tr>
@@ -192,7 +192,7 @@ table th, table td {
                     <span class="name">entourage[metadata][landscape_url]</span>
                 </td>
                 <td>
-                  <span class="description">Entourage[metadata] landscape url</span>
+                  <span class="description">Path to a 1125 x 375px image url</span>
                 </td>
               </tr>
               <tr>
@@ -200,7 +200,7 @@ table th, table td {
                     <span class="name">entourage[metadata][portrait_url]</span>
                 </td>
                 <td>
-                  <span class="description">Entourage[metadata] portrait url</span>
+                  <span class="description">Path to a 300 x 492px image url</span>
                 </td>
               </tr>
             </tbody>
@@ -219,7 +219,7 @@ Cookie: </pre>
 
 
             <h4>Body</h4>
-            <pre class="request body">{"token":"foobar13","entourage":{"group_type":"outing","title":"foobar","location":{"latitude":48.854367553785,"longitude":2.27034058909627},"metadata":{"starts_at":"2021-05-20T19:00:00.000+02:00","place_name":"Café la Renaissance","street_address":"44 rue de l’Assomption, 75016 Paris, France","google_place_id":"foobar","landscape_url":null,"portrait_url":null}}}</pre>
+            <pre class="request body">{"token":"foobar14","entourage":{"group_type":"outing","title":"foobar","location":{"latitude":48.854367553785,"longitude":2.27034058909627},"metadata":{"starts_at":"2021-05-21T19:00:00.000+02:00","place_name":"Café la Renaissance","street_address":"44 rue de l’Assomption, 75016 Paris, France","google_place_id":"foobar","landscape_url":null,"portrait_url":null}}}</pre>
 
 
             <h3>Response</h3>
@@ -231,26 +231,26 @@ Access-Control-Allow-Origin: *
 Access-Control-Allow-Methods: GET,POST,PUT,PATCH,DELETE
 Access-Control-Allow-Headers: Origin,Accept,Content-Type,X-Requested-With,X-CSRF-Token,X-API-KEY
 Content-Type: application/json; charset=utf-8
-ETag: W/&quot;f99ab6159c668e49aaff262879291350&quot;
+ETag: W/&quot;ffa7e7c60284830ee505ca6c12d89e9e&quot;
 Cache-Control: max-age=0, private, must-revalidate
 Set-Cookie: request_method=POST; path=/
-X-Request-Id: f266fd86-0bca-4fc9-b4b7-89703d8eed4b
-X-Runtime: 0.149982
-Content-Length: 1070</pre>
+X-Request-Id: 3c935e97-aff7-4d18-ae09-49058819ddbd
+X-Runtime: 0.160520
+Content-Length: 1067</pre>
             <h4>Status</h4>
             <pre class="response status">201 Created</pre>
               <h4>Body</h4>
               <pre class="response body">{
   &quot;entourage&quot;: {
-    &quot;id&quot;: 11937,
-    &quot;uuid&quot;: &quot;eCcr_lNuQ4XM&quot;,
+    &quot;id&quot;: 472,
+    &quot;uuid&quot;: &quot;eP78GjisTEto&quot;,
     &quot;status&quot;: &quot;open&quot;,
     &quot;title&quot;: &quot;Foobar&quot;,
     &quot;group_type&quot;: &quot;outing&quot;,
     &quot;public&quot;: false,
     &quot;metadata&quot;: {
-      &quot;ends_at&quot;: &quot;2021-05-20T22:00:00.000+02:00&quot;,
-      &quot;starts_at&quot;: &quot;2021-05-20T19:00:00.000+02:00&quot;,
+      &quot;ends_at&quot;: &quot;2021-05-21T22:00:00.000+02:00&quot;,
+      &quot;starts_at&quot;: &quot;2021-05-21T19:00:00.000+02:00&quot;,
       &quot;place_name&quot;: &quot;Café la Renaissance&quot;,
       &quot;previous_at&quot;: null,
       &quot;portrait_url&quot;: null,
@@ -265,16 +265,16 @@ Content-Length: 1070</pre>
     &quot;join_status&quot;: &quot;accepted&quot;,
     &quot;number_of_unread_messages&quot;: 0,
     &quot;number_of_people&quot;: 1,
-    &quot;created_at&quot;: &quot;2021-05-19T12:01:49.998+02:00&quot;,
-    &quot;updated_at&quot;: &quot;2021-05-19T12:01:49.998+02:00&quot;,
+    &quot;created_at&quot;: &quot;2021-05-20T11:26:31.858+02:00&quot;,
+    &quot;updated_at&quot;: &quot;2021-05-20T11:26:31.858+02:00&quot;,
     &quot;description&quot;: null,
-    &quot;share_url&quot;: &quot;http://app.entourage.localhost:8081/actions/eCcr_lNuQ4XM&quot;,
+    &quot;share_url&quot;: &quot;http://app.entourage.localhost:8081/actions/eP78GjisTEto&quot;,
     &quot;image_url&quot;: null,
     &quot;online&quot;: false,
     &quot;event_url&quot;: null,
     &quot;display_report_prompt&quot;: false,
     &quot;author&quot;: {
-      &quot;id&quot;: 41863,
+      &quot;id&quot;: 1059,
       &quot;display_name&quot;: &quot;John D.&quot;,
       &quot;avatar_url&quot;: null,
       &quot;partner&quot;: null,

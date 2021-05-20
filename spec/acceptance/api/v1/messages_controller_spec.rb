@@ -6,15 +6,15 @@ resource Api::V1::MessagesController do
   header "Content-Type", "application/json"
 
   post 'api/v1/messages' do
-    route_summary "Creates a message"
+    route_summary "Sends a message to Entourage team"
 
     parameter :token, type: :string, required: true
 
-    with_options :scope => :message, :required => true do
-      parameter :content
-      parameter :first_name
-      parameter :last_name
-      parameter :email
+    with_options :scope => :message do
+      parameter :content, :required => true
+      parameter :first_name, "First name", :required => false
+      parameter :last_name, "Last name", :required => false
+      parameter :email, "Email", :required => false
     end
 
     let(:user) { FactoryBot.create(:pro_user) }
@@ -30,7 +30,7 @@ resource Api::V1::MessagesController do
     }.to_json }
 
     context '201' do
-      example_request 'Create message' do
+      example_request 'Sends a message to Entourage team' do
         expect(status).to eq(201)
         expect(JSON.parse(response_body)).to have_key('id')
       end

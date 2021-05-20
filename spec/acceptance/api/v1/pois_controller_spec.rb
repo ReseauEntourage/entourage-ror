@@ -37,7 +37,7 @@ resource Api::V1::PoisController do
   get 'api/v1/pois/:id' do
     route_summary "Get a POI"
 
-    parameter :id, "POI id"
+    parameter :id, required: true
 
     let(:poi) { create :poi }
     let(:id) { poi.id }
@@ -86,7 +86,7 @@ resource Api::V1::PoisController do
     }.to_json }
 
     context '201' do
-      example_request 'Create poi' do
+      example_request 'Create a poi' do
         expect(status).to eq(201)
         expect(JSON.parse(response_body)).to have_key('poi')
       end
@@ -94,10 +94,10 @@ resource Api::V1::PoisController do
   end
 
   post 'api/v1/pois/:id/report' do
-    route_summary "Report a POI"
+    route_summary "Report a POI to Entourage team"
 
     parameter :token, type: :string, required: true
-    parameter :id, "POI id", type: :integer, required: true
+    parameter :id, type: :integer, required: true
     parameter :message, type: :string, required: true
 
     let!(:mail) { spy('mail') }
@@ -113,7 +113,7 @@ resource Api::V1::PoisController do
     }.to_json }
 
     context '201' do
-      example_request 'Report poi' do
+      example_request 'Report a POI to Entourage team' do
         expect(status).to eq(201)
         expect(JSON.parse(response_body)).to have_key('message')
       end

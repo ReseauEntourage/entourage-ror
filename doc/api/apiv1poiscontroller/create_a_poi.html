@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Api::V1::FeedsController API</title>
+    <title>Api::V1::PoisController API</title>
     <meta charset="utf-8">
     <style>
       
@@ -106,13 +106,13 @@ table th, table td {
   </head>
   <body>
     <div class="container">
-      <h1>Api::V1::FeedsController API</h1>
+      <h1>Api::V1::PoisController API</h1>
 
-        <p class="explanation">Feeds</p>
+        <p class="explanation">Pois</p>
 
       <div class="article">
-        <h2>Get feed</h2>
-        <h3>GET api/v1/feeds</h3>
+        <h2>Create a poi</h2>
+        <h3>POST api/v1/pois</h3>
 
           <h3>Parameters</h3>
           <table class="parameters table table-striped table-bordered table-condensed">
@@ -132,75 +132,75 @@ table th, table td {
                 </td>
               </tr>
               <tr>
-                <td>
-                    <span class="name">latitude</span>
+                <td class="required">
+                    <span class="name">poi[name]</span>
                 </td>
                 <td>
-                  <span class="description"> latitude</span>
+                  <span class="description">Poi name</span>
+                </td>
+              </tr>
+              <tr>
+                <td class="required">
+                    <span class="name">poi[latitude]</span>
+                </td>
+                <td>
+                  <span class="description">Poi latitude</span>
+                </td>
+              </tr>
+              <tr>
+                <td class="required">
+                    <span class="name">poi[longitude]</span>
+                </td>
+                <td>
+                  <span class="description">Poi longitude</span>
+                </td>
+              </tr>
+              <tr>
+                <td class="required">
+                    <span class="name">poi[adress]</span>
+                </td>
+                <td>
+                  <span class="description">Poi adress</span>
                 </td>
               </tr>
               <tr>
                 <td>
-                    <span class="name">longitude</span>
+                    <span class="name">poi[phone]</span>
                 </td>
                 <td>
-                  <span class="description"> longitude</span>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                    <span class="name">show_past_events</span>
-                </td>
-                <td>
-                  <span class="description"> show past events</span>
+                  <span class="description">Poi phone</span>
                 </td>
               </tr>
               <tr>
                 <td>
-                    <span class="name">partners_only</span>
+                    <span class="name">poi[website]</span>
                 </td>
                 <td>
-                  <span class="description"> partners only</span>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                    <span class="name">distance</span>
-                </td>
-                <td>
-                  <span class="description"> distance</span>
+                  <span class="description">Poi website</span>
                 </td>
               </tr>
               <tr>
                 <td>
-                    <span class="name">announcements</span>
+                    <span class="name">poi[email]</span>
                 </td>
                 <td>
-                  <span class="description">Insert announcements when equals to v1</span>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                    <span class="name">page_token</span>
-                </td>
-                <td>
-                  <span class="description"> page token</span>
+                  <span class="description">Poi email</span>
                 </td>
               </tr>
               <tr>
                 <td>
-                    <span class="name">before</span>
+                    <span class="name">poi[audience]</span>
                 </td>
                 <td>
-                  <span class="description"> before</span>
+                  <span class="description">Poi audience</span>
                 </td>
               </tr>
               <tr>
-                <td>
-                    <span class="name">time_range</span>
+                <td class="required">
+                    <span class="name">poi[category_id]</span>
                 </td>
                 <td>
-                  <span class="description"> time range</span>
+                  <span class="description">Poi category</span>
                 </td>
               </tr>
             </tbody>
@@ -215,14 +215,11 @@ Host: example.org
 Cookie: </pre>
 
           <h4>Route</h4>
-          <pre class="request route highlight">GET api/v1/feeds?token=foobar23&amp;latitude=1.122&amp;longitude=2.345&amp;announcements=v1</pre>
+          <pre class="request route highlight">POST api/v1/pois</pre>
 
-            <h4>Query Parameters</h4>
-            <pre class="request query_parameters highlight">token: foobar23
-latitude: 1.122
-longitude: 2.345
-announcements: v1</pre>
 
+            <h4>Body</h4>
+            <pre class="request body">{"token":"foobar32","poi":{"name":"Dede","latitude":48.870424,"longitude":2.30681949999996,"adress":"Au 50 75008 Paris","phone":"0000000000","website":"entourage.com","email":"entourage@entourage.com","audience":"Mon audience","category_id":123}}</pre>
 
 
             <h3>Response</h3>
@@ -234,15 +231,37 @@ Access-Control-Allow-Origin: *
 Access-Control-Allow-Methods: GET,POST,PUT,PATCH,DELETE
 Access-Control-Allow-Headers: Origin,Accept,Content-Type,X-Requested-With,X-CSRF-Token,X-API-KEY
 Content-Type: application/json; charset=utf-8
-ETag: W/&quot;721a0e931fd8da0690e4d6d2869e45cc&quot;
+ETag: W/&quot;bf6d796ea323cfdefb2eebeebe3aed9a&quot;
 Cache-Control: max-age=0, private, must-revalidate
-X-Request-Id: 8f5a378a-0d09-4185-b4a6-41686b5189ae
-X-Runtime: 0.063169
-Content-Length: 799</pre>
+Set-Cookie: request_method=POST; path=/
+X-Request-Id: 84548b06-83d7-4594-b89c-b9541d056131
+X-Runtime: 0.015519
+Content-Length: 350</pre>
             <h4>Status</h4>
-            <pre class="response status">200 OK</pre>
+            <pre class="response status">201 Created</pre>
               <h4>Body</h4>
-              <pre class="response body">[binary data]</pre>
+              <pre class="response body">{
+  &quot;poi&quot;: {
+    &quot;uuid&quot;: &quot;123&quot;,
+    &quot;source&quot;: &quot;entourage&quot;,
+    &quot;source_url&quot;: null,
+    &quot;name&quot;: &quot;Dede&quot;,
+    &quot;description&quot;: null,
+    &quot;longitude&quot;: 2.30681949999996,
+    &quot;latitude&quot;: 48.870424,
+    &quot;address&quot;: &quot;Au 50 75008 Paris&quot;,
+    &quot;phone&quot;: &quot;0000000000&quot;,
+    &quot;website&quot;: &quot;entourage.com&quot;,
+    &quot;email&quot;: &quot;entourage@entourage.com&quot;,
+    &quot;audience&quot;: &quot;Mon audience&quot;,
+    &quot;hours&quot;: null,
+    &quot;languages&quot;: null,
+    &quot;partner_id&quot;: null,
+    &quot;category_ids&quot;: [
+      123
+    ]
+  }
+}</pre>
       </div>
     </div>
   </body>

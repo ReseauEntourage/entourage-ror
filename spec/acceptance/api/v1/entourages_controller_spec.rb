@@ -15,10 +15,10 @@ resource Api::V1::EntouragesController do
     parameter :longitude, "User longitude", type: :number
     parameter :distance, "Distance from GPS coordinates from which Entourage should be found", type: :number
     parameter :page, type: :integer
-    parameter :show_past_events, type: :boolean
+    parameter :show_past_events, "True to include past events in the results", type: :boolean
     parameter :time_range, "Find entourages created in the last hours (default 24)", type: :integer
-    parameter :before, type: :datetime
-    parameter :partners_only, type: :boolean
+    parameter :before, "Find entourages created before a date, when no pagination is given", type: :datetime
+    parameter :partners_only, "Boolean to get only partners", type: :boolean
 
     let(:user) { FactoryBot.create(:public_user) }
     let!(:entourage) { FactoryBot.create(:entourage, :joined, user: user, status: "open") }
@@ -56,9 +56,9 @@ resource Api::V1::EntouragesController do
 
     parameter :token, type: :string, required: true
 
-    let(:entourage) { create :entourage }
-    let(:id) { entourage.id }
     let(:user) { FactoryBot.create(:public_user) }
+    let(:entourage) { create :entourage, status: :open }
+    let!(:join_request) { FactoryBot.create(:join_request, joinable: entourage, user: user, status: "accepted") }
     let(:token) { user.token }
 
     context '200' do
@@ -74,9 +74,8 @@ resource Api::V1::EntouragesController do
 
     parameter :token, type: :string, required: true
 
-    let(:entourage) { create :entourage }
-    let(:id) { entourage.id }
     let(:user) { FactoryBot.create(:public_user) }
+    let!(:entourage) { create :entourage, status: :open, user: user }
     let(:token) { user.token }
 
     context '200' do
@@ -95,7 +94,6 @@ resource Api::V1::EntouragesController do
     let(:user) { FactoryBot.create(:public_user) }
     let(:entourage) { FactoryBot.create(:entourage, status: :open) }
     let!(:entourage_invitations) { FactoryBot.create(:entourage_invitation, invitable: entourage, invitee: user, status: "accepted") }
-    let(:id) { entourage.id }
     let(:token) { user.token }
 
     context '200' do
@@ -112,16 +110,16 @@ resource Api::V1::EntouragesController do
     parameter :token, type: :string, required: true
 
     with_options :scope => :entourage, :required => true do
-      parameter :title
+      parameter :title, "Title"
       with_options :scope => "entourage[location]", :required => true do
-        parameter :latitude
-        parameter :longitude
+        parameter :latitude, "Latitude", type: :number
+        parameter :longitude, "Longitude", type: :number
       end
-      parameter :entourage_type
-      parameter :display_category, required: false
+      parameter :entourage_type, "Either contribution or ask_for_help"
+      parameter :display_category, "Either mat_help, social, resource, info, skill, event or other", required: false
       parameter :description, required: false
-      parameter :category, required: false
-      parameter :recipient_consent_obtained, required: false
+      parameter :category, "Either mat_help, non_mat_help or social", required: false
+      parameter :recipient_consent_obtained, "Boolean", required: false
     end
 
     let(:entourage) { build :entourage }
@@ -157,18 +155,18 @@ resource Api::V1::EntouragesController do
     parameter :token, type: :string, required: true
 
     with_options :scope => :entourage, :required => true do
-      parameter :title
+      parameter :title, "Title"
       with_options :scope => "entourage[location]", :required => true do
-        parameter :latitude
-        parameter :longitude
+        parameter :latitude, "Latitude", type: :number
+        parameter :longitude, "Longitude", type: :number
       end
       with_options :scope => "entourage[metadata]", :required => true do
-        parameter :starts_at
-        parameter :place_name
-        parameter :street_address
-        parameter :google_place_id
-        parameter :landscape_url, required: false
-        parameter :portrait_url, required: false
+        parameter :starts_at, "Start date"
+        parameter :place_name, "Place name"
+        parameter :street_address, "Street address"
+        parameter :google_place_id, "Google place ID"
+        parameter :landscape_url, "Path to a 1125 x 375px image url", required: false
+        parameter :portrait_url, "Path to a 300 x 492px image url", required: false
       end
     end
 
@@ -210,16 +208,16 @@ resource Api::V1::EntouragesController do
     parameter :token, type: :string, required: true
 
     with_options :scope => :entourage, :required => true do
-      parameter :title, required: false
-      with_options :scope => "entourage[location]" do
-        parameter :latitude, required: false
-        parameter :longitude, required: false
+      parameter :title, "Title", required: false
+      with_options :scope => "entourage[location]", required: false do
+        parameter :latitude, "Latitude", type: :number
+        parameter :longitude, "Longitude", type: :number
       end
-      parameter :entourage_type, required: false
-      parameter :display_category, required: false
+      parameter :entourage_type, "Either contribution or ask_for_help", required: false
+      parameter :display_category, "Either mat_help, social, resource, info, skill, event or other", required: false
       parameter :description, required: false
-      parameter :category, required: false
-      parameter :recipient_consent_obtained, required: false
+      parameter :category, "Either mat_help, non_mat_help or social", required: false
+      parameter :recipient_consent_obtained, "Boolean", required: false
     end
 
     let(:user) { FactoryBot.create(:pro_user) }
@@ -249,17 +247,17 @@ resource Api::V1::EntouragesController do
 
     with_options :scope => :entourage, :required => true do
       parameter :title, required: false
-      with_options :scope => "entourage[location]" do
-        parameter :latitude, required: false
-        parameter :longitude, required: false
+      with_options :scope => "entourage[location]", required: false do
+        parameter :latitude, "Latitude", type: :number
+        parameter :longitude, "Longitude", type: :number
       end
       with_options :scope => "entourage[metadata]", :required => true do
-        parameter :starts_at, required: false
-        parameter :place_name, required: false
-        parameter :street_address, required: false
-        parameter :google_place_id, required: false
-        parameter :landscape_url, required: false
-        parameter :portrait_url, required: false
+        parameter :starts_at, "Start date", required: false
+        parameter :place_name, "Place name", required: false
+        parameter :street_address, "Street address", required: false
+        parameter :google_place_id, "Google place ID", required: false
+        parameter :landscape_url, "Path to a 1125 x 375px image url", required: false
+        parameter :portrait_url, "Path to a 300 x 492px image url", required: false
       end
     end
 
@@ -286,7 +284,7 @@ resource Api::V1::EntouragesController do
   end
 
   put 'api/v1/entourages/:id/read' do
-    route_summary "Reads an entourage"
+    route_summary "Mark entourage as read"
 
     parameter :id, required: true
     parameter :token, type: :string, required: true
@@ -309,7 +307,7 @@ resource Api::V1::EntouragesController do
   end
 
   post 'api/v1/entourages/:id/report' do
-    route_summary "Reports an entourage"
+    route_summary "Reports a message to an entourage"
 
     parameter :id, required: true
     parameter :token, type: :string, required: true

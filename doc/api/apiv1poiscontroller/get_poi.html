@@ -124,11 +124,11 @@ table th, table td {
             </thead>
             <tbody>
               <tr>
-                <td>
+                <td class="required">
                     <span class="name">id</span>
                 </td>
                 <td>
-                  <span class="description">POI id</span>
+                  <span class="description"> id</span>
                 </td>
               </tr>
             </tbody>
@@ -143,7 +143,7 @@ Host: example.org
 Cookie: </pre>
 
           <h4>Route</h4>
-          <pre class="request route highlight">GET api/v1/pois/1255</pre>
+          <pre class="request route highlight">GET api/v1/pois/122</pre>
 
 
 
@@ -157,15 +157,36 @@ Access-Control-Allow-Origin: *
 Access-Control-Allow-Methods: GET,POST,PUT,PATCH,DELETE
 Access-Control-Allow-Headers: Origin,Accept,Content-Type,X-Requested-With,X-CSRF-Token,X-API-KEY
 Content-Type: application/json; charset=utf-8
-ETag: W/&quot;9d7fcabe4df17752c1c2fc66f9bdbc0e&quot;
+ETag: W/&quot;e20f6f093ab310f3569c7988df05fa0d&quot;
 Cache-Control: max-age=0, private, must-revalidate
-X-Request-Id: 6d4d4474-4622-41a3-90d3-ffc297ebf948
-X-Runtime: 0.009937
-Content-Length: 352</pre>
+X-Request-Id: d400b736-8524-40ca-b8f4-681a28a40d24
+X-Runtime: 0.010286
+Content-Length: 350</pre>
             <h4>Status</h4>
             <pre class="response status">200 OK</pre>
               <h4>Body</h4>
-              <pre class="response body">[binary data]</pre>
+              <pre class="response body">{
+  &quot;poi&quot;: {
+    &quot;uuid&quot;: &quot;122&quot;,
+    &quot;source&quot;: &quot;entourage&quot;,
+    &quot;source_url&quot;: null,
+    &quot;name&quot;: &quot;Dede&quot;,
+    &quot;description&quot;: null,
+    &quot;longitude&quot;: 2.30681949999996,
+    &quot;latitude&quot;: 48.870424,
+    &quot;address&quot;: &quot;Au 50 75008 Paris&quot;,
+    &quot;phone&quot;: &quot;0000000000&quot;,
+    &quot;website&quot;: &quot;entourage.com&quot;,
+    &quot;email&quot;: &quot;entourage@entourage.com&quot;,
+    &quot;audience&quot;: &quot;Mon audience&quot;,
+    &quot;hours&quot;: null,
+    &quot;languages&quot;: null,
+    &quot;partner_id&quot;: null,
+    &quot;category_ids&quot;: [
+      122
+    ]
+  }
+}</pre>
       </div>
     </div>
   </body>

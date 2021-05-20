@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Api::V1::MessagesController API</title>
+    <title>Api::V1::PoisController API</title>
     <meta charset="utf-8">
     <style>
       
@@ -106,13 +106,13 @@ table th, table td {
   </head>
   <body>
     <div class="container">
-      <h1>Api::V1::MessagesController API</h1>
+      <h1>Api::V1::PoisController API</h1>
 
-        <p class="explanation">Messages</p>
+        <p class="explanation">Pois</p>
 
       <div class="article">
-        <h2>Create message</h2>
-        <h3>POST api/v1/messages</h3>
+        <h2>Report a POI to Entourage team</h2>
+        <h3>POST api/v1/pois/:id/report</h3>
 
           <h3>Parameters</h3>
           <table class="parameters table table-striped table-bordered table-condensed">
@@ -133,34 +133,18 @@ table th, table td {
               </tr>
               <tr>
                 <td class="required">
-                    <span class="name">message[content]</span>
+                    <span class="name">id</span>
                 </td>
                 <td>
-                  <span class="description">Message content</span>
+                  <span class="description"> id</span>
                 </td>
               </tr>
               <tr>
                 <td class="required">
-                    <span class="name">message[first_name]</span>
+                    <span class="name">message</span>
                 </td>
                 <td>
-                  <span class="description">Message first name</span>
-                </td>
-              </tr>
-              <tr>
-                <td class="required">
-                    <span class="name">message[last_name]</span>
-                </td>
-                <td>
-                  <span class="description">Message last name</span>
-                </td>
-              </tr>
-              <tr>
-                <td class="required">
-                    <span class="name">message[email]</span>
-                </td>
-                <td>
-                  <span class="description">Message email</span>
+                  <span class="description"> message</span>
                 </td>
               </tr>
             </tbody>
@@ -175,11 +159,11 @@ Host: example.org
 Cookie: </pre>
 
           <h4>Route</h4>
-          <pre class="request route highlight">POST api/v1/messages</pre>
+          <pre class="request route highlight">POST api/v1/pois/124/report</pre>
 
 
             <h4>Body</h4>
-            <pre class="request body">{"token":"foobar30","message":{"content":"content","first_name":"first_name","last_name":"last_name","email":"some@email.com"}}</pre>
+            <pre class="request body">{"token":"foobar33","message":"message"}</pre>
 
 
             <h3>Response</h3>
@@ -191,16 +175,18 @@ Access-Control-Allow-Origin: *
 Access-Control-Allow-Methods: GET,POST,PUT,PATCH,DELETE
 Access-Control-Allow-Headers: Origin,Accept,Content-Type,X-Requested-With,X-CSRF-Token,X-API-KEY
 Content-Type: application/json; charset=utf-8
-ETag: W/&quot;cb3502c07e87e6d7e7aae8af4800a6cc&quot;
+ETag: W/&quot;d2bba5c99af7518dc3b0729abfa040fe&quot;
 Cache-Control: max-age=0, private, must-revalidate
 Set-Cookie: request_method=POST; path=/
-X-Request-Id: 18fba64d-49eb-452c-be38-4c40bb413cf8
-X-Runtime: 0.028649
-Content-Length: 194</pre>
+X-Request-Id: b5f241cc-41f4-4dc2-a724-881a41428806
+X-Runtime: 0.011402
+Content-Length: 21</pre>
             <h4>Status</h4>
             <pre class="response status">201 Created</pre>
               <h4>Body</h4>
-              <pre class="response body">[binary data]</pre>
+              <pre class="response body">{
+  &quot;message&quot;: &quot;message&quot;
+}</pre>
       </div>
     </div>
   </body>
