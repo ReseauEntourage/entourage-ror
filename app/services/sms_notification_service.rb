@@ -36,7 +36,7 @@ class SmsNotificationService
 
     # we want a copy of sms_codes on slack
     if ENV['COPY_SMS_CODE_TO_SLACK'] == 'true' && ['regenerate', 'welcome'].include?(sms_type)
-      deliveryState = send_slack_message(phone_number, message, sms_type, "sms-codes-#{EnvironmentHelper.env}")
+      deliveryState = send_slack_message(phone_number, message, sms_type, "#sms-codes-#{EnvironmentHelper.env}")
     end
 
     SmsDelivery.create(phone_number: phone_number, status: deliveryState, sms_type: sms_type, provider: provider)
