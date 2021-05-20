@@ -34,6 +34,11 @@ class SmsNotificationService
       return
     end
 
+    # we want a copy of sms_codes on slack
+    if ENV['COPY_SMS_CODE_TO_SLACK'] == 'true' && ['regenerate', 'welcome'].include?(sms_type)
+      deliveryState = send_slack_message(phone_number, message, sms_type, "sms-codes-#{EnvironmentHelper.env}")
+    end
+
     SmsDelivery.create(phone_number: phone_number, status: deliveryState, sms_type: sms_type, provider: provider)
   end
 
@@ -93,10 +98,8 @@ class SmsNotificationService
     return deliveryState
   end
 
-  def send_slack_message(phone_number, message, sms_type)
+  def send_slack_message(phone_number, message, sms_type, channel = '#test-env-sms')
     return if ENV['SLACK_WEBHOOK_URL'].blank?
-
-    channel = '#test-env-sms'
 
     if audit_phone_number?(phone_number)
       channel = '#audit-linkedout-entourage'
@@ -106,7 +109,7 @@ class SmsNotificationService
       channel: channel,
       username: ENV['SMS_SENDER_NAME'],
       icon_emoji: ':speech_balloon:',
-      text: "À #{phone_number} (#{EnvironmentHelper.env})\n"\
+      text: "À #{obfuscate phone_number} (#{EnvironmentHelper.env})\n"\
             "```\n"\
             "#{message}"\
             "```"
@@ -125,5 +128,9 @@ class SmsNotificationService
   def audit_phone_number? phone_number
     ENV['AUDIT_PHONE_PREFIXES'].present? &&
     ENV['AUDIT_PHONE_PREFIXES'].split(',').any? { |prefix| phone_number.start_with?(prefix) }
+  end
+
+  def obfuscate phone_number
+    phone_number.dup.tap { |p| p[4...8] = "****" }
   end
 end
