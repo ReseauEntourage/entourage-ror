@@ -1,7 +1,7 @@
 module Admin
   class EntourageImagesController < Admin::BaseController
     def index
-      @entourage_images = EntourageImage.all
+      @entourage_images = EntourageImage.order(id: :desc)
     end
 
     def new
