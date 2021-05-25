@@ -29,12 +29,38 @@ provider:
     watch_bucket: "entourage-avatars-production-thumb"
     watch_dir: "${self:custom.dir_prefix.${self:provider.stage}}300x300/"
     target_bucket: "entourage-avatars-${self:custom.bucket_suffix.${self:provider.stage}}"
-    target_size: 300
-    small_target_size: 60
+    target_width: 300
+    target_height: 300
+    target_small_width: 60
+    target_small_height: 60
     target_dir: "${self:custom.dir_prefix.${self:provider.stage}}300x300/"
-    small_target_dir: "${self:custom.dir_prefix.${self:provider.stage}}60x60/"
+    target_small_dir: "${self:custom.dir_prefix.${self:provider.stage}}60x60/"
     source_dir: "${self:custom.dir_prefix.${self:provider.stage}}source/"
     request_string: ${self:functions.resize-avatar.name}
+  event-landscape-environment:
+    watch_bucket: "entourage-avatars-production-thumb"
+    watch_dir: "${self:custom.dir_prefix.${self:provider.stage}}entourage_images/landscape/"
+    target_bucket: "entourage-avatars-${self:custom.bucket_suffix.${self:provider.stage}}"
+    target_width: 1125
+    target_height: 375
+    target_small_width: 375
+    target_small_height: 125
+    target_dir: "${self:custom.dir_prefix.${self:provider.stage}}entourage_images/landscape/1125x375/"
+    target_small_dir: "${self:custom.dir_prefix.${self:provider.stage}}entourage_images/landscape/375x125/"
+    source_dir: "${self:custom.dir_prefix.${self:provider.stage}}entourage_images/landscape/source/"
+    request_string: ${self:functions.add-event-landscape.name}
+  event-portrait-environment:
+    watch_bucket: "entourage-avatars-production-thumb"
+    watch_dir: "${self:custom.dir_prefix.${self:provider.stage}}entourage_images/portrait/"
+    target_bucket: "entourage-avatars-${self:custom.bucket_suffix.${self:provider.stage}}"
+    target_width: 375
+    target_height: 192
+    target_small_width: 125
+    target_small_height: 64
+    target_dir: "${self:custom.dir_prefix.${self:provider.stage}}entourage_images/portrait/375x192/"
+    target_small_dir: "${self:custom.dir_prefix.${self:provider.stage}}entourage_images/portrait/125x64/"
+    source_dir: "${self:custom.dir_prefix.${self:provider.stage}}entourage_images/portrait/source/"
+    request_string: ${self:functions.add-event-portrait.name}
 
   iamRoleStatements:
     - Effect: Allow
@@ -45,7 +71,28 @@ provider:
 functions:
   resize-avatar:
     name: resize-avatar-${self:provider.stage}
-    handler: handler.resizeAvatar
+    handler: handler.resizeImage
+    events:
+      - s3:
+          bucket: ${self:provider.environment.watch_bucket}
+          event: s3:ObjectCreated:*
+          existing: true
+          rules:
+            - prefix: ${self:provider.environment.watch_dir}
+  add-event-landscape:
+    name: add-event-landscape-${self:provider.stage}
+    handler: handler.resizeImage
+    events:
+      - s3:
+          bucket: ${self:provider.environment.watch_bucket}
+          event: s3:ObjectCreated:*
+          existing: true
+          rules:
+            - prefix: ${self:provider.environment.watch_dir}
+
+  add-event-portrait:
+    name: add-event-portrait-${self:provider.stage}
+    handler: handler.resizeImage
     events:
       - s3:
           bucket: ${self:provider.environment.watch_bucket}

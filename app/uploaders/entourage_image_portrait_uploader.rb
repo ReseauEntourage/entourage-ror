@@ -4,7 +4,7 @@ class EntourageImagePortraitUploader < S3ImageUploader
   end
 
   def self.generate_s3_path params, extension
-    "entourage_images/images/#{params[:entourage_image_id]}-portrait-#{Time.now.to_i}.#{extension}"
+    "entourage_images/portrait/375x192/#{params[:entourage_image_id]}-#{Time.now.to_i}.#{extension}"
   end
 
   def self.upload_options
