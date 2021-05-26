@@ -327,7 +327,9 @@ describe Api::V1::EntouragesController do
               starts_at: "2018-09-04T19:30:00+02:00",
               place_name: "Le Dorothy",
               street_address: "85 bis rue de Ménilmontant, 75020 Paris, France",
-              google_place_id: "ChIJFzXXy-xt5kcRg5tztdINnp0"
+              google_place_id: "ChIJFzXXy-xt5kcRg5tztdINnp0",
+              landscape_url: "path/to/landscape_url",
+              portrait_url: "path/to/portrait_url",
             }
           }
         end
@@ -349,7 +351,9 @@ describe Api::V1::EntouragesController do
                 "place_name"=>"Le Dorothy",
                 "street_address"=>"85 bis rue de Ménilmontant, 75020 Paris, France",
                 "google_place_id"=>"ChIJFzXXy-xt5kcRg5tztdINnp0",
-                "display_address"=>"Le Dorothy, 85 bis rue de Ménilmontant, 75020 Paris"
+                "display_address"=>"Le Dorothy, 85 bis rue de Ménilmontant, 75020 Paris",
+                "landscape_url"=>"path/to/landscape_url",
+                "portrait_url"=>"path/to/portrait_url"
               },
               "entourage_type"=>"contribution",
               "display_category"=>nil,
@@ -431,7 +435,6 @@ describe Api::V1::EntouragesController do
         end
       end
     end
-
   end
 
   describe 'GET show' do
@@ -555,7 +558,9 @@ describe Api::V1::EntouragesController do
               "display_address"=>"Café la Renaissance, 44 rue de l’Assomption, 75016 Paris",
               "place_name"=>"Café la Renaissance",
               "street_address"=>"44 rue de l’Assomption, 75016 Paris, France",
-              "google_place_id"=>"foobar"
+              "google_place_id"=>"foobar",
+              "landscape_url"=>nil,
+              "portrait_url"=>nil
             }
           )}
         end
@@ -613,6 +618,60 @@ describe Api::V1::EntouragesController do
 
     context "signed in" do
       let!(:user_entourage) { FactoryBot.create(:entourage, :joined, user: user) }
+      let!(:outing) { FactoryBot.create(:outing, user: user) }
+
+      context "outing exists" do
+        before { patch :update, params: { id: outing.to_param, entourage: {metadata: {
+          landscape_url: "path/to/landscape_url",
+          portrait_url: "path/to/portrait_url",
+        }}, token: user.token } }
+        it { expect(JSON.parse(response.body)).to eq({
+          "entourage"=> {
+            "id"=>outing.id,
+            "uuid"=>outing.uuid_v2,
+            "status"=>"open",
+            "title"=>"Foobar",
+            "group_type"=>"outing",
+            "public"=>false,
+            "metadata"=>{
+              "ends_at" => 1.day.from_now.change(hour: 22).iso8601(3),
+              "starts_at" => 1.day.from_now.change(hour: 19).iso8601(3),
+              "place_name" => "Café la Renaissance",
+              "previous_at" => nil,
+              "street_address" => "44 rue de l’Assomption, 75016 Paris, France",
+              "display_address" => "Café la Renaissance, 44 rue de l’Assomption, 75016 Paris",
+              "google_place_id" => "foobar",
+              "landscape_url" => "path/to/landscape_url",
+              "portrait_url" => "path/to/portrait_url",
+            },
+            "entourage_type"=>"ask_for_help",
+            "display_category"=>"social",
+            "postal_code"=>nil,
+            "number_of_people"=>1,
+            "author"=>{
+              "id"=>user.id,
+              "display_name"=>"John D.",
+              "avatar_url"=>nil,
+              "partner"=>nil,
+              "partner_role_title" => nil
+            },
+            "location"=>{
+              "latitude"=>outing.latitude,
+              "longitude"=>outing.longitude
+            },
+            "join_status"=>"not_requested",
+            "number_of_unread_messages"=>nil,
+            "created_at"=> outing.created_at.iso8601(3),
+            "updated_at"=> outing.reload.updated_at.iso8601(3),
+            "description" => nil,
+            "share_url" => "https://app.entourage.social/actions/#{outing.uuid_v2}",
+            "image_url"=>nil,
+            "online"=>false,
+            "event_url"=>nil,
+            "display_report_prompt" => false
+          }
+        })}
+      end
 
       context "entourage exists" do
         before { patch :update, params: { id: user_entourage.to_param, entourage: {title: "new_title"}, token: user.token } }

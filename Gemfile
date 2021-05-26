@@ -47,6 +47,7 @@ gem 'whenever'
 gem 'ddtrace'
 gem 'airrecord',                      '~> 1'
 gem 'rails-observers'
+gem 'rspec_api_documentation'
 
 group :development, :test do
   # gem 'annotate'

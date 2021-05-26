@@ -29,6 +29,14 @@ Rails.application.routes.draw do
       end
 
       resources :pois
+      resources :entourage_images do
+        member do
+          get '/edit/landscape', action: :edit_landscape
+          get '/landscape_upload_success', action: :landscape_upload_success
+          get '/edit/portrait', action: :edit_portrait
+          get '/portrait_upload_success', action: :portrait_upload_success
+        end
+      end
       resources :registration_requests, only: [:index, :show, :update, :destroy]
       resources :messages, only: [:index, :destroy]
       resources :organizations, only: [:index, :edit, :update]
@@ -266,13 +274,17 @@ Rails.application.routes.draw do
           delete :report_prompt, action: :dismiss_report_prompt
         end
       end
+
       resources :invitations, only: [:index, :update, :destroy]
+
       # resources :contacts, only: [:update]
       resources :partners, only: [:index, :show] do
         collection do
           post :join_request
         end
       end
+
+      resources :entourage_images, only: [:index, :show]
 
       resource :sharing, controller: 'sharing', only: [] do
         get :groups
