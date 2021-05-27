@@ -47,6 +47,7 @@ gem 'whenever'
 gem 'ddtrace'
 gem 'airrecord',                      '~> 1'
 gem 'rails-observers'
+gem 'rspec_api_documentation'
 
 group :development, :test do
   # gem 'annotate'
@@ -55,7 +56,6 @@ group :development, :test do
   gem 'spring-commands-rspec'#,        '~> 1.0.4'
   gem 'dotenv-rails'#,                 '~> 2.0.2'
   gem 'rails-controller-testing'
-  gem 'rspec_api_documentation'
 end
 
 group :development do
