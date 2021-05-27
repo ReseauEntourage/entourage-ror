@@ -25,7 +25,7 @@ describe Poi, :type => :model do
     context 'should succeed when the category_ids is present' do
       it {
         expect {
-          FactoryBot.create :poi, category: nil, category_ids: [category.id]
+          FactoryBot.create :poi, category: nil, category_ids: [category.id, category.id.to_s]
         }.not_to raise_error
       }
     end
