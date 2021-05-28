@@ -229,11 +229,11 @@ Rails.application.routes.draw do
           patch 'me' => 'users#update'
           post 'lookup'
           post :ethics_charter_signed
+          post :request_phone_change
         end
 
         member do
           patch 'code'
-          post :request_phone_change
           post :report
           post :presigned_avatar_upload
           post :address
