@@ -40,6 +40,14 @@ class Poi < ApplicationRecord
     nil
   end
 
+  def category_ids= category_ids
+    if category_id.nil?
+      self[:category_id] = category_ids.reject(&:blank?).first
+    end
+
+    super category_ids
+  end
+
   #
   # Textsearch
 

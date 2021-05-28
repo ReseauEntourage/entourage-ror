@@ -451,15 +451,6 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
     end
   end
 
-  describe "DELETE delete_all" do
-    before { EnvironmentHelper.stub(:env) { :staging } }
-    let!(:user) { FactoryBot.create(:pro_user) }
-    let!(:tours) { FactoryBot.create_list(:tour, 2) }
-    before { delete 'delete_all', params: { token: user.token, format: :json } }
-    it { expect(response.status).to eq(200) }
-    it { expect(Tour.count).to eq(0) }
-  end
-
   describe "PUT read" do
     let!(:user) { FactoryBot.create(:pro_user) }
     let!(:tour) { FactoryBot.create(:tour) }

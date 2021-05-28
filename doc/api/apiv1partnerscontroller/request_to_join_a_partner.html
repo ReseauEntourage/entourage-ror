@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Api::V1::PartnersController API</title>
+    <meta charset="utf-8">
+    <style>
+      
+body {
+  font-family: Helvetica,Arial,sans-serif;
+  font-size: 13px;
+  font-weight: normal;
+  line-height: 18px;
+  color: #404040;
+}
+
+.container {
+  width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+  zoom: 1;
+}
+
+pre {
+  background-color: #f5f5f5;
+  display: block;
+  padding: 8.5px;
+  margin: 0 0 18px;
+  line-height: 18px;
+  font-size: 12px;
+  border: 1px solid #ccc;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  white-space: pre;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+td.required .name:after {
+  float: right;
+  content: "required";
+  font-weight: normal;
+  color: #F08080;
+}
+
+a{
+  color: #0069d6;
+  text-decoration: none;
+  line-height: inherit;
+  font-weight: inherit;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: bold;
+  color: #404040;
+}
+
+h1 {
+  margin-bottom: 18px;
+  font-size: 30px;
+  line-height: 36px;
+}
+h2 {
+  font-size: 24px;
+  line-height: 36px;
+}
+h3{
+  font-size: 18px;
+  line-height: 36px;
+}
+h4 {
+  font-size: 16px;
+  line-height: 36px;
+}
+
+table{
+  width: 100%;
+  margin-bottom: 18px;
+  padding: 0;
+  border-collapse: separate;
+  font-size: 13px;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  border-spacing: 0;
+  border: 1px solid #ddd;
+}
+
+table th {
+  padding-top: 9px;
+  font-weight: bold;
+  vertical-align: middle;
+  border-bottom: 1px solid #ddd;
+}
+table th+th, table td+td {
+  border-left: 1px solid #ddd;
+}
+table th, table td {
+  padding: 10px 10px 9px;
+  line-height: 18px;
+  text-align: left;
+}
+
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Api::V1::PartnersController API</h1>
+
+        <p class="explanation">Partners</p>
+
+      <div class="article">
+        <h2>Request to join a partner</h2>
+        <h3>POST /api/v1/partners/join_request</h3>
+
+          <h3>Parameters</h3>
+          <table class="parameters table table-striped table-bordered table-condensed">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="required">
+                    <span class="name">token</span>
+                </td>
+                <td>
+                  <span class="description">User token</span>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                    <span class="name">partner_id</span>
+                </td>
+                <td>
+                  <span class="description">Partner id; &#39;partner_id&#39; or &#39;new_partner_name&#39; must be present</span>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                    <span class="name">new_partner_name</span>
+                </td>
+                <td>
+                  <span class="description">New partner name; &#39;new_partner_name&#39; must be nil when &#39;partner_id&#39; is present</span>
+                </td>
+              </tr>
+              <tr>
+                <td class="required">
+                    <span class="name">postal_code</span>
+                </td>
+                <td>
+                  <span class="description">Postal code</span>
+                </td>
+              </tr>
+              <tr>
+                <td class="required">
+                    <span class="name">partner_role_title</span>
+                </td>
+                <td>
+                  <span class="description">Partner role title</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+
+          <h3>Request</h3>
+
+            <h4>Headers</h4>
+            <pre class="request headers">Content-Type: application/json
+Host: example.org
+Cookie: </pre>
+
+          <h4>Route</h4>
+          <pre class="request route highlight">POST /api/v1/partners/join_request</pre>
+
+
+            <h4>Body</h4>
+            <pre class="request body">{"token":"foobar37","partner_id":137,"new_partner_name":null,"postal_code":"44240","partner_role_title":"Partner role title"}</pre>
+
+
+            <h3>Response</h3>
+              <h4>Headers</h4>
+              <pre class="response headers">X-Frame-Options: SAMEORIGIN
+X-XSS-Protection: 1; mode=block
+X-Content-Type-Options: nosniff
+Access-Control-Allow-Origin: *
+Access-Control-Allow-Methods: GET,POST,PUT,PATCH,DELETE
+Access-Control-Allow-Headers: Origin,Accept,Content-Type,X-Requested-With,X-CSRF-Token,X-API-KEY
+Content-Type: application/json; charset=utf-8
+ETag: W/&quot;44136fa355b3678a1146ad16f7e8649e&quot;
+Cache-Control: max-age=0, private, must-revalidate
+Set-Cookie: request_method=POST; path=/
+X-Request-Id: cb487b3b-6220-49da-84f2-74079e75b137
+X-Runtime: 0.016429
+Content-Length: 2</pre>
+            <h4>Status</h4>
+            <pre class="response status">200 OK</pre>
+              <h4>Body</h4>
+              <pre class="response body">{
+}</pre>
+      </div>
+    </div>
+  </body>
+</html>
