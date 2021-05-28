@@ -10,7 +10,7 @@ resource Api::V1::EntourageImagesController do
     # route_description "no description"
 
     parameter :token, "User token", type: :string, required: true
-    let(:entourage_image) { create :entourage_image }
+    let!(:entourage_image) { create :entourage_image, landscape_url: 'path-to-img.jpeg' }
     let(:user) { FactoryBot.create(:public_user) }
     let(:token) { user.token }
 
@@ -28,7 +28,7 @@ resource Api::V1::EntourageImagesController do
     parameter :id, required: true
     parameter :token, type: :string, required: true
 
-    let(:entourage_image) { create :entourage_image }
+    let(:entourage_image) { create :entourage_image, landscape_url: 'path-to-img.jpeg' }
     let(:id) { entourage_image.id }
     let(:user) { FactoryBot.create(:public_user) }
     let(:token) { user.token }

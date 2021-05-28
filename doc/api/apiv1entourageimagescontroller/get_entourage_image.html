@@ -151,10 +151,10 @@ Host: example.org
 Cookie: </pre>
 
           <h4>Route</h4>
-          <pre class="request route highlight">GET api/v1/entourage_images/31?token=foobar2</pre>
+          <pre class="request route highlight">GET api/v1/entourage_images/259?token=foobar5</pre>
 
             <h4>Query Parameters</h4>
-            <pre class="request query_parameters highlight">token: foobar2</pre>
+            <pre class="request query_parameters highlight">token: foobar5</pre>
 
 
 
@@ -167,19 +167,20 @@ Access-Control-Allow-Origin: *
 Access-Control-Allow-Methods: GET,POST,PUT,PATCH,DELETE
 Access-Control-Allow-Headers: Origin,Accept,Content-Type,X-Requested-With,X-CSRF-Token,X-API-KEY
 Content-Type: application/json; charset=utf-8
-ETag: W/&quot;5f372213adc9bb04827cc2e76d7e14e0&quot;
+ETag: W/&quot;48db90dec4673efb69f54078672b998c&quot;
 Cache-Control: max-age=0, private, must-revalidate
-X-Request-Id: e93d4757-d46a-4e7c-a2e7-268dc0298fc8
-X-Runtime: 0.018656
-Content-Length: 96</pre>
+X-Request-Id: a49ebc4f-5d29-4746-a01f-d4fe7b42098a
+X-Runtime: 0.011234
+Content-Length: 152</pre>
             <h4>Status</h4>
             <pre class="response status">200 OK</pre>
               <h4>Body</h4>
               <pre class="response body">{
   &quot;entourage_image&quot;: {
-    &quot;id&quot;: 31,
+    &quot;id&quot;: 259,
     &quot;title&quot;: &quot;Café solidaire&quot;,
-    &quot;landscape_url&quot;: null,
+    &quot;landscape_url&quot;: &quot;path-to-img.jpeg&quot;,
+    &quot;landscape_small_url&quot;: &quot;path-to-img.jpeg&quot;,
     &quot;portrait_url&quot;: null
   }
 }</pre>
