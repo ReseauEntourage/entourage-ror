@@ -1,7 +1,7 @@
 module Admin
   class EntourageImagesController < Admin::BaseController
     def index
-      @entourage_images = EntourageImage.all
+      @entourage_images = EntourageImage.order(id: :desc)
     end
 
     def new
@@ -11,7 +11,7 @@ module Admin
     def create
       @entourage_image = EntourageImage.new(entourage_image_params)
       if @entourage_image.save
-        redirect_to admin_entourage_images_path, notice: "Un nouveau type d'image a bien été créé"
+        redirect_to admin_entourage_images_path, notice: "La photo a bien été créée"
       else
         render :new
       end
@@ -26,7 +26,7 @@ module Admin
       @entourage_image.assign_attributes(entourage_image_params)
 
       if @entourage_image.save
-        redirect_to edit_admin_entourage_image_path(@entourage_image)
+        redirect_to edit_admin_entourage_image_path(@entourage_image), notice: "La photo a bien été modifiée"
       else
         render :edit
       end
@@ -63,11 +63,11 @@ module Admin
 
       if @entourage_image.destroy
         redirect_to admin_entourage_images_path, flash: {
-          success: "Photo d'événement #{@entourage_image.title} supprimée"
+          success: "La photo \"#{@entourage_image.title}\" a bien été supprimée"
         }
       else
         redirect_to edit_admin_entourage_image_path(@entourage_image), flash: {
-          notice: "La photo d'événement #{@entourage_image.title} n'a pas pu être supprimée"
+          notice: "La photo d'événement \"#{@entourage_image.title}\" n'a pas pu être supprimée"
         }
       end
     end
