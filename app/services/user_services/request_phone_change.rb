@@ -1,6 +1,5 @@
 module UserServices
   class RequestPhoneChange
-    CHANNEL = '#requested-phone-changes'
     USERNAME = 'Mobile-request'
 
     def initialize(user:)
@@ -8,10 +7,8 @@ module UserServices
     end
 
     def request(requested_phone:, email:)
-      user_url = Rails.application.routes.url_helpers.admin_user_url(user.id, host: ENV['ADMIN_HOST'])
-
-      Slack::Notifier.new(ENV['SLACK_WEBHOOK_URL']).ping(
-        channel: CHANNEL,
+      Slack::Notifier.new(webhook_url).ping(
+        channel: channel,
         username: USERNAME,
         text: "L'utilisateur #{user.full_name}, #{email || '[Email non indiqué]'} a requis un changement de numéro de téléphone",
         attachments: [{
@@ -24,5 +21,21 @@ module UserServices
 
     private
     attr_reader :user
+
+    def host
+      ENV['ADMIN_HOST']
+    end
+
+    def channel
+      ENV['REQUEST_PHONE_CHANGE_CHANNEL']
+    end
+
+    def webhook_url
+      ENV['SLACK_WEBHOOK_URL']
+    end
+
+    def user_url
+      Rails.application.routes.url_helpers.admin_user_url(user.id, host: host)
+    end
   end
 end
