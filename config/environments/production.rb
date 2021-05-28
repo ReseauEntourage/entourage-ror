@@ -107,6 +107,12 @@ Rails.application.configure do
     }
   end
 
+  if EnvironmentHelper.staging?
+    ENV['REQUEST_PHONE_CHANGE_CHANNEL'] = '#test-env-sms'
+  else
+    ENV['REQUEST_PHONE_CHANGE_CHANNEL'] = '#requested-phone-changes'
+  end
+
   config.action_mailer.smtp_settings = {
     :port =>           '587',
     :address =>        'in-v3.mailjet.com',
