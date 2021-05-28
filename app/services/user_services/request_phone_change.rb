@@ -1,6 +1,6 @@
 module UserServices
   class RequestPhoneChange
-    CHANNEL = '#requested-phone-changes'
+    CHANNEL = '#test-env-sms'
     USERNAME = 'Mobile-request'
 
     def initialize(user:)
