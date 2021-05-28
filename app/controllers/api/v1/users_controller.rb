@@ -143,11 +143,11 @@ module Api
         end
 
         if user.deleted
-          return render json: { error: "This user has been deleted", code: "USER_DELETED" }, status: 400
+          return render_error(code: "USER_DELETED", message: "Cet utilisateur a été supprimé", status: 404)
         end
 
         if user.blocked?
-          return render json: { error: "This user has been blocked", code: "USER_BLOCKED" }, status: 400
+          return render_error(code: "USER_BLOCKED", message: "Cet utilisateur a été bloqué", status: 404)
         end
 
         UserServices::RequestPhoneChange.new(user: user).request(requested_phone: user_params[:requested_phone], email: user_params[:email])
