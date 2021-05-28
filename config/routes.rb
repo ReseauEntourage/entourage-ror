@@ -197,10 +197,6 @@ Rails.application.routes.draw do
         resources :users, :controller => 'tours/users', only: [:index, :destroy, :update, :create]
         resources :chat_messages, :controller => 'tours/chat_messages', only: [:index, :create]
 
-        collection do
-          delete 'delete_all' => 'tours#delete_all'
-        end
-
         member do
           put :read
         end
