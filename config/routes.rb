@@ -233,6 +233,7 @@ Rails.application.routes.draw do
 
         member do
           patch 'code'
+          post :request_phone_change
           post :report
           post :presigned_avatar_upload
           post :address

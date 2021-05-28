@@ -114,6 +114,7 @@ module Api
         if user_params[:phone].blank?
           return render json: {error: "Missing phone number"}, status:400
         end
+
         user_phone = Phone::PhoneBuilder.new(phone: user_params[:phone]).format
         user = community.users.where(phone: user_phone).first
 
@@ -127,6 +128,30 @@ module Api
         else
           render json: {error: "Unknown action"}, status:400
         end
+      end
+
+      def request_phone_change
+        if params[:current_phone].blank? || params[:requested_phone].blank?
+          return render json: { error: "Both current_phone and requested_phone are required" }, status: 400
+        end
+
+        user_phone = Phone::PhoneBuilder.new(phone: params[:current_phone]).format
+        user = community.users.where(phone: user_phone).first
+
+        if user.nil?
+          return render_error(code: "USER_NOT_FOUND", message: "", status: 404)
+        end
+
+        if user.deleted
+          return render json: { error: "This user has been deleted", code: "USER_DELETED" }, status: 400
+        end
+
+        if user.blocked?
+          return render json: { error: "This user has been blocked", code: "USER_BLOCKED" }, status: 400
+        end
+
+        UserServices::RequestPhoneChange.new(user: user).request(params[:requested_phone])
+        render json: { code: "SENT", message: "Votre demande de changement de numéro de téléphone a été envoyée" }, status: 200
       end
 
       #curl -H "X-API-KEY:adc86c761fa8" -H "Content-Type: application/json" "http://localhost:3000/api/v1/users/me.json?token=azerty"
