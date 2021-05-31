@@ -3,7 +3,7 @@ require 'typeform'
 module Api
   module V1
     class UsersController < Api::V1::BaseController
-      skip_before_action :authenticate_user!, only: [:login, :code, :create, :lookup, :ethics_charter_signed, :update_email_preferences, :confirm_address_suggestion]
+      skip_before_action :authenticate_user!, only: [:login, :code, :request_phone_change, :create, :lookup, :ethics_charter_signed, :update_email_preferences, :confirm_address_suggestion]
       skip_before_action :community_warning
       skip_before_action :ensure_community!, only: :ethics_charter_signed
       allow_anonymous_access only: [:show, :report, :address]
@@ -114,6 +114,7 @@ module Api
         if user_params[:phone].blank?
           return render json: {error: "Missing phone number"}, status:400
         end
+
         user_phone = Phone::PhoneBuilder.new(phone: user_params[:phone]).format
         user = community.users.where(phone: user_phone).first
 
@@ -127,6 +128,30 @@ module Api
         else
           render json: {error: "Unknown action"}, status:400
         end
+      end
+
+      def request_phone_change
+        if user_params[:current_phone].blank? || user_params[:requested_phone].blank?
+          return render json: { error: "Both current_phone and requested_phone are required" }, status: 400
+        end
+
+        user_phone = Phone::PhoneBuilder.new(phone: user_params[:current_phone]).format
+        user = community.users.where(phone: user_phone).first
+
+        if user.nil?
+          return render_error(code: "USER_NOT_FOUND", message: "", status: 404)
+        end
+
+        if user.deleted
+          return render_error(code: "USER_DELETED", message: "Cet utilisateur a été supprimé", status: 404)
+        end
+
+        if user.blocked?
+          return render_error(code: "USER_BLOCKED", message: "Cet utilisateur a été bloqué", status: 404)
+        end
+
+        UserServices::RequestPhoneChange.new(user: user).request(requested_phone: user_params[:requested_phone], email: user_params[:email])
+        render json: { code: "SENT", message: "Votre demande de changement de numéro de téléphone a été envoyée" }, status: 200
       end
 
       #curl -H "X-API-KEY:adc86c761fa8" -H "Content-Type: application/json" "http://localhost:3000/api/v1/users/me.json?token=azerty"
@@ -364,7 +389,7 @@ module Api
 
       private
       def user_params
-        @user_params ||= params.require(:user).permit(:first_name, :last_name, :email, :sms_code, :password, :secret, :auth_token, :phone, :avatar_key, :about, :goal, interests: [])
+        @user_params ||= params.require(:user).permit(:first_name, :last_name, :email, :sms_code, :password, :secret, :auth_token, :phone, :current_phone, :requested_phone, :avatar_key, :about, :goal, interests: [])
       end
 
       def user_report_params

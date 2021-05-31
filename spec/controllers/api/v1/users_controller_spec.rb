@@ -528,6 +528,33 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
     end
   end
 
+  describe 'POST request_phone_change' do
+    let!(:user) { FactoryBot.create(:pro_user, phone: '+331234567890') }
+
+    before {
+      UserServices::RequestPhoneChange.any_instance.stub(:webhook_url) { "https://www.google.fr" }
+      UserServices::RequestPhoneChange.any_instance.stub(:user_url) { "https://www.google.fr" }
+      UserServices::RequestPhoneChange.any_instance.stub(:channel) { "#channel" }
+      stub_request(:post, "https://www.google.fr/").to_return(status: 200, body: "", headers: {})
+    }
+
+    before {
+      expect_any_instance_of(Slack::Notifier).to receive(:ping).with({
+        attachments: [{ text: "https://www.google.fr"}, { text: "Téléphone requis : +330987654321"}],
+        channel: "#channel",
+        text: "L'utilisateur John Doe, my@email.com a requis un changement de numéro de téléphone",
+        username: "Mobile-request"
+      })
+    }
+
+    it "request a phone change on Slack" do
+      post 'request_phone_change', params: {
+        user: { current_phone: '+331234567890', requested_phone: '+330987654321', email: 'my@email.com' },
+        format: :json
+      }
+    end
+  end
+
   describe "POST create" do
     it "creates a new user" do
       expect {

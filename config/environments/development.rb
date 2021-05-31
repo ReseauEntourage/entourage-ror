@@ -39,6 +39,8 @@ Rails.application.configure do
   ENV["BASIC_ADMIN_USER"] = "admin"
   ENV["BASIC_ADMIN_PASSWORD"] = "3nt0ur4g3"
 
+  ENV['REQUEST_PHONE_CHANGE_CHANNEL'] = '#test-env-sms'
+
   if ENV['ENABLE_MAILCATCHER']
     config.action_mailer.delivery_method = :smtp
     config.action_mailer.smtp_settings   = { :address => "localhost", :port => 1025 }
