@@ -205,6 +205,15 @@ describe Api::V1::PoisController, :type => :controller do
           it { expect(assigns[:pois]).to eq [poi3, poi4, poi2] }
         end
       end
+
+      context 'redirects to soliguide when Paris' do
+        paris = PoiServices::Soliguide::PARIS
+        params = { latitude: paris[:latitude], longitude: paris[:longitude], v: '2', format: :json }
+
+        before { get :index, params: params }
+        it { expect(response.status).to eq 302 }
+        it { expect(response).to redirect_to PoiServices::Soliguide.new(params).get_redirection }
+      end
     end
   end
 end
