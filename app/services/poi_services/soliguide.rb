@@ -44,7 +44,7 @@ module PoiServices
     end
 
     def self.get_show_redirection(id, params)
-      "#{PoiServices::Soliguide::API_HOST}/#{id}?" + params.except(:action, :controller, :id).to_query
+      "#{PoiServices::Soliguide::API_HOST}/#{id}?#{params.except(:action, :controller, :id).to_query}"
     end
 
     private
