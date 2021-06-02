@@ -212,7 +212,7 @@ describe Api::V1::PoisController, :type => :controller do
 
         before { get :index, params: params }
         it { expect(response.status).to eq 302 }
-        it { expect(response).to redirect_to PoiServices::Soliguide.new(params).get_redirection }
+        it { expect(response).to redirect_to PoiServices::Soliguide.new(params).get_index_redirection }
       end
     end
   end

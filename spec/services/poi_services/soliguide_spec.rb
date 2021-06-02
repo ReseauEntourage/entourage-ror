@@ -49,7 +49,7 @@ describe PoiServices::Soliguide do
     end
   end
 
-  describe 'get_redirection' do
+  describe 'get_index_redirection' do
     it {
       expect(PoiServices::Soliguide.new({
         latitude: 47.3,
@@ -57,7 +57,7 @@ describe PoiServices::Soliguide do
         distance: 5.0,
         category_ids: "1,2",
         query: 'myquery'
-      }).get_redirection).to eq "#{PoiServices::Soliguide::API_HOST}?distance=5.0&latitude=47.3&longitude=-1.55&query=myquery"
+      }).get_index_redirection).to eq "#{PoiServices::Soliguide::API_HOST}?distance=5.0&latitude=47.3&longitude=-1.55&query=myquery"
     }
 
     it {
@@ -66,7 +66,7 @@ describe PoiServices::Soliguide do
         longitude: -1.55,
         distance: 5.0,
         category_ids: "1"
-      }).get_redirection).to eq "#{PoiServices::Soliguide::API_HOST}?categories=1&distance=5.0&latitude=47.3&longitude=-1.55"
+      }).get_index_redirection).to eq "#{PoiServices::Soliguide::API_HOST}?categories=1&distance=5.0&latitude=47.3&longitude=-1.55"
     }
   end
 end
