@@ -109,8 +109,10 @@ Rails.application.configure do
 
   if EnvironmentHelper.staging?
     ENV['REQUEST_PHONE_CHANGE_CHANNEL'] = '#test-env-sms'
+    ENV['ENTOURAGE_SOLIGUIDE_HOST'] = 'https://entourage-soliguide-preprod.herokuapp.com/api/v1/pois'
   else
     ENV['REQUEST_PHONE_CHANGE_CHANNEL'] = '#requested-phone-changes'
+    ENV['ENTOURAGE_SOLIGUIDE_HOST'] = 'https://entourage-soliguide-preprod.herokuapp.com/api/v1/pois'
   end
 
   config.action_mailer.smtp_settings = {

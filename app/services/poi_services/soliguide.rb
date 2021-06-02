@@ -1,6 +1,6 @@
 module PoiServices
   class Soliguide
-    API_HOST = "https://entourage-soliguide-preprod.herokuapp.com/api/v1/pois"
+    API_HOST = ENV['ENTOURAGE_SOLIGUIDE_HOST']
 
     PARIS = {
       latitude: 48.8586,
@@ -30,7 +30,7 @@ module PoiServices
       close_to?(PARIS) || close_to?(LYON)
     end
 
-    def get_redirection
+    def get_index_redirection
       params = {
         distance:  distance,
         latitude:  latitude,
@@ -41,6 +41,10 @@ module PoiServices
       params[:query] = query if query.present?
 
       "#{PoiServices::Soliguide::API_HOST}?#{params.to_query}"
+    end
+
+    def self.get_show_redirection(id, params)
+      "#{PoiServices::Soliguide::API_HOST}/#{id}?" + params.except(:action, :controller, :id).to_query
     end
 
     private

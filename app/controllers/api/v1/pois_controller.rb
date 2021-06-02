@@ -11,7 +11,7 @@ module Api
         soliguide = PoiServices::Soliguide.new(soliguide_params)
 
         if version == :v2 && params[:no_redirect] != 'true' && soliguide.apply?
-          return redirect_to soliguide.get_redirection
+          return redirect_to soliguide.get_index_redirection
         end
 
         @categories = Category.all
@@ -96,7 +96,7 @@ module Api
 
       def show
         if params[:id].start_with?('s')
-          return head status: 302, location: "#{PoiServices::Soliguide::API_HOST}/#{params[:id]}?" + show_params.except(:action, :controller, :id).to_query
+          return redirect_to PoiServices::Soliguide.get_show_redirection(params[:id], show_params)
         end
 
         poi = Poi.validated.find(params[:id])
