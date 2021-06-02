@@ -6,7 +6,7 @@ module PoiServices
       latitude: 48.8586,
       longitude: 2.3411,
       radius: 6000,
-      coef: 0.65792 # Math.cos(48.8586 * Math::PI / 180)
+      coef: 0.65792 # Math.cos(48.8586 * Math::PI / 180) #
     }
 
     LYON = {
