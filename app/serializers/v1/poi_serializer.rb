@@ -50,7 +50,7 @@ module V1
           62 => 6
         }[object.category_id] || object.category_id
       else
-        category_ids.many? ? 0 : category_ids.first
+        category_ids.any? ? category_ids.first : 0
       end
     end
 
