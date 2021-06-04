@@ -1,5 +1,7 @@
 module PoiServices
   class Soliguide
+    attr_reader :host, :port
+
     API_HOST = ENV['ENTOURAGE_SOLIGUIDE_HOST']
 
     PARIS = {
@@ -28,6 +30,14 @@ module PoiServices
       return false unless EnvironmentHelper.env.in? [:development, :staging, :test]
 
       close_to?(PARIS) || close_to?(LYON)
+    end
+
+    def host
+      @host ||= URI(PoiServices::Soliguide::API_HOST).host
+    end
+
+    def port
+      @port ||= URI(PoiServices::Soliguide::API_HOST).port
     end
 
     def get_index_redirection

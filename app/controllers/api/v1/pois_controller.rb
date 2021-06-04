@@ -11,7 +11,12 @@ module Api
         soliguide = PoiServices::Soliguide.new(soliguide_params)
 
         if version == :v2 && params[:no_redirect] != 'true' && soliguide.apply?
-          return redirect_to soliguide.get_index_redirection
+          https = Net::HTTP.new(soliguide.host, soliguide.port)
+          https.use_ssl = true
+
+          return render json: https.request(
+            Net::HTTP::Get.new(soliguide.get_index_redirection)
+          ).read_body
         end
 
         @categories = Category.all
