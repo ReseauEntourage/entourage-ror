@@ -32,14 +32,6 @@ module PoiServices
       close_to?(PARIS) || close_to?(LYON)
     end
 
-    def host
-      @host ||= URI(PoiServices::Soliguide::API_HOST).host
-    end
-
-    def port
-      @port ||= URI(PoiServices::Soliguide::API_HOST).port
-    end
-
     def get_index_redirection
       params = {
         distance:  distance,
@@ -55,6 +47,14 @@ module PoiServices
 
     def self.get_show_redirection(id, params)
       "#{PoiServices::Soliguide::API_HOST}/#{id}?#{params.except(:action, :controller, :id).to_query}"
+    end
+
+    def self.host
+      URI(PoiServices::Soliguide::API_HOST).host
+    end
+
+    def self.port
+      URI(PoiServices::Soliguide::API_HOST).port
     end
 
     private
