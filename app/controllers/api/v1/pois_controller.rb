@@ -11,7 +11,7 @@ module Api
         soliguide = PoiServices::Soliguide.new(soliguide_params)
 
         if version == :v2 && params[:no_redirect] != 'true' && soliguide.apply?
-          https = Net::HTTP.new(soliguide.host, soliguide.port)
+          https = Net::HTTP.new(PoiServices::Soliguide.host, PoiServices::Soliguide.port)
           https.use_ssl = true
 
           return render json: https.request(
@@ -101,11 +101,11 @@ module Api
 
       def show
         if params[:id].start_with?('s')
-          https = Net::HTTP.new(soliguide.host, soliguide.port)
+          https = Net::HTTP.new(PoiServices::Soliguide.host, PoiServices::Soliguide.port)
           https.use_ssl = true
 
           return render json: https.request(
-            Net::HTTP::Get.new(soliguide.get_show_redirection(params[:id], show_params))
+            Net::HTTP::Get.new(PoiServices::Soliguide.get_show_redirection(params[:id], show_params))
           ).read_body
         end
 
