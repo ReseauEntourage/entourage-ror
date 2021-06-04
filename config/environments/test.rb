@@ -60,6 +60,7 @@ Rails.application.configure do
 
   ENV["HOST"]='localhost'
   ENV["ORGANIZATION_ADMIN_URL"]="localhost"
+  ENV["ENTOURAGE_SOLIGUIDE_HOST"]="https://localhost:8080/api/v1/pois"
 
   # Limit slow down due to password hashing
   BCrypt::Engine.cost = BCrypt::Engine::MIN_COST
