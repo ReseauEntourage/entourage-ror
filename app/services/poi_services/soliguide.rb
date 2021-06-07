@@ -29,7 +29,7 @@ module PoiServices
     def apply?
       return false unless EnvironmentHelper.env.in? [:development, :staging, :test]
 
-      close_to?(PARIS) || close_to?(LYON)
+      close_to?(PARIS)
     end
 
     def get_index_redirection

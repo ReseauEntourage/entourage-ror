@@ -31,14 +31,14 @@ describe PoiServices::Soliguide do
       expect(PoiServices::Soliguide.new({
         latitude: 45.75,
         longitude: 4.85
-      }).apply?).to eq(true)
+      }).apply?).to eq(false)
     end
 
     it 'should be valid close to Lyon' do
       expect(PoiServices::Soliguide.new({
         latitude: 45.77,
         longitude: 4.87
-      }).apply?).to eq(true)
+      }).apply?).to eq(false)
     end
 
     it 'should not be valid far from Lyon' do
