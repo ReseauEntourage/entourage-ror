@@ -205,6 +205,24 @@ describe Api::V1::PoisController, :type => :controller do
           it { expect(assigns[:pois]).to eq [poi3, poi4, poi2] }
         end
       end
+
+      context 'redirects to soliguide when Paris' do
+        paris = PoiServices::Soliguide::PARIS
+        params = { latitude: paris[:latitude], longitude: paris[:longitude], distance: 5, v: '2', format: :json }
+        url = "#{ENV['ENTOURAGE_SOLIGUIDE_HOST']}?distance=5&latitude=#{paris[:latitude]}&longitude=#{paris[:longitude]}"
+
+        before {
+          stub_request(:get, url).with(headers: {
+            'Accept'=>'*/*',
+            'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+            'User-Agent'=>'Ruby'
+          }).to_return(status: 200, body: "[soliguide_called]", headers: {})
+
+          get :index, params: params
+        }
+        it { expect(response.status).to eq 200 }
+        it { expect(response.body).to eq("[soliguide_called]") }
+      end
     end
   end
 end

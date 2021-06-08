@@ -8,30 +8,15 @@ module Api
       #curl -H "Content-Type: application/json" "https://entourage-back-preprod.herokuapp.com/api/v1/pois.json?token=153ad0b7ef67e5c44b8ef5afc12709e4&category_ids=1,2"
       def index
         version = params[:v] == '2' ? :v2 : :v1
+        soliguide = PoiServices::Soliguide.new(soliguide_params)
 
-        use_soliguide = version == :v2 && params[:no_redirect] != 'true'
-        use_soliguide &&= EnvironmentHelper.env.in?([:development, :staging])
+        if version == :v2 && params[:no_redirect] != 'true' && soliguide.apply?
+          https = Net::HTTP.new(PoiServices::Soliguide.host, PoiServices::Soliguide.port)
+          https.use_ssl = true
 
-        if use_soliguide
-          # use only in a radius of ~6 km around the center of Paris
-          # https://www.mapsdirections.info/en/measure-map-radius/?lat=48.8586&lng=2.3411&radius=5965
-          x = 48.8586 - params[:latitude].to_f
-          y = (2.3411 - params[:longitude].to_f) * 0.65792 # Math.cos(48.8586 * Math::PI / 180)
-          paris_distance = Math.sqrt(x**2 + y**2) * 110_250 # meters/degree
-          use_soliguide = paris_distance <= 5_965 # meters
-        end
-
-        if use_soliguide
-          redirect_params = {
-            latitude:  params[:latitude],
-            longitude: params[:longitude],
-            distance:  params[:distance]
-          }
-          categories = (params[:category_ids] || "").split(",").map(&:to_i).uniq
-          redirect_params[:categories] = categories.first if categories.one?
-          redirect_params[:query] = params[:query] if params[:query].present?
-
-          return head status: 302, location:  "https://entourage-soliguide-preprod.herokuapp.com/api/v1/pois?" + redirect_params.to_query
+          return render json: https.request(
+            Net::HTTP::Get.new(soliguide.get_index_redirection)
+          ).read_body
         end
 
         @categories = Category.all
@@ -116,7 +101,12 @@ module Api
 
       def show
         if params[:id].start_with?('s')
-          return head status: 302, location: "https://entourage-soliguide-preprod.herokuapp.com/api/v1/pois/#{params[:id]}?" + show_params.except(:action, :controller, :id).to_query
+          https = Net::HTTP.new(PoiServices::Soliguide.host, PoiServices::Soliguide.port)
+          https.use_ssl = true
+
+          return render json: https.request(
+            Net::HTTP::Get.new(PoiServices::Soliguide.get_show_redirection(params[:id], show_params))
+          ).read_body
         end
 
         poi = Poi.validated.find(params[:id])
@@ -179,6 +169,10 @@ module Api
 
       def poi_params
         params.require(:poi).permit(:name, :latitude, :longitude, :adress, :phone, :website, :email, :audience, :category_id)
+      end
+
+      def soliguide_params
+        params.permit(:latitude, :longitude, :distance, :category_ids, :query)
       end
 
       def member_mailer
