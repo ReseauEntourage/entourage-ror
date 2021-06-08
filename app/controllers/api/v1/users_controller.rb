@@ -132,7 +132,7 @@ module Api
 
       def request_phone_change
         if user_params[:current_phone].blank? || user_params[:requested_phone].blank?
-          return render json: { error: "Both current_phone and requested_phone are required" }, status: 400
+          return render json: { error: "Les deux numéros, ancien et nouveau, sont requis" }, status: 400
         end
 
         user_phone = Phone::PhoneBuilder.new(phone: user_params[:current_phone]).format
@@ -148,6 +148,10 @@ module Api
 
         if user.blocked?
           return render_error(code: "USER_BLOCKED", message: "Cet utilisateur a été bloqué", status: 404)
+        end
+
+        if user_phone == Phone::PhoneBuilder.new(phone: user_params[:requested_phone]).format
+          return render_error(code: "IDENTICAL_PHONES", message: "Les deux numéros sont identiques", status: 404)
         end
 
         UserServices::RequestPhoneChange.new(user: user).request(requested_phone: user_params[:requested_phone], email: user_params[:email])
