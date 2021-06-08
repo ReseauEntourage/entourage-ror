@@ -27,8 +27,6 @@ module PoiServices
     end
 
     def apply?
-      return false unless EnvironmentHelper.env.in? [:development, :staging, :test]
-
       close_to?(PARIS)
     end
 
