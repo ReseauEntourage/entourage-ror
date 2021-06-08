@@ -110,7 +110,7 @@ Rails.application.configure do
   if EnvironmentHelper.staging?
     ENV['REQUEST_PHONE_CHANGE_CHANNEL'] = '#test-env-sms'
   else
-    ENV['REQUEST_PHONE_CHANGE_CHANNEL'] = '#requested-phone-changes'
+    ENV['REQUEST_PHONE_CHANGE_CHANNEL'] = '#moderation-entourages'
   end
 
   config.action_mailer.smtp_settings = {
