@@ -62,3 +62,10 @@ jobs:
         region: eu-west-1
         repo: entourage-ror
         tags: latest,${{ github.sha }}
+
+    - uses: akhileshns/heroku-deploy@v3.8.9
+      with:
+        heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+        # deploy to entourage-back-preprod
+        heroku_app_name: entourage-back-preprod
+        heroku_email: nicolas.chafai@entourage.social
