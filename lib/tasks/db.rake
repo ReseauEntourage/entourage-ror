@@ -29,9 +29,9 @@ namespace :db do
       Organization, Partner, Question, RegistrationRequest,
       Rpush::Apns::Feedback, Rpush::App, Rpush::Notification, SensitiveWord,
       SensitiveWordsCheck, SessionHistory, SimplifiedTourPoint,
-      StoreDailyReport, SuggestionComputeHistory, Tour, TourPoint,
+      StoreDailyReport, Tour, TourPoint,
       UserApplication, UserModeration,
-      UserRelationship, UsersAppetence
+      UserRelationship
     ].each(&:delete_all)
 
     [
