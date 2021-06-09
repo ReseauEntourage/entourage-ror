@@ -26,5 +26,17 @@ describe HomeServices::Outing do
       expect(outings.count).to eq(2)
       expect(outings).to match_array([outing, second])
     end
+
+    it 'should order by starts_at' do
+      allow(user).to receive(:goal) { :ask_for_help }
+      outing.metadata[:starts_at] = Time.zone.now + 1.hour and outing.save
+      second.metadata[:starts_at] = Time.zone.now + 1.minute and second.save
+
+      outings = HomeServices::Outing.new(user: user, latitude: 48.854367553784954, longitude: 2.270340589096274).find_all
+
+      expect(outings).to be_kind_of Array
+      expect(outings.count).to eq(2)
+      expect(outings).to eq([second, outing])
+    end
   end
 end
