@@ -21,7 +21,6 @@ excluded_tables=(
   user_applications
   events
   tour_points
-  users_appetences
   sms_deliveries
   entourage_displays
   rpush_feedback

@@ -52,10 +52,6 @@ module JoinRequestsServices
                                              user.id)
         end
 
-        if joinable.is_a?(Entourage)
-          EntourageServices::UsersAppetenceBuilder.new(user: user).join_entourage(entourage: joinable)
-        end
-
         callback.on_success.try(:call, join_request)
       else
         callback.on_failure.try(:call, join_request)

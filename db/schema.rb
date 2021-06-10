@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20210507153000) do
+ActiveRecord::Schema.define(version: 20210609163001) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -634,17 +634,6 @@ ActiveRecord::Schema.define(version: 20210507153000) do
     t.index ["report_date", "app_name", "store_id"], name: "index_store_daily_reports_date_store_app", unique: true
   end
 
-  create_table "suggestion_compute_histories", id: :serial, force: :cascade do |t|
-    t.integer "user_number", null: false
-    t.integer "total_user_number", null: false
-    t.integer "entourage_number", null: false
-    t.integer "total_entourage_number", null: false
-    t.integer "duration", null: false
-    t.string "filter_type", default: "NORMAL", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
   create_table "tour_areas", id: :serial, force: :cascade do |t|
     t.string "departement", limit: 5
     t.string "area", null: false
@@ -795,17 +784,6 @@ ActiveRecord::Schema.define(version: 20210507153000) do
     t.index ["roles"], name: "index_users_on_roles", using: :gin
     t.index ["token"], name: "index_users_on_token", unique: true
     t.index ["uuid"], name: "index_users_on_uuid", unique: true
-  end
-
-  create_table "users_appetences", id: :serial, force: :cascade do |t|
-    t.integer "user_id", null: false
-    t.integer "appetence_social", default: 0, null: false
-    t.integer "appetence_mat_help", default: 0, null: false
-    t.integer "appetence_non_mat_help", default: 0, null: false
-    t.float "avg_dist", default: 150.0, null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["user_id"], name: "index_users_appetences_on_user_id", unique: true
   end
 
   add_foreign_key "experimental_pending_request_reminders", "users"
