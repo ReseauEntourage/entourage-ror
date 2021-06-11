@@ -9,13 +9,4 @@ namespace :data_migration do
       entourage.update(category: category)
     end
   end
-
-  task set_user_appetences: :environment do
-    UsersAppetence.delete_all
-    User.find_each do |user|
-      puts "Create user_appetences #{user.id}"
-      EntourageServices::UsersAppetenceBuilder.new(user: user).create
-    end
-  end
-
 end

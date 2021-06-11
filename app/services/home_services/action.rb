@@ -24,7 +24,6 @@ module HomeServices
         .where("(#{Geocoder::Sql.within_bounding_box(*box, :latitude, :longitude)}) OR online = true")
         .order_by_profile(profile)
         .order_by_distance_from(latitude, longitude)
-        .order(created_at: :desc)
         .limit(MAX_LENGTH)
     end
 

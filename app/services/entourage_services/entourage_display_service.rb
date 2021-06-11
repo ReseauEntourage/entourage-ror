@@ -8,6 +8,7 @@ module EntourageServices
 
     def view
       return if user.anonymous?
+
       if params[:distance] && params[:feed_rank]
         EntourageDisplay.create(entourage: entourage,
                                 user: user,
@@ -15,7 +16,6 @@ module EntourageServices
                                 feed_rank: params[:feed_rank],
                                 source: params[:source])
       end
-      EntourageServices::UsersAppetenceBuilder.new(user: user).view_entourage(entourage: entourage)
     end
 
     private
