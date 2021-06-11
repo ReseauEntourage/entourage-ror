@@ -222,7 +222,21 @@
       </table>
     </div>
   <% end %>
-  <br>
+
+  <div class="control-group">
+    <label class="control-label">Droit d'administration et de modération</label>
+    <table class="table" style="width: auto">
+      <tr>
+        <td>
+          Permet d'accéder à l'ensemble des fonctionnalités du backoffice
+          <i class="text-muted">(seuls les membres d'Entourage devraient y avoir accès)</i>
+        </td>
+        <td style="font-weight: bold">
+          <%= f.check_box :admin %>
+        </td>
+      </tr>
+    </table>
+  </div>
 
   <% if @user.new_record? %>
     <div class="control-group">
