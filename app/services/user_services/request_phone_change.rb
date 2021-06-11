@@ -49,5 +49,16 @@ module UserServices
         email: email
       )
     end
+
+    def self.record_phone_change! user:, requester:
+      UserPhoneChange.create(
+        user_id: user.id,
+        requester_id: requester.id,
+        kind: :change,
+        phone_was: user.phone_was,
+        phone: user.phone,
+        email: user.email
+      )
+    end
   end
 end
