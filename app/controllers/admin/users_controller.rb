@@ -112,6 +112,7 @@ module Admin
       saved = false
       begin
         ApplicationRecord.transaction do
+          UserServices::RequestPhoneChange.record_phone_change!(user: user, requester: current_user) if user.phone_changed?
           user.save! if user.changed?
           moderation.save! if moderation.changed?
           saved = true

@@ -21,6 +21,55 @@ describe Admin::UsersController do
     end
   end
 
+  describe 'PUT update' do
+    let!(:admin) { admin_basic_login }
+    let!(:user) { FactoryBot.create(:pro_user, first_name: "John", phone: '+33600112233') }
+
+    context "common field" do
+      before {
+        put :update, params: { id: user.id, user: {
+          first_name: "Jane",
+          about: 'foo'
+        }, user_moderation: { skills: ['Administratif'] } }
+        user.reload
+      }
+      it { expect(user.first_name).to eq("Jane")}
+    end
+
+    context "change phone" do
+      before { # user_phone_change history
+        expect(UserPhoneChange).to receive(:create).with({
+          user_id: user.id,
+          requester_id: admin.id,
+          kind: :change,
+          phone_was: '+33600112233',
+          phone: '+33611223344',
+          email: user.email
+        })
+      }
+
+      it {
+        put :update, params: { id: user.id, user: {
+          phone: '+33611223344',
+          about: 'foo'
+        }, user_moderation: { skills: ['Administratif'] } }
+      }
+    end
+
+    context "did not change phone" do
+      before { # user_phone_change history
+        expect(UserPhoneChange).not_to receive(:create)
+      }
+
+      it {
+        put :update, params: { id: user.id, user: {
+          phone: user.phone,
+          about: 'foo'
+        }, user_moderation: { skills: ['Administratif'] } }
+      }
+    end
+  end
+
   describe 'PUT banish' do
     context "not signed in" do
       before { put :banish, params: { id: validated_user_with_avatar.to_param } }

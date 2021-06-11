@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20210609163001) do
+ActiveRecord::Schema.define(version: 20210611154000) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -724,6 +724,20 @@ ActiveRecord::Schema.define(version: 20210609163001) do
     t.boolean "accepts_volunteering_offers"
     t.boolean "ambassador"
     t.index ["user_id"], name: "index_user_moderations_on_user_id", unique: true
+  end
+
+  create_table "user_phone_changes", id: :serial, force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "requester_id"
+    t.string "kind", null: false
+    t.string "phone_was", null: false
+    t.string "phone", null: false
+    t.string "email"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["kind"], name: "index_user_phone_changes_on_kind"
+    t.index ["requester_id"], name: "index_user_phone_changes_on_requester_id"
+    t.index ["user_id"], name: "index_user_phone_changes_on_user_id"
   end
 
   create_table "user_relationships", id: :serial, force: :cascade do |t|
