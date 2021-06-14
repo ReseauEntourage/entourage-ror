@@ -143,15 +143,15 @@ module Api
         end
 
         if user.deleted
-          return render_error(code: "USER_DELETED", message: "Cet utilisateur a été supprimé", status: 404)
+          return render_error(code: "USER_DELETED", message: "L'ancien numéro a été supprimé. Veuillez vérifier", status: 404)
         end
 
         if user.blocked?
-          return render_error(code: "USER_BLOCKED", message: "Cet utilisateur a été bloqué", status: 404)
+          return render_error(code: "USER_BLOCKED", message: "L'ancien numéro a été bloqué. Veuillez vérifier", status: 404)
         end
 
         if user_phone == Phone::PhoneBuilder.new(phone: user_params[:requested_phone]).format
-          return render_error(code: "IDENTICAL_PHONES", message: "Les deux numéros sont identiques", status: 404)
+          return render_error(code: "IDENTICAL_PHONES", message: "Les deux numéros sont identiques. Veuillez vérifier le nouveau numéro", status: 404)
         end
 
         UserServices::RequestPhoneChange.new(user: user).request(requested_phone: user_params[:requested_phone], email: user_params[:email])

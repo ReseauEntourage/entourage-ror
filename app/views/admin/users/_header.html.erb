@@ -34,13 +34,24 @@
   </div>
 <% end %>
 
+<% if @user.deleted? %>
+  <div class="panel panel-danger">
+    <div class="panel-heading">
+      Cet utilisateur est supprimé
+    </div>
+    <div class="panel-body">
+      Les utilisateurs supprimés ne peuvent pas se connecter ou utiliser l'application<br>
+    </div>
+  </div>
+<% end %>
+
 <% if @user.anonymized? %>
   <div class="panel panel-danger">
     <div class="panel-heading">
       Cet utilisateur est anonymisé
     </div>
     <div class="panel-body">
-      Les utilisateurs anonymisé ne peuvent pas se connecter ou utiliser l'application,<br>
+      Les utilisateurs anonymisés ne peuvent pas se connecter ou utiliser l'application,<br>
       et leur photo de profil est supprimée.
     </div>
   </div>
