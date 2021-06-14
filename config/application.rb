@@ -71,7 +71,7 @@ module EntourageBack
         request_id: payload[:request_id],
       }
     end
-    config.lograge.formatter = Lograge::Formatters::Logstash.new
+    config.lograge.formatter = Lograge::Formatters::Json.new
 
     # Our staging env is not a proper distinct Rails env. We hack around this.
     require File.join(Rails.root, 'app/services/environment_helper')
