@@ -6,6 +6,8 @@
       <%= link_to("Tous", @params.merge(status: :all), class: "btn btn-#{@status == :all ? :primary : :default}") %>
       <%= link_to("Engagés", @params.merge(status: :engaged), class: "btn btn-#{@status == :engaged ? :primary : :default}") %>
       <%= link_to("Non engagés", @params.merge(status: :not_engaged), class: "btn btn-#{@status == :not_engaged ? :primary : :default}") %>
+    </div>
+    <div class="btn-group btn-group-sm" style="margin-left: 10px">
       <%= link_to("Bloqués", @params.merge(status: :blocked), class: "btn btn-#{@status == :blocked ? :primary : :default}") %>
       <%= link_to("Supprimés", @params.merge(status: :deleted), class: "btn btn-#{@status == :deleted ? :primary : :default}") %>
       <%= link_to("Admins", @params.merge(status: :admin), class: "btn btn-#{@status == :admin ? :primary : :default}") %>
@@ -36,7 +38,7 @@
     <th>Association</th>
     <th>Date de création</th>
     <th>Date de dernière connexion</th>
-    <th>Nombre d'entourages</th>
+    <th>Statut</th>
     <th></th>
 
     <% @users.each do |user| %>
@@ -58,8 +60,17 @@
             <span class="text-muted">&mdash;</span>
           <% end %>
         </td>
-        <td><%= user.groups.count %></td>
-        <td><%= link_to "Modifier", edit_admin_user_path(user), class: "btn btn-danger" %></td>
+        <td>
+          <% if user.anonymized? %>
+            <a class="btn-xs btn-info small">Anonymisé</a>
+          <% elsif user.deleted? %>
+            <a class="btn-xs btn-danger small">Supprimé</a>
+          <% elsif user.blocked? %>
+            <a class="btn-xs btn-warning small">Bloqué</a>
+          <% else %>
+          <% end %>
+        </td>
+        <td><%= link_to "Modifier", edit_admin_user_path(user), class: "btn btn-primary" %></td>
       </tr>
     <% end %>
   </table>
