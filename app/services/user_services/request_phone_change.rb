@@ -50,10 +50,10 @@ module UserServices
       )
     end
 
-    def self.record_phone_change! user:, requester:
+    def self.record_phone_change! user:, admin:
       UserPhoneChange.create(
         user_id: user.id,
-        requester_id: requester.id,
+        admin_id: admin.id,
         kind: :change,
         phone_was: user.phone_was,
         phone: user.phone,

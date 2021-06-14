@@ -40,7 +40,7 @@ describe Admin::UsersController do
       before { # user_phone_change history
         expect(UserPhoneChange).to receive(:create).with({
           user_id: user.id,
-          requester_id: admin.id,
+          admin_id: admin.id,
           kind: :change,
           phone_was: '+33600112233',
           phone: '+33611223344',

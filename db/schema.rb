@@ -728,15 +728,15 @@ ActiveRecord::Schema.define(version: 20210611154000) do
 
   create_table "user_phone_changes", id: :serial, force: :cascade do |t|
     t.integer "user_id", null: false
-    t.integer "requester_id"
+    t.integer "admin_id"
     t.string "kind", null: false
     t.string "phone_was", null: false
     t.string "phone", null: false
     t.string "email"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["admin_id"], name: "index_user_phone_changes_on_admin_id"
     t.index ["kind"], name: "index_user_phone_changes_on_kind"
-    t.index ["requester_id"], name: "index_user_phone_changes_on_requester_id"
     t.index ["user_id"], name: "index_user_phone_changes_on_user_id"
   end
 
