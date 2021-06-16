@@ -102,9 +102,6 @@ GEM
     crack (0.4.5)
       rexml
     crass (1.0.6)
-    ddtrace (0.49.0)
-      ffi (~> 1.0)
-      msgpack
     diff-lcs (1.4.4)
     domain_name (0.5.20190701)
       unf (>= 0.0.5, < 1.0.0)
@@ -209,7 +206,6 @@ GEM
     mixpanel-ruby (2.2.2)
     momentjs-rails (2.20.1)
       railties (>= 3.1)
-    msgpack (1.4.2)
     multi_json (1.15.0)
     multi_xml (0.6.0)
     multipart-post (2.1.1)
@@ -440,7 +436,6 @@ DEPENDENCIES
   barnes
   bcrypt (~> 3)
   bullet
-  ddtrace
   dotenv-rails
   factory_bot_rails (~> 4)
   faker
