@@ -12,11 +12,10 @@
 <% status_order = %w(pending rejected cancelled) %>
 
 <%
-  unread = requests.find_all { |r| @moderator_read && r.created_at >= @moderator_read.read_at }
-  @unread_content = true if unread.any?
+  unread = @requests.find_all { |r| @moderator_read && r.created_at >= @moderator_read.read_at }
 %>
 
-<h3 id="join_requests">Demandes <span class="badge"><%= requests.count(&:is_pending?) %><span></h3>
+<h3 id="join_requests">Demandes <span class="badge"><%= @requests.count(&:is_pending?) %><span></h3>
 
 <% if unread.count > 0 %>
   <div class="conversation-unread-status">
@@ -25,7 +24,7 @@
   </div>
 <% end %>
 
-<% if requests.empty? %>
+<% if @requests.empty? %>
   Il n'y a pas encore de demande.
 <% else %>
   <table id="members-list" class="table table-striped">
@@ -42,7 +41,7 @@
     </thead>
 
     <tbody>
-      <% requests.sort_by { |r| [status_order.index(r.status), r.created_at] }.each do |request| %>
+      <% @requests.sort_by { |r| [status_order.index(r.status), r.created_at] }.each do |request| %>
         <% member = request.user %>
         <tr>
           <td>

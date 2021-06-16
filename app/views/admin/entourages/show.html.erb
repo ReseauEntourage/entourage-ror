@@ -23,84 +23,84 @@
   <% end %>
 
   <div class="panel panel-default">
-    <div class="panel-heading">
-      <div class="row">
-        <div class='col-sm-8'>
-          <h3 class="panel-title">
-            <%= entourage_category_image @entourage, style: "position: relative; top: -2px;" %>
-            <%= @highlighted[:title] %>
-          </h3>
-          <div>
-            <%= entourage_type_name @entourage %> par
-            <span style="font-weight: bold">
-              <%= user_avatar_image @entourage.user, size: '24x24', style: "border-radius: 50%; display: inline-block; background-image: url('#{asset_path "user/default_avatar.png"}'); background-size: contain; background-color: #fff;", alt: '' %>
-              <%= link_to UserPresenter.new(user: @entourage.user).display_name, admin_user_path(@entourage.user), style: "color: inherit" %>
-            </span>
-            —
-            Créée il y a <%= time_ago_in_words @entourage.created_at %>
+    <div class="panel-body">
+      <ul class="nav nav-tabs">
+        <li role="presentation" class="<%= :active if params[:action] == 'show' %>">
+          <%= link_to "Informations générales", admin_entourage_path(@entourage) %>
+        </li>
+        <li role="presentation" class="<%= :active if params[:action] == 'show_members' %>">
+          <%= link_to "Membres", show_members_admin_entourage_path(@entourage) %>
+        </li>
+        <li role="presentation" class="<%= :active if params[:action] == 'show_joins' %>">
+          <%= link_to "Demandes", show_joins_admin_entourage_path(@entourage) %>
+        </li>
+        <li role="presentation" class="<%= :active if params[:action] == 'show_invitations' %>">
+          <%= link_to "Invitations", show_invitations_admin_entourage_path(@entourage) %>
+        </li>
+        <li role="presentation" class="<%= :active if params[:action] == 'show_messages' %>">
+          <%= link_to "Messages", show_messages_admin_entourage_path(@entourage) %>
+        </li>
+      </ul>
+
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <div class="row">
+            <div class='col-sm-8'>
+              <h3 class="panel-title">
+                <%= entourage_category_image @entourage, style: "position: relative; top: -2px;" %>
+                <%= @highlighted[:title] %>
+              </h3>
+              <div>
+                <%= entourage_type_name @entourage %> par
+                <span style="font-weight: bold">
+                  <%= user_avatar_image @entourage.user, size: '24x24', style: "border-radius: 50%; display: inline-block; background-image: url('#{asset_path "user/default_avatar.png"}'); background-size: contain; background-color: #fff;", alt: '' %>
+                  <%= link_to UserPresenter.new(user: @entourage.user).display_name, admin_user_path(@entourage.user), style: "color: inherit" %>
+                </span>
+                —
+                Créée il y a <%= time_ago_in_words @entourage.created_at %>
+              </div>
+            </div>
+            <div class='col-sm-4 '>
+              <div class='pull-right'>
+                <% if @moderator_read %>
+                  <div class="dropdown" style="display: inline-block">
+                    <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                      <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu1">
+                      <li>
+                        <%= link_to "Marquer comme non lu",
+                          moderator_unread_admin_entourage_path(@entourage),
+                          method: :post %>
+                      </li>
+                    </ul>
+                  </div>
+                <% end %>
+                <%- if !@entourage.members.include?(current_user) &&
+                       current_user.roles.include?(:moderator) %>
+                  <%= link_to "Rejoindre", admin_join_requests_path(joinable_id: @entourage), class: "btn btn-info", method: :post %>
+                <% end %>
+                <div class="btn-group btn-group-sm pull-right">
+                  <%= link_to("Prioritaire", admin_pin_admin_entourage_path(@entourage), method: :post, class: "btn btn-#{@entourage.admin_pin? ? :primary : :default}") %>
+                  <%= link_to("Non prioritaire", admin_unpin_admin_entourage_path(@entourage), method: :post, class: "btn btn-#{@entourage.admin_pin? ? :default : :primary}") %>
+                </div>
+                <br>
+                <br>
+                <% if @entourage.group_type == 'outing' %>
+                  <%= link_to "Renouveler l'événement", renew_admin_entourage_path(@entourage), class: "btn btn-primary" %>
+                <% end %>
+                <%= link_to "Modifier", edit_admin_entourage_path(@entourage), class: "btn btn-success" %>
+              </div>
+            </div>
           </div>
         </div>
-        <div class='col-sm-4 '>
-          <div class='pull-right'>
-            <% if @moderator_read %>
-              <div class="dropdown" style="display: inline-block">
-                <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                  <span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu1">
-                  <li>
-                    <%= link_to "Marquer comme non lu",
-                      moderator_unread_admin_entourage_path(@entourage),
-                      method: :post %>
-                  </li>
-                </ul>
-              </div>
-            <% end %>
-            <%- if !@entourage.members.include?(current_user) &&
-                   @messages_author.roles.include?(:moderator) %>
-              <%= link_to "Rejoindre", admin_join_requests_path(joinable_id: @entourage), class: "btn btn-info", method: :post %>
-            <% end %>
-            <div class="btn-group btn-group-sm pull-right">
-              <%= link_to("Prioritaire", admin_pin_admin_entourage_path(@entourage), method: :post, class: "btn btn-#{@entourage.admin_pin? ? :primary : :default}") %>
-              <%= link_to("Non prioritaire", admin_unpin_admin_entourage_path(@entourage), method: :post, class: "btn btn-#{@entourage.admin_pin? ? :default : :primary}") %>
-            </div>
-            <br>
-            <br>
-            <% if @entourage.group_type == 'outing' %>
-              <%= link_to "Renouveler l'événement", renew_admin_entourage_path(@entourage), class: "btn btn-primary" %>
-            <% end %>
-            <%= link_to "Modifier", edit_admin_entourage_path(@entourage), class: "btn btn-success" %>
-          </div>
+
+        <div class="panel-body">
+          <%= render partial: "admin/entourages/show/details", entourage: @entourage %>
         </div>
       </div>
 
-
+      <%= render "admin/entourages/show/#{params[:action]}" %>
     </div>
-
-    <div class="panel-body">
-      <%= render partial: "admin/entourages/show/details", entourage: @entourage %>
-    </div>
-  </div>
-
-    <%= render "admin/entourages/show/moderation", entourage: @entourage %>
-
-  <div class="panel panel-default">
-    <div class="panel-body">
-      <%= render "admin/entourages/show/members_list", requests: @join_requests.find_all(&:is_accepted?) %>
-      <%= render "admin/entourages/show/join_requests_list",
-                 requests: @join_requests.reject { |r| r.is_accepted? || (r.entourage_invitation_id && r.entourage_invitation_status != 'accepted') } %>
-      <%= render "admin/entourages/show/invitations_list", invitations: @invitations %>
-      <%= render partial: "admin/entourages/show/chat_messages_list", chat_messages: @chat_messages %>
-
-      <% if @unread_content %>
-        <div class="text-center">
-          <%= link_to "Marquer comme lu",
-                      moderator_read_admin_entourage_path(@entourage),
-                      method: :post,
-                      class: "btn btn-default" %>
-        </div>
-      <% end %>
-    </div>
-    <!-- <div class="panel-footer"></div> -->
   </div>
 </div>
