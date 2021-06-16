@@ -71,6 +71,10 @@ Rails.application.routes.draw do
           post :moderator_read
           post :moderator_unread
           post :message
+          get :show_members
+          get :show_joins
+          get :show_invitations
+          get :show_messages
           get :sensitive_words
           post :sensitive_words_check
           get :edit_type

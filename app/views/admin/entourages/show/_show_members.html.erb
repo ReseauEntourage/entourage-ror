@@ -1,9 +1,8 @@
 <%
-  unread = requests.find_all { |r| @moderator_read && r.created_at >= @moderator_read.read_at }
-  @unread_content = true if unread.any?
+  unread = @requests.find_all { |r| @moderator_read && r.created_at >= @moderator_read.read_at }
 %>
 
-<h3>Membres <span class="badge"><%= requests.count %><span></h3>
+<h3>Membres <span class="badge"><%= @requests.count %><span></h3>
 
 <% if unread.count > 0 %>
   <div class="conversation-unread-status">
@@ -25,7 +24,7 @@
   </thead>
 
   <tbody>
-    <% requests.sort_by(&:created_at).each do |request| %>
+    <% @requests.sort_by(&:created_at).each do |request| %>
       <% member = request.user %>
       <tr>
         <td>
