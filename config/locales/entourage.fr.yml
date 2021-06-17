@@ -17,6 +17,7 @@ fr:
         admin_password_confirmation: Confirmation de mot de passe
         created_at: Date de création
         address: Adresse
+        cnil_explanation: Raisons de cette action
       organization:
         name: Nom
         description: Description
