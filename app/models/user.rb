@@ -50,6 +50,8 @@ class User < ApplicationRecord
   has_many :partner_join_requests
 
   attr_reader :admin_password
+  attr_reader :cnil_explanation
+
   validates_length_of :admin_password, within: 8..256, allow_nil: true
   validates :admin_password, confirmation: true, presence: false, if: Proc.new { |u| u.admin_password.present? }
 
@@ -273,14 +275,33 @@ class User < ApplicationRecord
     validation_status=="anonymized"
   end
 
-  def block!
+  def block! updater, cnil_explanation
+    UserHistory.create({
+      user_id: self.id,
+      updater_id: updater.id,
+      kind: 'block',
+      metadata: {
+        cnil_explanation: cnil_explanation
+      }
+    })
     update(validation_status: "blocked")
+  end
+
+  def unblock! updater, cnil_explanation
+    UserHistory.create({
+      user_id: self.id,
+      updater_id: updater.id,
+      kind: 'unblock',
+      metadata: {
+        cnil_explanation: cnil_explanation
+      }
+    })
+    update(validation_status: "validated")
   end
 
   def validate!
     update(validation_status: "validated")
   end
-  alias_method :unblock!, :validate!
 
   def anonymize!
     update_attributes(

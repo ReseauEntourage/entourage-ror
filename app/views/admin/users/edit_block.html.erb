@@ -1,0 +1,63 @@
+<div class="col-md-10 col-md-offset-1">
+  <div class="row">
+    <div class="h1">
+      <span>
+        <% if [@user.first_name, @user.last_name].any?(&:present?) %>
+          <%= @user.first_name %> <%= @user.last_name %>
+        <% else %>
+          Utilisateur #<%= @user.id %>
+        <% end %>
+      </span>
+    </div>
+
+    <% if @user.blocked? %>
+      <div class="panel panel-danger">
+        <div class="panel-heading">
+          Cet utilisateur est bloqué
+        </div>
+        <div class="panel-body">
+          Les utilisateurs bloqués ne peuvent pas se connecter ou utiliser l'application et leur photo de profil est masquée. <br>
+          Vous pouvez débloquer cet utilisateur ci-après en fournissant les raisons de cette action.
+        </div>
+      </div>
+    <% else %>
+      <div class="panel panel-info">
+        <div class="panel-heading">
+          Cet utilisateur n'est pas bloqué
+        </div>
+        <div class="panel-body">
+          Vous pouvez choisir de bloquer cet utilisateur ci-après en fournissant les raisons de cette action.
+        </div>
+      </div>
+      <div class="panel panel-info">
+        <div class="panel-heading">
+          Recommandations de la CNIL
+        </div>
+        <div class="panel-body">
+          [Entrer ici un texte explicatif] <br>
+          Exemple : <a href="https://www.cnil.fr/fr/securite-informatique-sensibiliser-les-utilisateurs">Sensibiliser les utilisateurs</a>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="row">
+    <% action = @user.blocked? ? "Débloquer" : "Bloquer" %>
+    <% path = @user.blocked? ? unblock_admin_user_path(@user.id) : block_admin_user_path(@user.id) %>
+
+    <%= form_for([:admin, @user], url: path, method: :put, html: { class: "form-horizontal", role: "form" }) do |f| %>
+      <%= render partial: "layouts/errors", locals: {obj: @user} %>
+
+      <div class="control-group">
+        <%= f.label :cnil_explanation, class: "control-label" %>
+        <div class="controls">
+          <%= f.text_area :cnil_explanation, class: "form-control", maxlength: 200 %>
+        </div>
+      </div>
+
+      <br>
+      <%= f.submit action, class: "btn btn-danger" %>
+      <%= link_to "Annuler", edit_admin_user_path(@user), class: "btn btn-default" %>
+    <% end %>
+  </div>
+</div>
