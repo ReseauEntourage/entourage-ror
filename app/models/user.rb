@@ -48,6 +48,7 @@ class User < ApplicationRecord
   belongs_to :address, optional: true
   has_many :addresses, -> { order(:position) }, dependent: :destroy
   has_many :partner_join_requests
+  has_many :histories, class_name: 'UserHistory'
 
   attr_reader :admin_password
   attr_reader :cnil_explanation
