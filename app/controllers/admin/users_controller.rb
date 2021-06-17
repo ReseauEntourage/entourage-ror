@@ -148,7 +148,7 @@ module Admin
       end
 
       @user.block! current_user, block_params[:cnil_explanation]
-      redirect_to [:admin, @user], flash: { success: "Utilisateur bloqué" }
+      redirect_to edit_admin_user_path(user), flash: { success: "Utilisateur bloqué" }
     end
 
     def unblock
@@ -157,7 +157,7 @@ module Admin
       end
 
       @user.unblock! current_user, block_params[:cnil_explanation]
-      redirect_to [:admin, @user], flash: { success: "Utilisateur débloqué" }
+      redirect_to edit_admin_user_path(user), flash: { success: "Utilisateur débloqué" }
     end
 
     def banish
