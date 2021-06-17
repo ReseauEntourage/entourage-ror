@@ -156,7 +156,6 @@ module Admin
         redirect_to edit_block_admin_user_path(@user), flash: { error: "Merci de renseigner les raisons de cette action" } and return
       end
 
-      @user.errors.add(:cnil_explanation, "gotoo") and redirect_to edit_block_admin_user_path(@user) and return
       @user.unblock! current_user, block_params[:cnil_explanation]
       redirect_to [:admin, @user], flash: { success: "Utilisateur débloqué" }
     end
