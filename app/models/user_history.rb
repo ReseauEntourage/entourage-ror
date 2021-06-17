@@ -4,6 +4,8 @@ class UserHistory < ApplicationRecord
 
   attribute :metadata, :jsonb_with_schema
 
+  scope :blocked, -> { where(kind: 'block').order('user_histories.created_at desc') }
+
   def metadata= value
     value = add_metadata_schema_urn(value)
     super(value)

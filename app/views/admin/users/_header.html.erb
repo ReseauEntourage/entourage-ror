@@ -20,8 +20,11 @@
       Cet utilisateur est bloqué
     </div>
     <div class="panel-body">
-      Les utilisateurs bloqués ne peuvent pas se connecter ou utiliser l'application,<br>
-      et leur photo de profil est masquée.
+      Les utilisateurs bloqués ne peuvent pas se connecter ou utiliser l'application, et leur photo de profil est masquée. <br>
+      <% if history = @user.histories.blocked.first %>
+        Il a été bloqué pour la raison suivante :<br>
+        <b><%= history.metadata[:cnil_explanation] %></b>
+      <% end %>
     </div>
   </div>
 <% end %>
