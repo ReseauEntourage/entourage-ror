@@ -171,6 +171,9 @@
     <div class="controls">
       <%= f.text_field :phone, class: "form-control", required: true %>
     </div>
+    <% if @user.pending_phone_change_request.present? %>
+      <i class="text-muted">L'utilisateur a demandé un nouveau numéro téléphone &mdash; <%= link_to "Annuler la demande", cancel_phone_change_request_admin_user_path(@user), method: :put, data: { confirm: "Confirmer la demande d'annulation du changement de téléphone" } %></i>
+    <% end %>
   </div>
   <br>
 

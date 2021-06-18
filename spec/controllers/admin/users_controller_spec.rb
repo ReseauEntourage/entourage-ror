@@ -70,6 +70,24 @@ describe Admin::UsersController do
     end
   end
 
+  describe "PUT cancel_phone_change_request" do
+    let!(:admin) { admin_basic_login }
+    let!(:user) { FactoryBot.create(:pro_user) }
+
+    context "no phone_change request" do
+      subject { put :cancel_phone_change_request, params: { id: user.id }}
+      it { expect(lambda { subject }).to change { UserPhoneChange.count }.by(0) }
+    end
+
+    context "with phone_change request" do
+      let!(:change_request) { FactoryBot.create(:user_phone_change_request, user_id: user.id, admin_id: admin.id) }
+
+      subject { put :cancel_phone_change_request, params: { id: user.id }}
+      it { expect(lambda { subject }).to change { UserPhoneChange.count }.by(1) }
+      it { expect(subject && UserPhoneChange.last.kind).to eq('cancel') }
+    end
+  end
+
   describe 'PUT banish' do
     context "not signed in" do
       before { put :banish, params: { id: validated_user_with_avatar.to_param } }

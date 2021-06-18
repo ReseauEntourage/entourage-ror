@@ -1,6 +1,6 @@
 module Admin
   class UsersController < Admin::BaseController
-    before_action :set_user, only: [:show, :messages, :engagement, :edit, :update, :block, :unblock, :download_export, :send_export, :anonymize, :banish, :validate, :experimental_pending_request_reminder]
+    before_action :set_user, only: [:show, :messages, :engagement, :edit, :update, :block, :unblock, :cancel_phone_change_request, :download_export, :send_export, :anonymize, :banish, :validate, :experimental_pending_request_reminder]
 
     def index
       @params = params.permit([:status]).to_h
@@ -148,6 +148,15 @@ module Admin
     def unblock
       @user.unblock!
       redirect_to [:admin, @user], flash: { success: "Utilisateur débloqué" }
+    end
+
+    def cancel_phone_change_request
+      if @user.pending_phone_change_request.present?
+        UserServices::RequestPhoneChange.cancel_phone_change!(user: @user, admin: current_user)
+        redirect_to [:admin, @user], flash: { success: "Demande de changement de téléphone annulée" }
+      else
+        redirect_to [:admin, @user], flash: { error: "L'utilisateur n'a pas de demande de changement de téléphone en cours" }
+      end
     end
 
     def banish
