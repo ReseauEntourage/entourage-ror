@@ -48,6 +48,7 @@ class User < ApplicationRecord
   belongs_to :address, optional: true
   has_many :addresses, -> { order(:position) }, dependent: :destroy
   has_many :partner_join_requests
+  has_many :user_phone_changes
 
   attr_reader :admin_password
   validates_length_of :admin_password, within: 8..256, allow_nil: true
@@ -126,6 +127,12 @@ class User < ApplicationRecord
     else
       joins(:addresses).where("addresses.country = 'FR' AND left(addresses.postal_code, 2) = ?", ModerationArea.departement(area))
     end
+  }
+
+  scope :join_last_user_phone_request, -> {
+    joins(:user_phone_changes).joins(
+      'left outer join user_phone_changes last on last.user_id = users.id and user_phone_changes.id < last.id'
+    ).where("last.id is null and user_phone_changes.kind = 'request'")
   }
 
   before_validation do
