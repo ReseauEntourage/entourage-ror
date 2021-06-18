@@ -1,6 +1,6 @@
 module Admin
   class EntouragesController < Admin::BaseController
-    before_action :set_entourage, only: [:show, :edit, :update, :renew, :moderator_read, :moderator_unread, :message, :sensitive_words, :sensitive_words_check, :edit_type, :admin_pin, :admin_unpin, :pin, :unpin]
+    before_action :set_entourage, only: [:show, :edit, :update, :renew, :moderator_read, :moderator_unread, :message, :show_members, :show_joins, :show_invitations, :show_messages, :sensitive_words, :sensitive_words_check, :edit_type, :admin_pin, :admin_unpin, :pin, :unpin]
     before_action :ensure_moderator!, only: [:message]
 
     def index
@@ -133,31 +133,54 @@ module Admin
     end
 
     def show
-      @join_requests =
-        @entourage
-        .join_requests
+      @moderator_read = @entourage.moderator_read_for(user: current_user)
+
+      render layout: 'admin_large'
+    end
+
+    def show_members
+      @moderator_read = @entourage.moderator_read_for(user: current_user)
+      @requests = @entourage.join_requests
         .with_entourage_invitations
         .includes(:user)
-        .to_a
-      @invitations =
-        @entourage
-        .entourage_invitations
+        .to_a.find_all(&:is_accepted?)
+
+      render :show
+    end
+
+    def show_joins
+      @moderator_read = @entourage.moderator_read_for(user: current_user)
+      @requests = @entourage.join_requests
+        .with_entourage_invitations
+        .includes(:user)
+        .to_a.reject { |r|
+          r.is_accepted? || (r.entourage_invitation_id && r.entourage_invitation_status != 'accepted')
+        }
+
+      render :show
+    end
+
+    def show_invitations
+      @moderator_read = @entourage.moderator_read_for(user: current_user)
+      @invitations = @entourage.entourage_invitations
         .where.not(status: :accepted)
         .includes(:invitee)
         .to_a
-      @chat_messages  =
-        @entourage
-          .conversation_messages.ordered.includes(:user)
+
+      render :show
+    end
+
+    def show_messages
+      @moderator_read  = @entourage.moderator_read_for(user: current_user)
+
+      @chat_messages = @entourage.conversation_messages.ordered
+          .includes(:user)
           .with_content
           .page(params[:page])
           .per(params[:per])
 
-      @moderator_read  = @entourage.moderator_read_for(user: current_user)
-
-      @messages_author = current_user
-
       reads = @entourage.join_requests.accepted
-        .reject { |r| r.last_message_read.nil? || r.user_id == @messages_author.id }
+        .reject { |r| r.last_message_read.nil? || r.user_id == current_user.id }
         .reject { |r| r.last_message_read < @chat_messages.first.created_at if @chat_messages.any? }
         .sort_by(&:last_message_read)
 
@@ -171,9 +194,7 @@ module Admin
         end
       end
 
-      @unread_content = @moderator_read.nil?
-
-      render layout: 'admin_large'
+      render :show
     end
 
     def moderator_read
