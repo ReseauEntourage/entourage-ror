@@ -29,6 +29,16 @@
 </div>
 <br><br>
 
+<% if @status == :pending %>
+  <div class="panel panel-info">
+    <div class="panel-heading">
+      En attente
+    </div>
+    <div class="panel-body">
+      Les utilisateurs affichés ici ont fait une demande de changement de téléphone qui est en attente de modération.
+    </div>
+  </div>
+<% end %>
 
 <div class="row">
   <table class="table">
