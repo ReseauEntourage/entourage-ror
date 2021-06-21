@@ -166,7 +166,9 @@ resource Api::V1::EntouragesController do
         parameter :street_address, "Street address"
         parameter :google_place_id, "Google place ID"
         parameter :landscape_url, "Path to a 1125 x 375px image url", required: false
+        parameter :landscape_thumbnail_url, "Path to a thumbnail of 1125 x 375px image url", required: false
         parameter :portrait_url, "Path to a 300 x 492px image url", required: false
+        parameter :portrait_thumbnail_url, "Path to a thumbnail of 300 x 492px image url", required: false
       end
     end
 
@@ -188,7 +190,9 @@ resource Api::V1::EntouragesController do
           street_address: outing.metadata[:street_address],
           google_place_id: outing.metadata[:google_place_id],
           landscape_url: outing.metadata[:landscape_url],
+          landscape_thumbnail_url: outing.metadata[:landscape_thumbnail_url],
           portrait_url: outing.metadata[:portrait_url],
+          portrait_thumbnail_url: outing.metadata[:portrait_thumbnail_url],
         }
       }
     }.to_json }
@@ -257,7 +261,9 @@ resource Api::V1::EntouragesController do
         parameter :street_address, "Street address", required: false
         parameter :google_place_id, "Google place ID", required: false
         parameter :landscape_url, "Path to a 1125 x 375px image url", required: false
+        parameter :landscape_thumbnail_url, "Path to a thumbnail of 1125 x 375px image url", required: false
         parameter :portrait_url, "Path to a 300 x 492px image url", required: false
+        parameter :portrait_thumbnail_url, "Path to a thumbnail of 300 x 492px image url", required: false
       end
     end
 
@@ -270,7 +276,9 @@ resource Api::V1::EntouragesController do
       entourage: {
         metadata: {
           landscape_url: "path/to/landscape_url",
+          landscape_thumbnail_url: "path/to/landscape_thumbnail_url",
           portrait_url: "path/to/portrait_url",
+          portrait_thumbnail_url: "path/to/portrait_thumbnail_url",
         }
       }
     }.to_json }

@@ -48,8 +48,8 @@ class User < ApplicationRecord
   belongs_to :address, optional: true
   has_many :addresses, -> { order(:position) }, dependent: :destroy
   has_many :partner_join_requests
-  has_many :histories, class_name: 'UserHistory'
   has_many :user_phone_changes, -> { order(:id) }, dependent: :destroy
+  has_many :histories, class_name: 'UserHistory'
 
   attr_reader :admin_password
   attr_reader :cnil_explanation
@@ -277,6 +277,15 @@ class User < ApplicationRecord
     validation_status=="anonymized"
   end
 
+  def pending_phone_change_request
+    return @pending_phone_change_request if @pending_phone_change_request.present?
+
+    @pending_phone_change_request = user_phone_changes.last
+    return nil unless @pending_phone_change_request && @pending_phone_change_request.kind == 'request'
+
+    @pending_phone_change_request
+  end
+
   def block! updater, cnil_explanation
     UserHistory.create({
       user_id: self.id,
@@ -287,15 +296,6 @@ class User < ApplicationRecord
       }
     })
     update(validation_status: "blocked")
-  end
-
-  def pending_phone_change_request
-    return @pending_phone_change_request if @pending_phone_change_request.present?
-
-    @pending_phone_change_request = user_phone_changes.last
-    return nil unless @pending_phone_change_request && @pending_phone_change_request.kind == 'request'
-
-    @pending_phone_change_request
   end
 
   def unblock! updater, cnil_explanation

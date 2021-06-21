@@ -150,6 +150,11 @@ module Admin
 
     def show_joins
       @moderator_read = @entourage.moderator_read_for(user: current_user)
+
+      @join_requests = @entourage.join_requests
+        .with_entourage_invitations
+        .includes(:user)
+        .to_a
       @requests = @entourage.join_requests
         .with_entourage_invitations
         .includes(:user)
@@ -172,6 +177,11 @@ module Admin
 
     def show_messages
       @moderator_read  = @entourage.moderator_read_for(user: current_user)
+
+      @join_requests = @entourage.join_requests
+        .with_entourage_invitations
+        .includes(:user)
+        .to_a
 
       @chat_messages = @entourage.conversation_messages.ordered
           .includes(:user)
