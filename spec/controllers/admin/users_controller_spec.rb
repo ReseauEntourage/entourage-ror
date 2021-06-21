@@ -109,6 +109,48 @@ describe Admin::UsersController do
     end
   end
 
+  describe 'PUT block' do
+    let!(:admin) { admin_basic_login }
+    let!(:user) { FactoryBot.create(:pro_user, validation_status: "validated") }
+
+    context "no cnil_explanation" do
+      before { put :block, params: { id: user.id, user: { cnil_explanation: nil } } }
+
+      it { should redirect_to edit_block_admin_user_path(user) }
+      it { expect(user.reload.validation_status).to eq("validated") }
+      it { expect(user.reload.histories.count).to eq(0) }
+    end
+
+    context "with cnil_explanation" do
+      before { put :block, params: { id: user.id, user: { cnil_explanation: 'reason' } } }
+
+      it { should redirect_to edit_admin_user_path(user) }
+      it { expect(user.reload.validation_status).to eq("blocked") }
+      it { expect(user.reload.histories.count).to eq(1) }
+    end
+  end
+
+  describe 'PUT unblock' do
+    let!(:admin) { admin_basic_login }
+    let!(:user) { FactoryBot.create(:pro_user, validation_status: "blocked") }
+
+    context "no cnil_explanation" do
+      before { put :unblock, params: { id: user.id, user: { cnil_explanation: nil } } }
+
+      it { should redirect_to edit_block_admin_user_path(user) }
+      it { expect(user.reload.validation_status).to eq("blocked") }
+      it { expect(user.reload.histories.count).to eq(0) }
+    end
+
+    context "with cnil_explanation" do
+      before { put :unblock, params: { id: user.id, user: { cnil_explanation: 'reason' } } }
+
+      it { should redirect_to edit_admin_user_path(user) }
+      it { expect(user.reload.validation_status).to eq("validated") }
+      it { expect(user.reload.histories.count).to eq(1) }
+    end
+  end
+
   describe 'PUT validate' do
     context "not signed in" do
       before { put :validate, params: { id: blocked_user.to_param } }

@@ -17,6 +17,7 @@ Rails.application.routes.draw do
         end
 
         member do
+          get 'edit_block'
           put 'block'
           put 'unblock'
           put 'banish'

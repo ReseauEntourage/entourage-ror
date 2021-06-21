@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20210611154000) do
+ActiveRecord::Schema.define(version: 20210616170000) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -712,6 +712,18 @@ ActiveRecord::Schema.define(version: 20210611154000) do
     t.index ["last_join_request_id"], name: "index_user_denorms_on_last_join_request_id"
     t.index ["last_private_chat_message_id"], name: "index_user_denorms_on_last_private_chat_message_id"
     t.index ["user_id"], name: "index_user_denorms_on_user_id"
+  end
+
+  create_table "user_histories", id: :serial, force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "updater_id"
+    t.string "kind", null: false
+    t.jsonb "metadata", default: {}
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["kind"], name: "index_user_histories_on_kind"
+    t.index ["updater_id"], name: "index_user_histories_on_updater_id"
+    t.index ["user_id"], name: "index_user_histories_on_user_id"
   end
 
   create_table "user_moderations", id: :serial, force: :cascade do |t|

@@ -11,15 +11,7 @@
       uuid = ConversationService.list_for_participants([current_admin.id, @user.id])
     %>
     <%= link_to "Contacter", admin_conversation_path(uuid), class: "btn btn-primary" %>
-    <% if @user.blocked? %>
-      <%= link_to "Débloquer", unblock_admin_user_path(@user), method: :put, class: "btn btn-success", data: {
-        confirm: "Débloquer #{@user.first_name} #{@user.last_name} (#{@user.email}) ?"
-      } %>
-    <% else %>
-      <%= link_to "Bloquer", block_admin_user_path(@user), method: :put, class: "btn btn-danger", data: {
-        confirm: "Bloquer #{@user.first_name} #{@user.last_name} (#{@user.email}) ?"
-      } %>
-    <% end %>
+    <%= link_to (@user.blocked? ? "Débloquer" : "Bloquer"), edit_block_admin_user_path(@user), class: "btn btn-success" %>
   </div>
 </div>
 <% if @user.blocked? %>
@@ -28,8 +20,11 @@
       Cet utilisateur est bloqué
     </div>
     <div class="panel-body">
-      Les utilisateurs bloqués ne peuvent pas se connecter ou utiliser l'application,<br>
-      et leur photo de profil est masquée.
+      Les utilisateurs bloqués ne peuvent pas se connecter ou utiliser l'application, et leur photo de profil est masquée. <br>
+      <% if history = @user.histories.blocked.first %>
+        Il a été bloqué pour la raison suivante :<br>
+        <b><%= history.metadata[:cnil_explanation] %></b>
+      <% end %>
     </div>
   </div>
 <% end %>

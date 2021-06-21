@@ -1,6 +1,6 @@
 module Admin
   class UsersController < Admin::BaseController
-    before_action :set_user, only: [:show, :messages, :engagement, :edit, :update, :block, :unblock, :cancel_phone_change_request, :download_export, :send_export, :anonymize, :banish, :validate, :experimental_pending_request_reminder]
+    before_action :set_user, only: [:show, :messages, :engagement, :edit, :update, :edit_block, :block, :unblock, :cancel_phone_change_request, :download_export, :send_export, :anonymize, :banish, :validate, :experimental_pending_request_reminder]
 
     def index
       @params = params.permit([:status]).to_h
@@ -140,14 +140,25 @@ module Admin
       @users = @users.where("avatar_key IS NOT NULL").order("updated_at DESC").page(params[:page]).per(25)
     end
 
+    def edit_block
+    end
+
     def block
-      @user.block!
-      redirect_to [:admin, @user], flash: { success: "Utilisateur bloqué" }
+      unless block_params[:cnil_explanation].present?
+        redirect_to edit_block_admin_user_path(@user), flash: { error: "Merci de renseigner les raisons de cette action" } and return
+      end
+
+      @user.block! current_user, block_params[:cnil_explanation]
+      redirect_to edit_admin_user_path(user), flash: { success: "Utilisateur bloqué" }
     end
 
     def unblock
-      @user.unblock!
-      redirect_to [:admin, @user], flash: { success: "Utilisateur débloqué" }
+      unless block_params[:cnil_explanation].present?
+        redirect_to edit_block_admin_user_path(@user), flash: { error: "Merci de renseigner les raisons de cette action" } and return
+      end
+
+      @user.unblock! current_user, block_params[:cnil_explanation]
+      redirect_to edit_admin_user_path(user), flash: { success: "Utilisateur débloqué" }
     end
 
     def cancel_phone_change_request
@@ -160,7 +171,7 @@ module Admin
     end
 
     def banish
-      @user.block!
+      @user.block! current_user, "banish"
       UserServices::Avatar.new(user: user).destroy
       redirect_to moderate_admin_users_path(validation_status: "blocked")
     end
@@ -221,6 +232,10 @@ module Admin
 
     def user_params
       params.require(:user).permit(:first_name, :last_name, :email, :sms_code, :phone, :organization_id, :use_suggestions, :about, :accepts_emails, :targeting_profile, :partner_id, :admin)
+    end
+
+    def block_params
+      params.require(:user).permit(:cnil_explanation)
     end
 
     def moderation_params
