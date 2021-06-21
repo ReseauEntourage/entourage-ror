@@ -207,4 +207,18 @@ describe User, :type => :model do
     it { expect(build_or_error :public_user, interests: [:event_riverain, 'entourer_riverain']).to be true }
     it { expect(build_or_error :public_user, interests: [:aide_sdf, :lol]).to eq(interests: ":lol n'est pas inclus dans la liste") }
   end
+
+  describe 'pending_phone_change_request' do
+    let(:user) { FactoryBot.create(:pro_user, phone: '+33600000000', token: 'mytoken') }
+    let(:admin) { FactoryBot.create(:admin_user, token: 'hertoken') }
+
+    context 'user with no phone_change' do
+      it { expect(user.pending_phone_change_request).to eq(nil) }
+    end
+
+    context 'user with a phone_change request' do
+      let!(:phone_request) { FactoryBot.create(:user_phone_change_request, user_id: user.id, admin_id: admin.id) }
+      it { expect(user.pending_phone_change_request.id).to eq(phone_request.id) }
+    end
+  end
 end

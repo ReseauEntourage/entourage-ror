@@ -60,5 +60,16 @@ module UserServices
         email: user.email
       )
     end
+
+    def self.cancel_phone_change! user:, admin:
+      UserPhoneChange.create(
+        user_id: user.id,
+        admin_id: admin.id,
+        kind: :cancel,
+        phone_was: user.phone,
+        phone: user.phone,
+        email: user.email
+      )
+    end
   end
 end

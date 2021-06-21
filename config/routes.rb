@@ -21,6 +21,7 @@ Rails.application.routes.draw do
           put 'unblock'
           put 'banish'
           put 'validate'
+          put 'cancel_phone_change_request'
           get 'download_export'
           get 'send_export'
           put 'anonymize'
