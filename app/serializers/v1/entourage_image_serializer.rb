@@ -12,7 +12,7 @@ module V1
     end
 
     def portrait_small_url
-      object.portrait_small_url || object.portrait_url
+      object.portrait_thumbnail_url || object.portrait_url
     end
   end
 end
