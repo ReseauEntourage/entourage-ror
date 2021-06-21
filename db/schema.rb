@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20210616170000) do
+ActiveRecord::Schema.define(version: 20210621111001) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -224,6 +224,8 @@ ActiveRecord::Schema.define(version: 20210616170000) do
     t.string "portrait_url"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "landscape_thumbnail_url"
+    t.string "portrait_thumbnail_url"
   end
 
   create_table "entourage_invitations", id: :serial, force: :cascade do |t|

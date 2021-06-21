@@ -17,6 +17,8 @@ class S3ImageUploader
     :id,
   ]
 
+  DEFAULT_PATH = "#{Rails.root}/tmp"
+
   def self.content_types
     CONTENT_TYPES.join(', ')
   end
@@ -118,5 +120,18 @@ class S3ImageUploader
     return nil unless url.starts_with?(base_url)
     key = url[base_url.length..-1]
     storage.object(key)
+  end
+
+  def self.ensure_directory_exist
+    Dir.mkdir(DEFAULT_PATH) unless Dir.exist?(DEFAULT_PATH)
+  end
+
+  def self.resized_image path, ratio
+    ensure_directory_exist
+
+    image = MiniMagick::Image.open(path)
+    image.resize ratio
+    image.write(image.path)
+    image.path
   end
 end
