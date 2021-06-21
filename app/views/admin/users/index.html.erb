@@ -11,6 +11,7 @@
       <%= link_to("Bloqués", @params.merge(status: :blocked), class: "btn btn-#{@status == :blocked ? :primary : :default}") %>
       <%= link_to("Supprimés", @params.merge(status: :deleted), class: "btn btn-#{@status == :deleted ? :primary : :default}") %>
       <%= link_to("Admins", @params.merge(status: :admin), class: "btn btn-#{@status == :admin ? :primary : :default}") %>
+      <%= link_to("En attente", @params.merge(status: :pending), class: "btn btn-#{@status == :pending ? :primary : :default}") %>
     </div>
 
     <div style="margin-left: auto">
@@ -30,6 +31,16 @@
 </div>
 <br><br>
 
+<% if @status == :pending %>
+  <div class="panel panel-info">
+    <div class="panel-heading">
+      En attente
+    </div>
+    <div class="panel-body">
+      Les utilisateurs affichés ici ont fait une demande de changement de téléphone qui est en attente de modération.
+    </div>
+  </div>
+<% end %>
 
 <div class="row">
   <table class="table">

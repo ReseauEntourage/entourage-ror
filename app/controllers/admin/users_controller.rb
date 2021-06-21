@@ -1,11 +1,11 @@
 module Admin
   class UsersController < Admin::BaseController
-    before_action :set_user, only: [:show, :messages, :engagement, :edit, :update, :edit_block, :block, :unblock, :download_export, :send_export, :anonymize, :banish, :validate, :experimental_pending_request_reminder]
+    before_action :set_user, only: [:show, :messages, :engagement, :edit, :update, :edit_block, :block, :unblock, :cancel_phone_change_request, :download_export, :send_export, :anonymize, :banish, :validate, :experimental_pending_request_reminder]
 
     def index
       @params = params.permit([:status]).to_h
       @status = params[:status].presence&.to_sym
-      @status = :all unless @status.in?([:engaged, :not_engaged, :blocked, :deleted, :admin])
+      @status = :all unless @status.in?([:engaged, :not_engaged, :blocked, :deleted, :admin, :pending])
 
       @users = current_user.community.users
 
@@ -14,6 +14,7 @@ module Admin
       @users = @users.blocked if @status && @status == :blocked
       @users = @users.deleted if @status && @status == :deleted
       @users = @users.where(admin: true) if @status && @status == :admin
+      @users = @users.where(id: UserPhoneChange.pending_user_ids) if @status && @status == :pending
 
       @users = @users.includes(:organization).order("last_name ASC").page(params[:page]).per(25)
     end
@@ -158,6 +159,15 @@ module Admin
 
       @user.unblock! current_user, block_params[:cnil_explanation]
       redirect_to edit_admin_user_path(user), flash: { success: "Utilisateur débloqué" }
+    end
+
+    def cancel_phone_change_request
+      if @user.pending_phone_change_request.present?
+        UserServices::RequestPhoneChange.cancel_phone_change!(user: @user, admin: current_user)
+        redirect_to [:admin, @user], flash: { success: "Demande de changement de téléphone annulée" }
+      else
+        redirect_to [:admin, @user], flash: { error: "L'utilisateur n'a pas de demande de changement de téléphone en cours" }
+      end
     end
 
     def banish
