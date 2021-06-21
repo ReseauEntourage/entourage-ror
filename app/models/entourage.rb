@@ -205,7 +205,9 @@ class Entourage < ApplicationRecord
           google_place_id: { type: :string },
           display_address: { type: :string },
           landscape_url: { type: [:string, :null] },
-          portrait_url: { type: [:string, :null] }
+          landscape_thumbnail_url: { type: [:string, :null] },
+          portrait_url: { type: [:string, :null] },
+          portrait_thumbnail_url: { type: [:string, :null] }
         }
       end
     end
@@ -324,6 +326,14 @@ class Entourage < ApplicationRecord
 
     if metadata[:portrait_url].nil?
       self.metadata[:portrait_url] = nil
+    end
+
+    if metadata[:landscape_thumbnail_url].nil?
+      self.metadata[:landscape_thumbnail_url] = nil
+    end
+
+    if metadata[:portrait_thumbnail_url].nil?
+      self.metadata[:portrait_thumbnail_url] = nil
     end
   end
 

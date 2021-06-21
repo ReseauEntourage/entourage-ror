@@ -204,6 +204,7 @@ GEM
     mime-types (3.3.1)
       mime-types-data (~> 3.2015)
     mime-types-data (3.2021.0225)
+    mini_magick (4.11.0)
     mini_mime (1.1.0)
     minitest (5.14.4)
     mixpanel-ruby (2.2.2)
@@ -458,6 +459,7 @@ DEPENDENCIES
   logstash-event
   mailchimp-api (~> 2)
   mailjet
+  mini_magick
   mixpanel-ruby
   momentjs-rails (~> 2)
   newrelic_rpm (~> 5)

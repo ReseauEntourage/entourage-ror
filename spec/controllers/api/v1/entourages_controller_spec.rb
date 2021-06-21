@@ -329,7 +329,9 @@ describe Api::V1::EntouragesController do
               street_address: "85 bis rue de Ménilmontant, 75020 Paris, France",
               google_place_id: "ChIJFzXXy-xt5kcRg5tztdINnp0",
               landscape_url: "path/to/landscape_url",
+              landscape_thumbnail_url: "path/to/landscape_thumbnail_url",
               portrait_url: "path/to/portrait_url",
+              portrait_thumbnail_url: "path/to/portrait_thumbnail_url",
             }
           }
         end
@@ -353,7 +355,9 @@ describe Api::V1::EntouragesController do
                 "google_place_id"=>"ChIJFzXXy-xt5kcRg5tztdINnp0",
                 "display_address"=>"Le Dorothy, 85 bis rue de Ménilmontant, 75020 Paris",
                 "landscape_url"=>"path/to/landscape_url",
-                "portrait_url"=>"path/to/portrait_url"
+                "landscape_thumbnail_url"=>"path/to/landscape_thumbnail_url",
+                "portrait_url"=>"path/to/portrait_url",
+                "portrait_thumbnail_url"=>"path/to/portrait_thumbnail_url"
               },
               "entourage_type"=>"contribution",
               "display_category"=>nil,
@@ -560,7 +564,9 @@ describe Api::V1::EntouragesController do
               "street_address"=>"44 rue de l’Assomption, 75016 Paris, France",
               "google_place_id"=>"foobar",
               "landscape_url"=>nil,
-              "portrait_url"=>nil
+              "landscape_thumbnail_url"=>nil,
+              "portrait_url"=>nil,
+              "portrait_thumbnail_url"=>nil
             }
           )}
         end
@@ -623,7 +629,9 @@ describe Api::V1::EntouragesController do
       context "outing exists" do
         before { patch :update, params: { id: outing.to_param, entourage: {metadata: {
           landscape_url: "path/to/landscape_url",
+          landscape_thumbnail_url: "path/to/landscape_thumbnail_url",
           portrait_url: "path/to/portrait_url",
+          portrait_thumbnail_url: "path/to/portrait_thumbnail_url",
         }}, token: user.token } }
         it { expect(JSON.parse(response.body)).to eq({
           "entourage"=> {
@@ -642,7 +650,9 @@ describe Api::V1::EntouragesController do
               "display_address" => "Café la Renaissance, 44 rue de l’Assomption, 75016 Paris",
               "google_place_id" => "foobar",
               "landscape_url" => "path/to/landscape_url",
+              "landscape_thumbnail_url" => "path/to/landscape_thumbnail_url",
               "portrait_url" => "path/to/portrait_url",
+              "portrait_thumbnail_url" => "path/to/portrait_thumbnail_url",
             },
             "entourage_type"=>"ask_for_help",
             "display_category"=>"social",
