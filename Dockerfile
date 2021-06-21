@@ -35,6 +35,7 @@ RUN apt-get update \
       libsqlite3-dev \
       nodejs \
       cron \
+      imagemagick \
  && rm -rf /var/lib/apt/lists/*
 
 # Setup scheduler
