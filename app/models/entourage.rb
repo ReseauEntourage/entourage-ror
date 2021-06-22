@@ -46,7 +46,7 @@ class Entourage < ApplicationRecord
   has_one :user_moderation, primary_key: :user_id, foreign_key: :user_id
   has_one :sensitive_words_check, as: :record, dependent: :destroy
 
-  attr_accessor :current_join_request, :number_of_unread_messages
+  attr_accessor :current_join_request, :number_of_unread_messages, :entourage_image_id
 
   validates_presence_of :status, :title, :entourage_type, :user_id, :latitude, :longitude, :number_of_people
   validates_inclusion_of :status, in: ENTOURAGE_STATUS
@@ -229,6 +229,32 @@ class Entourage < ApplicationRecord
   def group_type= value
     self.metadata = add_metadata_schema_urn(metadata)
     super(value)
+  end
+
+  def entourage_image_id= entourage_image_id
+    return unless outing?
+
+    if entourage_image = EntourageImage.find_by_id(entourage_image_id)
+      self.metadata[:landscape_url] = entourage_image.landscape_url
+      self.metadata[:landscape_thumbnail_url] = entourage_image.landscape_thumbnail_url
+      self.metadata[:portrait_url] = entourage_image.portrait_url
+      self.metadata[:portrait_thumbnail_url] = entourage_image.portrait_thumbnail_url
+    else
+      remove_entourage_image_id!
+    end
+  end
+
+  def remove_entourage_image_id!
+    self.metadata[:landscape_url] = nil
+    self.metadata[:landscape_thumbnail_url] = nil
+    self.metadata[:portrait_url] = nil
+    self.metadata[:portrait_thumbnail_url] = nil
+  end
+
+  def outing_image_url
+    return unless outing?
+
+    self.metadata[:landscape_thumbnail_url] || self.metadata[:landscape_url]
   end
 
   def conversation?

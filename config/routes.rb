@@ -86,7 +86,7 @@ Rails.application.routes.draw do
           post :admin_unpin
           get :renew
           get '/edit/image', action: :edit_image
-          get '/image_upload_success', action: :image_upload_success
+          put '/update/image', action: :update_image
         end
         collection do
           post :destroy_message

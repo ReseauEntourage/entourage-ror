@@ -66,6 +66,26 @@ describe Admin::EntouragesController do
     end
   end
 
+  describe "PUT #update_image" do
+    let(:entourage_image) { FactoryBot.create(:entourage_image) }
+
+    context "no access when action" do
+      let(:entourage) { FactoryBot.create(:entourage) }
+      it {
+        expect_any_instance_of(Entourage).not_to receive(:save)
+        put :update_image, params: { id: entourage.to_param, entourage: { entourage_image_id: entourage_image.id } }
+      }
+    end
+
+    context "access when outing" do
+      let(:outing) { FactoryBot.create(:outing) }
+      it {
+        expect_any_instance_of(Entourage).to receive(:save)
+        put :update_image, params: { id: outing.to_param, entourage: { entourage_image_id: entourage_image.id } }
+      }
+    end
+  end
+
   describe "POST update pins" do
     let(:entourage) { FactoryBot.create(:entourage, pin: true) }
     before { post :update, params: { id: entourage.to_param, entourage: { pins: ['75000','44'], group_type: :action } } }
