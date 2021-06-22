@@ -1,6 +1,6 @@
 module Admin
   class EntouragesController < Admin::BaseController
-    before_action :set_entourage, only: [:show, :edit, :update, :renew, :moderator_read, :moderator_unread, :message, :show_members, :show_joins, :show_invitations, :show_messages, :sensitive_words, :sensitive_words_check, :edit_type, :admin_pin, :admin_unpin, :pin, :unpin]
+    before_action :set_entourage, only: [:show, :edit, :update, :renew, :edit_image, :update_image, :moderator_read, :moderator_unread, :message, :show_members, :show_joins, :show_invitations, :show_messages, :sensitive_words, :sensitive_words_check, :edit_type, :admin_pin, :admin_unpin, :pin, :unpin]
     before_action :ensure_moderator!, only: [:message]
 
     def index
@@ -295,13 +295,22 @@ module Admin
     end
 
     def edit_image
-      @entourage = Entourage.find(params[:id])
-      @form = EntourageImageUploader
+      redirect_to edit_admin_entourage_path(@entourage) and return unless @entourage.outing?
+
+      @entourage_images = EntourageImage.all
     end
 
-    def image_upload_success
-      entourage = EntourageImageUploader.handle_success(params)
-      redirect_to edit_admin_entourage_path(entourage)
+    def update_image
+      redirect_to edit_admin_entourage_path(@entourage) and return unless @entourage.outing?
+
+      @entourage.assign_attributes(entourage_params)
+
+      if @entourage.save
+        redirect_to edit_admin_entourage_path(@entourage)
+      else
+        @entourage_images = EntourageImage.all
+        render :edit_image
+      end
     end
 
     def admin_pin
@@ -424,7 +433,7 @@ module Admin
     def entourage_params
       metadata_keys = params.dig(:entourage, :metadata).try(:keys) || [] # security issue
       metadata_keys -= [:starts_at]
-      params.require(:entourage).permit(:group_type, :status, :title, :description, :category, :entourage_type, :display_category, :latitude, :longitude, :public, :online, :url, :event_url, pins: [], metadata: metadata_keys)
+      params.require(:entourage).permit(:group_type, :status, :title, :description, :category, :entourage_type, :display_category, :latitude, :longitude, :public, :online, :url, :event_url, :entourage_image_id, pins: [], metadata: metadata_keys)
     end
 
     def chat_messages_params

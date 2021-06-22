@@ -7,61 +7,46 @@
     </ol>
 
     <h1>Modifier l'image</h1>
-    <div class="alert alert-info" role="alert" style="display: flex; align-items: center">
-      <div style="flex-grow: 1">
-        Merci de privilégier les images <b>sans texte</b> et en <b>16:9</b>.
-      </div>
-    </div>
 
-    <div class="margin-bottom: 15px">
-      <%= image_tag(@entourage.image_url, size: '750x320') if @entourage.image_url.present? %>
-    </div>
-
-    <form class="form-inline" id="upload-form"
-          action="#" method="post" enctype="multipart/form-data">
-      <div>PNG ou JPEG, 750x320</div>
-      <div class="form-group">
-        <input type="file" class="btn btn-default"
-               name="file" accept="<%= @form.content_types %>"/>
+    <% if @entourage_images.empty? %>
+      <div class="panel panel-warning">
+        <div class="panel-heading">
+          <h3 class="panel-title">Aucune photo n'est encore spécifiée.</h3>
+        </div>
       </div>
-      <input type="submit" value="Enregistrer" class="btn btn-success" disabled/>
-    </form>
+    <% else %>
+      <div class="margin-bottom: 15px">
+        <%= image_tag(@entourage.image_url, size: '750x320') if @entourage.image_url.present? %>
+      </div>
+
+      <%= form_for @entourage, url: update_image_admin_entourage_path(@entourage), method: :put do |f| %>
+        <table class="table">
+          <th>Titre</th>
+          <th>Photos</th>
+          <% @entourage_images.each do |entourage_image| %>
+            <tr>
+              <td>
+                <%= entourage_image.title %>
+              </td>
+              <td>
+                <%= image_tag(entourage_image.landscape_small_url, size: '288x96') if entourage_image.landscape_small_url.present? %>
+                <%= image_tag(entourage_image.portrait_small_url, size: '59x96') if entourage_image.portrait_small_url.present? %>
+              </td>
+              <td>
+                <%= f.radio_button :entourage_image_id, entourage_image.id, checked: @entourage.metadata[:landscape_url] == entourage_image.landscape_url %>
+              </td>
+            </tr>
+          <% end %>
+          <tr>
+            <td>Pas de photo</td>
+            <td></td>
+            <td>
+              <%= f.radio_button :entourage_image_id, nil, checked: @entourage.outing_image_url.blank? %>
+            </td>
+          </tr>
+        </table>
+        <%= f.submit "Enregistrer", class: "btn btn-success" %>
+      <% end %>
+    <% end %>
   </div>
 </div>
-
-<script>
-  (function() {
-    var $form = $('#upload-form'),
-        $fileInput = $form.find('input[type=file]'),
-        $submit = $form.find('[type=submit]');
-
-    $fileInput.on('change', function() {
-      var file = this.files[0],
-          $field = null;
-
-      $submit.prop('disabled', true);
-
-      $.ajax(
-        '<%= new_admin_upload_path %>', {
-        data: {
-          uploader: 'entourage_image',
-          entourage_id: '<%= @entourage.id %>',
-          redirect_url: '<%= image_upload_success_admin_entourage_url %>',
-          filetype: file.type
-        }
-      })
-      .done(function(data) {
-        $form.attr('action', data.url);
-        Object.keys(data.fields).forEach(function(key) {
-          $field = $form.find('input[name=' + key + ']');
-          if ($field.length === 0) {
-            $field = $('<input>', {name: key, type: 'hidden'})
-                     .insertBefore($fileInput); // 'file' must be the last field
-          }
-          $field.val(data.fields[key]);
-        });
-        $submit.prop('disabled', false);
-      });
-    });
-  })();
-</script>
