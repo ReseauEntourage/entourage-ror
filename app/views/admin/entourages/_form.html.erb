@@ -39,25 +39,27 @@
     </div>
   <% end %>
 
-  <div class="control-group">
-    <%= f.label :image_url %>
-    <% if @entourage.new_record? %>
-      <div class="text-muted">
-        Vous pourrez ajouter une image une fois que l'événement sera crée.
-      </div>
-    <% else %>
-      <% if @entourage.image_url %>
-        <div style="margin-bottom: 15px">
-          <%= image_tag(@entourage.image_url, size: '750x320') if @entourage.image_url.present? %>
+  <% if @entourage.outing? %>
+    <div class="control-group">
+      <%= f.label :image_url %>
+      <% if @entourage.new_record? %>
+        <div class="text-muted">
+          Vous pourrez ajouter une image une fois que l'événement sera crée.
         </div>
+      <% else %>
+        <% if @entourage.image_url %>
+          <div style="margin-bottom: 15px">
+            <%= image_tag(@entourage.image_url, size: '750x320') if @entourage.image_url.present? %>
+          </div>
+        <% end %>
+        <% if @entourage.status == 'open' %>
+          <div>
+            <%= link_to "Modifier", edit_image_admin_entourage_path, class: "btn btn-default btn-sm" %>
+          </div>
+        <% end %>
       <% end %>
-      <% if @entourage.status == 'open' %>
-        <div>
-          <%= link_to "Modifier", edit_image_admin_entourage_path, class: "btn btn-default btn-sm" %>
-        </div>
-      <% end %>
-    <% end %>
-  </div>
+    </div>
+  <% end %>
 
   <div class="control-group">
     <%= f.label :status, "Status", class: "control-label" %>

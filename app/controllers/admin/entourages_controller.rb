@@ -297,6 +297,8 @@ module Admin
     def edit_image
       @entourage = Entourage.find(params[:id])
       @form = EntourageImageUploader
+
+      redirect_to edit_admin_entourage_path(@entourage) unless @entourage.outing?
     end
 
     def image_upload_success

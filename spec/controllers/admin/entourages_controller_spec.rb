@@ -50,6 +50,22 @@ describe Admin::EntouragesController do
     it { expect(assigns(:entourage)).to eq(entourage) }
   end
 
+  describe "GET #edit_image" do
+    context "no access when action" do
+      let(:entourage) { FactoryBot.create(:entourage) }
+      before { get :edit_image, params: { id: entourage.to_param } }
+      it { should redirect_to edit_admin_entourage_path(entourage) }
+      it { expect(response.code).to eq('302') }
+    end
+
+    context "access when outing" do
+      let(:outing) { FactoryBot.create(:outing) }
+      before { get :edit_image, params: { id: outing.to_param } }
+      it { should_not redirect_to edit_admin_entourage_path(outing) }
+      it { expect(response.code).to eq('200') }
+    end
+  end
+
   describe "POST update pins" do
     let(:entourage) { FactoryBot.create(:entourage, pin: true) }
     before { post :update, params: { id: entourage.to_param, entourage: { pins: ['75000','44'], group_type: :action } } }
