@@ -1,5 +1,5 @@
 class EntourageImagePortraitUploader < S3ImageUploader
-  THUMBNAIL_RATIO = "25%"
+  THUMBNAIL_RATIO = "40%"
 
   def self.metadata_keys
     [:entourage_image_id]
@@ -20,7 +20,7 @@ class EntourageImagePortraitUploader < S3ImageUploader
     raise if payload.nil?
 
     entourage_image = EntourageImage.find(payload[:entourage_image_id])
-    entourage_image.update_column(:portrait_url, payload[:object_url])
+    entourage_image.update_column(:portrait_url, params[:key])
     entourage_image.update_column(:portrait_thumbnail_url, self.upload_thumbnail(payload[:object_url]))
 
     entourage_image
@@ -34,13 +34,25 @@ class EntourageImagePortraitUploader < S3ImageUploader
     ).to_h
   end
 
+  def self.generate_s3_thumbnail_path_from source_path
+    "entourage_images/images/thumbnail-#{self.filename_from_s3_path source_path}"
+  end
+
+  # extract filename from a s3 fullpath
   def self.filename_from_s3_path path
     path.gsub /(.)*entourage_images\/images\//, ''
   end
 
-  def self.upload_thumbnail path
-    object = Storage::Client.avatars.object("entourage_images/images/thumbnail-#{self.filename_from_s3_path path}")
-    object.upload_file(self.resized_image(path, THUMBNAIL_RATIO))
-    object.public_url
+  def self.upload_thumbnail source_path
+    path = self.generate_s3_thumbnail_path_from source_path
+
+    object = self.storage.object path
+    object.upload_file(self.resized_image(source_path, THUMBNAIL_RATIO))
+
+    path
+  end
+
+  def self.storage
+    Storage::Client.images
   end
 end
