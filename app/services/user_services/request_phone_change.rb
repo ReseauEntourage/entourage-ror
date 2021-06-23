@@ -17,6 +17,8 @@ module UserServices
           text: user_url,
         }, {
           text: "Téléphone requis : #{requested_phone}"
+        }, {
+          text: "Département : #{user.addresses.pluck(:postal_code).join(', ')}"
         }]
       )
     end
