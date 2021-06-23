@@ -282,6 +282,18 @@ class Entourage < ApplicationRecord
      I18n.l(metadata[:ends_at],   format: formats[1])].join
   end
 
+  def metadata_with_image_paths
+    return metadata unless group_type == 'outing'
+
+    metadata.map do |key, value|
+      if [:landscape_url, :landscape_thumbnail_url, :portrait_url, :portrait_thumbnail_url].include? key
+        [key, EntourageImage.storage.url_for(key: value)]
+      else
+        [key, value]
+      end
+    end.to_h
+  end
+
   protected
 
   def check_moderation

@@ -10,22 +10,22 @@ class EntourageImage < ApplicationRecord
   end
 
   def landscape_thumbnail_url
-    storage.url_for key: self['landscape_thumbnail_url']
+    self.storage.url_for(key: self['landscape_thumbnail_url'])
   end
 
   def landscape_url
-    storage.url_for key: self['landscape_url']
+    self.storage.url_for(key: self['landscape_url'])
   end
 
   def portrait_thumbnail_url
-    storage.url_for key: self['portrait_thumbnail_url']
+    self.storage.url_for(key: self['portrait_thumbnail_url'])
   end
 
   def portrait_url
-    storage.url_for key: self['portrait_url']
+    self.storage.url_for(key: self['portrait_url'])
   end
 
-  def storage
+  def self.storage
     Storage::Client.images
   end
 end
