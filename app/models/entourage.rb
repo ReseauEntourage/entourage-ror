@@ -235,10 +235,10 @@ class Entourage < ApplicationRecord
     return unless outing?
 
     if entourage_image = EntourageImage.find_by_id(entourage_image_id)
-      self.metadata[:landscape_url] = entourage_image.landscape_url
-      self.metadata[:landscape_thumbnail_url] = entourage_image.landscape_thumbnail_url
-      self.metadata[:portrait_url] = entourage_image.portrait_url
-      self.metadata[:portrait_thumbnail_url] = entourage_image.portrait_thumbnail_url
+      self.metadata[:landscape_url] = entourage_image[:landscape_url]
+      self.metadata[:landscape_thumbnail_url] = entourage_image[:landscape_thumbnail_url]
+      self.metadata[:portrait_url] = entourage_image[:portrait_url]
+      self.metadata[:portrait_thumbnail_url] = entourage_image[:portrait_thumbnail_url]
     else
       remove_entourage_image_id!
     end
@@ -253,8 +253,9 @@ class Entourage < ApplicationRecord
 
   def outing_image_url
     return unless outing?
+    return unless self.metadata[:landscape_thumbnail_url] || self.metadata[:landscape_url]
 
-    self.metadata[:landscape_thumbnail_url] || self.metadata[:landscape_url]
+    EntourageImage.storage.url_for(key: self.metadata[:landscape_thumbnail_url] || self.metadata[:landscape_url])
   end
 
   def conversation?
