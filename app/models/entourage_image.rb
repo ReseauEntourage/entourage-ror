@@ -36,4 +36,11 @@ class EntourageImage < ApplicationRecord
   def self.storage
     Storage::Client.images
   end
+
+  def self.from_absolute_to_relative_url url
+    url = url.gsub /(.)*entourage_images\/images\//, ''
+    url = url.gsub /\?(.)*/, '' if url.include? '?'
+
+    "entourage_images/images/#{url}"
+  end
 end
