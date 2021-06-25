@@ -223,6 +223,8 @@ class Entourage < ApplicationRecord
 
   def metadata= value
     value = add_metadata_schema_urn(value)
+    value = format_metadata_image_paths(value)
+
     super(value)
   end
 
@@ -249,6 +251,21 @@ class Entourage < ApplicationRecord
     self.metadata[:landscape_thumbnail_url] = nil
     self.metadata[:portrait_url] = nil
     self.metadata[:portrait_thumbnail_url] = nil
+  end
+
+  # whenever a mobile user creates an outing with an entourage_image, this image has an absolute url path
+  # we need to convert this absolute path to a relative one. Example:
+  # https://[server-name].com/entourage_images/images/my-image.png?AMZ_args should be stored as entourage_images/images/my-image.png
+  def format_metadata_image_paths metadata
+    return metadata unless outing?
+
+    metadata.map do |key, value|
+      if value && [:landscape_url, :landscape_thumbnail_url, :portrait_url, :portrait_thumbnail_url].include?(key)
+        [key, EntourageImage.from_absolute_to_relative_url(value)]
+      else
+        [key, value]
+      end
+    end.to_h
   end
 
   def outing_image_url

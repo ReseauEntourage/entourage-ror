@@ -113,6 +113,22 @@ RSpec.describe Entourage, type: :model do
     ) }
   end
 
+  describe "format_metadata_image_paths" do
+    let(:now) { Time.now.change(sec: 42) }
+    let!(:outing) { create(:outing, metadata: {
+      starts_at: now,
+      landscape_url: 'https://myserver.com/entourage_images/images/mypicture.png?X-Amz-Algorithm=AWS4-HMAC-SHA256',
+      landscape_thumbnail_url: 'http://myserver.com/entourage_images/images/mypicture.png?X-Amz-Algorithm=AWS4-HMAC-SHA256',
+      portrait_url: 'http://myserver.com/entourage_images/images/mypicture.png',
+      portrait_thumbnail_url: 'entourage_images/images/mypicture.png',
+    }) }
+
+    it { expect(outing.metadata[:landscape_url]).to eq('entourage_images/images/mypicture.png') }
+    it { expect(outing.metadata[:landscape_thumbnail_url]).to eq('entourage_images/images/mypicture.png') }
+    it { expect(outing.metadata[:portrait_url]).to eq('entourage_images/images/mypicture.png') }
+    it { expect(outing.metadata[:portrait_thumbnail_url]).to eq('entourage_images/images/mypicture.png') }
+  end
+
   describe "public accessibility" do
     it { expect(build(:entourage, group_type: :conversation, public: true).tap(&:save).errors.messages).to eq(
       public: ["n'est pas inclus(e) dans la liste"]
