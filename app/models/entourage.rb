@@ -260,7 +260,7 @@ class Entourage < ApplicationRecord
     return metadata unless outing?
 
     metadata.map do |key, value|
-      if value && [:landscape_url, :landscape_thumbnail_url, :portrait_url, :portrait_thumbnail_url].include?(key)
+      if value && [:landscape_url, :landscape_thumbnail_url, :portrait_url, :portrait_thumbnail_url].include?(key.to_sym)
         [key, EntourageImage.from_absolute_to_relative_url(value)]
       else
         [key, value]
