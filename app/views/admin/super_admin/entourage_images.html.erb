@@ -21,7 +21,15 @@
                 <%= link_to entourage_image.title, edit_admin_entourage_image_path(entourage_image) %>
               </td>
               <td>
+                <%= image_tag(entourage_image.landscape_url, size: '288x96') if entourage_image.landscape_url.present? %>
+              </td>
+              <td>
                 <%= image_tag(entourage_image.landscape_small_url, size: '288x96') if entourage_image.landscape_small_url.present? %>
+              </td>
+              <td>
+                <%= image_tag(entourage_image.portrait_url, size: '59x96') if entourage_image.portrait_url.present? %>
+              </td>
+              <td>
                 <%= image_tag(entourage_image.portrait_small_url, size: '59x96') if entourage_image.portrait_small_url.present? %>
               </td>
             </tr>
