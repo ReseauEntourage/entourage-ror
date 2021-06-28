@@ -18,7 +18,7 @@
           <% @entourage_images.each do |entourage_image| %>
             <tr>
               <td>
-                <%= link_to entourage_image.title, edit_admin_entourage_image_path(entourage_image) %>
+                <%= link_to entourage_image.title, edit_admin_entourage_image_path(entourage_image.id) %>
               </td>
               <td>
                 <%= image_tag(entourage_image.landscape_url, size: '288x96') if entourage_image.landscape_url.present? %>
@@ -37,5 +37,9 @@
         </table>
       <% end %>
     </div>
+  </div>
+
+  <div class="row">
+    <%= paginate @paginated %>
   </div>
 </div>
