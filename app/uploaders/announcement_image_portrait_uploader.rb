@@ -18,7 +18,7 @@ class AnnouncementImagePortraitUploader < S3ImageUploader
     raise if payload.nil?
 
     announcement = Announcement.find(payload[:announcement_id])
-    announcement.update_column(:image_portrait_url, payload[:object_url])
+    announcement.update_column(:image_portrait_url, params[:key])
 
     announcement
   end
@@ -29,5 +29,9 @@ class AnnouncementImagePortraitUploader < S3ImageUploader
     params.permit(
       S3ImageUploader::AUTHORIZED_PARAMS.push(:announcement_id)
     ).to_h
+  end
+
+  def self.storage
+    Storage::Client.images
   end
 end
