@@ -8,8 +8,6 @@ class Announcement < ApplicationRecord
   validates :webview, inclusion: [true, false], allow_nil: false, if: :active?
 
   validates :status, inclusion: STATUS
-  validates :image_url, format: { with: %r(\Ahttps?://\S+\z) }, allow_blank: true
-  validates :image_portrait_url, format: { with: %r(\Ahttps?://\S+\z) }, allow_blank: true
   validates :url, format: { with: %r(\A(https?|mailto|entourage):\S+\z) }, allow_blank: true
 
   scope :ordered, -> { order(:position, :id) }
@@ -42,6 +40,22 @@ class Announcement < ApplicationRecord
 
   def feed_object
     Feed.new(self)
+  end
+
+  def image_url
+    return unless self[:image_url]
+
+    Announcement.storage.url_for(key: self[:image_url])
+  end
+
+  def image_portrait_url
+    return unless self[:image_portrait_url]
+
+    Announcement.storage.url_for(key: self[:image_portrait_url])
+  end
+
+  def self.storage
+    Storage::Client.images
   end
 
   class Feed
