@@ -7,6 +7,7 @@
       <ul class="nav navbar-nav navbar-left">
         <li class="navbar-text"> Bonjour, <%= current_admin.try(:first_name) %></li>
 
+        <% if current_admin.super_admin == true %>
         <li class="dropdown" style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; text-transform: none">
           <a class="dropdown-toggle" type="button" data-toggle="dropdown">
             Super-administrer
@@ -18,6 +19,7 @@
             <li><%= link_to "Événements", admin_super_admin_outings_images_path %></li>
           </ul>
         </li>
+        <% end %>
 
         <li class="dropdown" style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; text-transform: none">
           <a class="dropdown-toggle" type="button" data-toggle="dropdown">
