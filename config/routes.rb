@@ -66,6 +66,12 @@ Rails.application.routes.draw do
         get '/success', action: :update
       end
 
+      namespace :super_admin do
+        get '/entourage_images', action: :entourage_images
+        get '/outings_images', action: :outings_images
+        get '/announcements_images', action: :announcements_images
+      end
+
       resources :newsletter_subscriptions, only: [:index]
       resources :entourage_invitations, only: [:index]
       resources :entourages, only: [:index, :show, :edit, :update] do

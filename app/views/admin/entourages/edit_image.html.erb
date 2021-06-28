@@ -33,7 +33,7 @@
                 <%= image_tag(entourage_image.portrait_small_url, size: '59x96') if entourage_image.portrait_small_url.present? %>
               </td>
               <td>
-                <%= f.radio_button :entourage_image_id, entourage_image.id, checked: @entourage.metadata[:landscape_url] == entourage_image.landscape_url %>
+                <%= f.radio_button :entourage_image_id, entourage_image.id, checked: @entourage.metadata[:landscape_url] == entourage_image[:landscape_url] %>
               </td>
             </tr>
           <% end %>
@@ -46,6 +46,7 @@
           </tr>
         </table>
         <%= f.submit "Enregistrer", class: "btn btn-success" %>
+        <%= link_to "Annuler", edit_admin_entourage_path(@entourage), class: "btn btn-default" %>
       <% end %>
     <% end %>
   </div>

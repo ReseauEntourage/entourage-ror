@@ -130,7 +130,7 @@ module V1
     end
 
     def metadata
-      object.metadata.except(:$id)
+      object.metadata_with_image_paths.except(:$id)
     end
 
     def display_report_prompt

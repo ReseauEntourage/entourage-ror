@@ -1,7 +1,7 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception, prepend: true
 
-  helper_method :current_user, :current_admin, :current_manager
+  helper_method :current_user, :current_admin, :current_manager, :current_super_admin
 
   def authenticate_admin!
     login_error "Vous devez vous authentifier avec un compte admin pour accéder à cette page" unless current_admin
@@ -9,6 +9,10 @@ class ApplicationController < ActionController::Base
 
   def authenticate_manager!
     login_error "Vous devez vous authentifier avec un compte manager pour accéder à cette page" unless current_manager
+  end
+
+  def authenticate_super_admin!
+    login_error "Vous devez vous authentifier avec un compte super_admin pour accéder à cette page" unless current_super_admin
   end
 
   def authenticate_user!
@@ -31,6 +35,11 @@ class ApplicationController < ActionController::Base
 
   def current_manager
     current_user if (current_user && (current_user.manager || current_user.admin))
+  end
+
+  def current_super_admin
+    return if session[:admin_user_id].nil?
+    @current_super_admin ||= User.where(id: session[:admin_user_id], super_admin: true).first
   end
 
   def login_error(message)

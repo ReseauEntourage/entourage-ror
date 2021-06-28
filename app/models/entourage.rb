@@ -223,6 +223,8 @@ class Entourage < ApplicationRecord
 
   def metadata= value
     value = add_metadata_schema_urn(value)
+    value = format_metadata_image_paths(value)
+
     super(value)
   end
 
@@ -235,10 +237,10 @@ class Entourage < ApplicationRecord
     return unless outing?
 
     if entourage_image = EntourageImage.find_by_id(entourage_image_id)
-      self.metadata[:landscape_url] = entourage_image.landscape_url
-      self.metadata[:landscape_thumbnail_url] = entourage_image.landscape_thumbnail_url
-      self.metadata[:portrait_url] = entourage_image.portrait_url
-      self.metadata[:portrait_thumbnail_url] = entourage_image.portrait_thumbnail_url
+      self.metadata[:landscape_url] = entourage_image[:landscape_url]
+      self.metadata[:landscape_thumbnail_url] = entourage_image[:landscape_thumbnail_url]
+      self.metadata[:portrait_url] = entourage_image[:portrait_url]
+      self.metadata[:portrait_thumbnail_url] = entourage_image[:portrait_thumbnail_url]
     else
       remove_entourage_image_id!
     end
@@ -251,10 +253,26 @@ class Entourage < ApplicationRecord
     self.metadata[:portrait_thumbnail_url] = nil
   end
 
+  # whenever a mobile user creates an outing with an entourage_image, this image has an absolute url path
+  # we need to convert this absolute path to a relative one. Example:
+  # https://[server-name].com/entourage_images/images/my-image.png?AMZ_args should be stored as entourage_images/images/my-image.png
+  def format_metadata_image_paths metadata
+    return metadata unless outing?
+
+    metadata.map do |key, value|
+      if value && [:landscape_url, :landscape_thumbnail_url, :portrait_url, :portrait_thumbnail_url].include?(key.to_sym)
+        [key, EntourageImage.from_absolute_to_relative_url(value)]
+      else
+        [key, value]
+      end
+    end.to_h
+  end
+
   def outing_image_url
     return unless outing?
+    return unless self.metadata[:landscape_thumbnail_url] || self.metadata[:landscape_url]
 
-    self.metadata[:landscape_thumbnail_url] || self.metadata[:landscape_url]
+    EntourageImage.storage.url_for(key: self.metadata[:landscape_thumbnail_url] || self.metadata[:landscape_url])
   end
 
   def conversation?
@@ -280,6 +298,18 @@ class Entourage < ApplicationRecord
       end
     [I18n.l(metadata[:starts_at], format: formats[0]),
      I18n.l(metadata[:ends_at],   format: formats[1])].join
+  end
+
+  def metadata_with_image_paths
+    return metadata unless group_type == 'outing'
+
+    metadata.map do |key, value|
+      if value && [:landscape_url, :landscape_thumbnail_url, :portrait_url, :portrait_thumbnail_url].include?(key)
+        [key, EntourageImage.storage.url_for(key: value)]
+      else
+        [key, value]
+      end
+    end.to_h
   end
 
   protected
