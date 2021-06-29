@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20210625151500) do
+ActiveRecord::Schema.define(version: 20210628143000) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -61,6 +61,8 @@ ActiveRecord::Schema.define(version: 20210625151500) do
     t.jsonb "user_goals", default: [], null: false
     t.string "category"
     t.string "image_portrait_url"
+    t.string "image_url_copy"
+    t.string "image_portrait_url_copy"
     t.index ["areas"], name: "index_announcements_on_areas", using: :gin
     t.index ["category"], name: "index_announcements_on_category"
     t.index ["image_portrait_url"], name: "index_announcements_on_image_portrait_url"

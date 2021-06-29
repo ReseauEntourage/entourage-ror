@@ -19,6 +19,7 @@ include CommunityHelper
       let!(:tour) { FactoryBot.create(:tour, updated_at: 5.hours.ago, created_at: 5.hours.ago, tour_type: "medical", latitude: latitude, longitude: longitude) }
       let(:announcement) { FactoryBot.build(:announcement) }
       before do
+        Storage::Bucket.any_instance.stub(:url_for) { "path/to/portrait_url" }
         allow_any_instance_of(FeedServices::AnnouncementsService)
           .to receive(:repositionned_announcements)
           .and_return([announcement])
@@ -74,7 +75,7 @@ include CommunityHelper
                 "uuid"=>"1",
                 "title"=>"Une autre façon de contribuer.",
                 "body"=>"Entourage a besoin de vous pour continuer à accompagner les sans-abri.",
-                "image_url"=>"https://blog.entourage.social/",
+                "image_url"=>"path/to/portrait_url",
                 "action"=>"Aider",
                 "url"=>"http://test.host/api/v1/announcements/1/redirect/#{user.token}",
                 "icon_url"=>"http://test.host/api/v1/announcements/1/icon",
@@ -407,7 +408,10 @@ include CommunityHelper
           .and_return([announcement])
       end
 
-      before { get :index, params: { token: user.token, latitude: latitude, longitude: longitude, announcements: :v1 } }
+      before {
+        Storage::Bucket.any_instance.stub(:url_for) { "path/to/portrait_url" }
+        get :index, params: { token: user.token, latitude: latitude, longitude: longitude, announcements: :v1 }
+      }
       it { expect(response.status).to eq(200) }
       it { expect(result).to eq({
         "feeds"=>[
@@ -433,9 +437,6 @@ include CommunityHelper
              "image_url"=>nil,
              "online"=>false,
              "event_url"=>nil,
-             "image_url"=>nil,
-             "online"=>false,
-             "event_url"=>nil,
              "author"=>{
                "id"=>entourage.user_id,
                "display_name"=>"John D.",
@@ -453,7 +454,7 @@ include CommunityHelper
              "uuid"=>"1",
              "title"=>"Une autre façon de contribuer.",
              "body"=>"Entourage a besoin de vous pour continuer à accompagner les sans-abri.",
-             "image_url"=>"https://blog.entourage.social/",
+             "image_url"=>"path/to/portrait_url",
              "action"=>"Aider",
              "url"=>"http://test.host/api/v1/announcements/1/redirect/#{user.token}",
              "icon_url"=>"http://test.host/api/v1/announcements/1/icon",
