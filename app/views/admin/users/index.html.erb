@@ -16,6 +16,36 @@
       <%= link_to "Ajouter", new_admin_user_path, class: "btn btn-success" %>
     </div>
   </div>
+
+  <div style="margin-left: 15px; margin-bottom: 15px; display: flex">
+    <div style="display: flex; margin: -10px 0 10px">
+      <div class="btn-group btn-group-sm" style="flex-grow: 1">
+        <%
+          q = @params[:q] || {}
+          presets = {
+            "Partout" => {},
+            "75" => { postal_code_start: '75' },
+            "92" => { postal_code_start: '92' },
+            "69" => { postal_code_start: '69' },
+            "59" => { postal_code_start: '59' },
+            "35" => { postal_code_start: '35' },
+            "Hors zone" => { postal_code_in_hors_zone: 'true' },
+          }
+
+          location_keys = [:country_eq, :postal_code_start, :postal_code_in_hors_zone]
+          active = presets.key q.slice(*location_keys).compact.symbolize_keys
+        %>
+        <% presets.each do |name, options| %>
+          <%= link_to(
+            name,
+            @params.merge(q: q.except(*location_keys).merge(options)),
+            class: "btn btn-#{active == name ? :primary : :default}"
+          ) %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
   <%= form_tag(admin_user_search_path, method: :get, html: { class: "form-horizontal", role: "form" }) do %>
     <div style="margin-left: 15px; display: flex">
       <div class="input-group">
