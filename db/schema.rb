@@ -61,6 +61,8 @@ ActiveRecord::Schema.define(version: 20210628143000) do
     t.jsonb "user_goals", default: [], null: false
     t.string "category"
     t.string "image_portrait_url"
+    t.string "image_url_copy"
+    t.string "image_portrait_url_copy"
     t.index ["areas"], name: "index_announcements_on_areas", using: :gin
     t.index ["category"], name: "index_announcements_on_category"
     t.index ["image_portrait_url"], name: "index_announcements_on_image_portrait_url"

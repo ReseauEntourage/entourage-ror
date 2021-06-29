@@ -14,11 +14,21 @@
       <% else %>
         <table class="table">
           <th>Titre</th>
+          <th>Statut</th>
           <th>Photos</th>
           <% @announcements.each do |announcement| %>
             <tr>
               <td>
                 <%= link_to announcement.title, edit_admin_announcement_path(announcement.id) %>
+              </td>
+              <td>
+                <% if announcement.object.active? %>
+                  <span class="badge" style="background-color: green">actif</span>
+                <% elsif announcement.object.archived? %>
+                  <span class="badge" style="background-color: red">archivé</span>
+                <% elsif announcement.object.draft? %>
+                  <span class="badge" style="background-color: grey">brouillon</span>
+                <% end %>
               </td>
               <td>
                 <%= image_tag(announcement.image_url, size: '288x96') if announcement.image_url.present? %>
