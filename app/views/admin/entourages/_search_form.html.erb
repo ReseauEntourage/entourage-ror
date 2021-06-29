@@ -43,32 +43,25 @@
       q = @params[:q] || {}
       presets = {
         "Partout" => {},
-        "Paris" => {
+        "75" => {
           country_eq: 'FR', postal_code_start: '75'
         },
-        "Hauts-de-Seine" => {
+        "92" => {
           country_eq: 'FR', postal_code_start: '92'
         },
-        "Lyon" => {
+        "69" => {
           country_eq: 'FR', postal_code_start: '69'
         },
-        "Grenoble" => {
-          country_eq: 'FR',postal_code_start: '38'
-        },
-        "Rhône-Alpes" => {
-          country_eq: 'FR',
-          postal_code_start_any: ['01', '07', '26', '38', '42', '69', '73', '74']
-        },
-        "Bretagne" => {
-          country_eq: 'FR',
-          postal_code_start_any: ['22', '29', '35', '44', '56']
-        },
-        "Lille" => {
+        "59" => {
           country_eq: 'FR', postal_code_start: '59'
+        },
+        "35" => {
+          country_eq: 'FR', postal_code_start: '35'
         },
         "Hors zone" => {
           postal_code_not_start_all: ['75', '92', '69', '35', '59']
         },
+
         "Épinglées" => {
           pin_eq: 'true'
         },
