@@ -30,7 +30,7 @@ module Admin
     def announcements_images
       @paginated = Announcement.where(%(
         image_url is not null or image_portrait_url is not null
-      )).page(params[:page]).per(PER_PAGE)
+      )).order(:status).page(params[:page]).per(PER_PAGE)
 
       @announcements = @paginated.map do |announcement|
         ::V1::AnnouncementSerializer.new(announcement, scope: {
