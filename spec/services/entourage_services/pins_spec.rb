@@ -23,14 +23,30 @@ describe EntourageServices::Pins do
     end
   end
 
+  describe 'pinned_for with joined action' do
+    let!(:join_request) { FactoryBot.create(:join_request, joinable: pin, user: user, status: "accepted") }
+
+    it 'should find not a pin' do
+      expect(EntourageServices::Pins.pinned_for user).to be_nil
+    end
+  end
+
   describe 'outing_pinned' do
     it 'should find outing' do
-      expect(EntourageServices::Pins.outing_pinned).to eq(outing.id)
+      expect(EntourageServices::Pins.outing_pinned user).to eq(outing.id)
     end
 
     it 'should not find outing if closed' do
       outing.update_attribute(:status, :closed)
-      expect(EntourageServices::Pins.outing_pinned).to be_nil
+      expect(EntourageServices::Pins.outing_pinned user).to be_nil
+    end
+  end
+
+  describe 'outing_pinned with joined outing' do
+    let!(:join_request) { FactoryBot.create(:join_request, joinable: outing, user: user, status: "accepted") }
+
+    it 'should not find outing' do
+      expect(EntourageServices::Pins.outing_pinned user).to be_nil
     end
   end
 
