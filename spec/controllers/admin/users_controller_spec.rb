@@ -68,6 +68,35 @@ describe Admin::UsersController do
         }, user_moderation: { skills: ['Administratif'] } }
       }
     end
+
+    context "change sms_code" do
+      before {
+        expect_any_instance_of(UserServices::SMSSender).to receive(:send_welcome_sms).with(
+          '123456',
+          'regenerate'
+        )
+      }
+
+      it {
+        put :update, params: { id: user.id, user: {
+          sms_code: '123456',
+          about: 'foo'
+        }, user_moderation: { skills: ['Administratif'] } }
+      }
+    end
+
+    context "dit not change sms_code" do
+      before {
+        expect_any_instance_of(UserServices::SMSSender).not_to receive(:send_welcome_sms)
+      }
+
+      it {
+        put :update, params: { id: user.id, user: {
+          first_name: 'Jane',
+          about: 'foo'
+        }, user_moderation: { skills: ['Administratif'] } }
+      }
+    end
   end
 
   describe "PUT cancel_phone_change_request" do
