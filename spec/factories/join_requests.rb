@@ -16,6 +16,7 @@ FactoryBot.define do
         case [joinable.community, joinable.group_type]
         when ['entourage', 'tour'          ] then 'member'
         when ['entourage', 'action'        ] then 'member'
+        when ['entourage', 'outing'        ] then 'participant'
         when ['pfp',       'private_circle'] then 'visitor'
         when ['pfp',       'conversation'  ] then 'participant'
         when ['pfp',       'neighborhood'  ] then 'member'
