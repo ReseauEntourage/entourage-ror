@@ -127,7 +127,7 @@
   </div>
 <% end %>
 
-<% if unread_count > 0 %>
+<% unless @moderator_read.present? %>
   <div class="text-center">
     <%= link_to "Marquer comme lu", moderator_read_admin_entourage_path(@entourage), method: :post, class: "btn btn-default" %>
   </div>
