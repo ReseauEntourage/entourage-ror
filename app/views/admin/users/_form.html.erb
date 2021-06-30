@@ -249,19 +249,25 @@
       </div>
     </div>
   <% end %>
-  <br>
 
   <div class="control-group" id="sms_group">
-    <%= f.label :sms_code,"Code SMS", class: "control-label" %>
+    <%= f.label :sms_code,"Nouveau code SMS", class: "control-label" %>
     <div class="controls">
       <%= f.text_field :sms_code, class: "form-control", required: true %>
     </div>
+
+    <div class="alert alert-info" role="alert" style="display: flex; align-items: center">
+      <div style="flex-grow: 1">
+        <b>Attention</b> Une fois le nouveau code enregistré, l'utilisateur recevra automatiquement une confirmation par SMS.
+      </div>
+    </div>
   </div>
+
   <%= link_to "Modifier le code SMS", "#", id: "change_password" %>
   <br>
 
   <br>
-  <%= f.submit "Sauver", class: "btn btn-success" %>
+  <%= f.submit "Sauver", class: "btn btn-success", id: "admin-user-update" %>
   <%= link_to "Annuler", admin_users_path, class: "btn btn-default" %>
 <% end %>
 
