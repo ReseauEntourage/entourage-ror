@@ -1,0 +1,13 @@
+<div class="control-group <%= :hide if entourage.online %>" id="address-block">
+  <label class="control-label">Adresse</label>
+  <div class="controls">
+    <input id="autocomplete" value="<%= entourage.metadata[:display_address] %>"
+           type="text" class="form-control"></input>
+    <%= f.hidden_field :latitude, disabled: true %>
+    <%= f.hidden_field :longitude, disabled: true %>
+    <div class="adress-maps" id="addressMaps">
+      <img src="https://maps.googleapis.com/maps/api/staticmap?zoom=6&size=200x200&markers=<%= entourage.latitude %>,<%= entourage.longitude %>&key=<%= ENV['GOOGLE_FRONTEND_API_KEY'] %>" width="200" height="200" />
+      <img src="https://maps.googleapis.com/maps/api/staticmap?zoom=13&size=400x200&markers=<%= entourage.latitude %>,<%= entourage.longitude %>&key=<%= ENV['GOOGLE_FRONTEND_API_KEY'] %>&style=feature:road|element:labels|visibility:off&style=feature:water|element:labels|visibility:off" width="400" height="200" />
+    </div>
+  </div>
+</div>

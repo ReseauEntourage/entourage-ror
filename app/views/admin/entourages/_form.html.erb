@@ -7,8 +7,15 @@
   }
 </style>
 
-<%= form_for([:admin, @entourage], :method => :PATCH, html: { class: "form-horizontal", role: "form" }) do |f| %>
+<% url = @entourage.new_record? ? admin_entourages_path(@entourage) : admin_entourage_path(@entourage) %>
+<% method = @entourage.new_record? ? :post : :patch %>
+
+<%= form_for(@entourage, url: url, :method => method, html: { class: "form-horizontal", role: "form" }) do |f| %>
   <%= render partial: "layouts/errors", locals: {obj: @entourage} %>
+
+  <% if @entourage.new_record? %>
+    <%= f.hidden_field :user_id %>
+  <% end %>
 
   <%= f.hidden_field :group_type %>
 
@@ -116,14 +123,14 @@
     <% end %>
   <% end %>
 
-  <% if @entourage.group_type == 'action' %>
-  <div class="control-group">
-    <%= f.label :display_category, "Catégorie affichée", class: "control-label" %>
-    <div class="controls">
-      <%= f.select :entourage_type, [["Demande", :ask_for_help], ["Contribution", :contribution]], {include_blank: true}, required: true %>
-      <%= f.select :display_category, Entourage::DISPLAY_CATEGORIES, {include_blank: true}, required: true %>
+  <% if @entourage.group_type == 'action' || @entourage.new_record? %>
+    <div class="control-group">
+      <%= f.label :display_category, "Catégorie affichée", class: "control-label" %>
+      <div class="controls">
+        <%= f.select :entourage_type, [["Demande", :ask_for_help], ["Contribution", :contribution]], {include_blank: true}, required: true %>
+        <%= f.select :display_category, Entourage::DISPLAY_CATEGORIES, {include_blank: true}, required: true %>
+      </div>
     </div>
-  </div>
   <% else %>
     <%= f.hidden_field :entourage_type %>
     <%= f.hidden_field :display_category if @entourage.display_category.present? %>
@@ -153,37 +160,10 @@
   <% end %>
 
   <% if @entourage.group_type.in?(['action', 'group']) %>
-  <div class="control-group <%= :hide if @entourage.online %>" id="address-block">
-    <label class="control-label">Adresse</label>
-    <div class="controls">
-      <input id="autocomplete" value="<%= @entourage.metadata[:display_address] %>"
-             type="text" class="form-control"></input>
-      <%= f.hidden_field :latitude, disabled: true %>
-      <%= f.hidden_field :longitude, disabled: true %>
-      <div class="adress-maps" id="addressMaps">
-        <img src="https://maps.googleapis.com/maps/api/staticmap?zoom=6&size=200x200&markers=<%= @entourage.latitude %>,<%= @entourage.longitude %>&key=<%= ENV['GOOGLE_FRONTEND_API_KEY'] %>" width="200" height="200" />
-        <img src="https://maps.googleapis.com/maps/api/staticmap?zoom=13&size=400x200&markers=<%= @entourage.latitude %>,<%= @entourage.longitude %>&key=<%= ENV['GOOGLE_FRONTEND_API_KEY'] %>&style=feature:road|element:labels|visibility:off&style=feature:water|element:labels|visibility:off" width="400" height="200" />
-      </div>
-    </div>
-  </div>
+    <%= render partial: 'edit_action_address', locals: { entourage: @entourage, f: f } %>
   <% end %>
   <% if @entourage.group_type == 'outing' %>
-    <div class="control-group <%= :hide if @entourage.online %>" id="address-block">
-      <label class="control-label" for="metadata_address">Adresse</label>
-      <%= text_field_tag nil, (@entourage.metadata[:display_address] unless @entourage.online?),
-          id: :metadata_address,
-          class: "form-control",
-          required: true,
-          data: { last_valid: (@entourage.metadata[:display_address] unless @entourage.online?) } %>
-      <%= hidden_field_tag 'entourage[latitude]', nil, disabled: true %>
-      <%= hidden_field_tag 'entourage[longitude]', nil, disabled: true %>
-      <%= hidden_field_tag 'entourage[country]', nil, disabled: true %>
-      <%= hidden_field_tag 'entourage[postal_code]', nil, disabled: true %>
-      <%= hidden_field_tag 'entourage[metadata][place_name]', nil, disabled: true %>
-      <%= hidden_field_tag 'entourage[metadata][street_address]', nil, disabled: true %>
-      <%= hidden_field_tag 'entourage[metadata][google_place_id]', nil, disabled: true %>
-    </div>
-
+    <%= render partial: 'edit_outing_address', locals: { entourage: @entourage } %>
   <% end %>
 
   <br>

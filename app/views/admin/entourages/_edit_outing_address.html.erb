@@ -1,0 +1,15 @@
+<div class="control-group <%= :hide if entourage.online %>" id="address-block">
+  <label class="control-label" for="metadata_address">Adresse</label>
+  <%= text_field_tag nil, (entourage.metadata[:display_address] unless entourage.online?),
+      id: :metadata_address,
+      class: "form-control",
+      required: true,
+      data: { last_valid: (entourage.metadata[:display_address] unless entourage.online?) } %>
+  <%= hidden_field_tag 'entourage[latitude]', nil, disabled: true %>
+  <%= hidden_field_tag 'entourage[longitude]', nil, disabled: true %>
+  <%= hidden_field_tag 'entourage[country]', nil, disabled: true %>
+  <%= hidden_field_tag 'entourage[postal_code]', nil, disabled: true %>
+  <%= hidden_field_tag 'entourage[metadata][place_name]', nil, disabled: true %>
+  <%= hidden_field_tag 'entourage[metadata][street_address]', nil, disabled: true %>
+  <%= hidden_field_tag 'entourage[metadata][google_place_id]', nil, disabled: true %>
+</div>

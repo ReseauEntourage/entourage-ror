@@ -132,6 +132,36 @@ module Admin
       render layout: 'admin_large'
     end
 
+    def new
+      @entourage = Entourage.new(
+        group_type: params[:group_type].to_sym,
+      )
+
+      render :edit
+    end
+
+    def create
+      @entourage = Entourage.new(user_id: current_user.id, community: current_user.community)
+
+      if @entourage.outing?
+        @entourage.metadata = {
+          starts_at: nil,
+          ends_at: nil,
+          previous_at: nil,
+          landscape_url: nil,
+          landscape_thumbnail_url: nil,
+          portrait_url: nil,
+          portrait_thumbnail_url: nil,
+        }
+      end
+
+      if @entourage.assign_attributes(entourage_params) && @entourage.save
+        redirect_to edit_admin_entourage_path(@entourage)
+      else
+        render :edit
+      end
+    end
+
     def show
       @moderator_read = @entourage.moderator_read_for(user: current_user)
 
