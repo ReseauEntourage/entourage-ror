@@ -1,7 +1,16 @@
 <div class="row">
-  <%= link_to "<- Retourner à l'entourage", [:admin, @entourage] %>
+  <%= link_to("<- Retourner à l'entourage", [:admin, @entourage]) unless @entourage.new_record? %>
   <div class="h1">
-    <span>Editer l'entourage</span>
+    <span>
+      <% if @entourage.action? %>
+        Editer l'action
+      <% elsif @entourage.outing? %>
+        Editer l'événement
+      <% else %>
+        Editer l'Entourage
+      <% end %>
+    </span>
+
     <div class="pull-right">
       <% if @entourage.pin? %>
         <%= link_to "Changer en action", unpin_admin_entourage_path(@entourage), method: :post, class: "btn btn-primary" %>
