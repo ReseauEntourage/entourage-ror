@@ -279,6 +279,10 @@ class Entourage < ApplicationRecord
     group_type == 'conversation'
   end
 
+  def action?
+    group_type == 'action'
+  end
+
   def outing?
     group_type == 'outing'
   end

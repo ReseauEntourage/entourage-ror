@@ -24,6 +24,7 @@ fr:
         phone: Téléphone
         address: Adresse
       entourage:
+        title: Titre
         outing_image_url: Photo d'événement
         group_types:
           action: Action

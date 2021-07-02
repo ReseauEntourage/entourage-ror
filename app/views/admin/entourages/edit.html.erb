@@ -5,7 +5,7 @@
     <div class="pull-right">
       <% if @entourage.pin? %>
         <%= link_to "Changer en action", unpin_admin_entourage_path(@entourage), method: :post, class: "btn btn-primary" %>
-      <% else %>
+      <% elsif !@entourage.new_record? %>
         <% case @entourage.group_type %>
         <% when 'action' %>
           <%= link_to "Changer en évènement", edit_type_admin_entourage_path(@entourage, to: :outing), class: "btn btn-primary" %>

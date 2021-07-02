@@ -74,7 +74,7 @@ Rails.application.routes.draw do
 
       resources :newsletter_subscriptions, only: [:index]
       resources :entourage_invitations, only: [:index]
-      resources :entourages, only: [:index, :show, :edit, :update] do
+      resources :entourages, only: [:index, :show, :new, :create, :edit, :update] do
         member do
           post :moderator_read
           post :moderator_unread
