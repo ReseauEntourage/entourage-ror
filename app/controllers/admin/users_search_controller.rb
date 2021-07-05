@@ -2,7 +2,7 @@ module Admin
   class UsersSearchController < Admin::BaseController
     def public_user_autocomplete
       users = User.where(community: current_user.community.slug)
-                  .search_by(search_param, search_param, search_param, params[:search])
+                  .search_by(search_like, search_like, search_like, search_strip)
                   .order("last_name ASC")
                   .limit(25)
       results = users.map {|u| {label: u.full_name, value: u.full_name, id: u.id} }
@@ -13,7 +13,7 @@ module Admin
       @params = params.permit([:status]).to_h
       @users = User.includes(:organization)
                    .where(community: current_user.community.slug)
-                   .search_by(search_param, search_param, search_param, params[:search])
+                   .search_by(search_like, search_like, search_like, search_strip)
                    .order("last_sign_in_at desc nulls last")
                    .page(params[:page])
                    .per(25)
@@ -22,8 +22,12 @@ module Admin
 
     private
 
-    def search_param
-      "%#{params[:search]}%"
+    def search_like
+      "%#{search_strip}%"
+    end
+
+    def search_strip
+      params[:search] && params[:search].strip
     end
   end
 end
