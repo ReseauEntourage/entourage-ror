@@ -37,34 +37,63 @@ describe Admin::EntouragesController do
   end
 
   describe "POST create outing" do
-    let(:success) {
-      post :create, params: { entourage: {
-        group_type: :outing,
-        title: 'Groupe de voisins',
-        description: 'Groupe de voisins',
-        entourage_type: 'ask_for_help',
-        display_category: 'social',
-        latitude: 1,
-        longitude: 2,
-        metadata: {
-          starts_at: {
-            date: "2018-09-04",
-            hour: 7,
-            min: 30,
+    context "live" do
+      let(:success) {
+        post :create, params: { entourage: {
+          group_type: :outing,
+          title: 'Groupe de voisins',
+          description: 'Groupe de voisins',
+          entourage_type: 'ask_for_help',
+          display_category: 'social',
+          latitude: 1,
+          longitude: 2,
+          metadata: {
+            starts_at: {
+              date: "2018-09-04",
+              hour: 7,
+              min: 30,
+            },
+            ends_at: {
+              date: "2018-09-05",
+              hour: 7,
+              min: 30,
+            },
+            google_place_id: "ChIJFzXXy-xt5kcRg5tztdINnp0",
+            place_name: "Le Dorothy",
+            street_address: "85 bis rue de Ménilmontant, 75020 Paris, France",
           },
-          ends_at: {
-            date: "2018-09-05",
-            hour: 7,
-            min: 30,
-          },
-          google_place_id: "ChIJFzXXy-xt5kcRg5tztdINnp0",
-          place_name: "Le Dorothy",
-          street_address: "85 bis rue de Ménilmontant, 75020 Paris, France",
-        },
-      }}
-    }
+        }}
+      }
 
-    it { expect { success }.to change { Entourage.where(group_type: :outing).count }.by(1) }
+      it { expect { success }.to change { Entourage.where(group_type: :outing).count }.by(1) }
+    end
+
+    context "online" do
+      let(:success) {
+        post :create, params: { entourage: {
+          group_type: :outing,
+          title: 'Groupe de voisins',
+          description: 'Groupe de voisins',
+          entourage_type: 'ask_for_help',
+          display_category: 'social',
+          online: true,
+          metadata: {
+            starts_at: {
+              date: "2018-09-04",
+              hour: 7,
+              min: 30,
+            },
+            ends_at: {
+              date: "2018-09-05",
+              hour: 7,
+              min: 30,
+            },
+          },
+        }}
+      }
+
+      it { expect { success }.to change { Entourage.where(group_type: :outing).count }.by(1) }
+    end
   end
 
   describe "GET #show" do
