@@ -219,14 +219,15 @@ module Admin
         .new(entourage: @entourage, moderator: current_user)
         .mark_as_read(at: read_at)
 
-      redirect_to [:admin, @entourage]
+      redirect_to show_messages_admin_entourage_path(@entourage)
     end
 
     def moderator_unread
       ModeratorReadsService
         .new(entourage: @entourage, moderator: current_user)
         .mark_as_unread
-      redirect_to [:admin, @entourage]
+
+      redirect_to show_messages_admin_entourage_path(@entourage)
     end
 
     def edit
