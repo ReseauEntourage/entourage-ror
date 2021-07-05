@@ -53,31 +53,15 @@ module Admin
         ))
         .group("entourages.id, moderator_reads.id, entourage_moderations.id")
 
-      # I changed the implementation here. This option is to temporarily
-      # go back to the old one if there is a bug.
-      if params[:old_query] == '1'
-        @entourages = @entourages
-          .joins("left join conversation_messages on conversation_messages.messageable_type = 'Entourage' and conversation_messages.messageable_id = entourages.id")
-          .order(%(
-            case
-            when moderator_reads is null and entourages.created_at >= now() - interval '1 week' then 0
-            when max(conversation_messages.created_at) >= moderator_reads.read_at then 1
-            else 2
-            end
-          ))
-      else
-        @entourages = @entourages
-          .joins(%(join entourage_denorms on entourage_denorms.entourage_id = entourages.id))
-          .order(%(
-            case
-            when moderator_reads is null and entourages.created_at >= now() - interval '1 week' then 0
-            when greatest(max(max_chat_message_created_at), max(max_join_request_requested_at)) >= moderator_reads.read_at then 1
-            else 2
-            end
-          ))
-      end
-
       @entourages = @entourages
+        .joins(%(join entourage_denorms on entourage_denorms.entourage_id = entourages.id))
+        .order(%(
+          case
+          when moderator_reads is null and entourages.created_at >= now() - interval '1 week' then 0
+          when greatest(max(max_chat_message_created_at), max(max_join_request_requested_at)) >= moderator_reads.read_at then 1
+          else 2
+          end
+        ))
         .order("admin_pin DESC, entourages.created_at DESC")
         .to_a
 
