@@ -22,8 +22,8 @@ module EntourageServices
       entourage = Entourage.new(params.except(:location))
       entourage.group_type ||= 'action'
       entourage.entourage_type = 'contribution' if entourage.group_type != 'action'
-      entourage.longitude = params.dig(:location, :longitude)
-      entourage.latitude = params.dig(:location, :latitude)
+      entourage.longitude = params.dig(:location, :longitude) || params[:longitude]
+      entourage.latitude = params.dig(:location, :latitude) || params[:latitude]
       entourage.user = user
       entourage.uuid = SecureRandom.uuid
 
@@ -88,8 +88,8 @@ module EntourageServices
       params.delete(:group_type)
 
       if params[:location]
-        entourage.longitude = params.dig(:location, :longitude)
-        entourage.latitude = params.dig(:location, :latitude)
+        entourage.longitude = params.dig(:location, :longitude) || params[:longitude]
+        entourage.latitude = params.dig(:location, :latitude) || params[:latitude]
       end
 
       if self.class.update(entourage: entourage, params: params.except(:location))

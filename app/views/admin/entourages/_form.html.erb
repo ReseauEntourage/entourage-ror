@@ -104,19 +104,19 @@
         <label class="control-label"><%= label %></label>
         <div class="controls">
           <%= date_field_tag(
-                "metadata[#{timestamp}][date]",
+                "entourage[metadata][#{timestamp}][date]",
                 datetime&.to_date&.to_s,
                 required: true) %>
           <%= select_hour(
                 datetime&.hour,
                 {include_blank: true},
-                name: "metadata[#{timestamp}][hour]",
+                name: "entourage[metadata][#{timestamp}][hour]",
                 required: true) %>
           <% minutes = datetime ? (datetime.min / minute_step.to_f).round * minute_step : nil %>
           <%= select_minute(
                 minutes,
                 {minute_step: 5},
-                name: "metadata[#{timestamp}][min]",
+                name: "entourage[metadata][#{timestamp}][min]",
                 required: true) %>
         </div>
       </div>

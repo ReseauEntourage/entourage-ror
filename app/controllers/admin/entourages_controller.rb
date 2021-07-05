@@ -141,24 +141,16 @@ module Admin
     end
 
     def create
-      @entourage = Entourage.new(user_id: current_user.id, community: current_user.community)
+      entourage_builder = EntourageServices::EntourageBuilder.new(params: entourage_params, user: current_user)
+      entourage_builder.create do |on|
+        on.success do |entourage|
+          redirect_to edit_admin_entourage_path(entourage)
+        end
 
-      if @entourage.outing?
-        @entourage.metadata = {
-          starts_at: nil,
-          ends_at: nil,
-          previous_at: nil,
-          landscape_url: nil,
-          landscape_thumbnail_url: nil,
-          portrait_url: nil,
-          portrait_thumbnail_url: nil,
-        }
-      end
-
-      if @entourage.assign_attributes(entourage_params) && @entourage.save
-        redirect_to edit_admin_entourage_path(@entourage)
-      else
-        render :edit
+        on.failure do |entourage|
+          @entourage = entourage
+          render :edit
+        end
       end
     end
 
@@ -264,20 +256,6 @@ module Admin
 
     def update
       update_params = entourage_params.to_h.with_indifferent_access
-      [:starts_at, :ends_at].each do |timestamp|
-        datetime = params.dig(:metadata, timestamp)&.slice(:date, :hour, :min)
-        if datetime.present?
-          update_params[:metadata] ||= {}
-          update_params[:metadata][timestamp] =
-            Date
-              .strptime(datetime[:date])
-              .in_time_zone
-              .change(
-                hour: datetime[:hour],
-                min:  datetime[:min]
-              )
-        end
-      end
 
       if @entourage.group_type == 'outing' && params[:metadata].present?
         update_params[:metadata] ||= {}
@@ -463,7 +441,20 @@ module Admin
     def entourage_params
       metadata_keys = params.dig(:entourage, :metadata).try(:keys) || [] # security issue
       metadata_keys -= [:starts_at]
-      params.require(:entourage).permit(:group_type, :status, :title, :description, :category, :entourage_type, :display_category, :latitude, :longitude, :public, :online, :url, :event_url, :entourage_image_id, pins: [], metadata: metadata_keys)
+      permitted = params.require(:entourage).permit(:group_type, :status, :title, :description, :category, :entourage_type, :display_category, :latitude, :longitude, :public, :online, :url, :event_url, :entourage_image_id, pins: [], metadata: metadata_keys)
+
+      [:starts_at, :ends_at].each do |timestamp|
+        datetime = params.dig(:entourage, :metadata, timestamp)&.slice(:date, :hour, :min)
+        if datetime.present?
+          permitted[:metadata] ||= {}
+          permitted[:metadata][timestamp] = Date.strptime(datetime[:date]).in_time_zone.change(
+            hour: datetime[:hour],
+            min:  datetime[:min]
+          )
+        end
+      end
+
+      permitted
     end
 
     def chat_messages_params
