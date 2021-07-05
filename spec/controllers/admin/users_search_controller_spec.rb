@@ -40,6 +40,12 @@ describe Admin::UsersSearchController do
       it { expect(assigns(:users).map(&:email).uniq).to eq([searched.email]) }
     end
 
+    context "like full_name" do
+      before { get :user_search, params: { search: 'Youri Gagarine'} }
+      it { expect(assigns(:users).count).to eq(1) }
+      it { expect(assigns(:users).map(&:first_name).uniq).to eq([searched.first_name]) }
+    end
+
     context "exact phone" do
       before { get :user_search, params: { search: '+33600000000'} }
       it { expect(assigns(:users).count).to eq(1) }
