@@ -82,16 +82,20 @@ class User < ApplicationRecord
   scope :blocked, -> { where(validation_status: "blocked") }
   scope :deleted, -> { where(deleted: true) }
   scope :anonymized, -> { where(validation_status: "anonymized") }
-  scope :search_by, ->(first_name, last_name, email, phone, full_name) {
-    where(
-      "first_name ILIKE ? OR last_name ILIKE ? OR email ILIKE ? OR phone = ? OR concat(first_name, ' ', last_name) ILIKE ? OR concat(last_name, ' ', first_name) ILIKE ?",
-      first_name,
-      last_name,
-      email,
-      Phone::PhoneBuilder.new(phone: phone).format,
-      full_name,
-      full_name
-    )
+  scope :search_by, ->(search) {
+    strip = search && search.strip
+    like = "%#{strip}%"
+
+    where(%(
+      id = :id OR first_name ILIKE :first_name OR last_name ILIKE :last_name OR email ILIKE :email OR phone = :phone OR concat(first_name, ' ', last_name) ILIKE :full_name OR concat(last_name, ' ', first_name) ILIKE :full_name
+    ), {
+      id: strip.to_i,
+      first_name: like,
+      last_name: like,
+      email: like,
+      full_name: like,
+      phone: Phone::PhoneBuilder.new(phone: strip).format,
+    })
   }
   scope :atd_friends, -> { where(atd_friend: true) }
   scope :accepts_email_category, -> (category_name) {
