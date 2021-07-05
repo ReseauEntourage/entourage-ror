@@ -82,11 +82,13 @@ class User < ApplicationRecord
   scope :blocked, -> { where(validation_status: "blocked") }
   scope :deleted, -> { where(deleted: true) }
   scope :anonymized, -> { where(validation_status: "anonymized") }
-  scope :search_by, ->(first_name, last_name, email, phone) { where("first_name ILIKE ? OR last_name ILIKE ? OR email ILIKE ? OR phone = ?",
-                                                                    first_name,
-                                                                    last_name,
-                                                                    email,
-                                                                    phone) }
+  scope :search_by, ->(first_name, last_name, email, phone) { where(
+    "first_name ILIKE ? OR last_name ILIKE ? OR email ILIKE ? OR phone = ?",
+    first_name,
+    last_name,
+    email,
+    Phone::PhoneBuilder.new(phone: phone).format
+  ) }
   scope :atd_friends, -> { where(atd_friend: true) }
   scope :accepts_email_category, -> (category_name) {
     email_category_id = EmailPreferencesService.category_id(category_name)
