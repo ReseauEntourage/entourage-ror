@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Api::V1::ToursController API</title>
+    <title>Api::V1::EncountersController API</title>
     <meta charset="utf-8">
     <style>
       
@@ -106,13 +106,13 @@ table th, table td {
   </head>
   <body>
     <div class="container">
-      <h1>Api::V1::ToursController API</h1>
+      <h1>Api::V1::EncountersController API</h1>
 
-        <p class="explanation">Tours</p>
+        <p class="explanation">Encounters</p>
 
       <div class="article">
-        <h2>Update tour that the user did not created</h2>
-        <h3>PATCH api/v1/tours/:id</h3>
+        <h2>Create encounter with no message</h2>
+        <h3>POST /api/v1/tours/:tour_id/encounters</h3>
 
           <h3>Parameters</h3>
           <table class="parameters table table-striped table-bordered table-condensed">
@@ -125,50 +125,66 @@ table th, table td {
             <tbody>
               <tr>
                 <td class="required">
-                    <span class="name">id</span>
-                </td>
-                <td>
-                  <span class="description"> id</span>
-                </td>
-              </tr>
-              <tr>
-                <td class="required">
                     <span class="name">token</span>
                 </td>
                 <td>
-                  <span class="description"> token</span>
+                  <span class="description">User token</span>
                 </td>
               </tr>
               <tr>
                 <td class="required">
-                    <span class="name">tour[tour_type]</span>
+                    <span class="name">tour_id</span>
                 </td>
                 <td>
-                  <span class="description">Tour tour type</span>
+                  <span class="description">Tour id</span>
                 </td>
               </tr>
               <tr>
                 <td class="required">
-                    <span class="name">tour[vehicle_type]</span>
+                    <span class="name">encounter[street_person_name]</span>
                 </td>
                 <td>
-                  <span class="description">Tour vehicle type</span>
+                  <span class="description">Encounter street person name</span>
                 </td>
               </tr>
               <tr>
                 <td class="required">
-                    <span class="name">tour[distance]</span>
+                    <span class="name">encounter[date]</span>
                 </td>
                 <td>
-                  <span class="description">Tour distance</span>
+                  <span class="description">Encounter date</span>
                 </td>
               </tr>
               <tr>
                 <td class="required">
-                    <span class="name">tour[start_time]</span>
+                    <span class="name">encounter[latitude]</span>
                 </td>
                 <td>
-                  <span class="description">Tour start time</span>
+                  <span class="description">Encounter latitude</span>
+                </td>
+              </tr>
+              <tr>
+                <td class="required">
+                    <span class="name">encounter[longitude]</span>
+                </td>
+                <td>
+                  <span class="description">Encounter longitude</span>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                    <span class="name">encounter[message]</span>
+                </td>
+                <td>
+                  <span class="description">Encounter message</span>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                    <span class="name">encounter[voice_message]</span>
+                </td>
+                <td>
+                  <span class="description">Voice message URL</span>
                 </td>
               </tr>
             </tbody>
@@ -183,11 +199,11 @@ Host: example.org
 Cookie: </pre>
 
           <h4>Route</h4>
-          <pre class="request route highlight">PATCH api/v1/tours/4398</pre>
+          <pre class="request route highlight">POST /api/v1/tours/4391/encounters</pre>
 
 
             <h4>Body</h4>
-            <pre class="request body">{"token":"foobar53","tour":{"distance":10.02}}</pre>
+            <pre class="request body">{"token":"foobar4","tour_id":4391,"encounter":{"street_person_name":"John Doe","date":"2021-01-01 00:00:00","latitude":48.870424,"longitude":2.30682}}</pre>
 
 
             <h3>Response</h3>
@@ -198,14 +214,29 @@ X-Content-Type-Options: nosniff
 Access-Control-Allow-Origin: *
 Access-Control-Allow-Methods: GET,POST,PUT,PATCH,DELETE
 Access-Control-Allow-Headers: Origin,Accept,Content-Type,X-Requested-With,X-CSRF-Token,X-API-KEY
-Content-Type: text/html
-Cache-Control: no-cache
-Set-Cookie: request_method=PATCH; path=/
-X-Request-Id: 9e802085-694f-41c8-9776-ecf9475a88ab
-X-Runtime: 0.004858
-Content-Length: 0</pre>
+Content-Type: application/json; charset=utf-8
+ETag: W/&quot;dc2e25b7b7602fb47b53e4409bd00f29&quot;
+Cache-Control: max-age=0, private, must-revalidate
+Set-Cookie: request_method=POST; path=/
+X-Request-Id: b1961022-98f8-410e-8005-139484f43482
+X-Runtime: 0.031950
+Content-Length: 208</pre>
             <h4>Status</h4>
-            <pre class="response status">403 Forbidden</pre>
+            <pre class="response status">201 Created</pre>
+              <h4>Body</h4>
+              <pre class="response body">{
+  &quot;encounter&quot;: {
+    &quot;id&quot;: 2322,
+    &quot;date&quot;: &quot;2021-01-01T00:00:00.000+01:00&quot;,
+    &quot;latitude&quot;: 48.870424,
+    &quot;longitude&quot;: 2.30682,
+    &quot;user_id&quot;: 22783,
+    &quot;user_name&quot;: &quot;John&quot;,
+    &quot;street_person_name&quot;: &quot;John Doe&quot;,
+    &quot;message&quot;: null,
+    &quot;voice_message&quot;: null
+  }
+}</pre>
       </div>
     </div>
   </body>

@@ -92,6 +92,12 @@ RSpec.describe Api::V1::EncountersController, :type => :controller do
       end
     end
 
+    describe "response without message" do
+      let(:success) { post 'create', params: { tour_id: tour.id, token: user.token, encounter: {street_person_name: encounter.street_person_name, date: encounter.date, latitude: encounter.latitude, longitude: encounter.longitude }, :format => :json } }
+
+      it { expect { success }.to change { Encounter.count }.by(1) }
+    end
+
     describe "jobs" do
       it "reverse geocode encounter" do
         expect(EncounterReverseGeocodeJob).to receive(:perform_later)
