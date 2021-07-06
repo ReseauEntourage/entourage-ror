@@ -1,7 +1,7 @@
 module Admin
   class SlackController < ActionController::Base
-    before_action :parse_payload, only: [:message_action]
-    before_action :authenticate!, only: [:message_action]
+    before_action :parse_payload, only: [:message_action, :csv]
+    before_action :authenticate!, only: [:message_action, :csv]
 
     def message_action
       callback_type, *callback_params = @payload['callback_id']&.split(':')
@@ -35,6 +35,14 @@ module Admin
     def entourage_links
       @entourage = Entourage.find params[:id]
       render layout: false
+    end
+
+    def csv
+      return head :bad_request unless @payload['filename']
+
+      document = Storage::Client.csv.url_for(key: @payload['filename'])
+
+      send_data document.file.read, filename: document.name
     end
 
     private
