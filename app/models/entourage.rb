@@ -276,11 +276,15 @@ class Entourage < ApplicationRecord
   end
 
   def conversation?
-    group_type == 'conversation'
+    group_type && group_type.to_sym == :conversation
+  end
+
+  def action?
+    group_type && group_type.to_sym == :action
   end
 
   def outing?
-    group_type == 'outing'
+    group_type && group_type.to_sym == :outing
   end
 
   def add_metadata_schema_urn(value)

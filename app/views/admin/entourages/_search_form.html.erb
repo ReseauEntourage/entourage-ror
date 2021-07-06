@@ -87,6 +87,12 @@
     %>
     <%= label_tag :moderator_id, t("activerecord.attributes.entourage_moderation.moderator_id") %>
     <%= select_tag :moderator_id, options_for_select(options, params[:moderator_id]), class: "form-control" %>
+  </form>
+  <div style="margin-left: 20px">
+    <%= link_to "Nouvelle action", new_admin_entourage_path(group_type: :action), class: "btn btn-success" %>
+  </div>
+  <div style="margin-left: 20px">
+    <%= link_to "Nouvel événement", new_admin_entourage_path(group_type: :outing), class: "btn btn-success" %>
   </div>
 </div>
 <script>
