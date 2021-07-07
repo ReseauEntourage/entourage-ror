@@ -38,20 +38,31 @@ module Admin
       render layout: false
     end
 
+    # no option: render template
+    # option display: display csv
+    # option download: download csv
     def csv
-      return head :bad_request unless params['filename']
+      @filename = params['filename']
+      @option = params['option']
 
-      # why that? because download fails from slack without this instruction
-      return redirect_to admin_slack_csv_url(filename: params['filename'], has_been_redirected: true) unless params['has_been_redirected'].present?
+      return head :bad_request unless @filename
 
-      send_data(
-        open(Storage::Client.csv.url_for key: params['filename']).read,
-        filename: "#{params['filename']}.csv",
-        type: "application/csv",
-        disposition: 'inline',
-        stream: 'true',
-        buffer_size: '4096'
-      )
+      aws_url = Storage::Client.csv.url_for key: @filename
+
+      if @option && @option == 'display'
+        return redirect_to aws_url
+      elsif @option && @option == 'download'
+        return send_data(
+          open(aws_url).read,
+          filename: "#{@filename}.csv",
+          type: "application/csv",
+          disposition: 'inline',
+          stream: 'true',
+          buffer_size: '4096'
+        )
+      end
+
+      render layout: false
     end
 
     private
