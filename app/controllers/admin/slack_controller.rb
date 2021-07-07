@@ -41,6 +41,9 @@ module Admin
     def csv
       return head :bad_request unless params['filename']
 
+      # why that? because download fails from slack without this instruction
+      return redirect_to admin_slack_csv_url(filename: params['filename'], has_been_redirected: true) unless params['has_been_redirected'].present?
+
       send_data(
         open(Storage::Client.csv.url_for key: params['filename']).read,
         filename: "#{params['filename']}.csv",
