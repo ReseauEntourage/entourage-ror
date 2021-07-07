@@ -41,7 +41,14 @@ module Admin
     def csv
       return head :bad_request unless params['filename']
 
-      redirect_to Storage::Client.csv.url_for(key: params['filename'])
+      send_data(
+        open(Storage::Client.csv.url_for key: params['filename']).read,
+        filename: "#{params['filename']}.csv",
+        type: "application/csv",
+        disposition: 'inline',
+        stream: 'true',
+        buffer_size: '4096'
+      )
     end
 
     private
