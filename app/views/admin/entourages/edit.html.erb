@@ -2,12 +2,14 @@
   <%= link_to("<- Retourner à l'entourage", [:admin, @entourage]) unless @entourage.new_record? %>
   <div class="h1">
     <span>
+      <% verb = @entourage.new_record? ? 'Créer' : 'Éditer' %>
+
       <% if @entourage.action? %>
-        Editer l'action
+        <%= verb %> l'action
       <% elsif @entourage.outing? %>
-        Editer l'événement
+        <%= verb %> l'événement
       <% else %>
-        Editer l'Entourage
+        <%= verb %> l'Entourage
       <% end %>
     </span>
 

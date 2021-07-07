@@ -143,10 +143,10 @@ Host: example.org
 Cookie: </pre>
 
           <h4>Route</h4>
-          <pre class="request route highlight">GET /api/v1/entourage_images?token=foobar4</pre>
+          <pre class="request route highlight">GET /api/v1/entourage_images?token=foobar5</pre>
 
             <h4>Query Parameters</h4>
-            <pre class="request query_parameters highlight">token: foobar4</pre>
+            <pre class="request query_parameters highlight">token: foobar5</pre>
 
 
 
@@ -159,21 +159,21 @@ Access-Control-Allow-Origin: *
 Access-Control-Allow-Methods: GET,POST,PUT,PATCH,DELETE
 Access-Control-Allow-Headers: Origin,Accept,Content-Type,X-Requested-With,X-CSRF-Token,X-API-KEY
 Content-Type: application/json; charset=utf-8
-ETag: W/&quot;c6adf71ce2dbb7b904faaf79f8aed876&quot;
+ETag: W/&quot;7bec2d28ab76b0751a2aa00deb832d4b&quot;
 Cache-Control: max-age=0, private, must-revalidate
-X-Request-Id: 310c52c6-bbe0-47b3-b618-d8b2505bbe9c
-X-Runtime: 0.009802
-Content-Length: 181</pre>
+X-Request-Id: 23d7ca55-2421-4bd7-8e1e-a57e3bf22588
+X-Runtime: 0.034934
+Content-Length: 815</pre>
             <h4>Status</h4>
             <pre class="response status">200 OK</pre>
               <h4>Body</h4>
               <pre class="response body">{
   &quot;entourage_images&quot;: [
     {
-      &quot;id&quot;: 118,
+      &quot;id&quot;: 268,
       &quot;title&quot;: &quot;Café solidaire&quot;,
-      &quot;landscape_url&quot;: &quot;path-to-img.jpeg&quot;,
-      &quot;landscape_small_url&quot;: &quot;path-to-img.jpeg&quot;,
+      &quot;landscape_url&quot;: &quot;https://foobar.s3.eu-west-1.amazonaws.com/path-to-img.jpeg?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=foo%2F20210706%2Feu-west-1%2Fs3%2Faws4_request&amp;X-Amz-Date=20210706T130605Z&amp;X-Amz-Expires=3600&amp;X-Amz-SignedHeaders=host&amp;X-Amz-Signature=f5f2ac45b812416c8bdf4fddc2602aff95e516837cc72b01ab7a9277b91a883e&quot;,
+      &quot;landscape_small_url&quot;: &quot;https://foobar.s3.eu-west-1.amazonaws.com/path-to-img.jpeg?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=foo%2F20210706%2Feu-west-1%2Fs3%2Faws4_request&amp;X-Amz-Date=20210706T130605Z&amp;X-Amz-Expires=3600&amp;X-Amz-SignedHeaders=host&amp;X-Amz-Signature=f5f2ac45b812416c8bdf4fddc2602aff95e516837cc72b01ab7a9277b91a883e&quot;,
       &quot;portrait_url&quot;: null,
       &quot;portrait_small_url&quot;: null
     }

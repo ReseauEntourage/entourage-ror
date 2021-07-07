@@ -28,6 +28,7 @@
             "Partout" => {},
             "75" => { postal_code_start: '75' },
             "92" => { postal_code_start: '92' },
+            "93" => { postal_code_start: '93' },
             "69" => { postal_code_start: '69' },
             "59" => { postal_code_start: '59' },
             "35" => { postal_code_start: '35' },
@@ -77,10 +78,17 @@
     <th>Nom</th>
     <th>Prénom</th>
     <th>Association</th>
-    <th>Date de création</th>
-    <th>Date de dernière connexion</th>
-    <th>Statut</th>
-    <th></th>
+
+    <% if @status == :pending %>
+      <th>Email lié au compte</th>
+      <th>Date de la demande</th>
+    <% else %>
+      <th>Date de création</th>
+      <th>Date de dernière connexion</th>
+      <th>Nombre d'entourages</th>
+    <% end %>
+
+    <th><!-- Actions --></th>
 
     <% @users.each do |user| %>
       <tr>
@@ -93,25 +101,23 @@
             <span class="text-muted">&mdash;</span>
           <% end %>
         </td>
-        <td><%= l user.created_at, format: "%-d %B %Y" %></td>
-        <td>
-          <% if user.last_sign_in_at %>
-            <%= l user.last_sign_in_at, format: "%-d %B %Y" %>
-          <% else %>
-            <span class="text-muted">&mdash;</span>
-          <% end %>
-        </td>
-        <td>
-          <% if user.anonymized? %>
-            <a class="btn-xs btn-info small">Anonymisé</a>
-          <% elsif user.deleted? %>
-            <a class="btn-xs btn-danger small">Supprimé</a>
-          <% elsif user.blocked? %>
-            <a class="btn-xs btn-warning small">Bloqué</a>
-          <% else %>
-          <% end %>
-        </td>
-        <td><%= link_to "Modifier", edit_admin_user_path(user), class: "btn btn-primary" %></td>
+
+        <% if @status == :pending %>
+          <td><%= user.email %></td>
+          <td><%= l user.pending_phone_change_request.created_at, format: "%-d %B %Y" %></td>
+        <% else %>
+          <td><%= l user.created_at, format: "%-d %B %Y" %></td>
+          <td>
+            <% if user.last_sign_in_at %>
+              <%= l user.last_sign_in_at, format: "%-d %B %Y" %>
+            <% else %>
+              <span class="text-muted">&mdash;</span>
+            <% end %>
+          </td>
+          <td><%= user.groups.count %></td>
+        <% end %>
+
+        <td><%= link_to "Modifier", edit_admin_user_path(user), class: "btn btn-danger" %></td>
       </tr>
     <% end %>
   </table>
