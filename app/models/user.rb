@@ -145,9 +145,7 @@ class User < ApplicationRecord
   before_validation do
     self.goal = nil if goal.blank?
 
-    if targeting_profile_changed? && targeting_profile == 'team'
-      self.partner_id = Partner.where(name: 'Entourage').pluck(:id).first
-    elsif targeting_profile_changed? && targeting_profile != 'partner'
+    if targeting_profile_changed? && !['partner', 'team'].include?(targeting_profile)
       self.partner_id = nil
     elsif partner_id_changed? && partner_id.present?
       self.targeting_profile = partner.staff ? 'team' : 'partner'
