@@ -3,11 +3,19 @@ module Admin
     before_action :set_poi, only: [:edit, :update, :destroy]
 
     def index
-      @q = Poi.ransack(params[:q])
+      @params = params.permit([q: [:name_cont, :postal_code_start, :postal_code_in_hors_zone]]).to_h
+      @q = Poi.ransack(@params[:q])
       @pois = @q.result(distinct: true)
                          .page(params[:page])
                          .per(25)
                          .order("created_at DESC")
+
+      if @params[:q]
+        @pois = @pois.in_postal_code(@params[:q][:postal_code_start]) if @params[:q][:postal_code_start]
+        @pois = @pois.in_postal_code(:hors_zone) if @params[:q][:postal_code_in_hors_zone]
+      end
+
+      @pois
     end
 
     def new
