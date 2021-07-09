@@ -7,7 +7,6 @@ module Admin
     def message_action
       callback_type, *callback_params = @payload['callback_id']&.split(':')
       return head :bad_request if [callback_type, callback_params.length] != ['entourage_validation', 1]
-      return head :bad_request unless @payload['actions']
 
       entourage = Entourage.find callback_params[0]
 
