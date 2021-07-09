@@ -123,7 +123,15 @@
     <% end %>
   <% end %>
 
-  <% if @entourage.group_type == 'action' || @entourage.new_record? %>
+  <% if @entourage.group_type == 'action' %>
+    <% if Entourage::DEPRECATED_DISPLAY_CATEGORIES.include? @entourage.display_category %>
+      <div class="alert alert-info" role="alert" style="display: flex; align-items: center">
+        <div style="flex-grow: 1">
+          L'action est liée à une ancienne catégorie (<%= @entourage.display_category %>). Merci d'en choisir une autre.
+        </div>
+      </div>
+    <% end %>
+
     <div class="control-group">
       <%= f.label :display_category, "Catégorie affichée", class: "control-label" %>
       <div class="controls">

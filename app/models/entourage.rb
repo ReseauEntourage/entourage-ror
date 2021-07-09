@@ -30,7 +30,8 @@ class Entourage < ApplicationRecord
   ENTOURAGE_STATUS = ['open', 'closed', 'blacklisted', 'suspended']
   BLACKLIST_WORDS  = ['rue', 'avenue', 'boulevard', 'en face de', 'vend', 'loue', '06', '07', '01']
   CATEGORIES  = ['mat_help', 'non_mat_help', 'social']
-  DISPLAY_CATEGORIES = ['social', 'event', 'mat_help', 'resource', 'info', 'skill', 'other']
+  DISPLAY_CATEGORIES = ['social', 'resource', 'mat_help', 'other']
+  DEPRECATED_DISPLAY_CATEGORIES = ['info', 'skill', 'event']
   DEFAULT_EVENT_DURATION = 3.hours
 
   belongs_to :user
