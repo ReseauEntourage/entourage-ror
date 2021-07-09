@@ -119,7 +119,7 @@ module Admin
     def new
       @entourage = Entourage.new(
         group_type: params[:group_type].to_sym,
-        public: params[:group_type] == 'outing'
+        public: true
       )
 
       render :edit
