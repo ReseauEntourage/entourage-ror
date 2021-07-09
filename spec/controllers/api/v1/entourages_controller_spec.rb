@@ -93,7 +93,7 @@ describe Api::V1::EntouragesController do
 
       # types
       context "filter entourage_type" do
-        let!(:help_entourage) { FactoryBot.create(:entourage, entourage_type: "ask_for_help", display_category: "event", updated_at: entourage.created_at-1.hours, created_at: entourage.created_at-1.hours) }
+        let!(:help_entourage) { FactoryBot.create(:entourage, entourage_type: "ask_for_help", display_category: "social", updated_at: entourage.created_at-1.hours, created_at: entourage.created_at-1.hours) }
         # before { get :index, types: "as, ae", token: user.token } # conflict
         before { get :index, params: { type: "ask_for_help", token: user.token } }
         it { expect(subject["entourages"].count).to eq(2) }
@@ -101,7 +101,7 @@ describe Api::V1::EntouragesController do
       end
 
       context "filter wrong entourage_type" do
-        let!(:help_entourage) { FactoryBot.create(:entourage, entourage_type: "ask_for_help", display_category: "event", updated_at: entourage.created_at-1.hours, created_at: entourage.created_at-1.hours) }
+        let!(:help_entourage) { FactoryBot.create(:entourage, entourage_type: "ask_for_help", display_category: "social", updated_at: entourage.created_at-1.hours, created_at: entourage.created_at-1.hours) }
         before { get :index, params: { types: "cs, ce", token: user.token } }
         it { expect(subject["entourages"].count).to eq(0) }
       end
