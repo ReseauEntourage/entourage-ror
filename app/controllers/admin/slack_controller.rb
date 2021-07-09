@@ -1,12 +1,13 @@
 module Admin
   class SlackController < Admin::BaseController
     before_action :parse_payload, only: [:message_action]
-    skip_before_action :authenticate_admin!, only: [:message_action]
+    skip_before_action :authenticate_admin!, only: [:message_action, :entourage_links]
     before_action :authenticate_slack!, only: [:message_action]
 
     def message_action
       callback_type, *callback_params = @payload['callback_id']&.split(':')
       return head :bad_request if [callback_type, callback_params.length] != ['entourage_validation', 1]
+      return head :bad_request unless @payload['actions']
 
       entourage = Entourage.find callback_params[0]
 
@@ -47,13 +48,13 @@ module Admin
 
       return head :bad_request unless @filename
 
-      aws_url = Storage::Client.csv.url_for key: @filename
+      @url = Storage::Client.csv.url_for(key: @filename)
 
       if @option && @option == 'display'
-        return redirect_to aws_url
+        return redirect_to @url
       elsif @option && @option == 'download'
         return send_data(
-          open(aws_url).read,
+          open(@url).read,
           filename: "#{@filename}.csv",
           type: "application/csv",
           disposition: 'inline',
@@ -72,7 +73,9 @@ module Admin
     end
 
     def authenticate_slack!
-      head :unauthorized if @payload['token'] != ENV['SLACK_APP_VERIFICATION_TOKEN']
+      unless @payload['token'] && @payload['token'] == ENV['SLACK_APP_VERIFICATION_TOKEN']
+        login_error "Votre action nécessite une authentification Slack pour accéder à cette page"
+      end
     end
   end
 end
