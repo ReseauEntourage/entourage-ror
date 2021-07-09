@@ -1,8 +1,7 @@
 module Admin
-  class SlackController < Admin::BaseController
+  class SlackController < ActionController::Base
     before_action :parse_payload, only: [:message_action]
-    skip_before_action :authenticate_admin!, only: [:message_action, :entourage_links]
-    before_action :authenticate_slack!, only: [:message_action]
+    before_action :authenticate!, only: [:message_action]
 
     def message_action
       callback_type, *callback_params = @payload['callback_id']&.split(':')
@@ -38,43 +37,14 @@ module Admin
       render layout: false
     end
 
-    # no option: render template
-    # option display: display csv
-    # option download: download csv
-    def csv
-      @filename = params['filename']
-      @option = params['option']
-
-      return head :bad_request unless @filename
-
-      @url = Storage::Client.csv.url_for(key: @filename)
-
-      if @option && @option == 'display'
-        return redirect_to @url
-      elsif @option && @option == 'download'
-        return send_data(
-          open(@url).read,
-          filename: "#{@filename}.csv",
-          type: "application/csv",
-          disposition: 'inline',
-          stream: 'true',
-          buffer_size: '4096'
-        )
-      end
-
-      render layout: false
-    end
-
     private
 
     def parse_payload
       @payload = JSON.parse(params[:payload]) rescue {}
     end
 
-    def authenticate_slack!
-      unless @payload['token'] && @payload['token'] == ENV['SLACK_APP_VERIFICATION_TOKEN']
-        login_error "Votre action nécessite une authentification Slack pour accéder à cette page"
-      end
+    def authenticate!
+      head :unauthorized if @payload['token'] != ENV['SLACK_APP_VERIFICATION_TOKEN']
     end
   end
 end
