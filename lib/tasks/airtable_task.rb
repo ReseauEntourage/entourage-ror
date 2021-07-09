@@ -53,7 +53,7 @@ module AirtableTask
             {
               text:  "Télécharger",
               type:  :button,
-              url: Rails.application.routes.url_helpers.admin_slack_csv_url(filename: filename),
+              url: Rails.application.routes.url_helpers.admin_slack_csv_url(filename: filename, host: ENV['ADMIN_HOST']),
             },
           ]
         }

@@ -279,12 +279,12 @@ include CommunityHelper
       context "entourage" do
         with_community :entourage
         let!(:as) { create :entourage, entourage_type: :ask_for_help, display_category: :social, latitude: latitude, longitude: longitude }
-        let!(:ci) { create :entourage, entourage_type: :contribution, display_category: :info, latitude: latitude, longitude: longitude }
+        let!(:co) { create :entourage, entourage_type: :contribution, display_category: :other, latitude: latitude, longitude: longitude }
 
-        it { expect(result_ids()).to eq [ci.id, as.id] }
-        it { expect(result_ids(types: 'as,ci')).to eq [ci.id, as.id] }
+        it { expect(result_ids()).to eq [co.id, as.id] }
+        it { expect(result_ids(types: 'as,co')).to eq [co.id, as.id] }
         it { expect(result_ids(types: 'as')).to eq [as.id] }
-        it { expect(result_ids(types: 'contribution_info')).to eq [ci.id] }
+        it { expect(result_ids(types: 'contribution_other')).to eq [co.id] }
       end
     end
 
