@@ -73,6 +73,7 @@ module Admin
     end
 
     def authenticate_slack!
+      puts "authenticate_slack! #{@payload.inspect}"
       unless @payload['token'] && @payload['token'] == ENV['SLACK_APP_VERIFICATION_TOKEN']
         login_error "Votre action nécessite une authentification Slack pour accéder à cette page"
       end
