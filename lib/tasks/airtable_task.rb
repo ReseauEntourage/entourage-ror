@@ -6,7 +6,7 @@ module AirtableTask
   def self.upload klass, channel, dpts, stade, hors_zone: false
     ensure_directory_exist
     file = path dpts, stade
-    object = Storage::Client.avatars.object(s3_path(klass, dpts, stade, hors_zone))
+    object = Storage::Client.csv.object(s3_path(klass, dpts, stade, hors_zone))
 
     CSV.open(file, 'w+', write_headers: true, headers: klass.headers) do |writer|
       klass.from_airtable(dpts, stade, hors_zone).each do |csv|
@@ -16,7 +16,7 @@ module AirtableTask
 
     object.upload_file(file)
 
-    to_slack klass, channel, object.public_url, dpts, stade, hors_zone
+    to_slack klass, channel, object.key, dpts, stade, hors_zone
   end
 
   private
@@ -34,17 +34,30 @@ module AirtableTask
     "airtable/#{Date.today}-#{klass.table_name.parameterize}-#{stade.parameterize}-#{dpts.join('-')}-#{Time.now.to_i}.csv"
   end
 
-  def self.to_slack klass, channel, url, dpts, stade, hors_zone
+  def self.to_slack klass, channel, filename, dpts, stade, hors_zone
     dpts = hors_zone ? ['Hors-Zone'] : dpts
-    Slack::Notifier.new(ENV['SLACK_WEBHOOK_URL']).ping(
-      channel: channel,
+    callback_id = [:csv, klass, channel, filename, dpts, stade].join(':')
+
+    Slack::Notifier.new(ENV['SLACK_WEBHOOK_URL']).ping({
       username: USERNAME,
+      channel: channel,
       text: "Export du #{Date.today} pour #{klass.table_name} #{dpts}, #{stade}",
-      attachments: [{
-        text: TEXT,
-      }, {
-        text: url
-      }]
-    )
+      attachments: [
+        {
+          color: "#3AA3E3",
+          title: "Envoi de masse de SMS de suivi",
+          text: "C'est l'heure de votre envoi de masse de SMS de suivi !",
+          mrkdwn_in: [:text],
+          callback_id: callback_id,
+          actions: [
+            {
+              text:  "Télécharger",
+              type:  :button,
+              url: Rails.application.routes.url_helpers.admin_slack_csv_url(filename: filename, host: ENV['ADMIN_HOST']),
+            },
+          ]
+        }
+      ]
+    })
   end
 end
