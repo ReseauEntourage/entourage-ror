@@ -4,7 +4,6 @@ class ApplicationController < ActionController::Base
   helper_method :current_user, :current_admin, :current_manager, :current_super_admin
 
   def authenticate_admin!
-    puts "Vous devez vous authentifier avec un compte admin pour accéder à cette page"
     login_error "Vous devez vous authentifier avec un compte admin pour accéder à cette page" unless current_admin
   end
 

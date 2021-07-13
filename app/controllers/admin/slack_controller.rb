@@ -1,9 +1,8 @@
 module Admin
-  class SlackController < Admin::BaseController
-    skip_before_action :verify_authenticity_token
+  class SlackController < ActionController::Base
     before_action :parse_payload, only: [:message_action]
-    skip_before_action :authenticate_admin!, only: [:message_action, :entourage_links]
     before_action :authenticate_slack!, only: [:message_action]
+    before_action :authenticate_admin!, only: [:csv]
 
     def message_action
       callback_type, *callback_params = @payload['callback_id']&.split(':')
@@ -74,10 +73,16 @@ module Admin
     end
 
     def authenticate_slack!
-      puts "authenticate_slack! #{@payload.inspect}"
-      unless @payload['token'] && @payload['token'] == ENV['SLACK_APP_VERIFICATION_TOKEN']
-        login_error "Votre action nécessite une authentification Slack pour accéder à cette page"
-      end
+      head :unauthorized if @payload['token'] != ENV['SLACK_APP_VERIFICATION_TOKEN']
+    end
+
+    def authenticate_admin!
+      head :unauthorized unless current_admin
+    end
+
+    def current_admin
+      return if session[:admin_user_id].nil?
+      @current_admin ||= User.where(id: session[:admin_user_id]).first
     end
   end
 end

@@ -20,7 +20,7 @@ describe Admin::SlackController do
     context "not signed in" do
       before { post :message_action, params: { payload: ActiveSupport::JSON.encode(payload) } }
 
-      it { should redirect_to new_session_path }
+      it { expect(response.code).to eq("401") }
     end
 
     context "signed in" do
@@ -82,7 +82,7 @@ describe Admin::SlackController do
     context "not signed in" do
       before { get :csv, params: params }
 
-      it { should redirect_to new_session_path(continue: request.fullpath) }
+      it { expect(response.code).to eq("401") }
     end
 
     context "signed in" do
