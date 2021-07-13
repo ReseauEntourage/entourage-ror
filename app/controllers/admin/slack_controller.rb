@@ -1,5 +1,6 @@
 module Admin
   class SlackController < Admin::BaseController
+    skip_before_action :verify_authenticity_token
     before_action :parse_payload, only: [:message_action]
     skip_before_action :authenticate_admin!, only: [:message_action, :entourage_links]
     before_action :authenticate_slack!, only: [:message_action]
