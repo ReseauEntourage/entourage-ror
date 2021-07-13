@@ -8,6 +8,7 @@ var ready = function() {
       $("#change_password").hide();
       $("#sms_group").show();
       $("#sms_group :input")[0].removeAttribute("disabled");
+      $("#admin-user-update").attr('value', 'Enregistrer et envoyer la confirmation');
     });
 
     $("#change_status a").click(function(e) {
