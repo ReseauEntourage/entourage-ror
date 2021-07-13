@@ -22,7 +22,6 @@ describe Api::V1::Public::StatsController do
 
       # events
       create :outing
-      create :entourage, display_category: :event
 
       # excluded event
       create :outing, community: :pfp
@@ -36,8 +35,8 @@ describe Api::V1::Public::StatsController do
         'encounters'=>4,
         'organizations'=>1,
         'actions'=>2,
-        'events'=>2,
-        'users'=>7
+        'events'=>1,
+        'users'=>6
       })
     end
   end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20210628143000) do
+ActiveRecord::Schema.define(version: 20210709144700) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -309,6 +309,7 @@ ActiveRecord::Schema.define(version: 20210628143000) do
     t.boolean "admin_pin", default: false, null: false
     t.boolean "pin", default: false
     t.jsonb "pins", default: [], null: false
+    t.string "display_category_copy"
     t.index "st_setsrid(st_makepoint(longitude, latitude), 4326)", name: "index_entourages_on_coordinates", using: :gist
     t.index ["country", "postal_code"], name: "index_entourages_on_country_and_postal_code"
     t.index ["latitude", "longitude"], name: "index_entourages_on_latitude_and_longitude"
