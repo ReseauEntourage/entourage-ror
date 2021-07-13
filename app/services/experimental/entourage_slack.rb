@@ -116,7 +116,7 @@ module Experimental::EntourageSlack
             {
               text:  "Afficher",
               type:  :button,
-              url: h.admin_slack_entourage_links_url(e, host: ENV['ADMIN_HOST'])
+              url: links_url(e)
             }
           ]
         }
@@ -133,6 +133,10 @@ module Experimental::EntourageSlack
 
   def self.asset_url path
     File.join(h.root_url, "/assets/", path)
+  end
+
+  def self.links_url entourage
+    h.admin_slack_entourage_links_url(entourage, host: ENV['ADMIN_HOST'])
   end
 
   def self.enable_callback
