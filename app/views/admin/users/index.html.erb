@@ -33,7 +33,7 @@
             "Hors zone" => { postal_code_in_hors_zone: 'true' },
           }
 
-          location_keys = [:country_eq, :postal_code_start, :postal_code_in_hors_zone]
+          location_keys = [:postal_code_start, :postal_code_in_hors_zone]
           active = presets.key q.slice(*location_keys).compact.symbolize_keys
         %>
         <% presets.each do |name, options| %>
