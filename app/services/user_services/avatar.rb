@@ -29,6 +29,8 @@ module UserServices
     end
 
     def thumbnail_key
+      return "staging/300x300/#{user.avatar_key}" if EnvironmentHelper.staging?
+
       "300x300/#{user.avatar_key}"
     end
 

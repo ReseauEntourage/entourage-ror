@@ -46,7 +46,7 @@ module AirtableTask
         {
           color: "#3AA3E3",
           title: "Envoi de masse de SMS de suivi",
-          text: "C'est l'heure de votre envoi de masse de SMS de suivi ! Importez ce csv dans vos Google Contacts pour ensuite utiliser votre app (DoItLater)",
+          text: "C'est l'heure de votre envoi de masse de SMS de suivi !",
           mrkdwn_in: [:text],
           callback_id: callback_id,
           actions: [
