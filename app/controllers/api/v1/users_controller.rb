@@ -205,6 +205,7 @@ module Api
 
         extension = MiniMime.lookup_by_content_type(params[:content_type]).extension
         key = "#{SecureRandom.uuid}.#{extension}"
+        # TODO on staging platform should be .object("staging/300x300/#{key}"), this was done by using ENTOURAGE_AVATARS_FOLDER variable before
         url = Storage::Client.avatars
           .object("300x300/#{key}")
           .presigned_url(
