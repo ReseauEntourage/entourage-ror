@@ -74,6 +74,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                                   "feature_flags"=>{"organization_admin"=>false},
                                   "engaged"=>false,
                                   "goal" => nil,
+                                  "unread_count" => 0,
                                   "interests" => []
                                  },
                                 "first_sign_in"=>true
@@ -277,6 +278,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                                                              "feature_flags"=>{"organization_admin"=>false},
                                                              "engaged"=>true,
                                                              "goal" => nil,
+                                                             "unread_count" => 0,
                                                              "interests" => []
                                                            },
                                                     "first_sign_in"=>true})}
@@ -695,6 +697,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                                                            "feature_flags"=>{"organization_admin"=>false},
                                                            "engaged"=>false,
                                                            "goal" => nil,
+                                                           "unread_count" => 0,
                                                            "interests" => []
                                                          }}) }
 
@@ -765,6 +768,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                                                            "feature_flags"=>{"organization_admin"=>false},
                                                            "engaged"=>false,
                                                            "goal" => nil,
+                                                           "unread_count" => 0,
                                                            "interests" => []
                                                          }}) }
       end
@@ -799,6 +803,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                                                                "good_waves_participation" => false,
                                                            },
                                                            "engaged"=>false,
+                                                           "unread_count" => 0,
                                                            "partner"=>nil,
                                                            "memberships"=>[],
                                                            "conversation"=>{"uuid"=>"1_list_#{user.id}-#{other_user.id}"}
