@@ -53,12 +53,8 @@ Rails.application.routes.draw do
           get '/logo_upload_success', action: :logo_upload_success
         end
       end
-      resources :moderation_areas, only: [:index, :edit] do
-        member do
-          match '/edit', via: [:patch, :put], action: :update, as: nil
-        end
-      end
 
+      resources :moderation_areas
       resources :tour_areas
 
       resources :uploads, only: :new

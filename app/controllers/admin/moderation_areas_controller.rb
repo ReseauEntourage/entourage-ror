@@ -6,13 +6,26 @@ module Admin
       @areas = ModerationArea.order(:id).all
     end
 
+    def new
+      @area = ModerationArea.new
+    end
+
+    def create
+      @area = ModerationArea.new(area_params)
+
+      if @area.save
+        redirect_to admin_moderation_areas_path, notice: "La zone de modération a bien été créée"
+      else
+        render :new
+      end
+    end
+
     def edit
       @area = ModerationArea.find(params[:id])
     end
 
     def update
       @area = ModerationArea.find(params[:id])
-
       @area.assign_attributes(area_params)
 
       if @area.save
@@ -27,6 +40,8 @@ module Admin
     def area_params
       params.require(:moderation_area).permit(
         :moderator_id,
+        :departement,
+        :name,
         :welcome_message_1_offer_help,     :welcome_message_2_offer_help,
         :welcome_message_1_ask_for_help,   :welcome_message_2_ask_for_help,
         :welcome_message_1_organization,   :welcome_message_2_organization,
