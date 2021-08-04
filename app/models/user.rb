@@ -200,7 +200,7 @@ class User < ApplicationRecord
   end
 
   def admin= is_admin
-    if ['0', false].include?(is_admin)
+    unless ActiveModel::Type::Boolean.new.cast(is_admin)
       self.roles -= [:moderator]
     end
 
