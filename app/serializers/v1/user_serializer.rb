@@ -22,7 +22,8 @@ module V1
                :firebase_properties,
                :placeholders,
                :feature_flags,
-               :engaged
+               :engaged,
+               :unread_count
 
     has_one :organization
     has_one :stats, serializer: ActiveModel::DefaultSerializer
@@ -145,6 +146,10 @@ module V1
 
     def engaged
       object.engaged?
+    end
+
+    def unread_count
+      UserServices::UnreadMessages.new(user: object).number_of_unread_messages
     end
 
     def scope
