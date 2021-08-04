@@ -9,6 +9,7 @@
       <%= link_to("Bloqués", @params.merge(status: :blocked), class: "btn btn-#{@status == :blocked ? :primary : :default}") %>
       <%= link_to("Supprimés", @params.merge(status: :deleted), class: "btn btn-#{@status == :deleted ? :primary : :default}") %>
       <%= link_to("Admins", @params.merge(status: :admin), class: "btn btn-#{@status == :admin ? :primary : :default}") %>
+      <%= link_to("Modérateurs", @params.merge(status: :moderators), class: "btn btn-#{@status == :moderators ? :primary : :default}") %>
       <%= link_to("En attente", @params.merge(status: :pending), class: "btn btn-#{@status == :pending ? :primary : :default}") %>
     </div>
 
@@ -83,7 +84,10 @@
     <% else %>
       <th>Date de création</th>
       <th>Date de dernière connexion</th>
-      <th>Nombre d'entourages</th>
+    <% end %>
+
+    <% if [:admin, :moderators].include? @status %>
+      <th>Rôle modérateur</th>
     <% end %>
 
     <th><!-- Actions --></th>
@@ -112,7 +116,14 @@
               <span class="text-muted">&mdash;</span>
             <% end %>
           </td>
-          <td><%= user.groups.count %></td>
+
+          <% if [:admin, :moderators].include? @status %>
+            <td>
+              <% if user.moderator %>
+                <span class="label label-default" title="moderator">modérateur</span>
+              <% end %>
+            </td>
+          <% end %>
         <% end %>
 
         <td><%= link_to "Modifier", edit_admin_user_path(user), class: "btn btn-danger" %></td>

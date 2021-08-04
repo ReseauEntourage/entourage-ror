@@ -6,7 +6,7 @@ module Admin
       @params = params.permit([:status, q: [:postal_code_start, :postal_code_in_hors_zone]]).to_h
 
       @status = params[:status].presence&.to_sym
-      @status = :all unless @status.in?([:engaged, :not_engaged, :blocked, :deleted, :admin, :pending])
+      @status = :all unless @status.in?([:engaged, :not_engaged, :blocked, :deleted, :admin, :pending, :moderators])
 
       @users = current_user.community.users
 
@@ -15,6 +15,7 @@ module Admin
       @users = @users.blocked if @status && @status == :blocked
       @users = @users.deleted if @status && @status == :deleted
       @users = @users.where(admin: true) if @status && @status == :admin
+      @users = @users.moderators if @status && @status == :moderators
       @users = @users.where(id: UserPhoneChange.pending_user_ids) if @status && @status == :pending
       @users = @users.joins(:user_phone_changes).order('user_phone_changes.created_at') if @status && @status == :pending
       @users = @users.in_area("dep_" + @params[:q][:postal_code_start]) if @params[:q] && @params[:q][:postal_code_start]
