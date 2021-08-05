@@ -221,4 +221,30 @@ describe User, :type => :model do
       it { expect(user.pending_phone_change_request.id).to eq(phone_request.id) }
     end
   end
+
+  describe 'admin=' do
+    context 'when false for a moderator' do
+      let(:admin) { FactoryBot.create(:admin_user, roles: [:moderator]) }
+      it { admin.update(admin: false); expect(admin.reload.admin).to eq(false) }
+      it { admin.update(admin: false); expect(admin.reload.roles).to eq([]) }
+      it { admin.update(admin: true); expect(admin.reload.admin).to eq(true) }
+      it { admin.update(admin: true); expect(admin.reload.roles).to eq([:moderator]) }
+    end
+
+    context 'when false for a non-moderator' do
+      let(:admin) { FactoryBot.create(:admin_user, roles: []) }
+      it { admin.update(admin: false); expect(admin.reload.admin).to eq(false) }
+      it { admin.update(admin: false); expect(admin.reload.roles).to eq([]) }
+      it { admin.update(admin: true); expect(admin.reload.admin).to eq(true) }
+      it { admin.update(admin: true); expect(admin.reload.roles).to eq([]) }
+    end
+
+    context 'when true' do
+      let(:admin) { FactoryBot.create(:admin_user, admin: false, roles: []) }
+      it { admin.update(admin: false); expect(admin.reload.admin).to eq(false) }
+      it { admin.update(admin: false); expect(admin.reload.roles).to eq([]) }
+      it { admin.update(admin: true); expect(admin.reload.admin).to eq(true) }
+      it { admin.update(admin: true); expect(admin.reload.roles).to eq([]) }
+    end
+  end
 end
