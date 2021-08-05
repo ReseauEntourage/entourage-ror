@@ -94,11 +94,30 @@ class Entourage < ApplicationRecord
   after_create :check_moderation
   before_create :set_uuid
 
-  def moderator_read_for(user:)
+  def moderator_read_for user:
     moderator_reads.where(user_id: user.id).first
   end
 
-  def self.with_moderator_reads_for(user:)
+  def no_moderator_read_for user:
+    moderator_read_for(user: user).nil?
+  end
+
+  def join_request_after read_at:
+    join_requests.with_entourage_invitations.accepted.where('join_requests.created_at > ?', read_at).any?
+  end
+
+  def unread_chat_message_after read_at:
+    conversation_messages.ordered.with_content.where('created_at > ?', read_at).any?
+  end
+
+  def moderator_has_unread_content user:
+    moderator_read = moderator_read_for(user: user)
+    return true unless moderator_read && moderator_read.read_at
+
+    no_moderator_read_for(user: user) || join_request_after(read_at: moderator_read.read_at) || unread_chat_message_after(read_at: moderator_read.read_at)
+  end
+
+  def self.with_moderator_reads_for user:
     joins(%(
       left join moderator_reads on (
         moderator_reads.user_id = #{user.id} and
