@@ -60,11 +60,9 @@
           </div>
         <% end %>
 
-        <% if @entourage.status == 'open' %>
-          <div>
-            <%= link_to "Modifier", edit_image_admin_entourage_path, class: "btn btn-default btn-sm" %>
-          </div>
-        <% end %>
+        <div>
+          <%= link_to "Modifier", edit_image_admin_entourage_path, class: "btn btn-default btn-sm" %>
+        </div>
       <% end %>
     </div>
   <% end %>
