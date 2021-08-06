@@ -69,7 +69,7 @@ class MemberMailer < MailjetMailer
                       id: action.uuid_v2,
                       signature: SignatureService.sign(action.id),
                     ),
-                    action_support_url: "mailto:guillaume@entourage.social?" + {
+                    action_support_url: "mailto:clara@entourage.social?" + {
                       subject: "Demande d'aide pour mon action [##{action.id}]",
                       body: "\n\n--\nLien vers l'action : #{action_url}"
                     }.to_query
