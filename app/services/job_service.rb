@@ -22,7 +22,13 @@ module JobService
 
   def self.processes
     Sidekiq::ProcessSet.new.map do |process|
-      JSON.parse(process.value)
+      {
+        hostname: process['hostname'],
+        started_at: process['started_at'],
+        identity: process['identity'],
+        busy: process['busy'],
+        pid: process['pid'],
+      }
     end
   end
 

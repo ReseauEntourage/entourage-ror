@@ -53,18 +53,18 @@
         </div>
       <% else %>
         <table class="table">
-          <th>Classe</th>
-          <th>Créé le</th>
-          <th>Placé en queue le</th>
-          <th>Erreur le</th>
-          <th>Arguments</th>
+          <th>hostname</th>
+          <th>started_at</th>
+          <th>identity</th>
+          <th>busy</th>
+          <th>pid</th>
           <% @processes.each do |job| %>
             <tr>
-              <td><%= job['error_class'] %></td>
-              <td><%= job['created_at'] %></td>
-              <td><%= job['enqueued_at'] %></td>
-              <td><%= job['failed_at'] %></td>
-              <td><%= job['args'] %></td>
+              <td><%= job[:hostname] %></td>
+              <td><%= job[:started_at] %></td>
+              <td><%= job[:identity] %></td>
+              <td><%= job[:busy] %></td>
+              <td><%= job[:pid] %></td>
             </tr>
           <% end %>
         </table>
