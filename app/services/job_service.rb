@@ -33,8 +33,18 @@ module JobService
   end
 
   def self.workers
-    Sidekiq::Workers.new.map do |worker|
-      JSON.parse(worker.value)
+    Sidekiq::Workers.new.map do |process_id, thread_id, work|
+      {
+        process_id: process_id,
+        thread_id: thread_id,
+        work: work,
+        queue: work['payload']['queue'],
+        class: work['payload']['class'],
+        args: work['payload']['args'],
+        created_at: work['payload']['created_at'],
+        enqueued_at: work['payload']['enqueued_at'],
+        run_at: work['enqueued_at'],
+      }
     end
   end
 

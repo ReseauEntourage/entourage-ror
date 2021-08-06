@@ -82,6 +82,50 @@
   <div class="row">
     <div class="col-xs-offset-2 col-xs-8">
       <div class="h1" style="display: flex; align-items: center;">
+        <div style="flex-grow: 1">Jobs finis</div>
+      </div>
+
+      <% if @workers.empty? %>
+        <div class="panel panel-warning">
+          <div class="panel-heading">
+            <h3 class="panel-title">Aucun job fini</h3>
+          </div>
+        </div>
+      <% else %>
+        <table class="table">
+          <th>hostname</th>
+          <th>started_at</th>
+          <th>identity</th>
+          <th>busy</th>
+          <th>pid</th>
+          <% @workers.each do |job| %>
+            <tr>
+              <td><%= job[:process_id] %></td>
+              <td><%= job[:thread_id] %></td>
+              <td><%= job[:work] %></td>
+              <td><%= job[:queue] %></td>
+              <td><%= job[:class] %></td>
+              <td><%= job[:args] %></td>
+              <td><%= job[:created_at] %></td>
+              <td><%= job[:enqueued_at] %></td>
+              <td><%= job[:run_at] %></td>
+            </tr>
+          <% end %>
+        </table>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="row">
+    <%#= paginate @paginated %>
+  </div>
+</div>
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-xs-offset-2 col-xs-8">
+      <div class="h1" style="display: flex; align-items: center;">
         <div style="flex-grow: 1">Jobs planifiés</div>
       </div>
 
