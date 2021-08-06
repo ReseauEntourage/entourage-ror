@@ -66,6 +66,7 @@ Rails.application.routes.draw do
         get '/entourage_images', action: :entourage_images
         get '/outings_images', action: :outings_images
         get '/announcements_images', action: :announcements_images
+        get '/jobs', action: :jobs
       end
 
       resources :newsletter_subscriptions, only: [:index]
