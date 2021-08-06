@@ -230,12 +230,16 @@
     <label class="control-label">Droit d'administration et de modération</label>
     <table class="table" style="width: auto">
       <tr>
-        <td>
-          Permet d'accéder à l'ensemble des fonctionnalités du backoffice
-          <i class="text-muted">(seuls les membres d'Entourage devraient y avoir accès)</i>
-        </td>
+        <td>Rôle d'administrateur (permet d'accéder à l'ensemble des fonctionnalités du backoffice)</td>
         <td style="font-weight: bold">
           <%= f.check_box :admin %>
+        </td>
+      </tr>
+
+      <tr>
+        <td>Rôle de modérateur</td>
+        <td style="font-weight: bold">
+          <%= f.check_box :moderator %>
         </td>
       </tr>
     </table>

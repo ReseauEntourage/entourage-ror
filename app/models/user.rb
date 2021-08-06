@@ -207,6 +207,20 @@ class User < ApplicationRecord
     super is_admin
   end
 
+  def moderator
+    roles.include?(:moderator)
+  end
+
+  def moderator= is_moderator
+    if ActiveModel::Type::Boolean.new.cast(is_moderator)
+      self.roles += [:moderator]
+    else
+      self.roles -= [:moderator]
+    end
+
+    self.roles.uniq
+  end
+
   #Force all phone number to be inserted in DB in "+33" format
   def phone=(new_phone)
     super(Phone::PhoneBuilder.new(phone: new_phone).format)

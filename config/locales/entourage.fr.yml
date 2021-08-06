@@ -89,6 +89,8 @@ fr:
           poi_map: Lieux solidaires
 
       moderation_area:
+        name: Nom de la zone
+        departement: Département
         moderator_id: Modérateur
         welcome_message_1: Message de bienvenue 1
         welcome_message_2: Message de bienvenue 2
