@@ -295,4 +295,69 @@ RSpec.describe Entourage, type: :model do
       include_examples "is not updated"
     end
   end
+
+  describe "no_moderator_read_for" do
+    let(:user) { FactoryBot.create(:public_user) }
+    let(:entourage) { FactoryBot.create(:entourage) }
+
+    it "moderator has no read" do
+      expect(entourage.no_moderator_read_for(user: user)).to eq(true)
+    end
+
+    it "moderator has reads" do
+      moderator_read = FactoryBot.create(:moderator_read, moderatable: entourage, user: user)
+
+      expect(entourage.no_moderator_read_for(user: user)).to eq(false)
+    end
+  end
+
+  describe "join_request_after" do
+    let(:user) { FactoryBot.create(:public_user) }
+    let(:entourage) {FactoryBot.create(:entourage) }
+    let(:at) { Time.now }
+
+    let!(:join_request) { FactoryBot.create(:join_request, user: user, joinable: entourage, status: JoinRequest::ACCEPTED_STATUS, created_at: at) }
+
+    it "no join_request after" do
+      expect(entourage.join_request_after(read_at: at + 1.second)).to eq(false)
+    end
+
+    it "with join_request after" do
+      expect(entourage.join_request_after(read_at: at - 1.second)).to eq(true)
+    end
+  end
+
+  describe "unread_chat_message_after" do
+    let(:user) { FactoryBot.create(:public_user) }
+    let(:entourage) {FactoryBot.create(:entourage) }
+    let(:at) { Time.now }
+
+    let!(:chat_message) { FactoryBot.create(:chat_message, messageable: entourage) }
+
+    it "no unread_chat_message after" do
+      expect(entourage.unread_chat_message_after(read_at: at + 1.second)).to eq(false)
+    end
+
+    it "with unread_chat_message after" do
+      expect(entourage.unread_chat_message_after(read_at: at - 1.second)).to eq(true)
+    end
+  end
+
+  describe "moderator_has_unread_content" do
+    let(:user) { FactoryBot.create(:public_user) }
+    let(:entourage) {FactoryBot.create(:entourage) }
+    let(:at) { Time.now }
+
+    let!(:join_request) { FactoryBot.create(:join_request, user: user, joinable: entourage, status: JoinRequest::ACCEPTED_STATUS, created_at: at) }
+    let!(:chat_message) { FactoryBot.create(:chat_message, messageable: entourage) }
+
+    it "no unread_content" do
+      expect(entourage.moderator_has_unread_content(user: user)).to eq(true)
+    end
+
+    it "with unread_content" do
+      moderator_read = FactoryBot.create(:moderator_read, moderatable: entourage, user: user)
+      expect(entourage.moderator_has_unread_content(user: user)).to eq(false)
+    end
+  end
 end
