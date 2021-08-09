@@ -41,16 +41,18 @@ module Admin
     end
 
     def jobs
+      @history = JobService.history(2)
+
       @jober = {
         retries: JobService.retries,
         deads: JobService.deads,
         schedules: JobService.schedules,
         processes: JobService.processes,
         workers: JobService.workers,
+        stats: [JobService.stats],
+        history_failed: @history[:failed].map{ |v| { day: v.first, count: v.last } },
+        history_processed: @history[:processed].map{ |v| { day: v.first, count: v.last } },
       }
-
-      @stats = JobService.stats
-      @history = JobService.history(2)
     end
   end
 end
