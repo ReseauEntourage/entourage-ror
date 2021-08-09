@@ -34,7 +34,7 @@ class AdminMailer < ActionMailer::Base
 
     @message        = message
     mail to: "contact@entourage.social",
-         subject: "Signalement d'un utilisateur - #{reported_user.first_name} #{reported_user.last_name}"
+         subject: "Signalement d'un utilisateur - #{reported_user.first_name} #{reported_user.last_name} - #{reported_user.postal_codes.join(', ')}"
   end
 
   def group_report(reported_group:, reporting_user:, message:)

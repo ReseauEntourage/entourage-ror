@@ -73,6 +73,10 @@ class User < ApplicationRecord
     departements.uniq.map { |d| ModerationArea.departement_slug(d) }
   end
 
+  def postal_codes
+    addresses.pluck(:postal_code)
+  end
+
   enum device_type: [ :android, :ios ]
   attribute :roles, :jsonb_set
   attribute :interests, :jsonb_set
