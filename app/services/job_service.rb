@@ -2,7 +2,7 @@ require 'sidekiq/api'
 
 module JobService
   def self.retries
-    # @why retrie? because retry seems a protected word
+    # @why retrie? because retry is a protected word
     Sidekiq::RetrySet.new.map do |retrie|
       JSON.parse(retrie.value)
     end

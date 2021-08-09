@@ -1,199 +1,36 @@
 <div class="container">
   <div class="row">
-    <div class="col-xs-offset-2 col-xs-8">
-      <div class="h1" style="display: flex; align-items: center;">
-        <div style="flex-grow: 1">Jobs morts</div>
-      </div>
-
-      <% if @deads.empty? %>
-        <div class="panel panel-warning">
-          <div class="panel-heading">
-            <h3 class="panel-title">Aucun job mort</h3>
-          </div>
+    <% @jober.each do |type, jobs| %>
+      <div class="col-xs-offset-2 col-xs-8">
+        <div class="h1" style="display: flex; align-items: center;">
+          <div style="flex-grow: 1">Jobs <%= type %></div>
         </div>
-      <% else %>
-        <table class="table">
-          <th>Classe</th>
-          <th>Créé le</th>
-          <th>Placé en queue le</th>
-          <th>Erreur le</th>
-          <th>Arguments</th>
-          <% @deads.each do |job| %>
-            <tr>
-              <td><%= job['error_class'] %></td>
-              <td><%= job['created_at'] %></td>
-              <td><%= job['enqueued_at'] %></td>
-              <td><%= job['failed_at'] %></td>
-              <td><%= job['args'] %></td>
-            </tr>
-          <% end %>
-        </table>
-      <% end %>
-    </div>
-  </div>
 
-  <div class="row">
-    <%#= paginate @paginated %>
-  </div>
-</div>
-
-
-<div class="container">
-  <div class="row">
-    <div class="col-xs-offset-2 col-xs-8">
-      <div class="h1" style="display: flex; align-items: center;">
-        <div style="flex-grow: 1">Jobs finis</div>
-      </div>
-
-      <% if @processes.empty? %>
-        <div class="panel panel-warning">
-          <div class="panel-heading">
-            <h3 class="panel-title">Aucun job fini</h3>
+        <% if jobs.empty? %>
+          <div class="panel panel-warning">
+            <div class="panel-heading">
+              <h3 class="panel-title">Aucun job <%= type %></h3>
+            </div>
           </div>
-        </div>
-      <% else %>
-        <table class="table">
-          <th>hostname</th>
-          <th>started_at</th>
-          <th>identity</th>
-          <th>busy</th>
-          <th>pid</th>
-          <% @processes.each do |job| %>
-            <tr>
-              <td><%= job[:hostname] %></td>
-              <td><%= job[:started_at] %></td>
-              <td><%= job[:identity] %></td>
-              <td><%= job[:busy] %></td>
-              <td><%= job[:pid] %></td>
-            </tr>
-          <% end %>
-        </table>
-      <% end %>
-    </div>
-  </div>
+        <% else %>
+          <table class="table">
+            <% keys = jobs.first.keys %>
 
-  <div class="row">
-    <%#= paginate @paginated %>
-  </div>
-</div>
+            <% keys.each do |key| %>
+              <th><%= key %></th>
+            <% end %>
 
-
-<div class="container">
-  <div class="row">
-    <div class="col-xs-offset-2 col-xs-8">
-      <div class="h1" style="display: flex; align-items: center;">
-        <div style="flex-grow: 1">Jobs finis</div>
+            <% @deads.each do |job| %>
+              <tr>
+                <% keys.each do |key| %>
+                  <td><%= job[key] %></td>
+                <% end %>
+              </tr>
+            <% end %>
+          </table>
+        <% end %>
       </div>
-
-      <% if @workers.empty? %>
-        <div class="panel panel-warning">
-          <div class="panel-heading">
-            <h3 class="panel-title">Aucun job fini</h3>
-          </div>
-        </div>
-      <% else %>
-        <table class="table">
-          <th>hostname</th>
-          <th>started_at</th>
-          <th>identity</th>
-          <th>busy</th>
-          <th>pid</th>
-          <% @workers.each do |job| %>
-            <tr>
-              <td><%= job[:process_id] %></td>
-              <td><%= job[:thread_id] %></td>
-              <td><%= job[:work] %></td>
-              <td><%= job[:queue] %></td>
-              <td><%= job[:class] %></td>
-              <td><%= job[:args] %></td>
-              <td><%= job[:created_at] %></td>
-              <td><%= job[:enqueued_at] %></td>
-              <td><%= job[:run_at] %></td>
-            </tr>
-          <% end %>
-        </table>
-      <% end %>
-    </div>
-  </div>
-
-  <div class="row">
-    <%#= paginate @paginated %>
-  </div>
-</div>
-
-
-<div class="container">
-  <div class="row">
-    <div class="col-xs-offset-2 col-xs-8">
-      <div class="h1" style="display: flex; align-items: center;">
-        <div style="flex-grow: 1">Jobs planifiés</div>
-      </div>
-
-      <% if @schedules.empty? %>
-        <div class="panel panel-warning">
-          <div class="panel-heading">
-            <h3 class="panel-title">Aucun job planifié</h3>
-          </div>
-        </div>
-      <% else %>
-        <table class="table">
-          <th>Classe</th>
-          <th>Créé le</th>
-          <th>Placé en queue le</th>
-          <th>Erreur le</th>
-          <th>Arguments</th>
-          <% @schedules.each do |job| %>
-            <tr>
-              <td><%= job['error_class'] %></td>
-              <td><%= job['created_at'] %></td>
-              <td><%= job['enqueued_at'] %></td>
-              <td><%= job['failed_at'] %></td>
-              <td><%= job['args'] %></td>
-            </tr>
-          <% end %>
-        </table>
-      <% end %>
-    </div>
-  </div>
-
-  <div class="row">
-    <%#= paginate @paginated %>
-  </div>
-</div>
-
-
-<div class="container">
-  <div class="row">
-    <div class="col-xs-offset-2 col-xs-8">
-      <div class="h1" style="display: flex; align-items: center;">
-        <div style="flex-grow: 1">Jobs relancés</div>
-      </div>
-
-      <% if @retries.empty? %>
-        <div class="panel panel-warning">
-          <div class="panel-heading">
-            <h3 class="panel-title">Aucun job relancé</h3>
-          </div>
-        </div>
-      <% else %>
-        <table class="table">
-          <th>Classe</th>
-          <th>Créé le</th>
-          <th>Placé en queue le</th>
-          <th>Erreur le</th>
-          <th>Arguments</th>
-          <% @retries.each do |job| %>
-            <tr>
-              <td><%= job['error_class'] %></td>
-              <td><%= job['created_at'] %></td>
-              <td><%= job['enqueued_at'] %></td>
-              <td><%= job['failed_at'] %></td>
-              <td><%= job['args'] %></td>
-            </tr>
-          <% end %>
-        </table>
-      <% end %>
-    </div>
+    <% end %>
   </div>
 
   <div class="row">

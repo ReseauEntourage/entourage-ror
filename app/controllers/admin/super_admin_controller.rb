@@ -41,13 +41,16 @@ module Admin
     end
 
     def jobs
-      @retries = JobService.retries
-      @deads = JobService.deads
-      @schedules = JobService.schedules
-      @processes = JobService.processes
-      @workers = JobService.workers
+      @jober = {
+        retries: JobService.retries,
+        deads: JobService.deads,
+        schedules: JobService.schedules,
+        processes: JobService.processes,
+        workers: JobService.workers,
+      }
+
       @stats = JobService.stats
-      @history = JobService.history 2
+      @history = JobService.history(2)
     end
   end
 end
