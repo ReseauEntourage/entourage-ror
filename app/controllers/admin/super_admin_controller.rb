@@ -39,5 +39,47 @@ module Admin
         })
       end
     end
+
+    def jobs_metrics
+      @history = JobMetricService.history(7)
+
+      @jober = {
+        retries: JobMetricService.retries,
+        deads: JobMetricService.deads,
+        schedules: JobMetricService.schedules,
+        processes: JobMetricService.processes,
+        workers: JobMetricService.workers,
+        stats: [JobMetricService.stats],
+        history_failed: @history[:failed].map{ |v| { day: v.first, count: v.last } },
+        history_processed: @history[:processed].map{ |v| { day: v.first, count: v.last } },
+      }
+    end
+
+    def jobs_crons
+    end
+
+    def force_close_tours
+      JobCronService.force_close_tours
+
+      redirect_to admin_super_admin_jobs_metrics_path, flash: {
+        success: "Un job a été créé pour fermer les maraudes en cours"
+      }
+    end
+
+    def unread_reminder_email
+      JobCronService.unread_reminder_email
+
+      redirect_to admin_super_admin_jobs_metrics_path, flash: {
+        success: "Un job a été créé pour envoyer un mail de rappel des messages non lus"
+      }
+    end
+
+    def onboarding_sequence_send_welcome_messages
+      JobCronService.onboarding_sequence_send_welcome_messages
+
+      redirect_to admin_super_admin_jobs_metrics_path, flash: {
+        success: "Un job a été créé pour envoyer les messages de bienvenue"
+      }
+    end
   end
 end

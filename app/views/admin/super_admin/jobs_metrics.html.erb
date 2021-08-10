@@ -1,0 +1,39 @@
+<div class="container">
+  <div class="row">
+    <% @jober.each do |type, jobs| %>
+      <div class="col-xs-offset-2 col-xs-8">
+        <div class="h1" style="display: flex; align-items: center;">
+          <div style="flex-grow: 1">Jobs <%= type %></div>
+        </div>
+
+        <% if jobs.empty? %>
+          <div class="panel panel-warning">
+            <div class="panel-heading">
+              <h3 class="panel-title">Aucun job <%= type %></h3>
+            </div>
+          </div>
+        <% else %>
+          <table class="table">
+            <% keys = jobs.first.keys %>
+
+            <% keys.each do |key| %>
+              <th><%= key %></th>
+            <% end %>
+
+            <% jobs.each do |job| %>
+              <tr>
+                <% keys.each do |key| %>
+                  <td><%= job[key] %></td>
+                <% end %>
+              </tr>
+            <% end %>
+          </table>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="row">
+    <%#= paginate @paginated %>
+  </div>
+</div>

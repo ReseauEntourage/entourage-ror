@@ -66,6 +66,11 @@ Rails.application.routes.draw do
         get '/entourage_images', action: :entourage_images
         get '/outings_images', action: :outings_images
         get '/announcements_images', action: :announcements_images
+        get '/jobs_metrics', action: :jobs_metrics
+        get '/jobs_crons', action: :jobs_crons
+        post '/force_close_tours', action: :force_close_tours
+        post '/unread_reminder_email', action: :unread_reminder_email
+        post '/onboarding_sequence_send_welcome_messages', action: :onboarding_sequence_send_welcome_messages
       end
 
       resources :newsletter_subscriptions, only: [:index]
