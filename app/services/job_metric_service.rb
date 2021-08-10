@@ -1,6 +1,6 @@
 require 'sidekiq/api'
 
-module JobService
+module JobMetricService
   def self.retries
     # @why retrie? because retry is a protected word
     Sidekiq::RetrySet.new.map do |retrie|
