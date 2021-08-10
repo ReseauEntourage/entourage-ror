@@ -23,7 +23,19 @@
             <% jobs.each do |job| %>
               <tr>
                 <% keys.each do |key| %>
-                  <td><%= job[key] %></td>
+                  <td>
+                    <% if [:created_at, :started_at, :enqueued_at, :failed_at, :retried_at].include? key.to_sym %>
+                      <%= l Time.at(job[key]) %>
+                    <% elsif key.to_sym == :args %>
+                      <% job[key].each do |arg| %>
+                        <% arg.each do |key, value| %>
+                          <%= "#{key}: #{value}" %><br/>
+                        <% end %>
+                      <% end %>
+                    <% else %>
+                      <%= job[key] %>
+                    <% end %>
+                  </td>
                 <% end %>
               </tr>
             <% end %>
