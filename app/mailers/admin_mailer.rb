@@ -49,10 +49,11 @@ class AdminMailer < ActionMailer::Base
     end
 
     group_name = GroupService.name(@reported_group, :u)
+    group_postal_code = GroupService.postal_code(@reported_group)
 
     @message        = message
-    mail to: "contact@entourage.social",
-         subject: %(Signalement d'#{group_name} : "#{reported_group.title}")
+    mail to: "nicolas.chafai@entourage.social",
+         subject: %(Signalement d'#{group_name} : "#{reported_group.title}" - #{group_postal_code}")
   end
 
   def forgot_password(user:)

@@ -29,6 +29,12 @@ module GroupService
     end
   end
 
+  def self.postal_code group
+    return 'n/a' if group.group_type.to_sym == :tour
+
+    group.postal_code
+  end
+
   def self.g group, word
     parts = word.split('.', 2)
     case name(group, :g)
