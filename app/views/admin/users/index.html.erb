@@ -124,13 +124,13 @@
           </td>
 
           <td>
-            <% if user.goal.present? %>
-              <span class="label label-primary" title="Profil renseigné par l'utilisateur">
-                <%= t "community.entourage.goals_compact.#{user.goal}" %>
-              </span>
-            <% elsif user.targeting_profile.present? %>
+            <% if user.targeting_profile.present? %>
               <span class="label label-default" title="Profil renseigné par la modération">
                 <%= t "community.entourage.targeting_profiles.#{user.targeting_profile}" %>
+              </span>
+            <% elsif user.goal.present? %>
+              <span class="label label-primary" title="Profil renseigné par l'utilisateur">
+                <%= t "community.entourage.goals_compact.#{user.goal}" %>
               </span>
             <% end %>
           </td>
