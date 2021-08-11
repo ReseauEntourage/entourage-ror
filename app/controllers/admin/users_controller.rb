@@ -177,7 +177,7 @@ module Admin
       end
 
       @user.temporary_block! current_user, block_params[:cnil_explanation]
-      redirect_to edit_admin_user_path(user), flash: { success: "Utilisateur bloqué temporairement" }
+      redirect_to edit_admin_user_path(user), flash: { success: "Utilisateur bloqué pendant 1 mois" }
     end
 
     def unblock
