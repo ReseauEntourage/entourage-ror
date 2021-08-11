@@ -3,10 +3,13 @@ module Admin
     before_action :set_user, only: [:show, :messages, :engagement, :edit, :update, :edit_block, :block, :unblock, :cancel_phone_change_request, :download_export, :send_export, :anonymize, :banish, :validate, :experimental_pending_request_reminder]
 
     def index
-      @params = params.permit([:status, q: [:postal_code_start, :postal_code_in_hors_zone]]).to_h
+      @params = params.permit([:status, :goal, q: [:postal_code_start, :postal_code_in_hors_zone]]).to_h
 
       @status = params[:status].presence&.to_sym
       @status = :all unless @status.in?([:engaged, :not_engaged, :blocked, :deleted, :admin, :pending, :moderators])
+
+      @goal = :all unless @goal.in?([:unknown])
+      @goal = params[:goal].presence&.to_sym
 
       @users = current_user.community.users
 
@@ -18,6 +21,10 @@ module Admin
       @users = @users.moderators if @status && @status == :moderators
       @users = @users.where(id: UserPhoneChange.pending_user_ids) if @status && @status == :pending
       @users = @users.joins(:user_phone_changes).order('user_phone_changes.created_at') if @status && @status == :pending
+      @users = @users.unknown if @goal == :unknown
+      @users = @users.ask_for_help if @goal == :ask_for_help
+      @users = @users.offer_help if @goal == :offer_help
+      @users = @users.organization if @goal == :organization
       @users = @users.in_area("dep_" + @params[:q][:postal_code_start]) if @params[:q] && @params[:q][:postal_code_start]
       @users = @users.in_area(:hors_zone) if @params[:q] && @params[:q][:postal_code_in_hors_zone]
 

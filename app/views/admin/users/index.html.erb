@@ -11,6 +11,11 @@
       <%= link_to("Admins", @params.merge(status: :admin), class: "btn btn-#{@status == :admin ? :primary : :default}") %>
       <%= link_to("Modérateurs", @params.merge(status: :moderators), class: "btn btn-#{@status == :moderators ? :primary : :default}") %>
       <%= link_to("En attente", @params.merge(status: :pending), class: "btn btn-#{@status == :pending ? :primary : :default}") %>
+      <%= link_to("Tous profils", @params.merge(goal: :all), class: "btn btn-#{@goal == :all ? :primary : :default}", style: "margin-left: 5px") %>
+      <%= link_to("Inconnus", @params.merge(goal: :unknown), class: "btn btn-#{@goal == :unknown ? :primary : :default}") %>
+      <%= link_to("Riverain", @params.merge(goal: :offer_help), class: "btn btn-#{@goal == :offer_help ? :primary : :default}") %>
+      <%= link_to("En précarité", @params.merge(goal: :ask_for_help), class: "btn btn-#{@goal == :ask_for_help ? :primary : :default}") %>
+      <%= link_to("Organisation", @params.merge(goal: :organization), class: "btn btn-#{@goal == :organization ? :primary : :default}") %>
     </div>
 
     <div style="margin-left: auto">
@@ -84,6 +89,7 @@
     <% else %>
       <th>Date de création</th>
       <th>Date de dernière connexion</th>
+      <th>Profil</th>
     <% end %>
 
     <% if [:admin, :moderators].include? @status %>
@@ -114,6 +120,18 @@
               <%= l user.last_sign_in_at, format: "%-d %B %Y" %>
             <% else %>
               <span class="text-muted">&mdash;</span>
+            <% end %>
+          </td>
+
+          <td>
+            <% if user.goal.present? %>
+              <span class="label label-primary" title="Profil renseigné par l'utilisateur">
+                <%= t "community.entourage.goals_compact.#{user.goal}" %>
+              </span>
+            <% elsif user.targeting_profile.present? %>
+              <span class="label label-default" title="Profil renseigné par la modération">
+                <%= t "community.entourage.targeting_profiles.#{user.targeting_profile}" %>
+              </span>
             <% end %>
           </td>
 

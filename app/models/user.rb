@@ -84,8 +84,13 @@ class User < ApplicationRecord
   scope :type_pro, -> { where(user_type: "pro") }
   scope :validated, -> { where(validation_status: "validated") }
   scope :blocked, -> { where(validation_status: "blocked") }
+  scope :temporary_blocked, -> { blocked.where('unblock_at is not null and unblock_at > ?', Time.now) }
   scope :deleted, -> { where(deleted: true) }
   scope :anonymized, -> { where(validation_status: "anonymized") }
+  scope :unknown, -> { where(targeting_profile: nil, goal: nil) }
+  scope :ask_for_help, -> { where('(targeting_profile is null and goal = ?) or targeting_profile = ?', :ask_for_help, :asks_for_help) }
+  scope :offer_help, -> { where('(targeting_profile is null and goal = ?) or targeting_profile = ?', :offer_help, :offers_help) }
+  scope :organization, -> { where(goal: :organization) }
   scope :search_by, ->(search) {
     strip = search && search.strip
     like = "%#{strip}%"
