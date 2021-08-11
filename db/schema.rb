@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20210804172000) do
+ActiveRecord::Schema.define(version: 20210810170000) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -808,6 +808,7 @@ ActiveRecord::Schema.define(version: 20210804172000) do
     t.string "reset_admin_password_token"
     t.datetime "reset_admin_password_sent_at"
     t.boolean "super_admin", default: false
+    t.datetime "unblock_at"
     t.index ["address_id"], name: "index_users_on_address_id"
     t.index ["email"], name: "index_users_on_email"
     t.index ["organization_id"], name: "index_users_on_organization_id"
@@ -815,6 +816,7 @@ ActiveRecord::Schema.define(version: 20210804172000) do
     t.index ["phone", "community"], name: "index_users_on_phone_and_community", unique: true
     t.index ["roles"], name: "index_users_on_roles", using: :gin
     t.index ["token"], name: "index_users_on_token", unique: true
+    t.index ["unblock_at"], name: "index_users_on_unblock_at"
     t.index ["uuid"], name: "index_users_on_uuid", unique: true
   end
 

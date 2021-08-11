@@ -19,6 +19,7 @@ Rails.application.routes.draw do
         member do
           get 'edit_block'
           put 'block'
+          put 'temporary_block'
           put 'unblock'
           put 'banish'
           put 'validate'

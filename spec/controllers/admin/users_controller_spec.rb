@@ -155,6 +155,29 @@ describe Admin::UsersController do
 
       it { should redirect_to edit_admin_user_path(user) }
       it { expect(user.reload.validation_status).to eq("blocked") }
+      it { expect(user.reload.unblock_at).to be(nil) }
+      it { expect(user.reload.histories.count).to eq(1) }
+    end
+  end
+
+  describe 'PUT temporary_block' do
+    let!(:admin) { admin_basic_login }
+    let!(:user) { FactoryBot.create(:pro_user, validation_status: "validated") }
+
+    context "no cnil_explanation" do
+      before { put :temporary_block, params: { id: user.id, user: { cnil_explanation: nil } } }
+
+      it { should redirect_to edit_block_admin_user_path(user) }
+      it { expect(user.reload.validation_status).to eq("validated") }
+      it { expect(user.reload.histories.count).to eq(0) }
+    end
+
+    context "with cnil_explanation" do
+      before { put :temporary_block, params: { id: user.id, user: { cnil_explanation: 'reason' } } }
+
+      it { should redirect_to edit_admin_user_path(user) }
+      it { expect(user.reload.validation_status).to eq("blocked") }
+      it { expect(user.reload.unblock_at).to be_a_kind_of(Time) }
       it { expect(user.reload.histories.count).to eq(1) }
     end
   end
