@@ -75,7 +75,7 @@ module Admin
 
       User.find(callback_params[0]).unblock!(OpenStruct.new(id: nil), 'auto')
 
-      response = UserServices::Unblock.notify(callback_params[0])
+      response = UserServices::Unblock.payload(callback_params[0])
       response[:attachments].first[:color] = :good
       response[:attachments].last[:text] = "*:#{:white_check_mark}: <@#{@payload['user']['name']}> a débloqué l'utilisateur*"
 

@@ -7,9 +7,7 @@ module UserServices
     end
 
     def self.notify user_id
-      return unless user = User.find(user_id)
-
-      notifier&.ping(payload(user))
+      notifier&.ping(payload(user_id))
     end
 
     def self.notifier
@@ -26,7 +24,9 @@ module UserServices
       webhook[field]
     end
 
-    def self.payload user
+    def self.payload user_id
+      return {} unless user = User.find(user_id)
+
       {
         text: "Le blocage temporaire de l'utilisateur #{user.full_name} arrive à échéance aujourd'hui, #{I18n.l user.unblock_at if user.unblock_at}",
         attachments: [
