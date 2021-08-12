@@ -1,7 +1,8 @@
 module Admin
   class SlackController < ActionController::Base
-    before_action :parse_payload, only: [:message_action]
+    before_action :parse_payload, only: [:message_action, :user_unblock]
     before_action :authenticate_slack!, only: [:message_action]
+    before_action :authenticate_slack_user_unblock!, only: [:user_unblock]
     before_action :authenticate_admin!, only: [:csv]
 
     def message_action
@@ -66,6 +67,21 @@ module Admin
       render layout: false
     end
 
+    def user_unblock
+      callback_type, *callback_params = @payload['callback_id']&.split(':')
+      return head :bad_request if [callback_type, callback_params.length] != ['user_unblock', 1]
+      return head :bad_request unless @payload['actions']
+      return head :bad_request unless @payload['actions'].first['value'] == 'unblock'
+
+      User.find(callback_params[0]).unblock!(OpenStruct.new(id: nil), 'auto')
+
+      response = UserServices::Unblock.notify(callback_params[0])
+      response[:attachments].first[:color] = :good
+      response[:attachments].last[:text] = "*:#{:white_check_mark}: <@#{@payload['user']['name']}> a débloqué l'utilisateur*"
+
+      render json: response
+    end
+
     private
 
     def parse_payload
@@ -74,6 +90,10 @@ module Admin
 
     def authenticate_slack!
       head :unauthorized if @payload['token'] != ENV['SLACK_APP_VERIFICATION_TOKEN']
+    end
+
+    def authenticate_slack_user_unblock!
+      head :unauthorized if @payload['token'] != UserServices::Unblock.webhook('token')
     end
 
     def authenticate_admin!

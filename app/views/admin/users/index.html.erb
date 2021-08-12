@@ -74,6 +74,7 @@
     <%= select_tag :status, options_for_select([
       ['Tous', :all],
       ['Bloqués', :blocked],
+      ['Bloqués 1 mois', :temporary_blocked],
       ['Supprimés', :deleted],
       ['En attente', :pending],
     ], params[:status]), class: "form-control" %>

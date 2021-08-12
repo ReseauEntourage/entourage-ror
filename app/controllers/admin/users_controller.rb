@@ -12,7 +12,7 @@ module Admin
       @engagement = :all unless @engagement.in?([:engaged, :not_engaged])
 
       @status = params[:status].presence&.to_sym
-      @status = :all unless @status.in?([:blocked, :deleted, :pending])
+      @status = :all unless @status.in?([:blocked, :temporary_blocked, :deleted, :pending])
 
       @role = params[:role].presence&.to_sym
       @role = :all unless @role.in?([:admin, :moderators])
@@ -22,6 +22,7 @@ module Admin
       @users = @users.engaged if @engagement && @engagement == :engaged
       @users = @users.not_engaged if @engagement && @engagement == :not_engaged
       @users = @users.blocked if @status && @status == :blocked
+      @users = @users.temporary_blocked if @status && @status == :temporary_blocked
       @users = @users.deleted if @status && @status == :deleted
       @users = @users.where(admin: true) if @role && @role == :admin
       @users = @users.moderators if @role && @role == :moderators
