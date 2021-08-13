@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20210810170000) do
+ActiveRecord::Schema.define(version: 20210813104000) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -402,6 +402,7 @@ ActiveRecord::Schema.define(version: 20210810170000) do
     t.text "welcome_message_2_organization"
     t.text "welcome_message_1_goal_not_known"
     t.text "welcome_message_2_goal_not_known"
+    t.string "slack_moderator_id"
     t.index ["departement"], name: "index_moderation_areas_on_departement", unique: true
   end
 

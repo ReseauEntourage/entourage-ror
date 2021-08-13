@@ -3,7 +3,7 @@ module Admin
     layout 'admin_large'
 
     def index
-      @areas = ModerationArea.order(:id).all
+      @areas = ModerationArea.includes(:moderator).order(:id)
     end
 
     def new
@@ -40,6 +40,7 @@ module Admin
     def area_params
       params.require(:moderation_area).permit(
         :moderator_id,
+        :slack_moderator_id,
         :departement,
         :name,
         :welcome_message_1_offer_help,     :welcome_message_2_offer_help,
