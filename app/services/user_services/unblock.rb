@@ -27,15 +27,18 @@ module UserServices
     def self.payload user_id
       return {} unless user = User.find(user_id)
 
+      departement = ModerationServices.departement_for_object(user.address)
+      moderation_area = ModerationServices.moderation_area_for_user(user)
+
       {
         text: "Le blocage temporaire de l'utilisateur #{user.full_name} arrive à échéance aujourd'hui, #{I18n.l user.unblock_at if user.unblock_at}",
         attachments: [
           {
-            text: "Département : #{user.postal_codes.join(', ')}"
+            text: "Département : #{departement}"
           },
-          ({
-            text: "L'utilisateur a été bloqué",
-          } if true),
+          {
+            text: ("<@#{moderation_area.slack_moderator_id}>" if moderation_area && moderation_area.slack_moderator_id),
+          },
           {
             callback_id: [:user_unblock, user.id].join(':'),
             fallback: "",
