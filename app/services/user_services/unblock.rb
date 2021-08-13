@@ -34,7 +34,7 @@ module UserServices
             text: "Département : #{user.postal_codes.join(', ')}"
           },
           ({
-            text: "L'utilisateur a été débloqué",
+            text: "L'utilisateur a été bloqué",
           } if true),
           {
             callback_id: [:user_unblock, user.id].join(':'),
