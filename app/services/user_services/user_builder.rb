@@ -22,6 +22,7 @@ module UserServices
       UserService.sync_roles(user)
       if user.save
         self.class.process_good_waves_invitations(user)
+        self.class.signal_blocked_user(user)
         UserServices::SMSSender.new(user: user).send_welcome_sms(sms_code) if send_sms
         callback.on_success.try(:call, user)
       else
@@ -75,6 +76,16 @@ module UserServices
           Raven.capture_exception(ActiveRecord::RecordInvalid.new(jr))
         end
       end
+    end
+
+    def self.signal_blocked_user user
+      return unless user.email.present?
+
+      blocked_user_ids = User.where(validation_status: :blocked, email: user.email).pluck(:id)
+
+      return if blocked_user_ids.empty?
+
+      SlackServices::SignalUserCreation.new(user: user, blocked_user_ids: blocked_user_ids).notify
     end
   end
 end
