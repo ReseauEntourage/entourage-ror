@@ -94,6 +94,7 @@ fr:
         moderator_id: Modérateur
         welcome_message_1: Message de bienvenue 1
         welcome_message_2: Message de bienvenue 2
+        slack_moderator_id: Identifiant Slack
       tour_area:
         statuses:
           active: Active

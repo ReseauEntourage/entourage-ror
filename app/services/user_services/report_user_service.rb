@@ -21,11 +21,11 @@ module UserServices
       # ActiveJob can't serialize AnonymousUser, it's not an ActiveRecord model.
       reporting_user = reporting_user.token if reporting_user.anonymous?
 
-      AdminMailer.user_report(
+      SlackServices::SignalUser.new(
         reported_user:  reported_user,
         reporting_user: reporting_user,
         message:        message
-      ).deliver_later
+      ).notify
 
       callback.on_success.try(:call)
     end

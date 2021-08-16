@@ -1,5 +1,5 @@
 module SlackServices
-  class SignalEntourage
+  class SignalGroup
     def initialize reported_group:, reporting_user:, message:
       @reported_group = reported_group
       @reporting_user = find_reporting_user(reporting_user)
@@ -58,14 +58,17 @@ module SlackServices
     end
 
     def slack_moderator_id
-      moderation_area = ModerationServices.moderation_area_for_user(@reported_group)
-      return moderation_area.slack_moderator_id if moderation_area.present?
+      moderation_area = ModerationServices.moderation_area_for_departement(departement, community: $server_community)
+      return nil unless moderation_area.present?
 
-      nil
+      moderation_area.slack_moderator_id
     end
 
     def departement
-      ModerationServices.departement_for_object @reported_group.address
+      @departement ||= ModerationServices.departement_for_object(OpenStruct.new(
+        postal_code: @reported_group.postal_code,
+        country: @reported_group.country
+      ))
     end
 
     def link_to_user user
@@ -73,7 +76,7 @@ module SlackServices
     end
 
     def link_to_group group
-      Rails.application.routes.url_helpers.admin_group_url(group.id, host: ENV['ADMIN_HOST'])
+      Rails.application.routes.url_helpers.admin_entourage_url(group.id, host: ENV['ADMIN_HOST'])
     end
   end
 end
