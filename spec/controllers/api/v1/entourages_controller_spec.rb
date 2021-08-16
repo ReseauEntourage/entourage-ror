@@ -906,19 +906,26 @@ describe Api::V1::EntouragesController do
   describe 'POST #report' do
     let(:reporting_user) { create :public_user }
     let(:reported_group) { create :entourage }
-    let(:message) { "MESSAGE" }
 
-    before { post 'report', params: { token: reporting_user.token, id: reported_group.id, entourage_report: {message: message} } }
+    ENV['SLACK_SIGNAL_GROUP_WEBHOOK'] = '{"url":"https://url.to.slack.com","channel":"channel","username":"signal-group"}'
+
+    before { stub_request(:post, "https://url.to.slack.com").to_return(status: 200) }
+
 
     context "valid params" do
+      before {
+        expect_any_instance_of(SlackServices::SignalGroup).to receive(:notify)
+        post 'report', params: { token: reporting_user.token, id: reported_group.id, entourage_report: {message: 'message'} }
+      }
       it { expect(response.status).to eq 201 }
-      it { expect(ActionMailer::Base.deliveries.count).to eq 1 }
     end
 
     context "missing message" do
-      let(:message) { '' }
+      before {
+        expect_any_instance_of(SlackServices::SignalGroup).not_to receive(:notify)
+        post 'report', params: { token: reporting_user.token, id: reported_group.id, entourage_report: {message: ''} }
+      }
       it { expect(response.status).to eq 400 }
-      it { expect(ActionMailer::Base.deliveries.count).to eq 0 }
     end
   end
 

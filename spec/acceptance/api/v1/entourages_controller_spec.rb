@@ -334,6 +334,12 @@ resource Api::V1::EntouragesController do
       }
     }.to_json }
 
+
+    ENV['ADMIN_HOST'] = 'https://this.is.local'
+    ENV['SLACK_SIGNAL_GROUP_WEBHOOK'] = '{"url":"https://url.to.slack.com","channel":"channel","username":"signal-group"}'
+
+    before { stub_request(:post, "https://url.to.slack.com").to_return(status: 200) }
+
     context '201' do
       example_request 'Report entourage' do
         expect(status).to eq(201)
