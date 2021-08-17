@@ -146,11 +146,11 @@ describe User, :type => :model do
       end
     end
 
-    it { expect(update updated_at: Time.now                           ).to be :unchanged }
-    it { expect(update password: nil                                  ).to be :unchanged }
-    it { expect(update password: ''                                   ).to eq password: "est trop court (au moins 8 caractères)" }
-    it { expect(update password: ' '*10                               ).to be :changed }
-    it { expect(update password: 'x'*10                               ).to be :changed }
+    it { expect(update updated_at: Time.now).to be :unchanged }
+    it { expect(update password: nil).to be :unchanged }
+    it { expect(update password: '').to eq password: "est trop court (au moins 8 caractères)" }
+    it { expect(update password: ' ' * 10).to be :changed }
+    it { expect(update password: 'x' * 10).to be :changed }
   end
 
   it "has many entourage_participations" do
@@ -245,6 +245,23 @@ describe User, :type => :model do
       it { admin.update(admin: false); expect(admin.reload.roles).to eq([]) }
       it { admin.update(admin: true); expect(admin.reload.admin).to eq(true) }
       it { admin.update(admin: true); expect(admin.reload.roles).to eq([]) }
+    end
+  end
+
+  describe 'block_observer' do
+    let(:user) { create(:public_user, phone: '+33600000000', token: 'foo') }
+    let!(:open) { create(:entourage, user_id: user.id, status: :open) }
+    let!(:suspended) { create(:entourage, user_id: user.id, status: :suspended) }
+
+    let!(:other_user) { create(:public_user, phone: '+33600000010', token: 'bar') }
+    let!(:other_entourage) { create(:entourage, user_id: other_user.id, status: :open) }
+
+    context 'when user has created entourages' do
+      before { user.update(validation_status: :blocked) }
+
+      it { expect(open.reload.status).to eq('closed') }
+      it { expect(suspended.reload.status).to eq('suspended') }
+      it { expect(other_entourage.reload.status).to eq('open') }
     end
   end
 end
