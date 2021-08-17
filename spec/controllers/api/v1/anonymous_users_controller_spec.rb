@@ -51,6 +51,7 @@ describe Api::V1::AnonymousUsersController do
         "feature_flags"=>{"organization_admin"=>false},
         "engaged"=>false,
         "goal" => nil,
+        "unread_count" => 0,
         "interests" => []
       }
     )}
