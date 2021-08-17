@@ -21,7 +21,6 @@ module UserServices
       user
     end
 
-
     def update(user:, platform: nil)
       yield callback if block_given?
 
@@ -44,7 +43,10 @@ module UserServices
       end
 
       if user.update_attributes(params)
+        signal_blocked_user(user)
+
         MemberMailer.welcome(user).deliver_later if start_onboarding_sequence
+
         callback.on_success.try(:call, user)
       else
         callback.on_failure.try(:call, user)
