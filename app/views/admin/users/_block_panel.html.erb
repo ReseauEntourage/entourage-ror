@@ -1,0 +1,19 @@
+<% if user.blocked? %>
+  <div class="panel panel-danger">
+    <div class="panel-heading">
+      Cet utilisateur est bloqué
+    </div>
+    <div class="panel-body">
+      Les utilisateurs bloqués :
+      <ul>
+        <li>ne peuvent pas se connecter ou utiliser l’application</li>
+        <li>leur photo de profil est masquée</li>
+        <li>les actions ou événements qu’ils ont créés sont clôturés</li>
+        <li>leurs notifications par email sont désactivées</li>
+      </ul>
+      <% if history = user.histories.blocked.first %>
+        Il a été bloqué pour la raison suivante : <b><%= history.metadata[:cnil_explanation] %></b>
+      <% end %>
+    </div>
+  </div>
+<% end %>

@@ -11,15 +11,7 @@
     </div>
 
     <% if @user.blocked? %>
-      <div class="panel panel-danger">
-        <div class="panel-heading">
-          Cet utilisateur est bloqué
-        </div>
-        <div class="panel-body">
-          Les utilisateurs bloqués ne peuvent pas se connecter ou utiliser l'application et leur photo de profil est masquée. <br>
-          Vous pouvez débloquer cet utilisateur ci-après en fournissant les raisons de cette action.
-        </div>
-      </div>
+      <%= render partial: "block_panel", locals: { user: @user } %>
     <% else %>
       <div class="panel panel-info">
         <div class="panel-heading">
