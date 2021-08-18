@@ -6,7 +6,7 @@ module Api
       allow_anonymous_access only: [:index]
 
       def index
-        invitations = current_user_or_anonymous.invitations.preload(:invitable)
+        invitations = current_user_or_anonymous.active_invitations.preload(:invitable)
         if params[:status]
           invitations = invitations.status(params[:status])
         end
