@@ -54,7 +54,6 @@ namespace :db do
       .where("entourages is null")
       .delete_all
 
-    EntourageInvitation.where.not(invitable_type: :Entourage).delete_all
     EntourageInvitation
       .joins("left join entourages on entourages.id = invitable_id")
       .where("entourages is null")

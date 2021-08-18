@@ -18,7 +18,6 @@ describe FollowingService do
       subject
       expect(EntourageInvitation.last.attributes).to include(
         "invitable_id" => action.id,
-        "invitable_type" => "Entourage",
         "inviter_id" => partner_user.id,
         "invitee_id" => following.user.id,
         "invitation_mode" => "partner_following",

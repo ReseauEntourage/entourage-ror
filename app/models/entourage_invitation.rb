@@ -8,14 +8,14 @@ class EntourageInvitation < ApplicationRecord
 
   STATUS = [ACCEPTED_STATUS, PENDING_STATUS, REJECTED_STATUS, CANCELLED_STATUS]
 
-  belongs_to :invitable, polymorphic: true
+  belongs_to :invitable, class_name: "Entourage"
   belongs_to :inviter, class_name: "User"
   belongs_to :invitee, class_name: "User", foreign_key: "invitee_id"
 
-  validates :invitable_id, :invitable_type, :status, :inviter, :phone_number, :invitation_mode, presence: true
+  validates :invitable_id, :status, :inviter, :phone_number, :invitation_mode, presence: true
   validates :invitee, presence: true, if: -> (i) { i.invitation_mode != 'good_waves' }
   validates_inclusion_of :invitation_mode, in: [EntourageInvitation::MODE_SMS, 'good_waves', 'partner_following']
-  validates_uniqueness_of :phone_number, scope: [:inviter_id, :invitable_id, :invitable_type]
+  validates_uniqueness_of :phone_number, scope: [:inviter_id, :invitable_id]
   validates :metadata, schema: -> (i) { "#{i.invitation_mode}:metadata" }
 
   scope :status, -> (status) { where(status: status) }
@@ -42,5 +42,9 @@ class EntourageInvitation < ApplicationRecord
         }
       end
     end
+  end
+
+  def invitable_type
+    'Entourage'
   end
 end

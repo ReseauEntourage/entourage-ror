@@ -3,7 +3,6 @@ require 'rails_helper'
 RSpec.describe EntourageInvitation, type: :model do
   it { expect(FactoryBot.build(:entourage_invitation).save).to be true }
   it { should validate_presence_of :invitable_id }
-  it { should validate_presence_of :invitable_type }
   it { should validate_presence_of :inviter }
   it { should validate_presence_of :phone_number }
   it { should validate_presence_of :invitation_mode }
