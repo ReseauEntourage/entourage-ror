@@ -6,15 +6,18 @@ module Admin
       @params = params.permit([:status, :goal, q: [:postal_code_start, :postal_code_in_hors_zone]]).to_h
 
       @status = params[:status].presence&.to_sym
-      @status = :all unless @status.in?([:engaged, :not_engaged, :blocked, :deleted, :admin, :pending, :moderators])
+      @status = :all unless @status.in?([:blocked, :deleted, :admin, :pending, :moderators])
 
-      @goal = :all unless @goal.in?([:unknown])
+      @engagement = params[:engagement].presence&.to_sym
+      @engagement = :all unless @engagement.in?([:engaged, :not_engaged])
+
       @goal = params[:goal].presence&.to_sym
+      @goal = :all unless @goal.in?([:unknown, :offer_help, :ask_for_help, :organization])
 
       @users = current_user.community.users
 
-      @users = @users.engaged if @status && @status == :engaged
-      @users = @users.not_engaged if @status && @status == :not_engaged
+      @users = @users.engaged if @engagement && @engagement == :engaged
+      @users = @users.not_engaged if @engagement && @engagement == :not_engaged
       @users = @users.blocked if @status && @status == :blocked
       @users = @users.deleted if @status && @status == :deleted
       @users = @users.where(admin: true) if @status && @status == :admin

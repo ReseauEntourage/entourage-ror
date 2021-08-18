@@ -1,70 +1,82 @@
 <h1>Liste des utilisateurs</h1>
 
-<div class="row">
-  <div style="margin-left: 15px; margin-bottom: 15px; display: flex">
-    <div class="btn-group btn-group-sm">
-      <%= link_to("Tous", @params.merge(status: :all), class: "btn btn-#{@status == :all ? :primary : :default}") %>
-      <%= link_to("Engagés", @params.merge(status: :engaged), class: "btn btn-#{@status == :engaged ? :primary : :default}") %>
-      <%= link_to("Non engagés", @params.merge(status: :not_engaged), class: "btn btn-#{@status == :not_engaged ? :primary : :default}") %>
-      <%= link_to("Bloqués", @params.merge(status: :blocked), class: "btn btn-#{@status == :blocked ? :primary : :default}") %>
-      <%= link_to("Supprimés", @params.merge(status: :deleted), class: "btn btn-#{@status == :deleted ? :primary : :default}") %>
-      <%= link_to("Admins", @params.merge(status: :admin), class: "btn btn-#{@status == :admin ? :primary : :default}") %>
-      <%= link_to("Modérateurs", @params.merge(status: :moderators), class: "btn btn-#{@status == :moderators ? :primary : :default}") %>
-      <%= link_to("En attente", @params.merge(status: :pending), class: "btn btn-#{@status == :pending ? :primary : :default}") %>
-      <%= link_to("Tous profils", @params.merge(goal: :all), class: "btn btn-#{@goal == :all ? :primary : :default}", style: "margin-left: 5px") %>
-      <%= link_to("Inconnus", @params.merge(goal: :unknown), class: "btn btn-#{@goal == :unknown ? :primary : :default}") %>
-      <%= link_to("Riverain", @params.merge(goal: :offer_help), class: "btn btn-#{@goal == :offer_help ? :primary : :default}") %>
-      <%= link_to("En précarité", @params.merge(goal: :ask_for_help), class: "btn btn-#{@goal == :ask_for_help ? :primary : :default}") %>
-      <%= link_to("Organisation", @params.merge(goal: :organization), class: "btn btn-#{@goal == :organization ? :primary : :default}") %>
-    </div>
-
-    <div style="margin-left: auto">
-      <%= link_to "Ajouter", new_admin_user_path, class: "btn btn-success" %>
-    </div>
-  </div>
-
-  <div style="margin-left: 15px; margin-bottom: 15px; display: flex">
-    <div style="display: flex; margin: -10px 0 10px">
-      <div class="btn-group btn-group-sm" style="flex-grow: 1">
-        <%
-          q = @params[:q] || {}
-          presets = {
-            "Partout" => {},
-            "75" => { postal_code_start: '75' },
-            "92" => { postal_code_start: '92' },
-            "93" => { postal_code_start: '93' },
-            "69" => { postal_code_start: '69' },
-            "59" => { postal_code_start: '59' },
-            "35" => { postal_code_start: '35' },
-            "Hors zone" => { postal_code_in_hors_zone: 'true' },
-          }
-
-          location_keys = [:postal_code_start, :postal_code_in_hors_zone]
-          active = presets.key q.slice(*location_keys).compact.symbolize_keys
-        %>
-        <% presets.each do |name, options| %>
-          <%= link_to(
-            name,
-            @params.merge(q: q.except(*location_keys).merge(options)),
-            class: "btn btn-#{active == name ? :primary : :default}"
-          ) %>
-        <% end %>
-      </div>
-    </div>
-  </div>
-
-  <%= form_tag(admin_user_search_path, method: :get, html: { class: "form-horizontal", role: "form" }) do %>
+<div class="panel panel-default">
+  <div class="panel-body">
     <div style="margin-left: 15px; display: flex">
-      <div class="input-group">
-        <%= text_field_tag :search, nil, class: "form-control", placeholder: "nom, prénom, email..." %>
-        <span class="input-group-btn">
-          <%= button_tag(type: 'submit', class: "btn btn-default") do %>Chercher<% end %>
-        </span>
-      </div>
+      <%= form_tag(admin_user_search_path, method: :get, html: { class: "form-horizontal", role: "form" }) do %>
+        <div class="input-group">
+          <%= text_field_tag :search, nil, class: "form-control", placeholder: "nom, prénom, email..." %>
+          <span class="input-group-btn">
+            <%= button_tag(type: 'submit', class: "btn btn-default") do %>Chercher<% end %>
+          </span>
+        </div>
+      <% end %>
     </div>
-  <% end %>
+  </div>
 </div>
-<br><br>
+
+<div style="display: flex; margin: -10px 0 10px">
+  <div class="btn-group btn-group-sm" style="flex-grow: 1; margin-right: 20px">
+    <%
+      q = @params[:q] || {}
+      presets = {
+        "Partout" => {},
+        "75" => { postal_code_start: '75' },
+        "92" => { postal_code_start: '92' },
+        "93" => { postal_code_start: '93' },
+        "69" => { postal_code_start: '69' },
+        "59" => { postal_code_start: '59' },
+        "35" => { postal_code_start: '35' },
+        "Hors zone" => { postal_code_in_hors_zone: 'true' },
+      }
+
+      location_keys = [:postal_code_start, :postal_code_in_hors_zone]
+      active = presets.key q.slice(*location_keys).compact.symbolize_keys
+    %>
+    <% presets.each do |name, options| %>
+      <%= link_to(
+        name,
+        @params.merge(q: q.except(*location_keys).merge(options)),
+        class: "btn btn-#{active == name ? :primary : :default}"
+      ) %>
+    <% end %>
+  </div>
+
+  <form action="<%= admin_users_path %>" class="form-inline" id="search_form">
+    <%= label_tag :engagement %>
+    <%= select_tag :engagement, options_for_select([
+      ['Tous', :all],
+      ['Engagés', :engaged],
+      ['Non engagés', :not_engaged],
+    ], params[:engagement]), class: "form-control" %>
+
+    <%= label_tag :status %>
+    <%= select_tag :status, options_for_select([
+      ['Tous', :all],
+      ['Bloqués', :blocked],
+      ['Supprimés', :deleted],
+      ['Admins', :admin],
+      ['Modérateurs', :moderators],
+      ['En attente', :pending],
+    ], params[:status]), class: "form-control" %>
+
+    <%= label_tag :goal %>
+    <%= select_tag :goal, options_for_select([
+      ['Tous profils', :all],
+      ['Inconnus', :unknown],
+      ['Riverain', :offer_help],
+      ['En précarité', :ask_for_help],
+      ['Organisation', :organization],
+    ], params[:goal]), class: "form-control" %>
+  </form>
+
+  <div style="margin-left: 20px">
+    <%= link_to "Nouvel utilisateur", new_admin_user_path, class: "btn btn-success" %>
+  </div>
+</div>
+
+
+<br>
 
 <% if @status == :pending %>
   <div class="panel panel-info">
@@ -153,3 +165,11 @@
 <div class="row">
   <%= paginate @users %>
 </div>
+
+<script>
+  $(function(){
+    $('#engagement, #status, #goal').on('change', function() {
+      $('#search_form').submit()
+    })
+  })
+</script>
