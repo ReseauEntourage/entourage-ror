@@ -3,16 +3,19 @@ module Admin
     before_action :set_user, only: [:show, :messages, :engagement, :edit, :update, :edit_block, :block, :unblock, :cancel_phone_change_request, :download_export, :send_export, :anonymize, :banish, :validate, :experimental_pending_request_reminder]
 
     def index
-      @params = params.permit([:status, :goal, q: [:postal_code_start, :postal_code_in_hors_zone]]).to_h
+      @params = params.permit([q: [:postal_code_start, :postal_code_in_hors_zone]]).to_h
 
-      @status = params[:status].presence&.to_sym
-      @status = :all unless @status.in?([:blocked, :deleted, :admin, :pending, :moderators])
+      @profile = params[:profile].presence&.to_sym
+      @profile = :all unless @profile.in?([:offer_help, :ask_for_help, :organization, :unknown])
 
       @engagement = params[:engagement].presence&.to_sym
       @engagement = :all unless @engagement.in?([:engaged, :not_engaged])
 
-      @goal = params[:goal].presence&.to_sym
-      @goal = :all unless @goal.in?([:unknown, :offer_help, :ask_for_help, :organization])
+      @status = params[:status].presence&.to_sym
+      @status = :all unless @status.in?([:blocked, :deleted, :pending])
+
+      @role = params[:admin].presence&.to_sym
+      @role = :all unless @role.in?([:admin, :moderators])
 
       @users = current_user.community.users
 
@@ -20,14 +23,14 @@ module Admin
       @users = @users.not_engaged if @engagement && @engagement == :not_engaged
       @users = @users.blocked if @status && @status == :blocked
       @users = @users.deleted if @status && @status == :deleted
-      @users = @users.where(admin: true) if @status && @status == :admin
-      @users = @users.moderators if @status && @status == :moderators
+      @users = @users.where(admin: true) if @role && @role == :admin
+      @users = @users.moderators if @role && @role == :moderators
       @users = @users.where(id: UserPhoneChange.pending_user_ids) if @status && @status == :pending
       @users = @users.joins(:user_phone_changes).order('user_phone_changes.created_at') if @status && @status == :pending
-      @users = @users.unknown if @goal == :unknown
-      @users = @users.ask_for_help if @goal == :ask_for_help
-      @users = @users.offer_help if @goal == :offer_help
-      @users = @users.organization if @goal == :organization
+      @users = @users.unknown if @profile == :unknown
+      @users = @users.ask_for_help if @profile == :ask_for_help
+      @users = @users.offer_help if @profile == :offer_help
+      @users = @users.organization if @profile == :organization
       @users = @users.in_area("dep_" + @params[:q][:postal_code_start]) if @params[:q] && @params[:q][:postal_code_start]
       @users = @users.in_area(:hors_zone) if @params[:q] && @params[:q][:postal_code_in_hors_zone]
 

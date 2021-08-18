@@ -2,7 +2,7 @@
 
 <div class="panel panel-default">
   <div class="panel-body">
-    <div style="margin-left: 15px; display: flex">
+    <div style="float: left; display: flex">
       <%= form_tag(admin_user_search_path, method: :get, html: { class: "form-horizontal", role: "form" }) do %>
         <div class="input-group">
           <%= text_field_tag :search, nil, class: "form-control", placeholder: "nom, prénom, email..." %>
@@ -10,13 +10,18 @@
             <%= button_tag(type: 'submit', class: "btn btn-default") do %>Chercher<% end %>
           </span>
         </div>
+
       <% end %>
+    </div>
+
+    <div style="float: right">
+      <%= link_to "Nouvel utilisateur", new_admin_user_path, class: "btn btn-success" %>
     </div>
   </div>
 </div>
 
 <div style="display: flex; margin: -10px 0 10px">
-  <div class="btn-group btn-group-sm" style="flex-grow: 1; margin-right: 20px">
+  <div class="btn-group btn-group-sm" style="flex-grow: 0.5">
     <%
       q = @params[:q] || {}
       presets = {
@@ -43,6 +48,15 @@
   </div>
 
   <form action="<%= admin_users_path %>" class="form-inline" id="search_form">
+    <%= label_tag :profile, 'Statut' %>
+    <%= select_tag :profile, options_for_select([
+      ['Tous', :all],
+      ['Riverain', :offer_help],
+      ['SDF', :ask_for_help],
+      ['Association', :organization],
+      ['Non défini', :unknown],
+    ], params[:profile]), class: "form-control" %>
+
     <%= label_tag :engagement %>
     <%= select_tag :engagement, options_for_select([
       ['Tous', :all],
@@ -55,26 +69,17 @@
       ['Tous', :all],
       ['Bloqués', :blocked],
       ['Supprimés', :deleted],
-      ['Admins', :admin],
-      ['Modérateurs', :moderators],
       ['En attente', :pending],
     ], params[:status]), class: "form-control" %>
 
-    <%= label_tag :goal, 'Profil' %>
-    <%= select_tag :goal, options_for_select([
-      ['Tous profils', :all],
-      ['Inconnus', :unknown],
-      ['Riverain', :offer_help],
-      ['En précarité', :ask_for_help],
-      ['Organisation', :organization],
-    ], params[:goal]), class: "form-control" %>
+    <%= label_tag :role, 'Rôle' %>
+    <%= select_tag :role, options_for_select([
+      ['Tous', :all],
+      ['Admins', :admin],
+      ['Modérateurs', :moderators],
+    ], params[:role]), class: "form-control" %>
   </form>
-
-  <div style="margin-left: 20px">
-    <%= link_to "Nouvel utilisateur", new_admin_user_path, class: "btn btn-success" %>
-  </div>
 </div>
-
 
 <br>
 
@@ -104,7 +109,7 @@
       <th>Profil</th>
     <% end %>
 
-    <% if [:admin, :moderators].include? @status %>
+    <% if [:admin, :moderators].include? @role %>
       <th>Rôle modérateur</th>
     <% end %>
 
@@ -147,7 +152,7 @@
             <% end %>
           </td>
 
-          <% if [:admin, :moderators].include? @status %>
+          <% if [:admin, :moderators].include? @role %>
             <td>
               <% if user.moderator %>
                 <span class="label label-default" title="moderator">modérateur</span>
@@ -168,7 +173,7 @@
 
 <script>
   $(function(){
-    $('#engagement, #status, #goal').on('change', function() {
+    $('#profile, #engagement, #status, #role').on('change', function() {
       $('#search_form').submit()
     })
   })
