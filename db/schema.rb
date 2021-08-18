@@ -232,7 +232,7 @@ ActiveRecord::Schema.define(version: 2021_08_18_163501) do
 
   create_table "entourage_invitations", id: :serial, force: :cascade do |t|
     t.integer "invitable_id", null: false
-    t.string "invitable_type_old", null: false
+    t.string "invitable_type_old"
     t.integer "inviter_id", null: false
     t.integer "invitee_id"
     t.string "invitation_mode", null: false
