@@ -50,7 +50,7 @@
       ['Non engagés', :not_engaged],
     ], params[:engagement]), class: "form-control" %>
 
-    <%= label_tag :status %>
+    <%= label_tag :status, 'Statut' %>
     <%= select_tag :status, options_for_select([
       ['Tous', :all],
       ['Bloqués', :blocked],
@@ -60,7 +60,7 @@
       ['En attente', :pending],
     ], params[:status]), class: "form-control" %>
 
-    <%= label_tag :goal %>
+    <%= label_tag :goal, 'Profil' %>
     <%= select_tag :goal, options_for_select([
       ['Tous profils', :all],
       ['Inconnus', :unknown],
