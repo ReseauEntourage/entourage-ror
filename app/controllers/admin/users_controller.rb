@@ -14,7 +14,7 @@ module Admin
       @status = params[:status].presence&.to_sym
       @status = :all unless @status.in?([:blocked, :deleted, :pending])
 
-      @role = params[:admin].presence&.to_sym
+      @role = params[:role].presence&.to_sym
       @role = :all unless @role.in?([:admin, :moderators])
 
       @users = current_user.community.users
