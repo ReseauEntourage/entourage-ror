@@ -1,6 +1,6 @@
 module UserServices
   class RequestPhoneChange
-    USERNAME = 'Mobile-request'
+    USERNAME = 'Changement de téléphone'
 
     def initialize(user:)
       @user = user
