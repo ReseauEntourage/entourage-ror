@@ -48,8 +48,10 @@
   </div>
 
   <form action="<%= admin_users_path %>" class="form-inline" id="search_form">
-    <% @params[:q].each do |key, value| %>
-      <input type="hidden" name="q[<%= key %>]" value="<%= value %>">
+    <% if @params[:q] %>
+      <% @params[:q].each do |key, value| %>
+        <input type="hidden" name="q[<%= key %>]" value="<%= value %>">
+      <% end %>
     <% end %>
 
     <%= label_tag :profile, 'Statut' %>
