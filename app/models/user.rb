@@ -86,7 +86,7 @@ class User < ApplicationRecord
   scope :type_pro, -> { where(user_type: "pro") }
   scope :validated, -> { where(validation_status: "validated") }
   scope :blocked, -> { where(validation_status: "blocked") }
-  scope :temporary_blocked, -> { blocked.where('unblock_at is not null and unblock_at > ?', Time.now) }
+  scope :temporary_blocked, -> { blocked.where('unblock_at is not null') }
   scope :deleted, -> { where(deleted: true) }
   scope :anonymized, -> { where(validation_status: "anonymized") }
   scope :unknown, -> { where(targeting_profile: nil, goal: nil) }

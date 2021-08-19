@@ -110,11 +110,14 @@
     <% if @status == :pending %>
       <th>Email lié au compte</th>
       <th>Date de la demande</th>
+    <% elsif @status == :temporary_blocked %>
+      <th>Notification de déblocage le</th>
     <% else %>
       <th>Date de création</th>
       <th>Date de dernière connexion</th>
-      <th>Profil</th>
     <% end %>
+
+    <th>Profil</th>
 
     <% if [:admin, :moderators].include? @role %>
       <th>Rôle modérateur</th>
@@ -137,6 +140,8 @@
         <% if @status == :pending %>
           <td><%= user.email %></td>
           <td><%= l user.pending_phone_change_request.created_at, format: "%-d %B %Y" %></td>
+        <% elsif @status == :temporary_blocked %>
+          <td><%= l user.unblock_at, format: "%-d %B %Y" %></td>
         <% else %>
           <td><%= l user.created_at, format: "%-d %B %Y" %></td>
           <td>
@@ -146,26 +151,26 @@
               <span class="text-muted">&mdash;</span>
             <% end %>
           </td>
+        <% end %>
 
+        <td>
+          <% if user.targeting_profile.present? %>
+            <span class="label label-default" title="Profil renseigné par la modération">
+              <%= t "community.entourage.targeting_profiles.#{user.targeting_profile}" %>
+            </span>
+          <% elsif user.goal.present? %>
+            <span class="label label-primary" title="Profil renseigné par l'utilisateur">
+              <%= t "community.entourage.goals_compact.#{user.goal}" %>
+            </span>
+          <% end %>
+        </td>
+
+        <% if [:admin, :moderators].include? @role %>
           <td>
-            <% if user.targeting_profile.present? %>
-              <span class="label label-default" title="Profil renseigné par la modération">
-                <%= t "community.entourage.targeting_profiles.#{user.targeting_profile}" %>
-              </span>
-            <% elsif user.goal.present? %>
-              <span class="label label-primary" title="Profil renseigné par l'utilisateur">
-                <%= t "community.entourage.goals_compact.#{user.goal}" %>
-              </span>
+            <% if user.moderator %>
+              <span class="label label-default" title="moderator">modérateur</span>
             <% end %>
           </td>
-
-          <% if [:admin, :moderators].include? @role %>
-            <td>
-              <% if user.moderator %>
-                <span class="label label-default" title="moderator">modérateur</span>
-              <% end %>
-            </td>
-          <% end %>
         <% end %>
 
         <td><%= link_to "Modifier", edit_admin_user_path(user), class: "btn btn-danger" %></td>
