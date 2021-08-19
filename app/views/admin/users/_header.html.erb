@@ -14,20 +14,8 @@
     <%= link_to (@user.blocked? ? "Débloquer" : "Bloquer"), edit_block_admin_user_path(@user), class: "btn btn-success" %>
   </div>
 </div>
-<% if @user.blocked? %>
-  <div class="panel panel-danger">
-    <div class="panel-heading">
-      Cet utilisateur est bloqué
-    </div>
-    <div class="panel-body">
-      Les utilisateurs bloqués ne peuvent pas se connecter ou utiliser l'application, et leur photo de profil est masquée. <br>
-      <% if history = @user.histories.blocked.first %>
-        Il a été bloqué pour la raison suivante :<br>
-        <b><%= history.metadata[:cnil_explanation] %></b>
-      <% end %>
-    </div>
-  </div>
-<% end %>
+
+<%= render partial: "block_panel", locals: { user: @user } %>
 
 <% if @user.anonymized? %>
   <div class="panel panel-danger">

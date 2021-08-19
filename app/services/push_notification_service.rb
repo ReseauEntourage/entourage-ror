@@ -9,14 +9,17 @@ class PushNotificationService
     if extra[:group_type] == 'group'
       extra[:group_type] = 'action'
     end
+
     Rails.logger.info("Sending push notif to users : #{users.map(&:email)}, content: #{content}, sender: #{sender}, object: #{object}")
+
     users.each do |user|
-      android_tokens = UserServices::UserApplications.new(user: user).android_app_tokens
-      android_tokens.each do |token|
+      next if user.blocked?
+
+      UserServices::UserApplications.new(user: user).android_app_tokens.each do |token|
         android_notification_service.send_notification(sender, object, content, token.push_token, user.community.slug, extra, badge(user))
       end
-      ios_tokens = UserServices::UserApplications.new(user: user).ios_app_tokens
-      ios_tokens.each do |token|
+
+      UserServices::UserApplications.new(user: user).ios_app_tokens.each do |token|
         ios_notification_service.send_notification(sender, object, content, token.push_token, user.community.slug, extra, badge(user))
       end
     end
