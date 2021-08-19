@@ -545,7 +545,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
         attachments: [{ text: "https://www.google.fr"}, { text: "Téléphone requis : +330987654321"}, {text: "Département : "}],
         channel: "#channel",
         text: "L'utilisateur John Doe, my@email.com a requis un changement de numéro de téléphone",
-        username: "Mobile-request"
+        username: UserServices::RequestPhoneChange::USERNAME
       })
     }
 
