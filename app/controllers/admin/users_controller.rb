@@ -1,6 +1,6 @@
 module Admin
   class UsersController < Admin::BaseController
-    before_action :set_user, only: [:show, :messages, :engagement, :edit, :update, :edit_block, :block, :unblock, :cancel_phone_change_request, :download_export, :send_export, :anonymize, :banish, :validate, :experimental_pending_request_reminder]
+    before_action :set_user, only: [:show, :messages, :engagement, :edit, :update, :edit_block, :block, :temporary_block, :unblock, :cancel_phone_change_request, :download_export, :send_export, :anonymize, :banish, :validate, :experimental_pending_request_reminder]
 
     def index
       @params = params.permit([:profile, :engagement, :status, :role, q: [:postal_code_start, :postal_code_in_hors_zone]]).to_h
@@ -12,7 +12,7 @@ module Admin
       @engagement = :all unless @engagement.in?([:engaged, :not_engaged])
 
       @status = params[:status].presence&.to_sym
-      @status = :all unless @status.in?([:blocked, :deleted, :pending])
+      @status = :all unless @status.in?([:blocked, :temporary_blocked, :deleted, :pending])
 
       @role = params[:role].presence&.to_sym
       @role = :all unless @role.in?([:admin, :moderators])
@@ -22,6 +22,7 @@ module Admin
       @users = @users.engaged if @engagement && @engagement == :engaged
       @users = @users.not_engaged if @engagement && @engagement == :not_engaged
       @users = @users.blocked if @status && @status == :blocked
+      @users = @users.temporary_blocked if @status && @status == :temporary_blocked
       @users = @users.deleted if @status && @status == :deleted
       @users = @users.where(admin: true) if @role && @role == :admin
       @users = @users.moderators if @role && @role == :moderators
@@ -169,6 +170,15 @@ module Admin
 
       @user.block! current_user, block_params[:cnil_explanation]
       redirect_to edit_admin_user_path(user), flash: { success: "Utilisateur bloqué" }
+    end
+
+    def temporary_block
+      unless block_params[:cnil_explanation].present?
+        redirect_to edit_block_admin_user_path(@user), flash: { error: "Merci de renseigner les raisons de cette action" } and return
+      end
+
+      @user.temporary_block! current_user, block_params[:cnil_explanation]
+      redirect_to edit_admin_user_path(user), flash: { success: "Utilisateur bloqué pendant 1 mois" }
     end
 
     def unblock

@@ -11,12 +11,9 @@
       <table class="table">
         <% @areas.each do |area| %>
           <tr>
-            <td style="width: 3em">
-              <%= area.departement %>
-            </td>
-            <td>
-              <%= link_to area.name, edit_admin_moderation_area_path(area) %>
-            </td>
+            <td style="width: 3em"><%= area.departement %></td>
+            <td><%= link_to area.name, edit_admin_moderation_area_path(area) %></td>
+            <td><%= area.moderator.full_name %></td>
           </tr>
         <% end %>
       </table>

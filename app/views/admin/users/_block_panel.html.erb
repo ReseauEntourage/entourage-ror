@@ -15,5 +15,11 @@
         Il a été bloqué pour la raison suivante : <b><%= history.metadata[:cnil_explanation] %></b>
       <% end %>
     </div>
+
+    <% if user.temporary_blocked? %>
+      <div class="panel-body">
+        Utilisateur bloqué temporairement pendant 1 mois, jusqu'au <%= l user.unblock_at, format: "%A %-d %B %Y %Hh" %>
+      </div>
+    <% end %>
   </div>
 <% end %>

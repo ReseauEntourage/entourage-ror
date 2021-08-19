@@ -22,7 +22,8 @@ class UserHistory < ApplicationRecord
       case urn
       when 'block:metadata', 'unblock:metadata'
         {
-          cnil_explanation: { type: :string }
+          cnil_explanation: { type: :string },
+          temporary: { type: :boolean }
         }
       end
     end

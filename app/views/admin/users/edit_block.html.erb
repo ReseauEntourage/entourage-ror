@@ -43,6 +43,8 @@
     <% path = @user.blocked? ? unblock_admin_user_path(@user.id) : block_admin_user_path(@user.id) %>
 
     <%= form_for([:admin, @user], url: path, method: :put, html: { class: "form-horizontal", role: "form" }) do |f| %>
+      <input type="submit" formaction="<%= path %>" style="visibility: hidden; display: none;">
+
       <%= render partial: "layouts/errors", locals: {obj: @user} %>
 
       <div class="control-group">
@@ -55,6 +57,12 @@
       <br>
       <%= f.submit action, class: "btn btn-danger" %>
       <%= link_to "Annuler", edit_admin_user_path(@user), class: "btn btn-default" %>
+
+      <% unless @user.blocked? %>
+        <div style="float: right">
+          <button formaction="<%= temporary_block_admin_user_path(@user.id) %>" class="btn btn-default">Bloquer temporairement</button>
+        </div>
+      <% end %>
     <% end %>
   </div>
 </div>

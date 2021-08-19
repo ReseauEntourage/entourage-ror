@@ -38,6 +38,11 @@
     <%= f.select :moderator_id, options_for_select(moderators, @area.moderator_id), { include_blank: false }, class: "form-control" %>
   </div>
 
+  <div class="form-group">
+    <%= f.label :slack_moderator_id %>
+    <%= f.text_field :slack_moderator_id, class: "form-control", maxlength: 11 %>
+  </div>
+
   <div>
     <!-- Nav tabs -->
     <ul class="nav nav-tabs" style="margin-bottom: 15px">

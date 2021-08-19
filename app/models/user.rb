@@ -2,6 +2,8 @@ class User < ApplicationRecord
   include Onboarding::UserEventsTracking::UserConcern
   include UserServices::Engagement
 
+  TEMPORARY_BLOCK_PERIOD = 1.month
+
   validates_presence_of [:phone, :sms_code, :token, :validation_status]
   validates_uniqueness_of :phone, scope: :community
   validates_uniqueness_of :token
@@ -312,6 +314,10 @@ class User < ApplicationRecord
     validation_status=="blocked"
   end
 
+  def temporary_blocked?
+    blocked? && unblock_at && unblock_at > Time.now
+  end
+
   def anonymized?
     validation_status=="anonymized"
   end
@@ -331,10 +337,24 @@ class User < ApplicationRecord
       updater_id: updater.id,
       kind: 'block',
       metadata: {
-        cnil_explanation: cnil_explanation
+        cnil_explanation: cnil_explanation,
+        temporary: false
       }
     })
     update(validation_status: "blocked")
+  end
+
+  def temporary_block! updater, cnil_explanation
+    UserHistory.create({
+      user_id: self.id,
+      updater_id: updater.id,
+      kind: 'block',
+      metadata: {
+        cnil_explanation: cnil_explanation,
+        temporary: true
+      }
+    })
+    update(validation_status: "blocked", unblock_at: Time.now + TEMPORARY_BLOCK_PERIOD)
   end
 
   def unblock! updater, cnil_explanation
@@ -346,7 +366,7 @@ class User < ApplicationRecord
         cnil_explanation: cnil_explanation
       }
     })
-    update(validation_status: "validated")
+    update(validation_status: "validated", unblock_at: nil)
   end
 
   def validate!
