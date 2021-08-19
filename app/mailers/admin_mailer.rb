@@ -52,7 +52,7 @@ class AdminMailer < ActionMailer::Base
     group_postal_code = GroupService.postal_code(@reported_group)
 
     @message        = message
-    mail to: "nicolas.chafai@entourage.social",
+    mail to: "contact@entourage.social",
          subject: %(Signalement d'#{group_name} : "#{reported_group.title}" - #{group_postal_code}")
   end
 
