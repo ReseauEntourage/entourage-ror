@@ -54,7 +54,7 @@
       <% end %>
     <% end %>
 
-    <%= label_tag :profile, 'Statut' %>
+    <%= label_tag :profile, 'Profil' %>
     <%= select_tag :profile, options_for_select([
       ['Tous', :all],
       ['Riverain', :offer_help],
@@ -78,7 +78,7 @@
       ['En attente', :pending],
     ], params[:status]), class: "form-control" %>
 
-    <%= label_tag :role, 'Rôle' %>
+    <%= label_tag :role, 'Admin' %>
     <%= select_tag :role, options_for_select([
       ['Tous', :all],
       ['Admins', :admin],
