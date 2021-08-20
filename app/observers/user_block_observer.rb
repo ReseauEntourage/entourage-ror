@@ -13,5 +13,6 @@ class UserBlockObserver < ActiveRecord::Observer
   end
 
   def block_notifications! user
+    # @see PushNotificationService.send_notification
   end
 end
