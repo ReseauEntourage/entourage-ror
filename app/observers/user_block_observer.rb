@@ -2,7 +2,7 @@ class UserBlockObserver < ActiveRecord::Observer
   observe :user
 
   def after_update user
-    if user.saved_change_to_validation_status? && user.blocked?
+    if (user.saved_change_to_validation_status? && user.blocked?) || (user.saved_change_to_deleted && user.deleted?)
       close_entourages! user
       block_notifications! user
     end
