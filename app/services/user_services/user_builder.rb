@@ -35,6 +35,7 @@ module UserServices
 
     def signal_blocked_user user
       return unless user.email.present?
+      return unless user.saved_change_to_email?
 
       blocked_user_ids = User.where(validation_status: :blocked, email: user.email).pluck(:id)
 
