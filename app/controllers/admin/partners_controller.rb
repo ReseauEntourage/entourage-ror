@@ -4,7 +4,7 @@ module Admin
 
     def index
       @staff_teams = Partner.where(staff: true).order(:name)
-      @partners = Partner.where(staff: false).order(:name)
+      @partners = Partner.where(staff: false).includes(:users).order(:name)
     end
 
     def new
