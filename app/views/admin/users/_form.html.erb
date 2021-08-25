@@ -109,7 +109,7 @@
          id="partner-fieldset">
       <%= f.label :partner, class: "control-label" %>
       <div class="controls">
-        <%= f.collection_select :partner_id, Partner.where(staff: false), :id, :name, { include_blank: true }, { required: true, disabled: !is_partner }
+        <%= f.collection_select :partner_id, Partner.no_staff, :id, :name, { include_blank: true }, { required: true, disabled: !is_partner }
         %>
       </div>
     </div>
@@ -120,7 +120,7 @@
          id="staff-fieldset">
       <%= label_tag :partner, "Équipe", class: "control-label" %>
       <div class="controls">
-        <%= f.collection_select :partner_id, Partner.where(staff: true), :id, :name, { include_blank: true }, { required: true, disabled: !is_staff }
+        <%= f.collection_select :partner_id, Partner.staff, :id, :name, { include_blank: true }, { required: true, disabled: !is_staff }
         %>
       </div>
     </div>
