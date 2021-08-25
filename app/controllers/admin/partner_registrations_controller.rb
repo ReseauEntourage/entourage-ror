@@ -15,5 +15,14 @@ module Admin
 
       @users = @users.page(params[:page]).per(25)
     end
+
+    def edit
+      @user = User.find(params[:id])
+    end
+
+    private
+
+    def user_params
+    end
   end
 end

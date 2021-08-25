@@ -1,0 +1,91 @@
+<style>
+  .field_with_errors { display: inline-block }
+</style>
+
+<%= render partial: 'common/errors', locals: { obj: @user } %>
+<%= form_for [:admin, @user], html: { role: "form" } do |f| %>
+  <div class="form-group">
+    <%= f.label :full_name %>
+    <%= f.text_field :full_name, class: "form-control", disabled: true %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :address %>
+    <%= f.text_field :address, class: "form-control", disabled: true %>
+  </div>
+
+  <div class="row">
+    <div class="col-xs-6 form-group">
+      <%= f.label :email %>
+      <%= f.text_field :email, class: "form-control", disabled: true %>
+    </div>
+
+    <div class="col-xs-6 form-group">
+      <%= f.label :phone %>
+      <%= f.text_field :phone, class: "form-control", disabled: true %>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :goal %>
+    <%= f.text_field :goal, class: "form-control", disabled: true, value: t("community.entourage.goals_compact.#{f.object.goal || :goal_not_known}") %>
+  </div>
+
+  <div class="alert alert-info" role="alert" style="display: flex; align-items: center">
+    <div style="flex-grow: 1">
+      <b>Profil de l'utilisateur</b><br>
+      Si l'utilisateur fait partie d'une association, indiquer l'association à laquelle il appartient.
+      Sinon, préciser son profil
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-xs-6 form-group">
+      <label class="radio-inline" style="padding-top: 0; margin-bottom: 5px;">
+        <%= f.radio_button :org_member?, true %>
+        Fait partie d'une association
+      </label>
+    </div>
+
+    <div class="col-xs-6 form-group">
+      <label class="radio-inline" style="padding-top: 0; margin-bottom: 5px;">
+        <%= f.radio_button :org_member?, false %>
+        Ne fait pas partie d'une association
+      </label>
+    </div>
+  </div>
+
+  <div class="row">
+    <!-- Be careful not to post targeting_profile twice -->
+    <%= f.hidden_field :targeting_profile, value: :partner, id: 'targeting_profile_hidden' %>
+
+    <div class="col-xs-6 form-group">
+      <%= f.label :partner_id %>
+      <%= f.select :partner_id, Partner.no_staff.pluck(:name, :id), { include_blank: "(Non défini)" }, class: "form-control" %>
+    </div>
+
+    <div class="col-xs-6 form-group">
+      <% profiles = [:asks_for_help, :offers_help, :ambassador].map do |key|
+        [t("community.#{@user.community.slug}.targeting_profiles.#{key}"), key]
+      end %>
+
+      <%= f.label :targeting_profile %>
+      <%= f.select :targeting_profile, profiles, { include_blank: "(Non défini)" }, class: "form-control" %>
+    </div>
+  </div>
+
+  <%= f.submit 'Enregistrer', class: "btn btn-primary" %>
+  <%= link_to "Annuler", admin_partner_registrations_path, class: "btn btn-default" %>
+<% end %>
+
+<script>
+  $('#user_org_member_false, #user_org_member_true').on('change', function(event) {
+    var is_asso = $('#user_org_member_true').prop('checked');
+
+    $('#targeting_profile_hidden').prop('disabled', !is_asso);
+    $('#user_targeting_profile').prop('disabled', is_asso);
+    $('#user_partner_id').prop('disabled', !is_asso);
+  });
+
+  $('#user_org_member_true').trigger('change');
+</script>
