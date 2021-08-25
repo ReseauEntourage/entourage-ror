@@ -5,6 +5,7 @@ fr:
       user:
         first_name: Prénom
         last_name: Nom
+        full_name: Nom
         email: Email
         phone: Téléphone
         organization: Association de maraude
@@ -13,6 +14,7 @@ fr:
         targeting_profile: Profil modération
         goal: Profil déclaré
         partner: Association
+        partner_id: Association
         admin_password: Mot de passe
         admin_password_confirmation: Confirmation de mot de passe
         created_at: Date de création
