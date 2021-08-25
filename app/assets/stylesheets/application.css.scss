@@ -17,6 +17,8 @@ $buttons-color: #ef662f;
 @import "utils";
 @import "bootstrap-tagsinput";
 @import "bootstrap4-toggle.min";
+@import "select2";
+@import "select2-bootstrap";
 
 
 body.with-navbar { padding-top: $navbar-height; }

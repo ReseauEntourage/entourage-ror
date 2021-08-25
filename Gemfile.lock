@@ -378,6 +378,7 @@ GEM
       sprockets (> 3.0)
       sprockets-rails
       tilt
+    select2-rails (4.0.13)
     sentry-raven (3.1.2)
       faraday (>= 1.0)
     shorturl (1.0.0)
@@ -487,6 +488,7 @@ DEPENDENCIES
   ruby-stemmer
   safety_mailer
   sass-rails
+  select2-rails
   sentry-raven
   shorturl (~> 1.0.0)
   shoulda-matchers

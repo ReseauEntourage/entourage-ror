@@ -79,6 +79,8 @@
 <% end %>
 
 <script>
+  $('#user_partner_id, #user_targeting_profile').select2();
+
   $('#user_org_member_false, #user_org_member_true').on('change', function(event) {
     var is_asso = $('#user_org_member_true').prop('checked');
 
