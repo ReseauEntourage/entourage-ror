@@ -1,5 +1,7 @@
 module Admin
   class PartnerRegistrationsController < Admin::BaseController
+    before_action :set_user, only: [:edit, :update]
+
     def index
       @params = params.permit([:status, q: [:postal_code_start, :postal_code_in_hors_zone]]).to_h
 
@@ -17,12 +19,26 @@ module Admin
     end
 
     def edit
-      @user = User.find(params[:id])
+    end
+
+    def update
+      @user.assign_attributes(user_params)
+
+      if @user.save
+        redirect_to edit_admin_partner_registration_path(@user), notice: "L'utilisateur a bien été mis à jour"
+      else
+        render :edit
+      end
     end
 
     private
 
     def user_params
+      params.require(:user).permit(:partner_id, :targeting_profile)
+    end
+
+    def set_user
+      @user = User.find(params[:id])
     end
   end
 end

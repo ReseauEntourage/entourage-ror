@@ -3,7 +3,7 @@
 </style>
 
 <%= render partial: 'common/errors', locals: { obj: @user } %>
-<%= form_for [:admin, @user], html: { role: "form" } do |f| %>
+<%= form_for @user, url: admin_partner_registration_path, :method => :put, html: { role: "form" } do |f| %>
   <div class="form-group">
     <%= f.label :full_name %>
     <%= f.text_field :full_name, class: "form-control", disabled: true %>
