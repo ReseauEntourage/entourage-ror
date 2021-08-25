@@ -1,7 +1,7 @@
 module HomeServices
   class Outing
     DISTANCE = 10
-    MAX_LENGTH = 3
+    MAX_LENGTH = 7
 
     # currently offer_help, association and default share the same definition
     STRUCTURE = {
