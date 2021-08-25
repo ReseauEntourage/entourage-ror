@@ -109,7 +109,7 @@
          id="partner-fieldset">
       <%= f.label :partner, class: "control-label" %>
       <div class="controls">
-        <%= f.collection_select :partner_id, Partner.no_staff, :id, :name, { include_blank: true }, { required: true, disabled: !is_partner }
+        <%= f.collection_select :partner_id, Partner.no_staff, :id, :name, { include_blank: true }, { required: true, disabled: !is_partner, id: 'partner_id_no_staff' }
         %>
       </div>
     </div>
@@ -120,7 +120,7 @@
          id="staff-fieldset">
       <%= label_tag :partner, "Équipe", class: "control-label" %>
       <div class="controls">
-        <%= f.collection_select :partner_id, Partner.staff, :id, :name, { include_blank: true }, { required: true, disabled: !is_staff }
+        <%= f.collection_select :partner_id, Partner.staff, :id, :name, { include_blank: true }, { required: true, disabled: !is_staff, id: 'partner_id_staff' }
         %>
       </div>
     </div>
@@ -300,5 +300,7 @@
     $partnerUserFields.prop('required', partner || staff ? true : <%= @user.pro? %>)
   }
 
-  $profileField.on('change', togglePartnerFieldset)
+  $profileField.on('change', togglePartnerFieldset);
+
+  $('select').select2({ width: 200 });
 </script>
