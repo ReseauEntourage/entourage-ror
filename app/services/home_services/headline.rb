@@ -170,7 +170,7 @@ module HomeServices
       feeds = user.community.entourages.where(group_type: :outing, status: :open)
         .where("(#{Geocoder::Sql.within_bounding_box(*box, :latitude, :longitude)}) OR online = true")
         .where("metadata->>'ends_at' >= ?", Time.zone.now)
-        .order("metadata->>'starts_at' asc, id")
+        .order("metadata->>'starts_at' asc, id") # DEPRECATION WARNING: metadata->>'starts_at' asc, id". Non-attribute arguments will be disallowed in Rails 6.0. This method should not be called with user-provided values, such as request parameters or model attributes
         .offset(offset)
         .first
     end
