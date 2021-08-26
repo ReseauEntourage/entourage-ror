@@ -892,7 +892,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
     let(:reporting_user) { create :public_user }
     let(:reported_user)  { create :public_user }
 
-    ENV['SLACK_SIGNAL_USER_WEBHOOK'] = '{"url":"https://url.to.slack.com","channel":"channel","username":"signal-user"}'
+    ENV['SLACK_SIGNAL_USER_WEBHOOK'] = '{"url":"https://url.to.slack.com","channel":"channel","username-signal-user-creation":"signal-user"}'
 
     before { stub_request(:post, "https://url.to.slack.com").to_return(status: 200) }
 

@@ -45,7 +45,7 @@ module SlackServices
 
     def payload_adds
       {
-        username: webhook('username'),
+        username: webhook('username-signal-user'),
         channel: webhook('channel'),
       }
     end
