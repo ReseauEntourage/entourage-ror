@@ -1,5 +1,7 @@
 module SlackServices
   class RequestPhoneChange < Abstract
+    USERNAME = 'Changement de téléphone'
+
     def initialize user:, requested_phone:, email:
       @user = user
       @email = email
@@ -29,7 +31,7 @@ module SlackServices
     def webhook field
       return ENV['SLACK_WEBHOOK_URL'] if field == 'url'
       return ENV['REQUEST_PHONE_CHANGE_CHANNEL'] if field == 'channel'
-      return 'Changement de téléphone' if field == 'username'
+      return USERNAME if field == 'username'
 
       nil
     end
