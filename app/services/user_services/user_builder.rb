@@ -45,7 +45,6 @@ module UserServices
         invitation_mode: :good_waves,
         phone_number: user.phone,
         status: :pending,
-        invitable_type: :Entourage
       )
 
       invitations_entourage_ids = pending_invitations.pluck(:invitable_id)

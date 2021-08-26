@@ -438,6 +438,15 @@ class User < ApplicationRecord
     addresses.find_by(position: 2)
   end
 
+  def active_invitations
+    EntourageInvitation.where(invitee_id: id).joins(:invitable).where(%(
+      entourages.status = 'open' AND (
+        group_type != 'outing'
+        OR entourages.metadata->>'ends_at' IS NULL OR entourages.metadata->>'ends_at' > ?
+      )
+    ), Time.now)
+  end
+
   protected
 
   def clean_up_passwords

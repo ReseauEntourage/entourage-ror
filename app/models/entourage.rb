@@ -41,7 +41,7 @@ class Entourage < ApplicationRecord
   has_many :chat_messages, as: :messageable, dependent: :destroy
   has_many :conversation_messages, as: :messageable, dependent: :destroy
   has_many :moderator_reads, as: :moderatable, dependent: :destroy
-  has_many :entourage_invitations, as: :invitable, dependent: :destroy
+  has_many :entourage_invitations, foreign_key: :invitable_id, dependent: :destroy
   has_one :entourage_score, dependent: :destroy
   has_one :moderation, class_name: 'EntourageModeration', autosave: true
   has_one :user_moderation, primary_key: :user_id, foreign_key: :user_id

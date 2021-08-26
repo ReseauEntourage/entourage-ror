@@ -45,7 +45,7 @@ class JoinRequest < ApplicationRecord
   def self.with_entourage_invitations
     joins(%(
       left join entourage_invitations on (
-        entourage_invitations.invitable_type = join_requests.joinable_type and
+        join_requests.joinable_type = 'Entourage' and
         entourage_invitations.invitable_id = join_requests.joinable_id and
         entourage_invitations.invitee_id = join_requests.user_id
       )

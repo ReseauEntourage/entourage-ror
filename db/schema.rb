@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20210813104000) do
+ActiveRecord::Schema.define(version: 2021_08_18_163501) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -232,7 +232,7 @@ ActiveRecord::Schema.define(version: 20210813104000) do
 
   create_table "entourage_invitations", id: :serial, force: :cascade do |t|
     t.integer "invitable_id", null: false
-    t.string "invitable_type", null: false
+    t.string "invitable_type_old"
     t.integer "inviter_id", null: false
     t.integer "invitee_id"
     t.string "invitation_mode", null: false
@@ -241,9 +241,9 @@ ActiveRecord::Schema.define(version: 20210813104000) do
     t.datetime "updated_at", null: false
     t.string "status", default: "pending", null: false
     t.jsonb "metadata", default: {}, null: false
-    t.index ["invitable_id", "invitable_type"], name: "index_entourage_invitations_on_invitable_id_and_invitable_type"
+    t.index ["invitable_id"], name: "index_entourage_invitations_on_invitable_id"
     t.index ["invitee_id"], name: "index_entourage_invitations_on_invitee_id"
-    t.index ["inviter_id", "phone_number", "invitable_id", "invitable_type"], name: "unique_invitation_by_entourage", unique: true
+    t.index ["inviter_id", "phone_number", "invitable_id"], name: "unique_invitation_by_entourage", unique: true
     t.index ["inviter_id"], name: "index_entourage_invitations_on_inviter_id"
     t.index ["phone_number"], name: "index_entourage_invitations_on_phone_number"
   end
