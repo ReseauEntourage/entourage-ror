@@ -28,10 +28,14 @@
 
       <table class="table">
         <% @partners.each do |partner| %>
+          <% partner_admins = partner.users.pluck(:partner_admin) %>
+
           <tr>
             <td>
               <%= link_to partner.name, [:admin, partner] %>
             </td>
+            <td><span class="badge" title="admins"><%= partner_admins.select { |is| is }.count %></span></td>
+            <td><span class="badge" title="membres"><%= partner_admins.select { |is| !is }.count %></span></td>
             <td>
               <%= link_to "Supprimer", [:admin, partner], method: :delete, class: "text-danger", data: { confirm: "Supprimer l'association \"#{partner.name}\" ?" } %>
             </td>
