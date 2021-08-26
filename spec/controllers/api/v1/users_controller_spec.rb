@@ -313,6 +313,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
 
   describe 'PATCH update' do
     let!(:user) { create :pro_user, avatar_key: "avatar" }
+    let!(:blocked_user) { create :pro_user, avatar_key: "avatar", email: 'blocked@email.com', validation_status: :blocked }
 
     context 'authentication is OK' do
       before { ENV["DISABLE_CRYPT"]="FALSE" }
@@ -397,6 +398,22 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
           before { patch 'update', params: { token: user.token, user: { interests: [:event_sdf, :aide_sdf] } } }
           it { expect(result['user']).to include('interests' => ['aide_sdf', 'event_sdf']) }
         end
+      end
+
+      context 'updated email is valid' do
+        before {
+          expect_any_instance_of(SlackServices::SignalUserCreation).not_to receive(:notify)
+          patch 'update', params: { token:user.token, user: { email:'new@e.mail' }, format: :json }
+        }
+        it { expect(response.status).to eq(200) }
+      end
+
+      context 'updated email is blocked' do
+        before {
+          expect_any_instance_of(SlackServices::SignalUserCreation).to receive(:notify)
+          patch 'update', params: { token:user.token, user: { email:'blocked@email.com' }, format: :json }
+        }
+        it { expect(response.status).to eq(200) }
       end
     end
 

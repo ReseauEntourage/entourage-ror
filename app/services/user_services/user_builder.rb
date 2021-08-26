@@ -33,6 +33,17 @@ module UserServices
       callback.on_duplicate(user)
     end
 
+    def signal_blocked_user user
+      return unless user.email.present?
+      return unless user.saved_change_to_email?
+
+      blocked_user_ids = User.where(validation_status: :blocked, email: user.email).pluck(:id)
+
+      return if blocked_user_ids.empty?
+
+      SlackServices::SignalUserCreation.new(user: user, blocked_user_ids: blocked_user_ids).notify
+    end
+
     private
     attr_reader :params, :callback
 
