@@ -253,13 +253,29 @@ describe User, :type => :model do
     let!(:open) { create(:entourage, user_id: user.id, status: :open) }
     let!(:suspended) { create(:entourage, user_id: user.id, status: :suspended) }
 
-    let!(:other_user) { create(:public_user, phone: '+33600000010', token: 'bar') }
+    let!(:other_user) { create(:public_user, phone: '+33600000010', token: 'bar', validation_status: :blocked) }
     let!(:other_entourage) { create(:entourage, user_id: other_user.id, status: :open) }
 
-    context 'when user has created entourages' do
+    context 'close entourages when user is blocked' do
       before { user.update(validation_status: :blocked) }
 
       it { expect(open.reload.status).to eq('closed') }
+      it { expect(suspended.reload.status).to eq('suspended') }
+      it { expect(other_entourage.reload.status).to eq('open') }
+    end
+
+    context 'close entourages when user is deleted' do
+      before { user.update(deleted: true) }
+
+      it { expect(open.reload.status).to eq('closed') }
+      it { expect(suspended.reload.status).to eq('suspended') }
+      it { expect(other_entourage.reload.status).to eq('open') }
+    end
+
+    context 'do not close entourages when user is back to validated' do
+      before { user.update(validation_status: :validated) }
+
+      it { expect(open.reload.status).to eq('open') }
       it { expect(suspended.reload.status).to eq('suspended') }
       it { expect(other_entourage.reload.status).to eq('open') }
     end
