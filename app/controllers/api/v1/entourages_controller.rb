@@ -148,11 +148,11 @@ module Api
         reporting_user = current_user_or_anonymous
         reporting_user = reporting_user.token if reporting_user.anonymous?
 
-        AdminMailer.group_report(
+        SlackServices::SignalGroup.new(
           reported_group: @entourage,
           reporting_user: reporting_user,
           message:        message
-        ).deliver_later
+        ).notify
 
         head :created
       end

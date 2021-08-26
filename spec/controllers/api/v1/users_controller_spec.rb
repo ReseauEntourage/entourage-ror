@@ -891,19 +891,27 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
   describe 'POST #report' do
     let(:reporting_user) { create :public_user }
     let(:reported_user)  { create :public_user }
-    let(:message) { "MESSAGE" }
 
-    before { post 'report', params: { token: reporting_user.token, id: reported_user.id, user_report: {message: message} } }
+    ENV['SLACK_SIGNAL_USER_WEBHOOK'] = '{"url":"https://url.to.slack.com","channel":"channel","username-signal-user-creation":"signal-user"}'
+
+    before { stub_request(:post, "https://url.to.slack.com").to_return(status: 200) }
 
     context "valid params" do
+      before {
+        expect_any_instance_of(SlackServices::SignalUser).to receive(:notify)
+        post 'report', params: { token: reporting_user.token, id: reported_user.id, user_report: {message: 'message'} }
+      }
+
       it { expect(response.status).to eq 201 }
-      it { expect(ActionMailer::Base.deliveries.count).to eq 1 }
     end
 
     context "missing message" do
-      let(:message) { '' }
+      before {
+        expect_any_instance_of(SlackServices::SignalUser).not_to receive(:notify)
+        post 'report', params: { token: reporting_user.token, id: reported_user.id, user_report: {message: ''} }
+      }
+
       it { expect(response.status).to eq 400 }
-      it { expect(ActionMailer::Base.deliveries.count).to eq 0 }
     end
   end
 

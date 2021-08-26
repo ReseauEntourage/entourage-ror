@@ -218,10 +218,6 @@ class User < ApplicationRecord
     super is_admin
   end
 
-  def moderator
-    roles.include?(:moderator)
-  end
-
   def moderator= is_moderator
     if ActiveModel::Type::Boolean.new.cast(is_moderator)
       self.roles += [:moderator]
@@ -295,6 +291,11 @@ class User < ApplicationRecord
   end
 
   def moderator?
+    roles.include?(:moderator)
+  end
+
+  # @duplicated method
+  def moderator
     roles.include?(:moderator)
   end
 

@@ -1,0 +1,77 @@
+module SlackServices
+  class SignalUser
+    attr_accessor :reported_user, :reporting_user, :message
+
+    def initialize reported_user:, reporting_user:, message:
+      @reported_user = reported_user
+      @reporting_user = find_reporting_user(reporting_user)
+      @message = message
+    end
+
+    def notify
+      notifier&.ping payload.merge(payload_adds)
+    end
+
+    def notifier
+      Slack::Notifier.new(webhook 'url')
+    end
+
+    def webhook field
+      return unless ENV['SLACK_SIGNAL_USER_WEBHOOK'].present?
+
+      webhook = JSON.parse(ENV['SLACK_SIGNAL_USER_WEBHOOK']) rescue nil
+
+      return unless webhook.present?
+
+      webhook[field]
+    end
+
+    def payload
+      {
+        text: "<@#{slack_moderator_id || 'clara'}> ou team modération (département : #{departement || 'n/a'}) pouvez-vous vérifier cet utilisateur ?",
+        attachments: [
+          {
+            text: "Utilisateur signalé : #{@reported_user.full_name} #{link_to_user(@reported_user)}"
+          },
+          {
+            text: "Signalé par : #{@reporting_user.full_name} #{link_to_user(@reporting_user)}"
+          },
+          {
+            text: "Message : #{@message}"
+          },
+        ]
+      }
+    end
+
+    def payload_adds
+      {
+        username: webhook('username-signal-user'),
+        channel: webhook('channel'),
+      }
+    end
+
+    private
+
+    def find_reporting_user user
+      return user if user.is_a?(User)
+      return AnonymousUserService.find_user_by_token(user, community: $server_community) if AnonymousUserService.token?(user, community: $server_community)
+
+      OpenStruct.new(first_name: 'n/a', last_name: 'n/a', id: 'n/a')
+    end
+
+    def slack_moderator_id
+      moderation_area = ModerationServices.moderation_area_for_user(@reported_user)
+      return moderation_area.slack_moderator_id if moderation_area.present?
+
+      nil
+    end
+
+    def departement
+      ModerationServices.departement_for_object @reported_user.address
+    end
+
+    def link_to_user user
+      Rails.application.routes.url_helpers.admin_user_url(user.id, host: ENV['ADMIN_HOST'])
+    end
+  end
+end
