@@ -1,5 +1,5 @@
 module SlackServices
-  class SignalGroup < Abstract
+  class SignalGroup < Notifier
     def initialize reported_group:, reporting_user:, message:
       @reported_group = reported_group
       @reporting_user = find_user(reporting_user)

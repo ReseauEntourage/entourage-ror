@@ -1,5 +1,5 @@
 module SlackServices
-  class UnblockUser < Abstract
+  class UnblockUser < Notifier
     def initialize user_id:
       @user = User.find_by_id(user_id)
     end

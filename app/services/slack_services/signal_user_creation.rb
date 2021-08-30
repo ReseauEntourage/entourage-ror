@@ -1,5 +1,5 @@
 module SlackServices
-  class SignalUserCreation < Abstract
+  class SignalUserCreation < Notifier
     def initialize user:, blocked_user_ids:
       @user = user
       @blocked_user_ids = blocked_user_ids

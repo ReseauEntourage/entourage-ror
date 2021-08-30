@@ -1,5 +1,5 @@
 module SlackServices
-  class Abstract
+  class Notifier
     DEFAULT_SLACK_MODERATOR_ID = 'clara'
 
     def notify

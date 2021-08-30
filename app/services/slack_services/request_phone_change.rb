@@ -1,5 +1,5 @@
 module SlackServices
-  class RequestPhoneChange < Abstract
+  class RequestPhoneChange < Notifier
     USERNAME = 'Changement de téléphone'
 
     def initialize user:, requested_phone:, email:
