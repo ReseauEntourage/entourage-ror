@@ -27,6 +27,15 @@
       et leur photo de profil est supprimée.
     </div>
   </div>
+<% elsif @user.deleted? %>
+  <div class="panel panel-danger">
+    <div class="panel-heading">
+      Cet utilisateur est supprimé
+    </div>
+    <div class="panel-body">
+      Les utilisateurs supprimés ne peuvent pas se connecter ou utiliser l'application
+    </div>
+  </div>
 <% end %>
 
 <ul class="nav nav-tabs">
