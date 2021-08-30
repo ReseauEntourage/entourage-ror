@@ -222,7 +222,7 @@ module Admin
     end
 
     def send_export
-      UserServices::Exporter.new(user: @user).export(cci: current_user)
+      UserServices::Exporter.new(user: @user).export
       redirect_to [:admin, @user], flash: { success: "Export envoyé par mail" }
     end
 
