@@ -1,5 +1,5 @@
 class ModerationArea < ApplicationRecord
-  validates :slack_moderator_id, length: { is: 11 }, allow_nil: true
+  validates :slack_moderator_id, length: { in: 9..11 }, allow_nil: true
 
   belongs_to :moderator, class_name: :User
 
