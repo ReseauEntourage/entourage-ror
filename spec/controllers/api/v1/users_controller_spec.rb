@@ -551,9 +551,10 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
     let!(:user) { FactoryBot.create(:pro_user, phone: '+331234567890') }
 
     before { # stubs
-      UserServices::RequestPhoneChange.any_instance.stub(:webhook_url) { "https://www.google.fr" }
-      UserServices::RequestPhoneChange.any_instance.stub(:user_url) { "https://www.google.fr" }
-      UserServices::RequestPhoneChange.any_instance.stub(:channel) { "#channel" }
+      SlackServices::RequestPhoneChange.any_instance.stub(:webhook).with('url') { "https://www.google.fr" }
+      SlackServices::RequestPhoneChange.any_instance.stub(:webhook).with('username') { SlackServices::RequestPhoneChange::USERNAME }
+      SlackServices::RequestPhoneChange.any_instance.stub(:webhook).with('channel') { "#channel" }
+      SlackServices::RequestPhoneChange.any_instance.stub(:link_to_user) { "https://www.google.fr" }
       stub_request(:post, "https://www.google.fr/").to_return(status: 200, body: "", headers: {})
     }
 
@@ -561,8 +562,8 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
       expect_any_instance_of(Slack::Notifier).to receive(:ping).with({
         attachments: [{ text: "https://www.google.fr"}, { text: "Téléphone requis : +330987654321"}, {text: "Département : "}],
         channel: "#channel",
-        text: "L'utilisateur John Doe, my@email.com a requis un changement de numéro de téléphone",
-        username: UserServices::RequestPhoneChange::USERNAME
+        text: "<@clara> ou team modération (département : n/a) L'utilisateur John Doe, my@email.com a requis un changement de numéro de téléphone",
+        username: SlackServices::RequestPhoneChange::USERNAME
       })
     }
 

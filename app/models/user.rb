@@ -53,6 +53,9 @@ class User < ApplicationRecord
   has_many :user_phone_changes, -> { order(:id) }, dependent: :destroy
   has_many :histories, class_name: 'UserHistory'
 
+  delegate :country, to: :address, allow_nil: true
+  delegate :postal_code, to: :address, allow_nil: true
+
   attr_reader :admin_password
   attr_reader :cnil_explanation
 
