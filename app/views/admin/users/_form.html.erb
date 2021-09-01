@@ -184,17 +184,18 @@
 
   <div class="control-group">
     <%= f.label :organization, class: "control-label" %>
-    <div class="controls">
-      <%= f.collection_select :organization_id,
-          Organization.order("name ASC"), :id, :name,
-          {include_blank: @user.organization_id.present? ? false : "(Aucune)"},
-          {id: :pro_user, class: (:hide unless @user.pro?), disabled: !@user.pro?} %>
+    <div class="controls <%= :hide unless @user.pro? %>" id="organization-fieldset">
+      <%= f.collection_select :organization_id, Organization.order("name ASC"), :id, :name, {
+          include_blank: @user.organization_id.present? ? false : "(Aucune)"
+        }, { id: :pro_user }
+      %>
+
+    </div>
       <% if !@user.pro? %>
         <div id="change_status">
           Aucune &mdash; <%= link_to "Donner les droits de maraude", "#" %>
         </div>
       <% end %>
-    </div>
   </div>
   <br>
 
@@ -301,6 +302,12 @@
   }
 
   $profileField.on('change', togglePartnerFieldset);
+
+  $("#change_status a").click(function(e) {
+    e.preventDefault();
+    $("#change_status").hide();
+    $("#organization-fieldset").removeClass('hide');
+  });
 
   $('select').select2({ width: 200 });
 </script>

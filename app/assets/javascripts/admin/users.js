@@ -11,12 +11,6 @@ var ready = function() {
       $("#admin-user-update").attr('value', 'Enregistrer et envoyer la confirmation');
     });
 
-    $("#change_status a").click(function(e) {
-      e.preventDefault();
-      $("#change_status").hide();
-      $("#pro_user").removeClass('hide').attr('disabled', false);
-    });
-
     function requireProAttributes(require) {
       ['first_name', 'last_name', 'email'].forEach(function(attr) {
         $('[name="user[' + attr + ']"]').attr('required', require);
