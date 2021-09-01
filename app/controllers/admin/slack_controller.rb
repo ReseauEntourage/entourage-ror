@@ -93,7 +93,7 @@ module Admin
     end
 
     def authenticate_slack_user_unblock!
-      head :unauthorized if @payload['token'] != UserServices::Unblock.webhook('token')
+      head :unauthorized if @payload['token'] != SlackServices::UnblockUser.webhook('token')
     end
 
     def authenticate_admin!

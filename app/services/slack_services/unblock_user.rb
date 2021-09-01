@@ -49,5 +49,9 @@ module SlackServices
         channel: webhook('channel'),
       }
     end
+
+    def self.webhook field
+      SlackServices::UnblockUser.new(user_id: nil).webhook(field)
+    end
   end
 end
