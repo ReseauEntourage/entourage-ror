@@ -1,5 +1,10 @@
+<ol class="breadcrumb">
+  <li><%= link_to "Maraudes - Liste des associations", admin_organizations_path %></li>
+  <li class="active">Association de maraude</li>
+</ol>
+
 <div class="row">
-  <h1>Editer l'association</h1>
+  <h1>Éditer l'association</h1>
 </div>
 
 <%= form_for([:admin, @organization], html: { class: "form-horizontal", role: "form" }) do |f| %>
