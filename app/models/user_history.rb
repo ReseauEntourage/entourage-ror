@@ -28,4 +28,10 @@ class UserHistory < ApplicationRecord
       end
     end
   end
+
+  def cnil_explanation
+    return unless self[:metadata]
+
+    self[:metadata][:cnil_explanation]
+  end
 end

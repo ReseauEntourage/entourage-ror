@@ -27,6 +27,7 @@ class User < ApplicationRecord
   has_many :encounters, through: :tours
   has_many :login_histories
   has_many :session_histories
+  has_many :user_histories
   has_many :entourages
   has_many :groups, -> { except_conversations }, class_name: :Entourage
   has_many :join_requests

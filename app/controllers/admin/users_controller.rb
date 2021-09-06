@@ -1,6 +1,6 @@
 module Admin
   class UsersController < Admin::BaseController
-    before_action :set_user, only: [:show, :messages, :engagement, :edit, :update, :edit_block, :block, :temporary_block, :unblock, :cancel_phone_change_request, :download_export, :send_export, :anonymize, :banish, :validate, :experimental_pending_request_reminder]
+    before_action :set_user, only: [:show, :messages, :engagement, :history, :edit, :update, :edit_block, :block, :temporary_block, :unblock, :cancel_phone_change_request, :download_export, :send_export, :anonymize, :banish, :validate, :experimental_pending_request_reminder]
 
     def index
       @params = params.permit([:profile, :engagement, :status, :role, q: [:postal_code_start, :postal_code_in_hors_zone]]).to_h
@@ -73,6 +73,12 @@ module Admin
     end
 
     def engagement
+    end
+
+    def history
+      @sms_deliveries = SmsDelivery.where(phone_number: @user.phone).order('created_at desc')
+      @histories = @user.user_histories
+      @block_histories = @user.user_histories.blocked
     end
 
     def edit
