@@ -115,8 +115,7 @@ module Admin
         user.organization_id = user_params[:organization_id]
       end
 
-      email_prefs_success = EmailPreferencesService.update(
-        user: user, preferences: (params.permit([:email_preferences])[:email_preferences] || {}))
+      email_prefs_success = EmailPreferencesService.update(user: user, preferences: email_preferences_params.to_h)
 
       user.assign_attributes(user_params)
       user.encrypted_password = nil if user.sms_code_changed?
@@ -261,6 +260,10 @@ module Admin
 
     def user_params
       params.require(:user).permit(:first_name, :last_name, :email, :sms_code, :phone, :organization_id, :use_suggestions, :about, :accepts_emails, :targeting_profile, :partner_id, :admin, :moderator)
+    end
+
+    def email_preferences_params
+      params.permit(email_preferences: [:default, :newsletter, :unread_reminder, :digest_email])[:email_preferences] || {}
     end
 
     def block_params

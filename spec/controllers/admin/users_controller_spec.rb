@@ -97,6 +97,26 @@ describe Admin::UsersController do
         }, user_moderation: { skills: ['Administratif'] } }
       }
     end
+
+    context "add email_preferences" do
+      before {
+        expect(EmailPreferencesService).to receive(:update).with(user: user, preferences: { newsletter: '1' })
+      }
+
+      it {
+        put :update, params: { id: user.id, user: { about: 'foo' }, user_moderation: { skills: ['Administratif'] }, email_preferences: { newsletter: '1'} }
+      }
+    end
+
+    context "remove email_preferences" do
+      before {
+        expect(EmailPreferencesService).to receive(:update).with(user: user, preferences: {})
+      }
+
+      it {
+        put :update, params: { id: user.id, user: { about: 'foo' }, user_moderation: { skills: ['Administratif'] } }
+      }
+    end
   end
 
   describe "PUT cancel_phone_change_request" do
