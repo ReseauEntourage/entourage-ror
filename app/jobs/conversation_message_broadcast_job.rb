@@ -2,7 +2,9 @@ class ConversationMessageBroadcastJob
   include Sidekiq::Worker
 
   def perform(conversation_message_broadcast_id, sender_id, recipient_ids, content)
-    return if conversation_message_broadcast_id <= 58
+    if EnvironmentHelper.production?
+      return if conversation_message_broadcast_id <= 58
+    end
 
     conversation_message_broadcast = ConversationMessageBroadcast.find(conversation_message_broadcast_id)
     conversation_message_broadcast.update_attribute(:status, :sending)
