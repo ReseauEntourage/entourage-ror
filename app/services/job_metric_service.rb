@@ -48,6 +48,23 @@ module JobMetricService
     end
   end
 
+  def self.queues
+    list = []
+
+    Sidekiq::Queue.all.each do |queue|
+      queue.each do |job|
+        list << {
+          queue: queue.name,
+          size: queue.size,
+          klass: job.klass,
+          args: job.args
+        }
+      end
+    end
+
+    list
+  end
+
   def self.stats
     stat = Sidekiq::Stats.new
 

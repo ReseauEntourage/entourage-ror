@@ -49,6 +49,7 @@ module Admin
         schedules: JobMetricService.schedules,
         processes: JobMetricService.processes,
         workers: JobMetricService.workers,
+        queues: JobMetricService.queues,
         stats: [JobMetricService.stats],
         history_failed: @history[:failed].map{ |v| { day: v.first, count: v.last } },
         history_processed: @history[:processed].map{ |v| { day: v.first, count: v.last } },
