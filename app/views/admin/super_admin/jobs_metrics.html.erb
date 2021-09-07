@@ -28,8 +28,12 @@
                       <%= l Time.at(job[key]) %>
                     <% elsif key.to_sym == :args %>
                       <% job[key].each do |arg| %>
-                        <% arg.each do |key, value| %>
-                          <%= "#{key}: #{value}" %><br/>
+                        <% if arg.is_a? Array %>
+                          <% arg[0..10].each do |key, value| %>
+                            <%= "#{key}: #{value}" %><br/>
+                          <% end %>
+                        <% else %>
+                          <%= arg %>
                         <% end %>
                       <% end %>
                     <% else %>
