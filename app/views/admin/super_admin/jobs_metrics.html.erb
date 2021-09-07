@@ -33,11 +33,11 @@
                             <%= "#{key}: #{value}" %><br/>
                           <% end %>
                         <% else %>
-                          <%= arg %>
+                          <%= "#{arg}"[0..1000] %>
                         <% end %>
                       <% end %>
                     <% else %>
-                      <%= job[key] %>
+                      <%= "#{job[key]}"[0..1000] %>
                     <% end %>
                   </td>
                 <% end %>
