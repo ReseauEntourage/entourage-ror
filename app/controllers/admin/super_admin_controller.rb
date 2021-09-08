@@ -1,6 +1,7 @@
 module Admin
   class SuperAdminController < Admin::BaseController
     PER_PAGE = 50
+    JOB_HISTORY_DAYS = 7
 
     layout 'admin_large'
 
@@ -41,7 +42,7 @@ module Admin
     end
 
     def jobs_metrics
-      @history = JobMetricService.history(7)
+      @history = JobMetricService.history(params[:days] || JOB_HISTORY_DAYS)
 
       @jober = {
         retries: JobMetricService.retries,
