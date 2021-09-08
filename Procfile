@@ -1,3 +1,4 @@
 web: bundle exec puma -C config/puma.rb
-worker: bundle exec sidekiq -c ${SIDEKIQ_CONCURRENCY:-10} -q default -q mailers
+worker_1: bundle exec sidekiq -c ${SIDEKIQ_CONCURRENCY:-10} -q sms
+worker_2: bundle exec sidekiq -c ${SIDEKIQ_CONCURRENCY:-10} -q mailers -q default
 release: ACTIVERECORD_STATEMENT_TIMEOUT=90s bundle exec rake db:migrate
