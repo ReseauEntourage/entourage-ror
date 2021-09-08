@@ -231,7 +231,6 @@ GEM
     net-http2 (0.18.4)
       http-2 (~> 0.11)
     netrc (0.11.0)
-    newrelic_rpm (5.7.0.350)
     nexmo (7.2.1)
       nexmo-jwt (~> 0.1.1)
       sorbet-runtime (~> 0.5)
@@ -468,7 +467,6 @@ DEPENDENCIES
   mini_magick
   mixpanel-ruby
   momentjs-rails (~> 2)
-  newrelic_rpm (~> 5)
   nexmo
   pg (~> 1)
   phonelib
