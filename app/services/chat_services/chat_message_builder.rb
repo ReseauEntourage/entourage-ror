@@ -66,14 +66,14 @@ module ChatServices
       joinable
     end
 
-    def self.create_broadcast conversation_message_broadcast:, sender:, recipients:, content:
+    def self.create_broadcast conversation_message_broadcast:, sender:, recipient_ids:, content:
       user = sender
       success_users = []
       failure_users = []
 
       # refactoriser : code quasi identique dans Admin::ConversationsController.message
-      recipients.each do |recipient|
-        conversation = self.find_conversation recipient.id, user_id: user.id
+      recipient_ids.each do |recipient_id|
+        conversation = self.find_conversation recipient_id, user_id: user.id
 
         join_request =
           if conversation.new_record?
@@ -96,10 +96,10 @@ module ChatServices
         chat_builder.create do |on|
           on.success do |message|
             join_request.update_column(:last_message_read, message.created_at)
-            success_users << recipient.id
+            success_users << recipient_id
           end
           on.failure do |message|
-            failure_users << recipient.id
+            failure_users << recipient_id
           end
         end
       end
