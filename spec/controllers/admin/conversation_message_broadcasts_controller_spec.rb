@@ -136,7 +136,7 @@ describe Admin::ConversationMessageBroadcastsController do
   describe "POST #broadcast" do
     let!(:conversation_message_broadcast) { FactoryBot.create(:conversation_message_broadcast) }
     it {
-      expect(ConversationMessageBroadcastJob).to receive(:perform_later)
+      expect_any_instance_of(ConversationMessageBroadcastJob).to receive(:perform)
       post :broadcast, params: { id: conversation_message_broadcast.id }
     }
   end
