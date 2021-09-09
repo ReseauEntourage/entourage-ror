@@ -1,7 +1,7 @@
 class ConversationMessageBroadcastJob
   include Sidekiq::Worker
 
-  def perform(conversation_message_broadcast_id, sender_id, recipient_ids, content)
+  def perform(conversation_message_broadcast_id, sender_id, content)
     if EnvironmentHelper.production?
       return if conversation_message_broadcast_id <= 58
     end
@@ -14,7 +14,6 @@ class ConversationMessageBroadcastJob
     ChatServices::ChatMessageBuilder.create_broadcast(
       conversation_message_broadcast: conversation_message_broadcast,
       sender: sender,
-      recipient_ids: recipient_ids,
       content: content
     ) do |success_users, failure_users|
       conversation_message_broadcast.update_attributes(status: :sent, sent_users_count: success_users.count)
@@ -22,7 +21,7 @@ class ConversationMessageBroadcastJob
   end
 
   # ActiveJob interface
-  def self.perform_later(conversation_message_broadcast_id, sender_id, recipient_ids, content)
-    perform_async(conversation_message_broadcast_id, sender_id, recipient_ids, content)
+  def self.perform_later(conversation_message_broadcast_id, sender_id, content)
+    perform_async(conversation_message_broadcast_id, sender_id, content)
   end
 end

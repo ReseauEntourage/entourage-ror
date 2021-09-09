@@ -66,13 +66,13 @@ module ChatServices
       joinable
     end
 
-    def self.create_broadcast conversation_message_broadcast:, sender:, recipient_ids:, content:
+    def self.create_broadcast conversation_message_broadcast:, sender:, content:
       user = sender
       success_users = []
       failure_users = []
 
       # refactoriser : code quasi identique dans Admin::ConversationsController.message
-      recipient_ids.each do |recipient_id|
+      conversation_message_broadcast.user_ids.each do |recipient_id|
         conversation = self.find_conversation recipient_id, user_id: user.id
 
         join_request =

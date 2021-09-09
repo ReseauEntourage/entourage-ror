@@ -61,7 +61,6 @@ module Admin
       ConversationMessageBroadcastJob.new.perform(
         @conversation_message_broadcast.id,
         current_admin.id,
-        @conversation_message_broadcast.user_ids,
         @conversation_message_broadcast.content
       )
 
