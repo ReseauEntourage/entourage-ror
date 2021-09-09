@@ -79,7 +79,7 @@ class ConversationMessageBroadcast < ApplicationRecord
     .where([
       %(
         (users.targeting_profile = ? or
-          (users.targeting_profile is null and users.goal = ?) or
+          ((users.targeting_profile is null or targeting_profile = '') and users.goal = ?) or
           (users.targeting_profile in ('ambassador', 'partner') and 'organization' = ?)
         )
       ),

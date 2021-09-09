@@ -63,7 +63,7 @@
 
   <div class="row">
     <div class="col-xs-6 form-group">
-      <% areas = ModerationArea.all.map {|area| [area.name_with_departement, area.departement_slug]} %>
+      <% areas = ModerationArea.all_with_national_with_no_zone.map {|area| [area.name_with_departement, area.departement_slug]} %>
       <%= f.label :area %>
       <%= f.select :area, options_for_select(areas, @conversation_message_broadcast.area), { include_blank: false }, class: "form-control" %>
     </div>

@@ -152,6 +152,8 @@ class User < ApplicationRecord
       left_joins_addresses.where("addresses.id IS NULL OR addresses.postal_code IS NULL")
     elsif area.to_sym == :hors_zone
       joins(:addresses).where("addresses.country != 'FR' OR left(addresses.postal_code, 2) NOT IN (?)", ModerationArea.only_departements)
+    elsif area.to_sym == :national
+      joins(:addresses).where("addresses.country = 'FR'")
     else
       joins(:addresses).where("addresses.country = 'FR' AND left(addresses.postal_code, 2) = ?", ModerationArea.departement(area))
     end
