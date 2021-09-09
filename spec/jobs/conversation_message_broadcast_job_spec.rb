@@ -12,11 +12,14 @@ RSpec.describe ConversationMessageBroadcastJob do
       ConversationMessageBroadcastJob.new.perform(
         conversation_message_broadcast.id,
         admin.id,
-        users.map(&:id),
         conversation_message_broadcast.content
       )
       users.map(&:reload)
       admin.reload
+    }
+
+    before {
+      allow_any_instance_of(ConversationMessageBroadcast).to receive(:user_ids).and_return(users.map(&:id))
     }
 
     it { expect { job }.to change { ConversationMessage.count }.by(2) }
