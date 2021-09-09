@@ -6,7 +6,7 @@ module Api
       def index
         render json: {
           metadata: {
-            order: [:headlines, :outings, :entourages],
+            order: metadata_order,
           },
 
           headlines: get_headlines,
@@ -17,8 +17,14 @@ module Api
             scope: { user: current_user }
           ),
 
-          entourages: ::ActiveModel::ArraySerializer.new(
-            get_entourages,
+          entourage_contributions: ::ActiveModel::ArraySerializer.new(
+            entourages(:contribution),
+            each_serializer: ::V1::EntourageSerializer,
+            scope: { user: current_user }
+          ),
+
+          entourage_ask_for_helps: ::ActiveModel::ArraySerializer.new(
+            entourages(:ask_for_help),
             each_serializer: ::V1::EntourageSerializer,
             scope: { user: current_user }
           )
@@ -51,8 +57,16 @@ module Api
         HomeServices::Outing.new(user: current_user, latitude: params[:latitude], longitude: params[:longitude]).find_all
       end
 
-      def get_entourages
-        HomeServices::Action.new(user: current_user, latitude: params[:latitude], longitude: params[:longitude]).find_all
+      def entourages entourage_type
+        HomeServices::Action.new(user: current_user, latitude: params[:latitude], longitude: params[:longitude]).find_all(entourage_type: entourage_type)
+      end
+
+      def metadata_order
+        if current_user.is_ask_for_help?
+          [:headlines, :outings, :entourage_ask_for_helps, :entourage_contributions],
+        else
+          [:headlines, :outings, :entourage_contributions, :entourage_ask_for_helps]
+        end
       end
     end
   end
