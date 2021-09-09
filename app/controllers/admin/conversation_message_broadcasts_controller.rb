@@ -58,7 +58,7 @@ module Admin
       @conversation_message_broadcast = ConversationMessageBroadcast.find(params[:id])
       @conversation_message_broadcast.update_attribute(:status, :sending)
 
-      ConversationMessageBroadcastJob.perform_later(
+      ConversationMessageBroadcastJob.perform_now(
         @conversation_message_broadcast.id,
         current_admin.id,
         @conversation_message_broadcast.user_ids,
