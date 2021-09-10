@@ -11,8 +11,8 @@ module Admin
 
       @conversation_message_broadcasts = ConversationMessageBroadcast.where(status: @status).order(:created_at)
 
-      @conversation_message_broadcasts = @conversation_message_broadcasts.where(goal: @goal) if @goal and @goal != :all
-      @conversation_message_broadcasts = @conversation_message_broadcasts.where(area: @area) if @area and @area != :all
+      @conversation_message_broadcasts = @conversation_message_broadcasts.where(goal: @goal) if @goal && @goal != :all
+      @conversation_message_broadcasts = @conversation_message_broadcasts.where(area: @area) if @area && @area != :all
     end
 
     def new
