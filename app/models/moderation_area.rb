@@ -78,6 +78,10 @@ class ModerationArea < ApplicationRecord
     Hash[all_with_no_zone.map { |a| [a.departement_slug, a] }]
   end
 
+  def self.by_slug_with_national
+    Hash[all_with_national_with_no_zone.map { |a| [a.departement_slug, a] }]
+  end
+
   def self.only_departements
     pluck(:departement) - ['*', '_']
   end
