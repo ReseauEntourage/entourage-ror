@@ -18,7 +18,15 @@ class UserGoalPresenter
     community.goals + [:goal_not_known]
   end
 
+  def self.all_slugs_with_any community
+    [:all] + all_slugs(community)
+  end
+
   def self.all community
     all_slugs(community).map { |slug| new(slug, community: community) }
+  end
+
+  def self.all_with_any community
+    all_slugs_with_any(community).map { |slug| new(slug, community: community) }
   end
 end

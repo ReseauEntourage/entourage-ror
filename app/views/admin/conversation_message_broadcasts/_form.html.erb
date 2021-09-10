@@ -68,7 +68,7 @@
       <%= f.select :area, options_for_select(areas, @conversation_message_broadcast.area), { include_blank: false }, class: "form-control" %>
     </div>
     <div class="col-xs-6 form-group">
-      <% goals = UserGoalPresenter.all(current_user.community).map {|goal| [goal.name, goal.slug]} %>
+      <% goals = UserGoalPresenter.all_with_any(current_user.community).map {|goal| [goal.name, goal.slug]} %>
       <%= f.label :goal %>
       <%= f.select :goal, options_for_select(goals, @conversation_message_broadcast.goal), { include_blank: false }, class: "form-control" %>
     </div>

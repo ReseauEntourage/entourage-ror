@@ -93,7 +93,8 @@ class User < ApplicationRecord
   scope :temporary_blocked, -> { blocked.where('unblock_at is not null') }
   scope :deleted, -> { where(deleted: true) }
   scope :anonymized, -> { where(validation_status: "anonymized") }
-  scope :unknown, -> { where(targeting_profile: nil, goal: nil) }
+  scope :goal_not_known, -> { where(targeting_profile: nil, goal: nil) }
+  scope :unknown, -> { goal_not_known }
   scope :ask_for_help, -> { where('(targeting_profile is null and goal = ?) or targeting_profile = ?', :ask_for_help, :asks_for_help) }
   scope :offer_help, -> { where('(targeting_profile is null and goal = ?) or targeting_profile = ?', :offer_help, :offers_help) }
   scope :organization, -> { where(goal: :organization) }
@@ -146,6 +147,18 @@ class User < ApplicationRecord
   scope :moderators, -> { where(admin: true).where("roles ? 'moderator'") }
 
   scope :left_joins_addresses, -> { joins('LEFT OUTER JOIN addresses ON addresses.user_id = users.id') }
+
+  scope :with_profile, -> (profile) {
+    if profile.to_sym == :ask_for_help
+      ask_for_help
+    elsif profile.to_sym == :offer_help
+      offer_help
+    elsif profile.to_sym == :organization
+      organization
+    elsif profile.to_sym == :goal_not_known
+      goal_not_known
+    end
+  }
 
   scope :in_area, -> (area) {
     if area.to_sym == :sans_zone
