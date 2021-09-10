@@ -44,6 +44,9 @@
           <th>Dernière mise à jour</th>
           <% if @status == :sent %>
             <th>Envoyés</th>
+          <% elsif @status == :sending %>
+            <th>Envoyés</th>
+            <th>En cours</th>
           <% end %>
           <th>Actions</th>
           <% @conversation_message_broadcasts.each do |conversation_message_broadcast| %>
@@ -56,12 +59,17 @@
               <td><%= l(conversation_message_broadcast.updated_at, format: :short) if conversation_message_broadcast.updated_at %></td>
               <% if @status == :sent %>
                 <td><%= conversation_message_broadcast.sent_users_count %></td>
+              <% elsif @status == :sending %>
+                <td><%= conversation_message_broadcast.sent_users_count %></td>
+                <td><%= ConversationMessageBroadcast.pending_jobs[conversation_message_broadcast.id] %></td>
               <% end %>
               <td>
-                <% if conversation_message_broadcast.draft? %>
+                <% if @status == :draft %>
                   <%= link_to "Modifier", edit_admin_conversation_message_broadcast_path(conversation_message_broadcast), class: "btn btn-primary" %>
-                <% elsif !conversation_message_broadcast.sending? %>
+                <% elsif [:sent, :archived].include? @status %>
                   <%= link_to "Dupliquer", clone_admin_conversation_message_broadcast_path(conversation_message_broadcast), method: :post, class: "btn btn-danger" %>
+                <% elsif @status == :sending %>
+                  <%= link_to "Stopper", kill_admin_conversation_message_broadcast_path(conversation_message_broadcast), method: :post, class: "btn btn-danger" %>
                 <% end %>
               </td>
             </tr>

@@ -9,11 +9,14 @@ RSpec.describe ConversationMessageBroadcastJob do
     let!(:admin) { FactoryBot.create(:user, admin: true, organization: organization) }
 
     let(:job) {
-      ConversationMessageBroadcastJob.new.perform(
-        conversation_message_broadcast.id,
-        admin.id,
-        conversation_message_broadcast.content
-      )
+      users.each do |user|
+        ConversationMessageBroadcastJob.new.perform(
+          conversation_message_broadcast.id,
+          admin.id,
+          user.id,
+          conversation_message_broadcast.content
+        )
+      end
       users.map(&:reload)
       admin.reload
     }
