@@ -1,3 +1,5 @@
+require 'sidekiq/api'
+
 class ConversationMessageBroadcastJob
   include Sidekiq::Worker
   sidekiq_options :retry => false, queue: :broadcast
