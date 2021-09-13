@@ -63,9 +63,9 @@ module Api
 
       def metadata_order
         if current_user.is_ask_for_help?
-          [:headlines, :outings, :entourage_ask_for_helps, :entourage_contributions]
-        else
           [:headlines, :outings, :entourage_contributions, :entourage_ask_for_helps]
+        else
+          [:headlines, :outings, :entourage_ask_for_helps, :entourage_contributions]
         end
       end
     end
