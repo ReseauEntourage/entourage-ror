@@ -1,7 +1,6 @@
 module Admin
   class SuperAdminController < Admin::BaseController
     PER_PAGE = 50
-    JOB_HISTORY_DAYS = 7
 
     layout 'admin_large'
 
@@ -41,29 +40,13 @@ module Admin
       end
     end
 
-    def jobs_metrics
-      @history = JobMetricService.history(params[:days] || JOB_HISTORY_DAYS)
-
-      @jober = {
-        retries: JobMetricService.retries,
-        deads: JobMetricService.deads,
-        schedules: JobMetricService.schedules,
-        processes: JobMetricService.processes,
-        workers: JobMetricService.workers,
-        queues: JobMetricService.queues,
-        stats: [JobMetricService.stats],
-        history_failed: @history[:failed].map{ |v| { day: v.first, count: v.last } },
-        history_processed: @history[:processed].map{ |v| { day: v.first, count: v.last } },
-      }
-    end
-
     def jobs_crons
     end
 
     def force_close_tours
       JobCronService.force_close_tours
 
-      redirect_to admin_super_admin_jobs_metrics_path, flash: {
+      redirect_to sidekiq_web_path, flash: {
         success: "Un job a été créé pour fermer les maraudes en cours"
       }
     end
@@ -71,7 +54,7 @@ module Admin
     def unread_reminder_email
       JobCronService.unread_reminder_email
 
-      redirect_to admin_super_admin_jobs_metrics_path, flash: {
+      redirect_to sidekiq_web_path, flash: {
         success: "Un job a été créé pour envoyer un mail de rappel des messages non lus"
       }
     end
@@ -79,7 +62,7 @@ module Admin
     def onboarding_sequence_send_welcome_messages
       JobCronService.onboarding_sequence_send_welcome_messages
 
-      redirect_to admin_super_admin_jobs_metrics_path, flash: {
+      redirect_to sidekiq_web_path, flash: {
         success: "Un job a été créé pour envoyer les messages de bienvenue"
       }
     end

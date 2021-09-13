@@ -1,4 +1,8 @@
+require 'sidekiq/web'
+require 'super_admin_constraint'
+
 Rails.application.routes.draw do
+  mount Sidekiq::Web => '/super_admin/sidekiq', :constraints => SuperAdminConstraint.new
 
   #ADMIN
   constraints :subdomain => /\A(admin|admin-preprod)\z/ do
@@ -67,7 +71,7 @@ Rails.application.routes.draw do
         get '/entourage_images', action: :entourage_images
         get '/outings_images', action: :outings_images
         get '/announcements_images', action: :announcements_images
-        get '/jobs_metrics', action: :jobs_metrics
+        # sidekiq: /super_admin/sidekiq defined previously
         get '/jobs_crons', action: :jobs_crons
         post '/force_close_tours', action: :force_close_tours
         post '/unread_reminder_email', action: :unread_reminder_email
