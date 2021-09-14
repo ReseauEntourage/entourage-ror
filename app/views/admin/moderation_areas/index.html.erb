@@ -9,11 +9,18 @@
       </div>
 
       <table class="table">
+        <tr>
+          <th></th>
+          <th></th>
+          <th>Modérateur</th>
+          <th>Lien vers l'identifiant Slack</th>
+        </tr>
         <% @areas.each do |area| %>
           <tr>
             <td style="width: 3em"><%= area.departement %></td>
             <td><%= link_to area.name, edit_admin_moderation_area_path(area) %></td>
             <td><%= area.moderator.full_name %></td>
+            <td><%= link_to area.slack_moderator_id, "https://resentourage.slack.com/team/#{area.slack_moderator_id}", target: :_blank if area.slack_moderator_id.present? %></td>
           </tr>
         <% end %>
       </table>
