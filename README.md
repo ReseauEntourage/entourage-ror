@@ -61,6 +61,16 @@ RAILS_ENV=test bin/d bundle exec rake db:drop db:create db:migrate
 RAILS_ENV=test bin/d bundle exec rspec
 ```
 
+# Docker - Psql
+
+If you want to connect directly to docker psql, use:
+
+```bash
+docker-compose exec --env RAILS_ENV=development postgresql psql postgres://guest:guest@postgresql:5432/entourage-dev
+```
+
+See `docker-compose.yml` for more details.
+
 # Local install
 
 ## Resolve dependencies and database migration
