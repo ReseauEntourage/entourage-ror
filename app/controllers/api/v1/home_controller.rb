@@ -17,6 +17,12 @@ module Api
             scope: { user: current_user }
           ),
 
+          entourages: ::ActiveModel::ArraySerializer.new(
+            entourages([:contribution, :ask_for_help]),
+            each_serializer: ::V1::EntourageSerializer,
+            scope: { user: current_user }
+          ),
+
           entourage_contributions: ::ActiveModel::ArraySerializer.new(
             entourages(:contribution),
             each_serializer: ::V1::EntourageSerializer,
@@ -62,6 +68,8 @@ module Api
       end
 
       def metadata_order
+        return [:headlines, :outings, :entourages] unless params[:split_entourages].present?
+
         if current_user.is_ask_for_help?
           [:headlines, :outings, :entourage_contributions, :entourage_ask_for_helps]
         else
