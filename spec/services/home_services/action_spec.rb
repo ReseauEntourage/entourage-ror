@@ -22,17 +22,5 @@ describe HomeServices::Action do
 
       expect(actions).to eq([contribution, ask_for_help])
     end
-
-    it 'no ask_for_help if entourage_type is contribution' do
-      actions = HomeServices::Action.new(user: user, latitude: 1.122, longitude: 2.345).find_all(entourage_type: :contribution)
-
-      expect(actions).to eq([contribution])
-    end
-
-    it 'no contribution if entourage_type is ask_for_help' do
-      actions = HomeServices::Action.new(user: user, latitude: 1.122, longitude: 2.345).find_all(entourage_type: :ask_for_help)
-
-      expect(actions).to eq([ask_for_help])
-    end
   end
 end

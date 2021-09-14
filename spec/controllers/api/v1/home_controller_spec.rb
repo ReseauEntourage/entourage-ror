@@ -32,17 +32,14 @@ describe Api::V1::HomeController do
         expect(subject).to have_key("metadata")
         expect(subject).to have_key("headlines")
         expect(subject).to have_key("outings")
-        expect(subject).to have_key("entourage_contributions")
-        expect(subject).to have_key("entourage_ask_for_helps")
+        expect(subject).to have_key("entourages")
       end
 
-      it "renders entourage_ask_for_helps" do
-        entourage.update_attribute(:entourage_type, :ask_for_help)
-
+      it "renders entourages" do
         get :index, params: { token: user.token, latitude: 48.854367553784954, longitude: 2.270340589096274 }
 
-        expect(subject["entourage_ask_for_helps"].count).to eq(1)
-        expect(subject["entourage_ask_for_helps"]).to eq(
+        expect(subject["entourages"].count).to eq(1)
+        expect(subject["entourages"]).to eq(
           [{
             "id" => entourage.id,
             "uuid"=>entourage.uuid_v2,
