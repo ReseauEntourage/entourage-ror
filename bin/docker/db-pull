@@ -42,6 +42,19 @@ excluded_tables=(
   questions
 )
 
+included_tables=(
+  users
+  addresses
+  organizations
+  partners
+  join_requests
+  entourages
+  tours
+  entourage_moderations
+  chat_messages
+  conversation_messages
+)
+
 $(is_running spring)     && spring_running=true
 $(is_running postgresql) && postgresql_running=true
 
@@ -49,7 +62,8 @@ $(is_running postgresql) && postgresql_running=true
 [ $spring_running ]     && docker-compose stop spring
 
 reset $target
-dump $source $(exclude ${excluded_tables[*]}) | restore $target
+dump $source $(exclude ${excluded_tables[*]}) | restore -c $target
+# dump $source $(exclude ${excluded_tables[*]}) $(include ${included_tables[*]}) | restore -c $target
 
 [ $postgresql_running ] || docker-compose stop  postgresql
 [ $spring_running ]     && docker-compose start spring

@@ -61,3 +61,9 @@ function exclude {
     echo -n "--exclude-table-data=$table "
   done
 }
+
+function include {
+  for table in "$@"; do
+    echo -n "-t $table "
+  done
+}
