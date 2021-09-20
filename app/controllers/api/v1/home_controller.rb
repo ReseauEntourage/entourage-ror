@@ -6,7 +6,7 @@ module Api
       def index
         render json: {
           metadata: {
-            order: [:headlines, :outings, :entourages],
+            order: metadata_order,
           },
 
           headlines: get_headlines,
