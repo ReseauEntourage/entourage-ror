@@ -111,6 +111,40 @@
   <div class="form-group">
     <%= f.label :url %>
     <%= f.url_field :url, class: "form-control", required: !@announcement.draft?, readonly: @announcement.archived? %>
+    <div class="alert alert-info" role="alert">
+      <p>Le lien URL peut être de différents types :</p>
+      <ul>
+        <li>
+          <b>Vers une conversation donnée : </b>
+          <mark>entourage://entourage/1_list_me-[id]</mark> (remplacer [id] par l'id d'un utilisateur
+        </li>
+
+        <li>
+          <b>Vers une conversation avec un modérateur : </b>
+          <mark>entourage://entourage/1_list_me-moderator</mark>
+        </li>
+
+        <li>
+          <b>Vers une page spécifique de l'appli : </b>
+          <mark>entourage://guidemap</mark> (ici, le guide de solidarité)
+        </li>
+
+        <li>
+          <b>Vers une action spécifique : </b>
+          <mark>https://app.entourage.social/actions/eIURtNV7nEUs</mark> (remplacer l'élément de fin par l'identifiant d'une action)
+        </li>
+
+        <li>
+          <b>Vers une page HTML : </b>
+          <mark>https://blog.entourage.social</mark>
+        </li>
+
+        <li>
+          <b>Envoyer un email : </b>
+          <mark>mailto:barbara@entourage.social</mark>
+        </li>
+      </ul>
+    </div>
   </div>
 
   <div class="control-group form-group">
