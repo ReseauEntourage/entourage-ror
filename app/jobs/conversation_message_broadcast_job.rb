@@ -48,6 +48,8 @@ class ConversationMessageBroadcastJob
         tags: [conversation_message_broadcast_id]
       ).perform_async(conversation_message_broadcast_id, sender_id, recipient_id, content)
     end
+
+    ConversationMessageBroadcastDenormJob.perform_later conversation_message_broadcast_id
   end
 
   def self.jobs
