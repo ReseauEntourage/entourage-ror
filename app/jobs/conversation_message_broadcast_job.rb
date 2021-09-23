@@ -56,6 +56,12 @@ class ConversationMessageBroadcastJob
     Sidekiq::Queue.new('broadcast')
   end
 
+  def self.count_jobs_for conversation_message_broadcast_id
+    return if (by_tags = count_jobs_by_tags).empty?
+
+    by_tags[conversation_message_broadcast_id]
+  end
+
   def self.count_jobs_by_tags
     jobs.map do |job|
       job.tags
