@@ -68,25 +68,9 @@ class ConversationMessageBroadcast < ApplicationRecord
   def users
     return [] unless valid?
 
-    targeting_profile = goal
-    targeting_profile = 'asks_for_help' if goal.to_s == 'ask_for_help'
-    targeting_profile = 'offers_help' if goal.to_s == 'offer_help'
-
-    # targeting_profile prevails on goal
-    # whenever broadcast goal is 'organization' then ambassador and partner' targeting_profiles are valids
     User
     .where('users.deleted': false, 'users.validation_status': :validated)
-    .where([
-      %(
-        (users.targeting_profile = ? or
-          (users.targeting_profile is null and users.goal = ?) or
-          (users.targeting_profile in ('ambassador', 'partner') and 'organization' = ?)
-        )
-      ),
-      targeting_profile,
-      goal,
-      goal
-    ])
+    .with_profile(goal)
     .in_area(area)
     .group('users.id')
   end

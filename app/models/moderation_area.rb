@@ -33,6 +33,8 @@ class ModerationArea < ApplicationRecord
       :hors_zone
     when '_'
       :sans_zone
+    when 'FR'
+      :national
     when /\A\d\d\z/
       "dep_#{departement}".to_sym
     else
@@ -48,8 +50,16 @@ class ModerationArea < ApplicationRecord
     slug[4..-1]
   end
 
+  def self.national
+    new(name: "National", departement: "FR")
+  end
+
   def self.no_zone
     new(name: "Sans zone", departement: "_")
+  end
+
+  def self.all_with_national_with_no_zone
+    [national] + all.order(:id) + [no_zone]
   end
 
   def self.all_with_no_zone
@@ -66,6 +76,10 @@ class ModerationArea < ApplicationRecord
 
   def self.by_slug
     Hash[all_with_no_zone.map { |a| [a.departement_slug, a] }]
+  end
+
+  def self.by_slug_with_national
+    Hash[all_with_national_with_no_zone.map { |a| [a.departement_slug, a] }]
   end
 
   def self.only_departements

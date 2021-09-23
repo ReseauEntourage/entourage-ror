@@ -106,6 +106,7 @@ fr:
         goal: Public
         title: Titre
         archived_at: Archivé le
+        area: Zone
 
   community:
     entourage:
@@ -122,11 +123,13 @@ fr:
         ask_for_help: Personne isolée ou en précarité
         organization: Association ou service public
         goal_not_known: Non défini
+        all: Tous profils
       goals_compact:
         offer_help: Riverain
         ask_for_help: SDF
         organization: Association
         goal_not_known: Non défini
+        all: Tous profils
       icons:
         offer_help: user
         ask_for_help: street-view
