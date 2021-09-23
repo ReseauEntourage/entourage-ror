@@ -62,7 +62,7 @@ class ConversationMessageBroadcast < ApplicationRecord
   end
 
   def user_ids
-    users.select('users.id').map(&:id)
+    users.pluck(:id)
   end
 
   def users
