@@ -3,6 +3,14 @@ require 'experimental/jsonb_set'
 class ConversationMessageBroadcast < ApplicationRecord
   validates_presence_of :area, :goal, :content, :title
 
+  scope :with_status, -> (status) {
+    if status.to_sym == :sending
+      where(id: ConversationMessageBroadcast.pending_jobs.keys)
+    else
+      where(status: status)
+    end
+  }
+
   def name
     if moderation_area
       "#{title} (#{area.departement}, #{goal})"
@@ -29,7 +37,7 @@ class ConversationMessageBroadcast < ApplicationRecord
   end
 
   def sending?
-    status&.to_sym == :sending
+    self.class.pending_jobs.keys.include? id
   end
 
   def sent?
@@ -90,5 +98,13 @@ class ConversationMessageBroadcast < ApplicationRecord
       goal: goal,
       title: title
     )
+  end
+
+  def self.pending_jobs
+    ConversationMessageBroadcastJob.count_jobs_by_tags
+  end
+
+  def delete_jobs
+    ConversationMessageBroadcastJob.delete_jobs_with_tag id
   end
 end

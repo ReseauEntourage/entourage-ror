@@ -9,10 +9,10 @@ module Admin
       @status = params[:status].presence&.to_sym || :draft
       @areas = ModerationArea.by_slug
 
-      @conversation_message_broadcasts = ConversationMessageBroadcast.where(status: @status).order(:created_at)
+      @conversation_message_broadcasts = ConversationMessageBroadcast.with_status(@status).order(:created_at)
 
-      @conversation_message_broadcasts = @conversation_message_broadcasts.where(goal: @goal) if @goal and @goal != :all
-      @conversation_message_broadcasts = @conversation_message_broadcasts.where(area: @area) if @area and @area != :all
+      @conversation_message_broadcasts = @conversation_message_broadcasts.where(goal: @goal) if @goal && @goal != :all
+      @conversation_message_broadcasts = @conversation_message_broadcasts.where(area: @area) if @area && @area != :all
     end
 
     def new
@@ -54,14 +54,20 @@ module Admin
       render :new
     end
 
+    def kill
+      @conversation_message_broadcast = ConversationMessageBroadcast.find(params[:id]).delete_jobs
+      @conversation_message_broadcast.update_attribute(:status, :sent)
+
+      redirect_to admin_conversation_message_broadcasts_path(status: :sending)
+    end
+
     def broadcast
       @conversation_message_broadcast = ConversationMessageBroadcast.find(params[:id])
-      @conversation_message_broadcast.update_attribute(:status, :sending)
+      @conversation_message_broadcast.update_attribute(:status, :sent)
 
       ConversationMessageBroadcastJob.perform_later(
         @conversation_message_broadcast.id,
         current_admin.id,
-        @conversation_message_broadcast.user_ids,
         @conversation_message_broadcast.content
       )
 

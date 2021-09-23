@@ -66,47 +66,6 @@ module ChatServices
       joinable
     end
 
-    def self.create_broadcast conversation_message_broadcast:, sender:, recipients:, content:
-      user = sender
-      success_users = []
-      failure_users = []
-
-      # refactoriser : code quasi identique dans Admin::ConversationsController.message
-      recipients.each do |recipient|
-        conversation = self.find_conversation recipient.id, user_id: user.id
-
-        join_request =
-          if conversation.new_record?
-            conversation.join_requests.to_a.find { |r| r.user_id == user.id }
-          else
-            user.join_requests.accepted.find_by!(joinable: conversation)
-          end
-
-        chat_builder = ChatServices::ChatMessageBuilder.new(
-            user: user,
-            joinable: conversation,
-            join_request: join_request,
-            params: {
-              message_type: :broadcast,
-              conversation_message_broadcast_id: conversation_message_broadcast.id,
-              content: content,
-            }
-        )
-
-        chat_builder.create do |on|
-          on.success do |message|
-            join_request.update_column(:last_message_read, message.created_at)
-            success_users << recipient.id
-          end
-          on.failure do |message|
-            failure_users << recipient.id
-          end
-        end
-      end
-
-      yield success_users, failure_users
-    end
-
     private
     attr_reader :message, :user, :joinable, :join_request, :callback
 

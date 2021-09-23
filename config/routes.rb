@@ -176,6 +176,7 @@ Rails.application.routes.draw do
       member do
         post 'broadcast'
         post 'clone'
+        post 'kill'
       end
     end
 
