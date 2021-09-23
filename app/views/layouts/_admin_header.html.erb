@@ -17,8 +17,8 @@
             <li><%= link_to "Cartes d'annonce", admin_super_admin_announcements_images_path %></li>
             <li><%= link_to "Photos d'événements", admin_super_admin_entourage_images_path %></li>
             <li><%= link_to "Événements", admin_super_admin_outings_images_path %></li>
-            <li><%= link_to "Jobs", admin_super_admin_jobs_metrics_path %></li>
-            <li><%= link_to "Jobs - Lancer un job", admin_super_admin_jobs_crons_path %></li>
+            <li><%= link_to "Sidekiq", sidekiq_web_path %></li>
+            <li><%= link_to "Lancer un job", admin_super_admin_jobs_crons_path %></li>
           </ul>
         </li>
         <% end %>
