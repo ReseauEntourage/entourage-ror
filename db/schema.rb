@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_08_18_163501) do
+ActiveRecord::Schema.define(version: 2021_09_23_144500) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -116,6 +116,7 @@ ActiveRecord::Schema.define(version: 2021_08_18_163501) do
     t.string "message_type", limit: 20, default: "text", null: false
     t.jsonb "metadata", default: {}, null: false
     t.index ["created_at"], name: "index_chat_messages_on_created_at"
+    t.index ["message_type"], name: "index_chat_messages_on_message_type"
     t.index ["messageable_id", "messageable_type"], name: "index_chat_messages_on_messageable_id_and_messageable_type"
     t.index ["user_id"], name: "index_chat_messages_on_user_id"
   end
