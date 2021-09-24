@@ -159,10 +159,10 @@ Host: example.org
 Cookie: </pre>
 
           <h4>Route</h4>
-          <pre class="request route highlight">GET /api/v1/home?token=foobar32&amp;latitude=48.854367553784954&amp;longitude=2.270340589096274</pre>
+          <pre class="request route highlight">GET /api/v1/home?token=foobar33&amp;latitude=48.854367553784954&amp;longitude=2.270340589096274</pre>
 
             <h4>Query Parameters</h4>
-            <pre class="request query_parameters highlight">token: foobar32
+            <pre class="request query_parameters highlight">token: foobar33
 latitude: 48.854367553784954
 longitude: 2.270340589096274</pre>
 
@@ -173,15 +173,18 @@ longitude: 2.270340589096274</pre>
               <pre class="response headers">X-Frame-Options: SAMEORIGIN
 X-XSS-Protection: 1; mode=block
 X-Content-Type-Options: nosniff
+X-Download-Options: noopen
+X-Permitted-Cross-Domain-Policies: none
+Referrer-Policy: strict-origin-when-cross-origin
 Access-Control-Allow-Origin: *
 Access-Control-Allow-Methods: GET,POST,PUT,PATCH,DELETE
 Access-Control-Allow-Headers: Origin,Accept,Content-Type,X-Requested-With,X-CSRF-Token,X-API-KEY
 Content-Type: application/json; charset=utf-8
-ETag: W/&quot;054afbe8c693a265c280754d4f1d4c8c&quot;
+ETag: W/&quot;f44a69c36156b19bd2781f1621018762&quot;
 Cache-Control: max-age=0, private, must-revalidate
-X-Request-Id: 4e917fde-99ae-4648-bf99-c40290516716
-X-Runtime: 0.036748
-Content-Length: 4299</pre>
+X-Request-Id: dfb70ad6-853f-4a77-9f82-8cef3c7fa8ac
+X-Runtime: 0.049366
+Content-Length: 5082</pre>
             <h4>Status</h4>
             <pre class="response status">200 OK</pre>
               <h4>Body</h4>
@@ -210,7 +213,7 @@ Content-Length: 4299</pre>
         &quot;body&quot;: &quot;Entourage a besoin de vous pour continuer à accompagner les sans-abri.&quot;,
         &quot;image_url&quot;: null,
         &quot;action&quot;: &quot;Aider&quot;,
-        &quot;url&quot;: &quot;http://example.org/api/v1/announcements/1/redirect/foobar32&quot;,
+        &quot;url&quot;: &quot;http://example.org/api/v1/announcements/1/redirect/foobar33&quot;,
         &quot;icon_url&quot;: &quot;http://example.org/api/v1/announcements/1/icon&quot;,
         &quot;author&quot;: null
       }
@@ -218,15 +221,15 @@ Content-Length: 4299</pre>
     &quot;outing&quot;: {
       &quot;type&quot;: &quot;Entourage&quot;,
       &quot;data&quot;: {
-        &quot;id&quot;: 6557,
-        &quot;uuid&quot;: &quot;euNUaTwTlOPk&quot;,
+        &quot;id&quot;: 15373,
+        &quot;uuid&quot;: &quot;e7Vnhpwx7Gl8&quot;,
         &quot;status&quot;: &quot;open&quot;,
         &quot;title&quot;: &quot;Foobar&quot;,
         &quot;group_type&quot;: &quot;outing&quot;,
         &quot;public&quot;: false,
         &quot;metadata&quot;: {
-          &quot;ends_at&quot;: &quot;2021-07-07T22:00:00.000+02:00&quot;,
-          &quot;starts_at&quot;: &quot;2021-07-07T19:00:00.000+02:00&quot;,
+          &quot;ends_at&quot;: &quot;2021-09-25T22:00:00.000+02:00&quot;,
+          &quot;starts_at&quot;: &quot;2021-09-25T19:00:00.000+02:00&quot;,
           &quot;place_name&quot;: &quot;Café la Renaissance&quot;,
           &quot;previous_at&quot;: null,
           &quot;portrait_url&quot;: null,
@@ -243,16 +246,16 @@ Content-Length: 4299</pre>
         &quot;join_status&quot;: &quot;not_requested&quot;,
         &quot;number_of_unread_messages&quot;: null,
         &quot;number_of_people&quot;: 1,
-        &quot;created_at&quot;: &quot;2021-07-06T15:06:07.739+02:00&quot;,
-        &quot;updated_at&quot;: &quot;2021-07-06T15:06:07.739+02:00&quot;,
+        &quot;created_at&quot;: &quot;2021-09-24T11:36:32.939+02:00&quot;,
+        &quot;updated_at&quot;: &quot;2021-09-24T11:36:32.939+02:00&quot;,
         &quot;description&quot;: null,
-        &quot;share_url&quot;: &quot;http://app.entourage.localhost:8081/actions/euNUaTwTlOPk&quot;,
+        &quot;share_url&quot;: &quot;http://app.entourage.localhost:8081/actions/e7Vnhpwx7Gl8&quot;,
         &quot;image_url&quot;: null,
         &quot;online&quot;: false,
         &quot;event_url&quot;: null,
         &quot;display_report_prompt&quot;: false,
         &quot;author&quot;: {
-          &quot;id&quot;: 22812,
+          &quot;id&quot;: 59470,
           &quot;display_name&quot;: &quot;John D.&quot;,
           &quot;avatar_url&quot;: null,
           &quot;partner&quot;: null,
@@ -267,8 +270,8 @@ Content-Length: 4299</pre>
     &quot;action&quot;: {
       &quot;type&quot;: &quot;Entourage&quot;,
       &quot;data&quot;: {
-        &quot;id&quot;: 6556,
-        &quot;uuid&quot;: &quot;esILYdyL2YXA&quot;,
+        &quot;id&quot;: 15372,
+        &quot;uuid&quot;: &quot;ec3to5NiSqb4&quot;,
         &quot;status&quot;: &quot;open&quot;,
         &quot;title&quot;: &quot;Foobar&quot;,
         &quot;group_type&quot;: &quot;action&quot;,
@@ -283,16 +286,16 @@ Content-Length: 4299</pre>
         &quot;join_status&quot;: &quot;accepted&quot;,
         &quot;number_of_unread_messages&quot;: 0,
         &quot;number_of_people&quot;: 1,
-        &quot;created_at&quot;: &quot;2021-07-06T15:06:07.709+02:00&quot;,
-        &quot;updated_at&quot;: &quot;2021-07-06T15:06:07.709+02:00&quot;,
+        &quot;created_at&quot;: &quot;2021-09-24T11:36:32.912+02:00&quot;,
+        &quot;updated_at&quot;: &quot;2021-09-24T11:36:32.912+02:00&quot;,
         &quot;description&quot;: null,
-        &quot;share_url&quot;: &quot;http://app.entourage.localhost:8081/actions/esILYdyL2YXA&quot;,
+        &quot;share_url&quot;: &quot;http://app.entourage.localhost:8081/actions/ec3to5NiSqb4&quot;,
         &quot;image_url&quot;: null,
         &quot;online&quot;: false,
         &quot;event_url&quot;: null,
         &quot;display_report_prompt&quot;: false,
         &quot;author&quot;: {
-          &quot;id&quot;: 22811,
+          &quot;id&quot;: 59469,
           &quot;display_name&quot;: &quot;John D.&quot;,
           &quot;avatar_url&quot;: null,
           &quot;partner&quot;: null,
@@ -307,15 +310,15 @@ Content-Length: 4299</pre>
   },
   &quot;outings&quot;: [
     {
-      &quot;id&quot;: 6557,
-      &quot;uuid&quot;: &quot;euNUaTwTlOPk&quot;,
+      &quot;id&quot;: 15373,
+      &quot;uuid&quot;: &quot;e7Vnhpwx7Gl8&quot;,
       &quot;status&quot;: &quot;open&quot;,
       &quot;title&quot;: &quot;Foobar&quot;,
       &quot;group_type&quot;: &quot;outing&quot;,
       &quot;public&quot;: false,
       &quot;metadata&quot;: {
-        &quot;ends_at&quot;: &quot;2021-07-07T22:00:00.000+02:00&quot;,
-        &quot;starts_at&quot;: &quot;2021-07-07T19:00:00.000+02:00&quot;,
+        &quot;ends_at&quot;: &quot;2021-09-25T22:00:00.000+02:00&quot;,
+        &quot;starts_at&quot;: &quot;2021-09-25T19:00:00.000+02:00&quot;,
         &quot;place_name&quot;: &quot;Café la Renaissance&quot;,
         &quot;previous_at&quot;: null,
         &quot;portrait_url&quot;: null,
@@ -332,16 +335,16 @@ Content-Length: 4299</pre>
       &quot;join_status&quot;: &quot;not_requested&quot;,
       &quot;number_of_unread_messages&quot;: null,
       &quot;number_of_people&quot;: 1,
-      &quot;created_at&quot;: &quot;2021-07-06T15:06:07.739+02:00&quot;,
-      &quot;updated_at&quot;: &quot;2021-07-06T15:06:07.739+02:00&quot;,
+      &quot;created_at&quot;: &quot;2021-09-24T11:36:32.939+02:00&quot;,
+      &quot;updated_at&quot;: &quot;2021-09-24T11:36:32.939+02:00&quot;,
       &quot;description&quot;: null,
-      &quot;share_url&quot;: &quot;http://app.entourage.localhost:8081/actions/euNUaTwTlOPk&quot;,
+      &quot;share_url&quot;: &quot;http://app.entourage.localhost:8081/actions/e7Vnhpwx7Gl8&quot;,
       &quot;image_url&quot;: null,
       &quot;online&quot;: false,
       &quot;event_url&quot;: null,
       &quot;display_report_prompt&quot;: false,
       &quot;author&quot;: {
-        &quot;id&quot;: 22812,
+        &quot;id&quot;: 59470,
         &quot;display_name&quot;: &quot;John D.&quot;,
         &quot;avatar_url&quot;: null,
         &quot;partner&quot;: null,
@@ -355,8 +358,8 @@ Content-Length: 4299</pre>
   ],
   &quot;entourages&quot;: [
     {
-      &quot;id&quot;: 6556,
-      &quot;uuid&quot;: &quot;esILYdyL2YXA&quot;,
+      &quot;id&quot;: 15372,
+      &quot;uuid&quot;: &quot;ec3to5NiSqb4&quot;,
       &quot;status&quot;: &quot;open&quot;,
       &quot;title&quot;: &quot;Foobar&quot;,
       &quot;group_type&quot;: &quot;action&quot;,
@@ -371,16 +374,58 @@ Content-Length: 4299</pre>
       &quot;join_status&quot;: &quot;accepted&quot;,
       &quot;number_of_unread_messages&quot;: 0,
       &quot;number_of_people&quot;: 1,
-      &quot;created_at&quot;: &quot;2021-07-06T15:06:07.709+02:00&quot;,
-      &quot;updated_at&quot;: &quot;2021-07-06T15:06:07.709+02:00&quot;,
+      &quot;created_at&quot;: &quot;2021-09-24T11:36:32.912+02:00&quot;,
+      &quot;updated_at&quot;: &quot;2021-09-24T11:36:32.912+02:00&quot;,
       &quot;description&quot;: null,
-      &quot;share_url&quot;: &quot;http://app.entourage.localhost:8081/actions/esILYdyL2YXA&quot;,
+      &quot;share_url&quot;: &quot;http://app.entourage.localhost:8081/actions/ec3to5NiSqb4&quot;,
       &quot;image_url&quot;: null,
       &quot;online&quot;: false,
       &quot;event_url&quot;: null,
       &quot;display_report_prompt&quot;: false,
       &quot;author&quot;: {
-        &quot;id&quot;: 22811,
+        &quot;id&quot;: 59469,
+        &quot;display_name&quot;: &quot;John D.&quot;,
+        &quot;avatar_url&quot;: null,
+        &quot;partner&quot;: null,
+        &quot;partner_role_title&quot;: null
+      },
+      &quot;location&quot;: {
+        &quot;latitude&quot;: 48.85436,
+        &quot;longitude&quot;: 2.27034
+      }
+    }
+  ],
+  &quot;entourage_contributions&quot;: [
+
+  ],
+  &quot;entourage_ask_for_helps&quot;: [
+    {
+      &quot;id&quot;: 15372,
+      &quot;uuid&quot;: &quot;ec3to5NiSqb4&quot;,
+      &quot;status&quot;: &quot;open&quot;,
+      &quot;title&quot;: &quot;Foobar&quot;,
+      &quot;group_type&quot;: &quot;action&quot;,
+      &quot;public&quot;: false,
+      &quot;metadata&quot;: {
+        &quot;city&quot;: &quot;&quot;,
+        &quot;display_address&quot;: &quot;&quot;
+      },
+      &quot;entourage_type&quot;: &quot;ask_for_help&quot;,
+      &quot;display_category&quot;: &quot;social&quot;,
+      &quot;postal_code&quot;: null,
+      &quot;join_status&quot;: &quot;accepted&quot;,
+      &quot;number_of_unread_messages&quot;: 0,
+      &quot;number_of_people&quot;: 1,
+      &quot;created_at&quot;: &quot;2021-09-24T11:36:32.912+02:00&quot;,
+      &quot;updated_at&quot;: &quot;2021-09-24T11:36:32.912+02:00&quot;,
+      &quot;description&quot;: null,
+      &quot;share_url&quot;: &quot;http://app.entourage.localhost:8081/actions/ec3to5NiSqb4&quot;,
+      &quot;image_url&quot;: null,
+      &quot;online&quot;: false,
+      &quot;event_url&quot;: null,
+      &quot;display_report_prompt&quot;: false,
+      &quot;author&quot;: {
+        &quot;id&quot;: 59469,
         &quot;display_name&quot;: &quot;John D.&quot;,
         &quot;avatar_url&quot;: null,
         &quot;partner&quot;: null,

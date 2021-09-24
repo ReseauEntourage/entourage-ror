@@ -199,13 +199,13 @@ Host: example.org
 Cookie: </pre>
 
           <h4>Route</h4>
-          <pre class="request route highlight">GET /api/v1/pois?v=1&amp;latitude=48.870424&amp;longitude=2.30681949999996&amp;category_ids=630</pre>
+          <pre class="request route highlight">GET /api/v1/pois?v=1&amp;latitude=48.870424&amp;longitude=2.30681949999996&amp;category_ids=1773</pre>
 
             <h4>Query Parameters</h4>
             <pre class="request query_parameters highlight">v: 1
 latitude: 48.870424
 longitude: 2.30681949999996
-category_ids: 630</pre>
+category_ids: 1773</pre>
 
 
 
@@ -214,22 +214,25 @@ category_ids: 630</pre>
               <pre class="response headers">X-Frame-Options: SAMEORIGIN
 X-XSS-Protection: 1; mode=block
 X-Content-Type-Options: nosniff
+X-Download-Options: noopen
+X-Permitted-Cross-Domain-Policies: none
+Referrer-Policy: strict-origin-when-cross-origin
 Access-Control-Allow-Origin: *
 Access-Control-Allow-Methods: GET,POST,PUT,PATCH,DELETE
 Access-Control-Allow-Headers: Origin,Accept,Content-Type,X-Requested-With,X-CSRF-Token,X-API-KEY
 Content-Type: application/json; charset=utf-8
-ETag: W/&quot;de849b3eb15648f1c9d144d7bc277188&quot;
+ETag: W/&quot;03dfbde1ef759ce39135906c7ebfaaa3&quot;
 Cache-Control: max-age=0, private, must-revalidate
-X-Request-Id: 6439b1db-d927-4158-bba8-d48095b0f2da
-X-Runtime: 0.014398
-Content-Length: 383</pre>
+X-Request-Id: 3554715c-3fbb-4ae1-b672-68cce3dd9abe
+X-Runtime: 0.012076
+Content-Length: 387</pre>
             <h4>Status</h4>
             <pre class="response status">200 OK</pre>
               <h4>Body</h4>
               <pre class="response body">{
   &quot;pois&quot;: [
     {
-      &quot;id&quot;: 592,
+      &quot;id&quot;: 1665,
       &quot;name&quot;: &quot;Dede&quot;,
       &quot;description&quot;: null,
       &quot;longitude&quot;: 2.30681949999996,
@@ -240,17 +243,17 @@ Content-Length: 383</pre>
       &quot;email&quot;: &quot;entourage@entourage.com&quot;,
       &quot;audience&quot;: &quot;Mon audience&quot;,
       &quot;validated&quot;: true,
-      &quot;category_id&quot;: 630,
+      &quot;category_id&quot;: 1773,
       &quot;partner_id&quot;: null,
       &quot;category&quot;: {
-        &quot;id&quot;: 630,
+        &quot;id&quot;: 1773,
         &quot;name&quot;: &quot;Categorie 1&quot;
       }
     }
   ],
   &quot;categories&quot;: [
     {
-      &quot;id&quot;: 630,
+      &quot;id&quot;: 1773,
       &quot;name&quot;: &quot;Categorie 1&quot;
     }
   ]

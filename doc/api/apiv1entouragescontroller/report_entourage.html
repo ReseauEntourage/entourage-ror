@@ -159,11 +159,11 @@ Host: example.org
 Cookie: </pre>
 
           <h4>Route</h4>
-          <pre class="request route highlight">POST api/v1/entourages/6552/report</pre>
+          <pre class="request route highlight">POST api/v1/entourages/15368/report</pre>
 
 
             <h4>Body</h4>
-            <pre class="request body">{"token":"foobar25","entourage_report":{"message":"message"}}</pre>
+            <pre class="request body">{"token":"foobar26","entourage_report":{"message":"message"}}</pre>
 
 
             <h3>Response</h3>
@@ -171,14 +171,17 @@ Cookie: </pre>
               <pre class="response headers">X-Frame-Options: SAMEORIGIN
 X-XSS-Protection: 1; mode=block
 X-Content-Type-Options: nosniff
+X-Download-Options: noopen
+X-Permitted-Cross-Domain-Policies: none
+Referrer-Policy: strict-origin-when-cross-origin
 Access-Control-Allow-Origin: *
 Access-Control-Allow-Methods: GET,POST,PUT,PATCH,DELETE
 Access-Control-Allow-Headers: Origin,Accept,Content-Type,X-Requested-With,X-CSRF-Token,X-API-KEY
 Content-Type: text/html
 Cache-Control: no-cache
 Set-Cookie: request_method=POST; path=/
-X-Request-Id: c31a5b48-88fb-49ab-8c13-faabb4826f6c
-X-Runtime: 0.027330
+X-Request-Id: 6941bf58-ddaf-4246-a709-91b64b740d8a
+X-Runtime: 0.008708
 Content-Length: 0</pre>
             <h4>Status</h4>
             <pre class="response status">201 Created</pre>

@@ -179,7 +179,7 @@ Cookie: </pre>
 
 
             <h4>Body</h4>
-            <pre class="request body">{"token":"foobar35","message":{"content":"content","first_name":"first_name","last_name":"last_name","email":"some@email.com"}}</pre>
+            <pre class="request body">{"token":"foobar36","message":{"content":"content","first_name":"first_name","last_name":"last_name","email":"some@email.com"}}</pre>
 
 
             <h3>Response</h3>
@@ -187,24 +187,27 @@ Cookie: </pre>
               <pre class="response headers">X-Frame-Options: SAMEORIGIN
 X-XSS-Protection: 1; mode=block
 X-Content-Type-Options: nosniff
+X-Download-Options: noopen
+X-Permitted-Cross-Domain-Policies: none
+Referrer-Policy: strict-origin-when-cross-origin
 Access-Control-Allow-Origin: *
 Access-Control-Allow-Methods: GET,POST,PUT,PATCH,DELETE
 Access-Control-Allow-Headers: Origin,Accept,Content-Type,X-Requested-With,X-CSRF-Token,X-API-KEY
 Content-Type: application/json; charset=utf-8
-ETag: W/&quot;f55d9c781189a7104b376b18be9157fa&quot;
+ETag: W/&quot;f444fba189d24738cf38206c8a5e39b7&quot;
 Cache-Control: max-age=0, private, must-revalidate
 Set-Cookie: request_method=POST; path=/
-X-Request-Id: c2cefb60-3cdc-4946-80d6-beb91d2fad5b
-X-Runtime: 0.022248
-Content-Length: 194</pre>
+X-Request-Id: 068c4d43-b890-4d91-b87a-c85e0b12a107
+X-Runtime: 0.027787
+Content-Length: 195</pre>
             <h4>Status</h4>
             <pre class="response status">201 Created</pre>
               <h4>Body</h4>
               <pre class="response body">{
-  &quot;id&quot;: 46,
+  &quot;id&quot;: 111,
   &quot;content&quot;: &quot;content&quot;,
-  &quot;created_at&quot;: &quot;2021-07-06T15:06:07.814+02:00&quot;,
-  &quot;updated_at&quot;: &quot;2021-07-06T15:06:07.814+02:00&quot;,
+  &quot;created_at&quot;: &quot;2021-09-24T11:36:33.026+02:00&quot;,
+  &quot;updated_at&quot;: &quot;2021-09-24T11:36:33.026+02:00&quot;,
   &quot;first_name&quot;: &quot;first_name&quot;,
   &quot;last_name&quot;: &quot;last_name&quot;,
   &quot;email&quot;: &quot;some@email.com&quot;

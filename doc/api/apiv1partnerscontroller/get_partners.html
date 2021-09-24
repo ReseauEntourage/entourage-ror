@@ -143,10 +143,10 @@ Host: example.org
 Cookie: </pre>
 
           <h4>Route</h4>
-          <pre class="request route highlight">GET /api/v1/partners?token=foobar36</pre>
+          <pre class="request route highlight">GET /api/v1/partners?token=foobar37</pre>
 
             <h4>Query Parameters</h4>
-            <pre class="request query_parameters highlight">token: foobar36</pre>
+            <pre class="request query_parameters highlight">token: foobar37</pre>
 
 
 
@@ -155,22 +155,25 @@ Cookie: </pre>
               <pre class="response headers">X-Frame-Options: SAMEORIGIN
 X-XSS-Protection: 1; mode=block
 X-Content-Type-Options: nosniff
+X-Download-Options: noopen
+X-Permitted-Cross-Domain-Policies: none
+Referrer-Policy: strict-origin-when-cross-origin
 Access-Control-Allow-Origin: *
 Access-Control-Allow-Methods: GET,POST,PUT,PATCH,DELETE
 Access-Control-Allow-Headers: Origin,Accept,Content-Type,X-Requested-With,X-CSRF-Token,X-API-KEY
 Content-Type: application/json; charset=utf-8
-ETag: W/&quot;0617d1a027ff47969a95983197cbebbf&quot;
+ETag: W/&quot;c2dd6eca7719d83fdef075c40741521b&quot;
 Cache-Control: max-age=0, private, must-revalidate
-X-Request-Id: c80fdb2e-d2e0-4950-af88-dd959c098f97
-X-Runtime: 0.008067
-Content-Length: 62</pre>
+X-Request-Id: 4d765335-087b-481f-9d82-eb4b558509bc
+X-Runtime: 0.006918
+Content-Length: 63</pre>
             <h4>Status</h4>
             <pre class="response status">200 OK</pre>
               <h4>Body</h4>
               <pre class="response body">{
   &quot;partners&quot;: [
     {
-      &quot;id&quot;: 517,
+      &quot;id&quot;: 1471,
       &quot;name&quot;: &quot;MyString&quot;,
       &quot;postal_code&quot;: null
     }

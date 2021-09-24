@@ -199,11 +199,11 @@ Host: example.org
 Cookie: </pre>
 
           <h4>Route</h4>
-          <pre class="request route highlight">POST /api/v1/tours/4391/encounters</pre>
+          <pre class="request route highlight">POST /api/v1/tours/12699/encounters</pre>
 
 
             <h4>Body</h4>
-            <pre class="request body">{"token":"foobar4","tour_id":4391,"encounter":{"street_person_name":"John Doe","date":"2021-01-01 00:00:00","latitude":48.870424,"longitude":2.30682}}</pre>
+            <pre class="request body">{"token":"foobar4","tour_id":12699,"encounter":{"street_person_name":"John Doe","date":"2021-01-01 00:00:00","latitude":48.870424,"longitude":2.30682}}</pre>
 
 
             <h3>Response</h3>
@@ -211,26 +211,29 @@ Cookie: </pre>
               <pre class="response headers">X-Frame-Options: SAMEORIGIN
 X-XSS-Protection: 1; mode=block
 X-Content-Type-Options: nosniff
+X-Download-Options: noopen
+X-Permitted-Cross-Domain-Policies: none
+Referrer-Policy: strict-origin-when-cross-origin
 Access-Control-Allow-Origin: *
 Access-Control-Allow-Methods: GET,POST,PUT,PATCH,DELETE
 Access-Control-Allow-Headers: Origin,Accept,Content-Type,X-Requested-With,X-CSRF-Token,X-API-KEY
 Content-Type: application/json; charset=utf-8
-ETag: W/&quot;dc2e25b7b7602fb47b53e4409bd00f29&quot;
+ETag: W/&quot;4613c4ae1df7a0823fb9503d8dc0febe&quot;
 Cache-Control: max-age=0, private, must-revalidate
 Set-Cookie: request_method=POST; path=/
-X-Request-Id: b1961022-98f8-410e-8005-139484f43482
-X-Runtime: 0.031950
+X-Request-Id: 5eae7ad3-3a45-42ff-923d-e29101b8064d
+X-Runtime: 0.027864
 Content-Length: 208</pre>
             <h4>Status</h4>
             <pre class="response status">201 Created</pre>
               <h4>Body</h4>
               <pre class="response body">{
   &quot;encounter&quot;: {
-    &quot;id&quot;: 2322,
+    &quot;id&quot;: 6903,
     &quot;date&quot;: &quot;2021-01-01T00:00:00.000+01:00&quot;,
     &quot;latitude&quot;: 48.870424,
     &quot;longitude&quot;: 2.30682,
-    &quot;user_id&quot;: 22783,
+    &quot;user_id&quot;: 59440,
     &quot;user_name&quot;: &quot;John&quot;,
     &quot;street_person_name&quot;: &quot;John Doe&quot;,
     &quot;message&quot;: null,

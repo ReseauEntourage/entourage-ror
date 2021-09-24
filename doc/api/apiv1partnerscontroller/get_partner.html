@@ -143,10 +143,10 @@ Host: example.org
 Cookie: </pre>
 
           <h4>Route</h4>
-          <pre class="request route highlight">GET /api/v1/partners/518?token=foobar37</pre>
+          <pre class="request route highlight">GET /api/v1/partners/1472?token=foobar38</pre>
 
             <h4>Query Parameters</h4>
-            <pre class="request query_parameters highlight">token: foobar37</pre>
+            <pre class="request query_parameters highlight">token: foobar38</pre>
 
 
 
@@ -155,21 +155,24 @@ Cookie: </pre>
               <pre class="response headers">X-Frame-Options: SAMEORIGIN
 X-XSS-Protection: 1; mode=block
 X-Content-Type-Options: nosniff
+X-Download-Options: noopen
+X-Permitted-Cross-Domain-Policies: none
+Referrer-Policy: strict-origin-when-cross-origin
 Access-Control-Allow-Origin: *
 Access-Control-Allow-Methods: GET,POST,PUT,PATCH,DELETE
 Access-Control-Allow-Headers: Origin,Accept,Content-Type,X-Requested-With,X-CSRF-Token,X-API-KEY
 Content-Type: application/json; charset=utf-8
-ETag: W/&quot;d26ac2bbe293b60947779e3684a4611a&quot;
+ETag: W/&quot;5731b1b7129cdb64b5ae3031a7d3873c&quot;
 Cache-Control: max-age=0, private, must-revalidate
-X-Request-Id: cf33aeff-cc4f-4bdf-8e7a-c214c1c5022e
-X-Runtime: 0.012373
-Content-Length: 329</pre>
+X-Request-Id: 6f012ff5-25b9-44a9-ab18-eac2853c69b9
+X-Runtime: 0.010140
+Content-Length: 330</pre>
             <h4>Status</h4>
             <pre class="response status">200 OK</pre>
               <h4>Body</h4>
               <pre class="response body">{
   &quot;partner&quot;: {
-    &quot;id&quot;: 518,
+    &quot;id&quot;: 1472,
     &quot;name&quot;: &quot;MyString&quot;,
     &quot;large_logo_url&quot;: &quot;MyString&quot;,
     &quot;small_logo_url&quot;: &quot;https://s3-eu-west-1.amazonaws.com/entourage-ressources/check-small.png&quot;,
