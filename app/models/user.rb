@@ -402,7 +402,7 @@ class User < ApplicationRecord
       validation_status: "anonymized",
       email: "anonymized@#{Time.now.to_i}",
       phone: "+33100000000-#{Time.now.to_i}",
-      first_name: "Cet utilisateur a été anonymisé",
+      first_name: "Cet utilisateur a supprimé son compte",
       last_name: nil,
       deleted: true,
       address_id: nil
