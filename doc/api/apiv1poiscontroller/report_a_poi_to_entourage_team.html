@@ -159,11 +159,11 @@ Host: example.org
 Cookie: </pre>
 
           <h4>Route</h4>
-          <pre class="request route highlight">POST api/v1/pois/595/report</pre>
+          <pre class="request route highlight">POST api/v1/pois/1668/report</pre>
 
 
             <h4>Body</h4>
-            <pre class="request body">{"token":"foobar40","message":"message"}</pre>
+            <pre class="request body">{"token":"foobar41","message":"message"}</pre>
 
 
             <h3>Response</h3>
@@ -171,6 +171,9 @@ Cookie: </pre>
               <pre class="response headers">X-Frame-Options: SAMEORIGIN
 X-XSS-Protection: 1; mode=block
 X-Content-Type-Options: nosniff
+X-Download-Options: noopen
+X-Permitted-Cross-Domain-Policies: none
+Referrer-Policy: strict-origin-when-cross-origin
 Access-Control-Allow-Origin: *
 Access-Control-Allow-Methods: GET,POST,PUT,PATCH,DELETE
 Access-Control-Allow-Headers: Origin,Accept,Content-Type,X-Requested-With,X-CSRF-Token,X-API-KEY
@@ -178,8 +181,8 @@ Content-Type: application/json; charset=utf-8
 ETag: W/&quot;d2bba5c99af7518dc3b0729abfa040fe&quot;
 Cache-Control: max-age=0, private, must-revalidate
 Set-Cookie: request_method=POST; path=/
-X-Request-Id: f61f623c-cbf7-4b4b-9a5a-12e1e28c446a
-X-Runtime: 0.012328
+X-Request-Id: 75abae91-7f3d-43a9-807b-feb9b85ded22
+X-Runtime: 0.013568
 Content-Length: 21</pre>
             <h4>Status</h4>
             <pre class="response status">201 Created</pre>

@@ -278,6 +278,7 @@ Rails.application.routes.draw do
 
       resources :entourages, only: [:index, :show, :create, :update] do
         collection do
+          get :search
           get :mine
           get :owns
           get :invitees

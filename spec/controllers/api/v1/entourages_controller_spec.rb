@@ -162,6 +162,26 @@ describe Api::V1::EntouragesController do
     end
   end
 
+  describe 'GET search' do
+    let!(:entourage_1) { FactoryBot.create(:entourage, status: :open, title: 'Foo', description: 'Bar') }
+    let!(:entourage_2) { FactoryBot.create(:entourage, status: :open, title: 'John', description: 'Doe') }
+    subject { JSON.parse(response.body) }
+
+    context "filter search term on title" do
+      before { get :search, params: { token: user.token, q: 'John' } }
+
+      it { expect(subject["entourages"].count).to eq(1) }
+      it { expect(subject["entourages"][0]["id"]).to eq(entourage_2.id) }
+    end
+
+    context "filter search term on description" do
+      before { get :search, params: { token: user.token, q: 'Bar' } }
+
+      it { expect(subject["entourages"].count).to eq(1) }
+      it { expect(subject["entourages"][0]["id"]).to eq(entourage_1.id) }
+    end
+  end
+
   describe 'GET mine' do
     let!(:entourage) { FactoryBot.create(:entourage, status: :open) }
     let(:other_user) { FactoryBot.create(:public_user) }

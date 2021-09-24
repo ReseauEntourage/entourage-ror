@@ -239,11 +239,11 @@ Host: example.org
 Cookie: </pre>
 
           <h4>Route</h4>
-          <pre class="request route highlight">PATCH api/v1/entourages/6550</pre>
+          <pre class="request route highlight">PATCH api/v1/entourages/15366</pre>
 
 
             <h4>Body</h4>
-            <pre class="request body">{"token":"foobar21","entourage":{"metadata":{"landscape_url":"path/to/landscape_url","landscape_thumbnail_url":"path/to/landscape_thumbnail_url","portrait_url":"path/to/portrait_url","portrait_thumbnail_url":"path/to/portrait_thumbnail_url"}}}</pre>
+            <pre class="request body">{"token":"foobar22","entourage":{"metadata":{"landscape_url":"path/to/landscape_url","landscape_thumbnail_url":"path/to/landscape_thumbnail_url","portrait_url":"path/to/portrait_url","portrait_thumbnail_url":"path/to/portrait_thumbnail_url"}}}</pre>
 
 
             <h3>Response</h3>
@@ -251,39 +251,42 @@ Cookie: </pre>
               <pre class="response headers">X-Frame-Options: SAMEORIGIN
 X-XSS-Protection: 1; mode=block
 X-Content-Type-Options: nosniff
+X-Download-Options: noopen
+X-Permitted-Cross-Domain-Policies: none
+Referrer-Policy: strict-origin-when-cross-origin
 Access-Control-Allow-Origin: *
 Access-Control-Allow-Methods: GET,POST,PUT,PATCH,DELETE
 Access-Control-Allow-Headers: Origin,Accept,Content-Type,X-Requested-With,X-CSRF-Token,X-API-KEY
 Content-Type: application/json; charset=utf-8
-ETag: W/&quot;016b1f5b2c7eaeb4c163b204782276a7&quot;
+ETag: W/&quot;2d49c68e3e3457707eb37cb42bd52acb&quot;
 Cache-Control: max-age=0, private, must-revalidate
 Set-Cookie: request_method=PATCH; path=/
-X-Request-Id: 24ded3ce-0681-4859-afe8-7c20661cdd75
-X-Runtime: 0.039796
-Content-Length: 2600</pre>
+X-Request-Id: d5f856d7-859c-4205-9acf-a5821ffd12e7
+X-Runtime: 0.027158
+Content-Length: 2601</pre>
             <h4>Status</h4>
             <pre class="response status">200 OK</pre>
               <h4>Body</h4>
               <pre class="response body">{
   &quot;entourage&quot;: {
-    &quot;id&quot;: 6550,
-    &quot;uuid&quot;: &quot;ewagTMVVEqJE&quot;,
+    &quot;id&quot;: 15366,
+    &quot;uuid&quot;: &quot;ewwWAHyidFRA&quot;,
     &quot;status&quot;: &quot;open&quot;,
     &quot;title&quot;: &quot;Foobar&quot;,
     &quot;group_type&quot;: &quot;outing&quot;,
     &quot;public&quot;: false,
     &quot;metadata&quot;: {
-      &quot;ends_at&quot;: &quot;2021-07-07T22:00:00.000+02:00&quot;,
-      &quot;starts_at&quot;: &quot;2021-07-07T19:00:00.000+02:00&quot;,
+      &quot;ends_at&quot;: &quot;2021-09-25T22:00:00.000+02:00&quot;,
+      &quot;starts_at&quot;: &quot;2021-09-25T19:00:00.000+02:00&quot;,
       &quot;place_name&quot;: &quot;Café la Renaissance&quot;,
       &quot;previous_at&quot;: null,
-      &quot;portrait_url&quot;: &quot;https://foobar.s3.eu-west-1.amazonaws.com/entourage_images/images/path/to/portrait_url?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=foo%2F20210706%2Feu-west-1%2Fs3%2Faws4_request&amp;X-Amz-Date=20210706T130607Z&amp;X-Amz-Expires=3600&amp;X-Amz-SignedHeaders=host&amp;X-Amz-Signature=fd1b684621ba1eaf44b2c7a2cb9f6647717362e66428a0db9bb3b85a1b6b6824&quot;,
-      &quot;landscape_url&quot;: &quot;https://foobar.s3.eu-west-1.amazonaws.com/entourage_images/images/path/to/landscape_url?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=foo%2F20210706%2Feu-west-1%2Fs3%2Faws4_request&amp;X-Amz-Date=20210706T130607Z&amp;X-Amz-Expires=3600&amp;X-Amz-SignedHeaders=host&amp;X-Amz-Signature=5da0e4498cc633d77445a5961814669c8a5785287d2c6922ae2905c285a6460f&quot;,
+      &quot;portrait_url&quot;: &quot;https://foobar.s3.eu-west-1.amazonaws.com/entourage_images/images/path/to/portrait_url?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=foo%2F20210924%2Feu-west-1%2Fs3%2Faws4_request&amp;X-Amz-Date=20210924T093632Z&amp;X-Amz-Expires=3600&amp;X-Amz-SignedHeaders=host&amp;X-Amz-Signature=92dd2068e7cab97359b907b4ce1bdd1fe56630ce92debdc62639d477e00a8e2d&quot;,
+      &quot;landscape_url&quot;: &quot;https://foobar.s3.eu-west-1.amazonaws.com/entourage_images/images/path/to/landscape_url?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=foo%2F20210924%2Feu-west-1%2Fs3%2Faws4_request&amp;X-Amz-Date=20210924T093632Z&amp;X-Amz-Expires=3600&amp;X-Amz-SignedHeaders=host&amp;X-Amz-Signature=2a2f22b4c87e8168db3214451fe4db3c45be0e82ee6e7218f25e412721f4dbe0&quot;,
       &quot;street_address&quot;: &quot;44 rue de l’Assomption, 75016 Paris, France&quot;,
       &quot;display_address&quot;: &quot;Café la Renaissance, 44 rue de l’Assomption, 75016 Paris&quot;,
       &quot;google_place_id&quot;: &quot;foobar&quot;,
-      &quot;portrait_thumbnail_url&quot;: &quot;https://foobar.s3.eu-west-1.amazonaws.com/entourage_images/images/path/to/portrait_thumbnail_url?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=foo%2F20210706%2Feu-west-1%2Fs3%2Faws4_request&amp;X-Amz-Date=20210706T130607Z&amp;X-Amz-Expires=3600&amp;X-Amz-SignedHeaders=host&amp;X-Amz-Signature=d6b6ca18046dad96f9ecc181c22b1b0791dbab47b717a97de293662e034980d9&quot;,
-      &quot;landscape_thumbnail_url&quot;: &quot;https://foobar.s3.eu-west-1.amazonaws.com/entourage_images/images/path/to/landscape_thumbnail_url?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=foo%2F20210706%2Feu-west-1%2Fs3%2Faws4_request&amp;X-Amz-Date=20210706T130607Z&amp;X-Amz-Expires=3600&amp;X-Amz-SignedHeaders=host&amp;X-Amz-Signature=6147cfbb55607efe6a9896dac052d540c36f3f3e54b9a1b110a02b17e61869e6&quot;
+      &quot;portrait_thumbnail_url&quot;: &quot;https://foobar.s3.eu-west-1.amazonaws.com/entourage_images/images/path/to/portrait_thumbnail_url?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=foo%2F20210924%2Feu-west-1%2Fs3%2Faws4_request&amp;X-Amz-Date=20210924T093632Z&amp;X-Amz-Expires=3600&amp;X-Amz-SignedHeaders=host&amp;X-Amz-Signature=89fa3cf4a60634a4eae48270c7fe2ebb8631d5d86ea353cde2b3d23727c6f31f&quot;,
+      &quot;landscape_thumbnail_url&quot;: &quot;https://foobar.s3.eu-west-1.amazonaws.com/entourage_images/images/path/to/landscape_thumbnail_url?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=foo%2F20210924%2Feu-west-1%2Fs3%2Faws4_request&amp;X-Amz-Date=20210924T093632Z&amp;X-Amz-Expires=3600&amp;X-Amz-SignedHeaders=host&amp;X-Amz-Signature=9eb3454a0ca92d0d3fd159c6c7486196d93182f628a6c46c9f03ecef69189310&quot;
     },
     &quot;entourage_type&quot;: &quot;ask_for_help&quot;,
     &quot;display_category&quot;: &quot;social&quot;,
@@ -291,16 +294,16 @@ Content-Length: 2600</pre>
     &quot;join_status&quot;: &quot;not_requested&quot;,
     &quot;number_of_unread_messages&quot;: null,
     &quot;number_of_people&quot;: 1,
-    &quot;created_at&quot;: &quot;2021-07-06T15:06:07.325+02:00&quot;,
-    &quot;updated_at&quot;: &quot;2021-07-06T15:06:07.325+02:00&quot;,
+    &quot;created_at&quot;: &quot;2021-09-24T11:36:32.634+02:00&quot;,
+    &quot;updated_at&quot;: &quot;2021-09-24T11:36:32.634+02:00&quot;,
     &quot;description&quot;: null,
-    &quot;share_url&quot;: &quot;http://app.entourage.localhost:8081/actions/ewagTMVVEqJE&quot;,
+    &quot;share_url&quot;: &quot;http://app.entourage.localhost:8081/actions/ewwWAHyidFRA&quot;,
     &quot;image_url&quot;: null,
     &quot;online&quot;: false,
     &quot;event_url&quot;: null,
     &quot;display_report_prompt&quot;: false,
     &quot;author&quot;: {
-      &quot;id&quot;: 22800,
+      &quot;id&quot;: 59458,
       &quot;display_name&quot;: &quot;John D.&quot;,
       &quot;avatar_url&quot;: null,
       &quot;partner&quot;: null,

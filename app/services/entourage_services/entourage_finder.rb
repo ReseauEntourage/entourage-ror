@@ -3,7 +3,7 @@ module EntourageServices
     DEFAULT_DISTANCE=10
     FEED_CATEGORY_EXPR = "(case when group_type = 'action' then concat(entourage_type, '_', coalesce(display_category, 'other')) else group_type::text end)"
 
-    attr_reader :user, :types, :latitude, :longitude, :distance, :page, :per, :show_past_events, :time_range, :before, :partners_only, :no_outings, :show_my_entourages_only, :author, :invitee, :status
+    attr_reader :user, :types, :latitude, :longitude, :distance, :page, :per, :show_past_events, :time_range, :before, :partners_only, :no_outings, :show_my_entourages_only, :author, :invitee, :status, :search
 
     def initialize(
       user:,
@@ -24,7 +24,8 @@ module EntourageServices
       author: nil,
       # invitations
       invitee: nil,
-      status: nil
+      status: nil,
+      search: nil
     )
       @user = user
       @types = formated_types(types)
@@ -46,6 +47,7 @@ module EntourageServices
       # invitations
       @invitee = invitee
       @status = status
+      @search = search
     end
 
     def entourages
@@ -54,6 +56,7 @@ module EntourageServices
       entourages = entourages.where.not(group_type: [:conversation, :group]) # group_type
       entourages = entourages.where.not(group_type: [:outing]) if no_outings
       entourages = entourages.where("entourages.created_at > ?", time_range.hours.ago)
+      entourages = entourages.like(search) if @search.present?
 
       if latitude && longitude
         bounding_box_sql = Geocoder::Sql.within_bounding_box(*box, :latitude, :longitude)

@@ -27,6 +27,23 @@ module Api
         }
       end
 
+      def search
+        entourages = EntourageServices::EntourageFinder.new(
+          user: current_user,
+          search: params[:q],
+          types: params[:types],
+          latitude: params[:latitude],
+          longitude: params[:longitude],
+          page: params[:page],
+          per: per,
+          time_range: 31*24
+        ).entourages
+
+        render json: entourages, each_serializer: ::V1::EntourageSerializer, scope: {
+          user: current_user
+        }
+      end
+
       def mine
         entourages = EntourageServices::EntourageFinder.new(
           user: current_user,

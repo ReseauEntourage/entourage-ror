@@ -51,6 +51,28 @@ resource Api::V1::EntouragesController do
     end
   end
 
+  get 'api/v1/entourages/search' do
+    route_summary "Get the entourages corresponding to a search"
+
+    parameter :token, type: :string, required: true
+    parameter :q, "A search string", type: :string
+    parameter :types, "Comma separated type codes", type: :string
+    parameter :latitude, "User latitude", type: :number
+    parameter :longitude, "User longitude", type: :number
+
+    let(:user) { FactoryBot.create(:public_user) }
+    let!(:entourage) { FactoryBot.create(:entourage, :joined, user: user, status: "open", title: "solidarity coffee") }
+    let(:token) { user.token }
+    let(:q) { "coffee" }
+
+    context '200' do
+      example_request 'Get entourages from search' do
+        expect(status).to eq(200)
+        expect(JSON.parse(response_body)).to have_key('entourages')
+      end
+    end
+  end
+
   get 'api/v1/entourages/mine' do
     route_summary "Get the entourages the current user joined"
 

@@ -155,14 +155,17 @@ Cookie: </pre>
               <pre class="response headers">X-Frame-Options: SAMEORIGIN
 X-XSS-Protection: 1; mode=block
 X-Content-Type-Options: nosniff
+X-Download-Options: noopen
+X-Permitted-Cross-Domain-Policies: none
+Referrer-Policy: strict-origin-when-cross-origin
 Access-Control-Allow-Origin: *
 Access-Control-Allow-Methods: GET,POST,PUT,PATCH,DELETE
 Access-Control-Allow-Headers: Origin,Accept,Content-Type,X-Requested-With,X-CSRF-Token,X-API-KEY
 Content-Type: application/json; charset=utf-8
-ETag: W/&quot;3b666aea610f4c91e8b8b398920a7e1d&quot;
+ETag: W/&quot;4518fd90166669b059dac6b33b447b7b&quot;
 Cache-Control: max-age=0, private, must-revalidate
-X-Request-Id: 4a90db70-ba07-455a-81a2-0a5e1449814a
-X-Runtime: 0.066264
+X-Request-Id: 002ec51e-d6e6-45c8-8850-d4563fb8f58f
+X-Runtime: 0.049253
 Content-Length: 684</pre>
             <h4>Status</h4>
             <pre class="response status">200 OK</pre>
@@ -174,7 +177,7 @@ Content-Length: 684</pre>
       &quot;uuid&quot;: &quot;1&quot;,
       &quot;title&quot;: &quot;Une autre façon de contribuer.&quot;,
       &quot;body&quot;: &quot;Entourage a besoin de vous pour continuer à accompagner les sans-abri.&quot;,
-      &quot;image_url&quot;: &quot;https://foobar.s3.eu-west-1.amazonaws.com/https%3A//blog.entourage.social/?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=foo%2F20210706%2Feu-west-1%2Fs3%2Faws4_request&amp;X-Amz-Date=20210706T130605Z&amp;X-Amz-Expires=3600&amp;X-Amz-SignedHeaders=host&amp;X-Amz-Signature=762d8b1ef094675c5546dc0a0b3597036c8cfe914cfa85b0ed5460a7ffc2f7ab&quot;,
+      &quot;image_url&quot;: &quot;https://foobar.s3.eu-west-1.amazonaws.com/https%3A//blog.entourage.social/?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=foo%2F20210924%2Feu-west-1%2Fs3%2Faws4_request&amp;X-Amz-Date=20210924T093630Z&amp;X-Amz-Expires=3600&amp;X-Amz-SignedHeaders=host&amp;X-Amz-Signature=61422dcde53371c80d25b4eac479baecd7c3cff68dfc995381951ab40782aa5d&quot;,
       &quot;action&quot;: &quot;Aider&quot;,
       &quot;url&quot;: &quot;http://example.org/api/v1/announcements/1/redirect/foobar2&quot;,
       &quot;icon_url&quot;: &quot;http://example.org/api/v1/announcements/1/icon&quot;,

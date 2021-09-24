@@ -183,11 +183,11 @@ Host: example.org
 Cookie: </pre>
 
           <h4>Route</h4>
-          <pre class="request route highlight">PATCH api/v1/tours/4397</pre>
+          <pre class="request route highlight">PATCH api/v1/tours/12705</pre>
 
 
             <h4>Body</h4>
-            <pre class="request body">{"token":"foobar51","tour":{"distance":10.02}}</pre>
+            <pre class="request body">{"token":"foobar52","tour":{"distance":10.02}}</pre>
 
 
             <h3>Response</h3>
@@ -195,40 +195,43 @@ Cookie: </pre>
               <pre class="response headers">X-Frame-Options: SAMEORIGIN
 X-XSS-Protection: 1; mode=block
 X-Content-Type-Options: nosniff
+X-Download-Options: noopen
+X-Permitted-Cross-Domain-Policies: none
+Referrer-Policy: strict-origin-when-cross-origin
 Access-Control-Allow-Origin: *
 Access-Control-Allow-Methods: GET,POST,PUT,PATCH,DELETE
 Access-Control-Allow-Headers: Origin,Accept,Content-Type,X-Requested-With,X-CSRF-Token,X-API-KEY
 Content-Type: application/json; charset=utf-8
-ETag: W/&quot;1bf01e4a50f89ced7d062258db8ae1fd&quot;
+ETag: W/&quot;78e05242d5b2d8edd83311f2a2043a78&quot;
 Cache-Control: max-age=0, private, must-revalidate
 Set-Cookie: request_method=PATCH; path=/
-X-Request-Id: 6e14aa78-5441-4a6a-8bcf-75feb35821c1
-X-Runtime: 0.010971
-Content-Length: 488</pre>
+X-Request-Id: 0c7acbe9-d119-4936-a5e2-05a3e3bfb5be
+X-Runtime: 0.009816
+Content-Length: 490</pre>
             <h4>Status</h4>
             <pre class="response status">200 OK</pre>
               <h4>Body</h4>
               <pre class="response body">{
   &quot;tour&quot;: {
-    &quot;id&quot;: 4397,
-    &quot;uuid&quot;: &quot;4397&quot;,
+    &quot;id&quot;: 12705,
+    &quot;uuid&quot;: &quot;12705&quot;,
     &quot;tour_type&quot;: &quot;medical&quot;,
     &quot;status&quot;: &quot;ongoing&quot;,
     &quot;vehicle_type&quot;: &quot;feet&quot;,
     &quot;distance&quot;: 10,
     &quot;organization_name&quot;: &quot;Association 20&quot;,
     &quot;organization_description&quot;: &quot;Association description&quot;,
-    &quot;start_time&quot;: &quot;2021-07-06T15:06:08.225+02:00&quot;,
+    &quot;start_time&quot;: &quot;2021-09-24T11:36:33.427+02:00&quot;,
     &quot;end_time&quot;: null,
     &quot;number_of_people&quot;: 1,
     &quot;join_status&quot;: &quot;not_requested&quot;,
     &quot;number_of_unread_messages&quot;: null,
-    &quot;updated_at&quot;: &quot;2021-07-06T15:06:08.231+02:00&quot;,
+    &quot;updated_at&quot;: &quot;2021-09-24T11:36:33.434+02:00&quot;,
     &quot;tour_points&quot;: [
 
     ],
     &quot;author&quot;: {
-      &quot;id&quot;: 22830,
+      &quot;id&quot;: 59488,
       &quot;display_name&quot;: &quot;John D.&quot;,
       &quot;avatar_url&quot;: null,
       &quot;partner&quot;: null

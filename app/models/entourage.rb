@@ -81,6 +81,12 @@ class Entourage < ApplicationRecord
       order(PostgisHelper.distance_from(latitude, longitude))
     end
   }
+  scope :like, -> (search) {
+    where('(title ilike :title or description ilike :description)', {
+      title: "%#{search.strip}%",
+      description: "%#{search.strip}%"
+    })
+  }
 
   before_validation :set_community, on: :create
   before_validation :set_default_attributes, if: :group_type_changed?
