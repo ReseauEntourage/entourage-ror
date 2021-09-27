@@ -174,11 +174,31 @@ describe Api::V1::EntouragesController do
       it { expect(subject["entourages"][0]["id"]).to eq(entourage_2.id) }
     end
 
+    context "filter search case insensitive" do
+      before { get :search, params: { token: user.token, q: 'john' } }
+
+      it { expect(subject["entourages"].count).to eq(1) }
+      it { expect(subject["entourages"][0]["id"]).to eq(entourage_2.id) }
+    end
+
+    context "filter search accent insensitive" do
+      before { get :search, params: { token: user.token, q: 'jôhn' } }
+
+      it { expect(subject["entourages"].count).to eq(1) }
+      it { expect(subject["entourages"][0]["id"]).to eq(entourage_2.id) }
+    end
+
     context "filter search term on description" do
       before { get :search, params: { token: user.token, q: 'Bar' } }
 
       it { expect(subject["entourages"].count).to eq(1) }
       it { expect(subject["entourages"][0]["id"]).to eq(entourage_1.id) }
+    end
+
+    context "filter search term on unknown" do
+      before { get :search, params: { token: user.token, q: 'Foobar' } }
+
+      it { expect(subject["entourages"].count).to eq(0) }
     end
   end
 

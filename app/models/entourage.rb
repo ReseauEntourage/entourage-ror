@@ -82,7 +82,7 @@ class Entourage < ApplicationRecord
     end
   }
   scope :like, -> (search) {
-    where('(title ilike :title or description ilike :description)', {
+    where('(unaccent(title) ilike unaccent(:title) or unaccent(description) ilike unaccent(:description))', {
       title: "%#{search.strip}%",
       description: "%#{search.strip}%"
     })
