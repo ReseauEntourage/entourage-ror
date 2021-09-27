@@ -36,7 +36,8 @@ describe Api::V1::EntouragesController do
               "display_name"=>"John D.",
               "avatar_url"=>nil,
               "partner"=>nil,
-              "partner_role_title" => nil
+              "partner_role_title" => nil,
+              "partner_with_current_user" => false
             },
             "location"=>{
               "latitude"=>1.122,
@@ -312,7 +313,8 @@ describe Api::V1::EntouragesController do
               "display_name"=>"John D.",
               "avatar_url"=>nil,
               "partner"=>nil,
-              "partner_role_title" => nil
+              "partner_role_title" => nil,
+              "partner_with_current_user" => false
             },
             "location"=>{
               "latitude"=>4.567,
@@ -420,7 +422,8 @@ describe Api::V1::EntouragesController do
                 "display_name"=>"John D.",
                 "avatar_url"=>nil,
                 "partner"=>nil,
-                "partner_role_title" => nil
+                "partner_role_title" => nil,
+                "partner_with_current_user" => false
               },
               "location"=>{
                 "latitude"=>48.868959,
@@ -544,7 +547,8 @@ describe Api::V1::EntouragesController do
                 "display_name"=>"John D.",
                 "avatar_url"=>nil,
                 "partner"=>nil,
-                "partner_role_title" => nil
+                "partner_role_title" => nil,
+                "partner_with_current_user" => false
               },
               "location"=>{
                 "latitude"=>1.122,
@@ -614,7 +618,9 @@ describe Api::V1::EntouragesController do
                 "display_name"=>"Buzz L.",
                 "avatar_url"=>nil,
                 "partner"=>nil,
-                "partner_role_title" => nil},
+                "partner_role_title" => nil,
+                "partner_with_current_user" => false
+              },
               "location"=>{"latitude"=>0.0, "longitude"=>0.0},
               "display_report_prompt" => false
             }
@@ -739,7 +745,8 @@ describe Api::V1::EntouragesController do
               "display_name"=>"John D.",
               "avatar_url"=>nil,
               "partner"=>nil,
-              "partner_role_title" => nil
+              "partner_role_title" => nil,
+              "partner_with_current_user" => false
             },
             "location"=>{
               "latitude"=>outing.latitude,
@@ -779,7 +786,8 @@ describe Api::V1::EntouragesController do
               "display_name"=>"John D.",
               "avatar_url"=>nil,
               "partner"=>nil,
-              "partner_role_title" => nil
+              "partner_role_title" => nil,
+              "partner_with_current_user" => false
             },
             "location"=>{
               "latitude"=>1.122,
