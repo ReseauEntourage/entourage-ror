@@ -42,7 +42,7 @@
         Cette diffusion de MP est configurable avant envoi.<br>
         Vous pouvez également choisir de l'archiver mais cette action n'est pas réversible.
       </div>
-      <%= f.submit "Archiver", name: :archive, class: "btn btn-danger" %>
+      <%= f.submit "Archiver", name: :archive, class: "btn btn-default" %>
     </div>
     <div class="alert alert-danger" role="alert" style="display: flex; align-items: center">
       <div style="flex-grow: 1">
@@ -50,7 +50,9 @@
         L'envoi sera effectué auprès de <%= @conversation_message_broadcast.user_ids.count %> utilisateurs correspondants aux filtres configurés.<br>
         La diffusion de MP sera automatiquement archivée après envoi.
       </div>
-        <%= link_to("Envoyer", broadcast_admin_conversation_message_broadcast_path, method: :post, class: "btn btn-success") %>
+        <%= link_to("Envoyer", broadcast_admin_conversation_message_broadcast_path, method: :post, class: "btn btn-danger", data: {
+          confirm: "Êtes vous sûr de vouloir diffuser ces MP à #{@conversation_message_broadcast.user_ids.count} utilisateurs ?"
+        }) %>
     </div>
   <% end %>
 
