@@ -172,6 +172,17 @@ class User < ApplicationRecord
     end
   }
 
+  scope :in_conversation_with, -> (user_id) {
+    joins(chat_messages: { entourage: :join_requests }).where(%(
+      chat_messages.user_id = :chat_message_user_id
+      and join_requests.user_id != :join_request_user_id
+      and entourages.group_type = 'conversation'
+    ), {
+      chat_message_user_id: user_id,
+      join_request_user_id: user_id
+    })
+  }
+
   before_validation do
     self.goal = nil if goal.blank?
 
