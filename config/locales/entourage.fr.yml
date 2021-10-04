@@ -54,6 +54,7 @@ fr:
       entourage:
         title: Titre
         outing_image_url: Photo d'événement
+        cancellation_message: Message d'annulation
         categories:
           social: Social
           resource: Ressource

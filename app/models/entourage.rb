@@ -1,20 +1,3 @@
-# == Schema Information
-#
-# Table name: entourages
-#
-#  id               :integer          not null, primary key
-#  status           :string           default("open"), not null
-#  title            :string           not null
-#  entourage_type   :string           not null
-#  user_id          :integer          not null
-#  latitude         :float            not null
-#  longitude        :float            not null
-#  number_of_people :integer          default(0), not null
-#  created_at       :datetime         not null
-#  updated_at       :datetime         not null
-#  description      :string
-#
-
 class Entourage < ApplicationRecord
   include FeedsConcern
   include UpdatedAtSkippable
@@ -27,7 +10,7 @@ class Entourage < ApplicationRecord
   include ModerationServices::EntourageModeration::Callback
 
   ENTOURAGE_TYPES  = ['ask_for_help', 'contribution']
-  ENTOURAGE_STATUS = ['open', 'closed', 'blacklisted', 'suspended', 'full']
+  ENTOURAGE_STATUS = ['open', 'closed', 'blacklisted', 'suspended', 'full', 'cancelled']
   BLACKLIST_WORDS  = ['rue', 'avenue', 'boulevard', 'en face de', 'vend', 'loue', '06', '07', '01']
   CATEGORIES  = ['mat_help', 'non_mat_help', 'social']
   DISPLAY_CATEGORIES = ['social', 'resource', 'mat_help', 'other']
@@ -50,10 +33,12 @@ class Entourage < ApplicationRecord
   attr_accessor :current_join_request, :number_of_unread_messages, :entourage_image_id
   attr_accessor :change_ownership_message
   attr_accessor :user_status
+  attr_accessor :cancellation_message
 
   validates_presence_of :status, :title, :entourage_type, :user_id, :latitude, :longitude, :number_of_people
+
   validates_inclusion_of :status, in: ENTOURAGE_STATUS, if: :outing?
-  validates_inclusion_of :status, in: ENTOURAGE_STATUS - ['full'], unless: :outing?
+  validates_inclusion_of :status, in: ENTOURAGE_STATUS - ['full', 'cancelled'], unless: :outing?
   validates_inclusion_of :entourage_type, in: ENTOURAGE_TYPES
   validates_inclusion_of :category, in: CATEGORIES, allow_nil: true
   validates_inclusion_of :display_category, in: DISPLAY_CATEGORIES, allow_nil: true

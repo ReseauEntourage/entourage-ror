@@ -1,6 +1,6 @@
 module Admin
   class EntouragesController < Admin::BaseController
-    before_action :set_entourage, only: [:show, :edit, :update, :renew, :edit_image, :update_image, :moderator_read, :moderator_unread, :message, :show_members, :show_joins, :show_invitations, :show_messages, :sensitive_words, :sensitive_words_check, :edit_type, :edit_owner, :update_owner, :admin_pin, :admin_unpin, :pin, :unpin]
+    before_action :set_entourage, only: [:show, :edit, :update, :renew, :cancellation, :cancel, :edit_image, :update_image, :moderator_read, :moderator_unread, :message, :show_members, :show_joins, :show_invitations, :show_messages, :sensitive_words, :sensitive_words_check, :edit_type, :edit_owner, :update_owner, :admin_pin, :admin_unpin, :pin, :unpin]
     before_action :ensure_moderator!, only: [:message]
 
     before_action :set_index_params, only: [:index, :show, :edit, :show_messages, :show_invitations, :show_joins, :show_members]
@@ -251,7 +251,6 @@ module Admin
       end
 
       if EntourageServices::EntourageBuilder.update(entourage: @entourage, params: update_params)
-
         Entourage.transaction do
           group_roles = {
             action: [:creator,   :member],
@@ -271,6 +270,18 @@ module Admin
     end
 
     def renew
+    end
+
+    def cancellation
+      redirect_to [:edit, :admin, @entourage], alert: "Seuls les événements peuvent être annulés" unless @entourage.outing?
+    end
+
+    def cancel
+      if EntourageServices::EntourageBuilder.cancel(entourage: @entourage, params: cancel_params)
+        redirect_to [:admin, @entourage], notice: "L'événement a été annulé"
+      else
+        redirect_to [:cancellation, :admin, @entourage], alert: "L'événement n'a pas pu être annulé : #{@entourage.errors.full_messages.to_sentence}"
+      end
     end
 
     def edit_image
@@ -448,6 +459,10 @@ module Admin
       end
 
       permitted
+    end
+
+    def cancel_params
+      params.require(:entourage).permit(:cancellation_message)
     end
 
     def chat_messages_params

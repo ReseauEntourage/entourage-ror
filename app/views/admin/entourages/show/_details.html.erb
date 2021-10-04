@@ -72,6 +72,12 @@
         <span style="font-weight: bold">statut :</span>
         <%= entourage_state_label(@entourage) %>
       </div>
+
+      <% if @entourage.group_type == 'outing' %>
+        <div>
+          <%= link_to "Annuler l'événement", [:cancellation, :admin, @entourage] %>
+        </div>
+      <% end %>
     </div>
   </div>
 </div>
