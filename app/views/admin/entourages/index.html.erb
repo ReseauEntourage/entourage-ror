@@ -107,6 +107,7 @@
   <% if params[:q] && params[:q][:pin_eq] %>
     <th>Actions épinglées pour</th>
   <% end %>
+  <th>Statut</th>
   <th><span class="glyphicon glyphicon-user" aria-hidden="true"></span></th>
   <th><span class="glyphicon glyphicon-comment" aria-hidden="true"></span></th>
   <th><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></th>
@@ -141,6 +142,7 @@
           <% end %>
         </td>
       <% end %>
+      <td><%= entourage_state_label(entourage) %></td>
       <td><span class="badge" title="Membres"><%= @member_count[entourage.id] %></span></td>
       <td><span class="badge" title="Messages"><%= @message_count[entourage.id].total %></span></td>
       <td>
