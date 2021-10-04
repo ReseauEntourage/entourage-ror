@@ -15,7 +15,7 @@ describe EntourageServices::NeighborhoodAnnouncement do
     it { expect(V1::ChatMessageSerializer.new(chat_message).as_json).to eq(
       'chat_message' => {
         id: chat_message.id,
-        content: "a créé une sortie :\nFoobar\nle 26/07 à 19h00,\nCafé la Renaissance, 44 rue de l’Assomption, 75016 Paris",
+        content: "a créé un évènement :\nFoobar\nle 26/07 à 19h00,\nCafé la Renaissance, 44 rue de l’Assomption, 75016 Paris",
         user: {
           id: user.id,
           avatar_url: nil,
@@ -44,7 +44,7 @@ describe EntourageServices::NeighborhoodAnnouncement do
     it { expect(V1::ChatMessageSerializer.new(chat_message).as_json).to eq(
       'chat_message' => {
         id: chat_message.id,
-        content: "a modifié une sortie :\nPlop\nle 26/07 à 19h00,\nCafé la Renaissance, 44 rue de l’Assomption, 75016 Paris",
+        content: "a modifié un évènement :\nPlop\nle 26/07 à 19h00,\nCafé la Renaissance, 44 rue de l’Assomption, 75016 Paris",
         user: {
           id: user.id,
           avatar_url: nil,
