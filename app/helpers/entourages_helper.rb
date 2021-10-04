@@ -15,7 +15,8 @@ module EntouragesHelper
       "open"        => "label-success",
       "closed"      => "label-danger",
       "suspended"   => "label-warning",
-      "blacklisted" => "label-default"
+      "blacklisted" => "label-default",
+      "full"        => "label-warning"
     }
     content_tag :span, entourage.status, class: "label #{state_to_class[entourage.status]}"
   end

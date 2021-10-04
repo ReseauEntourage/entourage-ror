@@ -15,6 +15,18 @@ RSpec.describe Entourage, type: :model do
   it { should validate_inclusion_of(:category).in_array(['mat_help', 'non_mat_help', 'social']) }
   it { should belong_to(:user) }
 
+  describe "validate_inclusion_of status" do
+    context 'is an event' do
+      before { allow(subject).to receive(:outing?).and_return(true) }
+      it { is_expected.to validate_inclusion_of(:status).in_array(["open", "closed", "blacklisted", "suspended", "full"]) }
+    end
+
+    context 'is not an event' do
+      before { allow(subject).to receive(:outing?).and_return(false) }
+      it { is_expected.to validate_inclusion_of(:status).in_array(["open", "closed", "blacklisted", "suspended"]) }
+    end
+  end
+
   describe "group_type" do
     it { expect(build(:entourage, group_type: :invalid).save).to eq false }
     it { expect(build(:entourage, group_type: :action).save).to eq true }

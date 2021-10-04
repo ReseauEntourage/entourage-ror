@@ -73,7 +73,7 @@ module FeedServices
 
       feeds = user.community.feeds
 
-      feeds = feeds.where.not(status: [:blacklisted, :suspended])
+      feeds = feeds.where.not(status: [:blacklisted, :suspended, :full])
 
       feeds = feeds.where.not(group_type: [:conversation, :group])
 
