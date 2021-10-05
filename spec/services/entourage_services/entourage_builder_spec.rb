@@ -47,4 +47,24 @@ describe EntourageServices::EntourageBuilder do
       entourage = service.create
     end
   end
+
+  describe 'cancel' do
+    describe 'actions are not eligible to cancellation' do
+      let(:action) { FactoryBot.create(:entourage) }
+      let(:params) { { cancellation_message: 'my message' } }
+      subject { -> { described_class.cancel(entourage: action, params: params) } }
+
+      it { should_not change { action.reload.status } }
+      it { should_not change { ChatMessage.count } }
+    end
+
+    describe 'outings are eligible to cancellation' do
+      let(:outing) { FactoryBot.create(:outing) }
+      let(:params) { { cancellation_message: 'my message' } }
+      subject { -> { described_class.cancel(entourage: outing, params: params) } }
+
+      it { should change { outing.reload.status } }
+      it { should change { ChatMessage.count }.by(1) }
+    end
+  end
 end

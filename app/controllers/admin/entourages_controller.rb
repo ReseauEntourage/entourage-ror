@@ -277,7 +277,7 @@ module Admin
     end
 
     def cancel
-      if EntourageServices::EntourageBuilder.cancel(entourage: @entourage, params: cancel_params)
+      if EntourageServices::EntourageBuilder.cancel(entourage: @entourage, params: cancel_params.to_h)
         redirect_to [:admin, @entourage], notice: "L'événement a été annulé"
       else
         redirect_to [:cancellation, :admin, @entourage], alert: "L'événement n'a pas pu être annulé : #{@entourage.errors.full_messages.to_sentence}"
