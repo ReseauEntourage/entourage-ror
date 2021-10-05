@@ -155,14 +155,7 @@ module Admin
     end
 
     def moderate
-      @users = if params[:validation_status] == "blocked"
-        User.blocked
-      elsif params[:validation_status] == "anonymized"
-        User.anonymized
-      else
-        User.validated
-      end
-      @users = @users.where("avatar_key IS NOT NULL").order("updated_at DESC").page(params[:page]).per(25)
+      @users = User.validated.where("avatar_key IS NOT NULL").order("updated_at DESC").page(params[:page]).per(25)
     end
 
     def edit_block
@@ -212,12 +205,12 @@ module Admin
     def banish
       @user.block! current_user, "banish"
       UserServices::Avatar.new(user: user).destroy
-      redirect_to moderate_admin_users_path(validation_status: "blocked")
+      redirect_to edit_admin_user_path(user)
     end
 
     def validate
       @user.validate!
-      redirect_to moderate_admin_users_path(validation_status: "validated")
+      redirect_to moderate_admin_users_path
     end
 
     def experimental_pending_request_reminder

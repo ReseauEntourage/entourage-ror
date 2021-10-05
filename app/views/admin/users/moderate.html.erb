@@ -1,17 +1,5 @@
 <h1>Liste des dernières photos de profils ajoutées</h1>
 
-<ul class="nav nav-pills" role="tablist">
-  <li role="presentation" class="<%= active_class(moderate_admin_users_path(validation_status: "validated"))%>">
-    <%= link_to "Validés", moderate_admin_users_path(validation_status: "validated") %>
-  </li>
-  <li role="presentation" class="<%= active_class(moderate_admin_users_path(validation_status: "blocked"))%>">
-    <%= link_to "Bloqués", moderate_admin_users_path(validation_status: "blocked") %>
-  </li>
-  <li role="presentation" class="<%= active_class(moderate_admin_users_path(validation_status: "anonymized"))%>">
-    <%= link_to "Anonymisés", moderate_admin_users_path(validation_status: "anonymized") %>
-  </li>
-</ul>
-
 <table class="table">
   <th>id</th>
   <th>name</th>
