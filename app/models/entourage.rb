@@ -10,7 +10,8 @@ class Entourage < ApplicationRecord
   include ModerationServices::EntourageModeration::Callback
 
   ENTOURAGE_TYPES  = ['ask_for_help', 'contribution']
-  ENTOURAGE_STATUS = ['open', 'closed', 'blacklisted', 'suspended', 'full', 'cancelled']
+  ENTOURAGE_STATUS = ['open', 'closed', 'blacklisted', 'suspended']
+  OUTING_STATUS = ['open', 'closed', 'blacklisted', 'suspended', 'full', 'cancelled']
   BLACKLIST_WORDS  = ['rue', 'avenue', 'boulevard', 'en face de', 'vend', 'loue', '06', '07', '01']
   CATEGORIES  = ['mat_help', 'non_mat_help', 'social']
   DISPLAY_CATEGORIES = ['social', 'resource', 'mat_help', 'other']
@@ -37,8 +38,8 @@ class Entourage < ApplicationRecord
 
   validates_presence_of :status, :title, :entourage_type, :user_id, :latitude, :longitude, :number_of_people
 
-  validates_inclusion_of :status, in: ENTOURAGE_STATUS, if: :outing?
-  validates_inclusion_of :status, in: ENTOURAGE_STATUS - ['full', 'cancelled'], unless: :outing?
+  validates_inclusion_of :status, in: OUTING_STATUS, if: :outing?
+  validates_inclusion_of :status, in: ENTOURAGE_STATUS, unless: :outing?
   validates_inclusion_of :entourage_type, in: ENTOURAGE_TYPES
   validates_inclusion_of :category, in: CATEGORIES, allow_nil: true
   validates_inclusion_of :display_category, in: DISPLAY_CATEGORIES, allow_nil: true
@@ -304,6 +305,12 @@ class Entourage < ApplicationRecord
     EntourageImage.storage.url_for(key: self.metadata[:landscape_thumbnail_url] || self.metadata[:landscape_url])
   end
 
+  def status_list
+    return OUTING_STATUS if outing?
+
+    ENTOURAGE_STATUS
+  end
+
   def conversation?
     group_type && group_type.to_sym == :conversation
   end
@@ -314,6 +321,10 @@ class Entourage < ApplicationRecord
 
   def outing?
     group_type && group_type.to_sym == :outing
+  end
+
+  def cancelled?
+    status && status.to_sym == :cancelled
   end
 
   def add_metadata_schema_urn(value)
