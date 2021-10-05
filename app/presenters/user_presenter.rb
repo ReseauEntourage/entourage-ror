@@ -26,6 +26,10 @@ class UserPresenter < ApplicationPresenter
     image_tag(url, height: '128', width: '128')
   end
 
+  def destroy_avatar_link
+    link_to("Supprimer l'avatar", Rails.application.routes.url_helpers.destroy_avatar_admin_user_path(user), method: :put, class: "btn btn-danger", data: { confirm: "Vous allez supprimer l'avatar, êtes vous sûr ?" })
+  end
+
   def validation_status_action_link
     return if user.anonymized?
 
