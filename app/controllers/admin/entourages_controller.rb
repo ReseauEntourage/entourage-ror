@@ -1,6 +1,6 @@
 module Admin
   class EntouragesController < Admin::BaseController
-    before_action :set_entourage, only: [:show, :edit, :update, :renew, :edit_image, :update_image, :moderator_read, :moderator_unread, :message, :show_members, :show_joins, :show_invitations, :show_messages, :sensitive_words, :sensitive_words_check, :edit_type, :admin_pin, :admin_unpin, :pin, :unpin]
+    before_action :set_entourage, only: [:show, :edit, :update, :renew, :edit_image, :update_image, :moderator_read, :moderator_unread, :message, :show_members, :show_joins, :show_invitations, :show_messages, :sensitive_words, :sensitive_words_check, :edit_type, :edit_owner, :update_owner, :admin_pin, :admin_unpin, :pin, :unpin]
     before_action :ensure_moderator!, only: [:message]
 
     def index
@@ -337,6 +337,22 @@ module Admin
       end
     end
 
+    def edit_owner
+    end
+
+    def update_owner
+      user_id = entourage_params[:user_id]
+      message = entourage_params[:change_ownership_message]
+
+      EntourageServices::ChangeOwner.new(@entourage).to(user_id, message: message) do |success, error_message|
+        if success
+          redirect_to [:admin, @entourage], notice: "Mise à jour réussie"
+        else
+          redirect_to [:edit_owner, :admin, @entourage], alert: error_message
+        end
+      end
+    end
+
     def message
       user = current_user
 
@@ -405,7 +421,7 @@ module Admin
     def entourage_params
       metadata_keys = params.dig(:entourage, :metadata).try(:keys) || [] # security issue
       metadata_keys -= [:starts_at]
-      permitted = params.require(:entourage).permit(:group_type, :status, :title, :description, :category, :entourage_type, :display_category, :latitude, :longitude, :public, :online, :url, :event_url, :entourage_image_id, pins: [], metadata: metadata_keys)
+      permitted = params.require(:entourage).permit(:group_type, :status, :title, :description, :category, :entourage_type, :display_category, :latitude, :longitude, :public, :online, :url, :event_url, :user_id, :entourage_image_id, :change_ownership_message, pins: [], metadata: metadata_keys)
 
       [:starts_at, :ends_at].each do |timestamp|
         datetime = params.dig(:entourage, :metadata, timestamp)&.slice(:date, :hour, :min)

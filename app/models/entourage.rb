@@ -48,6 +48,7 @@ class Entourage < ApplicationRecord
   has_one :sensitive_words_check, as: :record, dependent: :destroy
 
   attr_accessor :current_join_request, :number_of_unread_messages, :entourage_image_id
+  attr_accessor :change_ownership_message
 
   validates_presence_of :status, :title, :entourage_type, :user_id, :latitude, :longitude, :number_of_people
   validates_inclusion_of :status, in: ENTOURAGE_STATUS

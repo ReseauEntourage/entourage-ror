@@ -38,8 +38,7 @@
       <% end %>
     <% end %>
 
-    <% moderators = User.where("roles->>0 = 'moderator'").map {|moderator| [moderator.email, moderator.id]} %>
-    <%= f.select :moderator_id, options_for_select(moderators, @area.moderator_id), { include_blank: false }, class: "form-control" %>
+    <%= f.select :moderator_id, options_for_select(moderators_for_select, @area.moderator_id), { include_blank: false }, class: "form-control" %>
   </div>
 
   <div class="form-group">
