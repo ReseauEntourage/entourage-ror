@@ -4,14 +4,13 @@ describe FollowingService do
   let(:partner) { create :partner, name: "PARTNER_NAME" }
   let(:partner_user) { create :public_user, partner: partner }
   let!(:following) { create :following, partner: partner }
-  let(:action) { create :entourage, user: partner_user }
 
-  describe ".on_create_entourage" do
+  describe ".on_create_entourage with invitation" do
+    let(:action) { create :entourage, user: partner_user }
+
     subject { FollowingService.on_create_entourage(action) }
 
-    it {
-      expect { subject }.to change { EntourageInvitation.count }.by(1)
-    }
+    it { expect { subject }.to change { EntourageInvitation.count }.by(1) }
 
     it {
       subject
@@ -44,9 +43,16 @@ describe FollowingService do
     }
 
     it {
-      expect { subject }.to \
-        change { UserServices::UnreadMessages.new(user: following.user).number_of_unread_messages } \
-        .by(1)
+      expect { subject }.to change { UserServices::UnreadMessages.new(user: following.user).number_of_unread_messages }.by(1)
     }
+  end
+
+  describe ".on_create_entourage without invitation" do
+    let(:action) { create :entourage, user: partner_user, invite_followers: false }
+
+    subject { FollowingService.on_create_entourage(action) }
+
+    it { expect { subject }.to_not change { EntourageInvitation.count } }
+    it { expect_any_instance_of(PushNotificationService).to_not receive(:send_notification) }
   end
 end

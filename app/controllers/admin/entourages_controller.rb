@@ -445,7 +445,7 @@ module Admin
     def entourage_params
       metadata_keys = params.dig(:entourage, :metadata).try(:keys) || [] # security issue
       metadata_keys -= [:starts_at]
-      permitted = params.require(:entourage).permit(:group_type, :status, :title, :description, :category, :entourage_type, :display_category, :latitude, :longitude, :public, :online, :url, :event_url, :user_id, :entourage_image_id, :change_ownership_message, pins: [], metadata: metadata_keys)
+      permitted = params.require(:entourage).permit(:group_type, :status, :title, :description, :category, :entourage_type, :display_category, :latitude, :longitude, :public, :online, :url, :event_url, :user_id, :entourage_image_id, :invite_followers, :change_ownership_message, pins: [], metadata: metadata_keys)
 
       [:starts_at, :ends_at].each do |timestamp|
         datetime = params.dig(:entourage, :metadata, timestamp)&.slice(:date, :hour, :min)

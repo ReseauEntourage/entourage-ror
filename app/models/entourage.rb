@@ -35,6 +35,7 @@ class Entourage < ApplicationRecord
   attr_accessor :change_ownership_message
   attr_accessor :user_status
   attr_accessor :cancellation_message
+  attr_accessor :invite_followers
 
   validates_presence_of :status, :title, :entourage_type, :user_id, :latitude, :longitude, :number_of_people
 
@@ -97,6 +98,13 @@ class Entourage < ApplicationRecord
   before_create :set_uuid
 
   after_update :create_chat_message_on_status_update, if: :saved_change_to_status?
+
+  # @notice is there a simpliest way to define a default value?
+  def invite_followers
+    return true if @invite_followers.nil?
+
+    @invite_followers
+  end
 
   def moderator_read_for user:
     moderator_reads.where(user_id: user.id).first

@@ -156,7 +156,6 @@
         </label>
       </div>
     </div>
-
     <div class="control-group <%= :hide unless @entourage.online %>" id="url-block">
       <%= f.label :event_url, "Lien de la visioconférence", class: "control-label" %>
       <div class="controls">
@@ -170,6 +169,27 @@
   <% end %>
   <% if @entourage.group_type == 'outing' %>
     <%= render partial: 'edit_outing_address', locals: { entourage: @entourage } %>
+  <% end %>
+
+  <% if @entourage.new_record? && current_user.partner %>
+    <div class="control-group">
+      <%= f.label :invite_followers, class: "control-label" %>
+
+      <div class="alert alert-info" role="alert">
+        Votre association a <%= current_user.partner.followings.count %> abonné(s). Vous pouvez choisir de leur envoyer une invitation.
+      </div>
+
+      <div class="controls">
+        <label class="radio-inline" style="padding-top: 0; margin-bottom: 5px;">
+          <%= f.radio_button :invite_followers, true, required: true %>
+          Oui
+        </label>
+        <label class="radio-inline" style="padding-top: 0; margin-bottom: 5px;">
+          <%= f.radio_button :invite_followers, false, required: true %>
+          Non
+        </label>
+      </div>
+    </div>
   <% end %>
 
   <br>
