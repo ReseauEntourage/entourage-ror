@@ -16,14 +16,11 @@ module Admin
         ransack_params = params[:q]
       end
 
-      community = params[:community] || :entourage
       group_types = (params[:group_type] || 'action,outing').split(',')
 
-      @q = Entourage
-        .where(group_type: group_types, community: community)
-        .with_moderation
+      @q = Entourage.where(group_type: group_types).with_moderation
 
-      main_moderator = ModerationServices.moderator_if_exists(community: current_user.community)
+      main_moderator = ModerationServices.moderator_if_exists(community: :entourage)
       if current_user != main_moderator && (params.keys - ['controller', 'action']).none? && current_user.roles.include?(:moderator)
         params[:moderator_id] = current_user.id
       end
