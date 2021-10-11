@@ -4,7 +4,7 @@ module Admin
     before_action :ensure_moderator!, only: [:message]
 
     def index
-      @params = params.permit([q: [:country_eq, :postal_code_start, :pin_eq, :group_type_eq, postal_code_start_any: [], postal_code_not_start_all: []]]).to_h
+      @params = params.permit([q: [:entourage_type_eq, :status_eq, :display_category_eq, :country_eq, :postal_code_start, :pin_eq, :group_type_eq, postal_code_start_any: [], postal_code_not_start_all: []]]).to_h
       per_page = params[:per] || 50
 
       # workaround for the 'null' option
