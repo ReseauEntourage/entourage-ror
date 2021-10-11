@@ -97,8 +97,6 @@ module Admin
 
       # workaround for the 'null' option
       @q = Entourage.ransack(params[:q])
-
-      render layout: 'admin_large'
     end
 
     def new
@@ -126,8 +124,6 @@ module Admin
 
     def show
       @moderator_read = @entourage.moderator_read_for(user: current_user)
-
-      render layout: 'admin_large'
     end
 
     def show_members
@@ -393,8 +389,6 @@ module Admin
       @title = highlighted[:title]
       @description = highlighted[:description]
       @matches = highlighted[:matches]
-
-      render layout: 'admin_large'
     end
 
     def sensitive_words_check
