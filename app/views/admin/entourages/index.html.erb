@@ -3,7 +3,7 @@
 <%= search_form_for [:admin, @q], class: 'form-inline', id: 'q_form' do |f| %>
   <div class="panel panel-default">
     <div class="panel-body">
-      <div style="float: left; display: flex">
+      <div style="float: left">
         <div class='input-group'>
           <%= text_field_tag :search, params[:search], class: "form-control", placeholder: 'Titre, description' %>
           <span class="input-group-btn">
@@ -38,69 +38,67 @@
     </div>
   </div>
 
-<div style="display: flex; margin: -10px 0 10px">
-  <%
-    q = @params[:q] || {}
+  <div style="float: left; margin: -10px 0 10px">
+    <%
+      q = @params[:q] || {}
 
-    locations = {
-      "Partout" => {},
-      "75" => { country_eq: 'FR', postal_code_start: '75' },
-      "92" => { country_eq: 'FR', postal_code_start: '92' },
-      "93" => { country_eq: 'FR', postal_code_start: '93' },
-      "69" => { country_eq: 'FR', postal_code_start: '69' },
-      "59" => { country_eq: 'FR', postal_code_start: '59' },
-      "35" => { country_eq: 'FR', postal_code_start: '35' },
-      "Hors zone" => {
-        postal_code_not_start_all: ['75', '92', '93', '69', '35', '59']
-      },
-    }
+      locations = {
+        "Partout" => {},
+        "75" => { country_eq: 'FR', postal_code_start: '75' },
+        "92" => { country_eq: 'FR', postal_code_start: '92' },
+        "93" => { country_eq: 'FR', postal_code_start: '93' },
+        "69" => { country_eq: 'FR', postal_code_start: '69' },
+        "59" => { country_eq: 'FR', postal_code_start: '59' },
+        "35" => { country_eq: 'FR', postal_code_start: '35' },
+        "Hors zone" => {
+          postal_code_not_start_all: ['75', '92', '93', '69', '35', '59']
+        },
+      }
 
-    types = {
-      "Épinglées" => { pin_eq: 'true' },
-      "Actions" => { group_type_eq: 'action', pin_eq: 'false' },
-      "Événements" => { group_type_eq: 'outing', pin_eq: 'false' }
-    }
-  %>
+      types = {
+        "Épinglées" => { pin_eq: 'true' },
+        "Actions" => { group_type_eq: 'action', pin_eq: 'false' },
+        "Événements" => { group_type_eq: 'outing', pin_eq: 'false' }
+      }
+    %>
 
-  <%= f.hidden_field :postal_code_start %>
-  <%= f.hidden_field :postal_code_not_start_all %>
-  <%= f.hidden_field :pin_eq %>
-  <%= f.hidden_field :group_type_eq %>
-  <%= f.hidden_field :country_eq if @q.country_eq %>
-  <% (@q.postal_code_start_any || []).each do |value| %>
-    <%= hidden_field_tag 'q[postal_code_start_any][]', value %>
-  <% end %>
-
-  <div class="btn-group btn-group-sm">
-    <% locations_keys = [:country_eq, :postal_code_start_any, :postal_code_start, :postal_code_not_start_all] %>
-    <% locations.each do |name, options| %>
-      <% active = locations.key q.slice(*locations_keys).compact.symbolize_keys %>
-      <%= link_to(name, @params.merge(q: q.except(*locations_keys).merge(options)),
-          class: "btn btn-#{active == name ? :primary : :default}"
-      ) %>
+    <%= f.hidden_field :postal_code_start %>
+    <%= f.hidden_field :postal_code_not_start_all %>
+    <%= f.hidden_field :pin_eq %>
+    <%= f.hidden_field :group_type_eq %>
+    <%= f.hidden_field :country_eq if @q.country_eq %>
+    <% (@q.postal_code_start_any || []).each do |value| %>
+      <%= hidden_field_tag 'q[postal_code_start_any][]', value %>
     <% end %>
+
+    <div class="btn-group btn-group-sm">
+      <% locations_keys = [:country_eq, :postal_code_start_any, :postal_code_start, :postal_code_not_start_all] %>
+      <% locations.each do |name, options| %>
+        <% active = locations.key q.slice(*locations_keys).compact.symbolize_keys %>
+        <%= link_to(name, @params.merge(q: q.except(*locations_keys).merge(options)),
+            class: "btn btn-#{active == name ? :primary : :default}"
+        ) %>
+      <% end %>
+    </div>
+
+    <div class="btn-group btn-group-sm" style="padding-left: 10px">
+      <% types_keys = [:pin_eq, :group_type_eq] %>
+      <% types.each do |name, options| %>
+        <% active = types.key q.slice(*types_keys).compact.symbolize_keys %>
+        <%= link_to(name, @params.merge(q: q.except(*types_keys).merge(options)),
+            class: "btn btn-#{active == name ? :primary : :default}"
+        ) %>
+      <% end %>
+    </div>
   </div>
 
-  <div class="btn-group btn-group-sm" style="padding-left: 10px">
-    <% types_keys = [:pin_eq, :group_type_eq] %>
-    <% types.each do |name, options| %>
-      <% active = types.key q.slice(*types_keys).compact.symbolize_keys %>
-      <%= link_to(name, @params.merge(q: q.except(*types_keys).merge(options)),
-          class: "btn btn-#{active == name ? :primary : :default}"
-      ) %>
-    <% end %>
+  <div style="float: right; margin: -10px 0 10px">
+    <%= link_to "Annuler les filtres", admin_entourages_path, class: "btn btn-default" %>
   </div>
-</div>
 
 <% end %>
 
-<br>
-
 <table class="table admin-table" style="table-layout: auto">
-  <!-- <th>id</th>
-  <th>Status</th>
-  <th>Titre</th>
-  <th>Type</th> -->
   <th></th>
   <th></th>
   <th></th>
