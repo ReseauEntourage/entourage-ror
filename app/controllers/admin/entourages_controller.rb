@@ -30,10 +30,7 @@ module Admin
       @q = @q.moderator_search(params[:moderator_id])
       @q = @q.ransack(ransack_params)
 
-      @entourages =
-        @q.result
-        .page(params[:page])
-        .per(per_page)
+      @entourages = @q.result.page(params[:page]).per(per_page)
         .with_moderator_reads_for(user: current_user)
         .select(%(
           entourages.*,
@@ -65,35 +62,34 @@ module Admin
           .count
       @member_count.default = 0
 
-      @requests_count =
-        JoinRequest
-          .where(joinable_type: :Entourage, joinable_id: entourage_ids, status: :pending)
-          .group(:joinable_id)
-          .pluck(%(
-            joinable_id,
-            count(*),
-            count(case when updated_at <= now() - interval '48 hours' then 1 end)
-          ))
+      @requests_count = JoinRequest
+        .where(joinable_type: :Entourage, joinable_id: entourage_ids, status: :pending)
+        .group(:joinable_id)
+        .pluck(%(
+          joinable_id,
+          count(*),
+          count(case when updated_at <= now() - interval '48 hours' then 1 end)
+        ))
+
       @requests_count = Hash[@requests_count.map { |id, total, late| [id, { total: total, late: late }]}]
       @requests_count.default = { total: 0, late: 0 }
 
-      @reminded_users =
-        Experimental::PendingRequestReminder
-          .recent
-          .where(user_id: @entourages.map(&:user_id))
-          .pluck('distinct user_id')
+      @reminded_users = Experimental::PendingRequestReminder.recent
+        .where(user_id: @entourages.map(&:user_id))
+        .pluck('distinct user_id')
+
       @reminded_users = Set.new(@reminded_users)
 
-      @message_count =
-        ConversationMessage
-          .with_moderator_reads_for(user: current_user)
-          .where(messageable_type: :Entourage, messageable_id: entourage_ids)
-          .group(:messageable_id)
-          .select(%{
-            messageable_id,
-            sum(case when conversation_messages.content <> '' then 1 else 0 end) as total,
-            sum(case when conversation_messages.created_at >= moderator_reads.read_at then 1 else 0 end) as unread
-          })
+      @message_count = ConversationMessage
+        .with_moderator_reads_for(user: current_user)
+        .where(messageable_type: :Entourage, messageable_id: entourage_ids)
+        .group(:messageable_id)
+        .select(%{
+          messageable_id,
+          sum(case when conversation_messages.content <> '' then 1 else 0 end) as total,
+          sum(case when conversation_messages.created_at >= moderator_reads.read_at then 1 else 0 end) as unread
+        })
+
       @message_count = Hash[@message_count.map { |m| [m.messageable_id, m] }]
       @message_count.default = OpenStruct.new(unread: 0, total: 0)
       @moderation = Hash[EntourageModeration.where(entourage_id: entourage_ids).pluck(:entourage_id, :moderated)]
