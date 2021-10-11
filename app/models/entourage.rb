@@ -82,14 +82,17 @@ class Entourage < ApplicationRecord
     end
   }
   scope :like, -> (search) {
+    return unless search.present?
+
     where('(unaccent(title) ilike unaccent(:title) or unaccent(description) ilike unaccent(:description))', {
       title: "%#{search.strip}%",
       description: "%#{search.strip}%"
     })
   }
   scope :moderator_search, -> (search) {
+    return if search == 'any'
     return where(entourage_moderations: { moderator_id: nil }) if search == 'none'
-    return where(entourage_moderations: { moderator_id: search }) if search.present?
+    return where(entourage_moderations: { moderator_id: search.to_i }) if search.present?
   }
 
   before_validation :set_community, on: :create

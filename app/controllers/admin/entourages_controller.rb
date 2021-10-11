@@ -18,8 +18,6 @@ module Admin
 
       group_types = (params[:group_type] || 'action,outing').split(',')
 
-      @q = Entourage.where(group_type: group_types).with_moderation
-
       main_moderator = ModerationServices.moderator_if_exists(community: :entourage)
       if current_user != main_moderator && (params.keys - ['controller', 'action']).none? && current_user.roles.include?(:moderator)
         params[:moderator_id] = current_user.id
@@ -27,8 +25,9 @@ module Admin
 
       params[:moderator_id] = 'any' unless params[:moderator_id].present?
 
-      @q = @q.moderator_search(params[:moderator_id])
-      @q = @q.ransack(ransack_params)
+      @q = Entourage.where(group_type: group_types).with_moderation
+        .moderator_search(params[:moderator_id])
+        .ransack(ransack_params)
 
       @entourages = @q.result.page(params[:page]).per(per_page)
         .with_moderator_reads_for(user: current_user)
@@ -37,9 +36,8 @@ module Admin
           entourage_moderations.moderated_at is not null or entourages.created_at < '2018-01-01' as moderated,
           moderator_reads is null and entourages.created_at >= now() - interval '1 week' as unread
         ))
+        .like(params[:search])
         .group("entourages.id, moderator_reads.id, entourage_moderations.id")
-
-      @entourages = @entourages
         .joins(%(join entourage_denorms on entourage_denorms.entourage_id = entourages.id))
         .order(%(
           case
@@ -52,9 +50,10 @@ module Admin
         .to_a
 
       @entourages = Kaminari.paginate_array(@entourages, total_count: @q.result.count).page(params[:page]).per(per_page)
+
       entourage_ids = @entourages.map(&:id)
-      @member_count =
-        JoinRequest
+
+      @member_count = JoinRequest
           .where(joinable_type: :Entourage, joinable_id: entourage_ids, status: :accepted)
           .joins(:user)
           .merge(User.where(admin: false))
