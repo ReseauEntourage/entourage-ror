@@ -62,10 +62,10 @@
       }
     %>
 
-    <%= f.hidden_field :postal_code_start %>
-    <%= f.hidden_field :postal_code_not_start_all %>
-    <%= f.hidden_field :pin_eq %>
-    <%= f.hidden_field :group_type_eq %>
+    <%= f.hidden_field :postal_code_start if @q.postal_code_start %>
+    <%= f.hidden_field :postal_code_not_start_all if @q.postal_code_not_start_all %>
+    <%= f.hidden_field :pin_eq if @q.pin_eq %>
+    <%= f.hidden_field :group_type_eq if @q.group_type_eq %>
     <%= f.hidden_field :country_eq if @q.country_eq %>
     <% (@q.postal_code_start_any || []).each do |value| %>
       <%= hidden_field_tag 'q[postal_code_start_any][]', value %>
@@ -95,7 +95,6 @@
   <div style="float: right; margin: -10px 0 10px">
     <%= link_to "Annuler les filtres", admin_entourages_path, class: "btn btn-default" %>
   </div>
-
 <% end %>
 
 <table class="table admin-table" style="table-layout: auto">
