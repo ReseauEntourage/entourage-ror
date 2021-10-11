@@ -25,17 +25,9 @@ module Admin
         params[:moderator_id] = current_user.id
       end
 
-      if params[:moderator_id] == 'none'
-        @q = @q.where(entourage_moderations: {moderator_id: nil})
-      elsif params[:moderator_id] == 'any'
-        # default
-      elsif params[:moderator_id].present?
-        @q = @q.where(entourage_moderations: {moderator_id: params[:moderator_id]})
-      else
-        # make it explicit
-        params[:moderator_id] = 'any'
-      end
+      params[:moderator_id] = 'any' unless params[:moderator_id].present?
 
+      @q = @q.moderator_search(params[:moderator_id])
       @q = @q.ransack(ransack_params)
 
       @entourages =

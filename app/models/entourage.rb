@@ -87,6 +87,10 @@ class Entourage < ApplicationRecord
       description: "%#{search.strip}%"
     })
   }
+  scope :moderator_search, -> (search) {
+    return where(entourage_moderations: { moderator_id: nil }) if search == 'none'
+    return where(entourage_moderations: { moderator_id: search }) if search.present?
+  }
 
   before_validation :set_community, on: :create
   before_validation :set_default_attributes, if: :group_type_changed?
