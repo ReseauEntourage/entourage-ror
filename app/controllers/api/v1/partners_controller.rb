@@ -9,8 +9,12 @@ module Api
 
       def show
         partner = Partner.find(params[:id])
-        partner.following = Following.where(user_id: current_user.id, partner_id: partner.id, active: true).exists?
-        render json: partner, status: 200, serializer: ::V1::PartnerSerializer, scope: {full: true, following: true}
+
+        render json: partner, status: 200, serializer: ::V1::PartnerSerializer, scope: {
+          full: true,
+          following: true,
+          user: current_user
+        }
       end
 
       def join_request

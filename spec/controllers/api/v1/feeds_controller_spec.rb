@@ -52,7 +52,6 @@ include CommunityHelper
                   "avatar_url"=>nil,
                   "partner"=>nil,
                   "partner_role_title" => nil,
-                  "partner_with_current_user" => false
                 },
                 "location"=>{
                   "latitude"=>1.122,
@@ -444,7 +443,6 @@ include CommunityHelper
                "avatar_url"=>nil,
                "partner"=>nil,
                "partner_role_title" => nil,
-               "partner_with_current_user" => false
              },
              "location"=>{
                "latitude"=>1.122,

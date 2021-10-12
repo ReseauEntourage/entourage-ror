@@ -90,9 +90,8 @@ module V1
         id: entourage_author.id,
         display_name: UserPresenter.new(user: entourage_author).display_name,
         avatar_url: UserServices::Avatar.new(user: entourage_author).thumbnail_url,
-        partner: partner.nil? ? nil : V1::PartnerSerializer.new(partner, scope: {user: entourage_author}, root: false).as_json,
-        partner_role_title: entourage_author.partner_role_title.presence,
-        partner_with_current_user: partner.present? && Following.where(partner: partner, active: true).pluck(:user_id).include?(scope[:user].id)
+        partner: partner.nil? ? nil : V1::PartnerSerializer.new(partner, scope: { user: scope[:user], following: true }, root: false).as_json,
+        partner_role_title: entourage_author.partner_role_title.presence
       }
     end
 

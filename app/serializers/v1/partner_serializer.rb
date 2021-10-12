@@ -42,5 +42,9 @@ module V1
     def default
       return true
     end
+
+    def following
+      Following.where(user: scope[:user], partner_id: object.id, active: true).exists?
+    end
   end
 end

@@ -37,7 +37,7 @@ module Api
 
           join_requests = join_requests.to_a.sort_by { |r| r.user_id == @entourage.user_id ? Time.at(0) : r.accepted_at || r.created_at }
 
-          render json: join_requests, root: "users", each_serializer: ::V1::JoinRequestSerializer
+          render json: join_requests, root: "users", each_serializer: ::V1::JoinRequestSerializer, scope: { user: current_user }
         end
 
         #curl -X POST -H "Content-Type: application/json" -d '{"distance": 987.65, "request":{"message": "a join message"}}' "http://localhost:3000/api/v1/entourages/1017/users.json?token=azerty"
@@ -59,7 +59,7 @@ module Api
                 mixpanel.track("Requested to join Entourage", mp_params)
                 mixpanel.track("Wrote Message in Entourage") if message.present?
 
-                render json: join_request, root: "user", status: 201, serializer: ::V1::JoinRequestSerializer
+                render json: join_request, root: "user", status: 201, serializer: ::V1::JoinRequestSerializer, scope: { user: current_user }
               end
 
               on.failure do |join_request|
@@ -79,7 +79,7 @@ module Api
               mixpanel.track("Requested to join Entourage", mp_params)
               mixpanel.track("Wrote Message in Entourage") if message.present?
 
-              render json: join_request, root: "user", status: 201, serializer: ::V1::JoinRequestSerializer
+              render json: join_request, root: "user", status: 201, serializer: ::V1::JoinRequestSerializer, scope: { user: current_user }
             end
 
             on.failure do |join_request|
@@ -132,7 +132,7 @@ module Api
 
           updater.reject do |on|
             on.success do |join_request|
-              render json: join_request, root: "user", status: 200, serializer: ::V1::JoinRequestSerializer
+              render json: join_request, root: "user", status: 200, serializer: ::V1::JoinRequestSerializer, scope: { user: current_user }
             end
 
             on.failure do |join_request|
@@ -149,7 +149,7 @@ module Api
 
             on.quit do
               #JoinRequest was destroyed we return an empty join request
-              render json: @join_request, root: "user", status: 200, serializer: ::V1::JoinRequestSerializer
+              render json: @join_request, root: "user", status: 200, serializer: ::V1::JoinRequestSerializer, scope: { user: current_user }
             end
           end
         end

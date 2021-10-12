@@ -31,7 +31,6 @@ describe Api::V1::Entourages::UsersController do
             "avatar_url"=>nil,
             "partner"=>nil,
             "partner_role_title"=>nil,
-            "partner_with_current_user"=>false
           }
         )}
       end
@@ -53,7 +52,6 @@ describe Api::V1::Entourages::UsersController do
             "avatar_url"=>nil,
             "partner"=>nil,
             "partner_role_title"=>nil,
-            "partner_with_current_user"=>false
           }
         )}
       end
@@ -75,7 +73,6 @@ describe Api::V1::Entourages::UsersController do
             "avatar_url"=>nil,
             "partner"=>nil,
             "partner_role_title"=>nil,
-            "partner_with_current_user"=>false
           }
         )}
       end
@@ -201,7 +198,6 @@ describe Api::V1::Entourages::UsersController do
           "avatar_url"=>nil,
           "partner"=>nil,
           "partner_role_title"=>nil,
-          "partner_with_current_user"=>false
         }]
       })}
     end
@@ -314,7 +310,6 @@ describe Api::V1::Entourages::UsersController do
             "avatar_url"=>nil,
             "partner"=>nil,
             "partner_role_title"=>nil,
-            "partner_with_current_user"=>false
           }
         })}
       end
@@ -337,7 +332,6 @@ describe Api::V1::Entourages::UsersController do
             "avatar_url"=>nil,
             "partner"=>nil,
             "partner_role_title"=>nil,
-            "partner_with_current_user"=>false
           }
         })}
       end

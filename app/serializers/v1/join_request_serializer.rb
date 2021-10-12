@@ -10,8 +10,7 @@ module V1
                :requested_at,
                :avatar_url,
                :partner,
-               :partner_role_title,
-               :partner_with_current_user
+               :partner_role_title
 
     def id
       object.user_id
@@ -45,19 +44,16 @@ module V1
     def partner
       return unless object.user && object.user.partner_id
 
-      V1::PartnerSerializer.new(object.user.partner, scope: { user: object.user }, root: false).as_json
+      V1::PartnerSerializer.new(object.user.partner, scope: {
+        user: scope[:user],
+        following: true
+      }, root: false).as_json
     end
 
     def partner_role_title
       return unless object.user && object.user.partner_id
 
       object.user.partner_role_title.presence
-    end
-
-    def partner_with_current_user
-      return false unless object.user && object.user.partner_id
-
-      Following.where(partner_id: object.user.partner_id, active: true).pluck(:user_id).include?(object.user_id)
     end
   end
 end

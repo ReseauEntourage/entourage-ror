@@ -28,7 +28,6 @@ describe Api::V1::Tours::UsersController do
             "requested_at"=>JoinRequest.last.created_at.iso8601(3),
             "partner"=>nil,
             "partner_role_title"=>nil,
-            "partner_with_current_user"=>false
           }
         )}
         it { expect(tour.reload.number_of_people).to eq(1) }
@@ -52,7 +51,6 @@ describe Api::V1::Tours::UsersController do
             "requested_at"=>JoinRequest.last.created_at.iso8601(3),
             "partner"=>nil,
             "partner_role_title"=>nil,
-            "partner_with_current_user"=>false
           }
         )}
         it { expect(tour.reload.number_of_people).to eq(0) }
@@ -86,7 +84,6 @@ describe Api::V1::Tours::UsersController do
             "avatar_url"=>nil,
             "partner"=>nil,
             "partner_role_title"=>nil,
-            "partner_with_current_user"=>false
           }) }
       end
     end
@@ -114,7 +111,6 @@ describe Api::V1::Tours::UsersController do
           "avatar_url"=>nil,
           "partner"=>nil,
           "partner_role_title"=>nil,
-          "partner_with_current_user"=>false
         }]
       })}
     end
@@ -213,7 +209,6 @@ describe Api::V1::Tours::UsersController do
           "avatar_url"=>nil,
           "partner"=>nil,
           "partner_role_title"=>nil,
-          "partner_with_current_user"=>false
         }
       })}
       it { expect(tour_requested.reload.status).to eq("rejected") }
@@ -243,7 +238,6 @@ describe Api::V1::Tours::UsersController do
           "avatar_url"=>nil,
           "partner"=>nil,
           "partner_role_title"=>nil,
-          "partner_with_current_user"=>false
         }
       }) }
       it { expect(tour.reload.number_of_people).to eq(0) }
