@@ -15,17 +15,22 @@ describe Api::V1::Tours::UsersController do
       context "first request to join tour" do
         before { post :create, params: { tour_id: tour.to_param, token: user.token } }
         it { expect(tour.members).to eq([user]) }
-        it { expect(result).to eq("user"=>{"id"=>user.id,
-                                                              "display_name"=>"John D.",
-                                                              "role"=>"member",
-                                                              "group_role"=>"member",
-                                                              "community_roles"=>[],
-                                                              "status" => "pending",
-                                                              "message"=>nil,
-                                                              "avatar_url"=>nil,
-                                                              "requested_at"=>JoinRequest.last.created_at.iso8601(3),
-                                                              "partner"=>nil,
-                                                              "partner_role_title"=>nil}) }
+        it { expect(result).to eq(
+          "user"=>{
+            "id"=>user.id,
+            "display_name"=>"John D.",
+            "role"=>"member",
+            "group_role"=>"member",
+            "community_roles"=>[],
+            "status" => "pending",
+            "message"=>nil,
+            "avatar_url"=>nil,
+            "requested_at"=>JoinRequest.last.created_at.iso8601(3),
+            "partner"=>nil,
+            "partner_role_title"=>nil,
+            "partner_with_current_user"=>false
+          }
+        )}
         it { expect(tour.reload.number_of_people).to eq(1) }
       end
 
@@ -34,17 +39,22 @@ describe Api::V1::Tours::UsersController do
         before { create(:join_request, user: user, joinable: tour) }
         before { post :create, params: { tour_id: tour.to_param, token: user.token } }
         it { expect(tour.members).to eq([user]) }
-        it { expect(result).to eq("user"=>{"id"=>user.id,
-                                           "display_name"=>"John D.",
-                                           "role"=>"member",
-                                           "group_role"=>"member",
-                                           "community_roles"=>[],
-                                           "status" => "pending",
-                                           "message"=>nil,
-                                           "avatar_url"=>nil,
-                                           "requested_at"=>JoinRequest.last.created_at.iso8601(3),
-                                           "partner"=>nil,
-                                           "partner_role_title"=>nil}) }
+        it { expect(result).to eq(
+          "user"=>{
+            "id"=>user.id,
+            "display_name"=>"John D.",
+            "role"=>"member",
+            "group_role"=>"member",
+            "community_roles"=>[],
+            "status" => "pending",
+            "message"=>nil,
+            "avatar_url"=>nil,
+            "requested_at"=>JoinRequest.last.created_at.iso8601(3),
+            "partner"=>nil,
+            "partner_role_title"=>nil,
+            "partner_with_current_user"=>false
+          }
+        )}
         it { expect(tour.reload.number_of_people).to eq(0) }
       end
 
@@ -63,17 +73,21 @@ describe Api::V1::Tours::UsersController do
       context "with message" do
         before { post :create, params: { tour_id: tour.to_param, request: {message: "foo"}, token: user.token } }
         it { expect(tour.members).to eq([user]) }
-        it { expect(result).to eq("user"=>{"id"=>user.id,
-                                                              "display_name"=>"John D.",
-                                                              "status" => "pending",
-                                                              "role"=>"member",
-                                                              "group_role"=>"member",
-                                                              "community_roles"=>[],
-                                                              "message"=> "foo",
-                                                              "requested_at"=>JoinRequest.last.created_at.iso8601(3),
-                                                              "avatar_url"=>nil,
-                                                              "partner"=>nil,
-                                                              "partner_role_title"=>nil}) }
+        it { expect(result).to eq(
+          "user"=>{
+            "id"=>user.id,
+            "display_name"=>"John D.",
+            "status" => "pending",
+            "role"=>"member",
+            "group_role"=>"member",
+            "community_roles"=>[],
+            "message"=> "foo",
+            "requested_at"=>JoinRequest.last.created_at.iso8601(3),
+            "avatar_url"=>nil,
+            "partner"=>nil,
+            "partner_role_title"=>nil,
+            "partner_with_current_user"=>false
+          }) }
       end
     end
   end
@@ -87,17 +101,22 @@ describe Api::V1::Tours::UsersController do
     context "signed in" do
       let!(:join_request) { FactoryBot.create(:join_request, user: user, joinable: tour) }
       before { get :index, params: { tour_id: tour.to_param, token: user.token } }
-      it { expect(result).to eq({"users"=>[{"id"=>user.id,
-                                                               "display_name"=>"John D.",
-                                                               "status"=>"pending",
-                                                               "role"=>"member",
-                                                               "group_role"=>"member",
-                                                               "community_roles"=>[],
-                                                               "message"=>nil,
-                                                               "requested_at"=>join_request.created_at.iso8601(3),
-                                                               "avatar_url"=>nil,
-                                                               "partner"=>nil,
-                                                               "partner_role_title"=>nil}]}) }
+      it { expect(result).to eq({
+        "users"=>[{
+          "id"=>user.id,
+          "display_name"=>"John D.",
+          "status"=>"pending",
+          "role"=>"member",
+          "group_role"=>"member",
+          "community_roles"=>[],
+          "message"=>nil,
+          "requested_at"=>join_request.created_at.iso8601(3),
+          "avatar_url"=>nil,
+          "partner"=>nil,
+          "partner_role_title"=>nil,
+          "partner_with_current_user"=>false
+        }]
+      })}
     end
   end
 
@@ -181,19 +200,22 @@ describe Api::V1::Tours::UsersController do
       let!(:tour_requested) { create(:join_request, user: requester, joinable: tour, status: "pending") }
       before { delete :destroy, params: { tour_id: tour.to_param, id: requester.id, token: user.token } }
       it { expect(response.status).to eq(200) }
-      it { expect(result).to eq({"user"=>{
-                                          "id"=>requester.id,
-                                          "display_name"=>"John D.",
-                                          "role"=>"member",
-                                          "group_role"=>"member",
-                                          "community_roles"=>[],
-                                          "status"=>"not_requested",
-                                          "message"=>nil,
-                                          "requested_at"=>JoinRequest.last.created_at.iso8601(3),
-                                          "avatar_url"=>nil,
-                                          "partner"=>nil,
-                                          "partner_role_title"=>nil
-                                          }}) }
+      it { expect(result).to eq({
+        "user"=>{
+          "id"=>requester.id,
+          "display_name"=>"John D.",
+          "role"=>"member",
+          "group_role"=>"member",
+          "community_roles"=>[],
+          "status"=>"not_requested",
+          "message"=>nil,
+          "requested_at"=>JoinRequest.last.created_at.iso8601(3),
+          "avatar_url"=>nil,
+          "partner"=>nil,
+          "partner_role_title"=>nil,
+          "partner_with_current_user"=>false
+        }
+      })}
       it { expect(tour_requested.reload.status).to eq("rejected") }
       it { expect(tour.reload.number_of_people).to eq(1) }
 
@@ -208,19 +230,22 @@ describe Api::V1::Tours::UsersController do
       let!(:tour_member) { create(:join_request, user: user, joinable: tour, status: "accepted") }
       before { delete :destroy, params: { tour_id: tour.to_param, id: user.id, token: user.token } }
       it { expect(response.status).to eq(200) }
-      it { expect(result).to eq({"user"=>{
-                                  "id"=>user.id,
-                                  "display_name"=>"John D.",
-                                  "role"=>"member",
-                                  "group_role"=>"member",
-                                  "community_roles"=>[],
-                                  "status"=>"not_requested",
-                                  "message"=>nil,
-                                  "requested_at"=>tour_member.created_at.iso8601(3),
-                                  "avatar_url"=>nil,
-                                  "partner"=>nil,
-                                  "partner_role_title"=>nil}
-                                }) }
+      it { expect(result).to eq({
+        "user"=>{
+          "id"=>user.id,
+          "display_name"=>"John D.",
+          "role"=>"member",
+          "group_role"=>"member",
+          "community_roles"=>[],
+          "status"=>"not_requested",
+          "message"=>nil,
+          "requested_at"=>tour_member.created_at.iso8601(3),
+          "avatar_url"=>nil,
+          "partner"=>nil,
+          "partner_role_title"=>nil,
+          "partner_with_current_user"=>false
+        }
+      }) }
       it { expect(tour.reload.number_of_people).to eq(0) }
     end
 
