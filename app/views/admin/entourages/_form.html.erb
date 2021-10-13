@@ -70,7 +70,9 @@
   <div class="control-group">
     <%= f.label :status, "Status", class: "control-label" %>
     <div class="controls">
-      <%= f.select :status, Entourage::ENTOURAGE_STATUS, include_blank: false %>
+      <%= f.select :status, Entourage::ENTOURAGE_STATUS.map { |status|
+        [t("activerecord.attributes.entourage.statuses.#{status}"), status]
+      }, include_blank: false %>
     </div>
   </div>
 

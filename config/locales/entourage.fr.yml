@@ -45,6 +45,13 @@ fr:
           action: Action
           outing: Événement
           conversation: Conversation
+        statuses:
+          open: Actif
+          closed: Clôturé
+          blacklisted: Blacklisté
+          suspended: Suspendu
+          full: Complet
+          cancelled: Annulé
       entourage_image:
         title: Titre
         landscape_url: Photo horizontale
