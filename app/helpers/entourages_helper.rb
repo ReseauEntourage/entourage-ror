@@ -18,7 +18,7 @@ module EntouragesHelper
       "blacklisted" => "label-default",
       "full"        => "label-warning"
     }
-    content_tag :span, entourage.status, class: "label #{state_to_class[entourage.status]}"
+    content_tag :span, t("activerecord.attributes.entourage.statuses.#{entourage.status}"), class: "label #{state_to_class[entourage.status]}"
   end
 
   def entourage_type_label entourage
