@@ -103,7 +103,7 @@ class Entourage < ApplicationRecord
   def invite_followers
     return true if @invite_followers.nil?
 
-    @invite_followers
+    @invite_followers = ActiveModel::Type::Boolean.new.cast(@invite_followers)
   end
 
   def moderator_read_for user:

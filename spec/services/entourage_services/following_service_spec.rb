@@ -55,4 +55,13 @@ describe FollowingService do
     it { expect { subject }.to_not change { EntourageInvitation.count } }
     it { expect_any_instance_of(PushNotificationService).to_not receive(:send_notification) }
   end
+
+  describe ".on_create_entourage without invitation on falsy string" do
+    let(:action) { create :entourage, user: partner_user, invite_followers: "false" }
+
+    subject { FollowingService.on_create_entourage(action) }
+
+    it { expect { subject }.to_not change { EntourageInvitation.count } }
+    it { expect_any_instance_of(PushNotificationService).to_not receive(:send_notification) }
+  end
 end
