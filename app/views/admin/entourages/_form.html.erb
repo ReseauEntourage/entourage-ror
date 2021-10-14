@@ -176,17 +176,17 @@
       <%= f.label :invite_followers, class: "control-label" %>
 
       <div class="alert alert-info" role="alert">
-        Votre association a <%= current_user.partner.followings.count %> abonné(s). Vous pouvez choisir de leur envoyer une invitation.
+        Votre association <%= current_user.partner.name %> a <%= current_user.partner.followings.count %> abonné(s). Vous pouvez choisir de leur envoyer une invitation.
       </div>
 
       <div class="controls">
         <label class="radio-inline" style="padding-top: 0; margin-bottom: 5px;">
           <%= f.radio_button :invite_followers, true, required: true %>
-          Oui
+          Inviter
         </label>
         <label class="radio-inline" style="padding-top: 0; margin-bottom: 5px;">
           <%= f.radio_button :invite_followers, false, required: true %>
-          Non
+          Ne pas inviter
         </label>
       </div>
     </div>
