@@ -1,6 +1,8 @@
 class UserBlockObserver < ActiveRecord::Observer
   observe :user
 
+  AUTO_CLOSE_MESSAGE = "L'utilisateur %s a supprimé son compte ou ce compte a été bloqué par la modération. Les actions et événements qu'il a crées sont clôturés automatiquement."
+
   def after_update user
     return unless user.saved_change_to_validation_status? || user.saved_change_to_deleted?
 
@@ -26,6 +28,17 @@ class UserBlockObserver < ActiveRecord::Observer
     Entourage.where(user_id: user.id, status: :open).update_all(status: :closed)
   end
 
+  def create_chat_message_for_entourages! user
+    entourage_ids = Entourage.where(user_id: user.id, group_type: [:action, :outing], status: :open).pluck(:id)
+
+    ChatMessagesEntourageJob.perform_later(
+      user.id,
+      entourage_ids,
+      AUTO_CLOSE_MESSAGE % user.full_name
+    )
+  end
+
+  # @notice do not delete this method; we use it as documentation
   def block_notifications! user
     # @see PushNotificationService.send_notification
   end

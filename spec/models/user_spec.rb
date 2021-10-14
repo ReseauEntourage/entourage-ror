@@ -252,6 +252,8 @@ describe User, :type => :model do
     let(:user) { create(:public_user, phone: '+33600000000', token: 'foo') }
     let!(:open) { create(:entourage, user_id: user.id, status: :open) }
     let!(:suspended) { create(:entourage, user_id: user.id, status: :suspended) }
+    let!(:join_request_open) { create(:join_request, user: user, joinable: open) }
+    let!(:join_request_suspended) { create(:join_request, user: user, joinable: suspended) }
 
     let!(:other_user) { create(:public_user, phone: '+33600000010', token: 'bar', validation_status: :blocked) }
     let!(:other_entourage) { create(:entourage, user_id: other_user.id, status: :open) }
@@ -262,6 +264,28 @@ describe User, :type => :model do
       it { expect(open.reload.status).to eq('closed') }
       it { expect(suspended.reload.status).to eq('suspended') }
       it { expect(other_entourage.reload.status).to eq('open') }
+      it {}
+    end
+
+    context 'send a message when user is blocked' do
+      before {
+        expect(ChatMessagesEntourageJob).to receive(:perform_later).with(
+          user.id,
+          [open.id],
+          UserBlockObserver::AUTO_CLOSE_MESSAGE % user.full_name
+        )
+      }
+
+      it { user.update(validation_status: :blocked) }
+    end
+
+    context 'do not send a message when user is validated' do
+      before {
+        expect_any_instance_of(UserBlockObserver).to receive(:after_update)
+        expect(ChatMessagesEntourageJob).not_to receive(:perform_later)
+      }
+
+      it { user.update(validation_status: :validated) }
     end
 
     context 'close entourages when user is deleted' do
