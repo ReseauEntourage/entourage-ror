@@ -26,6 +26,21 @@ fr:
       entourage:
         title: Titre
         outing_image_url: Photo d'événement
+        categories:
+          social: Social
+          resource: Ressource
+          mat_help: Aide matérielle
+          non_mat_help: Aide non matérielle
+          other: Autre
+        entourage_types:
+          ask_for_help: Demande
+          contribution: Contribution
+        statuses:
+          open: Actif
+          closed: Clôturé
+          blacklisted: Blacklisté
+          suspended: Suspendu
+          full: Complet
         group_types:
           action: Action
           outing: Événement

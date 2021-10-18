@@ -27,13 +27,13 @@
 
     <div style="padding: 0 0 15px 15px">
       <div class='input-group'>
-        <%= f.select :entourage_type_eq, [['Tous les types', nil]] + Entourage::ENTOURAGE_TYPES, {}, class: 'form-control' %>
-      </div>
-      <div class="input-group">
-        <%= f.select :status_eq, [['Tous les statuts', nil]] + Entourage::ENTOURAGE_STATUS, {}, class: 'form-control' %>
+        <%= f.select :entourage_type_eq, [['Toutes les actions', nil]] + entourage_type_names, {}, class: 'form-control' %>
       </div>
       <div class='input-group'>
-        <%= f.select :display_category_eq, [['Toutes les catégories', nil]] + Entourage::DISPLAY_CATEGORIES + [EntouragesHelper::NO_CATEGORY], {}, class: 'form-control' %>
+        <%= f.select :display_category_eq, [['Toutes les catégories', nil]] + entourage_type_categories + [EntouragesHelper::NO_CATEGORY], {}, class: 'form-control' %>
+      </div>
+      <div class="input-group">
+        <%= f.select :status_eq, [['Tous les statuts', nil]] + entourage_type_statuses, {}, class: 'form-control' %>
       </div>
     </div>
   </div>
@@ -93,7 +93,7 @@
   </div>
 
   <div style="float: right; margin: -10px 0 10px">
-    <%= link_to "Annuler les filtres", admin_entourages_path, class: "btn btn-default" %>
+    <%= link_to "Réinitialiser les filtres", admin_entourages_path, class: "btn btn-default" %>
   </div>
 <% end %>
 
