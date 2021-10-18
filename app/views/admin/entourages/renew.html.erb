@@ -10,7 +10,7 @@
   <%= render partial: "layouts/errors", locals: {obj: @entourage} %>
 
   <%= f.hidden_field :group_type %>
-  <%= hidden_field_tag 'metadata[previous_at]', @entourage.metadata[:starts_at] %>
+  <%= hidden_field_tag 'entourage[metadata][previous_at]', @entourage.metadata[:starts_at] %>
 
   <% if @entourage.group_type == 'outing' %>
     <%
@@ -25,10 +25,10 @@
       <div class="control-group">
         <label class="control-label"><%= label %></label>
         <div class="controls">
-          <%= date_field_tag("metadata[#{timestamp}][date]", datetime&.to_date&.to_s, required: true) %>
-          <%= select_hour(datetime&.hour, { include_blank: true }, name: "metadata[#{timestamp}][hour]", required: true) %>
+          <%= date_field_tag("entourage[metadata][#{timestamp}][date]", datetime&.to_date&.to_s, required: true) %>
+          <%= select_hour(datetime&.hour, { include_blank: true }, name: "entourage[metadata][#{timestamp}][hour]", required: true) %>
           <% minutes = datetime ? (datetime.min / minute_step.to_f).round * minute_step : nil %>
-          <%= select_minute(minutes, { minute_step: 5 }, name: "metadata[#{timestamp}][min]", required: true) %>
+          <%= select_minute(minutes, { minute_step: 5 }, name: "entourage[metadata][#{timestamp}][min]", required: true) %>
         </div>
       </div>
     <% end %>
