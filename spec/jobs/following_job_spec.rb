@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe FollowingService do
+describe FollowingJob do
   let(:partner) { create :partner, name: "PARTNER_NAME" }
   let(:partner_user) { create :public_user, partner: partner }
   let!(:following) { create :following, partner: partner }
@@ -8,7 +8,7 @@ describe FollowingService do
   describe ".on_create_entourage with invitation" do
     let(:action) { create :entourage, user: partner_user }
 
-    subject { FollowingService.on_create_entourage(action) }
+    subject { FollowingJob.perform_later(action) }
 
     it { expect { subject }.to change { EntourageInvitation.count }.by(1) }
 
@@ -47,21 +47,39 @@ describe FollowingService do
     }
   end
 
+  describe ".on_create_entourage with invitation" do
+    let(:action) { create :entourage, user: partner_user, invite_followers: true }
+
+    subject { FollowingJob.perform_later(action) }
+
+    it { expect { subject }.to change { EntourageInvitation.count }.by(1) }
+    it {
+      expect_any_instance_of(PushNotificationService).to receive(:send_notification)
+      subject
+    }
+  end
+
   describe ".on_create_entourage without invitation" do
     let(:action) { create :entourage, user: partner_user, invite_followers: false }
 
-    subject { FollowingService.on_create_entourage(action) }
+    subject { FollowingJob.perform_later(action) }
 
     it { expect { subject }.to_not change { EntourageInvitation.count } }
-    it { expect_any_instance_of(PushNotificationService).to_not receive(:send_notification) }
+    it {
+      expect_any_instance_of(PushNotificationService).to_not receive(:send_notification)
+      subject
+    }
   end
 
   describe ".on_create_entourage without invitation on falsy string" do
     let(:action) { create :entourage, user: partner_user, invite_followers: "false" }
 
-    subject { FollowingService.on_create_entourage(action) }
+    subject { FollowingJob.perform_later(action) }
 
     it { expect { subject }.to_not change { EntourageInvitation.count } }
-    it { expect_any_instance_of(PushNotificationService).to_not receive(:send_notification) }
+    it {
+      expect_any_instance_of(PushNotificationService).to_not receive(:send_notification)
+      subject
+    }
   end
 end
