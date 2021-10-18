@@ -42,8 +42,8 @@ describe EntourageServices::EntourageBuilder do
       entourage = service.create
     end
 
-    it "FollowingService.on_create_entourage" do
-      expect(FollowingService).to receive(:on_create_entourage)
+    it "FollowingJob.perform_later" do
+      expect(FollowingJob).to receive(:perform_later)
       entourage = service.create
     end
   end
