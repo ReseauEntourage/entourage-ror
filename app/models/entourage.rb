@@ -109,6 +109,8 @@ class Entourage < ApplicationRecord
   after_create :check_moderation
   before_create :set_uuid
 
+  after_update :create_chat_message_on_status_update, if: :saved_change_to_status?
+
   def moderator_read_for user:
     moderator_reads.where(user_id: user.id).first
   end
@@ -362,6 +364,30 @@ class Entourage < ApplicationRecord
   def check_moderation
     return unless description.present?
     ping_slack if is_description_unacceptable?
+  end
+
+  def create_chat_message_on_status_update
+    return unless saved_change_to_status?
+    return unless status.in?(['closed', 'open'])
+
+    outcome = if status == 'closed' && moderation&.saved_change_to_action_outcome?
+      {
+        'Oui' => true,
+        'Non' => false,
+      }[moderation.action_outcome]
+    else
+      nil
+    end
+
+    ChatMessage.create(
+      messageable: self,
+      user_id: user_id,
+      message_type: :status_update,
+      metadata: {
+        status: status,
+        outcome_success: outcome
+      }
+    )
   end
 
   def is_description_unacceptable?

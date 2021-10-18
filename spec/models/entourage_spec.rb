@@ -372,4 +372,57 @@ RSpec.describe Entourage, type: :model do
       expect(entourage.moderator_has_unread_content(user: user)).to eq(false)
     end
   end
+
+  describe "create_chat_message_on_status_update" do
+    let(:user) { FactoryBot.create(:public_user)}
+    let(:entourage) { FactoryBot.create(:entourage, status: :open) }
+
+    describe "status changed to closed" do
+      it {
+        expect_any_instance_of(Entourage).to receive(:create_chat_message_on_status_update)
+        entourage.update(status: :closed)
+      }
+      it {
+        expect(ChatMessage).to receive(:create)
+        entourage.update(status: :closed)
+      }
+    end
+
+    describe "status changed to closed on save" do
+      it {
+        expect_any_instance_of(Entourage).to receive(:create_chat_message_on_status_update)
+
+        entourage.status = :closed
+        entourage.save
+      }
+      it {
+        expect(ChatMessage).to receive(:create)
+        entourage.update(status: :closed)
+      }
+    end
+
+    describe "status changed to blacklisted" do
+      it {
+        expect_any_instance_of(Entourage).to receive(:create_chat_message_on_status_update)
+        entourage.update(status: :blacklisted)
+      }
+
+      it {
+        expect(ChatMessage).not_to receive(:create)
+        entourage.update(status: :blacklisted)
+      }
+    end
+
+    describe "no change to status" do
+      it {
+        expect(ChatMessage).not_to receive(:create)
+        entourage.update(title: :foo)
+      }
+
+      it {
+        expect_any_instance_of(Entourage).not_to receive(:create_chat_message_on_status_update)
+        entourage.update(title: :foo)
+      }
+    end
+  end
 end
