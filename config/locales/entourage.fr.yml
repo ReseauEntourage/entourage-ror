@@ -164,3 +164,16 @@ fr:
         organization: Association ou service public
         goal_not_known: Non défini
         all: Tous profils
+      engagements:
+        engaged: Engagé
+        not_engaged: Non engagé
+      statuses:
+        validated: Validé
+        anonymized: Anonymisé
+        blocked: Bloqué
+        temporary_blocked: Bloqué temporairement
+        deleted: Supprimé
+        pending: En attente
+      roles:
+        moderator: Modérateur
+        admin: Administrateur

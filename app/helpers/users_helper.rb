@@ -17,4 +17,28 @@ module UsersHelper
 
     image_tag(url, *args)
   end
+
+  def user_profiles
+    User::PROFILES.map do |profile|
+      [t("community.user.profiles.#{profile}"), profile]
+    end
+  end
+
+  def user_engagements
+    [:engaged, :not_engaged].map do |engagement|
+      [t("community.user.engagements.#{engagement}"), engagement]
+    end
+  end
+
+  def user_statuses
+    User::STATUSES.map do |status|
+      [t("community.user.statuses.#{status}"), status]
+    end
+  end
+
+  def user_roles
+    User::ROLES.map do |status|
+      [t("community.user.statuses.#{status}"), status]
+    end
+  end
 end
