@@ -153,7 +153,7 @@ describe Admin::UsersController do
 
         put :banish, params: { id: validated_user_with_avatar.to_param }
       end
-      it { should redirect_to moderate_admin_users_path(validation_status: "blocked") }
+      it { should redirect_to edit_admin_user_path(validated_user_with_avatar) }
       it { expect(validated_user_with_avatar.reload.validation_status).to eq("blocked") }
     end
   end
@@ -232,7 +232,7 @@ describe Admin::UsersController do
     context "signed in" do
       let!(:user) { admin_basic_login }
       before { put :validate, params: { id: blocked_user.to_param } }
-      it { should redirect_to moderate_admin_users_path(validation_status: "validated") }
+      it { should redirect_to moderate_admin_users_path }
       it { expect(blocked_user.reload.validation_status).to eq("validated") }
     end
   end

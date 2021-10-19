@@ -74,6 +74,11 @@
     <div style="padding: 27px 0 0 27px;">
       <% if @user.avatar_key.present? %>
         <%= user_avatar_image @user, size: '200x200', alt: '' %>
+        <div>
+          <%= link_to("Supprimer la photo de profil", destroy_avatar_admin_user_path(@user), method: :put, data: {
+            confirm: "Vous allez supprimer la photo de profil, êtes vous sûr ?"
+          }) %>
+        </div>
       <% else %>
         <%= image_tag "user/default_avatar.png", size: '200x200', alt: '' %>
       <% end %>

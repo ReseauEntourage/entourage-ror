@@ -163,6 +163,7 @@ Rails.application.routes.draw do
         get 'messages'
         get 'engagement'
         get 'history'
+        put 'destroy_avatar'
         put 'banish'
         put 'validate'
       end

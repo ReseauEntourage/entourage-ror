@@ -26,11 +26,15 @@ class UserPresenter < ApplicationPresenter
     image_tag(url, height: '128', width: '128')
   end
 
+  def destroy_avatar_link
+    link_to("Supprimer la photo de profil", Rails.application.routes.url_helpers.destroy_avatar_admin_user_path(user), method: :put, class: "btn btn-danger", data: { confirm: "Vous allez supprimer la photo de profil, êtes vous sûr ?" })
+  end
+
   def validation_status_action_link
     return if user.anonymized?
 
     if user.validated?
-      link_to("Bannir", Rails.application.routes.url_helpers.banish_admin_user_path(user), method: :put, class: "btn btn-danger", data: { confirm: "Vous allez supprimer l'avatar et bannir l'utilisateur, êtes vous sûr ?" })
+      link_to("Bloquer", Rails.application.routes.url_helpers.banish_admin_user_path(user), method: :put, class: "btn btn-danger", data: { confirm: "Vous allez supprimer l'avatar et bloquer l'utilisateur, êtes vous sûr ?" })
     else
       link_to("Valider", Rails.application.routes.url_helpers.validate_admin_user_path(user), method: :put, class: "btn btn-success")
     end
