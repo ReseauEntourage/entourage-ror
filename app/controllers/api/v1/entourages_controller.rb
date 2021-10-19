@@ -49,6 +49,7 @@ module Api
           user: current_user,
           page: params[:page],
           per: per,
+          time_range: 24 * 365,
           show_my_entourages_only: true
         ).entourages
 
@@ -58,12 +59,12 @@ module Api
       end
 
       def owns
-        entourages = EntourageServices::EntourageFinder.new(
-          user: current_user,
-          page: params[:page],
-          per: per,
-          author: current_user
-        ).entourages
+        entourages = Entourage
+          .where(status: :open)
+          .where(group_type: [:action])
+          .where("entourages.created_at > ?", 1.year.ago)
+          .where(user: current_user)
+          .order(created_at: :desc)
 
         render json: entourages, each_serializer: ::V1::EntourageSerializer, scope: {
           user: current_user
@@ -75,6 +76,7 @@ module Api
           user: current_user,
           page: params[:page],
           per: per,
+          time_range: 24 * 365,
           invitee: current_user
         ).entourages
 
