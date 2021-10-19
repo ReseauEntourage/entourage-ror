@@ -3,6 +3,7 @@ class User < ApplicationRecord
   include UserServices::Engagement
 
   TEMPORARY_BLOCK_PERIOD = 1.month
+  STATUSES = [:validated, :blocked, :temporary_blocked, :deleted, :pending]
 
   validates_presence_of [:phone, :sms_code, :token, :validation_status]
   validates_uniqueness_of :phone, scope: :community
@@ -89,10 +90,22 @@ class User < ApplicationRecord
 
   scope :type_pro, -> { where(user_type: "pro") }
   scope :validated, -> { where(validation_status: "validated") }
-  scope :blocked, -> { where(validation_status: "blocked") }
-  scope :temporary_blocked, -> { blocked.where('unblock_at is not null') }
   scope :deleted, -> { where(deleted: true) }
   scope :anonymized, -> { where(validation_status: "anonymized") }
+  scope :blocked, -> { where(validation_status: "blocked") }
+  scope :temporary_blocked, -> { blocked.where('unblock_at is not null') }
+  scope :status_is -> (status) -> {
+    return unless status.present?
+
+    status = status.to_sym
+
+    return if status == :all
+    return deleted if status == :deleted
+    return blocked.where('unblock_at is not null') if status == :temporary_blocked
+    return where(id: UserPhoneChange.pending_user_ids) if status == :pending
+
+    where(validation_status: status)
+  }
   scope :goal_not_known, -> { where(targeting_profile: nil, goal: nil) }
   scope :unknown, -> { goal_not_known }
   scope :ask_for_help, -> { where('(targeting_profile is null and goal = ?) or targeting_profile = ?', :ask_for_help, :asks_for_help) }

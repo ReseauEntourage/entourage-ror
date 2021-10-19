@@ -19,14 +19,12 @@ module Admin
 
       @users = current_user.community.users
 
+      @users = @users.status_is(@status)
+
       @users = @users.engaged if @engagement && @engagement == :engaged
       @users = @users.not_engaged if @engagement && @engagement == :not_engaged
-      @users = @users.blocked if @status && @status == :blocked
-      @users = @users.temporary_blocked if @status && @status == :temporary_blocked
-      @users = @users.deleted if @status && @status == :deleted
       @users = @users.where(admin: true) if @role && @role == :admin
       @users = @users.moderators if @role && @role == :moderators
-      @users = @users.where(id: UserPhoneChange.pending_user_ids) if @status && @status == :pending
       @users = @users.joins(:user_phone_changes).order('user_phone_changes.created_at') if @status && @status == :pending
       @users = @users.unknown if @profile == :goal_not_known
       @users = @users.ask_for_help if @profile == :ask_for_help
