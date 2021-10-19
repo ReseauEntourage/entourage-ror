@@ -1,23 +1,15 @@
 module EntouragesHelper
   NO_CATEGORY = '(pas de catégorie)'.freeze
 
-  def link_to_entourage_with_infos entourage
-    content_tag(:div, class: "o-entourage-title") do
-      link_to("#{entourage.title.try(:capitalize)} (##{entourage.id})", admin_entourage_path(entourage))+
-      content_tag(:br)+
-      entourage_state_label(entourage)+
-      entourage_type_label(entourage)
-    end
-  end
-
   def entourage_state_label entourage
     state_to_class = {
       "open"        => "label-success",
       "closed"      => "label-danger",
       "suspended"   => "label-warning",
-      "blacklisted" => "label-default"
+      "blacklisted" => "label-default",
+      "full"        => "label-warning"
     }
-    content_tag :span, entourage.status, class: "label #{state_to_class[entourage.status]}"
+    content_tag :span, t("activerecord.attributes.entourage.statuses.#{entourage.status}"), class: "label #{state_to_class[entourage.status]}"
   end
 
   def entourage_type_label entourage
