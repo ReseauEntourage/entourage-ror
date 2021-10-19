@@ -15,16 +15,15 @@ module Admin
       @status = :all unless @status.in?([:blocked, :temporary_blocked, :deleted, :pending])
 
       @role = params[:role].presence&.to_sym
-      @role = :all unless @role.in?([:admin, :moderators])
+      @role = :all unless @role.in?([:admin, :moderator])
 
       @users = current_user.community.users
 
       @users = @users.status_is(@status)
+      @users = @users.role_is(@role)
 
       @users = @users.engaged if @engagement && @engagement == :engaged
       @users = @users.not_engaged if @engagement && @engagement == :not_engaged
-      @users = @users.where(admin: true) if @role && @role == :admin
-      @users = @users.moderators if @role && @role == :moderators
       @users = @users.joins(:user_phone_changes).order('user_phone_changes.created_at') if @status && @status == :pending
       @users = @users.unknown if @profile == :goal_not_known
       @users = @users.ask_for_help if @profile == :ask_for_help

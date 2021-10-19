@@ -4,6 +4,7 @@ class User < ApplicationRecord
 
   TEMPORARY_BLOCK_PERIOD = 1.month
   STATUSES = [:validated, :blocked, :temporary_blocked, :deleted, :pending]
+  ROLES = [:moderator, :admin]
 
   validates_presence_of [:phone, :sms_code, :token, :validation_status]
   validates_uniqueness_of :phone, scope: :community
@@ -105,6 +106,14 @@ class User < ApplicationRecord
     return where(id: UserPhoneChange.pending_user_ids) if status == :pending
 
     where(validation_status: status)
+  }
+  scope :role_is, -> (role) {
+    return unless role.present?
+
+    role = role.to_sym
+
+    return moderators if role == :moderator
+    return where(admin: true) if role == :admin
   }
   scope :goal_not_known, -> { where(targeting_profile: nil, goal: nil) }
   scope :unknown, -> { goal_not_known }
