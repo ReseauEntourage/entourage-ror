@@ -157,3 +157,10 @@ fr:
         ask_for_help: street-view
         organization: sitemap
         goal_not_known: question
+    user:
+      profiles:
+        offer_help: Voisin solidaire
+        ask_for_help: Personne isolée ou en précarité
+        organization: Association ou service public
+        goal_not_known: Non défini
+        all: Tous profils

@@ -6,7 +6,7 @@ module Admin
       @params = params.permit([:profile, :engagement, :status, :role, q: [:postal_code_start, :postal_code_in_hors_zone]]).to_h
 
       @profile = params[:profile].presence&.to_sym
-      @profile = :all unless @profile.in?([:offer_help, :ask_for_help, :organization, :unknown])
+      @profile = :all unless @profile.in?([:offer_help, :ask_for_help, :organization, :goal_not_known])
 
       @engagement = params[:engagement].presence&.to_sym
       @engagement = :all unless @engagement.in?([:engaged, :not_engaged])
@@ -28,7 +28,7 @@ module Admin
       @users = @users.moderators if @role && @role == :moderators
       @users = @users.where(id: UserPhoneChange.pending_user_ids) if @status && @status == :pending
       @users = @users.joins(:user_phone_changes).order('user_phone_changes.created_at') if @status && @status == :pending
-      @users = @users.unknown if @profile == :unknown
+      @users = @users.unknown if @profile == :goal_not_known
       @users = @users.ask_for_help if @profile == :ask_for_help
       @users = @users.offer_help if @profile == :offer_help
       @users = @users.organization if @profile == :organization
