@@ -4,7 +4,7 @@ module Admin
     before_action :ensure_moderator!, only: [:message]
 
     def index
-      @params = params.permit([q: [:country_eq, :postal_code_start, :pin_eq, :group_type_eq, postal_code_start_any: [], postal_code_not_start_all: []]]).to_h
+      @params = params.permit([:search, :moderator_id, q: [:entourage_type_eq, :status_eq, :display_category_eq, :country_eq, :postal_code_start, :pin_eq, :group_type_eq, postal_code_start_any: [], postal_code_not_start_all: []]]).to_h
       per_page = params[:per] || 50
 
       # workaround for the 'null' option
@@ -16,44 +16,28 @@ module Admin
         ransack_params = params[:q]
       end
 
-      community = params[:community] || :entourage
       group_types = (params[:group_type] || 'action,outing').split(',')
 
-      @q = Entourage
-        .where(group_type: group_types, community: community)
-        .with_moderation
-
-      main_moderator = ModerationServices.moderator_if_exists(community: current_user.community)
+      main_moderator = ModerationServices.moderator_if_exists(community: :entourage)
       if current_user != main_moderator && (params.keys - ['controller', 'action']).none? && current_user.roles.include?(:moderator)
         params[:moderator_id] = current_user.id
       end
 
-      if params[:moderator_id] == 'none'
-        @q = @q.where(entourage_moderations: {moderator_id: nil})
-      elsif params[:moderator_id] == 'any'
-        # default
-      elsif params[:moderator_id].present?
-        @q = @q.where(entourage_moderations: {moderator_id: params[:moderator_id]})
-      else
-        # make it explicit
-        params[:moderator_id] = 'any'
-      end
+      params[:moderator_id] = 'any' unless params[:moderator_id].present?
 
-      @q = @q.ransack(ransack_params)
+      @q = Entourage.where(group_type: group_types).with_moderation
+        .moderator_search(params[:moderator_id])
+        .ransack(ransack_params)
 
-      @entourages =
-        @q.result
-        .page(params[:page])
-        .per(per_page)
+      @entourages = @q.result.page(params[:page]).per(per_page)
         .with_moderator_reads_for(user: current_user)
         .select(%(
           entourages.*,
           entourage_moderations.moderated_at is not null or entourages.created_at < '2018-01-01' as moderated,
           moderator_reads is null and entourages.created_at >= now() - interval '1 week' as unread
         ))
+        .like(params[:search])
         .group("entourages.id, moderator_reads.id, entourage_moderations.id")
-
-      @entourages = @entourages
         .joins(%(join entourage_denorms on entourage_denorms.entourage_id = entourages.id))
         .order(%(
           case
@@ -66,9 +50,10 @@ module Admin
         .to_a
 
       @entourages = Kaminari.paginate_array(@entourages, total_count: @q.result.count).page(params[:page]).per(per_page)
+
       entourage_ids = @entourages.map(&:id)
-      @member_count =
-        JoinRequest
+
+      @member_count = JoinRequest
           .where(joinable_type: :Entourage, joinable_id: entourage_ids, status: :accepted)
           .joins(:user)
           .merge(User.where(admin: false))
@@ -76,35 +61,34 @@ module Admin
           .count
       @member_count.default = 0
 
-      @requests_count =
-        JoinRequest
-          .where(joinable_type: :Entourage, joinable_id: entourage_ids, status: :pending)
-          .group(:joinable_id)
-          .pluck(%(
-            joinable_id,
-            count(*),
-            count(case when updated_at <= now() - interval '48 hours' then 1 end)
-          ))
+      @requests_count = JoinRequest
+        .where(joinable_type: :Entourage, joinable_id: entourage_ids, status: :pending)
+        .group(:joinable_id)
+        .pluck(%(
+          joinable_id,
+          count(*),
+          count(case when updated_at <= now() - interval '48 hours' then 1 end)
+        ))
+
       @requests_count = Hash[@requests_count.map { |id, total, late| [id, { total: total, late: late }]}]
       @requests_count.default = { total: 0, late: 0 }
 
-      @reminded_users =
-        Experimental::PendingRequestReminder
-          .recent
-          .where(user_id: @entourages.map(&:user_id))
-          .pluck('distinct user_id')
+      @reminded_users = Experimental::PendingRequestReminder.recent
+        .where(user_id: @entourages.map(&:user_id))
+        .pluck('distinct user_id')
+
       @reminded_users = Set.new(@reminded_users)
 
-      @message_count =
-        ConversationMessage
-          .with_moderator_reads_for(user: current_user)
-          .where(messageable_type: :Entourage, messageable_id: entourage_ids)
-          .group(:messageable_id)
-          .select(%{
-            messageable_id,
-            sum(case when conversation_messages.content <> '' then 1 else 0 end) as total,
-            sum(case when conversation_messages.created_at >= moderator_reads.read_at then 1 else 0 end) as unread
-          })
+      @message_count = ConversationMessage
+        .with_moderator_reads_for(user: current_user)
+        .where(messageable_type: :Entourage, messageable_id: entourage_ids)
+        .group(:messageable_id)
+        .select(%{
+          messageable_id,
+          sum(case when conversation_messages.content <> '' then 1 else 0 end) as total,
+          sum(case when conversation_messages.created_at >= moderator_reads.read_at then 1 else 0 end) as unread
+        })
+
       @message_count = Hash[@message_count.map { |m| [m.messageable_id, m] }]
       @message_count.default = OpenStruct.new(unread: 0, total: 0)
       @moderation = Hash[EntourageModeration.where(entourage_id: entourage_ids).pluck(:entourage_id, :moderated)]
@@ -112,8 +96,6 @@ module Admin
 
       # workaround for the 'null' option
       @q = Entourage.ransack(params[:q])
-
-      render layout: 'admin_large'
     end
 
     def new
@@ -141,8 +123,6 @@ module Admin
 
     def show
       @moderator_read = @entourage.moderator_read_for(user: current_user)
-
-      render layout: 'admin_large'
     end
 
     def show_members
@@ -408,8 +388,6 @@ module Admin
       @title = highlighted[:title]
       @description = highlighted[:description]
       @matches = highlighted[:matches]
-
-      render layout: 'admin_large'
     end
 
     def sensitive_words_check

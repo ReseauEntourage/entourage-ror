@@ -67,6 +67,24 @@ module EntouragesHelper
     end
   end
 
+  def entourage_type_names
+    Entourage::ENTOURAGE_TYPES.map do |type|
+      [t("activerecord.attributes.entourage.entourage_types.#{type}"), type]
+    end
+  end
+
+  def entourage_type_statuses
+    Entourage::ENTOURAGE_STATUS.map do |status|
+      [t("activerecord.attributes.entourage.statuses.#{status}"), status]
+    end
+  end
+
+  def entourage_type_categories
+    Entourage::DISPLAY_CATEGORIES.map do |category|
+      [t("activerecord.attributes.entourage.categories.#{category}"), category]
+    end
+  end
+
   def entourage_type_phrase entourage
     {
       'contribution' => "Je me propose de",
