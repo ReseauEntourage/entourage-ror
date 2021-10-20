@@ -48,19 +48,21 @@
       }
     %>
 
-    <%= hidden_field_tag :postal_code_start if q['postal_code_start'] %>
-    <%= hidden_field_tag :postal_code_in_hors_zone if q['postal_code_in_hors_zone'] %>
+    <%= hidden_field_tag "q[postal_code_start]", q[:postal_code_start] if q[:postal_code_start] %>
+    <%= hidden_field_tag "q[postal_code_in_hors_zone]", q[:postal_code_in_hors_zone] if q[:postal_code_in_hors_zone] %>
   </div>
 
-  <div class="btn-group btn-group-sm">
-    <% location_keys = [:postal_code_start, :postal_code_in_hors_zone] %>
-    <% active = locations.key q.slice(*location_keys).compact.symbolize_keys %>
+  <div style="float: left; margin: -10px 0 10px">
+    <div class="btn-group btn-group-sm">
+      <% location_keys = [:postal_code_start, :postal_code_in_hors_zone] %>
+      <% active = locations.key q.slice(*location_keys).compact.symbolize_keys %>
 
-    <% locations.each do |name, options| %>
-      <%= link_to(name, @params.merge(q: q.except(*location_keys).merge(options)),
-        class: "btn btn-#{active == name ? :primary : :default}"
-      ) %>
-    <% end %>
+      <% locations.each do |name, options| %>
+        <%= link_to(name, @params.merge(q: q.except(*location_keys).merge(options)),
+          class: "btn btn-#{active == name ? :primary : :default}"
+        ) %>
+      <% end %>
+    </div>
   </div>
 
   <div style="float: right; margin: -10px 0 10px">
