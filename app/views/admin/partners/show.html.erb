@@ -14,6 +14,7 @@
       </ul>
 
       <table class="table">
+        <!-- Administrateurs -->
         <tr>
           <th colspan="2" style="border-top: none">
             <h2>Administrateurs</h2>
@@ -22,23 +23,20 @@
 
         <% if @admins.empty? %>
           <tr>
-            <td colspan="2">
-              Cette organisation n'a pas d'administrateur.
-            </td>
+            <td colspan="2">Cette organisation n'a pas d'administrateur.</td>
           </tr>
         <% end %>
 
         <% @admins.each do |user| %>
           <tr>
-            <td>
-              <%= link_to UserPresenter.full_name(user), admin_user_path(user) %>
-            </td>
+            <td><%= link_to UserPresenter.full_name(user), admin_user_path(user) %></td>
             <td>
               <%= link_to "Retirer des administrateurs", change_admin_role_admin_partners_path(user_id: user.id, admin: false), method: :post %>
             </td>
           </tr>
         <% end %>
 
+        <!-- Membres -->
         <tr>
           <th colspan="2" style="border-top: none">
             <h2>Membres</h2>
@@ -47,20 +45,36 @@
 
         <% if @members.empty? %>
           <tr>
-            <td colspan="2">
-              Cette organisation n'a pas de membres.
-            </td>
+            <td colspan="2">Cette organisation n'a pas de membres.</td>
           </tr>
         <% end %>
 
         <% @members.each do |user| %>
           <tr>
-            <td>
-              <%= link_to UserPresenter.full_name(user), admin_user_path(user) %>
-            </td>
+            <td><%= link_to UserPresenter.full_name(user), admin_user_path(user) %></td>
             <td>
               <%= link_to "Ajouter aux administrateurs", change_admin_role_admin_partners_path(user_id: user.id, admin: true), method: :post %>
             </td>
+          </tr>
+        <% end %>
+
+        <!-- Abonnés -->
+        <tr>
+          <th colspan="2" style="border-top: none">
+            <h2>Abonnés</h2>
+          </th>
+        </tr>
+
+        <% if @followers.empty? %>
+          <tr>
+            <td colspan="2">Cette organisation n'a pas d'abonnés.</td>
+          </tr>
+        <% end %>
+
+        <% @followers.each do |user| %>
+          <tr>
+            <td><%= link_to UserPresenter.full_name(user), admin_user_path(user) %></td>
+            <td></td>
           </tr>
         <% end %>
       </table>

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_09_23_144500) do
+ActiveRecord::Schema.define(version: 2021_10_20_164800) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -344,6 +344,8 @@ ActiveRecord::Schema.define(version: 2021_09_23_144500) do
     t.integer "user_id", null: false
     t.integer "partner_id", null: false
     t.boolean "active", default: true, null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.index ["partner_id"], name: "index_followings_on_partner_id"
     t.index ["user_id", "partner_id"], name: "index_followings_on_user_id_and_partner_id", unique: true
   end

@@ -25,6 +25,7 @@ module Admin
     def show
       @partner = Partner.find(params[:id])
       @admins, @members = @partner.users.order(:last_name, :first_name).partition(&:partner_admin)
+      @followers = @partner.followers
     end
 
     def edit
