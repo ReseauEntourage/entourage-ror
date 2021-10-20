@@ -5,7 +5,7 @@
     <div class="panel-body">
       <div style="float: left">
         <div class='input-group'>
-          <%= text_field_tag :search, params[:search], class: "form-control", placeholder: "nom, prénom, email..." %>
+          <%= text_field_tag :search, @params[:search], class: "form-control", placeholder: "nom, prénom, email..." %>
           <span class="input-group-btn">
             <%= submit_tag "Chercher", class: "btn btn-default" %>
           </span>
@@ -19,16 +19,16 @@
 
     <div style="padding: 0 0 15px 15px">
       <div class='input-group'>
-        <%= select_tag :profile, options_for_select([['Tous les profils', nil]] + user_profiles, @params['profile']), class: 'form-control' %>
+        <%= select_tag :profile, options_for_select([['Tous les profils', nil]] + user_profiles, @params[:profile]), class: 'form-control' %>
       </div>
       <div class='input-group'>
-        <%= select_tag :engagement, options_for_select([['Tous les engagements', nil]] + user_engagements, @params['engagement']), class: 'form-control' %>
+        <%= select_tag :engagement, options_for_select([['Tous les engagements', nil]] + user_engagements, @params[:engagement]), class: 'form-control' %>
       </div>
       <div class="input-group">
-        <%= select_tag :role, options_for_select([['Tous les rôles', nil]] + user_roles, @params['role']), class: 'form-control' %>
+        <%= select_tag :role, options_for_select([['Tous les rôles', nil]] + user_roles, @params[:role]), class: 'form-control' %>
       </div>
       <div class="input-group">
-        <%= select_tag :status, options_for_select([['Tous les statuts', nil]] + user_statuses, @params['status']), class: 'form-control' %>
+        <%= select_tag :status, options_for_select([['Tous les statuts', nil]] + user_statuses, @params[:status]), class: 'form-control' %>
       </div>
     </div>
   </div>

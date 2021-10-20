@@ -3,7 +3,7 @@ module Admin
     before_action :set_user, only: [:show, :messages, :engagement, :history, :edit, :update, :edit_block, :block, :temporary_block, :unblock, :cancel_phone_change_request, :download_export, :send_export, :anonymize, :destroy_avatar, :banish, :validate, :experimental_pending_request_reminder]
 
     def index
-      @params = params.permit([:profile, :engagement, :status, :role, q: [:postal_code_start, :postal_code_in_hors_zone]]).to_h
+      @params = params.permit([:profile, :engagement, :status, :role, :search, q: [:postal_code_start, :postal_code_in_hors_zone]]).to_h
 
       @profile = params[:profile].presence&.to_sym
       @profile = :all unless @profile.in?([:offer_help, :ask_for_help, :organization, :goal_not_known])
