@@ -55,11 +55,17 @@ module V1
     def stats
       groups = object.entourage_participations.merge(JoinRequest.accepted).group(:group_type).count
       groups.default = 0
+
+      contributions = Entourage.where(user: object).where(group_type: :action, entourage_type: :contribution).count
+      ask_for_helps = Entourage.where(user: object).where(group_type: :action, entourage_type: :ask_for_help).count
+
       {
           tour_count: object.tours.count,
           encounter_count: object.encounters.count,
           entourage_count: object.groups.count,
           actions_count: groups['action'],
+          ask_for_help_creation_count: ask_for_helps,
+          contribution_creation_count: contributions,
           events_count: groups['outing'],
           good_waves_participation: groups['group'] > 0
       }

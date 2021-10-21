@@ -36,6 +36,8 @@ describe Api::V1::AnonymousUsersController do
           "encounter_count"=>0,
           "entourage_count"=>0,
           "actions_count" => 0,
+          "ask_for_help_creation_count" => 0,
+          "contribution_creation_count" => 0,
           "events_count" => 0,
           "good_waves_participation" => false
         },
