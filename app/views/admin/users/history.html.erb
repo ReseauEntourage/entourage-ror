@@ -2,42 +2,27 @@
 
 <div class="alert alert-info" role="alert" style="display: flex; align-items: center">
   <div style="flex-grow: 1">
-    <%= @user.full_name %> a fait <%= @sms_deliveries.count %> demandes de mot de passe.<br/>
-    Il a également fait l'objet de <%= @block_histories.count %> blocages.
+    <%= @user.full_name %> a fait <%= @sms_deliveries_count %> demandes de mot de passe.<br/>
+    Il a également fait l'objet de <%= @block_count %> blocages.
   </div>
 </div>
 
-<div class="control-group">
-  <label class="control-label">Demandes de mot de passe</label>
-  <table class="table" style="width: auto">
-    <tr>
-      <th>Statut</th>
-      <th>Type de demande</th>
-      <th>Provider</th>
-      <th>Date</th>
-    </tr>
-    <% @sms_deliveries.each do |sms_delivery| %>
-      <tr>
-        <td><%= sms_delivery.status %></td>
-        <td><%= sms_delivery.sms_type %></td>
-        <td><%= sms_delivery.provider %></td>
-        <td><%= l sms_delivery.created_at %></td>
-      </tr>
-    <% end %>
-  </table>
-</div>
 
-<div class="control-group">
-  <label class="control-label">Changements de statut</label>
-  <table class="table" style="width: auto">
+<div class="row">
+  <label class="control-label">Historique de l'utilisateur</label>
+  <table class="table">
+    <tr>
+      <th>Date</th>
+      <th>Type</th>
+      <th>Modéré par</th>
+      <th>Autre</th>
+    </tr>
     <% @histories.each do |history| %>
       <tr>
-        <td><%= l history.created_at %></td>
-        <td>
-          <%= "L'utilisateur a été #{history.kind}" %><i class="text-muted">
-            <%= "(raison : #{history.cnil_explanation})" %>
-          </i>
-        </td>
+        <td><%= l history[:date], format: "%A %-d %B %Y, %H:%M" %></td>
+        <td><%= history[:kind] %></td>
+        <td><%= history[:moderator].full_name if history[:moderator].present? %></td>
+        <td><%= history[:metadata] %></td>
       </tr>
     <% end %>
   </table>
