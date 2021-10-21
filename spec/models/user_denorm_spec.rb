@@ -138,13 +138,13 @@ RSpec.describe UserDenorm, type: :model do
       it do
         # we update to group
         # group entourages are not considered in engagement computation; everything should be nil
-        expect(UserDenormJob).to receive(:perform_later).with(entourage_id: action.id, user_id: nil)
+        expect(UserDenormJob).to receive(:perform_later).with(action.id, nil)
 
         action.update_attribute(:group_type, :group)
 
         # calls explicitely
         perform_enqueued_jobs do
-          UserDenormJob.new.perform(entourage_id: action.id, user_id: nil)
+          UserDenormJob.new.perform(action.id, nil)
         end
 
         # denorm_pro
@@ -164,12 +164,12 @@ RSpec.describe UserDenorm, type: :model do
 
         # then we update back to action
         # expectations are that we should go back to initial state
-        expect(UserDenormJob).to receive(:perform_later).with(entourage_id: action.id, user_id: nil)
+        expect(UserDenormJob).to receive(:perform_later).with(action.id, nil)
 
         action.update_attribute(:group_type, :action)
 
         perform_enqueued_jobs do
-          UserDenormJob.new.perform(entourage_id: action.id, user_id: nil)
+          UserDenormJob.new.perform(action.id, nil)
         end
 
         # denorm_pro
