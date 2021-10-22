@@ -26,7 +26,7 @@ class UserHistory < ApplicationRecord
           cnil_explanation: { type: :string },
           temporary: { type: :boolean }
         }
-      when 'anonymized:metadata'
+      else
         {}
       end
     end
