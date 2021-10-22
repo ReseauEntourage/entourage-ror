@@ -160,8 +160,8 @@ fr:
     user:
       profiles:
         offer_help: Voisin solidaire
-        ask_for_help: Personne isolée ou en précarité
-        organization: Association ou service public
+        ask_for_help: Personne isolée
+        organization: Association
         goal_not_known: Non défini
         all: Tous profils
       engagements:

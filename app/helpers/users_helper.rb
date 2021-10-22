@@ -37,8 +37,8 @@ module UsersHelper
   end
 
   def user_roles
-    User::ROLES.map do |status|
-      [t("community.user.statuses.#{status}"), status]
+    User::ROLES.map do |role|
+      [t("community.user.roles.#{role}"), role]
     end
   end
 end
