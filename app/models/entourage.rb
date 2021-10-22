@@ -331,9 +331,9 @@ class Entourage < ApplicationRecord
   def metadata_datetimes_formatted
     formats =
       if metadata[:ends_at].midnight == metadata[:starts_at].midnight
-        ["%A %-d %B de %H:%M ", "à %H:%M"]
+        ["%A %-d %B %Y de %H:%M ", "à %H:%M"]
       else
-        ["%A %-d %B à %H:%M — ", "%A %-d %B à %H:%M"]
+        ["%A %-d %B %Y à %H:%M — ", "%A %-d %B %Y à %H:%M"]
       end
     [I18n.l(metadata[:starts_at], format: formats[0]),
      I18n.l(metadata[:ends_at],   format: formats[1])].join
