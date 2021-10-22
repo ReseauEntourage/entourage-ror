@@ -139,7 +139,6 @@ Rails.application.routes.draw do
       end
 
       get 'public_user_autocomplete' => "users_search#public_user_autocomplete"
-      get 'user_search' => "users_search#user_search"
       delete 'user_relationships' => "user_relationships#destroy"
     end
   end
@@ -188,7 +187,6 @@ Rails.application.routes.draw do
     end
 
     get 'public_user_autocomplete' => "users_search#public_user_autocomplete"
-    get 'user_search' => "users_search#user_search"
     delete 'user_relationships' => "user_relationships#destroy"
 
     namespace :slack do

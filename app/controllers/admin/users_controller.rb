@@ -3,10 +3,10 @@ module Admin
     before_action :set_user, only: [:show, :messages, :engagement, :history, :edit, :update, :edit_block, :block, :temporary_block, :unblock, :cancel_phone_change_request, :download_export, :send_export, :anonymize, :destroy_avatar, :banish, :validate, :experimental_pending_request_reminder]
 
     def index
-      @params = params.permit([:profile, :engagement, :status, :role, q: [:postal_code_start, :postal_code_in_hors_zone]]).to_h
+      @params = params.permit([:profile, :engagement, :status, :role, :search, q: [:postal_code_start, :postal_code_in_hors_zone]]).to_h
 
       @profile = params[:profile].presence&.to_sym
-      @profile = :all unless @profile.in?([:offer_help, :ask_for_help, :organization, :unknown])
+      @profile = :all unless @profile.in?([:offer_help, :ask_for_help, :organization, :goal_not_known])
 
       @engagement = params[:engagement].presence&.to_sym
       @engagement = :all unless @engagement.in?([:engaged, :not_engaged])
@@ -15,20 +15,18 @@ module Admin
       @status = :all unless @status.in?([:blocked, :temporary_blocked, :deleted, :pending])
 
       @role = params[:role].presence&.to_sym
-      @role = :all unless @role.in?([:admin, :moderators])
+      @role = :all unless @role.in?([:admin, :moderator])
 
       @users = current_user.community.users
 
+      @users = @users.status_is(@status)
+      @users = @users.role_is(@role)
+
       @users = @users.engaged if @engagement && @engagement == :engaged
       @users = @users.not_engaged if @engagement && @engagement == :not_engaged
-      @users = @users.blocked if @status && @status == :blocked
-      @users = @users.temporary_blocked if @status && @status == :temporary_blocked
-      @users = @users.deleted if @status && @status == :deleted
-      @users = @users.where(admin: true) if @role && @role == :admin
-      @users = @users.moderators if @role && @role == :moderators
-      @users = @users.where(id: UserPhoneChange.pending_user_ids) if @status && @status == :pending
+      @users = @users.search_by(params[:search]) if params[:search].present?
       @users = @users.joins(:user_phone_changes).order('user_phone_changes.created_at') if @status && @status == :pending
-      @users = @users.unknown if @profile == :unknown
+      @users = @users.unknown if @profile == :goal_not_known
       @users = @users.ask_for_help if @profile == :ask_for_help
       @users = @users.offer_help if @profile == :offer_help
       @users = @users.organization if @profile == :organization
