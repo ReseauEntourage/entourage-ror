@@ -5,6 +5,7 @@ class UserHistory < ApplicationRecord
   attribute :metadata, :jsonb_with_schema
 
   scope :blocked, -> { where(kind: 'block').order('user_histories.created_at desc') }
+  scope :anonymized, -> { where(kind: 'anonymized') }
 
   def metadata= value
     value = add_metadata_schema_urn(value)
@@ -25,6 +26,8 @@ class UserHistory < ApplicationRecord
           cnil_explanation: { type: :string },
           temporary: { type: :boolean }
         }
+      when 'anonymized:metadata'
+        {}
       end
     end
   end

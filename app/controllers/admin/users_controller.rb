@@ -217,7 +217,7 @@ module Admin
     end
 
     def anonymize
-      @user.anonymize!
+      @user.anonymize! current_user
       UserServices::Avatar.new(user: @user).destroy
       redirect_to [:admin, @user], flash: { success: "Utilisateur anonymisé" }
     end
