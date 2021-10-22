@@ -202,7 +202,7 @@ describe Api::V1::EntouragesController do
     end
   end
 
-  describe 'GET mine' do
+  describe 'GET joined' do
     let!(:entourage) { FactoryBot.create(:entourage, status: :open) }
     let(:other_user) { FactoryBot.create(:public_user) }
     subject { JSON.parse(response.body) }
@@ -210,7 +210,7 @@ describe Api::V1::EntouragesController do
     context "filter show_my_entourages_only" do
       let!(:join_request) { FactoryBot.create(:join_request, joinable: entourage, user: user, status: "accepted") }
 
-      before { get :mine, params: { token: user.token } }
+      before { get :joined, params: { token: user.token } }
       it { expect(subject["entourages"].count).to eq(1) }
       it { expect(subject["entourages"][0]["id"]).to eq(entourage.id) }
     end
@@ -218,26 +218,26 @@ describe Api::V1::EntouragesController do
     context "filter wrong user show_my_entourages_only" do
       let!(:join_request) { FactoryBot.create(:join_request, joinable: entourage, user: other_user, status: "accepted") }
 
-      before { get :mine, params: { token: user.token } }
+      before { get :joined, params: { token: user.token } }
       it { expect(subject["entourages"].count).to eq(0) }
     end
 
     context "filter wrong status show_my_entourages_only" do
       let!(:join_request) { FactoryBot.create(:join_request, joinable: entourage, user: user, status: "pending") }
 
-      before { get :mine, params: { token: user.token } }
+      before { get :joined, params: { token: user.token } }
       it { expect(subject["entourages"].count).to eq(0) }
     end
   end
 
-  describe 'GET owns' do
+  describe 'GET owned' do
     let(:other_user) { FactoryBot.create(:public_user) }
     subject { JSON.parse(response.body) }
 
     context "filter author" do
       let!(:entourage) { FactoryBot.create(:entourage, status: :open, user: user) }
 
-      before { get :owns, params: { token: user.token } }
+      before { get :owned, params: { token: user.token } }
       it { expect(subject["entourages"].count).to eq(1) }
       it { expect(subject["entourages"][0]["id"]).to eq(entourage.id) }
     end
@@ -245,12 +245,12 @@ describe Api::V1::EntouragesController do
     context "filter wrong author" do
       let!(:entourage) { FactoryBot.create(:entourage, status: :open, user: other_user) }
 
-      before { get :owns, params: { token: user.token } }
+      before { get :owned, params: { token: user.token } }
       it { expect(subject["entourages"].count).to eq(0) }
     end
   end
 
-  describe 'GET invitees' do
+  describe 'GET invited' do
     let!(:entourage) { FactoryBot.create(:entourage, status: :open) }
     let(:other_user) { FactoryBot.create(:public_user) }
     subject { JSON.parse(response.body) }
@@ -258,7 +258,7 @@ describe Api::V1::EntouragesController do
     context "filter invitee" do
       let!(:entourage_invitations) { FactoryBot.create(:entourage_invitation, invitable: entourage, invitee: user, status: "accepted") }
 
-      before { get :invitees, params: { token: user.token } }
+      before { get :invited, params: { token: user.token } }
       it { expect(subject["entourages"].count).to eq(1) }
       it { expect(subject["entourages"][0]["id"]).to eq(entourage.id) }
     end
@@ -266,14 +266,14 @@ describe Api::V1::EntouragesController do
     context "filter wrong invitee invitee" do
       let!(:entourage_invitations) { FactoryBot.create(:entourage_invitation, invitable: entourage, invitee: other_user, status: "accepted") }
 
-      before { get :invitees, params: { token: user.token } }
+      before { get :invited, params: { token: user.token } }
       it { expect(subject["entourages"].count).to eq(0) }
     end
 
     context "filter wrong status invitee" do
       let!(:entourage_invitations) { FactoryBot.create(:entourage_invitation, invitable: entourage, invitee: user, status: "pending") }
 
-      before { get :invitees, params: { token: user.token } }
+      before { get :invited, params: { token: user.token } }
       it { expect(subject["entourages"].count).to eq(0) }
     end
   end

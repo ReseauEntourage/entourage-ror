@@ -73,7 +73,7 @@ resource Api::V1::EntouragesController do
     end
   end
 
-  get 'api/v1/entourages/mine' do
+  get 'api/v1/entourages/joined' do
     route_summary "Get the entourages the current user joined"
 
     parameter :token, type: :string, required: true
@@ -91,7 +91,7 @@ resource Api::V1::EntouragesController do
     end
   end
 
-  get 'api/v1/entourages/owns' do
+  get 'api/v1/entourages/owned' do
     route_summary "Get the entourages the current user created"
 
     parameter :token, type: :string, required: true
@@ -108,7 +108,7 @@ resource Api::V1::EntouragesController do
     end
   end
 
-  get 'api/v1/entourages/invitees' do
+  get 'api/v1/entourages/invited' do
     route_summary "Get the entourages the current user has been invited in"
 
     parameter :token, type: :string, required: true
