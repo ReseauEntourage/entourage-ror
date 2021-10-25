@@ -5,7 +5,7 @@ module TourService
     user = tour.user
     key_infos = Api::ApplicationKey.new(api_key: api_key).key_infos
     Slack::Notifier.new(ENV['SLACK_WEBHOOK_URL']).ping(
-      channel: '#associations',
+      channel: channel,
       username: 'Maraudes',
       icon_emoji: ':memo:',
       attachments: [
@@ -35,5 +35,11 @@ module TourService
         }
       ]
     )
+  end
+
+  def self.channel
+    return '#associations' if EnvironmentHelper.production?
+
+    '#backenddev'
   end
 end
