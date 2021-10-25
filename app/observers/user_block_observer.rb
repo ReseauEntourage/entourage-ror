@@ -70,7 +70,9 @@ class UserBlockObserver < ActiveRecord::Observer
       user_id: user.id,
       updater_id: user.id,
       kind: 'deleted',
-      metadata: {}
+      metadata: {
+        email_was: user.anonymized? ? 'anonymized' : user.email_was
+      }
     })
   end
 end

@@ -334,14 +334,16 @@ describe User, :type => :model do
 
     it { expect(UserHistory.first.kind).to eq('anonymize') }
     it { expect(UserHistory.last.kind).to eq('deleted') }
+    it { expect(UserHistory.last.metadata[:email_was]).to eq('anonymized') }
   end
 
   describe 'deleted' do
-    let(:user) { create(:public_user, phone: '+33600000000', token: 'foo') }
+    let(:user) { create(:public_user, phone: '+33600000000', token: 'foo', email: 'foo@bar.com') }
 
     subject { user.update_attribute(:deleted, true) }
     before { expect { subject }.to change { UserHistory.count }.by(1) }
 
     it { expect(UserHistory.last.kind).to eq('deleted') }
+    it { expect(UserHistory.last.metadata[:email_was]).to eq('foo@bar.com') }
   end
 end
