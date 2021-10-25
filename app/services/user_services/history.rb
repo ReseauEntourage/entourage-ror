@@ -71,7 +71,7 @@ module UserServices
         kind: user_history.kind.to_sym,
         date: user_history.created_at,
         moderator: user_history.updater,
-        metadata: user_history.cnil_explanation
+        metadata: user_history.message || user_history.cnil_explanation
       }
     end
   end

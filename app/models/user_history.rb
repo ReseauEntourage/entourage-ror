@@ -41,4 +41,10 @@ class UserHistory < ApplicationRecord
 
     self[:metadata][:cnil_explanation]
   end
+
+  def message
+    return unless self[:metadata]
+
+    self[:metadata][:message]
+  end
 end
