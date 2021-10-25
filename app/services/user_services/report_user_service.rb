@@ -27,6 +27,15 @@ module UserServices
         message:        message
       ).notify
 
+      UserHistory.create({
+        user_id: reported_user.id,
+        updater_id: reporting_user.id,
+        kind: 'signal-user',
+        metadata: {
+          message: message
+        }
+      })
+
       callback.on_success.try(:call)
     end
 

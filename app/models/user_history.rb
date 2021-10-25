@@ -26,6 +26,10 @@ class UserHistory < ApplicationRecord
           cnil_explanation: { type: :string },
           temporary: { type: :boolean }
         }
+      when 'signal-user:metadata', 'unblock:metadata'
+        {
+          message: { type: :string }
+        }
       else
         {}
       end
