@@ -5,31 +5,24 @@ module Admin
     def index
       @params = params.permit([:profile, :engagement, :status, :role, :search, q: [:postal_code_start, :postal_code_in_hors_zone]]).to_h
 
-      @profile = params[:profile].presence&.to_sym
-      @profile = :all unless @profile.in?([:offer_help, :ask_for_help, :organization, :goal_not_known])
-
-      @engagement = params[:engagement].presence&.to_sym
-      @engagement = :all unless @engagement.in?([:engaged, :not_engaged])
-
-      @status = params[:status].presence&.to_sym
-      @status = :all unless @status.in?([:blocked, :temporary_blocked, :deleted, :pending])
-
-      @role = params[:role].presence&.to_sym
-      @role = :all unless @role.in?([:admin, :moderator])
+      engagement = get_engagement
+      profile = get_profile
+      @status = get_status
+      @role = get_role
 
       @users = current_user.community.users
 
       @users = @users.status_is(@status)
       @users = @users.role_is(@role)
 
-      @users = @users.engaged if @engagement && @engagement == :engaged
-      @users = @users.not_engaged if @engagement && @engagement == :not_engaged
+      @users = @users.engaged if engagement == :engaged
+      @users = @users.not_engaged if engagement == :not_engaged
       @users = @users.search_by(params[:search]) if params[:search].present?
-      @users = @users.joins(:user_phone_changes).order('user_phone_changes.created_at') if @status && @status == :pending
-      @users = @users.unknown if @profile == :goal_not_known
-      @users = @users.ask_for_help if @profile == :ask_for_help
-      @users = @users.offer_help if @profile == :offer_help
-      @users = @users.organization if @profile == :organization
+      @users = @users.joins(:user_phone_changes).order('user_phone_changes.created_at') if @status == :pending
+      @users = @users.unknown if profile == :goal_not_known
+      @users = @users.ask_for_help if profile == :ask_for_help
+      @users = @users.offer_help if profile == :offer_help
+      @users = @users.organization if profile == :organization
       @users = @users.in_area("dep_" + @params[:q][:postal_code_start]) if @params[:q] && @params[:q][:postal_code_start]
       @users = @users.in_area(:hors_zone) if @params[:q] && @params[:q][:postal_code_in_hors_zone]
 
@@ -276,6 +269,30 @@ module Admin
       params.require(:user_moderation).permit(
         :skills, :expectations, :acquisition_channel
       )
+    end
+
+    def get_profile
+      profile = params[:profile].presence&.to_sym
+      profile = :all unless profile.in?([:offer_help, :ask_for_help, :organization, :goal_not_known])
+      profile
+    end
+
+    def get_engagement
+      engagement = params[:engagement].presence&.to_sym
+      engagement = :all unless engagement.in?([:engaged, :not_engaged])
+      engagement
+    end
+
+    def get_status
+      status = params[:status].presence&.to_sym
+      status = :all unless status.in?([:blocked, :temporary_blocked, :deleted, :pending])
+      status
+    end
+
+    def get_role
+      role = params[:role].presence&.to_sym
+      role = :all unless role.in?([:admin, :moderator])
+      role
     end
   end
 
