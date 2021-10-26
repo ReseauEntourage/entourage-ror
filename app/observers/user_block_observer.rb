@@ -25,12 +25,9 @@ class UserBlockObserver < ActiveRecord::Observer
   end
 
   def close_entourages! user
-    AsyncService.new(UserBlockObserver).close_entourages!(user.id)
-  end
+    entourage_ids = Entourage.where(user_id: user.id, status: :open).pluck(:id)
 
-  def self.close_entourages! user_id
-    # @caution do not update_all: we want to enable callbacks
-    Entourage.where(user_id: user_id, status: :open).update(status: :closed)
+    EntouragesCloserJob.perform_later(entourage_ids)
   end
 
   def create_chat_message_for_entourages! user
