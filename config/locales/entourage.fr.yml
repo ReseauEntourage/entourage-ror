@@ -22,6 +22,7 @@ fr:
         last_sign_in_at: Date de dernière connexion
         postal_codes: Codes postaux
         engaged?: Engagé ?
+        deleted: Supprimé
         organization_name: Association
       organization:
         name: Nom

@@ -14,6 +14,7 @@ module UserServices
       postal_codes
       engaged?
       validation_status
+      deleted
     }
 
     def initialize(users:)
