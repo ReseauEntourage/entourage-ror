@@ -5,28 +5,10 @@ module Admin
     def index
       @params = params.permit([:profile, :engagement, :status, :role, :search, q: [:postal_code_start, :postal_code_in_hors_zone]]).to_h
 
-      engagement = get_engagement
-      profile = get_profile
       @status = get_status
       @role = get_role
 
-      @users = current_user.community.users
-
-      @users = @users.status_is(@status)
-      @users = @users.role_is(@role)
-
-      @users = @users.engaged if engagement == :engaged
-      @users = @users.not_engaged if engagement == :not_engaged
-      @users = @users.search_by(params[:search]) if params[:search].present?
-      @users = @users.joins(:user_phone_changes).order('user_phone_changes.created_at') if @status == :pending
-      @users = @users.unknown if profile == :goal_not_known
-      @users = @users.ask_for_help if profile == :ask_for_help
-      @users = @users.offer_help if profile == :offer_help
-      @users = @users.organization if profile == :organization
-      @users = @users.in_area("dep_" + @params[:q][:postal_code_start]) if @params[:q] && @params[:q][:postal_code_start]
-      @users = @users.in_area(:hors_zone) if @params[:q] && @params[:q][:postal_code_in_hors_zone]
-
-      @users = @users.includes(:organization).order("last_name ASC").page(params[:page]).per(25)
+      @users = filtered_users.includes(:organization).order("last_name ASC").page(params[:page]).per(25)
     end
 
     def show
@@ -212,12 +194,20 @@ module Admin
     end
 
     def download_export
-      send_file UserServices::Exporter.new(user: @user).csv, filename: "users-personal-data-#{@user.phone.parameterize}.csv", type: "application/csv"
+      send_file UserServices::Exporter.new(user: @user).csv,
+        filename: "users-personal-data-#{@user.phone.parameterize}.csv",
+        type: "application/csv"
     end
 
     def send_export
       UserServices::Exporter.new(user: @user).export
       redirect_to [:admin, @user], flash: { success: "Export envoyé par mail" }
+    end
+
+    def download_list_export
+      send_file UserServices::ListExporter.new(users: filtered_users.includes(:user_denorm, :addresses, :organization)).csv,
+        filename: "users-#{Time.now.to_i}.csv",
+        type: "application/csv"
     end
 
     def anonymize
@@ -269,6 +259,30 @@ module Admin
       params.require(:user_moderation).permit(
         :skills, :expectations, :acquisition_channel
       )
+    end
+
+    def filtered_users
+      status = get_status
+      role = get_role
+      engagement = get_engagement
+      profile = get_profile
+
+      @users = current_user.community.users
+
+      @users = @users.status_is(status)
+      @users = @users.role_is(role)
+
+      @users = @users.engaged if engagement == :engaged
+      @users = @users.not_engaged if engagement == :not_engaged
+      @users = @users.search_by(params[:search]) if params[:search].present?
+      @users = @users.joins(:user_phone_changes).order('user_phone_changes.created_at') if status == :pending
+      @users = @users.unknown if profile == :goal_not_known
+      @users = @users.ask_for_help if profile == :ask_for_help
+      @users = @users.offer_help if profile == :offer_help
+      @users = @users.organization if profile == :organization
+      @users = @users.in_area("dep_" + params[:q][:postal_code_start]) if params[:q] && params[:q][:postal_code_start]
+      @users = @users.in_area(:hors_zone) if params[:q] && params[:q][:postal_code_in_hors_zone]
+      @users
     end
 
     def get_profile

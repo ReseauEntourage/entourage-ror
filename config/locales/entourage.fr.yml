@@ -18,6 +18,11 @@ fr:
         created_at: Date de création
         address: Adresse
         cnil_explanation: Raisons de cette action
+        validation_status: Statut
+        last_sign_in_at: Date de dernière connexion
+        postal_codes: Codes postaux
+        engaged?: Engagé ?
+        organization_name: Association
       organization:
         name: Nom
         description: Description

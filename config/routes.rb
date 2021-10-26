@@ -18,6 +18,7 @@ Rails.application.routes.draw do
           get 'moderate'
           get 'fake'
           post 'generate'
+          get 'download_list_export'
         end
 
         member do
