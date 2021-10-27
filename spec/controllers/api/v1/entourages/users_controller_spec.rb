@@ -18,26 +18,29 @@ describe Api::V1::Entourages::UsersController do
         before { post :create, params: { entourage_id: entourage.to_param, token: user.token, distance: 123.45 } }
         it { expect(JoinRequest.last.distance).to eq(123.45) }
         it { expect(entourage.members).to eq([user]) }
-        it { expect(result).to eq("user"=>{
-                                            "id"=>user.id,
-                                            "display_name"=>"John D.",
-                                            "role"=>"member",
-                                            "group_role"=>"member",
-                                            "community_roles"=>[],
-                                            "status"=>"pending",
-                                            "message"=>nil,
-                                            "requested_at"=>JoinRequest.last.created_at.iso8601(3),
-                                            "avatar_url"=>nil,
-                                            "partner"=>nil,
-                                            "partner_role_title"=>nil
-                                          }) }
+        it { expect(result).to eq(
+          "user"=>{
+            "id"=>user.id,
+            "display_name"=>"John D.",
+            "role"=>"member",
+            "group_role"=>"member",
+            "community_roles"=>[],
+            "status"=>"pending",
+            "message"=>nil,
+            "requested_at"=>JoinRequest.last.created_at.iso8601(3),
+            "avatar_url"=>nil,
+            "partner"=>nil,
+            "partner_role_title"=>nil,
+          }
+        )}
       end
 
       context "request to join entourage after a cancel" do
         before { create(:join_request, user: user, joinable: entourage, status: JoinRequest::CANCELLED_STATUS) }
         before { post :create, params: { entourage_id: entourage.to_param, token: user.token } }
         it { expect(entourage.members).to eq([user]) }
-        it { expect(result).to eq("user"=>{
+        it { expect(result).to eq(
+          "user"=>{
             "id"=>user.id,
             "display_name"=>"John D.",
             "status"=>"pending",
@@ -48,15 +51,17 @@ describe Api::V1::Entourages::UsersController do
             "requested_at"=>JoinRequest.last.created_at.iso8601(3),
             "avatar_url"=>nil,
             "partner"=>nil,
-            "partner_role_title"=>nil
-        }) }
+            "partner_role_title"=>nil,
+          }
+        )}
       end
 
       context "duplicate request to join entourage" do
         before { create(:join_request, user: user, joinable: entourage) }
         before { post :create, params: { entourage_id: entourage.to_param, token: user.token } }
         it { expect(entourage.members).to eq([user]) }
-        it { expect(result).to eq("user"=>{
+        it { expect(result).to eq(
+          "user"=>{
             "id"=>user.id,
             "display_name"=>"John D.",
             "role"=>"member",
@@ -67,8 +72,9 @@ describe Api::V1::Entourages::UsersController do
             "requested_at"=>JoinRequest.last.created_at.iso8601(3),
             "avatar_url"=>nil,
             "partner"=>nil,
-            "partner_role_title"=>nil
-        }) }
+            "partner_role_title"=>nil,
+          }
+        )}
       end
 
       context "public group" do
@@ -179,19 +185,21 @@ describe Api::V1::Entourages::UsersController do
     context "signed in" do
       let!(:join_request) { create(:join_request, user: user, joinable: entourage, status: "pending") }
       before { get :index, params: { entourage_id: entourage.to_param, token: user.token } }
-      it { expect(result).to eq({"users"=>[{
-                                               "id"=>user.id,
-                                               "display_name"=>"John D.",
-                                               "role"=>"member",
-                                               "group_role"=>"member",
-                                               "community_roles"=>[],
-                                               "status"=>"pending",
-                                               "message"=>nil,
-                                               "requested_at"=>join_request.created_at.iso8601(3),
-                                               "avatar_url"=>nil,
-                                               "partner"=>nil,
-                                               "partner_role_title"=>nil
-                                           }]}) }
+      it { expect(result).to eq({
+        "users"=>[{
+          "id"=>user.id,
+          "display_name"=>"John D.",
+          "role"=>"member",
+          "group_role"=>"member",
+          "community_roles"=>[],
+          "status"=>"pending",
+          "message"=>nil,
+          "requested_at"=>join_request.created_at.iso8601(3),
+          "avatar_url"=>nil,
+          "partner"=>nil,
+          "partner_role_title"=>nil,
+        }]
+      })}
     end
 
     context "from a conversation" do
@@ -289,20 +297,21 @@ describe Api::V1::Entourages::UsersController do
         it { expect(response.status).to eq(200) }
         it { expect(other_join_request.reload.status).to eq("rejected") }
         it { expect(my_join_request.reload.status).to eq("accepted") }
-        it { expect(result).to eq({"user"=>{
-                                            "id"=>other_user.id,
-                                            "display_name"=>"John D.",
-                                            "role"=>"member",
-                                            "group_role"=>"member",
-                                            "community_roles"=>[],
-                                            "status"=>"not_requested",
-                                            "message"=>nil,
-                                            "requested_at"=>other_join_request.created_at.iso8601(3),
-                                            "avatar_url"=>nil,
-                                            "partner"=>nil,
-                                            "partner_role_title"=>nil
-                                          }
-                                  }) }
+        it { expect(result).to eq({
+          "user"=>{
+            "id"=>other_user.id,
+            "display_name"=>"John D.",
+            "role"=>"member",
+            "group_role"=>"member",
+            "community_roles"=>[],
+            "status"=>"not_requested",
+            "message"=>nil,
+            "requested_at"=>other_join_request.created_at.iso8601(3),
+            "avatar_url"=>nil,
+            "partner"=>nil,
+            "partner_role_title"=>nil,
+          }
+        })}
       end
 
       context "quit tour" do
@@ -310,19 +319,21 @@ describe Api::V1::Entourages::UsersController do
         before { delete :destroy, params: { entourage_id: entourage.to_param, id: user.id, token: user.token } }
         it { expect(response.status).to eq(200) }
         it { expect(expect(my_join_request.reload.status).to eq('cancelled')) }
-        it { expect(result).to eq({"user"=>{
-                                      "id"=>user.id,
-                                      "display_name"=>"John D.",
-                                      "role"=>"member",
-                                      "group_role"=>"member",
-                                      "community_roles"=>[],
-                                      "status"=>"not_requested",
-                                      "message"=>nil,
-                                      "requested_at"=>my_join_request.created_at.iso8601(3),
-                                      "avatar_url"=>nil,
-                                      "partner"=>nil,
-                                      "partner_role_title"=>nil}
-                                  }) }
+        it { expect(result).to eq({
+          "user"=>{
+            "id"=>user.id,
+            "display_name"=>"John D.",
+            "role"=>"member",
+            "group_role"=>"member",
+            "community_roles"=>[],
+            "status"=>"not_requested",
+            "message"=>nil,
+            "requested_at"=>my_join_request.created_at.iso8601(3),
+            "avatar_url"=>nil,
+            "partner"=>nil,
+            "partner_role_title"=>nil,
+          }
+        })}
       end
     end
 

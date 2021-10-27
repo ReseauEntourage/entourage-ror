@@ -83,15 +83,15 @@ module V1
     end
 
     def author
-      return unless object.user
-      entourage_author = object.user
-      # TODO(partner)
+      return unless entourage_author = object.user
+      partner = entourage_author.partner
+
       {
-          id: entourage_author.id,
-          display_name: UserPresenter.new(user: object.user).display_name,
-          avatar_url: UserServices::Avatar.new(user: entourage_author).thumbnail_url,
-          partner: object.user.partner.nil? ? nil : V1::PartnerSerializer.new(object.user.partner, scope: {user: object.user}, root: false).as_json,
-          partner_role_title: object.user.partner.nil? ? nil : object.user.partner_role_title.presence
+        id: entourage_author.id,
+        display_name: UserPresenter.new(user: entourage_author).display_name,
+        avatar_url: UserServices::Avatar.new(user: entourage_author).thumbnail_url,
+        partner: partner.nil? ? nil : V1::PartnerSerializer.new(partner, scope: { user: scope[:user], following: true }, root: false).as_json,
+        partner_role_title: entourage_author.partner_role_title.presence
       }
     end
 

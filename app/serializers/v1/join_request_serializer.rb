@@ -13,7 +13,7 @@ module V1
                :partner_role_title
 
     def id
-      object.user.id
+      object.user_id
     end
 
     def requested_at
@@ -42,13 +42,18 @@ module V1
     end
 
     def partner
-      return nil unless object.user.partner
-      V1::PartnerSerializer.new(object.user.partner, scope: {user: object.user}, root: false).as_json
+      return unless object.user && object.user.partner_id
+
+      V1::PartnerSerializer.new(object.user.partner, scope: {
+        user: scope[:user],
+        following: true
+      }, root: false).as_json
     end
 
     def partner_role_title
-      user = object.user
-      user.partner_role_title.presence if user.partner_id
+      return unless object.user && object.user.partner_id
+
+      object.user.partner_role_title.presence
     end
   end
 end

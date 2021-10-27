@@ -60,7 +60,7 @@ describe Api::V1::HomeController do
               "display_name"=>"John D.",
               "avatar_url"=>nil,
               "partner"=>nil,
-              "partner_role_title" => nil
+              "partner_role_title" => nil,
             },
             "location"=>{
               "latitude"=>48.85436,
