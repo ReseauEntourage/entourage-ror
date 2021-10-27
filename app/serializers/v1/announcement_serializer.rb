@@ -7,6 +7,7 @@ module V1
                :image_url,
                :action,
                :url,
+               :webapp_url,
                :icon_url
 
     has_one :author, serializer: ActiveModel::DefaultSerializer

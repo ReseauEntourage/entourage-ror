@@ -77,6 +77,7 @@ describe Api::V1::FeedsController do
                 "image_url"=>"path/to/portrait_url",
                 "action"=>"Aider",
                 "url"=>"http://test.host/api/v1/announcements/1/redirect/#{user.token}",
+                "webapp_url"=>nil,
                 "icon_url"=>"http://test.host/api/v1/announcements/1/icon",
                 "author"=>nil
               }
@@ -457,6 +458,7 @@ describe Api::V1::FeedsController do
              "image_url"=>"path/to/portrait_url",
              "action"=>"Aider",
              "url"=>"http://test.host/api/v1/announcements/1/redirect/#{user.token}",
+             "webapp_url"=>nil,
              "icon_url"=>"http://test.host/api/v1/announcements/1/icon",
              "author"=>nil}}],
         "unread_count" => 0

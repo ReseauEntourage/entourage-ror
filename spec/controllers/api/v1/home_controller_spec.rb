@@ -105,6 +105,7 @@ describe Api::V1::HomeController do
             "image_url" => nil,
             "action" => "Aider",
             "url" => "http://test.host/api/v1/announcements/#{announcement.id}/redirect/#{user.token}",
+            "webapp_url" => nil,
             "icon_url" => "http://test.host/api/v1/announcements/#{announcement.id}/icon",
             "author" => nil
           }
