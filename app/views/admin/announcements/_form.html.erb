@@ -161,6 +161,13 @@
     </div>
   </div>
 
+  <div class="form-group" id="webapp_url"
+    <% unless @announcement.webview %>style="display: none;"<% end %>
+  >
+    <%= f.label :webapp_url %>
+    <%= f.url_field :webapp_url, class: "form-control", readonly: @announcement.archived? %>
+  </div>
+
   <div class="form-group">
     <%= f.label :areas, style: "margin-right: .7em" %>
     <a href="#" data-role="select-areas" data-select="all">Tout sélectionner</a> ·
@@ -266,6 +273,11 @@
     $(this).find('[type=checkbox]').each(function() { this.setCustomValidity('') })
   })
 
+  $(document).on('change', '[name="announcement[webview]"]', function() {
+    $('#webapp_url').toggle(
+      $('#announcement_webview_true').is(':checked')
+    );
+  })
 
   //
   // areas presets
