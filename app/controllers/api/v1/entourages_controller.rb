@@ -44,7 +44,7 @@ module Api
         }
       end
 
-      def mine
+      def joined
         entourages = EntourageServices::EntourageFinder.new(
           user: current_user,
           page: params[:page],
@@ -58,7 +58,7 @@ module Api
         }
       end
 
-      def owns
+      def owned
         entourages = Entourage
           .where(status: :open)
           .where(group_type: [:action])
@@ -71,7 +71,7 @@ module Api
         }
       end
 
-      def invitees
+      def invited
         entourages = EntourageServices::EntourageFinder.new(
           user: current_user,
           page: params[:page],

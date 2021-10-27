@@ -18,9 +18,9 @@ module EntourageServices
       before: nil,
       partners_only: false,
       no_outings: false,
-      # mine
+      # joined
       show_my_entourages_only: false,
-      # owns
+      # owned
       author: nil,
       # invitations
       invitee: nil,
@@ -40,9 +40,9 @@ module EntourageServices
       @partners_only = partners_only=="true"
       @no_outings = no_outings
 
-      # mine
+      # joined
       @show_my_entourages_only = show_my_entourages_only
-      # owns
+      # owned
       @author = author
       # invitations
       @invitee = invitee
