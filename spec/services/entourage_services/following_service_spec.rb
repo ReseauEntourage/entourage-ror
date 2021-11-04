@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 describe FollowingService do
-
   let(:partner) { create :partner, name: "PARTNER_NAME" }
   let(:partner_user) { create :public_user, partner: partner }
   let!(:following) { create :following, partner: partner }

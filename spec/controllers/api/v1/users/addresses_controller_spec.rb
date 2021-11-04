@@ -7,28 +7,13 @@ RSpec.describe Api::V1::Users::AddressesController, type: :controller do
   let(:home) { {place_name: 'Maison',  latitude: 45.2, longitude: 3.7} }
   let(:work) { {place_name: 'Travail', latitude: 44.7, longitude: 3.1} }
 
-  let!(:stub_gmaps) do
-    Geocoder.configure(api_key: 'something')
-
-    stub_request(:get, /maps.googleapis.com/).
-    to_return do |request|
-      postal_code =
-        case request.uri
-        when /latlng=45.2,3.7/
-          '75011'
-        when /latlng=44.7,3.1/
-          '92001'
-        else
-          '12345'
-        end
-
-      {status: 200, body: JSON.fast_generate(status: :OK, results: [{
-        types: [:postal_code], address_components: [
-          {long_name: postal_code, types: [:postal_code]},
-          {short_name: 'FR', types: [:country]}
-        ]
-      }])}
-    end
+  before do
+    EntourageServices::GeocodingService.stub(:search_postal_code).with("45.2", "3.7") {
+      ['FR', '75011', 'Paris']
+    }
+    EntourageServices::GeocodingService.stub(:search_postal_code).with("44.7", "3.1") {
+      ['FR', '92001', 'Paris']
+    }
   end
 
   describe 'POST :position' do

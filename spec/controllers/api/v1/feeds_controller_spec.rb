@@ -1,8 +1,7 @@
 require 'rails_helper'
 include CommunityHelper
 
-  describe Api::V1::FeedsController do
-
+describe Api::V1::FeedsController do
   let(:result) { JSON.parse(response.body) }
 
   describe 'GET index' do
