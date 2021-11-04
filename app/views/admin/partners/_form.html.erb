@@ -97,9 +97,7 @@
 
     if (typeof place.geometry === 'undefined') {
       $input.siblings('input[type=hidden]').val(null);
-    }
-    else {
-      $input.data('last-valid', $input.val())
+    } else {
       input.setCustomValidity('')
       $input.siblings('input[type=hidden]').val(null);
       var details = {
@@ -117,15 +115,6 @@
   $input.on('input', function() {
     if ($input.val() === '') {
       $input.siblings('input[type=hidden]').val(null);
-      $input.data('last-valid', $input.val());
-    }
-  })
-
-  $('#partner-form').on('submit', function(e) {
-    if (typeof $input.data('last-valid') === 'undefined' ||
-        $input.val() !== $input.data('last-valid')) {
-      input.setCustomValidity("Sélectionnez une adresse")
-      e.preventDefault()
     }
   })
 </script>
