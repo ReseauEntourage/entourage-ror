@@ -30,7 +30,6 @@ module Admin
       if @poi.errors.blank? && @poi.update(poi_params)
         redirect_to admin_pois_path, notice: "Le POI a bien été mis à jour"
       else
-        @should_edit_gps = true
         render :edit
       end
     end
@@ -47,7 +46,6 @@ module Admin
       if @poi.errors.blank? && @poi.save(poi_params)
         redirect_to admin_pois_url, notice: "Le POI a bien été créé"
       else
-        @should_edit_gps = true
         render :new
       end
     end
