@@ -13,6 +13,9 @@
     <a href="#" rel="tooltip" title="Adresse du POI" class="tooltip-infos"><i class="fa fa-question-circle"></i></a>
     <div class="controls">
       <%= f.text_field :adress, class: "form-control", required: true %>
+      <%= f.hidden_field :adress %>
+      <%= f.hidden_field :latitude %>
+      <%= f.hidden_field :longitude %>
     </div>
   </div>
 
@@ -71,27 +74,44 @@
       <%= f.check_box :validated %>
     </div>
   </div>
-
-  <% if @should_edit_gps %>
-    <div class="control-group">
-      <%= f.label :latitude,"Latitude", class: "control-label" %>
-      <a href="#" rel="tooltip" title="Latitude du POI" class="tooltip-infos"><i class="fa fa-question-circle"></i></a>
-      <div class="controls">
-        <%= f.text_field :latitude, class: "form-control", required: true %>
-      </div>
-    </div>
-
-    <div class="control-group">
-      <%= f.label :longitude,"Longitude", class: "control-label" %>
-      <a href="#" rel="tooltip" title="Longitude du POI" class="tooltip-infos"><i class="fa fa-question-circle"></i></a>
-      <div class="controls">
-        <%= f.text_field :longitude, class: "form-control", required: true %>
-      </div>
-    </div>
-  <% end %>
-
-
   <br>
   <%= f.submit "Enregistrer", class: "btn btn-success" %>
   <%= link_to "Annuler", admin_pois_path, class: "btn btn-default" %>
 <% end %>
+
+<script>
+  var input = document.getElementById('poi_adress');
+  var $input = $(input);
+  var options = {
+    types: ['geocode'],
+    fields: ['geometry.location', 'formatted_address'],
+    componentRestrictions: {country: ['fr']}
+  };
+
+  autocomplete = new google.maps.places.Autocomplete(input, options);
+  autocomplete.addListener('place_changed', function() {
+    var place = this.getPlace();
+
+    if (typeof place.geometry === 'undefined') {
+      $input.siblings('input[type=hidden]').val(null);
+    }
+    else {
+      $input.siblings('input[type=hidden]').val(null);
+      var details = {
+        adress: place.formatted_address,
+        latitude: place.geometry.location.lat(),
+        longitude: place.geometry.location.lng(),
+      };
+      for (var attribute in details) {
+        $input.siblings('input[type=hidden][name="poi[' + attribute + ']"]')
+          .val(details[attribute]);
+      }
+    }
+  });
+
+  $input.on('input', function() {
+    if ($input.val() === '') {
+      $input.siblings('input[type=hidden]').val(null);
+    }
+  })
+</script>
