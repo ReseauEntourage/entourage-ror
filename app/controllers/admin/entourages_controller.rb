@@ -46,7 +46,11 @@ module Admin
           else 2
           end
         ))
-        .order("admin_pin DESC, entourages.created_at DESC")
+        .order(%(
+          admin_pin DESC,
+          case when status = 'open' then 1 else 2 end,
+          entourages.created_at DESC
+        ))
         .to_a
 
       @entourages = Kaminari.paginate_array(@entourages, total_count: @q.result.count).page(params[:page]).per(per_page)
