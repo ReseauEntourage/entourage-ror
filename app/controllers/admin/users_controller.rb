@@ -225,25 +225,31 @@ module Admin
     def new_spam_warning
       redirect_to [:admin, @user], flash: { success: "On ne peut prévenir du spam que sur un utilisateur bloqué" } unless @user.blocked?
 
-      @users = User.find(
-        User.in_conversation_with(@user.id).pluck('join_requests.user_id')
-      )
-
       @chat_message = ChatMessage.new
     end
 
     def create_spam_warning
-      redirect_to [:admin, @user], flash: { success: "On ne peut prévenir du spam que sur un utilisateur bloqué" } unless @user.blocked?
+      redirect_to [:admin, @user], flash: {
+        error: "On ne peut prévenir du spam que sur un utilisateur bloqué"
+      } and return unless @user.blocked?
 
-      redirect_to new_spam_warning_admin_user_path(@user), flash: { success: "Merci de renseigner un message" } unless params[:message].present?
+      redirect_to new_spam_warning_admin_user_path(@user), flash: {
+        error: "Merci de renseigner un message"
+      } and return unless params[:message].present?
 
-      ChatMessagesJob.perform_later(
-        current_user.id,
-        User.in_conversation_with(@user.id).pluck('join_requests.user_id'),
-        params[:message]
-      )
+      UserServices::SpamAlert.new(spammer: @user).alert!(current_user, params[:message]) do |on|
+        on.success do |user|
+          redirect_to [:admin, @user], flash: {
+            success: "Un message est envoyé aux différents utilisateurs qui ont été en contact avec #{@user.full_name}"
+          }
+        end
 
-      redirect_to [:admin, @user], flash: { success: "Un message est envoyé aux différents utilisateurs qui ont été en contact avec #{@user.full_name}" }
+        on.failure do |error, user|
+          flash[:error] = "L'envoi n'a pas pu être effectué : #{error.message}"
+
+          render :new_spam_warning
+        end
+      end
     end
 
     def fake

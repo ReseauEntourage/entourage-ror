@@ -1,3 +1,5 @@
+<% users = User.in_conversation_with(@user.id) %>
+
 <div class="container">
   <div style="width: 750px; margin: auto">
     <ol class="breadcrumb">
@@ -29,7 +31,7 @@
         <summary>
           <div class="panel panel-info">
             <div class="panel-body">
-              Consulter la liste des <%= @users.count %> utilisateurs contactés
+              Consulter la liste des <%= users.length %> utilisateurs contactés
             </div>
           </div>
         </summary>
@@ -40,7 +42,7 @@
             <th>Email</th>
             <th>Phone</th>
           </tr>
-          <% @users.each do |user| %>
+          <% users.each do |user| %>
             <tr>
               <td><%= link_to user.full_name, admin_user_path(user) %></td>
               <td><%= user.email %></td>
