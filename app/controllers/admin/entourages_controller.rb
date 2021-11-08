@@ -39,6 +39,7 @@ module Admin
         .like(params[:search])
         .group("entourages.id, moderator_reads.id, entourage_moderations.id")
         .joins(%(join entourage_denorms on entourage_denorms.entourage_id = entourages.id))
+        .order("case when status = 'open' then 1 else 2 end")
         .order(%(
           case
           when moderator_reads is null and entourages.created_at >= now() - interval '1 week' then 0
@@ -48,7 +49,6 @@ module Admin
         ))
         .order(%(
           admin_pin DESC,
-          case when status = 'open' then 1 else 2 end,
           entourages.created_at DESC
         ))
         .to_a
