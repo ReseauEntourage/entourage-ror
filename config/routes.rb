@@ -168,6 +168,8 @@ Rails.application.routes.draw do
         put 'destroy_avatar'
         put 'banish'
         put 'validate'
+        get 'new_spam_warning'
+        post 'create_spam_warning'
       end
     end
 

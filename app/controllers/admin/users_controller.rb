@@ -1,6 +1,6 @@
 module Admin
   class UsersController < Admin::BaseController
-    before_action :set_user, only: [:show, :messages, :engagement, :history, :edit, :update, :edit_block, :block, :temporary_block, :unblock, :cancel_phone_change_request, :download_export, :send_export, :anonymize, :destroy_avatar, :banish, :validate, :experimental_pending_request_reminder]
+    before_action :set_user, only: [:show, :messages, :engagement, :history, :edit, :update, :edit_block, :block, :temporary_block, :unblock, :cancel_phone_change_request, :download_export, :send_export, :anonymize, :destroy_avatar, :banish, :validate, :experimental_pending_request_reminder, :new_spam_warning, :create_spam_warning]
 
     def index
       @params = params.permit([:profile, :engagement, :status, :role, :search, q: [:postal_code_start, :postal_code_in_hors_zone]]).to_h
@@ -220,6 +220,30 @@ module Admin
       @user.anonymize! current_user
       UserServices::Avatar.new(user: @user).destroy
       redirect_to [:admin, @user], flash: { success: "Utilisateur anonymisé" }
+    end
+
+    def new_spam_warning
+      redirect_to [:admin, @user], flash: { success: "On ne peut prévenir du spam que sur un utilisateur bloqué" } unless @user.blocked?
+
+      @users = User.find(
+        User.in_conversation_with(@user.id).pluck('join_requests.user_id')
+      )
+
+      @chat_message = ChatMessage.new
+    end
+
+    def create_spam_warning
+      redirect_to [:admin, @user], flash: { success: "On ne peut prévenir du spam que sur un utilisateur bloqué" } unless @user.blocked?
+
+      redirect_to new_spam_warning_admin_user_path(@user), flash: { success: "Merci de renseigner un message" } unless params[:message].present?
+
+      ChatMessagesJob.perform_later(
+        current_user.id,
+        User.in_conversation_with(@user.id).pluck('join_requests.user_id'),
+        params[:message]
+      )
+
+      redirect_to [:admin, @user], flash: { success: "Un message est envoyé aux différents utilisateurs qui ont été en contact avec #{@user.full_name}" }
     end
 
     def fake
