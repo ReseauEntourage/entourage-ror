@@ -29,18 +29,35 @@ module ChatServices
     end
 
     def spams
-      return false unless content.present?
-      return false unless messageable_type == 'Entourage'
-      return false unless messageable.conversation?
-      return false if metadata.present? && metadata[:conversation_message_broadcast_id].present?
-      return false if user.moderator? || user.admin
-      return false unless content.length > SPAM_MIN_LENGTH
+      @spams ||= begin
+        return [] unless content.present?
+        return [] unless messageable_type == 'Entourage'
+        return [] unless messageable.conversation?
+        return [] if metadata.present? && metadata[:conversation_message_broadcast_id].present?
+        return [] if user.moderator? || user.admin
+        return [] unless content.length > SPAM_MIN_LENGTH
 
-      ChatMessage.spam_messages_for(self)
+        ChatMessage.spam_messages_for(self)
+      end
     end
 
     def has_spams?
       spams.length >= SPAM_MIN_OCCURRENCES
+    end
+
+    def check_spam!
+      if has_spams? && UserHistory.spam_not_reported?(self)
+        SlackServices::SignalSpam.new(spam_user: user, content: content).notify
+
+        UserHistory.create({
+          user_id: user_id,
+          updater_id: nil,
+          kind: 'spam-detection',
+          metadata: {
+            chat_message_id: id
+          }
+        })
+      end
     end
   end
 end
