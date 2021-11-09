@@ -19,6 +19,7 @@ module UserServices
         }
       })
 
+      # @warning should be renamed to ChatMessagesPrivateJob (EN-4011)
       ChatMessagesJob.perform_later(
         moderator.id,
         User.in_conversation_with(@spammer.id).pluck(:id),
