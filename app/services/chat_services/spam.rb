@@ -16,7 +16,7 @@ module ChatServices
 
       scope :spam_messages_for, -> (user_id) {
         joins(%(
-          left join chat_messages previous_messages on previous_messages.user_id = chat_messages.id
+          left join chat_messages previous_messages on previous_messages.user_id = chat_messages.user_id
         ))
         .where("chat_messages.user_id = ?", user_id)
         .where("similarity(chat_messages.content, previous_messages.content) > ?", SPAM_SIMILARITY)
@@ -27,7 +27,7 @@ module ChatServices
     def has_spams?
       return false unless content.present?
       return false unless messageable_type == 'Entourage'
-      return false unless Entourage.find(messageable_id).conversation?
+      return false unless messageable.conversation?
       return false if metadata.present? && metadata[:conversation_message_broadcast_id].present?
       return false if user.moderator? || user.admin
       return false unless content.length > SPAM_MIN_LENGTH
