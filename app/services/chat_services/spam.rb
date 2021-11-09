@@ -16,16 +16,19 @@ module ChatServices
 
       scope :spam_messages_for, -> (chat_message) {
         joins(%(
-          left join chat_messages previous_messages on previous_messages.user_id = chat_messages.user_id
+          left join chat_messages previous_messages
+            on previous_messages.user_id = chat_messages.user_id
+            and previous_messages.id <> chat_messages.id
+            and previous_messages.messageable_id <> chat_messages.messageable_id
         ))
         .where("chat_messages.id = ?", chat_message.id)
         .where("similarity(chat_messages.content, previous_messages.content) > ?", SPAM_SIMILARITY)
         .where("previous_messages.created_at between ? and ?", chat_message.created_at - SPAM_PERIOD, chat_message.created_at)
-        .group("chat_messages.id, previous_messages.messageable_type")
+        .group("chat_messages.id, previous_messages.messageable_id")
       }
     end
 
-    def has_spams?
+    def spams
       return false unless content.present?
       return false unless messageable_type == 'Entourage'
       return false unless messageable.conversation?
@@ -33,7 +36,11 @@ module ChatServices
       return false if user.moderator? || user.admin
       return false unless content.length > SPAM_MIN_LENGTH
 
-      ChatMessage.spam_messages_for(self).length > SPAM_MIN_OCCURRENCES
+      ChatMessage.spam_messages_for(self)
+    end
+
+    def has_spams?
+      spams.length >= SPAM_MIN_OCCURRENCES
     end
   end
 end
