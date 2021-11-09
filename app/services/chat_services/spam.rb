@@ -14,12 +14,13 @@ module ChatServices
       SPAM_MIN_OCCURRENCES = 5
       SPAM_PERIOD = 7.days
 
-      scope :spam_messages_for, -> (user_id) {
+      scope :spam_messages_for, -> (chat_message) {
         joins(%(
           left join chat_messages previous_messages on previous_messages.user_id = chat_messages.user_id
         ))
-        .where("chat_messages.user_id = ?", user_id)
+        .where("chat_messages.id = ?", chat_message.id)
         .where("similarity(chat_messages.content, previous_messages.content) > ?", SPAM_SIMILARITY)
+        .where("previous_messages.created_at between ? and ?", chat_message.created_at - SPAM_PERIOD, chat_message.created_at)
         .group("chat_messages.id, previous_messages.messageable_type")
       }
     end
@@ -32,10 +33,7 @@ module ChatServices
       return false if user.moderator? || user.admin
       return false unless content.length > SPAM_MIN_LENGTH
 
-      ChatMessage
-        .where("chat_messages.created_at between ? and ?", created_at - SPAM_PERIOD, created_at)
-        .spam_messages_for(user_id)
-        .length > SPAM_MIN_OCCURRENCES
+      ChatMessage.spam_messages_for(self).length > SPAM_MIN_OCCURRENCES
     end
   end
 end
