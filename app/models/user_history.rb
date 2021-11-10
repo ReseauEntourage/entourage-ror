@@ -23,7 +23,8 @@ class UserHistory < ApplicationRecord
       case urn
       when 'spam-detection:metadata'
         {
-          chat_message_id: { type: :integer }
+          messageable_id: { type: :integer },
+          messageable_type: { type: :string }
         }
       when 'block:metadata', 'unblock:metadata'
         {
@@ -70,8 +71,8 @@ class UserHistory < ApplicationRecord
       user_id: chat_message.user_id,
       kind: 'spam-detection'
     ).where(
-      "(metadata ->> 'chat_message_id')::integer IN (?)",
-      chat_message.spams.map(&:id)
+      "(metadata ->> 'messageable_id')::integer IN (?) and metadata ->> 'messageable_type' = 'Entourage'",
+      chat_message.spams.map(&:messageable_id)
     ).empty?
   end
 end
