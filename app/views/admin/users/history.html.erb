@@ -13,16 +13,16 @@
   <table class="table">
     <tr>
       <th>Date</th>
-      <th>Type</th>
+      <th>Action</th>
+      <th>Détails</th>
       <th>Modéré par</th>
-      <th>Autre</th>
     </tr>
     <% @histories.each do |history| %>
       <tr>
         <td><%= l history[:date], format: "%A %-d %B %Y, %H:%M" %></td>
-        <td><%= history[:kind] %></td>
-        <td><%= history[:moderator].full_name if history[:moderator].present? %></td>
+        <td><%= l "activerecord.attributes.user_history.kind.#{history[:kind]}" %></td>
         <td><%= history[:metadata] %></td>
+        <td><%= history[:moderator].full_name if history[:moderator].present? %></td>
       </tr>
     <% end %>
   </table>
