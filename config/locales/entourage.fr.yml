@@ -34,6 +34,7 @@ fr:
           phone_change_cancel: Changement de téléphone annulé
           phone_change_change: Numéro de téléphone changé
           phone_change_request: Changement de téléphone demandé
+          signal-action: Signalement d'une action
           signal-user: Signalement de l'utilisateur
           spam-alert: Alerte des utilisateurs spammés
           spam-detection: Spam détecté

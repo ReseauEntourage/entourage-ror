@@ -26,11 +26,16 @@ class UserHistory < ApplicationRecord
           cnil_explanation: { type: :string },
           temporary: { type: :boolean }
         }
-      when 'deleted:metadata', 'unblock:metadata'
+      when 'deleted:metadata'
         {
           email_was: { type: :string }
         }
-      when 'signal-user:metadata', 'unblock:metadata'
+      when 'signal-action:metadata'
+        {
+          message: { type: :string },
+          entourage_id: { type: :integer }
+        }
+      when 'signal-user:metadata'
         {
           message: { type: :string }
         }
