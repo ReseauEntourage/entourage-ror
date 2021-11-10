@@ -31,11 +31,11 @@ module ChatServices
     def spams
       @spams ||= begin
         return [] unless content.present?
+        return [] unless content.length > SPAM_MIN_LENGTH
         return [] unless messageable_type == 'Entourage'
         return [] unless messageable.conversation?
         return [] if metadata.present? && metadata[:conversation_message_broadcast_id].present?
         return [] if user.moderator? || user.admin
-        return [] unless content.length > SPAM_MIN_LENGTH
 
         ChatMessage.spam_entourages_for(self)
       end
