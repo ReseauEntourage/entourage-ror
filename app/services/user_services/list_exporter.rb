@@ -11,7 +11,7 @@ module UserServices
       targeting_profile
       email
       phone
-      postal_codes
+      postal_code
       engaged?
       validation_status
       deleted
