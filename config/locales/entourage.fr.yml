@@ -27,6 +27,7 @@ fr:
       user_history:
         kind:
           account: Compte créé
+          anonymize: Compte anonymisé
           auto: auto
           block: Compte bloqué
           deleted: Compte supprimé
