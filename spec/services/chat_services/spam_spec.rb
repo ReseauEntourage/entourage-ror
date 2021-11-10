@@ -60,7 +60,7 @@ describe ChatServices::Spam do
       }
 
       it { expect(chat_messages.first.spams.length).to be(0) }
-      it { expect(chat_messages.last.spams.length).to be(0) }
+      it { expect(chat_messages.last.spams.length).to be(1) }
     end
   end
 end
