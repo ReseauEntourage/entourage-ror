@@ -21,7 +21,7 @@ module UserServices
     end
 
     def elements
-      [user] + user.user_histories + sms_deliveries_history(user)
+      [user] + user.user_histories + sms_deliveries_history(user) + user.user_phone_changes
     end
 
     protected
@@ -59,7 +59,7 @@ module UserServices
 
     def history_from_user_phone_changes user_phone_change
       {
-        kind: user_phone_change.kind.to_sym,
+        kind: "phone_change_#{user_phone_change.kind.to_sym}",
         date: user_phone_change.created_at,
         moderator: user_phone_change.admin,
         metadata: user_phone_change.metadata
