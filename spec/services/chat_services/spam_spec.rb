@@ -1,10 +1,10 @@
 require 'rails_helper'
 
 describe ChatServices::Spam do
-  describe 'spams' do
-    let(:user) { FactoryBot.create(:public_user) }
-    let(:conversations) { FactoryBot.create_list(:conversation, 6, user: user) }
+  let(:user) { FactoryBot.create(:public_user) }
+  let(:conversations) { FactoryBot.create_list(:conversation, 6, user: user) }
 
+  describe 'spams' do
     context 'same messages' do
       let(:chat_messages) {
         conversations.map do |conversation|
@@ -61,6 +61,37 @@ describe ChatServices::Spam do
 
       it { expect(chat_messages.first.spams.length).to be(0) }
       it { expect(chat_messages.last.spams.length).to be(1) }
+    end
+  end
+
+  describe 'check_spams!' do
+    describe 'spams exists' do
+      let(:chat_messages) {
+        conversations.map do |conversation|
+          FactoryBot.create(:chat_message, content: 'This is a spam message.', messageable: conversation, user: user)
+        end
+      }
+
+      let(:chat_message) { FactoryBot.create(:chat_message, content: chat_messages.last.content, messageable: chat_messages.last.messageable, user: user) }
+
+      before { SlackServices::SignalSpam.any_instance.stub(:notify) { nil } }
+
+      context 'no spam has been reported' do
+        before { expect(UserHistory).to receive(:create) }
+
+        it { chat_message.check_spam! }
+      end
+
+      context 'spam has been reported' do
+        let!(:user_history) { FactoryBot.create(:user_history, user: user, metadata: {
+          messageable_id: chat_messages.last.messageable_id,
+          messageable_type: 'Entourage'
+        })}
+
+        before { expect(UserHistory).not_to receive(:create) }
+
+        it { chat_message.check_spam! }
+      end
     end
   end
 end
