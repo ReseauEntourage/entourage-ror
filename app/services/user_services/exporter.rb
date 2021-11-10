@@ -3,7 +3,6 @@ module UserServices
     DEFAULT_PATH = "#{Rails.root}/tmp"
     FIELDS = %w{email phone address created_at}
     GROUP_TYPES = %w{outing action conversation}
-    CCI_EMAIL = 'contact@entourage.social'
 
     def initialize(user:)
       @user = user
@@ -56,7 +55,7 @@ module UserServices
     def export
       raise "User with phone #{user.phone} should have an email" unless user.email
 
-      MemberMailer.user_export(user_id: user.id, recipient: user.email, cci: [CCI_EMAIL]).deliver_later
+      MemberMailer.user_export(user_id: user.id, recipient: user.email).deliver_later
     end
 
     private
