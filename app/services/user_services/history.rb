@@ -53,7 +53,7 @@ module UserServices
         kind: :sms,
         date: sms_delivery.created_at,
         moderator: nil,
-        metadata: sms_delivery.sms_type
+        metadata: I18n.t("activerecord.attributes.user_history.sms.#{sms_delivery.sms_type}")
       }
     end
 
@@ -62,7 +62,7 @@ module UserServices
         kind: "phone_change_#{user_phone_change.kind.to_sym}",
         date: user_phone_change.created_at,
         moderator: user_phone_change.admin,
-        metadata: user_phone_change.metadata
+        metadata: nil
       }
     end
 

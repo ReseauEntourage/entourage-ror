@@ -40,6 +40,9 @@ fr:
           spam-alert: Alerte des utilisateurs spammés
           spam-detection: Spam détecté
           sms: Code SMS redemandé
+        sms:
+          welcome: Bienvenue
+          regenerate: Demande de nouveau mot de passe
       organization:
         name: Nom
         description: Description
