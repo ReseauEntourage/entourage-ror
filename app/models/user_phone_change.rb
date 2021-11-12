@@ -1,6 +1,6 @@
 class UserPhoneChange < ApplicationRecord
   belongs_to :user
-  belongs_to :user, foreign_key: :admin_id
+  belongs_to :admin, foreign_key: :admin_id
 
   def self.pending_user_ids
     UserPhoneChange.joins(
