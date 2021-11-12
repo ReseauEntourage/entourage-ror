@@ -58,13 +58,15 @@
       types = {
         "Épinglées" => { pin_eq: 'true' },
         "Actions" => { group_type_eq: 'action', pin_eq: 'false' },
-        "Événements" => { group_type_eq: 'outing', pin_eq: 'false' }
+        "Événements" => { group_type_eq: 'outing', pin_eq: 'false' },
+        "Événements sans photo" => { group_type_eq: 'outing', pin_eq: 'false', landscape_url_blank: "1" }
       }
     %>
 
     <%= f.hidden_field :postal_code_start if @q.postal_code_start %>
     <%= f.hidden_field :postal_code_not_start_all if @q.postal_code_not_start_all %>
     <%= f.hidden_field :pin_eq if @q.pin_eq || @q.pin_eq === false %>
+    <%= f.hidden_field :landscape_url_blank if @q.landscape_url_blank %>
     <%= f.hidden_field :group_type_eq if @q.group_type_eq %>
     <%= f.hidden_field :country_eq if @q.country_eq %>
     <% (@q.postal_code_start_any || []).each do |value| %>
@@ -82,7 +84,7 @@
     </div>
 
     <div class="btn-group btn-group-sm" style="padding-left: 10px">
-      <% types_keys = [:pin_eq, :group_type_eq] %>
+      <% types_keys = [:pin_eq, :group_type_eq, :landscape_url_blank] %>
       <% types.each do |name, options| %>
         <% active = types.key q.slice(*types_keys).compact.symbolize_keys %>
         <%= link_to(name, @params.merge(q: q.except(*types_keys).merge(options)),
@@ -106,6 +108,9 @@
   <th>Description</th>
   <% if params[:q] && params[:q][:pin_eq] %>
     <th>Actions épinglées pour</th>
+  <% end %>
+  <% if params[:q] && params[:q][:group_type_eq] == 'outing' %>
+    <th>Photo</th>
   <% end %>
   <th>Statut</th>
   <th><span class="glyphicon glyphicon-user" aria-hidden="true"></span></th>
@@ -142,6 +147,17 @@
           <% end %>
         </td>
       <% end %>
+
+      <% if params[:q] && params[:q][:group_type_eq] == 'outing' %>
+        <td>
+          <% if entourage.outing_image_url? %>
+            <span class="label label-primary">oui</span>
+          <% else %>
+            <span class="label label-warning">non</span>
+          <% end %>
+        </td>
+      <% end %>
+
       <td><%= entourage_state_label(entourage) %></td>
       <td><span class="badge" title="Membres"><%= @member_count[entourage.id] %></span></td>
       <td><span class="badge" title="Messages"><%= @message_count[entourage.id].total %></span></td>

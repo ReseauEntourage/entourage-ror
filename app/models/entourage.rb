@@ -109,6 +109,10 @@ class Entourage < ApplicationRecord
   after_create :check_moderation
   before_create :set_uuid
 
+  ransacker :landscape_url do |instance|
+    Arel::Nodes::InfixOperation.new('->>', instance.table[:metadata], Arel::Nodes.build_quoted('landscape_url'))
+  end
+
   def moderator_read_for user:
     moderator_reads.where(user_id: user.id).first
   end
@@ -301,6 +305,12 @@ class Entourage < ApplicationRecord
         [key, value]
       end
     end.to_h
+  end
+
+  def outing_image_url?
+    return unless outing?
+
+    (self.metadata[:landscape_thumbnail_url] || self.metadata[:landscape_url]).present?
   end
 
   def outing_image_url
