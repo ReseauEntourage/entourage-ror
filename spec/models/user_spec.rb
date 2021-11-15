@@ -264,25 +264,34 @@ describe User, :type => :model do
       it { expect(open.reload.status).to eq('closed') }
       it { expect(suspended.reload.status).to eq('suspended') }
       it { expect(other_entourage.reload.status).to eq('open') }
-      it {}
     end
 
-    context 'send a message when user is blocked' do
-      before {
-        expect(ChatMessagesEntourageJob).to receive(:perform_later).with(
-          user.id,
-          [open.id],
-          UserBlockObserver::AUTO_CLOSE_MESSAGE % user.full_name
-        )
-      }
+    context 'a status_update message is requested when user is blocked' do
+      before { expect_any_instance_of(ChatMessage).to receive(:status_update_content) }
 
       it { user.update(validation_status: :blocked) }
+    end
+
+    context 'a chat_message is created when user is blocked' do
+      subject { user.update(validation_status: :blocked) }
+
+      it { expect { subject }.to change { ChatMessage.count }.by 1 }
+    end
+
+    context 'the content of status_update message is specific when the user is blocked' do
+      before { user.update(validation_status: :blocked) }
+
+      it {
+        expect(ChatMessage.last.content).to eq(
+          "a clôturé l’action : #{I18n.t("community.chat_messages.status_update.closed_user")}"
+        )
+      }
     end
 
     context 'do not send a message when user is validated' do
       before {
         expect_any_instance_of(UserBlockObserver).to receive(:after_update)
-        expect(ChatMessagesEntourageJob).not_to receive(:perform_later)
+        expect_any_instance_of(ChatMessage).not_to receive(:status_update_content)
       }
 
       it { user.update(validation_status: :validated) }

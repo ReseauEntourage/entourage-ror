@@ -1,8 +1,6 @@
 class UserBlockObserver < ActiveRecord::Observer
   observe :user
 
-  AUTO_CLOSE_MESSAGE = "Cette action a été clôturée car son auteur a quitté le réseau Entourage. N'hésitez pas à rejoindre d'autres actions solidaires sur l'app !"
-
   def after_update user
     return unless user.saved_change_to_validation_status? || user.saved_change_to_deleted?
 
@@ -27,13 +25,7 @@ class UserBlockObserver < ActiveRecord::Observer
   def close_entourages! user
     entourage_ids = Entourage.where(user_id: user.id, status: :open).pluck(:id)
 
-    EntouragesCloserJob.perform_later(entourage_ids)
-  end
-
-  def create_chat_message_for_entourages! user
-    entourage_ids = Entourage.where(user_id: user.id, group_type: [:action, :outing], status: :open).pluck(:id)
-
-    ChatMessagesEntourageJob.perform_later(user.id, entourage_ids, AUTO_CLOSE_MESSAGE)
+    EntouragesCloserJob.perform_later(entourage_ids, user.validation_status)
   end
 
   # @notice do not delete this method; we use it as documentation

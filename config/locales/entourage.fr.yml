@@ -205,3 +205,7 @@ fr:
       roles:
         moderator: Modérateur
         admin: Administrateur
+    chat_messages:
+      status_update:
+        closed_user: l'utilisateur a quitté le réseau Entourage. N'hésitez pas à rejoindre d'autres actions solidaires sur l'app !
+

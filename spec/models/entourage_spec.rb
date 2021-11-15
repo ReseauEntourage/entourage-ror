@@ -388,6 +388,20 @@ RSpec.describe Entourage, type: :model do
       }
     end
 
+    describe "a status_update message is created when status changed to closed" do
+      subject { entourage.update(status: :closed) }
+
+      it { expect { subject }.to change { ChatMessage.count }.by 1 }
+    end
+
+    context 'the content of status_update message is specific when status changed to closed' do
+      before { entourage.update(status: :closed) }
+
+      it {
+        expect(ChatMessage.last.content).to eq("a clôturé l’action")
+      }
+    end
+
     describe "status changed to closed on save" do
       it {
         expect_any_instance_of(Entourage).to receive(:create_chat_message_on_status_update)

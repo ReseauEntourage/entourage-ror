@@ -150,8 +150,12 @@ class ChatMessage < ApplicationRecord
     op = {
       closed: "a clôturé",
       open: "a rouvert",
+      user_deleted: "a clôturé",
+      user_blocked: "a clôturé",
+      user_anonymized: "a clôturé",
     }[metadata[:status].to_sym]
-    "#{op} #{GroupService.name messageable, :l}"
+
+    "#{op} #{GroupService.name messageable, :l}#{[' : ', content].join if content.present?}"
   end
 
   def share_content
