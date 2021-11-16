@@ -1,6 +1,6 @@
 module Admin
   class UsersController < Admin::BaseController
-    before_action :set_user, only: [:show, :messages, :engagement, :history, :edit, :update, :edit_block, :block, :temporary_block, :unblock, :cancel_phone_change_request, :download_export, :send_export, :anonymize, :destroy_avatar, :banish, :validate, :experimental_pending_request_reminder]
+    before_action :set_user, only: [:show, :messages, :engagement, :history, :edit, :update, :edit_block, :block, :temporary_block, :unblock, :cancel_phone_change_request, :download_export, :send_export, :anonymize, :destroy_avatar, :banish, :validate, :experimental_pending_request_reminder, :new_spam_warning, :create_spam_warning]
 
     def index
       @params = params.permit([:profile, :engagement, :status, :role, :search, q: [:postal_code_start, :postal_code_in_hors_zone]]).to_h
@@ -220,6 +220,36 @@ module Admin
       @user.anonymize! current_user
       UserServices::Avatar.new(user: @user).destroy
       redirect_to [:admin, @user], flash: { success: "Utilisateur anonymisé" }
+    end
+
+    def new_spam_warning
+      redirect_to [:admin, @user], flash: { success: "On ne peut prévenir du spam que sur un utilisateur bloqué" } unless @user.blocked?
+
+      @chat_message = ChatMessage.new
+    end
+
+    def create_spam_warning
+      redirect_to [:admin, @user], flash: {
+        error: "On ne peut prévenir du spam que sur un utilisateur bloqué"
+      } and return unless @user.blocked?
+
+      redirect_to new_spam_warning_admin_user_path(@user), flash: {
+        error: "Merci de renseigner un message"
+      } and return unless params[:message].present?
+
+      UserServices::SpamAlert.new(spammer: @user).alert!(current_user, params[:message]) do |on|
+        on.success do |user|
+          redirect_to [:admin, @user], flash: {
+            success: "Un message est envoyé aux différents utilisateurs qui ont été en contact avec #{@user.full_name}"
+          }
+        end
+
+        on.failure do |error, user|
+          flash[:error] = "L'envoi n'a pas pu être effectué : #{error.message}"
+
+          render :new_spam_warning
+        end
+      end
     end
 
     def fake

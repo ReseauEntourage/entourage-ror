@@ -196,14 +196,17 @@ class User < ApplicationRecord
   }
 
   scope :in_conversation_with, -> (user_id) {
-    joins(chat_messages: { entourage: :join_requests }).where(%(
-      chat_messages.user_id = :chat_message_user_id
-      and join_requests.user_id != :join_request_user_id
+    select("users.*")
+    .joins(join_requests: { entourage: :chat_messages })
+    .where(%(
+      users.id != :user_id
+      and chat_messages.user_id = :chat_message_user_id
       and entourages.group_type = 'conversation'
     ), {
-      chat_message_user_id: user_id,
-      join_request_user_id: user_id
+      user_id: user_id,
+      chat_message_user_id: user_id
     })
+    .group('users.id')
   }
 
   before_validation do
