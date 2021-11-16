@@ -431,7 +431,14 @@ class User < ApplicationRecord
     update(validation_status: "validated")
   end
 
-  def anonymize!
+  def anonymize! updater
+    UserHistory.create({
+      user_id: self.id,
+      updater_id: updater.id,
+      kind: 'anonymize',
+      metadata: {}
+    })
+
     update_attributes(
       validation_status: "anonymized",
       email: "anonymized@#{Time.now.to_i}",

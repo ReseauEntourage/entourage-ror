@@ -24,6 +24,25 @@ fr:
         engaged?: Engagé ?
         deleted: Supprimé
         organization_name: Association
+      user_history:
+        kind:
+          account: Compte créé
+          anonymize: Compte anonymisé
+          auto: auto
+          block: Compte bloqué
+          deleted: Compte supprimé
+          unblock: Compte débloqué
+          phone_change_cancel: Changement de téléphone annulé
+          phone_change_change: Numéro de téléphone changé
+          phone_change_request: Changement de téléphone demandé
+          signal-action: Signalement d'une action
+          signal-user: Signalement de l'utilisateur
+          spam-alert: Alerte des utilisateurs spammés
+          spam-detection: Spam détecté
+          sms: Code SMS redemandé
+        sms:
+          welcome: Bienvenue
+          regenerate: Demande de nouveau mot de passe
       organization:
         name: Nom
         description: Description

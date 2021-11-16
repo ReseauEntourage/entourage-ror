@@ -173,6 +173,16 @@ module Api
           message:        message
         ).notify
 
+        UserHistory.create({
+          user_id: @entourage.user_id,
+          updater_id: reporting_user.id,
+          kind: 'signal-action',
+          metadata: {
+            message: message,
+            entourage_id: @entourage.id
+          }
+        })
+
         head :created
       end
 

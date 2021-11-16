@@ -49,9 +49,15 @@ module Admin
     end
 
     def history
-      @sms_deliveries = SmsDelivery.where(phone_number: @user.phone).order('created_at desc')
-      @histories = @user.user_histories
-      @block_histories = @user.user_histories.blocked
+      @histories = UserServices::History.new(user).get
+
+      @sms_deliveries_count = @histories.select do |history|
+        history[:kind] == :sms
+      end.count
+
+      @block_count = @histories.select do |history|
+        history[:kind] == :block
+      end.count
     end
 
     def edit
@@ -211,7 +217,7 @@ module Admin
     end
 
     def anonymize
-      @user.anonymize!
+      @user.anonymize! current_user
       UserServices::Avatar.new(user: @user).destroy
       redirect_to [:admin, @user], flash: { success: "Utilisateur anonymisé" }
     end

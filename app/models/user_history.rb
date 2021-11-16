@@ -1,10 +1,11 @@
 class UserHistory < ApplicationRecord
   belongs_to :user
-  belongs_to :user, foreign_key: :updater_id
+  belongs_to :updater, class_name: :User
 
   attribute :metadata, :jsonb_with_schema
 
   scope :blocked, -> { where(kind: 'block').order('user_histories.created_at desc') }
+  scope :anonymized, -> { where(kind: 'anonymized') }
 
   def metadata= value
     value = add_metadata_schema_urn(value)
@@ -25,6 +26,21 @@ class UserHistory < ApplicationRecord
           cnil_explanation: { type: :string },
           temporary: { type: :boolean }
         }
+      when 'deleted:metadata'
+        {
+          email_was: { type: :string }
+        }
+      when 'signal-action:metadata'
+        {
+          message: { type: :string },
+          entourage_id: { type: :integer }
+        }
+      when 'signal-user:metadata'
+        {
+          message: { type: :string }
+        }
+      else
+        {}
       end
     end
   end
@@ -33,5 +49,11 @@ class UserHistory < ApplicationRecord
     return unless self[:metadata]
 
     self[:metadata][:cnil_explanation]
+  end
+
+  def message
+    return unless self[:metadata]
+
+    self[:metadata][:message]
   end
 end

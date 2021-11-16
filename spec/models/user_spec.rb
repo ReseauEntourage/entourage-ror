@@ -279,5 +279,71 @@ describe User, :type => :model do
       it { expect(suspended.reload.status).to eq('suspended') }
       it { expect(other_entourage.reload.status).to eq('open') }
     end
+
+    context 'close entourages when user is anonymized' do
+      before { user.update(validation_status: :anonymized) }
+
+      it { expect(open.reload.status).to eq('closed') }
+      it { expect(suspended.reload.status).to eq('suspended') }
+      it { expect(other_entourage.reload.status).to eq('open') }
+    end
+  end
+
+  describe 'block!' do
+    let(:user) { create(:public_user, phone: '+33600000000', token: 'foo') }
+    let(:moderator) { create(:pro_user, phone: '+33600000001', token: 'bar') }
+
+    subject { user.block! moderator, 'explanation' }
+    before { expect { subject }.to change { UserHistory.count }.by(1) }
+
+    it { expect(UserHistory.last.kind).to eq('block') }
+    it { expect(UserHistory.last.metadata[:temporary]).to eq(false) }
+    it { expect(UserHistory.last.metadata[:cnil_explanation]).to eq('explanation') }
+  end
+
+  describe 'temporary_block!' do
+    let(:user) { create(:public_user, phone: '+33600000000', token: 'foo') }
+    let(:moderator) { create(:pro_user, phone: '+33600000001', token: 'bar') }
+
+    subject { user.temporary_block! moderator, 'explanation' }
+    before { expect { subject }.to change { UserHistory.count }.by(1) }
+
+    it { expect(UserHistory.last.kind).to eq('block') }
+    it { expect(UserHistory.last.metadata[:temporary]).to eq(true) }
+    it { expect(UserHistory.last.metadata[:cnil_explanation]).to eq('explanation') }
+  end
+
+  describe 'unblock!' do
+    let(:user) { create(:public_user, phone: '+33600000000', token: 'foo') }
+    let(:moderator) { create(:pro_user, phone: '+33600000001', token: 'bar') }
+
+    subject { user.unblock! moderator, 'explanation' }
+    before { expect { subject }.to change { UserHistory.count }.by(1) }
+
+    it { expect(UserHistory.last.kind).to eq('unblock') }
+    it { expect(UserHistory.last.metadata[:temporary]).to be(nil) }
+    it { expect(UserHistory.last.metadata[:cnil_explanation]).to eq('explanation') }
+  end
+
+  describe 'anonymize!' do
+    let(:user) { create(:public_user, phone: '+33600000000', token: 'foo') }
+    let(:moderator) { create(:pro_user, phone: '+33600000001', token: 'bar') }
+
+    subject { user.anonymize! moderator }
+    before { expect { subject }.to change { UserHistory.count }.by(2) }
+
+    it { expect(UserHistory.first.kind).to eq('anonymize') }
+    it { expect(UserHistory.last.kind).to eq('deleted') }
+    it { expect(UserHistory.last.metadata[:email_was]).to eq('anonymized') }
+  end
+
+  describe 'deleted' do
+    let(:user) { create(:public_user, phone: '+33600000000', token: 'foo', email: 'foo@bar.com') }
+
+    subject { user.update_attribute(:deleted, true) }
+    before { expect { subject }.to change { UserHistory.count }.by(1) }
+
+    it { expect(UserHistory.last.kind).to eq('deleted') }
+    it { expect(UserHistory.last.metadata[:email_was]).to eq('foo@bar.com') }
   end
 end
