@@ -21,6 +21,7 @@ fr:
         validation_status: Statut
         last_sign_in_at: Date de dernière connexion
         postal_codes: Codes postaux
+        postal_code: Code postal
         engaged?: Engagé ?
         deleted: Supprimé
         organization_name: Association
