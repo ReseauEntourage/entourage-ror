@@ -101,6 +101,13 @@ describe User, :type => :model do
     expect(FactoryBot.build(:public_user, phone: '+33123456789', community: 'pfp'      ).save).to be true
   end
 
+  describe 'status' do
+    it { expect(User.new(validation_status: 'validated', deleted: false).status).to eq('validated') }
+    it { expect(User.new(validation_status: 'validated', deleted: true).status).to eq('deleted') }
+    it { expect(User.new(validation_status: 'blocked', deleted: true).status).to eq('deleted') }
+    it { expect(User.new(validation_status: 'blocked', deleted: false).status).to eq('blocked') }
+  end
+
   describe '#full_name' do
     subject { User.new(first_name: 'John', last_name: 'Doe').full_name }
     it { should eq 'John Doe' }
@@ -255,62 +262,90 @@ describe User, :type => :model do
     let!(:join_request_open) { create(:join_request, user: user, joinable: open) }
     let!(:join_request_suspended) { create(:join_request, user: user, joinable: suspended) }
 
-    let!(:other_user) { create(:public_user, phone: '+33600000010', token: 'bar', validation_status: :blocked) }
-    let!(:other_entourage) { create(:entourage, user_id: other_user.id, status: :open) }
+    let!(:blocked_user) { create(:public_user, phone: '+33600000010', token: 'bar', validation_status: :blocked) }
+    let!(:other_entourage) { create(:entourage, user_id: blocked_user.id, status: :open) }
 
-    context 'close entourages when user is blocked' do
-      before { user.update(validation_status: :blocked) }
+    describe 'user is blocked' do
+      context 'close entourages' do
+        before { user.update(validation_status: :blocked) }
 
-      it { expect(open.reload.status).to eq('closed') }
-      it { expect(suspended.reload.status).to eq('suspended') }
-      it { expect(other_entourage.reload.status).to eq('open') }
+        it { expect(open.reload.status).to eq('closed') }
+        it { expect(suspended.reload.status).to eq('suspended') }
+        it { expect(other_entourage.reload.status).to eq('open') }
+      end
+
+      context 'a status_update message is requested' do
+        before { expect_any_instance_of(ChatMessage).to receive(:status_update_content) }
+
+        it { user.update(validation_status: :blocked) }
+      end
+
+      context 'a chat_message is created' do
+        subject { user.update(validation_status: :blocked) }
+
+        it { expect { subject }.to change { ChatMessage.count }.by 1 }
+      end
+
+      context 'the content of status_update message is specific' do
+        before { user.update(validation_status: :blocked) }
+
+        it {
+          expect(ChatMessage.last.content).to eq(
+            "a clôturé l’action : #{I18n.t("community.chat_messages.status_update.closed_user")}"
+          )
+        }
+      end
     end
 
-    context 'a status_update message is requested when user is blocked' do
-      before { expect_any_instance_of(ChatMessage).to receive(:status_update_content) }
+    describe 'user is deleted' do
+      context 'close entourages' do
+        before { user.update(deleted: true) }
 
-      it { user.update(validation_status: :blocked) }
+        it { expect(open.reload.status).to eq('closed') }
+        it { expect(suspended.reload.status).to eq('suspended') }
+        it { expect(other_entourage.reload.status).to eq('open') }
+      end
+
+      context 'a status_update message is requested' do
+        before { expect_any_instance_of(ChatMessage).to receive(:status_update_content) }
+
+        it { user.update(deleted: true) }
+      end
+
+      context 'a chat_message is created' do
+        subject { user.update(deleted: true) }
+
+        it { expect { subject }.to change { ChatMessage.count }.by 1 }
+      end
+
+      context 'the content of status_update message is specific' do
+        before { user.update(deleted: true) }
+
+        it {
+          expect(ChatMessage.last.content).to eq(
+            "a clôturé l’action : #{I18n.t("community.chat_messages.status_update.closed_user")}"
+          )
+        }
+      end
     end
 
-    context 'a chat_message is created when user is blocked' do
-      subject { user.update(validation_status: :blocked) }
+    describe 'user is validated' do
+      context 'do not send a message' do
+        before {
+          expect_any_instance_of(UserBlockObserver).to receive(:after_update)
+          expect_any_instance_of(ChatMessage).not_to receive(:status_update_content)
+        }
 
-      it { expect { subject }.to change { ChatMessage.count }.by 1 }
-    end
+        it { blocked_user.update(validation_status: :validated) }
+      end
 
-    context 'the content of status_update message is specific when the user is blocked' do
-      before { user.update(validation_status: :blocked) }
+      context 'do not close entourages' do
+        before { blocked_user.update(validation_status: :validated) }
 
-      it {
-        expect(ChatMessage.last.content).to eq(
-          "a clôturé l’action : #{I18n.t("community.chat_messages.status_update.closed_user")}"
-        )
-      }
-    end
-
-    context 'do not send a message when user is validated' do
-      before {
-        expect_any_instance_of(UserBlockObserver).to receive(:after_update)
-        expect_any_instance_of(ChatMessage).not_to receive(:status_update_content)
-      }
-
-      it { user.update(validation_status: :validated) }
-    end
-
-    context 'close entourages when user is deleted' do
-      before { user.update(deleted: true) }
-
-      it { expect(open.reload.status).to eq('closed') }
-      it { expect(suspended.reload.status).to eq('suspended') }
-      it { expect(other_entourage.reload.status).to eq('open') }
-    end
-
-    context 'do not close entourages when user is back to validated' do
-      before { user.update(validation_status: :validated) }
-
-      it { expect(open.reload.status).to eq('open') }
-      it { expect(suspended.reload.status).to eq('suspended') }
-      it { expect(other_entourage.reload.status).to eq('open') }
+        it { expect(open.reload.status).to eq('open') }
+        it { expect(suspended.reload.status).to eq('suspended') }
+        it { expect(other_entourage.reload.status).to eq('open') }
+      end
     end
 
     context 'close entourages when user is anonymized' do

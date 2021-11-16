@@ -25,7 +25,7 @@ class UserBlockObserver < ActiveRecord::Observer
   def close_entourages! user
     entourage_ids = Entourage.where(user_id: user.id, status: :open).pluck(:id)
 
-    EntouragesCloserJob.perform_later(entourage_ids, user.validation_status)
+    EntouragesCloserJob.perform_later(entourage_ids, user.status)
   end
 
   # @notice do not delete this method; we use it as documentation
