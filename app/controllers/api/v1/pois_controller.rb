@@ -101,12 +101,7 @@ module Api
 
       def show
         if params[:id].start_with?('s')
-          https = Net::HTTP.new(PoiServices::Soliguide.host, PoiServices::Soliguide.port)
-          https.use_ssl = true
-
-          return render json: https.request(
-            Net::HTTP::Get.new(PoiServices::Soliguide.get_show_redirection(params[:id], show_params))
-          ).read_body
+          return render json: PoiServices::SoliguideShow.get(params[:id][1..])
         end
 
         poi = Poi.validated.find(params[:id])

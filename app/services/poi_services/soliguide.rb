@@ -3,6 +3,7 @@ module PoiServices
     attr_reader :host, :port
 
     API_HOST = ENV['ENTOURAGE_SOLIGUIDE_HOST']
+    API_KEY = ENV['SOLIGUIDE_API_KEY']
 
     PARIS = {
       latitude: 48.8586,
