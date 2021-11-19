@@ -1,5 +1,3 @@
-# require 'html_to_plain_text'
-
 module PoiServices
   class SoliguideFormatter
     def self.format_audience publics, modalities
