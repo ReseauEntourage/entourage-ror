@@ -163,7 +163,7 @@ module PoiServices
     end
 
     def self.format_description string
-      HtmlToPlainText.plain_text(string)
+      Nokogiri::HTML(string).text
         .gsub(/\n\n+/, "\n\n") # Never leave more than 2 consecutive newlines.
         .strip                 # Strip leading and trailing whitespace.
     end
@@ -177,9 +177,12 @@ module PoiServices
     end
 
     def self.categories_from_entourage entourage_category
-      CATEGORIES_EQUIVALENTS
-        .find_all { |_, value| value == entourage_category }
-        .map(&:first)
+      return nil unless entourage_category
+      return nil unless CATEGORIES_EQUIVALENTS.values.include?(entourage_category)
+
+      CATEGORIES_EQUIVALENTS.find_all {|_, value|
+        value == entourage_category
+      }.map(&:first)
     end
 
     def self.group_by_top_category categories
