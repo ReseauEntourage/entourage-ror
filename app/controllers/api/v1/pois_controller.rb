@@ -113,29 +113,6 @@ module Api
         render json: poi, serializer: ::V1::PoiSerializer, scope: {version: :v2}
       end
 
-      def soliguide_test
-        render json: {
-          poi: {
-            uuid: "s114",
-            source: :soliguide,
-            source_url: "https://soliguide.fr/fiche/cafe-social-dejean-paris-114",
-            name: "Café Social Dejean - Association Ayyem Zamen",
-            description: "L'association Ayyem Zamen se mobilise auprès des personnes vieillissantes, en situation de précarité économique ou de fragilité sociale, notamment celles ayant vécu une migration.\nLe Café Social est un lieu de sociabilité pour briser l'isolement des vieux migrants et leur venir en aide dans des démarches quotidiennes.\n\n• Un lieu de mixité sociale et culturelle, qui accueille toutes les nationalités, des hommes aussi bien que des femmes, pour se rencontrer, sortir de la solitude et de l'oubli, trouver une écoute... \n• Un salon de thé pour prendre un café ou un thé, dans un cadre chaleureux et beau. \n• Un espace “Entre-femmes“ (sorties hammam, ateliers artistiques, bijoux, décoration ﬂorale, patchwork…). \n• Un espace de jeux (cartes, dominos, jeux d’échecs, jeux traditionnels…).",
-            longitude: 2.350839,
-            latitude: 48.887142,
-            address: "1 Rue Dejean, 75018 Paris, France",
-            phone: "0142230593",
-            website: "https://www.cafesocial.org/",
-            email: "ayyem.zamen@gmail.com",
-            audience: "ouvert aux hommes et femmes, avec ou sans papiers, sans rendez-vous.\nPersonnes de plus de 55 ans, notamment migrantes, parisiens",
-            partner_id: nil,
-            category_ids: [5, 6, 7, 3],
-            hours: "Lun : 9h30 à 17h30\nMar : 9h30 à 17h30\nMer : 9h30 à 17h30\nJeu : 9h30 à 17h30\nVen : 9h30 à 17h30\nSam : Fermé\nDim : Fermé",
-            languages: "français"
-          }
-        }
-      end
-
       def create
         @poi = Poi.new(poi_params)
         @poi.validated = false
