@@ -238,4 +238,100 @@ describe PoiServices::Soliguide do
       it { expect(subject).to eq("Lun : 8h00 à 12h30 - 14h00 à 16h30\nMar : 7h00 à 12h30 - 13h30 à 16h30") }
     end
   end
+
+  describe 'format_title' do
+    subject { PoiServices::SoliguideFormatter.format_title place_name, entity_name }
+
+    context 'no names' do
+      let(:place_name) { nil }
+      let(:entity_name) { nil }
+      it { expect(subject).to eq("") }
+    end
+
+    context 'only place_name' do
+      let(:place_name) { "Lorem ipsum dolor sit amet" }
+      let(:entity_name) { nil }
+      it { expect(subject).to eq("Lorem ipsum dolor sit amet") }
+    end
+
+    context 'only entity_name' do
+      let(:place_name) { nil }
+      let(:entity_name) { "Lorem ipsum dolor sit amet" }
+      it { expect(subject).to eq("Lorem ipsum dolor sit amet") }
+    end
+
+    context 'both names without similarity' do
+      let(:place_name) { "Lorem ipsum dolor sit amet" }
+      let(:entity_name) { "consectetur adipiscing elit" }
+      it { expect(subject).to eq("Lorem ipsum dolor sit amet - consectetur adipiscing elit") }
+    end
+
+    context 'both names with high similarity' do
+      let(:place_name) { "Lorem ipsum dolor sit amet" }
+      let(:entity_name) { "Lorem ipsum dolor sit amet, consectetur adipiscing" }
+      it { expect(subject).to eq("Lorem ipsum dolor sit amet") }
+    end
+  end
+
+  describe 'format_description' do
+    subject { PoiServices::SoliguideFormatter.format_description description }
+
+    context 'no description' do
+      let(:description) { nil }
+      it { expect(subject).to eq("") }
+    end
+
+    context 'plaintext description' do
+      let(:description) { "Lorem ipsum dolor sit amet" }
+      it { expect(subject).to eq("Lorem ipsum dolor sit amet") }
+    end
+
+    context 'html description' do
+      let(:description) { "<p>Lorem ipsum dolor sit amet</p>" }
+      it { expect(subject).to eq("Lorem ipsum dolor sit amet") }
+    end
+
+    context 'html accent description' do
+      let(:description) { "<p>Lorem to caf&#233;t&#233;ria</p>" }
+      it { expect(subject).to eq("Lorem to cafétéria") }
+    end
+  end
+
+  describe 'extract_words' do
+    subject { PoiServices::SoliguideFormatter.extract_words words }
+
+    context 'nil words' do
+      let(:words) { nil }
+      it { expect(subject).to eq([]) }
+    end
+
+    context 'empty words' do
+      let(:words) { "" }
+      it { expect(subject).to eq([]) }
+    end
+
+    context 'with 3 or less words' do
+      let(:words) { "Lorem ipsum dolor sit amet" }
+      it { expect(subject).to eq(["lorem", "ipsum", "dolor", "amet"]) }
+    end
+  end
+
+  describe 'categories_from_entourage' do
+    subject { PoiServices::SoliguideFormatter.categories_from_entourage entourage_category }
+
+    context 'no entourage_category' do
+      let(:entourage_category) { nil }
+      it { expect(subject).to eq(nil) }
+    end
+
+    context 'invalid entourage_category' do
+      let(:entourage_category) { 0 }
+      it { expect(subject).to eq(nil) }
+    end
+
+    context 'invalid entourage_category' do
+      let(:entourage_category) { 1 }
+      it { expect(subject).to eq([600, 601, 602, 603, 604]) }
+    end
+  end
 end
