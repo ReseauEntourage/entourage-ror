@@ -393,6 +393,22 @@ module PoiServices
       1122 => 3, # ACUPUNCTURE
     }
 
+    CATEGORIES_EQUIVALENTS_REVERSED = {
+      1 => [600],
+      2 => [401, 700],
+      3 => [100, 1100],
+      4 => [300],
+      5 => [400, 500, 700],
+      6 => [300, 705, 800, 900],
+      7 => [200, 707],
+      40 => [304],
+      41 => [605],
+      42 => [301],
+      43 => [302],
+      61 => [903],
+      63 => [901],
+    }
+
     ISO_LANGS = {
       ab: "Abkhaz",
       aa: "Afar (Erythtrée / Ethiopie)",
