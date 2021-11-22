@@ -206,22 +206,51 @@ describe Api::V1::PoisController, :type => :controller do
         end
       end
 
-      context 'redirects to soliguide when Paris' do
+      context 'gets soliguide when Paris' do
         paris = PoiServices::Soliguide::PARIS
         params = { latitude: paris[:latitude], longitude: paris[:longitude], distance: 5, v: '2', format: :json }
-        url = "#{ENV['ENTOURAGE_SOLIGUIDE_HOST']}?distance=5&latitude=#{paris[:latitude]}&longitude=#{paris[:longitude]}"
-
-        before {
-          stub_request(:get, url).with(headers: {
-            'Accept'=>'*/*',
-            'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-            'User-Agent'=>'Ruby'
-          }).to_return(status: 200, body: "[soliguide_called]", headers: {})
-
-          get :index, params: params
+        subject {
+          stub_request(:post, "https://api.soliguide.fr/new-search").to_return(status: 200, body: body.to_json, headers: {})
         }
-        it { expect(response.status).to eq 200 }
-        it { expect(response.body).to eq("[soliguide_called]") }
+
+        context 'no result from Soliguide' do
+          let(:body) { {
+            results: 0,
+            places: []
+          } }
+          before { subject ; get :index, params: params }
+
+          it { expect(response.status).to eq 200 }
+          it { expect(response.body).to eq({ pois: [] }.to_json) }
+        end
+
+        context 'one result from Soliguide' do
+          let(:body) { {
+            results: 0,
+            places: [{
+              lieu_id: 0,
+              address: "174 rue Championnet Paris",
+              entity: { name: "Entourage" },
+              location: {
+                coordinates: [1, 2],
+              },
+              services_all: []
+            }]
+          } }
+          before { subject ; get :index, params: params }
+
+          it { expect(response.status).to eq 200 }
+          it { expect(response.body).to eq({ pois: [{
+            uuid: "s0",
+            name: "Entourage",
+            longitude: 1,
+            latitude: 2,
+            address: "174 rue Championnet Paris",
+            phone: nil,
+            category_id: 0,
+            partner_id: nil
+          }] }.to_json) }
+        end
       end
     end
   end
