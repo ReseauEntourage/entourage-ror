@@ -45,8 +45,8 @@ module PoiServices
         }
       }
 
-      params[:categories] = categories.first if categories.one?
-      params[:query] = query if query.present?
+      params[:categories] = soliguide_category(categories) if soliguide_category(categories).present?
+      params[:name] = query if query.present?
 
       params
     end
@@ -56,6 +56,12 @@ module PoiServices
 
     def categories
       @categories ||= (category_ids || "").split(",").map(&:to_i).uniq
+    end
+
+    def soliguide_category categories
+      return unless categories.one?
+
+      PoiServices::SoliguideFormatter::CATEGORIES_EQUIVALENTS_REVERSED[categories.first]
     end
 
     def close_to? city

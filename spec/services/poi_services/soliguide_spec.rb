@@ -37,24 +37,71 @@ describe PoiServices::Soliguide do
     end
   end
 
-  describe 'get_index_redirection' do
-    it {
-      expect(PoiServices::Soliguide.new({
+  describe 'query_params' do
+    subject { PoiServices::Soliguide.new(params).query_params }
+
+    context 'minimal search' do
+      let(:params) { {
         latitude: 47.3,
         longitude: -1.55,
+      } }
+
+      it {
+        expect(subject).to eq({
+          location: {
+            distance: PoiServices::Soliguide::DISTANCE_MIN,
+            latitude: 47.3,
+            longitude: -1.55,
+            geoType: :ville,
+            geoValue: :Paris,
+          }
+        })
+      }
+    end
+
+    context 'with query and multiple categories' do
+      let(:params) { {
         distance: 5.0,
+        latitude: 47.3,
+        longitude: -1.55,
         category_ids: "1,2",
         query: 'myquery'
-      }).get_index_redirection).to eq "#{PoiServices::Soliguide::API_HOST}?distance=5.0&latitude=47.3&longitude=-1.55&query=myquery"
-    }
+      } }
 
-    it {
-      expect(PoiServices::Soliguide.new({
+      it {
+        expect(subject).to eq({
+          location: {
+            distance: 5.0,
+            latitude: 47.3,
+            longitude: -1.55,
+            geoType: :ville,
+            geoValue: :Paris,
+          },
+          name: 'myquery',
+        })
+      }
+    end
+
+    context 'without query and single category' do
+      let(:params) { {
+        distance: 5.0,
         latitude: 47.3,
         longitude: -1.55,
-        distance: 5.0,
         category_ids: "1"
-      }).get_index_redirection).to eq "#{PoiServices::Soliguide::API_HOST}?categories=1&distance=5.0&latitude=47.3&longitude=-1.55"
-    }
+      } }
+
+      it {
+        expect(subject).to eq({
+          location: {
+            distance: 5.0,
+            latitude: 47.3,
+            longitude: -1.55,
+            geoType: :ville,
+            geoValue: :Paris,
+          },
+          categories: [600],
+        })
+      }
+    end
   end
 end
