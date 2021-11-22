@@ -1,5 +1,37 @@
 module PoiServices
   class SoliguideFormatter
+    # @todo add unit tests
+    # @todo refactor: get specific formatter for services_all, location, entity, languages
+    def self.format poi
+      return nil unless poi
+
+      source_categories = poi['services_all'].map { |service| service['categorie'] }
+
+      category_ids = source_categories.map {
+        |cat_id| CATEGORIES_EQUIVALENTS[cat_id]
+      }.compact.uniq
+
+      {
+        uuid: "s#{poi['lieu_id']}",
+        source: :soliguide,
+        source_url: "https://soliguide.fr/fiche/#{poi['seo_url']}",
+        name: format_title(poi['name'], poi['entity']['name']),
+        description: format_description(poi['description']),
+        longitude: poi['location']['coordinates'][0].round(6),
+        latitude: poi['location']['coordinates'][1].round(6),
+        address: poi['address'].presence,
+        phone: poi['entity']['phone'].presence,
+        website: poi['entity']['website'].presence,
+        email:poi['entity']['mail'].presence,
+        audience: format_audience(poi['conditions'], poi['modalities']),
+        category_ids: category_ids,
+        source_category_id: source_categories.compact.first,
+        source_category_ids: source_categories.compact.uniq,
+        hours: format_hours(poi['newhours']),
+        languages: poi['languages'].map { |l| ISO_LANGS[l.to_sym] }.compact.join(', ')
+      }
+    end
+
     def self.format_audience publics, modalities
       (format_publics(publics) + format_modalities(modalities)).join("\n")
     end
