@@ -1,8 +1,5 @@
 module PoiServices
   class Soliguide
-    attr_reader :host, :port
-
-    API_HOST = ENV['ENTOURAGE_SOLIGUIDE_HOST']
     API_KEY = ENV['SOLIGUIDE_API_KEY']
 
     PARIS = {
@@ -31,29 +28,21 @@ module PoiServices
       close_to?(PARIS)
     end
 
-    def get_index_redirection
+    def query_params
       params = {
-        distance:  distance,
-        latitude:  latitude,
-        longitude: longitude,
+        location: {
+          distance:  distance,
+          latitude:  latitude,
+          longitude: longitude,
+          geoType: :ville,
+          geoValue: :Paris, # @notice To be changed when different cities have access to Soliguide
+        }
       }
 
       params[:categories] = categories.first if categories.one?
       params[:query] = query if query.present?
 
-      "#{PoiServices::Soliguide::API_HOST}?#{params.to_query}"
-    end
-
-    def self.get_show_redirection(id, params)
-      "#{PoiServices::Soliguide::API_HOST}/#{id}?#{params.except(:action, :controller, :id).to_query}"
-    end
-
-    def self.host
-      URI(PoiServices::Soliguide::API_HOST).host
-    end
-
-    def self.port
-      URI(PoiServices::Soliguide::API_HOST).port
+      params
     end
 
     private

@@ -7,10 +7,6 @@ module PoiServices
 
       source_categories = poi['services_all'].map { |service| service['categorie'] }
 
-      category_ids = source_categories.map {
-        |cat_id| CATEGORIES_EQUIVALENTS[cat_id]
-      }.compact.uniq
-
       {
         uuid: "s#{poi['lieu_id']}",
         source: :soliguide,
@@ -24,7 +20,7 @@ module PoiServices
         website: poi['entity']['website'].presence,
         email:poi['entity']['mail'].presence,
         audience: format_audience(poi['conditions'], poi['modalities']),
-        category_ids: category_ids,
+        category_ids: format_category_ids(poi),
         source_category_id: source_categories.compact.first,
         source_category_ids: source_categories.compact.uniq,
         hours: format_hours(poi['newhours']),
@@ -32,8 +28,33 @@ module PoiServices
       }
     end
 
+    def self.format_short poi
+      return nil unless poi
+
+      category_ids = format_category_ids(poi)
+
+      {
+        uuid: "s#{poi['lieu_id']}",
+        name: format_title(poi['name'], poi['entity']['name']),
+        longitude: poi['location']['coordinates'][0].round(6),
+        latitude: poi['location']['coordinates'][1].round(6),
+        address: poi['address'],
+        phone: poi['entity']['phone'],
+        category_id: category_ids.any? ? category_ids[0] : 0,
+        partner_id: nil
+      }
+    end
+
     def self.format_audience publics, modalities
       (format_publics(publics) + format_modalities(modalities)).join("\n")
+    end
+
+    def self.format_category_ids poi
+      poi['services_all'].map do |service|
+        service['categorie']
+      end.map do |category_id|
+        CATEGORIES_EQUIVALENTS[category_id]
+      end.compact.uniq
     end
 
     # "publics": {

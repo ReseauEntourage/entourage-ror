@@ -8,16 +8,6 @@ module Api
       #curl -H "Content-Type: application/json" "https://entourage-back-preprod.herokuapp.com/api/v1/pois.json?token=153ad0b7ef67e5c44b8ef5afc12709e4&category_ids=1,2"
       def index
         version = params[:v] == '2' ? :v2 : :v1
-        soliguide = PoiServices::Soliguide.new(soliguide_params)
-
-        if version == :v2 && params[:no_redirect] != 'true' && soliguide.apply?
-          https = Net::HTTP.new(PoiServices::Soliguide.host, PoiServices::Soliguide.port)
-          https.use_ssl = true
-
-          return render json: https.request(
-            Net::HTTP::Get.new(soliguide.get_index_redirection)
-          ).read_body
-        end
 
         @categories = Category.all
         @pois = Poi.validated
@@ -87,6 +77,10 @@ module Api
 
           ActiveModel::ArraySerializer.new(pois, each_serializer: ::V1::PoiSerializer, scope: {version: :"#{version}_list"}).as_json
         end.serialize
+
+        # soliguide
+        soliguide = PoiServices::Soliguide.new(soliguide_params)
+        poi_json += PoiServices::SoliguideIndex.post(soliguide.query_params) if version == :v2 && soliguide.apply?
 
         payload =
           case version
