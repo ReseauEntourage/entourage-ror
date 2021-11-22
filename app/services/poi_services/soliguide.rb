@@ -1,6 +1,8 @@
 module PoiServices
   class Soliguide
     API_KEY = ENV['SOLIGUIDE_API_KEY']
+    DISTANCE_MIN = 2
+    DISTANCE_MAX = 10
 
     PARIS = {
       latitude: 48.8586,
@@ -35,7 +37,7 @@ module PoiServices
     def query_params
       params = {
         location: {
-          distance:  distance,
+          distance:  (distance || 0).to_f.clamp(DISTANCE_MIN, DISTANCE_MAX),
           latitude:  latitude,
           longitude: longitude,
           geoType: :ville,
