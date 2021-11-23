@@ -151,9 +151,9 @@
       <% if params[:q] && params[:q][:group_type_eq] == 'outing' %>
         <td>
           <% if entourage.outing_image_url? %>
-            <span class="label label-primary">oui</span>
+            <span class="label label-success">oui</span>
           <% else %>
-            <span class="label label-warning">non</span>
+            <span class="label label-default">non</span>
           <% end %>
         </td>
       <% end %>
