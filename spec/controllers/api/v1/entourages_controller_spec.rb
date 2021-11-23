@@ -463,6 +463,37 @@ describe Api::V1::EntouragesController do
         it { expect(Entourage.last.metadata[:portrait_thumbnail_url]).to eq("entourage_images/images/mypicture.png") }
       end
 
+      context "metadata (outings) with empty urls" do
+        let(:params) do
+          {
+            entourage_type: :outing,
+            group_type: :outing,
+            title: "Apéro Entourage",
+            location: {
+              latitude: 48.868959,
+              longitude: 2.390185
+            },
+            metadata: {
+              starts_at: "2018-09-04T19:30:00+02:00",
+              place_name: "Le Dorothy",
+              street_address: "85 bis rue de Ménilmontant, 75020 Paris, France",
+              google_place_id: "ChIJFzXXy-xt5kcRg5tztdINnp0",
+              landscape_url: "",
+              landscape_thumbnail_url: "",
+              portrait_url: "",
+              portrait_thumbnail_url: "",
+            }
+          }
+        end
+        before {
+          post :create, params: { entourage: params, token: user.token }
+        }
+        it { expect(Entourage.last.metadata[:landscape_url]).to eq(nil) }
+        it { expect(Entourage.last.metadata[:landscape_thumbnail_url]).to eq(nil) }
+        it { expect(Entourage.last.metadata[:portrait_url]).to eq(nil) }
+        it { expect(Entourage.last.metadata[:portrait_thumbnail_url]).to eq(nil) }
+      end
+
       context "recipient consent" do
         let(:group_details) { {entourage_type: "ask_for_help"} }
         let(:entourage) { Entourage.last }

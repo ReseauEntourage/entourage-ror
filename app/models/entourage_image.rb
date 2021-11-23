@@ -38,6 +38,8 @@ class EntourageImage < ApplicationRecord
   end
 
   def self.from_absolute_to_relative_url url
+    return unless url.present?
+
     url = url.gsub /(.)*entourage_images\/images\//, ''
     url = url.gsub /\?(.)*/, '' if url.include? '?'
 
