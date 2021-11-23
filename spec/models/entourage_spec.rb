@@ -394,11 +394,19 @@ RSpec.describe Entourage, type: :model do
       it { expect { subject }.to change { ChatMessage.count }.by 1 }
     end
 
-    context 'the content of status_update message is specific when status changed to closed' do
+    context 'the content of status_update message when status changed to closed' do
       before { entourage.update(status: :closed) }
 
       it {
         expect(ChatMessage.last.content).to eq("a clôturé l’action")
+      }
+    end
+
+    context 'the content of status_update message is specific when status changed to closed' do
+      before { entourage.update(status: :closed, close_message: 'foo') }
+
+      it {
+        expect(ChatMessage.last.content).to eq("a clôturé l’action : foo")
       }
     end
 
