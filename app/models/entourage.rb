@@ -109,10 +109,6 @@ class Entourage < ApplicationRecord
   after_create :check_moderation
   before_create :set_uuid
 
-  ransacker :landscape_url do |instance|
-    Arel::Nodes::InfixOperation.new('->>', instance.table[:metadata], Arel::Nodes.build_quoted('landscape_url'))
-  end
-
   def moderator_read_for user:
     moderator_reads.where(user_id: user.id).first
   end
