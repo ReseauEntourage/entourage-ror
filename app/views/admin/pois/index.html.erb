@@ -19,7 +19,7 @@
       <td><%= poi.id %></td>
       <td><%= poi.name %></td>
       <td><%= poi.adress %></td>
-      <td><%=  l(poi.created_at, format: :short) if poi.created_at %></td>
+      <td><%= l(poi.created_at, format: :date_long) if poi.created_at %></td>
       <td><%= check_box_tag '', '', poi.validated, disabled: true %></td>
     </tr>
   <% end %>
