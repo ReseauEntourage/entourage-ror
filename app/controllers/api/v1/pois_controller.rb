@@ -95,7 +95,7 @@ module Api
 
       def show
         if params[:id].start_with?('s')
-          return render json: PoiServices::SoliguideShow.get(params[:id][1..])
+          return render json: { poi: PoiServices::SoliguideShow.get(params[:id][1..]) }
         end
 
         poi = Poi.validated.find(params[:id])
