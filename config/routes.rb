@@ -78,6 +78,7 @@ Rails.application.routes.draw do
         get '/entourage_images', action: :entourage_images
         get '/outings_images', action: :outings_images
         get '/soliguide', action: :soliguide
+        get '/soliguide_show/:id' => :soliguide_show, as: :soliguide_show
         # sidekiq: /super_admin/sidekiq defined previously
         get '/jobs_crons', action: :jobs_crons
         post '/force_close_tours', action: :force_close_tours

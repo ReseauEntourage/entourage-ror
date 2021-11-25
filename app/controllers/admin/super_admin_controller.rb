@@ -44,11 +44,12 @@ module Admin
       @pois = []
       @poi = nil
 
-      if soliguide_params[:type] == 'index'
-        soliguide = PoiServices::Soliguide.new(soliguide_params)
-        @pois = PoiServices::SoliguideIndex.post(soliguide.query_params)
-      elsif soliguide_params[:type] == 'show'
-      end
+      soliguide = PoiServices::Soliguide.new(soliguide_params)
+      @pois = PoiServices::SoliguideIndex.post(soliguide.query_params)
+    end
+
+    def soliguide_show
+      @poi = PoiServices::SoliguideShow.get(params[:id][1..])
     end
 
     def jobs_crons
@@ -81,7 +82,7 @@ module Admin
     private
 
     def soliguide_params
-      params.permit(:type, :limit, :latitude, :longitude, :distance, :category_ids, :query)
+      params.permit(:limit, :latitude, :longitude, :distance, :category_ids, :query)
     end
   end
 end
