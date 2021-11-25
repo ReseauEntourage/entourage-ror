@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 describe PoiServices::Soliguide do
-  let!(:tour) { FactoryBot.create(:tour) }
-
   describe 'apply?' do
     let!(:option_soliguide) { FactoryBot.create(:option_soliguide) }
 
