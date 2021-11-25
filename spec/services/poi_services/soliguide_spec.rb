@@ -52,7 +52,8 @@ describe PoiServices::Soliguide do
             longitude: -1.55,
             geoType: :ville,
             geoValue: :Paris,
-          }
+          },
+          options: {},
         })
       }
     end
@@ -75,6 +76,7 @@ describe PoiServices::Soliguide do
             geoType: :ville,
             geoValue: :Paris,
           },
+          options: {},
           name: 'myquery',
         })
       }
@@ -97,6 +99,7 @@ describe PoiServices::Soliguide do
             geoType: :ville,
             geoValue: :Paris,
           },
+          options: {},
           categories: [600],
         })
       }
