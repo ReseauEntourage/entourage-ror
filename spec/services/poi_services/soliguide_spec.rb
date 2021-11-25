@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 describe PoiServices::Soliguide do
-  let!(:tour) { FactoryBot.create(:tour) }
-
   describe 'apply?' do
     # Paris
     it 'should be valid for Paris' do
