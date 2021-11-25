@@ -40,6 +40,17 @@ module Admin
       end
     end
 
+    def soliguide
+      @pois = []
+      @poi = nil
+
+      if soliguide_params[:type] == 'index'
+        soliguide = PoiServices::Soliguide.new(soliguide_params)
+        @pois = PoiServices::SoliguideIndex.post(soliguide.query_params)
+      elsif soliguide_params[:type] == 'show'
+      end
+    end
+
     def jobs_crons
     end
 
@@ -65,6 +76,12 @@ module Admin
       redirect_to sidekiq_web_path, flash: {
         success: "Un job a été créé pour envoyer les messages de bienvenue"
       }
+    end
+
+    private
+
+    def soliguide_params
+      params.permit(:type, :limit, :latitude, :longitude, :distance, :category_ids, :query)
     end
   end
 end
