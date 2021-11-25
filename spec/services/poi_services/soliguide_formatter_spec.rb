@@ -23,6 +23,45 @@ describe PoiServices::Soliguide do
     it { expect(subject).to eq("Accueil préférentiel : de 16 à 35 ans\nAutres informations importantes : foo\nAnimaux autorisés\nSur inscription (bar)") }
   end
 
+  describe 'format_category_ids' do
+    subject { PoiServices::SoliguideFormatter.format_category_ids poi }
+
+    context 'no services_all' do
+      let(:poi) { {} }
+      it { expect(subject).to eq([]) }
+    end
+
+    context 'empty services_all' do
+      let(:poi) { { 'services_all' => [] } }
+      it { expect(subject).to eq([]) }
+    end
+
+    context 'wrong categorie' do
+      let(:poi) { { 'services_all' => [
+        { 'categorie' => 1 }
+      ] } }
+      it { expect(subject).to eq([]) }
+    end
+
+    context 'soliguide categorie' do
+      let(:poi) { { 'services_all' => [
+        { 'categorie' => 100 }
+      ] } }
+      it { expect(subject).to eq([3]) }
+    end
+
+    context 'multiple soliguide categorie' do
+      let(:poi) { { 'services_all' => [
+        { 'categorie' => 100 },
+        { 'categorie' => 101 },
+        { 'categorie' => 203 },
+        { 'categorie' => 303 },
+        { 'categorie' => 304 },
+      ] } }
+      it { expect(subject).to eq([3, 7, 6, 40]) }
+    end
+  end
+
   describe 'format_publics' do
     subject { PoiServices::SoliguideFormatter.format_publics publics }
 
