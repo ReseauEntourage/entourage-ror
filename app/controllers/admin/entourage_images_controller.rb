@@ -11,7 +11,7 @@ module Admin
     def create
       @entourage_image = EntourageImage.new(entourage_image_params)
       if @entourage_image.save
-        redirect_to admin_entourage_images_path, notice: "La photo a bien été créée"
+        redirect_to edit_admin_entourage_image_path(@entourage_image.id)
       else
         render :new
       end
