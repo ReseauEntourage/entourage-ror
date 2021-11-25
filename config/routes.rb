@@ -71,9 +71,10 @@ Rails.application.routes.draw do
       end
 
       namespace :super_admin do
+        get '/announcements_images', action: :announcements_images
         get '/entourage_images', action: :entourage_images
         get '/outings_images', action: :outings_images
-        get '/announcements_images', action: :announcements_images
+        get '/soliguide', action: :soliguide
         # sidekiq: /super_admin/sidekiq defined previously
         get '/jobs_crons', action: :jobs_crons
         post '/force_close_tours', action: :force_close_tours
