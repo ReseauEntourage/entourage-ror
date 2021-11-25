@@ -33,7 +33,9 @@ module PoiServices
       http = Net::HTTP.new(uri.host, uri.port)
       http.use_ssl = true
 
-      JSON.parse(http.post(uri.path, params.to_json, headers).read_body)['places']
+      JSON.parse(http.post(uri.path, params.to_json, headers).read_body)['places'] || []
+    rescue JSON::ParserError => e
+      []
     end
   end
 end
