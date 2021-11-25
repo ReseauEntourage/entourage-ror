@@ -50,7 +50,6 @@ class Entourage < ApplicationRecord
   attr_accessor :current_join_request, :number_of_unread_messages, :entourage_image_id
   attr_accessor :change_ownership_message
   attr_accessor :user_status
-  attr_accessor :close_message
 
   validates_presence_of :status, :title, :entourage_type, :user_id, :latitude, :longitude, :number_of_people
   validates_inclusion_of :status, in: ENTOURAGE_STATUS, if: :outing?
@@ -393,8 +392,6 @@ class Entourage < ApplicationRecord
     if @user_status.present? && status == 'closed'
       chat_message_status = "user_#{@user_status}"
       content = I18n.t('community.chat_messages.status_update.closed_user')
-    elsif status == 'closed'
-      content = close_message
     end
 
     ChatMessage.create(
