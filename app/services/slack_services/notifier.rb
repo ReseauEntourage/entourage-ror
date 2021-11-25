@@ -7,7 +7,11 @@ module SlackServices
     end
 
     def notifier
-      Slack::Notifier.new(webhook 'url')
+      Slack::Notifier.new(url)
+    end
+
+    def url
+      webhook 'url'
     end
 
     def webhook field

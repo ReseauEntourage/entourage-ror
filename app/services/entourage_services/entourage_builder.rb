@@ -123,6 +123,10 @@ module EntourageServices
         entourage.metadata[:ends_at] = nil
       end
 
+      if entourage.metadata[:close_message].present?
+        SlackServices::ActionCloseMessage.new(action: entourage, message: entourage.metadata[:close_message])
+      end
+
       entourage.skip_updated_at! if
         entourage.changes.all? do |attribute, change|
           from, to = change
