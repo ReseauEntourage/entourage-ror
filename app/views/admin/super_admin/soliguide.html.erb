@@ -1,0 +1,50 @@
+<div class="container">
+  <div class="row">
+    <div class="col-xs-offset-2 col-xs-8">
+      <div class="h1" style="display: flex; align-items: center;">
+        <div style="flex-grow: 1">Pois</div>
+      </div>
+
+      <% if @pois.empty? %>
+        <div class="panel panel-warning">
+          <div class="panel-heading">
+            <h3 class="panel-title">Aucun POI trouvé.</h3>
+          </div>
+        </div>
+      <% else %>
+        <table class="table">
+          <th>UUID</th>
+          <th>Name</th>
+          <th>Latitude</th>
+          <th>Longitude</th>
+          <th>Address</th>
+          <th>Phone</th>
+          <th>Category_id</th>
+
+          <% @pois.each do |poi| %>
+            <tr>
+              <td><%= poi[:uuid][1..] %></td>
+              <td><%= link_to poi[:name], "https://soliguide.fr/place/%s" % poi[:uuid][1..], method: :get, remote: true, class: 'auth-link' %></td>
+              <td><%= poi[:latitude] %></td>
+              <td><%= poi[:longitude] %></td>
+              <td><%= poi[:address] %></td>
+              <td><%= poi[:phone] %></td>
+              <td><%= poi[:category_id] %></td>
+            </tr>
+          <% end %>
+        </table>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="row">
+    <%#= paginate @paginated %>
+  </div>
+</div>
+
+<script type="text/javascript">
+   $('.auth-link').bind('ajax:beforeSend', function(xhr, opts) {
+     opts.setRequestHeader("Content-Type", "application/json");
+     opts.setRequestHeader("Authorization", "<%= ENV['SOLIGUIDE_API_KEY'] %>");
+   });
+</script>

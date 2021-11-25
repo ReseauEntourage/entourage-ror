@@ -24,6 +24,7 @@ module PoiServices
       @distance = params[:distance]
       @category_ids = params[:category_ids]
       @query = params[:query]
+      @limit = params[:limit]
     end
 
     def apply?
@@ -38,17 +39,19 @@ module PoiServices
           longitude: longitude,
           geoType: :ville,
           geoValue: :Paris, # @notice To be changed when different cities have access to Soliguide
-        }
+        },
+        options: {}
       }
 
       params[:categories] = soliguide_category(categories) if soliguide_category(categories).present?
       params[:name] = query if query.present?
+      params[:options][:limit] = limit if limit.present?
 
       params
     end
 
     private
-    attr_reader :latitude, :longitude, :distance, :category_ids, :query, :category_ids
+    attr_reader :latitude, :longitude, :distance, :category_ids, :query, :limit, :category_ids
 
     def categories
       @categories ||= (category_ids || "").split(",").map(&:to_i).uniq
