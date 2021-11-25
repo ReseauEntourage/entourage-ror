@@ -50,6 +50,8 @@ module PoiServices
     end
 
     def self.format_category_ids poi
+      return [] unless poi['services_all']
+
       poi['services_all'].map do |service|
         service['categorie']
       end.map do |category_id|
