@@ -2,7 +2,7 @@
   <div class="row">
     <div class="col-xs-offset-2 col-xs-8">
       <div class="h1" style="display: flex; align-items: center;">
-        <div style="flex-grow: 1">Pois</div>
+        <div style="flex-grow: 1">Pois Soliguide</div>
       </div>
 
       <% if @pois.empty? %>
@@ -11,6 +11,12 @@
             <h3 class="panel-title">Aucun POI trouvé.</h3>
           </div>
         </div>
+
+        <%= link_to "Pois Soliguide à Paris", admin_super_admin_soliguide_path({
+          latitude: 48.8586,
+          longitude: 2.3411,
+          distance: 2,
+        }), class: "btn btn-default" %>
       <% else %>
         <table class="table">
           <th>UUID</th>
@@ -24,7 +30,7 @@
           <% @pois.each do |poi| %>
             <tr>
               <td><%= poi[:uuid][1..] %></td>
-              <td><%= link_to poi[:name], "https://soliguide.fr/place/%s" % poi[:uuid][1..], method: :get, remote: true, class: 'auth-link' %></td>
+              <td><%= link_to poi[:name], admin_super_admin_soliguide_show_path(poi[:uuid]) %></td>
               <td><%= poi[:latitude] %></td>
               <td><%= poi[:longitude] %></td>
               <td><%= poi[:address] %></td>
