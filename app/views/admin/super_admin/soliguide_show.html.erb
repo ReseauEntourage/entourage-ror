@@ -1,0 +1,91 @@
+<div class="container">
+  <div class="row">
+    <div class="col-xs-offset-2 col-xs-8">
+      <ol class="breadcrumb">
+        <li><%= link_to "Pois Soliguide", admin_super_admin_soliguide_path %></li>
+        <li><%= @poi[:name] %> (<%= @poi[:address] %>)</li>
+      </ol>
+
+      <form>
+        <div class="form-group">
+          <%= link_to "Ouvrir dans Soliguide", @poi[:source_url], class: "btn btn-primary" %>
+        </div>
+
+        <div class="form-group">
+          <%= label_tag :uuid %>
+          <%= text_field_tag :uuid, @poi[:uuid], class: "form-control" %>
+        </div>
+
+        <div class="form-group">
+          <%= label_tag :name %>
+          <%= text_field_tag :name, @poi[:name], class: "form-control" %>
+        </div>
+
+        <div class="form-group">
+          <%= label_tag :description %>
+          <%= text_area_tag :description, @poi[:description], rows: 6, class: "form-control" %>
+        </div>
+
+        <div class="form-group">
+          <%= label_tag :longitude %>
+          <%= text_field_tag :longitude, @poi[:longitude], class: "form-control" %>
+        </div>
+
+        <div class="form-group">
+          <%= label_tag :latitude %>
+          <%= text_field_tag :latitude, @poi[:latitude], class: "form-control" %>
+        </div>
+
+        <div class="form-group">
+          <%= label_tag :address %>
+          <%= text_field_tag :address, @poi[:address], class: "form-control" %>
+        </div>
+
+        <div class="form-group">
+          <%= label_tag :phone %>
+          <%= text_field_tag :phone, @poi[:phone], class: "form-control" %>
+        </div>
+
+        <div class="form-group">
+          <%= label_tag :website %>
+          <%= text_field_tag :website, @poi[:website], class: "form-control" %>
+        </div>
+
+        <div class="form-group">
+          <%= label_tag :email %>
+          <%= text_field_tag :email, @poi[:email], class: "form-control" %>
+        </div>
+
+        <div class="form-group">
+          <%= label_tag :audience %>
+          <%= text_field_tag :audience, @poi[:audience], class: "form-control" %>
+        </div>
+
+        <div class="form-group">
+          <%= label_tag :category_ids %>
+          <%= text_field_tag :category_ids, @poi[:category_ids], class: "form-control" %>
+        </div>
+
+        <div class="form-group">
+          <%= label_tag :source_category_id %>
+          <%= text_field_tag :source_category_id, @poi[:source_category_id], class: "form-control" %>
+        </div>
+
+        <div class="form-group">
+          <%= label_tag :source_category_ids %>
+          <%= text_field_tag :source_category_ids, @poi[:source_category_ids], class: "form-control" %>
+        </div>
+
+        <div class="form-group">
+          <%= label_tag :hours %>
+          <%= text_area_tag :hours, @poi[:hours], rows: 6, class: "form-control" %>
+        </div>
+
+        <div class="form-group">
+          <%= label_tag :languages %>
+          <%= text_field_tag :languages, @poi[:languages], class: "form-control" %>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
