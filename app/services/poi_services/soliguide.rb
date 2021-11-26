@@ -32,13 +32,21 @@ module PoiServices
     end
 
     def query_params
+      geoValue = if close_to?(PARIS)
+        :Paris
+      elsif close_to?(LYON)
+        :Lyon
+      else
+        :HorsZone
+      end
+
       params = {
         location: {
           distance:  (distance || 0).to_f.clamp(DISTANCE_MIN, DISTANCE_MAX),
           latitude:  latitude,
           longitude: longitude,
           geoType: :ville,
-          geoValue: :Paris, # @notice To be changed when different cities have access to Soliguide
+          geoValue: geoValue,
         },
         options: {}
       }

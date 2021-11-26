@@ -5,18 +5,25 @@
         <div style="flex-grow: 1">Pois Soliguide</div>
       </div>
 
+      <% [
+        { name: :Paris, latitude: 48.86, longitude: 2.34, distance: 2, limit: 50 },
+        { name: :Lyon, latitude: 45.75, longitude: 4.85, distance: 2, limit: 50 },
+        { name: :Nantes, latitude: 47.22, longitude: -1.55, distance: 2, limit: 50 },
+      ].each do |search| %>
+        <%= link_to search[:name], admin_super_admin_soliguide_path({
+          latitude: search[:latitude],
+          longitude: search[:longitude],
+          distance: search[:distance],
+          limit: search[:limit],
+        }), class: "btn btn-default" %>
+      <% end %>
+
       <% if @pois.empty? %>
         <div class="panel panel-warning">
           <div class="panel-heading">
             <h3 class="panel-title">Aucun POI trouvé.</h3>
           </div>
         </div>
-
-        <%= link_to "Pois Soliguide à Paris", admin_super_admin_soliguide_path({
-          latitude: 48.8586,
-          longitude: 2.3411,
-          distance: 2,
-        }), class: "btn btn-default" %>
       <% else %>
         <table class="table">
           <th>UUID</th>
