@@ -171,11 +171,20 @@ module EntourageServices
       entourage.assign_attributes({status: :cancelled})
 
       if entourage.save
+        if params[:cancellation_message]
+          ChatMessage.create(
+            messageable: entourage,
+            user_id: entourage.user_id,
+            message_type: :text,
+            content: params[:cancellation_message]
+          )
+        end
+
         ChatMessage.create(
           messageable: entourage,
           user_id: entourage.user_id,
           message_type: :status_update,
-          content: params[:cancellation_message],
+          content: nil,
           metadata: {
             status: entourage.status,
             outcome_success: nil
