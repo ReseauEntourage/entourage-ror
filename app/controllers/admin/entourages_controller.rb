@@ -3,8 +3,9 @@ module Admin
     before_action :set_entourage, only: [:show, :edit, :update, :renew, :edit_image, :update_image, :moderator_read, :moderator_unread, :message, :show_members, :show_joins, :show_invitations, :show_messages, :sensitive_words, :sensitive_words_check, :edit_type, :edit_owner, :update_owner, :admin_pin, :admin_unpin, :pin, :unpin]
     before_action :ensure_moderator!, only: [:message]
 
+    before_action :set_index_params, only: [:index, :show, :edit, :show_messages, :show_invitations, :show_joins, :show_members]
+
     def index
-      @params = params.permit([:search, :moderator_id, q: [:entourage_type_eq, :status_eq, :display_category_eq, :country_eq, :postal_code_start, :pin_eq, :group_type_eq, postal_code_start_any: [], postal_code_not_start_all: []]]).to_h
       per_page = params[:per] || 50
 
       # workaround for the 'null' option
@@ -420,6 +421,14 @@ module Admin
     private
     def set_entourage
       @entourage = Entourage.find(params[:id])
+    end
+
+    def set_index_params
+      @params = index_params
+    end
+
+    def index_params
+      params.permit([:search, :moderator_id, q: [:entourage_type_eq, :status_eq, :display_category_eq, :country_eq, :postal_code_start, :pin_eq, :group_type_eq, postal_code_start_any: [], postal_code_not_start_all: []]]).to_h
     end
 
     def entourage_params
