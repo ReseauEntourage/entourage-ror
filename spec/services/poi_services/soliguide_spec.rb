@@ -51,6 +51,26 @@ describe PoiServices::Soliguide do
             latitude: 47.3,
             longitude: -1.55,
             geoType: :ville,
+            geoValue: :HorsZone,
+          },
+          options: {},
+        })
+      }
+    end
+
+    context 'search in Paris' do
+      let(:params) { {
+        latitude: 48.86,
+        longitude: 2.34,
+      } }
+
+      it {
+        expect(subject).to eq({
+          location: {
+            distance: PoiServices::Soliguide::DISTANCE_MIN,
+            latitude: 48.86,
+            longitude: 2.34,
+            geoType: :ville,
             geoValue: :Paris,
           },
           options: {},
@@ -74,7 +94,7 @@ describe PoiServices::Soliguide do
             latitude: 47.3,
             longitude: -1.55,
             geoType: :ville,
-            geoValue: :Paris,
+            geoValue: :HorsZone,
           },
           options: {},
           name: 'myquery',
@@ -97,7 +117,7 @@ describe PoiServices::Soliguide do
             latitude: 47.3,
             longitude: -1.55,
             geoType: :ville,
-            geoValue: :Paris,
+            geoValue: :HorsZone,
           },
           options: {},
           categories: [600],
