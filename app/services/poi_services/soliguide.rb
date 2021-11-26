@@ -38,8 +38,6 @@ module PoiServices
     def query_params
       geoValue = if close_to?(PARIS)
         :Paris
-      elsif close_to?(LYON)
-        :Lyon
       else
         :HorsZone
       end
