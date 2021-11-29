@@ -49,6 +49,7 @@ class Entourage < ApplicationRecord
 
   attr_accessor :current_join_request, :number_of_unread_messages, :entourage_image_id
   attr_accessor :change_ownership_message
+  attr_accessor :user_status
 
   validates_presence_of :status, :title, :entourage_type, :user_id, :latitude, :longitude, :number_of_people
   validates_inclusion_of :status, in: ENTOURAGE_STATUS, if: :outing?
@@ -108,6 +109,8 @@ class Entourage < ApplicationRecord
 
   after_create :check_moderation
   before_create :set_uuid
+
+  after_update :create_chat_message_on_status_update, if: :saved_change_to_status?
 
   def moderator_read_for user:
     moderator_reads.where(user_id: user.id).first
@@ -357,11 +360,50 @@ class Entourage < ApplicationRecord
     end.to_h
   end
 
+  def close_entourage_from_user_status! user_status
+    @user_status = user_status
+
+    update_attribute(:status, :closed)
+  end
+
   protected
 
   def check_moderation
     return unless description.present?
     ping_slack if is_description_unacceptable?
+  end
+
+  def create_chat_message_on_status_update
+    return unless saved_change_to_status?
+    return unless status.in?(['closed', 'open'])
+
+    outcome = if status == 'closed' && moderation&.saved_change_to_action_outcome?
+      {
+        'Oui' => true,
+        'Non' => false,
+      }[moderation.action_outcome]
+    else
+      nil
+    end
+
+    chat_message_status = status
+    content = nil
+
+    if @user_status.present? && status == 'closed'
+      chat_message_status = "user_#{@user_status}"
+      content = I18n.t('community.chat_messages.status_update.closed_user')
+    end
+
+    ChatMessage.create(
+      messageable: self,
+      user_id: user_id,
+      content: content,
+      message_type: :status_update,
+      metadata: {
+        status: chat_message_status,
+        outcome_success: outcome
+      }
+    )
   end
 
   def is_description_unacceptable?

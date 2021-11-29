@@ -45,6 +45,7 @@ module FeedServices
       if unread_only
         clauses = ["(feed_updated_at is not null and (last_message_read < feed_updated_at or last_message_read is null))"]
 
+        # DEPRECATION WARNING: Dangerous query method (method whose arguments are used as raw SQL) called with non-attribute argument(s): "distinct joinable_id". Non-attribute arguments will be disallowed in Rails 6.0. This method should not be called with user-provided values, such as request parameters or model attributes. Known-safe values can be passed by wrapping them in Arel.sql()
         entourage_ids_for_pending_join_requests =
           JoinRequest
           .where(status: :pending)
