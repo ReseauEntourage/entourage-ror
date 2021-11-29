@@ -1,0 +1,34 @@
+<ol class="breadcrumb">
+  <li><%= link_to "Actions et événements", admin_entourages_path %></li>
+  <li><%= link_to @entourage.title, [:admin, @entourage] %></li>
+  <li class="active">Annuler</li>
+</ol>
+
+<h2>
+  <span class="text-muted">#<%= @entourage.id %></span>
+  <%= @entourage.title %>
+</h2>
+
+<div class="alert alert-info" role="alert" style="display: flex; align-items: center">
+  <div style="flex-grow: 1">
+    <p><b>Vous souhaitez annuler l'événement</b></p>
+    Merci d'indiquer ci-après un message qui sera automatiquement envoyé dans la conversation de groupe liée à l'événement.<br>
+    Ce message permettra aux utilisateurs de comprendre pourquoi l'événement a été annulé.<br>
+    L'événement n'apparaitra plus dans les résultats de recherche (fil d'actualité, liste des événements).<br>
+  </div>
+</div>
+
+<%= form_for([:cancel, :admin, @entourage], :method => :POST, html: { class: "form-horizontal", role: "form" }) do |f| %>
+  <%= render partial: "layouts/errors", locals: {obj: @entourage} %>
+
+  <%= f.hidden_field :group_type %>
+    <div class="control-group">
+      <%= f.label :cancellation_message %>
+      <%= f.text_area :cancellation_message, class: "form-control vresize" %>
+    </div>
+
+    <br>
+    <%= f.submit "Annuler l'événement", class: "btn btn-success" %>
+
+  <%= link_to "Retour", [:admin, @entourage], class: "btn btn-default" %>
+<% end %>

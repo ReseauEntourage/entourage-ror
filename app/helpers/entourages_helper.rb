@@ -7,7 +7,8 @@ module EntouragesHelper
       "closed"      => "label-danger",
       "suspended"   => "label-warning",
       "blacklisted" => "label-default",
-      "full"        => "label-warning"
+      "full"        => "label-warning",
+      "cancelled"   => "label-warning",
     }
     content_tag :span, t("activerecord.attributes.entourage.statuses.#{entourage.status}"), class: "label #{state_to_class[entourage.status]}"
   end
@@ -66,7 +67,7 @@ module EntouragesHelper
   end
 
   def entourage_type_statuses
-    Entourage::ENTOURAGE_STATUS.map do |status|
+    Entourage::ENTOURAGE_STATUS|Entourage::OUTING_STATUS.map do |status|
       [t("activerecord.attributes.entourage.statuses.#{status}"), status]
     end
   end

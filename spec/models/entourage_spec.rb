@@ -18,7 +18,7 @@ RSpec.describe Entourage, type: :model do
   describe "validate_inclusion_of status" do
     context 'is an event' do
       before { allow(subject).to receive(:outing?).and_return(true) }
-      it { is_expected.to validate_inclusion_of(:status).in_array(["open", "closed", "blacklisted", "suspended", "full"]) }
+      it { is_expected.to validate_inclusion_of(:status).in_array(["open", "closed", "blacklisted", "suspended", "full", "cancelled"]) }
     end
 
     context 'is not an event' do

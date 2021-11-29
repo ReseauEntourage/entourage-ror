@@ -102,6 +102,8 @@ Rails.application.routes.draw do
           post :admin_pin
           post :admin_unpin
           get :renew
+          get :cancellation
+          post :cancel
           get '/edit/image', action: :edit_image
           put '/update/image', action: :update_image
         end

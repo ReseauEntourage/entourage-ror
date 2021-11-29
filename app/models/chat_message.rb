@@ -55,7 +55,7 @@ class ChatMessage < ApplicationRecord
         }
       when 'outing:metadata'
         {
-          operation: { type: :string, enum: [:created, :updated] },
+          operation: { type: :string, enum: [:created, :updated, :cancelled] },
           title: { type: :string },
           starts_at: { format: 'date-time-iso8601' },
           display_address: { type: :string },
@@ -134,12 +134,10 @@ class ChatMessage < ApplicationRecord
       created: 'a créé',
       updated: 'a modifié'
     }[metadata[:operation].to_sym]
-    name = {
-      pfp: 'une sortie'
-    }[messageable.community.slug.to_sym] || 'un évènement'
+
     starts_at = Time.zone.parse(metadata[:starts_at])
     [
-      "#{action} #{name} :",
+      "#{action} un évènement :",
       metadata[:title],
       I18n.l(starts_at, format: "le %d/%m à %Hh%M,"),
       metadata[:display_address]
@@ -153,6 +151,7 @@ class ChatMessage < ApplicationRecord
       user_deleted: "a clôturé",
       user_blocked: "a clôturé",
       user_anonymized: "a clôturé",
+      cancelled: "a annulé"
     }[metadata[:status].to_sym]
 
     "#{op} #{GroupService.name messageable, :l}#{[' : ', content].join if content.present?}"

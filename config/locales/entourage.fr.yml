@@ -54,6 +54,7 @@ fr:
       entourage:
         title: Titre
         outing_image_url: Photo d'événement
+        cancellation_message: Message d'annulation
         categories:
           social: Social
           resource: Ressource
@@ -63,12 +64,6 @@ fr:
         entourage_types:
           ask_for_help: Demande
           contribution: Contribution
-        statuses:
-          open: Actif
-          closed: Clôturé
-          blacklisted: Blacklisté
-          suspended: Suspendu
-          full: Complet
         group_types:
           action: Action
           outing: Événement

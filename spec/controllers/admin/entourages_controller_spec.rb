@@ -162,6 +162,53 @@ describe Admin::EntouragesController do
     end
   end
 
+  describe "GET cancellation" do
+    context "actions are not cancellable" do
+      let(:entourage) { FactoryBot.create(:entourage) }
+      before { get :cancellation, params: { id: entourage.to_param } }
+
+      it { should redirect_to edit_admin_entourage_path(entourage) }
+      it { expect(response.code).to eq('302') }
+    end
+
+    context "outings are cancellable" do
+      let(:outing) { FactoryBot.create(:outing) }
+      before { get :cancellation, params: { id: outing.to_param } }
+
+      it { should_not redirect_to edit_admin_entourage_path(outing) }
+      it { expect(response.code).to eq('200') }
+    end
+  end
+
+  describe "POST cancel" do
+    context "actions are not cancellable" do
+      let(:entourage) { FactoryBot.create(:entourage) }
+      before { post :cancel, params: { id: entourage.to_param, entourage: { cancellation_message: 'message' } } }
+
+      it { should redirect_to cancellation_admin_entourage_path(entourage) }
+      it { expect(response.code).to eq('302') }
+    end
+
+    context "outings are cancellable" do
+      let(:outing) { FactoryBot.create(:outing) }
+      before { post :cancel, params: { id: outing.to_param, entourage: { cancellation_message: 'message' } } }
+
+      it { should redirect_to admin_entourage_path(outing) }
+      it { expect(response.code).to eq('302') }
+    end
+
+    context "cancellable outings should be cancelled" do
+      let(:outing) { FactoryBot.create(:outing) }
+      before {
+        expect(EntourageServices::EntourageBuilder).to receive(:cancel).with(
+        entourage: outing,
+        params: { cancellation_message: 'message' }
+      )}
+
+      it { post :cancel, params: { id: outing.to_param, entourage: { cancellation_message: 'message' } } }
+    end
+  end
+
   describe "POST update pins" do
     let(:entourage) { FactoryBot.create(:entourage, pin: true) }
     before { post :update, params: { id: entourage.to_param, entourage: { pins: ['75000','44'], group_type: :action } } }

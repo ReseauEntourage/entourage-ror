@@ -167,6 +167,34 @@ module EntourageServices
       entourage.save
     end
 
+    def self.cancel(entourage:, params:)
+      entourage.assign_attributes({status: :cancelled})
+
+      if entourage.save
+        if params[:cancellation_message]
+          ChatMessage.create(
+            messageable: entourage,
+            user_id: entourage.user_id,
+            message_type: :text,
+            content: params[:cancellation_message]
+          )
+        end
+
+        ChatMessage.create(
+          messageable: entourage,
+          user_id: entourage.user_id,
+          message_type: :status_update,
+          content: nil,
+          metadata: {
+            status: entourage.status,
+            outcome_success: nil
+          }
+        )
+      else
+        false
+      end
+    end
+
     private
     attr_reader :tour, :user, :callback, :params, :recipient_consent_obtained
   end
