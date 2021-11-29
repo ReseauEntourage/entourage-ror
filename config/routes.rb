@@ -60,6 +60,8 @@ Rails.application.routes.draw do
         end
       end
 
+      resources :partner_registrations, only: [:index, :show, :edit, :update]
+
       resources :moderation_areas
       resources :tour_areas
 

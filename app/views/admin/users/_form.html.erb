@@ -109,7 +109,7 @@
          id="partner-fieldset">
       <%= f.label :partner, class: "control-label" %>
       <div class="controls">
-        <%= f.collection_select :partner_id, Partner.where(staff: false), :id, :name, { include_blank: true }, { required: true, disabled: !is_partner }
+        <%= f.collection_select :partner_id, Partner.no_staff, :id, :name, { include_blank: true }, { required: true, disabled: !is_partner, id: 'partner_id_no_staff' }
         %>
       </div>
     </div>
@@ -120,7 +120,7 @@
          id="staff-fieldset">
       <%= label_tag :partner, "Équipe", class: "control-label" %>
       <div class="controls">
-        <%= f.collection_select :partner_id, Partner.where(staff: true), :id, :name, { include_blank: true }, { required: true, disabled: !is_staff }
+        <%= f.collection_select :partner_id, Partner.staff, :id, :name, { include_blank: true }, { required: true, disabled: !is_staff, id: 'partner_id_staff' }
         %>
       </div>
     </div>
@@ -184,17 +184,18 @@
 
   <div class="control-group">
     <%= f.label :organization, class: "control-label" %>
-    <div class="controls">
-      <%= f.collection_select :organization_id,
-          Organization.order("name ASC"), :id, :name,
-          {include_blank: @user.organization_id.present? ? false : "(Aucune)"},
-          {id: :pro_user, class: (:hide unless @user.pro?), disabled: !@user.pro?} %>
+    <div class="controls <%= :hide unless @user.pro? %>" id="organization-fieldset">
+      <%= f.collection_select :organization_id, Organization.order("name ASC"), :id, :name, {
+          include_blank: @user.organization_id.present? ? false : "(Aucune)"
+        }, { id: :pro_user }
+      %>
+
+    </div>
       <% if !@user.pro? %>
         <div id="change_status">
-          Aucune &mdash; <%= link_to "Passer l'utilisateur en pro", "#" %>
+          Aucune &mdash; <%= link_to "Donner les droits de maraude", "#" %>
         </div>
       <% end %>
-    </div>
   </div>
   <br>
 
@@ -300,5 +301,13 @@
     $partnerUserFields.prop('required', partner || staff ? true : <%= @user.pro? %>)
   }
 
-  $profileField.on('change', togglePartnerFieldset)
+  $profileField.on('change', togglePartnerFieldset);
+
+  $("#change_status a").click(function(e) {
+    e.preventDefault();
+    $("#change_status").hide();
+    $("#organization-fieldset").removeClass('hide');
+  });
+
+  $('select').select2({ width: 200 });
 </script>

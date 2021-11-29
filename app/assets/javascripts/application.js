@@ -26,3 +26,4 @@
 //= require_tree ./templates
 //= require_tree .
 //= require_tree ./admin
+//= require select2

@@ -1,0 +1,85 @@
+<h1>Associations - Demandes d'adhésion</h1>
+
+<div style="display: flex; margin: -10px 0 10px">
+  <div class="btn-group btn-group-sm" style="flex-grow: 0.5">
+    <%
+      q = @params[:q] || {}
+      presets = {
+        "Partout" => {},
+        "75" => { postal_code_start: '75' },
+        "92" => { postal_code_start: '92' },
+        "93" => { postal_code_start: '93' },
+        "69" => { postal_code_start: '69' },
+        "59" => { postal_code_start: '59' },
+        "35" => { postal_code_start: '35' },
+        "Hors zone" => { postal_code_in_hors_zone: 'true' },
+      }
+
+      location_keys = [:postal_code_start, :postal_code_in_hors_zone]
+      active = presets.key q.slice(*location_keys).compact.symbolize_keys
+    %>
+    <% presets.each do |name, options| %>
+      <%= link_to(
+        name,
+        @params.merge(q: q.except(*location_keys).merge(options)),
+        class: "btn btn-#{active == name ? :primary : :default}"
+      ) %>
+    <% end %>
+  </div>
+
+  <form action="<%= admin_partner_registrations_path %>" class="form-inline" id="search_form">
+    <% if @params[:q] %>
+      <% @params[:q].each do |key, value| %>
+        <input type="hidden" name="q[<%= key %>]" value="<%= value %>">
+      <% end %>
+    <% end %>
+
+    <%= label_tag :status, 'Statut' %>
+    <%= select_tag :status, options_for_select([
+      ['Tous', :all],
+      ['En attente', :pending],
+    ], params[:status]), class: "form-control" %>
+  </form>
+</div>
+
+<br>
+
+<div class="row">
+  <table class="table">
+    <th>Nom</th>
+    <th>Nom si nouvelle asso</th>
+    <th>Nom si asso existante</th>
+    <th>CP asso renseigné par user</th>
+    <th>CP user</th>
+    <th>Poste</th>
+    <th><!-- Actions --></th>
+
+    <% @users.each do |user| %>
+      <tr>
+        <td><%= link_to user.full_name, edit_admin_user_path(user) %></td>
+        <td><%= user.partner_join_requests.map(&:new_partner_name).join(', ') %></td>
+        <td>
+          <% user.partner_join_requests.map(&:partner).each do |partner| %>
+            <%= link_to partner.name, edit_admin_partner_path(partner) %>
+          <% end %>
+        </td>
+        <td><%= user.partner_join_requests.map(&:postal_code).join(', ') %></td>
+        <td><%= user.addresses.map(&:postal_code).join(', ') %></td>
+        <td><%= user.partner_join_requests.map(&:partner_role_title).join(', ') %></td>
+        <td><%= link_to "Modifier", edit_admin_partner_registration_path(user), class: "btn btn-danger" %></td>
+      </tr>
+    <% end %>
+  </table>
+</div>
+
+<div class="row">
+  <%= paginate @users %>
+</div>
+
+<script>
+  $(function(){
+    $('#status').on('change', function() {
+      $('#search_form').submit()
+    })
+  })
+</script>
