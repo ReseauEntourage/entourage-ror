@@ -414,8 +414,4 @@ describe User, :type => :model do
     it { expect(UserHistory.last.kind).to eq('deleted') }
     it { expect(UserHistory.last.metadata[:email_was]).to eq('foo@bar.com') }
   end
-
-  describe 'rename ChatMessagesJob to ChatMessagesPrivateJob' do
-    it { expect(false).to eq(true) }
-  end
 end
