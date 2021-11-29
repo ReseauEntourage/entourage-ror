@@ -27,6 +27,8 @@ module EntourageServices
       entourage.user = user
       entourage.uuid = SecureRandom.uuid
 
+      return callback.on_unauthorized.try(:call, "ONLY_PARTNER") if entourage.outing? && user.partner.blank?
+
       allowed_group_types =
         case user.community
         when 'entourage' then ['action', 'outing']
