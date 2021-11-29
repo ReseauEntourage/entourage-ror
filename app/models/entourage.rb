@@ -303,6 +303,12 @@ class Entourage < ApplicationRecord
     end.to_h
   end
 
+  def outing_image_url?
+    return unless outing?
+
+    (self.metadata[:landscape_thumbnail_url] || self.metadata[:landscape_url]).present?
+  end
+
   def outing_image_url
     return unless outing?
     return unless self.metadata[:landscape_thumbnail_url] || self.metadata[:landscape_url]

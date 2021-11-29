@@ -58,7 +58,7 @@
       types = {
         "Épinglées" => { pin_eq: 'true' },
         "Actions" => { group_type_eq: 'action', pin_eq: 'false' },
-        "Événements" => { group_type_eq: 'outing', pin_eq: 'false' }
+        "Événements" => { group_type_eq: 'outing', pin_eq: 'false' },
       }
     %>
 
@@ -107,6 +107,9 @@
   <% if params[:q] && params[:q][:pin_eq] %>
     <th>Actions épinglées pour</th>
   <% end %>
+  <% if params[:q] && params[:q][:group_type_eq] == 'outing' %>
+    <th>Photo</th>
+  <% end %>
   <th>Statut</th>
   <th><span class="glyphicon glyphicon-user" aria-hidden="true"></span></th>
   <th><span class="glyphicon glyphicon-comment" aria-hidden="true"></span></th>
@@ -142,6 +145,17 @@
           <% end %>
         </td>
       <% end %>
+
+      <% if params[:q] && params[:q][:group_type_eq] == 'outing' %>
+        <td>
+          <% if entourage.outing_image_url? %>
+            <span class="label label-success">oui</span>
+          <% else %>
+            <span class="label label-default">non</span>
+          <% end %>
+        </td>
+      <% end %>
+
       <td><%= entourage_state_label(entourage) %></td>
       <td><span class="badge" title="Membres"><%= @member_count[entourage.id] %></span></td>
       <td><span class="badge" title="Messages"><%= @message_count[entourage.id].total %></span></td>
