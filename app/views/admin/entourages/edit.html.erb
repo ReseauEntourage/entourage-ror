@@ -1,5 +1,5 @@
 <div class="row">
-  <%= link_to("<- Retourner à l'entourage", [:admin, @entourage]) unless @entourage.new_record? %>
+  <%= link_to("<- Retourner à l'entourage", admin_entourage_path(@entourage, @params)) unless @entourage.new_record? %>
   <div class="h1">
     <span>
       <% verb = @entourage.new_record? ? 'Créer' : 'Éditer' %>

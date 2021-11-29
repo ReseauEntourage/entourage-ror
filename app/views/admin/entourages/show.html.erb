@@ -134,7 +134,7 @@
 </style>
 
 <div class="container">
-  <%= link_to('<- Retourner à la liste des entourages', admin_entourages_path) %>
+  <%= link_to('<- Retourner à la liste des entourages', admin_entourages_path(@params)) %>
   <div class="pull-right">
     <%= link_to nil, @entourage.share_url, target: :_blank %>
   </div>
@@ -152,19 +152,19 @@
     <div class="panel-body">
       <ul class="nav nav-tabs">
         <li role="presentation" class="<%= :active if params[:action] == 'show' %>">
-          <%= link_to "Informations générales", admin_entourage_path(@entourage) %>
+          <%= link_to "Informations générales", admin_entourage_path(@entourage, @params) %>
         </li>
         <li role="presentation" class="<%= :active if params[:action] == 'show_members' %>">
-          <%= link_to "Membres", show_members_admin_entourage_path(@entourage) %>
+          <%= link_to "Membres", show_members_admin_entourage_path(@entourage, @params) %>
         </li>
         <li role="presentation" class="<%= :active if params[:action] == 'show_joins' %>">
-          <%= link_to "Demandes", show_joins_admin_entourage_path(@entourage) %>
+          <%= link_to "Demandes", show_joins_admin_entourage_path(@entourage, @params) %>
         </li>
         <li role="presentation" class="<%= :active if params[:action] == 'show_invitations' %>">
-          <%= link_to "Invitations", show_invitations_admin_entourage_path(@entourage) %>
+          <%= link_to "Invitations", show_invitations_admin_entourage_path(@entourage, @params) %>
         </li>
         <li role="presentation" class="<%= :active if params[:action] == 'show_messages' %>">
-          <%= link_to "Messages", show_messages_admin_entourage_path(@entourage) %>
+          <%= link_to "Messages", show_messages_admin_entourage_path(@entourage, @params) %>
         </li>
       </ul>
 
@@ -217,7 +217,7 @@
                 <% if @entourage.group_type == 'outing' %>
                   <%= link_to "Renouveler l'événement", renew_admin_entourage_path(@entourage), class: "btn btn-primary" %>
                 <% end %>
-                <%= link_to "Modifier", edit_admin_entourage_path(@entourage), class: "btn btn-success" %>
+                <%= link_to "Modifier", edit_admin_entourage_path(@entourage, @params), class: "btn btn-success" %>
               </div>
             </div>
           </div>

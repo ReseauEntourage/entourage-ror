@@ -133,7 +133,7 @@
         <% end %>
       </td>
       <td><%= entourage.id %></td>
-      <td><%= link_to entourage.title, [:admin, entourage] %></td>
+      <td><%= link_to entourage.title, admin_entourage_path(entourage, @params) %></td>
       <td><%= entourage_description_excerpt(entourage.description) %></td>
       <% if params[:q] && params[:q][:pin_eq] %>
         <td>
