@@ -54,11 +54,9 @@ jobs:
         REDIS_URL: redis://redis:6379
       run: bundle exec rake
 
-    - uses: kciter/aws-ecr-action@master
+    - uses: akhileshns/heroku-deploy@v3.8.9
       with:
-        access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        account_id: ${{ secrets.AWS_ACCOUNT_ID }}
-        region: eu-west-1
-        repo: entourage-ror
-        tags: latest,${{ github.sha }}
+        heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+        # deploy to entourage-back-preprod
+        heroku_app_name: entourage-back-preprod
+        heroku_email: nicolas.chafai@entourage.social
