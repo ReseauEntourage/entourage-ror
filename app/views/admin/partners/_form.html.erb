@@ -13,7 +13,11 @@
   }
 </style>
 
+<% @partner.errors.delete(:latitude) if @partner.errors.has_key?(:address) %>
+<% @partner.errors.delete(:longitude) if @partner.errors.has_key?(:address) %>
+
 <%= render partial: 'common/errors', locals: {obj: @partner} %>
+
 <%= form_for @partner, url: "", html: {id: "partner-form"} do |f| %>
   <%= f.hidden_field :staff %>
 
@@ -39,9 +43,7 @@
           <label></label>
           <div class="aspect-ratio-container-1-1 logo-as-background rounded border-grey"></div>
           <div class="text-center" style="margin-top: 15px;">
-            <%= link_to "Modifier",
-                  edit_logo_admin_partner_path,
-                  class: "btn btn-default" %>
+            <%= link_to "Modifier", edit_logo_admin_partner_path, class: "btn btn-default" %>
           </div>
         <% end %>
       </div>
@@ -50,8 +52,7 @@
 
   <div class="form-group">
     <%= f.label :donations_needs %>
-    <%= f.text_area :donations_needs, rows: 3, class: "form-control",
-          placeholder: "jeux, produits d'hygiène, sous-vêtements, collations..." %>
+    <%= f.text_area :donations_needs, rows: 3, class: "form-control", placeholder: "jeux, produits d'hygiène, sous-vêtements, collations..." %>
   </div>
 
   <div class="form-group">
@@ -78,8 +79,7 @@
     <%= f.label :email %>
     <%= f.email_field :email, class: "form-control" %>
   </div>
-  <%= f.submit @partner.new_record? ? "Créer" : "Modifier",
-        class: "btn btn-success" %>
+  <%= f.submit @partner.new_record? ? "Créer" : "Modifier", class: "btn btn-success" %>
 <% end %>
 
 <script>
