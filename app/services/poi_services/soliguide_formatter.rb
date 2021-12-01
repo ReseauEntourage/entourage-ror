@@ -19,7 +19,7 @@ module PoiServices
         phone: poi['entity']['phone'].presence,
         website: poi['entity']['website'].presence,
         email:poi['entity']['mail'].presence,
-        audience: format_audience(poi['conditions'], poi['modalities']),
+        audience: format_audience(poi['publics'], poi['modalities']),
         category_ids: format_category_ids(poi),
         source_category_id: source_categories.compact.first,
         source_category_ids: source_categories.compact.uniq,
@@ -46,7 +46,7 @@ module PoiServices
     end
 
     def self.format_audience publics, modalities
-      (format_publics(publics) + format_modalities(modalities)).join("\n")
+      (format_publics(publics) + format_modalities(modalities) + format_other(modalities)).join("\n")
     end
 
     def self.format_category_ids poi
@@ -74,13 +74,25 @@ module PoiServices
     def self.format_publics publics
       return [] unless publics
 
-      [
-        %(Accueil #{format_accueil publics['accueil']} : #{format_age publics['age']}),
-        %(Autres informations importantes : #{
-          publics['description'] || format_administrative(publics['administrative'])
-        }),
-        format_animals(publics['animals']),
-      ].compact
+      sentences = []
+
+      accueil = "Accueil #{format_accueil publics['accueil']}"
+
+      sentences << if publics['accueil'] == 0
+        accueil
+      else
+        "#{accueil} : #{(format_age(publics['age']) + format_familialle(publics['familialle'])).compact.join(', ')}"
+      end
+
+      if format_administrative(publics['administrative'])
+        sentences << "Accueil : %s" % format_administrative(publics['administrative'])
+      end
+
+      if publics['description'].present?
+        sentences << "Autres informations importantes : %s" % publics['description']
+      end
+
+      sentences.compact
     end
 
     def self.format_accueil accueil
@@ -91,45 +103,61 @@ module PoiServices
     end
 
     def self.format_age age
-      return nil unless age
+      return [] unless age
 
       min = age['min'].presence
       max = age['max'].presence
 
-      return nil unless min || max
+      return [] unless min || max
 
-      return "mineurs (-18 ans)" if max && max <= 18
-      return "adultes uniquement" if min == 18 && max == 99
-      return "dès %s ans" % min if min.present? && max.nil?
-      return  if min == 0 && max == 99 # tous ages
-      return "de %s à %s ans" % [min, max] if min.present? && max.present?
+      return ["mineurs (-18 ans)"] if max && max <= 18
+      return ["adultes uniquement"] if min == 18 && max == 99
+      return ["dès %s ans" % min] if min.present? && max.nil?
+      return [] if min == 0 && max == 99 # tous ages
+      return ["de %s à %s ans" % [min, max]] if min.present? && max.present?
 
-      nil
+      []
+    end
+
+    def self.format_familialle familialle
+      # isolated : personne isolée
+      # family : famille
+      # couple : couple
+      # pregnant : femme enceinte
+      return [] unless familialle.present?
+      return [] if familialle.sort == ['isolated', 'family', 'couple', 'pregnant'].sort
+
+      familialle.map do |term|
+        case term
+        when 'isolated' then 'Personne isolée'
+        when 'family' then 'Famille'
+        when 'couple' then 'Couple'
+        when 'pregnant' then 'Femme enceinte'
+        end
+      end
     end
 
     def self.format_administrative administrative
       return nil unless administrative
       return nil if administrative.sort == ["asylum", "refugee", "regular", "undocumented"].sort
 
+      # regular : personne en situation régulière
+      # asylum : personne demandeur⋅euse d'asile
+      # refugee : personne avec le statut de réfugié
+      # undocumented : personne sans papier
+
       situations = []
-      situations << "avec ou sans papiers" if administrative.include?('regular')
-      situations << "demandeurs d'asile"   if administrative.include?('asylum')
-      situations << "en situation régulière"  if situations.none?
+      situations << "en situation régulière" if administrative.include?('regular')
       situations << "sans papiers"         if administrative.include?('undocumented')
+      situations << "demandeurs d'asile"   if administrative.include?('asylum')
       situations << "réfugiés"             if administrative.include?('refugee')
 
       "personnes #{situations.join(', ')}"
     end
 
-    def self.format_animals animals
-      return nil unless animals == true
-
-      "Animaux autorisés"
-    end
-
     def self.format_modalities modalities
       return [] unless modalities
-      return ["accueil sans rendez-vous"] if modalities['inconditionnel'] == true
+      return ["Accueil sans rendez-vous"] if modalities['inconditionnel'] == true
 
       sentences = []
 
@@ -151,7 +179,24 @@ module PoiServices
         sentences << "Sur orientation (#{modalities['orientation']['precisions']})"
       end
 
-      sentences
+      sentences << format_animal(modalities['animal'])
+
+      sentences.compact
+    end
+
+    def self.format_animal animal
+      return nil unless animal.present?
+      return nil if animal['checked'].nil?
+      return "Animaux non autorisés" unless animal['checked']
+
+      "Animaux autorisés"
+    end
+
+    def self.format_other modalities
+      return [] unless modalities.present?
+      return [] unless modalities['other'].present?
+
+      ["Autres précisions : #{modalities['other']}"]
     end
 
     def self.format_hours hours
