@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe Api::V1::PartnersController, type: :controller do
-
   let!(:user) { FactoryBot.create :pro_user }
 
   describe 'GET index' do
@@ -43,7 +42,7 @@ RSpec.describe Api::V1::PartnersController, type: :controller do
         "donations_needs" => nil,
         "volunteers_needs" => nil,
         "phone" => nil,
-        "address" => nil,
+        "address" => "174 rue Championnet, Paris",
         "website_url" => nil,
         "email" => nil,
         "default" => true,

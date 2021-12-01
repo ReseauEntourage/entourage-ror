@@ -9,6 +9,8 @@ class Partner < ApplicationRecord
   has_one :poi, dependent: :delete
 
   validates :name, presence: true
+  validates :address, presence: true
+  validates :longitude, :latitude, numericality: true, presence: true
 
   before_save :reformat_url, if: :website_url_changed?
   before_save :reformat_needs, if: :needs_changed?

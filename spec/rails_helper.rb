@@ -16,3 +16,13 @@ RSpec.configure do |config|
     ActionMailer::Base.deliveries.clear
   end
 end
+
+Geocoder.configure(lookup: :test, ip_lookup: :test)
+Geocoder::Lookup::Test.add_stub(
+  "174 rue Championnet, Paris", [{
+    'coordinates'  => [49, 2.3],
+    'address'      => '174 rue Championnet, Paris',
+    'country'      => 'France',
+    'country_code' => 'FR'
+  }]
+)
