@@ -8,8 +8,7 @@ describe PoiServices::Soliguide do
       'age' => { 'min' => 16, 'max' => 35 },
       'accueil' => 1,
       'description' => 'foo',
-      'administrative' => ['refugee'],
-      'animals' => true
+      'administrative' => ['refugee']
     } }
 
     let(:modalities) { {
@@ -17,10 +16,11 @@ describe PoiServices::Soliguide do
       'inscription' => {
         'checked' => true,
         'precisions' => 'bar'
-      }
+      },
+      'other' => 'foo'
     }}
 
-    it { expect(subject).to eq("Accueil préférentiel : de 16 à 35 ans\nAutres informations importantes : foo\nAnimaux autorisés\nSur inscription (bar)") }
+    it { expect(subject).to eq("Accueil préférentiel : de 16 à 35 ans\nAccueil : personnes réfugiés\nAutres informations importantes : foo\nSur inscription (bar)\nAutres précisions : foo") }
   end
 
   describe 'format_category_ids' do
@@ -70,10 +70,9 @@ describe PoiServices::Soliguide do
         'age' => { 'min' => 16, 'max' => 35 },
         'accueil' => 1,
         'description' => 'foo',
-        'administrative' => ['refugee'],
-        'animals' => true
+        'administrative' => ['refugee']
       } }
-      it { expect(subject).to eq(["Accueil préférentiel : de 16 à 35 ans", "Autres informations importantes : foo", "Animaux autorisés"]) }
+      it { expect(subject).to eq(["Accueil préférentiel : de 16 à 35 ans", "Accueil : personnes réfugiés", "Autres informations importantes : foo"]) }
     end
 
     context 'without description' do
@@ -81,10 +80,9 @@ describe PoiServices::Soliguide do
         'age' => { 'min' => 16, 'max' => 35 },
         'accueil' => 1,
         'description' => nil,
-        'administrative' => ['refugee'],
-        'animals' => true
+        'administrative' => ['refugee']
       } }
-      it { expect(subject).to eq(["Accueil préférentiel : de 16 à 35 ans", "Autres informations importantes : personnes en situation régulière, réfugiés", "Animaux autorisés"]) }
+      it { expect(subject).to eq(["Accueil préférentiel : de 16 à 35 ans", "Accueil : personnes réfugiés"]) }
     end
   end
 
@@ -117,32 +115,56 @@ describe PoiServices::Soliguide do
 
     context 'no age' do
       let(:age) { nil }
-      it { expect(subject).to eq(nil) }
+      it { expect(subject).to eq([]) }
     end
 
     context 'all ages' do
       let(:age) {{ 'min' => 0, 'max' => 99 }}
-      it { expect(subject).to eq(nil) }
+      it { expect(subject).to eq([]) }
     end
 
     context 'with age' do
       let(:age) {{ 'min' => 18, 'max' => 99 }}
-      it { expect(subject).to eq('adultes uniquement') }
+      it { expect(subject).to eq(['adultes uniquement']) }
     end
 
     context 'specific age' do
       let(:age) {{ 'min' => 8, 'max' => 39 }}
-      it { expect(subject).to eq('de 8 à 39 ans') }
+      it { expect(subject).to eq(['de 8 à 39 ans']) }
     end
 
     context 'min age' do
       let(:age) {{ 'min' => 8, 'max' => nil }}
-      it { expect(subject).to eq('dès 8 ans') }
+      it { expect(subject).to eq(['dès 8 ans']) }
     end
 
     context 'max age' do
       let(:age) {{ 'min' => nil, 'max' => 18 }}
-      it { expect(subject).to eq('mineurs (-18 ans)') }
+      it { expect(subject).to eq(['mineurs (-18 ans)']) }
+    end
+  end
+
+  describe 'format_familialle' do
+    subject { PoiServices::SoliguideFormatter.format_familialle familialle }
+
+    context 'no familialle' do
+      let(:familialle) { nil }
+      it { expect(subject).to eq([]) }
+    end
+
+    context 'all familialles' do
+      let(:familialle) { ['isolated', 'family', 'couple', 'pregnant'] }
+      it { expect(subject).to eq([]) }
+    end
+
+    context 'one familialle' do
+      let(:familialle) { ['pregnant'] }
+      it { expect(subject).to eq(['Femme enceinte']) }
+    end
+
+    context 'some familialles' do
+      let(:familialle) { ['family', 'pregnant'] }
+      it { expect(subject).to eq(['Famille', 'Femme enceinte']) }
     end
   end
 
@@ -161,7 +183,7 @@ describe PoiServices::Soliguide do
 
     context 'regular' do
       let(:administrative) { ["regular"] }
-      it { expect(subject).to eq("personnes avec ou sans papiers") }
+      it { expect(subject).to eq("personnes en situation régulière") }
     end
 
     context 'asylum' do
@@ -171,31 +193,55 @@ describe PoiServices::Soliguide do
 
     context 'undocumented' do
       let(:administrative) { ["undocumented"] }
-      it { expect(subject).to eq("personnes en situation régulière, sans papiers") }
+      it { expect(subject).to eq("personnes sans papiers") }
     end
 
     context 'refugee' do
       let(:administrative) { ["refugee"] }
-      it { expect(subject).to eq("personnes en situation régulière, réfugiés") }
+      it { expect(subject).to eq("personnes réfugiés") }
+    end
+
+    context 'asylum and refugee' do
+      let(:administrative) { ["asylum", "refugee"] }
+      it { expect(subject).to eq("personnes demandeurs d'asile, réfugiés") }
     end
   end
 
-  describe 'format_animals' do
-    subject { PoiServices::SoliguideFormatter.format_animals animals }
+  describe 'format_animal' do
+    subject { PoiServices::SoliguideFormatter.format_animal animal }
 
-    context 'no animals' do
-      let(:animals) { nil }
+    context 'no animal' do
+      let(:animal) { nil }
       it { expect(subject).to eq(nil) }
     end
 
-    context 'animals not authorized' do
-      let(:animals) { false }
-      it { expect(subject).to eq(nil) }
+    context 'animal not authorized' do
+      let(:animal) { { 'checked' => false } }
+      it { expect(subject).to eq("Animaux non autorisés") }
     end
 
-    context 'accueil 0' do
-      let(:animals) { true }
+    context 'animal authorized' do
+      let(:animal) { { 'checked' => true } }
       it { expect(subject).to eq("Animaux autorisés") }
+    end
+  end
+
+  describe 'format_other' do
+    subject { PoiServices::SoliguideFormatter.format_other other }
+
+    context 'no other' do
+      let(:other) { nil }
+      it { expect(subject).to eq([]) }
+    end
+
+    context 'other not authorized' do
+      let(:other) { { 'other' => nil } }
+      it { expect(subject).to eq([]) }
+    end
+
+    context 'other authorized' do
+      let(:other) { { 'other' => 'foo' } }
+      it { expect(subject).to eq(["Autres précisions : foo"]) }
     end
   end
 
@@ -209,7 +255,18 @@ describe PoiServices::Soliguide do
 
     context 'with inconditionnel' do
       let(:modalities) { { 'inconditionnel' => true } }
-      it { expect(subject).to eq(["accueil sans rendez-vous"]) }
+      it { expect(subject).to eq(["Accueil sans rendez-vous"]) }
+    end
+
+    context 'with inconditionnel and inscription' do
+      let(:modalities) { {
+        'inconditionnel' => true,
+        'appointment' => {
+          'checked' => true,
+          'precisions' => 'foo'
+        }
+      } }
+      it { expect(subject).to eq(["Accueil sans rendez-vous"]) }
     end
 
     context 'with appointment' do
@@ -246,6 +303,18 @@ describe PoiServices::Soliguide do
       }}
 
       it { expect(subject).to eq(['Sur orientation (baz)']) }
+    end
+
+    context 'with animal' do
+      let(:modalities) { { 'animal' => { 'checked' => true } } }
+
+      it { expect(subject).to eq(['Animaux autorisés'])}
+    end
+
+    context 'without animal' do
+      let(:modalities) { { 'animal' => { 'checked' => false } } }
+
+      it { expect(subject).to eq(['Animaux non autorisés'])}
     end
   end
 
