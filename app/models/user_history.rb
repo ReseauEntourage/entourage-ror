@@ -21,6 +21,11 @@ class UserHistory < ApplicationRecord
   def self.json_schema urn
     JsonSchemaService.base do
       case urn
+      when 'spam-detection:metadata'
+        {
+          messageable_id: { type: :integer },
+          messageable_type: { type: :string }
+        }
       when 'block:metadata', 'unblock:metadata'
         {
           cnil_explanation: { type: :string },
@@ -57,5 +62,17 @@ class UserHistory < ApplicationRecord
     return unless self[:metadata]
 
     self[:metadata][:message]
+  end
+
+  def self.spam_not_reported? chat_message
+    return true if chat_message.spams.empty?
+
+    UserHistory.where(
+      user_id: chat_message.user_id,
+      kind: 'spam-detection'
+    ).where(
+      "(metadata ->> 'messageable_id')::integer IN (?) and metadata ->> 'messageable_type' = 'Entourage'",
+      chat_message.spams.map(&:messageable_id)
+    ).empty?
   end
 end

@@ -1,5 +1,6 @@
 class ChatMessage < ApplicationRecord
   include FeedsConcern
+  include ChatServices::Spam
 
   belongs_to :messageable, polymorphic: true
   belongs_to :entourage, -> {
