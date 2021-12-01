@@ -110,6 +110,10 @@ module Api
           on.failure do |entourage|
             render json: {message: 'Could not create entourage', reasons: entourage.errors.full_messages}, status: 400
           end
+
+          on.unauthorized do |reason|
+            render json: {message: 'Could not create entourage', reasons: reason}, status: 401
+          end
         end
       end
 
