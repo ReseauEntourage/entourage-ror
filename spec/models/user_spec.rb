@@ -258,6 +258,8 @@ describe User, :type => :model do
   describe 'block_observer' do
     let(:user) { create(:public_user, phone: '+33600000000', token: 'foo') }
     let!(:open) { create(:entourage, user_id: user.id, status: :open) }
+    let!(:outing) { create(:outing, user_id: user.id, status: :open) }
+    let!(:conversation) { create(:conversation, user_id: user.id, status: :open) }
     let!(:suspended) { create(:entourage, user_id: user.id, status: :suspended) }
     let!(:join_request_open) { create(:join_request, user: user, joinable: open) }
     let!(:join_request_suspended) { create(:join_request, user: user, joinable: suspended) }
@@ -354,6 +356,14 @@ describe User, :type => :model do
       it { expect(open.reload.status).to eq('closed') }
       it { expect(suspended.reload.status).to eq('suspended') }
       it { expect(other_entourage.reload.status).to eq('open') }
+    end
+
+    context 'only entourages are closed when user is anonymized' do
+      before {
+        expect(EntouragesCloserJob).to receive(:perform_later).with([open.id], 'anonymized')
+      }
+
+      it { user.update(validation_status: :anonymized) }
     end
   end
 
