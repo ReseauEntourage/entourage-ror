@@ -38,7 +38,7 @@ module Admin
         .order(%(
           case
           when moderator_reads is null and entourages.created_at >= now() - interval '1 week' then 0
-          when greatest(max(max_chat_message_created_at), max(max_join_request_requested_at)) >= moderator_reads.read_at then 1
+          when max(max_chat_message_created_at) >= moderator_reads.read_at then 1
           else 2
           end
         ))
