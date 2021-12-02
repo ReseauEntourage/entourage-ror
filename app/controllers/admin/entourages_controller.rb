@@ -3,6 +3,7 @@ module Admin
     before_action :set_entourage, only: [:show, :edit, :update, :renew, :cancellation, :cancel, :edit_image, :update_image, :moderator_read, :moderator_unread, :message, :show_members, :show_joins, :show_invitations, :show_messages, :sensitive_words, :sensitive_words_check, :edit_type, :edit_owner, :update_owner, :admin_pin, :admin_unpin, :pin, :unpin]
     before_action :ensure_moderator!, only: [:message]
 
+    before_action :set_default_index_params, only: [:index]
     before_action :set_index_params, only: [:index, :show, :edit, :show_messages, :show_invitations, :show_joins, :show_members]
 
     def index
@@ -18,13 +19,6 @@ module Admin
       end
 
       group_types = (params[:group_type] || 'action,outing').split(',')
-
-      main_moderator = ModerationServices.moderator_if_exists(community: :entourage)
-      if current_user != main_moderator && (params.keys - ['controller', 'action']).none? && current_user.roles.include?(:moderator)
-        params[:moderator_id] = current_user.id
-      end
-
-      params[:moderator_id] = 'any' unless params[:moderator_id].present?
 
       @q = Entourage.where(group_type: group_types).with_moderation
         .moderator_search(params[:moderator_id])
@@ -436,6 +430,23 @@ module Admin
 
     def set_index_params
       @params = index_params
+    end
+
+    def set_default_index_params
+      # set default moderator_id
+      main_moderator = ModerationServices.moderator_if_exists(community: :entourage)
+
+      if current_user != main_moderator && (params.keys - ['controller', 'action']).none? && current_user.roles.include?(:moderator)
+        params[:moderator_id] = current_user.id
+      end
+
+      params[:moderator_id] = 'any' unless params[:moderator_id].present?
+
+      # set default status_in
+      return if params[:q] && params[:q][:status_in].present?
+
+      params[:q] = {}
+      params[:q][:status_in] = ['open', 'suspended', 'full']
     end
 
     def index_params
