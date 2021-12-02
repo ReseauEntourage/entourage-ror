@@ -67,8 +67,8 @@ module EntouragesHelper
   end
 
   def entourage_type_statuses
-    Entourage::ENTOURAGE_STATUS|Entourage::OUTING_STATUS.map do |status|
-      [t("activerecord.attributes.entourage.statuses.#{status}"), status]
+    (Entourage::ENTOURAGE_STATUS|Entourage::OUTING_STATUS).map do |status|
+      [I18n.t("activerecord.attributes.entourage.statuses.#{status}"), status]
     end
   end
 
