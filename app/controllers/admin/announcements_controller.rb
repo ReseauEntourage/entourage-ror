@@ -105,7 +105,7 @@ module Admin
 
     def announcement_params
       params.require(:announcement).permit(
-        :title, :icon, :body, :action, :url, :webview, :category, areas: [], user_goals: []
+        :title, :icon, :body, :action, :url, :webapp_url, :webview, :category, areas: [], user_goals: []
       )
     end
   end
