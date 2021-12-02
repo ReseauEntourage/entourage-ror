@@ -69,5 +69,20 @@ module UserServices
 
       ChatMessage.find_by(id: last_group_chat_message_id)
     end
+
+    def ask_for_help_creation_count
+      open_actions_creation.ask_for_helps.count
+    end
+
+    def contribution_creation_count
+      open_actions_creation.contributions.count
+    end
+
+    private
+    def open_actions_creation
+      Entourage.where(user: self)
+        .where(group_type: :action, status: :open)
+        .where("entourages.created_at > ?", 1.year.ago)
+    end
   end
 end
