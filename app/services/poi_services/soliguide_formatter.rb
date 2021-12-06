@@ -161,9 +161,28 @@ module PoiServices
 
     def self.format_other other
       return [] unless other.present?
-      return ['Étudiant / étudiante'] if other.include?('student')
+      return [] if other.sort == ['violence', 'addiction', 'handicap', 'lgbt+', 'hiv', 'prostitution', 'prison', 'student'].sort
 
-      []
+      # violence : personne victime de violence
+      # addiction : personne en situation d'addiction
+      # handicap : personne en situation de handicap
+      # lgbt+ : personne appartenant aux communautés LGBT+
+      # hiv : personne porteuse du VIH
+      # prostitution : travailleur/travailleuse du sexe
+      # prison : personne sortant de prison
+      # student : personne étudiante
+
+      others = []
+      others << "victime de violence" if other.include?('violence')
+      others << "en situation d'addiction" if other.include?('addiction')
+      others << "en situation de handicap" if other.include?('handicap')
+      others << "appartenant aux communautés LGBT+" if other.include?('lgbt+')
+      others << "porteuse du VIH" if other.include?('hiv')
+      others << "travailleur(euse) du sexe" if other.include?('prostitution')
+      others << "sortant de prison" if other.include?('prison')
+      others << "étudiant(e)" if other.include?('student')
+
+      others
     end
 
     def self.format_modalities modalities
