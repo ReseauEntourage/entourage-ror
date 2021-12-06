@@ -170,6 +170,12 @@ module EntourageServices
       entourage.save
     end
 
+    def self.close entourage:
+      return false unless ['open', 'full'].include?(entourage.status)
+
+      update(entourage: entourage, params: { status: :closed })
+    end
+
     def self.cancel(entourage:, params:)
       entourage.assign_attributes({status: :cancelled})
 

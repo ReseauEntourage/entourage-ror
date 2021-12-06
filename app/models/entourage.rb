@@ -346,6 +346,10 @@ class Entourage < ApplicationRecord
     status && status.to_sym == :cancelled
   end
 
+  def ongoing?
+    status && [:open, :full].include?(status.to_sym)
+  end
+
   def add_metadata_schema_urn(value)
     value = {} if value.nil?
     value['$id'] = "urn:entourage:#{group_type}:metadata" if group_type
