@@ -46,7 +46,7 @@ module PoiServices
     end
 
     def self.format_audience publics, modalities
-      (format_publics(publics) + format_modalities(modalities) + format_other(modalities)).join("\n")
+      (format_publics(publics) + format_modalities(modalities) + format_other_modalities(modalities)).join("\n")
     end
 
     def self.format_category_ids poi
@@ -81,7 +81,11 @@ module PoiServices
       sentences << if publics['accueil'] == 0
         accueil
       else
-        "#{accueil} : #{(format_age(publics['age']) + format_familialle(publics['familialle'])).compact.join(', ')}"
+        "#{accueil} : #{(
+          format_age(publics['age']) +
+          format_familialle(publics['familialle']) +
+          format_other(publics['other'])
+        ).compact.join(', ')}"
       end
 
       if format_administrative(publics['administrative'])
@@ -155,6 +159,13 @@ module PoiServices
       "personnes #{situations.join(', ')}"
     end
 
+    def self.format_other other
+      return [] unless other.present?
+      return ['Étudiant / étudiante'] if other.include?('student')
+
+      []
+    end
+
     def self.format_modalities modalities
       return [] unless modalities
       return ["Accueil sans rendez-vous"] if modalities['inconditionnel'] == true
@@ -192,7 +203,7 @@ module PoiServices
       "Animaux autorisés"
     end
 
-    def self.format_other modalities
+    def self.format_other_modalities modalities
       return [] unless modalities.present?
       return [] unless modalities['other'].present?
 

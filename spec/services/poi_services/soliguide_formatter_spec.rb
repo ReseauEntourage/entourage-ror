@@ -212,6 +212,30 @@ describe PoiServices::Soliguide do
     end
   end
 
+  describe 'format_other' do
+    subject { PoiServices::SoliguideFormatter.format_other other }
+
+    context 'no format_other' do
+      let(:other) { nil }
+      it { expect(subject).to eq([]) }
+    end
+
+    context 'empty format_other' do
+      let(:other) { [] }
+      it { expect(subject).to eq([]) }
+    end
+
+    context 'student format_other' do
+      let(:other) { ['student', 'foo'] }
+      it { expect(subject).to eq(["Étudiant / étudiante"]) }
+    end
+
+    context 'invalid format_other' do
+      let(:other) { ['foo', 'bar'] }
+      it { expect(subject).to eq([]) }
+    end
+  end
+
   describe 'format_animal' do
     subject { PoiServices::SoliguideFormatter.format_animal animal }
 
@@ -231,8 +255,8 @@ describe PoiServices::Soliguide do
     end
   end
 
-  describe 'format_other' do
-    subject { PoiServices::SoliguideFormatter.format_other other }
+  describe 'format_other_modalities' do
+    subject { PoiServices::SoliguideFormatter.format_other_modalities other }
 
     context 'no other' do
       let(:other) { nil }
