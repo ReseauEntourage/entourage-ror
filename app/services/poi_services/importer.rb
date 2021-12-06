@@ -4,6 +4,20 @@ module PoiServices
       @path = path
     end
 
+    # Id
+    # Nom
+    # Adresse
+    # Description
+    # Public
+    # Website
+    # Téléphone
+    # Catégorie1
+    # Catégorie2
+    # Catégorie3
+    # Catégorie4
+    # Catégorie5
+    # Catégorie6
+    # Catégorie7
     def import!
       CSV.read(path, headers: true).each do |row|
         row = row.to_hash.map { |k,v| [k, v&.strip] }.to_h # remove surrounding spaces or carriage returns
@@ -16,10 +30,10 @@ module PoiServices
           description: row['Description'],
           audience: row['Public'],
           email: row['Email'],
-          website: row['website'],
+          website: row['Website'],
           phone: row['Téléphone'],
           category_id: row['Catégorie1'],
-          category_ids: [row['Catégorie1'], row['Catégorie2'], row['Catégorie3'], row['Catégorie4'], row['Catégorie5']].uniq.compact,
+          category_ids: [row['Catégorie1'], row['Catégorie2'], row['Catégorie3'], row['Catégorie4'], row['Catégorie5'], row['Catégorie6'], row['Catégorie7']].uniq.compact,
 
           validated: true
         }
