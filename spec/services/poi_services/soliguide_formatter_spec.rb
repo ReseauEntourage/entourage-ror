@@ -176,6 +176,11 @@ describe PoiServices::Soliguide do
       it { expect(subject).to eq(nil) }
     end
 
+    context 'empty format_administrative' do
+      let(:administrative) { [] }
+      it { expect(subject).to eq(nil) }
+    end
+
     context 'all format_administrative' do
       let(:administrative) { ["regular", "asylum", "refugee", "undocumented"] }
       it { expect(subject).to eq(nil) }
