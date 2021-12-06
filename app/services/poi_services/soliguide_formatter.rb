@@ -138,7 +138,7 @@ module PoiServices
     end
 
     def self.format_administrative administrative
-      return nil unless administrative
+      return nil unless administrative.present?
       return nil if administrative.sort == ["asylum", "refugee", "regular", "undocumented"].sort
 
       # regular : personne en situation régulière
