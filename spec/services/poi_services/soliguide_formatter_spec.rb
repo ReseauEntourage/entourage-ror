@@ -225,9 +225,19 @@ describe PoiServices::Soliguide do
       it { expect(subject).to eq([]) }
     end
 
+    context 'all format_other' do
+      let(:other) { ['violence', 'addiction', 'handicap', 'lgbt+', 'hiv', 'prostitution', 'prison', 'student'] }
+      it { expect(subject).to eq([]) }
+    end
+
     context 'student format_other' do
       let(:other) { ['student', 'foo'] }
-      it { expect(subject).to eq(["Étudiant / étudiante"]) }
+      it { expect(subject).to eq(["étudiant(e)"]) }
+    end
+
+    context 'some format_other' do
+      let(:other) { ['violence', 'prison'] }
+      it { expect(subject).to eq(["victime de violence", "sortant de prison"]) }
     end
 
     context 'invalid format_other' do
