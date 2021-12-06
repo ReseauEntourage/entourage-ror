@@ -96,6 +96,7 @@ Rails.application.routes.draw do
           post :sensitive_words_check
           get :edit_type
           get :edit_owner
+          post :close
           post :update_owner
           post :pin
           post :unpin
