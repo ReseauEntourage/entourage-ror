@@ -202,12 +202,19 @@
 
 <script>
   $(function(){
-    $('#q_status_in').select2( { placeholder: 'Tous les statuts' });
+    var isChanged = false;
+
+    $('#q_status_in').multiselect({
+      onChange: function(option, change) { isChanged = true },
+      onSelectAll: function(option, change) { isChanged = true },
+      onDropdownHide: function(option, change) {
+        if (isChanged) {
+          $(event.target).closest('form').submit();
+        }
+      },
+    });
 
     $('form select:not(#q_status_in)').on('change', function(event) {
-      $(event.target).closest('form').submit();
-    })
-    $('#q_status_in').on('select2:close', function(event) {
       $(event.target).closest('form').submit();
     })
   })
