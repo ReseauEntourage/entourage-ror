@@ -445,7 +445,7 @@ module Admin
       # set default status_in
       return if params[:q] && params[:q][:status_in].present?
 
-      params[:q] = {}
+      params[:q] ||= {}
       params[:q][:status_in] = ['open', 'suspended', 'full']
     end
 
