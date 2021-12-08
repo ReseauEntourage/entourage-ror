@@ -4,7 +4,6 @@ include CommunityHelper
 describe Api::V1::EntouragesController do
 
   let(:user) { FactoryBot.create(:public_user) }
-  let(:partner_user) { FactoryBot.create(:partner_user) }
   before { ModerationServices.stub(:moderator) { nil } }
 
   describe 'GET index' do
@@ -355,36 +354,6 @@ describe Api::V1::EntouragesController do
         it { expect(response.status).to eq(400) }
       end
 
-      context "outing creation unavailable to user that is not partner" do
-        let(:params) do
-          {
-            group_type: :outing,
-            title: "Apéro Entourage",
-            location: {
-              latitude: 48.868959,
-              longitude: 2.390185
-            },
-            metadata: {
-              starts_at: "2018-09-04T19:30:00+02:00",
-              place_name: "Le Dorothy",
-              street_address: "85 bis rue de Ménilmontant, 75020 Paris, France",
-              google_place_id: "ChIJFzXXy-xt5kcRg5tztdINnp0",
-              landscape_url: "path/to/landscape_url",
-              landscape_thumbnail_url: "path/to/landscape_thumbnail_url",
-              portrait_url: "path/to/portrait_url",
-              portrait_thumbnail_url: "path/to/portrait_thumbnail_url",
-            }
-          }
-        end
-
-        before { post :create, params: { entourage: params, token: user.token } }
-
-        it { expect(response.status).to eq(401) }
-        it { expect(JSON.parse(response.body)).to eq({
-          "message" => 'Could not create entourage', "reasons" => "ONLY_PARTNER"
-        }) }
-      end
-
       context "metadata (outings)" do
         let(:params) do
           {
@@ -408,7 +377,7 @@ describe Api::V1::EntouragesController do
         end
         before {
           Storage::Bucket.any_instance.stub(:url_for) { "path/to/portrait_url" }
-          post :create, params: { entourage: params, token: partner_user.token }
+          post :create, params: { entourage: params, token: user.token }
         }
         it do
           outing = Entourage.last
@@ -447,17 +416,10 @@ describe Api::V1::EntouragesController do
               "online"=>false,
               "event_url"=>nil,
               "author"=>{
-                "id"=>partner_user.id,
+                "id"=>user.id,
                 "display_name"=>"John D.",
                 "avatar_url"=>nil,
-                "partner"=> {
-                  "id" => partner_user.partner_id,
-                  "name" => partner_user.partner.name,
-                  "large_logo_url" => partner_user.partner.large_logo_url,
-                  "small_logo_url" => partner_user.partner.small_logo_url,
-                  "default" => true,
-                  "following" => false
-                },
+                "partner"=>nil,
                 "partner_role_title" => nil,
               },
               "location"=>{
@@ -493,7 +455,7 @@ describe Api::V1::EntouragesController do
           }
         end
         before {
-          post :create, params: { entourage: params, token: partner_user.token }
+          post :create, params: { entourage: params, token: user.token }
         }
         it { expect(Entourage.last.metadata[:landscape_url]).to eq("entourage_images/images/mypicture.png") }
         it { expect(Entourage.last.metadata[:landscape_thumbnail_url]).to eq("entourage_images/images/mypicture.png") }
@@ -524,7 +486,7 @@ describe Api::V1::EntouragesController do
           }
         end
         before {
-          post :create, params: { entourage: params, token: partner_user.token }
+          post :create, params: { entourage: params, token: user.token }
         }
         it { expect(Entourage.last.metadata[:landscape_url]).to eq(nil) }
         it { expect(Entourage.last.metadata[:landscape_thumbnail_url]).to eq(nil) }
