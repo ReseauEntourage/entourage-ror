@@ -195,10 +195,10 @@ resource Api::V1::EntouragesController do
     end
 
     let(:outing) { build :outing }
-    let(:partner_user) { FactoryBot.create(:partner_user) }
+    let(:user) { FactoryBot.create(:pro_user) }
 
     let(:raw_post) { {
-      token: partner_user.token,
+      token: user.token,
       entourage: {
         group_type: :outing,
         title: outing.title,

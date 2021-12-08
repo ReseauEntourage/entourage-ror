@@ -1,5 +1,5 @@
 class Callback
-  attr_accessor :on_success, :on_failure, :on_unauthorized
+  attr_accessor :on_success, :on_failure
 
   def success(&block)
     @on_success = block
@@ -7,10 +7,6 @@ class Callback
 
   def failure(&block)
     @on_failure = block
-  end
-
-  def unauthorized(&block)
-    @on_unauthorized = block
   end
 
   def action_or_failure(block, user)
