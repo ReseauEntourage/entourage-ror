@@ -27,6 +27,7 @@ fr:
         engaged?: Engagé ?
         deleted: Supprimé
         organization_name: Association
+        subscriptions: Abonnements
       user_history:
         kind:
           account: Compte créé
