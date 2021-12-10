@@ -187,6 +187,32 @@ describe User, :type => :model do
     expect(user.invitations).to eq([invitation])
   end
 
+  it "has many active followings" do
+    user = FactoryBot.create(:public_user)
+    following = FactoryBot.create(:following, user: user, active: true)
+    expect(user.followings).to eq([following])
+  end
+
+  it "has many non active followings" do
+    user = FactoryBot.create(:public_user)
+    following = FactoryBot.create(:following, user: user, active: false)
+    expect(user.followings).to eq([])
+  end
+
+  it "has many active subscriptions" do
+    user = FactoryBot.create(:public_user)
+    partner = FactoryBot.create(:partner)
+    following = FactoryBot.create(:following, user: user, partner: partner, active: true)
+    expect(user.subscriptions).to eq([partner])
+  end
+
+  it "has many non active subscriptions" do
+    user = FactoryBot.create(:public_user)
+    partner = FactoryBot.create(:partner)
+    following = FactoryBot.create(:following, user: user, partner: partner, active: false)
+    expect(user.subscriptions).to eq([])
+  end
+
   describe "apple?" do
     fr = Address.new(country: 'FR')
     us = Address.new(country: 'US')
