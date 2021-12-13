@@ -77,7 +77,10 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                                   "engaged"=>false,
                                   "goal" => nil,
                                   "unread_count" => 0,
-                                  "interests" => []
+                                  "interests" => [],
+                                  "permissions" => {
+                                    "outing" => { "creation" => true }
+                                  },
                                  },
                                 "first_sign_in"=>true
                                })
@@ -283,7 +286,10 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                                                              "engaged"=>true,
                                                              "goal" => nil,
                                                              "unread_count" => 0,
-                                                             "interests" => []
+                                                             "interests" => [],
+                                                             "permissions" => {
+                                                               "outing" => { "creation" => false }
+                                                             },
                                                            },
                                                     "first_sign_in"=>true})}
     end
@@ -722,7 +728,10 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                                                            "engaged"=>false,
                                                            "goal" => nil,
                                                            "unread_count" => 0,
-                                                           "interests" => []
+                                                           "interests" => [],
+                                                           "permissions" => {
+                                                             "outing" => { "creation" => true }
+                                                           },
                                                          }}) }
 
         context "when you have an address" do
@@ -795,7 +804,10 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                                                            "engaged"=>false,
                                                            "goal" => nil,
                                                            "unread_count" => 0,
-                                                           "interests" => []
+                                                           "interests" => [],
+                                                           "permissions" => {
+                                                             "outing" => { "creation" => true }
+                                                           },
                                                          }}) }
       end
 
@@ -833,6 +845,9 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                                                            "engaged"=>false,
                                                            "unread_count" => 0,
                                                            "partner"=>nil,
+                                                           "permissions" => {
+                                                             "outing" => { "creation" => false }
+                                                           },
                                                            "memberships"=>[],
                                                            "conversation"=>{"uuid"=>"1_list_#{user.id}-#{other_user.id}"}
                                                          }}) }

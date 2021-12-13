@@ -75,6 +75,7 @@ class AnonymousUser
   def groups; []; end
   def join_requests; JoinRequest.none; end
   def pro?; false; end
+  def admin?; false; end
   def email; nil; end
   def has_password?; false; end
   def deleted; false; end
