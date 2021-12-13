@@ -292,6 +292,18 @@ class Entourage < ApplicationRecord
     end.to_h
   end
 
+  def starts_at
+    return unless outing?
+    return unless metadata
+    metadata[:starts_at]
+  end
+
+  def ends_at
+    return unless outing?
+    return unless metadata
+    metadata[:ends_at]
+  end
+
   def outing_image_url?
     return unless outing?
 
