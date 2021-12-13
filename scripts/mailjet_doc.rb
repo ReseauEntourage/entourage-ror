@@ -69,33 +69,6 @@ def template_variables template_id
   template_tags(template_id).map { |m| m.scan(/var:([a-z0-9_\.]+)/) }.flatten.uniq
 end
 
-# value_count = {}
-
-# headers.each do |headers|
-#   headers.map do |header|
-#     value_count[header.name] ||= Hash.new(0)
-#     value_count[header.name][header.value] += 1
-#   end
-# end
-
-# common_header_values = []
-
-# majority = (headers.count / 2.0).ceil
-
-# value_count.each do |name, value_count|
-#   value_count.each do |value, count|
-#     if count >= majority
-#       common_header_values.push [name, value, "#{count}/#{headers.count}"]
-#     end
-#   end
-# end
-
-# puts "Ces headers ont les valeurs suivantes, sauf si précisé"
-# common_header_values.each do |name, value, freq|
-#   next if name.in? ["To", "Mime-Version", "Content-Type", 'X-MJ-TemplateLanguage', 'X-MJ-TemplateErrorReporting']
-#   p [name, value]
-# end
-
 data = []
 
 headers.each do |headers|
@@ -158,36 +131,9 @@ vars.each do |var, metadata|
   end
 end
 
-# put side to side the columns for similarly named (entourage|action)_ vars
-#
-# vars2 = []
-# loop do
-#   break if vars.empty?
-#   var = vars.shift
-#   vars2.push var
-#   match = var.match(/^(action|entourage)_/)
-#   next if match.nil?
-#   other = (['action', 'entourage'] - [match[1]])[0]
-#   subst = var.gsub(match[1], other)
-#   var = vars.delete subst
-#   vars2.push var if var
-# end
-# vars = vars2
-
 lines = []
 r = ["Nom dans Mailjet", :campagne, :template] + shared_vars
 lines.push r
-
-def mailjet_id decimal
-  # it's a base 62 conversion
-  alphabet = ['0'..'9', 'a'..'z', 'A'..'Z'].flat_map(&:to_a)
-  output = []
-  while decimal != 0
-    output.unshift alphabet[decimal % alphabet.size]
-    decimal /= alphabet.size
-  end
-  output.join
-end
 
 def nbsp string
   string.gsub(' ', '&nbsp;')
@@ -196,8 +142,8 @@ end
 data.each do |m|
   a = [
     "[#{nbsp template_names[m[:template]]}](https://app.mailjet.com/template/#{m[:template]}/build)",
-    m[:campaign_id] ? "[#{m[:campaign]}](https://app.mailjet.com/stats/campaigns-basic/#{mailjet_id m[:campaign_id]})" : m[:campaign],
-    "[#{m[:template]}](https://app.mailjet.com/resource/template/#{m[:template]}/render)"
+    m[:campaign_id] ? "[#{m[:campaign]}](https://app.mailjet.com/stats/campaigns/#{m[:campaign_id]})" : m[:campaign],
+    "[#{m[:template]}](https://app.mailjet.com/template/#{m[:template]}/preview)"
   ]
   shared_vars.each do |var|
     used = var.in?(m[:template_vars])
