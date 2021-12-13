@@ -199,6 +199,22 @@
   </div>
   <br>
 
+  <div class="control-group">
+    <%= f.label :subscriptions, class: "control-label" %>
+    <% if @user.subscriptions.any? %>
+      <% @user.subscriptions.each do |subscription| %>
+        <table class="table" style="width: auto">
+          <tr>
+            <td><%= link_to subscription.name, admin_partner_path(subscription.id) %></td>
+          </tr>
+        </table>
+      <% end %>
+    <% else %>
+      <div>Aucun</div>
+      <br>
+    <% end %>
+  </div>
+
   <% unless @user.new_record? %>
     <div class="control-group">
       <label class="control-label">CNIL</label>

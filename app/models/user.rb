@@ -28,6 +28,8 @@ class User < ApplicationRecord
 
   has_many :tours
   has_many :encounters, through: :tours
+  has_many :followings, -> { where active: true }
+  has_many :subscriptions, through: :followings, source: :partner
   has_many :login_histories
   has_many :session_histories
   has_many :user_histories
