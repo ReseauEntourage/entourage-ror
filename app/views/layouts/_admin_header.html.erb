@@ -32,13 +32,10 @@
           <ul class="dropdown-menu">
             <li><%= link_to "Cartes d'annonce", admin_announcements_path %></li>
             <li><%= link_to "Photos d'événements", admin_entourage_images_path %></li>
-            <li><%= link_to "Emails de récap", admin_digest_emails_path %></li>
             <li><%= link_to "Pois", admin_pois_path %></li>
             <li><%= link_to "Zones de modération", admin_moderation_areas_path %></li>
             <li><%= link_to "Zones de maraudes", admin_tour_areas_path %></li>
             <li><%= link_to "Diffusions de MP", admin_conversation_message_broadcasts_path %></li>
-            <li><%= link_to "Liste des admins", admin_users_path(status: :admin) %></li>
-            <li><%= link_to "Liste des modérateurs", admin_users_path(status: :moderators) %></li>
           </ul>
         </li>
 
@@ -54,10 +51,7 @@
             <li><%= link_to "Maraudes - Demandes d'adhésion", admin_registration_requests_path %></li>
             <li><%= link_to "Maraudes - Liste des associations", admin_organizations_path %></li>
 
-            <li><%= link_to "Messages pour Entourage", admin_messages_path %></li>
             <li><%= link_to "Modération des photos de profils", moderate_admin_users_path %></li>
-            <li><%= link_to "Inscription à la newsletter", admin_newsletter_subscriptions_path %></li>
-            <li><%= link_to "Invitations à rejoindre un entourage", admin_entourage_invitations_path %></li>
             <li><%= link_to "Demandes de changement de téléphone", admin_users_path(status: :pending) %></li>
             <% if EnvironmentHelper.staging? %>
               <li><%= link_to "Maraudes de test", admin_generate_tours_path %></li>
