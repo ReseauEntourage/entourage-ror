@@ -54,7 +54,12 @@ describe Api::V1::AnonymousUsersController do
         "engaged"=>false,
         "goal" => nil,
         "unread_count" => 0,
-        "interests" => []
+        "interests" => [],
+        "permissions" => {
+          "outing" => {
+            "creation" => false
+          }
+        },
       }
     )}
   end
