@@ -1,6 +1,6 @@
 module Admin
   class EntouragesController < Admin::BaseController
-    before_action :set_entourage, only: [:show, :edit, :update, :renew, :cancellation, :cancel, :edit_image, :update_image, :moderator_read, :moderator_unread, :message, :show_members, :show_joins, :show_invitations, :show_messages, :sensitive_words, :sensitive_words_check, :edit_type, :edit_owner, :update_owner, :admin_pin, :admin_unpin, :pin, :unpin]
+    before_action :set_entourage, only: [:show, :edit, :update, :close, :renew, :cancellation, :cancel, :edit_image, :update_image, :moderator_read, :moderator_unread, :message, :show_members, :show_joins, :show_invitations, :show_messages, :sensitive_words, :sensitive_words_check, :edit_type, :edit_owner, :update_owner, :admin_pin, :admin_unpin, :pin, :unpin]
     before_action :ensure_moderator!, only: [:message]
 
     before_action :set_default_index_params, only: [:index]
@@ -260,6 +260,14 @@ module Admin
         redirect_to [:edit, :admin, @entourage], notice: "Entourage mis à jour"
       else
         render :edit, alert: "Erreur lors de la mise à jour"
+      end
+    end
+
+    def close
+      if EntourageServices::EntourageBuilder.close(entourage: @entourage)
+        redirect_to [:admin, @entourage], notice: "L'événement a été clôturé"
+      else
+        redirect_to [:admin, @entourage], alert: "L'événement n'a pas pu être clôturé : #{@entourage.errors.full_messages.to_sentence}"
       end
     end
 

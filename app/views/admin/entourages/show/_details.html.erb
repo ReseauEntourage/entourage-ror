@@ -73,7 +73,7 @@
         <%= entourage_state_label(@entourage) %>
       </div>
 
-      <% if @entourage.outing? && !@entourage.cancelled? %>
+      <% if @entourage.outing? && @entourage.ongoing? %>
         <div>
           <%= link_to "Annuler l'événement", [:cancellation, :admin, @entourage] %>
         </div>
