@@ -30,23 +30,23 @@ create :chat_message, messageable: event, user: event.user
 headers = []
 
 [
-  MemberMailer.welcome(user),
-  MemberMailer.onboarding_day_8(user),
-  MemberMailer.onboarding_day_14(user),
-  MemberMailer.reactivation_day_20(user),
-  MemberMailer.reactivation_day_40(user),
-  GroupMailer.action_confirmation(action),
-  GroupMailer.action_joined_confirmation(action_join_request),
-  MemberMailer.action_follow_up_day_10(action),
-  MemberMailer.action_follow_up_day_20(action),
-  GroupMailer.action_success_creator(action_join_request),
-  GroupMailer.event_created_confirmation(event),
-  GroupMailer.event_joined_confirmation(event_join_request),
-  GroupMailer.event_reminder_organizer(event_join_request),
-  GroupMailer.event_reminder_participant(event_join_request),
-  GroupMailer.event_followup_organizer(event_join_request),
-  UnreadReminderEmail.delivery(UnreadReminderEmail::Presenter.new(user)),
-  DigestEmailService.delivery(user, [action.id, event.id], suggested_postal_code: '75001'),
+  MemberMailer.welcome(user), # à l'inscription
+  # MemberMailer.onboarding_day_8(user), # pas exécuté
+  MemberMailer.onboarding_day_14(user), # deux semaines après une inscription
+  MemberMailer.reactivation_day_20(user), # 3 semaines après la dernière connexion
+  MemberMailer.reactivation_day_40(user), # 6 semaines après la dernière connexion
+  GroupMailer.action_confirmation(action), # à la création d'une action
+  GroupMailer.action_joined_confirmation(action_join_request), # lorsque l'utilisateur rejoint une action
+  MemberMailer.action_follow_up_day_10(action), # 10 jours après la création d'une action
+  MemberMailer.action_follow_up_day_20(action), # 20 jours après la création d'une action
+  GroupMailer.action_success_creator(action_join_request), # à la fermeture d'une action, si le succès de l'action est renseigné
+  GroupMailer.event_created_confirmation(event), # à la création d'un événement
+  GroupMailer.event_joined_confirmation(event_join_request), # lorsque l'utilisateur rejoint un événement
+  GroupMailer.event_reminder_organizer(event_join_request), # la veille d'un événement que l'utilisateur organise
+  GroupMailer.event_reminder_participant(event_join_request), # le matin d'un événement auquel l'utilisateur participe
+  GroupMailer.event_followup_organizer(event_join_request), # le lendemain d'un événement que l'utilisateur organise
+  UnreadReminderEmail.delivery(UnreadReminderEmail::Presenter.new(user)), # lorsque l'utilisateur a des messages non lus de plus d'une journée dans une action rejointe
+  # DigestEmailService.delivery(user, [action.id, event.id], suggested_postal_code: '75001'),
 ].each do |delivery|
   headers.push delivery.header
 end
@@ -99,6 +99,8 @@ end
 data = []
 
 headers.each do |headers|
+  sleep 2 # to avoid too many requests from mailjet
+
   h = {}
   headers.map do |header|
     h[header.name] ||= []
