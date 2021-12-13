@@ -97,19 +97,19 @@
   </div>
 <% end %>
 
+<% outing_filter = params[:q] && params[:q][:group_type_eq] == 'outing' %>
+<% pin_filter = params[:q] && params[:q][:pin_eq] %>
+
 <table class="table admin-table" style="table-layout: auto">
   <th></th>
   <th></th>
   <th></th>
   <th>id</th>
   <th>Titre</th>
+  <% if outing_filter %><th>Date</th><% end %>
   <th>Description</th>
-  <% if params[:q] && params[:q][:pin_eq] %>
-    <th>Actions épinglées pour</th>
-  <% end %>
-  <% if params[:q] && params[:q][:group_type_eq] == 'outing' %>
-    <th>Photo</th>
-  <% end %>
+  <% if pin_filter %><th>Actions épinglées pour</th><% end %>
+  <% if outing_filter %><th>Photo</th><% end %>
   <th>Statut</th>
   <th><span class="glyphicon glyphicon-user" aria-hidden="true"></span></th>
   <th><span class="glyphicon glyphicon-comment" aria-hidden="true"></span></th>
@@ -137,8 +137,11 @@
       </td>
       <td><%= entourage.id %></td>
       <td><%= link_to entourage.title, admin_entourage_path(entourage, @params) %></td>
+      <% if outing_filter %>
+        <td><%= l entourage.starts_at, format: :date_short %></td>
+      <% end %>
       <td><%= entourage_description_excerpt(entourage.description) %></td>
-      <% if params[:q] && params[:q][:pin_eq] %>
+      <% if pin_filter %>
         <td>
           <% entourage[:pins].map do |pin| %>
             <span class="badge"><%= pin %></span>
@@ -146,7 +149,7 @@
         </td>
       <% end %>
 
-      <% if params[:q] && params[:q][:group_type_eq] == 'outing' %>
+      <% if outing_filter %>
         <td>
           <% if entourage.outing_image_url? %>
             <span class="label label-success">oui</span>
