@@ -33,7 +33,7 @@
         <%= f.select :display_category_eq, [['Toutes les catégories', nil]] + entourage_type_categories + [EntouragesHelper::NO_CATEGORY], {}, class: 'form-control' %>
       </div>
       <div class="input-group">
-        <%= f.select :status_eq, [['Tous les statuts', nil]] + entourage_type_statuses, {}, class: 'form-control' %>
+        <%= f.select :status_in, entourage_type_statuses, {}, class: 'form-control', multiple: true, style: "width: 200px" %>
       </div>
     </div>
   </div>
@@ -202,7 +202,20 @@
 
 <script>
   $(function(){
-    $('form select').on('change', function(event) {
+    var isChanged = false;
+
+    $('#q_status_in').multiselect({
+      nonSelectedText: 'Tous les statuts',
+      onChange: function(option, change) { isChanged = true },
+      onSelectAll: function(option, change) { isChanged = true },
+      onDropdownHide: function(option, change) {
+        if (isChanged) {
+          $(event.target).closest('form').submit();
+        }
+      },
+    });
+
+    $('form select:not(#q_status_in)').on('change', function(event) {
       $(event.target).closest('form').submit();
     })
   })
