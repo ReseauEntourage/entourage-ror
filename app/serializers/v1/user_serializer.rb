@@ -23,7 +23,8 @@ module V1
                :placeholders,
                :feature_flags,
                :engaged,
-               :unread_count
+               :unread_count,
+               :permissions
 
     has_one :organization
     has_one :stats, serializer: ActiveModel::DefaultSerializer
@@ -157,6 +158,14 @@ module V1
 
     def unread_count
       UserServices::UnreadMessages.new(user: object).number_of_unread_messages
+    end
+
+    def permissions
+      {
+        outing: {
+          creation: object.partner.present? || object.admin?
+        }
+      }
     end
 
     def scope
