@@ -6,6 +6,12 @@
         <%= link_to "Ajouter une zone", new_admin_tour_area_path, class: "btn btn-default" %>
       </div>
 
+      <div class="alert alert-info" role="alert" style="display: flex; align-items: center">
+        <div style="flex-grow: 1">
+          <i>Sur le mode "Premiers pas" de l'app, les utilisateurs peuvent faire une demande de renseignements sur les maraudes dans la ville de leur choix. Cette page permet d'activer ou de désactiver les villes disponibles affichées dans l'app.</i>
+        </div>
+      </div>
+
       <% if @tour_areas.empty? %>
         <div class="panel panel-warning">
           <div class="panel-heading">
