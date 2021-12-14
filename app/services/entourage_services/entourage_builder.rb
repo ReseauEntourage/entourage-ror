@@ -124,7 +124,7 @@ module EntourageServices
       end
 
       if entourage.metadata[:close_message].present?
-        SlackServices::ActionCloseMessage.new(action: entourage, message: entourage.metadata[:close_message])
+        SlackServices::ActionCloseMessage.new(action: entourage, message: entourage.metadata[:close_message]).notify
       end
 
       entourage.skip_updated_at! if

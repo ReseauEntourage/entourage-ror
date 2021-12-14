@@ -909,6 +909,7 @@ describe Api::V1::EntouragesController do
       context "close with message" do
         let!(:user_entourage) { create :entourage, :joined, user: user }
 
+        before { SlackServices::ActionCloseMessage.any_instance.stub(:notify) { nil } }
         before { patch :update, params: { id: user_entourage.to_param, entourage: {
           status: 'closed', metadata: { close_message: 'foo' }
         }, token: user.token } }
@@ -931,6 +932,16 @@ describe Api::V1::EntouragesController do
           display_address: "",
           close_message: "foo"
         }) }
+      end
+
+      context "close with message pings on Slack" do
+        let!(:user_entourage) { create :entourage, :joined, user: user }
+
+        before { expect_any_instance_of(SlackServices::ActionCloseMessage).to receive(:notify) }
+
+        it { patch :update, params: { id: user_entourage.to_param, entourage: {
+          status: 'closed', metadata: { close_message: 'foo' }
+        }, token: user.token } }
       end
 
       context "entourage does not belong to user" do
