@@ -44,4 +44,52 @@ RSpec.describe JoinRequest, type: :model do
       end
     end
   end
+
+  describe "join_request_observer" do
+    subject { create :join_request, status: status }
+
+    describe "create" do
+      context "accepted" do
+        let(:status) { :accepted }
+
+        before { expect_any_instance_of(SlackServices::StackTrace).not_to receive(:notify) }
+
+        it { subject }
+      end
+
+      context "pending" do
+        let(:status) { :pending }
+
+        before { expect_any_instance_of(SlackServices::StackTrace).to receive(:notify) }
+
+        it { subject }
+      end
+    end
+
+    describe "update" do
+      context "from accepted to rejected" do
+        let(:status) { :accepted }
+
+        before { subject; expect_any_instance_of(SlackServices::StackTrace).not_to receive(:notify) }
+
+        it { subject.update_attribute(:status, :rejected) }
+      end
+
+      context "from accepted to pending" do
+        let(:status) { :accepted }
+
+        before { subject; expect_any_instance_of(SlackServices::StackTrace).to receive(:notify) }
+
+        it { subject.update_attribute(:status, :pending) }
+      end
+
+      context "from pending to pending" do
+        let(:status) { :pending }
+
+        before { subject; expect_any_instance_of(SlackServices::StackTrace).not_to receive(:notify) }
+
+        it { subject.update_attribute(:status, :pending) }
+      end
+    end
+  end
 end
