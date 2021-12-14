@@ -14,6 +14,7 @@ RSpec.configure do |config|
 
   config.before(:each) do
     ActionMailer::Base.deliveries.clear
+    SlackServices::StackTrace.any_instance.stub(:notify).and_return(nil)
   end
 end
 

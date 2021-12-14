@@ -79,6 +79,11 @@ class JoinRequest < ApplicationRecord
     archived_at && archived_at >= joinable.feed_updated_at
   end
 
+  def pending?
+    return unless status
+    status.to_sym == :pending
+  end
+
   # these 3 methods manage the skip_conversation_uuid_update flag.
   # see join_callback and ChatMessageBuilder#create
   def initialize(*)
