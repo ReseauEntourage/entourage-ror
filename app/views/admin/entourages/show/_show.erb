@@ -224,7 +224,7 @@
           <% end %>
         </div>
 
-        <% if @entourage[:metadata][:close_message].present? %>
+        <% unless @entourage.outing? %>
           <div>
             <%= label_tag :entourage_metadata_close_message, "Commentaire du créateur lors de la clôture" %>
             <%= text_field_tag :close_message, @entourage[:metadata][:close_message], class: 'form-control' %>
