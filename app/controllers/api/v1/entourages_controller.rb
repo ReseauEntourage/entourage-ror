@@ -89,6 +89,7 @@ module Api
         entourages = Entourage.joins(:join_requests)
           .where(group_type: :conversation)
           .where('join_requests.user_id = ?', current_user.id)
+          .page(params[:page] || 1).per(per)
 
         render json: entourages, each_serializer: ::V1::EntourageSerializer, scope: {
           user: current_user, include_last_message: true
@@ -100,6 +101,7 @@ module Api
           .where(group_type: [:action, :outing])
           .where('join_requests.user_id = ?', current_user.id)
           .where('join_requests.status = ?', :accepted)
+          .page(params[:page] || 1).per(per)
 
         render json: entourages, each_serializer: ::V1::EntourageSerializer, scope: {
           user: current_user, include_last_message: true
