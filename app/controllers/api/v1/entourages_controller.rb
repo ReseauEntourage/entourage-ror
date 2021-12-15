@@ -85,6 +85,27 @@ module Api
         }
       end
 
+      def private
+        entourages = Entourage.joins(:join_requests)
+          .where(group_type: :conversation)
+          .where('join_requests.user_id = ?', current_user.id)
+
+        render json: entourages, each_serializer: ::V1::EntourageSerializer, scope: {
+          user: current_user, include_last_message: true
+        }
+      end
+
+      def group
+        entourages = Entourage.joins(:join_requests)
+          .where(group_type: [:action, :outing])
+          .where('join_requests.user_id = ?', current_user.id)
+          .where('join_requests.status = ?', :accepted)
+
+        render json: entourages, each_serializer: ::V1::EntourageSerializer, scope: {
+          user: current_user, include_last_message: true
+        }
+      end
+
       #curl -H "Content-Type: application/json" "http://localhost:3000/api/v1/entourages/951.json?token=e4fdc865bc7a91c34daea849e7d73349&distance=123.45&feed_rank=2"
       def show
         ensure_permission! :can_read_public_content?
