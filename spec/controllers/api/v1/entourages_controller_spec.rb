@@ -278,6 +278,69 @@ describe Api::V1::EntouragesController do
     end
   end
 
+  describe 'GET private' do
+    let(:other_user) { FactoryBot.create(:public_user) }
+    subject { JSON.parse(response.body) }
+
+    context "no private conversations" do
+      let!(:conversation) { create :conversation, participants: [other_user] }
+
+      before { get :private, params: { token: user.token } }
+
+      it { expect(subject["entourages"].count).to eq(0) }
+    end
+
+    context "actions are not private" do
+      let(:entourage) { create :entourage, status: :open, group_type: :action }
+      let!(:join_request) { FactoryBot.create(:join_request, joinable: entourage, user: user, status: "accepted") }
+
+      before { get :private, params: { token: user.token } }
+
+      it { expect(subject["entourages"].count).to eq(0) }
+    end
+
+    context "some private conversations" do
+      let!(:conversation) { create :conversation, participants: [user] }
+
+      before { get :private, params: { token: user.token } }
+
+      it { expect(subject["entourages"].count).to eq(1) }
+      it { expect(subject["entourages"][0]["id"]).to eq(conversation.id) }
+      it { expect(subject["entourages"][0]).to have_key("last_message") }
+      it { expect(subject["entourages"][0]).to have_key("number_of_unread_messages") }
+    end
+  end
+
+  describe 'GET group' do
+    let!(:entourage) { FactoryBot.create(:entourage, status: :open) }
+    let(:other_user) { FactoryBot.create(:public_user) }
+    subject { JSON.parse(response.body) }
+
+    context "filter show_my_entourages_only" do
+      let!(:join_request) { FactoryBot.create(:join_request, joinable: entourage, user: user, status: "accepted") }
+
+      before { get :group, params: { token: user.token } }
+      it { expect(subject["entourages"].count).to eq(1) }
+      it { expect(subject["entourages"][0]["id"]).to eq(entourage.id) }
+      it { expect(subject["entourages"][0]).to have_key("last_message") }
+      it { expect(subject["entourages"][0]).to have_key("number_of_unread_messages") }
+    end
+
+    context "filter wrong user show_my_entourages_only" do
+      let!(:join_request) { FactoryBot.create(:join_request, joinable: entourage, user: other_user, status: "accepted") }
+
+      before { get :group, params: { token: user.token } }
+      it { expect(subject["entourages"].count).to eq(0) }
+    end
+
+    context "filter wrong status show_my_entourages_only" do
+      let!(:join_request) { FactoryBot.create(:join_request, joinable: entourage, user: user, status: "pending") }
+
+      before { get :group, params: { token: user.token } }
+      it { expect(subject["entourages"].count).to eq(0) }
+    end
+  end
+
   describe 'POST create' do
     context "not signed in" do
       before { post :create, params: { entourage: { location: {longitude: 1.123, latitude: 4.567}, title: "foo", entourage_type: "ask_for_help", display_category: "social" } } }
