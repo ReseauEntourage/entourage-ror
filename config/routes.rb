@@ -303,6 +303,13 @@ Rails.application.routes.draw do
         end
       end
 
+      resources :conversations, :controller => 'entourages', only: [] do
+        collection do
+          get :private
+          get :group
+        end
+      end
+
       resources :invitations, only: [:index, :update, :destroy]
 
       # resources :contacts, only: [:update]
