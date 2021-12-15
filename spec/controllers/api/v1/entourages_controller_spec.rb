@@ -299,41 +299,101 @@ describe Api::V1::EntouragesController do
       it { expect(subject["entourages"].count).to eq(0) }
     end
 
-    context "some private conversations" do
-      let!(:conversation) { create :conversation, participants: [user] }
+    describe "some private conversations" do
+      let!(:conversation) { create :conversation }
+      let!(:join_request) { FactoryBot.create(:join_request, joinable: conversation, user: user, status: "accepted", last_message_read: Time.now) }
+      let!(:other_conversation) { create :conversation, participants: [other_user] }
 
-      before { get :private, params: { token: user.token } }
+      context "default properties" do
+        before { get :private, params: { token: user.token } }
+        it { expect(subject["entourages"].count).to eq(1) }
+        it { expect(subject["entourages"][0]).to have_key("last_message") }
+        it { expect(subject["entourages"][0]).to have_key("number_of_unread_messages") }
+      end
 
-      it { expect(subject["entourages"].count).to eq(1) }
-      it { expect(subject["entourages"][0]["id"]).to eq(conversation.id) }
-      it { expect(subject["entourages"][0]).to have_key("last_message") }
-      it { expect(subject["entourages"][0]).to have_key("number_of_unread_messages") }
+      context "with unread" do
+        let!(:chat_message) { FactoryBot.create(:chat_message, created_at: 1.minute.from_now, messageable: conversation)}
+
+        before { get :private, params: { token: user.token } }
+        it { expect(subject["entourages"].first["number_of_unread_messages"]).to eq(1) }
+      end
+
+      context "without unread" do
+        let!(:chat_message) { FactoryBot.create(:chat_message, created_at: 1.minute.ago, messageable: conversation)}
+
+        before { get :private, params: { token: user.token } }
+        it { expect(subject["entourages"].first["number_of_unread_messages"]).to eq(0) }
+      end
+
+      context "with last_message" do
+        let!(:chat_message) { FactoryBot.create(:chat_message, messageable: conversation)}
+
+        before { get :private, params: { token: user.token } }
+        it { expect(subject["entourages"].first["last_message"]).to be_a(Hash) }
+      end
+
+      context "without last_message" do
+        let!(:chat_message) { FactoryBot.create(:chat_message, messageable: other_conversation)}
+
+        before { get :private, params: { token: user.token } }
+        it { expect(subject["entourages"].first["last_message"]).to eq(nil) }
+      end
     end
   end
 
   describe 'GET group' do
     let!(:entourage) { FactoryBot.create(:entourage, status: :open) }
+    let!(:other_entourage) { FactoryBot.create(:entourage, status: :open) }
     let(:other_user) { FactoryBot.create(:public_user) }
     subject { JSON.parse(response.body) }
 
-    context "filter show_my_entourages_only" do
-      let!(:join_request) { FactoryBot.create(:join_request, joinable: entourage, user: user, status: "accepted") }
+    describe "some group conversations" do
+      let!(:join_request) { FactoryBot.create(:join_request, joinable: entourage, user: user, status: "accepted", last_message_read: Time.now) }
 
-      before { get :group, params: { token: user.token } }
-      it { expect(subject["entourages"].count).to eq(1) }
-      it { expect(subject["entourages"][0]["id"]).to eq(entourage.id) }
-      it { expect(subject["entourages"][0]).to have_key("last_message") }
-      it { expect(subject["entourages"][0]).to have_key("number_of_unread_messages") }
+      context "default properties" do
+        before { get :group, params: { token: user.token } }
+        it { expect(subject["entourages"].count).to eq(1) }
+        it { expect(subject["entourages"][0]).to have_key("last_message") }
+        it { expect(subject["entourages"][0]).to have_key("number_of_unread_messages") }
+      end
+
+      context "with unread" do
+        let!(:chat_message) { FactoryBot.create(:chat_message, created_at: 1.minute.from_now, messageable: entourage)}
+
+        before { get :group, params: { token: user.token } }
+        it { expect(subject["entourages"].first["number_of_unread_messages"]).to eq(1) }
+      end
+
+      context "without unread" do
+        let!(:chat_message) { FactoryBot.create(:chat_message, created_at: 1.minute.ago, messageable: entourage)}
+
+        before { get :group, params: { token: user.token } }
+        it { expect(subject["entourages"].first["number_of_unread_messages"]).to eq(0) }
+      end
+
+      context "with last_message" do
+        let!(:chat_message) { FactoryBot.create(:chat_message, messageable: entourage)}
+
+        before { get :group, params: { token: user.token } }
+        it { expect(subject["entourages"].first["last_message"]).to be_a(Hash) }
+      end
+
+      context "without last_message" do
+        let!(:chat_message) { FactoryBot.create(:chat_message, messageable: other_entourage)}
+
+        before { get :group, params: { token: user.token } }
+        it { expect(subject["entourages"].first["last_message"]).to eq(nil) }
+      end
     end
 
-    context "filter wrong user show_my_entourages_only" do
+    context "no group conversations" do
       let!(:join_request) { FactoryBot.create(:join_request, joinable: entourage, user: other_user, status: "accepted") }
 
       before { get :group, params: { token: user.token } }
       it { expect(subject["entourages"].count).to eq(0) }
     end
 
-    context "filter wrong status show_my_entourages_only" do
+    context "group conversations are not accepted" do
       let!(:join_request) { FactoryBot.create(:join_request, joinable: entourage, user: user, status: "pending") }
 
       before { get :group, params: { token: user.token } }
