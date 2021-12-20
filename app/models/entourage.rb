@@ -23,6 +23,12 @@ class Entourage < ApplicationRecord
   has_many :members, through: :join_requests, source: :user
   reverse_geocoded_by :latitude, :longitude
   has_many :chat_messages, as: :messageable, dependent: :destroy
+  has_one :last_chat_message, -> {
+    select('DISTINCT ON (messageable_id, messageable_type) *').order('messageable_id, messageable_type, created_at')
+  }, as: :messageable, class_name: 'ChatMessage'
+  has_one :chat_messages_count, -> {
+    select('DISTINCT ON (messageable_id, messageable_type) COUNT(*)')
+  }, as: :messageable, class_name: 'ChatMessage'
   has_many :conversation_messages, as: :messageable, dependent: :destroy
   has_many :moderator_reads, as: :moderatable, dependent: :destroy
   has_many :entourage_invitations, foreign_key: :invitable_id, dependent: :destroy

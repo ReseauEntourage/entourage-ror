@@ -31,9 +31,11 @@ GEM
       erubi (~> 1.4)
       rails-dom-testing (~> 2.0)
       rails-html-sanitizer (~> 1.0, >= 1.0.3)
-    active_model_serializers (0.9.8)
-      activemodel (>= 3.2)
-      concurrent-ruby (~> 1.0)
+    active_model_serializers (0.10.12)
+      actionpack (>= 4.1, < 6.2)
+      activemodel (>= 4.1, < 6.2)
+      case_transform (>= 0.2)
+      jsonapi-renderer (>= 0.1.1.beta1, < 0.3)
     activejob (5.2.6)
       activesupport (= 5.2.6)
       globalid (>= 0.3.6)
@@ -60,6 +62,9 @@ GEM
     airrecord (1.0.7)
       faraday (>= 0.10, < 2.0)
       net-http-persistent
+    ams_lazy_relationships (0.3.2)
+      active_model_serializers (>= 0.10.0.rc4)
+      batch-loader
     ansi (1.5.0)
     arel (9.0.0)
     ast (2.4.2)
@@ -88,11 +93,14 @@ GEM
     barnes (0.0.9)
       multi_json (~> 1)
       statsd-ruby (~> 1.1)
+    batch-loader (2.0.1)
     bcrypt (3.1.16)
     builder (3.2.4)
     bullet (6.1.5)
       activesupport (>= 3.0.0)
       uniform_notifier (~> 1.11)
+    case_transform (0.2)
+      activesupport
     chronic (0.10.2)
     coffee-rails (5.0.0)
       coffee-script (>= 2.2.0)
@@ -179,6 +187,7 @@ GEM
     json (2.5.1)
     json-schema (2.8.1)
       addressable (>= 2.4)
+    jsonapi-renderer (0.2.2)
     jwt (2.2.3)
     kaminari (1.2.1)
       activesupport (>= 4.1.0)
@@ -438,9 +447,10 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
-  active_model_serializers (~> 0.9.3)
+  active_model_serializers (~> 0.10)
   activerecord-postgis-adapter (~> 5)
   airrecord (~> 1)
+  ams_lazy_relationships
   attr_encrypted (~> 3)
   aws-sdk-s3 (~> 1)
   aws-sdk-sns (~> 1)

@@ -1,5 +1,7 @@
 module V1
   class EntourageSerializer < ActiveModel::Serializer
+    include AmsLazyRelationships::Core
+
     include V1::Myfeeds::LastMessage
     include V1::Entourages::Location
 
@@ -26,9 +28,14 @@ module V1
                :event_url,
                :display_report_prompt
 
-    has_one :author, serializer: ActiveModel::DefaultSerializer
-    has_one :location, serializer: ActiveModel::DefaultSerializer
-    has_one :last_message, serializer: ActiveModel::DefaultSerializer
+    has_one :author
+    has_one :location
+    has_one :last_message
+
+    lazy_relationship :last_chat_message
+    lazy_relationship :chat_messages_count
+    lazy_relationship :chat_messages
+    lazy_relationship :join_requests
 
     def initialize(*)
       super
@@ -107,9 +114,11 @@ module V1
       elsif current_join_request.status != 'accepted'
         0
       elsif current_join_request.last_message_read.nil?
-        object.chat_messages.count
+        lazy_chat_messages_count
       else
-        object.chat_messages.where("created_at > ?", current_join_request.last_message_read).count
+        lazy_chat_messages.select do |chat_message|
+          chat_message.created_at > current_join_request.last_message_read
+        end.count
       end
     end
 
@@ -118,14 +127,17 @@ module V1
     end
 
     def current_join_request
-      if scope[:user].nil?
-        nil
-      elsif scope.key?(:current_join_request)
-        return scope[:current_join_request]
-      elsif object.join_requests.loaded?
-        object.join_requests.select {|join_request| join_request.user_id == scope[:user].id}.first
-      else
-        JoinRequest.where(user_id: scope[:user].id, joinable: object).first
+      @current_join_request ||= begin
+        if scope[:user].nil?
+          nil
+        elsif scope.key?(:current_join_request)
+          scope[:current_join_request]
+        else
+          # @fixme performance issue: we instanciate all records but we need only one
+          lazy_join_requests.select do |join_request|
+            join_request.user_id == scope[:user].id
+          end.first
+        end
       end
     end
 

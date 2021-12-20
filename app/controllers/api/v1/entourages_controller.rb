@@ -87,6 +87,7 @@ module Api
 
       def private
         entourages = Entourage.joins(:join_requests)
+          .includes(:join_requests, { user: :partner })
           .where(group_type: :conversation)
           .where('join_requests.user_id = ?', current_user.id)
           .page(params[:page] || 1).per(per)
@@ -98,6 +99,7 @@ module Api
 
       def group
         entourages = Entourage.joins(:join_requests)
+          .includes(:join_requests, { user: :partner })
           .where(group_type: [:action, :outing])
           .where('join_requests.user_id = ?', current_user.id)
           .where('join_requests.status = ?', :accepted)
