@@ -201,9 +201,18 @@ class Entourage < ApplicationRecord
   end
 
   def self.json_schema urn
+    # we want to define required fields
+    return JsonSchemaService.base do
+      {
+        city: { type: :string },
+        display_address: { type: :string },
+        close_message: { type: [:string, :null] },
+      }
+    end.merge({ required: [:city, :display_address]}) if urn == 'action:metadata'
+
     JsonSchemaService.base do
       case urn
-      when 'action:metadata', 'group:metadata'
+      when 'group:metadata'
         {
           city: { type: :string },
           display_address: { type: :string },

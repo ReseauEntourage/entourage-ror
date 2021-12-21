@@ -119,11 +119,12 @@ module EntourageServices
       entourage.assign_attributes(params)
 
       # reset ends_at if only starts_at was set
-      if entourage.group_type == 'outing' &&
-         sent_metadata&.key?(:starts_at) &&
-         !sent_metadata&.key?(:ends_at)
-
+      if entourage.group_type == 'outing' && sent_metadata&.key?(:starts_at) && !sent_metadata&.key?(:ends_at)
         entourage.metadata[:ends_at] = nil
+      end
+
+      if entourage.metadata[:close_message].present?
+        SlackServices::ActionCloseMessage.new(action: entourage, message: entourage.metadata[:close_message]).notify
       end
 
       entourage.skip_updated_at! if

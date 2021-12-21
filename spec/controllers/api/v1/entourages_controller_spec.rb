@@ -906,6 +906,44 @@ describe Api::V1::EntouragesController do
         )}
       end
 
+      context "close with message" do
+        let!(:user_entourage) { create :entourage, :joined, user: user }
+
+        before { SlackServices::ActionCloseMessage.any_instance.stub(:notify) { nil } }
+        before { patch :update, params: { id: user_entourage.to_param, entourage: {
+          status: 'closed', metadata: { close_message: 'foo' }
+        }, token: user.token } }
+
+        it { expect(response.code).to eq '200' }
+        it { expect(user_entourage.chat_messages.last.attributes).to include(
+          "content"=>"a clôturé l’action",
+          "user_id"=>user.id,
+          "message_type"=>"status_update",
+          "metadata"=>{
+            :$id=>"urn:chat_message:status_update:metadata",
+            :status=>"closed",
+            :outcome_success=>nil
+          }
+        )}
+
+        it { expect(user_entourage.reload.metadata).to eq({
+          :$id => "urn:entourage:action:metadata",
+          city: "",
+          display_address: "",
+          close_message: "foo"
+        }) }
+      end
+
+      context "close with message pings on Slack" do
+        let!(:user_entourage) { create :entourage, :joined, user: user }
+
+        before { expect_any_instance_of(SlackServices::ActionCloseMessage).to receive(:notify) }
+
+        it { patch :update, params: { id: user_entourage.to_param, entourage: {
+          status: 'closed', metadata: { close_message: 'foo' }
+        }, token: user.token } }
+      end
+
       context "entourage does not belong to user" do
         before { patch :update, params: { id: entourage.to_param, entourage: {title: "new_title"}, token: user.token } }
         it { expect(response.status).to eq(401) }

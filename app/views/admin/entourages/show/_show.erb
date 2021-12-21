@@ -209,16 +209,25 @@
       <div class="panel-heading">
         Finalité de l’action
       </div>
-      <div class="panel-body row">
-        <% [:action_outcome_reported_at, :action_outcome].each do |field| %>
-          <div class="col-md-3">
-            <%= f.label field %>
-            <% case column_type[field] %>
-            <% when :date %>
-              <%= f.date_field field, class: "form-control js-datepicker" %>
-            <% else %>
-              <%= f.select field, values[field], { include_blank: true }, { class: "form-control" } %>
-            <% end %>
+      <div class="panel-body">
+        <div class="row">
+          <% [:action_outcome_reported_at, :action_outcome].each do |field| %>
+            <div class="col-md-3 form-group">
+              <%= f.label field %>
+              <% case column_type[field] %>
+              <% when :date %>
+                <%= f.date_field field, class: "form-control js-datepicker" %>
+              <% else %>
+                <%= f.select field, values[field], { include_blank: true }, { class: "form-control" } %>
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+
+        <% unless @entourage.outing? %>
+          <div>
+            <%= label_tag :entourage_metadata_close_message, "Commentaire du créateur lors de la clôture" %>
+            <%= text_field_tag :close_message, @entourage[:metadata][:close_message], class: 'form-control' %>
           </div>
         <% end %>
 
