@@ -1,55 +1,55 @@
 module V1
   class UserSerializer < ActiveModel::Serializer
     attributes :id,
-               :phone,
-               :email,
                :display_name,
                :first_name,
                :last_name,
                :roles,
                :about,
-               :token,
                :avatar_url,
                :user_type,
                :partner,
-               :memberships,
-               :has_password,
-               :conversation,
-               :anonymous,
-               :uuid,
-               :goal,
-               :interests,
-               :firebase_properties,
-               :placeholders,
-               :feature_flags,
                :engaged,
                :unread_count
 
     has_one :organization
-    has_one :stats, serializer: ActiveModel::DefaultSerializer
+    has_one :stats
     has_one :address, serializer: AddressSerializer
     has_one :address_2, serializer: AddressSerializer
 
-    def filter(keys)
-      if scope[:phone_only] == true
-        return [:phone]
-      else
-        keys -= [:phone]
-      end
+    attribute :phone, if: :phone?
+    attribute :placeholders, if: :placeholders?
+    attribute :memberships, if: :memberships?
+    attribute :conversation, if: :conversation?
+    # uuid and anonymous are not confidential but right now we only need
+    # them for current_user in the clients so we don't return it in other contexts
+    attribute :anonymous, if: :me?
+    attribute :uuid, if: :me?
+    attribute :feature_flags, if: :me?
 
-      keys -= [:token, :email, :has_password, :address, :address_2, :firebase_properties, :goal, :interests] unless me?
+    attribute :token, if: :me?
+    attribute :email, if: :me?
+    attribute :has_password, if: :me?
+    attribute :address, if: :me?
+    attribute :address_2, if: :me?
+    attribute :firebase_properties, if: :me?
+    attribute :goal, if: :me?
+    attribute :interests, if: :me?
 
-      # uuid and anonymous are not confidential but right now we only need
-      # them for current_user in the clients so we don't return it in other
-      # contexts
-      keys -= [:anonymous, :uuid, :feature_flags] unless me?
+    def phone?
+      scope[:phone_only] == true
+    end
 
-      # FIXME: see comment above the definition of placeholder
-      keys -= [:placeholders] unless me? && scope[:user].anonymous?
+    def placeholders?
+      me? && scope[:user].anonymous?
+    end
 
-      keys -= [:memberships] unless scope[:memberships]
-      keys -= [:conversation] unless scope[:conversation] && scope[:user]
-      keys
+    def memberships?
+      scope[:memberships]
+    end
+
+    def conversation?
+      scope[:conversation] && scope[:user]
     end
 
     def stats

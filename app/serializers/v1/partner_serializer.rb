@@ -1,34 +1,34 @@
 module V1
   class PartnerSerializer < ActiveModel::Serializer
-    attributes :id,
-               :name,
-               :large_logo_url,
-               :small_logo_url,
-               :description,
-               :donations_needs,
-               :volunteers_needs,
-               :phone,
-               :address,
-               :postal_code,
-               :website_url,
-               :email,
-               :default,
-               :following
+    attributes :id, :name
 
-    def filter(keys)
-      if scope[:full] == true
-        keys -= [:postal_code]
-      elsif scope[:minimal] == true
-        keys = [:id, :name, :postal_code]
-      else
-        keys -= [:description, :donations_needs, :volunteers_needs, :phone, :address, :website_url, :email, :postal_code]
-      end
+    attribute :postal_code, if: :minimal?
 
-      if scope[:following] != true
-        keys -= [:following]
-      end
+    attribute :description, if: :full?
+    attribute :donations_needs, if: :full?
+    attribute :volunteers_needs, if: :full?
+    attribute :phone, if: :full?
+    attribute :address, if: :full?
+    attribute :website_url, if: :full?
+    attribute :email, if: :full?
 
-      keys
+    attribute :large_logo_url, unless: :minimal?
+    attribute :small_logo_url, unless: :minimal?
+    attribute :default, unless: :minimal?
+
+    attribute :following, if: :following?
+
+    def full?
+      scope[:full] == true
+    end
+
+    def minimal?
+      scope[:minimal] == true
+    end
+
+    def following?
+      return false if minimal?
+      scope[:following] == true
     end
 
     OPTIONAL_ATTRIBUTES = [:phone, :address, :website_url, :email].freeze
