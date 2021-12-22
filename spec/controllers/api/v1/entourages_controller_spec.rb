@@ -798,15 +798,6 @@ describe Api::V1::EntouragesController do
             }
           )}
         end
-
-        context "last_message" do
-          let!(:join_request) { create :join_request, joinable: entourage, user: user, status: :pending }
-          before { get :show, params: { id: entourage.uuid.to_param, include_last_message: 'true', token: user.token } }
-          it { expect(JSON.parse(response.body)["entourage"]["last_message"]).to eq(
-            "text"=>"Votre demande est en attente.",
-            "author"=>nil
-          )}
-        end
       end
 
       context "entourage doesn't exists" do
