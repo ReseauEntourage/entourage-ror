@@ -4,12 +4,12 @@ module V1
                :content,
                :user,
                :created_at,
-               :message_type,
-               :metadata
+               :message_type
 
-    def filter(keys)
-      keys -= [:metadata] unless object.message_type.in?(['outing', 'status_update', 'share'])
-      keys
+    attribute :metadata, if: :metadata?
+
+    def metadata?
+      object.message_type.in?(['outing', 'status_update', 'share'])
     end
 
     def user
