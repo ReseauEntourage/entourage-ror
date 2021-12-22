@@ -12,12 +12,12 @@ module V1
                :engaged,
                :unread_count
 
-    has_one :organization
+    has_one :organization, serializer: ::V1::OrganizationSerializer
     has_one :stats
     has_one :address, serializer: AddressSerializer
     has_one :address_2, serializer: AddressSerializer
 
-    attribute :phone, if: :phone?
+    attribute :phone, if: :phone_only?
     attribute :placeholders, if: :placeholders?
     attribute :memberships, if: :memberships?
     attribute :conversation, if: :conversation?
@@ -36,7 +36,7 @@ module V1
     attribute :goal, if: :me?
     attribute :interests, if: :me?
 
-    def phone?
+    def phone_only?
       scope[:phone_only] == true
     end
 
