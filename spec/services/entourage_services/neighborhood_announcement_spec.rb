@@ -12,8 +12,8 @@ describe EntourageServices::NeighborhoodAnnouncement do
   describe ".on_create" do
     before { EntourageServices::NeighborhoodAnnouncement.on_create(outing) }
 
-    it { expect(V1::ChatMessageSerializer.new(chat_message).as_json).to eq(
-      'chat_message' => {
+    it { expect(ActiveModelSerializers::SerializableResource.new(chat_message, serializer: V1::ChatMessageSerializer).as_json).to eq(
+      chat_message: {
         id: chat_message.id,
         content: "a créé un évènement :\nFoobar\nle 26/07 à 19h00,\nCafé la Renaissance, 44 rue de l’Assomption, 75016 Paris",
         user: {
@@ -41,8 +41,8 @@ describe EntourageServices::NeighborhoodAnnouncement do
       EntourageServices::NeighborhoodAnnouncement.on_update(outing)
     end
 
-    it { expect(V1::ChatMessageSerializer.new(chat_message).as_json).to eq(
-      'chat_message' => {
+    it { expect(ActiveModelSerializers::SerializableResource.new(chat_message, serializer: V1::ChatMessageSerializer).as_json).to eq(
+      chat_message: {
         id: chat_message.id,
         content: "a modifié un évènement :\nPlop\nle 26/07 à 19h00,\nCafé la Renaissance, 44 rue de l’Assomption, 75016 Paris",
         user: {

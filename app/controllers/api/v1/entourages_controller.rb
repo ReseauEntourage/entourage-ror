@@ -22,7 +22,7 @@ module Api
           status: params[:status]
         ).entourages
 
-        render json: entourages, each_serializer: ::V1::EntourageSerializer, scope: {
+        render json: entourages, root: :entourages, each_serializer: ::V1::EntourageSerializer, scope: {
           user: current_user
         }
       end
@@ -39,7 +39,7 @@ module Api
           time_range: 31*24
         ).entourages
 
-        render json: entourages, each_serializer: ::V1::EntourageSerializer, scope: {
+        render json: entourages, root: :entourages, each_serializer: ::V1::EntourageSerializer, scope: {
           user: current_user
         }
       end
@@ -53,7 +53,7 @@ module Api
           show_my_entourages_only: true
         ).entourages
 
-        render json: entourages, each_serializer: ::V1::EntourageSerializer, scope: {
+        render json: entourages, root: :entourages, each_serializer: ::V1::EntourageSerializer, scope: {
           user: current_user
         }
       end
@@ -66,7 +66,7 @@ module Api
           .where(user: current_user)
           .order(created_at: :desc)
 
-        render json: entourages, each_serializer: ::V1::EntourageSerializer, scope: {
+        render json: entourages, root: :entourages, each_serializer: ::V1::EntourageSerializer, scope: {
           user: current_user
         }
       end
@@ -80,7 +80,7 @@ module Api
           invitee: current_user
         ).entourages
 
-        render json: entourages, each_serializer: ::V1::EntourageSerializer, scope: {
+        render json: entourages, root: :entourages, each_serializer: ::V1::EntourageSerializer, scope: {
           user: current_user
         }
       end
@@ -92,7 +92,7 @@ module Api
           .where('join_requests.user_id = ?', current_user.id)
           .page(params[:page] || 1).per(per)
 
-        render json: entourages, each_serializer: ::V1::EntourageSerializer, scope: {
+        render json: entourages, root: :entourages, each_serializer: ::V1::EntourageSerializer, scope: {
           user: current_user, include_last_message: true
         }
       end
@@ -105,7 +105,7 @@ module Api
           .where('join_requests.status = ?', :accepted)
           .page(params[:page] || 1).per(per)
 
-        render json: entourages, each_serializer: ::V1::EntourageSerializer, scope: {
+        render json: entourages, root: :entourages, each_serializer: ::V1::EntourageSerializer, scope: {
           user: current_user, include_last_message: true
         }
       end

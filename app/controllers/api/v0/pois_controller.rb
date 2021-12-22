@@ -13,8 +13,8 @@ module Api
         end
 
         #TODO : refactor API to return 1 top level POI ressources and associated categories ressources
-        poi_json = JSON.parse(ActiveModel::ArraySerializer.new(@pois, each_serializer: ::V0::PoiSerializer).to_json)
-        categorie_json = JSON.parse(ActiveModel::ArraySerializer.new(@categories, each_serializer: ::V0::CategorySerializer).to_json)
+        poi_json = JSON.parse(ActiveModel::Serializer::CollectionSerializer.new(@pois, serializer: ::V0::PoiSerializer).to_json)
+        categorie_json = JSON.parse(ActiveModel::Serializer::CollectionSerializer.new(@categories, serializer: ::V0::CategorySerializer).to_json)
         render json: {pois: poi_json, categories: categorie_json }, status: 200
       end
 

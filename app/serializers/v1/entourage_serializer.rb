@@ -7,30 +7,32 @@ module V1
 
     attributes :id,
                :uuid,
-               :status,
-               :outcome,
                :title,
                :group_type,
-               :public,
-               :metadata,
                :entourage_type,
-               :display_category,
-               :postal_code,
-               :join_status,
-               :number_of_unread_messages,
-               :number_of_people,
-               :created_at,
-               :updated_at,
-               :description,
-               :share_url,
-               :image_url,
-               :online,
-               :event_url,
-               :display_report_prompt
+               :display_category
+
+    attribute :status, unless: :sharing_selection?
+    attribute :public, unless: :sharing_selection?
+    attribute :metadata, unless: :sharing_selection?
+    attribute :postal_code, unless: :sharing_selection?
+    attribute :join_status, unless: :sharing_selection?
+    attribute :number_of_unread_messages, unless: :sharing_selection?
+    attribute :number_of_people, unless: :sharing_selection?
+    attribute :created_at, unless: :sharing_selection?
+    attribute :updated_at, unless: :sharing_selection?
+    attribute :description, unless: :sharing_selection?
+    attribute :share_url, unless: :sharing_selection?
+    attribute :image_url, unless: :sharing_selection?
+    attribute :online, unless: :sharing_selection?
+    attribute :event_url, unless: :sharing_selection?
+    attribute :display_report_prompt, unless: :sharing_selection?
+
+    attribute :outcome, if: :outcome?
 
     has_one :author
     has_one :location
-    has_one :last_message
+    has_one :last_message, if: :last_message?
 
     lazy_relationship :last_chat_message
     lazy_relationship :chat_messages_count
@@ -56,19 +58,18 @@ module V1
       end
     end
 
-    def filter(keys)
-      if scope[:sharing_selection]
-        return [
-          :id, :uuid,
-          :title,
-          :group_type, :entourage_type, :display_category,
-          :author
-        ]
-      end
+    def sharing_selection?
+      scope[:sharing_selection]
+    end
 
-      keys.delete :last_message unless include_last_message?
-      keys.delete :outcome unless object.has_outcome?
-      keys
+    def outcome?
+      return false if sharing_selection?
+      object.has_outcome?
+    end
+
+    def last_message?
+      return false if sharing_selection?
+      include_last_message?
     end
 
     def uuid
@@ -114,7 +115,7 @@ module V1
       elsif current_join_request.status != 'accepted'
         0
       elsif current_join_request.last_message_read.nil?
-        lazy_chat_messages_count
+        lazy_chat_messages_count || 0
       else
         lazy_chat_messages.select do |chat_message|
           chat_message.created_at > current_join_request.last_message_read
