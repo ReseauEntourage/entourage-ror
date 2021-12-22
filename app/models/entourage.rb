@@ -27,7 +27,7 @@ class Entourage < ApplicationRecord
     select('DISTINCT ON (messageable_id, messageable_type) *').order('messageable_id, messageable_type, created_at')
   }, as: :messageable, class_name: 'ChatMessage'
   has_one :chat_messages_count, -> {
-    select('DISTINCT ON (messageable_id, messageable_type) COUNT(*)')
+    select('DISTINCT ON (messageable_id, messageable_type) COUNT(*), messageable_id, messageable_type').group('messageable_id, messageable_type')
   }, as: :messageable, class_name: 'ChatMessage'
   has_many :conversation_messages, as: :messageable, dependent: :destroy
   has_many :moderator_reads, as: :moderatable, dependent: :destroy
