@@ -10,10 +10,10 @@ class ToursController < ApplicationController
   end
 
   def map_center
-    return render json: [] if @tour.empty_points?
+    return render json: { tours: [] } if @tour.empty_points?
 
     first_tour_point = @tour.tour_points.first
-    render json: [first_tour_point.latitude, first_tour_point.longitude]
+    render json: { tours: [first_tour_point.latitude, first_tour_point.longitude] }
   end
 
   def map_data
