@@ -3,16 +3,20 @@ module V1
     class EntourageSerializer < ActiveModel::Serializer
       include V1::Entourages::Location
 
-      attributes :uuid,
-                 :title,
-                 :group_type,
-                 :description,
-                 :created_at,
-                 :location,
-                 :approximated_location,
-                 :number_of_people
+      attribute :uuid, unless: :map?
+      attribute :title
+      attribute :group_type, unless: :map?
+      attribute :description, unless: :map?
+      attribute :created_at, unless: :map?
+      attribute :location, if: :map?
+      attribute :approximated_location, unless: :map?
+      attribute :number_of_people, unless: :map?
 
       has_one :author
+
+      def map?
+        scope == :map
+      end
 
       def created_at
         I18n.l(object.created_at, format: '%e %B')

@@ -72,21 +72,6 @@ module V1
       include_last_message?
     end
 
-    def filter(keys)
-      if scope[:sharing_selection]
-        return [
-          :id, :uuid,
-          :title,
-          :group_type, :entourage_type, :display_category,
-          :author
-        ]
-      end
-
-      keys.delete :last_message unless include_last_message?
-      keys.delete :outcome unless object.has_outcome?
-      keys
-    end
-
     def uuid
       case object.group_type
       when 'action', 'conversation', 'outing', 'group'
