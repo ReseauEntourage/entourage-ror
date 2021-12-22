@@ -11,8 +11,8 @@ module Api
           @pois = Poi.all.order(:id).limit(pois_limit)
         end
 
-        categorie_json = JSON.parse(ActiveModel::ArraySerializer.new(@categories, each_serializer: ::V1::CategorySerializer).to_json)
-        poi_json = JSON.parse(ActiveModel::ArraySerializer.new(@pois, each_serializer: ::V1::PoiSerializer, scope: {version: :v1_list}).to_json)
+        categorie_json = JSON.parse(ActiveModel::Serializer::CollectionSerializer.new(@categories, serializer: ::V1::CategorySerializer).to_json)
+        poi_json = JSON.parse(ActiveModel::Serializer::CollectionSerializer.new(@pois, serializer: ::V1::PoiSerializer, scope: {version: :v1_list}).to_json)
         render json: {pois: poi_json, categories: categorie_json }, status: 200
       end
     end

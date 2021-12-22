@@ -79,7 +79,7 @@ class OrganizationsController < ApplicationController
     user_default.date_range = params[:date_range] if params[:date_range]
     user_default.tour_types = params[:tour_type].split(",") if params[:tour_type].present?
 
-    encounters = JSON.parse(ActiveModel::ArraySerializer.new(@encounters, each_serializer: V1::EncounterSerializer).to_json)
+    encounters = JSON.parse(ActiveModel::Serializer::CollectionSerializer.new(@encounters, serializer: V1::EncounterSerializer).to_json)
     render json: {encounters: encounters,
                   stats: {encounter_count: @encounter_count,
                           tour_count: @tourer_count,
