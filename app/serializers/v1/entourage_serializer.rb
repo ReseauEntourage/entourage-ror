@@ -114,7 +114,7 @@ module V1
       elsif current_join_request.status != 'accepted'
         0
       elsif current_join_request.last_message_read.nil?
-        lazy_chat_messages_count
+        lazy_chat_messages_count || 0
       else
         lazy_chat_messages.select do |chat_message|
           chat_message.created_at > current_join_request.last_message_read
