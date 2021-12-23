@@ -1131,6 +1131,10 @@ describe Api::V1::EntouragesController do
     subject { JSON.parse(response.body) }
 
     let!(:entourage) { FactoryBot.create(:entourage, status: :open, user: user) }
+    let!(:join_request) { FactoryBot.create(:join_request, joinable: entourage, user: user, status: "accepted") }
+    let(:signature) { SignatureService.sign(user.id) }
+    before { SignatureService.stub(:validate) { false } }
+    before { SignatureService.stub(:validate).with(entourage.id, signature) { true } }
 
     context "wrong signature" do
       before { get :one_click_update, params: { id: entourage.id, token: user.token, signature: 'foo' } }
@@ -1141,7 +1145,7 @@ describe Api::V1::EntouragesController do
     end
 
     context "correct signature" do
-      before { get :one_click_update, params: { id: entourage.id, token: user.token, signature: SignatureService.sign(user.id) } }
+      before { get :one_click_update, params: { id: entourage.id, token: user.token, signature: signature } }
 
       it { expect(response.status).to eq(200) }
       it { expect(assigns(:entourage).id).to eq(entourage.id) }
