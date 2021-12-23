@@ -921,14 +921,13 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
     it { expect(user.reload.email).to eq("foo@bar.com-2010-10-10 00:00:00") }
     it { expect(response.status).to eq(200) }
     it do
-      expect(MailchimpService)
-      .to have_received(:strong_unsubscribe)
-      .with(
+      expect(MailchimpService).to have_received(:strong_unsubscribe).with(
         list: :newsletter,
         email: user.email,
         reason: "compte supprimé dans l'app"
       )
     end
+    it { expect(JSON.parse(response.body)).to have_key('user') }
   end
 
   describe 'POST #report' do
@@ -956,6 +955,15 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
 
       it { expect(response.status).to eq 400 }
     end
+  end
+
+  describe 'POST #presigned_avatar_upload' do
+    let(:user) { create :public_user }
+
+    before { post :presigned_avatar_upload, params: { id: UserService.external_uuid(user), token: user.token, content_type: 'image/jpeg' } }
+    it { expect(response.status).to eq(200) }
+    it { expect(JSON.parse(response.body)).to have_key('avatar_key') }
+    it { expect(JSON.parse(response.body)).to have_key('presigned_url') }
   end
 
   describe 'POST #address' do
@@ -1132,7 +1140,14 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
     end
   end
 
-  describe 'GET #email_preferences' do
+  describe 'POST lookup' do
+    let(:user) { create :public_user }
+    before { post 'lookup', params: { token: user.token, phone: user.phone } }
+    it { expect(response.status).to eq(200) }
+    it { expect(JSON.parse(response.body)).to have_key('status')}
+  end
+
+  describe 'GET #update_email_preferences' do
     let(:category) { create :email_category }
     let(:other_category) { create :email_category }
 
@@ -1174,5 +1189,39 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
         .to(false)
       end
     end
+  end
+
+  describe 'GET confirm_address_suggestion' do
+    let(:user) { create :public_user }
+    let!(:address) { create :address, country: :FR, postal_code: '75018', user_id: user.id }
+
+    before { get :confirm_address_suggestion, params: { id: user.id } }
+    it { expect(response.status).to eq(200) }
+  end
+
+  describe 'POST confirm_address_suggestion' do
+    pending "add some examples to (or delete) #{__FILE__}"
+  end
+
+  describe 'POST ethics_charter_signed' do
+    let(:user) { create :public_user }
+
+    before { post :ethics_charter_signed, params: { form_response: nil } }
+    it { expect(response.status).to eq(200) }
+
+    context 'further tests' do
+      pending "add some examples to (or delete) #{__FILE__}"
+    end
+  end
+
+  describe 'GET organization_admin_redirect' do
+    let(:user) { create :partner_user }
+
+    before {
+      UserServices::UserAuthenticator.stub(:auth_token) { 'foo' }
+      get :organization_admin_redirect, params: { message: 'webapp_logout', token: user.token }
+    }
+    it { expect(response.status).to eq(302) }
+    it { should redirect_to organization_admin_auth_url(auth_token: 'foo', message: 'webapp_logout') }
   end
 end

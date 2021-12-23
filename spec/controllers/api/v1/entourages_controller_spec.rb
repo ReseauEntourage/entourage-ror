@@ -1141,7 +1141,11 @@ describe Api::V1::EntouragesController do
     end
 
     context "correct signature" do
-      pending "add some examples to (or delete) #{__FILE__}"
+      before { get :one_click_update, params: { id: entourage.id, token: user.token, signature: SignatureService.sign(user.id) } }
+
+      it { expect(response.status).to eq(200) }
+      it { expect(assigns(:entourage).id).to eq(entourage.id) }
+      it { expect(assigns(:success)).to eq(true) }
     end
   end
 

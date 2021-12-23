@@ -11,6 +11,9 @@ RSpec.describe Api::V1::MessagesController, :type => :controller do
       it { expect(Message.last.first_name).to eq("john") }
       it { expect(Message.last.last_name).to eq("doe") }
       it { expect(Message.last.email).to eq("some@mail.com") }
+      # we want it explicit that the route does not render a root serialized version of message
+      it { expect(JSON.parse(response.body)).not_to have_key('message') }
+      it { expect(JSON.parse(response.body)).to have_key('content') }
     end
 
     context "invalid message" do
