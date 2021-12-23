@@ -1089,6 +1089,32 @@ describe Api::V1::EntouragesController do
     end
   end
 
+  describe 'GET update#one_click_update' do
+    subject { JSON.parse(response.body) }
+
+    let!(:entourage) { FactoryBot.create(:entourage, status: :open, user: user) }
+    let!(:join_request) { FactoryBot.create(:join_request, joinable: entourage, user: user, status: "accepted") }
+    let(:signature) { SignatureService.sign(user.id) }
+    before { SignatureService.stub(:validate) { false } }
+    before { SignatureService.stub(:validate).with(entourage.id, signature) { true } }
+
+    context "wrong signature" do
+      before { get :one_click_update, params: { id: entourage.id, token: user.token, signature: 'foo' } }
+
+      it { expect(response.status).to eq(200) }
+      it { expect(assigns(:entourage).id).to eq(entourage.id) }
+      it { expect(assigns(:success)).to eq(false) }
+    end
+
+    context "correct signature" do
+      before { get :one_click_update, params: { id: entourage.id, token: user.token, signature: signature } }
+
+      it { expect(response.status).to eq(200) }
+      it { expect(assigns(:entourage).id).to eq(entourage.id) }
+      it { expect(assigns(:success)).to eq(true) }
+    end
+  end
+
   describe 'POST #report' do
     let(:reporting_user) { create :public_user }
     let(:reported_group) { create :entourage }

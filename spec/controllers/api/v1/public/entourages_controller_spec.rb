@@ -13,11 +13,13 @@ describe Api::V1::Public::EntouragesController do
     context "could get entourage with v1 uuid" do
       let(:identifier) { entourage.uuid.to_param }
       it { expect(response.status).to eq(200) }
+      it { expect(JSON.parse(response.body)).to have_key('entourage') }
     end
 
     context "could get entourage with v2 uuid" do
       let(:identifier) { entourage.uuid_v2.to_param }
       it { expect(response.status).to eq(200) }
+      it { expect(JSON.parse(response.body)).to have_key('entourage') }
     end
 
     context "could not get entourage with id" do
@@ -25,5 +27,13 @@ describe Api::V1::Public::EntouragesController do
 
       it { expect(response.status).to eq(404) }
     end
+  end
+
+  describe 'GET index' do
+    let(:entourage) { create :entourage }
+
+    before { get :index }
+    it { expect(response.status).to eq(200) }
+    it { expect(JSON.parse(response.body)).to have_key('entourages') }
   end
 end

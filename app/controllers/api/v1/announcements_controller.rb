@@ -8,7 +8,9 @@ module Api
       def index
         announcements = FeedServices::AnnouncementsService.announcements_for_user(current_user_or_anonymous)
 
-        render json: announcements, each_serializer: ::V1::AnnouncementSerializer, scope: {
+        # @fixme to_a prevents active_record_serializer to determine model_name
+        # @see FeedServices::AnnouncementsService.announcements_for_user
+        render json: announcements, root: :announcements, each_serializer: ::V1::AnnouncementSerializer, scope: {
           user: current_user_or_anonymous,
           base_url: request.base_url
         }
