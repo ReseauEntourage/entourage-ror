@@ -312,7 +312,6 @@ Rails.application.routes.draw do
 
       resources :invitations, only: [:index, :update, :destroy]
 
-      # resources :contacts, only: [:update]
       resources :partners, only: [:index, :show] do
         collection do
           post :join_request
@@ -346,7 +345,6 @@ Rails.application.routes.draw do
       post 'login' => 'users#login'
       get 'check' => 'base#check'
       get 'ping' => 'base#ping'
-      # get 'csv_matching' => 'csv_matching#show'
       get 'organization_admin_redirect' => 'users#organization_admin_redirect'
 
       namespace :public do
