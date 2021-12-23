@@ -32,6 +32,7 @@ RSpec.describe Api::V1::RegistrationRequestsController, type: :controller do
         before { post :create, params: { registration_request: valid_attributes } }
         it { expect(RegistrationRequest.count).to eq(1) }
         it { expect(response.status).to eq(201) }
+        it { expect(JSON.parse(response.body)).to have_key("registration_request") }
         it { expect(AdminMailer).to have_received(:registration_request).with(RegistrationRequest.last.id).once }
       end
 

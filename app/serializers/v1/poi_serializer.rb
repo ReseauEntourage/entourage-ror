@@ -1,42 +1,32 @@
 module V1
   class PoiSerializer < ActiveModel::Serializer
-    attributes :id,
-               :uuid,
-               :source,
-               :source_url,
-               :name,
-               :description,
-               :longitude,
-               :latitude,
-               :adress,
-               :address,
-               :phone,
-               :website,
-               :email,
-               :audience,
-               :hours,
-               :languages,
-               :validated,
-               :category_id,
-               :partner_id,
-               :category_ids
+    attribute :id,           if: :v1_list? || :default?
+    attribute :name
+    attribute :description,  unless: :v2_list?
+    attribute :longitude
+    attribute :latitude
+    attribute :adress,       if: :v1_list? || :default?
+    attribute :phone
+    attribute :website,      unless: :v2_list?
+    attribute :email,        unless: :v2_list?
+    attribute :audience,     unless: :v2_list?
+    attribute :validated,    if: :v1_list? || :default?
+    attribute :category_id,  unless: :v2?
+    attribute :partner_id
+    attribute :address,      unless: :v1_list?
+    attribute :hours,        if: :v2? || :default?
+    attribute :languages,    if: :v2? || :default?
+    attribute :source_url,   if: :v2? || :default?
+    attribute :uuid,         unless: :v1_list?
+    attribute :source,       if: :v2? || :default?
+    attribute :category_ids, if: :v2? || :default?
 
-    has_one :category
+    has_one :category,       if: :v1_list? || :default?
 
-    def filter(keys)
-      case version
-      when :v1_list
-        keys & [:id, :name, :description, :longitude, :latitude, :adress,
-                :phone, :website, :email, :audience, :validated, :category_id,
-                :partner_id, :category]
-      when :v2_list
-        keys & [:uuid, :name, :latitude, :longitude, :address, :phone, :category_id, :partner_id]
-      when :v2
-        keys - [:id, :adress, :validated, :category, :category_id]
-      else
-        keys
-      end
-    end
+    def v1_list?; version == :v1_list; end
+    def v2_list?; version == :v2_list; end
+    def v2?; version == :v2; end
+    def default?; !v1_list? && !v2_list? && !v2?; end
 
     def category_id
       case version

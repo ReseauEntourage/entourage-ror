@@ -10,7 +10,7 @@ module Api
         if params[:status]
           invitations = invitations.status(params[:status])
         end
-        render json: invitations, each_serializer: ::V1::EntourageInvitationSerializer
+        render json: invitations, root: :invitations, each_serializer: ::V1::EntourageInvitationSerializer
       end
 
       #curl -H "Content-Type: application/json" -X PUT "http://localhost:3000/api/v1/invitations/124.json?token=azerty"

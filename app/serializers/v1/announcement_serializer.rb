@@ -10,7 +10,7 @@ module V1
                :webapp_url,
                :icon_url
 
-    has_one :author, serializer: ActiveModel::DefaultSerializer
+    has_one :author
 
     def uuid
       object.id.to_s

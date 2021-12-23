@@ -5,7 +5,7 @@ module Api
 
       def create
         user = AnonymousUserService.create_user(community)
-        render json: user, status: 201, serializer: ::V1::UserSerializer, scope: {user: user}
+        render json: user, root: :user, status: 201, serializer: ::V1::UserSerializer, scope: {user: user}
       end
     end
   end

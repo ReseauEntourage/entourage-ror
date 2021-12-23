@@ -35,6 +35,7 @@ module FeedServices
     end
 
     def self.announcements_for_user(user)
+      # @fixme to_a prevents active_record_serializer to determine model_name
       self.announcements_scope_for_user(user).ordered.to_a
     end
 

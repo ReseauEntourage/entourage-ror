@@ -59,6 +59,7 @@ describe Api::V1::PoisController, :type => :controller do
         it { expect(response.status).to eq(201) }
         it { expect(member_mailer).to have_received(:poi_report).with poi, user, message }
         it { expect(mail).to have_received(:deliver_later).with no_args }
+        it { expect(JSON.parse(response.body)).to have_key('message') }
       end
 
       describe 'wrong poi id' do

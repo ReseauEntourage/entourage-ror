@@ -75,7 +75,7 @@ module Api
             pois.each { |p| p.category = category_by_id[p.category_id] }
           end
 
-          ActiveModel::ArraySerializer.new(pois, each_serializer: ::V1::PoiSerializer, scope: {version: :"#{version}_list"}).as_json
+          ActiveModel::Serializer::CollectionSerializer.new(pois, serializer: ::V1::PoiSerializer, scope: {version: :"#{version}_list"}).as_json
         end.serialize
 
         # soliguide
@@ -85,7 +85,7 @@ module Api
         payload =
           case version
           when :v1
-            categorie_json = ActiveModel::ArraySerializer.new(@categories, each_serializer: ::V1::CategorySerializer).as_json
+            categorie_json = ActiveModel::Serializer::CollectionSerializer.new(@categories, serializer: ::V1::CategorySerializer).as_json
             {pois: poi_json, categories: categorie_json}
           when :v2
             {pois: poi_json}

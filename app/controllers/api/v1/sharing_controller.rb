@@ -3,7 +3,7 @@ module Api
     class SharingController < Api::V1::BaseController
       def groups
         groups = find_groups(current_user_or_anonymous)
-        render json: groups, status: 200, each_serializer: ::V1::EntourageSerializer, scope: {user: current_user_or_anonymous, sharing_selection: true}
+        render json: groups, root: :sharing, status: 200, each_serializer: ::V1::EntourageSerializer, scope: {user: current_user_or_anonymous, sharing_selection: true}
       end
 
       private

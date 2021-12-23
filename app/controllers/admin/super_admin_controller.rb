@@ -10,7 +10,7 @@ module Admin
       @paginated = EntourageImage.page(params[:page]).per(PER_PAGE)
 
       @entourage_images = @paginated.map do |entourage_image|
-        ::V1::EntourageImageSerializer.new(entourage_image)
+        ::V1::EntourageImageSerializer.new(entourage_image).object
       end
     end
 
@@ -23,7 +23,7 @@ module Admin
       )).page(params[:page]).per(PER_PAGE)
 
       @outings = @paginated.map do |outing|
-        ::V1::EntourageSerializer.new(outing)
+        ::V1::EntourageSerializer.new(outing).object
       end
     end
 
@@ -36,7 +36,7 @@ module Admin
         ::V1::AnnouncementSerializer.new(announcement, scope: {
           user: current_user,
           base_url: request.base_url
-        })
+        }).object
       end
     end
 
