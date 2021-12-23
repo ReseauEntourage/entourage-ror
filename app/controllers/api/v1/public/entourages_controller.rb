@@ -30,7 +30,7 @@ module Api
             @entourages = []
           end
 
-          render json: @entourages, each_serializer: ::V1::Public::EntourageSerializer, scope: :map
+          render json: @entourages, root: 'entourages', each_serializer: ::V1::Public::EntourageSerializer, scope: :map
         end
 
         private
