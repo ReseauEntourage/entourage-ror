@@ -123,7 +123,7 @@ module EntourageServices
         entourage.metadata[:ends_at] = nil
       end
 
-      if entourage.metadata[:close_message].present?
+      if params[:metadata].present? && params[:metadata][:close_message].present?
         SlackServices::ActionCloseMessage.new(action: entourage, message: entourage.metadata[:close_message]).notify
       end
 
