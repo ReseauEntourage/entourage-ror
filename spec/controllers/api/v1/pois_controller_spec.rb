@@ -118,40 +118,57 @@ describe Api::V1::PoisController, :type => :controller do
 
           it "renders POI" do
             res = JSON.parse(response.body)
-            expect(res).to eq({"categories"=>[
-                {"id"=>category1.id, "name"=>category1.name},
-                {"id"=>category2.id, "name"=>category2.name},
-                {"id"=>category3.id, "name"=>category3.name}],
-                               "pois"=>[
-                                   {"id"=>poi1.id,
-                                    "name"=>"Dede",
-                                    "description"=>nil,
-                                    "longitude"=>2.30681949999996,
-                                    "latitude"=>48.870424,
-                                    "adress"=>"Au 50 75008 Paris",
-                                    "phone"=>"0000000000",
-                                    "website"=>"entourage.com",
-                                    "email"=>"entourage@entourage.com",
-                                    "audience"=>"Mon audience",
-                                    "validated"=>true,
-                                    "category_id"=>poi1.category_id,
-                                    "category"=>{"id"=>poi1.category.id, "name"=>poi1.category.name},
-                                    "partner_id"=>nil},
-                                   {"id"=>poi3.id,
-                                    "name"=>"Dede",
-                                    "description"=>nil,
-                                    "longitude"=>2.30681949999996,
-                                    "latitude"=>48.870424,
-                                    "adress"=>"Au 50 75008 Paris",
-                                    "phone"=>"0000000000",
-                                    "website"=>"entourage.com",
-                                    "email"=>"entourage@entourage.com",
-                                    "audience"=>"Mon audience",
-                                    "validated"=>true,
-                                    "category_id"=>poi3.category_id,
-                                    "category"=>{"id"=>poi3.category.id, "name"=>poi3.category.name},
-                                    "partner_id"=>nil}
-                               ]})
+            expect(res).to eq({
+              "categories" => [{
+                "id" => category1.id,
+                "name" => category1.name
+              }, {
+                "id" => category2.id,
+                "name" => category2.name
+              }, {
+                "id" => category3.id,
+                "name" => category3.name
+              }
+              ],
+              "pois" => [{
+                "id" => poi1.id,
+                "name" => "Dede",
+                "description" => nil,
+                "longitude" => 2.30681949999996,
+                "latitude" => 48.870424,
+                "adress" => "Au 50 75008 Paris",
+                "phone" => "0000000000",
+                "website" => "entourage.com",
+                "email" => "entourage@entourage.com",
+                "audience" => "Mon audience",
+                "validated" => true,
+                "category_id" => poi1.category_id,
+                "category" => {
+                  "id" => poi1.category.id,
+                  "name" => poi1.category.name
+                },
+                "partner_id" => nil
+              }, {
+                "id" => poi3.id,
+                "name" => "Dede",
+                "description" => nil,
+                "longitude" => 2.30681949999996,
+                "latitude" => 48.870424,
+                "adress" => "Au 50 75008 Paris",
+                "phone" => "0000000000",
+                "website" => "entourage.com",
+                "email" => "entourage@entourage.com",
+                "audience" => "Mon audience",
+                "validated" => true,
+                "category_id" => poi3.category_id,
+                "category" => {
+                  "id" => poi3.category.id,
+                  "name" => poi3.category.name
+                },
+                "partner_id" => nil
+              }
+            ]
+          })
           end
         end
 
@@ -160,28 +177,25 @@ describe Api::V1::PoisController, :type => :controller do
           it "renders POI" do
             res = JSON.parse(response.body)
             expect(res).to eq(
-              "pois"=>[
-                {
-                  "uuid"=>poi1.uuid,
-                  "name"=>"Dede",
-                  "longitude"=>2.30681949999996,
-                  "latitude"=>48.870424,
-                  "address"=>"Au 50 75008 Paris",
-                  "phone"=>"0000000000",
-                  "category_id"=>poi1.category_id,
-                  "partner_id"=>nil
-                },
-                {
-                  "uuid"=>poi3.uuid,
-                  "name"=>"Dede",
-                  "longitude"=>2.30681949999996,
-                  "latitude"=>48.870424,
-                  "address"=>"Au 50 75008 Paris",
-                  "phone"=>"0000000000",
-                  "category_id"=>poi3.category_id,
-                  "partner_id"=>nil
-                }
-              ]
+              "pois" => [{
+                "uuid" => poi1.uuid,
+                "name" => "Dede",
+                "longitude" => 2.30681949999996,
+                "latitude" => 48.870424,
+                "address" => "Au 50 75008 Paris",
+                "phone" => "0000000000",
+                "category_id" => poi1.category_id,
+                "partner_id" => nil
+              }, {
+                "uuid" => poi3.uuid,
+                "name" => "Dede",
+                "longitude" => 2.30681949999996,
+                "latitude" => 48.870424,
+                "address" => "Au 50 75008 Paris",
+                "phone" => "0000000000",
+                "category_id" => poi3.category_id,
+                "partner_id" => nil
+              }]
             )
           end
         end
