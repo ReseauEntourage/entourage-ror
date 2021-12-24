@@ -30,52 +30,53 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
       get 'index', params: { token: user.token, format: :json }
 
       res = JSON.parse(response.body)
-      expect(res).to eq({"tours"=>[
-          {
-             "id"=>tours.first.id,
-             "uuid"=>tours.first.id.to_s,
-             "tour_type"=>"medical",
-             "status"=>"ongoing",
-             "vehicle_type"=>"feet",
-             "distance"=>0,
-             "start_time"=>tours.first.created_at.iso8601(3),
-             "end_time"=>nil,
-             "organization_name"=>tours.first.user.organization.name,
-             "organization_description"=>"Association description",
-             "author"=>{
-                 "id"=>tours.first.user.id,
-                 "display_name"=>"John D.",
-                 "avatar_url"=>nil,
-                 "partner"=>nil
-             },
-             "number_of_people"=> 1,
-             "join_status"=>"not_requested",
-             "tour_points"=>[],
-             "number_of_unread_messages"=>nil,
-             "updated_at"=>tours.first.updated_at.iso8601(3)
+      expect(res).to eq({
+        "tours" => [{
+          "id" => tours.first.id,
+          "uuid" => tours.first.id.to_s,
+          "tour_type" => "medical",
+          "status" => "ongoing",
+          "vehicle_type" => "feet",
+          "distance" => 0,
+          "start_time" => tours.first.created_at.iso8601(3),
+          "end_time" => nil,
+          "organization_name" => tours.first.user.organization.name,
+          "organization_description" => "Association description",
+          "author" => {
+            "id" => tours.first.user.id,
+            "display_name" => "John D.",
+            "avatar_url" => nil,
+            "partner" => nil
           },
-          {
-             "id"=>tours.last.id,
-             "uuid"=>tours.last.id.to_s,
-             "tour_type"=>"medical",
-             "status"=>"ongoing",
-             "vehicle_type"=>"feet",
-             "distance"=>0,
-             "start_time"=>tours.last.created_at.iso8601(3),
-             "end_time"=>nil,
-             "organization_name"=>tours.last.user.organization.name,
-             "organization_description"=>"Association description",
-             "author"=>{
-                 "id"=>tours.last.user.id,
-                 "display_name"=>"John D.",
-                 "avatar_url"=>nil,
-                 "partner"=>nil
-             },
-             "number_of_people"=> 1,
-             "join_status"=>"not_requested",
-             "tour_points"=>[],
-             "number_of_unread_messages"=>nil,
-             "updated_at"=>tours.last.updated_at.iso8601(3)}]})
+          "number_of_people" => 1,
+          "join_status" => "not_requested",
+          "tour_points" => [],
+          "number_of_unread_messages" => nil,
+          "updated_at" => tours.first.updated_at.iso8601(3)
+        }, {
+          "id" => tours.last.id,
+          "uuid" => tours.last.id.to_s,
+          "tour_type" => "medical",
+          "status" => "ongoing",
+          "vehicle_type" => "feet",
+          "distance" => 0,
+          "start_time" => tours.last.created_at.iso8601(3),
+          "end_time" => nil,
+          "organization_name" => tours.last.user.organization.name,
+          "organization_description" => "Association description",
+          "author" => {
+            "id" => tours.last.user.id,
+            "display_name" => "John D.",
+            "avatar_url" => nil,
+            "partner" => nil
+          },
+          "number_of_people" =>  1,
+          "join_status" => "not_requested",
+          "tour_points" => [],
+          "number_of_unread_messages" => nil,
+          "updated_at" => tours.last.updated_at.iso8601(3)
+        }
+      ]})
     end
 
     context "with limit parameter" do
@@ -207,27 +208,31 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
       it "responds with tour" do
         res = JSON.parse(response.body)
         last_tour = Tour.last
-        expect(res).to eq({"tour"=>{"id"=>last_tour.id,
-                                    "uuid"=>last_tour.id.to_s,
-                                    "tour_type"=>"medical",
-                                    "status"=>"ongoing",
-                                    "vehicle_type"=>"feet",
-                                    "distance"=>123,
-                                    "organization_name"=>last_tour.user.organization.name,
-                                    "organization_description"=>"Association description",
-                                    "start_time"=>last_tour.created_at.iso8601(3),
-                                    "end_time"=>last_tour.closed_at,
-                                    "author"=>{
-                                        "id"=>user.id,
-                                        "display_name"=>"John D.",
-                                        "avatar_url"=>nil,
-                                        "partner"=>nil
-                                    },
-                                    "number_of_people"=> 1,
-                                    "join_status"=>"accepted",
-                                    "tour_points"=>[],
-                                    "number_of_unread_messages"=>0,
-                                    "updated_at"=>last_tour.updated_at.iso8601(3)}})
+        expect(res).to eq({
+          "tour" => {
+            "id" => last_tour.id,
+            "uuid" => last_tour.id.to_s,
+            "tour_type" => "medical",
+            "status" => "ongoing",
+            "vehicle_type" => "feet",
+            "distance" => 123,
+            "organization_name" => last_tour.user.organization.name,
+            "organization_description" => "Association description",
+            "start_time" => last_tour.created_at.iso8601(3),
+            "end_time" => last_tour.closed_at,
+            "author" => {
+              "id" => user.id,
+              "display_name" => "John D.",
+              "avatar_url" => nil,
+              "partner" => nil
+            },
+            "number_of_people" => 1,
+            "join_status" => "accepted",
+            "tour_points" => [],
+            "number_of_unread_messages" => 0,
+            "updated_at" => last_tour.updated_at.iso8601(3)
+          }
+        })
       end
     end
 
@@ -263,30 +268,35 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
       it "responds with tour" do
         res = JSON.parse(response.body)
         last_tour = Tour.last
-        expect(res).to eq({"tour"=>{"id"=>last_tour.id,
-                                    "uuid"=>last_tour.id.to_s,
-                                    "tour_type"=>"medical",
-                                    "status"=>"closed",
-                                    "vehicle_type"=>"feet",
-                                    "distance"=>tour.length,
-                                    "organization_name"=>last_tour.user.organization.name,
-                                    "organization_description"=>"Association description",
-                                    "start_time"=>last_tour.created_at.iso8601(3),
-                                    "end_time"=>last_tour.closed_at.iso8601(3),
-                                    "author"=>{
-                                        "id"=>last_tour.user.id,
-                                        "display_name"=>"John D.",
-                                        "avatar_url"=>nil,
-                                        "partner"=>nil
-                                    },
-                                    "number_of_people"=> 1,
-                                    "join_status"=>"not_requested",
-                                    "tour_points"=>[{"latitude"=>49.40752907, "longitude"=>0.26782405},
-                                                    {"latitude"=>49.40774009, "longitude"=>0.26870057}],
-                                    "number_of_unread_messages"=>nil,
-                                    "updated_at"=>last_tour.updated_at.iso8601(3)}})
+        expect(res).to eq({
+          "tour" => {
+            "id" => last_tour.id,
+            "uuid" => last_tour.id.to_s,
+            "tour_type" => "medical",
+            "status" => "closed",
+            "vehicle_type" => "feet",
+            "distance" => tour.length,
+            "organization_name" => last_tour.user.organization.name,
+            "organization_description" => "Association description",
+            "start_time" => last_tour.created_at.iso8601(3),
+            "end_time" => last_tour.closed_at.iso8601(3),
+            "author" => {
+              "id" => last_tour.user.id,
+              "display_name" => "John D.",
+              "avatar_url" => nil,
+              "partner" => nil
+            },
+            "number_of_people" =>  1,
+            "join_status" => "not_requested",
+            "tour_points" => [
+              { "latitude" => 49.40752907, "longitude" => 0.26782405 },
+              { "latitude" => 49.40774009, "longitude" => 0.26870057 }
+            ],
+            "number_of_unread_messages" => nil,
+            "updated_at" => last_tour.updated_at.iso8601(3)
+          }
+        })
       end
-
     end
 
     context "with unexisting id" do
@@ -356,28 +366,34 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
 
       it "responds with tour" do
         res = JSON.parse(response.body)
-        expect(res).to eq({"tour"=>{"id"=>tour.id,
-                                    "uuid"=>tour.id.to_s,
-                                    "tour_type"=>"medical",
-                                    "status"=>"closed",
-                                    "vehicle_type"=>"car",
-                                    "distance"=>tour.length,
-                                    "organization_name"=>tour.user.organization.name,
-                                    "organization_description"=>"Association description",
-                                    "start_time"=>tour.created_at.iso8601(3),
-                                    "end_time"=>tour.closed_at.iso8601(3),
-                                    "author"=>{
-                                        "id"=>tour.user.id,
-                                        "display_name"=>"John D.",
-                                        "avatar_url"=>nil,
-                                        "partner"=>nil
-                                    },
-                                    "number_of_people"=> 1,
-                                    "join_status"=>"not_requested",
-                                    "tour_points"=>[{"latitude"=>49.40752907, "longitude"=>0.26782405},
-                                                    {"latitude"=>49.40774009, "longitude"=>0.26870057}],
-                                    "number_of_unread_messages"=>nil,
-                                    "updated_at"=>tour.updated_at.iso8601(3)}})
+        expect(res).to eq({
+          "tour" => {
+            "id" => tour.id,
+            "uuid" => tour.id.to_s,
+            "tour_type" => "medical",
+            "status" => "closed",
+            "vehicle_type" => "car",
+            "distance" => tour.length,
+            "organization_name" => tour.user.organization.name,
+            "organization_description" => "Association description",
+            "start_time" => tour.created_at.iso8601(3),
+            "end_time" => tour.closed_at.iso8601(3),
+            "author" => {
+              "id" => tour.user.id,
+              "display_name" => "John D.",
+              "avatar_url" => nil,
+              "partner" => nil
+            },
+            "number_of_people" =>  1,
+            "join_status" => "not_requested",
+            "tour_points" => [
+              { "latitude" => 49.40752907, "longitude" => 0.26782405 },
+              { "latitude" => 49.40774009, "longitude" => 0.26870057 }
+            ],
+            "number_of_unread_messages" => nil,
+            "updated_at" => tour.updated_at.iso8601(3)
+          }
+        })
       end
     end
 

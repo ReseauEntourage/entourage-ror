@@ -19,21 +19,31 @@ describe Api::V1::Tours::ChatMessagesController do
         let!(:join_request) { FactoryBot.create(:join_request, joinable: tour, user: user, status: "accepted") }
         before { get :index, params: { tour_id: tour.to_param, token: user.token } }
         it { expect(response.status).to eq(200) }
-        it { expect(JSON.parse(response.body)).to eq({"chat_messages"=>
-                                                          [{
-                                                               "id"=>chat_message1.id,
-                                                               "message_type"=>"text",
-                                                               "content"=>"MyText",
-                                                               "user"=> {"id"=>chat_message1.user_id, "avatar_url"=>nil, "display_name"=>"John D.","partner"=>nil},
-                                                               "created_at"=>chat_message1.created_at.iso8601(3)
-                                                           },
-                                                           {
-                                                               "id"=>chat_message2.id,
-                                                               "message_type"=>"text",
-                                                               "content"=>"MyText",
-                                                               "user"=> {"id"=>chat_message2.user_id, "avatar_url"=>nil, "display_name"=>"John D.","partner"=>nil},
-                                                               "created_at"=>chat_message2.created_at.iso8601(3)
-                                                           }]}) }
+        it { expect(JSON.parse(response.body)).to eq({
+          "chat_messages" => [{
+            "id" => chat_message1.id,
+            "message_type" => "text",
+            "content" => "MyText",
+            "user" => {
+              "id" => chat_message1.user_id,
+              "avatar_url" => nil,
+              "display_name" => "John D.",
+              "partner" => nil
+            },
+            "created_at" => chat_message1.created_at.iso8601(3)
+          }, {
+           "id" => chat_message2.id,
+           "message_type" => "text",
+           "content" => "MyText",
+           "user" => {
+            "id" => chat_message2.user_id,
+            "avatar_url" => nil,
+            "display_name" => "John D.",
+            "partner" => nil
+          },
+            "created_at" => chat_message2.created_at.iso8601(3)
+          }]
+        }) }
 
         it { expect(join_request.reload.last_message_read).to eq(chat_message1.created_at)}
       end
@@ -73,13 +83,20 @@ describe Api::V1::Tours::ChatMessagesController do
         let!(:chat_message2) { FactoryBot.create(:chat_message, messageable: tour, updated_at: DateTime.parse("09/01/2016")) }
         let!(:join_request) { FactoryBot.create(:join_request, joinable: tour, user: user, status: "accepted") }
         before { get :index, params: { tour_id: tour.to_param, token: user.token, before: "10/01/2016" } }
-        it { expect(JSON.parse(response.body)).to eq({"chat_messages"=>[{
-                                                                           "id"=>chat_message2.id,
-                                                                           "message_type"=>"text",
-                                                                           "content"=>"MyText",
-                                                                           "user"=>{"id"=>chat_message2.user.id, "avatar_url"=>nil, "display_name"=>"John D.","partner"=>nil},
-                                                                           "created_at"=>chat_message2.created_at.iso8601(3)
-                                                                       }]}) }
+        it { expect(JSON.parse(response.body)).to eq({
+          "chat_messages" => [{
+            "id" => chat_message2.id,
+            "message_type" => "text",
+            "content" => "MyText",
+            "user" => {
+              "id" => chat_message2.user.id,
+              "avatar_url" => nil,
+              "display_name" => "John D.",
+              "partner" => nil
+            },
+            "created_at" => chat_message2.created_at.iso8601(3)
+          }]
+        }) }
       end
     end
   end
@@ -102,13 +119,20 @@ describe Api::V1::Tours::ChatMessagesController do
         before { post :create, params: { tour_id: tour.to_param, chat_message: {content: "foobar"}, token: user.token } }
         it { expect(response.status).to eq(201) }
         it { expect(ChatMessage.count).to eq(1) }
-        it { expect(JSON.parse(response.body)).to eq({"chat_message"=>
-                                                          {"id"=>ChatMessage.first.id,
-                                                           "message_type"=>"text",
-                                                           "content"=>"foobar",
-                                                           "user"=>{"id"=>user.id, "avatar_url"=>nil, "display_name"=>"John D.","partner"=>nil},
-                                                           "created_at"=>ChatMessage.first.created_at.iso8601(3)
-                                                          }}) }
+        it { expect(JSON.parse(response.body)).to eq({
+          "chat_message" => {
+            "id" => ChatMessage.first.id,
+            "message_type" => "text",
+            "content" => "foobar",
+            "user" => {
+              "id" => user.id,
+              "avatar_url" => nil,
+              "display_name" => "John D.",
+              "partner" => nil
+            },
+            "created_at" => ChatMessage.first.created_at.iso8601(3)
+          }
+        }) }
       end
 
       describe "send push notif" do

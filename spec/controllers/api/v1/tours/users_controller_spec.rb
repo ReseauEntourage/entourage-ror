@@ -16,18 +16,18 @@ describe Api::V1::Tours::UsersController do
         before { post :create, params: { tour_id: tour.to_param, token: user.token } }
         it { expect(tour.members).to eq([user]) }
         it { expect(result).to eq(
-          "user"=>{
-            "id"=>user.id,
-            "display_name"=>"John D.",
-            "role"=>"member",
-            "group_role"=>"member",
-            "community_roles"=>[],
-            "status" => "pending",
-            "message"=>nil,
-            "avatar_url"=>nil,
-            "requested_at"=>JoinRequest.last.created_at.iso8601(3),
-            "partner"=>nil,
-            "partner_role_title"=>nil,
+          "user" => {
+            "id" => user.id,
+            "display_name" => "John D.",
+            "role" => "member",
+            "group_role" => "member",
+            "community_roles" => [],
+            "status"  =>  "pending",
+            "message" => nil,
+            "avatar_url" => nil,
+            "requested_at" => JoinRequest.last.created_at.iso8601(3),
+            "partner" => nil,
+            "partner_role_title" => nil,
           }
         )}
         it { expect(tour.reload.number_of_people).to eq(1) }
@@ -39,18 +39,18 @@ describe Api::V1::Tours::UsersController do
         before { post :create, params: { tour_id: tour.to_param, token: user.token } }
         it { expect(tour.members).to eq([user]) }
         it { expect(result).to eq(
-          "user"=>{
-            "id"=>user.id,
-            "display_name"=>"John D.",
-            "role"=>"member",
-            "group_role"=>"member",
-            "community_roles"=>[],
-            "status" => "pending",
-            "message"=>nil,
-            "avatar_url"=>nil,
-            "requested_at"=>JoinRequest.last.created_at.iso8601(3),
-            "partner"=>nil,
-            "partner_role_title"=>nil,
+          "user" => {
+            "id" => user.id,
+            "display_name" => "John D.",
+            "role" => "member",
+            "group_role" => "member",
+            "community_roles" => [],
+            "status"  =>  "pending",
+            "message" => nil,
+            "avatar_url" => nil,
+            "requested_at" => JoinRequest.last.created_at.iso8601(3),
+            "partner" => nil,
+            "partner_role_title" => nil,
           }
         )}
         it { expect(tour.reload.number_of_people).to eq(0) }
@@ -59,11 +59,12 @@ describe Api::V1::Tours::UsersController do
       it "sends a notifications to tour owner" do
         new_member = FactoryBot.create(:pro_user)
         create(:join_request, user: user, joinable: tour, status: "accepted")
-        expect_any_instance_of(PushNotificationService).to receive(:send_notification).with("John D.",
-                                                                                            "Demande en attente",
-                                                                                            "John D. souhaite rejoindre votre maraude",
-                                                                                            [tour.user],
-                                                                                            {:joinable_id=>tour.id, :joinable_type=>"Tour", :group_type=>'tour', :type=>"NEW_JOIN_REQUEST", :user_id => new_member.id}
+        expect_any_instance_of(PushNotificationService).to receive(:send_notification).with(
+          "John D.",
+          "Demande en attente",
+          "John D. souhaite rejoindre votre maraude",
+          [tour.user],
+          { :joinable_id => tour.id, :joinable_type => "Tour", :group_type => 'tour', :type => "NEW_JOIN_REQUEST", :user_id => new_member.id }
         )
         post :create, params: { tour_id: tour.to_param, token: new_member.token }
       end
@@ -72,19 +73,20 @@ describe Api::V1::Tours::UsersController do
         before { post :create, params: { tour_id: tour.to_param, request: {message: "foo"}, token: user.token } }
         it { expect(tour.members).to eq([user]) }
         it { expect(result).to eq(
-          "user"=>{
-            "id"=>user.id,
-            "display_name"=>"John D.",
-            "status" => "pending",
-            "role"=>"member",
-            "group_role"=>"member",
-            "community_roles"=>[],
-            "message"=> "foo",
-            "requested_at"=>JoinRequest.last.created_at.iso8601(3),
-            "avatar_url"=>nil,
-            "partner"=>nil,
-            "partner_role_title"=>nil,
-          }) }
+          "user" => {
+            "id" => user.id,
+            "display_name" => "John D.",
+            "status"  =>  "pending",
+            "role" => "member",
+            "group_role" => "member",
+            "community_roles" => [],
+            "message" =>  "foo",
+            "requested_at" => JoinRequest.last.created_at.iso8601(3),
+            "avatar_url" => nil,
+            "partner" => nil,
+            "partner_role_title" => nil,
+          }
+        ) }
       end
     end
   end
@@ -99,18 +101,18 @@ describe Api::V1::Tours::UsersController do
       let!(:join_request) { FactoryBot.create(:join_request, user: user, joinable: tour) }
       before { get :index, params: { tour_id: tour.to_param, token: user.token } }
       it { expect(result).to eq({
-        "users"=>[{
-          "id"=>user.id,
-          "display_name"=>"John D.",
-          "status"=>"pending",
-          "role"=>"member",
-          "group_role"=>"member",
-          "community_roles"=>[],
-          "message"=>nil,
-          "requested_at"=>join_request.created_at.iso8601(3),
-          "avatar_url"=>nil,
-          "partner"=>nil,
-          "partner_role_title"=>nil,
+        "users" => [{
+          "id" => user.id,
+          "display_name" => "John D.",
+          "status" => "pending",
+          "role" => "member",
+          "group_role" => "member",
+          "community_roles" => [],
+          "message" => nil,
+          "requested_at" => join_request.created_at.iso8601(3),
+          "avatar_url" => nil,
+          "partner" => nil,
+          "partner_role_title" => nil,
         }]
       })}
     end
@@ -136,11 +138,13 @@ describe Api::V1::Tours::UsersController do
 
       it "sends a notification to the requester" do
         FactoryBot.create(:android_app)
-        expect_any_instance_of(PushNotificationService).to receive(:send_notification).with("John D.",
-                                                                                            "Demande acceptée",
-                                                                                            "Vous venez de rejoindre la maraude de John D.",
-                                                                                            User.where(id: requester.id),
-                                                                                            {:joinable_id=>tour.id, :joinable_type=>"Tour", :group_type => 'tour', :type=>"JOIN_REQUEST_ACCEPTED", :user_id => requester.id})
+        expect_any_instance_of(PushNotificationService).to receive(:send_notification).with(
+          "John D.",
+          "Demande acceptée",
+          "Vous venez de rejoindre la maraude de John D.",
+          User.where(id: requester.id),
+          { :joinable_id => tour.id, :joinable_type => "Tour", :group_type => 'tour', :type=>"JOIN_REQUEST_ACCEPTED", :user_id => requester.id }
+        )
         patch :update, params: { tour_id: tour.to_param, id: requester.id, user: {status: "accepted"}, token: user.token }
       end
 
@@ -197,18 +201,18 @@ describe Api::V1::Tours::UsersController do
       before { delete :destroy, params: { tour_id: tour.to_param, id: requester.id, token: user.token } }
       it { expect(response.status).to eq(200) }
       it { expect(result).to eq({
-        "user"=>{
-          "id"=>requester.id,
-          "display_name"=>"John D.",
-          "role"=>"member",
-          "group_role"=>"member",
-          "community_roles"=>[],
-          "status"=>"not_requested",
-          "message"=>nil,
-          "requested_at"=>JoinRequest.last.created_at.iso8601(3),
-          "avatar_url"=>nil,
-          "partner"=>nil,
-          "partner_role_title"=>nil,
+        "user" => {
+          "id" => requester.id,
+          "display_name" => "John D.",
+          "role" => "member",
+          "group_role" => "member",
+          "community_roles" => [],
+          "status" => "not_requested",
+          "message" => nil,
+          "requested_at" => JoinRequest.last.created_at.iso8601(3),
+          "avatar_url" => nil,
+          "partner" => nil,
+          "partner_role_title" => nil,
         }
       })}
       it { expect(tour_requested.reload.status).to eq("rejected") }
@@ -226,18 +230,18 @@ describe Api::V1::Tours::UsersController do
       before { delete :destroy, params: { tour_id: tour.to_param, id: user.id, token: user.token } }
       it { expect(response.status).to eq(200) }
       it { expect(result).to eq({
-        "user"=>{
-          "id"=>user.id,
-          "display_name"=>"John D.",
-          "role"=>"member",
-          "group_role"=>"member",
-          "community_roles"=>[],
-          "status"=>"not_requested",
-          "message"=>nil,
-          "requested_at"=>tour_member.created_at.iso8601(3),
-          "avatar_url"=>nil,
-          "partner"=>nil,
-          "partner_role_title"=>nil,
+        "user" => {
+          "id" => user.id,
+          "display_name" => "John D.",
+          "role" => "member",
+          "group_role" => "member",
+          "community_roles" => [],
+          "status" => "not_requested",
+          "message" => nil,
+          "requested_at" => tour_member.created_at.iso8601(3),
+          "avatar_url" => nil,
+          "partner" => nil,
+          "partner_role_title" => nil,
         }
       }) }
       it { expect(tour.reload.number_of_people).to eq(0) }
