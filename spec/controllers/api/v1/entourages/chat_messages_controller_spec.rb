@@ -83,13 +83,47 @@ describe Api::V1::Entourages::ChatMessagesController do
         let!(:chat_message2) { FactoryBot.create(:chat_message, messageable: entourage, updated_at: DateTime.parse("09/01/2016")) }
         let!(:join_request) { FactoryBot.create(:join_request, joinable: entourage, user: user, status: "accepted") }
         before { get :index, params: { entourage_id: entourage.to_param, token: user.token, before: "10/01/2016" } }
-        it { expect(JSON.parse(response.body)).to eq({"chat_messages"=>[{
-                                                                            "id"=>chat_message2.id,
-                                                                            "message_type"=>"text",
-                                                                            "content"=>"MyText",
-                                                                            "user"=>{"id"=>chat_message2.user.id, "avatar_url"=>nil, "display_name"=>"John D.","partner"=>nil},
-                                                                            "created_at"=>chat_message2.created_at.iso8601(3)
-                                                                        }]}) }
+        it { expect(JSON.parse(response.body)).to eq({
+          "chat_messages"=>[{
+            "id" => chat_message2.id,
+            "message_type" => "text",
+            "content" => "MyText",
+            "user" => {
+              "id" => chat_message2.user.id,
+              "avatar_url" => nil,
+              "display_name" => "John D.",
+              "partner" => nil
+            },
+            "created_at" => chat_message2.created_at.iso8601(3)
+          }]
+        }) }
+      end
+
+      context "user with partner" do
+        let(:partner_user) { FactoryBot.create(:partner_user) }
+        let!(:chat_message) { FactoryBot.create(:chat_message, messageable: entourage, user: partner_user) }
+        let!(:join_request) { FactoryBot.create(:join_request, joinable: entourage, user: partner_user, status: "accepted") }
+        before { get :index, params: { entourage_id: entourage.to_param, token: partner_user.token } }
+        it { expect(JSON.parse(response.body)).to eq({
+          "chat_messages" => [{
+            "id" => chat_message.id,
+            "message_type" => "text",
+            "content" => "MyText",
+            "user" => {
+              "id" => chat_message.user_id,
+              "avatar_url" => nil,
+              "display_name" => "John D.",
+              "partner" => {
+                "id" => partner_user.partner_id,
+                "name" => partner_user.partner.name,
+                "large_logo_url" => partner_user.partner.large_logo_url,
+                "small_logo_url" => partner_user.partner.small_logo_url,
+                "default" => true,
+              },
+            },
+            "created_at" => chat_message.created_at.iso8601(3)
+          }]
+        }) }
       end
 
       context "from a null conversations by list uuid" do
