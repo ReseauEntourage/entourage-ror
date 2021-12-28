@@ -128,7 +128,13 @@ class User < ApplicationRecord
     like = "%#{strip}%"
 
     where(%(
-      users.id = :id OR first_name ILIKE :first_name OR last_name ILIKE :last_name OR email ILIKE :email OR phone = :phone OR concat(first_name, ' ', last_name) ILIKE :full_name OR concat(last_name, ' ', first_name) ILIKE :full_name
+      users.id = :id OR
+      trim(first_name) ILIKE :first_name OR
+      trim(last_name) ILIKE :last_name OR
+      email ILIKE :email OR
+      phone = :phone OR
+      concat(trim(first_name), ' ', trim(last_name)) ILIKE :full_name OR
+      concat(trim(last_name), ' ', trim(first_name)) ILIKE :full_name
     ), {
       id: strip.to_i,
       first_name: like,
