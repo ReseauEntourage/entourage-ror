@@ -113,6 +113,35 @@ describe User, :type => :model do
     it { should eq 'John Doe' }
   end
 
+  describe "search_by" do
+    context "wrong search" do
+      let!(:user) { FactoryBot.create(:pro_user, first_name: "Foo", last_name: "Bar") }
+      it { expect(User.search_by("Foobar").pluck(:id)).to eq([]) }
+    end
+
+    context "without trailing spaces" do
+      let!(:user) { FactoryBot.create(:pro_user, first_name: "Foo", last_name: "Bar") }
+      it { expect(User.search_by("Foo Bar").pluck(:id)).to eq([user.id]) }
+    end
+
+    context "with trailing spaces" do
+      let!(:user) { FactoryBot.create(:pro_user, first_name: "Foo ", last_name: "Bar ") }
+      it { expect(User.search_by("Foo Bar").pluck(:id)).to eq([user.id]) }
+    end
+
+    context "without trailing spaces on first_name" do
+      let!(:user) { FactoryBot.create(:pro_user, first_name: "Foo", last_name: "Bar") }
+      it { expect(User.search_by("Foo").pluck(:id)).to eq([user.id]) }
+      it { expect(User.search_by("Foo ").pluck(:id)).to eq([user.id]) }
+    end
+
+    context "with trailing spaces on first_name" do
+      let!(:user) { FactoryBot.create(:pro_user, first_name: "Foo ", last_name: "Bar ") }
+      it { expect(User.search_by("Foo").pluck(:id)).to eq([user.id]) }
+      it { expect(User.search_by("Foo ").pluck(:id)).to eq([user.id]) }
+    end
+  end
+
   describe "organization association" do
     let(:valid_organization) { FactoryBot.build(:organization) }
     let(:invalid_organization) { FactoryBot.build(:organization, name: nil) }
