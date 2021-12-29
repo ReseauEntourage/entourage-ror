@@ -6,19 +6,21 @@ resource Api::V1::EntouragesController do
   header "Content-Type", "application/json"
 
   get '/api/v1/entourages' do
-    route_summary "Allows users to find entourages for a given location."
+    route_summary "Find entourages for a given location."
     # route_description "no description"
 
     parameter :token, "User token", type: :string, required: true
-    parameter :types, "Comma separated type codes", type: :string
-    parameter :latitude, "User latitude", type: :number
-    parameter :longitude, "User longitude", type: :number
-    parameter :distance, "Distance from GPS coordinates from which Entourage should be found", type: :number
-    parameter :page, type: :integer
-    parameter :show_past_events, "True to include past events in the results", type: :boolean
-    parameter :time_range, "Find entourages created in the last hours (default 24)", type: :integer
-    parameter :before, "Find entourages created before a date, when no pagination is given", type: :datetime
-    parameter :partners_only, "Boolean to get only partners", type: :boolean
+    parameter :types, "Comma separated; see: app/services/feed_services/types.rb", type: :string
+    parameter :latitude, "User latitude", type: :number, required: true
+    parameter :longitude, "User longitude", type: :number, required: true
+    parameter :distance, "Distance from GPS coordinates from which Entourage should be found (km)", type: :number, default: 10
+    parameter :page, type: :integer, default: 1
+    parameter :per, type: :integer, default: 25
+    parameter :show_past_events, "True to include past events in the results", type: :boolean, default: false
+    parameter :time_range, "Find entourages created in the last hours", type: :integer, default: 24
+    parameter :before, "Find entourages created before a date, when no pagination is given", type: :datetime, default: nil
+    parameter :partners_only, "Boolean to get only partners", type: :boolean, default: false
+    parameter :status, "open, closed, full, suspended, blacklisted", type: :string, default: :open
 
     let(:user) { FactoryBot.create(:public_user) }
     let!(:entourage) { FactoryBot.create(:entourage, :joined, user: user, status: "open") }
@@ -52,13 +54,15 @@ resource Api::V1::EntouragesController do
   end
 
   get 'api/v1/entourages/search' do
-    route_summary "Get the entourages corresponding to a search"
+    route_summary "Get the entourages corresponding to a search in the past month"
 
     parameter :token, type: :string, required: true
-    parameter :q, "A search string", type: :string
-    parameter :types, "Comma separated type codes", type: :string
-    parameter :latitude, "User latitude", type: :number
-    parameter :longitude, "User longitude", type: :number
+    parameter :q, "A search string", type: :string, required: true
+    parameter :types, "Comma separated; see: app/services/feed_services/types.rb", type: :string
+    parameter :latitude, "User latitude", type: :number, required: true
+    parameter :longitude, "User longitude", type: :number, required: true
+    parameter :page, type: :integer, default: 1
+    parameter :per, type: :integer, default: 25
 
     let(:user) { FactoryBot.create(:public_user) }
     let!(:entourage) { FactoryBot.create(:entourage, :joined, user: user, status: "open", title: "solidarity coffee") }
@@ -74,9 +78,11 @@ resource Api::V1::EntouragesController do
   end
 
   get 'api/v1/entourages/joined' do
-    route_summary "Get the entourages the current user joined"
+    route_summary "Get the entourages the current user joined in the past year"
 
     parameter :token, type: :string, required: true
+    parameter :page, type: :integer, default: 1
+    parameter :per, type: :integer, default: 25
 
     let(:user) { FactoryBot.create(:public_user) }
     let(:entourage) { create :entourage, status: :open }
@@ -85,16 +91,18 @@ resource Api::V1::EntouragesController do
 
     context '200' do
       example_request 'Get joined entourages' do
-        expect(status).to eq(200)
+        expect(response_status).to eq(200)
         expect(JSON.parse(response_body)).to have_key('entourages')
       end
     end
   end
 
   get 'api/v1/entourages/owned' do
-    route_summary "Get the entourages the current user created"
+    route_summary "Get the actions the current user created in the past year"
 
     parameter :token, type: :string, required: true
+    parameter :page, type: :integer, default: 1
+    parameter :per, type: :integer, default: 25
 
     let(:user) { FactoryBot.create(:public_user) }
     let!(:entourage) { create :entourage, status: :open, user: user }
@@ -102,16 +110,18 @@ resource Api::V1::EntouragesController do
 
     context '200' do
       example_request 'Get owned entourages' do
-        expect(status).to eq(200)
+        expect(response_status).to eq(200)
         expect(JSON.parse(response_body)).to have_key('entourages')
       end
     end
   end
 
   get 'api/v1/entourages/invited' do
-    route_summary "Get the entourages the current user has been invited in"
+    route_summary "Get the entourages the current user has been invited in, in the past year"
 
     parameter :token, type: :string, required: true
+    parameter :page, type: :integer, default: 1
+    parameter :per, type: :integer, default: 25
 
     let(:user) { FactoryBot.create(:public_user) }
     let(:entourage) { FactoryBot.create(:entourage, status: :open) }
@@ -127,21 +137,32 @@ resource Api::V1::EntouragesController do
   end
 
   post 'api/v1/entourages' do
-    route_summary "Creates an entourage"
+    route_summary "Creates an action"
 
     parameter :token, type: :string, required: true
 
     with_options :scope => :entourage, :required => true do
+      parameter :group_type, "action", required: true
       parameter :title, "Title"
       with_options :scope => "entourage[location]", :required => true do
         parameter :latitude, "Latitude", type: :number
         parameter :longitude, "Longitude", type: :number
       end
-      parameter :entourage_type, "Either contribution or ask_for_help"
-      parameter :display_category, "Either mat_help, social, resource, info, skill, event or other", required: false
+      parameter :entourage_type, "contribution or ask_for_help"
+      parameter :display_category, "mat_help, social, resource, info, skill, event or other", required: false
+      parameter :status, required: false
       parameter :description, required: false
-      parameter :category, "Either mat_help, non_mat_help or social", required: false
-      parameter :recipient_consent_obtained, "Boolean", required: false
+      parameter :category, "mat_help, non_mat_help or social", required: false
+      parameter :public, "deprecated", required: false
+      with_options :scope => "entourage[outcome]", :required => false do
+        parameter :success, "whether the action was successful or not"
+      end
+      parameter :recipient_consent_obtained, "Consent is required when creating an action for someone else", required: false
+      with_options :scope => "entourage[metadata]" do
+        parameter :display_address, "Address", type: :string
+        parameter :city, "City", type: :string
+        parameter :close_message, "A message to post when closing an action", type: :string, :required => false
+      end
     end
 
     let(:entourage) { build :entourage }
@@ -177,16 +198,23 @@ resource Api::V1::EntouragesController do
     parameter :token, type: :string, required: true
 
     with_options :scope => :entourage, :required => true do
+      parameter :group_type, "outing", required: true
       parameter :title, "Title"
       with_options :scope => "entourage[location]", :required => true do
         parameter :latitude, "Latitude", type: :number
         parameter :longitude, "Longitude", type: :number
       end
+      parameter :entourage_type, "contribution or ask_for_help"
+      parameter :display_category, "mat_help, social, resource, info, skill, event or other", required: false
+      parameter :status, required: false
+      parameter :description, required: false
+      parameter :category, "mat_help, non_mat_help or social", required: false
+      parameter :public, "deprecated", required: false
       with_options :scope => "entourage[metadata]", :required => true do
         parameter :starts_at, "Start date"
-        parameter :place_name, "Place name"
-        parameter :street_address, "Street address"
-        parameter :google_place_id, "Google place ID"
+        parameter :place_name, "Place name", required: false
+        parameter :street_address, "Street address", required: false
+        parameter :google_place_id, "Google place ID", required: false
         parameter :landscape_url, "Path to a 1125 x 375px image url", required: false
         parameter :landscape_thumbnail_url, "Path to a thumbnail of 1125 x 375px image url", required: false
         parameter :portrait_url, "Path to a 300 x 492px image url", required: false
@@ -234,16 +262,26 @@ resource Api::V1::EntouragesController do
     parameter :token, type: :string, required: true
 
     with_options :scope => :entourage, :required => true do
-      parameter :title, "Title", required: false
-      with_options :scope => "entourage[location]", required: false do
+      parameter :title, "Title"
+      with_options :scope => "entourage[location]", :required => true do
         parameter :latitude, "Latitude", type: :number
         parameter :longitude, "Longitude", type: :number
       end
-      parameter :entourage_type, "Either contribution or ask_for_help", required: false
-      parameter :display_category, "Either mat_help, social, resource, info, skill, event or other", required: false
+      parameter :entourage_type, "contribution or ask_for_help"
+      parameter :display_category, "mat_help, social, resource, info, skill, event or other", required: false
+      parameter :status, required: false
       parameter :description, required: false
-      parameter :category, "Either mat_help, non_mat_help or social", required: false
-      parameter :recipient_consent_obtained, "Boolean", required: false
+      parameter :category, "mat_help, non_mat_help or social", required: false
+      parameter :public, "deprecated", required: false
+      with_options :scope => "entourage[outcome]", :required => false do
+        parameter :success, "whether the action was successful or not"
+      end
+      parameter :recipient_consent_obtained, "Consent is required when creating an action for someone else", required: false
+      with_options :scope => "entourage[metadata]" do
+        parameter :display_address, "Address", type: :string
+        parameter :city, "City", type: :string
+        parameter :close_message, "A message to post when closing an action", type: :string, :required => false
+      end
     end
 
     let(:user) { FactoryBot.create(:pro_user) }
@@ -272,13 +310,19 @@ resource Api::V1::EntouragesController do
     parameter :token, type: :string, required: true
 
     with_options :scope => :entourage, :required => true do
-      parameter :title, required: false
-      with_options :scope => "entourage[location]", required: false do
+      parameter :title, "Title"
+      with_options :scope => "entourage[location]", :required => true do
         parameter :latitude, "Latitude", type: :number
         parameter :longitude, "Longitude", type: :number
       end
-      with_options :scope => "entourage[metadata]", :required => true do
-        parameter :starts_at, "Start date", required: false
+      parameter :entourage_type, "contribution or ask_for_help"
+      parameter :display_category, "mat_help, social, resource, info, skill, event or other", required: false
+      parameter :status, required: false
+      parameter :description, required: false
+      parameter :category, "mat_help, non_mat_help or social", required: false
+      parameter :public, "deprecated", required: false
+      with_options :scope => "entourage[metadata]", required: true do
+        parameter :starts_at, "Start date"
         parameter :place_name, "Place name", required: false
         parameter :street_address, "Street address", required: false
         parameter :google_place_id, "Google place ID", required: false
@@ -321,8 +365,7 @@ resource Api::V1::EntouragesController do
 
     let(:entourage) { create :entourage }
     let(:user) { FactoryBot.create(:public_user) }
-    let(:old_date) { DateTime.parse("15/10/2010") }
-    let!(:join_request) { FactoryBot.create(:join_request, joinable: entourage, user: user, status: JoinRequest::ACCEPTED_STATUS, last_message_read: old_date) }
+    let!(:join_request) { FactoryBot.create(:join_request, joinable: entourage, user: user, status: JoinRequest::ACCEPTED_STATUS, last_message_read: DateTime.parse("15/10/2010")) }
 
     let(:id) { entourage.id }
     let(:raw_post) { {
@@ -337,7 +380,7 @@ resource Api::V1::EntouragesController do
   end
 
   post 'api/v1/entourages/:id/report' do
-    route_summary "Reports a message to an entourage"
+    route_summary "Sends an alert about an entourage"
 
     parameter :id, required: true
     parameter :token, type: :string, required: true
@@ -370,7 +413,7 @@ resource Api::V1::EntouragesController do
   end
 
   delete 'api/v1/entourages/:id/report_prompt' do
-    route_summary "Deletes a report prompt"
+    route_summary "Deletes a prompt message, displayed at first direct message from a user in an action or outing"
 
     parameter :id, required: true
     parameter :token, type: :string, required: true

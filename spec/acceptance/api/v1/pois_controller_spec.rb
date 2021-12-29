@@ -6,12 +6,12 @@ resource Api::V1::PoisController do
   header "Content-Type", "application/json"
 
   get '/api/v1/pois' do
-    route_summary "Allows users to interact find POI for a given location."
-    route_description "If user wants to find Soliguide POI, (v=2, no_redirect!='true') is expected. Soliguide is currently provided only for Paris."
+    route_summary "Find POI for a given location."
+    route_description "To find Pois from Soliguide, values (v=2, no_redirect!='true') are expected. Soliguide is currently provided only for Paris."
 
     parameter :v, "Version to be used, 1 or 2 (default 1)", type: :integer
-    parameter :latitude, "User latitude", type: :number
-    parameter :longitude, "User longitude", type: :number
+    parameter :latitude, "User latitude", type: :number, required: true
+    parameter :longitude, "User longitude", type: :number, required: true
     parameter :distance, "Distance from GPS coordinates from which POI should be found", type: :number
     parameter :category_ids, "Comma separated category_ids", type: :string
     parameter :partners_filters, "Comma separated partners (either donations or volunteers)", type: :string

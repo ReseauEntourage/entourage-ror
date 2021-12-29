@@ -370,6 +370,8 @@ module Api
 
       def ethics_charter_signed
         answers = Typeform.answers params[:form_response]
+        # Typeform::answers does not return a user_id
+        # @deprecated this method seems deprecated
         user_id = UserServices::EncodedId.decode answers['user_id']
         user = User.find(user_id)
         user.roles.push :ethics_charter_signed

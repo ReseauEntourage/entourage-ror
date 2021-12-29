@@ -25,6 +25,25 @@ resource Api::V1::AnnouncementsController do
     end
   end
 
+  get '/api/v1/announcements/:id/icon' do
+    route_summary "Announcement icon"
+
+    parameter :id, required: true
+    parameter :token, "User token", type: :string, required: true
+
+    let(:user) { FactoryBot.create(:public_user) }
+    let(:announcement) { FactoryBot.create(:announcement, icon: 'icon.png', user_goals: [:offer_help], areas: [:dep_75]) }
+
+    let(:id) { announcement.id }
+    let(:token) { user.token }
+
+    context '200' do
+      example_request 'Get announcement icon' do
+        expect(response_status).to eq(302)
+      end
+    end
+  end
+
   get '/api/v1/announcements/:id/redirect/:token' do
     route_summary "Announcement redirection whenever a given announcement has defined an URL"
 
