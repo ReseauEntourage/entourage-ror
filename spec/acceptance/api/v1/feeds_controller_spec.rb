@@ -30,7 +30,7 @@ resource Api::V1::FeedsController do
 
     context '200' do
       example_request 'Get the feed' do
-        expect(status).to eq(200)
+        expect(response_status).to eq(200)
         expect(JSON.parse(response_body)).to have_key('feeds')
       end
     end
@@ -52,7 +52,7 @@ resource Api::V1::FeedsController do
 
     context '200' do
       example_request 'Get outings' do
-        expect(status).to eq(200)
+        expect(response_status).to eq(200)
         expect(JSON.parse(response_body)).to have_key('feeds')
       end
     end

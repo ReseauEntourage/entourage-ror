@@ -14,7 +14,7 @@ resource Api::V1::TourAreasController do
 
     context '200' do
       example_request 'Get tour_areas' do
-        expect(status).to eq(200)
+        expect(response_status).to eq(200)
       end
     end
   end
@@ -30,7 +30,7 @@ resource Api::V1::TourAreasController do
 
     context '200' do
       example_request 'Show tour_area' do
-        expect(status).to eq(200)
+        expect(response_status).to eq(200)
       end
     end
   end

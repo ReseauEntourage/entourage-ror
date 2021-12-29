@@ -20,6 +20,10 @@ RSpec.configure do |config|
   end
 end
 
+RspecApiDocumentation.configure do |config|
+  config.disable_dsl_status!
+end
+
 Geocoder.configure(lookup: :test, ip_lookup: :test)
 Geocoder::Lookup::Test.add_stub(
   "174 rue Championnet, Paris", [{

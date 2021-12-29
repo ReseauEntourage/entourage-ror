@@ -39,7 +39,7 @@ resource Api::V1::EncountersController do
 
     context '201' do
       example_request 'Create encounter with no message' do
-        expect(status).to eq(201)
+        expect(response_status).to eq(201)
         expect(JSON.parse(response_body)).to have_key('encounter')
       end
     end

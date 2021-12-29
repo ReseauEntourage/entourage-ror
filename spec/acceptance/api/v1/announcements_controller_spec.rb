@@ -19,7 +19,7 @@ resource Api::V1::AnnouncementsController do
 
     context '200' do
       example_request 'Get announcements' do
-        expect(status).to eq(200)
+        expect(response_status).to eq(200)
         expect(JSON.parse(response_body)).to have_key('announcements')
       end
     end
@@ -39,7 +39,7 @@ resource Api::V1::AnnouncementsController do
 
     context '200' do
       example_request 'Get announcement redirection' do
-        expect(status).to eq(302)
+        expect(response_status).to eq(302)
       end
     end
   end

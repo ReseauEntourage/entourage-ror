@@ -28,7 +28,7 @@ resource Api::V1::PoisController do
 
     context '200' do
       example_request 'Get pois' do
-        expect(status).to eq(200)
+        expect(response_status).to eq(200)
         expect(JSON.parse(response_body)).to have_key('pois')
       end
     end
@@ -44,7 +44,7 @@ resource Api::V1::PoisController do
 
     context '200' do
       example_request 'Get poi' do
-        expect(status).to eq(200)
+        expect(response_status).to eq(200)
         expect(JSON.parse(response_body)).to have_key('poi')
       end
     end
@@ -87,7 +87,7 @@ resource Api::V1::PoisController do
 
     context '201' do
       example_request 'Create a poi' do
-        expect(status).to eq(201)
+        expect(response_status).to eq(201)
         expect(JSON.parse(response_body)).to have_key('poi')
       end
     end
@@ -114,7 +114,7 @@ resource Api::V1::PoisController do
 
     context '201' do
       example_request 'Report a POI to Entourage team' do
-        expect(status).to eq(201)
+        expect(response_status).to eq(201)
         expect(JSON.parse(response_body)).to have_key('message')
       end
     end

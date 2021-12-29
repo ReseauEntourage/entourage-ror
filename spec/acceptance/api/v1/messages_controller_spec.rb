@@ -31,7 +31,7 @@ resource Api::V1::MessagesController do
 
     context '201' do
       example_request 'Sends a message to Entourage team' do
-        expect(status).to eq(201)
+        expect(response_status).to eq(201)
         expect(JSON.parse(response_body)).to have_key('id')
       end
     end

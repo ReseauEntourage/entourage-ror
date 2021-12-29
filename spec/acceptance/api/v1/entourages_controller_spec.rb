@@ -26,7 +26,7 @@ resource Api::V1::EntouragesController do
 
     context '200' do
       example_request 'Get entourages' do
-        expect(status).to eq(200)
+        expect(response_status).to eq(200)
         expect(JSON.parse(response_body)).to have_key('entourages')
       end
     end
@@ -45,7 +45,7 @@ resource Api::V1::EntouragesController do
 
     context '200' do
       example_request 'Get entourage' do
-        expect(status).to eq(200)
+        expect(response_status).to eq(200)
         expect(JSON.parse(response_body)).to have_key('entourage')
       end
     end
@@ -67,7 +67,7 @@ resource Api::V1::EntouragesController do
 
     context '200' do
       example_request 'Get entourages from search' do
-        expect(status).to eq(200)
+        expect(response_status).to eq(200)
         expect(JSON.parse(response_body)).to have_key('entourages')
       end
     end
@@ -120,7 +120,7 @@ resource Api::V1::EntouragesController do
 
     context '200' do
       example_request 'Get invited entourages' do
-        expect(status).to eq(200)
+        expect(response_status).to eq(200)
         expect(JSON.parse(response_body)).to have_key('entourages')
       end
     end
@@ -165,7 +165,7 @@ resource Api::V1::EntouragesController do
 
     context '201' do
       example_request 'Create entourage' do
-        expect(status).to eq(201)
+        expect(response_status).to eq(201)
         expect(JSON.parse(response_body)).to have_key('entourage')
       end
     end
@@ -221,7 +221,7 @@ resource Api::V1::EntouragesController do
 
     context '201' do
       example_request 'Create outing' do
-        expect(status).to eq(201)
+        expect(response_status).to eq(201)
         expect(JSON.parse(response_body)).to have_key('entourage')
       end
     end
@@ -259,7 +259,7 @@ resource Api::V1::EntouragesController do
 
     context '200' do
       example_request 'Update entourage' do
-        expect(status).to eq(200)
+        expect(response_status).to eq(200)
         expect(JSON.parse(response_body)).to have_key('entourage')
       end
     end
@@ -307,7 +307,7 @@ resource Api::V1::EntouragesController do
 
     context '200' do
       example_request 'Update outing' do
-        expect(status).to eq(200)
+        expect(response_status).to eq(200)
         expect(JSON.parse(response_body)).to have_key('entourage')
       end
     end
@@ -331,7 +331,7 @@ resource Api::V1::EntouragesController do
 
     context '204' do
       example_request 'Read entourage' do
-        expect(status).to eq(204)
+        expect(response_status).to eq(204)
       end
     end
   end
@@ -364,7 +364,7 @@ resource Api::V1::EntouragesController do
 
     context '201' do
       example_request 'Report entourage' do
-        expect(status).to eq(201)
+        expect(response_status).to eq(201)
       end
     end
   end
@@ -385,7 +385,7 @@ resource Api::V1::EntouragesController do
 
     context '204' do
       example_request 'Delete entourage report_prompt' do
-        expect(status).to eq(204)
+        expect(response_status).to eq(204)
       end
     end
   end
