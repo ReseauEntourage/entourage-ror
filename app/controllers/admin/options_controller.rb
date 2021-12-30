@@ -18,7 +18,7 @@ module Admin
         flash[:error] = @option.errors.full_messages.to_sentence
       end
 
-      redirect_to admin_options_path(@option)
+      redirect_to admin_options_path
     end
 
     private
