@@ -4,6 +4,8 @@ describe PoiServices::Soliguide do
   let!(:tour) { FactoryBot.create(:tour) }
 
   describe 'apply?' do
+    let!(:option_soliguide) { FactoryBot.create(:option_soliguide) }
+
     # Paris
     it 'should be valid for Paris' do
       expect(PoiServices::Soliguide.new({
@@ -27,24 +29,10 @@ describe PoiServices::Soliguide do
     end
 
     # Lyon
-    it 'should be valid for Lyon' do
+    it 'should be not valid for Lyon' do
       expect(PoiServices::Soliguide.new({
         latitude: 45.75,
         longitude: 4.85
-      }).apply?).to eq(false)
-    end
-
-    it 'should be valid close to Lyon' do
-      expect(PoiServices::Soliguide.new({
-        latitude: 45.77,
-        longitude: 4.87
-      }).apply?).to eq(false)
-    end
-
-    it 'should not be valid far from Lyon' do
-      expect(PoiServices::Soliguide.new({
-        latitude: 45.90,
-        longitude: 4.60
       }).apply?).to eq(false)
     end
   end
