@@ -60,6 +60,8 @@ Rails.application.routes.draw do
         end
       end
 
+      resources :options, only: [:index, :update]
+
       resources :partner_registrations, only: [:index, :show, :edit, :update]
 
       resources :moderation_areas
@@ -69,6 +71,7 @@ Rails.application.routes.draw do
       namespace :uploads do
         get '/success', action: :update
       end
+
 
       namespace :super_admin do
         get '/entourage_images', action: :entourage_images

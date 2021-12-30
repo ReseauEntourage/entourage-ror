@@ -206,7 +206,9 @@ describe Api::V1::PoisController, :type => :controller do
         end
       end
 
-      context 'redirects to soliguide when Paris' do
+      context 'soliguide redirection' do
+        let!(:option_soliguide) { FactoryBot.create(:option_soliguide, active: active) }
+
         paris = PoiServices::Soliguide::PARIS
         params = { latitude: paris[:latitude], longitude: paris[:longitude], distance: 5, v: '2', format: :json }
         url = "#{ENV['ENTOURAGE_SOLIGUIDE_HOST']}?distance=5&latitude=#{paris[:latitude]}&longitude=#{paris[:longitude]}"
@@ -220,8 +222,21 @@ describe Api::V1::PoisController, :type => :controller do
 
           get :index, params: params
         }
-        it { expect(response.status).to eq 200 }
-        it { expect(response.body).to eq("[soliguide_called]") }
+
+        context 'redirects to soliguide when Paris and soliguide option is defined' do
+          let!(:active) { true }
+
+          it { expect(response.status).to eq 200 }
+          it { expect(response.body).to eq("[soliguide_called]") }
+        end
+
+        context 'does not redirect to soliguide when Paris and soliguide option is not defined' do
+          let!(:active) { false }
+
+          it { expect(response.status).to eq 200 }
+          it { expect(response.body).not_to eq("[soliguide_called]") }
+          it { expect(JSON.parse(response.body)).to have_key("pois") }
+        end
       end
     end
   end
