@@ -1,0 +1,42 @@
+<div class="container">
+  <div class="row">
+    <div class="col-xs-offset-2 col-xs-8">
+      <div class="h1" style="display: flex; align-items: center;">
+        <div style="flex-grow: 1">Options</div>
+      </div>
+
+      <table class="table">
+        <tr>
+          <th>Nom</th>
+          <th>Description</th>
+          <th>Actif</th>
+        </tr>
+        <% @options.each do |option| %>
+          <tr>
+            <td><%= option.key %></td>
+            <td><%= option.description %></td>
+            <td>
+              <%= form_for [:admin, option], html: { role: "form" } do |f| %>
+                <div class="form-group">
+                  <%= f.check_box :active, {
+                    checked: option.active?,
+                    'data-toggle': :toggle
+                  }, 'true', 'false' %>
+                </div>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+      </table>
+    </div>
+  </div>
+</div>
+
+
+<script>
+  $(function(){
+    $('form input[name="option[active]"]').on('change', function(event) {
+      $(event.target).closest('form').submit();
+    })
+  })
+</script>
