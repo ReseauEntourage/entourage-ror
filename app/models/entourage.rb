@@ -350,6 +350,10 @@ class Entourage < ApplicationRecord
     status && status.to_sym == :cancelled
   end
 
+  def closed?
+    status && status.to_sym == :closed
+  end
+
   def ongoing?
     status && [:open, :full].include?(status.to_sym)
   end
