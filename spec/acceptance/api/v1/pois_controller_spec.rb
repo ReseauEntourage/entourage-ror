@@ -6,12 +6,12 @@ resource Api::V1::PoisController do
   header "Content-Type", "application/json"
 
   get '/api/v1/pois' do
-    route_summary "Allows users to interact find POI for a given location."
-    route_description "If user wants to find Soliguide POI, (v=2, no_redirect!='true') is expected. Soliguide is currently provided only for Paris."
+    route_summary "Find POI for a given location."
+    route_description "To find Pois from Soliguide, values (v=2, no_redirect!='true') are expected. Soliguide is currently provided only for Paris."
 
     parameter :v, "Version to be used, 1 or 2 (default 1)", type: :integer
-    parameter :latitude, "User latitude", type: :number
-    parameter :longitude, "User longitude", type: :number
+    parameter :latitude, "User latitude", type: :number, required: true
+    parameter :longitude, "User longitude", type: :number, required: true
     parameter :distance, "Distance from GPS coordinates from which POI should be found", type: :number
     parameter :category_ids, "Comma separated category_ids", type: :string
     parameter :partners_filters, "Comma separated partners (either donations or volunteers)", type: :string
@@ -28,7 +28,7 @@ resource Api::V1::PoisController do
 
     context '200' do
       example_request 'Get pois' do
-        expect(status).to eq(200)
+        expect(response_status).to eq(200)
         expect(JSON.parse(response_body)).to have_key('pois')
       end
     end
@@ -44,7 +44,7 @@ resource Api::V1::PoisController do
 
     context '200' do
       example_request 'Get poi' do
-        expect(status).to eq(200)
+        expect(response_status).to eq(200)
         expect(JSON.parse(response_body)).to have_key('poi')
       end
     end
@@ -87,7 +87,7 @@ resource Api::V1::PoisController do
 
     context '201' do
       example_request 'Create a poi' do
-        expect(status).to eq(201)
+        expect(response_status).to eq(201)
         expect(JSON.parse(response_body)).to have_key('poi')
       end
     end
@@ -114,7 +114,7 @@ resource Api::V1::PoisController do
 
     context '201' do
       example_request 'Report a POI to Entourage team' do
-        expect(status).to eq(201)
+        expect(response_status).to eq(201)
         expect(JSON.parse(response_body)).to have_key('message')
       end
     end

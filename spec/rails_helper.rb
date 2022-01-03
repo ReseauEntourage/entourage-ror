@@ -11,10 +11,17 @@ RSpec.configure do |config|
   config.infer_spec_type_from_file_location!
   config.include(Shoulda::Matchers::ActiveModel, type: :model)
   config.include(Shoulda::Matchers::ActiveRecord, type: :model)
+  config.backtrace_exclusion_patterns = [
+    /vendor/
+  ]
 
   config.before(:each) do
     ActionMailer::Base.deliveries.clear
   end
+end
+
+RspecApiDocumentation.configure do |config|
+  config.disable_dsl_status!
 end
 
 Geocoder.configure(lookup: :test, ip_lookup: :test)
