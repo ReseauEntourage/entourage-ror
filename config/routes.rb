@@ -210,10 +210,6 @@ Rails.application.routes.draw do
 
   #API
   namespace :api do
-    namespace :v0 do
-      match '(*path)', to: "base#deprecated", via: :all
-    end
-
     namespace :v1 do
       match '(*path)' => 'base#options', via: [:options]
       resources :home, only: [:index]
