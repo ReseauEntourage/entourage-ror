@@ -109,7 +109,7 @@ module V1
 
     def number_of_unread_messages
       if current_join_request.nil?
-        nil
+        0
       elsif scope.key?(:number_of_unread_messages)
         scope[:number_of_unread_messages]
       elsif current_join_request.status != 'accepted'
