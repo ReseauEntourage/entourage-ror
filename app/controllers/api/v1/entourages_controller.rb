@@ -90,6 +90,7 @@ module Api
           .includes(:join_requests, { user: :partner })
           .where(group_type: :conversation)
           .where('join_requests.user_id = ?', current_user.id)
+          .order(created_at: :desc)
           .page(params[:page] || 1).per(per)
 
         render json: entourages, root: :entourages, each_serializer: ::V1::EntourageSerializer, scope: {
@@ -103,6 +104,7 @@ module Api
           .where(group_type: [:action, :outing])
           .where('join_requests.user_id = ?', current_user.id)
           .where('join_requests.status = ?', :accepted)
+          .order(created_at: :desc)
           .page(params[:page] || 1).per(per)
 
         render json: entourages, root: :entourages, each_serializer: ::V1::EntourageSerializer, scope: {
