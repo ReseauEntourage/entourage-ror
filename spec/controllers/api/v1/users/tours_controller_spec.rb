@@ -61,7 +61,7 @@ RSpec.describe Api::V1::Users::ToursController, :type => :controller do
                "number_of_people"=> 1,
                "join_status"=>"not_requested",
                "tour_points"=>[],
-               "number_of_unread_messages"=>nil,
+               "number_of_unread_messages"=>0,
                "updated_at"=>tour2.updated_at.iso8601(3)
             }]})
       end
