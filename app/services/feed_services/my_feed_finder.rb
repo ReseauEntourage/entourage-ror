@@ -68,13 +68,6 @@ module FeedServices
       feeds
     end
 
-    def self.unread_count user:
-      entourages_only = true
-      user_feeds(user: user, unread_only: true, entourages_only: entourages_only)
-        .limit(99) # for performance in extreme cases
-        .count("distinct entourages.id")
-    end
-
     def feeds
       entourages_only = !user.pro? || @unread_only
 
