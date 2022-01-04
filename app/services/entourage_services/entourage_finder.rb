@@ -1,5 +1,7 @@
 module EntourageServices
   class EntourageFinder
+    include FeedServices::Preloader
+
     DEFAULT_DISTANCE=10
     FEED_CATEGORY_EXPR = "(case when group_type = 'action' then concat(entourage_type, '_', coalesce(display_category, 'other')) else group_type::text end)"
 
