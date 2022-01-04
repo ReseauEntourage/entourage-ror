@@ -2,6 +2,7 @@ require 'geocoder/sql'
 
 module FeedServices
   class FeedFinder
+    include FeedServices::Preloader
 
     DEFAULT_DISTANCE=10
     ITEMS_PER_PAGE=25
@@ -292,21 +293,6 @@ module FeedServices
         next unless feed.feedable.is_a?(Tour)
         next if feed.feedable.user.nil?
         feed.feedable.user.organization = organizations[feed.feedable.user.organization_id]
-      end
-    end
-
-    def preload_chat_messages_counts(feeds)
-      user_join_request_ids = feeds.map { |feed| feed.try(:current_join_request)&.id }
-      counts = JoinRequest
-        .with_unread_messages
-        .where(id: user_join_request_ids)
-        .group(:id)
-        .count
-      counts.default = 0
-      feeds.each do |feed|
-        join_request_id = feed.try(:current_join_request)&.id
-        next if join_request_id.nil?
-        feed.number_of_unread_messages = counts[join_request_id]
       end
     end
 
