@@ -12,6 +12,7 @@ module Api
           end
         end
 
+        # @deprecated
         def index
           @entourages = Entourage.visible
 

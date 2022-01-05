@@ -19,8 +19,27 @@ resource Api::V1::AnnouncementsController do
 
     context '200' do
       example_request 'Get announcements' do
-        expect(status).to eq(200)
+        expect(response_status).to eq(200)
         expect(JSON.parse(response_body)).to have_key('announcements')
+      end
+    end
+  end
+
+  get '/api/v1/announcements/:id/icon' do
+    route_summary "Announcement icon"
+
+    parameter :id, required: true
+    parameter :token, "User token", type: :string, required: true
+
+    let(:user) { FactoryBot.create(:public_user) }
+    let(:announcement) { FactoryBot.create(:announcement, icon: 'icon.png', user_goals: [:offer_help], areas: [:dep_75]) }
+
+    let(:id) { announcement.id }
+    let(:token) { user.token }
+
+    context '200' do
+      example_request 'Get announcement icon' do
+        expect(response_status).to eq(302)
       end
     end
   end
@@ -39,7 +58,7 @@ resource Api::V1::AnnouncementsController do
 
     context '200' do
       example_request 'Get announcement redirection' do
-        expect(status).to eq(302)
+        expect(response_status).to eq(302)
       end
     end
   end

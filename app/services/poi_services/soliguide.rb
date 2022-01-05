@@ -28,7 +28,11 @@ module PoiServices
     end
 
     def apply?
-      close_to?(PARIS)
+      is_active? && close_to?(PARIS)
+    end
+
+    def is_active?
+      Option.active? :soliguide
     end
 
     def query_params

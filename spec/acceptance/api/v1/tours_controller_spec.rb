@@ -17,13 +17,13 @@ resource Api::V1::ToursController do
 
     context '403' do
       example_request 'Get tours for public user' do
-        expect(status).to eq(403)
+        expect(response_status).to eq(403)
       end
     end
   end
 
   get '/api/v1/tours' do
-    route_summary "Public user can not list tours"
+    route_summary "Pro user can list tours"
     # route_description "no description"
 
     parameter :token, "User token", type: :string, required: true
@@ -34,7 +34,7 @@ resource Api::V1::ToursController do
 
     context '200' do
       example_request 'Get tours for pro user' do
-        expect(status).to eq(200)
+        expect(response_status).to eq(200)
         expect(JSON.parse(response_body)).to have_key('tours')
       end
     end
@@ -71,7 +71,7 @@ resource Api::V1::ToursController do
 
     context '201' do
       example_request 'Create a tour' do
-        expect(status).to eq(201)
+        expect(response_status).to eq(201)
         expect(JSON.parse(response_body)).to have_key('tour')
       end
     end
@@ -90,14 +90,14 @@ resource Api::V1::ToursController do
 
     context '200' do
       example_request 'Get tour' do
-        expect(status).to eq(200)
+        expect(response_status).to eq(200)
         expect(JSON.parse(response_body)).to have_key('tour')
       end
     end
   end
 
   patch 'api/v1/tours/:id' do
-    route_summary "Updates an tour"
+    route_summary "Updates a tour"
 
     parameter :id, required: true
     parameter :token, type: :string, required: true
@@ -125,14 +125,14 @@ resource Api::V1::ToursController do
 
     context '200' do
       example_request 'Update tour' do
-        expect(status).to eq(200)
+        expect(response_status).to eq(200)
         expect(JSON.parse(response_body)).to have_key('tour')
       end
     end
   end
 
   patch 'api/v1/tours/:id' do
-    route_summary "Updates an tour the user did not created"
+    route_summary "Updates a tour the user did not created"
 
     parameter :id, required: true
     parameter :token, type: :string, required: true
@@ -160,7 +160,7 @@ resource Api::V1::ToursController do
 
     context '403' do
       example_request 'Update tour that the user did not created' do
-        expect(status).to eq(403)
+        expect(response_status).to eq(403)
       end
     end
   end
@@ -181,7 +181,7 @@ resource Api::V1::ToursController do
 
     context '204' do
       example_request 'Defines a tour as read' do
-        expect(status).to eq(204)
+        expect(response_status).to eq(204)
       end
     end
   end

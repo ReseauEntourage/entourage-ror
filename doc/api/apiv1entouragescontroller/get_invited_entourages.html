@@ -112,7 +112,7 @@ table th, table td {
 
       <div class="article">
         <h2>Get invited entourages</h2>
-        <h3>GET api/v1/entourages/invitees</h3>
+        <h3>GET api/v1/entourages/invited</h3>
 
           <h3>Parameters</h3>
           <table class="parameters table table-striped table-bordered table-condensed">
@@ -131,6 +131,22 @@ table th, table td {
                   <span class="description"> token</span>
                 </td>
               </tr>
+              <tr>
+                <td>
+                    <span class="name">page</span>
+                </td>
+                <td>
+                  <span class="description"> page</span>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                    <span class="name">per</span>
+                </td>
+                <td>
+                  <span class="description"> per</span>
+                </td>
+              </tr>
             </tbody>
           </table>
 
@@ -143,10 +159,10 @@ Host: example.org
 Cookie: </pre>
 
           <h4>Route</h4>
-          <pre class="request route highlight">GET api/v1/entourages/invitees?token=foobar15</pre>
+          <pre class="request route highlight">GET api/v1/entourages/invited?token=foobar43</pre>
 
             <h4>Query Parameters</h4>
-            <pre class="request query_parameters highlight">token: foobar15</pre>
+            <pre class="request query_parameters highlight">token: foobar43</pre>
 
 
 
@@ -162,19 +178,19 @@ Access-Control-Allow-Origin: *
 Access-Control-Allow-Methods: GET,POST,PUT,PATCH,DELETE
 Access-Control-Allow-Headers: Origin,Accept,Content-Type,X-Requested-With,X-CSRF-Token,X-API-KEY
 Content-Type: application/json; charset=utf-8
-ETag: W/&quot;2baf49af9f69d1008dd6cdd6331dabcc&quot;
+ETag: W/&quot;a9f94f7eaa33b4be0dafa107b4cc6a4f&quot;
 Cache-Control: max-age=0, private, must-revalidate
-X-Request-Id: 8c0cd2e6-e6a6-4e69-a996-e0ef684211f5
-X-Runtime: 0.010855
-Content-Length: 741</pre>
+X-Request-Id: 76481085-97d5-4944-9d31-1721ac6e965d
+X-Runtime: 0.010088
+Content-Length: 743</pre>
             <h4>Status</h4>
             <pre class="response status">200 OK</pre>
               <h4>Body</h4>
               <pre class="response body">{
   &quot;entourages&quot;: [
     {
-      &quot;id&quot;: 15362,
-      &quot;uuid&quot;: &quot;eWcXjh-lgJ2s&quot;,
+      &quot;id&quot;: 136449,
+      &quot;uuid&quot;: &quot;eJBBCddAIgro&quot;,
       &quot;status&quot;: &quot;open&quot;,
       &quot;title&quot;: &quot;Foobar&quot;,
       &quot;group_type&quot;: &quot;action&quot;,
@@ -189,16 +205,16 @@ Content-Length: 741</pre>
       &quot;join_status&quot;: &quot;not_requested&quot;,
       &quot;number_of_unread_messages&quot;: null,
       &quot;number_of_people&quot;: 1,
-      &quot;created_at&quot;: &quot;2021-09-24T11:36:31.257+02:00&quot;,
-      &quot;updated_at&quot;: &quot;2021-09-24T11:36:31.257+02:00&quot;,
+      &quot;created_at&quot;: &quot;2022-01-03T16:38:04.975+01:00&quot;,
+      &quot;updated_at&quot;: &quot;2022-01-03T16:38:04.975+01:00&quot;,
       &quot;description&quot;: null,
-      &quot;share_url&quot;: &quot;http://app.entourage.localhost:8081/actions/eWcXjh-lgJ2s&quot;,
+      &quot;share_url&quot;: &quot;http://app.entourage.localhost:8081/actions/eJBBCddAIgro&quot;,
       &quot;image_url&quot;: null,
       &quot;online&quot;: false,
       &quot;event_url&quot;: null,
       &quot;display_report_prompt&quot;: false,
       &quot;author&quot;: {
-        &quot;id&quot;: 59450,
+        &quot;id&quot;: 458236,
         &quot;display_name&quot;: &quot;John D.&quot;,
         &quot;avatar_url&quot;: null,
         &quot;partner&quot;: null,

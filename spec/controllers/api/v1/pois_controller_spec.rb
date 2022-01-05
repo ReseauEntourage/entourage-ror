@@ -221,50 +221,31 @@ describe Api::V1::PoisController, :type => :controller do
         end
       end
 
-      context 'gets soliguide when Paris' do
+      context 'soliguide redirection' do
+        let!(:option_soliguide) { FactoryBot.create(:option_soliguide, active: active) }
+
         paris = PoiServices::Soliguide::PARIS
         params = { latitude: paris[:latitude], longitude: paris[:longitude], distance: 5, v: '2', format: :json }
-        subject {
-          stub_request(:post, "https://api.soliguide.fr/new-search").to_return(status: 200, body: body.to_json, headers: {})
+        url = "#{ENV['ENTOURAGE_SOLIGUIDE_HOST']}?distance=5&latitude=#{paris[:latitude]}&longitude=#{paris[:longitude]}"
+
+        before {
+          stub_request(:post, "https://api.soliguide.fr/new-search").to_return(status: 200, body: "[soliguide_called]", headers: {})
+          get :index, params: params
         }
 
-        context 'no result from Soliguide' do
-          let(:body) { {
-            results: 0,
-            places: []
-          } }
-          before { subject ; get :index, params: params }
+        context 'redirects to soliguide when Paris and soliguide option is defined' do
+          let!(:active) { true }
 
           it { expect(response.status).to eq 200 }
-          it { expect(response.body).to eq({ pois: [] }.to_json) }
+          it { expect(JSON.parse(response.body)).to have_key("pois") }
         end
 
-        context 'one result from Soliguide' do
-          let(:body) { {
-            results: 0,
-            places: [{
-              lieu_id: 0,
-              address: "174 rue Championnet Paris",
-              entity: { name: "Entourage" },
-              location: {
-                coordinates: [1, 2],
-              },
-              services_all: []
-            }]
-          } }
-          before { subject ; get :index, params: params }
+        context 'does not redirect to soliguide when Paris and soliguide option is not defined' do
+          let!(:active) { false }
 
           it { expect(response.status).to eq 200 }
-          it { expect(response.body).to eq({ pois: [{
-            uuid: "s0",
-            name: "Entourage",
-            longitude: 1,
-            latitude: 2,
-            address: "174 rue Championnet Paris",
-            phone: nil,
-            category_id: 0,
-            partner_id: nil
-          }] }.to_json) }
+          it { expect(response.body).not_to eq("[soliguide_called]") }
+          it { expect(JSON.parse(response.body)).to have_key("pois") }
         end
       end
     end

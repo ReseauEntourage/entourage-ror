@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_10_27_135000) do
+ActiveRecord::Schema.define(version: 2021_12_30_133001) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -423,6 +423,15 @@ ActiveRecord::Schema.define(version: 2021_10_27_135000) do
     t.boolean "active"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "options", force: :cascade do |t|
+    t.string "key", null: false
+    t.string "description"
+    t.boolean "active", default: true
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["key"], name: "index_options_on_key"
   end
 
   create_table "organizations", id: :serial, force: :cascade do |t|

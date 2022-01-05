@@ -23,7 +23,7 @@ resource Api::V1::HomeController do
 
     context '200' do
       example_request 'Get home' do
-        expect(status).to eq(200)
+        expect(response_status).to eq(200)
       end
     end
   end

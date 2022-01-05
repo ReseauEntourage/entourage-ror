@@ -523,7 +523,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
     end
   end
 
-  describe 'code' do
+  describe 'PATCH code' do
     let!(:user) { create :pro_user, sms_code: "123456", avatar_key: "avatar" }
 
     describe "regenerate sms code" do

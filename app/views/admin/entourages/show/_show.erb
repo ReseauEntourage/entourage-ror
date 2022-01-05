@@ -231,7 +231,7 @@
           </div>
         <% end %>
 
-        <% if entourage.ongoing? %>
+        <% unless entourage.closed? %>
           <div style="padding-top: 25px">
             <%= link_to 'Clôturer', close_admin_entourage_path(entourage), method: :post, class: 'btn btn-success' %>
           </div>

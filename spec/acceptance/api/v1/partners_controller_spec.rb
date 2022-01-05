@@ -17,7 +17,7 @@ resource Api::V1::PartnersController do
 
     context '200' do
       example_request 'Get partners' do
-        expect(status).to eq(200)
+        expect(response_status).to eq(200)
         expect(JSON.parse(response_body)).to have_key('partners')
       end
     end
@@ -36,7 +36,7 @@ resource Api::V1::PartnersController do
 
     context '200' do
       example_request 'Get partner' do
-        expect(status).to eq(200)
+        expect(response_status).to eq(200)
         expect(JSON.parse(response_body)).to have_key('partner')
       end
     end
@@ -65,7 +65,7 @@ resource Api::V1::PartnersController do
 
     context '200' do
       example_request 'Request to join a partner' do
-        expect(status).to eq(200)
+        expect(response_status).to eq(200)
         expect(JSON.parse(response_body)).to eq({})
       end
     end

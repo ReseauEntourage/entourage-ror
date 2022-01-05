@@ -16,7 +16,7 @@ resource Api::V1::EntourageImagesController do
 
     context '200' do
       example_request 'Get entourage images' do
-        expect(status).to eq(200)
+        expect(response_status).to eq(200)
         expect(JSON.parse(response_body)).to have_key('entourage_images')
       end
     end
@@ -35,7 +35,7 @@ resource Api::V1::EntourageImagesController do
 
     context '200' do
       example_request 'Get entourage image' do
-        expect(status).to eq(200)
+        expect(response_status).to eq(200)
         expect(JSON.parse(response_body)).to have_key('entourage_image')
       end
     end
