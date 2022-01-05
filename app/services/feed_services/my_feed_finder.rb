@@ -1,5 +1,6 @@
 module FeedServices
   class MyFeedFinder
+    include FeedServices::Preloader
 
     DEFAULT_PER=25
 
@@ -65,13 +66,6 @@ module FeedServices
       end
 
       feeds
-    end
-
-    def self.unread_count user:
-      entourages_only = true
-      user_feeds(user: user, unread_only: true, entourages_only: entourages_only)
-        .limit(99) # for performance in extreme cases
-        .count("distinct entourages.id")
     end
 
     def feeds
@@ -160,21 +154,6 @@ module FeedServices
         next unless feed.feedable.is_a?(Tour)
         next if feed.feedable.user.nil?
         feed.feedable.user.organization = organizations[feed.feedable.user.organization_id]
-      end
-    end
-
-    def preload_chat_messages_counts(feeds)
-      user_join_request_ids = feeds.map { |feed| feed.try(:current_join_request)&.id }
-      counts = JoinRequest
-        .with_unread_messages
-        .where(id: user_join_request_ids)
-        .group(:id)
-        .count
-      counts.default = 0
-      feeds.each do |feed|
-        join_request_id = feed.try(:current_join_request)&.id
-        next if join_request_id.nil?
-        feed.number_of_unread_messages = counts[join_request_id]
       end
     end
 
