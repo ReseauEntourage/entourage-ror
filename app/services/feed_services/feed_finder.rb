@@ -295,59 +295,6 @@ module FeedServices
         feed.feedable.user.organization = organizations[feed.feedable.user.organization_id]
       end
     end
-
-    # @deprecated: no call
-    def preload_last_chat_messages(feeds)
-      feedable_ids = {}
-      feeds.each do |feed|
-        join_request_status = feed.try(:current_join_request)&.status
-        next unless join_request_status == 'accepted'
-        (feedable_ids[feed.feedable_type] ||= []).push feed.feedable_id
-      end
-      feedable_ids.delete 'Announcement'
-      return if feedable_ids.empty?
-      clause = ["(messageable_type = ? and messageable_id in (?))"]
-      last_chat_messages = ChatMessage
-        .select("distinct on (messageable_type, messageable_id) messageable_type, messageable_id")
-        .order("messageable_type, messageable_id, created_at desc")
-        .select(:id, :content, :user_id, :created_at)
-        .includes(:user)
-        .where((clause * feedable_ids.count).join(" OR "), *feedable_ids.flatten)
-      last_chat_messages =
-        Hash[last_chat_messages.map { |m| [[m.messageable_type, m.messageable_id], m] }]
-      feeds.each do |feed|
-        next if feed.feedable.is_a?(Announcement)
-        feed.last_chat_message =
-          last_chat_messages[[feed.feedable_type, feed.feedable_id]]
-      end
-    end
-
-    # @deprecated: no call
-    def preload_last_join_requests(feeds)
-      feedable_ids = {}
-      feeds.each do |feed|
-        join_request_status = feed.try(:current_join_request)&.status
-        next unless join_request_status == 'accepted'
-        (feedable_ids[feed.feedable_type] ||= []).push feed.feedable_id
-      end
-      feedable_ids.delete 'Announcement'
-      return if feedable_ids.empty?
-      clause = ["(joinable_type = ? and joinable_id in (?))"]
-      last_join_requests = JoinRequest
-        .select("distinct on (joinable_type, joinable_id) joinable_type, joinable_id")
-        .order("joinable_type, joinable_id, created_at desc")
-        .select(:id, :status, :user_id, :created_at)
-        .where(status: :pending)
-        .where((clause * feedable_ids.count).join(" OR "), *feedable_ids.flatten)
-      last_join_requests =
-        Hash[last_join_requests.map { |r| [[r.joinable_type, r.joinable_id], r] }]
-      feeds.each do |feed|
-        next if feed.feedable.is_a?(Announcement)
-        feed.last_join_request =
-          last_join_requests[[feed.feedable_type, feed.feedable_id]]
-      end
-    end
-
     # This is just for the sake of making the cursor seemingly random and hard
     # to decode, to discourage clients of caching tokens or forging them.
     def self.encode_cursor cursor
