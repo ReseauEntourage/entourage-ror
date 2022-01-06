@@ -108,17 +108,13 @@ module V1
     end
 
     def number_of_unread_messages
-      if current_join_request.nil?
-        0
-      elsif scope.key?(:number_of_unread_messages)
-        scope[:number_of_unread_messages]
-      elsif current_join_request.last_message_read.nil?
-        lazy_chat_messages_count&.count || 0
-      else
-        lazy_chat_messages.select do |chat_message|
-          chat_message.created_at > current_join_request.last_message_read
-        end.count
-      end
+      return 0 if current_join_request.nil?
+      return scope[:number_of_unread_messages] if scope.key?(:number_of_unread_messages)
+      return lazy_chat_messages_count&.count || 0 if current_join_request.last_message_read.nil?
+
+      lazy_chat_messages.select do |chat_message|
+        chat_message.created_at > current_join_request.last_message_read
+      end.count
     end
 
     def updated_at
