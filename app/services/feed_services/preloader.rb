@@ -1,5 +1,6 @@
 module FeedServices
   module Preloader
+    # number of unread_message for each conversation
     def preload_chat_messages_counts(feeds)
       user_join_request_ids = feeds.map { |feed| feed.try(:current_join_request)&.id }
       return if user_join_request_ids.empty?
