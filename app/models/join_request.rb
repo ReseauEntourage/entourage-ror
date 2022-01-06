@@ -61,10 +61,8 @@ class JoinRequest < ApplicationRecord
     where(status: :accepted)
     .joins(%(
       join chat_messages on (
-        messageable_id = joinable_id and
-        messageable_type = joinable_type and
-        (last_message_read is null or
-         chat_messages.created_at > last_message_read)
+        messageable_id = joinable_id and messageable_type = joinable_type and
+        (last_message_read is null or chat_messages.created_at > last_message_read)
       )
     ))
   end
