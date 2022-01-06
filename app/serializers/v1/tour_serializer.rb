@@ -73,8 +73,6 @@ module V1
         nil
       elsif scope.key?(:number_of_unread_messages)
         scope[:number_of_unread_messages]
-      elsif current_join_request.status != 'accepted'
-        0
       elsif current_join_request.last_message_read.nil?
         object.chat_messages.count
       else
