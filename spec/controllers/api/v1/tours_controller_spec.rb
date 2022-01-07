@@ -70,7 +70,7 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
             "avatar_url" => nil,
             "partner" => nil
           },
-          "number_of_people" =>  1,
+          "number_of_people" => 1,
           "join_status" => "not_requested",
           "tour_points" => [],
           "number_of_unread_messages" => 0,
