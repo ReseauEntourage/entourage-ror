@@ -97,7 +97,7 @@ describe PoiServices::Soliguide do
             geoValue: :HorsZone,
           },
           options: {},
-          name: 'myquery',
+          word: 'myquery',
         })
       }
     end
