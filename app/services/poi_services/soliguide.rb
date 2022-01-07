@@ -54,7 +54,7 @@ module PoiServices
       }
 
       params[:categories] = soliguide_category(categories) if soliguide_category(categories).present?
-      params[:name] = query if query.present?
+      params[:word] = query if query.present?
       params[:options][:limit] = limit if limit.present?
 
       params
