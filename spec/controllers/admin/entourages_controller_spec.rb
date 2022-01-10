@@ -163,13 +163,13 @@ describe Admin::EntouragesController do
   end
 
   describe "POST close" do
-    context "blacklisted actions are not closable" do
+    context "blacklisted actions are closable" do
       let(:entourage) { FactoryBot.create(:entourage, status: :blacklisted) }
       before { post :close, params: { id: entourage.to_param } }
 
       it { should redirect_to admin_entourage_path(entourage) }
       it { expect(response.code).to eq('302') }
-      it { expect(entourage.reload.status).to eq('blacklisted') }
+      it { expect(entourage.reload.status).to eq('closed') }
     end
 
     context "open actions are closable" do
