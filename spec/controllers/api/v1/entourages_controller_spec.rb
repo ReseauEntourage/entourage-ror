@@ -332,6 +332,15 @@ describe Api::V1::EntouragesController do
         it { expect(subject["entourages"].first["last_message"]).to be_a(Hash) }
       end
 
+      context "with some messages, get last_message" do
+        let!(:chat_message_1) { FactoryBot.create(:chat_message, messageable: conversation, content: "foo", created_at: 1.hour.ago) }
+        let!(:chat_message_2) { FactoryBot.create(:chat_message, messageable: conversation, content: "bar", created_at: 2.hours.ago) }
+
+        before { get :private, params: { token: user.token } }
+        it { expect(subject["entourages"].first["last_message"]).to be_a(Hash) }
+        it { expect(subject["entourages"].first["last_message"]["text"]).to eq("foo") }
+      end
+
       context "without last_message" do
         let!(:chat_message) { FactoryBot.create(:chat_message, messageable: other_conversation)}
 
