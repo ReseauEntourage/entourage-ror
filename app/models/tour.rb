@@ -15,7 +15,7 @@ class Tour < ApplicationRecord
   has_many :members, through: :join_requests, source: :user
   has_many :chat_messages, as: :messageable, dependent: :destroy
   has_one :last_chat_message, -> {
-    select('DISTINCT ON (messageable_id, messageable_type) *').order('messageable_id, messageable_type, created_at')
+    select('DISTINCT ON (messageable_id, messageable_type) *').order('messageable_id, messageable_type, created_at desc')
   }, as: :messageable, class_name: 'ChatMessage'
   has_one :chat_messages_count, -> {
     select('DISTINCT ON (messageable_id, messageable_type) COUNT(*), messageable_id, messageable_type').group('messageable_id, messageable_type')
