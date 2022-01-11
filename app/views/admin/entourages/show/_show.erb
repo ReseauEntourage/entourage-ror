@@ -222,6 +222,10 @@
               <% end %>
             </div>
           <% end %>
+
+          <div class="col-md-3 form-group" style="padding-top: 25px">
+            <%= link_to 'Clôturer', close_admin_entourage_path(entourage), method: :post, class: "btn btn-success #{ 'disabled' if entourage.closed? }" %>
+          </div>
         </div>
 
         <% unless @entourage.outing? %>
@@ -230,10 +234,6 @@
             <%= text_field_tag :close_message, @entourage[:metadata][:close_message], class: 'form-control' %>
           </div>
         <% end %>
-
-        <div style="padding-top: 25px">
-          <%= link_to 'Clôturer', close_admin_entourage_path(entourage), method: :post, class: "btn btn-success #{ 'disabled' if entourage.closed? }" %>
-        </div>
       </div>
     </div>
   </div>
