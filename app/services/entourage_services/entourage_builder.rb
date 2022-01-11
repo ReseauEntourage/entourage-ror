@@ -169,8 +169,6 @@ module EntourageServices
     end
 
     def self.close entourage:
-      return false unless ['open', 'full'].include?(entourage.status)
-
       update(entourage: entourage, params: { status: :closed })
     end
 
