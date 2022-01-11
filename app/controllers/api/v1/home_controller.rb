@@ -11,27 +11,27 @@ module Api
 
           headlines: get_headlines,
 
-          outings: ::ActiveModel::ArraySerializer.new(
+          outings: ActiveModel::Serializer::CollectionSerializer.new(
             get_outings,
-            each_serializer: ::V1::EntourageSerializer,
+            serializer: ::V1::EntourageSerializer,
             scope: { user: current_user }
           ),
 
-          entourages: ::ActiveModel::ArraySerializer.new(
+          entourages: ActiveModel::Serializer::CollectionSerializer.new(
             entourages([:contribution, :ask_for_help]),
-            each_serializer: ::V1::EntourageSerializer,
+            serializer: ::V1::EntourageSerializer,
             scope: { user: current_user }
           ),
 
-          entourage_contributions: ::ActiveModel::ArraySerializer.new(
+          entourage_contributions: ActiveModel::Serializer::CollectionSerializer.new(
             entourages(:contribution),
-            each_serializer: ::V1::EntourageSerializer,
+            serializer: ::V1::EntourageSerializer,
             scope: { user: current_user }
           ),
 
-          entourage_ask_for_helps: ::ActiveModel::ArraySerializer.new(
+          entourage_ask_for_helps: ActiveModel::Serializer::CollectionSerializer.new(
             entourages(:ask_for_help),
-            each_serializer: ::V1::EntourageSerializer,
+            serializer: ::V1::EntourageSerializer,
             scope: { user: current_user }
           )
         }.to_json, status: 200

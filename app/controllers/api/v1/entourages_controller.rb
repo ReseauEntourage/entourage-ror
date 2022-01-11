@@ -22,7 +22,7 @@ module Api
           status: params[:status]
         ).entourages
 
-        render json: entourages, each_serializer: ::V1::EntourageSerializer, scope: {
+        render json: entourages, root: :entourages, each_serializer: ::V1::EntourageSerializer, scope: {
           user: current_user
         }
       end
@@ -39,7 +39,7 @@ module Api
           time_range: 31*24
         ).entourages
 
-        render json: entourages, each_serializer: ::V1::EntourageSerializer, scope: {
+        render json: entourages, root: :entourages, each_serializer: ::V1::EntourageSerializer, scope: {
           user: current_user
         }
       end
@@ -53,7 +53,7 @@ module Api
           show_my_entourages_only: true
         ).entourages
 
-        render json: entourages, each_serializer: ::V1::EntourageSerializer, scope: {
+        render json: entourages, root: :entourages, each_serializer: ::V1::EntourageSerializer, scope: {
           user: current_user
         }
       end
@@ -64,9 +64,9 @@ module Api
           .where(group_type: [:action])
           .where("entourages.created_at > ?", 1.year.ago)
           .where(user: current_user)
-          .order(created_at: :desc)
+          .order(updated_at: :desc)
 
-        render json: entourages, each_serializer: ::V1::EntourageSerializer, scope: {
+        render json: entourages, root: :entourages, each_serializer: ::V1::EntourageSerializer, scope: {
           user: current_user
         }
       end
@@ -80,8 +80,35 @@ module Api
           invitee: current_user
         ).entourages
 
-        render json: entourages, each_serializer: ::V1::EntourageSerializer, scope: {
+        render json: entourages, root: :entourages, each_serializer: ::V1::EntourageSerializer, scope: {
           user: current_user
+        }
+      end
+
+      def private
+        entourages = Entourage.joins(:join_requests)
+          .includes(:join_requests, { user: :partner })
+          .where(group_type: :conversation)
+          .where('join_requests.user_id = ?', current_user.id)
+          .order(updated_at: :desc)
+          .page(params[:page] || 1).per(per)
+
+        render json: entourages, root: :entourages, each_serializer: ::V1::EntourageSerializer, scope: {
+          user: current_user, include_last_message: true
+        }
+      end
+
+      def group
+        entourages = Entourage.joins(:join_requests)
+          .includes(:join_requests, { user: :partner })
+          .where(group_type: [:action, :outing])
+          .where('join_requests.user_id = ?', current_user.id)
+          .where('join_requests.status = ?', :accepted)
+          .order(updated_at: :desc)
+          .page(params[:page] || 1).per(per)
+
+        render json: entourages, root: :entourages, each_serializer: ::V1::EntourageSerializer, scope: {
+          user: current_user, include_last_message: true
         }
       end
 

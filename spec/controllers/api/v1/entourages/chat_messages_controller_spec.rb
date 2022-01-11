@@ -29,21 +29,31 @@ describe Api::V1::Entourages::ChatMessagesController do
         let!(:join_request) { FactoryBot.create(:join_request, joinable: entourage, user: user, status: "accepted") }
         before { get :index, params: { entourage_id: entourage.to_param, token: user.token } }
         it { expect(response.status).to eq(200) }
-        it { expect(JSON.parse(response.body)).to eq({"chat_messages"=>
-                                                          [{
-                                                               "id"=>chat_message1.id,
-                                                               "message_type"=>"text",
-                                                               "content"=>"MyText",
-                                                               "user"=> {"id"=>chat_message1.user_id, "avatar_url"=>nil, "display_name"=>"John D.","partner"=>nil},
-                                                               "created_at"=>chat_message1.created_at.iso8601(3)
-                                                           },
-                                                           {
-                                                               "id"=>chat_message2.id,
-                                                               "message_type"=>"text",
-                                                               "content"=>"MyText",
-                                                               "user"=> {"id"=>chat_message2.user_id, "avatar_url"=>nil, "display_name"=>"John D.","partner"=>nil},
-                                                               "created_at"=>chat_message2.created_at.iso8601(3)
-                                                           }]}) }
+        it { expect(JSON.parse(response.body)).to eq({
+          "chat_messages"=> [{
+             "id" => chat_message1.id,
+             "message_type" => "text",
+             "content" => "MyText",
+             "user" => {
+                "id" => chat_message1.user_id,
+                "avatar_url" => nil,
+                "display_name" => "John D.",
+                "partner" => nil
+              },
+             "created_at" => chat_message1.created_at.iso8601(3)
+           }, {
+             "id" => chat_message2.id,
+             "message_type" => "text",
+             "content" => "MyText",
+             "user" => {
+              "id" => chat_message2.user_id,
+              "avatar_url" => nil,
+              "display_name" => "John D.",
+              "partner" => nil
+            },
+             "created_at" => chat_message2.created_at.iso8601(3)
+          }]
+        }) }
 
         it { expect(join_request.reload.last_message_read).to eq(chat_message1.created_at)}
       end
@@ -83,13 +93,47 @@ describe Api::V1::Entourages::ChatMessagesController do
         let!(:chat_message2) { FactoryBot.create(:chat_message, messageable: entourage, updated_at: DateTime.parse("09/01/2016")) }
         let!(:join_request) { FactoryBot.create(:join_request, joinable: entourage, user: user, status: "accepted") }
         before { get :index, params: { entourage_id: entourage.to_param, token: user.token, before: "10/01/2016" } }
-        it { expect(JSON.parse(response.body)).to eq({"chat_messages"=>[{
-                                                                            "id"=>chat_message2.id,
-                                                                            "message_type"=>"text",
-                                                                            "content"=>"MyText",
-                                                                            "user"=>{"id"=>chat_message2.user.id, "avatar_url"=>nil, "display_name"=>"John D.","partner"=>nil},
-                                                                            "created_at"=>chat_message2.created_at.iso8601(3)
-                                                                        }]}) }
+        it { expect(JSON.parse(response.body)).to eq({
+          "chat_messages"=>[{
+            "id" => chat_message2.id,
+            "message_type" => "text",
+            "content" => "MyText",
+            "user" => {
+              "id" => chat_message2.user.id,
+              "avatar_url" => nil,
+              "display_name" => "John D.",
+              "partner" => nil
+            },
+            "created_at" => chat_message2.created_at.iso8601(3)
+          }]
+        }) }
+      end
+
+      context "user with partner" do
+        let(:partner_user) { FactoryBot.create(:partner_user) }
+        let!(:chat_message) { FactoryBot.create(:chat_message, messageable: entourage, user: partner_user) }
+        let!(:join_request) { FactoryBot.create(:join_request, joinable: entourage, user: partner_user, status: "accepted") }
+        before { get :index, params: { entourage_id: entourage.to_param, token: partner_user.token } }
+        it { expect(JSON.parse(response.body)).to eq({
+          "chat_messages" => [{
+            "id" => chat_message.id,
+            "message_type" => "text",
+            "content" => "MyText",
+            "user" => {
+              "id" => chat_message.user_id,
+              "avatar_url" => nil,
+              "display_name" => "John D.",
+              "partner" => {
+                "id" => partner_user.partner_id,
+                "name" => partner_user.partner.name,
+                "large_logo_url" => partner_user.partner.large_logo_url,
+                "small_logo_url" => partner_user.partner.small_logo_url,
+                "default" => true,
+              },
+            },
+            "created_at" => chat_message.created_at.iso8601(3)
+          }]
+        }) }
       end
 
       context "from a null conversations by list uuid" do
@@ -120,13 +164,20 @@ describe Api::V1::Entourages::ChatMessagesController do
         before { post :create, params: { entourage_id: entourage.to_param, chat_message: {content: "foobar"}, token: user.token } }
         it { expect(response.status).to eq(201) }
         it { expect(ChatMessage.count).to eq(1) }
-        it { expect(JSON.parse(response.body)).to eq({"chat_message"=>
-                                                          {"id"=>ChatMessage.first.id,
-                                                           "message_type"=>"text",
-                                                           "content"=>"foobar",
-                                                           "user"=>{"id"=>user.id, "avatar_url"=>nil, "display_name"=>"John D.","partner"=>nil},
-                                                           "created_at"=>ChatMessage.first.created_at.iso8601(3)
-                                                          }}) }
+        it { expect(JSON.parse(response.body)).to eq({
+          "chat_message" => {
+            "id" => ChatMessage.first.id,
+            "message_type" => "text",
+            "content" => "foobar",
+            "user" => {
+              "id" => user.id,
+              "avatar_url" => nil,
+              "display_name" => "John D.",
+              "partner" => nil
+            },
+            "created_at" => ChatMessage.first.created_at.iso8601(3)
+          }
+        }) }
       end
 
       describe "send push notif" do
@@ -198,17 +249,20 @@ describe Api::V1::Entourages::ChatMessagesController do
 
           it { expect(response.status).to eq(201) }
           it { expect(ChatMessage.count).to eq(1) }
-          it { expect(JSON.parse(response.body)).to eq({"chat_message"=>{
-                                                          "id"=>ChatMessage.last.id,
-                                                          "message_type"=>"visit",
-                                                          "content"=>"J'ai voisiné Henriette aujourd'hui",
-                                                          "user"=>{
-                                                            "id"=>user.id,
-                                                            "avatar_url"=>nil,
-                                                            "display_name"=>"John D.",
-                                                            "partner"=>nil
-                                                          },
-                                                          "created_at"=>ChatMessage.last.created_at.iso8601(3)}}) }
+          it { expect(JSON.parse(response.body)).to eq({
+            "chat_message" => {
+              "id" => ChatMessage.last.id,
+              "message_type" => "visit",
+              "content" => "J'ai voisiné Henriette aujourd'hui",
+              "user" => {
+                "id" => user.id,
+                "avatar_url" => nil,
+                "display_name" => "John D.",
+                "partner" => nil
+              },
+              "created_at" => ChatMessage.last.created_at.iso8601(3)
+            }
+          }) }
         end
       end
 
@@ -224,18 +278,26 @@ describe Api::V1::Entourages::ChatMessagesController do
 
           it { expect(response.status).to eq(201) }
           it { expect(ChatMessage.count).to eq(1) }
-          it { expect(JSON.parse(response.body)).to eq({"chat_message"=>{
-                                                          "id"=>ChatMessage.first.id,
-                                                          "message_type"=>"text",
-                                                          "content"=>"foobar",
-                                                          "user"=>{"id"=>user.id, "avatar_url"=>nil, "display_name"=>"John D.","partner"=>nil},
-                                                          "created_at"=>ChatMessage.first.created_at.iso8601(3)
-                                                       }}) }
-          it { expect(Entourage.last.attributes).to include("user_id"=>user.id,
-                                                            "number_of_people"=>2,
-                                                            "community"=>'pfp',
-                                                            "group_type"=>"conversation"
-                                                           ) }
+          it { expect(JSON.parse(response.body)).to eq({
+            "chat_message" => {
+              "id" => ChatMessage.first.id,
+              "message_type" => "text",
+              "content" => "foobar",
+              "user" => {
+                "id" => user.id,
+                "avatar_url" => nil,
+                "display_name" => "John D.",
+                "partner" => nil
+              },
+              "created_at" => ChatMessage.first.created_at.iso8601(3)
+            }
+          }) }
+          it { expect(Entourage.last.attributes).to include(
+            "user_id" => user.id,
+            "number_of_people" => 2,
+            "community" => 'pfp',
+            "group_type" => "conversation"
+          ) }
           it { expect(Entourage.last.attributes['uuid_v2']).to start_with '1_hash_' }
           it { expect(join_requests.map { |r| r['user_id'] }.sort).to eq([user.id, other_user.id]) }
           it { expect(join_requests.map { |r| r.slice('status', 'role') }.uniq).to eq(["status"=>"accepted", "role"=>"participant"]) }

@@ -278,6 +278,138 @@ describe Api::V1::EntouragesController do
     end
   end
 
+  describe 'GET private' do
+    let(:other_user) { FactoryBot.create(:public_user) }
+    subject { JSON.parse(response.body) }
+
+    context "no private conversations" do
+      let!(:conversation) { create :conversation, participants: [other_user] }
+
+      before { get :private, params: { token: user.token } }
+
+      it { expect(subject["entourages"].count).to eq(0) }
+    end
+
+    context "actions are not private" do
+      let(:entourage) { create :entourage, status: :open, group_type: :action }
+      let!(:join_request) { FactoryBot.create(:join_request, joinable: entourage, user: user, status: "accepted") }
+
+      before { get :private, params: { token: user.token } }
+
+      it { expect(subject["entourages"].count).to eq(0) }
+    end
+
+    describe "some private conversations" do
+      let!(:conversation) { create :conversation }
+      let!(:join_request) { FactoryBot.create(:join_request, joinable: conversation, user: user, status: "accepted", last_message_read: Time.now) }
+      let!(:other_conversation) { create :conversation, participants: [other_user] }
+
+      context "default properties" do
+        before { get :private, params: { token: user.token } }
+        it { expect(subject["entourages"].count).to eq(1) }
+        it { expect(subject["entourages"][0]).to have_key("last_message") }
+        it { expect(subject["entourages"][0]).to have_key("number_of_unread_messages") }
+      end
+
+      context "with unread" do
+        let!(:chat_message) { FactoryBot.create(:chat_message, created_at: 1.minute.from_now, messageable: conversation)}
+
+        before { get :private, params: { token: user.token } }
+        it { expect(subject["entourages"].first["number_of_unread_messages"]).to eq(1) }
+      end
+
+      context "without unread" do
+        let!(:chat_message) { FactoryBot.create(:chat_message, created_at: 1.minute.ago, messageable: conversation)}
+
+        before { get :private, params: { token: user.token } }
+        it { expect(subject["entourages"].first["number_of_unread_messages"]).to eq(0) }
+      end
+
+      context "with last_message" do
+        let!(:chat_message) { FactoryBot.create(:chat_message, messageable: conversation)}
+
+        before { get :private, params: { token: user.token } }
+        it { expect(subject["entourages"].first["last_message"]).to be_a(Hash) }
+      end
+
+      context "with some messages, get last_message" do
+        let!(:chat_message_1) { FactoryBot.create(:chat_message, messageable: conversation, content: "foo", created_at: 1.hour.ago) }
+        let!(:chat_message_2) { FactoryBot.create(:chat_message, messageable: conversation, content: "bar", created_at: 2.hours.ago) }
+
+        before { get :private, params: { token: user.token } }
+        it { expect(subject["entourages"].first["last_message"]).to be_a(Hash) }
+        it { expect(subject["entourages"].first["last_message"]["text"]).to eq("foo") }
+      end
+
+      context "without last_message" do
+        let!(:chat_message) { FactoryBot.create(:chat_message, messageable: other_conversation)}
+
+        before { get :private, params: { token: user.token } }
+        it { expect(subject["entourages"].first["last_message"]).to eq(nil) }
+      end
+    end
+  end
+
+  describe 'GET group' do
+    let!(:entourage) { FactoryBot.create(:entourage, status: :open) }
+    let!(:other_entourage) { FactoryBot.create(:entourage, status: :open) }
+    let(:other_user) { FactoryBot.create(:public_user) }
+    subject { JSON.parse(response.body) }
+
+    describe "some group conversations" do
+      let!(:join_request) { FactoryBot.create(:join_request, joinable: entourage, user: user, status: "accepted", last_message_read: Time.now) }
+
+      context "default properties" do
+        before { get :group, params: { token: user.token } }
+        it { expect(subject["entourages"].count).to eq(1) }
+        it { expect(subject["entourages"][0]).to have_key("last_message") }
+        it { expect(subject["entourages"][0]).to have_key("number_of_unread_messages") }
+      end
+
+      context "with unread" do
+        let!(:chat_message) { FactoryBot.create(:chat_message, created_at: 1.minute.from_now, messageable: entourage)}
+
+        before { get :group, params: { token: user.token } }
+        it { expect(subject["entourages"].first["number_of_unread_messages"]).to eq(1) }
+      end
+
+      context "without unread" do
+        let!(:chat_message) { FactoryBot.create(:chat_message, created_at: 1.minute.ago, messageable: entourage)}
+
+        before { get :group, params: { token: user.token } }
+        it { expect(subject["entourages"].first["number_of_unread_messages"]).to eq(0) }
+      end
+
+      context "with last_message" do
+        let!(:chat_message) { FactoryBot.create(:chat_message, messageable: entourage)}
+
+        before { get :group, params: { token: user.token } }
+        it { expect(subject["entourages"].first["last_message"]).to be_a(Hash) }
+      end
+
+      context "without last_message" do
+        let!(:chat_message) { FactoryBot.create(:chat_message, messageable: other_entourage)}
+
+        before { get :group, params: { token: user.token } }
+        it { expect(subject["entourages"].first["last_message"]).to eq(nil) }
+      end
+    end
+
+    context "no group conversations" do
+      let!(:join_request) { FactoryBot.create(:join_request, joinable: entourage, user: other_user, status: "accepted") }
+
+      before { get :group, params: { token: user.token } }
+      it { expect(subject["entourages"].count).to eq(0) }
+    end
+
+    context "group conversations are not accepted" do
+      let!(:join_request) { FactoryBot.create(:join_request, joinable: entourage, user: user, status: "pending") }
+
+      before { get :group, params: { token: user.token } }
+      it { expect(subject["entourages"].count).to eq(0) }
+    end
+  end
+
   describe 'POST create' do
     context "not signed in" do
       before { post :create, params: { entourage: { location: {longitude: 1.123, latitude: 4.567}, title: "foo", entourage_type: "ask_for_help", display_category: "social" } } }
@@ -582,7 +714,7 @@ describe Api::V1::EntouragesController do
                 "longitude"=>2.345
               },
               "join_status"=>"not_requested",
-              "number_of_unread_messages"=>nil,
+              "number_of_unread_messages"=>0,
               "created_at"=> entourage.created_at.iso8601(3),
               "updated_at"=> entourage.updated_at.iso8601(3),
               "description" => nil,
@@ -673,15 +805,6 @@ describe Api::V1::EntouragesController do
               "portrait_url"=>nil,
               "portrait_thumbnail_url"=>nil
             }
-          )}
-        end
-
-        context "last_message" do
-          let!(:join_request) { create :join_request, joinable: entourage, user: user, status: :pending }
-          before { get :show, params: { id: entourage.uuid.to_param, include_last_message: 'true', token: user.token } }
-          it { expect(JSON.parse(response.body)["entourage"]["last_message"]).to eq(
-            "text"=>"Votre demande est en attente.",
-            "author"=>nil
           )}
         end
       end
@@ -778,7 +901,7 @@ describe Api::V1::EntouragesController do
               "longitude"=>outing.longitude
             },
             "join_status"=>"not_requested",
-            "number_of_unread_messages"=>nil,
+            "number_of_unread_messages"=>0,
             "created_at"=> outing.created_at.iso8601(3),
             "updated_at"=> outing.reload.updated_at.iso8601(3),
             "description" => nil,
@@ -1010,6 +1133,32 @@ describe Api::V1::EntouragesController do
       before { put :read, params: { id: entourage.to_param, token: user.token } }
       it { expect(response.status).to eq(204) }
       it { expect(join_request.reload.last_message_read).to eq(old_date) }
+    end
+  end
+
+  describe 'GET update#one_click_update' do
+    subject { JSON.parse(response.body) }
+
+    let!(:entourage) { FactoryBot.create(:entourage, status: :open, user: user) }
+    let!(:join_request) { FactoryBot.create(:join_request, joinable: entourage, user: user, status: "accepted") }
+    let(:signature) { SignatureService.sign(user.id) }
+    before { SignatureService.stub(:validate) { false } }
+    before { SignatureService.stub(:validate).with(entourage.id, signature) { true } }
+
+    context "wrong signature" do
+      before { get :one_click_update, params: { id: entourage.id, token: user.token, signature: 'foo' } }
+
+      it { expect(response.status).to eq(200) }
+      it { expect(assigns(:entourage).id).to eq(entourage.id) }
+      it { expect(assigns(:success)).to eq(false) }
+    end
+
+    context "correct signature" do
+      before { get :one_click_update, params: { id: entourage.id, token: user.token, signature: signature } }
+
+      it { expect(response.status).to eq(200) }
+      it { expect(assigns(:entourage).id).to eq(entourage.id) }
+      it { expect(assigns(:success)).to eq(true) }
     end
   end
 

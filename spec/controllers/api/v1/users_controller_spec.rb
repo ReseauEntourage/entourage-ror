@@ -20,70 +20,78 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
         it { expect(response.status).to eq(200) }
 
         it "renders user" do
-          expect(result).to eq({"user"=>
-                                 {"id"=>user.id,
-                                  "uuid"=>user.id.to_s,
-                                  "email"=>user.email,
-                                  "display_name"=>"John D.",
-                                  "first_name"=> "John",
-                                  "last_name"=> "Doe",
-                                  "roles"=>[],
-                                  "about"=> nil,
-                                  "token"=>user.token,
-                                  "user_type"=>"pro",
-                                  "has_password"=>false,
-                                  "address"=>nil,
-                                  "address_2"=>nil,
-                                  "avatar_url"=>"https://foobar.s3-eu-west-1.amazonaws.com/300x300/avatar.jpg",
-                                  "organization"=>{"name"=>user.organization.name,
-                                                   "description"=>"Association description",
-                                                   "phone"=>user.organization.phone,
-                                                   "address"=>user.organization.address,
-                                                   "logo_url"=>nil},
-                                  "stats"=>{
-                                      "tour_count"=>0,
-                                      "encounter_count"=>0,
-                                      "entourage_count"=>0,
-                                      "actions_count" => 0,
-                                      "ask_for_help_creation_count" => 0,
-                                      "contribution_creation_count" => 0,
-                                      "events_count" => 0,
-                                      "good_waves_participation" => false,
-                                  },
-                                  "partner"=>{
-                                    "id"=>partner.id,
-                                    "name"=>"MyString",
-                                    "large_logo_url"=>"MyString",
-                                    "small_logo_url"=>"https://s3-eu-west-1.amazonaws.com/entourage-ressources/check-small.png",
-                                    "description"=>"MyDescription",
-                                    "donations_needs"=>nil,
-                                    "volunteers_needs"=>nil,
-                                    "phone"=>nil,
-                                    "address" => "174 rue Championnet, Paris",
-                                    "website_url"=>nil,
-                                    "email"=>nil,
-                                    "default"=>true,
-                                    "user_role_title"=>nil},
-                                  "memberships"=>[],
-                                  "conversation"=>{"uuid"=>"1_list_#{user.id}"},
-                                  "firebase_properties"=>{
-                                    "ActionZoneDep"=>"not_set",
-                                    "ActionZoneCP"=>"not_set",
-                                    "Goal" => "no_set",
-                                    "Interests" => "none"
-                                  },
-                                  "anonymous"=>false,
-                                  "feature_flags"=>{"organization_admin"=>false},
-                                  "engaged"=>false,
-                                  "goal" => nil,
-                                  "unread_count" => 0,
-                                  "interests" => [],
-                                  "permissions" => {
-                                    "outing" => { "creation" => true }
-                                  },
-                                 },
-                                "first_sign_in"=>true
-                               })
+          expect(result).to eq({
+            "user" => {
+              "id" => user.id,
+              "uuid" => user.id.to_s,
+              "email" => user.email,
+              "display_name" => "John D.",
+              "first_name" => "John",
+              "last_name" => "Doe",
+              "roles" => [],
+              "about" => nil,
+              "token" => user.token,
+              "user_type" => "pro",
+              "has_password" => false,
+              "address" => nil,
+              "address_2" => nil,
+              "avatar_url" => "https://foobar.s3-eu-west-1.amazonaws.com/300x300/avatar.jpg",
+              "organization" => {
+                "name" => user.organization.name,
+                "description" => "Association description",
+                "phone" => user.organization.phone,
+                "address" => user.organization.address,
+                "logo_url" => nil
+              },
+              "stats" => {
+                "tour_count" => 0,
+                "encounter_count" => 0,
+                "entourage_count" => 0,
+                "actions_count" => 0,
+                "ask_for_help_creation_count" => 0,
+                "contribution_creation_count" => 0,
+                "events_count" => 0,
+                "good_waves_participation" => false,
+              },
+              "partner" => {
+                "id" => partner.id,
+                "name" => "MyString",
+                "large_logo_url" => "MyString",
+                "small_logo_url" => "https://s3-eu-west-1.amazonaws.com/entourage-ressources/check-small.png",
+                "description" => "MyDescription",
+                "donations_needs" => nil,
+                "volunteers_needs" => nil,
+                "phone" => nil,
+                "address"  =>  "174 rue Championnet, Paris",
+                "website_url" => nil,
+                "email" => nil,
+                "default" => true,
+                "user_role_title" => nil
+              },
+              "memberships" => [],
+              "conversation" => {
+                "uuid" => "1_list_#{user.id}"
+              },
+              "firebase_properties" => {
+                "ActionZoneDep" => "not_set",
+                "ActionZoneCP" => "not_set",
+                "Goal" => "no_set",
+                "Interests" => "none"
+              },
+              "anonymous" => false,
+              "feature_flags" => {
+                "organization_admin" => false
+              },
+              "engaged" => false,
+              "goal" => nil,
+              "unread_count" => 0,
+              "interests" => [],
+              "permissions" => {
+                "outing" => { "creation" => true }
+              },
+            },
+            "first_sign_in" => true
+          })
         end
       end
 
@@ -243,55 +251,64 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
       let!(:entourage) { create :entourage, user: user }
 
       before { post 'login', params: { user: {phone: user.phone, sms_code: "123456"}, format: 'json' } }
-      it { expect(JSON.parse(response.body)).to eq({"user"=>{"id"=>user.id,
-                                                             "uuid"=>user.id.to_s,
-                                                             "email"=>user.email,
-                                                             "display_name"=>"John D.",
-                                                             "first_name"=> "John",
-                                                             "last_name"=> "Doe",
-                                                             "roles"=>[],
-                                                             "about" => nil,
-                                                             "user_type"=>"pro",
-                                                             "token"=>user.token,
-                                                             "has_password"=>false,
-                                                             "address"=>nil,
-                                                             "address_2"=>nil,
-                                                             "avatar_url"=>"https://foobar.s3-eu-west-1.amazonaws.com/300x300/avatar.jpg",
-                                                             "organization"=>{"name"=>user.organization.name,
-                                                                              "description"=>"Association description",
-                                                                              "phone"=>user.organization.phone,
-                                                                              "address"=>user.organization.address,
-                                                                              "logo_url"=>nil},
-                                                             "stats"=>{
-                                                                 "tour_count"=>2,
-                                                                 "encounter_count"=>3,
-                                                                 "entourage_count"=>1,
-                                                                 "actions_count" => 0,
-                                                                 "ask_for_help_creation_count" => 1,
-                                                                 "contribution_creation_count" => 0,
-                                                                 "events_count" => 0,
-                                                                 "good_waves_participation" => false,
-                                                             },
-                                                             "partner"=>nil,
-                                                             "memberships"=>[],
-                                                             "conversation"=>{"uuid"=>"1_list_#{user.id}"},
-                                                             "firebase_properties"=>{
-                                                               "ActionZoneDep"=>"not_set",
-                                                               "ActionZoneCP"=>"not_set",
-                                                               "Goal" => "no_set",
-                                                               "Interests" => "none"
-                                                             },
-                                                             "anonymous"=>false,
-                                                             "feature_flags"=>{"organization_admin"=>false},
-                                                             "engaged"=>true,
-                                                             "goal" => nil,
-                                                             "unread_count" => 0,
-                                                             "interests" => [],
-                                                             "permissions" => {
-                                                               "outing" => { "creation" => false }
-                                                             },
-                                                           },
-                                                    "first_sign_in"=>true})}
+      it { expect(JSON.parse(response.body)).to eq({
+        "user" => {
+          "id" => user.id,
+          "uuid" => user.id.to_s,
+          "email" => user.email,
+          "display_name" => "John D.",
+          "first_name" => "John",
+          "last_name" => "Doe",
+          "roles" => [],
+          "about" => nil,
+          "user_type" => "pro",
+          "token" => user.token,
+          "has_password" => false,
+          "address" => nil,
+          "address_2" => nil,
+          "avatar_url" => "https://foobar.s3-eu-west-1.amazonaws.com/300x300/avatar.jpg",
+          "organization" => {
+            "name" => user.organization.name,
+            "description" => "Association description",
+            "phone" => user.organization.phone,
+            "address" => user.organization.address,
+            "logo_url" => nil
+          },
+          "stats" => {
+            "tour_count" => 2,
+            "encounter_count" => 3,
+            "entourage_count" => 1,
+            "actions_count" => 0,
+            "ask_for_help_creation_count" => 1,
+            "contribution_creation_count" => 0,
+            "events_count" => 0,
+            "good_waves_participation" => false,
+          },
+          "partner" => nil,
+          "memberships" => [],
+          "conversation" => {
+            "uuid" => "1_list_#{user.id}"
+          },
+          "firebase_properties" => {
+            "ActionZoneDep" => "not_set",
+            "ActionZoneCP" => "not_set",
+            "Goal" => "no_set",
+            "Interests" => "none"
+          },
+          "anonymous" => false,
+          "feature_flags" => {
+            "organization_admin" => false
+          },
+          "engaged" => true,
+          "goal" => nil,
+          "unread_count" => 0,
+          "interests" => [],
+          "permissions" => {
+            "outing" => { "creation" => false }
+          },
+        },
+        "first_sign_in" => true
+      })}
     end
 
     context "blocked user" do
@@ -671,68 +688,76 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
       context "get your own profile" do
         before { get :show, params: { id: user.id, token: user.token } }
         it { expect(response.status).to eq(200) }
-        it { expect(JSON.parse(response.body)).to eq({"user"=>
-                                                          {"id"=>user.id,
-                                                           "uuid"=>user.id.to_s,
-                                                           "email"=>user.email,
-                                                           "display_name"=>"John D.",
-                                                           "first_name"=>"John",
-                                                           "last_name"=>"Doe",
-                                                           "roles"=>[],
-                                                           "about"=>nil,
-                                                           "token"=>user.token,
-                                                           "user_type"=>"pro",
-                                                           "avatar_url"=>nil,
-                                                           "has_password"=>false,
-                                                           "address"=>nil,
-                                                           "address_2"=>nil,
-                                                           "organization"=>{"name"=>user.organization.name,
-                                                                            "description"=>"Association description",
-                                                                            "phone"=>user.organization.phone,
-                                                                            "address"=>user.organization.address,
-                                                                            "logo_url"=>nil},
-                                                           "stats"=>{
-                                                               "tour_count"=>0,
-                                                               "encounter_count"=>0,
-                                                               "entourage_count"=>0,
-                                                               "actions_count" => 0,
-                                                               "ask_for_help_creation_count" => 0,
-                                                               "contribution_creation_count" => 0,
-                                                               "events_count" => 0,
-                                                               "good_waves_participation" => false,
-                                                           },
-                                                           "partner"=>{
-                                                              "id"=>partner.id,
-                                                              "name"=>"MyString",
-                                                              "large_logo_url"=>"MyString",
-                                                              "small_logo_url"=>"https://s3-eu-west-1.amazonaws.com/entourage-ressources/check-small.png",
-                                                              "description"=>"MyDescription",
-                                                              "donations_needs"=>nil,
-                                                              "volunteers_needs"=>nil,
-                                                              "phone"=>nil,
-                                                              "address" => "174 rue Championnet, Paris",
-                                                              "website_url"=>nil,
-                                                              "email"=>nil,
-                                                              "default"=>true,
-                                                              "user_role_title"=>nil},
-                                                           "memberships"=>[],
-                                                           "conversation"=>{"uuid"=>"1_list_#{user.id}"},
-                                                           "firebase_properties"=>{
-                                                             "ActionZoneDep"=>"not_set",
-                                                             "ActionZoneCP"=>"not_set",
-                                                             "Goal" => "no_set",
-                                                             "Interests" => "none"
-                                                           },
-                                                           "anonymous"=>false,
-                                                           "feature_flags"=>{"organization_admin"=>false},
-                                                           "engaged"=>false,
-                                                           "goal" => nil,
-                                                           "unread_count" => 0,
-                                                           "interests" => [],
-                                                           "permissions" => {
-                                                             "outing" => { "creation" => true }
-                                                           },
-                                                         }}) }
+        it { expect(JSON.parse(response.body)).to eq({
+          "user" => {
+            "id" => user.id,
+            "uuid" => user.id.to_s,
+            "email" => user.email,
+            "display_name" => "John D.",
+            "first_name" => "John",
+            "last_name" => "Doe",
+            "roles" => [],
+            "about" => nil,
+            "token" => user.token,
+            "user_type" => "pro",
+            "avatar_url" => nil,
+            "has_password" => false,
+            "address" => nil,
+            "address_2" => nil,
+            "organization" => {
+              "name" => user.organization.name,
+              "description" => "Association description",
+              "phone" => user.organization.phone,
+              "address" => user.organization.address,
+              "logo_url" => nil
+            },
+            "stats" => {
+               "tour_count" => 0,
+               "encounter_count" => 0,
+               "entourage_count" => 0,
+               "actions_count" => 0,
+               "ask_for_help_creation_count" => 0,
+               "contribution_creation_count" => 0,
+               "events_count" => 0,
+               "good_waves_participation" => false,
+            },
+            "partner" => {
+              "id" => partner.id,
+              "name" => "MyString",
+              "large_logo_url" => "MyString",
+              "small_logo_url" => "https://s3-eu-west-1.amazonaws.com/entourage-ressources/check-small.png",
+              "description" => "MyDescription",
+              "donations_needs" => nil,
+              "volunteers_needs" => nil,
+              "phone" => nil,
+              "address"  =>  "174 rue Championnet, Paris",
+              "website_url" => nil,
+              "email" => nil,
+              "default" => true,
+              "user_role_title" => nil},
+            "memberships" => [],
+            "conversation" => {
+              "uuid" => "1_list_#{user.id}"
+            },
+            "firebase_properties" => {
+             "ActionZoneDep" => "not_set",
+             "ActionZoneCP" => "not_set",
+             "Goal" => "no_set",
+             "Interests" => "none"
+            },
+            "anonymous" => false,
+            "feature_flags" => {
+              "organization_admin" => false
+            },
+            "engaged" => false,
+            "goal" => nil,
+            "unread_count" => 0,
+            "interests" => [],
+            "permissions" => {
+              "outing" => { "creation" => true }
+            },
+          }
+        }) }
 
         context "when you have an address" do
           let(:address) { create :address }
@@ -751,64 +776,76 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
       context "get my profile with 'me' shortcut" do
         before { get :show, params: { id: "me", token: user.token } }
         it { expect(response.status).to eq(200) }
-        it { expect(JSON.parse(response.body)).to eq({"user"=>
-                                                          {"id"=>user.id,
-                                                           "uuid"=>user.id.to_s,
-                                                           "email"=>user.email,
-                                                           "display_name"=>"John D.",
-                                                           "first_name"=>"John",
-                                                           "last_name"=>"Doe",
-                                                           "roles"=>[],
-                                                           "about"=>nil,
-                                                           "token"=>user.token,
-                                                           "user_type"=>"pro",
-                                                           "avatar_url"=>nil,
-                                                           "has_password"=>false,
-                                                           "address"=>nil,
-                                                           "address_2"=>nil,
-                                                           "organization"=>{"name"=>user.organization.name, "description"=>"Association description", "phone"=>user.organization.phone, "address"=>user.organization.address, "logo_url"=>nil},
-                                                           "stats"=>{
-                                                               "tour_count"=>0,
-                                                               "encounter_count"=>0,
-                                                               "entourage_count"=>0,
-                                                               "actions_count" => 0,
-                                                               "ask_for_help_creation_count" => 0,
-                                                               "contribution_creation_count" => 0,
-                                                               "events_count" => 0,
-                                                               "good_waves_participation" => false,
-                                                           },
-                                                           "partner"=>{
-                                                              "id"=>partner.id,
-                                                              "name"=>"MyString",
-                                                              "large_logo_url"=>"MyString",
-                                                              "small_logo_url"=>"https://s3-eu-west-1.amazonaws.com/entourage-ressources/check-small.png",
-                                                              "description"=>"MyDescription",
-                                                              "donations_needs"=>nil,
-                                                              "volunteers_needs"=>nil,
-                                                              "phone"=>nil,
-                                                              "address" => "174 rue Championnet, Paris",
-                                                              "website_url"=>nil,
-                                                              "email"=>nil,
-                                                              "default"=>true,
-                                                              "user_role_title"=>nil},
-                                                           "memberships"=>[],
-                                                           "conversation"=>{"uuid"=>"1_list_#{user.id}"},
-                                                           "firebase_properties"=>{
-                                                             "ActionZoneDep"=>"not_set",
-                                                             "ActionZoneCP"=>"not_set",
-                                                             "Goal" => "no_set",
-                                                             "Interests" => "none"
-                                                           },
-                                                           "anonymous"=>false,
-                                                           "feature_flags"=>{"organization_admin"=>false},
-                                                           "engaged"=>false,
-                                                           "goal" => nil,
-                                                           "unread_count" => 0,
-                                                           "interests" => [],
-                                                           "permissions" => {
-                                                             "outing" => { "creation" => true }
-                                                           },
-                                                         }}) }
+        it { expect(JSON.parse(response.body)).to eq({
+          "user" => {
+            "id" => user.id,
+            "uuid" => user.id.to_s,
+            "email" => user.email,
+            "display_name" => "John D.",
+            "first_name" => "John",
+            "last_name" => "Doe",
+            "roles" => [],
+            "about" => nil,
+            "token" => user.token,
+            "user_type" => "pro",
+            "avatar_url" => nil,
+            "has_password" => false,
+            "address" => nil,
+            "address_2" => nil,
+            "organization" => {
+              "name" => user.organization.name,
+              "description" => "Association description",
+              "phone" => user.organization.phone,
+              "address" => user.organization.address,
+              "logo_url"=>nil
+            },
+            "stats" => {
+               "tour_count" => 0,
+               "encounter_count" => 0,
+               "entourage_count" => 0,
+               "actions_count" => 0,
+               "ask_for_help_creation_count" => 0,
+               "contribution_creation_count" => 0,
+               "events_count" => 0,
+               "good_waves_participation" => false,
+            },
+            "partner" => {
+              "id" => partner.id,
+              "name" => "MyString",
+              "large_logo_url" => "MyString",
+              "small_logo_url" => "https://s3-eu-west-1.amazonaws.com/entourage-ressources/check-small.png",
+              "description" => "MyDescription",
+              "donations_needs" => nil,
+              "volunteers_needs" => nil,
+              "phone" => nil,
+              "address" => "174 rue Championnet, Paris",
+              "website_url" => nil,
+              "email" => nil,
+              "default" => true,
+              "user_role_title" => nil},
+            "memberships" => [],
+            "conversation" => {
+              "uuid" => "1_list_#{user.id}"
+            },
+            "firebase_properties" => {
+             "ActionZoneDep" => "not_set",
+             "ActionZoneCP" => "not_set",
+             "Goal" => "no_set",
+             "Interests" => "none"
+            },
+            "anonymous" => false,
+            "feature_flags" => {
+              "organization_admin" => false
+            },
+            "engaged" => false,
+            "goal" => nil,
+            "unread_count" => 0,
+            "interests" => [],
+            "permissions" => {
+              "outing" => { "creation" => true }
+            },
+          }
+        }) }
       end
 
       context "get my profile as an anonymous user" do
@@ -822,35 +859,45 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
         let!(:conversation) { nil }
         before { get :show, params: { id: other_user.id, token: user.token } }
         it { expect(response.status).to eq(200) }
-        it { expect(JSON.parse(response.body)).to eq({"user"=>
-                                                          {"id"=>other_user.id,
-                                                           "display_name"=>"John D.",
-                                                           "first_name"=>"John",
-                                                           "last_name"=>"D",
-                                                           "roles"=>[],
-                                                           "about"=>"about",
-                                                           "avatar_url"=>nil,
-                                                           "user_type"=>"pro",
-                                                           "organization"=>{"name"=>other_user.organization.name, "description"=>"Association description", "phone"=>other_user.organization.phone, "address"=>other_user.organization.address, "logo_url"=>nil},
-                                                           "stats"=>{
-                                                               "tour_count"=>0,
-                                                               "encounter_count"=>0,
-                                                               "entourage_count"=>0,
-                                                               "actions_count" => 0,
-                                                               "ask_for_help_creation_count" => 0,
-                                                               "contribution_creation_count" => 0,
-                                                               "events_count" => 0,
-                                                               "good_waves_participation" => false,
-                                                           },
-                                                           "engaged"=>false,
-                                                           "unread_count" => 0,
-                                                           "partner"=>nil,
-                                                           "permissions" => {
-                                                             "outing" => { "creation" => false }
-                                                           },
-                                                           "memberships"=>[],
-                                                           "conversation"=>{"uuid"=>"1_list_#{user.id}-#{other_user.id}"}
-                                                         }}) }
+        it { expect(JSON.parse(response.body)).to eq({
+          "user" => {
+            "id" => other_user.id,
+            "display_name" => "John D.",
+            "first_name" => "John",
+            "last_name" => "D",
+            "roles" => [],
+            "about" => "about",
+            "avatar_url" => nil,
+            "user_type" => "pro",
+            "organization" => {
+              "name" => other_user.organization.name,
+              "description" => "Association description",
+              "phone" => other_user.organization.phone,
+              "address" => other_user.organization.address,
+              "logo_url" => nil
+            },
+            "stats" => {
+              "tour_count" => 0,
+              "encounter_count" => 0,
+              "entourage_count" => 0,
+              "actions_count" => 0,
+              "ask_for_help_creation_count" => 0,
+              "contribution_creation_count" => 0,
+              "events_count" => 0,
+              "good_waves_participation" => false,
+            },
+            "engaged" => false,
+            "unread_count" => 0,
+            "partner" => nil,
+            "permissions" => {
+              "outing" => { "creation" => false }
+            },
+            "memberships" => [],
+            "conversation" => {
+              "uuid" => "1_list_#{user.id}-#{other_user.id}"
+            }
+          }
+        }) }
 
         context "when the two users have an existing conversation" do
           let!(:conversation) { create :conversation, participants: [user, other_user] }
@@ -885,26 +932,34 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
 
           context "no action zone" do
             let(:address) { nil }
-            it { expect(firebase_properties).to include('ActionZoneDep' => 'not_set',
-                                                        'ActionZoneCP'  => 'not_set') }
+            it { expect(firebase_properties).to include(
+              'ActionZoneDep' => 'not_set',
+              'ActionZoneCP'  => 'not_set'
+            ) }
           end
 
           context "outside of FR" do
             let(:address) { create :address, country: :BE }
-            it { expect(firebase_properties).to include('ActionZoneDep' => 'not_FR',
-                                                        'ActionZoneCP'  => 'not_FR') }
+            it { expect(firebase_properties).to include(
+              'ActionZoneDep' => 'not_FR',
+              'ActionZoneCP'  => 'not_FR'
+            ) }
           end
 
           context "only department" do
             let(:address) { create :address, country: :FR, postal_code: '69XXX' }
-            it { expect(firebase_properties).to include('ActionZoneDep' => '69',
-                                                        'ActionZoneCP'  => 'not_set') }
+            it { expect(firebase_properties).to include(
+              'ActionZoneDep' => '69',
+              'ActionZoneCP'  => 'not_set'
+            ) }
           end
 
           context "full postal code" do
             let(:address) { create :address, country: :FR, postal_code: '75012' }
-            it { expect(firebase_properties).to include('ActionZoneDep' => '75',
-                                                        'ActionZoneCP'  => '75012') }
+            it { expect(firebase_properties).to include(
+              'ActionZoneDep' => '75',
+              'ActionZoneCP'  => '75012'
+            ) }
           end
         end
       end
@@ -921,14 +976,13 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
     it { expect(user.reload.email).to eq("foo@bar.com-2010-10-10 00:00:00") }
     it { expect(response.status).to eq(200) }
     it do
-      expect(MailchimpService)
-      .to have_received(:strong_unsubscribe)
-      .with(
+      expect(MailchimpService).to have_received(:strong_unsubscribe).with(
         list: :newsletter,
         email: user.email,
         reason: "compte supprimé dans l'app"
       )
     end
+    it { expect(JSON.parse(response.body)).to have_key('user') }
   end
 
   describe 'POST #report' do
@@ -956,6 +1010,15 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
 
       it { expect(response.status).to eq 400 }
     end
+  end
+
+  describe 'POST #presigned_avatar_upload' do
+    let(:user) { create :public_user }
+
+    before { post :presigned_avatar_upload, params: { id: UserService.external_uuid(user), token: user.token, content_type: 'image/jpeg' } }
+    it { expect(response.status).to eq(200) }
+    it { expect(JSON.parse(response.body)).to have_key('avatar_key') }
+    it { expect(JSON.parse(response.body)).to have_key('presigned_url') }
   end
 
   describe 'POST #address' do
@@ -1132,7 +1195,14 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
     end
   end
 
-  describe 'GET #email_preferences' do
+  describe 'POST lookup' do
+    let(:user) { create :public_user }
+    before { post 'lookup', params: { token: user.token, phone: user.phone } }
+    it { expect(response.status).to eq(200) }
+    it { expect(JSON.parse(response.body)).to have_key('status')}
+  end
+
+  describe 'GET #update_email_preferences' do
     let(:category) { create :email_category }
     let(:other_category) { create :email_category }
 
@@ -1174,5 +1244,39 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
         .to(false)
       end
     end
+  end
+
+  describe 'GET confirm_address_suggestion' do
+    let(:user) { create :public_user }
+    let!(:address) { create :address, country: :FR, postal_code: '75018', user_id: user.id }
+
+    before { get :confirm_address_suggestion, params: { id: user.id } }
+    it { expect(response.status).to eq(200) }
+  end
+
+  describe 'POST confirm_address_suggestion' do
+    pending "add some examples to (or delete) #{__FILE__}"
+  end
+
+  describe 'POST ethics_charter_signed' do
+    let(:user) { create :public_user }
+
+    before { post :ethics_charter_signed, params: { form_response: nil } }
+    it { expect(response.status).to eq(200) }
+
+    context 'further tests' do
+      pending "add some examples to (or delete) #{__FILE__}"
+    end
+  end
+
+  describe 'GET organization_admin_redirect' do
+    let(:user) { create :partner_user }
+
+    before {
+      UserServices::UserAuthenticator.stub(:auth_token) { 'foo' }
+      get :organization_admin_redirect, params: { message: 'webapp_logout', token: user.token }
+    }
+    it { expect(response.status).to eq(302) }
+    it { should redirect_to organization_admin_auth_url(auth_token: 'foo', message: 'webapp_logout') }
   end
 end

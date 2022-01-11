@@ -168,7 +168,7 @@ module Api
             community.users.find(params[:id])
           end
 
-        render json: user, status: 200, serializer: ::V1::UserSerializer, scope: full_user_serializer_options(current_user: current_user_or_anonymous, displayed_user: user)
+        render json: user, root: :user, status: 200, serializer: ::V1::UserSerializer, scope: full_user_serializer_options(current_user: current_user_or_anonymous, displayed_user: user)
       end
 
       def destroy

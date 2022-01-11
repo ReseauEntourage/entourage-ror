@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 describe Api::V1::InvitationsController do
-
   let(:user) { FactoryBot.create(:pro_user) }
   let(:result) { JSON.parse(response.body) }
 
@@ -15,20 +14,19 @@ describe Api::V1::InvitationsController do
       let!(:invitation) { FactoryBot.create(:entourage_invitation, invitee: user) }
       before { get :index, params: { token: user.token } }
       it { expect(response.status).to eq(200) }
-      it { expect(result).to eq({"invitations"=>[
-                                                  {
-                                                    "id"=>invitation.id,
-                                                    "invitation_mode"=>"SMS",
-                                                    "phone_number"=>"+33612345678",
-                                                    "entourage_id"=>invitation.invitable_id,
-                                                    "title"=>invitation.invitable.title,
-                                                    "status"=>"pending",
-                                                    "inviter"=>{
-                                                        "display_name"=>"John D."
-                                                    }
-                                                  }
-                                                ]}) }
-
+      it { expect(result).to eq({
+        "invitations"=>[{
+          "id" => invitation.id,
+          "invitation_mode" => "SMS",
+          "phone_number" => "+33612345678",
+          "entourage_id" => invitation.invitable_id,
+          "title" => invitation.invitable.title,
+          "status" => "pending",
+          "inviter" => {
+            "display_name" => "John D."
+          }
+        }]
+      }) }
     end
 
     context "accepted invitation" do
@@ -95,17 +93,22 @@ describe Api::V1::InvitationsController do
       end
 
       it "sends notification for accepted invitation" do
-        expect_any_instance_of(PushNotificationService).to receive(:send_notification).with("John D.",
-                                                                                            "Foobar",
-                                                                                            "John D. a accepté votre invitation",
-                                                                                            [invitation.inviter],
-                                                                                            {type: "INVITATION_STATUS",
-                                                                                             inviter_id: invitation.inviter_id,
-                                                                                             invitee_id: invitation.invitee_id,
-                                                                                             feed_id: invitation.invitable_id,
-                                                                                             feed_type: "Entourage",
-                                                                                             group_type: 'action',
-                                                                                             accepted: true})
+        expect_any_instance_of(PushNotificationService).to receive(:send_notification).with(
+          "John D.",
+          "Foobar",
+          "John D. a accepté votre invitation",
+          [invitation.inviter],
+          {
+            type: "INVITATION_STATUS",
+            inviter_id: invitation.inviter_id,
+            invitee_id: invitation.invitee_id,
+            feed_id: invitation.invitable_id,
+            feed_type: "Entourage",
+            group_type: 'action',
+            accepted: true
+          }
+        )
+
         put :update, params: { id: invitation.to_param, token: user.token }
       end
     end
@@ -134,17 +137,22 @@ describe Api::V1::InvitationsController do
       end
 
       it "sends notification for accepted invitation" do
-        expect_any_instance_of(PushNotificationService).to receive(:send_notification).with("John D.",
-                                                                                            "Foobar",
-                                                                                            "John D. a refusé votre invitation",
-                                                                                            [invitation.inviter],
-                                                                                            {type: "INVITATION_STATUS",
-                                                                                             inviter_id: invitation.inviter_id,
-                                                                                             invitee_id: invitation.invitee_id,
-                                                                                             feed_id: invitation.invitable_id,
-                                                                                             feed_type: "Entourage",
-                                                                                             group_type: 'action',
-                                                                                             accepted: false})
+        expect_any_instance_of(PushNotificationService).to receive(:send_notification).with(
+          "John D.",
+          "Foobar",
+          "John D. a refusé votre invitation",
+          [invitation.inviter],
+          {
+            type: "INVITATION_STATUS",
+            inviter_id: invitation.inviter_id,
+            invitee_id: invitation.invitee_id,
+            feed_id: invitation.invitable_id,
+            feed_type: "Entourage",
+            group_type: 'action',
+            accepted: false
+          }
+        )
+
         delete :destroy, params: { id: invitation.to_param, token: user.token }
       end
     end

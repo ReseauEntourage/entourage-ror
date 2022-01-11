@@ -34,19 +34,21 @@ describe Api::V1::MyfeedsController do
 
       context "last_message i'm creator" do
         let!(:entourage) { create :entourage, :joined, user: user }
-        context "has pending join_request and messages" do
-          context "messages more recent that join requests" do
-            let!(:join_request) { create :join_request, joinable: entourage }
-            let!(:chat_message) { create :chat_message, messageable: entourage }
-            before { get :index, params: { token: user.token } }
-            it { expect(result["feeds"].map {|feed| feed["data"]["last_message"]} ).to eq([{"text"=>"1 personne demande à rejoindre votre action.", "author"=>nil}]) }
-          end
 
-          context "join requests more recent that messages" do
-            let!(:chat_message) { create :chat_message, messageable: entourage }
-            let!(:join_request) { create :join_request, joinable: entourage }
+        context "has join_request and messages" do
+          context "requests more recent that join messages" do
+            let!(:join_request) { create :join_request, joinable: entourage, created_at: 1.minute.ago }
+            let!(:chat_message) { create :chat_message, messageable: entourage, created_at: 2.minutes.ago }
             before { get :index, params: { token: user.token } }
-            it { expect(result["feeds"].map {|feed| feed["data"]["last_message"]} ).to eq([{"text"=>"1 personne demande à rejoindre votre action.", "author"=>nil}]) }
+            it { expect(result["feeds"].map {|feed| feed["data"]["last_message"]} ).to eq([{
+              "text"=>"MyText",
+              "author"=> {
+                "first_name" => "John",
+                "last_name" => "D",
+                "display_name" => "John D.",
+                "id" => chat_message.user_id
+              }
+            }]) }
           end
         end
       end
@@ -72,57 +74,49 @@ describe Api::V1::MyfeedsController do
           it { expect(result["feeds"].map {|feed| feed["data"]["last_message"]} ).to eq([nil, nil]) }
         end
 
-        context "has pending join_request" do
+        context "has join_request is not a last_message" do
           let!(:join_request) do
-            entourage.join_requests.last.update(message: "foo_bar", status: "pending")
+            entourage.join_requests.last.update(message: "foo_bar")
           end
           before { get :index, params: { token: user.token } }
-          it { expect(result["feeds"].map {|feed| feed["data"]["last_message"]} ).to eq([{"text"=>"Votre demande est en attente.", "author"=>nil}, nil]) }
+          it { expect(result["feeds"].map {|feed| feed["data"]["last_message"]} ).to eq([nil, nil]) }
         end
 
-        context "has pending join_request and messages" do
+        context "has join_request and messages" do
           context "messages more recent that join requests" do
             let!(:join_request) do
-              entourage.join_requests.last.update(message: "foo_bar", status: "pending", created_at: DateTime.parse("10/01/2015"), updated_at: DateTime.parse("10/01/2015"))
+              entourage.join_requests.last.update(message: "foo_bar", created_at: DateTime.parse("10/01/2015"), updated_at: DateTime.parse("10/01/2015"))
             end
             let!(:chat_message1) { FactoryBot.create(:chat_message, messageable: entourage, created_at: DateTime.parse("10/01/2016"), updated_at: DateTime.parse("10/01/2016"), content: "foo") }
             before { get :index, params: { token: user.token } }
-            it { expect(result["feeds"].map {|feed| feed["data"]["last_message"]} ).to eq([{"text"=>"Votre demande est en attente.", "author"=>nil}, nil]) }
+            it { expect(result["feeds"].map {|feed| feed["data"]["last_message"]} ).to eq([{
+              "text"=>"foo",
+              "author"=> {
+                "first_name" => "John",
+                "last_name" => "D",
+                "display_name" => "John D.",
+                "id" => chat_message1.user_id
+              }
+            }, nil]) }
           end
 
           context "join requests more recent that messages" do
             let!(:join_request) do
-              entourage.join_requests.last.update(message: "foo_bar", status: "pending", created_at: DateTime.parse("10/01/2016"), updated_at: DateTime.parse("10/01/2016"))
+              entourage.join_requests.last.update(message: "foo_bar", created_at: DateTime.parse("10/01/2016"), updated_at: DateTime.parse("10/01/2016"))
             end
             let!(:chat_message1) { FactoryBot.create(:chat_message, messageable: entourage, created_at: DateTime.parse("10/01/2015"), updated_at: DateTime.parse("10/01/2015"), content: "foo") }
             before { get :index, params: { token: user.token } }
-            it { expect(result["feeds"].map {|feed| feed["data"]["last_message"]} ).to eq([{"text"=>"Votre demande est en attente.", "author"=>nil}, nil]) }
+            it { expect(result["feeds"].map {|feed| feed["data"]["last_message"]} ).to eq([{
+              "text"=>"foo",
+              "author"=> {
+                "first_name" => "John",
+                "last_name" => "D",
+                "display_name" => "John D.",
+                "id" => chat_message1.user_id
+              }
+            }, nil]) }
           end
         end
-      end
-
-      context "last_message i'm not accepted in" do
-        let!(:join_request) { FactoryBot.create(:join_request, joinable: entourage, user: user, status: status) }
-        let!(:chat_message) { FactoryBot.create(:chat_message, messageable: entourage, content: "foo") }
-        before { get :index, params: { token: user.token, status: "all" } }
-        subject { result["feeds"].map {|feed| feed["data"]["last_message"]} }
-
-        context "request is pending" do
-          let(:status) { "pending" }
-          it { is_expected.to eq [{"text"=>"Votre demande est en attente.", "author"=>nil}] }
-        end
-
-        context "request is rejected" do
-          let(:status) { "rejected" }
-          it { is_expected.to eq [] }
-        end
-      end
-
-      context "last_message someone else is pending in" do
-        let!(:join_request) { FactoryBot.create(:join_request, joinable: entourage, user: user, status: "accepted") }
-        let!(:join_request2) { FactoryBot.create(:join_request, joinable: entourage, status: "pending") }
-        before { get :index, params: { token: user.token, status: "all" } }
-        it { expect(result["feeds"].map {|feed| feed["data"]["last_message"]} ).to eq([{"text"=>"1 nouvelle demande pour rejoindre votre action.", "author"=>nil}]) }
       end
 
       context "filter by status" do

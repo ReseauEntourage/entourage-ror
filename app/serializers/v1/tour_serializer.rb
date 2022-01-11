@@ -1,5 +1,7 @@
 module V1
   class TourSerializer < ActiveModel::Serializer
+    include AmsLazyRelationships::Core
+
     include V1::Myfeeds::LastMessage
 
     attributes :id,
@@ -17,13 +19,14 @@ module V1
                :number_of_unread_messages,
                :updated_at
 
-    has_many :tour_points, serializer: ActiveModel::DefaultSerializer
-    has_one :author, serializer: ActiveModel::DefaultSerializer
-    has_one :last_message, serializer: ActiveModel::DefaultSerializer
+    has_many :tour_points
+    has_one :author
+    has_one :last_message, if: :include_last_message?
 
-    def filter(keys)
-      include_last_message? ? keys : keys - [:last_message]
-    end
+    lazy_relationship :last_chat_message
+    lazy_relationship :chat_messages_count
+    lazy_relationship :chat_messages
+    lazy_relationship :join_requests
 
     def uuid
       object.id.to_s
@@ -70,27 +73,32 @@ module V1
 
     def number_of_unread_messages
       if current_join_request.nil?
-        nil
+        0
       elsif scope.key?(:number_of_unread_messages)
         scope[:number_of_unread_messages]
       elsif current_join_request.status != 'accepted'
         0
       elsif current_join_request.last_message_read.nil?
-        object.chat_messages.count
+        lazy_chat_messages_count&.count || 0
       else
-        object.chat_messages.where("created_at > ?", current_join_request.last_message_read).count
+        lazy_chat_messages.select do |chat_message|
+          chat_message.created_at > current_join_request.last_message_read
+        end.count
       end
     end
 
     def current_join_request
-      if scope[:user].nil?
-        nil
-      elsif scope.key?(:current_join_request)
-        scope[:current_join_request]
-      elsif object.join_requests.loaded?
-        object.join_requests.select {|join_request| join_request.user_id == scope[:user].id}.first
-      else
-        JoinRequest.where(user_id: scope[:user].id, joinable: object).first
+      @current_join_request ||= begin
+        if scope[:user].nil?
+          nil
+        elsif scope.key?(:current_join_request)
+          scope[:current_join_request]
+        else
+          # @fixme performance issue: we instanciate all records but we need only one
+          lazy_join_requests.select do |join_request|
+            join_request.user_id == scope[:user].id
+          end.first
+        end
       end
     end
   end

@@ -1,56 +1,56 @@
 module V1
   class UserSerializer < ActiveModel::Serializer
-    attributes :id,
-               :phone,
-               :email,
-               :display_name,
-               :first_name,
-               :last_name,
-               :roles,
-               :about,
-               :token,
-               :avatar_url,
-               :user_type,
-               :partner,
-               :memberships,
-               :has_password,
-               :conversation,
-               :anonymous,
-               :uuid,
-               :goal,
-               :interests,
-               :firebase_properties,
-               :placeholders,
-               :feature_flags,
-               :engaged,
-               :unread_count,
-               :permissions
+    attribute :id,           unless: :phone_only?
+    attribute :display_name, unless: :phone_only?
+    attribute :first_name,   unless: :phone_only?
+    attribute :last_name,    unless: :phone_only?
+    attribute :roles,        unless: :phone_only?
+    attribute :about,        unless: :phone_only?
+    attribute :avatar_url,   unless: :phone_only?
+    attribute :user_type,    unless: :phone_only?
+    attribute :partner,      unless: :phone_only?
+    attribute :engaged,      unless: :phone_only?
+    attribute :unread_count, unless: :phone_only?
+    attribute :permissions,  unless: :phone_only?
+    attribute :phone,        if: :phone_only?
+    attribute :placeholders, if: :placeholders?
+    attribute :memberships,  if: :memberships?
+    attribute :conversation, if: :conversation?
+    # uuid and anonymous are not confidential but right now we only need them for current_user in the clients so we don't return it in other contexts
+    attribute :anonymous,           if: :default?
+    attribute :uuid,                if: :default?
+    attribute :feature_flags,       if: :default?
+    attribute :token,               if: :default?
+    attribute :email,               if: :default?
+    attribute :has_password,        if: :default?
+    attribute :firebase_properties, if: :default?
+    attribute :goal,                if: :default?
+    attribute :interests,           if: :default?
 
-    has_one :organization
-    has_one :stats, serializer: ActiveModel::DefaultSerializer
-    has_one :address, serializer: AddressSerializer
-    has_one :address_2, serializer: AddressSerializer
+    has_one :stats,        unless: :phone_only?
+    has_one :organization, serializer: ::V1::OrganizationSerializer, unless: :phone_only?
+    has_one :address,      serializer: AddressSerializer, if: :default?
+    has_one :address_2,    serializer: AddressSerializer, if: :default?
 
-    def filter(keys)
-      if scope[:phone_only] == true
-        return [:phone]
-      else
-        keys -= [:phone]
-      end
+    def phone_only?
+      scope[:phone_only] == true
+    end
 
-      keys -= [:token, :email, :has_password, :address, :address_2, :firebase_properties, :goal, :interests] unless me?
+    def placeholders?
+      me? && scope[:user].anonymous?
+    end
 
-      # uuid and anonymous are not confidential but right now we only need
-      # them for current_user in the clients so we don't return it in other
-      # contexts
-      keys -= [:anonymous, :uuid, :feature_flags] unless me?
+    def memberships?
+      scope[:memberships]
+    end
 
-      # FIXME: see comment above the definition of placeholder
-      keys -= [:placeholders] unless me? && scope[:user].anonymous?
+    def conversation?
+      scope[:conversation] && scope[:user]
+    end
 
-      keys -= [:memberships] unless scope[:memberships]
-      keys -= [:conversation] unless scope[:conversation] && scope[:user]
-      keys
+    def default?
+      return false if phone_only?
+      me?
     end
 
     def stats
@@ -101,6 +101,7 @@ module V1
       object.has_password?
     end
 
+    # @deprecated
     def memberships
       return [] if object.community != 'pfp'
       groups = object.entourage_participations.merge(JoinRequest.accepted).group_by(&:group_type)
