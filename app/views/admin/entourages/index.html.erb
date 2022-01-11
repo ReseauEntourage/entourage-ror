@@ -59,7 +59,7 @@
         "Épinglées" => { pin_eq: 'true' },
         "Actions" => { group_type_eq: 'action', pin_eq: 'false' },
         "Événements" => { group_type_eq: 'outing', pin_eq: 'false' },
-        "Non abouties" => { group_type_eq: 'action', pin_eq: 'false', moderation_action_outcome_blank: 'true' },
+        "Non abouties" => { group_type_eq: 'action', pin_eq: 'false', moderation_action_outcome_blank: 'true', created_at_lt: 3.months.ago.strftime("%Y-%m-%d") },
       }
     %>
 
@@ -69,6 +69,7 @@
     <%= f.hidden_field :group_type_eq if @q.group_type_eq %>
     <%= f.hidden_field :moderation_action_outcome_blank if @q.moderation_action_outcome_blank %>
     <%= f.hidden_field :country_eq if @q.country_eq %>
+    <%= f.hidden_field :created_at_lt if @q.created_at_lt %>
     <% (@q.postal_code_start_any || []).each do |value| %>
       <%= hidden_field_tag 'q[postal_code_start_any][]', value %>
     <% end %>
@@ -84,7 +85,7 @@
     </div>
 
     <div class="btn-group btn-group-sm" style="padding-left: 10px">
-      <% types_keys = [:pin_eq, :group_type_eq, :moderation_action_outcome_blank] %>
+      <% types_keys = [:pin_eq, :group_type_eq, :moderation_action_outcome_blank, :created_at_lt] %>
       <% types.each do |name, options| %>
         <% active = types.key q.slice(*types_keys).compact.symbolize_keys %>
         <%= link_to(name, @params.merge(q: q.except(*types_keys).merge(options)),
@@ -99,6 +100,17 @@
   </div>
 <% end %>
 
+<% if @q.moderation_action_outcome_blank %>
+  <div class="panel panel-info" style="clear: both">
+    <div class="panel-heading">
+      Actions non abouties <b>de plus de trois mois</b>
+    </div>
+    <div class="panel-body">
+      Les actions épinglées n'apparaissent pas dans cette liste.
+    </div>
+  </div>
+<% end %>
+
 <% outing_filter = params[:q] && params[:q][:group_type_eq] == 'outing' %>
 <% pin_filter = params[:q] && params[:q][:pin_eq] %>
 
@@ -106,7 +118,7 @@
   <th></th>
   <th></th>
   <th></th>
-  <th>id</th>
+  <th>Date de création</th>
   <th>Titre</th>
   <% if outing_filter %><th>Date</th><% end %>
   <th>Description</th>
@@ -137,7 +149,7 @@
           <span class="badge" style="background: #d9534f" title="Non lus"><%= unread_count %></span>
         <% end %>
       </td>
-      <td><%= entourage.id %></td>
+      <td><%= l entourage.created_at, format: "%-d %B %Y" %></td>
       <td><%= link_to entourage.title, admin_entourage_path(entourage, @params) %></td>
       <% if outing_filter %>
         <td><%= l entourage.starts_at, format: :date_short %></td>
