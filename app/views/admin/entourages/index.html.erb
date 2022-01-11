@@ -106,7 +106,7 @@
   <th></th>
   <th></th>
   <th></th>
-  <th>id</th>
+  <th>Date de création</th>
   <th>Titre</th>
   <% if outing_filter %><th>Date</th><% end %>
   <th>Description</th>
@@ -137,7 +137,7 @@
           <span class="badge" style="background: #d9534f" title="Non lus"><%= unread_count %></span>
         <% end %>
       </td>
-      <td><%= entourage.id %></td>
+      <td><%= l entourage.created_at, format: "%-d %B %Y" %></td>
       <td><%= link_to entourage.title, admin_entourage_path(entourage, @params) %></td>
       <% if outing_filter %>
         <td><%= l entourage.starts_at, format: :date_short %></td>
