@@ -41,8 +41,6 @@ Rails.application.configure do
   config.active_record.logger.level = Logger::INFO
 
   # DEV / TEST CREDENTIALS
-  ENV["BASIC_ADMIN_USER"] = "admin"
-  ENV["BASIC_ADMIN_PASSWORD"] = "3nt0ur4g3"
   ENV["ANDROID_GCM_API_KEY"] = "foobar"
 
   config.action_mailer.default_url_options = { :host => "localhost" }
