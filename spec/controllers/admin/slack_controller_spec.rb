@@ -2,6 +2,8 @@ require 'rails_helper'
 include AuthHelper
 
 describe Admin::SlackController do
+  render_views
+
   ENV["SLACK_APP_VERIFICATION_TOKEN"] = "slack-app-verification-token"
 
   describe 'POST #message_action' do

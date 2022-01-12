@@ -29,7 +29,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
               "first_name" => "John",
               "last_name" => "Doe",
               "roles" => [],
-              "about" =>  nil,
+              "about" => nil,
               "token" => user.token,
               "user_type" => "pro",
               "has_password" => false,
@@ -66,7 +66,8 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                 "website_url" => nil,
                 "email" => nil,
                 "default" => true,
-                "user_role_title" => nil},
+                "user_role_title" => nil
+              },
               "memberships" => [],
               "conversation" => {
                 "uuid" => "1_list_#{user.id}"
@@ -89,7 +90,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                 "outing" => { "creation" => true }
               },
             },
-            "first_sign_in"=>true
+            "first_sign_in" => true
           })
         end
       end
@@ -274,14 +275,14 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
             "logo_url" => nil
           },
           "stats" => {
-             "tour_count" => 2,
-             "encounter_count" => 3,
-             "entourage_count" => 1,
-             "actions_count" => 0,
-             "ask_for_help_creation_count" => 1,
-             "contribution_creation_count" => 0,
-             "events_count"  =>  0,
-             "good_waves_participation" => false,
+            "tour_count" => 2,
+            "encounter_count" => 3,
+            "entourage_count" => 1,
+            "actions_count" => 0,
+            "ask_for_help_creation_count" => 1,
+            "contribution_creation_count" => 0,
+            "events_count" => 0,
+            "good_waves_participation" => false,
           },
           "partner" => nil,
           "memberships" => [],
@@ -289,10 +290,10 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
             "uuid" => "1_list_#{user.id}"
           },
           "firebase_properties" => {
-           "ActionZoneDep" => "not_set",
-           "ActionZoneCP" => "not_set",
-           "Goal" => "no_set",
-           "Interests" => "none"
+            "ActionZoneDep" => "not_set",
+            "ActionZoneCP" => "not_set",
+            "Goal" => "no_set",
+            "Interests" => "none"
           },
           "anonymous" => false,
           "feature_flags" => {
@@ -305,10 +306,9 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
           "permissions" => {
             "outing" => { "creation" => false }
           },
-          },
-          "first_sign_in"=>true
-        }
-      )}
+        },
+        "first_sign_in" => true
+      })}
     end
 
     context "blocked user" do

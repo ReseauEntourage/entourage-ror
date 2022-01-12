@@ -76,7 +76,7 @@
       <div class="container">
         <%= link_to "Admin", [:admin, @entourage], class: "button" %>
         <%= link_to "App", "entourage://entourage/#{@entourage.id}", class: "button" %>
-        <%= link_to "Web app", V1::EntourageSerializer.new(@entourage).share_url, class: "button" %>
+        <%= link_to "Web app", @entourage.share_url, class: "button" %>
       </div>
     </div>
   </div>

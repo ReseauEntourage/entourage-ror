@@ -224,7 +224,11 @@
           <% end %>
 
           <div class="col-md-3 form-group" style="padding-top: 25px">
-            <%= link_to 'Clôturer', close_admin_entourage_path(entourage), method: :post, class: "btn btn-success #{ 'disabled' if entourage.closed? }" %>
+            <% if entourage.closed? %>
+              <%= link_to 'Clôturé', close_admin_entourage_path(entourage), method: :post, class: "btn btn-default disabled" %>
+            <% else %>
+              <%= link_to 'Clôturer', close_admin_entourage_path(entourage), method: :post, class: "btn btn-success" %>
+            <% end %>
           </div>
         </div>
 
