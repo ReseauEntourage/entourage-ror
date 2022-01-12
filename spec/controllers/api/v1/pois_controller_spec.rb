@@ -229,27 +229,30 @@ describe Api::V1::PoisController, :type => :controller do
         url = "#{ENV['ENTOURAGE_SOLIGUIDE_HOST']}?distance=5&latitude=#{paris[:latitude]}&longitude=#{paris[:longitude]}"
 
         before {
-          stub_request(:get, url).with(headers: {
-            'Accept'=>'*/*',
-            'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-            'User-Agent'=>'Ruby'
-          }).to_return(status: 200, body: "[soliguide_called]", headers: {})
-
-          get :index, params: params
+          stub_request(:post, "https://api.soliguide.fr/new-search").to_return(status: 200, body: '{"places":[{}]}', headers: {})
         }
 
         context 'redirects to soliguide when Paris and soliguide option is defined' do
           let!(:active) { true }
 
+          before {
+            expect(PoiServices::SoliguideFormatter).to receive(:format_short)
+            get :index, params: params
+          }
+
           it { expect(response.status).to eq 200 }
-          it { expect(response.body).to eq("[soliguide_called]") }
+          it { expect(JSON.parse(response.body)).to have_key("pois") }
         end
 
         context 'does not redirect to soliguide when Paris and soliguide option is not defined' do
           let!(:active) { false }
 
+          before {
+            expect(PoiServices::SoliguideFormatter).not_to receive(:format_short)
+            get :index, params: params
+          }
+
           it { expect(response.status).to eq 200 }
-          it { expect(response.body).not_to eq("[soliguide_called]") }
           it { expect(JSON.parse(response.body)).to have_key("pois") }
         end
       end

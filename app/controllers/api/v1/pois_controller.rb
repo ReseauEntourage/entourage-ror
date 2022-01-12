@@ -8,16 +8,6 @@ module Api
       #curl -H "Content-Type: application/json" "https://entourage-back-preprod.herokuapp.com/api/v1/pois.json?token=153ad0b7ef67e5c44b8ef5afc12709e4&category_ids=1,2"
       def index
         version = params[:v] == '2' ? :v2 : :v1
-        soliguide = PoiServices::Soliguide.new(soliguide_params)
-
-        if version == :v2 && params[:no_redirect] != 'true' && soliguide.apply?
-          https = Net::HTTP.new(PoiServices::Soliguide.host, PoiServices::Soliguide.port)
-          https.use_ssl = true
-
-          return render json: https.request(
-            Net::HTTP::Get.new(soliguide.get_index_redirection)
-          ).read_body
-        end
 
         @categories = Category.all
         @pois = Poi.validated
@@ -88,6 +78,10 @@ module Api
           ActiveModel::Serializer::CollectionSerializer.new(pois, serializer: ::V1::PoiSerializer, scope: {version: :"#{version}_list"}).as_json
         end.serialize
 
+        # soliguide
+        soliguide = PoiServices::Soliguide.new(soliguide_params)
+        poi_json += PoiServices::SoliguideIndex.post(soliguide.query_params) if version == :v2 && soliguide.apply?
+
         payload =
           case version
           when :v1
@@ -101,39 +95,11 @@ module Api
 
       def show
         if params[:id].start_with?('s')
-          https = Net::HTTP.new(PoiServices::Soliguide.host, PoiServices::Soliguide.port)
-          https.use_ssl = true
-
-          return render json: https.request(
-            Net::HTTP::Get.new(PoiServices::Soliguide.get_show_redirection(params[:id], show_params))
-          ).read_body
+          return render json: { poi: PoiServices::SoliguideShow.get(params[:id][1..]) }
         end
 
         poi = Poi.validated.find(params[:id])
         render json: poi, serializer: ::V1::PoiSerializer, scope: {version: :v2}
-      end
-
-      def soliguide_test
-        render json: {
-          poi: {
-            uuid: "s114",
-            source: :soliguide,
-            source_url: "https://soliguide.fr/fiche/cafe-social-dejean-paris-114",
-            name: "Café Social Dejean - Association Ayyem Zamen",
-            description: "L'association Ayyem Zamen se mobilise auprès des personnes vieillissantes, en situation de précarité économique ou de fragilité sociale, notamment celles ayant vécu une migration.\nLe Café Social est un lieu de sociabilité pour briser l'isolement des vieux migrants et leur venir en aide dans des démarches quotidiennes.\n\n• Un lieu de mixité sociale et culturelle, qui accueille toutes les nationalités, des hommes aussi bien que des femmes, pour se rencontrer, sortir de la solitude et de l'oubli, trouver une écoute... \n• Un salon de thé pour prendre un café ou un thé, dans un cadre chaleureux et beau. \n• Un espace “Entre-femmes“ (sorties hammam, ateliers artistiques, bijoux, décoration ﬂorale, patchwork…). \n• Un espace de jeux (cartes, dominos, jeux d’échecs, jeux traditionnels…).",
-            longitude: 2.350839,
-            latitude: 48.887142,
-            address: "1 Rue Dejean, 75018 Paris, France",
-            phone: "0142230593",
-            website: "https://www.cafesocial.org/",
-            email: "ayyem.zamen@gmail.com",
-            audience: "ouvert aux hommes et femmes, avec ou sans papiers, sans rendez-vous.\nPersonnes de plus de 55 ans, notamment migrantes, parisiens",
-            partner_id: nil,
-            category_ids: [5, 6, 7, 3],
-            hours: "Lun : 9h30 à 17h30\nMar : 9h30 à 17h30\nMer : 9h30 à 17h30\nJeu : 9h30 à 17h30\nVen : 9h30 à 17h30\nSam : Fermé\nDim : Fermé",
-            languages: "français"
-          }
-        }
       end
 
       def create

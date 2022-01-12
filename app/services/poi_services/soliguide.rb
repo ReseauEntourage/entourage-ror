@@ -1,8 +1,8 @@
 module PoiServices
   class Soliguide
-    attr_reader :host, :port
-
-    API_HOST = ENV['ENTOURAGE_SOLIGUIDE_HOST']
+    API_KEY = ENV['SOLIGUIDE_API_KEY']
+    DISTANCE_MIN = 2
+    DISTANCE_MAX = 10
 
     PARIS = {
       latitude: 48.8586,
@@ -24,6 +24,7 @@ module PoiServices
       @distance = params[:distance]
       @category_ids = params[:category_ids]
       @query = params[:query]
+      @limit = params[:limit]
     end
 
     def apply?
@@ -34,36 +35,42 @@ module PoiServices
       Option.active? :soliguide
     end
 
-    def get_index_redirection
+    def query_params
+      geoValue = if close_to?(PARIS)
+        :Paris
+      else
+        :HorsZone
+      end
+
       params = {
-        distance:  distance,
-        latitude:  latitude,
-        longitude: longitude,
+        location: {
+          distance:  (distance || 0).to_f.clamp(DISTANCE_MIN, DISTANCE_MAX),
+          latitude:  latitude,
+          longitude: longitude,
+          geoType: :ville,
+          geoValue: geoValue,
+        },
+        options: {}
       }
 
-      params[:categories] = categories.first if categories.one?
-      params[:query] = query if query.present?
+      params[:categories] = soliguide_category(categories) if soliguide_category(categories).present?
+      params[:word] = query if query.present?
+      params[:options][:limit] = limit if limit.present?
 
-      "#{PoiServices::Soliguide::API_HOST}?#{params.to_query}"
-    end
-
-    def self.get_show_redirection(id, params)
-      "#{PoiServices::Soliguide::API_HOST}/#{id}?#{params.except(:action, :controller, :id).to_query}"
-    end
-
-    def self.host
-      URI(PoiServices::Soliguide::API_HOST).host
-    end
-
-    def self.port
-      URI(PoiServices::Soliguide::API_HOST).port
+      params
     end
 
     private
-    attr_reader :latitude, :longitude, :distance, :category_ids, :query, :category_ids
+    attr_reader :latitude, :longitude, :distance, :category_ids, :query, :limit, :category_ids
 
     def categories
       @categories ||= (category_ids || "").split(",").map(&:to_i).uniq
+    end
+
+    def soliguide_category categories
+      return unless categories.one?
+
+      PoiServices::SoliguideFormatter::CATEGORIES_EQUIVALENTS_REVERSED[categories.first]
     end
 
     def close_to? city

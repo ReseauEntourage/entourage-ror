@@ -74,9 +74,11 @@ Rails.application.routes.draw do
 
 
       namespace :super_admin do
+        get '/announcements_images', action: :announcements_images
         get '/entourage_images', action: :entourage_images
         get '/outings_images', action: :outings_images
-        get '/announcements_images', action: :announcements_images
+        get '/soliguide', action: :soliguide
+        get '/soliguide_show/:id' => :soliguide_show, as: :soliguide_show
         # sidekiq: /super_admin/sidekiq defined previously
         get '/jobs_crons', action: :jobs_crons
         post '/force_close_tours', action: :force_close_tours
@@ -246,9 +248,6 @@ Rails.application.routes.draw do
       end
 
       resources :pois, only: [:index, :show, :create] do
-        collection do
-          get :soliguide_test
-        end
         member do
           post 'report'
         end

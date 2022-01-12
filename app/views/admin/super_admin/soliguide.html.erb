@@ -1,0 +1,56 @@
+<div class="container">
+  <div class="row">
+    <div class="col-xs-offset-2 col-xs-8">
+      <div class="h1" style="display: flex; align-items: center;">
+        <div style="flex-grow: 1">Pois Soliguide</div>
+      </div>
+
+      <% [
+        { name: :Paris, latitude: 48.86, longitude: 2.34, distance: 2, limit: 50 },
+        { name: :Lyon, latitude: 45.75, longitude: 4.85, distance: 2, limit: 50 },
+        { name: :Nantes, latitude: 47.22, longitude: -1.55, distance: 2, limit: 50 },
+      ].each do |search| %>
+        <%= link_to search[:name], admin_super_admin_soliguide_path({
+          latitude: search[:latitude],
+          longitude: search[:longitude],
+          distance: search[:distance],
+          limit: search[:limit],
+        }), class: "btn btn-default" %>
+      <% end %>
+
+      <% if @pois.empty? %>
+        <div class="panel panel-warning">
+          <div class="panel-heading">
+            <h3 class="panel-title">Aucun POI trouvé.</h3>
+          </div>
+        </div>
+      <% else %>
+        <table class="table">
+          <th>UUID</th>
+          <th>Name</th>
+          <th>Latitude</th>
+          <th>Longitude</th>
+          <th>Address</th>
+          <th>Phone</th>
+          <th>Category_id</th>
+
+          <% @pois.each do |poi| %>
+            <tr>
+              <td><%= poi[:uuid][1..] %></td>
+              <td><%= link_to poi[:name], admin_super_admin_soliguide_show_path(poi[:uuid]) %></td>
+              <td><%= poi[:latitude] %></td>
+              <td><%= poi[:longitude] %></td>
+              <td><%= poi[:address] %></td>
+              <td><%= poi[:phone] %></td>
+              <td><%= poi[:category_id] %></td>
+            </tr>
+          <% end %>
+        </table>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="row">
+    <%#= paginate @paginated %>
+  </div>
+</div>
