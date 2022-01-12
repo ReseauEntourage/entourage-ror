@@ -22,7 +22,7 @@ namespace :db do
     User.update_all(address_id: nil)
 
     [
-      Address, Answer, AtdSynchronization, AtdUser,
+      Address, Answer,
       EmailDelivery, Encounter, EntourageDisplay,
       EntourageModeration, EntourageScore, Experimental::PendingRequestReminder,
       LoginHistory, Message, ModeratorRead, NewsletterSubscription,
@@ -88,7 +88,6 @@ namespace :db do
       user_type: :public,
       avatar_key: nil,
       marketing_referer_id: 1,
-      atd_friend: false,
       use_suggestions: false,
       about: nil,
       encrypted_password: nil,

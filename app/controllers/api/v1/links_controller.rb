@@ -46,8 +46,6 @@ module Api
 
               url
             end,
-          'atd-partnership' =>
-            'https://www.atd-quartmonde.fr/entourage/',
           'faq' => {
             'entourage' => 'https://blog.entourage.social/2017/04/28/comment-utiliser-l-application-entourage/#index-faq',
             'pfp'       => 'https://docs.google.com/document/d/1fR6pEmhmCIBUJgzZ0CmFy9gzbMTXW5lFh7zxLDmbUco'

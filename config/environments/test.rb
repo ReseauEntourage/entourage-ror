@@ -55,9 +55,6 @@ Rails.application.configure do
   ENV["MAILCHIMP_LIST_ID"]="foobar"
   ENV["MAILCHIMP_API_KEY"]="foobar-us8"
 
-  ENV["ATD_USERNAME"] = "name"
-  ENV["ATD_PASSWORD"] = "password"
-
   ENV["HOST"]='localhost'
   ENV["ORGANIZATION_ADMIN_URL"]="localhost"
   ENV["ENTOURAGE_SOLIGUIDE_HOST"]="https://localhost:8080/api/v1/pois"
