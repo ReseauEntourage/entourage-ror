@@ -2,7 +2,6 @@ class MemberMailer < MailjetMailer
   default from: "contact@entourage.social"
   add_template_helper(OrganizationHelper)
 
-  COMMUNITY_EMAIL   = ENV["COMMUNITY_EMAIL"]   || "communaute@entourage.social"
   TOUR_REPORT_EMAIL = ENV["TOUR_REPORT_EMAIL"] || "maraudes@entourage.social"
 
   def welcome(user)
@@ -118,11 +117,6 @@ class MemberMailer < MailjetMailer
     else
       logger.warn "Could not deliver POI report. Please provide POI_REPORT_EMAIL as an environment variable"
     end
-  end
-
-  def registration_request_accepted(user)
-    @user = user
-    mail(from: COMMUNITY_EMAIL, to: @user.email, subject: "Votre demande d'adhésion à la plateforme Entourage a été acceptée") if @user.email.present?
   end
 
   def user_export user_id:, recipient:, cci:

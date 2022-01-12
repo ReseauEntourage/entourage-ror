@@ -55,14 +55,12 @@ RSpec.describe Admin::RegistrationRequestsController, type: :controller do
       shared_examples "validate" do
         describe "objects creation" do
           before do
-            allow(MemberMailer).to receive(:registration_request_accepted)
             put 'update', params: { id: registration_request.to_param, validate: true }
           end
           it { expect(registration_request.reload.status).to eq("validated") }
           #Already 1 user authenticated with organization
           it { expect(Organization.count).to eq(2) }
           it { expect(User.type_pro.count).to eq(2) }
-          it { expect(MemberMailer).to have_received(:registration_request_accepted).once }
         end
       end
 
@@ -82,11 +80,6 @@ RSpec.describe Admin::RegistrationRequestsController, type: :controller do
       #Already 1 user authenticated with organization
       it { expect(Organization.count).to eq(1) }
       it { expect(User.count).to eq(1) }
-    end
-
-    it "doesn't send mail" do
-      expect(MemberMailer).to receive(:registration_request_accepted).never
-      put 'update', params: { id: registration_request.to_param }
     end
   end
 end
