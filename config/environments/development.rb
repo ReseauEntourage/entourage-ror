@@ -36,8 +36,6 @@ Rails.application.configure do
 
   # DEV / TEST CREDENTIALS
   #TODO: Remove credentials from sources files
-  ENV["BASIC_ADMIN_USER"] = "admin"
-  ENV["BASIC_ADMIN_PASSWORD"] = "3nt0ur4g3"
 
   ENV['REQUEST_PHONE_CHANGE_CHANNEL'] = '#test-env-sms'
   ENV['ENTOURAGE_SOLIGUIDE_HOST'] = 'https://localhost:9292/api/v1/pois'
