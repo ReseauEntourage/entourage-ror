@@ -14,7 +14,6 @@ module RegistrationRequestServices
           on.success do |user|
             user.update(manager: true)
             registration_request.update(status: "validated")
-            MemberMailer.registration_request_accepted(user).try(:deliver_later)
           end
 
           on.failure do |user|
