@@ -138,7 +138,6 @@ class User < ApplicationRecord
       phone: Phone::PhoneBuilder.new(phone: strip).format,
     })
   }
-  scope :atd_friends, -> { where(atd_friend: true) }
   scope :accepts_email_category, -> (category_name) {
     email_category_id = EmailPreferencesService.category_id(category_name)
     joins(%{

@@ -340,7 +340,6 @@ Rails.application.routes.draw do
       post 'login' => 'users#login'
       get 'check' => 'base#check'
       get 'ping' => 'base#ping'
-      # get 'csv_matching' => 'csv_matching#show'
       get 'organization_admin_redirect' => 'users#organization_admin_redirect'
 
       namespace :public do
