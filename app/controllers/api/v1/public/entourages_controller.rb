@@ -14,7 +14,7 @@ module Api
 
         # @deprecated ATD related
         def index
-          render json: [], each_serializer: ::V1::Public::EntourageSerializer, scope: :map
+          render json: [], root: 'entourages', each_serializer: ::V1::Public::EntourageSerializer, scope: :map
         end
 
         private
