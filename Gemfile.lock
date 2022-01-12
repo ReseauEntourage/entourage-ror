@@ -398,8 +398,6 @@ GEM
       rack (~> 2.0)
       redis (>= 4.2.0)
     simplify_rb (0.4.0)
-    skylight (5.1.1)
-      activesupport (>= 5.2.0)
     slack-notifier (2.4.0)
     sorbet-runtime (0.5.9048)
     spring (2.1.1)
@@ -504,7 +502,6 @@ DEPENDENCIES
   shoulda-matchers
   sidekiq (~> 6)
   simplify_rb (~> 0)
-  skylight
   slack-notifier
   spring (~> 2.1.0)
   spring-commands-rspec

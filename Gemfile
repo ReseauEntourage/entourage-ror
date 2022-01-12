@@ -91,5 +91,4 @@ group :production do
   gem 'puma'
   gem 'rack-timeout', require: 'rack/timeout/base'
   gem 'barnes'
-  gem 'skylight'
 end
