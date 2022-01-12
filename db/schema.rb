@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_12_30_133001) do
+ActiveRecord::Schema.define(version: 2022_01_12_090000) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -75,23 +75,6 @@ ActiveRecord::Schema.define(version: 2021_12_30_133001) do
     t.integer "encounter_id", null: false
     t.string "value", null: false
     t.index ["encounter_id", "question_id"], name: "index_answers_on_encounter_id_and_question_id"
-  end
-
-  create_table "atd_synchronizations", id: :serial, force: :cascade do |t|
-    t.string "filename", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["filename"], name: "index_atd_synchronizations_on_filename", unique: true
-  end
-
-  create_table "atd_users", id: :serial, force: :cascade do |t|
-    t.integer "user_id"
-    t.integer "atd_id", null: false
-    t.string "tel_hash"
-    t.string "mail_hash"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["atd_id", "user_id"], name: "index_atd_users_on_atd_id_and_user_id", unique: true
   end
 
   create_table "categories", id: :serial, force: :cascade do |t|
@@ -800,7 +783,7 @@ ActiveRecord::Schema.define(version: 2021_12_30_133001) do
     t.boolean "deleted", default: false, null: false
     t.integer "marketing_referer_id", default: 1, null: false
     t.datetime "last_sign_in_at"
-    t.boolean "atd_friend", default: false, null: false
+    t.boolean "old_atd_friend", default: false, null: false
     t.boolean "use_suggestions", default: false, null: false
     t.string "about", limit: 200
     t.string "community", limit: 9, null: false
