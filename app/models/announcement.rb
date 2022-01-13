@@ -9,6 +9,7 @@ class Announcement < ApplicationRecord
 
   validates :status, inclusion: STATUS
   validates :url, format: { with: %r(\A(https?|mailto|entourage):\S+\z) }, allow_blank: true
+  validates :webapp_url, format: { with: %r(\A(https)\S+\z) }, allow_blank: false, allow_nil: true
 
   scope :ordered, -> { order(:position, :id) }
   scope :for_areas, -> (area_slugs) { where("areas ?| array[%s]" % area_slugs.map { |a| ApplicationRecord.connection.quote(a) }.join(',')) }
@@ -35,6 +36,14 @@ class Announcement < ApplicationRecord
       super category
     else
       self[:category] = nil
+    end
+  end
+
+  def webapp_url= webapp_url
+    if webapp_url.present?
+      super webapp_url
+    else
+      self[:webapp_url] = nil
     end
   end
 
