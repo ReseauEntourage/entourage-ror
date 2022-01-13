@@ -84,6 +84,11 @@ class JoinRequest < ApplicationRecord
     status.to_sym == :pending
   end
 
+  def rejected?
+    return unless status
+    status.to_sym == :rejected
+  end
+
   # these 3 methods manage the skip_conversation_uuid_update flag.
   # see join_callback and ChatMessageBuilder#create
   def initialize(*)

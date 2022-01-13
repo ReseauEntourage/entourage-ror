@@ -50,7 +50,7 @@ module Api
           if join_request.present?
            message = params.dig(:request, :message)
             updater = JoinRequestsServices::JoinRequestUpdater.new(join_request: join_request,
-                                                                   status: JoinRequest::PENDING_STATUS,
+                                                                   status: JoinRequest::ACCEPTED_STATUS,
                                                                    message: message,
                                                                    current_user: current_user)
 
