@@ -88,6 +88,7 @@ class AnonymousUser
   def errors; ActiveModel::Errors.new(nil); end
   def entourage_participations; JoinRequest.none; end
   def engaged?; false; end
+  def ambassador?; false; end
   def ask_for_help_creation_count; 0; end
   def contribution_creation_count; 0; end
 end

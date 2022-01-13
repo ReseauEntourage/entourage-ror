@@ -161,7 +161,7 @@ module V1
     def permissions
       {
         outing: {
-          creation: object.partner.present? || object.admin?
+          creation: object.partner.present? || object.admin? || object.ambassador?
         }
       }
     end
