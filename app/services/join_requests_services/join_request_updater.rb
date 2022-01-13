@@ -56,7 +56,7 @@ module JoinRequestsServices
         return callback.on_invalid_status.try(:call, status)
       end
 
-      unless current_user_authorised?
+      if join_request.rejected?
         return callback.on_not_authorised.try(:call)
       end
 

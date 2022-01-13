@@ -35,6 +35,16 @@ describe Api::V1::Entourages::UsersController do
         )}
       end
 
+      context "request to join entourage after a rejected" do
+        before { create(:join_request, user: user, joinable: entourage, status: JoinRequest::REJECTED_STATUS) }
+        before { post :create, params: { entourage_id: entourage.to_param, token: user.token } }
+        it { expect(entourage.members).to eq([user]) }
+        it { expect(result).to eq(
+          "message" => "Could not create entourage participation request",
+          "reasons" => []
+        )}
+      end
+
       context "request to join entourage after a cancel" do
         before { create(:join_request, user: user, joinable: entourage, status: JoinRequest::CANCELLED_STATUS) }
         before { post :create, params: { entourage_id: entourage.to_param, token: user.token } }
@@ -43,7 +53,7 @@ describe Api::V1::Entourages::UsersController do
           "user"=>{
             "id"=>user.id,
             "display_name"=>"John D.",
-            "status"=>"pending",
+            "status"=>"accepted",
             "role"=>"member",
             "group_role"=>"member",
             "community_roles"=>[],
@@ -67,7 +77,7 @@ describe Api::V1::Entourages::UsersController do
             "role"=>"member",
             "group_role"=>"member",
             "community_roles"=>[],
-            "status"=>"pending",
+            "status"=>"accepted",
             "message"=>nil,
             "requested_at"=>JoinRequest.last.created_at.iso8601(3),
             "avatar_url"=>nil,
@@ -89,6 +99,7 @@ describe Api::V1::Entourages::UsersController do
 
         context "first-time request" do
           before { post :create, params: { entourage_id: entourage.to_param, token: user.token, distance: 123.45 } }
+          it { expect(result['user']['id']).to eq(user.id) }
           it { expect(result['user']['status']).to eq('accepted') }
           it {
             expect(notif_service).to have_received(:send_notification).with(
@@ -110,13 +121,14 @@ describe Api::V1::Entourages::UsersController do
         context "after a cancel" do
           let!(:canceled_join_request) { create :join_request, user: user, joinable: entourage, status: "cancelled" }
           before { post :create, params: { entourage_id: entourage.to_param, token: user.token, distance: 123.45 } }
-          it { pp result; expect(result['user']['status']).to eq('accepted') }
+          it { expect(result['user']['id']).to eq(user.id) }
+          it { expect(result['user']['status']).to eq('accepted') }
           it {
             expect(notif_service).to have_received(:send_notification).with(
               "John D.",
               "Foobar1",
-              "John D. vient de rejoindre votre action",
-              [entourage.user],
+              "Vous venez de rejoindre l’action de John D.",
+              [user],
               {
                 joinable_type: "Entourage",
                 joinable_id: entourage.id,
@@ -257,10 +269,16 @@ describe Api::V1::Entourages::UsersController do
       end
     end
 
-    context "not accepted in tour" do
-      let!(:join_request) { create(:join_request, user: user, joinable: entourage, status: "pending") }
+    context "rejected is not accepted in entourage" do
+      let!(:join_request) { create(:join_request, user: user, joinable: entourage, status: "rejected") }
       before { patch :update, params: { entourage_id: entourage.to_param, id: user.id, user: {status: "accepted"}, token: user.token } }
       it { expect(response.status).to eq(401) }
+    end
+
+    context "pending is accepted in entourage" do
+      let!(:join_request) { create(:join_request, user: user, joinable: entourage, status: "pending") }
+      before { patch :update, params: { entourage_id: entourage.to_param, id: user.id, user: {status: "accepted"}, token: user.token } }
+      it { expect(response.status).to eq(204) }
     end
 
     context "invalid status" do

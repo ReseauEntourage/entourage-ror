@@ -22,7 +22,6 @@ module TourServices
 
     def accept!
       return true if accepted?
-      return false if cancelled?
 
       ApplicationRecord.transaction do
         increment_counter
