@@ -45,7 +45,7 @@ describe Api::V1::Tours::UsersController do
             "role" => "member",
             "group_role" => "member",
             "community_roles" => [],
-            "status"  =>  "pending",
+            "status" => "accepted",
             "message" => nil,
             "avatar_url" => nil,
             "requested_at" => JoinRequest.last.created_at.iso8601(3),
@@ -53,7 +53,7 @@ describe Api::V1::Tours::UsersController do
             "partner_role_title" => nil,
           }
         )}
-        it { expect(tour.reload.number_of_people).to eq(0) }
+        it { expect(tour.reload.number_of_people).to eq(1) }
       end
 
       it "sends a notifications to tour owner" do
@@ -166,8 +166,8 @@ describe Api::V1::Tours::UsersController do
       let!(:other_tour_member) { create(:join_request, user: user, joinable: FactoryBot.create(:tour), status: "accepted") }
       let!(:tour_requested) { create(:join_request, user: requester, joinable: tour, status: "pending") }
       before { patch :update, params: { tour_id: tour.to_param, id: requester.id, user: {status: "accepted"}, token: user.token } }
-      it { expect(response.status).to eq(401) }
-      it { expect(tour_requested.reload.status).to eq("pending") }
+      it { expect(response.status).to eq(204) }
+      it { expect(tour_requested.reload.status).to eq("accepted") }
     end
 
     context "member of the tour but not accepted" do
@@ -175,8 +175,17 @@ describe Api::V1::Tours::UsersController do
       let!(:tour_member) { create(:join_request, user: user, joinable: tour, status: "pending") }
       let!(:tour_requested) { create(:join_request, user: requester, joinable: tour, status: "pending") }
       before { patch :update, params: { tour_id: tour.to_param, id: requester.id, user: {status: "accepted"}, token: user.token } }
+      it { expect(response.status).to eq(204) }
+      it { expect(tour_requested.reload.status).to eq("accepted") }
+    end
+
+    context "member of the tour but rejected" do
+      let(:requester) { FactoryBot.create(:pro_user) }
+      let!(:tour_member) { create(:join_request, user: user, joinable: tour, status: "pending") }
+      let!(:tour_requested) { create(:join_request, user: requester, joinable: tour, status: "rejected") }
+      before { patch :update, params: { tour_id: tour.to_param, id: requester.id, user: {status: "accepted"}, token: user.token } }
       it { expect(response.status).to eq(401) }
-      it { expect(tour_requested.reload.status).to eq("pending") }
+      it { expect(tour_requested.reload.status).to eq("rejected") }
     end
 
     context "user didn't request to join tour" do
