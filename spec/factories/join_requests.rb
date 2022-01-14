@@ -17,9 +17,6 @@ FactoryBot.define do
         when ['entourage', 'tour'          ] then 'member'
         when ['entourage', 'action'        ] then 'member'
         when ['entourage', 'outing'        ] then 'participant'
-        when ['pfp',       'private_circle'] then 'visitor'
-        when ['pfp',       'conversation'  ] then 'participant'
-        when ['pfp',       'neighborhood'  ] then 'member'
         when ['entourage', 'conversation'  ] then 'participant'
         when ['entourage', 'group'         ] then 'member'
         else raise 'Unhandled: %s:%s' % [joinable.community.slug, joinable.group_type]

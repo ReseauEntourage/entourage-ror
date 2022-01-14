@@ -915,13 +915,12 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
       end
 
       context "roles" do
-        with_community :pfp
-        let(:other_user) { FactoryBot.create(:public_user, roles: [:visitor, :coordinator]) }
-        let!(:join_request)  { create :join_request, user: other_user, joinable_factory: :private_circle, status: :accepted }
-        let!(:join_request2) { create :join_request, user: other_user, joinable_factory: :private_circle, status: :pending }
+        let(:other_user) { FactoryBot.create(:public_user, roles: [:ambassador]) }
+        let!(:join_request)  { create :join_request, user: other_user, status: :accepted }
+        let!(:join_request2) { create :join_request, user: other_user, status: :pending }
         before { get :show, params: { id: other_user.id, token: user.token } }
-        it { expect(JSON.parse(response.body)['user']['roles']).to eq ['coordinator', 'visitor'] }
-        it { expect(JSON.parse(response.body)['user']['memberships']).to eq [{"type"=>"private_circle", "list"=>[{"id"=>join_request.joinable_id, "title"=>"Les amis d'Henriette", "number_of_people"=>1}]}, {"type"=>"neighborhood", "list"=>[]}] }
+        it { expect(JSON.parse(response.body)['user']['roles']).to eq ['ambassador'] }
+        it { expect(JSON.parse(response.body)['user']['memberships']).to eq [] }
       end
 
       context "firebase_properties" do

@@ -738,7 +738,6 @@ describe Api::V1::EntouragesController do
         end
 
         context "find conversations by hash uuid" do
-          with_community :pfp
           let!(:entourage) { nil }
           let!(:conversation) { create :conversation, participants: [user] }
           before { get :show, params: { id: conversation.uuid_v2.to_param, token: user.token } }
