@@ -21,7 +21,6 @@ RSpec.describe JoinRequest, type: :model do
   end
 
   describe "conversation uuids" do
-    with_community :pfp
     let(:user_1) { create :public_user }
     let(:user_2) { create :public_user }
 

@@ -135,15 +135,12 @@ describe Api::V1::MyfeedsController do
         end
       end
 
-      context "PFP" do
-        with_community :pfp
+      context "community entourage" do
         let!(:tour) { nil }
         let!(:entourage) { nil }
-        let!(:circle) { create :private_circle, :joined, user: user, join_request_role: :visitor, title: "Les amis de Jean" }
-        let!(:neighborhood) { create :neighborhood, :joined, user: user, join_request_role: :member }
         let!(:conversation) { create :conversation, participants: [user] }
         before { get :index, params: { token: user.token, status: "open" } }
-        it { expect(result["feeds"].map {|feed| feed["data"]["uuid"]}.sort).to eq([circle.uuid, neighborhood.uuid, conversation.uuid_v2].sort) }
+        it { expect(result["feeds"].map {|feed| feed["data"]["uuid"]}.sort).to eq([conversation.uuid_v2].sort) }
       end
     end
 

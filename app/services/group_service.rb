@@ -6,17 +6,9 @@ module GroupService
     group: ['le ', 'un ', 'groupe', :m],
   }
 
-  COMMUNITY_NAME = {
-    [:pfp, :outing] => ['la ', 'une ', 'sortie', :f],
-    [:pfp, :neighborhood] => ['le ', 'un ', 'voisinage de quartier', :m],
-    [:pfp, :private_circle] => ['le ', 'un ', 'voisinage de personne', :m]
-  }
-
   def self.name group, form=nil
-    l, u, name, g =
-      COMMUNITY_NAME[[group.community.slug.to_sym, group.group_type.to_sym]] ||
-      NAME[group.group_type.to_sym] ||
-      ['le ', 'un ', 'groupe']
+    l, u, name, g = NAME[group.group_type.to_sym] || ['le ', 'un ', 'groupe']
+
     case form
     when :l
       [l, name].join

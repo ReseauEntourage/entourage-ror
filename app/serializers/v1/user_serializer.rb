@@ -103,19 +103,7 @@ module V1
 
     # @deprecated
     def memberships
-      return [] if object.community != 'pfp'
-      groups = object.entourage_participations.merge(JoinRequest.accepted).group_by(&:group_type)
-      groups.default = []
-      [
-        {
-          type: :private_circle,
-          list: groups['private_circle'].map { |e| e.attributes.slice('id', 'title', 'number_of_people') }
-        },
-        {
-          type: :neighborhood,
-          list: groups['neighborhood'].map { |e| e.attributes.slice('id', 'title', 'number_of_people') }
-        }
-      ]
+      return []
     end
 
     def conversation

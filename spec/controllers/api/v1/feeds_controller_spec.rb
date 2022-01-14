@@ -265,17 +265,6 @@ describe Api::V1::FeedsController do
         result["feeds"].map {|feed| feed["data"]["id"] }
       end
 
-      context "pfp" do
-        with_community :pfp
-        let!(:nh) { create :neighborhood, latitude: latitude, longitude: longitude }
-        let!(:pc) { create :private_circle, latitude: latitude, longitude: longitude }
-
-        it { expect(result_ids()).to eq [pc.id, nh.id] }
-        it { expect(result_ids(types: 'nh,pc')).to eq [pc.id, nh.id] }
-        it { expect(result_ids(types: 'nh')).to eq [nh.id] }
-        it { expect(result_ids(types: 'private_circle')).to eq [pc.id] }
-      end
-
       context "entourage" do
         with_community :entourage
         let!(:as) { create :entourage, entourage_type: :ask_for_help, display_category: :social, latitude: latitude, longitude: longitude }
@@ -354,7 +343,6 @@ describe Api::V1::FeedsController do
       let(:latitude) { 3.853 }
       let(:longitude) { 43.997 }
       let!(:entourage_action) { create :entourage,    community: 'entourage', created_at: 1.hour.ago, updated_at: 1.hour.ago, latitude: latitude, longitude: longitude }
-      let!(:pfp_action)       { create :neighborhood, community: 'pfp',       created_at: 1.hour.ago, updated_at: 1.hour.ago, latitude: latitude, longitude: longitude }
       let(:announcement) { build :announcement }
       before do
         allow_any_instance_of(FeedServices::AnnouncementsService)
@@ -362,12 +350,6 @@ describe Api::V1::FeedsController do
           .and_return([announcement])
       end
       before { get :index, params: { token: user.token, announcements: "v1", latitude: latitude, longitude: longitude } }
-
-      context "signed in as an user from another community" do
-        with_community 'pfp'
-        it { expect(response.status).to eq(200) }
-        it { expect(result['feeds'].map { |f| [f['type'], f['data']['id']] }).to eq [['Entourage', pfp_action.id], ['Announcement', announcement.id]] }
-      end
 
       context "signed in as an user from another community (entourage)" do
         with_community 'entourage'
@@ -377,11 +359,9 @@ describe Api::V1::FeedsController do
     end
 
     context "show past events" do
-      with_community :pfp
       let(:user) { create :public_user }
       let(:latitude) { 8.643 }
       let(:longitude) { 48.086 }
-      let!(:neighborhood) { create :neighborhood, latitude: latitude, longitude: longitude }
       let!(:past_outing) { create :outing, metadata: {starts_at: 5.hour.ago}, latitude: latitude, longitude: longitude }
       let!(:upcoming_outing) { create :outing, metadata: {starts_at: 1.hour.from_now}, latitude: latitude, longitude: longitude }
       let!(:custom_end_outing) { create :outing, metadata: {starts_at: 2.days.ago, ends_at: 3.hours.from_now}, latitude: latitude, longitude: longitude }
@@ -391,8 +371,8 @@ describe Api::V1::FeedsController do
         result["feeds"].map {|feed| feed["data"]["id"]}
       end
 
-      it { expect(feeds).to eq [custom_end_outing.id, upcoming_outing.id, neighborhood.id] }
-      it { expect(feeds(show_past_events: 'true')).to eq [custom_end_outing.id, upcoming_outing.id, past_outing.id, neighborhood.id] }
+      it { expect(feeds).to eq [custom_end_outing.id, upcoming_outing.id] }
+      it { expect(feeds(show_past_events: 'true')).to eq [custom_end_outing.id, upcoming_outing.id, past_outing.id] }
     end
 
     context "loginless" do

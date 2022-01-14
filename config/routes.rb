@@ -353,41 +353,6 @@ Rails.application.routes.draw do
     end
   end
 
-  community_admin_url = URI(ENV['COMMUNITY_ADMIN_URL'] || "//#{ENV['HOST']}/community_admin")
-  community_admin_scope = {
-    host: community_admin_url.host,
-    path: community_admin_url.path
-  }.compact
-
-  scope community_admin_scope.merge(
-    as: :community_admin, :module => :community_admin,
-    constraints: community_admin_scope.slice(:host)) do
-
-    get '/' => 'base#root'
-    resources :sessions, only: [:new, :create] do
-      collection do
-        post :logout, action: :destroy
-      end
-    end
-    namespace :dashboard do
-      get '', action: :index, as: ''
-    end
-    resources :users, only: [:index, :show, :edit, :update, :new, :create] do
-      post :group_role, action: :update_group_role
-      post :groups, action: :add_to_group
-      delete :groups, action: :remove_from_group
-      collection do
-        get :archived
-      end
-      member do
-        post :archive, action: :archive
-        post :unarchive, action: :unarchive
-      end
-    end
-    resources :neighborhoods, only: [:index, :show, :edit, :update, :new, :create]
-    resources :private_circles, only: [:index, :show, :edit, :update, :new, :create]
-  end
-
   organization_admin_url = URI(ENV['ORGANIZATION_ADMIN_URL'] || "//#{ENV['HOST']}/organization_admin")
   organization_admin_scope = {
     host: organization_admin_url.host,
@@ -396,7 +361,7 @@ Rails.application.routes.draw do
 
   scope organization_admin_scope.merge(
     as: :organization_admin, :module => :organization_admin,
-    constraints: community_admin_scope.slice(:host)) do
+    constraints: organization_admin_scope.slice(:host)) do
 
     get '/' => 'base#home'
     get 'auth' => 'base#auth'

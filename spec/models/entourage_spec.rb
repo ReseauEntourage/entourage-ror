@@ -30,7 +30,6 @@ RSpec.describe Entourage, type: :model do
   describe "group_type" do
     it { expect(build(:entourage, group_type: :invalid).save).to eq false }
     it { expect(build(:entourage, group_type: :action).save).to eq true }
-    it { expect(build(:entourage, community: :pfp, group_type: :neighborhood, metadata: {address: "foo", google_place_id: "bar"}).save).to eq true }
   end
 
   describe "reformat_content" do
