@@ -49,6 +49,10 @@ module V1
           member.id != scope[:user]&.id
         end
 
+        # weird fix on "find a null conversations by list uuid" spec
+        # fix when conversation id is nil; is this should ever been the case? Maybe pfp related
+        other_participant = User.where(id: object.join_requests.map(&:user_id) - [scope[:user]&.id]).first unless other_participant
+
         object.user = other_participant if other_participant
         object.title = UserPresenter.new(user: object.user).display_name
       end
