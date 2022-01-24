@@ -300,9 +300,30 @@ describe Api::V1::EntouragesController do
     end
 
     describe "some private conversations" do
-      let!(:conversation) { create :conversation }
+      let!(:conversation) { create :conversation, user: creator }
       let!(:join_request) { FactoryBot.create(:join_request, joinable: conversation, user: user, status: "accepted", last_message_read: Time.now) }
       let!(:other_conversation) { create :conversation, participants: [other_user] }
+
+      let(:creator) { user }
+
+      context "title" do
+        let!(:other_user) { FactoryBot.create :public_user, first_name: "foo", last_name: "bar" }
+        let!(:other_user_join_request) { FactoryBot.create(:join_request, joinable: conversation, user: other_user, status: "accepted", last_message_read: Time.now) }
+
+        before { get :private, params: { token: user.token } }
+
+        context "title is other participant name when the user is the creator" do
+          # let(:creator) { user }
+          it { expect(subject["entourages"].count).to eq(1) }
+          it { expect(subject["entourages"][0]["title"]).to eq("Foo B.") }
+        end
+
+        context "title is other participant name when the user is not the creator" do
+          let(:creator) { other_user }
+          it { expect(subject["entourages"].count).to eq(1) }
+          it { expect(subject["entourages"][0]["title"]).to eq("Foo B.") }
+        end
+      end
 
       context "default properties" do
         before { get :private, params: { token: user.token } }
