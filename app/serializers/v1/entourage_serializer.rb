@@ -38,6 +38,7 @@ module V1
     lazy_relationship :chat_messages_count
     lazy_relationship :chat_messages
     lazy_relationship :join_requests
+    lazy_relationship :members
 
     def initialize(*)
       super
@@ -45,15 +46,12 @@ module V1
       # try to put other user as author if conversation
       # and user's name as title
       if object.group_type == 'conversation'
-        other_participants =
-          if object.join_requests.loaded?
-            User.where(id: object.join_requests.map(&:user_id) - [scope[:user]&.id])
-          else
-            object.members.where.not(id: scope[:user]&.id)
-          end
-        other_participant = other_participants.includes(:partner).first
-        object.user = other_participant if other_participant
 
+        other_participant = lazy_members.find do |member|
+          member.id != scope[:user]&.id
+        end
+
+        object.user = other_participant if other_participant
         object.title = UserPresenter.new(user: object.user).display_name
       end
     end
