@@ -41,8 +41,6 @@ Rails.application.configure do
   config.active_record.logger.level = Logger::INFO
 
   # DEV / TEST CREDENTIALS
-  ENV["BASIC_ADMIN_USER"] = "admin"
-  ENV["BASIC_ADMIN_PASSWORD"] = "3nt0ur4g3"
   ENV["ANDROID_GCM_API_KEY"] = "foobar"
 
   config.action_mailer.default_url_options = { :host => "localhost" }
@@ -54,9 +52,6 @@ Rails.application.configure do
 
   ENV["MAILCHIMP_LIST_ID"]="foobar"
   ENV["MAILCHIMP_API_KEY"]="foobar-us8"
-
-  ENV["ATD_USERNAME"] = "name"
-  ENV["ATD_PASSWORD"] = "password"
 
   ENV["HOST"]='localhost'
   ENV["ORGANIZATION_ADMIN_URL"]="localhost"

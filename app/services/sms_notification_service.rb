@@ -8,10 +8,6 @@ class SmsNotificationService
     provider = ENV['SMS_PROVIDER']
     secondary_provider = ENV['SMS_PROVIDER_SECONDARY'].presence
 
-    if audit_phone_number?(phone_number)
-      provider = 'Slack'
-    end
-
     if secondary_provider != nil && sms_type == 'regenerate'
       number_of_deliveries = SmsDelivery.where(phone_number: phone_number, sms_type: sms_type).where("created_at > '#{Time.now - 60.minutes}'").count
 
@@ -98,10 +94,6 @@ class SmsNotificationService
 
     channel = '#test-env-sms'
 
-    if audit_phone_number?(phone_number)
-      channel = '#audit-linkedout-entourage'
-    end
-
     Slack::Notifier.new(ENV['SLACK_WEBHOOK_URL']).ping(
       channel: channel,
       username: ENV['SMS_SENDER_NAME'],
@@ -118,12 +110,5 @@ class SmsNotificationService
   def debug_to_logs(phone_number, message, sms_type)
     Rails.logger.debug "\nSMS to #{phone_number.inspect}: #{message.inspect}"
     return 'Ok'
-  end
-
-  private
-
-  def audit_phone_number? phone_number
-    ENV['AUDIT_PHONE_PREFIXES'].present? &&
-    ENV['AUDIT_PHONE_PREFIXES'].split(',').any? { |prefix| phone_number.start_with?(prefix) }
   end
 end
