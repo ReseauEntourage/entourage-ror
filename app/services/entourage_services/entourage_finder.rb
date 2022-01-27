@@ -1,5 +1,7 @@
 module EntourageServices
   class EntourageFinder
+    include FeedServices::Preloader
+
     DEFAULT_DISTANCE=10
     FEED_CATEGORY_EXPR = "(case when group_type = 'action' then concat(entourage_type, '_', coalesce(display_category, 'other')) else group_type::text end)"
 
@@ -157,26 +159,6 @@ module EntourageServices
 
       entourages.each do |entourage|
         entourage.current_join_request = user_join_requests[entourage.id]
-      end
-    end
-
-    def preload_chat_messages_counts(entourages)
-      user_join_request_ids = entourages.map do |entourage|
-        entourage.try(:current_join_request)&.id
-      end
-
-      counts = JoinRequest
-        .with_unread_messages
-        .where(id: user_join_request_ids)
-        .group(:id)
-        .count
-
-      counts.default = 0
-
-      entourages.each do |entourage|
-        join_request_id = entourage.try(:current_join_request)&.id
-        next if join_request_id.nil?
-        entourage.number_of_unread_messages = counts[join_request_id]
       end
     end
 

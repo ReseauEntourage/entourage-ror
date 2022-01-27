@@ -5,13 +5,20 @@ module UserServices
     end
 
     def number_of_unread_messages
-      count =
-        FeedServices::MyFeedFinder.unread_count(user: user) +
-        EntourageServices::InvitationService.unread_count(user: user)
+      (unread_conversations + unread_invitations).uniq.count
+    end
 
-      count = 99 if count > 99
+    def unread_conversations
+      JoinRequest.where(user_id: user.id, joinable_type: :Entourage)
+        .with_unread_messages
+        .pluck(:joinable_id)
+        .uniq
+    end
 
-      count
+    def unread_invitations
+      EntourageInvitation.where(invitee_id: user.id, status: :pending)
+        .pluck(:invitable_id)
+        .uniq
     end
 
     private
