@@ -226,7 +226,6 @@ describe Api::V1::PoisController, :type => :controller do
 
         paris = PoiServices::Soliguide::PARIS
         params = { latitude: paris[:latitude], longitude: paris[:longitude], distance: 5, v: '2', format: :json }
-        url = "#{ENV['ENTOURAGE_SOLIGUIDE_HOST']}?distance=5&latitude=#{paris[:latitude]}&longitude=#{paris[:longitude]}"
 
         before {
           stub_request(:post, "https://api.soliguide.fr/new-search").to_return(status: 200, body: '{"places":[{}]}', headers: {})
