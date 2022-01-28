@@ -335,6 +335,10 @@ Rails.application.routes.draw do
         end
       end
 
+      namespace :uptimes, only: [] do
+        get :soliguides
+      end
+
       resources :anonymous_users, only: [:create]
 
       put 'applications' => 'user_applications#update'
