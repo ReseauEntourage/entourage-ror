@@ -337,6 +337,7 @@ Rails.application.routes.draw do
 
       namespace :uptimes, only: [] do
         get :soliguides
+        get :soliguide
       end
 
       resources :anonymous_users, only: [:create]
