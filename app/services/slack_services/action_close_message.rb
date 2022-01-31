@@ -15,13 +15,19 @@ module SlackServices
 
     def payload
       {
-        text: "<@#{slack_moderator_id(@action.user)}> ou team modération (département : #{departement(@action.user) || 'n/a'}) pouvez-vous vérifier cet utilisateur ?",
+        text: "Nouveau commentaire utilisateur",
         attachments: [
+          {
+            text: "<@#{slack_moderator_id(@action.user)}> ou team modération (département : #{departement(@action.user) || 'n/a'})"
+          },
           {
             text: "%s vient de clôturer son action solidaire en laissant un commentaire" % @action.user.full_name
           },
           {
             text: "Commentaire : #{@message}"
+          },
+          {
+            text: "Afficher l'action #{@action.title} : #{link_to_group(@action)}"
           },
         ]
       }
