@@ -31,11 +31,6 @@ module FeedServices
 
         # fix wrong key in iOS 4.1 - 4.3
         'ts' => 'tour_barehands',
-      },
-      'pfp' => {
-        'nh' => 'neighborhood',
-        'pc' => 'private_circle',
-        'ou' => 'outing',
       }
     }
 

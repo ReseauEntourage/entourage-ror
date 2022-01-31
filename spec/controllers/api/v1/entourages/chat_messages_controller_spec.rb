@@ -228,46 +228,7 @@ describe Api::V1::Entourages::ChatMessagesController do
                                                      "reasons"=>["Message type n'est pas inclus(e) dans la liste"]) }
       end
 
-      context "pfp visit" do
-        with_community :pfp
-
-        let(:circle) { create :private_circle, title: "Les amis de Henriette" }
-        let(:user) { create :public_user }
-        let!(:join_request) { create :join_request, joinable: circle, user: user, status: :accepted }
-
-        before { post :create, params: { entourage_id: circle.to_param, chat_message: payload, token: user.token } }
-
-        context "valid payload" do
-          let(:payload) do
-            {
-              message_type: 'visit',
-              metadata: {
-                visited_at: Time.zone.now.iso8601
-              }
-            }
-          end
-
-          it { expect(response.status).to eq(201) }
-          it { expect(ChatMessage.count).to eq(1) }
-          it { expect(JSON.parse(response.body)).to eq({
-            "chat_message" => {
-              "id" => ChatMessage.last.id,
-              "message_type" => "visit",
-              "content" => "J'ai voisiné Henriette aujourd'hui",
-              "user" => {
-                "id" => user.id,
-                "avatar_url" => nil,
-                "display_name" => "John D.",
-                "partner" => nil
-              },
-              "created_at" => ChatMessage.last.created_at.iso8601(3)
-            }
-          }) }
-        end
-      end
-
       context "to a null conversations by list uuid" do
-        with_community :pfp
         let!(:entourage) { nil }
         let(:other_user) { create :public_user, first_name: "Buzz", last_name: "Lightyear" }
         let(:join_requests) { Entourage.last.join_requests.map(&:attributes) }
@@ -295,7 +256,7 @@ describe Api::V1::Entourages::ChatMessagesController do
           it { expect(Entourage.last.attributes).to include(
             "user_id" => user.id,
             "number_of_people" => 2,
-            "community" => 'pfp',
+            "community" => 'entourage',
             "group_type" => "conversation"
           ) }
           it { expect(Entourage.last.attributes['uuid_v2']).to start_with '1_hash_' }

@@ -37,11 +37,6 @@ describe EntourageServices::EntourageBuilder do
       longitude: 2
     ) }
 
-    it "EntourageServices::NeighborhoodAnnouncement.on_create" do
-      expect(EntourageServices::NeighborhoodAnnouncement).to receive(:on_create)
-      entourage = service.create
-    end
-
     it "FollowingService.on_create_entourage" do
       expect(FollowingService).to receive(:on_create_entourage)
       entourage = service.create

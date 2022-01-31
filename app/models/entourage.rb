@@ -225,17 +225,6 @@ class Entourage < ApplicationRecord
           city: { type: :string },
           display_address: { type: :string },
         }
-      when 'private_circle:metadata'
-        {
-          visited_user_first_name: { type: :string },
-          street_address: { type: :string },
-          google_place_id: { type: :string },
-        }
-      when 'neighborhood:metadata'
-        {
-          address: { type: :string },
-          google_place_id: { type: :string },
-        }
       when 'outing:metadata'
         {
           starts_at: { format: 'date-time-iso8601' },

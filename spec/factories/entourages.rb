@@ -34,39 +34,6 @@ FactoryBot.define do
       status { "blacklisted" }
     end
 
-    factory :private_circle do
-      group_type { "private_circle" }
-
-      transient do
-        default_metadata { { visited_user_first_name: "Henriette",
-                         street_address: "44 rue de l’Assomption, 75016 Paris, France",
-                         google_place_id: "foobar" } }
-      end
-
-      after(:build) do |circle, stuff|
-        circle.metadata = (stuff.default_metadata || {}).symbolize_keys.merge(circle.metadata.symbolize_keys)
-        circle.title = PrivateCircleService.generate_title(circle)
-      end
-    end
-
-    factory :neighborhood do
-      group_type { "neighborhood" }
-
-      transient do
-        default_metadata { { address: "Saint Ambroise, 75011 Paris",
-                         google_place_id: "foobar" } }
-      end
-
-      after(:build) do |circle, stuff|
-        circle.metadata = (stuff.default_metadata || {}).symbolize_keys.merge(circle.metadata.symbolize_keys)
-        circle.title = [
-          "Voisinage ",
-          ("aehiouy".include?(circle.metadata[:address].first.downcase) ? "d'" : "de "),
-          circle.metadata[:address]
-        ].join
-      end
-    end
-
     factory :outing do
       group_type { "outing" }
       latitude { 48.854367553785 }
