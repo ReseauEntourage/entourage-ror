@@ -211,7 +211,7 @@ module Admin
     end
 
     def download_list_export
-      send_file UserServices::ListExporter.new(users: filtered_users.includes(:user_denorm, :addresses, :organization)).csv,
+      send_file UserServices::ListExporter.new(users: filtered_users.includes(:user_denorm, :address, :organization)).csv,
         filename: "users-#{Time.now.to_i}.csv",
         type: "application/csv"
     end
