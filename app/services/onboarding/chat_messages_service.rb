@@ -9,15 +9,6 @@ module Onboarding
       return unless now.strftime('%A').in?(ACTIVE_DAYS)
       return unless now.strftime('%H:%M').in?(ACTIVE_HOURS)
 
-      user_ids = User
-        .where(community: :entourage, deleted: false)
-        .with_event('onboarding.profile.first_name.entered', :name_entered)
-        .with_event('onboarding.profile.postal_code.entered', :postal_code_entered)
-        .without_event('onboarding.chat_messages.welcome.sent')
-        .without_event('onboarding.chat_messages.welcome.skipped')
-        .where("greatest(name_entered.created_at, postal_code_entered.created_at) <= ?", MIN_DELAY.ago)
-        .pluck(:id)
-
       User.where(id: user_ids).find_each do |user|
         begin
           Raven.user_context(id: user&.id)
@@ -41,7 +32,7 @@ module Onboarding
 
           if chat_message_exists
             Event.track('onboarding.chat_messages.welcome.skipped', user_id: user.id)
-            return
+            next
           end
 
           variant = user.goal || :goal_not_known
@@ -84,5 +75,16 @@ module Onboarding
         end
       end
     end
+
+    def self.user_ids
+      User.where(community: :entourage, deleted: false)
+        .with_event('onboarding.profile.first_name.entered', :name_entered)
+        .with_event('onboarding.profile.postal_code.entered', :postal_code_entered)
+        .without_event('onboarding.chat_messages.welcome.sent')
+        .without_event('onboarding.chat_messages.welcome.skipped')
+        .where("greatest(name_entered.created_at, postal_code_entered.created_at) <= ?", MIN_DELAY.ago)
+        .pluck(:id)
+    end
+
   end
 end

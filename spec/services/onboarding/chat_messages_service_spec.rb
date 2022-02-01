@@ -72,6 +72,16 @@ describe Onboarding::ChatMessagesService, type: :service do
       it { expect { subject }.not_to change { ChatMessage.count } }
     end
 
+    describe 'one user has already a conversation; that should not skip the other one' do
+      let(:other_address) { build :address }
+      let!(:other_user) { create :public_user, first_name: 'Jack', goal: :offer_help, address: other_address }
+      let!(:conversation) { create :conversation, participants: [user, admin] }
+      let!(:chat_message) { create :chat_message, user: user, messageable: conversation }
+
+      before { Onboarding::ChatMessagesService.stub(:user_ids) { [user.id, other_user.id] } }
+      it { expect { subject }.to change { ChatMessage.count }.by 2 }
+    end
+
     describe 'user has already sent a message to the moderator' do
       let(:conversation) { create :conversation, participants: [user, admin] }
       before do
