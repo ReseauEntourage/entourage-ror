@@ -4,6 +4,8 @@ module PoiServices
     # @todo refactor: get specific formatter for services_all, location, entity, languages
     def self.format poi
       return nil unless poi
+      return nil unless poi['entity']
+      return nil unless poi['location']
       return nil unless poi['services_all']
 
       source_categories = poi['services_all'].map { |service| service['categorie'] }

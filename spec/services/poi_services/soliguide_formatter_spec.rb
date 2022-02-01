@@ -1,6 +1,62 @@
 require 'rails_helper'
 
 describe PoiServices::Soliguide do
+  describe 'format' do
+    subject { PoiServices::SoliguideFormatter.format poi }
+
+    context 'empty poi' do
+      let(:poi) {}
+      it { expect(subject).to eq(nil) }
+    end
+
+    context 'minimum information' do
+      let(:poi) { {
+        'lieu_id' => 123,
+        'entity' => { 'name' => 'foo' },
+        'location' => { 'coordinates' => [1, 2] },
+        'languages' => ['en'],
+        'services_all' => [{
+          'name' => 'bar',
+        }]
+      } }
+
+      it { expect(subject).to eq({
+        uuid: "s123",
+        source: :soliguide,
+        source_url: "https://soliguide.fr/fiche/",
+        name: "foo",
+        description: "",
+        longitude: 1,
+        latitude: 2,
+        address: nil,
+        phone: nil,
+        website: nil,
+        email: nil,
+        audience: "",
+        category_ids: [],
+        source_category_id: nil,
+        source_category_ids: [],
+        hours: [],
+        languages: "Anglais (English)"
+      }) }
+    end
+
+    describe 'with phone' do
+      let(:poi) { {
+        'lieu_id' => 123,
+        'entity' => { 'name' => 'foo', 'phone' => '0601020304' },
+        'location' => { 'coordinates' => [1, 2] },
+        'languages' => ['en'],
+        'services_all' => [{
+          'name' => 'bar',
+        }]
+      } }
+
+      it { expect(subject).to have_key(:phone) }
+      it { expect(subject[:phone]).to eq('0601020304') }
+    end
+  end
+
   describe 'format_audience' do
     subject { PoiServices::SoliguideFormatter.format_audience publics, modalities }
 
