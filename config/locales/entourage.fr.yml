@@ -157,6 +157,13 @@ fr:
         title: Titre
         archived_at: Archivé le
         area: Zone
+        areas: Départements ou codes postaux
+        area_type: Zone
+        area_types:
+          national: National
+          hors_zone: Hors-zone
+          sans_zone: Sans-zone
+          list: Départements ou codes postaux
 
   community:
     entourage:
