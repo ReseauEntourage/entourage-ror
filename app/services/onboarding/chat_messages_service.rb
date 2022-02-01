@@ -9,15 +9,6 @@ module Onboarding
       return unless now.strftime('%A').in?(ACTIVE_DAYS)
       return unless now.strftime('%H:%M').in?(ACTIVE_HOURS)
 
-      user_ids = User
-        .where(community: :entourage, deleted: false)
-        .with_event('onboarding.profile.first_name.entered', :name_entered)
-        .with_event('onboarding.profile.postal_code.entered', :postal_code_entered)
-        .without_event('onboarding.chat_messages.welcome.sent')
-        .without_event('onboarding.chat_messages.welcome.skipped')
-        .where("greatest(name_entered.created_at, postal_code_entered.created_at) <= ?", MIN_DELAY.ago)
-        .pluck(:id)
-
       User.where(id: user_ids).find_each do |user|
         begin
           Raven.user_context(id: user&.id)
@@ -25,23 +16,18 @@ module Onboarding
           moderation_area = ModerationServices.moderation_area_for_user(user)
           author = moderation_area.moderator
 
-          participant_ids = [author.id, user.id]
-
-          conversation_uuid = ConversationService.hash_for_participants(participant_ids, validated: false)
-          conversation = Entourage.find_by(uuid_v2: conversation_uuid)
-
-          if conversation
+          if conversation = conversation_with([author.id, user.id])
             join_request = JoinRequest.find_by(joinable: conversation, user: author, status: :accepted)
             chat_message_exists = conversation.chat_messages.where(message_type: :text).exists?
           else
-            conversation = ConversationService.build_conversation(participant_ids: participant_ids)
+            conversation = ConversationService.build_conversation(participant_ids: [author.id, user.id])
             join_request = conversation.join_requests.to_a.find { |r| r.user_id == author.id }
             chat_message_exists = false
           end
 
           if chat_message_exists
             Event.track('onboarding.chat_messages.welcome.skipped', user_id: user.id)
-            return
+            next
           end
 
           variant = user.goal || :goal_not_known
@@ -83,6 +69,22 @@ module Onboarding
           Raven.capture_exception(e)
         end
       end
+    end
+
+    def self.user_ids
+      User.where(community: :entourage, deleted: false)
+        .with_event('onboarding.profile.first_name.entered', :name_entered)
+        .with_event('onboarding.profile.postal_code.entered', :postal_code_entered)
+        .without_event('onboarding.chat_messages.welcome.sent')
+        .without_event('onboarding.chat_messages.welcome.skipped')
+        .where("greatest(name_entered.created_at, postal_code_entered.created_at) <= ?", MIN_DELAY.ago)
+        .pluck(:id)
+    end
+
+    def self.conversation_with participant_ids
+      Entourage.find_by(
+        uuid_v2: ConversationService.hash_for_participants(participant_ids, validated: false)
+      )
     end
   end
 end
