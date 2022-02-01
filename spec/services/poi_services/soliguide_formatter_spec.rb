@@ -30,6 +30,7 @@ describe PoiServices::Soliguide do
         latitude: 2,
         address: nil,
         phone: nil,
+        phones: "",
         website: nil,
         email: nil,
         audience: "",
@@ -41,10 +42,13 @@ describe PoiServices::Soliguide do
       }) }
     end
 
-    describe 'with phone' do
+    describe 'with phones' do
       let(:poi) { {
         'lieu_id' => 123,
-        'entity' => { 'name' => 'foo', 'phone' => '0601020304' },
+        'entity' => { 'name' => 'foo', 'phones' => [
+          { 'label' => 'phone1', 'phoneNumber' => '0601020304' },
+          { 'label' => 'phone2', 'phoneNumber' => '0712345678' },
+        ] },
         'location' => { 'coordinates' => [1, 2] },
         'languages' => ['en'],
         'services_all' => [{
@@ -54,6 +58,8 @@ describe PoiServices::Soliguide do
 
       it { expect(subject).to have_key(:phone) }
       it { expect(subject[:phone]).to eq('0601020304') }
+      it { expect(subject).to have_key(:phones) }
+      it { expect(subject[:phones]).to eq('0601020304, 0712345678') }
     end
   end
 
@@ -497,6 +503,35 @@ describe PoiServices::Soliguide do
     context 'html accent description' do
       let(:description) { "<p>Lorem to caf&#233;t&#233;ria</p>" }
       it { expect(subject).to eq("Lorem to cafétéria") }
+    end
+  end
+
+  describe 'format_phones' do
+    subject { PoiServices::SoliguideFormatter.format_phones phones }
+
+    context 'no phones' do
+      let(:phones) { nil }
+      it { expect(subject).to eq([]) }
+    end
+
+    context 'empty phones' do
+      let(:phones) { [] }
+      it { expect(subject).to eq([]) }
+    end
+
+    context 'one phone' do
+      let(:phones) { [
+        { 'label' => 'phone1', 'phoneNumber' => '0601020304' },
+      ] }
+      it { expect(subject).to eq(['0601020304']) }
+    end
+
+    context 'multiple phones' do
+      let(:phones) { [
+        { 'label' => 'phone1', 'phoneNumber' => '0601020304' },
+        { 'label' => 'phone2', 'phoneNumber' => '0712345678' },
+      ] }
+      it { expect(subject).to eq(['0601020304', '0712345678']) }
     end
   end
 
