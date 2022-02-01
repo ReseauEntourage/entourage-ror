@@ -4,9 +4,12 @@ module PoiServices
     # @todo refactor: get specific formatter for services_all, location, entity, languages
     def self.format poi
       return nil unless poi
+      return nil unless poi['entity']
+      return nil unless poi['location']
       return nil unless poi['services_all']
 
       source_categories = poi['services_all'].map { |service| service['categorie'] }
+      phones = poi['entity']['phones'].presence
 
       {
         uuid: "s#{poi['lieu_id']}",
@@ -17,7 +20,8 @@ module PoiServices
         longitude: poi['location']['coordinates'][0].round(6),
         latitude: poi['location']['coordinates'][1].round(6),
         address: poi['address'].presence,
-        phone: poi['entity']['phone'].presence,
+        phone: format_phones(phones).first,
+        phones: format_phones(phones).join(', '),
         website: poi['entity']['website'].presence,
         email:poi['entity']['mail'].presence,
         audience: format_audience(poi['publics'], poi['modalities']),
@@ -295,6 +299,12 @@ module PoiServices
       Nokogiri::HTML(string).text
         .gsub(/\n\n+/, "\n\n") # Never leave more than 2 consecutive newlines.
         .strip                 # Strip leading and trailing whitespace.
+    end
+
+    def self.format_phones phones
+      return [] unless phones.presence
+
+      phones.pluck('phoneNumber')
     end
 
     def self.extract_words string
