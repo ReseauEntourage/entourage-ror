@@ -16,16 +16,11 @@ module Onboarding
           moderation_area = ModerationServices.moderation_area_for_user(user)
           author = moderation_area.moderator
 
-          participant_ids = [author.id, user.id]
-
-          conversation_uuid = ConversationService.hash_for_participants(participant_ids, validated: false)
-          conversation = Entourage.find_by(uuid_v2: conversation_uuid)
-
-          if conversation
+          if conversation = conversation_with([author.id, user.id])
             join_request = JoinRequest.find_by(joinable: conversation, user: author, status: :accepted)
             chat_message_exists = conversation.chat_messages.where(message_type: :text).exists?
           else
-            conversation = ConversationService.build_conversation(participant_ids: participant_ids)
+            conversation = ConversationService.build_conversation(participant_ids: [author.id, user.id])
             join_request = conversation.join_requests.to_a.find { |r| r.user_id == author.id }
             chat_message_exists = false
           end
@@ -86,5 +81,10 @@ module Onboarding
         .pluck(:id)
     end
 
+    def self.conversation_with participant_ids
+      Entourage.find_by(
+        uuid_v2: ConversationService.hash_for_participants(participant_ids, validated: false)
+      )
+    end
   end
 end
