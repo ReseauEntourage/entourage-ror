@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_02_01_144000) do
+ActiveRecord::Schema.define(version: 2022_02_02_113000) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -106,7 +106,7 @@ ActiveRecord::Schema.define(version: 2022_02_01_144000) do
   end
 
   create_table "conversation_message_broadcasts", id: :serial, force: :cascade do |t|
-    t.string "area", null: false
+    t.string "area_old"
     t.text "content", null: false
     t.string "goal", null: false
     t.string "title", null: false
@@ -118,7 +118,7 @@ ActiveRecord::Schema.define(version: 2022_02_01_144000) do
     t.integer "sent_users_count"
     t.string "area_type"
     t.jsonb "areas", default: [], null: false
-    t.index ["area"], name: "index_conversation_message_broadcasts_on_area"
+    t.index ["area_old"], name: "index_conversation_message_broadcasts_on_area_old"
     t.index ["area_type"], name: "index_conversation_message_broadcasts_on_area_type"
     t.index ["goal"], name: "index_conversation_message_broadcasts_on_goal"
     t.index ["status"], name: "index_conversation_message_broadcasts_on_status"
