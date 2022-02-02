@@ -78,7 +78,7 @@ module Admin
 
     def conversation_message_broadcast_params
       params.require(:conversation_message_broadcast).permit(
-        :area, :goal, :content, :title
+        :area_type, :goal, :content, :title, areas: []
       )
     end
   end

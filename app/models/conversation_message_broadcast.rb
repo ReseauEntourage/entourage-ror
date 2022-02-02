@@ -3,7 +3,7 @@ require 'experimental/jsonb_set'
 class ConversationMessageBroadcast < ApplicationRecord
   AREA_TYPES = %w(national hors_zone sans_zone list).freeze
 
-  validates_presence_of :area, :area_type, :goal, :content, :title
+  validates_presence_of :area_type, :goal, :content, :title
 
   scope :with_status, -> (status) {
     if status.to_sym == :sending
