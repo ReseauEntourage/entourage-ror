@@ -1,7 +1,9 @@
 require 'experimental/jsonb_set'
 
 class ConversationMessageBroadcast < ApplicationRecord
-  validates_presence_of :area, :goal, :content, :title
+  AREA_TYPES = %w(national hors_zone sans_zone list).freeze
+
+  validates_presence_of :area_type, :goal, :content, :title
 
   scope :with_status, -> (status) {
     if status.to_sym == :sending
@@ -11,6 +13,22 @@ class ConversationMessageBroadcast < ApplicationRecord
     end
   }
 
+  # @param moderation_area Either (national, hors_zone, sans_zone) or "dep_xx"
+  scope :with_moderation_area, -> (moderation_area) {
+    return where(area_type: moderation_area) unless moderation_area.start_with? 'dep_'
+
+    with_departement(ModerationArea.departement moderation_area)
+  }
+
+  scope :with_departement, -> (departement) {
+    from('conversation_message_broadcasts, jsonb_array_elements_text(areas)')
+      .where(area_type: 'list')
+      .where('value like ?', "#{departement}%")
+  }
+
+  # @deprecated
+  # @fixme
+  # There is no moderation_area relationship
   def name
     if moderation_area
       "#{title} (#{area.departement}, #{goal})"
@@ -68,16 +86,19 @@ class ConversationMessageBroadcast < ApplicationRecord
   def users
     return [] unless valid?
 
-    User
-    .where('users.deleted': false, 'users.validation_status': :validated)
-    .with_profile(goal)
-    .in_area(area)
-    .group('users.id')
+    users = User.where('users.deleted': false, 'users.validation_status': :validated)
+      .with_profile(goal)
+      .group('users.id')
+
+    return users.in_area(area_type) if generic_area?
+
+    users.in_specific_areas(areas)
   end
 
   def clone
     ConversationMessageBroadcast.new(
-      area: area,
+      area_type: area_type,
+      areas: areas,
       content: content,
       goal: goal,
       title: title
@@ -90,5 +111,15 @@ class ConversationMessageBroadcast < ApplicationRecord
 
   def delete_jobs
     ConversationMessageBroadcastJob.delete_jobs_with_tag id
+  end
+
+  private
+
+  def generic_area?
+    ['national', 'hors_zone', 'sans_zone'].include? area_type
+  end
+
+  def specific_area?
+    !generic_area?
   end
 end
