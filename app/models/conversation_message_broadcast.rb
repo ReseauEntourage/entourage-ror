@@ -13,6 +13,19 @@ class ConversationMessageBroadcast < ApplicationRecord
     end
   }
 
+  # @param moderation_area Either (national, hors_zone, sans_zone) or "dep_xx"
+  scope :with_moderation_area, -> (moderation_area) {
+    return where(area_type: moderation_area) unless moderation_area.start_with? 'dep_'
+
+    with_departement(ModerationArea.departement moderation_area)
+  }
+
+  scope :with_departement, -> (departement) {
+    from('conversation_message_broadcasts, jsonb_array_elements_text(areas)')
+      .where(area_type: 'list')
+      .where('value like ?', "#{departement}%")
+  }
+
   # @deprecated
   # @fixme
   # There is no moderation_area relationship
@@ -84,7 +97,6 @@ class ConversationMessageBroadcast < ApplicationRecord
 
   def clone
     ConversationMessageBroadcast.new(
-      area: area, # @deprecated
       area_type: area_type,
       areas: areas,
       content: content,
