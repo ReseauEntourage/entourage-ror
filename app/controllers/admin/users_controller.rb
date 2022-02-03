@@ -318,6 +318,7 @@ module Admin
       @users = @users.organization if profile == :organization
       @users = @users.in_area("dep_" + params[:q][:postal_code_start]) if params[:q] && params[:q][:postal_code_start]
       @users = @users.in_area(:hors_zone) if params[:q] && params[:q][:postal_code_in_hors_zone]
+      @users.group('users.id')
       @users
     end
 
