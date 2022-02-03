@@ -28,6 +28,9 @@ fr:
         deleted: Supprimé
         organization_name: Association
         subscriptions: Abonnements
+        action_participations_count: Nombre d'actions rejointes
+        outing_participations_count: Nombre d'événements rejoints
+        conversation_participations_count: Nombre de conversations rejointes
       user_history:
         kind:
           account: Compte créé
