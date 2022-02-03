@@ -31,7 +31,7 @@ module UserServices
     end
 
     def csv
-      file = self.get_file
+      file = UserServices::ListExporter.get_file
 
       CSV.open(file, 'w+') do |writer|
         writer << FIELDS.map { |field| I18n.t("activerecord.attributes.user.#{field}") }
