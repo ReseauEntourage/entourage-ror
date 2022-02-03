@@ -211,9 +211,16 @@ module Admin
     end
 
     def download_list_export
-      send_file UserServices::ListExporter.new(users: filtered_users.includes(:user_denorm, :address, :organization)).csv,
-        filename: "users-#{Time.now.to_i}.csv",
-        type: "application/csv"
+      user_ids = filtered_users.pluck(:id)
+
+      if user_ids.count < 500
+        send_file UserServices::ListExporter.new(users: filtered_users.includes(:user_denorm, :address, :organization)).csv,
+          filename: "users-#{Time.now.to_i}.csv",
+          type: "application/csv"
+      else
+        MemberMailer.users_csv_export(user_ids, current_user.email).deliver_later
+        redirect_to [:admin, :users], params: params, flash: { success: "Vous recevrez l'export par mail" }
+      end
     end
 
     def anonymize

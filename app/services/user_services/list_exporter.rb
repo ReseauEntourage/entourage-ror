@@ -18,6 +18,7 @@ module UserServices
     }
 
     FULL_FIELDS = FIELDS + %w{
+      action_creations_count
       action_participations_count
       outing_participations_count
       conversation_participations_count
@@ -30,7 +31,7 @@ module UserServices
     end
 
     def csv
-      file = self.get_file
+      file = UserServices::ListExporter.get_file
 
       CSV.open(file, 'w+') do |writer|
         writer << FIELDS.map { |field| I18n.t("activerecord.attributes.user.#{field}") }
