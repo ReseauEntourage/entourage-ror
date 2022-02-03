@@ -528,6 +528,25 @@ class User < ApplicationRecord
     ), Time.now)
   end
 
+  def action_participations_count
+    entourage_participations.select do |participation|
+      participation.group_type.to_sym == :action
+    end.count
+  end
+
+  def outing_participations_count
+    entourage_participations.select do |participation|
+      participation.group_type.to_sym == :outing
+    end.count
+  end
+
+  def conversation_participations_count
+    entourage_participations.select do |participation|
+      participation.group_type.to_sym == :conversation
+    end.count
+  end
+
+
   protected
 
   def clean_up_passwords
