@@ -533,6 +533,10 @@ class User < ApplicationRecord
     ), Time.now)
   end
 
+  def action_creations_count
+    entourages.count
+  end
+
   def action_participations_count
     entourage_participations.select do |participation|
       participation.group_type.to_sym == :action
