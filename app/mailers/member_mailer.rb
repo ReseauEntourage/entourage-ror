@@ -130,4 +130,15 @@ class MemberMailer < MailjetMailer
       subject: "Export des données personnelles d'Entourage"
     )
   end
+
+  def users_csv_export user_ids, recipient
+    attachments["users-csv-export.csv"] = File.read(
+      UserServices::ListExporter.export(user_ids)
+    )
+
+    mail(
+      to: recipient,
+      subject: "Export des utilisateurs"
+    )
+  end
 end
