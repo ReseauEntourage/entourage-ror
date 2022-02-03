@@ -18,6 +18,7 @@ module UserServices
     }
 
     FULL_FIELDS = FIELDS + %w{
+      action_creations_count
       action_participations_count
       outing_participations_count
       conversation_participations_count
