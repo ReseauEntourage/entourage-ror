@@ -219,7 +219,7 @@ module Admin
           type: "application/csv"
       else
         MemberMailer.users_csv_export(user_ids, current_user.email).deliver_later
-        redirect_to [:admin, :users], params: params, flash: { success: "Vous recevrez l'export par mail" }
+        redirect_to admin_users_url(params: filter_params), flash: { success: "Vous recevrez l'export par mail" }
       end
     end
 
@@ -302,6 +302,10 @@ module Admin
       params.require(:user_moderation).permit(
         :skills, :expectations, :acquisition_channel
       )
+    end
+
+    def filter_params
+      params.permit(:search, :profile, :engagement, :status, :role, q: {})
     end
 
     def filtered_users
