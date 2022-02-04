@@ -54,7 +54,11 @@
               <td><%= conversation_message_broadcast.id %></td>
               <td><%= link_to conversation_message_broadcast.title, edit_admin_conversation_message_broadcast_path(conversation_message_broadcast) %></td>
               <td><%= check_box_tag '', '', conversation_message_broadcast.archived?, disabled: true %></td>
-              <td><%= @areas[conversation_message_broadcast.area.to_sym].name_with_departement %></td>
+              <td>
+                <% conversation_message_broadcast[:areas].map do |area| %>
+                  <span class="badge"><%= area %></span>
+                <% end %>
+              </td>
               <td><%= UserGoalPresenter.new(conversation_message_broadcast.goal, community: current_user.community).name %></td>
               <td><%= l(conversation_message_broadcast.updated_at, format: :short) if conversation_message_broadcast.updated_at %></td>
               <% if @status == :sent %>
