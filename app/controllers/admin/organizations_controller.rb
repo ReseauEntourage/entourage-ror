@@ -1,6 +1,6 @@
 module Admin
   class OrganizationsController < Admin::BaseController
-    before_action :set_organization, only: [:edit, :update]
+    before_action :set_organization, only: [:show, :edit, :update]
 
     def index
       @q = Organization.ransack(params[:q])
@@ -8,6 +8,10 @@ module Admin
                          .page(params[:page])
                          .per(25)
                          .order("name ASC")
+    end
+
+    def show
+      @members = @organization.users.order(:last_name, :first_name)
     end
 
     def edit
