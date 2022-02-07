@@ -1,11 +1,16 @@
 <ol class="breadcrumb">
   <li><%= link_to "Maraudes - Liste des associations", admin_organizations_path %></li>
-  <li class="active">Association de maraude</li>
+  <li><%= @organization.name %></li>
 </ol>
 
 <div class="row">
   <h1>Éditer l'association</h1>
 </div>
+
+<ul class="nav nav-tabs" role="tablist" style="margin-bottom: 2rem">
+  <li role="presentation"><%= link_to "Membres", admin_organization_path(@organization) %></li>
+  <li role="presentation" class="active"><%= link_to "Description", edit_admin_organization_path(@organization) %></li>
+</ul>
 
 <%= form_for([:admin, @organization], html: { class: "form-horizontal", role: "form" }) do |f| %>
   <%= render partial: "layouts/errors", locals: {obj: @organization} %>
