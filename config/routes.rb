@@ -47,7 +47,7 @@ Rails.application.routes.draw do
       end
       resources :registration_requests, only: [:index, :show, :update, :destroy]
       resources :messages, only: [:index, :destroy]
-      resources :organizations, only: [:index, :edit, :update]
+      resources :organizations, only: [:show, :index, :edit, :update]
       resources :partners, except: [:create, :update] do
         collection do
           post '/new', action: :create, as: nil
