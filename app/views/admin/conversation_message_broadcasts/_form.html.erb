@@ -100,29 +100,31 @@
 <% end %>
 
 <script>
-  let $areaType = $('#conversation_message_broadcast_area_type');
-  let $areasContainer = $('#conversation_message_broadcast_areas_container');
-  let $areas = $('#conversation_message_broadcast_areas');
+  $(document).on('turbolinks:load', function() {
+    let $areaType = $('#conversation_message_broadcast_area_type');
+    let $areasContainer = $('#conversation_message_broadcast_areas_container');
+    let $areas = $('#conversation_message_broadcast_areas');
 
-  function toggleAreaType() {
-    $areasContainer.toggle($areaType.val() == 'list');
-  }
-
-  toggleAreaType();
-
-  $areas.tagsinput({
-    maxChars: 5,
-    trimValue: true,
-    size: 0
-  });
-
-  $areas.on('beforeItemAdd', function(event) {
-    if (!/^[0-9]+$/.test(event.item)) {
-      event.cancel = true;
+    function toggleAreaType() {
+      $areasContainer.toggle($areaType.val() == 'list');
     }
-  });
 
-  $areaType.on('change', function(event) {
     toggleAreaType();
-  });
+
+    $areas.tagsinput({
+      maxChars: 5,
+      trimValue: true,
+      size: 0
+    });
+
+    $areas.on('beforeItemAdd', function(event) {
+      if (!/^[0-9]+$/.test(event.item)) {
+        event.cancel = true;
+      }
+    });
+
+    $areaType.on('change', function(event) {
+      toggleAreaType();
+    });
+  })
 </script>
