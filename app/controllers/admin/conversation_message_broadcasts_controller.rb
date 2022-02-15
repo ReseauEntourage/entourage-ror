@@ -7,6 +7,7 @@ module Admin
       @goal = params[:goal].presence&.to_sym || :all
       @area = params[:area].presence&.to_sym || :all
       @status = params[:status].presence&.to_sym || :draft
+      @areas = ModerationArea.by_slug_with_national
 
       @conversation_message_broadcasts = ConversationMessageBroadcast.with_status(@status).order(:created_at)
 
