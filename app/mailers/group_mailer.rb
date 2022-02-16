@@ -80,6 +80,8 @@ class GroupMailer < MailjetMailer
   end
 
   def event_joined_confirmation join_request
+    return # @see EN-4675
+
     event = join_request.joinable
     new_member = join_request.user
 
@@ -128,6 +130,8 @@ class GroupMailer < MailjetMailer
   end
 
   def event_reminder_participant join_request
+    return # @see EN-4675
+
     participant = join_request.user
     event = join_request.joinable
 
