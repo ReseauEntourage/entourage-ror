@@ -343,13 +343,6 @@ module Admin
         @entourage.public = nil
         @entourage.metadata = {}
         @entourage.online = false
-      when [:action, :group]
-        @entourage.group_type = :group
-        @entourage.entourage_type = :contribution
-        @entourage.display_category = :social
-        @entourage.public = false
-        # @entourage.metadata = {} # keep it!
-        @entourage.online = false
       else
         raise "Changing #{current_type} to #{new_type} is not allowed"
       end
