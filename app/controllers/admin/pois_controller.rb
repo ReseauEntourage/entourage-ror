@@ -3,7 +3,7 @@ module Admin
     before_action :set_poi, only: [:edit, :update, :destroy]
 
     def index
-      @params = params.permit([q: [:name_cont, :postal_code_start, :postal_code_in_hors_zone]]).to_h
+      @params = params.permit([q: [:name_or_adress_cont, :postal_code_start, :postal_code_in_hors_zone]]).to_h
       @q = Poi.ransack(@params[:q])
       @pois = @q.result(distinct: true)
                          .page(params[:page])

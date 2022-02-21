@@ -34,7 +34,7 @@
   </div>
     <%= search_form_for [:admin, @q], class: 'form-inline' do |f| %>
       <div class='form-group'>
-        <%= f.search_field :name_cont, class: 'form-control' %>
+        <%= f.search_field :name_or_adress_cont, class: 'form-control' %>
       </div>
 
       <%= f.submit 'Rechercher par nom', class: 'btn btn-default' %>
