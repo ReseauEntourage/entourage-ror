@@ -8,7 +8,7 @@ module PoiServices
     # Nom
     # Adresse
     # Description
-    # Public
+    # Public, Public(s) bénéficiaire(s)
     # Website
     # Téléphone
     # Catégorie1
@@ -28,13 +28,20 @@ module PoiServices
           # we use different notation because of poi_geocoder specifications
           "adress" => row['Adresse'],
           description: row['Description'],
-          audience: row['Public'],
+          audience: row['Public'] || row['Public(s) bénéficiaire(s)'],
           email: row['Email'],
           website: row['Website'],
           phone: row['Téléphone'],
-          category_id: row['Catégorie1'],
-          category_ids: [row['Catégorie1'], row['Catégorie2'], row['Catégorie3'], row['Catégorie4'], row['Catégorie5'], row['Catégorie6'], row['Catégorie7']].uniq.compact,
-
+          category_id: row['Catégorie1'] || row['Catégorie 1'],
+          category_ids: [
+            row['Catégorie1'] || row['Catégorie 1'],
+            row['Catégorie2'] || row['Catégorie 2'],
+            row['Catégorie3'] || row['Catégorie 3'],
+            row['Catégorie4'] || row['Catégorie 4'],
+            row['Catégorie5'] || row['Catégorie 5'],
+            row['Catégorie6'] || row['Catégorie 6'],
+            row['Catégorie7'] || row['Catégorie 7']
+          ].uniq.compact,
           validated: true
         }
 
