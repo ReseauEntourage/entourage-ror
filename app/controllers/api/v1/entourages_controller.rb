@@ -112,6 +112,23 @@ module Api
         }
       end
 
+      def lists
+        entourages = Entourage.joins(:join_requests)
+          .select(:id, :group_type)
+          .includes(:join_requests, { user: :partner })
+          .where('join_requests.user_id = ?', current_user.id)
+          .where('join_requests.status = ?', :accepted)
+
+        render json: {
+          private: {
+            count: entourages.filter{ |entourage| entourage.conversation? }.count
+          },
+          group: {
+            count: entourages.filter{ |entourage| !entourage.conversation? }.count
+          }
+        }
+      end
+
       #curl -H "Content-Type: application/json" "http://localhost:3000/api/v1/entourages/951.json?token=e4fdc865bc7a91c34daea849e7d73349&distance=123.45&feed_rank=2"
       def show
         ensure_permission! :can_read_public_content?
