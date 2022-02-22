@@ -431,17 +431,17 @@ describe Api::V1::EntouragesController do
     end
   end
 
-  describe 'GET lists' do
+  describe 'GET metadata' do
     let!(:group) { FactoryBot.create(:entourage, status: :open) }
     let(:other_user) { FactoryBot.create(:public_user) }
     let!(:conversation) { create :conversation, participants: [other_user] }
     subject { JSON.parse(response.body) }
 
-    describe "some lists conversations" do
+    describe "some metadata conversations" do
       context "group conversation" do
         let!(:join_request) { FactoryBot.create(:join_request, joinable: group, user: user, status: "accepted", last_message_read: Time.now) }
 
-        before { get :lists, params: { token: user.token } }
+        before { get :metadata, params: { token: user.token } }
         it { expect(subject).to have_key("conversations") }
         it { expect(subject['conversations']['count']).to eq(0) }
         it { expect(subject['conversations']['unread']).to eq(0) }
@@ -453,7 +453,7 @@ describe Api::V1::EntouragesController do
       context "private conversation" do
         let!(:join_request) { FactoryBot.create(:join_request, joinable: conversation, user: user, status: "accepted", last_message_read: Time.now) }
 
-        before { get :lists, params: { token: user.token } }
+        before { get :metadata, params: { token: user.token } }
         it { expect(subject).to have_key("conversations") }
         it { expect(subject['conversations']['count']).to eq(1) }
         it { expect(subject).to have_key("actions") }

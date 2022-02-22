@@ -112,7 +112,7 @@ module Api
         }
       end
 
-      def lists
+      def metadata
         entourages = Entourage.joins(:join_requests)
           .select(:id, :group_type)
           .includes(:join_requests, { user: :partner })
