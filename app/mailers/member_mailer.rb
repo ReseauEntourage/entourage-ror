@@ -141,4 +141,13 @@ class MemberMailer < MailjetMailer
       subject: "Export des utilisateurs"
     )
   end
+
+  def poi_import csv:, recipient:
+    PoiServices::Importer.read(csv: CSV.parse(csv, headers: true)) do |successes, errors|
+      @successes = successes
+      @errors = errors
+
+      mail to: recipient, subject: "Import de POI"
+    end
+  end
 end

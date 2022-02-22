@@ -1,9 +1,5 @@
 module PoiServices
   class Importer
-    def initialize(path:)
-      @path = path
-    end
-
     # Id
     # Nom
     # Adresse
@@ -18,8 +14,15 @@ module PoiServices
     # Catégorie5
     # Catégorie6
     # Catégorie7
-    def import!
-      CSV.read(path, headers: true).each do |row|
+    def self.import path
+      read CSV.read(path, headers: true)
+    end
+
+    def self.read csv:
+      successes = []
+      errors = []
+
+      csv.each do |row|
         row = row.to_hash.map { |k,v| [k, v&.strip] }.to_h # remove surrounding spaces or carriage returns
 
         attributes = {
@@ -49,15 +52,13 @@ module PoiServices
         poi = PoiServices::PoiGeocoder.new(poi: poi, params: attributes).geocode
 
         if poi.valid?
-          puts "saving Poi #{row['Nom']}, #{row['Adresse']} (#{poi.latitude}, #{poi.longitude})"
-          poi.save
+          poi.save and successes << row['Nom']
         else
-          puts "Couldn't save Poi : #{poi.errors.full_messages}"
+          errors << [row['Nom'], poi.errors.full_messages]
         end
       end
-    end
 
-    private
-    attr_reader :path
+      yield successes, errors
+    end
   end
 end
