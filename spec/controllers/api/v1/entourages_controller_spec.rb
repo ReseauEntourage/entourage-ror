@@ -431,6 +431,37 @@ describe Api::V1::EntouragesController do
     end
   end
 
+  describe 'GET lists' do
+    let!(:group) { FactoryBot.create(:entourage, status: :open) }
+    let(:other_user) { FactoryBot.create(:public_user) }
+    let!(:conversation) { create :conversation, participants: [other_user] }
+    subject { JSON.parse(response.body) }
+
+    describe "some lists conversations" do
+      context "group conversation" do
+        let!(:join_request) { FactoryBot.create(:join_request, joinable: group, user: user, status: "accepted", last_message_read: Time.now) }
+
+        before { get :lists, params: { token: user.token } }
+        it { expect(subject).to have_key("conversations") }
+        it { expect(subject['conversations']['count']).to eq(0) }
+        it { expect(subject['conversations']['unread']).to eq(0) }
+        it { expect(subject).to have_key("actions") }
+        it { expect(subject['actions']['count']).to eq(1) }
+        it { expect(subject['actions']['unread']).to eq(0) }
+      end
+
+      context "private conversation" do
+        let!(:join_request) { FactoryBot.create(:join_request, joinable: conversation, user: user, status: "accepted", last_message_read: Time.now) }
+
+        before { get :lists, params: { token: user.token } }
+        it { expect(subject).to have_key("conversations") }
+        it { expect(subject['conversations']['count']).to eq(1) }
+        it { expect(subject).to have_key("actions") }
+        it { expect(subject['actions']['count']).to eq(0) }
+      end
+    end
+  end
+
   describe 'POST create' do
     context "not signed in" do
       before { post :create, params: { entourage: { location: {longitude: 1.123, latitude: 4.567}, title: "foo", entourage_type: "ask_for_help", display_category: "social" } } }
