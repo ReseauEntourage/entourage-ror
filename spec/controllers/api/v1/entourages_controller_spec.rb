@@ -442,20 +442,22 @@ describe Api::V1::EntouragesController do
         let!(:join_request) { FactoryBot.create(:join_request, joinable: group, user: user, status: "accepted", last_message_read: Time.now) }
 
         before { get :lists, params: { token: user.token } }
-        it { expect(subject).to have_key("private") }
-        it { expect(subject['private']['count']).to eq(0) }
-        it { expect(subject).to have_key("group") }
-        it { expect(subject['group']['count']).to eq(1) }
+        it { expect(subject).to have_key("conversations") }
+        it { expect(subject['conversations']['count']).to eq(0) }
+        it { expect(subject['conversations']['unread']).to eq(0) }
+        it { expect(subject).to have_key("actions") }
+        it { expect(subject['actions']['count']).to eq(1) }
+        it { expect(subject['actions']['unread']).to eq(0) }
       end
 
       context "private conversation" do
         let!(:join_request) { FactoryBot.create(:join_request, joinable: conversation, user: user, status: "accepted", last_message_read: Time.now) }
 
         before { get :lists, params: { token: user.token } }
-        it { expect(subject).to have_key("private") }
-        it { expect(subject['private']['count']).to eq(1) }
-        it { expect(subject).to have_key("group") }
-        it { expect(subject['group']['count']).to eq(0) }
+        it { expect(subject).to have_key("conversations") }
+        it { expect(subject['conversations']['count']).to eq(1) }
+        it { expect(subject).to have_key("actions") }
+        it { expect(subject['actions']['count']).to eq(0) }
       end
     end
   end

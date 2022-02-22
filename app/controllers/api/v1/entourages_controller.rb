@@ -119,12 +119,20 @@ module Api
           .where('join_requests.user_id = ?', current_user.id)
           .where('join_requests.status = ?', :accepted)
 
+        unreads = UserServices::UnreadMessages.new(user: current_user).unread_by_group_type
+
         render json: {
-          private: {
-            count: entourages.filter{ |entourage| entourage.conversation? }.count
+          conversations: {
+            count: entourages.filter{ |entourage| entourage.conversation? }.count,
+            unread: unreads[:conversations]
           },
-          group: {
-            count: entourages.filter{ |entourage| !entourage.conversation? }.count
+          actions: {
+            count: entourages.filter{ |entourage| entourage.action? }.count,
+            unread: unreads[:actions]
+          },
+          outings: {
+            count: entourages.filter{ |entourage| entourage.outing? }.count,
+            unread: unreads[:outings]
           }
         }
       end
