@@ -305,7 +305,7 @@ Rails.application.routes.draw do
         collection do
           get :private
           get :group
-          get :lists
+          get :metadata
         end
       end
 
