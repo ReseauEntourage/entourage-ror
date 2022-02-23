@@ -182,23 +182,38 @@ resource Api::V1::UsersController do
     parameter :token, type: :string, required: true
 
     let(:user) { FactoryBot.create(:public_user) }
+    let(:other_user) { FactoryBot.create(:public_user) }
     let(:token) { user.token }
+
+    let(:subject) { JSON.parse(response_body) }
 
     context '200' do
       let(:id) { user.id }
 
-      example_request 'Get user' do
+      example_request 'Get my user using id' do
         expect(response_status).to eq(200)
-        expect(JSON.parse(response_body)).to have_key('user')
+        expect(subject).to have_key('user')
+        expect(subject['user']).to have_key('uuid')
       end
     end
 
     context '200' do
       let(:id) { "me" }
 
-      example_request 'Get my user' do
+      example_request 'Get my user using me' do
         expect(response_status).to eq(200)
-        expect(JSON.parse(response_body)).to have_key('user')
+        expect(subject).to have_key('user')
+        expect(subject['user']).to have_key('uuid')
+      end
+    end
+
+    context '200' do
+      let(:id) { other_user.id }
+
+      example_request 'Get another user' do
+        expect(response_status).to eq(200)
+        expect(subject).to have_key('user')
+        expect(subject['user']).not_to have_key('uuid')
       end
     end
   end
