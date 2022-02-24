@@ -1,5 +1,6 @@
 class User < ApplicationRecord
   include Interestable
+
   include Onboarding::UserEventsTracking::UserConcern
   include UserServices::Engagement
 
