@@ -125,6 +125,10 @@ module V1
       UserService.firebase_properties(object)
     end
 
+    def interests
+      object.interests.map(&:name).sort
+    end
+
     # FIXME: the placeholders attribute is a hack. It indicates to the clients
     # that if there is a value in local storage for the attributes listed,
     # the local value should be used instead of the one provided by the server.

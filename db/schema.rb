@@ -832,7 +832,6 @@ ActiveRecord::Schema.define(version: 2022_02_28_163000) do
     t.string "partner_role_title"
     t.uuid "uuid", default: -> { "gen_random_uuid()" }, null: false
     t.string "goal"
-    t.jsonb "interests", default: [], null: false
     t.string "encrypted_admin_password"
     t.string "reset_admin_password_token"
     t.datetime "reset_admin_password_sent_at"
