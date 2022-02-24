@@ -57,6 +57,8 @@ GEM
       i18n (>= 0.7, < 2)
       minitest (~> 5.1)
       tzinfo (~> 1.1)
+    acts-as-taggable-on (8.1.0)
+      activerecord (>= 5.0, < 6.2)
     addressable (2.8.0)
       public_suffix (>= 2.0.2, < 5.0)
     airrecord (1.0.7)
@@ -447,6 +449,7 @@ PLATFORMS
 DEPENDENCIES
   active_model_serializers (~> 0.10)
   activerecord-postgis-adapter (~> 5)
+  acts-as-taggable-on (~> 8.0)
   airrecord (~> 1)
   ams_lazy_relationships
   attr_encrypted (~> 3)
