@@ -1,5 +1,5 @@
 class User < ApplicationRecord
-  acts_as_taggable_on :tags
+  acts_as_taggable_on :interests
 
   include Onboarding::UserEventsTracking::UserConcern
   include UserServices::Engagement
@@ -92,7 +92,6 @@ class User < ApplicationRecord
 
   enum device_type: [ :android, :ios ]
   attribute :roles, :jsonb_set
-  attribute :interests, :jsonb_set
 
   scope :type_pro, -> { where(user_type: "pro") }
   scope :validated, -> { where(validation_status: "validated") }
@@ -244,7 +243,7 @@ class User < ApplicationRecord
     return if community.nil?
     attribute = attribute.to_sym
 
-    invalid = self[attribute] - community.send(attribute)
+    invalid = send(attribute) - community.send(attribute)
     invalid = yield invalid if block_given?
 
     errors.add(
@@ -265,7 +264,7 @@ class User < ApplicationRecord
   end
 
   def validate_interests!
-    validate_set_attr :interests
+    validate_set_attr :interest_list
   end
 
   def validate_partner!

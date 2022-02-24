@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_02_23_141241) do
+ActiveRecord::Schema.define(version: 2022_02_24_143000) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -829,7 +829,6 @@ ActiveRecord::Schema.define(version: 2022_02_23_141241) do
     t.string "partner_role_title"
     t.uuid "uuid", default: -> { "gen_random_uuid()" }, null: false
     t.string "goal"
-    t.jsonb "interests", default: [], null: false
     t.string "encrypted_admin_password"
     t.string "reset_admin_password_token"
     t.datetime "reset_admin_password_sent_at"

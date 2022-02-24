@@ -422,7 +422,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
 
       context 'interests' do
         context 'good value' do
-          before { patch 'update', params: { token: user.token, user: { interests: [:event_sdf, :aide_sdf] } } }
+          before { patch 'update', params: { token: user.token, user: { interest_list: "event_sdf, aide_sdf" } } }
           it { expect(result['user']).to include('interests' => ['aide_sdf', 'event_sdf']) }
         end
       end
