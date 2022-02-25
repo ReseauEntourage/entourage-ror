@@ -24,6 +24,18 @@
         </div>
       </div>
 
+      <div class="control-group">
+        <%= f.label :interests, "Centres d'intérêts", class: "control-label" %>
+        <div class="controls">
+          <select multiple data-role="tagsinput" name="user[interests][]" id="user_interests">
+            <% @user.interest_list.each do |interest| %>
+              <option value="<%= interest %>"><%= interest %></option>
+            <% end %>
+          </select>
+        </div>
+        <i>Valeurs possibles : <%= Community.new(:entourage).interest_list.sort.join(', ') %></i>
+      </div>
+
       <% unless @user.new_record? %>
         <div style="display: flex">
           <div class="control-group">
@@ -333,4 +345,9 @@
   });
 
   $('select').select2({ width: 200 });
+
+  $('#user_interests').tagsinput({
+    trimValue: true
+  });
+
 </script>
