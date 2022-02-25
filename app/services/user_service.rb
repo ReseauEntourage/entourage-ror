@@ -70,7 +70,7 @@ module UserService
 
     goal = user.goal.presence || :no_set
 
-    interests = (user.interests || []).sort.uniq
+    interests = (user.interest_list || []).sort.uniq
     interests = [:none] if interests.empty?
 
     {
