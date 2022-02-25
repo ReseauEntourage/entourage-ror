@@ -8,7 +8,7 @@ describe UserService do
       addresses = addresses.map { |country, postal_code| Address.new(country: country, postal_code: postal_code) }
       allow(user).to receive(:addresses).and_return(addresses)
       allow(user).to receive(:goal).and_return(:ask_for_help)
-      allow(user).to receive(:interests).and_return([:rencontrer_sdf, :event_sdf])
+      allow(user).to receive(:interest_list).and_return([:rencontrer_sdf, :event_sdf])
       UserService.firebase_properties(user)
     end
 
