@@ -126,7 +126,7 @@ module V1
     end
 
     def interests
-      object.interests.map(&:name).sort
+      object.interest_list.sort
     end
 
     # FIXME: the placeholders attribute is a hack. It indicates to the clients
