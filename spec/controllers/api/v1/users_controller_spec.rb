@@ -462,6 +462,20 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
         end
       end
 
+      context 'interests as a string' do
+        context 'good value' do
+          before { patch 'update', params: { token: user.token, user: { interests: "event_sdf, aide_sdf" } } }
+          it { expect(result['user']).to include('interests' => ['aide_sdf', 'event_sdf']) }
+        end
+      end
+
+      context 'interests as an array' do
+        context 'good value' do
+          before { patch 'update', params: { token: user.token, user: { interests: ["event_sdf", "aide_sdf"] } } }
+          it { expect(result['user']).to include('interests' => ['aide_sdf', 'event_sdf']) }
+        end
+      end
+
       context 'updated email is valid' do
         before {
           expect_any_instance_of(SlackServices::SignalUserCreation).not_to receive(:notify)
