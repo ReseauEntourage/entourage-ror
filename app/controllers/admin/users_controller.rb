@@ -8,7 +8,7 @@ module Admin
       @status = get_status
       @role = get_role
 
-      @users = filtered_users.includes(:organization).order("last_name ASC").page(params[:page]).per(25)
+      @users = filtered_users.includes(:organization).order("created_at DESC").page(params[:page]).per(25)
     end
 
     def show
