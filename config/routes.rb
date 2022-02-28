@@ -350,6 +350,12 @@ Rails.application.routes.draw do
         resources :entourages, only: [:index]
         match 'entourages/:uuid' => 'entourages#show', :via => :get
       end
+
+      resources :tags, only: [] do
+        collection do
+          get :interests
+        end
+      end
     end
   end
 
