@@ -27,13 +27,8 @@
       <div class="control-group">
         <%= f.label :interests, "Centres d'intérêts", class: "control-label" %>
         <div class="controls">
-          <select multiple data-role="tagsinput" name="user[interests][]" id="user_interests">
-            <% @user.interest_list.each do |interest| %>
-              <option value="<%= interest %>"><%= interest %></option>
-            <% end %>
-          </select>
+          <%= f.collection_select :interests, Tag.interest_list, :to_s, :to_s, {}, { multiple: true } %>
         </div>
-        <i>Valeurs possibles : <%= Tag.interest_list.sort.join(', ') %></i>
       </div>
 
       <% unless @user.new_record? %>
@@ -344,10 +339,7 @@
     $("#organization-fieldset").removeClass('hide');
   });
 
-  $('select:not(#user_interests)').select2({ width: 200 });
-
-  $('#user_interests').tagsinput({
-    trimValue: true
-  });
+  $('select').select2({ width: 200 });
+  $('select#user_interests').select2({ width: '100%' });
 
 </script>
