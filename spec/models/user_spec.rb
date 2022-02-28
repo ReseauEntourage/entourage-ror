@@ -266,8 +266,9 @@ describe User, :type => :model do
 
   describe 'interests' do
     it { expect(build_or_error :public_user, interest_list: []).to be true }
+    it { expect(build_or_error :public_user, interest_list: 'jeux').to be true }
     it { expect(build_or_error :public_user, interest_list: 'jeux, jardinage').to be true }
-    it { expect(build_or_error :public_user, interest_list: 'culture, lol').to eq(interest_list: "\"lol\" n'est pas inclus dans la liste") }
+    it { expect(build_or_error :public_user, interest_list: 'culture, lol').to eq(interests: "lol n'est pas inclus dans la liste") }
   end
 
   describe 'pending_phone_change_request' do
