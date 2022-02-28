@@ -26,8 +26,8 @@ module V1
     attribute :firebase_properties, if: :me?
     attribute :goal,                if: :me?
     attribute :phone,               if: :me?
-    attribute :birthday,            if: :me?
     attribute :travel_distance,     if: :me?
+    attribute :birthday,            if: :me?
 
     has_one :stats
     has_one :organization, serializer: ::V1::OrganizationSerializer
