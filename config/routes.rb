@@ -127,7 +127,11 @@ Rails.application.routes.draw do
         end
       end
 
-      resources :join_requests, only: [:create]
+      resources :join_requests, only: [:create] do
+        member do
+          post :accept
+        end
+      end
 
       resources :digest_emails, only: [:index, :show, :edit, :update] do
         member do

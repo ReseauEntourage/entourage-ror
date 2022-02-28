@@ -37,6 +37,7 @@
         <th>Email</th>
         <th>Phone</th>
         <th>Attente</th>
+        <th></th>
       </tr>
     </thead>
 
@@ -72,6 +73,9 @@
                 <%= time_ago_in_words request.updated_at %>
               </span>
             <% end %>
+          </td>
+          <td>
+            <%= link_to("Accepter", accept_admin_join_request_path(request), method: :post, class: "btn btn-sm btn-default") %>
           </td>
         </tr>
       <% end %>
