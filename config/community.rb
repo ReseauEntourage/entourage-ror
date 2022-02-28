@@ -54,7 +54,7 @@ class Community < BasicObject
   end
 
   def interest_list
-    memoize(:interests) { struct.interests.to_a }
+    memoize(:interests) { struct.interests.to_a.sort }
   end
 
   def group_types
