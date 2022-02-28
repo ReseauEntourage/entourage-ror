@@ -24,6 +24,13 @@
         </div>
       </div>
 
+      <div class="control-group">
+        <%= f.label :interests, "Centres d'intérêts", class: "control-label" %>
+        <div class="controls">
+          <%= f.collection_select :interests, Tag.interest_list, :to_s, :to_s, {}, { multiple: true } %>
+        </div>
+      </div>
+
       <% unless @user.new_record? %>
         <div style="display: flex">
           <div class="control-group">
@@ -326,4 +333,6 @@
   });
 
   $('select').select2({ width: 200 });
+  $('select#user_interests').select2({ width: '100%' });
+
 </script>
