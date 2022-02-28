@@ -22,9 +22,9 @@ class User < ApplicationRecord
   validates_length_of :password, within: 8..256, allow_nil: true
   validates_inclusion_of :community, in: Community.slugs
   validates_inclusion_of :goal, in: -> (u) { (u.community&.goals || []).map(&:to_s) }, allow_nil: true
+  validate :validate_interest_list!
   validate :validate_roles!
   validate :validate_partner!
-  validate :validate_interests!
 
   after_save :clean_up_passwords, if: :saved_change_to_encrypted_password?
 
@@ -268,8 +268,12 @@ class User < ApplicationRecord
     end
   end
 
-  def validate_interests!
-    validate_set_attr :interest_list
+  def validate_interest_list!
+    wrongs = self.interest_list.reject do |interest|
+      Tag.interest_list.include?(interest)
+    end
+
+    errors.add(:interests, "#{wrongs.join(', ')} n'est pas inclus dans la liste") if wrongs.any?
   end
 
   def validate_partner!

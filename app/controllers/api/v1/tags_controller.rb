@@ -4,7 +4,7 @@ module Api
       skip_before_action :authenticate_user!, only: [:interests]
 
       def interests
-        render json: { interests: Community.new(:entourage).interest_list }
+        render json: { interests: Tag.interest_list }
       end
     end
   end
