@@ -33,7 +33,7 @@
             <% end %>
           </select>
         </div>
-        <i>Valeurs possibles : <%= Community.new(:entourage).interest_list.sort.join(', ') %></i>
+        <i>Valeurs possibles : <%= Tag.interest_list.sort.join(', ') %></i>
       </div>
 
       <% unless @user.new_record? %>
@@ -344,7 +344,7 @@
     $("#organization-fieldset").removeClass('hide');
   });
 
-  $('select').select2({ width: 200 });
+  $('select:not(#user_interests)').select2({ width: 200 });
 
   $('#user_interests').tagsinput({
     trimValue: true
