@@ -91,4 +91,5 @@ class AnonymousUser
   def ambassador?; false; end
   def ask_for_help_creation_count; 0; end
   def contribution_creation_count; 0; end
+  def travel_distance; 10; end
 end
