@@ -90,7 +90,7 @@ module Api
           on.success do |user|
             mixpanel.distinct_id = user.id
             mixpanel.track("Created Account")
-            render json: user, status: 201, serializer: ::V1::UserSerializer, scope: { phone_only: true }
+            render json: user, status: 201, serializer: ::V1::Users::PhoneOnlySerializer
           end
 
           on.failure do |user|
@@ -124,7 +124,7 @@ module Api
 
         if params[:code][:action] == "regenerate" && !user.deleted && !user.blocked?
           UserServices::SMSSender.new(user: user).regenerate_sms!(clear_password: api_request.platform == :web)
-          render json: user, status: 200, serializer: ::V1::UserSerializer, scope: { phone_only: true }
+          render json: user, status: 200, serializer: ::V1::Users::PhoneOnlySerializer
         else
           render json: {error: "Unknown action"}, status:400
         end
