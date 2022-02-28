@@ -26,6 +26,7 @@ module V1
     attribute :firebase_properties, if: :default?
     attribute :goal,                if: :default?
     attribute :interests,           if: :default?
+    attribute :travel_distance,     if: :default?
 
     has_one :stats,        unless: :phone_only?
     has_one :organization, serializer: ::V1::OrganizationSerializer, unless: :phone_only?
