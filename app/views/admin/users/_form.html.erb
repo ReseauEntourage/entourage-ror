@@ -131,6 +131,13 @@
         %>
       </div>
     </div>
+
+    <div class="control-group" style="margin-left: 30px">
+      <%= f.label :travel_distance, class: "control-label" %>
+      <div class="controls">
+        <%= f.number_field :travel_distance, class: "form-control" %>
+      </div>
+    </div>
   </div>
 
   <% unless @user.new_record? %>

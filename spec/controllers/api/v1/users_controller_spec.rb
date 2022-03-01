@@ -86,6 +86,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
               "goal" => nil,
               "unread_count" => 0,
               "interests" => [],
+              "travel_distance" => 10,
               "permissions" => {
                 "outing" => { "creation" => true }
               },
@@ -303,6 +304,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
           "goal" => nil,
           "unread_count" => 0,
           "interests" => [],
+          "travel_distance" => 10,
           "permissions" => {
             "outing" => { "creation" => false }
           },
@@ -767,6 +769,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
             "goal" => nil,
             "unread_count" => 0,
             "interests" => [],
+            "travel_distance" => 10,
             "permissions" => {
               "outing" => { "creation" => true }
             },
@@ -855,6 +858,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
             "goal" => nil,
             "unread_count" => 0,
             "interests" => [],
+            "travel_distance" => 10,
             "permissions" => {
               "outing" => { "creation" => true }
             },
