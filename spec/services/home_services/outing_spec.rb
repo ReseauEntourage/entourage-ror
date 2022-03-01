@@ -8,10 +8,12 @@ describe HomeServices::Outing do
     let!(:second) { FactoryBot.create(:outing) }
     let!(:online) { FactoryBot.create(:outing, online: true) }
 
+    let(:subject) { HomeServices::Outing.new(user: user, latitude: 48.854, longitude: 2.27) }
+
     it 'should find online for :offer_help' do
       allow(user).to receive(:goal) { :offer_help }
 
-      outings = HomeServices::Outing.new(user: user, latitude: 48.854367553784954, longitude: 2.270340589096274).find_all
+      outings = subject.find_all
 
       expect(outings).to be_kind_of Array
       expect(outings).to match_array([outing, second, online])
@@ -20,7 +22,7 @@ describe HomeServices::Outing do
     it 'should find no online for :ask_for_help' do
       allow(user).to receive(:goal) { :ask_for_help }
 
-      outings = HomeServices::Outing.new(user: user, latitude: 48.854367553784954, longitude: 2.270340589096274).find_all
+      outings = subject.find_all
 
       expect(outings).to be_kind_of Array
       expect(outings.count).to eq(2)
@@ -32,7 +34,7 @@ describe HomeServices::Outing do
       outing.metadata[:starts_at] = Time.zone.now + 1.hour and outing.save
       second.metadata[:starts_at] = Time.zone.now + 1.minute and second.save
 
-      outings = HomeServices::Outing.new(user: user, latitude: 48.854367553784954, longitude: 2.270340589096274).find_all
+      outings = subject.find_all
 
       expect(outings).to be_kind_of Array
       expect(outings.count).to eq(2)
