@@ -7,10 +7,12 @@ describe HomeServices::Action do
   let!(:pin) { FactoryBot.create(:entourage, pin: true, pins: '75', title: 'pin') }
 
   describe 'find_all' do
+    let(:subject) { HomeServices::Action.new(user: user, latitude: 1.122, longitude: 2.345) }
+
     it 'ask_for_help firsts for :offer_help' do
       allow(user).to receive(:goal) { :offer_help }
 
-      actions = HomeServices::Action.new(user: user, latitude: 1.122, longitude: 2.345).find_all
+      actions = subject.find_all
 
       expect(actions).to eq([ask_for_help, contribution])
     end
@@ -18,19 +20,19 @@ describe HomeServices::Action do
     it 'contribution firsts for :ask_for_help' do
       allow(user).to receive(:goal) { :ask_for_help }
 
-      actions = HomeServices::Action.new(user: user, latitude: 1.122, longitude: 2.345).find_all
+      actions = subject.find_all
 
       expect(actions).to eq([contribution, ask_for_help])
     end
 
     it 'no ask_for_help if entourage_type is contribution' do
-      actions = HomeServices::Action.new(user: user, latitude: 1.122, longitude: 2.345).find_all(entourage_type: :contribution)
+      actions = subject.find_all(entourage_type: :contribution)
 
       expect(actions).to eq([contribution])
     end
 
     it 'no contribution if entourage_type is ask_for_help' do
-      actions = HomeServices::Action.new(user: user, latitude: 1.122, longitude: 2.345).find_all(entourage_type: :ask_for_help)
+      actions = subject.find_all(entourage_type: :ask_for_help)
 
       expect(actions).to eq([ask_for_help])
     end
