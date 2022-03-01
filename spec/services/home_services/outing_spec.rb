@@ -4,11 +4,25 @@ describe HomeServices::Outing do
   let(:user) { FactoryBot.create(:pro_user_paris) }
 
   describe 'find_all' do
+    # outing coordinates: (48.854367553785, 2.27034058909627)
     let!(:outing) { FactoryBot.create(:outing) }
     let!(:second) { FactoryBot.create(:outing) }
     let!(:online) { FactoryBot.create(:outing, online: true) }
 
-    let(:subject) { HomeServices::Outing.new(user: user, latitude: 48.854, longitude: 2.27) }
+    # 3,092km from outing
+    let(:subject) { HomeServices::Outing.new(user: user, latitude: 48.83, longitude: 2.25) }
+
+    it 'should find outings within user travel_distance' do
+      user.update_attribute(:travel_distance, 8)
+
+      expect(subject.find_all).to eq([outing, second, online])
+    end
+
+    it 'should not find outings outside user travel_distance' do
+      user.update_attribute(:travel_distance, 2)
+
+      expect(subject.find_all).to eq([online])
+    end
 
     it 'should find online for :offer_help' do
       allow(user).to receive(:goal) { :offer_help }
