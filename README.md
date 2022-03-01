@@ -176,7 +176,8 @@ entourage-dev=# SELECT PostGIS_version();
 
 # API documentation
 
-Open in a browser: `doc/api/index.html`
+1. open in a browser: `public/doc/api/index.html`
+2. or open directly URL : https://admin.entourage.social/public/doc/api/index.html
 
 # Profiling
 
