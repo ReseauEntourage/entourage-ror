@@ -2,7 +2,6 @@ module HomeServices
   class Headline
     ACTION_CATEGORIES = [:mat_help, :neighborhood]
     TIME_RANGE = 24
-    DISTANCE = 10
     MAX_LENGTH = 5
 
     # currently offer_help, association and default share the same definition
@@ -108,7 +107,7 @@ module HomeServices
       @latitude = latitude
       @longitude = longitude
       @time_range = TIME_RANGE
-      @distance = DISTANCE
+      @distance = UserService.travel_distance(user: user)
     end
 
     def each

@@ -1,6 +1,5 @@
 module HomeServices
   class Action
-    DISTANCE = 10
     MAX_LENGTH = 7
     TIME_RANGE = 24 * 30
 
@@ -11,7 +10,7 @@ module HomeServices
       @latitude = latitude
       @longitude = longitude
       @time_range = TIME_RANGE
-      @distance = DISTANCE
+      @distance = UserService.travel_distance(user: user)
     end
 
     def find_all entourage_type: [:ask_for_help, :contribution]

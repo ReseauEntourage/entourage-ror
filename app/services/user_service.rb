@@ -1,4 +1,6 @@
 module UserService
+  DEFAULT_DISTANCE = 10
+
   def self.full_name user
     join_and_capitalize(user.first_name, user.last_name)
   end
@@ -20,6 +22,10 @@ module UserService
     else
       user.id.to_s
     end
+  end
+
+  def self.travel_distance user:, forced_distance: nil
+    [(forced_distance&.to_f || user.travel_distance || DEFAULT_DISTANCE), 40].min
   end
 
   def self.firebase_properties user
