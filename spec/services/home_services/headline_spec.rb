@@ -59,13 +59,27 @@ describe HomeServices::Headline do
   end
 
   describe 'find_outing' do
+    # outing coordinates: (48.854367553785, 2.27034058909627)
     let!(:outing) { FactoryBot.create(:outing) }
     let!(:second) { FactoryBot.create(:outing) }
 
-    let(:subject) { HomeServices::Headline.new(user: user, latitude: 48.854, longitude: 2.27) }
+    # 3,092km from outing
+    let(:subject) { HomeServices::Headline.new(user: user, latitude: 48.83, longitude: 2.25) }
 
     it 'should find an outing' do
       expect(subject.find_outing).to eq(outing)
+    end
+
+    it 'should find an outing within user travel_distance' do
+      user.update_attribute(:travel_distance, 8)
+
+      expect(subject.find_outing).to eq(outing)
+    end
+
+    it 'should not find an outing outside user travel_distance' do
+      user.update_attribute(:travel_distance, 2)
+
+      expect(subject.find_outing).to be_nil
     end
 
     it 'should not find a closed outing' do
@@ -81,18 +95,27 @@ describe HomeServices::Headline do
   end
 
   describe 'find_action' do
+    # action coordinates: 1.122, 2.345
     let!(:action) { FactoryBot.create(:entourage) }
     let!(:second) { FactoryBot.create(:entourage) }
 
-    let(:subject) { HomeServices::Headline.new(user: user, latitude: 1.122, longitude: 2.345) }
-    let(:subject_far_away) { HomeServices::Headline.new(user: user, latitude: 10.122, longitude: 2.345) }
+    # 5,57km from action
+    let(:subject) { HomeServices::Headline.new(user: user, latitude: 1.1, longitude: 2.3) }
 
     it 'should find an action' do
       expect(subject.find_action).to eq(second) # created_at desc
     end
 
-    it 'should not find a far action' do
-      expect(subject_far_away.find_action).to be_nil
+    it 'should find an action within user travel_distance' do
+      user.update_attribute(:travel_distance, 8)
+
+      expect(subject.find_action).to eq(second)
+    end
+
+    it 'should not find an action outside user travel_distance' do
+      user.update_attribute(:travel_distance, 2)
+
+      expect(subject.find_action).to be_nil
     end
 
     it 'should find an offset action' do
