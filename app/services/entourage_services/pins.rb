@@ -30,14 +30,6 @@ module EntourageServices
           postal_code: postal_code,
           departement: departement
         )
-        .where(%(
-          not exists (
-            select id from join_requests
-            where join_requests.joinable_type = 'Entourage' and join_requests.joinable_id = entourages.id
-            and join_requests.status = 'accepted'
-            and join_requests.user_id = :user_id
-          )
-        ), user_id: user.id)
         .map(&:id)
         .first
     end
@@ -46,14 +38,6 @@ module EntourageServices
     def self.outing_pinned(user)
       Entourage.select(:id)
         .where(status: :open, group_type: :outing, online: true)
-        .where(%(
-          not exists (
-            select id from join_requests
-            where join_requests.joinable_type = 'Entourage' and join_requests.joinable_id = entourages.id
-            and join_requests.status = 'accepted'
-            and join_requests.user_id = :user_id
-          )
-        ), user_id: user.id)
         .map(&:id)
         .first
     end
