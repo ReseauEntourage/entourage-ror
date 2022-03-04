@@ -1,6 +1,6 @@
 module Admin
   class JoinRequestsController < Admin::BaseController
-    before_action :ensure_moderator!
+    before_action :ensure_moderator!, only: [:create]
 
     def create
       @entourage = Entourage.find params[:joinable_id]
