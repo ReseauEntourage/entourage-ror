@@ -137,6 +137,14 @@ $ rspec
 bin/d db-restore path/to/snapshot.dump
 ```
 
+## Import a database without docker
+
+```bash
+heroku config:get DATABASE_URL -a entourage-back-preprod
+pg_dump -Fc [DATABASE_URL] > preprod.sql
+pg_restore --verbose --no-acl --no-owner -U postgres -d entourage-dev preprod.sql
+```
+
 ## Generate a stripped database dump from production data
 
 You need to have access to the `entourage-back` Heroku application.

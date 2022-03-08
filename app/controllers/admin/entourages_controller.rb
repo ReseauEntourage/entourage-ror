@@ -333,14 +333,14 @@ module Admin
         @entourage.group_type = :outing
         @entourage.entourage_type = :contribution
         @entourage.display_category = :event
-        @entourage.public = nil
+        @entourage.public = true
         @entourage.metadata = {}
         @entourage.online = false
       when [:outing, :action]
         @entourage.group_type = :action
         @entourage.entourage_type = nil
         @entourage.display_category = nil
-        @entourage.public = nil
+        @entourage.public = true
         @entourage.metadata = {}
         @entourage.online = false
       else

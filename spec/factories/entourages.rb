@@ -53,6 +53,7 @@ FactoryBot.define do
 
     factory :conversation do
       group_type { "conversation" }
+      public { false }
 
       transient do
         participants { [] }

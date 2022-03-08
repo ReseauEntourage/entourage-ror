@@ -25,7 +25,7 @@ describe Api::V1::Entourages::UsersController do
             "role"=>"member",
             "group_role"=>"member",
             "community_roles"=>[],
-            "status"=>"pending",
+            "status"=>"accepted",
             "message"=>nil,
             "requested_at"=>JoinRequest.last.created_at.iso8601(3),
             "avatar_url"=>nil,
@@ -153,13 +153,13 @@ describe Api::V1::Entourages::UsersController do
             expect_any_instance_of(PushNotificationService).to receive(:send_notification).with(
               "John D.",
               "Foobar1",
-              "John D. souhaite rejoindre votre action",
+              "John D. vient de rejoindre votre action",
               [entourage.user],
               {
                 joinable_type: "Entourage",
                 joinable_id: entourage.id,
                 group_type: 'action',
-                type: "NEW_JOIN_REQUEST",
+                type: "JOIN_REQUEST_ACCEPTED",
                 user_id: user.id
               }
             )
@@ -175,13 +175,13 @@ describe Api::V1::Entourages::UsersController do
             expect_any_instance_of(PushNotificationService).to receive(:send_notification).with(
               "John D.",
               "Foobar1",
-              "John D. souhaite rejoindre votre action",
+              "John D. vient de rejoindre votre action",
               [entourage.user],
               {
                 joinable_type: "Entourage",
                 joinable_id: entourage.id,
                 group_type: 'action',
-                type: "NEW_JOIN_REQUEST",
+                type: "JOIN_REQUEST_ACCEPTED",
                 user_id: user.id
               }
             )

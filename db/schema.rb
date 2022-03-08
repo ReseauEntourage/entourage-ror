@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_01_12_090000) do
+ActiveRecord::Schema.define(version: 2022_03_04_150000) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -286,7 +286,7 @@ ActiveRecord::Schema.define(version: 2022_01_12_090000) do
     t.string "community", limit: 9, null: false
     t.string "group_type", limit: 14, null: false
     t.jsonb "metadata", default: {}, null: false
-    t.boolean "public", default: false
+    t.boolean "public", default: true
     t.datetime "feed_updated_at"
     t.string "image_url"
     t.boolean "online", default: false
