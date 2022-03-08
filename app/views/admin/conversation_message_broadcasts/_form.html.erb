@@ -118,7 +118,7 @@
     });
 
     $areas.on('beforeItemAdd', function(event) {
-      if (!/^[0-9]+$/.test(event.item)) {
+      if (!/^([0-9]{2}|[0-9]{5})$/.test(event.item)) {
         event.cancel = true;
       }
     });
