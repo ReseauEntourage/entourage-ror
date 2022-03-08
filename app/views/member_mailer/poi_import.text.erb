@@ -1,0 +1,14 @@
+Bonjour,
+
+Merci de trouver ci-après les détails de l'import de POI.
+
+<%= @successes.count %> POI importés.
+
+<%= @errors.count %> erreurs :
+<% @errors.each do |error| %>
+ - <%= error[0] %> : <%= error[1] %>
+<% end %>
+
+Cordialement,
+
+L'équipe Entourage
