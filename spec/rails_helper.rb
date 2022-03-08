@@ -23,6 +23,7 @@ end
 
 RspecApiDocumentation.configure do |config|
   config.disable_dsl_status!
+  config.docs_dir = Rails.root.join("public", "doc", "api")
 end
 
 Geocoder.configure(lookup: :test, ip_lookup: :test)
