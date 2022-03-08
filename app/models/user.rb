@@ -202,6 +202,11 @@ class User < ApplicationRecord
     end
   }
 
+  # from departements or postal_codes
+  scope :in_specific_areas, -> (areas) {
+    joins(:addresses).where("addresses.country = 'FR' and postal_code SIMILAR TO ?", "(#{areas.join('|')})%")
+  }
+
   scope :in_conversation_with, -> (user_id) {
     select("users.*")
     .joins(join_requests: { entourage: :chat_messages })

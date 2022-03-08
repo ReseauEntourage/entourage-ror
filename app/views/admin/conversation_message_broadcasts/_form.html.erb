@@ -65,10 +65,21 @@
 
   <div class="row">
     <div class="col-xs-6 form-group">
-      <% areas = ModerationArea.all_with_national_with_no_zone.map {|area| [area.name_with_departement, area.departement_slug]} %>
-      <%= f.label :area %>
-      <%= f.select :area, options_for_select(areas, @conversation_message_broadcast.area), { include_blank: false }, class: "form-control" %>
+      <% area_types = ConversationMessageBroadcast::AREA_TYPES.map {|area_type| [t("activerecord.attributes.conversation_message_broadcast.area_types.#{area_type}"), area_type]} %>
+      <%= f.label :area_type %>
+      <%= f.select :area_type, options_for_select(area_types, @conversation_message_broadcast.area_type), { include_blank: false }, class: "form-control" %>
+
+      <div id="conversation_message_broadcast_areas_container">
+        <%= f.label :areas %><br/>
+        <select multiple data-role="tagsinput" name="conversation_message_broadcast[areas][]" id="conversation_message_broadcast_areas">
+          <% @conversation_message_broadcast.areas.each do |area| %>
+            <option value="<%= area %>"><%= area %></option>
+          <% end %>
+        </select>
+        <p><i>doit contenir 2 chiffres (pour cibler un département) <br>ou 5 chiffres (pour cibler une ville)</i></p>
+      </div>
     </div>
+
     <div class="col-xs-6 form-group">
       <% goals = UserGoalPresenter.all_with_any(current_user.community).map {|goal| [goal.name, goal.slug]} %>
       <%= f.label :goal %>
@@ -88,3 +99,33 @@
     <%= link_to "Retour", admin_conversation_message_broadcasts_path, class: "btn btn-default" %>
   <% end %>
 <% end %>
+
+<script>
+  $(document).on('turbolinks:load', function() {
+    let $areaType = $('#conversation_message_broadcast_area_type');
+    let $areasContainer = $('#conversation_message_broadcast_areas_container');
+    let $areas = $('#conversation_message_broadcast_areas');
+
+    function toggleAreaType() {
+      $areasContainer.toggle($areaType.val() == 'list');
+    }
+
+    toggleAreaType();
+
+    $areas.tagsinput({
+      maxChars: 5,
+      trimValue: true,
+      size: 0
+    });
+
+    $areas.on('beforeItemAdd', function(event) {
+      if (!/^([0-9]{2}|[0-9]{5})$/.test(event.item)) {
+        event.cancel = true;
+      }
+    });
+
+    $areaType.on('change', function(event) {
+      toggleAreaType();
+    });
+  })
+</script>

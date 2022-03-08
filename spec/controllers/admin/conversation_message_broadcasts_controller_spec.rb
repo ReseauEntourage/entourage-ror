@@ -35,8 +35,8 @@ describe Admin::ConversationMessageBroadcastsController do
   end
 
   describe 'GET #index area filter' do
-    let!(:dep_75) { FactoryBot.create(:conversation_message_broadcast, area: 'dep_75') }
-    let!(:hors_zone) { FactoryBot.create(:conversation_message_broadcast, area: 'hors_zone') }
+    let!(:dep_75) { FactoryBot.create(:conversation_message_broadcast, area_type: 'list', areas: ['75']) }
+    let!(:hors_zone) { FactoryBot.create(:conversation_message_broadcast, area_type: 'hors_zone') }
 
     context "has area conversation_message_broadcasts" do
       before { get :index, params: { area: 'dep_75' } }
@@ -77,7 +77,8 @@ describe Admin::ConversationMessageBroadcastsController do
   describe "POST #create" do
     context "create success" do
       let(:conversation_message_broadcast) { post :create, params: { 'conversation_message_broadcast' => {
-        area: 'dep_75',
+        area_type: 'list',
+        areas: ['75'],
         content: 'Contenu du broadcast',
         goal: 'ask_for_help',
         title: 'Titre du broadcast'

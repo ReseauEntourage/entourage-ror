@@ -7,12 +7,11 @@ module Admin
       @goal = params[:goal].presence&.to_sym || :all
       @area = params[:area].presence&.to_sym || :all
       @status = params[:status].presence&.to_sym || :draft
-      @areas = ModerationArea.by_slug_with_national
 
       @conversation_message_broadcasts = ConversationMessageBroadcast.with_status(@status).order(:created_at)
 
       @conversation_message_broadcasts = @conversation_message_broadcasts.where(goal: @goal) if @goal && @goal != :all
-      @conversation_message_broadcasts = @conversation_message_broadcasts.where(area: @area) if @area && @area != :all
+      @conversation_message_broadcasts = @conversation_message_broadcasts.with_moderation_area(@area.to_s) if @area && @area != :all
     end
 
     def new
@@ -78,7 +77,7 @@ module Admin
 
     def conversation_message_broadcast_params
       params.require(:conversation_message_broadcast).permit(
-        :area, :goal, :content, :title
+        :area_type, :goal, :content, :title, areas: []
       )
     end
   end

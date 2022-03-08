@@ -1,6 +1,7 @@
 FactoryBot.define do
   factory :conversation_message_broadcast do
-    area { 'dep_75' }
+    area_type { 'list' }
+    areas { ['75'] }
     content { 'Contenu de la diffusion' }
     goal { 'ask_for_help' }
     title { 'Titre de la diffusion' }
