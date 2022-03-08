@@ -7,6 +7,41 @@ RSpec.describe ConversationMessageBroadcast, type: :model do
   it { should validate_presence_of(:content) }
   it { should validate_presence_of(:title) }
 
+  describe "areas" do
+    let(:subject) { FactoryBot.build(:conversation_message_broadcast, area_type: area_type, areas: areas).save }
+    let(:area_type) { 'list' }
+
+    context "not empty" do
+      let(:areas) { [] }
+      it { expect(subject).to be false }
+    end
+
+    context "invalid format with one area" do
+      let(:areas) { ['1'] }
+      it { expect(subject).to be false }
+    end
+
+    context "another invalid format with one area" do
+      let(:areas) { ['321'] }
+      it { expect(subject).to be false }
+    end
+
+    context "valid format with one area" do
+      let(:areas) { ['11'] }
+      it { expect(subject).to be true }
+    end
+
+    context "valid format with multiple areas" do
+      let(:areas) { ['11', '92'] }
+      it { expect(subject).to be true }
+    end
+
+    context "some valid formats, some invalid formats" do
+      let(:areas) { ['11', '321', '92'] }
+      it { expect(subject).to be false }
+    end
+  end
+
   describe "users & user_ids" do
     let(:subjects) { conversation_message_broadcast.users }
     let(:subject_ids) { conversation_message_broadcast.user_ids.sort }

@@ -2,8 +2,10 @@ require 'experimental/jsonb_set'
 
 class ConversationMessageBroadcast < ApplicationRecord
   AREA_TYPES = %w(national hors_zone sans_zone list).freeze
+  AREA_FORMAT = /^([0-9]{2}|[0-9]{5})$/
 
   validates_presence_of :area_type, :goal, :content, :title
+  validate :validate_areas_format
 
   scope :with_status, -> (status) {
     if status.to_sym == :sending
@@ -25,6 +27,13 @@ class ConversationMessageBroadcast < ApplicationRecord
       .where(area_type: 'list')
       .where('value like ?', "#{departement}%")
   }
+
+  def validate_areas_format
+    return unless area_type&.to_s == 'list'
+
+    errors.add(:areas, 'ne doit pas être vide') if areas.compact.empty?
+    errors.add(:areas, "2 ou 5 chiffres") if areas.filter { |area| area !~ AREA_FORMAT }.any?
+  end
 
   # @deprecated
   # @fixme
