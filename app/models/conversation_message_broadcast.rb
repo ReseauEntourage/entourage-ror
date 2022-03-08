@@ -32,7 +32,7 @@ class ConversationMessageBroadcast < ApplicationRecord
     return unless area_type&.to_s == 'list'
 
     errors.add(:areas, 'ne doit pas être vide') if areas.compact.empty?
-    errors.add(:areas, "2 ou 5 chiffres") if areas.filter { |area| area !~ AREA_FORMAT }.any?
+    errors.add(:areas, "doit contenir 2 chiffres (pour cibler un département) ou 5 chiffres (pour cibler une ville)") if areas.filter { |area| area !~ AREA_FORMAT }.any?
   end
 
   # @deprecated
