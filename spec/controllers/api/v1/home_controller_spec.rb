@@ -49,7 +49,7 @@ describe Api::V1::HomeController do
             "status"=>"open",
             "title"=>"Foobar",
             "group_type"=>"action",
-            "public"=>false,
+            "public"=>true,
             "metadata"=>{"city"=>"", "display_address"=>""},
             "entourage_type"=>"ask_for_help",
             "display_category"=>"social",

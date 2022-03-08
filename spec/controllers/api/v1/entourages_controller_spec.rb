@@ -25,7 +25,7 @@ describe Api::V1::EntouragesController do
             "status"=>"open",
             "title"=>"Foobar",
             "group_type"=>"action",
-            "public"=>false,
+            "public"=>true,
             "metadata"=>{"city"=>"", "display_address"=>""},
             "entourage_type"=>"ask_for_help",
             "display_category"=>"social",
@@ -485,7 +485,7 @@ describe Api::V1::EntouragesController do
             "status"=>"open",
             "title"=>"Foo",
             "group_type"=>"action",
-            "public"=>false,
+            "public"=>true,
             "metadata"=>{"city"=>"", "display_address"=>""},
             "entourage_type"=>"ask_for_help",
             "display_category"=>"mat_help",
@@ -520,7 +520,7 @@ describe Api::V1::EntouragesController do
         it { expect(Entourage.last.number_of_people).to eq(1) }
         it { expect(Entourage.last.category).to eq("mat_help") }
         it { expect(Entourage.last.community).to eq("entourage") }
-        it { expect(Entourage.last.public).to eq(false) }
+        it { expect(Entourage.last.public).to eq(true) }
         it { expect(user.entourage_participations).to eq([Entourage.last]) }
         it { expect(JoinRequest.count).to eq(1) }
         it { expect(JoinRequest.last.status).to eq(JoinRequest::ACCEPTED_STATUS) }
@@ -572,7 +572,7 @@ describe Api::V1::EntouragesController do
               "status"=>"open",
               "title"=>"Apéro Entourage",
               "group_type"=>"outing",
-              "public"=>false,
+              "public"=>true,
               "metadata"=>{
                 "starts_at"=>"2018-09-04T19:30:00.000+02:00",
                 "ends_at"=>"2018-09-04T22:30:00.000+02:00",
@@ -748,7 +748,7 @@ describe Api::V1::EntouragesController do
               "status"=>"open",
               "title"=>"Foobar",
               "group_type"=>"action",
-              "public"=>false,
+              "public"=>true,
               "metadata"=>{"city"=>"", "display_address"=>""},
               "entourage_type"=>"ask_for_help",
               "display_category"=>"social",
@@ -922,7 +922,7 @@ describe Api::V1::EntouragesController do
             "status"=>"open",
             "title"=>"Foobar",
             "group_type"=>"outing",
-            "public"=>false,
+            "public"=>true,
             "metadata"=>{
               "ends_at" => 1.day.from_now.change(hour: 22).iso8601(3),
               "starts_at" => 1.day.from_now.change(hour: 19).iso8601(3),
@@ -974,7 +974,7 @@ describe Api::V1::EntouragesController do
             "status"=>"open",
             "title"=>"New_title",
             "group_type"=>"action",
-            "public"=>false,
+            "public"=>true,
             "metadata"=>{"city"=>"", "display_address"=>""},
             "entourage_type"=>"ask_for_help",
             "display_category"=>"social",

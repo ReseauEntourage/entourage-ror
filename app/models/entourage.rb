@@ -267,6 +267,7 @@ class Entourage < ApplicationRecord
   end
 
   def group_type= value
+    self[:public] = false unless [:outing, :action].include?(value&.to_sym)
     self.metadata = add_metadata_schema_urn(metadata)
     super(value)
   end
