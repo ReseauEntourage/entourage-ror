@@ -17,7 +17,8 @@ class CommunityLogic::Entourage < CommunityLogic::Common
     when 'action'
       GroupMailer.action_joined_confirmation(join_request).deliver_later
     when 'outing' # event
-      GroupMailer.event_joined_confirmation(join_request).deliver_later
+      # # @see EN-4675
+      # GroupMailer.event_joined_confirmation(join_request).deliver_later
     else # not an action or an event. shouldn't happen.
       # nothing for now
     end
@@ -33,7 +34,8 @@ class CommunityLogic::Entourage < CommunityLogic::Common
     end
 
     at_day 1, before: :event, role: :participant do |join_request|
-      GroupMailer.event_reminder_participant(join_request).deliver_later
+      # # @see EN-4675
+      # GroupMailer.event_reminder_participant(join_request).deliver_later
     end
 
     at_day 1, after: :event, role: :organizer do |join_request|
