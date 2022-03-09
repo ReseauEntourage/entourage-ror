@@ -87,6 +87,14 @@ RSpec.describe ConversationMessageBroadcast, type: :model do
     end
 
     describe "list" do
+      context 'area is contained in a postal_code but does not start the same' do
+        let(:area_type) { 'list' }
+        let(:areas) { ['50'] }
+
+        it { expect(subject_ids.count).to eq(0) }
+        it { expect(subjects.map(&:postal_code).sort).to eq([]) }
+      end
+
       context 'single departement' do
         let(:area_type) { 'list' }
         let(:areas) { ['44'] }
