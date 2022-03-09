@@ -82,11 +82,19 @@ module ModerationServices
     )
   end
 
+  def self.moderation_area_for_user_with_default user
+    moderation_area_for_user(user) || default_moderation_area
+  end
+
   def self.moderator_for_entourage entourage
     return unless entourage.group_type.in?(['action', 'outing'])
     moderator_for_departement(
       departement_for_object(entourage),
       community: entourage.community
     )
+  end
+
+  def self.default_moderation_area
+    moderation_area_for_departement('*', community: :entourage)
   end
 end
