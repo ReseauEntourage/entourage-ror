@@ -903,6 +903,7 @@ ActiveRecord::Schema.define(version: 2022_05_31_153601) do
     t.datetime "unblock_at"
     t.integer "travel_distance", default: 10
     t.string "other_interest"
+    t.string "birthday", limit: 5
     t.index ["address_id"], name: "index_users_on_address_id"
     t.index ["email"], name: "index_users_on_email"
     t.index ["organization_id"], name: "index_users_on_organization_id"
