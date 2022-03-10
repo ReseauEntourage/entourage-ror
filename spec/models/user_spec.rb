@@ -273,7 +273,7 @@ describe User, :type => :model do
   describe 'interests' do
     it { expect(build_or_error :public_user, interest_list: []).to be true }
     it { expect(build_or_error :public_user, interest_list: 'jeux').to be true }
-    it { expect(build_or_error :public_user, interest_list: 'jeux, jardinage').to be true }
+    it { expect(build_or_error :public_user, interest_list: 'jeux, cuisine').to be true }
     it { expect(build_or_error :public_user, interest_list: 'culture, lol').to eq(interests: "lol n'est pas inclus dans la liste") }
   end
 
