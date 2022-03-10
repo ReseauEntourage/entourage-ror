@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_03_04_150000) do
+ActiveRecord::Schema.define(version: 2022_03_10_110500) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -838,6 +838,7 @@ ActiveRecord::Schema.define(version: 2022_03_04_150000) do
     t.boolean "super_admin", default: false
     t.datetime "unblock_at"
     t.integer "travel_distance", default: 10
+    t.string "birthday", limit: 5
     t.index ["address_id"], name: "index_users_on_address_id"
     t.index ["email"], name: "index_users_on_email"
     t.index ["organization_id"], name: "index_users_on_organization_id"

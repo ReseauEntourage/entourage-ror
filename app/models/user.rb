@@ -25,6 +25,8 @@ class User < ApplicationRecord
   validate :validate_interest_list!
   validate :validate_roles!
   validate :validate_partner!
+  validate :validate_interests!
+  validate :validate_birthday!
 
   after_save :clean_up_passwords, if: :saved_change_to_encrypted_password?
 
@@ -274,6 +276,24 @@ class User < ApplicationRecord
     end
 
     errors.add(:interests, "#{wrongs.join(', ')} n'est pas inclus dans la liste") if wrongs.any?
+  end
+
+  def validate_birthday!
+    return unless birthday.present?
+
+    day, month = birthday.split('-').map(&:to_i)
+
+    unless day && month
+      errors.add(:birthday, "Format invalide")
+    end
+
+    unless (1..31).include? day
+      errors.add(:birthday, "Jour invalide")
+    end
+
+    unless (1..12).include? month
+      errors.add(:birthday, "Mois invalide")
+    end
   end
 
   def validate_partner!
