@@ -84,6 +84,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
               },
               "engaged" => false,
               "goal" => nil,
+              "phone" => user.phone,
               "unread_count" => 0,
               "interests" => [],
               "permissions" => {
@@ -301,6 +302,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
           },
           "engaged" => true,
           "goal" => nil,
+          "phone" => user.phone,
           "unread_count" => 0,
           "interests" => [],
           "permissions" => {
@@ -765,6 +767,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
             },
             "engaged" => false,
             "goal" => nil,
+            "phone" => user.phone,
             "unread_count" => 0,
             "interests" => [],
             "permissions" => {
@@ -853,6 +856,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
             },
             "engaged" => false,
             "goal" => nil,
+            "phone" => user.phone,
             "unread_count" => 0,
             "interests" => [],
             "permissions" => {
