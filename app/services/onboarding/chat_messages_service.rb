@@ -13,7 +13,7 @@ module Onboarding
         begin
           Raven.user_context(id: user&.id)
 
-          moderation_area = ModerationServices.moderation_area_for_user(user)
+          moderation_area = ModerationServices.moderation_area_for_user_with_default(user)
           author = moderation_area.moderator
 
           if conversation = conversation_with([author.id, user.id])

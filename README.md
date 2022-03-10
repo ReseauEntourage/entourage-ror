@@ -99,6 +99,12 @@ foreman start web
 
 Scheduled jobs documentation is accessible [here](config/scheduler/Jobs.md)
 
+# Configure job worker
+
+```bash
+bundle exec sidekiq -c 5 -q mailers -q default -q broadcast -q denorm
+```
+
 # Accessing admin panel
 
 To access the admin panel, you need to set an entry in your `/etc/hosts` :

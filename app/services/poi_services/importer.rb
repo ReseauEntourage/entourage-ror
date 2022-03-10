@@ -1,14 +1,10 @@
 module PoiServices
   class Importer
-    def initialize(path:)
-      @path = path
-    end
-
     # Id
     # Nom
     # Adresse
     # Description
-    # Public
+    # Public, Public(s) bénéficiaire(s)
     # Website
     # Téléphone
     # Catégorie1
@@ -18,8 +14,15 @@ module PoiServices
     # Catégorie5
     # Catégorie6
     # Catégorie7
-    def import!
-      CSV.read(path, headers: true).each do |row|
+    def self.import path
+      read CSV.read(path, headers: true)
+    end
+
+    def self.read csv:
+      successes = []
+      errors = []
+
+      csv.each do |row|
         row = row.to_hash.map { |k,v| [k, v&.strip] }.to_h # remove surrounding spaces or carriage returns
 
         attributes = {
@@ -28,13 +31,20 @@ module PoiServices
           # we use different notation because of poi_geocoder specifications
           "adress" => row['Adresse'],
           description: row['Description'],
-          audience: row['Public'],
+          audience: row['Public'] || row['Public(s) bénéficiaire(s)'],
           email: row['Email'],
           website: row['Website'],
           phone: row['Téléphone'],
-          category_id: row['Catégorie1'],
-          category_ids: [row['Catégorie1'], row['Catégorie2'], row['Catégorie3'], row['Catégorie4'], row['Catégorie5'], row['Catégorie6'], row['Catégorie7']].uniq.compact,
-
+          category_id: row['Catégorie1'] || row['Catégorie 1'],
+          category_ids: [
+            row['Catégorie1'] || row['Catégorie 1'],
+            row['Catégorie2'] || row['Catégorie 2'],
+            row['Catégorie3'] || row['Catégorie 3'],
+            row['Catégorie4'] || row['Catégorie 4'],
+            row['Catégorie5'] || row['Catégorie 5'],
+            row['Catégorie6'] || row['Catégorie 6'],
+            row['Catégorie7'] || row['Catégorie 7']
+          ].uniq.compact,
           validated: true
         }
 
@@ -42,15 +52,13 @@ module PoiServices
         poi = PoiServices::PoiGeocoder.new(poi: poi, params: attributes).geocode
 
         if poi.valid?
-          puts "saving Poi #{row['Nom']}, #{row['Adresse']} (#{poi.latitude}, #{poi.longitude})"
-          poi.save
+          poi.save and successes << row['Nom']
         else
-          puts "Couldn't save Poi : #{poi.errors.full_messages}"
+          errors << [row['Nom'], poi.errors.full_messages]
         end
       end
-    end
 
-    private
-    attr_reader :path
+      yield successes, errors
+    end
   end
 end

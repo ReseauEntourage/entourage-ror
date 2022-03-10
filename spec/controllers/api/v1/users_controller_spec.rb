@@ -369,10 +369,10 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
         it { expect(user.reload.email).to eq('cs@bell.com') }
       end
 
-      context 'try to update phone number' do
-        before { patch 'update', params: { token:user.token, user: { phone:'+33654876754' }, format: :json } }
+      context 'try to update phone number: no phone update is possible through API' do
+        before { patch 'update', params: { token:user.token, user: { phone: '+33654876754' }, format: :json } }
         it { expect(response.status).to eq(200) }
-        it { expect(user.reload.phone).to eq('+33654876754') }
+        it { expect(user.reload.phone).not_to eq('+33654876754') }
       end
 
       context 'params are invalid' do

@@ -36,7 +36,12 @@ Rails.application.routes.draw do
         end
       end
 
-      resources :pois
+      resources :pois do
+        collection do
+          post :import
+        end
+      end
+
       resources :entourage_images do
         member do
           get '/edit/landscape', action: :edit_landscape

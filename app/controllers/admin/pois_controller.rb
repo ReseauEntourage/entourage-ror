@@ -1,9 +1,10 @@
 module Admin
   class PoisController < Admin::BaseController
     before_action :set_poi, only: [:edit, :update, :destroy]
+    before_action :authenticate_super_admin!, only: [:import]
 
     def index
-      @params = params.permit([q: [:name_cont, :postal_code_start, :postal_code_in_hors_zone]]).to_h
+      @params = params.permit([q: [:name_or_adress_cont, :postal_code_start, :postal_code_in_hors_zone]]).to_h
       @q = Poi.ransack(@params[:q])
       @pois = @q.result(distinct: true)
                          .page(params[:page])
@@ -48,6 +49,15 @@ module Admin
       else
         render :new
       end
+    end
+
+    def import
+      MemberMailer.poi_import(
+        csv: CSV.read(params["poi"]["file"].path, headers: true).to_csv,
+        recipient: current_user.email
+      ).deliver_later
+
+      redirect_to admin_pois_path, notice: "Un email sera envoyé après l'import pour indiquer le nombre de POI importés et les erreurs éventuelles"
     end
 
     private
