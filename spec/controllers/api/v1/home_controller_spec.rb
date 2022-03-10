@@ -113,4 +113,17 @@ describe Api::V1::HomeController do
       end
     end
   end
+
+  describe 'GET metadata' do
+    let(:result) { JSON.parse(response.body) }
+
+    before { get :metadata, params: { token: user.token } }
+    it { expect(response.status).to eq(200) }
+    it { expect(result).to have_key("tags") }
+    it { expect(result["tags"]).to be_a(Hash) }
+    it { expect(result["tags"]).to have_key("interests") }
+    it { expect(result["tags"]["interests"]).to be_a(Hash) }
+    it { expect(result["tags"]["interests"]).to have_key("sport") }
+    it { expect(result["tags"]["interests"]["sport"]).to eq("Sport") }
+  end
 end
