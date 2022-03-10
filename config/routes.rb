@@ -223,7 +223,11 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
       match '(*path)' => 'base#options', via: [:options]
-      resources :home, only: [:index]
+      resources :home, only: [:index] do
+        collection do
+          get :metadata
+        end
+      end
 
       resources :feeds, only: [:index] do
         collection do
