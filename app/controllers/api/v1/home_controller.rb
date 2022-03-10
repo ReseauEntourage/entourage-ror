@@ -37,6 +37,14 @@ module Api
         }.to_json, status: 200
       end
 
+      def metadata
+        render json: {
+          tags: {
+            interests: Tag.interests
+          }
+        }.to_json, status: 200
+      end
+
       private
 
       def get_headlines
