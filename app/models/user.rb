@@ -25,7 +25,6 @@ class User < ApplicationRecord
   validate :validate_interest_list!
   validate :validate_roles!
   validate :validate_partner!
-  validate :validate_interests!
   validate :validate_birthday!
 
   after_save :clean_up_passwords, if: :saved_change_to_encrypted_password?
