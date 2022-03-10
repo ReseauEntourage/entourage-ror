@@ -53,6 +53,7 @@ describe Api::V1::AnonymousUsersController do
         "feature_flags"=>{"organization_admin"=>false},
         "engaged"=>false,
         "goal" => nil,
+        "phone" => nil,
         "unread_count" => 0,
         "interests" => [],
         "travel_distance" => 10,
