@@ -8,6 +8,9 @@ RSpec.describe Api::V1::TagsController, :type => :controller do
   describe 'GET interests' do
     before { get :interests }
     it { expect(response.status).to eq(200) }
-    it { expect(result).to eq({ "interests" => ["culture", "jardinage", "jeux", "sport"] }) }
+    it { expect(result).to have_key("interests") }
+    it { expect(result["interests"]).to be_a(Hash) }
+    it { expect(result["interests"]).to have_key("sport") }
+    it { expect(result["interests"]["sport"]).to eq("Sport") }
   end
 end
