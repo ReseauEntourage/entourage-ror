@@ -232,3 +232,12 @@ fr:
       status_update:
         closed_user: l'utilisateur a quitté le réseau Entourage. N'hésitez pas à rejoindre d'autres actions solidaires sur l'app !
 
+  tags:
+    activites: Activités manuelles
+    animaux: Animaux
+    bien-etre: Bien-être
+    cuisine: Cuisine
+    culture: Art & culture
+    jeux: Jeux
+    nature: Nature
+    sport: Sport
