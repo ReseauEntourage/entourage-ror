@@ -24,7 +24,7 @@ module V1
     attribute :has_password,        if: :me?
     attribute :firebase_properties, if: :me?
     attribute :goal,                if: :me?
-    # attribute :phone,               if: :me?
+    attribute :phone,               if: :me?
     attribute :interests,           if: :me?
     attribute :travel_distance,     if: :me?
 
