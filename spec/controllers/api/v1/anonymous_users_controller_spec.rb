@@ -57,6 +57,7 @@ describe Api::V1::AnonymousUsersController do
         "unread_count" => 0,
         "interests" => [],
         "travel_distance" => 10,
+        "birthday" => nil,
         "permissions" => {
           "outing" => {
             "creation" => false
