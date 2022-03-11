@@ -86,6 +86,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
               "goal" => nil,
               "unread_count" => 0,
               "interests" => [],
+              "birthday" => nil,
               "permissions" => {
                 "outing" => { "creation" => true }
               },
@@ -303,6 +304,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
           "goal" => nil,
           "unread_count" => 0,
           "interests" => [],
+          "birthday" => nil,
           "permissions" => {
             "outing" => { "creation" => false }
           },
@@ -753,6 +755,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
             "goal" => nil,
             "unread_count" => 0,
             "interests" => [],
+            "birthday" => nil,
             "permissions" => {
               "outing" => { "creation" => true }
             },
@@ -841,6 +844,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
             "goal" => nil,
             "unread_count" => 0,
             "interests" => [],
+            "birthday" => nil,
             "permissions" => {
               "outing" => { "creation" => true }
             },
