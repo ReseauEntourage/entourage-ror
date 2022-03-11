@@ -278,19 +278,9 @@ class User < ApplicationRecord
   def validate_birthday!
     return unless birthday.present?
 
-    day, month = birthday.split('-').map(&:to_i)
-
-    unless day && month
-      errors.add(:birthday, "Format invalide")
-    end
-
-    unless (1..31).include? day
-      errors.add(:birthday, "Jour invalide")
-    end
-
-    unless (1..12).include? month
-      errors.add(:birthday, "Mois invalide")
-    end
+    Date.strptime("#{birthday}-2024", '%d-%m-%y')
+  rescue
+    errors.add(:birthday, "Date invalide")
   end
 
   def validate_partner!
