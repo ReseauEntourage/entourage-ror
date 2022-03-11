@@ -26,6 +26,7 @@ module V1
     attribute :goal,                if: :me?
     attribute :phone,               if: :me?
     attribute :interests,           if: :me?
+    attribute :birthday,            if: :me?
     attribute :travel_distance,     if: :me?
 
     has_one :stats
