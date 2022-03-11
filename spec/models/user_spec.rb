@@ -61,6 +61,8 @@ describe User, :type => :model do
     it { expect(FactoryBot.build(:pro_user, birthday: '01-1').save).to be true }
     it { expect(FactoryBot.build(:pro_user, birthday: '01-12').save).to be true }
     it { expect(FactoryBot.build(:pro_user, birthday: '01-13').save).to be false }
+    it { expect(FactoryBot.build(:pro_user, birthday: '31-01').save).to be true }
+    it { expect(FactoryBot.build(:pro_user, birthday: '31-02').save).to be false }
   end
 
   describe "phone number" do
