@@ -57,8 +57,7 @@ module Api
             @pois = @pois.where(clauses.join(" OR "))
           end
 
-          @pois = @pois
-            .order(PostgisHelper.distance_from(params[:latitude], params[:longitude], :pois))
+          @pois = @pois.order('random()').limit(100)
         else
           @pois = @pois.limit(25)
         end
