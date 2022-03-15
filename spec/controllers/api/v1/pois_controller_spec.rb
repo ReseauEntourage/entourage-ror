@@ -211,7 +211,7 @@ describe Api::V1::PoisController, :type => :controller do
         context 'without distance' do
           before { get :index, params: { latitude: 10.0, longitude: 10.0, format: :json } }
           it { expect(response.status).to eq(200) }
-          it { expect(assigns[:pois]).to eq [poi3, poi4] }
+          it { expect(assigns[:pois].map(&:id).sort).to eq [poi3, poi4].map(&:id).sort }
         end
 
         context 'with distance' do
