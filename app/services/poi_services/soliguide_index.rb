@@ -5,7 +5,7 @@ module PoiServices
     class << self
       def post params
         get_results(params).map do |poi|
-          SoliguideFormatter.format_short poi
+          PoiServices::SoliguideFormatter.format_short poi
         end
       end
 
@@ -18,7 +18,9 @@ module PoiServices
       def headers
         {
           'Content-Type' => 'application/json',
-          'Authorization' => Soliguide::API_KEY,
+          'User-Agent' => 'Mozilla',
+          'origin' => 'https://soliguide.fr',
+          # 'Authorization' => Soliguide::API_KEY,
         }
       end
 
