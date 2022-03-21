@@ -2,7 +2,6 @@ class Neighborhood < ApplicationRecord
   include Interestable
 
   belongs_to :user
-  alias_attribute :author, :user
 
   has_many :join_requests, as: :joinable, dependent: :destroy
   has_many :members, through: :join_requests, source: :user
