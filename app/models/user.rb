@@ -310,14 +310,6 @@ class User < ApplicationRecord
     self.roles.uniq
   end
 
-  def interests= interests
-    if interests.is_a? Array
-      self.interest_list = interests.join(', ')
-    elsif interests.is_a? String
-      self.interest_list = interests
-    end
-  end
-
   #Force all phone number to be inserted in DB in "+33" format
   def phone=(new_phone)
     super(Phone::PhoneBuilder.new(phone: new_phone).format)
