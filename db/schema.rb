@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_02_28_163000) do
+ActiveRecord::Schema.define(version: 2022_03_21_141000) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -402,6 +402,18 @@ ActiveRecord::Schema.define(version: 2022_02_28_163000) do
     t.string "moderatable_type", null: false
     t.datetime "read_at", null: false
     t.index ["user_id", "moderatable_id", "moderatable_type"], name: "index_moderator_reads_on_user_id_and_moderatable"
+  end
+
+  create_table "neighborhoods", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.string "name", limit: 256
+    t.string "description"
+    t.string "ethics"
+    t.string "photo_url"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_neighborhoods_on_name"
+    t.index ["user_id"], name: "index_neighborhoods_on_user_id"
   end
 
   create_table "newsletter_subscriptions", id: :serial, force: :cascade do |t|
