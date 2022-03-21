@@ -1,6 +1,6 @@
 module HomeServices
   class Headline
-    ACTION_CATEGORIES = [:mat_help, :neighborhood]
+    ACTION_CATEGORIES = [:mat_help]
     TIME_RANGE = 24
     MAX_LENGTH = 5
 
@@ -8,7 +8,7 @@ module HomeServices
     STRUCTURE = {
       offer_help: {
         active: [
-          { type: :pin, category: :neighborhood },
+          { type: :pin },
           { type: :announcement, offset: 0 },
           { type: :outing },
           { type: :action },
@@ -16,7 +16,7 @@ module HomeServices
           { type: :announcement, category: :online },
         ],
         animated: [
-          { type: :pin, category: :neighborhood },
+          { type: :pin },
           { type: :announcement, offset: 0 },
           { type: :outing },
           { type: :action },
@@ -25,7 +25,7 @@ module HomeServices
           { type: :announcement, category: :online },
         ],
         dead: [
-          { type: :pin, category: :neighborhood },
+          { type: :pin },
           { type: :announcement, offset: 0 },
           { type: :outing },
           { type: :action },
@@ -36,7 +36,7 @@ module HomeServices
       },
       association: {
         active: [
-          { type: :pin, category: :neighborhood },
+          { type: :pin },
           { type: :announcement, offset: 0 },
           { type: :outing },
           { type: :action },
@@ -44,7 +44,7 @@ module HomeServices
           { type: :announcement, category: :online, offset: 1 },
         ],
         animated: [
-          { type: :pin, category: :neighborhood },
+          { type: :pin },
           { type: :announcement, offset: 0 },
           { type: :outing },
           { type: :action },
@@ -53,7 +53,7 @@ module HomeServices
           { type: :announcement, category: :online, offset: 1 },
         ],
         dead: [
-          { type: :pin, category: :neighborhood },
+          { type: :pin },
           { type: :announcement, offset: 0 },
           { type: :outing },
           { type: :action },
@@ -64,7 +64,7 @@ module HomeServices
       },
       ask_for_help: {
         active: [
-          { type: :pin, category: :neighborhood },
+          { type: :pin },
           { type: :announcement, offset: 0 },
           { type: :outing },
           { type: :announcement, offset: 1 },
@@ -72,7 +72,7 @@ module HomeServices
           { type: :announcement, category: :poi_map },
         ],
         animated: [
-          { type: :pin, category: :neighborhood },
+          { type: :pin },
           { type: :announcement, offset: 0 },
           { type: :outing },
           { type: :announcement, offset: 1 },
@@ -87,7 +87,7 @@ module HomeServices
       },
       default: {
         active: [
-          { type: :pin, category: :neighborhood },
+          { type: :pin },
           { type: :announcement, offset: 0 },
           { type: :outing },
           { type: :action },
@@ -95,7 +95,7 @@ module HomeServices
           { type: :announcement, category: :online },
         ],
         animated: [
-          { type: :pin, category: :neighborhood },
+          { type: :pin },
           { type: :announcement, offset: 0 },
           { type: :outing },
           { type: :action },
@@ -104,7 +104,7 @@ module HomeServices
           { type: :announcement, category: :online },
         ],
         dead: [
-          { type: :pin, category: :neighborhood },
+          { type: :pin },
           { type: :announcement, offset: 0 },
           { type: :outing },
           { type: :action },
@@ -146,9 +146,7 @@ module HomeServices
       end
     end
 
-    def find_pin category:, offset: 0
-      return unless category == :neighborhood
-
+    def find_pin category: nil, offset: 0
       entourage_id = EntourageServices::Pins.pinned_for(user)
       return unless entourage_id
 
