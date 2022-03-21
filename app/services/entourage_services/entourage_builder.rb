@@ -62,7 +62,6 @@ module EntourageServices
 
         TourServices::JoinRequestStatus.new(join_request: join_request).accept!
         # AsyncService.new(ModerationServices::EntourageModeration).on_create(entourage)
-        # AsyncService.new(EntourageServices::NeighborhoodAnnouncement).on_create(entourage)
         AsyncService.new(FollowingService).on_create_entourage(entourage)
         CommunityLogic.for(entourage).group_created(entourage)
 
@@ -94,7 +93,6 @@ module EntourageServices
 
       if self.class.update(entourage: entourage, params: params.except(:location))
         entourage.reload
-        # AsyncService.new(EntourageServices::NeighborhoodAnnouncement).on_update(entourage)
         callback.on_success.try(:call, entourage)
       else
         callback.on_failure.try(:call, entourage)
