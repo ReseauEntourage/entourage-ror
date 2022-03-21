@@ -28,9 +28,4 @@ module JobCronService
     # Every 10 minutes
     Onboarding::ChatMessagesService.deliver_welcome_message
   end
-
-  def self.airtable_task_export_all
-    # airtable_task:export_all
-    # Daily at 4:00 AM UTC, seulement les lundis des semaines paires
-  end
 end
