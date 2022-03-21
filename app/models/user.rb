@@ -1,6 +1,5 @@
 class User < ApplicationRecord
-  acts_as_taggable_on :interests
-
+  include Interestable
   include Onboarding::UserEventsTracking::UserConcern
   include UserServices::Engagement
 
@@ -23,7 +22,6 @@ class User < ApplicationRecord
   validates_length_of :password, within: 8..256, allow_nil: true
   validates_inclusion_of :community, in: Community.slugs
   validates_inclusion_of :goal, in: -> (u) { (u.community&.goals || []).map(&:to_s) }, allow_nil: true
-  validate :validate_interest_list!
   validate :validate_roles!
   validate :validate_partner!
 
@@ -269,14 +267,6 @@ class User < ApplicationRecord
     end
   end
 
-  def validate_interest_list!
-    wrongs = self.interest_list.reject do |interest|
-      Tag.interest_list.include?(interest)
-    end
-
-    errors.add(:interests, "#{wrongs.join(', ')} n'est pas inclus dans la liste") if wrongs.any?
-  end
-
   def validate_partner!
     if targeting_profile.in?(['partner', 'team'])
       if partner_id.blank?
@@ -306,14 +296,6 @@ class User < ApplicationRecord
     end
 
     self.roles.uniq
-  end
-
-  def interests= interests
-    if interests.is_a? Array
-      self.interest_list = interests.join(', ')
-    elsif interests.is_a? String
-      self.interest_list = interests
-    end
   end
 
   #Force all phone number to be inserted in DB in "+33" format
