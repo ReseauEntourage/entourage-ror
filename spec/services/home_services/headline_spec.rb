@@ -11,19 +11,16 @@ describe HomeServices::Headline do
     it 'should find a pin' do
       expect(Entourage).to receive(:find_by).with(id: pin.id)
 
-      subject.find_pin(category: :neighborhood)
-    end
-
-    it 'should not find a pin without valid category' do
-      expect(Entourage).not_to receive(:find_by)
-      expect(subject.find_pin(category: :foo)).to be_nil
+      subject.find_pin
     end
 
     it 'should not find a pin without valid postal_code' do
       user.address.update_attribute(:postal_code, '00000')
 
       expect(Entourage).not_to receive(:find_by)
-      expect(subject.find_pin(category: :foo)).to be_nil
+      expect(
+        subject.find_pin
+      ).to be_nil
     end
   end
 
@@ -150,7 +147,7 @@ describe HomeServices::Headline do
 
       # pin
       expect(headlines[0][:type]).to eq('Entourage')
-      expect(headlines[0][:name]).to eq(:pin_neighborhood)
+      expect(headlines[0][:name]).to eq(:pin)
       expect(headlines[0][:instance]).to eq(pin)
       # announcement_0
       expect(headlines[1][:type]).to eq('Announcement')
