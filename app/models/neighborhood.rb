@@ -9,6 +9,8 @@ class Neighborhood < ApplicationRecord
     raise ActiveRecord::Rollback
   end
 
+  alias_attribute :author, :user
+
   has_many :join_requests, as: :joinable, dependent: :destroy
   has_many :members, through: :join_requests, source: :user
   has_many :neighborhoods_entourages
