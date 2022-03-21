@@ -295,6 +295,23 @@ Rails.application.routes.draw do
         end
       end
 
+      resources :neighborhoods do
+        collection do
+          get :joined # see my neighborhoods
+        end
+
+        member do
+          get :find # either q or coordinates
+          post :join # join a neighborhood
+          post :leave # leave a neighborhood
+          post :report # report an issue with the neighborhood
+        end
+
+        resources :chat_messages, :controller => 'neighborhoods/chat_messages', only: [:index, :create] do
+          post :report # report an issue with a chat_message
+        end
+      end
+
       resources :entourages, only: [:index, :show, :create, :update] do
         collection do
           get :search
