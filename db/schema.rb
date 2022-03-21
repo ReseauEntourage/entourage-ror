@@ -421,22 +421,12 @@ ActiveRecord::Schema.define(version: 2022_04_20_103800) do
     t.float "longitude", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.datetime "feed_updated_at"
     t.string "welcome_message"
     t.string "other_interest"
     t.index ["feed_updated_at"], name: "index_neighborhoods_on_feed_updated_at"
     t.index ["latitude", "longitude"], name: "neighborhoods_coordinates"
     t.index ["name"], name: "index_neighborhoods_on_name"
     t.index ["user_id"], name: "index_neighborhoods_on_user_id"
-  end
-
-  create_table "neighborhoods_entourages", force: :cascade do |t|
-    t.bigint "neighborhood_id"
-    t.bigint "entourage_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["entourage_id"], name: "index_neighborhoods_entourages_on_entourage_id"
-    t.index ["neighborhood_id"], name: "index_neighborhoods_entourages_on_neighborhood_id"
   end
 
   create_table "newsletter_subscriptions", id: :serial, force: :cascade do |t|
