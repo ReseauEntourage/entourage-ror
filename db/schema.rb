@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_03_21_141000) do
+ActiveRecord::Schema.define(version: 2022_03_22_145500) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -410,10 +410,22 @@ ActiveRecord::Schema.define(version: 2022_03_21_141000) do
     t.string "description"
     t.string "ethics"
     t.string "photo_url"
+    t.float "latitude", null: false
+    t.float "longitude", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["latitude", "longitude"], name: "neighborhoods_coordinates"
     t.index ["name"], name: "index_neighborhoods_on_name"
     t.index ["user_id"], name: "index_neighborhoods_on_user_id"
+  end
+
+  create_table "neighborhoods_entourages", force: :cascade do |t|
+    t.bigint "neighborhood_id"
+    t.bigint "entourage_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["entourage_id"], name: "index_neighborhoods_entourages_on_entourage_id"
+    t.index ["neighborhood_id"], name: "index_neighborhoods_entourages_on_neighborhood_id"
   end
 
   create_table "newsletter_subscriptions", id: :serial, force: :cascade do |t|
