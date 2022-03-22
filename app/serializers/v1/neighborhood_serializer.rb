@@ -7,12 +7,16 @@ module V1
       :interests,
       :members,
       :ethics,
-      :past_events_count,
-      :future_events_count,
-      :has_ongoing_event
+      :past_outings_count,
+      :future_outings_count,
+      :has_ongoing_outing
 
     def interests
       object.interest_list.sort
+    end
+
+    def has_ongoing_outing
+      object.has_ongoing_outing?
     end
   end
 end
