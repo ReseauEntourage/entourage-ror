@@ -349,10 +349,11 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
       after { ENV["DISABLE_CRYPT"]="TRUE" }
 
       context 'params are valid' do
-        before { patch 'update', params: { token:user.token, user: { email:'new@e.mail', sms_code:'654321', device_id: 'foo', device_type: 'android', avatar_key: 'foo.jpg'}, format: :json } }
+        before { patch 'update', params: { token:user.token, user: { email:'new@e.mail', sms_code:'654321', device_id: 'foo', device_type: 'android', avatar_key: 'foo.jpg', travel_distance: 12 }, format: :json } }
         it { expect(response.status).to eq(200) }
         it { expect(user.reload.email).to eq('new@e.mail') }
         it { expect(user.reload.avatar_key).to eq('foo.jpg') }
+        it { expect(user.reload.travel_distance).to eq(12) }
         it { expect(BCrypt::Password.new(User.find(user.id).sms_code) == '654321').to be true }
 
         it "renders user" do
@@ -622,11 +623,12 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
     end
 
     context "valid params" do
-      before { post 'create', params: { user: {phone: "+33612345678"} } }
+      before { post 'create', params: { user: { phone: "+33612345678", travel_distance: 16 } } }
       it { expect(User.last.user_type).to eq("public") }
       it { expect(User.last.community).to eq("entourage") }
       it { expect(User.last.roles).to eq([]) }
       it { expect(User.last.phone).to eq("+33612345678") }
+      it { expect(User.last.travel_distance).to eq(16) }
       it {
         expect(JSON.parse(response.body)).to eq(
           "user" => {
