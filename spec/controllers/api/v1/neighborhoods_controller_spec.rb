@@ -27,7 +27,7 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
         ethics: neighborhood.ethics,
         latitude: neighborhood.latitude,
         longitude: neighborhood.longitude,
-        interests: neighborhood.interests,
+        interests: neighborhood.interest_list,
         photo_url: neighborhood.photo_url
       }, format: :json }}
 
@@ -35,13 +35,8 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
       it { expect(subject.name).to eq neighborhood.name }
       it { expect(subject.latitude).to eq neighborhood.latitude }
       it { expect(subject.longitude).to eq neighborhood.longitude }
-      it { expect(subject.adress).to eq neighborhood.adress }
-
-      it "renders POI" do
-        expect(result).to eq("neighborhood" => {
-          "uuid" => subject.id.to_s
-        })
-      end
+      it { expect(result).to have_key("neighborhood") }
+      it { expect(result['neighborhood']['name']).to eq("Foot Paris 17è") }
     end
 
     describe 'show' do
@@ -49,11 +44,20 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
       before { get 'show', params: { id: neighborhood.id, token: user.token } }
 
       it { expect(response.status).to eq 200 }
-      it { expect(JSON.parse(response.body)).to eq(
+      it { expect(JSON.parse(response.body)).to eq({
         "neighborhood" => {
-          "name" => neighborhood.name,
+          "id" => neighborhood.id,
+          "name" => "Foot Paris 17è",
+          "members_count" => 0,
+          "photo_url" => nil,
+          "interests" => ["sport"],
+          "members" => [],
+          "ethics" => nil,
+          "past_outings_count" => 0,
+          "future_outings_count" => 0,
+          "has_ongoing_outing" => false
         }
-      )}
+      })}
     end
   end
 end

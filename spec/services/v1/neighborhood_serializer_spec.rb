@@ -16,9 +16,9 @@ describe V1::NeighborhoodSerializer do
     it { expect(subject).to have_key(:interests) }
     it { expect(subject).to have_key(:members) }
     it { expect(subject).to have_key(:ethics) }
-    it { expect(subject).to have_key(:past_events_count) }
-    it { expect(subject).to have_key(:future_events_count) }
-    it { expect(subject).to have_key(:has_ongoing_event) }
+    it { expect(subject).to have_key(:past_outings_count) }
+    it { expect(subject).to have_key(:future_outings_count) }
+    it { expect(subject).to have_key(:has_ongoing_outing) }
 
     context 'values' do
       it { expect(subject[:name]).to eq('Foot Paris 17è') }
