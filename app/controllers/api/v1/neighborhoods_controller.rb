@@ -14,11 +14,12 @@ module Api
 
       def create
         @neighborhood = Neighborhood.new(neighborhood_params)
+        @neighborhood.user = current_user
 
         if @neighborhood.save
           render json: @neighborhood, status: 201, serializer: ::V1::NeighborhoodSerializer
         else
-          render json: { message: "Could not create Neighborhood", reasons: @neighborhood.errors.full_message }, status: 400
+          render json: { message: "Could not create Neighborhood", reasons: @neighborhood.errors.full_messages }, status: 400
         end
       end
 
