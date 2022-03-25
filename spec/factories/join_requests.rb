@@ -25,7 +25,7 @@ FactoryBot.define do
 
     after(:create) do |join_request, _|
       group = join_request.joinable
-      group.update_column(:number_of_people, group.join_requests.accepted.count)
+      group.update_column(:number_of_people, group.join_requests.accepted.count) unless join_request.neighborhood?
     end
   end
 
