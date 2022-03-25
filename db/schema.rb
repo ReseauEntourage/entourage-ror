@@ -414,6 +414,8 @@ ActiveRecord::Schema.define(version: 2022_03_22_145500) do
     t.float "longitude", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "feed_updated_at"
+    t.index ["feed_updated_at"], name: "index_neighborhoods_on_feed_updated_at"
     t.index ["latitude", "longitude"], name: "neighborhoods_coordinates"
     t.index ["name"], name: "index_neighborhoods_on_name"
     t.index ["user_id"], name: "index_neighborhoods_on_user_id"
