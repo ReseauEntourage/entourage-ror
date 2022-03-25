@@ -45,11 +45,6 @@ describe Onboarding::ChatMessagesService, type: :service do
       it {
         expect(messages.first.content).to eq "Bonjour Lily-rose"
       }
-
-      it {
-        admin_join_request = messages.first.messageable.join_requests.find_by(user: admin)
-        expect(admin_join_request).to be_archived
-      }
     end
 
     describe 'outside of active hours' do
@@ -94,10 +89,6 @@ describe Onboarding::ChatMessagesService, type: :service do
 
       it { expect { subject }.not_to change { ChatMessage.count } }
       it { expect { subject }.to change { event.present? }.to true }
-      it {
-        admin_join_request = conversation.join_requests.find_by(user: admin)
-        expect(admin_join_request).to_not be_archived
-      }
     end
   end
 end
