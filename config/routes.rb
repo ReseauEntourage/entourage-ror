@@ -310,6 +310,8 @@ Rails.application.routes.draw do
         resources :chat_messages, :controller => 'neighborhoods/chat_messages', only: [:index, :create] do
           post :report # report an issue with a chat_message
         end
+
+        resources :users, :controller => 'neighborhoods/users', only: [:index, :destroy, :create]
       end
 
       resources :entourages, only: [:index, :show, :create, :update] do
