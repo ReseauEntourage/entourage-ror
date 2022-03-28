@@ -55,6 +55,34 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
     end
   end
 
+  describe 'PATCH update' do
+    let(:neighborhood) { FactoryBot.create(:neighborhood) }
+
+    context "not signed in" do
+      before { patch :update, params: { id: neighborhood.to_param, neighborhood: { name: "new name" } } }
+      it { expect(response.status).to eq(401) }
+    end
+
+    context "signed in" do
+      before { patch :update, params: { id: neighborhood.to_param, neighborhood: { name: "new name" } } }
+
+      context "user is not creator" do
+        before { patch :update, params: { id: neighborhood.to_param, neighborhood: { name: "new name" }, token: user.token } }
+        it { expect(response.status).to eq(401) }
+      end
+
+      context "user is creator" do
+        let(:neighborhood) { FactoryBot.create(:neighborhood, user: user) }
+        let(:result) { JSON.parse(response.body) }
+
+        before { patch :update, params: { id: neighborhood.to_param, neighborhood: { name: "new name" }, token: user.token } }
+        it { expect(response.status).to eq(200) }
+        it { expect(result).to have_key("neighborhood") }
+        it { expect(result["neighborhood"]["name"]).to eq("new name") }
+      end
+    end
+  end
+
   context 'show' do
     let(:neighborhood) { create :neighborhood }
 
