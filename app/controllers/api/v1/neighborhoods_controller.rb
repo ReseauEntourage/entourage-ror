@@ -23,6 +23,20 @@ module Api
         end
       end
 
+      def update
+        return render json: { message: 'unauthorized' }, status: :unauthorized if @neighborhood.user != current_user
+
+        @neighborhood.assign_attributes(neighborhood_params)
+
+        if @neighborhood.save
+          render json: @neighborhood, status: 200, serializer: ::V1::NeighborhoodSerializer
+        else
+          render json: {
+            message: 'Could not update neighborhood', reasons: @neighborhood.errors.full_messages
+          }, status: 400
+        end
+      end
+
       private
 
       def set_neighborhood
