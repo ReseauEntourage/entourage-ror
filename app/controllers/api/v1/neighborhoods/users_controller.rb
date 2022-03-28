@@ -21,13 +21,20 @@ module Api
             render json: join_request, root: "user", status: 201, serializer: ::V1::JoinRequestSerializer, scope: { user: current_user }
           else
             render json: {
-              message: 'Could not create entourage participation request', reasons: join_request.errors.full_messages
+              message: 'Could not create neighborhood participation request', reasons: join_request.errors.full_messages
             }, status: :bad_request
           end
         end
 
         def destroy
+          return render json: {
+            message: 'Could not find neighborhood participation for user'
+          }, status: :bad_request unless @join_request
+
           # remove the join of a user in a neighborhood
+          @join_request.update!(status: :cancelled)
+
+          render json: @join_request, root: "user", status: 200, serializer: ::V1::JoinRequestSerializer, scope: { user: current_user }
         end
 
         private
