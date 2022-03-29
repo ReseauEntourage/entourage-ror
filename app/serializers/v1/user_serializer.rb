@@ -12,6 +12,7 @@ module V1
     attribute :engaged,      unless: :phone_only?
     attribute :unread_count, unless: :phone_only?
     attribute :permissions,  unless: :phone_only?
+    attribute :interests,    unless: :phone_only?
     attribute :phone,        if: :phone_only?
     attribute :placeholders, if: :placeholders?
     attribute :memberships,  if: :memberships?
@@ -25,7 +26,6 @@ module V1
     attribute :has_password,        if: :default?
     attribute :firebase_properties, if: :default?
     attribute :goal,                if: :default?
-    attribute :interests,           if: :default?
     attribute :birthday,            if: :default?
 
     has_one :stats,        unless: :phone_only?
