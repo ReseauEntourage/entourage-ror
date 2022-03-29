@@ -125,5 +125,9 @@ describe Api::V1::HomeController do
     it { expect(result["tags"]["interests"]).to be_a(Hash) }
     it { expect(result["tags"]["interests"]).to have_key("sport") }
     it { expect(result["tags"]["interests"]["sport"]).to eq("Sport") }
+    it { expect(result["tags"]).to have_key("signals") }
+    it { expect(result["tags"]["signals"]).to be_a(Hash) }
+    it { expect(result["tags"]["signals"]).to have_key("spam") }
+    it { expect(result["tags"]["signals"]["spam"]).to eq("Spam") }
   end
 end
