@@ -2,11 +2,12 @@ module Api
   module V1
     module Neighborhoods
       class UsersController < Api::V1::BaseController
-        before_action :set_neighborhood, only: [:create, :destroy]
+        before_action :set_neighborhood, only: [:index, :create, :destroy]
         before_action :set_join_request, only: [:create, :destroy]
 
         def index
-          # all neighborhoods a user has joined
+          # neighborhood members
+          render json: @neighborhood.join_requests, root: "users", each_serializer: ::V1::JoinRequestSerializer, scope: { user: current_user }
         end
 
         def create
