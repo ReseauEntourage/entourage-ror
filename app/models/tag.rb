@@ -5,7 +5,7 @@ class Tag < ApplicationRecord
     end
 
     def interests
-      I18n.t('tags')
+      I18n.t('tags.interests')
     end
   end
 end
