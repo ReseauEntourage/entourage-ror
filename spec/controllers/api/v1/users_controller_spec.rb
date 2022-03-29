@@ -934,6 +934,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
             "permissions" => {
               "outing" => { "creation" => false }
             },
+            "interests" => [],
             "memberships" => [],
             "conversation" => {
               "uuid" => "1_list_#{user.id}-#{other_user.id}"
