@@ -14,6 +14,8 @@ class Neighborhood < ApplicationRecord
 
   validates_presence_of [:name, :latitude, :longitude]
 
+  alias_attribute :title, :name
+
   # behaviors
 
   # EC-94: list neighborhoods
@@ -68,5 +70,16 @@ class Neighborhood < ApplicationRecord
 
   def has_ongoing_outing?
     ongoing_outings.any?
+  end
+
+  def group_type
+    'neighborhood'
+  end
+
+  def group_type_config
+    {
+      'message_types' => ['text', 'share'],
+      'roles' => ['admin', 'member']
+    }
   end
 end
