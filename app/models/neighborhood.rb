@@ -18,17 +18,17 @@ class Neighborhood < ApplicationRecord
 
   # behaviors
 
-  # EC-94: list neighborhoods
-  # EC-95: join neighborhood
-  # EC-117: leave neighborhood
-  # EC-95: show neighborhood
+  # EC-94: list neighborhoods [OK]
+  # EC-95: join neighborhood [OK]
+  # EC-117: leave neighborhood [OK]
+  # EC-95: show neighborhood [OK]
   # EC-99: find neighborhood
-  # EC-100: create neighborhood
+  # EC-100: create neighborhood [OK]
   # EC-118: add photo to neighborhood
-  # EC-101: update neighborhood
+  # EC-101: update neighborhood [OK]
   # EC-104: add localization to neighborhood
-  # EC-104: add localization to neighborhood
-  # main: post comment in neighborhood conversation
+  # main: post message in neighborhood conversation [OK]
+  # main: receive notification when message has been post [OK]
   # main: create outing in neighborhood
   # main: signal neighborhood
   # main: signal a user in neighborhood (ethics)
