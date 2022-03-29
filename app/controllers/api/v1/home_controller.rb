@@ -40,7 +40,8 @@ module Api
       def metadata
         render json: {
           tags: {
-            interests: Tag.interests
+            interests: Tag.interests,
+            signals: Tag.signals
           }
         }.to_json, status: 200
       end
