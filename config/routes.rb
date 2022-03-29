@@ -286,6 +286,7 @@ Rails.application.routes.draw do
 
         resources :tours, :controller => 'users/tours', only: [:index]
         resources :entourages, :controller => 'users/entourages', only: [:index]
+        resources :neighborhoods, :controller => 'users/neighborhoods', only: [:index]
 
         resources :addresses, controller: 'users/addresses', only: [] do
           collection do
