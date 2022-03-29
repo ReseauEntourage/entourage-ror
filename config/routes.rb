@@ -313,6 +313,7 @@ Rails.application.routes.draw do
         end
 
         resources :users, :controller => 'neighborhoods/users', only: [:index, :destroy, :create]
+        resources :outings, :controller => 'neighborhoods/outings', only: [:create]
       end
 
       resources :entourages, only: [:index, :show, :create, :update] do
