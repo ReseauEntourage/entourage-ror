@@ -7,6 +7,31 @@ describe Api::V1::Neighborhoods::UsersController do
   let(:result) { JSON.parse(response.body) }
 
   describe "GET index" do
+    context "not signed in" do
+      before { get :index, params: { neighborhood_id: neighborhood.to_param } }
+      it { expect(response.status).to eq(401) }
+    end
+
+    context "signed in" do
+      let!(:join_request) { create(:join_request, user: user, joinable: neighborhood, status: "accepted") }
+
+      before { get :index, params: { neighborhood_id: neighborhood.to_param, token: user.token } }
+      it { expect(result).to eq({
+        "users" => [{
+          "id" => user.id,
+          "display_name" => "John D.",
+          "role" => "member",
+          "group_role" => "member",
+          "community_roles" => [],
+          "status" => "accepted",
+          "message" => nil,
+          "requested_at" => join_request.created_at.iso8601(3),
+          "avatar_url" => nil,
+          "partner" => nil,
+          "partner_role_title" => nil,
+        }]
+      })}
+    end
   end
 
   describe 'POST create' do
