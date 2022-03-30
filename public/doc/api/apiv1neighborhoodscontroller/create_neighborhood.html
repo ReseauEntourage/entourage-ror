@@ -140,6 +140,22 @@ table th, table td {
                 </td>
               </tr>
               <tr>
+                <td class="required">
+                    <span class="name">neighborhood[description]</span>
+                </td>
+                <td>
+                  <span class="description">Description</span>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                    <span class="name">neighborhood[welcome_message]</span>
+                </td>
+                <td>
+                  <span class="description">Welcome message</span>
+                </td>
+              </tr>
+              <tr>
                 <td>
                     <span class="name">neighborhood[ethics]</span>
                 </td>
@@ -173,10 +189,26 @@ table th, table td {
               </tr>
               <tr>
                 <td>
-                    <span class="name">neighborhood[photo_url]</span>
+                    <span class="name">neighborhood[other_interest]</span>
                 </td>
                 <td>
-                  <span class="description">Photo url</span>
+                  <span class="description">Other interest</span>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                    <span class="name">neighborhood[neighborhood_image_id]</span>
+                </td>
+                <td>
+                  <span class="description">Neighborhood image id</span>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                    <span class="name">neighborhood[google_place_id]</span>
+                </td>
+                <td>
+                  <span class="description">Google place id</span>
                 </td>
               </tr>
             </tbody>
@@ -195,7 +227,7 @@ Cookie: </pre>
 
 
             <h4>Body</h4>
-            <pre class="request body">{"token":"foobar79","neighborhood":{"name":"Foot Paris 17è","ethics":null,"latitude":48.86,"longitude":2.35,"interests":["sport"],"photo_url":null}}</pre>
+            <pre class="request body">{"token":"foobar113","neighborhood":{"name":"Foot Paris 17è","description":"Pour les passionnés de foot du 17è","ethics":null,"latitude":48.86,"longitude":2.35,"interests":["sport"],"neighborhood_image_id":3,"google_place_id":"ChIJQWDurldu5kcRmj2mNTjxtxE"}}</pre>
 
 
             <h3>Response</h3>
@@ -210,30 +242,47 @@ Access-Control-Allow-Origin: *
 Access-Control-Allow-Methods: GET,POST,PUT,PATCH,DELETE
 Access-Control-Allow-Headers: Origin,Accept,Content-Type,X-Requested-With,X-CSRF-Token,X-API-KEY
 Content-Type: application/json; charset=utf-8
-ETag: W/&quot;b55283a172de6bc9900d60d552311b7f&quot;
+ETag: W/&quot;734bdc2390ccff80a3d12e11303bb673&quot;
 Cache-Control: max-age=0, private, must-revalidate
-X-Request-Id: 2087359d-2493-443a-b703-d63838a69f7f
-X-Runtime: 0.022423
-Content-Length: 202</pre>
+X-Request-Id: b9e6ebfd-fe58-47b4-978c-4a7f99584a05
+X-Runtime: 0.023238
+Content-Length: 558</pre>
             <h4>Status</h4>
             <pre class="response status">201 Created</pre>
               <h4>Body</h4>
               <pre class="response body">{
   &quot;neighborhood&quot;: {
-    &quot;id&quot;: 1,
+    &quot;id&quot;: 14,
     &quot;name&quot;: &quot;Foot Paris 17è&quot;,
-    &quot;members_count&quot;: 0,
-    &quot;photo_url&quot;: null,
+    &quot;description&quot;: &quot;Pour les passionnés de foot du 17è&quot;,
+    &quot;welcome_message&quot;: null,
+    &quot;member&quot;: true,
+    &quot;members_count&quot;: 1,
+    &quot;image_url&quot;: &quot;https://foobar.s3.eu-west-1.amazonaws.com/foobar_url&quot;,
     &quot;interests&quot;: [
-
-    ],
-    &quot;members&quot;: [
-
+      &quot;sport&quot;
     ],
     &quot;ethics&quot;: null,
     &quot;past_outings_count&quot;: 0,
     &quot;future_outings_count&quot;: 0,
-    &quot;has_ongoing_outing&quot;: false
+    &quot;has_ongoing_outing&quot;: false,
+    &quot;address&quot;: {
+      &quot;latitude&quot;: 48.86,
+      &quot;longitude&quot;: 2.35,
+      &quot;display_address&quot;: &quot;174, rue Championnet, 75017&quot;
+    },
+    &quot;user&quot;: {
+      &quot;id&quot;: 115,
+      &quot;display_name&quot;: &quot;John D.&quot;,
+      &quot;avatar_url&quot;: null
+    },
+    &quot;members&quot;: [
+      {
+        &quot;id&quot;: 115,
+        &quot;display_name&quot;: &quot;John D.&quot;,
+        &quot;avatar_url&quot;: null
+      }
+    ]
   }
 }</pre>
       </div>

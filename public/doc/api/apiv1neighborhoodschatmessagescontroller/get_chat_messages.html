@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Api::V1::UsersController API</title>
+    <title>Api::V1::Neighborhoods::ChatMessagesController API</title>
     <meta charset="utf-8">
     <style>
       
@@ -106,13 +106,13 @@ table th, table td {
   </head>
   <body>
     <div class="container">
-      <h1>Api::V1::UsersController API</h1>
+      <h1>Api::V1::Neighborhoods::ChatMessagesController API</h1>
 
-        <p class="explanation">Users</p>
+        <p class="explanation">Chat messages</p>
 
       <div class="article">
-        <h2>Get user</h2>
-        <h3>GET /api/v1/users/:id</h3>
+        <h2>Get chat_messages</h2>
+        <h3>GET /api/v1/neighborhoods/:neighborhood_id/chat_messages</h3>
 
           <h3>Parameters</h3>
           <table class="parameters table table-striped table-bordered table-condensed">
@@ -125,18 +125,18 @@ table th, table td {
             <tbody>
               <tr>
                 <td class="required">
-                    <span class="name">id</span>
-                </td>
-                <td>
-                  <span class="description">Either a user id or &#39;me&#39;</span>
-                </td>
-              </tr>
-              <tr>
-                <td class="required">
                     <span class="name">token</span>
                 </td>
                 <td>
                   <span class="description"> token</span>
+                </td>
+              </tr>
+              <tr>
+                <td class="required">
+                    <span class="name">neighborhood_id</span>
+                </td>
+                <td>
+                  <span class="description"> neighborhood</span>
                 </td>
               </tr>
             </tbody>
@@ -151,10 +151,10 @@ Host: example.org
 Cookie: </pre>
 
           <h4>Route</h4>
-          <pre class="request route highlight">GET /api/v1/users/149?token=foobar146</pre>
+          <pre class="request route highlight">GET /api/v1/neighborhoods/1/chat_messages?token=foobar83</pre>
 
             <h4>Query Parameters</h4>
-            <pre class="request query_parameters highlight">token: foobar146</pre>
+            <pre class="request query_parameters highlight">token: foobar83</pre>
 
 
 
@@ -170,73 +170,34 @@ Access-Control-Allow-Origin: *
 Access-Control-Allow-Methods: GET,POST,PUT,PATCH,DELETE
 Access-Control-Allow-Headers: Origin,Accept,Content-Type,X-Requested-With,X-CSRF-Token,X-API-KEY
 Content-Type: application/json; charset=utf-8
-ETag: W/&quot;376ab3c95c0ac96893cc75af92f6135e&quot;
+ETag: W/&quot;8739472ab9c9497de086b64df90964f0&quot;
 Cache-Control: max-age=0, private, must-revalidate
-X-Request-Id: 79de4869-1f4b-40ac-8504-a1e347810526
-X-Runtime: 0.016657
-Content-Length: 844</pre>
+X-Request-Id: 4f85699b-9c63-47e1-b0c5-ae104416ceb8
+X-Runtime: 0.016506
+Content-Length: 274</pre>
             <h4>Status</h4>
             <pre class="response status">200 OK</pre>
               <h4>Body</h4>
               <pre class="response body">{
-  &quot;user&quot;: {
-    &quot;id&quot;: 149,
-    &quot;display_name&quot;: &quot;John D.&quot;,
-    &quot;first_name&quot;: &quot;John&quot;,
-    &quot;last_name&quot;: &quot;Doe&quot;,
-    &quot;roles&quot;: [
-
-    ],
-    &quot;about&quot;: null,
-    &quot;avatar_url&quot;: null,
-    &quot;user_type&quot;: &quot;public&quot;,
-    &quot;partner&quot;: null,
-    &quot;engaged&quot;: false,
-    &quot;unread_count&quot;: 0,
-    &quot;permissions&quot;: {
-      &quot;outing&quot;: {
-        &quot;creation&quot;: false
-      }
-    },
-    &quot;memberships&quot;: [
-
-    ],
-    &quot;conversation&quot;: {
-      &quot;uuid&quot;: &quot;1_list_149&quot;
-    },
-    &quot;anonymous&quot;: false,
-    &quot;uuid&quot;: &quot;149&quot;,
-    &quot;feature_flags&quot;: {
-      &quot;organization_admin&quot;: false
-    },
-    &quot;token&quot;: &quot;foobar146&quot;,
-    &quot;email&quot;: &quot;user146@mail.com&quot;,
-    &quot;has_password&quot;: false,
-    &quot;firebase_properties&quot;: {
-      &quot;ActionZoneDep&quot;: &quot;not_set&quot;,
-      &quot;ActionZoneCP&quot;: &quot;not_set&quot;,
-      &quot;Goal&quot;: &quot;no_set&quot;,
-      &quot;Interests&quot;: &quot;none&quot;
-    },
-    &quot;goal&quot;: null,
-    &quot;phone&quot;: &quot;+33600000145&quot;,
-    &quot;interests&quot;: [
-
-    ],
-    &quot;stats&quot;: {
-      &quot;tour_count&quot;: 0,
-      &quot;encounter_count&quot;: 0,
-      &quot;entourage_count&quot;: 0,
-      &quot;actions_count&quot;: 0,
-      &quot;ask_for_help_creation_count&quot;: 0,
-      &quot;contribution_creation_count&quot;: 0,
-      &quot;events_count&quot;: 0,
-      &quot;good_waves_participation&quot;: false
-    },
-    &quot;organization&quot;: null,
-    &quot;address&quot;: null,
-    &quot;address_2&quot;: null
-  }
+  &quot;chat_messages&quot;: [
+    {
+      &quot;id&quot;: 4,
+      &quot;content&quot;: &quot;MyText&quot;,
+      &quot;user&quot;: {
+        &quot;id&quot;: 84,
+        &quot;avatar_url&quot;: null,
+        &quot;display_name&quot;: &quot;John D.&quot;,
+        &quot;partner&quot;: null
+      },
+      &quot;created_at&quot;: &quot;2022-06-02T17:16:44.530+02:00&quot;,
+      &quot;message_type&quot;: &quot;text&quot;,
+      &quot;post_id&quot;: null,
+      &quot;has_comments&quot;: false,
+      &quot;comments_count&quot;: 0,
+      &quot;image_url&quot;: null,
+      &quot;read&quot;: false
+    }
+  ]
 }</pre>
       </div>
     </div>
