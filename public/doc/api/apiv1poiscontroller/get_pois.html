@@ -199,13 +199,13 @@ Host: example.org
 Cookie: </pre>
 
           <h4>Route</h4>
-          <pre class="request route highlight">GET /api/v1/pois?v=1&amp;latitude=48.870424&amp;longitude=2.30681949999996&amp;category_ids=302</pre>
+          <pre class="request route highlight">GET /api/v1/pois?v=1&amp;latitude=48.870424&amp;longitude=2.30681949999996&amp;category_ids=2</pre>
 
             <h4>Query Parameters</h4>
             <pre class="request query_parameters highlight">v: 1
 latitude: 48.870424
 longitude: 2.30681949999996
-category_ids: 302</pre>
+category_ids: 2</pre>
 
 
 
@@ -221,18 +221,18 @@ Access-Control-Allow-Origin: *
 Access-Control-Allow-Methods: GET,POST,PUT,PATCH,DELETE
 Access-Control-Allow-Headers: Origin,Accept,Content-Type,X-Requested-With,X-CSRF-Token,X-API-KEY
 Content-Type: application/json; charset=utf-8
-ETag: W/&quot;1e30fbc5bf614f3d59d9c0754b9fc360&quot;
+ETag: W/&quot;d694d4a598dff2f4a3a884a0255e4a66&quot;
 Cache-Control: max-age=0, private, must-revalidate
-X-Request-Id: 17e03e67-6324-443f-9d02-38d3015cf2fc
-X-Runtime: 0.017333
-Content-Length: 383</pre>
+X-Request-Id: 9dce0b60-94c1-4957-a7a1-44bcfab2f43f
+X-Runtime: 0.009397
+Content-Length: 375</pre>
             <h4>Status</h4>
             <pre class="response status">200 OK</pre>
               <h4>Body</h4>
               <pre class="response body">{
   &quot;pois&quot;: [
     {
-      &quot;id&quot;: 284,
+      &quot;id&quot;: 2,
       &quot;name&quot;: &quot;Dede&quot;,
       &quot;description&quot;: null,
       &quot;longitude&quot;: 2.30681949999996,
@@ -243,17 +243,17 @@ Content-Length: 383</pre>
       &quot;email&quot;: &quot;entourage@entourage.com&quot;,
       &quot;audience&quot;: &quot;Mon audience&quot;,
       &quot;validated&quot;: true,
-      &quot;category_id&quot;: 302,
+      &quot;category_id&quot;: 2,
       &quot;partner_id&quot;: null,
       &quot;category&quot;: {
-        &quot;id&quot;: 302,
+        &quot;id&quot;: 2,
         &quot;name&quot;: &quot;Categorie 2&quot;
       }
     }
   ],
   &quot;categories&quot;: [
     {
-      &quot;id&quot;: 302,
+      &quot;id&quot;: 2,
       &quot;name&quot;: &quot;Categorie 2&quot;
     }
   ]
