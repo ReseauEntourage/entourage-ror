@@ -44,7 +44,8 @@ class UserHistory < ApplicationRecord
         }
       when 'signal-user:metadata'
         {
-          message: { type: :string }
+          message: { type: :string },
+          signals: { type: :string }
         }
       else
         {}

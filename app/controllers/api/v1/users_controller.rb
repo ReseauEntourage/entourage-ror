@@ -403,7 +403,7 @@ module Api
       end
 
       def user_report_params
-        params.require(:user_report).permit(:message)
+        params.require(:user_report).permit(:message, signals: [])
       end
 
       def address_params
