@@ -4,6 +4,7 @@ module UserServices
       @reported_user = reported_user
       @params = params
       @message = params[:message]
+      @signals = translate_signals(params[:signals] || []).join(', ')
       @callback = Callback.new
     end
 
@@ -22,9 +23,10 @@ module UserServices
       reporting_user = reporting_user.token if reporting_user.anonymous?
 
       SlackServices::SignalUser.new(
-        reported_user:  reported_user,
+        reported_user: reported_user,
         reporting_user: reporting_user,
-        message:        message
+        message: message,
+        signals: signals
       ).notify
 
       UserHistory.create({
@@ -32,14 +34,19 @@ module UserServices
         updater_id: reporting_user.id,
         kind: 'signal-user',
         metadata: {
-          message: message
+          message: message,
+          signals: signals
         }
       })
 
       callback.on_success.try(:call)
     end
 
+    def translate_signals signals
+      signals.map { |signal| Tag.signal_t signal }
+    end
+
     private
-    attr_reader :reported_user, :message, :callback
+    attr_reader :reported_user, :message, :signals, :callback
   end
 end
