@@ -87,7 +87,7 @@ module Api
       end
 
       def format_tags tags
-        tags.to_a.map { |t| { t.first => t.last } }
+        tags.to_a.map { |t| { id: t.first, name: t.last } }
       end
     end
   end
