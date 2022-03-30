@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Api::V1::Entourages::ChatMessagesController API</title>
+    <title>Api::V1::HomeController API</title>
     <meta charset="utf-8">
     <style>
       
@@ -106,13 +106,13 @@ table th, table td {
   </head>
   <body>
     <div class="container">
-      <h1>Api::V1::Entourages::ChatMessagesController API</h1>
+      <h1>Api::V1::HomeController API</h1>
 
-        <p class="explanation">Chat messages</p>
+        <p class="explanation">Home</p>
 
       <div class="article">
-        <h2>Create chat_message</h2>
-        <h3>POST /api/v1/entourages/:entourage_id/chat_messages</h3>
+        <h2>Get metadata</h2>
+        <h3>GET /api/v1/home/metadata</h3>
 
           <h3>Parameters</h3>
           <table class="parameters table table-striped table-bordered table-condensed">
@@ -131,62 +131,6 @@ table th, table td {
                   <span class="description"> token</span>
                 </td>
               </tr>
-              <tr>
-                <td class="required">
-                    <span class="name">entourage_id</span>
-                </td>
-                <td>
-                  <span class="description"> entourage</span>
-                </td>
-              </tr>
-              <tr>
-                <td class="required">
-                    <span class="name">chat_message[content]</span>
-                </td>
-                <td>
-                  <span class="description">Chat message content</span>
-                </td>
-              </tr>
-              <tr>
-                <td class="required">
-                    <span class="name">chat_message[message_type]</span>
-                </td>
-                <td>
-                  <span class="description">text, status_update, share</span>
-                </td>
-              </tr>
-              <tr>
-                <td class="required">
-                    <span class="name">chat_message[metadata][status]</span>
-                </td>
-                <td>
-                  <span class="description">(status_update)</span>
-                </td>
-              </tr>
-              <tr>
-                <td class="required">
-                    <span class="name">chat_message[metadata][outcome_success]</span>
-                </td>
-                <td>
-                  <span class="description">(status_update)</span>
-                </td>
-              </tr>
-              <tr>
-                <td class="required">
-                    <span class="name">chat_message[metadata][type]</span>
-                </td>
-                <td>
-                  <span class="description">entourage, poi (share)</span>
-                </td>
-              </tr>
-              <tr>
-                <td class="required">
-                    <span class="name">chat_message[metadata][uuid]</span>
-                </td>
-                <td>
-                  <span class="description">(share)</span>
-                </td>
-              </tr>
             </tbody>
           </table>
 
@@ -199,11 +143,11 @@ Host: example.org
 Cookie: </pre>
 
           <h4>Route</h4>
-          <pre class="request route highlight">POST /api/v1/entourages/3/chat_messages</pre>
+          <pre class="request route highlight">GET /api/v1/home/metadata?token=foobar64</pre>
 
+            <h4>Query Parameters</h4>
+            <pre class="request query_parameters highlight">token: foobar64</pre>
 
-            <h4>Body</h4>
-            <pre class="request body">{"token":"foobar18","chat_message":{"content":"foo"}}</pre>
 
 
             <h3>Response</h3>
@@ -218,26 +162,26 @@ Access-Control-Allow-Origin: *
 Access-Control-Allow-Methods: GET,POST,PUT,PATCH,DELETE
 Access-Control-Allow-Headers: Origin,Accept,Content-Type,X-Requested-With,X-CSRF-Token,X-API-KEY
 Content-Type: application/json; charset=utf-8
-ETag: W/&quot;334522b32e9c22fe88daf3bc142584d1&quot;
+ETag: W/&quot;ae5d6e6a40134d4365a9a190fa0d41fb&quot;
 Cache-Control: max-age=0, private, must-revalidate
-X-Request-Id: f4023771-18b7-4331-81c9-f3da315f872d
-X-Runtime: 0.822882
-Content-Length: 183</pre>
+X-Request-Id: 23784bf0-8774-4cad-95dc-df34d39a27bd
+X-Runtime: 0.004770
+Content-Length: 203</pre>
             <h4>Status</h4>
-            <pre class="response status">201 Created</pre>
+            <pre class="response status">200 OK</pre>
               <h4>Body</h4>
               <pre class="response body">{
-  &quot;chat_message&quot;: {
-    &quot;id&quot;: 3,
-    &quot;content&quot;: &quot;foo&quot;,
-    &quot;user&quot;: {
-      &quot;id&quot;: 18,
-      &quot;avatar_url&quot;: null,
-      &quot;display_name&quot;: &quot;John D.&quot;,
-      &quot;partner&quot;: null
-    },
-    &quot;created_at&quot;: &quot;2022-04-27T15:27:10.462+02:00&quot;,
-    &quot;message_type&quot;: &quot;text&quot;
+  &quot;tags&quot;: {
+    &quot;interests&quot;: {
+      &quot;activites&quot;: &quot;Activités manuelles&quot;,
+      &quot;animaux&quot;: &quot;Animaux&quot;,
+      &quot;bien-etre&quot;: &quot;Bien-être&quot;,
+      &quot;cuisine&quot;: &quot;Cuisine&quot;,
+      &quot;culture&quot;: &quot;Art &amp; culture&quot;,
+      &quot;jeux&quot;: &quot;Jeux&quot;,
+      &quot;nature&quot;: &quot;Nature&quot;,
+      &quot;sport&quot;: &quot;Sport&quot;
+    }
   }
 }</pre>
       </div>
