@@ -40,8 +40,8 @@ module Api
       def metadata
         render json: {
           tags: {
-            interests: Tag.interests,
-            signals: Tag.signals
+            interests: format_tags(Tag.interests),
+            signals: format_tags(Tag.signals)
           }
         }.to_json, status: 200
       end
@@ -84,6 +84,10 @@ module Api
         else
           [:headlines, :outings, :entourage_ask_for_helps, :entourage_contributions]
         end
+      end
+
+      def format_tags tags
+        tags.to_a.map { |t| { t.first => t.last } }
       end
     end
   end
