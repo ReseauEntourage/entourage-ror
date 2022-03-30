@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Api::V1::UsersController API</title>
+    <title>Api::V1::NeighborhoodsController API</title>
     <meta charset="utf-8">
     <style>
       
@@ -106,13 +106,13 @@ table th, table td {
   </head>
   <body>
     <div class="container">
-      <h1>Api::V1::UsersController API</h1>
+      <h1>Api::V1::NeighborhoodsController API</h1>
 
-        <p class="explanation">Users</p>
+        <p class="explanation">Neighborhoods</p>
 
       <div class="article">
-        <h2>Update user address</h2>
-        <h3>POST /api/v1/users/:id/address</h3>
+        <h2>Create neighborhood</h2>
+        <h3>POST api/v1/neighborhoods</h3>
 
           <h3>Parameters</h3>
           <table class="parameters table table-striped table-bordered table-condensed">
@@ -125,14 +125,6 @@ table th, table td {
             <tbody>
               <tr>
                 <td class="required">
-                    <span class="name">id</span>
-                </td>
-                <td>
-                  <span class="description">Id or &#39;me&#39;</span>
-                </td>
-              </tr>
-              <tr>
-                <td class="required">
                     <span class="name">token</span>
                 </td>
                 <td>
@@ -141,15 +133,23 @@ table th, table td {
               </tr>
               <tr>
                 <td class="required">
-                    <span class="name">address[place_name]</span>
+                    <span class="name">neighborhood[name]</span>
                 </td>
                 <td>
-                  <span class="description">Place name</span>
+                  <span class="description">Name</span>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                    <span class="name">neighborhood[ethics]</span>
+                </td>
+                <td>
+                  <span class="description">Ethics</span>
                 </td>
               </tr>
               <tr>
                 <td class="required">
-                    <span class="name">address[latitude]</span>
+                    <span class="name">neighborhood[latitude]</span>
                 </td>
                 <td>
                   <span class="description">Latitude</span>
@@ -157,10 +157,26 @@ table th, table td {
               </tr>
               <tr>
                 <td class="required">
-                    <span class="name">address[longitude]</span>
+                    <span class="name">neighborhood[longitude]</span>
                 </td>
                 <td>
                   <span class="description">Longitude</span>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                    <span class="name">neighborhood[interests]</span>
+                </td>
+                <td>
+                  <span class="description">Interests</span>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                    <span class="name">neighborhood[photo_url]</span>
+                </td>
+                <td>
+                  <span class="description">Photo url</span>
                 </td>
               </tr>
             </tbody>
@@ -175,11 +191,11 @@ Host: example.org
 Cookie: </pre>
 
           <h4>Route</h4>
-          <pre class="request route highlight">POST /api/v1/users/473/address</pre>
+          <pre class="request route highlight">POST api/v1/neighborhoods</pre>
 
 
             <h4>Body</h4>
-            <pre class="request body">{"token":"foobar152","address":{"place_name":"75012","latitude":48.84,"longitude":2.38}}</pre>
+            <pre class="request body">{"token":"foobar79","neighborhood":{"name":"Foot Paris 17è","ethics":null,"latitude":48.86,"longitude":2.35,"interests":["sport"],"photo_url":null}}</pre>
 
 
             <h3>Response</h3>
@@ -194,27 +210,31 @@ Access-Control-Allow-Origin: *
 Access-Control-Allow-Methods: GET,POST,PUT,PATCH,DELETE
 Access-Control-Allow-Headers: Origin,Accept,Content-Type,X-Requested-With,X-CSRF-Token,X-API-KEY
 Content-Type: application/json; charset=utf-8
-ETag: W/&quot;059f53713c651e2ac3ac6ddb36ab5489&quot;
+ETag: W/&quot;54c15dfbbe274a6ca2d3e37708bfa668&quot;
 Cache-Control: max-age=0, private, must-revalidate
 Set-Cookie: request_method=POST; path=/
-X-Request-Id: e4d9f3f8-6be0-4656-b093-49a2d6c11239
-X-Runtime: 0.019310
-Content-Length: 196</pre>
+X-Request-Id: 5a67eb01-0525-411a-8189-33070cb04b3e
+X-Runtime: 0.024083
+Content-Length: 202</pre>
             <h4>Status</h4>
-            <pre class="response status">200 OK</pre>
+            <pre class="response status">201 Created</pre>
               <h4>Body</h4>
               <pre class="response body">{
-  &quot;address&quot;: {
-    &quot;latitude&quot;: 48.84,
-    &quot;longitude&quot;: 2.38,
-    &quot;display_address&quot;: &quot;75012&quot;,
-    &quot;position&quot;: 1
-  },
-  &quot;firebase_properties&quot;: {
-    &quot;ActionZoneDep&quot;: &quot;not_set&quot;,
-    &quot;ActionZoneCP&quot;: &quot;not_set&quot;,
-    &quot;Goal&quot;: &quot;no_set&quot;,
-    &quot;Interests&quot;: &quot;none&quot;
+  &quot;neighborhood&quot;: {
+    &quot;id&quot;: 2,
+    &quot;name&quot;: &quot;Foot Paris 17è&quot;,
+    &quot;members_count&quot;: 0,
+    &quot;photo_url&quot;: null,
+    &quot;interests&quot;: [
+
+    ],
+    &quot;members&quot;: [
+
+    ],
+    &quot;ethics&quot;: null,
+    &quot;past_outings_count&quot;: 0,
+    &quot;future_outings_count&quot;: 0,
+    &quot;has_ongoing_outing&quot;: false
   }
 }</pre>
       </div>

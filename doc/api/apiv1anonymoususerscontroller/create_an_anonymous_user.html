@@ -141,19 +141,18 @@ Access-Control-Allow-Origin: *
 Access-Control-Allow-Methods: GET,POST,PUT,PATCH,DELETE
 Access-Control-Allow-Headers: Origin,Accept,Content-Type,X-Requested-With,X-CSRF-Token,X-API-KEY
 Content-Type: application/json; charset=utf-8
-ETag: W/&quot;81b5fd81dfd33ccc38d455287ecb6283&quot;
+ETag: W/&quot;e2327a3e355f084ae691e5587aad2812&quot;
 Cache-Control: max-age=0, private, must-revalidate
 Set-Cookie: request_method=POST; path=/
-X-Request-Id: 41266cac-29bb-4dd8-8fde-264579fac372
-X-Runtime: 0.044121
-Content-Length: 931</pre>
+X-Request-Id: 1c861a70-76c7-4f00-9192-5c6b843a1187
+X-Runtime: 0.025434
+Content-Length: 944</pre>
             <h4>Status</h4>
             <pre class="response status">201 Created</pre>
               <h4>Body</h4>
               <pre class="response body">{
   &quot;user&quot;: {
     &quot;id&quot;: null,
-    &quot;email&quot;: null,
     &quot;display_name&quot;: null,
     &quot;first_name&quot;: null,
     &quot;last_name&quot;: null,
@@ -161,31 +160,9 @@ Content-Length: 931</pre>
 
     ],
     &quot;about&quot;: null,
-    &quot;token&quot;: &quot;1_anonymous_7f08818d-5a8d-475b-a06f-6b17de1a2c9f_e774f7046e149a8dc1cfbcc4771772f1ec3f478f&quot;,
     &quot;avatar_url&quot;: null,
     &quot;user_type&quot;: &quot;public&quot;,
     &quot;partner&quot;: null,
-    &quot;has_password&quot;: false,
-    &quot;anonymous&quot;: true,
-    &quot;uuid&quot;: &quot;1_anonymous_7f08818d-5a8d-475b-a06f-6b17de1a2c9f&quot;,
-    &quot;goal&quot;: null,
-    &quot;interests&quot;: [
-
-    ],
-    &quot;firebase_properties&quot;: {
-      &quot;ActionZoneDep&quot;: &quot;not_set&quot;,
-      &quot;ActionZoneCP&quot;: &quot;not_set&quot;,
-      &quot;Goal&quot;: &quot;no_set&quot;,
-      &quot;Interests&quot;: &quot;none&quot;
-    },
-    &quot;placeholders&quot;: [
-      &quot;firebase_properties&quot;,
-      &quot;address&quot;,
-      &quot;address_2&quot;
-    ],
-    &quot;feature_flags&quot;: {
-      &quot;organization_admin&quot;: false
-    },
     &quot;engaged&quot;: false,
     &quot;unread_count&quot;: 0,
     &quot;permissions&quot;: {
@@ -193,7 +170,30 @@ Content-Length: 931</pre>
         &quot;creation&quot;: false
       }
     },
-    &quot;organization&quot;: null,
+    &quot;placeholders&quot;: [
+      &quot;firebase_properties&quot;,
+      &quot;address&quot;,
+      &quot;address_2&quot;
+    ],
+    &quot;anonymous&quot;: true,
+    &quot;uuid&quot;: &quot;1_anonymous_2f4e02ed-804e-4a29-b3e2-7a2567b096c5&quot;,
+    &quot;feature_flags&quot;: {
+      &quot;organization_admin&quot;: false
+    },
+    &quot;token&quot;: &quot;1_anonymous_2f4e02ed-804e-4a29-b3e2-7a2567b096c5_15c85076720c01c908f472c41bc0ec799b4cb9aa&quot;,
+    &quot;email&quot;: null,
+    &quot;has_password&quot;: false,
+    &quot;firebase_properties&quot;: {
+      &quot;ActionZoneDep&quot;: &quot;not_set&quot;,
+      &quot;ActionZoneCP&quot;: &quot;not_set&quot;,
+      &quot;Goal&quot;: &quot;no_set&quot;,
+      &quot;Interests&quot;: &quot;none&quot;
+    },
+    &quot;goal&quot;: null,
+    &quot;phone&quot;: null,
+    &quot;interests&quot;: [
+
+    ],
     &quot;stats&quot;: {
       &quot;tour_count&quot;: 0,
       &quot;encounter_count&quot;: 0,
@@ -204,6 +204,7 @@ Content-Length: 931</pre>
       &quot;events_count&quot;: 0,
       &quot;good_waves_participation&quot;: false
     },
+    &quot;organization&quot;: null,
     &quot;address&quot;: null,
     &quot;address_2&quot;: null
   }

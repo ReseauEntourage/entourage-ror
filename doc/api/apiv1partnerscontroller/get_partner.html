@@ -143,10 +143,10 @@ Host: example.org
 Cookie: </pre>
 
           <h4>Route</h4>
-          <pre class="request route highlight">GET /api/v1/partners/13261?token=foobar80</pre>
+          <pre class="request route highlight">GET /api/v1/partners/10?token=foobar83</pre>
 
             <h4>Query Parameters</h4>
-            <pre class="request query_parameters highlight">token: foobar80</pre>
+            <pre class="request query_parameters highlight">token: foobar83</pre>
 
 
 
@@ -162,20 +162,18 @@ Access-Control-Allow-Origin: *
 Access-Control-Allow-Methods: GET,POST,PUT,PATCH,DELETE
 Access-Control-Allow-Headers: Origin,Accept,Content-Type,X-Requested-With,X-CSRF-Token,X-API-KEY
 Content-Type: application/json; charset=utf-8
-ETag: W/&quot;ab6f1b9930a9f746339524be449c853a&quot;
+ETag: W/&quot;959ba175fad756691a806b80ad30f592&quot;
 Cache-Control: max-age=0, private, must-revalidate
-X-Request-Id: b6e7a71c-33dc-4882-b2fa-ae4b82c86a5e
-X-Runtime: 0.011922
-Content-Length: 355</pre>
+X-Request-Id: ac50b2f2-dcd2-4f72-b24e-8e334d00af67
+X-Runtime: 0.010882
+Content-Length: 352</pre>
             <h4>Status</h4>
             <pre class="response status">200 OK</pre>
               <h4>Body</h4>
               <pre class="response body">{
   &quot;partner&quot;: {
-    &quot;id&quot;: 13261,
+    &quot;id&quot;: 10,
     &quot;name&quot;: &quot;MyString&quot;,
-    &quot;large_logo_url&quot;: &quot;MyString&quot;,
-    &quot;small_logo_url&quot;: &quot;https://s3-eu-west-1.amazonaws.com/entourage-ressources/check-small.png&quot;,
     &quot;description&quot;: &quot;MyDescription&quot;,
     &quot;donations_needs&quot;: null,
     &quot;volunteers_needs&quot;: null,
@@ -183,6 +181,8 @@ Content-Length: 355</pre>
     &quot;address&quot;: &quot;174 rue Championnet, Paris&quot;,
     &quot;website_url&quot;: null,
     &quot;email&quot;: null,
+    &quot;large_logo_url&quot;: &quot;MyString&quot;,
+    &quot;small_logo_url&quot;: &quot;https://s3-eu-west-1.amazonaws.com/entourage-ressources/check-small.png&quot;,
     &quot;default&quot;: true,
     &quot;following&quot;: false
   }

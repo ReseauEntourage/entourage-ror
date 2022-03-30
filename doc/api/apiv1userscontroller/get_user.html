@@ -151,10 +151,10 @@ Host: example.org
 Cookie: </pre>
 
           <h4>Route</h4>
-          <pre class="request route highlight">GET /api/v1/users/458338?token=foobar143</pre>
+          <pre class="request route highlight">GET /api/v1/users/467?token=foobar146</pre>
 
             <h4>Query Parameters</h4>
-            <pre class="request query_parameters highlight">token: foobar143</pre>
+            <pre class="request query_parameters highlight">token: foobar146</pre>
 
 
 
@@ -170,18 +170,17 @@ Access-Control-Allow-Origin: *
 Access-Control-Allow-Methods: GET,POST,PUT,PATCH,DELETE
 Access-Control-Allow-Headers: Origin,Accept,Content-Type,X-Requested-With,X-CSRF-Token,X-API-KEY
 Content-Type: application/json; charset=utf-8
-ETag: W/&quot;f0cc2e5ca657dcef3fc7e793813463ed&quot;
+ETag: W/&quot;cec620e8b49e5fc154c96e01b86b3d7e&quot;
 Cache-Control: max-age=0, private, must-revalidate
-X-Request-Id: 7214f7f4-a813-4a5f-b05b-e6a85add7bb4
-X-Runtime: 0.019676
-Content-Length: 830</pre>
+X-Request-Id: f55bf4e0-5036-445b-9aa6-1c288efb42c5
+X-Runtime: 0.018266
+Content-Length: 844</pre>
             <h4>Status</h4>
             <pre class="response status">200 OK</pre>
               <h4>Body</h4>
               <pre class="response body">{
   &quot;user&quot;: {
-    &quot;id&quot;: 458338,
-    &quot;email&quot;: &quot;user143@mail.com&quot;,
+    &quot;id&quot;: 467,
     &quot;display_name&quot;: &quot;John D.&quot;,
     &quot;first_name&quot;: &quot;John&quot;,
     &quot;last_name&quot;: &quot;Doe&quot;,
@@ -189,32 +188,9 @@ Content-Length: 830</pre>
 
     ],
     &quot;about&quot;: null,
-    &quot;token&quot;: &quot;foobar143&quot;,
     &quot;avatar_url&quot;: null,
     &quot;user_type&quot;: &quot;public&quot;,
     &quot;partner&quot;: null,
-    &quot;memberships&quot;: [
-
-    ],
-    &quot;has_password&quot;: false,
-    &quot;conversation&quot;: {
-      &quot;uuid&quot;: &quot;1_list_458338&quot;
-    },
-    &quot;anonymous&quot;: false,
-    &quot;uuid&quot;: &quot;458338&quot;,
-    &quot;goal&quot;: null,
-    &quot;interests&quot;: [
-
-    ],
-    &quot;firebase_properties&quot;: {
-      &quot;ActionZoneDep&quot;: &quot;not_set&quot;,
-      &quot;ActionZoneCP&quot;: &quot;not_set&quot;,
-      &quot;Goal&quot;: &quot;no_set&quot;,
-      &quot;Interests&quot;: &quot;none&quot;
-    },
-    &quot;feature_flags&quot;: {
-      &quot;organization_admin&quot;: false
-    },
     &quot;engaged&quot;: false,
     &quot;unread_count&quot;: 0,
     &quot;permissions&quot;: {
@@ -222,7 +198,31 @@ Content-Length: 830</pre>
         &quot;creation&quot;: false
       }
     },
-    &quot;organization&quot;: null,
+    &quot;memberships&quot;: [
+
+    ],
+    &quot;conversation&quot;: {
+      &quot;uuid&quot;: &quot;1_list_467&quot;
+    },
+    &quot;anonymous&quot;: false,
+    &quot;uuid&quot;: &quot;467&quot;,
+    &quot;feature_flags&quot;: {
+      &quot;organization_admin&quot;: false
+    },
+    &quot;token&quot;: &quot;foobar146&quot;,
+    &quot;email&quot;: &quot;user146@mail.com&quot;,
+    &quot;has_password&quot;: false,
+    &quot;firebase_properties&quot;: {
+      &quot;ActionZoneDep&quot;: &quot;not_set&quot;,
+      &quot;ActionZoneCP&quot;: &quot;not_set&quot;,
+      &quot;Goal&quot;: &quot;no_set&quot;,
+      &quot;Interests&quot;: &quot;none&quot;
+    },
+    &quot;goal&quot;: null,
+    &quot;phone&quot;: &quot;+33600000145&quot;,
+    &quot;interests&quot;: [
+
+    ],
     &quot;stats&quot;: {
       &quot;tour_count&quot;: 0,
       &quot;encounter_count&quot;: 0,
@@ -233,6 +233,7 @@ Content-Length: 830</pre>
       &quot;events_count&quot;: 0,
       &quot;good_waves_participation&quot;: false
     },
+    &quot;organization&quot;: null,
     &quot;address&quot;: null,
     &quot;address_2&quot;: null
   }
