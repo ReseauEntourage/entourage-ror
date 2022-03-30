@@ -15,5 +15,9 @@ class Tag < ApplicationRecord
     def signals
       I18n.t('tags.signals')
     end
+
+    def signal_t signal
+      I18n.t("tags.signals.#{signal}")
+    end
   end
 end
