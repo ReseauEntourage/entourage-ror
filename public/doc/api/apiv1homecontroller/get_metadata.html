@@ -162,26 +162,76 @@ Access-Control-Allow-Origin: *
 Access-Control-Allow-Methods: GET,POST,PUT,PATCH,DELETE
 Access-Control-Allow-Headers: Origin,Accept,Content-Type,X-Requested-With,X-CSRF-Token,X-API-KEY
 Content-Type: application/json; charset=utf-8
-ETag: W/&quot;ae5d6e6a40134d4365a9a190fa0d41fb&quot;
+ETag: W/&quot;36335ccd294b6501e1095a981941a527&quot;
 Cache-Control: max-age=0, private, must-revalidate
-X-Request-Id: 23784bf0-8774-4cad-95dc-df34d39a27bd
-X-Runtime: 0.004770
-Content-Length: 203</pre>
+X-Request-Id: 0080732c-0c65-48ac-88b4-918ef941cbc6
+X-Runtime: 0.004244
+Content-Length: 534</pre>
             <h4>Status</h4>
             <pre class="response status">200 OK</pre>
               <h4>Body</h4>
               <pre class="response body">{
   &quot;tags&quot;: {
-    &quot;interests&quot;: {
-      &quot;activites&quot;: &quot;Activités manuelles&quot;,
-      &quot;animaux&quot;: &quot;Animaux&quot;,
-      &quot;bien-etre&quot;: &quot;Bien-être&quot;,
-      &quot;cuisine&quot;: &quot;Cuisine&quot;,
-      &quot;culture&quot;: &quot;Art &amp; culture&quot;,
-      &quot;jeux&quot;: &quot;Jeux&quot;,
-      &quot;nature&quot;: &quot;Nature&quot;,
-      &quot;sport&quot;: &quot;Sport&quot;
-    }
+    &quot;interests&quot;: [
+      {
+        &quot;id&quot;: &quot;activites&quot;,
+        &quot;name&quot;: &quot;Activités manuelles&quot;
+      },
+      {
+        &quot;id&quot;: &quot;animaux&quot;,
+        &quot;name&quot;: &quot;Animaux&quot;
+      },
+      {
+        &quot;id&quot;: &quot;bien-etre&quot;,
+        &quot;name&quot;: &quot;Bien-être&quot;
+      },
+      {
+        &quot;id&quot;: &quot;cuisine&quot;,
+        &quot;name&quot;: &quot;Cuisine&quot;
+      },
+      {
+        &quot;id&quot;: &quot;culture&quot;,
+        &quot;name&quot;: &quot;Art &amp; culture&quot;
+      },
+      {
+        &quot;id&quot;: &quot;jeux&quot;,
+        &quot;name&quot;: &quot;Jeux&quot;
+      },
+      {
+        &quot;id&quot;: &quot;nature&quot;,
+        &quot;name&quot;: &quot;Nature&quot;
+      },
+      {
+        &quot;id&quot;: &quot;sport&quot;,
+        &quot;name&quot;: &quot;Sport&quot;
+      },
+      {
+        &quot;id&quot;: &quot;other&quot;,
+        &quot;name&quot;: &quot;Autre&quot;
+      }
+    ],
+    &quot;signals&quot;: [
+      {
+        &quot;id&quot;: &quot;spam&quot;,
+        &quot;name&quot;: &quot;Spam&quot;
+      },
+      {
+        &quot;id&quot;: &quot;fraud&quot;,
+        &quot;name&quot;: &quot;Arnaque&quot;
+      },
+      {
+        &quot;id&quot;: &quot;insults&quot;,
+        &quot;name&quot;: &quot;Propos déplacés&quot;
+      },
+      {
+        &quot;id&quot;: &quot;in_danger&quot;,
+        &quot;name&quot;: &quot;Mise en danger&quot;
+      },
+      {
+        &quot;id&quot;: &quot;other&quot;,
+        &quot;name&quot;: &quot;Autre&quot;
+      }
+    ]
   }
 }</pre>
       </div>

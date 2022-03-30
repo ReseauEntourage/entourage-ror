@@ -223,11 +223,11 @@ Host: example.org
 Cookie: </pre>
 
           <h4>Route</h4>
-          <pre class="request route highlight">PATCH /api/v1/users/144</pre>
+          <pre class="request route highlight">PATCH /api/v1/users/181</pre>
 
 
             <h4>Body</h4>
-            <pre class="request body">{"token":"foobar142","user":{"first_name":"foo","interests":["sport"]}}</pre>
+            <pre class="request body">{"token":"foobar179","user":{"first_name":"foo","interests":["sport"]}}</pre>
 
 
             <h3>Response</h3>
@@ -242,17 +242,17 @@ Access-Control-Allow-Origin: *
 Access-Control-Allow-Methods: GET,POST,PUT,PATCH,DELETE
 Access-Control-Allow-Headers: Origin,Accept,Content-Type,X-Requested-With,X-CSRF-Token,X-API-KEY
 Content-Type: application/json; charset=utf-8
-ETag: W/&quot;57bf5a37465dfe0b9d2b7e51f73b94a0&quot;
+ETag: W/&quot;ab4eb25446df11131a4dbfdd4431946a&quot;
 Cache-Control: max-age=0, private, must-revalidate
-X-Request-Id: 537e15ad-e808-41f6-8b5e-7dc8e12b5419
-X-Runtime: 0.036958
-Content-Length: 1008</pre>
+X-Request-Id: 5fd75406-3122-473d-8664-1658462ccd4d
+X-Runtime: 0.035574
+Content-Length: 1045</pre>
             <h4>Status</h4>
             <pre class="response status">200 OK</pre>
               <h4>Body</h4>
               <pre class="response body">{
   &quot;user&quot;: {
-    &quot;id&quot;: 144,
+    &quot;id&quot;: 181,
     &quot;display_name&quot;: &quot;Foo D.&quot;,
     &quot;first_name&quot;: &quot;foo&quot;,
     &quot;last_name&quot;: &quot;Doe&quot;,
@@ -270,19 +270,22 @@ Content-Length: 1008</pre>
         &quot;creation&quot;: false
       }
     },
+    &quot;interests&quot;: [
+      &quot;sport&quot;
+    ],
     &quot;memberships&quot;: [
 
     ],
     &quot;conversation&quot;: {
-      &quot;uuid&quot;: &quot;1_list_144&quot;
+      &quot;uuid&quot;: &quot;1_list_181&quot;
     },
     &quot;anonymous&quot;: false,
-    &quot;uuid&quot;: &quot;144&quot;,
+    &quot;uuid&quot;: &quot;181&quot;,
     &quot;feature_flags&quot;: {
       &quot;organization_admin&quot;: false
     },
-    &quot;token&quot;: &quot;foobar142&quot;,
-    &quot;email&quot;: &quot;user142@mail.com&quot;,
+    &quot;token&quot;: &quot;foobar179&quot;,
+    &quot;email&quot;: &quot;user179@mail.com&quot;,
     &quot;has_password&quot;: false,
     &quot;firebase_properties&quot;: {
       &quot;ActionZoneDep&quot;: &quot;not_set&quot;,
@@ -291,10 +294,9 @@ Content-Length: 1008</pre>
       &quot;Interests&quot;: &quot;sport&quot;
     },
     &quot;goal&quot;: null,
-    &quot;phone&quot;: &quot;+33600000142&quot;,
-    &quot;interests&quot;: [
-      &quot;sport&quot;
-    ],
+    &quot;phone&quot;: &quot;+33600000179&quot;,
+    &quot;travel_distance&quot;: 10,
+    &quot;birthday&quot;: null,
     &quot;stats&quot;: {
       &quot;tour_count&quot;: 0,
       &quot;encounter_count&quot;: 0,
@@ -306,10 +308,10 @@ Content-Length: 1008</pre>
       &quot;good_waves_participation&quot;: false
     },
     &quot;organization&quot;: {
-      &quot;name&quot;: &quot;Association 70&quot;,
+      &quot;name&quot;: &quot;Association 84&quot;,
       &quot;description&quot;: &quot;Association description&quot;,
-      &quot;phone&quot;: &quot;+33600000070&quot;,
-      &quot;address&quot;: &quot;70 avenue des Champs Elysées 75008 Paris France&quot;,
+      &quot;phone&quot;: &quot;+33600000084&quot;,
+      &quot;address&quot;: &quot;84 avenue des Champs Elysées 75008 Paris France&quot;,
       &quot;logo_url&quot;: null
     },
     &quot;address&quot;: null,
