@@ -2,6 +2,7 @@ module V1
   class NeighborhoodSerializer < ActiveModel::Serializer
     attributes :id,
       :name,
+      :description,
       :members_count,
       :photo_url,
       :interests,
