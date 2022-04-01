@@ -3,6 +3,7 @@ module V1
     attributes :id,
       :name,
       :description,
+      :welcome_message,
       :members_count,
       :photo_url,
       :interests,
