@@ -434,13 +434,6 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
         end
       end
 
-      context 'interests as a string' do
-        context 'good value' do
-          before { patch 'update', params: { token: user.token, user: { interests: "sport, culture" } } }
-          it { expect(result['user']).to include('interests' => ['culture', 'sport']) }
-        end
-      end
-
       context 'interests as an array' do
         context 'good value' do
           before { patch 'update', params: { token: user.token, user: { interests: ["sport", "culture"] } } }
