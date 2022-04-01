@@ -44,7 +44,7 @@ module Api
       end
 
       def neighborhood_params
-        params.require(:neighborhood).permit(:name, :ethics, :latitude, :longitude, :interests, :photo_url)
+        params.require(:neighborhood).permit(:name, :description, :welcome_message, :ethics, :latitude, :longitude, :interests, :photo_url)
       end
     end
   end

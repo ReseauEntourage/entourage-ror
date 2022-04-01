@@ -75,10 +75,20 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
         let(:neighborhood) { FactoryBot.create(:neighborhood, user: user) }
         let(:result) { JSON.parse(response.body) }
 
-        before { patch :update, params: { id: neighborhood.to_param, neighborhood: { name: "new name" }, token: user.token } }
+        before { patch :update, params: { id: neighborhood.to_param, neighborhood: {
+          name: "new name",
+          ethics: "new ethics",
+          description: "new description",
+          welcome_message: "new welcome_message",
+          interests: ["jeux", "nature"],
+        }, token: user.token } }
         it { expect(response.status).to eq(200) }
         it { expect(result).to have_key("neighborhood") }
         it { expect(result["neighborhood"]["name"]).to eq("new name") }
+        it { expect(result["neighborhood"]["ethics"]).to eq("new ethics") }
+        it { expect(result["neighborhood"]["description"]).to eq("new description") }
+        it { expect(result["neighborhood"]["welcome_message"]).to eq("new welcome_message") }
+        it { expect(result["neighborhood"]["interests"]).to eq(["jeux", "nature"]) }
       end
     end
   end
@@ -100,6 +110,8 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
         "neighborhood" => {
           "id" => neighborhood.id,
           "name" => "Foot Paris 17è",
+          "description" => nil,
+          "welcome_message" => nil,
           "members_count" => 0,
           "photo_url" => nil,
           "interests" => ["sport"],
