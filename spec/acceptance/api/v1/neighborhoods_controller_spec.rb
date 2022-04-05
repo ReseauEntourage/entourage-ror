@@ -16,7 +16,7 @@ resource Api::V1::NeighborhoodsController do
       parameter :latitude, "Latitude"
       parameter :longitude, "Longitude"
       parameter :interests, "Interests", required: false
-      parameter :photo_url, "Photo url", required: false
+      parameter :image_url, "Photo url", required: false
     end
 
 
@@ -31,7 +31,7 @@ resource Api::V1::NeighborhoodsController do
         latitude: neighborhood.latitude,
         longitude: neighborhood.longitude,
         interests: neighborhood.interest_list,
-        photo_url: neighborhood.photo_url
+        image_url: neighborhood.image_url
       }
     }.to_json }
 

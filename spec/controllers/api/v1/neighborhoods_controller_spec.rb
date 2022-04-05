@@ -30,8 +30,7 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
         ethics: neighborhood.ethics,
         latitude: neighborhood.latitude,
         longitude: neighborhood.longitude,
-        interests: neighborhood.interest_list,
-        photo_url: neighborhood.photo_url
+        interests: neighborhood.interest_list
     } }
 
     describe 'not authorized' do
@@ -57,6 +56,7 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
 
   describe 'PATCH update' do
     let(:neighborhood) { FactoryBot.create(:neighborhood) }
+    let(:neighborhood_image) { FactoryBot.create(:neighborhood_image) }
 
     context "not signed in" do
       before { patch :update, params: { id: neighborhood.to_param, neighborhood: { name: "new name" } } }
@@ -80,15 +80,24 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
           ethics: "new ethics",
           description: "new description",
           welcome_message: "new welcome_message",
+          neighborhood_image_id: neighborhood_image.id,
           interests: ["jeux", "nature"],
         }, token: user.token } }
         it { expect(response.status).to eq(200) }
-        it { expect(result).to have_key("neighborhood") }
-        it { expect(result["neighborhood"]["name"]).to eq("new name") }
-        it { expect(result["neighborhood"]["ethics"]).to eq("new ethics") }
-        it { expect(result["neighborhood"]["description"]).to eq("new description") }
-        it { expect(result["neighborhood"]["welcome_message"]).to eq("new welcome_message") }
-        it { expect(result["neighborhood"]["interests"]).to eq(["jeux", "nature"]) }
+        it { expect(result["neighborhood"]).to eq({
+          "id" => neighborhood.id,
+          "name" => "new name",
+          "description" => "new description",
+          "welcome_message" => "new welcome_message",
+          "ethics" => "new ethics",
+          "image_url" => "foobar_url",
+          "interests" => ["jeux", "nature"],
+          "members" => [],
+          "members_count" => 0,
+          "past_outings_count" => 0,
+          "future_outings_count" => 0,
+          "has_ongoing_outing" => false,
+        }) }
       end
     end
   end
@@ -113,7 +122,7 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
           "description" => nil,
           "welcome_message" => nil,
           "members_count" => 0,
-          "photo_url" => nil,
+          "image_url" => nil,
           "interests" => ["sport"],
           "members" => [],
           "ethics" => nil,
