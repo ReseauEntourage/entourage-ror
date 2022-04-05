@@ -360,6 +360,7 @@ Rails.application.routes.draw do
       end
 
       resources :entourage_images, only: [:index, :show]
+      resources :neighborhood_images, only: [:index, :show]
 
       resource :sharing, controller: 'sharing', only: [] do
         get :groups

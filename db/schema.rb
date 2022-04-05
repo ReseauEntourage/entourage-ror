@@ -416,7 +416,7 @@ ActiveRecord::Schema.define(version: 2022_04_05_113500) do
     t.string "name", limit: 256
     t.string "description"
     t.string "ethics"
-    t.string "photo_url"
+    t.string "image_url"
     t.float "latitude", null: false
     t.float "longitude", null: false
     t.datetime "created_at", null: false
