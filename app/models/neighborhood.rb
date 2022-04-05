@@ -16,6 +16,9 @@ class Neighborhood < ApplicationRecord
 
   alias_attribute :title, :name
 
+  # valides :image_url # should be 390x258 (2/3)
+  attr_accessor :neighborhood_image_id
+
   # behaviors
 
   # EC-94: list neighborhoods [OK]
@@ -72,14 +75,28 @@ class Neighborhood < ApplicationRecord
     ongoing_outings.any?
   end
 
+  # @code_legacy
   def group_type
     'neighborhood'
   end
 
+  # @code_legacy
   def group_type_config
     {
       'message_types' => ['text', 'share'],
       'roles' => ['admin', 'member']
     }
+  end
+
+  def neighborhood_image_id= neighborhood_image_id
+    if neighborhood_image = NeighborhoodImage.find_by_id(neighborhood_image_id)
+      self.image_url = neighborhood_image[:image_url]
+    else
+      remove_neighborhood_image_id!
+    end
+  end
+
+  def remove_neighborhood_image_id!
+    self.image_url = nil
   end
 end
