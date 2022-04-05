@@ -5,7 +5,7 @@ module V1
       :description,
       :welcome_message,
       :members_count,
-      :photo_url,
+      :image_url,
       :interests,
       :members,
       :ethics,
