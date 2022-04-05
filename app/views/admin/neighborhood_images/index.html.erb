@@ -1,0 +1,36 @@
+<div class="container">
+  <div class="row">
+    <div class="col-xs-offset-2 col-xs-8">
+      <div class="h1" style="display: flex; align-items: center;">
+        <div style="flex-grow: 1">Photos de groupe de voisinage</div>
+        <%= link_to "Ajouter une photo", new_admin_neighborhood_image_path, class: "btn btn-default" %>
+      </div>
+
+      <% if @neighborhood_images.empty? %>
+        <div class="panel panel-warning">
+          <div class="panel-heading">
+            <h3 class="panel-title">Aucune photo n'est encore spécifiée.</h3>
+          </div>
+        </div>
+      <% else %>
+        <table class="table">
+          <th>Titre</th>
+          <th>Photos</th>
+          <% @neighborhood_images.each do |neighborhood_image| %>
+            <tr>
+              <td>
+                <%= link_to neighborhood_image.title, edit_admin_neighborhood_image_path(neighborhood_image) %>
+              </td>
+              <td>
+                <%= image_tag(neighborhood_image.image_url, size: '390x258') if neighborhood_image.image_url.present? %>
+              </td>
+              <td>
+                <%= link_to "Modifier", edit_admin_neighborhood_image_path(neighborhood_image), class: "btn btn-default" %>
+              </td>
+            </tr>
+          <% end %>
+        </table>
+      <% end %>
+    </div>
+  </div>
+</div>
