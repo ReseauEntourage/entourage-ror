@@ -12,7 +12,7 @@ describe V1::NeighborhoodSerializer do
     it { expect(subject).to have_key(:id) }
     it { expect(subject).to have_key(:name) }
     it { expect(subject).to have_key(:members_count) }
-    it { expect(subject).to have_key(:photo_url) }
+    it { expect(subject).to have_key(:image_url) }
     it { expect(subject).to have_key(:interests) }
     it { expect(subject).to have_key(:members) }
     it { expect(subject).to have_key(:ethics) }
