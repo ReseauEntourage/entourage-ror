@@ -1,0 +1,52 @@
+<style>
+  .field_with_errors { display: inline-block }
+</style>
+
+<div class="alert alert-info" role="alert" style="display: flex; align-items: center">
+  <div style="flex-grow: 1">
+    <p>
+      Chaque photo de groupe de voisinage doit être prévue en 2 formats :
+    </p>
+    <ul>
+      <li>un format horizontal pour la vue détaillée du groupe de voisinage</li>
+      <li>un format vertical pour l’aperçu du groupe de voisinage sur le fil d’actualité</li>
+    </ul>
+  </div>
+</div>
+
+<%= render partial: 'common/errors', locals: {obj: @neighborhood_image} %>
+
+<%= form_for [:admin, @neighborhood_image], html: { role: "form" } do |f| %>
+  <div class="form-group">
+    <%= f.label :title %>
+    <%= f.text_field :title, class: "form-control", required: true %>
+  </div>
+
+  <div class="row">
+    <div class="form-group col-xs-8">
+      <%= f.label :image_url %>
+      <p><i>1125 x 375 px</i></p>
+      <% if @neighborhood_image.new_record? %>
+        <div class="text-muted">
+          Vous pourrez ajouter une image une fois que vous aurez enregistré un titre.
+        </div>
+      <% else %>
+        <% if @neighborhood_image.image_url %>
+          <div style="margin-bottom: 15px">
+            <%= image_tag(@neighborhood_image.image_url, size: '450x150') if @neighborhood_image.image_url.present? %>
+          </div>
+        <% end %>
+        <div>
+          <%= link_to "Modifier", edit_photo_admin_neighborhood_image_path, class: "btn btn-default btn-sm" %>
+        </div>
+      <% end %>
+    </div>
+
+  <%= f.submit 'Enregistrer', class: "btn btn-primary" %>
+
+  <% unless @neighborhood_image.new_record? %>
+    <%= link_to "Supprimer", admin_neighborhood_image_path(@neighborhood_image), method: :DELETE, class: "btn btn-danger", style: 'float: right;', data: {
+      confirm: "Êtes-vous sûr de vouloir supprimer ces photos de groupe de voisinage ?"
+    } %>
+  <% end %>
+<% end %>
