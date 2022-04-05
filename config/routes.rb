@@ -50,6 +50,14 @@ Rails.application.routes.draw do
           get '/portrait_upload_success', action: :portrait_upload_success
         end
       end
+
+      resources :neighborhood_images do
+        member do
+          get '/edit/photo', action: :edit_photo
+          get '/photo_upload_success', action: :photo_upload_success
+        end
+      end
+
       resources :registration_requests, only: [:index, :show, :update, :destroy]
       resources :messages, only: [:index, :destroy]
       resources :organizations, only: [:show, :index, :edit, :update]
@@ -352,6 +360,7 @@ Rails.application.routes.draw do
       end
 
       resources :entourage_images, only: [:index, :show]
+      resources :neighborhood_images, only: [:index, :show]
 
       resource :sharing, controller: 'sharing', only: [] do
         get :groups
