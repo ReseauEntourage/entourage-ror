@@ -4,6 +4,10 @@ module Storage
       Storage::Bucket.new(ENV["ENTOURAGE_IMAGES_BUCKET"])
     end
 
+    def self.public_images
+      @public_images ||= Storage::Bucket.new(ENV["ENTOURAGE_IMAGES_BUCKET"])
+    end
+
     def self.avatars
       @avatars ||= Storage::Bucket.new(ENV["ENTOURAGE_AVATARS_BUCKET"])
     end
