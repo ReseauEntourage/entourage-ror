@@ -75,14 +75,18 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
         let(:neighborhood) { FactoryBot.create(:neighborhood, user: user) }
         let(:result) { JSON.parse(response.body) }
 
-        before { patch :update, params: { id: neighborhood.to_param, neighborhood: {
-          name: "new name",
-          ethics: "new ethics",
-          description: "new description",
-          welcome_message: "new welcome_message",
-          neighborhood_image_id: neighborhood_image.id,
-          interests: ["jeux", "nature"],
-        }, token: user.token } }
+        before {
+          Storage::Bucket.any_instance.stub(:url_for).with(key: "foobar_url") { "path/to/foobar_url" }
+
+          patch :update, params: { id: neighborhood.to_param, neighborhood: {
+            name: "new name",
+            ethics: "new ethics",
+            description: "new description",
+            welcome_message: "new welcome_message",
+            neighborhood_image_id: neighborhood_image.id,
+            interests: ["jeux", "nature"],
+          }, token: user.token }
+        }
         it { expect(response.status).to eq(200) }
         it { expect(result["neighborhood"]).to eq({
           "id" => neighborhood.id,
@@ -90,7 +94,7 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
           "description" => "new description",
           "welcome_message" => "new welcome_message",
           "ethics" => "new ethics",
-          "image_url" => "foobar_url",
+          "image_url" => "path/to/foobar_url",
           "interests" => ["jeux", "nature"],
           "members" => [],
           "members_count" => 0,
