@@ -1011,6 +1011,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
   describe 'POST #report' do
     let(:reporting_user) { create :public_user }
     let(:reported_user)  { create :public_user }
+    let(:result) { JSON.parse(response.body) }
 
     ENV['SLACK_SIGNAL_USER_WEBHOOK'] = '{"url":"https://url.to.slack.com","channel":"channel","username":"signal-user-creation"}'
 
@@ -1019,19 +1020,30 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
     context "valid params" do
       before {
         expect_any_instance_of(SlackServices::SignalUser).to receive(:notify)
-        post 'report', params: { token: reporting_user.token, id: reported_user.id, user_report: {message: 'message'} }
+        post 'report', params: { token: reporting_user.token, id: reported_user.id, user_report: { message: 'message' } }
       }
 
       it { expect(response.status).to eq 201 }
     end
 
-    context "missing message" do
+    context "missing message without signals" do
       before {
         expect_any_instance_of(SlackServices::SignalUser).not_to receive(:notify)
-        post 'report', params: { token: reporting_user.token, id: reported_user.id, user_report: {message: ''} }
+        post 'report', params: { token: reporting_user.token, id: reported_user.id, user_report: { message: '' } }
       }
 
       it { expect(response.status).to eq 400 }
+      it { expect(result['message']).to eq "Message is required" }
+    end
+
+    context "empty signals" do
+      before {
+        expect_any_instance_of(SlackServices::SignalUser).not_to receive(:notify)
+        post 'report', params: { token: reporting_user.token, id: reported_user.id, user_report: { message: 'foobar', signals: [''] } }
+      }
+
+      it { expect(response.status).to eq 400 }
+      it { expect(result['message']).to eq "Signal is required" }
     end
   end
 

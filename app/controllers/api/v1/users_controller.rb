@@ -184,8 +184,8 @@ module Api
             head :created
           end
 
-          on.failure do |code|
-            render json: { code: 'CANNOT_REPORT_USER' }, status: :bad_request
+          on.failure do |message|
+            render json: { code: 'CANNOT_REPORT_USER', message: message }, status: :bad_request
           end
         end
       end
