@@ -4,19 +4,25 @@ class NeighborhoodImage < ApplicationRecord
   def image_url
     return unless self['image_url'].present?
 
-    NeighborhoodImage.storage.url_for(key: self['image_url'])
+    NeighborhoodImage.image_url_for self['image_url']
   end
 
-  def self.storage
-    Storage::Client.public_images
-  end
+  class << self
+    def image_url_for url
+      storage.url_for(key: url)
+    end
 
-  def self.from_absolute_to_relative_url url
-    return unless url.present?
+    def storage
+      Storage::Client.public_images
+    end
 
-    url = url.gsub /(.)*neighborhood_images\//, ''
-    url = url.gsub /\?(.)*/, '' if url.include? '?'
+    def from_absolute_to_relative_url url
+      return unless url.present?
 
-    "neighborhood_images/#{url}"
+      url = url.gsub /(.)*neighborhood_images\//, ''
+      url = url.gsub /\?(.)*/, '' if url.include? '?'
+
+      "neighborhood_images/#{url}"
+    end
   end
 end
