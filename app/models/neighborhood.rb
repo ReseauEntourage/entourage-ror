@@ -88,6 +88,12 @@ class Neighborhood < ApplicationRecord
     }
   end
 
+  def image_url
+    return unless self['image_url'].present?
+
+    NeighborhoodImage.image_url_for self['image_url']
+  end
+
   def neighborhood_image_id= neighborhood_image_id
     if neighborhood_image = NeighborhoodImage.find_by_id(neighborhood_image_id)
       self.image_url = neighborhood_image[:image_url]
