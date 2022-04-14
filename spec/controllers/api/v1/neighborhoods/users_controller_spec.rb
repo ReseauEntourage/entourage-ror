@@ -12,6 +12,12 @@ describe Api::V1::Neighborhoods::UsersController do
       it { expect(response.status).to eq(401) }
     end
 
+    context "did not join neighborhood" do
+      # we can see members even if we did not join
+      before { get :index, params: { neighborhood_id: neighborhood.to_param, token: user.token } }
+      it { expect(response.status).to eq(200) }
+    end
+
     context "signed in" do
       let!(:join_request) { create(:join_request, user: user, joinable: neighborhood, status: "accepted") }
 
