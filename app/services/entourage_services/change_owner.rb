@@ -10,13 +10,12 @@ module EntourageServices
     # 2. update join_requests creator
     # 3. create ChatMessage to inform other users
     def to user_id, message:
-      return yield false, "User not found" unless user = User.find(user_id)
-      return yield false, "Entourage should be an action" unless @entourage.action?
-      return yield false, "Entourage should be pinned" unless @entourage.pin?
+      return yield false, "L'utilsateur n'a pas pu être trouvé" unless user = User.find(user_id)
+      return yield false, "Le créateur ne peut être changé que pour les actions épinglées et les événements" unless @entourage.pin? || @entourage.outing?
 
-      creator_join_requests = @entourage.join_requests.where(role: :creator)
+      creator_join_requests = @entourage.join_requests.where("role in (?)", [:creator, :organizer])
 
-      return yield false, "Entourage should have a creator join_request" unless creator_join_requests.any?
+      return yield false, "Aucun utilisateur n'est actuellement identifié comme le créateur de l'action ou de l'événement" unless creator_join_requests.any?
 
       Entourage.transaction do
         @entourage.update_attribute(:user_id, user.id)
