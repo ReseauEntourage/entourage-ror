@@ -27,12 +27,12 @@ class Neighborhood < ApplicationRecord
   # EC-95: show neighborhood [OK]
   # EC-99: find neighborhood
   # EC-100: create neighborhood [OK]
-  # EC-118: add photo to neighborhood
+  # EC-118: add photo to neighborhood [OK]
   # EC-101: update neighborhood [OK]
   # EC-104: add localization to neighborhood
   # main: post message in neighborhood conversation [OK]
   # main: receive notification when message has been post [OK]
-  # main: create outing in neighborhood
+  # main: create outing in neighborhood [OK]
   # main: signal neighborhood
   # main: signal a user in neighborhood (ethics)
 
