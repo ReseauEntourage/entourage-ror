@@ -23,7 +23,7 @@ module PoiServices
       @longitude = params[:longitude]
       @distance = params[:distance]
       @category_ids = params[:category_ids]
-      @query = params[:query]
+      @query = params[:query] || params[:word]
       @limit = params[:limit]
     end
 

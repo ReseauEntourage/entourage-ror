@@ -146,6 +146,9 @@ module Api
         "145afedd05482e1e91ed2990" => {version: "6.2.0", device: "Android", device_family: UserApplication::ANDROID, community: 'entourage'},
         "11aabfa5967deb0d7a2ea16e" => {version: "6.2.0", device: "iOS",     device_family: UserApplication::IOS,     community: 'pfp'},
         "14fe3580873758c2a63f14aa" => {version: "6.2.0", device: "Android", device_family: UserApplication::ANDROID, community: 'pfp'},
+
+        "5071ce2e119e8a43747cd89c" => {version: "8.0.0", device: "iOS",     device_family: UserApplication::IOS,     community: 'entourage'},
+        "50968038037d1df181e8372d" => {version: "8.0.0", device: "Android", device_family: UserApplication::ANDROID, community: 'entourage'},
       }
     end
 
