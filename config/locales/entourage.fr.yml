@@ -243,11 +243,8 @@ fr:
       nature: Nature
       sport: Sport
     signals:
-      insults: Propos déplacés, injures
-      fake: Faux profil
       spam: Spam
-      fraud: Arnaque, fraude
-      harassment: Harcèlement
-      in_danger: Personne en danger (suicide, ...)
-      hate: Discours haineux
+      fraud: Arnaque
+      insults: Propos déplacés
+      in_danger: Mise en danger
       other: Autre
