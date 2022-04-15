@@ -19,6 +19,20 @@ class Neighborhood < ApplicationRecord
   # valides :image_url # should be 390x258 (2/3)
   attr_accessor :neighborhood_image_id
 
+  scope :order_by_distance_from, -> (latitude, longitude) {
+    if latitude && longitude
+      order(PostgisHelper.distance_from(latitude, longitude))
+    end
+  }
+  scope :like, -> (search) {
+    return unless search.present?
+
+    where('(unaccent(name) ilike unaccent(:name) or unaccent(description) ilike unaccent(:description))', {
+      name: "%#{search.strip}%",
+      description: "%#{search.strip}%"
+    })
+  }
+
   # behaviors
 
   # EC-94: list neighborhoods [OK]
@@ -27,12 +41,12 @@ class Neighborhood < ApplicationRecord
   # EC-95: show neighborhood [OK]
   # EC-99: find neighborhood
   # EC-100: create neighborhood [OK]
-  # EC-118: add photo to neighborhood
+  # EC-118: add photo to neighborhood [OK]
   # EC-101: update neighborhood [OK]
   # EC-104: add localization to neighborhood
   # main: post message in neighborhood conversation [OK]
   # main: receive notification when message has been post [OK]
-  # main: create outing in neighborhood
+  # main: create outing in neighborhood [OK]
   # main: signal neighborhood
   # main: signal a user in neighborhood (ethics)
 

@@ -4,8 +4,7 @@ module Api
       before_action :set_neighborhood, only: [:show, :update, :destroy]
 
       def index
-        # @caution Neighborhood.all to be replaced with a searched query
-        render json: Neighborhood.all, root: :neighborhoods, each_serializer: ::V1::NeighborhoodSerializer
+        render json: Neighborhoods::Finder.search(current_user, params[:q]), root: :neighborhoods, each_serializer: ::V1::NeighborhoodSerializer
       end
 
       def show
