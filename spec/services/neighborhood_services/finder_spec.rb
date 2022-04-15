@@ -1,13 +1,13 @@
 require 'rails_helper'
 
-describe Neighborhoods::Finder do
+describe NeighborhoodServices::Finder do
   let(:user) { FactoryBot.create(:public_user, address: address) }
   let!(:neighborhood_0) { FactoryBot.create(:neighborhood, latitude: 0, longitude: 0, name: "foot", description: "volley") }
   let!(:neighborhood_1) { FactoryBot.create(:neighborhood, latitude: 1, longitude: 1, name: "ball", description: "barre") }
 
   let(:address) { FactoryBot.create(:address, place_name: 'address', latitude: latitude, longitude: longitude) }
 
-  let(:response) { Neighborhoods::Finder.search(user, q).map(&:name) }
+  let(:response) { NeighborhoodServices::Finder.search(user, q).map(&:name) }
 
 
   describe "search" do
