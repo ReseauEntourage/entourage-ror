@@ -19,6 +19,20 @@ class Neighborhood < ApplicationRecord
   # valides :image_url # should be 390x258 (2/3)
   attr_accessor :neighborhood_image_id
 
+  scope :order_by_distance_from, -> (latitude, longitude) {
+    if latitude && longitude
+      order(PostgisHelper.distance_from(latitude, longitude))
+    end
+  }
+  scope :like, -> (search) {
+    return unless search.present?
+
+    where('(unaccent(name) ilike unaccent(:name) or unaccent(description) ilike unaccent(:description))', {
+      name: "%#{search.strip}%",
+      description: "%#{search.strip}%"
+    })
+  }
+
   # behaviors
 
   # EC-94: list neighborhoods [OK]
