@@ -130,8 +130,8 @@ describe Api::V1::HomeController do
     it { expect(result["tags"]).to have_key("signals") }
     it { expect(result["tags"]["signals"]).to be_a(Array) }
     it { expect(result["tags"]["signals"][0]).to eq({
-      "id" => "insults",
-      "name" => "Propos déplacés, injures"
+      "id" => "spam",
+      "name" => "Spam"
     }) }
   end
 end
