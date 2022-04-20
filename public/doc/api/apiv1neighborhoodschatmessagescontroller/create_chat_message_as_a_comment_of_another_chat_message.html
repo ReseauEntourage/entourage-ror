@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Api::V1::NeighborhoodsController API</title>
+    <title>Api::V1::Neighborhoods::ChatMessagesController API</title>
     <meta charset="utf-8">
     <style>
       
@@ -106,13 +106,13 @@ table th, table td {
   </head>
   <body>
     <div class="container">
-      <h1>Api::V1::NeighborhoodsController API</h1>
+      <h1>Api::V1::Neighborhoods::ChatMessagesController API</h1>
 
-        <p class="explanation">Neighborhoods</p>
+        <p class="explanation">Chat messages</p>
 
       <div class="article">
-        <h2>Get neighborhoods</h2>
-        <h3>GET /api/v1/neighborhoods</h3>
+        <h2>Create chat_message as a comment of another chat_message</h2>
+        <h3>POST /api/v1/neighborhoods/:neighborhood_id/chat_messages</h3>
 
           <h3>Parameters</h3>
           <table class="parameters table table-striped table-bordered table-condensed">
@@ -128,7 +128,31 @@ table th, table td {
                     <span class="name">token</span>
                 </td>
                 <td>
-                  <span class="description">User token</span>
+                  <span class="description"> token</span>
+                </td>
+              </tr>
+              <tr>
+                <td class="required">
+                    <span class="name">neighborhood_id</span>
+                </td>
+                <td>
+                  <span class="description"> neighborhood</span>
+                </td>
+              </tr>
+              <tr>
+                <td class="required">
+                    <span class="name">chat_message[content]</span>
+                </td>
+                <td>
+                  <span class="description">Chat message content</span>
+                </td>
+              </tr>
+              <tr>
+                <td class="required">
+                    <span class="name">chat_message[message_type]</span>
+                </td>
+                <td>
+                  <span class="description">text, status_update, share</span>
                 </td>
               </tr>
             </tbody>
@@ -143,11 +167,11 @@ Host: example.org
 Cookie: </pre>
 
           <h4>Route</h4>
-          <pre class="request route highlight">GET /api/v1/neighborhoods?token=foobar99</pre>
+          <pre class="request route highlight">POST /api/v1/neighborhoods/4/chat_messages</pre>
 
-            <h4>Query Parameters</h4>
-            <pre class="request query_parameters highlight">token: foobar99</pre>
 
+            <h4>Body</h4>
+            <pre class="request body">{"token":"foobar90","chat_message":{"content":"foo","parent_id":7}}</pre>
 
 
             <h3>Response</h3>
@@ -162,35 +186,28 @@ Access-Control-Allow-Origin: *
 Access-Control-Allow-Methods: GET,POST,PUT,PATCH,DELETE
 Access-Control-Allow-Headers: Origin,Accept,Content-Type,X-Requested-With,X-CSRF-Token,X-API-KEY
 Content-Type: application/json; charset=utf-8
-ETag: W/&quot;f3bfca13be795606f7632c9095f615e0&quot;
+ETag: W/&quot;2b26fbaa01342194b0b9cd7ac74101d2&quot;
 Cache-Control: max-age=0, private, must-revalidate
-X-Request-Id: 0f8701d2-1315-4a91-93f4-3ae02f00894e
-X-Runtime: 0.020153
-Content-Length: 254</pre>
+X-Request-Id: 7f137f80-5816-49f8-96f8-6d536163ee57
+X-Runtime: 0.019779
+Content-Length: 197</pre>
             <h4>Status</h4>
-            <pre class="response status">200 OK</pre>
+            <pre class="response status">201 Created</pre>
               <h4>Body</h4>
               <pre class="response body">{
-  &quot;neighborhoods&quot;: [
-    {
-      &quot;id&quot;: 8,
-      &quot;name&quot;: &quot;Foot Paris 17è&quot;,
-      &quot;description&quot;: null,
-      &quot;welcome_message&quot;: null,
-      &quot;members_count&quot;: 0,
-      &quot;image_url&quot;: null,
-      &quot;interests&quot;: [
-        &quot;sport&quot;
-      ],
-      &quot;members&quot;: [
-
-      ],
-      &quot;ethics&quot;: null,
-      &quot;past_outings_count&quot;: 0,
-      &quot;future_outings_count&quot;: 0,
-      &quot;has_ongoing_outing&quot;: false
-    }
-  ]
+  &quot;chat_message&quot;: {
+    &quot;id&quot;: 8,
+    &quot;content&quot;: &quot;foo&quot;,
+    &quot;user&quot;: {
+      &quot;id&quot;: 92,
+      &quot;avatar_url&quot;: null,
+      &quot;display_name&quot;: &quot;John D.&quot;,
+      &quot;partner&quot;: null
+    },
+    &quot;created_at&quot;: &quot;2022-04-20T16:17:25.549+02:00&quot;,
+    &quot;message_type&quot;: &quot;text&quot;,
+    &quot;parent_id&quot;: 7
+  }
 }</pre>
       </div>
     </div>

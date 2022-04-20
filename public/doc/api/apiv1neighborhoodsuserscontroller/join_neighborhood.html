@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Api::V1::NeighborhoodsController API</title>
+    <title>Api::V1::Neighborhoods::UsersController API</title>
     <meta charset="utf-8">
     <style>
       
@@ -106,13 +106,13 @@ table th, table td {
   </head>
   <body>
     <div class="container">
-      <h1>Api::V1::NeighborhoodsController API</h1>
+      <h1>Api::V1::Neighborhoods::UsersController API</h1>
 
-        <p class="explanation">Neighborhoods</p>
+        <p class="explanation">Users</p>
 
       <div class="article">
-        <h2>Get neighborhoods</h2>
-        <h3>GET /api/v1/neighborhoods</h3>
+        <h2>Join neighborhood</h2>
+        <h3>POST /api/v1/neighborhoods/:neighborhood_id/users</h3>
 
           <h3>Parameters</h3>
           <table class="parameters table table-striped table-bordered table-condensed">
@@ -128,7 +128,23 @@ table th, table td {
                     <span class="name">token</span>
                 </td>
                 <td>
-                  <span class="description">User token</span>
+                  <span class="description"> token</span>
+                </td>
+              </tr>
+              <tr>
+                <td class="required">
+                    <span class="name">neighborhood_id</span>
+                </td>
+                <td>
+                  <span class="description"> neighborhood</span>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                    <span class="name">distance</span>
+                </td>
+                <td>
+                  <span class="description"> distance</span>
                 </td>
               </tr>
             </tbody>
@@ -143,11 +159,11 @@ Host: example.org
 Cookie: </pre>
 
           <h4>Route</h4>
-          <pre class="request route highlight">GET /api/v1/neighborhoods?token=foobar99</pre>
+          <pre class="request route highlight">POST /api/v1/neighborhoods/7/users</pre>
 
-            <h4>Query Parameters</h4>
-            <pre class="request query_parameters highlight">token: foobar99</pre>
 
+            <h4>Body</h4>
+            <pre class="request body">{"token":"foobar97","distance":10.0}</pre>
 
 
             <h3>Response</h3>
@@ -162,35 +178,30 @@ Access-Control-Allow-Origin: *
 Access-Control-Allow-Methods: GET,POST,PUT,PATCH,DELETE
 Access-Control-Allow-Headers: Origin,Accept,Content-Type,X-Requested-With,X-CSRF-Token,X-API-KEY
 Content-Type: application/json; charset=utf-8
-ETag: W/&quot;f3bfca13be795606f7632c9095f615e0&quot;
+ETag: W/&quot;bb53132ba0c437c6d63eb14dc10e3dff&quot;
 Cache-Control: max-age=0, private, must-revalidate
-X-Request-Id: 0f8701d2-1315-4a91-93f4-3ae02f00894e
-X-Runtime: 0.020153
-Content-Length: 254</pre>
+X-Request-Id: 341c0591-abe5-4a8e-abe6-fa8dc6ec4371
+X-Runtime: 0.012255
+Content-Length: 243</pre>
             <h4>Status</h4>
-            <pre class="response status">200 OK</pre>
+            <pre class="response status">201 Created</pre>
               <h4>Body</h4>
               <pre class="response body">{
-  &quot;neighborhoods&quot;: [
-    {
-      &quot;id&quot;: 8,
-      &quot;name&quot;: &quot;Foot Paris 17è&quot;,
-      &quot;description&quot;: null,
-      &quot;welcome_message&quot;: null,
-      &quot;members_count&quot;: 0,
-      &quot;image_url&quot;: null,
-      &quot;interests&quot;: [
-        &quot;sport&quot;
-      ],
-      &quot;members&quot;: [
+  &quot;user&quot;: {
+    &quot;id&quot;: 99,
+    &quot;display_name&quot;: &quot;John D.&quot;,
+    &quot;role&quot;: &quot;member&quot;,
+    &quot;group_role&quot;: &quot;member&quot;,
+    &quot;community_roles&quot;: [
 
-      ],
-      &quot;ethics&quot;: null,
-      &quot;past_outings_count&quot;: 0,
-      &quot;future_outings_count&quot;: 0,
-      &quot;has_ongoing_outing&quot;: false
-    }
-  ]
+    ],
+    &quot;status&quot;: &quot;accepted&quot;,
+    &quot;message&quot;: null,
+    &quot;requested_at&quot;: &quot;2022-04-20T16:17:25.691+02:00&quot;,
+    &quot;avatar_url&quot;: null,
+    &quot;partner&quot;: null,
+    &quot;partner_role_title&quot;: null
+  }
 }</pre>
       </div>
     </div>
