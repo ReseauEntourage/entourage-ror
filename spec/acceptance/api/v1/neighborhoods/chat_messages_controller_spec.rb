@@ -43,6 +43,7 @@ resource Api::V1::Neighborhoods::ChatMessagesController do
     with_options :scope => :chat_message, :required => true do
       parameter :content, type: :string
       parameter :message_type, "text, status_update, share", type: :string
+      parameter :parent_id, "parent chat_message id"
     end
 
     let(:user) { FactoryBot.create(:pro_user) }
