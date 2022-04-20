@@ -48,20 +48,36 @@ resource Api::V1::Neighborhoods::ChatMessagesController do
     let(:user) { FactoryBot.create(:pro_user) }
     let(:neighborhood) { FactoryBot.create(:neighborhood) }
     let(:neighborhood_id) { neighborhood.id }
+    let(:chat_message) { FactoryBot.create(:chat_message, messageable: neighborhood) }
+
+    let(:parent_id) { nil }
 
     let(:raw_post) { {
       token: user.token,
       chat_message: {
-        content: "foo"
+        content: "foo",
+        parent_id: parent_id
       }
     }.to_json }
 
     context '201' do
       let!(:join_request) { FactoryBot.create(:join_request, joinable: neighborhood, user: user, status: :accepted) }
 
-      example_request 'Create chat_message' do
-        expect(response_status).to eq(201)
-        expect(JSON.parse(response_body)).to have_key('chat_message')
+      context 'Simple chat_message' do
+        example_request 'Create chat_message' do
+          expect(response_status).to eq(201)
+          expect(JSON.parse(response_body)).to have_key('chat_message')
+        end
+      end
+
+      context 'chat_message as a comment of another chat_message' do
+        let!(:parent_id) { chat_message.id }
+
+        example_request 'Create chat_message as a comment of another chat_message' do
+          expect(response_status).to eq(201)
+          expect(JSON.parse(response_body)).to have_key('chat_message')
+          # expect(JSON.parse(response_body)['chat_message']).to have_key('parent_id')
+        end
       end
     end
 

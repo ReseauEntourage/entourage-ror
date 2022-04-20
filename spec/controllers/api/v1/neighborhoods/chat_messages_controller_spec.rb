@@ -43,6 +43,34 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
         }) }
       end
 
+      context "valid params with parent_id" do
+        let!(:join_request) { FactoryBot.create(:join_request, joinable: neighborhood, user: user, status: "accepted") }
+        let!(:chat_message) { FactoryBot.create(:chat_message, messageable: neighborhood) }
+
+        before { post :create, params: {
+          neighborhood_id: neighborhood.to_param, chat_message: { content: "foobar", message_type: :text, parent_id: chat_message.id }, token: user.token
+        } }
+
+        let(:result) { JSON.parse(response.body) }
+
+        it { expect(response.status).to eq(201) }
+        it { expect(ChatMessage.count).to eq(2) }
+        it { expect(JSON.parse(response.body)).to eq({
+          "chat_message" => {
+            "id" => ChatMessage.last.id,
+            "message_type" => "text",
+            "content" => "foobar",
+            "user" => {
+              "id" => user.id,
+              "avatar_url" => nil,
+              "display_name" => "John D.",
+              "partner" => nil
+            },
+            "created_at" => ChatMessage.last.created_at.iso8601(3)
+          }
+        }) }
+      end
+
       describe "send push notif" do
         it "sends notif to everyone accepted except message sender" do
           join_request = FactoryBot.create(:join_request, joinable: neighborhood, user: user, status: "accepted")

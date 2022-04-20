@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_04_20_103800) do
+ActiveRecord::Schema.define(version: 2022_04_20_151701) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -99,6 +99,9 @@ ActiveRecord::Schema.define(version: 2022_04_20_103800) do
     t.datetime "updated_at", null: false
     t.string "message_type", limit: 20, default: "text", null: false
     t.jsonb "metadata", default: {}, null: false
+    t.string "ancestry"
+    t.index ["ancestry"], name: "index_chat_messages_on_ancestry"
+    t.index ["content"], name: "index_chat_messages_on_content", opclass: :gin_trgm_ops, using: :gin
     t.index ["created_at"], name: "index_chat_messages_on_created_at"
     t.index ["message_type"], name: "index_chat_messages_on_message_type"
     t.index ["messageable_id", "messageable_type"], name: "index_chat_messages_on_messageable_id_and_messageable_type"
