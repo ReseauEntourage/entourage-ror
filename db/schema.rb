@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_04_05_113500) do
+ActiveRecord::Schema.define(version: 2022_04_20_103800) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -423,6 +423,7 @@ ActiveRecord::Schema.define(version: 2022_04_05_113500) do
     t.datetime "updated_at", null: false
     t.datetime "feed_updated_at"
     t.string "welcome_message"
+    t.string "other_interest"
     t.index ["feed_updated_at"], name: "index_neighborhoods_on_feed_updated_at"
     t.index ["latitude", "longitude"], name: "neighborhoods_coordinates"
     t.index ["name"], name: "index_neighborhoods_on_name"
@@ -872,6 +873,7 @@ ActiveRecord::Schema.define(version: 2022_04_05_113500) do
     t.boolean "super_admin", default: false
     t.datetime "unblock_at"
     t.integer "travel_distance", default: 10
+    t.string "other_interest"
     t.index ["address_id"], name: "index_users_on_address_id"
     t.index ["email"], name: "index_users_on_email"
     t.index ["organization_id"], name: "index_users_on_organization_id"
