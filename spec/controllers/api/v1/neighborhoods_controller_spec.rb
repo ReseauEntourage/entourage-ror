@@ -84,7 +84,8 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
             description: "new description",
             welcome_message: "new welcome_message",
             neighborhood_image_id: neighborhood_image.id,
-            interests: ["jeux", "nature"],
+            interests: ["jeux", "nature", "other"],
+            other_interest: "foo"
           }, token: user.token }
         }
         it { expect(response.status).to eq(200) }
@@ -95,7 +96,7 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
           "welcome_message" => "new welcome_message",
           "ethics" => "new ethics",
           "image_url" => "path/to/foobar_url",
-          "interests" => ["jeux", "nature"],
+          "interests" => ["jeux", "nature", "other"],
           "members" => [],
           "members_count" => 0,
           "past_outings_count" => 0,
