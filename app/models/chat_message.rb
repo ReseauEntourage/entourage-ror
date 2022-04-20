@@ -2,6 +2,8 @@ class ChatMessage < ApplicationRecord
   include FeedsConcern
   include ChatServices::Spam
 
+  has_ancestry
+
   belongs_to :messageable, polymorphic: true
   belongs_to :entourage, -> {
     where("chat_messages.messageable_type = 'Entourage'")
@@ -13,6 +15,8 @@ class ChatMessage < ApplicationRecord
   validates :messageable_id, :messageable_type, :content, :user_id, presence: true
   validates_inclusion_of :message_type, in: -> (m) { m.message_types }
   validates :metadata, schema: -> (m) { "#{m.message_type}:metadata" }
+
+  validate :validate_ancestry!
 
   scope :ordered, -> { order("created_at DESC") }
 
@@ -30,6 +34,12 @@ class ChatMessage < ApplicationRecord
 
   after_create :update_sender_report_prompt_status
   after_create :update_recipients_report_prompt_status
+
+  def validate_ancestry!
+    if parent && parent.has_parent?
+      errors.add(:interests, "Il n'est pas possible de commenter une discussion")
+    end
+  end
 
   def entourage?
     messageable_type == 'Entourage'
