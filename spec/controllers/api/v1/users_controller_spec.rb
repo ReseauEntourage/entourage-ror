@@ -441,8 +441,15 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
 
       context 'interests as an array' do
         context 'good value' do
-          before { patch 'update', params: { token: user.token, user: { interests: ["sport", "culture"] } } }
-          it { expect(result['user']).to include('interests' => ['culture', 'sport']) }
+          before { patch 'update', params: { token: user.token, user: { interests: ["sport", "culture", "other"] } } }
+          it { expect(result['user']).to include('interests' => ['culture', 'sport', 'other']) }
+        end
+      end
+
+      context 'interests as an array' do
+        context 'wrong value' do
+          before { patch 'update', params: { token: user.token, user: { interests: ["foo", "bar"] } } }
+        it { expect(response.status).to eq(400) }
         end
       end
 
