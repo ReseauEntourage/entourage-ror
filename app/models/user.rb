@@ -269,14 +269,6 @@ class User < ApplicationRecord
     end
   end
 
-  def validate_interest_list!
-    wrongs = self.interest_list.reject do |interest|
-      Tag.interest_list.include?(interest)
-    end
-
-    errors.add(:interests, "#{wrongs.join(', ')} n'est pas inclus dans la liste") if wrongs.any?
-  end
-
   def validate_birthday!
     return unless birthday.present?
 
