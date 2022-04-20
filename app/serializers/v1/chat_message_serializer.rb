@@ -7,9 +7,14 @@ module V1
                :message_type
 
     attribute :metadata, if: :metadata?
+    attribute :parent_id, if: :neighborhood?
 
     def metadata?
       object.message_type.in?(['outing', 'status_update', 'share'])
+    end
+
+    def neighborhood?
+      object.messageable_type.in?(['Neighborhood'])
     end
 
     def user

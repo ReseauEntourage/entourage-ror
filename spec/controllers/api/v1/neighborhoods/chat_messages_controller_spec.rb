@@ -38,7 +38,8 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
               "display_name" => "John D.",
               "partner" => nil
             },
-            "created_at" => ChatMessage.first.created_at.iso8601(3)
+            "created_at" => ChatMessage.first.created_at.iso8601(3),
+            "parent_id" => nil
           }
         }) }
       end
@@ -66,7 +67,8 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
               "display_name" => "John D.",
               "partner" => nil
             },
-            "created_at" => ChatMessage.last.created_at.iso8601(3)
+            "created_at" => ChatMessage.last.created_at.iso8601(3),
+            "parent_id" => chat_message.id
           }
         }) }
       end
