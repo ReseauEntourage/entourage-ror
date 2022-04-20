@@ -444,6 +444,13 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
       context 'interests as an array' do
         context 'good value when other_interest is missing is also valid' do
           before { patch 'update', params: { token: user.token, user: { interests: ["sport", "culture", "other"] } } }
+          it { expect(response.status).to eq(400) }
+        end
+      end
+
+      context 'interests as an array' do
+        context 'good value' do
+          before { patch 'update', params: { token: user.token, user: { interests: ["sport", "culture", "other"], other_interest: 'foo' } } }
           it { expect(result['user']).to include('interests' => ['culture', 'sport', 'other']) }
         end
       end
