@@ -155,6 +155,14 @@ table th, table td {
                   <span class="description">text, status_update, share</span>
                 </td>
               </tr>
+              <tr>
+                <td class="required">
+                    <span class="name">chat_message[parent_id]</span>
+                </td>
+                <td>
+                  <span class="description">parent chat_message id</span>
+                </td>
+              </tr>
             </tbody>
           </table>
 
@@ -167,7 +175,7 @@ Host: example.org
 Cookie: </pre>
 
           <h4>Route</h4>
-          <pre class="request route highlight">POST /api/v1/neighborhoods/3/chat_messages</pre>
+          <pre class="request route highlight">POST /api/v1/neighborhoods/15/chat_messages</pre>
 
 
             <h4>Body</h4>
@@ -186,25 +194,25 @@ Access-Control-Allow-Origin: *
 Access-Control-Allow-Methods: GET,POST,PUT,PATCH,DELETE
 Access-Control-Allow-Headers: Origin,Accept,Content-Type,X-Requested-With,X-CSRF-Token,X-API-KEY
 Content-Type: application/json; charset=utf-8
-ETag: W/&quot;ff752e9dccfadfb8e19a72de81afe4f9&quot;
+ETag: W/&quot;d7a9069d74dc2b31044612781f198d8d&quot;
 Cache-Control: max-age=0, private, must-revalidate
-X-Request-Id: 0e7ca0d9-9c99-40c5-8ed5-bcecee96b334
-X-Runtime: 0.017758
-Content-Length: 200</pre>
+X-Request-Id: 4acf5f72-26f4-40c0-9315-927c01bd9835
+X-Runtime: 0.017824
+Content-Length: 202</pre>
             <h4>Status</h4>
             <pre class="response status">201 Created</pre>
               <h4>Body</h4>
               <pre class="response body">{
   &quot;chat_message&quot;: {
-    &quot;id&quot;: 6,
+    &quot;id&quot;: 17,
     &quot;content&quot;: &quot;foo&quot;,
     &quot;user&quot;: {
-      &quot;id&quot;: 90,
+      &quot;id&quot;: 278,
       &quot;avatar_url&quot;: null,
       &quot;display_name&quot;: &quot;John D.&quot;,
       &quot;partner&quot;: null
     },
-    &quot;created_at&quot;: &quot;2022-04-20T16:17:25.477+02:00&quot;,
+    &quot;created_at&quot;: &quot;2022-04-20T16:51:22.242+02:00&quot;,
     &quot;message_type&quot;: &quot;text&quot;,
     &quot;parent_id&quot;: null
   }

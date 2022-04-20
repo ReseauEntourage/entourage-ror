@@ -155,6 +155,14 @@ table th, table td {
                   <span class="description">text, status_update, share</span>
                 </td>
               </tr>
+              <tr>
+                <td class="required">
+                    <span class="name">chat_message[parent_id]</span>
+                </td>
+                <td>
+                  <span class="description">parent chat_message id</span>
+                </td>
+              </tr>
             </tbody>
           </table>
 
@@ -167,11 +175,11 @@ Host: example.org
 Cookie: </pre>
 
           <h4>Route</h4>
-          <pre class="request route highlight">POST /api/v1/neighborhoods/4/chat_messages</pre>
+          <pre class="request route highlight">POST /api/v1/neighborhoods/16/chat_messages</pre>
 
 
             <h4>Body</h4>
-            <pre class="request body">{"token":"foobar90","chat_message":{"content":"foo","parent_id":7}}</pre>
+            <pre class="request body">{"token":"foobar90","chat_message":{"content":"foo","parent_id":18}}</pre>
 
 
             <h3>Response</h3>
@@ -186,27 +194,27 @@ Access-Control-Allow-Origin: *
 Access-Control-Allow-Methods: GET,POST,PUT,PATCH,DELETE
 Access-Control-Allow-Headers: Origin,Accept,Content-Type,X-Requested-With,X-CSRF-Token,X-API-KEY
 Content-Type: application/json; charset=utf-8
-ETag: W/&quot;2b26fbaa01342194b0b9cd7ac74101d2&quot;
+ETag: W/&quot;cb9a55275eb9acf49f889e7f5fb360ca&quot;
 Cache-Control: max-age=0, private, must-revalidate
-X-Request-Id: 7f137f80-5816-49f8-96f8-6d536163ee57
-X-Runtime: 0.019779
-Content-Length: 197</pre>
+X-Request-Id: 1d0e7830-dbf8-44bf-a49a-3f1c4caabc84
+X-Runtime: 0.017596
+Content-Length: 200</pre>
             <h4>Status</h4>
             <pre class="response status">201 Created</pre>
               <h4>Body</h4>
               <pre class="response body">{
   &quot;chat_message&quot;: {
-    &quot;id&quot;: 8,
+    &quot;id&quot;: 19,
     &quot;content&quot;: &quot;foo&quot;,
     &quot;user&quot;: {
-      &quot;id&quot;: 92,
+      &quot;id&quot;: 280,
       &quot;avatar_url&quot;: null,
       &quot;display_name&quot;: &quot;John D.&quot;,
       &quot;partner&quot;: null
     },
-    &quot;created_at&quot;: &quot;2022-04-20T16:17:25.549+02:00&quot;,
+    &quot;created_at&quot;: &quot;2022-04-20T16:51:22.313+02:00&quot;,
     &quot;message_type&quot;: &quot;text&quot;,
-    &quot;parent_id&quot;: 7
+    &quot;parent_id&quot;: 18
   }
 }</pre>
       </div>
