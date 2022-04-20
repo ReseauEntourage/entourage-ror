@@ -13,6 +13,10 @@ module Interestable
     end
 
     errors.add(:interests, "#{wrongs.join(', ')} n'est pas inclus dans la liste") if wrongs.any?
+
+    if self.interest_list.include?('other') && self.other_interest.blank?
+      errors.add(:interests, "Lorsque vous sélectionnez la catégorie \"Autre\", vous devez renseigner un message")
+    end
   end
 
   def interests= interests
