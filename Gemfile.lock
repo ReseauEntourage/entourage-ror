@@ -67,6 +67,8 @@ GEM
     ams_lazy_relationships (0.3.2)
       active_model_serializers (>= 0.10.0.rc4)
       batch-loader
+    ancestry (4.1.0)
+      activerecord (>= 5.2.6)
     ansi (1.5.0)
     arel (9.0.0)
     ast (2.4.2)
@@ -453,6 +455,7 @@ DEPENDENCIES
   acts-as-taggable-on (~> 8.0)
   airrecord (~> 1)
   ams_lazy_relationships
+  ancestry
   attr_encrypted (~> 3)
   aws-sdk-s3 (~> 1)
   aws-sdk-sns (~> 1)
