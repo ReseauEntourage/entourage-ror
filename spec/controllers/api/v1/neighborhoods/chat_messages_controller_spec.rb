@@ -1,62 +1,93 @@
 require 'rails_helper'
 
 describe Api::V1::Neighborhoods::ChatMessagesController do
+  let(:user) { FactoryBot.create(:pro_user) }
+
   let(:neighborhood) { create :neighborhood }
+  let(:result) { JSON.parse(response.body) }
+
+  describe 'GET index' do
+    let!(:chat_message_1) { FactoryBot.create(:chat_message, messageable: neighborhood, user: user) }
+    let!(:chat_message_2) { FactoryBot.create(:chat_message, messageable: neighborhood, user: user, parent: chat_message_1) }
+
+    context "not signed in" do
+      before { get :index, params: { neighborhood_id: neighborhood.to_param } }
+
+      it { expect(response.status).to eq(401) }
+    end
+
+    context "signed in but not in neighborhood" do
+      before { get :index, params: { neighborhood_id: neighborhood.to_param, token: user.token } }
+
+      it { expect(response.status).to eq(401) }
+    end
+
+    context "signed and in neighborhood" do
+      let!(:join_request) { FactoryBot.create(:join_request, joinable: neighborhood, user: user, status: "accepted") }
+
+      before { get :index, params: { neighborhood_id: neighborhood.to_param, token: user.token } }
+
+      it { expect(response.status).to eq(200) }
+      it { expect(result).to have_key('chat_messages')}
+      it { expect(result).to eq({
+        "chat_messages" => [{
+          "id" => chat_message_2.id,
+          "message_type" => "text",
+          "content" => chat_message_2.content,
+          "user" => {
+            "id" => user.id,
+            "avatar_url" => nil,
+            "display_name" => "John D.",
+            "partner" => nil
+          },
+          "created_at" => chat_message_2.created_at.iso8601(3),
+          "parent_id" => chat_message_1.id,
+          "has_children" => false,
+        }, {
+          "id" => chat_message_1.id,
+          "message_type" => "text",
+          "content" => chat_message_1.content,
+          "user" => {
+            "id" => user.id,
+            "avatar_url" => nil,
+            "display_name" => "John D.",
+            "partner" => nil
+          },
+          "created_at" => chat_message_1.created_at.iso8601(3),
+          "parent_id" => nil,
+          "has_children" => true,
+        }]
+      })
+    }
+    end
+  end
 
   describe 'POST create' do
     context "not signed in" do
       before { post :create, params: { neighborhood_id: neighborhood.to_param, chat_message: { content: "foobar"} } }
+
       it { expect(response.status).to eq(401) }
       it { expect(ChatMessage.count).to eq(0) }
     end
 
-    context "signed in" do
-      let(:user) { FactoryBot.create(:pro_user) }
+    context "signed in but not in neighborhood" do
+      before { post :create, params: {
+        neighborhood_id: neighborhood.to_param, chat_message: { content: "foobar", message_type: :text }, token: user.token
+      } }
 
+      it { expect(response.status).to eq(401) }
+    end
+
+    context "signed in" do
       let!(:ios_app) { FactoryBot.create(:ios_app, name: 'neighborhood') }
       let!(:android_app) { FactoryBot.create(:android_app, name: 'neighborhood') }
 
-      context "valid params" do
+      context "nested chat_messages" do
         let!(:join_request) { FactoryBot.create(:join_request, joinable: neighborhood, user: user, status: "accepted") }
+        let(:parent_id) { nil }
+        let(:has_children) { false }
 
-        before { post :create, params: {
-          neighborhood_id: neighborhood.to_param, chat_message: { content: "foobar", message_type: :text }, token: user.token
-        } }
-
-        let(:result) { JSON.parse(response.body) }
-
-        it { expect(response.status).to eq(201) }
-        it { expect(ChatMessage.count).to eq(1) }
-        it { expect(JSON.parse(response.body)).to eq({
-          "chat_message" => {
-            "id" => ChatMessage.first.id,
-            "message_type" => "text",
-            "content" => "foobar",
-            "user" => {
-              "id" => user.id,
-              "avatar_url" => nil,
-              "display_name" => "John D.",
-              "partner" => nil
-            },
-            "created_at" => ChatMessage.first.created_at.iso8601(3),
-            "parent_id" => nil
-          }
-        }) }
-      end
-
-      context "valid params with parent_id" do
-        let!(:join_request) { FactoryBot.create(:join_request, joinable: neighborhood, user: user, status: "accepted") }
-        let!(:chat_message) { FactoryBot.create(:chat_message, messageable: neighborhood) }
-
-        before { post :create, params: {
-          neighborhood_id: neighborhood.to_param, chat_message: { content: "foobar", message_type: :text, parent_id: chat_message.id }, token: user.token
-        } }
-
-        let(:result) { JSON.parse(response.body) }
-
-        it { expect(response.status).to eq(201) }
-        it { expect(ChatMessage.count).to eq(2) }
-        it { expect(JSON.parse(response.body)).to eq({
+        let(:json) {{
           "chat_message" => {
             "id" => ChatMessage.last.id,
             "message_type" => "text",
@@ -68,9 +99,29 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
               "partner" => nil
             },
             "created_at" => ChatMessage.last.created_at.iso8601(3),
-            "parent_id" => chat_message.id
+            "parent_id" => parent_id,
+            "has_children" => has_children,
           }
-        }) }
+        }}
+
+        before { post :create, params: {
+          neighborhood_id: neighborhood.to_param, chat_message: { content: "foobar", message_type: :text, parent_id: parent_id }, token: user.token
+        } }
+
+        context "no nested" do
+          it { expect(response.status).to eq(201) }
+          it { expect(ChatMessage.count).to eq(1) }
+          it { expect(result).to eq(json) }
+        end
+
+        context "with nested" do
+          let!(:chat_message) { FactoryBot.create(:chat_message, messageable: neighborhood) }
+          let(:parent_id) { chat_message.id }
+
+          it { expect(response.status).to eq(201) }
+          it { expect(ChatMessage.count).to eq(2) }
+          it { expect(result).to eq(json) }
+        end
       end
 
       describe "send push notif" do
