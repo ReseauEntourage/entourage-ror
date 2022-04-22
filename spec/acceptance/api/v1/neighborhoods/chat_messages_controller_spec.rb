@@ -113,4 +113,35 @@ resource Api::V1::Neighborhoods::ChatMessagesController do
       end
     end
   end
+
+  post 'api/v1/neighborhoods/:neighborhood_id/chat_messages/:chat_message_id/report' do
+    route_summary "Sends an alert about a chat_message"
+
+    parameter :id, required: true
+    parameter :token, type: :string, required: true
+
+    let(:user) { FactoryBot.create(:public_user) }
+
+    let(:neighborhood) { create :neighborhood }
+    let(:chat_message) { create :chat_message, messageable: neighborhood }
+    let!(:join_request) { FactoryBot.create(:join_request, joinable: neighborhood, user: user, status: "accepted") }
+
+    let(:neighborhood_id) { neighborhood.id }
+    let(:chat_message_id) { chat_message.id }
+    let(:raw_post) { {
+      token: user.token,
+    }.to_json }
+
+
+    ENV['ADMIN_HOST'] = 'https://this.is.local'
+    ENV['SLACK_SIGNAL_NEIGHBORHOOD_WEBHOOK'] = '{"url":"https://url.to.slack.com","channel":"channel","username":"signal-neighborhood"}'
+
+    before { stub_request(:post, "https://url.to.slack.com").to_return(status: 200) }
+
+    context '201' do
+      example_request 'Report neighborhood' do
+        expect(response_status).to eq(201)
+      end
+    end
+  end
 end

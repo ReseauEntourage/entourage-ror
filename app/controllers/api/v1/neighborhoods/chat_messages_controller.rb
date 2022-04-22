@@ -85,6 +85,7 @@ module Api
         end
 
         def set_chat_message
+          # we want to force chat_message to belong to Neighborhood
           @chat_message = ChatMessage.where(id: params[:chat_message_id], messageable_type: :Neighborhood).first
         end
 
