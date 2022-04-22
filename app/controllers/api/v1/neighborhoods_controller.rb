@@ -1,7 +1,8 @@
 module Api
   module V1
     class NeighborhoodsController < Api::V1::BaseController
-      before_action :set_neighborhood, only: [:show, :update, :destroy]
+      before_action :set_neighborhood, only: [:show, :update, :destroy, :report]
+      allow_anonymous_access only: [:report]
 
       def index
         render json: NeighborhoodServices::Finder.search(current_user, params[:q]), root: :neighborhoods, each_serializer: ::V1::NeighborhoodSerializer
@@ -36,6 +37,23 @@ module Api
         end
       end
 
+      def report
+        if report_params[:message].blank?
+          render json: {
+            code: 'CANNOT_REPORT_NEIGHBORHOOD',
+            message: 'message is required'
+          }, status: :bad_request and return
+        end
+
+        SlackServices::SignalNeighborhood.new(
+          neighborhood: @neighborhood,
+          reporting_user: current_user,
+          message: report_params[:message]
+        ).notify
+
+        head :created
+      end
+
       private
 
       def set_neighborhood
@@ -44,6 +62,10 @@ module Api
 
       def neighborhood_params
         params.require(:neighborhood).permit(:name, :description, :welcome_message, :ethics, :latitude, :longitude, :neighborhood_image_id, :other_interest, interests: [])
+      end
+
+      def report_params
+        params.require(:report).permit(:message)
       end
     end
   end
