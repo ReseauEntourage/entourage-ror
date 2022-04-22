@@ -221,6 +221,35 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
     end
   end
 
+  describe 'POST #report' do
+    let(:neighborhood) { create :neighborhood }
+    let(:chat_message) { create :chat_message, messageable: neighborhood }
+    let!(:join_request) { FactoryBot.create(:join_request, joinable: neighborhood, user: user, status: "accepted") }
+
+    ENV['SLACK_SIGNAL_NEIGHBORHOOD_WEBHOOK'] = '{"url":"https://url.to.slack.com","channel":"channel","username":"signal-neighborhood"}'
+
+    before { stub_request(:post, "https://url.to.slack.com").to_return(status: 200) }
+
+    context "correct messageable" do
+      before {
+        expect_any_instance_of(SlackServices::SignalNeighborhoodChatMessage).to receive(:notify)
+        post :report, params: { token: user.token, neighborhood_id: neighborhood.id, chat_message_id: chat_message.id }
+      }
+      it { expect(response.status).to eq 201 }
+    end
+
+    context "wrong messageable" do
+      let(:entourage) { create :entourage }
+      let(:entourage_chat_message) { create :chat_message, messageable: entourage }
+
+      before {
+        expect_any_instance_of(SlackServices::SignalNeighborhoodChatMessage).not_to receive(:notify)
+        post :report, params: { token: user.token, neighborhood_id: neighborhood.id, chat_message_id: entourage_chat_message.id }
+      }
+      it { expect(response.status).to eq 400 }
+    end
+  end
+
   describe 'GET comments' do
     let!(:chat_message_1) { FactoryBot.create(:chat_message, messageable: neighborhood, user: user) }
     let!(:chat_message_2) { FactoryBot.create(:chat_message, messageable: neighborhood, user: user, parent: chat_message_1) }

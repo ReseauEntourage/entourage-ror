@@ -132,4 +132,37 @@ resource Api::V1::NeighborhoodsController do
       end
     end
   end
+
+  post 'api/v1/neighborhoods/:id/report' do
+    route_summary "Sends an alert about a neighborhood"
+
+    parameter :id, required: true
+    parameter :token, type: :string, required: true
+    with_options :scope => :report, :required => true do
+      parameter :message, type: :string
+    end
+
+    let(:neighborhood) { create :neighborhood }
+    let(:user) { FactoryBot.create(:public_user) }
+
+    let(:id) { neighborhood.id }
+    let(:raw_post) { {
+      token: user.token,
+      report: {
+        message: 'message'
+      }
+    }.to_json }
+
+
+    ENV['ADMIN_HOST'] = 'https://this.is.local'
+    ENV['SLACK_SIGNAL_NEIGHBORHOOD_WEBHOOK'] = '{"url":"https://url.to.slack.com","channel":"channel","username":"signal-neighborhood"}'
+
+    before { stub_request(:post, "https://url.to.slack.com").to_return(status: 200) }
+
+    context '201' do
+      example_request 'Report neighborhood' do
+        expect(response_status).to eq(201)
+      end
+    end
+  end
 end

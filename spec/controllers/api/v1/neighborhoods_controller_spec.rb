@@ -457,4 +457,28 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
       it { expect(result.status).to eq 'deleted' }
     end
   end
+
+  describe 'POST #report' do
+    let(:neighborhood) { create :neighborhood }
+
+    ENV['SLACK_SIGNAL_NEIGHBORHOOD_WEBHOOK'] = '{"url":"https://url.to.slack.com","channel":"channel","username":"signal-neighborhood"}'
+
+    before { stub_request(:post, "https://url.to.slack.com").to_return(status: 200) }
+
+    context "valid params" do
+      before {
+        expect_any_instance_of(SlackServices::SignalNeighborhood).to receive(:notify)
+        post 'report', params: { token: user.token, id: neighborhood.id, report: { message: 'message' } }
+      }
+      it { expect(response.status).to eq 201 }
+    end
+
+    context "missing message" do
+      before {
+        expect_any_instance_of(SlackServices::SignalNeighborhood).not_to receive(:notify)
+        post 'report', params: { token: user.token, id: neighborhood.id, report: { message: '' } }
+      }
+      it { expect(response.status).to eq 400 }
+    end
+  end
 end
