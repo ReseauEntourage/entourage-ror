@@ -4,7 +4,8 @@ module Api
       class UnauthorizedNeighborhood < StandardError; end
 
       class ChatMessagesController < Api::V1::BaseController
-        before_action :set_neighborhood, only: [:index, :create, :comments, :presigned_upload]
+        before_action :set_neighborhood, only: [:index, :create, :report, :comments, :presigned_upload]
+        before_action :set_chat_message, only: [:report]
         before_action :ensure_is_member, except: [:index, :comments]
 
         after_action :set_last_message_read, only: [:index]
@@ -39,6 +40,14 @@ module Api
         end
 
         def report
+          return render json: { message: "Wrong chat_message" }, status: :bad_request unless @chat_message
+
+          SlackServices::SignalNeighborhoodChatMessage.new(
+            chat_message: @chat_message,
+            reporting_user: current_user
+          ).notify
+
+          head :created
         end
 
         def comments
@@ -69,8 +78,18 @@ module Api
           params.require(:chat_message).permit(:content, :parent_id, :image_url)
         end
 
+        private
+
         def set_neighborhood
           @neighborhood = Neighborhood.find(params[:neighborhood_id])
+        end
+
+        def set_chat_message
+          @chat_message = ChatMessage.where(id: params[:chat_message_id], messageable_type: :Neighborhood).first
+        end
+
+        def chat_messages_params
+          params.require(:chat_message).permit(:content, :message_type)
         end
 
         def join_request
