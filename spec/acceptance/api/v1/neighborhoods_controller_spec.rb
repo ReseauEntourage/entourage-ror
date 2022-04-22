@@ -48,14 +48,18 @@ resource Api::V1::NeighborhoodsController do
 
     with_options :scope => :neighborhood, :required => true do
       parameter :name, "Name"
+      parameter :description, "Description", required: false
+      parameter :welcome_message, "Welcome message", required: false
       parameter :ethics, "Ethics", required: false
       parameter :latitude, "Latitude"
       parameter :longitude, "Longitude"
       parameter :interests, "Interests", required: false
-      parameter :image_url, "Image url", required: false
+      parameter :other_interest, "Other interest", required: false
+      parameter :neighborhood_image_id, "Neighborhood image id", required: false
     end
 
     let(:neighborhood) { build :neighborhood }
+    let(:neighborhood_image) { FactoryBot.create :neighborhood_image }
     let(:user) { FactoryBot.create(:pro_user) }
 
     let(:raw_post) { {
@@ -66,7 +70,7 @@ resource Api::V1::NeighborhoodsController do
         latitude: neighborhood.latitude,
         longitude: neighborhood.longitude,
         interests: neighborhood.interest_list,
-        image_url: neighborhood.image_url
+        neighborhood_image_id: neighborhood_image.id
       }
     }.to_json }
 
