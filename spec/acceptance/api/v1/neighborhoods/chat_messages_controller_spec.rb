@@ -42,8 +42,8 @@ resource Api::V1::Neighborhoods::ChatMessagesController do
 
     with_options :scope => :chat_message, :required => true do
       parameter :content, type: :string
-      parameter :message_type, "text, status_update, share", type: :string
-      parameter :parent_id, "parent chat_message id"
+      parameter :message_type, "text, status_update, share", type: :string, :required => false
+      parameter :parent_id, "parent chat_message id", :required => false
     end
 
     let(:user) { FactoryBot.create(:pro_user) }
@@ -77,7 +77,6 @@ resource Api::V1::Neighborhoods::ChatMessagesController do
         example_request 'Create chat_message as a comment of another chat_message' do
           expect(response_status).to eq(201)
           expect(JSON.parse(response_body)).to have_key('chat_message')
-          # expect(JSON.parse(response_body)['chat_message']).to have_key('parent_id')
         end
       end
     end
