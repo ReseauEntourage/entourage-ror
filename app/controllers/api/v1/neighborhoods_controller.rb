@@ -1,7 +1,8 @@
 module Api
   module V1
     class NeighborhoodsController < Api::V1::BaseController
-      before_action :set_neighborhood, only: [:show, :update, :destroy]
+      before_action :set_neighborhood, only: [:show, :update, :destroy, :report]
+      allow_anonymous_access only: [:report]
 
       after_action :set_last_message_read, only: [:show]
 
@@ -65,6 +66,23 @@ module Api
         end
       end
 
+      def report
+        if report_params[:message].blank?
+          render json: {
+            code: 'CANNOT_REPORT_NEIGHBORHOOD',
+            message: 'message is required'
+          }, status: :bad_request and return
+        end
+
+        SlackServices::SignalNeighborhood.new(
+          neighborhood: @neighborhood,
+          reporting_user: current_user,
+          message: report_params[:message]
+        ).notify
+
+        head :created
+      end
+
       private
 
       def set_neighborhood
@@ -95,6 +113,10 @@ module Api
 
       def per
         params[:per] || 25
+      end
+
+      def report_params
+        params.require(:report).permit(:message)
       end
     end
   end
