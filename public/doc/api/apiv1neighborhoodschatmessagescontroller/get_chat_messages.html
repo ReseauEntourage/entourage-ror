@@ -151,7 +151,7 @@ Host: example.org
 Cookie: </pre>
 
           <h4>Route</h4>
-          <pre class="request route highlight">GET /api/v1/neighborhoods/13/chat_messages?token=foobar83</pre>
+          <pre class="request route highlight">GET /api/v1/neighborhoods/1/chat_messages?token=foobar83</pre>
 
             <h4>Query Parameters</h4>
             <pre class="request query_parameters highlight">token: foobar83</pre>
@@ -170,28 +170,29 @@ Access-Control-Allow-Origin: *
 Access-Control-Allow-Methods: GET,POST,PUT,PATCH,DELETE
 Access-Control-Allow-Headers: Origin,Accept,Content-Type,X-Requested-With,X-CSRF-Token,X-API-KEY
 Content-Type: application/json; charset=utf-8
-ETag: W/&quot;cb7032da519cee019fdba182c93c85eb&quot;
+ETag: W/&quot;8d4d0a3425a51be786bb0f58a83e532e&quot;
 Cache-Control: max-age=0, private, must-revalidate
-X-Request-Id: 43c138af-c70e-4af7-834e-42ecd0c746c0
-X-Runtime: 0.012961
-Content-Length: 208</pre>
+X-Request-Id: 34920be0-9986-42f0-9ff1-80637ff0f183
+X-Runtime: 0.013555
+Content-Length: 227</pre>
             <h4>Status</h4>
             <pre class="response status">200 OK</pre>
               <h4>Body</h4>
               <pre class="response body">{
   &quot;chat_messages&quot;: [
     {
-      &quot;id&quot;: 15,
+      &quot;id&quot;: 4,
       &quot;content&quot;: &quot;MyText&quot;,
       &quot;user&quot;: {
-        &quot;id&quot;: 272,
+        &quot;id&quot;: 84,
         &quot;avatar_url&quot;: null,
         &quot;display_name&quot;: &quot;John D.&quot;,
         &quot;partner&quot;: null
       },
-      &quot;created_at&quot;: &quot;2022-04-20T16:51:22.127+02:00&quot;,
+      &quot;created_at&quot;: &quot;2022-04-22T08:42:33.591+02:00&quot;,
       &quot;message_type&quot;: &quot;text&quot;,
-      &quot;parent_id&quot;: null
+      &quot;parent_id&quot;: null,
+      &quot;has_children&quot;: false
     }
   ]
 }</pre>
