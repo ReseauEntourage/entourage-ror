@@ -287,7 +287,7 @@ Host: example.org
 Cookie: </pre>
 
           <h4>Route</h4>
-          <pre class="request route highlight">PATCH api/v1/entourages/55</pre>
+          <pre class="request route highlight">PATCH api/v1/entourages/22</pre>
 
 
             <h4>Body</h4>
@@ -306,18 +306,18 @@ Access-Control-Allow-Origin: *
 Access-Control-Allow-Methods: GET,POST,PUT,PATCH,DELETE
 Access-Control-Allow-Headers: Origin,Accept,Content-Type,X-Requested-With,X-CSRF-Token,X-API-KEY
 Content-Type: application/json; charset=utf-8
-ETag: W/&quot;778b9eae3d51063973031af7317a55f7&quot;
+ETag: W/&quot;f648cb3ebfbf133ce9fccd82af1b2fe0&quot;
 Cache-Control: max-age=0, private, must-revalidate
-X-Request-Id: 4a4d5ecf-8b19-4e53-9371-b33252227447
-X-Runtime: 0.023769
+X-Request-Id: 8ab040db-3e72-41ea-9e47-943d1d1b7803
+X-Runtime: 0.025129
 Content-Length: 2585</pre>
             <h4>Status</h4>
             <pre class="response status">200 OK</pre>
               <h4>Body</h4>
               <pre class="response body">{
   &quot;entourage&quot;: {
-    &quot;id&quot;: 55,
-    &quot;uuid&quot;: &quot;e1UZlcutDkug&quot;,
+    &quot;id&quot;: 22,
+    &quot;uuid&quot;: &quot;ehlfuKoLkkLU&quot;,
     &quot;title&quot;: &quot;Foobar&quot;,
     &quot;group_type&quot;: &quot;outing&quot;,
     &quot;entourage_type&quot;: &quot;ask_for_help&quot;,
@@ -329,28 +329,28 @@ Content-Length: 2585</pre>
       &quot;starts_at&quot;: &quot;2022-04-23T19:00:00.000+02:00&quot;,
       &quot;place_name&quot;: &quot;Café la Renaissance&quot;,
       &quot;previous_at&quot;: null,
-      &quot;portrait_url&quot;: &quot;https://foobar.s3.eu-west-1.amazonaws.com/entourage_images/images/path/to/portrait_url?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=foo%2F20220422%2Feu-west-1%2Fs3%2Faws4_request&amp;X-Amz-Date=20220422T093707Z&amp;X-Amz-Expires=3600&amp;X-Amz-SignedHeaders=host&amp;X-Amz-Signature=8467a474dac5cbbb0c7898304b199724c941e6d79522ab06b0e586a5eec4b559&quot;,
-      &quot;landscape_url&quot;: &quot;https://foobar.s3.eu-west-1.amazonaws.com/entourage_images/images/path/to/landscape_url?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=foo%2F20220422%2Feu-west-1%2Fs3%2Faws4_request&amp;X-Amz-Date=20220422T093707Z&amp;X-Amz-Expires=3600&amp;X-Amz-SignedHeaders=host&amp;X-Amz-Signature=a6212487ad176b84972800296969ca685c7ef7436ea567ea096c314162fb1c44&quot;,
+      &quot;portrait_url&quot;: &quot;https://foobar.s3.eu-west-1.amazonaws.com/entourage_images/images/path/to/portrait_url?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=foo%2F20220422%2Feu-west-1%2Fs3%2Faws4_request&amp;X-Amz-Date=20220422T133754Z&amp;X-Amz-Expires=3600&amp;X-Amz-SignedHeaders=host&amp;X-Amz-Signature=0d1df4f9e25c5a8885c29a6e0c89228e0ae19ce1a5dc69af8d2e4c67067fee7d&quot;,
+      &quot;landscape_url&quot;: &quot;https://foobar.s3.eu-west-1.amazonaws.com/entourage_images/images/path/to/landscape_url?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=foo%2F20220422%2Feu-west-1%2Fs3%2Faws4_request&amp;X-Amz-Date=20220422T133754Z&amp;X-Amz-Expires=3600&amp;X-Amz-SignedHeaders=host&amp;X-Amz-Signature=9343213b82458f6ab617fea213926155815a29a5b1f6431ba2df18b2e103a178&quot;,
       &quot;street_address&quot;: &quot;44 rue de l’Assomption, 75016 Paris, France&quot;,
       &quot;display_address&quot;: &quot;Café la Renaissance, 44 rue de l’Assomption, 75016 Paris&quot;,
       &quot;google_place_id&quot;: &quot;foobar&quot;,
-      &quot;portrait_thumbnail_url&quot;: &quot;https://foobar.s3.eu-west-1.amazonaws.com/entourage_images/images/path/to/portrait_thumbnail_url?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=foo%2F20220422%2Feu-west-1%2Fs3%2Faws4_request&amp;X-Amz-Date=20220422T093707Z&amp;X-Amz-Expires=3600&amp;X-Amz-SignedHeaders=host&amp;X-Amz-Signature=fad12a67dec28f35898a9b0516d04b1f853047690a9aeb290d25c504219b8c1b&quot;,
-      &quot;landscape_thumbnail_url&quot;: &quot;https://foobar.s3.eu-west-1.amazonaws.com/entourage_images/images/path/to/landscape_thumbnail_url?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=foo%2F20220422%2Feu-west-1%2Fs3%2Faws4_request&amp;X-Amz-Date=20220422T093707Z&amp;X-Amz-Expires=3600&amp;X-Amz-SignedHeaders=host&amp;X-Amz-Signature=56890c199970e35f10e3b899ab2ff3dd4febab89fdee4f3de2f6e1782c0e02e8&quot;
+      &quot;portrait_thumbnail_url&quot;: &quot;https://foobar.s3.eu-west-1.amazonaws.com/entourage_images/images/path/to/portrait_thumbnail_url?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=foo%2F20220422%2Feu-west-1%2Fs3%2Faws4_request&amp;X-Amz-Date=20220422T133754Z&amp;X-Amz-Expires=3600&amp;X-Amz-SignedHeaders=host&amp;X-Amz-Signature=7fcdd7fe0cb95cd3286667b8bbb4c8dd9b7e0baf86fa32ceefbe5c779c0ef8cc&quot;,
+      &quot;landscape_thumbnail_url&quot;: &quot;https://foobar.s3.eu-west-1.amazonaws.com/entourage_images/images/path/to/landscape_thumbnail_url?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=foo%2F20220422%2Feu-west-1%2Fs3%2Faws4_request&amp;X-Amz-Date=20220422T133754Z&amp;X-Amz-Expires=3600&amp;X-Amz-SignedHeaders=host&amp;X-Amz-Signature=1ef900f41fa8df23979b2844f3f313306fe932d172b7f01758499f236c448620&quot;
     },
     &quot;postal_code&quot;: null,
     &quot;join_status&quot;: &quot;not_requested&quot;,
     &quot;number_of_unread_messages&quot;: 0,
     &quot;number_of_people&quot;: 1,
-    &quot;created_at&quot;: &quot;2022-04-22T11:37:07.731+02:00&quot;,
-    &quot;updated_at&quot;: &quot;2022-04-22T11:37:07.731+02:00&quot;,
+    &quot;created_at&quot;: &quot;2022-04-22T15:37:54.279+02:00&quot;,
+    &quot;updated_at&quot;: &quot;2022-04-22T15:37:54.279+02:00&quot;,
     &quot;description&quot;: null,
-    &quot;share_url&quot;: &quot;https://app.entourage.social/actions/e1UZlcutDkug&quot;,
+    &quot;share_url&quot;: &quot;https://app.entourage.social/actions/ehlfuKoLkkLU&quot;,
     &quot;image_url&quot;: null,
     &quot;online&quot;: false,
     &quot;event_url&quot;: null,
     &quot;display_report_prompt&quot;: false,
     &quot;author&quot;: {
-      &quot;id&quot;: 247,
+      &quot;id&quot;: 163,
       &quot;display_name&quot;: &quot;John D.&quot;,
       &quot;avatar_url&quot;: null,
       &quot;partner&quot;: null,

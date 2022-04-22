@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Api::V1::EncountersController API</title>
+    <title>Api::V1::NeighborhoodsController API</title>
     <meta charset="utf-8">
     <style>
       
@@ -106,13 +106,13 @@ table th, table td {
   </head>
   <body>
     <div class="container">
-      <h1>Api::V1::EncountersController API</h1>
+      <h1>Api::V1::NeighborhoodsController API</h1>
 
-        <p class="explanation">Encounters</p>
+        <p class="explanation">Neighborhoods</p>
 
       <div class="article">
-        <h2>Get encounters</h2>
-        <h3>GET /api/v1/tours/:tour_id/encounters</h3>
+        <h2>Report neighborhood</h2>
+        <h3>POST api/v1/neighborhoods/:id/report</h3>
 
           <h3>Parameters</h3>
           <table class="parameters table table-striped table-bordered table-condensed">
@@ -125,18 +125,26 @@ table th, table td {
             <tbody>
               <tr>
                 <td class="required">
-                    <span class="name">token</span>
+                    <span class="name">id</span>
                 </td>
                 <td>
-                  <span class="description">User token</span>
+                  <span class="description"> id</span>
                 </td>
               </tr>
               <tr>
                 <td class="required">
-                    <span class="name">tour_id</span>
+                    <span class="name">token</span>
                 </td>
                 <td>
-                  <span class="description">Tour id</span>
+                  <span class="description"> token</span>
+                </td>
+              </tr>
+              <tr>
+                <td class="required">
+                    <span class="name">entourage_report[message]</span>
+                </td>
+                <td>
+                  <span class="description">Entourage report message</span>
                 </td>
               </tr>
             </tbody>
@@ -151,11 +159,11 @@ Host: example.org
 Cookie: </pre>
 
           <h4>Route</h4>
-          <pre class="request route highlight">GET /api/v1/tours/1/encounters?token=foobar5</pre>
+          <pre class="request route highlight">POST api/v1/neighborhoods/62/report</pre>
 
-            <h4>Query Parameters</h4>
-            <pre class="request query_parameters highlight">token: foobar5</pre>
 
+            <h4>Body</h4>
+            <pre class="request body">{"token":"foobar109","report":{"message":"message"}}</pre>
 
 
             <h3>Response</h3>
@@ -169,30 +177,13 @@ Referrer-Policy: strict-origin-when-cross-origin
 Access-Control-Allow-Origin: *
 Access-Control-Allow-Methods: GET,POST,PUT,PATCH,DELETE
 Access-Control-Allow-Headers: Origin,Accept,Content-Type,X-Requested-With,X-CSRF-Token,X-API-KEY
-Content-Type: application/json; charset=utf-8
-ETag: W/&quot;fe86f76ce13c6e65a25e2939048ff021&quot;
-Cache-Control: max-age=0, private, must-revalidate
-X-Request-Id: e8f0d67f-c8bf-44c7-aadc-a1d37733be42
-X-Runtime: 0.010988
-Content-Length: 238</pre>
+Content-Type: text/html
+Cache-Control: no-cache
+X-Request-Id: ccc44bd2-c54d-44fc-8a99-93fc98d63105
+X-Runtime: 0.006297
+Content-Length: 0</pre>
             <h4>Status</h4>
             <pre class="response status">201 Created</pre>
-              <h4>Body</h4>
-              <pre class="response body">{
-  &quot;encounters&quot;: [
-    {
-      &quot;id&quot;: 1,
-      &quot;date&quot;: &quot;2014-10-11T15:19:45.000+02:00&quot;,
-      &quot;latitude&quot;: 48.870424,
-      &quot;longitude&quot;: 2.30682,
-      &quot;user_id&quot;: 116,
-      &quot;user_name&quot;: &quot;John&quot;,
-      &quot;street_person_name&quot;: &quot;Toto&quot;,
-      &quot;message&quot;: &quot;Toto fait du velo.&quot;,
-      &quot;voice_message&quot;: &quot;https://www.google.com&quot;
-    }
-  ]
-}</pre>
       </div>
     </div>
   </body>
