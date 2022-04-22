@@ -93,9 +93,6 @@ resource Api::V1::Neighborhoods::ChatMessagesController do
 
     parameter :id, required: true
     parameter :token, type: :string, required: true
-    with_options :scope => :entourage_report, :required => true do
-      parameter :message, type: :string
-    end
 
     let(:user) { FactoryBot.create(:public_user) }
 

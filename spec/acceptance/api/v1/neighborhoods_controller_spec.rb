@@ -122,7 +122,7 @@ resource Api::V1::NeighborhoodsController do
 
     parameter :id, required: true
     parameter :token, type: :string, required: true
-    with_options :scope => :entourage_report, :required => true do
+    with_options :scope => :report, :required => true do
       parameter :message, type: :string
     end
 
