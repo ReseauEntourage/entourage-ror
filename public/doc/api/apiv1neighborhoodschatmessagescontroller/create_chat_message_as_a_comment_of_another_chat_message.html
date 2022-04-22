@@ -175,11 +175,11 @@ Host: example.org
 Cookie: </pre>
 
           <h4>Route</h4>
-          <pre class="request route highlight">POST /api/v1/neighborhoods/4/chat_messages</pre>
+          <pre class="request route highlight">POST /api/v1/neighborhoods/20/chat_messages</pre>
 
 
             <h4>Body</h4>
-            <pre class="request body">{"token":"foobar90","chat_message":{"content":"foo","parent_id":7}}</pre>
+            <pre class="request body">{"token":"foobar90","chat_message":{"content":"foo","parent_id":18}}</pre>
 
 
             <h3>Response</h3>
@@ -194,27 +194,27 @@ Access-Control-Allow-Origin: *
 Access-Control-Allow-Methods: GET,POST,PUT,PATCH,DELETE
 Access-Control-Allow-Headers: Origin,Accept,Content-Type,X-Requested-With,X-CSRF-Token,X-API-KEY
 Content-Type: application/json; charset=utf-8
-ETag: W/&quot;a4b59132f198bc0aeddbaf315cd48b45&quot;
+ETag: W/&quot;b225e08060f0d6e11563742fd1328396&quot;
 Cache-Control: max-age=0, private, must-revalidate
-X-Request-Id: f85386a7-91ac-4ee6-badf-46c25fb0d7a0
-X-Runtime: 0.017615
-Content-Length: 218</pre>
+X-Request-Id: da889150-18bd-44ce-a4a9-97b291890717
+X-Runtime: 0.052915
+Content-Length: 221</pre>
             <h4>Status</h4>
             <pre class="response status">201 Created</pre>
               <h4>Body</h4>
               <pre class="response body">{
   &quot;chat_message&quot;: {
-    &quot;id&quot;: 8,
+    &quot;id&quot;: 19,
     &quot;content&quot;: &quot;foo&quot;,
     &quot;user&quot;: {
-      &quot;id&quot;: 92,
+      &quot;id&quot;: 287,
       &quot;avatar_url&quot;: null,
       &quot;display_name&quot;: &quot;John D.&quot;,
       &quot;partner&quot;: null
     },
-    &quot;created_at&quot;: &quot;2022-04-22T08:42:33.787+02:00&quot;,
+    &quot;created_at&quot;: &quot;2022-04-22T11:37:08.957+02:00&quot;,
     &quot;message_type&quot;: &quot;text&quot;,
-    &quot;parent_id&quot;: 7,
+    &quot;parent_id&quot;: 18,
     &quot;has_children&quot;: false
   }
 }</pre>
