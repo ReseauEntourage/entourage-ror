@@ -9,10 +9,12 @@ resource Api::V1::NeighborhoodsController do
     route_summary "Find neighborhoods"
 
     parameter :token, "User token", type: :string, required: true
+    parameter :q, "Search text", type: :string, required: false
 
     let(:user) { FactoryBot.create(:pro_user) }
-    let!(:neighborhood) { FactoryBot.create(:neighborhood) }
+    let!(:neighborhood) { FactoryBot.create(:neighborhood, name: "foobar") }
     let(:token) { user.token }
+    let(:q) { :foo }
 
     context '200' do
       example_request 'Get neighborhoods' do
