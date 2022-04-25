@@ -199,11 +199,11 @@ Host: example.org
 Cookie: </pre>
 
           <h4>Route</h4>
-          <pre class="request route highlight">POST /api/v1/tours/25/encounters</pre>
+          <pre class="request route highlight">POST /api/v1/tours/48/encounters</pre>
 
 
             <h4>Body</h4>
-            <pre class="request body">{"token":"foobar6","tour_id":25,"encounter":{"street_person_name":"John Doe","date":"2021-01-01 00:00:00","latitude":48.870424,"longitude":2.30682}}</pre>
+            <pre class="request body">{"token":"foobar6","tour_id":48,"encounter":{"street_person_name":"John Doe","date":"2021-01-01 00:00:00","latitude":48.870424,"longitude":2.30682}}</pre>
 
 
             <h3>Response</h3>
@@ -218,21 +218,21 @@ Access-Control-Allow-Origin: *
 Access-Control-Allow-Methods: GET,POST,PUT,PATCH,DELETE
 Access-Control-Allow-Headers: Origin,Accept,Content-Type,X-Requested-With,X-CSRF-Token,X-API-KEY
 Content-Type: application/json; charset=utf-8
-ETag: W/&quot;502d08a4456853757f7822b91ab88cba&quot;
+ETag: W/&quot;db8cf5b8be67a6c60df4877d05441929&quot;
 Cache-Control: max-age=0, private, must-revalidate
-X-Request-Id: f4f9ced7-f85a-4cd7-a392-cbfd5044870a
-X-Runtime: 0.013078
+X-Request-Id: ef4e5042-9f27-4346-8df7-7c309423d329
+X-Runtime: 0.012682
 Content-Length: 203</pre>
             <h4>Status</h4>
             <pre class="response status">201 Created</pre>
               <h4>Body</h4>
               <pre class="response body">{
   &quot;encounter&quot;: {
-    &quot;id&quot;: 5,
+    &quot;id&quot;: 8,
     &quot;date&quot;: &quot;2021-01-01T00:00:00.000+01:00&quot;,
     &quot;latitude&quot;: 48.870424,
     &quot;longitude&quot;: 2.30682,
-    &quot;user_id&quot;: 310,
+    &quot;user_id&quot;: 510,
     &quot;user_name&quot;: &quot;John&quot;,
     &quot;street_person_name&quot;: &quot;John Doe&quot;,
     &quot;message&quot;: null,
