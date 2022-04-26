@@ -32,6 +32,7 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
         longitude: neighborhood.longitude,
         interests: neighborhood.interest_list
     } }
+    let(:request) { post :create, params: { token: user.token, neighborhood: fields, format: :json } }
 
     describe 'not authorized' do
       before { post :create }
@@ -43,7 +44,7 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
       let(:subject) { Neighborhood.last }
       let(:result) { JSON.parse(response.body) }
 
-      before { post :create, params: { token: user.token, neighborhood: fields, format: :json }}
+      before { request }
 
       it { expect(response.status).to eq(201) }
       it { expect(subject.name).to eq neighborhood.name }
@@ -51,6 +52,17 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
       it { expect(subject.longitude).to eq neighborhood.longitude }
       it { expect(result).to have_key("neighborhood") }
       it { expect(result['neighborhood']['name']).to eq("Foot Paris 17è") }
+    end
+
+    describe 'Neighborhood and JoinRequest are created on success' do
+      it { expect { request }.to change { Neighborhood.count }.by(1) }
+      it { expect { request }.to change { JoinRequest.count }.by(1) }
+    end
+
+    describe 'Neighborhood and JoinRequest are not created on failure' do
+      before { JoinRequest.stub(:create!).and_raise("ValidationError") }
+      it { expect { request }.to change { Neighborhood.count }.by(0) }
+      it { expect { request }.to change { JoinRequest.count }.by(0) }
     end
   end
 

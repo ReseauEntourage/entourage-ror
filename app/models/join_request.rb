@@ -21,7 +21,7 @@ class JoinRequest < ApplicationRecord
   validates :user_id, :joinable_id, :joinable_type, :status, presence: true
   validates_uniqueness_of :joinable_id, {scope: [:joinable_type, :user_id], message: "a déjà été ajouté"}
   validates_inclusion_of :status, in: ["pending", "accepted", "rejected", "cancelled"]
-  validates :role, presence: true, inclusion: { in: ['member'] }, if: :neighborhood?
+  validates :role, presence: true, inclusion: { in: ['member', 'creator'] }, if: :neighborhood?
   validates :role, presence: true,
                    inclusion: { in: -> (r) { r.joinable&.group_type_config&.dig('roles') || [] }, allow_nil: true },
                    unless: :neighborhood?
