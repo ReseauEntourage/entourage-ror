@@ -46,7 +46,7 @@ describe FollowingService do
     it {
       expect { subject }.to \
         change { UserServices::UnreadMessages.new(user: following.user).number_of_unread_messages } \
-        .by(1)
+        .by(0)
     }
   end
 end

@@ -5,7 +5,7 @@ module UserServices
     end
 
     def number_of_unread_messages
-      (unread_conversations + unread_invitations).uniq.count
+      unread_conversations.uniq.count
     end
 
     def unread_by_group_type
