@@ -44,7 +44,7 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
       end
 
       describe "send push notif" do
-        it "sends notif to everyone accaepted except message sender" do
+        it "sends notif to everyone accepted except message sender" do
           join_request = FactoryBot.create(:join_request, joinable: neighborhood, user: user, status: "accepted")
           join_request2 = FactoryBot.create(:join_request, joinable: neighborhood, status: "accepted")
 
@@ -54,7 +54,7 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
             "John D.",
             'Foot Paris 17è',
             'foobaz',
-            [ join_request2.user ],
+            [ neighborhood.user, join_request2.user ],
             {
               joinable_id: neighborhood.id,
               joinable_type: "Neighborhood",

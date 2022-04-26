@@ -7,11 +7,12 @@ module V1
       :members_count,
       :image_url,
       :interests,
-      :members,
       :ethics,
       :past_outings_count,
       :future_outings_count,
       :has_ongoing_outing
+
+    has_many :members, serializer: ::V1::Users::BasicSerializer
 
     def interests
       object.interest_list.sort
