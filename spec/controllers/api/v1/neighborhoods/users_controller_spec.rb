@@ -20,10 +20,23 @@ describe Api::V1::Neighborhoods::UsersController do
 
     context "signed in" do
       let!(:join_request) { create(:join_request, user: user, joinable: neighborhood, status: "accepted") }
+      let(:creator) { neighborhood.user }
 
       before { get :index, params: { neighborhood_id: neighborhood.to_param, token: user.token } }
       it { expect(result).to eq({
         "users" => [{
+          "id" => creator.id,
+          "display_name" => "John D.",
+          "role" => "creator",
+          "group_role" => "creator",
+          "community_roles" => [],
+          "status" => "accepted",
+          "message" => nil,
+          "requested_at" => JoinRequest.where(user: creator, joinable: neighborhood).first.created_at.iso8601(3),
+          "avatar_url" => nil,
+          "partner" => nil,
+          "partner_role_title" => nil,
+        }, {
           "id" => user.id,
           "display_name" => "John D.",
           "role" => "member",
@@ -50,7 +63,7 @@ describe Api::V1::Neighborhoods::UsersController do
       context "first request to join neighborhood" do
         before { post :create, params: { neighborhood_id: neighborhood.to_param, token: user.token, distance: 123.45 } }
         it { expect(JoinRequest.last.distance).to eq(123.45) }
-        it { expect(neighborhood.members).to eq([user]) }
+        it { expect(neighborhood.member_ids).to eq([neighborhood.user_id, user.id]) }
         it { expect(result).to eq(
           "user" => {
             "id" => user.id,
@@ -72,7 +85,7 @@ describe Api::V1::Neighborhoods::UsersController do
         let!(:join_request) { create(:join_request, user: user, joinable: neighborhood) }
         before { post :create, params: { neighborhood_id: neighborhood.to_param, token: user.token } }
 
-        it { expect(neighborhood.members).to eq([user]) }
+        it { expect(neighborhood.member_ids).to eq([neighborhood.user_id, user.id]) }
         it { expect(result).to eq(
           "user" => {
             "id" => user.id,
