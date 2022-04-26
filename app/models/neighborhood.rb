@@ -3,6 +3,12 @@ class Neighborhood < ApplicationRecord
 
   belongs_to :user
 
+  after_create do |neighborhood|
+    JoinRequest.create!(role: :creator, joinable: neighborhood, user: neighborhood.user, status: :accepted)
+  rescue
+    raise ActiveRecord::Rollback
+  end
+
   has_many :join_requests, as: :joinable, dependent: :destroy
   has_many :members, through: :join_requests, source: :user
   has_many :neighborhoods_entourages
