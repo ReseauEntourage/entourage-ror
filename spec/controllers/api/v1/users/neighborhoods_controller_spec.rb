@@ -13,10 +13,8 @@ describe Api::V1::Users::NeighborhoodsController, :type => :controller do
     end
 
     context "logged in" do
-      let(:neighborhood_created) { FactoryBot.create(:neighborhood, user: user, created_at: 1.day.ago) }
-      let!(:join_request_created) { FactoryBot.create(:join_request, joinable: neighborhood_created, user: user, status: JoinRequest::ACCEPTED_STATUS) }
-      let(:neighborhood_joined) { FactoryBot.create(:neighborhood, created_at: 2.day.ago) }
-      let!(:join_request_joined) { FactoryBot.create(:join_request, joinable: neighborhood_joined, user: user, status: JoinRequest::ACCEPTED_STATUS) }
+      let!(:neighborhood_created) { FactoryBot.create(:neighborhood, user: user, created_at: 1.day.ago) }
+      let!(:neighborhood_joined) { FactoryBot.create(:neighborhood, user: user, created_at: 2.day.ago) }
       let!(:neighborhood_other) { FactoryBot.create(:neighborhood) }
 
       before { get :index, params: { user_id: user.id, token: user.token } }
