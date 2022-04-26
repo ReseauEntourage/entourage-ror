@@ -43,7 +43,7 @@ describe FollowingJob do
     }
 
     it {
-      expect { subject }.to change { UserServices::UnreadMessages.new(user: following.user).number_of_unread_messages }.by(1)
+      expect { subject }.to change { UserServices::UnreadMessages.new(user: following.user).number_of_unread_messages }.by(0)
     }
   end
 
