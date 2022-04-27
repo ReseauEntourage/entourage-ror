@@ -242,6 +242,7 @@ fr:
       jeux: Jeux
       nature: Nature
       sport: Sport
+      other: Autre
     signals:
       spam: Spam
       fraud: Arnaque
