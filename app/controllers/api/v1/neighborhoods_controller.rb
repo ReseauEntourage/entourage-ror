@@ -72,11 +72,11 @@ module Api
       end
 
       def page
-        param[:page] || 1
+        params[:page] || 1
       end
 
       def per
-        param[:per] || 10
+        params[:per] || 10
       end
     end
   end
