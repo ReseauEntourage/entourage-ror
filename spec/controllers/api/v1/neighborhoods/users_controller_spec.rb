@@ -84,7 +84,7 @@ describe Api::V1::Neighborhoods::UsersController do
         let!(:join_request) { create(:join_request, user: user, joinable: neighborhood) }
         before { post :create, params: { neighborhood_id: neighborhood.to_param, token: user.token } }
 
-        it { expect(neighborhood.member_ids).to eq([neighborhood.user_id, user.id]) }
+        it { expect(neighborhood.member_ids).to match_array([neighborhood.user_id, user.id]) }
         it { expect(result).to eq(
           "user" => {
             "id" => user.id,
