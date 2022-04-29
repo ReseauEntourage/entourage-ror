@@ -5,7 +5,10 @@ module Api
       allow_anonymous_access only: [:report]
 
       def index
-        render json: NeighborhoodServices::Finder.search(current_user, params[:q]), root: :neighborhoods, each_serializer: ::V1::NeighborhoodSerializer
+        render json: NeighborhoodServices::Finder.search(
+          user: current_user,
+          q: params[:q]
+        ).per(per).page(page), root: :neighborhoods, each_serializer: ::V1::NeighborhoodSerializer
       end
 
       def show
@@ -66,6 +69,14 @@ module Api
 
       def report_params
         params.require(:report).permit(:message)
+      end
+
+      def page
+        param[:page] || 1
+      end
+
+      def per
+        param[:per] || 10
       end
     end
   end
