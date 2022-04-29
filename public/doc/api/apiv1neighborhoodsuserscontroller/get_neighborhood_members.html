@@ -151,7 +151,7 @@ Host: example.org
 Cookie: </pre>
 
           <h4>Route</h4>
-          <pre class="request route highlight">GET /api/v1/neighborhoods/88/users?token=foobar97</pre>
+          <pre class="request route highlight">GET /api/v1/neighborhoods/7/users?token=foobar97</pre>
 
             <h4>Query Parameters</h4>
             <pre class="request query_parameters highlight">token: foobar97</pre>
@@ -170,18 +170,33 @@ Access-Control-Allow-Origin: *
 Access-Control-Allow-Methods: GET,POST,PUT,PATCH,DELETE
 Access-Control-Allow-Headers: Origin,Accept,Content-Type,X-Requested-With,X-CSRF-Token,X-API-KEY
 Content-Type: application/json; charset=utf-8
-ETag: W/&quot;274e17caf3482d93bcbd21ad5108e3f2&quot;
+ETag: W/&quot;46906207ca0eba2c86bc3e92a4a52ec1&quot;
 Cache-Control: max-age=0, private, must-revalidate
-X-Request-Id: 0dcf2f94-3b2d-48d7-b8e0-39b4a7d16ec5
-X-Runtime: 0.012611
-Content-Length: 247</pre>
+X-Request-Id: 1eba15a4-5dea-4e71-81fc-55aa10ebbd99
+X-Runtime: 0.012355
+Content-Length: 484</pre>
             <h4>Status</h4>
             <pre class="response status">200 OK</pre>
               <h4>Body</h4>
               <pre class="response body">{
   &quot;users&quot;: [
     {
-      &quot;id&quot;: 603,
+      &quot;id&quot;: 100,
+      &quot;display_name&quot;: &quot;John D.&quot;,
+      &quot;role&quot;: &quot;creator&quot;,
+      &quot;group_role&quot;: &quot;creator&quot;,
+      &quot;community_roles&quot;: [
+
+      ],
+      &quot;status&quot;: &quot;accepted&quot;,
+      &quot;message&quot;: null,
+      &quot;requested_at&quot;: &quot;2022-04-29T12:03:34.468+02:00&quot;,
+      &quot;avatar_url&quot;: null,
+      &quot;partner&quot;: null,
+      &quot;partner_role_title&quot;: null
+    },
+    {
+      &quot;id&quot;: 99,
       &quot;display_name&quot;: &quot;John D.&quot;,
       &quot;role&quot;: &quot;member&quot;,
       &quot;group_role&quot;: &quot;member&quot;,
@@ -190,7 +205,7 @@ Content-Length: 247</pre>
       ],
       &quot;status&quot;: &quot;accepted&quot;,
       &quot;message&quot;: null,
-      &quot;requested_at&quot;: &quot;2022-04-25T18:00:54.239+02:00&quot;,
+      &quot;requested_at&quot;: &quot;2022-04-29T12:03:34.481+02:00&quot;,
       &quot;avatar_url&quot;: null,
       &quot;partner&quot;: null,
       &quot;partner_role_title&quot;: null

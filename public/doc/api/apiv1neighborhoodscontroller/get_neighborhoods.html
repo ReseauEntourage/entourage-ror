@@ -171,33 +171,37 @@ Access-Control-Allow-Origin: *
 Access-Control-Allow-Methods: GET,POST,PUT,PATCH,DELETE
 Access-Control-Allow-Headers: Origin,Accept,Content-Type,X-Requested-With,X-CSRF-Token,X-API-KEY
 Content-Type: application/json; charset=utf-8
-ETag: W/&quot;b0faa883c486da6eaf3220f8c2ae07b8&quot;
+ETag: W/&quot;cf5cba9f1f9c66f9c637eda0dded5c5d&quot;
 Cache-Control: max-age=0, private, must-revalidate
-X-Request-Id: b878b0e4-2327-4761-ad8a-e2674ad1b28d
-X-Runtime: 0.021185
-Content-Length: 246</pre>
+X-Request-Id: 902b5664-8e7c-4d96-b286-6a2271cb6dca
+X-Runtime: 0.043146
+Content-Length: 298</pre>
             <h4>Status</h4>
             <pre class="response status">200 OK</pre>
               <h4>Body</h4>
               <pre class="response body">{
   &quot;neighborhoods&quot;: [
     {
-      &quot;id&quot;: 90,
+      &quot;id&quot;: 9,
       &quot;name&quot;: &quot;foobar&quot;,
       &quot;description&quot;: null,
       &quot;welcome_message&quot;: null,
-      &quot;members_count&quot;: 0,
+      &quot;members_count&quot;: 1,
       &quot;image_url&quot;: null,
       &quot;interests&quot;: [
         &quot;sport&quot;
       ],
-      &quot;members&quot;: [
-
-      ],
       &quot;ethics&quot;: null,
       &quot;past_outings_count&quot;: 0,
       &quot;future_outings_count&quot;: 0,
-      &quot;has_ongoing_outing&quot;: false
+      &quot;has_ongoing_outing&quot;: false,
+      &quot;members&quot;: [
+        {
+          &quot;id&quot;: 103,
+          &quot;display_name&quot;: &quot;John D.&quot;,
+          &quot;avatar_url&quot;: null
+        }
+      ]
     }
   ]
 }</pre>

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Api::V1::UsersController API</title>
+    <title>Api::V1::NeighborhoodsController API</title>
     <meta charset="utf-8">
     <style>
       
@@ -106,13 +106,13 @@ table th, table td {
   </head>
   <body>
     <div class="container">
-      <h1>Api::V1::UsersController API</h1>
+      <h1>Api::V1::NeighborhoodsController API</h1>
 
-        <p class="explanation">Users</p>
+        <p class="explanation">Neighborhoods</p>
 
       <div class="article">
-        <h2>Delete user</h2>
-        <h3>DELETE /api/v1/users/:id</h3>
+        <h2>Create neighborhood</h2>
+        <h3>POST api/v1/neighborhoods</h3>
 
           <h3>Parameters</h3>
           <table class="parameters table table-striped table-bordered table-condensed">
@@ -125,18 +125,58 @@ table th, table td {
             <tbody>
               <tr>
                 <td class="required">
-                    <span class="name">id</span>
-                </td>
-                <td>
-                  <span class="description">My id</span>
-                </td>
-              </tr>
-              <tr>
-                <td class="required">
                     <span class="name">token</span>
                 </td>
                 <td>
                   <span class="description"> token</span>
+                </td>
+              </tr>
+              <tr>
+                <td class="required">
+                    <span class="name">neighborhood[name]</span>
+                </td>
+                <td>
+                  <span class="description">Name</span>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                    <span class="name">neighborhood[ethics]</span>
+                </td>
+                <td>
+                  <span class="description">Ethics</span>
+                </td>
+              </tr>
+              <tr>
+                <td class="required">
+                    <span class="name">neighborhood[latitude]</span>
+                </td>
+                <td>
+                  <span class="description">Latitude</span>
+                </td>
+              </tr>
+              <tr>
+                <td class="required">
+                    <span class="name">neighborhood[longitude]</span>
+                </td>
+                <td>
+                  <span class="description">Longitude</span>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                    <span class="name">neighborhood[interests]</span>
+                </td>
+                <td>
+                  <span class="description">Interests</span>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                    <span class="name">neighborhood[photo_url]</span>
+                </td>
+                <td>
+                  <span class="description">Photo url</span>
                 </td>
               </tr>
             </tbody>
@@ -151,11 +191,11 @@ Host: example.org
 Cookie: </pre>
 
           <h4>Route</h4>
-          <pre class="request route highlight">DELETE /api/v1/users/184</pre>
+          <pre class="request route highlight">POST api/v1/neighborhoods</pre>
 
 
             <h4>Body</h4>
-            <pre class="request body">{"token":"foobar181"}</pre>
+            <pre class="request body">{"token":"foobar79","neighborhood":{"name":"Foot Paris 17è","ethics":null,"latitude":48.86,"longitude":2.35,"interests":["sport"],"photo_url":null}}</pre>
 
 
             <h3>Response</h3>
@@ -170,68 +210,31 @@ Access-Control-Allow-Origin: *
 Access-Control-Allow-Methods: GET,POST,PUT,PATCH,DELETE
 Access-Control-Allow-Headers: Origin,Accept,Content-Type,X-Requested-With,X-CSRF-Token,X-API-KEY
 Content-Type: application/json; charset=utf-8
-ETag: W/&quot;2f46a05c68a7ace3b9a640fa6d95bb66&quot;
+ETag: W/&quot;54c15dfbbe274a6ca2d3e37708bfa668&quot;
 Cache-Control: max-age=0, private, must-revalidate
-X-Request-Id: b34d28cb-fa67-48cc-8efd-ac0b19abd951
-X-Runtime: 0.028182
-Content-Length: 867</pre>
+Set-Cookie: request_method=POST; path=/
+X-Request-Id: 5a67eb01-0525-411a-8189-33070cb04b3e
+X-Runtime: 0.024083
+Content-Length: 202</pre>
             <h4>Status</h4>
-            <pre class="response status">200 OK</pre>
+            <pre class="response status">201 Created</pre>
               <h4>Body</h4>
               <pre class="response body">{
-  &quot;user&quot;: {
-    &quot;id&quot;: 184,
-    &quot;display_name&quot;: &quot;John D.&quot;,
-    &quot;first_name&quot;: &quot;John&quot;,
-    &quot;last_name&quot;: &quot;Doe&quot;,
-    &quot;roles&quot;: [
-
-    ],
-    &quot;about&quot;: null,
-    &quot;avatar_url&quot;: null,
-    &quot;user_type&quot;: &quot;public&quot;,
-    &quot;partner&quot;: null,
-    &quot;engaged&quot;: false,
-    &quot;unread_count&quot;: 0,
-    &quot;permissions&quot;: {
-      &quot;outing&quot;: {
-        &quot;creation&quot;: false
-      }
-    },
+  &quot;neighborhood&quot;: {
+    &quot;id&quot;: 2,
+    &quot;name&quot;: &quot;Foot Paris 17è&quot;,
+    &quot;members_count&quot;: 0,
+    &quot;photo_url&quot;: null,
     &quot;interests&quot;: [
 
     ],
-    &quot;anonymous&quot;: false,
-    &quot;uuid&quot;: &quot;184&quot;,
-    &quot;feature_flags&quot;: {
-      &quot;organization_admin&quot;: false
-    },
-    &quot;token&quot;: &quot;foobar181&quot;,
-    &quot;email&quot;: &quot;user181@mail.com-2022-04-29 12:03:36&quot;,
-    &quot;has_password&quot;: false,
-    &quot;firebase_properties&quot;: {
-      &quot;ActionZoneDep&quot;: &quot;not_set&quot;,
-      &quot;ActionZoneCP&quot;: &quot;not_set&quot;,
-      &quot;Goal&quot;: &quot;no_set&quot;,
-      &quot;Interests&quot;: &quot;none&quot;
-    },
-    &quot;goal&quot;: null,
-    &quot;phone&quot;: &quot;+33600000180-2022-04-29 12:03:36&quot;,
-    &quot;travel_distance&quot;: 10,
-    &quot;birthday&quot;: null,
-    &quot;stats&quot;: {
-      &quot;tour_count&quot;: 0,
-      &quot;encounter_count&quot;: 0,
-      &quot;entourage_count&quot;: 0,
-      &quot;actions_count&quot;: 0,
-      &quot;ask_for_help_creation_count&quot;: 0,
-      &quot;contribution_creation_count&quot;: 0,
-      &quot;events_count&quot;: 0,
-      &quot;good_waves_participation&quot;: false
-    },
-    &quot;organization&quot;: null,
-    &quot;address&quot;: null,
-    &quot;address_2&quot;: null
+    &quot;members&quot;: [
+
+    ],
+    &quot;ethics&quot;: null,
+    &quot;past_outings_count&quot;: 0,
+    &quot;future_outings_count&quot;: 0,
+    &quot;has_ongoing_outing&quot;: false
   }
 }</pre>
       </div>

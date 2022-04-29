@@ -11,7 +11,7 @@ describe HomeServices::Headline do
     it 'should find a pin' do
       expect(Entourage).to receive(:find_by).with(id: pin.id)
 
-      HomeServices::Headline.new(user: user, latitude: nil, longitude: nil).find_pin
+      subject.find_pin
     end
 
     it 'should not find a pin without valid postal_code' do
@@ -19,7 +19,7 @@ describe HomeServices::Headline do
 
       expect(Entourage).not_to receive(:find_by)
       expect(
-        HomeServices::Headline.new(user: user, latitude: nil, longitude: nil).find_pin
+        subject.find_pin
       ).to be_nil
     end
   end

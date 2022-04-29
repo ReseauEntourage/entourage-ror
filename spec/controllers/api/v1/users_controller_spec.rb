@@ -434,10 +434,17 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
         end
       end
 
+      context 'interests as a string' do
+        context 'good value' do
+          before { patch 'update', params: { token: user.token, user: { interests: "sport, culture" } } }
+          it { expect(result['user']).to include('interests' => ['culture', 'sport']) }
+        end
+      end
+
       context 'interests as an array' do
-        context 'good value but other_interest is missing' do
+        context 'good value when other_interest is missing is also valid' do
           before { patch 'update', params: { token: user.token, user: { interests: ["sport", "culture", "other"] } } }
-          it { expect(response.status).to eq(400) }
+          it { expect(result['user']).to include('interests' => ['culture', 'sport', 'other']) }
         end
       end
 
@@ -1033,6 +1040,15 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
       before {
         expect_any_instance_of(SlackServices::SignalUser).to receive(:notify)
         post 'report', params: { token: reporting_user.token, id: reported_user.id, user_report: { message: 'message' } }
+      }
+
+      it { expect(response.status).to eq 201 }
+    end
+
+    context "valid params with signals but no message" do
+      before {
+        expect_any_instance_of(SlackServices::SignalUser).to receive(:notify)
+        post 'report', params: { token: reporting_user.token, id: reported_user.id, user_report: { message: nil, signals: ['spam'] } }
       }
 
       it { expect(response.status).to eq 201 }

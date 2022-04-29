@@ -151,7 +151,7 @@ Host: example.org
 Cookie: </pre>
 
           <h4>Route</h4>
-          <pre class="request route highlight">GET api/v1/neighborhoods/91?token=foobar104</pre>
+          <pre class="request route highlight">GET api/v1/neighborhoods/10?token=foobar104</pre>
 
             <h4>Query Parameters</h4>
             <pre class="request query_parameters highlight">token: foobar104</pre>
@@ -170,32 +170,36 @@ Access-Control-Allow-Origin: *
 Access-Control-Allow-Methods: GET,POST,PUT,PATCH,DELETE
 Access-Control-Allow-Headers: Origin,Accept,Content-Type,X-Requested-With,X-CSRF-Token,X-API-KEY
 Content-Type: application/json; charset=utf-8
-ETag: W/&quot;35a683a496e34095384ef2f7381c99a7&quot;
+ETag: W/&quot;889bfba2e8f308b4ed71a24735d372d4&quot;
 Cache-Control: max-age=0, private, must-revalidate
-X-Request-Id: b69092d5-e79b-4f99-a0e6-d3dbcc7dc1de
-X-Runtime: 0.012651
-Content-Length: 252</pre>
+X-Request-Id: 30bb4cfe-1451-4a7a-b4d7-c3204a319a1d
+X-Runtime: 0.019935
+Content-Length: 305</pre>
             <h4>Status</h4>
             <pre class="response status">200 OK</pre>
               <h4>Body</h4>
               <pre class="response body">{
   &quot;neighborhood&quot;: {
-    &quot;id&quot;: 91,
+    &quot;id&quot;: 10,
     &quot;name&quot;: &quot;Foot Paris 17è&quot;,
     &quot;description&quot;: null,
     &quot;welcome_message&quot;: null,
-    &quot;members_count&quot;: 0,
+    &quot;members_count&quot;: 1,
     &quot;image_url&quot;: null,
     &quot;interests&quot;: [
       &quot;sport&quot;
     ],
-    &quot;members&quot;: [
-
-    ],
     &quot;ethics&quot;: null,
     &quot;past_outings_count&quot;: 0,
     &quot;future_outings_count&quot;: 0,
-    &quot;has_ongoing_outing&quot;: false
+    &quot;has_ongoing_outing&quot;: false,
+    &quot;members&quot;: [
+      {
+        &quot;id&quot;: 105,
+        &quot;display_name&quot;: &quot;John D.&quot;,
+        &quot;avatar_url&quot;: null
+      }
+    ]
   }
 }</pre>
       </div>

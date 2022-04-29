@@ -219,7 +219,7 @@ Cookie: </pre>
 
 
             <h4>Body</h4>
-            <pre class="request body">{"token":"foobar105","neighborhood":{"name":"Foot Paris 17è","ethics":null,"latitude":48.86,"longitude":2.35,"interests":["sport"],"neighborhood_image_id":10}}</pre>
+            <pre class="request body">{"token":"foobar105","neighborhood":{"name":"Foot Paris 17è","ethics":null,"latitude":48.86,"longitude":2.35,"interests":["sport"],"neighborhood_image_id":3}}</pre>
 
 
             <h3>Response</h3>
@@ -234,32 +234,36 @@ Access-Control-Allow-Origin: *
 Access-Control-Allow-Methods: GET,POST,PUT,PATCH,DELETE
 Access-Control-Allow-Headers: Origin,Accept,Content-Type,X-Requested-With,X-CSRF-Token,X-API-KEY
 Content-Type: application/json; charset=utf-8
-ETag: W/&quot;091733491854c49938b0bf8884c50f62&quot;
+ETag: W/&quot;c892860e4496026f9def49bcde67d09a&quot;
 Cache-Control: max-age=0, private, must-revalidate
-X-Request-Id: 67e10dad-e0e3-46b3-bab3-1befc5a944d1
-X-Runtime: 0.042749
-Content-Length: 577</pre>
+X-Request-Id: 10ec20c6-4fef-4e67-816a-b1e6a101ef98
+X-Runtime: 0.039609
+Content-Length: 630</pre>
             <h4>Status</h4>
             <pre class="response status">201 Created</pre>
               <h4>Body</h4>
               <pre class="response body">{
   &quot;neighborhood&quot;: {
-    &quot;id&quot;: 92,
+    &quot;id&quot;: 11,
     &quot;name&quot;: &quot;Foot Paris 17è&quot;,
     &quot;description&quot;: null,
     &quot;welcome_message&quot;: null,
-    &quot;members_count&quot;: 0,
-    &quot;image_url&quot;: &quot;https://foobar.s3.eu-west-1.amazonaws.com/foobar_url?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=foo%2F20220425%2Feu-west-1%2Fs3%2Faws4_request&amp;X-Amz-Date=20220425T160054Z&amp;X-Amz-Expires=3600&amp;X-Amz-SignedHeaders=host&amp;X-Amz-Signature=aa9368cbd49eaec9eb39b40ed0969d2896eb5824552a6786383ec37fad5f83c9&quot;,
+    &quot;members_count&quot;: 1,
+    &quot;image_url&quot;: &quot;https://foobar.s3.eu-west-1.amazonaws.com/foobar_url?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=foo%2F20220429%2Feu-west-1%2Fs3%2Faws4_request&amp;X-Amz-Date=20220429T100334Z&amp;X-Amz-Expires=3600&amp;X-Amz-SignedHeaders=host&amp;X-Amz-Signature=e8d86d59821ade7dfb795935da41ffd9d6781ff5bc01815a2e6ce25533c07edb&quot;,
     &quot;interests&quot;: [
       &quot;sport&quot;
-    ],
-    &quot;members&quot;: [
-
     ],
     &quot;ethics&quot;: null,
     &quot;past_outings_count&quot;: 0,
     &quot;future_outings_count&quot;: 0,
-    &quot;has_ongoing_outing&quot;: false
+    &quot;has_ongoing_outing&quot;: false,
+    &quot;members&quot;: [
+      {
+        &quot;id&quot;: 107,
+        &quot;display_name&quot;: &quot;John D.&quot;,
+        &quot;avatar_url&quot;: null
+      }
+    ]
   }
 }</pre>
       </div>
