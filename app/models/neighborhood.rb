@@ -27,10 +27,21 @@ class Neighborhood < ApplicationRecord
   # valides :image_url # should be 390x258 (2/3)
   attr_accessor :neighborhood_image_id
 
+  scope :inside_perimeter, -> (latitude, longitude, travel_distance) {
+    if latitude && longitude
+      where("#{PostgisHelper.distance_from(latitude, longitude)} < ?", travel_distance)
+    end
+  }
   scope :order_by_distance_from, -> (latitude, longitude) {
     if latitude && longitude
       order(PostgisHelper.distance_from(latitude, longitude))
     end
+  }
+  scope :order_by_interests_matching, -> (interest_list) {
+    # @todo
+  }
+  scope :order_by_activity, -> {
+    # @todo
   }
   scope :like, -> (search) {
     return unless search.present?

@@ -1,10 +1,11 @@
 module NeighborhoodServices
   class Finder
     def self.search user:, q: nil
-      neighborhoods = Neighborhood.order_by_distance_from(user.latitude, user.longitude)
-      neighborhoods = neighborhoods.like(q) if q.present?
-
-      neighborhoods
+      Neighborhood.like(q)
+        .inside_perimeter(user.latitude, user.longitude, user.travel_distance)
+        .order_by_interests_matching(user.interest_list)
+        .order_by_activity
+        .order_by_distance_from(user.latitude, user.longitude)
     end
   end
 end
