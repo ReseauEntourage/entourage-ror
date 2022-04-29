@@ -13,9 +13,10 @@
 ActiveRecord::Schema.define(version: 2022_04_20_151701) do
 
   # These are extensions that must be enabled in order to support this database
+  enable_extension "pg_trgm"
+  enable_extension "pgcrypto"
   enable_extension "plpgsql"
   enable_extension "postgis"
-  enable_extension "pgcrypto"
   enable_extension "unaccent"
 
   create_table "active_admin_comments", id: :serial, force: :cascade do |t|
@@ -424,12 +425,21 @@ ActiveRecord::Schema.define(version: 2022_04_20_151701) do
     t.float "longitude", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "feed_updated_at"
     t.string "welcome_message"
     t.string "other_interest"
     t.index ["feed_updated_at"], name: "index_neighborhoods_on_feed_updated_at"
-    t.index ["latitude", "longitude"], name: "neighborhoods_coordinates"
     t.index ["name"], name: "index_neighborhoods_on_name"
     t.index ["user_id"], name: "index_neighborhoods_on_user_id"
+  end
+
+  create_table "neighborhoods_entourages", force: :cascade do |t|
+    t.bigint "neighborhood_id"
+    t.bigint "entourage_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["entourage_id"], name: "index_neighborhoods_entourages_on_entourage_id"
+    t.index ["neighborhood_id"], name: "index_neighborhoods_entourages_on_neighborhood_id"
   end
 
   create_table "newsletter_subscriptions", id: :serial, force: :cascade do |t|
@@ -437,6 +447,23 @@ ActiveRecord::Schema.define(version: 2022_04_20_151701) do
     t.boolean "active"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "old_atd_synchronizations", id: :serial, force: :cascade do |t|
+    t.string "filename", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["filename"], name: "index_old_atd_synchronizations_on_filename", unique: true
+  end
+
+  create_table "old_atd_users", id: :serial, force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "atd_id", null: false
+    t.string "tel_hash"
+    t.string "mail_hash"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["atd_id", "user_id"], name: "index_old_atd_users_on_atd_id_and_user_id", unique: true
   end
 
   create_table "options", force: :cascade do |t|
@@ -860,6 +887,7 @@ ActiveRecord::Schema.define(version: 2022_04_20_151701) do
     t.string "partner_role_title"
     t.uuid "uuid", default: -> { "gen_random_uuid()" }, null: false
     t.string "goal"
+    t.jsonb "interests_old", default: [], null: false
     t.string "encrypted_admin_password"
     t.string "reset_admin_password_token"
     t.datetime "reset_admin_password_sent_at"
