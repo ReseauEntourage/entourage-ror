@@ -7,7 +7,7 @@ module Api
         render json: NeighborhoodServices::Finder.search(
           user: current_user,
           q: params[:q]
-        ).per(per).page(page), root: :neighborhoods, each_serializer: ::V1::NeighborhoodSerializer
+        ).page(page).per(per), root: :neighborhoods, each_serializer: ::V1::NeighborhoodSerializer
       end
 
       def show
@@ -54,7 +54,7 @@ module Api
       end
 
       def per
-        params[:per] || 10
+        params[:per] || 25
       end
     end
   end
