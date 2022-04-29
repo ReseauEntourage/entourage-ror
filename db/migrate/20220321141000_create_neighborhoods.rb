@@ -23,7 +23,6 @@ class CreateNeighborhoods < ActiveRecord::Migration[5.2]
   def down
     remove_index :neighborhoods, :user_id
     remove_index :neighborhoods, :name
-    # remove_index :neighborhoods, :neighborhoods_coordinates
     remove_index :neighborhoods, :feed_updated_at
 
     drop_table :neighborhoods
