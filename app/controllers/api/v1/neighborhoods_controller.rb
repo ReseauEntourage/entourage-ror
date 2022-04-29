@@ -4,7 +4,10 @@ module Api
       before_action :set_neighborhood, only: [:show, :update, :destroy]
 
       def index
-        render json: NeighborhoodServices::Finder.search(current_user, params[:q]), root: :neighborhoods, each_serializer: ::V1::NeighborhoodSerializer
+        render json: NeighborhoodServices::Finder.search(
+          user: current_user,
+          q: params[:q]
+        ).per(per).page(page), root: :neighborhoods, each_serializer: ::V1::NeighborhoodSerializer
       end
 
       def show
@@ -44,6 +47,14 @@ module Api
 
       def neighborhood_params
         params.require(:neighborhood).permit(:name, :description, :welcome_message, :ethics, :latitude, :longitude, :neighborhood_image_id, :other_interest, interests: [])
+      end
+
+      def page
+        params[:page] || 1
+      end
+
+      def per
+        params[:per] || 10
       end
     end
   end

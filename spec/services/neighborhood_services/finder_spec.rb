@@ -7,7 +7,7 @@ describe NeighborhoodServices::Finder do
 
   let(:address) { FactoryBot.create(:address, place_name: 'address', latitude: latitude, longitude: longitude) }
 
-  let(:response) { NeighborhoodServices::Finder.search(user, q).map(&:name) }
+  let(:response) { NeighborhoodServices::Finder.search(user: user, q: q).map(&:name) }
 
 
   describe "search" do
