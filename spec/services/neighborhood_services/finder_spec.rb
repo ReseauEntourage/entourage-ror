@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe NeighborhoodServices::Finder do
-  let(:user) { FactoryBot.create(:public_user, address: address) }
+  let(:user) { FactoryBot.create(:public_user, address: address, travel_distance: 200) }
   let!(:neighborhood_0) { FactoryBot.create(:neighborhood, latitude: 0, longitude: 0, name: "foot", description: "volley") }
   let!(:neighborhood_1) { FactoryBot.create(:neighborhood, latitude: 1, longitude: 1, name: "ball", description: "barre") }
 
