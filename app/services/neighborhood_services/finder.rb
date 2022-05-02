@@ -1,7 +1,7 @@
 module NeighborhoodServices
   class Finder
     def self.search user:, q: nil
-      Neighborhood.like(q)
+      Neighborhood.like(q).not_joined_by(user)
         .inside_perimeter(user.latitude, user.longitude, user.travel_distance)
         .order_by_interests_matching(user.interest_list)
         .order_by_activity

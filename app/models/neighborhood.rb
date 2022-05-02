@@ -51,6 +51,14 @@ class Neighborhood < ApplicationRecord
       description: "%#{search.strip}%"
     })
   }
+  scope :joined_by, -> (user) {
+    joins(:join_requests).where(join_requests: {
+      user: user, status: JoinRequest::ACCEPTED_STATUS
+    })
+  }
+  scope :not_joined_by, -> (user) {
+    where.not(id: Neighborhood.joined_by(user))
+  }
 
   # behaviors
 
