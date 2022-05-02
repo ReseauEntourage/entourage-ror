@@ -4,6 +4,7 @@ module Api
       class UsersController < Api::V1::BaseController
         before_action :set_neighborhood, only: [:index, :create, :destroy]
         before_action :set_join_request, only: [:create, :destroy]
+        before_action :authorised_user?, only: [:destroy]
 
         def index
           # neighborhood members
@@ -30,7 +31,7 @@ module Api
         def destroy
           return render json: {
             message: 'Could not find neighborhood participation for user'
-          }, status: :bad_request unless @join_request
+          }, status: :unauthorized unless @join_request
 
           # remove the join of a user in a neighborhood
           @join_request.update!(status: :cancelled)
@@ -46,6 +47,12 @@ module Api
 
         def set_join_request
           @join_request = JoinRequest.where(joinable: @neighborhood, user: current_user).first
+        end
+
+        def authorised_user?
+          unless current_user == User.find(params[:id])
+            render json: { message: 'unauthorized' }, status: :unauthorized
+          end
         end
       end
     end
