@@ -109,6 +109,11 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
           "ethics" => "new ethics",
           "image_url" => "path/to/foobar_url",
           "interests" => ["jeux", "nature", "other"],
+          "user" => {
+            "id" => neighborhood.user_id,
+            "display_name" => "John D.",
+            "avatar_url" => nil
+          },
           "members" => [{
             "id" => user.id,
             "display_name" => "John D.",
@@ -145,6 +150,11 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
           "members_count" => 1,
           "image_url" => nil,
           "interests" => ["sport"],
+          "user" => {
+            "id" => neighborhood.user_id,
+            "display_name" => "John D.",
+            "avatar_url" => nil
+          },
           "members" => [{
             "id" => neighborhood.user.id,
             "display_name" => "John D.",
