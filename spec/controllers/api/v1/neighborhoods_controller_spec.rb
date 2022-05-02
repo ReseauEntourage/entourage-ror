@@ -168,4 +168,28 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
       })}
     end
   end
+
+  context 'joined' do
+    let(:joined) { create :neighborhood }
+    let(:not_joined) { create :neighborhood }
+
+    let!(:join_request) { create(:join_request, user: user, joinable: joined, status: :accepted) }
+
+    let(:result) { JSON.parse(response.body) }
+
+    describe 'not authorized' do
+      before { get :joined }
+
+      it { expect(response.status).to eq 401 }
+    end
+
+    describe 'authorized' do
+      before { get :joined, params: { token: user.token } }
+
+      it { expect(response.status).to eq 200 }
+      it { expect(result).to have_key('neighborhoods') }
+      it { expect(result['neighborhoods'].count).to eq(1) }
+      it { expect(result['neighborhoods'][0]['id']).to eq(joined.id) }
+    end
+  end
 end
