@@ -112,7 +112,8 @@ describe Api::V1::Neighborhoods::UsersController do
 
     context "signed in" do
       context "quit neighborhood" do
-        let!(:my_join_request) { create(:join_request, user: user, joinable: neighborhood, status: "accepted") }
+        let!(:my_join_request) { create(:join_request, user: user, joinable: neighborhood, status: :accepted) }
+
         before { delete :destroy, params: { neighborhood_id: neighborhood.to_param, id: user.id, token: user.token } }
         it { expect(response.status).to eq(200) }
         it { expect(expect(my_join_request.reload.status).to eq('cancelled')) }
@@ -133,10 +134,21 @@ describe Api::V1::Neighborhoods::UsersController do
         })}
       end
 
+      context "can not quit another member" do
+        let(:member) { FactoryBot.create(:public_user) }
+        let!(:my_join_request) { create(:join_request, user: user, joinable: neighborhood, status: :accepted) }
+        let!(:member_join_request) { create(:join_request, user: member, joinable: neighborhood, status: :accepted) }
+
+        before { delete :destroy, params: { neighborhood_id: neighborhood.to_param, id: member.id, token: user.token } }
+
+        it { expect(response.status).to eq(401) }
+        it { expect(result).to have_key('message') }
+      end
+
       context "user didn't request to join neighborhood" do
         before { delete :destroy, params: { neighborhood_id: neighborhood.to_param, id: user.id, token: user.token } }
 
-        it { expect(response.status).to eq(400) }
+        it { expect(response.status).to eq(401) }
         it { expect(result).to have_key('message') }
       end
     end
