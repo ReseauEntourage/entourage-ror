@@ -40,9 +40,7 @@ module Api
       end
 
       def joined
-        render json: Neighborhood.where(join_requests: {
-          user: current_user, status: JoinRequest::ACCEPTED_STATUS
-        }).page(page).per(per), root: :neighborhoods, each_serializer: ::V1::NeighborhoodSerializer
+        render json: Neighborhood.joined_by(current_user).page(page).per(per), root: :neighborhoods, each_serializer: ::V1::NeighborhoodSerializer
       end
 
       private
