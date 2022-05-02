@@ -21,6 +21,25 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
       it { expect(response.status).to eq 200 }
       it { expect(result).to have_key('neighborhoods') }
     end
+
+    describe 'joined' do
+      let!(:join_request) { create(:join_request, user: user, joinable: neighborhood, status: :accepted) }
+
+      before { get :index, params: { token: user.token } }
+
+      it { expect(response.status).to eq 200 }
+      it { expect(result).to have_key('neighborhoods') }
+      it { expect(result['neighborhoods'].count).to eq(0) }
+    end
+
+    describe 'not joined' do
+      before { get :index, params: { token: user.token } }
+
+      it { expect(response.status).to eq 200 }
+      it { expect(result).to have_key('neighborhoods') }
+      it { expect(result['neighborhoods'].count).to eq(1) }
+      it { expect(result['neighborhoods'][0]['id']).to eq(neighborhood.id) }
+    end
   end
 
   context 'create' do
