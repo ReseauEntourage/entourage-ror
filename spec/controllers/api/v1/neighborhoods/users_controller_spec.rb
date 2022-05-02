@@ -19,7 +19,7 @@ describe Api::V1::Neighborhoods::UsersController do
     end
 
     context "signed in" do
-      let!(:join_request) { create(:join_request, user: user, joinable: neighborhood, status: "accepted") }
+      let!(:join_request) { create(:join_request, user: user, joinable: neighborhood, status: :accepted) }
       let(:creator) { neighborhood.user }
 
       before { get :index, params: { neighborhood_id: neighborhood.to_param, token: user.token } }
