@@ -109,6 +109,11 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
           "ethics" => "new ethics",
           "image_url" => "path/to/foobar_url",
           "interests" => ["jeux", "nature", "other"],
+          "user" => {
+            "id" => neighborhood.user_id,
+            "display_name" => "John D.",
+            "avatar_url" => nil
+          },
           "members" => [{
             "id" => user.id,
             "display_name" => "John D.",
@@ -145,6 +150,11 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
           "members_count" => 1,
           "image_url" => nil,
           "interests" => ["sport"],
+          "user" => {
+            "id" => neighborhood.user_id,
+            "display_name" => "John D.",
+            "avatar_url" => nil
+          },
           "members" => [{
             "id" => neighborhood.user.id,
             "display_name" => "John D.",
@@ -180,6 +190,30 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
         post 'report', params: { token: user.token, id: neighborhood.id, report: { message: '' } }
       }
       it { expect(response.status).to eq 400 }
+    end
+  end
+
+  context 'joined' do
+    let(:joined) { create :neighborhood }
+    let(:not_joined) { create :neighborhood }
+
+    let!(:join_request) { create(:join_request, user: user, joinable: joined, status: :accepted) }
+
+    let(:result) { JSON.parse(response.body) }
+
+    describe 'not authorized' do
+      before { get :joined }
+
+      it { expect(response.status).to eq 401 }
+    end
+
+    describe 'authorized' do
+      before { get :joined, params: { token: user.token } }
+
+      it { expect(response.status).to eq 200 }
+      it { expect(result).to have_key('neighborhoods') }
+      it { expect(result['neighborhoods'].count).to eq(1) }
+      it { expect(result['neighborhoods'][0]['id']).to eq(joined.id) }
     end
   end
 end
