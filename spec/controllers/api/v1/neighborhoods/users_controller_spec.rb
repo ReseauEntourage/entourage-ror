@@ -92,7 +92,7 @@ describe Api::V1::Neighborhoods::UsersController do
             "role" => "member",
             "group_role" => join_request.role,
             "community_roles" => [],
-            "status" => join_request.status,
+            "status" => "accepted",
             "message" => nil,
             "requested_at" => JoinRequest.last.created_at.iso8601(3),
             "avatar_url" => nil,
