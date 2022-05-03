@@ -148,6 +148,11 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
             "display_name" => "John D.",
             "avatar_url" => nil
           },
+          "address" => {
+            "latitude" => 48.86,
+            "longitude" => 2.35,
+            "display_address" => ""
+          },
           "members" => [{
             "id" => user.id,
             "display_name" => "John D.",
@@ -188,6 +193,11 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
             "id" => neighborhood.user_id,
             "display_name" => "John D.",
             "avatar_url" => nil
+          },
+          "address" => {
+            "latitude" => 48.86,
+            "longitude" => 2.35,
+            "display_address" => ""
           },
           "members" => [{
             "id" => neighborhood.user.id,
