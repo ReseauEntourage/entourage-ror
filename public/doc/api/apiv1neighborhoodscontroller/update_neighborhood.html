@@ -199,7 +199,7 @@ Host: example.org
 Cookie: </pre>
 
           <h4>Route</h4>
-          <pre class="request route highlight">PATCH api/v1/neighborhoods/12</pre>
+          <pre class="request route highlight">PATCH api/v1/neighborhoods/376</pre>
 
 
             <h4>Body</h4>
@@ -218,17 +218,17 @@ Access-Control-Allow-Origin: *
 Access-Control-Allow-Methods: GET,POST,PUT,PATCH,DELETE
 Access-Control-Allow-Headers: Origin,Accept,Content-Type,X-Requested-With,X-CSRF-Token,X-API-KEY
 Content-Type: application/json; charset=utf-8
-ETag: W/&quot;74ae21f69103cc735290ed372c5fa065&quot;
+ETag: W/&quot;9dd9774943c7179ff6ebbabf500c7a83&quot;
 Cache-Control: max-age=0, private, must-revalidate
-X-Request-Id: bfa699a5-d7ae-4581-8f01-8d41118afb14
-X-Runtime: 0.028624
-Content-Length: 306</pre>
+X-Request-Id: 77924a22-d066-4420-bc07-b55221b6b5af
+X-Runtime: 0.019367
+Content-Length: 435</pre>
             <h4>Status</h4>
             <pre class="response status">200 OK</pre>
               <h4>Body</h4>
               <pre class="response body">{
   &quot;neighborhood&quot;: {
-    &quot;id&quot;: 12,
+    &quot;id&quot;: 376,
     &quot;name&quot;: &quot;new name&quot;,
     &quot;description&quot;: null,
     &quot;welcome_message&quot;: null,
@@ -241,9 +241,19 @@ Content-Length: 306</pre>
     &quot;past_outings_count&quot;: 0,
     &quot;future_outings_count&quot;: 0,
     &quot;has_ongoing_outing&quot;: false,
+    &quot;address&quot;: {
+      &quot;latitude&quot;: 48.86,
+      &quot;longitude&quot;: 2.35,
+      &quot;display_address&quot;: &quot;&quot;
+    },
+    &quot;user&quot;: {
+      &quot;id&quot;: 803,
+      &quot;display_name&quot;: &quot;John D.&quot;,
+      &quot;avatar_url&quot;: null
+    },
     &quot;members&quot;: [
       {
-        &quot;id&quot;: 109,
+        &quot;id&quot;: 803,
         &quot;display_name&quot;: &quot;John D.&quot;,
         &quot;avatar_url&quot;: null
       }

@@ -151,7 +151,7 @@ Host: example.org
 Cookie: </pre>
 
           <h4>Route</h4>
-          <pre class="request route highlight">GET api/v1/neighborhoods/10?token=foobar104</pre>
+          <pre class="request route highlight">GET api/v1/neighborhoods/374?token=foobar104</pre>
 
             <h4>Query Parameters</h4>
             <pre class="request query_parameters highlight">token: foobar104</pre>
@@ -170,17 +170,17 @@ Access-Control-Allow-Origin: *
 Access-Control-Allow-Methods: GET,POST,PUT,PATCH,DELETE
 Access-Control-Allow-Headers: Origin,Accept,Content-Type,X-Requested-With,X-CSRF-Token,X-API-KEY
 Content-Type: application/json; charset=utf-8
-ETag: W/&quot;889bfba2e8f308b4ed71a24735d372d4&quot;
+ETag: W/&quot;f1bafb68ddd8ac57d0fa5ba68bcd38ac&quot;
 Cache-Control: max-age=0, private, must-revalidate
-X-Request-Id: 30bb4cfe-1451-4a7a-b4d7-c3204a319a1d
-X-Runtime: 0.019935
-Content-Length: 305</pre>
+X-Request-Id: 1248563e-a623-4c53-a0eb-4c360d7632da
+X-Runtime: 0.013490
+Content-Length: 434</pre>
             <h4>Status</h4>
             <pre class="response status">200 OK</pre>
               <h4>Body</h4>
               <pre class="response body">{
   &quot;neighborhood&quot;: {
-    &quot;id&quot;: 10,
+    &quot;id&quot;: 374,
     &quot;name&quot;: &quot;Foot Paris 17è&quot;,
     &quot;description&quot;: null,
     &quot;welcome_message&quot;: null,
@@ -193,9 +193,19 @@ Content-Length: 305</pre>
     &quot;past_outings_count&quot;: 0,
     &quot;future_outings_count&quot;: 0,
     &quot;has_ongoing_outing&quot;: false,
+    &quot;address&quot;: {
+      &quot;latitude&quot;: 48.86,
+      &quot;longitude&quot;: 2.35,
+      &quot;display_address&quot;: &quot;&quot;
+    },
+    &quot;user&quot;: {
+      &quot;id&quot;: 799,
+      &quot;display_name&quot;: &quot;John D.&quot;,
+      &quot;avatar_url&quot;: null
+    },
     &quot;members&quot;: [
       {
-        &quot;id&quot;: 105,
+        &quot;id&quot;: 799,
         &quot;display_name&quot;: &quot;John D.&quot;,
         &quot;avatar_url&quot;: null
       }

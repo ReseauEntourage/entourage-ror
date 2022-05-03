@@ -167,7 +167,7 @@ Host: example.org
 Cookie: </pre>
 
           <h4>Route</h4>
-          <pre class="request route highlight">GET /api/v1/users/170/neighborhoods?token=foobar169</pre>
+          <pre class="request route highlight">GET /api/v1/users/864/neighborhoods?token=foobar169</pre>
 
             <h4>Query Parameters</h4>
             <pre class="request query_parameters highlight">token: foobar169</pre>
@@ -186,18 +186,18 @@ Access-Control-Allow-Origin: *
 Access-Control-Allow-Methods: GET,POST,PUT,PATCH,DELETE
 Access-Control-Allow-Headers: Origin,Accept,Content-Type,X-Requested-With,X-CSRF-Token,X-API-KEY
 Content-Type: application/json; charset=utf-8
-ETag: W/&quot;c0c78f49f7df62851258bda048e129f1&quot;
+ETag: W/&quot;43e6ab05790f6beff5988d34dd531310&quot;
 Cache-Control: max-age=0, private, must-revalidate
-X-Request-Id: ccd6f7eb-6861-4912-9b35-8125e615b877
-X-Runtime: 0.017215
-Content-Length: 308</pre>
+X-Request-Id: 77ed19d1-9cc0-4ef8-b060-8913ca790468
+X-Runtime: 0.016450
+Content-Length: 437</pre>
             <h4>Status</h4>
             <pre class="response status">200 OK</pre>
               <h4>Body</h4>
               <pre class="response body">{
   &quot;neighborhoods&quot;: [
     {
-      &quot;id&quot;: 14,
+      &quot;id&quot;: 378,
       &quot;name&quot;: &quot;Foot Paris 17è&quot;,
       &quot;description&quot;: null,
       &quot;welcome_message&quot;: null,
@@ -210,9 +210,19 @@ Content-Length: 308</pre>
       &quot;past_outings_count&quot;: 0,
       &quot;future_outings_count&quot;: 0,
       &quot;has_ongoing_outing&quot;: false,
+      &quot;address&quot;: {
+        &quot;latitude&quot;: 48.86,
+        &quot;longitude&quot;: 2.35,
+        &quot;display_address&quot;: &quot;&quot;
+      },
+      &quot;user&quot;: {
+        &quot;id&quot;: 864,
+        &quot;display_name&quot;: &quot;John D.&quot;,
+        &quot;avatar_url&quot;: null
+      },
       &quot;members&quot;: [
         {
-          &quot;id&quot;: 170,
+          &quot;id&quot;: 864,
           &quot;display_name&quot;: &quot;John D.&quot;,
           &quot;avatar_url&quot;: null
         }
