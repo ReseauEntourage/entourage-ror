@@ -58,6 +58,7 @@ resource Api::V1::NeighborhoodsController do
       parameter :interests, "Interests", required: false
       parameter :other_interest, "Other interest", required: false
       parameter :neighborhood_image_id, "Neighborhood image id", required: false
+      parameter :google_place_id, "Google place id", required: false
     end
 
     let(:neighborhood) { build :neighborhood }
@@ -72,9 +73,21 @@ resource Api::V1::NeighborhoodsController do
         latitude: neighborhood.latitude,
         longitude: neighborhood.longitude,
         interests: neighborhood.interest_list,
-        neighborhood_image_id: neighborhood_image.id
+        neighborhood_image_id: neighborhood_image.id,
+        google_place_id: 'ChIJQWDurldu5kcRmj2mNTjxtxE'
       }
     }.to_json }
+
+    before { UserServices::AddressService.stub(:fetch_google_place_details).and_return(
+      {
+        place_name: '174, rue Championnet',
+        latitude: 48.86,
+        longitude: 2.35,
+        postal_code: '75017',
+        country: 'FR',
+        google_place_id: 'ChIJQWDurldu5kcRmj2mNTjxtxE',
+      }
+    )}
 
     context '201' do
       example_request 'Create neighborhood' do
