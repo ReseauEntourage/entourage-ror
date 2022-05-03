@@ -49,9 +49,21 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
         ethics: neighborhood.ethics,
         latitude: neighborhood.latitude,
         longitude: neighborhood.longitude,
-        interests: neighborhood.interest_list
+        interests: neighborhood.interest_list,
+        google_place_id: 'ChIJQWDurldu5kcRmj2mNTjxtxE'
     } }
     let(:request) { post :create, params: { token: user.token, neighborhood: fields, format: :json } }
+
+    before { UserServices::AddressService.stub(:fetch_google_place_details).and_return(
+      {
+        place_name: '174, rue Championnet',
+        latitude: 48.86,
+        longitude: 2.35,
+        postal_code: '75017',
+        country: 'FR',
+        google_place_id: 'ChIJQWDurldu5kcRmj2mNTjxtxE',
+      }
+    )}
 
     describe 'not authorized' do
       before { post :create }
@@ -71,6 +83,9 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
       it { expect(subject.longitude).to eq neighborhood.longitude }
       it { expect(result).to have_key("neighborhood") }
       it { expect(result['neighborhood']['name']).to eq("Foot Paris 17è") }
+      it { expect(result['neighborhood']['address']['display_address']).to eq("174, rue Championnet, 75017") }
+      it { expect(result['neighborhood']['address']['latitude']).to eq(48.86) }
+      it { expect(result['neighborhood']['address']['longitude']).to eq(2.35) }
     end
 
     describe 'Neighborhood and JoinRequest are created on success' do
@@ -133,6 +148,11 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
             "display_name" => "John D.",
             "avatar_url" => nil
           },
+          "address" => {
+            "latitude" => 48.86,
+            "longitude" => 2.35,
+            "display_address" => ""
+          },
           "members" => [{
             "id" => user.id,
             "display_name" => "John D.",
@@ -173,6 +193,11 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
             "id" => neighborhood.user_id,
             "display_name" => "John D.",
             "avatar_url" => nil
+          },
+          "address" => {
+            "latitude" => 48.86,
+            "longitude" => 2.35,
+            "display_address" => ""
           },
           "members" => [{
             "id" => neighborhood.user.id,
