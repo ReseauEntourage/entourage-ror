@@ -13,17 +13,21 @@ module Api
 
         def create
           # join a neighborhood
+          return render json: @join_request, root: "user", status: 201, serializer: ::V1::JoinRequestSerializer, scope: {
+            user: current_user
+          } if @join_request.present? && @join_request.accepted?
+
           if @join_request.present?
-            return render json: @join_request, root: "user", status: 201, serializer: ::V1::JoinRequestSerializer, scope: { user: current_user }
+            @join_request.status = :accepted
+          else
+            @join_request = JoinRequest.new(joinable: @neighborhood, user: current_user, distance: params[:distance], role: :member, status: :accepted)
           end
 
-          join_request = JoinRequest.new(joinable: @neighborhood, user: current_user, distance: params[:distance], role: :member, status: :accepted)
-
-          if join_request.save
-            render json: join_request, root: "user", status: 201, serializer: ::V1::JoinRequestSerializer, scope: { user: current_user }
+          if @join_request.save
+            render json: @join_request, root: "user", status: 201, serializer: ::V1::JoinRequestSerializer, scope: { user: current_user }
           else
             render json: {
-              message: 'Could not create neighborhood participation request', reasons: join_request.errors.full_messages
+              message: 'Could not create neighborhood participation request', reasons: @join_request.errors.full_messages
             }, status: :bad_request
           end
         end
