@@ -81,7 +81,7 @@ describe Api::V1::Neighborhoods::UsersController do
       end
 
       context "duplicate request to join neighborhood" do
-        let!(:join_request) { create(:join_request, user: user, joinable: neighborhood) }
+        let!(:join_request) { create(:join_request, user: user, joinable: neighborhood, status: :cancelled) }
         before { post :create, params: { neighborhood_id: neighborhood.to_param, token: user.token } }
 
         it { expect(neighborhood.member_ids).to match_array([neighborhood.user_id, user.id]) }
