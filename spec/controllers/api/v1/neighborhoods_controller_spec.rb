@@ -44,13 +44,16 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
 
   context 'create' do
     let(:neighborhood) { build :neighborhood }
+    let(:google_place_id) { 'ChIJQWDurldu5kcRmj2mNTjxtxE' }
+
     let(:fields) { {
         name: neighborhood.name,
         ethics: neighborhood.ethics,
-        latitude: neighborhood.latitude,
-        longitude: neighborhood.longitude,
+        latitude: 47.22,
+        longitude: -1.55,
         interests: neighborhood.interest_list,
-        google_place_id: 'ChIJQWDurldu5kcRmj2mNTjxtxE'
+        place_name: '1, place Bouffay, Nantes',
+        google_place_id: google_place_id,
     } }
     let(:request) { post :create, params: { token: user.token, neighborhood: fields, format: :json } }
 
@@ -61,9 +64,12 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
         longitude: 2.35,
         postal_code: '75017',
         country: 'FR',
-        google_place_id: 'ChIJQWDurldu5kcRmj2mNTjxtxE',
+        google_place_id: google_place_id,
       }
     )}
+
+    let(:subject) { Neighborhood.last }
+    let(:result) { JSON.parse(response.body) }
 
     describe 'not authorized' do
       before { post :create }
@@ -72,9 +78,6 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
     end
 
     describe 'authorized' do
-      let(:subject) { Neighborhood.last }
-      let(:result) { JSON.parse(response.body) }
-
       before { request }
 
       it { expect(response.status).to eq(201) }
@@ -83,9 +86,29 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
       it { expect(subject.longitude).to eq neighborhood.longitude }
       it { expect(result).to have_key("neighborhood") }
       it { expect(result['neighborhood']['name']).to eq("Foot Paris 17è") }
-      it { expect(result['neighborhood']['address']['display_address']).to eq("174, rue Championnet, 75017") }
-      it { expect(result['neighborhood']['address']['latitude']).to eq(48.86) }
-      it { expect(result['neighborhood']['address']['longitude']).to eq(2.35) }
+    end
+
+    describe 'using google_place_id' do
+      let(:google_place_id) { 'ChIJQWDurldu5kcRmj2mNTjxtxE' }
+
+      before { request }
+
+      it { expect(subject.id).to eq(result['neighborhood']['id']) }
+      it { expect(subject.latitude).to eq(48.86) }
+      it { expect(subject.longitude).to eq(2.35) }
+      it { expect(subject.place_name).to eq("174, rue Championnet") }
+      it { expect(subject.google_place_id).to eq("ChIJQWDurldu5kcRmj2mNTjxtxE") }
+    end
+
+    describe 'using place_name, latitude, longitude' do
+      let(:google_place_id) { nil }
+
+      before { request }
+
+      it { expect(subject.latitude).to eq(47.22) }
+      it { expect(subject.longitude).to eq(-1.55) }
+      it { expect(subject.place_name).to eq("1, place Bouffay, Nantes") }
+      it { expect(subject.google_place_id).to eq("") }
     end
 
     describe 'Neighborhood and JoinRequest are created on success' do
