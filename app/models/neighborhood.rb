@@ -61,12 +61,22 @@ class Neighborhood < ApplicationRecord
   }
 
   def google_place_id= google_place_id
+    super(google_place_id)
+
+    return unless google_place_id.present?
+
     google_place_details = UserServices::AddressService.fetch_google_place_details(google_place_id)
 
-    self.place_name = google_place_details[:place_name]
-    self.postal_code = google_place_details[:postal_code]
-    self.latitude = google_place_details[:latitude]
-    self.longitude = google_place_details[:longitude]
+    self[:place_name] = google_place_details[:place_name]
+    self[:postal_code] = google_place_details[:postal_code]
+    self[:latitude] = google_place_details[:latitude]
+    self[:longitude] = google_place_details[:longitude]
+  end
+
+  def place_name= place_name
+    return if google_place_id_changed? && google_place_id.present?
+
+    super(place_name)
   end
 
   # behaviors
