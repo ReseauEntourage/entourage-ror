@@ -15,7 +15,7 @@ class User < ApplicationRecord
   validates_presence_of [:first_name, :last_name, :organization, :email], if: Proc.new { |u| u.pro? }
   validates_associated :organization, if: Proc.new { |u| u.pro? }
   validates_presence_of [:first_name, :last_name, :email], if: Proc.new { |u| u.org_member? }
-  validates :sms_code, length: { minimum: 6 }
+  validates :sms_code, length: { minimum: 6, maximum: 10 }
   validates_length_of :about, maximum: 200, allow_nil: true
   validates_length_of :password, within: 8..256, allow_nil: true
   validates_inclusion_of :community, in: Community.slugs
