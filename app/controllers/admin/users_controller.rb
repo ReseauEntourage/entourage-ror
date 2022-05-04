@@ -287,7 +287,7 @@ module Admin
     end
 
     def user_params
-      params.require(:user).permit(:first_name, :last_name, :email, :sms_code, :phone, :organization_id, :use_suggestions, :about, :accepts_emails, :targeting_profile, :partner_id, :admin, :moderator)
+      params.require(:user).permit(:first_name, :last_name, :email, :sms_code, :sms_code_password, :phone, :organization_id, :use_suggestions, :about, :accepts_emails, :targeting_profile, :partner_id, :admin, :moderator)
     end
 
     def email_preferences_params
