@@ -89,8 +89,13 @@ describe User, :type => :model do
   describe "sms_code" do
     it { expect(FactoryBot.build(:pro_user, sms_code: '123456').save).to be true }
     it { expect(FactoryBot.build(:pro_user, sms_code: '12345').save).to be false }
-    it { expect(FactoryBot.build(:pro_user, sms_code: '12345678901').save).to be false }
+    it { expect(FactoryBot.build(:pro_user, sms_code: '12345678901').save).to be true }
     it { expect(FactoryBot.build(:pro_user, sms_code: '1234567').save).to be true }
+  end
+
+  describe "sms_code_password" do
+    it { expect(FactoryBot.build(:pro_user, sms_code_password: '123456').save).to be true }
+    it { expect(FactoryBot.build(:pro_user, sms_code_password: '12345').save).to be false }
   end
 
   it "validates uniqueness of token" do
