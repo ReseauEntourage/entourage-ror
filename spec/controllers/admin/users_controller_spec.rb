@@ -190,7 +190,7 @@ describe Admin::UsersController do
 
       it {
         put :update, params: { id: user.id, user: {
-          sms_code: '123456',
+          sms_code_password: '123456',
           about: 'foo'
         }, user_moderation: { skills: ['Administratif'] } }
       }
