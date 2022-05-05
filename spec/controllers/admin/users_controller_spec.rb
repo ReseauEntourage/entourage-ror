@@ -196,6 +196,19 @@ describe Admin::UsersController do
       }
     end
 
+    context "change sms_code does not work for invalid password" do
+      before {
+        expect_any_instance_of(UserServices::SMSSender).not_to receive(:send_welcome_sms)
+      }
+
+      it {
+        put :update, params: { id: user.id, user: {
+          sms_code_password: '12345',
+          about: 'foo'
+        }, user_moderation: { skills: ['Administratif'] } }
+      }
+    end
+
     context "dit not change sms_code" do
       before {
         expect_any_instance_of(UserServices::SMSSender).not_to receive(:send_welcome_sms)
