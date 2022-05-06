@@ -22,10 +22,14 @@ module Storage
     end
 
     def object(key)
-      bucket.object(key)
+      bucket.object(key_with_folder(key))
     end
 
     private
     attr_reader :bucket
+
+    def key_with_folder(key)
+      ENV["ENTOURAGE_AVATARS_FOLDER"] ? "#{ENV["ENTOURAGE_AVATARS_FOLDER"]}/#{key}" : key
+    end
   end
 end
