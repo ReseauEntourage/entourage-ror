@@ -76,6 +76,8 @@ class Neighborhood < ApplicationRecord
   def place_name= place_name
     return if google_place_id_changed? && google_place_id.present?
 
+    self[:google_place_id] = nil
+
     super(place_name)
   end
 
