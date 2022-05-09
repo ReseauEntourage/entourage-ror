@@ -108,7 +108,7 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
       it { expect(subject.latitude).to eq(47.22) }
       it { expect(subject.longitude).to eq(-1.55) }
       it { expect(subject.place_name).to eq("1, place Bouffay, Nantes") }
-      it { expect(subject.google_place_id).to eq("") }
+      it { expect(subject.google_place_id).to eq(nil) }
     end
 
     describe 'Neighborhood and JoinRequest are created on success' do
