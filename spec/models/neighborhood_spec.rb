@@ -26,4 +26,57 @@ RSpec.describe Neighborhood, :type => :model do
       it { expect(subject.count).to eq(1) }
     end
   end
+
+  describe 'order_by_distance_from' do
+    let!(:paris) { FactoryBot.create :neighborhood, latitude: 48.86, longitude: 2.35 }
+    let!(:nantes) { FactoryBot.create :neighborhood, latitude: 47.22, longitude: -1.55 }
+
+    subject { Neighborhood.order_by_distance_from(latitude, longitude).pluck(:id) }
+
+    context 'from angers' do
+      let(:latitude) { 47.48 }
+      let(:longitude) { -0.56 }
+
+      it { expect(subject).to eq([nantes.id, paris.id]) }
+    end
+
+    context 'from versailles' do
+      let(:latitude) { 48.80 }
+      let(:longitude) { 2.13 }
+
+      it { expect(subject).to eq([paris.id, nantes.id]) }
+    end
+  end
+
+  describe 'order_by_interests_matching' do
+    let!(:sport) { FactoryBot.create :neighborhood, name: 'sport', interests: [:sport] }
+    let!(:nature_animals) { FactoryBot.create :neighborhood, name: 'nature_animals', interests: [:nature, :animaux] }
+    let!(:nature_jeux) { FactoryBot.create :neighborhood, name: 'nature_jeux', interests: [:nature, :jeux] }
+    let!(:other) { FactoryBot.create :neighborhood, name: 'other', interests: [:other], other_interest: 'foo' }
+    let!(:none) { FactoryBot.create :neighborhood, name: 'none', interests: [] }
+
+    subject { Neighborhood.order_by_interests_matching(interests).pluck(:name) }
+
+    context 'on nature' do
+      let(:interests) { [:nature] }
+
+      it { expect(subject[0..1]).to match_array([nature_animals.name, nature_jeux.name]) }
+      it { expect(subject[2..-1]).to match_array([sport.name, other.name, none.name]) }
+    end
+
+    context 'on jeux' do
+      let(:interests) { [:jeux] }
+
+      it { expect(subject[0]).to eq(nature_jeux.name) }
+      it { expect(subject[1..-1]).to match_array([sport.name, nature_animals.name, other.name, none.name]) }
+    end
+
+    context 'on nature, jeux' do
+      let(:interests) { [:nature, :jeux] }
+
+      it { expect(subject[0]).to eq(nature_jeux.name) }
+      it { expect(subject[1]).to eq(nature_animals.name) }
+      it { expect(subject[2..-1]).to match_array([sport.name, other.name, none.name]) }
+    end
+  end
 end
