@@ -36,12 +36,12 @@ class Neighborhood < ApplicationRecord
 
   scope :inside_perimeter, -> (latitude, longitude, travel_distance) {
     if latitude && longitude
-      where("#{PostgisHelper.distance_from(latitude, longitude)} < ?", travel_distance)
+      where("#{PostgisHelper.distance_from(latitude, longitude, :neighborhoods)} < ?", travel_distance)
     end
   }
   scope :order_by_distance_from, -> (latitude, longitude) {
     if latitude && longitude
-      order(PostgisHelper.distance_from(latitude, longitude))
+      order(PostgisHelper.distance_from(latitude, longitude, :neighborhoods))
     end
   }
   scope :order_by_interests_matching, -> (interest_list) {
@@ -55,13 +55,36 @@ class Neighborhood < ApplicationRecord
     ), interest_list])
   }
   scope :order_by_activity, -> {
-    # @todo
     # Groupe actif = au moins 1 message ou 1 événement créé par semaine pendant 1 mois ou plus
+    # Code proposé : classé par nombre d'événements puis nombre de messages dans le mois
+    order_by_outings.order_by_chat_messages
+  }
+  scope :order_by_outings, -> {
+    left_outer_joins(:outings).group('neighborhoods.id').order(%(
+      sum(
+        case
+          (entourages.metadata->>'starts_at')::date > date_trunc('day', NOW() - interval '1 month')
+        when true then 1
+        else 0
+        end
+      ) desc
+    ))
+  }
+  scope :order_by_chat_messages, -> {
+    left_outer_joins(:chat_messages).group('neighborhoods.id').order(%(
+      sum(
+        case
+          chat_messages.created_at > date_trunc('day', NOW() - interval '1 month')
+        when true then 1
+        else 0
+        end
+      ) desc
+    ))
   }
   scope :like, -> (search) {
     return unless search.present?
 
-    where('(unaccent(neighborhoods.name) ilike unaccent(:name) or unaccent(description) ilike unaccent(:description))', {
+    where('(unaccent(neighborhoods.name) ilike unaccent(:name) or unaccent(neighborhoods.description) ilike unaccent(:description))', {
       name: "%#{search.strip}%",
       description: "%#{search.strip}%"
     })
