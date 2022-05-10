@@ -79,4 +79,32 @@ RSpec.describe Neighborhood, :type => :model do
       it { expect(subject[2..-1]).to match_array([sport.name, other.name, none.name]) }
     end
   end
+
+  describe 'order_by_outings' do
+    subject { Neighborhood.order_by_outings.pluck(:id) }
+
+    let(:outing_1) { FactoryBot.create :outing, created_at: Time.now }
+    let(:outing_2) { FactoryBot.create :outing, created_at: Time.now }
+
+    let!(:without_outing) { FactoryBot.create :neighborhood, outings: [] }
+    let!(:with_outing) { FactoryBot.create :neighborhood, outings: [outing_1] }
+    let!(:with_outings) { FactoryBot.create :neighborhood, outings: [outing_1, outing_2] }
+
+    it { expect(subject).to eq([with_outings.id, with_outing.id, without_outing.id]) }
+  end
+
+  describe 'order_by_chat_messages' do
+    subject { Neighborhood.order_by_chat_messages.pluck(:id) }
+
+    let!(:without_chat_message) { FactoryBot.create :neighborhood }
+    let(:with_chat_message) { FactoryBot.create :neighborhood }
+    let(:with_chat_messages) { FactoryBot.create :neighborhood }
+
+    let!(:chat_message_1) { FactoryBot.create :chat_message, created_at: Time.now, messageable: with_chat_message }
+    let!(:chat_message_2) { FactoryBot.create :chat_message, created_at: Time.now, messageable: with_chat_messages }
+    let!(:chat_message_3) { FactoryBot.create :chat_message, created_at: Time.now, messageable: with_chat_messages }
+
+
+    it { expect(subject).to eq([with_chat_messages.id, with_chat_message.id, without_chat_message.id]) }
+  end
 end
