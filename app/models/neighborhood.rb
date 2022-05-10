@@ -55,8 +55,36 @@ class Neighborhood < ApplicationRecord
     ), interest_list])
   }
   scope :order_by_activity, -> {
-    # @todo
     # Groupe actif = au moins 1 message ou 1 événement créé par semaine pendant 1 mois ou plus
+    # Code proposé : classé par nombre d'événements puis nombre de messages dans le mois
+    order_by_outings.order_by_chat_messages
+  }
+  scope :order_by_outings, -> {
+    joins(%(
+      LEFT JOIN neighborhoods_entourages ON neighborhoods_entourages.neighborhood_id = neighborhoods.id
+      LEFT JOIN entourages ON entourages.id = neighborhoods_entourages.entourage_id AND entourages.group_type = 'outing'
+    )).group('neighborhoods.id').order(%(
+      sum(
+        case
+          (entourages.metadata->>'starts_at')::date > date_trunc('day', NOW() - interval '1 month')
+        when true then 1
+        else 0
+        end
+      ) desc
+    ))
+  }
+  scope :order_by_chat_messages, -> {
+    joins(%(
+      LEFT JOIN chat_messages ON chat_messages.messageable_id = neighborhoods.id AND chat_messages.messageable_type = 'Neighborhood'
+    )).group('neighborhoods.id').order(%(
+      sum(
+        case
+          chat_messages.created_at > date_trunc('day', NOW() - interval '1 month')
+        when true then 1
+        else 0
+        end
+      ) desc
+    ))
   }
   scope :like, -> (search) {
     return unless search.present?
