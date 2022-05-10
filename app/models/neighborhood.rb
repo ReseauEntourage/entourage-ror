@@ -36,12 +36,12 @@ class Neighborhood < ApplicationRecord
 
   scope :inside_perimeter, -> (latitude, longitude, travel_distance) {
     if latitude && longitude
-      where("#{PostgisHelper.distance_from(latitude, longitude)} < ?", travel_distance)
+      where("#{PostgisHelper.distance_from(latitude, longitude, :neighborhoods)} < ?", travel_distance)
     end
   }
   scope :order_by_distance_from, -> (latitude, longitude) {
     if latitude && longitude
-      order(PostgisHelper.distance_from(latitude, longitude))
+      order(PostgisHelper.distance_from(latitude, longitude, :neighborhoods))
     end
   }
   scope :order_by_interests_matching, -> (interest_list) {
@@ -89,7 +89,7 @@ class Neighborhood < ApplicationRecord
   scope :like, -> (search) {
     return unless search.present?
 
-    where('(unaccent(neighborhoods.name) ilike unaccent(:name) or unaccent(description) ilike unaccent(:description))', {
+    where('(unaccent(neighborhoods.name) ilike unaccent(:name) or unaccent(neighborhoods.description) ilike unaccent(:description))', {
       name: "%#{search.strip}%",
       description: "%#{search.strip}%"
     })
