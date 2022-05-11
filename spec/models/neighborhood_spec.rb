@@ -5,6 +5,26 @@ RSpec.describe Neighborhood, :type => :model do
   it { should validate_presence_of(:latitude) }
   it { should validate_presence_of(:longitude) }
 
+  describe 'members count' do
+    let(:neighborhood) { FactoryBot.create :neighborhood }
+    let(:member) { FactoryBot.create :public_user }
+    let!(:join_request) { FactoryBot.create :join_request, user: member, joinable: neighborhood, status: status }
+
+    subject { neighborhood.members.pluck(:id) }
+
+    context 'member accepted' do
+      let(:status) { :accepted }
+
+      it { expect(subject).to include(member.id) }
+    end
+
+    context 'member cancelled' do
+      let(:status) { :cancelled }
+
+      it { expect(subject).not_to include(member.id) }
+    end
+  end
+
   describe 'inside_perimeter' do
     let!(:neighborhood) { FactoryBot.create :neighborhood, latitude: 48.86, longitude: 2.35 }
     let(:travel_distance) { 1 }
