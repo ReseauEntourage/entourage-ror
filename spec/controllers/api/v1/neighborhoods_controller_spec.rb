@@ -233,7 +233,8 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
           "past_outings_count" => 0,
           "future_outings_count" => 0,
           "future_outings" => [],
-          "has_ongoing_outing" => false
+          "has_ongoing_outing" => false,
+          "chat_messages" => []
         }
       })}
     end
@@ -263,6 +264,30 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
           'latitude' => outing.latitude,
           'longitude' => outing.longitude,
         }
+      }]) }
+    end
+
+    describe 'with chat_message' do
+      let(:neighborhood) { create :neighborhood }
+      let!(:chat_message) { FactoryBot.create(:chat_message, messageable: neighborhood, user: user) }
+
+      before { get :show, params: { id: neighborhood.id, token: user.token } }
+
+      it { expect(response.status).to eq 200 }
+      it { expect(result['neighborhood']).to have_key('chat_messages') }
+      it { expect(result['neighborhood']['chat_messages']).to eq([{
+        "id" => chat_message.id,
+        "content" => chat_message.content,
+        "user_id" => chat_message.user_id,
+        "messageable_id" => neighborhood.id,
+        "messageable_type" => "Neighborhood",
+        "created_at" => chat_message.created_at.iso8601(3),
+        "updated_at" => chat_message.updated_at.iso8601(3),
+        "message_type" => "text",
+        "metadata" => {
+          "$id" => "urn:chat_message:text:metadata"
+        },
+        "ancestry" => nil
       }]) }
     end
   end
