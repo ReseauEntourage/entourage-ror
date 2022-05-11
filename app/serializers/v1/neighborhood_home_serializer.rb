@@ -11,7 +11,8 @@ module V1
       :past_outings_count,
       :future_outings_count,
       :has_ongoing_outing,
-      :address
+      :address,
+      :chat_messages
 
     has_one :user, serializer: ::V1::Users::BasicSerializer
     has_many :members, serializer: ::V1::Users::BasicSerializer
@@ -31,6 +32,10 @@ module V1
         longitude: object.longitude,
         display_address: [object.place_name, object.postal_code].compact.uniq.join(', ')
       }
+    end
+
+    def chat_messages
+      object.main_chat_messages.ordered.limit(25)
     end
   end
 end
