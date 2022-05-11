@@ -11,7 +11,7 @@ module Api
       end
 
       def show
-        render json: @neighborhood, serializer: ::V1::NeighborhoodSerializer
+        render json: @neighborhood, serializer: ::V1::NeighborhoodHomeSerializer
       end
 
       def create
