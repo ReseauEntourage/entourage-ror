@@ -175,6 +175,10 @@ class Neighborhood < ApplicationRecord
     ongoing_outings.any?
   end
 
+  def main_chat_messages
+    chat_messages.where(ancestry: nil)
+  end
+
   # @code_legacy
   def group_type
     'neighborhood'
