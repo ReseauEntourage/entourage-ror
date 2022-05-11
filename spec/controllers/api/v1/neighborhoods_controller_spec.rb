@@ -193,6 +193,8 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
   context 'show' do
     let(:neighborhood) { create :neighborhood }
 
+    let(:result) { JSON.parse(response.body) }
+
     describe 'not authorized' do
       before { get :show, params: { id: neighborhood.id } }
 
@@ -203,7 +205,7 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
       before { get :show, params: { id: neighborhood.id, token: user.token } }
 
       it { expect(response.status).to eq 200 }
-      it { expect(JSON.parse(response.body)).to eq({
+      it { expect(result).to eq({
         "neighborhood" => {
           "id" => neighborhood.id,
           "name" => "Foot Paris 17è",
@@ -230,9 +232,63 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
           "ethics" => nil,
           "past_outings_count" => 0,
           "future_outings_count" => 0,
-          "has_ongoing_outing" => false
+          "future_outings" => [],
+          "has_ongoing_outing" => false,
+          "chat_messages" => []
         }
       })}
+    end
+
+    describe 'with outing' do
+      let(:outing) { create :outing }
+      let(:neighborhood) { create :neighborhood, outings: [outing] }
+
+      before { get :show, params: { id: neighborhood.id, token: user.token } }
+
+      it { expect(response.status).to eq 200 }
+      it { expect(result['neighborhood']).to have_key('future_outings') }
+      it { expect(result['neighborhood']['future_outings']).to eq([{
+        'id' => outing.id,
+        'uuid' =>  outing.uuid_v2,
+        'title' => outing.title,
+        'description' => outing.description,
+        'share_url' => outing.share_url,
+        'image_url' => outing.image_url,
+        'event_url' => outing.event_url,
+        'author' => {
+          'id' => outing.user_id,
+          'display_name' => 'John D.',
+          'avatar_url' => nil,
+        },
+        'location' => {
+          'latitude' => outing.latitude,
+          'longitude' => outing.longitude,
+        }
+      }]) }
+    end
+
+    describe 'with chat_message' do
+      let(:neighborhood) { create :neighborhood }
+      let!(:chat_message) { FactoryBot.create(:chat_message, messageable: neighborhood, user: user) }
+
+      before { get :show, params: { id: neighborhood.id, token: user.token } }
+
+      it { expect(response.status).to eq 200 }
+      it { expect(result['neighborhood']).to have_key('chat_messages') }
+      it { expect(result['neighborhood']['chat_messages']).to eq([{
+        "id" => chat_message.id,
+        "content" => chat_message.content,
+        "user_id" => chat_message.user_id,
+        "messageable_id" => neighborhood.id,
+        "messageable_type" => "Neighborhood",
+        "created_at" => chat_message.created_at.iso8601(3),
+        "updated_at" => chat_message.updated_at.iso8601(3),
+        "message_type" => "text",
+        "metadata" => {
+          "$id" => "urn:chat_message:text:metadata"
+        },
+        "ancestry" => nil
+      }]) }
     end
   end
 
