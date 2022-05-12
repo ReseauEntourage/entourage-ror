@@ -289,16 +289,16 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
       it { expect(result['neighborhood']['posts']).to eq([{
         "id" => chat_message.id,
         "content" => chat_message.content,
-        "user_id" => chat_message.user_id,
-        "messageable_id" => neighborhood.id,
-        "messageable_type" => "Neighborhood",
-        "created_at" => chat_message.created_at.iso8601(3),
-        "updated_at" => chat_message.updated_at.iso8601(3),
-        "message_type" => "text",
-        "metadata" => {
-          "$id" => "urn:chat_message:text:metadata"
+        "user" => {
+          "id" => chat_message.user_id,
+          'display_name' => 'John D.',
+          "avatar_url" => nil,
+          "partner" => nil,
         },
-        "ancestry" => nil
+        "created_at" => chat_message.created_at.iso8601(3),
+        "message_type" => "text",
+        "parent_id" => nil,
+        "has_children" => false
       }]) }
     end
   end
