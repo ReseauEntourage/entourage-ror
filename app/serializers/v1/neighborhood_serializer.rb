@@ -4,6 +4,7 @@ module V1
       :name,
       :description,
       :welcome_message,
+      :member,
       :members_count,
       :image_url,
       :interests,
@@ -15,6 +16,12 @@ module V1
 
     has_one :user, serializer: ::V1::Users::BasicSerializer
     has_many :members, serializer: ::V1::Users::BasicSerializer
+
+    def member
+      return false unless scope[:user]
+
+      object.members.include? scope[:user]
+    end
 
     def interests
       object.interest_list.sort
