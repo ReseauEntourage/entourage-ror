@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Api::V1::EntouragesController API</title>
+    <title>Api::V1::Neighborhoods::OutingsController API</title>
     <meta charset="utf-8">
     <style>
       
@@ -106,13 +106,13 @@ table th, table td {
   </head>
   <body>
     <div class="container">
-      <h1>Api::V1::EntouragesController API</h1>
+      <h1>Api::V1::Neighborhoods::OutingsController API</h1>
 
-        <p class="explanation">Entourages</p>
+        <p class="explanation">Outings</p>
 
       <div class="article">
-        <h2>Create outing</h2>
-        <h3>POST api/v1/entourages</h3>
+        <h2>Create outing as a comment of another outing</h2>
+        <h3>POST /api/v1/neighborhoods/:neighborhood_id/outings</h3>
 
           <h3>Parameters</h3>
           <table class="parameters table table-striped table-bordered table-condensed">
@@ -133,23 +133,39 @@ table th, table td {
               </tr>
               <tr>
                 <td class="required">
-                    <span class="name">entourage[group_type]</span>
+                    <span class="name">neighborhood_id</span>
                 </td>
                 <td>
-                  <span class="description">outing</span>
+                  <span class="description"> neighborhood</span>
                 </td>
               </tr>
               <tr>
                 <td class="required">
-                    <span class="name">entourage[title]</span>
+                    <span class="name">outing[title]</span>
                 </td>
                 <td>
                   <span class="description">Title</span>
                 </td>
               </tr>
               <tr>
+                <td>
+                    <span class="name">outing[description]</span>
+                </td>
+                <td>
+                  <span class="description">Description</span>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                    <span class="name">outing[event_url]</span>
+                </td>
+                <td>
+                  <span class="description">Event url</span>
+                </td>
+              </tr>
+              <tr>
                 <td class="required">
-                    <span class="name">entourage[location][latitude]</span>
+                    <span class="name">outing[latitude]</span>
                 </td>
                 <td>
                   <span class="description">Latitude</span>
@@ -157,122 +173,58 @@ table th, table td {
               </tr>
               <tr>
                 <td class="required">
-                    <span class="name">entourage[location][longitude]</span>
+                    <span class="name">outing[longitude]</span>
                 </td>
                 <td>
                   <span class="description">Longitude</span>
                 </td>
               </tr>
               <tr>
-                <td class="required">
-                    <span class="name">entourage[entourage_type]</span>
+                <td>
+                    <span class="name">outing[metadata]</span>
                 </td>
                 <td>
-                  <span class="description">contribution or ask_for_help</span>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                    <span class="name">entourage[display_category]</span>
-                </td>
-                <td>
-                  <span class="description">mat_help, social, resource, info, skill, event or other</span>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                    <span class="name">entourage[status]</span>
-                </td>
-                <td>
-                  <span class="description">Entourage status</span>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                    <span class="name">entourage[description]</span>
-                </td>
-                <td>
-                  <span class="description">Entourage description</span>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                    <span class="name">entourage[category]</span>
-                </td>
-                <td>
-                  <span class="description">mat_help, non_mat_help or social</span>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                    <span class="name">entourage[public]</span>
-                </td>
-                <td>
-                  <span class="description">deprecated</span>
+                  <span class="description">Metadata</span>
                 </td>
               </tr>
               <tr>
                 <td class="required">
-                    <span class="name">entourage[metadata][starts_at]</span>
+                    <span class="name">outing[metadata][starts_at]</span>
                 </td>
                 <td>
-                  <span class="description">Start date</span>
+                  <span class="description">Start time</span>
                 </td>
               </tr>
               <tr>
+                <td class="required">
+                    <span class="name">outing[metadata][ends_at]</span>
+                </td>
                 <td>
-                    <span class="name">entourage[metadata][place_name]</span>
+                  <span class="description">End time</span>
+                </td>
+              </tr>
+              <tr>
+                <td class="required">
+                    <span class="name">outing[metadata][place_name]</span>
                 </td>
                 <td>
                   <span class="description">Place name</span>
                 </td>
               </tr>
               <tr>
-                <td>
-                    <span class="name">entourage[metadata][street_address]</span>
+                <td class="required">
+                    <span class="name">outing[metadata][street_address]</span>
                 </td>
                 <td>
                   <span class="description">Street address</span>
                 </td>
               </tr>
               <tr>
-                <td>
-                    <span class="name">entourage[metadata][google_place_id]</span>
+                <td class="required">
+                    <span class="name">outing[metadata][google_place_id]</span>
                 </td>
                 <td>
                   <span class="description">Google place ID</span>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                    <span class="name">entourage[metadata][landscape_url]</span>
-                </td>
-                <td>
-                  <span class="description">Path to a 1125 x 375px image url</span>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                    <span class="name">entourage[metadata][landscape_thumbnail_url]</span>
-                </td>
-                <td>
-                  <span class="description">Path to a thumbnail of 1125 x 375px image url</span>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                    <span class="name">entourage[metadata][portrait_url]</span>
-                </td>
-                <td>
-                  <span class="description">Path to a 300 x 492px image url</span>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                    <span class="name">entourage[metadata][portrait_thumbnail_url]</span>
-                </td>
-                <td>
-                  <span class="description">Path to a thumbnail of 300 x 492px image url</span>
                 </td>
               </tr>
             </tbody>
@@ -287,11 +239,11 @@ Host: example.org
 Cookie: </pre>
 
           <h4>Route</h4>
-          <pre class="request route highlight">POST api/v1/entourages</pre>
+          <pre class="request route highlight">POST /api/v1/neighborhoods/8/outings</pre>
 
 
             <h4>Body</h4>
-            <pre class="request body">{"token":"foobar47","entourage":{"group_type":"outing","title":"foobar","location":{"latitude":48.854367553785,"longitude":2.27034058909627},"metadata":{"starts_at":"2022-05-13T19:00:00.000+02:00","place_name":"Café la Renaissance","street_address":"44 rue de l’Assomption, 75016 Paris, France","google_place_id":"foobar","landscape_url":null,"landscape_thumbnail_url":null,"portrait_url":null,"portrait_thumbnail_url":null}}}</pre>
+            <pre class="request body">{"token":"foobar101","outing":{"title":"Groupe de voisins","latitude":48.854367553785,"longitude":2.27034058909627,"metadata":{"starts_at":"2022-05-13T19:00:00.000+02:00","ends_at":null,"place_name":"Café la Renaissance","street_address":"44 rue de l’Assomption, 75016 Paris, France","google_place_id":"foobar"}}}</pre>
 
 
             <h3>Response</h3>
@@ -306,51 +258,51 @@ Access-Control-Allow-Origin: *
 Access-Control-Allow-Methods: GET,POST,PUT,PATCH,DELETE
 Access-Control-Allow-Headers: Origin,Accept,Content-Type,X-Requested-With,X-CSRF-Token,X-API-KEY
 Content-Type: application/json; charset=utf-8
-ETag: W/&quot;84afd2cf0156927277b742f21b243444&quot;
+ETag: W/&quot;091a7242f4dd4748542a4407bcbaec05&quot;
 Cache-Control: max-age=0, private, must-revalidate
-X-Request-Id: 50e27062-d9da-464b-bcb2-a202df822b34
-X-Runtime: 0.083572
-Content-Length: 1117</pre>
+X-Request-Id: 8af2c82c-dd50-41d2-af76-580e6c79c896
+X-Runtime: 0.037902
+Content-Length: 1098</pre>
             <h4>Status</h4>
             <pre class="response status">201 Created</pre>
               <h4>Body</h4>
               <pre class="response body">{
-  &quot;entourage&quot;: {
-    &quot;id&quot;: 18,
-    &quot;uuid&quot;: &quot;eoSxbqtM-GyE&quot;,
-    &quot;title&quot;: &quot;Foobar&quot;,
+  &quot;outing&quot;: {
+    &quot;id&quot;: 33,
+    &quot;uuid&quot;: &quot;eLVk-dFSgfSE&quot;,
+    &quot;title&quot;: &quot;Groupe de voisins&quot;,
     &quot;group_type&quot;: &quot;outing&quot;,
     &quot;entourage_type&quot;: &quot;contribution&quot;,
     &quot;display_category&quot;: null,
     &quot;status&quot;: &quot;open&quot;,
     &quot;public&quot;: true,
     &quot;metadata&quot;: {
-      &quot;ends_at&quot;: &quot;2022-05-13T22:00:00.000+02:00&quot;,
       &quot;starts_at&quot;: &quot;2022-05-13T19:00:00.000+02:00&quot;,
+      &quot;ends_at&quot;: null,
       &quot;place_name&quot;: &quot;Café la Renaissance&quot;,
-      &quot;previous_at&quot;: null,
-      &quot;portrait_url&quot;: null,
-      &quot;landscape_url&quot;: null,
       &quot;street_address&quot;: &quot;44 rue de l’Assomption, 75016 Paris, France&quot;,
-      &quot;display_address&quot;: &quot;Café la Renaissance, 44 rue de l’Assomption, 75016 Paris&quot;,
       &quot;google_place_id&quot;: &quot;foobar&quot;,
+      &quot;previous_at&quot;: null,
+      &quot;landscape_url&quot;: null,
+      &quot;portrait_url&quot;: null,
+      &quot;landscape_thumbnail_url&quot;: null,
       &quot;portrait_thumbnail_url&quot;: null,
-      &quot;landscape_thumbnail_url&quot;: null
+      &quot;display_address&quot;: &quot;Café la Renaissance, 44 rue de l’Assomption, 75016 Paris&quot;
     },
     &quot;postal_code&quot;: null,
-    &quot;join_status&quot;: &quot;accepted&quot;,
+    &quot;join_status&quot;: &quot;pending&quot;,
     &quot;number_of_unread_messages&quot;: 0,
-    &quot;number_of_people&quot;: 1,
-    &quot;created_at&quot;: &quot;2022-05-12T16:03:44.393+02:00&quot;,
-    &quot;updated_at&quot;: &quot;2022-05-12T16:03:44.393+02:00&quot;,
+    &quot;number_of_people&quot;: 0,
+    &quot;created_at&quot;: &quot;2022-05-12T16:03:46.052+02:00&quot;,
+    &quot;updated_at&quot;: &quot;2022-05-12T16:03:46.052+02:00&quot;,
     &quot;description&quot;: null,
-    &quot;share_url&quot;: &quot;https://app.entourage.social/actions/eoSxbqtM-GyE&quot;,
+    &quot;share_url&quot;: &quot;https://app.entourage.social/actions/eLVk-dFSgfSE&quot;,
     &quot;image_url&quot;: null,
     &quot;online&quot;: false,
     &quot;event_url&quot;: null,
     &quot;display_report_prompt&quot;: false,
     &quot;author&quot;: {
-      &quot;id&quot;: 49,
+      &quot;id&quot;: 103,
       &quot;display_name&quot;: &quot;John D.&quot;,
       &quot;avatar_url&quot;: null,
       &quot;partner&quot;: null,

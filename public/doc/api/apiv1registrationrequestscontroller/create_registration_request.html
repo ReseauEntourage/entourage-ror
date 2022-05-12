@@ -243,7 +243,7 @@ Cookie: </pre>
 
 
             <h4>Body</h4>
-            <pre class="request body">{"token":"foobar123","registration_request":{"organization":{"name":"foo","local_entity":"bar","address":"2, rue de l'Église","phone":"+33612345678","email":"some@email.com","website_url":"http://foobar.com","description":"lorem ipsum","logo_key":"some_key.jpg"},"user":{"first_name":"John","last_name":"Doe","phone":"+33612345678","email":"some@email.com"}}}</pre>
+            <pre class="request body">{"token":"foobar132","registration_request":{"organization":{"name":"foo","local_entity":"bar","address":"2, rue de l'Église","phone":"+33612345678","email":"some@email.com","website_url":"http://foobar.com","description":"lorem ipsum","logo_key":"some_key.jpg"},"user":{"first_name":"John","last_name":"Doe","phone":"+33612345678","email":"some@email.com"}}}</pre>
 
 
             <h3>Response</h3>
@@ -258,17 +258,17 @@ Access-Control-Allow-Origin: *
 Access-Control-Allow-Methods: GET,POST,PUT,PATCH,DELETE
 Access-Control-Allow-Headers: Origin,Accept,Content-Type,X-Requested-With,X-CSRF-Token,X-API-KEY
 Content-Type: application/json; charset=utf-8
-ETag: W/&quot;996f881553276a1e979949f622d5e5aa&quot;
+ETag: W/&quot;c18aad51d2f45b6c5216e824e2765222&quot;
 Cache-Control: max-age=0, private, must-revalidate
-X-Request-Id: 909a70f5-cc50-4f66-a1c0-8be5640db429
-X-Runtime: 0.026863
+X-Request-Id: 026a07a2-c672-469f-bd0f-832c4c4c9b32
+X-Runtime: 0.026641
 Content-Length: 466</pre>
             <h4>Status</h4>
             <pre class="response status">201 Created</pre>
               <h4>Body</h4>
               <pre class="response body">{
   &quot;registration_request&quot;: {
-    &quot;id&quot;: 2,
+    &quot;id&quot;: 1,
     &quot;status&quot;: &quot;pending&quot;,
     &quot;extra&quot;: {
       &quot;organization&quot;: {
@@ -288,8 +288,8 @@ Content-Length: 466</pre>
         &quot;phone&quot;: &quot;+33612345678&quot;
       }
     },
-    &quot;created_at&quot;: &quot;2022-05-12T11:26:32.340+02:00&quot;,
-    &quot;updated_at&quot;: &quot;2022-05-12T11:26:32.340+02:00&quot;
+    &quot;created_at&quot;: &quot;2022-05-12T16:03:46.897+02:00&quot;,
+    &quot;updated_at&quot;: &quot;2022-05-12T16:03:46.897+02:00&quot;
   }
 }</pre>
       </div>
