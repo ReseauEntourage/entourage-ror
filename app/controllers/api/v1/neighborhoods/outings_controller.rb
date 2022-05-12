@@ -14,7 +14,7 @@ module Api
           if outing.save
             JoinRequest.create(joinable: outing, user: current_user, role: :organizer).save!
 
-            render json: outing, status: 201, serializer: ::V1::EntourageSerializer, scope: {user: current_user}
+            render json: outing, status: 201, serializer: ::V1::EntourageSerializer, scope: { user: current_user }
           else
             render json: { message: 'Could not create outing', reasons: outing.errors.full_messages }, status: 400
           end
