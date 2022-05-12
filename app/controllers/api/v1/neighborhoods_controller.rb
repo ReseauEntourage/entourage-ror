@@ -11,7 +11,7 @@ module Api
       end
 
       def show
-        render json: @neighborhood, serializer: ::V1::NeighborhoodHomeSerializer
+        render json: @neighborhood, serializer: ::V1::NeighborhoodHomeSerializer, scope: { user: current_user }
       end
 
       def create
@@ -19,7 +19,7 @@ module Api
         @neighborhood.user = current_user
 
         if @neighborhood.save
-          render json: @neighborhood, status: 201, serializer: ::V1::NeighborhoodSerializer
+          render json: @neighborhood, status: 201, serializer: ::V1::NeighborhoodSerializer, scope: { user: current_user }
         else
           render json: { message: "Could not create Neighborhood", reasons: @neighborhood.errors.full_messages }, status: 400
         end
@@ -31,7 +31,7 @@ module Api
         @neighborhood.assign_attributes(neighborhood_params)
 
         if @neighborhood.save
-          render json: @neighborhood, status: 200, serializer: ::V1::NeighborhoodSerializer
+          render json: @neighborhood, status: 200, serializer: ::V1::NeighborhoodSerializer, scope: { user: current_user }
         else
           render json: {
             message: 'Could not update neighborhood', reasons: @neighborhood.errors.full_messages
@@ -40,7 +40,7 @@ module Api
       end
 
       def joined
-        render json: Neighborhood.joined_by(current_user).page(page).per(per), root: :neighborhoods, each_serializer: ::V1::NeighborhoodSerializer
+        render json: Neighborhood.joined_by(current_user).page(page).per(per), root: :neighborhoods, each_serializer: ::V1::NeighborhoodSerializer, scope: { user: current_user }
       end
 
       private

@@ -14,7 +14,7 @@ module Api
             .page(page)
             .per(per)
 
-          render json: neighborhoods, status: 200, each_serializer: ::V1::NeighborhoodSerializer
+          render json: neighborhoods, status: 200, each_serializer: ::V1::NeighborhoodSerializer, scope: { user: current_user }
         end
 
         private
