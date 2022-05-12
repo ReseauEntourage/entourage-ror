@@ -54,7 +54,7 @@ module Api
         end
 
         def join_request
-          @join_request ||= JoinRequest.where(joinable: @neighborhood, user: current_user, status: "accepted").first
+          @join_request ||= JoinRequest.where(joinable: @neighborhood, user: current_user, status: :accepted).first
         end
 
         def authorised_to_see_messages?
