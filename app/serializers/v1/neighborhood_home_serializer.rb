@@ -4,6 +4,7 @@ module V1
       :name,
       :description,
       :welcome_message,
+      :member,
       :members_count,
       :image_url,
       :interests,
@@ -12,11 +13,17 @@ module V1
       :future_outings_count,
       :has_ongoing_outing,
       :address,
-      :chat_messages
+      :posts
 
     has_one :user, serializer: ::V1::Users::BasicSerializer
     has_many :members, serializer: ::V1::Users::BasicSerializer
     has_many :future_outings, serializer: ::V1::NeighborhoodOutingSerializer
+
+    def member
+      return false unless scope && scope[:user]
+
+      object.members.include? scope[:user]
+    end
 
     def interests
       object.interest_list.sort
@@ -34,7 +41,7 @@ module V1
       }
     end
 
-    def chat_messages
+    def posts
       object.main_chat_messages.ordered.limit(25)
     end
   end

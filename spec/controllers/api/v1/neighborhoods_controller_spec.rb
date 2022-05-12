@@ -181,6 +181,7 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
             "display_name" => "John D.",
             "avatar_url" => nil,
           }],
+          "member" => true,
           "members_count" => 1,
           "past_outings_count" => 0,
           "future_outings_count" => 0,
@@ -211,6 +212,7 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
           "name" => "Foot Paris 17è",
           "description" => nil,
           "welcome_message" => nil,
+          "member" => false,
           "members_count" => 1,
           "image_url" => nil,
           "interests" => ["sport"],
@@ -234,9 +236,18 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
           "future_outings_count" => 0,
           "future_outings" => [],
           "has_ongoing_outing" => false,
-          "chat_messages" => []
+          "posts" => []
         }
       })}
+    end
+
+    describe 'is member' do
+      let!(:join_request) { create(:join_request, user: user, joinable: neighborhood, status: :accepted) }
+
+      before { get :show, params: { id: neighborhood.id, token: user.token } }
+
+      it { expect(response.status).to eq 200 }
+      it { expect(result['neighborhood']['member']).to eq(true) }
     end
 
     describe 'with outing' do
@@ -274,8 +285,8 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
       before { get :show, params: { id: neighborhood.id, token: user.token } }
 
       it { expect(response.status).to eq 200 }
-      it { expect(result['neighborhood']).to have_key('chat_messages') }
-      it { expect(result['neighborhood']['chat_messages']).to eq([{
+      it { expect(result['neighborhood']).to have_key('posts') }
+      it { expect(result['neighborhood']['posts']).to eq([{
         "id" => chat_message.id,
         "content" => chat_message.content,
         "user_id" => chat_message.user_id,
