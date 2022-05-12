@@ -18,7 +18,7 @@ module V1
     has_many :members, serializer: ::V1::Users::BasicSerializer
 
     def member
-      return false unless scope[:user]
+      return false unless scope && scope[:user]
 
       object.members.include? scope[:user]
     end
