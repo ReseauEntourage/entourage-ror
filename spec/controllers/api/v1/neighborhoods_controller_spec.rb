@@ -298,7 +298,8 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
         "created_at" => chat_message.created_at.iso8601(3),
         "message_type" => "text",
         "parent_id" => nil,
-        "has_children" => false
+        "has_children" => false,
+        "children_count" => 0
       }]) }
     end
   end
