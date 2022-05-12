@@ -43,6 +43,7 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
           "created_at" => chat_message_2.created_at.iso8601(3),
           "parent_id" => chat_message_1.id,
           "has_children" => false,
+          "children_count" => 0
         }, {
           "id" => chat_message_1.id,
           "message_type" => "text",
