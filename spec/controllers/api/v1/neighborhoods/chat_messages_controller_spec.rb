@@ -43,6 +43,7 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
           "created_at" => chat_message_2.created_at.iso8601(3),
           "parent_id" => chat_message_1.id,
           "has_children" => false,
+          "children_count" => 0
         }, {
           "id" => chat_message_1.id,
           "message_type" => "text",
@@ -56,6 +57,7 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
           "created_at" => chat_message_1.created_at.iso8601(3),
           "parent_id" => nil,
           "has_children" => true,
+          "children_count" => 1
         }]
       })
     }
@@ -101,6 +103,7 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
             "created_at" => ChatMessage.last.created_at.iso8601(3),
             "parent_id" => parent_id,
             "has_children" => has_children,
+            "children_count" => 0
           }
         }}
 
