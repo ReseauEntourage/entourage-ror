@@ -285,8 +285,8 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
       before { get :show, params: { id: neighborhood.id, token: user.token } }
 
       it { expect(response.status).to eq 200 }
-      it { expect(result['neighborhood']).to have_key('chat_messages') }
-      it { expect(result['neighborhood']['chat_messages']).to eq([{
+      it { expect(result['neighborhood']).to have_key('posts') }
+      it { expect(result['neighborhood']['posts']).to eq([{
         "id" => chat_message.id,
         "content" => chat_message.content,
         "user_id" => chat_message.user_id,
