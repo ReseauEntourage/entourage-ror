@@ -20,7 +20,7 @@ module V1
     has_many :future_outings, serializer: ::V1::NeighborhoodOutingSerializer
 
     def member
-      return false unless scope[:user]
+      return false unless scope && scope[:user]
 
       object.members.include? scope[:user]
     end
