@@ -250,7 +250,7 @@ module PoiServices
           'sunday'    => 'Dim',
         }[day]
 
-        if hours['timeslot'].empty?
+        if hours['timeslot'].blank?
           hours = 'Fermé'
         else
           hours = hours['timeslot'].map do |timeslot|
