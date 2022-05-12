@@ -9,6 +9,7 @@ module V1
     attribute :metadata, if: :metadata?
     attribute :parent_id, if: :neighborhood?
     attribute :has_children, if: :neighborhood?
+    attribute :children_count, if: :neighborhood?
 
     def metadata?
       object.message_type.in?(['outing', 'status_update', 'share'])
@@ -41,6 +42,10 @@ module V1
 
     def has_children
       object.has_children?
+    end
+
+    def children_count
+      object.children.count
     end
   end
 end
