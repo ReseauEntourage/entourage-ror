@@ -199,7 +199,7 @@ Host: example.org
 Cookie: </pre>
 
           <h4>Route</h4>
-          <pre class="request route highlight">PATCH api/v1/neighborhoods/376</pre>
+          <pre class="request route highlight">PATCH api/v1/neighborhoods/29</pre>
 
 
             <h4>Body</h4>
@@ -218,20 +218,21 @@ Access-Control-Allow-Origin: *
 Access-Control-Allow-Methods: GET,POST,PUT,PATCH,DELETE
 Access-Control-Allow-Headers: Origin,Accept,Content-Type,X-Requested-With,X-CSRF-Token,X-API-KEY
 Content-Type: application/json; charset=utf-8
-ETag: W/&quot;9dd9774943c7179ff6ebbabf500c7a83&quot;
+ETag: W/&quot;ae4a837dd48bae327efb83c67b6a1a68&quot;
 Cache-Control: max-age=0, private, must-revalidate
-X-Request-Id: 77924a22-d066-4420-bc07-b55221b6b5af
-X-Runtime: 0.019367
-Content-Length: 435</pre>
+X-Request-Id: 002f14b8-ff4f-41a8-bd5f-688fe6cb2ba4
+X-Runtime: 0.025560
+Content-Length: 448</pre>
             <h4>Status</h4>
             <pre class="response status">200 OK</pre>
               <h4>Body</h4>
               <pre class="response body">{
   &quot;neighborhood&quot;: {
-    &quot;id&quot;: 376,
+    &quot;id&quot;: 29,
     &quot;name&quot;: &quot;new name&quot;,
     &quot;description&quot;: null,
     &quot;welcome_message&quot;: null,
+    &quot;member&quot;: true,
     &quot;members_count&quot;: 1,
     &quot;image_url&quot;: null,
     &quot;interests&quot;: [
@@ -247,13 +248,13 @@ Content-Length: 435</pre>
       &quot;display_address&quot;: &quot;&quot;
     },
     &quot;user&quot;: {
-      &quot;id&quot;: 803,
+      &quot;id&quot;: 311,
       &quot;display_name&quot;: &quot;John D.&quot;,
       &quot;avatar_url&quot;: null
     },
     &quot;members&quot;: [
       {
-        &quot;id&quot;: 803,
+        &quot;id&quot;: 311,
         &quot;display_name&quot;: &quot;John D.&quot;,
         &quot;avatar_url&quot;: null
       }
