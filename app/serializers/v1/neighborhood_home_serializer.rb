@@ -42,7 +42,9 @@ module V1
     end
 
     def posts
-      object.main_chat_messages.ordered.limit(25)
+      object.main_chat_messages.ordered.limit(25).map do |chat_message|
+        V1::ChatMessageSerializer.new(chat_message).as_json
+      end
     end
   end
 end
