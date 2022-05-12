@@ -41,7 +41,7 @@ module V1
       }
     end
 
-    def chat_messages
+    def posts
       object.main_chat_messages.ordered.limit(25)
     end
   end
