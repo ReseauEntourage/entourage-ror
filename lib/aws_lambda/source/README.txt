@@ -17,9 +17,8 @@ then resizes it to 60x60 pixels max in 60x00 dir,
 TO DEPLOY:
 
 sls deploy -s dev
+sls deploy -s staging
 sls deploy -s prod
-sls deploy -s pfp-dev
-sls deploy -s pfp-prod
 
 
 /************/
@@ -27,10 +26,10 @@ To touch existing files (already done! DO NOT DO IT AGAIN):
 
 
 aws s3 cp --metadata {\"touched\":\"true\"}  s3://entourage-avatars-production-thumb/300x300/ s3://entourage-avatars-production-thumb/300x300/ --recursive
-aws s3 cp --metadata {\"touched\":\"true\"}  s3://entourage-avatars-production-thumb/pfp/300x300/ s3://entourage-avatars-production-thumb/pfp/300x300/ --recursive
-aws s3 cp --metadata {\"touched\":\"true\"}  s3://entourage-avatars-production-thumb/pfp/staging/300x300/ s3://entourage-avatars-production-thumb/pfp/staging/300x300/ --recursive
+aws s3 cp --metadata {\"touched\":\"true\"}  s3://entourage-avatars-staging/users/300x300/testFPavatarEntourage.jpeg s3://entourage-avatars-staging/users/300x300/testFPavatarEntourage.jpeg
 
+aws s3 cp s3://entourage-avatars-production-thumb/staging/source/ s3://entourage-avatars-staging/users/300x300/ --recursive
 
 /************/
-TO DO: remove aws-sdk from package.json (since it should already be on AWS server)
 TO DO: record action into BDD
+TO DO: handle PNG files for partner logo

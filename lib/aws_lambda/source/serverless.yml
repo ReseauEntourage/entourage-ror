@@ -6,27 +6,26 @@ service: resize-avatar
 custom:
   bucket_suffix:
     dev: 'production-thumb'
+    staging: 'staging'
     prod: 'production-thumb'
-    partners-dev: 'production-thumb'
+    partners-staging: 'staging'
     partners-prod: 'production-thumb'
-    pfp-dev: 'production-thumb'
-    pfp-prod: 'production-thumb'
   dir_prefix:
     dev: 'staging/'
+    staging: 'users/'
     prod: ''
-    partners-dev: 'partners/staging/'
-    partners-prod: 'partners/'
-    pfp-dev: 'pfp/staging/'
-    pfp-prod: 'pfp/'
+    partners-staging: 'partners/logo/'
+    partners-prod: 'partners/logo/'
 
 provider:
   name: aws
-  runtime: nodejs10.x
-  stage: ${opt:stage, 'dev'}
+  runtime: nodejs14.x
+  stage: ${opt:stage, 'staging'}
   region: eu-west-1
   logRetentionInDays: 30
+  lambdaHashingVersion: 20201221
   environment :
-    watch_bucket: "entourage-avatars-production-thumb"
+    watch_bucket: "entourage-avatars-${self:custom.bucket_suffix.${self:provider.stage}}"
     watch_dir: "${self:custom.dir_prefix.${self:provider.stage}}300x300/"
     target_bucket: "entourage-avatars-${self:custom.bucket_suffix.${self:provider.stage}}"
     target_size: 300
