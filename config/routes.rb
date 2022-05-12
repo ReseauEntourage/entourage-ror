@@ -320,7 +320,12 @@ Rails.application.routes.draw do
           post :report # report an issue with a chat_message
         end
 
-        resources :users, :controller => 'neighborhoods/users', only: [:index, :destroy, :create]
+        resources :users, :controller => 'neighborhoods/users', only: [:index, :destroy, :create] do
+          collection do
+            delete :destroy
+          end
+        end
+
         resources :outings, :controller => 'neighborhoods/outings', only: [:create]
       end
 

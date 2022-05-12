@@ -153,4 +153,37 @@ describe Api::V1::Neighborhoods::UsersController do
       end
     end
   end
+
+  describe "DELETE destroy on collection" do
+    context "not signed in" do
+      before { delete :destroy, params: { neighborhood_id: neighborhood.to_param } }
+      it { expect(response.status).to eq(401) }
+    end
+
+
+    context "signed in" do
+      context "quit neighborhood" do
+        let!(:my_join_request) { create(:join_request, user: user, joinable: neighborhood, status: :accepted) }
+
+        before { delete :destroy, params: { neighborhood_id: neighborhood.to_param, token: user.token } }
+        it { expect(response.status).to eq(200) }
+        it { expect(expect(my_join_request.reload.status).to eq('cancelled')) }
+        it { expect(result).to eq({
+          "user" => {
+            "id" => user.id,
+            "display_name" => "John D.",
+            "role" => "member",
+            "group_role" => "member",
+            "community_roles" => [],
+            "status" => "not_requested",
+            "message" => nil,
+            "requested_at" => my_join_request.created_at.iso8601(3),
+            "avatar_url" => nil,
+            "partner" => nil,
+            "partner_role_title" => nil,
+          }
+        })}
+      end
+    end
+  end
 end
