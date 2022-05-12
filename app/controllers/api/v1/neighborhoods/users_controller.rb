@@ -54,6 +54,8 @@ module Api
         end
 
         def authorised_user?
+          return unless params[:id].present?
+
           unless current_user == User.find(params[:id])
             render json: { message: 'unauthorized' }, status: :unauthorized
           end
