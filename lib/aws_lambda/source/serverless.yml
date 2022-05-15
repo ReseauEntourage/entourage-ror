@@ -23,7 +23,6 @@ provider:
   stage: ${opt:stage, 'staging'}
   region: eu-west-1
   logRetentionInDays: 30
-  lambdaHashingVersion: 20201221
   environment :
     watch_bucket: "entourage-avatars-${self:custom.bucket_suffix.${self:provider.stage}}"
     watch_dir: "${self:custom.dir_prefix.${self:provider.stage}}300x300/"
@@ -35,11 +34,13 @@ provider:
     source_dir: "${self:custom.dir_prefix.${self:provider.stage}}source/"
     request_string: ${self:functions.resize-avatar.name}
 
-  iamRoleStatements:
-    - Effect: Allow
-      Action:
-        - s3:*
-      Resource: "*"
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - s3:*
+          Resource: "*"
 
 functions:
   resize-avatar:
