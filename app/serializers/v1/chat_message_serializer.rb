@@ -7,9 +7,11 @@ module V1
                :message_type
 
     attribute :metadata, if: :metadata?
+
     attribute :parent_id, if: :neighborhood?
     attribute :has_children, if: :neighborhood?
     attribute :children_count, if: :neighborhood?
+    attribute :image_url, if: :neighborhood?
 
     def metadata?
       object.message_type.in?(['outing', 'status_update', 'share'])

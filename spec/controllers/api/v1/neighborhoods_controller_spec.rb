@@ -270,10 +270,21 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
           'id' => outing.user_id,
           'display_name' => 'John D.',
           'avatar_url' => nil,
+          "partner" => nil,
+          "partner_role_title" => nil,
         },
-        'location' => {
-          'latitude' => outing.latitude,
-          'longitude' => outing.longitude,
+        "metadata" => {
+          "ends_at" => "2022-05-14T22:00:00.000+02:00",
+          "starts_at" => "2022-05-14T19:00:00.000+02:00",
+          "place_name" => "Café la Renaissance",
+          "previous_at" => nil,
+          "portrait_url" => nil,
+          "landscape_url" => nil,
+          "street_address" => "44 rue de l’Assomption, 75016 Paris, France",
+          "display_address" => "Café la Renaissance, 44 rue de l’Assomption, 75016 Paris",
+          "google_place_id" => "foobar",
+          "portrait_thumbnail_url" => nil,
+          "landscape_thumbnail_url" => nil
         }
       }]) }
     end
