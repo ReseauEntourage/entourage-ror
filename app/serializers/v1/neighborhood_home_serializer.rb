@@ -18,6 +18,7 @@ module V1
     has_one :user, serializer: ::V1::Users::BasicSerializer
     has_many :members, serializer: ::V1::Users::BasicSerializer
     has_many :future_outings, serializer: ::V1::NeighborhoodOutingSerializer
+    has_many :ongoing_outings, serializer: ::V1::NeighborhoodOutingSerializer
 
     def member
       return false unless scope && scope[:user]
@@ -42,7 +43,7 @@ module V1
     end
 
     def posts
-      object.main_chat_messages.ordered.limit(25).map do |chat_message|
+      object.parent_chat_messages.ordered.limit(25).map do |chat_message|
         V1::ChatMessageSerializer.new(chat_message).as_json
       end
     end
