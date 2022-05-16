@@ -12,7 +12,7 @@ module Api
         end
 
         def index
-          messages = @neighborhood.chat_messages.ordered.limit(25)
+          messages = @neighborhood.parent_chat_messages.ordered.limit(25)
 
           if messages.present? && (join_request.last_message_read.nil? || join_request.last_message_read < messages.first.created_at)
             join_request.update(last_message_read: messages.first.created_at)

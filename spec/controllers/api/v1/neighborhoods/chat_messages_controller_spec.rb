@@ -31,21 +31,6 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
       it { expect(result).to have_key('chat_messages')}
       it { expect(result).to eq({
         "chat_messages" => [{
-          "id" => chat_message_2.id,
-          "message_type" => "text",
-          "content" => chat_message_2.content,
-          "user" => {
-            "id" => user.id,
-            "avatar_url" => nil,
-            "display_name" => "John D.",
-            "partner" => nil
-          },
-          "created_at" => chat_message_2.created_at.iso8601(3),
-          "post_id" => chat_message_1.id,
-          "has_comments" => false,
-          "comments_count" => 0,
-          "image_url" => nil,
-        }, {
           "id" => chat_message_1.id,
           "message_type" => "text",
           "content" => chat_message_1.content,
