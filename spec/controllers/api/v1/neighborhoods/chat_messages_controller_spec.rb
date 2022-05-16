@@ -158,11 +158,12 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
   describe 'GET comments' do
     let!(:chat_message_1) { FactoryBot.create(:chat_message, messageable: neighborhood, user: user) }
     let!(:chat_message_2) { FactoryBot.create(:chat_message, messageable: neighborhood, user: user, parent: chat_message_1) }
+    let!(:join_request) { FactoryBot.create(:join_request, joinable: neighborhood, user: user, status: "accepted") }
+
+    let(:request) { get :comments, params: { neighborhood_id: neighborhood.to_param, id: chat_message_1.id, token: user.token } }
 
     context "signed and in neighborhood" do
-      let!(:join_request) { FactoryBot.create(:join_request, joinable: neighborhood, user: user, status: "accepted") }
-
-      before { get :comments, params: { neighborhood_id: neighborhood.to_param, id: chat_message_1.id, token: user.token } }
+      before { request }
 
       it { expect(response.status).to eq(200) }
       it { expect(result).to have_key('chat_messages')}
@@ -184,6 +185,28 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
           "image_url" => nil,
         }]
       }) }
+    end
+
+    context "ordered" do
+      let!(:chat_message_3) { FactoryBot.create(:chat_message, messageable: neighborhood, user: user, parent: chat_message_1, created_at: chat_message_2.created_at + day) }
+
+      before { request }
+
+      context "in one order" do
+        let(:day) { - 1.day }
+
+        it { expect(result["chat_messages"].count).to eq(2) }
+        it { expect(result["chat_messages"][0]["id"]).to eq(chat_message_2.id) }
+        it { expect(result["chat_messages"][1]["id"]).to eq(chat_message_3.id) }
+      end
+
+      context "in another order" do
+        let(:day) { + 1.day }
+
+        it { expect(result["chat_messages"].count).to eq(2) }
+        it { expect(result["chat_messages"][0]["id"]).to eq(chat_message_3.id) }
+        it { expect(result["chat_messages"][1]["id"]).to eq(chat_message_2.id) }
+      end
     end
   end
 end
