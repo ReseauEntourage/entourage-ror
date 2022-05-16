@@ -47,5 +47,11 @@ module V1
     def children_count
       object.children.count
     end
+
+    def image_url
+      if object.parent_id.nil?
+        "https://picsum.photos/200/300"
+      end
+    end
   end
 end
