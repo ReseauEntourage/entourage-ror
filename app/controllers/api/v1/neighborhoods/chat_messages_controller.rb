@@ -59,7 +59,7 @@ module Api
 
           extension = MiniMime.lookup_by_content_type(params[:content_type]).extension
           key = "#{SecureRandom.uuid}.#{extension}"
-          url = Storage::Client.avatars
+          url = Storage::Client.private_images
             .object("neighborhood_posts/#{key}")
             .presigned_url(
               :put,
