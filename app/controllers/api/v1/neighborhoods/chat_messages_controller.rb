@@ -46,7 +46,7 @@ module Api
         def comments
           post = Neighborhood.find(params[:neighborhood_id]).chat_messages.where(id: params[:id]).first
 
-          render json: post.children, each_serializer: ::V1::ChatMessageSerializer
+          render json: post.children.order(created_at: :desc), each_serializer: ::V1::ChatMessageSerializer
         end
 
         private
