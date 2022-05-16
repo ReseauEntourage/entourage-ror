@@ -4,7 +4,7 @@ module Api
       class UnauthorizedNeighborhood < StandardError; end
 
       class ChatMessagesController < Api::V1::BaseController
-        before_action :set_neighborhood, only: [:index, :create, :comments]
+        before_action :set_neighborhood, only: [:index, :create, :comments, :presigned_upload]
         before_action :authorised_to_see_messages?
 
         rescue_from Api::V1::Neighborhoods::UnauthorizedNeighborhood do |exception|
@@ -47,6 +47,29 @@ module Api
           post = Neighborhood.find(params[:neighborhood_id]).chat_messages.where(id: params[:id]).first
 
           render json: post.children.order(created_at: :desc), each_serializer: ::V1::ChatMessageSerializer
+        end
+
+        def presigned_upload
+          allowed_types = %w(image/jpeg image/gif)
+
+          unless params[:content_type].in? allowed_types
+            type_list = allowed_types.to_sentence(two_words_connector: ' or ', last_word_connector: ', or ')
+            return render_error(code: "INVALID_CONTENT_TYPE", message: "Content-Type must be #{type_list}.", status: 400)
+          end
+
+          extension = MiniMime.lookup_by_content_type(params[:content_type]).extension
+          key = "#{SecureRandom.uuid}.#{extension}"
+          url = Storage::Client.avatars
+            .object("neighborhood_posts/#{key}")
+            .presigned_url(
+              :put,
+              expires_in: 1.minute.to_i,
+              acl: :private,
+              content_type: params[:content_type],
+              cache_control: "max-age=#{365.days}"
+            )
+
+          render json: { upload_key: key, presigned_url: url }
         end
 
         private
