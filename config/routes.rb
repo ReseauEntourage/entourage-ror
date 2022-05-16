@@ -322,6 +322,10 @@ Rails.application.routes.draw do
           member do
             get :comments
           end
+
+          collection do
+            post :presigned_upload
+          end
         end
 
         resources :users, :controller => 'neighborhoods/users', only: [:index, :destroy, :create] do
