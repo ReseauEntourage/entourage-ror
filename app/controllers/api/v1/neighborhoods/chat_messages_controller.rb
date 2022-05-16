@@ -6,7 +6,6 @@ module Api
       class ChatMessagesController < Api::V1::BaseController
         before_action :set_neighborhood, only: [:index, :create, :report, :comments]
         before_action :set_chat_message, only: [:report]
-        before_action :set_neighborhood, only: [:index, :create, :comments]
         before_action :authorised_to_see_messages?
 
         rescue_from Api::V1::Neighborhoods::UnauthorizedNeighborhood do |exception|
