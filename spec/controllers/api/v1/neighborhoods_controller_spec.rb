@@ -310,7 +310,8 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
         "message_type" => "text",
         "parent_id" => nil,
         "has_children" => false,
-        "children_count" => 0
+        "children_count" => 0,
+        "image_url" => nil,
       }]) }
     end
   end
