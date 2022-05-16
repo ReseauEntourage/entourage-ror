@@ -8,9 +8,9 @@ module V1
 
     attribute :metadata, if: :metadata?
 
-    attribute :parent_id, if: :neighborhood?
-    attribute :has_children, if: :neighborhood?
-    attribute :children_count, if: :neighborhood?
+    attribute :post_id, if: :neighborhood?
+    attribute :has_comments, if: :neighborhood?
+    attribute :comments_count, if: :neighborhood?
     attribute :image_url, if: :neighborhood?
 
     def metadata?
@@ -42,11 +42,15 @@ module V1
       object.metadata.except(:$id)
     end
 
-    def has_children
+    def post_id
+      object.parent_id
+    end
+
+    def has_comments
       object.has_children?
     end
 
-    def children_count
+    def comments_count
       object.children.count
     end
   end
