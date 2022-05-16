@@ -318,6 +318,10 @@ Rails.application.routes.draw do
 
         resources :chat_messages, :controller => 'neighborhoods/chat_messages', only: [:index, :create] do
           post :report # report an issue with a chat_message
+
+          member do
+            get :comments
+          end
         end
 
         resources :users, :controller => 'neighborhoods/users', only: [:index, :destroy, :create] do
