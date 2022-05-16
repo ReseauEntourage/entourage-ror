@@ -274,8 +274,8 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
           "partner_role_title" => nil,
         },
         "metadata" => {
-          "ends_at" => "2022-05-14T22:00:00.000+02:00",
-          "starts_at" => "2022-05-14T19:00:00.000+02:00",
+          "ends_at" => 1.day.from_now.change(hour: 22).iso8601(3),
+          "starts_at" => 1.day.from_now.change(hour: 19).iso8601(3),
           "place_name" => "Café la Renaissance",
           "previous_at" => nil,
           "portrait_url" => nil,
