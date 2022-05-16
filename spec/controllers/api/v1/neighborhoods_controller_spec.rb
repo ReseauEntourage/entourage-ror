@@ -311,7 +311,7 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
         "parent_id" => nil,
         "has_children" => false,
         "children_count" => 0,
-        "image_url" => nil,
+        "image_url" => ChatMessage::DEFAULT_URL,
       }]) }
     end
   end

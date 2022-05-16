@@ -1,4 +1,6 @@
 class ChatMessage < ApplicationRecord
+  DEFAULT_URL = "https://picsum.photos/200/300"
+
   include FeedsConcern
   include ChatServices::Spam
 

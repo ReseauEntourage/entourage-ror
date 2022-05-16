@@ -52,7 +52,7 @@ module V1
 
     def image_url
       if object.parent_id.nil?
-        "https://picsum.photos/200/300"
+        ChatMessage::DEFAULT_URL
       end
     end
   end

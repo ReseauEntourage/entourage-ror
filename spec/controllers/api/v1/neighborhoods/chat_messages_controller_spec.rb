@@ -59,7 +59,7 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
           "parent_id" => nil,
           "has_children" => true,
           "children_count" => 1,
-          "image_url" => nil,
+          "image_url" => ChatMessage::DEFAULT_URL,
         }]
       })
     }
@@ -90,6 +90,7 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
         let!(:join_request) { FactoryBot.create(:join_request, joinable: neighborhood, user: user, status: "accepted") }
         let(:parent_id) { nil }
         let(:has_children) { false }
+        let(:image_url) { nil }
 
         let(:json) {{
           "chat_message" => {
@@ -106,7 +107,7 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
             "parent_id" => parent_id,
             "has_children" => has_children,
             "children_count" => 0,
-            "image_url" => nil,
+            "image_url" => image_url,
           }
         }}
 
@@ -115,6 +116,8 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
         } }
 
         context "no nested" do
+          let(:image_url) { ChatMessage::DEFAULT_URL }
+
           it { expect(response.status).to eq(201) }
           it { expect(ChatMessage.count).to eq(1) }
           it { expect(result).to eq(json) }
