@@ -23,7 +23,7 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
     end
 
     context "signed and in neighborhood" do
-      let!(:join_request) { FactoryBot.create(:join_request, joinable: neighborhood, user: user, status: "accepted") }
+      let!(:join_request) { FactoryBot.create(:join_request, joinable: neighborhood, user: user, status: :accepted) }
 
       before { get :index, params: { neighborhood_id: neighborhood.to_param, token: user.token } }
 
@@ -71,7 +71,7 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
       let!(:android_app) { FactoryBot.create(:android_app, name: 'neighborhood') }
 
       context "nested chat_messages" do
-        let!(:join_request) { FactoryBot.create(:join_request, joinable: neighborhood, user: user, status: "accepted") }
+        let!(:join_request) { FactoryBot.create(:join_request, joinable: neighborhood, user: user, status: :accepted) }
         let(:parent_id) { nil }
         let(:has_comments) { false }
 
@@ -116,8 +116,8 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
 
       describe "send push notif" do
         it "sends notif to everyone accepted except message sender" do
-          join_request = FactoryBot.create(:join_request, joinable: neighborhood, user: user, status: "accepted")
-          join_request2 = FactoryBot.create(:join_request, joinable: neighborhood, status: "accepted")
+          join_request = FactoryBot.create(:join_request, joinable: neighborhood, user: user, status: :accepted)
+          join_request2 = FactoryBot.create(:join_request, joinable: neighborhood, status: :accepted)
 
           FactoryBot.create(:join_request, joinable: neighborhood, status: "pending")
 
@@ -143,7 +143,7 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
   describe 'GET comments' do
     let!(:chat_message_1) { FactoryBot.create(:chat_message, messageable: neighborhood, user: user) }
     let!(:chat_message_2) { FactoryBot.create(:chat_message, messageable: neighborhood, user: user, parent: chat_message_1) }
-    let!(:join_request) { FactoryBot.create(:join_request, joinable: neighborhood, user: user, status: "accepted") }
+    let!(:join_request) { FactoryBot.create(:join_request, joinable: neighborhood, user: user, status: :accepted) }
 
     let(:request) { get :comments, params: { neighborhood_id: neighborhood.to_param, id: chat_message_1.id, token: user.token } }
 
@@ -192,6 +192,37 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
         it { expect(result["chat_messages"][0]["id"]).to eq(chat_message_3.id) }
         it { expect(result["chat_messages"][1]["id"]).to eq(chat_message_2.id) }
       end
+    end
+  end
+
+  describe 'POST #presigned_upload' do
+    let(:request) { post :presigned_upload, params: { neighborhood_id: neighborhood.to_param, token: token, content_type: 'image/jpeg' } }
+
+    context "not signed in" do
+      let(:token) { nil }
+
+      before { request }
+
+      it { expect(response.status).to eq(401) }
+    end
+
+    context "signed in but not in neighborhood" do
+      let(:token) { user.token }
+
+      before { request }
+
+      it { expect(response.status).to eq(401) }
+    end
+
+    context "signed in and in neighborhood" do
+      let(:token) { user.token }
+      let!(:join_request) { FactoryBot.create(:join_request, joinable: neighborhood, user: user, status: :accepted) }
+
+      before { request }
+
+      it { expect(response.status).to eq(200) }
+      it { expect(JSON.parse(response.body)).to have_key('upload_key') }
+      it { expect(JSON.parse(response.body)).to have_key('presigned_url') }
     end
   end
 end
