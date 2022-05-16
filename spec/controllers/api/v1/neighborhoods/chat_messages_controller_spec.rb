@@ -61,8 +61,7 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
           "comments_count" => 1,
           "image_url" => ChatMessage::DEFAULT_URL,
         }]
-      })
-    }
+      }) }
     end
   end
 
@@ -185,6 +184,38 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
         post :report, params: { token: user.token, neighborhood_id: neighborhood.id, chat_message_id: entourage_chat_message.id }
       }
       it { expect(response.status).to eq 400 }
+    end
+  end
+
+  describe 'GET comments' do
+    let!(:chat_message_1) { FactoryBot.create(:chat_message, messageable: neighborhood, user: user) }
+    let!(:chat_message_2) { FactoryBot.create(:chat_message, messageable: neighborhood, user: user, parent: chat_message_1) }
+
+    context "signed and in neighborhood" do
+      let!(:join_request) { FactoryBot.create(:join_request, joinable: neighborhood, user: user, status: "accepted") }
+
+      before { get :comments, params: { neighborhood_id: neighborhood.to_param, id: chat_message_1.id, token: user.token } }
+
+      it { expect(response.status).to eq(200) }
+      it { expect(result).to have_key('chat_messages')}
+      it { expect(result).to eq({
+        "chat_messages" => [{
+          "id" => chat_message_2.id,
+          "message_type" => "text",
+          "content" => chat_message_2.content,
+          "user" => {
+            "id" => user.id,
+            "avatar_url" => nil,
+            "display_name" => "John D.",
+            "partner" => nil
+          },
+          "created_at" => chat_message_2.created_at.iso8601(3),
+          "post_id" => chat_message_1.id,
+          "has_comments" => false,
+          "comments_count" => 0,
+          "image_url" => nil,
+        }]
+      }) }
     end
   end
 end
