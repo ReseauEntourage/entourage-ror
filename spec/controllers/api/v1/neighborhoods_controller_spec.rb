@@ -235,6 +235,7 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
           "past_outings_count" => 0,
           "future_outings_count" => 0,
           "future_outings" => [],
+          "ongoing_outings" => [],
           "has_ongoing_outing" => false,
           "posts" => []
         }
