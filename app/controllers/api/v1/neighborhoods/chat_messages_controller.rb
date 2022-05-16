@@ -4,7 +4,7 @@ module Api
       class UnauthorizedNeighborhood < StandardError; end
 
       class ChatMessagesController < Api::V1::BaseController
-        before_action :set_neighborhood, only: [:index, :create]
+        before_action :set_neighborhood, only: [:index, :create, :comments]
         before_action :authorised_to_see_messages?
 
         rescue_from Api::V1::Neighborhoods::UnauthorizedNeighborhood do |exception|
@@ -41,6 +41,12 @@ module Api
         end
 
         def report
+        end
+
+        def comments
+          post = Neighborhood.find(params[:neighborhood_id]).chat_messages.where(id: params[:id]).first
+
+          render json: post.children, each_serializer: ::V1::ChatMessageSerializer
         end
 
         private
