@@ -41,9 +41,9 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
             "partner" => nil
           },
           "created_at" => chat_message_2.created_at.iso8601(3),
-          "parent_id" => chat_message_1.id,
-          "has_children" => false,
-          "children_count" => 0,
+          "post_id" => chat_message_1.id,
+          "has_comments" => false,
+          "comments_count" => 0,
           "image_url" => nil,
         }, {
           "id" => chat_message_1.id,
@@ -56,9 +56,9 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
             "partner" => nil
           },
           "created_at" => chat_message_1.created_at.iso8601(3),
-          "parent_id" => nil,
-          "has_children" => true,
-          "children_count" => 1,
+          "post_id" => nil,
+          "has_comments" => true,
+          "comments_count" => 1,
           "image_url" => nil,
         }]
       })
@@ -89,7 +89,7 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
       context "nested chat_messages" do
         let!(:join_request) { FactoryBot.create(:join_request, joinable: neighborhood, user: user, status: "accepted") }
         let(:parent_id) { nil }
-        let(:has_children) { false }
+        let(:has_comments) { false }
 
         let(:json) {{
           "chat_message" => {
@@ -103,9 +103,9 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
               "partner" => nil
             },
             "created_at" => ChatMessage.last.created_at.iso8601(3),
-            "parent_id" => parent_id,
-            "has_children" => has_children,
-            "children_count" => 0,
+            "post_id" => parent_id,
+            "has_comments" => has_comments,
+            "comments_count" => 0,
             "image_url" => nil,
           }
         }}

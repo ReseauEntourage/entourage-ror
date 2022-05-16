@@ -429,8 +429,12 @@ ActiveRecord::Schema.define(version: 2022_05_16_092500) do
     t.datetime "feed_updated_at"
     t.string "welcome_message"
     t.string "other_interest"
+    t.string "google_place_id"
+    t.string "place_name"
+    t.string "postal_code"
     t.index ["feed_updated_at"], name: "index_neighborhoods_on_feed_updated_at"
     t.index ["name"], name: "index_neighborhoods_on_name"
+    t.index ["postal_code"], name: "index_neighborhoods_on_postal_code"
     t.index ["user_id"], name: "index_neighborhoods_on_user_id"
   end
 
