@@ -235,6 +235,7 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
           "past_outings_count" => 0,
           "future_outings_count" => 0,
           "future_outings" => [],
+          "ongoing_outings" => [],
           "has_ongoing_outing" => false,
           "posts" => []
         }
@@ -308,9 +309,9 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
         },
         "created_at" => chat_message.created_at.iso8601(3),
         "message_type" => "text",
-        "parent_id" => nil,
-        "has_children" => false,
-        "children_count" => 0,
+        "post_id" => nil,
+        "has_comments" => false,
+        "comments_count" => 0,
         "image_url" => ChatMessage::DEFAULT_URL,
       }]) }
     end
