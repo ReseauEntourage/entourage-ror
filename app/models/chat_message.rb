@@ -2,6 +2,8 @@ class ChatMessage < ApplicationRecord
   include FeedsConcern
   include ChatServices::Spam
 
+  CONTENT_TYPES = %w(image/jpeg image/png)
+
   has_ancestry
 
   belongs_to :messageable, polymorphic: true
