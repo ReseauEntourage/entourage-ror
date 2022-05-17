@@ -53,11 +53,5 @@ module V1
     def comments_count
       object.children.count
     end
-
-    def image_url
-      if object.parent_id.nil?
-        ChatMessage::DEFAULT_URL
-      end
-    end
   end
 end

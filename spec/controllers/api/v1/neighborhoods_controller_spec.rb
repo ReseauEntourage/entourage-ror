@@ -312,7 +312,7 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
         "post_id" => nil,
         "has_comments" => false,
         "comments_count" => 0,
-        "image_url" => ChatMessage::DEFAULT_URL,
+        "image_url" => nil,
       }]) }
     end
   end
