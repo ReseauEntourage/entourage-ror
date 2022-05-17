@@ -59,7 +59,7 @@ module Api
         end
 
         def presigned_upload
-          allowed_types = %w(image/jpeg image/gif)
+          allowed_types = ChatMessage::CONTENT_TYPES
 
           unless params[:content_type].in? allowed_types
             type_list = allowed_types.to_sentence(two_words_connector: ' or ', last_word_connector: ', or ')
@@ -83,6 +83,10 @@ module Api
 
         private
 
+        def chat_messages_params
+          params.require(:chat_message).permit(:content, :message_type, :parent_id, :image_url)
+        end
+
         def set_neighborhood
           @neighborhood = Neighborhood.find(params[:neighborhood_id])
         end
@@ -90,10 +94,6 @@ module Api
         def set_chat_message
           # we want to force chat_message to belong to Neighborhood
           @chat_message = ChatMessage.where(id: params[:chat_message_id], messageable_type: :Neighborhood).first
-        end
-
-        def chat_messages_params
-          params.require(:chat_message).permit(:content, :message_type, :parent_id)
         end
 
         def join_request
