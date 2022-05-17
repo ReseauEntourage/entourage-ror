@@ -7,8 +7,10 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
   let(:result) { JSON.parse(response.body) }
 
   describe 'GET index' do
-    let!(:chat_message_1) { FactoryBot.create(:chat_message, messageable: neighborhood, user: user) }
+    let!(:chat_message_1) { FactoryBot.create(:chat_message, messageable: neighborhood, user: user, image_url: "foo") }
     let!(:chat_message_2) { FactoryBot.create(:chat_message, messageable: neighborhood, user: user, parent: chat_message_1) }
+
+    before { ChatMessage.stub(:url_for) { "http://foo.bar"} }
 
     context "not signed in" do
       before { get :index, params: { neighborhood_id: neighborhood.to_param } }
@@ -44,7 +46,7 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
           "post_id" => nil,
           "has_comments" => true,
           "comments_count" => 1,
-          "image_url" => nil,
+          "image_url" => "http://foo.bar",
         }]
       }) }
     end

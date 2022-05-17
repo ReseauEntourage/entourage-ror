@@ -37,6 +37,26 @@ class ChatMessage < ApplicationRecord
   after_create :update_sender_report_prompt_status
   after_create :update_recipients_report_prompt_status
 
+  class << self
+    def bucket
+      Storage::Client.private_images
+    end
+
+    def presigned_url key, content_type
+      bucket.object(key).presigned_url(
+        :put,
+        expires_in: 1.minute.to_i,
+        acl: :private,
+        content_type: content_type,
+        cache_control: "max-age=#{365.days}"
+      )
+    end
+
+    def url_for key
+      bucket.url_for(key: key, extra: { expire: 1.day })
+    end
+  end
+
   def validate_ancestry!
     if parent && parent.has_parent?
       errors.add(:interests, "Il n'est pas possible de commenter une discussion")

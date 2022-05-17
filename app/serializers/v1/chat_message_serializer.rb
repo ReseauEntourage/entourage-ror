@@ -53,5 +53,11 @@ module V1
     def comments_count
       object.children.count
     end
+
+    def image_url
+      return unless object.image_url.present?
+
+      ChatMessage.url_for(object.image_url)
+    end
   end
 end
