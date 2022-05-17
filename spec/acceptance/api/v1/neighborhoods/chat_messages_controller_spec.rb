@@ -87,4 +87,30 @@ resource Api::V1::Neighborhoods::ChatMessagesController do
       end
     end
   end
+
+  post '/api/v1/neighborhoods/:neighborhood_id/chat_messages/presigned_upload' do
+    route_summary "Presigned upload"
+
+    parameter :neighborhood_id, type: :integer, required: true
+    parameter :token, type: :string, required: true
+    parameter :content_type, "image/jpeg, image/png", type: :string, required: true
+
+    let(:user) { FactoryBot.create(:pro_user) }
+    let(:neighborhood) { FactoryBot.create(:neighborhood) }
+    let(:neighborhood_id) { neighborhood.id }
+    let!(:join_request) { FactoryBot.create(:join_request, joinable: neighborhood, user: user, status: :accepted) }
+
+    let(:raw_post) { {
+      token: user.token,
+      content_type: 'image/jpeg',
+    }.to_json }
+
+    context '200' do
+      example_request 'Presigned upload' do
+        expect(response_status).to eq(200)
+        expect(JSON.parse(response_body)).to have_key('upload_key')
+        expect(JSON.parse(response_body)).to have_key('presigned_url')
+      end
+    end
+  end
 end
