@@ -59,15 +59,7 @@ module Api
 
           extension = MiniMime.lookup_by_content_type(params[:content_type]).extension
           key = "#{SecureRandom.uuid}.#{extension}"
-          url = Storage::Client.private_images
-            .object("neighborhood_posts/#{key}")
-            .presigned_url(
-              :put,
-              expires_in: 1.minute.to_i,
-              acl: :private,
-              content_type: params[:content_type],
-              cache_control: "max-age=#{365.days}"
-            )
+          url = ChatMessage.presigned_url("neighborhood_posts/#{key}", params[:content_type])
 
           render json: { upload_key: key, presigned_url: url }
         end
