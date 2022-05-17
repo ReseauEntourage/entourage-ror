@@ -50,7 +50,7 @@ module Api
         end
 
         def presigned_upload
-          allowed_types = %w(image/jpeg image/gif)
+          allowed_types = ChatMessage::CONTENT_TYPES
 
           unless params[:content_type].in? allowed_types
             type_list = allowed_types.to_sentence(two_words_connector: ' or ', last_word_connector: ', or ')
@@ -75,7 +75,7 @@ module Api
         private
 
         def chat_messages_params
-          params.require(:chat_message).permit(:content, :message_type, :parent_id)
+          params.require(:chat_message).permit(:content, :message_type, :parent_id, :image_url)
         end
 
         def set_neighborhood
