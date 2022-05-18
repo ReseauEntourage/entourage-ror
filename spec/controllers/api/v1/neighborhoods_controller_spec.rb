@@ -313,8 +313,19 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
         "has_comments" => false,
         "comments_count" => 0,
         "image_url" => nil,
-        "read" => false,
+        "read" => nil,
       }]) }
+    end
+
+    describe 'is member with chat_message' do
+      let!(:join_request) { create(:join_request, user: user, joinable: neighborhood, status: :accepted) }
+      let!(:chat_message) { FactoryBot.create(:chat_message, messageable: neighborhood, user: user) }
+
+      before { get :show, params: { id: neighborhood.id, token: user.token } }
+
+      it { expect(response.status).to eq 200 }
+      it { expect(result['neighborhood']).to have_key('posts') }
+      it { expect(result['neighborhood']['posts'][0]["read"]).to eq(false) }
     end
   end
 

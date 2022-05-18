@@ -7,7 +7,7 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
   let(:result) { JSON.parse(response.body) }
 
   describe 'GET index' do
-    let!(:chat_message_1) { FactoryBot.create(:chat_message, messageable: neighborhood, user: user, image_url: "foo") }
+    let!(:chat_message_1) { FactoryBot.create(:chat_message, messageable: neighborhood, user: user, image_url: "foo", created_at: Time.now) }
     let!(:chat_message_2) { FactoryBot.create(:chat_message, messageable: neighborhood, user: user, parent: chat_message_1) }
 
     before { ChatMessage.stub(:url_for) { "http://foo.bar"} }
@@ -50,6 +50,22 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
           "read" => true
         }]
       }) }
+    end
+
+    context 'chat_message has been read' do
+      let!(:join_request) { FactoryBot.create(:join_request, joinable: neighborhood, user: user, status: :accepted, last_message_read: Time.now) }
+
+      before { get :index, params: { neighborhood_id: neighborhood.to_param, token: user.token } }
+      it { expect(result['chat_messages'][0]['read']).to eq(true) }
+      it { expect(JoinRequest.last.last_message_read.to_s).to eq(chat_message_1.created_at.to_s) }
+    end
+
+    context 'chat_message has not been read' do
+      let!(:join_request) { FactoryBot.create(:join_request, joinable: neighborhood, user: user, status: :accepted, last_message_read: 1.day.ago) }
+
+      before { get :index, params: { neighborhood_id: neighborhood.to_param, token: user.token } }
+      it { expect(result['chat_messages'][0]['read']).to eq(false) }
+      it { expect(JoinRequest.last.last_message_read.to_s).to eq(chat_message_1.created_at.to_s) }
     end
   end
 
@@ -94,7 +110,7 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
             "has_comments" => has_comments,
             "comments_count" => 0,
             "image_url" => nil,
-            "read" => false
+            "read" => nil
           }
         }}
 
