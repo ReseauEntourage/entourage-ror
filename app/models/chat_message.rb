@@ -3,6 +3,7 @@ class ChatMessage < ApplicationRecord
   include ChatServices::Spam
 
   CONTENT_TYPES = %w(image/jpeg image/png)
+  BUCKET_PREFIX = "chat_messages"
 
   has_ancestry
 
@@ -43,7 +44,7 @@ class ChatMessage < ApplicationRecord
     end
 
     def presigned_url key, content_type
-      bucket.object(key).presigned_url(
+      bucket.object(path key).presigned_url(
         :put,
         expires_in: 1.minute.to_i,
         acl: :private,
@@ -53,7 +54,11 @@ class ChatMessage < ApplicationRecord
     end
 
     def url_for key
-      bucket.url_for(key: key, extra: { expire: 1.day })
+      bucket.url_for(key: path(key), extra: { expire: 1.day })
+    end
+
+    def path key
+      "#{BUCKET_PREFIX}/#{key}"
     end
   end
 
