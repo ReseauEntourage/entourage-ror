@@ -47,7 +47,7 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
           "has_comments" => true,
           "comments_count" => 1,
           "image_url" => "http://foo.bar",
-          "read" => false
+          "read" => true
         }]
       }) }
     end
