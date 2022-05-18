@@ -5,7 +5,7 @@ module Api
 
       class ChatMessagesController < Api::V1::BaseController
         before_action :set_neighborhood, only: [:index, :create, :comments, :presigned_upload]
-        before_action :authorised_to_see_messages?
+        before_action :ensure_is_member, except: [:index, :comments]
 
         rescue_from Api::V1::Neighborhoods::UnauthorizedNeighborhood do |exception|
           render json: { message: 'unauthorized : you are not accepted in this neighborhood' }, status: :unauthorized
@@ -14,7 +14,7 @@ module Api
         def index
           messages = @neighborhood.parent_chat_messages.ordered.limit(25)
 
-          if messages.present? && (join_request.last_message_read.nil? || join_request.last_message_read < messages.first.created_at)
+          if messages.present? && join_request.present? && (join_request.last_message_read.nil? || join_request.last_message_read < messages.first.created_at)
             join_request.update(last_message_read: messages.first.created_at)
           end
 
@@ -78,7 +78,7 @@ module Api
           @join_request ||= JoinRequest.where(joinable: @neighborhood, user: current_user, status: :accepted).first
         end
 
-        def authorised_to_see_messages?
+        def ensure_is_member
           raise Api::V1::Neighborhoods::UnauthorizedNeighborhood unless join_request
         end
       end
