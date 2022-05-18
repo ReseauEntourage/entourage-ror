@@ -41,7 +41,8 @@ resource Api::V1::Neighborhoods::ChatMessagesController do
     parameter :neighborhood_id, type: :integer, required: true
 
     with_options :scope => :chat_message, :required => true do
-      parameter :content, type: :string
+      parameter :content, "content is optional whenever image_url is defined", type: :string, required: false
+      parameter :image_url, type: :string, required: false
       parameter :parent_id, "parent chat_message id", :required => false
     end
 
