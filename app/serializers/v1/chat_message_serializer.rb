@@ -62,15 +62,16 @@ module V1
     end
 
     def read
-      return false unless join_request && join_request.last_message_read.present?
+      return unless current_join_request
+      return false unless current_join_request.last_message_read.present?
 
-      object.created_at <= join_request.last_message_read
+      object.created_at <= current_join_request.last_message_read
     end
 
     private
 
-    def join_request
-      @join_request ||= object.join_request
+    def current_join_request
+      scope[:current_join_request]
     end
   end
 end

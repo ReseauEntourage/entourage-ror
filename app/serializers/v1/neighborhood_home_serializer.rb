@@ -44,8 +44,16 @@ module V1
 
     def posts
       object.parent_chat_messages.ordered.limit(25).map do |chat_message|
-        V1::ChatMessageSerializer.new(chat_message).as_json
+        V1::ChatMessageSerializer.new(chat_message, scope: { current_join_request: current_join_request }).as_json
       end
+    end
+
+    private
+
+    def current_join_request
+      return unless scope[:user]
+
+      @current_join_request ||= JoinRequest.where(joinable: object, user: scope[:user], status: :accepted).first
     end
   end
 end
