@@ -199,11 +199,11 @@ Host: example.org
 Cookie: </pre>
 
           <h4>Route</h4>
-          <pre class="request route highlight">PATCH api/v1/neighborhoods/15</pre>
+          <pre class="request route highlight">PATCH api/v1/neighborhoods/16</pre>
 
 
             <h4>Body</h4>
-            <pre class="request body">{"token":"foobar116","neighborhood":{"name":"new name","ethics":"new ethics"}}</pre>
+            <pre class="request body">{"token":"foobar118","neighborhood":{"name":"new name","ethics":"new ethics"}}</pre>
 
 
             <h3>Response</h3>
@@ -218,17 +218,17 @@ Access-Control-Allow-Origin: *
 Access-Control-Allow-Methods: GET,POST,PUT,PATCH,DELETE
 Access-Control-Allow-Headers: Origin,Accept,Content-Type,X-Requested-With,X-CSRF-Token,X-API-KEY
 Content-Type: application/json; charset=utf-8
-ETag: W/&quot;655d05cff99dba17439523df6739e422&quot;
+ETag: W/&quot;0a2ae0433dc17e668edf0c80f54f718b&quot;
 Cache-Control: max-age=0, private, must-revalidate
-X-Request-Id: c0aa1037-cce0-4bf3-82d2-b4dea16ad20a
-X-Runtime: 0.018639
+X-Request-Id: e4101ed9-ea6c-40b9-9189-ac90a9ad7ec6
+X-Runtime: 0.019816
 Content-Length: 448</pre>
             <h4>Status</h4>
             <pre class="response status">200 OK</pre>
               <h4>Body</h4>
               <pre class="response body">{
   &quot;neighborhood&quot;: {
-    &quot;id&quot;: 15,
+    &quot;id&quot;: 16,
     &quot;name&quot;: &quot;new name&quot;,
     &quot;description&quot;: null,
     &quot;welcome_message&quot;: null,
@@ -248,13 +248,13 @@ Content-Length: 448</pre>
       &quot;display_address&quot;: &quot;&quot;
     },
     &quot;user&quot;: {
-      &quot;id&quot;: 118,
+      &quot;id&quot;: 120,
       &quot;display_name&quot;: &quot;John D.&quot;,
       &quot;avatar_url&quot;: null
     },
     &quot;members&quot;: [
       {
-        &quot;id&quot;: 118,
+        &quot;id&quot;: 120,
         &quot;display_name&quot;: &quot;John D.&quot;,
         &quot;avatar_url&quot;: null
       }
