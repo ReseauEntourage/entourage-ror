@@ -21,7 +21,7 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
     context "signed in but not in neighborhood" do
       before { get :index, params: { neighborhood_id: neighborhood.to_param, token: user.token } }
 
-      it { expect(response.status).to eq(401) }
+      it { expect(response.status).to eq(200) }
     end
 
     context "signed and in neighborhood" do
@@ -47,6 +47,7 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
           "has_comments" => true,
           "comments_count" => 1,
           "image_url" => "http://foo.bar",
+          "read" => false
         }]
       }) }
     end
@@ -93,6 +94,7 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
             "has_comments" => has_comments,
             "comments_count" => 0,
             "image_url" => nil,
+            "read" => false
           }
         }}
 
@@ -199,6 +201,7 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
           "has_comments" => false,
           "comments_count" => 0,
           "image_url" => nil,
+          "read" => false
         }]
       }) }
     end
