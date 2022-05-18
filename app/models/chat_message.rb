@@ -15,7 +15,8 @@ class ChatMessage < ApplicationRecord
 
   before_validation :generate_content
 
-  validates :messageable_id, :messageable_type, :content, :user_id, presence: true
+  validates :messageable_id, :messageable_type, :user_id, presence: true
+  validates :content, presence: true, unless: -> (m) { m.image_url.present? }
   validates_inclusion_of :message_type, in: -> (m) { m.message_types }
   validates :metadata, schema: -> (m) { "#{m.message_type}:metadata" }
 
