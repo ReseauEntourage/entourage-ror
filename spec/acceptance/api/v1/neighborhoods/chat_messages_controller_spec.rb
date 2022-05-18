@@ -26,9 +26,9 @@ resource Api::V1::Neighborhoods::ChatMessagesController do
       end
     end
 
-    context '401' do
-      example_request 'Cannot see chat_messages if the user does not belong to the neighborhood' do
-        expect(response_status).to eq(401)
+    context '200' do
+      example_request 'Non members can see chat_messages' do
+        expect(response_status).to eq(200)
       end
     end
   end
