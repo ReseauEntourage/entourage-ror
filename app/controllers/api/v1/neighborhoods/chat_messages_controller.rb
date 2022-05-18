@@ -12,7 +12,7 @@ module Api
         end
 
         def index
-          messages = @neighborhood.parent_chat_messages.ordered.limit(25)
+          messages = @neighborhood.parent_chat_messages.ordered.page(page).per(per)
 
           if messages.present? && join_request.present? && (join_request.last_message_read.nil? || join_request.last_message_read < messages.first.created_at)
             join_request.update(last_message_read: messages.first.created_at)
@@ -80,6 +80,14 @@ module Api
 
         def ensure_is_member
           raise Api::V1::Neighborhoods::UnauthorizedNeighborhood unless join_request
+        end
+
+        def page
+          params[:page] || 1
+        end
+
+        def per
+          params[:per] || 25
         end
       end
     end
