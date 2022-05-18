@@ -64,7 +64,7 @@ module V1
     def read
       return false unless join_request && join_request.last_message_read.present?
 
-      object.created_at < join_request.last_message_read
+      object.created_at <= join_request.last_message_read
     end
 
     private
