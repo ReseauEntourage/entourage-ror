@@ -313,6 +313,7 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
         "has_comments" => false,
         "comments_count" => 0,
         "image_url" => nil,
+        "read" => false,
       }]) }
     end
   end
