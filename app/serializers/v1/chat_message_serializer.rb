@@ -12,6 +12,7 @@ module V1
     attribute :has_comments, if: :neighborhood?
     attribute :comments_count, if: :neighborhood?
     attribute :image_url, if: :neighborhood?
+    attribute :read, if: :neighborhood?
 
     def metadata?
       object.message_type.in?(['outing', 'status_update', 'share'])
@@ -58,6 +59,18 @@ module V1
       return unless object.image_url.present?
 
       ChatMessage.url_for(object.image_url)
+    end
+
+    def read
+      return false unless join_request && join_request.last_message_read.present?
+
+      object.created_at < join_request.last_message_read
+    end
+
+    private
+
+    def join_request
+      @join_request ||= object.join_request
     end
   end
 end

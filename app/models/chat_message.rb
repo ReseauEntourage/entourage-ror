@@ -62,6 +62,14 @@ class ChatMessage < ApplicationRecord
     end
   end
 
+  def join_request
+    JoinRequest.where(
+      joinable_type: messageable_type,
+      joinable_id: messageable_id,
+      user_id: user_id
+    ).first
+  end
+
   def validate_ancestry!
     if parent && parent.has_parent?
       errors.add(:interests, "Il n'est pas possible de commenter une discussion")
