@@ -21,7 +21,7 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
     context "signed in but not in neighborhood" do
       before { get :index, params: { neighborhood_id: neighborhood.to_param, token: user.token } }
 
-      it { expect(response.status).to eq(401) }
+      it { expect(response.status).to eq(200) }
     end
 
     context "signed and in neighborhood" do
