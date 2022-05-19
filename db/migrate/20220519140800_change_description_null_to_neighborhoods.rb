@@ -1,4 +1,4 @@
-class ChangeDescriptionNullToNeighborhood < ActiveRecord::Migration[5.2]
+class ChangeDescriptionNullToNeighborhoods < ActiveRecord::Migration[5.2]
   def up
     change_column_null :neighborhoods, :description, true
   end
