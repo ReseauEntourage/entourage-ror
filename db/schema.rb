@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_05_18_140500) do
+ActiveRecord::Schema.define(version: 2022_05_19_140800) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -433,7 +433,6 @@ ActiveRecord::Schema.define(version: 2022_05_18_140500) do
     t.string "place_name"
     t.string "postal_code"
     t.index ["feed_updated_at"], name: "index_neighborhoods_on_feed_updated_at"
-    t.index ["latitude", "longitude"], name: "neighborhoods_coordinates"
     t.index ["name"], name: "index_neighborhoods_on_name"
     t.index ["postal_code"], name: "index_neighborhoods_on_postal_code"
     t.index ["user_id"], name: "index_neighborhoods_on_user_id"
@@ -893,6 +892,7 @@ ActiveRecord::Schema.define(version: 2022_05_18_140500) do
     t.string "partner_role_title"
     t.uuid "uuid", default: -> { "gen_random_uuid()" }, null: false
     t.string "goal"
+    t.jsonb "interests_old", default: [], null: false
     t.string "encrypted_admin_password"
     t.string "reset_admin_password_token"
     t.datetime "reset_admin_password_sent_at"

@@ -26,7 +26,7 @@ class Neighborhood < ApplicationRecord
   reverse_geocoded_by :latitude, :longitude
   has_many :chat_messages, as: :messageable, dependent: :destroy
 
-  validates_presence_of [:name, :latitude, :longitude]
+  validates_presence_of [:name, :description, :latitude, :longitude]
 
   alias_attribute :title, :name
 

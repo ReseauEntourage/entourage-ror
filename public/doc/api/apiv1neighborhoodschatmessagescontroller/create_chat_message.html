@@ -140,11 +140,19 @@ table th, table td {
                 </td>
               </tr>
               <tr>
-                <td class="required">
+                <td>
                     <span class="name">chat_message[content]</span>
                 </td>
                 <td>
-                  <span class="description">Chat message content</span>
+                  <span class="description">content is optional whenever image_url is defined</span>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                    <span class="name">chat_message[image_url]</span>
+                </td>
+                <td>
+                  <span class="description">Chat message image url</span>
                 </td>
               </tr>
               <tr>
@@ -167,7 +175,7 @@ Host: example.org
 Cookie: </pre>
 
           <h4>Route</h4>
-          <pre class="request route highlight">POST /api/v1/neighborhoods/3/chat_messages</pre>
+          <pre class="request route highlight">POST /api/v1/neighborhoods/237/chat_messages</pre>
 
 
             <h4>Body</h4>
@@ -186,31 +194,31 @@ Access-Control-Allow-Origin: *
 Access-Control-Allow-Methods: GET,POST,PUT,PATCH,DELETE
 Access-Control-Allow-Headers: Origin,Accept,Content-Type,X-Requested-With,X-CSRF-Token,X-API-KEY
 Content-Type: application/json; charset=utf-8
-ETag: W/&quot;c3b893775aa10e0b8e1c7427e55b3e5e&quot;
+ETag: W/&quot;9ca5a08018eebc259f98cd437d3bd6b8&quot;
 Cache-Control: max-age=0, private, must-revalidate
-X-Request-Id: 90beb508-fbf4-4c90-9fa9-7e88d24e9ab3
-X-Runtime: 0.069959
-Content-Length: 268</pre>
+X-Request-Id: 21cd4901-5d64-4146-8c35-9ac0b8e43e87
+X-Runtime: 0.034550
+Content-Length: 271</pre>
             <h4>Status</h4>
             <pre class="response status">201 Created</pre>
               <h4>Body</h4>
               <pre class="response body">{
   &quot;chat_message&quot;: {
-    &quot;id&quot;: 6,
+    &quot;id&quot;: 334,
     &quot;content&quot;: &quot;foo&quot;,
     &quot;user&quot;: {
-      &quot;id&quot;: 90,
+      &quot;id&quot;: 4545,
       &quot;avatar_url&quot;: null,
       &quot;display_name&quot;: &quot;John D.&quot;,
       &quot;partner&quot;: null
     },
-    &quot;created_at&quot;: &quot;2022-05-18T13:55:41.611+02:00&quot;,
+    &quot;created_at&quot;: &quot;2022-05-19T14:46:09.873+02:00&quot;,
     &quot;message_type&quot;: &quot;text&quot;,
     &quot;post_id&quot;: null,
     &quot;has_comments&quot;: false,
     &quot;comments_count&quot;: 0,
     &quot;image_url&quot;: null,
-    &quot;read&quot;: false
+    &quot;read&quot;: null
   }
 }</pre>
       </div>

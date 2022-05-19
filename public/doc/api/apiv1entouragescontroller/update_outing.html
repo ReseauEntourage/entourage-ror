@@ -287,7 +287,7 @@ Host: example.org
 Cookie: </pre>
 
           <h4>Route</h4>
-          <pre class="request route highlight">PATCH api/v1/entourages/20</pre>
+          <pre class="request route highlight">PATCH api/v1/entourages/1231</pre>
 
 
             <h4>Body</h4>
@@ -306,18 +306,18 @@ Access-Control-Allow-Origin: *
 Access-Control-Allow-Methods: GET,POST,PUT,PATCH,DELETE
 Access-Control-Allow-Headers: Origin,Accept,Content-Type,X-Requested-With,X-CSRF-Token,X-API-KEY
 Content-Type: application/json; charset=utf-8
-ETag: W/&quot;d035cd011cbc14e0149342dd2c9bb6c9&quot;
+ETag: W/&quot;763be9449c29dc3dfa468aa74d93bad3&quot;
 Cache-Control: max-age=0, private, must-revalidate
-X-Request-Id: a3d506eb-898c-479f-8248-508b09c7fc1b
-X-Runtime: 0.058284
-Content-Length: 2584</pre>
+X-Request-Id: a03a149c-6612-4859-9361-a4046416b9d7
+X-Runtime: 0.041011
+Content-Length: 2588</pre>
             <h4>Status</h4>
             <pre class="response status">200 OK</pre>
               <h4>Body</h4>
               <pre class="response body">{
   &quot;entourage&quot;: {
-    &quot;id&quot;: 20,
-    &quot;uuid&quot;: &quot;eX9w8EBYtAcU&quot;,
+    &quot;id&quot;: 1231,
+    &quot;uuid&quot;: &quot;eorYB35u2MeI&quot;,
     &quot;title&quot;: &quot;Foobar&quot;,
     &quot;group_type&quot;: &quot;outing&quot;,
     &quot;entourage_type&quot;: &quot;ask_for_help&quot;,
@@ -325,32 +325,32 @@ Content-Length: 2584</pre>
     &quot;status&quot;: &quot;open&quot;,
     &quot;public&quot;: true,
     &quot;metadata&quot;: {
-      &quot;ends_at&quot;: &quot;2022-05-19T22:00:00.000+02:00&quot;,
-      &quot;starts_at&quot;: &quot;2022-05-19T19:00:00.000+02:00&quot;,
+      &quot;ends_at&quot;: &quot;2022-05-20T22:00:00.000+02:00&quot;,
+      &quot;starts_at&quot;: &quot;2022-05-20T19:00:00.000+02:00&quot;,
       &quot;place_name&quot;: &quot;Café la Renaissance&quot;,
       &quot;previous_at&quot;: null,
-      &quot;portrait_url&quot;: &quot;https://foobar.s3.eu-west-1.amazonaws.com/entourage_images/images/path/to/portrait_url?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=foo%2F20220518%2Feu-west-1%2Fs3%2Faws4_request&amp;X-Amz-Date=20220518T115540Z&amp;X-Amz-Expires=3600&amp;X-Amz-SignedHeaders=host&amp;X-Amz-Signature=49af926ca297b17911418db96437631c11d3fcbef4b10ae6dcaa33d30f37baf5&quot;,
-      &quot;landscape_url&quot;: &quot;https://foobar.s3.eu-west-1.amazonaws.com/entourage_images/images/path/to/landscape_url?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=foo%2F20220518%2Feu-west-1%2Fs3%2Faws4_request&amp;X-Amz-Date=20220518T115540Z&amp;X-Amz-Expires=3600&amp;X-Amz-SignedHeaders=host&amp;X-Amz-Signature=813d4f2139aa36316d9d8da9195795374e6b86906171152d5857613191c0699a&quot;,
+      &quot;portrait_url&quot;: &quot;https://foobar.s3.eu-west-1.amazonaws.com/entourage_images/images/path/to/portrait_url?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=foo%2F20220519%2Feu-west-1%2Fs3%2Faws4_request&amp;X-Amz-Date=20220519T124608Z&amp;X-Amz-Expires=3600&amp;X-Amz-SignedHeaders=host&amp;X-Amz-Signature=d9f46fc42b211902c8d44e731645628900f93fbe0548eccd3813a49853ae386e&quot;,
+      &quot;landscape_url&quot;: &quot;https://foobar.s3.eu-west-1.amazonaws.com/entourage_images/images/path/to/landscape_url?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=foo%2F20220519%2Feu-west-1%2Fs3%2Faws4_request&amp;X-Amz-Date=20220519T124608Z&amp;X-Amz-Expires=3600&amp;X-Amz-SignedHeaders=host&amp;X-Amz-Signature=fe3eb16934fa162c0950eeb3c0e1930a0b3e9aa1884e6c15320ee937c4b831f4&quot;,
       &quot;street_address&quot;: &quot;44 rue de l’Assomption, 75016 Paris, France&quot;,
       &quot;display_address&quot;: &quot;Café la Renaissance, 44 rue de l’Assomption, 75016 Paris&quot;,
       &quot;google_place_id&quot;: &quot;foobar&quot;,
-      &quot;portrait_thumbnail_url&quot;: &quot;https://foobar.s3.eu-west-1.amazonaws.com/entourage_images/images/path/to/portrait_thumbnail_url?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=foo%2F20220518%2Feu-west-1%2Fs3%2Faws4_request&amp;X-Amz-Date=20220518T115540Z&amp;X-Amz-Expires=3600&amp;X-Amz-SignedHeaders=host&amp;X-Amz-Signature=0f7e563f5733b073dfd850f2ab508148f0735c5422991cb9b1ec516dc2490134&quot;,
-      &quot;landscape_thumbnail_url&quot;: &quot;https://foobar.s3.eu-west-1.amazonaws.com/entourage_images/images/path/to/landscape_thumbnail_url?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=foo%2F20220518%2Feu-west-1%2Fs3%2Faws4_request&amp;X-Amz-Date=20220518T115540Z&amp;X-Amz-Expires=3600&amp;X-Amz-SignedHeaders=host&amp;X-Amz-Signature=9b97f500a083a24986947a878c3439ab17ffcc7f3e599b5f9d40e054bc842514&quot;
+      &quot;portrait_thumbnail_url&quot;: &quot;https://foobar.s3.eu-west-1.amazonaws.com/entourage_images/images/path/to/portrait_thumbnail_url?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=foo%2F20220519%2Feu-west-1%2Fs3%2Faws4_request&amp;X-Amz-Date=20220519T124608Z&amp;X-Amz-Expires=3600&amp;X-Amz-SignedHeaders=host&amp;X-Amz-Signature=80a6fee6da8badf3187d5cb67796abcf5bb27a9fb2caa83b318fd0695e4048f9&quot;,
+      &quot;landscape_thumbnail_url&quot;: &quot;https://foobar.s3.eu-west-1.amazonaws.com/entourage_images/images/path/to/landscape_thumbnail_url?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=foo%2F20220519%2Feu-west-1%2Fs3%2Faws4_request&amp;X-Amz-Date=20220519T124608Z&amp;X-Amz-Expires=3600&amp;X-Amz-SignedHeaders=host&amp;X-Amz-Signature=0869fe3352ea82edb67eb5b8e67e130362bd11f6c9ebb9f0bb5bedaffd7b825d&quot;
     },
     &quot;postal_code&quot;: null,
     &quot;join_status&quot;: &quot;not_requested&quot;,
     &quot;number_of_unread_messages&quot;: 0,
     &quot;number_of_people&quot;: 1,
-    &quot;created_at&quot;: &quot;2022-05-18T13:55:40.077+02:00&quot;,
-    &quot;updated_at&quot;: &quot;2022-05-18T13:55:40.077+02:00&quot;,
+    &quot;created_at&quot;: &quot;2022-05-19T14:46:08.098+02:00&quot;,
+    &quot;updated_at&quot;: &quot;2022-05-19T14:46:08.098+02:00&quot;,
     &quot;description&quot;: null,
-    &quot;share_url&quot;: &quot;https://app.entourage.social/actions/eX9w8EBYtAcU&quot;,
+    &quot;share_url&quot;: &quot;https://app.entourage.social/actions/eorYB35u2MeI&quot;,
     &quot;image_url&quot;: null,
     &quot;online&quot;: false,
     &quot;event_url&quot;: null,
     &quot;display_report_prompt&quot;: false,
     &quot;author&quot;: {
-      &quot;id&quot;: 52,
+      &quot;id&quot;: 4507,
       &quot;display_name&quot;: &quot;John D.&quot;,
       &quot;avatar_url&quot;: null,
       &quot;partner&quot;: null,

@@ -1054,15 +1054,6 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
       it { expect(response.status).to eq 201 }
     end
 
-    context "valid params with signals but no message" do
-      before {
-        expect_any_instance_of(SlackServices::SignalUser).to receive(:notify)
-        post 'report', params: { token: reporting_user.token, id: reported_user.id, user_report: { message: nil, signals: ['spam'] } }
-      }
-
-      it { expect(response.status).to eq 201 }
-    end
-
     context "invalid signal" do
       before {
         expect_any_instance_of(SlackServices::SignalUser).not_to receive(:notify)

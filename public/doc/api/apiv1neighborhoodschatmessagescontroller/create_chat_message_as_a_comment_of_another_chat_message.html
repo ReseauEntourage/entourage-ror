@@ -140,11 +140,19 @@ table th, table td {
                 </td>
               </tr>
               <tr>
-                <td class="required">
+                <td>
                     <span class="name">chat_message[content]</span>
                 </td>
                 <td>
-                  <span class="description">Chat message content</span>
+                  <span class="description">content is optional whenever image_url is defined</span>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                    <span class="name">chat_message[image_url]</span>
+                </td>
+                <td>
+                  <span class="description">Chat message image url</span>
                 </td>
               </tr>
               <tr>
@@ -167,11 +175,11 @@ Host: example.org
 Cookie: </pre>
 
           <h4>Route</h4>
-          <pre class="request route highlight">POST /api/v1/neighborhoods/4/chat_messages</pre>
+          <pre class="request route highlight">POST /api/v1/neighborhoods/238/chat_messages</pre>
 
 
             <h4>Body</h4>
-            <pre class="request body">{"token":"foobar90","chat_message":{"content":"foo","parent_id":7}}</pre>
+            <pre class="request body">{"token":"foobar90","chat_message":{"content":"foo","parent_id":335}}</pre>
 
 
             <h3>Response</h3>
@@ -186,31 +194,31 @@ Access-Control-Allow-Origin: *
 Access-Control-Allow-Methods: GET,POST,PUT,PATCH,DELETE
 Access-Control-Allow-Headers: Origin,Accept,Content-Type,X-Requested-With,X-CSRF-Token,X-API-KEY
 Content-Type: application/json; charset=utf-8
-ETag: W/&quot;1bdf660fe3252eb09e5cd1f9ecaa5bb3&quot;
+ETag: W/&quot;d897b2638a5c88a0e5d6a52c9891227f&quot;
 Cache-Control: max-age=0, private, must-revalidate
-X-Request-Id: 7a5e8d33-6758-4c15-a2e9-a4589591f3e8
-X-Runtime: 0.026835
-Content-Length: 265</pre>
+X-Request-Id: 700c47fd-958f-49c5-9303-fac1b6744d01
+X-Runtime: 0.079767
+Content-Length: 270</pre>
             <h4>Status</h4>
             <pre class="response status">201 Created</pre>
               <h4>Body</h4>
               <pre class="response body">{
   &quot;chat_message&quot;: {
-    &quot;id&quot;: 8,
+    &quot;id&quot;: 336,
     &quot;content&quot;: &quot;foo&quot;,
     &quot;user&quot;: {
-      &quot;id&quot;: 92,
+      &quot;id&quot;: 4547,
       &quot;avatar_url&quot;: null,
       &quot;display_name&quot;: &quot;John D.&quot;,
       &quot;partner&quot;: null
     },
-    &quot;created_at&quot;: &quot;2022-05-18T13:55:41.710+02:00&quot;,
+    &quot;created_at&quot;: &quot;2022-05-19T14:46:10.036+02:00&quot;,
     &quot;message_type&quot;: &quot;text&quot;,
-    &quot;post_id&quot;: 7,
+    &quot;post_id&quot;: 335,
     &quot;has_comments&quot;: false,
     &quot;comments_count&quot;: 0,
     &quot;image_url&quot;: null,
-    &quot;read&quot;: false
+    &quot;read&quot;: null
   }
 }</pre>
       </div>
