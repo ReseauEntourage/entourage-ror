@@ -81,6 +81,9 @@ module Api
         end
 
         def set_last_message_read
+          return unless join_request
+          return unless @messages.any?
+
           most_recent = @messages.first.created_at
 
           if join_request.present? && (join_request.last_message_read.nil? || join_request.last_message_read < most_recent)
