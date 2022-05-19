@@ -50,7 +50,7 @@ resource Api::V1::NeighborhoodsController do
 
     with_options :scope => :neighborhood, :required => true do
       parameter :name, "Name"
-      parameter :description, "Description", required: false
+      parameter :description, "Description"
       parameter :welcome_message, "Welcome message", required: false
       parameter :ethics, "Ethics", required: false
       parameter :latitude, "Latitude"
