@@ -48,6 +48,7 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
 
     let(:fields) { {
         name: neighborhood.name,
+        description: neighborhood.description,
         ethics: neighborhood.ethics,
         latitude: 47.22,
         longitude: -1.55,
@@ -210,7 +211,7 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
         "neighborhood" => {
           "id" => neighborhood.id,
           "name" => "Foot Paris 17è",
-          "description" => nil,
+          "description" => "Pour les passionnés de foot du 17è",
           "welcome_message" => nil,
           "member" => false,
           "members_count" => 1,
