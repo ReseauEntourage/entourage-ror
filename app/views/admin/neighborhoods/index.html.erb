@@ -1,6 +1,21 @@
 <div class="container">
-  <div style="width: 750px; margin: auto">
+  <div style="margin: auto">
     <h1>Groupes de voisinage</h1>
+
+    <%= form_tag admin_neighborhoods_path, class: 'form-inline', method: :get do |f| %>
+      <div class="panel panel-default">
+        <div class="panel-body">
+          <div style="float: left">
+            <div class='input-group'>
+              <%= text_field_tag :search, @params[:search], class: "form-control", placeholder: "Nom, description..." %>
+              <span class="input-group-btn">
+                <%= submit_tag "Chercher", class: "btn btn-default" %>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% end %>
 
     <div style="margin-bottom: 15px; display: flex">
       <div class="btn-group btn-group-sm">

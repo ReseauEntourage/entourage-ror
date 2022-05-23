@@ -13,8 +13,6 @@ class Neighborhood < ApplicationRecord
 
   has_many :join_requests, as: :joinable, dependent: :destroy
   has_many :members, -> {
-    puts self.class
-
     where("join_requests.status = 'accepted'")
     # .order("neighborhoods.user_id = join_requests.user_id")
     # .order("users.first_name")
@@ -39,6 +37,21 @@ class Neighborhood < ApplicationRecord
     end
 
     where("left(postal_code, 2) = ?", ModerationArea.departement(moderation_area))
+  }
+
+  scope :search_by, ->(search) {
+    strip = search && search.strip
+    like = "%#{strip}%"
+
+    where(%(
+      neighborhoods.id = :id OR
+      trim(name) ILIKE :name OR
+      trim(description) ILIKE :description
+    ), {
+      id: strip.to_i,
+      name: like,
+      description: like
+    })
   }
 
   scope :join_tags, -> {
