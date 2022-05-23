@@ -69,6 +69,7 @@ resource Api::V1::NeighborhoodsController do
       token: user.token,
       neighborhood: {
         name: neighborhood.name,
+        description: neighborhood.description,
         ethics: neighborhood.ethics,
         latitude: neighborhood.latitude,
         longitude: neighborhood.longitude,
