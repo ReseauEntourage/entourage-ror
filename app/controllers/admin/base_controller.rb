@@ -18,6 +18,14 @@ module Admin
       end
     end
 
+    def page
+      params[:page] || 1
+    end
+
+    def per
+      [params[:per] || 25, 25].min
+    end
+
     protected
 
     def ensure_moderator!
