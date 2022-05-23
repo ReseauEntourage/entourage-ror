@@ -2,7 +2,7 @@ class ChatMessage < ApplicationRecord
   include FeedsConcern
   include ChatServices::Spam
 
-  CONTENT_TYPES = %w(image/jpeg image/png)
+  CONTENT_TYPES = %w(image/jpeg)
   BUCKET_PREFIX = "chat_messages"
 
   has_ancestry
