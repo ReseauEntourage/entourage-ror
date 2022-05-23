@@ -1,0 +1,34 @@
+<style>
+  .field_with_errors { display: inline-block }
+</style>
+
+<%= render partial: 'common/errors', locals: { obj: @neighborhood } %>
+<%= form_for [:admin, @neighborhood], html: { role: "form" } do |f| %>
+  <div class="form-group">
+    <%= f.label :name %>
+    <div class="controls">
+      <%= f.text_field :name, class: "form-control", required: true %>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :description %>
+    <div class="controls">
+      <%= f.text_field :description, class: "form-control", required: true %>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :interests %>
+    <div class="controls">
+      <%= f.collection_select :interests, Tag.interest_list, :to_s, :to_s, {}, { multiple: true } %>
+    </div>
+  </div>
+
+  <%= f.submit 'Enregistrer', class: "btn btn-primary" %>
+  <%= link_to "Retour", admin_neighborhoods_path, class: "btn btn-default" %>
+<% end %>
+
+<script>
+  $('select#neighborhood_interests').select2({ width: '100%' });
+</script>
