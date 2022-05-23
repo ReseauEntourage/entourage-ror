@@ -1,0 +1,15 @@
+<div class="container">
+  <div style="width: 750px; margin: auto">
+    <ol class="breadcrumb">
+      <li><%= link_to "Groupes de voisinage", admin_neighborhoods_path %></li>
+      <li class="active">Modifier</li>
+    </ol>
+
+    <h2>
+      <span class="text-muted">#<%= @neighborhood.id %></span>
+      <%= @neighborhood.name %>
+    </h2>
+
+    <%= render partial: 'form' %>
+  </div>
+</div>

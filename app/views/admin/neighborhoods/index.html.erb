@@ -1,0 +1,36 @@
+<div class="container">
+  <div style="width: 750px; margin: auto">
+    <h1>Groupes de voisinage</h1>
+
+    <div class="row">
+      <% if @neighborhoods.none? %>
+        Pas de groupe de voisinage.
+      <% else %>
+        <table class="table">
+          <th>Id</th>
+          <th>Name</th>
+          <th>Utilisateur</th>
+          <th>Localisation</th>
+          <th>Intérêts</th>
+          <th>Actions</th>
+          <% @neighborhoods.each do |neighborhood| %>
+            <tr>
+              <td><%= neighborhood.id %></td>
+              <td><%= link_to neighborhood.name, edit_admin_neighborhood_path(neighborhood) %></td>
+              <td><%= link_to neighborhood.user.full_name, admin_user_path(neighborhood.user) %></td>
+              <td><!-- Localisation --></td>
+              <td>
+                <% neighborhood.interest_list.each do |interest| %>
+                  <span class="badge"><%= interest %></span>
+                <% end %>
+              </td>
+              <td>
+                <%= link_to "Modifier", admin_neighborhood_path(neighborhood), class: "btn btn-primary" %>
+              </td>
+            </tr>
+          <% end %>
+        </table>
+      <% end %>
+    </div>
+  </div>
+</div>
