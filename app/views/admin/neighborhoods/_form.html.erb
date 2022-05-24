@@ -25,6 +25,19 @@
     </div>
   </div>
 
+  <div class="form-group">
+    <%= f.label :image_url %>
+    <% if @neighborhood.image_url %>
+      <div style="margin-bottom: 15px">
+        <%= image_tag(@neighborhood.image_url, size: '300x100') if @neighborhood.image_url.present? %>
+      </div>
+    <% end %>
+
+    <div>
+      <%= link_to "Modifier", edit_image_admin_neighborhood_path, class: "btn btn-default btn-sm" %>
+    </div>
+  </div>
+
   <%= f.submit 'Enregistrer', class: "btn btn-primary" %>
   <%= link_to "Retour", admin_neighborhoods_path, class: "btn btn-default" %>
 <% end %>
