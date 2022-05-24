@@ -13,8 +13,6 @@ class Neighborhood < ApplicationRecord
 
   has_many :join_requests, as: :joinable, dependent: :destroy
   has_many :members, -> {
-    puts self.class
-
     where("join_requests.status = 'accepted'")
     # .order("neighborhoods.user_id = join_requests.user_id")
     # .order("users.first_name")
@@ -32,6 +30,29 @@ class Neighborhood < ApplicationRecord
 
   # valides :image_url # should be 390x258 (2/3)
   attr_accessor :neighborhood_image_id
+
+  scope :with_moderation_area, -> (moderation_area) {
+    if moderation_area == :hors_zone
+      return where("left(postal_code, 2) not in ?", ModerationArea.only_departements)
+    end
+
+    where("left(postal_code, 2) = ?", ModerationArea.departement(moderation_area))
+  }
+
+  scope :search_by, ->(search) {
+    strip = search && search.strip
+    like = "%#{strip}%"
+
+    where(%(
+      neighborhoods.id = :id OR
+      trim(name) ILIKE :name OR
+      trim(description) ILIKE :description
+    ), {
+      id: strip.to_i,
+      name: like,
+      description: like
+    })
+  }
 
   scope :join_tags, -> {
     joins(%(
@@ -109,9 +130,10 @@ class Neighborhood < ApplicationRecord
 
     return unless google_place_id.present?
 
-    google_place_details = UserServices::AddressService.fetch_google_place_details(google_place_id)
+    google_place_details = UserServices::AddressService.get_google_place_details(google_place_id)
 
     self[:place_name] = google_place_details[:place_name]
+    self[:street_address] = google_place_details[:formatted_address]
     self[:postal_code] = google_place_details[:postal_code]
     self[:latitude] = google_place_details[:latitude]
     self[:longitude] = google_place_details[:longitude]
