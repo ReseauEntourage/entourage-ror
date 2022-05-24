@@ -9,7 +9,7 @@ class NeighborhoodImage < ApplicationRecord
 
   class << self
     def image_url_for url
-      storage.url_for(key: url)
+      storage.read_for(key: url)
     end
 
     def storage

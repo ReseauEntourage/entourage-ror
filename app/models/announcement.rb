@@ -54,13 +54,13 @@ class Announcement < ApplicationRecord
   def image_url
     return unless self[:image_url]
 
-    Announcement.storage.url_for(key: self[:image_url])
+    Announcement.storage.read_for(key: self[:image_url])
   end
 
   def image_portrait_url
     return unless self[:image_portrait_url]
 
-    Announcement.storage.url_for(key: self[:image_portrait_url])
+    Announcement.storage.read_for(key: self[:image_portrait_url])
   end
 
   def self.storage
