@@ -58,7 +58,7 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
     } }
     let(:request) { post :create, params: { token: user.token, neighborhood: fields, format: :json } }
 
-    before { UserServices::AddressService.stub(:fetch_google_place_details).and_return(
+    before { UserServices::AddressService.stub(:get_google_place_details).and_return(
       {
         place_name: '174, rue Championnet',
         latitude: 48.86,
@@ -225,7 +225,8 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
           "address" => {
             "latitude" => 48.86,
             "longitude" => 2.35,
-            "display_address" => ""
+            "display_address" => "",
+            "street_address" => nil
           },
           "members" => [{
             "id" => neighborhood.user.id,
