@@ -120,6 +120,10 @@ module UserServices
     end
 
     def self.fetch_google_place_details place_id
+      get_google_place_details(place_id).slice(:place_name, :latitude, :longitude, :postal_code, :country, :google_place_id)
+    end
+
+    def self.get_google_place_details place_id
       raise if place_id.blank?
 
       result = Geocoder.search(
@@ -132,6 +136,7 @@ module UserServices
             :name,
             :address_components,
             :place_id,
+            :formatted_address
           ].join(',')
         }
       ).first
@@ -148,6 +153,7 @@ module UserServices
 
       {
         place_name: result.data['name'],
+        formatted_address: result.data['formatted_address'],
 
         latitude:  result.latitude,
         longitude: result.longitude,

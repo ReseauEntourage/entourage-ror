@@ -49,7 +49,7 @@ module Admin
     end
 
     def neighborhood_params
-      params.require(:neighborhood).permit(:name, :description, :interest_list, :neighborhood_image_id, interests: [])
+      params.require(:neighborhood).permit(:name, :description, :interest_list, :neighborhood_image_id, :google_place_id, interests: [])
     end
   end
 end

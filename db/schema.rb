@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_05_19_140800) do
+ActiveRecord::Schema.define(version: 2022_05_24_162300) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -432,6 +432,7 @@ ActiveRecord::Schema.define(version: 2022_05_19_140800) do
     t.string "google_place_id"
     t.string "place_name"
     t.string "postal_code"
+    t.string "street_address"
     t.index ["feed_updated_at"], name: "index_neighborhoods_on_feed_updated_at"
     t.index ["name"], name: "index_neighborhoods_on_name"
     t.index ["postal_code"], name: "index_neighborhoods_on_postal_code"
