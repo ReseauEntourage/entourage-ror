@@ -2,7 +2,7 @@ module Admin
   class NeighborhoodsController < Admin::BaseController
     layout 'admin_large'
 
-    before_action :set_neighborhood, only: [:edit, :update]
+    before_action :set_neighborhood, only: [:edit, :update, :edit_image, :update_image]
 
     def index
       @params = params.permit([:area, :search]).to_h
@@ -27,6 +27,21 @@ module Admin
       end
     end
 
+    def edit_image
+      @neighborhood_images = NeighborhoodImage.all
+    end
+
+    def update_image
+      @neighborhood.assign_attributes(neighborhood_params)
+
+      if @neighborhood.save
+        redirect_to edit_admin_neighborhood_path(@neighborhood)
+      else
+        @neighborhood_images = NeighborhoodImage.all
+        render :edit_image
+      end
+    end
+
     private
 
     def set_neighborhood
@@ -34,7 +49,7 @@ module Admin
     end
 
     def neighborhood_params
-      params.require(:neighborhood).permit(:name, :description, :interest_list, interests: [])
+      params.require(:neighborhood).permit(:name, :description, :interest_list, :neighborhood_image_id, interests: [])
     end
   end
 end

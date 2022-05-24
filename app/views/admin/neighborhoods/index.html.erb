@@ -55,7 +55,7 @@
               </td>
               <td><%= l neighborhood.created_at, format: :date_short %></td>
               <td>
-                <%= link_to "Modifier", admin_neighborhood_path(neighborhood), class: "btn btn-primary" %>
+                <%= link_to "Modifier", edit_admin_neighborhood_path(neighborhood), class: "btn btn-primary" %>
               </td>
             </tr>
           <% end %>
