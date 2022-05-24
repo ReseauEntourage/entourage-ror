@@ -200,7 +200,12 @@ Rails.application.routes.draw do
       end
     end
 
-    resources :neighborhoods, only: [:index, :edit, :update]
+    resources :neighborhoods, only: [:index, :edit, :update] do
+      member do
+        get '/edit/image', action: :edit_image
+        put '/update/image', action: :update_image
+      end
+    end
 
     resources :pois
     resources :registration_requests, only: [:index, :show, :update, :destroy]
