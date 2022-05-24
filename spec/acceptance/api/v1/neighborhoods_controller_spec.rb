@@ -69,6 +69,7 @@ resource Api::V1::NeighborhoodsController do
       token: user.token,
       neighborhood: {
         name: neighborhood.name,
+        description: neighborhood.description,
         ethics: neighborhood.ethics,
         latitude: neighborhood.latitude,
         longitude: neighborhood.longitude,
@@ -78,7 +79,7 @@ resource Api::V1::NeighborhoodsController do
       }
     }.to_json }
 
-    before { UserServices::AddressService.stub(:fetch_google_place_details).and_return(
+    before { UserServices::AddressService.stub(:get_google_place_details).and_return(
       {
         place_name: '174, rue Championnet',
         latitude: 48.86,
