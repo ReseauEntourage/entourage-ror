@@ -38,6 +38,7 @@ module V1
       {
         latitude: object.latitude,
         longitude: object.longitude,
+        street_address: object.street_address,
         display_address: [object.place_name, object.postal_code].compact.uniq.join(', ')
       }
     end
