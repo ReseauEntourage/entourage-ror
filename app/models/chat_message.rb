@@ -41,7 +41,7 @@ class ChatMessage < ApplicationRecord
 
   class << self
     def bucket
-      Storage::Client.private_images
+      Storage::Client.images
     end
 
     def presigned_url key, content_type
