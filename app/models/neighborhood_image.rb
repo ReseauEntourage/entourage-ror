@@ -9,11 +9,11 @@ class NeighborhoodImage < ApplicationRecord
 
   class << self
     def image_url_for url
-      storage.read_for(key: url)
+      storage.public_url(key: url)
     end
 
     def storage
-      Storage::Client.public_images
+      Storage::Client.images
     end
 
     def from_absolute_to_relative_url url
