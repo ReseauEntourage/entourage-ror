@@ -146,7 +146,7 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
         let(:result) { JSON.parse(response.body) }
 
         before {
-          Storage::Bucket.any_instance.stub(:read_for).with(key: "foobar_url") { "path/to/foobar_url" }
+          Storage::Bucket.any_instance.stub(:public_url).with(key: "foobar_url") { "path/to/foobar_url" }
 
           patch :update, params: { id: neighborhood.to_param, neighborhood: {
             name: "new name",
