@@ -3,7 +3,7 @@ module Admin
     before_action :set_user, only: [:show, :messages, :engagement, :history, :edit, :update, :edit_block, :block, :temporary_block, :unblock, :cancel_phone_change_request, :download_export, :send_export, :anonymize, :destroy_avatar, :banish, :validate, :experimental_pending_request_reminder, :new_spam_warning, :create_spam_warning]
 
     def index
-      @params = params.permit([:profile, :engagement, :status, :role, :search, q: [:postal_code_start, :postal_code_in_hors_zone]]).to_h
+      @params = params.permit([:profile, :engagement, :status, :role, :search, q: [:country_eq, :postal_code_start, :postal_code_not_start_all]]).to_h
 
       @status = get_status
       @role = get_role
@@ -328,7 +328,7 @@ module Admin
       @users = @users.offer_help if profile == :offer_help
       @users = @users.organization if profile == :organization
       @users = @users.in_area("dep_" + params[:q][:postal_code_start]) if params[:q] && params[:q][:postal_code_start]
-      @users = @users.in_area(:hors_zone) if params[:q] && params[:q][:postal_code_in_hors_zone]
+      @users = @users.in_area(:hors_zone) if params[:q] && params[:q][:postal_code_not_start_all]
       @users.group('users.id')
       @users
     end

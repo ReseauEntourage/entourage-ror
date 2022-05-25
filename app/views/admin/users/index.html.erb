@@ -36,25 +36,17 @@
   <div style="float: left; margin: -10px 0 10px">
     <%
       q = @params[:q] || {}
-      locations = {
-        "Partout" => {},
-        "75" => { postal_code_start: '75' },
-        "92" => { postal_code_start: '92' },
-        "93" => { postal_code_start: '93' },
-        "69" => { postal_code_start: '69' },
-        "59" => { postal_code_start: '59' },
-        "35" => { postal_code_start: '35' },
-        "Hors zone" => { postal_code_in_hors_zone: 'true' },
-      }
+      locations = moderation_area_filters
     %>
 
+    <%= hidden_field_tag "q[country_eq]", q[:country_eq] if q[:country_eq] %>
     <%= hidden_field_tag "q[postal_code_start]", q[:postal_code_start] if q[:postal_code_start] %>
-    <%= hidden_field_tag "q[postal_code_in_hors_zone]", q[:postal_code_in_hors_zone] if q[:postal_code_in_hors_zone] %>
+    <%= hidden_field_tag "q[postal_code_not_start_all]", q[:postal_code_not_start_all] if q[:postal_code_not_start_all] %>
   </div>
 
   <div style="float: left; margin: -10px 0 10px">
     <div class="btn-group btn-group-sm">
-      <% location_keys = [:postal_code_start, :postal_code_in_hors_zone] %>
+      <% location_keys = [:country_eq, :postal_code_start, :postal_code_not_start_all] %>
       <% active = locations.key q.slice(*location_keys).compact.symbolize_keys %>
 
       <% locations.each do |name, options| %>
