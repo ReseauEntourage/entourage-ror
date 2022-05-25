@@ -8,6 +8,10 @@ module Storage
       @bucket = Aws::S3::Bucket.new(bucket_name)
     end
 
+    def public_url key:
+      bucket.object(key).public_url
+    end
+
     def read_for(key:, extra: {})
       expire = extra[:expire] || 3600
       bucket.object(key).presigned_url(:get, expires_in: expire.to_i)
