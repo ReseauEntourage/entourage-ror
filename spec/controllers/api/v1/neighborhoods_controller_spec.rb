@@ -45,6 +45,8 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
   context 'create' do
     let(:neighborhood) { build :neighborhood }
     let(:google_place_id) { 'ChIJQWDurldu5kcRmj2mNTjxtxE' }
+    let(:interests) { neighborhood.interest_list }
+    let(:other_interest) { nil }
 
     let(:fields) { {
         name: neighborhood.name,
@@ -52,7 +54,8 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
         ethics: neighborhood.ethics,
         latitude: 47.22,
         longitude: -1.55,
-        interests: neighborhood.interest_list,
+        interests: interests,
+        other_interest: other_interest,
         place_name: '1, place Bouffay, Nantes',
         google_place_id: google_place_id,
     } }
@@ -112,6 +115,36 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
       it { expect(subject.google_place_id).to eq(nil) }
     end
 
+    describe 'with "other" interest, other_interest field is optionnal' do
+      let(:interests) { [:sport, :other] }
+      let(:other_interest) { "my other interest" }
+
+      before { request }
+
+      it { expect(response.status).to eq(201) }
+      it { expect(subject.other_interest).to eq "my other interest" }
+    end
+
+    describe 'with "other" interest, other_interest field is not required' do
+      let(:interests) { [:sport, :other] }
+      let(:other_interest) { nil }
+
+      before { request }
+
+      it { expect(response.status).to eq(201) }
+      it { expect(subject.other_interest).to be_blank }
+    end
+
+    describe 'without "other" interest, other_interest is always nil' do
+      let(:interests) { [:sport] }
+      let(:other_interest) { "my other interest" }
+
+      before { request }
+
+      it { expect(response.status).to eq(201) }
+      it { expect(subject.other_interest).to be_blank }
+    end
+
     describe 'Neighborhood and JoinRequest are created on success' do
       it { expect { request }.to change { Neighborhood.count }.by(1) }
       it { expect { request }.to change { JoinRequest.count }.by(1) }
@@ -128,6 +161,9 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
     let(:neighborhood) { FactoryBot.create(:neighborhood) }
     let(:neighborhood_image) { FactoryBot.create(:neighborhood_image) }
     let(:result) { JSON.parse(response.body) }
+    let(:subject) { Neighborhood.find(neighborhood.id) }
+
+    before { Storage::Bucket.any_instance.stub(:public_url).with(key: "foobar_url") { "path/to/foobar_url" } }
 
     context "not signed in" do
       before { patch :update, params: { id: neighborhood.to_param, neighborhood: { name: "new name" } } }
@@ -145,19 +181,16 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
       context "user is creator" do
         let(:neighborhood) { FactoryBot.create(:neighborhood, user: user) }
 
-        before {
-          Storage::Bucket.any_instance.stub(:public_url).with(key: "foobar_url") { "path/to/foobar_url" }
+        before { patch :update, params: { id: neighborhood.to_param, neighborhood: {
+          name: "new name",
+          ethics: "new ethics",
+          description: "new description",
+          welcome_message: "new welcome_message",
+          neighborhood_image_id: neighborhood_image.id,
+          interests: ["jeux", "nature", "other"],
+          other_interest: "foo"
+        }, token: user.token } }
 
-          patch :update, params: { id: neighborhood.to_param, neighborhood: {
-            name: "new name",
-            ethics: "new ethics",
-            description: "new description",
-            welcome_message: "new welcome_message",
-            neighborhood_image_id: neighborhood_image.id,
-            interests: ["jeux", "nature", "other"],
-            other_interest: "foo"
-          }, token: user.token }
-        }
         it { expect(response.status).to eq(200) }
         it { expect(result["neighborhood"]).to eq({
           "id" => neighborhood.id,
@@ -193,12 +226,28 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
       context "user is creator, one field updated" do
         let(:neighborhood) { FactoryBot.create(:neighborhood, user: user) }
 
-        before {
-          Storage::Bucket.any_instance.stub(:public_url).with(key: "foobar_url") { "path/to/foobar_url" }
-          patch :update, params: { id: neighborhood.to_param, neighborhood: { name: "new name" }, token: user.token }
-        }
+        before { patch :update, params: { id: neighborhood.to_param, neighborhood: { name: "new name" }, token: user.token } }
+
         it { expect(response.status).to eq(200) }
-        it { expect(result["neighborhood"]["name"]).to eq("new name") }
+        it { expect(subject.name).to eq("new name") }
+      end
+
+      describe 'with "other" interest, other_interest field is always nil' do
+        let(:neighborhood) { FactoryBot.create(:neighborhood, user: user) }
+
+        before { patch :update, params: { id: neighborhood.to_param, neighborhood: { interests: [:sport, :other], other_interest: 'foo' }, token: user.token } }
+
+        it { expect(response.status).to eq(200) }
+        it { expect(subject.other_interest).to eq(nil) }
+      end
+
+      describe 'without "other" interest, other_interest is always nil' do
+        let(:neighborhood) { FactoryBot.create(:neighborhood, user: user) }
+
+        before { patch :update, params: { id: neighborhood.to_param, neighborhood: { interests: [:cuisine], other_interest: 'foo' }, token: user.token } }
+
+        it { expect(response.status).to eq(200) }
+        it { expect(subject.other_interest).to eq(nil) }
       end
     end
   end

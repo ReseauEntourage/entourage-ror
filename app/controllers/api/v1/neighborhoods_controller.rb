@@ -28,7 +28,7 @@ module Api
       def update
         return render json: { message: 'unauthorized' }, status: :unauthorized if @neighborhood.user != current_user
 
-        @neighborhood.assign_attributes(neighborhood_params)
+        @neighborhood.assign_attributes(neighborhood_update_params)
 
         if @neighborhood.save
           render json: @neighborhood, status: 200, serializer: ::V1::NeighborhoodSerializer, scope: { user: current_user }
@@ -51,6 +51,10 @@ module Api
 
       def neighborhood_params
         params.require(:neighborhood).permit(:name, :description, :welcome_message, :ethics, :latitude, :longitude, :google_place_id, :place_name, :neighborhood_image_id, :other_interest, interests: [])
+      end
+
+      def neighborhood_update_params
+        neighborhood_params.except(:other_interest)
       end
 
       def page
