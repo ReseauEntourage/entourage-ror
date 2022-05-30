@@ -1,8 +1,9 @@
 module SlackServices
   class SignalNeighborhood < Notifier
-    def initialize neighborhood:, reporting_user:, message:
+    def initialize neighborhood:, reporting_user:, category:, message:
       @neighborhood = neighborhood
       @reporting_user = find_user(reporting_user)
+      @category = category
       @message = message
     end
 
@@ -21,7 +22,7 @@ module SlackServices
             text: "Signalé par : #{@reporting_user.full_name} #{link_to_user(@reporting_user.id)}"
           },
           {
-            text: "Message : #{@message}"
+            text: "Catégorie #{@category}, message : #{@message}"
           },
         ]
       }
