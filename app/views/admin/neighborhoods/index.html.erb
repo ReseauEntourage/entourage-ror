@@ -37,6 +37,7 @@
           <th>Lieu</th>
           <th>Intérêts</th>
           <th>Date de création</th>
+          <th>Membres</th>
           <th>Actions</th>
           <% @neighborhoods.each do |neighborhood| %>
             <tr>
@@ -54,6 +55,7 @@
                 <% end %>
               </td>
               <td><%= l neighborhood.created_at, format: :date_short %></td>
+              <td><span class="label label-default"><%= "#{neighborhood.members_count} membres" %></span></td>
               <td>
                 <%= link_to "Modifier", edit_admin_neighborhood_path(neighborhood), class: "btn btn-primary" %>
               </td>
