@@ -125,6 +125,14 @@ class Neighborhood < ApplicationRecord
     where.not(id: Neighborhood.joined_by(user))
   }
 
+  def interests= interests
+    unless interests.compact.map(&:to_sym).include?(:other)
+      self[:other_interest] = nil
+    end
+
+    super(interests)
+  end
+
   def google_place_id= google_place_id
     super(google_place_id)
 
