@@ -2,7 +2,7 @@ module Admin
   class NeighborhoodsController < Admin::BaseController
     layout 'admin_large'
 
-    before_action :set_neighborhood, only: [:edit, :update, :edit_image, :update_image]
+    before_action :set_neighborhood, only: [:edit, :update, :edit_image, :update_image, :show_members]
 
     def index
       @params = params.permit([:area, :search]).to_h
@@ -40,6 +40,9 @@ module Admin
         @neighborhood_images = NeighborhoodImage.all
         render :edit_image
       end
+    end
+
+    def show_members
     end
 
     private
