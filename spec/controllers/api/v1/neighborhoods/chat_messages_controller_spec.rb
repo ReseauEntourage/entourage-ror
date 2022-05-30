@@ -233,12 +233,25 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
     context "correct messageable" do
       before {
         expect_any_instance_of(SlackServices::SignalNeighborhoodChatMessage).to receive(:notify)
-        post :report, params: { token: user.token, neighborhood_id: neighborhood.id, chat_message_id: chat_message.id }
+        post :report, params: { token: user.token, neighborhood_id: neighborhood.id, chat_message_id: chat_message.id, report: {
+          category: 'foo',
+          message: 'bar'
+        } }
       }
       it { expect(response.status).to eq 201 }
     end
 
-    context "wrong messageable" do
+    context "wrong messageable cause no report category" do
+      before {
+        expect_any_instance_of(SlackServices::SignalNeighborhoodChatMessage).not_to receive(:notify)
+        post :report, params: { token: user.token, neighborhood_id: neighborhood.id, chat_message_id: chat_message.id, report: {
+          message: 'bar'
+        } }
+      }
+      it { expect(response.status).to eq 400 }
+    end
+
+    context "wrong messageable cause message does not belong to neighborhood" do
       let(:entourage) { create :entourage }
       let(:entourage_chat_message) { create :chat_message, messageable: entourage }
 

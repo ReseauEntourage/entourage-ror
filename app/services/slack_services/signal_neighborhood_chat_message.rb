@@ -1,11 +1,13 @@
 module SlackServices
   class SignalNeighborhoodChatMessage < Notifier
-    def initialize chat_message:, reporting_user:
+    def initialize chat_message:, reporting_user:, category:, message:
       @reporting_user = find_user(reporting_user)
 
       @chat_message = chat_message
       @neighborhood = chat_message.messageable
-      @message = chat_message.content
+      @category = category
+      @message = message
+      @content = chat_message.content
     end
 
     def env
@@ -23,7 +25,10 @@ module SlackServices
             text: "Signalé par : #{@reporting_user.full_name} #{link_to_user(@reporting_user.id)}"
           },
           {
-            text: "Message signalé : #{@message}"
+            text: "Message signalé : #{@content}"
+          },
+          {
+            text: "Catégorie #{@category}, message : #{@message}"
           },
         ]
       }
