@@ -127,6 +127,7 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
   describe 'PATCH update' do
     let(:neighborhood) { FactoryBot.create(:neighborhood) }
     let(:neighborhood_image) { FactoryBot.create(:neighborhood_image) }
+    let(:result) { JSON.parse(response.body) }
 
     context "not signed in" do
       before { patch :update, params: { id: neighborhood.to_param, neighborhood: { name: "new name" } } }
@@ -143,7 +144,6 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
 
       context "user is creator" do
         let(:neighborhood) { FactoryBot.create(:neighborhood, user: user) }
-        let(:result) { JSON.parse(response.body) }
 
         before {
           Storage::Bucket.any_instance.stub(:public_url).with(key: "foobar_url") { "path/to/foobar_url" }
@@ -188,6 +188,17 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
           "future_outings_count" => 0,
           "has_ongoing_outing" => false,
         }) }
+      end
+
+      context "user is creator, one field updated" do
+        let(:neighborhood) { FactoryBot.create(:neighborhood, user: user) }
+
+        before {
+          Storage::Bucket.any_instance.stub(:public_url).with(key: "foobar_url") { "path/to/foobar_url" }
+          patch :update, params: { id: neighborhood.to_param, neighborhood: { name: "new name" }, token: user.token }
+        }
+        it { expect(response.status).to eq(200) }
+        it { expect(result["neighborhood"]["name"]).to eq("new name") }
       end
     end
   end
