@@ -202,6 +202,7 @@ Rails.application.routes.draw do
 
     resources :neighborhoods, only: [:index, :edit, :update] do
       member do
+        get :show_members
         get '/edit/image', action: :edit_image
         put '/update/image', action: :update_image
       end
