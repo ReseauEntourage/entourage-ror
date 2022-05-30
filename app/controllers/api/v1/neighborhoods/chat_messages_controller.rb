@@ -99,6 +99,10 @@ module Api
           params.require(:report).permit(:category, :message)
         end
 
+        def report_params
+          params.require(:report).permit(:category, :message)
+        end
+
         def join_request
           @join_request ||= JoinRequest.where(joinable: @neighborhood, user: current_user, status: :accepted).first
         end

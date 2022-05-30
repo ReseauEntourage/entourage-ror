@@ -22,7 +22,7 @@ module SlackServices
             text: "Signalé par : #{@reporting_user.full_name} #{link_to_user(@reporting_user.id)}"
           },
           {
-            text: "Catégorie #{category}, message : #{@message}"
+            text: "Catégorie #{@category}, message : #{@message}"
           },
         ]
       }

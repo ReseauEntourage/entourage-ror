@@ -28,7 +28,7 @@ module SlackServices
             text: "Message signalé : #{@content}"
           },
           {
-            text: "Catégorie #{category}, message : #{@message}"
+            text: "Catégorie #{@category}, message : #{@message}"
           },
         ]
       }
