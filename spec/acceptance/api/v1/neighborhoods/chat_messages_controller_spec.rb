@@ -119,6 +119,10 @@ resource Api::V1::Neighborhoods::ChatMessagesController do
 
     parameter :id, required: true
     parameter :token, type: :string, required: true
+    with_options :scope => :report, :required => true do
+      parameter :category, type: :string
+      parameter :message, type: :string
+    end
 
     let(:user) { FactoryBot.create(:public_user) }
 
@@ -130,6 +134,10 @@ resource Api::V1::Neighborhoods::ChatMessagesController do
     let(:chat_message_id) { chat_message.id }
     let(:raw_post) { {
       token: user.token,
+      report: {
+        category: 'category',
+        message: 'message'
+      }
     }.to_json }
 
 

@@ -42,8 +42,17 @@ module Api
         def report
           return render json: { message: "Wrong chat_message" }, status: :bad_request unless @chat_message
 
+          if report_params[:category].blank?
+            render json: {
+              code: 'CANNOT_REPORT_NEIGHBORHOOD',
+              message: 'category is required'
+            }, status: :bad_request and return
+          end
+
           SlackServices::SignalNeighborhoodChatMessage.new(
             chat_message: @chat_message,
+            category: report_params[:category],
+            message: report_params[:message],
             reporting_user: current_user
           ).notify
 
@@ -91,6 +100,10 @@ module Api
 
         def chat_messages_params
           params.require(:chat_message).permit(:content, :message_type)
+        end
+
+        def report_params
+          params.require(:report).permit(:category, :message)
         end
 
         def join_request

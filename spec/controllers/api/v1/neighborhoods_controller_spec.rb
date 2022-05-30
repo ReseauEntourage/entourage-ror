@@ -468,15 +468,15 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
     context "valid params" do
       before {
         expect_any_instance_of(SlackServices::SignalNeighborhood).to receive(:notify)
-        post 'report', params: { token: user.token, id: neighborhood.id, report: { message: 'message' } }
+        post 'report', params: { token: user.token, id: neighborhood.id, report: { category: 'foo', message: 'bar' } }
       }
       it { expect(response.status).to eq 201 }
     end
 
-    context "missing message" do
+    context "missing category" do
       before {
         expect_any_instance_of(SlackServices::SignalNeighborhood).not_to receive(:notify)
-        post 'report', params: { token: user.token, id: neighborhood.id, report: { message: '' } }
+        post 'report', params: { token: user.token, id: neighborhood.id, report: { category: '', message: 'bar' } }
       }
       it { expect(response.status).to eq 400 }
     end
