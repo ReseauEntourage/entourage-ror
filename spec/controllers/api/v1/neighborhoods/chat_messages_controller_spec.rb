@@ -91,6 +91,8 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
 
       context "nested chat_messages" do
         let!(:join_request) { FactoryBot.create(:join_request, joinable: neighborhood, user: user, status: :accepted) }
+        let(:content) { "foobar" }
+        let(:image_url) { nil }
         let(:parent_id) { nil }
         let(:has_comments) { false }
 
@@ -98,7 +100,7 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
           "chat_message" => {
             "id" => ChatMessage.last.id,
             "message_type" => "text",
-            "content" => "foobar",
+            "content" => content,
             "user" => {
               "id" => user.id,
               "avatar_url" => nil,
@@ -109,14 +111,25 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
             "post_id" => parent_id,
             "has_comments" => has_comments,
             "comments_count" => 0,
-            "image_url" => nil,
+            "image_url" => image_url,
             "read" => nil
           }
         }}
 
-        before { post :create, params: {
-          neighborhood_id: neighborhood.to_param, chat_message: { content: "foobar", message_type: :text, parent_id: parent_id }, token: user.token
+        let(:chat_message_params) { {
+          content: content,
+          message_type: :text,
+          parent_id: parent_id,
+          image_url: image_url
         } }
+
+        before {
+          ChatMessage.stub(:url_for) { image_url }
+
+          post :create, params: {
+            token: user.token, neighborhood_id: neighborhood.to_param, chat_message: chat_message_params
+          }
+        }
 
         context "no nested" do
           it { expect(response.status).to eq(201) }
@@ -130,6 +143,36 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
 
           it { expect(response.status).to eq(201) }
           it { expect(ChatMessage.count).to eq(2) }
+          it { expect(result).to eq(json) }
+        end
+
+        context "with image_url and content" do
+          let(:image_url) { "path/to/image.jpeg" }
+
+          it { expect(response.status).to eq(201) }
+          it { expect(ChatMessage.count).to eq(1) }
+          it { expect(result).to eq(json) }
+        end
+
+        context "with image_url and empty content" do
+          let(:content) { "" }
+          let(:image_url) { "path/to/image.jpeg" }
+
+          it { expect(response.status).to eq(201) }
+          it { expect(ChatMessage.count).to eq(1) }
+          it { expect(result).to eq(json) }
+        end
+
+        context "with image_url and no content" do
+          let(:content) { nil }
+          let(:image_url) { "path/to/image.jpeg" }
+          let(:chat_message_params) { {
+            message_type: :text,
+            image_url: image_url
+          } }
+
+          it { expect(response.status).to eq(201) }
+          it { expect(ChatMessage.count).to eq(1) }
           it { expect(result).to eq(json) }
         end
       end
