@@ -1,6 +1,8 @@
 class Neighborhood < ApplicationRecord
   include Interestable
 
+  # STATUSES = [:active, :deleted]
+
   belongs_to :user
 
   after_create do |neighborhood|
@@ -24,12 +26,14 @@ class Neighborhood < ApplicationRecord
   reverse_geocoded_by :latitude, :longitude
   has_many :chat_messages, as: :messageable, dependent: :destroy
 
-  validates_presence_of [:name, :description, :latitude, :longitude]
+  validates_presence_of [:status, :name, :description, :latitude, :longitude]
 
   alias_attribute :title, :name
 
   # valides :image_url # should be 390x258 (2/3)
   attr_accessor :neighborhood_image_id
+
+  default_scope { where(status: :active) }
 
   scope :with_moderation_area, -> (moderation_area) {
     if moderation_area == :hors_zone
