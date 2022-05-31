@@ -433,6 +433,7 @@ ActiveRecord::Schema.define(version: 2022_05_31_153600) do
     t.string "place_name"
     t.string "postal_code"
     t.string "street_address"
+    t.string "status", default: "active", null: false
     t.index ["feed_updated_at"], name: "index_neighborhoods_on_feed_updated_at"
     t.index ["name"], name: "index_neighborhoods_on_name"
     t.index ["postal_code"], name: "index_neighborhoods_on_postal_code"
