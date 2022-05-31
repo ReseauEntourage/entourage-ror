@@ -454,7 +454,7 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
     let(:creator) { create :pro_user }
     let(:neighborhood) { create :neighborhood, user: creator }
 
-    let(:result) { Neighborhood.unscoped.find(neighborhood.id }
+    let(:result) { Neighborhood.unscoped.find(neighborhood.id) }
 
     describe 'not authorized' do
       before { delete :destroy, params: { id: neighborhood.id } }
