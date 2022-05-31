@@ -40,6 +40,17 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
       it { expect(result['neighborhoods'].count).to eq(1) }
       it { expect(result['neighborhoods'][0]['id']).to eq(neighborhood.id) }
     end
+
+    describe 'do not get deleted' do
+      let!(:deleted) { create :neighborhood, status: :deleted }
+
+      before { get :index, params: { token: user.token } }
+
+      it { expect(response.status).to eq 200 }
+      it { expect(result).to have_key('neighborhoods') }
+      it { expect(result['neighborhoods'].count).to eq(1) }
+      it { expect(result['neighborhoods'][0]['id']).to eq(neighborhood.id) }
+    end
   end
 
   context 'create' do
