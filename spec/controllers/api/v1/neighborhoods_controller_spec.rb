@@ -454,20 +454,20 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
     let(:creator) { create :pro_user }
     let(:neighborhood) { create :neighborhood, user: creator }
 
-    let(:result) { JSON.parse(response.body) }
+    let(:result) { Neighborhood.unscoped.find(neighborhood.id }
 
     describe 'not authorized' do
       before { delete :destroy, params: { id: neighborhood.id } }
 
       it { expect(response.status).to eq 401 }
-      it { expect(Neighborhood.unscoped.find(neighborhood.id).status).to eq 'active' }
+      it { expect(result.status).to eq 'active' }
     end
 
     describe 'not authorized cause should be creator' do
       before { delete :destroy, params: { id: neighborhood.id, token: user.token } }
 
       it { expect(response.status).to eq 401 }
-      it { expect(Neighborhood.unscoped.find(neighborhood.id).status).to eq 'active' }
+      it { expect(result.status).to eq 'active' }
     end
 
     describe 'authorized' do
@@ -476,7 +476,7 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
       before { delete :destroy, params: { id: neighborhood.id, token: user.token } }
 
       it { expect(response.status).to eq 200 }
-      it { expect(Neighborhood.unscoped.find(neighborhood.id).status).to eq 'deleted' }
+      it { expect(result.status).to eq 'deleted' }
     end
   end
 end
