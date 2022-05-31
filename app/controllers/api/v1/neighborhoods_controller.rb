@@ -43,6 +43,26 @@ module Api
         render json: Neighborhood.joined_by(current_user).page(page).per(per), root: :neighborhoods, each_serializer: ::V1::NeighborhoodSerializer, scope: { user: current_user }
       end
 
+      def destroy
+        NeighborhoodServices::Deleter.new(user: current_user, neighborhood: @neighborhood).delete do |on|
+          on.success do |neighborhood|
+            render json: neighborhood, root: "user", status: 200, serializer: ::V1::NeighborhoodSerializer, scope: { user: current_user }
+          end
+
+          on.failure do |neighborhood|
+            render json: {
+              message: "Could not delete neighborhood", reasons: neighborhood.errors.full_messages
+            }, status: :bad_request
+          end
+
+          on.not_authorized do
+            render json: {
+              message: "You are not authorized to delete this neighborhood"
+            }, status: :unauthorized
+          end
+        end
+      end
+
       private
 
       def set_neighborhood
