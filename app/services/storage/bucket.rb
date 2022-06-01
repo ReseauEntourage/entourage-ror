@@ -40,7 +40,7 @@ module Storage
 
     def key_with_folder(key)
       return key unless @default_folder.present?
-      return key if key.start_with @default_folder
+      return key if key.start_with? @default_folder
 
       "#{@default_folder}/#{key}"
     end
