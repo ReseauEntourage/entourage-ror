@@ -323,7 +323,7 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
 
       it { expect(response.status).to eq 200 }
       it { expect(result['neighborhood']['member']).to eq(true) }
-      it { expect(join_request.reload.last_message_read.to_s).to eq Time.now.to_s }
+      it { expect(join_request.reload.last_message_read.to_s).to eq Time.now.in_time_zone.to_s }
     end
 
     describe 'with outing' do

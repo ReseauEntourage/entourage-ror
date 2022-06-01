@@ -6,6 +6,8 @@ module Api
 
       after_action :set_last_message_read, only: [:show]
 
+      after_action :set_last_message_read, only: [:show]
+
       def index
         render json: NeighborhoodServices::Finder.search(
           user: current_user,

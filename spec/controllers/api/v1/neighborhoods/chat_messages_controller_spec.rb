@@ -71,12 +71,12 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
       end
 
       context 'last_message_read is still Time.now' do
-        it { expect(last_message_read).to eq(Time.now.to_s) }
+        it { expect(last_message_read).to eq(Time.now.in_time_zone.to_s) }
       end
 
       context 'last_message_read is always Time.now' do
         let(:time) { 1.day.ago }
-        it { expect(last_message_read).to eq(Time.now.to_s) }
+        it { expect(last_message_read).to eq(Time.now.in_time_zone.to_s) }
       end
     end
   end
