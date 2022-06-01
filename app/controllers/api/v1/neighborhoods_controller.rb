@@ -4,6 +4,8 @@ module Api
       before_action :set_neighborhood, only: [:show, :update, :destroy, :report]
       allow_anonymous_access only: [:report]
 
+      after_action :set_last_message_read, only: [:show]
+
       def index
         render json: NeighborhoodServices::Finder.search(
           user: current_user,
@@ -98,6 +100,16 @@ module Api
 
       def report_params
         params.require(:report).permit(:category, :message)
+      end
+
+      def join_request
+        @join_request ||= JoinRequest.where(joinable: @neighborhood, user: current_user, status: :accepted).first
+      end
+
+      def set_last_message_read
+        return unless join_request
+
+        join_request.update(last_message_read: Time.now)
       end
 
       def page
