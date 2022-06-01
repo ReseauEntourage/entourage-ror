@@ -58,12 +58,16 @@ module ChatServices
 
       if success
         message.check_spam!
-        join_request.update_column(:last_message_read, message.created_at)
+
+        join_request.update_column(:last_message_read, message.created_at) unless joinable.is_a?(Neighborhood)
+
         AsyncService.new(self.class).send_notification(message)
+
         callback.on_success.try(:call, message)
       else
         callback.on_failure.try(:call, message)
       end
+
       joinable
     end
 
