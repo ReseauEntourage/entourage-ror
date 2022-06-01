@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 describe Api::V1::Neighborhoods::UsersController do
-
   let(:user) { FactoryBot.create(:public_user) }
   let(:neighborhood) { FactoryBot.create(:neighborhood, name: "foobar1") }
   let(:result) { JSON.parse(response.body) }
@@ -100,6 +99,14 @@ describe Api::V1::Neighborhoods::UsersController do
             "partner_role_title" => nil,
           }
         )}
+      end
+
+      context "user has community_roles" do
+        let(:user) { FactoryBot.create(:public_user, roles: ["ambassador"]) }
+        before { post :create, params: { neighborhood_id: neighborhood.to_param, token: user.token, distance: 123.45 } }
+
+        it { expect(neighborhood.member_ids).to match_array([neighborhood.user_id, user.id]) }
+        it { expect(result["user"]["community_roles"]).to eq(["Ambassadeur"])}
       end
     end
   end
