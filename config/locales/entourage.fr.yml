@@ -184,7 +184,13 @@ fr:
   community:
     entourage:
       roles:
+        admin: Administrateur
         ambassador: Ambassadeur
+        coordinator: Coordinateur
+        ethics_charter_signed: A validé la charte éthique
+        moderator: Modérateur
+        not_validated: Non validé
+        visitor: Visiteur
       targeting_profiles:
         offers_help: Riverain
         asks_for_help: SDF
