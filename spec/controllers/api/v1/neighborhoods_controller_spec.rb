@@ -316,12 +316,14 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
     end
 
     describe 'is member' do
-      let!(:join_request) { create(:join_request, user: user, joinable: neighborhood, status: :accepted) }
+      let!(:join_request) { create(:join_request, user: user, joinable: neighborhood, status: :accepted, last_message_read: nil) }
 
+      before { Timecop.freeze }
       before { get :show, params: { id: neighborhood.id, token: user.token } }
 
       it { expect(response.status).to eq 200 }
       it { expect(result['neighborhood']['member']).to eq(true) }
+      it { expect(join_request.reload.last_message_read.to_s).to eq Time.now.in_time_zone.to_s }
     end
 
     describe 'with outing' do
