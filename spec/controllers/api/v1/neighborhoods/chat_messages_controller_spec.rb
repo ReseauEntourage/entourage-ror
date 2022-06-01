@@ -7,9 +7,10 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
   let(:result) { JSON.parse(response.body) }
 
   describe 'GET index' do
-    let!(:chat_message_1) { FactoryBot.create(:chat_message, messageable: neighborhood, user: user, image_url: "foo", created_at: Time.now) }
+    let!(:chat_message_1) { FactoryBot.create(:chat_message, messageable: neighborhood, user: user, image_url: "foo", created_at: 1.hour.ago) }
     let!(:chat_message_2) { FactoryBot.create(:chat_message, messageable: neighborhood, user: user, parent: chat_message_1) }
 
+    before { Timecop.freeze }
     before { ChatMessage.stub(:url_for) { "http://foo.bar"} }
 
     context "not signed in" do
@@ -52,24 +53,37 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
       }) }
     end
 
-    context 'chat_message has been read' do
-      let!(:join_request) { FactoryBot.create(:join_request, joinable: neighborhood, user: user, status: :accepted, last_message_read: Time.now) }
+    context "chat_message read and last_message_read" do
+      let(:last_message_read) { join_request.reload.last_message_read.to_s }
+      let(:time) { Time.now }
+      let!(:join_request) { FactoryBot.create(:join_request, joinable: neighborhood, user: user, status: :accepted, last_message_read: time) }
 
       before { get :index, params: { neighborhood_id: neighborhood.to_param, token: user.token } }
-      it { expect(result['chat_messages'][0]['read']).to eq(true) }
-      it { expect(JoinRequest.last.last_message_read.to_s).to eq(chat_message_1.created_at.to_s) }
-    end
 
-    context 'chat_message has not been read' do
-      let!(:join_request) { FactoryBot.create(:join_request, joinable: neighborhood, user: user, status: :accepted, last_message_read: 1.day.ago) }
+      context 'chat_message has been read' do
+        it { expect(result['chat_messages'][0]['read']).to eq(true) }
+      end
 
-      before { get :index, params: { neighborhood_id: neighborhood.to_param, token: user.token } }
-      it { expect(result['chat_messages'][0]['read']).to eq(false) }
-      it { expect(JoinRequest.last.last_message_read.to_s).to eq(chat_message_1.created_at.to_s) }
+      context 'chat_message has not been read' do
+        let(:time) { 1.day.ago }
+
+        it { expect(result['chat_messages'][0]['read']).to eq(false) }
+      end
+
+      context 'last_message_read is still Time.now' do
+        it { expect(last_message_read).to eq(Time.now.in_time_zone.to_s) }
+      end
+
+      context 'last_message_read is always Time.now' do
+        let(:time) { 1.day.ago }
+        it { expect(last_message_read).to eq(Time.now.in_time_zone.to_s) }
+      end
     end
   end
 
   describe 'POST create' do
+    before { Timecop.freeze }
+
     context "not signed in" do
       before { post :create, params: { neighborhood_id: neighborhood.to_param, chat_message: { content: "foobar"} } }
 
@@ -135,6 +149,8 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
           it { expect(response.status).to eq(201) }
           it { expect(ChatMessage.count).to eq(1) }
           it { expect(result).to eq(json) }
+          # create does not update last_message_read
+          it { expect(join_request.reload.last_message_read).to eq(nil) }
         end
 
         context "with nested" do
@@ -144,6 +160,8 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
           it { expect(response.status).to eq(201) }
           it { expect(ChatMessage.count).to eq(2) }
           it { expect(result).to eq(json) }
+          # create does not update last_message_read
+          it { expect(join_request.reload.last_message_read).to eq(nil) }
         end
 
         context "with image_url and content" do
