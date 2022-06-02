@@ -5,6 +5,20 @@
 <%= render partial: 'common/errors', locals: { obj: @neighborhood } %>
 <%= form_for [:admin, @neighborhood], html: { role: "form" } do |f| %>
   <div class="form-group">
+    <%= f.label :status %>
+    <div class="controls">
+      <%= f.check_box :status, {
+        checked: @neighborhood.active?,
+        'data-toggle': :toggle,
+        'data-on': "Active",
+        'data-off': "Inactive",
+        'data-onstyle': :success,
+        'data-offstyle': :danger
+      }, :active, :deleted %>
+    </div>
+  </div>
+
+  <div class="form-group">
     <%= f.label :name %>
     <div class="controls">
       <%= f.text_field :name, class: "form-control", required: true %>
@@ -88,4 +102,10 @@
   }
 
   initAutocomplete();
+</script>
+
+<script>
+  $(document).on('turbolinks:load', function() {
+    $('#neighborhood_status').bootstrapToggle()
+  })
 </script>
