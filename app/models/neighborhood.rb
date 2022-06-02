@@ -129,6 +129,10 @@ class Neighborhood < ApplicationRecord
     where.not(id: Neighborhood.joined_by(user))
   }
 
+  def active?
+    status.to_sym == :active
+  end
+
   def interests= interests
     unless interests.compact.map(&:to_sym).include?(:other)
       self[:other_interest] = nil
