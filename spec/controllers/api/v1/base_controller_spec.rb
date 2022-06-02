@@ -68,8 +68,16 @@ RSpec.describe Api::V1::BaseController, :type => :controller do
         before { get :ping, params: { token: user.token } }
         it { expect(SessionHistory.where(user_id: user.id, date: Time.zone.today, platform: 'rspec').count).to eq 1 }
       end
-
     end
+  end
+
+  describe 'ping_db' do
+    let(:user) { FactoryBot.create(:pro_user) }
+
+    before { get :ping_db, params: { token: user.token } }
+
+    it { expect(response.status).to eq 200 }
+    it { expect(JSON.parse(response.body)).to have_key 'count' }
   end
 
   describe 'ensure_community!' do

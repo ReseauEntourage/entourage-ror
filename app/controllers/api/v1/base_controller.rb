@@ -103,11 +103,15 @@ module Api
 
       #curl -H "X-API-KEY: api_debug" "http://api.entourage.social/api/v1/check.json"
       def check
-        render json: {status: :ok}
+        render json: { status: :ok }
       end
 
       def ping
-        render json: {status: :ok}
+        render json: { status: :ok }
+      end
+
+      def ping_db
+        render json: { status: :ok, count: User.count }
       end
 
       def api_request
