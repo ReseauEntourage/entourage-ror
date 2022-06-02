@@ -118,7 +118,7 @@ module Admin
         ApplicationRecord.transaction do
           UserServices::RequestPhoneChange.record_phone_change!(user: user, admin: current_user) if user.phone_changed?
           user.save! if user.changed?
-          UserServices::SMSSender.new(user: user).send_welcome_sms(user_params[:sms_code], 'regenerate') if user.saved_change_to_sms_code?
+          UserServices::SMSSender.new(user: user).send_welcome_sms(user_params[:sms_code_password], 'regenerate') if user.saved_change_to_sms_code?
           moderation.save! if moderation.changed?
           saved = true
         end
@@ -287,7 +287,7 @@ module Admin
     end
 
     def user_params
-      params.require(:user).permit(:first_name, :last_name, :email, :sms_code, :phone, :organization_id, :use_suggestions, :about, :accepts_emails, :targeting_profile, :partner_id, :admin, :moderator)
+      params.require(:user).permit(:first_name, :last_name, :email, :sms_code_password, :phone, :organization_id, :use_suggestions, :about, :accepts_emails, :targeting_profile, :partner_id, :admin, :moderator)
     end
 
     def email_preferences_params
