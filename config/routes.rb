@@ -499,6 +499,7 @@ Rails.application.routes.draw do
   get 'store_redirection' => 'home#store_redirection'
   get 'cgu' => 'home#cgu'
   get 'ping' => 'application#ping'
+  get 'ping_db' => 'application#ping_db'
 
   #PUBLIC USER
   namespace :public_user do
