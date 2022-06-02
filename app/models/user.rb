@@ -24,7 +24,6 @@ class User < ApplicationRecord
   validates_inclusion_of :goal, in: -> (u) { (u.community&.goals || []).map(&:to_s) }, allow_nil: true
   validate :validate_roles!
   validate :validate_partner!
-  validate :validate_interests!
   validate :validate_birthday!
 
   after_save :clean_up_passwords, if: :saved_change_to_encrypted_password?
@@ -269,10 +268,6 @@ class User < ApplicationRecord
       invalid -= community.admin_roles if admin?
       invalid
     end
-  end
-
-  def validate_interests!
-    validate_set_attr :interests
   end
 
   def validate_birthday!

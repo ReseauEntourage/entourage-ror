@@ -12,6 +12,7 @@ module V1
     attribute :engaged
     attribute :unread_count
     attribute :permissions
+    attribute :interests
     attribute :placeholders, if: :placeholders?
     attribute :memberships,  if: :memberships?
     attribute :conversation, if: :conversation?
@@ -25,7 +26,6 @@ module V1
     attribute :firebase_properties, if: :me?
     attribute :goal,                if: :me?
     attribute :phone,               if: :me?
-    attribute :interests,           if: :me?
     attribute :birthday,            if: :me?
     attribute :travel_distance,     if: :me?
 
