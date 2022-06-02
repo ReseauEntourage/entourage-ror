@@ -27,9 +27,7 @@
     </div>
 
     <div class="row">
-      <% if @neighborhoods.none? %>
-        Pas de groupe de voisinage.
-      <% else %>
+      <% unless @neighborhoods.none? %>
         <table class="table">
           <th>Id</th>
           <th>Name</th>
@@ -66,7 +64,10 @@
         </table>
       <% end %>
     </div>
+
+    <%= page_entries_info @neighborhoods, entry_name: 'groupes de voisinage' %>
+    <div class="container">
+      <%= paginate(@neighborhoods) %>
+    </div>
   </div>
 </div>
-
-<%= paginate(@neighborhoods) %>
