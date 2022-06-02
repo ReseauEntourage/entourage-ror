@@ -34,8 +34,6 @@ describe ApplicationController, :type => :controller do
     end
   end
 
-
-
   describe "authorisations" do
     let(:admin) { FactoryBot.create(:pro_user, admin: true) }
     let(:manager) { FactoryBot.create(:pro_user, manager: true) }
@@ -68,5 +66,12 @@ describe ApplicationController, :type => :controller do
       it { expect(controller.current_manager).to be nil }
       it { expect(controller.current_user).to be nil }
     end
+  end
+
+  describe 'ping_db' do
+    before { get :ping_db }
+
+    it { expect(response.status).to eq 200 }
+    it { expect(JSON.parse(response.body)).to have_key 'count' }
   end
 end

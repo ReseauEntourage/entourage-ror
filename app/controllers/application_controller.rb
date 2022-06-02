@@ -56,4 +56,8 @@ class ApplicationController < ActionController::Base
   def ping
     head 200
   end
+
+  def ping_db
+    render json: { status: :ok, count: User.count }
+  end
 end
