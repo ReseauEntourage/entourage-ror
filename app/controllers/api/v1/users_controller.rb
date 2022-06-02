@@ -66,7 +66,7 @@ module Api
 
       #curl -X PATCH -d '{"user": { "sms_code":"123456"}}' -H "Content-Type: application/json" "http://localhost:3000/api/v1/users/93.json?token=azerty"
       def update
-        builder = UserServices::PublicUserBuilder.new(params: user_params, community: community)
+        builder = UserServices::PublicUserBuilder.new(params: update_params, community: community)
         builder.update(user: @current_user, platform: api_request.platform) do |on|
           on.success do |user|
             mixpanel.sync_changes(user, {
@@ -396,6 +396,10 @@ module Api
       private
       def user_params
         @user_params ||= params.require(:user).permit(:first_name, :last_name, :email, :sms_code, :password, :secret, :auth_token, :phone, :current_phone, :requested_phone, :avatar_key, :about, :goal, interests: [])
+      end
+
+      def update_params
+        @update_params ||= params.require(:user).permit(:first_name, :last_name, :email, :sms_code, :password, :secret, :auth_token, :current_phone, :requested_phone, :avatar_key, :about, :goal, :birthday, :interest_list, :interests, interests: [])
       end
 
       def user_report_params
