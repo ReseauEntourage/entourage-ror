@@ -25,4 +25,7 @@
   <% end %>
 </table>
 
-<%= paginate(@pois) %>
+<%= page_entries_info @pois, entry_name: 'POI' %>
+<div class="container">
+  <%= paginate(@pois) %>
+</div>

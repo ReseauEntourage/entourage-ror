@@ -1,5 +1,21 @@
 ---
 fr:
+  views:
+    pagination:
+      first: "&laquo; First"
+      last: "Last &raquo;"
+      previous: "&lsaquo; Prev"
+      next: "Next &rsaquo;"
+      truncate: "&hellip;"
+  helpers:
+    page_entries_info:
+      one_page:
+        display_entries:
+          zero: "Aucun %{entry_name} trouvé"
+          one: "Affichage de <b>1</b> %{entry_name}"
+          other: "Affichage de <b>tous</b> les %{entry_name} (total : <b>%{count}</b>)"
+      more_pages:
+        display_entries: "Affichage des %{entry_name} <b>%{first}&nbsp;à&nbsp;%{last}</b> (total : <b>%{total}</b>)"
   activerecord:
     attributes:
       user:
