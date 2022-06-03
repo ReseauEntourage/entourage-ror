@@ -46,6 +46,10 @@ module Api
         }.to_json, status: 200
       end
 
+      def summary
+        render json: current_user, serializer: ::V1::Users::SummarySerializer
+      end
+
       private
 
       def get_headlines

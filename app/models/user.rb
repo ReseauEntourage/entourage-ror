@@ -566,6 +566,9 @@ class User < ApplicationRecord
     entourage_participations.where(group_type: :conversation).count
   end
 
+  def neighborhood_participations_count
+    join_requests.where(joinable_type: :Neighborhood, status: :accepted).count
+  end
 
   protected
 
