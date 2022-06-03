@@ -444,7 +444,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
       context 'interests as an array' do
         context 'good value when other_interest is missing is also valid' do
           before { patch 'update', params: { token: user.token, user: { interests: ["sport", "culture", "other"] } } }
-          it { expect(response.status).to eq(400) }
+          it { expect(response.status).to eq(200) }
         end
       end
 
@@ -466,20 +466,6 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
         context 'wrong value' do
           before { patch 'update', params: { token: user.token, user: { interests: ["foo", "bar"] } } }
           it { expect(response.status).to eq(400) }
-        end
-      end
-
-      context 'interests as a string' do
-        context 'good value' do
-          before { patch 'update', params: { token: user.token, user: { interests: "event_sdf, aide_sdf" } } }
-          it { expect(result['user']).to include('interests' => ['aide_sdf', 'event_sdf']) }
-        end
-      end
-
-      context 'interests as an array' do
-        context 'good value' do
-          before { patch 'update', params: { token: user.token, user: { interests: ["event_sdf", "aide_sdf"] } } }
-          it { expect(result['user']).to include('interests' => ['aide_sdf', 'event_sdf']) }
         end
       end
 

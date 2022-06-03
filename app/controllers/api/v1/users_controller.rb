@@ -399,7 +399,7 @@ module Api
       end
 
       def update_params
-        @update_params ||= params.require(:user).permit(:first_name, :last_name, :email, :sms_code, :password, :secret, :auth_token, :current_phone, :requested_phone, :avatar_key, :about, :goal, :birthday, :interest_list, :interests, interests: [])
+        @update_params ||= params.require(:user).permit(:first_name, :last_name, :email, :sms_code, :password, :secret, :auth_token, :current_phone, :requested_phone, :avatar_key, :about, :goal, :birthday, :travel_distance, :interest_list, :interests, interests: [])
       end
 
       def user_report_params
