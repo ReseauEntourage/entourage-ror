@@ -147,6 +147,9 @@ describe Api::V1::HomeController do
       let(:request) { get :summary, params: { token: user.token } }
 
       context "renders default fields" do
+        before { UserServices::Recommandations.any_instance.stub(:find) {
+          [ { type: :profile, action: :edit, image_url: "path/to/image" } ]
+        } }
         before { request }
 
         it { expect(subject).to eq({
@@ -157,7 +160,12 @@ describe Api::V1::HomeController do
             "meetings_count" => 0,
             "chat_messages_count" => 0,
             "outing_participations_count" => 0,
-            "neighborhood_participations_count" => 0
+            "neighborhood_participations_count" => 0,
+            "recommandations" => [{
+              "type" => "profile",
+              "action" => "edit",
+              "image_url" => "path/to/image"
+            }]
           }
         }) }
       end

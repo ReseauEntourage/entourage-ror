@@ -7,7 +7,8 @@ module V1
         :meetings_count,
         :chat_messages_count,
         :outing_participations_count,
-        :neighborhood_participations_count
+        :neighborhood_participations_count,
+        :recommandations
 
       def meetings_count
         0
@@ -19,6 +20,10 @@ module V1
 
       def neighborhood_participations_count
         object.join_requests.where(joinable_type: :Neighborhood).count
+      end
+
+      def recommandations
+        UserServices::Recommandations.new(object).find
       end
     end
   end
