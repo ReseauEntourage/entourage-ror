@@ -117,6 +117,7 @@ describe HomeServices::Headline do
     let!(:pin) { FactoryBot.create(:entourage, pin: true, pins: ['75']) }
     let!(:announcement_0) { FactoryBot.create(:announcement, id: 1, position: 1, user_goals: ['goal_not_known'], areas: ['dep_75']) }
     let!(:announcement_1) { FactoryBot.create(:announcement, id: 2, position: 2, user_goals: ['goal_not_known'], areas: ['dep_75']) }
+    let!(:announcement_2) { FactoryBot.create(:announcement, id: 6, position: 6, user_goals: ['goal_not_known'], areas: ['dep_75']) }
     let!(:announcement_online) { FactoryBot.create(:announcement, id: 3, position: 3, user_goals: ['goal_not_known'], areas: ['dep_75'], category: :online) }
     let!(:announcement_poi_map) { FactoryBot.create(:announcement, id: 4, position: 4, user_goals: ['goal_not_known'], areas: ['dep_75'], category: :poi_map) }
     let!(:announcement_ambassador) { FactoryBot.create(:announcement, id: 5, position: 5, user_goals: ['goal_not_known'], areas: ['dep_75'], category: :ambassador) }
@@ -141,22 +142,22 @@ describe HomeServices::Headline do
       expect(headlines[0][:type]).to eq('Entourage')
       expect(headlines[0][:name]).to eq(:pin_neighborhood)
       expect(headlines[0][:instance]).to eq(pin)
-      # announcement
+      # announcement_0
       expect(headlines[1][:type]).to eq('Announcement')
       expect(headlines[1][:name]).to eq(:announcement_0)
       expect(headlines[1][:instance]).to eq(announcement_0)
-      # outing
-      expect(headlines[2][:type]).to eq('Entourage')
-      expect(headlines[2][:name]).to eq(:outing)
-      expect(headlines[2][:instance]).to eq(outing)
-      # action
-      expect(headlines[3][:type]).to eq('Entourage')
-      expect(headlines[3][:name]).to eq(:action)
-      expect(headlines[3][:instance]).to eq(action)
-      # announcement
+      # announcement_1
+      expect(headlines[2][:type]).to eq('Announcement')
+      expect(headlines[2][:name]).to eq(:announcement_1)
+      expect(headlines[2][:instance]).to eq(announcement_1)
+      # announcement_2
+      expect(headlines[3][:type]).to eq('Announcement')
+      expect(headlines[3][:name]).to eq(:announcement_2)
+      expect(headlines[3][:instance]).to eq(announcement_2)
+      # announcement_online
       expect(headlines[4][:type]).to eq('Announcement')
-      expect(headlines[4][:name]).to eq(:announcement_1)
-      expect(headlines[4][:instance]).to eq(announcement_1)
+      expect(headlines[4][:name]).to eq(:announcement_online)
+      expect(headlines[4][:instance]).to eq(announcement_online)
     end
 
     it 'ask_for_help & dead' do
@@ -170,20 +171,28 @@ describe HomeServices::Headline do
       headline.each { |line| headlines << line }
 
       expect(headlines).to be_a(Array)
-      expect(headlines.count).to eq(3)
+      expect(headlines.count).to eq(5)
 
-      # announcement
-      expect(headlines[0][:type]).to eq('Announcement')
-      expect(headlines[0][:name]).to eq(:announcement_0)
-      expect(headlines[0][:instance]).to eq(announcement_0)
-      # outing
-      expect(headlines[1][:type]).to eq('Entourage')
-      expect(headlines[1][:name]).to eq(:outing)
-      expect(headlines[1][:instance]).to eq(outing)
-      # announcement
+      # pin
+      expect(headlines[0][:type]).to eq('Entourage')
+      expect(headlines[0][:name]).to eq(:pin_neighborhood)
+      expect(headlines[0][:instance]).to eq(pin)
+      # announcement_0
+      expect(headlines[1][:type]).to eq('Announcement')
+      expect(headlines[1][:name]).to eq(:announcement_0)
+      expect(headlines[1][:instance]).to eq(announcement_0)
+      # announcement_1
       expect(headlines[2][:type]).to eq('Announcement')
-      expect(headlines[2][:name]).to eq(:announcement_poi_map)
-      expect(headlines[2][:instance]).to eq(announcement_poi_map)
+      expect(headlines[2][:name]).to eq(:announcement_1)
+      expect(headlines[2][:instance]).to eq(announcement_1)
+      # announcement_2
+      expect(headlines[3][:type]).to eq('Announcement')
+      expect(headlines[3][:name]).to eq(:announcement_2)
+      expect(headlines[3][:instance]).to eq(announcement_2)
+      # announcement_online
+      expect(headlines[4][:type]).to eq('Announcement')
+      expect(headlines[4][:name]).to eq(:announcement_online)
+      expect(headlines[4][:instance]).to eq(announcement_online)
     end
   end
 end
