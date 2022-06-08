@@ -62,7 +62,7 @@ module Admin
     def recommandation_params
       params.require(:recommandation).permit(
         :name,
-        :neighborhood_image_id,
+        :recommandation_image_id,
         :profile,
         :instance,
         :action,

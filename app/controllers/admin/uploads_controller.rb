@@ -9,7 +9,8 @@ module Admin
         'entourage_image' => EntourageImageUploader,
         'entourage_image_landscape_uploader' => EntourageImageLandscapeUploader,
         'entourage_image_portrait_uploader' => EntourageImagePortraitUploader,
-        'neighborhood_image_uploader' => NeighborhoodImageUploader
+        'neighborhood_image_uploader' => NeighborhoodImageUploader,
+        'recommandation_image_uploader' => RecommandationImageUploader
       }[params[:uploader]]
 
       raise if uploader.nil?
@@ -25,6 +26,7 @@ module Admin
         :announcement_id,
         :entourage_id,
         :neighborhood_image_id,
+        :recommandation_image_id,
         :partner_id
       ])
     end
