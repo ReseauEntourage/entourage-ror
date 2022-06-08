@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_05_31_153601) do
+ActiveRecord::Schema.define(version: 2022_06_08_172600) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -575,6 +575,35 @@ ActiveRecord::Schema.define(version: 2022_05_31_153601) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["organization_id"], name: "index_questions_on_organization_id"
+  end
+
+  create_table "recommandation_images", force: :cascade do |t|
+    t.string "title"
+    t.string "image_url"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "recommandation_moderation_areas", force: :cascade do |t|
+    t.integer "recommandation_id"
+    t.integer "moderation_area_id"
+    t.index ["moderation_area_id"], name: "index_recommandation_moderation_areas_on_moderation_area_id"
+    t.index ["recommandation_id"], name: "index_recommandation_moderation_areas_on_recommandation_id"
+  end
+
+  create_table "recommandations", force: :cascade do |t|
+    t.string "name", limit: 256
+    t.string "image_url"
+    t.string "profile"
+    t.string "instance", null: false
+    t.string "action", default: "show", null: false
+    t.string "url"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["action"], name: "index_recommandations_on_action"
+    t.index ["instance"], name: "index_recommandations_on_instance"
+    t.index ["name"], name: "index_recommandations_on_name"
+    t.index ["profile"], name: "index_recommandations_on_profile"
   end
 
   create_table "registration_requests", id: :serial, force: :cascade do |t|

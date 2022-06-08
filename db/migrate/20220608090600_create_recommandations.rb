@@ -6,7 +6,7 @@ class CreateRecommandations < ActiveRecord::Migration[5.2]
       t.string :profile # offer_help, ask_for_help, organization
 
       # link
-      t.string :type, null: false
+      t.string :instance, null: false
       t.string :action, null: false, default: :show
       t.string :url
 
@@ -14,7 +14,7 @@ class CreateRecommandations < ActiveRecord::Migration[5.2]
 
       t.index :name
       t.index :profile
-      t.index :type
+      t.index :instance
       t.index :action
     end
   end
@@ -22,7 +22,7 @@ class CreateRecommandations < ActiveRecord::Migration[5.2]
   def down
     remove_index :recommandations, :name
     remove_index :recommandations, :profile
-    remove_index :recommandations, :type
+    remove_index :recommandations, :instance
     remove_index :recommandations, :action
 
     drop_table :recommandations

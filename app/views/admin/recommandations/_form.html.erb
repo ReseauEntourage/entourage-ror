@@ -1,0 +1,63 @@
+<style>
+  .field_with_errors { display: inline-block }
+</style>
+
+<%= render partial: 'common/errors', locals: { obj: @recommandation } %>
+<%= form_for [:admin, @recommandation], html: { role: "form" } do |f| %>
+  <div class="form-group">
+    <%= f.label :name %>
+    <div class="controls">
+      <%= f.text_field :name, class: "form-control", required: true %>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :profile %>
+    <div class="controls">
+      <%= f.text_field :profile, class: "form-control", required: true %>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :instance %>
+    <div class="controls">
+      <%= f.text_field :instance, class: "form-control", required: true %>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :action %>
+    <div class="controls">
+      <%= f.text_field :action, class: "form-control" %>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :url %>
+    <div class="controls">
+      <%= f.text_field :url, class: "form-control" %>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :image_url %>
+    <% if @recommandation.new_record? %>
+      <div class="text-muted">
+        Vous pourrez ajouter une image une fois que la carte sera créée.
+      </div>
+    <% else %>
+      <% if @recommandation.image_url %>
+        <div style="margin-bottom: 15px">
+          <%= image_tag(@recommandation.image_url, size: '300x100') if @recommandation.image_url.present? %>
+        </div>
+      <% end %>
+
+      <div>
+        <%= link_to "Modifier", edit_image_admin_recommandation_path, class: "btn btn-default btn-sm" %>
+      </div>
+    <% end %>
+  </div>
+
+  <%= f.submit 'Enregistrer', class: "btn btn-primary" %>
+  <%= link_to "Retour", admin_recommandations_path, class: "btn btn-default" %>
+<% end %>
