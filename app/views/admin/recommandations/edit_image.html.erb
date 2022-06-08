@@ -1,7 +1,7 @@
 <div class="container">
   <div style="width: 750px; margin: auto">
     <ol class="breadcrumb">
-      <li><%= link_to "Groupes de voisinage", admin_recommandations_path %></li>
+      <li><%= link_to "Recommandations", admin_recommandations_path %></li>
       <li><%= link_to @recommandation.name, edit_admin_recommandation_path(@recommandation) %></li>
       <li class="active">Image</li>
     </ol>
@@ -20,7 +20,7 @@
           <b>Galerie</b><br>
           Vous souhaitez ajouter une nouvelle photo ?
           <b><u><%= link_to 'Cliquez ici', new_admin_recommandation_image_path %></u></b>
-          pour accéder à l'édition de la galerie photos des groupes de voisinage.
+          pour accéder à l'édition de la galerie photos des recommandations.
         </div>
 
       </div>
