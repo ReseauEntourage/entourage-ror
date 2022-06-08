@@ -1,0 +1,33 @@
+<div class="container">
+  <div style="margin: auto">
+    <div style="float: right">
+      <%= link_to "Ajouter une recommandation", new_admin_recommandation_path, class: "btn btn-default" %>
+    </div>
+
+    <h1>Recommandations</h1>
+
+    <div class="row">
+      <% unless @recommandations.none? %>
+        <table class="table">
+          <th>Id</th>
+          <th>Name</th>
+          <th>Action</th>
+          <% @recommandations.each do |recommandation| %>
+            <tr>
+              <td><%= recommandation.id %></td>
+              <td><%= link_to recommandation.name, edit_admin_recommandation_path(recommandation) %></td>
+              <td>
+                <%= link_to "Modifier", edit_admin_recommandation_path(recommandation), class: "btn btn-primary" %>
+              </td>
+            </tr>
+          <% end %>
+        </table>
+      <% end %>
+    </div>
+
+    <%= page_entries_info @recommandations, entry_name: 'recommandations' %>
+    <div class="container">
+      <%= paginate(@recommandations) %>
+    </div>
+  </div>
+</div>
