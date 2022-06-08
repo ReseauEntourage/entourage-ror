@@ -15,14 +15,5 @@ class RecommandationImage < ApplicationRecord
     def storage
       Storage::Client.images
     end
-
-    def from_absolute_to_relative_url url
-      return unless url.present?
-
-      url = url.gsub /(.)*recommandation_images\//, ''
-      url = url.gsub /\?(.)*/, '' if url.include? '?'
-
-      "recommandation_images/#{url}"
-    end
   end
 end
