@@ -15,14 +15,5 @@ class NeighborhoodImage < ApplicationRecord
     def storage
       Storage::Client.images
     end
-
-    def from_absolute_to_relative_url url
-      return unless url.present?
-
-      url = url.gsub /(.)*neighborhood_images\//, ''
-      url = url.gsub /\?(.)*/, '' if url.include? '?'
-
-      "neighborhood_images/#{url}"
-    end
   end
 end
