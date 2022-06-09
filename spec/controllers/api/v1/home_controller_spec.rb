@@ -144,12 +144,12 @@ describe Api::V1::HomeController do
     end
 
     context "signed in" do
+      let!(:neighborhood) { FactoryBot.create(:neighborhood) }
+      let!(:recommandation) { FactoryBot.create(:recommandation, name: 'voisinage', instance: :neighborhood, action: :show) }
+
       let(:request) { get :summary, params: { token: user.token } }
 
       context "renders default fields" do
-        before { UserServices::Recommandations.any_instance.stub(:find) {
-          [ { type: :profile, action: :edit, image_url: "path/to/image" } ]
-        } }
         before { request }
 
         it { expect(subject).to eq({
@@ -162,9 +162,15 @@ describe Api::V1::HomeController do
             "outing_participations_count" => 0,
             "neighborhood_participations_count" => 0,
             "recommandations" => [{
-              "type" => "profile",
-              "action" => "edit",
-              "image_url" => "path/to/image"
+              "name" => "voisinage",
+              "type" => "neighborhood",
+              "action" => "show",
+              "image_url" => nil,
+              "params" => {
+                "id" => neighborhood.id,
+                "uuid" => nil,
+                "url" => nil
+              }
             }]
           }
         }) }

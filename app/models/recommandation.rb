@@ -8,6 +8,12 @@ class Recommandation < ApplicationRecord
 
   # valides :image_url # should be ?x?
   attr_accessor :recommandation_image_id
+  attr_accessor :instance_id
+  attr_accessor :instance_key
+
+  def show?
+    action.to_sym == :show
+  end
 
   def image_url
     return unless self['image_url'].present?
