@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_06_09_111001) do
+ActiveRecord::Schema.define(version: 2022_06_09_160001) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -608,7 +608,18 @@ ActiveRecord::Schema.define(version: 2022_06_09_111001) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "rpush_apps", force: :cascade do |t|
+  create_table "resources", force: :cascade do |t|
+    t.string "name", limit: 256
+    t.string "category", limit: 32
+    t.string "description"
+    t.string "image_url"
+    t.string "url"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_resources_on_name"
+  end
+
+  create_table "rpush_apps", id: :serial, force: :cascade do |t|
     t.string "name", null: false
     t.string "environment"
     t.text "certificate"
@@ -937,6 +948,16 @@ ActiveRecord::Schema.define(version: 2022_06_09_111001) do
     t.index ["token"], name: "index_users_on_token", unique: true
     t.index ["unblock_at"], name: "index_users_on_unblock_at"
     t.index ["uuid"], name: "index_users_on_uuid", unique: true
+  end
+
+  create_table "users_resources", force: :cascade do |t|
+    t.bigint "user_id"
+    t.bigint "resource_id"
+    t.boolean "displayed", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["resource_id"], name: "index_users_resources_on_resource_id"
+    t.index ["user_id"], name: "index_users_resources_on_user_id"
   end
 
   add_foreign_key "experimental_pending_request_reminders", "users"

@@ -222,6 +222,8 @@ Rails.application.routes.draw do
       end
     end
 
+    resources :resources
+
     resources :pois
     resources :registration_requests, only: [:index, :show, :update, :destroy]
     resources :messages, only: [:index, :destroy]

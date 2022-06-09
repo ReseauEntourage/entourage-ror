@@ -61,6 +61,7 @@ class User < ApplicationRecord
   has_many :partner_join_requests
   has_many :user_phone_changes, -> { order(:id) }, dependent: :destroy
   has_many :histories, class_name: 'UserHistory'
+  has_many :users_resources
 
   delegate :country, to: :address, allow_nil: true
   delegate :postal_code, to: :address, allow_nil: true
