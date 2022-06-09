@@ -40,6 +40,35 @@
   </div>
 
   <div class="form-group">
+    <%= f.label :areas, style: "margin-right: .7em" %>
+    <a href="#" data-role="select-areas" data-select="all">Tout sélectionner</a> ·
+    <a href="#" data-role="select-areas" data-select="ours">Nos zones</a> ·
+    <a href="#" data-role="select-areas" data-select="none">Tout désélectionner</a>
+    <div style="margin-bottom: 5px" data-checkbox-required="Sélectionnez au moins une zone">
+      <%=
+        collection_check_boxes(:recommandation, :areas,
+                               ModerationArea.all_with_no_zone,
+                               :departement_slug, :name_with_departement) do |b|
+          b.label(class: "checkbox-inline") { b.check_box + b.text }
+        end
+      %>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :user_goals, style: "margin-right: .7em" %>
+    <div style="margin-bottom: 5px" data-checkbox-required="Sélectionnez au moins un profil">
+      <%=
+        collection_check_boxes(:recommandation, :user_goals,
+                               UserGoalPresenter.all(current_user.community),
+                               :slug, :name) do |b|
+          b.label(class: "checkbox-inline") { b.check_box + b.text }
+        end
+      %>
+    </div>
+  </div>
+
+  <div class="form-group">
     <%= f.label :image_url %>
     <% if @recommandation.new_record? %>
       <div class="text-muted">
@@ -61,3 +90,27 @@
   <%= f.submit 'Enregistrer', class: "btn btn-primary" %>
   <%= link_to "Retour", admin_recommandations_path, class: "btn btn-default" %>
 <% end %>
+
+<script>
+  //
+  // areas presets
+
+  var areasSelector = '[type="checkbox"][name="recommandation[areas][]"]',
+      $areas = $(areasSelector)
+
+  $(document).on('click', '[data-role="select-areas"]', function(e) {
+    e.preventDefault()
+    var select = $(this).data('select'),
+        check = {
+          'all': function() { return true },
+          'ours': function(v) { return ['sans_zone', 'hors_zone'].indexOf(v) === -1 },
+          'none': function() { return false },
+        }[select]
+
+    $areas.each(function() {
+      var $box = $(this)
+      $box.prop('checked', check($box.val()))
+      this.setCustomValidity('') // reset validations
+    })
+  })
+</script>

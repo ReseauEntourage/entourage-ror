@@ -1,4 +1,7 @@
 class Recommandation < ApplicationRecord
+  include WithAreas
+  include WithUserGoals
+
   validates_presence_of [:name, :instance, :action]
 
   alias_attribute :title, :name

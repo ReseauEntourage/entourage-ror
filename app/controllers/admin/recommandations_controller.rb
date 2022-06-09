@@ -10,6 +10,10 @@ module Admin
 
     def new
       @recommandation = Recommandation.new
+
+      # pre-fill targeting
+      @recommandation.areas = ModerationArea.all_slugs
+      @recommandation.user_goals = UserGoalPresenter.all_slugs(community)
     end
 
     def create
@@ -66,7 +70,9 @@ module Admin
         :profile,
         :instance,
         :action,
-        :url
+        :url,
+        areas: [],
+        user_goals: []
       )
     end
   end

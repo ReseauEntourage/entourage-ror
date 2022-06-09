@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_06_08_172600) do
+ActiveRecord::Schema.define(version: 2022_06_09_111000) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -600,10 +600,14 @@ ActiveRecord::Schema.define(version: 2022_06_08_172600) do
     t.string "url"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.jsonb "areas", default: [], null: false
+    t.jsonb "user_goals", default: [], null: false
     t.index ["action"], name: "index_recommandations_on_action"
+    t.index ["areas"], name: "index_recommandations_on_areas", using: :gin
     t.index ["instance"], name: "index_recommandations_on_instance"
     t.index ["name"], name: "index_recommandations_on_name"
     t.index ["profile"], name: "index_recommandations_on_profile"
+    t.index ["user_goals"], name: "index_recommandations_on_user_goals", using: :gin
   end
 
   create_table "registration_requests", id: :serial, force: :cascade do |t|
