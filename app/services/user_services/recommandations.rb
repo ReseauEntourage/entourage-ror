@@ -21,7 +21,7 @@ module UserServices
     end
 
     def find_user recommandation
-      [:id, @user.id]
+      [:id, User.last.id]
     end
 
     def find_profile recommandation
