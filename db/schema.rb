@@ -584,13 +584,6 @@ ActiveRecord::Schema.define(version: 2022_06_09_111000) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "recommandation_moderation_areas", force: :cascade do |t|
-    t.integer "recommandation_id"
-    t.integer "moderation_area_id"
-    t.index ["moderation_area_id"], name: "index_recommandation_moderation_areas_on_moderation_area_id"
-    t.index ["recommandation_id"], name: "index_recommandation_moderation_areas_on_recommandation_id"
-  end
-
   create_table "recommandations", force: :cascade do |t|
     t.string "name", limit: 256
     t.string "image_url"
