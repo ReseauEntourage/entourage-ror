@@ -31,7 +31,9 @@ describe Admin::RecommandationsController do
         image_url: 'path/to/image',
         profile: :ask_for_help,
         instance: :profile,
-        action: :show
+        action: :show,
+        areas: [:dep_75],
+        user_goals: [:ask_for_help]
       } } }
       it { expect { recommandation }.to change { Recommandation.count }.by(1) }
     end
