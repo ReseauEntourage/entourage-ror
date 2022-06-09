@@ -1,6 +1,5 @@
 FactoryBot.define do
   factory :recommandation do
-    profile { :offer_help }
     user_goals { [:offer_help] }
     areas { [:dep_75] }
 

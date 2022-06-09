@@ -67,7 +67,6 @@ module Admin
       params.require(:recommandation).permit(
         :name,
         :recommandation_image_id,
-        :profile,
         :instance,
         :action,
         :url,
