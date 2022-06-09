@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_06_09_111000) do
+ActiveRecord::Schema.define(version: 2022_06_09_111001) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -587,7 +587,6 @@ ActiveRecord::Schema.define(version: 2022_06_09_111000) do
   create_table "recommandations", force: :cascade do |t|
     t.string "name", limit: 256
     t.string "image_url"
-    t.string "profile"
     t.string "instance", null: false
     t.string "action", default: "show", null: false
     t.string "url"
@@ -599,7 +598,6 @@ ActiveRecord::Schema.define(version: 2022_06_09_111000) do
     t.index ["areas"], name: "index_recommandations_on_areas", using: :gin
     t.index ["instance"], name: "index_recommandations_on_instance"
     t.index ["name"], name: "index_recommandations_on_name"
-    t.index ["profile"], name: "index_recommandations_on_profile"
     t.index ["user_goals"], name: "index_recommandations_on_user_goals", using: :gin
   end
 
