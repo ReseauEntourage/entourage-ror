@@ -20,6 +20,14 @@ module UserServices
       end.compact
     end
 
+    def find_user
+      [:id, @user.id]
+    end
+
+    def find_profile
+      [:id, @user.id]
+    end
+
     def find_neighborhood
       [:id, Neighborhood.last.id]
     end
