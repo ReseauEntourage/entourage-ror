@@ -36,6 +36,10 @@ module UserServices
       [:id, Entourage.where(group_type: :outing).last.id]
     end
 
+    def find_poi recommandation
+      [:id, Poi.last.id]
+    end
+
     def find_resource recommandation
       # [:id, Resource.last.id]
     end
