@@ -163,34 +163,6 @@ class Neighborhood < ApplicationRecord
     super(place_name)
   end
 
-  # behaviors
-
-  # EC-94: list neighborhoods [OK]
-  # EC-95: join neighborhood [OK]
-  # EC-117: leave neighborhood [OK]
-  # EC-95: show neighborhood [OK]
-  # EC-99: find neighborhood
-  # EC-100: create neighborhood [OK]
-  # EC-118: add photo to neighborhood [OK]
-  # EC-101: update neighborhood [OK]
-  # EC-104: add localization to neighborhood
-  # main: post message in neighborhood conversation [OK]
-  # main: receive notification when message has been post [OK]
-  # main: create outing in neighborhood [OK]
-  # main: signal neighborhood
-  # main: signal a user in neighborhood (ethics)
-
-  # EC-82 [groupe] modérer la création d'un groupe
-  # EC-83 [groupe] être notifié sur la création d'un groupe
-  # EC-84 [groupe] détecter groupes similaires
-  # EC-85 [groupe] détecter groupes abusifs : détection
-  # EC-86 [groupe] détecter groupes abusifs : design interface
-  # EC-88 [groupe] détecter groupes abusifs : notification
-  # EC-89 [modé] détecter mots abusifs sur contenu publié : détection
-  # EC-90 [modé] détecter mots abusifs sur contenu publié : design interface
-  # EC-91 [modé] détecter mots abusifs sur contenu publié : notification
-  # EC-92 [groupe] éditer les infos d'un groupe
-
   def members_count
     members.count
   end
