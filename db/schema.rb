@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_06_09_160001) do
+ActiveRecord::Schema.define(version: 2022_06_10_085500) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -609,8 +609,8 @@ ActiveRecord::Schema.define(version: 2022_06_09_160001) do
   end
 
   create_table "resources", force: :cascade do |t|
-    t.string "name", limit: 256
-    t.string "category", limit: 32
+    t.string "name", limit: 256, null: false
+    t.string "category", limit: 32, default: "all", null: false
     t.string "description"
     t.string "image_url"
     t.string "url"
@@ -953,10 +953,11 @@ ActiveRecord::Schema.define(version: 2022_06_09_160001) do
   create_table "users_resources", force: :cascade do |t|
     t.bigint "user_id"
     t.bigint "resource_id"
-    t.boolean "displayed", default: false
+    t.boolean "watched", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["resource_id"], name: "index_users_resources_on_resource_id"
+    t.index ["user_id", "resource_id"], name: "index_users_resources_on_user_id_and_resource_id", unique: true
     t.index ["user_id"], name: "index_users_resources_on_user_id"
   end
 

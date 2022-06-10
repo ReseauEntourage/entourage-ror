@@ -353,13 +353,23 @@ Rails.application.routes.draw do
           end
         end
 
-        resources :users, :controller => 'neighborhoods/users', only: [:index, :destroy, :create] do
+        resources :users, :controller => 'neighborhoods/users', only: [:index, :create, :destroy] do
           collection do
+            # we want to avoid specific id to unjoin
             delete :destroy
           end
         end
 
         resources :outings, :controller => 'neighborhoods/outings', only: [:create]
+      end
+
+      resources :resources, only: [:index, :show] do
+        resources :users, :controller => 'resources/users', only: [:create, :destroy] do
+          collection do
+            # we want to avoid specific id to unjoin
+            delete :destroy
+          end
+        end
       end
 
       resources :entourages, only: [:index, :show, :create, :update] do

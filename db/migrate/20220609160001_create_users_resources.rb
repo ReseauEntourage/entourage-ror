@@ -5,6 +5,8 @@ class CreateUsersResources < ActiveRecord::Migration[5.2]
       t.belongs_to :resource, index: true
       t.boolean :displayed, default: false
       t.timestamps
+
+      t.index [:user_id, :resource_id], unique: true
     end
   end
 
