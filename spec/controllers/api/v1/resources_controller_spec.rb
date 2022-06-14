@@ -35,6 +35,7 @@ describe Api::V1::ResourcesController, :type => :controller do
     end
 
     describe 'authorized' do
+      before { ResourceServices::Format.any_instance.stub(:to_html) { '<title>foo</title>' } }
       before { get :show, params: { id: resource.id, token: user.token } }
 
       it { expect(response.status).to eq 200 }
@@ -42,12 +43,14 @@ describe Api::V1::ResourcesController, :type => :controller do
         "resource" => {
           "id" => resource.id,
           "name" => "Comment aider",
+          "is_video" => false,
+          "duration" => nil,
           "category" => "understand",
           "description" => nil,
           "image_url" => nil,
           "url" => nil,
           "watched" => false,
-          "html" => "<title>Comment aider</title>\n<em></em>\n<p></p>\n<img src=\"\">\n<a href=\"\"></a>\n"
+          "html" => "<title>foo</title>"
         }
       })}
     end

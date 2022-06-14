@@ -14,7 +14,7 @@
   <div class="form-group">
     <%= f.label :category %>
     <div class="controls">
-      <%= f.text_field :category, class: "form-control", required: true %>
+      <%= f.select :category, options_for_select(Resource::CATEGORIES, @resource.category), class: "form-control", required: true %>
     </div>
   </div>
 
@@ -32,6 +32,24 @@
     </div>
   </div>
 
+  <div class="form-group">
+    <%= f.label :is_video %>
+    <div class="controls">
+      <%= f.check_box :is_video, { :checked => @resource.is_video }, 0, 1 %>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :duration %>
+    <div class="controls">
+      <%= f.number_field :duration, class: "form-control" %>
+    </div>
+  </div>
+
   <%= f.submit 'Enregistrer', class: "btn btn-primary" %>
   <%= link_to "Retour", admin_resources_path, class: "btn btn-default" %>
 <% end %>
+
+<script>
+  $('select#resource_category').select2({ width: '100%' });
+</script>
