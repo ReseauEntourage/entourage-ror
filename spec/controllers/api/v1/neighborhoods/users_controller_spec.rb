@@ -141,6 +141,15 @@ describe Api::V1::Neighborhoods::UsersController do
         })}
       end
 
+      context "can not quit creator" do
+        let(:neighborhood) { FactoryBot.create(:neighborhood, name: "foobar1", user: user) }
+
+        before { delete :destroy, params: { neighborhood_id: neighborhood.to_param, id: user.id, token: user.token } }
+
+        it { expect(response.status).to eq(400) }
+        it { expect(result).to have_key('message') }
+      end
+
       context "can not quit another member" do
         let(:member) { FactoryBot.create(:public_user) }
         let!(:my_join_request) { create(:join_request, user: user, joinable: neighborhood, status: :accepted) }
