@@ -544,25 +544,19 @@ class User < ApplicationRecord
   end
 
   def action_creations_count
-    entourages.count
+    entourages.where(group_type: :action).count
   end
 
   def action_participations_count
-    entourage_participations.select do |participation|
-      participation.group_type.to_sym == :action
-    end.count
+    entourage_participations.where(group_type: :action).count
   end
 
   def outing_participations_count
-    entourage_participations.select do |participation|
-      participation.group_type.to_sym == :outing
-    end.count
+    entourage_participations.where(group_type: :outing).count
   end
 
   def conversation_participations_count
-    entourage_participations.select do |participation|
-      participation.group_type.to_sym == :conversation
-    end.count
+    entourage_participations.where(group_type: :conversation).count
   end
 
 
