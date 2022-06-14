@@ -4,6 +4,7 @@ module Api
       class UsersController < Api::V1::BaseController
         before_action :set_resource
         before_action :set_user_resource, only: [:create, :destroy]
+        before_action :authorised_user?, only: [:destroy]
 
         def create
           return render json: @user_resource, status: 201, serializer: ::V1::UsersResourceSerializer if @user_resource.present? && @user_resource.watched?
@@ -24,8 +25,8 @@ module Api
         end
 
         def destroy
-          render json: :ok, status: 200 unless @user_resource.present?
-          render json: :ok, status: 200 unless @user_resource.watched?
+          render json: :ok, status: 200 and return unless @user_resource.present?
+          render json: :ok, status: 200 and return unless @user_resource.watched?
 
           @user_resource.watched = false
 
@@ -46,6 +47,14 @@ module Api
 
         def set_user_resource
           @user_resource = UsersResource.find_by_resource_id_and_user_id(params[:resource_id], current_user.id)
+        end
+
+        def authorised_user?
+          return unless params[:id].present?
+
+          unless current_user == User.find(params[:id])
+            render json: { message: 'unauthorized' }, status: :unauthorized
+          end
         end
       end
     end
