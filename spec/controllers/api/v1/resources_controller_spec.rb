@@ -47,6 +47,7 @@ describe Api::V1::ResourcesController, :type => :controller do
           "image_url" => nil,
           "url" => nil,
           "watched" => false,
+          "html" => "<title>Comment aider</title>\n<em></em>\n<p></p>\n<img src=\"\">\n<a href=\"\"></a>\n"
         }
       })}
     end
