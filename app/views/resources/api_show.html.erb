@@ -1,5 +1,17 @@
 <title><%= @resource.name %></title>
-<em><%#= @resource.duration %></em>
+<em><%= @resource.duration %></em>
 <p><%= @resource.description %></p>
-<img src="<%= @resource.image_url %>">
-<a href="<%= @resource.url %>"><%= @resource.url %></a>
+
+<% if @resource.is_video %>
+  <video controls>
+    <source src="<%= @resource.url %>" type="video/mp4">
+    <p>Votre navigateur ne prend pas en charge les vidéos HTML5.
+       Voici <a href="<%= @resource.url %>">un lien pour télécharger la vidéo</a>.</p>
+  </video>
+
+
+  <iframe width="640" height="360" src="<%= @resource.url %>" title="<%= @resource.name %>" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<% else %>
+  <img src="<%= @resource.image_url %>">
+  <a href="<%= @resource.url %>"><%= @resource.url %></a>
+<% end %>

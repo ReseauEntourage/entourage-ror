@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_06_10_085500) do
+ActiveRecord::Schema.define(version: 2022_06_14_154800) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -616,10 +616,12 @@ ActiveRecord::Schema.define(version: 2022_06_10_085500) do
     t.string "url"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "duration"
+    t.boolean "is_video", default: false
     t.index ["name"], name: "index_resources_on_name"
   end
 
-  create_table "rpush_apps", id: :serial, force: :cascade do |t|
+  create_table "rpush_apps", force: :cascade do |t|
     t.string "name", null: false
     t.string "environment"
     t.text "certificate"

@@ -2,6 +2,8 @@ module V1
   class ResourceSerializer < ActiveModel::Serializer
     attributes :id,
       :name,
+      :is_video,
+      :duration,
       :category,
       :description,
       :image_url,

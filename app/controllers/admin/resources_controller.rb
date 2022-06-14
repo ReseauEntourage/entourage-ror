@@ -48,7 +48,10 @@ module Admin
       params.require(:resource).permit(
         :name,
         :category,
-        :url
+        :description,
+        :url,
+        :is_video,
+        :duration
       )
     end
   end
