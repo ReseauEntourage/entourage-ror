@@ -23,6 +23,7 @@
 //= require bootstrap-multiselect
 //= require jquery.ui.widget
 //= require jquery.fileupload
+//= require tinymce
 //= require_tree ./templates
 //= require_tree .
 //= require_tree ./admin

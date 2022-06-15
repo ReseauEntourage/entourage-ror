@@ -53,6 +53,7 @@ gem 'rspec_api_documentation'
 gem 'ams_lazy_relationships'
 gem 'acts-as-taggable-on',            '~> 8.0'
 gem 'ancestry'
+gem 'tinymce-rails'
 
 group :development, :test do
   # gem 'annotate'
