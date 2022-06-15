@@ -54,5 +54,15 @@ describe Api::V1::ResourcesController, :type => :controller do
         }
       })}
     end
+
+    describe 'description' do
+      let(:resource) { create :resource, description: '<p>foo</p>', is_video: false }
+      before { get :show, params: { id: resource.id, token: user.token } }
+
+      it { expect(response.status).to eq 200 }
+      it { expect(result['resource']['html']).to include(
+        "<p>foo</p>"
+      )}
+    end
   end
 end

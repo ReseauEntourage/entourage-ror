@@ -49,7 +49,7 @@
     <% if @resource.is_video %>
       <iframe src="<%= @resource.url %>" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
     <% else %>
-      <h2><%= @resource.description %></h2>
+      <h2><%= @resource.description&.html_safe %></h2>
       <br />
 
       <img src="<%= @resource.image_url %>" />
