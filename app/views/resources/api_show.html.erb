@@ -1,17 +1,59 @@
-<title><%= @resource.name %></title>
-<em><%= @resource.duration %></em>
-<p><%= @resource.description %></p>
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport"  content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
-<% if @resource.is_video %>
-  <video controls>
-    <source src="<%= @resource.url %>" type="video/mp4">
-    <p>Votre navigateur ne prend pas en charge les vidéos HTML5.
-       Voici <a href="<%= @resource.url %>">un lien pour télécharger la vidéo</a>.</p>
-  </video>
+    <style>
+      img {width:auto;height:auto;max-width:100%;max-height:90vh;}
+      iframe {width:auto;height:auto;max-width:150%; }
 
+      body {
+        font-family: "HelveticaNeue";
+        font-size: 15px;
+        line-height: 17px;
+        color: #000000;
+      }
 
-  <iframe width="640" height="360" src="<%= @resource.url %>" title="<%= @resource.name %>" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-<% else %>
-  <img src="<%= @resource.image_url %>">
-  <a href="<%= @resource.url %>"><%= @resource.url %></a>
-<% end %>
+      h1 {
+        font-weight: 600;
+        font-size: 18px;
+        line-height: 20px;
+        color: #000000;
+      }
+
+      h2 {
+          font-weight: 200;
+          font-size: 15px;
+          color: #000000;
+      }
+
+      h3 {
+          font-weight: 100;
+          font-size: 14px;
+          line-height: 18px;
+          color: #aaaaaa;
+      }
+      a {
+        color: #F55F24;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h1><%= @resource.name %></h1>
+    <% if @resource.duration.present? %>
+      <h3><%= "#{@resource.duration}mn" %></h3>
+    <% end %>
+
+    <% if @resource.is_video %>
+      <iframe src="<%= @resource.url %>" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    <% else %>
+      <h2><%= @resource.description %></h2>
+      <br />
+
+      <img src="<%= @resource.image_url %>" />
+      <a href="<%= @resource.url %>"><%= @resource.url %></a>
+    <% end %>
+  </body>
+</html>

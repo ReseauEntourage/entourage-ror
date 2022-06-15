@@ -11,12 +11,14 @@
         <table class="table">
           <th>Id</th>
           <th>Name</th>
+          <th>Catégorie</th>
           <th>Vues</th>
           <th>Action</th>
           <% @resources.each do |resource| %>
             <tr>
               <td><%= resource.id %></td>
               <td><%= link_to resource.name, edit_admin_resource_path(resource) %></td>
+              <td><%= resource.category %></td>
               <td><%= resource.views %></td>
               <td>
                 <%= link_to "Modifier", edit_admin_resource_path(resource), class: "btn btn-primary" %>
