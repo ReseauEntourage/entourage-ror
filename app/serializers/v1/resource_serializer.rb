@@ -11,6 +11,12 @@ module V1
       :watched,
       :html
 
+    def description
+      return unless object.description
+
+      object.description.html_safe
+    end
+
     def watched
       return false unless scope[:user].present?
 

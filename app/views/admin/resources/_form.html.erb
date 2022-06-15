@@ -1,3 +1,5 @@
+<%= tinymce %>
+
 <style>
   .field_with_errors { display: inline-block }
 </style>
@@ -21,7 +23,7 @@
   <div class="form-group">
     <%= f.label :description %>
     <div class="controls">
-      <%= f.text_field :description, class: "form-control" %>
+      <%= f.text_area :description, rows: 10, :class => "form-control tinymce" %>
     </div>
   </div>
 
