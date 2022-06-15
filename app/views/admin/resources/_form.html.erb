@@ -1,5 +1,3 @@
-<%= tinymce %>
-
 <style>
   .field_with_errors { display: inline-block }
 </style>
@@ -51,6 +49,7 @@
   <%= f.submit 'Enregistrer', class: "btn btn-primary" %>
   <%= link_to "Retour", admin_resources_path, class: "btn btn-default" %>
 <% end %>
+<%= tinymce %>
 
 <script>
   $('select#resource_category').select2({ width: '100%' });

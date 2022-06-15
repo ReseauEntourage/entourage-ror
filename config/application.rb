@@ -39,6 +39,8 @@ module EntourageBack
     # https://guides.rubyonrails.org/upgrading_ruby_on_rails.html#per-form-csrf-tokens
     # config.action_controller.per_form_csrf_tokens = true
 
+    config.tinymce.install = :copy
+
     # lograge
     # note: development.rb overrides this config
     config.lograge.enabled = true
