@@ -14,7 +14,7 @@ module V1
     def description
       return unless object.description
 
-      object.description.sanitize
+      object.description.html_safe
     end
 
     def watched
