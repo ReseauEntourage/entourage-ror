@@ -35,7 +35,7 @@
   <div class="form-group">
     <%= f.label :is_video %>
     <div class="controls">
-      <%= f.check_box :is_video, { :checked => @resource.is_video }, 0, 1 %>
+      <%= f.check_box :is_video, { :checked => @resource.is_video? }, 1, 0 %>
     </div>
   </div>
 
