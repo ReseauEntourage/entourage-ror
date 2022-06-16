@@ -67,17 +67,17 @@ module Api
       end
 
       def report
-        if report_params[:category].blank?
+        unless report_params[:signals].present?
           render json: {
             code: 'CANNOT_REPORT_NEIGHBORHOOD',
-            message: 'category is required'
+            message: 'signals is required'
           }, status: :bad_request and return
         end
 
         SlackServices::SignalNeighborhood.new(
           neighborhood: @neighborhood,
           reporting_user: current_user,
-          category: report_params[:category],
+          signals: report_params[:signals],
           message: report_params[:message]
         ).notify
 
@@ -117,7 +117,7 @@ module Api
       end
 
       def report_params
-        params.require(:report).permit(:category, :message)
+        params.require(:report).permit(:message, signals: [])
       end
     end
   end

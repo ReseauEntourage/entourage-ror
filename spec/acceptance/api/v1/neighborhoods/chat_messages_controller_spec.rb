@@ -120,7 +120,7 @@ resource Api::V1::Neighborhoods::ChatMessagesController do
     parameter :id, required: true
     parameter :token, type: :string, required: true
     with_options :scope => :report, :required => true do
-      parameter :category, type: :string
+      parameter :signals, type: :array
       parameter :message, type: :string
     end
 
@@ -135,7 +135,7 @@ resource Api::V1::Neighborhoods::ChatMessagesController do
     let(:raw_post) { {
       token: user.token,
       report: {
-        category: 'category',
+        signals: ['spam'],
         message: 'message'
       }
     }.to_json }
