@@ -98,10 +98,6 @@ module Api
           @chat_message = ChatMessage.where(id: params[:chat_message_id], messageable_type: :Neighborhood).first
         end
 
-        def chat_messages_params
-          params.require(:chat_message).permit(:content, :message_type)
-        end
-
         def report_params
           params.require(:report).permit(:category, :message)
         end
