@@ -232,14 +232,14 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
       before {
         expect_any_instance_of(SlackServices::SignalNeighborhoodChatMessage).to receive(:notify)
         post :report, params: { token: user.token, neighborhood_id: neighborhood.id, chat_message_id: chat_message.id, report: {
-          category: 'foo',
+          signals: ['foo'],
           message: 'bar'
         } }
       }
       it { expect(response.status).to eq 201 }
     end
 
-    context "wrong messageable cause no report category" do
+    context "wrong messageable cause no report signals" do
       before {
         expect_any_instance_of(SlackServices::SignalNeighborhoodChatMessage).not_to receive(:notify)
         post :report, params: { token: user.token, neighborhood_id: neighborhood.id, chat_message_id: chat_message.id, report: {
