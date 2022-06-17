@@ -1,9 +1,10 @@
 FactoryBot.define do
-  factory :ios_app, class: Rpush::Apns::App do
-    name { 'entourage' }
-    certificate { File.read File.join(Rails.root, 'certificates', 'ios_push_production.pem') }
-    environment { "sandbox" }
-    password { "" }
-    connections { 1 }
-  end
+  factory :ios_app, class: Rpush::Apnsp8::App do
+    name { :entourage }
+    environment { :development }
+    apn_key { :apn_key) }
+    apn_key_id { :apn_key_id }
+    team_id { :team_id }
+    bundle_id { :bundle_id }
+    connections { 1 }  end
 end
