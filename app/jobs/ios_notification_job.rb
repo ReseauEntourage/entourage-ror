@@ -41,6 +41,10 @@ class IosNotificationJob < ApplicationJob
           Rails.logger.error e.message
         end
       end
+
+      unless EnvironmentHelper.test?
+        Rpush.push
+      end
     end
   end
 end
