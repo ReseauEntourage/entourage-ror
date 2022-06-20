@@ -42,9 +42,7 @@ class IosNotificationJob < ApplicationJob
         end
       end
 
-      unless EnvironmentHelper.test?
-        Rpush.push
-      end
+      Rpush.push
     end
   end
 end

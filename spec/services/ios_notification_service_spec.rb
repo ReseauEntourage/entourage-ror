@@ -2,6 +2,8 @@ require 'rails_helper'
 
 describe IosNotificationService do
   describe '#send_notification' do
+    before { Rpush.stub(:push) { nil } }
+
     let(:service) { IosNotificationService.new }
 
     context 'ios app is present' do
