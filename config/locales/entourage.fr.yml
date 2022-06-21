@@ -186,6 +186,18 @@ fr:
         interests: Centres d'intérêts
         image_url: Image
         status: Statut
+      resource:
+        name: Nom
+        category: Catégorie
+        description: Description
+        url: Url
+        is_video: Vidéo ?
+        duration: Durée
+        image_url: Image
+        categories:
+          act: Agir
+          inspire: S'inspirer
+          understand: Comprendre
 
   community:
     entourage:

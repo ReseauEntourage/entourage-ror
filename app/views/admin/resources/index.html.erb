@@ -18,7 +18,7 @@
             <tr>
               <td><%= resource.id %></td>
               <td><%= link_to resource.name, edit_admin_resource_path(resource) %></td>
-              <td><%= resource.category %></td>
+              <td><%= category_label resource.category %></td>
               <td><%= resource.views %></td>
               <td>
                 <%= link_to "Modifier", edit_admin_resource_path(resource), class: "btn btn-primary" %>

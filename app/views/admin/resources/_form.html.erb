@@ -14,7 +14,7 @@
   <div class="form-group">
     <%= f.label :category %>
     <div class="controls">
-      <%= f.select :category, options_for_select(Resource::CATEGORIES, @resource.category), class: "form-control", required: true %>
+      <%= f.select :category, options_for_select(categories_options_for_select, @resource.category), class: "form-control", required: true %>
     </div>
   </div>
 
