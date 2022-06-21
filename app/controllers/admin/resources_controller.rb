@@ -2,7 +2,7 @@ module Admin
   class ResourcesController < Admin::BaseController
     layout 'admin_large'
 
-    before_action :set_resource, only: [:edit, :update, :destroy]
+    before_action :set_resource, only: [:edit, :update, :destroy, :edit_image, :update_image]
 
     def index
       @resources = Resource.page(page).per(per)
@@ -35,6 +35,21 @@ module Admin
       end
     end
 
+    def edit_image
+      @resource_images = ResourceImage.all
+    end
+
+    def update_image
+      @resource.assign_attributes(resource_params)
+
+      if @resource.save
+        redirect_to edit_admin_resource_path(@resource)
+      else
+        @resource_images = ResourceImage.all
+        render :edit_image
+      end
+    end
+
     def destroy
     end
 
@@ -51,7 +66,8 @@ module Admin
         :description,
         :url,
         :is_video,
-        :duration
+        :duration,
+        :resource_image_id,
       )
     end
   end
