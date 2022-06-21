@@ -180,6 +180,12 @@ fr:
           hors_zone: Hors-zone
           sans_zone: Sans-zone
           list: Départements ou codes postaux
+      neighborhood:
+        name: Nom
+        description: Description
+        interests: Centres d'intérêts
+        image_url: Image
+        status: Statut
 
   community:
     entourage:
