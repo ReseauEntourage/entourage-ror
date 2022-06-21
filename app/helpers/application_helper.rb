@@ -1,4 +1,11 @@
 module ApplicationHelper
+  def status_label instance
+    type_to_class = {
+      "active" => "label-info",
+      "deleted" => "label-warning"
+    }
+    content_tag :span, instance.status, class: "label #{type_to_class[instance.status]}"
+  end
 
   def active_class(link_path)
     current_page?(link_path) ? "active" : ""

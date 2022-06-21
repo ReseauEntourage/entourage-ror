@@ -55,7 +55,7 @@
               </td>
               <td><%= l neighborhood.created_at, format: :date_short %></td>
               <td><span class="label label-default"><%= "#{neighborhood.members_count} membres" %></span></td>
-              <td><%= neighborhood_status neighborhood %></td>
+              <td><%= status_label neighborhood %></td>
               <td>
                 <%= link_to "Modifier", edit_admin_neighborhood_path(neighborhood), class: "btn btn-primary" %>
               </td>

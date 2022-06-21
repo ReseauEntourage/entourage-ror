@@ -6,10 +6,16 @@ class Recommandation < ApplicationRecord
 
   alias_attribute :title, :name
 
+  default_scope { where(status: :active) }
+
   # valides :image_url # should be ?x?
   attr_accessor :recommandation_image_id
   attr_accessor :instance_id
   attr_accessor :instance_key
+
+  def active?
+    status.to_sym == :active
+  end
 
   def show?
     action.to_sym == :show
