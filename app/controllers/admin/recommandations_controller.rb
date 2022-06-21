@@ -5,7 +5,7 @@ module Admin
     before_action :set_recommandation, only: [:edit, :update, :destroy, :edit_image, :update_image]
 
     def index
-      @recommandations = Recommandation.page(page).per(per)
+      @recommandations = Recommandation.unscoped.page(page).per(per)
     end
 
     def new
@@ -60,11 +60,12 @@ module Admin
     private
 
     def set_recommandation
-      @recommandation = Recommandation.find(params[:id])
+      @recommandation = Recommandation.unscoped.find(params[:id])
     end
 
     def recommandation_params
       params.require(:recommandation).permit(
+        :status,
         :name,
         :recommandation_image_id,
         :instance,

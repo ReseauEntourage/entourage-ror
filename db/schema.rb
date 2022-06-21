@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_06_21_092900) do
+ActiveRecord::Schema.define(version: 2022_06_21_150000) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -594,6 +594,7 @@ ActiveRecord::Schema.define(version: 2022_06_21_092900) do
     t.datetime "updated_at", null: false
     t.jsonb "areas", default: [], null: false
     t.jsonb "user_goals", default: [], null: false
+    t.string "status", default: "active", null: false
     t.index ["action"], name: "index_recommandations_on_action"
     t.index ["areas"], name: "index_recommandations_on_areas", using: :gin
     t.index ["instance"], name: "index_recommandations_on_instance"

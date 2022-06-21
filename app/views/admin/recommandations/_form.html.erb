@@ -5,6 +5,20 @@
 <%= render partial: 'common/errors', locals: { obj: @recommandation } %>
 <%= form_for [:admin, @recommandation], html: { role: "form" } do |f| %>
   <div class="form-group">
+    <%= f.label :status %>
+    <div class="controls">
+      <%= f.check_box :status, {
+        checked: @recommandation.active?,
+        'data-toggle': :toggle,
+        'data-on': "Active",
+        'data-off': "Supprimée",
+        'data-onstyle': :success,
+        'data-offstyle': :danger
+      }, :active, :deleted %>
+    </div>
+  </div>
+
+  <div class="form-group">
     <%= f.label :name %>
     <div class="controls">
       <%= f.text_field :name, class: "form-control", required: true %>
@@ -105,5 +119,11 @@
       $box.prop('checked', check($box.val()))
       this.setCustomValidity('') // reset validations
     })
+  })
+</script>
+
+<script>
+  $(document).on('turbolinks:load', function() {
+    $('#recommandation_status').bootstrapToggle()
   })
 </script>
