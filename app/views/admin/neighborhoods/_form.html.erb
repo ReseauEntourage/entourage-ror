@@ -28,14 +28,14 @@
   <div class="form-group">
     <%= f.label :description %>
     <div class="controls">
-      <%= f.text_field :description, class: "form-control", required: true %>
+      <%= f.text_area :description, class: "form-control", required: true, rows: 8 %>
     </div>
   </div>
 
   <div class="form-group">
     <%= f.label :interests %>
     <div class="controls">
-      <%= f.collection_select :interests, Tag.interest_list, :to_s, :to_s, {}, { multiple: true } %>
+      <%= f.collection_select :interests, Tag.interests, :first, :last, {}, { multiple: true } %>
     </div>
   </div>
 
