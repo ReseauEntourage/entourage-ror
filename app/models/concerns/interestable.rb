@@ -5,6 +5,24 @@ module Interestable
     acts_as_taggable_on :interests
 
     validate :validate_interest_list!
+
+    scope :join_tags, -> {
+      joins(sanitize_sql_array [%(
+        left join taggings on taggable_type = '%s' and taggable_id = %s.id
+        left join tags on tags.id = taggings.tag_id
+      ), self.name, self.table_name])
+    }
+
+    scope :order_by_interests_matching, -> (interest_list) {
+      join_tags.group(sanitize_sql_array ["%s.id", self.table_name]).order([%(
+        sum(
+          case context = 'interests' and tagger_id is null and tags.name in (?)
+          when true then 1
+          else 0
+          end
+        ) desc
+      ), interest_list])
+    }
   end
 
   def validate_interest_list!

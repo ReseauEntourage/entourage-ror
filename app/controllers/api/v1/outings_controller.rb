@@ -16,13 +16,15 @@ module Api
       private
 
       def outing_params
-        params.require(:outing).permit(:title, :description, :event_url, :latitude, :longitude, { metadata: [
+        params.require(:outing).permit(:title, :description, :event_url, :latitude, :longitude, :other_interest, { metadata: [
           :starts_at,
           :ends_at,
           :place_name,
           :street_address,
           :google_place_id
-        ] }, neighborhood_ids: [])
+        ] }, neighborhood_ids: [],
+          interests: []
+        )
       end
     end
   end

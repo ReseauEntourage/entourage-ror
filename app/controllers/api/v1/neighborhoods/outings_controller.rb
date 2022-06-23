@@ -34,13 +34,13 @@ module Api
         private
 
         def outing_params
-          params.require(:outing).permit(:title, :description, :event_url, :latitude, :longitude, { metadata: [
+          params.require(:outing).permit(:title, :description, :event_url, :latitude, :longitude, :other_interest, { metadata: [
             :starts_at,
             :ends_at,
             :place_name,
             :street_address,
             :google_place_id
-          ] }).merge({ neighborhood_ids: @neighborhood.id })
+          ] }, interests: []).merge({ neighborhood_ids: @neighborhood.id })
         end
 
         def set_neighborhood
