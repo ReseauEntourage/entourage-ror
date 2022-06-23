@@ -11,35 +11,36 @@ module Api
           render json: { message: 'unauthorized : you are not accepted in this neighborhood' }, status: :unauthorized
         end
 
+        def index
+          # to be done
+        end
+
         def create
-          outing = Entourage.new(outing_params.except(:location))
-          outing.user = current_user
-          outing.status = :open
-          outing.group_type = :outing
-          outing.entourage_type = :contribution
-          outing.category = :social
-          outing.uuid = SecureRandom.uuid
-          outing.neighborhoods = [@neighborhood]
+          EntourageServices::OutingBuilder.new(params: outing_params, user: current_user).create do |on|
+            on.success do |outing|
+              render json: outing, root: :outing, status: 201, serializer: ::V1::EntourageSerializer, scope: { user: current_user }
+            end
 
-          if outing.save
-            JoinRequest.create(joinable: outing, user: current_user, role: :organizer).save!
-
-            render json: outing, root: :outing, status: 201, serializer: ::V1::EntourageSerializer, scope: { user: current_user }
-          else
-            render json: { message: 'Could not create outing', reasons: outing.errors.full_messages }, status: 400
+            on.failure do |outing|
+              render json: { message: 'Could not create outing', reasons: outing.errors.full_messages }, status: 400
+            end
           end
+        end
+
+        def destroy
+          # to be done
         end
 
         private
 
         def outing_params
-          params.require(:outing).permit(:title, :description, :event_url, :latitude, :longitude, { metadata: [
+          params.require(:outing).permit(:title, :description, :event_url, :latitude, :longitude, :other_interest, { metadata: [
             :starts_at,
             :ends_at,
             :place_name,
             :street_address,
             :google_place_id
-          ] })
+          ] }, interests: []).merge({ neighborhood_ids: @neighborhood.id })
         end
 
         def set_neighborhood

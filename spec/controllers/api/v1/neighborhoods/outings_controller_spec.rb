@@ -21,13 +21,13 @@ describe Api::V1::Neighborhoods::OutingsController do
     } }
 
     context "not signed in" do
-      before { post :create, params: { neighborhood_id: neighborhood.to_param, outing: { title: "foobar", longitude: 1.123, latitude: 4.567 } } }
+      before { post :create, params: { neighborhood_id: neighborhood.to_param, outing: params } }
       it { expect(response.status).to eq(401) }
       it { expect(Entourage.count).to eq(0) }
     end
 
     context "not joined" do
-      before { post :create, params: { neighborhood_id: neighborhood.to_param, outing: { title: "foobar", longitude: 1.123, latitude: 4.567 }, token: user.token } }
+      before { post :create, params: { neighborhood_id: neighborhood.to_param, outing: params, token: user.token } }
       it { expect(response.status).to eq(401) }
       it { expect(Entourage.count).to eq(0) }
     end
@@ -43,6 +43,8 @@ describe Api::V1::Neighborhoods::OutingsController do
         }, token: user.token } }
 
         it { expect(response.status).to eq(400) }
+        it { expect(Entourage.count).to eq(0) }
+        it { expect(neighborhood.outings.count).to eq(0) }
         it { expect(JSON.parse(response.body)).to have_key("message") }
         it { expect(JSON.parse(response.body)).to have_key("reasons") }
       end
