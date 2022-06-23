@@ -9,7 +9,7 @@ module EntourageServices
     def create
       yield callback if block_given?
 
-      outing = Entourage.new(params)
+      outing = Outing.new(params)
       outing.user = user
       outing.status = :open
       outing.group_type = :outing
