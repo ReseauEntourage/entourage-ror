@@ -23,6 +23,7 @@ class ChatMessage < ApplicationRecord
   validate :validate_ancestry!
 
   scope :ordered, -> { order("created_at DESC") }
+  scope :inversed_ordered, -> { order("created_at ASC") }
 
   attribute :metadata, :jsonb_with_schema
 
