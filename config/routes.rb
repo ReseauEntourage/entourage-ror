@@ -403,6 +403,8 @@ Rails.application.routes.draw do
         end
       end
 
+      resources :outings, only: [:create]
+
       resources :conversations, :controller => 'entourages', only: [] do
         collection do
           get :private

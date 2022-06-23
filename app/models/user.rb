@@ -40,6 +40,7 @@ class User < ApplicationRecord
   has_many :groups, -> { except_conversations }, class_name: :Entourage
   has_many :join_requests
   has_many :entourage_participations, through: :join_requests, source: :joinable, source_type: "Entourage"
+  has_many :neighborhood_participations, through: :join_requests, source: :joinable, source_type: "Neighborhood"
   has_many :tour_participations, through: :join_requests, source: :joinable, source_type: "Tour"
   belongs_to :organization, optional: true
   has_and_belongs_to_many :coordinated_organizations, -> { distinct }, class_name: "Organization", join_table: "coordination", optional: true
