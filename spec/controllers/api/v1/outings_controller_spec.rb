@@ -66,6 +66,15 @@ describe Api::V1::OutingsController do
         it { expect(Outing.last.interest_list).to match_array(["animaux", "other"]) }
         it { expect(Outing.last.other_interest).to eq("poterie") }
       end
+
+      context "interests are optional" do
+        before { post :create, params: { outing: params.except(:interests, :other_interest), token: user.token } }
+
+        it { expect(response.status).to eq(201) }
+        it { expect(Entourage.count).to eq(1) }
+        it { expect(Outing.last.interest_list).to match_array([]) }
+        it { expect(Outing.last.other_interest).to be_nil }
+      end
     end
   end
 end
