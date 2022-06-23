@@ -59,6 +59,7 @@ class Entourage < ApplicationRecord
   validates :metadata, schema: -> (e) { "#{e.group_type}:metadata" }
   validate :validate_outings_ends_at
   validates :image_url, format: { with: %r(\Ahttps?://\S+\z) }, allow_blank: true
+  validate :validate_neighborhood_ids
 
   scope :visible, -> { where.not(status: ['blacklisted', 'suspended']) }
   scope :findable, -> { where.not(status: ['blacklisted']) }
@@ -515,6 +516,15 @@ class Entourage < ApplicationRecord
 
     if metadata[:ends_at] < metadata[:starts_at]
       errors.add(:metadata, "'ends_at' must not be before 'starts_at'")
+    end
+  end
+
+  def validate_neighborhood_ids
+    return unless outing?
+    return if neighborhood_ids.empty?
+
+    if (neighborhood_ids - user.neighborhood_participation_ids).any?
+      errors.add(:neighborhood_ids, "User has to be a member of every neighborhoods")
     end
   end
 
