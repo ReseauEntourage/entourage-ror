@@ -58,13 +58,6 @@ class Neighborhood < ApplicationRecord
     })
   }
 
-  scope :join_tags, -> {
-    joins(%(
-      left join taggings on taggable_type = 'Neighborhood' and taggable_id = neighborhoods.id
-      left join tags on tags.id = taggings.tag_id
-    ))
-  }
-
   scope :inside_perimeter, -> (latitude, longitude, travel_distance) {
     if latitude && longitude
       where("#{PostgisHelper.distance_from(latitude, longitude, :neighborhoods)} < ?", travel_distance)
@@ -74,16 +67,6 @@ class Neighborhood < ApplicationRecord
     if latitude && longitude
       order(PostgisHelper.distance_from(latitude, longitude, :neighborhoods))
     end
-  }
-  scope :order_by_interests_matching, -> (interest_list) {
-    join_tags.group('neighborhoods.id').order([%(
-      sum(
-        case context = 'interests' and tagger_id is null and tags.name in (?)
-        when true then 1
-        else 0
-        end
-      ) desc
-    ), interest_list])
   }
   scope :order_by_activity, -> {
     # Groupe actif = au moins 1 message ou 1 événement créé par semaine pendant 1 mois ou plus

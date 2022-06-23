@@ -13,6 +13,8 @@ describe Api::V1::OutingsController do
       latitude: 48.868959,
       longitude: 2.390185,
       neighborhood_ids: [neighborhood_1.id, neighborhood_2.id],
+      interests: ['animaux', 'other'],
+      other_interest: 'poterie',
       metadata: {
         starts_at: "2018-09-04T19:30:00+02:00",
         ends_at: "2018-09-04T20:30:00+02:00",
@@ -61,6 +63,8 @@ describe Api::V1::OutingsController do
         it { expect(Entourage.count).to eq(1) }
         it { expect(neighborhood_1.outings.count).to eq(1) }
         it { expect(neighborhood_2.outings.count).to eq(1) }
+        it { expect(Outing.last.interest_list).to match_array(["animaux", "other"]) }
+        it { expect(Outing.last.other_interest).to eq("poterie") }
       end
     end
   end
