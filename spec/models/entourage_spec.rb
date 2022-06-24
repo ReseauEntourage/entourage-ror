@@ -105,6 +105,7 @@ RSpec.describe Entourage, type: :model do
       landscape_thumbnail_url: nil,
       portrait_url: nil,
       portrait_thumbnail_url: nil,
+      place_limit: nil,
       :$id=>"urn:entourage:outing:metadata"
     ) }
     it { expect(build(:outing, default_metadata: {}).tap(&:save).errors.messages).to eq(
