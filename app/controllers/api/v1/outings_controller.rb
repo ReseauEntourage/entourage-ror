@@ -21,7 +21,8 @@ module Api
           :ends_at,
           :place_name,
           :street_address,
-          :google_place_id
+          :google_place_id,
+          :place_limit
         ] }, neighborhood_ids: [],
           interests: []
         )
