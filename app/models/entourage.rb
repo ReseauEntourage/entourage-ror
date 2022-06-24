@@ -99,6 +99,7 @@ class Entourage < ApplicationRecord
   before_validation :set_outings_ends_at
   before_validation :set_outings_previous_at
   before_validation :set_outings_image_urls
+  before_validation :set_outings_place_limit
   before_validation :generate_display_address
   before_validation :reformat_content
   before_validation :set_default_online_attributes, if: :online_changed?
@@ -239,7 +240,8 @@ class Entourage < ApplicationRecord
           landscape_url: { type: [:string, :null] },
           landscape_thumbnail_url: { type: [:string, :null] },
           portrait_url: { type: [:string, :null] },
-          portrait_thumbnail_url: { type: [:string, :null] }
+          portrait_thumbnail_url: { type: [:string, :null] },
+          place_limit: { type: [:string, :integer, :null] }
         }
       end
     end
@@ -506,6 +508,12 @@ class Entourage < ApplicationRecord
     if metadata[:portrait_thumbnail_url].nil?
       self.metadata[:portrait_thumbnail_url] = nil
     end
+  end
+
+  def set_outings_place_limit
+    return unless outing?
+    return unless metadata[:place_limit].nil?
+    self.metadata[:place_limit] = nil
   end
 
   def validate_outings_ends_at

@@ -360,7 +360,8 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
           "display_address" => "Café la Renaissance, 44 rue de l’Assomption, 75016 Paris",
           "google_place_id" => "foobar",
           "portrait_thumbnail_url" => nil,
-          "landscape_thumbnail_url" => nil
+          "landscape_thumbnail_url" => nil,
+          "place_limit" => nil
         }
       }]) }
     end

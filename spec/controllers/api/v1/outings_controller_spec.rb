@@ -21,6 +21,7 @@ describe Api::V1::OutingsController do
         place_name: "Le Dorothy",
         street_address: "85 bis rue de Ménilmontant, 75020 Paris, France",
         google_place_id: "ChIJFzXXy-xt5kcRg5tztdINnp0",
+        place_limit: 5
       }
     } }
 
@@ -65,6 +66,7 @@ describe Api::V1::OutingsController do
         it { expect(neighborhood_2.outings.count).to eq(1) }
         it { expect(Outing.last.interest_list).to match_array(["animaux", "other"]) }
         it { expect(Outing.last.other_interest).to eq("poterie") }
+        it { expect(Outing.last.metadata[:place_limit].to_i).to eq(5) }
       end
 
       context "interests are optional" do
@@ -74,6 +76,28 @@ describe Api::V1::OutingsController do
         it { expect(Entourage.count).to eq(1) }
         it { expect(Outing.last.interest_list).to match_array([]) }
         it { expect(Outing.last.other_interest).to be_nil }
+      end
+
+      context "place_limit is nullable" do
+        before {
+          params[:metadata][:place_limit] = nil
+          post :create, params: { outing: params, token: user.token }
+        }
+
+        it { expect(response.status).to eq(201) }
+        it { expect(Entourage.count).to eq(1) }
+        it { expect(Outing.last.metadata[:place_limit]).to be_blank }
+      end
+
+      context "place_limit is optional" do
+        before {
+          params[:metadata] = params[:metadata].except(:place_limit)
+          post :create, params: { outing: params, token: user.token }
+        }
+
+        it { expect(response.status).to eq(201) }
+        it { expect(Entourage.count).to eq(1) }
+        it { expect(Outing.last.metadata[:place_limit]).to be_blank }
       end
     end
   end
