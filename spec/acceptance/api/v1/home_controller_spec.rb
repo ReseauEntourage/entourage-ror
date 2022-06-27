@@ -40,4 +40,19 @@ resource Api::V1::HomeController do
       end
     end
   end
+
+  get '/api/v1/home/summary' do
+    parameter :token, type: :string, required: true
+
+    let(:user) { FactoryBot.create(:offer_help_user) }
+    let(:token) { user.token }
+    let!(:neighborhood) { FactoryBot.create(:neighborhood) }
+    let!(:recommandation) { FactoryBot.create(:recommandation, name: 'voisinage', instance: :neighborhood, action: :show) }
+
+    context '200' do
+      example_request 'Get summary' do
+        expect(response_status).to eq(200)
+      end
+    end
+  end
 end
