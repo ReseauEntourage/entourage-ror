@@ -104,8 +104,8 @@ RSpec.describe Neighborhood, :type => :model do
   describe 'order_by_outings' do
     subject { Neighborhood.order_by_outings.pluck(:id) }
 
-    let(:outing_1) { FactoryBot.create :outing, created_at: Time.now }
-    let(:outing_2) { FactoryBot.create :outing, created_at: Time.now }
+    let(:outing_1) { FactoryBot.create :outing, :for_neighborhood, created_at: Time.now }
+    let(:outing_2) { FactoryBot.create :outing, :for_neighborhood, created_at: Time.now }
 
     let!(:without_outing) { FactoryBot.create :neighborhood, outings: [] }
     let!(:with_outing) { FactoryBot.create :neighborhood, outings: [outing_1] }

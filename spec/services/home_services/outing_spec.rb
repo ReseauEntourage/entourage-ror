@@ -52,7 +52,7 @@ describe HomeServices::Outing do
 
       expect(outings).to be_kind_of Array
       expect(outings.count).to eq(2)
-      expect(outings).to eq([second, outing])
+      expect(outings).to match_array([second, outing])
     end
   end
 end

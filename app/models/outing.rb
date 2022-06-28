@@ -5,6 +5,10 @@ class Outing < Entourage
 
   default_scope { where(group_type: :outing) }
 
+  scope :order_by_starts_at, -> {
+    order("metadata->>'starts_at'")
+  }
+
   def validate_neighborhood_ids
     return unless outing?
     return if neighborhood_ids.empty?

@@ -37,6 +37,8 @@ class User < ApplicationRecord
   has_many :session_histories
   has_many :user_histories
   has_many :entourages
+  has_many :outings, -> { where(group_type: :outing) }, source: :entourage, class_name: "Outing"
+
   has_many :groups, -> { except_conversations }, class_name: :Entourage
   has_many :join_requests
   has_many :entourage_participations, through: :join_requests, source: :joinable, source_type: "Entourage"
