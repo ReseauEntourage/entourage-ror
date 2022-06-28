@@ -4,6 +4,29 @@ describe Api::V1::Neighborhoods::OutingsController do
   let(:user) { FactoryBot.create(:public_user) }
   let(:neighborhood) { create :neighborhood }
 
+  describe 'GET index' do
+    let!(:outing) { FactoryBot.create(:outing, :joined, user: user, status: "open", neighborhoods: [neighborhood]) }
+    let(:request) { get :index, params: { token: user.token, neighborhood_id: neighborhood.to_param } }
+
+    context "not joined" do
+      before { request }
+
+      it { expect(response.status).to eq(401) }
+    end
+
+    context "joined" do
+      let!(:join_request) { FactoryBot.create(:join_request, joinable: neighborhood, user: user, status: :accepted) }
+      subject { JSON.parse(response.body) }
+
+      before { request }
+
+      it { expect(response.status).to eq(200) }
+      it { expect(subject).to have_key("outings") }
+      it { expect(subject["outings"].count).to eq(1) }
+      it { expect(subject["outings"][0]["id"]).to eq(outing.id) }
+    end
+  end
+
   describe 'POST create' do
     let(:params) { {
       title: "Apéro Entourage",
