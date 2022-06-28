@@ -12,7 +12,7 @@ module Api
       def create
         EntourageServices::OutingBuilder.new(params: outing_params, user: current_user).create do |on|
           on.success do |outing|
-            render json: outing, root: :outing, status: 201, serializer: ::V1::EntourageSerializer, scope: { user: current_user }
+            render json: outing, root: :outing, status: 201, serializer: ::V1::NeighborhoodOutingSerializer, scope: { user: current_user }
           end
 
           on.failure do |outing|
