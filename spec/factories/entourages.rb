@@ -49,6 +49,10 @@ FactoryBot.define do
       after(:build) do |outing, stuff|
         outing.metadata = (stuff.default_metadata || {}).symbolize_keys.merge(outing.metadata.symbolize_keys)
       end
+
+      trait :for_neighborhood do
+        initialize_with { Outing.new(attributes) }
+      end
     end
 
     factory :conversation do

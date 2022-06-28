@@ -327,7 +327,7 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
     end
 
     describe 'with outing' do
-      let(:outing) { create :outing }
+      let(:outing) { create :outing, :for_neighborhood, interests: [:sport, :other] }
       let(:neighborhood) { create :neighborhood, outings: [outing] }
 
       before { get :show, params: { id: neighborhood.id, token: user.token } }
