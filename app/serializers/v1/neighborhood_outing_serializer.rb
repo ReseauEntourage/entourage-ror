@@ -8,7 +8,8 @@ module V1
                :image_url,
                :event_url,
                :author,
-               :metadata
+               :metadata,
+               :interests
 
     def uuid
       object.uuid_v2
@@ -28,6 +29,11 @@ module V1
 
     def metadata
       object.metadata_with_image_paths.except(:$id)
+    end
+
+    def interests
+      # we use "Tag.interest_list &" to force ordering
+      Tag.interest_list & object.interest_list
     end
   end
 end

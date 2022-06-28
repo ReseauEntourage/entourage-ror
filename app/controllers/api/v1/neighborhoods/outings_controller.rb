@@ -12,13 +12,15 @@ module Api
         end
 
         def index
-          # to be done
+          render json: @neighborhood.outings.order_by_starts_at, root: :outings, each_serializer: ::V1::NeighborhoodOutingSerializer, scope: {
+            user: current_user
+          }
         end
 
         def create
           EntourageServices::OutingBuilder.new(params: outing_params, user: current_user).create do |on|
             on.success do |outing|
-              render json: outing, root: :outing, status: 201, serializer: ::V1::EntourageSerializer, scope: { user: current_user }
+              render json: outing, root: :outing, status: 201, serializer: ::V1::NeighborhoodOutingSerializer, scope: { user: current_user }
             end
 
             on.failure do |outing|

@@ -372,7 +372,7 @@ Rails.application.routes.draw do
           end
         end
 
-        resources :outings, :controller => 'neighborhoods/outings', only: [:create]
+        resources :outings, :controller => 'neighborhoods/outings', only: [:index, :create]
       end
 
       resources :resources, only: [:index, :show] do
@@ -403,7 +403,7 @@ Rails.application.routes.draw do
         end
       end
 
-      resources :outings, only: [:create]
+      resources :outings, only: [:index, :create]
 
       resources :conversations, :controller => 'entourages', only: [] do
         collection do

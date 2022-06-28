@@ -21,7 +21,7 @@ class Neighborhood < ApplicationRecord
   }, through: :join_requests, source: :user
   has_many :neighborhoods_entourages
 
-  has_many :outings, -> { where(group_type: :outing) }, through: :neighborhoods_entourages, source: :entourage
+  has_many :outings, -> { where(group_type: :outing) }, through: :neighborhoods_entourages, source: :entourage, class_name: "Outing"
 
   reverse_geocoded_by :latitude, :longitude
   has_many :chat_messages, as: :messageable, dependent: :destroy
