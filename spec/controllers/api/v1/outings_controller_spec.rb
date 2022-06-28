@@ -5,6 +5,20 @@ describe Api::V1::OutingsController do
   let(:neighborhood_1) { create :neighborhood }
   let(:neighborhood_2) { create :neighborhood }
 
+  subject { JSON.parse(response.body) }
+
+  describe 'GET index' do
+    let!(:outing) { FactoryBot.create(:outing, status: "open") }
+    let!(:neighborhood_outing) { FactoryBot.create(:outing, :joined, user: user, status: "open", neighborhoods: [neighborhood_1]) }
+
+
+    before { get :index, params: { token: user.token } }
+
+    it { expect(response.status).to eq(200) }
+    it { expect(subject).to have_key("outings") }
+    it { expect(subject["outings"].count).to eq(2) }
+  end
+
   describe 'POST create' do
     let(:params) { {
       title: "Apéro Entourage",
@@ -100,5 +114,14 @@ describe Api::V1::OutingsController do
         it { expect(Outing.last.metadata[:place_limit]).to be_blank }
       end
     end
+  end
+
+  describe 'GET show' do
+    let(:outing) { FactoryBot.create(:outing, status: "open") }
+
+    before { get :show, params: { token: user.token, id: outing.id } }
+
+    it { expect(response.status).to eq 200 }
+    it { expect(subject).to have_key("outing") }
   end
 end

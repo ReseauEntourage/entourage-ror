@@ -403,7 +403,7 @@ Rails.application.routes.draw do
         end
       end
 
-      resources :outings, only: [:index, :create]
+      resources :outings, only: [:index, :create, :show]
 
       resources :conversations, :controller => 'entourages', only: [] do
         collection do
