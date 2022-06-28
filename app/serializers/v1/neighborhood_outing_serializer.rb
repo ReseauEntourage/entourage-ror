@@ -9,7 +9,8 @@ module V1
                :event_url,
                :author,
                :metadata,
-               :interests
+               :interests,
+               :neighborhood_ids
 
     def uuid
       object.uuid_v2
