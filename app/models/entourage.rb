@@ -43,6 +43,7 @@ class Entourage < ApplicationRecord
   attr_accessor :change_ownership_message
   attr_accessor :user_status
   attr_accessor :cancellation_message
+  attr_accessor :entourage_image_id
 
   validates_presence_of :status, :title, :entourage_type, :user_id, :latitude, :longitude, :number_of_people
 
@@ -278,6 +279,8 @@ class Entourage < ApplicationRecord
     else
       remove_entourage_image_id!
     end
+
+    @entourage_image_id = entourage_image_id
   end
 
   def remove_entourage_image_id!
