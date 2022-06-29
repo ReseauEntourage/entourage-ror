@@ -4,13 +4,13 @@ describe Api::V1::OutingsController do
   let(:user) { FactoryBot.create(:public_user) }
   let(:neighborhood_1) { create :neighborhood }
   let(:neighborhood_2) { create :neighborhood }
+  let(:entourage_image) { FactoryBot.create(:entourage_image) }
 
   subject { JSON.parse(response.body) }
 
   describe 'GET index' do
     let!(:outing) { FactoryBot.create(:outing, status: "open") }
     let!(:neighborhood_outing) { FactoryBot.create(:outing, :joined, user: user, status: "open", neighborhoods: [neighborhood_1]) }
-
 
     before { get :index, params: { token: user.token } }
 
@@ -29,6 +29,7 @@ describe Api::V1::OutingsController do
       neighborhood_ids: [neighborhood_1.id, neighborhood_2.id],
       interests: ['animaux', 'other'],
       other_interest: 'poterie',
+      entourage_image_id: entourage_image.id,
       metadata: {
         starts_at: "2018-09-04T19:30:00+02:00",
         ends_at: "2018-09-04T20:30:00+02:00",
@@ -81,6 +82,7 @@ describe Api::V1::OutingsController do
         it { expect(Outing.last.interest_list).to match_array(["animaux", "other"]) }
         it { expect(Outing.last.other_interest).to eq("poterie") }
         it { expect(Outing.last.metadata[:place_limit].to_i).to eq(5) }
+        it { expect(Outing.last.metadata[:landscape_url]).to eq("path/to/landscape") }
       end
 
       context "interests are optional" do
