@@ -17,6 +17,8 @@ module V1
     end
 
     def author
+      return unless object.user.present?
+
       partner = object.user.partner
 
       {
