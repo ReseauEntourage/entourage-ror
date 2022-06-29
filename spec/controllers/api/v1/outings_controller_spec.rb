@@ -42,14 +42,14 @@ describe Api::V1::OutingsController do
     context "not signed in" do
       before { post :create, params: { outing: params } }
       it { expect(response.status).to eq(401) }
-      it { expect(Entourage.count).to eq(0) }
+      it { expect(Outing.count).to eq(0) }
     end
 
     context "not joined" do
       before { post :create, params: { outing: params, token: user.token } }
       it { expect(response.body).to include("User has to be a member of every neighborhoods") }
       it { expect(response.status).to eq(400) }
-      it { expect(Entourage.count).to eq(0) }
+      it { expect(Outing.count).to eq(0) }
     end
 
     context "signed in" do
@@ -64,7 +64,7 @@ describe Api::V1::OutingsController do
         }, token: user.token } }
 
         it { expect(response.status).to eq(400) }
-        it { expect(Entourage.count).to eq(0) }
+        it { expect(Outing.count).to eq(0) }
         it { expect(neighborhood_1.outings.count).to eq(0) }
         it { expect(neighborhood_2.outings.count).to eq(0) }
         it { expect(JSON.parse(response.body)).to have_key("message") }
@@ -75,7 +75,7 @@ describe Api::V1::OutingsController do
         before { post :create, params: { outing: params, token: user.token } }
 
         it { expect(response.status).to eq(201) }
-        it { expect(Entourage.count).to eq(1) }
+        it { expect(Outing.count).to eq(1) }
         it { expect(neighborhood_1.outings.count).to eq(1) }
         it { expect(neighborhood_2.outings.count).to eq(1) }
         it { expect(Outing.last.interest_list).to match_array(["animaux", "other"]) }
@@ -87,7 +87,7 @@ describe Api::V1::OutingsController do
         before { post :create, params: { outing: params.except(:interests, :other_interest), token: user.token } }
 
         it { expect(response.status).to eq(201) }
-        it { expect(Entourage.count).to eq(1) }
+        it { expect(Outing.count).to eq(1) }
         it { expect(Outing.last.interest_list).to match_array([]) }
         it { expect(Outing.last.other_interest).to be_nil }
       end
@@ -99,7 +99,7 @@ describe Api::V1::OutingsController do
         }
 
         it { expect(response.status).to eq(201) }
-        it { expect(Entourage.count).to eq(1) }
+        it { expect(Outing.count).to eq(1) }
         it { expect(Outing.last.metadata[:place_limit]).to be_blank }
       end
 
@@ -110,8 +110,28 @@ describe Api::V1::OutingsController do
         }
 
         it { expect(response.status).to eq(201) }
-        it { expect(Entourage.count).to eq(1) }
+        it { expect(Outing.count).to eq(1) }
         it { expect(Outing.last.metadata[:place_limit]).to be_blank }
+      end
+
+      context "with recurrency" do
+        before { post :create, params: { outing: params.merge({ recurrency: 7 }), token: user.token } }
+
+        it { expect(response.status).to eq(201) }
+        it { expect(subject).to have_key("outing") }
+        it { expect(Outing.count).to eq(1) }
+        it { expect(OutingRecurrence.count).to eq(1) }
+        it { expect(Outing.last.recurrence).not_to be_nil }
+      end
+
+      context "without recurrency" do
+        before { post :create, params: { outing: params.merge({ recurrency: nil }), token: user.token } }
+
+        it { expect(response.status).to eq(201) }
+        it { expect(subject).to have_key("outing") }
+        it { expect(Outing.count).to eq(1) }
+        it { expect(OutingRecurrence.count).to eq(0) }
+        it { expect(Outing.last.recurrence).to be_nil }
       end
     end
   end
