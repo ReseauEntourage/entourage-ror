@@ -36,7 +36,7 @@ module EntourageServices
     attr_reader :callback, :user, :params
 
     def new_join_request outing
-      JoinRequest.create(joinable: outing, user: user, role: :organizer)
+      JoinRequest.create(joinable: outing, user: user, role: :organizer, status: :accepted)
     end
   end
 end
