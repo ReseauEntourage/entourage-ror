@@ -146,4 +146,37 @@ describe Api::V1::OutingsController do
     it { expect(response.status).to eq 200 }
     it { expect(subject).to have_key("outing") }
   end
+
+  describe 'POST duplicate' do
+    let(:creator) { user }
+    let(:recurrence) { FactoryBot.create(:outing_recurrence) }
+    let!(:outing) { FactoryBot.create(:outing, :for_neighborhood, status: :open, user: creator, recurrence: recurrence) }
+
+    let(:request) { post :duplicate, params: { token: user.token, id: outing.id } }
+
+    context 'not as creator' do
+      let(:creator) { FactoryBot.create(:public_user) }
+      it { expect(lambda { request }).to change { Outing.count }.by(0) }
+      it { request ; expect(response.status).to eq(401) }
+    end
+
+    context 'without recurrence' do
+      let(:recurrence) { nil }
+      it { expect(lambda { request }).to change { Outing.count }.by(0) }
+      it { request ; expect(response.status).to eq(401) }
+    end
+
+    context 'duplication as creator' do
+      it { expect(lambda { request }).to change { Outing.count }.by(1) }
+    end
+
+    context 'as creator' do
+      before { request }
+
+      it { expect(response.status).to eq(200) }
+      it { expect(subject).to have_key('outing') }
+      it { expect(subject['outing']).to have_key('metadata') }
+      it { expect(subject['outing']['metadata']['starts_at']).to eq((outing[:metadata][:starts_at] + 7.days).iso8601(3)) }
+    end
+  end
 end
