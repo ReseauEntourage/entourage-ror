@@ -214,8 +214,12 @@
                 </div>
                 <br>
                 <br>
-                <% if @entourage.group_type == 'outing' %>
+                <% if @entourage.outing? %>
                   <%= link_to "Renouveler l'événement", renew_admin_entourage_path(@entourage), class: "btn btn-primary" %>
+                <% end %>
+
+                <% if @entourage.outing? && Outing.find(@entourage.id).recurrence.present? %>
+                  <%= link_to "Générer un nouvel événement", duplicate_outing_admin_entourage_path(@entourage), method: :post, class: "btn btn-primary" %>
                 <% end %>
                 <%= link_to "Modifier", edit_admin_entourage_path(@entourage, @params), class: "btn btn-success" %>
               </div>

@@ -1,7 +1,7 @@
 module Api
   module V1
     class OutingsController < Api::V1::BaseController
-      before_action :set_outing, only: [:show]
+      before_action :set_outing, only: [:show, :duplicate]
 
       def index
         render json: Outing.order_by_starts_at.page(page).per(per), root: :outings, each_serializer: ::V1::NeighborhoodOutingSerializer, scope: {
@@ -23,6 +23,16 @@ module Api
 
       def show
         render json: @outing, serializer: ::V1::NeighborhoodOutingSerializer, scope: { user: current_user }
+      end
+
+      def duplicate
+        duplicate = @outing.dup
+
+        if duplicate.save
+          render json: duplicate, serializer: ::V1::NeighborhoodOutingSerializer, scope: { user: current_user }
+        else
+          render json: { message: 'Could not duplicate outing', reasons: duplicate.errors.full_messages }, status: 400
+        end
       end
 
       private

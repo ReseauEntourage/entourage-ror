@@ -36,7 +36,7 @@ module Api
         private
 
         def outing_params
-          params.require(:outing).permit(:title, :description, :event_url, :latitude, :longitude, :other_interest, { metadata: [
+          params.require(:outing).permit(:title, :description, :event_url, :latitude, :longitude, :other_interest, :recurrency, { metadata: [
             :starts_at,
             :ends_at,
             :place_name,

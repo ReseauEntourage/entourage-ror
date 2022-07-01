@@ -137,6 +137,7 @@ Rails.application.routes.draw do
           get :renew
           get :cancellation
           post :cancel
+          post :duplicate_outing
           get '/edit/image', action: :edit_image
           put '/update/image', action: :update_image
         end
@@ -404,7 +405,11 @@ Rails.application.routes.draw do
         end
       end
 
-      resources :outings, only: [:index, :create, :show]
+      resources :outings, only: [:index, :create, :show] do
+        member do
+          post :duplicate
+        end
+      end
 
       resources :conversations, :controller => 'entourages', only: [] do
         collection do
