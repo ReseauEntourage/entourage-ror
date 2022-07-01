@@ -405,7 +405,7 @@ Rails.application.routes.draw do
         end
       end
 
-      resources :outings, only: [:index, :create, :show] do
+      resources :outings, only: [:index, :create, :show, :update] do
         member do
           post :duplicate
         end
