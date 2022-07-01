@@ -11,7 +11,8 @@ module V1
                :online,
                :metadata,
                :interests,
-               :neighborhood_ids
+               :neighborhood_ids,
+               :recurrency
 
     def uuid
       object.uuid_v2
@@ -38,6 +39,12 @@ module V1
     def interests
       # we use "Tag.interest_list &" to force ordering
       Tag.interest_list & object.interest_list
+    end
+
+    def recurrency
+      return unless object.recurrence.present?
+
+      object.recurrence.recurrency
     end
   end
 end
