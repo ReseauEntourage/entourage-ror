@@ -16,6 +16,20 @@ class Outing < Entourage
 
   attr_accessor :recurrency
 
+  def initialize_dup original_outing
+    set_uuid!
+
+    return super unless recurrency = recurrence&.recurrency
+    return super unless last_outing = recurrence&.last_outing
+
+    diff = recurrency == 31 ? 1.month : recurrency.days
+
+    self.metadata[:starts_at] = last_outing.metadata[:starts_at] + diff
+    self.metadata[:ends_at] = last_outing.metadata[:ends_at] + diff
+
+    super
+  end
+
   def validate_neighborhood_ids
     return unless outing?
     return if neighborhood_ids.empty?
@@ -51,5 +65,10 @@ class Outing < Entourage
     else
       remove_entourage_image_id!
     end
+  end
+
+  def set_uuid!
+    self.uuid = SecureRandom.uuid
+    self.uuid_v2 = self.class.generate_uuid_v2
   end
 end
