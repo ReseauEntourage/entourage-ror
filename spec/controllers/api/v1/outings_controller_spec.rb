@@ -138,6 +138,33 @@ describe Api::V1::OutingsController do
     end
   end
 
+  describe 'PUT update' do
+    let(:outing) { FactoryBot.create(:outing, status: :open) }
+
+    context "not signed in" do
+      before { patch :update, params: { id: outing.to_param, outing: { title: "new title" } } }
+      it { expect(response.status).to eq(401) }
+    end
+
+    context "signed in" do
+      before { patch :update, params: { id: outing.to_param, outing: { title: "new title" } } }
+
+      context "user is not creator" do
+        before { patch :update, params: { id: outing.to_param, outing: { title: "new title" }, token: user.token } }
+        it { expect(response.status).to eq(401) }
+      end
+
+      context "user is creator" do
+        let(:outing) { FactoryBot.create(:outing, :joined, user: user, status: :open) }
+        before { patch :update, params: { id: outing.to_param, outing: { title: "New title", metadata: { place_limit: 100 } }, token: user.token } }
+        it { expect(response.status).to eq(200) }
+        it { expect(subject).to have_key('outing') }
+        it { expect(subject['outing']['title']).to eq('New title') }
+        it { expect(subject['outing']['metadata']['place_limit']).to eq('100') }
+      end
+    end
+  end
+
   describe 'GET show' do
     let(:outing) { FactoryBot.create(:outing, status: "open") }
 

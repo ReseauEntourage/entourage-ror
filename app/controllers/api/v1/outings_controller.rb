@@ -1,7 +1,8 @@
 module Api
   module V1
     class OutingsController < Api::V1::BaseController
-      before_action :set_outing, only: [:show, :duplicate]
+      before_action :set_outing, only: [:show, :update, :duplicate]
+      before_action :authorised?, only: [:update]
       before_action :allowed_duplicate?, only: [:duplicate]
 
       def index
@@ -18,6 +19,18 @@ module Api
 
           on.failure do |outing|
             render json: { message: 'Could not create outing', reasons: outing.errors.full_messages }, status: 400
+          end
+        end
+      end
+
+      def update
+        EntourageServices::EntourageBuilder.new(params: outing_params, user: current_user).update(entourage: @outing) do |on|
+          on.success do |outing|
+            render json: outing, status: 200, serializer: ::V1::NeighborhoodOutingSerializer, scope: { user: current_user }
+          end
+
+          on.failure do |outing|
+            render json: { message: 'Could not update outing', reasons: outing.errors.full_messages }, status: 400
           end
         end
       end
@@ -61,6 +74,12 @@ module Api
 
       def per
         params[:per] || 25
+      end
+
+      def authorised?
+        unless @outing.user == current_user
+          render json: { message: 'unauthorized user' }, status: :unauthorized
+        end
       end
 
       def allowed_duplicate?
