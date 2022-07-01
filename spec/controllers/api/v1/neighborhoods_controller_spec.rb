@@ -342,6 +342,7 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
         'share_url' => outing.share_url,
         'image_url' => outing.image_url,
         'event_url' => outing.event_url,
+        'online' => false,
         'author' => {
           'id' => outing.user_id,
           'display_name' => 'John D.',
