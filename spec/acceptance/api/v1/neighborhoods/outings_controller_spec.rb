@@ -18,6 +18,7 @@ resource Api::V1::Neighborhoods::OutingsController do
       parameter :event_url, "Event url", type: :string, :required => false
       parameter :latitude, "Latitude", type: :string
       parameter :longitude, "Longitude", type: :string
+      parameter :entourage_image_id, "Entourage image id", type: :integer
       parameter :metadata, "Metadata", :required => false
       with_options :scope => "outing[metadata]", :required => true do
         parameter :starts_at, "Start time"
@@ -31,6 +32,7 @@ resource Api::V1::Neighborhoods::OutingsController do
     let(:user) { FactoryBot.create(:pro_user) }
     let(:neighborhood) { FactoryBot.create(:neighborhood) }
     let(:neighborhood_id) { neighborhood.id }
+    let(:entourage_image) { FactoryBot.create(:entourage_image) }
 
     let(:outing) { build :outing }
 
@@ -40,6 +42,7 @@ resource Api::V1::Neighborhoods::OutingsController do
         title: 'Groupe de voisins',
         latitude: outing.latitude,
         longitude: outing.longitude,
+        entourage_image_id: entourage_image.id,
         metadata: {
           starts_at: outing.metadata[:starts_at],
           ends_at: outing.metadata[:ends_at],

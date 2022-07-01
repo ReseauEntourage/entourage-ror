@@ -8,6 +8,7 @@ module V1
                :image_url,
                :event_url,
                :author,
+               :online,
                :metadata,
                :interests,
                :neighborhood_ids
