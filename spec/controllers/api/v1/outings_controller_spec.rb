@@ -177,6 +177,9 @@ describe Api::V1::OutingsController do
       it { expect(subject).to have_key('outing') }
       it { expect(subject['outing']).to have_key('metadata') }
       it { expect(subject['outing']['metadata']['starts_at']).to eq((outing[:metadata][:starts_at] + 7.days).iso8601(3)) }
+
+      it { expect(subject['outing']['id']).to eq(Outing.last.id) }
+      it { expect(Outing.find(subject['outing']['id']).member_ids).to match_array([user.id]) }
     end
   end
 end
