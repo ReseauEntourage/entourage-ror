@@ -1,13 +1,33 @@
 class OutingRecurrence < ApplicationRecord
+  AVAILABLE_RECURRENCES = 5
+
+  has_many :outings, foreign_key: :recurrency_identifier, primary_key: :identifier
+
   after_initialize :set_identifier, if: :new_record?
 
   default_scope { where(continue: true) }
+
+  class << self
+    def generate_all
+      OutingRecurrence.find_in_batches do |outing_recurrences|
+        outing_recurrences.each do |outing_recurrence|
+          next unless outing_recurrence.generate_available?
+
+          outing_recurrence.generate.save
+        end
+      end
+    end
+  end
 
   def set_identifier
     self.identifier ||= SecureRandom.hex(8)
   end
 
-  def new_outing
+  def generate_available?
+    outings.future.count < AVAILABLE_RECURRENCES
+  end
+
+  def generate
     return unless continue
     return unless last_outing.present?
 

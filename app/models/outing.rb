@@ -16,6 +16,8 @@ class Outing < Entourage
     order("metadata->>'starts_at'")
   }
 
+  scope :future, -> { where("metadata->>'starts_at' >= ?", Time.zone.now) }
+
   attr_accessor :recurrency
 
   def initialize_dup original_outing
