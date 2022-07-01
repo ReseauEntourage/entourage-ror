@@ -39,6 +39,12 @@ module Api
         render json: @outing, serializer: ::V1::NeighborhoodOutingSerializer, scope: { user: current_user }
       end
 
+      def siblings
+        render json: Outing.siblings.order_by_starts_at.page(page).per(per), root: :outings, each_serializer: ::V1::NeighborhoodOutingSerializer, scope: {
+          user: current_user
+        }
+      end
+
       def duplicate
         duplicate = @outing.dup
 

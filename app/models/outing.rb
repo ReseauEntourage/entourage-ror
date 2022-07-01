@@ -17,6 +17,7 @@ class Outing < Entourage
   }
 
   scope :future, -> { where("metadata->>'starts_at' >= ?", Time.zone.now) }
+  scope :siblings, -> { where("recurrency_identifier is not null").where(recurrency_identifier: recurrency_identifier) }
 
   attr_accessor :recurrency
 
