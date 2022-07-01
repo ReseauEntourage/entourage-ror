@@ -1,5 +1,7 @@
 module EntourageServices
   class OutingBuilder
+    attr_reader :callback, :user, :params
+
     def initialize(params:, user:)
       @callback = Callback.new
       @params = params
@@ -17,26 +19,9 @@ module EntourageServices
       outing.category = :social
       outing.uuid = SecureRandom.uuid
 
-      success = false
-
-      ApplicationRecord.transaction do
-        success = outing.save && new_join_request(outing).save
-
-        unless success
-          raise ActiveRecord::Rollback
-        end
-      end
-
-      return callback.on_success.try(:call, outing.reload) if success
+      return callback.on_success.try(:call, outing.reload) if outing.save
 
       callback.on_failure.try(:call, outing)
-    end
-
-    private
-    attr_reader :callback, :user, :params
-
-    def new_join_request outing
-      JoinRequest.create(joinable: outing, user: user, role: :organizer, status: :accepted)
     end
   end
 end

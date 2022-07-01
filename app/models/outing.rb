@@ -2,7 +2,9 @@ class Outing < Entourage
   include Interestable
 
   after_initialize :set_outing_recurrence, if: :new_record?
+
   before_validation :set_entourage_image_id
+  after_validation :add_creator_as_member, if: :new_record?
 
   belongs_to :recurrence, class_name: :OutingRecurrence, foreign_key: :recurrency_identifier, primary_key: :identifier
 
@@ -52,6 +54,13 @@ class Outing < Entourage
 
     self.recurrence = OutingRecurrence.new(recurrency: recurrency, continue: true)
     self.recurrency_identifier = self.recurrence.identifier
+  end
+
+  def add_creator_as_member
+    return unless user.present?
+    return if join_requests.map(&:user_id).include?(user.id)
+
+    join_requests << JoinRequest.new(user: user, joinable: self, status: :accepted, role: :organizer)
   end
 
   def set_entourage_image_id
