@@ -166,6 +166,12 @@ describe Api::V1::OutingsController do
       it { request ; expect(response.status).to eq(401) }
     end
 
+    context 'without unactive recurrence' do
+      let(:recurrence) { FactoryBot.create(:outing_recurrence, continue: false) }
+      it { expect(lambda { request }).to change { Outing.count }.by(0) }
+      it { request ; expect(response.status).to eq(401) }
+    end
+
     context 'duplication as creator' do
       it { expect(lambda { request }).to change { Outing.count }.by(1) }
     end
