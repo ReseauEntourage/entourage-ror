@@ -147,8 +147,6 @@ describe Api::V1::OutingsController do
     end
 
     context "signed in" do
-      before { patch :update, params: { id: outing.to_param, outing: { title: "new title" } } }
-
       context "user is not creator" do
         before { patch :update, params: { id: outing.to_param, outing: { title: "new title" }, token: user.token } }
         it { expect(response.status).to eq(401) }
@@ -156,11 +154,53 @@ describe Api::V1::OutingsController do
 
       context "user is creator" do
         let(:outing) { FactoryBot.create(:outing, :joined, user: user, status: :open) }
+
         before { patch :update, params: { id: outing.to_param, outing: { title: "New title", metadata: { place_limit: 100 } }, token: user.token } }
+
         it { expect(response.status).to eq(200) }
         it { expect(subject).to have_key('outing') }
         it { expect(subject['outing']['title']).to eq('New title') }
         it { expect(subject['outing']['metadata']['place_limit']).to eq('100') }
+      end
+    end
+  end
+
+  describe 'PUT batch_update' do
+    let(:creator) { FactoryBot.create(:public_user) }
+
+    let(:recurrence) { FactoryBot.create(:outing_recurrence) }
+    let!(:outing) { FactoryBot.create(:outing, :for_neighborhood, user: creator, recurrence: recurrence) }
+    let!(:sibling) { FactoryBot.create(:outing, :for_neighborhood, user: creator, recurrence: recurrence) }
+    let!(:stranger) { FactoryBot.create(:outing, :for_neighborhood, user: creator) }
+
+    context "not signed in" do
+      before { patch :batch_update, params: { id: outing.to_param, outing: { title: "new title" } } }
+      it { expect(response.status).to eq(401) }
+    end
+
+    context "signed in" do
+      context "user is not creator" do
+        before { patch :batch_update, params: { id: outing.to_param, outing: { title: "new title" }, token: user.token } }
+        it { expect(response.status).to eq(401) }
+      end
+
+      context "user is creator" do
+        let(:creator) { user }
+
+        before { patch :batch_update, params: { id: outing.to_param, outing: { title: "New title", metadata: { place_limit: 100 } }, token: user.token } }
+
+        it { expect(response.status).to eq(200) }
+        it { expect(subject).to have_key('outings') }
+
+        it {
+          [outing, sibling].each do |event|
+            expect(outing.reload.title).to eq('New title')
+            expect(outing.reload.metadata[:place_limit]).to eq("100")
+          end
+        }
+
+        it { expect(stranger.reload.title).to eq('Foobar') }
+        it { expect(stranger.reload.metadata[:place_limit]).to eq(nil) }
       end
     end
   end

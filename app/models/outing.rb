@@ -9,6 +9,8 @@ class Outing < Entourage
 
   has_many :neighborhoods_entourages, foreign_key: :entourage_id
   has_many :neighborhoods, through: :neighborhoods_entourages
+  has_many :siblings, class_name: :Outing, foreign_key: :recurrency_identifier, primary_key: :recurrency_identifier
+  has_many :future_siblings, -> { where(group_type: :outing) }, class_name: :Outing, foreign_key: :recurrency_identifier, primary_key: :recurrency_identifier
 
   belongs_to :recurrence, class_name: :OutingRecurrence, foreign_key: :recurrency_identifier, primary_key: :identifier
 
@@ -22,7 +24,6 @@ class Outing < Entourage
   }
 
   scope :future, -> { where("metadata->>'starts_at' >= ?", Time.zone.now) }
-  scope :siblings, -> { where("recurrency_identifier is not null").where(recurrency_identifier: recurrency_identifier) }
 
   attr_accessor :recurrency, :original_outing
 
