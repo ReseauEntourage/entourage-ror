@@ -3,7 +3,9 @@ class Outing < Entourage
 
   after_initialize :set_outing_recurrence, if: :new_record?
 
+  before_validation :cancel_outing_recurrence, unless: :new_record?
   before_validation :set_entourage_image_id
+
   after_validation :add_creator_as_member, if: :new_record?
   after_validation :dup_neighborhoods_entourages, if: :new_record?
 
@@ -13,6 +15,8 @@ class Outing < Entourage
   has_many :future_siblings, -> { where(group_type: :outing) }, class_name: :Outing, foreign_key: :recurrency_identifier, primary_key: :recurrency_identifier
 
   belongs_to :recurrence, class_name: :OutingRecurrence, foreign_key: :recurrency_identifier, primary_key: :identifier
+
+  accepts_nested_attributes_for :recurrence
 
   validate :validate_neighborhood_ids
   validate :validate_member_ids, unless: :new_record?
@@ -73,6 +77,14 @@ class Outing < Entourage
 
     self.recurrence = OutingRecurrence.new(recurrency: recurrency, continue: true)
     self.recurrency_identifier = self.recurrence.identifier
+  end
+
+  def cancel_outing_recurrence
+    return if recurrency.blank?
+    return unless recurrence.present?
+    return unless recurrency.to_i == 0
+
+    self.recurrence.assign_attributes(continue: false)
   end
 
   def add_creator_as_member
