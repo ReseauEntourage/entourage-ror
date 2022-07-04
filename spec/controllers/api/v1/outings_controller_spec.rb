@@ -162,6 +162,33 @@ describe Api::V1::OutingsController do
         it { expect(subject['outing']['title']).to eq('New title') }
         it { expect(subject['outing']['metadata']['place_limit']).to eq('100') }
       end
+
+      context "cancel recurrency" do
+        let(:outing) { FactoryBot.create(:outing, :with_recurrence, user: user, status: :open) }
+        let(:subject) { OutingRecurrence.unscoped.find_by_identifier(outing.recurrency_identifier)}
+
+        before { patch :update, params: { id: outing.to_param, outing: { recurrency: 0 }, token: user.token } }
+
+        it { expect(subject.continue).to eq(false) }
+      end
+
+      context "cancel recurrency is not valid if recurrency > 0" do
+        let(:outing) { FactoryBot.create(:outing, :with_recurrence, user: user, status: :open) }
+        let(:subject) { OutingRecurrence.unscoped.find_by_identifier(outing.recurrency_identifier)}
+
+        before { patch :update, params: { id: outing.to_param, outing: { recurrency: 15 }, token: user.token } }
+
+        it { expect(subject.continue).to eq(true) }
+      end
+
+      context "cancel recurrency is not valid if recurrency is nil" do
+        let(:outing) { FactoryBot.create(:outing, :with_recurrence, user: user, status: :open) }
+        let(:subject) { OutingRecurrence.unscoped.find_by_identifier(outing.recurrency_identifier)}
+
+        before { patch :update, params: { id: outing.to_param, outing: { recurrency: nil }, token: user.token } }
+
+        it { expect(subject.continue).to eq(true) }
+      end
     end
   end
 
