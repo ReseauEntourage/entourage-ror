@@ -19,8 +19,8 @@ class Neighborhood < ApplicationRecord
     # .order("neighborhoods.user_id = join_requests.user_id")
     # .order("users.first_name")
   }, through: :join_requests, source: :user
-  has_many :neighborhoods_entourages
 
+  has_many :neighborhoods_entourages
   has_many :outings, -> { where(group_type: :outing) }, through: :neighborhoods_entourages, source: :entourage, class_name: "Outing"
 
   reverse_geocoded_by :latitude, :longitude

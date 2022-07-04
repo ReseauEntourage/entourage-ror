@@ -5,6 +5,10 @@ class Outing < Entourage
 
   before_validation :set_entourage_image_id
   after_validation :add_creator_as_member, if: :new_record?
+  after_validation :dup_neighborhoods_entourages, if: :new_record?
+
+  has_many :neighborhoods_entourages, foreign_key: :entourage_id
+  has_many :neighborhoods, through: :neighborhoods_entourages
 
   belongs_to :recurrence, class_name: :OutingRecurrence, foreign_key: :recurrency_identifier, primary_key: :identifier
 
@@ -19,10 +23,12 @@ class Outing < Entourage
   scope :future, -> { where("metadata->>'starts_at' >= ?", Time.zone.now) }
   scope :siblings, -> { where("recurrency_identifier is not null").where(recurrency_identifier: recurrency_identifier) }
 
-  attr_accessor :recurrency
+  attr_accessor :recurrency, :original_outing
 
   def initialize_dup original_outing
     set_uuid!
+
+    self.original_outing = original_outing
 
     return super unless recurrency = recurrence&.recurrency
     return super unless last_outing = recurrence&.last_outing
@@ -64,6 +70,14 @@ class Outing < Entourage
     return if join_requests.map(&:user_id).include?(user.id)
 
     join_requests << JoinRequest.new(user: user, joinable: self, status: :accepted, role: :organizer)
+  end
+
+  def dup_neighborhoods_entourages
+    return unless original_outing
+
+    original_outing.neighborhoods_entourages.each do |neighborhood_entourage|
+      neighborhoods_entourages << NeighborhoodsEntourage.new(neighborhood: neighborhood_entourage.neighborhood, entourage: self)
+    end
   end
 
   def set_entourage_image_id
