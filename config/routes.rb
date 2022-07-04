@@ -407,6 +407,7 @@ Rails.application.routes.draw do
 
       resources :outings, only: [:index, :create, :show, :update] do
         member do
+          put :batch_update
           get :siblings
           post :duplicate
         end

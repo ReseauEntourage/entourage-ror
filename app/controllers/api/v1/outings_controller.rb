@@ -1,8 +1,8 @@
 module Api
   module V1
     class OutingsController < Api::V1::BaseController
-      before_action :set_outing, only: [:show, :update, :duplicate]
-      before_action :authorised?, only: [:update]
+      before_action :set_outing, only: [:show, :update, :batch_update, :duplicate]
+      before_action :authorised?, only: [:update, :batch_update]
       before_action :allowed_duplicate?, only: [:duplicate]
 
       def index
@@ -32,6 +32,28 @@ module Api
           on.failure do |outing|
             render json: { message: 'Could not update outing', reasons: outing.errors.full_messages }, status: 400
           end
+        end
+      end
+
+      def batch_update
+        @outings = @outing.future_siblings
+
+        errors = nil
+
+        ApplicationRecord.transaction do
+          @outings.each do |outing|
+            EntourageServices::EntourageBuilder.new(params: outing_params, user: current_user).update(entourage: outing) do |on|
+              on.failure do |outing|
+                errors = outing.errors.full_messages and raise ActiveRecord::Rollback
+              end
+            end
+          end
+        end
+
+        if errors.present?
+          render json: { message: 'Could not update outing', reasons: errors }, status: 400
+        else
+          render json: @outings, status: 200, each_serializer: ::V1::NeighborhoodOutingSerializer, scope: { user: current_user }
         end
       end
 
