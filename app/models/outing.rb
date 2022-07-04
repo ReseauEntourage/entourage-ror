@@ -13,6 +13,7 @@ class Outing < Entourage
   belongs_to :recurrence, class_name: :OutingRecurrence, foreign_key: :recurrency_identifier, primary_key: :identifier
 
   validate :validate_neighborhood_ids
+  validate :validate_member_ids, unless: :new_record?
 
   default_scope { where(group_type: :outing) }
 
@@ -47,6 +48,14 @@ class Outing < Entourage
 
     if (neighborhood_ids - user.neighborhood_participation_ids).any?
       errors.add(:neighborhood_ids, "User has to be a member of every neighborhoods")
+    end
+  end
+
+  def validate_member_ids
+    return unless outing?
+
+    unless accepted_member_ids.include?(user_id)
+      errors.add(:neighborhood_ids, "User has to be a member of outing")
     end
   end
 
