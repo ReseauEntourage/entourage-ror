@@ -24,7 +24,7 @@ class OutingRecurrence < ApplicationRecord
   end
 
   def generate_available?
-    outings.future.count < AVAILABLE_RECURRENCES
+    outings.active.future.count < AVAILABLE_RECURRENCES
   end
 
   def generate

@@ -28,6 +28,7 @@ class Outing < Entourage
   }
 
   scope :future, -> { where("metadata->>'starts_at' >= ?", Time.zone.now) }
+  scope :active, -> { where(status: ['open', 'full']) }
 
   attr_accessor :recurrency, :original_outing
 
