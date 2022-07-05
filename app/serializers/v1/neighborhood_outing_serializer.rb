@@ -12,7 +12,8 @@ module V1
                :metadata,
                :interests,
                :neighborhood_ids,
-               :recurrency
+               :recurrency,
+               :members_count
 
     def uuid
       object.uuid_v2
@@ -45,6 +46,10 @@ module V1
       return unless object.recurrence.present?
 
       object.recurrence.recurrency
+    end
+
+    def members_count
+      object.accepted_members.count
     end
   end
 end
