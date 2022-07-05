@@ -5,6 +5,8 @@ class OutingRecurrence < ApplicationRecord
 
   after_initialize :set_identifier, if: :new_record?
 
+  validates_inclusion_of :recurrency, in: [0, 7, 15, 31], allow_nil: true
+
   default_scope { where(continue: true) }
 
   class << self
