@@ -12,12 +12,12 @@ resource Api::V1::Neighborhoods::OutingsController do
     parameter :token, type: :string, required: true
     parameter :neighborhood_id, type: :integer, required: true
 
-    with_options :scope => :outing, :required => true do
-      parameter :title, "Title", type: :string
-      parameter :description, "Description", type: :string, :required => false
-      parameter :event_url, "Event url", type: :string, :required => false
-      parameter :latitude, "Latitude", type: :string
-      parameter :longitude, "Longitude", type: :string
+    with_options :scope => :outing, :required => false do
+      parameter :title, required: true
+      parameter :description, "Description", type: :string
+      parameter :event_url, "Event url", type: :string
+      parameter :latitude, "Latitude", type: :string, required: true
+      parameter :longitude, "Longitude", type: :string, required: true
       parameter :entourage_image_id, "Entourage image id", type: :integer
       parameter :metadata, "Metadata", :required => false
       with_options :scope => "outing[metadata]", :required => true do
