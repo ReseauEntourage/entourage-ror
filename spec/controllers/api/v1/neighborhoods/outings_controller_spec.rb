@@ -11,7 +11,8 @@ describe Api::V1::Neighborhoods::OutingsController do
     context "not joined" do
       before { request }
 
-      it { expect(response.status).to eq(401) }
+      # non-member can list outings
+      it { expect(response.status).to eq(200) }
     end
 
     context "joined" do
