@@ -5,7 +5,7 @@ module Api
 
       class OutingsController < Api::V1::BaseController
         before_action :set_neighborhood, only: [:index, :create, :destroy]
-        before_action :authorised_to_see_messages?
+        before_action :authorised_to_see_messages?, only: [:create, :destroy]
 
         rescue_from Api::V1::Neighborhoods::UnauthorizedOuting do |exception|
           render json: { message: 'unauthorized : you are not accepted in this neighborhood' }, status: :unauthorized
