@@ -47,12 +47,12 @@ resource Api::V1::OutingsController do
 
     parameter :token, type: :string, required: true
 
-    with_options :scope => :outing, :required => true do
-      parameter :title
+    with_options :scope => :outing, :required => false do
+      parameter :title, required: true
       parameter :description
       parameter :event_url
-      parameter :latitude
-      parameter :longitude
+      parameter :latitude, required: true
+      parameter :longitude, required: true
       parameter :interests
       parameter :other_interest
       parameter :online
@@ -112,7 +112,7 @@ resource Api::V1::OutingsController do
     parameter :id, required: true
     parameter :token, type: :string, required: true
 
-    with_options :scope => :outing, :required => true do
+    with_options :scope => :outing, :required => false do
       parameter :title
       parameter :description
       parameter :event_url
@@ -125,7 +125,7 @@ resource Api::V1::OutingsController do
       parameter :entourage_image_id
       parameter :neighborhood_ids
 
-      with_options :scope => "outing[metadata]", :required => true do
+      with_options :scope => "outing[metadata]", :required => false do
         parameter :starts_at
         parameter :ends_at
         parameter :place_name
@@ -178,7 +178,7 @@ resource Api::V1::OutingsController do
     parameter :id, required: true
     parameter :token, type: :string, required: true
 
-    with_options :scope => :outing, :required => true do
+    with_options :scope => :outing, :required => false do
       parameter :title
       parameter :description
       parameter :event_url
@@ -191,7 +191,7 @@ resource Api::V1::OutingsController do
       parameter :entourage_image_id
       parameter :neighborhood_ids
 
-      with_options :scope => "outing[metadata]", :required => true do
+      with_options :scope => "outing[metadata]", :required => false do
         parameter :starts_at
         parameter :ends_at
         parameter :place_name
