@@ -12,7 +12,7 @@ module Api
         end
 
         def index
-          render json: @neighborhood.outings.order_by_starts_at, root: :outings, each_serializer: ::V1::NeighborhoodOutingSerializer, scope: {
+          render json: @neighborhood.outings.future.order_by_starts_at, root: :outings, each_serializer: ::V1::NeighborhoodOutingSerializer, scope: {
             user: current_user
           }
         end
