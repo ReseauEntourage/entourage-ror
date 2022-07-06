@@ -1,5 +1,5 @@
 module V1
-  class NeighborhoodOutingSerializer < ActiveModel::Serializer
+  class OutingSerializer < ActiveModel::Serializer
     attributes :id,
                :uuid,
                :title,

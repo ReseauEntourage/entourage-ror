@@ -14,7 +14,7 @@ module Api
             .page(page)
             .per(per)
 
-          render json: outings, status: 200, each_serializer: ::V1::NeighborhoodOutingSerializer, scope: { user: current_user }
+          render json: outings, status: 200, each_serializer: ::V1::OutingSerializer, scope: { user: current_user }
         end
 
         private

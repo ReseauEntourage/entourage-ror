@@ -6,7 +6,7 @@ module Api
       before_action :allowed_duplicate?, only: [:duplicate]
 
       def index
-        render json: Outing.future.order_by_starts_at.page(page).per(per), root: :outings, each_serializer: ::V1::NeighborhoodOutingSerializer, scope: {
+        render json: Outing.future.order_by_starts_at.page(page).per(per), root: :outings, each_serializer: ::V1::OutingSerializer, scope: {
           user: current_user
         }
       end
@@ -14,7 +14,7 @@ module Api
       def create
         EntourageServices::OutingBuilder.new(params: outing_params, user: current_user).create do |on|
           on.success do |outing|
-            render json: outing, root: :outing, status: 201, serializer: ::V1::NeighborhoodOutingSerializer, scope: { user: current_user }
+            render json: outing, root: :outing, status: 201, serializer: ::V1::OutingSerializer, scope: { user: current_user }
           end
 
           on.failure do |outing|
@@ -26,7 +26,7 @@ module Api
       def update
         EntourageServices::EntourageBuilder.new(params: outing_params, user: current_user).update(entourage: @outing) do |on|
           on.success do |outing|
-            render json: outing, status: 200, serializer: ::V1::NeighborhoodOutingSerializer, scope: { user: current_user }
+            render json: outing, status: 200, serializer: ::V1::OutingSerializer, scope: { user: current_user }
           end
 
           on.failure do |outing|
@@ -53,16 +53,16 @@ module Api
         if errors.present?
           render json: { message: 'Could not update outing', reasons: errors }, status: 400
         else
-          render json: @outings, status: 200, each_serializer: ::V1::NeighborhoodOutingSerializer, scope: { user: current_user }
+          render json: @outings, status: 200, each_serializer: ::V1::OutingSerializer, scope: { user: current_user }
         end
       end
 
       def show
-        render json: @outing, serializer: ::V1::NeighborhoodOutingSerializer, scope: { user: current_user }
+        render json: @outing, serializer: ::V1::OutingSerializer, scope: { user: current_user }
       end
 
       def siblings
-        render json: Outing.siblings.order_by_starts_at.page(page).per(per), root: :outings, each_serializer: ::V1::NeighborhoodOutingSerializer, scope: {
+        render json: Outing.siblings.order_by_starts_at.page(page).per(per), root: :outings, each_serializer: ::V1::OutingSerializer, scope: {
           user: current_user
         }
       end
@@ -71,7 +71,7 @@ module Api
         duplicate = @outing.dup
 
         if duplicate.save
-          render json: duplicate, serializer: ::V1::NeighborhoodOutingSerializer, scope: { user: current_user }
+          render json: duplicate, serializer: ::V1::OutingSerializer, scope: { user: current_user }
         else
           render json: { message: 'Could not duplicate outing', reasons: duplicate.errors.full_messages }, status: 400
         end
