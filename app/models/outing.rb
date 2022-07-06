@@ -3,12 +3,23 @@ class Outing < Entourage
 
   after_initialize :set_outing_recurrence, if: :new_record?
 
+  before_validation :cancel_outing_recurrence, unless: :new_record?
   before_validation :set_entourage_image_id
+
   after_validation :add_creator_as_member, if: :new_record?
+  after_validation :dup_neighborhoods_entourages, if: :new_record?
+
+  has_many :neighborhoods_entourages, foreign_key: :entourage_id
+  has_many :neighborhoods, through: :neighborhoods_entourages
+  has_many :siblings, class_name: :Outing, foreign_key: :recurrency_identifier, primary_key: :recurrency_identifier
+  has_many :future_siblings, -> { where(group_type: :outing) }, class_name: :Outing, foreign_key: :recurrency_identifier, primary_key: :recurrency_identifier
 
   belongs_to :recurrence, class_name: :OutingRecurrence, foreign_key: :recurrency_identifier, primary_key: :identifier
 
+  accepts_nested_attributes_for :recurrence
+
   validate :validate_neighborhood_ids
+  validate :validate_member_ids, unless: :new_record?
 
   default_scope { where(group_type: :outing) }
 
@@ -17,12 +28,14 @@ class Outing < Entourage
   }
 
   scope :future, -> { where("metadata->>'starts_at' >= ?", Time.zone.now) }
-  scope :siblings, -> { where("recurrency_identifier is not null").where(recurrency_identifier: recurrency_identifier) }
+  scope :active, -> { where(status: ['open', 'full']) }
 
-  attr_accessor :recurrency
+  attr_accessor :recurrency, :original_outing
 
   def initialize_dup original_outing
     set_uuid!
+
+    self.original_outing = original_outing
 
     return super unless recurrency = recurrence&.recurrency
     return super unless last_outing = recurrence&.last_outing
@@ -44,6 +57,14 @@ class Outing < Entourage
     end
   end
 
+  def validate_member_ids
+    return unless outing?
+
+    unless accepted_member_ids.include?(user_id)
+      errors.add(:neighborhood_ids, "User has to be a member of outing")
+    end
+  end
+
   def interests= interests
     unless interests.compact.map(&:to_sym).include?(:other)
       self[:other_interest] = nil
@@ -59,11 +80,27 @@ class Outing < Entourage
     self.recurrency_identifier = self.recurrence.identifier
   end
 
+  def cancel_outing_recurrence
+    return if recurrency.blank?
+    return unless recurrence.present?
+    return unless recurrency.to_i == 0
+
+    self.recurrence.assign_attributes(continue: false)
+  end
+
   def add_creator_as_member
     return unless user.present?
     return if join_requests.map(&:user_id).include?(user.id)
 
     join_requests << JoinRequest.new(user: user, joinable: self, status: :accepted, role: :organizer)
+  end
+
+  def dup_neighborhoods_entourages
+    return unless original_outing
+
+    original_outing.neighborhoods_entourages.each do |neighborhood_entourage|
+      neighborhoods_entourages << NeighborhoodsEntourage.new(neighborhood: neighborhood_entourage.neighborhood, entourage: self)
+    end
   end
 
   def set_entourage_image_id
