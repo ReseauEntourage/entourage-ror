@@ -30,6 +30,18 @@ module EntourageServices
 
         outing.update_attributes!({ metadata: metadata }.merge(force_relatives_dates: true))
       end
+
+      def update_recurrency outing:, params:
+        outing.assign_attributes(params)
+
+        if outing.create_inbetween_occurrences?
+          outing.create_inbetween_occurrences!
+        elsif outing.cancel_odds_occurrences?
+          outing.cancel_odds_occurrences!
+        end
+
+        outing.save
+      end
     end
   end
 end

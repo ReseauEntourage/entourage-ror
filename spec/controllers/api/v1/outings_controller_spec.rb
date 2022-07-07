@@ -190,11 +190,11 @@ describe Api::V1::OutingsController do
         it { expect(subject.continue).to eq(true) }
       end
 
-      context "change recurrence from 7 to 14" do
+      context "change recurrence" do
         let(:start_at) { 1.hour.from_now }
         let(:end_at) { 2.hours.from_now }
 
-        let(:recurrence) { FactoryBot.create(:outing_recurrence) }
+        let(:recurrence) { FactoryBot.create(:outing_recurrence, recurrency: 7) }
 
         let(:outing) { FactoryBot.create(:outing, :outing_class, user: user, recurrence: recurrence, metadata: {
           starts_at: start_at,
@@ -223,16 +223,44 @@ describe Api::V1::OutingsController do
 
         let(:subject) { OutingRecurrence.unscoped.find_by_identifier(outing.recurrency_identifier)}
 
-        before { patch :update, params: { id: outing.to_param, outing: { recurrency: 14 }, token: user.token } }
+        context "from 7 to 14" do
+          before { patch :update, params: { id: outing.to_param, outing: { recurrency: 14 }, token: user.token } }
 
-        it { expect(subject.continue).to eq(true) }
-        it { expect(response.status).to eq(200) }
+          it { expect(subject.continue).to eq(true) }
+          it { expect(response.status).to eq(200) }
 
-        it { expect(outing.reload.status).to eq("open") }
-        it { expect(sibling_1.reload.status).to eq("cancelled") }
-        it { expect(sibling_2.reload.status).to eq("open") }
-        it { expect(sibling_3.reload.status).to eq("cancelled") }
-        it { expect(sibling_4.reload.status).to eq("open") }
+          it {
+            expect(outing.reload.status).to eq("open")
+            expect(sibling_1.reload.status).to eq("cancelled")
+            expect(sibling_2.reload.status).to eq("open")
+            expect(sibling_3.reload.status).to eq("cancelled")
+            expect(sibling_4.reload.status).to eq("open")
+          }
+        end
+
+        context "from 14 to 7" do
+          let(:recurrence) { FactoryBot.create(:outing_recurrence, recurrency: 14) }
+
+          before { patch :update, params: { id: outing.to_param, outing: { recurrency: 7 }, token: user.token } }
+
+          it { expect(subject.continue).to eq(true) }
+          it { expect(response.status).to eq(200) }
+
+          it {
+            expect(outing.reload.status).to eq("open")
+            expect(sibling_1.reload.status).to eq("open")
+            expect(sibling_2.reload.status).to eq("open")
+            expect(sibling_3.reload.status).to eq("open")
+            expect(sibling_4.reload.status).to eq("open")
+          }
+
+          let(:start_dates) { (start_at.to_datetime..(start_at + 64.days).to_datetime).step(7).to_a }
+          let(:end_dates) { (end_at.to_datetime..(end_at + 64.days).to_datetime).step(7).to_a }
+
+          it { expect(outing.siblings.count).to eq(10) }
+          it { expect(outing.siblings.pluck("metadata->>'starts_at'").map(&:to_datetime)).to match_array(start_dates) }
+          it { expect(outing.siblings.pluck("metadata->>'ends_at'").map(&:to_datetime)).to match_array(end_dates) }
+        end
       end
     end
   end
