@@ -24,14 +24,24 @@ module Api
       end
 
       def update
-        EntourageServices::EntourageBuilder.new(params: outing_params, user: current_user).update(entourage: @outing) do |on|
-          on.success do |outing|
-            render json: outing, status: 200, serializer: ::V1::OutingSerializer, scope: { user: current_user }
+        errors = nil
+
+        ApplicationRecord.transaction do
+          unless EntourageServices::OutingBuilder.update_recurrency(outing: @outing, params: outing_recurrency_params)
+            errors = @outing.errors.full_messages and raise ActiveRecord::Rollback
           end
 
-          on.failure do |outing|
-            render json: { message: 'Could not update outing', reasons: outing.errors.full_messages }, status: 400
+          EntourageServices::EntourageBuilder.new(params: outing_params, user: current_user).update(entourage: @outing) do |on|
+            on.failure do |outing|
+              errors = outing.errors.full_messages and raise ActiveRecord::Rollback
+            end
           end
+        end
+
+        if errors.present?
+          render json: { message: 'Could not update outing', reasons: errors }, status: 400
+        else
+          render json: @outing.reload, status: 200, each_serializer: ::V1::OutingSerializer, scope: { user: current_user }
         end
       end
 
@@ -42,7 +52,7 @@ module Api
 
         ApplicationRecord.transaction do
           unless EntourageServices::OutingBuilder.batch_update_dates(outing: @outing, params: outing_date_params)
-            raise ActiveRecord::Rollback
+            errors = @outing.errors.full_messages and raise ActiveRecord::Rollback
           end
 
           @outings.each do |outing|
@@ -113,6 +123,10 @@ module Api
         ] }, neighborhood_ids: [],
           interests: []
         )
+      end
+
+      def outing_recurrency_params
+        params.require(:outing).permit(:recurrency)
       end
 
       def page

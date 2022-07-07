@@ -1,5 +1,9 @@
 # frozen_string_literal: true
 
+# This code is a copy from https://github.com/rails/rails/blob/6-0-stable/activerecord/lib/active_record/store.rb
+# Rails 5 provides this class but without magic methods (such as key_changed?) we need
+# Please remove this class as soon as we migrate to Rails 6
+
 require "active_support/core_ext/hash/indifferent_access"
 
 module JsonStorable

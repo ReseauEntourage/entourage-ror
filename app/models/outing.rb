@@ -1,12 +1,11 @@
 class Outing < Entourage
   include Interestable
-  include JsonStorable # @caution delete this include as soon as we migrate Rails to 6.0.0 or higher
+  include JsonStorable # @caution delete this include as soon as we migrate Rails to 6 or higher
 
   store_accessor :metadata, :starts_at, :ends_at, :previous_at, :place_name, :street_address, :google_place_id, :display_address, :landscape_url, :landscape_thumbnail_url, :portrait_url, :portrait_thumbnail_url, :place_limit
 
   after_initialize :set_outing_recurrence, if: :new_record?
 
-  before_validation :cancel_odds_occurrences, if: :cancel_odds_occurrences?
   before_validation :update_relatives_dates, if: :force_relatives_dates
   before_validation :cancel_outing_recurrence, unless: :new_record?
   before_validation :set_entourage_image_id
@@ -92,13 +91,33 @@ class Outing < Entourage
     super(interests)
   end
 
+  # inbetween occurrences are created whenever we change an active recurrence from 14 to 7
+  def create_inbetween_occurrences?
+    return unless recurrence.present?
+
+    recurrency&.to_i == 7 && recurrence.recurrency&.to_i == 14
+  end
+
+  def create_inbetween_occurrences!
+    recurrence.update_attribute(:recurrency, recurrency)
+
+    future_sibling_ids.each do |outing_id|
+      # @caution .dup clones by reference the original outing
+      # To avoid to modify source and duplication at the same time, we do not iterate on future_siblings objects
+      future_siblings << Outing.find(outing_id).dup
+    end
+  end
+
+  # we cancel odd occurrences whenever we change an active recurrence from 7 to 14
   def cancel_odds_occurrences?
     return unless recurrence.present?
 
     recurrency&.to_i == 14 && recurrence.recurrency&.to_i == 7
   end
 
-  def cancel_odds_occurrences
+  def cancel_odds_occurrences!
+    recurrence.update_attribute(:recurrency, recurrency)
+
     future_siblings.each_with_index do |outing, index|
       next if index.even?
 
@@ -106,6 +125,7 @@ class Outing < Entourage
     end
   end
 
+  # we update relatives dates whenever an outing update its dates with "force_relatives_dates" option
   def update_relatives_dates
     return if new_record?
     return unless force_relatives_dates
