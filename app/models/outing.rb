@@ -6,6 +6,7 @@ class Outing < Entourage
 
   after_initialize :set_outing_recurrence, if: :new_record?
 
+  before_validation :cancel_odds_occurrences, if: :cancel_odds_occurrences?
   before_validation :update_relatives_dates, if: :force_relatives_dates
   before_validation :cancel_outing_recurrence, unless: :new_record?
   before_validation :set_entourage_image_id
@@ -34,7 +35,7 @@ class Outing < Entourage
 
   belongs_to :recurrence, class_name: :OutingRecurrence, foreign_key: :recurrency_identifier, primary_key: :identifier
 
-  accepts_nested_attributes_for :recurrence, :future_relatives
+  accepts_nested_attributes_for :recurrence, :future_siblings, :future_relatives
 
   validate :validate_neighborhood_ids
   validate :validate_member_ids, unless: :new_record?
@@ -89,6 +90,20 @@ class Outing < Entourage
     end
 
     super(interests)
+  end
+
+  def cancel_odds_occurrences?
+    return unless recurrence.present?
+
+    recurrency&.to_i == 14 && recurrence.recurrency&.to_i == 7
+  end
+
+  def cancel_odds_occurrences
+    future_siblings.each_with_index do |outing, index|
+      next if index.even?
+
+      outing.assign_attributes(status: :cancelled)
+    end
   end
 
   def update_relatives_dates
