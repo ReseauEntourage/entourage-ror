@@ -39,11 +39,7 @@ class Outing < Entourage
   validate :validate_neighborhood_ids
   validate :validate_member_ids, unless: :new_record?
 
-  default_scope { where(group_type: :outing) }
-
-  scope :order_by_starts_at, -> {
-    order("metadata->>'starts_at'")
-  }
+  default_scope { where(group_type: :outing).order(Arel.sql("metadata->>'starts_at'")) }
 
   scope :future, -> { where("metadata->>'starts_at' >= ?", Time.zone.now) }
   scope :active, -> { where(status: ['open', 'full']) }
