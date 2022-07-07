@@ -6,12 +6,12 @@ class Outing < Entourage
 
   after_initialize :set_outing_recurrence, if: :new_record?
 
-  before_validation :update_relatives_dates, unless: :new_record?
+  before_validation :update_relatives_dates, if: :force_relatives_dates
   before_validation :cancel_outing_recurrence, unless: :new_record?
   before_validation :set_entourage_image_id
 
   after_validation :add_creator_as_member, if: :new_record?
-  after_validation :dup_neighborhoods_entourages, if: :new_record?
+  after_validation :dup_neighborhoods_entourages, if: :original_outing
 
   has_many :neighborhoods_entourages, foreign_key: :entourage_id
   has_many :neighborhoods, through: :neighborhoods_entourages
@@ -92,6 +92,7 @@ class Outing < Entourage
   end
 
   def update_relatives_dates
+    return if new_record?
     return unless force_relatives_dates
     return unless starts_at_changed? || ends_at_changed?
     return unless recurrence.present?
@@ -129,6 +130,7 @@ class Outing < Entourage
 
   def dup_neighborhoods_entourages
     return unless original_outing
+    return unless new_record?
 
     original_outing.neighborhoods_entourages.each do |neighborhood_entourage|
       neighborhoods_entourages << NeighborhoodsEntourage.new(neighborhood: neighborhood_entourage.neighborhood, entourage: self)
