@@ -56,7 +56,7 @@ FactoryBot.define do
         recurrence { association :outing_recurrence, identifier: recurrency_identifier }
       end
 
-      trait :for_neighborhood do
+      trait :outing_class do
         initialize_with { Outing.new(attributes) }
       end
 

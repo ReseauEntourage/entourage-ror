@@ -41,8 +41,12 @@ module Api
         errors = nil
 
         ApplicationRecord.transaction do
+          unless EntourageServices::OutingBuilder.batch_update_dates(outing: @outing, params: outing_date_params)
+            raise ActiveRecord::Rollback
+          end
+
           @outings.each do |outing|
-            EntourageServices::EntourageBuilder.new(params: outing_params, user: current_user).update(entourage: outing) do |on|
+            EntourageServices::EntourageBuilder.new(params: outing_no_date_params, user: current_user).update(entourage: outing) do |on|
               on.failure do |outing|
                 errors = outing.errors.full_messages and raise ActiveRecord::Rollback
               end
@@ -87,6 +91,21 @@ module Api
         params.require(:outing).permit(:title, :description, :event_url, :latitude, :longitude, :other_interest, :online, :recurrency, :entourage_image_id, { metadata: [
           :starts_at,
           :ends_at,
+          :place_name,
+          :street_address,
+          :google_place_id,
+          :place_limit
+        ] }, neighborhood_ids: [],
+          interests: []
+        )
+      end
+
+      def outing_date_params
+        params.require(:outing).permit({ metadata: [:starts_at, :ends_at] })
+      end
+
+      def outing_no_date_params
+        params.require(:outing).permit(:title, :description, :event_url, :latitude, :longitude, :other_interest, :online, :recurrency, :entourage_image_id, { metadata: [
           :place_name,
           :street_address,
           :google_place_id,
