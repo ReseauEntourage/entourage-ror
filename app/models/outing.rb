@@ -1,8 +1,12 @@
 class Outing < Entourage
   include Interestable
+  include JsonStorable # @caution delete this include as soon as we migrate Rails to 6.0.0 or higher
+
+  store_accessor :metadata, :starts_at, :ends_at, :previous_at, :place_name, :street_address, :google_place_id, :display_address, :landscape_url, :landscape_thumbnail_url, :portrait_url, :portrait_thumbnail_url, :place_limit
 
   after_initialize :set_outing_recurrence, if: :new_record?
 
+  before_validation :update_relatives_dates, unless: :new_record?
   before_validation :cancel_outing_recurrence, unless: :new_record?
   before_validation :set_entourage_image_id
 
@@ -11,12 +15,26 @@ class Outing < Entourage
 
   has_many :neighborhoods_entourages, foreign_key: :entourage_id
   has_many :neighborhoods, through: :neighborhoods_entourages
+
+  # siblings and relatives
   has_many :siblings, class_name: :Outing, foreign_key: :recurrency_identifier, primary_key: :recurrency_identifier
-  has_many :future_siblings, -> { where(group_type: :outing) }, class_name: :Outing, foreign_key: :recurrency_identifier, primary_key: :recurrency_identifier
+
+  has_many :relatives, -> (object) {
+    where.not(id: object.id)
+  }, class_name: :Outing, foreign_key: :recurrency_identifier, primary_key: :recurrency_identifier
+
+  # future_siblings and future_relatives
+  has_many :future_siblings, -> {
+    where("metadata->>'starts_at' >= ?", DateTime.now)
+  }, class_name: :Outing, foreign_key: :recurrency_identifier, primary_key: :recurrency_identifier
+
+  has_many :future_relatives, -> (object) {
+    where.not(id: object.id).where("metadata->>'starts_at' >= ?", DateTime.now)
+  }, class_name: :Outing, foreign_key: :recurrency_identifier, primary_key: :recurrency_identifier
 
   belongs_to :recurrence, class_name: :OutingRecurrence, foreign_key: :recurrency_identifier, primary_key: :identifier
 
-  accepts_nested_attributes_for :recurrence
+  accepts_nested_attributes_for :recurrence, :future_relatives
 
   validate :validate_neighborhood_ids
   validate :validate_member_ids, unless: :new_record?
@@ -30,7 +48,7 @@ class Outing < Entourage
   scope :future, -> { where("metadata->>'starts_at' >= ?", Time.zone.now) }
   scope :active, -> { where(status: ['open', 'full']) }
 
-  attr_accessor :recurrency, :original_outing
+  attr_accessor :recurrency, :original_outing, :force_relatives_dates
 
   def initialize_dup original_outing
     set_uuid!
@@ -71,6 +89,20 @@ class Outing < Entourage
     end
 
     super(interests)
+  end
+
+  def update_relatives_dates
+    return unless force_relatives_dates
+    return unless starts_at_changed? || ends_at_changed?
+    return unless recurrence.present?
+    return unless future_relatives.any?
+
+    future_relatives.each do |outing|
+      outing.assign_attributes(metadata: outing.metadata.merge({
+        starts_at: outing.metadata[:starts_at] + (self.metadata[:starts_at] - starts_at_was),
+        ends_at: outing.metadata[:ends_at] + (self.metadata[:ends_at] - ends_at_was)
+      }))
+    end
   end
 
   def set_outing_recurrence
