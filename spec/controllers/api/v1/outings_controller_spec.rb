@@ -189,6 +189,51 @@ describe Api::V1::OutingsController do
 
         it { expect(subject.continue).to eq(true) }
       end
+
+      context "change recurrence from 7 to 14" do
+        let(:start_at) { 1.hour.from_now }
+        let(:end_at) { 2.hours.from_now }
+
+        let(:recurrence) { FactoryBot.create(:outing_recurrence) }
+
+        let(:outing) { FactoryBot.create(:outing, :outing_class, user: user, recurrence: recurrence, metadata: {
+          starts_at: start_at,
+          ends_at: end_at
+        }) }
+        let!(:sibling_1) { FactoryBot.create(:outing, :outing_class, user: user, recurrence: recurrence, metadata: {
+          starts_at: start_at + 7.days,
+          ends_at: end_at + 7.days
+        }) }
+        let!(:sibling_2) { FactoryBot.create(:outing, :outing_class, user: user, recurrence: recurrence, metadata: {
+          starts_at: start_at + 14.days,
+          ends_at: end_at + 14.days
+        }) }
+        let!(:sibling_3) { FactoryBot.create(:outing, :outing_class, user: user, recurrence: recurrence, metadata: {
+          starts_at: start_at + 21.days,
+          ends_at: end_at + 21.days
+        }) }
+        let!(:sibling_4) { FactoryBot.create(:outing, :outing_class, user: user, recurrence: recurrence, metadata: {
+          starts_at: start_at + 28.days,
+          ends_at: end_at + 28.days
+        }) }
+        let!(:stranger) { FactoryBot.create(:outing, :outing_class, user: user, metadata: {
+          starts_at: start_at,
+          ends_at: end_at
+        }) }
+
+        let(:subject) { OutingRecurrence.unscoped.find_by_identifier(outing.recurrency_identifier)}
+
+        before { patch :update, params: { id: outing.to_param, outing: { recurrency: 14 }, token: user.token } }
+
+        it { expect(subject.continue).to eq(true) }
+        it { expect(response.status).to eq(200) }
+
+        it { expect(outing.reload.status).to eq("open") }
+        it { expect(sibling_1.reload.status).to eq("cancelled") }
+        it { expect(sibling_2.reload.status).to eq("open") }
+        it { expect(sibling_3.reload.status).to eq("cancelled") }
+        it { expect(sibling_4.reload.status).to eq("open") }
+      end
     end
   end
 
