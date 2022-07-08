@@ -3,6 +3,9 @@
     <%= render 'edit_header', tab: :show_members %>
 
     <div class="row">
+      <div class="breadcrumb" style="margin-bottom: 0px">
+        <%= link_to "Changer le créateur", edit_owner_admin_neighborhood_path(@neighborhood) %>
+      </div>
       <table class="table">
         <th>Id</th>
         <th>Nom</th>

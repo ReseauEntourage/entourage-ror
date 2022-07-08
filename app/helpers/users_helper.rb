@@ -1,4 +1,10 @@
 module UsersHelper
+  def users_for_select users
+    users.map do |user|
+      ["#{user.full_name} (#{user.email})", user.id]
+    end
+  end
+
   def user_state_label validation_status
     state_to_class = {
       "accepted"  => "label-success",

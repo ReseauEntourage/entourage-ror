@@ -27,6 +27,7 @@ class Neighborhood < ApplicationRecord
 
   # valides :image_url # should be 390x258 (2/3)
   attr_accessor :neighborhood_image_id
+  attr_accessor :change_ownership_message
 
   default_scope { where(status: :active) }
 
