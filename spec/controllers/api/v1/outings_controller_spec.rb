@@ -189,16 +189,101 @@ describe Api::V1::OutingsController do
 
         it { expect(subject.continue).to eq(true) }
       end
+
+      context "change recurrence" do
+        let(:start_at) { 1.hour.from_now }
+        let(:end_at) { 2.hours.from_now }
+
+        let(:recurrence) { FactoryBot.create(:outing_recurrence, recurrency: 7) }
+
+        let(:outing) { FactoryBot.create(:outing, :outing_class, user: user, recurrence: recurrence, metadata: {
+          starts_at: start_at,
+          ends_at: end_at
+        }) }
+        let!(:sibling_1) { FactoryBot.create(:outing, :outing_class, user: user, recurrence: recurrence, metadata: {
+          starts_at: start_at + 7.days,
+          ends_at: end_at + 7.days
+        }) }
+        let!(:sibling_2) { FactoryBot.create(:outing, :outing_class, user: user, recurrence: recurrence, metadata: {
+          starts_at: start_at + 14.days,
+          ends_at: end_at + 14.days
+        }) }
+        let!(:sibling_3) { FactoryBot.create(:outing, :outing_class, user: user, recurrence: recurrence, metadata: {
+          starts_at: start_at + 21.days,
+          ends_at: end_at + 21.days
+        }) }
+        let!(:sibling_4) { FactoryBot.create(:outing, :outing_class, user: user, recurrence: recurrence, metadata: {
+          starts_at: start_at + 28.days,
+          ends_at: end_at + 28.days
+        }) }
+        let!(:stranger) { FactoryBot.create(:outing, :outing_class, user: user, metadata: {
+          starts_at: start_at,
+          ends_at: end_at
+        }) }
+
+        let(:subject) { OutingRecurrence.unscoped.find_by_identifier(outing.recurrency_identifier)}
+
+        context "from 7 to 14" do
+          before { patch :update, params: { id: outing.to_param, outing: { recurrency: 14 }, token: user.token } }
+
+          it { expect(subject.continue).to eq(true) }
+          it { expect(response.status).to eq(200) }
+
+          it {
+            expect(outing.reload.status).to eq("open")
+            expect(sibling_1.reload.status).to eq("cancelled")
+            expect(sibling_2.reload.status).to eq("open")
+            expect(sibling_3.reload.status).to eq("cancelled")
+            expect(sibling_4.reload.status).to eq("open")
+          }
+        end
+
+        context "from 14 to 7" do
+          let(:recurrence) { FactoryBot.create(:outing_recurrence, recurrency: 14) }
+
+          before { patch :update, params: { id: outing.to_param, outing: { recurrency: 7 }, token: user.token } }
+
+          it { expect(subject.continue).to eq(true) }
+          it { expect(response.status).to eq(200) }
+
+          it {
+            expect(outing.reload.status).to eq("open")
+            expect(sibling_1.reload.status).to eq("open")
+            expect(sibling_2.reload.status).to eq("open")
+            expect(sibling_3.reload.status).to eq("open")
+            expect(sibling_4.reload.status).to eq("open")
+          }
+
+          let(:start_dates) { (start_at.to_datetime..(start_at + 64.days).to_datetime).step(7).to_a }
+          let(:end_dates) { (end_at.to_datetime..(end_at + 64.days).to_datetime).step(7).to_a }
+
+          it { expect(outing.siblings.count).to eq(10) }
+          it { expect(outing.siblings.pluck("metadata->>'starts_at'").map(&:to_datetime)).to match_array(start_dates) }
+          it { expect(outing.siblings.pluck("metadata->>'ends_at'").map(&:to_datetime)).to match_array(end_dates) }
+        end
+      end
     end
   end
 
   describe 'PUT batch_update' do
     let(:creator) { FactoryBot.create(:public_user) }
 
+    let(:start_at) { 1.hour.from_now }
+    let(:end_at) { 2.hours.from_now }
+
     let(:recurrence) { FactoryBot.create(:outing_recurrence) }
-    let!(:outing) { FactoryBot.create(:outing, :for_neighborhood, user: creator, recurrence: recurrence) }
-    let!(:sibling) { FactoryBot.create(:outing, :for_neighborhood, user: creator, recurrence: recurrence) }
-    let!(:stranger) { FactoryBot.create(:outing, :for_neighborhood, user: creator) }
+    let!(:outing) { FactoryBot.create(:outing, :outing_class, user: creator, recurrence: recurrence, metadata: {
+      starts_at: start_at,
+      ends_at: end_at
+    }) }
+    let!(:sibling) { FactoryBot.create(:outing, :outing_class, user: creator, recurrence: recurrence, metadata: {
+      starts_at: start_at + 7.days,
+      ends_at: end_at + 7.days
+    }) }
+    let!(:stranger) { FactoryBot.create(:outing, :outing_class, user: creator, metadata: {
+      starts_at: start_at,
+      ends_at: end_at
+    }) }
 
     context "not signed in" do
       before { patch :batch_update, params: { id: outing.to_param, outing: { title: "new title" } } }
@@ -229,6 +314,27 @@ describe Api::V1::OutingsController do
         it { expect(stranger.reload.title).to eq('Foobar') }
         it { expect(stranger.reload.metadata[:place_limit]).to eq(nil) }
       end
+
+      context "change starts_at or ends_at" do
+        let(:creator) { user }
+
+        before { patch :batch_update, params: { id: outing.to_param, outing: { title: "New title", metadata: {
+          starts_at: start_at + 3.hours,
+          ends_at: end_at + 1.day
+        } }, token: user.token } }
+
+        it { expect(response.status).to eq(200) }
+        it { expect(subject).to have_key('outings') }
+
+        it { expect(outing.reload.metadata[:starts_at]).to be_within(1.second).of (start_at + 3.hours) }
+        it { expect(outing.reload.metadata[:ends_at]).to be_within(1.second).of (end_at + 1.day) }
+
+        it { expect(sibling.reload.metadata[:starts_at]).to be_within(1.second).of (start_at + 7.days + 3.hours) }
+        it { expect(sibling.reload.metadata[:ends_at]).to be_within(1.second).of (end_at + 8.days) }
+
+        it { expect(stranger.reload.metadata[:starts_at]).to be_within(1.second).of start_at }
+        it { expect(stranger.reload.metadata[:ends_at]).to be_within(1.second).of end_at }
+      end
     end
   end
 
@@ -244,7 +350,7 @@ describe Api::V1::OutingsController do
   describe 'POST duplicate' do
     let(:creator) { user }
     let(:recurrence) { FactoryBot.create(:outing_recurrence) }
-    let!(:outing) { FactoryBot.create(:outing, :for_neighborhood, status: :open, user: creator, recurrence: recurrence) }
+    let!(:outing) { FactoryBot.create(:outing, :outing_class, status: :open, user: creator, recurrence: recurrence) }
 
     let(:request) { post :duplicate, params: { token: user.token, id: outing.id } }
 

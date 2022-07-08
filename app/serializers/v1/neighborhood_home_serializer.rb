@@ -17,8 +17,8 @@ module V1
 
     has_one :user, serializer: ::V1::Users::BasicSerializer
     has_many :members, serializer: ::V1::Users::BasicSerializer
-    has_many :future_outings, serializer: ::V1::NeighborhoodOutingSerializer
-    has_many :ongoing_outings, serializer: ::V1::NeighborhoodOutingSerializer
+    has_many :future_outings, serializer: ::V1::OutingSerializer
+    has_many :ongoing_outings, serializer: ::V1::OutingSerializer
 
     def member
       return false unless scope && scope[:user]

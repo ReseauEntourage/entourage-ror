@@ -5,7 +5,7 @@ class OutingRecurrence < ApplicationRecord
 
   after_initialize :set_identifier, if: :new_record?
 
-  validates_inclusion_of :recurrency, in: [0, 7, 15, 31], allow_nil: true
+  validates_inclusion_of :recurrency, in: [0, 7, 14, 31], allow_nil: true
 
   default_scope { where(continue: true) }
 
@@ -37,6 +37,6 @@ class OutingRecurrence < ApplicationRecord
   end
 
   def last_outing
-    @last_outing ||= Outing.where(recurrency_identifier: identifier).order_by_starts_at.last
+    @last_outing ||= Outing.where(recurrency_identifier: identifier).last
   end
 end

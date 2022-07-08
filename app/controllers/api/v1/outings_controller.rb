@@ -6,7 +6,7 @@ module Api
       before_action :allowed_duplicate?, only: [:duplicate]
 
       def index
-        render json: Outing.future.order_by_starts_at.page(page).per(per), root: :outings, each_serializer: ::V1::NeighborhoodOutingSerializer, scope: {
+        render json: Outing.future.page(page).per(per), root: :outings, each_serializer: ::V1::OutingSerializer, scope: {
           user: current_user
         }
       end
@@ -14,7 +14,7 @@ module Api
       def create
         EntourageServices::OutingBuilder.new(params: outing_params, user: current_user).create do |on|
           on.success do |outing|
-            render json: outing, root: :outing, status: 201, serializer: ::V1::NeighborhoodOutingSerializer, scope: { user: current_user }
+            render json: outing, root: :outing, status: 201, serializer: ::V1::OutingSerializer, scope: { user: current_user }
           end
 
           on.failure do |outing|
@@ -24,14 +24,24 @@ module Api
       end
 
       def update
-        EntourageServices::EntourageBuilder.new(params: outing_params, user: current_user).update(entourage: @outing) do |on|
-          on.success do |outing|
-            render json: outing, status: 200, serializer: ::V1::NeighborhoodOutingSerializer, scope: { user: current_user }
+        errors = nil
+
+        ApplicationRecord.transaction do
+          unless EntourageServices::OutingBuilder.update_recurrency(outing: @outing, params: outing_recurrency_params)
+            errors = @outing.errors.full_messages and raise ActiveRecord::Rollback
           end
 
-          on.failure do |outing|
-            render json: { message: 'Could not update outing', reasons: outing.errors.full_messages }, status: 400
+          EntourageServices::EntourageBuilder.new(params: outing_params, user: current_user).update(entourage: @outing) do |on|
+            on.failure do |outing|
+              errors = outing.errors.full_messages and raise ActiveRecord::Rollback
+            end
           end
+        end
+
+        if errors.present?
+          render json: { message: 'Could not update outing', reasons: errors }, status: 400
+        else
+          render json: @outing.reload, status: 200, serializer: ::V1::OutingSerializer, scope: { user: current_user }
         end
       end
 
@@ -41,8 +51,12 @@ module Api
         errors = nil
 
         ApplicationRecord.transaction do
+          unless EntourageServices::OutingBuilder.batch_update_dates(outing: @outing, params: outing_date_params)
+            errors = @outing.errors.full_messages and raise ActiveRecord::Rollback
+          end
+
           @outings.each do |outing|
-            EntourageServices::EntourageBuilder.new(params: outing_params, user: current_user).update(entourage: outing) do |on|
+            EntourageServices::EntourageBuilder.new(params: outing_no_date_params, user: current_user).update(entourage: outing) do |on|
               on.failure do |outing|
                 errors = outing.errors.full_messages and raise ActiveRecord::Rollback
               end
@@ -53,16 +67,16 @@ module Api
         if errors.present?
           render json: { message: 'Could not update outing', reasons: errors }, status: 400
         else
-          render json: @outings, status: 200, each_serializer: ::V1::NeighborhoodOutingSerializer, scope: { user: current_user }
+          render json: @outings, status: 200, each_serializer: ::V1::OutingSerializer, scope: { user: current_user }
         end
       end
 
       def show
-        render json: @outing, serializer: ::V1::NeighborhoodOutingSerializer, scope: { user: current_user }
+        render json: @outing, serializer: ::V1::OutingSerializer, scope: { user: current_user }
       end
 
       def siblings
-        render json: Outing.siblings.order_by_starts_at.page(page).per(per), root: :outings, each_serializer: ::V1::NeighborhoodOutingSerializer, scope: {
+        render json: Outing.siblings.page(page).per(per), root: :outings, each_serializer: ::V1::OutingSerializer, scope: {
           user: current_user
         }
       end
@@ -71,7 +85,7 @@ module Api
         duplicate = @outing.dup
 
         if duplicate.save
-          render json: duplicate, serializer: ::V1::NeighborhoodOutingSerializer, scope: { user: current_user }
+          render json: duplicate, serializer: ::V1::OutingSerializer, scope: { user: current_user }
         else
           render json: { message: 'Could not duplicate outing', reasons: duplicate.errors.full_messages }, status: 400
         end
@@ -94,6 +108,25 @@ module Api
         ] }, neighborhood_ids: [],
           interests: []
         )
+      end
+
+      def outing_date_params
+        params.require(:outing).permit({ metadata: [:starts_at, :ends_at] })
+      end
+
+      def outing_no_date_params
+        params.require(:outing).permit(:title, :description, :event_url, :latitude, :longitude, :other_interest, :online, :recurrency, :entourage_image_id, { metadata: [
+          :place_name,
+          :street_address,
+          :google_place_id,
+          :place_limit
+        ] }, neighborhood_ids: [],
+          interests: []
+        )
+      end
+
+      def outing_recurrency_params
+        params.require(:outing).permit(:recurrency)
       end
 
       def page
