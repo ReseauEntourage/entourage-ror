@@ -41,7 +41,7 @@ module Api
         if errors.present?
           render json: { message: 'Could not update outing', reasons: errors }, status: 400
         else
-          render json: @outing.reload, status: 200, each_serializer: ::V1::OutingSerializer, scope: { user: current_user }
+          render json: @outing.reload, status: 200, serializer: ::V1::OutingSerializer, scope: { user: current_user }
         end
       end
 
