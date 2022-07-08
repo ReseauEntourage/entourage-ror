@@ -6,7 +6,7 @@ module Api
       before_action :allowed_duplicate?, only: [:duplicate]
 
       def index
-        render json: Outing.future.page(page).per(per), root: :outings, each_serializer: ::V1::OutingSerializer, scope: {
+        render json: Outing.active.future.page(page).per(per), root: :outings, each_serializer: ::V1::OutingSerializer, scope: {
           user: current_user
         }
       end
