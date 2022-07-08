@@ -8,7 +8,7 @@ module Api
           page = params[:page] || 1
           per = [(params[:per].try(:to_i) || 25), 25].min
 
-          outings = Outing.joins(:join_requests)
+          outings = Outing.active.future.joins(:join_requests)
             .where(join_requests: { user: @user, status: JoinRequest::ACCEPTED_STATUS })
             .order(created_at: :desc)
             .page(page)
