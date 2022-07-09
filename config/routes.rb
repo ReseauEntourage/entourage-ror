@@ -423,6 +423,13 @@ Rails.application.routes.draw do
             post :presigned_upload
           end
         end
+
+        resources :users, :controller => 'outings/users', only: [:index, :create, :destroy] do
+          collection do
+            # we want to avoid specific id to unjoin
+            delete :destroy
+          end
+        end
       end
 
       resources :conversations, :controller => 'entourages', only: [] do
