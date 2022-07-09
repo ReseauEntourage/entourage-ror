@@ -2,6 +2,7 @@ module V1
   class OutingSerializer < ActiveModel::Serializer
     attributes :id,
                :uuid,
+               :status,
                :title,
                :description,
                :share_url,
