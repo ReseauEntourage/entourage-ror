@@ -17,7 +17,7 @@ module Api
         def index
           messages = @neighborhood.parent_chat_messages.ordered.page(page).per(per)
 
-          render json: messages, each_serializer: ::V1::ChatMessageSerializer, scope: { current_join_request: join_request }
+          render json: messages, each_serializer: ::V1::ChatMessages::PostSerializer, scope: { current_join_request: join_request }
         end
 
         def create
@@ -28,7 +28,7 @@ module Api
             join_request: join_request
           ).create do |on|
             on.success do |message|
-              render json: message, status: 201, serializer: ::V1::ChatMessageSerializer
+              render json: message, status: 201, serializer: ::V1::ChatMessages::GenericSerializer
             end
 
             on.failure do |message|
@@ -63,7 +63,7 @@ module Api
           post = Neighborhood.find(params[:neighborhood_id]).chat_messages.where(id: params[:id]).first
           messages = post.children.order(created_at: :desc)
 
-          render json: messages, each_serializer: ::V1::ChatMessageSerializer, scope: { current_join_request: join_request }
+          render json: messages, each_serializer: ::V1::ChatMessages::CommentSerializer, scope: { current_join_request: join_request }
         end
 
         def presigned_upload

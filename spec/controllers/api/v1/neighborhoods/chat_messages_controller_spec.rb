@@ -35,13 +35,11 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
       it { expect(result).to eq({
         "chat_messages" => [{
           "id" => chat_message_1.id,
-          "message_type" => "text",
           "content" => chat_message_1.content,
           "user" => {
             "id" => user.id,
             "avatar_url" => nil,
-            "display_name" => "John D.",
-            "partner" => nil
+            "display_name" => "John D."
           },
           "created_at" => chat_message_1.created_at.iso8601(3),
           "post_id" => nil,
@@ -113,13 +111,11 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
         let(:json) {{
           "chat_message" => {
             "id" => ChatMessage.last.id,
-            "message_type" => "text",
             "content" => content,
             "user" => {
               "id" => user.id,
               "avatar_url" => nil,
-              "display_name" => "John D.",
-              "partner" => nil
+              "display_name" => "John D."
             },
             "created_at" => ChatMessage.last.created_at.iso8601(3),
             "post_id" => parent_id,
@@ -278,13 +274,11 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
       it { expect(result).to eq({
         "chat_messages" => [{
           "id" => chat_message_2.id,
-          "message_type" => "text",
           "content" => chat_message_2.content,
           "user" => {
             "id" => user.id,
             "avatar_url" => nil,
-            "display_name" => "John D.",
-            "partner" => nil
+            "display_name" => "John D."
           },
           "created_at" => chat_message_2.created_at.iso8601(3),
           "post_id" => chat_message_1.id,
