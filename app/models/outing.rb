@@ -87,6 +87,10 @@ class Outing < Entourage
     super(interests)
   end
 
+  def parent_chat_messages
+    chat_messages.where(ancestry: nil)
+  end
+
   # inbetween occurrences are created whenever we change an active recurrence from 14 to 7
   def create_inbetween_occurrences?
     return unless recurrence.present?
