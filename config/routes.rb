@@ -411,6 +411,25 @@ Rails.application.routes.draw do
           get :siblings
           post :duplicate
         end
+
+        resources :chat_messages, :controller => 'outings/chat_messages', only: [:index, :create] do
+          post :report # report an issue with a chat_message
+
+          member do
+            get :comments
+          end
+
+          collection do
+            post :presigned_upload
+          end
+        end
+
+        resources :users, :controller => 'outings/users', only: [:index, :create, :destroy] do
+          collection do
+            # we want to avoid specific id to unjoin
+            delete :destroy
+          end
+        end
       end
 
       resources :conversations, :controller => 'entourages', only: [] do

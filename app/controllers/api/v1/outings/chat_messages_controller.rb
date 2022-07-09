@@ -1,21 +1,21 @@
 module Api
   module V1
-    module Neighborhoods
-      class UnauthorizedNeighborhood < StandardError; end
+    module Outings
+      class UnauthorizedOuting < StandardError; end
 
       class ChatMessagesController < Api::V1::BaseController
-        before_action :set_neighborhood, only: [:index, :create, :report, :comments, :presigned_upload]
+        before_action :set_outing, only: [:index, :create, :report, :comments, :presigned_upload]
         before_action :set_chat_message, only: [:report]
         before_action :ensure_is_member, except: [:index, :comments]
 
         after_action :set_last_message_read, only: [:index]
 
-        rescue_from Api::V1::Neighborhoods::UnauthorizedNeighborhood do |exception|
-          render json: { message: 'unauthorized : you are not accepted in this neighborhood' }, status: :unauthorized
+        rescue_from Api::V1::Outings::UnauthorizedOuting do |exception|
+          render json: { message: 'unauthorized : you are not accepted in this outing' }, status: :unauthorized
         end
 
         def index
-          messages = @neighborhood.parent_chat_messages.ordered.page(page).per(per)
+          messages = @outing.parent_chat_messages.ordered.page(page).per(per)
 
           render json: messages, each_serializer: ::V1::ChatMessages::PostSerializer, scope: { current_join_request: join_request }
         end
@@ -24,7 +24,7 @@ module Api
           ChatServices::ChatMessageBuilder.new(
             params: chat_messages_params,
             user: current_user,
-            joinable: @neighborhood,
+            joinable: @outing,
             join_request: join_request
           ).create do |on|
             on.success do |message|
@@ -44,12 +44,12 @@ module Api
 
           if report_params[:category].blank?
             render json: {
-              code: 'CANNOT_REPORT_NEIGHBORHOOD',
+              code: 'CANNOT_REPORT_OUTING',
               message: 'category is required'
             }, status: :bad_request and return
           end
 
-          SlackServices::SignalNeighborhoodChatMessage.new(
+          SlackServices::SignalOutingChatMessage.new(
             chat_message: @chat_message,
             category: report_params[:category],
             message: report_params[:message],
@@ -60,7 +60,7 @@ module Api
         end
 
         def comments
-          post = Neighborhood.find(params[:neighborhood_id]).chat_messages.where(id: params[:id]).first
+          post = Outing.find(params[:outing_id]).chat_messages.where(id: params[:id]).first
           messages = post.children.order(created_at: :desc)
 
           render json: messages, each_serializer: ::V1::ChatMessages::CommentSerializer, scope: { current_join_request: join_request }
@@ -89,13 +89,13 @@ module Api
 
         private
 
-        def set_neighborhood
-          @neighborhood = Neighborhood.find(params[:neighborhood_id])
+        def set_outing
+          @outing = Outing.find(params[:outing_id])
         end
 
         def set_chat_message
-          # we want to force chat_message to belong to Neighborhood
-          @chat_message = ChatMessage.where(id: params[:chat_message_id], messageable_type: :Neighborhood).first
+          # we want to force chat_message to belong to Outing
+          @chat_message = ChatMessage.where(id: params[:chat_message_id], messageable_type: :Entourage).first
         end
 
         def report_params
@@ -103,11 +103,11 @@ module Api
         end
 
         def join_request
-          @join_request ||= JoinRequest.where(joinable: @neighborhood, user: current_user, status: :accepted).first
+          @join_request ||= JoinRequest.where(joinable: @outing, user: current_user, status: :accepted).first
         end
 
         def ensure_is_member
-          raise Api::V1::Neighborhoods::UnauthorizedNeighborhood unless join_request
+          raise Api::V1::Outings::UnauthorizedOuting unless join_request
         end
 
         def set_last_message_read

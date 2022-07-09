@@ -1,34 +1,34 @@
 require 'rails_helper'
 
-describe Api::V1::Neighborhoods::ChatMessagesController do
+describe Api::V1::Outings::ChatMessagesController do
   let(:user) { FactoryBot.create(:pro_user) }
 
-  let(:neighborhood) { create :neighborhood }
+  let(:outing) { create :outing, title: "Foot Paris 17è" }
   let(:result) { JSON.parse(response.body) }
 
   describe 'GET index' do
-    let!(:chat_message_1) { FactoryBot.create(:chat_message, messageable: neighborhood, user: user, image_url: "foo", created_at: 1.hour.ago) }
-    let!(:chat_message_2) { FactoryBot.create(:chat_message, messageable: neighborhood, user: user, parent: chat_message_1) }
+    let!(:chat_message_1) { FactoryBot.create(:chat_message, messageable: outing, user: user, image_url: "foo", created_at: 1.hour.ago) }
+    let!(:chat_message_2) { FactoryBot.create(:chat_message, messageable: outing, user: user, parent: chat_message_1) }
 
     before { Timecop.freeze }
     before { ChatMessage.stub(:url_for) { "http://foo.bar"} }
 
     context "not signed in" do
-      before { get :index, params: { neighborhood_id: neighborhood.to_param } }
+      before { get :index, params: { outing_id: outing.to_param } }
 
       it { expect(response.status).to eq(401) }
     end
 
-    context "signed in but not in neighborhood" do
-      before { get :index, params: { neighborhood_id: neighborhood.to_param, token: user.token } }
+    context "signed in but not in outing" do
+      before { get :index, params: { outing_id: outing.to_param, token: user.token } }
 
       it { expect(response.status).to eq(200) }
     end
 
-    context "signed and in neighborhood" do
-      let!(:join_request) { FactoryBot.create(:join_request, joinable: neighborhood, user: user, status: :accepted) }
+    context "signed and in outing" do
+      let!(:join_request) { FactoryBot.create(:join_request, joinable: outing, user: user, status: :accepted) }
 
-      before { get :index, params: { neighborhood_id: neighborhood.to_param, token: user.token } }
+      before { get :index, params: { outing_id: outing.to_param, token: user.token } }
 
       it { expect(response.status).to eq(200) }
       it { expect(result).to have_key('chat_messages')}
@@ -54,9 +54,9 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
     context "chat_message read and last_message_read" do
       let(:last_message_read) { join_request.reload.last_message_read.to_s }
       let(:time) { Time.now }
-      let!(:join_request) { FactoryBot.create(:join_request, joinable: neighborhood, user: user, status: :accepted, last_message_read: time) }
+      let!(:join_request) { FactoryBot.create(:join_request, joinable: outing, user: user, status: :accepted, last_message_read: time) }
 
-      before { get :index, params: { neighborhood_id: neighborhood.to_param, token: user.token } }
+      before { get :index, params: { outing_id: outing.to_param, token: user.token } }
 
       context 'chat_message has been read' do
         it { expect(result['chat_messages'][0]['read']).to eq(true) }
@@ -83,26 +83,26 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
     before { Timecop.freeze }
 
     context "not signed in" do
-      before { post :create, params: { neighborhood_id: neighborhood.to_param, chat_message: { content: "foobar"} } }
+      before { post :create, params: { outing_id: outing.to_param, chat_message: { content: "foobar"} } }
 
       it { expect(response.status).to eq(401) }
       it { expect(ChatMessage.count).to eq(0) }
     end
 
-    context "signed in but not in neighborhood" do
+    context "signed in but not in outing" do
       before { post :create, params: {
-        neighborhood_id: neighborhood.to_param, chat_message: { content: "foobar", message_type: :text }, token: user.token
+        outing_id: outing.to_param, chat_message: { content: "foobar", message_type: :text }, token: user.token
       } }
 
       it { expect(response.status).to eq(401) }
     end
 
     context "signed in" do
-      let!(:ios_app) { FactoryBot.create(:ios_app, name: 'neighborhood') }
-      let!(:android_app) { FactoryBot.create(:android_app, name: 'neighborhood') }
+      let!(:ios_app) { FactoryBot.create(:ios_app, name: 'outing') }
+      let!(:android_app) { FactoryBot.create(:android_app, name: 'outing') }
 
       context "nested chat_messages" do
-        let!(:join_request) { FactoryBot.create(:join_request, joinable: neighborhood, user: user, status: :accepted) }
+        let!(:join_request) { FactoryBot.create(:join_request, joinable: outing, user: user, status: :accepted) }
         let(:content) { "foobar" }
         let(:image_url) { nil }
         let(:parent_id) { nil }
@@ -137,7 +137,7 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
           ChatMessage.stub(:url_for) { image_url }
 
           post :create, params: {
-            token: user.token, neighborhood_id: neighborhood.to_param, chat_message: chat_message_params
+            token: user.token, outing_id: outing.to_param, chat_message: chat_message_params
           }
         }
 
@@ -150,7 +150,7 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
         end
 
         context "with nested" do
-          let!(:chat_message) { FactoryBot.create(:chat_message, messageable: neighborhood) }
+          let!(:chat_message) { FactoryBot.create(:chat_message, messageable: outing) }
           let(:parent_id) { chat_message.id }
 
           it { expect(response.status).to eq(201) }
@@ -193,43 +193,44 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
 
       describe "send push notif" do
         it "sends notif to everyone accepted except message sender" do
-          join_request = FactoryBot.create(:join_request, joinable: neighborhood, user: user, status: :accepted)
-          join_request2 = FactoryBot.create(:join_request, joinable: neighborhood, status: :accepted)
+          join_request1 = FactoryBot.create(:join_request, joinable: outing, user: outing.user, status: :accepted)
+          join_request2 = FactoryBot.create(:join_request, joinable: outing, user: user, status: :accepted)
+          join_request3 = FactoryBot.create(:join_request, joinable: outing, status: :accepted)
 
-          FactoryBot.create(:join_request, joinable: neighborhood, status: "pending")
+          FactoryBot.create(:join_request, joinable: outing, status: "pending")
 
           expect_any_instance_of(PushNotificationService).to receive(:send_notification).with(
             "John D.",
             'Foot Paris 17è',
             'foobaz',
-            [ neighborhood.user, join_request2.user ],
+            [ join_request1.user, join_request3.user ], # user.token should not receive notification
             {
-              joinable_id: neighborhood.id,
-              joinable_type: "Neighborhood",
-              group_type: 'neighborhood',
+              joinable_id: outing.id,
+              joinable_type: "Entourage",
+              group_type: 'outing',
               type: "NEW_CHAT_MESSAGE"
             }
           )
 
-          post :create, params: { neighborhood_id: neighborhood.to_param, chat_message: { content: "foobaz" }, token: user.token }
+          post :create, params: { outing_id: outing.to_param, chat_message: { content: "foobaz" }, token: user.token }
         end
       end
     end
   end
 
   describe 'POST #report' do
-    let(:neighborhood) { create :neighborhood }
-    let(:chat_message) { create :chat_message, messageable: neighborhood }
-    let!(:join_request) { FactoryBot.create(:join_request, joinable: neighborhood, user: user, status: "accepted") }
+    let(:outing) { create :outing }
+    let(:chat_message) { create :chat_message, messageable: outing }
+    let!(:join_request) { FactoryBot.create(:join_request, joinable: outing, user: user, status: "accepted") }
 
-    ENV['SLACK_SIGNAL_NEIGHBORHOOD_WEBHOOK'] = '{"url":"https://url.to.slack.com","channel":"channel","username":"signal-neighborhood"}'
+    ENV['SLACK_SIGNAL_OUTING_WEBHOOK'] = '{"url":"https://url.to.slack.com","channel":"channel","username":"signal-outing"}'
 
     before { stub_request(:post, "https://url.to.slack.com").to_return(status: 200) }
 
     context "correct messageable" do
       before {
-        expect_any_instance_of(SlackServices::SignalNeighborhoodChatMessage).to receive(:notify)
-        post :report, params: { token: user.token, neighborhood_id: neighborhood.id, chat_message_id: chat_message.id, report: {
+        expect_any_instance_of(SlackServices::SignalOutingChatMessage).to receive(:notify)
+        post :report, params: { token: user.token, outing_id: outing.id, chat_message_id: chat_message.id, report: {
           category: 'foo',
           message: 'bar'
         } }
@@ -239,34 +240,34 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
 
     context "wrong messageable cause no report category" do
       before {
-        expect_any_instance_of(SlackServices::SignalNeighborhoodChatMessage).not_to receive(:notify)
-        post :report, params: { token: user.token, neighborhood_id: neighborhood.id, chat_message_id: chat_message.id, report: {
+        expect_any_instance_of(SlackServices::SignalOutingChatMessage).not_to receive(:notify)
+        post :report, params: { token: user.token, outing_id: outing.id, chat_message_id: chat_message.id, report: {
           message: 'bar'
         } }
       }
       it { expect(response.status).to eq 400 }
     end
 
-    context "wrong messageable cause message does not belong to neighborhood" do
+    context "wrong messageable cause message does not belong to outing" do
       let(:entourage) { create :entourage }
       let(:entourage_chat_message) { create :chat_message, messageable: entourage }
 
       before {
-        expect_any_instance_of(SlackServices::SignalNeighborhoodChatMessage).not_to receive(:notify)
-        post :report, params: { token: user.token, neighborhood_id: neighborhood.id, chat_message_id: entourage_chat_message.id }
+        expect_any_instance_of(SlackServices::SignalOutingChatMessage).not_to receive(:notify)
+        post :report, params: { token: user.token, outing_id: outing.id, chat_message_id: entourage_chat_message.id }
       }
       it { expect(response.status).to eq 400 }
     end
   end
 
   describe 'GET comments' do
-    let!(:chat_message_1) { FactoryBot.create(:chat_message, messageable: neighborhood, user: user) }
-    let!(:chat_message_2) { FactoryBot.create(:chat_message, messageable: neighborhood, user: user, parent: chat_message_1) }
-    let!(:join_request) { FactoryBot.create(:join_request, joinable: neighborhood, user: user, status: :accepted) }
+    let!(:chat_message_1) { FactoryBot.create(:chat_message, messageable: outing, user: user) }
+    let!(:chat_message_2) { FactoryBot.create(:chat_message, messageable: outing, user: user, parent: chat_message_1) }
+    let!(:join_request) { FactoryBot.create(:join_request, joinable: outing, user: user, status: :accepted) }
 
-    let(:request) { get :comments, params: { neighborhood_id: neighborhood.to_param, id: chat_message_1.id, token: user.token } }
+    let(:request) { get :comments, params: { outing_id: outing.to_param, id: chat_message_1.id, token: user.token } }
 
-    context "signed and in neighborhood" do
+    context "signed and in outing" do
       before { request }
 
       it { expect(response.status).to eq(200) }
@@ -291,7 +292,7 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
     end
 
     context "ordered" do
-      let!(:chat_message_3) { FactoryBot.create(:chat_message, messageable: neighborhood, user: user, parent: chat_message_1, created_at: chat_message_2.created_at + day) }
+      let!(:chat_message_3) { FactoryBot.create(:chat_message, messageable: outing, user: user, parent: chat_message_1, created_at: chat_message_2.created_at + day) }
 
       before { request }
 
@@ -314,7 +315,7 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
   end
 
   describe 'POST #presigned_upload' do
-    let(:request) { post :presigned_upload, params: { neighborhood_id: neighborhood.to_param, token: token, content_type: 'image/jpeg' } }
+    let(:request) { post :presigned_upload, params: { outing_id: outing.to_param, token: token, content_type: 'image/jpeg' } }
 
     context "not signed in" do
       let(:token) { nil }
@@ -324,7 +325,7 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
       it { expect(response.status).to eq(401) }
     end
 
-    context "signed in but not in neighborhood" do
+    context "signed in but not in outing" do
       let(:token) { user.token }
 
       before { request }
@@ -332,9 +333,9 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
       it { expect(response.status).to eq(401) }
     end
 
-    context "signed in and in neighborhood" do
+    context "signed in and in outing" do
       let(:token) { user.token }
-      let!(:join_request) { FactoryBot.create(:join_request, joinable: neighborhood, user: user, status: :accepted) }
+      let!(:join_request) { FactoryBot.create(:join_request, joinable: outing, user: user, status: :accepted) }
 
       before { request }
 
