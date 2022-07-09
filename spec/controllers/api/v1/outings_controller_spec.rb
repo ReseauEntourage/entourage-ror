@@ -9,14 +9,19 @@ describe Api::V1::OutingsController do
   subject { JSON.parse(response.body) }
 
   describe 'GET index' do
-    let!(:outing) { FactoryBot.create(:outing, status: "open") }
-    let!(:neighborhood_outing) { FactoryBot.create(:outing, :joined, user: user, status: "open", neighborhoods: [neighborhood_1]) }
+    let(:outing) { FactoryBot.create(:outing, status: "open") }
+    let!(:join_request) { create(:join_request, user: outing.user, joinable: outing, status: :accepted, role: :organizer) }
 
     before { get :index, params: { token: user.token } }
 
     it { expect(response.status).to eq(200) }
     it { expect(subject).to have_key("outings") }
-    it { expect(subject["outings"].count).to eq(2) }
+    it { expect(subject["outings"].count).to eq(1) }
+    it { expect(subject["outings"][0]["members"]).to eq([{
+      "id" => outing.user_id,
+      "display_name" => "John D.",
+      "avatar_url" => nil
+    }]) }
   end
 
   describe 'POST create' do

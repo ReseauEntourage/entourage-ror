@@ -14,7 +14,10 @@ module V1
                :interests,
                :neighborhood_ids,
                :recurrency,
+               :member,
                :members_count
+
+    has_many :members, serializer: ::V1::Users::BasicSerializer
 
     def uuid
       object.uuid_v2
@@ -32,6 +35,12 @@ module V1
         partner: partner.nil? ? nil : V1::PartnerSerializer.new(partner, scope: { minimal: true }, root: false).as_json,
         partner_role_title: object.user.partner_role_title.presence
       }
+    end
+
+    def member
+      return false unless scope && scope[:user]
+
+      object.members.include? scope[:user]
     end
 
     def metadata
