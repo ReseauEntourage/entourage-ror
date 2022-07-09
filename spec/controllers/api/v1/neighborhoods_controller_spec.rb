@@ -337,6 +337,7 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
       it { expect(result['neighborhood']['future_outings']).to eq([{
         'id' => outing.id,
         'uuid' =>  outing.uuid_v2,
+        'status' => 'open',
         'title' => outing.title,
         'description' => outing.description,
         'share_url' => outing.share_url,
