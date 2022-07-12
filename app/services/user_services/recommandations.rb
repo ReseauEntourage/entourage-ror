@@ -41,7 +41,7 @@ module UserServices
     end
 
     def find_resource recommandation
-      # [:id, Resource.last.id]
+      [:id, Resource.last.id]
     end
 
     def find_webview recommandation
