@@ -5,6 +5,8 @@ module Api
       before_action :authorised?, only: [:update, :batch_update]
       before_action :allowed_duplicate?, only: [:duplicate]
 
+      after_action :set_last_message_read, only: [:show]
+
       def index
         render json: Outing.future.page(page).per(per), root: :outings, each_serializer: ::V1::OutingSerializer, scope: {
           user: current_user
@@ -127,6 +129,16 @@ module Api
 
       def outing_recurrency_params
         params.require(:outing).permit(:recurrency)
+      end
+
+      def join_request
+        @join_request ||= JoinRequest.where(joinable: @outing, user: current_user, status: :accepted).first
+      end
+
+      def set_last_message_read
+        return unless join_request
+
+        join_request.update(last_message_read: Time.now)
       end
 
       def page
