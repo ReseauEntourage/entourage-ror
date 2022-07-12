@@ -1,7 +1,7 @@
 module Api
   module V1
     class OutingsController < Api::V1::BaseController
-      before_action :set_outing, only: [:show, :update, :batch_update, :duplicate]
+      before_action :set_outing, only: [:show, :siblings, :update, :batch_update, :duplicate]
       before_action :authorised?, only: [:update, :batch_update]
       before_action :allowed_duplicate?, only: [:duplicate]
 
@@ -76,7 +76,7 @@ module Api
       end
 
       def siblings
-        render json: Outing.siblings.page(page).per(per), root: :outings, each_serializer: ::V1::OutingSerializer, scope: {
+        render json: @outing.siblings.page(page).per(per), root: :outings, each_serializer: ::V1::OutingSerializer, scope: {
           user: current_user
         }
       end
