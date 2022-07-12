@@ -2,6 +2,9 @@ class Recommandation < ApplicationRecord
   include WithAreas
   include WithUserGoals
 
+  INSTANCES = [:user, :profile, :neighborhood, :outing, :poi, :resource, :webview, :conversation, :contribution, :ask_for_help]
+  ACTIONS = [:index, :show, :new]
+
   validates_presence_of [:name, :instance, :action]
 
   alias_attribute :title, :name

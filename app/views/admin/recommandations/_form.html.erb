@@ -28,14 +28,14 @@
   <div class="form-group">
     <%= f.label :instance %>
     <div class="controls">
-      <%= f.text_field :instance, class: "form-control", required: true %>
+      <%= f.select :instance, options_for_select(instances_options_for_select, @recommandation.instance), class: "form-control", required: true %>
     </div>
   </div>
 
   <div class="form-group">
     <%= f.label :action %>
     <div class="controls">
-      <%= f.text_field :action, class: "form-control" %>
+      <%= f.select :action, options_for_select(actions_options_for_select, @recommandation.action), class: "form-control", required: true %>
     </div>
   </div>
 
@@ -126,4 +126,7 @@
   $(document).on('turbolinks:load', function() {
     $('#recommandation_status').bootstrapToggle()
   })
+
+  $('select#recommandation_action').select2({ width: '100%' });
+  $('select#recommandation_instance').select2({ width: '100%' });
 </script>
