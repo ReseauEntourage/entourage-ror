@@ -1,13 +1,10 @@
 module SlackServices
-  class SignalOutingChatMessage < Notifier
-    def initialize chat_message:, reporting_user:, category:, message:
+  class SignalOuting < Notifier
+    def initialize outing:, reporting_user:, category:, message:
+      @outing = outing
       @reporting_user = find_user(reporting_user)
-
-      @chat_message = chat_message
-      @outing = chat_message.messageable
       @category = category
       @message = message
-      @content = chat_message.content
     end
 
     def env
@@ -16,16 +13,13 @@ module SlackServices
 
     def payload
       {
-        text: "<@#{slack_moderator_id(@outing)}> ou team modération (département : #{departement(@outing) || 'n/a'}) pouvez-vous vérifier le message de ce événement ?",
+        text: "<@#{slack_moderator_id(@outing)}> ou team modération (département : #{departement(@outing) || 'n/a'}) pouvez-vous vérifier cet événement ?",
         attachments: [
           {
             text: "Événement : #{@outing.title} #{link_to_group(@outing)}"
           },
           {
             text: "Signalé par : #{@reporting_user.full_name} #{link_to_user(@reporting_user.id)}"
-          },
-          {
-            text: "Message signalé : #{@content}"
           },
           {
             text: "Catégorie #{@category}, message : #{@message}"
