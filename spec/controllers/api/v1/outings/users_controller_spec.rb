@@ -141,6 +141,16 @@ describe Api::V1::Outings::UsersController do
         })}
       end
 
+      context "can not quit creator" do
+        # @see JoinRequest: can not remove neighborhood creator
+        let(:outing) { FactoryBot.create(:outing, title: "foobar1", user: user) }
+
+        before { delete :destroy, params: { outing_id: outing.to_param, id: user.id, token: user.token } }
+
+        it { expect(response.status).to eq(400) }
+        it { expect(result).to have_key('message') }
+      end
+
       context "can not quit another member" do
         let(:member) { FactoryBot.create(:public_user) }
         let!(:my_join_request) { create(:join_request, user: user, joinable: outing, status: :accepted) }

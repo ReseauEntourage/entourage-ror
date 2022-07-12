@@ -22,8 +22,8 @@ class JoinRequest < ApplicationRecord
   validates_uniqueness_of :joinable_id, {scope: [:joinable_type, :user_id], message: "a déjà été ajouté"}
   validates_inclusion_of :status, in: ["pending", "accepted", "rejected", "cancelled"]
   validates :status, inclusion: { in: ['accepted'] }, if: Proc.new { |join_request|
-    # can not remove neighborhood creator
-    join_request.neighborhood? && join_request.joinable.user == join_request.user
+    # can not remove outing or neighborhood creator
+    (join_request.outing? || join_request.neighborhood?) && join_request.joinable.user == join_request.user
   }
   validates :role, presence: true, inclusion: { in: ['member', 'creator'] }, if: :neighborhood?
   validates :role, presence: true,
@@ -41,6 +41,10 @@ class JoinRequest < ApplicationRecord
 
   def entourage?
     joinable_type == 'Entourage'
+  end
+
+  def outing?
+    entourage? && joinable.outing?
   end
 
   def neighborhood?
