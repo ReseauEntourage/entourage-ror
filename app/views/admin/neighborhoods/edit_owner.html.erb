@@ -1,0 +1,37 @@
+<div class="container">
+  <ol class="breadcrumb">
+    <li><%= link_to "Liste des groupes de voisinage", admin_neighborhoods_path %></li>
+    <li><%= link_to @neighborhood.title, edit_admin_neighborhood_path(@neighborhood) %></li>
+    <li class="active">Changer le créateur</li>
+  </ol>
+
+  <h2>Changer le créateur</h2>
+
+  <div class="alert alert-info" role="alert">
+    <p>
+      Si vous souhaitez changer le créateur de l'action, vous pouvez choisir de laisser automatiquement un message dans la conversation afin d'expliquer aux utilisateurs le changement.
+    </p>
+    <p>Si vous laissez le message vide, aucun message ne sera publié</p>
+  </div>
+
+  <%= form_for(@neighborhood, url: update_owner_admin_neighborhood_path(@neighborhood), :method => :post, html: { role: "form" }) do |f| %>
+    <%= render partial: "layouts/errors", locals: { obj: @neighborhood } %>
+
+    <div class="form-group">
+      <%= f.label :change_ownership_message, "Message à publier dans la conversation", class: "control-label" %>
+      <%= f.text_area :change_ownership_message, class: "form-control" %>
+    </div>
+
+    <div class="form-group">
+      <%= f.label :user_id, "Créateur actuel", class: "control-label" %>
+      <input class="form-control" required="required" type="text" value="<%= @neighborhood.user.full_name %>" disabled="disabled">
+
+      <%= f.label :user_id, "Créateur à associer", class: "control-label" %>
+      <%= f.select :user_id, options_for_select(users_for_select(@neighborhood.members), nil), { include_blank: false }, class: "form-control" %>
+    </div>
+
+    <br>
+    <%= f.submit "Enregistrer", class: "btn btn-success" %>
+    <%= link_to "Annuler", admin_neighborhood_path(@neighborhood), class: "btn btn-default" %>
+  <% end %>
+</div>

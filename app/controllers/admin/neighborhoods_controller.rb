@@ -2,7 +2,7 @@ module Admin
   class NeighborhoodsController < Admin::BaseController
     layout 'admin_large'
 
-    before_action :set_neighborhood, only: [:edit, :update, :edit_image, :update_image, :show_members]
+    before_action :set_neighborhood, only: [:edit, :update, :edit_image, :update_image, :show_members, :edit_owner, :update_owner]
 
     def index
       @params = params.permit([:area, :search]).to_h
@@ -45,6 +45,22 @@ module Admin
     def show_members
     end
 
+    def edit_owner
+    end
+
+    def update_owner
+      user_id = neighborhood_params[:user_id]
+      message = neighborhood_params[:change_ownership_message]
+
+      NeighborhoodServices::ChangeOwner.new(@neighborhood).to(user_id, message: message) do |success, error_message|
+        if success
+          redirect_to [:admin, @neighborhood], notice: "Mise à jour réussie"
+        else
+          redirect_to [:edit_owner, :admin, @neighborhood], alert: error_message
+        end
+      end
+    end
+
     private
 
     def set_neighborhood
@@ -52,7 +68,7 @@ module Admin
     end
 
     def neighborhood_params
-      params.require(:neighborhood).permit(:status, :name, :description, :interest_list, :neighborhood_image_id, :google_place_id, interests: [])
+      params.require(:neighborhood).permit(:status, :name, :description, :interest_list, :neighborhood_image_id, :google_place_id, :user_id, :change_ownership_message, interests: [])
     end
   end
 end
