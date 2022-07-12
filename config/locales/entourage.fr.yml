@@ -186,6 +186,30 @@ fr:
         interests: Centres d'intérêts
         image_url: Image
         status: Statut
+      recommandation:
+        name: Nom
+        instance: Objet
+        action: Action
+        url: Url
+        areas: Zones
+        user_goals: Profils
+        image_url: Image
+        status: Statut
+        actions:
+          index: Liste
+          show: Afficher
+          new: Créer
+        instances:
+          user: Utilisateur
+          profile: Profil
+          neighborhood: Groupe de voisinage
+          outing: Événement
+          poi: POI
+          resource: Ressource
+          webview: Webview
+          conversation: Conversation
+          contribution: Contribution
+          ask_for_help: Demande
       resource:
         name: Nom
         category: Catégorie
