@@ -14,12 +14,7 @@ class Neighborhood < ApplicationRecord
   alias_attribute :author, :user
 
   has_many :join_requests, as: :joinable, dependent: :destroy
-  has_many :members, -> {
-    where("join_requests.status = 'accepted'")
-    # .order("neighborhoods.user_id = join_requests.user_id")
-    # .order("users.first_name")
-  }, through: :join_requests, source: :user
-
+  has_many :members, -> { where("join_requests.status = 'accepted'") }, through: :join_requests, source: :user
   has_many :neighborhoods_entourages
   has_many :outings, -> { where(group_type: :outing) }, through: :neighborhoods_entourages, source: :entourage, class_name: "Outing"
 
