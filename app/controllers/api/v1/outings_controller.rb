@@ -93,6 +93,24 @@ module Api
         end
       end
 
+      def report
+        if report_params[:category].blank?
+          render json: {
+            code: 'CANNOT_REPORT_OUTING',
+            message: 'category is required'
+          }, status: :bad_request and return
+        end
+
+        SlackServices::SignalOuting.new(
+          outing: @outing,
+          reporting_user: current_user,
+          category: report_params[:category],
+          message: report_params[:message]
+        ).notify
+
+        head :created
+      end
+
       private
 
       def set_outing
@@ -129,6 +147,10 @@ module Api
 
       def outing_recurrency_params
         params.require(:outing).permit(:recurrency)
+      end
+
+      def report_params
+        params.require(:report).permit(:category, :message)
       end
 
       def join_request
