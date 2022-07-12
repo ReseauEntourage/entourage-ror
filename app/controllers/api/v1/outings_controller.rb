@@ -100,7 +100,7 @@ module Api
       end
 
       def outing_params
-        params.require(:outing).permit(:title, :description, :event_url, :latitude, :longitude, :other_interest, :online, :recurrency, :entourage_image_id, { metadata: [
+        params.require(:outing).permit(:status, :title, :description, :event_url, :latitude, :longitude, :other_interest, :online, :recurrency, :entourage_image_id, { metadata: [
           :starts_at,
           :ends_at,
           :place_name,
@@ -117,7 +117,7 @@ module Api
       end
 
       def outing_no_date_params
-        params.require(:outing).permit(:title, :description, :event_url, :latitude, :longitude, :other_interest, :online, :recurrency, :entourage_image_id, { metadata: [
+        params.require(:outing).permit(:status, :title, :description, :event_url, :latitude, :longitude, :other_interest, :online, :recurrency, :entourage_image_id, { metadata: [
           :place_name,
           :street_address,
           :google_place_id,
