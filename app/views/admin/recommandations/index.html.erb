@@ -11,12 +11,16 @@
         <table class="table">
           <th>Id</th>
           <th>Name</th>
-          <th>Statut</th>
+          <th>Objet</th>
           <th>Action</th>
+          <th>Statut</th>
+          <th></th>
           <% @recommandations.each do |recommandation| %>
             <tr>
               <td><%= recommandation.id %></td>
               <td><%= link_to recommandation.name, edit_admin_recommandation_path(recommandation) %></td>
+              <td><%= t ("activerecord.attributes.recommandation.instances.#{recommandation.instance}") %></td>
+              <td><%= t ("activerecord.attributes.recommandation.actions.#{recommandation.action}") %></td>
               <td><%= status_label recommandation %></td>
               <td>
                 <%= link_to "Modifier", edit_admin_recommandation_path(recommandation), class: "btn btn-primary" %>
