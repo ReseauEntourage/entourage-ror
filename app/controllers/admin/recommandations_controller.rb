@@ -5,7 +5,7 @@ module Admin
     before_action :set_recommandation, only: [:edit, :update, :destroy, :edit_image, :update_image]
 
     def index
-      @recommandations = Recommandation.unscoped.page(page).per(per)
+      @recommandations = Recommandation.unscoped.order(:instance, :action).page(page).per(per)
     end
 
     def new
