@@ -6,7 +6,7 @@ module Api
       before_action :allowed_duplicate?, only: [:duplicate]
 
       def index
-        render json: Outing.future.page(page).per(per), root: :outings, each_serializer: ::V1::OutingHomeSerializer, scope: {
+        render json: Outing.future.page(page).per(per), root: :outings, each_serializer: ::V1::OutingSerializer, scope: {
           user: current_user
         }
       end
@@ -72,7 +72,7 @@ module Api
       end
 
       def show
-        render json: @outing, serializer: ::V1::OutingSerializer, scope: { user: current_user }
+        render json: @outing, serializer: ::V1::OutingHomeSerializer, scope: { user: current_user }
       end
 
       def siblings
