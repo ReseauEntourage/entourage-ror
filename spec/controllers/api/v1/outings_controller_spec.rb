@@ -169,6 +169,28 @@ describe Api::V1::OutingsController do
         it { expect(subject['outing']['metadata']['place_limit']).to eq('100') }
       end
 
+      context "close" do
+        let(:outing) { FactoryBot.create(:outing, :joined, user: user, status: :open) }
+
+        before { patch :update, params: { id: outing.to_param, outing: { status: :closed }, token: user.token } }
+
+        it { expect(response.status).to eq(200) }
+        it { expect(subject).to have_key('outing') }
+        it { expect(subject['outing']['status']).to eq('closed') }
+        it { expect(outing.reload.status).to eq('closed') }
+      end
+
+      context "cancel" do
+        let(:outing) { FactoryBot.create(:outing, :joined, user: user, status: :open) }
+
+        before { patch :update, params: { id: outing.to_param, outing: { status: :cancelled }, token: user.token } }
+
+        it { expect(response.status).to eq(200) }
+        it { expect(subject).to have_key('outing') }
+        it { expect(subject['outing']['status']).to eq('cancelled') }
+        it { expect(outing.reload.status).to eq('cancelled') }
+      end
+
       context "cancel recurrency" do
         let(:outing) { FactoryBot.create(:outing, :with_recurrence, user: user, status: :open) }
         let(:subject) { OutingRecurrence.unscoped.find_by_identifier(outing.recurrency_identifier)}
