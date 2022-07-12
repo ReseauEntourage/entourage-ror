@@ -17,7 +17,6 @@ describe Api::V1::OutingsController do
     it { expect(response.status).to eq(200) }
     it { expect(subject).to have_key("outings") }
     it { expect(subject["outings"].count).to eq(1) }
-    it { expect(subject["outings"][0]).to have_key("posts") }
     it { expect(subject["outings"][0]).to have_key("members") }
     it { expect(subject["outings"][0]["members"]).to eq([{
       "id" => outing.user_id,
@@ -352,6 +351,7 @@ describe Api::V1::OutingsController do
 
     it { expect(response.status).to eq 200 }
     it { expect(subject).to have_key("outing") }
+    it { expect(subject["outing"]).to have_key("posts") }
   end
 
   describe 'POST duplicate' do
