@@ -17,6 +17,7 @@ describe Api::V1::OutingsController do
     it { expect(response.status).to eq(200) }
     it { expect(subject).to have_key("outings") }
     it { expect(subject["outings"].count).to eq(1) }
+    it { expect(subject["outings"][0]).to have_key("members") }
     it { expect(subject["outings"][0]["members"]).to eq([{
       "id" => outing.user_id,
       "display_name" => "John D.",
@@ -166,6 +167,28 @@ describe Api::V1::OutingsController do
         it { expect(subject).to have_key('outing') }
         it { expect(subject['outing']['title']).to eq('New title') }
         it { expect(subject['outing']['metadata']['place_limit']).to eq('100') }
+      end
+
+      context "close" do
+        let(:outing) { FactoryBot.create(:outing, :joined, user: user, status: :open) }
+
+        before { patch :update, params: { id: outing.to_param, outing: { status: :closed }, token: user.token } }
+
+        it { expect(response.status).to eq(200) }
+        it { expect(subject).to have_key('outing') }
+        it { expect(subject['outing']['status']).to eq('closed') }
+        it { expect(outing.reload.status).to eq('closed') }
+      end
+
+      context "cancel" do
+        let(:outing) { FactoryBot.create(:outing, :joined, user: user, status: :open) }
+
+        before { patch :update, params: { id: outing.to_param, outing: { status: :cancelled }, token: user.token } }
+
+        it { expect(response.status).to eq(200) }
+        it { expect(subject).to have_key('outing') }
+        it { expect(subject['outing']['status']).to eq('cancelled') }
+        it { expect(outing.reload.status).to eq('cancelled') }
       end
 
       context "cancel recurrency" do
@@ -350,6 +373,7 @@ describe Api::V1::OutingsController do
 
     it { expect(response.status).to eq 200 }
     it { expect(subject).to have_key("outing") }
+    it { expect(subject["outing"]).to have_key("posts") }
   end
 
   describe 'POST duplicate' do
@@ -391,6 +415,30 @@ describe Api::V1::OutingsController do
 
       it { expect(subject['outing']['id']).to eq(Outing.last.id) }
       it { expect(Outing.find(subject['outing']['id']).member_ids).to match_array([user.id]) }
+    end
+  end
+
+  describe 'POST #report' do
+    let(:outing) { create :outing }
+
+    ENV['SLACK_SIGNAL_OUTING_WEBHOOK'] = '{"url":"https://url.to.slack.com","channel":"channel","username":"signal-outing"}'
+
+    before { stub_request(:post, "https://url.to.slack.com").to_return(status: 200) }
+
+    context "valid params" do
+      before {
+        expect_any_instance_of(SlackServices::SignalOuting).to receive(:notify)
+        post 'report', params: { token: user.token, id: outing.id, report: { category: 'foo', message: 'bar' } }
+      }
+      it { expect(response.status).to eq 201 }
+    end
+
+    context "missing category" do
+      before {
+        expect_any_instance_of(SlackServices::SignalOuting).not_to receive(:notify)
+        post 'report', params: { token: user.token, id: outing.id, report: { category: '', message: 'bar' } }
+      }
+      it { expect(response.status).to eq 400 }
     end
   end
 end

@@ -1,9 +1,11 @@
 module Api
   module V1
     class OutingsController < Api::V1::BaseController
-      before_action :set_outing, only: [:show, :update, :batch_update, :duplicate]
+      before_action :set_outing, only: [:show, :siblings, :update, :batch_update, :duplicate]
       before_action :authorised?, only: [:update, :batch_update]
       before_action :allowed_duplicate?, only: [:duplicate]
+
+      after_action :set_last_message_read, only: [:show]
 
       def index
         render json: Outing.future.page(page).per(per), root: :outings, each_serializer: ::V1::OutingSerializer, scope: {
@@ -72,11 +74,11 @@ module Api
       end
 
       def show
-        render json: @outing, serializer: ::V1::OutingSerializer, scope: { user: current_user }
+        render json: @outing, serializer: ::V1::OutingHomeSerializer, scope: { user: current_user }
       end
 
       def siblings
-        render json: Outing.siblings.page(page).per(per), root: :outings, each_serializer: ::V1::OutingSerializer, scope: {
+        render json: @outing.siblings.page(page).per(per), root: :outings, each_serializer: ::V1::OutingSerializer, scope: {
           user: current_user
         }
       end
@@ -91,6 +93,24 @@ module Api
         end
       end
 
+      def report
+        if report_params[:category].blank?
+          render json: {
+            code: 'CANNOT_REPORT_OUTING',
+            message: 'category is required'
+          }, status: :bad_request and return
+        end
+
+        SlackServices::SignalOuting.new(
+          outing: @outing,
+          reporting_user: current_user,
+          category: report_params[:category],
+          message: report_params[:message]
+        ).notify
+
+        head :created
+      end
+
       private
 
       def set_outing
@@ -98,7 +118,7 @@ module Api
       end
 
       def outing_params
-        params.require(:outing).permit(:title, :description, :event_url, :latitude, :longitude, :other_interest, :online, :recurrency, :entourage_image_id, { metadata: [
+        params.require(:outing).permit(:status, :title, :description, :event_url, :latitude, :longitude, :other_interest, :online, :recurrency, :entourage_image_id, { metadata: [
           :starts_at,
           :ends_at,
           :place_name,
@@ -115,7 +135,7 @@ module Api
       end
 
       def outing_no_date_params
-        params.require(:outing).permit(:title, :description, :event_url, :latitude, :longitude, :other_interest, :online, :recurrency, :entourage_image_id, { metadata: [
+        params.require(:outing).permit(:status, :title, :description, :event_url, :latitude, :longitude, :other_interest, :online, :recurrency, :entourage_image_id, { metadata: [
           :place_name,
           :street_address,
           :google_place_id,
@@ -127,6 +147,20 @@ module Api
 
       def outing_recurrency_params
         params.require(:outing).permit(:recurrency)
+      end
+
+      def report_params
+        params.require(:report).permit(:category, :message)
+      end
+
+      def join_request
+        @join_request ||= JoinRequest.where(joinable: @outing, user: current_user, status: :accepted).first
+      end
+
+      def set_last_message_read
+        return unless join_request
+
+        join_request.update(last_message_read: Time.now)
       end
 
       def page

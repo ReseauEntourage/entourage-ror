@@ -410,6 +410,7 @@ Rails.application.routes.draw do
           put :batch_update
           get :siblings
           post :duplicate
+          post :report
         end
 
         resources :chat_messages, :controller => 'outings/chat_messages', only: [:index, :create] do
