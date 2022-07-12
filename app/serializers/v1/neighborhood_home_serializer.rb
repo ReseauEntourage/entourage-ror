@@ -45,7 +45,7 @@ module V1
 
     def posts
       object.parent_chat_messages.ordered.limit(25).map do |chat_message|
-        V1::ChatMessageSerializer.new(chat_message, scope: { current_join_request: current_join_request }).as_json
+        V1::ChatMessageHomeSerializer.new(chat_message, scope: { current_join_request: current_join_request }).as_json
       end
     end
 
