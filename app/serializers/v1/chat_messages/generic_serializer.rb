@@ -9,7 +9,8 @@ module V1
                  :has_comments,
                  :comments_count,
                  :image_url,
-                 :read
+                 :read,
+                 :message_type
 
       def user
         {
