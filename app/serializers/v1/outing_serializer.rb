@@ -1,5 +1,7 @@
 module V1
   class OutingSerializer < ActiveModel::Serializer
+    include V1::Entourages::Location
+
     attributes :id,
                :uuid,
                :status,
@@ -15,9 +17,12 @@ module V1
                :neighborhood_ids,
                :recurrency,
                :member,
-               :members_count
+               :members_count,
+               :created_at,
+               :updated_at
 
     has_many :members, serializer: ::V1::Users::BasicSerializer
+    has_one :location
 
     def uuid
       object.uuid_v2
