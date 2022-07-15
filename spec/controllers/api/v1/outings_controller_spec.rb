@@ -9,20 +9,104 @@ describe Api::V1::OutingsController do
   subject { JSON.parse(response.body) }
 
   describe 'GET index' do
-    let(:outing) { FactoryBot.create(:outing, status: "open") }
+    let(:request) { get :index, params: { token: user.token } }
+
+    let(:latitude) { 48.85 }
+    let(:longitude) { 2.27 }
+
+    let(:outing) { FactoryBot.create(:outing, latitude: latitude, longitude: longitude) }
     let!(:join_request) { create(:join_request, user: outing.user, joinable: outing, status: :accepted, role: :organizer) }
 
-    before { get :index, params: { token: user.token } }
+    context "some user is a member" do
 
-    it { expect(response.status).to eq(200) }
-    it { expect(subject).to have_key("outings") }
-    it { expect(subject["outings"].count).to eq(1) }
-    it { expect(subject["outings"][0]).to have_key("members") }
-    it { expect(subject["outings"][0]["members"]).to eq([{
-      "id" => outing.user_id,
-      "display_name" => "John D.",
-      "avatar_url" => nil
-    }]) }
+      before { request }
+
+      it { expect(response.status).to eq(200) }
+      it { expect(subject).to have_key("outings") }
+      it { expect(subject["outings"].count).to eq(1) }
+      it { expect(subject["outings"][0]).to have_key("members") }
+      it { expect(subject["outings"][0]["members"]).to eq([{
+        "id" => outing.user_id,
+        "display_name" => "John D.",
+        "avatar_url" => nil
+      }]) }
+    end
+
+    context "user being a member" do
+      let!(:join_request) { create(:join_request, user: user, joinable: outing, status: :accepted, role: :organizer) }
+
+      before { request }
+
+      it { expect(response.status).to eq(200) }
+      it { expect(subject["outings"].count).to eq(0) }
+    end
+
+    context "user being a member but not accepted" do
+      let!(:join_request) { create(:join_request, user: user, joinable: outing, status: :pending, role: :organizer) }
+
+      before { request }
+
+      it { expect(response.status).to eq(200) }
+      it { expect(subject["outings"].count).to eq(1) }
+    end
+
+    context "user not being a member" do
+      before { request }
+
+      it { expect(response.status).to eq(200) }
+      it { expect(subject["outings"].count).to eq(1) }
+    end
+
+    context "params coordinates matches" do
+      let(:request) { get :index, params: { token: user.token, latitude: 48.84, longitude: 2.28, travel_distance: 10 } }
+
+      before { request }
+
+      it { expect(response.status).to eq(200) }
+      it { expect(subject["outings"].count).to eq(1) }
+    end
+
+    context "params coordinates do not matches" do
+      let(:request) { get :index, params: { token: user.token, latitude: 47, longitude: 2, travel_distance: 1 } }
+
+      before { request }
+
+      it { expect(response.status).to eq(200) }
+      it { expect(subject["outings"].count).to eq(0) }
+    end
+
+    context "user coordinates matches" do
+      before { user.stub(:latitude) { 48.84 }}
+      before { user.stub(:longitude) { 2.28 }}
+
+      before { request }
+
+      it { expect(response.status).to eq(200) }
+      it { expect(subject["outings"].count).to eq(1) }
+    end
+
+    context "user coordinates do not matches" do
+      before { User.any_instance.stub(:latitude) { 40 } }
+      before { User.any_instance.stub(:longitude) { 2 } }
+
+      before { request }
+
+      it { expect(response.status).to eq(200) }
+      it { expect(subject["outings"].count).to eq(0) }
+    end
+
+    context "ordered by starts_at desc" do
+      let(:outing) { FactoryBot.create(:outing, metadata: { starts_at: 1.day.from_now }) }
+      let(:outing_1) { FactoryBot.create(:outing, metadata: { starts_at: 1.hour.from_now }) }
+      let!(:join_request_1) { create(:join_request, user: outing_1.user, joinable: outing_1, status: :accepted, role: :organizer) }
+
+      before { request }
+
+      it { expect(response.status).to eq(200) }
+      it { expect(subject["outings"].count).to eq(2) }
+      it { expect(subject["outings"][0]["id"]).to eq(outing_1.id) }
+      it { expect(subject["outings"][1]["id"]).to eq(outing.id) }
+    end
   end
 
   describe 'POST create' do
