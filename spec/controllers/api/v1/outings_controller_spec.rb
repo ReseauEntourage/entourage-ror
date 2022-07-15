@@ -14,10 +14,10 @@ describe Api::V1::OutingsController do
     let(:latitude) { 48.85 }
     let(:longitude) { 2.27 }
 
-    let!(:outing) { FactoryBot.create(:outing, latitude: latitude, longitude: longitude) }
+    let(:outing) { FactoryBot.create(:outing, latitude: latitude, longitude: longitude) }
+    let!(:join_request) { create(:join_request, user: outing.user, joinable: outing, status: :accepted, role: :organizer) }
 
-    context "user is a member" do
-      let!(:join_request) { create(:join_request, user: outing.user, joinable: outing, status: :accepted, role: :organizer) }
+    context "some user is a member" do
 
       before { request }
 
@@ -32,12 +32,29 @@ describe Api::V1::OutingsController do
       }]) }
     end
 
-    context "user not being a member is not required" do
+    context "user being a member" do
+      let!(:join_request) { create(:join_request, user: user, joinable: outing, status: :accepted, role: :organizer) }
+
+      before { request }
+
+      it { expect(response.status).to eq(200) }
+      it { expect(subject["outings"].count).to eq(0) }
+    end
+
+    context "user being a member but not accepted" do
+      let!(:join_request) { create(:join_request, user: user, joinable: outing, status: :pending, role: :organizer) }
+
       before { request }
 
       it { expect(response.status).to eq(200) }
       it { expect(subject["outings"].count).to eq(1) }
-      it { expect(subject["outings"][0]["members"]).to eq([]) }
+    end
+
+    context "user not being a member" do
+      before { request }
+
+      it { expect(response.status).to eq(200) }
+      it { expect(subject["outings"].count).to eq(1) }
     end
 
     context "params coordinates matches" do
@@ -47,7 +64,6 @@ describe Api::V1::OutingsController do
 
       it { expect(response.status).to eq(200) }
       it { expect(subject["outings"].count).to eq(1) }
-      it { expect(subject["outings"][0]["members"]).to eq([]) }
     end
 
     context "params coordinates do not matches" do
@@ -67,7 +83,6 @@ describe Api::V1::OutingsController do
 
       it { expect(response.status).to eq(200) }
       it { expect(subject["outings"].count).to eq(1) }
-      it { expect(subject["outings"][0]["members"]).to eq([]) }
     end
 
     context "user coordinates do not matches" do
@@ -81,8 +96,9 @@ describe Api::V1::OutingsController do
     end
 
     context "ordered by starts_at desc" do
-      let!(:outing) { FactoryBot.create(:outing, metadata: { starts_at: 1.day.from_now }) }
-      let!(:outing_1) { FactoryBot.create(:outing, metadata: { starts_at: 1.hour.from_now }) }
+      let(:outing) { FactoryBot.create(:outing, metadata: { starts_at: 1.day.from_now }) }
+      let(:outing_1) { FactoryBot.create(:outing, metadata: { starts_at: 1.hour.from_now }) }
+      let!(:join_request_1) { create(:join_request, user: outing_1.user, joinable: outing_1, status: :accepted, role: :organizer) }
 
       before { request }
 
