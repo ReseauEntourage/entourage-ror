@@ -28,7 +28,7 @@ module OutingsServices
       end
 
       # order by starts_at is already in default_scope
-      outings
+      outings.group(:id)
     end
 
     private

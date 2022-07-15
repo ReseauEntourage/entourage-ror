@@ -18,7 +18,6 @@ describe Api::V1::OutingsController do
     let!(:join_request) { create(:join_request, user: outing.user, joinable: outing, status: :accepted, role: :organizer) }
 
     context "some user is a member" do
-
       before { request }
 
       it { expect(response.status).to eq(200) }
@@ -30,6 +29,19 @@ describe Api::V1::OutingsController do
         "display_name" => "John D.",
         "avatar_url" => nil
       }]) }
+    end
+
+    context "some users are members" do
+      let!(:join_request_1) { create(:join_request, user: FactoryBot.create(:public_user), joinable: outing, status: :accepted, role: :organizer) }
+      let!(:join_request_2) { create(:join_request, user: FactoryBot.create(:public_user), joinable: outing, status: :accepted, role: :organizer) }
+
+      before { request }
+
+      it { expect(response.status).to eq(200) }
+      it { expect(subject).to have_key("outings") }
+      it { expect(subject["outings"].count).to eq(1) }
+      it { expect(subject["outings"][0]).to have_key("members") }
+      it { expect(subject["outings"][0]["members"].count).to eq(3) }
     end
 
     context "user being a member" do
