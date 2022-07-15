@@ -15,6 +15,7 @@ module V1
                :metadata,
                :interests,
                :neighborhood_ids,
+               :neighborhoods,
                :recurrency,
                :member,
                :members_count,
@@ -55,6 +56,10 @@ module V1
     def interests
       # we use "Tag.interest_list &" to force ordering
       Tag.interest_list & object.interest_list
+    end
+
+    def neighborhoods
+      object.neighborhoods.pluck(:id, :name)
     end
 
     def recurrency
