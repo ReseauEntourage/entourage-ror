@@ -25,8 +25,9 @@ describe Api::V1::Neighborhoods::OutingsController do
       it { expect(subject).to have_key("outings") }
       it { expect(subject["outings"].count).to eq(1) }
       it { expect(subject["outings"][0]["id"]).to eq(outing.id) }
-      it { expect(subject["outings"][0]["neighborhood_ids"]).to eq([neighborhood.id]) }
-      it { expect(subject["outings"][0]["neighborhoods"]).to match_array([[neighborhood.id, neighborhood.name]]) }
+      it { expect(subject["outings"][0]["neighborhoods"]).to match_array([
+        { "id" => neighborhood.id, "name" => neighborhood.name }
+      ]) }
     end
   end
 

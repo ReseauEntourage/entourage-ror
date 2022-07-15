@@ -14,7 +14,6 @@ module V1
                :online,
                :metadata,
                :interests,
-               :neighborhood_ids,
                :neighborhoods,
                :recurrency,
                :member,
@@ -59,7 +58,12 @@ module V1
     end
 
     def neighborhoods
-      object.neighborhoods.pluck(:id, :name)
+      object.neighborhoods.pluck(:id, :name).map do |id, name|
+        {
+          id: id,
+          name: name,
+        }
+      end
     end
 
     def recurrency
