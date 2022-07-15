@@ -8,7 +8,7 @@ module Api
       after_action :set_last_message_read, only: [:show]
 
       def index
-        render json: Outing.future.page(page).per(per), root: :outings, each_serializer: ::V1::OutingSerializer, scope: {
+        render json: OutingsServices::Finder.new(current_user, index_params).find_all.page(page).per(per), root: :outings, each_serializer: ::V1::OutingSerializer, scope: {
           user: current_user
         }
       end
@@ -115,6 +115,10 @@ module Api
 
       def set_outing
         @outing = Outing.find(params[:id])
+      end
+
+      def index_params
+        params.permit(:latitude, :longitude, :travel_distance, :page, :per)
       end
 
       def outing_params
