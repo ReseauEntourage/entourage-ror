@@ -44,6 +44,7 @@ class User < ApplicationRecord
   has_many :entourage_participations, through: :join_requests, source: :joinable, source_type: "Entourage"
   has_many :neighborhood_participations, through: :join_requests, source: :joinable, source_type: "Neighborhood"
   has_many :tour_participations, through: :join_requests, source: :joinable, source_type: "Tour"
+  has_many :outing_memberships, -> { where("join_requests.status = 'accepted'") }, through: :join_requests, source: :joinable, source_type: "Entourage"
   belongs_to :organization, optional: true
   has_and_belongs_to_many :coordinated_organizations, -> { distinct }, class_name: "Organization", join_table: "coordination", optional: true
   has_many :chat_messages
