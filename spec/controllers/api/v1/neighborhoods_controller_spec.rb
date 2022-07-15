@@ -367,6 +367,7 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
         },
         "interests" => ["sport", "other"],
         "neighborhood_ids" => [neighborhood.id],
+        "neighborhoods" => [[neighborhood.id, neighborhood.name]],
         "recurrency" => nil,
         "members_count" => 1,
         "member" => false,
