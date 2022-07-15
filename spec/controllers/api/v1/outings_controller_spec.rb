@@ -53,6 +53,17 @@ describe Api::V1::OutingsController do
       it { expect(subject["outings"].count).to eq(0) }
     end
 
+    context "user being a member along with some users" do
+      let!(:join_request) { create(:join_request, user: user, joinable: outing, status: :accepted, role: :organizer) }
+      let!(:join_request_1) { create(:join_request, user: FactoryBot.create(:public_user), joinable: outing, status: :accepted, role: :organizer) }
+      let!(:join_request_2) { create(:join_request, user: FactoryBot.create(:public_user), joinable: outing, status: :accepted, role: :organizer) }
+
+      before { request }
+
+      it { expect(response.status).to eq(200) }
+      it { expect(subject["outings"].count).to eq(0) }
+    end
+
     context "user being a member but not accepted" do
       let!(:join_request) { create(:join_request, user: user, joinable: outing, status: :pending, role: :organizer) }
 

@@ -17,9 +17,7 @@ module OutingsServices
     end
 
     def find_all
-      outings = Outing.future.joins(:join_requests).where(%(
-        (join_requests.id is null or join_requests.user_id != ? or join_requests.status != ?)
-      ), @user.id, JoinRequest::ACCEPTED_STATUS)
+      outings = Outing.future.where.not(id: user.outing_membership_ids)
 
       if latitude && longitude
         bounding_box_sql = Geocoder::Sql.within_bounding_box(*box, :latitude, :longitude)
