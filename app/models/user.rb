@@ -1,4 +1,6 @@
 class User < ApplicationRecord
+  include Interestable
+
   include Onboarding::UserEventsTracking::UserConcern
   include UserServices::Engagement
 
@@ -23,7 +25,7 @@ class User < ApplicationRecord
   validates_inclusion_of :goal, in: -> (u) { (u.community&.goals || []).map(&:to_s) }, allow_nil: true
   validate :validate_roles!
   validate :validate_partner!
-  validate :validate_interests!
+  validate :validate_birthday!
 
   after_save :clean_up_passwords, if: :saved_change_to_encrypted_password?
 
@@ -35,9 +37,12 @@ class User < ApplicationRecord
   has_many :session_histories
   has_many :user_histories
   has_many :entourages
+  has_many :outings, -> { where(group_type: :outing) }, source: :entourage, class_name: "Outing"
+
   has_many :groups, -> { except_conversations }, class_name: :Entourage
   has_many :join_requests
   has_many :entourage_participations, through: :join_requests, source: :joinable, source_type: "Entourage"
+  has_many :neighborhood_participations, through: :join_requests, source: :joinable, source_type: "Neighborhood"
   has_many :tour_participations, through: :join_requests, source: :joinable, source_type: "Tour"
   belongs_to :organization, optional: true
   has_and_belongs_to_many :coordinated_organizations, -> { distinct }, class_name: "Organization", join_table: "coordination", optional: true
@@ -59,9 +64,12 @@ class User < ApplicationRecord
   has_many :partner_join_requests
   has_many :user_phone_changes, -> { order(:id) }, dependent: :destroy
   has_many :histories, class_name: 'UserHistory'
+  has_many :users_resources
 
   delegate :country, to: :address, allow_nil: true
   delegate :postal_code, to: :address, allow_nil: true
+  delegate :latitude, to: :address, allow_nil: true
+  delegate :longitude, to: :address, allow_nil: true
 
   attr_reader :admin_password
   attr_reader :cnil_explanation
@@ -91,7 +99,6 @@ class User < ApplicationRecord
 
   enum device_type: [ :android, :ios ]
   attribute :roles, :jsonb_set
-  attribute :interests, :jsonb_set
 
   scope :type_pro, -> { where(user_type: "pro") }
   scope :validated, -> { where(validation_status: "validated") }
@@ -248,7 +255,7 @@ class User < ApplicationRecord
     return if community.nil?
     attribute = attribute.to_sym
 
-    invalid = self[attribute] - community.send(attribute)
+    invalid = send(attribute) - community.send(attribute)
     invalid = yield invalid if block_given?
 
     errors.add(
@@ -268,8 +275,12 @@ class User < ApplicationRecord
     end
   end
 
-  def validate_interests!
-    validate_set_attr :interests
+  def validate_birthday!
+    return unless birthday.present?
+
+    Date.strptime("#{birthday}-2024", '%d-%m-%y')
+  rescue
+    errors.add(:birthday, "Date invalide")
   end
 
   def validate_partner!
@@ -559,6 +570,9 @@ class User < ApplicationRecord
     entourage_participations.where(group_type: :conversation).count
   end
 
+  def neighborhood_participations_count
+    join_requests.where(joinable_type: :Neighborhood, status: :accepted).count
+  end
 
   protected
 

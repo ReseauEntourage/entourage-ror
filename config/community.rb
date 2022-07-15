@@ -49,10 +49,6 @@ class Community < BasicObject
     memoize(:goals) { ::Experimental::SymbolSet(struct.goals) }
   end
 
-  def interests
-    memoize(:interests) { ::Experimental::SymbolSet(struct.interests) }
-  end
-
   def group_types
     struct.group_types || []
   end

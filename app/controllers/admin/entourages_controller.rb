@@ -286,6 +286,17 @@ module Admin
       end
     end
 
+    def duplicate_outing
+      original = Outing.find(params[:id])
+      @outing = original.dup
+
+      if @outing.save
+        redirect_to [:admin, @outing], notice: "L'événement a été dupliqué"
+      else
+        redirect_to [:admin, @original], alert: "L'événement n'a pas été dupliqué: #{@outing.errors.full_messages.to_sentence}"
+      end
+    end
+
     def edit_image
       redirect_to edit_admin_entourage_path(@entourage) and return unless @entourage.outing?
 

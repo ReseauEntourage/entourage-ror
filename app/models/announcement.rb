@@ -1,10 +1,12 @@
 class Announcement < ApplicationRecord
+  include WithAreas
+  include WithUserGoals
+
   STATUS = %w[draft active archived].freeze
 
   validates :title, presence: true
 
-  validates :body, :image_url, :action, :url, :icon, :areas, :user_goals,
-            presence: true, if: :active?
+  validates :body, :image_url, :action, :url, :icon, presence: true, if: :active?
   validates :webview, inclusion: [true, false], allow_nil: false, if: :active?
 
   validates :status, inclusion: STATUS
@@ -12,8 +14,6 @@ class Announcement < ApplicationRecord
   validates :webapp_url, format: { with: %r(\A(https)\S+\z) }, allow_blank: false, allow_nil: true
 
   scope :ordered, -> { order(:position, :id) }
-  scope :for_areas, -> (area_slugs) { where("areas ?| array[%s]" % area_slugs.map { |a| ApplicationRecord.connection.quote(a) }.join(',')) }
-  scope :for_user_goal, -> (user_goal) { where("user_goals ? %s" % ApplicationRecord.connection.quote(user_goal)) }
 
   STATUS.each do |status|
     scope status, -> { where(status: status) }
@@ -21,14 +21,6 @@ class Announcement < ApplicationRecord
     define_method("#{status}?") do
       self.status == status
     end
-  end
-
-  attribute :areas,      :jsonb_set
-  attribute :user_goals, :jsonb_set
-
-  before_validation do
-    areas.reject!(&:blank?)
-    user_goals.reject!(&:blank?)
   end
 
   def category= category
@@ -54,13 +46,13 @@ class Announcement < ApplicationRecord
   def image_url
     return unless self[:image_url]
 
-    Announcement.storage.url_for(key: self[:image_url])
+    Announcement.storage.read_for(key: self[:image_url])
   end
 
   def image_portrait_url
     return unless self[:image_portrait_url]
 
-    Announcement.storage.url_for(key: self[:image_portrait_url])
+    Announcement.storage.read_for(key: self[:image_portrait_url])
   end
 
   def self.storage

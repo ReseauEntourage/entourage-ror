@@ -1,0 +1,18 @@
+<ol class="breadcrumb">
+  <li><%= link_to "Groupes de voisinage", admin_neighborhoods_path %></li>
+  <li class="active">Modifier</li>
+</ol>
+
+<h2>
+  <span class="text-muted">#<%= @neighborhood.id %></span>
+  <%= @neighborhood.name %>
+</h2>
+
+<ul class="nav nav-tabs">
+  <li role="presentation" class="<%= :active if tab == :edit %>">
+    <%= link_to "Modifier", edit_admin_neighborhood_path(@neighborhood) %>
+  </li>
+  <li role="presentation" class="<%= :active if tab == :show_members %>">
+    <%= link_to "Membres (#{@neighborhood.members_count})", show_members_admin_neighborhood_path(@neighborhood) %>
+  </li>
+</ul>

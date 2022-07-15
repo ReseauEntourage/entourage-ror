@@ -180,11 +180,59 @@ fr:
           hors_zone: Hors-zone
           sans_zone: Sans-zone
           list: Départements ou codes postaux
+      neighborhood:
+        name: Nom
+        description: Description
+        interests: Centres d'intérêts
+        image_url: Image
+        status: Statut
+      recommandation:
+        name: Nom
+        instance: Objet
+        action: Action
+        url: Url
+        areas: Zones
+        user_goals: Profils
+        image_url: Image
+        status: Statut
+        actions:
+          index: Liste
+          show: Afficher
+          new: Créer
+        instances:
+          user: Utilisateur
+          profile: Profil
+          neighborhood: Groupe de voisinage
+          outing: Événement
+          poi: POI
+          resource: Ressource
+          webview: Webview
+          conversation: Conversation
+          contribution: Contribution
+          ask_for_help: Demande
+      resource:
+        name: Nom
+        category: Catégorie
+        description: Description
+        url: Url
+        is_video: Vidéo ?
+        duration: Durée
+        image_url: Image
+        categories:
+          act: Agir
+          inspire: S'inspirer
+          understand: Comprendre
 
   community:
     entourage:
       roles:
+        admin: Administrateur
         ambassador: Ambassadeur
+        coordinator: Coordinateur
+        ethics_charter_signed: A validé la charte éthique
+        moderator: Modérateur
+        not_validated: Non validé
+        visitor: Visiteur
       targeting_profiles:
         offers_help: Riverain
         asks_for_help: SDF
@@ -232,3 +280,20 @@ fr:
       status_update:
         closed_user: l'utilisateur a quitté le réseau Entourage. N'hésitez pas à rejoindre d'autres actions solidaires sur l'app !
 
+  tags:
+    interests:
+      activites: Activités manuelles
+      animaux: Animaux
+      bien-etre: Bien-être
+      cuisine: Cuisine
+      culture: Art & culture
+      jeux: Jeux
+      nature: Nature
+      sport: Sport
+      other: Autre
+    signals:
+      spam: Spam
+      fraud: Arnaque
+      insults: Propos déplacés
+      in_danger: Mise en danger
+      other: Autre

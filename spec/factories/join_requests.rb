@@ -12,7 +12,7 @@ FactoryBot.define do
     after(:build) do |join_request, _|
       joinable = join_request.joinable
       next unless join_request.role == 'auto' && joinable.present?
-      join_request.role =
+      join_request.role = joinable.is_a?(Neighborhood) ? 'member' :
         case [joinable.community, joinable.group_type]
         when ['entourage', 'tour'          ] then 'member'
         when ['entourage', 'action'        ] then 'member'
@@ -25,7 +25,7 @@ FactoryBot.define do
 
     after(:create) do |join_request, _|
       group = join_request.joinable
-      group.update_column(:number_of_people, group.join_requests.accepted.count)
+      group.update_column(:number_of_people, group.join_requests.accepted.count) unless join_request.neighborhood?
     end
   end
 

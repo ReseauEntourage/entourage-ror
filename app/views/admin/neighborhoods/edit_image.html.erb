@@ -1,0 +1,58 @@
+<div class="container">
+  <div style="width: 750px; margin: auto">
+    <ol class="breadcrumb">
+      <li><%= link_to "Groupes de voisinage", admin_neighborhoods_path %></li>
+      <li><%= link_to @neighborhood.name, edit_admin_neighborhood_path(@neighborhood) %></li>
+      <li class="active">Image</li>
+    </ol>
+
+    <h1>Modifier l'image</h1>
+
+    <% if @neighborhood_images.empty? %>
+      <div class="panel panel-warning">
+        <div class="panel-heading">
+          <h3 class="panel-title">Aucune photo n'est encore spécifiée.</h3>
+        </div>
+      </div>
+    <% else %>
+      <div class="alert alert-info" role="alert" style="display: flex; align-items: center">
+        <div style="flex-grow: 1">
+          <b>Galerie</b><br>
+          Vous souhaitez ajouter une nouvelle photo ?
+          <b><u><%= link_to 'Cliquez ici', new_admin_neighborhood_image_path %></u></b>
+          pour accéder à l'édition de la galerie photos des groupes de voisinage.
+        </div>
+
+      </div>
+
+      <%= form_for @neighborhood, url: update_image_admin_neighborhood_path(@neighborhood), method: :put do |f| %>
+        <table class="table">
+          <th>Titre</th>
+          <th>Photos</th>
+          <% @neighborhood_images.each do |neighborhood_image| %>
+            <tr>
+              <td>
+                <%= neighborhood_image.title %>
+              </td>
+              <td>
+                <%= image_tag(neighborhood_image.image_url, size: '288x96') if neighborhood_image.image_url.present? %>
+              </td>
+              <td>
+                <%= f.radio_button :neighborhood_image_id, neighborhood_image.id, checked: @neighborhood[:image_url] == neighborhood_image[:image_url] %>
+              </td>
+            </tr>
+          <% end %>
+          <tr>
+            <td>Pas de photo</td>
+            <td></td>
+            <td>
+              <%= f.radio_button :neighborhood_image_id, nil, checked: @neighborhood.image_url.blank? %>
+            </td>
+          </tr>
+        </table>
+        <%= f.submit "Enregistrer", class: "btn btn-success" %>
+        <%= link_to "Annuler", edit_admin_neighborhood_path(@neighborhood), class: "btn btn-default" %>
+      <% end %>
+    <% end %>
+  </div>
+</div>

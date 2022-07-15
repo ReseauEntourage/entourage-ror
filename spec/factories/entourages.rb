@@ -49,6 +49,21 @@ FactoryBot.define do
       after(:build) do |outing, stuff|
         outing.metadata = (stuff.default_metadata || {}).symbolize_keys.merge(outing.metadata.symbolize_keys)
       end
+
+      trait :with_recurrence do
+        recurrency_identifier { SecureRandom.hex(8) }
+        initialize_with { Outing.new(attributes) }
+        recurrence { association :outing_recurrence, identifier: recurrency_identifier }
+      end
+
+      trait :outing_class do
+        initialize_with { Outing.new(attributes) }
+      end
+
+      trait :with_neighborhood do
+        initialize_with { Outing.new(attributes) }
+        neighborhoods { [association(:neighborhood, user: user)] }
+      end
     end
 
     factory :conversation do

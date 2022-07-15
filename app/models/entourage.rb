@@ -21,6 +21,9 @@ class Entourage < ApplicationRecord
   belongs_to :user
   has_many :join_requests, as: :joinable, dependent: :destroy
   has_many :members, through: :join_requests, source: :user
+  has_many :accepted_members, -> { where("join_requests.status = 'accepted'") }, through: :join_requests, source: :user
+  has_many :neighborhoods_entourages, dependent: :destroy
+  has_many :neighborhoods, through: :neighborhoods_entourages
   reverse_geocoded_by :latitude, :longitude
   has_many :chat_messages, as: :messageable, dependent: :destroy
   has_one :last_chat_message, -> {
@@ -41,6 +44,7 @@ class Entourage < ApplicationRecord
   attr_accessor :change_ownership_message
   attr_accessor :user_status
   attr_accessor :cancellation_message
+  attr_accessor :entourage_image_id
 
   validates_presence_of :status, :title, :entourage_type, :user_id, :latitude, :longitude, :number_of_people
 
@@ -97,6 +101,7 @@ class Entourage < ApplicationRecord
   before_validation :set_outings_ends_at
   before_validation :set_outings_previous_at
   before_validation :set_outings_image_urls
+  before_validation :set_outings_place_limit
   before_validation :generate_display_address
   before_validation :reformat_content
   before_validation :set_default_online_attributes, if: :online_changed?
@@ -237,7 +242,8 @@ class Entourage < ApplicationRecord
           landscape_url: { type: [:string, :null] },
           landscape_thumbnail_url: { type: [:string, :null] },
           portrait_url: { type: [:string, :null] },
-          portrait_thumbnail_url: { type: [:string, :null] }
+          portrait_thumbnail_url: { type: [:string, :null] },
+          place_limit: { type: [:string, :integer, :null] }
         }
       end
     end
@@ -274,6 +280,8 @@ class Entourage < ApplicationRecord
     else
       remove_entourage_image_id!
     end
+
+    @entourage_image_id = entourage_image_id
   end
 
   def remove_entourage_image_id!
@@ -504,6 +512,12 @@ class Entourage < ApplicationRecord
     if metadata[:portrait_thumbnail_url].nil?
       self.metadata[:portrait_thumbnail_url] = nil
     end
+  end
+
+  def set_outings_place_limit
+    return unless outing?
+    return unless metadata[:place_limit].nil?
+    self.metadata[:place_limit] = nil
   end
 
   def validate_outings_ends_at

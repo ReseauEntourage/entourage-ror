@@ -30,7 +30,9 @@ module V1
 
     def community_roles
       user = object.user
-      user.roles.sort_by { |r| user.community.roles.index(r) }
+      user.roles.sort_by { |r| user.community.roles.index(r) }.map do |role|
+        I18n.t("community.entourage.roles.#{role}")
+      end
     end
 
     def status

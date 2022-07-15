@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Api::V1::NeighborhoodsController API</title>
+    <meta charset="utf-8">
+    <style>
+      
+body {
+  font-family: Helvetica,Arial,sans-serif;
+  font-size: 13px;
+  font-weight: normal;
+  line-height: 18px;
+  color: #404040;
+}
+
+.container {
+  width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+  zoom: 1;
+}
+
+pre {
+  background-color: #f5f5f5;
+  display: block;
+  padding: 8.5px;
+  margin: 0 0 18px;
+  line-height: 18px;
+  font-size: 12px;
+  border: 1px solid #ccc;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  white-space: pre;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+td.required .name:after {
+  float: right;
+  content: "required";
+  font-weight: normal;
+  color: #F08080;
+}
+
+a{
+  color: #0069d6;
+  text-decoration: none;
+  line-height: inherit;
+  font-weight: inherit;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: bold;
+  color: #404040;
+}
+
+h1 {
+  margin-bottom: 18px;
+  font-size: 30px;
+  line-height: 36px;
+}
+h2 {
+  font-size: 24px;
+  line-height: 36px;
+}
+h3{
+  font-size: 18px;
+  line-height: 36px;
+}
+h4 {
+  font-size: 16px;
+  line-height: 36px;
+}
+
+table{
+  width: 100%;
+  margin-bottom: 18px;
+  padding: 0;
+  border-collapse: separate;
+  font-size: 13px;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  border-spacing: 0;
+  border: 1px solid #ddd;
+}
+
+table th {
+  padding-top: 9px;
+  font-weight: bold;
+  vertical-align: middle;
+  border-bottom: 1px solid #ddd;
+}
+table th+th, table td+td {
+  border-left: 1px solid #ddd;
+}
+table th, table td {
+  padding: 10px 10px 9px;
+  line-height: 18px;
+  text-align: left;
+}
+
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Api::V1::NeighborhoodsController API</h1>
+
+        <p class="explanation">Neighborhoods</p>
+
+      <div class="article">
+        <h2>Update neighborhood</h2>
+        <h3>PATCH api/v1/neighborhoods/:id</h3>
+
+          <h3>Parameters</h3>
+          <table class="parameters table table-striped table-bordered table-condensed">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="required">
+                    <span class="name">id</span>
+                </td>
+                <td>
+                  <span class="description"> id</span>
+                </td>
+              </tr>
+              <tr>
+                <td class="required">
+                    <span class="name">token</span>
+                </td>
+                <td>
+                  <span class="description"> token</span>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                    <span class="name">neighborhood[name]</span>
+                </td>
+                <td>
+                  <span class="description">Name</span>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                    <span class="name">neighborhood[ethics]</span>
+                </td>
+                <td>
+                  <span class="description">Ethics</span>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                    <span class="name">neighborhood[latitude]</span>
+                </td>
+                <td>
+                  <span class="description">Latitude</span>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                    <span class="name">neighborhood[longitude]</span>
+                </td>
+                <td>
+                  <span class="description">Longitude</span>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                    <span class="name">neighborhood[interests]</span>
+                </td>
+                <td>
+                  <span class="description">Interests</span>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                    <span class="name">neighborhood[image_url]</span>
+                </td>
+                <td>
+                  <span class="description">Image url</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+
+          <h3>Request</h3>
+
+            <h4>Headers</h4>
+            <pre class="request headers">Content-Type: application/json
+Host: example.org
+Cookie: </pre>
+
+          <h4>Route</h4>
+          <pre class="request route highlight">PATCH api/v1/neighborhoods/15</pre>
+
+
+            <h4>Body</h4>
+            <pre class="request body">{"token":"foobar115","neighborhood":{"name":"new name","ethics":"new ethics"}}</pre>
+
+
+            <h3>Response</h3>
+              <h4>Headers</h4>
+              <pre class="response headers">X-Frame-Options: SAMEORIGIN
+X-XSS-Protection: 1; mode=block
+X-Content-Type-Options: nosniff
+X-Download-Options: noopen
+X-Permitted-Cross-Domain-Policies: none
+Referrer-Policy: strict-origin-when-cross-origin
+Access-Control-Allow-Origin: *
+Access-Control-Allow-Methods: GET,POST,PUT,PATCH,DELETE
+Access-Control-Allow-Headers: Origin,Accept,Content-Type,X-Requested-With,X-CSRF-Token,X-API-KEY
+Content-Type: application/json; charset=utf-8
+ETag: W/&quot;f404cde3b605d04476e8062a9b02acd8&quot;
+Cache-Control: max-age=0, private, must-revalidate
+X-Request-Id: 0ef62440-c3a3-414a-8a9d-eeba5daca0ea
+X-Runtime: 0.023477
+Content-Length: 482</pre>
+            <h4>Status</h4>
+            <pre class="response status">200 OK</pre>
+              <h4>Body</h4>
+              <pre class="response body">{
+  &quot;neighborhood&quot;: {
+    &quot;id&quot;: 15,
+    &quot;name&quot;: &quot;new name&quot;,
+    &quot;description&quot;: &quot;Pour les passionnés de foot du 17è&quot;,
+    &quot;welcome_message&quot;: null,
+    &quot;member&quot;: true,
+    &quot;members_count&quot;: 1,
+    &quot;image_url&quot;: null,
+    &quot;interests&quot;: [
+      &quot;sport&quot;
+    ],
+    &quot;ethics&quot;: &quot;new ethics&quot;,
+    &quot;past_outings_count&quot;: 0,
+    &quot;future_outings_count&quot;: 0,
+    &quot;has_ongoing_outing&quot;: false,
+    &quot;address&quot;: {
+      &quot;latitude&quot;: 48.86,
+      &quot;longitude&quot;: 2.35,
+      &quot;display_address&quot;: &quot;&quot;
+    },
+    &quot;user&quot;: {
+      &quot;id&quot;: 117,
+      &quot;display_name&quot;: &quot;John D.&quot;,
+      &quot;avatar_url&quot;: null
+    },
+    &quot;members&quot;: [
+      {
+        &quot;id&quot;: 117,
+        &quot;display_name&quot;: &quot;John D.&quot;,
+        &quot;avatar_url&quot;: null
+      }
+    ]
+  }
+}</pre>
+      </div>
+    </div>
+  </body>
+</html>

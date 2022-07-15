@@ -1,6 +1,5 @@
 module HomeServices
   class Outing
-    DISTANCE = 10
     MAX_LENGTH = 7
 
     # currently offer_help, association and default share the same definition
@@ -36,7 +35,7 @@ module HomeServices
       @user = user
       @latitude = latitude
       @longitude = longitude
-      @distance = DISTANCE
+      @distance = UserService.travel_distance(user: user)
     end
 
     def find_all

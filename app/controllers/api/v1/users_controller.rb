@@ -90,7 +90,7 @@ module Api
           on.success do |user|
             mixpanel.distinct_id = user.id
             mixpanel.track("Created Account")
-            render json: user, status: 201, serializer: ::V1::UserSerializer, scope: { phone_only: true }
+            render json: user, status: 201, serializer: ::V1::Users::PhoneOnlySerializer
           end
 
           on.failure do |user|
@@ -124,7 +124,7 @@ module Api
 
         if params[:code][:action] == "regenerate" && !user.deleted && !user.blocked?
           UserServices::SMSSender.new(user: user).regenerate_sms!(clear_password: api_request.platform == :web)
-          render json: user, status: 200, serializer: ::V1::UserSerializer, scope: { phone_only: true }
+          render json: user, status: 200, serializer: ::V1::Users::PhoneOnlySerializer
         else
           render json: {error: "Unknown action"}, status:400
         end
@@ -184,8 +184,8 @@ module Api
             head :created
           end
 
-          on.failure do |code|
-            render json: { code: 'CANNOT_REPORT_USER' }, status: :bad_request
+          on.failure do |message|
+            render json: { code: 'CANNOT_REPORT_USER', message: message }, status: :bad_request
           end
         end
       end
@@ -395,15 +395,15 @@ module Api
 
       private
       def user_params
-        @user_params ||= params.require(:user).permit(:first_name, :last_name, :email, :sms_code, :password, :secret, :auth_token, :phone, :current_phone, :requested_phone, :avatar_key, :about, :goal, interests: [])
+        @user_params ||= params.require(:user).permit(:first_name, :last_name, :email, :sms_code, :password, :secret, :auth_token, :phone, :current_phone, :requested_phone, :avatar_key, :about, :goal, :birthday, :travel_distance, :other_interest, :interest_list, :interests, interests: [])
       end
 
       def update_params
-        @update_params ||= params.require(:user).permit(:first_name, :last_name, :email, :sms_code, :password, :secret, :auth_token, :current_phone, :requested_phone, :avatar_key, :about, :goal, :birthday, :interest_list, :interests, interests: [])
+        @update_params ||= params.require(:user).permit(:first_name, :last_name, :email, :sms_code, :password, :secret, :auth_token, :current_phone, :requested_phone, :avatar_key, :about, :goal, :birthday, :travel_distance, :interest_list, :interests, interests: [])
       end
 
       def user_report_params
-        params.require(:user_report).permit(:message)
+        params.require(:user_report).permit(:message, signals: [])
       end
 
       def address_params

@@ -113,4 +113,113 @@ describe Api::V1::HomeController do
       end
     end
   end
+
+  describe 'GET metadata' do
+    let(:result) { JSON.parse(response.body) }
+
+    before { get :metadata, params: { token: user.token } }
+    it { expect(response.status).to eq(200) }
+    it { expect(result).to have_key("tags") }
+    it { expect(result["tags"]).to be_a(Hash) }
+    it { expect(result["tags"]).to have_key("interests") }
+    it { expect(result["tags"]["interests"]).to be_a(Array) }
+    it { expect(result["tags"]["interests"][0]).to eq({
+      "id" => "activites",
+      "name" => "Activités manuelles"
+    }) }
+    it { expect(result["tags"]).to have_key("signals") }
+    it { expect(result["tags"]["signals"]).to be_a(Array) }
+    it { expect(result["tags"]["signals"][0]).to eq({
+      "id" => "spam",
+      "name" => "Spam"
+    }) }
+  end
+
+  describe 'GET summary' do
+    subject { JSON.parse(response.body) }
+
+    context "not signed in" do
+      before { get :summary }
+      it { expect(response.status).to eq(401) }
+    end
+
+    context "signed in" do
+      let!(:neighborhood) { FactoryBot.create(:neighborhood) }
+      let!(:recommandation) { FactoryBot.create(:recommandation, name: 'voisinage', instance: :neighborhood, action: :show) }
+
+      let(:request) { get :summary, params: { token: user.token } }
+
+      context "renders default fields" do
+        before { request }
+
+        it { expect(subject).to eq({
+          "user" => {
+            "id" => user.id,
+            "display_name" => "John D.",
+            "avatar_url" => nil,
+            "meetings_count" => 0,
+            "chat_messages_count" => 0,
+            "outing_participations_count" => 0,
+            "neighborhood_participations_count" => 0,
+            "recommandations" => [{
+              "name" => "voisinage",
+              "type" => "neighborhood",
+              "action" => "show",
+              "image_url" => nil,
+              "params" => {
+                "id" => neighborhood.id,
+                "uuid" => nil,
+                "url" => nil
+              }
+            }]
+          }
+        }) }
+      end
+
+      let(:entourage) { FactoryBot.create(:entourage) }
+      let(:outing) { FactoryBot.create(:outing) }
+      let(:conversation) { FactoryBot.create(:conversation) }
+      let(:neighborhood) { FactoryBot.create(:neighborhood) }
+
+      context "renders meetings_count" do
+        before { request }
+
+        it { expect(subject["user"]["meetings_count"]).to eq(0) }
+      end
+
+      context "renders chat_messages_count" do
+        let!(:chat_message_entourage) { FactoryBot.create(:chat_message, messageable: entourage, user: user) }
+        let!(:chat_message_outing) { FactoryBot.create(:chat_message, messageable: outing, user: user) }
+        let!(:chat_message_conversation) { FactoryBot.create(:chat_message, messageable: conversation, user: user) }
+        let!(:chat_message_neighborhood) { FactoryBot.create(:chat_message, messageable: neighborhood, user: user) }
+        # same but with pro_user
+        let!(:chat_message_action_pro) { FactoryBot.create(:chat_message, messageable: entourage, user: pro_user) }
+        let!(:chat_message_outing_pro) { FactoryBot.create(:chat_message, messageable: outing, user: pro_user) }
+        let!(:chat_message_conversation_pro) { FactoryBot.create(:chat_message, messageable: conversation, user: pro_user) }
+        let!(:chat_message_neighborhood_pro) { FactoryBot.create(:chat_message, messageable: neighborhood, user: pro_user) }
+
+        before { request }
+
+        it { expect(subject["user"]["chat_messages_count"]).to eq(4) }
+      end
+
+      context "renders outing_participations_count" do
+        let!(:join_request) { FactoryBot.create(:join_request, joinable: outing, user: user, status: :accepted) }
+        let!(:join_request_pro) { FactoryBot.create(:join_request, joinable: outing, user: pro_user, status: :accepted) }
+
+        before { request }
+
+        it { expect(subject["user"]["outing_participations_count"]).to eq(1) }
+      end
+
+      context "renders neighborhood_participations_count" do
+        let!(:join_request) { FactoryBot.create(:join_request, joinable: neighborhood, user: user, status: :accepted) }
+        let!(:join_request_pro) { FactoryBot.create(:join_request, joinable: neighborhood, user: pro_user, status: :accepted) }
+
+        before { request }
+
+        it { expect(subject["user"]["neighborhood_participations_count"]).to eq(1) }
+      end
+    end
+  end
 end

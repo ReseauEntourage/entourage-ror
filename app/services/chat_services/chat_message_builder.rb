@@ -12,7 +12,7 @@ module ChatServices
     def create
       yield callback if block_given?
 
-      return callback.on_freezed_tour.try(:call, message) if joinable.freezed?
+      return callback.on_freezed_tour.try(:call, message) if joinable.is_a?(Tour) && joinable.freezed?
 
       if message.message_type == 'status_update'
         message.errors.add(:message_type, :inclusion)
@@ -58,12 +58,16 @@ module ChatServices
 
       if success
         message.check_spam!
-        join_request.update_column(:last_message_read, message.created_at)
+
+        join_request.update_column(:last_message_read, message.created_at) unless [Neighborhood, Outing].include?(joinable.class)
+
         AsyncService.new(self.class).send_notification(message)
+
         callback.on_success.try(:call, message)
       else
         callback.on_failure.try(:call, message)
       end
+
       joinable
     end
 

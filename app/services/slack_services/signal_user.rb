@@ -1,9 +1,10 @@
 module SlackServices
   class SignalUser < Notifier
-    def initialize reported_user:, reporting_user:, message:
+    def initialize reported_user:, reporting_user:, message:, signals:
       @reported_user = reported_user
       @reporting_user = find_user(reporting_user)
       @message = message
+      @signals = signals
     end
 
     def env
@@ -22,6 +23,9 @@ module SlackServices
           },
           {
             text: "Message : #{@message}"
+          },
+          {
+            text: "Catégories de signalement : #{@signals}"
           },
         ]
       }

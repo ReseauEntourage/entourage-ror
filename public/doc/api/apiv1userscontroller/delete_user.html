@@ -151,11 +151,11 @@ Host: example.org
 Cookie: </pre>
 
           <h4>Route</h4>
-          <pre class="request route highlight">DELETE /api/v1/users/11652</pre>
+          <pre class="request route highlight">DELETE /api/v1/users/190</pre>
 
 
             <h4>Body</h4>
-            <pre class="request body">{"token":"foobar145"}</pre>
+            <pre class="request body">{"token":"foobar187"}</pre>
 
 
             <h3>Response</h3>
@@ -170,18 +170,17 @@ Access-Control-Allow-Origin: *
 Access-Control-Allow-Methods: GET,POST,PUT,PATCH,DELETE
 Access-Control-Allow-Headers: Origin,Accept,Content-Type,X-Requested-With,X-CSRF-Token,X-API-KEY
 Content-Type: application/json; charset=utf-8
-ETag: W/&quot;2700c6fc868c132ee1669d4a43c3ef6a&quot;
+ETag: W/&quot;5130541e8a16beeddbe4e96339ce0196&quot;
 Cache-Control: max-age=0, private, must-revalidate
-Set-Cookie: request_method=DELETE; path=/
-X-Request-Id: a1ae5159-8fb2-4d95-9ae3-fec5893b28cb
-X-Runtime: 0.033567
-Content-Length: 791</pre>
+X-Request-Id: 47d0cdaf-6210-410e-a75e-7ede32fe1811
+X-Runtime: 0.024780
+Content-Length: 867</pre>
             <h4>Status</h4>
             <pre class="response status">200 OK</pre>
               <h4>Body</h4>
               <pre class="response body">{
   &quot;user&quot;: {
-    &quot;id&quot;: 11652,
+    &quot;id&quot;: 190,
     &quot;display_name&quot;: &quot;John D.&quot;,
     &quot;first_name&quot;: &quot;John&quot;,
     &quot;last_name&quot;: &quot;Doe&quot;,
@@ -199,13 +198,16 @@ Content-Length: 791</pre>
         &quot;creation&quot;: false
       }
     },
+    &quot;interests&quot;: [
+
+    ],
     &quot;anonymous&quot;: false,
-    &quot;uuid&quot;: &quot;11652&quot;,
+    &quot;uuid&quot;: &quot;190&quot;,
     &quot;feature_flags&quot;: {
       &quot;organization_admin&quot;: false
     },
-    &quot;token&quot;: &quot;foobar145&quot;,
-    &quot;email&quot;: &quot;user145@mail.com-2022-03-01 11:00:12&quot;,
+    &quot;token&quot;: &quot;foobar187&quot;,
+    &quot;email&quot;: &quot;user187@mail.com-2022-06-02 17:16:47&quot;,
     &quot;has_password&quot;: false,
     &quot;firebase_properties&quot;: {
       &quot;ActionZoneDep&quot;: &quot;not_set&quot;,
@@ -214,9 +216,9 @@ Content-Length: 791</pre>
       &quot;Interests&quot;: &quot;none&quot;
     },
     &quot;goal&quot;: null,
-    &quot;interests&quot;: [
-
-    ],
+    &quot;phone&quot;: &quot;+33600000186-2022-06-02 17:16:47&quot;,
+    &quot;travel_distance&quot;: 10,
+    &quot;birthday&quot;: null,
     &quot;stats&quot;: {
       &quot;tour_count&quot;: 0,
       &quot;encounter_count&quot;: 0,

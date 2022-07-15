@@ -4,7 +4,6 @@ module FeedServices
   class FeedFinder
     include FeedServices::Preloader
 
-    DEFAULT_DISTANCE=10
     ITEMS_PER_PAGE=25
 
     LAST_PAGE_CURSOR = 0xff
@@ -28,7 +27,7 @@ module FeedServices
       @show_past_events = show_past_events=="true"
       @partners_only = partners_only=="true"
       @time_range = time_range.to_i
-      @distance = [(distance&.to_f || DEFAULT_DISTANCE), 40].min
+      @distance = UserService.travel_distance(user: user, forced_distance: distance)
       @announcements = announcements.try(:to_sym)
       @page_token = page_token
 

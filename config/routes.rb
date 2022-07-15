@@ -50,6 +50,28 @@ Rails.application.routes.draw do
           get '/portrait_upload_success', action: :portrait_upload_success
         end
       end
+
+      resources :neighborhood_images do
+        member do
+          get '/edit/photo', action: :edit_photo
+          get '/photo_upload_success', action: :photo_upload_success
+        end
+      end
+
+      resources :recommandation_images do
+        member do
+          get '/edit/photo', action: :edit_photo
+          get '/photo_upload_success', action: :photo_upload_success
+        end
+      end
+
+      resources :resource_images do
+        member do
+          get '/edit/photo', action: :edit_photo
+          get '/photo_upload_success', action: :photo_upload_success
+        end
+      end
+
       resources :registration_requests, only: [:index, :show, :update, :destroy]
       resources :messages, only: [:index, :destroy]
       resources :organizations, only: [:show, :index, :edit, :update]
@@ -115,6 +137,7 @@ Rails.application.routes.draw do
           get :renew
           get :cancellation
           post :cancel
+          post :duplicate_outing
           get '/edit/image', action: :edit_image
           put '/update/image', action: :update_image
         end
@@ -192,6 +215,30 @@ Rails.application.routes.draw do
       end
     end
 
+    resources :neighborhoods, only: [:index, :edit, :update] do
+      member do
+        get :show_members
+        get :edit_owner
+        post :update_owner
+        get '/edit/image', action: :edit_image
+        put '/update/image', action: :update_image
+      end
+    end
+
+    resources :recommandations do
+      member do
+        get '/edit/image', action: :edit_image
+        put '/update/image', action: :update_image
+      end
+    end
+
+    resources :resources do
+      member do
+        get '/edit/image', action: :edit_image
+        put '/update/image', action: :update_image
+      end
+    end
+
     resources :pois
     resources :registration_requests, only: [:index, :show, :update, :destroy]
     resources :messages, only: [:index, :destroy]
@@ -223,7 +270,12 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
       match '(*path)' => 'base#options', via: [:options]
-      resources :home, only: [:index]
+      resources :home, only: [:index] do
+        collection do
+          get :metadata
+          get :summary
+        end
+      end
 
       resources :feeds, only: [:index] do
         collection do
@@ -282,11 +334,56 @@ Rails.application.routes.draw do
 
         resources :tours, :controller => 'users/tours', only: [:index]
         resources :entourages, :controller => 'users/entourages', only: [:index]
+        resources :neighborhoods, :controller => 'users/neighborhoods', only: [:index]
+        resources :outings, :controller => 'users/outings', only: [:index]
 
         resources :addresses, controller: 'users/addresses', only: [] do
           collection do
             post   ':position' => :create_or_update
             delete ':position' => :destroy
+          end
+        end
+      end
+
+      resources :neighborhoods do
+        collection do
+          get :joined # see my neighborhoods
+        end
+
+        member do
+          get :find # either q or coordinates
+          post :join # join a neighborhood
+          post :leave # leave a neighborhood
+          post :report # report an issue with the neighborhood
+        end
+
+        resources :chat_messages, :controller => 'neighborhoods/chat_messages', only: [:index, :create] do
+          post :report # report an issue with a chat_message
+
+          member do
+            get :comments
+          end
+
+          collection do
+            post :presigned_upload
+          end
+        end
+
+        resources :users, :controller => 'neighborhoods/users', only: [:index, :create, :destroy] do
+          collection do
+            # we want to avoid specific id to unjoin
+            delete :destroy
+          end
+        end
+
+        resources :outings, :controller => 'neighborhoods/outings', only: [:index, :create]
+      end
+
+      resources :resources, only: [:index, :show] do
+        resources :users, :controller => 'resources/users', only: [:create, :destroy] do
+          collection do
+            # we want to avoid specific id to unjoin
+            delete :destroy
           end
         end
       end
@@ -310,6 +407,34 @@ Rails.application.routes.draw do
         end
       end
 
+      resources :outings, only: [:index, :create, :show, :update] do
+        member do
+          put :batch_update
+          get :siblings
+          post :duplicate
+          post :report
+        end
+
+        resources :chat_messages, :controller => 'outings/chat_messages', only: [:index, :create] do
+          post :report # report an issue with a chat_message
+
+          member do
+            get :comments
+          end
+
+          collection do
+            post :presigned_upload
+          end
+        end
+
+        resources :users, :controller => 'outings/users', only: [:index, :create, :destroy] do
+          collection do
+            # we want to avoid specific id to unjoin
+            delete :destroy
+          end
+        end
+      end
+
       resources :conversations, :controller => 'entourages', only: [] do
         collection do
           get :private
@@ -327,6 +452,7 @@ Rails.application.routes.draw do
       end
 
       resources :entourage_images, only: [:index, :show]
+      resources :neighborhood_images, only: [:index, :show]
 
       resource :sharing, controller: 'sharing', only: [] do
         get :groups
@@ -365,6 +491,12 @@ Rails.application.routes.draw do
         resources :stats, only: [:index]
         resources :entourages, only: [:index]
         match 'entourages/:uuid' => 'entourages#show', :via => :get
+      end
+
+      resources :tags, only: [] do
+        collection do
+          get :interests
+        end
       end
     end
   end

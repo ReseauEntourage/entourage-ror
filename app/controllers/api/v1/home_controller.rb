@@ -37,6 +37,21 @@ module Api
         }.to_json, status: 200
       end
 
+      def metadata
+        render json: {
+          tags: {
+            interests: format_tags(Tag.interests),
+            signals: format_tags(Tag.signals)
+          }
+        }.to_json, status: 200
+      end
+
+      def summary
+        render json: current_user, serializer: ::V1::Users::SummarySerializer, scope: {
+          user: current_user
+        }
+      end
+
       private
 
       def get_headlines
@@ -75,6 +90,10 @@ module Api
         else
           [:headlines, :outings, :entourage_ask_for_helps, :entourage_contributions]
         end
+      end
+
+      def format_tags tags
+        tags.to_a.map { |t| { id: t.first, name: t.last } }
       end
     end
   end

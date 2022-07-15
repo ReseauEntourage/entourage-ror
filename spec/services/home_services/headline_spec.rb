@@ -6,17 +6,12 @@ describe HomeServices::Headline do
   describe 'find_pin' do
     let!(:pin) { FactoryBot.create(:entourage, pin: true, pins: ['75']) }
 
+    let(:subject) { HomeServices::Headline.new(user: user, latitude: nil, longitude: nil) }
+
     it 'should find a pin' do
       expect(Entourage).to receive(:find_by).with(id: pin.id)
 
-      HomeServices::Headline.new(user: user, latitude: nil, longitude: nil).find_pin(category: :neighborhood)
-    end
-
-    it 'should not find a pin without valid category' do
-      expect(Entourage).not_to receive(:find_by)
-      expect(
-        HomeServices::Headline.new(user: user, latitude: nil, longitude: nil).find_pin(category: :foo)
-      ).to be_nil
+      subject.find_pin
     end
 
     it 'should not find a pin without valid postal_code' do
@@ -24,7 +19,7 @@ describe HomeServices::Headline do
 
       expect(Entourage).not_to receive(:find_by)
       expect(
-        HomeServices::Headline.new(user: user, latitude: nil, longitude: nil).find_pin(category: :foo)
+        subject.find_pin
       ).to be_nil
     end
   end
@@ -32,13 +27,13 @@ describe HomeServices::Headline do
   describe 'find_announcement' do
     let!(:announcement) { FactoryBot.create(:announcement, user_goals: ['goal_not_known'], areas: ['dep_75']) }
 
+    let(:subject) { HomeServices::Headline.new(user: user, latitude: nil, longitude: nil) }
+
     it 'should find default announcement' do
       allow(ModerationArea).to receive(:all_slugs) { [:dep_75] }
       allow(user).to receive(:departement_slugs) { [:dep_75] }
 
-      expect(
-        HomeServices::Headline.new(user: user, latitude: nil, longitude: nil).find_announcement
-      ).to eq(announcement)
+      expect(subject.find_announcement).to eq(announcement)
     end
 
     it 'should find nil if no default announcement' do
@@ -47,9 +42,7 @@ describe HomeServices::Headline do
       allow(ModerationArea).to receive(:all_slugs) { [:dep_75] }
       allow(user).to receive(:departement_slugs) { [:dep_75] }
 
-      expect(
-        HomeServices::Headline.new(user: user, latitude: nil, longitude: nil).find_announcement
-      ).to be_nil
+      expect(subject.find_announcement).to be_nil
     end
 
     it 'should find announcement with a given category' do
@@ -58,58 +51,72 @@ describe HomeServices::Headline do
       allow(ModerationArea).to receive(:all_slugs) { [:dep_75] }
       allow(user).to receive(:departement_slugs) { [:dep_75] }
 
-      expect(
-        HomeServices::Headline.new(user: user, latitude: nil, longitude: nil).find_announcement(category: :foo)
-      ).to eq(announcement)
+      expect(subject.find_announcement(category: :foo)).to eq(announcement)
     end
   end
 
   describe 'find_outing' do
+    # outing coordinates: (48.854367553785, 2.27034058909627)
     let!(:outing) { FactoryBot.create(:outing) }
     let!(:second) { FactoryBot.create(:outing) }
 
+    # 3,092km from outing
+    let(:subject) { HomeServices::Headline.new(user: user, latitude: 48.83, longitude: 2.25) }
+
     it 'should find an outing' do
-      expect(
-        HomeServices::Headline.new(user: user, latitude: 48.854367553784954, longitude: 2.270340589096274).find_outing
-      ).to eq(outing)
+      expect(subject.find_outing).to eq(outing)
+    end
+
+    it 'should find an outing within user travel_distance' do
+      user.update_attribute(:travel_distance, 8)
+
+      expect(subject.find_outing).to eq(outing)
+    end
+
+    it 'should not find an outing outside user travel_distance' do
+      user.update_attribute(:travel_distance, 2)
+
+      expect(subject.find_outing).to be_nil
     end
 
     it 'should not find a closed outing' do
       outing.update_attribute(:status, :closed)
       second.update_attribute(:status, :closed)
 
-      expect(
-        HomeServices::Headline.new(user: user, latitude: 48.854367553784954, longitude: 2.270340589096274).find_outing
-      ).to be_nil
+      expect(subject.find_outing).to be_nil
     end
 
     it 'should find an offset outing' do
-      expect(
-        HomeServices::Headline.new(user: user, latitude: 48.854367553784954, longitude: 2.270340589096274).find_outing(offset: 1)
-      ).to eq(second)
+      expect(subject.find_outing(offset: 1)).to eq(second)
     end
   end
 
   describe 'find_action' do
+    # action coordinates: 1.122, 2.345
     let!(:action) { FactoryBot.create(:entourage) }
     let!(:second) { FactoryBot.create(:entourage) }
 
+    # 5,57km from action
+    let(:subject) { HomeServices::Headline.new(user: user, latitude: 1.1, longitude: 2.3) }
+
     it 'should find an action' do
-      expect(
-        HomeServices::Headline.new(user: user, latitude: 1.122, longitude: 2.345).find_action
-      ).to eq(second) # created_at desc
+      expect(subject.find_action).to eq(second) # created_at desc
     end
 
-    it 'should not find a far action' do
-      expect(
-        HomeServices::Headline.new(user: user, latitude: 10.122, longitude: 2.345).find_action
-      ).to be_nil
+    it 'should find an action within user travel_distance' do
+      user.update_attribute(:travel_distance, 8)
+
+      expect(subject.find_action).to eq(second)
+    end
+
+    it 'should not find an action outside user travel_distance' do
+      user.update_attribute(:travel_distance, 2)
+
+      expect(subject.find_action).to be_nil
     end
 
     it 'should find an offset action' do
-      expect(
-        HomeServices::Headline.new(user: user, latitude: 1.122, longitude: 2.345).find_action(offset: 1)
-      ).to eq(action) # created_at desc
+      expect(subject.find_action(offset: 1)).to eq(action) # created_at desc
     end
   end
 
@@ -140,7 +147,7 @@ describe HomeServices::Headline do
 
       # pin
       expect(headlines[0][:type]).to eq('Entourage')
-      expect(headlines[0][:name]).to eq(:pin_neighborhood)
+      expect(headlines[0][:name]).to eq(:pin)
       expect(headlines[0][:instance]).to eq(pin)
       # announcement_0
       expect(headlines[1][:type]).to eq('Announcement')

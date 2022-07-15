@@ -1,29 +1,28 @@
 module HomeServices
   class Headline
-    ACTION_CATEGORIES = [:mat_help, :neighborhood]
+    ACTION_CATEGORIES = [:mat_help]
     TIME_RANGE = 24
-    DISTANCE = 10
     MAX_LENGTH = 5
 
     # currently offer_help, association and default share the same definition
     STRUCTURE = {
       offer_help: {
         active: [
-          { type: :pin, category: :neighborhood },
+          { type: :pin },
           { type: :announcement, offset: 0 },
           { type: :announcement, offset: 1 },
           { type: :announcement, offset: 2 },
           { type: :announcement, category: :online },
         ],
         animated: [
-          { type: :pin, category: :neighborhood },
+          { type: :pin },
           { type: :announcement, offset: 0 },
           { type: :announcement, offset: 1 },
           { type: :announcement, offset: 2 },
           { type: :announcement, category: :online },
         ],
         dead: [
-          { type: :pin, category: :neighborhood },
+          { type: :pin },
           { type: :announcement, offset: 0 },
           { type: :announcement, offset: 1 },
           { type: :announcement, offset: 2 },
@@ -32,21 +31,21 @@ module HomeServices
       },
       association: {
         active: [
-          { type: :pin, category: :neighborhood },
+          { type: :pin },
           { type: :announcement, offset: 0 },
           { type: :announcement, offset: 1 },
           { type: :announcement, offset: 2 },
           { type: :announcement, category: :online },
         ],
         animated: [
-          { type: :pin, category: :neighborhood },
+          { type: :pin },
           { type: :announcement, offset: 0 },
           { type: :announcement, offset: 1 },
           { type: :announcement, offset: 2 },
           { type: :announcement, category: :online },
         ],
         dead: [
-          { type: :pin, category: :neighborhood },
+          { type: :pin },
           { type: :announcement, offset: 0 },
           { type: :announcement, offset: 1 },
           { type: :announcement, offset: 2 },
@@ -55,14 +54,14 @@ module HomeServices
       },
       ask_for_help: {
         active: [
-          { type: :pin, category: :neighborhood },
+          { type: :pin },
           { type: :announcement, offset: 0 },
           { type: :announcement, offset: 1 },
           { type: :announcement, offset: 2 },
           { type: :announcement, category: :online },
         ],
         animated: [
-          { type: :pin, category: :neighborhood },
+          { type: :pin },
           { type: :announcement, offset: 0 },
           { type: :announcement, offset: 1 },
           { type: :announcement, offset: 2 },
@@ -78,21 +77,21 @@ module HomeServices
       },
       default: {
         active: [
-          { type: :pin, category: :neighborhood },
+          { type: :pin },
           { type: :announcement, offset: 0 },
           { type: :announcement, offset: 1 },
           { type: :announcement, offset: 2 },
           { type: :announcement, category: :online },
         ],
         animated: [
-          { type: :pin, category: :neighborhood },
+          { type: :pin },
           { type: :announcement, offset: 0 },
           { type: :announcement, offset: 1 },
           { type: :announcement, offset: 2 },
           { type: :announcement, category: :online },
         ],
         dead: [
-          { type: :pin, category: :neighborhood },
+          { type: :pin },
           { type: :announcement, offset: 0 },
           { type: :announcement, offset: 1 },
           { type: :announcement, offset: 2 },
@@ -108,7 +107,7 @@ module HomeServices
       @latitude = latitude
       @longitude = longitude
       @time_range = TIME_RANGE
-      @distance = DISTANCE
+      @distance = UserService.travel_distance(user: user)
     end
 
     def each
@@ -132,9 +131,7 @@ module HomeServices
       end
     end
 
-    def find_pin category:, offset: 0
-      return unless category == :neighborhood
-
+    def find_pin category: nil, offset: 0
       entourage_id = EntourageServices::Pins.pinned_for(user)
       return unless entourage_id
 

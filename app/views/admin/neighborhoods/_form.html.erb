@@ -1,0 +1,111 @@
+<style>
+  .field_with_errors { display: inline-block }
+</style>
+
+<%= render partial: 'common/errors', locals: { obj: @neighborhood } %>
+<%= form_for [:admin, @neighborhood], html: { role: "form" } do |f| %>
+  <div class="form-group">
+    <%= f.label :status %>
+    <div class="controls">
+      <%= f.check_box :status, {
+        checked: @neighborhood.active?,
+        'data-toggle': :toggle,
+        'data-on': "Active",
+        'data-off': "Inactive",
+        'data-onstyle': :success,
+        'data-offstyle': :danger
+      }, :active, :deleted %>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :name %>
+    <div class="controls">
+      <%= f.text_field :name, class: "form-control", required: true %>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :description %>
+    <div class="controls">
+      <%= f.text_area :description, class: "form-control", required: true, rows: 8 %>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :interests %>
+    <div class="controls">
+      <%= f.collection_select :interests, Tag.interests, :first, :last, {}, { multiple: true } %>
+    </div>
+  </div>
+
+  <div class="form-group" id="address-block">
+    <label class="control-label">Adresse</label>
+    <div class="controls">
+      <input id="autocomplete" value="<%= @neighborhood.street_address %>" type="text" class="form-control"></input>
+      <%= f.hidden_field :google_place_id, disabled: true %>
+      <div class="adress-maps" id="addressMaps">
+        <img src="https://maps.googleapis.com/maps/api/staticmap?zoom=6&size=200x200&markers=<%= @neighborhood.latitude %>,<%= @neighborhood.longitude %>&key=<%= ENV['GOOGLE_FRONTEND_API_KEY'] %>" width="200" height="200" />
+        <img src="https://maps.googleapis.com/maps/api/staticmap?zoom=13&size=400x200&markers=<%= @neighborhood.latitude %>,<%= @neighborhood.longitude %>&key=<%= ENV['GOOGLE_FRONTEND_API_KEY'] %>&style=feature:road|element:labels|visibility:off&style=feature:water|element:labels|visibility:off" width="400" height="200" />
+      </div>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :image_url %>
+    <% if @neighborhood.image_url %>
+      <div style="margin-bottom: 15px">
+        <%= image_tag(@neighborhood.image_url, size: '300x100') if @neighborhood.image_url.present? %>
+      </div>
+    <% end %>
+
+    <div>
+      <%= link_to "Modifier", edit_image_admin_neighborhood_path, class: "btn btn-default btn-sm" %>
+    </div>
+  </div>
+
+  <%= f.submit 'Enregistrer', class: "btn btn-primary" %>
+  <%= link_to "Retour", admin_neighborhoods_path, class: "btn btn-default" %>
+<% end %>
+
+<script>
+  $('select#neighborhood_interests').select2({ width: '100%' });
+</script>
+
+<script>
+  var autocomplete;
+
+  function initAutocomplete() {
+    var $autocomplete = $('#autocomplete');
+    autocomplete = new google.maps.places.Autocomplete($autocomplete[0], {
+      types: ['geocode']
+    });
+
+    autocomplete.addListener('place_changed', fillInLocation);
+    $autocomplete.on('keypress', function(e) {
+      if ((e.keyCode || e.which || e.charCode) === 13) {
+        e.preventDefault();
+      }
+    });
+  }
+
+  function fillInLocation() {
+    var google_place_id = autocomplete.getPlace().place_id;
+    var location = autocomplete.getPlace().geometry.location,
+        lat = location.lat(),
+        lng = location.lng();
+
+    $('#neighborhood_google_place_id').val(google_place_id).prop('disabled', false);
+    $('#addressMaps img').each(function(_, map) {
+      map.src = map.src.replace(/markers=[^&]*/, 'markers=' + lat + ',' + lng);
+    })
+  }
+
+  initAutocomplete();
+</script>
+
+<script>
+  $(document).on('turbolinks:load', function() {
+    $('#neighborhood_status').bootstrapToggle()
+  })
+</script>

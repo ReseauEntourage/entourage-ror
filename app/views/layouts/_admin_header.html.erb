@@ -33,6 +33,11 @@
           <ul class="dropdown-menu">
             <li><%= link_to "Cartes d'annonce", admin_announcements_path %></li>
             <li><%= link_to "Photos d'événements", admin_entourage_images_path %></li>
+            <li><%= link_to "Photos de groupes de voisinages", admin_neighborhood_images_path %></li>
+            <li><%= link_to "Photos de recommandations", admin_recommandation_images_path %></li>
+            <li><%= link_to "Photos de contenus pédagogiques", admin_resource_images_path %></li>
+            <li><%= link_to "Recommandations", admin_recommandations_path %></li>
+            <li><%= link_to "Contenus pédagogiques", admin_resources_path %></li>
             <li><%= link_to "Pois", admin_pois_path %></li>
             <li><%= link_to "Zones de modération", admin_moderation_areas_path %></li>
             <li><%= link_to "Zones de maraudes", admin_tour_areas_path %></li>
@@ -46,6 +51,7 @@
             <span class="caret"></span>
           </a>
           <ul class="dropdown-menu">
+            <li><%= link_to "Groupes de voisinage", admin_neighborhoods_path %></li>
             <li><%= link_to "Associations - Demandes d'adhésion", admin_partner_registrations_path %></li>
             <li><%= link_to "Associations - Liste", admin_partners_path %></li>
 

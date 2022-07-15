@@ -24,6 +24,13 @@
         </div>
       </div>
 
+      <div class="control-group">
+        <%= f.label :interests, "Centres d'intérêts", class: "control-label" %>
+        <div class="controls">
+          <%= f.collection_select :interests, Tag.interest_list, :to_s, :to_s, {}, { multiple: true } %>
+        </div>
+      </div>
+
       <% unless @user.new_record? %>
         <div style="display: flex">
           <div class="control-group">
@@ -122,6 +129,13 @@
       <div class="controls">
         <%= f.collection_select :partner_id, Partner.staff, :id, :name, { include_blank: true }, { required: true, disabled: !is_staff, id: 'partner_id_staff' }
         %>
+      </div>
+    </div>
+
+    <div class="control-group" style="margin-left: 30px">
+      <%= f.label :travel_distance, class: "control-label" %>
+      <div class="controls">
+        <%= f.number_field :travel_distance, class: "form-control" %>
       </div>
     </div>
   </div>
@@ -326,4 +340,6 @@
   });
 
   $('select').select2({ width: 200 });
+  $('select#user_interests').select2({ width: '100%' });
+
 </script>
