@@ -153,4 +153,16 @@ describe Api::V1::ContributionsController, :type => :controller do
       it { expect(subject["contributions"][1]["id"]).to eq(contribution.id) }
     end
   end
+
+  describe 'GET show' do
+    subject { JSON.parse(response.body) }
+
+    let(:contribution) { FactoryBot.create(:contribution) }
+
+    before { get :show, params: { token: user.token, id: contribution.id } }
+
+    it { expect(response.status).to eq 200 }
+    it { expect(subject).to have_key("contribution") }
+    it { expect(subject["contribution"]).to have_key("posts") }
+  end
 end

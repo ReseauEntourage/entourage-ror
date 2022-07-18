@@ -25,6 +25,10 @@ module Api
         params.permit(:latitude, :longitude, :travel_distance, :page, :per)
       end
 
+      def join_request
+        @join_request ||= JoinRequest.where(joinable: @solicitation, user: current_user, status: :accepted).first
+      end
+
       def set_last_message_read
         return unless join_request
 
