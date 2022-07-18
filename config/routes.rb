@@ -435,6 +435,9 @@ Rails.application.routes.draw do
         end
       end
 
+      resources :contributions, only: [:index, :create, :show, :update] do
+      end
+
       resources :solicitations, only: [:index, :create, :show, :update] do
       end
 

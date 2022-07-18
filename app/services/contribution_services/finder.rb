@@ -1,4 +1,4 @@
-module SolicitationServices
+module ContributionServices
   class Finder
     attr_reader :user, :latitude, :longitude, :distance
 
@@ -17,16 +17,16 @@ module SolicitationServices
     end
 
     def find_all
-      solicitations = Solicitation.active.where.not(id: user.solicitation_membership_ids)
+      contributions = Contribution.active.where.not(id: user.contribution_membership_ids)
 
       if latitude && longitude
         bounding_box_sql = Geocoder::Sql.within_bounding_box(*box, :latitude, :longitude)
 
-        solicitations = solicitations.where(bounding_box_sql)
+        contributions = contributions.where(bounding_box_sql)
       end
 
       # order by feed_updated_at is already in default_scope
-      solicitations.group(:id)
+      contributions.group(:id)
     end
 
     private
