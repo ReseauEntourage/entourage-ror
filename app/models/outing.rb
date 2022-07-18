@@ -43,7 +43,6 @@ class Outing < Entourage
   default_scope { where(group_type: :outing).order(Arel.sql("metadata->>'starts_at'")) }
 
   scope :future, -> { where("metadata->>'starts_at' >= ?", Time.zone.now) }
-  scope :active, -> { where(status: ['open', 'full']) }
 
   attr_accessor :recurrency, :original_outing, :force_relatives_dates
 

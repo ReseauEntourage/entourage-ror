@@ -1,0 +1,2 @@
+class Solicitation < Entourage
+end
