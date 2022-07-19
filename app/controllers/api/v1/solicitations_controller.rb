@@ -15,6 +15,18 @@ module Api
         render json: @solicitation, serializer: ::V1::Actions::SolicitationHomeSerializer, scope: { user: current_user }
       end
 
+      def create
+        EntourageServices::SolicitationBuilder.new(params: solicitation_params, user: current_user).create do |on|
+          on.success do |solicitation|
+            render json: solicitation, root: :solicitation, status: 201, serializer: ::V1::Actions::SolicitationSerializer, scope: { user: current_user }
+          end
+
+          on.failure do |solicitation|
+            render json: { message: 'Could not create solicitation', reasons: solicitation.errors.full_messages }, status: 400
+          end
+        end
+      end
+
       private
 
       def set_solicitation
@@ -23,6 +35,15 @@ module Api
 
       def index_params
         params.permit(:latitude, :longitude, :travel_distance, :page, :per)
+      end
+
+      def solicitation_params
+        metadata_keys = params.dig(:solicitation, :metadata).try(:keys) || []
+        params.require(:solicitation).permit({
+          location: [:longitude, :latitude]
+        }, :postal_code, :title, :description, {
+          metadata: metadata_keys
+        }, :recipient_consent_obtained)
       end
 
       def join_request

@@ -154,6 +154,60 @@ describe Api::V1::ContributionsController, :type => :controller do
     end
   end
 
+  context 'create' do
+    subject { JSON.parse(response.body) }
+    let(:result) { Contribution.find(subject['contribution']['id']) }
+
+    let(:params) { {
+      title: "Apéro Entourage",
+      description: "Au Social Bar",
+      metadata: {
+        city: 'Nantes',
+      },
+      postal_code: '44000',
+      location: {
+        latitude: 48.85,
+        longitude: 2.4,
+      },
+      recipient_consent_obtained: true
+    } }
+
+    context "not signed in" do
+      before { post :create, params: { contribution: params } }
+      it { expect(response.status).to eq(401) }
+      it { expect(Contribution.count).to eq(0) }
+    end
+
+    context "signed in" do
+      context "without all required parameters" do
+        before { post :create, params: { contribution: {
+          title: "foobar",
+          longitude: 1.123,
+          latitude: 4.567
+        }, token: user.token } }
+
+        it { expect(response.status).to eq(400) }
+        it { expect(Contribution.count).to eq(0) }
+        it { expect(subject).to have_key("message") }
+        it { expect(subject).to have_key("reasons") }
+      end
+
+      context "with all required parameters" do
+        before { post :create, params: { contribution: params, token: user.token } }
+
+        it { expect(response.status).to eq(201) }
+        it { expect(subject).to have_key("contribution") }
+        it { expect(Contribution.count).to eq(1) }
+        it { expect(Contribution.last.metadata).to have_key(:city) }
+        it { expect(result.group_type).to eq("action") }
+        it { expect(result.entourage_type).to eq("contribution") }
+        it { expect(result.member_ids).to match_array([user.id]) }
+        it { expect(result.moderation).to be_a(EntourageModeration) }
+        it { expect(result.moderation.action_recipient_consent_obtained).to eq("Oui") }
+      end
+    end
+  end
+
   describe 'GET show' do
     subject { JSON.parse(response.body) }
 
