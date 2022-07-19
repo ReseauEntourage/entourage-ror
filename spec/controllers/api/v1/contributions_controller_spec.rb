@@ -168,8 +168,7 @@ describe Api::V1::ContributionsController, :type => :controller do
       location: {
         latitude: 48.85,
         longitude: 2.4,
-      },
-      recipient_consent_obtained: true
+      }
     } }
 
     context "not signed in" do
@@ -202,8 +201,46 @@ describe Api::V1::ContributionsController, :type => :controller do
         it { expect(result.group_type).to eq("action") }
         it { expect(result.entourage_type).to eq("contribution") }
         it { expect(result.member_ids).to match_array([user.id]) }
-        it { expect(result.moderation).to be_a(EntourageModeration) }
-        it { expect(result.moderation.action_recipient_consent_obtained).to eq("Oui") }
+        it { expect(result.moderation).to be_nil }
+      end
+    end
+  end
+
+  describe 'PATCH update' do
+    subject { JSON.parse(response.body) }
+
+    let(:contribution) { FactoryBot.create(:contribution, status: :open) }
+
+    context "not signed in" do
+      before { patch :update, params: { id: contribution.to_param, contribution: { title: "new title" } } }
+      it { expect(response.status).to eq(401) }
+    end
+
+    context "signed in" do
+      context "user is not creator" do
+        before { patch :update, params: { id: contribution.to_param, contribution: { title: "new title" }, token: user.token } }
+        it { expect(response.status).to eq(401) }
+      end
+
+      context "user is creator" do
+        let(:contribution) { FactoryBot.create(:contribution, :joined, user: user, status: :open) }
+
+        before { patch :update, params: { id: contribution.to_param, contribution: { title: "New title" }, token: user.token } }
+
+        it { expect(response.status).to eq(200) }
+        it { expect(subject).to have_key('contribution') }
+        it { expect(subject['contribution']['title']).to eq('New title') }
+      end
+
+      context "close" do
+        let(:contribution) { FactoryBot.create(:contribution, :joined, user: user, status: :open) }
+
+        before { patch :update, params: { id: contribution.to_param, contribution: { status: :closed }, token: user.token } }
+
+        it { expect(response.status).to eq(200) }
+        it { expect(subject).to have_key('contribution') }
+        it { expect(subject['contribution']['status']).to eq('closed') }
+        it { expect(contribution.reload.status).to eq('closed') }
       end
     end
   end
