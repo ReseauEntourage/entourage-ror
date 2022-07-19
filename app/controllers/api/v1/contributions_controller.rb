@@ -27,6 +27,22 @@ module Api
         end
       end
 
+      def update
+        return render json: { message: 'unauthorized' }, status: :unauthorized unless @contribution.user == current_user
+
+        EntourageServices::EntourageBuilder.new(params: contribution_params, user: current_user).update(entourage: @contribution) do |on|
+          on.success do |contribution|
+            render json: contribution, status: 200, serializer: ::V1::Actions::ContributionSerializer, scope: { user: current_user }
+          end
+
+          on.failure do |contribution|
+            render json: {
+              message: 'Could not update contribution', reasons: contribution.errors.full_messages
+            }, status: 400
+          end
+        end
+      end
+
       private
 
       def set_contribution
@@ -41,7 +57,7 @@ module Api
         metadata_keys = params.dig(:contribution, :metadata).try(:keys) || []
         params.require(:contribution).permit({
           location: [:longitude, :latitude]
-        }, :postal_code, :title, :description, {
+        }, :status, :postal_code, :title, :description, {
           metadata: metadata_keys
         })
       end

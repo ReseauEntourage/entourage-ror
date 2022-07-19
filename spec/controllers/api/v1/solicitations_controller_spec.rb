@@ -208,6 +208,45 @@ describe Api::V1::SolicitationsController, :type => :controller do
     end
   end
 
+  describe 'PATCH update' do
+    subject { JSON.parse(response.body) }
+
+    let(:solicitation) { FactoryBot.create(:solicitation, status: :open) }
+
+    context "not signed in" do
+      before { patch :update, params: { id: solicitation.to_param, solicitation: { title: "new title" } } }
+      it { expect(response.status).to eq(401) }
+    end
+
+    context "signed in" do
+      context "user is not creator" do
+        before { patch :update, params: { id: solicitation.to_param, solicitation: { title: "new title" }, token: user.token } }
+        it { expect(response.status).to eq(401) }
+      end
+
+      context "user is creator" do
+        let(:solicitation) { FactoryBot.create(:solicitation, :joined, user: user, status: :open) }
+
+        before { patch :update, params: { id: solicitation.to_param, solicitation: { title: "New title" }, token: user.token } }
+
+        it { expect(response.status).to eq(200) }
+        it { expect(subject).to have_key('solicitation') }
+        it { expect(subject['solicitation']['title']).to eq('New title') }
+      end
+
+      context "close" do
+        let(:solicitation) { FactoryBot.create(:solicitation, :joined, user: user, status: :open) }
+
+        before { patch :update, params: { id: solicitation.to_param, solicitation: { status: :closed }, token: user.token } }
+
+        it { expect(response.status).to eq(200) }
+        it { expect(subject).to have_key('solicitation') }
+        it { expect(subject['solicitation']['status']).to eq('closed') }
+        it { expect(solicitation.reload.status).to eq('closed') }
+      end
+    end
+  end
+
   describe 'GET show' do
     subject { JSON.parse(response.body) }
 

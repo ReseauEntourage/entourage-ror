@@ -27,6 +27,22 @@ module Api
         end
       end
 
+      def update
+        return render json: { message: 'unauthorized' }, status: :unauthorized unless @solicitation.user == current_user
+
+        EntourageServices::EntourageBuilder.new(params: solicitation_params, user: current_user).update(entourage: @solicitation) do |on|
+          on.success do |solicitation|
+            render json: solicitation, status: 200, serializer: ::V1::Actions::SolicitationSerializer, scope: { user: current_user }
+          end
+
+          on.failure do |solicitation|
+            render json: {
+              message: 'Could not update solicitation', reasons: solicitation.errors.full_messages
+            }, status: 400
+          end
+        end
+      end
+
       private
 
       def set_solicitation
@@ -41,7 +57,7 @@ module Api
         metadata_keys = params.dig(:solicitation, :metadata).try(:keys) || []
         params.require(:solicitation).permit({
           location: [:longitude, :latitude]
-        }, :postal_code, :title, :description, {
+        }, :status, :postal_code, :title, :description, {
           metadata: metadata_keys
         }, :recipient_consent_obtained)
       end
