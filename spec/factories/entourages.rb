@@ -66,6 +66,14 @@ FactoryBot.define do
       end
     end
 
+    factory :contribution do
+      entourage_type { "contribution" }
+    end
+
+    factory :solicitation do
+      entourage_type { "ask_for_help" }
+    end
+
     factory :conversation do
       group_type { "conversation" }
 

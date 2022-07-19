@@ -17,6 +17,17 @@ describe Api::V1::OutingsController do
     let(:outing) { FactoryBot.create(:outing, latitude: latitude, longitude: longitude) }
     let!(:join_request) { create(:join_request, user: outing.user, joinable: outing, status: :accepted, role: :organizer) }
 
+    describe 'do not get closed' do
+      let!(:closed) { create :outing, status: :closed }
+
+      before { get :index, params: { token: user.token } }
+
+      it { expect(response.status).to eq 200 }
+      it { expect(subject).to have_key('outings') }
+      it { expect(subject['outings'].count).to eq(1) }
+      it { expect(subject['outings'][0]['id']).to eq(outing.id) }
+    end
+
     context "some user is a member" do
       before { request }
 

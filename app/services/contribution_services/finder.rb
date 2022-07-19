@@ -1,4 +1,4 @@
-module OutingsServices
+module ContributionServices
   class Finder
     attr_reader :user, :latitude, :longitude, :distance
 
@@ -17,16 +17,16 @@ module OutingsServices
     end
 
     def find_all
-      outings = Outing.active.future.where.not(id: user.outing_membership_ids)
+      contributions = Contribution.active.where.not(id: user.contribution_membership_ids)
 
       if latitude && longitude
         bounding_box_sql = Geocoder::Sql.within_bounding_box(*box, :latitude, :longitude)
 
-        outings = outings.where("(#{bounding_box_sql}) OR online = true")
+        contributions = contributions.where(bounding_box_sql)
       end
 
-      # order by starts_at is already in default_scope
-      outings.group(:id)
+      # order by feed_updated_at is already in default_scope
+      contributions.group(:id)
     end
 
     private

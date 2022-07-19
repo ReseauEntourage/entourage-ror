@@ -62,6 +62,7 @@ class Entourage < ApplicationRecord
   validate :validate_outings_ends_at
   validates :image_url, format: { with: %r(\Ahttps?://\S+\z) }, allow_blank: true
 
+  scope :active, -> { where(status: ['open', 'full']) }
   scope :visible, -> { where.not(status: ['blacklisted', 'suspended']) }
   scope :findable, -> { where.not(status: ['blacklisted']) }
   scope :social_category, -> { where(category: 'social') }
