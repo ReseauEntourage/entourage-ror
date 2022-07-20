@@ -539,22 +539,22 @@ describe Api::V1::OutingsController do
   describe 'POST #report' do
     let(:outing) { create :outing }
 
-    ENV['SLACK_SIGNAL_OUTING_WEBHOOK'] = '{"url":"https://url.to.slack.com","channel":"channel","username":"signal-outing"}'
+    ENV['SLACK_SIGNAL'] = '{"url":"https://url.to.slack.com","channel":"channel"}'
 
     before { stub_request(:post, "https://url.to.slack.com").to_return(status: 200) }
 
     context "valid params" do
       before {
         expect_any_instance_of(SlackServices::SignalOuting).to receive(:notify)
-        post 'report', params: { token: user.token, id: outing.id, report: { category: 'foo', message: 'bar' } }
+        post 'report', params: { token: user.token, id: outing.id, report: { signals: ['foo'], message: 'bar' } }
       }
       it { expect(response.status).to eq 201 }
     end
 
-    context "missing category" do
+    context "missing signals" do
       before {
         expect_any_instance_of(SlackServices::SignalOuting).not_to receive(:notify)
-        post 'report', params: { token: user.token, id: outing.id, report: { category: '', message: 'bar' } }
+        post 'report', params: { token: user.token, id: outing.id, report: { signals: [], message: 'bar' } }
       }
       it { expect(response.status).to eq 400 }
     end

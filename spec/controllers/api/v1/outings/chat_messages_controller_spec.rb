@@ -225,7 +225,7 @@ describe Api::V1::Outings::ChatMessagesController do
     let(:chat_message) { create :chat_message, messageable: outing }
     let!(:join_request) { FactoryBot.create(:join_request, joinable: outing, user: user, status: "accepted") }
 
-    ENV['SLACK_SIGNAL_OUTING_WEBHOOK'] = '{"url":"https://url.to.slack.com","channel":"channel","username":"signal-outing"}'
+    ENV['SLACK_SIGNAL'] = '{"url":"https://url.to.slack.com","channel":"channel"}'
 
     before { stub_request(:post, "https://url.to.slack.com").to_return(status: 200) }
 
@@ -233,14 +233,14 @@ describe Api::V1::Outings::ChatMessagesController do
       before {
         expect_any_instance_of(SlackServices::SignalOutingChatMessage).to receive(:notify)
         post :report, params: { token: user.token, outing_id: outing.id, chat_message_id: chat_message.id, report: {
-          category: 'foo',
+          signals: ['foo'],
           message: 'bar'
         } }
       }
       it { expect(response.status).to eq 201 }
     end
 
-    context "wrong messageable cause no report category" do
+    context "wrong messageable cause no report signals" do
       before {
         expect_any_instance_of(SlackServices::SignalOutingChatMessage).not_to receive(:notify)
         post :report, params: { token: user.token, outing_id: outing.id, chat_message_id: chat_message.id, report: {
