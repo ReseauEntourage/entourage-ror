@@ -6,7 +6,7 @@ module SlackServices
     end
 
     def env
-      ENV['SLACK_SIGNAL_SPAM_WEBHOOK']
+      ENV['SLACK_SIGNAL']
     end
 
     def payload
@@ -25,7 +25,7 @@ module SlackServices
 
     def payload_adds
       {
-        username: webhook('username-signal-spam'),
+        username: "Signalement de spam",
         channel: webhook('channel'),
       }
     end

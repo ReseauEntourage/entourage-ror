@@ -8,7 +8,7 @@ module SlackServices
     end
 
     def env
-      ENV['SLACK_SIGNAL_NEIGHBORHOOD_WEBHOOK']
+      ENV['SLACK_SIGNAL']
     end
 
     def payload
@@ -30,7 +30,7 @@ module SlackServices
 
     def payload_adds
       {
-        username: webhook('username'),
+        username: "Signalement d'un groupe de voisinage",
         channel: webhook('channel'),
       }
     end
