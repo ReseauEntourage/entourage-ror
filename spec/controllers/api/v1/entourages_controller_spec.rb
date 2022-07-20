@@ -1220,7 +1220,7 @@ describe Api::V1::EntouragesController do
     let(:reporting_user) { create :public_user }
     let(:reported_group) { create :entourage }
 
-    ENV['SLACK_SIGNAL_GROUP_WEBHOOK'] = '{"url":"https://url.to.slack.com","channel":"channel","username":"signal-group"}'
+    ENV['SLACK_SIGNAL_GROUP_WEBHOOK'] = '{"url":"https://url.to.slack.com","channel":"channel"}'
 
     before { stub_request(:post, "https://url.to.slack.com").to_return(status: 200) }
 
