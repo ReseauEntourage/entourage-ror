@@ -1,7 +1,13 @@
 module V1
   module Actions
     class GenericHomeSerializer < V1::Actions::GenericSerializer
+      attribute :category
       attribute :posts
+
+      def category
+        # we use "Tag.category_list &" to force ordering
+        Tag.category_list & object.category_list
+      end
 
       def posts
         object.parent_chat_messages.ordered.limit(25).map do |chat_message|
