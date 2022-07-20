@@ -6,7 +6,7 @@ resource Api::V1::UsersController do
   header "Content-Type", "application/json"
 
   ENV['ADMIN_HOST'] = 'https://this.is.local'
-  ENV['SLACK_SIGNAL_USER_WEBHOOK'] = '{"url":"https://url.to.slack.com","channel":"channel","username":"signal-user-creation"}'
+  ENV['SLACK_SIGNAL'] = '{"url":"https://url.to.slack.com","channel":"channel"}'
 
   before(:each) {
     ENV['SLACK_WEBHOOK_URL'] = 'https://url.to.slack.com'

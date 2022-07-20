@@ -157,7 +157,7 @@ resource Api::V1::NeighborhoodsController do
 
 
     ENV['ADMIN_HOST'] = 'https://this.is.local'
-    ENV['SLACK_SIGNAL_NEIGHBORHOOD_WEBHOOK'] = '{"url":"https://url.to.slack.com","channel":"channel","username":"signal-neighborhood"}'
+    ENV['SLACK_SIGNAL'] = '{"url":"https://url.to.slack.com","channel":"channel"}'
 
     before { stub_request(:post, "https://url.to.slack.com").to_return(status: 200) }
 

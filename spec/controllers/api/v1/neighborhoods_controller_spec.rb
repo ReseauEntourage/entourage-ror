@@ -473,7 +473,7 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
   describe 'POST #report' do
     let(:neighborhood) { create :neighborhood }
 
-    ENV['SLACK_SIGNAL_NEIGHBORHOOD_WEBHOOK'] = '{"url":"https://url.to.slack.com","channel":"channel","username":"signal-neighborhood"}'
+    ENV['SLACK_SIGNAL'] = '{"url":"https://url.to.slack.com","channel":"channel"}'
 
     before { stub_request(:post, "https://url.to.slack.com").to_return(status: 200) }
 
