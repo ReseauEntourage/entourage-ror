@@ -1,9 +1,9 @@
 module SlackServices
   class SignalOuting < Notifier
-    def initialize outing:, reporting_user:, category:, message:
+    def initialize outing:, reporting_user:, signals:, message:
       @outing = outing
       @reporting_user = find_user(reporting_user)
-      @category = category
+      @signals = signals
       @message = message
     end
 
@@ -22,7 +22,7 @@ module SlackServices
             text: "Signalé par : #{@reporting_user.full_name} #{link_to_user(@reporting_user.id)}"
           },
           {
-            text: "Catégorie #{@category}, message : #{@message}"
+            text: "Catégorie #{@signals}, message : #{@message}"
           },
         ]
       }

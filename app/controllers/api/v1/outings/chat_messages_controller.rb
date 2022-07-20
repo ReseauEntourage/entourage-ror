@@ -42,16 +42,16 @@ module Api
         def report
           return render json: { message: "Wrong chat_message" }, status: :bad_request unless @chat_message
 
-          if report_params[:category].blank?
+          if report_params[:signals].blank?
             render json: {
               code: 'CANNOT_REPORT_OUTING',
-              message: 'category is required'
+              message: 'signals is required'
             }, status: :bad_request and return
           end
 
           SlackServices::SignalOutingChatMessage.new(
             chat_message: @chat_message,
-            category: report_params[:category],
+            signals: report_params[:signals],
             message: report_params[:message],
             reporting_user: current_user
           ).notify
@@ -99,7 +99,7 @@ module Api
         end
 
         def report_params
-          params.require(:report).permit(:category, :message)
+          params.require(:report).permit(:message, signals: [])
         end
 
         def join_request
