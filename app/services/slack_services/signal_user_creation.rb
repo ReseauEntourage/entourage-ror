@@ -6,7 +6,7 @@ module SlackServices
     end
 
     def env
-      ENV['SLACK_SIGNAL_USER_WEBHOOK']
+      ENV['SLACK_SIGNAL']
     end
 
     def payload
@@ -22,7 +22,7 @@ module SlackServices
 
     def payload_adds
       {
-        username: webhook('username-signal-user-creation'),
+        username: "Nouveau compte avec email bloqué",
         channel: webhook('channel'),
       }
     end
