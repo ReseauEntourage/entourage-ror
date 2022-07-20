@@ -281,6 +281,22 @@ fr:
         closed_user: l'utilisateur a quitté le réseau Entourage. N'hésitez pas à rejoindre d'autres actions solidaires sur l'app !
 
   tags:
+    categories:
+      social:
+        name: Lien social / temps partagé
+        subname: proposer un café...
+      services:
+        name: Services
+        subname: laver du linge, aide administrative...
+      clothes:
+        name: Vêtements
+        subname: chaussures, vestes, jean...
+      equipment:
+        name: Équipement
+        subname: tente, meubles, téléphone, écouteurs...
+      hygiene:
+        name: Produit d'hygiène
+        subname: savon, kit hygiène pour les femmes...
     interests:
       activites: Activités manuelles
       animaux: Animaux

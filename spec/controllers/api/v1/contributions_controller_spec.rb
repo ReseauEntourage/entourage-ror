@@ -168,7 +168,8 @@ describe Api::V1::ContributionsController, :type => :controller do
       location: {
         latitude: 48.85,
         longitude: 2.4,
-      }
+      },
+      category: 'social'
     } }
 
     context "not signed in" do
@@ -197,7 +198,8 @@ describe Api::V1::ContributionsController, :type => :controller do
         it { expect(response.status).to eq(201) }
         it { expect(subject).to have_key("contribution") }
         it { expect(Contribution.count).to eq(1) }
-        it { expect(Contribution.last.metadata).to have_key(:city) }
+        it { expect(result.category_list).to eq(['social']) }
+        it { expect(result.metadata).to have_key(:city) }
         it { expect(result.group_type).to eq("action") }
         it { expect(result.entourage_type).to eq("contribution") }
         it { expect(result.member_ids).to match_array([user.id]) }

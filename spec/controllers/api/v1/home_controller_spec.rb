@@ -121,12 +121,22 @@ describe Api::V1::HomeController do
     it { expect(response.status).to eq(200) }
     it { expect(result).to have_key("tags") }
     it { expect(result["tags"]).to be_a(Hash) }
+    # categories
+    it { expect(result["tags"]).to have_key("categories") }
+    it { expect(result["tags"]["categories"]).to be_a(Array) }
+    it { expect(result["tags"]["categories"][0]).to eq({
+      "id" => "social",
+      "name" => "Lien social / temps partagé",
+      "subname" => "proposer un café..."
+    }) }
+    # interests
     it { expect(result["tags"]).to have_key("interests") }
     it { expect(result["tags"]["interests"]).to be_a(Array) }
     it { expect(result["tags"]["interests"][0]).to eq({
       "id" => "activites",
       "name" => "Activités manuelles"
     }) }
+    # signals
     it { expect(result["tags"]).to have_key("signals") }
     it { expect(result["tags"]["signals"]).to be_a(Array) }
     it { expect(result["tags"]["signals"][0]).to eq({

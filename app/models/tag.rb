@@ -8,6 +8,14 @@ class Tag < ApplicationRecord
       I18n.t('tags.interests')
     end
 
+    def category_list
+      categories.keys.map(&:to_s)
+    end
+
+    def categories
+      I18n.t('tags.categories')
+    end
+
     def signal_list
       signals.keys.map(&:to_s)
     end
