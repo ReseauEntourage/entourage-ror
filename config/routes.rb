@@ -407,12 +407,13 @@ Rails.application.routes.draw do
         end
       end
 
-      resources :outings, only: [:index, :create, :show, :update] do
+      resources :outings do
         member do
           put :batch_update
           get :siblings
           post :duplicate
           post :report
+          post :cancel
         end
 
         resources :chat_messages, :controller => 'outings/chat_messages', only: [:index, :create] do
@@ -435,10 +436,10 @@ Rails.application.routes.draw do
         end
       end
 
-      resources :contributions, only: [:index, :create, :show, :update] do
+      resources :contributions do
       end
 
-      resources :solicitations, only: [:index, :create, :show, :update] do
+      resources :solicitations do
       end
 
       resources :conversations, :controller => 'entourages', only: [] do

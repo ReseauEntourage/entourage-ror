@@ -43,6 +43,26 @@ module Api
         end
       end
 
+      def destroy
+        ContributionServices::Deleter.new(user: current_user, contribution: @contribution).delete do |on|
+          on.success do |contribution|
+            render json: contribution, root: "user", status: 200, serializer: ::V1::Actions::ContributionSerializer, scope: { user: current_user }
+          end
+
+          on.failure do |contribution|
+            render json: {
+              message: "Could not delete contribution", reasons: contribution.errors.full_messages
+            }, status: :bad_request
+          end
+
+          on.not_authorized do
+            render json: {
+              message: "You are not authorized to delete this contribution"
+            }, status: :unauthorized
+          end
+        end
+      end
+
       private
 
       def set_contribution

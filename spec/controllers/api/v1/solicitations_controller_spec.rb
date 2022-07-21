@@ -250,4 +250,34 @@ describe Api::V1::SolicitationsController, :type => :controller do
     it { expect(subject["solicitation"]).to have_key("section") }
     it { expect(subject["solicitation"]["section"]).to eq("social") }
   end
+
+  context 'destroy' do
+    let(:creator) { create :pro_user }
+    let(:solicitation) { create :solicitation, user: creator }
+
+    let(:result) { Solicitation.unscoped.find(solicitation.id) }
+
+    describe 'not authorized' do
+      before { delete :destroy, params: { id: solicitation.id } }
+
+      it { expect(response.status).to eq 401 }
+      it { expect(result.status).to eq 'open' }
+    end
+
+    describe 'not authorized cause should be creator' do
+      before { delete :destroy, params: { id: solicitation.id, token: user.token } }
+
+      it { expect(response.status).to eq 401 }
+      it { expect(result.status).to eq 'open' }
+    end
+
+    describe 'authorized' do
+      let(:creator) { user }
+
+      before { delete :destroy, params: { id: solicitation.id, token: user.token } }
+
+      it { expect(response.status).to eq 200 }
+      it { expect(result.status).to eq 'closed' }
+    end
+  end
 end
