@@ -336,8 +336,8 @@ describe User, :type => :model do
     let!(:outing) { create(:outing, user_id: user.id, status: :open) }
     let!(:conversation) { create(:conversation, user_id: user.id, status: :open) }
     let!(:suspended) { create(:entourage, user_id: user.id, status: :suspended) }
-    let!(:join_request_open) { create(:join_request, user: user, joinable: open) }
-    let!(:join_request_suspended) { create(:join_request, user: user, joinable: suspended) }
+    let!(:join_request_open) { create(:join_request, user: user, joinable: open, status: :accepted) }
+    let!(:join_request_suspended) { create(:join_request, user: user, joinable: suspended, status: :accepted) }
 
     let!(:blocked_user) { create(:public_user, phone: '+33600000010', token: 'bar', validation_status: :blocked) }
     let!(:other_entourage) { create(:entourage, user_id: blocked_user.id, status: :open) }

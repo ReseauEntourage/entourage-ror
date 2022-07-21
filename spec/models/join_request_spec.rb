@@ -9,7 +9,8 @@ RSpec.describe JoinRequest, type: :model do
   it { should validate_presence_of :joinable_id }
   it { should validate_presence_of :joinable_type }
   it { should validate_presence_of :status }
-  it { should validate_inclusion_of(:status).in_array(["pending", "accepted", "rejected", "cancelled"]) }
+  it { should validate_inclusion_of(:status).in_array(["accepted"]) }
+  # it { should validate_inclusion_of(:status).in_array(["pending", "accepted", "rejected", "cancelled"]) }
 
   it "has unique join request per user and tour" do
     user = FactoryBot.create(:pro_user)
