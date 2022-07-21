@@ -1,7 +1,12 @@
 module V1
   module Actions
     class GenericHomeSerializer < V1::Actions::GenericSerializer
+      attribute :category
       attribute :posts
+
+      def category
+        object.category_list.first
+      end
 
       def posts
         object.parent_chat_messages.ordered.limit(25).map do |chat_message|

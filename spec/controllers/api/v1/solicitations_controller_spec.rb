@@ -169,6 +169,7 @@ describe Api::V1::SolicitationsController, :type => :controller do
         latitude: 48.85,
         longitude: 2.4,
       },
+      category: 'social',
       recipient_consent_obtained: true
     } }
 
@@ -198,7 +199,8 @@ describe Api::V1::SolicitationsController, :type => :controller do
         it { expect(response.status).to eq(201) }
         it { expect(subject).to have_key("solicitation") }
         it { expect(Solicitation.count).to eq(1) }
-        it { expect(Solicitation.last.metadata).to have_key(:city) }
+        it { expect(result.category_list).to eq(['social']) }
+        it { expect(result.metadata).to have_key(:city) }
         it { expect(result.group_type).to eq("action") }
         it { expect(result.entourage_type).to eq("ask_for_help") }
         it { expect(result.member_ids).to match_array([user.id]) }
@@ -250,12 +252,14 @@ describe Api::V1::SolicitationsController, :type => :controller do
   describe 'GET show' do
     subject { JSON.parse(response.body) }
 
-    let(:solicitation) { FactoryBot.create(:solicitation) }
+    let(:solicitation) { FactoryBot.create(:solicitation, category: "social") }
 
     before { get :show, params: { token: user.token, id: solicitation.id } }
 
     it { expect(response.status).to eq 200 }
     it { expect(subject).to have_key("solicitation") }
     it { expect(subject["solicitation"]).to have_key("posts") }
+    it { expect(subject["solicitation"]).to have_key("category") }
+    it { expect(subject["solicitation"]["category"]).to eq("social") }
   end
 end

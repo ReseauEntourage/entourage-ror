@@ -67,10 +67,12 @@ FactoryBot.define do
     end
 
     factory :contribution do
+      initialize_with { Contribution.new(attributes) }
       entourage_type { "contribution" }
     end
 
     factory :solicitation do
+      initialize_with { Solicitation.new(attributes) }
       entourage_type { "ask_for_help" }
     end
 

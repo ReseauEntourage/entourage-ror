@@ -1,5 +1,6 @@
 class Solicitation < Entourage
   include Actionable
+  include Categorizable
 
   default_scope { where(group_type: :action, entourage_type: :ask_for_help).order(feed_updated_at: :desc) }
 
