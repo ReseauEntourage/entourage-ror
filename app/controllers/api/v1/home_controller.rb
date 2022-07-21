@@ -40,7 +40,7 @@ module Api
       def metadata
         render json: {
           tags: {
-            categories: format_categories(Tag.categories),
+            sections: format_sections(Tag.sections),
             interests: format_tags(Tag.interests),
             signals: format_tags(Tag.signals)
           }
@@ -97,8 +97,8 @@ module Api
         tags.to_a.map { |t| { id: t.first, name: t.last } }
       end
 
-      def format_categories categories
-        categories.to_a.map { |t| { id: t.first }.merge(t.last) }
+      def format_sections sections
+        sections.to_a.map { |t| { id: t.first }.merge(t.last) }
       end
     end
   end
