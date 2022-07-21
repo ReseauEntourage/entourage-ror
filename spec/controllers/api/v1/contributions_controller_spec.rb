@@ -12,8 +12,7 @@ describe Api::V1::ContributionsController, :type => :controller do
     let(:latitude) { 48.85 }
     let(:longitude) { 2.27 }
 
-    let(:contribution) { FactoryBot.create(:contribution, latitude: latitude, longitude: longitude) }
-    let!(:join_request) { create(:join_request, user: contribution.user, joinable: contribution, status: :accepted, role: :member) }
+    let!(:contribution) { FactoryBot.create(:contribution, latitude: latitude, longitude: longitude) }
 
     describe 'not authorized' do
       before { get :index }
@@ -29,14 +28,13 @@ describe Api::V1::ContributionsController, :type => :controller do
     end
 
     describe 'do not get closed' do
-      let!(:closed) { create :contribution, status: :closed }
+      let!(:contribution) { create :contribution, status: :closed }
 
       before { get :index, params: { token: user.token } }
 
       it { expect(response.status).to eq 200 }
       it { expect(subject).to have_key('contributions') }
-      it { expect(subject['contributions'].count).to eq(1) }
-      it { expect(subject['contributions'][0]['id']).to eq(contribution.id) }
+      it { expect(subject['contributions'].count).to eq(0) }
     end
 
     context "some user is a member" do
@@ -54,8 +52,8 @@ describe Api::V1::ContributionsController, :type => :controller do
     end
 
     context "some users are members" do
-      let!(:join_request_1) { create(:join_request, user: FactoryBot.create(:public_user), joinable: contribution, status: :accepted, role: :creator) }
-      let!(:join_request_2) { create(:join_request, user: FactoryBot.create(:public_user), joinable: contribution, status: :accepted, role: :creator) }
+      let!(:join_request_1) { create(:join_request, user: FactoryBot.create(:public_user), joinable: contribution, status: :accepted, role: :member) }
+      let!(:join_request_2) { create(:join_request, user: FactoryBot.create(:public_user), joinable: contribution, status: :accepted, role: :member) }
 
       before { request }
 
@@ -67,7 +65,7 @@ describe Api::V1::ContributionsController, :type => :controller do
     end
 
     context "user being a member" do
-      let!(:join_request) { create(:join_request, user: user, joinable: contribution, status: :accepted, role: :creator) }
+      let!(:join_request) { create(:join_request, user: user, joinable: contribution, status: :accepted, role: :member) }
 
       before { request }
 
@@ -76,23 +74,14 @@ describe Api::V1::ContributionsController, :type => :controller do
     end
 
     context "user being a member along with some users" do
-      let!(:join_request) { create(:join_request, user: user, joinable: contribution, status: :accepted, role: :creator) }
-      let!(:join_request_1) { create(:join_request, user: FactoryBot.create(:public_user), joinable: contribution, status: :accepted, role: :creator) }
-      let!(:join_request_2) { create(:join_request, user: FactoryBot.create(:public_user), joinable: contribution, status: :accepted, role: :creator) }
+      let!(:join_request) { create(:join_request, user: user, joinable: contribution, status: :accepted, role: :member) }
+      let!(:join_request_1) { create(:join_request, user: FactoryBot.create(:public_user), joinable: contribution, status: :accepted, role: :member) }
+      let!(:join_request_2) { create(:join_request, user: FactoryBot.create(:public_user), joinable: contribution, status: :accepted, role: :member) }
 
       before { request }
 
       it { expect(response.status).to eq(200) }
       it { expect(subject["contributions"].count).to eq(0) }
-    end
-
-    context "user being a member but not accepted" do
-      let!(:join_request) { create(:join_request, user: user, joinable: contribution, status: :pending, role: :creator) }
-
-      before { request }
-
-      it { expect(response.status).to eq(200) }
-      it { expect(subject["contributions"].count).to eq(1) }
     end
 
     context "user not being a member" do
@@ -141,9 +130,8 @@ describe Api::V1::ContributionsController, :type => :controller do
     end
 
     context "ordered by feed_updated_at desc" do
-      let(:contribution) { FactoryBot.create(:contribution, feed_updated_at: 1.hour.from_now) }
-      let(:contribution_1) { FactoryBot.create(:contribution, feed_updated_at: 1.day.from_now) }
-      let!(:join_request_1) { create(:join_request, user: contribution_1.user, joinable: contribution_1, status: :accepted, role: :creator) }
+      let!(:contribution) { FactoryBot.create(:contribution, feed_updated_at: 1.hour.from_now) }
+      let!(:contribution_1) { FactoryBot.create(:contribution, feed_updated_at: 1.day.from_now) }
 
       before { request }
 

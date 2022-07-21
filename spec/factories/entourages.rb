@@ -19,6 +19,8 @@ FactoryBot.define do
 
     trait :joined do
       after(:create) do |entourage, evaluator|
+        next if entourage.is_a?(Solicitation) || entourage.is_a?(Contribution)
+
         user = evaluator.join_request_user || entourage.user
         if evaluator.join_request_role == :auto && entourage.group_type == 'action' && user == entourage.user
           role = :creator
@@ -67,13 +69,13 @@ FactoryBot.define do
     end
 
     factory :contribution do
-      initialize_with { Contribution.new(attributes) }
       entourage_type { "contribution" }
+      initialize_with { Contribution.new(attributes) }
     end
 
     factory :solicitation do
-      initialize_with { Solicitation.new(attributes) }
       entourage_type { "ask_for_help" }
+      initialize_with { Solicitation.new(attributes) }
     end
 
     factory :conversation do
