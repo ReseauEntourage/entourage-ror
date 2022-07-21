@@ -47,7 +47,7 @@ RSpec.describe UserDenorm, type: :model do
 
     describe "does not create a denorm if group" do
       let!(:group) { create :entourage, group_type: :group, user: user }
-      let!(:join_request) { create :join_request, joinable: group, user_id: user.id }
+      let!(:join_request) { create :join_request, joinable: group, user_id: user.id, status: :accepted }
 
       it do
         denorm = UserDenorm.find_by(user_id: user.id)
