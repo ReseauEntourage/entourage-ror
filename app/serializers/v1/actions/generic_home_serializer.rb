@@ -5,8 +5,7 @@ module V1
       attribute :posts
 
       def category
-        # we use "Tag.category_list &" to force ordering
-        Tag.category_list & object.category_list
+        object.category_list.first
       end
 
       def posts
