@@ -157,7 +157,7 @@ describe Api::V1::ContributionsController, :type => :controller do
         latitude: 48.85,
         longitude: 2.4,
       },
-      category: 'social'
+      section: 'clothes'
     } }
 
     context "not signed in" do
@@ -171,7 +171,8 @@ describe Api::V1::ContributionsController, :type => :controller do
         before { post :create, params: { contribution: {
           title: "foobar",
           longitude: 1.123,
-          latitude: 4.567
+          latitude: 4.567,
+          section: "clothes"
         }, token: user.token } }
 
         it { expect(response.status).to eq(400) }
@@ -186,7 +187,7 @@ describe Api::V1::ContributionsController, :type => :controller do
         it { expect(response.status).to eq(201) }
         it { expect(subject).to have_key("contribution") }
         it { expect(Contribution.count).to eq(1) }
-        it { expect(result.category_list).to eq(['social']) }
+        it { expect(result.section_list).to eq(['clothes']) }
         it { expect(result.metadata).to have_key(:city) }
         it { expect(result.group_type).to eq("action") }
         it { expect(result.entourage_type).to eq("contribution") }
@@ -238,14 +239,14 @@ describe Api::V1::ContributionsController, :type => :controller do
   describe 'GET show' do
     subject { JSON.parse(response.body) }
 
-    let(:contribution) { FactoryBot.create(:contribution, category: "social") }
+    let(:contribution) { FactoryBot.create(:contribution, section: "hygiene") }
 
     before { get :show, params: { token: user.token, id: contribution.id } }
 
     it { expect(response.status).to eq 200 }
     it { expect(subject).to have_key("contribution") }
     it { expect(subject["contribution"]).to have_key("posts") }
-    it { expect(subject["solicitation"]).to have_key("category") }
-    it { expect(subject["contribution"]["category"]).to eq("social") }
+    it { expect(subject["contribution"]).to have_key("section") }
+    it { expect(subject["contribution"]["section"]).to eq("hygiene") }
   end
 end
