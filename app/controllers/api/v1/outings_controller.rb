@@ -1,8 +1,8 @@
 module Api
   module V1
     class OutingsController < Api::V1::BaseController
-      before_action :set_outing, only: [:show, :siblings, :update, :batch_update, :duplicate, :report]
-      before_action :authorised?, only: [:update, :batch_update]
+      before_action :set_outing, only: [:show, :siblings, :update, :batch_update, :cancel, :destroy, :duplicate, :report]
+      before_action :authorised?, only: [:update, :batch_update, :cancel, :destroy]
       before_action :allowed_duplicate?, only: [:duplicate]
 
       after_action :set_last_message_read, only: [:show]
@@ -111,6 +111,22 @@ module Api
         head :created
       end
 
+      def cancel
+        if EntourageServices::EntourageBuilder.cancel(entourage: @outing, params: cancel_params.to_h)
+          render json: @outing, serializer: ::V1::OutingSerializer, scope: { user: current_user }
+        else
+          render json: { message: 'Could not cancel outing', reasons: @outing.errors.full_messages.to_sentence }, status: 400
+        end
+      end
+
+      def destroy
+        if EntourageServices::EntourageBuilder.close(entourage: @outing)
+          render json: @outing, serializer: ::V1::OutingSerializer, scope: { user: current_user }
+        else
+          render json: { message: 'Could not close outing', reasons: @outing.errors.full_messages.to_sentence }, status: 400
+        end
+      end
+
       private
 
       def set_outing
@@ -132,6 +148,10 @@ module Api
         ] }, neighborhood_ids: [],
           interests: []
         )
+      end
+
+      def cancel_params
+        params.require(:outing).permit(:cancellation_message)
       end
 
       def outing_date_params

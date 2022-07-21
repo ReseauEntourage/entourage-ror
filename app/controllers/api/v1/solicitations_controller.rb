@@ -43,6 +43,26 @@ module Api
         end
       end
 
+      def destroy
+        SolicitationServices::Deleter.new(user: current_user, solicitation: @solicitation).delete do |on|
+          on.success do |solicitation|
+            render json: solicitation, root: "user", status: 200, serializer: ::V1::Actions::SolicitationSerializer, scope: { user: current_user }
+          end
+
+          on.failure do |solicitation|
+            render json: {
+              message: "Could not delete solicitation", reasons: solicitation.errors.full_messages
+            }, status: :bad_request
+          end
+
+          on.not_authorized do
+            render json: {
+              message: "You are not authorized to delete this solicitation"
+            }, status: :unauthorized
+          end
+        end
+      end
+
       private
 
       def set_solicitation

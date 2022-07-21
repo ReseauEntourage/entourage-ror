@@ -249,4 +249,34 @@ describe Api::V1::ContributionsController, :type => :controller do
     it { expect(subject["contribution"]).to have_key("section") }
     it { expect(subject["contribution"]["section"]).to eq("hygiene") }
   end
+
+  context 'destroy' do
+    let(:creator) { create :pro_user }
+    let(:contribution) { create :contribution, user: creator }
+
+    let(:result) { Contribution.unscoped.find(contribution.id) }
+
+    describe 'not authorized' do
+      before { delete :destroy, params: { id: contribution.id } }
+
+      it { expect(response.status).to eq 401 }
+      it { expect(result.status).to eq 'open' }
+    end
+
+    describe 'not authorized cause should be creator' do
+      before { delete :destroy, params: { id: contribution.id, token: user.token } }
+
+      it { expect(response.status).to eq 401 }
+      it { expect(result.status).to eq 'open' }
+    end
+
+    describe 'authorized' do
+      let(:creator) { user }
+
+      before { delete :destroy, params: { id: contribution.id, token: user.token } }
+
+      it { expect(response.status).to eq 200 }
+      it { expect(result.status).to eq 'closed' }
+    end
+  end
 end
