@@ -1,11 +1,11 @@
 module V1
   module Actions
     class GenericHomeSerializer < V1::Actions::GenericSerializer
-      attribute :category
+      attribute :section
       attribute :posts
 
-      def category
-        object.category_list.first
+      def section
+        object.section_list.first
       end
 
       def posts
