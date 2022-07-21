@@ -250,12 +250,14 @@ describe Api::V1::ContributionsController, :type => :controller do
   describe 'GET show' do
     subject { JSON.parse(response.body) }
 
-    let(:contribution) { FactoryBot.create(:contribution) }
+    let(:contribution) { FactoryBot.create(:contribution, category: "social") }
 
     before { get :show, params: { token: user.token, id: contribution.id } }
 
     it { expect(response.status).to eq 200 }
     it { expect(subject).to have_key("contribution") }
     it { expect(subject["contribution"]).to have_key("posts") }
+    it { expect(subject["solicitation"]).to have_key("category") }
+    it { expect(subject["contribution"]["category"]).to eq("social") }
   end
 end
