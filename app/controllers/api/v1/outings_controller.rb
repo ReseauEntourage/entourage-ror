@@ -1,7 +1,7 @@
 module Api
   module V1
     class OutingsController < Api::V1::BaseController
-      before_action :set_outing, only: [:show, :siblings, :update, :batch_update, :duplicate]
+      before_action :set_outing, only: [:show, :siblings, :update, :batch_update, :duplicate, :report]
       before_action :authorised?, only: [:update, :batch_update]
       before_action :allowed_duplicate?, only: [:duplicate]
 
