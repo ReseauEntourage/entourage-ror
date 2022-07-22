@@ -255,7 +255,6 @@ describe Api::V1::SolicitationsController, :type => :controller do
 
     it { expect(response.status).to eq 200 }
     it { expect(subject).to have_key("solicitation") }
-    it { expect(subject["solicitation"]).to have_key("posts") }
     it { expect(subject["solicitation"]).to have_key("section") }
     it { expect(subject["solicitation"]["section"]).to eq("social") }
   end
