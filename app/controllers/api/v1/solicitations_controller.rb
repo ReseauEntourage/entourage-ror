@@ -2,6 +2,7 @@ module Api
   module V1
     class SolicitationsController < Api::V1::BaseController
       before_action :set_solicitation, only: [:show, :update, :destroy, :report]
+      allow_anonymous_access only: [:report]
 
       after_action :set_last_message_read, only: [:show]
 
@@ -63,6 +64,24 @@ module Api
         end
       end
 
+      def report
+        unless report_params[:signals].present?
+          render json: {
+            code: 'CANNOT_REPORT_DONATION',
+            message: 'signals is required'
+          }, status: :bad_request and return
+        end
+
+        SlackServices::SignalSolicitation.new(
+          solicitation: @solicitation,
+          reporting_user: current_user,
+          signals: report_params[:signals],
+          message: report_params[:message]
+        ).notify
+
+        head :created
+      end
+
       private
 
       def set_solicitation
@@ -98,6 +117,10 @@ module Api
 
       def per
         params[:per] || 25
+      end
+
+      def report_params
+        params.require(:report).permit(:message, signals: [])
       end
     end
   end

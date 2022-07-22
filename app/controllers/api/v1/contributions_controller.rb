@@ -1,8 +1,9 @@
 module Api
   module V1
     class ContributionsController < Api::V1::BaseController
-      before_action :set_contribution, only: [:show, :update, :destroy, :presigned_upload]
+      before_action :set_contribution, only: [:show, :update, :destroy, :presigned_upload, :report]
       before_action :authorised?, only: [:update, :destroy, :presigned_upload]
+      allow_anonymous_access only: [:report]
 
       after_action :set_last_message_read, only: [:show]
 
@@ -62,6 +63,24 @@ module Api
         end
       end
 
+      def report
+        unless report_params[:signals].present?
+          render json: {
+            code: 'CANNOT_REPORT_DONATION',
+            message: 'signals is required'
+          }, status: :bad_request and return
+        end
+
+        SlackServices::SignalContribution.new(
+          contribution: @contribution,
+          reporting_user: current_user,
+          signals: report_params[:signals],
+          message: report_params[:message]
+        ).notify
+
+        head :created
+      end
+
       def presigned_upload
         allowed_types = Contribution::CONTENT_TYPES
 
@@ -94,6 +113,10 @@ module Api
         }, :status, :postal_code, :title, :description, :section, {
           metadata: metadata_keys
         }, :image_url)
+      end
+
+      def report_params
+        params.require(:report).permit(:message, signals: [])
       end
 
       def join_request
