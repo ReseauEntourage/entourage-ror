@@ -2,10 +2,10 @@ class Contribution < Entourage
   include Actionable
   include Sectionable
 
-  default_scope { where(group_type: :action, entourage_type: :contribution).order(feed_updated_at: :desc) }
   CONTENT_TYPES = %w(image/jpeg)
   BUCKET_PREFIX = "contributions"
 
+  default_scope { where(group_type: :action, entourage_type: :contribution).order(created_at: :desc) }
 
   class << self
     def bucket
