@@ -351,6 +351,10 @@ class Entourage < ApplicationRecord
     group_type && group_type.to_sym == :outing
   end
 
+  def contribution?
+    entourage_type && entourage_type.to_sym == :contribution
+  end
+
   def cancelled?
     status && status.to_sym == :cancelled
   end
