@@ -231,15 +231,6 @@ describe Api::V1::ContributionsController, :type => :controller do
         it { expect(subject).to have_key('contribution') }
         it { expect(subject['contribution']['title']).to eq('New title') }
       end
-
-      context "close" do
-        before { patch :update, params: { id: contribution.to_param, contribution: { status: :closed }, token: user.token } }
-
-        it { expect(response.status).to eq(200) }
-        it { expect(subject).to have_key('contribution') }
-        it { expect(subject['contribution']['status']).to eq('closed') }
-        it { expect(contribution.reload.status).to eq('closed') }
-      end
     end
   end
 

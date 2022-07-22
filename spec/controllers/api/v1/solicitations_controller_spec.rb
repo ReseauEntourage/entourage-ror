@@ -232,17 +232,6 @@ describe Api::V1::SolicitationsController, :type => :controller do
         it { expect(subject).to have_key('solicitation') }
         it { expect(subject['solicitation']['title']).to eq('New title') }
       end
-
-      context "close" do
-        let(:solicitation) { FactoryBot.create(:solicitation, :joined, user: user, status: :open) }
-
-        before { patch :update, params: { id: solicitation.to_param, solicitation: { status: :closed }, token: user.token } }
-
-        it { expect(response.status).to eq(200) }
-        it { expect(subject).to have_key('solicitation') }
-        it { expect(subject['solicitation']['status']).to eq('closed') }
-        it { expect(solicitation.reload.status).to eq('closed') }
-      end
     end
   end
 
