@@ -195,6 +195,15 @@ describe Api::V1::SolicitationsController, :type => :controller do
         it { expect(result.moderation).to be_a(EntourageModeration) }
         it { expect(result.moderation.action_recipient_consent_obtained).to eq("Oui") }
       end
+
+      context "with all required parameters but without recipient_consent_obtained" do
+        before { post :create, params: { solicitation: params.except(:recipient_consent_obtained), token: user.token } }
+
+        it { expect(response.status).to eq(201) }
+        it { expect(subject).to have_key("solicitation") }
+        it { expect(Solicitation.count).to eq(1) }
+        it { expect(result.moderation).to be_nil }
+      end
     end
   end
 
