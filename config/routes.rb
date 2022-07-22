@@ -437,6 +437,9 @@ Rails.application.routes.draw do
       end
 
       resources :contributions do
+        member do
+          post :presigned_upload
+        end
       end
 
       resources :solicitations do

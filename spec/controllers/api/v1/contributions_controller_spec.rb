@@ -279,4 +279,37 @@ describe Api::V1::ContributionsController, :type => :controller do
       it { expect(result.status).to eq 'closed' }
     end
   end
+
+  describe 'POST #presigned_upload' do
+    let(:contribution) { FactoryBot.create(:contribution, status: :open) }
+
+    let(:request) { post :presigned_upload, params: { id: contribution.to_param, token: token, content_type: 'image/jpeg' } }
+
+    context "not signed in" do
+      let(:token) { nil }
+
+      before { request }
+
+      it { expect(response.status).to eq(401) }
+    end
+
+    context "signed in but user is not creator" do
+      let(:token) { user.token }
+
+      before { request }
+
+      it { expect(response.status).to eq(401) }
+    end
+
+    context "signed in and user is creator" do
+      let(:token) { user.token }
+      let(:contribution) { FactoryBot.create(:contribution, :joined, user: user, status: :open) }
+
+      before { request }
+
+      it { expect(response.status).to eq(200) }
+      it { expect(JSON.parse(response.body)).to have_key('upload_key') }
+      it { expect(JSON.parse(response.body)).to have_key('presigned_url') }
+    end
+  end
 end

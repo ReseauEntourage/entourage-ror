@@ -1,7 +1,8 @@
 module Api
   module V1
     class ContributionsController < Api::V1::BaseController
-      before_action :set_contribution, only: [:show, :update, :destroy, :report]
+      before_action :set_contribution, only: [:show, :update, :destroy, :presigned_upload]
+      before_action :authorised?, only: [:update, :destroy, :presigned_upload]
 
       after_action :set_last_message_read, only: [:show]
 
@@ -28,8 +29,6 @@ module Api
       end
 
       def update
-        return render json: { message: 'unauthorized' }, status: :unauthorized unless @contribution.user == current_user
-
         EntourageServices::EntourageBuilder.new(params: contribution_params, user: current_user).update(entourage: @contribution) do |on|
           on.success do |contribution|
             render json: contribution, status: 200, serializer: ::V1::Actions::ContributionSerializer, scope: { user: current_user }
@@ -63,6 +62,21 @@ module Api
         end
       end
 
+      def presigned_upload
+        allowed_types = Contribution::CONTENT_TYPES
+
+        unless params[:content_type].in? allowed_types
+          type_list = allowed_types.to_sentence(two_words_connector: ' or ', last_word_connector: ', or ')
+          return render_error(code: "INVALID_CONTENT_TYPE", message: "Content-Type must be #{type_list}.", status: 400)
+        end
+
+        extension = MiniMime.lookup_by_content_type(params[:content_type]).extension
+        key = "#{SecureRandom.uuid}.#{extension}"
+        url = Contribution.presigned_url(key, params[:content_type])
+
+        render json: { upload_key: key, presigned_url: url }
+      end
+
       private
 
       def set_contribution
@@ -79,7 +93,7 @@ module Api
           location: [:longitude, :latitude]
         }, :status, :postal_code, :title, :description, :section, {
           metadata: metadata_keys
-        })
+        }, :image_url)
       end
 
       def join_request
@@ -98,6 +112,12 @@ module Api
 
       def per
         params[:per] || 25
+      end
+
+      def authorised?
+        unless @contribution.user == current_user
+          render json: { message: 'unauthorized user' }, status: :unauthorized
+        end
       end
     end
   end
