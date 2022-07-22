@@ -75,7 +75,7 @@ class Outing < Entourage
     return unless outing?
 
     unless accepted_member_ids.include?(user_id)
-      errors.add(:neighborhood_ids, "User has to be a member of outing")
+      errors.add(:user_id, "User has to be a member of outing")
     end
   end
 
