@@ -60,7 +60,6 @@ class Entourage < ApplicationRecord
   validates_inclusion_of :online, in: -> (e) { e.online_setting_options }
   validates :metadata, schema: -> (e) { "#{e.group_type}:metadata" }
   validate :validate_outings_ends_at
-  validates :image_url, format: { with: %r(\Ahttps?://\S+\z) }, allow_blank: true
 
   scope :active, -> { where(status: ['open', 'full']) }
   scope :visible, -> { where.not(status: ['blacklisted', 'suspended']) }
