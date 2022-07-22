@@ -252,7 +252,6 @@ describe Api::V1::ContributionsController, :type => :controller do
 
     it { expect(response.status).to eq 200 }
     it { expect(subject).to have_key("contribution") }
-    it { expect(subject["contribution"]).to have_key("posts") }
     it { expect(subject["contribution"]).to have_key("section") }
     it { expect(subject["contribution"]["section"]).to eq("hygiene") }
   end
