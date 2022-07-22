@@ -200,7 +200,7 @@ describe Api::V1::ContributionsController, :type => :controller do
   describe 'PATCH update' do
     subject { JSON.parse(response.body) }
 
-    let(:contribution) { FactoryBot.create(:contribution, status: :open) }
+    let(:contribution) { FactoryBot.create(:contribution, status: :open, user: user) }
 
     context "not signed in" do
       before { patch :update, params: { id: contribution.to_param, contribution: { title: "new title" } } }
@@ -209,13 +209,22 @@ describe Api::V1::ContributionsController, :type => :controller do
 
     context "signed in" do
       context "user is not creator" do
+        let(:contribution) { FactoryBot.create(:contribution, status: :open) }
+
         before { patch :update, params: { id: contribution.to_param, contribution: { title: "new title" }, token: user.token } }
+
         it { expect(response.status).to eq(401) }
       end
 
       context "user is creator" do
-        let(:contribution) { FactoryBot.create(:contribution, :joined, user: user, status: :open) }
+        before { patch :update, params: { id: contribution.to_param, contribution: { image_url: "image.jpeg" }, token: user.token } }
 
+        it { expect(response.status).to eq(200) }
+        it { expect(subject).to have_key('contribution') }
+        it { expect(Contribution.find(subject['contribution']['id']).image_url).to eq('image.jpeg') }
+      end
+
+      context "update image_url" do
         before { patch :update, params: { id: contribution.to_param, contribution: { title: "New title" }, token: user.token } }
 
         it { expect(response.status).to eq(200) }
@@ -224,8 +233,6 @@ describe Api::V1::ContributionsController, :type => :controller do
       end
 
       context "close" do
-        let(:contribution) { FactoryBot.create(:contribution, :joined, user: user, status: :open) }
-
         before { patch :update, params: { id: contribution.to_param, contribution: { status: :closed }, token: user.token } }
 
         it { expect(response.status).to eq(200) }
@@ -277,6 +284,52 @@ describe Api::V1::ContributionsController, :type => :controller do
 
       it { expect(response.status).to eq 200 }
       it { expect(result.status).to eq 'closed' }
+    end
+  end
+
+  describe 'POST #report' do
+    let(:contribution) { create :contribution }
+
+    ENV['SLACK_SIGNAL_NEIGHBORHOOD_WEBHOOK'] = '{"url":"https://url.to.slack.com","channel":"channel","username":"signal-contribution"}'
+
+    before { stub_request(:post, "https://url.to.slack.com").to_return(status: 200) }
+
+    context "valid params" do
+      before {
+        expect_any_instance_of(SlackServices::SignalContribution).to receive(:notify)
+        post 'report', params: { token: user.token, id: contribution.id, report: { signals: ['foo'], message: 'bar' } }
+      }
+      it { expect(response.status).to eq 201 }
+    end
+
+    context "missing signals" do
+      before {
+        expect_any_instance_of(SlackServices::SignalContribution).not_to receive(:notify)
+        post 'report', params: { token: user.token, id: contribution.id, report: { signals: [], message: 'bar' } }
+      }
+      it { expect(response.status).to eq 400 }
+    end
+  end
+
+  describe 'POST #presigned_upload' do
+    let(:request) { post :presigned_upload, params: { token: token, content_type: 'image/jpeg' } }
+
+    context "not signed in" do
+      let(:token) { nil }
+
+      before { request }
+
+      it { expect(response.status).to eq(401) }
+    end
+
+    context "signed in" do
+      let(:token) { user.token }
+
+      before { request }
+
+      it { expect(response.status).to eq(200) }
+      it { expect(JSON.parse(response.body)).to have_key('upload_key') }
+      it { expect(JSON.parse(response.body)).to have_key('presigned_url') }
     end
   end
 end

@@ -195,6 +195,15 @@ describe Api::V1::SolicitationsController, :type => :controller do
         it { expect(result.moderation).to be_a(EntourageModeration) }
         it { expect(result.moderation.action_recipient_consent_obtained).to eq("Oui") }
       end
+
+      context "with all required parameters but without recipient_consent_obtained" do
+        before { post :create, params: { solicitation: params.except(:recipient_consent_obtained), token: user.token } }
+
+        it { expect(response.status).to eq(201) }
+        it { expect(subject).to have_key("solicitation") }
+        it { expect(Solicitation.count).to eq(1) }
+        it { expect(result.moderation).to be_nil }
+      end
     end
   end
 
@@ -278,6 +287,30 @@ describe Api::V1::SolicitationsController, :type => :controller do
 
       it { expect(response.status).to eq 200 }
       it { expect(result.status).to eq 'closed' }
+    end
+  end
+
+  describe 'POST #report' do
+    let(:solicitation) { create :solicitation }
+
+    ENV['SLACK_SIGNAL_NEIGHBORHOOD_WEBHOOK'] = '{"url":"https://url.to.slack.com","channel":"channel","username":"signal-solicitation"}'
+
+    before { stub_request(:post, "https://url.to.slack.com").to_return(status: 200) }
+
+    context "valid params" do
+      before {
+        expect_any_instance_of(SlackServices::SignalSolicitation).to receive(:notify)
+        post 'report', params: { token: user.token, id: solicitation.id, report: { signals: ['foo'], message: 'bar' } }
+      }
+      it { expect(response.status).to eq 201 }
+    end
+
+    context "missing signals" do
+      before {
+        expect_any_instance_of(SlackServices::SignalSolicitation).not_to receive(:notify)
+        post 'report', params: { token: user.token, id: solicitation.id, report: { signals: [], message: 'bar' } }
+      }
+      it { expect(response.status).to eq 400 }
     end
   end
 end
