@@ -9,8 +9,7 @@ class Entourage < ApplicationRecord
   include Experimental::EntourageSlack::Callback
   include ModerationServices::EntourageModeration::Callback
 
-  include CustomTimestampAttributesForUpdate
-  before_save :track_status_change
+  after_validation :track_status_change
 
   ENTOURAGE_TYPES  = ['ask_for_help', 'contribution']
   ENTOURAGE_STATUS = ['open', 'closed', 'blacklisted', 'suspended']
@@ -614,8 +613,6 @@ class Entourage < ApplicationRecord
   end
 
   def track_status_change
-    if status_changed? && !status_changed_at_changed?
-      @custom_timestamp_attributes_for_update = [:status_changed_at]
-    end
+    self[:status_changed_at] = Time.zone.now if status_changed?
   end
 end
