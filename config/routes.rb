@@ -436,6 +436,8 @@ Rails.application.routes.draw do
         end
       end
 
+      resources :actions, only: [:index]
+
       resources :contributions do
         member do
           post :report
