@@ -10,7 +10,7 @@ module V1
                  :title,
                  :description,
                  :image_url,
-                 :event_url,
+                 :action_type,
                  :author,
                  :metadata,
                  :member,
@@ -36,6 +36,10 @@ module V1
           display_name: UserPresenter.new(user: object.user).display_name,
           avatar_url: UserServices::Avatar.new(user: object.user).thumbnail_url
         }
+      end
+
+      def action_type
+        object.contribution? ? :contribution : :solicitation
       end
 
       def member
