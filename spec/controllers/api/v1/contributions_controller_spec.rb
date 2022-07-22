@@ -312,9 +312,7 @@ describe Api::V1::ContributionsController, :type => :controller do
   end
 
   describe 'POST #presigned_upload' do
-    let(:contribution) { FactoryBot.create(:contribution, status: :open) }
-
-    let(:request) { post :presigned_upload, params: { id: contribution.to_param, token: token, content_type: 'image/jpeg' } }
+    let(:request) { post :presigned_upload, params: { token: token, content_type: 'image/jpeg' } }
 
     context "not signed in" do
       let(:token) { nil }
@@ -324,17 +322,8 @@ describe Api::V1::ContributionsController, :type => :controller do
       it { expect(response.status).to eq(401) }
     end
 
-    context "signed in but user is not creator" do
+    context "signed in" do
       let(:token) { user.token }
-
-      before { request }
-
-      it { expect(response.status).to eq(401) }
-    end
-
-    context "signed in and user is creator" do
-      let(:token) { user.token }
-      let(:contribution) { FactoryBot.create(:contribution, :joined, user: user, status: :open) }
 
       before { request }
 

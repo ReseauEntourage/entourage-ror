@@ -1,8 +1,8 @@
 module Api
   module V1
     class ContributionsController < Api::V1::BaseController
-      before_action :set_contribution, only: [:show, :update, :destroy, :presigned_upload, :report]
-      before_action :authorised?, only: [:update, :destroy, :presigned_upload]
+      before_action :set_contribution, only: [:show, :update, :destroy, :report]
+      before_action :authorised?, only: [:update, :destroy]
       allow_anonymous_access only: [:report]
 
       after_action :set_last_message_read, only: [:show]
