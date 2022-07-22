@@ -2,7 +2,7 @@ class Solicitation < Entourage
   include Actionable
   include Sectionable
 
-  default_scope { where(group_type: :action, entourage_type: :ask_for_help).order(feed_updated_at: :desc) }
+  default_scope { where(group_type: :action, entourage_type: :ask_for_help).order(created_at: :desc) }
 
   after_create :after_create_build_moderation
 

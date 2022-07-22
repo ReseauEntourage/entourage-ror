@@ -25,7 +25,7 @@ module SolicitationServices
         solicitations = solicitations.where(bounding_box_sql)
       end
 
-      # order by feed_updated_at is already in default_scope
+      # order by created_at is already in default_scope
       solicitations.group(:id)
     end
 
