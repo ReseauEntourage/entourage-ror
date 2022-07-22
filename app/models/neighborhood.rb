@@ -1,6 +1,8 @@
 class Neighborhood < ApplicationRecord
   include Interestable
 
+  after_validation :track_status_change
+
   # STATUSES = [:active, :deleted]
 
   belongs_to :user
@@ -203,5 +205,11 @@ class Neighborhood < ApplicationRecord
 
   def remove_neighborhood_image_id!
     self.image_url = nil
+  end
+
+  private
+
+  def track_status_change
+    self[:status_changed_at] = Time.zone.now if status_changed?
   end
 end

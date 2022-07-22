@@ -231,6 +231,7 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
           "past_outings_count" => 0,
           "future_outings_count" => 0,
           "has_ongoing_outing" => false,
+          "status_changed_at" => nil
         }) }
       end
 
@@ -373,7 +374,8 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
         "members_count" => 1,
         "member" => false,
         "created_at" => outing.created_at.iso8601(3),
-        "updated_at" => outing.updated_at.iso8601(3)
+        "updated_at" => outing.updated_at.iso8601(3),
+        "status_changed_at" => nil
       }]) }
     end
 

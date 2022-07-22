@@ -128,4 +128,15 @@ RSpec.describe Neighborhood, :type => :model do
 
     it { expect(subject).to eq([with_chat_messages.id, with_chat_message.id, without_chat_message.id]) }
   end
+
+  describe "status_changed_at" do
+    let(:neighborhood) { FactoryBot.create(:neighborhood, status: :open) }
+
+    context 'set status_changed_at' do
+      before { neighborhood.update(status: :closed) }
+
+      it { expect(neighborhood.status).to eq("closed") }
+      it { expect(neighborhood.status_changed_at).to be_a(ActiveSupport::TimeWithZone) }
+    end
+  end
 end

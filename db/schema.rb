@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_07_22_145000) do
+ActiveRecord::Schema.define(version: 2022_07_22_145001) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -456,6 +456,7 @@ ActiveRecord::Schema.define(version: 2022_07_22_145000) do
     t.string "postal_code"
     t.string "street_address"
     t.string "status", default: "active", null: false
+    t.datetime "status_changed_at"
     t.index ["feed_updated_at"], name: "index_neighborhoods_on_feed_updated_at"
     t.index ["name"], name: "index_neighborhoods_on_name"
     t.index ["postal_code"], name: "index_neighborhoods_on_postal_code"
