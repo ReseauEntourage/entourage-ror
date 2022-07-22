@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_06_29_103701) do
+ActiveRecord::Schema.define(version: 2022_07_22_145000) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -324,6 +324,7 @@ ActiveRecord::Schema.define(version: 2022_06_29_103701) do
     t.string "display_category_copy"
     t.string "other_interest"
     t.string "recurrency_identifier"
+    t.datetime "status_changed_at"
     t.index "st_setsrid(st_makepoint(longitude, latitude), 4326)", name: "index_entourages_on_coordinates", using: :gist
     t.index ["country", "postal_code"], name: "index_entourages_on_country_and_postal_code"
     t.index ["latitude", "longitude"], name: "index_entourages_on_latitude_and_longitude"
