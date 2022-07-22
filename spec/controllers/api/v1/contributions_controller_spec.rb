@@ -221,7 +221,7 @@ describe Api::V1::ContributionsController, :type => :controller do
 
         it { expect(response.status).to eq(200) }
         it { expect(subject).to have_key('contribution') }
-        it { expect(subject['contribution']['image_url']).to eq('image.jpeg') }
+        it { expect(Contribution.find(subject['contribution']['id']).image_url).to eq('image.jpeg') }
       end
 
       context "update image_url" do
