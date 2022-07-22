@@ -6,6 +6,7 @@ module V1
       attributes :id,
                  :uuid,
                  :status,
+                 :section,
                  :title,
                  :description,
                  :image_url,

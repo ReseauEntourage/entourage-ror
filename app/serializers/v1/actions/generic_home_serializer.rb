@@ -1,9 +1,6 @@
 module V1
   module Actions
     class GenericHomeSerializer < V1::Actions::GenericSerializer
-      attribute :section
-      attribute :posts
-
       def section
         object.section_list.first
       end
