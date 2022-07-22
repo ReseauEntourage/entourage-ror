@@ -438,11 +438,15 @@ Rails.application.routes.draw do
 
       resources :contributions do
         member do
+          post :report
           post :presigned_upload
         end
       end
 
       resources :solicitations do
+        member do
+          post :report
+        end
       end
 
       resources :conversations, :controller => 'entourages', only: [] do
