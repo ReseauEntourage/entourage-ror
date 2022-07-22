@@ -373,6 +373,17 @@ RSpec.describe Entourage, type: :model do
     end
   end
 
+  describe "status_changed_at" do
+    let(:entourage) { FactoryBot.create(:entourage, status: :open) }
+
+    context 'set status_changed_at' do
+      before { entourage.update(status: :closed) }
+
+      it { expect(entourage.status).to eq("closed") }
+      it { expect(entourage.status_changed_at).to be_a(ActiveSupport::TimeWithZone) }
+    end
+  end
+
   describe "create_chat_message_on_status_update" do
     let(:user) { FactoryBot.create(:public_user)}
     let(:entourage) { FactoryBot.create(:entourage, status: :open) }
