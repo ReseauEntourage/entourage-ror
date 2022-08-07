@@ -47,11 +47,9 @@ describe PoiServices::Soliguide do
       it {
         expect(subject).to eq({
           location: {
-            distance: PoiServices::Soliguide::DISTANCE_MIN,
-            latitude: 47.3,
-            longitude: -1.55,
-            geoType: :ville,
-            geoValue: :HorsZone,
+            geoType: :position,
+            coordinates: [-1.55, 47.3],
+            distance: PoiServices::Soliguide::DISTANCE_MIN
           },
           options: {},
         })
@@ -67,11 +65,9 @@ describe PoiServices::Soliguide do
       it {
         expect(subject).to eq({
           location: {
-            distance: PoiServices::Soliguide::DISTANCE_MIN,
-            latitude: 48.86,
-            longitude: 2.34,
-            geoType: :ville,
-            geoValue: :Paris,
+            geoType: :position,
+            coordinates: [2.34, 48.86],
+            distance: PoiServices::Soliguide::DISTANCE_MIN
           },
           options: {},
         })
@@ -90,11 +86,9 @@ describe PoiServices::Soliguide do
       it {
         expect(subject).to eq({
           location: {
-            distance: 5.0,
-            latitude: 47.3,
-            longitude: -1.55,
-            geoType: :ville,
-            geoValue: :HorsZone,
+            geoType: :position,
+            coordinates: [-1.55, 47.3],
+            distance: 5.0
           },
           options: {},
           word: 'myquery',
@@ -113,11 +107,9 @@ describe PoiServices::Soliguide do
       it {
         expect(subject).to eq({
           location: {
-            distance: 5.0,
-            latitude: 47.3,
-            longitude: -1.55,
-            geoType: :ville,
-            geoValue: :HorsZone,
+            geoType: :position,
+            coordinates: [-1.55, 47.3],
+            distance: 5.0
           },
           options: {},
           categories: [600],
