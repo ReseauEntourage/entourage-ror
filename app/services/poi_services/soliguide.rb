@@ -44,11 +44,9 @@ module PoiServices
 
       params = {
         location: {
-          distance:  (distance || 0).to_f.clamp(DISTANCE_MIN, DISTANCE_MAX),
-          latitude:  latitude,
-          longitude: longitude,
-          geoType: :ville,
-          geoValue: geoValue,
+          geoType: :position,
+          coordinates: [longitude.to_f, latitude.to_f],
+          distance: (distance || 0).to_f.clamp(DISTANCE_MIN, DISTANCE_MAX)
         },
         options: {}
       }
