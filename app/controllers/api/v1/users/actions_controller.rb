@@ -13,7 +13,7 @@ module Api
             .page(page)
             .per(per)
 
-          render json: actions, status: 200, each_serializer: ::V1::Actions::GenericSerializer, scope: { user: current_user }
+          render json: actions, status: 200, each_serializer: ::V1::ActionSerializer, scope: { user: current_user }
         end
 
         private

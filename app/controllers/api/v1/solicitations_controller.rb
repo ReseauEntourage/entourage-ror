@@ -7,19 +7,19 @@ module Api
       after_action :set_last_message_read, only: [:show]
 
       def index
-        render json: SolicitationServices::Finder.new(current_user, index_params).find_all.page(page).per(per), root: :solicitations, each_serializer: ::V1::Actions::SolicitationSerializer, scope: {
+        render json: SolicitationServices::Finder.new(current_user, index_params).find_all.page(page).per(per), root: :solicitations, each_serializer: ::V1::ActionSerializer, scope: {
           user: current_user
         }
       end
 
       def show
-        render json: @solicitation, serializer: ::V1::Actions::SolicitationSerializer, scope: { user: current_user }
+        render json: @solicitation, serializer: ::V1::ActionSerializer, scope: { user: current_user }
       end
 
       def create
         EntourageServices::SolicitationBuilder.new(params: solicitation_params, user: current_user).create do |on|
           on.success do |solicitation|
-            render json: solicitation, root: :solicitation, status: 201, serializer: ::V1::Actions::SolicitationSerializer, scope: { user: current_user }
+            render json: solicitation, root: :solicitation, status: 201, serializer: ::V1::ActionSerializer, scope: { user: current_user }
           end
 
           on.failure do |solicitation|
@@ -33,7 +33,7 @@ module Api
 
         EntourageServices::EntourageBuilder.new(params: solicitation_params, user: current_user).update(entourage: @solicitation) do |on|
           on.success do |solicitation|
-            render json: solicitation, status: 200, serializer: ::V1::Actions::SolicitationSerializer, scope: { user: current_user }
+            render json: solicitation, status: 200, serializer: ::V1::ActionSerializer, scope: { user: current_user }
           end
 
           on.failure do |solicitation|
@@ -47,7 +47,7 @@ module Api
       def destroy
         SolicitationServices::Deleter.new(user: current_user, solicitation: @solicitation).delete do |on|
           on.success do |solicitation|
-            render json: solicitation, root: "user", status: 200, serializer: ::V1::Actions::SolicitationSerializer, scope: { user: current_user }
+            render json: solicitation, root: "user", status: 200, serializer: ::V1::ActionSerializer, scope: { user: current_user }
           end
 
           on.failure do |solicitation|
