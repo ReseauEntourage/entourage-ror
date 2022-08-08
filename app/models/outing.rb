@@ -12,6 +12,7 @@ class Outing < Entourage
 
   after_validation :add_creator_as_member, if: :new_record?
   after_validation :dup_neighborhoods_entourages, if: :original_outing
+  after_validation :dup_taggings, if: :original_outing
 
   has_many :members, -> { where("join_requests.status = 'accepted'") }, through: :join_requests, source: :user
   has_many :neighborhoods_entourages, foreign_key: :entourage_id
@@ -172,6 +173,13 @@ class Outing < Entourage
     original_outing.neighborhoods_entourages.each do |neighborhood_entourage|
       neighborhoods_entourages << NeighborhoodsEntourage.new(neighborhood: neighborhood_entourage.neighborhood, entourage: self)
     end
+  end
+
+  def dup_taggings
+    return unless original_outing
+    return unless new_record?
+
+    self.interests = original_outing.interest_list
   end
 
   def set_entourage_image_id
