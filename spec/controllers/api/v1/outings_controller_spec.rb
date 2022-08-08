@@ -559,7 +559,7 @@ describe Api::V1::OutingsController do
   describe 'POST duplicate' do
     let(:creator) { user }
     let(:recurrence) { FactoryBot.create(:outing_recurrence) }
-    let!(:outing) { FactoryBot.create(:outing, :with_neighborhood, status: :open, user: creator, recurrence: recurrence, recurrency_identifier: recurrence.identifier, interests: [:sport]) }
+    let!(:outing) { FactoryBot.create(:outing, :with_neighborhood, status: :open, user: creator, recurrence: recurrence, recurrency_identifier: recurrence&.identifier, interests: [:sport]) }
 
     let(:request) { post :duplicate, params: { token: user.token, id: outing.id } }
 
