@@ -26,13 +26,13 @@ class OutingRecurrence < ApplicationRecord
   end
 
   def generate_available?
+    return false unless continue
+    return false unless last_outing.present?
+
     outings.active.future.count < AVAILABLE_RECURRENCES
   end
 
   def generate
-    return unless continue
-    return unless last_outing.present?
-
     last_outing.dup
   end
 

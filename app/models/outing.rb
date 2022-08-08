@@ -144,7 +144,7 @@ class Outing < Entourage
   # we create recurrence relationship whenever we set a recurrency to an outing that does not already defines this relationship
   def set_outing_recurrence
     return if recurrence.present?
-    return unless recurrency.present?
+    return if recurrency.blank?
 
     self.recurrence = OutingRecurrence.new(recurrency: recurrency, continue: true)
     self.recurrency_identifier = self.recurrence.identifier
@@ -153,7 +153,7 @@ class Outing < Entourage
   def cancel_outing_recurrence
     return if recurrency.blank?
     return unless recurrence.present?
-    return unless recurrency.to_i == 0
+    return unless recurrency&.to_i == 0
 
     self.recurrence.assign_attributes(continue: false)
   end
