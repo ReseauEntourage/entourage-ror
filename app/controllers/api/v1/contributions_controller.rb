@@ -46,7 +46,7 @@ module Api
       def destroy
         ContributionServices::Deleter.new(user: current_user, contribution: @contribution).delete do |on|
           on.success do |contribution|
-            render json: contribution, root: "user", status: 200, serializer: ::V1::ActionSerializer, scope: { user: current_user }
+            render json: contribution, root: :contribution, status: 200, serializer: ::V1::ActionSerializer, scope: { user: current_user }
           end
 
           on.failure do |contribution|
