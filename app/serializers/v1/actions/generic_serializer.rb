@@ -55,6 +55,13 @@ module V1
       def members_count
         object.accepted_members.count
       end
+
+      def image_url
+        return unless object.image_url.present?
+        return unless object.contribution?
+
+        Contribution.url_for(object.image_url)
+      end
     end
   end
 end
