@@ -47,7 +47,7 @@ module Api
       def destroy
         SolicitationServices::Deleter.new(user: current_user, solicitation: @solicitation).delete do |on|
           on.success do |solicitation|
-            render json: solicitation, root: "user", status: 200, serializer: ::V1::ActionSerializer, scope: { user: current_user }
+            render json: solicitation, root: :solicitation, status: 200, serializer: ::V1::ActionSerializer, scope: { user: current_user }
           end
 
           on.failure do |solicitation|
