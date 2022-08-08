@@ -37,6 +37,6 @@ class OutingRecurrence < ApplicationRecord
   end
 
   def last_outing
-    @last_outing ||= Outing.where(recurrency_identifier: identifier).last
+    @last_outing ||= Outing.where(recurrency_identifier: identifier).order("metadata->>'starts_at' desc").last
   end
 end
