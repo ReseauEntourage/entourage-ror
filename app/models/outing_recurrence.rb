@@ -37,6 +37,7 @@ class OutingRecurrence < ApplicationRecord
   end
 
   def last_outing
-    @last_outing ||= Outing.where(recurrency_identifier: identifier).order("metadata->>'starts_at' desc").last
+    # @reminder default_scope is on metadata->>'starts_at'
+    @last_outing ||= Outing.where(recurrency_identifier: identifier, status: :open).last
   end
 end
