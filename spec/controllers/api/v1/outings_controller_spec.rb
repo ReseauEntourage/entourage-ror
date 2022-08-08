@@ -559,7 +559,7 @@ describe Api::V1::OutingsController do
   describe 'POST duplicate' do
     let(:creator) { user }
     let(:recurrence) { FactoryBot.create(:outing_recurrence) }
-    let!(:outing) { FactoryBot.create(:outing, :outing_class, status: :open, user: creator, recurrence: recurrence) }
+    let!(:outing) { FactoryBot.create(:outing, :with_neighborhood, status: :open, user: creator, recurrence: recurrence, recurrency_identifier: recurrence.identifier, interests: [:sport]) }
 
     let(:request) { post :duplicate, params: { token: user.token, id: outing.id } }
 
@@ -586,15 +586,22 @@ describe Api::V1::OutingsController do
     end
 
     context 'as creator' do
+      let(:result) { subject['outing'] }
+      let(:result_db) { Outing.find(subject['outing']['id']) }
+
       before { request }
 
       it { expect(response.status).to eq(200) }
       it { expect(subject).to have_key('outing') }
-      it { expect(subject['outing']).to have_key('metadata') }
-      it { expect(subject['outing']['metadata']['starts_at']).to eq((outing[:metadata][:starts_at] + 7.days).iso8601(3)) }
+      it { expect(result).to have_key('metadata') }
+      it { expect(result['metadata']['starts_at']).to eq((outing[:metadata][:starts_at] + 7.days).iso8601(3)) }
 
-      it { expect(subject['outing']['id']).to eq(Outing.last.id) }
-      it { expect(Outing.find(subject['outing']['id']).member_ids).to match_array([user.id]) }
+      it { expect(result['id']).to eq(Outing.last.id) }
+      it { expect(result['id']).not_to eq(outing.id) }
+      it { expect(result_db.member_ids).to match_array([user.id]) }
+      it { expect(result_db.neighborhoods_entourages.count).to eq 1 }
+      it { expect(result_db.neighborhoods.count).to eq 1 }
+      it { expect(result['interests']).to match_array(['sport']) }
     end
   end
 
