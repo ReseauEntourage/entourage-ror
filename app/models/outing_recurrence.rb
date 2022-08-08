@@ -5,7 +5,7 @@ class OutingRecurrence < ApplicationRecord
 
   after_initialize :set_identifier, if: :new_record?
 
-  validates_inclusion_of :recurrency, in: [0, 7, 14, 31], allow_nil: true
+  validates_inclusion_of :recurrency, in: [7, 14, 31]
 
   default_scope { where(continue: true) }
 
