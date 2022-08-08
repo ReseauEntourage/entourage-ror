@@ -14,7 +14,7 @@ module Api
       end
 
       def show
-        render json: @contribution, serializer: ::V1::Actions::ContributionHomeSerializer, scope: { user: current_user }
+        render json: @contribution, serializer: ::V1::Actions::ContributionSerializer, scope: { user: current_user }
       end
 
       def create

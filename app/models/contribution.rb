@@ -30,8 +30,4 @@ class Contribution < Entourage
       "#{BUCKET_PREFIX}/#{key}"
     end
   end
-
-  def parent_chat_messages
-    chat_messages.where(ancestry: nil)
-  end
 end

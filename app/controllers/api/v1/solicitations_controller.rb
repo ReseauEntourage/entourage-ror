@@ -13,7 +13,7 @@ module Api
       end
 
       def show
-        render json: @solicitation, serializer: ::V1::Actions::SolicitationHomeSerializer, scope: { user: current_user }
+        render json: @solicitation, serializer: ::V1::Actions::SolicitationSerializer, scope: { user: current_user }
       end
 
       def create
