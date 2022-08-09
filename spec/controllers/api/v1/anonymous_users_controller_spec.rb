@@ -63,6 +63,7 @@ describe Api::V1::AnonymousUsersController do
             "creation" => false
           }
         },
+        "created_at" => nil,
       }
     )}
   end

@@ -92,6 +92,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
               "permissions" => {
                 "outing" => { "creation" => true }
               },
+              "created_at" => user.created_at.iso8601(3),
             },
             "first_sign_in" => true
           })
@@ -312,6 +313,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
           "permissions" => {
             "outing" => { "creation" => false }
           },
+          "created_at" => user.created_at.iso8601(3),
         },
         "first_sign_in" => true
       })}
@@ -802,6 +804,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
             "permissions" => {
               "outing" => { "creation" => true }
             },
+            "created_at" => user.created_at.iso8601(3),
           }
         }) }
 
@@ -893,6 +896,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
             "permissions" => {
               "outing" => { "creation" => true }
             },
+            "created_at" => user.created_at.iso8601(3),
           }
         }) }
       end
