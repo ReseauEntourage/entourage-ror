@@ -181,7 +181,8 @@ describe Api::V1::HomeController do
                 "uuid" => nil,
                 "url" => nil
               }
-            }]
+            }],
+            "moderator" => {}
           }
         }) }
       end
