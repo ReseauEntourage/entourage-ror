@@ -39,6 +39,8 @@ describe Api::V1::AnonymousUsersController do
           "ask_for_help_creation_count" => 0,
           "contribution_creation_count" => 0,
           "events_count" => 0,
+          "outings_count" => 0,
+          "neighborhoods_count" => 0,
           "good_waves_participation" => false
         },
         "address"=>nil,
@@ -63,6 +65,7 @@ describe Api::V1::AnonymousUsersController do
             "creation" => false
           }
         },
+        "created_at" => nil,
       }
     )}
   end
