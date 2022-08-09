@@ -95,4 +95,5 @@ class AnonymousUser
   def ask_for_help_creation_count; 0; end
   def contribution_creation_count; 0; end
   def travel_distance; 10; end
+  def created_at; nil; end
 end

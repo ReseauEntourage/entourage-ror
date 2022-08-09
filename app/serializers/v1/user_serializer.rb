@@ -28,6 +28,7 @@ module V1
     attribute :phone,               if: :me?
     attribute :travel_distance,     if: :me?
     attribute :birthday,            if: :me?
+    attribute :created_at,          if: :me?
 
     has_one :stats
     has_one :organization, serializer: ::V1::OrganizationSerializer
