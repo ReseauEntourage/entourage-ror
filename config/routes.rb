@@ -124,6 +124,7 @@ Rails.application.routes.draw do
           get :show_joins
           get :show_invitations
           get :show_messages
+          get :show_siblings
           get :sensitive_words
           post :sensitive_words_check
           get :edit_type

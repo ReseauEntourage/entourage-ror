@@ -166,6 +166,11 @@
         <li role="presentation" class="<%= :active if params[:action] == 'show_messages' %>">
           <%= link_to "Messages", show_messages_admin_entourage_path(@entourage, @params) %>
         </li>
+        <% if @entourage.recurrent? %>
+          <li role="presentation" class="<%= :active if params[:action] == 'show_siblings' %>">
+            <%= link_to "Récurrences", show_siblings_admin_entourage_path(@entourage, @params) %>
+          </li>
+        <% end %>
       </ul>
 
       <div class="panel panel-default">
