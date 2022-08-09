@@ -51,6 +51,11 @@ module Admin
     end
 
     def destroy
+      if @resource.update_attribute(:status, :deleted)
+        redirect_to admin_resources_path, notice: "Le contenu pédagogique a bien été supprimé"
+      else
+        redirect_to edit_admin_resource_path(@resource), error: "Le contenu pédagogique n'a pas pu être supprimé"
+      end
     end
 
     private
