@@ -67,6 +67,12 @@
 
   <%= f.submit 'Enregistrer', class: "btn btn-primary" %>
   <%= link_to "Retour", admin_resources_path, class: "btn btn-default" %>
+
+  <% unless @resource.new_record? %>
+    <%= link_to "Supprimer", admin_resource_path(@resource), method: :DELETE, class: "btn btn-danger", style: 'float: right;', data: {
+      confirm: "Êtes-vous sûr de vouloir supprimer ce contenu pédagogique ?"
+    } %>
+  <% end %>
 <% end %>
 <%= tinymce %>
 
