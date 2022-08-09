@@ -94,6 +94,10 @@ module ModerationServices
     )
   end
 
+  def self.moderator_for_user user
+    moderation_area_for_user_with_default(user)&.moderator
+  end
+
   def self.default_moderation_area
     moderation_area_for_departement('*', community: :entourage)
   end
