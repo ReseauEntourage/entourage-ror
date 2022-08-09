@@ -32,8 +32,6 @@ module V1
     def author
       return unless object.user.present?
 
-      partner = object.user.partner
-
       {
         id: object.user.id,
         display_name: UserPresenter.new(user: object.user).display_name,
