@@ -8,7 +8,8 @@ module V1
         :chat_messages_count,
         :outing_participations_count,
         :neighborhood_participations_count,
-        :recommandations
+        :recommandations,
+        :moderator
 
       def meetings_count
         0
@@ -26,6 +27,16 @@ module V1
         UserServices::Recommandations.new(object).find[0..2].map do |recommandation|
           V1::RecommandationSerializer.new(recommandation).as_json
         end
+      end
+
+      def moderator
+        return Hash.new unless moderator = ModerationServices.moderator_for_user(scope[:user])
+
+        {
+          id: moderator.id,
+          display_name: UserPresenter.new(user: moderator).display_name,
+          avatar_url: UserServices::Avatar.new(user: moderator).thumbnail_url
+        }
       end
     end
   end
