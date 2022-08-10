@@ -918,7 +918,9 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
       context "get someone else profile" do
         let(:other_user) { FactoryBot.create(:pro_user, about: "about") }
         let!(:conversation) { nil }
+
         before { get :show, params: { id: other_user.id, token: user.token } }
+
         it { expect(response.status).to eq(200) }
         it { expect(JSON.parse(response.body)).to eq({
           "user" => {
@@ -959,7 +961,8 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
             "memberships" => [],
             "conversation" => {
               "uuid" => "1_list_#{user.id}-#{other_user.id}"
-            }
+            },
+            "created_at" => other_user.created_at.iso8601(3)
           }
         }) }
 
