@@ -43,7 +43,7 @@
   <body>
     <h1><%= @resource.name %></h1>
     <% if @resource.duration.present? %>
-      <h3><%= "#{@resource.duration}mn" %></h3>
+      <h3><%= "#{@resource.duration} min" %></h3>
     <% end %>
 
     <% if @resource.is_video %>
