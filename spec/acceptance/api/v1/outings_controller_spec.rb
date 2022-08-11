@@ -9,11 +9,16 @@ resource Api::V1::OutingsController do
     route_summary "Find outings"
 
     parameter :token, "User token", type: :string, required: true
-    parameter :q, "Search text", type: :string, required: false
+    parameter :latitude, "latitude", type: :number, required: false
+    parameter :longitude, "longitude", type: :number, required: false
+    parameter :travel_distance, "travel_distance", type: :number, required: false
 
     let(:user) { FactoryBot.create(:pro_user) }
     let!(:outing) { FactoryBot.create(:outing) }
     let(:token) { user.token }
+    let(:latitude) { 48.84 }
+    let(:longitude) { 2.28 }
+    let(:travel_distance) { 10 }
 
     context '200' do
       example_request 'Get outings' do
@@ -216,6 +221,42 @@ resource Api::V1::OutingsController do
       example_request 'Update outing future siblings' do
         expect(response_status).to eq(200)
         expect(JSON.parse(response_body)).to have_key('outings')
+      end
+    end
+  end
+
+  post 'api/v1/outings/:id/cancel' do
+    route_summary "Cancel a outing"
+
+    parameter :id, required: true
+    parameter :token, type: :string, required: true
+
+    let(:id) { outing.id }
+    let(:user) { FactoryBot.create(:pro_user) }
+    let(:outing) { create(:outing, user: user) }
+
+    let!(:join_request) { create(:join_request, user: outing.user, joinable: outing, status: :accepted, role: :organizer) }
+
+    let(:raw_post) { {
+      token: user.token,
+      outing: {
+        cancellation_message: :foo
+      }
+    }.to_json }
+
+    context '200' do
+      example_request 'Cancel outing' do
+        expect(response_status).to eq(200)
+        expect(JSON.parse(response_body)).to have_key('outing')
+        expect(outing.reload.status).to eq('cancelled')
+      end
+    end
+
+    context '401' do
+      let(:outing) { create(:outing, user: FactoryBot.create(:pro_user)) }
+
+      example_request 'Cancel outing without being the creator' do
+        expect(response_status).to eq(401)
       end
     end
   end
