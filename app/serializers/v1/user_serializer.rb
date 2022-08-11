@@ -51,8 +51,6 @@ module V1
       groups = object.entourage_participations.merge(JoinRequest.accepted).group(:group_type).count
       groups.default = 0
 
-      neighborhoods_count = object.neighborhood_participations.merge(JoinRequest.accepted).count
-
       {
           tour_count: object.tours.count,
           encounter_count: object.encounters.count,
@@ -62,7 +60,7 @@ module V1
           contribution_creation_count: object.contribution_creation_count,
           events_count: groups['outing'],
           outings_count: groups['outing'],
-          neighborhoods_count: neighborhoods_count,
+          neighborhoods_count: object.neighborhood_memberships.count,
           good_waves_participation: groups['group'] > 0
       }
     end
