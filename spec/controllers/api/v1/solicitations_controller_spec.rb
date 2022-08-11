@@ -131,6 +131,17 @@ describe Api::V1::SolicitationsController, :type => :controller do
       it { expect(subject["solicitations"].count).to eq(0) }
     end
 
+    context "params section finds no match with nil" do
+      let(:section) { nil }
+
+      let(:request) { get :index, params: { token: user.token, sections: [:social] } }
+
+      before { request }
+
+      it { expect(response.status).to eq(200) }
+      it { expect(subject["solicitations"].count).to eq(0) }
+    end
+
     context "params section empty matches" do
       let(:section) { :social }
 
