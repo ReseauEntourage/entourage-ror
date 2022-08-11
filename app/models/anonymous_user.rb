@@ -90,6 +90,7 @@ class AnonymousUser
   def birthday; nil; end
   def errors; ActiveModel::Errors.new(nil); end
   def entourage_participations; JoinRequest.none; end
+  def neighborhood_memberships; JoinRequest.none; end
   def neighborhood_participations; JoinRequest.none; end
   def engaged?; false; end
   def ambassador?; false; end

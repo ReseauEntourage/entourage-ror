@@ -19,8 +19,12 @@ module V1
         object.chat_messages.count
       end
 
+      def outing_participations_count
+        object.outing_memberships.count
+      end
+
       def neighborhood_participations_count
-        object.join_requests.where(joinable_type: :Neighborhood).count
+        object.neighborhood_memberships.count
       end
 
       def recommandations
