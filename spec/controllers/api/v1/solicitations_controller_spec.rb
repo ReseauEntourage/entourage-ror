@@ -7,12 +7,14 @@ describe Api::V1::SolicitationsController, :type => :controller do
 
   context 'index' do
     let(:request) { get :index, params: { token: user.token } }
+
     subject { JSON.parse(response.body) }
 
     let(:latitude) { 48.85 }
     let(:longitude) { 2.27 }
+    let(:section) { nil }
 
-    let!(:solicitation) { FactoryBot.create(:solicitation, latitude: latitude, longitude: longitude) }
+    let!(:solicitation) { FactoryBot.create(:solicitation, latitude: latitude, longitude: longitude, section: section) }
 
     describe 'not authorized' do
       before { get :index }
@@ -122,6 +124,50 @@ describe Api::V1::SolicitationsController, :type => :controller do
     context "user coordinates do not matches" do
       before { User.any_instance.stub(:latitude) { 40 } }
       before { User.any_instance.stub(:longitude) { 2 } }
+
+      before { request }
+
+      it { expect(response.status).to eq(200) }
+      it { expect(subject["solicitations"].count).to eq(0) }
+    end
+
+    context "params section empty matches" do
+      let(:section) { :social }
+
+      let(:request) { get :index, params: { token: user.token, sections: [] } }
+
+      before { request }
+
+      it { expect(response.status).to eq(200) }
+      it { expect(subject["solicitations"].count).to eq(1) }
+    end
+
+    context "params section matches" do
+      let(:section) { :social }
+
+      let(:request) { get :index, params: { token: user.token, sections: [:social] } }
+
+      before { request }
+
+      it { expect(response.status).to eq(200) }
+      it { expect(subject["solicitations"].count).to eq(1) }
+    end
+
+    context "params sections matches any" do
+      let(:section) { :social }
+
+      let(:request) { get :index, params: { token: user.token, sections: [:clothes, :social] } }
+
+      before { request }
+
+      it { expect(response.status).to eq(200) }
+      it { expect(subject["solicitations"].count).to eq(1) }
+    end
+
+    context "params section does not match" do
+      let(:section) { :social }
+
+      let(:request) { get :index, params: { token: user.token, sections: [:clothes] } }
 
       before { request }
 

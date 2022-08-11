@@ -103,7 +103,7 @@ module Api
       end
 
       def index_params
-        params.permit(:latitude, :longitude, :travel_distance, :page, :per)
+        params.permit(:latitude, :longitude, :travel_distance, :page, :per, sections: [])
       end
 
       def contribution_params
