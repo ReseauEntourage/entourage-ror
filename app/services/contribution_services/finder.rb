@@ -1,6 +1,6 @@
 module ContributionServices
   class Finder
-    attr_reader :user, :latitude, :longitude, :distance
+    attr_reader :user, :latitude, :longitude, :distance, :sections
 
     def initialize user, params
       @user = user
@@ -14,6 +14,7 @@ module ContributionServices
       end
 
       @distance = params[:travel_distance] || user.travel_distance
+      @sections = params[:sections] || []
     end
 
     def find_all
@@ -23,6 +24,10 @@ module ContributionServices
         bounding_box_sql = Geocoder::Sql.within_bounding_box(*box, :latitude, :longitude)
 
         contributions = contributions.where(bounding_box_sql)
+      end
+
+      if sections.any?
+        contributions = contributions.tagged_with(sections, :any => true)
       end
 
       # order by created_at is already in default_scope
