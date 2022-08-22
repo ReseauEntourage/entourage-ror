@@ -61,7 +61,7 @@ module Api
 
         def comments
           post = Outing.find(params[:outing_id]).chat_messages.where(id: params[:id]).first
-          messages = post.children.order(created_at: :desc)
+          messages = post.children.order(created_at: :asc)
 
           render json: messages, each_serializer: ::V1::ChatMessages::CommentSerializer, scope: { current_join_request: join_request }
         end
