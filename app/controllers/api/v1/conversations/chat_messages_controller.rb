@@ -14,6 +14,10 @@ module Api
 
         private
 
+        def set_conversation
+          @conversation = Entourage.find(params[:conversation_id])
+        end
+
         def join_request
           @join_request ||= JoinRequest.where(joinable: @conversation, user: current_user, status: :accepted).first
         end
