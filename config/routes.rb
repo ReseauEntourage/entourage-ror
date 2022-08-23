@@ -457,6 +457,8 @@ Rails.application.routes.draw do
       end
 
       resources :conversations, only: [:index, :show] do
+        resources :chat_messages, :controller => 'conversations/chat_messages', only: [:index, :create]
+
         collection do
           get :private
           get :group
