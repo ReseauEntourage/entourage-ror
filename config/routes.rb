@@ -456,11 +456,12 @@ Rails.application.routes.draw do
         end
       end
 
-      resources :conversations, :controller => 'entourages', only: [] do
+      resources :conversations, only: [:index, :show] do
         collection do
-          get :private
-          get :group
-          get :metadata
+          # to be moved to ConversationsController
+          get :private, controller: 'entourages'
+          get :group, controller: 'entourages'
+          get :metadata, controller: 'entourages'
         end
       end
 
