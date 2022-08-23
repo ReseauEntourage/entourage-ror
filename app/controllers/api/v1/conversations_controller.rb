@@ -1,6 +1,11 @@
 module Api
   module V1
     class ConversationsController < Api::V1::BaseController
+      before_action :set_conversation, only: [:show]
+      before_action :authorised_to_see_messages?, only: [:show]
+
+      after_action :set_last_message_read, only: [:show]
+
       def index
         conversations = Entourage.joins(:join_requests)
           .includes(:members, :join_requests)
@@ -67,6 +72,10 @@ module Api
       end
 
       def show
+        render json: @conversation, root: :conversation, serializer: ::V1::ConversationHomeSerializer
+      end
+
+      def create
       end
 
       private
@@ -77,6 +86,24 @@ module Api
 
       def per
         params[:per] || 25
+      end
+
+      def set_conversation
+        @conversation = Entourage.find(params[:id])
+      end
+
+      def authorised_to_see_messages?
+        render json: { message: 'unauthorized user' } unless join_request
+      end
+
+      def join_request
+        @join_request ||= JoinRequest.where(joinable: @conversation, user: @current_user, status: :accepted).first
+      end
+
+      def set_last_message_read
+        return unless join_request
+
+        join_request.update(last_message_read: Time.now)
       end
     end
   end
