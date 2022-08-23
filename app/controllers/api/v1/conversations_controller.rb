@@ -14,6 +14,58 @@ module Api
         }
       end
 
+      def private
+        entourages = Entourage.joins(:join_requests)
+          .includes(:members, :join_requests, { user: :partner })
+          .where(group_type: :conversation)
+          .where('join_requests.user_id = ?', current_user.id)
+          .order(updated_at: :desc)
+          .page(params[:page] || 1).per(per)
+
+        render json: entourages, root: :entourages, each_serializer: ::V1::EntourageSerializer, scope: {
+          user: current_user, include_last_message: true
+        }
+      end
+
+      def group
+        entourages = Entourage.joins(:join_requests)
+          .includes(:join_requests, { user: :partner })
+          .where(group_type: [:action, :outing])
+          .where('join_requests.user_id = ?', current_user.id)
+          .where('join_requests.status = ?', :accepted)
+          .order(updated_at: :desc)
+          .page(params[:page] || 1).per(per)
+
+        render json: entourages, root: :entourages, each_serializer: ::V1::EntourageSerializer, scope: {
+          user: current_user, include_last_message: true
+        }
+      end
+
+      def metadata
+        entourages = Entourage.joins(:join_requests)
+          .select(:id, :group_type)
+          .includes(:join_requests, { user: :partner })
+          .where('join_requests.user_id = ?', current_user.id)
+          .where('join_requests.status = ?', :accepted)
+
+        unreads = UserServices::UnreadMessages.new(user: current_user).unread_by_group_type
+
+        render json: {
+          conversations: {
+            count: entourages.filter{ |entourage| entourage.conversation? }.count,
+            unread: unreads[:conversations]
+          },
+          actions: {
+            count: entourages.filter{ |entourage| entourage.action? }.count,
+            unread: unreads[:actions]
+          },
+          outings: {
+            count: entourages.filter{ |entourage| entourage.outing? }.count,
+            unread: unreads[:outings]
+          }
+        }
+      end
+
       def show
       end
 
