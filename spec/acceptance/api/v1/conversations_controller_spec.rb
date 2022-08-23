@@ -35,4 +35,24 @@ resource Api::V1::ConversationsController do
       end
     end
   end
+
+  get 'api/v1/conversations/:id' do
+    route_summary "Get a conversation"
+
+    parameter :id, required: true
+    parameter :token, type: :string, required: true
+
+    let(:user) { FactoryBot.create(:pro_user) }
+    let(:token) { user.token }
+    let(:conversation) { create :conversation }
+    let(:id) { conversation.id }
+    let!(:join_request) { FactoryBot.create(:join_request, joinable: conversation, user: user, status: :accepted) }
+
+    context '200' do
+      example_request 'Get conversation' do
+        expect(response_status).to eq(200)
+        expect(JSON.parse(response_body)).to have_key('conversation')
+      end
+    end
+  end
 end
