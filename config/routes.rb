@@ -458,10 +458,9 @@ Rails.application.routes.draw do
 
       resources :conversations, only: [:index, :show] do
         collection do
-          # to be moved to ConversationsController
-          get :private, controller: 'entourages'
-          get :group, controller: 'entourages'
-          get :metadata, controller: 'entourages'
+          get :private
+          get :group
+          get :metadata
         end
       end
 
