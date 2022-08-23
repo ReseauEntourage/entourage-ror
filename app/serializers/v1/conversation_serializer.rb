@@ -9,8 +9,28 @@ module V1
                :last_message,
                :number_of_unread_messages
 
-    # admin, ambassador, coordinator, ethics_charter_signed, moderator, not_validated, visited, visitor
-    attribute :roles, if: :private_conversation?
+    attribute :user, if: :private_conversation?
+    attribute :section, unless: :private_conversation?
+
+    # Array: modérateur, nom de l'asso, ambassadeur
+    def user
+      return unless user = other_participant
+
+      partner = user.partner
+
+      {
+        id: user.id,
+        display_name: UserPresenter.new(user: user).display_name,
+        avatar_url: UserServices::Avatar.new(user: user).thumbnail_url,
+        partner: partner.nil? ? nil : V1::PartnerSerializer.new(partner, scope: { minimal: true }, root: false).as_json,
+        partner_role_title: user.partner_role_title.presence,
+        roles: user.roles
+      }
+    end
+
+    def section
+      object.becomes(object.contribution? ? Contribution : Solicitation).section
+    end
 
     lazy_relationship :last_chat_message
     lazy_relationship :chat_messages_count
@@ -51,10 +71,6 @@ module V1
       lazy_chat_messages.select do |chat_message|
         chat_message.created_at > current_join_request.last_message_read
       end.count
-    end
-
-    def roles
-      other_participant.roles
     end
 
     # protected
