@@ -8,7 +8,8 @@ module Api
 
       def index
         conversations = Entourage.joins(:join_requests)
-          .includes(:members, :join_requests)
+          .includes(:members, :join_requests, :chat_messages)
+          .where.not(chat_messages: { id: nil })
           .where(group_type: [:conversation, :action])
           .where('join_requests.user_id = ?', current_user.id)
           .order(updated_at: :desc)
