@@ -15,12 +15,16 @@ resource Api::V1::ConversationsController do
     let(:other_user) { FactoryBot.create(:public_user, first_name: 'Michel', last_name: 'Ange') }
 
     # conversations
-    let!(:entourage) { FactoryBot.create(:entourage, status: :open) }
-    let!(:conversation) { FactoryBot.create(:conversation, user: user, participants: [other_user]) }
+    let(:entourage) { FactoryBot.create(:entourage, status: :open) }
+    let(:conversation) { FactoryBot.create(:conversation, user: user, participants: [other_user]) }
 
     # memberships
     let!(:join_request_1) { FactoryBot.create(:join_request, joinable: entourage, user: user, status: :accepted, last_message_read: Time.now) }
     let!(:join_request_2) { FactoryBot.create(:join_request, joinable: conversation, user: user, status: :accepted, last_message_read: Time.now) }
+
+    # chat_messages
+    let!(:chat_message_1) { FactoryBot.create(:chat_message, messageable: entourage) }
+    let!(:chat_message_2) { FactoryBot.create(:chat_message, messageable: conversation) }
 
     let(:token) { user.token }
 
