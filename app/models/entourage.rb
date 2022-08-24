@@ -113,6 +113,31 @@ class Entourage < ApplicationRecord
 
   after_update :create_chat_message_on_status_update, if: :saved_change_to_status?
 
+  def create_from_join_requests!
+    ApplicationRecord.connection.transaction do
+      participations = self.join_requests.to_a
+
+      self.join_requests = []
+      self.chat_messages = []
+      self.instance_variable_set(:@readonly, false)
+
+      # we set the uuid manually instead of updating it gradually at each
+      # join_request. see next comment.
+      self.uuid_v2 = ConversationService.hash_for_participants(participations.map(&:user_id), validated: false)
+      self.save!
+
+      participations.each do |join_request|
+        join_request.joinable = self
+
+        # if we update the UUID at each user, one of the intermediary
+        # conversations (e.g. first user with itself) may already exist
+        # and cause an error.
+        join_request.skip_conversation_uuid_update!
+        join_request.save!
+      end
+    end
+  end
+
   def moderator_read_for user:
     moderator_reads.where(user_id: user.id).first
   end

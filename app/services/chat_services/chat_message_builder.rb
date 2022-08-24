@@ -23,30 +23,12 @@ module ChatServices
       if joinable.new_record?
         success = begin
           ApplicationRecord.connection.transaction do
-            join_requests = joinable.join_requests.to_a
-            joinable.join_requests = []
-            joinable.chat_messages = []
-            joinable.instance_variable_set(:@readonly, false)
+            joinable.create_from_join_requests!
 
-            # we set the uuid manually instead of updating it gradually at each
-            # join_request. see next comment.
-            joinable.uuid_v2 = ConversationService.hash_for_participants(
-              join_requests.map(&:user_id), validated: false)
-
-            joinable.save!
-            join_requests.each do |join_request|
-              join_request.joinable = joinable
-
-              # if we update the UUID at each user, one of the intermediary
-              # conversations (e.g. first user with itself) may already exist
-              # and cause an error.
-              join_request.skip_conversation_uuid_update!
-
-              join_request.save!
-            end
             message.messageable = joinable
             message.save!
           end
+
           true
         rescue => e
           Raven.capture_exception(e)
