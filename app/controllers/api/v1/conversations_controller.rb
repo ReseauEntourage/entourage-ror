@@ -76,6 +76,12 @@ module Api
       end
 
       def create
+        @conversation = ConversationService.build_conversation(participant_ids: [conversation_params[:user_id], current_user.id])
+        @conversation.create_from_join_requests!
+
+        render json: @conversation, status: 201, root: :conversation, serializer: ::V1::ConversationHomeSerializer
+      rescue => e
+        render json: { message: 'unable to create conversation' }
       end
 
       private
@@ -90,6 +96,10 @@ module Api
 
       def set_conversation
         @conversation = Entourage.find(params[:id])
+      end
+
+      def conversation_params
+        params.require(:conversation).permit(:user_id)
       end
 
       def authorised_to_see_messages?

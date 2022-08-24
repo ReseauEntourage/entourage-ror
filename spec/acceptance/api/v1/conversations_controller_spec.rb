@@ -55,4 +55,35 @@ resource Api::V1::ConversationsController do
       end
     end
   end
+
+  post '/api/v1/conversations' do
+    route_summary "Create private conversation"
+    # route_description "no description"
+
+    parameter :token, type: :string, required: true
+
+    with_options :scope => :conversation, :required => true do
+      parameter :user_id, type: :integer
+    end
+
+    let(:user) { FactoryBot.create(:pro_user) }
+    let(:other_user) { FactoryBot.create(:pro_user) }
+
+    let(:raw_post) { {
+      token: user.token,
+      conversation: {
+        user_id: other_user.id
+      }
+    }.to_json }
+
+    subject { JSON.parse(response_body) }
+
+    context '201' do
+      example_request 'Create conversation' do
+        expect(response_status).to eq(201)
+        expect(subject).to have_key('conversation')
+        expect(subject['conversation']['members_count']).to eq(2)
+      end
+    end
+  end
 end
