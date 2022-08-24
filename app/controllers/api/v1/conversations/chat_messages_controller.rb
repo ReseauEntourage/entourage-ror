@@ -3,6 +3,7 @@ module Api
     module Conversations
       class ChatMessagesController < Api::V1::BaseController
         before_action :set_conversation, only: [:index, :create]
+        before_action :ensure_is_member, only: [:create]
 
         after_action :set_last_message_read, only: [:index]
 
@@ -12,7 +13,34 @@ module Api
           render json: messages, each_serializer: ::V1::ChatMessages::CommonSerializer, scope: { current_join_request: join_request }
         end
 
+        def create
+          ChatServices::ChatMessageBuilder.new(
+            params: chat_messages_params,
+            user: current_user,
+            joinable: @conversation,
+            join_request: join_request
+          ).create do |on|
+            on.success do |message|
+              render json: message, status: 201, serializer: ::V1::ChatMessages::CommonSerializer
+            end
+
+            on.failure do |message|
+              render json: {
+                message: 'Could not create chat message', reasons: message.errors.full_messages
+              }, status: :bad_request
+            end
+          end
+        end
+
         private
+
+        def ensure_is_member
+          render json: { message: 'unauthorized' }, status: :unauthorized unless join_request
+        end
+
+        def chat_messages_params
+          params.require(:chat_message).permit(:content, :image_url)
+        end
 
         def set_conversation
           @conversation = Entourage.find(params[:conversation_id])
