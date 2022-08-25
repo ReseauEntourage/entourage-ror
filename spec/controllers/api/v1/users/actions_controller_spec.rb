@@ -15,6 +15,7 @@ describe Api::V1::Users::ActionsController, :type => :controller do
     context "logged in" do
       let!(:action_created) { FactoryBot.create(:contribution, user: user, created_at: 1.day.ago) }
       let!(:action_joined) { FactoryBot.create(:contribution, user: user, created_at: 2.day.ago) }
+      let!(:action_closed) { FactoryBot.create(:contribution, user: user, created_at: 3.day.ago, status: :closed) }
       let!(:action_other) { FactoryBot.create(:contribution) }
 
       before { get :index, params: { user_id: user.id, token: user.token } }
