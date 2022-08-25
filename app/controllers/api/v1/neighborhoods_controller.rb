@@ -2,7 +2,6 @@ module Api
   module V1
     class NeighborhoodsController < Api::V1::BaseController
       before_action :set_neighborhood, only: [:show, :update, :destroy, :report]
-      allow_anonymous_access only: [:report]
 
       after_action :set_last_message_read, only: [:show]
 
