@@ -1,8 +1,8 @@
 module Api
   module V1
     class ConversationsController < Api::V1::BaseController
-      before_action :set_conversation, only: [:show]
-      before_action :ensure_is_member, only: [:show]
+      before_action :set_conversation, only: [:show, :report]
+      before_action :ensure_is_member, only: [:show, :report]
 
       after_action :set_last_message_read, only: [:show]
 
@@ -91,6 +91,24 @@ module Api
         render json: { message: 'unable to create conversation' }, status: :bad_request
       end
 
+      def report
+        unless report_params[:signals].present?
+          render json: {
+            code: 'CANNOT_REPORT_CONVERSATION',
+            message: 'signals is required'
+          }, status: :bad_request and return
+        end
+
+        SlackServices::SignalConversation.new(
+          conversation: @conversation,
+          reporting_user: current_user,
+          signals: report_params[:signals],
+          message: report_params[:message]
+        ).notify
+
+        head :created
+      end
+
       private
 
       def page
@@ -110,7 +128,7 @@ module Api
       end
 
       def ensure_is_member
-        render json: { message: 'unauthorized user' } unless join_request
+        render json: { message: 'unauthorized user' }, status: :unauthorized unless join_request
       end
 
       def join_request
@@ -121,6 +139,10 @@ module Api
         return unless join_request
 
         join_request.update(last_message_read: Time.now)
+      end
+
+      def report_params
+        params.require(:report).permit(:message, signals: [])
       end
     end
   end
