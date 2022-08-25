@@ -7,7 +7,8 @@ module V1
                :name,
                :image_url,
                :last_message,
-               :number_of_unread_messages
+               :number_of_unread_messages,
+               :has_personal_post
 
     attribute :user, if: :private_conversation?
     attribute :section, unless: :private_conversation?
@@ -71,6 +72,12 @@ module V1
       lazy_chat_messages.select do |chat_message|
         chat_message.created_at > current_join_request.last_message_read
       end.count
+    end
+
+    def has_personal_post
+      return unless scope[:user]
+
+      (lazy_chat_messages.pluck(:user_id) & [scope[:user].id]).any?
     end
 
     # protected
