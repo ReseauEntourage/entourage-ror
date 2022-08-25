@@ -7,8 +7,8 @@ module Api
       after_action :set_last_message_read, only: [:show]
 
       def index
-        conversations = Entourage.joins(:join_requests)
-          .includes(:members, :join_requests, :chat_messages)
+        conversations = Entourage.joins(:members)
+          .includes(:chat_messages)
           .where.not(chat_messages: { id: nil })
           .where(group_type: [:conversation, :action])
           .where('join_requests.user_id = ?', current_user.id)
