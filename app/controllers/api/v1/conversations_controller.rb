@@ -2,7 +2,7 @@ module Api
   module V1
     class ConversationsController < Api::V1::BaseController
       before_action :set_conversation, only: [:show]
-      before_action :authorised_to_see_messages?, only: [:show]
+      before_action :ensure_is_member, only: [:show]
 
       after_action :set_last_message_read, only: [:show]
 
@@ -107,7 +107,7 @@ module Api
         params.require(:conversation).permit(:user_id)
       end
 
-      def authorised_to_see_messages?
+      def ensure_is_member
         render json: { message: 'unauthorized user' } unless join_request
       end
 
