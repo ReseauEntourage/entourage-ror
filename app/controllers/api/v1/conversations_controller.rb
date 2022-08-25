@@ -12,6 +12,7 @@ module Api
           .where.not(chat_messages: { id: nil })
           .where(group_type: [:conversation, :action])
           .where('join_requests.user_id = ?', current_user.id)
+          .merge(JoinRequest.accepted)
           .order(updated_at: :desc)
           .page(page).per(per)
 
