@@ -150,6 +150,7 @@ class Entourage < ApplicationRecord
     join_requests.with_entourage_invitations.accepted.where('join_requests.created_at > ?', read_at).any?
   end
 
+  # @dead_code
   def unread_chat_message_after read_at:
     conversation_messages.ordered.with_content.where('created_at > ?', read_at).any?
   end

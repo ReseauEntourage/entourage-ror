@@ -36,6 +36,15 @@ class Outing < Entourage
 
   belongs_to :recurrence, class_name: :OutingRecurrence, foreign_key: :recurrency_identifier, primary_key: :identifier
 
+  # chat_messages redefinitions without updated_status
+  has_many :chat_messages, -> { where.not(message_type: :status_update) }, as: :messageable, dependent: :destroy
+  has_one :last_chat_message, -> {
+    select('DISTINCT ON (messageable_id, messageable_type) *').where.not(message_type: :status_update).order('messageable_id, messageable_type, created_at desc')
+  }, as: :messageable, class_name: 'ChatMessage'
+  has_one :chat_messages_count, -> {
+    select('DISTINCT ON (messageable_id, messageable_type) COUNT(*), messageable_id, messageable_type').where.not(message_type: :status_update).group('messageable_id, messageable_type')
+  }, as: :messageable, class_name: 'ChatMessage'
+
   accepts_nested_attributes_for :recurrence, :future_siblings, :future_relatives
 
   validate :validate_neighborhood_ids
