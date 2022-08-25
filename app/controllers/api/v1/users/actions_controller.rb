@@ -8,7 +8,7 @@ module Api
           page = params[:page] || 1
           per = [(params[:per].try(:to_i) || 25), 25].min
 
-          actions = Action.where(user_id: @user.id)
+          actions = Action.active.where(user_id: @user.id)
             .order(created_at: :desc)
             .page(page)
             .per(per)
