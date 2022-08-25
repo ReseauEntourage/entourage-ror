@@ -15,8 +15,8 @@ resource Api::V1::ConversationsController do
     let(:other_user) { FactoryBot.create(:public_user, first_name: 'Michel', last_name: 'Ange') }
 
     # conversations
-    let(:entourage) { FactoryBot.create(:entourage, status: :open) }
-    let(:conversation) { FactoryBot.create(:conversation, user: user, participants: [other_user]) }
+    let(:entourage) { FactoryBot.create(:entourage, title: "foo", status: :open, created_at: 2.hours.ago) }
+    let(:conversation) { FactoryBot.create(:conversation, user: user, participants: [other_user], created_at: 1.hour.ago) }
 
     # memberships
     let!(:join_request_1) { FactoryBot.create(:join_request, joinable: entourage, user: user, status: :accepted, last_message_read: Time.now) }
@@ -24,7 +24,7 @@ resource Api::V1::ConversationsController do
 
     # chat_messages
     let!(:chat_message_1) { FactoryBot.create(:chat_message, messageable: entourage) }
-    let!(:chat_message_2) { FactoryBot.create(:chat_message, messageable: conversation) }
+    let!(:chat_message_2) { FactoryBot.create(:chat_message, messageable: conversation, user: user) }
 
     let(:token) { user.token }
 
@@ -36,6 +36,10 @@ resource Api::V1::ConversationsController do
         expect(subject).to have_key('conversations')
         expect(subject["conversations"].count).to eq(2)
         expect(subject["conversations"][0]["name"]).to eq("Michel A.")
+        expect(subject["conversations"][1]["name"]).to eq("Foo")
+
+        expect(subject["conversations"][0]["has_personal_post"]).to eq(true)
+        expect(subject["conversations"][1]["has_personal_post"]).to eq(false)
       end
     end
   end

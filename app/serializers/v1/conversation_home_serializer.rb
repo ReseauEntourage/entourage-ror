@@ -6,7 +6,8 @@ module V1
       :image_url,
       :member,
       :members_count,
-      :chat_messages
+      :chat_messages,
+      :has_personal_post
 
     attribute :user, if: :private_conversation?
     attribute :section, unless: :private_conversation?
@@ -46,6 +47,12 @@ module V1
       object.chat_messages.ordered.limit(25).map do |chat_message|
         V1::ChatMessageHomeSerializer.new(chat_message, scope: { current_join_request: current_join_request }).as_json
       end
+    end
+
+    def has_personal_post
+      return unless scope[:user]
+
+      (lazy_chat_messages.pluck(:user_id) & [scope[:user].id]).any?
     end
 
     def user
