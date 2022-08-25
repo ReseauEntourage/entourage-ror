@@ -35,7 +35,8 @@ module V1
       {
         id: object.user.id,
         display_name: UserPresenter.new(user: object.user).display_name,
-        avatar_url: UserServices::Avatar.new(user: object.user).thumbnail_url
+        avatar_url: UserServices::Avatar.new(user: object.user).thumbnail_url,
+        created_at: object.user.created_at
       }
     end
 
