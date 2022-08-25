@@ -456,7 +456,15 @@ Rails.application.routes.draw do
         end
       end
 
-      resources :conversations, :controller => 'entourages', only: [] do
+      resources :conversations, only: [:index, :show, :create] do
+        resources :chat_messages, :controller => 'conversations/chat_messages', only: [:index, :create]
+        resources :users, :controller => 'conversations/users', only: [] do
+          collection do
+            # we want to avoid specific id to unjoin
+            delete :destroy
+          end
+        end
+
         collection do
           get :private
           get :group
