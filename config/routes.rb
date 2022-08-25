@@ -465,6 +465,10 @@ Rails.application.routes.draw do
           end
         end
 
+        member do
+          post :report
+        end
+
         collection do
           get :private
           get :group

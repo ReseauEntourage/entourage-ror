@@ -188,4 +188,47 @@ describe Api::V1::ConversationsController do
       end
     end
   end
+
+  describe 'POST #report' do
+    let(:conversation) { create :conversation }
+    let(:params) { { token: user.token, id: conversation.id, report: { signals: signals, message: 'bar' } } }
+    let(:signals) { ['foo'] }
+
+    let!(:join_request) { FactoryBot.create(:join_request, joinable: conversation, user: user, status: :accepted) }
+
+    ENV['SLACK_SIGNAL'] = '{"url":"https://url.to.slack.com","channel":"channel"}'
+
+    before { stub_request(:post, "https://url.to.slack.com").to_return(status: 200) }
+
+    context "valid params" do
+      before {
+        expect_any_instance_of(SlackServices::SignalConversation).to receive(:notify)
+        post :report, params: params
+      }
+
+      it { expect(response.status).to eq 201 }
+    end
+
+    context "missing signals" do
+      let(:signals) { [] }
+
+      before {
+        expect_any_instance_of(SlackServices::SignalConversation).not_to receive(:notify)
+        post :report, params: params
+      }
+
+      it { expect(response.status).to eq 400 }
+    end
+
+    context "user is not member" do
+      let!(:join_request) { nil }
+
+      before {
+        expect_any_instance_of(SlackServices::SignalConversation).not_to receive(:notify)
+        post :report, params: params
+      }
+
+      it { expect(response.status).to eq 401 }
+    end
+  end
 end
