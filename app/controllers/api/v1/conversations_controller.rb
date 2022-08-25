@@ -81,12 +81,13 @@ module Api
 
         unless @conversation = Entourage.findable.find_by(uuid_v2: ConversationService.hash_for_participants(participant_ids))
           @conversation = ConversationService.build_conversation(participant_ids: participant_ids)
+          @conversation.public = false
           @conversation.create_from_join_requests!
         end
 
         render json: @conversation, status: 201, root: :conversation, serializer: ::V1::ConversationHomeSerializer
       rescue => e
-        render json: { message: 'unable to create conversation' }
+        render json: { message: 'unable to create conversation' }, status: :bad_request
       end
 
       private
