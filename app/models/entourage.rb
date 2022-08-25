@@ -496,6 +496,7 @@ class Entourage < ApplicationRecord
     return if group_type.nil?
     case group_type
     when 'conversation'
+      # why no public = false?
       self.status         = :open
       self.title          = '(conversation)'
       self.entourage_type = :contribution
