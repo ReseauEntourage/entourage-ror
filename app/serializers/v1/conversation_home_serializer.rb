@@ -5,6 +5,7 @@ module V1
       :type,
       :name,
       :image_url,
+      :creator,
       :member,
       :members_count,
       :chat_messages,
@@ -12,6 +13,7 @@ module V1
 
     attribute :user, if: :private_conversation?
     attribute :section, unless: :private_conversation?
+    attribute :author, unless: :private_conversation?
 
     has_many :members, serializer: ::V1::Users::BasicSerializer
 
@@ -32,6 +34,12 @@ module V1
       return object.image_url unless private_conversation?
 
       UserServices::Avatar.new(user: other_participant).thumbnail_url
+    end
+
+    def creator
+      return false unless scope && scope[:user]
+
+      object.user_id == scope[:user].id
     end
 
     def member
@@ -73,6 +81,17 @@ module V1
 
     def section
       object.becomes(object.contribution? ? Contribution : Solicitation).section
+    end
+
+    def author
+      return unless object.user.present?
+
+      {
+        id: object.user.id,
+        display_name: UserPresenter.new(user: object.user).display_name,
+        avatar_url: UserServices::Avatar.new(user: object.user).thumbnail_url,
+        created_at: object.user.created_at
+      }
     end
 
     def private_conversation?
