@@ -28,6 +28,7 @@ module V1
     attribute :phone,               if: :me?
     attribute :travel_distance,     if: :me?
     attribute :birthday,            if: :me?
+    attribute :created_at
 
     has_one :stats
     has_one :organization, serializer: ::V1::OrganizationSerializer
@@ -58,6 +59,8 @@ module V1
           ask_for_help_creation_count: object.ask_for_help_creation_count,
           contribution_creation_count: object.contribution_creation_count,
           events_count: groups['outing'],
+          outings_count: groups['outing'],
+          neighborhoods_count: object.neighborhood_memberships.count,
           good_waves_participation: groups['group'] > 0
       }
     end

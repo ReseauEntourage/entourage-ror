@@ -51,6 +51,8 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                 "ask_for_help_creation_count" => 0,
                 "contribution_creation_count" => 0,
                 "events_count" => 0,
+                "outings_count" => 0,
+                "neighborhoods_count" => 0,
                 "good_waves_participation" => false,
               },
               "partner" => {
@@ -92,6 +94,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
               "permissions" => {
                 "outing" => { "creation" => true }
               },
+              "created_at" => user.created_at.iso8601(3),
             },
             "first_sign_in" => true
           })
@@ -285,6 +288,8 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
             "ask_for_help_creation_count" => 1,
             "contribution_creation_count" => 0,
             "events_count" => 0,
+            "outings_count" => 0,
+            "neighborhoods_count" => 0,
             "good_waves_participation" => false,
           },
           "partner" => nil,
@@ -312,6 +317,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
           "permissions" => {
             "outing" => { "creation" => false }
           },
+          "created_at" => user.created_at.iso8601(3),
         },
         "first_sign_in" => true
       })}
@@ -762,6 +768,8 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                "ask_for_help_creation_count" => 0,
                "contribution_creation_count" => 0,
                "events_count" => 0,
+               "outings_count" => 0,
+               "neighborhoods_count" => 0,
                "good_waves_participation" => false,
             },
             "partner" => {
@@ -802,6 +810,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
             "permissions" => {
               "outing" => { "creation" => true }
             },
+            "created_at" => user.created_at.iso8601(3),
           }
         }) }
 
@@ -853,6 +862,8 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                "ask_for_help_creation_count" => 0,
                "contribution_creation_count" => 0,
                "events_count" => 0,
+               "outings_count" => 0,
+               "neighborhoods_count" => 0,
                "good_waves_participation" => false,
             },
             "partner" => {
@@ -893,6 +904,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
             "permissions" => {
               "outing" => { "creation" => true }
             },
+            "created_at" => user.created_at.iso8601(3),
           }
         }) }
       end
@@ -906,7 +918,9 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
       context "get someone else profile" do
         let(:other_user) { FactoryBot.create(:pro_user, about: "about") }
         let!(:conversation) { nil }
+
         before { get :show, params: { id: other_user.id, token: user.token } }
+
         it { expect(response.status).to eq(200) }
         it { expect(JSON.parse(response.body)).to eq({
           "user" => {
@@ -933,6 +947,8 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
               "ask_for_help_creation_count" => 0,
               "contribution_creation_count" => 0,
               "events_count" => 0,
+              "outings_count" => 0,
+              "neighborhoods_count" => 0,
               "good_waves_participation" => false,
             },
             "engaged" => false,
@@ -945,7 +961,8 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
             "memberships" => [],
             "conversation" => {
               "uuid" => "1_list_#{user.id}-#{other_user.id}"
-            }
+            },
+            "created_at" => other_user.created_at.iso8601(3)
           }
         }) }
 

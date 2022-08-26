@@ -18,10 +18,6 @@ class Solicitation < Entourage
     moderation.save
   end
 
-  def parent_chat_messages
-    chat_messages.where(ancestry: nil)
-  end
-
   attr_accessor :recipient_consent_obtained
 
   def recipient_consent_obtained= recipient_consent_obtained

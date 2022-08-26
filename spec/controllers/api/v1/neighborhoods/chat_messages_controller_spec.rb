@@ -302,16 +302,16 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
         let(:day) { - 1.day }
 
         it { expect(result["chat_messages"].count).to eq(2) }
-        it { expect(result["chat_messages"][0]["id"]).to eq(chat_message_2.id) }
-        it { expect(result["chat_messages"][1]["id"]).to eq(chat_message_3.id) }
+        it { expect(result["chat_messages"][0]["id"]).to eq(chat_message_3.id) }
+        it { expect(result["chat_messages"][1]["id"]).to eq(chat_message_2.id) }
       end
 
       context "in another order" do
         let(:day) { + 1.day }
 
         it { expect(result["chat_messages"].count).to eq(2) }
-        it { expect(result["chat_messages"][0]["id"]).to eq(chat_message_3.id) }
-        it { expect(result["chat_messages"][1]["id"]).to eq(chat_message_2.id) }
+        it { expect(result["chat_messages"][0]["id"]).to eq(chat_message_2.id) }
+        it { expect(result["chat_messages"][1]["id"]).to eq(chat_message_3.id) }
       end
     end
   end

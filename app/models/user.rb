@@ -46,6 +46,7 @@ class User < ApplicationRecord
   has_many :tour_participations, through: :join_requests, source: :joinable, source_type: "Tour"
   has_many :outing_memberships, -> { where(group_type: :outing).where("join_requests.status = 'accepted'") }, through: :join_requests, source: :joinable, source_type: "Entourage"
   has_many :action_memberships, -> { where(group_type: :action, entourage_type: [:ask_for_help, :contribution]).where("join_requests.status = 'accepted'") }, through: :join_requests, source: :joinable, source_type: "Entourage"
+  has_many :neighborhood_memberships, -> { where("join_requests.status = 'accepted'") }, through: :join_requests, source: :joinable, source_type: "Neighborhood"
   has_many :solicitation_memberships, -> { where(group_type: :action, entourage_type: :ask_for_help).where("join_requests.status = 'accepted'") }, through: :join_requests, source: :joinable, source_type: "Entourage"
   has_many :contribution_memberships, -> { where(group_type: :action, entourage_type: :contribution).where("join_requests.status = 'accepted'") }, through: :join_requests, source: :joinable, source_type: "Entourage"
   belongs_to :organization, optional: true
@@ -572,10 +573,6 @@ class User < ApplicationRecord
 
   def conversation_participations_count
     entourage_participations.where(group_type: :conversation).count
-  end
-
-  def neighborhood_participations_count
-    join_requests.where(joinable_type: :Neighborhood, status: :accepted).count
   end
 
   protected

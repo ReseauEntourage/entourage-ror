@@ -306,6 +306,7 @@ fr:
       jeux: Jeux
       nature: Nature
       sport: Sport
+      marauding: Rencontres nomades
       other: Autre
     signals:
       spam: Spam

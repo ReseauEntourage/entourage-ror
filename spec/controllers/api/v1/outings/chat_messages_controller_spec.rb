@@ -9,6 +9,7 @@ describe Api::V1::Outings::ChatMessagesController do
   describe 'GET index' do
     let!(:chat_message_1) { FactoryBot.create(:chat_message, messageable: outing, user: user, image_url: "foo", created_at: 1.hour.ago) }
     let!(:chat_message_2) { FactoryBot.create(:chat_message, messageable: outing, user: user, parent: chat_message_1) }
+    let!(:chat_message_3) { FactoryBot.create(:chat_message, :closed_as_success, messageable: outing, user: user, created_at: 1.hour.ago) }
 
     before { Timecop.freeze }
     before { ChatMessage.stub(:url_for) { "http://foo.bar"} }
@@ -303,16 +304,16 @@ describe Api::V1::Outings::ChatMessagesController do
         let(:day) { - 1.day }
 
         it { expect(result["chat_messages"].count).to eq(2) }
-        it { expect(result["chat_messages"][0]["id"]).to eq(chat_message_2.id) }
-        it { expect(result["chat_messages"][1]["id"]).to eq(chat_message_3.id) }
+        it { expect(result["chat_messages"][0]["id"]).to eq(chat_message_3.id) }
+        it { expect(result["chat_messages"][1]["id"]).to eq(chat_message_2.id) }
       end
 
       context "in another order" do
         let(:day) { + 1.day }
 
         it { expect(result["chat_messages"].count).to eq(2) }
-        it { expect(result["chat_messages"][0]["id"]).to eq(chat_message_3.id) }
-        it { expect(result["chat_messages"][1]["id"]).to eq(chat_message_2.id) }
+        it { expect(result["chat_messages"][0]["id"]).to eq(chat_message_2.id) }
+        it { expect(result["chat_messages"][1]["id"]).to eq(chat_message_3.id) }
       end
     end
   end

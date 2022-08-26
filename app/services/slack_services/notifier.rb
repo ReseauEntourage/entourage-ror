@@ -65,8 +65,15 @@ module SlackServices
     end
 
     def link_to_neighborhood neighborhood
-      # @caution replace admin_entourage_url with admin_neighborhood_url as soon as this route exists
-      Rails.application.routes.url_helpers.admin_entourage_url(neighborhood.id, host: ENV['ADMIN_HOST'])
+      Rails.application.routes.url_helpers.admin_neighborhood_url(neighborhood.id, host: ENV['ADMIN_HOST'])
+    end
+
+    def link_to_conversation conversation_or_action
+      if conversation_or_action.conversation?
+        Rails.application.routes.url_helpers.admin_conversation_url(conversation_or_action.id, host: ENV['ADMIN_HOST'])
+      else
+        Rails.application.routes.url_helpers.admin_entourage_url(conversation_or_action.id, host: ENV['ADMIN_HOST'])
+      end
     end
   end
 end

@@ -124,6 +124,7 @@ Rails.application.routes.draw do
           get :show_joins
           get :show_invitations
           get :show_messages
+          get :show_siblings
           get :sensitive_words
           post :sensitive_words_check
           get :edit_type
@@ -455,7 +456,19 @@ Rails.application.routes.draw do
         end
       end
 
-      resources :conversations, :controller => 'entourages', only: [] do
+      resources :conversations, only: [:index, :show, :create] do
+        resources :chat_messages, :controller => 'conversations/chat_messages', only: [:index, :create]
+        resources :users, :controller => 'conversations/users', only: [] do
+          collection do
+            # we want to avoid specific id to unjoin
+            delete :destroy
+          end
+        end
+
+        member do
+          post :report
+        end
+
         collection do
           get :private
           get :group

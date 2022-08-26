@@ -8,19 +8,19 @@ module Api
       after_action :set_last_message_read, only: [:show]
 
       def index
-        render json: ContributionServices::Finder.new(current_user, index_params).find_all.page(page).per(per), root: :contributions, each_serializer: ::V1::Actions::ContributionSerializer, scope: {
+        render json: ContributionServices::Finder.new(current_user, index_params).find_all.page(page).per(per), root: :contributions, each_serializer: ::V1::ActionSerializer, scope: {
           user: current_user
         }
       end
 
       def show
-        render json: @contribution, serializer: ::V1::Actions::ContributionHomeSerializer, scope: { user: current_user }
+        render json: @contribution, serializer: ::V1::ActionSerializer, scope: { user: current_user }
       end
 
       def create
         EntourageServices::ContributionBuilder.new(params: contribution_params, user: current_user).create do |on|
           on.success do |contribution|
-            render json: contribution, root: :contribution, status: 201, serializer: ::V1::Actions::ContributionSerializer, scope: { user: current_user }
+            render json: contribution, root: :contribution, status: 201, serializer: ::V1::ActionSerializer, scope: { user: current_user }
           end
 
           on.failure do |contribution|
@@ -32,7 +32,7 @@ module Api
       def update
         EntourageServices::EntourageBuilder.new(params: contribution_params, user: current_user).update(entourage: @contribution) do |on|
           on.success do |contribution|
-            render json: contribution, status: 200, serializer: ::V1::Actions::ContributionSerializer, scope: { user: current_user }
+            render json: contribution, status: 200, serializer: ::V1::ActionSerializer, scope: { user: current_user }
           end
 
           on.failure do |contribution|
@@ -46,7 +46,7 @@ module Api
       def destroy
         ContributionServices::Deleter.new(user: current_user, contribution: @contribution).delete do |on|
           on.success do |contribution|
-            render json: contribution, root: "user", status: 200, serializer: ::V1::Actions::ContributionSerializer, scope: { user: current_user }
+            render json: contribution, root: :contribution, status: 200, serializer: ::V1::ActionSerializer, scope: { user: current_user }
           end
 
           on.failure do |contribution|
@@ -103,7 +103,7 @@ module Api
       end
 
       def index_params
-        params.permit(:latitude, :longitude, :travel_distance, :page, :per)
+        params.permit(:latitude, :longitude, :travel_distance, :page, :per, sections: [])
       end
 
       def contribution_params

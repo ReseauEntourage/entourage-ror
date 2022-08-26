@@ -1,0 +1,29 @@
+<h4>Liste des événements récurrents <span class="badge"><%= @siblings.count %><span></h4>
+
+<table id="siblings-list" class="table table-striped">
+  <% if @siblings.any? %>
+    <thead>
+      <tr>
+        <th>id</th>
+        <th>date de création</th>
+        <th>date d'événement (début)</th>
+        <th>date d'événement (fin)</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% @siblings.each do |sibling| %>
+        <tr>
+          <td><%= link_to sibling.id, admin_entourage_path(sibling) %></td>
+          <td><%= l sibling.created_at %></td>
+          <td><%= l sibling.metadata[:starts_at] %></td>
+          <td><%= l sibling.metadata[:ends_at] %></td>
+        </tr>
+      <% end %>
+
+    </tbody>
+
+  <% else %>
+    <caption><%= "Il n'y a pas encore d'événements récurrents."%></caption>
+  <% end %>
+</table>

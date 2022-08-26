@@ -12,6 +12,7 @@ class Outing < Entourage
 
   after_validation :add_creator_as_member, if: :new_record?
   after_validation :dup_neighborhoods_entourages, if: :original_outing
+  after_validation :dup_taggings, if: :original_outing
 
   has_many :members, -> { where("join_requests.status = 'accepted'") }, through: :join_requests, source: :user
   has_many :neighborhoods_entourages, foreign_key: :entourage_id
@@ -35,8 +36,18 @@ class Outing < Entourage
 
   belongs_to :recurrence, class_name: :OutingRecurrence, foreign_key: :recurrency_identifier, primary_key: :identifier
 
+  # chat_messages redefinitions without updated_status
+  has_many :chat_messages, -> { where.not(message_type: :status_update) }, as: :messageable, dependent: :destroy
+  has_one :last_chat_message, -> {
+    select('DISTINCT ON (messageable_id, messageable_type) *').where.not(message_type: :status_update).order('messageable_id, messageable_type, created_at desc')
+  }, as: :messageable, class_name: 'ChatMessage'
+  has_one :chat_messages_count, -> {
+    select('DISTINCT ON (messageable_id, messageable_type) COUNT(*), messageable_id, messageable_type').where.not(message_type: :status_update).group('messageable_id, messageable_type')
+  }, as: :messageable, class_name: 'ChatMessage'
+
   accepts_nested_attributes_for :recurrence, :future_siblings, :future_relatives
 
+  validate :validate_outings_starts_at
   validate :validate_neighborhood_ids
   validate :validate_member_ids, unless: :new_record?
 
@@ -60,6 +71,14 @@ class Outing < Entourage
     self.metadata[:ends_at] = last_outing.metadata[:ends_at] + diff
 
     super
+  end
+
+  def validate_outings_starts_at
+    return unless metadata[:starts_at].present?
+
+    if metadata[:starts_at] < Time.now
+      errors.add(:metadata, "'starts_at' must be in the future")
+    end
   end
 
   def validate_neighborhood_ids
@@ -144,7 +163,7 @@ class Outing < Entourage
   # we create recurrence relationship whenever we set a recurrency to an outing that does not already defines this relationship
   def set_outing_recurrence
     return if recurrence.present?
-    return unless recurrency.present?
+    return if recurrency.blank?
 
     self.recurrence = OutingRecurrence.new(recurrency: recurrency, continue: true)
     self.recurrency_identifier = self.recurrence.identifier
@@ -153,7 +172,7 @@ class Outing < Entourage
   def cancel_outing_recurrence
     return if recurrency.blank?
     return unless recurrence.present?
-    return unless recurrency.to_i == 0
+    return unless recurrency&.to_i == 0
 
     self.recurrence.assign_attributes(continue: false)
   end
@@ -172,6 +191,13 @@ class Outing < Entourage
     original_outing.neighborhoods_entourages.each do |neighborhood_entourage|
       neighborhoods_entourages << NeighborhoodsEntourage.new(neighborhood: neighborhood_entourage.neighborhood, entourage: self)
     end
+  end
+
+  def dup_taggings
+    return unless original_outing
+    return unless new_record?
+
+    self.interests = original_outing.interest_list
   end
 
   def set_entourage_image_id
