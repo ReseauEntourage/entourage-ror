@@ -1,6 +1,7 @@
 module V1
   class ConversationHomeSerializer < ActiveModel::Serializer
     attributes :id,
+      :status,
       :type,
       :name,
       :image_url,
