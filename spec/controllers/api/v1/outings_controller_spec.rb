@@ -155,8 +155,8 @@ describe Api::V1::OutingsController do
       other_interest: 'poterie',
       entourage_image_id: entourage_image.id,
       metadata: {
-        starts_at: "2018-09-04T19:30:00+02:00",
-        ends_at: "2018-09-04T20:30:00+02:00",
+        starts_at: 1.minute.from_now,
+        ends_at: 1.minute.from_now + 1.minute,
         place_name: "Le Dorothy",
         street_address: "85 bis rue de Ménilmontant, 75020 Paris, France",
         google_place_id: "ChIJFzXXy-xt5kcRg5tztdINnp0",
@@ -238,6 +238,28 @@ describe Api::V1::OutingsController do
         it { expect(response.status).to eq(201) }
         it { expect(Outing.count).to eq(1) }
         it { expect(Outing.last.metadata[:place_limit]).to be_blank }
+      end
+
+      context "starts_at in the future" do
+        before {
+          params[:metadata][:starts_at] = 1.day.from_now
+          params[:metadata][:ends_at] = 1.day.from_now + 1.hour
+          post :create, params: { outing: params, token: user.token }
+        }
+
+        it { expect(response.status).to eq(201) }
+        it { expect(subject).to have_key("outing") }
+      end
+
+      context "starts_at in the past" do
+        before {
+          params[:metadata][:starts_at] = 1.day.ago
+          params[:metadata][:ends_at] = 1.day.ago + 1.hour
+          post :create, params: { outing: params, token: user.token }
+        }
+
+        it { expect(response.status).to eq(400) }
+        it { expect(subject).to have_key("message") }
       end
 
       context "with recurrency" do

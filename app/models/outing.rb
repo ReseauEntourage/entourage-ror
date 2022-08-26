@@ -47,6 +47,7 @@ class Outing < Entourage
 
   accepts_nested_attributes_for :recurrence, :future_siblings, :future_relatives
 
+  validate :validate_outings_starts_at
   validate :validate_neighborhood_ids
   validate :validate_member_ids, unless: :new_record?
 
@@ -70,6 +71,14 @@ class Outing < Entourage
     self.metadata[:ends_at] = last_outing.metadata[:ends_at] + diff
 
     super
+  end
+
+  def validate_outings_starts_at
+    return unless metadata[:starts_at].present?
+
+    if metadata[:starts_at] < Time.now
+      errors.add(:metadata, "'starts_at' must be in the future")
+    end
   end
 
   def validate_neighborhood_ids
