@@ -39,8 +39,8 @@ describe Api::V1::Neighborhoods::OutingsController do
       latitude: 48.868959,
       longitude: 2.390185,
       metadata: {
-        starts_at: "2018-09-04T19:30:00+02:00",
-        ends_at: "2018-09-04T20:30:00+02:00",
+        starts_at: 1.day.from_now,
+        ends_at: 1.day.from_now + 1.hour,
         place_name: "Le Dorothy",
         street_address: "85 bis rue de Ménilmontant, 75020 Paris, France",
         google_place_id: "ChIJFzXXy-xt5kcRg5tztdINnp0",

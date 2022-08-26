@@ -93,8 +93,8 @@ resource Api::V1::OutingsController do
         other_interest: 'poterie',
         entourage_image_id: entourage_image.id,
         metadata: {
-          starts_at: "2018-09-04T19:30:00+02:00",
-          ends_at: "2018-09-04T20:30:00+02:00",
+          starts_at: 1.day.from_now,
+          ends_at: 1.day.from_now + 1.hour,
           place_name: "Le Dorothy",
           street_address: "85 bis rue de Ménilmontant, 75020 Paris, France",
           google_place_id: "ChIJFzXXy-xt5kcRg5tztdINnp0",
