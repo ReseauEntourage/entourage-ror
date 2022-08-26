@@ -3,6 +3,7 @@ module V1
     include AmsLazyRelationships::Core
 
     attributes :id,
+               :status,
                :type,
                :name,
                :image_url,
