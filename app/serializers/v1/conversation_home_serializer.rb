@@ -1,5 +1,7 @@
 module V1
   class ConversationHomeSerializer < ActiveModel::Serializer
+    include AmsLazyRelationships::Core
+
     attributes :id,
       :status,
       :type,
@@ -17,6 +19,8 @@ module V1
 
     has_many :members, serializer: ::V1::Users::BasicSerializer
 
+    lazy_relationship :chat_messages
+
     def type
       return :private if private_conversation?
       return :contribution if object.contribution?
@@ -26,12 +30,14 @@ module V1
 
     def name
       return object.title unless private_conversation?
+      return unless other_participant
 
       UserPresenter.new(user: other_participant).display_name
     end
 
     def image_url
       return object.image_url unless private_conversation?
+      return unless other_participant
 
       UserServices::Avatar.new(user: other_participant).thumbnail_url
     end
