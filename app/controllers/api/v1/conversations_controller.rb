@@ -74,7 +74,9 @@ module Api
       end
 
       def show
-        render json: @conversation, root: :conversation, serializer: ::V1::ConversationHomeSerializer
+        render json: @conversation, root: :conversation, serializer: ::V1::ConversationHomeSerializer, scope: {
+          user: current_user
+        }
       end
 
       def create
@@ -86,7 +88,9 @@ module Api
           @conversation.create_from_join_requests!
         end
 
-        render json: @conversation, status: 201, root: :conversation, serializer: ::V1::ConversationHomeSerializer
+        render json: @conversation, status: 201, root: :conversation, serializer: ::V1::ConversationHomeSerializer, scope: {
+          user: current_user
+        }
       rescue => e
         render json: { message: 'unable to create conversation' }, status: :bad_request
       end
