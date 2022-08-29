@@ -55,7 +55,7 @@ module UserServices
     def export
       raise "User with phone #{user.phone} should have an email" unless user.email
 
-      MemberMailer.user_export(user_id: user.id, recipient: user.email).deliver_later
+      MemberMailer.user_export(user_id: user.id, recipient: user.email, cci: nil).deliver_later
     end
 
     private
