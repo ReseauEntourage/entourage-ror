@@ -53,11 +53,11 @@ module UserServices
     end
 
     def find_contribution recommandation
-      [:id, Entourage.where(entourage_type: :contribution).last.id]
+      [:id, Contribution.last.id]
     end
 
     def find_ask_for_help recommandation
-      [:id, Entourage.where(entourage_type: :ask_for_help).last.id]
+      [:id, Solicitation.last.id]
     end
   end
 end
