@@ -5,6 +5,105 @@ describe Api::V1::ConversationsController do
   let(:user) { FactoryBot.create(:public_user) }
   before { ModerationServices.stub(:moderator) { nil } }
 
+  describe 'GET index' do
+    subject { JSON.parse(response.body)["conversations"] }
+
+    let(:request) { get :index, params: { token: user.token }}
+    let(:participant) { create :public_user, first_name: :Jane }
+
+    context 'conversations and actions' do
+      let(:conversation) { create :conversation, participants: [user, participant] }
+      let(:action) { create :entourage, status: :open, group_type: :action, participants: [user] }
+      let(:outing) { create :outing, status: :open, participants: [user] }
+
+      let!(:chat_message_1) { FactoryBot.create(:chat_message, messageable: conversation)}
+      let!(:chat_message_2) { FactoryBot.create(:chat_message, messageable: action)}
+      let!(:chat_message_3) { FactoryBot.create(:chat_message, messageable: outing)}
+
+      before { request }
+
+      it { expect(response.status).to eq(200) }
+      it { expect(subject.count).to eq(2) }
+      it { expect(subject.map{|c| c["id"] }).to match_array([conversation.id, action.id]) }
+    end
+
+    context 'conversations of any status' do
+      let(:conversation) { create :conversation, participants: [user, participant] }
+      let!(:chat_message_1) { FactoryBot.create(:chat_message, messageable: conversation)}
+
+      context 'open' do
+        before { request }
+
+        it { expect(response.status).to eq(200) }
+        it { expect(subject.count).to eq(1) }
+        it { expect(subject[0]["id"]).to eq(conversation.id) }
+      end
+
+      context 'closed' do
+        let(:conversation) { create :conversation, participants: [user, participant], status: :closed }
+
+        before { request }
+
+        it { expect(response.status).to eq(200) }
+        it { expect(subject.count).to eq(1) }
+        it { expect(subject[0]["id"]).to eq(conversation.id) }
+      end
+    end
+
+    context 'conversations as member' do
+      let(:conversation) { create :conversation, participants: [participant] }
+      let!(:chat_message) { FactoryBot.create(:chat_message, messageable: conversation)}
+
+      context 'is member' do
+        let!(:join_request) { FactoryBot.create(:join_request, joinable: conversation, user: user, status: :accepted) }
+
+        before { request }
+
+        it { expect(response.status).to eq(200) }
+        it { expect(subject.count).to eq(1) }
+        it { expect(subject[0]["id"]).to eq(conversation.id) }
+      end
+
+      context 'is not member' do
+        before { request }
+
+        it { expect(response.status).to eq(200) }
+        it { expect(subject.count).to eq(0) }
+      end
+
+      context 'is not accepted member' do
+        let!(:join_request) { FactoryBot.create(:join_request, joinable: conversation, user: user, status: :cancelled) }
+
+        before { request }
+
+        it { expect(response.status).to eq(200) }
+        it { expect(subject.count).to eq(0) }
+      end
+    end
+
+    context 'should return conversations having chat_messages' do
+      let(:conversation) { create :conversation, participants: [participant] }
+      let!(:join_request) { FactoryBot.create(:join_request, joinable: conversation, user: user, status: :accepted) }
+
+      context 'having chat_messages' do
+        let!(:chat_message) { FactoryBot.create(:chat_message, messageable: conversation)}
+
+        before { request }
+
+        it { expect(response.status).to eq(200) }
+        it { expect(subject.count).to eq(1) }
+        it { expect(subject[0]["id"]).to eq(conversation.id) }
+      end
+
+      context 'not having chat_messages' do
+        before { request }
+
+        it { expect(response.status).to eq(200) }
+        it { expect(subject.count).to eq(0) }
+      end
+    end
+  end
+
   describe 'GET private' do
     let(:other_user) { FactoryBot.create(:public_user) }
     subject { JSON.parse(response.body) }

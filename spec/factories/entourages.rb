@@ -17,6 +17,17 @@ FactoryBot.define do
     longitude { 2.345 }
     number_of_people { 1 }
 
+    transient do
+      participants { [] }
+    end
+
+    after(:create) do |entourage, stuff|
+      stuff.participants.each do |participant|
+        create :join_request, joinable: entourage, user: participant, status: JoinRequest::ACCEPTED_STATUS
+      end
+      entourage.reload
+    end
+
     trait :joined do
       after(:create) do |entourage, evaluator|
         next if entourage.is_a?(Solicitation) || entourage.is_a?(Contribution)
@@ -81,19 +92,8 @@ FactoryBot.define do
     factory :conversation do
       group_type { "conversation" }
 
-      transient do
-        participants { [] }
-      end
-
       after(:build) do |conversation, stuff|
         conversation.user = stuff.members.first if stuff.members.any?
-      end
-
-      after(:create) do |conversation, stuff|
-        stuff.participants.each do |participant|
-          create :join_request, joinable: conversation, user: participant, status: JoinRequest::ACCEPTED_STATUS
-        end
-        conversation.reload
       end
     end
   end
