@@ -76,7 +76,7 @@ module ChatServices
           joinable_type: group.class.name,
           group_type: group.group_type,
           type: "NEW_CHAT_MESSAGE"
-        }
+        }.merge(PushNotificationLinker.get(group))
       )
     end
 

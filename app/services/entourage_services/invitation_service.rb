@@ -79,14 +79,15 @@ module EntourageServices
 
     def send_notif(title:, content:, accepted:)
       meta = {
-          type: "INVITATION_STATUS",
-          inviter_id: invitation.inviter.id,
-          invitee_id: invitation.invitee.id,
-          feed_id: invitation.invitable_id,
-          feed_type: invitation.invitable_type,
-          group_type: invitation.invitable.group_type,
-          accepted: accepted
-      }
+        type: "INVITATION_STATUS",
+        inviter_id: invitation.inviter.id,
+        invitee_id: invitation.invitee.id,
+        feed_id: invitation.invitable_id,
+        feed_type: invitation.invitable_type,
+        group_type: invitation.invitable.group_type,
+        accepted: accepted
+      }.merge(PushNotificationLinker.get(invitation.invitable))
+
       PushNotificationService.new.send_notification(invitee_name, title, content, [invitation.inviter], meta)
     end
 
