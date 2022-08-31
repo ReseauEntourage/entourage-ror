@@ -171,6 +171,10 @@ module Api
         render json: user, root: :user, status: 200, serializer: ::V1::UserSerializer, scope: full_user_serializer_options(current_user: current_user_or_anonymous, displayed_user: user)
       end
 
+      def unread
+        render json: current_user, root: :user, status: 200, serializer: ::V1::Users::UnreadSerializer
+      end
+
       def destroy
         UserServices::DeleteUserService.new(user: @current_user).delete
         render json: @current_user, status: 200, serializer: ::V1::UserSerializer, scope: { user: @current_user }
