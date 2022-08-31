@@ -20,7 +20,7 @@ module UserServices
 
     def unread_conversations
       JoinRequest.where(user_id: user.id, joinable_type: :Entourage)
-        .with_unread_messages
+        .with_unread_text_messages
         .pluck(:joinable_id)
         .uniq
     end
