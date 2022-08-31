@@ -317,6 +317,7 @@ Rails.application.routes.draw do
 
       resources :users, only: [:show, :create, :destroy, :update] do
         collection do
+          get :unread
           patch 'me' => 'users#update'
           post 'lookup'
           post :ethics_charter_signed

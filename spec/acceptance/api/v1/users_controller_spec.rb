@@ -218,6 +218,25 @@ resource Api::V1::UsersController do
     end
   end
 
+  get '/api/v1/users/unread' do
+    route_summary "Get unread count"
+
+    parameter :token, type: :string, required: true
+
+    let(:user) { FactoryBot.create(:public_user) }
+    let(:token) { user.token }
+
+    let(:subject) { JSON.parse(response_body) }
+
+    context '200' do
+      example_request 'Get unread count' do
+        expect(response_status).to eq(200)
+        expect(subject).to have_key('user')
+        expect(subject['user']).to have_key('unread_count')
+      end
+    end
+  end
+
   delete '/api/v1/users/:id' do
     route_summary "Delete a user"
 
