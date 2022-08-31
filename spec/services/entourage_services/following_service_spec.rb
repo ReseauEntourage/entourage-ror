@@ -38,7 +38,7 @@ describe FollowingService do
           inviter_id: partner_user.id,
           invitee_id: following.user.id,
           invitation_id: 123,
-          instance: "solicitations",
+          instance: "conversations",
           id: action.id
         }
       )

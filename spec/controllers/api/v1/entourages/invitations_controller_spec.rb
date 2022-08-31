@@ -43,7 +43,7 @@ describe Api::V1::Entourages::InvitationsController do
           context "user has already connected to entourage" do
             let!(:existing_user) { FactoryBot.create(:public_user, phone: "+33612345678") }
             let!(:entourage_invitation) { FactoryBot.create(:entourage_invitation, invitable: entourage, inviter: user, phone_number: "+33612345678") }
-            before { expect_any_instance_of(PushNotificationService).to receive(:send_notification).with("John D.", "Foobar", "John D. vous invite à rejoindre une action.", [existing_user], {type: "ENTOURAGE_INVITATION", entourage_id: entourage.id, group_type: 'action', inviter_id: user.id, invitee_id: existing_user.id, invitation_id: 123, instance: "solicitations", id: entourage.id}) }
+            before { expect_any_instance_of(PushNotificationService).to receive(:send_notification).with("John D.", "Foobar", "John D. vous invite à rejoindre une action.", [existing_user], {type: "ENTOURAGE_INVITATION", entourage_id: entourage.id, group_type: 'action', inviter_id: user.id, invitee_id: existing_user.id, invitation_id: 123, instance: "conversations", id: entourage.id}) }
             before { post :create, params: { entourage_id: entourage.to_param, invite: {mode: "SMS", phone_numbers: ["+33612345678"]}, token: user.token } }
             it { expect(EntourageInvitation.all).to eq([entourage_invitation]) }
             it { expect(response.status).to eq(201) }
