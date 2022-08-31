@@ -113,7 +113,7 @@ describe Api::V1::Entourages::UsersController do
                 group_type: 'action',
                 type: "JOIN_REQUEST_ACCEPTED",
                 user_id: user.id,
-                instance: "contributions",
+                instance: "conversations",
                 id: entourage.id
               }
             )
@@ -137,7 +137,7 @@ describe Api::V1::Entourages::UsersController do
                 group_type: 'action',
                 type: "JOIN_REQUEST_ACCEPTED",
                 user_id: user.id,
-                instance: "contributions",
+                instance: "conversations",
                 id: entourage.id
               }
             )
@@ -165,7 +165,7 @@ describe Api::V1::Entourages::UsersController do
                 group_type: 'action',
                 type: "NEW_JOIN_REQUEST",
                 user_id: user.id,
-                instance: "solicitations",
+                instance: "conversations",
                 id: entourage.id
               }
             )
@@ -189,7 +189,7 @@ describe Api::V1::Entourages::UsersController do
                 group_type: 'action',
                 type: "NEW_JOIN_REQUEST",
                 user_id: user.id,
-                instance: "solicitations",
+                instance: "conversations",
                 id: entourage.id
               }
             )
@@ -271,7 +271,7 @@ describe Api::V1::Entourages::UsersController do
             :group_type => 'action',
             :type => "JOIN_REQUEST_ACCEPTED",
             :user_id => requester.id,
-            instance: "solicitations",
+            instance: "conversations",
             id: entourage.id
           }
         )

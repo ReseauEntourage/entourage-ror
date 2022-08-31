@@ -23,7 +23,7 @@ RSpec.describe TourServices::JoinRequestStatus do
           group_type: 'action',
           type: "JOIN_REQUEST_CANCELED",
           user_id: requester.id,
-          instance: "solicitations",
+          instance: "conversations",
           id: entourage.id
         }
       )
@@ -44,7 +44,7 @@ RSpec.describe TourServices::JoinRequestStatus do
           group_type: 'action',
           type: "JOIN_REQUEST_CANCELED",
           user_id: requester.id,
-          instance: "solicitations",
+          instance: "conversations",
           id: entourage.id
         }
       )
