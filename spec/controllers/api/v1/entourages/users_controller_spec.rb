@@ -112,7 +112,9 @@ describe Api::V1::Entourages::UsersController do
                 joinable_id: entourage.id,
                 group_type: 'action',
                 type: "JOIN_REQUEST_ACCEPTED",
-                user_id: user.id
+                user_id: user.id,
+                instance: "contributions",
+                id: entourage.id
               }
             )
           }
@@ -134,7 +136,9 @@ describe Api::V1::Entourages::UsersController do
                 joinable_id: entourage.id,
                 group_type: 'action',
                 type: "JOIN_REQUEST_ACCEPTED",
-                user_id: user.id
+                user_id: user.id,
+                instance: "contributions",
+                id: entourage.id
               }
             )
           }
@@ -160,7 +164,9 @@ describe Api::V1::Entourages::UsersController do
                 joinable_id: entourage.id,
                 group_type: 'action',
                 type: "NEW_JOIN_REQUEST",
-                user_id: user.id
+                user_id: user.id,
+                instance: "solicitations",
+                id: entourage.id
               }
             )
             post :create, params: { entourage_id: entourage.to_param, token: user.token }
@@ -182,7 +188,9 @@ describe Api::V1::Entourages::UsersController do
                 joinable_id: entourage.id,
                 group_type: 'action',
                 type: "NEW_JOIN_REQUEST",
-                user_id: user.id
+                user_id: user.id,
+                instance: "solicitations",
+                id: entourage.id
               }
             )
             post :create, params: { entourage_id: entourage.to_param, request: {message: "foobar"}, token: user.token }
@@ -262,7 +270,9 @@ describe Api::V1::Entourages::UsersController do
             :joinable_type => "Entourage",
             :group_type => 'action',
             :type => "JOIN_REQUEST_ACCEPTED",
-            :user_id => requester.id
+            :user_id => requester.id,
+            instance: "solicitations",
+            id: entourage.id
           }
         )
         patch :update, params: { entourage_id: entourage.to_param, id: requester.id, user: {status: "accepted"}, token: user.token }

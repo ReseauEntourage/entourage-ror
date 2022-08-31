@@ -33,16 +33,17 @@ module TourServices
         message = "Vous venez de rejoindre #{GroupService.name joinable, :l} de #{author_name}"
 
         PushNotificationService.new.send_notification(author_name,
-                                                      object,
-                                                      message,
-                                                      User.where(id: user.id),
-                                                      {
-                                                          joinable_id: join_request.joinable_id,
-                                                          joinable_type: join_request.joinable_type,
-                                                          group_type: joinable.group_type,
-                                                          type: "JOIN_REQUEST_ACCEPTED",
-                                                          user_id: user.id
-                                                      })
+          object,
+          message,
+          User.where(id: user.id),
+          {
+            joinable_id: join_request.joinable_id,
+            joinable_type: join_request.joinable_type,
+            group_type: joinable.group_type,
+            type: "JOIN_REQUEST_ACCEPTED",
+            user_id: user.id
+          }.merge(PushNotificationLinker.get(joinable))
+        )
 
         CommunityLogic.for(joinable).group_joined(join_request)
       end
@@ -134,16 +135,17 @@ module TourServices
     def notify_owner(requester, owner, joinable)
       if ENV["QUIT_ENTOURAGE_NOTIFICATION"]=="true"
         PushNotificationService.new.send_notification(UserPresenter.new(user: requester).display_name,
-                                                      "Demande annulée",
-                                                      "Demande annulée",
-                                                      [owner],
-                                                      {
-                                                          joinable_id: joinable.id,
-                                                          joinable_type: joinable.class.name,
-                                                          group_type: joinable.group_type,
-                                                          type: "JOIN_REQUEST_CANCELED",
-                                                          user_id: requester.id
-                                                      })
+          "Demande annulée",
+          "Demande annulée",
+          [owner],
+          {
+            joinable_id: joinable.id,
+            joinable_type: joinable.class.name,
+            group_type: joinable.group_type,
+            type: "JOIN_REQUEST_CANCELED",
+            user_id: requester.id
+          }.merge(PushNotificationLinker.get(joinable))
+        )
       end
     end
   end

@@ -37,7 +37,9 @@ describe FollowingService do
           group_type: 'action',
           inviter_id: partner_user.id,
           invitee_id: following.user.id,
-          invitation_id: 123
+          invitation_id: 123,
+          instance: "solicitations",
+          id: action.id
         }
       )
       subject

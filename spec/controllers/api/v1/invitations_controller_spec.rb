@@ -105,7 +105,9 @@ describe Api::V1::InvitationsController do
             feed_id: invitation.invitable_id,
             feed_type: "Entourage",
             group_type: 'action',
-            accepted: true
+            accepted: true,
+            instance: "solicitations",
+            id: group.id
           }
         )
 
@@ -149,7 +151,9 @@ describe Api::V1::InvitationsController do
             feed_id: invitation.invitable_id,
             feed_type: "Entourage",
             group_type: 'action',
-            accepted: false
+            accepted: false,
+            instance: "solicitations",
+            id: invitation.invitable_id
           }
         )
 
