@@ -11,13 +11,16 @@ class NewJoinRequestNotifyJob < ApplicationJob
     object = joinable.respond_to?(:title) ? joinable.title : "Demande en attente"
 
     PushNotificationService.new.send_notification(user_name,
-                                                  object,
-                                                  message,
-                                                  recipients,
-                                                  {joinable_id: joinable.id,
-                                                   joinable_type: joinable_type,
-                                                   group_type: joinable.group_type,
-                                                   type: 'NEW_JOIN_REQUEST',
-                                                   user_id: user.id})
+      object,
+      message,
+      recipients,
+      {
+        joinable_id: joinable.id,
+        joinable_type: joinable_type,
+        group_type: joinable.group_type,
+        type: 'NEW_JOIN_REQUEST',
+        user_id: user.id
+      }.merge(PushNotificationLinker.get(joinable))
+    )
   end
 end

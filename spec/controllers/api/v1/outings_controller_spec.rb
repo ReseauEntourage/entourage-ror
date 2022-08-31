@@ -293,15 +293,22 @@ describe Api::V1::OutingsController do
     end
 
     context "signed in" do
+      let(:params) { {} }
+      let(:request) { patch :update, params: { id: outing.to_param, outing: params, token: user.token } }
+
       context "user is not creator" do
-        before { patch :update, params: { id: outing.to_param, outing: { title: "new title" }, token: user.token } }
+        let(:params) { { title: "new title" } }
+
+        before { request }
+
         it { expect(response.status).to eq(401) }
       end
 
       context "user is creator" do
         let(:outing) { FactoryBot.create(:outing, :joined, user: user, status: :open) }
+        let(:params) { { title: "New title", metadata: { place_limit: 100 } } }
 
-        before { patch :update, params: { id: outing.to_param, outing: { title: "New title", metadata: { place_limit: 100 } }, token: user.token } }
+        before { request }
 
         it { expect(response.status).to eq(200) }
         it { expect(subject).to have_key('outing') }
@@ -318,6 +325,10 @@ describe Api::V1::OutingsController do
         it { expect(subject).to have_key('outing') }
         it { expect(subject['outing']['status']).to eq('closed') }
         it { expect(outing.reload.status).to eq('closed') }
+      end
+
+      context "remove relationship with neighborhood" do
+        let(:outing) { FactoryBot.create(:outing, :with_neighborhood, status: :open, user: creator) }
       end
 
       context "cancel" do

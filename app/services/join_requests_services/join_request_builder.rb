@@ -77,7 +77,7 @@ module JoinRequestsServices
           group_type: joinable.group_type,
           type: "JOIN_REQUEST_ACCEPTED",
           user_id: user.id
-        }
+        }.merge(PushNotificationLinker.get(joinable))
       )
     end
 
