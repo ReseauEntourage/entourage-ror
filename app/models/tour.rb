@@ -13,6 +13,7 @@ class Tour < ApplicationRecord
   belongs_to :user
   has_many :join_requests, as: :joinable, dependent: :destroy
   has_many :members, through: :join_requests, source: :user
+  has_many :accepted_members, -> { where("join_requests.status = 'accepted'") }, through: :join_requests, source: :user
   has_many :chat_messages, as: :messageable, dependent: :destroy
   has_one :last_chat_message, -> {
     select('DISTINCT ON (messageable_id, messageable_type) *').order('messageable_id, messageable_type, created_at desc')

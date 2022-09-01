@@ -26,6 +26,7 @@ class Neighborhood < ApplicationRecord
   validates_presence_of [:status, :name, :description, :latitude, :longitude]
 
   alias_attribute :title, :name
+  alias_attribute :accepted_members, :members
 
   # valides :image_url # should be 390x258 (2/3)
   attr_accessor :neighborhood_image_id
