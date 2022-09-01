@@ -30,7 +30,7 @@ class PushNotificationTriggerObserver < ActiveRecord::Observer
     return if users.none?
 
     notify(instance: outing, users: users, params: {
-      sender: outing.user.full_name,
+      sender: username(outing.user),
       object: "un événement a été créé",
       content: outing.title
     })
@@ -44,7 +44,7 @@ class PushNotificationTriggerObserver < ActiveRecord::Observer
     return if users.none?
 
     notify(instance: outing, users: users, params: {
-      sender: outing.user.full_name,
+      sender: username(outing.user),
       object: "un événement a été modifié",
       content: outing.title
     })
@@ -56,7 +56,7 @@ class PushNotificationTriggerObserver < ActiveRecord::Observer
     return if users.none?
 
     notify(instance: outing, users: users, params: {
-      sender: outing.user.full_name,
+      sender: username(outing.user),
       object: "un événement a été annulé",
       content: outing.title
     })
@@ -76,9 +76,15 @@ class PushNotificationTriggerObserver < ActiveRecord::Observer
     return if users.none?
 
     notify(instance: post.messageable, users: users, params: {
-      sender: post.user.full_name,
-      object: "un post a été posté",
-      content: post.content
+      sender: username(post.user),
+      object: title(post.messageable),
+      content: post.content,
+      extra: {
+        group_type: group_type(post.messageable),
+        joinable_id: post.messageable_id,
+        joinable_type: post.messageable_type,
+        type: "NEW_CHAT_MESSAGE"
+      }
     })
   end
 
@@ -86,17 +92,26 @@ class PushNotificationTriggerObserver < ActiveRecord::Observer
     return if comment.parent.user == comment.user
 
     notify(instance: comment.messageable, users: [comment.parent.user], params: {
-      sender: comment.user.full_name,
+      sender: username(comment.user),
       object: "un commentaire a été posté",
       content: comment.content
     })
   end
 
   def join_request_on_create join_request
+    return unless join_request.accepted?
+
     notify(instance: join_request.user, users: [join_request.joinable.user], params: {
-      sender: join_request.user.full_name,
-      object: "un membre vient de rejoindre",
-      content: "n/a"
+      sender: username(join_request.user),
+      object: title(join_request.joinable) || "Nouveau membre",
+      content: "#{username(join_request.user)} vient de rejoindre votre #{GroupService.name(join_request.joinable)}",
+      extra: {
+        joinable_id: join_request.joinable_id,
+        joinable_type: join_request.joinable_type,
+        group_type: group_type(join_request.joinable),
+        type: "JOIN_REQUEST_ACCEPTED",
+        user_id: join_request.user_id
+      }
     })
   end
 
@@ -109,5 +124,22 @@ class PushNotificationTriggerObserver < ActiveRecord::Observer
       users,
       PushNotificationLinker.get(instance).merge(params[:extra] || {})
     )
+  end
+
+  def username user
+    UserPresenter.new(user: user).display_name
+  end
+
+  def title object
+    return unless object.respond_to?(:title)
+    return if object.respond_to?(:conversation?) && object.conversation?
+
+    object.title
+  end
+
+  def group_type object
+    return unless object.respond_to?(:group_type)
+
+    object.group_type
   end
 end

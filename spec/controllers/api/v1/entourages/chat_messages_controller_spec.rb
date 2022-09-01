@@ -181,7 +181,7 @@ describe Api::V1::Entourages::ChatMessagesController do
       end
 
       describe "send push notif" do
-        it "sends notif to everyone accaepted except message sender" do
+        it "sends notif to everyone accepted except message sender" do
           join_request = FactoryBot.create(:join_request, joinable: entourage, user: user, status: "accepted")
           join_request2 = FactoryBot.create(:join_request, joinable: entourage, status: "accepted")
           FactoryBot.create(:join_request, joinable: entourage, status: "pending")
