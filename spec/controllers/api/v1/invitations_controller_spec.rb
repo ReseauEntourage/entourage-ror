@@ -91,28 +91,6 @@ describe Api::V1::InvitationsController do
         it { expect(response.status).to eq(403) }
         it { expect(JoinRequest.where(user: invitation.invitee, joinable: invitation.invitable, status: JoinRequest::ACCEPTED_STATUS).count).to eq(0) }
       end
-
-      it "sends notification for accepted invitation" do
-        expect_any_instance_of(PushNotificationService).to receive(:send_notification).with(
-          "John D.",
-          "Foobar",
-          "John D. a accepté votre invitation",
-          [invitation.inviter],
-          {
-            type: "INVITATION_STATUS",
-            inviter_id: invitation.inviter_id,
-            invitee_id: invitation.invitee_id,
-            feed_id: invitation.invitable_id,
-            feed_type: "Entourage",
-            group_type: 'action',
-            accepted: true,
-            instance: "conversations",
-            id: group.id
-          }
-        )
-
-        put :update, params: { id: invitation.to_param, token: user.token }
-      end
     end
   end
 
@@ -136,28 +114,6 @@ describe Api::V1::InvitationsController do
         before { delete :destroy, params: { id: invitation.to_param, token: user.token } }
         it { expect(response.status).to eq(403) }
         it { expect(JoinRequest.where(user: invitation.invitee, joinable: invitation.invitable, status: JoinRequest::REJECTED_STATUS).count).to eq(0) }
-      end
-
-      it "sends notification for accepted invitation" do
-        expect_any_instance_of(PushNotificationService).to receive(:send_notification).with(
-          "John D.",
-          "Foobar",
-          "John D. a refusé votre invitation",
-          [invitation.inviter],
-          {
-            type: "INVITATION_STATUS",
-            inviter_id: invitation.inviter_id,
-            invitee_id: invitation.invitee_id,
-            feed_id: invitation.invitable_id,
-            feed_type: "Entourage",
-            group_type: 'action',
-            accepted: false,
-            instance: "conversations",
-            id: invitation.invitable_id
-          }
-        )
-
-        delete :destroy, params: { id: invitation.to_param, token: user.token }
       end
     end
   end
