@@ -47,6 +47,8 @@ class Outing < Entourage
 
   accepts_nested_attributes_for :recurrence, :future_siblings, :future_relatives
 
+  alias_attribute :accepted_members, :members
+
   validate :validate_outings_starts_at
   validate :validate_neighborhood_ids
   validate :validate_member_ids, unless: :new_record?
