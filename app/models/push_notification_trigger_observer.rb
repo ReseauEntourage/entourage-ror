@@ -41,7 +41,7 @@ class PushNotificationTriggerObserver < ActiveRecord::Observer
   end
 
   def outing_on_update outing
-    return cancel_on_outing(outing) if outing.saved_change_to_status? && outing.status == :cancelled
+    return outing_on_cancel(outing) if outing.saved_change_to_status? && outing.cancelled?
 
     users = outing.accepted_members - [outing.user]
 
@@ -104,6 +104,7 @@ class PushNotificationTriggerObserver < ActiveRecord::Observer
 
   def join_request_on_create join_request
     return unless join_request.accepted?
+    return if join_request.joinable.user == join_request.user
 
     notify(instance: join_request.user, users: [join_request.joinable.user], params: {
       sender: username(join_request.user),
