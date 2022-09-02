@@ -12,10 +12,6 @@ class PushNotificationTriggerObserver < ActiveRecord::Observer
   # @param verb :create, :update
   # @param record instance of entourage, chat_message, join_request
   def action(verb, record)
-    if record.instance_of? Entourage
-      record = record.becomes(Outing) if record.outing?
-    end
-
     method = "#{record.class.name.underscore}_on_#{verb.to_s}".to_sym
     return unless self.class.method_defined?(method)
 
@@ -23,6 +19,10 @@ class PushNotificationTriggerObserver < ActiveRecord::Observer
   end
 
   protected
+
+  def entourage_on_create entourage
+    return outing_on_create(entourage) if entourage.outing?
+  end
 
   def outing_on_create outing
     users = outing.neighborhoods.map(&:members).flatten.uniq - [outing.user]
@@ -34,6 +34,10 @@ class PushNotificationTriggerObserver < ActiveRecord::Observer
       object: "un événement a été créé",
       content: outing.title
     })
+  end
+
+  def entourage_on_update entourage
+    return outing_on_update(entourage) if entourage.outing?
   end
 
   def outing_on_update outing
