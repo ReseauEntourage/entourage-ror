@@ -29,22 +29,6 @@ module TourServices
       end
 
       if user != joinable_author
-        object = joinable.respond_to?(:title) ? joinable.title : "Demande acceptée"
-        message = "Vous venez de rejoindre #{GroupService.name joinable, :l} de #{author_name}"
-
-        PushNotificationService.new.send_notification(author_name,
-          object,
-          message,
-          User.where(id: user.id),
-          {
-            joinable_id: join_request.joinable_id,
-            joinable_type: join_request.joinable_type,
-            group_type: joinable.group_type,
-            type: "JOIN_REQUEST_ACCEPTED",
-            user_id: user.id
-          }.merge(PushNotificationLinker.get(joinable))
-        )
-
         CommunityLogic.for(joinable).group_joined(join_request)
       end
 

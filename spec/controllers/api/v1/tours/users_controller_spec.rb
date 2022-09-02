@@ -141,9 +141,17 @@ describe Api::V1::Tours::UsersController do
         expect_any_instance_of(PushNotificationService).to receive(:send_notification).with(
           "John D.",
           "Demande acceptée",
-          "Vous venez de rejoindre la maraude de John D.",
+          "Vous venez de rejoindre un(e) maraude de John D.",
           User.where(id: requester.id),
-          { :joinable_id => tour.id, :joinable_type => "Tour", :group_type => 'tour', :type=>"JOIN_REQUEST_ACCEPTED", :user_id => requester.id, instance: "tours", id: tour.id }
+          {
+            joinable_id: tour.id,
+            joinable_type: "Tour",
+            group_type: 'tour',
+            type: "JOIN_REQUEST_ACCEPTED",
+            user_id: requester.id,
+            instance: "tours",
+            id: tour.id
+          }
         )
         patch :update, params: { tour_id: tour.to_param, id: requester.id, user: {status: "accepted"}, token: user.token }
       end
