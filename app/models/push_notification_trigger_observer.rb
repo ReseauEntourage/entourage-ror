@@ -120,6 +120,23 @@ class PushNotificationTriggerObserver < ActiveRecord::Observer
     })
   end
 
+  def join_request_on_update join_request
+    return join_request_on_create(join_request) unless join_request.status_before_last_save&.to_sym == :pending
+
+    notify(instance: join_request.joinable, users: [join_request.user], params: {
+      sender: username(join_request.user),
+      object: title(join_request.joinable) || "Demande acceptée",
+      content: "Vous venez de rejoindre un(e) #{GroupService.name(join_request.joinable)} de #{username(join_request.joinable.user)}",
+      extra: {
+        joinable_id: join_request.joinable_id,
+        joinable_type: join_request.joinable_type,
+        group_type: group_type(join_request.joinable),
+        type: "JOIN_REQUEST_ACCEPTED",
+        user_id: join_request.user_id
+      }
+    })
+  end
+
   # use params[:extra] to be compliant with v7
   def notify instance:, users:, params: {}
     PushNotificationService.new.send_notification(
