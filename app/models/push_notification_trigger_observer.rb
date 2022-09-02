@@ -1,6 +1,12 @@
 class PushNotificationTriggerObserver < ActiveRecord::Observer
   observe :entourage, :chat_message, :join_request
 
+  CREATE_OUTING = "Un nouvel événement vient d'être ajouté au %s : %s prévu le %s"
+  CANCEL_OUTING = "Cet événement prévu le %s vient d'être annulé"
+  CREATE_POST = "%s vient de partager : %s"
+  CREATE_COMMENT = "%s vient de commenter votre publication : %s"
+  CREATE_JOIN_REQUEST = "%s vient de rejoindre votre %s : %s"
+
   def after_create(record)
     action(:create, record)
   end
@@ -25,15 +31,15 @@ class PushNotificationTriggerObserver < ActiveRecord::Observer
   end
 
   def outing_on_create outing
-    users = outing.neighborhoods.map(&:members).flatten.uniq - [outing.user]
+    outing.neighborhoods.each do |neighborhood|
+      next unless users = (neighborhood.members.uniq - [outing.user])
 
-    return if users.none?
-
-    notify(instance: outing, users: users, params: {
-      sender: username(outing.user),
-      object: "un événement a été créé",
-      content: outing.title
-    })
+      notify(instance: outing, users: users, params: {
+        sender: username(outing.user),
+        object: neighborhood.title,
+        content: CREATE_OUTING % [entity_name(neighborhood), outing.title, I18n.l(outing.starts_at.to_date)]
+      })
+    end
   end
 
   def entourage_on_update entourage
@@ -61,8 +67,8 @@ class PushNotificationTriggerObserver < ActiveRecord::Observer
 
     notify(instance: outing, users: users, params: {
       sender: username(outing.user),
-      object: "un événement a été annulé",
-      content: outing.title
+      object: outing.title,
+      content: CANCEL_OUTING % I18n.l(outing.starts_at.to_date)
     })
   end
 
@@ -70,8 +76,47 @@ class PushNotificationTriggerObserver < ActiveRecord::Observer
     return unless ['text', 'broadcast'].include? chat_message.message_type
 
     return comment_on_create(chat_message) if chat_message.has_parent?
+    return post_on_create(chat_message) if chat_message.messageable.is_a?(Neighborhood)
+    return post_on_create(chat_message) if chat_message.messageable.respond_to?(:outing?) && chat_message.messageable.outing?
+    return public_chat_message_on_create(chat_message) if chat_message.messageable.respond_to?(:action?) && chat_message.messageable.action?
 
-    post_on_create(chat_message)
+    private_chat_message_on_create(chat_message)
+  end
+
+  def public_chat_message_on_create public_chat_message
+    users = public_chat_message.messageable.accepted_members - [public_chat_message.user]
+
+    return if users.none?
+
+    notify(instance: public_chat_message.messageable, users: users, params: {
+      sender: username(public_chat_message.user),
+      object: "#{username(public_chat_message.user)} - #{title(public_chat_message.messageable)}",
+      content: public_chat_message.content,
+      extra: {
+        group_type: group_type(public_chat_message.messageable),
+        joinable_id: public_chat_message.messageable_id,
+        joinable_type: public_chat_message.messageable_type,
+        type: "NEW_CHAT_MESSAGE"
+      }
+    })
+  end
+
+  def private_chat_message_on_create private_chat_message
+    users = private_chat_message.messageable.accepted_members - [private_chat_message.user]
+
+    return if users.none?
+
+    notify(instance: private_chat_message.messageable, users: users, params: {
+      sender: username(private_chat_message.user),
+      object: username(private_chat_message.user),
+      content: private_chat_message.content,
+      extra: {
+        group_type: group_type(private_chat_message.messageable),
+        joinable_id: private_chat_message.messageable_id,
+        joinable_type: private_chat_message.messageable_type,
+        type: "NEW_CHAT_MESSAGE"
+      }
+    })
   end
 
   def post_on_create post
@@ -82,7 +127,7 @@ class PushNotificationTriggerObserver < ActiveRecord::Observer
     notify(instance: post.messageable, users: users, params: {
       sender: username(post.user),
       object: title(post.messageable),
-      content: post.content,
+      content: CREATE_POST % [username(post.user), post.content],
       extra: {
         group_type: group_type(post.messageable),
         joinable_id: post.messageable_id,
@@ -97,8 +142,8 @@ class PushNotificationTriggerObserver < ActiveRecord::Observer
 
     notify(instance: comment.messageable, users: [comment.parent.user], params: {
       sender: username(comment.user),
-      object: "un commentaire a été posté",
-      content: comment.content
+      object: title(comment.messageable,
+      content: CREATE_COMMENT % [username(comment.user), comment.content]
     })
   end
 
@@ -109,7 +154,7 @@ class PushNotificationTriggerObserver < ActiveRecord::Observer
     notify(instance: join_request.user, users: [join_request.joinable.user], params: {
       sender: username(join_request.user),
       object: title(join_request.joinable) || "Nouveau membre",
-      content: "#{username(join_request.user)} vient de rejoindre votre #{GroupService.name(join_request.joinable)}",
+      content: CREATE_JOIN_REQUEST % [username(join_request.user), entity_name(join_request.joinable), title(join_request.joinable)],
       extra: {
         joinable_id: join_request.joinable_id,
         joinable_type: join_request.joinable_type,
@@ -126,7 +171,7 @@ class PushNotificationTriggerObserver < ActiveRecord::Observer
     notify(instance: join_request.joinable, users: [join_request.user], params: {
       sender: username(join_request.user),
       object: title(join_request.joinable) || "Demande acceptée",
-      content: "Vous venez de rejoindre un(e) #{GroupService.name(join_request.joinable)} de #{username(join_request.joinable.user)}",
+      content: "Vous venez de rejoindre un(e) #{entity_name(join_request.joinable)} de #{username(join_request.joinable.user)}",
       extra: {
         joinable_id: join_request.joinable_id,
         joinable_type: join_request.joinable_type,
@@ -163,5 +208,9 @@ class PushNotificationTriggerObserver < ActiveRecord::Observer
     return unless object.respond_to?(:group_type)
 
     object.group_type
+  end
+
+  def entity_name object
+    GroupService.name object
   end
 end
