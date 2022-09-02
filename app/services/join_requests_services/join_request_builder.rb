@@ -36,18 +36,10 @@ module JoinRequestsServices
       join_request.status = JoinRequest::ACCEPTED_STATUS if joinable.public
 
       if join_request.save
-        is_onboarding = joinable.is_a?(Entourage) && Onboarding::V1.is_onboarding?(joinable)
-
         if join_request.is_accepted?
           joinable.class.increment_counter(:number_of_people, joinable.id)
 
           CommunityLogic.for(joinable).group_joined(join_request)
-        elsif is_onboarding
-          # nothing!
-        else
-          NewJoinRequestNotifyJob.perform_later(joinable.class.name,
-                                             joinable.id,
-                                             user.id)
         end
 
         callback.on_success.try(:call, join_request)
