@@ -59,12 +59,21 @@ describe Api::V1::Tours::UsersController do
       it "sends a notifications to tour owner" do
         new_member = FactoryBot.create(:pro_user)
         create(:join_request, user: user, joinable: tour, status: "accepted")
-        expect_any_instance_of(PushNotificationService).to receive(:send_notification).with(
+        # we do not maintain pending join_request scenarios
+        expect_any_instance_of(PushNotificationService).not_to receive(:send_notification).with(
           "John D.",
           "Demande en attente",
           "John D. souhaite rejoindre votre maraude",
           [tour.user],
-          { :joinable_id => tour.id, :joinable_type => "Tour", :group_type => 'tour', :type => "NEW_JOIN_REQUEST", :user_id => new_member.id, instance: "tours", id: tour.id }
+          {
+            joinable_id: tour.id,
+            joinable_type: "Tour",
+            group_type: 'tour',
+            type: "NEW_JOIN_REQUEST",
+            user_id: new_member.id,
+            instance: "tours",
+            id: tour.id
+          }
         )
         post :create, params: { tour_id: tour.to_param, token: new_member.token }
       end
