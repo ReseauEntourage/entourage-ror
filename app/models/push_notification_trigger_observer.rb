@@ -37,7 +37,7 @@ class PushNotificationTriggerObserver < ActiveRecord::Observer
       notify(instance: outing, users: users, params: {
         sender: username(outing.user),
         object: neighborhood.title,
-        content: CREATE_OUTING % [entity_name(neighborhood), outing.title, I18n.l(outing.starts_at.to_date)]
+        content: CREATE_OUTING % [entity_name(neighborhood), outing.title, to_date(outing.starts_at)]
       })
     end
   end
@@ -68,7 +68,7 @@ class PushNotificationTriggerObserver < ActiveRecord::Observer
     notify(instance: outing, users: users, params: {
       sender: username(outing.user),
       object: outing.title,
-      content: CANCEL_OUTING % I18n.l(outing.starts_at.to_date)
+      content: CANCEL_OUTING % to_date(outing.starts_at)
     })
   end
 
@@ -142,7 +142,7 @@ class PushNotificationTriggerObserver < ActiveRecord::Observer
 
     notify(instance: comment.messageable, users: [comment.parent.user], params: {
       sender: username(comment.user),
-      object: title(comment.messageable,
+      object: title(comment.messageable),
       content: CREATE_COMMENT % [username(comment.user), comment.content]
     })
   end
@@ -212,5 +212,11 @@ class PushNotificationTriggerObserver < ActiveRecord::Observer
 
   def entity_name object
     GroupService.name object
+  end
+
+  def to_date date_str
+    return unless date_str
+
+    I18n.l(date_str.to_date)
   end
 end

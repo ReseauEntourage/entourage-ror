@@ -203,7 +203,7 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
           expect_any_instance_of(PushNotificationService).to receive(:send_notification).with(
             "John D.",
             'Foot Paris 17è',
-            'foobaz',
+            "John D. vient de partager : foobaz",
             [ neighborhood.user, join_request2.user ],
             {
               joinable_id: neighborhood.id,
