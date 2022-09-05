@@ -47,7 +47,7 @@ module TourServices
           join_request.update!(status: "rejected")
         end
       end
-      notify_owner(join_request.user, join_request.joinable.user, join_request.joinable)
+
       true
     end
 
@@ -62,7 +62,7 @@ module TourServices
           join_request.update!(status: "cancelled")
         end
       end
-      notify_owner(join_request.user, join_request.joinable.user, join_request.joinable)
+
       true
     end
 
@@ -114,23 +114,7 @@ module TourServices
     end
 
     private
-    attr_reader :join_request
 
-    def notify_owner(requester, owner, joinable)
-      if ENV["QUIT_ENTOURAGE_NOTIFICATION"]=="true"
-        PushNotificationService.new.send_notification(UserPresenter.new(user: requester).display_name,
-          "Demande annulée",
-          "Demande annulée",
-          [owner],
-          {
-            joinable_id: joinable.id,
-            joinable_type: joinable.class.name,
-            group_type: joinable.group_type,
-            type: "JOIN_REQUEST_CANCELED",
-            user_id: requester.id
-          }.merge(PushNotificationLinker.get(joinable))
-        )
-      end
-    end
+    attr_reader :join_request
   end
 end
