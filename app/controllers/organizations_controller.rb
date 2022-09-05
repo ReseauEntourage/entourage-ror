@@ -1,6 +1,4 @@
 class OrganizationsController < ApplicationController
-  attr_writer :push_notification_service
-
   before_action :authenticate_user!
   before_action :authenticate_manager!, only: [:edit, :update]
   before_action :set_organization, except: [:new, :create]
@@ -92,13 +90,7 @@ class OrganizationsController < ApplicationController
   end
 
   def send_message
-    send_message_service = TourServices::SendMessageService.new(params: params, current_user: @current_user)
-    if send_message_service.should_send_now?
-      push_notification_service.send_notification send_message_service.sender, send_message_service.object, send_message_service.content, send_message_service.recipients
-      redirect_to dashboard_organizations_path, notice: 'message envoyé'
-    else
-      redirect_to dashboard_organizations_path, notice: 'message programmé'
-    end
+    redirect_to dashboard_organizations_path, notice: 'message programmé'
   end
 
   private
@@ -113,10 +105,6 @@ class OrganizationsController < ApplicationController
 
   def set_organization
     @organization = @current_user.organization
-  end
-
-  def push_notification_service
-    @push_notification_service ||= PushNotificationService.new
   end
 
   def user_default
