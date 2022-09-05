@@ -3,6 +3,8 @@ class PushNotificationTriggerObserver < ActiveRecord::Observer
 
   CREATE_OUTING = "Un nouvel événement vient d'être ajouté au %s : %s prévu le %s"
   CANCEL_OUTING = "Cet événement prévu le %s vient d'être annulé"
+  UPDATE_OUTING = "L'événement prévu le %s a été modifié. Il se déroulera le %s, au %s"
+  UPDATE_OUTING_SHORT = "L'événement prévu le %s a été modifié"
   CREATE_POST = "%s vient de partager : %s"
   CREATE_COMMENT = "%s vient de commenter votre publication : %s"
   CREATE_JOIN_REQUEST = "%s vient de rejoindre votre %s : %s"
@@ -55,8 +57,8 @@ class PushNotificationTriggerObserver < ActiveRecord::Observer
 
     notify(instance: outing, users: users, params: {
       sender: username(outing.user),
-      object: "un événement a été modifié",
-      content: outing.title
+      object: outing.title,
+      content: update_outing_message(outing)
     })
   end
 
@@ -218,5 +220,17 @@ class PushNotificationTriggerObserver < ActiveRecord::Observer
     return unless date_str
 
     I18n.l(date_str.to_date)
+  end
+
+  def update_outing_message outing
+    if outing.metadata_before_last_save[:starts_at] == outing.starts_at && outing.metadata_before_last_save[:display_address] == outing.metadata[:display_address]
+      return UPDATE_OUTING_SHORT % to_date(outing.starts_at)
+    end
+
+    UPDATE_OUTING % [
+      to_date(outing.metadata_before_last_save[:starts_at]),
+      to_date(outing.starts_at),
+      outing.metadata[:display_address]
+    ]
   end
 end

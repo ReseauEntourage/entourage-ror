@@ -3,8 +3,8 @@ require 'rails_helper'
 RSpec.describe PushNotificationTriggerObserver, type: :model do
   include ActiveJob::TestHelper
 
-  let(:user) { create :public_user }
-  let(:participant) { create :public_user }
+  let(:user) { create :public_user, first_name: "John" }
+  let(:participant) { create :public_user, first_name: "Jane" }
 
   # after_create
   describe "after_create" do
@@ -181,6 +181,46 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
         it {
           expect_any_instance_of(PushNotificationTriggerObserver).not_to receive(:notify)
           outing.update_attribute(:status, :cancelled)
+        }
+      end
+    end
+  end
+
+  describe "notify" do
+    describe "outing_on_update" do
+      let!(:outing) { create :outing, user: user, status: :open, title: "Café", metadata: { starts_at: Time.now, ends_at: 2.days.from_now} }
+      let!(:join_request) { create :join_request, user: participant, joinable: outing, status: :accepted }
+
+      context "update title" do
+        it {
+          expect_any_instance_of(PushNotificationTriggerObserver).to receive(:notify).with(
+            instance: outing,
+            users: [participant],
+            params: {
+              sender: "John D.",
+              object: "Théâtre",
+              content: "L'événement prévu le #{I18n.l(outing.starts_at.to_date)} a été modifié",
+            }
+          )
+
+          outing.update_attribute(:title, "Théâtre")
+        }
+      end
+
+      context "update starts_at" do
+        it {
+          expect_any_instance_of(PushNotificationTriggerObserver).to receive(:notify).with(
+            instance: outing,
+            users: [participant],
+            params: {
+              sender: "John D.",
+              object: "Café",
+              content: "L'événement prévu le #{I18n.l(Time.now.to_date)} a été modifié. Il se déroulera le #{I18n.l(1.day.from_now.to_date)}, au #{outing.metadata[:display_address]}",
+            }
+          )
+
+          outing.metadata[:starts_at] = 1.day.from_now
+          outing.save
         }
       end
     end
