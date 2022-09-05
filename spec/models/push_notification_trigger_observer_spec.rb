@@ -24,37 +24,59 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
       end
 
       describe "chat_message" do
-        let!(:chat_message) { create :chat_message, user: user, message_type: :text }
+        let(:neighborhood) { create :neighborhood }
 
-        it {
-          expect_any_instance_of(PushNotificationTriggerObserver).to receive(:chat_message_on_create)
-          create :chat_message, user: user, message_type: :text
-        }
+        context "text chat_message" do
+          it {
+            expect_any_instance_of(PushNotificationTriggerObserver).to receive(:chat_message_on_create)
+            create :chat_message, user: user, message_type: :text
+          }
+        end
 
-        let!(:broadcast) { FactoryBot.create(:conversation_message_broadcast) }
+        context "broadcast chat_message" do
+          let!(:broadcast) { FactoryBot.create(:conversation_message_broadcast) }
 
-        it {
-          expect_any_instance_of(PushNotificationTriggerObserver).to receive(:chat_message_on_create)
-          create :chat_message, user: user, message_type: :broadcast, metadata: { conversation_message_broadcast_id: broadcast.id }
-        }
+          it {
+            expect_any_instance_of(PushNotificationTriggerObserver).to receive(:chat_message_on_create)
+            create :chat_message, user: user, message_type: :broadcast, metadata: { conversation_message_broadcast_id: broadcast.id }
+          }
+        end
 
-        it {
-          expect_any_instance_of(PushNotificationTriggerObserver).not_to receive(:post_on_create)
-          expect_any_instance_of(PushNotificationTriggerObserver).not_to receive(:comment_on_create)
-          create :chat_message, user: user, message_type: :status_update, metadata: { status: :foo, outcome_success: true }
-        }
+        context "status chat_message" do
+          it {
+            expect_any_instance_of(PushNotificationTriggerObserver).not_to receive(:post_on_create)
+            expect_any_instance_of(PushNotificationTriggerObserver).not_to receive(:comment_on_create)
+            create :chat_message, user: user, message_type: :status_update, metadata: { status: :foo, outcome_success: true }
+          }
+        end
 
-        it {
-          expect_any_instance_of(PushNotificationTriggerObserver).to receive(:post_on_create)
-          expect_any_instance_of(PushNotificationTriggerObserver).not_to receive(:comment_on_create)
-          create :chat_message, user: user, message_type: :text
-        }
+        context "private_chat_message" do
+          it {
+            expect_any_instance_of(PushNotificationTriggerObserver).to receive(:private_chat_message_on_create)
+            expect_any_instance_of(PushNotificationTriggerObserver).not_to receive(:post_on_create)
+            expect_any_instance_of(PushNotificationTriggerObserver).not_to receive(:comment_on_create)
+            create :chat_message, user: user, message_type: :text
+          }
+        end
 
-        it {
-          expect_any_instance_of(PushNotificationTriggerObserver).not_to receive(:post_on_create)
-          expect_any_instance_of(PushNotificationTriggerObserver).to receive(:comment_on_create)
-          create :chat_message, user: user, message_type: :text, parent: chat_message
-        }
+        context "post chat_message in neighborhood" do
+          it {
+            expect_any_instance_of(PushNotificationTriggerObserver).not_to receive(:private_chat_message_on_create)
+            expect_any_instance_of(PushNotificationTriggerObserver).to receive(:post_on_create)
+            expect_any_instance_of(PushNotificationTriggerObserver).not_to receive(:comment_on_create)
+            create :chat_message, user: user, message_type: :text, messageable: neighborhood
+          }
+        end
+
+        context "comment" do
+          let!(:chat_message) { create :chat_message, messageable: neighborhood, user: user, message_type: :text }
+
+          it {
+            expect_any_instance_of(PushNotificationTriggerObserver).not_to receive(:post_on_create)
+            expect_any_instance_of(PushNotificationTriggerObserver).to receive(:comment_on_create)
+            create :chat_message, user: user, message_type: :text, parent: chat_message
+          }
+        end
       end
 
       describe "join_request" do
