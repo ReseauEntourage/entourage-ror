@@ -105,7 +105,7 @@ describe Api::V1::Entourages::UsersController do
             expect(notif_service).to have_received(:send_notification).with(
               "John D.",
               "Foobar1",
-              "John D. vient de rejoindre votre action",
+              "John D. vient de rejoindre votre action : Foobar1",
               [entourage.user],
               {
                 joinable_type: "Entourage",
@@ -113,8 +113,8 @@ describe Api::V1::Entourages::UsersController do
                 group_type: 'action',
                 type: "JOIN_REQUEST_ACCEPTED",
                 user_id: user.id,
-                instance: "conversations",
-                id: entourage.id
+                instance: "users",
+                id: user.id
               }
             )
           }
@@ -129,16 +129,16 @@ describe Api::V1::Entourages::UsersController do
             expect(notif_service).to have_received(:send_notification).with(
               "John D.",
               "Foobar1",
-              "Vous venez de rejoindre l’action de John D.",
-              [user],
+              "John D. vient de rejoindre votre action : Foobar1",
+              [entourage.user],
               {
                 joinable_type: "Entourage",
                 joinable_id: entourage.id,
                 group_type: 'action',
                 type: "JOIN_REQUEST_ACCEPTED",
                 user_id: user.id,
-                instance: "conversations",
-                id: entourage.id
+                instance: "users",
+                id: user.id
               }
             )
           }
@@ -154,7 +154,8 @@ describe Api::V1::Entourages::UsersController do
           let!(:user_join_request) { create(:join_request, user: user, status: "accepted") }
 
           it "sends notif to all entourage members" do
-            expect_any_instance_of(PushNotificationService).to receive(:send_notification).with(
+            # we do not maintain pending join_request scenarios
+            expect_any_instance_of(PushNotificationService).not_to receive(:send_notification).with(
               "John D.",
               "Foobar1",
               "John D. souhaite rejoindre votre action",
@@ -178,7 +179,8 @@ describe Api::V1::Entourages::UsersController do
           let!(:member_join_request) { create(:join_request, user: member, joinable: entourage, status: "accepted") }
 
           it "sends notif to all entourage members" do
-            expect_any_instance_of(PushNotificationService).to receive(:send_notification).with(
+            # we do not maintain pending join_request scenarios
+            expect_any_instance_of(PushNotificationService).not_to receive(:send_notification).with(
               "John D.",
               "Foobar1",
               "John D. souhaite rejoindre votre action",
@@ -263,7 +265,7 @@ describe Api::V1::Entourages::UsersController do
         expect_any_instance_of(PushNotificationService).to receive(:send_notification).with(
           "John D.",
           "Foobar1",
-          "Vous venez de rejoindre l’action de John D.",
+          "Vous venez de rejoindre un(e) action de John D.",
           User.where(id: requester.id),
           {
             :joinable_id => entourage.id,

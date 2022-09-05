@@ -205,7 +205,7 @@ describe Api::V1::Outings::ChatMessagesController do
           expect_any_instance_of(PushNotificationService).to receive(:send_notification).with(
             "John D.",
             'Foot Paris 17è',
-            'foobaz',
+            "John D. vient de partager : foobaz",
             [ join_request1.user, join_request3.user ], # user.token should not receive notification
             {
               joinable_id: outing.id,

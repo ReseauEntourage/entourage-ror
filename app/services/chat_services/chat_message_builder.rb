@@ -43,8 +43,6 @@ module ChatServices
 
         join_request.update_column(:last_message_read, message.created_at) unless [Neighborhood, Outing].include?(joinable.class)
 
-        AsyncService.new(self.class).send_notification(message)
-
         callback.on_success.try(:call, message)
       else
         callback.on_failure.try(:call, message)
@@ -55,34 +53,6 @@ module ChatServices
 
     private
     attr_reader :message, :user, :joinable, :join_request, :callback
-
-    def self.send_notification(message)
-      group = message.messageable
-
-      group_title =
-        if !group.respond_to?(:title) || group.group_type == 'conversation'
-          nil
-        else
-          group.title
-        end
-
-      PushNotificationService.new.send_notification(
-        UserPresenter.new(user: message.user).display_name,
-        group_title,
-        message.content,
-        recipients(message),
-        {
-          joinable_id: group.id,
-          joinable_type: group.class.name,
-          group_type: group.group_type,
-          type: "NEW_CHAT_MESSAGE"
-        }.merge(PushNotificationLinker.get(group))
-      )
-    end
-
-    def self.recipients(message)
-      message.messageable.members.where("users.id != ? AND status = ?", message.user_id, "accepted")
-    end
 
     def self.find_conversation recipient_id, user_id:
       participants = [recipient_id, user_id]
