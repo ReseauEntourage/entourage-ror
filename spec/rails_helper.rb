@@ -35,3 +35,12 @@ Geocoder::Lookup::Test.add_stub(
     'country_code' => 'FR'
   }]
 )
+
+Geocoder::Lookup::Test.add_stub(
+  "Au 50 75008 Paris", [{
+    'coordinates'  => [48.870424, 2.30681949999996],
+    'address'      => 'Au 50 75008 Paris',
+    'country'      => 'France',
+    'country_code' => 'FR'
+  }]
+)

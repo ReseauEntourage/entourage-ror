@@ -8,7 +8,19 @@ describe Api::V1::PoisController, :type => :controller do
 
     describe 'create' do
       let!(:poi) { build :poi }
-      before { post :create, params: { token: user.token, poi: { name: poi.name, latitude: poi.latitude, longitude: poi.longitude, adress: poi.adress, phone: poi.phone, website: poi.website, email: poi.email, audience: poi.audience, category_id: poi.category_id }, format: :json }}
+
+      before {
+        post :create, params: { token: user.token, poi: {
+          name: poi.name,
+          adress: poi.adress,
+          phone: poi.phone,
+          website: poi.website,
+          email: poi.email,
+          audience: poi.audience,
+          category_id: poi.category_id
+        }, format: :json }
+      }
+
       it { expect(response.status).to eq(201) }
       it { expect(Poi.last.name).to eq poi.name }
       it { expect(Poi.last.latitude).to eq poi.latitude }
