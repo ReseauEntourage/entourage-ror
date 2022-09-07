@@ -140,8 +140,7 @@ resource Api::V1::OutingsController do
       end
     end
 
-    let(:outing) { FactoryBot.create(:outing, user: user) }
-    let!(:join_request) { FactoryBot.create(:join_request, joinable: outing, user: user, status: :accepted) }
+    let(:outing) { FactoryBot.create(:outing, :with_recurrence, user: user) }
     let(:user) { FactoryBot.create(:pro_user) }
     let(:params) { { title: "new title" } }
 
