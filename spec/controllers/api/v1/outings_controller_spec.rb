@@ -267,7 +267,7 @@ describe Api::V1::OutingsController do
 
         it { expect(response.status).to eq(201) }
         it { expect(subject).to have_key("outing") }
-        it { expect(Outing.count).to eq(1) }
+        it { expect(Outing.count).to eq(5) }
         it { expect(OutingRecurrence.count).to eq(1) }
         it { expect(Outing.last.recurrence).not_to be_nil }
       end
@@ -349,6 +349,7 @@ describe Api::V1::OutingsController do
         before { patch :update, params: { id: outing.to_param, outing: { recurrency: 0 }, token: user.token } }
 
         it { expect(subject.continue).to eq(false) }
+        it { expect(response.status).to eq(200) }
       end
 
       context "cancel recurrency is not valid if recurrency > 0" do
@@ -440,6 +441,22 @@ describe Api::V1::OutingsController do
           it { expect(outing.siblings.pluck("metadata->>'starts_at'").map(&:to_datetime)).to match_array(start_dates) }
           it { expect(outing.siblings.pluck("metadata->>'ends_at'").map(&:to_datetime)).to match_array(end_dates) }
         end
+
+      end
+
+      context "change recurrence from nil to 7" do
+        let(:start_at) { 1.hour.from_now }
+        let(:end_at) { 2.hours.from_now }
+
+        let(:outing) { FactoryBot.create(:outing, :outing_class, user: user, metadata: {
+          starts_at: start_at,
+          ends_at: end_at
+        }) }
+
+        before { patch :update, params: { id: outing.to_param, outing: { recurrency: 7 }, token: user.token } }
+
+        it { expect(outing.reload.recurrence.continue).to eq(true) }
+        it { expect(outing.reload.siblings.count).to eq(5) }
       end
     end
   end
