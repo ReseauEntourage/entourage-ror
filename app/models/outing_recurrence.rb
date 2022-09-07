@@ -32,6 +32,14 @@ class OutingRecurrence < ApplicationRecord
     outings.active.future.count < AVAILABLE_RECURRENCES
   end
 
+  def generate_initial_recurrences
+    AVAILABLE_RECURRENCES.times do |time|
+      return unless generate_available?
+
+      generate.save!
+    end
+  end
+
   def generate
     last_outing.dup
   end

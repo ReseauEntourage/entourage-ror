@@ -4,7 +4,7 @@ class Outing < Entourage
 
   store_accessor :metadata, :starts_at, :ends_at, :previous_at, :place_name, :street_address, :google_place_id, :display_address, :landscape_url, :landscape_thumbnail_url, :portrait_url, :portrait_thumbnail_url, :place_limit
 
-  after_initialize :set_outing_recurrence, if: :recurrency
+  after_save :generate_initial_recurrences, if: :recurrency
 
   before_validation :update_relatives_dates, if: :force_relatives_dates
   before_validation :cancel_outing_recurrence, unless: :new_record?
@@ -163,7 +163,9 @@ class Outing < Entourage
   end
 
   # we create recurrence relationship whenever we set a recurrency to an outing that does not already defines this relationship
-  def set_outing_recurrence
+  def recurrency= recurrency
+    @recurrency = recurrency
+
     return if recurrence.present?
     return if recurrency.blank?
 
@@ -177,6 +179,15 @@ class Outing < Entourage
     return unless recurrency&.to_i == 0
 
     self.recurrence.assign_attributes(continue: false)
+  end
+
+  # @refactor might be moved to job
+  def generate_initial_recurrences
+    return if recurrency.blank?
+    return if recurrency&.to_i == 0
+    return unless self.recurrence.present?
+
+    self.recurrence.generate_initial_recurrences
   end
 
   def add_creator_as_member

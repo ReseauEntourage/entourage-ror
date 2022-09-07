@@ -37,4 +37,66 @@ RSpec.describe Outing, type: :model do
     it { expect(result.taggings.map(&:id)).not_to eq(outing.taggings.map(&:id)) }
     it { expect(result.taggings.map(&:tag_id)).to eq(outing.taggings.map(&:tag_id)) }
   end
+
+  describe "generate_initial_recurrences" do
+    describe "on create" do
+      subject { FactoryBot.create(:outing, :with_neighborhood, recurrency: recurrency) }
+
+      context "with recurrency" do
+        let(:recurrency) { 7 }
+
+        it { expect { subject }.to change { Outing.count }.by(5) }
+      end
+
+      context "without recurrency" do
+        let(:recurrency) { nil }
+
+        it { expect { subject }.to change { Outing.count }.by(1) }
+      end
+    end
+
+    describe "on update" do
+      let(:outing) { FactoryBot.create(:outing, :with_neighborhood, recurrency: recurrency) }
+
+      context "from outing without recurrence to recurrence" do
+        let(:recurrency) { nil }
+
+        subject { outing.update_attribute(:recurrency, 7) }
+
+        it { expect { subject }.to change { Outing.count }.by(4) }
+      end
+
+      context "from outing without recurrence to without recurrence" do
+        let(:recurrency) { nil }
+
+        subject { outing.update_attribute(:recurrency, nil) }
+
+        it { expect { subject }.to change { Outing.count }.by(0) }
+      end
+
+      context "from outing with recurrence to same recurrence" do
+        let(:recurrency) { 7 }
+
+        subject { outing.update_attribute(:recurrency, 7) }
+
+        it { expect { subject }.to change { Outing.count }.by(0) }
+      end
+
+      context "from outing with recurrence to another recurrence" do
+        let(:recurrency) { 7 }
+
+        subject { outing.update_attribute(:recurrency, 14) }
+
+        it { expect { subject }.to change { Outing.count }.by(0) }
+      end
+
+      context "from outing with recurrence to without recurrence" do
+        let(:recurrency) { 7 }
+
+        subject { outing.update_attribute(:recurrency, nil) }
+
+        it { expect { subject }.to change { Outing.count }.by(0) }
+      end
+    end
+  end
 end
