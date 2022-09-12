@@ -39,6 +39,19 @@ RSpec.describe Outing, type: :model do
   end
 
   describe "generate_initial_recurrences" do
+    describe "generates five occurences" do
+      let(:starts_at) { 1.minute.from_now }
+      let(:outing) { FactoryBot.create(:outing, :with_neighborhood, recurrency: 7, metadata: { starts_at: starts_at }) }
+      let(:dates) { outing.siblings.map(&:starts_at).map{|date| date.iso8601(3)}.sort }
+
+      it { expect(outing.siblings.count).to eq(5) }
+      it { expect(dates).to include(starts_at.iso8601(3)) }
+      it { expect(dates).to include((starts_at + 7.days).iso8601(3)) }
+      it { expect(dates).to include((starts_at + 14.days).iso8601(3)) }
+      it { expect(dates).to include((starts_at + 21.days).iso8601(3)) }
+      it { expect(dates).to include((starts_at + 28.days).iso8601(3)) }
+    end
+
     describe "on create" do
       subject { FactoryBot.create(:outing, :with_neighborhood, recurrency: recurrency) }
 
