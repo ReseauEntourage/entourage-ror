@@ -25,10 +25,6 @@ module TourServices
 
         TourServices::JoinRequestStatus.new(join_request: join_request).accept!
 
-        # When you start a tour we check if there was any messages scheduled to be delivered to people starting a tour on that day
-        schedule_push_service = TourServices::SchedulePushService.new(organization: organization, date: Date.today)
-        schedule_push_service.send_to(user)
-
         callback.on_success.try(:call, tour.reload)
       else
         callback.on_failure.try(:call, tour)

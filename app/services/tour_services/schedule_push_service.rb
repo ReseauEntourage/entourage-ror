@@ -18,14 +18,6 @@ module TourServices
       @scheduled_message ||= $redis.hgetall(key)
     end
 
-    def send_to(user)
-      return if scheduled_message.blank?
-      push_service.send_notification(scheduled_message[:sender],
-                                     scheduled_message[:object],
-                                     scheduled_message[:message],
-                                     User.where(id: user.id))
-    end
-
     def destroy
       $redis.del(key)
     end
@@ -43,10 +35,6 @@ module TourServices
 
     def key
       "scheduled_message:organization:#{organization.id}:date:#{date}"
-    end
-
-    def push_service
-      PushNotificationService.new
     end
   end
 
