@@ -26,39 +26,32 @@
   </div>
 
   <div class="form-group">
-    <%= f.label :instance %>
+    <%= f.label :description %>
     <div class="controls">
-      <%= f.select :instance, options_for_select(instances_options_for_select, @recommandation.instance), class: "form-control", required: true %>
+      <%= f.text_area :description, class: "form-control" %>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="form-group col-md-6">
+      <%= f.label :instance %>
+      <div class="controls">
+        <%= f.select :instance, options_for_select(instances_options_for_select, @recommandation.instance), class: "form-control", required: true %>
+      </div>
+    </div>
+
+    <div class="form-group col-md-6">
+      <%= f.label :action %>
+      <div class="controls">
+        <%= f.select :action, options_for_select(actions_options_for_select, @recommandation.action), class: "form-control", required: true %>
+      </div>
     </div>
   </div>
 
   <div class="form-group">
-    <%= f.label :action %>
+    <%= f.label :argument_value %>
     <div class="controls">
-      <%= f.select :action, options_for_select(actions_options_for_select, @recommandation.action), class: "form-control", required: true %>
-    </div>
-  </div>
-
-  <div class="form-group">
-    <%= f.label :url %>
-    <div class="controls">
-      <%= f.text_field :url, class: "form-control" %>
-    </div>
-  </div>
-
-  <div class="form-group">
-    <%= f.label :areas, style: "margin-right: .7em" %>
-    <a href="#" data-role="select-areas" data-select="all">Tout sélectionner</a> ·
-    <a href="#" data-role="select-areas" data-select="ours">Nos zones</a> ·
-    <a href="#" data-role="select-areas" data-select="none">Tout désélectionner</a>
-    <div style="margin-bottom: 5px" data-checkbox-required="Sélectionnez au moins une zone">
-      <%=
-        collection_check_boxes(:recommandation, :areas,
-                               ModerationArea.all_with_no_zone,
-                               :departement_slug, :name_with_departement) do |b|
-          b.label(class: "checkbox-inline") { b.check_box + b.text }
-        end
-      %>
+      <%= f.text_field :argument_value, class: "form-control" %>
     </div>
   </div>
 
@@ -66,12 +59,24 @@
     <%= f.label :user_goals, style: "margin-right: .7em" %>
     <div style="margin-bottom: 5px" data-checkbox-required="Sélectionnez au moins un profil">
       <%=
-        collection_check_boxes(:recommandation, :user_goals,
-                               UserGoalPresenter.all(current_user.community),
-                               :slug, :name) do |b|
+        collection_check_boxes(:recommandation, :user_goals, UserGoalPresenter.all(current_user.community), :slug, :name) do |b|
           b.label(class: "checkbox-inline") { b.check_box + b.text }
         end
       %>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :conditional_display %>
+    <div class="controls">
+      <%= f.check_box :conditional_display, {
+        checked: @recommandation.conditional_display,
+        'data-toggle': :toggle,
+        'data-on': "Oui",
+        'data-off': "Non",
+        'data-onstyle': :success,
+        'data-offstyle': :danger
+      }, 1, 0 %>
     </div>
   </div>
 
@@ -99,34 +104,12 @@
 <% end %>
 
 <script>
-  //
-  // areas presets
-
-  var areasSelector = '[type="checkbox"][name="recommandation[areas][]"]',
-      $areas = $(areasSelector)
-
-  $(document).on('click', '[data-role="select-areas"]', function(e) {
-    e.preventDefault()
-    var select = $(this).data('select'),
-        check = {
-          'all': function() { return true },
-          'ours': function(v) { return ['sans_zone', 'hors_zone'].indexOf(v) === -1 },
-          'none': function() { return false },
-        }[select]
-
-    $areas.each(function() {
-      var $box = $(this)
-      $box.prop('checked', check($box.val()))
-      this.setCustomValidity('') // reset validations
-    })
-  })
-</script>
-
-<script>
   $(document).on('turbolinks:load', function() {
     $('#recommandation_status').bootstrapToggle()
+    $('#recommandation_conditional_display').bootstrapToggle()
   })
 
   $('select#recommandation_action').select2({ width: '100%' });
   $('select#recommandation_instance').select2({ width: '100%' });
+  $('select#recommandation_argument_type').select2({ width: '100%' });
 </script>

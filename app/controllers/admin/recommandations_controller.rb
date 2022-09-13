@@ -12,7 +12,6 @@ module Admin
       @recommandation = Recommandation.new
 
       # pre-fill targeting
-      @recommandation.areas = ModerationArea.all_slugs
       @recommandation.user_goals = UserGoalPresenter.all_slugs(community)
     end
 
@@ -70,8 +69,9 @@ module Admin
         :recommandation_image_id,
         :instance,
         :action,
-        :url,
-        areas: [],
+        :argument_type,
+        :argument_value,
+        :conditional_display,
         user_goals: []
       )
     end

@@ -1,9 +1,8 @@
 class Recommandation < ApplicationRecord
-  include WithAreas
   include WithUserGoals
 
-  INSTANCES = [:user, :profile, :neighborhood, :outing, :poi, :resource, :webview, :conversation, :contribution, :ask_for_help]
-  ACTIONS = [:index, :show, :new]
+  INSTANCES = [:neighborhood, :outing, :poi, :resource, :webview, :contribution, :solicitation]
+  ACTIONS = [:index, :show, :new, :join, :show_webview, :show_joined, :show_not_joined]
 
   validates_presence_of [:name, :instance, :action]
 
