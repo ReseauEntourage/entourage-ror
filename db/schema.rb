@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_07_22_145001) do
+ActiveRecord::Schema.define(version: 2022_09_13_145100) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -628,16 +628,19 @@ ActiveRecord::Schema.define(version: 2022_07_22_145001) do
     t.string "image_url"
     t.string "instance", null: false
     t.string "action", default: "show", null: false
-    t.string "url"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.jsonb "areas", default: [], null: false
     t.jsonb "user_goals", default: [], null: false
     t.string "status", default: "active", null: false
+    t.integer "position"
+    t.integer "fragment"
+    t.string "description"
+    t.string "argument_value"
+    t.boolean "conditional_display", default: false, null: false
     t.index ["action"], name: "index_recommandations_on_action"
-    t.index ["areas"], name: "index_recommandations_on_areas", using: :gin
     t.index ["instance"], name: "index_recommandations_on_instance"
     t.index ["name"], name: "index_recommandations_on_name"
+    t.index ["status", "position", "fragment"], name: "index_recommandations_on_status_and_position_and_fragment", unique: true
     t.index ["user_goals"], name: "index_recommandations_on_user_goals", using: :gin
   end
 
@@ -665,6 +668,7 @@ ActiveRecord::Schema.define(version: 2022_07_22_145001) do
     t.datetime "updated_at", null: false
     t.integer "duration"
     t.boolean "is_video", default: false
+    t.string "status", default: "active", null: false
     t.index ["name"], name: "index_resources_on_name"
   end
 

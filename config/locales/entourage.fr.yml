@@ -190,8 +190,9 @@ fr:
         name: Nom
         instance: Objet
         action: Action
-        url: Url
-        areas: Zones
+        argument_type: Type d'argument
+        argument_value: Valeur de l'argument (id ou url)
+        conditional_display: Affichage conditionnel
         user_goals: Profils
         image_url: Image
         status: Statut
@@ -199,17 +200,21 @@ fr:
           index: Liste
           show: Afficher
           new: Créer
+          join: Rejoindre
+          show_webview: Afficher une webview
+          show_joined: Afficher le plus proche déjà rejoint
+          show_not_joined: Afficher le plus proche pas déjà rejoint
         instances:
           user: Utilisateur
           profile: Profil
           neighborhood: Groupe de voisinage
           outing: Événement
           poi: POI
-          resource: Ressource
+          resource: Contenu pédagogique
           webview: Webview
           conversation: Conversation
           contribution: Contribution
-          ask_for_help: Demande
+          solicitation: Demande
       resource:
         name: Nom
         category: Catégorie
