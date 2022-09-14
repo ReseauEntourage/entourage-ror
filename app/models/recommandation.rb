@@ -2,13 +2,17 @@ class Recommandation < ApplicationRecord
   include WithUserGoals
 
   INSTANCES = [:neighborhood, :outing, :poi, :resource, :webview, :contribution, :solicitation]
-  ACTIONS = [:index, :show, :new, :join, :show_webview, :show_joined, :show_not_joined]
+  ACTIONS = [:index, :show, :new, :join, :show_joined, :show_not_joined]
+  FRAGMENTS = [0, 1, 2]
 
   validates_presence_of [:name, :instance, :action]
 
   alias_attribute :title, :name
 
   default_scope { where(status: :active) }
+
+  scope :fragment, -> (fragment) { where(fragment: fragment) }
+  scope :for_profile, -> (profile) { where(["user_goals @> ?", profile.to_json]) }
 
   # valides :image_url # should be ?x?
   attr_accessor :recommandation_image_id
@@ -19,8 +23,8 @@ class Recommandation < ApplicationRecord
     status.to_sym == :active
   end
 
-  def show?
-    action.to_sym == :show
+  def webview?
+    instance.to_sym == :webview
   end
 
   def image_url

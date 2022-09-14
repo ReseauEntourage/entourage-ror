@@ -192,7 +192,6 @@ fr:
         action: Action
         argument_type: Type d'argument
         argument_value: Valeur de l'argument (id ou url)
-        conditional_display: Affichage conditionnel
         user_goals: Profils
         image_url: Image
         status: Statut
@@ -201,7 +200,6 @@ fr:
           show: Afficher
           new: Créer
           join: Rejoindre
-          show_webview: Afficher une webview
           show_joined: Afficher le plus proche déjà rejoint
           show_not_joined: Afficher le plus proche pas déjà rejoint
         instances:
