@@ -70,6 +70,8 @@ class User < ApplicationRecord
   has_many :user_phone_changes, -> { order(:id) }, dependent: :destroy
   has_many :histories, class_name: 'UserHistory'
   has_many :users_resources
+  has_many :user_recommandations
+  has_many :recommandations, -> { UserRecommandation.active }, through: :user_recommandations
 
   delegate :country, to: :address, allow_nil: true
   delegate :postal_code, to: :address, allow_nil: true
