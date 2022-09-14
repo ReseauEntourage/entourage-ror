@@ -28,7 +28,7 @@ module V1
       end
 
       def recommandations
-        UserServices::Recommandations.new(object).find[0..2].map do |recommandation|
+        RecommandationsServices::Finder.new(object).find[0..2].map do |recommandation|
           V1::RecommandationSerializer.new(recommandation).as_json
         end
       end

@@ -57,6 +57,25 @@ class Outing < Entourage
 
   scope :future, -> { where("metadata->>'starts_at' >= ?", Time.zone.now) }
 
+  scope :inside_perimeter, -> (latitude, longitude, travel_distance) {
+    if latitude && longitude
+      where("#{PostgisHelper.distance_from(latitude, longitude, :entourages)} < ?", travel_distance)
+    end
+  }
+  scope :order_by_distance_from, -> (latitude, longitude) {
+    if latitude && longitude
+      order(PostgisHelper.distance_from(latitude, longitude, :entourages))
+    end
+  }
+  scope :joined_by, -> (user) {
+    joins(:join_requests).where(join_requests: {
+      user: user, status: JoinRequest::ACCEPTED_STATUS
+    })
+  }
+  scope :not_joined_by, -> (user) {
+    where.not(id: Outing.joined_by(user))
+  }
+
   attr_accessor :recurrency, :original_outing, :force_relatives_dates
 
   def initialize_dup original_outing
