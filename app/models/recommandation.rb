@@ -33,6 +33,13 @@ class Recommandation < ApplicationRecord
     RecommandationImage.image_url_for self['image_url']
   end
 
+  def position_for_profile profile
+    return position_offer_help if profile&.to_sym == :offer_help
+    return position_ask_for_help if profile&.to_sym == :ask_for_help
+
+    nil
+  end
+
   def recommandation_image_id= recommandation_image_id
     if recommandation_image = RecommandationImage.find_by_id(recommandation_image_id)
       self.image_url = recommandation_image[:image_url]

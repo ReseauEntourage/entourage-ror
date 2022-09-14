@@ -1,4 +1,6 @@
 <div class="container">
+  <%= render 'header', profile: @profile, fragment: @fragment %>
+
   <div style="margin: auto">
     <div style="float: right">
       <%= link_to "Ajouter une recommandation", new_admin_recommandation_path, class: "btn btn-default" %>
@@ -9,7 +11,7 @@
     <div class="row">
       <% unless @recommandations.none? %>
         <table class="table">
-          <th>Id</th>
+          <th>Position</th>
           <th>Name</th>
           <th>Objet</th>
           <th>Action</th>
@@ -17,7 +19,7 @@
           <th></th>
           <% @recommandations.each do |recommandation| %>
             <tr>
-              <td><%= recommandation.id %></td>
+              <td><%= recommandation.position_for_profile(@profile) %></td>
               <td><%= link_to recommandation.name, edit_admin_recommandation_path(recommandation) %></td>
               <td><%= t ("activerecord.attributes.recommandation.instances.#{recommandation.instance}") %></td>
               <td><%= t ("activerecord.attributes.recommandation.actions.#{recommandation.action}") %></td>
