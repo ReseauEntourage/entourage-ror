@@ -10,6 +10,10 @@ class UserRecommandation < ApplicationRecord
     instance_type.underscore.to_sym == :webview
   end
 
+  def join?
+    action.to_sym == :join
+  end
+
   def action= action
     self[:action] = :show and return unless ACTIONS.include?(action)
     self[:action] = action

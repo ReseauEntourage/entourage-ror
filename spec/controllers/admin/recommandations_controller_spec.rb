@@ -6,7 +6,7 @@ describe Admin::RecommandationsController do
 
   describe 'GET #index' do
     context "has recommandations" do
-      let!(:recommandation_list) { FactoryBot.create_list(:recommandation_profile, 2) }
+      let!(:recommandation_list) { [FactoryBot.create(:recommandation_neighborhood, position_offer_help: 0), FactoryBot.create(:recommandation_neighborhood, position_offer_help: 1)] }
       before { get :index }
 
       it { expect(assigns(:recommandations)).to match_array(recommandation_list) }
@@ -40,13 +40,13 @@ describe Admin::RecommandationsController do
   end
 
   describe "GET #edit" do
-    let!(:recommandation) { FactoryBot.create(:recommandation_profile) }
+    let!(:recommandation) { FactoryBot.create(:recommandation_neighborhood) }
     before { get :edit, params: { id: recommandation.to_param } }
     it { expect(assigns(:recommandation)).to eq(recommandation) }
   end
 
   describe "PUT #update" do
-    let!(:recommandation) { FactoryBot.create(:recommandation_profile) }
+    let!(:recommandation) { FactoryBot.create(:recommandation_neighborhood) }
 
     context "common field" do
       before {
