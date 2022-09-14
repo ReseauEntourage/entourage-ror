@@ -154,8 +154,8 @@ describe Api::V1::HomeController do
     end
 
     context "signed in" do
-      let!(:neighborhood) { FactoryBot.create(:neighborhood) }
-      let!(:recommandation) { FactoryBot.create(:recommandation, name: 'voisinage', instance: :neighborhood, action: :show) }
+      let!(:recommandation) { FactoryBot.create(:recommandation_contribution) }
+      let!(:user_recommandation) { FactoryBot.create(:user_recommandation, user: user, recommandation: recommandation) }
 
       let(:request) { get :summary, params: { token: user.token } }
 
@@ -172,13 +172,12 @@ describe Api::V1::HomeController do
             "outing_participations_count" => 0,
             "neighborhood_participations_count" => 0,
             "recommandations" => [{
-              "name" => "voisinage",
-              "type" => "neighborhood",
-              "action" => "show",
+              "name" => "Proposer de l'aide",
+              "type" => "contribution",
+              "action" => "new",
               "image_url" => nil,
               "params" => {
-                "id" => neighborhood.id,
-                "uuid" => nil,
+                "id" => nil,
                 "url" => nil
               }
             }],

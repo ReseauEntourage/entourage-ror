@@ -1,5 +1,7 @@
 class PopulateRecommandations < ActiveRecord::Migration[5.2]
   def up
+    return if EnvironmentHelper.test?
+
     get_attributes.each do |attributes|
       Recommandation.new(attributes).save
     end

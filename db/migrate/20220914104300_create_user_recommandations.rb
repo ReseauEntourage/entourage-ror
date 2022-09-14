@@ -8,6 +8,8 @@ class CreateUserRecommandations < ActiveRecord::Migration[5.2]
       t.datetime :congrats_at
       t.datetime :skipped_at
 
+      t.string :name, null: false
+      t.string :image_url
       t.string :action, null: false
       t.string :instance_type, null: false
       t.integer :instance_id
