@@ -1,0 +1,62 @@
+module RecommandationServices
+  class User
+    attr_accessor :user
+
+    def initialize user
+      @user = user
+    end
+
+    def initiate
+      return if has_all_recommandations?
+
+      Recommandation::FRAGMENTS.each do |fragment|
+        next if user_fragments.include?(fragment)
+
+        Recommandation.fragment(fragment).for_profile(profile).each do |recommandation|
+          break if instanciate_user_recommandation_from_recommandation(recommandation).save
+        end
+      end
+    end
+
+    def instanciate_user_recommandation_from_recommandation recommandation
+      user_recommandation = UserRecommandation.new(user: user, recommandation: recommandation)
+      user_recommandation.instance_type = recommandation.instance.classify
+      user_recommandation.action = recommandation.action
+
+      klass = "finder_#{recommandation.action}".classify
+
+      return user_recommandation unless method_exists?(klass, :find_identifiant)
+
+      user_recommandation.identifiant = call_method(klass, :find_identifiant, user, recommandation)
+      user_recommandation
+    end
+
+    private
+
+    def user_fragments
+      @user_fragments ||= user.recommandations.pluck(:fragment).compact.uniq.sort
+    end
+
+    def has_all_recommandations?
+      @has_all_recommandations ||= (user_fragments == Recommandation::FRAGMENTS.sort)
+    end
+
+    def profile
+      @profile ||= (user.is_ask_for_help? ? :ask_for_help : :offer_help)
+    end
+
+    def method_exists? klass, method
+      RecommandationServices.const_get(klass).methods.include?(method)
+
+      true
+    rescue NameError
+      false
+    end
+
+    def call_method klass, method, user, recommandation
+      RecommandationServices.const_get(klass).send(method, user, recommandation)
+    rescue
+      nil
+    end
+  end
+end
