@@ -1,19 +1,22 @@
 module RecommandationServices
   class Completor
-    attr_accessor :user, :controller_name, :action_name, :params
+    attr_accessor :user, :instance_type, :action_name, :params
 
     def initialize user:, controller_name:, action_name:, params:
       @user = user
-      @controller_name = controller_name
+      @instance_type = controller_name.singularize.to_sym
       @action_name = action_name
       @params = params
     end
 
     def run
+      return unless Recommandation::INSTANCES.include?(instance_type)
+      return unless Recommandation::ACTIONS.include?(action_name)
+
       method = "after_#{action_name}".to_sym
 
       return unless self.class.instance_methods.include?(method)
-      return unless matched_user_recommandations = send(method, controller_name.singularize, params)
+      return unless matched_user_recommandations = send(method, instance_type, params)
 
       matched_user_recommandations.update_all(completed_at: Time.now)
     end
