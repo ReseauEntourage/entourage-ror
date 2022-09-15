@@ -6,6 +6,7 @@ class UserRecommandation < ApplicationRecord
 
   scope :active, -> { where(completed_at: nil, skipped_at: nil) }
   scope :completed_by, -> (user) { where(user_id: user.id).where.not(completed_at: nil) }
+  scope :for_instance, -> (instance) { where(instance_type: instance.to_s.classify) }
 
   def webview?
     instance_type.underscore.to_sym == :webview
@@ -16,7 +17,7 @@ class UserRecommandation < ApplicationRecord
   end
 
   def action= action
-    self[:action] = :show and return unless ACTIONS.include?(action)
+    self[:action] = :show and return unless ACTIONS.include?(action.to_sym)
     self[:action] = action
   end
 
