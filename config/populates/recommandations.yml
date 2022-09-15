@@ -1,0 +1,397 @@
+chaleur_humaine:
+  fragment: 0
+  position_offer_help: 0
+  position_ask_for_help: 0
+  name: "Vidéo Entourage, un peu de chaleur humaine"
+  instance: resource
+  action: show
+  argument_value: chaleur_humaine
+  user_goals: [offer_help, ask_for_help]
+  status: active
+
+adresses_solidaires:
+  fragment: 0
+  position_ask_for_help: 1
+  name: "Article présentation carte POIs : où trouver des adresses solidaires pour m'aider ?"
+  instance: resource
+  action: show
+  argument_value: adresses_solidaires
+  user_goals: [ask_for_help]
+  status: active
+
+formulaire_orientation:
+  fragment: 0
+  position_ask_for_help: 2
+  name: "Formulaire typeform orientation"
+  instance: webview
+  action: show
+  argument_value: "url_to_typeform"
+  user_goals: [ask_for_help]
+  status: active
+
+aides_sociales:
+  fragment: 0
+  position_ask_for_help: 3
+  name: "Article Aides sociales : comment y avoir accès ?"
+  instance: resource
+  action: show
+  argument_value: aides_sociales
+  user_goals: [ask_for_help]
+  status: active
+
+comite_de_la_rue:
+  fragment: 0
+  position_ask_for_help: 4
+  name: "Vidéo Le Comité de la Rue, organe essentiel d'Entourage"
+  instance: resource
+  action: show
+  argument_value: comite_de_la_rue
+  user_goals: [ask_for_help]
+  status: active
+
+idees_d_actions:
+  fragment: 0
+  position_ask_for_help: 5
+  name: "Article Des idées d'actions faciles à réaliser sur l'app !"
+  instance: resource
+  action: show
+  argument_value: idees_d_actions
+  user_goals: [ask_for_help]
+  status: active
+
+devenir_sdf:
+  fragment: 0
+  position_offer_help: 1
+  name: "Vidéo Comment devient-on SDF ?"
+  instance: resource
+  action: show
+  argument_value: devenir_sdf
+  user_goals: [offer_help]
+  status: active
+
+si_on_se_comprenait:
+  fragment: 0
+  position_offer_help: 2
+  name: "Vidéo SDF, et si on comprenait ?"
+  instance: resource
+  action: show
+  argument_value: si_on_se_comprenait
+  user_goals: [offer_help]
+  status: active
+
+sensibilisation_general:
+  fragment: 0
+  position_offer_help: 3
+  name: "S'inscrire à une sensibilisation en ligne - général"
+  instance: webview
+  action: show
+  argument_value: "url_to_eventbrite"
+  user_goals: [offer_help]
+  status: active
+
+combat_d_eric:
+  fragment: 0
+  position_offer_help: 4
+  position_ask_for_help: 6
+  name: "Vidéo Loopsider Le combat d'Eric, sans-abri à Paris"
+  instance: resource
+  action: show
+  argument_value: combat_d_eric
+  user_goals: [offer_help, ask_for_help]
+  status: active
+
+wifi:
+  fragment: 0
+  position_ask_for_help: 7
+  name: "Vidéo J’ai ouvert mon WiFi à mes voisins"
+  instance: resource
+  action: show
+  argument_value: wifi
+  user_goals: [ask_for_help]
+  status: active
+
+si_on_changeait_de_regard:
+  fragment: 0
+  position_offer_help: 5
+  name: "Vidéo Personnes sans-domicile-fixe : et si on changeait de regard ?"
+  instance: resource
+  action: show
+  argument_value: si_on_changeait_de_regard
+  user_goals: [offer_help]
+  status: active
+
+paroles_de_femmes:
+  fragment: 0
+  position_offer_help: 6
+  position_ask_for_help: 8
+  name: "Vidéo Paroles de femmes sans-domicile-fixe"
+  instance: resource
+  action: show
+  argument_value: paroles_de_femmes
+  user_goals: [offer_help, ask_for_help]
+  status: active
+
+sensibilisation_femmes:
+  fragment: 0
+  position_offer_help: 7
+  name: "S'inscrire à une sensibilisation en ligne - Spécial Femmes"
+  instance: webview
+  action: show
+  argument_value: "url_to_eventbrite"
+  user_goals: [offer_help]
+  status: active
+
+rachid_et_marie:
+  fragment: 0
+  position_offer_help: 8
+  position_ask_for_help: 9
+  name: "Vidéo Regards croisés : Rachid & Marie"
+  instance: resource
+  action: show
+  argument_value: rachid_et_marie
+  user_goals: [offer_help, ask_for_help]
+  status: active
+
+urgence_sociale:
+  fragment: 0
+  position_ask_for_help: 10
+  name: "Vidéo L'urgence sociale : qui fait quoi ?"
+  instance: resource
+  action: show
+  argument_value: urgence_sociale
+  user_goals: [ask_for_help]
+  status: active
+
+si_on_agissait:
+  fragment: 0
+  position_offer_help: 9
+  name: "Vidéo Personnes sans-domicile-fixe : et si on agissait ?"
+  instance: resource
+  action: show
+  argument_value: si_on_agissait
+  user_goals: [offer_help]
+  status: active
+
+maraudes:
+  fragment: 0
+  position_offer_help: 10
+  name: "Article Les maraudes pour les nuls"
+  instance: resource
+  action: show
+  argument_value: maraudes
+  user_goals: [offer_help]
+  status: active
+
+pyramide_de_maslow:
+  fragment: 0
+  position_offer_help: 11
+  name: "Article La pyramide de Maslow : une vision biaisée de l'homme ?"
+  instance: resource
+  action: show
+  argument_value: pyramide_de_maslow
+  user_goals: [offer_help]
+  status: active
+
+portrait_de_benevole:
+  fragment: 0
+  position_offer_help: 12
+  name: "Vidéo Audrey dans les portraits de bénévoles"
+  instance: resource
+  action: show
+  argument_value: portrait_de_benevole
+  user_goals: [offer_help]
+  status: active
+
+communaute:
+  fragment: 0
+  position_offer_help: 13
+  name: "Article Faire grandir la communauté Entourage"
+  instance: resource
+  action: show
+  argument_value: communaute
+  user_goals: [offer_help]
+  status: active
+
+# Fragment 1
+dire_bonjour:
+  fragment: 1
+  position_offer_help: 0
+  position_ask_for_help: 0
+  name: "Découvrir / dire bonjour à mon groupe de voisins local"
+  instance: neighborhood
+  action: show_joined
+  user_goals: [offer_help, ask_for_help]
+  status: active
+
+decouvrir_evenements:
+  fragment: 1
+  position_offer_help: 1
+  position_ask_for_help: 1
+  name: "Découvrir les événements"
+  instance: outing
+  action: index
+  user_goals: [offer_help, ask_for_help]
+  status: active
+
+decouvrir_groupes:
+  fragment: 1
+  position_offer_help: 2
+  position_ask_for_help: 2
+  name: "Découvrir les groupes à proximité"
+  instance: neighborhood
+  action: index
+  user_goals: [offer_help, ask_for_help]
+  status: active
+
+rejoindre_groupe:
+  fragment: 1
+  position_offer_help: 3
+  position_ask_for_help: 3
+  name: "Rejoindre un groupe"
+  instance: neighborhood
+  action: join
+  user_goals: [offer_help, ask_for_help]
+  status: active
+
+participer_evenement:
+  fragment: 1
+  position_offer_help: 4
+  position_ask_for_help: 4
+  name: "Participer à un événement"
+  instance: outing
+  action: show_not_joined
+  user_goals: [offer_help, ask_for_help]
+  status: active
+
+tuto_evenement:
+  fragment: 1
+  position_offer_help: 5
+  position_ask_for_help: 5
+  name: "Tuto app - Comment créer un événement ?"
+  instance: resource
+  action: show
+  argument_value: tuto_evenement
+  user_goals: [offer_help, ask_for_help]
+  status: active
+
+creer_evenement:
+  fragment: 1
+  position_offer_help: 6
+  position_ask_for_help: 6
+  name: "Créer un événement"
+  instance: outing
+  action: new
+  user_goals: [offer_help, ask_for_help]
+  status: active
+
+proposer_cafe:
+  fragment: 1
+  position_offer_help: 7
+  name: "Proposer un café"
+  instance: contribution
+  action: new
+  user_goals: [offer_help]
+  status: active
+
+tuto_groupe:
+  fragment: 1
+  position_offer_help: 8
+  position_ask_for_help: 7
+  name: "Tuto app - Comment créer un groupe ?"
+  instance: resource
+  action: show
+  argument_value: tuto_groupe
+  user_goals: [offer_help, ask_for_help]
+  status: active
+
+creer_groupe:
+  fragment: 1
+  position_offer_help: 9
+  position_ask_for_help: 8
+  name: "Créer un groupe"
+  instance: neighborhood
+  action: new
+  user_goals: [offer_help, ask_for_help]
+  status: active
+
+# Fragment 2
+decouvrir_demandes:
+  fragment: 2
+  position_offer_help: 0
+  position_ask_for_help: 0
+  name: "Liste des demandes à proximité"
+  instance: solicitation
+  action: index
+  user_goals: [offer_help, ask_for_help]
+  status: active
+
+repondre_demande:
+  fragment: 2
+  position_offer_help: 1
+  name: "Répondre à une demande"
+  instance: solicitation
+  action: show
+  user_goals: [offer_help]
+  status: active
+
+preparer_la_rencontre:
+  fragment: 2
+  position_offer_help: 2
+  position_ask_for_help: 4
+  name: "Préparer la rencontre"
+  instance: resource
+  action: show
+  argument_value: preparer_la_rencontre
+  user_goals: [offer_help, ask_for_help]
+  status: active
+
+tuto_don:
+  fragment: 2
+  position_offer_help: 3
+  position_ask_for_help: 1
+  name: "Tuto ce que je peux donner / ne pas donner"
+  instance: resource
+  action: show
+  argument_value: tuto_don
+  user_goals: [ask_for_help, offer_help]
+  status: active
+
+charte_ethique:
+  fragment: 2
+  position_offer_help: 4
+  position_ask_for_help: 2
+  name: "La Charte éthique en qlq mots"
+  instance: resource
+  action: show
+  argument_value: charte_ethique
+  user_goals: [offer_help, ask_for_help]
+  status: active
+
+proposer_aide:
+  fragment: 2
+  position_offer_help: 5
+  position_ask_for_help: 5
+  name: "Proposer de l'aide"
+  instance: contribution
+  action: new
+  user_goals: [offer_help, ask_for_help]
+  status: active
+
+demander_aide:
+  fragment: 2
+  position_ask_for_help: 3
+  name: "Demander de l'aide"
+  instance: solicitation
+  action: new
+  user_goals: [ask_for_help]
+  status: active
+
+relayer_les_demandes:
+  fragment: 2
+  position_offer_help: 6
+  name: "Article “Comment relayer les demandes à son réseau de quartier”"
+  instance: resource
+  action: show
+  argument_value: relayer_les_demandes
+  user_goals: [offer_help]
+  status: active
