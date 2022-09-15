@@ -12,7 +12,12 @@ class Recommandation < ApplicationRecord
   default_scope { where(status: :active) }
 
   scope :fragment, -> (fragment) { where(fragment: fragment) }
-  scope :for_profile, -> (profile) { where(["user_goals @> ?", profile.to_json]) }
+  scope :for_profile, -> (profile) {
+    order = profile&.to_sym == :offer_help ? :position_offer_help : :position_ask_for_help
+
+    where(["user_goals @> ?", profile.to_json]).order(order)
+  }
+  scope :not_completed_by, -> (user) { where.not(id: UserRecommandation.completed_by(user).pluck(:id)) }
 
   # valides :image_url # should be ?x?
   attr_accessor :recommandation_image_id

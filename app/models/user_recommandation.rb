@@ -5,6 +5,7 @@ class UserRecommandation < ApplicationRecord
   belongs_to :recommandation
 
   scope :active, -> { where(completed_at: nil, skipped_at: nil) }
+  scope :completed_by, -> (user) { where(user_id: user.id).where.not(completed_at: nil) }
 
   def webview?
     instance_type.underscore.to_sym == :webview

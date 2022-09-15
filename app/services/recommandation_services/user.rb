@@ -12,7 +12,7 @@ module RecommandationServices
       Recommandation::FRAGMENTS.each do |fragment|
         next if user_fragments.include?(fragment)
 
-        Recommandation.fragment(fragment).for_profile(profile).each do |recommandation|
+        Recommandation.fragment(fragment).for_profile(profile).not_completed_by(user).each do |recommandation|
           break if instanciate_user_recommandation_from_recommandation(recommandation).save
         end
       end
