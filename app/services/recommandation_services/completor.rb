@@ -18,7 +18,7 @@ module RecommandationServices
       matched_user_recommandations.update_all(completed_at: Time.now)
     end
 
-    def after_index instance_type
+    def after_index instance_type, params
       user_recommandations.where(instance_type: instance_type, action: :index)
     end
 
@@ -27,7 +27,7 @@ module RecommandationServices
       user_recommandations.where(instance_type: instance_type, action: :show, instance_id: params[:id])
     end
 
-    def after_create instance_type
+    def after_create instance_type, params
       user_recommandations.where(instance_type: instance_type, action: :create)
     end
 
