@@ -173,8 +173,8 @@ describe Api::V1::HomeController do
             "neighborhood_participations_count" => 0,
             "recommandations" => [{
               "name" => "Proposer de l'aide",
-              "type" => "contribution",
-              "action" => "new",
+              "type" => "contributions",
+              "action" => "create",
               "image_url" => nil,
               "params" => {
                 "id" => nil,

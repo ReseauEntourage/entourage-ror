@@ -20,7 +20,7 @@ FactoryBot.define do
     factory :recommandation_contribution do
       name { "Proposer de l'aide" }
       instance { :contribution }
-      action { :new }
+      action { :create }
       position_offer_help { 2 }
     end
 

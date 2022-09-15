@@ -1,7 +1,7 @@
 FactoryBot.define do
   factory :user_recommandation do
     name { "Proposer de l'aide" }
-    action { :new }
+    action { :create }
     instance_type { :Contribution }
   end
 end
