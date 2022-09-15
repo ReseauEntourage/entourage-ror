@@ -6,6 +6,7 @@ class UserRecommandation < ApplicationRecord
 
   scope :active, -> { where(completed_at: nil, skipped_at: nil) }
   scope :completed_by, -> (user) { where(user_id: user.id).where.not(completed_at: nil) }
+  scope :to_be_congratulated, -> { where.not(completed_at: nil).where(congrats_at: nil) }
   scope :for_instance, -> (instance) { where(instance_type: instance.to_s.classify) }
 
   def webview?
