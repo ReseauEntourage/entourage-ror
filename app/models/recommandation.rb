@@ -27,6 +27,14 @@ class Recommandation < ApplicationRecord
     instance.to_sym == :webview
   end
 
+  def resource?
+    instance.to_sym == :resource
+  end
+
+  def show?
+    action.to_sym == :show
+  end
+
   def image_url
     return unless self['image_url'].present?
 
