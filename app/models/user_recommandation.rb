@@ -1,5 +1,5 @@
 class UserRecommandation < ApplicationRecord
-  ACTIONS = [:index, :show, :new, :join]
+  ACTIONS = [:index, :show, :create, :join]
 
   belongs_to :user
   belongs_to :recommandation

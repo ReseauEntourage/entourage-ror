@@ -198,7 +198,7 @@ fr:
         actions:
           index: Liste
           show: Afficher
-          new: Créer
+          create: Créer
           join: Rejoindre
           show_joined: Afficher le plus proche déjà rejoint
           show_not_joined: Afficher le plus proche pas déjà rejoint

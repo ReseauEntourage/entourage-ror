@@ -280,7 +280,7 @@ creer_evenement:
   position_ask_for_help: 6
   name: "Créer un événement"
   instance: outing
-  action: new
+  action: create
   user_goals: [offer_help, ask_for_help]
   status: active
 
@@ -289,7 +289,7 @@ proposer_cafe:
   position_offer_help: 7
   name: "Proposer un café"
   instance: contribution
-  action: new
+  action: create
   user_goals: [offer_help]
   status: active
 
@@ -310,7 +310,7 @@ creer_groupe:
   position_ask_for_help: 8
   name: "Créer un groupe"
   instance: neighborhood
-  action: new
+  action: create
   user_goals: [offer_help, ask_for_help]
   status: active
 
@@ -373,7 +373,7 @@ proposer_aide:
   position_ask_for_help: 5
   name: "Proposer de l'aide"
   instance: contribution
-  action: new
+  action: create
   user_goals: [offer_help, ask_for_help]
   status: active
 
@@ -382,7 +382,7 @@ demander_aide:
   position_ask_for_help: 3
   name: "Demander de l'aide"
   instance: solicitation
-  action: new
+  action: create
   user_goals: [ask_for_help]
   status: active
 
