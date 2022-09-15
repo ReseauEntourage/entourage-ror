@@ -8,6 +8,8 @@ module Api
       skip_before_action :ensure_community!, only: :ethics_charter_signed
       allow_anonymous_access only: [:show, :report, :address]
 
+      after_action :set_user_recommandations, only: [:login], if: -> { response.status == 200 }
+
       #curl -H "X-API-KEY:adc86c761fa8" -H "Content-Type: application/json" -X POST -d '{"user": {"phone": "+3312345567", "sms_code": "11111"}}' "http://localhost:3000/api/v1/login.json"
       def login
         user =
@@ -428,6 +430,13 @@ module Api
           user: current_user,
           conversation: ConversationService.conversations_allowed?(from: current_user, to: displayed_user)
         }
+      end
+
+      def set_user_recommandations
+        return unless user = User.find(JSON.parse(response.body)['user']['id'])
+
+        RecommandationServices::User.new(user).initiate
+      rescue
       end
     end
   end
