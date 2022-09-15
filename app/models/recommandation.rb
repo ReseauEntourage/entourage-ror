@@ -2,7 +2,7 @@ class Recommandation < ApplicationRecord
   include WithUserGoals
 
   INSTANCES = [:neighborhood, :outing, :poi, :resource, :webview, :contribution, :solicitation]
-  ACTIONS = [:index, :show, :new, :join, :show_joined, :show_not_joined]
+  ACTIONS = [:index, :show, :create, :join, :show_joined, :show_not_joined]
   FRAGMENTS = [0, 1, 2]
 
   validates_presence_of [:name, :instance, :action]
