@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_07_22_145001) do
+ActiveRecord::Schema.define(version: 2022_09_15_100002) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -628,16 +628,20 @@ ActiveRecord::Schema.define(version: 2022_07_22_145001) do
     t.string "image_url"
     t.string "instance", null: false
     t.string "action", default: "show", null: false
-    t.string "url"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.jsonb "areas", default: [], null: false
     t.jsonb "user_goals", default: [], null: false
     t.string "status", default: "active", null: false
+    t.integer "position_offer_help"
+    t.integer "position_ask_for_help"
+    t.integer "fragment", default: 0
+    t.string "description"
+    t.string "argument_value"
     t.index ["action"], name: "index_recommandations_on_action"
-    t.index ["areas"], name: "index_recommandations_on_areas", using: :gin
     t.index ["instance"], name: "index_recommandations_on_instance"
     t.index ["name"], name: "index_recommandations_on_name"
+    t.index ["status", "position_ask_for_help", "fragment"], name: "index_recommandations_on_status_and_position_ask_for_help", unique: true, where: "(((status)::text = 'active'::text) AND (position_ask_for_help IS NOT NULL))"
+    t.index ["status", "position_offer_help", "fragment"], name: "index_recommandations_on_status_and_position_offer_help", unique: true, where: "(((status)::text = 'active'::text) AND (position_offer_help IS NOT NULL))"
     t.index ["user_goals"], name: "index_recommandations_on_user_goals", using: :gin
   end
 
@@ -665,6 +669,7 @@ ActiveRecord::Schema.define(version: 2022_07_22_145001) do
     t.datetime "updated_at", null: false
     t.integer "duration"
     t.boolean "is_video", default: false
+    t.string "status", default: "active", null: false
     t.index ["name"], name: "index_resources_on_name"
   end
 
@@ -931,6 +936,24 @@ ActiveRecord::Schema.define(version: 2022_07_22_145001) do
     t.index ["admin_id"], name: "index_user_phone_changes_on_admin_id"
     t.index ["kind"], name: "index_user_phone_changes_on_kind"
     t.index ["user_id"], name: "index_user_phone_changes_on_user_id"
+  end
+
+  create_table "user_recommandations", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "recommandation_id", null: false
+    t.datetime "completed_at"
+    t.datetime "congrats_at"
+    t.datetime "skipped_at"
+    t.string "name", null: false
+    t.string "image_url"
+    t.string "action", null: false
+    t.string "instance_type", null: false
+    t.integer "instance_id"
+    t.string "instance_url"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["recommandation_id"], name: "index_user_recommandations_on_recommandation_id"
+    t.index ["user_id"], name: "index_user_recommandations_on_user_id"
   end
 
   create_table "user_relationships", id: :serial, force: :cascade do |t|

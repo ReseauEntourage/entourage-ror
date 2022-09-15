@@ -1,0 +1,20 @@
+<ul class="nav nav-tabs">
+  <li role="presentation" class="<%= :active if profile == :offer_help && fragment == 0 %>">
+    <%= link_to "Riverain - bloc A", admin_recommandations_path(@recommandation) %>
+  </li>
+  <li role="presentation" class="<%= :active if profile == :offer_help && fragment == 1 %>">
+    <%= link_to "Riverain - bloc B", admin_recommandations_path(@recommandation, profile: :offer_help, fragment: 1) %>
+  </li>
+  <li role="presentation" class="<%= :active if profile == :offer_help && fragment == 2 %>">
+    <%= link_to "Riverain - bloc C", admin_recommandations_path(@recommandation, profile: :offer_help, fragment: 2) %>
+  </li>
+  <li role="presentation" class="<%= :active if profile == :ask_for_help && fragment == 0 %>">
+    <%= link_to "Préca - bloc A", admin_recommandations_path(@recommandation, profile: :ask_for_help, fragment: 0) %>
+  </li>
+  <li role="presentation" class="<%= :active if profile == :ask_for_help && fragment == 1 %>">
+    <%= link_to "Préca - bloc B", admin_recommandations_path(@recommandation, profile: :ask_for_help, fragment: 1) %>
+  </li>
+  <li role="presentation" class="<%= :active if profile == :ask_for_help && fragment == 2 %>">
+    <%= link_to "Préca - bloc C", admin_recommandations_path(@recommandation, profile: :ask_for_help, fragment: 2) %>
+  </li>
+</ul>

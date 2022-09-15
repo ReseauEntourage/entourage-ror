@@ -9,6 +9,7 @@ module V1
         :outing_participations_count,
         :neighborhood_participations_count,
         :recommandations,
+        :congratulations,
         :moderator
 
       def meetings_count
@@ -28,8 +29,14 @@ module V1
       end
 
       def recommandations
-        UserServices::Recommandations.new(object).find[0..2].map do |recommandation|
-          V1::RecommandationSerializer.new(recommandation).as_json
+        object.user_recommandations.active.map do |recommandation|
+          V1::UserRecommandationSerializer.new(recommandation).as_json
+        end
+      end
+
+      def congratulations
+        object.user_recommandations.to_be_congratulated.map do |recommandation|
+          V1::UserRecommandationSerializer.new(recommandation).as_json
         end
       end
 

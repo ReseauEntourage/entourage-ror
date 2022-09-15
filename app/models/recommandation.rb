@@ -1,15 +1,23 @@
 class Recommandation < ApplicationRecord
-  include WithAreas
   include WithUserGoals
 
-  INSTANCES = [:user, :profile, :neighborhood, :outing, :poi, :resource, :webview, :conversation, :contribution, :ask_for_help]
-  ACTIONS = [:index, :show, :new]
+  INSTANCES = [:neighborhood, :outing, :poi, :resource, :webview, :contribution, :solicitation]
+  ACTIONS = [:index, :show, :create, :join, :show_joined, :show_not_joined]
+  FRAGMENTS = [0, 1, 2]
 
   validates_presence_of [:name, :instance, :action]
 
   alias_attribute :title, :name
 
   default_scope { where(status: :active) }
+
+  scope :fragment, -> (fragment) { where(fragment: fragment) }
+  scope :for_profile, -> (profile) {
+    order = profile&.to_sym == :offer_help ? :position_offer_help : :position_ask_for_help
+
+    where(["user_goals @> ?", profile.to_json]).order(order)
+  }
+  scope :not_completed_by, -> (user) { where.not(id: UserRecommandation.completed_by(user).pluck(:recommandation_id)) }
 
   # valides :image_url # should be ?x?
   attr_accessor :recommandation_image_id
@@ -20,6 +28,14 @@ class Recommandation < ApplicationRecord
     status.to_sym == :active
   end
 
+  def webview?
+    instance.to_sym == :webview
+  end
+
+  def resource?
+    instance.to_sym == :resource
+  end
+
   def show?
     action.to_sym == :show
   end
@@ -28,6 +44,13 @@ class Recommandation < ApplicationRecord
     return unless self['image_url'].present?
 
     RecommandationImage.image_url_for self['image_url']
+  end
+
+  def position_for_profile profile
+    return position_offer_help if profile&.to_sym == :offer_help
+    return position_ask_for_help if profile&.to_sym == :ask_for_help
+
+    nil
   end
 
   def recommandation_image_id= recommandation_image_id

@@ -5,14 +5,22 @@ module Admin
     before_action :set_recommandation, only: [:edit, :update, :destroy, :edit_image, :update_image]
 
     def index
-      @recommandations = Recommandation.unscoped.order(:instance, :action).page(page).per(per)
+      @profile = params[:profile]&.to_sym || :offer_help
+      @fragment = params[:fragment]&.to_i || 0
+      order = @profile == :offer_help ? :position_offer_help : :position_ask_for_help
+
+      @recommandations = Recommandation.unscoped
+        .for_profile(@profile)
+        .fragment(@fragment)
+        .order(order)
+        .page(page)
+        .per(per)
     end
 
     def new
       @recommandation = Recommandation.new
 
       # pre-fill targeting
-      @recommandation.areas = ModerationArea.all_slugs
       @recommandation.user_goals = UserGoalPresenter.all_slugs(community)
     end
 
@@ -70,8 +78,8 @@ module Admin
         :recommandation_image_id,
         :instance,
         :action,
-        :url,
-        areas: [],
+        :argument_type,
+        :argument_value,
         user_goals: []
       )
     end
