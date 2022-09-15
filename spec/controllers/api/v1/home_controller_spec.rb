@@ -181,6 +181,7 @@ describe Api::V1::HomeController do
                 "url" => nil
               }
             }],
+            "congratulations" => [],
             "moderator" => {}
           }
         }) }
