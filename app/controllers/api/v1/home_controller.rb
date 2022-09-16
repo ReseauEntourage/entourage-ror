@@ -3,6 +3,8 @@ module Api
     class HomeController < Api::V1::BaseController
       skip_before_action :community_warning
 
+      before_action :set_user_recommandations, only: [:summary]
+
       def index
         render json: {
           metadata: {
@@ -99,6 +101,11 @@ module Api
 
       def format_sections sections
         sections.to_a.map { |t| { id: t.first }.merge(t.last) }
+      end
+
+      def set_user_recommandations
+        RecommandationServices::User.new(current_user.id).initiate
+      rescue
       end
     end
   end
