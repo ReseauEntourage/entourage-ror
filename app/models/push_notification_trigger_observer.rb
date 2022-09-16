@@ -168,6 +168,7 @@ class PushNotificationTriggerObserver < ActiveRecord::Observer
   end
 
   def join_request_on_update join_request
+    return unless join_request.saved_change_to_status?
     return join_request_on_create(join_request) unless join_request.status_before_last_save&.to_sym == :pending
 
     notify(instance: join_request.joinable, users: [join_request.user], params: {
