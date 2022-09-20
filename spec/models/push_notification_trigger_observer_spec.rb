@@ -270,6 +270,47 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
           outing.save
         }
       end
+
+      context "update status to cancel" do
+        it {
+          expect_any_instance_of(PushNotificationTriggerObserver).to receive(:notify).with(
+            instance: outing,
+            users: [participant],
+            params: {
+              sender: "John D.",
+              object: "Café",
+              content: "Cet événement prévu le #{I18n.l(outing.starts_at.to_date)} vient d'être annulé",
+            }
+          )
+
+          outing.update_attribute(:status, :cancelled)
+        }
+      end
+    end
+
+    describe "join_request on create" do
+      let!(:outing) { create :outing, user: user, status: :open, title: "Café", metadata: { starts_at: Time.now, ends_at: 2.days.from_now} }
+
+      it {
+        expect_any_instance_of(PushNotificationTriggerObserver).to receive(:notify).with(
+          instance: participant,
+          users: [outing.user],
+          params: {
+            sender: "Jane D.",
+            object: "Café",
+            content: "Jane D. vient de rejoindre votre évènement : Café",
+            extra: {
+              joinable_id: outing.id,
+              joinable_type: "Entourage",
+              group_type: "outing",
+              type: "JOIN_REQUEST_ACCEPTED",
+              user_id: participant.id
+            }
+          }
+        )
+
+        create :join_request, user: participant, joinable: outing, status: :accepted
+      }
     end
   end
 end
