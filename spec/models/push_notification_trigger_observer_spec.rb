@@ -187,6 +187,50 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
   end
 
   describe "notify" do
+
+    describe "text chat_message" do
+      let(:conversation) { ConversationService.build_conversation(participant_ids: [user.id, participant.id]) }
+      let(:chat_message) { build(:chat_message, messageable: conversation, user: user, message_type: :text, content: "foobar") }
+
+      context "conversation creation does not push any notification" do
+        it {
+          expect_any_instance_of(PushNotificationTriggerObserver).not_to receive(:notify)
+
+          conversation.public = false
+          conversation.create_from_join_requests!
+          conversation.save
+        }
+      end
+
+      context "chat_message creation does not push any notification" do
+        before {
+          conversation.public = false
+          conversation.create_from_join_requests!
+          conversation.save
+        }
+
+        it {
+          expect_any_instance_of(PushNotificationTriggerObserver).to receive(:notify).with(
+            instance: conversation,
+            users: [participant],
+            params: {
+              sender: "John D.",
+              object: "John D.",
+              content: "foobar",
+              extra: {
+                group_type: "conversation",
+                joinable_id: conversation.id,
+                joinable_type: "Entourage",
+                type: "NEW_CHAT_MESSAGE"
+              },
+            }
+          )
+
+          chat_message.save
+        }
+      end
+    end
+
     describe "outing_on_update" do
       let!(:outing) { create :outing, user: user, status: :open, title: "Café", metadata: { starts_at: Time.now, ends_at: 2.days.from_now} }
       let!(:join_request) { create :join_request, user: participant, joinable: outing, status: :accepted }

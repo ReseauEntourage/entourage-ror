@@ -151,6 +151,7 @@ class PushNotificationTriggerObserver < ActiveRecord::Observer
 
   def join_request_on_create join_request
     return unless join_request.accepted?
+    return if join_request.joinable.is_a?(Entourage) && join_request.joinable.conversation?
     return if join_request.joinable.user == join_request.user
 
     notify(instance: join_request.user, users: [join_request.joinable.user], params: {
