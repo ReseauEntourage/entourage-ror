@@ -9,17 +9,10 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
   # after_create
   describe "after_create" do
     describe "on_create is received" do
-      describe "entourage" do
-        it {
-          expect_any_instance_of(PushNotificationTriggerObserver).not_to receive(:outing_on_create)
-          create :entourage, user: user
-        }
-      end
-
       describe "outing" do
         it {
-          expect_any_instance_of(PushNotificationTriggerObserver).to receive(:outing_on_create)
-          create :outing, user: user
+          expect_any_instance_of(PushNotificationTriggerObserver).to receive(:neighborhoods_entourage_on_create)
+          create :outing, user: user, neighborhoods: [create(:neighborhood)]
         }
       end
 
@@ -187,6 +180,16 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
   end
 
   describe "notify" do
+    describe "set neighborhood_ids on outing does push notification" do
+      let!(:outing) { create :outing, user: user, participants: [participant] }
+      let!(:neighborhood) { create :neighborhood }
+
+      it {
+        expect_any_instance_of(PushNotificationTriggerObserver).to receive(:notify)
+
+        outing.update_attribute(:neighborhood_ids, [neighborhood.id])
+      }
+    end
 
     describe "text chat_message" do
       let(:conversation) { ConversationService.build_conversation(participant_ids: [user.id, participant.id]) }
@@ -202,7 +205,7 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
         }
       end
 
-      context "chat_message creation does not push any notification" do
+      context "chat_message creation does push notification" do
         before {
           conversation.public = false
           conversation.create_from_join_requests!

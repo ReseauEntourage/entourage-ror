@@ -1,5 +1,5 @@
 class PushNotificationTriggerObserver < ActiveRecord::Observer
-  observe :entourage, :chat_message, :join_request
+  observe :entourage, :chat_message, :join_request, :neighborhoods_entourage
 
   CREATE_OUTING = "Un nouvel événement vient d'être ajouté au %s : %s prévu le %s"
   CANCEL_OUTING = "Cet événement prévu le %s vient d'être annulé"
@@ -28,20 +28,18 @@ class PushNotificationTriggerObserver < ActiveRecord::Observer
 
   protected
 
-  def entourage_on_create entourage
-    return outing_on_create(entourage) if entourage.outing?
-  end
+  def neighborhoods_entourage_on_create neighborhoods_entourage
+    neighborhood = neighborhoods_entourage.neighborhood
+    entourage = neighborhoods_entourage.entourage
 
-  def outing_on_create outing
-    outing.neighborhoods.each do |neighborhood|
-      next unless users = (neighborhood.members.uniq - [outing.user])
+    return unless entourage.outing?
+    return unless users = (neighborhood.members.uniq - [entourage.user])
 
-      notify(instance: outing, users: users, params: {
-        sender: username(outing.user),
-        object: neighborhood.title,
-        content: CREATE_OUTING % [entity_name(neighborhood), outing.title, to_date(outing.starts_at)]
-      })
-    end
+    notify(instance: entourage, users: users, params: {
+      sender: username(entourage.user),
+      object: neighborhood.title,
+      content: CREATE_OUTING % [entity_name(neighborhood), entourage.title, to_date(entourage.starts_at)]
+    })
   end
 
   def entourage_on_update entourage
@@ -50,6 +48,7 @@ class PushNotificationTriggerObserver < ActiveRecord::Observer
 
   def outing_on_update outing
     return outing_on_cancel(outing) if outing.saved_change_to_status? && outing.cancelled?
+    return unless outing.saved_changes.any? # it happens when neighborhoods_entourage is updated
 
     users = outing.accepted_members - [outing.user]
 
