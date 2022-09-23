@@ -331,9 +331,24 @@ describe Api::V1::OutingsController do
         let(:outing) { FactoryBot.create(:outing, :with_neighborhood, status: :open, user: creator) }
       end
 
-      context "cancel" do
+      context "cancel sends notification" do
         let(:outing) { FactoryBot.create(:outing, :joined, user: user, status: :open) }
 
+        let(:participant) { create :public_user, first_name: "Jane" }
+        let!(:join_request) { create :join_request, user: participant, joinable: outing, status: :accepted }
+
+        before {
+          allow_any_instance_of(PushNotificationTriggerObserver).to receive(:notify)
+          expect_any_instance_of(PushNotificationTriggerObserver).to receive(:notify).with(
+            instance: outing.becomes(Outing),
+            users: [participant],
+            params: {
+              sender: "John D.",
+              object: "Foobar",
+              content: "Cet événement prévu le #{I18n.l(outing.starts_at.to_date)} vient d'être annulé",
+            }
+          )
+        }
         before { patch :update, params: { id: outing.to_param, outing: { status: :cancelled }, token: user.token } }
 
         it { expect(response.status).to eq(200) }
@@ -559,6 +574,7 @@ describe Api::V1::OutingsController do
     end
 
     describe 'not authorized cause should be creator' do
+      before { expect_any_instance_of(PushNotificationTriggerObserver).not_to receive(:notify) }
       before { delete :cancel, params: { id: outing.id, outing: { cancellation_message: "foo" }, token: user.token } }
 
       it { expect(response.status).to eq 401 }
@@ -567,6 +583,22 @@ describe Api::V1::OutingsController do
 
     describe 'authorized' do
       let(:creator) { user }
+
+      let(:participant) { create :public_user, first_name: "Jane" }
+      let!(:join_request_2) { create :join_request, user: participant, joinable: outing, status: :accepted }
+
+      before {
+        allow_any_instance_of(PushNotificationTriggerObserver).to receive(:notify)
+        expect_any_instance_of(PushNotificationTriggerObserver).to receive(:notify).with(
+          instance: outing.reload.becomes(Outing),
+          users: [participant],
+          params: {
+            sender: "John D.",
+            object: "Foobar",
+            content: "Cet événement prévu le #{I18n.l(outing.starts_at.to_date)} vient d'être annulé",
+          }
+        ).once
+      }
 
       before { delete :cancel, params: { id: outing.id, outing: { cancellation_message: "foo" }, token: user.token } }
 

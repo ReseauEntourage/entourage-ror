@@ -171,7 +171,7 @@ module EntourageServices
     end
 
     def self.cancel(entourage:, params:)
-      entourage.assign_attributes({status: :cancelled})
+      entourage.assign_attributes({ status: :cancelled })
 
       if entourage.save
         if params[:cancellation_message]
