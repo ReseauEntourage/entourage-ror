@@ -104,8 +104,7 @@ module Api
       end
 
       def set_user_recommandations
-        RecommandationServices::User.new(current_user.id).initiate
-      rescue
+        RecommandationServices::User.new(current_user).initiate
       end
     end
   end
