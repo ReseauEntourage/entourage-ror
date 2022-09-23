@@ -238,6 +238,14 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
       let!(:outing) { create :outing, user: user, status: :open, title: "Café", metadata: { starts_at: Time.now, ends_at: 2.days.from_now} }
       let!(:join_request) { create :join_request, user: participant, joinable: outing, status: :accepted }
 
+      context "update title sends one notification" do
+        it {
+          expect_any_instance_of(PushNotificationTriggerObserver).to receive(:notify).once
+
+          outing.update_attribute(:title, "Théâtre")
+        }
+      end
+
       context "update title" do
         it {
           expect_any_instance_of(PushNotificationTriggerObserver).to receive(:notify).with(
