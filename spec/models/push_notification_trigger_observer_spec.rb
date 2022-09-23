@@ -9,17 +9,10 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
   # after_create
   describe "after_create" do
     describe "on_create is received" do
-      describe "entourage" do
-        it {
-          expect_any_instance_of(PushNotificationTriggerObserver).not_to receive(:outing_on_create)
-          create :entourage, user: user
-        }
-      end
-
       describe "outing" do
         it {
-          expect_any_instance_of(PushNotificationTriggerObserver).to receive(:outing_on_create)
-          create :outing, user: user
+          expect_any_instance_of(PushNotificationTriggerObserver).to receive(:neighborhoods_entourage_on_create)
+          create :outing, user: user, neighborhoods: [create(:neighborhood)]
         }
       end
 
@@ -187,9 +180,71 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
   end
 
   describe "notify" do
+    describe "set neighborhood_ids on outing does push notification" do
+      let!(:outing) { create :outing, user: user, participants: [participant] }
+      let!(:neighborhood) { create :neighborhood }
+
+      it {
+        expect_any_instance_of(PushNotificationTriggerObserver).to receive(:notify)
+
+        outing.update_attribute(:neighborhood_ids, [neighborhood.id])
+      }
+    end
+
+    describe "text chat_message" do
+      let(:conversation) { ConversationService.build_conversation(participant_ids: [user.id, participant.id]) }
+      let(:chat_message) { build(:chat_message, messageable: conversation, user: user, message_type: :text, content: "foobar") }
+
+      context "conversation creation does not push any notification" do
+        it {
+          expect_any_instance_of(PushNotificationTriggerObserver).not_to receive(:notify)
+
+          conversation.public = false
+          conversation.create_from_join_requests!
+          conversation.save
+        }
+      end
+
+      context "chat_message creation does push notification" do
+        before {
+          conversation.public = false
+          conversation.create_from_join_requests!
+          conversation.save
+        }
+
+        it {
+          expect_any_instance_of(PushNotificationTriggerObserver).to receive(:notify).with(
+            instance: conversation,
+            users: [participant],
+            params: {
+              sender: "John D.",
+              object: "John D.",
+              content: "foobar",
+              extra: {
+                group_type: "conversation",
+                joinable_id: conversation.id,
+                joinable_type: "Entourage",
+                type: "NEW_CHAT_MESSAGE"
+              },
+            }
+          )
+
+          chat_message.save
+        }
+      end
+    end
+
     describe "outing_on_update" do
       let!(:outing) { create :outing, user: user, status: :open, title: "Café", metadata: { starts_at: Time.now, ends_at: 2.days.from_now} }
       let!(:join_request) { create :join_request, user: participant, joinable: outing, status: :accepted }
+
+      context "update title sends one notification" do
+        it {
+          expect_any_instance_of(PushNotificationTriggerObserver).to receive(:notify).once
+
+          outing.update_attribute(:title, "Théâtre")
+        }
+      end
 
       context "update title" do
         it {
@@ -223,6 +278,47 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
           outing.save
         }
       end
+
+      context "update status to cancel" do
+        it {
+          expect_any_instance_of(PushNotificationTriggerObserver).to receive(:notify).with(
+            instance: outing,
+            users: [participant],
+            params: {
+              sender: "John D.",
+              object: "Café",
+              content: "Cet événement prévu le #{I18n.l(outing.starts_at.to_date)} vient d'être annulé",
+            }
+          )
+
+          outing.update_attribute(:status, :cancelled)
+        }
+      end
+    end
+
+    describe "join_request on create" do
+      let!(:outing) { create :outing, user: user, status: :open, title: "Café", metadata: { starts_at: Time.now, ends_at: 2.days.from_now} }
+
+      it {
+        expect_any_instance_of(PushNotificationTriggerObserver).to receive(:notify).with(
+          instance: participant,
+          users: [outing.user],
+          params: {
+            sender: "Jane D.",
+            object: "Café",
+            content: "Jane D. vient de rejoindre votre évènement : Café",
+            extra: {
+              joinable_id: outing.id,
+              joinable_type: "Entourage",
+              group_type: "outing",
+              type: "JOIN_REQUEST_ACCEPTED",
+              user_id: participant.id
+            }
+          }
+        )
+
+        create :join_request, user: participant, joinable: outing, status: :accepted
+      }
     end
   end
 end

@@ -32,6 +32,8 @@ module EntourageServices
       end
 
       def update_recurrency outing:, params:
+        return true unless params.to_h.any?
+
         outing.assign_attributes(params)
 
         if outing.create_inbetween_occurrences?

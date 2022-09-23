@@ -108,6 +108,32 @@ describe Api::V1::Outings::UsersController do
         it { expect(outing.member_ids).to match_array([outing.user_id, user.id]) }
         it { expect(result["user"]["community_roles"]).to eq(["Ambassadeur"])}
       end
+
+      context "push notification sent" do
+        before {
+          allow_any_instance_of(PushNotificationTriggerObserver).to receive(:notify)
+          expect_any_instance_of(PushNotificationTriggerObserver).to receive(:notify).with(
+            instance: user,
+            users: [outing.user],
+            params: {
+              sender: "John D.",
+              object: outing.title,
+              content: "John D. vient de rejoindre votre évènement : #{outing.title}",
+              extra: {
+                group_type: "outing",
+                joinable_id: outing.id,
+                joinable_type: "Entourage",
+                type: "JOIN_REQUEST_ACCEPTED",
+                user_id: user.id
+              }
+            }
+          ).once
+        }
+
+        before { post :create, params: { outing_id: outing.to_param, token: user.token, distance: 123.45 } }
+
+        it { expect(response.status).to eq(201) }
+      end
     end
   end
 
