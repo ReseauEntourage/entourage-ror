@@ -32,9 +32,9 @@ module EntourageServices
       end
 
       def update_recurrency outing:, params:
-        outing.assign_attributes(params)
+        return true unless params.to_h.any?
 
-        return true unless outing.has_changes_to_save?
+        outing.assign_attributes(params)
 
         if outing.create_inbetween_occurrences?
           outing.create_inbetween_occurrences!
