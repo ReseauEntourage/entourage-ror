@@ -34,6 +34,8 @@ module EntourageServices
       def update_recurrency outing:, params:
         outing.assign_attributes(params)
 
+        return true unless outing.has_changes_to_save?
+
         if outing.create_inbetween_occurrences?
           outing.create_inbetween_occurrences!
         elsif outing.cancel_odds_occurrences?
