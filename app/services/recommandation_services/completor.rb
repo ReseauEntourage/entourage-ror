@@ -31,7 +31,22 @@ module RecommandationServices
     end
 
     def after_create instance, params
+      return after_create_user(params) if instance == :user
+
       user_recommandations.for_instance(instance).where(action: :create)
+    end
+
+    def after_create_user params
+      return after_create_user_on_neighborhood if params.has_key?(:neighborhood_id)
+      return after_create_user_on_outing if params.has_key?(:outing_id)
+    end
+
+    def after_create_user_on_outing
+      user_recommandations.for_instance(:outing).where(action: :join)
+    end
+
+    def after_create_user_on_neighborhood
+      user_recommandations.for_instance(:neighborhood).where(action: :join)
     end
 
     private
