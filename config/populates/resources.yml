@@ -1,6 +1,6 @@
 chaleur_humaine:
   name: "Vidéo Entourage, un peu de chaleur humaine"
-  category: category
+  category: understand
   description: description
   url: https://www.youtube.com/watch?v=IYUo5WAZxXs
   duration: 96
@@ -9,7 +9,7 @@ chaleur_humaine:
 
 adresses_solidaires:
   name: "Article présentation carte POIs : où trouver des adresses solidaires pour m'aider ?"
-  category: category
+  category: understand
   description: description
   url: https://blog.entourage.social/2020/11/10/comment-trouver-les-bonnes-adresses-et-demarches-a-faire-quand-on-est-sdf-ou-precaire/
   duration: 60
@@ -18,7 +18,7 @@ adresses_solidaires:
 
 aides_sociales:
   name: "Article Aides sociales : comment y avoir accès ?"
-  category: category
+  category: understand
   description: description
   url: https://blog.entourage.social/2020/11/06/les-aides-sociales-en-france-comment-y-avoir-acces-quand-on-est-sdf/
   duration: 300
@@ -27,7 +27,7 @@ aides_sociales:
 
 comite_de_la_rue:
   name: "Vidéo Le Comité de la Rue, organe essentiel d'Entourage"
-  category: category
+  category: understand
   description: description
   url: https://www.youtube.com/watch?v=CaTIbs03TQ0
   duration: 141
@@ -36,7 +36,7 @@ comite_de_la_rue:
 
 idees_d_actions:
   name: "Article Des idées d'actions faciles à réaliser sur l'app !"
-  category: category
+  category: act
   description: description
   url: https://blog.entourage.social/2017/04/28/quelles-actions-faire-avec-entourage/
   duration: 180
@@ -45,7 +45,7 @@ idees_d_actions:
 
 devenir_sdf:
   name: "Vidéo Comment devient-on SDF ?"
-  category: category
+  category: understand
   description: description
   url: https://www.youtube.com/watch?v=Dk3bo__5dvs
   duration: 154
@@ -54,7 +54,7 @@ devenir_sdf:
 
 si_on_se_comprenait:
   name: "Vidéo SDF, et si on comprenait ?"
-  category: category
+  category: understand
   description: description
   url: https://www.youtube.com/watch?v=aVobOfVgELg
   duration: 198
@@ -63,7 +63,7 @@ si_on_se_comprenait:
 
 combat_d_eric:
   name: "Vidéo Loopsider Le combat d'Eric, sans-abri à Paris"
-  category: category
+  category: understand
   description: description
   url: https://www.youtube.com/watch?v=kUHJqJ-FifU
   # duration: 120
@@ -72,7 +72,7 @@ combat_d_eric:
 
 wifi:
   name: "Vidéo J'ai ouvert mon WiFi à mes voisins"
-  category: category
+  category: inspire
   description: description
   url: https://www.youtube.com/watch?v=lZxLhBDj8Kk
   duration: 129
@@ -81,7 +81,7 @@ wifi:
 
 si_on_changeait_de_regard:
   name: "Vidéo Personnes sans-domicile-fixe : et si on changeait de regard ?"
-  category: category
+  category: inspire
   description: description
   url: https://www.youtube.com/watch?v=hemPKnpsfWc
   duration: 197
@@ -90,7 +90,7 @@ si_on_changeait_de_regard:
 
 paroles_de_femmes:
   name: "Vidéo Paroles de femmes sans-domicile-fixe"
-  category: category
+  category: understand
   description: description
   url: https://www.youtube.com/watch?v=kF7CnsSsBxE
   duration: 133
@@ -99,7 +99,7 @@ paroles_de_femmes:
 
 rachid_et_marie:
   name: "Vidéo Regards croisés : Rachid & Marie"
-  category: category
+  category: understand
   description: description
   url: https://www.youtube.com/watch?v=QXcUptypnOY
   duration: 124
@@ -108,7 +108,7 @@ rachid_et_marie:
 
 urgence_sociale:
   name: "Vidéo L'urgence sociale : qui fait quoi ?"
-  category: category
+  category: understand
   description: description
   url: https://www.youtube.com/watch?v=DiJf64CtZRc
   duration: 201
@@ -117,7 +117,7 @@ urgence_sociale:
 
 si_on_agissait:
   name: "Vidéo Personnes sans-domicile-fixe : et si on agissait ?"
-  category: category
+  category: act
   description: description
   url: https://www.youtube.com/watch?v=SvYCZ3s0AFE
   duration: 270
@@ -126,7 +126,7 @@ si_on_agissait:
 
 tuto_evenement:
   name: "Tuto app - Comment créer un événement ?"
-  category: category
+  category: act
   description: description
   # url:
   # duration: 120
@@ -135,7 +135,7 @@ tuto_evenement:
 
 tuto_groupe:
   name: "Tuto app - Comment créer un groupe ?"
-  category: category
+  category: act
   description: description
   # url:
   # duration: 120
@@ -144,7 +144,7 @@ tuto_groupe:
 
 preparer_la_rencontre:
   name: "Préparer la rencontre"
-  category: category
+  category: act
   description: description
   # url:
   # duration: 120
@@ -153,7 +153,7 @@ preparer_la_rencontre:
 
 tuto_don:
   name: "Tuto ce que je peux donner / ne pas donner"
-  category: category
+  category: act
   description: description
   # url:
   # duration: 120
@@ -162,7 +162,7 @@ tuto_don:
 
 charte_ethique:
   name: "La Charte éthique en qlq mots"
-  category: category
+  category: act
   description: description
   # url:
   # duration: 120
@@ -171,7 +171,7 @@ charte_ethique:
 
 relayer_les_demandes:
   name: "Article “Comment relayer les demandes à son réseau de quartier”"
-  category: category
+  category: act
   description: description
   # url:
   # duration: 120
@@ -180,7 +180,7 @@ relayer_les_demandes:
 
 maraudes:
   name: "Article Les maraudes pour les nuls"
-  category: category
+  category: act
   description: description
   url: https://blog.entourage.social/2021/04/26/maraude-pour-les-nuls/
   duration: 300
@@ -189,7 +189,7 @@ maraudes:
 
 pyramide_de_maslow:
   name: "Article La pyramide de Maslow : une vision biaisée de l'homme ?"
-  category: category
+  category: understand
   description: description
   url: https://blog.entourage.social/2022/02/24/la-pyramide-de-maslow-une-vision-biaisee-de-lhomme/
   duration: 60
@@ -198,7 +198,7 @@ pyramide_de_maslow:
 
 portrait_de_benevole:
   name: "Vidéo Audrey dans les portraits de bénévoles"
-  category: category
+  category: inspire
   description: description
   url: https://www.youtube.com/watch?v=zNF9QaUpvn8
   duration: 66
@@ -207,7 +207,7 @@ portrait_de_benevole:
 
 communaute:
   name: "Article Faire grandir la communauté Entourage"
-  category: category
+  category: act
   description: description
   # url:
   # duration: 120
