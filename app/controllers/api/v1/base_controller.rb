@@ -199,7 +199,7 @@ module Api
 
       def set_completed_user_recommandations
         return unless current_user
-        return unless response.status == 200
+        return unless [200, 201].include?(response.status)
 
         RecommandationServices::Completor.new(
           user: current_user,
