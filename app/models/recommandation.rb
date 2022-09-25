@@ -1,7 +1,7 @@
 class Recommandation < ApplicationRecord
   include WithUserGoals
 
-  INSTANCES = [:neighborhood, :outing, :poi, :resource, :webview, :contribution, :solicitation]
+  INSTANCES = [:neighborhood, :outing, :poi, :resource, :webview, :contribution, :solicitation, :user]
   ACTIONS = [:index, :show, :create, :join, :show_joined, :show_not_joined]
   FRAGMENTS = [0, 1, 2]
 
