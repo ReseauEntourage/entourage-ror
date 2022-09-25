@@ -2,9 +2,7 @@ module RecommandationServices
   class FinderShow
     class << self
       def find_identifiant user, recommandation
-        return recommandation.id unless recommandation.webview?
-
-        recommandation.url
+        recommandation.argument_value
       end
     end
   end
