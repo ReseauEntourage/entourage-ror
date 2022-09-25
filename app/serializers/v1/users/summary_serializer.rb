@@ -36,6 +36,8 @@ module V1
 
       def congratulations
         object.user_recommandations.to_be_congratulated.map do |recommandation|
+          recommandation.update_column(:congrats_at, Time.now)
+
           V1::UserRecommandationSerializer.new(recommandation).as_json
         end
       end

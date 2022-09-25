@@ -7,7 +7,7 @@ module V1
       :params
 
     def type
-      object.instance_type.underscore.pluralize
+      object.instance_type.underscore
     end
 
     def action
