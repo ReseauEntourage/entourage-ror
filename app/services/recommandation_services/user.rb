@@ -1,5 +1,7 @@
 module RecommandationServices
   class User
+    OBSOLETE_PERIOD = 15.days
+
     attr_accessor :user
 
     def initialize user
@@ -7,6 +9,8 @@ module RecommandationServices
     end
 
     def initiate
+      skip_obsolete_recommandations
+
       return if has_all_recommandations?
 
       Recommandation::FRAGMENTS.each do |fragment|
@@ -20,6 +24,12 @@ module RecommandationServices
 
     def recommandations
       user.user_recommandations.active
+    end
+
+    def skip_obsolete_recommandations
+      recommandations.each do |recommandation|
+        recommandation.update_attribute(:skipped_at, Time.now) if recommandation.created_at < OBSOLETE_PERIOD.ago
+      end
     end
 
     def instanciate_user_recommandation_from_recommandation recommandation
@@ -44,7 +54,7 @@ module RecommandationServices
     end
 
     def has_all_recommandations?
-      @has_all_recommandations ||= (user_fragments == Recommandation::FRAGMENTS.sort)
+      user_fragments == Recommandation::FRAGMENTS.sort
     end
 
     def profile
