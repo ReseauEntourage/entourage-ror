@@ -139,8 +139,10 @@ describe Api::V1::Tours::ChatMessagesController do
         it "sends notif to everyone accaepted except message sender" do
           join_request = FactoryBot.create(:join_request, joinable: tour, user: user, status: "accepted")
           join_request2 = FactoryBot.create(:join_request, joinable: tour, status: "accepted")
+
           FactoryBot.create(:join_request, joinable: tour, status: "pending")
-          expect_any_instance_of(PushNotificationService).to receive(:send_notification).with("John D.", "John D.", 'foobar', [join_request2.user], {
+
+          expect_any_instance_of(PushNotificationService).to receive(:send_notification).with("John D.", nil, 'foobar', [join_request2.user], {
             joinable_id: tour.id,
             joinable_type: "Tour",
             group_type: 'tour',

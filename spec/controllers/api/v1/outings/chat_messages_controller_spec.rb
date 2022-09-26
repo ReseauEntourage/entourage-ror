@@ -203,7 +203,7 @@ describe Api::V1::Outings::ChatMessagesController do
           FactoryBot.create(:join_request, joinable: outing, status: "pending")
 
           expect_any_instance_of(PushNotificationService).to receive(:send_notification).with(
-            "John D.",
+            nil,
             'Foot Paris 17è',
             "John D. vient de partager : foobaz",
             [ join_request1.user, join_request3.user ], # user.token should not receive notification

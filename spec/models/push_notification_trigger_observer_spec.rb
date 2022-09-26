@@ -218,7 +218,7 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
             users: [participant],
             params: {
               sender: "John D.",
-              object: "John D.",
+              object: nil,
               content: "foobar",
               extra: {
                 group_type: "conversation",
@@ -252,7 +252,6 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
             instance: outing,
             users: [participant],
             params: {
-              sender: "John D.",
               object: "Théâtre",
               content: "L'événement prévu le #{I18n.l(outing.starts_at.to_date)} a été modifié",
             }
@@ -268,7 +267,6 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
             instance: outing,
             users: [participant],
             params: {
-              sender: "John D.",
               object: "Café",
               content: "L'événement prévu le #{I18n.l(Time.now.to_date)} a été modifié. Il se déroulera le #{I18n.l(1.day.from_now.to_date)}, au #{outing.metadata[:display_address]}",
             }
@@ -285,7 +283,6 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
             instance: outing,
             users: [participant],
             params: {
-              sender: "John D.",
               object: "Café",
               content: "Cet événement prévu le #{I18n.l(outing.starts_at.to_date)} vient d'être annulé",
             }
@@ -304,7 +301,6 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
           instance: participant,
           users: [outing.user],
           params: {
-            sender: "Jane D.",
             object: "Café",
             content: "Jane D. vient de rejoindre votre évènement : Café",
             extra: {

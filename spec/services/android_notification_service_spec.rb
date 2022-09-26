@@ -10,7 +10,7 @@ describe AndroidNotificationService do
       it { expect(Rpush::Gcm::Notification.count).to eq(1) }
       it { expect(Rpush::Gcm::Notification.last.app).to eq(android_app) }
       it { expect(Rpush::Gcm::Notification.last.registration_ids).to eq(["device_id_1", "device_id_2"]) }
-      it { expect(Rpush::Gcm::Notification.last.data).to eq({ "sender" => "sender", "object" => "object", "content" => {"message"=>"content", "extra"=>{}} }) }
+      it { expect(Rpush::Gcm::Notification.last.data).to eq({ "sender" => "object", "object" => "object", "content" => {"message"=>"content", "extra"=>{}} }) }
     end
 
     context 'android app is absent' do

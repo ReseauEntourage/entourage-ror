@@ -36,7 +36,6 @@ class PushNotificationTriggerObserver < ActiveRecord::Observer
     return unless users = (neighborhood.members.uniq - [entourage.user])
 
     notify(instance: entourage, users: users, params: {
-      sender: username(entourage.user),
       object: neighborhood.title,
       content: CREATE_OUTING % [entity_name(neighborhood), entourage.title, to_date(entourage.starts_at)]
     })
@@ -55,7 +54,6 @@ class PushNotificationTriggerObserver < ActiveRecord::Observer
     return if users.none?
 
     notify(instance: outing, users: users, params: {
-      sender: username(outing.user),
       object: outing.title,
       content: update_outing_message(outing)
     })
@@ -67,7 +65,6 @@ class PushNotificationTriggerObserver < ActiveRecord::Observer
     return if users.none?
 
     notify(instance: outing, users: users, params: {
-      sender: username(outing.user),
       object: outing.title,
       content: CANCEL_OUTING % to_date(outing.starts_at)
     })
@@ -109,7 +106,7 @@ class PushNotificationTriggerObserver < ActiveRecord::Observer
 
     notify(instance: private_chat_message.messageable, users: users, params: {
       sender: username(private_chat_message.user),
-      object: username(private_chat_message.user),
+      object: nil,
       content: private_chat_message.content,
       extra: {
         group_type: group_type(private_chat_message.messageable),
@@ -126,7 +123,6 @@ class PushNotificationTriggerObserver < ActiveRecord::Observer
     return if users.none?
 
     notify(instance: post.messageable, users: users, params: {
-      sender: username(post.user),
       object: title(post.messageable),
       content: CREATE_POST % [username(post.user), post.content],
       extra: {
@@ -142,7 +138,6 @@ class PushNotificationTriggerObserver < ActiveRecord::Observer
     return if comment.parent.user == comment.user
 
     notify(instance: comment.messageable, users: [comment.parent.user], params: {
-      sender: username(comment.user),
       object: title(comment.messageable),
       content: CREATE_COMMENT % [username(comment.user), comment.content]
     })
@@ -154,7 +149,6 @@ class PushNotificationTriggerObserver < ActiveRecord::Observer
     return if join_request.joinable.user == join_request.user
 
     notify(instance: join_request.user, users: [join_request.joinable.user], params: {
-      sender: username(join_request.user),
       object: title(join_request.joinable) || "Nouveau membre",
       content: CREATE_JOIN_REQUEST % [username(join_request.user), entity_name(join_request.joinable), title(join_request.joinable)],
       extra: {
@@ -172,7 +166,6 @@ class PushNotificationTriggerObserver < ActiveRecord::Observer
     return join_request_on_create(join_request) unless join_request.status_before_last_save&.to_sym == :pending
 
     notify(instance: join_request.joinable, users: [join_request.user], params: {
-      sender: username(join_request.user),
       object: title(join_request.joinable) || "Demande acceptée",
       content: "Vous venez de rejoindre un(e) #{entity_name(join_request.joinable)} de #{username(join_request.joinable.user)}",
       extra: {
