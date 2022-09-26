@@ -116,7 +116,6 @@ describe Api::V1::Outings::UsersController do
             instance: user,
             users: [outing.user],
             params: {
-              sender: "John D.",
               object: outing.title,
               content: "John D. vient de rejoindre votre évènement : #{outing.title}",
               extra: {

@@ -148,7 +148,7 @@ describe Api::V1::Tours::UsersController do
       it "sends a notification to the requester" do
         FactoryBot.create(:android_app)
         expect_any_instance_of(PushNotificationService).to receive(:send_notification).with(
-          "John D.",
+          nil,
           "Demande acceptée",
           "Vous venez de rejoindre un(e) maraude de John D.",
           User.where(id: requester.id),
