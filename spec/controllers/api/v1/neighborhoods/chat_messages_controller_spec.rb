@@ -201,7 +201,7 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
           FactoryBot.create(:join_request, joinable: neighborhood, status: "pending")
 
           expect_any_instance_of(PushNotificationService).to receive(:send_notification).with(
-            "John D.",
+            nil,
             'Foot Paris 17è',
             "John D. vient de partager : foobaz",
             [ neighborhood.user, join_request2.user ],
