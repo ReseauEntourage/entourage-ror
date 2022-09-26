@@ -13,29 +13,20 @@ class IosNotificationJob < ApplicationJob
           notification.badge = badge if badge
           notification.app = app
           notification.device_token = device_token.to_s
-          notification.alert =
-            case extra[:type]
-            when 'NEW_CHAT_MESSAGE'
-              payload = {
-                title: sender,
-                subtitle: object,
-                body: content
-              }
-              payload.delete(:subtitle) if object.nil?
-              payload
-            when 'NEW_JOIN_REQUEST',
-                 'JOIN_REQUEST_ACCEPTED',
-                 'ENTOURAGE_INVITATION',
-                 'INVITATION_STATUS'
-              {
-                title: object,
-                body: content
-              }
-            else
-              content
-            end
+          notification.alert = if sender.present?
+            {
+              title: sender,
+              subtitle: object,
+              body: content
+            }
+          else
+            {
+              title: object,
+              body: content
+            }
+          end
 
-          notification.data = { sender: sender, object: object, content: {message: content, extra: extra} }
+          notification.data = { sender: sender, object: object, content: { message: content, extra: extra } }
           notification.save!
         rescue ActiveRecord::RecordInvalid => e
           Rails.logger.error e.message

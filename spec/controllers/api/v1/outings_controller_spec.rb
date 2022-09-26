@@ -343,7 +343,6 @@ describe Api::V1::OutingsController do
             instance: outing.becomes(Outing),
             users: [participant],
             params: {
-              sender: "John D.",
               object: "Foobar",
               content: "Cet événement prévu le #{I18n.l(outing.starts_at.to_date)} vient d'être annulé",
             }
@@ -593,7 +592,6 @@ describe Api::V1::OutingsController do
           instance: outing.reload.becomes(Outing),
           users: [participant],
           params: {
-            sender: "John D.",
             object: "Foobar",
             content: "Cet événement prévu le #{I18n.l(outing.starts_at.to_date)} vient d'être annulé",
           }

@@ -103,7 +103,7 @@ describe Api::V1::Entourages::UsersController do
           it { expect(result['user']['status']).to eq('accepted') }
           it {
             expect(notif_service).to have_received(:send_notification).with(
-              "John D.",
+              nil,
               "Foobar1",
               "John D. vient de rejoindre votre action : Foobar1",
               [entourage.user],
@@ -127,7 +127,7 @@ describe Api::V1::Entourages::UsersController do
           it { expect(result['user']['status']).to eq('accepted') }
           it {
             expect(notif_service).to have_received(:send_notification).with(
-              "John D.",
+              nil,
               "Foobar1",
               "John D. vient de rejoindre votre action : Foobar1",
               [entourage.user],
@@ -156,7 +156,7 @@ describe Api::V1::Entourages::UsersController do
           it "sends notif to all entourage members" do
             # we do not maintain pending join_request scenarios
             expect_any_instance_of(PushNotificationService).not_to receive(:send_notification).with(
-              "John D.",
+              nil,
               "Foobar1",
               "John D. souhaite rejoindre votre action",
               [entourage.user],
@@ -181,7 +181,7 @@ describe Api::V1::Entourages::UsersController do
           it "sends notif to all entourage members" do
             # we do not maintain pending join_request scenarios
             expect_any_instance_of(PushNotificationService).not_to receive(:send_notification).with(
-              "John D.",
+              nil,
               "Foobar1",
               "John D. souhaite rejoindre votre action",
               [entourage.user],
@@ -262,8 +262,9 @@ describe Api::V1::Entourages::UsersController do
 
       it "sends a notification to the requester" do
         FactoryBot.create(:android_app)
+
         expect_any_instance_of(PushNotificationService).to receive(:send_notification).with(
-          "John D.",
+          nil,
           "Foobar1",
           "Vous venez de rejoindre un(e) action de John D.",
           User.where(id: requester.id),
