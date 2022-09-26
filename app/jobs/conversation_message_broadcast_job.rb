@@ -43,7 +43,7 @@ class ConversationMessageBroadcastJob
 
   # ActiveJob interface
   def self.perform_later(conversation_message_broadcast_id, sender_id, content)
-    ConversationMessageBroadcast.find(conversation_message_broadcast_id).user_ids.each do |recipient_id|
+    user_ids_to_broadcast(conversation_message_broadcast_id, sender_id).each do |recipient_id|
       set(
         tags: [conversation_message_broadcast_id]
       ).perform_async(conversation_message_broadcast_id, sender_id, recipient_id, content)
@@ -74,5 +74,20 @@ class ConversationMessageBroadcastJob
     jobs.select do |job|
       job.tags.include? tag
     end.map(&:delete)
+  end
+
+  def self.user_ids_to_broadcast conversation_message_broadcast_id, sender_id
+    ConversationMessageBroadcast.find(conversation_message_broadcast_id).user_ids - broadcasted_user_ids(conversation_message_broadcast_id, sender_id)
+  end
+
+  # find all users that have already been broadcasted
+  # this case happens whenever a broadcast has timeout and we want to relaunch this broadcast
+  def self.broadcasted_user_ids conversation_message_broadcast_id, sender_id
+    JoinRequest
+      .where.not(user_id: sender_id)
+      .where(joinable_type: 'Entourage')
+      .where(
+        joinable_id: ChatMessage.where("metadata ->> 'conversation_message_broadcast_id' = '?'", conversation_message_broadcast_id).pluck(:messageable_id)
+      ).pluck(:user_id).uniq.sort
   end
 end
