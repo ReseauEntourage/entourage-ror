@@ -35,7 +35,7 @@ module V1
       end
 
       def congratulations
-        object.user_recommandations.to_be_congratulated.map do |recommandation|
+        object.user_recommandations.to_be_congratulated.order(completed_at: :desc).map do |recommandation|
           recommandation.update_column(:congrats_at, Time.now)
 
           V1::UserRecommandationSerializer.new(recommandation).as_json
