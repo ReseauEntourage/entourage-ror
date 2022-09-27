@@ -17,7 +17,7 @@ class Recommandation < ApplicationRecord
 
     where(["user_goals @> ?", profile.to_json]).order(order)
   }
-  scope :not_completed_by, -> (user) { where.not(id: UserRecommandation.completed_by(user).pluck(:recommandation_id)) }
+  scope :recommandable_for, -> (user) { where.not(id: UserRecommandation.processed_by(user).pluck(:recommandation_id)) }
 
   # valides :image_url # should be ?x?
   attr_accessor :recommandation_image_id
