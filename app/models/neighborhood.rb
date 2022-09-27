@@ -1,5 +1,7 @@
 class Neighborhood < ApplicationRecord
   include Interestable
+  include CoordinatesScopable
+  include JoinableScopable
 
   after_validation :track_status_change
 
@@ -57,16 +59,6 @@ class Neighborhood < ApplicationRecord
     })
   }
 
-  scope :inside_perimeter, -> (latitude, longitude, travel_distance) {
-    if latitude && longitude
-      where("#{PostgisHelper.distance_from(latitude, longitude, :neighborhoods)} < ?", travel_distance)
-    end
-  }
-  scope :order_by_distance_from, -> (latitude, longitude) {
-    if latitude && longitude
-      order(PostgisHelper.distance_from(latitude, longitude, :neighborhoods))
-    end
-  }
   scope :order_by_activity, -> {
     # Groupe actif = au moins 1 message ou 1 événement créé par semaine pendant 1 mois ou plus
     # Code proposé : classé par nombre d'événements puis nombre de messages dans le mois
@@ -101,14 +93,6 @@ class Neighborhood < ApplicationRecord
       name: "%#{search.strip}%",
       description: "%#{search.strip}%"
     })
-  }
-  scope :joined_by, -> (user) {
-    joins(:join_requests).where(join_requests: {
-      user: user, status: JoinRequest::ACCEPTED_STATUS
-    })
-  }
-  scope :not_joined_by, -> (user) {
-    where.not(id: Neighborhood.joined_by(user))
   }
 
   def active?
