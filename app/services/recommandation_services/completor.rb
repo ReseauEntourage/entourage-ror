@@ -39,6 +39,7 @@ module RecommandationServices
     def after_create_user params
       return after_create_user_on_neighborhood if params.has_key?(:neighborhood_id)
       return after_create_user_on_outing if params.has_key?(:outing_id)
+      return after_create_user_on_resource(params) if params.has_key?(:resource_id)
     end
 
     def after_create_user_on_outing
@@ -47,6 +48,10 @@ module RecommandationServices
 
     def after_create_user_on_neighborhood
       user_recommandations.for_instance(:neighborhood).where(action: :join)
+    end
+
+    def after_create_user_on_resource params
+      user_recommandations.for_instance(:resource).where(action: :show, instance_id: params[:resource_id])
     end
 
     private
