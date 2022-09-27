@@ -25,9 +25,14 @@ module RecommandationServices
       user_recommandations.for_instance(instance).where(action: :index)
     end
 
-    # @caution does not work with webviews
     def after_show instance, params
+      return after_show_webview(params) if instance == :webview
+
       user_recommandations.for_instance(instance).where(action: :show, instance_id: params[:id])
+    end
+
+    def after_show_webview params
+      user_recommandations.for_instance(:webview).where(action: :show, instance_url: params[:url])
     end
 
     def after_create instance, params
