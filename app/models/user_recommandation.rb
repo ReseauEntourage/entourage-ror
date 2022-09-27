@@ -4,6 +4,9 @@ class UserRecommandation < ApplicationRecord
   belongs_to :user
   belongs_to :recommandation
 
+  validates_presence_of :instance_id, if: Proc.new { |object| object.show? && !object.webview? }
+  validates_presence_of :instance_url, if: Proc.new { |object| object.show? && object.webview? }
+
   scope :active, -> { where(completed_at: nil, skipped_at: nil) }
 
   scope :completed_by, -> (user) { where(user_id: user.id).where.not(completed_at: nil) }
@@ -19,6 +22,10 @@ class UserRecommandation < ApplicationRecord
 
   def join?
     action.to_sym == :join
+  end
+
+  def show?
+    action.to_sym == :show
   end
 
   def action= action
