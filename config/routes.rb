@@ -477,6 +477,12 @@ Rails.application.routes.draw do
         end
       end
 
+      resources :webviews, only: [] do
+        collection do
+          get :url, action: :show, as: :show
+        end
+      end
+
       resources :invitations, only: [:index, :update, :destroy]
 
       resources :partners, only: [:index, :show] do
