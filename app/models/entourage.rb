@@ -8,6 +8,8 @@ class Entourage < ApplicationRecord
   include Onboarding::V1::Entourage
   include Experimental::EntourageSlack::Callback
   include ModerationServices::EntourageModeration::Callback
+  include CoordinatesScopable
+  include JoinableScopable
 
   after_validation :track_status_change
 
@@ -77,11 +79,6 @@ class Entourage < ApplicationRecord
       order("case when entourage_type = 'contribution' then 1 else 2 end")
     else
       order("case when entourage_type = 'ask_for_help' then 1 else 2 end")
-    end
-  }
-  scope :order_by_distance_from, -> (latitude, longitude) {
-    if latitude && longitude
-      order(PostgisHelper.distance_from(latitude, longitude))
     end
   }
   scope :like, -> (search) {
