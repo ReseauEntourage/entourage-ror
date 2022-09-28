@@ -17,6 +17,8 @@ module RecommandationServices
         next if user_fragments.include?(fragment)
 
         Recommandation.fragment(fragment).for_profile(profile).recommandable_for(user).each do |recommandation|
+          next if recommandation.matches(user_recommandations_orphan)
+
           break if instanciate_user_recommandation_from_recommandation(recommandation).save
         end
       end
@@ -51,6 +53,10 @@ module RecommandationServices
 
     def user_fragments
       @user_fragments ||= user.recommandations.pluck(:fragment).compact.uniq.sort
+    end
+
+    def user_recommandations_orphan
+      @user_recommandations_orphan ||= user.user_recommandations.orphan.as_json(only: [:action, :instance, :instance_id, :instance_url])
     end
 
     def has_all_recommandations?
