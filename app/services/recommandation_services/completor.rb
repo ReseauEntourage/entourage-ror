@@ -16,29 +16,30 @@ module RecommandationServices
       method = "after_#{action_name}".to_sym
 
       return unless self.class.instance_methods.include?(method)
-      return unless matched_user_recommandations = send(method, instance, params)
+      return unless criteria = send(method, instance, params)
 
-      matched_user_recommandations.update_all(completed_at: Time.now)
+      set_completed_criteria! criteria
+      log_completed_criteria! criteria
     end
 
     def after_index instance, params
-      user_recommandations.for_instance(instance).where(action: :index)
+      { instance: instance, action: :index }
     end
 
     def after_show instance, params
       return after_show_webview(params) if instance == :webview
 
-      user_recommandations.for_instance(instance).where(action: :show, instance_id: params[:id])
+      { instance: instance, action: :show, instance_id: params[:id] }
     end
 
     def after_show_webview params
-      user_recommandations.for_instance(:webview).where(action: :show, instance_url: params[:url])
+      { instance: :webview, action: :show, instance_url: params[:url] }
     end
 
     def after_create instance, params
       return after_create_user(params) if instance == :user
 
-      user_recommandations.for_instance(instance).where(action: :create)
+      { instance: instance, action: :create }
     end
 
     def after_create_user params
@@ -48,21 +49,29 @@ module RecommandationServices
     end
 
     def after_create_user_on_outing
-      user_recommandations.for_instance(:outing).where(action: :join)
+      { instance: :outing, action: :join }
     end
 
     def after_create_user_on_neighborhood
-      user_recommandations.for_instance(:neighborhood).where(action: :join)
+      { instance: :neighborhood, action: :join }
     end
 
     def after_create_user_on_resource params
-      user_recommandations.for_instance(:resource).where(action: :show, instance_id: params[:resource_id])
+      { instance: :resource, action: :show, instance_id: params[:resource_id] }
     end
 
-    private
+    protected
 
-    def user_recommandations
-      @user_recommandations ||= user.user_recommandations.active
+    def set_completed_criteria! criteria
+      return unless matchings = UserRecommandation.active_criteria_by_user(user, criteria)
+
+      matchings.update_all(completed_at: Time.now)
+    end
+
+    def log_completed_criteria! criteria
+      return if UserRecommandation.processed_criteria_by_user(user, criteria).any?
+
+      UserRecommandation.new(criteria.merge(user: user, completed_at: Time.now)).save
     end
   end
 end

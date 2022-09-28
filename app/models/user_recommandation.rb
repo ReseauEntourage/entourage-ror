@@ -14,7 +14,13 @@ class UserRecommandation < ApplicationRecord
   scope :processed_by, -> (user) { UserRecommandation.completed_by(user).or(UserRecommandation.skipped_by(user)) }
 
   scope :to_be_congratulated, -> { where.not(completed_at: nil).where(congrats_at: nil) }
-  scope :for_instance, -> (instance) { where(instance_type: instance.to_s.classify) }
+
+  scope :active_criteria_by_user, -> (user, criteria) {
+    active.where(user: user).where(criteria)
+  }
+  scope :processed_criteria_by_user, -> (user, criteria) {
+    processed_by(user).where(criteria)
+  }
 
   def webview?
     instance.to_sym == :webview
