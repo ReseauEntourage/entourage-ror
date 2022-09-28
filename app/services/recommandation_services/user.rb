@@ -16,7 +16,7 @@ module RecommandationServices
       Recommandation::FRAGMENTS.each do |fragment|
         next if user_fragments.include?(fragment)
 
-        Recommandation.fragment(fragment).for_profile(profile).not_completed_by(user).each do |recommandation|
+        Recommandation.fragment(fragment).for_profile(profile).recommandable_for(user).each do |recommandation|
           break if instanciate_user_recommandation_from_recommandation(recommandation).save
         end
       end
@@ -36,7 +36,7 @@ module RecommandationServices
       user_recommandation = UserRecommandation.new(user: user, recommandation: recommandation)
       user_recommandation.name = recommandation.name
       user_recommandation.image_url = recommandation.image_url
-      user_recommandation.instance_type = recommandation.instance.classify
+      user_recommandation.instance = recommandation.instance
       user_recommandation.action = recommandation.action
 
       klass = "finder_#{recommandation.action}".classify

@@ -330,7 +330,7 @@ repondre_demande:
   position_offer_help: 1
   name: "Répondre à une demande"
   instance: solicitation
-  action: show
+  action: show_not_joined
   user_goals: [offer_help]
   status: active
 
