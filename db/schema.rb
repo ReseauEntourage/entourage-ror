@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_09_15_100002) do
+ActiveRecord::Schema.define(version: 2022_09_28_103000) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -940,19 +940,20 @@ ActiveRecord::Schema.define(version: 2022_09_15_100002) do
 
   create_table "user_recommandations", force: :cascade do |t|
     t.integer "user_id", null: false
-    t.integer "recommandation_id", null: false
+    t.integer "recommandation_id"
     t.datetime "completed_at"
     t.datetime "congrats_at"
     t.datetime "skipped_at"
-    t.string "name", null: false
+    t.string "name"
     t.string "image_url"
     t.string "action", null: false
-    t.string "instance_type", null: false
+    t.string "instance", null: false
     t.integer "instance_id"
     t.string "instance_url"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["recommandation_id"], name: "index_user_recommandations_on_recommandation_id"
+    t.index ["completed_at", "skipped_at"], name: "index_user_recommandations_on_completed_at_and_skipped_at"
+    t.index ["instance"], name: "index_user_recommandations_on_instance"
     t.index ["user_id"], name: "index_user_recommandations_on_user_id"
   end
 

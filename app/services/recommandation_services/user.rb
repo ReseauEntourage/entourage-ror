@@ -36,7 +36,7 @@ module RecommandationServices
       user_recommandation = UserRecommandation.new(user: user, recommandation: recommandation)
       user_recommandation.name = recommandation.name
       user_recommandation.image_url = recommandation.image_url
-      user_recommandation.instance_type = recommandation.instance.classify
+      user_recommandation.instance = recommandation.instance
       user_recommandation.action = recommandation.action
 
       klass = "finder_#{recommandation.action}".classify
