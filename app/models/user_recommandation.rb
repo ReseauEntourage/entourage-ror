@@ -17,7 +17,7 @@ class UserRecommandation < ApplicationRecord
   scope :for_instance, -> (instance) { where(instance_type: instance.to_s.classify) }
 
   def webview?
-    instance_type.underscore.to_sym == :webview
+    instance.to_sym == :webview
   end
 
   def join?
