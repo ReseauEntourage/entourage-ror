@@ -40,6 +40,10 @@ class Recommandation < ApplicationRecord
     action.to_sym == :show
   end
 
+  def showable?
+    [:show, :show_joined, :show_not_joined].include?(action.to_sym)
+  end
+
   def image_url
     return unless self['image_url'].present?
 
@@ -63,5 +67,36 @@ class Recommandation < ApplicationRecord
 
   def remove_recommandation_image_id!
     self.image_url = nil
+  end
+
+  def matches criteria
+    # @caution instruction order matters
+    return matches_show_webview(criteria) if show? && webview?
+    return matches_show(criteria) if show?
+    return matches_specific_show(criteria) if showable?
+
+    matches_no_show(criteria)
+  end
+
+  protected
+
+  def matches_show_webview criteria
+    criteria.include?({ action: "show", instance: "webview", instance_id: nil, instance_url: argument_value })
+  end
+
+  def matches_show criteria
+    criteria.include?({ action: "show", instance: instance, instance_id: argument_value.to_i, instance_url: nil })
+  end
+
+  def matches_specific_show criteria
+    criteria.any? do |criterion|
+      criterion[:action] == "show" && criterion[:instance] == instance
+    end
+  end
+
+  def matches_no_show criteria
+    criteria.any? do |criterion|
+      criterion[:action] == action && criterion[:instance] == instance
+    end
   end
 end
