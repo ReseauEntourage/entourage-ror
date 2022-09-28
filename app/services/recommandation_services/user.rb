@@ -9,7 +9,7 @@ module RecommandationServices
     end
 
     def initiate
-      skip_obsolete_recommandations
+      skip_obsolete_user_recommandations
 
       return if has_all_recommandations?
 
@@ -24,22 +24,21 @@ module RecommandationServices
       end
     end
 
-    def recommandations
-      user.user_recommandations.active
-    end
-
-    def skip_obsolete_recommandations
-      recommandations.each do |recommandation|
-        recommandation.update_attribute(:skipped_at, Time.now) if recommandation.created_at < OBSOLETE_PERIOD.ago
+    def skip_obsolete_user_recommandations
+      user.user_recommandations.active.each do |user_recommandation|
+        user_recommandation.update_attribute(:skipped_at, Time.now) if user_recommandation.created_at < OBSOLETE_PERIOD.ago
       end
     end
 
     def instanciate_user_recommandation_from_recommandation recommandation
-      user_recommandation = UserRecommandation.new(user: user, recommandation: recommandation)
-      user_recommandation.name = recommandation.name
-      user_recommandation.image_url = recommandation.image_url
-      user_recommandation.instance = recommandation.instance
-      user_recommandation.action = recommandation.action
+      user_recommandation = UserRecommandation.new(
+        user: user,
+        recommandation: recommandation,
+        name: recommandation.name,
+        image_url: recommandation.image_url,
+        instance: recommandation.instance,
+        action: recommandation.action
+      )
 
       klass = "finder_#{recommandation.action}".classify
 
@@ -60,7 +59,7 @@ module RecommandationServices
     end
 
     def has_all_recommandations?
-      user_fragments == Recommandation::FRAGMENTS.sort
+      user_fragments.sort == Recommandation::FRAGMENTS.sort
     end
 
     def profile
