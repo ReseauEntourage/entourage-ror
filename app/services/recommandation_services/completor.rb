@@ -63,9 +63,9 @@ module RecommandationServices
     protected
 
     def set_completed_criteria! criteria
-      return unless matchings = UserRecommandation.active_criteria_by_user(user, criteria)
-
-      matchings.update_all(completed_at: Time.now)
+      UserRecommandation
+        .active_criteria_by_user(user, criteria)
+        .update_all(completed_at: Time.now)
     end
 
     def log_completed_criteria! criteria

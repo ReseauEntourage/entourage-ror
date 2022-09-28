@@ -164,4 +164,90 @@ describe RecommandationServices::Completor do
 
     it { expect(subject).to eq({ instance: :resource, action: :show, instance_id: 1 }) }
   end
+
+  describe 'set_completed_criteria' do
+    let(:subject) { completor.send(:set_completed_criteria!, criteria) }
+
+    context 'no user_recommandation on user' do
+      let(:anyone) { FactoryBot.create(:pro_user) }
+      let!(:user_recommandation) { create(:user_recommandation, user: anyone, instance: :resource, action: :index) }
+
+      let(:criteria) { { instance: :resource, action: :index } }
+
+      it { expect(subject).to eq(0) }
+      it { expect(subject && user_recommandation.reload.completed_at).to be(nil) }
+    end
+
+    context 'some user_recommandation on user' do
+      let!(:user_recommandation) { create(:user_recommandation, user: user, instance: :resource, action: :index) }
+
+      let(:criteria) { { instance: :resource, action: :index } }
+
+      it { expect(subject).to eq(1) }
+      it { expect(subject && user_recommandation.reload.completed_at).to be_a(ActiveSupport::TimeWithZone) }
+    end
+
+    context 'wrong criteria on action' do
+      let!(:user_recommandation) { create(:user_recommandation, user: user, instance: :resource, action: :create) }
+
+      let(:criteria) { { instance: :resource, action: :index } }
+
+      it { expect(subject).to eq(0) }
+      it { expect(subject && user_recommandation.reload.completed_at).to be(nil) }
+    end
+
+    context 'wrong criteria on instance' do
+      let!(:user_recommandation) { create(:user_recommandation, user: user, instance: :neighborhood, action: :index) }
+
+      let(:criteria) { { instance: :resource, action: :index } }
+
+      it { expect(subject).to eq(0) }
+      it { expect(subject && user_recommandation.reload.completed_at).to be(nil) }
+    end
+  end
+
+  describe 'log_completed_criteria' do
+    let(:subject) { completor.send(:log_completed_criteria!, criteria) }
+    let(:criteria) { { instance: :resource, action: :index } }
+
+    context 'no existing user_recommandation' do
+      it { expect(subject).to eq(true) }
+      it { expect { subject }.to change { UserRecommandation.count }.by(1) }
+    end
+
+    context 'no existing completed user_recommandation' do
+      let!(:user_recommandation) { create(:user_recommandation, user: user, instance: :resource, action: :index) }
+
+      it { expect(subject).to eq(true) }
+      it { expect { subject }.to change { UserRecommandation.count }.by(1) }
+    end
+
+    context 'existing completed user_recommandation' do
+      let!(:user_recommandation) { create(:user_recommandation, user: user, instance: :resource, action: :index, completed_at: Time.now) }
+
+      it { expect(subject).to eq(nil) }
+      it { expect { subject }.not_to change { UserRecommandation.count } }
+    end
+
+    context 'existing skipped user_recommandation' do
+      let!(:user_recommandation) { create(:user_recommandation, user: user, instance: :resource, action: :index, skipped_at: Time.now) }
+
+      it { expect(subject).to eq(nil) }
+      it { expect { subject }.not_to change { UserRecommandation.count } }
+    end
+
+    context 'no existing action user_recommandation' do
+      let!(:user_recommandation) { create(:user_recommandation, user: user, instance: :resource, action: :create) }
+
+      it { expect(subject).to eq(true) }
+      it { expect { subject }.to change { UserRecommandation.count }.by(1) }
+    end
+
+    context 'no existing instance user_recommandation' do
+      let!(:user_recommandation) { create(:user_recommandation, user: user, instance: :outing, action: :index) }
+
+      it { expect(subject).to eq(true) }
+      it { expect { subject }.to change { UserRecommandation.count }.by(1) }
+    end
+  end
 end
