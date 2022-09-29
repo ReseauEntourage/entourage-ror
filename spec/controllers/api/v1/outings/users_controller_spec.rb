@@ -116,8 +116,8 @@ describe Api::V1::Outings::UsersController do
             instance: user,
             users: [outing.user],
             params: {
-              object: outing.title,
-              content: "John D. vient de rejoindre votre évènement : #{outing.title}",
+              object: "Nouveau membre",
+              content: "John D. vient de rejoindre votre événement \"#{outing.title}\" du #{I18n.l(outing.starts_at.to_date)}",
               extra: {
                 group_type: "outing",
                 joinable_id: outing.id,

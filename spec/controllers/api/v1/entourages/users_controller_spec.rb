@@ -104,8 +104,8 @@ describe Api::V1::Entourages::UsersController do
           it {
             expect(notif_service).to have_received(:send_notification).with(
               nil,
-              "Foobar1",
-              "John D. vient de rejoindre votre action : Foobar1",
+              "Nouveau membre",
+              "John D. vient de rejoindre votre action \"Foobar1\"",
               [entourage.user],
               {
                 joinable_type: "Entourage",
@@ -128,8 +128,8 @@ describe Api::V1::Entourages::UsersController do
           it {
             expect(notif_service).to have_received(:send_notification).with(
               nil,
-              "Foobar1",
-              "John D. vient de rejoindre votre action : Foobar1",
+              "Nouveau membre",
+              "John D. vient de rejoindre votre action \"Foobar1\"",
               [entourage.user],
               {
                 joinable_type: "Entourage",
