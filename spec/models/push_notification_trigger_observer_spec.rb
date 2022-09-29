@@ -179,6 +179,53 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
     end
   end
 
+  describe "on change outing status" do
+    let!(:outing) { create :outing, user: user, status: :open }
+    let!(:join_request) { create :join_request, user: participant, joinable: outing, status: :accepted }
+
+    describe "on_cancel" do
+      context "on_cancel is received" do
+        before { expect_any_instance_of(PushNotificationTriggerObserver).to receive(:outing_on_cancel) }
+
+        it { outing.update_attribute(:status, :cancelled) }
+      end
+
+      context "notification is received" do
+        before { expect_any_instance_of(PushNotificationTriggerObserver).to receive(:notify) }
+
+        it { outing.update_attribute(:status, :cancelled) }
+      end
+
+      describe "outing without participant" do
+        let!(:outing_without_participant) { create :outing, user: user, status: :open }
+
+        before { expect_any_instance_of(PushNotificationTriggerObserver).not_to receive(:notify) }
+
+        it { outing_without_participant.update_attribute(:status, :cancelled) }
+      end
+    end
+
+    describe "no notification sent on status other than cancelled" do
+      before { expect_any_instance_of(PushNotificationTriggerObserver).not_to receive(:notify) }
+
+      context "on close" do
+        it { outing.update_attribute(:status, :closed) }
+      end
+
+      context "on blacklisted" do
+        it { outing.update_attribute(:status, :blacklisted) }
+      end
+
+      context "on suspended" do
+        it { outing.update_attribute(:status, :suspended) }
+      end
+
+      context "on full" do
+        it { outing.update_attribute(:status, :full) }
+      end
+    end
+  end
+
   describe "notify" do
     describe "set neighborhood_ids on outing does push notification" do
       let!(:outing) { create :outing, user: user, participants: [participant] }

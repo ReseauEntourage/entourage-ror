@@ -47,7 +47,7 @@ class PushNotificationTriggerObserver < ActiveRecord::Observer
   end
 
   def outing_on_update outing
-    return outing_on_cancel(outing) if outing.saved_change_to_status? && outing.cancelled?
+    return outing_on_update_status(outing) if outing.saved_change_to_status?
     return unless outing.saved_changes.any? # it happens when neighborhoods_entourage is updated
 
     users = outing.accepted_members - [outing.user]
@@ -58,6 +58,12 @@ class PushNotificationTriggerObserver < ActiveRecord::Observer
       object: outing.title,
       content: update_outing_message(outing)
     })
+  end
+
+  def outing_on_update_status outing
+    return outing_on_cancel(outing) if outing.cancelled?
+
+    # future notifications on other status?
   end
 
   def outing_on_cancel outing
