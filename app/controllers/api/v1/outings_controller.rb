@@ -151,7 +151,7 @@ module Api
       end
 
       def cancel_params
-        params.require(:outing).permit(:cancellation_message)
+        params.permit(outing: [:cancellation_message])
       end
 
       def outing_date_params
