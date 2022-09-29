@@ -158,6 +158,7 @@ module UserServices
         latitude:  result.latitude,
         longitude: result.longitude,
 
+        city:        result.city,
         postal_code: postal_code,
         country:     country,
 
