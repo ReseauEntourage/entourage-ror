@@ -5,9 +5,10 @@ class PushNotificationTriggerObserver < ActiveRecord::Observer
   CANCEL_OUTING = "Cet événement prévu le %s vient d'être annulé"
   UPDATE_OUTING = "L'événement prévu le %s a été modifié. Il se déroulera le %s, au %s"
   UPDATE_OUTING_SHORT = "L'événement prévu le %s a été modifié"
-  CREATE_POST = "%s vient de partager : %s"
-  CREATE_COMMENT = "%s vient de commenter votre publication : %s"
-  CREATE_JOIN_REQUEST = "%s vient de rejoindre votre %s : %s"
+  CREATE_POST = "%s vient de partager : \"%s\""
+  CREATE_COMMENT = "%s vient de commenter votre publication \"%s\""
+  CREATE_JOIN_REQUEST = "%s vient de rejoindre votre %s \"%s\""
+  CREATE_JOIN_REQUEST_OUTING = "%s vient de rejoindre votre événement \"%s\" du %s"
 
   def after_create(record)
     action(:create, record)
@@ -148,9 +149,15 @@ class PushNotificationTriggerObserver < ActiveRecord::Observer
     return if join_request.joinable.is_a?(Entourage) && join_request.joinable.conversation?
     return if join_request.joinable.user == join_request.user
 
+    content = if join_request.joinable.is_a?(Entourage) && join_request.joinable.outing?
+      CREATE_JOIN_REQUEST_OUTING % [username(join_request.user), title(join_request.joinable), to_date(join_request.joinable.starts_at)]
+    else
+      CREATE_JOIN_REQUEST % [username(join_request.user), entity_name(join_request.joinable), title(join_request.joinable)]
+    end
+
     notify(instance: join_request.user, users: [join_request.joinable.user], params: {
-      object: title(join_request.joinable) || "Nouveau membre",
-      content: CREATE_JOIN_REQUEST % [username(join_request.user), entity_name(join_request.joinable), title(join_request.joinable)],
+      object: "Nouveau membre",
+      content: content,
       extra: {
         joinable_id: join_request.joinable_id,
         joinable_type: join_request.joinable_type,
