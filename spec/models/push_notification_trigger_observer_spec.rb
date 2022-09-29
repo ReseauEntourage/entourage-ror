@@ -301,8 +301,8 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
           instance: participant,
           users: [outing.user],
           params: {
-            object: "Café",
-            content: "Jane D. vient de rejoindre votre évènement : Café",
+            object: "Nouveau membre",
+            content: "Jane D. vient de rejoindre votre événement \"Café\" du #{I18n.l(outing.starts_at.to_date)}",
             extra: {
               joinable_id: outing.id,
               joinable_type: "Entourage",
