@@ -566,7 +566,7 @@ describe Api::V1::OutingsController do
     let(:result) { Outing.unscoped.find(outing.id) }
 
     describe 'not authorized' do
-      before { delete :cancel, params: { id: outing.id, cancellation_message: "foo" } }
+      before { post :cancel, params: { id: outing.id, cancellation_message: "foo" } }
 
       it { expect(response.status).to eq 401 }
       it { expect(result.status).to eq 'open' }
@@ -574,7 +574,7 @@ describe Api::V1::OutingsController do
 
     describe 'not authorized cause should be creator' do
       before { expect_any_instance_of(PushNotificationTriggerObserver).not_to receive(:notify) }
-      before { delete :cancel, params: { id: outing.id, outing: { cancellation_message: "foo" }, token: user.token } }
+      before { post :cancel, params: { id: outing.id, outing: { cancellation_message: "foo" }, token: user.token } }
 
       it { expect(response.status).to eq 401 }
       it { expect(result.status).to eq 'open' }
@@ -598,7 +598,31 @@ describe Api::V1::OutingsController do
         ).once
       }
 
-      before { delete :cancel, params: { id: outing.id, outing: { cancellation_message: "foo" }, token: user.token } }
+      before { post :cancel, params: { id: outing.id, outing: { cancellation_message: "foo" }, token: user.token } }
+
+      it { expect(response.status).to eq 200 }
+      it { expect(result.status).to eq 'cancelled' }
+    end
+
+    describe 'authorized without cancellation_message' do
+      let(:creator) { user }
+
+      let(:participant) { create :public_user, first_name: "Jane" }
+      let!(:join_request_2) { create :join_request, user: participant, joinable: outing, status: :accepted }
+
+      before {
+        allow_any_instance_of(PushNotificationTriggerObserver).to receive(:notify)
+        expect_any_instance_of(PushNotificationTriggerObserver).to receive(:notify).with(
+          instance: outing.reload.becomes(Outing),
+          users: [participant],
+          params: {
+            object: "Foobar",
+            content: "Cet événement prévu le #{I18n.l(outing.starts_at.to_date)} vient d'être annulé",
+          }
+        ).once
+      }
+
+      before { post :cancel, params: { id: outing.id, token: user.token } }
 
       it { expect(response.status).to eq 200 }
       it { expect(result.status).to eq 'cancelled' }
