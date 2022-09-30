@@ -1,20 +1,14 @@
+require "#{Rails.root}/lib/tasks/populate.rb"
+
 class PopulateResources < ActiveRecord::Migration[5.2]
   def up
     return if EnvironmentHelper.test?
 
-    load_config.each do |key, attributes|
-      Resource.new(attributes).save
-    end
+    Populate.set_resources
   end
 
   def down
-    Resource.delete_all
-  end
-
-  private
-
-  def load_config
-    YAML.load_file("#{Rails.root}/config/populates/resources.yml")
+    Populate.delete_resources
   end
 end
 

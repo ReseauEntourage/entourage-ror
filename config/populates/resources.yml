@@ -2,7 +2,7 @@ chaleur_humaine:
   name: "Vidéo Entourage, un peu de chaleur humaine"
   category: understand
   description: description
-  url: https://www.youtube.com/watch?v=IYUo5WAZxXs
+  url: https://www.youtube.com/embed/IYUo5WAZxXs
   duration: 96
   is_video: true
   status: active
@@ -29,7 +29,7 @@ comite_de_la_rue:
   name: "Vidéo Le Comité de la Rue, organe essentiel d'Entourage"
   category: understand
   description: description
-  url: https://www.youtube.com/watch?v=CaTIbs03TQ0
+  url: https://www.youtube.com/embed/CaTIbs03TQ0
   duration: 141
   is_video: true
   status: active
@@ -47,7 +47,7 @@ devenir_sdf:
   name: "Vidéo Comment devient-on SDF ?"
   category: understand
   description: description
-  url: https://www.youtube.com/watch?v=Dk3bo__5dvs
+  url: https://www.youtube.com/embed/Dk3bo__5dvs
   duration: 154
   is_video: true
   status: active
@@ -56,7 +56,7 @@ si_on_se_comprenait:
   name: "Vidéo SDF, et si on comprenait ?"
   category: understand
   description: description
-  url: https://www.youtube.com/watch?v=aVobOfVgELg
+  url: https://www.youtube.com/embed/aVobOfVgELg
   duration: 198
   is_video: true
   status: active
@@ -65,7 +65,7 @@ combat_d_eric:
   name: "Vidéo Loopsider Le combat d'Eric, sans-abri à Paris"
   category: understand
   description: description
-  url: https://www.youtube.com/watch?v=kUHJqJ-FifU
+  url: https://www.youtube.com/embed/kUHJqJ-FifU
   # duration: 120
   is_video: 407
   status: active
@@ -74,7 +74,7 @@ wifi:
   name: "Vidéo J'ai ouvert mon WiFi à mes voisins"
   category: inspire
   description: description
-  url: https://www.youtube.com/watch?v=lZxLhBDj8Kk
+  url: https://www.youtube.com/embed/lZxLhBDj8Kk
   duration: 129
   is_video: true
   status: active
@@ -83,7 +83,7 @@ si_on_changeait_de_regard:
   name: "Vidéo Personnes sans-domicile-fixe : et si on changeait de regard ?"
   category: inspire
   description: description
-  url: https://www.youtube.com/watch?v=hemPKnpsfWc
+  url: https://www.youtube.com/embed/hemPKnpsfWc
   duration: 197
   is_video: true
   status: active
@@ -92,7 +92,7 @@ paroles_de_femmes:
   name: "Vidéo Paroles de femmes sans-domicile-fixe"
   category: understand
   description: description
-  url: https://www.youtube.com/watch?v=kF7CnsSsBxE
+  url: https://www.youtube.com/embed/kF7CnsSsBxE
   duration: 133
   is_video: true
   status: active
@@ -101,7 +101,7 @@ rachid_et_marie:
   name: "Vidéo Regards croisés : Rachid & Marie"
   category: understand
   description: description
-  url: https://www.youtube.com/watch?v=QXcUptypnOY
+  url: https://www.youtube.com/embed/QXcUptypnOY
   duration: 124
   is_video: true
   status: active
@@ -110,7 +110,7 @@ urgence_sociale:
   name: "Vidéo L'urgence sociale : qui fait quoi ?"
   category: understand
   description: description
-  url: https://www.youtube.com/watch?v=DiJf64CtZRc
+  url: https://www.youtube.com/embed/DiJf64CtZRc
   duration: 201
   is_video: true
   status: active
@@ -119,7 +119,7 @@ si_on_agissait:
   name: "Vidéo Personnes sans-domicile-fixe : et si on agissait ?"
   category: act
   description: description
-  url: https://www.youtube.com/watch?v=SvYCZ3s0AFE
+  url: https://www.youtube.com/embed/SvYCZ3s0AFE
   duration: 270
   is_video: true
   status: active
@@ -200,7 +200,7 @@ portrait_de_benevole:
   name: "Vidéo Audrey dans les portraits de bénévoles"
   category: inspire
   description: description
-  url: https://www.youtube.com/watch?v=zNF9QaUpvn8
+  url: https://www.youtube.com/embed/zNF9QaUpvn8
   duration: 66
   is_video: true
   status: active
