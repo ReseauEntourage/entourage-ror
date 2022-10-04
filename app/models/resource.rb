@@ -7,6 +7,8 @@ class Resource < ApplicationRecord
   has_many :users_resources
   has_many :users, -> { where(watched: true) }, through: :users_resources, source: :user
 
+  scope :ordered, -> { order(:position, :id) }
+
   # valides :image_url # should be ?x?
   attr_accessor :resource_image_id
 
