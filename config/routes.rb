@@ -231,6 +231,10 @@ Rails.application.routes.draw do
         get '/edit/image', action: :edit_image
         put '/update/image', action: :update_image
       end
+
+      collection do
+        post :reorder
+      end
     end
 
     resources :resources do

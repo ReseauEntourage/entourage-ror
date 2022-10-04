@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_09_28_103000) do
+ActiveRecord::Schema.define(version: 2022_10_04_152800) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -640,8 +640,8 @@ ActiveRecord::Schema.define(version: 2022_09_28_103000) do
     t.index ["action"], name: "index_recommandations_on_action"
     t.index ["instance"], name: "index_recommandations_on_instance"
     t.index ["name"], name: "index_recommandations_on_name"
-    t.index ["status", "position_ask_for_help", "fragment"], name: "index_recommandations_on_status_and_position_ask_for_help", unique: true, where: "(((status)::text = 'active'::text) AND (position_ask_for_help IS NOT NULL))"
-    t.index ["status", "position_offer_help", "fragment"], name: "index_recommandations_on_status_and_position_offer_help", unique: true, where: "(((status)::text = 'active'::text) AND (position_offer_help IS NOT NULL))"
+    t.index ["status", "position_ask_for_help", "fragment"], name: "index_recommandations_on_status_and_position_ask_for_help", where: "(((status)::text = 'active'::text) AND (position_ask_for_help IS NOT NULL))"
+    t.index ["status", "position_offer_help", "fragment"], name: "index_recommandations_on_status_and_position_offer_for_help", where: "(((status)::text = 'active'::text) AND (position_offer_help IS NOT NULL))"
     t.index ["user_goals"], name: "index_recommandations_on_user_goals", using: :gin
   end
 

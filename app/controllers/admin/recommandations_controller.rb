@@ -7,6 +7,8 @@ module Admin
     def index
       @profile = params[:profile]&.to_sym || :offer_help
       @fragment = params[:fragment]&.to_i || 0
+      @status = :active
+
       order = @profile == :offer_help ? :position_offer_help : :position_ask_for_help
 
       @recommandations = Recommandation.unscoped
@@ -63,6 +65,22 @@ module Admin
     end
 
     def destroy
+    end
+
+    def reorder
+      return redirect_to admin_recommandations_path unless Recommandation::FRAGMENTS.include?(params[:fragment].to_i)
+      return redirect_to admin_recommandations_path unless [:offer_help, :ask_for_help].include?(params[:profile].to_sym)
+
+      ordered_ids = (params[:ordered_ids] || "").to_s.split(',').map(&:to_i).uniq.reject(&:zero?)
+
+      ApplicationRecord.transaction do
+        Recommandation
+          .active.where(id: ordered_ids)
+          .sort_by { |r| ordered_ids.index(r.id) }
+          .each.with_index(1) { |r, i| r.update_column("position_#{params[:profile]}", i) }
+      end
+
+      redirect_to admin_recommandations_path(fragment: params[:fragment], profile: params[:profile])
     end
 
     private
