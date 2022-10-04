@@ -7,7 +7,6 @@ module Admin
     def index
       @profile = params[:profile]&.to_sym || :offer_help
       @fragment = params[:fragment]&.to_i || 0
-      @status = :active
 
       order = @profile == :offer_help ? :position_offer_help : :position_ask_for_help
 
@@ -74,8 +73,8 @@ module Admin
       ordered_ids = (params[:ordered_ids] || "").to_s.split(',').map(&:to_i).uniq.reject(&:zero?)
 
       ApplicationRecord.transaction do
-        Recommandation
-          .active.where(id: ordered_ids)
+        Recommandation.unscoped
+          .where(id: ordered_ids)
           .sort_by { |r| ordered_ids.index(r.id) }
           .each.with_index(1) { |r, i| r.update_column("position_#{params[:profile]}", i) }
       end

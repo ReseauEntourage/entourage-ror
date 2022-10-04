@@ -120,13 +120,11 @@
       <%= link_to "Ajouter une recommandation", new_admin_recommandation_path, class: "btn btn-default" %>
     </div>
 
-    <% if @status == :active %>
-      <div style="margin-left: auto">
-        <a href="#" class="btn btn-default btn-sm" id="start-reorder">Modifier l'ordre des cartes</a>
-        <a href="#" class="btn btn-default btn-sm hide" id="cancel-reorder">Annuler</a>
-        <a href="#" class="btn btn-success btn-sm hide" id="save-reorder">Enregistrer l'ordre des cartes</a>
-      </div>
-    <% end %>
+    <div style="margin-left: auto">
+      <a href="#" class="btn btn-default btn-sm" id="start-reorder">Modifier l'ordre des cartes</a>
+      <a href="#" class="btn btn-default btn-sm hide" id="cancel-reorder">Annuler</a>
+      <a href="#" class="btn btn-success btn-sm hide" id="save-reorder">Enregistrer l'ordre des cartes</a>
+    </div>
 
     <h1>Recommandations</h1>
 
@@ -140,8 +138,9 @@
               <div style="font-weight: bold">
                 <%= link_to recommandation.name, edit_admin_recommandation_path(recommandation) %>
               </div>
-              <div><%= t ("activerecord.attributes.recommandation.instances.#{recommandation.instance}") %></div>
-              <div><%= t ("activerecord.attributes.recommandation.actions.#{recommandation.action}") %></div>
+              <div>
+                <%= t ("activerecord.attributes.recommandation.instances.#{recommandation.instance}") %>
+               - <%= t ("activerecord.attributes.recommandation.actions.#{recommandation.action}") %></div>
               <div><%= status_label recommandation %></div>
             </div>
           </div>
