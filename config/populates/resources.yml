@@ -1,216 +1,773 @@
 chaleur_humaine:
   name: "Vidéo Entourage, un peu de chaleur humaine"
   category: understand
-  description: description
   url: https://www.youtube.com/embed/IYUo5WAZxXs
   duration: 96
   is_video: true
   status: active
+  description: description
 
 adresses_solidaires:
   name: "Article présentation carte POIs : où trouver des adresses solidaires pour m'aider ?"
   category: understand
-  description: description
   url: https://blog.entourage.social/2020/11/10/comment-trouver-les-bonnes-adresses-et-demarches-a-faire-quand-on-est-sdf-ou-precaire/
   duration: 60
   is_video: false
   status: active
+  description: |
+    <header>
+      <h1>Comment trouver les bonnes adresses et d&eacute;marches &agrave; faire quand on est SDF ou pr&eacute;caire&nbsp;?</h1>
+      </header>
+      <div class="entry-content section-inner thin">
+      <figure class="wp-block-image size-large is-resized">
+      <div><img class="wp-image-7553" src="https://blog.entourage.social/wp-content/uploads/2020/11/guide-solidaire-vire.jpg" alt="" width="213" height="182" loading="lazy"></div>
+      </figure>
+      </div>
+      <p><br>Le monde de la rue est difficile et complexe. Pour les personnes &agrave; la rue, savoir comment s&rsquo;en sortir n&rsquo;est pas toujours &eacute;vident; pour les habitants, comprendre la situation des personnes de la rue en mettant de c&ocirc;t&eacute; ses pr&eacute;jug&eacute;s n&rsquo;est pas facile. Cela conduit &agrave; de nombreuses questions.</p>
+      <p>Entourage met &agrave; votre disposition un outil qui vous permettra de trouver des pistes et des r&eacute;ponses &agrave; vos questions concernant le monde de la rue en g&eacute;n&eacute;ral, les d&eacute;marches &agrave; suivre selon votre situation et des conseils d&rsquo;Entourage !&nbsp;</p>
+      <p>Que vous soyez une personne en difficult&eacute; ou un voisin qui souhaite aider, quelque soit le niveau d&rsquo;urgence de votre situation, ce formulaire vous guide dans votre recherche d&rsquo;information et vous oriente vers les structures et les fa&ccedil;ons d&rsquo;agir adapt&eacute;es &agrave; votre demande.&nbsp;</p>
+      <div class="wp-block-buttons aligncenter">
+      <div class="wp-block-button is-style-outline"><a class="wp-block-button__link" href="https://entourage-asso.typeform.com/to/RyxV8mhG"><span class="has-inline-color has-luminous-vivid-orange-color">Acc&eacute;der au formulaire</span></a></div>
+      </div>
+      <p class="has-text-align-left">Vous retrouverez aussi cet outil dans l&rsquo;onglet Guide de l&rsquo;application mobile Entourage.&nbsp;<a href="http://bit.ly/applientourage"><span class="has-inline-color has-luminous-vivid-orange-color">T&eacute;l&eacute;chargez-la ici</span>&nbsp;</a>!</p>
+      <p>Le contenu de ce formulaire sera compl&eacute;t&eacute; r&eacute;guli&egrave;rement. Si une de vos questions reste sans r&eacute;ponse ou si vous souhaitez que nous abordions un sujet sp&eacute;cifique n&rsquo;h&eacute;sitez pas &agrave; nous contacter sur&nbsp;<a href="mailto:orientation@entourage.social">orientation@entourage.social</a>.&nbsp;</p>
 
 aides_sociales:
   name: "Article Aides sociales : comment y avoir accès ?"
   category: understand
-  description: description
   url: https://blog.entourage.social/2020/11/06/les-aides-sociales-en-france-comment-y-avoir-acces-quand-on-est-sdf/
   duration: 300
   is_video: false
   status: active
+  description: |
+    <header>
+      <h1>Les aides sociales en France&nbsp;: comment y avoir acc&egrave;s quand on est SDF&nbsp;?</h1>
+      </header>
+      <div class="entry-content section-inner thin">
+      <figure class="wp-block-image size-large is-resized">
+      <div><img class="wp-image-7537" src="https://blog.entourage.social/wp-content/uploads/2020/11/Porte-feuille.png" alt="" width="143" height="279" loading="lazy"></div>
+      </figure>
+      <p>Nous vous pr&eacute;sentons ci-dessous un bref aper&ccedil;u des aides sociales financi&egrave;res principales en France. M&ecirc;me en situation de rue, il est possible d&rsquo;en b&eacute;n&eacute;ficier, &agrave; condition d&rsquo;&ecirc;tre domicili&eacute; et de respecter les autres conditions d&rsquo;attribution.&nbsp;<strong>Nous recommandons donc vivement aux personnes SDF et en pr&eacute;carit&eacute; qui ne sont pas encore accompagn&eacute;es par un travailleur social de s&rsquo;orienter vers le Centre Communal d&rsquo;Action Sociale de leur commune ou des associations habilit&eacute;es.</strong></p>
+      <p><strong>Saviez vous que le taux le taux de non-recours au RSA est de 34 % en moyenne par trimestre</strong>. Et que dans 50% des cas, cela est<strong>&nbsp;</strong>d&ucirc; &agrave; un manque d&rsquo;information ? (Adessadomicile, F&eacute;d&eacute;ration d&rsquo;aide &agrave; domicile, 2017).&nbsp;</p>
+      <p>Afin de prendre connaissance de toutes les aides auxquelles vous &ecirc;tes &eacute;ligibles compte tenu de votre situation, vous pouvez consulter le site&nbsp;<a href="https://www.mesdroitssociaux.gouv.fr/accueil/">mesdroitssociaux.gouv.fr</a>&nbsp;</p>
+      <p>&nbsp;</p>
+      <div id="wpsm_accordion_7531" class="wpsm_panel-group">
+      <div class="wpsm_panel wpsm_panel-default">
+      <div class="wpsm_panel-heading" role="tab">
+      <h4 class="wpsm_panel-title"><a data-toggle="collapse" data-parent="#wpsm_accordion_7531 " data-target="#ac_7531_collapse1"><span class="ac_title_class">&nbsp;Le Revenu de Solidarit&eacute; Active- RSA</span></a></h4>
+      </div>
+      <div id="ac_7531_collapse1" class="wpsm_panel-collapse collapse in">
+      <div class="wpsm_panel-body">En France il existe une multitude d'aides sociales et financi&egrave;res principalement d&eacute;livr&eacute;es par la CAF (Caisse d'Allocations Familiales).<br>La plus connue &eacute;tant le RSA (Revenu de Solidarit&eacute; Active) qui s'&eacute;l&egrave;ve en 2020 pour une personne seule &agrave; 564 euros par mois.<br><br>Le RSA assure aux personnes sans ressources un niveau minimum de revenu qui varie selon la composition du foyer. Pour &ecirc;tre &eacute;ligible au RSA il faut avoir au moins 25 ans et r&eacute;sider en France. Si vous &ecirc;tes sans domicile fixe vous devez vous faire domicilier aupr&egrave;s d&rsquo;un CCAS (Centre Communal d&rsquo;Action Social).<br><br>Pour en savoir plus sur les d&eacute;marches, le montant et les conditions d'acc&egrave;s du RSA,&nbsp;<a href="https://www.service-public.fr/particuliers/vosdroits/F19778">consultez cette page d&eacute;di&eacute;e sur service-public.fr.</a></div>
+      </div>
+      </div>
+      </div>
+      </div>
 
 comite_de_la_rue:
   name: "Vidéo Le Comité de la Rue, organe essentiel d'Entourage"
   category: understand
-  description: description
   url: https://www.youtube.com/embed/CaTIbs03TQ0
   duration: 141
   is_video: true
   status: active
+  description: description
 
 idees_d_actions:
   name: "Article Des idées d'actions faciles à réaliser sur l'app !"
   category: act
-  description: description
   url: https://blog.entourage.social/2017/04/28/quelles-actions-faire-avec-entourage/
   duration: 180
   is_video: false
   status: active
+  description: |
+    <header>
+      <h1>Appli Entourage&nbsp;: des id&eacute;es d&rsquo;actions faciles &agrave; r&eacute;aliser&nbsp;!</h1>
+      </header>
+      <div class="entry-content section-inner thin">
+      <p>On vous donne des id&eacute;es d&rsquo;actions simples &agrave; proposer pour cr&eacute;er plus de chaleur humaine avec les personnes de la rue.</p>
+      <p><img class="aligncenter wp-image-4383" src="http://blog.entourage.social/wp-content/uploads/2018/08/Demo-appli-e1535621662831.jpg" alt="" width="156" height="183" loading="lazy"></p>
+      <p>Gardons en t&ecirc;te que le plus important est de cr&eacute;er une&nbsp;<strong>relation</strong>&nbsp;avec nos voisins d&eacute;munis. Sur le r&eacute;seau :&nbsp; cr&eacute;er une action solidaire, c&rsquo;est facile !</p>
+      <p><img class="aligncenter size-full wp-image-4379" src="http://blog.entourage.social/wp-content/uploads/2018/08/sdf-femme-entouree-riverains.jpg" sizes="(max-width: 3010px) 100vw, 3010px" srcset="https://blog.entourage.social/wp-content/uploads/2018/08/sdf-femme-entouree-riverains.jpg 3010w, https://blog.entourage.social/wp-content/uploads/2018/08/sdf-femme-entouree-riverains-300x128.jpg 300w, https://blog.entourage.social/wp-content/uploads/2018/08/sdf-femme-entouree-riverains-768x327.jpg 768w, https://blog.entourage.social/wp-content/uploads/2018/08/sdf-femme-entouree-riverains-1024x436.jpg 1024w" alt="" width="3010" height="1281" loading="lazy"></p>
+      <h2><strong>Je me rends disponible pour cr&eacute;er du lien !</strong></h2>
+      <p>Le plus dur dans la rue, c&rsquo;est l&rsquo;absence de relations sociales. &ldquo;La solitude, &ccedil;a tue&rdquo;, nous dit Pierrot, qui dort dans la rue depuis 19 ans. Vous pouvez agir &agrave; votre &eacute;chelle contre cet isolement en proposant :</p>
+      <ul>
+      <li>du temps pour un caf&eacute;</li>
+      </ul>
+      <p><img class="aligncenter wp-image-4396" src="http://blog.entourage.social/wp-content/uploads/2017/04/cafe-solidaire-v2-e1535638575273.jpg" alt="" width="193" height="140" loading="lazy"></p>
+      <ul>
+      <li>
+      <ul>
+      <li>5 minutes pour faire un brin de causette</li>
+      </ul>
+      </li>
+      </ul>
+      <ul>
+      <li>
+      <ul>
+      <li>un moment de rencontre avec vos voisins avec et sans-abri</li>
+      </ul>
+      </li>
+      </ul>
+      <ul>
+      <li>une petite f&ecirc;te pour l&rsquo;anniversaire d&rsquo;une personnes SDF du quartier</li>
+      </ul>
+      <p><img class="aligncenter wp-image-4395" src="http://blog.entourage.social/wp-content/uploads/2017/04/Riverain-cadeau-anniversaire-e1535638409648.jpg" alt="" width="84" height="156" loading="lazy"></p>
+      <ul>
+      <li>regarder un match ensemble&hellip;</li>
+      </ul>
+      <hr>
+      <h2><strong>J&rsquo;organise des activit&eacute;s solidaires</strong></h2>
+      <p>Pour casser la routine de la rue, c&rsquo;est sympa de proposer des activit&eacute;s o&ugrave; riverains et sans-abri peuvent se r&eacute;unir :</p>
+      <ul>
+      <li>des&nbsp;<strong>loisirs</strong>&nbsp;: partie de p&eacute;tanque, pique-niques, cin&eacute;ma, jeux de soci&eacute;t&eacute; dans un caf&eacute;&hellip;</li>
+      </ul>
+      <p><img class="aligncenter wp-image-4392" src="http://blog.entourage.social/wp-content/uploads/2017/04/petanque-solidaire.jpg" sizes="(max-width: 397px) 100vw, 397px" srcset="https://blog.entourage.social/wp-content/uploads/2017/04/petanque-solidaire.jpg 3824w, https://blog.entourage.social/wp-content/uploads/2017/04/petanque-solidaire-300x92.jpg 300w, https://blog.entourage.social/wp-content/uploads/2017/04/petanque-solidaire-768x237.jpg 768w, https://blog.entourage.social/wp-content/uploads/2017/04/petanque-solidaire-1024x315.jpg 1024w" alt="" width="397" height="122" loading="lazy"></p>
+      <ul>
+      <li>du&nbsp;<strong>sport</strong>&nbsp;: du foot (&agrave; jouer ou &agrave; regarder !), basket, ping pong dans les parcs&hellip;</li>
+      <li>un&nbsp;<strong>repas de quartier</strong></li>
+      </ul>
+      <p><img class="aligncenter wp-image-4391" src="http://blog.entourage.social/wp-content/uploads/2017/04/cuisine-solidaire-e1535638048484.jpg" alt="" width="348" height="166" loading="lazy"></p>
+      <ul>
+      <li>ou m&ecirc;me une distribution de boissons chaudes &agrave; la rencontre des plus d&eacute;munis !</li>
+      <li>vous pouvez aussi&nbsp;<strong>proposer de donner un peu de temps &agrave; une action organis&eacute;e par des associations</strong>&nbsp;: &ecirc;tre b&eacute;n&eacute;vole ponctuel pour une distribution de soupe, une maraude&hellip;</li>
+      </ul>
+      <hr>
+      <h2>&nbsp;</h2>
+      <h2><strong>Je propose mes comp&eacute;tences !</strong></h2>
+      <p>Vous avez peut-&ecirc;tre un don ou une comp&eacute;tence particuli&egrave;re : et si vous les partagiez ?&nbsp;Souvent, les personnes SDF ont besoin d&rsquo;aide sur les sujets suivants :</p>
+      <ul>
+      <li><strong>d&eacute;marches administratives</strong>&nbsp;: si les personnes SDF peuvent se sentir soutenus dans leur d&eacute;marche par des voisins, en plus du travail de fond indispensable des r&eacute;f&eacute;rents sociaux, il y a d&rsquo;autant plus de chances que &ccedil;a aboutisse !
+      <ul>
+      <li>
+      <ul>
+      <li>refaire un CV</li>
+      </ul>
+      </li>
+      </ul>
+      <ul>
+      <li>
+      <ul>
+      <li>une d&eacute;marche en mairie pour des papiers, une domiciliation</li>
+      </ul>
+      </li>
+      </ul>
+      <ul>
+      <li>aider &agrave; r&eacute;clamer le RSA, refaire des papiers pour la Couverture Maladie Universelle&hellip;&nbsp;</li>
+      </ul>
+      </li>
+      </ul>
+      <p><img class="aligncenter wp-image-4390" src="http://blog.entourage.social/wp-content/uploads/2017/04/Aide-demarches.jpg" alt="" width="168" height="152" loading="lazy"></p>
+      <ul>
+      <li><strong>ma&icirc;trise de la langue :</strong>&nbsp;&nbsp;cours de fran&ccedil;ais, effectuer des traductions, &eacute;crire des lettres</li>
+      </ul>
+      <p><img class="aligncenter wp-image-4393" src="http://blog.entourage.social/wp-content/uploads/2017/04/Bjr.jpg" sizes="(max-width: 314px) 100vw, 314px" srcset="https://blog.entourage.social/wp-content/uploads/2017/04/Bjr.jpg 2199w, https://blog.entourage.social/wp-content/uploads/2017/04/Bjr-300x134.jpg 300w, https://blog.entourage.social/wp-content/uploads/2017/04/Bjr-768x343.jpg 768w, https://blog.entourage.social/wp-content/uploads/2017/04/Bjr-1024x457.jpg 1024w" alt="" width="314" height="140" loading="lazy"></p>
+      <ul>
+      <li>
+      <ul>
+      <li><strong>cas juridiques</strong>&nbsp;: faire respecter leurs droits, demander un recours&hellip;</li>
+      </ul>
+      </li>
+      </ul>
+      <ul>
+      <li><strong>prendre un rendez-vous chez un m&eacute;decin</strong></li>
+      </ul>
+      <p>Si vous &ecirc;tes traducteur, avocat, assistante sociale, infirmi&egrave;re, &eacute;crivain public&hellip; ou un riverain de bonne volont&eacute;, vous pouvez cr&eacute;er une action avec ce que vous avez &agrave; offrir !</p>
+      <hr>
+      <h2><strong><img class="aligncenter wp-image-4394 " src="http://blog.entourage.social/wp-content/uploads/2017/04/Proposer-services-e1535638239560.jpg" alt="" width="210" height="223" loading="lazy"></strong></h2>
+      <h2><strong>Je donne acc&egrave;s &agrave; certains&nbsp;&eacute;quipements</strong></h2>
+      <p>Comme tout le monde, les personnes &agrave; la rue ont besoin de laver leur linge ou recharger leurs batteries. Rien de plus facile !</p>
+      <ul>
+      <li>proposez un local / une cave pour pouvoir stocker ses affaires<img class="aligncenter wp-image-4397" src="http://blog.entourage.social/wp-content/uploads/2017/04/sdf-femme-bcp-bagages-e1535639209880.jpg" alt="" width="281" height="189" loading="lazy"></li>
+      <li>donnez leur acc&egrave;s &agrave; votre machine &agrave; laver</li>
+      <li>permettez leur d&rsquo;acc&eacute;der &agrave; un acc&egrave;s &agrave; Internet</li>
+      </ul>
+      <h2><br><img class=" size-full wp-image-3704 aligncenter" src="https://blogentourageblog.files.wordpress.com/2017/04/shape3.png" alt="Shape3.png" width="165" height="108" loading="lazy"></h2>
+      <h2><strong>Je peux aussi proposer un don mat&eacute;riel, qui peut &ecirc;tre un pr&eacute;texte &agrave; la cr&eacute;ation d&rsquo;une relation !</strong></h2>
+      <ul>
+      <li><strong>V&ecirc;tements :</strong>&nbsp;sous-v&ecirc;tements, chaussettes, pulls, t-shirt, pantalons, soutien-gorges</li>
+      </ul>
+      <p><img class="aligncenter size-full wp-image-4398" src="http://blog.entourage.social/wp-content/uploads/2017/04/pile-vetements-chauds-e1535639270399.jpg" alt="" width="700" height="239" loading="lazy"></p>
+      <ul>
+      <li>
+      <ul>
+      <li><strong>Hygi&egrave;ne</strong>&nbsp;: protections hygi&eacute;niques pour les femmes, shampoing, savon, dentifrice, brosse &agrave; dent&hellip;</li>
+      </ul>
+      </li>
+      </ul>
+      <ul>
+      <li><strong>&Eacute;quipements pour&nbsp;l&rsquo;hiver</strong>&nbsp;: sac de couchage, couverture, duvet, &eacute;charpes, gants&hellip;<br>Par exemple &ldquo;J&rsquo;ai 1 sac de couchage en bon &eacute;tat que je n&rsquo;utilise pas. Je suis disponible pour le donner dans mon quartier, les soirs de semaine apr&egrave;s 18h.&rdquo;</li>
+      </ul>
+      <p><img class="aligncenter wp-image-4399" src="http://blog.entourage.social/wp-content/uploads/2017/04/Duvet-ouvert-e1535639322114.jpg" alt="" width="266" height="152" loading="lazy"></p>
+      <ul>
+      <li><strong>Et l&rsquo;&eacute;t&eacute;</strong>&nbsp;: des bouteilles d&rsquo;eau, de quoi s&rsquo;&eacute;venter&hellip;</li>
+      <li>Proposer de faire quelques&nbsp;<strong>courses</strong>&hellip;<br>
+      <h2><img class="aligncenter wp-image-4403" src="http://blog.entourage.social/wp-content/uploads/2017/04/Sac-courses.jpg" sizes="(max-width: 131px) 100vw, 131px" srcset="https://blog.entourage.social/wp-content/uploads/2017/04/Sac-courses.jpg 565w, https://blog.entourage.social/wp-content/uploads/2017/04/Sac-courses-226x300.jpg 226w" alt="" width="131" height="175" loading="lazy"></h2>
+      <hr></li>
+      </ul>
+      <p><strong>&Agrave; VOUS DE JOUER POUR CR&Eacute;ER PLUS DE CHALEUR HUMAINE DANS VOTRE QUARTIER !</strong></p>
+      <hr>
+      <p>En plus Des associations professionnelles sont bien s&ucirc;r l&agrave; pour vous aider &agrave; aider : n&rsquo;h&eacute;sitez pas &agrave; les contacter quand la situation vous d&eacute;passe&nbsp; !</p>
+      </div>
 
 devenir_sdf:
   name: "Vidéo Comment devient-on SDF ?"
   category: understand
-  description: description
   url: https://www.youtube.com/embed/Dk3bo__5dvs
   duration: 154
   is_video: true
   status: active
+  description: description
 
 si_on_se_comprenait:
   name: "Vidéo SDF, et si on comprenait ?"
   category: understand
-  description: description
   url: https://www.youtube.com/embed/aVobOfVgELg
   duration: 198
   is_video: true
   status: active
+  description: description
 
 combat_d_eric:
   name: "Vidéo Loopsider Le combat d'Eric, sans-abri à Paris"
   category: understand
-  description: description
   url: https://www.youtube.com/embed/kUHJqJ-FifU
   # duration: 120
   is_video: 407
   status: active
+  description: description
 
 wifi:
   name: "Vidéo J'ai ouvert mon WiFi à mes voisins"
   category: inspire
-  description: description
   url: https://www.youtube.com/embed/lZxLhBDj8Kk
   duration: 129
   is_video: true
   status: active
+  description: description
 
 si_on_changeait_de_regard:
   name: "Vidéo Personnes sans-domicile-fixe : et si on changeait de regard ?"
   category: inspire
-  description: description
   url: https://www.youtube.com/embed/hemPKnpsfWc
   duration: 197
   is_video: true
   status: active
+  description: description
 
 paroles_de_femmes:
   name: "Vidéo Paroles de femmes sans-domicile-fixe"
   category: understand
-  description: description
   url: https://www.youtube.com/embed/kF7CnsSsBxE
   duration: 133
   is_video: true
   status: active
+  description: description
 
 rachid_et_marie:
   name: "Vidéo Regards croisés : Rachid & Marie"
   category: understand
-  description: description
   url: https://www.youtube.com/embed/QXcUptypnOY
   duration: 124
   is_video: true
   status: active
+  description: description
 
 urgence_sociale:
   name: "Vidéo L'urgence sociale : qui fait quoi ?"
   category: understand
-  description: description
   url: https://www.youtube.com/embed/DiJf64CtZRc
   duration: 201
   is_video: true
   status: active
+  description: description
 
 si_on_agissait:
   name: "Vidéo Personnes sans-domicile-fixe : et si on agissait ?"
   category: act
-  description: description
   url: https://www.youtube.com/embed/SvYCZ3s0AFE
   duration: 270
   is_video: true
   status: active
+  description: description
 
 tuto_evenement:
   name: "Tuto app - Comment créer un événement ?"
   category: act
-  description: description
   # url:
   # duration: 120
   is_video: true
   status: active
+  description: description
 
 tuto_groupe:
   name: "Tuto app - Comment créer un groupe ?"
   category: act
-  description: description
   # url:
   # duration: 120
   is_video: true
   status: active
+  description: description
 
 preparer_la_rencontre:
   name: "Préparer la rencontre"
   category: act
-  description: description
   # url:
   # duration: 120
   is_video: true
   status: active
+  description: description
 
 tuto_don:
   name: "Tuto ce que je peux donner / ne pas donner"
   category: act
-  description: description
   # url:
   # duration: 120
   is_video: true
   status: active
+  description: description
 
 charte_ethique:
   name: "La Charte éthique en qlq mots"
   category: act
-  description: description
   # url:
   # duration: 120
   is_video: true
   status: active
+  description: description
 
 relayer_les_demandes:
   name: "Article “Comment relayer les demandes à son réseau de quartier”"
   category: act
-  description: description
   # url:
   # duration: 120
   is_video: false
   status: active
+  description: description
 
 maraudes:
   name: "Article Les maraudes pour les nuls"
   category: act
-  description: description
   url: https://blog.entourage.social/2021/04/26/maraude-pour-les-nuls/
   duration: 300
   is_video: false
   status: active
+  description: |
+    <header>
+      <h1>Maraude pour les nuls&nbsp;!</h1>
+      </header>
+      <div class="entry-content section-inner thin">
+      <p>L&rsquo;id&eacute;e du lien social avec les personnes les plus d&eacute;munies c&rsquo;est bien, mais&nbsp;<strong>comment on passe &agrave; l&rsquo;action</strong>&nbsp;<strong>?</strong></p>
+      <p>Si toi aussi tu te demandes comment aider concr&egrave;tement les personnes sans-abri, voici une des r&eacute;ponses possibles :</p>
+      <p>En plus de cr&eacute;er du lien social par&nbsp;<a href="http://bit.ly/applientourage">l&rsquo;application Entourage</a>, tu peux effectuer des&nbsp;<strong>maraudes</strong>&nbsp;pour&nbsp;<strong>rencontrer, aider, partager, et propager toujours plus de chaleur humaine !&nbsp;</strong>💪</p>
+      <h2 class="has-text-align-center has-luminous-vivid-orange-color has-text-color has-background">Mais&nbsp;<strong>une maraude, qu&rsquo;est-ce que c&rsquo;est&nbsp;?</strong></h2>
+      <p>Une maraude consiste &agrave; aller dans la rue (&agrave; pied ou en voiture) &agrave; la rencontre de personnes sans-abri,&nbsp;<strong>pour leur apporter de l&rsquo;aide mat&eacute;rielle et/ou simplement &ecirc;tre l&agrave; et partager un moment</strong>. Elles sont organis&eacute;es par les associations, les lieux de culte, ou de mani&egrave;re autonome et citoyenne. Les interventions se font de jour comme de nuit, souvent en &eacute;quipe de 3-4 b&eacute;n&eacute;voles suivant les structures.</p>
+      <p>Les maraudes sont tr&egrave;s diversifi&eacute;es,&nbsp;<strong>certaines sont l&agrave; pour orienter les personnes, d&rsquo;autres&nbsp;juste pour le lien, certaines pour orienter vers des soins&hellip;&nbsp;</strong>Elles peuvent viser des groupes de personnes particuli&egrave;res (familles, personnes &eacute;trang&egrave;res&hellip;) ou pas, parfois professionnelles parfois b&eacute;n&eacute;voles&hellip;</p>
+      <p class="has-luminous-vivid-orange-color has-text-color"><strong>Pour simplifier, voici la classification utilis&eacute;e par Entourage, distinguant 3 types de maraudes :</strong></p>
+      <ul>
+      <li><strong>👕</strong>&nbsp;<strong>Distributives</strong>&nbsp;: le but est de distribuer des biens de premi&egrave;re n&eacute;cessit&eacute; aux personnes (v&ecirc;tements, nourriture, biens d&rsquo;hygi&egrave;ne&hellip;)</li>
+      <li><strong>🚑:</strong>&nbsp;<strong>M&eacute;dicale</strong>&nbsp;: les maraudeurs orientent vers du personnel m&eacute;dical&nbsp;les personnes dans le besoin (en fonction des signalements recens&eacute;s par le 115 ou en d&eacute;ambulant simplement dans la ville)</li>
+      <li><strong>☕️&nbsp;&nbsp;Sociale&nbsp;</strong>: les maraudeurs, avec un thermos de caf&eacute; (ou pas), vont &agrave; la rencontre des personnes sans-abri pour cr&eacute;er du lien social, &eacute;couter, partager, &eacute;tablir un contact humain.</li>
+      </ul>
+      <p>De mani&egrave;re g&eacute;n&eacute;ral, les maraudeurs (oui dans le jargon on dit maraudeur) partagent surtout un moment convivial et chaleureux avec les personnes sans-abri, pour&nbsp;<strong>redonner &agrave; chacun de la</strong>&nbsp;<strong>dignit&eacute; et de l&rsquo;estime de soi, par le lien social.</strong></p>
+      <h2 class="has-text-align-center has-luminous-vivid-orange-color has-text-color has-background"><strong>Concr&egrave;tement, comment &ccedil;a se passe?</strong></h2>
+      <p>Bien qu&rsquo;elles soient tr&egrave;s diversifi&eacute;es en fonction du type et de la structure qui l&rsquo;organise, voici une illustration&nbsp;<strong>des gestes typiques de maraudes</strong>&nbsp;:</p>
+      <figure class="wp-block-image size-large"><img class="wp-image-7954" src="https://blog.entourage.social/wp-content/uploads/2021/03/Duo-riverain_sdf-femme-trottoir-1.jpg" alt="" width="5245" height="3497" loading="lazy"></figure>
+      <h2 class="has-text-align-center has-luminous-vivid-orange-color has-text-color has-background">Et maintenant,&nbsp;<strong>comment je fais pour devenir maraudeur ?</strong></h2>
+      <p class="has-black-color has-text-color">Si toi aussi tu as du temps et que tu souhaites recr&eacute;er du lien avec les personnes les plus d&eacute;munies,&nbsp;<strong>voici une liste de grandes associations qui effectuent des maraudes et qui seront s&ucirc;rement ravies d&rsquo;accueillir de nouveaux b&eacute;n&eacute;voles !</strong>&nbsp;<a href="https://blog.entourage.social/2021/04/26/maraude-pour-les-nuls/#Focus-Maraude-Ville">(Trouvez les associations de maraude dans ma ville)</a></p>
+      <ul>
+      <li><strong><a href="https://www.captifs.fr/">Aux Captifs la lib&eacute;ration</a></strong>&nbsp;est une association humanitaire au service des personnes de la rue et des personnes en situation de prostitution. L&rsquo;association, implant&eacute;e &agrave; Paris, &agrave; une &laquo;&nbsp;triple vocation: rencontrer, accompagner, r&eacute;v&eacute;ler&nbsp;&raquo;. &nbsp;(<strong>Maraudes sociales</strong>)</li>
+      </ul>
+      <ul>
+      <li><a href="https://www.ssvp.fr/"><strong>La Soci&eacute;t&eacute; de Saint-Vincent-de-Paul</strong>&nbsp;</a>est &laquo;&nbsp;un r&eacute;seau de charit&eacute; de proximit&eacute;, au service des personnes seules ou d&eacute;munies&nbsp;&raquo;. Pr&eacute;sente dans 150 pays, l&rsquo;association initie des &laquo;&nbsp;actions locales cibl&eacute;es&nbsp;&raquo;.</li>
+      </ul>
+      <ul>
+      <li><strong><a href="https://www.croix-rouge.fr/">La Croix-Rouge</a></strong>, cr&eacute;&eacute;e depuis 1859, est le premier op&eacute;rateur du Samu social en France. (<strong>Maraudes m&eacute;dicales et sociales)</strong></li>
+      </ul>
+      <ul>
+      <li><strong><a href="https://www.restosducoeur.org/associations-departementales/">Les Restos du Coeur</a></strong>, fond&eacute;e par Coluche en 1985, est une association qui a pour but &ldquo;d&rsquo;aider et d&rsquo;apporter une assistance b&eacute;n&eacute;vole aux personnes d&eacute;munies, notamment dans le domaine alimentaire par l&rsquo;acc&egrave;s &agrave; des repas gratuits, et par la participation &agrave; leur insertion sociale et &eacute;conomique, ainsi qu&rsquo;&agrave; toute action contre la pauvret&eacute; sous toutes ses formes&rdquo;. (<strong>Maraudes distributives</strong>)</li>
+      </ul>
+      <ul>
+      <li><strong><a href="https://emmaus-france.org/">Emma&uuml;s</a></strong>, fond&eacute;e en 1954 par l&rsquo;Abb&eacute; Pierre, est une association de lutte contre la pauvret&eacute; et contre l&rsquo;exclusion, qui aide &agrave; &ldquo;trouver, avec les personnes victimes de ph&eacute;nom&egrave;nes d&rsquo;exclusion, les solutions qui leur permettent de redevenir acteur de leur vie&rdquo;, pour aider les &ldquo;publics en grande pr&eacute;carit&eacute;&rdquo;. (<strong>Maraudes sociales</strong>)</li>
+      </ul>
+      <ul>
+      <li><strong><a href="https://www.secourspopulaire.fr/secours-populaire">Le Secours Populaire</a></strong>, cr&eacute;&eacute;e en 1945 et h&eacute;ritier de mouvements populaires, est une association qui &ldquo;s&rsquo;est donn&eacute;e pour mission d&rsquo;agir contre la pauvret&eacute; et l&rsquo;exclusion en France et dans le monde, et de promouvoir la solidarit&eacute; et ses valeurs&rdquo;. (<strong>Maraudes distributives et sociales</strong>)</li>
+      </ul>
+      <ul>
+      <li><strong><a href="http://paris.secours-catholique.org/">Le Secours Catholique</a></strong>, cr&eacute;&eacute;e en 1946, est une association luttant &ldquo;contre toutes les causes de pauvret&eacute;, d&rsquo;in&eacute;galit&eacute;s et d&rsquo;exclusion&rdquo;, service de l&rsquo;Eglise Catholique. (<strong>Maraudes sociales)</strong></li>
+      </ul>
+      <ul>
+      <li><strong><a href="https://www.ordredemaltefrance.org/actions-en-france/lutte-contre-l-exclusion/maraudes-du-samu-social">L&rsquo;Ordre de Malte</a></strong>, cr&eacute;&eacute;e en 1927, est une association de lutte contre l&rsquo;exclusion. Sa mission est &ldquo;d&rsquo;accueillir, de secourir et de soigner les personnes fragilis&eacute;es par la vie, et de former leurs aidants&rdquo;. (<strong>Maraudes m&eacute;diales, distributives et sociales</strong>)</li>
+      </ul>
+      <ul>
+      <li><strong><a href="https://www.protection-civile.org/adpc/">Protection civile</a>,&nbsp;</strong>cr&eacute;&eacute;e en 1965, est une association de s&eacute;curit&eacute; civile, qui &ldquo;agit, hier comme aujourd&rsquo;hui, pour mettre en oeuvre tous les moyens civils dont elle dispose en vue d&rsquo;assurer la protection des populations civiles contre les dangers en temps de paix comme en temps de crise<strong>. (Maraudes distributives et sociales)</strong></li>
+      </ul>
+      <ul>
+      <li>L&rsquo;association&nbsp;<a href="https://aurore.asso.fr/">Aurore</a>, cr&eacute;&eacute;e en 1871, l&rsquo;association Aurore h&eacute;berge, soigne et accompagne plus de 41 300 personnes en situation de pr&eacute;carit&eacute; ou d&rsquo;exclusion vers une insertion sociale et professionnelle. Reconnue d&rsquo;utilit&eacute; publique depuis 1875, Aurore s&rsquo;appuie sur son exp&eacute;rience pour proposer et exp&eacute;rimenter des formes innovantes de prises en charge, qui s&rsquo;adaptent &agrave; l&rsquo;&eacute;volution des ph&eacute;nom&egrave;nes de pr&eacute;carit&eacute; et d&rsquo;exclusion.&nbsp;<strong>(Maraudes distributives et sociales)</strong></li>
+      </ul>
+      <p>&nbsp;</p>
+      <p><strong>Toutes les maraudes sont coordonn&eacute;es par le&nbsp;<a href="https://www.samusocial.paris/" target="_blank" rel="noreferrer noopener">Samu Social</a>,</strong>&nbsp;qui est un dispositif d&eacute;partemental de service public de r&eacute;f&eacute;rence pour l&rsquo;aide aux plus d&eacute;munis. Il g&egrave;re le&nbsp;<strong>115</strong>, num&eacute;ro &agrave; composer pour l&rsquo;h&eacute;bergement d&rsquo;urgence et pour toute situation d&rsquo;urgence, et effectue des&nbsp;<strong>maraudes m&eacute;dicales</strong>&nbsp;(avec l&rsquo;aide d&rsquo;autres associations comme la Croix Rouge ou l&rsquo;Ordre de Malte).</p>
+      <p class="has-luminous-vivid-orange-color has-text-color">Les associations font r&eacute;guli&egrave;rement des appels pour trouver des b&eacute;n&eacute;voles sur&nbsp;<a href="http://bit.ly/applientourage"><strong>l&rsquo;application Entourage</strong></a>&nbsp;pour leurs maraudes. N&rsquo;h&eacute;sitez pas &agrave; t&eacute;l&eacute;charger l&rsquo;application pour les aider et les rejoindre</p>
+      <p>Sinon, plusieurs sites recensent les besoins de b&eacute;n&eacute;volat, comme&nbsp;<a href="http://www.benenova.fr/" target="_blank" rel="noreferrer noopener">Benenova</a>, le site de la&nbsp;<a href="https://jemengage.paris.fr/" target="_blank" rel="noreferrer noopener">Mairie de Paris</a>, ou encore&nbsp;<a href="http://www.tousbenevoles.org/" target="_blank" rel="noreferrer noopener">Tous b&eacute;n&eacute;voles</a>, un bon moyen de rejoindre facilement des actions de solidarit&eacute; !</p>
+      <h2 id="Focus-Maraude-Ville" class="has-text-align-center has-luminous-vivid-orange-color has-text-color has-background"><strong>Focus sur quelques organisations de maraudes</strong></h2>
+      <p class="has-text-align-center"><strong>Cliquez sur la ville de votre choix ⤵️</strong></p>
+      <div class="wp-block-buttons aligncenter">
+      <div class="wp-block-button"><a class="wp-block-button__link has-white-color has-luminous-vivid-orange-background-color has-text-color has-background" href="https://blog.entourage.social/2021/04/26/maraude-pour-les-nuls/#Titre-Paris">Paris</a></div>
+      &nbsp;
+      <div class="wp-block-button"><a class="wp-block-button__link has-white-color has-luminous-vivid-orange-background-color has-text-color has-background" href="https://blog.entourage.social/2021/04/26/maraude-pour-les-nuls/#Titre-Lyon">Lyon</a></div>
+      &nbsp;
+      <div class="wp-block-button"><a class="wp-block-button__link has-white-color has-luminous-vivid-orange-background-color has-text-color has-background" href="https://blog.entourage.social/2021/04/26/maraude-pour-les-nuls/#Titre-Lille">Lille</a></div>
+      &nbsp;
+      <div class="wp-block-button"><a class="wp-block-button__link has-white-color has-luminous-vivid-orange-background-color has-text-color has-background" href="https://blog.entourage.social/2021/04/26/maraude-pour-les-nuls/#Titre-Rennes">Rennes</a></div>
+      &nbsp;
+      <div class="wp-block-button"><a class="wp-block-button__link has-white-color has-luminous-vivid-orange-background-color has-text-color has-background" href="https://blog.entourage.social/2021/04/26/maraude-pour-les-nuls/#Titre-Hauts-de-seine">Hauts-de-Seine</a></div>
+      </div>
+      <h2>&nbsp;</h2>
+      <div class="wp-block-columns">
+      <div class="wp-block-column">
+      <div class="wp-block-columns">
+      <div class="wp-block-column">
+      <div class="wp-block-image">
+      <figure class="aligncenter size-large is-resized"><img class="wp-image-8032" src="https://blog.entourage.social/wp-content/uploads/2021/03/Duo-riverain_sdf-maraude-cafe%CC%81-5-1.jpg" alt="" width="594" height="394" loading="lazy"></figure>
+      </div>
+      </div>
+      <div class="wp-block-column">
+      <div class="wp-block-image">
+      <figure class="aligncenter size-large is-resized"><img class="wp-image-8033" src="https://blog.entourage.social/wp-content/uploads/2021/03/Duo-riverain_sdf-carte-de-voeux-1.jpg" alt="" width="594" height="396" loading="lazy"></figure>
+      </div>
+      <p>&nbsp;</p>
+      </div>
+      </div>
+      </div>
+      </div>
+      <h2 id="Titre-Paris" class="has-text-align-center has-medium-font-size">Les associations de maraudes &agrave; Paris.</h2>
+      <div class="wp-block-columns">
+      <div class="wp-block-column">
+      <h2 class="has-text-align-center has-luminous-vivid-orange-color has-text-color">1er arr.</h2>
+      <ul>
+      <li><a href="http://emmaus-france.org/" target="_blank" rel="noreferrer noopener">Emma&uuml;s</a></li>
+      <li><a href="http://association-goelette.fr/" target="_blank" rel="noreferrer noopener">Go&euml;lette</a></li>
+      <li><a href="http://www.protection-civile.org/" target="_blank" rel="noreferrer noopener">Protection civile</a></li>
+      <li><a href="http://www.croix-rouge.fr/Annuaire/UNITE-LOCALE-DE-PARIS-1ER-ET-2EME2">La Croix Rouge</a></li>
+      <li><a href="https://fr-fr.facebook.com/groups/788932587852359/events/" target="_blank" rel="noreferrer noopener">Maraudes du Coeur 94</a></li>
+      </ul>
+      </div>
+      <div class="wp-block-column">
+      <h2 class="has-text-align-center has-luminous-vivid-orange-color has-text-color">2&egrave;me arr.</h2>
+      <ul>
+      <li><a href="http://www.captifs.fr/" target="_blank" rel="noreferrer noopener">Aux captifs la lib&eacute;ration</a></li>
+      <li><a href="http://www.ordredemaltefrance.org/">L&rsquo;Ordre de Malte</a></li>
+      <li><a href="http://www.croix-rouge.fr/Annuaire/UNITE-LOCALE-DE-PARIS-1ER-ET-2EME2" target="_blank" rel="noreferrer noopener">La Croix Rouge</a></li>
+      <li><a href="https://www.secourspopulaire.fr/" target="_blank" rel="noreferrer noopener">Le Secours Populaire</a></li>
+      </ul>
+      </div>
+      <div class="wp-block-column">
+      <h2 class="has-text-align-center has-luminous-vivid-orange-color has-text-color">3&egrave;me arr.</h2>
+      <ul>
+      <li><a href="http://www.ordredemaltefrance.org/" target="_blank" rel="noreferrer noopener">L&rsquo;Ordre de Malte</a></li>
+      <li><a href="https://www.secourspopulaire.fr/">Le Secours Populaire</a></li>
+      <li><a href="https://www.autremonde.org/" target="_blank" rel="noreferrer noopener">Autre Monde</a></li>
+      <li><a href="http://paris03et10.croix-rouge.fr/">La Croix Rouge</a></li>
+      </ul>
+      </div>
+      </div>
+      <div class="wp-block-columns">
+      <div class="wp-block-column">
+      <h2 class="has-text-align-center has-luminous-vivid-orange-color has-text-color">4&egrave;me arr.</h2>
+      <ul>
+      <li><a href="http://emmaus-france.org/" target="_blank" rel="noreferrer noopener">Emma&uuml;s</a></li>
+      <li><a href="http://association-goelette.fr/" target="_blank" rel="noreferrer noopener">Go&euml;lette</a></li>
+      <li><a href="http://www.protection-civile.org/" target="_blank" rel="noreferrer noopener">Protection civile</a></li>
+      <li><a href="http://www.croix-rouge.fr/Annuaire/UNITE-LOCALE-DE-PARIS-1ER-ET-2EME2">La Croix Rouge</a></li>
+      <li><a href="https://fr-fr.facebook.com/groups/788932587852359/events/" target="_blank" rel="noreferrer noopener">Maraudes du Coeur 94</a></li>
+      </ul>
+      </div>
+      <div class="wp-block-column">
+      <h2 class="has-text-align-center has-luminous-vivid-orange-color has-text-color">5&egrave;me arr.</h2>
+      <ul>
+      <li><a href="http://www.captifs.fr/" target="_blank" rel="noreferrer noopener">Aux captifs la lib&eacute;ration</a></li>
+      <li><a href="http://www.ordredemaltefrance.org/">L&rsquo;Ordre de Malte</a></li>
+      <li><a href="http://www.croix-rouge.fr/Annuaire/UNITE-LOCALE-DE-PARIS-1ER-ET-2EME2" target="_blank" rel="noreferrer noopener">La Croix Rouge</a></li>
+      <li><a href="https://www.secourspopulaire.fr/" target="_blank" rel="noreferrer noopener">Le Secours Populaire</a></li>
+      </ul>
+      </div>
+      <div class="wp-block-column">
+      <h2 class="has-text-align-center has-luminous-vivid-orange-color has-text-color">6&egrave;me arr.</h2>
+      <ul>
+      <li><a href="http://www.ordredemaltefrance.org/" target="_blank" rel="noreferrer noopener">L&rsquo;Ordre de Malte</a></li>
+      <li><a href="https://www.secourspopulaire.fr/">Le Secours Populaire</a></li>
+      <li><a href="https://www.autremonde.org/" target="_blank" rel="noreferrer noopener">Autre Monde</a></li>
+      <li><a href="http://paris03et10.croix-rouge.fr/">La Croix Rouge</a></li>
+      </ul>
+      </div>
+      </div>
+      <div class="wp-block-columns">
+      <div class="wp-block-column">
+      <h2 class="has-text-align-center has-luminous-vivid-orange-color has-text-color">7&egrave;me arr.</h2>
+      <ul>
+      <li><a href="https://www.secourspopulaire.fr/">Le Secours Populaire</a></li>
+      <li><a href="http://paris05.croix-rouge.fr/">La Croix Rouge</a></li>
+      <li><a href="http://www.ssvp.fr/">Soci&eacute;t&eacute; de Saint-Vincent-de-Paul</a>&nbsp;(Saint Etienne Dumont) (maraudes paroissiales)</li>
+      <li><a href="http://www.protection-civile.org/">Protection Civile</a></li>
+      </ul>
+      </div>
+      <div class="wp-block-column">
+      <h2 class="has-text-align-center has-luminous-vivid-orange-color has-text-color">8&egrave;me arr.</h2>
+      <ul>
+      <li><a href="http://www.ssvp.fr/">Soci&eacute;t&eacute; de Saint-Vincent-de-Paul</a>&nbsp;(Saint-Germain) (maraudes paroissiales)</li>
+      <li><a href="http://www.protection-civile.org/">Protection Civile</a></li>
+      <li><a href="http://paris06.croix-rouge.fr/">La Croix Rouge</a></li>
+      </ul>
+      </div>
+      <div class="wp-block-column">
+      <h2 class="has-text-align-center has-luminous-vivid-orange-color has-text-color">9&egrave;me arr.</h2>
+      <ul>
+      <li><a href="https://www.lesenfantsducanal.fr/">Les Enfants du Canal</a></li>
+      <li><a href="https://www.secourspopulaire.fr/">Le Secours Populaire</a></li>
+      <li><a href="http://www.stpierredugroscaillou.com/">Saint Pierre du Gros Caillou</a>&nbsp;(maraudes paroissiales)</li>
+      <li><a href="http://paris07.croix-rouge.fr/">La Croix Rouge</a></li>
+      <li><a href="http://xn--cre%20en%201871%2C%20lassociation%20aurore%20hberge%2C%20soigne%20et%20accompagne%20plus%20de%2041%20300%20personnes%20en%20situation%20de%20prcarit%20ou%20dexclusion%20vers%20une%20insertion%20sociale%20et%20professionnelle-ckta8b6ff50374p7da.xn--%20%20reconnue%20dutilit%20publique%20depuis%201875%2C%20aurore%20sappuie%20sur%20son%20exprience%20pour%20proposer%20et%20exprimenter%20des%20formes%20innovantes%20de%20prises%20en%20charge%2C%20qui%20sadaptent%20%20lvolution%20des%20phnomnes%20de%20prcarit%20et%20dexclusion-54vs8j0bwd9a1gtarf98249tpba0iqa8c./">La balade des lucioles</a></li>
+      </ul>
+      </div>
+      </div>
+      <div class="wp-block-columns">
+      <div class="wp-block-column">
+      <h2 class="has-text-align-center has-luminous-vivid-orange-color has-text-color">10&egrave;me arr.</h2>
+      <ul>
+      <li><a href="https://www.dansmarue.net/">Dans Ma Rue</a></li>
+      <li><a href="https://www.lesenfantsducanal.fr/">Les Enfants du Canal</a></li>
+      <li><a href="http://www.saintaugustin.net/">Saint Augustin</a>&nbsp;(maraudes paroissiales)</li>
+      <li><a href="https://www.stphilippeduroule.org/">Saint Philippe du Roule</a>&nbsp;(maraudes paroissiales)</li>
+      <li><a href="https://www.secourspopulaire.fr/">Le Secours Populaire</a></li>
+      </ul>
+      </div>
+      <div class="wp-block-column">
+      <h2 class="has-text-align-center has-luminous-vivid-orange-color has-text-color">11&egrave;me arr.</h2>
+      <ul>
+      <li><a href="http://www.paris.catholique.fr/macadam-cafe-trinite.html">Macadam caf&eacute; La Trinit&eacute;</a>&nbsp;(maraudes paroissiales)</li>
+      <li><a href="http://association-goelette.fr/">Go&euml;lette</a></li>
+      <li><a href="http://emmaus-france.org/">Emma&uuml;s&nbsp;</a></li>
+      <li><a href="http://agapestreetparis.com/">Agape Street</a></li>
+      <li><a href="http://www.aucoeurdelaprecarite.com/">Au Coeur de la pr&eacute;carit&eacute;</a></li>
+      <li><a href="http://www.saintlouisantin.fr/">La Chauss&eacute;e d&rsquo;Antin</a>&nbsp;(maraudes paroissiales)</li>
+      <li><a href="http://www.ch-maison-blanche.fr/Soins/Prises-en-charge-specifiques/Reseau-Psychiatrie-et-Precarite-de-Paris">Maraude&nbsp;&laquo; Sant&eacute; Mentale &amp; Pr&eacute;carit&eacute; &raquo; &ndash; H&ocirc;pital de Maison-Blanche</a></li>
+      </ul>
+      </div>
+      <div class="wp-block-column">
+      <h2 class="has-text-align-center has-luminous-vivid-orange-color has-text-color">12&egrave;me arr.</h2>
+      <ul>
+      <li><a href="http://www.captifs.fr/">Aux Captifs la Lib&eacute;ration</a></li>
+      <li><a href="https://www.secourspopulaire.fr/">Le Secours Populaire</a></li>
+      <li><a href="http://emmaus-france.org/">Emma&uuml;s&nbsp;</a></li>
+      <li><a href="http://association-goelette.fr/">Go&euml;lette</a></li>
+      <li><a href="https://www.autremonde.org/">AutreMonde</a></li>
+      <li><a href="http://www.protection-civile.org/">Protection Civile</a></li>
+      <li><a href="https://www.restosducoeur.org/associations-departementales/les-restos-du-coeur-de-paris/">Les Restos du Coeur</a></li>
+      <li><a href="http://paris03et10.croix-rouge.fr/">La Croix Rouge</a></li>
+      <li><a href="http://www.ch-maison-blanche.fr/Soins/Prises-en-charge-specifiques/Reseau-Psychiatrie-et-Precarite-de-Paris">Maraude&nbsp;&laquo; Sant&eacute; Mentale &amp; Pr&eacute;carit&eacute; &raquo; &ndash; H&ocirc;pital de Maison-Blanche</a>&nbsp;(maraude psychiatrique)</li>
+      </ul>
+      </div>
+      </div>
+      <div class="wp-block-columns">
+      <div class="wp-block-column">
+      <h2 class="has-text-align-center has-luminous-vivid-orange-color has-text-color">13&egrave;me arr.</h2>
+      <ul>
+      <li><a href="https://www.dansmarue.net/">Dans Ma Rue</a></li>
+      <li><a href="https://charonne-asso.fr/">Charonne</a></li>
+      <li><a href="http://paris11.croix-rouge.fr/">La Croix Rouge</a></li>
+      <li><a href="https://www.autremonde.org/">AutreMonde</a></li>
+      <li><a href="https://www.secourspopulaire.fr/">Le Secours Populaire</a></li>
+      <li><a href="https://www.restosducoeur.org/">Les Restos du Coeur</a></li>
+      <li><a href="http://xn--cre%20en%201871%2C%20lassociation%20aurore%20hberge%2C%20soigne%20et%20accompagne%20plus%20de%2041%20300%20personnes%20en%20situation%20de%20prcarit%20ou%20dexclusion%20vers%20une%20insertion%20sociale%20et%20professionnelle-ckta8b6ff50374p7da.xn--%20%20reconnue%20dutilit%20publique%20depuis%201875%2C%20aurore%20sappuie%20sur%20son%20exprience%20pour%20proposer%20et%20exprimenter%20des%20formes%20innovantes%20de%20prises%20en%20charge%2C%20qui%20sadaptent%20%20lvolution%20des%20phnomnes%20de%20prcarit%20et%20dexclusion-54vs8j0bwd9a1gtarf98249tpba0iqa8c./">La balade des lucioles</a></li>
+      </ul>
+      </div>
+      <div class="wp-block-column">
+      <h2 class="has-text-align-center has-luminous-vivid-orange-color has-text-color">14&egrave;me arr.</h2>
+      <ul>
+      <li><a href="http://www.ssvp.fr/">Soci&eacute;t&eacute; de Saint-Vincent-de-Paul</a></li>
+      <li><a href="http://www.actionfroid.org/">Action Froid</a></li>
+      <li><a href="http://notredamedebercy.com/spip.php?article282">Macadam Caf&eacute; Bercy&nbsp;</a>(maraudes paroissiales)</li>
+      <li><a href="https://www.secourspopulaire.fr/">Le Secours Populaire</a></li>
+      <li><a href="http://paris.croix-rouge.fr/loc/12-reuilly/">La Croix Rouge</a></li>
+      </ul>
+      </div>
+      <div class="wp-block-column">
+      <h2 class="has-text-align-center has-luminous-vivid-orange-color has-text-color">15&egrave;me arr.</h2>
+      <ul>
+      <li><a href="https://www.dansmarue.net/">Dans Ma Rue</a></li>
+      <li><a href="https://www.secourspopulaire.fr/">Le Secours Populaire</a></li>
+      <li><a href="http://www.protection-civile.org/">Protection Civile</a></li>
+      <li><a href="http://paris13.croix-rouge.fr/">La Croix Rouge</a></li>
+      <li><a href="https://www.restosducoeur.org/">Les Restos du Coeur</a></li>
+      <li><a href="http://xn--cre%20en%201871%2C%20lassociation%20aurore%20hberge%2C%20soigne%20et%20accompagne%20plus%20de%2041%20300%20personnes%20en%20situation%20de%20prcarit%20ou%20dexclusion%20vers%20une%20insertion%20sociale%20et%20professionnelle-ckta8b6ff50374p7da.xn--%20%20reconnue%20dutilit%20publique%20depuis%201875%2C%20aurore%20sappuie%20sur%20son%20exprience%20pour%20proposer%20et%20exprimenter%20des%20formes%20innovantes%20de%20prises%20en%20charge%2C%20qui%20sadaptent%20%20lvolution%20des%20phnomnes%20de%20prcarit%20et%20dexclusion-54vs8j0bwd9a1gtarf98249tpba0iqa8c./">La balade des lucioles</a></li>
+      </ul>
+      </div>
+      </div>
+      <div class="wp-block-columns">
+      <div class="wp-block-column">
+      <h2 class="has-text-align-center has-luminous-vivid-orange-color has-text-color">16&egrave;me arr.</h2>
+      <ul>
+      <li><a href="https://sites.google.com/site/mobildouche/">Mobil&rsquo;Douche</a></li>
+      <li><a href="http://www.ssvp.fr/">Soci&eacute;t&eacute; de Saint-Vincent-De-Paul</a>&nbsp;(maraudes paroissiales)</li>
+      <li><a href="https://www.secourspopulaire.fr/">Le Secours Populaire</a></li>
+      <li><a href="http://www.protection-civile.org/">Protection Civile</a></li>
+      <li><a href="https://www.restosducoeur.org/">Les Restos du Coeur</a></li>
+      <li><a href="http://paris14.croix-rouge.fr/">La Croix Rouge</a></li>
+      <li><a href="https://www.lesenfantsducanal.fr/">Les Enfants du Canal</a></li>
+      </ul>
+      </div>
+      <div class="wp-block-column">
+      <h2 class="has-text-align-center has-luminous-vivid-orange-color has-text-color">17&egrave;me arr.</h2>
+      <ul>
+      <li><a href="https://fr-fr.facebook.com/groups/788932587852359/events/">Antigel</a></li>
+      <li><a href="http://www.saintleon.com/">Saint L&eacute;on</a>&nbsp;(maraudes paroissiales)</li>
+      <li><a href="https://sites.google.com/site/mobildouche/">Mobil&rsquo;Douche</a></li>
+      <li><a href="https://www.secourspopulaire.fr/">Le Secours Populaire</a></li>
+      <li><a href="http://www.protection-civile.org/">Protection Civile</a></li>
+      <li><a href="http://paris15.croix-rouge.fr/">La Croix Rouge</a></li>
+      </ul>
+      <p>&nbsp;</p>
+      </div>
+      <div class="wp-block-column">
+      <h2 class="has-text-align-center has-luminous-vivid-orange-color has-text-color">18&egrave;me arr.</h2>
+      <ul>
+      <li><a href="https://www.secourspopulaire.fr/">Le Secours&nbsp;</a><a href="https://www.secourspopulaire.fr/">Le Secours Populaire</a></li>
+      <li><a href="http://www.ssvp.fr/">Soci&eacute;t&eacute; de Saint-Vincent-De-Paul</a>&nbsp;(Notre Dame de Gr&acirc;ce de Passy) (maraudes paroissiales)</li>
+      <li><a href="http://www.paroisse-saint-honore.com/">Saint Honor&eacute; d&rsquo;Eylau</a>&nbsp;(maraudes paroissiales)</li>
+      <li><a href="http://paris16.croix-rouge.fr/">La Croix Rouge</a></li>
+      </ul>
+      </div>
+      </div>
+      <div class="wp-block-columns">
+      <div class="wp-block-column">
+      <h2 class="has-text-align-center has-luminous-vivid-orange-color has-text-color">19&egrave;me arr.</h2>
+      <ul id="block-f0ec4eb3-ea9c-4e75-b04d-7b0bfee3c2df">
+      <li><a href="https://www.lesenfantsducanal.fr/">Les Enfants du Canal</a></li>
+      <li><a href="http://saintferdinanddesternes.fr/">Saint Ferdinand des Ternes</a>&nbsp;(maraudes paroissiales)</li>
+      <li><a href="http://www.ste-marie-batignolles.com/">Sainte Marie des Batignolles</a>&nbsp;(maraudes paroissiales)</li>
+      <li><a href="https://www.secourspopulaire.fr/">Le Secours Populaire</a></li>
+      <li><a href="http://paris17.croix-rouge.fr/">La Croix Rouge</a></li>
+      <li><a href="http://www.robinsdesrues.org/">Robins des rues</a></li>
+      </ul>
+      </div>
+      <div class="wp-block-column">
+      <h2 class="has-text-align-center has-luminous-vivid-orange-color has-text-color">20&egrave;me arr.</h2>
+      <ul>
+      <li><a href="http://www.robinsdesrues.org/">Robins des rues</a></li>
+      <li><a href="https://www.secourspopulaire.fr/">Le Secours Populaire</a></li>
+      <li><a href="http://www.paris.catholique.fr/la-compagnie-des-laveurs-de-pieds.html">Les laveurs de pieds</a>&nbsp;(maraudes paroissiales)</li>
+      <li><a href="http://paris18.croix-rouge.fr/">La Croix Rouge</a></li>
+      <li><a href="https://www.restosducoeur.org/associations-departementales/les-restos-du-coeur-75-hermel/">Les Restos du Coeur</a></li>
+      <li><a href="http://www.protection-civile.org/">Protection Civile</a></li>
+      <li><a href="http://www.ch-maison-blanche.fr/Soins/Prises-en-charge-specifiques/Reseau-Psychiatrie-et-Precarite-de-Paris">Maraude&nbsp;&laquo; Sant&eacute; Mentale &amp; Pr&eacute;carit&eacute; &raquo; &ndash; H&ocirc;pital de Maison-Blanche</a>&nbsp;(maraude psychiatrique)</li>
+      </ul>
+      </div>
+      <div class="wp-block-column">&nbsp;</div>
+      </div>
+      <h2 class="has-text-align-center has-luminous-vivid-orange-color has-text-color has-background"><strong>Focus sur quelques organisations de maraudes &agrave; Rennes, Lille, Hauts-de-Seine, et Lyon.</strong></h2>
+      <div class="wp-block-columns">
+      <div class="wp-block-column">
+      <h2 id="Titre-Rennes" class="has-text-align-left has-luminous-vivid-orange-color has-text-color has-medium-font-size">➡️ Rennes</h2>
+      <ul id="block-f0ec4eb3-ea9c-4e75-b04d-7b0bfee3c2df">
+      <li><a href="http://www.siao35.fr/">Siao35</a></li>
+      <li><a href="https://lacloche.org/lutter-contre-lexclusion-des-personnes-sans-domicile-en-creant-du-lien-social?gclid=CjwKCAjwxuuCBhATEiwAIIIz0QN1INt5IlRu4NzgHHajsLKEAfs0168ES0tF7C2x8UWk5wM4dZ1U6BoCHaoQAvD_BwE">La Cloche&nbsp;</a>(Maraude lien social)</li>
+      <li><a href="https://metropole.rennes.fr/organisme/les-restos-du-coeur-centre-dactivites-rennes-la-doneliere-6334">Resto du c&oelig;ur</a></li>
+      <li><a href="https://www.secours-catholique.org/?gclid=CjwKCAjwxuuCBhATEiwAIIIz0dl1UBAncPRmZSIDxewKeEaMkZ3mc3YQ4_JR071eCLXpuXPd_vgIjxoCkuAQAvD_BwE">Secours Catholique</a></li>
+      <li><a href="https://www.entourage.social/app/?utm_medium=all&amp;utm_source=googleads&amp;utm_campaign=chalumos&amp;gclid=CjwKCAjwxuuCBhATEiwAIIIz0Q5udYT7C2dAfUbhOY-NQYe5gArDHs4NvtD9KzoEXyuHP-BuqJ5PQhoCyNsQAvD_BwE">Entourage social</a></li>
+      <li><a href="https://www.croix-rouge.fr/Je-donne/Faire-un-don?gclid=CjwKCAjwxuuCBhATEiwAIIIz0Y5B5AZOKzG5M7lR1IfJav0w4WWynGxacME7W-_QuHtWDqHGOtdS6xoC31MQAvD_BwE">Croix-Rouge</a></li>
+      <li><a href="https://www.ssvp.fr/ssvp-dille-et-vilaine/">St Vincent-De-Paul</a></li>
+      <li><a href="https://www.gamellespleines.fr/">Gamelle pleine</a></li>
+      <li><a href="https://www.ordredemaltefrance.org/delegations/la-delegation-de-lille-et-vilaine">Ordre de Malte</a></li>
+      <li><a href="http://www.utopia56.com/fr/utopia-56-rennes">Utopia 56</a></li>
+      <li><a href="https://www.forum-jem.fr/">JEM</a></li>
+      <li><a href="https://www.instagram.com/maraude_rennes/">Rennespoir</a></li>
+      <li><a href="https://www.bulles-solidaires.com/">Bulles solidaires</a></li>
+      <li><a href="https://coeursresistants.wixsite.com/asso">Coeurs R&eacute;sistants</a></li>
+      </ul>
+      </div>
+      <div class="wp-block-column">
+      <h2 id="Titre-Lille" class="has-text-align-left has-luminous-vivid-orange-color has-text-color has-medium-font-size">➡️ Lille</h2>
+      <ul>
+      <li><a href="https://www.facebook.com/sansmaillecacaille/">Sans Maille &ccedil;a caille</a></li>
+      <li><a href="https://www.secourspopulaire.fr/59/">Secours Populaire</a></li>
+      <li><a href="http://www.utopia56.com/fr/utopia-56-lille">Utopia 56</a></li>
+      <li><a href="https://solidarites.lille.fr/acteur/239/3-ordre-de-malte.htm">Ordre de Malte</a></li>
+      <li><a href="https://www.restosducoeur.org/associations-departementales/les-restos-du-coeur-de-lille-a/">Restos du coeur</a></li>
+      <li><a href="https://humanitaide.fr/">Humanit&rsquo;Aide</a></li>
+      <li><a href="https://www.liledesolidarite.fr/">Ile de Solidarit&eacute;</a></li>
+      <li><a href="https://www.actionfroid.org/">ActionFroid</a></li>
+      <li><a href="https://solidarites.lille.fr/acteur/765/3-association-sdj-agir-ensemble-lille.htm">SDJ Solidarit&eacute;</a></li>
+      <li><a href="https://www.facebook.com/assolemessage/">Le Message</a></li>
+      <li><a href="https://humanappeal.fr/?gclid=CjwKCAjwxuuCBhATEiwAIIIz0ee6M53WTewYLWunYyWtZ95mk0XZM6KwD62Q41RjkLusG5Sg8MwhPxoCBQwQAvD_BwE">Human Appeal</a></li>
+      </ul>
+      </div>
+      </div>
+      <div class="wp-block-columns">
+      <div class="wp-block-column">
+      <h2 id="Titre-Hauts-de-Seine" class="has-text-align-left has-luminous-vivid-orange-color has-text-color has-medium-font-size">➡️ Hauts-de-seine</h2>
+      <ul>
+      <li><a href="http://hauts-de-seine.restosducoeur.org/liste-des-centres/maraude/">Restos du coeur</a></li>
+      <li><a href="https://www.tousbenevoles.org/trouver-une-mission-benevole/accompagnement-social-maraude/92/malakoff/tournees-de-rues-25752">Secours Catholique</a></li>
+      <li><a href="https://www.tousbenevoles.org/trouver-une-mission-benevole/accompagnement-social-maraude/92/nanterre/maraudeurs-31677">Croix-Rouge&nbsp;</a></li>
+      <li><a href="https://www.ordredemaltefrance.org/delegations/la-delegation-des-hauts-de-seine">Ordre de malte</a></li>
+      <li><a href="https://www.citesolidaire92.fr/events/help-for-language-volunteer/">Cit&eacute; solidaire 92</a></li>
+      <li><a href="https://www.protection-civile.org/antennes/hauts-de-seine/">Protection Civile</a></li>
+      </ul>
+      </div>
+      <div class="wp-block-column">
+      <h2 id="Titre-Lyon" class="has-text-align-left has-luminous-vivid-orange-color has-text-color has-medium-font-size">➡️ Lyon</h2>
+      <ul>
+      <li><a href="http://rhone.restosducoeur.org/nous-trouver.php?centre=CAMION-DU-COEUR">Camions du c&oelig;ur</a></li>
+      <li><a href="https://christhumanitaire.org/">Christhumanitaire</a></li>
+      <li><a href="https://www.fraternitelyoncentre.fr/">Fraternit&eacute; Lyon Centre</a></li>
+      <li><a href="https://www.chainedelespoir.org/fr/en-direct-de-lyon?reserved_code_media=I200050&amp;gclid=CjwKCAjwxuuCBhATEiwAIIIz0YGkJ9qHoXML6o8ZmnKfRzYw45JqAP9XKJ-JIeNReS2zEhjhRlhHFRoCeS4QAvD_BwE">Cha&icirc;ne de l&rsquo;Espoir</a></li>
+      <li><a href="http://adsl-association.org/">ASDL</a></li>
+      <li><a href="https://www.ordredemaltefrance.org/?gclid=CjwKCAjwxuuCBhATEiwAIIIz0ewNm9XvTm9aWtbfPGNcMWoiN-ec0LPVEVNMh8bRTSToNvacVXmx8hoClksQAvD_BwE">Ordre de Malte</a></li>
+      <li><a href="https://maintendue69.com/">La main tendue</a></li>
+      <li><a href="https://www.facebook.com/Association-Le-Coeur-Lyonnais-1746253548806692/">Le coeur Lyonnais</a></li>
+      <li><a href="https://www.facebook.com/AssociationSiMoiJaiFroid/">SMJF (SIMOIJAIFROID)</a></li>
+      </ul>
+      </div>
+      </div>
+      </div>
 
 pyramide_de_maslow:
   name: "Article La pyramide de Maslow : une vision biaisée de l'homme ?"
   category: understand
-  description: description
   url: https://blog.entourage.social/2022/02/24/la-pyramide-de-maslow-une-vision-biaisee-de-lhomme/
   duration: 60
   is_video: false
   status: active
+  description: |
+    <header>
+      <h1>La pyramide de Maslow&nbsp;: une vision biais&eacute;e de l&rsquo;homme&nbsp;?</h1>
+      </header>
+      <div class="entry-content section-inner thin">
+      <p>&nbsp;</p>
+      <p>La &laquo; pyramide de Maslow &raquo;, th&eacute;oris&eacute;e &agrave; partir des travaux du psychologue Abraham Maslow dans les ann&eacute;es 1940, d&eacute;finit la hi&eacute;rarchie des besoins humains. Selon elle, il faudrait d&rsquo;abord r&eacute;pondre &agrave; ses besoins primaires vitaux, puis de s&eacute;curit&eacute; avant de s&rsquo;adresser aux besoins &laquo; sup&eacute;rieurs &raquo; plus sp&eacute;cifiquement humains : besoins relationnels, culturels, spirituels. Bref, d&rsquo;accomplissement de soi.</p>
+      <p>Cette vision de l&rsquo;homme, finalement assez &laquo; animale &raquo;, est &agrave; d&eacute;construire pour comprendre la d&eacute;marche de ce livre*. Elle apporte en effet un biais important dans le regard port&eacute; sur les personnes en situation de rue, car elle pousse &agrave; penser d&rsquo;abord &agrave; leurs besoins vitaux (un repas, une couverture, de l&rsquo;argent) avant de voir les personnes dans leur int&eacute;grit&eacute;. Or, celles-ci ont tout autant besoin de relations, d&rsquo;affection, que de s&rsquo;int&eacute;resser &agrave; des sujets culturels ou spirituels :&nbsp;<em>&laquo; Pourquoi devrais-je chercher &agrave; me laver, &agrave; me soigner, &agrave; travailler, si personne ne me parle, si personne ne me consid&egrave;re, si je n&rsquo;ai pas le sentiment d&rsquo;exister aux yeux des autres ? &raquo;</em></p>
+      <div class="wp-block-cover">
+      <div class="wp-block-cover__inner-container">
+      <p class="has-text-align-center has-large-font-size">&nbsp;</p>
+      </div>
+      </div>
+      <p>Le besoin de relation et de reconnaissance chez l&rsquo;homme est aussi important que les autres besoins. C&rsquo;est pourquoi le groupe de recherche ATD Quart Monde universit&eacute;, m&ecirc;lant des personnes en situation de pauvret&eacute;, des universitaires et des professionnels, propose de remplacer cette pyramide par un cercle qui respecte la totalit&eacute; de la personne. //</p>
+      <p>* Voir le texte &laquo; Sortir de la hi&eacute;rarchie des besoins d&eacute;finis par la pyramide de Maslow &raquo;, dans l&rsquo;ouvrage d&rsquo;ATD Quart Monde Universit&eacute; :&nbsp;<em><a href="https://www.atd-quartmonde.fr/produit/le-croisement-des-savoirs-et-des-pratiques/#:~:text=Quand%20des%20personnes%20en%20situation,pensent%20et%20se%20forment%20ensemble&amp;text=Les%20auteurs%20de%20ce%20livre,bout%20de%20l'extr%C3%AAme%20pauvret%C3%A9." target="_blank" rel="noreferrer noopener">Le Croisement des savoirs et des pratiques. Quand des personnes en situation de pauvret&eacute;, des universitaires et des professionnels pensent et se forment ensemble</a>,</em>&nbsp;Paris, ATD Quart Monde, 2009, pp. 1427-1428</p>
+      </div>
 
 portrait_de_benevole:
   name: "Vidéo Audrey dans les portraits de bénévoles"
   category: inspire
-  description: description
   url: https://www.youtube.com/embed/zNF9QaUpvn8
   duration: 66
   is_video: true
   status: active
+  description: description
 
 communaute:
   name: "Article Faire grandir la communauté Entourage"
   category: act
-  description: description
   # url:
   # duration: 120
   is_video: false
   status: active
-
+  description: description
