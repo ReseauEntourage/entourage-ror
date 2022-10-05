@@ -15,9 +15,9 @@ module EntourageServices
       return yield false, "Le créateur ne peut être changé que pour les actions épinglées, les événements ou les groupes de voisinage" unless joinable_is_valid?
 
       ApplicationRecord.transaction do
-        creator_join_requests.update_all(:role, member_type)
+        creator_join_requests.update_all(role: member_type)
 
-        owner_join_request = @joinable.where(user_id: user_id, role: member_type).first_or_create
+        owner_join_request = JoinRequest.where(joinable: @joinable, user_id: user_id, role: member_type).first_or_create
         owner_join_request.update_attributes(status: :accepted, role: creator_type)
 
         if message.present?
