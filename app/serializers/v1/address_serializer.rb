@@ -4,5 +4,9 @@ module V1
                :longitude,
                :display_address,
                :position
+
+    def initialize
+      UserServices::AddressService.update_city_if_nil(object)
+    end
   end
 end
