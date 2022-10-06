@@ -40,7 +40,7 @@ module EntourageServices
         city = result.city
         postal_code =
           if country == 'FR'
-            result.postal_code.first(2) + 'XXX'
+            result.postal_code.first(2) + '000'
           else
             'XXXXX'
           end
