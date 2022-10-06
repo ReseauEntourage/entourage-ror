@@ -1,4 +1,4 @@
-class AddStatusToResources < ActiveRecord::Migration[5.2]
+class AddCityToAddresses < ActiveRecord::Migration[5.2]
   def up
     add_column :addresses, :city, :string
   end
