@@ -47,6 +47,7 @@ ActiveRecord::Schema.define(version: 2022_10_04_152800) do
     t.string "google_place_id"
     t.integer "user_id", null: false
     t.integer "position", default: 1, null: false
+    t.string "city"
     t.index ["user_id", "position"], name: "index_addresses_on_user_id_and_position", unique: true
   end
 
