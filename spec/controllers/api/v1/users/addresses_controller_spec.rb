@@ -24,7 +24,7 @@ RSpec.describe Api::V1::Users::AddressesController, type: :controller do
       it { expect(result).to match(
         "user" => hash_including(
           "address"=>{
-            "display_address"=>"Maison, 75011",
+            "display_address"=>"Paris, 75011",
             "latitude"=>45.2,
             "longitude"=>3.7,
             "position"=>1
@@ -45,9 +45,9 @@ RSpec.describe Api::V1::Users::AddressesController, type: :controller do
       it { expect(response.status).to eq(200) }
       it { expect(result).to match(
         "user" => hash_including(
-          "address"=>hash_including("display_address"=>"Maison, 75011"),
+          "address"=>hash_including("display_address"=>"Paris, 75011"),
           "address_2"=>{
-            "display_address"=>"Travail, 92001",
+            "display_address"=>"Paris, 92001",
             "latitude"=>44.7,
             "longitude"=>3.1,
             "position"=>2,
@@ -80,7 +80,7 @@ RSpec.describe Api::V1::Users::AddressesController, type: :controller do
       it { expect(result).to match(
         "user" => hash_including(
           "address"=>{
-            "display_address"=>"Travail, 92001",
+            "display_address"=>"Paris, 92001",
             "latitude"=>44.7,
             "longitude"=>3.1,
             "position"=>1
@@ -101,7 +101,7 @@ RSpec.describe Api::V1::Users::AddressesController, type: :controller do
       it { expect(result).to match(
         "user" => hash_including(
           "address_2"=>{
-            "display_address"=>"Maison, 75011",
+            "display_address"=>"Paris, 75011",
             "latitude"=>45.2,
             "longitude"=>3.7,
             "position"=>2,
@@ -138,7 +138,7 @@ RSpec.describe Api::V1::Users::AddressesController, type: :controller do
       it { expect(response.status).to eq(200) }
       it { expect(result).to match(
         "user" => hash_including(
-          "address"=>hash_including("display_address"=>"Maison, 75011"),
+          "address"=>hash_including("display_address"=>"Paris, 75011"),
           "address_2"=>nil,
           "firebase_properties"=>hash_including(
             "ActionZoneCP"=>"75011",

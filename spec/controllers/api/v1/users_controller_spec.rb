@@ -821,7 +821,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
             expect(JSON.parse(response.body)['user']['address']).to eq(
               "latitude" => 1.5,
               "longitude" => 1.5,
-              "display_address" => "rue Pizza, 75020",
+              "display_address" => "Cassis, 75020",
               "position"=>1,
             )
           }
