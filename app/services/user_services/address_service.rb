@@ -70,10 +70,12 @@ module UserServices
     end
 
     def self.update_city_if_nil address
-      return if address.city
-      return unless city = GeocodingServices::Finder.get_city_from(address.attributes)
+      return address unless address
+      return address if address&.city
+      return address unless city = GeocodingServices::Finder.get_city_from(address.attributes)
 
       address.update(city: city)
+      address
     end
 
     def self.update_with_google_place_details address

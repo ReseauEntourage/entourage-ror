@@ -44,3 +44,44 @@ Geocoder::Lookup::Test.add_stub(
     'country_code' => 'FR'
   }]
 )
+Geocoder::Lookup::Test.add_stub(
+  [1.5, 1.5], [{
+    'coordinates'  => [1.5, 1.5],
+    'address'      => 'rue Pizza',
+    'city'         => 'Cassis',
+    'postal_code'  => '13260',
+    'country'      => 'France',
+    'country_code' => 'FR'
+  }]
+)
+Geocoder::Lookup::Test.add_stub(
+  [45.2, 3.7], [{
+    'coordinates'  => [45.2, 3.7],
+    'address'      => 'rue Foo',
+    'city'         => 'Paris',
+    'postal_code'  => '75011',
+    'country'      => 'France',
+    'country_code' => 'FR'
+  }]
+)
+Geocoder::Lookup::Test.add_stub(
+  [44.7, 3.1], [{
+    'coordinates'  => [44.7, 3.1],
+    'address'      => 'rue Bar',
+    'city'         => 'Paris',
+    'postal_code'  => '92001',
+    'country'      => 'France',
+    'country_code' => 'FR'
+  }]
+)
+
+Geocoder::Lookup::Test.set_default_stub([
+  {
+    'coordinates'  => [48.23, -4.56],
+    'address'      => 'Pointe de Dinan, Crozon',
+    'city'         => 'Crozon',
+    'postal_code'  => '29160',
+    'country'      => 'France',
+    'country_code' => 'FR'
+  }
+])
