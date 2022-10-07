@@ -20,17 +20,19 @@ module EntourageServices
         owner_join_request = JoinRequest.where(joinable: @joinable, user_id: user_id, role: member_type).first_or_create
         owner_join_request.update_attributes(status: :accepted, role: creator_type)
 
-        if message.present?
-          ChatServices::ChatMessageBuilder.new(
-            user: user,
-            joinable: @joinable,
-            join_request: owner_join_request,
-            params: {
-              message_type: :text,
-              content: message,
-            }
-          ).create
-        end
+        @joinable.update_attribute(:user_id, user_id)
+      end
+
+      if message.present?
+        ChatServices::ChatMessageBuilder.new(
+          user: user,
+          joinable: @joinable,
+          join_request: owner_join_request,
+          params: {
+            message_type: :text,
+            content: message,
+          }
+        ).create
       end
 
       yield true
