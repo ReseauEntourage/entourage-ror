@@ -372,7 +372,7 @@ module Admin
       user_id = entourage_params[:user_id]
       message = entourage_params[:change_ownership_message]
 
-      EntourageServices::ChangeOwner.new(@entourage).to(user_id, message: message) do |success, error_message|
+      EntourageServices::ChangeOwner.new(@entourage).to(user_id, message) do |success, error_message|
         if success
           redirect_to [:admin, @entourage], notice: "Mise à jour réussie"
         else
