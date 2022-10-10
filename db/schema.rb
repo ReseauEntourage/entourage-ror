@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_10_04_152800) do
+ActiveRecord::Schema.define(version: 2022_10_10_141301) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -923,6 +923,26 @@ ActiveRecord::Schema.define(version: 2022_10_04_152800) do
     t.boolean "accepts_volunteering_offers"
     t.boolean "ambassador"
     t.index ["user_id"], name: "index_user_moderations_on_user_id", unique: true
+  end
+
+  create_table "user_notification_configurations", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.jsonb "configuration"
+    t.index ["user_id"], name: "index_user_notification_configurations_on_user_id"
+  end
+
+  create_table "user_notifications", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.string "action", null: false
+    t.string "instance", null: false
+    t.integer "instance_id"
+    t.datetime "completed_at"
+    t.datetime "skipped_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["completed_at"], name: "index_user_notifications_on_completed_at"
+    t.index ["skipped_at"], name: "index_user_notifications_on_skipped_at"
+    t.index ["user_id"], name: "index_user_notifications_on_user_id"
   end
 
   create_table "user_phone_changes", id: :serial, force: :cascade do |t|

@@ -10,14 +10,15 @@ module RecommandationServices
     end
 
     def run
-      return unless Recommandation::INSTANCES.include?(instance)
-      return unless Recommandation::ACTIONS.include?(action_name)
+      return unless instances_list.include?(instance)
+      return unless actions_list.include?(action_name)
 
       method = "after_#{action_name}".to_sym
 
       return unless self.class.instance_methods.include?(method)
       return unless criteria = send(method, instance, params)
 
+      set_completed_notification! criteria
       set_completed_criteria! criteria
       log_completed_criteria! criteria
     end
@@ -62,6 +63,12 @@ module RecommandationServices
 
     protected
 
+    def set_completed_notification! criteria
+      UserNotification
+        .active_criteria_by_user(user, criteria)
+        .update_all(completed_at: Time.now)
+    end
+
     def set_completed_criteria! criteria
       UserRecommandation
         .active_criteria_by_user(user, criteria)
@@ -72,6 +79,16 @@ module RecommandationServices
       return if UserRecommandation.processed_criteria_by_user(user, criteria).any?
 
       UserRecommandation.new(criteria.merge(user: user, completed_at: Time.now)).save
+    end
+
+    private
+
+    def instances_list
+      Recommandation::INSTANCES + UserNotification::INSTANCES
+    end
+
+    def actions_list
+      Recommandation::ACTIONS + UserNotification::ACTIONS
     end
   end
 end
