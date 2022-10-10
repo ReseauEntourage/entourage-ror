@@ -165,6 +165,43 @@ describe RecommandationServices::Completor do
     it { expect(subject).to eq({ instance: :resource, action: :show, instance_id: 1 }) }
   end
 
+  describe 'set_completed_notification' do
+    let(:subject) { completor.send(:set_completed_notification!, criteria) }
+    let(:criteria) { { action: :show, instance: :neighborhood, instance_id: instance_id } }
+    let(:instance_id) { user_notification.instance_id}
+
+    context 'no user_notification on user' do
+      let(:anyone) { FactoryBot.create(:pro_user) }
+      let!(:user_notification) { create(:user_notification, user: anyone) }
+
+      it { expect(subject).to eq(0) }
+      it { expect(subject && user_notification.reload.completed_at).to be(nil) }
+    end
+
+    context 'some user_notification on user' do
+      let!(:user_notification) { create(:user_notification, user: user) }
+
+      it { expect(subject).to eq(1) }
+      it { expect(subject && user_notification.reload.completed_at).to be_a(ActiveSupport::TimeWithZone) }
+    end
+
+    context 'wrong instance_id' do
+      let!(:user_notification) { create(:user_notification, user: user) }
+      let(:instance_id) { user_notification.instance_id + 1 }
+
+      it { expect(subject).to eq(0) }
+      it { expect(subject && user_notification.reload.completed_at).to be(nil) }
+    end
+
+    context 'empty instance_id is valid for all' do
+      let!(:user_notification) { create(:user_notification, user: user) }
+      let(:criteria) { { action: :show, instance: :neighborhood } }
+
+      it { expect(subject).to eq(1) }
+      it { expect(subject && user_notification.reload.completed_at).to be_a(ActiveSupport::TimeWithZone) }
+    end
+  end
+
   describe 'set_completed_criteria' do
     let(:subject) { completor.send(:set_completed_criteria!, criteria) }
 

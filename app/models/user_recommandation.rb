@@ -17,12 +17,8 @@ class UserRecommandation < ApplicationRecord
 
   scope :to_be_congratulated, -> { where.not(completed_at: nil).where(congrats_at: nil).where.not(recommandation_id: nil) }
 
-  scope :active_criteria_by_user, -> (user, criteria) {
-    active.where(user: user).where(criteria)
-  }
-  scope :processed_criteria_by_user, -> (user, criteria) {
-    processed_by(user).where(criteria)
-  }
+  scope :active_criteria_by_user, -> (user, criteria) { active.where(user: user).where(criteria) }
+  scope :processed_criteria_by_user, -> (user, criteria) { processed_by(user).where(criteria) }
 
   def webview?
     instance.to_sym == :webview
