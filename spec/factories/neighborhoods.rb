@@ -6,5 +6,16 @@ FactoryBot.define do
     interests { [:sport] }
     latitude { 48.86 }
     longitude { 2.35 }
+
+    transient do
+      participants { [] }
+    end
+
+    after(:create) do |neighborhood, stuff|
+      (stuff.participants - [neighborhood.user]).each do |participant|
+        create :join_request, joinable: neighborhood, user: participant, status: JoinRequest::ACCEPTED_STATUS
+      end
+      neighborhood.reload
+    end
   end
 end
