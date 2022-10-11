@@ -59,7 +59,7 @@ describe Api::V1::Neighborhoods::UsersController do
 
     context "signed in" do
       context "first request to join neighborhood" do
-        before { expect_any_instance_of(RecommandationServices::Completor).to receive(:after_create_user_on_neighborhood) }
+        before { expect_any_instance_of(RouteCompletionService).to receive(:after_create_user_on_neighborhood) }
         before { post :create, params: { neighborhood_id: neighborhood.to_param, token: user.token, distance: 123.45 } }
 
         it { expect(JoinRequest.last.distance).to eq(123.45) }
