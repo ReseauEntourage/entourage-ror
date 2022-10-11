@@ -1,9 +1,9 @@
 require 'rails_helper'
 
-describe RecommandationServices::Completor do
+describe RouteCompletionService do
   let(:user) { FactoryBot.create(:pro_user) }
 
-  let(:completor) { RecommandationServices::Completor.new(user: user, controller_name: controller_name, action_name: action_name, params: params) }
+  let(:completor) { RouteCompletionService.new(user: user, controller_name: controller_name, action_name: action_name, params: params) }
 
   let(:controller_name) { "resources" }
   let(:action_name) { :index }
@@ -16,7 +16,7 @@ describe RecommandationServices::Completor do
 
     describe 'arguments' do
       context 'defined arguments' do
-        before { expect_any_instance_of(RecommandationServices::Completor).to receive(:set_completed_criteria!) }
+        before { expect_any_instance_of(RouteCompletionService).to receive(:set_completed_criteria!) }
 
         it { subject }
       end
@@ -24,7 +24,7 @@ describe RecommandationServices::Completor do
       context 'undefined controller_name' do
         let(:controller_name) { "foo" }
 
-        before { expect_any_instance_of(RecommandationServices::Completor).not_to receive(:set_completed_criteria!) }
+        before { expect_any_instance_of(RouteCompletionService).not_to receive(:set_completed_criteria!) }
 
         it { subject }
       end
@@ -32,7 +32,7 @@ describe RecommandationServices::Completor do
       context 'undefined action_name' do
         let(:action_name) { "foo" }
 
-        before { expect_any_instance_of(RecommandationServices::Completor).not_to receive(:set_completed_criteria!) }
+        before { expect_any_instance_of(RouteCompletionService).not_to receive(:set_completed_criteria!) }
 
         it { subject }
       end
@@ -41,7 +41,7 @@ describe RecommandationServices::Completor do
         let(:controller_name) { "neighborhoods" }
         let(:action_name) { "index" }
 
-        before { expect_any_instance_of(RecommandationServices::Completor).to receive(:after_index) }
+        before { expect_any_instance_of(RouteCompletionService).to receive(:after_index) }
 
         it { subject }
       end
@@ -50,8 +50,8 @@ describe RecommandationServices::Completor do
         let(:controller_name) { "neighborhoods" }
         let(:action_name) { "show" }
 
-        before { expect_any_instance_of(RecommandationServices::Completor).to receive(:after_show) }
-        before { expect_any_instance_of(RecommandationServices::Completor).not_to receive(:after_show_webview) }
+        before { expect_any_instance_of(RouteCompletionService).to receive(:after_show) }
+        before { expect_any_instance_of(RouteCompletionService).not_to receive(:after_show_webview) }
 
         it { subject }
       end
@@ -60,7 +60,7 @@ describe RecommandationServices::Completor do
         let(:controller_name) { "webviews" }
         let(:action_name) { "show" }
 
-        before { expect_any_instance_of(RecommandationServices::Completor).to receive(:after_show_webview) }
+        before { expect_any_instance_of(RouteCompletionService).to receive(:after_show_webview) }
 
         it { subject }
       end
@@ -69,8 +69,8 @@ describe RecommandationServices::Completor do
         let(:controller_name) { "neighborhoods" }
         let(:action_name) { "create" }
 
-        before { expect_any_instance_of(RecommandationServices::Completor).to receive(:after_create) }
-        before { expect_any_instance_of(RecommandationServices::Completor).not_to receive(:after_create_user) }
+        before { expect_any_instance_of(RouteCompletionService).to receive(:after_create) }
+        before { expect_any_instance_of(RouteCompletionService).not_to receive(:after_create_user) }
 
         it { subject }
       end
@@ -80,7 +80,7 @@ describe RecommandationServices::Completor do
         let(:action_name) { "create" }
         let(:params) { { neighborhood_id: 1 } }
 
-        before { expect_any_instance_of(RecommandationServices::Completor).to receive(:after_create_user_on_neighborhood) }
+        before { expect_any_instance_of(RouteCompletionService).to receive(:after_create_user_on_neighborhood) }
 
         it { subject }
       end
@@ -90,7 +90,7 @@ describe RecommandationServices::Completor do
         let(:action_name) { "create" }
         let(:params) { { outing_id: 1 } }
 
-        before { expect_any_instance_of(RecommandationServices::Completor).to receive(:after_create_user_on_outing) }
+        before { expect_any_instance_of(RouteCompletionService).to receive(:after_create_user_on_outing) }
 
         it { subject }
       end
@@ -100,7 +100,7 @@ describe RecommandationServices::Completor do
         let(:action_name) { "create" }
         let(:params) { { resource_id: 1 } }
 
-        before { expect_any_instance_of(RecommandationServices::Completor).to receive(:after_create_user_on_resource) }
+        before { expect_any_instance_of(RouteCompletionService).to receive(:after_create_user_on_resource) }
 
         it { subject }
       end

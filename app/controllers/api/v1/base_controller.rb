@@ -201,7 +201,7 @@ module Api
         return unless current_user
         return unless [200, 201].include?(response.status)
 
-        RecommandationServices::Completor.new(
+        RouteCompletionService.new(
           user: current_user,
           controller_name: controller_name,
           action_name: action_name,
