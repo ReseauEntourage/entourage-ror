@@ -8,18 +8,36 @@ class RouteCompletionService
     @params = params
   end
 
-  def run
-    return unless instances_list.include?(instance)
-    return unless actions_list.include?(action_name)
-
-    method = "after_#{action_name}".to_sym
-
-    return unless self.class.instance_methods.include?(method)
-    return unless criteria = send(method, instance, params)
+  def run_notifications
+    return self unless criteria
 
     set_completed_notification! criteria
+
+    self
+  end
+
+  def run_recommandations
+    return self unless criteria
+
     set_completed_criteria! criteria
     log_completed_criteria! criteria
+
+    self
+  end
+
+  def criteria
+    return @criteria if defined?(@criteria)
+
+    @criteria = begin
+      return unless instances_list.include?(instance)
+      return unless actions_list.include?(action_name)
+
+      method = "after_#{action_name}".to_sym
+
+      return unless self.class.instance_methods.include?(method)
+
+      send(method, instance, params)
+    end
   end
 
   def after_index instance, params

@@ -206,7 +206,7 @@ module Api
           controller_name: controller_name,
           action_name: action_name,
           params: params
-        ).run
+        ).run_notifications.run_recommandations
       end
     end
   end
