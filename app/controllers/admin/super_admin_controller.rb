@@ -44,6 +44,9 @@ module Admin
       @pois = []
       @poi = nil
 
+      params[:latitude] ||= PoiServices::Soliguide::PARIS[:latitude]
+      params[:longitude] ||= PoiServices::Soliguide::PARIS[:longitude]
+
       soliguide = PoiServices::Soliguide.new(soliguide_params)
       @pois = PoiServices::SoliguideIndex.post(soliguide.query_params)
     end
