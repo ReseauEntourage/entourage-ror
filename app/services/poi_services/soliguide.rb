@@ -28,7 +28,7 @@ module PoiServices
     end
 
     def apply?
-      is_active? && close_to?(PARIS)
+      is_active?
     end
 
     def is_active?

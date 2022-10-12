@@ -19,19 +19,19 @@ describe PoiServices::Soliguide do
       }).apply?).to eq(true)
     end
 
-    it 'should not be valid far from Paris' do
+    it 'should be valid far from Paris' do
       expect(PoiServices::Soliguide.new({
         latitude: 48.8586,
         longitude: 2.50
-      }).apply?).to eq(false)
+      }).apply?).to eq(true)
     end
 
     # Lyon
-    it 'should be not valid for Lyon' do
+    it 'should be valid for Lyon' do
       expect(PoiServices::Soliguide.new({
         latitude: 45.75,
         longitude: 4.85
-      }).apply?).to eq(false)
+      }).apply?).to eq(true)
     end
   end
 
