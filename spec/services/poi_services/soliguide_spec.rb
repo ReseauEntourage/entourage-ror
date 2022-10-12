@@ -47,9 +47,9 @@ describe PoiServices::Soliguide do
       it {
         expect(subject).to eq({
           location: {
-            geoType: :position,
+            distance: PoiServices::Soliguide::DISTANCE_MIN,
             coordinates: [-1.55, 47.3],
-            distance: PoiServices::Soliguide::DISTANCE_MIN
+            geoType: :position
           },
           options: {},
         })
@@ -65,9 +65,9 @@ describe PoiServices::Soliguide do
       it {
         expect(subject).to eq({
           location: {
-            geoType: :position,
+            distance: PoiServices::Soliguide::DISTANCE_MIN,
             coordinates: [2.34, 48.86],
-            distance: PoiServices::Soliguide::DISTANCE_MIN
+            geoType: :position
           },
           options: {},
         })
@@ -86,9 +86,9 @@ describe PoiServices::Soliguide do
       it {
         expect(subject).to eq({
           location: {
-            geoType: :position,
+            distance: 5.0,
             coordinates: [-1.55, 47.3],
-            distance: 5.0
+            geoType: :position
           },
           options: {},
           word: 'myquery',
@@ -107,9 +107,9 @@ describe PoiServices::Soliguide do
       it {
         expect(subject).to eq({
           location: {
-            geoType: :position,
+            distance: 5.0,
             coordinates: [-1.55, 47.3],
-            distance: 5.0
+            geoType: :position
           },
           options: {},
           categories: [600],

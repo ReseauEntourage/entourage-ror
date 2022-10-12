@@ -36,17 +36,11 @@ module PoiServices
     end
 
     def query_params
-      geoValue = if close_to?(PARIS)
-        :Paris
-      else
-        :HorsZone
-      end
-
       params = {
         location: {
-          geoType: :position,
-          coordinates: [longitude.to_f, latitude.to_f],
-          distance: (distance || 0).to_f.clamp(DISTANCE_MIN, DISTANCE_MAX)
+          distance:  (distance || 0).to_f.clamp(DISTANCE_MIN, DISTANCE_MAX),
+          coordinates: [longitude, latitude],
+          geoType: :position
         },
         options: {}
       }
