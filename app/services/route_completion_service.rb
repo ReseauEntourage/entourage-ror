@@ -81,14 +81,14 @@ class RouteCompletionService
   protected
 
   def set_completed_notification! criteria
-    UserNotification
-      .active_criteria_by_user(user, criteria)
+    InappNotification
+      .active_criteria_by_user(user, criteria.slice(:instance, :instance_id))
       .update_all(completed_at: Time.now)
   end
 
   def set_completed_criteria! criteria
     UserRecommandation
-      .active_criteria_by_user(user, criteria)
+      .active_criteria_by_user(user, criteria.slice(:instance, :instance_id, :instance_url, :action))
       .update_all(completed_at: Time.now)
   end
 
@@ -101,10 +101,10 @@ class RouteCompletionService
   private
 
   def instances_list
-    Recommandation::INSTANCES + UserNotification::INSTANCES
+    Recommandation::INSTANCES + InappNotification::INSTANCES
   end
 
   def actions_list
-    Recommandation::ACTIONS + UserNotification::ACTIONS
+    Recommandation::ACTIONS
   end
 end

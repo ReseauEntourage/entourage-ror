@@ -71,6 +71,8 @@ class User < ApplicationRecord
   has_many :histories, class_name: 'UserHistory'
   has_many :users_resources
   has_many :user_recommandations
+  has_many :inapp_notifications, dependent: :destroy
+  has_one :notification_configuration, class_name: "InappNotificationConfiguration", dependent: :destroy
   has_many :recommandations, -> { UserRecommandation.active }, through: :user_recommandations
 
   delegate :country, to: :address, allow_nil: true

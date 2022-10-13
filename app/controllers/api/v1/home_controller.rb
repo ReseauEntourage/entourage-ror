@@ -4,6 +4,7 @@ module Api
       skip_before_action :community_warning
 
       before_action :set_user_recommandations, only: [:summary]
+      before_action :clean_inapp_notifications, only: [:summary]
 
       def index
         render json: {
@@ -105,6 +106,10 @@ module Api
 
       def set_user_recommandations
         RecommandationServices::User.new(current_user).initiate
+      end
+
+      def clean_inapp_notifications
+        InappNotificationServices::Builder.new(current_user).skip_obsolete_notifications
       end
     end
   end

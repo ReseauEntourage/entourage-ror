@@ -193,13 +193,23 @@ class PushNotificationTriggerObserver < ActiveRecord::Observer
 
   # use params[:extra] to be compliant with v7
   def notify instance:, users:, params: {}
+    object = PushNotificationLinker.get(instance)
+
+    # push notifications
     PushNotificationService.new.send_notification(
       params[:sender],
       params[:object],
       params[:content],
       users,
-      PushNotificationLinker.get(instance).merge(params[:extra] || {})
+      object.merge(params[:extra] || {})
     )
+
+    return unless object.any?
+
+    # inapp notifications
+    users.map do |user|
+      InappNotificationServices::Builder.new(user).instanciate(instance: object[:instance], instance_id: object[:id])
+    end
   end
 
   def username user
