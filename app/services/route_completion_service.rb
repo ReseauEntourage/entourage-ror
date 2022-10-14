@@ -8,22 +8,23 @@ class RouteCompletionService
     @params = params
   end
 
+  def run
+    run_notifications
+    run_recommandations
+  end
+
   def run_notifications
     return unless action_name == :show
-    return self unless criteria
+    return unless criteria
 
     set_completed_notification! criteria
-
-    self
   end
 
   def run_recommandations
-    return self unless criteria
+    return unless criteria
 
     set_completed_recommandation! criteria
     log_completed_recommandation! criteria
-
-    self
   end
 
   def criteria
