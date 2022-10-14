@@ -19,8 +19,8 @@ class RouteCompletionService
   def run_recommandations
     return self unless criteria
 
-    set_completed_criteria! criteria
-    log_completed_criteria! criteria
+    set_completed_recommandation! criteria
+    log_completed_recommandation! criteria
 
     self
   end
@@ -86,13 +86,13 @@ class RouteCompletionService
       .update_all(completed_at: Time.now)
   end
 
-  def set_completed_criteria! criteria
+  def set_completed_recommandation! criteria
     UserRecommandation
       .active_criteria_by_user(user, criteria.slice(:instance, :instance_id, :instance_url, :action))
       .update_all(completed_at: Time.now)
   end
 
-  def log_completed_criteria! criteria
+  def log_completed_recommandation! criteria
     return if UserRecommandation.processed_criteria_by_user(user, criteria).any?
 
     UserRecommandation.new(criteria.merge(user: user, completed_at: Time.now)).save

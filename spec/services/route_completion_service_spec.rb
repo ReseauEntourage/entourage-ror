@@ -16,7 +16,7 @@ describe RouteCompletionService do
 
     describe 'arguments' do
       context 'defined arguments' do
-        before { expect_any_instance_of(RouteCompletionService).to receive(:set_completed_criteria!) }
+        before { expect_any_instance_of(RouteCompletionService).to receive(:set_completed_recommandation!) }
 
         it { subject }
       end
@@ -24,7 +24,7 @@ describe RouteCompletionService do
       context 'undefined controller_name' do
         let(:controller_name) { "foo" }
 
-        before { expect_any_instance_of(RouteCompletionService).not_to receive(:set_completed_criteria!) }
+        before { expect_any_instance_of(RouteCompletionService).not_to receive(:set_completed_recommandation!) }
 
         it { subject }
       end
@@ -32,7 +32,7 @@ describe RouteCompletionService do
       context 'undefined action_name' do
         let(:action_name) { "foo" }
 
-        before { expect_any_instance_of(RouteCompletionService).not_to receive(:set_completed_criteria!) }
+        before { expect_any_instance_of(RouteCompletionService).not_to receive(:set_completed_recommandation!) }
 
         it { subject }
       end
@@ -202,8 +202,8 @@ describe RouteCompletionService do
     end
   end
 
-  describe 'set_completed_criteria' do
-    let(:subject) { completor.send(:set_completed_criteria!, criteria) }
+  describe 'set_completed_recommandation' do
+    let(:subject) { completor.send(:set_completed_recommandation!, criteria) }
 
     context 'no user_recommandation on user' do
       let(:anyone) { FactoryBot.create(:pro_user) }
@@ -243,8 +243,8 @@ describe RouteCompletionService do
     end
   end
 
-  describe 'log_completed_criteria' do
-    let(:subject) { completor.send(:log_completed_criteria!, criteria) }
+  describe 'log_completed_recommandation' do
+    let(:subject) { completor.send(:log_completed_recommandation!, criteria) }
     let(:criteria) { { instance: :resource, action: :index } }
 
     context 'no existing user_recommandation' do
