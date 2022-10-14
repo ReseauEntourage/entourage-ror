@@ -11,6 +11,22 @@ describe RouteCompletionService do
 
   let(:instance) { controller_name.singularize.to_sym }
 
+  describe 'run_notifications' do
+    let(:subject) { completor.run_notifications }
+
+    let!(:inapp_notification) { create(:inapp_notification, user: user) }
+    let!(:inapp_notification_1) { create(:inapp_notification, user: user) }
+
+    let(:controller_name) { "neighborhoods" }
+    let(:action_name) { :show }
+    let(:params) { { id: inapp_notification.instance_id } }
+
+    before { subject }
+
+    it { expect(inapp_notification.reload.completed_at).to be_a(ActiveSupport::TimeWithZone) }
+    it { expect(inapp_notification_1.reload.completed_at).to be(nil) }
+  end
+
   describe 'run_recommandations' do
     let(:subject) { completor.run_recommandations }
 

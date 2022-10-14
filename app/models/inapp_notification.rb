@@ -1,5 +1,5 @@
 class InappNotification < ApplicationRecord
-  INSTANCES = [:neighborhood, :outing, :contribution, :solicitation]
+  INSTANCES = [:neighborhood, :outing, :contribution, :solicitation, :user]
 
   belongs_to :user
 
