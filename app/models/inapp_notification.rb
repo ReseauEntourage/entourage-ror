@@ -5,6 +5,8 @@ class InappNotification < ApplicationRecord
 
   validates_presence_of :instance_id
 
+  default_scope { order(created_at: :desc) }
+
   scope :active, -> { where(completed_at: nil, skipped_at: nil) }
 
   scope :completed_by, -> (user) { where(user_id: user.id).where.not(completed_at: nil) }
