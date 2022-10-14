@@ -9,6 +9,7 @@ class RouteCompletionService
   end
 
   def run_notifications
+    return unless action_name == :show
     return self unless criteria
 
     set_completed_notification! criteria
