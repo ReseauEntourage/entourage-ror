@@ -208,7 +208,7 @@ class PushNotificationTriggerObserver < ActiveRecord::Observer
 
     # inapp notifications
     users.map do |user|
-      InappNotificationServices::Builder.new(user).instanciate(instance: object[:instance], instance_id: object[:id])
+      InappNotificationServices::Builder.new(user).instanciate(instance: object[:instance].singularize, instance_id: object[:id])
     end
   end
 
