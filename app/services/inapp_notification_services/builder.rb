@@ -21,7 +21,7 @@ module InappNotificationServices
         user: user,
         instance: instance,
         instance_id: instance_id
-      )
+      ).save
     end
 
     def configuration
