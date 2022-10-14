@@ -192,8 +192,11 @@ class PushNotificationTriggerObserver < ActiveRecord::Observer
   end
 
   # use params[:extra] to be compliant with v7
+  # @caution notifications should be instanciated in jobs
   def notify instance:, users:, params: {}
     object = PushNotificationLinker.get(instance)
+
+    # @jobs!
 
     # push notifications
     PushNotificationService.new.send_notification(
