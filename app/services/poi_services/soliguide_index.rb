@@ -18,9 +18,7 @@ module PoiServices
       def headers
         {
           'Content-Type' => 'application/json',
-          'User-Agent' => 'Mozilla',
-          'origin' => 'https://soliguide.fr',
-          # 'Authorization' => Soliguide::API_KEY,
+          'Authorization' => Soliguide::API_KEY,
         }
       end
 
