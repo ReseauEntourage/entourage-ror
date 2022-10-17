@@ -6,20 +6,8 @@
 
 <h2>Changer le créateur</h2>
 
-<div class="alert alert-info" role="alert">
-  <p>
-    Si vous souhaitez changer le créateur de l'action, vous pouvez choisir de laisser automatiquement un message dans la conversation afin d'expliquer aux utilisateurs le changement.
-  </p>
-  <p>Si vous laissez le message vide, aucun message ne sera publié</p>
-</div>
-
 <%= form_for(@entourage, url: update_owner_admin_entourage_path(@entourage), :method => :post, html: { role: "form" }) do |f| %>
   <%= render partial: "layouts/errors", locals: { obj: @entourage } %>
-
-  <div class="form-group">
-    <%= f.label :change_ownership_message, "Message à publier dans la conversation", class: "control-label" %>
-    <%= f.text_area :change_ownership_message, class: "form-control" %>
-  </div>
 
   <div class="form-group">
     <%= f.label :user_id, "Créateur actuel", class: "control-label" %>
