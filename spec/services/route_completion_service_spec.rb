@@ -14,17 +14,59 @@ describe RouteCompletionService do
   describe 'run_notifications' do
     let(:subject) { completor.run_notifications }
 
-    let!(:inapp_notification) { create(:inapp_notification, user: user) }
-    let!(:inapp_notification_1) { create(:inapp_notification, user: user) }
+    let(:inapp_notification) { create(:inapp_notification, user: user) }
 
     let(:controller_name) { "neighborhoods" }
     let(:action_name) { :show }
     let(:params) { { id: inapp_notification.instance_id } }
 
-    before { subject }
+    describe 'action is show' do
+      let(:action_name) { :show }
 
-    it { expect(inapp_notification.reload.completed_at).to be_a(ActiveSupport::TimeWithZone) }
-    it { expect(inapp_notification_1.reload.completed_at).to be(nil) }
+      context 'set_completed_notification!' do
+        before { RouteCompletionService.any_instance.stub(:criteria) { Hash.new } }
+        before { expect_any_instance_of(RouteCompletionService).to receive(:set_completed_notification!) }
+
+        it { subject }
+      end
+
+      context 'set completed_at for user with specific notification' do
+        let(:inapp_notification) { create(:inapp_notification, user: user) }
+        let(:params) { { id: inapp_notification.instance_id } }
+
+        before { subject }
+
+        it { expect(inapp_notification.reload.completed_at).to be_a(ActiveSupport::TimeWithZone) }
+      end
+
+      context 'set completed_at for another user with specific notification' do
+        let(:inapp_notification) { create(:inapp_notification) }
+        let(:params) { { id: inapp_notification.instance_id } }
+
+        before { subject }
+
+        it { expect(inapp_notification.reload.completed_at).to be(nil) }
+      end
+
+      context 'set completed_at for user with another notification' do
+        let(:inapp_notification) { create(:inapp_notification, user: user) }
+        let(:inapp_notification_1) { create(:inapp_notification, user: user) }
+        let(:params) { { id: inapp_notification_1.instance_id } }
+
+        before { subject }
+
+        it { expect(inapp_notification.reload.completed_at).to be(nil) }
+      end
+    end
+
+    describe 'action is index' do
+      let(:action_name) { :index }
+
+      before { RouteCompletionService.any_instance.stub(:criteria) { Hash.new } }
+      before { expect_any_instance_of(RouteCompletionService).not_to receive(:set_completed_notification!) }
+
+      it { subject }
+    end
   end
 
   describe 'run_recommandations' do
