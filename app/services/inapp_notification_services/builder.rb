@@ -15,7 +15,7 @@ module InappNotificationServices
     end
 
     def instanciate instance:, instance_id:
-      return if configuration && configuration.not_accepted?(instance: instance)
+      return unless accepted_configuration?(instance)
 
       InappNotification.new(
         user: user,
@@ -24,8 +24,10 @@ module InappNotificationServices
       ).save
     end
 
-    def configuration
-      @configuration ||= user.notification_configuration&.configuration
+    def accepted_configuration? instance
+      return true unless configuration = user.notification_configuration
+
+      configuration.is_accepted?(instance)
     end
   end
 end
