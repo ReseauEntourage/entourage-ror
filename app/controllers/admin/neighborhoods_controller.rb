@@ -52,9 +52,9 @@ module Admin
       user_id = neighborhood_params[:user_id]
       message = neighborhood_params[:change_ownership_message]
 
-      NeighborhoodServices::ChangeOwner.new(@neighborhood).to(user_id, message) do |success, error_message|
+      EntourageServices::ChangeOwner.new(@neighborhood).to(user_id, message) do |success, error_message|
         if success
-          redirect_to [:admin, @neighborhood], notice: "Mise à jour réussie"
+          redirect_to [:edit, :admin, @neighborhood], notice: "Mise à jour réussie"
         else
           redirect_to [:edit_owner, :admin, @neighborhood], alert: error_message
         end
