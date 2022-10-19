@@ -12,7 +12,7 @@ module Api
       before_action :authenticate_user!, except: [:check, :options]
       before_action :set_raven_context
 
-      after_action :set_completed_user_recommandations, only: [:index, :show, :create], if: -> { current_user.present? }
+      after_action :set_completed_route, only: [:index, :show, :create], if: -> { current_user.present? }
 
       rescue_from ApiRequest::Unauthorised do |e|
         Rails.logger.error e
@@ -197,7 +197,7 @@ module Api
         logger.warn "type=community.warning code=community_support_missing controller=#{controller_path} action=#{action_name}"
       end
 
-      def set_completed_user_recommandations
+      def set_completed_route
         return unless current_user
         return unless [200, 201].include?(response.status)
 
@@ -207,6 +207,8 @@ module Api
           action_name: action_name,
           params: params
         ).run
+      rescue => e
+        Raven.capture_exception(e)
       end
     end
   end
