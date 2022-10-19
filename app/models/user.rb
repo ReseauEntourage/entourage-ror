@@ -328,6 +328,13 @@ class User < ApplicationRecord
     super(Phone::PhoneBuilder.new(phone: new_phone).format)
   end
 
+  # excluding wrong values due to v7 constraints
+  def interests= interests
+    return super(interests) if interests.is_a?(String)
+
+    super(interests & Tag.interest_list)
+  end
+
   def to_s
     "#{id} - #{first_name} #{last_name}"
   end

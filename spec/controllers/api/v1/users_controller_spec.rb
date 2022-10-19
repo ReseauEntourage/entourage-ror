@@ -471,7 +471,14 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
       context 'interests as an array' do
         context 'wrong value' do
           before { patch 'update', params: { token: user.token, user: { interests: ["foo", "bar"] } } }
-          it { expect(response.status).to eq(400) }
+          it { expect(response.status).to eq(200) }
+          it { expect(result['user']).to include('interests' => []) }
+        end
+
+        context 'wrong value as v7 interests' do
+          before { patch 'update', params: { token: user.token, user: { interests: ["event_riverain", "m_informer_riverain"] } } }
+          it { expect(response.status).to eq(200) }
+          it { expect(result['user']).to include('interests' => []) }
         end
       end
 
