@@ -238,6 +238,30 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
       }
     end
 
+    describe "create entourage push notification" do
+      let(:partner) { create(:partner, name: "foo", postal_code: "75008") }
+      let(:user) { create(:public_user, partner: partner) }
+
+      let(:follower) { create(:public_user) }
+      let(:entourage) { create :entourage, user: user }
+
+      context "entourage creator has followers" do
+        let!(:following) { create :following, user: follower, partner: partner }
+
+        before { expect_any_instance_of(PushNotificationTriggerObserver).to receive(:notify) }
+
+        it { entourage }
+      end
+
+      context "entourage creator does not have followers" do
+        let(:entourage) { create :entourage }
+
+        before { expect_any_instance_of(PushNotificationTriggerObserver).not_to receive(:notify) }
+
+        it { entourage }
+      end
+    end
+
     describe "text chat_message" do
       let(:conversation) { ConversationService.build_conversation(participant_ids: [user.id, participant.id]) }
       let(:chat_message) { build(:chat_message, messageable: conversation, user: user, message_type: :text, content: "foobar") }

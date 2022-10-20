@@ -42,6 +42,36 @@ class PushNotificationTriggerObserver < ActiveRecord::Observer
     })
   end
 
+  def entourage_on_create entourage
+    return unless entourage.outing? || entourage.action?
+    return unless user = entourage.user
+    return unless partner = user.partner
+
+    follower_ids = Following.where(partner: partner, active: true).pluck(:user_id)
+
+    return unless follower_ids.any?
+
+    follower_ids.each do |follower_id|
+      next unless follower = User.find(follower_id)
+
+      invitation_id = EntourageInvitation.where(invitable: entourage, inviter: user, invitee_id: follower_id).pluck(:id).first
+
+      notify(instance: entourage, users: [follower], params: {
+        sender: partner.name,
+        object: entourage.title,
+        content: "#{partner.name} vous invite à rejoindre #{title(entourage)}",
+        extra: {
+          type: "ENTOURAGE_INVITATION",
+          entourage_id: entourage.id,
+          group_type: entourage.group_type,
+          inviter_id: user.id,
+          invitee_id: follower_id,
+          invitation_id: invitation_id
+        }
+      })
+    end
+  end
+
   def entourage_on_update entourage
     return outing_on_update(entourage) if entourage.outing?
   end
