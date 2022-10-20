@@ -103,6 +103,7 @@ module Api
 
       def create
         @poi = Poi.new(poi_params)
+        @poi = PoiServices::PoiGeocoder.new(poi: @poi, params: poi_params).geocode
         @poi.validated = false
 
         # TODO make this cleaner
@@ -111,7 +112,7 @@ module Api
         if @poi.save
           render json: @poi, status: 201, serializer: ::V1::PoiSerializer, scope: {version: :v2}
         else
-          render json: {message: "Could not create POI", reasons: @poi.errors.full_message }, status: 400
+          render json: {message: "Could not create POI", reasons: @poi.errors.full_messages }, status: 400
         end
       end
 
