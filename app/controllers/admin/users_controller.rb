@@ -1,5 +1,7 @@
 module Admin
   class UsersController < Admin::BaseController
+    LAST_SIGN_IN_AT_EXPORT = 1.year.ago
+
     before_action :set_user, only: [:show, :messages, :engagement, :history, :edit, :update, :edit_block, :block, :temporary_block, :unblock, :cancel_phone_change_request, :download_export, :send_export, :anonymize, :destroy_avatar, :banish, :validate, :experimental_pending_request_reminder, :new_spam_warning, :create_spam_warning]
 
     def index
@@ -207,14 +209,21 @@ module Admin
 
     def send_export
       UserServices::Exporter.new(user: @user).export
-      redirect_to [:admin, @user], flash: { success: "Export envoyé par mail" }
+      redirect_to [:admin, @user], flash: { success: "Export envoyé par mail (utilisateurs connectés depuis moins d'un an)" }
     end
 
     def download_list_export
-      user_ids = filtered_users.pluck(:id)
+      user_ids = filtered_users
+        .where("last_sign_in_at > ?", LAST_SIGN_IN_AT_EXPORT)
+        .order(last_sign_in_at: :desc)
+        .pluck(:id)
+
+      puts "count:"
+      puts user_ids.count
 
       MemberMailer.users_csv_export(user_ids, current_user.email).deliver_later
-      redirect_to admin_users_url(params: filter_params), flash: { success: "Vous recevrez l'export par mail" }
+
+      redirect_to admin_users_url(params: filter_params), flash: { success: "Vous recevrez l'export par mail (utilisateurs connectés depuis moins d'un an)" }
     end
 
     def anonymize
