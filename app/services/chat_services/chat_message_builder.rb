@@ -20,7 +20,8 @@ module ChatServices
       end
 
       success = false
-      if joinable.new_record?
+      if joinable.new_record? && joinable.is_a?(Entourage)
+        # @caution this part assumes we built joinable using self.find_conversation
         success = begin
           ApplicationRecord.connection.transaction do
             joinable.create_from_join_requests!
