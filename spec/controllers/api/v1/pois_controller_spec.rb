@@ -8,9 +8,8 @@ describe Api::V1::PoisController, :type => :controller do
 
     describe 'create' do
       let!(:poi) { build :poi }
-
-      before {
-        post :create, params: { token: user.token, poi: {
+      let(:poi_params) { {
+        poi: {
           name: poi.name,
           adress: poi.adress,
           phone: poi.phone,
@@ -18,42 +17,61 @@ describe Api::V1::PoisController, :type => :controller do
           email: poi.email,
           audience: poi.audience,
           category_id: poi.category_id
-        }, format: :json }
-      }
+        }
+      } }
 
-      it { expect(response.status).to eq(201) }
-      it { expect(Poi.last.name).to eq poi.name }
-      it { expect(Poi.last.latitude).to eq poi.latitude }
-      it { expect(Poi.last.longitude).to eq poi.longitude }
-      it { expect(Poi.last.adress).to eq poi.adress }
-      it { expect(Poi.last.phone).to eq poi.phone }
-      it { expect(Poi.last.website).to eq poi.website }
-      it { expect(Poi.last.email).to eq poi.email }
-      it { expect(Poi.last.audience).to eq poi.audience }
-      it { expect(Poi.last.category).to eq poi.category }
-      it { expect(Poi.last.validated).to be false }
+      let(:subject) { post :create, params: { format: :json }.merge(poi_params) }
 
-      it "renders POI" do
-        poi = Poi.last
-        res = JSON.parse(response.body)
-        expect(res).to eq("poi"=>{
-          "uuid"=>poi.id.to_s,
-          "source"=>"entourage",
-          "source_url"=>nil,
-          "name"=>"Dede",
-          "description"=>nil,
-          "longitude"=>2.30681949999996,
-          "latitude"=>48.870424,
-          "address"=>"Au 50 75008 Paris",
-          "phone"=>"0000000000",
-          "website"=>"entourage.com",
-          "email"=>"entourage@entourage.com",
-          "audience"=>"Mon audience",
-          "hours"=>nil,
-          "languages"=>nil,
-          "partner_id"=>nil,
-          "category_ids"=>[poi.category_id]
-        })
+      describe "stub verify" do
+        before { PoiServices::FormSignature.any_instance.stub(:verify) { true } }
+        before { subject }
+
+        it { expect(response.status).to eq(201) }
+        it { expect(Poi.last.name).to eq poi.name }
+        it { expect(Poi.last.latitude).to eq poi.latitude }
+        it { expect(Poi.last.longitude).to eq poi.longitude }
+        it { expect(Poi.last.adress).to eq poi.adress }
+        it { expect(Poi.last.phone).to eq poi.phone }
+        it { expect(Poi.last.website).to eq poi.website }
+        it { expect(Poi.last.email).to eq poi.email }
+        it { expect(Poi.last.audience).to eq poi.audience }
+        it { expect(Poi.last.category).to eq poi.category }
+        it { expect(Poi.last.validated).to be false }
+
+        it "renders POI" do
+          poi = Poi.last
+          res = JSON.parse(response.body)
+          expect(res).to eq("poi"=>{
+            "uuid"=>poi.id.to_s,
+            "source"=>"entourage",
+            "source_url"=>nil,
+            "name"=>"Dede",
+            "description"=>nil,
+            "longitude"=>2.30681949999996,
+            "latitude"=>48.870424,
+            "address"=>"Au 50 75008 Paris",
+            "phone"=>"0000000000",
+            "website"=>"entourage.com",
+            "email"=>"entourage@entourage.com",
+            "audience"=>"Mon audience",
+            "hours"=>nil,
+            "languages"=>nil,
+            "partner_id"=>nil,
+            "category_ids"=>[poi.category_id]
+          })
+        end
+      end
+
+      describe "do not stub verify" do
+        let(:secret) { "foo" }
+
+        before { ENV['POI_FORM_SECRET_TOKEN'] = secret }
+        before { request.headers["Typeform-Signature"] = "sha256=#{PoiServices::FormSignature.base64_hash(secret, poi_params.to_query)}" }
+
+        before { subject }
+
+        it { expect(response.status).to eq(201) }
+        it { expect(Poi.last.name).to eq poi.name }
       end
     end
 

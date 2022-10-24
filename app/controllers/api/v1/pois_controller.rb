@@ -1,7 +1,9 @@
 module Api
   module V1
     class PoisController < Api::V1::BaseController
-      skip_before_action :authenticate_user!, only: [:index, :show]
+      skip_before_action :authenticate_user!, only: [:index, :show, :create]
+
+      before_action :validate_form_signature, only: [:create]
 
       attr_writer :member_mailer
 
@@ -147,6 +149,10 @@ module Api
 
       def show_params
         params.permit([:id, :action, :controller, :token])
+      end
+
+      def validate_form_signature
+        render json: { message: 'unauthorized' }, status: :unauthorized unless PoiServices::FormSignature.new(request).verify
       end
     end
   end
