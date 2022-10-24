@@ -68,10 +68,8 @@ resource Api::V1::PoisController do
     end
 
     let(:poi) { build :poi }
-    let(:user) { FactoryBot.create(:pro_user) }
 
     let(:raw_post) { {
-      token: user.token,
       poi: {
         name: poi.name,
         latitude: poi.latitude,
@@ -84,6 +82,8 @@ resource Api::V1::PoisController do
         category_id: poi.category_id
       }
     }.to_json }
+
+    before { PoiServices::FormSignature.any_instance.stub(:verify) { true } }
 
     context '201' do
       example_request 'Create a poi' do
