@@ -57,7 +57,6 @@ class PushNotificationTriggerObserver < ActiveRecord::Observer
       invitation_id = EntourageInvitation.where(invitable: entourage, inviter: user, invitee_id: follower_id).pluck(:id).first
 
       notify(instance: entourage, users: [follower], params: {
-        sender: partner.name,
         object: entourage.title,
         content: "#{partner.name} vous invite à rejoindre #{title(entourage)}",
         extra: {
@@ -124,7 +123,6 @@ class PushNotificationTriggerObserver < ActiveRecord::Observer
     return if users.none?
 
     notify(instance: public_chat_message.messageable, users: users, params: {
-      sender: username(public_chat_message.user),
       object: "#{username(public_chat_message.user)} - #{title(public_chat_message.messageable)}",
       content: public_chat_message.content,
       extra: {
@@ -142,8 +140,7 @@ class PushNotificationTriggerObserver < ActiveRecord::Observer
     return if users.none?
 
     notify(instance: private_chat_message.messageable, users: users, params: {
-      sender: username(private_chat_message.user),
-      object: nil,
+      object: username(private_chat_message.user),
       content: private_chat_message.content,
       extra: {
         group_type: group_type(private_chat_message.messageable),

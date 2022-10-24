@@ -44,7 +44,7 @@ describe FollowingService do
 
       it {
         expect(notification_service).to have_received(:send_notification).with(
-          partner.name,
+          nil,
           action.title,
           "#{partner.name} vous invite à rejoindre #{action.title}",
           [following.user],

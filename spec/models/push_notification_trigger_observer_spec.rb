@@ -288,8 +288,7 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
             instance: conversation,
             users: [participant],
             params: {
-              sender: "John D.",
-              object: nil,
+              object: "John D.",
               content: "foobar",
               extra: {
                 group_type: "conversation",
