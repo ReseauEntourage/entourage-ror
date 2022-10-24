@@ -12,7 +12,7 @@ class AndroidNotificationJob < ApplicationJob
       notification.app = app
       notification.registration_ids = device_ids
       # the Android app displays the sender as title
-      notification.data = { sender: object, object: object, content: {message: content, extra: extra} }
+      notification.data = { sender: object || sender, object: object, content: {message: content, extra: extra} }
 
       NotificationTruncationService.truncate_message! notification
 
