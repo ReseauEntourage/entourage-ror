@@ -5,7 +5,7 @@ class RemoveProfileFromRecommandations < ActiveRecord::Migration[5.2]
   end
 
   def down
-    add_column :recommandations, :profile
+    add_column :recommandations, :profile, :string
     add_index :recommandations, :profile
   end
 end
