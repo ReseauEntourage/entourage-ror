@@ -2,14 +2,14 @@ class IosNotificationJob < ApplicationJob
   def perform(sender, object, content, device_token, community, extra={},badge=nil)
     return if device_token.blank?
 
-    apps = Rpush::Apns::App.where(name: community)
+    apps = Rpush::Apnsp8::App.where(name: community)
 
     if apps.blank?
       raise "No iOS notification has been sent: no '#{community}' certificate found."
     else
       apps.each do |app|
         begin
-          notification = Rpush::Apns::Notification.new
+          notification = Rpush::Apnsp8::Notification.new
           notification.badge = badge if badge
           notification.app = app
           notification.device_token = device_token.to_s
@@ -41,6 +41,8 @@ class IosNotificationJob < ApplicationJob
           Rails.logger.error e.message
         end
       end
+
+      Rpush.push
     end
   end
 end
