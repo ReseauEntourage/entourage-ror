@@ -50,48 +50,8 @@ resource Api::V1::PoisController do
     end
   end
 
-  post 'api/v1/pois' do
-    route_summary "Create a POI"
-
-    parameter :token, type: :string, required: true
-
-    with_options :scope => :poi, :required => true do
-      parameter :name
-      parameter :latitude
-      parameter :longitude
-      parameter :adress
-      parameter :phone, required: false
-      parameter :website, required: false
-      parameter :email, required: false
-      parameter :audience, required: false
-      parameter :category_id
-    end
-
-    let(:poi) { build :poi }
-
-    let(:raw_post) { {
-      poi: {
-        name: poi.name,
-        latitude: poi.latitude,
-        longitude: poi.longitude,
-        adress: poi.adress,
-        phone: poi.phone,
-        website: poi.website,
-        email: poi.email,
-        audience: poi.audience,
-        category_id: poi.category_id
-      }
-    }.to_json }
-
-    before { PoiServices::FormSignature.any_instance.stub(:verify) { true } }
-
-    context '201' do
-      example_request 'Create a poi' do
-        expect(response_status).to eq(201)
-        expect(JSON.parse(response_body)).to have_key('poi')
-      end
-    end
-  end
+  # @nodoc for post 'api/v1/pois'
+  # it is available only using typeform
 
   post 'api/v1/pois/:id/report' do
     route_summary "Report a POI to Entourage team"
