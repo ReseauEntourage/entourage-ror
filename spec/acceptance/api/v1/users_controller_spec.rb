@@ -6,7 +6,7 @@ resource Api::V1::UsersController do
   header "Content-Type", "application/json"
 
   ENV['ADMIN_HOST'] = 'https://this.is.local'
-  ENV['SLACK_SIGNAL_USER_WEBHOOK'] = '{"url":"https://url.to.slack.com","channel":"channel","username":"signal-user-creation"}'
+  ENV['SLACK_SIGNAL'] = '{"url":"https://url.to.slack.com","channel":"channel"}'
 
   before(:each) {
     ENV['SLACK_WEBHOOK_URL'] = 'https://url.to.slack.com'
@@ -52,15 +52,15 @@ resource Api::V1::UsersController do
     parameter :token, type: :string, required: true
 
     with_options :scope => :user, :required => true do
-      parameter :first_name, "First name", type: :string
-      parameter :last_name, "Last name", type: :string
-      parameter :email, "Email", type: :string
-      parameter :sms_code, "SMS code", type: :string
-      parameter :phone, "Phone", type: :string
-      parameter :avatar_key, "Avatar key", type: :string
-      parameter :about, "About", type: :string
-      parameter :goal, "offer_help, ask_for_help, organization", type: :string
-      parameter :interests, "Interests", type: :array
+      parameter :first_name, "First name", type: :string, :required => false
+      parameter :last_name, "Last name", type: :string, :required => false
+      parameter :email, "Email", type: :string, :required => false
+      parameter :sms_code, "SMS code", type: :string, :required => false
+      parameter :phone, "Phone", type: :string, :required => false
+      parameter :avatar_key, "Avatar key", type: :string, :required => false
+      parameter :about, "About", type: :string, :required => false
+      parameter :goal, "offer_help, ask_for_help, organization", type: :string, :required => false
+      parameter :interests, "Interests", type: :array, :required => false
     end
 
     let(:user) { FactoryBot.create(:pro_user) }
@@ -69,7 +69,8 @@ resource Api::V1::UsersController do
     let(:raw_post) { {
       token: user.token,
       user: {
-        first_name: "foo"
+        first_name: "foo",
+        interests: [:sport]
       }
     }.to_json }
 
@@ -181,23 +182,57 @@ resource Api::V1::UsersController do
     parameter :token, type: :string, required: true
 
     let(:user) { FactoryBot.create(:public_user) }
+    let(:other_user) { FactoryBot.create(:public_user) }
     let(:token) { user.token }
+
+    let(:subject) { JSON.parse(response_body) }
 
     context '200' do
       let(:id) { user.id }
 
-      example_request 'Get user' do
+      example_request 'Get my user using id' do
         expect(response_status).to eq(200)
-        expect(JSON.parse(response_body)).to have_key('user')
+        expect(subject).to have_key('user')
+        expect(subject['user']).to have_key('uuid')
       end
     end
 
     context '200' do
       let(:id) { "me" }
 
-      example_request 'Get my user' do
+      example_request 'Get my user using me' do
         expect(response_status).to eq(200)
-        expect(JSON.parse(response_body)).to have_key('user')
+        expect(subject).to have_key('user')
+        expect(subject['user']).to have_key('uuid')
+      end
+    end
+
+    context '200' do
+      let(:id) { other_user.id }
+
+      example_request 'Get another user' do
+        expect(response_status).to eq(200)
+        expect(subject).to have_key('user')
+        expect(subject['user']).not_to have_key('uuid')
+      end
+    end
+  end
+
+  get '/api/v1/users/unread' do
+    route_summary "Get unread count"
+
+    parameter :token, type: :string, required: true
+
+    let(:user) { FactoryBot.create(:public_user) }
+    let(:token) { user.token }
+
+    let(:subject) { JSON.parse(response_body) }
+
+    context '200' do
+      example_request 'Get unread count' do
+        expect(response_status).to eq(200)
+        expect(subject).to have_key('user')
+        expect(subject['user']).to have_key('unread_count')
       end
     end
   end

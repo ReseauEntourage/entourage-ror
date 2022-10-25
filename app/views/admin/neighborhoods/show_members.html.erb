@@ -1,0 +1,30 @@
+<div class="container">
+  <div style="width: 750px; margin: auto">
+    <%= render 'edit_header', tab: :show_members %>
+
+    <div class="row">
+      <div class="breadcrumb" style="margin-bottom: 0px">
+        <%= link_to "Changer le créateur", edit_owner_admin_neighborhood_path(@neighborhood) %>
+      </div>
+      <table class="table">
+        <th>Id</th>
+        <th>Nom</th>
+        <th>Email</th>
+        <th>Téléphone</th>
+        <th>Statut</th>
+        <% @neighborhood.members.each do |user| %>
+          <tr>
+            <td><%= user.id %></td>
+            <td>
+              <%= link_to user.full_name, edit_admin_user_path(user.id) %>
+              <% if user == @neighborhood.user %><i>(administrateur)</i><% end %>
+            </td>
+            <td><%= user.email %></td>
+            <td><%= user.phone %></td>
+            <td><%= user.status %></td>
+          </tr>
+        <% end %>
+      </table>
+    </div>
+  </div>
+</div>

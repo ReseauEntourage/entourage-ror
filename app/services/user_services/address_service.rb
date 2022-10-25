@@ -55,7 +55,7 @@ module UserServices
         country, postal_code, city = EntourageServices::GeocodingService.search_postal_code(
           params[:latitude], params[:longitude])
 
-        @params.merge!(country: country, postal_code: postal_code)
+        @params.merge!(country: country, postal_code: postal_code, city: city)
       end
 
       address, success = self.class.update_address(user: user, position: position, params: params)
@@ -67,6 +67,15 @@ module UserServices
 
       callback.on_success.try(:call, user, address)
       true
+    end
+
+    def self.update_city_if_nil address
+      return address unless address
+      return address if address&.city
+      return address unless city = GeocodingServices::Finder.get_city_from(address.attributes)
+
+      address.update(city: city)
+      address
     end
 
     def self.update_with_google_place_details address
@@ -100,6 +109,7 @@ module UserServices
       if params[:google_place_id] != address.google_place_id
         address.postal_code = nil
         address.country = nil
+        address.city = nil
         address.google_place_id = nil
       end
 
@@ -120,23 +130,12 @@ module UserServices
     end
 
     def self.fetch_google_place_details place_id
+      get_google_place_details(place_id).slice(:place_name, :latitude, :longitude, :postal_code, :country, :city, :google_place_id)
+    end
+
+    def self.get_google_place_details place_id
       raise if place_id.blank?
-
-      result = Geocoder.search(
-        place_id,
-        lookup: :google_places_details,
-        params: {
-          region: :fr,
-          fields: [
-            'geometry/location',
-            :name,
-            :address_components,
-            :place_id,
-          ].join(',')
-        }
-      ).first
-
-      raise if result.nil?
+      raise unless result = GeocodingServices::Finder.get_geocoder_from_place_id(place_id)
 
       country, postal_code =
         if result.postal_code
@@ -148,10 +147,12 @@ module UserServices
 
       {
         place_name: result.data['name'],
+        formatted_address: result.data['formatted_address'],
 
         latitude:  result.latitude,
         longitude: result.longitude,
 
+        city:        result.city,
         postal_code: postal_code,
         country:     country,
 

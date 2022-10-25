@@ -2,7 +2,6 @@ module EntourageServices
   class EntourageFinder
     include FeedServices::Preloader
 
-    DEFAULT_DISTANCE=10
     FEED_CATEGORY_EXPR = "(case when group_type = 'action' then concat(entourage_type, '_', coalesce(display_category, 'other')) else group_type::text end)"
 
     attr_reader :user, :types, :latitude, :longitude, :distance, :page, :per, :show_past_events, :time_range, :before, :partners_only, :no_outings, :show_my_entourages_only, :author, :invitee, :status, :search
@@ -33,7 +32,7 @@ module EntourageServices
       @types = formated_types(types)
       @latitude = latitude
       @longitude = longitude
-      @distance = [(distance&.to_f || DEFAULT_DISTANCE), 40].min
+      @distance = UserService.travel_distance(user: user, forced_distance: distance)
       @page = page
       @per = per
       @show_past_events = show_past_events=="true"

@@ -124,25 +124,6 @@ module GoodWaves
         end
       end
 
-      existing_ids = existing.map { |member| member[:user_id] }
-      author_name = UserPresenter.display_name(group.user)
-      object = group.title
-      message = "Vous venez de rejoindre le groupe de #{author_name}"
-
-      PushNotificationService.new.send_notification(
-        author_name,
-        object,
-        message,
-        User.where(id: existing_ids),
-        {
-          joinable_id: group.id,
-          joinable_type: group.class.name,
-          group_type: group.group_type,
-          type: "JOIN_REQUEST_ACCEPTED",
-          user_id: nil
-        }
-      )
-
       flash[:success] = "Groupe créé ! Des invitations ont été envoyées aux membres par SMS et email."
       redirect_to good_waves_group_path(group)
     end
@@ -218,26 +199,6 @@ module GoodWaves
       email, alternate_email = [email, alternate_email].compact.uniq
       if email.present?
         GoodWavesMailer.invitation(email, alternate_email, short_uuid).deliver_later
-      end
-
-      if existing
-        author_name = UserPresenter.display_name(group.user)
-        object = group.title
-        message = "Vous venez de rejoindre le groupe de #{author_name}"
-
-        PushNotificationService.new.send_notification(
-          author_name,
-          object,
-          message,
-          [existing],
-          {
-            joinable_id: group.id,
-            joinable_type: group.class.name,
-            group_type: group.group_type,
-            type: "JOIN_REQUEST_ACCEPTED",
-            user_id: nil
-          }
-        )
       end
 
       if existing

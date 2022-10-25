@@ -4,12 +4,15 @@ module Api
   module V1
     class BaseController < ApplicationController
       skip_before_action :verify_authenticity_token
+
       before_action :allow_cors
       before_action :community_warning
       before_action :validate_request!, only: [:check]
       before_action :ensure_community!, except: [:options]
       before_action :authenticate_user!, except: [:check, :options]
       before_action :set_raven_context
+
+      after_action :set_completed_route, only: [:index, :show, :create], if: -> { current_user.present? }
 
       rescue_from ApiRequest::Unauthorised do |e|
         Rails.logger.error e
@@ -192,6 +195,20 @@ module Api
       def community_warning
         return if $server_community == :entourage
         logger.warn "type=community.warning code=community_support_missing controller=#{controller_path} action=#{action_name}"
+      end
+
+      def set_completed_route
+        return unless current_user
+        return unless [200, 201].include?(response.status)
+
+        RouteCompletionService.new(
+          user: current_user,
+          controller_name: controller_name,
+          action_name: action_name,
+          params: params
+        ).run
+      rescue => e
+        Raven.capture_exception(e)
       end
     end
   end

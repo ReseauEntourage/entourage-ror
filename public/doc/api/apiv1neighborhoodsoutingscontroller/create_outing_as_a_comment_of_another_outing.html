@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Api::V1::Neighborhoods::OutingsController API</title>
+    <meta charset="utf-8">
+    <style>
+      
+body {
+  font-family: Helvetica,Arial,sans-serif;
+  font-size: 13px;
+  font-weight: normal;
+  line-height: 18px;
+  color: #404040;
+}
+
+.container {
+  width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+  zoom: 1;
+}
+
+pre {
+  background-color: #f5f5f5;
+  display: block;
+  padding: 8.5px;
+  margin: 0 0 18px;
+  line-height: 18px;
+  font-size: 12px;
+  border: 1px solid #ccc;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  white-space: pre;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+td.required .name:after {
+  float: right;
+  content: "required";
+  font-weight: normal;
+  color: #F08080;
+}
+
+a{
+  color: #0069d6;
+  text-decoration: none;
+  line-height: inherit;
+  font-weight: inherit;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: bold;
+  color: #404040;
+}
+
+h1 {
+  margin-bottom: 18px;
+  font-size: 30px;
+  line-height: 36px;
+}
+h2 {
+  font-size: 24px;
+  line-height: 36px;
+}
+h3{
+  font-size: 18px;
+  line-height: 36px;
+}
+h4 {
+  font-size: 16px;
+  line-height: 36px;
+}
+
+table{
+  width: 100%;
+  margin-bottom: 18px;
+  padding: 0;
+  border-collapse: separate;
+  font-size: 13px;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  border-spacing: 0;
+  border: 1px solid #ddd;
+}
+
+table th {
+  padding-top: 9px;
+  font-weight: bold;
+  vertical-align: middle;
+  border-bottom: 1px solid #ddd;
+}
+table th+th, table td+td {
+  border-left: 1px solid #ddd;
+}
+table th, table td {
+  padding: 10px 10px 9px;
+  line-height: 18px;
+  text-align: left;
+}
+
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Api::V1::Neighborhoods::OutingsController API</h1>
+
+        <p class="explanation">Outings</p>
+
+      <div class="article">
+        <h2>Create outing as a comment of another outing</h2>
+        <h3>POST /api/v1/neighborhoods/:neighborhood_id/outings</h3>
+
+          <h3>Parameters</h3>
+          <table class="parameters table table-striped table-bordered table-condensed">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="required">
+                    <span class="name">token</span>
+                </td>
+                <td>
+                  <span class="description"> token</span>
+                </td>
+              </tr>
+              <tr>
+                <td class="required">
+                    <span class="name">neighborhood_id</span>
+                </td>
+                <td>
+                  <span class="description"> neighborhood</span>
+                </td>
+              </tr>
+              <tr>
+                <td class="required">
+                    <span class="name">outing[title]</span>
+                </td>
+                <td>
+                  <span class="description">Title</span>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                    <span class="name">outing[description]</span>
+                </td>
+                <td>
+                  <span class="description">Description</span>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                    <span class="name">outing[event_url]</span>
+                </td>
+                <td>
+                  <span class="description">Event url</span>
+                </td>
+              </tr>
+              <tr>
+                <td class="required">
+                    <span class="name">outing[latitude]</span>
+                </td>
+                <td>
+                  <span class="description">Latitude</span>
+                </td>
+              </tr>
+              <tr>
+                <td class="required">
+                    <span class="name">outing[longitude]</span>
+                </td>
+                <td>
+                  <span class="description">Longitude</span>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                    <span class="name">outing[metadata]</span>
+                </td>
+                <td>
+                  <span class="description">Metadata</span>
+                </td>
+              </tr>
+              <tr>
+                <td class="required">
+                    <span class="name">outing[metadata][starts_at]</span>
+                </td>
+                <td>
+                  <span class="description">Start time</span>
+                </td>
+              </tr>
+              <tr>
+                <td class="required">
+                    <span class="name">outing[metadata][ends_at]</span>
+                </td>
+                <td>
+                  <span class="description">End time</span>
+                </td>
+              </tr>
+              <tr>
+                <td class="required">
+                    <span class="name">outing[metadata][place_name]</span>
+                </td>
+                <td>
+                  <span class="description">Place name</span>
+                </td>
+              </tr>
+              <tr>
+                <td class="required">
+                    <span class="name">outing[metadata][street_address]</span>
+                </td>
+                <td>
+                  <span class="description">Street address</span>
+                </td>
+              </tr>
+              <tr>
+                <td class="required">
+                    <span class="name">outing[metadata][google_place_id]</span>
+                </td>
+                <td>
+                  <span class="description">Google place ID</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+
+          <h3>Request</h3>
+
+            <h4>Headers</h4>
+            <pre class="request headers">Content-Type: application/json
+Host: example.org
+Cookie: </pre>
+
+          <h4>Route</h4>
+          <pre class="request route highlight">POST /api/v1/neighborhoods/8/outings</pre>
+
+
+            <h4>Body</h4>
+            <pre class="request body">{"token":"foobar100","outing":{"title":"Groupe de voisins","latitude":48.854367553785,"longitude":2.27034058909627,"metadata":{"starts_at":"2022-06-03T19:00:00.000+02:00","ends_at":null,"place_name":"Café la Renaissance","street_address":"44 rue de l’Assomption, 75016 Paris, France","google_place_id":"foobar"}}}</pre>
+
+
+            <h3>Response</h3>
+              <h4>Headers</h4>
+              <pre class="response headers">X-Frame-Options: SAMEORIGIN
+X-XSS-Protection: 1; mode=block
+X-Content-Type-Options: nosniff
+X-Download-Options: noopen
+X-Permitted-Cross-Domain-Policies: none
+Referrer-Policy: strict-origin-when-cross-origin
+Access-Control-Allow-Origin: *
+Access-Control-Allow-Methods: GET,POST,PUT,PATCH,DELETE
+Access-Control-Allow-Headers: Origin,Accept,Content-Type,X-Requested-With,X-CSRF-Token,X-API-KEY
+Content-Type: application/json; charset=utf-8
+ETag: W/&quot;543897e06e2b50c8e43e7ded1c1bbf31&quot;
+Cache-Control: max-age=0, private, must-revalidate
+X-Request-Id: af8433fc-aa35-43cc-9cd2-f824fd687ae6
+X-Runtime: 0.039234
+Content-Length: 1099</pre>
+            <h4>Status</h4>
+            <pre class="response status">201 Created</pre>
+              <h4>Body</h4>
+              <pre class="response body">{
+  &quot;outing&quot;: {
+    &quot;id&quot;: 33,
+    &quot;uuid&quot;: &quot;eRcBVtbDaJkY&quot;,
+    &quot;title&quot;: &quot;Groupe de voisins&quot;,
+    &quot;group_type&quot;: &quot;outing&quot;,
+    &quot;entourage_type&quot;: &quot;contribution&quot;,
+    &quot;display_category&quot;: null,
+    &quot;status&quot;: &quot;open&quot;,
+    &quot;public&quot;: false,
+    &quot;metadata&quot;: {
+      &quot;starts_at&quot;: &quot;2022-06-03T19:00:00.000+02:00&quot;,
+      &quot;ends_at&quot;: null,
+      &quot;place_name&quot;: &quot;Café la Renaissance&quot;,
+      &quot;street_address&quot;: &quot;44 rue de l’Assomption, 75016 Paris, France&quot;,
+      &quot;google_place_id&quot;: &quot;foobar&quot;,
+      &quot;previous_at&quot;: null,
+      &quot;landscape_url&quot;: null,
+      &quot;portrait_url&quot;: null,
+      &quot;landscape_thumbnail_url&quot;: null,
+      &quot;portrait_thumbnail_url&quot;: null,
+      &quot;display_address&quot;: &quot;Café la Renaissance, 44 rue de l’Assomption, 75016 Paris&quot;
+    },
+    &quot;postal_code&quot;: null,
+    &quot;join_status&quot;: &quot;pending&quot;,
+    &quot;number_of_unread_messages&quot;: 0,
+    &quot;number_of_people&quot;: 0,
+    &quot;created_at&quot;: &quot;2022-06-02T17:16:45.021+02:00&quot;,
+    &quot;updated_at&quot;: &quot;2022-06-02T17:16:45.021+02:00&quot;,
+    &quot;description&quot;: null,
+    &quot;share_url&quot;: &quot;https://app.entourage.social/actions/eRcBVtbDaJkY&quot;,
+    &quot;image_url&quot;: null,
+    &quot;online&quot;: false,
+    &quot;event_url&quot;: null,
+    &quot;display_report_prompt&quot;: false,
+    &quot;author&quot;: {
+      &quot;id&quot;: 102,
+      &quot;display_name&quot;: &quot;John D.&quot;,
+      &quot;avatar_url&quot;: null,
+      &quot;partner&quot;: null,
+      &quot;partner_role_title&quot;: null
+    },
+    &quot;location&quot;: {
+      &quot;latitude&quot;: 48.854367553785,
+      &quot;longitude&quot;: 2.27034058909627
+    }
+  }
+}</pre>
+      </div>
+    </div>
+  </body>
+</html>

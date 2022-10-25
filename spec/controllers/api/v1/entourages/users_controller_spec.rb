@@ -103,16 +103,18 @@ describe Api::V1::Entourages::UsersController do
           it { expect(result['user']['status']).to eq('accepted') }
           it {
             expect(notif_service).to have_received(:send_notification).with(
-              "John D.",
-              "Foobar1",
-              "John D. vient de rejoindre votre action",
+              nil,
+              "Nouveau membre",
+              "John D. vient de rejoindre votre action \"Foobar1\"",
               [entourage.user],
               {
                 joinable_type: "Entourage",
                 joinable_id: entourage.id,
                 group_type: 'action',
                 type: "JOIN_REQUEST_ACCEPTED",
-                user_id: user.id
+                user_id: user.id,
+                instance: "users",
+                id: user.id
               }
             )
           }
@@ -125,16 +127,18 @@ describe Api::V1::Entourages::UsersController do
           it { expect(result['user']['status']).to eq('accepted') }
           it {
             expect(notif_service).to have_received(:send_notification).with(
-              "John D.",
-              "Foobar1",
-              "Vous venez de rejoindre l’action de John D.",
-              [user],
+              nil,
+              "Nouveau membre",
+              "John D. vient de rejoindre votre action \"Foobar1\"",
+              [entourage.user],
               {
                 joinable_type: "Entourage",
                 joinable_id: entourage.id,
                 group_type: 'action',
                 type: "JOIN_REQUEST_ACCEPTED",
-                user_id: user.id
+                user_id: user.id,
+                instance: "users",
+                id: user.id
               }
             )
           }
@@ -150,8 +154,9 @@ describe Api::V1::Entourages::UsersController do
           let!(:user_join_request) { create(:join_request, user: user, status: "accepted") }
 
           it "sends notif to all entourage members" do
-            expect_any_instance_of(PushNotificationService).to receive(:send_notification).with(
-              "John D.",
+            # we do not maintain pending join_request scenarios
+            expect_any_instance_of(PushNotificationService).not_to receive(:send_notification).with(
+              nil,
               "Foobar1",
               "John D. souhaite rejoindre votre action",
               [entourage.user],
@@ -160,7 +165,9 @@ describe Api::V1::Entourages::UsersController do
                 joinable_id: entourage.id,
                 group_type: 'action',
                 type: "NEW_JOIN_REQUEST",
-                user_id: user.id
+                user_id: user.id,
+                instance: "conversations",
+                id: entourage.id
               }
             )
             post :create, params: { entourage_id: entourage.to_param, token: user.token }
@@ -172,8 +179,9 @@ describe Api::V1::Entourages::UsersController do
           let!(:member_join_request) { create(:join_request, user: member, joinable: entourage, status: "accepted") }
 
           it "sends notif to all entourage members" do
-            expect_any_instance_of(PushNotificationService).to receive(:send_notification).with(
-              "John D.",
+            # we do not maintain pending join_request scenarios
+            expect_any_instance_of(PushNotificationService).not_to receive(:send_notification).with(
+              nil,
               "Foobar1",
               "John D. souhaite rejoindre votre action",
               [entourage.user],
@@ -182,7 +190,9 @@ describe Api::V1::Entourages::UsersController do
                 joinable_id: entourage.id,
                 group_type: 'action',
                 type: "NEW_JOIN_REQUEST",
-                user_id: user.id
+                user_id: user.id,
+                instance: "conversations",
+                id: entourage.id
               }
             )
             post :create, params: { entourage_id: entourage.to_param, request: {message: "foobar"}, token: user.token }
@@ -252,17 +262,20 @@ describe Api::V1::Entourages::UsersController do
 
       it "sends a notification to the requester" do
         FactoryBot.create(:android_app)
+
         expect_any_instance_of(PushNotificationService).to receive(:send_notification).with(
-          "John D.",
+          nil,
           "Foobar1",
-          "Vous venez de rejoindre l’action de John D.",
+          "Vous venez de rejoindre un(e) action de John D.",
           User.where(id: requester.id),
           {
             :joinable_id => entourage.id,
             :joinable_type => "Entourage",
             :group_type => 'action',
             :type => "JOIN_REQUEST_ACCEPTED",
-            :user_id => requester.id
+            :user_id => requester.id,
+            instance: "conversations",
+            id: entourage.id
           }
         )
         patch :update, params: { entourage_id: entourage.to_param, id: requester.id, user: {status: "accepted"}, token: user.token }

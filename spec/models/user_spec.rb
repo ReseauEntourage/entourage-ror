@@ -52,6 +52,19 @@ describe User, :type => :model do
     it { expect { user.community = 'invalid'; user.community }.to raise_error Community::NotFound }
   end
 
+  describe "birthday" do
+    it { expect(FactoryBot.build(:pro_user, birthday: nil).save).to be true }
+    it { expect(FactoryBot.build(:pro_user, birthday: '').save).to be true }
+    it { expect(FactoryBot.build(:pro_user, birthday: '11').save).to be false }
+    it { expect(FactoryBot.build(:pro_user, birthday: '1-1').save).to be true }
+    it { expect(FactoryBot.build(:pro_user, birthday: '0-1').save).to be false }
+    it { expect(FactoryBot.build(:pro_user, birthday: '01-1').save).to be true }
+    it { expect(FactoryBot.build(:pro_user, birthday: '01-12').save).to be true }
+    it { expect(FactoryBot.build(:pro_user, birthday: '01-13').save).to be false }
+    it { expect(FactoryBot.build(:pro_user, birthday: '31-01').save).to be true }
+    it { expect(FactoryBot.build(:pro_user, birthday: '31-02').save).to be false }
+  end
+
   describe "phone number" do
     it { expect(FactoryBot.build(:pro_user, phone: '+33123456789').save).to be true }
     it { expect(FactoryBot.build(:pro_user, phone: '0123456789').save).to be true }
@@ -271,9 +284,10 @@ describe User, :type => :model do
   end
 
   describe 'interests' do
-    it { expect(build_or_error :public_user, interests: []).to be true }
-    it { expect(build_or_error :public_user, interests: [:event_riverain, 'entourer_riverain']).to be true }
-    it { expect(build_or_error :public_user, interests: [:aide_sdf, :lol]).to eq(interests: ":lol n'est pas inclus dans la liste") }
+    it { expect(build_or_error :public_user, interest_list: []).to be true }
+    it { expect(build_or_error :public_user, interest_list: 'jeux').to be true }
+    it { expect(build_or_error :public_user, interest_list: 'jeux, cuisine').to be true }
+    it { expect(build_or_error :public_user, interest_list: 'culture, lol').to eq(interests: "lol n'est pas inclus dans la liste") }
   end
 
   describe 'pending_phone_change_request' do
@@ -322,8 +336,8 @@ describe User, :type => :model do
     let!(:outing) { create(:outing, user_id: user.id, status: :open) }
     let!(:conversation) { create(:conversation, user_id: user.id, status: :open) }
     let!(:suspended) { create(:entourage, user_id: user.id, status: :suspended) }
-    let!(:join_request_open) { create(:join_request, user: user, joinable: open) }
-    let!(:join_request_suspended) { create(:join_request, user: user, joinable: suspended) }
+    let!(:join_request_open) { create(:join_request, user: user, joinable: open, status: :accepted) }
+    let!(:join_request_suspended) { create(:join_request, user: user, joinable: suspended, status: :accepted) }
 
     let!(:blocked_user) { create(:public_user, phone: '+33600000010', token: 'bar', validation_status: :blocked) }
     let!(:other_entourage) { create(:entourage, user_id: blocked_user.id, status: :open) }

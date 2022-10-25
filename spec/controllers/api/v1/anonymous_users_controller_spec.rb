@@ -39,6 +39,8 @@ describe Api::V1::AnonymousUsersController do
           "ask_for_help_creation_count" => 0,
           "contribution_creation_count" => 0,
           "events_count" => 0,
+          "outings_count" => 0,
+          "neighborhoods_count" => 0,
           "good_waves_participation" => false
         },
         "address"=>nil,
@@ -53,13 +55,17 @@ describe Api::V1::AnonymousUsersController do
         "feature_flags"=>{"organization_admin"=>false},
         "engaged"=>false,
         "goal" => nil,
+        "phone" => nil,
         "unread_count" => 0,
         "interests" => [],
+        "travel_distance" => 10,
+        "birthday" => nil,
         "permissions" => {
           "outing" => {
             "creation" => false
           }
         },
+        "created_at" => nil,
       }
     )}
   end

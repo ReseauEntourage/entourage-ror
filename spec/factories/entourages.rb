@@ -17,8 +17,21 @@ FactoryBot.define do
     longitude { 2.345 }
     number_of_people { 1 }
 
+    transient do
+      participants { [] }
+    end
+
+    after(:create) do |entourage, stuff|
+      stuff.participants.each do |participant|
+        create :join_request, joinable: entourage, user: participant, status: JoinRequest::ACCEPTED_STATUS
+      end
+      entourage.reload
+    end
+
     trait :joined do
       after(:create) do |entourage, evaluator|
+        next if entourage.is_a?(Solicitation) || entourage.is_a?(Contribution)
+
         user = evaluator.join_request_user || entourage.user
         if evaluator.join_request_role == :auto && entourage.group_type == 'action' && user == entourage.user
           role = :creator
@@ -49,24 +62,38 @@ FactoryBot.define do
       after(:build) do |outing, stuff|
         outing.metadata = (stuff.default_metadata || {}).symbolize_keys.merge(outing.metadata.symbolize_keys)
       end
+
+      trait :with_recurrence do
+        recurrency_identifier { SecureRandom.hex(8) }
+        initialize_with { Outing.new(attributes) }
+        recurrence { association :outing_recurrence, identifier: recurrency_identifier }
+      end
+
+      trait :outing_class do
+        initialize_with { Outing.new(attributes) }
+      end
+
+      trait :with_neighborhood do
+        initialize_with { Outing.new(attributes) }
+        neighborhoods { [association(:neighborhood, user: user)] }
+      end
+    end
+
+    factory :contribution do
+      entourage_type { "contribution" }
+      initialize_with { Contribution.new(attributes) }
+    end
+
+    factory :solicitation do
+      entourage_type { "ask_for_help" }
+      initialize_with { Solicitation.new(attributes) }
     end
 
     factory :conversation do
       group_type { "conversation" }
 
-      transient do
-        participants { [] }
-      end
-
       after(:build) do |conversation, stuff|
         conversation.user = stuff.members.first if stuff.members.any?
-      end
-
-      after(:create) do |conversation, stuff|
-        stuff.participants.each do |participant|
-          create :join_request, joinable: conversation, user: participant, status: JoinRequest::ACCEPTED_STATUS
-        end
-        conversation.reload
       end
     end
   end

@@ -140,7 +140,7 @@ table th, table td {
                 </td>
               </tr>
               <tr>
-                <td class="required">
+                <td>
                     <span class="name">user[first_name]</span>
                 </td>
                 <td>
@@ -148,7 +148,7 @@ table th, table td {
                 </td>
               </tr>
               <tr>
-                <td class="required">
+                <td>
                     <span class="name">user[last_name]</span>
                 </td>
                 <td>
@@ -156,7 +156,7 @@ table th, table td {
                 </td>
               </tr>
               <tr>
-                <td class="required">
+                <td>
                     <span class="name">user[email]</span>
                 </td>
                 <td>
@@ -164,7 +164,7 @@ table th, table td {
                 </td>
               </tr>
               <tr>
-                <td class="required">
+                <td>
                     <span class="name">user[sms_code]</span>
                 </td>
                 <td>
@@ -172,7 +172,7 @@ table th, table td {
                 </td>
               </tr>
               <tr>
-                <td class="required">
+                <td>
                     <span class="name">user[phone]</span>
                 </td>
                 <td>
@@ -180,7 +180,7 @@ table th, table td {
                 </td>
               </tr>
               <tr>
-                <td class="required">
+                <td>
                     <span class="name">user[avatar_key]</span>
                 </td>
                 <td>
@@ -188,7 +188,7 @@ table th, table td {
                 </td>
               </tr>
               <tr>
-                <td class="required">
+                <td>
                     <span class="name">user[about]</span>
                 </td>
                 <td>
@@ -196,7 +196,7 @@ table th, table td {
                 </td>
               </tr>
               <tr>
-                <td class="required">
+                <td>
                     <span class="name">user[goal]</span>
                 </td>
                 <td>
@@ -204,7 +204,7 @@ table th, table td {
                 </td>
               </tr>
               <tr>
-                <td class="required">
+                <td>
                     <span class="name">user[interests]</span>
                 </td>
                 <td>
@@ -223,11 +223,11 @@ Host: example.org
 Cookie: </pre>
 
           <h4>Route</h4>
-          <pre class="request route highlight">PATCH /api/v1/users/11645</pre>
+          <pre class="request route highlight">PATCH /api/v1/users/181</pre>
 
 
             <h4>Body</h4>
-            <pre class="request body">{"token":"foobar139","user":{"first_name":"foo"}}</pre>
+            <pre class="request body">{"token":"foobar179","user":{"first_name":"foo","interests":["sport"]}}</pre>
 
 
             <h3>Response</h3>
@@ -242,18 +242,17 @@ Access-Control-Allow-Origin: *
 Access-Control-Allow-Methods: GET,POST,PUT,PATCH,DELETE
 Access-Control-Allow-Headers: Origin,Accept,Content-Type,X-Requested-With,X-CSRF-Token,X-API-KEY
 Content-Type: application/json; charset=utf-8
-ETag: W/&quot;cb6d9ff5b085cbd25298e0f5847bc402&quot;
+ETag: W/&quot;ab4eb25446df11131a4dbfdd4431946a&quot;
 Cache-Control: max-age=0, private, must-revalidate
-Set-Cookie: request_method=PATCH; path=/
-X-Request-Id: f29f388f-7cd2-42ec-8e77-5115a6bc30db
-X-Runtime: 0.033911
-Content-Length: 983</pre>
+X-Request-Id: 5fd75406-3122-473d-8664-1658462ccd4d
+X-Runtime: 0.035574
+Content-Length: 1045</pre>
             <h4>Status</h4>
             <pre class="response status">200 OK</pre>
               <h4>Body</h4>
               <pre class="response body">{
   &quot;user&quot;: {
-    &quot;id&quot;: 11645,
+    &quot;id&quot;: 181,
     &quot;display_name&quot;: &quot;Foo D.&quot;,
     &quot;first_name&quot;: &quot;foo&quot;,
     &quot;last_name&quot;: &quot;Doe&quot;,
@@ -271,30 +270,33 @@ Content-Length: 983</pre>
         &quot;creation&quot;: false
       }
     },
+    &quot;interests&quot;: [
+      &quot;sport&quot;
+    ],
     &quot;memberships&quot;: [
 
     ],
     &quot;conversation&quot;: {
-      &quot;uuid&quot;: &quot;1_list_11645&quot;
+      &quot;uuid&quot;: &quot;1_list_181&quot;
     },
     &quot;anonymous&quot;: false,
-    &quot;uuid&quot;: &quot;11645&quot;,
+    &quot;uuid&quot;: &quot;181&quot;,
     &quot;feature_flags&quot;: {
       &quot;organization_admin&quot;: false
     },
-    &quot;token&quot;: &quot;foobar139&quot;,
-    &quot;email&quot;: &quot;user139@mail.com&quot;,
+    &quot;token&quot;: &quot;foobar179&quot;,
+    &quot;email&quot;: &quot;user179@mail.com&quot;,
     &quot;has_password&quot;: false,
     &quot;firebase_properties&quot;: {
       &quot;ActionZoneDep&quot;: &quot;not_set&quot;,
       &quot;ActionZoneCP&quot;: &quot;not_set&quot;,
       &quot;Goal&quot;: &quot;no_set&quot;,
-      &quot;Interests&quot;: &quot;none&quot;
+      &quot;Interests&quot;: &quot;sport&quot;
     },
     &quot;goal&quot;: null,
-    &quot;interests&quot;: [
-
-    ],
+    &quot;phone&quot;: &quot;+33600000179&quot;,
+    &quot;travel_distance&quot;: 10,
+    &quot;birthday&quot;: null,
     &quot;stats&quot;: {
       &quot;tour_count&quot;: 0,
       &quot;encounter_count&quot;: 0,
@@ -306,10 +308,10 @@ Content-Length: 983</pre>
       &quot;good_waves_participation&quot;: false
     },
     &quot;organization&quot;: {
-      &quot;name&quot;: &quot;Association 69&quot;,
+      &quot;name&quot;: &quot;Association 84&quot;,
       &quot;description&quot;: &quot;Association description&quot;,
-      &quot;phone&quot;: &quot;+33600000069&quot;,
-      &quot;address&quot;: &quot;69 avenue des Champs Elysées 75008 Paris France&quot;,
+      &quot;phone&quot;: &quot;+33600000084&quot;,
+      &quot;address&quot;: &quot;84 avenue des Champs Elysées 75008 Paris France&quot;,
       &quot;logo_url&quot;: null
     },
     &quot;address&quot;: null,

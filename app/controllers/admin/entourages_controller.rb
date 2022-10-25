@@ -1,6 +1,6 @@
 module Admin
   class EntouragesController < Admin::BaseController
-    before_action :set_entourage, only: [:show, :edit, :update, :close, :renew, :cancellation, :cancel, :edit_image, :update_image, :moderator_read, :moderator_unread, :message, :show_members, :show_joins, :show_invitations, :show_messages, :sensitive_words, :sensitive_words_check, :edit_type, :edit_owner, :update_owner, :admin_pin, :admin_unpin, :pin, :unpin]
+    before_action :set_entourage, only: [:show, :edit, :update, :close, :renew, :cancellation, :cancel, :edit_image, :update_image, :moderator_read, :moderator_unread, :message, :show_members, :show_joins, :show_invitations, :show_messages, :show_siblings, :sensitive_words, :sensitive_words_check, :edit_type, :edit_owner, :update_owner, :admin_pin, :admin_unpin, :pin, :unpin]
     before_action :ensure_moderator!, only: [:message]
 
     before_action :set_default_index_params, only: [:index]
@@ -193,6 +193,12 @@ module Admin
       render :show
     end
 
+    def show_siblings
+      @siblings = Outing.find(params[:id]).siblings
+
+      render :show
+    end
+
     def moderator_read
       read_at =
         if params[:read_at]
@@ -286,6 +292,17 @@ module Admin
       end
     end
 
+    def duplicate_outing
+      original = Outing.find(params[:id])
+      @outing = original.dup
+
+      if @outing.save
+        redirect_to [:admin, @outing], notice: "L'événement a été dupliqué"
+      else
+        redirect_to [:admin, @original], alert: "L'événement n'a pas été dupliqué: #{@outing.errors.full_messages.to_sentence}"
+      end
+    end
+
     def edit_image
       redirect_to edit_admin_entourage_path(@entourage) and return unless @entourage.outing?
 
@@ -355,7 +372,7 @@ module Admin
       user_id = entourage_params[:user_id]
       message = entourage_params[:change_ownership_message]
 
-      EntourageServices::ChangeOwner.new(@entourage).to(user_id, message: message) do |success, error_message|
+      EntourageServices::ChangeOwner.new(@entourage).to(user_id, message) do |success, error_message|
         if success
           redirect_to [:admin, @entourage], notice: "Mise à jour réussie"
         else

@@ -1,13 +1,14 @@
 module SlackServices
   class SignalUser < Notifier
-    def initialize reported_user:, reporting_user:, message:
+    def initialize reported_user:, reporting_user:, message:, signals:
       @reported_user = reported_user
       @reporting_user = find_user(reporting_user)
       @message = message
+      @signals = signals
     end
 
     def env
-      ENV['SLACK_SIGNAL_USER_WEBHOOK']
+      ENV['SLACK_SIGNAL']
     end
 
     def payload
@@ -23,13 +24,16 @@ module SlackServices
           {
             text: "Message : #{@message}"
           },
+          {
+            text: "Catégories de signalement : #{@signals}"
+          },
         ]
       }
     end
 
     def payload_adds
       {
-        username: webhook('username-signal-user'),
+        username: "Signalement d’un utilisateur",
         channel: webhook('channel'),
       }
     end

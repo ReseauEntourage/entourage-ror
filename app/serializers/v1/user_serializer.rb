@@ -1,40 +1,39 @@
 module V1
   class UserSerializer < ActiveModel::Serializer
-    attribute :id,           unless: :phone_only?
-    attribute :display_name, unless: :phone_only?
-    attribute :first_name,   unless: :phone_only?
-    attribute :last_name,    unless: :phone_only?
-    attribute :roles,        unless: :phone_only?
-    attribute :about,        unless: :phone_only?
-    attribute :avatar_url,   unless: :phone_only?
-    attribute :user_type,    unless: :phone_only?
-    attribute :partner,      unless: :phone_only?
-    attribute :engaged,      unless: :phone_only?
-    attribute :unread_count, unless: :phone_only?
-    attribute :permissions,  unless: :phone_only?
-    attribute :phone,        if: :phone_only?
+    attribute :id
+    attribute :display_name
+    attribute :first_name
+    attribute :last_name
+    attribute :roles
+    attribute :about
+    attribute :avatar_url
+    attribute :user_type
+    attribute :partner
+    attribute :engaged
+    attribute :unread_count
+    attribute :permissions
+    attribute :interests
     attribute :placeholders, if: :placeholders?
     attribute :memberships,  if: :memberships?
     attribute :conversation, if: :conversation?
     # uuid and anonymous are not confidential but right now we only need them for current_user in the clients so we don't return it in other contexts
-    attribute :anonymous,           if: :default?
-    attribute :uuid,                if: :default?
-    attribute :feature_flags,       if: :default?
-    attribute :token,               if: :default?
-    attribute :email,               if: :default?
-    attribute :has_password,        if: :default?
-    attribute :firebase_properties, if: :default?
-    attribute :goal,                if: :default?
-    attribute :interests,           if: :default?
+    attribute :anonymous,           if: :me?
+    attribute :uuid,                if: :me?
+    attribute :feature_flags,       if: :me?
+    attribute :token,               if: :me?
+    attribute :email,               if: :me?
+    attribute :has_password,        if: :me?
+    attribute :firebase_properties, if: :me?
+    attribute :goal,                if: :me?
+    attribute :phone,               if: :me?
+    attribute :travel_distance,     if: :me?
+    attribute :birthday,            if: :me?
+    attribute :created_at
 
-    has_one :stats,        unless: :phone_only?
-    has_one :organization, serializer: ::V1::OrganizationSerializer, unless: :phone_only?
-    has_one :address,      serializer: AddressSerializer, if: :default?
-    has_one :address_2,    serializer: AddressSerializer, if: :default?
-
-    def phone_only?
-      scope[:phone_only] == true
-    end
+    has_one :stats
+    has_one :organization, serializer: ::V1::OrganizationSerializer
+    has_one :address,      serializer: AddressSerializer, if: :me?
+    has_one :address_2,    serializer: AddressSerializer, if: :me?
 
     def placeholders?
       me? && scope[:user].anonymous?
@@ -46,11 +45,6 @@ module V1
 
     def conversation?
       scope[:conversation] && scope[:user]
-    end
-
-    def default?
-      return false if phone_only?
-      me?
     end
 
     def stats
@@ -65,6 +59,8 @@ module V1
           ask_for_help_creation_count: object.ask_for_help_creation_count,
           contribution_creation_count: object.contribution_creation_count,
           events_count: groups['outing'],
+          outings_count: groups['outing'],
+          neighborhoods_count: object.neighborhood_memberships.count,
           good_waves_participation: groups['group'] > 0
       }
     end
@@ -122,6 +118,11 @@ module V1
 
     def firebase_properties
       UserService.firebase_properties(object)
+    end
+
+    def interests
+      # we use "Tag.interest_list &" to force ordering
+      Tag.interest_list & object.interest_list
     end
 
     # FIXME: the placeholders attribute is a hack. It indicates to the clients

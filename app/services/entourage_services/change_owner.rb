@@ -1,43 +1,80 @@
 module EntourageServices
   class ChangeOwner
+    USER_NOT_FOUND = "L'utilisateur n'a pas pu être trouvé"
+    INVALID_JOINABLE = "Le créateur ne peut être changé que pour les actions épinglées, les événements ou les groupes de voisinage"
+
     attr_reader :user
 
-    def initialize entourage
-      @entourage = entourage
+    def initialize joinable
+      @joinable = joinable
     end
 
-    # 1. update entourage.user_id
-    # 2. update join_requests creator
-    # 3. create ChatMessage to inform other users
-    def to user_id, message:
-      return yield false, "L'utilsateur n'a pas pu être trouvé" unless user = User.find(user_id)
-      return yield false, "Le créateur ne peut être changé que pour les actions épinglées et les événements" unless @entourage.pin? || @entourage.outing?
+    # 1. sets all joinable join_requests as member/participant
+    # 2. ensure user_id has a join_request for joinable
+    # 3. sets user_id as the organizer/creator for joinable
+    # 4. create a chat_message to let people know about this new organizer/creator
+    def to user_id, message
+      return yield false, USER_NOT_FOUND unless user = User.find(user_id)
+      return yield false, INVALID_JOINABLE unless joinable_is_valid?
 
-      creator_join_requests = @entourage.join_requests.where("role in (?)", [:creator, :organizer])
+      owner_join_request = JoinRequest.where(joinable: @joinable, user_id: user_id, role: member_type).first_or_create
 
-      return yield false, "Aucun utilisateur n'est actuellement identifié comme le créateur de l'action ou de l'événement" unless creator_join_requests.any?
+      ApplicationRecord.transaction do
+        creator_join_requests.update_all(role: member_type)
 
-      Entourage.transaction do
-        @entourage.update_attribute(:user_id, user.id)
+        owner_join_request.update_attributes(status: :accepted, role: creator_type)
 
-        creator_join_requests.each do |join_request|
-          join_request.update_attribute(:user_id, user.id)
-        end
+        @joinable.update_attribute(:user_id, user_id)
+      end
 
-        if message.present?
-          ChatServices::ChatMessageBuilder.new(
-            user: user,
-            joinable: @entourage,
-            join_request: user.join_requests.accepted.find_by!(joinable: @entourage),
-            params: {
-              message_type: :text,
-              content: message,
-            }
-          ).create
-        end
+      if message.present?
+        ChatServices::ChatMessageBuilder.new(
+          user: user,
+          joinable: @joinable,
+          join_request: owner_join_request,
+          params: {
+            message_type: :text,
+            content: message,
+          }
+        ).create
       end
 
       yield true
+    end
+
+
+    private
+
+    def creator_join_requests
+      @joinable.join_requests.where("role in (?)", [:creator, :organizer])
+    end
+
+    def joinable_is_valid?
+      neighborhood? || pin? || outing?
+    end
+
+    def creator_type
+      return :organizer if outing?
+
+      :creator
+    end
+
+    def member_type
+      return :participant if outing?
+
+      :member
+    end
+
+    def pin?
+      @joinable.is_a?(Entourage) && @joinable.pin?
+    end
+
+    def outing?
+      @joinable.is_a?(Entourage) && @joinable.outing?
+    end
+
+    def neighborhood?
+      @joinable.is_a?(Neighborhood)
     end
   end
 end

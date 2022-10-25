@@ -236,12 +236,6 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
       end
     end
 
-    it "sends scheduled push" do
-      FactoryBot.create(:android_app)
-      expect_any_instance_of(TourServices::SchedulePushService).to receive(:send_to)
-      post 'create', params: { token: user.token, tour: {tour_type: tour.tour_type, status:tour.status, vehicle_type:tour.vehicle_type, distance: 123.456}, format: :json }
-    end
-
     it "doesn't send join request accepted push" do
       FactoryBot.create(:android_app)
       expect_any_instance_of(IosNotificationService).to_not receive(:send_notification)

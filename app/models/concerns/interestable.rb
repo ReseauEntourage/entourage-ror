@@ -1,0 +1,43 @@
+module Interestable
+  extend ActiveSupport::Concern
+
+  included do
+    acts_as_taggable_on :interests
+
+    validate :validate_interest_list!
+
+    scope :join_tags, -> {
+      joins(sanitize_sql_array [%(
+        left join taggings on taggable_type = '%s' and taggable_id = %s.id
+        left join tags on tags.id = taggings.tag_id
+      ), self.name, self.table_name])
+    }
+
+    scope :order_by_interests_matching, -> (interest_list) {
+      join_tags.group(sanitize_sql_array ["%s.id", self.table_name]).order([%(
+        sum(
+          case context = 'interests' and tagger_id is null and tags.name in (?)
+          when true then 1
+          else 0
+          end
+        ) desc
+      ), interest_list])
+    }
+  end
+
+  def validate_interest_list!
+    wrongs = self.interest_list.reject do |interest|
+      Tag.interest_list.include?(interest)
+    end
+
+    errors.add(:interests, "#{wrongs.join(', ')} n'est pas inclus dans la liste") if wrongs.any?
+  end
+
+  def interests= interests
+    if interests.is_a? Array
+      self.interest_list = interests.join(', ')
+    elsif interests.is_a? String
+      self.interest_list = interests
+    end
+  end
+end

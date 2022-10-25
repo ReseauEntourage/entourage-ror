@@ -1,0 +1,73 @@
+<div class="container">
+  <div style="margin: auto">
+    <h1>Groupes de voisinage</h1>
+
+    <%= form_tag admin_neighborhoods_path, class: 'form-inline', method: :get do |f| %>
+      <div class="panel panel-default">
+        <div class="panel-body">
+          <div style="float: left">
+            <div class='input-group'>
+              <%= text_field_tag :search, @params[:search], class: "form-control", placeholder: "Nom, description..." %>
+              <span class="input-group-btn">
+                <%= submit_tag "Chercher", class: "btn btn-default" %>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% end %>
+
+    <div style="margin-bottom: 15px; display: flex">
+      <div class="btn-group btn-group-sm">
+        <%= link_to("Tous", @params.merge(area: :all), class: "btn btn-#{@area == :all ? :primary : :default}") %>
+        <% ModerationArea.by_slug.sort.each do |slug, area| %>
+          <%= link_to(area.short_name, @params.merge(area: slug), class: "btn btn-#{@area == slug ? :primary : :default}") %>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="row">
+      <% unless @neighborhoods.none? %>
+        <table class="table">
+          <th>Id</th>
+          <th>Name</th>
+          <th>Utilisateur</th>
+          <th>Lieu</th>
+          <th>Intérêts</th>
+          <th>Date de création</th>
+          <th>Membres</th>
+          <th>Statut</th>
+          <th>Actions</th>
+          <% @neighborhoods.each do |neighborhood| %>
+            <tr>
+              <td><%= neighborhood.id %></td>
+              <td><%= link_to neighborhood.name, edit_admin_neighborhood_path(neighborhood) %></td>
+              <td><%= link_to neighborhood.user.full_name, admin_user_path(neighborhood.user) %></td>
+              <td>
+                <% if neighborhood.place_name %>
+                  <%= link_to neighborhood.place_name, "https://www.google.com/maps/search/?api=1&query=#{neighborhood.place_name}&query_place_id=#{neighborhood.google_place_id}" %>
+                <% end %>
+              </td>
+              <td>
+                <% neighborhood.interest_list.each do |interest| %>
+                  <span class="badge"><%= interest %></span>
+                <% end %>
+              </td>
+              <td><%= l neighborhood.created_at, format: :date_short %></td>
+              <td><span class="label label-default"><%= "#{neighborhood.members_count} membres" %></span></td>
+              <td><%= status_label neighborhood %></td>
+              <td>
+                <%= link_to "Modifier", edit_admin_neighborhood_path(neighborhood), class: "btn btn-primary" %>
+              </td>
+            </tr>
+          <% end %>
+        </table>
+      <% end %>
+    </div>
+
+    <%= page_entries_info @neighborhoods, entry_name: 'groupes de voisinage' %>
+    <div class="container">
+      <%= paginate(@neighborhoods) %>
+    </div>
+  </div>
+</div>

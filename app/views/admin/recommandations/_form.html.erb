@@ -1,0 +1,100 @@
+<style>
+  .field_with_errors { display: inline-block }
+</style>
+
+<%= render partial: 'common/errors', locals: { obj: @recommandation } %>
+<%= form_for [:admin, @recommandation], html: { role: "form" } do |f| %>
+  <div class="form-group">
+    <%= f.label :status %>
+    <div class="controls">
+      <%= f.check_box :status, {
+        checked: @recommandation.active?,
+        'data-toggle': :toggle,
+        'data-on': "Active",
+        'data-off': "Supprimée",
+        'data-onstyle': :success,
+        'data-offstyle': :danger
+      }, :active, :deleted %>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :name %>
+    <div class="controls">
+      <%= f.text_field :name, class: "form-control", required: true %>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :description %>
+    <div class="controls">
+      <%= f.text_area :description, class: "form-control" %>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="form-group col-md-6">
+      <%= f.label :instance %>
+      <div class="controls">
+        <%= f.select :instance, options_for_select(instances_options_for_select, @recommandation.instance), class: "form-control", required: true %>
+      </div>
+    </div>
+
+    <div class="form-group col-md-6">
+      <%= f.label :action %>
+      <div class="controls">
+        <%= f.select :action, options_for_select(actions_options_for_select, @recommandation.action), class: "form-control", required: true %>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :argument_value %>
+    <div class="controls">
+      <%= f.text_field :argument_value, class: "form-control" %>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :user_goals, style: "margin-right: .7em" %>
+    <div style="margin-bottom: 5px" data-checkbox-required="Sélectionnez au moins un profil">
+      <%=
+        collection_check_boxes(:recommandation, :user_goals, UserGoalPresenter.all(current_user.community), :slug, :name) do |b|
+          b.label(class: "checkbox-inline") { b.check_box + b.text }
+        end
+      %>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :image_url %>
+    <% if @recommandation.new_record? %>
+      <div class="text-muted">
+        Vous pourrez ajouter une image une fois que la carte sera créée.
+      </div>
+    <% else %>
+      <% if @recommandation.image_url %>
+        <div style="margin-bottom: 15px">
+          <%= image_tag(@recommandation.image_url, size: '300x100') if @recommandation.image_url.present? %>
+        </div>
+      <% end %>
+
+      <div>
+        <%= link_to "Modifier", edit_image_admin_recommandation_path, class: "btn btn-default btn-sm" %>
+      </div>
+    <% end %>
+  </div>
+
+  <%= f.submit 'Enregistrer', class: "btn btn-primary" %>
+  <%= link_to "Retour", admin_recommandations_path, class: "btn btn-default" %>
+<% end %>
+
+<script>
+  $(document).on('turbolinks:load', function() {
+    $('#recommandation_status').bootstrapToggle();
+  })
+
+  $('select#recommandation_action').select2({ width: '100%' });
+  $('select#recommandation_instance').select2({ width: '100%' });
+  $('select#recommandation_argument_type').select2({ width: '100%' });
+</script>

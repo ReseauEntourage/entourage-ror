@@ -21,8 +21,14 @@ class JoinRequest < ApplicationRecord
   validates :user_id, :joinable_id, :joinable_type, :status, presence: true
   validates_uniqueness_of :joinable_id, {scope: [:joinable_type, :user_id], message: "a déjà été ajouté"}
   validates_inclusion_of :status, in: ["pending", "accepted", "rejected", "cancelled"]
+  validates :status, inclusion: { in: ['accepted'] }, if: Proc.new { |join_request|
+    # can not remove creator
+    join_request.joinable&.user_id == join_request.user_id
+  }
+  validates :role, presence: true, inclusion: { in: ['member', 'creator'] }, if: :neighborhood?
   validates :role, presence: true,
-                   inclusion: { in: -> (r) { r.joinable&.group_type_config&.dig('roles') || [] }, allow_nil: true }
+                   inclusion: { in: -> (r) { r.joinable&.group_type_config&.dig('roles') || [] }, allow_nil: true },
+                   unless: :neighborhood?
   validates_inclusion_of :report_prompt_status, in: ['display', 'dismissed', 'reported'], allow_nil: true
 
   scope :accepted, -> {where(status: ACCEPTED_STATUS)}
@@ -35,6 +41,14 @@ class JoinRequest < ApplicationRecord
 
   def entourage?
     joinable_type == 'Entourage'
+  end
+
+  def outing?
+    entourage? && joinable.outing?
+  end
+
+  def neighborhood?
+    joinable_type == 'Neighborhood'
   end
 
   def entourage_id
@@ -67,14 +81,21 @@ class JoinRequest < ApplicationRecord
     ))
   end
 
+  def self.with_unread_text_messages
+    where(status: :accepted)
+    .joins(%(
+      join chat_messages on (
+        chat_messages.message_type in ('text', 'broadcast') and
+        messageable_id = joinable_id and messageable_type = joinable_type and
+        (last_message_read is null or chat_messages.created_at > last_message_read)
+      )
+    ))
+  end
+
   STATUS.each do |check_status|
     define_method("is_#{check_status}?") do
       status == check_status
     end
-  end
-
-  def archived?
-    archived_at && archived_at >= joinable.feed_updated_at
   end
 
   def pending?
@@ -85,6 +106,11 @@ class JoinRequest < ApplicationRecord
   def rejected?
     return unless status
     status.to_sym == :rejected
+  end
+
+  def accepted?
+    return unless status
+    status.to_sym == :accepted
   end
 
   # these 3 methods manage the skip_conversation_uuid_update flag.
@@ -127,12 +153,12 @@ class JoinRequest < ApplicationRecord
     end
 
     # update the conversation's uuid_v2 to match the list of participants
-    if joinable.group_type == 'conversation'
+    if joinable.is_a?(Entourage) && joinable.conversation?
       # TODO: handle status? (saved_change_to_status?)
       if @skip_conversation_uuid_update != true && (saved_change_to_id? || destroyed?)
         joinable.update!(
-          uuid_v2: ConversationService.hash_for_participants(
-            joinable.join_requests.pluck(:user_id), validated: false))
+          uuid_v2: ConversationService.hash_for_participants(joinable.join_requests.pluck(:user_id), validated: false)
+        )
       end
     end
   end

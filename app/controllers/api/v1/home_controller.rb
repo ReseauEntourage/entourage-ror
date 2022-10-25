@@ -3,6 +3,9 @@ module Api
     class HomeController < Api::V1::BaseController
       skip_before_action :community_warning
 
+      before_action :set_user_recommandations, only: [:summary]
+      before_action :clean_inapp_notifications, only: [:summary]
+
       def index
         render json: {
           metadata: {
@@ -35,6 +38,22 @@ module Api
             scope: { user: current_user }
           )
         }.to_json, status: 200
+      end
+
+      def metadata
+        render json: {
+          tags: {
+            sections: format_sections(Tag.sections),
+            interests: format_tags(Tag.interests),
+            signals: format_tags(Tag.signals)
+          }
+        }.to_json, status: 200
+      end
+
+      def summary
+        render json: current_user, serializer: ::V1::Users::SummarySerializer, scope: {
+          user: current_user
+        }
       end
 
       private
@@ -75,6 +94,22 @@ module Api
         else
           [:headlines, :outings, :entourage_ask_for_helps, :entourage_contributions]
         end
+      end
+
+      def format_tags tags
+        tags.to_a.map { |t| { id: t.first, name: t.last } }
+      end
+
+      def format_sections sections
+        sections.to_a.map { |t| { id: t.first }.merge(t.last) }
+      end
+
+      def set_user_recommandations
+        RecommandationServices::User.new(current_user).initiate
+      end
+
+      def clean_inapp_notifications
+        InappNotificationServices::Builder.new(current_user).skip_obsolete_notifications
       end
     end
   end

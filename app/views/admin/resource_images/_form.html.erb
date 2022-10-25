@@ -1,0 +1,41 @@
+<style>
+  .field_with_errors { display: inline-block }
+</style>
+
+<%= render partial: 'common/errors', locals: {obj: @resource_image} %>
+
+<%= form_for [:admin, @resource_image], html: { role: "form" } do |f| %>
+  <div class="form-group">
+    <%= f.label :title %>
+    <%= f.text_field :title, class: "form-control", required: true %>
+  </div>
+
+  <div class="row">
+    <div class="form-group col-xs-8">
+      <%= f.label :image_url %>
+      <p><i>1125 x 375 px</i></p>
+      <% if @resource_image.new_record? %>
+        <div class="text-muted">
+          Vous pourrez ajouter une image une fois que vous aurez enregistré un titre.
+        </div>
+      <% else %>
+        <% if @resource_image.image_url %>
+          <div style="margin-bottom: 15px">
+            <%= image_tag(@resource_image.image_url, size: '450x150') if @resource_image.image_url.present? %>
+          </div>
+        <% end %>
+        <div>
+          <%= link_to "Modifier", edit_photo_admin_resource_image_path, class: "btn btn-default btn-sm" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <%= f.submit 'Enregistrer', class: "btn btn-primary" %>
+
+  <% unless @resource_image.new_record? %>
+    <%= link_to "Supprimer", admin_resource_image_path(@resource_image), method: :DELETE, class: "btn btn-danger", style: 'float: right;', data: {
+      confirm: "Êtes-vous sûr de vouloir supprimer ces photos de resource ?"
+    } %>
+  <% end %>
+<% end %>

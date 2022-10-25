@@ -1,0 +1,37 @@
+<div class="container">
+  <div style="margin: auto">
+    <div style="float: right">
+      <%= link_to "Ajouter un contenu pédagogique", new_admin_resource_path, class: "btn btn-default" %>
+    </div>
+
+    <h1>Contenus pédagogiques</h1>
+
+    <div class="row">
+      <% unless @resources.none? %>
+        <table class="table">
+          <th>Id</th>
+          <th>Name</th>
+          <th>Catégorie</th>
+          <th>Vues</th>
+          <th>Action</th>
+          <% @resources.each do |resource| %>
+            <tr>
+              <td><%= resource.id %></td>
+              <td><%= link_to resource.name, edit_admin_resource_path(resource) %></td>
+              <td><%= category_label resource.category %></td>
+              <td><%= resource.views %></td>
+              <td>
+                <%= link_to "Modifier", edit_admin_resource_path(resource), class: "btn btn-primary" %>
+              </td>
+            </tr>
+          <% end %>
+        </table>
+      <% end %>
+    </div>
+
+    <%= page_entries_info @resources, entry_name: 'contenus pédagogiques' %>
+    <div class="container">
+      <%= paginate(@resources) %>
+    </div>
+  </div>
+</div>

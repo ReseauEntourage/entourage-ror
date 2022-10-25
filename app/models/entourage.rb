@@ -8,6 +8,10 @@ class Entourage < ApplicationRecord
   include Onboarding::V1::Entourage
   include Experimental::EntourageSlack::Callback
   include ModerationServices::EntourageModeration::Callback
+  include CoordinatesScopable
+  include JoinableScopable
+
+  after_validation :track_status_change
 
   ENTOURAGE_TYPES  = ['ask_for_help', 'contribution']
   ENTOURAGE_STATUS = ['open', 'closed', 'blacklisted', 'suspended']
@@ -21,6 +25,9 @@ class Entourage < ApplicationRecord
   belongs_to :user
   has_many :join_requests, as: :joinable, dependent: :destroy
   has_many :members, through: :join_requests, source: :user
+  has_many :accepted_members, -> { where("join_requests.status = 'accepted'") }, through: :join_requests, source: :user
+  has_many :neighborhoods_entourages, dependent: :destroy
+  has_many :neighborhoods, through: :neighborhoods_entourages
   reverse_geocoded_by :latitude, :longitude
   has_many :chat_messages, as: :messageable, dependent: :destroy
   has_one :last_chat_message, -> {
@@ -41,6 +48,7 @@ class Entourage < ApplicationRecord
   attr_accessor :change_ownership_message
   attr_accessor :user_status
   attr_accessor :cancellation_message
+  attr_accessor :entourage_image_id
 
   validates_presence_of :status, :title, :entourage_type, :user_id, :latitude, :longitude, :number_of_people
 
@@ -56,8 +64,8 @@ class Entourage < ApplicationRecord
   validates_inclusion_of :online, in: -> (e) { e.online_setting_options }
   validates :metadata, schema: -> (e) { "#{e.group_type}:metadata" }
   validate :validate_outings_ends_at
-  validates :image_url, format: { with: %r(\Ahttps?://\S+\z) }, allow_blank: true
 
+  scope :active, -> { where(status: ['open', 'full']) }
   scope :visible, -> { where.not(status: ['blacklisted', 'suspended']) }
   scope :findable, -> { where.not(status: ['blacklisted']) }
   scope :social_category, -> { where(category: 'social') }
@@ -71,11 +79,6 @@ class Entourage < ApplicationRecord
       order("case when entourage_type = 'contribution' then 1 else 2 end")
     else
       order("case when entourage_type = 'ask_for_help' then 1 else 2 end")
-    end
-  }
-  scope :order_by_distance_from, -> (latitude, longitude) {
-    if latitude && longitude
-      order(PostgisHelper.distance_from(latitude, longitude))
     end
   }
   scope :like, -> (search) {
@@ -97,6 +100,7 @@ class Entourage < ApplicationRecord
   before_validation :set_outings_ends_at
   before_validation :set_outings_previous_at
   before_validation :set_outings_image_urls
+  before_validation :set_outings_place_limit
   before_validation :generate_display_address
   before_validation :reformat_content
   before_validation :set_default_online_attributes, if: :online_changed?
@@ -105,6 +109,31 @@ class Entourage < ApplicationRecord
   before_create :set_uuid
 
   after_update :create_chat_message_on_status_update, if: :saved_change_to_status?
+
+  def create_from_join_requests!
+    ApplicationRecord.connection.transaction do
+      participations = self.join_requests.to_a
+
+      self.join_requests = []
+      self.chat_messages = []
+      self.instance_variable_set(:@readonly, false)
+
+      # we set the uuid manually instead of updating it gradually at each
+      # join_request. see next comment.
+      self.uuid_v2 = ConversationService.hash_for_participants(participations.map(&:user_id), validated: false)
+      self.save!
+
+      participations.each do |join_request|
+        join_request.joinable = self
+
+        # if we update the UUID at each user, one of the intermediary
+        # conversations (e.g. first user with itself) may already exist
+        # and cause an error.
+        join_request.skip_conversation_uuid_update!
+        join_request.save!
+      end
+    end
+  end
 
   def moderator_read_for user:
     moderator_reads.where(user_id: user.id).first
@@ -118,6 +147,7 @@ class Entourage < ApplicationRecord
     join_requests.with_entourage_invitations.accepted.where('join_requests.created_at > ?', read_at).any?
   end
 
+  # @dead_code
   def unread_chat_message_after read_at:
     conversation_messages.ordered.with_content.where('created_at > ?', read_at).any?
   end
@@ -237,7 +267,8 @@ class Entourage < ApplicationRecord
           landscape_url: { type: [:string, :null] },
           landscape_thumbnail_url: { type: [:string, :null] },
           portrait_url: { type: [:string, :null] },
-          portrait_thumbnail_url: { type: [:string, :null] }
+          portrait_thumbnail_url: { type: [:string, :null] },
+          place_limit: { type: [:string, :integer, :null] }
         }
       end
     end
@@ -274,6 +305,8 @@ class Entourage < ApplicationRecord
     else
       remove_entourage_image_id!
     end
+
+    @entourage_image_id = entourage_image_id
   end
 
   def remove_entourage_image_id!
@@ -339,6 +372,14 @@ class Entourage < ApplicationRecord
 
   def outing?
     group_type && group_type.to_sym == :outing
+  end
+
+  def recurrent?
+    outing? && recurrency_identifier.present?
+  end
+
+  def contribution?
+    entourage_type && entourage_type.to_sym == :contribution
   end
 
   def cancelled?
@@ -453,6 +494,7 @@ class Entourage < ApplicationRecord
     return if group_type.nil?
     case group_type
     when 'conversation'
+      # why no public = false?
       self.status         = :open
       self.title          = '(conversation)'
       self.entourage_type = :contribution
@@ -504,6 +546,12 @@ class Entourage < ApplicationRecord
     if metadata[:portrait_thumbnail_url].nil?
       self.metadata[:portrait_thumbnail_url] = nil
     end
+  end
+
+  def set_outings_place_limit
+    return unless outing?
+    return unless metadata[:place_limit].nil?
+    self.metadata[:place_limit] = nil
   end
 
   def validate_outings_ends_at
@@ -594,5 +642,9 @@ class Entourage < ApplicationRecord
     set_uuid
     tries += 1
     retry
+  end
+
+  def track_status_change
+    self[:status_changed_at] = Time.zone.now if status_changed?
   end
 end

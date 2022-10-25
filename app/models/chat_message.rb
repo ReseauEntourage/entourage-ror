@@ -2,6 +2,11 @@ class ChatMessage < ApplicationRecord
   include FeedsConcern
   include ChatServices::Spam
 
+  CONTENT_TYPES = %w(image/jpeg)
+  BUCKET_PREFIX = "chat_messages"
+
+  has_ancestry
+
   belongs_to :messageable, polymorphic: true
   belongs_to :entourage, -> {
     where("chat_messages.messageable_type = 'Entourage'")
@@ -10,9 +15,12 @@ class ChatMessage < ApplicationRecord
 
   before_validation :generate_content
 
-  validates :messageable_id, :messageable_type, :content, :user_id, presence: true
+  validates :messageable_id, :messageable_type, :user_id, presence: true
+  validates :content, presence: true, unless: -> (m) { m.image_url.present? }
   validates_inclusion_of :message_type, in: -> (m) { m.message_types }
   validates :metadata, schema: -> (m) { "#{m.message_type}:metadata" }
+
+  validate :validate_ancestry!
 
   scope :ordered, -> { order("created_at DESC") }
 
@@ -30,6 +38,36 @@ class ChatMessage < ApplicationRecord
 
   after_create :update_sender_report_prompt_status
   after_create :update_recipients_report_prompt_status
+
+  class << self
+    def bucket
+      Storage::Client.images
+    end
+
+    def presigned_url key, content_type
+      bucket.object(path key).presigned_url(
+        :put,
+        expires_in: 1.minute.to_i,
+        acl: :private,
+        content_type: content_type,
+        cache_control: "max-age=#{365.days}"
+      )
+    end
+
+    def url_for key
+      bucket.url_for(key: path(key), extra: { expire: 1.day })
+    end
+
+    def path key
+      "#{BUCKET_PREFIX}/#{key}"
+    end
+  end
+
+  def validate_ancestry!
+    if parent && parent.has_parent?
+      errors.add(:interests, "Il n'est pas possible de commenter une discussion")
+    end
+  end
 
   def entourage?
     messageable_type == 'Entourage'

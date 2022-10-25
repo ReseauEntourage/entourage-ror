@@ -105,6 +105,7 @@ RSpec.describe Entourage, type: :model do
       landscape_thumbnail_url: nil,
       portrait_url: nil,
       portrait_thumbnail_url: nil,
+      place_limit: nil,
       :$id=>"urn:entourage:outing:metadata"
     ) }
     it { expect(build(:outing, default_metadata: {}).tap(&:save).errors.messages).to eq(
@@ -369,6 +370,17 @@ RSpec.describe Entourage, type: :model do
     it "with unread_content" do
       moderator_read = FactoryBot.create(:moderator_read, moderatable: entourage, user: user)
       expect(entourage.moderator_has_unread_content(user: user)).to eq(false)
+    end
+  end
+
+  describe "status_changed_at" do
+    let(:entourage) { FactoryBot.create(:entourage, status: :open) }
+
+    context 'set status_changed_at' do
+      before { entourage.update(status: :closed) }
+
+      it { expect(entourage.status).to eq("closed") }
+      it { expect(entourage.status_changed_at).to be_a(ActiveSupport::TimeWithZone) }
     end
   end
 

@@ -151,7 +151,7 @@ Host: example.org
 Cookie: </pre>
 
           <h4>Route</h4>
-          <pre class="request route highlight">GET api/v1/entourage_images/65?token=foobar10</pre>
+          <pre class="request route highlight">GET api/v1/entourage_images/2?token=foobar10</pre>
 
             <h4>Query Parameters</h4>
             <pre class="request query_parameters highlight">token: foobar10</pre>
@@ -170,20 +170,20 @@ Access-Control-Allow-Origin: *
 Access-Control-Allow-Methods: GET,POST,PUT,PATCH,DELETE
 Access-Control-Allow-Headers: Origin,Accept,Content-Type,X-Requested-With,X-CSRF-Token,X-API-KEY
 Content-Type: application/json; charset=utf-8
-ETag: W/&quot;2d306382d7933f164f1abc20e17bce63&quot;
+ETag: W/&quot;1ace4ece1cd9807b270abbfa20ebc6e7&quot;
 Cache-Control: max-age=0, private, must-revalidate
-X-Request-Id: 12461162-bd17-4712-8b7b-2004d1dd7edb
-X-Runtime: 0.011875
-Content-Length: 811</pre>
+X-Request-Id: 1a5008d5-2e32-4d6b-87c1-ef8b8e615df1
+X-Runtime: 0.007633
+Content-Length: 260</pre>
             <h4>Status</h4>
             <pre class="response status">200 OK</pre>
               <h4>Body</h4>
               <pre class="response body">{
   &quot;entourage_image&quot;: {
-    &quot;id&quot;: 65,
+    &quot;id&quot;: 2,
     &quot;title&quot;: &quot;Café solidaire&quot;,
-    &quot;landscape_url&quot;: &quot;https://foobar.s3.eu-west-1.amazonaws.com/path-to-img.jpeg?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=foo%2F20220301%2Feu-west-1%2Fs3%2Faws4_request&amp;X-Amz-Date=20220301T100006Z&amp;X-Amz-Expires=3600&amp;X-Amz-SignedHeaders=host&amp;X-Amz-Signature=a0a1e9cbc682849d2c1e5d0dc2b2371c731acf70a63ac5b8c81b8548ee8a03aa&quot;,
-    &quot;landscape_small_url&quot;: &quot;https://foobar.s3.eu-west-1.amazonaws.com/path-to-img.jpeg?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=foo%2F20220301%2Feu-west-1%2Fs3%2Faws4_request&amp;X-Amz-Date=20220301T100006Z&amp;X-Amz-Expires=3600&amp;X-Amz-SignedHeaders=host&amp;X-Amz-Signature=a0a1e9cbc682849d2c1e5d0dc2b2371c731acf70a63ac5b8c81b8548ee8a03aa&quot;,
+    &quot;landscape_url&quot;: &quot;https://foobar.s3.eu-west-1.amazonaws.com/path-to-img.jpeg&quot;,
+    &quot;landscape_small_url&quot;: &quot;https://foobar.s3.eu-west-1.amazonaws.com/path-to-img.jpeg&quot;,
     &quot;portrait_url&quot;: null,
     &quot;portrait_small_url&quot;: null
   }

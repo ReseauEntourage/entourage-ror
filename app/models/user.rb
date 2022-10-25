@@ -1,4 +1,6 @@
 class User < ApplicationRecord
+  include Interestable
+
   include Onboarding::UserEventsTracking::UserConcern
   include UserServices::Engagement
 
@@ -23,7 +25,7 @@ class User < ApplicationRecord
   validates_inclusion_of :goal, in: -> (u) { (u.community&.goals || []).map(&:to_s) }, allow_nil: true
   validate :validate_roles!
   validate :validate_partner!
-  validate :validate_interests!
+  validate :validate_birthday!
 
   after_save :clean_up_passwords, if: :saved_change_to_encrypted_password?
 
@@ -35,10 +37,18 @@ class User < ApplicationRecord
   has_many :session_histories
   has_many :user_histories
   has_many :entourages
+  has_many :outings, -> { where(group_type: :outing) }, source: :entourage, class_name: "Outing"
+
   has_many :groups, -> { except_conversations }, class_name: :Entourage
   has_many :join_requests
   has_many :entourage_participations, through: :join_requests, source: :joinable, source_type: "Entourage"
+  has_many :neighborhood_participations, through: :join_requests, source: :joinable, source_type: "Neighborhood"
   has_many :tour_participations, through: :join_requests, source: :joinable, source_type: "Tour"
+  has_many :outing_memberships, -> { where(group_type: :outing).where("join_requests.status = 'accepted'") }, through: :join_requests, source: :joinable, source_type: "Entourage"
+  has_many :action_memberships, -> { where(group_type: :action, entourage_type: [:ask_for_help, :contribution]).where("join_requests.status = 'accepted'") }, through: :join_requests, source: :joinable, source_type: "Entourage"
+  has_many :neighborhood_memberships, -> { where("join_requests.status = 'accepted'") }, through: :join_requests, source: :joinable, source_type: "Neighborhood"
+  has_many :solicitation_memberships, -> { where(group_type: :action, entourage_type: :ask_for_help).where("join_requests.status = 'accepted'") }, through: :join_requests, source: :joinable, source_type: "Entourage"
+  has_many :contribution_memberships, -> { where(group_type: :action, entourage_type: :contribution).where("join_requests.status = 'accepted'") }, through: :join_requests, source: :joinable, source_type: "Entourage"
   belongs_to :organization, optional: true
   has_and_belongs_to_many :coordinated_organizations, -> { distinct }, class_name: "Organization", join_table: "coordination", optional: true
   has_many :chat_messages
@@ -59,9 +69,16 @@ class User < ApplicationRecord
   has_many :partner_join_requests
   has_many :user_phone_changes, -> { order(:id) }, dependent: :destroy
   has_many :histories, class_name: 'UserHistory'
+  has_many :users_resources
+  has_many :user_recommandations
+  has_many :inapp_notifications, dependent: :destroy
+  has_one :notification_configuration, class_name: "InappNotificationConfiguration", dependent: :destroy
+  has_many :recommandations, -> { UserRecommandation.active }, through: :user_recommandations
 
   delegate :country, to: :address, allow_nil: true
   delegate :postal_code, to: :address, allow_nil: true
+  delegate :latitude, to: :address, allow_nil: true
+  delegate :longitude, to: :address, allow_nil: true
 
   attr_reader :admin_password
   attr_reader :cnil_explanation
@@ -91,7 +108,6 @@ class User < ApplicationRecord
 
   enum device_type: [ :android, :ios ]
   attribute :roles, :jsonb_set
-  attribute :interests, :jsonb_set
 
   scope :type_pro, -> { where(user_type: "pro") }
   scope :validated, -> { where(validation_status: "validated") }
@@ -248,7 +264,7 @@ class User < ApplicationRecord
     return if community.nil?
     attribute = attribute.to_sym
 
-    invalid = self[attribute] - community.send(attribute)
+    invalid = send(attribute) - community.send(attribute)
     invalid = yield invalid if block_given?
 
     errors.add(
@@ -268,8 +284,12 @@ class User < ApplicationRecord
     end
   end
 
-  def validate_interests!
-    validate_set_attr :interests
+  def validate_birthday!
+    return unless birthday.present?
+
+    Date.strptime("#{birthday}-2024", '%d-%m-%y')
+  rescue
+    errors.add(:birthday, "Date invalide")
   end
 
   def validate_partner!
@@ -306,6 +326,13 @@ class User < ApplicationRecord
   #Force all phone number to be inserted in DB in "+33" format
   def phone=(new_phone)
     super(Phone::PhoneBuilder.new(phone: new_phone).format)
+  end
+
+  # excluding wrong values due to v7 constraints
+  def interests= interests
+    return super(interests) if interests.is_a?(String)
+
+    super(interests & Tag.interest_list)
   end
 
   def to_s
@@ -558,7 +585,6 @@ class User < ApplicationRecord
   def conversation_participations_count
     entourage_participations.where(group_type: :conversation).count
   end
-
 
   protected
 

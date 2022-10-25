@@ -18,7 +18,7 @@ describe Api::V1::FeedsController do
       let!(:tour) { FactoryBot.create(:tour, updated_at: 5.hours.ago, created_at: 5.hours.ago, tour_type: "medical", latitude: latitude, longitude: longitude) }
       let(:announcement) { FactoryBot.build(:announcement) }
       before do
-        Storage::Bucket.any_instance.stub(:url_for) { "path/to/portrait_url" }
+        Storage::Bucket.any_instance.stub(:read_for) { "path/to/portrait_url" }
         allow_any_instance_of(FeedServices::AnnouncementsService)
           .to receive(:repositionned_announcements)
           .and_return([announcement])
@@ -389,7 +389,7 @@ describe Api::V1::FeedsController do
       end
 
       before {
-        Storage::Bucket.any_instance.stub(:url_for) { "path/to/portrait_url" }
+        Storage::Bucket.any_instance.stub(:read_for) { "path/to/portrait_url" }
         get :index, params: { token: user.token, latitude: latitude, longitude: longitude, announcements: :v1 }
       }
       it { expect(response.status).to eq(200) }

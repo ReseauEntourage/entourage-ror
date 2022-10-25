@@ -1,0 +1,81 @@
+<style>
+  .field_with_errors { display: inline-block }
+</style>
+
+<%= render partial: 'common/errors', locals: { obj: @resource } %>
+<%= form_for [:admin, @resource], html: { role: "form" } do |f| %>
+  <div class="form-group">
+    <%= f.label :name %>
+    <div class="controls">
+      <%= f.text_field :name, class: "form-control", required: true %>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :category %>
+    <div class="controls">
+      <%= f.select :category, options_for_select(categories_options_for_select, @resource.category), class: "form-control", required: true %>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :description %>
+    <div class="controls">
+      <%= f.text_area :description, rows: 10, :class => "form-control tinymce" %>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :url %>
+    <div class="controls">
+      <%= f.text_field :url, class: "form-control" %>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :is_video %>
+    <div class="controls">
+      <%= f.check_box :is_video, { :checked => @resource.is_video? }, 1, 0 %>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :duration %>
+    <div class="controls">
+      <%= f.number_field :duration, class: "form-control" %>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :image_url %>
+    <% if @resource.new_record? %>
+      <div class="text-muted">
+        Vous pourrez ajouter une image une fois que la carte sera créée.
+      </div>
+    <% else %>
+      <% if @resource.image_url %>
+        <div style="margin-bottom: 15px">
+          <%= image_tag(@resource.image_url, size: '300x100') if @resource.image_url.present? %>
+        </div>
+      <% end %>
+
+      <div>
+        <%= link_to "Modifier", edit_image_admin_resource_path, class: "btn btn-default btn-sm" %>
+      </div>
+    <% end %>
+  </div>
+
+  <%= f.submit 'Enregistrer', class: "btn btn-primary" %>
+  <%= link_to "Retour", admin_resources_path, class: "btn btn-default" %>
+
+  <% unless @resource.new_record? %>
+    <%= link_to "Supprimer", admin_resource_path(@resource), method: :DELETE, class: "btn btn-danger", style: 'float: right;', data: {
+      confirm: "Êtes-vous sûr de vouloir supprimer ce contenu pédagogique ?"
+    } %>
+  <% end %>
+<% end %>
+<%= tinymce %>
+
+<script>
+  $('select#resource_category').select2({ width: '100%' });
+</script>

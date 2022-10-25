@@ -51,6 +51,8 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                 "ask_for_help_creation_count" => 0,
                 "contribution_creation_count" => 0,
                 "events_count" => 0,
+                "outings_count" => 0,
+                "neighborhoods_count" => 0,
                 "good_waves_participation" => false,
               },
               "partner" => {
@@ -84,11 +86,15 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
               },
               "engaged" => false,
               "goal" => nil,
+              "phone" => user.phone,
               "unread_count" => 0,
               "interests" => [],
+              "travel_distance" => 10,
+              "birthday" => nil,
               "permissions" => {
                 "outing" => { "creation" => true }
               },
+              "created_at" => user.created_at.iso8601(3),
             },
             "first_sign_in" => true
           })
@@ -282,6 +288,8 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
             "ask_for_help_creation_count" => 1,
             "contribution_creation_count" => 0,
             "events_count" => 0,
+            "outings_count" => 0,
+            "neighborhoods_count" => 0,
             "good_waves_participation" => false,
           },
           "partner" => nil,
@@ -301,11 +309,15 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
           },
           "engaged" => true,
           "goal" => nil,
+          "phone" => user.phone,
           "unread_count" => 0,
           "interests" => [],
+          "travel_distance" => 10,
+          "birthday" => nil,
           "permissions" => {
             "outing" => { "creation" => false }
           },
+          "created_at" => user.created_at.iso8601(3),
         },
         "first_sign_in" => true
       })}
@@ -347,10 +359,11 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
       after { ENV["DISABLE_CRYPT"]="TRUE" }
 
       context 'params are valid' do
-        before { patch 'update', params: { token:user.token, user: { email:'new@e.mail', sms_code:'654321', device_id: 'foo', device_type: 'android', avatar_key: 'foo.jpg'}, format: :json } }
+        before { patch 'update', params: { token:user.token, user: { email:'new@e.mail', sms_code:'654321', device_id: 'foo', device_type: 'android', avatar_key: 'foo.jpg', travel_distance: 12 }, format: :json } }
         it { expect(response.status).to eq(200) }
         it { expect(user.reload.email).to eq('new@e.mail') }
         it { expect(user.reload.avatar_key).to eq('foo.jpg') }
+        it { expect(user.reload.travel_distance).to eq(12) }
         it { expect(BCrypt::Password.new(User.find(user.id).sms_code) == '654321').to be true }
 
         it "renders user" do
@@ -420,10 +433,52 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
         end
       end
 
-      context 'interests' do
+      context 'interest_list' do
         context 'good value' do
-          before { patch 'update', params: { token: user.token, user: { interests: [:event_sdf, :aide_sdf] } } }
-          it { expect(result['user']).to include('interests' => ['aide_sdf', 'event_sdf']) }
+          before { patch 'update', params: { token: user.token, user: { interest_list: "sport, culture" } } }
+          it { expect(result['user']).to include('interests' => ['culture', 'sport']) }
+        end
+      end
+
+      context 'interests as a string' do
+        context 'good value' do
+          before { patch 'update', params: { token: user.token, user: { interests: "sport, culture" } } }
+          it { expect(result['user']).to include('interests' => ['culture', 'sport']) }
+        end
+      end
+
+      context 'interests as an array' do
+        context 'good value when other_interest is missing is also valid' do
+          before { patch 'update', params: { token: user.token, user: { interests: ["sport", "culture", "other"] } } }
+          it { expect(response.status).to eq(200) }
+        end
+      end
+
+      context 'interests as an array' do
+        context 'good value' do
+          before { patch 'update', params: { token: user.token, user: { interests: ["sport", "culture", "other"], other_interest: 'foo' } } }
+          it { expect(result['user']).to include('interests' => ['culture', 'sport', 'other']) }
+        end
+      end
+
+      context 'interests as an array' do
+        context 'good value' do
+          before { patch 'update', params: { token: user.token, user: { interests: ["sport", "culture", "other"], other_interest: 'foo' } } }
+          it { expect(result['user']).to include('interests' => ['culture', 'sport', 'other']) }
+        end
+      end
+
+      context 'interests as an array' do
+        context 'wrong value' do
+          before { patch 'update', params: { token: user.token, user: { interests: ["foo", "bar"] } } }
+          it { expect(response.status).to eq(200) }
+          it { expect(result['user']).to include('interests' => []) }
+        end
+
+        context 'wrong value as v7 interests' do
+          before { patch 'update', params: { token: user.token, user: { interests: ["event_riverain", "m_informer_riverain"] } } }
+          it { expect(response.status).to eq(200) }
+          it { expect(result['user']).to include('interests' => []) }
         end
       end
 
@@ -620,11 +675,12 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
     end
 
     context "valid params" do
-      before { post 'create', params: { user: {phone: "+33612345678"} } }
+      before { post 'create', params: { user: { phone: "+33612345678", travel_distance: 16 } } }
       it { expect(User.last.user_type).to eq("public") }
       it { expect(User.last.community).to eq("entourage") }
       it { expect(User.last.roles).to eq([]) }
       it { expect(User.last.phone).to eq("+33612345678") }
+      it { expect(User.last.travel_distance).to eq(16) }
       it {
         expect(JSON.parse(response.body)).to eq(
           "user" => {
@@ -719,6 +775,8 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                "ask_for_help_creation_count" => 0,
                "contribution_creation_count" => 0,
                "events_count" => 0,
+               "outings_count" => 0,
+               "neighborhoods_count" => 0,
                "good_waves_participation" => false,
             },
             "partner" => {
@@ -751,11 +809,15 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
             },
             "engaged" => false,
             "goal" => nil,
+            "phone" => user.phone,
             "unread_count" => 0,
             "interests" => [],
+            "travel_distance" => 10,
+            "birthday" => nil,
             "permissions" => {
               "outing" => { "creation" => true }
             },
+            "created_at" => user.created_at.iso8601(3),
           }
         }) }
 
@@ -766,7 +828,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
             expect(JSON.parse(response.body)['user']['address']).to eq(
               "latitude" => 1.5,
               "longitude" => 1.5,
-              "display_address" => "rue Pizza, 75020",
+              "display_address" => "Cassis, 75020",
               "position"=>1,
             )
           }
@@ -807,6 +869,8 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                "ask_for_help_creation_count" => 0,
                "contribution_creation_count" => 0,
                "events_count" => 0,
+               "outings_count" => 0,
+               "neighborhoods_count" => 0,
                "good_waves_participation" => false,
             },
             "partner" => {
@@ -839,11 +903,15 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
             },
             "engaged" => false,
             "goal" => nil,
+            "phone" => user.phone,
             "unread_count" => 0,
             "interests" => [],
+            "travel_distance" => 10,
+            "birthday" => nil,
             "permissions" => {
               "outing" => { "creation" => true }
             },
+            "created_at" => user.created_at.iso8601(3),
           }
         }) }
       end
@@ -857,7 +925,9 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
       context "get someone else profile" do
         let(:other_user) { FactoryBot.create(:pro_user, about: "about") }
         let!(:conversation) { nil }
+
         before { get :show, params: { id: other_user.id, token: user.token } }
+
         it { expect(response.status).to eq(200) }
         it { expect(JSON.parse(response.body)).to eq({
           "user" => {
@@ -884,6 +954,8 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
               "ask_for_help_creation_count" => 0,
               "contribution_creation_count" => 0,
               "events_count" => 0,
+              "outings_count" => 0,
+              "neighborhoods_count" => 0,
               "good_waves_participation" => false,
             },
             "engaged" => false,
@@ -892,10 +964,12 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
             "permissions" => {
               "outing" => { "creation" => false }
             },
+            "interests" => [],
             "memberships" => [],
             "conversation" => {
               "uuid" => "1_list_#{user.id}-#{other_user.id}"
-            }
+            },
+            "created_at" => other_user.created_at.iso8601(3)
           }
         }) }
 
@@ -987,27 +1061,58 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
   describe 'POST #report' do
     let(:reporting_user) { create :public_user }
     let(:reported_user)  { create :public_user }
+    let(:result) { JSON.parse(response.body) }
 
-    ENV['SLACK_SIGNAL_USER_WEBHOOK'] = '{"url":"https://url.to.slack.com","channel":"channel","username":"signal-user-creation"}'
+    ENV['SLACK_SIGNAL'] = '{"url":"https://url.to.slack.com","channel":"channel"}'
 
     before { stub_request(:post, "https://url.to.slack.com").to_return(status: 200) }
 
     context "valid params" do
       before {
         expect_any_instance_of(SlackServices::SignalUser).to receive(:notify)
-        post 'report', params: { token: reporting_user.token, id: reported_user.id, user_report: {message: 'message'} }
+        post 'report', params: { token: reporting_user.token, id: reported_user.id, user_report: { message: 'message' } }
       }
 
       it { expect(response.status).to eq 201 }
     end
 
-    context "missing message" do
+    context "valid params with signals but no message" do
+      before {
+        expect_any_instance_of(SlackServices::SignalUser).to receive(:notify)
+        post 'report', params: { token: reporting_user.token, id: reported_user.id, user_report: { message: nil, signals: ['spam'] } }
+      }
+
+      it { expect(response.status).to eq 201 }
+    end
+
+    context "invalid signal" do
       before {
         expect_any_instance_of(SlackServices::SignalUser).not_to receive(:notify)
-        post 'report', params: { token: reporting_user.token, id: reported_user.id, user_report: {message: ''} }
+        post 'report', params: { token: reporting_user.token, id: reported_user.id, user_report: { message: nil, signals: ['foo'] } }
       }
 
       it { expect(response.status).to eq 400 }
+      it { expect(result['message']).to eq "Signal is invalid" }
+    end
+
+    context "missing message without signals" do
+      before {
+        expect_any_instance_of(SlackServices::SignalUser).not_to receive(:notify)
+        post 'report', params: { token: reporting_user.token, id: reported_user.id, user_report: { message: '' } }
+      }
+
+      it { expect(response.status).to eq 400 }
+      it { expect(result['message']).to eq "Message is required" }
+    end
+
+    context "empty signals" do
+      before {
+        expect_any_instance_of(SlackServices::SignalUser).not_to receive(:notify)
+        post 'report', params: { token: reporting_user.token, id: reported_user.id, user_report: { message: 'foobar', signals: [''] } }
+      }
+
+      it { expect(response.status).to eq 400 }
+      it { expect(result['message']).to eq "Signal is invalid" }
     end
   end
 

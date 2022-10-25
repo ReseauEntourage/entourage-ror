@@ -10,21 +10,24 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_06_17_110700) do
+ActiveRecord::Schema.define(version: 2022_10_10_141301) do
 
   # These are extensions that must be enabled in order to support this database
+  enable_extension "pg_stat_statements"
+  enable_extension "pg_trgm"
+  enable_extension "pgcrypto"
   enable_extension "plpgsql"
   enable_extension "postgis"
-  enable_extension "pgcrypto"
   enable_extension "unaccent"
 
-  create_table "active_admin_comments", id: :serial, force: :cascade do |t|
-    t.string "namespace"
+  create_table "active_admin_comments", id: false, force: :cascade do |t|
+    t.serial "id", null: false
+    t.string "namespace", limit: 255
     t.text "body"
-    t.string "resource_id", null: false
-    t.string "resource_type", null: false
-    t.string "author_type"
+    t.string "resource_id", limit: 255, null: false
+    t.string "resource_type", limit: 255, null: false
     t.integer "author_id"
+    t.string "author_type", limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
     t.index ["author_type", "author_id"], name: "index_active_admin_comments_on_author_type_and_author_id"
@@ -44,7 +47,25 @@ ActiveRecord::Schema.define(version: 2022_06_17_110700) do
     t.string "google_place_id"
     t.integer "user_id", null: false
     t.integer "position", default: 1, null: false
+    t.string "city"
     t.index ["user_id", "position"], name: "index_addresses_on_user_id_and_position", unique: true
+  end
+
+  create_table "admin_users", id: :serial, force: :cascade do |t|
+    t.string "email", default: "", null: false
+    t.string "encrypted_password", default: "", null: false
+    t.string "reset_password_token"
+    t.datetime "reset_password_sent_at"
+    t.datetime "remember_created_at"
+    t.integer "sign_in_count", default: 0, null: false
+    t.datetime "current_sign_in_at"
+    t.datetime "last_sign_in_at"
+    t.string "current_sign_in_ip"
+    t.string "last_sign_in_ip"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.index ["email"], name: "index_admin_users_on_email", unique: true
+    t.index ["reset_password_token"], name: "index_admin_users_on_reset_password_token", unique: true
   end
 
   create_table "announcements", id: :serial, force: :cascade do |t|
@@ -80,7 +101,7 @@ ActiveRecord::Schema.define(version: 2022_06_17_110700) do
   create_table "categories", id: :serial, force: :cascade do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string "name"
+    t.string "name", limit: 255
   end
 
   create_table "categories_pois", id: false, force: :cascade do |t|
@@ -93,12 +114,16 @@ ActiveRecord::Schema.define(version: 2022_06_17_110700) do
   create_table "chat_messages", id: :serial, force: :cascade do |t|
     t.integer "messageable_id", null: false
     t.string "messageable_type", null: false
-    t.text "content", null: false
+    t.text "content"
     t.integer "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "message_type", limit: 20, default: "text", null: false
     t.jsonb "metadata", default: {}, null: false
+    t.string "ancestry"
+    t.string "image_url"
+    t.index ["ancestry"], name: "index_chat_messages_on_ancestry"
+    t.index ["content"], name: "index_chat_messages_on_content", opclass: :gin_trgm_ops, using: :gin
     t.index ["created_at"], name: "index_chat_messages_on_created_at"
     t.index ["message_type"], name: "index_chat_messages_on_message_type"
     t.index ["messageable_id", "messageable_type"], name: "index_chat_messages_on_messageable_id_and_messageable_type"
@@ -178,10 +203,10 @@ ActiveRecord::Schema.define(version: 2022_06_17_110700) do
     t.integer "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string "street_person_name"
+    t.string "street_person_name", limit: 255
     t.float "latitude"
     t.float "longitude"
-    t.string "voice_message_url"
+    t.string "voice_message_url", limit: 255
     t.integer "tour_id"
     t.string "encrypted_message"
     t.string "address"
@@ -289,7 +314,7 @@ ActiveRecord::Schema.define(version: 2022_06_17_110700) do
     t.string "community", limit: 9, null: false
     t.string "group_type", limit: 14, null: false
     t.jsonb "metadata", default: {}, null: false
-    t.boolean "public", default: false
+    t.boolean "public", default: true
     t.datetime "feed_updated_at"
     t.string "image_url"
     t.boolean "online", default: false
@@ -298,6 +323,9 @@ ActiveRecord::Schema.define(version: 2022_06_17_110700) do
     t.boolean "pin", default: false
     t.jsonb "pins", default: [], null: false
     t.string "display_category_copy"
+    t.string "other_interest"
+    t.string "recurrency_identifier"
+    t.datetime "status_changed_at"
     t.index "st_setsrid(st_makepoint(longitude, latitude), 4326)", name: "index_entourages_on_coordinates", using: :gist
     t.index ["country", "postal_code"], name: "index_entourages_on_country_and_postal_code"
     t.index ["latitude", "longitude"], name: "index_entourages_on_latitude_and_longitude"
@@ -335,6 +363,25 @@ ActiveRecord::Schema.define(version: 2022_06_17_110700) do
     t.datetime "updated_at"
     t.index ["partner_id"], name: "index_followings_on_partner_id"
     t.index ["user_id", "partner_id"], name: "index_followings_on_user_id_and_partner_id", unique: true
+  end
+
+  create_table "inapp_notification_configurations", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.jsonb "configuration"
+    t.index ["user_id"], name: "index_inapp_notification_configurations_on_user_id"
+  end
+
+  create_table "inapp_notifications", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.string "instance", null: false
+    t.integer "instance_id"
+    t.datetime "completed_at"
+    t.datetime "skipped_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["completed_at"], name: "index_inapp_notifications_on_completed_at"
+    t.index ["skipped_at"], name: "index_inapp_notifications_on_skipped_at"
+    t.index ["user_id"], name: "index_inapp_notifications_on_user_id"
   end
 
   create_table "join_requests", id: :serial, force: :cascade do |t|
@@ -404,11 +451,70 @@ ActiveRecord::Schema.define(version: 2022_06_17_110700) do
     t.index ["user_id", "moderatable_id", "moderatable_type"], name: "index_moderator_reads_on_user_id_and_moderatable"
   end
 
+  create_table "neighborhood_images", force: :cascade do |t|
+    t.string "title"
+    t.string "image_url"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "neighborhoods", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.string "name", limit: 256
+    t.string "description"
+    t.string "ethics"
+    t.string "image_url"
+    t.float "latitude", null: false
+    t.float "longitude", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.datetime "feed_updated_at"
+    t.string "welcome_message"
+    t.string "other_interest"
+    t.string "google_place_id"
+    t.string "place_name"
+    t.string "postal_code"
+    t.string "street_address"
+    t.string "status", default: "active", null: false
+    t.datetime "status_changed_at"
+    t.index ["feed_updated_at"], name: "index_neighborhoods_on_feed_updated_at"
+    t.index ["name"], name: "index_neighborhoods_on_name"
+    t.index ["postal_code"], name: "index_neighborhoods_on_postal_code"
+    t.index ["status"], name: "index_neighborhoods_on_status"
+    t.index ["user_id"], name: "index_neighborhoods_on_user_id"
+  end
+
+  create_table "neighborhoods_entourages", force: :cascade do |t|
+    t.bigint "neighborhood_id"
+    t.bigint "entourage_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["entourage_id"], name: "index_neighborhoods_entourages_on_entourage_id"
+    t.index ["neighborhood_id"], name: "index_neighborhoods_entourages_on_neighborhood_id"
+  end
+
   create_table "newsletter_subscriptions", id: :serial, force: :cascade do |t|
-    t.string "email"
+    t.string "email", limit: 255
     t.boolean "active"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "old_atd_synchronizations", id: :serial, force: :cascade do |t|
+    t.string "filename", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["filename"], name: "index_old_atd_synchronizations_on_filename", unique: true
+  end
+
+  create_table "old_atd_users", id: :serial, force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "atd_id", null: false
+    t.string "tel_hash"
+    t.string "mail_hash"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["atd_id", "user_id"], name: "index_old_atd_users_on_atd_id_and_user_id", unique: true
   end
 
   create_table "options", force: :cascade do |t|
@@ -434,6 +540,15 @@ ActiveRecord::Schema.define(version: 2022_06_17_110700) do
     t.boolean "test_organization", default: false, null: false
     t.text "tour_report_cc"
     t.index ["name"], name: "index_organizations_on_name", unique: true
+  end
+
+  create_table "outing_recurrences", force: :cascade do |t|
+    t.string "identifier"
+    t.integer "recurrency"
+    t.boolean "continue"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["identifier"], name: "index_outing_recurrences_on_identifier", unique: true
   end
 
   create_table "partner_invitations", id: :serial, force: :cascade do |t|
@@ -484,16 +599,16 @@ ActiveRecord::Schema.define(version: 2022_06_17_110700) do
   end
 
   create_table "pois", id: :serial, force: :cascade do |t|
-    t.string "name"
+    t.string "name", limit: 255
     t.text "description"
     t.float "latitude"
     t.float "longitude"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string "adress"
-    t.string "phone"
-    t.string "website"
-    t.string "email"
+    t.string "adress", limit: 255
+    t.string "phone", limit: 255
+    t.string "website", limit: 255
+    t.string "email", limit: 255
     t.string "audience"
     t.integer "category_id"
     t.boolean "validated", default: false, null: false
@@ -514,6 +629,42 @@ ActiveRecord::Schema.define(version: 2022_06_17_110700) do
     t.index ["organization_id"], name: "index_questions_on_organization_id"
   end
 
+  create_table "recommandation_images", force: :cascade do |t|
+    t.string "title"
+    t.string "image_url"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "recommandation_moderation_areas", force: :cascade do |t|
+    t.integer "recommandation_id"
+    t.integer "moderation_area_id"
+    t.index ["moderation_area_id"], name: "index_recommandation_moderation_areas_on_moderation_area_id"
+    t.index ["recommandation_id"], name: "index_recommandation_moderation_areas_on_recommandation_id"
+  end
+
+  create_table "recommandations", force: :cascade do |t|
+    t.string "name", limit: 256
+    t.string "image_url"
+    t.string "instance", null: false
+    t.string "action", default: "show", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.jsonb "user_goals", default: [], null: false
+    t.string "status", default: "active", null: false
+    t.integer "position_offer_help"
+    t.integer "position_ask_for_help"
+    t.integer "fragment", default: 0
+    t.string "description"
+    t.string "argument_value"
+    t.index ["action"], name: "index_recommandations_on_action"
+    t.index ["instance"], name: "index_recommandations_on_instance"
+    t.index ["name"], name: "index_recommandations_on_name"
+    t.index ["status", "position_ask_for_help", "fragment"], name: "index_recommandations_on_status_and_position_ask_for_help", where: "(((status)::text = 'active'::text) AND (position_ask_for_help IS NOT NULL))"
+    t.index ["status", "position_offer_help", "fragment"], name: "index_recommandations_on_status_and_position_offer_for_help", where: "(((status)::text = 'active'::text) AND (position_offer_help IS NOT NULL))"
+    t.index ["user_goals"], name: "index_recommandations_on_user_goals", using: :gin
+  end
+
   create_table "registration_requests", id: :serial, force: :cascade do |t|
     t.string "status", default: "pending", null: false
     t.string "extra", null: false
@@ -521,14 +672,35 @@ ActiveRecord::Schema.define(version: 2022_06_17_110700) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "rpush_apps", force: :cascade do |t|
+  create_table "resource_images", force: :cascade do |t|
+    t.string "title"
+    t.string "image_url"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "resources", force: :cascade do |t|
+    t.string "name", limit: 256, null: false
+    t.string "category", limit: 32, default: "all", null: false
+    t.string "description"
+    t.string "image_url"
+    t.string "url"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "duration"
+    t.boolean "is_video", default: false
+    t.string "status", default: "active", null: false
+    t.index ["name"], name: "index_resources_on_name"
+  end
+
+  create_table "rpush_apps", id: :serial, force: :cascade do |t|
     t.string "name", null: false
     t.string "environment"
     t.text "certificate"
     t.string "password"
     t.integer "connections", default: 1, null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.string "type", null: false
     t.string "auth_key"
     t.string "client_id"
@@ -542,16 +714,16 @@ ActiveRecord::Schema.define(version: 2022_06_17_110700) do
     t.boolean "feedback_enabled", default: true
   end
 
-  create_table "rpush_feedback", force: :cascade do |t|
+  create_table "rpush_feedback", id: :serial, force: :cascade do |t|
     t.string "device_token"
     t.datetime "failed_at", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.integer "app_id"
     t.index ["device_token"], name: "index_rpush_feedback_on_device_token"
   end
 
-  create_table "rpush_notifications", force: :cascade do |t|
+  create_table "rpush_notifications", id: :serial, force: :cascade do |t|
     t.integer "badge"
     t.string "device_token"
     t.string "sound"
@@ -565,8 +737,8 @@ ActiveRecord::Schema.define(version: 2022_06_17_110700) do
     t.integer "error_code"
     t.text "error_description"
     t.datetime "deliver_after"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.boolean "alert_is_json", default: false, null: false
     t.string "type", null: false
     t.string "collapse_key"
@@ -601,15 +773,15 @@ ActiveRecord::Schema.define(version: 2022_06_17_110700) do
 
   create_table "sensitive_words_checks", id: :serial, force: :cascade do |t|
     t.string "status", null: false
-    t.string "record_type", null: false
     t.integer "record_id", null: false
+    t.string "record_type", null: false
     t.text "matches", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["record_type", "record_id"], name: "index_sensitive_words_checks_on_record_type_and_record_id", unique: true
   end
 
-  create_table "session_histories", id: false, force: :cascade do |t|
+  create_table "session_histories", id: :serial, force: :cascade do |t|
     t.integer "user_id", null: false
     t.date "date", null: false
     t.string "platform", limit: 7, null: false
@@ -637,6 +809,35 @@ ActiveRecord::Schema.define(version: 2022_06_17_110700) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["report_date", "app_name", "store_id"], name: "index_store_daily_reports_date_store_app", unique: true
+  end
+
+  create_table "taggings", id: :serial, force: :cascade do |t|
+    t.integer "tag_id"
+    t.string "taggable_type"
+    t.integer "taggable_id"
+    t.string "tagger_type"
+    t.integer "tagger_id"
+    t.string "context", limit: 128
+    t.datetime "created_at"
+    t.string "tenant", limit: 128
+    t.index ["context"], name: "index_taggings_on_context"
+    t.index ["tag_id", "taggable_id", "taggable_type", "context", "tagger_id", "tagger_type"], name: "taggings_idx", unique: true
+    t.index ["tag_id"], name: "index_taggings_on_tag_id"
+    t.index ["taggable_id", "taggable_type", "context"], name: "taggings_taggable_context_idx"
+    t.index ["taggable_id", "taggable_type", "tagger_id", "context"], name: "taggings_idy"
+    t.index ["taggable_id"], name: "index_taggings_on_taggable_id"
+    t.index ["taggable_type"], name: "index_taggings_on_taggable_type"
+    t.index ["tagger_id", "tagger_type"], name: "index_taggings_on_tagger_id_and_tagger_type"
+    t.index ["tagger_id"], name: "index_taggings_on_tagger_id"
+    t.index ["tenant"], name: "index_taggings_on_tenant"
+  end
+
+  create_table "tags", id: :serial, force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer "taggings_count", default: 0
+    t.index ["name"], name: "index_tags_on_name", unique: true
   end
 
   create_table "tour_areas", id: :serial, force: :cascade do |t|
@@ -757,6 +958,25 @@ ActiveRecord::Schema.define(version: 2022_06_17_110700) do
     t.index ["user_id"], name: "index_user_phone_changes_on_user_id"
   end
 
+  create_table "user_recommandations", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "recommandation_id"
+    t.datetime "completed_at"
+    t.datetime "congrats_at"
+    t.datetime "skipped_at"
+    t.string "name"
+    t.string "image_url"
+    t.string "action", null: false
+    t.string "instance", null: false
+    t.integer "instance_id"
+    t.string "instance_url"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["completed_at", "skipped_at"], name: "index_user_recommandations_on_completed_at_and_skipped_at"
+    t.index ["instance"], name: "index_user_recommandations_on_instance"
+    t.index ["user_id"], name: "index_user_recommandations_on_user_id"
+  end
+
   create_table "user_relationships", id: :serial, force: :cascade do |t|
     t.integer "source_user_id", null: false
     t.integer "target_user_id", null: false
@@ -767,11 +987,11 @@ ActiveRecord::Schema.define(version: 2022_06_17_110700) do
   create_table "users", id: :serial, force: :cascade do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string "email"
-    t.string "first_name"
-    t.string "last_name"
+    t.string "email", limit: 255
+    t.string "first_name", limit: 255
+    t.string "last_name", limit: 255
     t.string "phone", null: false
-    t.string "token"
+    t.string "token", limit: 255
     t.string "device_id"
     t.integer "device_type"
     t.string "sms_code"
@@ -801,14 +1021,17 @@ ActiveRecord::Schema.define(version: 2022_06_17_110700) do
     t.integer "partner_id"
     t.boolean "partner_admin", default: false, null: false
     t.string "partner_role_title"
-    t.uuid "uuid", default: -> { "gen_random_uuid()" }, null: false
+    t.uuid "uuid", default: -> { "gen_random_uuid()" }
     t.string "goal"
-    t.jsonb "interests", default: [], null: false
+    t.jsonb "interests_old", default: [], null: false
     t.string "encrypted_admin_password"
     t.string "reset_admin_password_token"
     t.datetime "reset_admin_password_sent_at"
     t.boolean "super_admin", default: false
     t.datetime "unblock_at"
+    t.integer "travel_distance", default: 10
+    t.string "birthday", limit: 5
+    t.string "other_interest"
     t.index ["address_id"], name: "index_users_on_address_id"
     t.index ["email"], name: "index_users_on_email"
     t.index ["organization_id"], name: "index_users_on_organization_id"
@@ -820,6 +1043,18 @@ ActiveRecord::Schema.define(version: 2022_06_17_110700) do
     t.index ["uuid"], name: "index_users_on_uuid", unique: true
   end
 
+  create_table "users_resources", force: :cascade do |t|
+    t.bigint "user_id"
+    t.bigint "resource_id"
+    t.boolean "watched", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["resource_id"], name: "index_users_resources_on_resource_id"
+    t.index ["user_id", "resource_id"], name: "index_users_resources_on_user_id_and_resource_id", unique: true
+    t.index ["user_id"], name: "index_users_resources_on_user_id"
+  end
+
   add_foreign_key "experimental_pending_request_reminders", "users"
+  add_foreign_key "taggings", "tags"
   add_foreign_key "users", "addresses"
 end

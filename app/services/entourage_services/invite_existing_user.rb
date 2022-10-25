@@ -22,7 +22,9 @@ module EntourageServices
       else
         invite.update(invitee: invitee, phone_number: invitee.phone)
       end
+
       notify_user!(invite: invite) unless invite.nil?
+
       invite
     end
 
@@ -30,24 +32,8 @@ module EntourageServices
     attr_reader :entourage, :inviter, :invitee, :mode
 
     def notify_user!(invite:)
-      if invitee.last_sign_in_at
-        invitation_id = Rails.env.test? ? 123 : invite.id
-        PushNotificationService.new.send_notification(inviter_name,
-                                                      entourage.title,
-                                                      "#{inviter_name} vous invite à rejoindre #{GroupService.name(entourage, :u)}.",
-                                                      User.where(id: invitee.id),
-                                                      {
-                                                          type: "ENTOURAGE_INVITATION",
-                                                          entourage_id: entourage.id,
-                                                          group_type: entourage.group_type,
-                                                          inviter_id: inviter.id,
-                                                          invitee_id: invitee.id,
-                                                          invitation_id: invitation_id
-                                                      })
-      else
-        Rails.logger.info "InviteExistingUser : sending #{message} to #{invitee.phone}"
-        SmsSenderJob.perform_later(invitee.phone, message, 'invite')
-      end
+      Rails.logger.info "InviteExistingUser : sending #{message} to #{invitee.phone}"
+      SmsSenderJob.perform_later(invitee.phone, message, 'invite')
     end
 
     def create_invite!

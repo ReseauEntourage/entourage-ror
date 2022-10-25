@@ -77,6 +77,7 @@ class AnonymousUser
   def pro?; false; end
   def admin?; false; end
   def email; nil; end
+  def phone; nil; end
   def has_password?; false; end
   def deleted; false; end
   def partner_id; nil; end
@@ -84,11 +85,17 @@ class AnonymousUser
   def invitations; EntourageInvitation.none; end
   def active_invitations; EntourageInvitation.none; end
   def goal; nil; end
+  def interest_list; []; end
   def interests; []; end
+  def birthday; nil; end
   def errors; ActiveModel::Errors.new(nil); end
   def entourage_participations; JoinRequest.none; end
+  def neighborhood_memberships; JoinRequest.none; end
+  def neighborhood_participations; JoinRequest.none; end
   def engaged?; false; end
   def ambassador?; false; end
   def ask_for_help_creation_count; 0; end
   def contribution_creation_count; 0; end
+  def travel_distance; 10; end
+  def created_at; nil; end
 end
