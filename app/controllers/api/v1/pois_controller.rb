@@ -106,15 +106,16 @@ module Api
       def create
         @poi = Poi.new(poi_params)
         @poi = PoiServices::PoiGeocoder.new(poi: @poi, params: poi_params).geocode
+        @poi.category = Category.order(:id).first unless @poi.category
         @poi.validated = false
 
         # TODO make this cleaner
         @poi.categories << @poi.category
 
         if @poi.save
-          render json: @poi, status: 201, serializer: ::V1::PoiSerializer, scope: {version: :v2}
+          render json: @poi, status: 201, serializer: ::V1::PoiSerializer, scope: { version: :v2 }
         else
-          render json: {message: "Could not create POI", reasons: @poi.errors.full_messages }, status: 400
+          render json: { message: "Could not create POI", reasons: @poi.errors.full_messages }, status: 400
         end
       end
 
@@ -136,7 +137,9 @@ module Api
       private
 
       def poi_params
-        params.require(:poi).permit(:name, :latitude, :longitude, :adress, :phone, :website, :email, :audience, :category_id)
+        PoiServices::Typeform.convert_params(
+          params.require(:form_response)
+        )
       end
 
       def soliguide_params
@@ -152,7 +155,7 @@ module Api
       end
 
       def validate_form_signature
-        render json: { message: 'unauthorized' }, status: :unauthorized unless PoiServices::FormSignature.new(request).verify
+        render json: { message: 'unauthorized' }, status: :unauthorized unless PoiServices::Typeform.new(request).verify
       end
     end
   end

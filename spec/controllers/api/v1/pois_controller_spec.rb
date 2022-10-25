@@ -7,23 +7,36 @@ describe Api::V1::PoisController, :type => :controller do
     let!(:user) { create :pro_user }
 
     describe 'create' do
-      let!(:poi) { build :poi }
+      let(:poi) { build :poi }
       let(:poi_params) { {
-        poi: {
-          name: poi.name,
-          adress: poi.adress,
-          phone: poi.phone,
-          website: poi.website,
-          email: poi.email,
-          audience: poi.audience,
-          category_id: poi.category_id
+        form_response: {
+          definition: {
+            fields: [
+              { id: "1", title: "Nom de la structure" },
+              { id: "2", title: "Adresse exacte " },
+              { id: "3", title: "Description" },
+              { id: "4", title: "Site Internet ou page Facebook" },
+              { id: "5", title: "Téléphone de la structure" },
+              { id: "6", title: "Email de la structure" },
+              { id: "7", title: "Votre email" },
+            ]
+          },
+          answers: [
+            { text: poi.name, field: { id: "1" } },
+            { text: poi.adress, field: { id: "2" } },
+            { text: "mydescription", field: { id: "3" } },
+            { text: poi.website, field: { id: "4" } },
+            { text: poi.phone, field: { id: "5" } },
+            { text: poi.email, field: { id: "6" } },
+            { text: "john@foo.bar", field: { id: "7" } },
+          ]
         }
       } }
 
       let(:subject) { post :create, params: { format: :json }.merge(poi_params) }
 
       describe "stub verify" do
-        before { PoiServices::FormSignature.any_instance.stub(:verify) { true } }
+        before { PoiServices::Typeform.any_instance.stub(:verify) { true } }
         before { subject }
 
         it { expect(response.status).to eq(201) }
@@ -34,7 +47,7 @@ describe Api::V1::PoisController, :type => :controller do
         it { expect(Poi.last.phone).to eq poi.phone }
         it { expect(Poi.last.website).to eq poi.website }
         it { expect(Poi.last.email).to eq poi.email }
-        it { expect(Poi.last.audience).to eq poi.audience }
+        it { expect(Poi.last.audience).to eq nil }
         it { expect(Poi.last.category).to eq poi.category }
         it { expect(Poi.last.validated).to be false }
 
@@ -46,14 +59,14 @@ describe Api::V1::PoisController, :type => :controller do
             "source"=>"entourage",
             "source_url"=>nil,
             "name"=>"Dede",
-            "description"=>nil,
+            "description"=>"mydescription",
             "longitude"=>2.30681949999996,
             "latitude"=>48.870424,
             "address"=>"Au 50 75008 Paris",
             "phone"=>"0000000000",
             "website"=>"entourage.com",
             "email"=>"entourage@entourage.com",
-            "audience"=>"Mon audience",
+            "audience"=>nil,
             "hours"=>nil,
             "languages"=>nil,
             "partner_id"=>nil,
@@ -66,7 +79,7 @@ describe Api::V1::PoisController, :type => :controller do
         let(:secret) { "foo" }
 
         before { ENV['POI_FORM_SECRET_TOKEN'] = secret }
-        before { request.headers["Typeform-Signature"] = "sha256=#{PoiServices::FormSignature.base64_hash(secret, poi_params.to_query)}" }
+        before { request.headers["Typeform-Signature"] = "sha256=#{PoiServices::Typeform.base64_hash(secret, poi_params.to_query)}" }
 
         before { subject }
 
