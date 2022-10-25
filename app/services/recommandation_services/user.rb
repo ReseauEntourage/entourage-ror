@@ -16,7 +16,7 @@ module RecommandationServices
       Recommandation::FRAGMENTS.each do |fragment|
         next if user_fragments.include?(fragment)
 
-        Recommandation.fragment(fragment).for_profile(profile).recommandable_for(user).each do |recommandation|
+        Recommandation.recommandable_for_user_and_fragment(user, fragment).each do |recommandation|
           next if recommandation.matches(user_recommandations_orphan)
 
           break if instanciate_user_recommandation_from_recommandation(recommandation).save
@@ -61,10 +61,6 @@ module RecommandationServices
 
     def has_all_recommandations?
       user_fragments.sort == Recommandation::FRAGMENTS.sort
-    end
-
-    def profile
-      @profile ||= (user.is_ask_for_help? ? :ask_for_help : :offer_help)
     end
 
     def method_exists? klass, method
