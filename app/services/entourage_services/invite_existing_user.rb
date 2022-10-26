@@ -23,18 +23,11 @@ module EntourageServices
         invite.update(invitee: invitee, phone_number: invitee.phone)
       end
 
-      notify_user!(invite: invite) unless invite.nil?
-
       invite
     end
 
     private
     attr_reader :entourage, :inviter, :invitee, :mode
-
-    def notify_user!(invite:)
-      Rails.logger.info "InviteExistingUser : sending #{message} to #{invitee.phone}"
-      SmsSenderJob.perform_later(invitee.phone, message, 'invite')
-    end
 
     def create_invite!
       begin
