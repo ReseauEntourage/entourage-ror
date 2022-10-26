@@ -3,6 +3,11 @@ FactoryBot.define do
     user_goals { [:offer_help] }
     fragment { 0 }
 
+    name { 'Voisinage' }
+    instance { :neighborhood }
+    action { :show }
+    position_offer_help { 0 }
+
     factory :recommandation_neighborhood do
       name { 'Voisinage' }
       instance { :neighborhood }
@@ -30,6 +35,14 @@ FactoryBot.define do
       action { :show }
       fragment { 1 }
       position_offer_help { 0 }
+    end
+
+    trait :offer_help do
+      user_goals { [:offer_help] }
+    end
+
+    trait :ask_for_help do
+      user_goals { [:ask_for_help] }
     end
   end
 end
