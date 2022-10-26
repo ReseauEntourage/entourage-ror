@@ -37,7 +37,8 @@ module RecommandationServices
         name: recommandation.name,
         image_url: recommandation.image_url,
         instance: recommandation.instance,
-        action: recommandation.action
+        action: recommandation.action,
+        fragment: recommandation.fragment
       )
 
       klass = "finder_#{recommandation.action}".classify
