@@ -8,6 +8,19 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
 
   # after_create
   describe "after_create" do
+    describe "on_create not is received" do
+      describe "chat_message" do
+        before { expect_any_instance_of(PushNotificationTriggerObserver).not_to receive(:after_create) }
+
+        it {
+          begin
+            create :chat_message, user: user, message_type: :text, content: nil
+          rescue ActiveRecord::RecordInvalid
+          end
+        }
+      end
+    end
+
     describe "on_create is received" do
       describe "outing" do
         it {

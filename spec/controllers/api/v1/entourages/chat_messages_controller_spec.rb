@@ -204,6 +204,12 @@ describe Api::V1::Entourages::ChatMessagesController do
         it { expect(ChatMessage.count).to eq(0) }
       end
 
+      context "invalid params does not send push notif" do
+        let!(:join_request) { FactoryBot.create(:join_request, joinable: entourage, user: user, status: "accepted") }
+        before { expect_any_instance_of(PushNotificationTriggerObserver).not_to receive(:chat_message_on_create) }
+        it { post :create, params: { entourage_id: entourage.to_param, chat_message: {content: nil}, token: user.token } }
+      end
+
       context "post in a entourage i don't belong to" do
         before { post :create, params: { entourage_id: entourage.to_param, chat_message: {content: "foobar"}, token: user.token } }
         it { expect(response.status).to eq(401) }
