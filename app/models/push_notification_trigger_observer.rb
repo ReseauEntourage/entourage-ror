@@ -11,6 +11,8 @@ class PushNotificationTriggerObserver < ActiveRecord::Observer
   CREATE_JOIN_REQUEST_OUTING = "%s vient de rejoindre votre événement \"%s\" du %s"
 
   def after_create(record)
+    return unless record.persisted?
+
     action(:create, record)
   end
 
