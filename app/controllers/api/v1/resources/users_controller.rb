@@ -7,13 +7,7 @@ module Api
         before_action :authorised_user?, only: [:destroy]
 
         def create
-          return render json: @user_resource, status: 201, serializer: ::V1::UsersResourceSerializer if @user_resource.present? && @user_resource.watched?
-
-          if @user_resource.present?
-            @user_resource.watched = true
-          else
-            @user_resource = UsersResource.new(resource: @resource, user: current_user, watched: true)
-          end
+          @user_resource = ResourceServices::Read.new(resource: @resource, user: current_user).set_as_watched
 
           if @user_resource.save
             render json: @user_resource, status: 201, serializer: ::V1::UsersResourceSerializer
