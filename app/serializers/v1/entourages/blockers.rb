@@ -6,8 +6,7 @@ module V1
         return {} unless respond_to?(:other_participant) && other_participant
 
         UserBlockedUser
-          .where(user_id: scope[:user].id, blocked_user_id: other_participant.id)
-          .or(UserBlockedUser.where(user_id: other_participant.id, blocked_user_id: scope[:user].id))
+          .with_users([scope[:user].id, other_participant.id])
           .map(&:user_id)
           .compact
           .uniq
