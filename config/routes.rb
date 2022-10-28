@@ -353,6 +353,11 @@ Rails.application.routes.draw do
           end
         end
       end
+      resources :user_blocked_users, only: [:create, :show, :destroy] do
+        collection do
+          delete :destroy
+        end
+      end
 
       resources :neighborhoods do
         collection do
