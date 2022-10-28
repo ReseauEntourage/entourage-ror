@@ -21,6 +21,7 @@ class ChatMessage < ApplicationRecord
   validates :metadata, schema: -> (m) { "#{m.message_type}:metadata" }
 
   validate :validate_ancestry!
+  validate :validate_private_conversation_is_not_blocked!
 
   scope :ordered, -> { order("created_at DESC") }
 
@@ -66,6 +67,17 @@ class ChatMessage < ApplicationRecord
   def validate_ancestry!
     if parent && parent.has_parent?
       errors.add(:interests, "Il n'est pas possible de commenter une discussion")
+    end
+  end
+
+  def validate_private_conversation_is_not_blocked!
+    return unless messageable
+    return unless messageable.is_a?(Entourage)
+    return unless messageable.conversation?
+    return unless messageable.member_ids.any?
+
+    if UserBlockedUser.with_users(messageable.member_ids).any?
+      errors.add(:status, "La conversation a été bloquée par l'un des participants")
     end
   end
 
