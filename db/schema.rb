@@ -912,6 +912,17 @@ ActiveRecord::Schema.define(version: 2022_12_08_151000) do
     t.index ["user_id", "device_family"], name: "index_user_applications_on_user_id_and_device_family"
   end
 
+  create_table "user_blocked_users", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "blocked_user_id", null: false
+    t.string "status", default: "blocked", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["blocked_user_id"], name: "index_user_blocked_users_on_blocked_user_id"
+    t.index ["user_id", "blocked_user_id"], name: "index_user_blocked_users_on_user_id_and_blocked_user_id", unique: true
+    t.index ["user_id"], name: "index_user_blocked_users_on_user_id"
+  end
+
   create_table "user_denorms", id: :serial, force: :cascade do |t|
     t.integer "user_id", null: false
     t.integer "last_created_action_id"
