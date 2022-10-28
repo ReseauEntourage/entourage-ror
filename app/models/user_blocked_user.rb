@@ -7,4 +7,12 @@ class UserBlockedUser < ApplicationRecord
   belongs_to :blocked_user, class_name: :User
 
   default_scope { where(status: :blocked) }
+
+  scope :with_users, -> (user_ids) {
+    return unless user_ids.size >= 2
+
+    where(user_id: user_ids.first, blocked_user_id: user_ids.last).or(
+      UserBlockedUser.where(user_id: user_ids.last, blocked_user_id: user_ids.first)
+    )
+  }
 end
