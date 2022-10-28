@@ -4,6 +4,7 @@ module V1
 
     include V1::Myfeeds::LastMessage
     include V1::Entourages::Location
+    include V1::Entourages::Blockers
 
     attributes :id,
                :uuid,
@@ -29,6 +30,7 @@ module V1
     attribute :display_report_prompt, unless: :sharing_selection?
 
     attribute :outcome, if: :outcome?
+    attribute :blockers, if: :private_conversation?
 
     has_one :author
     has_one :location
@@ -70,6 +72,10 @@ module V1
     def last_message?
       return false if sharing_selection?
       include_last_message?
+    end
+
+    def private_conversation?
+      object.conversation?
     end
 
     def uuid

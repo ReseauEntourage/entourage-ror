@@ -9,7 +9,7 @@ module Api
       end
 
       def create
-        @user_blocked_user = UserBlockedUser.find_or_create_by(
+        @user_blocked_user = UserBlockedUser.unscoped.find_or_create_by(
           user_id: current_user.id,
           blocked_user_id: user_blocked_user_params[:blocked_user_id]
         )
@@ -23,6 +23,8 @@ module Api
 
       def destroy
         @user_blocked_user = UserBlockedUser.find_by_user_id_and_blocked_user_id(current_user.id, params[:id])
+
+        return render json: {}, status: 200 unless @user_blocked_user
 
         if @user_blocked_user.update_attribute(:status, :not_blocked)
           render json: @user_blocked_user, status: 200, serializer: ::V1::UserBlockedUserSerializer

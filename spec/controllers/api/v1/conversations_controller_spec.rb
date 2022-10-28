@@ -102,6 +102,42 @@ describe Api::V1::ConversationsController do
         it { expect(subject.count).to eq(0) }
       end
     end
+
+    describe 'blocked conversations' do
+      let(:conversation) { create :conversation, participants: [user, participant] }
+      let!(:chat_message_1) { FactoryBot.create(:chat_message, messageable: conversation)}
+
+      context 'user blocked' do
+        let!(:user_blocked_user) { create(:user_blocked_user, user: user, blocked_user: participant) }
+
+        before { request }
+
+        it { expect(response.status).to eq(200) }
+        it { expect(subject.count).to eq(1) }
+        it { expect(subject[0]['blockers']).to match_array([ "me" ]) }
+      end
+
+      context 'participant blocked' do
+        let!(:user_blocked_user) { create(:user_blocked_user, user: participant, blocked_user: user) }
+
+        before { request }
+
+        it { expect(response.status).to eq(200) }
+        it { expect(subject.count).to eq(1) }
+        it { expect(subject[0]['blockers']).to match_array([ "participant" ]) }
+      end
+
+      context 'both blocked' do
+        let!(:user_blocked_user_1) { create(:user_blocked_user, user: user, blocked_user: participant) }
+        let!(:user_blocked_user_2) { create(:user_blocked_user, user: participant, blocked_user: user) }
+
+        before { request }
+
+        it { expect(response.status).to eq(200) }
+        it { expect(subject.count).to eq(1) }
+        it { expect(subject[0]['blockers']).to match_array([ "me", "participant" ]) }
+      end
+    end
   end
 
   describe 'GET private' do
