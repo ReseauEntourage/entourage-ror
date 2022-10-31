@@ -6,6 +6,7 @@ describe Api::V1::UserBlockedUsersController, :type => :controller do
   let(:user) { create :pro_user }
   let(:alice) { create :pro_user }
   let(:bob) { create :pro_user }
+  let(:charlie) { create :pro_user }
 
   let(:result) { JSON.parse(response.body) }
 
@@ -21,23 +22,34 @@ describe Api::V1::UserBlockedUsersController, :type => :controller do
     end
 
     describe 'authorized' do
-      before { get :show, params: { token: user.token, id: alice.id } }
+      context 'user is blocked' do
+        before { get :show, params: { token: user.token, id: alice.id } }
 
-      it { expect(response.status).to eq 200 }
-      it { expect(result).to eq({
-          "user_blocked_user" => {
-            "user" => {
-              "id" => user.id,
-              "display_name" => "John D.",
-              "avatar_url" => nil
-            },
-            "blocked_user" => {
-              "id" => alice.id,
-              "display_name" => "John D.",
-              "avatar_url" => nil
-            },
-          }
+        it { expect(response.status).to eq 200 }
+        it { expect(result).to eq({
+            "user_blocked_user" => {
+              "user" => {
+                "id" => user.id,
+                "display_name" => "John D.",
+                "avatar_url" => nil
+              },
+              "blocked_user" => {
+                "id" => alice.id,
+                "display_name" => "John D.",
+                "avatar_url" => nil
+              },
+            }
+          }) }
+      end
+
+      context 'user is not blocked' do
+        before { get :show, params: { token: user.token, id: charlie.id } }
+
+        it { expect(response.status).to eq 200 }
+        it { expect(result).to eq({
+          "user_blocked_user" => {}
         }) }
+      end
     end
   end
 

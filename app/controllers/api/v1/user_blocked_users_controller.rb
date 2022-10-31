@@ -8,8 +8,8 @@ module Api
       def show
         render json: UserBlockedUser.find_by_user_id_and_blocked_user_id(
           current_user.id,
-          blocked_user_ids
-        ), status: 200, serializer: ::V1::UserBlockedUserSerializer
+          params[:id]
+        ), root: :user_blocked_user, status: 200, serializer: ::V1::UserBlockedUserSerializer
       end
 
       def create
