@@ -39,6 +39,7 @@ class User < ApplicationRecord
   has_many :entourages
   has_many :outings, -> { where(group_type: :outing) }, source: :entourage, class_name: "Outing"
   has_many :user_blocked_users
+  has_many :blocked_users, through: :user_blocked_users, source: "blocked_user"
 
   has_many :groups, -> { except_conversations }, class_name: :Entourage
   has_many :join_requests

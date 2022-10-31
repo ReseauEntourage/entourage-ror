@@ -4,8 +4,6 @@ class CreateUserBlockedUsers < ActiveRecord::Migration[5.2]
       t.integer :user_id, null: false
       t.integer :blocked_user_id, null: false
 
-      t.string :status, null: false, default: :blocked
-
       t.timestamps null: false
 
       t.index :user_id
