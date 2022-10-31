@@ -18,7 +18,7 @@ describe Api::V1::UserBlockedUsersController, :type => :controller do
       before { get :show, params: { id: alice.id } }
 
       it { expect(response.status).to eq 401 }
-      it { expect(user.blocked_user_ids).to eq([alice.id, bob.id]) }
+      it { expect(user.blocked_user_ids).to match_array([alice.id, bob.id]) }
     end
 
     describe 'authorized' do
@@ -70,7 +70,7 @@ describe Api::V1::UserBlockedUsersController, :type => :controller do
 
         it { expect(response.status).to eq(201) }
         it { expect(result).to eq({
-          "user_blocked_users" => [{
+          "user_blocked_user" => {
             "user" => {
               "id" => user.id,
               "display_name" => "John D.",
@@ -81,7 +81,7 @@ describe Api::V1::UserBlockedUsersController, :type => :controller do
               "display_name" => "John D.",
               "avatar_url" => nil
             },
-          }]
+          }
         }) }
       end
 
@@ -161,7 +161,7 @@ describe Api::V1::UserBlockedUsersController, :type => :controller do
       before { delete :destroy, params: { blocked_user_id: alice.id } }
 
       it { expect(response.status).to eq 401 }
-      it { expect(user.blocked_user_ids).to eq([alice.id, bob.id]) }
+      it { expect(user.blocked_user_ids).to match_array([alice.id, bob.id]) }
     end
 
     describe 'authorized' do
@@ -173,7 +173,7 @@ describe Api::V1::UserBlockedUsersController, :type => :controller do
         before { request }
 
         it { expect(response.status).to eq 200 }
-        it { expect(user.blocked_user_ids).to eq([bob.id]) }
+        it { expect(user.blocked_user_ids).to match_array([bob.id]) }
       end
 
       context 'unique blocked_user_id' do
@@ -182,7 +182,7 @@ describe Api::V1::UserBlockedUsersController, :type => :controller do
         before { request }
 
         it { expect(response.status).to eq 200 }
-        it { expect(user.blocked_user_ids).to eq([bob.id]) }
+        it { expect(user.blocked_user_ids).to match_array([bob.id]) }
       end
 
       context 'unique blocked_user_ids' do
@@ -191,7 +191,7 @@ describe Api::V1::UserBlockedUsersController, :type => :controller do
         before { request }
 
         it { expect(response.status).to eq 200 }
-        it { expect(user.blocked_user_ids).to eq([bob.id]) }
+        it { expect(user.blocked_user_ids).to match_array([bob.id]) }
       end
 
       context 'multiple blocked_user_ids' do
@@ -200,7 +200,7 @@ describe Api::V1::UserBlockedUsersController, :type => :controller do
         before { request }
 
         it { expect(response.status).to eq 200 }
-        it { expect(user.blocked_user_ids).to eq([]) }
+        it { expect(user.blocked_user_ids).to match_array([]) }
       end
 
       context 'empty blocked_user_ids' do
@@ -209,7 +209,7 @@ describe Api::V1::UserBlockedUsersController, :type => :controller do
         before { request }
 
         it { expect(response.status).to eq 200 }
-        it { expect(user.blocked_user_ids).to eq([alice.id, bob.id]) }
+        it { expect(user.blocked_user_ids).to match_array([alice.id, bob.id]) }
       end
     end
   end
