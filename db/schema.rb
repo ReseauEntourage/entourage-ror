@@ -908,7 +908,6 @@ ActiveRecord::Schema.define(version: 2022_10_28_100900) do
   create_table "user_blocked_users", force: :cascade do |t|
     t.integer "user_id", null: false
     t.integer "blocked_user_id", null: false
-    t.string "status", default: "blocked", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["blocked_user_id"], name: "index_user_blocked_users_on_blocked_user_id"
