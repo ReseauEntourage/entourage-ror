@@ -16,10 +16,16 @@ module RecommandationServices
       Recommandation::FRAGMENTS.each do |fragment|
         next if user_fragments.include?(fragment)
 
-        Recommandation.fragment(fragment).for_profile(profile).recommandable_for(user).each do |recommandation|
+        # create new user_recommandation based on recommandations
+        successes = Recommandation.fragment(fragment).for_profile(profile).recommandable_for(user).each do |recommandation|
           next if recommandation.matches(user_recommandations_orphan)
 
-          break if instanciate_user_recommandation_from_recommandation(recommandation).save
+          break true if instanciate_user_recommandation_from_recommandation(recommandation).save
+        end
+
+        # create new user_recommandation based on contributions, solicitations, outings or neighborhoods
+        unless successes.compact.any
+          instanciate_local_user_recommandation_for_fragment(fragment).save
         end
       end
     end
@@ -47,6 +53,23 @@ module RecommandationServices
 
       user_recommandation.identifiant = call_method(klass, :find_identifiant, user, recommandation)
       user_recommandation
+    end
+
+    def instanciate_local_user_recommandation_for_fragment fragment
+      return unless outing = Outing
+        .not_joined_by(user)
+        .inside_perimeter(user.address.latitude, user.address.longitude, user.travel_distance)
+        .order_by_distance_from
+        .first
+
+      UserRecommandation.new(
+        user: user,
+        name: outing.title,
+        image_url: outing.image_url,
+        instance: :outing,
+        action: :show,
+        fragment: fragment
+      )
     end
 
     private
