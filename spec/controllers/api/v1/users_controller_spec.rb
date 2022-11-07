@@ -344,8 +344,8 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
     end
 
     context "apple formatted phone number" do
-      let!(:user) { create :public_user, phone: "+40724593579", sms_code: "123456"}
-      before { post 'login', params: { user: {phone: "+40 (724) 593 579", sms_code: "123456"}, format: 'json' } }
+      let!(:user) { create :public_user, phone: "+33744219491", sms_code: "123456"}
+      before { post 'login', params: { user: {phone: "+337 44 21 94 91", sms_code: "123456"}, format: 'json' } }
       it { expect(response.status).to eq(200) }
     end
   end
@@ -630,7 +630,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
   end
 
   describe 'POST request_phone_change' do
-    let!(:user) { FactoryBot.create(:pro_user, phone: '+331234567890') }
+    let!(:user) { FactoryBot.create(:pro_user, phone: '+33623456789') }
 
     before { # stubs
       SlackServices::RequestPhoneChange.any_instance.stub(:webhook).with('url') { "https://www.google.fr" }
@@ -653,15 +653,15 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
       expect(UserPhoneChange).to receive(:create).with({
         user_id: user.id,
         kind: :request,
-        phone_was: '+331234567890',
-        phone: '+330987654321',
+        phone_was: '+33623456789',
+        phone: '+33098765432',
         email: 'my@email.com'
       })
     }
 
     it "request a phone change on Slack" do
       post 'request_phone_change', params: {
-        user: { current_phone: '+331234567890', requested_phone: '+330987654321', email: 'my@email.com' },
+        user: { current_phone: '+33623456789', requested_phone: '+33698765432', email: 'my@email.com' },
         format: :json
       }
     end
@@ -703,8 +703,8 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
     end
 
     context "user with Apple formated phone number" do
-      before { post 'create', params: { user: {phone: "+40 (724) 593 579"} } }
-      it { expect(User.last.phone).to eq("+40724593579") }
+      before { post 'create', params: { user: {phone: "+337 44 21 94 91"} } }
+      it { expect(User.last.phone).to eq("+33744219491") }
     end
 
     context "invalid params" do
