@@ -128,8 +128,8 @@ describe User, :type => :model do
   end
 
   it "allows reuse of phone for different communities" do
-    expect(FactoryBot.build(:public_user, phone: '+33123456789', community: 'entourage').save).to be true
-    expect(FactoryBot.build(:public_user, phone: '+33123456789', community: 'pfp'      ).save).to be true
+    expect(FactoryBot.build(:public_user, phone: '+33623456789', community: 'entourage').save).to be true
+    expect(FactoryBot.build(:public_user, phone: '+33623456789', community: 'pfp'      ).save).to be true
   end
 
   describe 'status' do
@@ -183,13 +183,12 @@ describe User, :type => :model do
 
   describe "set_phone" do
     it { expect(FactoryBot.create(:pro_user, phone: "0612345678").phone).to eq('+33612345678') }
-    it { expect(FactoryBot.create(:pro_user, phone: "0112345678").phone).to eq('+33112345678') }
-    it { expect(FactoryBot.create(:pro_user, phone: "01 12 34 56 78").phone).to eq('+33112345678') }
-    it { expect(FactoryBot.create(:pro_user, phone: "+331 12 34 56 78").phone).to eq('+33112345678') }
-    it { expect(FactoryBot.create(:pro_user, phone: "01.12.34.56.78").phone).to eq('+33112345678') }
-    it { expect(FactoryBot.create(:pro_user, phone: "+331.12.34.56.78").phone).to eq('+33112345678') }
-    it { expect(FactoryBot.create(:pro_user, phone: "01-12-34-56-78").phone).to eq('+33112345678') }
-    it { expect(FactoryBot.create(:pro_user, phone: "+331-12-34-56-78").phone).to eq('+33112345678') }
+    it { expect(FactoryBot.create(:pro_user, phone: "06 12 34 56 78").phone).to eq('+33612345678') }
+    it { expect(FactoryBot.create(:pro_user, phone: "+336 12 34 56 78").phone).to eq('+33612345678') }
+    it { expect(FactoryBot.create(:pro_user, phone: "06.12.34.56.78").phone).to eq('+33612345678') }
+    it { expect(FactoryBot.create(:pro_user, phone: "+336.12.34.56.78").phone).to eq('+33612345678') }
+    it { expect(FactoryBot.create(:pro_user, phone: "06-12-34-56-78").phone).to eq('+33612345678') }
+    it { expect(FactoryBot.create(:pro_user, phone: "+336-12-34-56-78").phone).to eq('+33612345678') }
     it { expect(FactoryBot.create(:pro_user, phone: "+33612345678").phone).to eq('+33612345678') }
     it { expect(FactoryBot.create(:pro_user, phone: "+32-2-555-12-12").phone).to eq('+3225551212') } #belgian number
 

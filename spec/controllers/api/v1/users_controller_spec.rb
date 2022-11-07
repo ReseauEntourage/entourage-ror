@@ -642,7 +642,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
 
     before { # slack ping
       expect_any_instance_of(Slack::Notifier).to receive(:ping).with({
-        attachments: [{ text: "https://www.google.fr"}, { text: "Téléphone requis : +330987654321"}, {text: "Département : "}],
+        attachments: [{ text: "https://www.google.fr"}, { text: "Téléphone requis : +33698765432"}, {text: "Département : "}],
         channel: "#channel",
         text: "<@clara> ou team modération (département : n/a) L'utilisateur John Doe, my@email.com a requis un changement de numéro de téléphone",
         username: SlackServices::RequestPhoneChange::USERNAME
@@ -654,7 +654,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
         user_id: user.id,
         kind: :request,
         phone_was: '+33623456789',
-        phone: '+33098765432',
+        phone: '+33698765432',
         email: 'my@email.com'
       })
     }
