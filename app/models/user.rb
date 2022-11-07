@@ -497,7 +497,7 @@ class User < ApplicationRecord
       metadata: {}
     })
 
-    update_attributes(
+    assign_attributes(
       validation_status: "anonymized",
       email: "anonymized@#{Time.now.to_i}",
       phone: "+33100000000-#{Time.now.to_i}",
@@ -506,6 +506,8 @@ class User < ApplicationRecord
       deleted: true,
       address_id: nil
     )
+
+    save(validate: false)
 
     Address.where(user_id: id).delete_all
   end

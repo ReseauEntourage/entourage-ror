@@ -7,8 +7,10 @@ module UserServices
     def delete
       email = user.email
       user['phone'] = add_timestamp(:phone) # we want after_update callback but do not want PhoneBuilder
-      user.update_attributes(deleted: true,
-                          email: add_timestamp(:email))
+      user.deleted = true
+      user.email = add_timestamp(:email)
+      user.save(validate: false)
+
       if user.community == :entourage
         AsyncService.new(self.class).mailchimp_unsubscribe(email)
       end
