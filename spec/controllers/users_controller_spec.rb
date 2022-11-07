@@ -58,7 +58,7 @@ RSpec.describe UsersController, :type => :controller do
           allow(SmsNotificationService).to receive(:new).and_return(sms_service)
         end
         subject do
-          post 'create', params: { user: {email: "test@rspec.com", first_name:"tester", last_name:"tested", phone:'+33102030405'}, send_sms: '1' }
+          post 'create', params: { user: {email: "test@rspec.com", first_name:"tester", last_name:"tested", phone:'+33602030405'}, send_sms: '1' }
         end
 
         context 'for a new user' do
@@ -66,7 +66,7 @@ RSpec.describe UsersController, :type => :controller do
           it { expect(response.status).to eq(302) }
           it { expect(User.last.first_name).to eq "tester" }
           it { expect(User.last.last_name).to eq "tested" }
-          it { expect(User.last.phone).to eq "+33102030405" }
+          it { expect(User.last.phone).to eq "+33602030405" }
           it { expect(User.last.email).to eq "test@rspec.com" }
           it { expect(User.last.organization).to eq user.organization }
           it { expect(sms_service).to have_received(:send_notification) }
@@ -74,13 +74,13 @@ RSpec.describe UsersController, :type => :controller do
 
         context 'for an existing user' do
           before do
-            create :public_user, phone: "+33102030405", first_name: "existing", last_name: nil, email: nil
+            create :public_user, phone: "+33602030405", first_name: "existing", last_name: nil, email: nil
             subject
           end
           it { expect(response.status).to eq(302) }
           it { expect(User.last.first_name).to eq "existing" }
           it { expect(User.last.last_name).to eq "tested" }
-          it { expect(User.last.phone).to eq "+33102030405" }
+          it { expect(User.last.phone).to eq "+33602030405" }
           it { expect(User.last.email).to eq "test@rspec.com" }
           it { expect(User.last.organization).to eq user.organization }
           it { expect(sms_service).to_not have_received(:send_notification) }
@@ -89,14 +89,14 @@ RSpec.describe UsersController, :type => :controller do
 
       it "doesn't sends sms" do
         expect_any_instance_of(SmsNotificationService).to_not receive(:send_notification)
-        post 'create', params: { user: {email: "test@rspec.com", first_name:"tester", last_name:"tested", phone:'+33102030405'}, send_sms: "0" }
+        post 'create', params: { user: {email: "test@rspec.com", first_name:"tester", last_name:"tested", phone:'+33602030405'}, send_sms: "0" }
       end
 
       context 'with incorrect parameters' do
-        let!(:user_already_exist) { FactoryBot.create(:pro_user, phone: '+33102030405') }
+        let!(:user_already_exist) { FactoryBot.create(:pro_user, phone: '+33602030405') }
         it "never sends sms" do
           expect_any_instance_of(SmsNotificationService).to_not receive(:send_notification)
-          post 'create', params: { user: {email: "test@rspec.com", first_name:"tester", last_name:"tested", phone:'+33102030405'}, send_sms: "1" }
+          post 'create', params: { user: {email: "test@rspec.com", first_name:"tester", last_name:"tested", phone:'+33602030405'}, send_sms: "1" }
         end
       end
     end
