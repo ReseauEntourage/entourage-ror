@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_11_16_104201) do
+ActiveRecord::Schema.define(version: 2022_10_28_103700) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -152,6 +152,13 @@ ActiveRecord::Schema.define(version: 2022_11_16_104201) do
   create_table "coordination", id: false, force: :cascade do |t|
     t.integer "user_id"
     t.integer "organization_id"
+  end
+
+  create_table "denorm_daily_engagements", force: :cascade do |t|
+    t.date "date", null: false
+    t.integer "user_id", null: false
+    t.string "postal_code"
+    t.index ["date", "user_id", "postal_code"], name: "unicity_denorm_daily_engagements_on_date_user_id_postal_code", unique: true
   end
 
   create_table "digest_emails", id: :serial, force: :cascade do |t|
