@@ -5,7 +5,7 @@ class CreateDenormDailyEngagements < ActiveRecord::Migration[5.2]
       t.integer :user_id, null: false
       t.string :postal_code
 
-      t.index [:date, :user_id, :postal_code], unique: true
+      t.index [:date, :user_id, :postal_code], unique: true, name: 'unicity_denorm_daily_engagements_on_date_user_id_postal_code'
     end
   end
 
