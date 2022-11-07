@@ -27,9 +27,9 @@ describe Api::V1::Entourages::InvitationsController do
         end
 
         context "phone number with spaces already exist" do
-          let!(:previous_user) { FactoryBot.create(:public_user, phone: "+40744219491") }
-          let!(:entourage_invitation) { FactoryBot.create(:entourage_invitation, invitable: entourage, inviter: user, phone_number: "+40744219491") }
-          before { post :create, params: { entourage_id: entourage.to_param, invite: {mode: "SMS", phone_numbers: ["+40 744 219 491"]}, token: user.token } }
+          let!(:previous_user) { FactoryBot.create(:public_user, phone: "+33744219491") }
+          let!(:entourage_invitation) { FactoryBot.create(:entourage_invitation, invitable: entourage, inviter: user, phone_number: "+33744219491") }
+          before { post :create, params: { entourage_id: entourage.to_param, invite: {mode: "SMS", phone_numbers: ["+337 44 21 94 91"]}, token: user.token } }
           it { expect(EntourageInvitation.count).to eq(1) }
           it { expect(response.status).to eq(201) }
         end

@@ -66,8 +66,6 @@ describe User, :type => :model do
   end
 
   describe "phone number" do
-    it { expect(FactoryBot.build(:pro_user, phone: '+33123456789').save).to be true }
-    it { expect(FactoryBot.build(:pro_user, phone: '0123456789').save).to be true }
     it { expect(FactoryBot.build(:pro_user, phone: '+33623456789').save).to be true }
     it { expect(FactoryBot.build(:pro_user, phone: '0623456789').save).to be true }
     it { expect(FactoryBot.build(:pro_user, phone: '+33 6 23 45 67 89').save).to be true }
@@ -77,13 +75,27 @@ describe User, :type => :model do
     it { expect(FactoryBot.build(:pro_user, phone: '+336-23-45-67-89').save).to be true }
     it { expect(FactoryBot.build(:pro_user, phone: '06-23-45-67-89').save).to be true }
     it { expect(FactoryBot.build(:pro_user, phone: '').save).to be false }
+    it { expect(FactoryBot.build(:pro_user, phone: '+33600000000').save).to be true } #Apple account
+    # only mobile
+    it { expect(FactoryBot.build(:pro_user, phone: '+33123456789').save).to be false }
+    it { expect(FactoryBot.build(:pro_user, phone: '0123456789').save).to be false }
+
+    # foreign countries
+    it { expect(FactoryBot.build(:pro_user, phone: '02-555-12-12').save).to be false } #belgian number as local
+    it { expect(FactoryBot.build(:pro_user, phone: '+32-2-555-12-12').save).to be true } #belgian number as international
+    it { expect(FactoryBot.build(:pro_user, phone: '+3225551212').save).to be true } #belgian number as international
+    it { expect(FactoryBot.build(:pro_user, phone: '+1-999-999-9999').save).to be false } #canadian number
+    it { expect(FactoryBot.build(:pro_user, phone: '+40 (724) 593 579').save).to be false } #Apple formatted
+    # wrongs
+    it { expect(FactoryBot.build(:pro_user, phone: '+33912345678').save).to be false }
     it { expect(FactoryBot.build(:pro_user, phone: '23-45-67-89').save).to be false }
     it { expect(FactoryBot.build(:pro_user, phone: '+3323456789').save).to be false }
     it { expect(FactoryBot.build(:pro_user, phone: '+33000000000').save).to be false }
-    it { expect(FactoryBot.build(:pro_user, phone: '+33600000000').save).to be true } #Apple account
-    it { expect(FactoryBot.build(:pro_user, phone: '+32-2-555-12-12').save).to be true } #belgian number
-    it { expect(FactoryBot.build(:pro_user, phone: '+1-999-999-9999').save).to be true } #canadian number
-    it { expect(FactoryBot.build(:public_user, phone: '+40 (724) 593 579').save).to be true } #Apple formatted
+    # using spamming numbers
+    it { expect(FactoryBot.build(:pro_user, phone: '+923480000000').save).to be false }
+    it { expect(FactoryBot.build(:pro_user, phone: '+6282333333000').save).to be false }
+    it { expect(FactoryBot.build(:pro_user, phone: '+40768888800').save).to be false }
+    it { expect(FactoryBot.build(:pro_user, phone: '+529322222200').save).to be false }
   end
 
   describe "sms_code" do
@@ -180,7 +192,6 @@ describe User, :type => :model do
     it { expect(FactoryBot.create(:pro_user, phone: "+331-12-34-56-78").phone).to eq('+33112345678') }
     it { expect(FactoryBot.create(:pro_user, phone: "+33612345678").phone).to eq('+33612345678') }
     it { expect(FactoryBot.create(:pro_user, phone: "+32-2-555-12-12").phone).to eq('+3225551212') } #belgian number
-    it { expect(FactoryBot.create(:pro_user, phone: "+1-999-999-9999").phone).to eq('+19999999999') } #canadian number
 
     context "updates with invalid phone number" do
       let(:user) { FactoryBot.create(:pro_user, phone: "+33612345678") }
