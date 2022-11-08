@@ -111,8 +111,8 @@ describe Api::V1::Outings::UsersController do
 
       context "push notification sent" do
         before {
-          allow(PushNotificationTriggerJob).to receive(:notify)
-          expect(PushNotificationTriggerJob).to receive(:notify).with(
+          allow_any_instance_of(PushNotificationTrigger).to receive(:notify)
+          expect_any_instance_of(PushNotificationTrigger).to receive(:notify).with(
             instance: user,
             users: [outing.user],
             params: {

@@ -11,7 +11,7 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
     describe "on_create is received" do
       describe "outing" do
         it {
-          expect(PushNotificationTriggerJob).to receive(:neighborhoods_entourage_on_create)
+          expect_any_instance_of(PushNotificationTrigger).to receive(:neighborhoods_entourage_on_create)
           create :outing, user: user, neighborhoods: [create(:neighborhood)]
         }
       end
@@ -21,7 +21,7 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
 
         context "text chat_message" do
           it {
-            expect(PushNotificationTriggerJob).to receive(:chat_message_on_create)
+            expect_any_instance_of(PushNotificationTrigger).to receive(:chat_message_on_create)
             create :chat_message, user: user, message_type: :text
           }
         end
@@ -30,33 +30,33 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
           let!(:broadcast) { FactoryBot.create(:conversation_message_broadcast) }
 
           it {
-            expect(PushNotificationTriggerJob).to receive(:chat_message_on_create)
+            expect_any_instance_of(PushNotificationTrigger).to receive(:chat_message_on_create)
             create :chat_message, user: user, message_type: :broadcast, metadata: { conversation_message_broadcast_id: broadcast.id }
           }
         end
 
         context "status chat_message" do
           it {
-            expect(PushNotificationTriggerJob).not_to receive(:post_on_create)
-            expect(PushNotificationTriggerJob).not_to receive(:comment_on_create)
+            expect_any_instance_of(PushNotificationTrigger).not_to receive(:post_on_create)
+            expect_any_instance_of(PushNotificationTrigger).not_to receive(:comment_on_create)
             create :chat_message, user: user, message_type: :status_update, metadata: { status: :foo, outcome_success: true }
           }
         end
 
         context "private_chat_message" do
           it {
-            expect(PushNotificationTriggerJob).to receive(:private_chat_message_on_create)
-            expect(PushNotificationTriggerJob).not_to receive(:post_on_create)
-            expect(PushNotificationTriggerJob).not_to receive(:comment_on_create)
+            expect_any_instance_of(PushNotificationTrigger).to receive(:private_chat_message_on_create)
+            expect_any_instance_of(PushNotificationTrigger).not_to receive(:post_on_create)
+            expect_any_instance_of(PushNotificationTrigger).not_to receive(:comment_on_create)
             create :chat_message, user: user, message_type: :text
           }
         end
 
         context "post chat_message in neighborhood" do
           it {
-            expect(PushNotificationTriggerJob).not_to receive(:private_chat_message_on_create)
-            expect(PushNotificationTriggerJob).to receive(:post_on_create)
-            expect(PushNotificationTriggerJob).not_to receive(:comment_on_create)
+            expect_any_instance_of(PushNotificationTrigger).not_to receive(:private_chat_message_on_create)
+            expect_any_instance_of(PushNotificationTrigger).to receive(:post_on_create)
+            expect_any_instance_of(PushNotificationTrigger).not_to receive(:comment_on_create)
             create :chat_message, user: user, message_type: :text, messageable: neighborhood
           }
         end
@@ -65,8 +65,8 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
           let!(:chat_message) { create :chat_message, messageable: neighborhood, user: user, message_type: :text }
 
           it {
-            expect(PushNotificationTriggerJob).not_to receive(:post_on_create)
-            expect(PushNotificationTriggerJob).to receive(:comment_on_create)
+            expect_any_instance_of(PushNotificationTrigger).not_to receive(:post_on_create)
+            expect_any_instance_of(PushNotificationTrigger).to receive(:comment_on_create)
             create :chat_message, user: user, message_type: :text, parent: chat_message
           }
         end
@@ -74,7 +74,7 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
 
       describe "join_request" do
         it {
-          expect(PushNotificationTriggerJob).to receive(:join_request_on_create)
+          expect_any_instance_of(PushNotificationTrigger).to receive(:join_request_on_create)
           create :join_request, user: user, status: :accepted
         }
       end
@@ -85,24 +85,24 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
         let(:neighborhood) { create(:neighborhood) }
 
         it {
-          expect(PushNotificationTriggerJob).not_to receive(:notify)
+          expect_any_instance_of(PushNotificationTrigger).not_to receive(:notify)
           create :outing, user: user
         }
 
         it {
-          expect(PushNotificationTriggerJob).to receive(:notify)
+          expect_any_instance_of(PushNotificationTrigger).to receive(:notify)
           create :outing, user: user, neighborhoods: [neighborhood]
         }
       end
 
       describe "join_request" do
         it {
-          expect(PushNotificationTriggerJob).to receive(:notify)
+          expect_any_instance_of(PushNotificationTrigger).to receive(:notify)
           create :join_request, user: user, status: :accepted
         }
 
         it {
-          expect(PushNotificationTriggerJob).not_to receive(:notify)
+          expect_any_instance_of(PushNotificationTrigger).not_to receive(:notify)
           create :join_request, user: user, status: :pending
         }
       end
@@ -116,7 +116,7 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
         let!(:outing) { create :outing, user: user, status: :open }
 
         it {
-          expect(PushNotificationTriggerJob).to receive(:outing_on_update)
+          expect_any_instance_of(PushNotificationTrigger).to receive(:outing_on_update)
           outing.update_attribute(:title, "foo")
         }
       end
@@ -128,7 +128,7 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
         let!(:join_request) { create :join_request, user: participant, joinable: outing, status: :accepted }
 
         it {
-          expect(PushNotificationTriggerJob).to receive(:notify)
+          expect_any_instance_of(PushNotificationTrigger).to receive(:notify)
           outing.update_attribute(:title, "foo")
         }
       end
@@ -137,7 +137,7 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
         let!(:outing) { create :outing, user: user, status: :open }
 
         it {
-          expect(PushNotificationTriggerJob).not_to receive(:notify)
+          expect_any_instance_of(PushNotificationTrigger).not_to receive(:notify)
           outing.update_attribute(:title, "foo")
         }
       end
@@ -151,7 +151,7 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
         let!(:outing) { create :outing, user: user, status: :open }
 
         it {
-          expect(PushNotificationTriggerJob).to receive(:outing_on_cancel)
+          expect_any_instance_of(PushNotificationTrigger).to receive(:outing_on_cancel)
           outing.update_attribute(:status, :cancelled)
         }
       end
@@ -163,7 +163,7 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
         let!(:join_request) { create :join_request, user: participant, joinable: outing, status: :accepted }
 
         it {
-          expect(PushNotificationTriggerJob).to receive(:notify)
+          expect_any_instance_of(PushNotificationTrigger).to receive(:notify)
           outing.update_attribute(:status, :cancelled)
         }
       end
@@ -172,7 +172,7 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
         let!(:outing) { create :outing, user: user, status: :open }
 
         it {
-          expect(PushNotificationTriggerJob).not_to receive(:notify)
+          expect_any_instance_of(PushNotificationTrigger).not_to receive(:notify)
           outing.update_attribute(:status, :cancelled)
         }
       end
@@ -185,13 +185,13 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
 
     describe "on_cancel" do
       context "on_cancel is received" do
-        before { expect(PushNotificationTriggerJob).to receive(:outing_on_cancel) }
+        before { expect_any_instance_of(PushNotificationTrigger).to receive(:outing_on_cancel) }
 
         it { outing.update_attribute(:status, :cancelled) }
       end
 
       context "notification is received" do
-        before { expect(PushNotificationTriggerJob).to receive(:notify) }
+        before { expect_any_instance_of(PushNotificationTrigger).to receive(:notify) }
 
         it { outing.update_attribute(:status, :cancelled) }
       end
@@ -199,14 +199,14 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
       describe "outing without participant" do
         let!(:outing_without_participant) { create :outing, user: user, status: :open }
 
-        before { expect(PushNotificationTriggerJob).not_to receive(:notify) }
+        before { expect_any_instance_of(PushNotificationTrigger).not_to receive(:notify) }
 
         it { outing_without_participant.update_attribute(:status, :cancelled) }
       end
     end
 
     describe "no notification sent on status other than cancelled" do
-      before { expect(PushNotificationTriggerJob).not_to receive(:notify) }
+      before { expect_any_instance_of(PushNotificationTrigger).not_to receive(:notify) }
 
       context "on close" do
         it { outing.update_attribute(:status, :closed) }
@@ -232,7 +232,7 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
       let!(:neighborhood) { create :neighborhood }
 
       it {
-        expect(PushNotificationTriggerJob).to receive(:notify)
+        expect_any_instance_of(PushNotificationTrigger).to receive(:notify)
 
         outing.update_attribute(:neighborhood_ids, [neighborhood.id])
       }
@@ -248,7 +248,7 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
       context "entourage creator has followers" do
         let!(:following) { create :following, user: follower, partner: partner }
 
-        before { expect(PushNotificationTriggerJob).to receive(:notify) }
+        before { expect_any_instance_of(PushNotificationTrigger).to receive(:notify) }
 
         it { entourage }
       end
@@ -256,7 +256,7 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
       context "entourage creator does not have followers" do
         let(:entourage) { create :entourage }
 
-        before { expect(PushNotificationTriggerJob).not_to receive(:notify) }
+        before { expect_any_instance_of(PushNotificationTrigger).not_to receive(:notify) }
 
         it { entourage }
       end
@@ -268,7 +268,7 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
 
       context "conversation creation does not push any notification" do
         it {
-          expect(PushNotificationTriggerJob).not_to receive(:notify)
+          expect_any_instance_of(PushNotificationTrigger).not_to receive(:notify)
 
           conversation.public = false
           conversation.create_from_join_requests!
@@ -284,7 +284,7 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
         }
 
         it {
-          expect(PushNotificationTriggerJob).to receive(:notify).with(
+          expect_any_instance_of(PushNotificationTrigger).to receive(:notify).with(
             instance: conversation,
             users: [participant],
             params: {
@@ -310,7 +310,7 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
 
       context "update title sends one notification" do
         it {
-          expect(PushNotificationTriggerJob).to receive(:notify).once
+          expect_any_instance_of(PushNotificationTrigger).to receive(:notify).once
 
           outing.update_attribute(:title, "Théâtre")
         }
@@ -318,8 +318,8 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
 
       context "update title" do
         it {
-          expect(PushNotificationTriggerJob).to receive(:notify).with(
-            instance: outing,
+          expect_any_instance_of(PushNotificationTrigger).to receive(:notify).with(
+            instance: outing.reload,
             users: [participant],
             params: {
               object: "Théâtre",
@@ -333,8 +333,8 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
 
       context "update starts_at" do
         it {
-          expect(PushNotificationTriggerJob).to receive(:notify).with(
-            instance: outing,
+          expect_any_instance_of(PushNotificationTrigger).to receive(:notify).with(
+            instance: outing.reload,
             users: [participant],
             params: {
               object: "Café",
@@ -349,8 +349,8 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
 
       context "update status to cancel" do
         it {
-          expect(PushNotificationTriggerJob).to receive(:notify).with(
-            instance: outing,
+          expect_any_instance_of(PushNotificationTrigger).to receive(:notify).with(
+            instance: outing.reload,
             users: [participant],
             params: {
               object: "Café",
@@ -367,7 +367,7 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
       let!(:outing) { create :outing, user: user, status: :open, title: "Café", metadata: { starts_at: Time.now, ends_at: 2.days.from_now} }
 
       it {
-        expect(PushNotificationTriggerJob).to receive(:notify).with(
+        expect_any_instance_of(PushNotificationTrigger).to receive(:notify).with(
           instance: participant,
           users: [outing.user],
           params: {
