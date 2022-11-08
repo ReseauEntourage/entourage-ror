@@ -27,11 +27,11 @@ class Outing < Entourage
 
   # future_siblings and future_relatives
   has_many :future_siblings, -> {
-    where("metadata->>'starts_at' >= ?", DateTime.now)
+    where("metadata->>'starts_at' >= ?", Time.zone.now)
   }, class_name: :Outing, foreign_key: :recurrency_identifier, primary_key: :recurrency_identifier
 
   has_many :future_relatives, -> (object) {
-    where.not(id: object.id).where("metadata->>'starts_at' >= ?", DateTime.now)
+    where.not(id: object.id).where("metadata->>'starts_at' >= ?", Time.zone.now)
   }, class_name: :Outing, foreign_key: :recurrency_identifier, primary_key: :recurrency_identifier
 
   belongs_to :recurrence, class_name: :OutingRecurrence, foreign_key: :recurrency_identifier, primary_key: :identifier
