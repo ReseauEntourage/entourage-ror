@@ -394,6 +394,10 @@ class Entourage < ApplicationRecord
     status && [:open, :full].include?(status.to_sym)
   end
 
+  def future_outing?
+    outing? && starts_at > Time.zone.now
+  end
+
   def add_metadata_schema_urn(value)
     value = {} if value.nil?
     value['$id'] = "urn:entourage:#{group_type}:metadata" if group_type

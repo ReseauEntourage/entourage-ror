@@ -180,7 +180,10 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
   end
 
   describe "on change outing status" do
-    let!(:outing) { create :outing, user: user, status: :open }
+    let(:starts_at) { 1.hour.from_now }
+    let(:ends_at) { 2.hours.from_now }
+
+    let!(:outing) { create :outing, user: user, status: :open, metadata: { starts_at: starts_at, ends_at: ends_at } }
     let!(:join_request) { create :join_request, user: participant, joinable: outing, status: :accepted }
 
     describe "on_cancel" do
@@ -205,10 +208,24 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
       end
     end
 
+    describe "notification sent on status closed only when in the future" do
+      before { expect_any_instance_of(PushNotificationTrigger).to receive(:notify) }
+
+      context "on close" do
+        let(:starts_at) { 1.hour.from_now }
+        let(:ends_at) { 2.hours.from_now }
+
+        it { outing.update_attribute(:status, :closed) }
+      end
+    end
+
     describe "no notification sent on status other than cancelled" do
       before { expect_any_instance_of(PushNotificationTrigger).not_to receive(:notify) }
 
-      context "on close" do
+      context "on close when in the past" do
+        let(:starts_at) { 2.hours.ago }
+        let(:ends_at) { 1.hour.ago }
+
         it { outing.update_attribute(:status, :closed) }
       end
 
@@ -305,7 +322,10 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
     end
 
     describe "outing_on_update" do
-      let!(:outing) { create :outing, user: user, status: :open, title: "Café", metadata: { starts_at: Time.now, ends_at: 2.days.from_now} }
+      let(:starts_at) { 1.hour.from_now }
+      let(:ends_at) { 2.hours.from_now }
+
+      let!(:outing) { create :outing, user: user, status: :open, title: "Café", metadata: { starts_at: starts_at, ends_at: ends_at } }
       let!(:join_request) { create :join_request, user: participant, joinable: outing, status: :accepted }
 
       context "update title sends one notification" do
@@ -338,11 +358,11 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
             users: [participant],
             params: {
               object: "Café",
-              content: "L'événement prévu le #{I18n.l(Time.now.to_date)} a été modifié. Il se déroulera le #{I18n.l(1.day.from_now.to_date)}, au #{outing.metadata[:display_address]}",
+              content: "L'événement prévu le #{I18n.l(Time.now.to_date)} a été modifié. Il se déroulera le #{I18n.l(90.minutes.from_now.to_date)}, au #{outing.metadata[:display_address]}",
             }
           )
 
-          outing.metadata[:starts_at] = 1.day.from_now
+          outing.metadata[:starts_at] = 90.minutes.from_now
           outing.save
         }
       end
@@ -359,6 +379,35 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
           )
 
           outing.update_attribute(:status, :cancelled)
+        }
+      end
+
+      context "update status to closed with starts_at in the future" do
+        let(:starts_at) { 1.hour.from_now }
+        let(:ends_at) { 2.hours.from_now }
+
+        it {
+          expect_any_instance_of(PushNotificationTrigger).to receive(:notify).with(
+            instance: outing.reload,
+            users: [participant],
+            params: {
+              object: "Café",
+              content: "Cet événement prévu le #{I18n.l(outing.starts_at.to_date)} vient d'être annulé",
+            }
+          )
+
+          outing.update_attribute(:status, :closed)
+        }
+      end
+
+      context "update status to closed with starts_at in the past" do
+        let(:starts_at) { 2.hours.ago }
+        let(:ends_at) { 1.hour.ago }
+
+        it {
+          expect_any_instance_of(PushNotificationTrigger).not_to receive(:notify)
+
+          outing.update_attribute(:status, :closed)
         }
       end
     end
