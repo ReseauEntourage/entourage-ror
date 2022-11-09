@@ -86,6 +86,7 @@ class PushNotificationTrigger
 
   def outing_on_update_status
     return outing_on_cancel if @record.cancelled?
+    return outing_on_cancel if @record.closed? && @record.future_outing?
 
     # future notifications on other status?
   end
