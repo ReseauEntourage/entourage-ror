@@ -14,20 +14,21 @@ module RecommandationServices
       return if has_all_recommandations?
 
       Recommandation::FRAGMENTS.each do |fragment|
-        next if user_fragments.include?(fragment)
-
-        # create new user_recommandation based on recommandations
-        successes = Recommandation.recommandable_for_user_and_fragment(user, fragment).each do |recommandation|
-          next if recommandation.matches(user_recommandations_orphan)
-
-          break true if instanciate_user_recommandation_from_recommandation(recommandation).save
-        end
-
-        # create new user_recommandation based on contributions, solicitations, outings or neighborhoods
-        unless successes.compact.any
-          instanciate_local_user_recommandation_for_fragment(fragment).save
-        end
+        initiate_fragment(fragment)
       end
+    end
+
+    def initiate_fragment fragment
+      return if user_fragments.include?(fragment)
+
+      Recommandation.recommandable_for_user_and_fragment(user, fragment).each do |recommandation|
+        next if recommandation.matches(user_recommandations_orphan)
+
+        return if create_user_recommandation_from_recommandation(recommandation)
+      end
+
+      # create new user_recommandation based on contributions, solicitations, outings or neighborhoods
+      create_local_user_recommandation_for_fragment(fragment)
     end
 
     def skip_obsolete_user_recommandations
@@ -36,7 +37,7 @@ module RecommandationServices
       end
     end
 
-    def instanciate_user_recommandation_from_recommandation recommandation
+    def create_user_recommandation_from_recommandation recommandation
       user_recommandation = UserRecommandation.new(
         user: user,
         recommandation: recommandation,
@@ -52,24 +53,27 @@ module RecommandationServices
       return user_recommandation unless method_exists?(klass, :find_identifiant)
 
       user_recommandation.identifiant = call_method(klass, :find_identifiant, user, recommandation)
-      user_recommandation
+      user_recommandation.save
     end
 
-    def instanciate_local_user_recommandation_for_fragment fragment
-      return unless outing = Outing
+    def create_local_user_recommandation_for_fragment fragment
+      return if fragment == Recommandation::FRAGMENT_RESOURCES
+
+      return unless record = Recommandation.preferred_instance_for_user_and_fragment(user, fragment)
         .not_joined_by(user)
-        .inside_perimeter(user.address.latitude, user.address.longitude, user.travel_distance)
-        .order_by_distance_from
+        .inside_perimeter(user.latitude, user.longitude, user.travel_distance)
+        .order_by_distance_from(user.latitude, user.longitude)
         .first
 
       UserRecommandation.new(
         user: user,
-        name: outing.title,
-        image_url: outing.image_url,
-        instance: :outing,
+        name: record.title,
+        image_url: record.image_url,
+        instance: record.class.name.underscore,
+        instance_id: record.id,
         action: :show,
         fragment: fragment
-      )
+      ).save
     end
 
     private

@@ -147,6 +147,8 @@ describe Api::V1::HomeController do
 
   describe 'GET summary' do
     subject { JSON.parse(response.body) }
+    before { User.any_instance.stub(:latitude) { 40 } }
+    before { User.any_instance.stub(:longitude) { 2 } }
 
     context "not signed in" do
       before { get :summary }

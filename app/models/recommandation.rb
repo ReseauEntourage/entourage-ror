@@ -6,6 +6,10 @@ class Recommandation < ApplicationRecord
   INSTANCES = [:neighborhood, :outing, :poi, :resource, :webview, :contribution, :solicitation, :user]
   ACTIONS = [:index, :show, :create, :join, :show_joined, :show_not_joined]
   FRAGMENTS = [0, 1, 2]
+  FRAGMENT_RESOURCES = 0
+  FRAGMENT_GROUPS = 1
+  FRAGMENT_OUTINGS = 1
+  FRAGMENT_ACTIONS = 2
 
   validates_presence_of [:name, :instance, :action]
   validates :status, inclusion: STATUS
@@ -58,6 +62,13 @@ class Recommandation < ApplicationRecord
     define_method("#{status}?") do
       self.status == status
     end
+  end
+
+  def self.preferred_instance_for_user_and_fragment user, fragment
+    return Outing if fragment == FRAGMENT_OUTINGS
+    return Contribution if user.is_ask_for_help?
+
+    Solicitation
   end
 
   def webview?
