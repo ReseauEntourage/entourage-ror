@@ -14,7 +14,13 @@ module RecommandationServices
       return if has_all_recommandations?
 
       Recommandation::FRAGMENTS.each do |fragment|
-        initiate_fragment(fragment)
+        next if user_fragments.include?(fragment)
+
+        Recommandation.recommandable_for_user_and_fragment(user, fragment).each do |recommandation|
+          next if recommandation.matches(user_recommandations_orphan)
+
+          instanciate_user_recommandation_from_recommandation(recommandation).save
+        end
       end
     end
 
