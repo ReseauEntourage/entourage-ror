@@ -1,5 +1,13 @@
-class AndroidNotificationJob < ApplicationJob
-  def perform(sender, object, content, device_ids, community, extra={},badge=nil)
+class AndroidNotificationJob
+  include Sidekiq::Worker
+
+  sidekiq_options :timeout => 60
+
+  def self.perform_later sender, object, content, device_ids, community, extra={}, badge=nil
+    AndroidNotificationJob.perform_async(sender, object, content, device_ids, community, extra, badge)
+  end
+
+  def perform(sender, object, content, device_ids, community, extra={}, badge=nil)
     return if device_ids.blank?
 
     app = Rpush::Gcm::App.where(name: community).first

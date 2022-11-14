@@ -1,5 +1,13 @@
-class IosNotificationJob < ApplicationJob
-  def perform(sender, object, content, device_token, community, extra={},badge=nil)
+class IosNotificationJob
+  include Sidekiq::Worker
+
+  sidekiq_options :timeout => 60
+
+  def self.perform_later sender, object, content, device_token, community, extra={}, badge=nil
+    IosNotificationJob.perform_async(sender, object, content, device_token, community, extra, badge)
+  end
+
+  def perform(sender, object, content, device_token, community, extra={}, badge=nil)
     return if device_token.blank?
 
     apps = Rpush::Apnsp8::App.where(name: community)
