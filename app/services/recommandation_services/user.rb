@@ -57,13 +57,11 @@ module RecommandationServices
     end
 
     def create_local_user_recommandation_for_fragment fragment
-      return if fragment == Recommandation::FRAGMENT_RESOURCES
+      preferred_instance = Recommandation.preferred_instance_for_user_and_fragment(user, fragment)
 
-      return unless record = Recommandation.preferred_instance_for_user_and_fragment(user, fragment)
-        .not_joined_by(user)
-        .inside_perimeter(user.latitude, user.longitude, user.travel_distance)
-        .order_by_distance_from(user.latitude, user.longitude)
-        .first
+      return unless preferred_instance
+      return unless preferred_instance.respond_to?(:closests_recommandable_to)
+      return unless record = preferred_instance.closests_recommandable_to(user).first
 
       UserRecommandation.new(
         user: user,

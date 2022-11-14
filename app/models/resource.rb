@@ -1,4 +1,6 @@
 class Resource < ApplicationRecord
+  include Recommandable
+
   CATEGORIES  = [:understand, :act, :inspire]
 
   # STATUSES = [:active, :deleted]
