@@ -40,6 +40,8 @@ class Recommandation < ApplicationRecord
   end
 
   def self.preferred_instance_for_user_and_fragment user, fragment
+    return if fragment == Recommandation::FRAGMENT_RESOURCES
+
     return Outing if fragment == FRAGMENT_OUTINGS
     return Contribution if user.is_ask_for_help?
 
