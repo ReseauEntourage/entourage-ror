@@ -29,7 +29,7 @@ module V1
       end
 
       def recommandations
-        object.user_recommandations.active.map do |recommandation|
+        object.user_recommandations.active.order(:fragment).map do |recommandation|
           V1::UserRecommandationSerializer.new(recommandation).as_json
         end
       end
