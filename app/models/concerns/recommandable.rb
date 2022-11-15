@@ -3,7 +3,7 @@ module Recommandable
 
   included do
     scope :closests_recommandable_to, -> (user) {
-      visited_instances = UserRecommandation.select(:instance_id).visit_processed_by(user).where(instance: self.class.name.underscore)
+      visited_instances = UserRecommandation.select(:instance_id).visit_processed_by(user).where(instance: self.name.underscore)
 
       self
         .not_joined_by(user)
