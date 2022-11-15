@@ -77,7 +77,7 @@ module RecommandationServices
     private
 
     def user_fragments
-      @user_fragments ||= user.recommandations.pluck(:fragment).compact.uniq.sort
+      @user_fragments ||= user.user_recommandations.active.pluck(:fragment).compact.uniq.sort
     end
 
     def user_recommandations_orphan
