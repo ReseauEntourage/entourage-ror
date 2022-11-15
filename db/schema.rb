@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_10_10_141301) do
+ActiveRecord::Schema.define(version: 2022_10_27_135700) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -974,6 +974,7 @@ ActiveRecord::Schema.define(version: 2022_10_10_141301) do
     t.datetime "updated_at", null: false
     t.index ["completed_at", "skipped_at"], name: "index_user_recommandations_on_completed_at_and_skipped_at"
     t.index ["instance"], name: "index_user_recommandations_on_instance"
+    t.index ["user_id", "recommandation_id"], name: "index_user_recommandations_on_user_id_and_recommandation_id", unique: true, where: "((completed_at IS NULL) AND (skipped_at IS NULL))"
     t.index ["user_id"], name: "index_user_recommandations_on_user_id"
   end
 
