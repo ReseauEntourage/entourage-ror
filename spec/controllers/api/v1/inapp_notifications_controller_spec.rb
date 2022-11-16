@@ -61,4 +61,36 @@ describe Api::V1::InappNotificationsController, :type => :controller do
       it { expect(InappNotification.find(inapp_notification.id).completed_at).to be_a(ActiveSupport::TimeWithZone) }
     end
   end
+
+  context 'count' do
+    let(:result) { JSON.parse(response.body) }
+
+    describe 'not authorized' do
+      before { get :count }
+
+      it { expect(response.status).to eq 401 }
+    end
+
+    describe 'authorized' do
+      context 'inapp_notification belongs to user' do
+        let!(:inapp_notification) { create :inapp_notification, user: user }
+
+        before { get :count, params: { token: user.token } }
+
+        it { expect(response.status).to eq 200 }
+        it { expect(result).to have_key('count') }
+        it { expect(result['count']).to eq(1) }
+      end
+
+      context 'inapp_notification belongs does not belong to user' do
+        let!(:inapp_notification) { create :inapp_notification }
+
+        before { get :count, params: { token: user.token } }
+
+        it { expect(response.status).to eq 200 }
+        it { expect(result).to have_key('count') }
+        it { expect(result['count']).to eq(0) }
+      end
+    end
+  end
 end
