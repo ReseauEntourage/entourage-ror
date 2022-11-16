@@ -50,7 +50,7 @@ module RecommandationServices
 
       klass = "finder_#{recommandation.action}".classify
 
-      return user_recommandation unless method_exists?(klass, :find_identifiant)
+      return user_recommandation.save unless method_exists?(klass, :find_identifiant)
 
       user_recommandation.identifiant = call_method(klass, :find_identifiant, user, recommandation)
       user_recommandation.save
