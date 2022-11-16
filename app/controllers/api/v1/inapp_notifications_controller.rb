@@ -7,6 +7,10 @@ module Api
         render json: current_user.inapp_notifications.active.page(page).per(per), each_serializer: ::V1::InappNotificationSerializer
       end
 
+      def count
+        render json: { count: current_user.inapp_notifications.active.count }
+      end
+
       def destroy
         return render json: { message: 'unauthorized' }, status: :unauthorized if @inapp_notification.user != current_user
 
