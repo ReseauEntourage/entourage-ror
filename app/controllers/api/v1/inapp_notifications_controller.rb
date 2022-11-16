@@ -4,7 +4,7 @@ module Api
       before_action :set_inapp_notification, only: [:destroy]
 
       def index
-        render json: current_user.inapp_notifications.active, each_serializer: ::V1::InappNotificationSerializer
+        render json: current_user.inapp_notifications.active.page(page).per(per), each_serializer: ::V1::InappNotificationSerializer
       end
 
       def destroy
@@ -23,6 +23,14 @@ module Api
 
       def set_inapp_notification
         @inapp_notification = InappNotification.find(params[:id])
+      end
+
+      def page
+        params[:page] || 1
+      end
+
+      def per
+        params[:per] || 25
       end
     end
   end
