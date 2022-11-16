@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_10_27_135700) do
+ActiveRecord::Schema.define(version: 2022_11_16_104201) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
@@ -379,8 +379,11 @@ ActiveRecord::Schema.define(version: 2022_10_27_135700) do
     t.datetime "skipped_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["completed_at"], name: "index_inapp_notifications_on_completed_at"
-    t.index ["skipped_at"], name: "index_inapp_notifications_on_skipped_at"
+    t.integer "context"
+    t.integer "content"
+    t.index ["context"], name: "index_inapp_notifications_on_context"
+    t.index ["instance"], name: "index_inapp_notifications_on_instance"
+    t.index ["instance_id"], name: "index_inapp_notifications_on_instance_id"
     t.index ["user_id"], name: "index_inapp_notifications_on_user_id"
   end
 
