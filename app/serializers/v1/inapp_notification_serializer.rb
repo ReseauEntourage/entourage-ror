@@ -1,5 +1,9 @@
 module V1
   class InappNotificationSerializer < ActiveModel::Serializer
-    attributes :instance, :instance_id, :created_at
+    attributes :id,
+      :instance,
+      :instance_id,
+      :content,
+      :created_at
   end
 end
