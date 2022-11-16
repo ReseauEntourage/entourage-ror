@@ -2,6 +2,8 @@ class PushNotificationTriggerObserver < ActiveRecord::Observer
   observe :entourage, :chat_message, :join_request, :neighborhoods_entourage
 
   def after_create(record)
+    return unless record.persisted?
+
     action(:create, record)
   end
 
