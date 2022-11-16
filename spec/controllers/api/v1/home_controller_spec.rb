@@ -157,7 +157,7 @@ describe Api::V1::HomeController do
 
     context "signed in" do
       let!(:recommandation) { FactoryBot.create(:recommandation_contribution) }
-      let!(:user_recommandation) { FactoryBot.create(:user_recommandation, user: user, recommandation: recommandation) }
+      let!(:user_recommandation) { FactoryBot.create(:user_recommandation, user: user, recommandation: recommandation, fragment: recommandation.fragment) }
 
       let(:request) { get :summary, params: { token: user.token } }
 
