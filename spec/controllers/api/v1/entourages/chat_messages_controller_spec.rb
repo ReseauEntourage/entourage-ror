@@ -241,14 +241,46 @@ describe Api::V1::Entourages::ChatMessagesController do
                                                      "reasons"=>["Message type n'est pas inclus(e) dans la liste"]) }
       end
 
-      context "to a null conversations by list uuid" do
+      describe "to a null conversations by list uuid" do
         let!(:entourage) { nil }
         let(:other_user) { create :public_user, first_name: "Buzz", last_name: "Lightyear" }
         let(:join_requests) { Entourage.last.join_requests.map(&:attributes) }
-        before { post :create, params: { entourage_id: "1_list_#{user.id}-#{other_user.id}", chat_message: {content: content}, token: user.token } }
+
+        let(:request) { post :create, params: { entourage_id: "1_list_#{user.id}-#{other_user.id}", chat_message: {content: content}, token: user.token } }
+
+        context "user has been blocked" do
+          let(:content) { "foobar" }
+          let!(:user_blocked_user_1) { FactoryBot.create(:user_blocked_user, user: user, blocked_user: other_user) }
+
+          before { request }
+
+          it { expect(response.status).to eq(400) }
+          it { expect(ChatMessage.count).to eq(0) }
+        end
+
+        context "other_user has been blocked" do
+          let(:content) { "foobar" }
+          let!(:user_blocked_user_2) { FactoryBot.create(:user_blocked_user, user: other_user, blocked_user: user) }
+
+          before { request }
+
+          it { expect(response.status).to eq(400) }
+          it { expect(ChatMessage.count).to eq(0) }
+        end
+
+        context "no user has been blocked" do
+          let(:content) { "foobar" }
+
+          before { request }
+
+          it { expect(response.status).to eq(201) }
+          it { expect(ChatMessage.count).to eq(1) }
+        end
 
         context "valid params" do
           let(:content) { "foobar" }
+
+          before { request }
 
           it { expect(response.status).to eq(201) }
           it { expect(ChatMessage.count).to eq(1) }
@@ -280,6 +312,8 @@ describe Api::V1::Entourages::ChatMessagesController do
 
         context "invalid params" do
           let(:content) { nil }
+
+          before { request }
 
           it { expect(response.status).to eq(400) }
           it { expect(ChatMessage.count).to eq(0) }

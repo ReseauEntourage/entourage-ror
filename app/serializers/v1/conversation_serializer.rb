@@ -1,6 +1,7 @@
 module V1
   class ConversationSerializer < ActiveModel::Serializer
     include AmsLazyRelationships::Core
+    include V1::Entourages::Blockers
 
     attributes :id,
                :status,
@@ -13,6 +14,7 @@ module V1
 
     attribute :user, if: :private_conversation?
     attribute :section, unless: :private_conversation?
+    attribute :blockers, if: :private_conversation?
 
     # Array: modérateur, nom de l'asso, ambassadeur
     def user
@@ -84,7 +86,7 @@ module V1
     # protected
 
     def private_conversation?
-      object.group_type.in?(['conversation'])
+      object.conversation?
     end
 
     def other_participant
