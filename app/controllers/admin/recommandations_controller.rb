@@ -14,8 +14,6 @@ module Admin
         .for_profile(@profile)
         .fragment(@fragment)
         .order(order)
-        .page(page)
-        .per(per)
     end
 
     def new
