@@ -215,11 +215,14 @@ class PushNotificationTrigger
   end
 
   # use params[:extra] to be compliant with v7
-  # @caution notifications should be instanciated in jobs
   def notify instance:, users:, params: {}
+    notify_push(instance: instance, users: users, params: params)
+    notify_inapp(instance: instance, users: users, params: params)
+  end
+
+  def notify_push instance:, users:, params: {}
     object = PushNotificationLinker.get(instance)
 
-    # push notifications
     PushNotificationService.new.send_notification(
       params[:sender],
       params[:object],
@@ -227,12 +230,20 @@ class PushNotificationTrigger
       users,
       object.merge(params[:extra] || {})
     )
+  end
+
+  def notify_inapp instance:, users:, params: {}
+    object = PushNotificationLinker.get(instance)
 
     return unless object.any?
 
-    # inapp notifications
     users.map do |user|
-      InappNotificationServices::Builder.new(user).instanciate(instance: object[:instance].singularize, instance_id: object[:id])
+      InappNotificationServices::Builder.new(user).instanciate(
+        type: @method,
+        instance: object[:instance].singularize,
+        instance_id: object[:id],
+        content: params[:content]
+      )
     end
   end
 

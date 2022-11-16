@@ -14,20 +14,28 @@ module InappNotificationServices
       end
     end
 
-    def instanciate instance:, instance_id:
-      return unless accepted_configuration?(instance)
+    def instanciate context:, instance:, instance_id:, content:
+      return unless accepted_configuration?(context, instance, instance_id)
 
-      InappNotification.new(
+      notification = InappNotification.find_or_initialize_by(
         user: user,
         instance: instance,
-        instance_id: instance_id
-      ).save
+        instance_id: instance_id,
+        context: context,
+        completed_at: nil,
+        skipped_at: nil
+      )
+
+      return unless notification.new_record?
+
+      notification.content = content
+      notification.save
     end
 
-    def accepted_configuration? instance
+    def accepted_configuration? context, instance, instance_id
       return true unless configuration = user.notification_configuration
 
-      configuration.is_accepted?(instance)
+      configuration.is_accepted?(context, instance, instance_id)
     end
   end
 end
