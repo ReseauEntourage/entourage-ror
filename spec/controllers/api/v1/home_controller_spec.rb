@@ -147,6 +147,8 @@ describe Api::V1::HomeController do
 
   describe 'GET summary' do
     subject { JSON.parse(response.body) }
+    before { User.any_instance.stub(:latitude) { 40 } }
+    before { User.any_instance.stub(:longitude) { 2 } }
 
     context "not signed in" do
       before { get :summary }
@@ -155,7 +157,7 @@ describe Api::V1::HomeController do
 
     context "signed in" do
       let!(:recommandation) { FactoryBot.create(:recommandation_contribution) }
-      let!(:user_recommandation) { FactoryBot.create(:user_recommandation, user: user, recommandation: recommandation) }
+      let!(:user_recommandation) { FactoryBot.create(:user_recommandation, user: user, recommandation: recommandation, fragment: recommandation.fragment) }
 
       let(:request) { get :summary, params: { token: user.token } }
 

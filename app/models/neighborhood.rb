@@ -2,6 +2,7 @@ class Neighborhood < ApplicationRecord
   include Interestable
   include CoordinatesScopable
   include JoinableScopable
+  include Recommandable
 
   after_validation :track_status_change
 
