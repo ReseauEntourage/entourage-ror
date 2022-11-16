@@ -386,8 +386,11 @@ ActiveRecord::Schema.define(version: 2022_12_08_151000) do
     t.datetime "skipped_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["completed_at"], name: "index_inapp_notifications_on_completed_at"
-    t.index ["skipped_at"], name: "index_inapp_notifications_on_skipped_at"
+    t.integer "context"
+    t.integer "content"
+    t.index ["context"], name: "index_inapp_notifications_on_context"
+    t.index ["instance"], name: "index_inapp_notifications_on_instance"
+    t.index ["instance_id"], name: "index_inapp_notifications_on_instance_id"
     t.index ["user_id"], name: "index_inapp_notifications_on_user_id"
   end
 
