@@ -282,7 +282,11 @@ Rails.application.routes.draw do
         end
       end
 
-      resources :inapp_notifications, only: [:index, :destroy]
+      resources :inapp_notifications, only: [:index, :destroy] do
+        collection do
+          get :count
+        end
+      end
 
       resources :feeds, only: [:index] do
         collection do
