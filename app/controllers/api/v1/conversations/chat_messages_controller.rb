@@ -8,7 +8,7 @@ module Api
         after_action :set_last_message_read, only: [:index]
 
         def index
-          messages = @conversation.chat_messages.ordered.page(page).per(per)
+          messages = @conversation.chat_messages.order("created_at ASC").page(page).per(per)
 
           render json: messages, each_serializer: ::V1::ChatMessages::CommonSerializer, scope: { current_join_request: join_request }
         end
