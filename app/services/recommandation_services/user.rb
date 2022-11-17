@@ -24,7 +24,7 @@ module RecommandationServices
       Recommandation.recommandable_for_user_and_fragment(user, fragment).each do |recommandation|
         next if recommandation.matches(user_recommandations_orphan)
 
-        create_user_recommandation_from_recommandation(recommandation)
+        return if create_user_recommandation_from_recommandation(recommandation)
       end
 
       # create new user_recommandation based on contributions, solicitations, outings or neighborhoods
