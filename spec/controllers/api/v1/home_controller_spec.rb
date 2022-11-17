@@ -126,8 +126,8 @@ describe Api::V1::HomeController do
     it { expect(result["tags"]["sections"]).to be_a(Array) }
     it { expect(result["tags"]["sections"][0]).to eq({
       "id" => "social",
-      "name" => "Lien social / temps partagé",
-      "subname" => "proposer un café..."
+      "name" => "Temps de partage",
+      "subname" => "café, activité..."
     }) }
     # interests
     it { expect(result["tags"]).to have_key("interests") }
@@ -147,6 +147,8 @@ describe Api::V1::HomeController do
 
   describe 'GET summary' do
     subject { JSON.parse(response.body) }
+    before { User.any_instance.stub(:latitude) { 40 } }
+    before { User.any_instance.stub(:longitude) { 2 } }
 
     context "not signed in" do
       before { get :summary }
@@ -155,7 +157,7 @@ describe Api::V1::HomeController do
 
     context "signed in" do
       let!(:recommandation) { FactoryBot.create(:recommandation_contribution) }
-      let!(:user_recommandation) { FactoryBot.create(:user_recommandation, user: user, recommandation: recommandation) }
+      let!(:user_recommandation) { FactoryBot.create(:user_recommandation, user: user, recommandation: recommandation, fragment: recommandation.fragment) }
 
       let(:request) { get :summary, params: { token: user.token } }
 

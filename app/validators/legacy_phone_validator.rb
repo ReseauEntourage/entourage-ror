@@ -6,7 +6,9 @@ class LegacyPhoneValidator
   def valid?
     return false unless phone
     return true if french_number?
-    foreign_number?
+    return true if belgian_number?
+
+    false
   end
 
   def foreign_number?
@@ -15,7 +17,13 @@ class LegacyPhoneValidator
   end
 
   def french_number?
-    formatted.match(/\A(\+[3]{2}|0)([1-9][-.\s]?(\d{2}[-.\s]?){3}\d{2})/).present?
+    formatted.match(/\A(\+[3]{2}|0)([6-7][-.\s]?(\d{2}[-.\s]?){3}\d{2})/).present?
+  end
+
+  def belgian_number?
+    # +32-9-999-99-99
+    # +3299999999
+    formatted.match(/\A\+32[-.\s]?\d[-.\s]?\d{3}[-.\s]?\d{2}[-.\s]?\d{2}$/).present?
   end
 
   def formatted

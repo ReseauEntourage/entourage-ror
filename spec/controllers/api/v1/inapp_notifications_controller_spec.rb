@@ -31,4 +31,66 @@ describe Api::V1::InappNotificationsController, :type => :controller do
       end
     end
   end
+
+  context 'destroy' do
+    let(:inapp_notification) { create :inapp_notification }
+    let(:result) { JSON.parse(response.body) }
+
+    describe 'not authorized' do
+      describe 'not logged' do
+        before { delete :destroy, params: { id: inapp_notification.id } }
+
+        it { expect(response.status).to eq 401 }
+        it { expect(InappNotification.find(inapp_notification.id).completed_at).to be_nil }
+      end
+
+      describe 'not the same user' do
+        before { delete :destroy, params: { token: user.token, id: inapp_notification.id } }
+
+        it { expect(response.status).to eq 401 }
+        it { expect(InappNotification.find(inapp_notification.id).completed_at).to be_nil }
+      end
+    end
+
+    describe 'authorized' do
+      before { delete :destroy, params: { token: user.token, id: inapp_notification.id } }
+
+      let(:inapp_notification) { create :inapp_notification, user: user }
+
+      it { expect(InappNotification.find(inapp_notification.id).completed_at).not_to be_nil }
+      it { expect(InappNotification.find(inapp_notification.id).completed_at).to be_a(ActiveSupport::TimeWithZone) }
+    end
+  end
+
+  context 'count' do
+    let(:result) { JSON.parse(response.body) }
+
+    describe 'not authorized' do
+      before { get :count }
+
+      it { expect(response.status).to eq 401 }
+    end
+
+    describe 'authorized' do
+      context 'inapp_notification belongs to user' do
+        let!(:inapp_notification) { create :inapp_notification, user: user }
+
+        before { get :count, params: { token: user.token } }
+
+        it { expect(response.status).to eq 200 }
+        it { expect(result).to have_key('count') }
+        it { expect(result['count']).to eq(1) }
+      end
+
+      context 'inapp_notification belongs does not belong to user' do
+        let!(:inapp_notification) { create :inapp_notification }
+
+        before { get :count, params: { token: user.token } }
+
+        it { expect(response.status).to eq 200 }
+        it { expect(result).to have_key('count') }
+        it { expect(result['count']).to eq(0) }
+      end
+    end
+  end
 end

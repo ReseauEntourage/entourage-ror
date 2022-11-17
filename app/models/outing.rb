@@ -1,6 +1,7 @@
 class Outing < Entourage
   include Interestable
   include JsonStorable # @caution delete this include as soon as we migrate Rails to 6 or higher
+  include Recommandable
 
   store_accessor :metadata, :starts_at, :ends_at, :previous_at, :place_name, :street_address, :google_place_id, :display_address, :landscape_url, :landscape_thumbnail_url, :portrait_url, :portrait_thumbnail_url, :place_limit
 
@@ -27,11 +28,11 @@ class Outing < Entourage
 
   # future_siblings and future_relatives
   has_many :future_siblings, -> {
-    where("metadata->>'starts_at' >= ?", DateTime.now)
+    where("metadata->>'starts_at' >= ?", Time.zone.now)
   }, class_name: :Outing, foreign_key: :recurrency_identifier, primary_key: :recurrency_identifier
 
   has_many :future_relatives, -> (object) {
-    where.not(id: object.id).where("metadata->>'starts_at' >= ?", DateTime.now)
+    where.not(id: object.id).where("metadata->>'starts_at' >= ?", Time.zone.now)
   }, class_name: :Outing, foreign_key: :recurrency_identifier, primary_key: :recurrency_identifier
 
   belongs_to :recurrence, class_name: :OutingRecurrence, foreign_key: :recurrency_identifier, primary_key: :identifier

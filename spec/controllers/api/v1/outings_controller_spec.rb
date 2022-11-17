@@ -338,8 +338,8 @@ describe Api::V1::OutingsController do
         let!(:join_request) { create :join_request, user: participant, joinable: outing, status: :accepted }
 
         before {
-          allow_any_instance_of(PushNotificationTriggerObserver).to receive(:notify)
-          expect_any_instance_of(PushNotificationTriggerObserver).to receive(:notify).with(
+          allow_any_instance_of(PushNotificationTrigger).to receive(:notify)
+          expect_any_instance_of(PushNotificationTrigger).to receive(:notify).with(
             instance: outing.becomes(Outing),
             users: [participant],
             params: {
@@ -573,7 +573,7 @@ describe Api::V1::OutingsController do
     end
 
     describe 'not authorized cause should be creator' do
-      before { expect_any_instance_of(PushNotificationTriggerObserver).not_to receive(:notify) }
+      before { expect_any_instance_of(PushNotificationTrigger).not_to receive(:notify) }
       before { post :cancel, params: { id: outing.id, outing: { cancellation_message: "foo" }, token: user.token } }
 
       it { expect(response.status).to eq 401 }
@@ -587,8 +587,8 @@ describe Api::V1::OutingsController do
       let!(:join_request_2) { create :join_request, user: participant, joinable: outing, status: :accepted }
 
       before {
-        allow_any_instance_of(PushNotificationTriggerObserver).to receive(:notify)
-        expect_any_instance_of(PushNotificationTriggerObserver).to receive(:notify).with(
+        allow_any_instance_of(PushNotificationTrigger).to receive(:notify)
+        expect_any_instance_of(PushNotificationTrigger).to receive(:notify).with(
           instance: outing.reload.becomes(Outing),
           users: [participant],
           params: {
@@ -611,8 +611,8 @@ describe Api::V1::OutingsController do
       let!(:join_request_2) { create :join_request, user: participant, joinable: outing, status: :accepted }
 
       before {
-        allow_any_instance_of(PushNotificationTriggerObserver).to receive(:notify)
-        expect_any_instance_of(PushNotificationTriggerObserver).to receive(:notify).with(
+        allow_any_instance_of(PushNotificationTrigger).to receive(:notify)
+        expect_any_instance_of(PushNotificationTrigger).to receive(:notify).with(
           instance: outing.reload.becomes(Outing),
           users: [participant],
           params: {
