@@ -4,6 +4,7 @@ module V1
       :instance,
       :instance_id,
       :content,
+      :completed_at,
       :created_at
   end
 end
