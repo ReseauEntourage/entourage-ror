@@ -239,7 +239,7 @@ class PushNotificationTrigger
 
     users.map do |user|
       InappNotificationServices::Builder.new(user).instanciate(
-        type: @method,
+        context: @method,
         instance: object[:instance].singularize,
         instance_id: object[:id],
         content: params[:content]
