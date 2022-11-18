@@ -154,6 +154,13 @@ ActiveRecord::Schema.define(version: 2022_10_27_135700) do
     t.integer "organization_id"
   end
 
+  create_table "denorm_daily_engagements", force: :cascade do |t|
+    t.date "date", null: false
+    t.integer "user_id", null: false
+    t.string "postal_code"
+    t.index ["date", "user_id", "postal_code"], name: "unicity_denorm_daily_engagements_on_date_user_id_postal_code", unique: true
+  end
+
   create_table "digest_emails", id: :serial, force: :cascade do |t|
     t.datetime "deliver_at", null: false
     t.jsonb "data", default: {}, null: false
