@@ -372,12 +372,6 @@ ActiveRecord::Schema.define(version: 2022_12_08_151000) do
     t.index ["user_id", "partner_id"], name: "index_followings_on_user_id_and_partner_id", unique: true
   end
 
-  create_table "inapp_notification_configurations", force: :cascade do |t|
-    t.integer "user_id", null: false
-    t.jsonb "configuration"
-    t.index ["user_id"], name: "index_inapp_notification_configurations_on_user_id"
-  end
-
   create_table "inapp_notifications", force: :cascade do |t|
     t.integer "user_id", null: false
     t.string "instance", null: false
@@ -508,6 +502,12 @@ ActiveRecord::Schema.define(version: 2022_12_08_151000) do
     t.boolean "active"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "notification_configurations", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.jsonb "configuration"
+    t.index ["user_id"], name: "index_notification_configurations_on_user_id"
   end
 
   create_table "old_atd_synchronizations", id: :serial, force: :cascade do |t|
