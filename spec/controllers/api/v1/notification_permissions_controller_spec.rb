@@ -48,13 +48,32 @@ describe Api::V1::NotificationPermissionsController, :type => :controller do
     end
 
     describe 'authorized' do
-      before { request }
+      describe 'create from not existing permissions' do
+        before { request }
 
-      it { expect(response.status).to eq(201) }
-      it { expect(subject.permissions).to eq({
-        "neighborhood" => "true",
-        "outing" => "true"
-      }) }
+        it { expect(response.status).to eq(201) }
+        it { expect(subject.permissions).to eq({
+          "neighborhood" => true,
+          "outing" => true
+        }) }
+      end
+
+      describe 'create from existing permissions' do
+        let!(:notification_permission) { create :notification_permission, user: user, permissions: {
+          neighborhood: false,
+          outing: true,
+          private_chat_message: false
+        } }
+
+        before { request }
+
+        it { expect(response.status).to eq(201) }
+        it { expect(subject.permissions).to eq({
+          "neighborhood" => true,
+          "outing" => true,
+          "private_chat_message" => false,
+        }) }
+      end
     end
   end
 end
