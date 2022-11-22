@@ -19,7 +19,7 @@ module Api
       private
 
       def notification_permission_params
-        params.require(:notification_permissions).permit(:neighborhood, :outing, :private_chat_message)
+        params.require(:notification_permissions).permit(:neighborhood, :outing, :chat_message, :action)
       end
     end
   end

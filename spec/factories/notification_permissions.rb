@@ -4,7 +4,8 @@ FactoryBot.define do
     permissions { {
       neighborhood: true,
       outing: true,
-      private_chat_message: true
+      chat_message: true,
+      action: true
     } }
   end
 end
