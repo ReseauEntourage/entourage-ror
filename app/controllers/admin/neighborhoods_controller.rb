@@ -2,7 +2,7 @@ module Admin
   class NeighborhoodsController < Admin::BaseController
     layout 'admin_large'
 
-    before_action :set_neighborhood, only: [:edit, :update, :edit_image, :update_image, :show_members, :edit_owner, :update_owner]
+    before_action :set_neighborhood, only: [:edit, :update, :edit_image, :update_image, :show_members, :show_posts, :show_post_comments, :edit_owner, :update_owner]
 
     def index
       @params = params.permit([:area, :search]).to_h
@@ -45,6 +45,20 @@ module Admin
     def show_members
     end
 
+    def show_posts
+      @posts = @neighborhood.posts.page(page).per(per).includes([:user])
+    end
+
+    def show_post_comments
+      @post = ChatMessage.find(params[:post_id])
+
+      if @post.messageable == @neighborhood
+        @comments = @post.children.page(page).per(per).includes([:user])
+      else
+        redirect_to edit_admin_neighborhood_path(@neighborhood), alert: "La page n'est pas disponible"
+      end
+    end
+
     def edit_owner
     end
 
@@ -69,6 +83,14 @@ module Admin
 
     def neighborhood_params
       params.require(:neighborhood).permit(:status, :name, :description, :interest_list, :neighborhood_image_id, :google_place_id, :user_id, :change_ownership_message, interests: [])
+    end
+
+    def page
+      params[:page] || 1
+    end
+
+    def per
+      params[:per] || 25
     end
   end
 end

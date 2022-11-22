@@ -29,6 +29,7 @@ class Neighborhood < ApplicationRecord
 
   alias_attribute :title, :name
   alias_attribute :accepted_members, :members
+  alias_attribute :posts, :parent_chat_messages
 
   # valides :image_url # should be 390x258 (2/3)
   attr_accessor :neighborhood_image_id
@@ -131,6 +132,10 @@ class Neighborhood < ApplicationRecord
 
   def members_count
     members.count
+  end
+
+  def posts_count
+    posts.count
   end
 
   def past_outings

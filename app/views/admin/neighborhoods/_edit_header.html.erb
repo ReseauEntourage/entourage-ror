@@ -15,4 +15,12 @@
   <li role="presentation" class="<%= :active if tab == :show_members %>">
     <%= link_to "Membres (#{@neighborhood.members_count})", show_members_admin_neighborhood_path(@neighborhood) %>
   </li>
+  <li role="presentation" class="<%= :active if tab == :show_posts %>">
+    <%= link_to "Publications (#{@neighborhood.posts_count})", show_posts_admin_neighborhood_path(@neighborhood) %>
+  </li>
+  <% if tab == :show_post_comments %>
+    <li role="presentation" class="active">
+      <%= link_to "Commentaires (#{@post.children.count})", show_posts_admin_neighborhood_path(@neighborhood) %>
+    </li>
+  <% end %>
 </ul>
