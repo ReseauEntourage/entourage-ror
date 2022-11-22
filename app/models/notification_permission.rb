@@ -1,5 +1,8 @@
 class NotificationPermission < ApplicationRecord
+  CONFIGURABLE_INSTANCES = %{neighborhood outing chat_message action solicitation contribution}
+
   belongs_to :user
+  validates_presence_of :user
 
   alias_attribute :notification_permissions, :permissions
 
@@ -7,8 +10,11 @@ class NotificationPermission < ApplicationRecord
   alias_attribute :contribution, :action
 
   # @params context ie. chat_message_on_create
-  def is_accepted? context, instance, instance_id
-    true
+  def notify? context, instance, instance_id
+    return true unless respond_to?(instance)
+    return true unless CONFIGURABLE_INSTANCES.include?(instance.to_s)
+
+    send(instance)
   end
 
   # accessors
