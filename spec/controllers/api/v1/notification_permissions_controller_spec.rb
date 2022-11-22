@@ -9,7 +9,8 @@ describe Api::V1::NotificationPermissionsController, :type => :controller do
     let!(:notification_permission) { create :notification_permission, user: user, permissions: {
       neighborhood: true,
       outing: true,
-      private_chat_message: false
+      chat_message: false,
+      action: false
     } }
     let(:result) { JSON.parse(response.body) }
 
@@ -27,7 +28,8 @@ describe Api::V1::NotificationPermissionsController, :type => :controller do
       it { expect(result['notification_permissions']).to eq({
         "neighborhood" => true,
         "outing" => true,
-        "private_chat_message" => false
+        "chat_message" => false,
+        "action" => false
       }) }
     end
   end
@@ -62,7 +64,8 @@ describe Api::V1::NotificationPermissionsController, :type => :controller do
         let!(:notification_permission) { create :notification_permission, user: user, permissions: {
           neighborhood: false,
           outing: true,
-          private_chat_message: false
+          chat_message: false,
+          action: false,
         } }
 
         before { request }
@@ -71,7 +74,8 @@ describe Api::V1::NotificationPermissionsController, :type => :controller do
         it { expect(subject.permissions).to eq({
           "neighborhood" => true,
           "outing" => true,
-          "private_chat_message" => false,
+          "chat_message" => false,
+          "action" => false,
         }) }
       end
     end

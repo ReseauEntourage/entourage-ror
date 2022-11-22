@@ -3,7 +3,10 @@ class NotificationPermission < ApplicationRecord
 
   alias_attribute :notification_permissions, :permissions
 
-  # @caution to be developed based on user permissions
+  alias_attribute :solicitation, :action
+  alias_attribute :contribution, :action
+
+  # @params context ie. chat_message_on_create
   def is_accepted? context, instance, instance_id
     true
   end
@@ -19,21 +22,30 @@ class NotificationPermission < ApplicationRecord
     permissions["outing"]
   end
 
-  def private_chat_message
-    return true unless permissions && permissions.has_key?("private_chat_message")
-    permissions["private_chat_message"]
+  def chat_message
+    return true unless permissions && permissions.has_key?("chat_message")
+    permissions["chat_message"]
+  end
+
+  def action
+    return true unless permissions && permissions.has_key?("action")
+    permissions["action"]
   end
 
   # setters
   def neighborhood= accepted
-    permissions[:neighborhood] = ActiveModel::Type::Boolean.new.cast(accepted)
+    permissions["neighborhood"] = ActiveModel::Type::Boolean.new.cast(accepted)
   end
 
   def outing= accepted
-    permissions[:outing] = ActiveModel::Type::Boolean.new.cast(accepted)
+    permissions["outing"] = ActiveModel::Type::Boolean.new.cast(accepted)
   end
 
-  def private_chat_message= accepted
-    permissions[:private_chat_message] = ActiveModel::Type::Boolean.new.cast(accepted)
+  def chat_message= accepted
+    permissions["chat_message"] = ActiveModel::Type::Boolean.new.cast(accepted)
+  end
+
+  def action= accepted
+    permissions["action"] = ActiveModel::Type::Boolean.new.cast(accepted)
   end
 end
