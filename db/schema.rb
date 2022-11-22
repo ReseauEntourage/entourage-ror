@@ -504,10 +504,10 @@ ActiveRecord::Schema.define(version: 2022_12_08_151000) do
     t.datetime "updated_at"
   end
 
-  create_table "notification_configurations", force: :cascade do |t|
+  create_table "notification_permissions", force: :cascade do |t|
     t.integer "user_id", null: false
-    t.jsonb "configuration"
-    t.index ["user_id"], name: "index_notification_configurations_on_user_id"
+    t.jsonb "permissions", default: {}, null: false
+    t.index ["user_id"], name: "index_notification_permissions_on_user_id"
   end
 
   create_table "old_atd_synchronizations", id: :serial, force: :cascade do |t|

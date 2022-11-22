@@ -295,6 +295,8 @@ Rails.application.routes.draw do
         end
       end
 
+      resources :notification_permissions, only: [:index, :create]
+
       resources :feeds, only: [:index] do
         collection do
           get :outings
