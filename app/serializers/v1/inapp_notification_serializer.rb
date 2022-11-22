@@ -5,6 +5,10 @@ module V1
       :instance_id,
       :content,
       :completed_at,
-      :created_at
+      :created_at,
+      :image_url
+
+    def image_url
+    end
   end
 end
