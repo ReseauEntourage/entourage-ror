@@ -28,6 +28,7 @@ describe Api::V1::InappNotificationsController, :type => :controller do
         it { expect(result['inapp_notifications'].count).to eq(1) }
         it { expect(result['inapp_notifications'][0]['instance']).to eq(inapp_notification.instance) }
         it { expect(result['inapp_notifications'][0]['instance_id']).to eq(inapp_notification.instance_id) }
+        it { expect(result['inapp_notifications'][0]['image_url']).to eq(nil) }
       end
     end
   end
