@@ -35,7 +35,7 @@ module InappNotificationServices
     def accepted_configuration? context, instance, instance_id
       return true unless configuration = user.notification_configuration
 
-      configuration.is_accepted?(context, instance, instance_id)
+      configuration.notify?(context, instance, instance_id)
     end
   end
 end
