@@ -2,7 +2,9 @@ module Api
   module V1
     class NotificationPermissionsController < Api::V1::BaseController
       def index
-        render json: current_user.notification_permission, root: :notification_permissions, serializer: ::V1::NotificationPermissionSerializer
+        permission = current_user.notification_permission || NotificationPermission.new
+
+        render json: permission, root: :notification_permissions, serializer: ::V1::NotificationPermissionSerializer
       end
 
       def create

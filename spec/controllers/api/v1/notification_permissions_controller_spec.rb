@@ -6,12 +6,6 @@ describe Api::V1::NotificationPermissionsController, :type => :controller do
   let(:user) { create :pro_user }
 
   context 'index' do
-    let!(:notification_permission) { create :notification_permission, user: user, permissions: {
-      neighborhood: true,
-      outing: true,
-      chat_message: false,
-      action: false
-    } }
     let(:result) { JSON.parse(response.body) }
 
     describe 'not authorized' do
@@ -21,16 +15,38 @@ describe Api::V1::NotificationPermissionsController, :type => :controller do
     end
 
     describe 'authorized' do
-      before { get :index, params: { token: user.token } }
+      describe 'configured' do
+        let!(:notification_permission) { create :notification_permission, user: user, permissions: {
+          neighborhood: true,
+          outing: true,
+          chat_message: false,
+          action: false
+        } }
 
-      it { expect(response.status).to eq 200 }
-      it { expect(result).to have_key('notification_permissions') }
-      it { expect(result['notification_permissions']).to eq({
-        "neighborhood" => true,
-        "outing" => true,
-        "chat_message" => false,
-        "action" => false
-      }) }
+        before { get :index, params: { token: user.token } }
+
+        it { expect(response.status).to eq 200 }
+        it { expect(result).to have_key('notification_permissions') }
+        it { expect(result['notification_permissions']).to eq({
+          "neighborhood" => true,
+          "outing" => true,
+          "chat_message" => false,
+          "action" => false
+        }) }
+      end
+
+      describe 'not configured' do
+        before { get :index, params: { token: user.token } }
+
+        it { expect(response.status).to eq 200 }
+        it { expect(result).to have_key('notification_permissions') }
+        it { expect(result['notification_permissions']).to eq({
+          "neighborhood" => true,
+          "outing" => true,
+          "chat_message" => true,
+          "action" => true
+        }) }
+      end
     end
   end
 
