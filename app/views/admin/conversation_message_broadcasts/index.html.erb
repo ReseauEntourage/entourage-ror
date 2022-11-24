@@ -80,6 +80,11 @@
           <% end %>
         </table>
       <% end %>
+
+      <%= page_entries_info @conversation_message_broadcasts, entry_name: 'diffusions de MP' %>
+      <div class="container">
+        <%= paginate(@conversation_message_broadcasts) %>
+      </div>
     </div>
   </div>
 </div>

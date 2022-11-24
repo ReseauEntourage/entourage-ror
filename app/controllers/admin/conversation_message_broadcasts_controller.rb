@@ -12,6 +12,7 @@ module Admin
 
       @conversation_message_broadcasts = @conversation_message_broadcasts.where(goal: @goal) if @goal && @goal != :all
       @conversation_message_broadcasts = @conversation_message_broadcasts.with_moderation_area(@area.to_s) if @area && @area != :all
+      @conversation_message_broadcasts = @conversation_message_broadcasts.page(page).per(per)
     end
 
     def new
@@ -82,6 +83,14 @@ module Admin
       params.require(:conversation_message_broadcast).permit(
         :area_type, :goal, :content, :title, areas: []
       )
+    end
+
+    def page
+      params[:page] || 1
+    end
+
+    def per
+      params[:per] || 25
     end
   end
 end
