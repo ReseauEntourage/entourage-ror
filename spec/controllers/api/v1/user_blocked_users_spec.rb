@@ -10,6 +10,49 @@ describe Api::V1::UserBlockedUsersController, :type => :controller do
 
   let(:result) { JSON.parse(response.body) }
 
+  context 'index' do
+    let!(:user_blocked_user_1) { create :user_blocked_user, user: user, blocked_user: alice }
+    let!(:user_blocked_user_2) { create :user_blocked_user, user: user, blocked_user: bob }
+    let!(:user_blocked_user_3) { create :user_blocked_user, user: charlie, blocked_user: user }
+
+    describe 'not authorized' do
+      before { get :index }
+
+      it { expect(response.status).to eq(401) }
+    end
+
+    describe 'authorized' do
+      before { get :index, params: { token: user.token } }
+
+      it { expect(response.status).to eq(200) }
+      it { expect(result).to eq({
+        "user_blocked_users" => [{
+          "user" => {
+            "id" => user.id,
+            "display_name" => "John D.",
+            "avatar_url" => nil
+          },
+          "blocked_user" => {
+            "id" => alice.id,
+            "display_name" => "John D.",
+            "avatar_url" => nil
+          },
+        }, {
+          "user" => {
+            "id" => user.id,
+            "display_name" => "John D.",
+            "avatar_url" => nil
+          },
+          "blocked_user" => {
+            "id" => bob.id,
+            "display_name" => "John D.",
+            "avatar_url" => nil
+          },
+        }]
+      })}
+    end
+  end
+
   context 'show' do
     let!(:user_blocked_user_1) { create :user_blocked_user, user: user, blocked_user: alice }
     let!(:user_blocked_user_2) { create :user_blocked_user, user: user, blocked_user: bob }
@@ -27,19 +70,19 @@ describe Api::V1::UserBlockedUsersController, :type => :controller do
 
         it { expect(response.status).to eq 200 }
         it { expect(result).to eq({
-            "user_blocked_user" => {
-              "user" => {
-                "id" => user.id,
-                "display_name" => "John D.",
-                "avatar_url" => nil
-              },
-              "blocked_user" => {
-                "id" => alice.id,
-                "display_name" => "John D.",
-                "avatar_url" => nil
-              },
-            }
-          }) }
+          "user_blocked_user" => {
+            "user" => {
+              "id" => user.id,
+              "display_name" => "John D.",
+              "avatar_url" => nil
+            },
+            "blocked_user" => {
+              "id" => alice.id,
+              "display_name" => "John D.",
+              "avatar_url" => nil
+            },
+          }
+        })}
       end
 
       context 'user is not blocked' do
