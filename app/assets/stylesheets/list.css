@@ -1,0 +1,41 @@
+.overlay-container {
+  position: relative;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+}
+
+.overlay-container a:not(.overlay) {
+  position: relative;
+  z-index: 2;
+}
+
+#elements {
+  background-color: #ddd;
+  padding-top: 1px; /* top separator */
+}
+.element {
+  display: flex;
+  background-color: #fff;
+}
+.element + .element {
+  margin-top: 1px; /* separators */
+}
+.element > * {
+  padding: 8px;
+}
+.element-id {
+  width: 40px;
+}
+.element-content {
+  flex-grow: 1;
+}
+.element-image {
+  width: calc(255px + 8px * 2);
+}

@@ -219,6 +219,8 @@ Rails.application.routes.draw do
     resources :neighborhoods, only: [:index, :edit, :update] do
       member do
         get :show_members
+        get :show_posts
+        get 'post/:post_id' => :show_post_comments, as: :show_post_comments
         get :edit_owner
         post :update_owner
         get '/edit/image', action: :edit_image
