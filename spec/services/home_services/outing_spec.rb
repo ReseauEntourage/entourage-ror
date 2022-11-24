@@ -15,7 +15,7 @@ describe HomeServices::Outing do
     it 'should find outings within user travel_distance' do
       user.update_attribute(:travel_distance, 8)
 
-      expect(subject.find_all).to eq([outing, second, online])
+      expect(subject.find_all).to match_array([outing, second, online])
     end
 
     it 'should not find outings outside user travel_distance' do
