@@ -231,6 +231,46 @@ describe Api::V1::ConversationsController do
         it { expect(subject["entourages"].first["last_message"]).to eq(nil) }
       end
     end
+
+    describe "some private conversations with blockers" do
+      context 'blocked conversations' do
+        let(:participant) { create :public_user, first_name: :Jane }
+        let!(:conversation) { create :conversation, participants: [user, participant] }
+
+        let(:request) { get :private, params: { token: user.token } }
+
+        context 'user blocked' do
+          let!(:user_blocked_user) { create(:user_blocked_user, user: user, blocked_user: participant) }
+
+          before { request }
+
+          it { expect(response.status).to eq(200) }
+          it { expect(subject["entourages"].count).to eq(1) }
+          it { expect(subject["entourages"][0]['blockers']).to match_array([ "me" ]) }
+        end
+
+        context 'participant blocked' do
+          let!(:user_blocked_user) { create(:user_blocked_user, user: participant, blocked_user: user) }
+
+          before { request }
+
+          it { expect(response.status).to eq(200) }
+          it { expect(subject["entourages"].count).to eq(1) }
+          it { expect(subject["entourages"][0]['blockers']).to match_array([ "participant" ]) }
+        end
+
+        context 'both blocked' do
+          let!(:user_blocked_user_1) { create(:user_blocked_user, user: user, blocked_user: participant) }
+          let!(:user_blocked_user_2) { create(:user_blocked_user, user: participant, blocked_user: user) }
+
+          before { request }
+
+          it { expect(response.status).to eq(200) }
+          it { expect(subject["entourages"].count).to eq(1) }
+          it { expect(subject["entourages"][0]['blockers']).to match_array([ "me", "participant" ]) }
+        end
+      end
+    end
   end
 
   describe 'GET group' do
@@ -320,6 +360,29 @@ describe Api::V1::ConversationsController do
         it { expect(subject['conversations']['count']).to eq(1) }
         it { expect(subject).to have_key("actions") }
         it { expect(subject['actions']['count']).to eq(0) }
+      end
+    end
+  end
+
+  describe 'GET show' do
+    let(:participant) { create :public_user, first_name: :Jane }
+    let(:conversation) { create :conversation, participants: [user, participant] }
+
+    let(:request) { get :show, params: { id: conversation.id, token: user.token } }
+
+    subject { JSON.parse(response.body) }
+
+    describe "some private conversations with blockers" do
+      context 'blocked conversations' do
+        context 'user blocked' do
+          let!(:user_blocked_user) { create(:user_blocked_user, user: user, blocked_user: participant) }
+
+          before { request }
+
+          it { expect(response.status).to eq(200) }
+          it { expect(subject).to have_key("conversation") }
+          it { expect(subject["conversation"]['blockers']).to match_array([ "me" ]) }
+        end
       end
     end
   end

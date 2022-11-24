@@ -640,7 +640,7 @@ describe Api::V1::EntouragesController do
               "image_url"=>nil,
               "online"=>false,
               "event_url"=>nil,
-              "blockers"=>{},
+              "blockers"=>[],
               "author"=>{
                 "id"=>other_user.id,
                 "display_name"=>"Buzz L.",

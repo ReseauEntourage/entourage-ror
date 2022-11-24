@@ -1,6 +1,7 @@
 module V1
   class ConversationHomeSerializer < ActiveModel::Serializer
     include AmsLazyRelationships::Core
+    include V1::Entourages::Blockers
 
     attributes :id,
       :status,
@@ -16,6 +17,7 @@ module V1
     attribute :user, if: :private_conversation?
     attribute :section, unless: :private_conversation?
     attribute :author, unless: :private_conversation?
+    attribute :blockers, if: :private_conversation?
 
     has_many :members, serializer: ::V1::Users::BasicSerializer
 
