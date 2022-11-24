@@ -135,10 +135,23 @@ describe Admin::ConversationMessageBroadcastsController do
   end
 
   describe "POST #broadcast" do
-    let!(:conversation_message_broadcast) { FactoryBot.create(:conversation_message_broadcast) }
-    it {
-      expect(ConversationMessageBroadcastJob).to receive(:perform_later)
-      post :broadcast, params: { id: conversation_message_broadcast.id }
-    }
+    let(:conversation_message_broadcast) { FactoryBot.create(:conversation_message_broadcast) }
+
+    describe "single sending" do
+      it {
+        expect(ConversationMessageBroadcastJob).to receive(:perform_later).once
+
+        post :broadcast, params: { id: conversation_message_broadcast.id }
+      }
+    end
+
+    describe "double sending" do
+      it {
+        expect(ConversationMessageBroadcastJob).to receive(:perform_later).once
+
+        post :broadcast, params: { id: conversation_message_broadcast.id }
+        post :broadcast, params: { id: conversation_message_broadcast.id }
+      }
+    end
   end
 end

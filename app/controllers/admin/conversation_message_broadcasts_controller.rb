@@ -62,13 +62,16 @@ module Admin
 
     def broadcast
       @conversation_message_broadcast = ConversationMessageBroadcast.find(params[:id])
-      @conversation_message_broadcast.update_attribute(:status, :sent)
 
-      ConversationMessageBroadcastJob.perform_later(
-        @conversation_message_broadcast.id,
-        current_admin.id,
-        @conversation_message_broadcast.content
-      )
+      unless @conversation_message_broadcast.sent? || @conversation_message_broadcast.sending?
+        @conversation_message_broadcast.update_attribute(:status, :sent)
+
+        ConversationMessageBroadcastJob.perform_later(
+          @conversation_message_broadcast.id,
+          current_admin.id,
+          @conversation_message_broadcast.content
+        )
+      end
 
       redirect_to edit_admin_conversation_message_broadcast_path(@conversation_message_broadcast)
     end
