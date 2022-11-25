@@ -32,7 +32,7 @@ class Recommandation < ApplicationRecord
       ),
       { user_id: user.id }
     ]))
-    .order("user_recommandations.skipped_at is null desc, user_recommandations.skipped_at asc")
+    .order("user_recommandations.skipped_at is null desc")
   }
 
   # valides :image_url # should be ?x?
@@ -46,9 +46,9 @@ class Recommandation < ApplicationRecord
 
       Recommandation
         .fragment(fragment)
-        .for_profile(profile)
         .recommandable_for(user)
         .order_by_skipped_at(user)
+        .for_profile(profile)
     end
   end
 
