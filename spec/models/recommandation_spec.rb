@@ -146,8 +146,8 @@ RSpec.describe Recommandation, :type => :model do
   describe 'order_by_skipped_at' do
     let(:user) { create(:public_user) }
 
-    let!(:recommandation_1) { FactoryBot.create(:recommandation) }
-    let!(:recommandation_2) { FactoryBot.create(:recommandation) }
+    let!(:recommandation_1) { FactoryBot.create(:recommandation, position_ask_for_help: 1) }
+    let!(:recommandation_2) { FactoryBot.create(:recommandation, position_ask_for_help: 2) }
 
     let(:subject) { Recommandation.order_by_skipped_at(user) }
 
@@ -167,18 +167,18 @@ RSpec.describe Recommandation, :type => :model do
       it { expect(subject.pluck(:id)).to eq([recommandation_1.id, recommandation_2.id]) }
     end
 
-    context 'when both user_recommandation has been skipped: older first' do
+    context 'when both user_recommandation has been skipped: indistinct order' do
       let!(:user_recommandation_1) { create(:user_recommandation, user: user, recommandation: recommandation_1, skipped_at: 1.minute.ago) }
       let!(:user_recommandation_2) { create(:user_recommandation, user: user, recommandation: recommandation_2, skipped_at: Time.now) }
 
-      it { expect(subject.pluck(:id)).to eq([recommandation_1.id, recommandation_2.id]) }
+      it { expect(subject.pluck(:id)).to match_array([recommandation_1.id, recommandation_2.id]) }
     end
 
-    context 'when both user_recommandation has been skipped: older first' do
+    context 'when both user_recommandation has been skipped: indistinct order' do
       let!(:user_recommandation_1) { create(:user_recommandation, user: user, recommandation: recommandation_1, skipped_at: Time.now) }
       let!(:user_recommandation_2) { create(:user_recommandation, user: user, recommandation: recommandation_2, skipped_at: 1.minute.ago) }
 
-      it { expect(subject.pluck(:id)).to eq([recommandation_2.id, recommandation_1.id]) }
+      it { expect(subject.pluck(:id)).to match_array([recommandation_1.id, recommandation_2.id]) }
     end
 
     context 'when both user_recommandation has been skipped but with different user' do
