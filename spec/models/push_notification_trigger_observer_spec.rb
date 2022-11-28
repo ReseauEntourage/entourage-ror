@@ -10,9 +10,21 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
   describe "after_create" do
     describe "on_create is received" do
       describe "outing" do
+        let(:subject) { create :outing, user: user, neighborhoods: [create(:neighborhood)] }
+
         it {
           expect_any_instance_of(PushNotificationTrigger).to receive(:neighborhoods_entourage_on_create)
-          create :outing, user: user, neighborhoods: [create(:neighborhood)]
+          subject
+        }
+
+        it {
+          expect_any_instance_of(PushNotificationService).to receive(:send_notification)
+          subject
+        }
+
+        it {
+          expect_any_instance_of(InappNotificationServices::Builder).to receive(:instanciate)
+          subject
         }
       end
 
