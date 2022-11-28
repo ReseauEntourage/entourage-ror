@@ -14,8 +14,9 @@ module InappNotificationServices
       end
     end
 
-    def instanciate context:, instance:, instance_id:, content:
-      return unless accepted_configuration?(context, instance, instance_id)
+    # @params context ie. chat_message_on_create
+    def instanciate context:, instance:, instance_id:, referent:, referent_id:, content:
+      return unless NotificationPermission.notify_inapp?(user, referent, referent_id)
 
       notification = InappNotification.find_or_initialize_by(
         user: user,
@@ -30,12 +31,6 @@ module InappNotificationServices
 
       notification.content = content
       notification.save
-    end
-
-    def accepted_configuration? context, instance, instance_id
-      return true unless permission = user.notification_permission
-
-      permission.notify?(context, instance, instance_id)
     end
   end
 end

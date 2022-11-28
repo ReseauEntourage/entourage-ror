@@ -265,33 +265,39 @@ class PushNotificationTrigger
   end
 
   # use params[:extra] to be compliant with v7
-  def notify instance:, users:, params: {}
-    notify_push(instance: instance, users: users, params: params)
-    notify_inapp(instance: instance, users: users, params: params)
+  def notify referent:, instance:, users:, params: {}
+    notify_push(referent: referent, instance: instance, users: users, params: params)
+    notify_inapp(referent: referent, instance: instance, users: users, params: params)
   end
 
-  def notify_push instance:, users:, params: {}
-    object = PushNotificationLinker.get(instance)
+  def notify_push referent:, instance:, users:, params: {}
+    instance = PushNotificationLinker.get(instance)
+    referent = PushNotificationLinker.get(referent)
 
     PushNotificationService.new.send_notification(
       params[:sender],
       params[:object],
       params[:content],
       users,
-      object.merge(params[:extra] || {})
+      referent[:instance].singularize,
+      referent[:id],
+      instance.merge(params[:extra] || {})
     )
   end
 
-  def notify_inapp instance:, users:, params: {}
-    object = PushNotificationLinker.get(instance)
+  def notify_inapp referent:, instance:, users:, params: {}
+    instance = PushNotificationLinker.get(instance)
+    referent = PushNotificationLinker.get(referent)
 
-    return unless object.any?
+    return unless instance.any?
 
     users.map do |user|
       InappNotificationServices::Builder.new(user).instanciate(
         context: @method,
-        instance: object[:instance].singularize,
-        instance_id: object[:id],
+        instance: instance[:instance].singularize,
+        instance_id: instance[:id],
+        referent: referent[:instance].singularize,
+        referent_id: referent[:id],
         content: params[:content]
       )
     end

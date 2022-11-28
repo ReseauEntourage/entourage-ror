@@ -1,5 +1,6 @@
 class NotificationPermission < ApplicationRecord
-  CONFIGURABLE_INSTANCES = %{neighborhood outing chat_message action solicitation contribution}
+  INAPP_INSTANCES = %{neighborhood outing user}
+  PUSH_INSTANCES = %{neighborhood outing conversation user}
 
   belongs_to :user
   validates_presence_of :user
@@ -9,31 +10,55 @@ class NotificationPermission < ApplicationRecord
   alias_attribute :solicitation, :action
   alias_attribute :contribution, :action
 
-  # @params context ie. chat_message_on_create
-  def notify? context, instance, instance_id
-    return true unless respond_to?(instance)
-    return true unless CONFIGURABLE_INSTANCES.include?(instance.to_s)
+  class << self
+    def notify_inapp? user, instance, instance_id
+      return false unless INAPP_INSTANCES.include?(instance.to_s)
 
-    send(instance)
+      notify?(user, instance, instance_id)
+    end
+
+    def notify_push? user, instance, instance_id
+      return false unless PUSH_INSTANCES.include?(instance.to_s)
+
+      notify?(user, instance, instance_id)
+    end
+
+    def notify? user, instance, instance_id
+      return true unless permission = user.notification_permission
+
+      permission.notify?(instance, instance_id)
+    end
+  end
+
+  def notify? instance, instance_id
+    return false unless respond_to?(instance)
+
+    send(instance, instance_id)
   end
 
   # accessors
-  def neighborhood
+  def neighborhood instance_id
     return true unless permissions && permissions.has_key?("neighborhood")
     permissions["neighborhood"]
   end
 
-  def outing
+  def outing instance_id
     return true unless permissions && permissions.has_key?("outing")
     permissions["outing"]
   end
 
-  def chat_message
+  def conversation instance_id
+    return chat_message(instance_id) if Entourage.find(instance_id).conversation?
+
+    action(instance_id)
+  end
+
+  def chat_message instance_id
     return true unless permissions && permissions.has_key?("chat_message")
     permissions["chat_message"]
   end
 
-  def action
+  def action instance_id
     return true unless permissions && permissions.has_key?("action")
     permissions["action"]
   end
