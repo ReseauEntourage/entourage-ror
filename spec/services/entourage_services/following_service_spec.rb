@@ -48,6 +48,8 @@ describe FollowingService do
           action.title,
           "#{partner.name} vous invite à rejoindre #{action.title}",
           [following.user],
+          "conversation",
+          action.id,
           {
             :instance => "conversations",
             :id => action.id,

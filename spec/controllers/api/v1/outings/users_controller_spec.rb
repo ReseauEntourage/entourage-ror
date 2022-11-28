@@ -113,6 +113,7 @@ describe Api::V1::Outings::UsersController do
         before {
           allow_any_instance_of(PushNotificationTrigger).to receive(:notify)
           expect_any_instance_of(PushNotificationTrigger).to receive(:notify).with(
+            referent: outing,
             instance: user,
             users: [outing.user],
             params: {

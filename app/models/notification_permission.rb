@@ -37,28 +37,28 @@ class NotificationPermission < ApplicationRecord
   end
 
   # accessors
-  def neighborhood instance_id
+  def neighborhood instance_id = nil
     return true unless permissions && permissions.has_key?("neighborhood")
     permissions["neighborhood"]
   end
 
-  def outing instance_id
+  def outing instance_id = nil
     return true unless permissions && permissions.has_key?("outing")
     permissions["outing"]
   end
 
-  def conversation instance_id
+  def conversation instance_id = nil
     return chat_message(instance_id) if Entourage.find(instance_id).conversation?
 
     action(instance_id)
   end
 
-  def chat_message instance_id
+  def chat_message instance_id = nil
     return true unless permissions && permissions.has_key?("chat_message")
     permissions["chat_message"]
   end
 
-  def action instance_id
+  def action instance_id = nil
     return true unless permissions && permissions.has_key?("action")
     permissions["action"]
   end

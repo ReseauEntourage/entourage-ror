@@ -107,6 +107,8 @@ describe Api::V1::Entourages::UsersController do
               "Nouveau membre",
               "John D. vient de rejoindre votre action \"Foobar1\"",
               [entourage.user],
+              "conversation",
+              entourage.id,
               {
                 joinable_type: "Entourage",
                 joinable_id: entourage.id,
@@ -131,6 +133,8 @@ describe Api::V1::Entourages::UsersController do
               "Nouveau membre",
               "John D. vient de rejoindre votre action \"Foobar1\"",
               [entourage.user],
+              "conversation",
+              entourage.id,
               {
                 joinable_type: "Entourage",
                 joinable_id: entourage.id,
@@ -268,6 +272,8 @@ describe Api::V1::Entourages::UsersController do
           "Foobar1",
           "Vous venez de rejoindre un(e) action de John D.",
           User.where(id: requester.id),
+          "conversation",
+          entourage.id,
           {
             :joinable_id => entourage.id,
             :joinable_type => "Entourage",

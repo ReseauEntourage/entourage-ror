@@ -205,6 +205,8 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
             'Foot Paris 17è',
             "John D. vient de partager : \"foobaz\"",
             [ neighborhood.user, join_request2.user ],
+            "neighborhood",
+            neighborhood.id,
             {
               joinable_id: neighborhood.id,
               joinable_type: "Neighborhood",

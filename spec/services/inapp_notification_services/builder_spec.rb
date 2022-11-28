@@ -46,9 +46,10 @@ describe InappNotificationServices::Builder do
     let(:instance_id) { neighborhood.id }
     let(:content) { "foo" }
 
-    let(:subject) { InappNotificationServices::Builder.new(user).instanciate(context: context, instance: instance, instance_id: instance_id, content: content) }
+    let(:subject) { InappNotificationServices::Builder.new(user).instanciate(context: context, instance: instance, instance_id: instance_id, referent: instance, referent_id: instance_id, content: content) }
 
-    before { InappNotificationServices::Builder.any_instance.stub(:accepted_configuration?) { acceptance } }
+    # before { InappNotificationServices::Builder.any_instance.stub(:accepted_configuration?) { acceptance } }
+    before { NotificationPermission.stub(:notify_inapp?) { acceptance } }
 
     describe 'configuration not accepting instance' do
       let(:acceptance) { false }
