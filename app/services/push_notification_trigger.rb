@@ -31,10 +31,15 @@ class PushNotificationTrigger
     return unless entourage.outing?
     return unless users = (neighborhood.members.uniq - [entourage.user])
 
-    notify(instance: entourage, users: users, params: {
-      object: neighborhood.title,
-      content: CREATE_OUTING % [entity_name(neighborhood), entourage.title, to_date(entourage.starts_at)]
-    })
+    notify(
+      referent: neighborhood,
+      instance: entourage,
+      users: users,
+      params: {
+        object: neighborhood.title,
+        content: CREATE_OUTING % [entity_name(neighborhood), entourage.title, to_date(entourage.starts_at)]
+      }
+    )
   end
 
   def entourage_on_create
@@ -51,18 +56,23 @@ class PushNotificationTrigger
 
       invitation_id = EntourageInvitation.where(invitable: @record, inviter: user, invitee_id: follower_id).pluck(:id).first
 
-      notify(instance: @record, users: [follower], params: {
-        object: @record.title,
-        content: "#{partner.name} vous invite à rejoindre #{title(@record)}",
-        extra: {
-          type: "ENTOURAGE_INVITATION",
-          entourage_id: @record.id,
-          group_type: @record.group_type,
-          inviter_id: user.id,
-          invitee_id: follower_id,
-          invitation_id: invitation_id
+      notify(
+        referent: @record,
+        instance: @record,
+        users: [follower],
+        params: {
+          object: @record.title,
+          content: "#{partner.name} vous invite à rejoindre #{title(@record)}",
+          extra: {
+            type: "ENTOURAGE_INVITATION",
+            entourage_id: @record.id,
+            group_type: @record.group_type,
+            inviter_id: user.id,
+            invitee_id: follower_id,
+            invitation_id: invitation_id
+          }
         }
-      })
+      )
     end
   end
 
@@ -78,10 +88,15 @@ class PushNotificationTrigger
 
     return if users.none?
 
-    notify(instance: @record, users: users, params: {
-      object: @record.title,
-      content: update_outing_message(@record, @changes)
-    })
+    notify(
+      referent: @record,
+      instance: @record,
+      users: users,
+      params: {
+        object: @record.title,
+        content: update_outing_message(@record, @changes)
+      }
+    )
   end
 
   def outing_on_update_status
@@ -96,10 +111,15 @@ class PushNotificationTrigger
 
     return if users.none?
 
-    notify(instance: @record, users: users, params: {
-      object: @record.title,
-      content: CANCEL_OUTING % to_date(@record.starts_at)
-    })
+    notify(
+      referent: @record,
+      instance: @record,
+      users: users,
+      params: {
+        object: @record.title,
+        content: CANCEL_OUTING % to_date(@record.starts_at)
+      }
+    )
   end
 
   def chat_message_on_create
@@ -118,16 +138,21 @@ class PushNotificationTrigger
 
     return if users.none?
 
-    notify(instance: @record.messageable, users: users, params: {
-      object: "#{username(@record.user)} - #{title(@record.messageable)}",
-      content: @record.content,
-      extra: {
-        group_type: group_type(@record.messageable),
-        joinable_id: @record.messageable_id,
-        joinable_type: @record.messageable_type,
-        type: "NEW_CHAT_MESSAGE"
+    notify(
+      referent: @record.messageable,
+      instance: @record.messageable,
+      users: users,
+      params: {
+        object: "#{username(@record.user)} - #{title(@record.messageable)}",
+        content: @record.content,
+        extra: {
+          group_type: group_type(@record.messageable),
+          joinable_id: @record.messageable_id,
+          joinable_type: @record.messageable_type,
+          type: "NEW_CHAT_MESSAGE"
+        }
       }
-    })
+    )
   end
 
   def private_chat_message_on_create
@@ -135,16 +160,21 @@ class PushNotificationTrigger
 
     return if users.none?
 
-    notify(instance: @record.messageable, users: users, params: {
-      object: username(@record.user),
-      content: @record.content,
-      extra: {
-        group_type: group_type(@record.messageable),
-        joinable_id: @record.messageable_id,
-        joinable_type: @record.messageable_type,
-        type: "NEW_CHAT_MESSAGE"
+    notify(
+      referent: @record.messageable,
+      instance: @record.messageable,
+      users: users,
+      params: {
+        object: username(@record.user),
+        content: @record.content,
+        extra: {
+          group_type: group_type(@record.messageable),
+          joinable_id: @record.messageable_id,
+          joinable_type: @record.messageable_type,
+          type: "NEW_CHAT_MESSAGE"
+        }
       }
-    })
+    )
   end
 
   def post_on_create
@@ -152,25 +182,35 @@ class PushNotificationTrigger
 
     return if users.none?
 
-    notify(instance: @record.messageable, users: users, params: {
-      object: title(@record.messageable),
-      content: CREATE_POST % [username(@record.user), @record.content],
-      extra: {
-        group_type: group_type(@record.messageable),
-        joinable_id: @record.messageable_id,
-        joinable_type: @record.messageable_type,
-        type: "NEW_CHAT_MESSAGE"
+    notify(
+      referent: @record.messageable,
+      instance: @record.messageable,
+      users: users,
+      params: {
+        object: title(@record.messageable),
+        content: CREATE_POST % [username(@record.user), @record.content],
+        extra: {
+          group_type: group_type(@record.messageable),
+          joinable_id: @record.messageable_id,
+          joinable_type: @record.messageable_type,
+          type: "NEW_CHAT_MESSAGE"
+        }
       }
-    })
+    )
   end
 
   def comment_on_create
     return if @record.parent.user == @record.user
 
-    notify(instance: @record.messageable, users: [@record.parent.user], params: {
-      object: title(@record.messageable),
-      content: CREATE_COMMENT % [username(@record.user), @record.content]
-    })
+    notify(
+      referent: @record.messageable,
+      instance: @record.messageable,
+      users: [@record.parent.user],
+      params: {
+        object: title(@record.messageable),
+        content: CREATE_COMMENT % [username(@record.user), @record.content]
+      }
+    )
   end
 
   def join_request_on_create
@@ -184,34 +224,44 @@ class PushNotificationTrigger
       CREATE_JOIN_REQUEST % [username(@record.user), entity_name(@record.joinable), title(@record.joinable)]
     end
 
-    notify(instance: @record.user, users: [@record.joinable.user], params: {
-      object: "Nouveau membre",
-      content: content,
-      extra: {
-        joinable_id: @record.joinable_id,
-        joinable_type: @record.joinable_type,
-        group_type: group_type(@record.joinable),
-        type: "JOIN_REQUEST_ACCEPTED",
-        user_id: @record.user_id
+    notify(
+      referent: @record.joinable,
+      instance: @record.user,
+      users: [@record.joinable.user],
+      params: {
+        object: "Nouveau membre",
+        content: content,
+        extra: {
+          joinable_id: @record.joinable_id,
+          joinable_type: @record.joinable_type,
+          group_type: group_type(@record.joinable),
+          type: "JOIN_REQUEST_ACCEPTED",
+          user_id: @record.user_id
+        }
       }
-    })
+    )
   end
 
   def join_request_on_update
     return unless @changes.keys.include?("status")
     return join_request_on_create unless @changes["status"] && @changes["status"].first&.to_sym == :pending
 
-    notify(instance: @record.joinable, users: [@record.user], params: {
-      object: title(@record.joinable) || "Demande acceptée",
-      content: "Vous venez de rejoindre un(e) #{entity_name(@record.joinable)} de #{username(@record.joinable.user)}",
-      extra: {
-        joinable_id: @record.joinable_id,
-        joinable_type: @record.joinable_type,
-        group_type: group_type(@record.joinable),
-        type: "JOIN_REQUEST_ACCEPTED",
-        user_id: @record.user_id
+    notify(
+      referent: @record.joinable,
+      instance: @record.joinable,
+      users: [@record.user],
+      params: {
+        object: title(@record.joinable) || "Demande acceptée",
+        content: "Vous venez de rejoindre un(e) #{entity_name(@record.joinable)} de #{username(@record.joinable.user)}",
+        extra: {
+          joinable_id: @record.joinable_id,
+          joinable_type: @record.joinable_type,
+          group_type: group_type(@record.joinable),
+          type: "JOIN_REQUEST_ACCEPTED",
+          user_id: @record.user_id
+        }
       }
-    })
+    )
   end
 
   # use params[:extra] to be compliant with v7

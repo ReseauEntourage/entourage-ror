@@ -302,6 +302,7 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
 
         it {
           expect_any_instance_of(PushNotificationTrigger).to receive(:notify).with(
+            referent: conversation,
             instance: conversation,
             users: [participant],
             params: {
@@ -339,6 +340,7 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
       context "update title" do
         it {
           expect_any_instance_of(PushNotificationTrigger).to receive(:notify).with(
+            referent: outing,
             instance: outing.reload,
             users: [participant],
             params: {
@@ -354,6 +356,7 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
       context "update starts_at" do
         it {
           expect_any_instance_of(PushNotificationTrigger).to receive(:notify).with(
+            referent: outing,
             instance: outing.reload,
             users: [participant],
             params: {
@@ -370,6 +373,7 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
       context "update status to cancel" do
         it {
           expect_any_instance_of(PushNotificationTrigger).to receive(:notify).with(
+            referent: outing,
             instance: outing.reload,
             users: [participant],
             params: {
@@ -388,6 +392,7 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
 
         it {
           expect_any_instance_of(PushNotificationTrigger).to receive(:notify).with(
+            referent: outing,
             instance: outing.reload,
             users: [participant],
             params: {
@@ -417,6 +422,7 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
 
       it {
         expect_any_instance_of(PushNotificationTrigger).to receive(:notify).with(
+          referent: outing,
           instance: participant,
           users: [outing.user],
           params: {
