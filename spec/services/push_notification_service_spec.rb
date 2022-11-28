@@ -11,7 +11,7 @@ describe PushNotificationService, type: :service do
     let!(:object) { 'object' }
     let!(:content) { 'content' }
     before { UserServices::UnreadMessages.any_instance.stub(:number_of_unread_messages) { 1 } }
-    subject! { PushNotificationService.new(android_notification_service, ios_notification_service).send_notification(sender, object, content, User.all) }
+    subject! { PushNotificationService.new(android_notification_service, ios_notification_service).send_notification(sender, object, content, User.all, :outing, :foo) }
     it { expect(android_notification_service).to have_received(:send_notification).with(sender, object, content, user_app1.push_token, user.community.slug, {}, 1) }
     it { expect(ios_notification_service).to have_received(:send_notification).with(sender, object, content, user_app2.push_token, user.community.slug, {}, 1) }
   end
@@ -25,7 +25,7 @@ describe PushNotificationService, type: :service do
     let!(:object) { 'object' }
     let!(:content) { 'content' }
     before { UserServices::UnreadMessages.any_instance.stub(:number_of_unread_messages) { 1 } }
-    subject! { PushNotificationService.new(android_notification_service, ios_notification_service).send_notification(sender, object, content, User.all) }
+    subject! { PushNotificationService.new(android_notification_service, ios_notification_service).send_notification(sender, object, content, User.all, :outing, :foo) }
     it { expect(android_notification_service).to have_received(:send_notification).with(sender, object, content, user_app.push_token, user.community.slug, {}, 1) }
   end
 
@@ -38,7 +38,7 @@ describe PushNotificationService, type: :service do
     let!(:object) { 'object' }
     let!(:content) { 'content' }
     before { UserServices::UnreadMessages.any_instance.stub(:number_of_unread_messages) { 1 } }
-    subject! { PushNotificationService.new(android_notification_service, ios_notification_service).send_notification(sender, object, content, User.all) }
+    subject! { PushNotificationService.new(android_notification_service, ios_notification_service).send_notification(sender, object, content, User.all, :outing, :foo) }
     it { expect(ios_notification_service).to have_received(:send_notification).with(sender, object, content, user_app.push_token, user.community.slug, {}, 1) }
   end
 
@@ -54,7 +54,7 @@ describe PushNotificationService, type: :service do
     let!(:object) { 'object' }
     let!(:content) { 'content' }
     before { UserServices::UnreadMessages.any_instance.stub(:number_of_unread_messages) { 1 } }
-    subject! { PushNotificationService.new(android_notification_service, ios_notification_service).send_notification(sender, object, content, User.all) }
+    subject! { PushNotificationService.new(android_notification_service, ios_notification_service).send_notification(sender, object, content, User.all, :outing, :foo) }
     it { expect(ios_notification_service).to have_received(:send_notification).with(sender, object, content, user_app4.push_token, user.community.slug, {}, 1) }
     it { expect(ios_notification_service).to have_received(:send_notification).with(sender, object, content, user_app2.push_token, user.community.slug, {}, 1) }
     it { expect(ios_notification_service).to have_received(:send_notification).with(sender, object, content, user_app3.push_token, user.community.slug, {}, 1) }
@@ -77,7 +77,7 @@ describe PushNotificationService, type: :service do
       }
 
       subject! {
-        PushNotificationService.new(android_notification_service, ios_notification_service).send_notification(sender, object, content, [android_user.user, ios_user.user])
+        PushNotificationService.new(android_notification_service, ios_notification_service).send_notification(sender, object, content, [android_user.user, ios_user.user], :outing, :foo)
       }
       it { expect(android_notification_service).to have_received(:send_notification) }
       it { expect(ios_notification_service).to have_received(:send_notification) }
@@ -92,7 +92,7 @@ describe PushNotificationService, type: :service do
       }
 
       subject! {
-        PushNotificationService.new(android_notification_service, ios_notification_service).send_notification(sender, object, content, [android_user.user, ios_user.user])
+        PushNotificationService.new(android_notification_service, ios_notification_service).send_notification(sender, object, content, [android_user.user, ios_user.user], :outing, :foo)
       }
       it { expect(android_notification_service).not_to have_received(:send_notification) }
       it { expect(ios_notification_service).not_to have_received(:send_notification) }
