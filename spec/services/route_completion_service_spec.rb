@@ -11,64 +11,6 @@ describe RouteCompletionService do
 
   let(:instance) { controller_name.singularize.to_sym }
 
-  describe 'run_notifications' do
-    let(:subject) { completor.run_notifications }
-
-    let(:inapp_notification) { create(:inapp_notification, user: user) }
-
-    let(:controller_name) { "neighborhoods" }
-    let(:action_name) { :show }
-    let(:params) { { id: inapp_notification.instance_id } }
-
-    describe 'action is show' do
-      let(:action_name) { :show }
-
-      context 'set_completed_notification!' do
-        before { RouteCompletionService.any_instance.stub(:criteria) { Hash.new } }
-        before { expect_any_instance_of(RouteCompletionService).to receive(:set_completed_notification!) }
-
-        it { subject }
-      end
-
-      context 'set completed_at for user with specific notification' do
-        let(:inapp_notification) { create(:inapp_notification, user: user) }
-        let(:params) { { id: inapp_notification.instance_id } }
-
-        before { subject }
-
-        it { expect(inapp_notification.reload.completed_at).to be_a(ActiveSupport::TimeWithZone) }
-      end
-
-      context 'set completed_at for another user with specific notification' do
-        let(:inapp_notification) { create(:inapp_notification) }
-        let(:params) { { id: inapp_notification.instance_id } }
-
-        before { subject }
-
-        it { expect(inapp_notification.reload.completed_at).to be(nil) }
-      end
-
-      context 'set completed_at for user with another notification' do
-        let(:inapp_notification) { create(:inapp_notification, user: user) }
-        let(:inapp_notification_1) { create(:inapp_notification, user: user) }
-        let(:params) { { id: inapp_notification_1.instance_id } }
-
-        before { subject }
-
-        it { expect(inapp_notification.reload.completed_at).to be(nil) }
-      end
-    end
-
-    describe 'action is index' do
-      let(:action_name) { :index }
-
-      before { RouteCompletionService.any_instance.stub(:criteria) { Hash.new } }
-      before { expect_any_instance_of(RouteCompletionService).not_to receive(:set_completed_notification!) }
-
-      it { subject }
-    end
-  end
-
   describe 'run_recommandations' do
     let(:subject) { completor.run_recommandations }
 
@@ -221,43 +163,6 @@ describe RouteCompletionService do
     let(:params) { { resource_id: 1 } }
 
     it { expect(subject).to eq({ instance: :resource, action: :show, instance_id: 1 }) }
-  end
-
-  describe 'set_completed_notification' do
-    let(:subject) { completor.send(:set_completed_notification!, criteria) }
-    let(:criteria) { { action: :show, instance: :neighborhood, instance_id: instance_id } }
-    let(:instance_id) { inapp_notification.instance_id}
-
-    context 'no inapp_notification on user' do
-      let(:anyone) { FactoryBot.create(:pro_user) }
-      let!(:inapp_notification) { create(:inapp_notification, user: anyone) }
-
-      it { expect(subject).to eq(0) }
-      it { expect(subject && inapp_notification.reload.completed_at).to be(nil) }
-    end
-
-    context 'some inapp_notification on user' do
-      let!(:inapp_notification) { create(:inapp_notification, user: user) }
-
-      it { expect(subject).to eq(1) }
-      it { expect(subject && inapp_notification.reload.completed_at).to be_a(ActiveSupport::TimeWithZone) }
-    end
-
-    context 'wrong instance_id' do
-      let!(:inapp_notification) { create(:inapp_notification, user: user) }
-      let(:instance_id) { inapp_notification.instance_id + 1 }
-
-      it { expect(subject).to eq(0) }
-      it { expect(subject && inapp_notification.reload.completed_at).to be(nil) }
-    end
-
-    context 'empty instance_id is valid for all' do
-      let!(:inapp_notification) { create(:inapp_notification, user: user) }
-      let(:criteria) { { action: :show, instance: :neighborhood } }
-
-      it { expect(subject).to eq(1) }
-      it { expect(subject && inapp_notification.reload.completed_at).to be_a(ActiveSupport::TimeWithZone) }
-    end
   end
 
   describe 'set_completed_recommandation' do

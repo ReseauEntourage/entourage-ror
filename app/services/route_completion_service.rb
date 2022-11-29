@@ -9,15 +9,7 @@ class RouteCompletionService
   end
 
   def run
-    run_notifications
     run_recommandations
-  end
-
-  def run_notifications
-    return unless action_name == :show
-    return unless criteria
-
-    set_completed_notification! criteria
   end
 
   def run_recommandations
@@ -82,12 +74,6 @@ class RouteCompletionService
 
   protected
 
-  def set_completed_notification! criteria
-    InappNotification
-      .active_criteria_by_user(user, criteria.slice(:instance, :instance_id))
-      .update_all(completed_at: Time.now)
-  end
-
   def set_completed_recommandation! criteria
     UserRecommandation
       .active_criteria_by_user(user, criteria.slice(:instance, :instance_id, :instance_url, :action))
@@ -103,7 +89,7 @@ class RouteCompletionService
   private
 
   def instances_list
-    Recommandation::INSTANCES + InappNotification::INSTANCES
+    Recommandation::INSTANCES
   end
 
   def actions_list
