@@ -13,21 +13,19 @@
 ActiveRecord::Schema.define(version: 2022_12_08_151000) do
 
   # These are extensions that must be enabled in order to support this database
-  enable_extension "pg_stat_statements"
   enable_extension "pg_trgm"
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
   enable_extension "postgis"
   enable_extension "unaccent"
 
-  create_table "active_admin_comments", id: false, force: :cascade do |t|
-    t.serial "id", null: false
-    t.string "namespace", limit: 255
+  create_table "active_admin_comments", id: :serial, force: :cascade do |t|
+    t.string "namespace"
     t.text "body"
-    t.string "resource_id", limit: 255, null: false
-    t.string "resource_type", limit: 255, null: false
+    t.string "resource_id", null: false
+    t.string "resource_type", null: false
+    t.string "author_type"
     t.integer "author_id"
-    t.string "author_type", limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
     t.index ["author_type", "author_id"], name: "index_active_admin_comments_on_author_type_and_author_id"
@@ -49,23 +47,6 @@ ActiveRecord::Schema.define(version: 2022_12_08_151000) do
     t.integer "position", default: 1, null: false
     t.string "city"
     t.index ["user_id", "position"], name: "index_addresses_on_user_id_and_position", unique: true
-  end
-
-  create_table "admin_users", id: :serial, force: :cascade do |t|
-    t.string "email", default: "", null: false
-    t.string "encrypted_password", default: "", null: false
-    t.string "reset_password_token"
-    t.datetime "reset_password_sent_at"
-    t.datetime "remember_created_at"
-    t.integer "sign_in_count", default: 0, null: false
-    t.datetime "current_sign_in_at"
-    t.datetime "last_sign_in_at"
-    t.string "current_sign_in_ip"
-    t.string "last_sign_in_ip"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.index ["email"], name: "index_admin_users_on_email", unique: true
-    t.index ["reset_password_token"], name: "index_admin_users_on_reset_password_token", unique: true
   end
 
   create_table "announcements", id: :serial, force: :cascade do |t|
@@ -101,7 +82,7 @@ ActiveRecord::Schema.define(version: 2022_12_08_151000) do
   create_table "categories", id: :serial, force: :cascade do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string "name", limit: 255
+    t.string "name"
   end
 
   create_table "categories_pois", id: false, force: :cascade do |t|
@@ -210,10 +191,10 @@ ActiveRecord::Schema.define(version: 2022_12_08_151000) do
     t.integer "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string "street_person_name", limit: 255
+    t.string "street_person_name"
     t.float "latitude"
     t.float "longitude"
-    t.string "voice_message_url", limit: 255
+    t.string "voice_message_url"
     t.integer "tour_id"
     t.string "encrypted_message"
     t.string "address"
@@ -321,7 +302,7 @@ ActiveRecord::Schema.define(version: 2022_12_08_151000) do
     t.string "community", limit: 9, null: false
     t.string "group_type", limit: 14, null: false
     t.jsonb "metadata", default: {}, null: false
-    t.boolean "public", default: true
+    t.boolean "public", default: false
     t.datetime "feed_updated_at"
     t.string "image_url"
     t.boolean "online", default: false
@@ -380,9 +361,11 @@ ActiveRecord::Schema.define(version: 2022_12_08_151000) do
     t.datetime "skipped_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "context"
-    t.integer "content"
+    t.string "context"
+    t.string "content"
+    t.datetime "displayed_at"
     t.index ["context"], name: "index_inapp_notifications_on_context"
+    t.index ["displayed_at"], name: "index_inapp_notifications_on_displayed_at"
     t.index ["instance"], name: "index_inapp_notifications_on_instance"
     t.index ["instance_id"], name: "index_inapp_notifications_on_instance_id"
     t.index ["user_id"], name: "index_inapp_notifications_on_user_id"
@@ -498,7 +481,7 @@ ActiveRecord::Schema.define(version: 2022_12_08_151000) do
   end
 
   create_table "newsletter_subscriptions", id: :serial, force: :cascade do |t|
-    t.string "email", limit: 255
+    t.string "email"
     t.boolean "active"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -609,16 +592,16 @@ ActiveRecord::Schema.define(version: 2022_12_08_151000) do
   end
 
   create_table "pois", id: :serial, force: :cascade do |t|
-    t.string "name", limit: 255
+    t.string "name"
     t.text "description"
     t.float "latitude"
     t.float "longitude"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string "adress", limit: 255
-    t.string "phone", limit: 255
-    t.string "website", limit: 255
-    t.string "email", limit: 255
+    t.string "adress"
+    t.string "phone"
+    t.string "website"
+    t.string "email"
     t.string "audience"
     t.integer "category_id"
     t.boolean "validated", default: false, null: false
@@ -644,13 +627,6 @@ ActiveRecord::Schema.define(version: 2022_12_08_151000) do
     t.string "image_url"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-  end
-
-  create_table "recommandation_moderation_areas", force: :cascade do |t|
-    t.integer "recommandation_id"
-    t.integer "moderation_area_id"
-    t.index ["moderation_area_id"], name: "index_recommandation_moderation_areas_on_moderation_area_id"
-    t.index ["recommandation_id"], name: "index_recommandation_moderation_areas_on_recommandation_id"
   end
 
   create_table "recommandations", force: :cascade do |t|
@@ -703,14 +679,14 @@ ActiveRecord::Schema.define(version: 2022_12_08_151000) do
     t.index ["name"], name: "index_resources_on_name"
   end
 
-  create_table "rpush_apps", id: :serial, force: :cascade do |t|
+  create_table "rpush_apps", force: :cascade do |t|
     t.string "name", null: false
     t.string "environment"
     t.text "certificate"
     t.string "password"
     t.integer "connections", default: 1, null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.string "type", null: false
     t.string "auth_key"
     t.string "client_id"
@@ -724,16 +700,16 @@ ActiveRecord::Schema.define(version: 2022_12_08_151000) do
     t.boolean "feedback_enabled", default: true
   end
 
-  create_table "rpush_feedback", id: :serial, force: :cascade do |t|
+  create_table "rpush_feedback", force: :cascade do |t|
     t.string "device_token"
     t.datetime "failed_at", null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.integer "app_id"
     t.index ["device_token"], name: "index_rpush_feedback_on_device_token"
   end
 
-  create_table "rpush_notifications", id: :serial, force: :cascade do |t|
+  create_table "rpush_notifications", force: :cascade do |t|
     t.integer "badge"
     t.string "device_token"
     t.string "sound"
@@ -747,8 +723,8 @@ ActiveRecord::Schema.define(version: 2022_12_08_151000) do
     t.integer "error_code"
     t.text "error_description"
     t.datetime "deliver_after"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.boolean "alert_is_json", default: false, null: false
     t.string "type", null: false
     t.string "collapse_key"
@@ -783,15 +759,15 @@ ActiveRecord::Schema.define(version: 2022_12_08_151000) do
 
   create_table "sensitive_words_checks", id: :serial, force: :cascade do |t|
     t.string "status", null: false
-    t.integer "record_id", null: false
     t.string "record_type", null: false
+    t.integer "record_id", null: false
     t.text "matches", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["record_type", "record_id"], name: "index_sensitive_words_checks_on_record_type_and_record_id", unique: true
   end
 
-  create_table "session_histories", id: :serial, force: :cascade do |t|
+  create_table "session_histories", id: false, force: :cascade do |t|
     t.integer "user_id", null: false
     t.date "date", null: false
     t.string "platform", limit: 7, null: false
@@ -992,6 +968,7 @@ ActiveRecord::Schema.define(version: 2022_12_08_151000) do
     t.string "instance_url"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "fragment"
     t.index ["completed_at", "skipped_at"], name: "index_user_recommandations_on_completed_at_and_skipped_at"
     t.index ["instance"], name: "index_user_recommandations_on_instance"
     t.index ["user_id", "recommandation_id"], name: "index_user_recommandations_on_user_id_and_recommandation_id", unique: true, where: "((completed_at IS NULL) AND (skipped_at IS NULL))"
@@ -1008,11 +985,11 @@ ActiveRecord::Schema.define(version: 2022_12_08_151000) do
   create_table "users", id: :serial, force: :cascade do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string "email", limit: 255
-    t.string "first_name", limit: 255
-    t.string "last_name", limit: 255
+    t.string "email"
+    t.string "first_name"
+    t.string "last_name"
     t.string "phone", null: false
-    t.string "token", limit: 255
+    t.string "token"
     t.string "device_id"
     t.integer "device_type"
     t.string "sms_code"
@@ -1042,7 +1019,7 @@ ActiveRecord::Schema.define(version: 2022_12_08_151000) do
     t.integer "partner_id"
     t.boolean "partner_admin", default: false, null: false
     t.string "partner_role_title"
-    t.uuid "uuid", default: -> { "gen_random_uuid()" }
+    t.uuid "uuid", default: -> { "gen_random_uuid()" }, null: false
     t.string "goal"
     t.jsonb "interests_old", default: [], null: false
     t.string "encrypted_admin_password"

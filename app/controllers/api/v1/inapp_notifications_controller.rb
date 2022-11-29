@@ -2,13 +2,14 @@ module Api
   module V1
     class InappNotificationsController < Api::V1::BaseController
       before_action :set_inapp_notification, only: [:destroy]
+      after_action :set_inapp_notications_displayed_at, only: [:index]
 
       def index
         render json: current_user.inapp_notifications.page(page).per(per), each_serializer: ::V1::InappNotificationSerializer
       end
 
       def count
-        render json: { count: current_user.inapp_notifications.active.count }
+        render json: { count: current_user.inapp_notifications.not_displayed.count }
       end
 
       def destroy
@@ -35,6 +36,12 @@ module Api
 
       def per
         params[:per] || 25
+      end
+
+      private
+
+      def set_inapp_notications_displayed_at
+        current_user.inapp_notifications.not_displayed.update_all(displayed_at: Time.zone.now)
       end
     end
   end

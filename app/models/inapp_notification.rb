@@ -8,6 +8,8 @@ class InappNotification < ApplicationRecord
   default_scope { order(created_at: :desc) }
 
   scope :active, -> { where(completed_at: nil, skipped_at: nil) }
+  scope :displayed, -> { where.not(displayed_at: nil) }
+  scope :not_displayed, -> { where(displayed_at: nil) }
 
   scope :completed_by, -> (user) { where(user_id: user.id).where.not(completed_at: nil) }
   scope :skipped_by, -> (user) { where(user_id: user.id).where.not(skipped_at: nil) }
