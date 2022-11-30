@@ -126,8 +126,8 @@ describe Api::V1::HomeController do
     it { expect(result["tags"]["sections"]).to be_a(Array) }
     it { expect(result["tags"]["sections"][0]).to eq({
       "id" => "social",
-      "name" => "Lien social / temps partagé",
-      "subname" => "proposer un café..."
+      "name" => "Temps de partage",
+      "subname" => "café, activité..."
     }) }
     # interests
     it { expect(result["tags"]).to have_key("interests") }
