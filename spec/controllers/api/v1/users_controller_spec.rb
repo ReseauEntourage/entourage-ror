@@ -993,7 +993,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
         let!(:join_request)  { create :join_request, user: other_user, status: :accepted }
         let!(:join_request2) { create :join_request, user: other_user, status: :pending }
         before { get :show, params: { id: other_user.id, token: user.token } }
-        it { expect(JSON.parse(response.body)['user']['roles']).to eq ['ambassador'] }
+        it { expect(JSON.parse(response.body)['user']['roles']).to eq ['Ambassadeur'] }
         it { expect(JSON.parse(response.body)['user']['memberships']).to eq [] }
       end
 
