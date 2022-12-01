@@ -219,8 +219,10 @@ Rails.application.routes.draw do
     resources :neighborhoods, only: [:index, :edit, :update] do
       member do
         get :show_members
+        get :show_outings
+        get 'outing_chat_messages/:outing_id' => :show_outing_chat_messages, as: :show_outing_chat_messages
         get :show_posts
-        get 'post/:post_id' => :show_post_comments, as: :show_post_comments
+        get 'post_comments/:post_id' => :show_post_comments, as: :show_post_comments
         get :edit_owner
         post :update_owner
         get '/edit/image', action: :edit_image

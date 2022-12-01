@@ -2,7 +2,7 @@ module Admin
   class NeighborhoodsController < Admin::BaseController
     layout 'admin_large'
 
-    before_action :set_neighborhood, only: [:edit, :update, :edit_image, :update_image, :show_members, :show_posts, :show_post_comments, :edit_owner, :update_owner]
+    before_action :set_neighborhood, only: [:edit, :update, :edit_image, :update_image, :show_members, :show_outings, :show_outing_chat_messages, :show_posts, :show_post_comments, :edit_owner, :update_owner]
 
     def index
       @params = params.permit([:area, :search]).to_h
@@ -43,6 +43,15 @@ module Admin
     end
 
     def show_members
+    end
+
+    def show_outings
+      @outings = @neighborhood.outings.page(page).per(per)
+    end
+
+    def show_outing_chat_messages
+      @outing = Outing.find(params[:outing_id])
+      @chat_messages = @outing.chat_messages.page(page).per(per)
     end
 
     def show_posts
