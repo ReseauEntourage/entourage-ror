@@ -49,8 +49,8 @@
                 <% end %>
               </td>
               <td>
-                <% neighborhood.interest_list.each do |interest| %>
-                  <span class="badge"><%= interest %></span>
+                <% neighborhood.interests.each do |interest| %>
+                  <span class="badge"><%= interest.name %></span>
                 <% end %>
               </td>
               <td><%= l neighborhood.created_at, format: :date_short %></td>

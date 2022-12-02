@@ -8,7 +8,7 @@ module Admin
       @params = params.permit([:area, :search]).to_h
       @area = params[:area].presence&.to_sym || :all
 
-      @neighborhoods = Neighborhood.unscoped.includes([:user, :taggings])
+      @neighborhoods = Neighborhood.unscoped.includes([:user, :interests])
       @neighborhoods = @neighborhoods.search_by(params[:search]) if params[:search].present?
       @neighborhoods = @neighborhoods.with_moderation_area(@area.to_s) if @area && @area != :all
       @neighborhoods = @neighborhoods.order(created_at: :desc).page(page).per(per)
@@ -46,7 +46,7 @@ module Admin
     end
 
     def show_outings
-      @outings = @neighborhood.outings.page(page).per(per)
+      @outings = @neighborhood.outings.includes([:interests, :chat_messages]).page(page).per(per)
     end
 
     def show_outing_chat_messages
