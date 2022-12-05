@@ -22,6 +22,7 @@ class Neighborhood < ApplicationRecord
   has_many :members, -> { where("join_requests.status = 'accepted'") }, through: :join_requests, source: :user
   has_many :neighborhoods_entourages
   has_many :outings, -> { where(group_type: :outing) }, through: :neighborhoods_entourages, source: :entourage, class_name: "Outing"
+  has_many :parent_chat_messages, -> { where(ancestry: nil) }, as: :messageable, class_name: :ChatMessage
 
   reverse_geocoded_by :latitude, :longitude
   has_many :chat_messages, as: :messageable, dependent: :destroy
@@ -169,10 +170,6 @@ class Neighborhood < ApplicationRecord
 
   def has_ongoing_outing?
     ongoing_outings.any?
-  end
-
-  def parent_chat_messages
-    chat_messages.where(ancestry: nil)
   end
 
   # @code_legacy

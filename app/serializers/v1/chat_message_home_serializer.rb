@@ -11,10 +11,13 @@ module V1
     end
 
     def has_comments
-      object.has_children?
+      comments_count > 0
     end
 
     def comments_count
+      # if chat_message has been loaded using :preload_comments_count scope
+      return object.comments_count if object.respond_to?(:comments_count)
+
       object.children.count
     end
 
