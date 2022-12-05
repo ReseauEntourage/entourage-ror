@@ -16,12 +16,17 @@ module Sectionable
   end
 
   def section
-    self.section_list.first
+    self.section_names.first
   end
 
   def section= section
     return unless section.present?
 
     self.section_list = [section]
+  end
+
+  def section_names
+    # optimization to resolve n+1
+    sections.map(&:name)
   end
 end

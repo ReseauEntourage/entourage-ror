@@ -126,7 +126,7 @@ module V1
 
     def interests
       # we use "Tag.interest_list &" to force ordering
-      Tag.interest_list & object.interest_list
+      Tag.interest_list & object.interest_names
     end
 
     # FIXME: the placeholders attribute is a hack. It indicates to the clients

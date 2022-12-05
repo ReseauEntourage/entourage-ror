@@ -25,7 +25,7 @@ module V1
     end
 
     def interests
-      object.interest_list.sort
+      object.interest_names.sort
     end
 
     def has_ongoing_outing

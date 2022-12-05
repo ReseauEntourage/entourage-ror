@@ -305,7 +305,7 @@ describe Api::V1::OutingsController do
       end
 
       context "user is creator" do
-        let(:outing) { FactoryBot.create(:outing, :joined, user: user, status: :open) }
+        let(:outing) { FactoryBot.create(:outing, :outing_class, user: user, status: :open, interests: ['animaux', 'other']) }
         let(:params) { { title: "New title", metadata: { place_limit: 100 } } }
 
         before { request }
@@ -314,6 +314,7 @@ describe Api::V1::OutingsController do
         it { expect(subject).to have_key('outing') }
         it { expect(subject['outing']['title']).to eq('New title') }
         it { expect(subject['outing']['metadata']['place_limit']).to eq('100') }
+        it { expect(subject['outing']['interests']).to eq(["animaux", "other"]) }
       end
 
       context "close" do
