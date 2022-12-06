@@ -22,15 +22,21 @@
     <%= link_to "Publications (#{@neighborhood.posts_count})", show_posts_admin_neighborhood_path(@neighborhood) %>
   </li>
 
-  <% if tab == :show_outing_chat_messages %>
-    <li role="presentation" class="active">
-      <%= link_to "Messages de l'événement (#{@outing.chat_messages.count})", "#" %>
+  <% if tab == :show_outing_chat_messages || @outing.present? %>
+    <li role="presentation" class="<%= :active if tab == :show_outing_chat_messages %>">
+      <%= link_to "Messages de l'événement (#{@outing.chat_messages.count})", show_outing_posts_admin_neighborhood_path(@neighborhood, outing_id: @outing.id) %>
     </li>
   <% end %>
 
   <% if tab == :show_post_comments %>
     <li role="presentation" class="active">
       <%= link_to "Commentaires (#{@post.children.count})", "#" %>
+    </li>
+  <% end %>
+
+  <% if tab == :show_outing_post_comments %>
+    <li role="presentation" class="active">
+      <%= link_to "Commentaires de l'événement (#{@post.children.count})", "#" %>
     </li>
   <% end %>
 </ul>

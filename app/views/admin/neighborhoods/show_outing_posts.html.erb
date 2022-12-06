@@ -11,14 +11,14 @@
 
       <% color = {} %>
 
-      <% if @chat_messages.empty? %>
+      <% if @posts.empty? %>
         Il n'y a pas encore de message.
       <% else %>
         <% date = nil %>
 
-        <% @chat_messages.each do |message| %>
-          <% if date.nil? || date != message.created_at.to_date %>
-            <% date = message.created_at.to_date %>
+        <% @posts.each do |post| %>
+          <% if date.nil? || date != post.created_at.to_date %>
+            <% date = post.created_at.to_date %>
             <div class="conversation-day-divider">
               <div class="conversation-day-divider-label">
                 <% if date == Date.today %>
@@ -30,24 +30,24 @@
             </div>
           <% end %>
 
-          <% color[message.user_id] ||= (color.count * 0.381966011 * 360).round %>
+          <% color[post.user_id] ||= (color.count * 0.381966011 * 360).round %>
 
           <div class="conversation-message">
             <div class="conversation-gutter">
-              <div style="background-color: hsl(<%= color[message.user_id] %>, 70%, 75%)" class="conversation-icon">
-                <%= [message.user.first_name.try(:first), message.user.last_name.try(:first)].compact.join.upcase %>
+              <div style="background-color: hsl(<%= color[post.user_id] %>, 70%, 75%)" class="conversation-icon">
+                <%= [post.user.first_name.try(:first), post.user.last_name.try(:first)].compact.join.upcase %>
               </div>
             </div>
             <div class="conversation-content">
               <div>
-                <%= link_to message.user.full_name, admin_user_path(message.user), class: "conversation-sender" %>
-                <span class="conversation-timestamp"><%= l message.created_at, format: "%H h %M" %></span>
+                <%= link_to post.user.full_name, admin_user_path(post.user), class: "conversation-sender" %>
+                <span class="conversation-timestamp"><%= l post.created_at, format: "%H h %M" %></span>
               </div>
 
-              <%= simple_format message.content %>
+              <%= simple_format post.content %>
 
-              <% if message.children.any? %>
-                <div><%= link_to "voir les commentaires", show_post_comments_admin_neighborhood_path(@neighborhood, post_id: message.id) %></div>
+              <% if post.children.any? %>
+                <div><%= link_to "voir les commentaires", show_outing_post_comments_admin_neighborhood_path(@neighborhood, post_id: post.id) %></div>
               <% end %>
             </div>
           </div>
@@ -55,7 +55,7 @@
       <% end %>
 
       <div class="row">
-        <%= paginate @chat_messages %>
+        <%= paginate @posts %>
       </div>
 
     </div>
