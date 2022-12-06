@@ -9,6 +9,7 @@ module NeighborhoodServices
         end
 
         neighborhoods
+          .includes([:user, :members, :interests, :ongoing_outings, :past_outings, :future_outings])
           .not_joined_by(user)
           .inside_perimeter(user.latitude, user.longitude, user.travel_distance)
           .order_by_distance_from(user.latitude, user.longitude)
