@@ -63,6 +63,10 @@
         <% end %>
         <%= simple_format message.content %>
 
+        <% if message.children.any? %>
+          <div><%= link_to "voir les commentaires", show_comments_admin_entourage_path(@entourage.id, message_id: message.full_object_id) %></div>
+        <% end %>
+
         <% if @last_reads[message.full_object_id].any? %>
           <div style="display: flex; align-items: center; font-size: 12px; margin-top: -10px; margin-right: -40px; justify-content: end; ; padding-right: 2px;">
             <% @last_reads[message.full_object_id].each do |participation| %>

@@ -19,4 +19,14 @@ class ConversationMessage < ApplicationRecord
   def join_request?
     full_object_type == 'JoinRequest'
   end
+
+  def chat_message?
+    full_object_type == 'ChatMessage'
+  end
+
+  def children
+    return unless chat_message?
+
+    ChatMessage.find(full_object_id).children
+  end
 end

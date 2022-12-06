@@ -124,6 +124,7 @@ Rails.application.routes.draw do
           get :show_joins
           get :show_invitations
           get :show_messages
+          get 'comments/:message_id' => :show_comments, as: :show_comments
           get :show_siblings
           get :sensitive_words
           post :sensitive_words_check
