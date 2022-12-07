@@ -17,7 +17,7 @@ class LegacyPhoneValidator
   end
 
   def french_number?
-    formatted.match(/\A(\+[3]{2}|0)([6-7][-.\s]?(\d{2}[-.\s]?){3}\d{2})/).present?
+    formatted.match(/\A(\+[3]{2}|0)([6-7][-.\s]?(\d{2}[-.\s]?){3}\d{2})$/).present?
   end
 
   def belgian_number?

@@ -96,6 +96,11 @@ describe User, :type => :model do
     it { expect(FactoryBot.build(:pro_user, phone: '+6282333333000').save).to be false }
     it { expect(FactoryBot.build(:pro_user, phone: '+40768888800').save).to be false }
     it { expect(FactoryBot.build(:pro_user, phone: '+529322222200').save).to be false }
+    # starting with 06 but too long
+    it { expect(FactoryBot.build(:pro_user, phone: '+336060606060616').save).to be false }
+    it { expect(FactoryBot.build(:pro_user, phone: '+336090909090919').save).to be false }
+    it { expect(FactoryBot.build(:pro_user, phone: '+336161616161616').save).to be false }
+    it { expect(FactoryBot.build(:pro_user, phone: '+336191919191919').save).to be false }
   end
 
   describe "sms_code" do
