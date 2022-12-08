@@ -30,8 +30,7 @@ module Admin
     end
 
     def neighborhood_links
-      @neighborhood = Neighborhood.unscoped.find(params[:id])
-      render layout: false
+      redirect_to edit_admin_neighborhood_path(params[:id])
     end
 
     # no option: render template
