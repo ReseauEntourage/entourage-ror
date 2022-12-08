@@ -1,5 +1,7 @@
 <% color = {} %>
 
+<h3>Commentaires <span class="badge"><%= @comments.count %><span></h3>
+
 <% if @comments.empty? %>
   Il n'y a pas encore de message.
 <% else %>
