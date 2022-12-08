@@ -15,7 +15,7 @@ module Experimental
     end
 
     def neighborhood_validation status
-      record = Neighborhood.find(id)
+      record = Neighborhood.unscoped.find(id)
 
       validation(record, status)
       payload(record, status)
@@ -60,7 +60,7 @@ module Experimental
 
     # neighborhood
     def set_neighborhood_as_validate record
-      record.update_attribute(:status, :open) unless record.status == :closed
+      record.update_attribute(:status, :active) unless record.status == :closed
     end
 
     def set_neighborhood_as_block record
