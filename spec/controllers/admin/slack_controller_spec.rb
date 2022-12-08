@@ -7,62 +7,124 @@ describe Admin::SlackController do
   ENV["SLACK_APP_VERIFICATION_TOKEN"] = "slack-app-verification-token"
 
   describe 'POST #message_action' do
-    let(:entourage) { FactoryBot.create(:entourage)}
-    let(:payload) { {
-      callback_id: "entourage_validation:#{entourage.id}",
-      user: { name: 'John Doe' },
-      actions: [ { value: "validate" } ]
-    } }
+    context "on entourage" do
+      let(:entourage) { FactoryBot.create(:entourage)}
+      let(:payload) { {
+        callback_id: "entourage_validation:#{entourage.id}",
+        user: { name: 'John Doe' },
+        actions: [ { value: "validate" } ]
+      } }
 
-    before {
-      allow(Experimental::EntourageSlack).to receive(:asset_url).and_return('https://fake.url')
-      allow(Experimental::EntourageSlack).to receive(:links_url).and_return('https://fake.url')
-    }
-
-    context "not signed in" do
-      before { post :message_action, params: { payload: ActiveSupport::JSON.encode(payload) } }
-
-      it { expect(response.code).to eq("401") }
-    end
-
-    context "signed in" do
       before {
-        payload[:token] = "slack-app-verification-token"
-        post :message_action, params: { payload: ActiveSupport::JSON.encode(payload) }
+        allow(Experimental::EntourageSlack).to receive(:asset_url).and_return('https://fake.url')
+        allow(Experimental::EntourageSlack).to receive(:links_url).and_return('https://fake.url')
       }
 
-      it { expect(response.code).to eq("200") }
-      it { expect(JSON.parse(response.body)).not_to be_nil }
-      it { expect(JSON.parse(response.body).has_key? 'attachments').to be_truthy }
+      context "not signed in" do
+        before { post :message_action, params: { payload: ActiveSupport::JSON.encode(payload) } }
+
+        it { expect(response.code).to eq("401") }
+      end
+
+      context "signed in" do
+        before {
+          payload[:token] = "slack-app-verification-token"
+          post :message_action, params: { payload: ActiveSupport::JSON.encode(payload) }
+        }
+
+        it { expect(response.code).to eq("200") }
+        it { expect(JSON.parse(response.body)).not_to be_nil }
+        it { expect(JSON.parse(response.body).has_key? 'attachments').to be_truthy }
+      end
+
+      context "validation message" do
+        before {
+          payload[:token] = "slack-app-verification-token"
+          post :message_action, params: { payload: ActiveSupport::JSON.encode(payload) }
+        }
+
+        it { expect(JSON.parse(response.body)['attachments'].last['text']).to eq("*:white_check_mark: <@John Doe> a validé cette action*") }
+      end
+
+      context "block message" do
+        before {
+          payload[:token] = "slack-app-verification-token"
+          payload[:actions] = [ { value: "block" } ]
+          post :message_action, params: { payload: ActiveSupport::JSON.encode(payload) }
+        }
+
+        it { expect(JSON.parse(response.body)['attachments'].last['text']).to eq("*:no_entry_sign: <@John Doe> a bloqué cette action*") }
+      end
+
+      context "wrong message" do
+        before {
+          payload[:token] = "slack-app-verification-token"
+          payload[:actions] = [ { value: "foo" } ]
+          post :message_action, params: { payload: ActiveSupport::JSON.encode(payload) }
+        }
+
+        it { expect(response.code).to eq("400") }
+      end
     end
 
-    context "validation message" do
+    context "on neighborhood" do
+      let(:neighborhood) { FactoryBot.create(:neighborhood)}
+      let(:payload) { {
+        callback_id: "neighborhood_validation:#{neighborhood.id}",
+        user: { name: 'John Doe' },
+        actions: [ { value: "validate" } ]
+      } }
+
       before {
-        payload[:token] = "slack-app-verification-token"
-        post :message_action, params: { payload: ActiveSupport::JSON.encode(payload) }
+        allow(Experimental::NeighborhoodSlack).to receive(:links_url).and_return('https://fake.url')
       }
 
-      it { expect(JSON.parse(response.body)['attachments'].last['text']).to eq("*:white_check_mark: <@John Doe> a validé cette action*") }
-    end
+      context "not signed in" do
+        before { post :message_action, params: { payload: ActiveSupport::JSON.encode(payload) } }
 
-    context "block message" do
-      before {
-        payload[:token] = "slack-app-verification-token"
-        payload[:actions] = [ { value: "block" } ]
-        post :message_action, params: { payload: ActiveSupport::JSON.encode(payload) }
-      }
+        it { expect(response.code).to eq("401") }
+      end
 
-      it { expect(JSON.parse(response.body)['attachments'].last['text']).to eq("*:no_entry_sign: <@John Doe> a bloqué cette action*") }
-    end
+      context "signed in" do
+        before {
+          payload[:token] = "slack-app-verification-token"
+          post :message_action, params: { payload: ActiveSupport::JSON.encode(payload) }
+        }
 
-    context "wrong message" do
-      before {
-        payload[:token] = "slack-app-verification-token"
-        payload[:actions] = [ { value: "foo" } ]
-        post :message_action, params: { payload: ActiveSupport::JSON.encode(payload) }
-      }
+        it { expect(response.code).to eq("200") }
+        it { expect(JSON.parse(response.body)).not_to be_nil }
+        it { expect(JSON.parse(response.body).has_key? 'attachments').to be_truthy }
+      end
 
-      it { expect(response.code).to eq("400") }
+      context "validation message" do
+        before {
+          payload[:token] = "slack-app-verification-token"
+          post :message_action, params: { payload: ActiveSupport::JSON.encode(payload) }
+        }
+
+        it { expect(response.code).to eq("200") }
+        it { expect(JSON.parse(response.body)['attachments'].last['text']).to eq("*:white_check_mark: <@John Doe> a validé cette action*") }
+      end
+
+      context "block message" do
+        before {
+          payload[:token] = "slack-app-verification-token"
+          payload[:actions] = [ { value: "block" } ]
+          post :message_action, params: { payload: ActiveSupport::JSON.encode(payload) }
+        }
+
+        it { expect(JSON.parse(response.body)['attachments'].last['text']).to eq("*:no_entry_sign: <@John Doe> a bloqué cette action*") }
+      end
+
+      context "wrong message" do
+        before {
+          payload[:token] = "slack-app-verification-token"
+          payload[:actions] = [ { value: "foo" } ]
+          post :message_action, params: { payload: ActiveSupport::JSON.encode(payload) }
+        }
+
+        it { expect(response.code).to eq("400") }
+      end
     end
   end
 
@@ -73,6 +135,15 @@ describe Admin::SlackController do
     it { expect(response.code).to eq("200") }
     it { expect(assigns(:entourage)).not_to be_nil }
     it { expect(assigns(:entourage).id).to eq(entourage.id) }
+  end
+
+  describe 'GET #neighborhood_links' do
+    let(:neighborhood) { FactoryBot.create(:neighborhood)}
+    before { get :neighborhood_links, params: { id: neighborhood.to_param } }
+
+    it { expect(response.code).to eq("200") }
+    it { expect(assigns(:neighborhood)).not_to be_nil }
+    it { expect(assigns(:neighborhood).id).to eq(neighborhood.id) }
   end
 
   describe 'GET #csv' do

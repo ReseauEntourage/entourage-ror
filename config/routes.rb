@@ -270,6 +270,7 @@ Rails.application.routes.draw do
       post :user_unblock
       get :csv
       get 'entourage_links/:id' => :entourage_links, as: :entourage_links
+      get 'neighborhood_links/:id' => :neighborhood_links, as: :neighborhood_links
     end
   end
 

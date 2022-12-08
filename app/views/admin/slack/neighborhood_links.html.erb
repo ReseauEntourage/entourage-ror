@@ -1,0 +1,81 @@
+<!doctype html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+
+  <style>
+    html {
+      height: 100%;
+    }
+
+    body {
+      margin: 0;
+      font-family: sans-serif;
+      height: 100%;
+    }
+
+    .wrapper {
+      display: table;
+      height: 100%;
+      margin: auto;
+    }
+
+    .wrapper > div {
+      display: table-cell;
+      vertical-align: middle;
+    }
+
+    .container {
+      width: 200px;
+    }
+
+    .button {
+      cursor: pointer;
+      color: #6c757d;
+      background-color: transparent;
+      background-image: none;
+      border: 1px solid #6c757d;
+
+      display: block;
+      font-weight: 400;
+      text-align: center;
+      white-space: nowrap;
+      vertical-align: middle;
+      -webkit-user-select: none;
+         -moz-user-select: none;
+          -ms-user-select: none;
+              user-select: none;
+
+      padding: .375rem .75rem;
+      font-size: 1rem;
+      line-height: 1.5;
+      border-radius: .25rem;
+      text-transform: none;
+      overflow: visible;
+      margin: .5rem;
+    }
+
+    .button:hover, .button:active {
+      color: #fff;
+      background-color: #6c757d;
+    }
+
+    .button, .button:focus, .button:hover {
+      text-decoration: none;
+    }
+
+    .button:focus {
+      outline: 0;
+      box-shadow: 0 0 0 .2rem rgba(108,117,125,.5);
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <div>
+      <div class="container">
+        <%= link_to "Admin", [:admin, @neighborhood], class: "button" %>
+      </div>
+    </div>
+  </div>
+</body>
