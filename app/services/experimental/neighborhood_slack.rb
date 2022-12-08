@@ -98,7 +98,7 @@ module Experimental::NeighborhoodSlack
     extend ActiveSupport::Concern
 
     included do
-      after_commit :notify_slack
+      after_create :notify_slack
     end
 
     private
