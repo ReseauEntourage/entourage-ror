@@ -103,7 +103,7 @@ describe Admin::SlackController do
         }
 
         it { expect(response.code).to eq("200") }
-        it { expect(JSON.parse(response.body)['attachments'].last['text']).to eq("*:white_check_mark: <@John Doe> a validé cette action*") }
+        it { expect(JSON.parse(response.body)['attachments'].last['text']).to eq("*:white_check_mark: <@John Doe> a validé ce groupe de voisinage*") }
       end
 
       context "block message" do
@@ -113,7 +113,7 @@ describe Admin::SlackController do
           post :message_action, params: { payload: ActiveSupport::JSON.encode(payload) }
         }
 
-        it { expect(JSON.parse(response.body)['attachments'].last['text']).to eq("*:no_entry_sign: <@John Doe> a bloqué cette action*") }
+        it { expect(JSON.parse(response.body)['attachments'].last['text']).to eq("*:no_entry_sign: <@John Doe> a bloqué ce groupe de voisinage*") }
       end
 
       context "wrong message" do
@@ -141,9 +141,8 @@ describe Admin::SlackController do
     let(:neighborhood) { FactoryBot.create(:neighborhood)}
     before { get :neighborhood_links, params: { id: neighborhood.to_param } }
 
-    it { expect(response.code).to eq("200") }
-    it { expect(assigns(:neighborhood)).not_to be_nil }
-    it { expect(assigns(:neighborhood).id).to eq(neighborhood.id) }
+    it { expect(response.code).to eq("302") }
+    it { should redirect_to edit_admin_neighborhood_path(neighborhood) }
   end
 
   describe 'GET #csv' do
