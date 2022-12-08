@@ -156,12 +156,12 @@ resource Api::V1::UsersController do
       parameter :email, "Email", type: :string
     end
 
-    let!(:user) { FactoryBot.create(:pro_user, phone: '+336234567890') }
+    let!(:user) { FactoryBot.create(:pro_user, phone: '+33623456789') }
 
     let(:raw_post) { {
       user: {
-        current_phone: '+336234567890',
-        requested_phone: '+336987654321',
+        current_phone: '+33623456789',
+        requested_phone: '+33698765432',
         email: 'my@email.com'
       }
     }.to_json }
