@@ -25,12 +25,12 @@ module Admin
     end
 
     def entourage_links
-      @entourage = Entourage.find params[:id]
+      @entourage = Entourage.find(params[:id])
       render layout: false
     end
 
     def neighborhood_links
-      @neighborhood = Neighborhood.find params[:id]
+      @neighborhood = Neighborhood.unscoped.find(params[:id])
       render layout: false
     end
 
