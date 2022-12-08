@@ -70,14 +70,14 @@ module Experimental
     def payload_neighborhood_as_validate record
       payload = Experimental::NeighborhoodSlack.payload(record)
       payload[:attachments].first[:color] = :good
-      payload[:attachments].last[:text] = "*:white_check_mark: <@#{username}> a validé cette action*"
+      payload[:attachments].last[:text] = "*:white_check_mark: <@#{username}> a validé ce groupe de voisinage*"
       payload
     end
 
     def payload_neighborhood_as_block record
       payload = Experimental::NeighborhoodSlack.payload(record)
       payload[:attachments].first[:color] = :danger
-      payload[:attachments].last[:text] = "*:no_entry_sign: <@#{username}> a bloqué cette action*"
+      payload[:attachments].last[:text] = "*:no_entry_sign: <@#{username}> a bloqué ce groupe de voisinage*"
       payload
     end
   end

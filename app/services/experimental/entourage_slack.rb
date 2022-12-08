@@ -108,7 +108,7 @@ module Experimental::EntourageSlack
               value: :block,
               confirm: {
                 title:        "Masquer cette action ?",
-                text:         "Elle n'apparaîtra plus dans le feed.",
+                text:         "Elle n'apparaîtra plus dans les recherches.",
                 ok_text:      "Oui",
                 dismiss_text: "Non"
               }
