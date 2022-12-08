@@ -139,4 +139,16 @@ RSpec.describe Neighborhood, :type => :model do
       it { expect(neighborhood.status_changed_at).to be_a(ActiveSupport::TimeWithZone) }
     end
   end
+
+  describe "notify_slack" do
+    let(:neighborhood) { build(:neighborhood) }
+
+    before {
+      allow(Experimental::NeighborhoodSlack).to receive(:notify)
+
+      neighborhood.save
+    }
+
+    it { expect(Experimental::NeighborhoodSlack).to have_received(:notify) }
+  end
 end
