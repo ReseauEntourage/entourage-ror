@@ -89,7 +89,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
               "phone" => user.phone,
               "unread_count" => 0,
               "interests" => [],
-              "travel_distance" => 10,
+              "travel_distance" => 100,
               "birthday" => nil,
               "permissions" => {
                 "outing" => { "creation" => true }
@@ -312,7 +312,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
           "phone" => user.phone,
           "unread_count" => 0,
           "interests" => [],
-          "travel_distance" => 10,
+          "travel_distance" => 100,
           "birthday" => nil,
           "permissions" => {
             "outing" => { "creation" => false }
@@ -812,7 +812,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
             "phone" => user.phone,
             "unread_count" => 0,
             "interests" => [],
-            "travel_distance" => 10,
+            "travel_distance" => 100,
             "birthday" => nil,
             "permissions" => {
               "outing" => { "creation" => true }
@@ -906,7 +906,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
             "phone" => user.phone,
             "unread_count" => 0,
             "interests" => [],
-            "travel_distance" => 10,
+            "travel_distance" => 100,
             "birthday" => nil,
             "permissions" => {
               "outing" => { "creation" => true }

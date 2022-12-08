@@ -119,8 +119,13 @@ describe Api::V1::FeedsController do
         let!(:suburbs_entourage) { FactoryBot.create(:entourage, created_at: 5.hours.ago, updated_at: 5.hours.ago, latitude: 48.752552, longitude: 2.294402) }
         let!(:south_of_france) { FactoryBot.create(:entourage, created_at: 6.hours.ago, updated_at: 6.hours.ago, latitude: 43.716691, longitude: 7.258083) }
 
-        context "default distance" do
+        context "default distance is 100" do
           before { get :index, params: { token: user.token, latitude: 48.8566, longitude: 2.3522 } }
+          it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([paris_entourage.id, suburbs_entourage.id]) }
+        end
+
+        context "10km distance" do
+          before { get :index, params: { token: user.token, latitude: 48.8566, longitude: 2.3522, distance: 10 } }
           it { expect(result["feeds"].map {|feed| feed["data"]["id"]} ).to eq([paris_entourage.id]) }
         end
 
