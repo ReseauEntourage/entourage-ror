@@ -2,7 +2,8 @@ module ApplicationHelper
   def status_label instance
     type_to_class = {
       "active" => "label-info",
-      "deleted" => "label-warning"
+      "deleted" => "label-warning",
+      "blacklisted" => "label-danger"
     }
     content_tag :span, instance.status, class: "label #{type_to_class[instance.status]}"
   end

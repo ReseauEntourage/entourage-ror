@@ -186,6 +186,10 @@ fr:
         interests: Centres d'intérêts
         image_url: Image
         status: Statut
+        statuses:
+          active: Actif
+          deleted: Supprimé
+          blacklisted: Blacklisté
       recommandation:
         name: Nom
         instance: Objet
