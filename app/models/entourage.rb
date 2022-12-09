@@ -294,6 +294,13 @@ class Entourage < ApplicationRecord
     super(value)
   end
 
+  def image_path
+    return unless action?
+    return unless contribution?
+
+    becomes(Contribution).image_path
+  end
+
   def entourage_image_id= entourage_image_id
     return unless outing?
 

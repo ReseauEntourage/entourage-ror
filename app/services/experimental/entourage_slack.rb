@@ -73,9 +73,9 @@ module Experimental::EntourageSlack
       attachments: [
         {
           color: "#3AA3E3",
-          author_icon: asset_url(e.user.avatar_key.present? ? h.entourage_category_image_path(e) : "user/default_avatar.png"),
+          author_icon: UserServices::Avatar.new(user: entourage.user).thumbnail_url(expire: 7.days),
           author_name: subtitle,
-          thumb_url: UserServices::Avatar.new(user: entourage.user).thumbnail_url(expire: 7.days),
+          thumb_url: e.image_path,
           title: entourage.title,
           text: text,
           mrkdwn_in: [:text]
