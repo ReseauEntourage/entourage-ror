@@ -2,10 +2,11 @@ class Neighborhood < ApplicationRecord
   include Interestable
   include CoordinatesScopable
   include JoinableScopable
+  include Experimental::NeighborhoodSlack::Callback
 
   after_validation :track_status_change
 
-  # STATUSES = [:active, :deleted]
+  STATUSES = [:active, :deleted, :blacklisted]
 
   belongs_to :user
 
@@ -98,6 +99,14 @@ class Neighborhood < ApplicationRecord
 
   def active?
     status.to_sym == :active
+  end
+
+  def deleted?
+    status.to_sym == :deleted
+  end
+
+  def blacklisted?
+    status.to_sym == :blacklisted
   end
 
   def interests= interests

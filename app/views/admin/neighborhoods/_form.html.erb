@@ -3,19 +3,30 @@
 </style>
 
 <%= render partial: 'common/errors', locals: { obj: @neighborhood } %>
+
 <%= form_for [:admin, @neighborhood], html: { role: "form" } do |f| %>
+
+  <% if @neighborhood.deleted? %>
+    <div class="alert alert-warning" role="alert" style="display: flex; align-items: center">
+      <div style="flex-grow: 1">
+        <b>Supprimé</b><br>
+        Ce groupe de voisins est supprimé. Il n'apparaît pas dans les propositions de groupe de voisins sur l'app mobile.
+      </div>
+    </div>
+  <% elsif @neighborhood.blacklisted? %>
+    <div class="alert alert-danger" role="alert" style="display: flex; align-items: center">
+      <div style="flex-grow: 1">
+        <b>Blacklisté</b><br>
+        Ce groupe de voisins est blacklisté. Il n'apparaît pas dans les propositions de groupe de voisins sur l'app mobile.
+      </div>
+    </div>
+  <% end %>
+
   <div class="form-group">
     <%= f.label :status %>
-    <div class="controls">
-      <%= f.check_box :status, {
-        checked: @neighborhood.active?,
-        'data-toggle': :toggle,
-        'data-on': "Active",
-        'data-off': "Inactive",
-        'data-onstyle': :success,
-        'data-offstyle': :danger
-      }, :active, :deleted %>
-    </div>
+
+    <% statuses = Neighborhood::STATUSES.map { |status| [t("activerecord.attributes.neighborhood.statuses.#{status}"), status] } %>
+    <%= f.select :status, options_for_select(statuses, @neighborhood.status), { include_blank: false }, class: "form-control" %>
   </div>
 
   <div class="form-group">
@@ -102,10 +113,4 @@
   }
 
   initAutocomplete();
-</script>
-
-<script>
-  $(document).on('turbolinks:load', function() {
-    $('#neighborhood_status').bootstrapToggle()
-  })
 </script>

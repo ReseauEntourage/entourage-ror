@@ -7,37 +7,30 @@ module Admin
 
     def message_action
       callback_type, *callback_params = @payload['callback_id']&.split(':')
-      return head :bad_request if [callback_type, callback_params.length] != ['entourage_validation', 1]
+      username = @payload['user']['name']
+
+      return head :bad_request unless callback_params.length == 1
+      return head :bad_request unless ['entourage_validation', 'neighborhood_validation'].include?(callback_type)
       return head :bad_request unless @payload['actions']
 
-      entourage = Entourage.find callback_params[0]
+      action = @payload['actions'].first['value']
+      return head :bad_request unless ['validate', 'block'].include?(action)
 
-      case @payload['actions'].first['value']
-      when 'validate'
-        entourage.update_attribute(:status, :open) unless entourage.status == :closed
-        color  = :good
-        icon   = :white_check_mark
-        action = 'validé'
-      when 'block'
-        entourage.update_attribute(:status, :blacklisted) unless entourage.status == :suspended
-        color  = :danger
-        icon   = :no_entry_sign
-        action = 'bloqué'
-      else
-        return head :bad_request
-      end
+      validation = Experimental::SlackValidation.new(callback_params[0], username)
+      return head :bad_request unless validation.respond_to?(callback_type)
 
-      response = Experimental::EntourageSlack.payload entourage
-      response[:attachments].first[:color] = color
-      response[:attachments].last[:text] =
-        "*:#{icon}: <@#{@payload['user']['name']}> a #{action} cette action*"
-
-      render json: response
+      render json: validation.send(callback_type, action)
+    rescue => e
+      return head :bad_request
     end
 
     def entourage_links
-      @entourage = Entourage.find params[:id]
+      @entourage = Entourage.find(params[:id])
       render layout: false
+    end
+
+    def neighborhood_links
+      redirect_to edit_admin_neighborhood_path(params[:id])
     end
 
     # no option: render template
