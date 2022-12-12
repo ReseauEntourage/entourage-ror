@@ -209,8 +209,6 @@ describe Api::V1::Conversations::ChatMessagesController do
             'John D.',
             "foobaz",
             [ join_request2.user ],
-            "conversation",
-            conversation.id,
             {
               joinable_id: conversation.id,
               joinable_type: "Entourage",
