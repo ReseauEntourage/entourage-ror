@@ -2,13 +2,13 @@ module Admin
   class NeighborhoodsController < Admin::BaseController
     layout 'admin_large'
 
-    before_action :set_neighborhood, only: [:edit, :update, :edit_image, :update_image, :show_members, :show_posts, :show_post_comments, :edit_owner, :update_owner]
+    before_action :set_neighborhood, only: [:edit, :update, :edit_image, :update_image, :show_members, :show_outings, :show_outing_posts, :show_outing_post_comments, :show_posts, :show_post_comments, :edit_owner, :update_owner]
 
     def index
       @params = params.permit([:area, :search]).to_h
       @area = params[:area].presence&.to_sym || :all
 
-      @neighborhoods = Neighborhood.unscoped.includes([:user, :taggings])
+      @neighborhoods = Neighborhood.unscoped.includes([:user, :interests])
       @neighborhoods = @neighborhoods.search_by(params[:search]) if params[:search].present?
       @neighborhoods = @neighborhoods.with_moderation_area(@area.to_s) if @area && @area != :all
       @neighborhoods = @neighborhoods.order(created_at: :desc).page(page).per(per)
@@ -43,6 +43,28 @@ module Admin
     end
 
     def show_members
+    end
+
+    def show_outings
+      @outings = @neighborhood.outings.includes([:interests]).page(page).per(per)
+    end
+
+    def show_outing_posts
+      @outing = Outing.find(params[:outing_id])
+      @posts = @outing.parent_chat_messages.page(page).per(per)
+    end
+
+    def show_outing_post_comments
+      @post = ChatMessage.find(params[:post_id])
+
+      messageable = @post.messageable
+
+      if messageable.is_a?(Entourage) && messageable.outing?
+        @outing = messageable
+        @comments = @post.children.page(page).per(per).includes([:user])
+      else
+        redirect_to edit_admin_neighborhood_path(@neighborhood), alert: "La page n'est pas disponible"
+      end
     end
 
     def show_posts

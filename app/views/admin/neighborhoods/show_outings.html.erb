@@ -1,0 +1,39 @@
+<%= stylesheet_link_tag 'list' %>
+
+<div class="container">
+  <div style="width: 750px; margin: auto">
+    <%= render 'edit_header', tab: :show_outings %>
+
+    <div id="outings">
+      <% @outings.each do |outing| %>
+        <div class="list-element" data-id="<%= outing.id %>">
+          <div class="list-element-id text-muted">
+            <div>#<%= outing.id %></div>
+            <div>
+              <% outing.interests.each do |interest| %>
+                <span class="label label-default" title="<%= interest %>"><%= interest %></span>
+              <% end %>
+            </div>
+          </div>
+
+          <div class="list-element-content" style="width: 100%">
+            <div style="font-weight: bold"><%= link_to outing.title, admin_entourage_path(outing) %></div>
+            <div><%= outing.description %></div>
+          </div>
+
+          <div class="list-element-image">
+            <%= image_tag(outing.image_url, size: '225x96') if outing.image_url.present? %>
+          </div>
+
+          <% if outing.parent_chat_messages.any? %>
+            <div><%= link_to "voir les messages", show_outing_posts_admin_neighborhood_path(@neighborhood, outing_id: outing.id) %></div>
+          <% end %>
+        </div>
+      <% end %>
+
+      <div class="row">
+        <%= paginate @outings %>
+      </div>
+    </div>
+  </div>
+</div>

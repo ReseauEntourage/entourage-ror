@@ -1,0 +1,46 @@
+<% color = {} %>
+
+<h3>Commentaires <span class="badge"><%= @comments.count %><span></h3>
+
+<% if @comments.empty? %>
+  Il n'y a pas encore de message.
+<% else %>
+  <% date = nil %>
+
+  <% @comments.each do |message| %>
+    <% if date.nil? || date != message.created_at.to_date %>
+      <% date = message.created_at.to_date %>
+      <div class="conversation-day-divider">
+        <div class="conversation-day-divider-label">
+          <% if date == Date.today %>
+            aujourd'hui
+          <% else %>
+            <%= l date, format: "%A %-d %B %Y" %>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+
+    <% color[message.user_id] ||= (color.count * 0.381966011 * 360).round %>
+
+    <div class="conversation-message">
+      <div class="conversation-gutter">
+        <div style="background-color: hsl(<%= color[message.user_id] %>, 70%, 75%)" class="conversation-icon">
+          <%= [message.user.first_name.try(:first), message.user.last_name.try(:first)].compact.join.upcase %>
+        </div>
+      </div>
+      <div class="conversation-content">
+        <div>
+          <%= link_to message.user.full_name, admin_user_path(message.user), class: "conversation-sender" %>
+          <span class="conversation-timestamp"><%= l message.created_at, format: "%H h %M" %></span>
+        </div>
+
+        <%= simple_format message.content %>
+      </div>
+    </div>
+  <% end %>
+<% end %>
+
+<div class="row">
+  <%= paginate @comments %>
+</div>

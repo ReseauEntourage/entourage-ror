@@ -1,6 +1,6 @@
 module Admin
   class EntouragesController < Admin::BaseController
-    before_action :set_entourage, only: [:show, :edit, :update, :close, :renew, :cancellation, :cancel, :edit_image, :update_image, :moderator_read, :moderator_unread, :message, :show_members, :show_joins, :show_invitations, :show_messages, :show_siblings, :sensitive_words, :sensitive_words_check, :edit_type, :edit_owner, :update_owner, :admin_pin, :admin_unpin, :pin, :unpin]
+    before_action :set_entourage, only: [:show, :edit, :update, :close, :renew, :cancellation, :cancel, :edit_image, :update_image, :moderator_read, :moderator_unread, :message, :show_members, :show_joins, :show_invitations, :show_messages, :show_comments, :show_siblings, :sensitive_words, :sensitive_words_check, :edit_type, :edit_owner, :update_owner, :admin_pin, :admin_unpin, :pin, :unpin]
     before_action :ensure_moderator!, only: [:message]
 
     before_action :set_default_index_params, only: [:index]
@@ -169,7 +169,7 @@ module Admin
         .includes(:user)
         .to_a
 
-      @chat_messages = @entourage.conversation_messages.ordered
+      @chat_messages = @entourage.parent_conversation_messages.ordered
           .includes(:user)
           .with_content
           .page(params[:page])
@@ -189,6 +189,12 @@ module Admin
           @last_reads[message.full_object_id].push reads.shift
         end
       end
+
+      render :show
+    end
+
+    def show_comments
+      @comments = ChatMessage.find(params[:message_id]).children.page(page).per(per)
 
       render :show
     end
@@ -442,6 +448,15 @@ module Admin
     end
 
     private
+
+    def per
+      params[:per] || 25
+    end
+
+    def page
+      params[:page] || 1
+    end
+
     def set_entourage
       @entourage = Entourage.find(params[:id])
     end

@@ -1,41 +1,23 @@
-.overlay-container {
-  position: relative;
-}
-
-.overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 1;
-}
-
-.overlay-container a:not(.overlay) {
-  position: relative;
-  z-index: 2;
-}
-
-#elements {
+#list {
   background-color: #ddd;
   padding-top: 1px; /* top separator */
 }
-.element {
+.list-element {
   display: flex;
   background-color: #fff;
 }
-.element + .element {
+.list-element + .list-element {
   margin-top: 1px; /* separators */
 }
-.element > * {
+.list-element > * {
   padding: 8px;
 }
-.element-id {
-  width: 40px;
+.list-element-id {
+  width: 80px;
 }
-.element-content {
+.list-element-content {
   flex-grow: 1;
 }
-.element-image {
+.list-element-image {
   width: calc(255px + 8px * 2);
 }

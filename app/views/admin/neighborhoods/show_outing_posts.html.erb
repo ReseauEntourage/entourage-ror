@@ -1,0 +1,63 @@
+<%= stylesheet_link_tag 'chat_messages' %>
+
+<div class="container">
+  <div style="width: 750px; margin: auto">
+    <%= render 'edit_header', tab: :show_outing_chat_messages %>
+
+    <div class="row">
+      <div class="breadcrumb" style="margin-bottom: 0px">
+        <%= "Messages de l'événement : #{@outing.title}" %>
+      </div>
+
+      <% color = {} %>
+
+      <% if @posts.empty? %>
+        Il n'y a pas encore de message.
+      <% else %>
+        <% date = nil %>
+
+        <% @posts.each do |post| %>
+          <% if date.nil? || date != post.created_at.to_date %>
+            <% date = post.created_at.to_date %>
+            <div class="conversation-day-divider">
+              <div class="conversation-day-divider-label">
+                <% if date == Date.today %>
+                  aujourd'hui
+                <% else %>
+                  <%= l date, format: "%A %-d %B %Y" %>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+
+          <% color[post.user_id] ||= (color.count * 0.381966011 * 360).round %>
+
+          <div class="conversation-message">
+            <div class="conversation-gutter">
+              <div style="background-color: hsl(<%= color[post.user_id] %>, 70%, 75%)" class="conversation-icon">
+                <%= [post.user.first_name.try(:first), post.user.last_name.try(:first)].compact.join.upcase %>
+              </div>
+            </div>
+            <div class="conversation-content">
+              <div>
+                <%= link_to post.user.full_name, admin_user_path(post.user), class: "conversation-sender" %>
+                <span class="conversation-timestamp"><%= l post.created_at, format: "%H h %M" %></span>
+              </div>
+
+              <%= simple_format post.content %>
+
+              <% if post.children.any? %>
+                <div><%= link_to "voir les commentaires", show_outing_post_comments_admin_neighborhood_path(@neighborhood, post_id: post.id) %></div>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+      <% end %>
+
+      <div class="row">
+        <%= paginate @posts %>
+      </div>
+
+    </div>
+  </div>
+</div>

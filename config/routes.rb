@@ -124,6 +124,7 @@ Rails.application.routes.draw do
           get :show_joins
           get :show_invitations
           get :show_messages
+          get 'comments/:message_id' => :show_comments, as: :show_comments
           get :show_siblings
           get :sensitive_words
           post :sensitive_words_check
@@ -219,8 +220,11 @@ Rails.application.routes.draw do
     resources :neighborhoods, only: [:index, :edit, :update] do
       member do
         get :show_members
+        get :show_outings
+        get 'outing_posts/:outing_id' => :show_outing_posts, as: :show_outing_posts
+        get 'outing_post_comments/:post_id' => :show_outing_post_comments, as: :show_outing_post_comments
         get :show_posts
-        get 'post/:post_id' => :show_post_comments, as: :show_post_comments
+        get 'post_comments/:post_id' => :show_post_comments, as: :show_post_comments
         get :edit_owner
         post :update_owner
         get '/edit/image', action: :edit_image
