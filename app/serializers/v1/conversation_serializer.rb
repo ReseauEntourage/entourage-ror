@@ -16,7 +16,7 @@ module V1
     attribute :section, unless: :private_conversation?
     attribute :blockers, if: :private_conversation?
 
-    # Array: modérateur, nom de l'asso, ambassadeur
+    # @duplicated with V1::ConversationHomeSerializer
     def user
       return unless user = other_participant
 
@@ -28,7 +28,9 @@ module V1
         avatar_url: UserServices::Avatar.new(user: user).thumbnail_url,
         partner: partner.nil? ? nil : V1::PartnerSerializer.new(partner, scope: { minimal: true }, root: false).as_json,
         partner_role_title: user.partner_role_title.presence,
-        roles: user.roles
+        roles: user.roles.map do |role|
+          I18n.t("community.entourage.roles.#{role}")
+        end
       }
     end
 

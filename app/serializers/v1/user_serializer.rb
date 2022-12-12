@@ -82,7 +82,11 @@ module V1
     end
 
     def roles
-      object.roles.sort_by { |r| object.community.roles.index(r) }
+      object.roles.sort_by do |r|
+        object.community.roles.index(r)
+      end.map do |role|
+        I18n.t("community.entourage.roles.#{role}")
+      end
     end
 
     def partner
