@@ -7,6 +7,12 @@ class Contribution < Entourage
 
   default_scope { where(group_type: :action, entourage_type: :contribution).order(created_at: :desc) }
 
+  def image_path
+    return unless image_url
+
+    Contribution.url_for(image_url)
+  end
+
   class << self
     def bucket
       Storage::Client.images
