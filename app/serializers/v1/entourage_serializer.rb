@@ -150,5 +150,19 @@ module V1
       return false if current_join_request.nil?
       current_join_request.report_prompt_status == 'display'
     end
+
+    def display_category
+      object.display_category || display_category_from_section
+    end
+
+    private
+
+    def display_category_from_section
+      return unless object.action?
+
+      action = object.contribution? ? object.becomes(Contribution) : object.becomes(Solicitation)
+
+      ActionServices::Mapper.display_category_from_section(action.section)
+    end
   end
 end
