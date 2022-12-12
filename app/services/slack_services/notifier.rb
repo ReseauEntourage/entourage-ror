@@ -65,7 +65,7 @@ module SlackServices
     end
 
     def link_to_neighborhood neighborhood
-      Rails.application.routes.url_helpers.admin_neighborhood_url(neighborhood.id, host: ENV['ADMIN_HOST'])
+      Rails.application.routes.url_helpers.edit_admin_neighborhood_url(neighborhood.id, host: ENV['ADMIN_HOST'])
     end
 
     def link_to_conversation conversation_or_action
