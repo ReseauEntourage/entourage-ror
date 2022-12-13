@@ -23,7 +23,7 @@ module Api
 
       def private
         entourages = Entourage.joins(:join_requests)
-          .includes(:members, :join_requests, { user: :partner })
+          .includes(:join_requests, { user: :partner })
           .where(group_type: :conversation)
           .where('join_requests.user_id = ?', current_user.id)
           .order(updated_at: :desc)
