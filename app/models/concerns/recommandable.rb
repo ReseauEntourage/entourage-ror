@@ -9,7 +9,7 @@ module Recommandable
         .not_joined_by(user)
         .where.not(id: visited_instances)
         .inside_perimeter(user.latitude, user.longitude, user.travel_distance)
-        .order_by_distance_from(user.latitude, user.longitude)
+        .unscope(:order).order_by_distance_from(user.latitude, user.longitude)
     }
   end
 end
