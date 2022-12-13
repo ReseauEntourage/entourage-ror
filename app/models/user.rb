@@ -74,13 +74,15 @@ class User < ApplicationRecord
   has_many :users_resources
   has_many :user_recommandations
   has_many :inapp_notifications, dependent: :destroy
-  has_one :notification_configuration, class_name: "InappNotificationConfiguration", dependent: :destroy
+  has_one :notification_permission, dependent: :destroy
   has_many :recommandations, -> { UserRecommandation.active }, through: :user_recommandations
 
   delegate :country, to: :address, allow_nil: true
   delegate :postal_code, to: :address, allow_nil: true
   delegate :latitude, to: :address, allow_nil: true
   delegate :longitude, to: :address, allow_nil: true
+
+  delegate :notification_permissions, to: :notification_permission
 
   attr_reader :admin_password
   attr_reader :cnil_explanation

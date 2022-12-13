@@ -372,12 +372,6 @@ ActiveRecord::Schema.define(version: 2022_12_08_151000) do
     t.index ["user_id", "partner_id"], name: "index_followings_on_user_id_and_partner_id", unique: true
   end
 
-  create_table "inapp_notification_configurations", force: :cascade do |t|
-    t.integer "user_id", null: false
-    t.jsonb "configuration"
-    t.index ["user_id"], name: "index_inapp_notification_configurations_on_user_id"
-  end
-
   create_table "inapp_notifications", force: :cascade do |t|
     t.integer "user_id", null: false
     t.string "instance", null: false
@@ -386,8 +380,11 @@ ActiveRecord::Schema.define(version: 2022_12_08_151000) do
     t.datetime "skipped_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["completed_at"], name: "index_inapp_notifications_on_completed_at"
-    t.index ["skipped_at"], name: "index_inapp_notifications_on_skipped_at"
+    t.integer "context"
+    t.integer "content"
+    t.index ["context"], name: "index_inapp_notifications_on_context"
+    t.index ["instance"], name: "index_inapp_notifications_on_instance"
+    t.index ["instance_id"], name: "index_inapp_notifications_on_instance_id"
     t.index ["user_id"], name: "index_inapp_notifications_on_user_id"
   end
 
@@ -505,6 +502,12 @@ ActiveRecord::Schema.define(version: 2022_12_08_151000) do
     t.boolean "active"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "notification_permissions", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.jsonb "permissions", default: {}, null: false
+    t.index ["user_id"], name: "index_notification_permissions_on_user_id"
   end
 
   create_table "old_atd_synchronizations", id: :serial, force: :cascade do |t|

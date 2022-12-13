@@ -10,9 +10,21 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
   describe "after_create" do
     describe "on_create is received" do
       describe "outing" do
+        let(:subject) { create :outing, user: user, neighborhoods: [create(:neighborhood)] }
+
         it {
           expect_any_instance_of(PushNotificationTrigger).to receive(:neighborhoods_entourage_on_create)
-          create :outing, user: user, neighborhoods: [create(:neighborhood)]
+          subject
+        }
+
+        it {
+          expect_any_instance_of(PushNotificationService).to receive(:send_notification)
+          subject
+        }
+
+        it {
+          expect_any_instance_of(InappNotificationServices::Builder).to receive(:instanciate)
+          subject
         }
       end
 
@@ -302,6 +314,7 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
 
         it {
           expect_any_instance_of(PushNotificationTrigger).to receive(:notify).with(
+            referent: conversation,
             instance: conversation,
             users: [participant],
             params: {
@@ -339,6 +352,7 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
       context "update title" do
         it {
           expect_any_instance_of(PushNotificationTrigger).to receive(:notify).with(
+            referent: outing,
             instance: outing.reload,
             users: [participant],
             params: {
@@ -354,6 +368,7 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
       context "update starts_at" do
         it {
           expect_any_instance_of(PushNotificationTrigger).to receive(:notify).with(
+            referent: outing,
             instance: outing.reload,
             users: [participant],
             params: {
@@ -370,6 +385,7 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
       context "update status to cancel" do
         it {
           expect_any_instance_of(PushNotificationTrigger).to receive(:notify).with(
+            referent: outing,
             instance: outing.reload,
             users: [participant],
             params: {
@@ -388,6 +404,7 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
 
         it {
           expect_any_instance_of(PushNotificationTrigger).to receive(:notify).with(
+            referent: outing,
             instance: outing.reload,
             users: [participant],
             params: {
@@ -417,6 +434,7 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
 
       it {
         expect_any_instance_of(PushNotificationTrigger).to receive(:notify).with(
+          referent: outing,
           instance: participant,
           users: [outing.user],
           params: {

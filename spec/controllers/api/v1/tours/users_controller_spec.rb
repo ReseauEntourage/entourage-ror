@@ -65,6 +65,8 @@ describe Api::V1::Tours::UsersController do
           "Demande en attente",
           "John D. souhaite rejoindre votre maraude",
           [tour.user],
+          "tour",
+          tour.id,
           {
             joinable_id: tour.id,
             joinable_type: "Tour",
@@ -152,6 +154,8 @@ describe Api::V1::Tours::UsersController do
           "Demande acceptée",
           "Vous venez de rejoindre un(e) maraude de John D.",
           User.where(id: requester.id),
+          "tour",
+          tour.id,
           {
             joinable_id: tour.id,
             joinable_type: "Tour",
