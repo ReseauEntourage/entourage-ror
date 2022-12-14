@@ -50,20 +50,70 @@ describe V1::EntourageSerializer do
       it { expect(serialized[:display_category]).to eq("resource") }
     end
 
-    context "section is defined" do
+    context "section is defined for contribution" do
       # simulates an action created from v8
-      let!(:contribution) { FactoryBot.create(:contribution, display_category: nil, section: "clothes") }
+      let!(:contribution) { FactoryBot.create(:contribution, display_category: nil, section: section) }
       # but accessed from v7
       let(:entourage) { Entourage.find(contribution.id) }
 
-      it { expect(serialized[:display_category]).to eq("mat_help") }
+      context "on clothes" do
+        let(:section) { "clothes" }
+
+        it { expect(serialized[:display_category]).to eq("mat_help") }
+      end
+
+      context "on equipment" do
+        let(:section) { "equipment" }
+
+        it { expect(serialized[:display_category]).to eq("mat_help") }
+      end
+
+      context "on hygiene" do
+        let(:section) { "hygiene" }
+
+        it { expect(serialized[:display_category]).to eq("mat_help") }
+      end
     end
 
-    context "display_category, section are defined (created in v7, updated in v8, accessed from v7)" do
+    context "section is defined for solicitation" do
+      # simulates an action created from v8
+      let!(:solicitation) { FactoryBot.create(:solicitation, display_category: nil, section: section) }
+      # but accessed from v7
+      let(:entourage) { Entourage.find(solicitation.id) }
+
+      context "on clothes" do
+        let(:section) { "clothes" }
+
+        it { expect(serialized[:display_category]).to eq("mat_help") }
+      end
+
+      context "on equipment" do
+        let(:section) { "equipment" }
+
+        it { expect(serialized[:display_category]).to eq("mat_help") }
+      end
+
+      context "on hygiene" do
+        let(:section) { "hygiene" }
+
+        it { expect(serialized[:display_category]).to eq("mat_help") }
+      end
+    end
+
+    context "display_category, section are defined for contribution (created in v7, updated in v8, accessed from v7)" do
       # simulates an action created from v7, updated in v8
       let!(:contribution) { FactoryBot.create(:contribution, display_category: "resource", section: "clothes") }
       # but accessed from v7
       let(:entourage) { Entourage.find(contribution.id) }
+
+      it { expect(serialized[:display_category]).to eq("resource") }
+    end
+
+    context "display_category, section are defined for solicitation (created in v7, updated in v8, accessed from v7)" do
+      # simulates an action created from v7, updated in v8
+      let!(:solicitation) { FactoryBot.create(:solicitation, display_category: "resource", section: "clothes") }
+      # but accessed from v7
+      let(:entourage) { Entourage.find(solicitation.id) }
 
       it { expect(serialized[:display_category]).to eq("resource") }
     end

@@ -1,6 +1,8 @@
 module ActionServices
   class Mapper
     class << self
+      DEFAULT_DISPLAY_CATEGORY = 'social'
+
       DISPLAY_CATEGORY_MAPPING = {
         social: "social",
         resource: "services",
@@ -23,10 +25,18 @@ module ActionServices
       end
 
       def display_category_from_section section
-        return unless section
-        return unless SECTION_MAPPING.keys.include?(section.to_sym)
+        return DEFAULT_DISPLAY_CATEGORY unless section
+        return DEFAULT_DISPLAY_CATEGORY unless SECTION_MAPPING.keys.include?(section.to_sym)
 
         SECTION_MAPPING[section.to_sym]
+      end
+
+      def category_from_section section
+        display_category = display_category_from_section(section)
+
+        return 'mat_help' if display_category == 'resource'
+
+        display_category
       end
     end
   end

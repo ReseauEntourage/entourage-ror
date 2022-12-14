@@ -20,9 +20,6 @@ module EntourageServices
       contribution.entourage_type = :contribution
       contribution.public = true
       contribution.uuid = SecureRandom.uuid
-      # category, display_category to be adapted with context
-      contribution.category = :social
-      contribution.display_category = :social
 
       return callback.on_success.try(:call, contribution.reload) if contribution.save
 

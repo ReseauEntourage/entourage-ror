@@ -32,7 +32,7 @@ describe V1::ConversationSerializer do
     end
 
     context 'as action' do
-      let(:conversation) { FactoryBot.create(:contribution, group_type: :action, participants: [user], section: [:social]) }
+      let(:conversation) { FactoryBot.create(:contribution, group_type: :action, participants: [user], section: :social) }
 
       it { expect(serialized).not_to have_key(:user) }
       it { expect(serialized).to have_key(:section) }
