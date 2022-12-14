@@ -20,6 +20,7 @@ describe Api::V1::ResourcesController, :type => :controller do
 
       it { expect(response.status).to eq 200 }
       it { expect(result).to have_key('resources') }
+      it { expect(result['resources'].count).to eq(1) }
     end
   end
 

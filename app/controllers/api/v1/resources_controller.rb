@@ -5,7 +5,7 @@ module Api
       after_action :set_as_watched, only: [:show]
 
       def index
-        render json: Resource.page(page).per(per), each_serializer: ::V1::ResourceSerializer, scope: { user: current_user }
+        render json: Resource.all, each_serializer: ::V1::ResourceSerializer, scope: { user: current_user }
       end
 
       def show
@@ -20,14 +20,6 @@ module Api
 
       def set_as_watched
         ResourceServices::Read.new(resource: @resource, user: current_user).set_as_watched_and_save
-      end
-
-      def page
-        params[:page] || 1
-      end
-
-      def per
-        params[:per] || 25
       end
     end
   end
