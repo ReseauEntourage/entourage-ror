@@ -17,6 +17,7 @@ module EntourageServices
       outing.group_type = :outing
       outing.entourage_type = :contribution
       outing.category = :social
+      outing.public = true
       outing.uuid = SecureRandom.uuid
 
       return callback.on_success.try(:call, outing.reload) if outing.save
