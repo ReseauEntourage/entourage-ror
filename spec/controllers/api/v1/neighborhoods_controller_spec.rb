@@ -381,26 +381,27 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
 
     describe 'with chat_message' do
       let(:neighborhood) { create :neighborhood }
-      let!(:chat_message) { FactoryBot.create(:chat_message, messageable: neighborhood, user: user) }
+      let(:post) { FactoryBot.create(:chat_message, messageable: neighborhood, user: user) }
+      let!(:comment) { FactoryBot.create(:chat_message, messageable: neighborhood, user: user, ancestry: "#{post.id}") }
 
       before { get :show, params: { id: neighborhood.id, token: user.token } }
 
       it { expect(response.status).to eq 200 }
       it { expect(result['neighborhood']).to have_key('posts') }
       it { expect(result['neighborhood']['posts']).to eq([{
-        "id" => chat_message.id,
-        "content" => chat_message.content,
+        "id" => post.id,
+        "content" => post.content,
         "user" => {
-          "id" => chat_message.user_id,
+          "id" => post.user_id,
           'display_name' => 'John D.',
           "avatar_url" => nil,
           "partner" => nil,
         },
-        "created_at" => chat_message.created_at.iso8601(3),
+        "created_at" => post.created_at.iso8601(3),
         "message_type" => "text",
         "post_id" => nil,
-        "has_comments" => false,
-        "comments_count" => 0,
+        "has_comments" => true,
+        "comments_count" => 1,
         "image_url" => nil,
         "read" => nil,
       }]) }

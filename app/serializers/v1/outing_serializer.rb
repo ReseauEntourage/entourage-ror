@@ -55,7 +55,7 @@ module V1
 
     def interests
       # we use "Tag.interest_list &" to force ordering
-      Tag.interest_list & object.interest_list
+      Tag.interest_list & object.interest_names
     end
 
     def neighborhoods

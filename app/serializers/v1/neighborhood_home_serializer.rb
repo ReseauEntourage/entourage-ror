@@ -27,7 +27,7 @@ module V1
     end
 
     def interests
-      object.interest_list.sort
+      object.interest_names.sort
     end
 
     def has_ongoing_outing
@@ -44,7 +44,7 @@ module V1
     end
 
     def posts
-      object.parent_chat_messages.ordered.limit(25).map do |chat_message|
+      object.parent_chat_messages.includes(:user).preload_comments_count.ordered.limit(25).map do |chat_message|
         V1::ChatMessageHomeSerializer.new(chat_message, scope: { current_join_request: current_join_request }).as_json
       end
     end

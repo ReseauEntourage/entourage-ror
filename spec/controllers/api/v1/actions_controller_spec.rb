@@ -140,5 +140,16 @@ describe Api::V1::ActionsController, :type => :controller do
       it { expect(subject["actions"][0]["id"]).to eq(action_1.id) }
       it { expect(subject["actions"][1]["id"]).to eq(action.id) }
     end
+
+    context 'with section' do
+      let!(:action) { create :contribution, section: :clothes }
+
+      before { get :index, params: { token: user.token } }
+
+      it { expect(response.status).to eq 200 }
+      it { expect(subject).to have_key('actions') }
+      it { expect(subject['actions'].count).to eq(1) }
+      it { expect(subject["actions"][0]["section"]).to eq("clothes") }
+    end
   end
 end

@@ -25,10 +25,6 @@ module V1
       object.uuid_v2
     end
 
-    def section
-      object.section_list.first
-    end
-
     def author
       return unless object.user.present?
 

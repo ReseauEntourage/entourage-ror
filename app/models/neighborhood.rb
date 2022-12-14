@@ -21,7 +21,28 @@ class Neighborhood < ApplicationRecord
   has_many :join_requests, as: :joinable, dependent: :destroy
   has_many :members, -> { where("join_requests.status = 'accepted'") }, through: :join_requests, source: :user
   has_many :neighborhoods_entourages
-  has_many :outings, -> { where(group_type: :outing) }, through: :neighborhoods_entourages, source: :entourage, class_name: "Outing"
+  has_many :parent_chat_messages, -> { where(ancestry: nil) }, as: :messageable, class_name: :ChatMessage
+
+  # outings
+  has_many :outings, -> {
+    where(group_type: :outing)
+  }, through: :neighborhoods_entourages, source: :entourage, class_name: :Outing
+
+  has_many :past_outings, -> {
+    where(group_type: :outing)
+    .where("metadata->>'ends_at' < ?", Time.zone.now)
+  }, through: :neighborhoods_entourages, source: :entourage, class_name: :Outing
+
+  has_many :future_outings, -> {
+    where(group_type: :outing)
+    .where("metadata->>'ends_at' > ?", Time.zone.now)
+  }, through: :neighborhoods_entourages, source: :entourage, class_name: :Outing
+
+  has_many :ongoing_outings, -> {
+    where(group_type: :outing)
+    .where("metadata->>'starts_at' <= ?", Time.zone.now)
+    .where("metadata->>'ends_at' >= ?", Time.zone.now)
+  }, through: :neighborhoods_entourages, source: :entourage, class_name: :Outing
 
   reverse_geocoded_by :latitude, :longitude
   has_many :chat_messages, as: :messageable, dependent: :destroy
@@ -140,39 +161,23 @@ class Neighborhood < ApplicationRecord
   end
 
   def members_count
-    members.count
+    members.length
   end
 
   def posts_count
-    posts.count
-  end
-
-  def past_outings
-    outings.where("metadata->>'ends_at' < ?", Time.zone.now)
+    posts.length
   end
 
   def past_outings_count
-    past_outings.count
-  end
-
-  def future_outings
-    outings.where("metadata->>'starts_at' > ?", Time.zone.now)
+    past_outings.length
   end
 
   def future_outings_count
-    future_outings.count
-  end
-
-  def ongoing_outings
-    outings.where("metadata->>'starts_at' <= ?", Time.zone.now).where("metadata->>'ends_at' >= ?", Time.zone.now)
+    future_outings.length
   end
 
   def has_ongoing_outing?
     ongoing_outings.any?
-  end
-
-  def parent_chat_messages
-    chat_messages.where(ancestry: nil)
   end
 
   # @code_legacy

@@ -40,4 +40,9 @@ module Interestable
       self.interest_list = interests
     end
   end
+
+  def interest_names
+    # optimization to resolve n+1
+    interests.map(&:name)
+  end
 end
