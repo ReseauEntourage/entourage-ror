@@ -20,12 +20,37 @@ class Recommandation < ApplicationRecord
 
     where(["user_goals @> ?", profile.to_json]).order(order)
   }
-  scope :recommandable_for, -> (user) { where.not(id: UserRecommandation.processed_by(user).pluck(:recommandation_id)) }
+  scope :recommandable_for, -> (user) {
+    where.not(id: UserRecommandation.completed_by(user).pluck(:recommandation_id))
+  }
+  scope :order_by_skipped_at, -> (user) {
+    joins(sanitize_sql_array([
+      %(
+        left outer join user_recommandations
+        on recommandations.id = user_recommandations.recommandation_id
+        and user_recommandations.user_id = :user_id
+      ),
+      { user_id: user.id }
+    ]))
+    .order("user_recommandations.skipped_at is null desc")
+  }
 
   # valides :image_url # should be ?x?
   attr_accessor :recommandation_image_id
   attr_accessor :instance_id
   attr_accessor :instance_key
+
+  class << self
+    def recommandable_for_user_and_fragment user, fragment
+      profile = (user.is_ask_for_help? ? :ask_for_help : :offer_help)
+
+      Recommandation
+        .fragment(fragment)
+        .recommandable_for(user)
+        .order_by_skipped_at(user)
+        .for_profile(profile)
+    end
+  end
 
   STATUS.each do |status|
     scope status, -> { where(status: status) }
