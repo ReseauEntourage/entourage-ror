@@ -20,6 +20,9 @@ module Sectionable
   end
 
   def section= section
+    set_category_from_section(section)
+    set_display_category_from_section(section)
+
     return unless section.present?
 
     self.section_list = [section]
@@ -28,5 +31,19 @@ module Sectionable
   def section_names
     # optimization to resolve n+1
     sections.map(&:name)
+  end
+
+  private
+
+  def set_category_from_section section
+    return if category_changed?
+
+    self.category = ActionServices::Mapper.category_from_section(section)
+  end
+
+  def set_display_category_from_section section
+    return if display_category_changed?
+
+    self.display_category = ActionServices::Mapper.display_category_from_section(section)
   end
 end

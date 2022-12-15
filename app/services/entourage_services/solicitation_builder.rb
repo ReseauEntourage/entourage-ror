@@ -24,9 +24,6 @@ module EntourageServices
       solicitation.entourage_type = :ask_for_help
       solicitation.public = true
       solicitation.uuid = SecureRandom.uuid
-      # category, display_category to be adapted with context
-      solicitation.category = :social
-      solicitation.display_category = :social
 
       return callback.on_success.try(:call, solicitation.reload) if solicitation.save
 

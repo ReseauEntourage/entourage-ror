@@ -25,6 +25,10 @@ module V1
       object.uuid_v2
     end
 
+    def section
+      object.section_list.first || ActionServices::Mapper.section_from_display_category(object.display_category)
+    end
+
     def author
       return unless object.user.present?
 
