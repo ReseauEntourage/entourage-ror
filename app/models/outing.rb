@@ -58,6 +58,8 @@ class Outing < Entourage
 
   scope :future, -> { where("metadata->>'starts_at' >= ?", Time.zone.now) }
 
+  scope :recommandable, -> { self.active.future }
+
   attr_accessor :recurrency, :original_outing, :force_relatives_dates
 
   def initialize_dup original_outing

@@ -2,6 +2,7 @@ module RecommandationServices
   class FinderShowJoined
     class << self
       def find_identifiant user, recommandation
+        # contribution, solicitation, outing, neighborhood
         klass = Object.const_get(recommandation.instance.to_s.classify)
 
         return unless klass.respond_to? :joined_by
@@ -9,6 +10,7 @@ module RecommandationServices
         return unless klass.respond_to? :order_by_distance_from
 
         klass.joined_by(user)
+          .recommandable
           .inside_perimeter(user.latitude, user.longitude, user.travel_distance)
           .order_by_distance_from(user.latitude, user.longitude)
           .pluck(:id)

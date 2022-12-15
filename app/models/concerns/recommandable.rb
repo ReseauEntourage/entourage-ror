@@ -11,5 +11,9 @@ module Recommandable
         .inside_perimeter(user.latitude, user.longitude, user.travel_distance)
         .unscope(:order).order_by_distance_from(user.latitude, user.longitude)
     }
+
+    scope :recommandable, -> {
+      self.active
+    }
   end
 end

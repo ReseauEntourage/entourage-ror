@@ -60,6 +60,8 @@ class Neighborhood < ApplicationRecord
 
   default_scope { where(status: :active) }
 
+  scope :active, -> { where(status: :active) }
+
   scope :with_moderation_area, -> (moderation_area) {
     if moderation_area == :hors_zone
       return where("left(postal_code, 2) not in ?", ModerationArea.only_departements)
