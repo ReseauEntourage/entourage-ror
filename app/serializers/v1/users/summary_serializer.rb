@@ -15,7 +15,7 @@ module V1
       def meetings_count
         return 0 unless user = scope[:user]
 
-        past_outing_memberships(user) + action_creations(user)
+        past_outing_memberships(user).count + action_creations(user).count
       end
 
       def chat_messages_count
