@@ -5,6 +5,12 @@ module Sectionable
     acts_as_taggable_on :sections
 
     validate :validate_section_list!
+
+    # hack to prevent ActsAsTaggableOn::Taggable::TaggedWithQuery::AnyTagsQuery "select", "order" and "readonly"
+    # this hack is required to chain with "or" statement
+    scope :tagged_with_any_sections, -> (sections) {
+      tagged_with(sections, :any => true).unscope(:select, :order, :readonly)
+    }
   end
 
   def validate_section_list!
