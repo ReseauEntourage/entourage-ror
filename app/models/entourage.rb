@@ -72,6 +72,7 @@ class Entourage < ApplicationRecord
   scope :social_category, -> { where(category: 'social') }
   scope :mat_help_category, -> { where(category: 'mat_help') }
   scope :non_mat_help_category, -> { where(category: 'non_mat_help') }
+  scope :action, -> { where(group_type: :action) }
   scope :contributions, -> { where(entourage_type: :contribution) }
   scope :ask_for_helps, -> { where(entourage_type: :ask_for_help) }
   scope :except_conversations, -> { where.not(group_type: :conversation) }
