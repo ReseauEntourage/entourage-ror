@@ -18,6 +18,7 @@ module EntourageServices
       contribution.latitude = params.dig(:location, :latitude)
       contribution.group_type = :action
       contribution.entourage_type = :contribution
+      contribution.public = true
       contribution.uuid = SecureRandom.uuid
       # category, display_category to be adapted with context
       contribution.category = :social

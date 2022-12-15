@@ -22,6 +22,7 @@ module EntourageServices
       solicitation.latitude = params.dig(:location, :latitude)
       solicitation.group_type = :action
       solicitation.entourage_type = :ask_for_help
+      solicitation.public = true
       solicitation.uuid = SecureRandom.uuid
       # category, display_category to be adapted with context
       solicitation.category = :social
