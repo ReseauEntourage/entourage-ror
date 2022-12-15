@@ -3,6 +3,7 @@ module Api
     class HomeController < Api::V1::BaseController
       skip_before_action :community_warning
 
+      before_action :set_default_neighborhood, only: [:summary]
       before_action :set_user_recommandations, only: [:summary]
       before_action :clean_inapp_notifications, only: [:summary]
 
@@ -102,6 +103,10 @@ module Api
 
       def format_sections sections
         sections.to_a.map { |t| { id: t.first }.merge(t.last) }
+      end
+
+      def set_default_neighborhood
+        NeighborhoodServices::Joiner.new(current_user).join_default_beta_test!
       end
 
       def set_user_recommandations
