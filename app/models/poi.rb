@@ -1,4 +1,5 @@
 class Poi < ApplicationRecord
+  include Recommandable
 
   validates_presence_of :name, :category
   validates :latitude, :longitude, numericality: true
