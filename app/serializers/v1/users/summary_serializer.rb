@@ -13,7 +13,9 @@ module V1
         :moderator
 
       def meetings_count
-        0
+        return 0 unless user = scope[:user]
+
+        past_outing_memberships(user).count + action_creations(user).count
       end
 
       def chat_messages_count
@@ -50,6 +52,16 @@ module V1
           display_name: UserPresenter.new(user: moderator).display_name,
           avatar_url: UserServices::Avatar.new(user: moderator).thumbnail_url
         }
+      end
+
+      private
+
+      def past_outing_memberships user
+        user.outing_memberships.where(id: Outing.active.past)
+      end
+
+      def action_creations user
+        Entourage.action.active.where(user: user)
       end
     end
   end
