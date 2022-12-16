@@ -27,9 +27,9 @@ module SolicitationServices
       end
 
       if sections.any?
-        solicitations = solicitations.tagged_with_any_sections(sections).or(Solicitation.where(
+        solicitations = solicitations.tagged_with_any_sections(sections).or(
           Solicitation.unscope(:order).where(display_category: ActionServices::Mapper.display_categories_from_sections(sections))
-        ))
+        )
       end
 
       # order by created_at is already in default_scope
