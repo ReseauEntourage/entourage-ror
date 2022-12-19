@@ -34,7 +34,7 @@ module PoiServices
     end
 
     def is_active?
-      Option.active? :soliguide
+      Option.soliguide_active?
     end
 
     def query_params

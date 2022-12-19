@@ -12,7 +12,9 @@ module Api
         version = params[:v] == '2' ? :v2 : :v1
 
         @categories = Category.all
+
         @pois = Poi.validated
+        @pois = @pois.not_source_soliguide unless Option.soliguide_active?
 
         if params[:category_ids].present?
           categories = params[:category_ids].split(",").map(&:to_i).uniq
@@ -79,9 +81,10 @@ module Api
           ActiveModel::Serializer::CollectionSerializer.new(pois, serializer: ::V1::PoiSerializer, scope: {version: :"#{version}_list"}).as_json
         end.serialize
 
-        # soliguide
+        # do not add Soliguide to results
+        # we send this request just for Soliguide stats; Soliguide POIs have already been added from Entourage DB
         soliguide = PoiServices::Soliguide.new(soliguide_params)
-        poi_json += PoiServices::SoliguideIndex.post(soliguide.query_params) if version == :v2 && soliguide.apply?
+        PoiServices::SoliguideIndex.post(soliguide.query_params) if version == :v2 && soliguide.apply?
 
         payload =
           case version

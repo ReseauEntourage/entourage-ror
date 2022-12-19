@@ -12,6 +12,8 @@ class Poi < ApplicationRecord
   geocoded_by :adress
 
   scope :validated, -> { where(validated: true) }
+  scope :not_source_entourage, -> { where.not(source: Poi.sources[:entourage]) }
+  scope :not_source_soliguide, -> { where.not(source: Poi.sources[:soliguide]) }
 
   scope :around, -> (latitude, longitude, distance) do
     distance ||= 10
