@@ -3,6 +3,7 @@ module PoiServices
     API_KEY = ENV['SOLIGUIDE_API_KEY']
     DISTANCE_MIN = 2
     DISTANCE_MAX = 10
+    DISTANCE_ALL_MAX = 700
 
     PARIS = {
       latitude: 48.8586,
@@ -49,6 +50,20 @@ module PoiServices
       params[:word] = query if query.present?
       params[:options][:limit] = limit if limit.present?
 
+      params
+    end
+
+    def query_all_params
+      params = {
+        location: {
+          distance:  (distance || 0).to_f.clamp(DISTANCE_MIN, DISTANCE_ALL_MAX),
+          coordinates: [longitude.to_f, latitude.to_f],
+          geoType: :position
+        },
+        options: {}
+      }
+
+      params[:options][:limit] = limit if limit.present?
       params
     end
 

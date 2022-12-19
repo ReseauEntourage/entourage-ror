@@ -1,6 +1,8 @@
 class Poi < ApplicationRecord
   include Recommandable
 
+  enum source: { entourage: 0, soliguide: 1 }, _prefix: :source
+
   validates_presence_of :name, :category
   validates :latitude, :longitude, numericality: true
   validates :partner_id, presence: true, allow_nil: true
@@ -33,12 +35,10 @@ class Poi < ApplicationRecord
     id.to_s unless id.nil?
   end
 
-  def source
-    :entourage
-  end
-
   def source_url
-    nil
+    return source_id unless source_soliguide?
+
+    "https://soliguide.fr/fiche/#{source_id}"
   end
 
   def address

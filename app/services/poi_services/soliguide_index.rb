@@ -1,6 +1,21 @@
 module PoiServices
   class SoliguideIndex
     INDEX_URI = "https://api.soliguide.fr/new-search?%s"
+    BATCH_LIMIT = 1000
+
+    FIND_ONE_PARAMS = {
+      latitude: PoiServices::Soliguide::PARIS[:latitude],
+      longitude: PoiServices::Soliguide::PARIS[:longitude],
+      distance: 1,
+      limit: 1
+    }
+
+    FIND_ALL_PARAMS = {
+      latitude: PoiServices::Soliguide::PARIS[:latitude],
+      longitude: PoiServices::Soliguide::PARIS[:longitude],
+      distance: PoiServices::Soliguide::DISTANCE_ALL_MAX,
+      limit: BATCH_LIMIT
+    }
 
     class << self
       def post params
@@ -9,8 +24,24 @@ module PoiServices
         end
       end
 
+      def post_all_for_page page
+        post(find_all_params.merge({ page: page }))
+      end
+
       def uptime
-        query(default_params)
+        find_one_query
+      end
+
+      def find_one_query
+        query(find_one_params)
+      end
+
+      def find_all_query
+        query(find_all_params)
+      end
+
+      def find_all_query_for_page page
+        query(find_all_params.merge({ page: page }))
       end
 
       private
@@ -18,7 +49,7 @@ module PoiServices
       def headers
         {
           'Content-Type' => 'application/json',
-          'Authorization' => Soliguide::API_KEY,
+          'Authorization' => PoiServices::Soliguide::API_KEY,
         }
       end
 
@@ -32,13 +63,12 @@ module PoiServices
         end.inject(&:+)
       end
 
-      def default_params
-        PoiServices::Soliguide.new({
-          latitude: PoiServices::Soliguide::PARIS[:latitude],
-          longitude: PoiServices::Soliguide::PARIS[:longitude],
-          distance: 1,
-          limit: 1
-        }).query_params
+      def find_one_params
+        @find_one_params ||= PoiServices::Soliguide.new(FIND_ONE_PARAMS).query_params
+      end
+
+      def find_all_params
+        @find_all_params ||= PoiServices::Soliguide.new(FIND_ALL_PARAMS).query_all_params
       end
 
       def post_response params

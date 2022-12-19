@@ -607,9 +607,12 @@ ActiveRecord::Schema.define(version: 2022_12_22_111500) do
     t.boolean "validated", default: false, null: false
     t.integer "partner_id"
     t.tsvector "textsearch"
+    t.integer "source", default: 0
+    t.integer "source_id", default: 0
     t.index ["category_id", "latitude", "longitude"], name: "index_pois_on_category_id_and_latitude_and_longitude", where: "validated"
     t.index ["latitude", "longitude"], name: "index_pois_on_latitude_and_longitude"
     t.index ["partner_id"], name: "index_pois_on_partner_id", unique: true
+    t.index ["source_id"], name: "index_pois_on_source_id"
     t.index ["textsearch"], name: "index_pois_on_textsearch", using: :gin
   end
 
