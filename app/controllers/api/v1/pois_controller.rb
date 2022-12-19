@@ -84,7 +84,7 @@ module Api
         # do not add Soliguide to results
         # we send this request just for Soliguide stats; Soliguide POIs have already been added from Entourage DB
         soliguide = PoiServices::Soliguide.new(soliguide_params)
-        PoiServices::SoliguideIndex.post(soliguide.query_params) if version == :v2 && soliguide.apply?
+        PoiServices::SoliguideIndex.post_only_query(soliguide.query_params) if version == :v2 && soliguide.apply?
 
         payload =
           case version

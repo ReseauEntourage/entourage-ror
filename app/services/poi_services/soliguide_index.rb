@@ -24,6 +24,10 @@ module PoiServices
         end
       end
 
+      def post_only_query params
+        get_results(params)
+      end
+
       def post_all_for_page page
         post(find_all_params_for_page(page))
       end
