@@ -29,7 +29,7 @@ module PoiServices
 
     def find_all_iterator
       1.step(nb_results, batch_limit) do |results|
-        yield results / batch_limit
+        yield (results / batch_limit) + 1
       end
     end
 
