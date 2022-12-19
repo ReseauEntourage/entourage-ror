@@ -42,7 +42,6 @@ module PoiServices
       {
         uuid: "s#{poi['lieu_id']}",
         source_id: poi['lieu_id'],
-        source: :soliguide,
         name: format_title(poi['name'], poi['entity']['name']),
         longitude: poi['location']['coordinates'][0].round(6),
         latitude: poi['location']['coordinates'][1].round(6),

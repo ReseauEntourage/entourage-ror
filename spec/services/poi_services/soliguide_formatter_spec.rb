@@ -23,6 +23,7 @@ describe PoiServices::Soliguide do
       it { expect(subject).to eq({
         uuid: "s123",
         source: :soliguide,
+        source_id: 123,
         source_url: "https://soliguide.fr/fiche/",
         name: "foo",
         description: "",

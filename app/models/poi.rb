@@ -36,7 +36,7 @@ class Poi < ApplicationRecord
   end
 
   def source_url
-    return source_id unless source_soliguide?
+    return unless source_soliguide?
 
     "https://soliguide.fr/fiche/#{source_id}"
   end
