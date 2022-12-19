@@ -25,7 +25,7 @@ module PoiServices
       end
 
       def post_all_for_page page
-        post(find_all_params.merge({ page: page }))
+        post(find_all_params_for_page(page))
       end
 
       def uptime
@@ -69,6 +69,10 @@ module PoiServices
 
       def find_all_params
         @find_all_params ||= PoiServices::Soliguide.new(FIND_ALL_PARAMS).query_all_params
+      end
+
+      def find_all_params_for_page page
+        PoiServices::Soliguide.new(FIND_ALL_PARAMS.merge({ page: page })).query_all_params
       end
 
       def post_response params

@@ -26,6 +26,7 @@ module PoiServices
       @category_ids = params[:category_ids]
       @query = params[:query] || params[:word]
       @limit = params[:limit]
+      @page = params[:page]
     end
 
     def apply?
@@ -64,11 +65,12 @@ module PoiServices
       }
 
       params[:options][:limit] = limit if limit.present?
+      params[:options][:page] = page || 1
       params
     end
 
     private
-    attr_reader :latitude, :longitude, :distance, :category_ids, :query, :limit, :category_ids
+    attr_reader :latitude, :longitude, :distance, :category_ids, :query, :page, :limit, :category_ids
 
     def categories
       @categories ||= (category_ids || "").split(",").map(&:to_i).uniq

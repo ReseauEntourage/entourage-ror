@@ -1,20 +1,22 @@
 module PoiServices
   class SoliguideImporter
     attr_reader :starting_time
-    attr_reader :accepted_keys
+    attr_reader :poi_attributes
     attr_reader :batch_limit
 
     def initialize
       @starting_time = Time.zone.now
-
-      @accepted_keys = Poi.attribute_names.map(&:to_sym)
+      @poi_attributes = Poi.attribute_names.map(&:to_sym)
       @batch_limit = PoiServices::SoliguideIndex::BATCH_LIMIT
     end
 
     def create_all
       find_all_iterator do |page|
         post_all_for_page(page).each do |response|
-          Poi.new(response.slice(*accepted_keys)).save!
+          poi = Poi.find_or_initialize_by(source_id: response[:source_id])
+          poi.update_attributes(response.slice(*poi_attributes))
+          poi.source = :soliguide
+          poi.save!
         end
       end
 
@@ -24,7 +26,7 @@ module PoiServices
     private
 
     def remove_deprecated_pois
-      Poi.source_soliguide.where('updated_at < ?', starting_time).delete_all
+      Poi.source_soliguide.where('updated_at < ?', starting_time).update_all(validated: false)
     end
 
     def find_all_iterator
