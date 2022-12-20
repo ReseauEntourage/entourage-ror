@@ -25,7 +25,7 @@ class ConversationMessage < ApplicationRecord
   end
 
   def children
-    return unless chat_message?
+    return [] unless chat_message?
 
     ChatMessage.find(full_object_id).children
   end
