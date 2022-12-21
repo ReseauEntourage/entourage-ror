@@ -74,6 +74,12 @@ class ChatMessage < ApplicationRecord
     end
   end
 
+  def image_path
+    return unless image_url.present?
+
+    ChatMessage.url_for(image_url)
+  end
+
   def validate_ancestry!
     if parent && parent.has_parent?
       errors.add(:interests, "Il n'est pas possible de commenter une discussion")

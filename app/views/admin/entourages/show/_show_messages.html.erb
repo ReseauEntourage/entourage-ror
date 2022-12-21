@@ -61,7 +61,14 @@
           <b><%= @entourage.title %></b><br/>
           <%= @entourage.description %>
         <% end %>
+
         <%= simple_format message.content %>
+
+        <% if message.chat_message? && message.full_object.image_url.present? %>
+          <div style="margin-bottom: 15px">
+            <%= image_tag(message.full_object.image_path, size: '300x100') %>
+          </div>
+        <% end %>
 
         <% if message.children.any? %>
           <div><%= link_to "voir les commentaires", show_comments_admin_entourage_path(@entourage.id, message_id: message.full_object_id) %></div>
