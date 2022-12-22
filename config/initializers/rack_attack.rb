@@ -95,4 +95,9 @@ class Rack::Attack
   #    {},   # headers
   #    ['']] # body
   # end
+
+  ### Blocking IP
+  Rack::Attack.blocklist_ip("54.36.101.21")
+  Rack::Attack.blocklist_ip("185.220.101.25")
+  Rack::Attack.blocklist_ip("185.220.101.50")
 end
