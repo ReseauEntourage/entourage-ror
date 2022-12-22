@@ -278,7 +278,8 @@ describe Api::V1::PoisController, :type => :controller do
           let!(:active) { true }
 
           before {
-            expect(PoiServices::SoliguideFormatter).to receive(:format_short)
+            expect(PoiServices::SoliguideFormatter).not_to receive(:format_short)
+            expect(PoiServices::SoliguideIndex).to receive(:post_only_query)
             get :index, params: params
           }
 
@@ -291,6 +292,7 @@ describe Api::V1::PoisController, :type => :controller do
 
           before {
             expect(PoiServices::SoliguideFormatter).not_to receive(:format_short)
+            expect(PoiServices::SoliguideIndex).not_to receive(:post_only_query)
             get :index, params: params
           }
 
