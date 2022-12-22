@@ -44,10 +44,6 @@ module PoiServices
         query(find_all_params)
       end
 
-      def find_all_query_for_page page
-        query(find_all_params.merge({ page: page }))
-      end
-
       private
 
       def headers
