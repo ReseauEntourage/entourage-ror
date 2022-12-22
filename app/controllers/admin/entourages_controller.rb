@@ -85,7 +85,8 @@ module Admin
         .select(%{
           messageable_id,
           sum(case when conversation_messages.content <> '' then 1 else 0 end) as total,
-          sum(case when conversation_messages.created_at >= moderator_reads.read_at then 1 else 0 end) as unread
+          sum(case when conversation_messages.created_at >= moderator_reads.read_at then 1 else 0 end) as unread,
+          sum(case when conversation_messages.created_at >= moderator_reads.read_at and conversation_messages.image_url is not null then 1 else 0 end) as unread_images
         })
 
       @message_count = Hash[@message_count.map { |m| [m.messageable_id, m] }]

@@ -64,9 +64,9 @@
 
         <%= simple_format message.content %>
 
-        <% if message.chat_message? && message.full_object.image_url.present? %>
+        <% if message.image_path.present? %>
           <div style="margin-bottom: 15px">
-            <%= image_tag(message.full_object.image_path, height: '100') %>
+            <%= image_tag(message.image_path, height: '100') %>
           </div>
         <% end %>
 

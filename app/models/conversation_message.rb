@@ -29,4 +29,13 @@ class ConversationMessage < ApplicationRecord
 
     ChatMessage.find(full_object_id).children
   end
+
+  def image_path
+    @image_path ||= begin
+      return unless chat_message?
+      return unless image_url.present?
+
+      ChatMessage.url_for(image_url)
+    end
+  end
 end
