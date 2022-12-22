@@ -27,7 +27,9 @@ module ContributionServices
       end
 
       if sections.any?
-        contributions = contributions.tagged_with(sections, :any => true)
+        contributions = contributions.tagged_with_any_sections(sections).or(
+          Contribution.unscope(:order).where(display_category: ActionServices::Mapper.display_categories_from_sections(sections))
+        )
       end
 
       # order by created_at is already in default_scope

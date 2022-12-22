@@ -31,6 +31,12 @@ module ActionServices
         SECTION_MAPPING[section.to_sym]
       end
 
+      def display_categories_from_sections sections
+        sections.map do |section|
+          display_category_from_section(section)
+        end
+      end
+
       def category_from_section section
         display_category = display_category_from_section(section)
 

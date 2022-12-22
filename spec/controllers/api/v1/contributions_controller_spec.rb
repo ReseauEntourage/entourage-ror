@@ -13,8 +13,9 @@ describe Api::V1::ContributionsController, :type => :controller do
     let(:latitude) { 48.85 }
     let(:longitude) { 2.27 }
     let(:section) { nil }
+    let(:display_category) { nil }
 
-    let!(:contribution) { FactoryBot.create(:contribution, latitude: latitude, longitude: longitude, section: section) }
+    let!(:contribution) { FactoryBot.create(:contribution, latitude: latitude, longitude: longitude, section: section, display_category: display_category) }
 
     describe 'not authorized' do
       before { get :index }
@@ -133,6 +134,7 @@ describe Api::V1::ContributionsController, :type => :controller do
 
     context "params section finds no match with nil" do
       let(:section) { nil }
+      let(:display_category) { 'mat_help' }
 
       let(:request) { get :index, params: { token: user.token, sections: [:social] } }
 
