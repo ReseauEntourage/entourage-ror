@@ -34,14 +34,8 @@ module Api
           params[:distance] = params[:distance].to_f * 2
         end
 
-        if params[:latitude].present? and params[:longitude].present?
-
-          min_distance =
-            if category_count <= 2
-              5
-            else
-              2
-            end
+        if params[:latitude].present? && params[:longitude].present?
+          min_distance = category_count <= 2 ? 5 : 2
 
           if params[:distance]
             distance = params[:distance].to_f / 2
