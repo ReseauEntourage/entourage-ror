@@ -107,6 +107,7 @@
   <th></th>
   <th></th>
   <th></th>
+  <th></th>
   <th>Date de création</th>
   <th>Titre</th>
   <% if outing_filter %><th>Date</th><% end %>
@@ -119,7 +120,8 @@
   <th><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></th>
 
   <% @entourages.each do |entourage| %>
-    <% unread_count = @message_count[entourage.id].unread %>
+    <% unread_count  = @message_count[entourage.id].unread %>
+    <% unread_images_count = @message_count[entourage.id].unread_images || 0 %>
     <tr class="<%= 'not-open' if entourage.status != 'open' %>">
       <td>
         <% if entourage.admin_pin? %>
@@ -135,7 +137,12 @@
         <% if entourage.unread %>
           <span class="badge" style="background: #d9534f" title="Non lu">●</span>
         <% elsif unread_count > 0 %>
-          <span class="badge" style="background: #d9534f" title="Non lus"><%= unread_count %></span>
+          <span class="badge" style="background: #d9534f" title="Messages non lus"><%= unread_count %></span>
+        <% end %>
+      </td>
+      <td>
+        <% if unread_images_count > 0 %>
+          <span class="badge" style="background: #19534f" title="Images non lues"><%= unread_images_count %></span>
         <% end %>
       </td>
       <td><%= l entourage.created_at, format: "%-d %B %Y" %></td>
