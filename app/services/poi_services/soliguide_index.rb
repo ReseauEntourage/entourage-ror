@@ -29,7 +29,11 @@ module PoiServices
       end
 
       def post_all_for_page page
-        post(find_all_params_for_page(page))
+        params = find_all_params_for_page(page)
+
+        Rails.logger.info("#{self.name} sends post with params: #{params}")
+
+        post(params)
       end
 
       def uptime
@@ -86,6 +90,7 @@ module PoiServices
 
         http = Net::HTTP.new(uri.host, uri.port)
         http.use_ssl = true
+        http.read_timeout = 180.0 # 3 minutes
 
         http.post(uri.path, params.to_json, headers)
       end
