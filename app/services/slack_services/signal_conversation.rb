@@ -13,7 +13,7 @@ module SlackServices
 
     def payload
       {
-        text: "<@#{slack_moderator_id(@conversation)}> ou team modération (département : #{departement(@conversation) || 'n/a'}) pouvez-vous vérifier cette conversation ?",
+        text: "<@#{slack_moderator_id(interlocutor)}> ou team modération (département : #{departement(@conversation) || 'n/a'}) pouvez-vous vérifier cette conversation ?",
         attachments: [
           {
             text: "Conversation : #{@conversation.title} #{link_to_conversation(@conversation)}"
@@ -33,6 +33,12 @@ module SlackServices
         username: "Signalement d'une conversation",
         channel: webhook('channel'),
       }
+    end
+
+    private
+
+    def interlocutor
+      @interlocutor ||= @conversation.interlocutor_of(@reporting_user)
     end
   end
 end

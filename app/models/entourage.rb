@@ -442,6 +442,14 @@ class Entourage < ApplicationRecord
     update_attribute(:status, :closed)
   end
 
+  def interlocutor_of user
+    return unless conversation?
+
+    members.find do |member|
+      member.id != user.id
+    end
+  end
+
   protected
 
   def check_moderation
