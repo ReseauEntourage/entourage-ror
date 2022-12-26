@@ -46,7 +46,7 @@ module PoiServices
     end
 
     def post_all_for_page page
-      PoiServices::SoliguideIndex.post_all_for_page(page)
+      PoiServices::SoliguideIndex.post_all_for_page(page, :long)
     end
 
     def nb_results

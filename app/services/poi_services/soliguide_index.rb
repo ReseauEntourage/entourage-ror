@@ -18,9 +18,13 @@ module PoiServices
     }
 
     class << self
-      def post params
+      def post params, format = :short
         get_results(params).map do |poi|
-          PoiServices::SoliguideFormatter.format_short poi
+          if format == :short
+            PoiServices::SoliguideFormatter.format_short(poi)
+          else
+            PoiServices::SoliguideFormatter.format(poi)
+          end
         end
       end
 
@@ -28,12 +32,12 @@ module PoiServices
         get_results(params)
       end
 
-      def post_all_for_page page
+      def post_all_for_page page, format = :short
         params = find_all_params_for_page(page)
 
         Rails.logger.info("#{self.name} sends post with params: #{params}")
 
-        post(params)
+        post(params, format)
       end
 
       def uptime
