@@ -47,6 +47,10 @@ class Poi < ApplicationRecord
     adress
   end
 
+  def address= address
+    self[:adress] = address
+  end
+
   def hours
     nil
   end

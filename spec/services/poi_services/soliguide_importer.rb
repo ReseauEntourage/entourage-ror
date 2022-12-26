@@ -2,7 +2,9 @@ require 'rails_helper'
 
 describe PoiServices::Soliguide do
   describe 'create_all' do
-    let!(:category) { create(:category, name: 'foo', id: 6) }
+    let!(:category_6) { create(:category, name: 'foo', id: 6) }
+    let!(:category_7) { create(:category, name: 'bar', id: 7) }
+
     let(:poi_struct) { {
       uuid: "s17205",
       source_id: 17205,
@@ -12,7 +14,6 @@ describe PoiServices::Soliguide do
       description: "Nour est une association loi 1901 créée en 2019 qui vise l'inclusion sociale par le yoga.Nour est née d'une volonté de rendre les pratiques douces telles que le yoga accessibles à tous et d'en faire un vecteur de lien social.Nous animons des cours et ateliers yoga dans les centres sociaux, au sein de structures associatives et dans les établissements de santé, auprès des personnes en situation d'Exil et / ou de précarité.",
       longitude: 2.353211,
       latitude: 48.869251,
-      adress: "15 Bis Boulevard St Denis, 75002 Paris",
       address: "15 Bis Boulevard St Denis, 75002 Paris",
       phone: "06 95 79 07 75",
       phones: "06 95 79 07 75",
@@ -22,8 +23,7 @@ describe PoiServices::Soliguide do
         "Sur inscription (L'inscription en ligne : https://nour-yoga.com/reserver-un-cours/)\n" +
         "Animaux non autorisés\n" +
         "Autres précisions : <p>Si vous rencontrez des problèmes avec l'inscription, contactez :&nbsp;</p><p><a href=\"mailto:contact@nour-yoga.com\">contact@nour-yoga.com</a></p><p>Siobhan : 0760892704</p>",
-      category_id: 6,
-      category_ids: [6],
+      category_ids: [6, 7],
       source_category_id: 801,
       source_category_ids: [801],
       hours: " : Fermé\n" +
@@ -69,7 +69,7 @@ describe PoiServices::Soliguide do
       it { expect { subject }.to change { Poi.count }.by(4) }
     end
 
-    context "checking content on real example" do
+    context "checking content on real example (adding category 7)" do
       let(:poi_0) { poi_struct.merge({ uuid: "s17205", source_id: 17205 }) }
 
       before {
@@ -100,6 +100,7 @@ describe PoiServices::Soliguide do
         "source" => "soliguide",
         "source_id" => 17205
       }) }
+      it { expect(Poi.first.category_ids).to eq([6, 7]) }
     end
   end
 end

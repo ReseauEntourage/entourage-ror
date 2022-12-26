@@ -6,7 +6,7 @@ module PoiServices
 
     def initialize
       @starting_time = Time.zone.now
-      @poi_attributes = Poi.attribute_names.map(&:to_sym)
+      @poi_attributes = Poi.attribute_names.map(&:to_sym) + [:address, :category_ids]
       @batch_limit = PoiServices::SoliguideIndex::BATCH_LIMIT
     end
 
