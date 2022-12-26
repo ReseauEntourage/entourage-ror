@@ -1,5 +1,16 @@
 <%= form_for([:admin, @poi], html: { class: "form-horizontal", role: "form" }) do |f| %>
   <%= render partial: "layouts/errors", locals: {obj: @poi} %>
+
+  <% if @poi.source_soliguide? %>
+    <div class="alert alert-warning" role="alert" style="display: flex; align-items: center">
+      <div style="flex-grow: 1">
+        <b>Soliguide</b><br>
+        Ce POI est issu de Soliguide. Merci de ne pas le modifier.
+      </div>
+      <span><a href="<%= @poi.source_url %>">lien vers Soliguide</a></span>
+    </div>
+  <% end %>
+
   <div class="control-group">
     <%= f.label :name,"Nom", class: "control-label" %>
     <a href="#" rel="tooltip" title="Nom du POI" class="tooltip-infos"><i class="fa fa-question-circle"></i></a>

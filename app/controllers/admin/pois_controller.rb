@@ -27,6 +27,10 @@ module Admin
     end
 
     def update
+      return redirect_to edit_admin_poi_path(params[:id]), flash: {
+        error: "Vous ne pouvez pas mettre à jour un POI Soliguide"
+      } if @poi.source_soliguide?
+
       @poi = PoiServices::PoiGeocoder.new(poi: @poi, params: poi_params).geocode
       if @poi.errors.blank? && @poi.update(poi_params)
         redirect_to admin_pois_path, notice: "Le POI a bien été mis à jour"
