@@ -13,7 +13,7 @@ module SlackServices
 
     def payload
       {
-        text: "<@#{slack_moderator_id(interlocutor)}> ou team modération (département : #{departement(@conversation) || 'n/a'}) pouvez-vous vérifier cette conversation ?",
+        text: "<@#{slack_moderator_id(interlocutor)}> ou team modération (département : #{departement(interlocutor) || 'n/a'}) pouvez-vous vérifier cette conversation ?",
         attachments: [
           {
             text: "Conversation : #{@conversation.title} #{link_to_conversation(@conversation)}"
