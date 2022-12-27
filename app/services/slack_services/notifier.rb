@@ -1,6 +1,6 @@
 module SlackServices
   class Notifier
-    DEFAULT_SLACK_MODERATOR_ID = 'clara'
+    DEFAULT_SLACK_MODERATOR_ID = 'louis'
 
     def notify
       notifier&.ping payload.merge(payload_adds)
