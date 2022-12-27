@@ -167,21 +167,30 @@ module Api
         reporting_user = current_user_or_anonymous
         reporting_user = reporting_user.token if reporting_user.anonymous?
 
-        SlackServices::SignalGroup.new(
-          reported_group: @entourage,
-          reporting_user: reporting_user,
-          message:        message
-        ).notify
+        if @entourage.conversation?
+          SlackServices::SignalConversation.new(
+            conversation: @entourage,
+            reporting_user: current_user_or_anonymous,
+            signals: ["n/a"],
+            message: message
+          ).notify
+        else
+          SlackServices::SignalGroup.new(
+            reported_group: @entourage,
+            reporting_user: reporting_user,
+            message:        message
+          ).notify
 
-        UserHistory.create({
-          user_id: @entourage.user_id,
-          updater_id: reporting_user.id,
-          kind: 'signal-action',
-          metadata: {
-            message: message,
-            entourage_id: @entourage.id
-          }
-        })
+          UserHistory.create({
+            user_id: @entourage.user_id,
+            updater_id: reporting_user.id,
+            kind: 'signal-action',
+            metadata: {
+              message: message,
+              entourage_id: @entourage.id
+            }
+          })
+        end
 
         head :created
       end

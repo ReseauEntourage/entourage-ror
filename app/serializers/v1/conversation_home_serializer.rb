@@ -118,11 +118,7 @@ module V1
     end
 
     def other_participant
-      return unless private_conversation?
-
-      @other_participant ||= object.members.find do |member|
-        member.id != scope[:user]&.id
-      end
+      @other_participant ||= object.interlocutor_of(scope[:user])
     end
   end
 end
