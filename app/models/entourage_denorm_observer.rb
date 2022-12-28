@@ -1,6 +1,6 @@
 class EntourageDenormObserver < ActiveRecord::Observer
-  # this class ensures that join_request and chat_message updates lead to denorm updates
-  observe :join_request, :chat_message
+  # this class ensures that chat_message updates lead to denorm updates
+  observe :chat_message
 
   def after_create(record)
     action(:create, record)
@@ -17,7 +17,7 @@ class EntourageDenormObserver < ActiveRecord::Observer
   private
 
   # @param verb :create, :update, :destroy
-  # @param record JoinRequest or ChatMessage instance
+  # @param record ChatMessage instance
   # return sends a directive to EntourageDenorm to update a specific field
   def action(verb, record)
     return unless entourage_id = record.entourage_id

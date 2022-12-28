@@ -11,7 +11,7 @@ describe Admin::EntouragesController do
       let!(:entourage_list) { FactoryBot.create_list(:entourage, 2, :joined) }
       before { get :index, params: { moderator_id: :any } }
 
-      it { expect(assigns(:entourages)).to match_array(entourage_list) }
+      it { expect(assigns(:entourages).map(&:id)).to match_array(entourage_list.map(&:id)) }
     end
 
     context "has no entourages" do
