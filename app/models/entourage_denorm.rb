@@ -12,6 +12,7 @@ class EntourageDenorm < ApplicationRecord
 
   def chat_message_on_create chat_message
     self[:max_chat_message_created_at] = chat_message.created_at
+    self[:has_image_url] ||= chat_message.image_url.present?
   end
 
   # update
@@ -34,7 +35,7 @@ class EntourageDenorm < ApplicationRecord
   def recompute_and_save
     recompute_max_join_request_requested_at
     recompute_max_chat_message_created_at
-    save
+    recompute_has_image_url
   end
 
   private
@@ -50,8 +51,14 @@ class EntourageDenorm < ApplicationRecord
 
   def recompute_max_chat_message_created_at
     self[:max_chat_message_created_at] = ChatMessage.select('max(created_at) as max_created_at')
-    .where(["messageable_type = 'Entourage' and messageable_id = ?", entourage_id])
-    .group(:messageable_id)
-    .map(&:max_created_at).max
+      .where(messageable: entourage)
+      .group(:messageable_id)
+      .pluck(:max_created_at).max
+  end
+
+  def recompute_has_image_url
+    self[:has_image_url] = ChatMessage.where(messageable: entourage)
+      .where('image_url is not null')
+      .any?
   end
 end

@@ -29,10 +29,11 @@ module Admin
         .select(%(
           entourages.*,
           entourage_moderations.moderated_at is not null or entourages.created_at < '2018-01-01' as moderated,
-          moderator_reads is null and entourages.created_at >= now() - interval '1 week' as unread
+          moderator_reads is null and entourages.created_at >= now() - interval '1 week' as unread,
+          moderator_reads is null and entourages.created_at >= now() - interval '1 week' and has_image_url as unread_images
         ))
         .like(params[:search])
-        .group("entourages.id, moderator_reads.id, entourage_moderations.id")
+        .group("entourages.id, moderator_reads.id, entourage_moderations.id, entourage_denorms.id")
         .joins(%(join entourage_denorms on entourage_denorms.entourage_id = entourages.id))
         .order("case when status = 'open' then 1 else 2 end")
         .order(%(
@@ -90,7 +91,7 @@ module Admin
         })
 
       @message_count = Hash[@message_count.map { |m| [m.messageable_id, m] }]
-      @message_count.default = OpenStruct.new(unread: 0, total: 0)
+      @message_count.default = OpenStruct.new(unread: 0, unread_images: 0, total: 0)
       @moderation = Hash[EntourageModeration.where(entourage_id: entourage_ids).pluck(:entourage_id, :moderated)]
       @moderation.default = false
 
