@@ -34,7 +34,7 @@ module Admin
         ))
         .like(params[:search])
         .group("entourages.id, moderator_reads.id, entourage_moderations.id, entourage_denorms.id")
-        .joins(%(join entourage_denorms on entourage_denorms.entourage_id = entourages.id))
+        .joins(%(left outer join entourage_denorms on entourage_denorms.entourage_id = entourages.id))
         .order("case when status = 'open' then 1 else 2 end")
         .order(%(
           case
