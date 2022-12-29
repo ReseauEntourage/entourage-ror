@@ -51,14 +51,6 @@ class Poi < ApplicationRecord
     self[:adress] = address
   end
 
-  def hours
-    nil
-  end
-
-  def languages
-    nil
-  end
-
   def category_ids= category_ids
     if category_id.nil?
       self[:category_id] = category_ids.reject(&:blank?).first
