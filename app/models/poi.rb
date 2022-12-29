@@ -33,8 +33,21 @@ class Poi < ApplicationRecord
     end
   end
 
+  class << self
+    def find_by_uuid uuid
+      if uuid.start_with?('s')
+        find_by(source_id: uuid[1..])
+      else
+        find(uuid)
+      end
+    end
+  end
+
   def uuid
-    id.to_s unless id.nil?
+    return "s#{source_id}" if source_soliguide?
+    return unless id
+
+    id.to_s
   end
 
   def source_url

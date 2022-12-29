@@ -93,10 +93,10 @@ module Api
 
       def show
         if params[:id].start_with?('s')
-          return render json: { poi: PoiServices::SoliguideShow.get(params[:id][1..]) }
+          PoiServices::SoliguideShow.get(params[:id][1..])
         end
 
-        poi = Poi.validated.find(params[:id])
+        poi = Poi.validated.find_by_uuid(params[:id])
         render json: poi, serializer: ::V1::PoiSerializer, scope: {version: :v2}
       end
 
