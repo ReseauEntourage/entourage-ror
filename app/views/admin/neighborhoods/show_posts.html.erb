@@ -42,6 +42,12 @@
 
               <%= simple_format message.content %>
 
+              <% if message.image_path.present? %>
+                <div style="margin-bottom: 15px">
+                  <%= image_tag(message.image_path, height: '100') %>
+                </div>
+              <% end %>
+
               <% if message.children.any? %>
                 <div><%= link_to "voir les commentaires", show_post_comments_admin_neighborhood_path(@neighborhood, post_id: message.id) %></div>
               <% end %>
