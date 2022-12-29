@@ -5,7 +5,7 @@ module PoiServices
 
     class << self
       def get id
-        SoliguideFormatter.format JSON.parse(query(id).body)
+        PoiServices::SoliguideFormatter.format JSON.parse(query(id).body)
       end
 
       def uptime
@@ -17,7 +17,7 @@ module PoiServices
       def headers
         {
           'Content-Type' => 'application/json',
-          'Authorization' => Soliguide::API_KEY,
+          'Authorization' => PoiServices::Soliguide::API_KEY,
         }
       end
 

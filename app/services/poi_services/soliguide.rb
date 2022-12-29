@@ -42,7 +42,7 @@ module PoiServices
         location: {
           distance:  (distance || 0).to_f.clamp(DISTANCE_MIN, DISTANCE_MAX),
           coordinates: [longitude.to_f, latitude.to_f],
-          geoType: :position
+          geoType: "position"
         },
         options: {}
       }
@@ -59,7 +59,7 @@ module PoiServices
         location: {
           distance:  (distance || 0).to_f.clamp(DISTANCE_MIN, DISTANCE_ALL_MAX),
           coordinates: [longitude.to_f, latitude.to_f],
-          geoType: :position
+          geoType: "position"
         },
         options: {}
       }

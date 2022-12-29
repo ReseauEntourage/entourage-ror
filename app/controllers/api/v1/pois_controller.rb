@@ -78,7 +78,10 @@ module Api
         # do not add Soliguide to results
         # we send this request just for Soliguide stats; Soliguide POIs have already been added from Entourage DB
         soliguide = PoiServices::Soliguide.new(soliguide_params)
-        PoiServices::SoliguideIndex.post_only_query(soliguide.query_params) if version == :v2 && soliguide.apply?
+
+        if version == :v2 && soliguide.apply?
+          AsyncService.new(PoiServices::SoliguideIndex).post_only_query(soliguide.query_params)
+        end
 
         payload =
           case version
@@ -93,7 +96,7 @@ module Api
 
       def show
         if params[:id].start_with?('s')
-          PoiServices::SoliguideShow.get(params[:id][1..])
+          AsyncService.new(PoiServices::SoliguideShow).get(params[:id][1..])
         end
 
         poi = Poi.validated.find_by_uuid(params[:id])
