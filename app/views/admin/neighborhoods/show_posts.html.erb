@@ -8,7 +8,7 @@
     <%= render 'edit_header', tab: :show_posts %>
 
     <div class="row">
-      <% if unread_count > 0 %>
+      <% if unread_count > 0 && first_unread %>
         <div class="conversation-unread-status" id="unreadStatus">
           <%= pluralize(unread_count, "nouveau message", "nouveaux messages") %>
           depuis le <%= l first_unread.created_at, format: "%-d %B %Y à %H h %M" %>
@@ -62,9 +62,30 @@
                 <div><%= link_to "voir les commentaires", show_post_comments_admin_neighborhood_path(@neighborhood, post_id: message.id) %></div>
               <% end %>
             </div>
+            <div class="conversation-actions">
+              <div class="dropdown" style="display: inline-block">
+                <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                  <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu1">
+                  <li>
+                    <%= link_to "Marquer comme non lu",
+                        unread_message_admin_neighborhoods_path(chat_message_id: message.id),
+                        method: :post %>
+                  </li>
+                  <li>
+                    <%= link_to "Supprimer le message",
+                        destroy_message_admin_neighborhoods_path(chat_message_id: message.id),
+                        method: :delete,
+                        data: { confirm: "Voulez-vous vraiment supprimer ce message ? Cette opération est irréversible.\n\n#{message.user.full_name} :\n#{message.content}" },
+                        class: "text-danger" %>
+                  </li>
+                </ul>
+              </div>
+            </div>
           </div>
 
-          <% if message.id == first_unread.unread_first_chat_message_id %>
+          <% if first_unread && message.id == first_unread.unread_first_chat_message_id %>
             <div class="conversation-unread-divider" id="unreadDivider">
               <div class="conversation-unread-divider-label">messages déjà lus</div>
             </div>
@@ -76,6 +97,11 @@
         <%= paginate @posts %>
       </div>
 
+      <% if unread_count > 0 %>
+        <div class="text-center">
+          <%= link_to "Marquer comme lu", read_all_messages_admin_neighborhood_path(@neighborhood), method: :post, class: "btn btn-default" %>
+        </div>
+      <% end %>
     </div>
   </div>
 </div>

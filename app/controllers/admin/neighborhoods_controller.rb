@@ -2,7 +2,7 @@ module Admin
   class NeighborhoodsController < Admin::BaseController
     layout 'admin_large'
 
-    before_action :set_neighborhood, only: [:edit, :update, :edit_image, :update_image, :show_members, :show_outings, :show_outing_posts, :show_outing_post_comments, :show_posts, :show_post_comments, :edit_owner, :update_owner]
+    before_action :set_neighborhood, only: [:edit, :update, :edit_image, :update_image, :show_members, :show_outings, :show_outing_posts, :show_outing_post_comments, :show_posts, :show_post_comments, :edit_owner, :update_owner, :read_all_messages]
 
     def index
       @params = params.permit([:area, :search]).to_h
@@ -95,6 +95,32 @@ module Admin
           redirect_to [:edit_owner, :admin, @neighborhood], alert: error_message
         end
       end
+    end
+
+    # chat_message
+    def read_all_messages
+      JoinRequest
+        .find_by(user: current_user, joinable: @neighborhood)
+        .update_attribute(:last_message_read, Time.zone.now)
+
+      redirect_to show_posts_admin_neighborhood_path(@neighborhood)
+    end
+
+    def unread_message
+      chat_message = ChatMessage.find(params[:chat_message_id])
+
+      JoinRequest
+        .find_by(user: current_user, joinable: chat_message.messageable)
+        .update_attribute(:last_message_read, chat_message.created_at - 1.second)
+
+      redirect_to show_posts_admin_neighborhood_path(chat_message.messageable)
+    end
+
+    def destroy_message
+      chat_message = ChatMessage.find(params[:chat_message_id])
+      chat_message.destroy
+
+      redirect_to show_posts_admin_neighborhood_path(chat_message.messageable)
     end
 
     private
