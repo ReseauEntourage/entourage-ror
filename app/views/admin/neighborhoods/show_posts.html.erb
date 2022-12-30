@@ -73,13 +73,15 @@
                         unread_message_admin_neighborhoods_path(chat_message_id: message.id),
                         method: :post %>
                   </li>
-                  <li>
-                    <%= link_to "Supprimer le message",
-                        destroy_message_admin_neighborhoods_path(chat_message_id: message.id),
-                        method: :delete,
-                        data: { confirm: "Voulez-vous vraiment supprimer ce message ? Cette opération est irréversible.\n\n#{message.user.full_name} :\n#{message.content}" },
-                        class: "text-danger" %>
-                  </li>
+                  <% unless message.children.any? %>
+                    <li>
+                      <%= link_to "Supprimer le message",
+                          destroy_message_admin_neighborhoods_path(chat_message_id: message.id),
+                          method: :delete,
+                          data: { confirm: "Voulez-vous vraiment supprimer ce message ? Cette opération est irréversible.\n\n#{message.user.full_name} :\n#{message.content}" },
+                          class: "text-danger" %>
+                    </li>
+                  <% end %>
                 </ul>
               </div>
             </div>

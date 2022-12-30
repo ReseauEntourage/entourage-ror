@@ -118,6 +118,9 @@ module Admin
 
     def destroy_message
       chat_message = ChatMessage.find(params[:chat_message_id])
+
+      return redirect_to show_posts_admin_neighborhood_path(chat_message.messageable), alert: "Impossible de supprimer une publication qui a des commentaires" if chat_message.children.any?
+
       chat_message.destroy
 
       redirect_to show_posts_admin_neighborhood_path(chat_message.messageable)
