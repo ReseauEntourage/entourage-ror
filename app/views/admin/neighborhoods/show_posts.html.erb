@@ -1,10 +1,20 @@
 <%= stylesheet_link_tag 'chat_messages' %>
 
+<% unread_count = @neighborhood.unread_count_chat_messages_for(current_user) %>
+<% first_unread = @neighborhood.unread_first_chat_message_for(current_user) %>
+
 <div class="container">
   <div style="width: 750px; margin: auto">
     <%= render 'edit_header', tab: :show_posts %>
 
     <div class="row">
+      <% if unread_count > 0 %>
+        <div class="conversation-unread-status" id="unreadStatus">
+          <%= pluralize(unread_count, "nouveau message", "nouveaux messages") %>
+          depuis le <%= l first_unread.created_at, format: "%-d %B %Y à %H h %M" %>
+        </div>
+      <% end %>
+
       <% color = {} %>
 
       <% if @posts.empty? %>
@@ -53,6 +63,12 @@
               <% end %>
             </div>
           </div>
+
+          <% if message.id == first_unread.unread_first_chat_message_id %>
+            <div class="conversation-unread-divider" id="unreadDivider">
+              <div class="conversation-unread-divider-label">messages déjà lus</div>
+            </div>
+          <% end %>
         <% end %>
       <% end %>
 
