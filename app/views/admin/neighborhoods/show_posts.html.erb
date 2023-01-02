@@ -108,7 +108,7 @@
         <%= paginate @posts %>
       </div>
 
-      <% if unread_count > 0 %>
+      <% if @neighborhood.moderator_has_unread_content(user: current_user) %>
         <div class="text-center">
           <%= link_to "Marquer comme lu", read_all_messages_admin_neighborhood_path(@neighborhood), method: :post, class: "btn btn-default" %>
         </div>
