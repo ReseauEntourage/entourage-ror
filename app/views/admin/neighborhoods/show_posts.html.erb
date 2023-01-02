@@ -1,8 +1,17 @@
 <%= stylesheet_link_tag 'chat_messages' %>
 
-<% unread_count = @neighborhood.unread_count_chat_messages_for(current_user) %>
-<% first_unread = @neighborhood.unread_first_chat_message_for(current_user) %>
+<%
+  first_unread = nil
+  unread_count = 0
 
+  @posts.reverse.each do |m|
+    if first_unread.nil? && @moderator_read && m.created_at >= @moderator_read.read_at
+      first_unread = m
+    end
+
+    unread_count += 1 if first_unread
+  end
+%>
 <div class="container">
   <div style="width: 750px; margin: auto">
     <%= render 'edit_header', tab: :show_posts %>
@@ -87,7 +96,7 @@
             </div>
           </div>
 
-          <% if first_unread && message.id == first_unread.unread_first_chat_message_id %>
+          <% if message == first_unread %>
             <div class="conversation-unread-divider" id="unreadDivider">
               <div class="conversation-unread-divider-label">messages déjà lus</div>
             </div>

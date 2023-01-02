@@ -3,6 +3,7 @@ class Neighborhood < ApplicationRecord
   include CoordinatesScopable
   include JoinableScopable
   include Recommandable
+  include ModeratorReadable
   include Experimental::NeighborhoodSlack::Callback
 
   after_validation :track_status_change
@@ -21,7 +22,9 @@ class Neighborhood < ApplicationRecord
 
   has_many :members, -> { where("join_requests.status = 'accepted'") }, through: :join_requests, source: :user
   has_many :neighborhoods_entourages
+  has_many :chat_messages, as: :messageable, dependent: :destroy
   has_many :parent_chat_messages, -> { where(ancestry: nil) }, as: :messageable, class_name: :ChatMessage
+  has_many :conversation_messages, as: :messageable, dependent: :destroy
 
   # outings
   has_many :outings, -> {
@@ -45,7 +48,6 @@ class Neighborhood < ApplicationRecord
   }, through: :neighborhoods_entourages, source: :entourage, class_name: :Outing
 
   reverse_geocoded_by :latitude, :longitude
-  has_many :chat_messages, as: :messageable, dependent: :destroy
 
   validates_presence_of [:status, :name, :description, :latitude, :longitude]
 

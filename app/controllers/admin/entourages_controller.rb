@@ -208,7 +208,7 @@ module Admin
         end
 
       ModeratorReadsService
-        .new(entourage: @entourage, moderator: current_user)
+        .new(instance: @entourage, moderator: current_user)
         .mark_as_read(at: read_at)
 
       redirect_to show_messages_admin_entourage_path(@entourage)
@@ -216,7 +216,7 @@ module Admin
 
     def moderator_unread
       ModeratorReadsService
-        .new(entourage: @entourage, moderator: current_user)
+        .new(instance: @entourage, moderator: current_user)
         .mark_as_unread
 
       redirect_to show_messages_admin_entourage_path(@entourage)
@@ -400,7 +400,7 @@ module Admin
       chat_builder.create do |on|
         on.success do |message|
           ModeratorReadsService
-            .new(entourage: @entourage, moderator: current_user)
+            .new(instance: @entourage, moderator: current_user)
             .mark_as_read
           redirect_to [:admin, @entourage, anchor: "chat_message-#{message.id}"]
         end

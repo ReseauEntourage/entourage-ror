@@ -41,23 +41,20 @@
           <th>Statut</th>
           <th>Actions</th>
           <% @neighborhoods.each do |neighborhood| %>
-            <% unread_count = neighborhood.unread_count_chat_messages_for(current_user) %>
-            <% unread_images_count = neighborhood.unread_images_count_chat_messages_for(current_user) %>
-
+            <% unread_count  = @message_count[neighborhood.id].unread %>
+            <% unread_images_count = @message_count[neighborhood.id].unread_images || 0 %>
             <tr>
               <td><%= neighborhood.id %></td>
               <td>
-                <% if unread_count > 0 %>
-                  <span class="badge" style="background: #d9534f" title="Messages non lus">
-                    <%= unread_count %>
-                  </span>
+                <% if neighborhood.unread %>
+                  <span class="badge" style="background: #d9534f" title="Non lu">●</span>
+                <% elsif unread_count > 0 %>
+                  <span class="badge" style="background: #d9534f" title="Messages non lus"><%= unread_count %></span>
                 <% end %>
               </td>
               <td>
                 <% if unread_images_count > 0 %>
-                  <span class="badge" style="background: #19534f" title="Images non lues">
-                    <%= unread_images_count %>
-                  </span>
+                  <span class="badge" style="background: #19534f" title="Image messages non lues"><%= unread_images_count %></span>
                 <% end %>
               </td>
               <td><%= link_to neighborhood.name, edit_admin_neighborhood_path(neighborhood) %></td>

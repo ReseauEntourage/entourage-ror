@@ -8,10 +8,33 @@ module Admin
       @params = params.permit([:area, :search]).to_h
       @area = params[:area].presence&.to_sym || :all
 
+
       @neighborhoods = Neighborhood.unscoped.includes([:user, :interests])
       @neighborhoods = @neighborhoods.search_by(params[:search]) if params[:search].present?
       @neighborhoods = @neighborhoods.with_moderation_area(@area.to_s) if @area && @area != :all
-      @neighborhoods = @neighborhoods.order(created_at: :desc).page(page).per(per)
+      @neighborhoods = @neighborhoods.order(created_at: :desc)
+        .with_moderator_reads_for(user: current_user)
+        .select(%(
+          neighborhoods.*,
+          moderator_reads is null as unread
+        ))
+        .order(%(
+          neighborhoods.created_at DESC
+        )).page(page).per(per)
+
+      @message_count = ConversationMessage
+        .with_moderator_reads_for(user: current_user)
+        .where(messageable: @neighborhoods.map(&:id))
+        .group(:messageable_id)
+        .select(%{
+          messageable_id,
+          sum(case when conversation_messages.content <> '' then 1 else 0 end) as total,
+          sum(case when conversation_messages.created_at >= moderator_reads.read_at then 1 else 0 end) as unread,
+          sum(case when conversation_messages.created_at >= moderator_reads.read_at and conversation_messages.image_url is not null then 1 else 0 end) as unread_images
+        })
+
+      @message_count = Hash[@message_count.map { |m| [m.messageable_id, m] }]
+      @message_count.default = OpenStruct.new(unread: 0, total: 0)
     end
 
     def edit
@@ -69,6 +92,7 @@ module Admin
 
     def show_posts
       @posts = @neighborhood.posts.page(page).per(per).includes([:user])
+      @moderator_read = @neighborhood.moderator_read_for(user: current_user)
     end
 
     def show_post_comments
@@ -99,9 +123,17 @@ module Admin
 
     # chat_message
     def read_all_messages
-      JoinRequest
-        .find_by(user: current_user, joinable: @neighborhood)
-        .update_attribute(:last_message_read, Time.zone.now)
+      ModeratorReadsService
+        .new(instance: @neighborhood, moderator: current_user)
+        .mark_as_read(at: Time.zone.now)
+
+      redirect_to show_posts_admin_neighborhood_path(@neighborhood)
+    end
+
+    def unread_all_messages
+      ModeratorReadsService
+        .new(instance: @neighborhood, moderator: current_user)
+        .mark_as_unread
 
       redirect_to show_posts_admin_neighborhood_path(@neighborhood)
     end
@@ -109,9 +141,9 @@ module Admin
     def unread_message
       chat_message = ChatMessage.find(params[:chat_message_id])
 
-      JoinRequest
-        .find_by(user: current_user, joinable: chat_message.messageable)
-        .update_attribute(:last_message_read, chat_message.created_at - 1.second)
+      ModeratorReadsService
+        .new(instance: chat_message.messageable, moderator: current_user)
+        .mark_as_read(at: chat_message.created_at)
 
       redirect_to show_posts_admin_neighborhood_path(chat_message.messageable)
     end
