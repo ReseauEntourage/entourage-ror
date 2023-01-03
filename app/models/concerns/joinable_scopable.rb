@@ -20,7 +20,7 @@ module JoinableScopable
   def members_has_changed!
     return unless has_attribute?(:number_of_people)
 
-    self[:number_of_people] = accepted_members.count
+    update_column(:number_of_people, accepted_members.count)
   end
 
   def members_count

@@ -24,9 +24,7 @@ class JoinRequestObserver < ActiveRecord::Observer
     return unless record.joinable
     return unless record.joinable.respond_to?(:members_has_changed!)
 
-    joinable = record.joinable
-    joinable.members_has_changed!
-    joinable.save
+    record.joinable.members_has_changed!
   rescue
     # we want this hook to never fail the main process
   end
