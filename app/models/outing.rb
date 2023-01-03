@@ -58,6 +58,7 @@ class Outing < Entourage
 
   scope :future, -> { where("metadata->>'starts_at' >= ?", Time.zone.now) }
   scope :past, -> { where("metadata->>'starts_at' <= ?", Time.zone.now) }
+  scope :starting_after, -> (from) { where("metadata->>'starts_at' >= ?", from) }
 
   scope :recommandable, -> { self.active.future }
 
