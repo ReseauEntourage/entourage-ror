@@ -19,7 +19,6 @@ class Neighborhood < ApplicationRecord
 
   alias_attribute :author, :user
 
-  has_many :join_requests, as: :joinable, dependent: :destroy
   has_many :members, -> { where("join_requests.status = 'accepted'") }, through: :join_requests, source: :user
   has_many :neighborhoods_entourages
   has_many :parent_chat_messages, -> { where(ancestry: nil) }, as: :messageable, class_name: :ChatMessage
@@ -51,7 +50,6 @@ class Neighborhood < ApplicationRecord
   validates_presence_of [:status, :name, :description, :latitude, :longitude]
 
   alias_attribute :title, :name
-  alias_attribute :accepted_members, :members
   alias_attribute :posts, :parent_chat_messages
 
   # valides :image_url # should be 390x258 (2/3)
@@ -161,10 +159,6 @@ class Neighborhood < ApplicationRecord
     self[:google_place_id] = nil
 
     super(place_name)
-  end
-
-  def members_count
-    members.length
   end
 
   def posts_count

@@ -23,9 +23,6 @@ class Entourage < ApplicationRecord
   DEFAULT_EVENT_DURATION = 3.hours
 
   belongs_to :user
-  has_many :join_requests, as: :joinable, dependent: :destroy
-  has_many :members, through: :join_requests, source: :user
-  has_many :accepted_members, -> { where("join_requests.status = 'accepted'") }, through: :join_requests, source: :user
   has_many :neighborhoods_entourages, dependent: :destroy
   has_many :neighborhoods, through: :neighborhoods_entourages
   reverse_geocoded_by :latitude, :longitude
