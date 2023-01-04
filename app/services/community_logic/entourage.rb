@@ -24,10 +24,6 @@ class CommunityLogic::Entourage < CommunityLogic::Common
     end
   end
 
-  def self.action_success_creator join_request
-    GroupMailer.action_success_creator(join_request).deliver_later
-  end
-
   def self.morning_emails
     at_day 1, before: :event, role: :organizer do |join_request|
       GroupMailer.event_reminder_organizer(join_request).deliver_later

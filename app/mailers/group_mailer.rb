@@ -1,26 +1,4 @@
 class GroupMailer < MailjetMailer
-  #
-  # Group created
-  #
-
-  def action_success_creator join_request
-    creator = join_request.user
-    action = join_request.joinable
-
-    mailjet_email(
-      to: creator,
-      campaign_name: :action_success_creator,
-      deliver_only_once: true,
-      template_id: 366621,
-      variables: [
-        action => [
-          :entourage_title,
-        ],
-        targeting_profile: creator.targeting_profile.presence || "null",
-      ]
-    )
-  end
-
   def event_created_confirmation event
     event_creator = event.user
 

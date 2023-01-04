@@ -158,7 +158,6 @@ module EntourageServices
           if entourage.group_type == 'action' &&
              entourage.moderation.action_outcome == 'Oui'
             join_request = JoinRequest.where(joinable: entourage, user: entourage.user).first
-            CommunityLogic.for(entourage).action_success_creator(join_request)
           end
         end
       end
