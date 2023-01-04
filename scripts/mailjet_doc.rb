@@ -34,7 +34,6 @@ headers = []
   MemberMailer.onboarding_day_8(user),
   MemberMailer.onboarding_day_14(user),
   MemberMailer.reactivation_day_20(user),
-  GroupMailer.action_joined_confirmation(action_join_request),
   MemberMailer.action_follow_up_day_10(action),
   GroupMailer.event_created_confirmation(event),
   GroupMailer.event_joined_confirmation(event_join_request),

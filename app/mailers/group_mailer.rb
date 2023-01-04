@@ -19,28 +19,6 @@ class GroupMailer < MailjetMailer
     )
   end
 
-  #
-  # Group joined
-  #
-
-  def action_joined_confirmation join_request
-    action = join_request.joinable
-    new_member = join_request.user
-
-    mailjet_email(
-      to: new_member,
-      campaign_name: :action_joined_confirmation,
-      deliver_only_once: true,
-      template_id: 583998,
-      variables: [
-        action => [
-          :entourage_title,
-          :entourage_share_url,
-        ],
-      ]
-    )
-  end
-
   def event_joined_confirmation join_request
     return # @see EN-4675
 

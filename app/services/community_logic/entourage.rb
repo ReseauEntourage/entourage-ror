@@ -15,7 +15,7 @@ class CommunityLogic::Entourage < CommunityLogic::Common
 
     case group.group_type
     when 'action'
-      GroupMailer.action_joined_confirmation(join_request).deliver_later
+      # do not send email anymore
     when 'outing' # event
       # # @see EN-4675
       # GroupMailer.event_joined_confirmation(join_request).deliver_later
