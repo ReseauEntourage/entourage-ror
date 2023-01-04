@@ -66,20 +66,4 @@ class GroupMailer < MailjetMailer
       ]
     )
   end
-
-  def event_followup_organizer join_request
-    organizer = join_request.user
-    event = join_request.joinable
-
-    mailjet_email(
-      to: organizer,
-      campaign_name: :event_followup_organizer,
-      template_id: 491294,
-      variables: [
-        event => [
-          :entourage_title,
-        ]
-      ]
-    )
-  end
 end

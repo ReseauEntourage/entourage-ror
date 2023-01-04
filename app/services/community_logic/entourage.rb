@@ -29,9 +29,5 @@ class CommunityLogic::Entourage < CommunityLogic::Common
       # # @see EN-4675
       # GroupMailer.event_reminder_participant(join_request).deliver_later
     end
-
-    at_day 1, after: :event, role: :organizer do |join_request|
-      GroupMailer.event_followup_organizer(join_request).deliver_later
-    end
   end
 end

@@ -38,7 +38,6 @@ headers = []
   GroupMailer.event_created_confirmation(event),
   GroupMailer.event_joined_confirmation(event_join_request),
   GroupMailer.event_reminder_participant(event_join_request),
-  GroupMailer.event_followup_organizer(event_join_request),
   UnreadReminderEmail.delivery(UnreadReminderEmail::Presenter.new(user)),
   DigestEmailService.delivery(user, [action.id, event.id], suggested_postal_code: '75001'),
 ].each do |delivery|
