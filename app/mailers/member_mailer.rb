@@ -31,13 +31,6 @@ class MemberMailer < MailjetMailer
                   deliver_only_once: true
   end
 
-  def reactivation_day_40(user)
-    mailjet_email to: user,
-                  template_id: 456194,
-                  campaign_name: 'relance_j_40',
-                  deliver_only_once: true
-  end
-
   def action_follow_up_day_10(action)
     mailjet_email to: action.user,
                   template_id: 452754,
