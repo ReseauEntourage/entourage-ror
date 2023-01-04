@@ -15,7 +15,7 @@ module V1
       def meetings_count
         return 0 unless user = scope[:user]
 
-        past_outing_memberships(user).count + action_creations(user).count
+        past_outing_memberships(user).count + successful_actions(user).count
       end
 
       def chat_messages_count
@@ -60,8 +60,8 @@ module V1
         user.outing_memberships.where(id: Outing.active.past)
       end
 
-      def action_creations user
-        Entourage.action.active.where(user: user)
+      def successful_actions user
+        Entourage.action.closed.successful_outcome.where(user: user)
       end
     end
   end
