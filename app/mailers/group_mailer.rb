@@ -3,22 +3,6 @@ class GroupMailer < MailjetMailer
   # Group created
   #
 
-  def action_confirmation action
-    action_creator = action.user
-
-    mailjet_email(
-      to: action_creator,
-      campaign_name: :action_confirmation,
-      template_id: 312279,
-      variables: [
-        action => [
-          :entourage_title,
-          :entourage_share_url,
-        ],
-      ]
-    )
-  end
-
   def action_success_creator join_request
     creator = join_request.user
     action = join_request.joinable
