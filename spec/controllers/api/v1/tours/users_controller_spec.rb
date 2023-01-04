@@ -30,7 +30,7 @@ describe Api::V1::Tours::UsersController do
             "partner_role_title" => nil,
           }
         )}
-        it { expect(tour.reload.number_of_people).to eq(1) }
+        it { expect(tour.reload.number_of_people).to eq(0) }
       end
 
       context "duplicate request to join tour" do
