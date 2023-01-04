@@ -43,32 +43,6 @@ class GroupMailer < MailjetMailer
     )
   end
 
-  #
-  # Event morning emails
-  #
-
-  def event_reminder_organizer join_request
-    organizer = join_request.user
-    event = join_request.joinable
-
-    IcalService.attach_ical(group: event, for_user: organizer, to: self)
-
-    mailjet_email(
-      to: organizer,
-      campaign_name: :event_reminder_organizer,
-      template_id: 513115,
-      variables: [
-        event => [
-          :entourage_url,
-          :entourage_title,
-          :entourage_share_url,
-        ],
-        event_date_time: event.metadata_datetimes_formatted,
-        event_place_name: event.metadata[:display_address],
-      ]
-    )
-  end
-
   def event_reminder_participant join_request
     return # @see EN-4675
 

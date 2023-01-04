@@ -37,7 +37,6 @@ headers = []
   MemberMailer.action_follow_up_day_10(action),
   GroupMailer.event_created_confirmation(event),
   GroupMailer.event_joined_confirmation(event_join_request),
-  GroupMailer.event_reminder_organizer(event_join_request),
   GroupMailer.event_reminder_participant(event_join_request),
   GroupMailer.event_followup_organizer(event_join_request),
   UnreadReminderEmail.delivery(UnreadReminderEmail::Presenter.new(user)),
