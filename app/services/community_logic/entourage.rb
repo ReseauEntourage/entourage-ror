@@ -25,9 +25,5 @@ class CommunityLogic::Entourage < CommunityLogic::Common
   end
 
   def self.morning_emails
-    at_day 1, before: :event, role: :participant do |join_request|
-      # # @see EN-4675
-      # GroupMailer.event_reminder_participant(join_request).deliver_later
-    end
   end
 end
