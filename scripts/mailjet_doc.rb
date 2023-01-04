@@ -36,7 +36,6 @@ headers = []
   MemberMailer.reactivation_day_20(user),
   GroupMailer.action_joined_confirmation(action_join_request),
   MemberMailer.action_follow_up_day_10(action),
-  MemberMailer.action_follow_up_day_20(action),
   GroupMailer.action_success_creator(action_join_request),
   GroupMailer.event_created_confirmation(event),
   GroupMailer.event_joined_confirmation(event_join_request),

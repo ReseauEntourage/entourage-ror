@@ -37,10 +37,6 @@ namespace :onboarding_sequence do
       MemberMailer.action_follow_up_day_10(action).deliver_later
     end
 
-    at_day 20, after: :action_creation do |action|
-      MemberMailer.action_follow_up_day_20(action).deliver_later
-    end
-
     CommunityLogic.for($server_community).morning_emails
 
     $redis.set(redis_key, redis_date)
