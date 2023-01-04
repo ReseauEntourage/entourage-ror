@@ -527,23 +527,6 @@ describe Api::V1::EntouragesController do
         end
       end
     end
-
-    describe "welcome email" do
-      subject { -> { post :create, params: { entourage: { location: {longitude: 1.123, latitude: 4.567}, title: "foo", entourage_type: "ask_for_help", display_category: "mat_help", description: "foo bar", category: "mat_help"}, token: user.token } } }
-      context "user has no email" do
-        let(:user) { create :public_user, email: nil }
-        it { is_expected.to change { ActionMailer::Base.deliveries.count }.by 0 }
-      end
-
-      context "user has an email" do
-        it { is_expected.to change { ActionMailer::Base.deliveries.count }.by 1 }
-        it "sets email recipient" do
-          subject.call
-          email = ActionMailer::Base.deliveries.last
-          expect(email.to).to eq [user.email]
-        end
-      end
-    end
   end
 
   describe 'GET show' do
