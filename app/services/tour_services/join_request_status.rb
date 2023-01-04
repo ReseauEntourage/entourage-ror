@@ -23,10 +23,7 @@ module TourServices
     def accept!
       return true if accepted?
 
-      ApplicationRecord.transaction do
-        increment_counter
-        join_request.update!(status: "accepted")
-      end
+      join_request.update!(status: "accepted")
 
       if user != joinable_author
         CommunityLogic.for(joinable).group_joined(join_request)
@@ -42,10 +39,7 @@ module TourServices
       if pending?
         join_request.update(status: "rejected")
       elsif accepted?
-        ApplicationRecord.transaction do
-          decrement_counter
-          join_request.update!(status: "rejected")
-        end
+        join_request.update!(status: "rejected")
       end
 
       true
@@ -57,10 +51,7 @@ module TourServices
       if pending?
         join_request.update(status: "cancelled")
       elsif accepted?
-        ApplicationRecord.transaction do
-          decrement_counter
-          join_request.update!(status: "cancelled")
-        end
+        join_request.update!(status: "cancelled")
       end
 
       true
@@ -70,31 +61,16 @@ module TourServices
       return true if pending?
 
       if accepted?
-        ApplicationRecord.transaction do
-          decrement_counter
-          join_request.update!(status: "pending")
-        end
+        join_request.update!(status: "pending")
       elsif joinable.public?
-        ApplicationRecord.transaction do
-          increment_counter
-          join_request.update!(status: "accepted")
-        end
+        join_request.update!(status: "accepted")
+
         JoinRequestsServices::JoinRequestBuilder.notify_auto_join_to_creator(join_request)
+
         true
       else
         join_request.update(status: "pending")
       end
-    end
-
-    def decrement_counter
-      if accepted?
-        joinable.class.decrement_counter(:number_of_people, joinable.id)
-      end
-    end
-
-    def increment_counter
-      return true if accepted?
-      joinable.class.increment_counter(:number_of_people, joinable.id)
     end
 
     def user
