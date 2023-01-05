@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_12_26_113000) do
+ActiveRecord::Schema.define(version: 2022_12_28_104402) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -203,10 +203,10 @@ ActiveRecord::Schema.define(version: 2022_12_26_113000) do
 
   create_table "entourage_denorms", id: :serial, force: :cascade do |t|
     t.integer "entourage_id", null: false
-    t.datetime "max_join_request_requested_at"
     t.datetime "max_chat_message_created_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "has_image_url", default: false
     t.index ["entourage_id"], name: "index_entourage_denorms_on_entourage_id"
   end
 
