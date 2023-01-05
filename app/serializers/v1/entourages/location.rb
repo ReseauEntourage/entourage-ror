@@ -2,18 +2,26 @@ module V1
   module Entourages
     module Location
       def location
-        case object.group_type
-        when 'outing'
-          {
-            latitude: object.latitude,
-            longitude: object.longitude
-          }
-        else
-          {
-            latitude: randomizer.random_latitude,
-            longitude: randomizer.random_longitude
-          }
-        end
+        return {
+          latitude: randomizer.random_latitude,
+          longitude: randomizer.random_longitude
+        } if object.is_a?(Entourage) && object.action?
+
+        {
+          latitude: object.latitude,
+          longitude: object.longitude
+        }
+      end
+
+      def distance
+        return unless scope
+        return unless scope[:latitude].present? && scope[:longitude].present?
+
+        Geocoder::Calculations.distance_between(
+          [location[:latitude], location[:longitude]],
+          [scope[:latitude], scope[:longitude]],
+          units: :km
+        )
       end
 
       def randomizer

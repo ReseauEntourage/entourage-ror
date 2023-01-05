@@ -9,7 +9,9 @@ module Api
 
       def index
         render json: OutingsServices::Finder.new(current_user, index_params).find_all.page(page).per(per), root: :outings, each_serializer: ::V1::OutingSerializer, scope: {
-          user: current_user
+          user: current_user,
+          latitude: index_params[:latitude] || current_user.latitude,
+          longitude: index_params[:longitude] || current_user.longitude
         }
       end
 

@@ -375,7 +375,8 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
         "member" => false,
         "created_at" => outing.created_at.iso8601(3),
         "updated_at" => outing.updated_at.iso8601(3),
-        "status_changed_at" => nil
+        "status_changed_at" => nil,
+        "distance" => nil
       }]) }
     end
 
