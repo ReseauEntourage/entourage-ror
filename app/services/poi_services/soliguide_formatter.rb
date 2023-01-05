@@ -10,9 +10,11 @@ module PoiServices
 
       source_categories = poi['services_all'].map { |service| service['categorie'] }
       phones = poi['entity']['phones'].presence
+      languages = poi['languages'] || []
 
       {
         uuid: "s#{poi['lieu_id']}",
+        source_id: poi['lieu_id'],
         source: :soliguide,
         source_url: "https://soliguide.fr/fiche/#{poi['seo_url']}",
         name: format_title(poi['name'], poi['entity']['name']),
@@ -29,7 +31,7 @@ module PoiServices
         source_category_id: source_categories.compact.first,
         source_category_ids: source_categories.compact.uniq,
         hours: format_hours(poi['newhours']),
-        languages: poi['languages'].map { |l| ISO_LANGS[l.to_sym] }.compact.join(', ')
+        languages: languages.map { |l| ISO_LANGS[l.to_sym] }.compact.join(', ')
       }
     end
 
@@ -40,6 +42,7 @@ module PoiServices
 
       {
         uuid: "s#{poi['lieu_id']}",
+        source_id: poi['lieu_id'],
         name: format_title(poi['name'], poi['entity']['name']),
         longitude: poi['location']['coordinates'][0].round(6),
         latitude: poi['location']['coordinates'][1].round(6),
@@ -419,7 +422,7 @@ module PoiServices
       703 => 2, # HEBERGEMENT_LONG_TERME
 
       # Accueil Logement bas-prix Se loger
-      704 => 2, # LOGEMENT_BASPRIX
+      # 704 => 2, # LOGEMENT_BAS  PRIX
 
       # Accueil Espace de repos S'occuper de soi
       705 => 6, # ESPACE_REPOS
@@ -479,6 +482,18 @@ module PoiServices
       1120 => 3, # STOMATOLOGIE
       1121 => 3, # OSTEO
       1122 => 3, # ACUPUNCTURE
+
+      # Nouvelles catégories
+      408 => 6, # "Conseil aux parents" (s'occuper de soi)
+      702 => 2, # "Hébergement d'urgence" (se loger)
+      709 => 5, # "Point d'information" (s'orienter)
+      710 => 2, # "Hébergement citoyen" (se loger)
+      805 => 6, # "Animations et loisirs" (s'occuper de soi)
+      1200 => 7, # "Transport & mobilité" (se réinsérer)
+      1201 => 7, # "Co-voiturage" (se réinsérer)
+      1202 => 7, # "Mise à disposition de véhicule" (se réinsérer)
+      1203 => 7, # "Transport avec chauffeur" (se réinsérer)
+      1204 => 7, # Aide à la mobilité (se réinsérer)
     }
 
     CATEGORIES_EQUIVALENTS_REVERSED = {

@@ -39,6 +39,7 @@ describe PoiServices::SoliguideIndex do
       it { expect(subject).to eq(
         [{
           uuid: "s1",
+          source_id: 1,
           name: "Entourage",
           longitude: 2.1,
           latitude: 48.2,

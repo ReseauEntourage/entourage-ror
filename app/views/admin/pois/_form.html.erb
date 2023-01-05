@@ -1,16 +1,25 @@
 <%= form_for([:admin, @poi], html: { class: "form-horizontal", role: "form" }) do |f| %>
   <%= render partial: "layouts/errors", locals: {obj: @poi} %>
+
+  <% if @poi.source_soliguide? %>
+    <div class="alert alert-warning" role="alert" style="display: flex; align-items: center">
+      <div style="flex-grow: 1">
+        <b>Soliguide</b><br>
+        Ce POI est issu de Soliguide. Merci de ne pas le modifier.
+      </div>
+      <span><a href="<%= @poi.source_url %>">lien vers Soliguide</a></span>
+    </div>
+  <% end %>
+
   <div class="control-group">
-    <%= f.label :name,"Nom", class: "control-label" %>
-    <a href="#" rel="tooltip" title="Nom du POI" class="tooltip-infos"><i class="fa fa-question-circle"></i></a>
+    <%= f.label :name, "Nom", class: "control-label" %>
     <div class="controls">
       <%= f.text_field :name, class: "form-control", required: true %>
     </div>
   </div>
 
   <div class="control-group">
-    <%= f.label :adress,"Adresse", class: "control-label" %>
-    <a href="#" rel="tooltip" title="Adresse du POI" class="tooltip-infos"><i class="fa fa-question-circle"></i></a>
+    <%= f.label :adress, "Adresse", class: "control-label" %>
     <div class="controls">
       <%= f.text_field :adress, class: "form-control", required: true %>
       <%= f.hidden_field :adress %>
@@ -20,15 +29,28 @@
   </div>
 
   <div class="control-group">
-    <%= f.label :description,"Description", class: "control-label" %>
-    <a href="#" rel="tooltip" title="Description du POI" class="tooltip-infos"><i class="fa fa-question-circle"></i></a>
+    <%= f.label :description, "Description", class: "control-label" %>
     <div class="controls">
       <%= f.text_area :description, class: "form-control" , rows: 10 %>
     </div>
   </div>
 
   <div class="control-group">
-    <%= f.label :audience,"Audience", class: "control-label" %>
+    <%= f.label :hours, "Horaires", class: "control-label" %>
+    <div class="controls">
+      <%= f.text_area :hours, class: "form-control" , rows: 10 %>
+    </div>
+  </div>
+
+  <div class="control-group">
+    <%= f.label :languages, "Langues parlées", class: "control-label" %>
+    <div class="controls">
+      <%= f.text_field :languages, class: "form-control", required: true %>
+    </div>
+  </div>
+
+  <div class="control-group">
+    <%= f.label :audience, "Audience", class: "control-label" %>
     <a href="#" rel="tooltip" title="A qui est destiné ce POI" class="tooltip-infos"><i class="fa fa-question-circle"></i></a>
     <div class="controls">
       <%= f.text_field :audience, class: "form-control" %>
@@ -36,23 +58,21 @@
   </div>
 
   <div class="control-group">
-    <%= f.label :email,"Email", class: "control-label" %>
-    <a href="#" rel="tooltip" title="Email du POI" class="tooltip-infos"><i class="fa fa-question-circle"></i></a>
+    <%= f.label :email, "Email", class: "control-label" %>
     <div class="controls">
       <%= f.email_field :email, class: "form-control" %>
     </div>
   </div>
 
   <div class="control-group">
-    <%= f.label :website,"Site web", class: "control-label" %>
-    <a href="#" rel="tooltip" title="Site web du POI" class="tooltip-infos"><i class="fa fa-question-circle"></i></a>
+    <%= f.label :website, "Site web", class: "control-label" %>
     <div class="controls">
       <%= f.text_field :website, class: "form-control" %>
     </div>
   </div>
 
   <div class="control-group">
-    <%= f.label :phone,"Téléphone", class: "control-label" %>
+    <%= f.label :phone, "Téléphone", class: "control-label" %>
     <a href="#" rel="tooltip" title="Téléphone du POI au format internationnal : +33..." class="tooltip-infos"><i class="fa fa-question-circle"></i></a>
     <div class="controls">
       <%= f.text_field :phone, class: "form-control" %>
@@ -60,15 +80,14 @@
   </div>
 
   <div class="control-group">
-    <%= f.label :category,"Categorie", class: "control-label" %>
-    <a href="#" rel="tooltip" title="Catégorie du POI" class="tooltip-infos"><i class="fa fa-question-circle"></i></a>
+    <%= f.label :category, "Categorie", class: "control-label" %>
     <div class="controls">
       <%= f.collection_select :category_ids, Category.all, :id, :name, { required: true }, { multiple: true } %>
     </div>
   </div>
 
   <div class="control-group">
-    <%= f.label :validated,"Validé", class: "control-label" %>
+    <%= f.label :validated, "Validé", class: "control-label" %>
     <a href="#" rel="tooltip" title="Est ce que ce POI est validé ?" class="tooltip-infos"><i class="fa fa-question-circle"></i></a>
     <div class="controls">
       <%= f.check_box :validated %>

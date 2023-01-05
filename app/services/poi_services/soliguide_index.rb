@@ -1,16 +1,55 @@
 module PoiServices
   class SoliguideIndex
     INDEX_URI = "https://api.soliguide.fr/new-search?%s"
+    BATCH_LIMIT = 1000
+
+    FIND_ONE_PARAMS = {
+      latitude: PoiServices::Soliguide::PARIS[:latitude],
+      longitude: PoiServices::Soliguide::PARIS[:longitude],
+      distance: 1,
+      limit: 1
+    }
+
+    FIND_ALL_PARAMS = {
+      latitude: PoiServices::Soliguide::PARIS[:latitude],
+      longitude: PoiServices::Soliguide::PARIS[:longitude],
+      distance: PoiServices::Soliguide::DISTANCE_ALL_MAX,
+      limit: BATCH_LIMIT
+    }
 
     class << self
-      def post params
+      def post params, format = :short
         get_results(params).map do |poi|
-          PoiServices::SoliguideFormatter.format_short poi
+          if format == :short
+            PoiServices::SoliguideFormatter.format_short(poi)
+          else
+            PoiServices::SoliguideFormatter.format(poi)
+          end
         end
       end
 
+      def post_only_query params
+        get_results(params)
+      end
+
+      def post_all_for_page page, format = :short
+        params = find_all_params_for_page(page)
+
+        Rails.logger.info("#{self.name} sends post with params: #{params}")
+
+        post(params, format)
+      end
+
       def uptime
-        query(default_params)
+        find_one_query
+      end
+
+      def find_one_query
+        query(find_one_params)
+      end
+
+      def find_all_query
+        query(find_all_params)
       end
 
       private
@@ -18,7 +57,7 @@ module PoiServices
       def headers
         {
           'Content-Type' => 'application/json',
-          'Authorization' => Soliguide::API_KEY,
+          'Authorization' => PoiServices::Soliguide::API_KEY,
         }
       end
 
@@ -32,13 +71,16 @@ module PoiServices
         end.inject(&:+)
       end
 
-      def default_params
-        PoiServices::Soliguide.new({
-          latitude: PoiServices::Soliguide::PARIS[:latitude],
-          longitude: PoiServices::Soliguide::PARIS[:longitude],
-          distance: 1,
-          limit: 1
-        }).query_params
+      def find_one_params
+        @find_one_params ||= PoiServices::Soliguide.new(FIND_ONE_PARAMS).query_params
+      end
+
+      def find_all_params
+        @find_all_params ||= PoiServices::Soliguide.new(FIND_ALL_PARAMS).query_all_params
+      end
+
+      def find_all_params_for_page page
+        PoiServices::Soliguide.new(FIND_ALL_PARAMS.merge({ page: page })).query_all_params
       end
 
       def post_response params
@@ -52,6 +94,7 @@ module PoiServices
 
         http = Net::HTTP.new(uri.host, uri.port)
         http.use_ssl = true
+        http.read_timeout = 180.0 # 3 minutes
 
         http.post(uri.path, params.to_json, headers)
       end

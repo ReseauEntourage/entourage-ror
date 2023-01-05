@@ -3,6 +3,7 @@ module PoiServices
     API_KEY = ENV['SOLIGUIDE_API_KEY']
     DISTANCE_MIN = 2
     DISTANCE_MAX = 10
+    DISTANCE_ALL_MAX = 700
 
     PARIS = {
       latitude: 48.8586,
@@ -25,6 +26,7 @@ module PoiServices
       @category_ids = params[:category_ids]
       @query = params[:query] || params[:word]
       @limit = params[:limit]
+      @page = params[:page]
     end
 
     def apply?
@@ -32,7 +34,7 @@ module PoiServices
     end
 
     def is_active?
-      Option.active? :soliguide
+      Option.soliguide_active?
     end
 
     def query_params
@@ -40,7 +42,7 @@ module PoiServices
         location: {
           distance:  (distance || 0).to_f.clamp(DISTANCE_MIN, DISTANCE_MAX),
           coordinates: [longitude.to_f, latitude.to_f],
-          geoType: :position
+          geoType: "position"
         },
         options: {}
       }
@@ -52,8 +54,23 @@ module PoiServices
       params
     end
 
+    def query_all_params
+      params = {
+        location: {
+          distance:  (distance || 0).to_f.clamp(DISTANCE_MIN, DISTANCE_ALL_MAX),
+          coordinates: [longitude.to_f, latitude.to_f],
+          geoType: "position"
+        },
+        options: {}
+      }
+
+      params[:options][:limit] = limit if limit.present?
+      params[:options][:page] = page || 1
+      params
+    end
+
     private
-    attr_reader :latitude, :longitude, :distance, :category_ids, :query, :limit, :category_ids
+    attr_reader :latitude, :longitude, :distance, :category_ids, :query, :page, :limit, :category_ids
 
     def categories
       @categories ||= (category_ids || "").split(",").map(&:to_i).uniq

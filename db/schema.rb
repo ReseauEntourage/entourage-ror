@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_12_22_111500) do
+ActiveRecord::Schema.define(version: 2022_12_26_113000) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -592,24 +592,29 @@ ActiveRecord::Schema.define(version: 2022_12_22_111500) do
   end
 
   create_table "pois", id: :serial, force: :cascade do |t|
-    t.string "name"
+    t.string "name", limit: 255
     t.text "description"
     t.float "latitude"
     t.float "longitude"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string "adress"
-    t.string "phone"
+    t.string "adress", limit: 255
+    t.string "phone", limit: 255
     t.string "website"
-    t.string "email"
+    t.string "email", limit: 255
     t.string "audience"
     t.integer "category_id"
     t.boolean "validated", default: false, null: false
     t.integer "partner_id"
     t.tsvector "textsearch"
+    t.integer "source", default: 0
+    t.integer "source_id", default: 0
+    t.string "hours"
+    t.string "languages"
     t.index ["category_id", "latitude", "longitude"], name: "index_pois_on_category_id_and_latitude_and_longitude", where: "validated"
     t.index ["latitude", "longitude"], name: "index_pois_on_latitude_and_longitude"
     t.index ["partner_id"], name: "index_pois_on_partner_id", unique: true
+    t.index ["source_id"], name: "index_pois_on_source_id"
     t.index ["textsearch"], name: "index_pois_on_textsearch", using: :gin
   end
 

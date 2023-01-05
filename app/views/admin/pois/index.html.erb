@@ -11,6 +11,7 @@
   <th>Nom</th>
   <th>Adresse</th>
   <th>Date de création</th>
+  <th>Source</th>
   <th>Validé?</th>
   <% @pois.each do |poi| %>
     <tr>
@@ -20,6 +21,9 @@
       <td><%= poi.name %></td>
       <td><%= poi.adress %></td>
       <td><%= l(poi.created_at, format: :date_long) if poi.created_at %></td>
+      <td>
+        <span class="label <%= poi.source_entourage? ? 'label-info' : 'label-warning' %>"><%= poi.source %></span>
+      </td>
       <td><%= check_box_tag '', '', poi.validated, disabled: true %></td>
     </tr>
   <% end %>

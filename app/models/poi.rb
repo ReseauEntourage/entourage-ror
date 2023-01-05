@@ -1,6 +1,8 @@
 class Poi < ApplicationRecord
   include Recommandable
 
+  enum source: { entourage: 0, soliguide: 1 }, _prefix: :source
+
   validates_presence_of :name, :category
   validates :latitude, :longitude, numericality: true
   validates :partner_id, presence: true, allow_nil: true
@@ -10,6 +12,8 @@ class Poi < ApplicationRecord
   geocoded_by :adress
 
   scope :validated, -> { where(validated: true) }
+  scope :not_source_entourage, -> { where.not(source: Poi.sources[:entourage]) }
+  scope :not_source_soliguide, -> { where.not(source: Poi.sources[:soliguide]) }
 
   scope :around, -> (latitude, longitude, distance) do
     distance ||= 10
@@ -29,28 +33,35 @@ class Poi < ApplicationRecord
     end
   end
 
-  def uuid
-    id.to_s unless id.nil?
+  class << self
+    def find_by_uuid uuid
+      if uuid.start_with?('s')
+        find_by(source_id: uuid[1..])
+      else
+        find(uuid)
+      end
+    end
   end
 
-  def source
-    :entourage
+  def uuid
+    return "s#{source_id}" if source_soliguide?
+    return unless id
+
+    id.to_s
   end
 
   def source_url
-    nil
+    return unless source_soliguide?
+
+    "https://soliguide.fr/fiche/#{source_id}"
   end
 
   def address
     adress
   end
 
-  def hours
-    nil
-  end
-
-  def languages
-    nil
+  def address= address
+    self[:adress] = address
   end
 
   def category_ids= category_ids
