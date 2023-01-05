@@ -1,6 +1,6 @@
 module ActionServices
   class Finder
-    attr_reader :user, :latitude, :longitude, :distance
+    attr_reader :user, :latitude, :longitude, :distance, :sections
 
     def initialize user, params
       @user = user
@@ -14,6 +14,7 @@ module ActionServices
       end
 
       @distance = params[:travel_distance] || user.travel_distance
+      @sections = params[:sections] || []
     end
 
     def find_all
@@ -23,6 +24,10 @@ module ActionServices
         bounding_box_sql = Geocoder::Sql.within_bounding_box(*box, :latitude, :longitude)
 
         actions = actions.where(bounding_box_sql)
+      end
+
+      if sections.any?
+        actions = actions.where(id: Action.with_sections(sections))
       end
 
       # order by created_at is already in default_scope

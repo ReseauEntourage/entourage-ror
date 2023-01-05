@@ -11,6 +11,14 @@ module Sectionable
     scope :tagged_with_any_sections, -> (sections) {
       tagged_with(sections, :any => true).unscope(:select, :order, :readonly)
     }
+
+    scope :with_sections, -> (sections) {
+      return tagged_with_any_sections(sections) unless attribute_names.include?("display_category")
+
+      tagged_with_any_sections(sections).or(
+        unscope(:order).where(display_category: ActionServices::Mapper.display_categories_from_sections(sections))
+      )
+    }
   end
 
   def validate_section_list!
