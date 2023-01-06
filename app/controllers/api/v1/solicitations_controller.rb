@@ -8,12 +8,18 @@ module Api
 
       def index
         render json: SolicitationServices::Finder.new(current_user, index_params).find_all.page(page).per(per), root: :solicitations, each_serializer: ::V1::ActionSerializer, scope: {
-          user: current_user
+          user: current_user,
+          latitude: latitude,
+          longitude: longitude
         }
       end
 
       def show
-        render json: @solicitation, serializer: ::V1::ActionSerializer, scope: { user: current_user }
+        render json: @solicitation, serializer: ::V1::ActionSerializer, scope: {
+          user: current_user,
+          latitude: latitude,
+          longitude: longitude
+        }
       end
 
       def create
@@ -117,6 +123,14 @@ module Api
 
       def per
         params[:per] || 25
+      end
+
+      def latitude
+        params[:latitude] || current_user.latitude
+      end
+
+      def longitude
+        params[:longitude] || current_user.longitude
       end
 
       def report_params
