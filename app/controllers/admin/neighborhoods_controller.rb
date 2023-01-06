@@ -14,9 +14,11 @@ module Admin
       @neighborhoods = @neighborhoods.with_moderation_area(@area.to_s) if @area && @area != :all
       @neighborhoods = @neighborhoods.order(created_at: :desc)
         .with_moderator_reads_for(user: current_user)
+        .join_chat_message_with_images
         .select(%(
           neighborhoods.*,
-          moderator_reads is null as unread
+          moderator_reads is null as unread,
+          moderator_reads is null and chat_message_with_images.id is not null as unread_images
         ))
         .order(%(
           neighborhoods.created_at DESC

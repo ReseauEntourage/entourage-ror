@@ -70,6 +70,16 @@ class Neighborhood < ApplicationRecord
     where("left(postal_code, 2) = ?", ModerationArea.departement(moderation_area))
   }
 
+  scope :join_chat_message_with_images, -> {
+    joins(%(
+      left join chat_messages as chat_message_with_images on (
+        chat_message_with_images.messageable_id = #{table_name}.id and
+        chat_message_with_images.messageable_type = '#{self.name}' and
+        chat_message_with_images.image_url is not null
+      )
+    ))
+  }
+
   scope :search_by, ->(search) {
     strip = search && search.strip
     like = "%#{strip}%"
