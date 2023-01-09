@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_12_28_104402) do
+ActiveRecord::Schema.define(version: 2023_01_09_151700) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -611,9 +611,11 @@ ActiveRecord::Schema.define(version: 2022_12_28_104402) do
     t.integer "source_id", default: 0
     t.string "hours"
     t.string "languages"
+    t.string "postal_code"
     t.index ["category_id", "latitude", "longitude"], name: "index_pois_on_category_id_and_latitude_and_longitude", where: "validated"
     t.index ["latitude", "longitude"], name: "index_pois_on_latitude_and_longitude"
     t.index ["partner_id"], name: "index_pois_on_partner_id", unique: true
+    t.index ["postal_code"], name: "index_pois_on_postal_code"
     t.index ["source_id"], name: "index_pois_on_source_id"
     t.index ["textsearch"], name: "index_pois_on_textsearch", using: :gin
   end

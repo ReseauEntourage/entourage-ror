@@ -48,6 +48,7 @@ module PoiServices
         longitude: poi['position']['location']['coordinates'][0].round(6),
         latitude: poi['position']['location']['coordinates'][1].round(6),
         address: poi['position']['adresse'],
+        postal_code: poi['position']['codePostal'].presence,
         phone: poi['entity']['phone'],
         category_id: category_ids.any? ? category_ids[0] : 0,
         partner_id: nil
