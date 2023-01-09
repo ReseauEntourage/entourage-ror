@@ -23,6 +23,7 @@ module PoiServices
         longitude: poi['position']['location']['coordinates'][0].round(6),
         latitude: poi['position']['location']['coordinates'][1].round(6),
         address: poi['position']['adresse'].presence,
+        postal_code: poi['position']['codePostal'].presence,
         phone: format_phones(phones).first,
         phones: format_phones(phones).join(', '),
         website: poi['entity']['website'].presence,
