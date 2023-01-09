@@ -1,5 +1,7 @@
 module OutingsServices
   class Finder
+    RECENTLY_PAST_PERIOD = 7.days
+
     attr_reader :user, :latitude, :longitude, :distance
 
     def initialize user, params
@@ -17,7 +19,9 @@ module OutingsServices
     end
 
     def find_all
-      outings = Outing.active.future.where.not(id: user.outing_membership_ids)
+      outings = Outing.active
+        .starting_after(RECENTLY_PAST_PERIOD.ago)
+        .where.not(id: user.outing_membership_ids)
 
       if latitude && longitude
         bounding_box_sql = Geocoder::Sql.within_bounding_box(*box, :latitude, :longitude)
