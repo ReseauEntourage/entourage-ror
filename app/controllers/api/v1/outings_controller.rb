@@ -140,7 +140,7 @@ module Api
       end
 
       def index_params
-        params.permit(:latitude, :longitude, :travel_distance, :page, :per)
+        params.permit(:latitude, :longitude, :travel_distance, :period, :page, :per)
       end
 
       def outing_params

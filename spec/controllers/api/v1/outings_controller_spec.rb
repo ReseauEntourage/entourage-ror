@@ -18,7 +18,7 @@ describe Api::V1::OutingsController do
     let!(:join_request) { create(:join_request, user: outing.user, joinable: outing, status: :accepted, role: :organizer) }
 
     describe 'do not get closed' do
-      let!(:closed) { create :outing, status: :closed }
+      let!(:closed) { create :outing, status: :closed, latitude: latitude, longitude: longitude }
 
       before { get :index, params: { token: user.token } }
 
@@ -26,6 +26,83 @@ describe Api::V1::OutingsController do
       it { expect(subject).to have_key('outings') }
       it { expect(subject['outings'].count).to eq(1) }
       it { expect(subject['outings'][0]['id']).to eq(outing.id) }
+    end
+
+    describe 'period' do
+      let!(:outing) { create :outing, latitude: latitude, longitude: longitude, metadata: { starts_at: starts_at } }
+
+      before { get :index, params: { token: user.token, period: period } }
+
+      context 'default' do
+        let(:period) { nil }
+
+        context 'display future' do
+          let(:starts_at) { 1.hour.from_now }
+
+          it { expect(subject['outings'].count).to eq(1) }
+          it { expect(subject['outings'][0]['id']).to eq(outing.id) }
+        end
+
+        context 'display recently past' do
+          let(:starts_at) { 1.hour.ago }
+
+          it { expect(subject['outings'].count).to eq(1) }
+          it { expect(subject['outings'][0]['id']).to eq(outing.id) }
+        end
+
+        context 'do not display ancient past' do
+          let(:starts_at) { 1.year.ago }
+
+          it { expect(subject['outings'].count).to eq(0) }
+        end
+      end
+
+      context 'past' do
+        let(:period) { :past }
+
+        context 'do not display future' do
+          let(:starts_at) { 1.hour.from_now }
+
+          it { expect(subject['outings'].count).to eq(0) }
+        end
+
+        context 'display recently past' do
+          let(:starts_at) { 1.hour.ago }
+
+          it { expect(subject['outings'].count).to eq(1) }
+          it { expect(subject['outings'][0]['id']).to eq(outing.id) }
+        end
+
+        context 'display ancient past' do
+          let(:starts_at) { 1.year.ago }
+
+          it { expect(subject['outings'].count).to eq(1) }
+          it { expect(subject['outings'][0]['id']).to eq(outing.id) }
+        end
+      end
+
+      context 'future' do
+        let(:period) { :future }
+
+        context 'display future' do
+          let(:starts_at) { 1.hour.from_now }
+
+          it { expect(subject['outings'].count).to eq(1) }
+          it { expect(subject['outings'][0]['id']).to eq(outing.id) }
+        end
+
+        context 'do not display recently past' do
+          let(:starts_at) { 1.hour.ago }
+
+          it { expect(subject['outings'].count).to eq(0) }
+        end
+
+        context 'do not display ancient past' do
+          let(:starts_at) { 1.year.ago }
+
+          it { expect(subject['outings'].count).to eq(0) }
+        end
+      end
     end
 
     context "some user is a member" do
