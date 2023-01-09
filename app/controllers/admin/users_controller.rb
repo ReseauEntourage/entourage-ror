@@ -218,9 +218,6 @@ module Admin
         .order(last_sign_in_at: :desc)
         .pluck(:id)
 
-      puts "count:"
-      puts user_ids.count
-
       MemberMailer.users_csv_export(user_ids, current_user.email).deliver_later
 
       redirect_to admin_users_url(params: filter_params), flash: { success: "Vous recevrez l'export par mail (utilisateurs connectés depuis moins d'un an)" }
