@@ -16,7 +16,7 @@ module OutingsServices
       end
 
       @distance = params[:travel_distance] || user.travel_distance
-      @period = params[:period].to_sym
+      @period = params[:period]
     end
 
     def find_all
