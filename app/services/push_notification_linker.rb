@@ -36,6 +36,11 @@ class PushNotificationLinker
           instance: "outings",
           id: object.id
         }
+      elsif object.is_a?(ChatMessage)
+        {
+          instance: "chat_messages",
+          id: object.id
+        }
       # @deprecated
       elsif object.is_a?(Tour)
         {

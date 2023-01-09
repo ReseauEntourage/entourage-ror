@@ -206,9 +206,10 @@ class PushNotificationTrigger
 
     return unless user_ids.any?
 
+    # should redirect to post
     notify(
       referent: @record.messageable,
-      instance: @record.messageable,
+      instance: @record.parent,
       users: User.where(id: user_ids),
       params: {
         object: title(@record.messageable),
