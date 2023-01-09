@@ -28,10 +28,10 @@ describe PoiServices::SoliguideIndex do
           lieu_id: 1,
           name: 'Entourage',
           entity: { name: 'Entourage', phone: '0102030405' },
-          location: {
-            coordinates: [ 2.1, 48.2]
+          position: {
+            location: { coordinates: [ 2.1, 48.2] },
+            adresse: '174 rue Championnet Paris'
           },
-          address: '174 rue Championnet Paris'
         }]
       }) }
       let(:params) { {} }
