@@ -5,7 +5,8 @@ module PoiServices
     def self.format poi
       return nil unless poi
       return nil unless poi['entity']
-      return nil unless poi['location']
+      return nil unless poi['position']
+      return nil unless poi['position']['location']
       return nil unless poi['services_all']
 
       source_categories = poi['services_all'].map { |service| service['categorie'] }
@@ -19,9 +20,9 @@ module PoiServices
         source_url: "https://soliguide.fr/fiche/#{poi['seo_url']}",
         name: format_title(poi['name'], poi['entity']['name']),
         description: format_description(poi['description']),
-        longitude: poi['location']['coordinates'][0].round(6),
-        latitude: poi['location']['coordinates'][1].round(6),
-        address: poi['address'].presence,
+        longitude: poi['position']['location']['coordinates'][0].round(6),
+        latitude: poi['position']['location']['coordinates'][1].round(6),
+        address: poi['position']['adresse'].presence,
         phone: format_phones(phones).first,
         phones: format_phones(phones).join(', '),
         website: poi['entity']['website'].presence,
@@ -44,9 +45,9 @@ module PoiServices
         uuid: "s#{poi['lieu_id']}",
         source_id: poi['lieu_id'],
         name: format_title(poi['name'], poi['entity']['name']),
-        longitude: poi['location']['coordinates'][0].round(6),
-        latitude: poi['location']['coordinates'][1].round(6),
-        address: poi['address'],
+        longitude: poi['position']['location']['coordinates'][0].round(6),
+        latitude: poi['position']['location']['coordinates'][1].round(6),
+        address: po['position']['adresse'],
         phone: poi['entity']['phone'],
         category_id: category_ids.any? ? category_ids[0] : 0,
         partner_id: nil

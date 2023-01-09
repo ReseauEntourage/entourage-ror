@@ -13,7 +13,7 @@ describe PoiServices::Soliguide do
       let(:poi) { {
         'lieu_id' => 123,
         'entity' => { 'name' => 'foo' },
-        'location' => { 'coordinates' => [1, 2] },
+        'position' => { 'location' => { 'coordinates' => [1, 2] } },
         'languages' => ['en'],
         'services_all' => [{
           'name' => 'bar',
@@ -50,7 +50,7 @@ describe PoiServices::Soliguide do
           { 'label' => 'phone1', 'phoneNumber' => '0601020304' },
           { 'label' => 'phone2', 'phoneNumber' => '0712345678' },
         ] },
-        'location' => { 'coordinates' => [1, 2] },
+        'position' => { 'location' => { 'coordinates' => [1, 2] } },
         'languages' => ['en'],
         'services_all' => [{
           'name' => 'bar',
