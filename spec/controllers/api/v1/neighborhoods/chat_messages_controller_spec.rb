@@ -80,6 +80,49 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
     end
   end
 
+  describe 'GET show' do
+    let!(:chat_message) { FactoryBot.create(:chat_message, messageable: neighborhood) }
+
+    context "not signed in" do
+      before { get :show, params: { neighborhood_id: neighborhood.to_param, id: chat_message.id } }
+
+      it { expect(response.status).to eq(401) }
+    end
+
+    context "signed in but not in neighborhood" do
+      before { get :show, params: { neighborhood_id: neighborhood.to_param, id: chat_message.id, token: user.token } }
+
+      it { expect(response.status).to eq(200) }
+    end
+
+    context "signed and in neighborhood" do
+      let!(:join_request) { FactoryBot.create(:join_request, joinable: neighborhood, user: user, status: :accepted) }
+
+      before { get :show, params: { neighborhood_id: neighborhood.to_param, id: chat_message.id, token: user.token } }
+
+      it { expect(response.status).to eq(200) }
+      it { expect(result).to have_key('chat_message')}
+      it { expect(result).to eq({
+        "chat_message" => {
+          "id" => chat_message.id,
+          "content" => chat_message.content,
+          "user" => {
+            "id" => chat_message.user_id,
+            "avatar_url" => nil,
+            "display_name" => "John D."
+          },
+          "created_at" => chat_message.created_at.iso8601(3),
+          "post_id" => nil,
+          "has_comments" => false,
+          "comments_count" => 0,
+          "image_url" => nil,
+          "read" => false,
+          "message_type" => "text"
+        }
+      }) }
+    end
+  end
+
   describe 'POST create' do
     before { Timecop.freeze }
 

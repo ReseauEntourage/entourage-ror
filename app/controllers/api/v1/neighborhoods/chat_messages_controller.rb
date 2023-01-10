@@ -4,9 +4,9 @@ module Api
       class UnauthorizedNeighborhood < StandardError; end
 
       class ChatMessagesController < Api::V1::BaseController
-        before_action :set_neighborhood, only: [:index, :create, :report, :comments, :presigned_upload]
-        before_action :set_chat_message, only: [:report]
-        before_action :ensure_is_member, except: [:index, :comments]
+        before_action :set_neighborhood, only: [:index, :show, :create, :report, :comments, :presigned_upload]
+        before_action :set_chat_message, only: [:show, :report]
+        before_action :ensure_is_member, only: [:create, :report, :presigned_upload]
 
         after_action :set_last_message_read, only: [:index]
 
@@ -18,6 +18,12 @@ module Api
           messages = @neighborhood.parent_chat_messages.ordered.page(page).per(per)
 
           render json: messages, each_serializer: ::V1::ChatMessages::PostSerializer, scope: { current_join_request: join_request }
+        end
+
+        def show
+          return render json: { message: "Wrong chat_message" }, status: :bad_request unless @chat_message
+
+          render json: @chat_message, serializer: ::V1::ChatMessages::PostSerializer, scope: { current_join_request: join_request }
         end
 
         def create
@@ -95,7 +101,7 @@ module Api
 
         def set_chat_message
           # we want to force chat_message to belong to Neighborhood
-          @chat_message = ChatMessage.where(id: params[:chat_message_id], messageable_type: :Neighborhood).first
+          @chat_message = ChatMessage.where(id: params[:chat_message_id] || params[:id], messageable_type: :Neighborhood).first
         end
 
         def report_params
