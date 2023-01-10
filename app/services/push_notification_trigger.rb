@@ -301,6 +301,7 @@ class PushNotificationTrigger
         context: @method,
         instance: instance[:instance].singularize,
         instance_id: instance[:id],
+        post_id: instance[:post_id],
         referent: referent[:instance].singularize,
         referent_id: referent[:id],
         content: params[:content]
