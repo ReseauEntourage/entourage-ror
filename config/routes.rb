@@ -443,7 +443,7 @@ Rails.application.routes.draw do
           post :cancel
         end
 
-        resources :chat_messages, :controller => 'outings/chat_messages', only: [:index, :create] do
+        resources :chat_messages, :controller => 'outings/chat_messages', only: [:index, :show, :create] do
           post :report # report an issue with a chat_message
 
           member do
