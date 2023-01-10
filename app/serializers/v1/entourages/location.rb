@@ -21,7 +21,7 @@ module V1
           [location[:latitude], location[:longitude]],
           [scope[:latitude], scope[:longitude]],
           units: :km
-        )
+        ).round(1)
       end
 
       def randomizer
