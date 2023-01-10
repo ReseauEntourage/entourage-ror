@@ -13,7 +13,10 @@ describe PoiServices::Soliguide do
       let(:poi) { {
         'lieu_id' => 123,
         'entity' => { 'name' => 'foo' },
-        'position' => { 'location' => { 'coordinates' => [1, 2] } },
+        'position' => {
+          'location' => { 'coordinates' => [1, 2] },
+          'codePostal' => '75001'
+        },
         'languages' => ['en'],
         'services_all' => [{
           'name' => 'bar',
@@ -30,6 +33,7 @@ describe PoiServices::Soliguide do
         longitude: 1,
         latitude: 2,
         address: nil,
+        postal_code: '75001',
         phone: nil,
         phones: "",
         website: nil,
