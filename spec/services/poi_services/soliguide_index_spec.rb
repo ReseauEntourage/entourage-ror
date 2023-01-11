@@ -28,10 +28,11 @@ describe PoiServices::SoliguideIndex do
           lieu_id: 1,
           name: 'Entourage',
           entity: { name: 'Entourage', phone: '0102030405' },
-          location: {
-            coordinates: [ 2.1, 48.2]
+          position: {
+            location: { coordinates: [ 2.1, 48.2] },
+            adresse: '174 rue Championnet 75018 Paris',
+            codePostal: "75018"
           },
-          address: '174 rue Championnet Paris'
         }]
       }) }
       let(:params) { {} }
@@ -43,7 +44,8 @@ describe PoiServices::SoliguideIndex do
           name: "Entourage",
           longitude: 2.1,
           latitude: 48.2,
-          address: "174 rue Championnet Paris",
+          address: "174 rue Championnet 75018 Paris",
+          postal_code: "75018",
           phone: "0102030405",
           category_id: 0,
           partner_id: nil

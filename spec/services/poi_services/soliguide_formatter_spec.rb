@@ -13,7 +13,10 @@ describe PoiServices::Soliguide do
       let(:poi) { {
         'lieu_id' => 123,
         'entity' => { 'name' => 'foo' },
-        'location' => { 'coordinates' => [1, 2] },
+        'position' => {
+          'location' => { 'coordinates' => [1, 2] },
+          'codePostal' => '75001'
+        },
         'languages' => ['en'],
         'services_all' => [{
           'name' => 'bar',
@@ -30,6 +33,7 @@ describe PoiServices::Soliguide do
         longitude: 1,
         latitude: 2,
         address: nil,
+        postal_code: '75001',
         phone: nil,
         phones: "",
         website: nil,
@@ -50,7 +54,7 @@ describe PoiServices::Soliguide do
           { 'label' => 'phone1', 'phoneNumber' => '0601020304' },
           { 'label' => 'phone2', 'phoneNumber' => '0712345678' },
         ] },
-        'location' => { 'coordinates' => [1, 2] },
+        'position' => { 'location' => { 'coordinates' => [1, 2] } },
         'languages' => ['en'],
         'services_all' => [{
           'name' => 'bar',
@@ -62,6 +66,36 @@ describe PoiServices::Soliguide do
       it { expect(subject).to have_key(:phones) }
       it { expect(subject[:phones]).to eq('0601020304, 0712345678') }
     end
+  end
+
+  describe 'format_short' do
+    subject { PoiServices::SoliguideFormatter.format_short poi }
+
+    let(:poi) { {
+      'lieu_id' => 123,
+      'entity' => { 'name' => 'foo' },
+      'position' => {
+        'location' => { 'coordinates' => [1, 2] },
+        'codePostal' => '75001'
+      },
+      'languages' => ['en'],
+      'services_all' => [{
+        'name' => 'bar',
+      }]
+    } }
+
+    it { expect(subject).to eq({
+      uuid: "s123",
+      source_id: 123,
+      name: "foo",
+      longitude: 1,
+      latitude: 2,
+      address: nil,
+      postal_code: "75001",
+      phone: nil,
+      category_id: 0,
+      partner_id: nil
+    }) }
   end
 
   describe 'format_audience' do
