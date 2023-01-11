@@ -3,53 +3,71 @@ class PushNotificationLinker
     def get object
       if object.is_a?(Neighborhood)
         {
-          instance: "neighborhoods",
-          id: object.id
+          instance: "neighborhood",
+          instance_id: object.id
         }
       elsif object.is_a?(User)
         {
-          instance: "users",
-          id: object.id
+          instance: "user",
+          instance_id: object.id
         }
       elsif object.is_a?(Poi)
         {
-          instance: "pois",
-          id: object.id
+          instance: "poi",
+          instance_id: object.id
         }
       elsif object.is_a?(Resource)
         {
-          instance: "resources",
-          id: object.id
+          instance: "resource",
+          instance_id: object.id
         }
       elsif object.is_a?(Partner)
         {
-          instance: "partners",
-          id: object.id
+          instance: "partner",
+          instance_id: object.id
         }
       elsif object.is_a?(Entourage) && (object.action? || object.conversation?)
         {
-          instance: "conversations",
-          id: object.id
+          instance: "conversation",
+          instance_id: object.id
         }
       elsif object.is_a?(Entourage) && object.outing?
         {
-          instance: "outings",
-          id: object.id
+          instance: "outing",
+          instance_id: object.id
         }
-      elsif object.is_a?(ChatMessage)
+      elsif is_a_post?(object)
         {
-          instance: "chat_messages",
-          id: object.id
+          instance: get_post_instance_for(object.messageable),
+          instance_id: object.messageable_id,
+          post_id: object.id
         }
       # @deprecated
       elsif object.is_a?(Tour)
         {
-          instance: "tours",
-          id: object.id
+          instance: "tour",
+          instance_id: object.id
         }
       else
         {}
       end
+    end
+
+    protected
+
+    def is_a_post? object
+      object.is_a?(ChatMessage) && (outing?(object.messageable) || object.messageable.is_a?(Neighborhood))
+    end
+
+    def outing? object
+      object.is_a?(Entourage) && object.outing?
+    end
+
+    def get_post_instance_for object
+      linker = PushNotificationLinker.get(object.messageable)
+      return unless linker.has_key?(:instance)
+
+      "#{linker[:instance]}_post"
     end
   end
 end

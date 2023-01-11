@@ -255,8 +255,8 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
               joinable_type: "Neighborhood",
               group_type: 'neighborhood',
               type: "NEW_CHAT_MESSAGE",
-              instance: "neighborhoods",
-              id: neighborhood.id
+              instance: "neighborhood",
+              instance_id: neighborhood.id
             }
           )
 

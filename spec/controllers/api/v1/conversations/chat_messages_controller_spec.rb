@@ -216,8 +216,8 @@ describe Api::V1::Conversations::ChatMessagesController do
               joinable_type: "Entourage",
               group_type: 'conversation',
               type: "NEW_CHAT_MESSAGE",
-              instance: "conversations",
-              id: conversation.id
+              instance: "conversation",
+              instance_id: conversation.id
             }
           )
 

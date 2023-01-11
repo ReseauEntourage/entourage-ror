@@ -257,8 +257,8 @@ describe Api::V1::Outings::ChatMessagesController do
               joinable_type: "Entourage",
               group_type: 'outing',
               type: "NEW_CHAT_MESSAGE",
-              instance: "outings",
-              id: outing.id
+              instance: "outing",
+              instance_id: outing.id
             }
           )
 

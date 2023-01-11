@@ -190,8 +190,8 @@ describe Api::V1::Entourages::ChatMessagesController do
             joinable_type: "Entourage",
             group_type: 'action',
             type: "NEW_CHAT_MESSAGE",
-            instance: "conversations",
-            id: entourage.id
+            instance: "conversation",
+            instance_id: entourage.id
           })
           post :create, params: { entourage_id: entourage.to_param, chat_message: {content: "foobaz"}, token: user.token }
         end
