@@ -53,14 +53,6 @@ module Admin
 
       entourage_ids = @entourages.map(&:id)
 
-      @member_count = JoinRequest
-          .where(joinable_type: :Entourage, joinable_id: entourage_ids, status: :accepted)
-          .joins(:user)
-          .merge(User.where(admin: false))
-          .group(:joinable_id)
-          .count
-      @member_count.default = 0
-
       @requests_count = JoinRequest
         .where(joinable_type: :Entourage, joinable_id: entourage_ids, status: :pending)
         .group(:joinable_id)

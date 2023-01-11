@@ -172,7 +172,7 @@
       <% end %>
 
       <td><%= entourage_state_label(entourage) %></td>
-      <td><span class="badge" title="Membres"><%= @member_count[entourage.id] %></span></td>
+      <td><span class="badge" title="Membres"><%= entourage.members_count %></span></td>
       <td><span class="badge" title="Messages"><%= @message_count[entourage.id].total %></span></td>
       <td>
         <% requests_count = @requests_count[entourage.id] %>
