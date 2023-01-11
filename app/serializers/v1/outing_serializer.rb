@@ -73,9 +73,5 @@ module V1
 
       object.recurrence.recurrency
     end
-
-    def members_count
-      object.accepted_members.count
-    end
   end
 end

@@ -24,6 +24,8 @@ module JoinableScopable
   end
 
   def members_count
+    return number_of_people if respond_to?(:number_of_people)
+
     members.length
   end
 end

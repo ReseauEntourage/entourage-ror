@@ -55,10 +55,6 @@ module V1
       object.metadata_with_image_paths.except(:$id)
     end
 
-    def members_count
-      object.accepted_members.count
-    end
-
     def image_url
       return unless object.image_url.present?
       return unless object.contribution?
