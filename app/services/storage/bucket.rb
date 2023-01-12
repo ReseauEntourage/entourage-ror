@@ -6,7 +6,6 @@ module Storage
         credentials: Aws::Credentials.new(ENV['ENTOURAGE_AWS_ACCESS_KEY_ID'], ENV['ENTOURAGE_AWS_SECRET_ACCESS_KEY']),
       })
       @bucket = Aws::S3::Bucket.new(bucket_name)
-      @default_folder = ENV["ENTOURAGE_AVATARS_FOLDER"]
     end
 
     def public_url key:
@@ -32,17 +31,10 @@ module Storage
     end
 
     def object(key)
-      bucket.object(key_with_folder(key))
+      bucket.object(key)
     end
 
     private
     attr_reader :bucket
-
-    def key_with_folder(key)
-      return key unless @default_folder.present?
-      return key if key.start_with? @default_folder
-
-      "#{@default_folder}/#{key}"
-    end
   end
 end
