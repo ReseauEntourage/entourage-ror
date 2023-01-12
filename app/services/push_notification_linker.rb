@@ -64,7 +64,7 @@ class PushNotificationLinker
     end
 
     def get_post_instance_for object
-      linker = PushNotificationLinker.get(object.messageable)
+      linker = PushNotificationLinker.get(object)
       return unless linker.has_key?(:instance)
 
       "#{linker[:instance]}_post"
