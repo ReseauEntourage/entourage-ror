@@ -202,7 +202,7 @@ class PushNotificationTrigger
   def comment_on_create
     return unless @record.has_parent?
 
-    user_ids = @record.siblings.pluck(:user_id).uniq - [@record.user_id]
+    user_ids = @record.siblings.pluck(:user_id).uniq + [@record.parent.user_id] - [@record.user_id]
 
     return unless user_ids.any?
 
