@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_01_09_151700) do
+ActiveRecord::Schema.define(version: 2023_01_12_095100) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -351,6 +351,17 @@ ActiveRecord::Schema.define(version: 2023_01_09_151700) do
     t.datetime "updated_at"
     t.index ["partner_id"], name: "index_followings_on_partner_id"
     t.index ["user_id", "partner_id"], name: "index_followings_on_user_id_and_partner_id", unique: true
+  end
+
+  create_table "image_resize_actions", force: :cascade do |t|
+    t.string "bucket", null: false
+    t.string "path", null: false
+    t.string "destination_path", null: false
+    t.string "destination_size", default: "medium", null: false
+    t.string "status", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["bucket", "path"], name: "index_image_resize_actions_on_bucket_and_path"
   end
 
   create_table "inapp_notifications", force: :cascade do |t|
