@@ -2,15 +2,17 @@ require 'rails_helper'
 
 describe NeighborhoodServices::Finder do
   let(:user) { FactoryBot.create(:public_user, address: address, travel_distance: 200) }
-  let!(:neighborhood_0) { FactoryBot.create(:neighborhood, latitude: 0, longitude: 0, name: "foot", description: "volley") }
-  let!(:neighborhood_1) { FactoryBot.create(:neighborhood, latitude: 1, longitude: 1, name: "ball", description: "barre") }
+  let!(:neighborhood_0) { FactoryBot.create(:neighborhood, latitude: 0, longitude: 0, name: "foot", description: "volley", is_departement: is_departement_0, postal_code: "75000") }
+  let!(:neighborhood_1) { FactoryBot.create(:neighborhood, latitude: 1, longitude: 1, name: "ball", description: "barre", is_departement: is_departement_1, postal_code: "75001") }
 
-  let(:address) { FactoryBot.create(:address, place_name: 'address', latitude: latitude, longitude: longitude) }
+  let(:address) { FactoryBot.create(:address, place_name: 'address', latitude: latitude, longitude: longitude, postal_code: "75020") }
 
   let(:response) { NeighborhoodServices::Finder.search(user: user, q: q).map(&:name) }
 
-
   describe "search" do
+    let(:is_departement_0) { false }
+    let(:is_departement_1) { false }
+
     describe "close to one" do
       let(:q) { nil }
       let(:latitude) { 0.1 }
@@ -25,6 +27,23 @@ describe NeighborhoodServices::Finder do
       let(:longitude) { 1.1 }
 
       it { expect(response).to eq(["ball", "foot"]) }
+    end
+
+    describe "far from user" do
+      let(:q) { nil }
+      let(:latitude) { 10 }
+      let(:longitude) { 10 }
+
+      it { expect(response).to eq([]) }
+    end
+
+    describe "far from user but with same departement" do
+      let(:q) { nil }
+      let(:latitude) { 10 }
+      let(:longitude) { 10 }
+      let(:is_departement_0) { true }
+
+      it { expect(response).to eq(["foot"]) }
     end
 
     describe "with q" do

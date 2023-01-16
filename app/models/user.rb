@@ -80,6 +80,7 @@ class User < ApplicationRecord
 
   delegate :country, to: :address, allow_nil: true
   delegate :postal_code, to: :address, allow_nil: true
+  delegate :departement, to: :address, allow_nil: true
   delegate :latitude, to: :address, allow_nil: true
   delegate :longitude, to: :address, allow_nil: true
 

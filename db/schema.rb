@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_01_12_095100) do
+ActiveRecord::Schema.define(version: 2023_01_16_162000) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -475,6 +475,8 @@ ActiveRecord::Schema.define(version: 2023_01_12_095100) do
     t.string "street_address"
     t.string "status", default: "active", null: false
     t.datetime "status_changed_at"
+    t.integer "number_of_people", default: 0
+    t.boolean "is_departement", default: false
     t.index ["feed_updated_at"], name: "index_neighborhoods_on_feed_updated_at"
     t.index ["name"], name: "index_neighborhoods_on_name"
     t.index ["postal_code"], name: "index_neighborhoods_on_postal_code"
