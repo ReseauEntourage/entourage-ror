@@ -12,6 +12,10 @@ class NeighborhoodImage < ApplicationRecord
       storage.public_url(key: url)
     end
 
+    def image_url_for_with_size url, size = :medium
+      storage.public_url_with_size(key: url, size: size)
+    end
+
     def storage
       Storage::Client.images
     end

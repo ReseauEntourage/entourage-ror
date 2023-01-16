@@ -6,11 +6,18 @@ module Storage
         credentials: Aws::Credentials.new(ENV['ENTOURAGE_AWS_ACCESS_KEY_ID'], ENV['ENTOURAGE_AWS_SECRET_ACCESS_KEY']),
       })
       @bucket = Aws::S3::Bucket.new(bucket_name)
+      @bucket_name = bucket_name
     end
 
     # display public image
     def public_url key:
       bucket.object(key).public_url
+    end
+
+    def public_url_with_size key:, size:
+      key_sized = key_with_size(key, size)
+
+      bucket.object(key_sized).public_url
     end
 
     # display private image
@@ -41,5 +48,9 @@ module Storage
 
     private
     attr_reader :bucket
+
+    def key_with_size(key, size)
+      ImageResizeAction.find_path_for(bucket: @bucket_name, path: key, size: size)
+    end
   end
 end
