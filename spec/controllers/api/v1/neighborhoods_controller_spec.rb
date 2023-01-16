@@ -174,7 +174,7 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
     let(:result) { JSON.parse(response.body) }
     let(:subject) { Neighborhood.find(neighborhood.id) }
 
-    before { Storage::Bucket.any_instance.stub(:public_url).with(key: "foobar_url") { "path/to/foobar_url" } }
+    before { Storage::Bucket.any_instance.stub(:public_url_with_size).with(key: "foobar_url", size: :small) { "path/to/foobar_url" } }
 
     context "not signed in" do
       before { patch :update, params: { id: neighborhood.to_param, neighborhood: { name: "new name" } } }
