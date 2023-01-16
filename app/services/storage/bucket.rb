@@ -34,6 +34,13 @@ module Storage
       bucket.object(key).presigned_url(:get, expires_in: expire.to_i)
     end
 
+    def url_for_with_size(key:, size:, extra: {})
+      expire = extra[:expire] || 3600
+      key_sized = key_with_size(key, size)
+
+      bucket.object(key_sized).presigned_url(:get, expires_in: expire.to_i)
+    end
+
     def upload(file:, key:, extra: {})
       object(key).upload_file(file, content_type: extra[:content_type])
     end

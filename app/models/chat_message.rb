@@ -70,6 +70,10 @@ class ChatMessage < ApplicationRecord
       bucket.url_for(key: path(key), extra: { expire: 1.day })
     end
 
+    def url_for_with_size key, size
+      bucket.url_for_with_size(key: path(key), size: size, extra: { expire: 1.day })
+    end
+
     def path key
       "#{BUCKET_PREFIX}/#{key}"
     end
@@ -79,6 +83,12 @@ class ChatMessage < ApplicationRecord
     return unless image_url.present?
 
     ChatMessage.url_for(image_url)
+  end
+
+  def image_url_with_size size
+    return unless image_url.present?
+
+    ChatMessage.url_for_with_size(image_url, size)
   end
 
   def validate_ancestry!
