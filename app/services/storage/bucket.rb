@@ -8,18 +8,23 @@ module Storage
       @bucket = Aws::S3::Bucket.new(bucket_name)
     end
 
+    # display public image
     def public_url key:
-      object(key).public_url
+      bucket.object(key).public_url
     end
 
+    # display private image
     def read_for(key:, extra: {})
       expire = extra[:expire] || 3600
+
       bucket.object(key).presigned_url(:get, expires_in: expire.to_i)
     end
 
+    # display private image
     def url_for(key:, extra: {})
       expire = extra[:expire] || 3600
-      object(key).presigned_url(:get, expires_in: expire.to_i)
+
+      bucket.object(key).presigned_url(:get, expires_in: expire.to_i)
     end
 
     def upload(file:, key:, extra: {})
