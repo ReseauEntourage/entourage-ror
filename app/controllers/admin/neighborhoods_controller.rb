@@ -18,7 +18,7 @@ module Admin
         .select(%(
           neighborhoods.*,
           moderator_reads is null as unread,
-          moderator_reads is null and chat_message_with_images.id is not null as unread_images
+          moderator_reads is null and neighborhoods_imageable.id is not null as unread_images
         ))
         .order(%(
           neighborhoods.created_at DESC

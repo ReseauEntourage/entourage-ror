@@ -72,11 +72,17 @@ class Neighborhood < ApplicationRecord
 
   scope :join_chat_message_with_images, -> {
     joins(%(
-      left join chat_messages as chat_message_with_images on (
-        chat_message_with_images.messageable_id = #{table_name}.id and
-        chat_message_with_images.messageable_type = '#{self.name}' and
-        chat_message_with_images.image_url is not null
-      )
+      left join (
+        select #{table_name}.id
+        from #{table_name}
+        left join chat_messages as chat_message_with_images on
+          chat_message_with_images.messageable_id = #{table_name}.id and
+          chat_message_with_images.messageable_type = '#{self.name}'
+        where
+          chat_message_with_images.image_url is not null
+        group by #{table_name}.id
+      ) as #{table_name}_imageable on
+        #{table_name}_imageable.id = #{table_name}.id
     ))
   }
 
