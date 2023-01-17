@@ -24,5 +24,17 @@ module CoordinatesScopable
         "postal_code is not null and left(postal_code, 2) = ?", departement
       )
     }
+    scope :order_by_not_departement, -> {
+      return unless has_attribute?(:is_departement)
+
+      order("case when is_departement then 1 else 0 end")
+    }
+
+    scope :closests_to, -> (user) {
+      inside_user_perimeter(user)
+        .unscope(:order)
+        .order_by_not_departement
+        .order_by_distance_from(user.latitude, user.longitude)
+    }
   end
 end

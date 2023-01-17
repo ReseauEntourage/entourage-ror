@@ -4,9 +4,9 @@ describe NeighborhoodServices::Joiner do
   let(:user) { FactoryBot.create(:public_user) }
   let(:neighborhood) { FactoryBot.create(:neighborhood, id: 8) }
 
-  let(:subject) { NeighborhoodServices::Joiner.new(user).join_default_beta_test! }
+  let(:subject) { NeighborhoodServices::Joiner.new(user).join_default_neighborhood! }
 
-  describe "join_default_beta_test!" do
+  describe "join_default_neighborhood!" do
     context "unexisting neighborhood with id 8" do
       it { expect(subject).to be_nil }
       it { expect { subject }.not_to change { JoinRequest.count } }
