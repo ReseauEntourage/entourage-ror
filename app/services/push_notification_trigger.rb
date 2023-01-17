@@ -4,7 +4,7 @@ class PushNotificationTrigger
   UPDATE_OUTING = "L'événement prévu le %s a été modifié. Il se déroulera le %s, au %s"
   UPDATE_OUTING_SHORT = "L'événement prévu le %s a été modifié"
   CREATE_POST = "%s vient de partager : \"%s\""
-  CREATE_COMMENT = "%s vient de commenter votre publication \"%s\""
+  CREATE_COMMENT = "%s vient de commenter la publication \"%s\""
   CREATE_JOIN_REQUEST = "%s vient de rejoindre votre %s \"%s\""
   CREATE_JOIN_REQUEST_OUTING = "%s vient de rejoindre votre événement \"%s\" du %s"
 
@@ -200,12 +200,16 @@ class PushNotificationTrigger
   end
 
   def comment_on_create
-    return if @record.parent.user == @record.user
+    return unless @record.has_parent?
+
+    user_ids = @record.siblings.pluck(:user_id).uniq + [@record.parent.user_id] - [@record.user_id]
+
+    return unless user_ids.any?
 
     notify(
       referent: @record.messageable,
       instance: @record.messageable,
-      users: [@record.parent.user],
+      users: User.where(id: user_ids),
       params: {
         object: title(@record.messageable),
         content: CREATE_COMMENT % [username(@record.user), @record.content]

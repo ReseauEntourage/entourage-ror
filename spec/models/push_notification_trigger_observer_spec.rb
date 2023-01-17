@@ -73,14 +73,63 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
           }
         end
 
-        context "comment" do
-          let!(:chat_message) { create :chat_message, messageable: neighborhood, user: user, message_type: :text }
+        context "comment with no notification" do
+          let(:chat_message) { create :chat_message, messageable: neighborhood, user: user, message_type: :text }
+          let!(:comment) { create :chat_message, messageable: neighborhood, parent: chat_message, user: user, message_type: :text }
+
+          context "sender is publisher" do
+            it {
+              expect_any_instance_of(PushNotificationTrigger).not_to receive(:notify)
+              create :chat_message, messageable: neighborhood, user: user, message_type: :text, parent: chat_message
+            }
+          end
+        end
+
+        context "comment with notification" do
+          let(:john) { create :public_user, first_name: "John", last_name: "Doe" }
+          let(:jane) { create :public_user, first_name: "Jane", last_name: "Doe" }
+
+          let(:chat_message) { create :chat_message, messageable: neighborhood, user: user, message_type: :text }
+          let!(:comment_1) { create :chat_message, messageable: neighborhood, parent: chat_message, user: user, message_type: :text }
+          let!(:comment_2) { create :chat_message, messageable: neighborhood, parent: chat_message, user: john, message_type: :text }
+          let!(:comment_3) { create :chat_message, messageable: neighborhood, parent: chat_message, user: john, message_type: :text }
+          let!(:comment_4) { create :chat_message, messageable: neighborhood, parent: chat_message, user: jane, message_type: :text }
 
           it {
             expect_any_instance_of(PushNotificationTrigger).not_to receive(:post_on_create)
             expect_any_instance_of(PushNotificationTrigger).to receive(:comment_on_create)
-            create :chat_message, user: user, message_type: :text, parent: chat_message
+            create :chat_message, messageable: neighborhood, user: user, message_type: :text, parent: chat_message
           }
+
+          context "sender is publisher" do
+            it {
+              expect_any_instance_of(PushNotificationTrigger).to receive(:notify).with(
+                referent: neighborhood,
+                instance: neighborhood,
+                users: [john, jane],
+                params: {
+                  object: neighborhood.title,
+                  content: "John D. vient de commenter la publication \"#{chat_message.content}\""
+                }
+              )
+              create :chat_message, messageable: neighborhood, user: user, message_type: :text, parent: chat_message
+            }
+          end
+
+          context "sender is commentator" do
+            it {
+              expect_any_instance_of(PushNotificationTrigger).to receive(:notify).with(
+                referent: neighborhood,
+                instance: neighborhood,
+                users: [user, jane],
+                params: {
+                  object: neighborhood.title,
+                  content: "John D. vient de commenter la publication \"#{chat_message.content}\""
+                }
+              )
+              create :chat_message, messageable: neighborhood, user: john, message_type: :text, parent: chat_message
+            }
+          end
         end
       end
 
