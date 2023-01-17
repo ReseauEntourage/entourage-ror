@@ -3,7 +3,9 @@ module Api
     class ActionsController < Api::V1::BaseController
       def index
         render json: ActionServices::Finder.new(current_user, index_params).find_all.page(page).per(per), root: :actions, each_serializer: ::V1::ActionSerializer, scope: {
-          user: current_user
+          user: current_user,
+          latitude: latitude,
+          longitude: longitude
         }
       end
 
@@ -19,6 +21,14 @@ module Api
 
       def per
         params[:per] || 25
+      end
+
+      def latitude
+        params[:latitude] || current_user.latitude
+      end
+
+      def longitude
+        params[:longitude] || current_user.longitude
       end
     end
   end

@@ -16,7 +16,8 @@ module V1
                :members_count,
                :created_at,
                :updated_at,
-               :status_changed_at
+               :status_changed_at,
+               :distance
 
     has_many :members, serializer: ::V1::Users::BasicSerializer
     has_one :location
