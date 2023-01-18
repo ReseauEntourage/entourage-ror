@@ -43,7 +43,7 @@ class Contribution < Entourage
       bucket.url_for(key: path(key), extra: { expire: 1.day })
     end
 
-    def image_url_for_with_size url, size = :medium
+    def image_url_for_with_size key, size = :medium
       bucket.public_url_with_size(key: path(key), size: size)
     end
 
