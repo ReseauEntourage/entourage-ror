@@ -37,7 +37,7 @@ module V1
       end
 
       def image_url
-        object.image_url_with_size(:medium)
+        object.image_url_with_size :medium
       end
 
       def read

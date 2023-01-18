@@ -71,7 +71,7 @@ class ChatMessage < ApplicationRecord
     end
 
     def url_for_with_size key, size
-      bucket.url_for_with_size(key: path(key), size: size, extra: { expire: 1.day })
+      bucket.public_url_with_size(key: path(key), size: size)
     end
 
     def path key

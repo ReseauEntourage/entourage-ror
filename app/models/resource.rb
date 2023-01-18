@@ -24,6 +24,12 @@ class Resource < ApplicationRecord
     ResourceImage.image_url_for self['image_url']
   end
 
+  def image_url_with_size size = :medium
+    return unless self['image_url'].present?
+
+    ResourceImage.image_url_for_with_size(self['image_url'], size)
+  end
+
   def resource_image_id= resource_image_id
     if resource_image = ResourceImage.find_by_id(resource_image_id)
       self.image_url = resource_image[:image_url]

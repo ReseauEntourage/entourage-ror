@@ -25,7 +25,7 @@ module V1
     end
 
     def image_url
-      object.image_url_with_size :small
+      object.image_url_with_size :medium
     end
 
     def interests
