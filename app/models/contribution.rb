@@ -27,7 +27,7 @@ class Contribution < Entourage
       bucket.object(path key).presigned_url(
         :put,
         expires_in: 1.minute.to_i,
-        acl: :private,
+        acl: 'public-read',
         content_type: content_type,
         cache_control: "max-age=#{365.days}"
       )
