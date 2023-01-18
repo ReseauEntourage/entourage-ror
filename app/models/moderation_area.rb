@@ -66,6 +66,10 @@ class ModerationArea < ApplicationRecord
     all.order(:id) + [no_zone]
   end
 
+  def self.all_without_no_zone
+    all.order(:id)
+  end
+
   def self.all_slugs
     (pluck(:departement) + [no_zone.departement]).map { |d| ModerationArea.departement_slug(d) }
   end
@@ -80,6 +84,10 @@ class ModerationArea < ApplicationRecord
 
   def self.by_slug_with_national
     Hash[all_with_national_with_no_zone.map { |a| [a.departement_slug, a] }]
+  end
+
+  def self.by_slug_without_no_zone
+    Hash[all_without_no_zone.map { |a| [a.departement_slug, a] }]
   end
 
   def self.only_departements
