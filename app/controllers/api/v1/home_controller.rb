@@ -106,7 +106,7 @@ module Api
       end
 
       def set_default_neighborhood
-        NeighborhoodServices::Joiner.new(current_user).join_default_beta_test!
+        NeighborhoodServices::Joiner.new(current_user).join_default_neighborhood!
       end
 
       def set_user_recommandations

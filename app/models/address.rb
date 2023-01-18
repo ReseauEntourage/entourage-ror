@@ -39,6 +39,10 @@ class Address < ApplicationRecord
     AsyncService.new(MixpanelService).sync_address(self)
   end
 
+  def departement
+    postal_code[0..1]
+  end
+
   private
 
   def set_user_address_id_if_primary!
