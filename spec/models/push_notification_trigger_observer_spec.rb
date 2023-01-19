@@ -105,7 +105,7 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
             it {
               expect_any_instance_of(PushNotificationTrigger).to receive(:notify).with(
                 referent: neighborhood,
-                instance: neighborhood,
+                instance: chat_message,
                 users: [john, jane],
                 params: {
                   object: neighborhood.title,
@@ -120,7 +120,7 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
             it {
               expect_any_instance_of(PushNotificationTrigger).to receive(:notify).with(
                 referent: neighborhood,
-                instance: neighborhood,
+                instance: chat_message,
                 users: [user, jane],
                 params: {
                   object: neighborhood.title,
