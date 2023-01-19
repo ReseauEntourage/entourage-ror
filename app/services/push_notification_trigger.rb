@@ -184,7 +184,7 @@ class PushNotificationTrigger
 
     notify(
       referent: @record.messageable,
-      instance: @record,
+      instance: @record.messageable,
       users: users,
       params: {
         object: title(@record.messageable),
