@@ -8,16 +8,12 @@ describe ModerationServices::EntourageModeration do
 
     context 'when admin exists' do
       let!(:admin) { create :admin_user }
-
-      it 'should change number_of_people by 1' do
-        expect { subject }.to change { entourage.reload.number_of_people }.by(1)
-      end
-
       let(:admin_join_request) { entourage.join_requests.find_by(user: admin) }
-      it 'should add the admin to the group' do
-        subject
-        expect(admin_join_request&.status).to eq 'accepted'
-      end
+
+      before { subject }
+
+      it { expect(entourage.reload.number_of_people).to eq(1) }
+      it { expect(admin_join_request&.status).to eq 'accepted' }
     end
   end
 

@@ -19,11 +19,8 @@ module JoinRequestsServices
         else raise 'Unhandled'
         end
 
-      success = true
       ApplicationRecord.transaction do
-        success &&= joinable.class.increment_counter(:number_of_people, joinable.id) == 1
-        success &&= join_request.save
-        raise ActiveRecord::Rollback unless success
+        raise ActiveRecord::Rollback unless join_request.save
       end
 
       join_request

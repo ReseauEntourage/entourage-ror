@@ -11,6 +11,10 @@ class JoinRequestObserver < ActiveRecord::Observer
     action(:update, record)
   end
 
+  def after_destroy(record)
+    action(:destroy, record)
+  end
+
   private
 
   # @param verb :create, :update
@@ -18,11 +22,9 @@ class JoinRequestObserver < ActiveRecord::Observer
   # sends a log to Slack
   def action(verb, record)
     return unless record.joinable
-    return unless record.entourage?
-    return unless record.pending?
-    return if record.joinable.conversation?
+    return unless record.joinable.respond_to?(:members_has_changed!)
 
-    SlackServices::StackTrace.new(title: "Pending join_request detected on #{verb}, id: #{record.id}", stack_trace: "> #{caller.inspect}").notify
+    record.joinable.members_has_changed!
   rescue
     # we want this hook to never fail the main process
   end

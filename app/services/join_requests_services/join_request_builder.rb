@@ -37,8 +37,6 @@ module JoinRequestsServices
 
       if join_request.save
         if join_request.is_accepted?
-          joinable.class.increment_counter(:number_of_people, joinable.id)
-
           CommunityLogic.for(joinable).group_joined(join_request)
         end
 

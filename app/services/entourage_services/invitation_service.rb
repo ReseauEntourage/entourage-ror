@@ -7,15 +7,7 @@ module EntourageServices
     def accept!
       join_request = build_join_request(status: JoinRequest::ACCEPTED_STATUS)
 
-      success = true
-      ApplicationRecord.transaction do
-        success &&= invitable.class.increment_counter(:number_of_people, invitable.id) == 1
-        success &&= join_request.save
-
-        raise ActiveRecord::Rollback unless success
-      end
-
-      if success
+      if join_request.save
         invitation.update(status: EntourageInvitation::ACCEPTED_STATUS)
 
         group = invitation.invitable
