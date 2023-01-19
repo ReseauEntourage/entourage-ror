@@ -162,8 +162,8 @@ describe Api::V1::Tours::UsersController do
             group_type: 'tour',
             type: "JOIN_REQUEST_ACCEPTED",
             user_id: requester.id,
-            instance: "tours",
-            id: tour.id
+            instance: "tour",
+            instance_id: tour.id
           }
         )
         patch :update, params: { tour_id: tour.to_param, id: requester.id, user: {status: "accepted"}, token: user.token }

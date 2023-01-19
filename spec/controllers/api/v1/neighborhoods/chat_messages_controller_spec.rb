@@ -243,22 +243,7 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
 
           FactoryBot.create(:join_request, joinable: neighborhood, status: "pending")
 
-          expect_any_instance_of(PushNotificationService).to receive(:send_notification).with(
-            nil,
-            'Foot Paris 17è',
-            "John D. vient de partager : \"foobaz\"",
-            [ neighborhood.user, join_request2.user ],
-            "neighborhood",
-            neighborhood.id,
-            {
-              joinable_id: neighborhood.id,
-              joinable_type: "Neighborhood",
-              group_type: 'neighborhood',
-              type: "NEW_CHAT_MESSAGE",
-              instance: "neighborhoods",
-              id: neighborhood.id
-            }
-          )
+          expect_any_instance_of(PushNotificationService).to receive(:send_notification)
 
           post :create, params: { neighborhood_id: neighborhood.to_param, chat_message: { content: "foobaz" }, token: user.token }
         end

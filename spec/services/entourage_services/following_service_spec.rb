@@ -51,8 +51,8 @@ describe FollowingService do
           "conversation",
           action.id,
           {
-            :instance => "conversations",
-            :id => action.id,
+            :instance => "conversation",
+            :instance_id => action.id,
             :type => "ENTOURAGE_INVITATION",
             :entourage_id => action.id,
             :group_type => 'action',

@@ -375,6 +375,7 @@ ActiveRecord::Schema.define(version: 2023_01_16_162000) do
     t.string "context"
     t.string "content"
     t.datetime "displayed_at"
+    t.integer "post_id"
     t.index ["context"], name: "index_inapp_notifications_on_context"
     t.index ["displayed_at"], name: "index_inapp_notifications_on_displayed_at"
     t.index ["instance"], name: "index_inapp_notifications_on_instance"

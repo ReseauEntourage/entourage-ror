@@ -15,13 +15,14 @@ module InappNotificationServices
     end
 
     # @params context ie. chat_message_on_create
-    def instanciate context:, instance:, instance_id:, referent:, referent_id:, content:
+    def instanciate context:, instance:, instance_id:, post_id:, referent:, referent_id:, content:
       return unless NotificationPermission.notify_inapp?(user, referent, referent_id)
 
       notification = InappNotification.find_or_initialize_by(
         user: user,
         instance: instance,
         instance_id: instance_id,
+        post_id: post_id,
         context: context,
         completed_at: nil,
         skipped_at: nil

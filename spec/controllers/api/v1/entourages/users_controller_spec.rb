@@ -115,8 +115,8 @@ describe Api::V1::Entourages::UsersController do
                 group_type: 'action',
                 type: "JOIN_REQUEST_ACCEPTED",
                 user_id: user.id,
-                instance: "users",
-                id: user.id
+                instance: "user",
+                instance_id: user.id
               }
             )
           }
@@ -141,8 +141,8 @@ describe Api::V1::Entourages::UsersController do
                 group_type: 'action',
                 type: "JOIN_REQUEST_ACCEPTED",
                 user_id: user.id,
-                instance: "users",
-                id: user.id
+                instance: "user",
+                instance_id: user.id
               }
             )
           }
@@ -280,8 +280,8 @@ describe Api::V1::Entourages::UsersController do
             :group_type => 'action',
             :type => "JOIN_REQUEST_ACCEPTED",
             :user_id => requester.id,
-            instance: "conversations",
-            id: entourage.id
+            instance: "conversation",
+            instance_id: entourage.id
           }
         )
         patch :update, params: { entourage_id: entourage.to_param, id: requester.id, user: {status: "accepted"}, token: user.token }

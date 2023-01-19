@@ -1,9 +1,11 @@
 class InappNotification < ApplicationRecord
-  INSTANCES = [:neighborhood, :outing, :contribution, :solicitation, :user]
+  INSTANCES = [:neighborhood, :outing, :contribution, :solicitation, :user, :neighborhood_post, :outing_post]
 
   belongs_to :user
+  belongs_to :post
 
-  validates_presence_of :instance_id
+  validates_presence_of :instance, :instance_id
+  # validates_inclusion_of :instance, in: INSTANCES
 
   default_scope { order(created_at: :desc) }
 
@@ -17,4 +19,20 @@ class InappNotification < ApplicationRecord
 
   scope :active_criteria_by_user, -> (user, criteria) { active.where(user: user).where(criteria) }
   scope :processed_criteria_by_user, -> (user, criteria) { processed_by(user).where(criteria) }
+
+
+  def record
+    return unless instance
+    return post if post?
+
+    instance.to_s.classify.constantize.find(instance_id)
+  rescue NameError
+    nil
+  end
+
+  def post?
+    return unless instance
+
+    [:neighborhood_post, :outing_post].include?(instance.to_sym)
+  end
 end

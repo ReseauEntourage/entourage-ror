@@ -184,7 +184,7 @@ class PushNotificationTrigger
 
     notify(
       referent: @record.messageable,
-      instance: @record.messageable,
+      instance: @record,
       users: users,
       params: {
         object: title(@record.messageable),
@@ -206,9 +206,10 @@ class PushNotificationTrigger
 
     return unless user_ids.any?
 
+    # should redirect to post
     notify(
       referent: @record.messageable,
-      instance: @record.messageable,
+      instance: @record.parent,
       users: User.where(id: user_ids),
       params: {
         object: title(@record.messageable),
@@ -283,8 +284,8 @@ class PushNotificationTrigger
       params[:object],
       params[:content],
       users,
-      referent[:instance].singularize,
-      referent[:id],
+      referent[:instance],
+      referent[:instance_id],
       instance.merge(params[:extra] || {})
     )
   end
@@ -298,10 +299,11 @@ class PushNotificationTrigger
     users.map do |user|
       InappNotificationServices::Builder.new(user).instanciate(
         context: @method,
-        instance: instance[:instance].singularize,
-        instance_id: instance[:id],
-        referent: referent[:instance].singularize,
-        referent_id: referent[:id],
+        instance: instance[:instance],
+        instance_id: instance[:instance_id],
+        post_id: instance[:post_id],
+        referent: referent[:instance],
+        referent_id: referent[:instance_id],
         content: params[:content]
       )
     end

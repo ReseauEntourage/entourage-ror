@@ -3,22 +3,28 @@ module V1
     attributes :id,
       :instance,
       :instance_id,
+      :post_id,
       :content,
       :completed_at,
       :created_at,
       :image_url
 
-    def record
-      return unless object.instance
-
-      object.instance.to_s.classify.constantize.find(object.instance_id)
-    end
-
     def image_url
+      return unless object.instance
+      return unless object.record
+
       method = "image_url_for_#{object.instance}"
       return unless respond_to?(method)
 
-      send(method, record)
+      send(method, object.record)
+    end
+
+    def image_url_for_neighborhood_post post
+      image_url_for_neighborhood(post.messageable)
+    end
+
+    def image_url_for_outing_post post
+      image_url_for_outing(post.messageable)
     end
 
     def image_url_for_neighborhood neighborhood

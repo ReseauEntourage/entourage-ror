@@ -147,8 +147,8 @@ describe Api::V1::Tours::ChatMessagesController do
             joinable_type: "Tour",
             group_type: 'tour',
             type: "NEW_CHAT_MESSAGE",
-            instance: "tours",
-            id: tour.id
+            instance: "tour",
+            instance_id: tour.id
           })
           post :create, params: { tour_id: tour.to_param, chat_message: {content: "foobar"}, token: user.token }
         end

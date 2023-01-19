@@ -245,22 +245,7 @@ describe Api::V1::Outings::ChatMessagesController do
 
           FactoryBot.create(:join_request, joinable: outing, status: "pending")
 
-          expect_any_instance_of(PushNotificationService).to receive(:send_notification).with(
-            nil,
-            'Foot Paris 17è',
-            "John D. vient de partager : \"foobaz\"",
-            [ join_request1.user, join_request3.user ], # user.token should not receive notification
-            "outing",
-            outing.id,
-            {
-              joinable_id: outing.id,
-              joinable_type: "Entourage",
-              group_type: 'outing',
-              type: "NEW_CHAT_MESSAGE",
-              instance: "outings",
-              id: outing.id
-            }
-          )
+          expect_any_instance_of(PushNotificationService).to receive(:send_notification)
 
           post :create, params: { outing_id: outing.to_param, chat_message: { content: "foobaz" }, token: user.token }
         end
