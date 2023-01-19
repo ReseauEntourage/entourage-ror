@@ -18,22 +18,26 @@ module CoordinatesScopable
       end
     }
     scope :with_departement, -> (departement) {
-      return unless has_attribute?(:is_departement)
+      return unless has_attribute?(:zone)
 
-      where(is_departement: true).where(
+      where(zone: :departement).where(
         "postal_code is not null and left(postal_code, 2) = ?", departement
       )
     }
-    scope :order_by_not_departement, -> {
-      return unless has_attribute?(:is_departement)
+    scope :order_by_zone, -> {
+      return unless has_attribute?(:zone)
 
-      order("case when is_departement then 1 else 0 end")
+      order(%(
+        case when zone = 'ville' then 0
+             when zone = 'departement' then 1
+        else 2 end
+      ))
     }
 
-    scope :closests_to, -> (user) {
+    scope :closests_to_by_zone, -> (user) {
       inside_user_perimeter(user)
         .unscope(:order)
-        .order_by_not_departement
+        .order_by_zone
         .order_by_distance_from(user.latitude, user.longitude)
     }
   end
