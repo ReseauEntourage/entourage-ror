@@ -69,7 +69,6 @@ GEM
       batch-loader
     ancestry (4.1.0)
       activerecord (>= 5.2.6)
-    ansi (1.5.0)
     arel (9.0.0)
     ast (2.4.2)
     attr_encrypted (3.1.0)
@@ -113,7 +112,7 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.12.2)
-    concurrent-ruby (1.1.9)
+    concurrent-ruby (1.1.10)
     connection_pool (2.2.5)
     crack (0.4.5)
       rexml
@@ -162,7 +161,7 @@ GEM
     faraday-rack (1.0.0)
     ffi (1.15.3)
     geocoder (1.6.7)
-    globalid (0.5.2)
+    globalid (1.0.1)
       activesupport (>= 5.0)
     handlebars_assets (0.23.9)
       execjs (~> 2.0)
@@ -177,7 +176,7 @@ GEM
     httparty (0.18.1)
       mime-types (~> 3.0)
       multi_xml (>= 0.5.2)
-    i18n (1.8.10)
+    i18n (1.12.0)
       concurrent-ruby (~> 1.0)
     icalendar (2.7.1)
       ice_cube (~> 0.16)
@@ -231,7 +230,7 @@ GEM
     mime-types-data (3.2021.0704)
     mini_magick (4.11.0)
     mini_mime (1.1.0)
-    minitest (5.14.4)
+    minitest (5.17.0)
     mixpanel-ruby (2.2.2)
     momentjs-rails (2.20.1)
       railties (>= 3.1)
@@ -430,7 +429,7 @@ GEM
     turbolinks (5.2.1)
       turbolinks-source (~> 5.2)
     turbolinks-source (5.2.0)
-    tzinfo (1.2.9)
+    tzinfo (1.2.10)
       thread_safe (~> 0.1)
     uglifier (4.2.0)
       execjs (>= 0.3.0, < 3)
