@@ -388,12 +388,12 @@ class Entourage < ApplicationRecord
      I18n.l(metadata[:ends_at],   format: formats[1])].join
   end
 
-  def metadata_with_image_paths
-    return metadata unless group_type == 'outing'
+  def metadata_with_image_paths size = :medium
+    return metadata unless outing?
 
     metadata.map do |key, value|
       if value.present? && [:landscape_url, :landscape_thumbnail_url, :portrait_url, :portrait_thumbnail_url].include?(key)
-        [key, EntourageImage.storage.url_for(key: value)]
+        [key, EntourageImage.storage.public_url_with_size(key: value, size: size)]
       else
         [key, value]
       end
