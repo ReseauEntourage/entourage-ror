@@ -3,8 +3,14 @@ module V1
     attributes :id,
                :title,
                :landscape_url,
-               :landscape_small_url,
                :portrait_url,
-               :portrait_small_url
+
+    def landscape_url
+      object.landscape_url :medium
+    end
+
+    def portrait_url
+      object.portrait_url :medium
+    end
   end
 end
