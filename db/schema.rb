@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_01_16_162000) do
+ActiveRecord::Schema.define(version: 2023_01_19_104000) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -478,11 +478,13 @@ ActiveRecord::Schema.define(version: 2023_01_16_162000) do
     t.datetime "status_changed_at"
     t.integer "number_of_people", default: 0
     t.boolean "is_departement", default: false
+    t.string "zone"
     t.index ["feed_updated_at"], name: "index_neighborhoods_on_feed_updated_at"
     t.index ["name"], name: "index_neighborhoods_on_name"
     t.index ["postal_code"], name: "index_neighborhoods_on_postal_code"
     t.index ["status"], name: "index_neighborhoods_on_status"
     t.index ["user_id"], name: "index_neighborhoods_on_user_id"
+    t.index ["zone"], name: "index_neighborhoods_on_zone"
   end
 
   create_table "neighborhoods_entourages", force: :cascade do |t|
