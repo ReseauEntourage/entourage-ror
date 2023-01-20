@@ -395,9 +395,9 @@ class Entourage < ApplicationRecord
       if value.present? && [:landscape_url, :portrait_url].include?(key)
         [key, EntourageImage.storage.public_url_with_size(key: value, size: size)]
       elsif value.present? && [:landscape_thumbnail_url].include?(key)
-        [key, EntourageImage.storage.public_url_with_size(key: "landscape_url", size: size)]
+        [key, EntourageImage.storage.public_url_with_size(key: metadata[:landscape_url], size: size)]
       elsif value.present? && [:portrait_thumbnail_url].include?(key)
-        [key, EntourageImage.storage.public_url_with_size(key: "portrait_url", size: size)]
+        [key, EntourageImage.storage.public_url_with_size(key: metadata[:portrait_url], size: size)]
       else
         [key, value]
       end
