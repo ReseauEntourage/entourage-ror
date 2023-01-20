@@ -34,6 +34,7 @@ class ChatMessage < ApplicationRecord
   validate :validate_private_conversation_is_not_blocked!
 
   scope :ordered, -> { order("created_at DESC") }
+  scope :with_content, -> { where("content <> ''") }
 
   attribute :metadata, :jsonb_with_schema
 

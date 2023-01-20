@@ -323,22 +323,6 @@ RSpec.describe Entourage, type: :model do
     end
   end
 
-  describe "join_request_after" do
-    let(:user) { FactoryBot.create(:public_user) }
-    let(:entourage) {FactoryBot.create(:entourage) }
-    let(:at) { Time.now }
-
-    let!(:join_request) { FactoryBot.create(:join_request, user: user, joinable: entourage, status: JoinRequest::ACCEPTED_STATUS, created_at: at) }
-
-    it "no join_request after" do
-      expect(entourage.join_request_after(read_at: at + 1.second)).to eq(false)
-    end
-
-    it "with join_request after" do
-      expect(entourage.join_request_after(read_at: at - 1.second)).to eq(true)
-    end
-  end
-
   describe "unread_chat_message_after" do
     let(:user) { FactoryBot.create(:public_user) }
     let(:entourage) {FactoryBot.create(:entourage) }

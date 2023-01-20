@@ -30,6 +30,8 @@
       <% unless @neighborhoods.none? %>
         <table class="table">
           <th>Id</th>
+          <th></th>
+          <th></th>
           <th>Name</th>
           <th>Utilisateur</th>
           <th>Lieu</th>
@@ -39,8 +41,24 @@
           <th>Statut</th>
           <th>Actions</th>
           <% @neighborhoods.each do |neighborhood| %>
+            <% unread_count  = @message_count[neighborhood.id].unread %>
+            <% unread_images_count = @message_count[neighborhood.id].unread_images || 0 %>
             <tr>
               <td><%= neighborhood.id %></td>
+              <td>
+                <% if neighborhood.unread %>
+                  <span class="badge" style="background: #d9534f" title="Non lu">●</span>
+                <% elsif unread_count > 0 %>
+                  <span class="badge" style="background: #d9534f" title="Messages non lus"><%= unread_count %></span>
+                <% end %>
+              </td>
+              <td>
+                <% if neighborhood.unread_images %>
+                  <span class="badge" style="background: #19534f" title="Images non lues">●</span>
+                <% elsif unread_count > 0 %>
+                  <span class="badge" style="background: #19534f" title="Images non lues"><%= unread_images_count %></span>
+                <% end %>
+              </td>
               <td><%= link_to neighborhood.name, edit_admin_neighborhood_path(neighborhood) %></td>
               <td><%= link_to neighborhood.user.full_name, admin_user_path(neighborhood.user) %></td>
               <td>

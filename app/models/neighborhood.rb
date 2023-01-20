@@ -3,6 +3,7 @@ class Neighborhood < ApplicationRecord
   include CoordinatesScopable
   include JoinableScopable
   include Recommandable
+  include ModeratorReadable
   include Experimental::NeighborhoodSlack::Callback
 
   after_validation :track_status_change
@@ -21,7 +22,9 @@ class Neighborhood < ApplicationRecord
 
   has_many :members, -> { where("join_requests.status = 'accepted'") }, through: :join_requests, source: :user
   has_many :neighborhoods_entourages
+  has_many :chat_messages, as: :messageable, dependent: :destroy
   has_many :parent_chat_messages, -> { where(ancestry: nil) }, as: :messageable, class_name: :ChatMessage
+  has_many :conversation_messages, as: :messageable, dependent: :destroy
 
   # outings
   has_many :outings, -> {
@@ -45,7 +48,6 @@ class Neighborhood < ApplicationRecord
   }, through: :neighborhoods_entourages, source: :entourage, class_name: :Outing
 
   reverse_geocoded_by :latitude, :longitude
-  has_many :chat_messages, as: :messageable, dependent: :destroy
 
   validates_presence_of [:status, :name, :description, :latitude, :longitude]
 
@@ -66,6 +68,22 @@ class Neighborhood < ApplicationRecord
     end
 
     where("left(postal_code, 2) = ?", ModerationArea.departement(moderation_area))
+  }
+
+  scope :join_chat_message_with_images, -> {
+    joins(%(
+      left join (
+        select #{table_name}.id
+        from #{table_name}
+        left join chat_messages as chat_message_with_images on
+          chat_message_with_images.messageable_id = #{table_name}.id and
+          chat_message_with_images.messageable_type = '#{self.name}'
+        where
+          chat_message_with_images.image_url is not null
+        group by #{table_name}.id
+      ) as #{table_name}_imageable on
+        #{table_name}_imageable.id = #{table_name}.id
+    ))
   }
 
   scope :search_by, ->(search) {
@@ -175,6 +193,29 @@ class Neighborhood < ApplicationRecord
 
   def has_ongoing_outing?
     ongoing_outings.any?
+  end
+
+  def unread_count_chat_messages_for user
+    JoinRequest
+      .where(user: user, joinable: self)
+      .with_unread_messages
+      .count
+  end
+
+  def unread_images_count_chat_messages_for user
+    JoinRequest
+      .where(user: user, joinable: self)
+      .with_unread_images_messages
+      .count
+  end
+
+  def unread_first_chat_message_for user
+    JoinRequest
+      .select("join_requests.id, join_requests.created_at, min(chat_messages.id) as unread_first_chat_message_id")
+      .where(user: user, joinable: self)
+      .with_unread_messages
+      .group('join_requests.id')
+      .first
   end
 
   # @code_legacy

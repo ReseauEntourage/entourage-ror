@@ -1,10 +1,29 @@
 <%= stylesheet_link_tag 'chat_messages' %>
 
+<%
+  first_unread = nil
+  unread_count = 0
+
+  @posts.reverse.each do |m|
+    if first_unread.nil? && @moderator_read && m.created_at >= @moderator_read.read_at
+      first_unread = m
+    end
+
+    unread_count += 1 if first_unread
+  end
+%>
 <div class="container">
   <div style="width: 750px; margin: auto">
     <%= render 'edit_header', tab: :show_posts %>
 
     <div class="row">
+      <% if unread_count > 0 && first_unread %>
+        <div class="conversation-unread-status" id="unreadStatus">
+          <%= pluralize(unread_count, "nouveau message", "nouveaux messages") %>
+          depuis le <%= l first_unread.created_at, format: "%-d %B %Y à %H h %M" %>
+        </div>
+      <% end %>
+
       <% color = {} %>
 
       <% if @posts.empty? %>
@@ -52,7 +71,36 @@
                 <div><%= link_to "voir les commentaires", show_post_comments_admin_neighborhood_path(@neighborhood, post_id: message.id) %></div>
               <% end %>
             </div>
+            <div class="conversation-actions">
+              <div class="dropdown" style="display: inline-block">
+                <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                  <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu1">
+                  <li>
+                    <%= link_to "Marquer comme non lu",
+                        unread_message_admin_neighborhoods_path(chat_message_id: message.id),
+                        method: :post %>
+                  </li>
+                  <% unless message.children.any? %>
+                    <li>
+                      <%= link_to "Supprimer le message",
+                          destroy_message_admin_neighborhoods_path(chat_message_id: message.id),
+                          method: :delete,
+                          data: { confirm: "Voulez-vous vraiment supprimer ce message ? Cette opération est irréversible.\n\n#{message.user.full_name} :\n#{message.content}" },
+                          class: "text-danger" %>
+                    </li>
+                  <% end %>
+                </ul>
+              </div>
+            </div>
           </div>
+
+          <% if message == first_unread %>
+            <div class="conversation-unread-divider" id="unreadDivider">
+              <div class="conversation-unread-divider-label">messages déjà lus</div>
+            </div>
+          <% end %>
         <% end %>
       <% end %>
 
@@ -60,6 +108,11 @@
         <%= paginate @posts %>
       </div>
 
+      <% if @neighborhood.moderator_has_unread_content(user: current_user) %>
+        <div class="text-center">
+          <%= link_to "Marquer comme lu", read_all_messages_admin_neighborhood_path(@neighborhood), method: :post, class: "btn btn-default" %>
+        </div>
+      <% end %>
     </div>
   </div>
 </div>
