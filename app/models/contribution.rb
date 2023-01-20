@@ -6,7 +6,11 @@ class Contribution < Entourage
   CONTENT_TYPES = %w(image/jpeg)
   BUCKET_PREFIX = "contributions"
 
-  default_scope { where(group_type: :action, entourage_type: :contribution).order(created_at: :desc) }
+  default_scope {
+    where(group_type: :action, entourage_type: :contribution)
+    .where(pin: false)
+    .order(created_at: :desc)
+  }
 
   def image_path
     return unless image_url
