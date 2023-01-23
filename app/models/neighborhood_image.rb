@@ -7,6 +7,12 @@ class NeighborhoodImage < ApplicationRecord
     NeighborhoodImage.image_url_for self['image_url']
   end
 
+  def image_url_with_size size
+    return unless self['image_url'].present?
+
+    NeighborhoodImage.image_url_for_with_size(self['image_url'], size)
+  end
+
   class << self
     def image_url_for url
       storage.public_url(key: url)
