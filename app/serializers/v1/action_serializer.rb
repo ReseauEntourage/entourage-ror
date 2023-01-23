@@ -59,7 +59,7 @@ module V1
       return unless object.image_url.present?
       return unless object.contribution?
 
-      Contribution.url_for(object.image_url)
+      Contribution.image_url_for_with_size(object.image_url, :medium)
     end
   end
 end

@@ -18,6 +18,12 @@ class Contribution < Entourage
     Contribution.url_for(image_url)
   end
 
+  def image_url_with_size size
+    return unless self['image_url'].present?
+
+    Contribution.image_url_for_with_size(self['image_url'], size)
+  end
+
   class << self
     def bucket
       Storage::Client.images
@@ -27,7 +33,7 @@ class Contribution < Entourage
       bucket.object(path key).presigned_url(
         :put,
         expires_in: 1.minute.to_i,
-        acl: :private,
+        acl: 'public-read',
         content_type: content_type,
         cache_control: "max-age=#{365.days}"
       )
@@ -35,6 +41,10 @@ class Contribution < Entourage
 
     def url_for key
       bucket.url_for(key: path(key), extra: { expire: 1.day })
+    end
+
+    def image_url_for_with_size key, size = :medium
+      bucket.public_url_with_size(key: path(key), size: size)
     end
 
     def path key

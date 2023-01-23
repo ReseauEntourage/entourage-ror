@@ -9,28 +9,28 @@ class EntourageImage < ApplicationRecord
     portrait_thumbnail_url || portrait_url
   end
 
-  def landscape_thumbnail_url
+  def landscape_thumbnail_url size = :medium
     return unless self['landscape_thumbnail_url'].present?
 
-    EntourageImage.storage.public_url(key: self['landscape_thumbnail_url'])
+    EntourageImage.storage.public_url_with_size(key: self['landscape_thumbnail_url'], size: size)
   end
 
-  def landscape_url
+  def landscape_url size = :medium
     return unless self['landscape_url'].present?
 
-    EntourageImage.storage.public_url(key: self['landscape_url'])
+    EntourageImage.storage.public_url_with_size(key: self['landscape_url'], size: size)
   end
 
-  def portrait_thumbnail_url
+  def portrait_thumbnail_url size = :medium
     return unless self['portrait_thumbnail_url'].present?
 
-    EntourageImage.storage.public_url(key: self['portrait_thumbnail_url'])
+    EntourageImage.storage.public_url_with_size(key: self['portrait_thumbnail_url'], size: size)
   end
 
-  def portrait_url
+  def portrait_url size = :medium
     return unless self['portrait_url'].present?
 
-    EntourageImage.storage.public_url(key: self['portrait_url'])
+    EntourageImage.storage.public_url_with_size(key: self['portrait_url'], size: size)
   end
 
   def self.storage

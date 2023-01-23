@@ -376,7 +376,7 @@ describe Api::V1::EntouragesController do
           }
         end
         before {
-          Storage::Bucket.any_instance.stub(:url_for) { "path/to/portrait_url" }
+          Storage::Bucket.any_instance.stub(:public_url_with_size) { "path/to/portrait_url" }
           post :create, params: { entourage: params, token: user.token }
         }
         it do
@@ -726,7 +726,7 @@ describe Api::V1::EntouragesController do
 
       context "outing exists" do
         before {
-          Storage::Bucket.any_instance.stub(:url_for) { "path/to/portrait_url" }
+          Storage::Bucket.any_instance.stub(:public_url_with_size) { "path/to/portrait_url" }
           patch :update, params: { id: outing.to_param, entourage: {metadata: {
             landscape_url: "path/to/landscape_url",
             landscape_thumbnail_url: "path/to/landscape_thumbnail_url",

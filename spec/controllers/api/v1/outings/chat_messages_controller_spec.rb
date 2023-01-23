@@ -12,7 +12,7 @@ describe Api::V1::Outings::ChatMessagesController do
     let!(:chat_message_3) { FactoryBot.create(:chat_message, :closed_as_success, messageable: outing, user: user, created_at: 1.hour.ago) }
 
     before { Timecop.freeze }
-    before { ChatMessage.stub(:url_for) { "http://foo.bar"} }
+    before { ChatMessage.stub(:url_for_with_size) { "http://foo.bar"} }
 
     context "not signed in" do
       before { get :index, params: { outing_id: outing.to_param } }
@@ -180,7 +180,7 @@ describe Api::V1::Outings::ChatMessagesController do
         } }
 
         before {
-          ChatMessage.stub(:url_for) { image_url }
+          ChatMessage.stub(:url_for_with_size) { image_url }
 
           post :create, params: {
             token: user.token, outing_id: outing.to_param, chat_message: chat_message_params

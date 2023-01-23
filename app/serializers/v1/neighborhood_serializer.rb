@@ -24,6 +24,10 @@ module V1
       object.members.include? scope[:user]
     end
 
+    def image_url
+      object.image_url_with_size :medium
+    end
+
     def interests
       object.interest_names.sort
     end

@@ -60,7 +60,7 @@ class ChatMessage < ApplicationRecord
       bucket.object(path key).presigned_url(
         :put,
         expires_in: 1.minute.to_i,
-        acl: :private,
+        acl: 'public-read',
         content_type: content_type,
         cache_control: "max-age=#{365.days}"
       )
@@ -68,6 +68,10 @@ class ChatMessage < ApplicationRecord
 
     def url_for key
       bucket.url_for(key: path(key), extra: { expire: 1.day })
+    end
+
+    def url_for_with_size key, size
+      bucket.public_url_with_size(key: path(key), size: size)
     end
 
     def path key
@@ -79,6 +83,12 @@ class ChatMessage < ApplicationRecord
     return unless image_url.present?
 
     ChatMessage.url_for(image_url)
+  end
+
+  def image_url_with_size size
+    return unless image_url.present?
+
+    ChatMessage.url_for_with_size(image_url, size)
   end
 
   def validate_ancestry!

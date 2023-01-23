@@ -20,5 +20,9 @@ module V1
     def html
       ResourceServices::Format.new(resource: object).to_html
     end
+
+    def image_url
+      object.image_url_with_size :medium
+    end
   end
 end

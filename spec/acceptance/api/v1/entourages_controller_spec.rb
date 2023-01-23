@@ -342,9 +342,9 @@ resource Api::V1::EntouragesController do
       entourage: {
         metadata: {
           landscape_url: "path/to/landscape_url",
-          landscape_thumbnail_url: "path/to/landscape_thumbnail_url",
+          landscape_thumbnail_url: "path/to/landscape_url",
           portrait_url: "path/to/portrait_url",
-          portrait_thumbnail_url: "path/to/portrait_thumbnail_url",
+          portrait_thumbnail_url: "path/to/portrait_url",
         }
       }
     }.to_json }

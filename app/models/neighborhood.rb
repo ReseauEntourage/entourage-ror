@@ -237,6 +237,12 @@ class Neighborhood < ApplicationRecord
     NeighborhoodImage.image_url_for self['image_url']
   end
 
+  def image_url_with_size size
+    return unless self['image_url'].present?
+
+    NeighborhoodImage.image_url_for_with_size(self['image_url'], size)
+  end
+
   def neighborhood_image_id= neighborhood_image_id
     if neighborhood_image = NeighborhoodImage.find_by_id(neighborhood_image_id)
       self.image_url = neighborhood_image[:image_url]

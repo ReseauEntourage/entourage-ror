@@ -11,7 +11,7 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
     let!(:chat_message_2) { FactoryBot.create(:chat_message, messageable: neighborhood, user: user, parent: chat_message_1) }
 
     before { Timecop.freeze }
-    before { ChatMessage.stub(:url_for) { "http://foo.bar"} }
+    before { ChatMessage.stub(:url_for_with_size) { "http://foo.bar"} }
 
     context "not signed in" do
       before { get :index, params: { neighborhood_id: neighborhood.to_param } }
@@ -179,7 +179,7 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
         } }
 
         before {
-          ChatMessage.stub(:url_for) { image_url }
+          ChatMessage.stub(:url_for_with_size) { image_url }
 
           post :create, params: {
             token: user.token, neighborhood_id: neighborhood.to_param, chat_message: chat_message_params
