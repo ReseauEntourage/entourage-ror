@@ -43,6 +43,10 @@ class Address < ApplicationRecord
     postal_code[0..1]
   end
 
+  def paris?
+    departement == '75'
+  end
+
   private
 
   def set_user_address_id_if_primary!
