@@ -43,6 +43,10 @@ module V1
       }
     end
 
+    def image_url
+      object.image_url_with_size :original
+    end
+
     def posts
       object.parent_chat_messages.includes(:user).preload_comments_count.ordered.limit(25).map do |chat_message|
         V1::ChatMessageHomeSerializer.new(chat_message, scope: { current_join_request: current_join_request }).as_json

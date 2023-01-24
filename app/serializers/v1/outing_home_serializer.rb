@@ -8,6 +8,10 @@ module V1
       end
     end
 
+    def metadata
+      object.metadata_with_image_paths(:original).except(:$id)
+    end
+
     private
 
     def current_join_request
