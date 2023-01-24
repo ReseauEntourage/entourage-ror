@@ -8,7 +8,7 @@ module NeighborhoodServices
 
     def join_default_neighborhood!
       return unless default_neighborhood
-      return if JoinRequest.where(joinable: default_neighborhood, user: user, status: :accepted).any?
+      return if JoinRequest.where(joinable: default_neighborhood, user: user, status: [:accepted, :cancelled]).any?
 
       join_request = JoinRequest.find_or_initialize_by(joinable: default_neighborhood, user: user)
       join_request.status = :accepted
