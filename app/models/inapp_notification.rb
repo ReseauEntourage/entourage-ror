@@ -25,7 +25,7 @@ class InappNotification < ApplicationRecord
     return unless instance
     return post if post?
 
-    instance.to_s.classify.constantize.find(instance_id)
+    instance.to_s.classify.constantize.unscoped.find_by_id(instance_id)
   rescue NameError
     nil
   end

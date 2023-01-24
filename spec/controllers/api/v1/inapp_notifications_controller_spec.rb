@@ -55,6 +55,16 @@ describe Api::V1::InappNotificationsController, :type => :controller do
 
         it { expect(inapp_notification.reload.displayed_at.iso8601(3)).to eq(Time.zone.now.iso8601(3)) }
       end
+
+      context 'with deleted neighborhoods' do
+        let!(:inapp_notification) { create :inapp_notification, user: user }
+
+        before { Neighborhood.find(inapp_notification.instance_id).update_attribute(:status, :deleted) }
+
+        before { request }
+
+        it { expect(response.status).to eq 200 }
+      end
     end
   end
 
