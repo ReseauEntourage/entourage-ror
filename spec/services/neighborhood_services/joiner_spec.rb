@@ -28,6 +28,15 @@ describe NeighborhoodServices::Joiner do
       it { expect { subject }.to change { JoinRequest.count }.by(0) }
     end
 
+    context "existing join_request and cancelled" do
+      let(:join_request) { create :join_request, user: user, joinable: neighborhood, status: :cancelled }
+
+      before { join_request }
+
+      it { expect(subject).to be_nil }
+      it { expect { subject }.to change { JoinRequest.count }.by(0) }
+    end
+
     context "existing join_request and accepted" do
       let(:join_request) { create :join_request, user: user, joinable: neighborhood, status: :accepted }
 
