@@ -12,8 +12,6 @@ module EntourageServices
 
         group = invitation.invitable
         group.touch
-
-        CommunityLogic.for(group).group_joined(join_request)
       end
     end
 

@@ -33,19 +33,9 @@ namespace :onboarding_sequence do
       MemberMailer.reactivation_day_20(user).deliver_later
     end
 
-    at_day 40, after: :last_session do |user|
-      MemberMailer.reactivation_day_40(user).deliver_later
-    end
-
     at_day 10, after: :action_creation do |action|
       MemberMailer.action_follow_up_day_10(action).deliver_later
     end
-
-    at_day 20, after: :action_creation do |action|
-      MemberMailer.action_follow_up_day_20(action).deliver_later
-    end
-
-    CommunityLogic.for($server_community).morning_emails
 
     $redis.set(redis_key, redis_date)
   end

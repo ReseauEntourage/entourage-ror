@@ -25,10 +25,6 @@ module TourServices
 
       join_request.update!(status: "accepted")
 
-      if user != joinable_author
-        CommunityLogic.for(joinable).group_joined(join_request)
-      end
-
       true
     end
 
