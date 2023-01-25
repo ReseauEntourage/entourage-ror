@@ -24,6 +24,15 @@ module CoordinatesScopable
         "postal_code is not null and left(postal_code, 2) = ?", departement
       )
     }
+    scope :order_by_paris_for_user, -> (user) {
+      return unless user.paris?
+
+      if has_attribute?(:zone)
+        order("case when zone = 'ville' and left(postal_code, 2) = '75' then 0 else 1 end")
+      else
+        order("case when left(postal_code, 2) = '75' then 0 else 1 end")
+      end
+    }
     scope :order_by_zone, -> {
       return unless has_attribute?(:zone)
 
@@ -37,6 +46,7 @@ module CoordinatesScopable
     scope :closests_to_by_zone, -> (user) {
       inside_user_perimeter(user)
         .unscope(:order)
+        .order_by_paris_for_user(user)
         .order_by_zone
         .order_by_distance_from(user.latitude, user.longitude)
     }
