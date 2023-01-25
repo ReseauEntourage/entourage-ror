@@ -36,10 +36,6 @@ module JoinRequestsServices
       join_request.status = JoinRequest::ACCEPTED_STATUS if joinable.public
 
       if join_request.save
-        if join_request.is_accepted?
-          joinable.class.increment_counter(:number_of_people, joinable.id)
-        end
-
         callback.on_success.try(:call, join_request)
       else
         callback.on_failure.try(:call, join_request)
