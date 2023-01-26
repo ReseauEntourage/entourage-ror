@@ -44,7 +44,7 @@ module V1
     end
 
     def image_url
-      object.image_url_with_size :original
+      object.image_url_with_size :high
     end
 
     def posts

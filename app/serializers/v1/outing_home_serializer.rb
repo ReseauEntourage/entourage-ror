@@ -9,7 +9,7 @@ module V1
     end
 
     def metadata
-      object.metadata_with_image_paths(:original).except(:$id)
+      object.metadata_with_image_paths(:high).except(:$id)
     end
 
     private
