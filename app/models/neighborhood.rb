@@ -28,21 +28,21 @@ class Neighborhood < ApplicationRecord
 
   # outings
   has_many :outings, -> {
-    where(group_type: :outing)
+    where(group_type: :outing).active
   }, through: :neighborhoods_entourages, source: :entourage, class_name: :Outing
 
   has_many :past_outings, -> {
-    where(group_type: :outing)
+    where(group_type: :outing).active
     .where("metadata->>'ends_at' < ?", Time.zone.now)
   }, through: :neighborhoods_entourages, source: :entourage, class_name: :Outing
 
   has_many :future_outings, -> {
-    where(group_type: :outing)
+    where(group_type: :outing).active
     .where("metadata->>'ends_at' > ?", Time.zone.now)
   }, through: :neighborhoods_entourages, source: :entourage, class_name: :Outing
 
   has_many :ongoing_outings, -> {
-    where(group_type: :outing)
+    where(group_type: :outing).active
     .where("metadata->>'starts_at' <= ?", Time.zone.now)
     .where("metadata->>'ends_at' >= ?", Time.zone.now)
   }, through: :neighborhoods_entourages, source: :entourage, class_name: :Outing
