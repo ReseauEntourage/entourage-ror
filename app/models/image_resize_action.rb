@@ -1,5 +1,5 @@
 class ImageResizeAction < ApplicationRecord
-  # sizes: small, medium, high
+  SIZES = [:small, :medium, :high, :source, :default]
 
   default_scope { where(status: :OK) }
 
@@ -9,6 +9,9 @@ class ImageResizeAction < ApplicationRecord
 
   class << self
     def find_path_for bucket:, path:, size:
+      size = :default unless size.respond_to?(:to_sym) && ImageResizeAction::SIZES.include?(size.to_sym)
+
+      return path if size.to_sym == :default
       return path unless image_resize_action = find_by_bucket_and_path_and_destination_size(bucket, path, size)
 
       image_resize_action.destination_path
