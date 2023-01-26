@@ -46,6 +46,9 @@ class OutingRecurrence < ApplicationRecord
 
   def last_outing
     # @reminder default_scope is on metadata->>'starts_at'
-    Outing.where(recurrency_identifier: identifier, status: :open).last
+    Outing
+      .where(recurrency_identifier: identifier, status: :open)
+      .where.not(status: [:blacklisted, :suspended])
+      .last
   end
 end
