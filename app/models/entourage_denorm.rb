@@ -23,7 +23,7 @@ class EntourageDenorm < ApplicationRecord
     self[:max_chat_message_created_at] = ChatMessage.select('max(created_at) as max_created_at')
       .where(messageable: entourage)
       .group(:messageable_id)
-      .pluck(:max_created_at).max
+      .pluck(:max_chat_message_created_at).max
   end
 
   def recompute_has_image_url
