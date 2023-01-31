@@ -314,7 +314,7 @@ module Admin
       engagement = get_engagement
       profile = get_profile
 
-      @users = current_user.community.users
+      @users = current_user.community.users.includes([:neighborhood_memberships])
 
       @users = @users.status_is(status)
       @users = @users.role_is(role)
