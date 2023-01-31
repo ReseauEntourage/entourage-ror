@@ -22,7 +22,6 @@ class EntourageDenorm < ApplicationRecord
   def recompute_max_chat_message_created_at
     self[:max_chat_message_created_at] = ChatMessage.select('max(created_at) as max_created_at')
       .where(messageable: entourage)
-      .group(:messageable_id)
       .pluck(:created_at).max
   end
 
