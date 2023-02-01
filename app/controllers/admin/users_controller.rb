@@ -327,6 +327,7 @@ module Admin
       @users = @users.ask_for_help if profile == :ask_for_help
       @users = @users.offer_help if profile == :offer_help
       @users = @users.organization if profile == :organization
+      @users = @users.ambassador if profile == :ambassador
       @users = @users.in_area("dep_" + params[:q][:postal_code_start]) if params[:q] && params[:q][:postal_code_start]
       @users = @users.in_area(:hors_zone) if params[:q] && params[:q][:postal_code_not_start_all]
       @users.group('users.id')
@@ -335,7 +336,7 @@ module Admin
 
     def get_profile
       profile = params[:profile].presence&.to_sym
-      profile = :all unless profile.in?([:offer_help, :ask_for_help, :organization, :goal_not_known])
+      profile = :all unless profile.in?([:offer_help, :ask_for_help, :organization, :goal_not_known, :ambassador])
       profile
     end
 

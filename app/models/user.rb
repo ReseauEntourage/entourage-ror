@@ -6,7 +6,7 @@ class User < ApplicationRecord
   include UserServices::Engagement
 
   TEMPORARY_BLOCK_PERIOD = 1.month
-  PROFILES = [:offer_help, :ask_for_help, :organization, :goal_not_known]
+  PROFILES = [:offer_help, :ask_for_help, :organization, :goal_not_known, :ambassador]
   STATUSES = [:validated, :blocked, :temporary_blocked, :deleted, :pending]
   ROLES = [:moderator, :admin]
 
@@ -147,6 +147,7 @@ class User < ApplicationRecord
   scope :ask_for_help, -> { where('(targeting_profile is null and goal = ?) or targeting_profile = ?', :ask_for_help, :asks_for_help) }
   scope :offer_help, -> { where('(targeting_profile is null and goal = ?) or targeting_profile = ?', :offer_help, :offers_help) }
   scope :organization, -> { where(goal: :organization) }
+  scope :ambassador, -> { where(targeting_profile: :ambassador) }
   scope :search_by, ->(search) {
     strip = search && search.strip
     like = "%#{strip}%"
