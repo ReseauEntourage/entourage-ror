@@ -6,7 +6,7 @@ module Api
 
         def index
           page = params[:page] || 1
-          per = [(params[:per].try(:to_i) || 25), 25].min
+          per = 200
 
           neighborhoods = Neighborhood.joins(:join_requests)
             .where(join_requests: { user: @user, status: JoinRequest::ACCEPTED_STATUS })
