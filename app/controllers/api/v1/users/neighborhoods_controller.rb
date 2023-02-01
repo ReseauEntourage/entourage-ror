@@ -10,7 +10,7 @@ module Api
 
           neighborhoods = Neighborhood.joins(:join_requests)
             .where(join_requests: { user: @user, status: JoinRequest::ACCEPTED_STATUS })
-            .order(created_at: :desc)
+            .order(name: :asc)
             .page(page)
             .per(per)
 
