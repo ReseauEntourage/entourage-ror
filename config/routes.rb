@@ -217,8 +217,9 @@ Rails.application.routes.draw do
       end
     end
 
-    resources :neighborhoods, only: [:index, :edit, :update] do
+    resources :neighborhoods, only: [:index, :edit, :update, :destroy] do
       member do
+        put :reactivate
         get :show_members
         get :show_outings
         get 'outing_posts/:outing_id' => :show_outing_posts, as: :show_outing_posts
