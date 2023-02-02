@@ -60,6 +60,10 @@ class Outing < Entourage
 
   scope :future, -> { where("metadata->>'starts_at' >= ?", Time.zone.now) }
   scope :past, -> { where("metadata->>'starts_at' <= ?", Time.zone.now) }
+  scope :ongoing, -> {
+    where("metadata->>'starts_at' <= ?", Time.zone.now)
+    .where("metadata->>'ends_at' >= ?", Time.zone.now)
+  }
   scope :starting_after, -> (from) { where("metadata->>'starts_at' >= ?", from) }
   scope :ending_after, -> (from) { where("metadata->>'ends_at' >= ?", from) }
 
