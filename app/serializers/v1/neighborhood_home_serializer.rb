@@ -58,15 +58,15 @@ module V1
     end
 
     def outings
-      object.outings.future_or_ongoing.limit(OUTINGS_LIMIT)
+      object.outings_with_online(scope: :future_outings).future_or_ongoing.limit(OUTINGS_LIMIT)
     end
 
     def future_outings
-      object.outings.future_or_ongoing.limit(OUTINGS_LIMIT)
+      object.outings_with_online(scope: :future_outings).future_or_ongoing.limit(OUTINGS_LIMIT)
     end
 
     def ongoing_outings
-      object.ongoing_outings.limit(OUTINGS_LIMIT)
+      object.outings_with_online(scope: :ongoing_outings).future_or_ongoing.limit(OUTINGS_LIMIT)
     end
 
     private

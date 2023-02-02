@@ -381,6 +381,29 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
       }]) }
     end
 
+    describe 'with online outing' do
+      let!(:online) { create :outing, :outing_class, online: true }
+      let(:neighborhood) { create :neighborhood }
+
+      before { get :show, params: { id: neighborhood.id, token: user.token } }
+
+      it { expect(response.status).to eq 200 }
+      it { expect(result['neighborhood']).to have_key('future_outings') }
+      it { expect(result['neighborhood']['future_outings'].count).to eq(1) }
+      it { expect(result['neighborhood']['future_outings'][0]['id']).to eq(online.id) }
+    end
+
+    describe 'with offline outing' do
+      let!(:offline) { create :outing, :outing_class, online: false }
+      let(:neighborhood) { create :neighborhood }
+
+      before { get :show, params: { id: neighborhood.id, token: user.token } }
+
+      it { expect(response.status).to eq 200 }
+      it { expect(result['neighborhood']).to have_key('future_outings') }
+      it { expect(result['neighborhood']['future_outings'].count).to eq(0) }
+    end
+
     describe 'with chat_message' do
       let(:neighborhood) { create :neighborhood }
       let(:post) { FactoryBot.create(:chat_message, messageable: neighborhood, user: user) }

@@ -183,6 +183,14 @@ class Neighborhood < ApplicationRecord
     posts.length
   end
 
+  def outings_with_online scope: :outings
+    scope = :outings unless [:past_outings, :future_outings, :ongoing_outings].include?(scope)
+
+    Outing.unscope(:order).where(
+      id: send(scope).select(:id)
+    ).or(Outing.unscope(:order).where(online: true))
+  end
+
   def past_outings_count
     past_outings.length
   end
