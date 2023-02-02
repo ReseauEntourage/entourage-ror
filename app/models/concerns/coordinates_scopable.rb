@@ -6,7 +6,7 @@ module CoordinatesScopable
     lyon: { field: :postal_code, in: ('69000'..'69009').to_a },
     marseille: { field: :postal_code, in: ('13000'..'13016').to_a },
     paris: { field: :departement, in: '75' },
-    rennes: { field: :postal_code, in: ['35000', '35200', '35700'] },
+    rennes: { field: :postal_code, in: ['35000', '35200', '35700', '35740', '35760', '35760', '35510', '35132', '35650', '35590', '35520', '35135', '35830', '35235', '35770'] },
   }
 
   included do
