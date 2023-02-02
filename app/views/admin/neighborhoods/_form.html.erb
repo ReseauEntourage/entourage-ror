@@ -5,7 +5,6 @@
 <%= render partial: 'common/errors', locals: { obj: @neighborhood } %>
 
 <%= form_for [:admin, @neighborhood], html: { role: "form" } do |f| %>
-
   <% if @neighborhood.deleted? %>
     <div class="alert alert-warning" role="alert" style="display: flex; align-items: center">
       <div style="flex-grow: 1">
@@ -77,7 +76,15 @@
 
   <%= f.submit 'Enregistrer', class: "btn btn-primary" %>
   <%= link_to "Retour", admin_neighborhoods_path, class: "btn btn-default" %>
+  <div style="float: right;">
+    <% if @neighborhood.active? %>
+      <%= link_to "Supprimer", admin_neighborhood_path(@neighborhood), method: :delete, class: "btn btn-danger", data: { confirm: "Êtes vous sûr de vouloir supprimer ce groupe de voisins ?" } %>
+    <% else %>
+      <%= link_to "Réactiver", reactivate_admin_neighborhood_path(@neighborhood), method: :put, class: "btn btn-success", data: { confirm: "Ce groupe a été supprimé ou blacklisté. Êtes vous sûr de vouloir le réactiver ?" } %>
+    <% end %>
+  </div>
 <% end %>
+
 
 <script>
   $('select#neighborhood_interests').select2({ width: '100%' });

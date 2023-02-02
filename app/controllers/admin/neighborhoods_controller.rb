@@ -2,7 +2,7 @@ module Admin
   class NeighborhoodsController < Admin::BaseController
     layout 'admin_large'
 
-    before_action :set_neighborhood, only: [:edit, :update, :edit_image, :update_image, :show_members, :show_outings, :show_outing_posts, :show_outing_post_comments, :show_posts, :show_post_comments, :edit_owner, :update_owner, :read_all_messages]
+    before_action :set_neighborhood, only: [:edit, :update, :destroy, :reactivate, :edit_image, :update_image, :show_members, :show_outings, :show_outing_posts, :show_outing_post_comments, :show_posts, :show_post_comments, :edit_owner, :update_owner, :read_all_messages]
 
     def index
       @params = params.permit([:area, :search]).to_h
@@ -49,6 +49,22 @@ module Admin
         redirect_to edit_admin_neighborhood_path(@neighborhood)
       else
         render :edit
+      end
+    end
+
+    def destroy
+      if @neighborhood.update_attribute(:status, :deleted)
+        redirect_to admin_neighborhoods_path, notice: "Le groupe de voisins #{@neighborhood.name} a bien été supprimé"
+      else
+        redirect_to edit_admin_neighborhood_path(@neighborhood), error: "Le groupe de voisins #{@neighborhood.name} n'a pas pu être supprimé"
+      end
+    end
+
+    def reactivate
+      if @neighborhood.update_attribute(:status, :active)
+        redirect_to admin_neighborhoods_path, notice: "Le groupe de voisins #{@neighborhood.name} a bien été réactivé"
+      else
+        redirect_to edit_admin_neighborhood_path(@neighborhood), error: "Le groupe de voisins #{@neighborhood.name} n'a pas pu être réactivé"
       end
     end
 
