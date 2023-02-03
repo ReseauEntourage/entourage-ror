@@ -3,7 +3,7 @@ class InappNotification < ApplicationRecord
 
   belongs_to :user # user that is notified
   belongs_to :sender, class_name: :User # user that created the notification
-  belongs_to :post
+  belongs_to :post, class_name: :ChatMessage
 
   validates_presence_of :instance, :instance_id
   # validates_inclusion_of :instance, in: INSTANCES

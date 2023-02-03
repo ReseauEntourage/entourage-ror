@@ -20,11 +20,11 @@ module V1
     end
 
     def image_url_for_neighborhood_post post
-      image_url_for_neighborhood(post.messageable)
+      image_url_for_sender
     end
 
     def image_url_for_outing_post post
-      image_url_for_outing(post.messageable)
+      image_url_for_sender
     end
 
     def image_url_for_neighborhood neighborhood
@@ -44,8 +44,8 @@ module V1
       nil
     end
 
-    def image_url_for_user user
-      UserServices::Avatar.new(user: user).thumbnail_url
+    def image_url_for_sender
+      UserServices::Avatar.new(user: object.sender).thumbnail_url
     end
   end
 end
