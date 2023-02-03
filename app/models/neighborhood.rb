@@ -183,7 +183,7 @@ class Neighborhood < ApplicationRecord
     posts.length
   end
 
-  def outings_with_online scope: :outings
+  def outings_with_admin_online scope: :outings
     scope = :outings unless [:past_outings, :future_outings, :ongoing_outings].include?(scope)
 
     onlines = Outing.unscope(:order).where(online: true)
@@ -193,7 +193,7 @@ class Neighborhood < ApplicationRecord
 
     Outing.unscope(:order).where(
       id: send(scope).select(:id)
-    ).or(onlines)
+    ).or(onlines.where(user: User.where(admin: true)))
   end
 
   def past_outings_count
