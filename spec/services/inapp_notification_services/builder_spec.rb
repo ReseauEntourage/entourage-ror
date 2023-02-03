@@ -42,12 +42,13 @@ describe InappNotificationServices::Builder do
   describe 'instanciate' do
     let(:neighborhood) { create(:neighborhood) }
     let(:context) { :entourage_on_create }
+    let(:sender_id) { nil }
     let(:instance) { :neighborhood }
     let(:instance_id) { neighborhood.id }
     let(:post_id) { nil }
     let(:content) { "foo" }
 
-    let(:subject) { InappNotificationServices::Builder.new(user).instanciate(context: context, instance: instance, instance_id: instance_id, post_id: post_id, referent: instance, referent_id: instance_id, content: content) }
+    let(:subject) { InappNotificationServices::Builder.new(user).instanciate(context: context, sender_id: sender_id, instance: instance, instance_id: instance_id, post_id: post_id, referent: instance, referent_id: instance_id, content: content) }
 
     before { NotificationPermission.stub(:notify_inapp?) { acceptance } }
 

@@ -371,6 +371,7 @@ describe Api::V1::OutingsController do
         before {
           allow_any_instance_of(PushNotificationTrigger).to receive(:notify)
           expect_any_instance_of(PushNotificationTrigger).to receive(:notify).with(
+            sender_id: outing.user_id,
             referent: outing.becomes(Outing),
             instance: outing.becomes(Outing),
             users: [participant],
@@ -621,6 +622,7 @@ describe Api::V1::OutingsController do
       before {
         allow_any_instance_of(PushNotificationTrigger).to receive(:notify)
         expect_any_instance_of(PushNotificationTrigger).to receive(:notify).with(
+          sender_id: outing.user_id,
           referent: outing.reload.becomes(Outing),
           instance: outing.reload.becomes(Outing),
           users: [participant],
@@ -646,6 +648,7 @@ describe Api::V1::OutingsController do
       before {
         allow_any_instance_of(PushNotificationTrigger).to receive(:notify)
         expect_any_instance_of(PushNotificationTrigger).to receive(:notify).with(
+          sender_id: outing.user_id,
           referent: outing.reload.becomes(Outing),
           instance: outing.reload.becomes(Outing),
           users: [participant],

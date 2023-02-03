@@ -104,6 +104,7 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
           context "sender is publisher" do
             it {
               expect_any_instance_of(PushNotificationTrigger).to receive(:notify).with(
+                sender_id: user.id,
                 referent: neighborhood,
                 instance: chat_message,
                 users: [john, jane],
@@ -119,6 +120,7 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
           context "sender is commentator" do
             it {
               expect_any_instance_of(PushNotificationTrigger).to receive(:notify).with(
+                sender_id: john.id,
                 referent: neighborhood,
                 instance: chat_message,
                 users: [user, jane],
@@ -363,6 +365,7 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
 
         it {
           expect_any_instance_of(PushNotificationTrigger).to receive(:notify).with(
+            sender_id: chat_message.user_id,
             referent: conversation,
             instance: conversation,
             users: [participant],
@@ -401,6 +404,7 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
       context "update title" do
         it {
           expect_any_instance_of(PushNotificationTrigger).to receive(:notify).with(
+            sender_id: outing.user_id,
             referent: outing,
             instance: outing.reload,
             users: [participant],
@@ -417,6 +421,7 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
       context "update starts_at" do
         it {
           expect_any_instance_of(PushNotificationTrigger).to receive(:notify).with(
+            sender_id: outing.user_id,
             referent: outing,
             instance: outing.reload,
             users: [participant],
@@ -434,6 +439,7 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
       context "update status to cancel" do
         it {
           expect_any_instance_of(PushNotificationTrigger).to receive(:notify).with(
+            sender_id: outing.user_id,
             referent: outing,
             instance: outing.reload,
             users: [participant],
@@ -453,6 +459,7 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
 
         it {
           expect_any_instance_of(PushNotificationTrigger).to receive(:notify).with(
+            sender_id: outing.user_id,
             referent: outing,
             instance: outing.reload,
             users: [participant],
@@ -483,6 +490,7 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
 
       it {
         expect_any_instance_of(PushNotificationTrigger).to receive(:notify).with(
+          sender_id: participant.id,
           referent: outing,
           instance: participant,
           users: [outing.user],

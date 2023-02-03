@@ -1,7 +1,8 @@
 class InappNotification < ApplicationRecord
   INSTANCES = [:neighborhood, :outing, :contribution, :solicitation, :user, :neighborhood_post, :outing_post]
 
-  belongs_to :user
+  belongs_to :user # user that is notified
+  belongs_to :sender, class_name: :User # user that created the notification
   belongs_to :post
 
   validates_presence_of :instance, :instance_id

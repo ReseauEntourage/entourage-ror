@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_01_19_104000) do
+ActiveRecord::Schema.define(version: 2023_02_03_145400) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -376,6 +376,7 @@ ActiveRecord::Schema.define(version: 2023_01_19_104000) do
     t.string "content"
     t.datetime "displayed_at"
     t.integer "post_id"
+    t.integer "sender_id"
     t.index ["context"], name: "index_inapp_notifications_on_context"
     t.index ["displayed_at"], name: "index_inapp_notifications_on_displayed_at"
     t.index ["instance"], name: "index_inapp_notifications_on_instance"
