@@ -37,7 +37,7 @@ module V1
       end
 
       def image_url
-        object.image_url_with_size :medium
+        object.image_url_with_size(image_size)
       end
 
       def read
@@ -51,6 +51,12 @@ module V1
 
       def current_join_request
         scope[:current_join_request]
+      end
+
+      def image_size
+        return :medium unless scope
+
+        scope[:image_size] || :medium
       end
     end
   end

@@ -23,7 +23,7 @@ module Api
         def show
           return render json: { message: "Wrong chat_message" }, status: :bad_request unless @chat_message
 
-          render json: @chat_message, serializer: ::V1::ChatMessages::PostSerializer, scope: { current_join_request: join_request }
+          render json: @chat_message, serializer: ::V1::ChatMessages::PostSerializer, scope: { current_join_request: join_request, image_size: params[:image_size] }
         end
 
         def create
