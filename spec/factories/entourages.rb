@@ -21,6 +21,14 @@ FactoryBot.define do
       participants { [] }
     end
 
+    # status
+    trait :open do status { :open } end
+    trait :closed do status { :closed } end
+
+    # outcome
+    trait :outcome_oui do moderation { association :entourage_moderation, :oui } end
+    trait :outcome_non do moderation { association :entourage_moderation, :non } end
+
     after(:create) do |entourage, stuff|
       stuff.participants.each do |participant|
         create :join_request, joinable: entourage, user: participant, status: JoinRequest::ACCEPTED_STATUS
