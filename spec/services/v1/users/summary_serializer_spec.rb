@@ -7,7 +7,7 @@ describe V1::Users::SummarySerializer do
   describe 'fields' do
     let(:user) { create(:public_user) }
 
-    let(:serialized) { V1::Users::SummarySerializer.new(user, scope: { user: user }).serializable_hash }
+    let(:serialized) { V1::Users::SummarySerializer.new(user).serializable_hash }
 
     it { expect(serialized).to have_key(:id) }
     it { expect(serialized).to have_key(:display_name) }
