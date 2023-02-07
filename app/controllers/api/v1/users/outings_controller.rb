@@ -2,15 +2,13 @@ module Api
   module V1
     module Users
       class OutingsController < Api::V1::BaseController
-        RECENTLY_PAST_PERIOD = 7.days
-
         before_action :set_user
 
         def index
           page = params[:page] || 1
           per = [(params[:per].try(:to_i) || 25), 25].min
 
-          outings = Outing.starting_after(RECENTLY_PAST_PERIOD.ago)
+          outings = Outing.future_or_recently_past
             .joins(:join_requests)
             .where(join_requests: { user: @user, status: JoinRequest::ACCEPTED_STATUS })
             .order(created_at: :desc)

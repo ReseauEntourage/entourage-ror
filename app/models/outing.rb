@@ -3,6 +3,8 @@ class Outing < Entourage
   include JsonStorable # @caution delete this include as soon as we migrate Rails to 6 or higher
   include Recommandable
 
+  RECENTLY_PAST_PERIOD = 7.days
+
   store_accessor :metadata, :starts_at, :ends_at, :previous_at, :place_name, :street_address, :google_place_id, :display_address, :landscape_url, :landscape_thumbnail_url, :portrait_url, :portrait_thumbnail_url, :place_limit
 
   after_save :generate_initial_recurrences, if: :recurrency
@@ -59,8 +61,10 @@ class Outing < Entourage
   scope :future, -> { where("metadata->>'starts_at' >= ?", Time.zone.now) }
   scope :past, -> { where("metadata->>'starts_at' <= ?", Time.zone.now) }
   scope :starting_after, -> (from) { where("metadata->>'starts_at' >= ?", from) }
+  scope :ending_after, -> (from) { where("metadata->>'ends_at' >= ?", from) }
 
   scope :recommandable, -> { self.active.future }
+  scope :future_or_recently_past, -> { ending_after(RECENTLY_PAST_PERIOD.ago) }
 
   attr_accessor :recurrency, :original_outing, :force_relatives_dates
 

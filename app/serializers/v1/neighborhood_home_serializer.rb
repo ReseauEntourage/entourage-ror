@@ -1,5 +1,8 @@
 module V1
   class NeighborhoodHomeSerializer < ActiveModel::Serializer
+    OUTINGS_LIMIT = 10
+    POSTS_LIMIT = 25
+
     attributes :id,
       :name,
       :description,
@@ -17,6 +20,7 @@ module V1
 
     has_one :user, serializer: ::V1::Users::BasicSerializer
     has_many :members, serializer: ::V1::Users::BasicSerializer
+    has_many :outings, serializer: ::V1::OutingSerializer
     has_many :future_outings, serializer: ::V1::OutingSerializer
     has_many :ongoing_outings, serializer: ::V1::OutingSerializer
 
@@ -48,9 +52,21 @@ module V1
     end
 
     def posts
-      object.parent_chat_messages.includes(:user).preload_comments_count.ordered.limit(25).map do |chat_message|
+      object.parent_chat_messages.includes(:user).preload_comments_count.ordered.limit(POSTS_LIMIT).map do |chat_message|
         V1::ChatMessageHomeSerializer.new(chat_message, scope: { current_join_request: current_join_request }).as_json
       end
+    end
+
+    def outings
+      object.outings.future_or_recently_past.limit(OUTINGS_LIMIT)
+    end
+
+    def future_outings
+      object.outings.future_or_recently_past.limit(OUTINGS_LIMIT)
+    end
+
+    def ongoing_outings
+      object.ongoing_outings.limit(OUTINGS_LIMIT)
     end
 
     private

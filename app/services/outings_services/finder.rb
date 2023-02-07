@@ -1,7 +1,5 @@
 module OutingsServices
   class Finder
-    RECENTLY_PAST_PERIOD = 7.days
-
     attr_reader :user, :latitude, :longitude, :distance, :period
 
     def initialize user, params
@@ -27,7 +25,7 @@ module OutingsServices
       elsif period && period.to_sym == :future
         outings = outings.future
       else
-        outings = outings.starting_after(RECENTLY_PAST_PERIOD.ago)
+        outings = outings.future_or_recently_past
       end
 
 
