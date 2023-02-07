@@ -21,7 +21,7 @@ describe V1::InappNotificationSerializer do
     end
 
     context 'neighborhood_post' do
-      let(:inapp_notification) { create(:inapp_notification, :neighborhood_post, user: user, sender: sender) }
+      let(:inapp_notification) { create(:inapp_notification, :neighborhood_post, user: user, sender: sender, context: :chat_message_on_create) }
 
       before { UserServices::Avatar.any_instance.stub(:thumbnail_url) { "https://foo.bar" }}
 

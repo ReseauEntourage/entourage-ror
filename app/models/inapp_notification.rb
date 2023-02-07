@@ -32,8 +32,14 @@ class InappNotification < ApplicationRecord
   end
 
   def post?
-    return unless instance
+    return false unless instance
 
     [:neighborhood_post, :outing_post].include?(instance.to_sym)
+  end
+
+  def chat_message_on_create?
+    return false unless context
+
+    :chat_message_on_create == context.to_sym
   end
 end
