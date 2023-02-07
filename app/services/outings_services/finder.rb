@@ -1,6 +1,6 @@
 module OutingsServices
   class Finder
-    attr_reader :user, :latitude, :longitude, :distance, :period
+    attr_reader :user, :latitude, :longitude, :distance
 
     def initialize user, params
       @user = user
@@ -14,20 +14,10 @@ module OutingsServices
       end
 
       @distance = params[:travel_distance] || user.travel_distance
-      @period = params[:period]
     end
 
     def find_all
-      outings = Outing.active.where.not(id: user.outing_membership_ids)
-
-      if period && period.to_sym == :past
-        outings = outings.past
-      elsif period && period.to_sym == :future
-        outings = outings.future
-      else
-        outings = outings.future_or_recently_past
-      end
-
+      outings = Outing.active.future_or_recently_past.where.not(id: user.outing_membership_ids)
 
       if latitude && longitude
         bounding_box_sql = Geocoder::Sql.within_bounding_box(*box, :latitude, :longitude)
