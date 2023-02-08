@@ -12,13 +12,21 @@ module Admin
       @neighborhoods = Neighborhood.unscoped.includes([:user, :interests])
       @neighborhoods = @neighborhoods.search_by(params[:search]) if params[:search].present?
       @neighborhoods = @neighborhoods.with_moderation_area(@area.to_s) if @area && @area != :all
-      @neighborhoods = @neighborhoods.order(created_at: :desc)
+      @neighborhoods = @neighborhoods
         .with_moderator_reads_for(user: current_user)
         .join_chat_message_with_images
         .select(%(
           neighborhoods.*,
           moderator_reads is null as unread,
           moderator_reads is null and neighborhoods_imageable.id is not null as unread_images
+        ))
+        .order("case when status = 'active' then 1 else 2 end")
+        .order(%(
+          case
+          when moderator_reads is null then 0
+          when moderator_reads is null and neighborhoods_imageable.id is not null then 1
+          else 2
+          end
         ))
         .order(%(
           neighborhoods.created_at DESC
