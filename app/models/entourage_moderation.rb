@@ -15,22 +15,6 @@ class EntourageModeration < ApplicationRecord
       'Comité de la rue',
       'Équipe Entourage',
     ],
-    # Audience
-    action_recipient_type: [
-      'SDF',
-      'Riverain',
-      'Tout le monde',
-      'Autre',
-      'Test'
-    ],
-    # Cible
-    action_target_type: [
-      'SDF',
-      'Association',
-      'Riverain',
-      'Tout le monde',
-      'Autre'
-    ],
     # Type d’action
     action_type: [
       "Autre",

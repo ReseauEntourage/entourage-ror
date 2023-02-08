@@ -31,11 +31,6 @@
     ]
     return safe_options, true
   end
-
-  label_info = {
-    action_recipient_type: "à qui recommander l'action",
-    action_target_type: "qui sera aidé par l'action"
-  }
 %>
 
 <style>
@@ -93,7 +88,7 @@
         Nature de l’action
       </div>
       <div class="panel-body row">
-        <% [:action_author_type, :action_recipient_type, :action_target_type, :action_type].each do |field| %>
+        <% [:action_author_type, :action_type].each do |field| %>
           <div class="col-md-3">
             <% current_value = f.object[field] %>
             <% options, non_standard = safe_options(values[field], current_value) %>
@@ -102,9 +97,6 @@
               <%= f.object.class.human_attribute_name(field) %>
               <% if non_standard %>
                 <span class="glyphicon glyphicon-warning-sign text-danger" aria-hidden="true" data-toggle="tooltip" data-placement="top" title="la valeur &quot;<%= current_value %>&quot; n'est pas standard"></span>
-              <% end %>
-              <% if label_info.key?(field) %>
-                <span class="glyphicon glyphicon-question-sign" aria-hidden="true" data-toggle="tooltip" data-placement="top" title="<%= label_info[field] %>"></span>
               <% end %>
             <% end %>
             <%= f.select field, options, { include_blank: true }, { class: "form-control" } %>
@@ -119,7 +111,7 @@
       </div>
       <div class="panel-body">
         <div class="row">
-          <% [:moderated_at, :moderator_id, :action_recipient_consent_obtained].each do |field| %>
+          <% [:moderated_at, :moderator_id].each do |field| %>
             <div class="col-md-3 form-group">
               <% case %>
               <% when column_type[field] == :date %>
@@ -192,14 +184,6 @@
               <%= uf.label :partner %>
               <%= uf.collection_select :partner_id, Partner.all, :id, :name, { include_blank: true }, { required: true, disabled: !is_partner, class: "form-control" } %>
             </div>
-          <% end %>
-          <%= fields_for :user_moderation, user_moderation do |uf| %>
-              <% [:skills].each do |field| %>
-                <div class="col-md-3">
-                  <%= uf.label field %>
-                  <%= uf.select field, user_values[field], { include_blank: true }, { class: "form-control" } %>
-                </div>
-              <% end %>
           <% end %>
         </div>
       </div>
