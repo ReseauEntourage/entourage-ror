@@ -111,39 +111,30 @@
       </div>
       <div class="panel-body">
         <div class="row">
-          <% [:moderated_at, :moderator_id].each do |field| %>
-            <div class="col-md-3 form-group">
-              <% case %>
-              <% when column_type[field] == :date %>
-                <%= f.label field %>
-                <%= f.date_field field, class: "form-control js-datepicker" %>
-              <% when field == :moderator_id %>
-                <%
-                  current_value = f.object[field]
-                  options = user_community.users.moderators.map { |u| [u.first_name, u.id] }
-                  non_standard = false
-                  if current_value.present? &&
-                    !current_value.in?(Hash[options].values) &&
-                    (missing_user = User.find_by(id: current_value)).present?
-                    options.unshift [missing_user.first_name, missing_user.id]
-                    non_standard = true
-                  end
-                %>
-                <%= f.label field do %>
-                  <%= f.object.class.human_attribute_name(field) %>
-                  <% if non_standard %>
-                    <span class="glyphicon glyphicon-warning-sign text-danger" aria-hidden="true" data-toggle="tooltip" data-placement="right" title="cet utilisateur n'est pas modérateur actuellement"></span>
-                  <% end %>
-                <% end %>
-                <%= f.select field, options, { include_blank: true }, { class: "form-control" } %>
-              <% else %>
-                <% current_value = f.object[field] %>
-                <% options, _ = safe_options(values[field], current_value) %>
-                <%= f.label field %>
-                <%= f.select field, options, { include_blank: true }, { class: "form-control" } %>
+          <div class="col-md-3 form-group">
+            <%= f.label :moderated_at %>
+            <%= f.date_field :moderated_at, class: "form-control js-datepicker" %>
+          </div>
+          <div class="col-md-3 form-group">
+            <%
+              current_value = f.object[:moderator_id]
+              options = user_community.users.moderators.map { |u| [u.first_name, u.id] }
+              non_standard = false
+              if current_value.present? &&
+                !current_value.in?(Hash[options].values) &&
+                (missing_user = User.find_by(id: current_value)).present?
+                options.unshift [missing_user.first_name, missing_user.id]
+                non_standard = true
+              end
+            %>
+            <%= f.label :moderator_id do %>
+              <%= f.object.class.human_attribute_name(:moderator_id) %>
+              <% if non_standard %>
+                <span class="glyphicon glyphicon-warning-sign text-danger" aria-hidden="true" data-toggle="tooltip" data-placement="right" title="cet utilisateur n'est pas modérateur actuellement"></span>
               <% end %>
-            </div>
-          <% end %>
+            <% end %>
+            <%= f.select :moderator_id, options, { include_blank: true }, { class: "form-control" } %>
+          </div>
         </div>
 
         <div>
