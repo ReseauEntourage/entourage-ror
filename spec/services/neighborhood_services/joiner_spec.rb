@@ -50,18 +50,7 @@ describe NeighborhoodServices::Joiner do
   describe "default_neighborhood" do
     let(:subject) { NeighborhoodServices::Joiner.new(user).default_neighborhood }
 
-    context "people in paris: order by postal_code" do
-      let(:paris) { create(:address, postal_code: '75001' )}
-      let(:user) { create(:public_user, address: paris) }
-
-      let!(:neighborhood_paris) { create(:neighborhood, zone: :ville, postal_code: '75020', latitude: 2, longitude: 2 ) }
-      let!(:neighborhood_not_paris) { create(:neighborhood, zone: :ville, postal_code: '15000', latitude: paris.latitude, longitude: paris.longitude ) }
-
-      it { expect(subject).not_to be_nil }
-      it { expect(subject.id).to eq(neighborhood_paris.id) }
-    end
-
-    context "people not in paris: order by distance" do
+    context "people not in lille, lyon, marseille, paris, rennes: order by distance" do
       let(:nantes) { create(:address, postal_code: '44000' )}
       let(:user) { create(:public_user, address: nantes) }
 
@@ -72,15 +61,109 @@ describe NeighborhoodServices::Joiner do
       it { expect(subject.id).to eq(neighborhood_15.id) } # this one because of coordinates
     end
 
-    context "people in paris: order by distance if neighborhoods are not 'ville'" do
+    describe "lille" do
+      let(:lille) { create(:address, postal_code: '59130' )}
+      let(:user) { create(:public_user, address: lille) }
+
+      context "people in lille: order by postal_code" do
+        let!(:neighborhood_lille) { create(:neighborhood, zone: :ville, postal_code: '59800', latitude: 2, longitude: 2 ) }
+        let!(:neighborhood_not_lille) { create(:neighborhood, zone: :ville, postal_code: '15000', latitude: lille.latitude, longitude: lille.longitude ) }
+
+        it { expect(subject).not_to be_nil }
+        it { expect(subject.id).to eq(neighborhood_lille.id) }
+      end
+
+      context "people in lille: order by distance if neighborhoods are not 'ville'" do
+        let!(:neighborhood_lille) { create(:neighborhood, postal_code: '59800', latitude: 2, longitude: 2 ) }
+        let!(:neighborhood_not_lille) { create(:neighborhood, postal_code: '15000', latitude: lille.latitude, longitude: lille.longitude ) }
+
+        it { expect(subject).not_to be_nil }
+        it { expect(subject.id).to eq(neighborhood_not_lille.id) } # this one because of coordinates
+      end
+    end
+
+    describe "lyon" do
+      let(:lyon) { create(:address, postal_code: '69003' )}
+      let(:user) { create(:public_user, address: lyon) }
+
+      context "people in lyon: order by postal_code" do
+        let!(:neighborhood_lyon) { create(:neighborhood, zone: :ville, postal_code: '69007', latitude: 2, longitude: 2 ) }
+        let!(:neighborhood_not_lyon) { create(:neighborhood, zone: :ville, postal_code: '15000', latitude: lyon.latitude, longitude: lyon.longitude ) }
+
+        it { expect(subject).not_to be_nil }
+        it { expect(subject.id).to eq(neighborhood_lyon.id) }
+      end
+
+      context "people in lyon: order by distance if neighborhoods are not 'ville'" do
+        let!(:neighborhood_lyon) { create(:neighborhood, postal_code: '69007', latitude: 2, longitude: 2 ) }
+        let!(:neighborhood_not_lyon) { create(:neighborhood, postal_code: '15000', latitude: lyon.latitude, longitude: lyon.longitude ) }
+
+        it { expect(subject).not_to be_nil }
+        it { expect(subject.id).to eq(neighborhood_not_lyon.id) } # this one because of coordinates
+      end
+    end
+
+    describe "marseille" do
+      let(:marseille) { create(:address, postal_code: '13003' )}
+      let(:user) { create(:public_user, address: marseille) }
+
+      context "people in marseille: order by postal_code" do
+        let!(:neighborhood_marseille) { create(:neighborhood, zone: :ville, postal_code: '13015', latitude: 2, longitude: 2 ) }
+        let!(:neighborhood_not_marseille) { create(:neighborhood, zone: :ville, postal_code: '15000', latitude: marseille.latitude, longitude: marseille.longitude ) }
+
+        it { expect(subject).not_to be_nil }
+        it { expect(subject.id).to eq(neighborhood_marseille.id) }
+      end
+
+      context "people in marseille: order by distance if neighborhoods are not 'ville'" do
+        let!(:neighborhood_marseille) { create(:neighborhood, postal_code: '13015', latitude: 2, longitude: 2 ) }
+        let!(:neighborhood_not_marseille) { create(:neighborhood, postal_code: '15000', latitude: marseille.latitude, longitude: marseille.longitude ) }
+
+        it { expect(subject).not_to be_nil }
+        it { expect(subject.id).to eq(neighborhood_not_marseille.id) } # this one because of coordinates
+      end
+    end
+
+    describe "paris" do
       let(:paris) { create(:address, postal_code: '75001' )}
       let(:user) { create(:public_user, address: paris) }
 
-      let!(:neighborhood_paris) { create(:neighborhood, postal_code: '75020', latitude: 2, longitude: 2 ) }
-      let!(:neighborhood_not_paris) { create(:neighborhood, postal_code: '15000', latitude: paris.latitude, longitude: paris.longitude ) }
+      context "people in paris: order by postal_code" do
+        let!(:neighborhood_paris) { create(:neighborhood, zone: :ville, postal_code: '75020', latitude: 2, longitude: 2 ) }
+        let!(:neighborhood_not_paris) { create(:neighborhood, zone: :ville, postal_code: '15000', latitude: paris.latitude, longitude: paris.longitude ) }
 
-      it { expect(subject).not_to be_nil }
-      it { expect(subject.id).to eq(neighborhood_not_paris.id) } # this one because of coordinates
+        it { expect(subject).not_to be_nil }
+        it { expect(subject.id).to eq(neighborhood_paris.id) }
+      end
+
+      context "people in paris: order by distance if neighborhoods are not 'ville'" do
+        let!(:neighborhood_paris) { create(:neighborhood, postal_code: '75020', latitude: 2, longitude: 2 ) }
+        let!(:neighborhood_not_paris) { create(:neighborhood, postal_code: '15000', latitude: paris.latitude, longitude: paris.longitude ) }
+
+        it { expect(subject).not_to be_nil }
+        it { expect(subject.id).to eq(neighborhood_not_paris.id) } # this one because of coordinates
+      end
+    end
+
+    describe "rennes" do
+      let(:rennes) { create(:address, postal_code: '35200' )}
+      let(:user) { create(:public_user, address: rennes) }
+
+      context "people in rennes: order by postal_code" do
+        let!(:neighborhood_rennes) { create(:neighborhood, zone: :ville, postal_code: '35700', latitude: 2, longitude: 2 ) }
+        let!(:neighborhood_not_rennes) { create(:neighborhood, zone: :ville, postal_code: '15000', latitude: rennes.latitude, longitude: rennes.longitude ) }
+
+        it { expect(subject).not_to be_nil }
+        it { expect(subject.id).to eq(neighborhood_rennes.id) }
+      end
+
+      context "people in rennes: order by distance if neighborhoods are not 'ville'" do
+        let!(:neighborhood_rennes) { create(:neighborhood, postal_code: '35700', latitude: 2, longitude: 2 ) }
+        let!(:neighborhood_not_rennes) { create(:neighborhood, postal_code: '15000', latitude: rennes.latitude, longitude: rennes.longitude ) }
+
+        it { expect(subject).not_to be_nil }
+        it { expect(subject.id).to eq(neighborhood_not_rennes.id) } # this one because of coordinates
+      end
     end
   end
 end

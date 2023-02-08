@@ -1,6 +1,14 @@
 module CoordinatesScopable
   extend ActiveSupport::Concern
 
+  CITIES = {
+    lille: { field: :postal_code, in: ['59000', '59130', '59160', '59260', '59350', '59777', '59800'] },
+    lyon: { field: :postal_code, in: ('69000'..'69009').to_a },
+    marseille: { field: :postal_code, in: ('13000'..'13016').to_a },
+    paris: { field: :departement, in: '75' },
+    rennes: { field: :postal_code, in: ['35000', '35200', '35700', '35740', '35760', '35760', '35510', '35132', '35650', '35590', '35520', '35135', '35830', '35235', '35770'] },
+  }
+
   included do
     scope :inside_perimeter, -> (latitude, longitude, travel_distance) {
       if latitude && longitude
@@ -33,6 +41,15 @@ module CoordinatesScopable
         order("case when left(postal_code, 2) = '75' then 0 else 1 end")
       end
     }
+    scope :order_by_city_for_user, -> (user, city) {
+      return unless is_in_city?(user, city)
+
+      if has_attribute?(:zone)
+        order(["case when zone = 'ville' and postal_code in (?) then 0 else 1 end", in_city(city)])
+      else
+        order(["case when postal_code in (?) then 0 else 1 end", in_city(city)])
+      end
+    }
     scope :order_by_zone, -> {
       return unless has_attribute?(:zone)
 
@@ -47,8 +64,27 @@ module CoordinatesScopable
       inside_user_perimeter(user)
         .unscope(:order)
         .order_by_paris_for_user(user)
+        .order_by_city_for_user(user, :rennes)
+        .order_by_city_for_user(user, :lille)
+        .order_by_city_for_user(user, :lyon)
+        .order_by_city_for_user(user, :marseille)
         .order_by_zone
         .order_by_distance_from(user.latitude, user.longitude)
     }
+  end
+
+  private
+
+  class_methods do
+    def is_in_city? user, city
+      return false unless values = CITIES.dig(city, :in)
+      return false unless field = user.send(CITIES[city][:field])
+
+      values.include?(field)
+    end
+
+    def in_city city
+      CITIES[city][:in]
+    end
   end
 end
