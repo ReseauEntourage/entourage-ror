@@ -52,9 +52,7 @@ module Api
       end
 
       def summary
-        render json: current_user, serializer: ::V1::Users::SummarySerializer, scope: {
-          user: current_user
-        }
+        render json: current_user, serializer: ::V1::Users::SummarySerializer
       end
 
       private

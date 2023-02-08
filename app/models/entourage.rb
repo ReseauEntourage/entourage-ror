@@ -65,6 +65,7 @@ class Entourage < ApplicationRecord
   validate :validate_outings_ends_at
 
   scope :active, -> { where(status: ['open', 'full']) }
+  scope :closed, -> { where(status: :closed) }
   scope :visible, -> { where.not(status: ['blacklisted', 'suspended']) }
   scope :findable, -> { where.not(status: ['blacklisted']) }
   scope :social_category, -> { where(category: 'social') }
@@ -93,6 +94,9 @@ class Entourage < ApplicationRecord
     return if search == 'any'
     return where(entourage_moderations: { moderator_id: nil }) if search == 'none'
     return where(entourage_moderations: { moderator_id: search.to_i }) if search.present?
+  }
+  scope :successful_outcome, -> {
+    joins(:moderation).where(entourage_moderations: { action_outcome: EntourageModeration::SUCCESSFUL_VALUES })
   }
 
   before_validation :set_community, on: :create

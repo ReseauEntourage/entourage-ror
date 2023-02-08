@@ -13,9 +13,7 @@ module V1
         :moderator
 
       def meetings_count
-        return 0 unless user = scope[:user]
-
-        past_outing_memberships(user).count + action_creations(user).count
+        past_outing_memberships(object).count + successful_actions(object).count
       end
 
       def chat_messages_count
@@ -45,7 +43,7 @@ module V1
       end
 
       def moderator
-        return Hash.new unless moderator = ModerationServices.moderator_for_user(scope[:user])
+        return Hash.new unless moderator = ModerationServices.moderator_for_user(object)
 
         {
           id: moderator.id,
@@ -60,8 +58,8 @@ module V1
         user.outing_memberships.where(id: Outing.active.past)
       end
 
-      def action_creations user
-        Entourage.action.active.where(user: user)
+      def successful_actions user
+        Entourage.action.closed.successful_outcome.where(user: user)
       end
     end
   end

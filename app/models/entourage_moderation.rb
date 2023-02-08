@@ -1,7 +1,9 @@
 class EntourageModeration < ApplicationRecord
-  validates :entourage_id, presence: true
+  validates_presence_of :entourage
   belongs_to :entourage
   belongs_to :moderator, class_name: :User, optional: true # about 30% of records have null moderator_id
+
+  SUCCESSFUL_VALUES = ["Oui", "Échange de coordonnées", "Orientation via modérateur"]
 
   VALUES = {
     # Emetteur. community.targeting_profiles + the following:
