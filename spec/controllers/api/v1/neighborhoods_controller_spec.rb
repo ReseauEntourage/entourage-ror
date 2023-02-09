@@ -4,6 +4,8 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
   render_views
 
   let(:user) { create :pro_user }
+  let(:admin) { create(:public_user, admin: true) }
+  let(:not_admin) { create(:public_user, admin: false) }
 
   context 'index' do
     let!(:neighborhood) { create :neighborhood }
@@ -379,6 +381,40 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
         "status_changed_at" => nil,
         "distance" => nil
       }]) }
+    end
+
+    describe 'with online outing created by admin' do
+      let!(:online) { create :outing, :outing_class, online: true, user: admin }
+      let(:neighborhood) { create :neighborhood }
+
+      before { get :show, params: { id: neighborhood.id, token: user.token } }
+
+      it { expect(response.status).to eq 200 }
+      it { expect(result['neighborhood']).to have_key('future_outings') }
+      it { expect(result['neighborhood']['future_outings'].count).to eq(1) }
+      it { expect(result['neighborhood']['future_outings'][0]['id']).to eq(online.id) }
+    end
+
+    describe 'with online outing created by not_admin' do
+      let!(:online) { create :outing, :outing_class, online: true, user: not_admin }
+      let(:neighborhood) { create :neighborhood }
+
+      before { get :show, params: { id: neighborhood.id, token: user.token } }
+
+      it { expect(response.status).to eq 200 }
+      it { expect(result['neighborhood']).to have_key('future_outings') }
+      it { expect(result['neighborhood']['future_outings'].count).to eq(0) }
+    end
+
+    describe 'with offline outing' do
+      let!(:offline) { create :outing, :outing_class, online: false, user: admin }
+      let(:neighborhood) { create :neighborhood }
+
+      before { get :show, params: { id: neighborhood.id, token: user.token } }
+
+      it { expect(response.status).to eq 200 }
+      it { expect(result['neighborhood']).to have_key('future_outings') }
+      it { expect(result['neighborhood']['future_outings'].count).to eq(0) }
     end
 
     describe 'with chat_message' do

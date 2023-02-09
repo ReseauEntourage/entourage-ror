@@ -2,10 +2,12 @@ require 'rails_helper'
 
 describe Api::V1::Neighborhoods::OutingsController do
   let(:user) { FactoryBot.create(:public_user) }
+  let(:admin) { FactoryBot.create(:public_user, admin: true) }
+  let(:not_admin) { FactoryBot.create(:public_user, admin: false) }
   let(:neighborhood) { create :neighborhood }
 
   describe 'GET index' do
-    let!(:outing) { FactoryBot.create(:outing, :joined, user: user, status: "open", neighborhoods: [neighborhood]) }
+    let!(:outing) { FactoryBot.create(:outing, :joined, user: user, status: :open, neighborhoods: [neighborhood]) }
     let(:request) { get :index, params: { token: user.token, neighborhood_id: neighborhood.to_param } }
 
     context "not joined" do
@@ -28,6 +30,45 @@ describe Api::V1::Neighborhoods::OutingsController do
       it { expect(subject["outings"][0]["neighborhoods"]).to match_array([
         { "id" => neighborhood.id, "name" => neighborhood.name }
       ]) }
+    end
+
+    context "find online created by admin" do
+      let!(:online) { FactoryBot.create(:outing, status: :open, online: true, user: admin) }
+
+      subject { JSON.parse(response.body) }
+
+      before { request }
+
+      it { expect(response.status).to eq(200) }
+      it { expect(subject).to have_key("outings") }
+      it { expect(subject["outings"].count).to eq(2) }
+      it { expect(subject["outings"].map{|outing| outing["id"]}).to match_array([outing.id, online.id]) }
+    end
+
+    context "find online created by not admin" do
+      let!(:online) { FactoryBot.create(:outing, status: :open, online: true, user: not_admin) }
+
+      subject { JSON.parse(response.body) }
+
+      before { request }
+
+      it { expect(response.status).to eq(200) }
+      it { expect(subject).to have_key("outings") }
+      it { expect(subject["outings"].count).to eq(1) }
+      it { expect(subject["outings"].map{|outing| outing["id"]}).to match_array([outing.id]) }
+    end
+
+    context "does not find offline" do
+      let!(:offline) { FactoryBot.create(:outing, status: :open, online: false, user: admin) }
+
+      subject { JSON.parse(response.body) }
+
+      before { request }
+
+      it { expect(response.status).to eq(200) }
+      it { expect(subject).to have_key("outings") }
+      it { expect(subject["outings"].count).to eq(1) }
+      it { expect(subject["outings"][0]["id"]).to eq(outing.id) }
     end
   end
 

@@ -60,12 +60,17 @@ class Outing < Entourage
 
   scope :future, -> { where("metadata->>'starts_at' >= ?", Time.zone.now) }
   scope :past, -> { where("metadata->>'starts_at' <= ?", Time.zone.now) }
+  scope :ongoing, -> {
+    where("metadata->>'starts_at' <= ?", Time.zone.now)
+    .where("metadata->>'ends_at' >= ?", Time.zone.now)
+  }
   scope :starting_after, -> (from) { where("metadata->>'starts_at' >= ?", from) }
   scope :ending_after, -> (from) { where("metadata->>'ends_at' >= ?", from) }
 
   scope :recommandable, -> { self.active.future }
   scope :future_or_ongoing, -> { ending_after(Time.zone.now) }
   scope :future_or_recently_past, -> { ending_after(RECENTLY_PAST_PERIOD.ago) }
+  scope :default_order, -> { order(Arel.sql("metadata->>'starts_at'")) }
 
   attr_accessor :recurrency, :original_outing, :force_relatives_dates
 
