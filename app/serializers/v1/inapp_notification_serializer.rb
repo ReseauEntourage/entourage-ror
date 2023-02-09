@@ -48,6 +48,8 @@ module V1
     end
 
     def image_url_for_sender
+      return unless object.sender
+
       UserServices::Avatar.new(user: object.sender).thumbnail_url
     end
 
