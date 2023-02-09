@@ -50,5 +50,9 @@ module V1
     def image_url_for_sender
       UserServices::Avatar.new(user: object.sender).thumbnail_url
     end
+
+    def context
+      I18n.t("activerecord.attributes.inapp_notification.context_types.#{object.context}", default: object.context)
+    end
   end
 end
