@@ -5,9 +5,6 @@ module Api
         before_action :set_user
 
         def index
-          page = params[:page] || 1
-          per = 200
-
           neighborhoods = Neighborhood.joins(:join_requests)
             .where(join_requests: { user: @user, status: JoinRequest::ACCEPTED_STATUS })
             .order(name: :asc)
@@ -21,6 +18,14 @@ module Api
 
         def set_user
           @user = User.find(params[:user_id])
+        end
+
+        def page
+          params[:page] || 1
+        end
+
+        def per
+          params[:per] || 200
         end
       end
     end
