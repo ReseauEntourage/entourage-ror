@@ -23,11 +23,15 @@ module V1
     end
 
     def image_url_for_neighborhood_post post
-      image_url_for_sender
+      return image_url_for_sender if object.sender_id.present?
+
+      image_url_for_neighborhood(post.messageable)
     end
 
     def image_url_for_outing_post post
-      image_url_for_sender
+      return image_url_for_sender if object.sender_id.present?
+
+      image_url_for_outing(post.messageable)
     end
 
     def image_url_for_neighborhood neighborhood
