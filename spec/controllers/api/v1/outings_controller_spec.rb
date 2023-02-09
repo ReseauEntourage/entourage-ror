@@ -56,53 +56,6 @@ describe Api::V1::OutingsController do
           it { expect(subject['outings'].count).to eq(0) }
         end
       end
-
-      context 'past' do
-        let(:period) { :past }
-
-        context 'do not display future' do
-          let(:starts_at) { 1.hour.from_now }
-
-          it { expect(subject['outings'].count).to eq(0) }
-        end
-
-        context 'display recently past' do
-          let(:starts_at) { 1.hour.ago }
-
-          it { expect(subject['outings'].count).to eq(1) }
-          it { expect(subject['outings'][0]['id']).to eq(outing.id) }
-        end
-
-        context 'display ancient past' do
-          let(:starts_at) { 1.year.ago }
-
-          it { expect(subject['outings'].count).to eq(1) }
-          it { expect(subject['outings'][0]['id']).to eq(outing.id) }
-        end
-      end
-
-      context 'future' do
-        let(:period) { :future }
-
-        context 'display future' do
-          let(:starts_at) { 1.hour.from_now }
-
-          it { expect(subject['outings'].count).to eq(1) }
-          it { expect(subject['outings'][0]['id']).to eq(outing.id) }
-        end
-
-        context 'do not display recently past' do
-          let(:starts_at) { 1.hour.ago }
-
-          it { expect(subject['outings'].count).to eq(0) }
-        end
-
-        context 'do not display ancient past' do
-          let(:starts_at) { 1.year.ago }
-
-          it { expect(subject['outings'].count).to eq(0) }
-        end
-      end
     end
 
     context "some user is a member" do

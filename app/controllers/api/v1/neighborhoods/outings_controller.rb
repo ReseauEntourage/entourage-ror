@@ -12,7 +12,7 @@ module Api
         end
 
         def index
-          render json: @neighborhood.outings.active.starting_after(OutingsServices::Finder::RECENTLY_PAST_PERIOD.ago), root: :outings, each_serializer: ::V1::OutingSerializer, scope: {
+          render json: @neighborhood.outings.active.future_or_ongoing.page(page).per(per), root: :outings, each_serializer: ::V1::OutingSerializer, scope: {
             user: current_user
           }
         end
@@ -56,6 +56,14 @@ module Api
 
         def authorised_to_see_messages?
           raise Api::V1::Neighborhoods::UnauthorizedOuting unless join_request
+        end
+
+        def page
+          params[:page] || 1
+        end
+
+        def per
+          params[:per] || 25
         end
       end
     end

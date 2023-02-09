@@ -308,6 +308,7 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
           "ethics" => nil,
           "past_outings_count" => 0,
           "future_outings_count" => 0,
+          "outings" => [],
           "future_outings" => [],
           "ongoing_outings" => [],
           "has_ongoing_outing" => false,
