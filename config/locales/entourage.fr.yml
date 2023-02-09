@@ -122,6 +122,14 @@ fr:
         action_success_reason: Raison de la réussite
         action_failure_reason: Raison de l'échec
 
+      inapp_notification:
+        context_types:
+          chat_message_on_create: chat_message_created
+          join_request_on_create: join_request_created
+          join_request_on_update: join_request_updated
+          neighborhoods_entourage_on_create: outing_created
+          outing_on_update: outing_updated
+
       user_moderation:
         expectations: Attentes
         acquisition_channel: Connaissance d’Entourage

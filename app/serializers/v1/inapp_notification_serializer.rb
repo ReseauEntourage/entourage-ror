@@ -7,9 +7,12 @@ module V1
       :content,
       :completed_at,
       :created_at,
-      :image_url
+      :image_url,
+      :context
 
     def image_url
+      return image_url_for_sender if object.sender && object.chat_message_on_create?
+
       return unless object.instance
       return unless object.record
 
@@ -20,11 +23,11 @@ module V1
     end
 
     def image_url_for_neighborhood_post post
-      image_url_for_neighborhood(post.messageable)
+      image_url_for_sender
     end
 
     def image_url_for_outing_post post
-      image_url_for_outing(post.messageable)
+      image_url_for_sender
     end
 
     def image_url_for_neighborhood neighborhood
@@ -44,8 +47,12 @@ module V1
       nil
     end
 
-    def image_url_for_user user
-      UserServices::Avatar.new(user: user).thumbnail_url
+    def image_url_for_sender
+      UserServices::Avatar.new(user: object.sender).thumbnail_url
+    end
+
+    def context
+      I18n.t("activerecord.attributes.inapp_notification.context_types.#{object.context}", default: object.context)
     end
   end
 end

@@ -32,6 +32,7 @@ class PushNotificationTrigger
     return unless users = (neighborhood.members.uniq - [entourage.user])
 
     notify(
+      sender_id: entourage.user_id,
       referent: neighborhood,
       instance: entourage,
       users: users,
@@ -57,6 +58,7 @@ class PushNotificationTrigger
       invitation_id = EntourageInvitation.where(invitable: @record, inviter: user, invitee_id: follower_id).pluck(:id).first
 
       notify(
+        sender_id: @record.user_id,
         referent: @record,
         instance: @record,
         users: [follower],
@@ -89,6 +91,7 @@ class PushNotificationTrigger
     return if users.none?
 
     notify(
+      sender_id: @record.user_id,
       referent: @record,
       instance: @record,
       users: users,
@@ -112,6 +115,7 @@ class PushNotificationTrigger
     return if users.none?
 
     notify(
+      sender_id: @record.user_id,
       referent: @record,
       instance: @record,
       users: users,
@@ -139,6 +143,7 @@ class PushNotificationTrigger
     return if users.none?
 
     notify(
+      sender_id: @record.user_id,
       referent: @record.messageable,
       instance: @record.messageable,
       users: users,
@@ -161,6 +166,7 @@ class PushNotificationTrigger
     return if users.none?
 
     notify(
+      sender_id: @record.user_id,
       referent: @record.messageable,
       instance: @record.messageable,
       users: users,
@@ -183,6 +189,7 @@ class PushNotificationTrigger
     return if users.none?
 
     notify(
+      sender_id: @record.user_id,
       referent: @record.messageable,
       instance: @record.messageable,
       users: users,
@@ -208,6 +215,7 @@ class PushNotificationTrigger
 
     # should redirect to post
     notify(
+      sender_id: @record.user_id,
       referent: @record.messageable,
       instance: @record.parent,
       users: User.where(id: user_ids),
@@ -230,6 +238,7 @@ class PushNotificationTrigger
     end
 
     notify(
+      sender_id: @record.user_id,
       referent: @record.joinable,
       instance: @record.user,
       users: [@record.joinable.user],
@@ -252,6 +261,7 @@ class PushNotificationTrigger
     return join_request_on_create unless @changes["status"] && @changes["status"].first&.to_sym == :pending
 
     notify(
+      sender_id: @record.user_id,
       referent: @record.joinable,
       instance: @record.joinable,
       users: [@record.user],
@@ -270,12 +280,12 @@ class PushNotificationTrigger
   end
 
   # use params[:extra] to be compliant with v7
-  def notify referent:, instance:, users:, params: {}
-    notify_push(referent: referent, instance: instance, users: users, params: params)
-    notify_inapp(referent: referent, instance: instance, users: users, params: params)
+  def notify sender_id:, referent:, instance:, users:, params: {}
+    notify_push(sender_id: sender_id, referent: referent, instance: instance, users: users, params: params)
+    notify_inapp(sender_id: sender_id, referent: referent, instance: instance, users: users, params: params)
   end
 
-  def notify_push referent:, instance:, users:, params: {}
+  def notify_push sender_id:, referent:, instance:, users:, params: {}
     instance = PushNotificationLinker.get(instance)
     referent = PushNotificationLinker.get(referent)
 
@@ -290,7 +300,7 @@ class PushNotificationTrigger
     )
   end
 
-  def notify_inapp referent:, instance:, users:, params: {}
+  def notify_inapp sender_id:, referent:, instance:, users:, params: {}
     instance = PushNotificationLinker.get(instance)
     referent = PushNotificationLinker.get(referent)
 
@@ -299,6 +309,7 @@ class PushNotificationTrigger
     users.map do |user|
       InappNotificationServices::Builder.new(user).instanciate(
         context: @method,
+        sender_id: sender_id,
         instance: instance[:instance],
         instance_id: instance[:instance_id],
         post_id: instance[:post_id],
