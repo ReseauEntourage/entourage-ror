@@ -7,7 +7,8 @@ module V1
       :content,
       :completed_at,
       :created_at,
-      :image_url
+      :image_url,
+      :context
 
     def image_url
       return image_url_for_sender if object.sender && object.chat_message_on_create?
