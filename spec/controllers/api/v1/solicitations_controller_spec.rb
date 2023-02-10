@@ -310,18 +310,23 @@ describe Api::V1::SolicitationsController, :type => :controller do
   context 'destroy' do
     let(:creator) { create :pro_user }
     let(:solicitation) { create :solicitation, user: creator }
+    let(:params) { { id: solicitation.id, token: user.token, solicitation: {
+      close_message: "message",
+      outcome: 'true'
+    } } }
+    let(:params_without_token) { { id: solicitation.id } }
 
     let(:result) { Solicitation.unscoped.find(solicitation.id) }
 
     describe 'not authorized' do
-      before { delete :destroy, params: { id: solicitation.id } }
+      before { delete :destroy, params: params_without_token }
 
       it { expect(response.status).to eq 401 }
       it { expect(result.status).to eq 'open' }
     end
 
     describe 'not authorized cause should be creator' do
-      before { delete :destroy, params: { id: solicitation.id, token: user.token } }
+      before { delete :destroy, params: params }
 
       it { expect(response.status).to eq 401 }
       it { expect(result.status).to eq 'open' }
@@ -330,10 +335,30 @@ describe Api::V1::SolicitationsController, :type => :controller do
     describe 'authorized' do
       let(:creator) { user }
 
-      before { delete :destroy, params: { id: solicitation.id, token: user.token } }
+      context 'correct params outcome true' do
+        before { delete :destroy, params: params }
 
-      it { expect(response.status).to eq 200 }
-      it { expect(result.status).to eq 'closed' }
+        it { expect(response.status).to eq 200 }
+        it { expect(result.status).to eq 'closed' }
+        it { expect(solicitation.reload.moderation.action_outcome).to eq 'Oui' }
+      end
+
+      context 'correct params outcome false' do
+        before { params[:solicitation][:outcome] = 'false' }
+        before { delete :destroy, params: params }
+
+        it { expect(response.status).to eq 200 }
+        it { expect(result.status).to eq 'closed' }
+        it { expect(solicitation.reload.moderation.action_outcome).to eq 'Non' }
+      end
+
+      context 'empty params' do
+        before { delete :destroy, params: params.except(:solicitation) }
+
+        it { expect(response.status).to eq 400 }
+        it { expect(result.status).to eq 'open' }
+        it { expect(solicitation.reload.moderation).to be_nil }
+      end
     end
   end
 

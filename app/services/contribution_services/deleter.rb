@@ -9,12 +9,14 @@ module ContributionServices
       @callback = DeleterCallback.new
     end
 
-    def delete
+    def delete params
       yield callback if block_given?
 
       return callback.on_not_authorized.try(:call) unless user.id == contribution.user_id
 
-      if contribution.update(status: :closed)
+      contribution.assign_attributes(params.merge({ status: :closed }))
+
+      if contribution.save
         callback.on_success.try(:call, contribution)
       else
         callback.on_failure.try(:call, contribution)
