@@ -48,7 +48,7 @@ module ModerationServices
   def self.moderation_area_query_for_departement departement, community:
     return ModerationArea.none if departement.nil?
     return ModerationArea.none if community != :entourage
-    user_id = ModerationArea
+    ModerationArea
       .where(departement: [departement, '*'])
       .order("case departement when '*' then 1 else 0 end")
       .limit(1)
@@ -59,10 +59,11 @@ module ModerationServices
   end
 
   def self.moderator_for_departement departement, community:
-    user_id = moderation_area_query_for_departement(departement, community: community)
+    moderator_id = moderation_area_query_for_departement(departement, community: community)
       .pluck(:moderator_id)
       .first
-    User.find_by(id: user_id)
+
+    User.find_by(id: moderator_id)
   end
 
   def self.departement_for_object object
