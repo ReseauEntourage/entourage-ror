@@ -24,10 +24,6 @@ module ModerationServices
       entourage.moderation.save
     end
 
-    def self.enable_callback
-      !Rails.env.test?
-    end
-
     module Callback
       extend ActiveSupport::Concern
 
@@ -38,11 +34,11 @@ module ModerationServices
       private
 
       def assign_to_area_moderator
-        return unless ModerationServices::EntourageModeration.enable_callback
         return unless group_type.in?(['action', 'outing'])
         return unless (['country', 'postal_code'] & previous_changes.keys).any?
         return unless [country, postal_code].all?(&:present?)
         return if ::EntourageModeration.where(entourage_id: id).where.not(moderator_id: nil).exists?
+
         AsyncService.new(ModerationServices::EntourageModeration).assign_to_area_moderator(self)
       end
     end
