@@ -96,4 +96,16 @@ class EntourageModeration < ApplicationRecord
       "Sans consentement",
     ],
   }
+
+  class << self
+    def get_action_author_type_from_user user
+      return 'Ambassadeur' if user.ambassador?
+      return 'Association' if user.org_member?
+      return 'Équipe Entourage' if user.team?
+      return 'Riverain' if user.is_offer_help?
+      return 'SDF' if user.is_ask_for_help?
+
+      nil
+    end
+  end
 end
