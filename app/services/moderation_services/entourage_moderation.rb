@@ -26,7 +26,7 @@ module ModerationServices
 
     def assign_action_author_type entourage
       entourage.moderation || entourage.build_moderation
-      entourage.moderation.action_author_type = EntourageModeration.get_action_author_type_from_user(entourage.user)
+      entourage.moderation.action_author_type = ::EntourageModeration.get_action_author_type_from_user(entourage.user)
       entourage.moderation.save
     end
 
