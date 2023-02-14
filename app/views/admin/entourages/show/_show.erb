@@ -88,20 +88,19 @@
         Nature de l’action
       </div>
       <div class="panel-body row">
-        <% [:action_author_type, :action_type].each do |field| %>
-          <div class="col-md-3">
-            <% current_value = f.object[field] %>
-            <% options, non_standard = safe_options(values[field], current_value) %>
-
-            <%= f.label field do %>
-              <%= f.object.class.human_attribute_name(field) %>
-              <% if non_standard %>
-                <span class="glyphicon glyphicon-warning-sign text-danger" aria-hidden="true" data-toggle="tooltip" data-placement="top" title="la valeur &quot;<%= current_value %>&quot; n'est pas standard"></span>
-              <% end %>
-            <% end %>
-            <%= f.select field, options, { include_blank: true }, { class: "form-control" } %>
+        <div class="col-md-3">
+          <%= f.label :action_author_type, class: "control-label" %>
+          <div class="controls">
+            <%= t "community.entourage.goals_compact.#{entourage.user.goal || :goal_not_known}" %>
           </div>
-        <% end %>
+        </div>
+
+        <div class="col-md-3">
+          <%= f.label :action_type, class: "control-label" %>
+          <div class="controls">
+            <%= entourage_type_name entourage %>
+          </div>
+        </div>
       </div>
     </div>
 
