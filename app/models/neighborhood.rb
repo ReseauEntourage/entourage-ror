@@ -86,6 +86,22 @@ class Neighborhood < ApplicationRecord
     ))
   }
 
+  scope :join_chat_messages_on_max_created_at, -> {
+    joins(%(
+      left join (
+        select
+          #{table_name}.id,
+          max(chat_message_on_max_created_at.created_at) as max_created_at
+        from #{table_name}
+        left join chat_messages as chat_message_on_max_created_at on
+          chat_message_on_max_created_at.messageable_id = #{table_name}.id and
+          chat_message_on_max_created_at.messageable_type = '#{self.name}'
+        group by #{table_name}.id
+      ) as #{table_name}_messageable on
+        #{table_name}_messageable.id = #{table_name}.id
+    ))
+  }
+
   scope :search_by, ->(search) {
     strip = search && search.strip
     like = "%#{strip}%"

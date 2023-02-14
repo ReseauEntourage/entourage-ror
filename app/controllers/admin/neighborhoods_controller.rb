@@ -15,6 +15,7 @@ module Admin
       @neighborhoods = @neighborhoods
         .with_moderator_reads_for(user: current_user)
         .join_chat_message_with_images
+        .join_chat_messages_on_max_created_at
         .select(%(
           neighborhoods.*,
           moderator_reads is null as unread,
@@ -25,7 +26,8 @@ module Admin
           case
           when moderator_reads is null then 0
           when moderator_reads is null and neighborhoods_imageable.id is not null then 1
-          else 2
+          when neighborhoods_messageable.max_created_at >= moderator_reads.read_at then 2
+          else 3
           end
         ))
         .order(%(
