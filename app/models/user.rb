@@ -419,19 +419,11 @@ class User < ApplicationRecord
   end
 
   def ambassador?
-    targeting_profile.to_s == 'ambassador'
-  end
-
-  def team?
-    targeting_profile.to_s == 'team'
+    targeting_profile == 'ambassador'
   end
 
   def is_ask_for_help?
     (targeting_profile.blank? && goal.to_s == 'ask_for_help') || targeting_profile.to_s == 'asks_for_help'
-  end
-
-  def is_offer_help?
-    (targeting_profile.blank? && goal.to_s == 'offer_help') || targeting_profile.to_s == 'offers_help'
   end
 
   def public?

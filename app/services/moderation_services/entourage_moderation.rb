@@ -24,36 +24,22 @@ module ModerationServices
       entourage.moderation.save
     end
 
-    def assign_action_author_type entourage
-      entourage.moderation || entourage.build_moderation
-      entourage.moderation.action_author_type = ::EntourageModeration.get_action_author_type_from_user(entourage.user)
-      entourage.moderation.save
-    end
-
     module Callback
       extend ActiveSupport::Concern
 
       included do
         after_commit :assign_to_area_moderator
-        after_commit :assign_action_author_type
       end
 
       private
 
       def assign_to_area_moderator
-        return unless action? || outing?
+        return unless group_type.in?(['action', 'outing'])
         return unless (['country', 'postal_code'] & previous_changes.keys).any?
         return unless [country, postal_code].all?(&:present?)
         return if ::EntourageModeration.where(entourage_id: id).where.not(moderator_id: nil).exists?
 
-        ModerationServices::EntourageModeration.assign_to_area_moderator(self)
-      end
-
-      def assign_action_author_type
-        return unless action? || outing?
-        return if ::EntourageModeration.where(entourage_id: id).where.not(action_author_type: nil).exists?
-
-        ModerationServices::EntourageModeration.assign_action_author_type(self)
+        AsyncService.new(ModerationServices::EntourageModeration).assign_to_area_moderator(self)
       end
     end
   end
