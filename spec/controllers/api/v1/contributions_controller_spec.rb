@@ -251,7 +251,8 @@ describe Api::V1::ContributionsController, :type => :controller do
         it { expect(result.group_type).to eq("action") }
         it { expect(result.entourage_type).to eq("contribution") }
         it { expect(result.member_ids).to match_array([user.id]) }
-        it { expect(result.moderation).to be_nil }
+        it { expect(result.moderation).to be_a(EntourageModeration) }
+        it { expect(result.moderation.action_recipient_consent_obtained).to eq(nil) }
       end
     end
   end

@@ -261,7 +261,8 @@ describe Api::V1::SolicitationsController, :type => :controller do
         it { expect(response.status).to eq(201) }
         it { expect(subject).to have_key("solicitation") }
         it { expect(Solicitation.count).to eq(1) }
-        it { expect(result.moderation).to be_nil }
+        it { expect(result.moderation).to be_a(EntourageModeration) }
+        it { expect(result.moderation.action_recipient_consent_obtained).to eq(nil) }
       end
     end
   end

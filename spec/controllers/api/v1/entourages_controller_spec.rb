@@ -504,7 +504,7 @@ describe Api::V1::EntouragesController do
         context "missing param" do
           let(:recipient_consent_obtained) { nil }
           it { expect(entourage.status).to eq 'open' }
-          it { expect(entourage.moderation).to be_nil }
+          it { expect(consent_obtained).to be_nil }
         end
 
         context "consent not obtained" do
@@ -523,7 +523,7 @@ describe Api::V1::EntouragesController do
           let(:group_details) { {entourage_type: "contribution"} }
           let(:recipient_consent_obtained) { nil }
           it { expect(Entourage.last.status).to eq 'open' }
-          it { expect(entourage.moderation).to be_nil }
+          it { expect(consent_obtained).to be_nil }
         end
       end
     end
@@ -861,7 +861,7 @@ describe Api::V1::EntouragesController do
           let(:success) { '' }
           it { expect(response.code).to eq '400' }
           it { expect(user_entourage.reload.status).to eq 'open' }
-          it { expect(user_entourage.moderation).to be_nil }
+          it { expect(user_entourage.moderation&.action_outcome).to be_nil }
           it { expect(JSON.parse(response.body)).to eq("message"=>"Could not update entourage", "reasons"=>["outcome.success must be a boolean"]) }
         end
       end
