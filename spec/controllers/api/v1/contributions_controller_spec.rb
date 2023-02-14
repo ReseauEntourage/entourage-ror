@@ -340,6 +340,7 @@ describe Api::V1::ContributionsController, :type => :controller do
         it { expect(response.status).to eq 200 }
         it { expect(result.status).to eq 'closed' }
         it { expect(contribution.reload.moderation.action_outcome).to eq 'Oui' }
+        it { expect(contribution.reload.moderation.action_outcome_reported_at).to be_a(Date) }
       end
 
       context 'correct params outcome false' do
@@ -349,6 +350,7 @@ describe Api::V1::ContributionsController, :type => :controller do
         it { expect(response.status).to eq 200 }
         it { expect(result.status).to eq 'closed' }
         it { expect(contribution.reload.moderation.action_outcome).to eq 'Non' }
+        it { expect(contribution.reload.moderation.action_outcome_reported_at).to be_a(Date) }
       end
 
       context 'empty params' do
