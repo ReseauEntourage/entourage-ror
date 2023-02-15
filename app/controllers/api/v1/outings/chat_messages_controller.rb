@@ -4,8 +4,8 @@ module Api
       class UnauthorizedOuting < StandardError; end
 
       class ChatMessagesController < Api::V1::BaseController
-        before_action :set_outing, only: [:index, :show, :create, :report, :comments, :presigned_upload]
-        before_action :set_chat_message, only: [:show, :report]
+        before_action :set_outing, only: [:index, :show, :create, :destroy, :report, :comments, :presigned_upload]
+        before_action :set_chat_message, only: [:show, :destroy, :report]
         before_action :ensure_is_member, only: [:create, :report, :presigned_upload]
 
         after_action :set_last_message_read, only: [:index]
@@ -41,6 +41,26 @@ module Api
               render json: {
                 message: 'Could not create chat message', reasons: message.errors.full_messages
               }, status: :bad_request
+            end
+          end
+        end
+
+        def destroy
+          ChatServices::Deleter.new(user: current_user, chat_message: @chat_message).delete do |on|
+            on.success do |chat_message|
+              render json: chat_message, root: "user", status: 200, serializer: ::V1::ChatMessageSerializer, scope: { user: current_user }
+            end
+
+            on.failure do |chat_message|
+              render json: {
+                message: "Could not delete chat_message", reasons: chat_message.errors.full_messages
+              }, status: :bad_request
+            end
+
+            on.not_authorized do
+              render json: {
+                message: "You are not authorized to delete this chat_message"
+              }, status: :unauthorized
             end
           end
         end

@@ -5,6 +5,8 @@ class ChatMessage < ApplicationRecord
   CONTENT_TYPES = %w(image/jpeg)
   BUCKET_PREFIX = "chat_messages"
 
+  STATUSES = [:active, :updated, :deleted]
+
   has_ancestry
 
   scope :preload_comments_count, -> {
@@ -22,11 +24,12 @@ class ChatMessage < ApplicationRecord
     where("chat_messages.messageable_type = 'Entourage'")
   }, foreign_key: :messageable_id, optional: true # why optional? Cause it might belongs_to Tour
   belongs_to :user
+  belongs_to :deleter, class_name: :User
 
   before_validation :generate_content
 
   validates :messageable_id, :messageable_type, :user_id, presence: true
-  validates :content, presence: true, unless: -> (m) { m.image_url.present? }
+  validates :content, presence: true, unless: -> (m) { m.image_url.present? || m.deleted? }
   validates_inclusion_of :message_type, in: -> (m) { m.message_types }
   validates :metadata, schema: -> (m) { "#{m.message_type}:metadata" }
 
@@ -77,6 +80,18 @@ class ChatMessage < ApplicationRecord
     def path key
       "#{BUCKET_PREFIX}/#{key}"
     end
+  end
+
+  def active?
+    status.to_sym == :active
+  end
+
+  def updated?
+    status.to_sym == :updated
+  end
+
+  def deleted?
+    status.to_sym == :deleted
   end
 
   def image_path
