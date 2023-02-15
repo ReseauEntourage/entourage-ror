@@ -101,6 +101,13 @@
             <%= entourage_type_name entourage %>
           </div>
         </div>
+
+        <div class="col-md-3">
+          <%= f.label :section %>
+          <div class="controls">
+            <%= f.collection_select :section, Tag.sections, :first, :last, {}, { multiple: false } %>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -216,6 +223,10 @@
     </div>
   </div>
 <% end %>
+
+<script>
+  $('select#entourage_moderation_section').select2({ width: '100%' });
+</script>
 
 <script>
   var $moderation = $('#moderation'),

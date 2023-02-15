@@ -1,4 +1,6 @@
 class EntourageModeration < ApplicationRecord
+  include Sectionable
+
   validates_presence_of :entourage
   belongs_to :entourage
   belongs_to :moderator, class_name: :User, optional: true # about 30% of records have null moderator_id

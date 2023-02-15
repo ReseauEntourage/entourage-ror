@@ -32,6 +32,7 @@ module Admin
         :action_author_type, :action_type,
         :moderated_at, :moderator_id, :moderation_comment,
         :action_outcome_reported_at, :action_outcome,
+        :section
       )
     end
 
