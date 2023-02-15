@@ -47,7 +47,8 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
           "comments_count" => 1,
           "image_url" => "http://foo.bar",
           "read" => false,
-          "message_type" => "text"
+          "message_type" => "text",
+          "status" => "active"
         }]
       }) }
     end
@@ -117,7 +118,8 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
           "comments_count" => 0,
           "image_url" => nil,
           "read" => false,
-          "message_type" => "text"
+          "message_type" => "text",
+          "status" => "active"
         }
       }) }
     end
@@ -167,7 +169,8 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
             "comments_count" => 0,
             "image_url" => image_url,
             "read" => nil,
-            "message_type" => "text"
+            "message_type" => "text",
+            "status" => "active"
           }
         }}
 
@@ -349,7 +352,8 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
           "comments_count" => 0,
           "image_url" => nil,
           "read" => false,
-          "message_type" => "text"
+          "message_type" => "text",
+          "status" => "active"
         }]
       }) }
     end

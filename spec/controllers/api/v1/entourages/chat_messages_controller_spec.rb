@@ -40,7 +40,8 @@ describe Api::V1::Entourages::ChatMessagesController do
                 "display_name" => "John D.",
                 "partner" => nil
               },
-             "created_at" => chat_message1.created_at.iso8601(3)
+             "created_at" => chat_message1.created_at.iso8601(3),
+             "status" => "active"
            }, {
              "id" => chat_message2.id,
              "message_type" => "text",
@@ -51,7 +52,8 @@ describe Api::V1::Entourages::ChatMessagesController do
               "display_name" => "John D.",
               "partner" => nil
             },
-             "created_at" => chat_message2.created_at.iso8601(3)
+             "created_at" => chat_message2.created_at.iso8601(3),
+             "status" => "active"
           }]
         }) }
 
@@ -104,7 +106,8 @@ describe Api::V1::Entourages::ChatMessagesController do
               "display_name" => "John D.",
               "partner" => nil
             },
-            "created_at" => chat_message2.created_at.iso8601(3)
+            "created_at" => chat_message2.created_at.iso8601(3),
+            "status" => "active"
           }]
         }) }
       end
@@ -131,7 +134,8 @@ describe Api::V1::Entourages::ChatMessagesController do
                 "default" => true,
               },
             },
-            "created_at" => chat_message.created_at.iso8601(3)
+            "created_at" => chat_message.created_at.iso8601(3),
+            "status" => "active"
           }]
         }) }
       end
@@ -175,7 +179,8 @@ describe Api::V1::Entourages::ChatMessagesController do
               "display_name" => "John D.",
               "partner" => nil
             },
-            "created_at" => ChatMessage.first.created_at.iso8601(3)
+            "created_at" => ChatMessage.first.created_at.iso8601(3),
+            "status" => "active"
           }
         }) }
       end
@@ -289,7 +294,8 @@ describe Api::V1::Entourages::ChatMessagesController do
                 "display_name" => "John D.",
                 "partner" => nil
               },
-              "created_at" => ChatMessage.first.created_at.iso8601(3)
+              "created_at" => ChatMessage.first.created_at.iso8601(3),
+              "status" => "active"
             }
           }) }
           it { expect(Entourage.last.attributes).to include(
@@ -347,6 +353,7 @@ describe Api::V1::Entourages::ChatMessagesController do
                 "partner" => nil
               },
               "created_at" => ChatMessage.last.created_at.iso8601(3),
+              "status" => "active",
               "message_type" => "share",
               "metadata" => {
                 "type" => "entourage",
@@ -381,6 +388,7 @@ describe Api::V1::Entourages::ChatMessagesController do
                 "partner" => nil
               },
               "created_at" => ChatMessage.last.created_at.iso8601(3),
+              "status" => "active",
               "message_type" => "share",
               "metadata" => {
                 "type" => "poi",

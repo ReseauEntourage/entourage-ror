@@ -47,7 +47,8 @@ describe Api::V1::Conversations::ChatMessagesController do
           "comments_count" => 0,
           "image_url" => nil,
           "read" => false,
-          "message_type" => "text"
+          "message_type" => "text",
+          "status" => "active"
         }, {
           "id" => chat_message_2.id,
           "content" => chat_message_2.content,
@@ -62,7 +63,8 @@ describe Api::V1::Conversations::ChatMessagesController do
           "comments_count" => 0,
           "image_url" => nil,
           "read" => false,
-          "message_type" => "text"
+          "message_type" => "text",
+          "status" => "active"
         }]
       }) }
     end
@@ -139,7 +141,8 @@ describe Api::V1::Conversations::ChatMessagesController do
             "comments_count" => 0,
             "image_url" => image_url,
             "read" => nil,
-            "message_type" => "text"
+            "message_type" => "text",
+            "status" => "active"
           }
         }}
 
