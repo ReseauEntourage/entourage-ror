@@ -298,7 +298,7 @@ Rails.application.routes.draw do
         end
       end
 
-      resources :chat_messages, only: [:destroy]
+      resources :chat_messages, only: [:update, :destroy]
 
       resources :inapp_notifications, only: [:index, :destroy] do
         collection do
@@ -396,7 +396,7 @@ Rails.application.routes.draw do
           post :report # report an issue with the neighborhood
         end
 
-        resources :chat_messages, :controller => 'neighborhoods/chat_messages', only: [:index, :show, :create, :destroy] do
+        resources :chat_messages, :controller => 'neighborhoods/chat_messages', only: [:index, :show, :create, :update, :destroy] do
           post :report # report an issue with a chat_message
 
           member do
@@ -455,7 +455,7 @@ Rails.application.routes.draw do
           post :cancel
         end
 
-        resources :chat_messages, :controller => 'outings/chat_messages', only: [:index, :show, :create, :destroy] do
+        resources :chat_messages, :controller => 'outings/chat_messages', only: [:index, :show, :create, :update, :destroy] do
           post :report # report an issue with a chat_message
 
           member do
@@ -494,7 +494,7 @@ Rails.application.routes.draw do
       end
 
       resources :conversations, only: [:index, :show, :create] do
-        resources :chat_messages, :controller => 'conversations/chat_messages', only: [:index, :create, :destroy]
+        resources :chat_messages, :controller => 'conversations/chat_messages', only: [:index, :create, :update, :destroy]
         resources :users, :controller => 'conversations/users', only: [] do
           collection do
             # we want to avoid specific id to unjoin
