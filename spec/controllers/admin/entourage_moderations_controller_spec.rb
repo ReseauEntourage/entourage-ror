@@ -24,7 +24,7 @@ describe Admin::EntourageModerationsController do
 
     it { expect(response.status).to eq(200) }
     it { expect(result).not_to be_nil }
-    it { expect(result.section_list).to eq("social") }
+    it { expect(result.section).to eq("social") }
     it { expect(result.moderation_comment).to eq("foobar") }
   end
 end

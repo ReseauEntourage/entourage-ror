@@ -105,7 +105,7 @@
         <div class="col-md-3">
           <%= f.label :section %>
           <div class="controls">
-            <%= f.collection_select :section, Tag.sections, :first, :last, {}, { multiple: false } %>
+            <%= f.collection_select :section, Tag.sections, :first, :last, { include_blank: true }, { multiple: false } %>
           </div>
         </div>
       </div>
