@@ -33,7 +33,14 @@
         <% end %>
 
         <tr>
-          <td><%= simple_format message.content %></td>
+          <td>
+            <% if message.is_a?(ConversationMessage) && message.deleted? %>
+              <p style="color: red;"> Ce message a été supprimé : </p>
+              <em><%= simple_format message.content(true) %></em>
+            <% else %>
+              <%= simple_format message.content %>
+            <% end %>
+          </td>
           <td><%= l message.created_at, format: "%H:%M" %></td>
         </tr>
       <% end %>

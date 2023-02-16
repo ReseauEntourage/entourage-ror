@@ -116,6 +116,15 @@
           <%= display_name @users[last_message.user_id] %> :
         <% end %>
         <%= last_message.content unless last_message.nil? %>
+
+        <% if last_message.present? %>
+          <% if last_message.deleted? %>
+            <p style="color: red;"> Ce message a été supprimé : </p>
+            <em><%= simple_format last_message.content(true) %></em>
+          <% else %>
+            <%= simple_format last_message.content %>
+          <% end %>
+        <% end %>
       </div>
       <div class="cell conversation-timestamp" style="text-align: right">
         <%= link_to "", admin_conversation_path(conversation), class: "overlay" %>

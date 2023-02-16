@@ -82,11 +82,16 @@
           <%= @entourage.description %>
         <% end %>
 
-        <%= simple_format message.content %>
+        <% if message.deleted? %>
+          <p style="color: red;"> Ce message a été supprimé : </p>
+          <em><%= simple_format message.content(true) %></em>
+        <% else %>
+          <%= simple_format message.content %>
+        <% end %>
 
-        <% if message.image_path.present? %>
+        <% if message.image_path(true).present? %>
           <div style="margin-bottom: 15px">
-            <%= image_tag(message.image_path, height: '100') %>
+            <%= image_tag(message.image_path(true), height: '100') %>
           </div>
         <% end %>
 

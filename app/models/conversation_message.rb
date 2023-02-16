@@ -30,12 +30,30 @@ class ConversationMessage < ApplicationRecord
     ChatMessage.find(full_object_id).children
   end
 
-  def image_path
+  def deleted?
+    status.to_sym == :deleted
+  end
+
+  # @param force true to bypass deletion
+  def content force = false
+    return if deleted? && !force
+
+    self[:content]
+  end
+
+  # @param force true to bypass deletion
+  def image_url force = false
+    return if deleted? && !force
+
+    self[:image_url]
+  end
+
+  def image_path force = false
     @image_path ||= begin
       return unless chat_message?
-      return unless image_url.present?
+      return unless image_url(force).present?
 
-      ChatMessage.url_for(image_url)
+      ChatMessage.url_for(image_url(force))
     end
   end
 end

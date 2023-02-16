@@ -44,13 +44,18 @@
                 <span class="conversation-timestamp"><%= l post.created_at, format: "%H h %M" %></span>
               </div>
 
-              <%= simple_format post.content %>
+              <% if post.deleted? %>
+                <p style="color: red;"> Ce message a été supprimé : </p>
+                <em><%= simple_format post.content(true) %></em>
+              <% else %>
+                <%= simple_format post.content %>
+              <% end %>
 
-            <% if post.image_path.present? %>
-              <div style="margin-bottom: 15px">
-                <%= image_tag(post.image_path, height: '100') %>
-              </div>
-            <% end %>
+              <% if post.image_path(true).present? %>
+                <div style="margin-bottom: 15px">
+                  <%= image_tag(post.image_path(true), height: '100') %>
+                </div>
+              <% end %>
 
               <% if post.children.any? %>
                 <div><%= link_to "voir les commentaires", show_outing_post_comments_admin_neighborhood_path(@neighborhood, post_id: post.id) %></div>

@@ -49,7 +49,12 @@
           <span class="conversation-timestamp"><%= l message.created_at, format: "%H h %M" %></span>
         </div>
 
-        <%= simple_format message.content %>
+        <% if message.deleted? %>
+          <p style="color: red;"> Ce message a été supprimé : </p>
+          <em><%= simple_format message.content(true) %></em>
+        <% else %>
+          <%= simple_format message.content %>
+        <% end %>
       </div>
     </div>
   <% end %>

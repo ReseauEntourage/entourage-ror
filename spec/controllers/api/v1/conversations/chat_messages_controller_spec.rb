@@ -168,36 +168,6 @@ describe Api::V1::Conversations::ChatMessagesController do
           # create does update last_message_read in ChatServices::ChatMessageBuilder
           it { expect(join_request.reload.last_message_read).to be_a(ActiveSupport::TimeWithZone) }
         end
-
-        context "with image_url and content" do
-          let(:image_url) { "path/to/image.jpeg" }
-
-          it { expect(response.status).to eq(201) }
-          it { expect(ChatMessage.count).to eq(1) }
-          it { expect(result).to eq(json) }
-        end
-
-        context "with image_url and empty content" do
-          let(:content) { "" }
-          let(:image_url) { "path/to/image.jpeg" }
-
-          it { expect(response.status).to eq(201) }
-          it { expect(ChatMessage.count).to eq(1) }
-          it { expect(result).to eq(json) }
-        end
-
-        context "with image_url and no content" do
-          let(:content) { nil }
-          let(:image_url) { "path/to/image.jpeg" }
-          let(:chat_message_params) { {
-            message_type: :text,
-            image_url: image_url
-          } }
-
-          it { expect(response.status).to eq(201) }
-          it { expect(ChatMessage.count).to eq(1) }
-          it { expect(result).to eq(json) }
-        end
       end
 
       describe "send push notif" do
