@@ -466,6 +466,8 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
           'display_name' => 'John D.',
           "avatar_url" => nil,
           "partner" => nil,
+          "partner_role_title" => nil,
+          "roles" => []
         },
         "created_at" => post.created_at.iso8601(3),
         "status" => "active",

@@ -15,10 +15,17 @@ module V1
                  :status
 
       def user
+        partner = object.user.partner
+
         {
           id: object.user.id,
           avatar_url: UserServices::Avatar.new(user: object.user).thumbnail_url,
-          display_name: display_name
+          display_name: display_name,
+          partner: partner.nil? ? nil : V1::PartnerSerializer.new(partner, scope: { minimal: true }, root: false).as_json,
+          partner_role_title: object.user.partner_role_title.presence,
+          roles: object.user.roles.map do |role|
+            I18n.t("community.entourage.roles.#{role}")
+          end
         }
       end
 

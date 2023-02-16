@@ -39,11 +39,13 @@ describe Api::V1::Entourages::ChatMessagesController do
               "id" => chat_message1.user_id,
               "avatar_url" => nil,
               "display_name" => "John D.",
-              "partner" => nil
+              "partner" => nil,
+              "partner_role_title" => nil,
+              "roles" => []
             },
             "created_at" => chat_message1.created_at.iso8601(3),
             "status" => "active"
-           }, {
+          }, {
             "id" => chat_message2.id,
             "uuid_v2" => chat_message2.uuid_v2,
             "message_type" => "text",
@@ -52,7 +54,9 @@ describe Api::V1::Entourages::ChatMessagesController do
               "id" => chat_message2.user_id,
               "avatar_url" => nil,
               "display_name" => "John D.",
-              "partner" => nil
+              "partner" => nil,
+              "partner_role_title" => nil,
+              "roles" => []
             },
             "created_at" => chat_message2.created_at.iso8601(3),
             "status" => "active"
@@ -107,7 +111,9 @@ describe Api::V1::Entourages::ChatMessagesController do
               "id" => chat_message2.user.id,
               "avatar_url" => nil,
               "display_name" => "John D.",
-              "partner" => nil
+              "partner" => nil,
+              "partner_role_title" => nil,
+              "roles" => []
             },
             "created_at" => chat_message2.created_at.iso8601(3),
             "status" => "active"
@@ -137,6 +143,8 @@ describe Api::V1::Entourages::ChatMessagesController do
                 "small_logo_url" => partner_user.partner.small_logo_url,
                 "default" => true,
               },
+              "partner_role_title" => nil,
+              "roles" => []
             },
             "created_at" => chat_message.created_at.iso8601(3),
             "status" => "active"
@@ -193,7 +201,9 @@ describe Api::V1::Entourages::ChatMessagesController do
               "id" => user.id,
               "avatar_url" => nil,
               "display_name" => "John D.",
-              "partner" => nil
+              "partner" => nil,
+              "partner_role_title" => nil,
+              "roles" => []
             },
             "created_at" => ChatMessage.first.created_at.iso8601(3),
             "status" => "active"
@@ -333,7 +343,9 @@ describe Api::V1::Entourages::ChatMessagesController do
                 "id" => user.id,
                 "avatar_url" => nil,
                 "display_name" => "John D.",
-                "partner" => nil
+                "partner" => nil,
+                "partner_role_title" => nil,
+                "roles" => []
               },
               "created_at" => ChatMessage.first.created_at.iso8601(3),
               "status" => "active"
@@ -392,7 +404,9 @@ describe Api::V1::Entourages::ChatMessagesController do
                 "id" => user.id,
                 "avatar_url" => nil,
                 "display_name" => "John D.",
-                "partner" => nil
+                "partner" => nil,
+                "partner_role_title" => nil,
+                "roles" => []
               },
               "created_at" => ChatMessage.last.created_at.iso8601(3),
               "status" => "active",
@@ -428,7 +442,9 @@ describe Api::V1::Entourages::ChatMessagesController do
                 "id" => user.id,
                 "avatar_url" => nil,
                 "display_name" => "John D.",
-                "partner" => nil
+                "partner" => nil,
+                "partner_role_title" => nil,
+                "roles" => []
               },
               "created_at" => ChatMessage.last.created_at.iso8601(3),
               "status" => "active",
