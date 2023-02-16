@@ -14,7 +14,7 @@ module ChatServices
 
       return callback.on_not_authorized.try(:call) unless user.id == chat_message.user_id
 
-      if chat_message.update(status: :deleted, content: nil, image_url: nil, deleter: user, deleted_at: Time.zone.now)
+      if chat_message.update(status: :deleted, deleter: user, deleted_at: Time.zone.now)
         callback.on_success.try(:call, chat_message)
       else
         callback.on_failure.try(:call, chat_message)

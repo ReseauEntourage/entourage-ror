@@ -94,16 +94,30 @@ class ChatMessage < ApplicationRecord
     status.to_sym == :deleted
   end
 
-  def image_path
-    return unless image_url.present?
+  # @param force true to bypass deletion
+  def content force = false
+    return if deleted? && !force
 
-    ChatMessage.url_for(image_url)
+    self[:content]
   end
 
-  def image_url_with_size size
-    return unless image_url.present?
+  # @param force true to bypass deletion
+  def image_url force = false
+    return if deleted? && !force
 
-    ChatMessage.url_for_with_size(image_url, size)
+    self[:image_url]
+  end
+
+  def image_path force = false
+    return unless image_url(force).present?
+
+    ChatMessage.url_for(image_url(force))
+  end
+
+  def image_url_with_size size, force = false
+    return unless image_url(force).present?
+
+    ChatMessage.url_for_with_size(image_url(force), size)
   end
 
   def validate_ancestry!
