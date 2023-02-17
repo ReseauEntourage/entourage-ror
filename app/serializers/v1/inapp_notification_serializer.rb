@@ -12,6 +12,7 @@ module V1
 
     def image_url
       return image_url_for_sender if object.sender && object.chat_message_on_create?
+      return image_url_for_sender if object.sender && object.join_request?
 
       return unless object.instance
       return unless object.record
