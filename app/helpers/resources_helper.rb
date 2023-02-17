@@ -8,4 +8,8 @@ module ResourcesHelper
   def category_label category
     I18n.t("activerecord.attributes.resource.categories.#{category}")
   end
+
+  def views_for resource
+    resource.users.where(admin: false).count
+  end
 end

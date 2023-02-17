@@ -7,16 +7,13 @@ class Resource < ApplicationRecord
   default_scope { where(status: :active) }
 
   has_many :users_resources
-  has_many :users, -> { where(watched: true) }, through: :users_resources, source: :user
+  has_many :users_resources_watched, -> { where(watched: true) }, class_name: :UsersResource
+  has_many :users, through: :users_resources_watched, source: :user
 
   scope :ordered, -> { order(:position, :id) }
 
   # valides :image_url # should be ?x?
   attr_accessor :resource_image_id
-
-  def views
-    users_resources.watched.count
-  end
 
   def image_url
     return unless self['image_url'].present?
