@@ -57,6 +57,7 @@ module RecommandationServices
     end
 
     def create_local_user_recommandation_for_fragment fragment
+      # outing, contribution or solicitation
       preferred_instance = Recommandation.preferred_instance_for_user_and_fragment(user, fragment)
 
       return unless preferred_instance
