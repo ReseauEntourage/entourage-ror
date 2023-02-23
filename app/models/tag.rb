@@ -16,6 +16,12 @@ class Tag < ApplicationRecord
       I18n.t('tags.sections')
     end
 
+    def sections_collection
+      I18n.t('tags.sections').map do |id, names|
+        [id, names[:name]]
+      end.to_h
+    end
+
     def signal_list
       signals.keys.map(&:to_s)
     end
