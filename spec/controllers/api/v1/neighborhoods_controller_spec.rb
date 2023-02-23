@@ -44,14 +44,23 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
     end
 
     describe 'do not get deleted' do
-      let!(:deleted) { create :neighborhood, status: :deleted }
+      let!(:neighborhood) { create :neighborhood, status: :deleted }
 
       before { get :index, params: { token: user.token } }
 
       it { expect(response.status).to eq 200 }
       it { expect(result).to have_key('neighborhoods') }
-      it { expect(result['neighborhoods'].count).to eq(1) }
-      it { expect(result['neighborhoods'][0]['id']).to eq(neighborhood.id) }
+      it { expect(result['neighborhoods'].count).to eq(0) }
+    end
+
+    describe 'do not get private' do
+      let!(:neighborhood) { create :neighborhood, public: false }
+
+      before { get :index, params: { token: user.token } }
+
+      it { expect(response.status).to eq 200 }
+      it { expect(result).to have_key('neighborhoods') }
+      it { expect(result['neighborhoods'].count).to eq(0) }
     end
   end
 
@@ -233,7 +242,8 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
           "past_outings_count" => 0,
           "future_outings_count" => 0,
           "has_ongoing_outing" => false,
-          "status_changed_at" => nil
+          "status_changed_at" => nil,
+          "public" => true
         }) }
       end
 
@@ -314,7 +324,8 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
           "future_outings" => [],
           "ongoing_outings" => [],
           "has_ongoing_outing" => false,
-          "posts" => []
+          "posts" => [],
+          "public" => true
         }
       })}
     end
@@ -328,6 +339,23 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
       it { expect(response.status).to eq 200 }
       it { expect(result['neighborhood']['member']).to eq(true) }
       it { expect(join_request.reload.last_message_read.to_s).to eq Time.now.in_time_zone.to_s }
+    end
+
+    describe 'private' do
+      let(:neighborhood) { create :neighborhood, public: false }
+
+      before { get :show, params: { id: neighborhood.id, token: user.token } }
+
+      it { expect(response.status).to eq 401 }
+    end
+
+    describe 'private but member' do
+      let(:neighborhood) { create :neighborhood, public: false }
+      let!(:join_request) { create(:join_request, user: user, joinable: neighborhood, status: :accepted) }
+
+      before { get :show, params: { id: neighborhood.id, token: user.token } }
+
+      it { expect(response.status).to eq 200 }
     end
 
     describe 'with outing' do

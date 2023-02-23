@@ -61,6 +61,7 @@ class Neighborhood < ApplicationRecord
   default_scope { where(status: :active) }
 
   scope :active, -> { where(status: :active) }
+  scope :public_only, -> { where(public: true) }
 
   scope :with_moderation_area, -> (moderation_area) {
     if moderation_area.present? && moderation_area.to_sym == :hors_zone
@@ -152,6 +153,8 @@ class Neighborhood < ApplicationRecord
       description: "%#{search.strip}%"
     })
   }
+
+  scope :recommandable, -> { self.active.public_only }
 
   def active?
     status.to_sym == :active
