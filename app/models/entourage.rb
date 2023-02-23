@@ -266,7 +266,7 @@ class Entourage < ApplicationRecord
   end
 
   def outcome= success
-    errors.add(:base, "outcome.success must be a boolean") and return if success.empty?
+    errors.add(:base, "outcome.success must be a boolean") and return if success.nil?
 
     moderation = (self.moderation || build_moderation)
     moderation.action_outcome = if ActiveModel::Type::Boolean::FALSE_VALUES.include?(success)

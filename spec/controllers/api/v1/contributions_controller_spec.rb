@@ -311,7 +311,7 @@ describe Api::V1::ContributionsController, :type => :controller do
     let(:contribution) { create :contribution, user: creator }
     let(:params) { { id: contribution.id, token: user.token, contribution: {
       close_message: "message",
-      outcome: 'true'
+      outcome: true
     } } }
     let(:params_without_token) { { id: contribution.id } }
 
@@ -344,7 +344,7 @@ describe Api::V1::ContributionsController, :type => :controller do
       end
 
       context 'correct params outcome false' do
-        before { params[:contribution][:outcome] = 'false' }
+        before { params[:contribution][:outcome] = false }
         before { delete :destroy, params: params }
 
         it { expect(response.status).to eq 200 }
