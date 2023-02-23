@@ -30,23 +30,27 @@ describe Api::V1::UserBlockedUsersController, :type => :controller do
           "user" => {
             "id" => user.id,
             "display_name" => "John D.",
-            "avatar_url" => nil
+            "avatar_url" => nil,
+            "community_roles" => [],
           },
           "blocked_user" => {
             "id" => alice.id,
             "display_name" => "John D.",
-            "avatar_url" => nil
+            "avatar_url" => nil,
+            "community_roles" => [],
           },
         }, {
           "user" => {
             "id" => user.id,
             "display_name" => "John D.",
-            "avatar_url" => nil
+            "avatar_url" => nil,
+            "community_roles" => [],
           },
           "blocked_user" => {
             "id" => bob.id,
             "display_name" => "John D.",
-            "avatar_url" => nil
+            "avatar_url" => nil,
+            "community_roles" => [],
           },
         }]
       })}
@@ -74,12 +78,14 @@ describe Api::V1::UserBlockedUsersController, :type => :controller do
             "user" => {
               "id" => user.id,
               "display_name" => "John D.",
-              "avatar_url" => nil
+              "avatar_url" => nil,
+              "community_roles" => [],
             },
             "blocked_user" => {
               "id" => alice.id,
               "display_name" => "John D.",
-              "avatar_url" => nil
+              "avatar_url" => nil,
+              "community_roles" => [],
             },
           }
         })}
@@ -117,12 +123,14 @@ describe Api::V1::UserBlockedUsersController, :type => :controller do
             "user" => {
               "id" => user.id,
               "display_name" => "John D.",
-              "avatar_url" => nil
+              "avatar_url" => nil,
+              "community_roles" => [],
             },
             "blocked_user" => {
               "id" => alice.id,
               "display_name" => "John D.",
-              "avatar_url" => nil
+              "avatar_url" => nil,
+              "community_roles" => [],
             },
           }
         }) }
@@ -139,12 +147,14 @@ describe Api::V1::UserBlockedUsersController, :type => :controller do
             "user" => {
               "id" => user.id,
               "display_name" => "John D.",
-              "avatar_url" => nil
+              "avatar_url" => nil,
+              "community_roles" => [],
             },
             "blocked_user" => {
               "id" => alice.id,
               "display_name" => "John D.",
-              "avatar_url" => nil
+              "avatar_url" => nil,
+              "community_roles" => [],
             },
           }]
         }) }
@@ -161,23 +171,27 @@ describe Api::V1::UserBlockedUsersController, :type => :controller do
             "user" => {
               "id" => user.id,
               "display_name" => "John D.",
-              "avatar_url" => nil
+              "avatar_url" => nil,
+              "community_roles" => [],
             },
             "blocked_user" => {
               "id" => alice.id,
               "display_name" => "John D.",
-              "avatar_url" => nil
+              "avatar_url" => nil,
+              "community_roles" => [],
             },
           }, {
             "user" => {
               "id" => user.id,
               "display_name" => "John D.",
-              "avatar_url" => nil
+              "avatar_url" => nil,
+              "community_roles" => [],
             },
             "blocked_user" => {
               "id" => bob.id,
               "display_name" => "John D.",
-              "avatar_url" => nil
+              "avatar_url" => nil,
+              "community_roles" => [],
             },
           }]
         }) }

@@ -68,7 +68,8 @@ describe Api::V1::OutingsController do
       it { expect(subject["outings"][0]["members"]).to eq([{
         "id" => outing.user_id,
         "display_name" => "John D.",
-        "avatar_url" => nil
+        "avatar_url" => nil,
+        "community_roles" => [],
       }]) }
     end
 

@@ -226,7 +226,8 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
           "user" => {
             "id" => neighborhood.user_id,
             "display_name" => "John D.",
-            "avatar_url" => nil
+            "avatar_url" => nil,
+            "community_roles" => [],
           },
           "address" => {
             "latitude" => 48.86,
@@ -237,6 +238,7 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
             "id" => user.id,
             "display_name" => "John D.",
             "avatar_url" => nil,
+            "community_roles" => [],
           }],
           "member" => true,
           "members_count" => 1,
@@ -306,7 +308,8 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
           "user" => {
             "id" => neighborhood.user_id,
             "display_name" => "John D.",
-            "avatar_url" => nil
+            "avatar_url" => nil,
+            "community_roles" => [],
           },
           "address" => {
             "latitude" => 48.86,
@@ -318,6 +321,7 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
             "id" => neighborhood.user.id,
             "display_name" => "John D.",
             "avatar_url" => nil,
+            "community_roles" => [],
           }],
           "ethics" => nil,
           "past_outings_count" => 0,
