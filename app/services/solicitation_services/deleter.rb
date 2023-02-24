@@ -9,12 +9,14 @@ module SolicitationServices
       @callback = DeleterCallback.new
     end
 
-    def delete
+    def delete params
       yield callback if block_given?
 
       return callback.on_not_authorized.try(:call) unless user.id == solicitation.user_id
 
-      if solicitation.update(status: :closed)
+      solicitation.assign_attributes(params.merge({ status: :closed }))
+
+      if solicitation.save
         callback.on_success.try(:call, solicitation)
       else
         callback.on_failure.try(:call, solicitation)

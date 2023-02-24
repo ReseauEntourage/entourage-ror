@@ -50,7 +50,7 @@ module Api
       end
 
       def destroy
-        ContributionServices::Deleter.new(user: current_user, contribution: @contribution).delete do |on|
+        ContributionServices::Deleter.new(user: current_user, contribution: @contribution).delete(contribution_destroy_params) do |on|
           on.success do |contribution|
             render json: contribution, root: :contribution, status: 200, serializer: ::V1::ActionSerializer, scope: { user: current_user }
           end
@@ -119,6 +119,10 @@ module Api
         }, :postal_code, :title, :description, :section, {
           metadata: metadata_keys
         }, :image_url)
+      end
+
+      def contribution_destroy_params
+        params.require(:contribution).permit([:close_message, :outcome])
       end
 
       def report_params

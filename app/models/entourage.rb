@@ -259,6 +259,33 @@ class Entourage < ApplicationRecord
     super(value)
   end
 
+  def close_message= message
+    errors.add(:base, "outcome.success must be a boolean") and return unless action?
+
+    metadata[:close_message] = message
+  end
+
+  def outcome= success
+    errors.add(:base, "outcome.success must be a boolean") and return if success.nil?
+
+    moderation = (self.moderation || build_moderation)
+    moderation.action_outcome = if ActiveModel::Type::Boolean::FALSE_VALUES.include?(success)
+      'Non'
+    else
+      'Oui'
+    end
+
+    if moderation.action_outcome_changed?
+      moderation.action_outcome_reported_at = Time.zone.now
+      moderation.moderation_comment = (
+        (moderation.moderation_comment || '').lines.map(&:chomp) +
+        ["Aboutissement passé à \"#{moderation.action_outcome}\" " +
+         "par le créateur de l'action " +
+         "le #{I18n.l Time.zone.now, format: '%-d %B %Y à %H:%M'}."]
+      ).join("\n")
+    end
+  end
+
   def group_type= value
     self.metadata = add_metadata_schema_urn(metadata)
     super(value)

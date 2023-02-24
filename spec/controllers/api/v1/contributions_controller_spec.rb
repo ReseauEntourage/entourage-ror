@@ -309,18 +309,23 @@ describe Api::V1::ContributionsController, :type => :controller do
   context 'destroy' do
     let(:creator) { create :pro_user }
     let(:contribution) { create :contribution, user: creator }
+    let(:params) { { id: contribution.id, token: user.token, contribution: {
+      close_message: "message",
+      outcome: true
+    } } }
+    let(:params_without_token) { { id: contribution.id } }
 
     let(:result) { Contribution.unscoped.find(contribution.id) }
 
     describe 'not authorized' do
-      before { delete :destroy, params: { id: contribution.id } }
+      before { delete :destroy, params: params_without_token }
 
       it { expect(response.status).to eq 401 }
       it { expect(result.status).to eq 'open' }
     end
 
     describe 'not authorized cause should be creator' do
-      before { delete :destroy, params: { id: contribution.id, token: user.token } }
+      before { delete :destroy, params: params }
 
       it { expect(response.status).to eq 401 }
       it { expect(result.status).to eq 'open' }
@@ -329,10 +334,32 @@ describe Api::V1::ContributionsController, :type => :controller do
     describe 'authorized' do
       let(:creator) { user }
 
-      before { delete :destroy, params: { id: contribution.id, token: user.token } }
+      context 'correct params outcome true' do
+        before { delete :destroy, params: params }
 
-      it { expect(response.status).to eq 200 }
-      it { expect(result.status).to eq 'closed' }
+        it { expect(response.status).to eq 200 }
+        it { expect(result.status).to eq 'closed' }
+        it { expect(contribution.reload.moderation.action_outcome).to eq 'Oui' }
+        it { expect(contribution.reload.moderation.action_outcome_reported_at).to be_a(Date) }
+      end
+
+      context 'correct params outcome false' do
+        before { params[:contribution][:outcome] = false }
+        before { delete :destroy, params: params }
+
+        it { expect(response.status).to eq 200 }
+        it { expect(result.status).to eq 'closed' }
+        it { expect(contribution.reload.moderation.action_outcome).to eq 'Non' }
+        it { expect(contribution.reload.moderation.action_outcome_reported_at).to be_a(Date) }
+      end
+
+      context 'empty params' do
+        before { delete :destroy, params: params.except(:contribution) }
+
+        it { expect(response.status).to eq 400 }
+        it { expect(result.status).to eq 'open' }
+        it { expect(contribution.reload.moderation).to be_nil }
+      end
     end
   end
 
