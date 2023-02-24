@@ -42,4 +42,10 @@ class InappNotification < ApplicationRecord
 
     :chat_message_on_create == context.to_sym
   end
+
+  def join_request?
+    return false unless context
+
+    [:join_request_on_create, :join_request_on_update].include?(context.to_sym)
+  end
 end
