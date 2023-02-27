@@ -13,7 +13,8 @@ module V1
       :future_outings_count,
       :has_ongoing_outing,
       :address,
-      :status_changed_at
+      :status_changed_at,
+      :public
 
     has_one :user, serializer: ::V1::Users::BasicSerializer
     has_many :members, serializer: ::V1::Users::BasicSerializer
