@@ -20,8 +20,7 @@ module NeighborhoodServices
       end
 
       def default_search user
-        Neighborhood.order_by_interests_matching(user.interest_list)
-          .order_by_activity
+        Neighborhood.order_by_activity
       end
     end
   end
