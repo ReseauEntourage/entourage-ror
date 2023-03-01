@@ -76,6 +76,7 @@ for file in ${files[@]}; do
   rm $file
 done
 
-rails runner scripts/import_iraiser_csv.rb export.csv
+rails runner scripts/import_iraiser_clean_csv.rb export.csv export-clean.csv
+rails runner scripts/import_iraiser_csv.rb export-clean.csv
 
-# rm iraiser_cookie export.csv
+rm iraiser_cookie export.csv export-clean.csv
