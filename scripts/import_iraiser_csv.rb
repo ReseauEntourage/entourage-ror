@@ -15,25 +15,26 @@ ensure
 end
 
 def process_csv csv
-  regular_setups, regular_setups_by_renew_key = extract_regular_setups csv
+  regular_setups = extract_regular_setups csv
   csv.rewind
+
   first_donations = extract_first_donations csv
   csv.rewind
-  csv.each { |row| process_row row, regular_setups, regular_setups_by_renew_key, first_donations }
+
+  csv.each { |row| process_row row, regular_setups, first_donations }
 end
 
 def extract_regular_setups csv
   regular_setups = {}
-  regular_setups_by_renew_key = {}
   csv.each do |row|
     next if row[:payment_gateway_account].in? %w[iraisertest test]
     next unless row[:payment_succeeded] == '1'
     next unless row[:donation_type] == 'setup'
 
     regular_setups[row[:donation_reference]] = row
-    regular_setups_by_renew_key[row[:payment_card_renew_key]] = row
   end
-  [regular_setups, regular_setups_by_renew_key]
+
+  regular_setups
 end
 
 def extract_first_donations csv
@@ -53,7 +54,7 @@ def extract_first_donations csv
   first_donations
 end
 
-def process_row row, regular_setups, regular_setups_by_renew_key, first_donations
+def process_row row, regular_setups, first_donations
   return if row[:payment_gateway_account].in? %w[iraisertest test]
   return unless (row[:payment_succeeded] == '1' ||
                  (row[:donation_category] == 'pledge' &&
@@ -70,20 +71,12 @@ def process_row row, regular_setups, regular_setups_by_renew_key, first_donation
       'regular'
     end
 
-  if row[:donation_type] == 'regular'
-    context_row = regular_setups[row[:donation_setup_number]]
-    while context_row[:campaign_type] == 'upgrade' do
-      context_row = regular_setups_by_renew_key[CGI.parse(context_row[:context_query_string])['h'][0]]
-    end
-  else
-    context_row = row
-  end
-
   source = nil
   medium = nil
   host = nil
-  if context_row[:context_referer]
-    context_row[:context_referer].split(" -> ").each do |url|
+
+  if row[:context_referer]
+    row[:context_referer].split(" -> ").each do |url|
       url = URI(url)
       query = CGI.parse(url.query || '')
       source = query['utm_source']&.first if source.nil?
@@ -91,15 +84,17 @@ def process_row row, regular_setups, regular_setups_by_renew_key, first_donation
       host = url.host if host.nil?
     end
   end
-  if context_row[:context_query_string]
+
+  if row[:context_query_string]
     begin
-      params = JSON.parse(context_row[:context_query_string])
+      params = JSON.parse(row[:context_query_string])
     rescue
-      params = CGI.parse(context_row[:context_query_string])
+      params = CGI.parse(row[:context_query_string])
     end
     source = Array(params['utm_source']).first if source.nil?
     medium = Array(params['utm_medium']).first if medium.nil?
   end
+
   channel = source.nil? ? host : "#{source}/#{medium || '(none)'}"
 
   first_donation = row[:donation_validation_date] == first_donations[row[:sympathizer_id]]
