@@ -149,8 +149,13 @@ def extract_emails row
 
   candidates = candidates
     .compact
-    .map { |c| c.gsub(/\s+/, '').downcase.presence }
-    .compact.uniq
+    .map do |c|
+      begin
+        c.gsub(/\s+/, '').downcase.presence
+      rescue => e
+        nil
+      end
+    end.compact.uniq
     .select { |c| c.match?(/\A[^@]+@[^@]+\.[^@]+\z/) }
 end
 
