@@ -1,5 +1,7 @@
 #!/bin/bash
 
+from_year=${1:-2023}
+
 # se connecte au compte iraiser pour faire un exportCsv
 
 login=$(echo "$IRAISER_CREDENTIALS" | cut -d: -f1)
@@ -32,7 +34,7 @@ function download {
 # The export times out if it's too large, so we segment by quarter to reduce each
 # file's size.
 files=()
-for year in $(seq 2023 $(date +%Y)); do
+for year in $(seq $from_year $(date +%Y)); do
   files+=($(download "${year}_Q1_export.csv" 01/01/$year 31/03/$year))
   files+=($(download "${year}_Q2_export.csv" 01/04/$year 30/06/$year))
   files+=($(download "${year}_Q3_export.csv" 01/07/$year 30/09/$year))
