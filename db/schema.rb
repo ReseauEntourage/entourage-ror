@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_02_22_115500) do
+ActiveRecord::Schema.define(version: 2023_03_02_150000) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -158,6 +158,12 @@ ActiveRecord::Schema.define(version: 2023_02_22_115500) do
     t.jsonb "protected_attributes", default: [], null: false
     t.boolean "first_time_donator", default: false, null: false
     t.integer "app_user_id"
+    t.string "sex"
+    t.string "country"
+    t.string "postal_code"
+    t.string "city"
+    t.string "payment_frequency"
+    t.index ["postal_code"], name: "index_donations_on_postal_code"
   end
 
   create_table "email_campaigns", id: :serial, force: :cascade do |t|
