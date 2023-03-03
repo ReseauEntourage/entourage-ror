@@ -118,6 +118,15 @@ def process_row row, regular_setups, first_donations
     postal_code: row[:donator_postcode],
     city: row[:donator_city],
     payment_frequency: row[:payment_frequency],
+    donator_birthdate: row[:sympathizer_birthdate],
+    payment_type: row[:payment_type],
+    iraiser_donator_id: row[:sympathizer_id],
+    donator_iraiser_account_creation_date: row[:sympathizer_optin_date],
+    donation_once_last_date: row[:sympathizer_donation_once_last_date],
+    donation_regular_first_date: row[sympathizer_donation_regular_first_date],
+    donator_donation_regular_amount: row[:sympathizer_donation_regular_amount],
+    donator_donation_regular_last_year_total: row[:sympathizer_donation_regular_last_year_total],
+    donator_donation_regular_last_date: row[:sympathizer_donation_regular_last_date],
     first_time_donator: first_donation,
     app_user_id: app_user_id
   )
