@@ -26,6 +26,26 @@
 
       <% color = {} %>
 
+      <% if @messages_author %>
+        <% color[@messages_author.id] ||= (color.count * 0.381966011 * 360).round %>
+        <div class="conversation-message is-message-form">
+          <div class="conversation-gutter">
+            <div style="background-color: hsl(<%= color[@messages_author.id] %>, 70%, 75%)" class="conversation-icon">
+              <%= [@messages_author.first_name.try(:first), @messages_author.last_name.try(:first)].compact.join.upcase %>
+            </div>
+          </div>
+          <div class="conversation-content">
+            <div>
+              <%= link_to UserPresenter.new(user: @messages_author).display_name, admin_user_path(@messages_author), class: "conversation-sender" %>
+            </div>
+            <%= form_for ChatMessage.new, url: message_admin_neighborhood_path(@neighborhood.id) do |f| %>
+              <%= f.text_area :content, class: "conversation-message-box", rows: 5 %>
+              <%= f.submit 'Envoyer', class: "btn btn-primary", disabled: true %>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+
       <% if @posts.empty? %>
         Il n'y a pas encore de message.
       <% else %>
@@ -102,26 +122,6 @@
             </div>
           <% end %>
         <% end %>
-      <% end %>
-
-      <% if @messages_author %>
-        <% color[@messages_author.id] ||= (color.count * 0.381966011 * 360).round %>
-        <div class="conversation-message is-message-form">
-          <div class="conversation-gutter">
-            <div style="background-color: hsl(<%= color[@messages_author.id] %>, 70%, 75%)" class="conversation-icon">
-              <%= [@messages_author.first_name.try(:first), @messages_author.last_name.try(:first)].compact.join.upcase %>
-            </div>
-          </div>
-          <div class="conversation-content">
-            <div>
-              <%= link_to UserPresenter.new(user: @messages_author).display_name, admin_user_path(@messages_author), class: "conversation-sender" %>
-            </div>
-            <%= form_for ChatMessage.new, url: message_admin_neighborhood_path(@neighborhood.id) do |f| %>
-              <%= f.text_area :content, class: "conversation-message-box", rows: 5 %>
-              <%= f.submit 'Envoyer', class: "btn btn-primary", disabled: true %>
-            <% end %>
-          </div>
-        </div>
       <% end %>
 
       <div class="row">
