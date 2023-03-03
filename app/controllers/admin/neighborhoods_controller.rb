@@ -102,7 +102,7 @@ module Admin
 
     def show_outing_posts
       @outing = Outing.find(params[:outing_id])
-      @posts = @outing.parent_chat_messages.ordered.page(page).per(per)
+      @posts = @outing.parent_chat_messages.order(created_at: :desc).page(page).per(per)
     end
 
     def show_outing_post_comments
@@ -119,7 +119,7 @@ module Admin
     end
 
     def show_posts
-      @posts = @neighborhood.posts.page(page).per(per).includes([:user])
+      @posts = @neighborhood.posts.order(created_at: :desc).page(page).per(per).includes([:user])
       @moderator_read = @neighborhood.moderator_read_for(user: current_user)
       @messages_author = current_user if @neighborhood.member_ids.include?(current_user.id)
     end
@@ -128,7 +128,7 @@ module Admin
       @post = ChatMessage.find(params[:post_id])
 
       if @post.messageable == @neighborhood
-        @comments = @post.children.page(page).per(per).includes([:user])
+        @comments = @post.children.order(created_at: :desc).page(page).per(per).includes([:user])
       else
         redirect_to edit_admin_neighborhood_path(@neighborhood), alert: "La page n'est pas disponible"
       end
