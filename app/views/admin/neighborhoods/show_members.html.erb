@@ -3,9 +3,37 @@
     <%= render 'edit_header', tab: :show_members %>
 
     <div class="row">
+      <% if @neighborhood.member_ids.include?(current_user.id) && @neighborhood.user_id == current_user.id %>
+        <div class="alert alert-danger" role="alert" style="display: flex; align-items: center">
+          <div style="flex-grow: 1">
+            <b>Membre</b><br>
+            Vous êtes membre et administrateur de ce groupe. Si vous souhaitez le quitter, vous devez choisir avant un autre administrateur.
+          </div>
+        </div>
+      <% elsif @neighborhood.member_ids.include?(current_user.id) %>
+        <div class="alert alert-info" role="alert" style="display: flex; align-items: center">
+          <div style="flex-grow: 1">
+            <b>Membre</b><br>
+            Vous êtes membre de ce groupe. Souhaitez-vous le quitter ?
+          </div>
+
+          <%= link_to("Quitter", unjoin_admin_neighborhood_path(@neighborhood), method: :put, class: "btn btn-success") %>
+        </div>
+      <% else %>
+        <div class="alert alert-warning" role="alert" style="display: flex; align-items: center">
+          <div style="flex-grow: 1">
+            <b>Non membre</b><br>
+            Vous n'êtes pas membre de ce groupe. Souhaitez-vous le rejoindre ?
+          </div>
+
+          <%= link_to("Rejoindre", join_admin_neighborhood_path(@neighborhood), method: :put, class: "btn btn-success") %>
+        </div>
+      <% end %>
+
       <div class="breadcrumb" style="margin-bottom: 0px">
-        <%= link_to "Changer le créateur", edit_owner_admin_neighborhood_path(@neighborhood) %>
+        <%= link_to "Changer l'administrateur", edit_owner_admin_neighborhood_path(@neighborhood) %>
       </div>
+
       <table class="table">
         <th>Id</th>
         <th>Nom</th>
