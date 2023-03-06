@@ -113,6 +113,7 @@ def process_row row, regular_setups, first_donations
     date: Time.zone.parse(row[:donation_validation_date]).to_date,
     amount: (row[:donation_amount].to_i / 100.0).round,
     donation_type: donation_type,
+    channel: channel,
     sex: row[:donator_sex],
     country: row[:donator_country],
     postal_code: row[:donator_postcode],
