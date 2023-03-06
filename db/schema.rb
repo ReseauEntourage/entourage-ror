@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_03_02_150000) do
+ActiveRecord::Schema.define(version: 2023_03_06_090001) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -163,6 +163,17 @@ ActiveRecord::Schema.define(version: 2023_03_02_150000) do
     t.string "postal_code"
     t.string "city"
     t.string "payment_frequency"
+    t.string "payment_type"
+    t.date "donator_birthdate"
+    t.integer "iraiser_donator_id"
+    t.date "donator_iraiser_account_creation_date"
+    t.date "donation_once_last_date"
+    t.date "donation_regular_first_date"
+    t.date "donator_donation_regular_last_date"
+    t.integer "donator_donation_regular_last_year_total"
+    t.integer "donator_donation_regular_amount"
+    t.index ["date"], name: "index_donations_on_date"
+    t.index ["iraiser_donator_id"], name: "index_donations_on_iraiser_donator_id"
     t.index ["postal_code"], name: "index_donations_on_postal_code"
   end
 
