@@ -2,9 +2,10 @@ module Admin
   class NeighborhoodsController < Admin::BaseController
     layout 'admin_large'
 
-    before_action :set_neighborhood, only: [:edit, :update, :destroy, :reactivate, :edit_image, :update_image, :show_members, :show_outings, :show_outing_posts, :show_outing_post_comments, :show_posts, :show_post_comments, :edit_owner, :update_owner, :read_all_messages, :message]
+    before_action :set_neighborhood, only: [:edit, :update, :destroy, :reactivate, :edit_image, :update_image, :show_members, :show_outings, :show_outing_posts, :show_outing_post_comments, :show_posts, :show_post_comments, :edit_owner, :update_owner, :read_all_messages, :join, :unjoin, :message]
     before_action :set_forced_join_request, only: [:message]
     before_action :set_chat_message, only: [:unread_message, :destroy_message]
+    before_action :set_join_request, only: [:join, :unjoin]
 
     def index
       @params = params.permit([:area, :search]).to_h
@@ -151,6 +152,38 @@ module Admin
       end
     end
 
+    def join
+      return redirect_to show_members_admin_neighborhood_path(@neighborhood) if @join_request.present? && @join_request.accepted?
+
+      if @join_request.present?
+        @join_request.status = :accepted
+      else
+        @join_request = JoinRequest.new(joinable: @neighborhood, user: current_user, role: :member, status: :accepted)
+      end
+
+      if @join_request.save
+        redirect_to show_members_admin_neighborhood_path(@neighborhood), notice: "Vous avez bien rejoint le groupe"
+      else
+        redirect_to show_members_admin_neighborhood_path(@neighborhood), error: "Vous n'avez pas pu rejoindre le groupe : #{@join_request.errors.full_messages}"
+      end
+    end
+
+    def unjoin
+      return redirect_to show_members_admin_neighborhood_path(@neighborhood) if @join_request.present? && @join_request.cancelled?
+
+      if @join_request.present?
+        @join_request.status = :cancelled
+      else
+        @join_request = JoinRequest.new(joinable: @neighborhood, user: current_user, role: :member, status: :cancelled)
+      end
+
+      if @join_request.save
+        redirect_to show_members_admin_neighborhood_path(@neighborhood), notice: "Vous avez bien quitté le groupe"
+      else
+        redirect_to show_members_admin_neighborhood_path(@neighborhood), error: "Vous n'avez pas pu quitter le groupe : #{@join_request.errors.full_messages}"
+      end
+    end
+
     # chat_message
     def read_all_messages
       ModeratorReadsService
@@ -245,6 +278,10 @@ module Admin
 
     def set_chat_message
       @chat_message = ChatMessage.find(params[:chat_message_id])
+    end
+
+    def set_join_request
+      @join_request = JoinRequest.where(joinable: @neighborhood, user: current_user).first
     end
 
     def neighborhood_params

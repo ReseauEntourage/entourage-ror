@@ -102,4 +102,40 @@ describe Admin::NeighborhoodsController do
     it { expect(result.content).to be_nil }
     it { expect(result.content(true)).to eq("foo") }
   end
+
+  describe "PUT #join" do
+    let(:neighborhood) { FactoryBot.create(:neighborhood) }
+
+    context "user is admin" do
+      before { put :join, params: { id: neighborhood.id } }
+
+      it { expect(neighborhood.reload.member_ids).to match_array([neighborhood.user_id, user.id])}
+    end
+
+    context "user is not admin" do
+      let!(:user) { user_basic_login }
+
+      before { put :join, params: { id: neighborhood.id } }
+
+      it { expect(neighborhood.reload.member_ids).to match_array([neighborhood.user_id])}
+    end
+  end
+
+  describe "PUT #unjoin" do
+    let(:neighborhood) { FactoryBot.create(:neighborhood, participants: [user]) }
+
+    context "user is admin" do
+      before { put :unjoin, params: { id: neighborhood.id } }
+
+      it { expect(neighborhood.reload.member_ids).to match_array([neighborhood.user_id])}
+    end
+
+    context "user is not admin" do
+      let!(:user) { user_basic_login }
+
+      before { put :unjoin, params: { id: neighborhood.id } }
+
+      it { expect(neighborhood.reload.member_ids).to match_array([neighborhood.user_id, user.id])}
+    end
+  end
 end
