@@ -2,11 +2,9 @@ class AddUuidV2ToResources < ActiveRecord::Migration[5.2]
   def up
     add_column :resources, :uuid_v2, :string, limit: 12
 
-    Resource.reset_column_information
-    Resource.find_each do |e|
-      e.send :set_uuid
-      e.save!
-    end
+    execute <<-SQL
+      update resources set uuid_v2 = left(MD5(random()::text), 12);
+    SQL
 
     change_column :resources, :uuid_v2, :string, limit: 12, null: false
 

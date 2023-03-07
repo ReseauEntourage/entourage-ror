@@ -2,11 +2,9 @@ class AddUuidV2ToNeighborhoods < ActiveRecord::Migration[5.2]
   def up
     add_column :neighborhoods, :uuid_v2, :string, limit: 12
 
-    Neighborhood.reset_column_information
-    Neighborhood.find_each do |e|
-      e.send :set_uuid
-      e.save!
-    end
+    execute <<-SQL
+      update neighborhoods set uuid_v2 = left(MD5(random()::text), 12);
+    SQL
 
     change_column :neighborhoods, :uuid_v2, :string, limit: 12, null: false
 
