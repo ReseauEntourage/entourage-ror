@@ -10,7 +10,8 @@ module Deeplinkable
       return find(id) unless params.has_key?(:deeplink)
       return find_by_uuid_v2(id) if attribute_names.include?("uuid_v2")
 
-      find(id) # fallback whenever it is a deeplink but table does not define uuid_v2
+      # fallback whenever it is a deeplink but table does not define uuid_v2
+      find(id)
     end
 
     def generate_uuid_v2
