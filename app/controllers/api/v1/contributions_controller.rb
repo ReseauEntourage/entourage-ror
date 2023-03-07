@@ -105,7 +105,9 @@ module Api
       private
 
       def set_contribution
-        @contribution = Contribution.find(params[:id])
+        @contribution = Contribution.find_by_id_through_context(params[:id], params)
+
+        render json: { message: 'Could not find contribution' }, status: 400 unless @contribution.present?
       end
 
       def index_params

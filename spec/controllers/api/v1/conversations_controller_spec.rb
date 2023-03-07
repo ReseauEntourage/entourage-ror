@@ -385,6 +385,29 @@ describe Api::V1::ConversationsController do
         end
       end
     end
+
+    describe 'deeplink' do
+      before { get :show, params: { token: user.token, id: conversation.id } }
+
+      it { expect(response.status).to eq 200 }
+      it { expect(subject).to have_key("conversation") }
+    end
+
+    describe 'deeplink' do
+      context 'using uuid_v2' do
+        before { get :show, params: { token: user.token, id: conversation.uuid_v2, deeplink: true } }
+
+        it { expect(response.status).to eq 200 }
+        it { expect(subject).to have_key('conversation') }
+        it { expect(subject['conversation']['id']).to eq(conversation.id) }
+      end
+
+      context 'using id fails' do
+        before { get :show, params: { token: user.token, id: conversation.id, deeplink: true } }
+
+        it { expect(response.status).to eq 400 }
+      end
+    end
   end
 
   describe 'POST #report' do

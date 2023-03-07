@@ -11,6 +11,7 @@ class Entourage < ApplicationRecord
   include CoordinatesScopable
   include JoinableScopable
   include ModeratorReadable
+  include Deeplinkable
 
   after_validation :track_status_change
 

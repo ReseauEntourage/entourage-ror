@@ -136,7 +136,9 @@ module Api
       private
 
       def set_outing
-        @outing = Outing.find(params[:id])
+        @outing = Outing.find_by_id_through_context(params[:id], params)
+
+        render json: { message: 'Could not find outing' }, status: 400 unless @outing.present?
       end
 
       def index_params

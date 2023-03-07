@@ -584,11 +584,29 @@ describe Api::V1::OutingsController do
   describe 'GET show' do
     let(:outing) { FactoryBot.create(:outing, status: "open") }
 
-    before { get :show, params: { token: user.token, id: outing.id } }
+    describe 'no deeplink' do
+      before { get :show, params: { token: user.token, id: outing.id } }
 
-    it { expect(response.status).to eq 200 }
-    it { expect(subject).to have_key("outing") }
-    it { expect(subject["outing"]).to have_key("posts") }
+      it { expect(response.status).to eq 200 }
+      it { expect(subject).to have_key("outing") }
+      it { expect(subject["outing"]).to have_key("posts") }
+    end
+
+    describe 'deeplink' do
+      context 'using uuid_v2' do
+        before { get :show, params: { token: user.token, id: outing.uuid_v2, deeplink: true } }
+
+        it { expect(response.status).to eq 200 }
+        it { expect(subject).to have_key('outing') }
+        it { expect(subject['outing']['id']).to eq(outing.id) }
+      end
+
+      context 'using id fails' do
+        before { get :show, params: { token: user.token, id: outing.id, deeplink: true } }
+
+        it { expect(response.status).to eq 400 }
+      end
+    end
   end
 
   context 'cancel' do
