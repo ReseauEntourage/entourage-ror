@@ -145,6 +145,8 @@ module Api
           @chat_message = ChatMessage.where(messageable_type: :Neighborhood).find_by_id_through_context(params[:chat_message_id] || params[:id], params)
 
           render json: { message: 'Could not find chat_message' }, status: 400 unless @chat_message.present?
+        rescue ActiveRecord::RecordNotFound
+          render json: { message: 'Could not find chat_message' }, status: 400
         end
 
         def report_params
