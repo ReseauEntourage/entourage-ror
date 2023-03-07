@@ -6,6 +6,16 @@ RSpec.describe Neighborhood, :type => :model do
   it { should validate_presence_of(:latitude) }
   it { should validate_presence_of(:longitude) }
 
+  describe "has a v2 uuid" do
+    let(:neighborhood) { create :neighborhood }
+
+    describe "format" do
+      it { expect(neighborhood.uuid_v2).not_to be_nil }
+      it { expect(neighborhood.uuid_v2[0]).to eq 'e' }
+      it { expect(neighborhood.uuid_v2.length).to eq 12 }
+    end
+  end
+
   describe 'members count' do
     let(:neighborhood) { FactoryBot.create :neighborhood }
     let(:member) { FactoryBot.create :public_user }

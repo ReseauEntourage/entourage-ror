@@ -1,5 +1,6 @@
 class Resource < ApplicationRecord
   include Recommandable
+  include Deeplinkable
 
   CATEGORIES  = [:understand, :act, :inspire]
 

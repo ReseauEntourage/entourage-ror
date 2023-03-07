@@ -67,6 +67,30 @@ describe Api::V1::ResourcesController, :type => :controller do
       end
     end
 
+    context 'no deeplink' do
+      before { get :show, params: { token: user.token, id: resource.id } }
+
+      it { expect(response.status).to eq 200 }
+      it { expect(result).to have_key("resource") }
+      it { expect(result['resource']['id']).to eq(resource.id) }
+    end
+
+    context 'deeplink' do
+      context 'using uuid_v2' do
+        before { get :show, params: { token: user.token, id: resource.uuid_v2, deeplink: true } }
+
+        it { expect(response.status).to eq 200 }
+        it { expect(result).to have_key('resource') }
+        it { expect(result['resource']['id']).to eq(resource.id) }
+      end
+
+      context 'using id fails' do
+        before { get :show, params: { token: user.token, id: resource.id, deeplink: true } }
+
+        it { expect(response.status).to eq 400 }
+      end
+    end
+
     describe 'description' do
       let(:resource) { create :resource, description: '<p>foo</p>', is_video: false }
       before { get :show, params: { id: resource.id, token: user.token } }

@@ -123,6 +123,30 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
         }
       }) }
     end
+
+    context 'no deeplink' do
+      before { get :show, params: { token: user.token, neighborhood_id: neighborhood.to_param, id: chat_message.id } }
+
+      it { expect(response.status).to eq 200 }
+      it { expect(result).to have_key("chat_message") }
+      it { expect(result['chat_message']['id']).to eq(chat_message.id) }
+    end
+
+    context 'deeplink' do
+      context 'using uuid_v2' do
+        before { get :show, params: { token: user.token, neighborhood_id: neighborhood.uuid_v2, id: chat_message.uuid_v2, deeplink: true } }
+
+        it { expect(response.status).to eq 200 }
+        it { expect(result).to have_key('chat_message') }
+        it { expect(result['chat_message']['id']).to eq(chat_message.id) }
+      end
+
+      context 'using id fails' do
+        before { get :show, params: { token: user.token, neighborhood_id: neighborhood.to_param, id: chat_message.id, deeplink: true } }
+
+        it { expect(response.status).to eq 400 }
+      end
+    end
   end
 
   describe 'POST create' do

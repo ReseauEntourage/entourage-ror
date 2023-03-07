@@ -135,12 +135,16 @@ module Api
         private
 
         def set_outing
-          @outing = Outing.find(params[:outing_id])
+          @outing = Outing.find_by_id_through_context(params[:outing_id], params)
+
+          render json: { message: 'Could not find outing' }, status: 400 unless @outing.present?
         end
 
         def set_chat_message
           # we want to force chat_message to belong to Outing
-          @chat_message = ChatMessage.where(id: params[:chat_message_id] || params[:id], messageable_type: :Entourage).first
+          @chat_message = ChatMessage.where(messageable_type: :Entourage).find_by_id_through_context(params[:chat_message_id] || params[:id], params)
+
+          render json: { message: 'Could not find chat_message' }, status: 400 unless @chat_message.present?
         end
 
         def report_params

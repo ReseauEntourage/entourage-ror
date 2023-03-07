@@ -95,6 +95,30 @@ describe Api::V1::Conversations::ChatMessagesController do
         it { expect(last_message_read).to eq(Time.now.in_time_zone.to_s) }
       end
     end
+
+    context 'no deeplink' do
+      before { get :index, params: { conversation_id: conversation.to_param, token: user.token } }
+
+      it { expect(response.status).to eq 200 }
+      it { expect(result).to have_key("chat_messages") }
+      it { expect(result['chat_messages'][0]['id']).to eq(chat_message_1.id) }
+    end
+
+    context 'deeplink' do
+      context 'using uuid_v2' do
+        before { get :index, params: { conversation_id: conversation.uuid_v2, token: user.token, deeplink: true } }
+
+        it { expect(response.status).to eq 200 }
+        it { expect(result).to have_key("chat_messages") }
+        it { expect(result['chat_messages'][0]['id']).to eq(chat_message_1.id) }
+      end
+
+      context 'using id fails' do
+        before { get :index, params: { conversation_id: conversation.id, token: user.token, deeplink: true } }
+
+        it { expect(response.status).to eq 400 }
+      end
+    end
   end
 
   describe 'POST create' do

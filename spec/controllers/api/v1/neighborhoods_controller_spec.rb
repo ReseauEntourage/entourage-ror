@@ -484,6 +484,30 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
       it { expect(result['neighborhood']).to have_key('posts') }
       it { expect(result['neighborhood']['posts'][0]["read"]).to eq(false) }
     end
+
+    context 'no deeplink' do
+      before { get :show, params: { token: user.token, id: neighborhood.id } }
+
+      it { expect(response.status).to eq 200 }
+      it { expect(result).to have_key("neighborhood") }
+      it { expect(result['neighborhood']['id']).to eq(neighborhood.id) }
+    end
+
+    context 'deeplink' do
+      context 'using uuid_v2' do
+        before { get :show, params: { token: user.token, id: neighborhood.uuid_v2, deeplink: true } }
+
+        it { expect(response.status).to eq 200 }
+        it { expect(result).to have_key('neighborhood') }
+        it { expect(result['neighborhood']['id']).to eq(neighborhood.id) }
+      end
+
+      context 'using id fails' do
+        before { get :show, params: { token: user.token, id: neighborhood.id, deeplink: true } }
+
+        it { expect(response.status).to eq 400 }
+      end
+    end
   end
 
   context 'joined' do
