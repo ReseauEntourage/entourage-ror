@@ -41,7 +41,8 @@ describe Admin::NeighborhoodsController do
   end
 
   describe "POST message" do
-    let(:request) { post :message, params: { id: neighborhood.id, chat_message: { content: "foo" }} }
+    let(:params) { { content: "foo" } }
+    let(:request) { post :message, params: { id: neighborhood.id, chat_message: params } }
 
     context "member" do
       let!(:neighborhood) { create(:neighborhood, participants: [user]) }
@@ -62,15 +63,30 @@ describe Admin::NeighborhoodsController do
 
       it { expect { request }.not_to change { JoinRequest.count } }
       it { expect { request }.to change { ChatMessage.count }.by(1) }
+
+      context "update join_request status" do
+        let(:join_request) { JoinRequest.find_by(joinable: neighborhood, user: user) }
+
+        before { request }
+
+        it { expect(join_request.reload.status).to eq(JoinRequest::ACCEPTED_STATUS) }
+      end
     end
 
-    context "cancelled member update join_request status" do
-      let!(:neighborhood) { create(:neighborhood, cancelled_participants: [user]) }
-      let(:join_request) { JoinRequest.find_by(joinable: neighborhood, user: user) }
+    context "message comment" do
+      let(:params) { { content: "foo", parent_id: chat_message.id } }
 
-      before { request }
+      let!(:neighborhood) { create(:neighborhood, participants: [user]) }
+      let!(:chat_message) { create(:chat_message, messageable: neighborhood)}
 
-      it { expect(join_request.reload.status).to eq(JoinRequest::ACCEPTED_STATUS) }
+      it { expect { request }.not_to change { JoinRequest.count } }
+      it { expect { request }.to change { ChatMessage.count }.by(1) }
+
+      context 'child of her parent' do
+        before { request }
+
+        it { expect(chat_message.reload.child_ids).to eq([ChatMessage.last.id]) }
+      end
     end
   end
 end

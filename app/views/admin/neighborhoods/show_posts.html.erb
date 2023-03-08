@@ -99,6 +99,13 @@
                         unread_message_admin_neighborhoods_path(chat_message_id: message.id),
                         method: :post %>
                   </li>
+
+                  <% unless message.children.any? %>
+                    <li>
+                      <%= link_to "Ajouter un commentaire", show_post_comments_admin_neighborhood_path(@neighborhood, post_id: message.id) %>
+                    </li>
+                  <% end %>
+
                   <% unless message.children.any? %>
                     <li>
                       <%= link_to "Supprimer le message",
@@ -133,7 +140,6 @@
     </div>
   </div>
 </div>
-
 
 <script>
   $('[data-toggle="tooltip"]').tooltip()

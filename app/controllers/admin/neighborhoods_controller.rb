@@ -184,14 +184,20 @@ module Admin
         joinable: @neighborhood,
         join_request: @join_request
       ).create do |on|
+        redirection = if chat_messages_params.has_key?(:parent_id)
+          show_post_comments_admin_neighborhood_path(@neighborhood, post_id: chat_messages_params[:parent_id])
+        else
+          show_posts_admin_neighborhood_path(@neighborhood)
+        end
+
         on.success do |message|
           @join_request.update_column(:last_message_read, message.created_at)
 
-          redirect_to show_posts_admin_neighborhood_path(@neighborhood)
+          redirect_to redirection
         end
 
         on.failure do |message|
-          redirect_to show_posts_admin_neighborhood_path(params[:id]), alert: "Erreur lors de l'envoi du message : #{message.errors.full_messages.to_sentence}"
+          redirect_to redirection, alert: "Erreur lors de l'envoi du message : #{message.errors.full_messages.to_sentence}"
         end
       end
     end
@@ -231,7 +237,7 @@ module Admin
     end
 
     def chat_messages_params
-      params.require(:chat_message).permit(:content)
+      params.require(:chat_message).permit(:content, :parent_id)
     end
 
     def page
