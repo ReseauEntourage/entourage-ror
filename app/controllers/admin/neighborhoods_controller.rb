@@ -3,6 +3,7 @@ module Admin
     layout 'admin_large'
 
     before_action :set_neighborhood, only: [:edit, :update, :destroy, :reactivate, :edit_image, :update_image, :show_members, :show_outings, :show_outing_posts, :show_outing_post_comments, :show_posts, :show_post_comments, :edit_owner, :update_owner, :read_all_messages, :message]
+    before_action :set_forced_join_request, only: [:message]
 
     def index
       @params = params.permit([:area, :search]).to_h
@@ -121,7 +122,6 @@ module Admin
     def show_posts
       @posts = @neighborhood.posts.order(created_at: :desc).page(page).per(per).includes([:user])
       @moderator_read = @neighborhood.moderator_read_for(user: current_user)
-      @messages_author = current_user if @neighborhood.member_ids.include?(current_user.id)
     end
 
     def show_post_comments
@@ -178,18 +178,14 @@ module Admin
     end
 
     def message
-      join_request = current_user.join_requests.accepted.find_by!(joinable: @neighborhood)
-
-      redirect_to show_posts_admin_neighborhood_path(params[:id]), alert: "Vous devez être membre pour poster un message" and return unless join_request
-
-      chat_builder = ChatServices::ChatMessageBuilder.new(
+      ChatServices::ChatMessageBuilder.new(
         params: chat_messages_params,
         user: current_user,
         joinable: @neighborhood,
-        join_request: join_request
+        join_request: @join_request
       ).create do |on|
         on.success do |message|
-          join_request.update_column(:last_message_read, message.created_at)
+          @join_request.update_column(:last_message_read, message.created_at)
 
           redirect_to show_posts_admin_neighborhood_path(@neighborhood)
         end
@@ -214,6 +210,20 @@ module Admin
 
     def set_neighborhood
       @neighborhood = Neighborhood.unscoped.find(params[:id])
+    end
+
+    def set_forced_join_request
+      @join_request = current_user.join_requests.find_by(joinable: @neighborhood)
+
+      return if @join_request.present? && @join_request.accepted?
+
+      if @join_request.present?
+        @join_request.status = :accepted
+      else
+        @join_request = JoinRequest.new(joinable: @neighborhood, user: current_user, role: :member, status: :accepted)
+      end
+
+      @join_request.save!
     end
 
     def neighborhood_params
