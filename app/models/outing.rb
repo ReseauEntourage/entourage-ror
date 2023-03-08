@@ -22,19 +22,21 @@ class Outing < Entourage
   has_many :neighborhoods, through: :neighborhoods_entourages
 
   # siblings and relatives
-  has_many :siblings, class_name: :Outing, foreign_key: :recurrency_identifier, primary_key: :recurrency_identifier
+  has_many :siblings, -> {
+    where.not(recurrency_identifier: nil)
+  }, class_name: :Outing, foreign_key: :recurrency_identifier, primary_key: :recurrency_identifier
 
   has_many :relatives, -> (object) {
-    where.not(id: object.id)
+    where.not(id: object.id).where.not(recurrency_identifier: nil)
   }, class_name: :Outing, foreign_key: :recurrency_identifier, primary_key: :recurrency_identifier
 
   # future_siblings and future_relatives
   has_many :future_siblings, -> {
-    where("metadata->>'starts_at' >= ?", Time.zone.now)
+    where("metadata->>'starts_at' >= ?", Time.zone.now).where.not(recurrency_identifier: nil)
   }, class_name: :Outing, foreign_key: :recurrency_identifier, primary_key: :recurrency_identifier
 
   has_many :future_relatives, -> (object) {
-    where.not(id: object.id).where("metadata->>'starts_at' >= ?", Time.zone.now)
+    where.not(id: object.id).where("metadata->>'starts_at' >= ?", Time.zone.now).where.not(recurrency_identifier: nil)
   }, class_name: :Outing, foreign_key: :recurrency_identifier, primary_key: :recurrency_identifier
 
   belongs_to :recurrence, class_name: :OutingRecurrence, foreign_key: :recurrency_identifier, primary_key: :identifier
