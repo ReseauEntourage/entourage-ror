@@ -437,6 +437,30 @@ describe Api::V1::Outings::ChatMessagesController do
         it { expect(result["chat_messages"][1]["id"]).to eq(chat_message_3.id) }
       end
     end
+
+    context 'no deeplink' do
+      before { get :comments, params: { token: user.token, outing_id: outing.to_param, id: chat_message_1.id } }
+
+      it { expect(response.status).to eq 200 }
+      it { expect(result).to have_key("chat_messages") }
+      it { expect(result['chat_messages'][0]['id']).to eq(chat_message_2.id) }
+    end
+
+    context 'deeplink' do
+      context 'using uuid_v2' do
+        before { get :comments, params: { token: user.token, outing_id: outing.uuid_v2, id: chat_message_1.uuid_v2, deeplink: true } }
+
+        it { expect(response.status).to eq 200 }
+        it { expect(result).to have_key('chat_messages') }
+        it { expect(result['chat_messages'][0]['id']).to eq(chat_message_2.id) }
+      end
+
+      context 'using id fails' do
+        before { get :comments, params: { token: user.token, outing_id: outing.to_param, id: chat_message_1.id, deeplink: true } }
+
+        it { expect(response.status).to eq 400 }
+      end
+    end
   end
 
   describe 'POST #presigned_upload' do

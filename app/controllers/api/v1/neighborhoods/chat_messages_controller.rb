@@ -5,7 +5,7 @@ module Api
 
       class ChatMessagesController < Api::V1::BaseController
         before_action :set_neighborhood, only: [:index, :show, :create, :update, :destroy, :report, :comments, :presigned_upload]
-        before_action :set_chat_message, only: [:show, :update, :destroy, :report]
+        before_action :set_chat_message, only: [:show, :update, :destroy, :report, :comments]
         before_action :ensure_is_member, only: [:create, :report, :presigned_upload]
 
         after_action :set_last_message_read, only: [:index]
@@ -101,7 +101,7 @@ module Api
         end
 
         def comments
-          post = Neighborhood.find(params[:neighborhood_id]).chat_messages.where(id: params[:id]).first
+          post = @neighborhood.chat_messages.where(id: @chat_message.id).first
           messages = post.children.order(created_at: :asc)
 
           render json: messages, each_serializer: ::V1::ChatMessages::CommentSerializer, scope: { current_join_request: join_request }
