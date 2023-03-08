@@ -22,6 +22,7 @@ describe Api::V1::Tours::ChatMessagesController do
         it { expect(JSON.parse(response.body)).to eq({
           "chat_messages" => [{
             "id" => chat_message1.id,
+            "uuid_v2" => chat_message1.uuid_v2,
             "message_type" => "text",
             "content" => "MyText",
             "user" => {
@@ -33,10 +34,11 @@ describe Api::V1::Tours::ChatMessagesController do
             "created_at" => chat_message1.created_at.iso8601(3),
             "status" => "active"
           }, {
-           "id" => chat_message2.id,
-           "message_type" => "text",
-           "content" => "MyText",
-           "user" => {
+            "id" => chat_message2.id,
+            "uuid_v2" => chat_message2.uuid_v2,
+            "message_type" => "text",
+            "content" => "MyText",
+            "user" => {
             "id" => chat_message2.user_id,
             "avatar_url" => nil,
             "display_name" => "John D.",
@@ -88,6 +90,7 @@ describe Api::V1::Tours::ChatMessagesController do
         it { expect(JSON.parse(response.body)).to eq({
           "chat_messages" => [{
             "id" => chat_message2.id,
+            "uuid_v2" => chat_message2.uuid_v2,
             "message_type" => "text",
             "content" => "MyText",
             "user" => {
@@ -125,6 +128,7 @@ describe Api::V1::Tours::ChatMessagesController do
         it { expect(JSON.parse(response.body)).to eq({
           "chat_message" => {
             "id" => ChatMessage.first.id,
+            "uuid_v2" => ChatMessage.first.uuid_v2,
             "message_type" => "text",
             "content" => "foobar",
             "user" => {

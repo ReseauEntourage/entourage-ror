@@ -31,29 +31,31 @@ describe Api::V1::Entourages::ChatMessagesController do
         it { expect(response.status).to eq(200) }
         it { expect(JSON.parse(response.body)).to eq({
           "chat_messages"=> [{
-             "id" => chat_message1.id,
-             "message_type" => "text",
-             "content" => "MyText",
-             "user" => {
-                "id" => chat_message1.user_id,
-                "avatar_url" => nil,
-                "display_name" => "John D.",
-                "partner" => nil
-              },
-             "created_at" => chat_message1.created_at.iso8601(3),
-             "status" => "active"
+            "id" => chat_message1.id,
+            "uuid_v2" => chat_message1.uuid_v2,
+            "message_type" => "text",
+            "content" => "MyText",
+            "user" => {
+              "id" => chat_message1.user_id,
+              "avatar_url" => nil,
+              "display_name" => "John D.",
+              "partner" => nil
+            },
+            "created_at" => chat_message1.created_at.iso8601(3),
+            "status" => "active"
            }, {
-             "id" => chat_message2.id,
-             "message_type" => "text",
-             "content" => "MyText",
-             "user" => {
+            "id" => chat_message2.id,
+            "uuid_v2" => chat_message2.uuid_v2,
+            "message_type" => "text",
+            "content" => "MyText",
+            "user" => {
               "id" => chat_message2.user_id,
               "avatar_url" => nil,
               "display_name" => "John D.",
               "partner" => nil
             },
-             "created_at" => chat_message2.created_at.iso8601(3),
-             "status" => "active"
+            "created_at" => chat_message2.created_at.iso8601(3),
+            "status" => "active"
           }]
         }) }
 
@@ -98,6 +100,7 @@ describe Api::V1::Entourages::ChatMessagesController do
         it { expect(JSON.parse(response.body)).to eq({
           "chat_messages"=>[{
             "id" => chat_message2.id,
+            "uuid_v2" => chat_message2.uuid_v2,
             "message_type" => "text",
             "content" => "MyText",
             "user" => {
@@ -120,6 +123,7 @@ describe Api::V1::Entourages::ChatMessagesController do
         it { expect(JSON.parse(response.body)).to eq({
           "chat_messages" => [{
             "id" => chat_message.id,
+            "uuid_v2" => chat_message.uuid_v2,
             "message_type" => "text",
             "content" => "MyText",
             "user" => {
@@ -171,6 +175,7 @@ describe Api::V1::Entourages::ChatMessagesController do
         it { expect(JSON.parse(response.body)).to eq({
           "chat_message" => {
             "id" => ChatMessage.first.id,
+            "uuid_v2" => ChatMessage.first.uuid_v2,
             "message_type" => "text",
             "content" => "foobar",
             "user" => {
@@ -286,6 +291,7 @@ describe Api::V1::Entourages::ChatMessagesController do
           it { expect(JSON.parse(response.body)).to eq({
             "chat_message" => {
               "id" => ChatMessage.first.id,
+              "uuid_v2" => ChatMessage.first.uuid_v2,
               "message_type" => "text",
               "content" => "foobar",
               "user" => {
@@ -345,6 +351,7 @@ describe Api::V1::Entourages::ChatMessagesController do
           it { expect(JSON.parse(response.body)).to eq({
             "chat_message" => {
               "id" => ChatMessage.last.id,
+              "uuid_v2" => ChatMessage.last.uuid_v2,
               "content" => "#{entourage.title}\nhttps://app.entourage.social/actions/#{entourage.uuid_v2}",
               "user" => {
                 "id" => user.id,
@@ -380,6 +387,7 @@ describe Api::V1::Entourages::ChatMessagesController do
           it { expect(JSON.parse(response.body)).to eq({
             "chat_message" => {
               "id" => ChatMessage.last.id,
+              "uuid_v2" => ChatMessage.last.uuid_v2,
               "content" => "Dede\nAu 50 75008 Paris",
               "user" => {
                 "id" => user.id,

@@ -51,6 +51,7 @@ describe Api::V1::ResourcesController, :type => :controller do
         it { expect(result).to eq({
           "resource" => {
             "id" => resource.id,
+            "uuid_v2" => resource.uuid_v2,
             "name" => "Comment aider",
             "is_video" => false,
             "duration" => nil,

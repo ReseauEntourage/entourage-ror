@@ -35,6 +35,7 @@ describe Api::V1::Conversations::ChatMessagesController do
       it { expect(result).to eq({
         "chat_messages" => [{
           "id" => chat_message_1.id,
+          "uuid_v2" => chat_message_1.uuid_v2,
           "content" => chat_message_1.content,
           "user" => {
             "id" => user.id,
@@ -51,6 +52,7 @@ describe Api::V1::Conversations::ChatMessagesController do
           "status" => "active"
         }, {
           "id" => chat_message_2.id,
+          "uuid_v2" => chat_message_2.uuid_v2,
           "content" => chat_message_2.content,
           "user" => {
             "id" => user.id,
@@ -153,6 +155,7 @@ describe Api::V1::Conversations::ChatMessagesController do
         let(:json) {{
           "chat_message" => {
             "id" => ChatMessage.last.id,
+            "uuid_v2" => ChatMessage.last.uuid_v2,
             "content" => content,
             "user" => {
               "id" => user.id,

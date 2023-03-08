@@ -36,6 +36,7 @@ describe Api::V1::Outings::ChatMessagesController do
       it { expect(result).to eq({
         "chat_messages" => [{
           "id" => chat_message_1.id,
+          "uuid_v2" => chat_message_1.uuid_v2,
           "content" => chat_message_1.content,
           "user" => {
             "id" => user.id,
@@ -107,6 +108,7 @@ describe Api::V1::Outings::ChatMessagesController do
       it { expect(result).to eq({
         "chat_message" => {
           "id" => chat_message.id,
+          "uuid_v2" => chat_message.uuid_v2,
           "content" => chat_message.content,
           "user" => {
             "id" => chat_message.user_id,
@@ -182,6 +184,7 @@ describe Api::V1::Outings::ChatMessagesController do
         let(:json) {{
           "chat_message" => {
             "id" => ChatMessage.last.id,
+            "uuid_v2" => ChatMessage.last.uuid_v2,
             "content" => content,
             "user" => {
               "id" => user.id,
@@ -394,6 +397,7 @@ describe Api::V1::Outings::ChatMessagesController do
       it { expect(result).to eq({
         "chat_messages" => [{
           "id" => chat_message_2.id,
+          "uuid_v2" => chat_message_2.uuid_v2,
           "content" => chat_message_2.content,
           "user" => {
             "id" => user.id,

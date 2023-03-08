@@ -4,6 +4,7 @@ module V1
     include V1::Entourages::Blockers
 
     attributes :id,
+      :uuid_v2,
       :status,
       :type,
       :name,
