@@ -102,7 +102,7 @@ module Admin
 
     def show_outing_posts
       @outing = Outing.find(params[:outing_id])
-      @posts = @outing.parent_chat_messages.page(page).per(per)
+      @posts = @outing.parent_chat_messages.ordered.page(page).per(per)
     end
 
     def show_outing_post_comments
@@ -112,7 +112,7 @@ module Admin
 
       if messageable.is_a?(Entourage) && messageable.outing?
         @outing = messageable
-        @comments = @post.children.page(page).per(per).includes([:user])
+        @comments = @post.children.ordered.page(page).per(per).includes([:user])
       else
         redirect_to edit_admin_neighborhood_path(@neighborhood), alert: "La page n'est pas disponible"
       end
