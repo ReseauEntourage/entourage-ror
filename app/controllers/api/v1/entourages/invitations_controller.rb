@@ -37,7 +37,7 @@ module Api
         attr_reader :entourage
 
         def set_entourage
-          @entourage = Entourage.find_by_id_or_uuid(params[:entourage_id])
+          @entourage = Entourage.findable_by_id_or_uuid(params[:entourage_id])
         end
 
         def restrict_group_types!

@@ -143,7 +143,6 @@ class Entourage < ApplicationRecord
     joins("left join entourage_moderations on entourage_moderations.entourage_id = entourages.id")
   end
 
-  def self.find_by_id_or_uuid identifier
     key =
       if !identifier.is_a?(String)
         :id
@@ -158,6 +157,7 @@ class Entourage < ApplicationRecord
       end
 
     @entourage = Entourage.findable.find_by!(key => identifier)
+  def self.findable_by_id_or_uuid identifier
   end
 
   #An entourage can never be freezed
