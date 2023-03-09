@@ -305,6 +305,7 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
 
       it { expect(response.status).to eq 200 }
       it { expect(result.content).to be_nil }
+      it { expect(result.content(true)).to eq("bar") }
       it { expect(result.status).to eq 'deleted' }
       it { expect(result.deleter_id).to eq(chat_message.user_id) }
       it { expect(result.deleted_at).to be_a(ActiveSupport::TimeWithZone) }
