@@ -127,12 +127,24 @@ describe Api::V1::Outings::ChatMessagesController do
       }) }
     end
 
-    context 'no deeplink' do
-      before { get :show, params: { token: user.token, outing_id: outing.to_param, id: chat_message.id } }
+    describe 'no deeplink' do
+      before { get :index, params: { outing_id: identifier, token: user.token } }
 
-      it { expect(response.status).to eq 200 }
-      it { expect(result).to have_key("chat_message") }
-      it { expect(result['chat_message']['id']).to eq(chat_message.id) }
+      context 'from id' do
+        let(:identifier) { outing.id }
+
+        it { expect(response.status).to eq 200 }
+        it { expect(result).to have_key("chat_messages") }
+        it { expect(result['chat_messages'][0]['id']).to eq(chat_message.id) }
+      end
+
+      context 'from uuid_v2' do
+        let(:identifier) { outing.uuid_v2 }
+
+        it { expect(response.status).to eq 200 }
+        it { expect(result).to have_key("chat_messages") }
+        it { expect(result['chat_messages'][0]['id']).to eq(chat_message.id) }
+      end
     end
 
     context 'deeplink' do
@@ -438,12 +450,24 @@ describe Api::V1::Outings::ChatMessagesController do
       end
     end
 
-    context 'no deeplink' do
-      before { get :comments, params: { token: user.token, outing_id: outing.to_param, id: chat_message_1.id } }
+    describe 'no deeplink' do
+      before { get :comments, params: { token: user.token, outing_id: identifier, id: chat_message_1.id } }
 
-      it { expect(response.status).to eq 200 }
-      it { expect(result).to have_key("chat_messages") }
-      it { expect(result['chat_messages'][0]['id']).to eq(chat_message_2.id) }
+      context 'from id' do
+        let(:identifier) { outing.id }
+
+        it { expect(response.status).to eq 200 }
+        it { expect(result).to have_key("chat_messages") }
+        it { expect(result['chat_messages'][0]['id']).to eq(chat_message_2.id) }
+      end
+
+      context 'from uuid_v2' do
+        let(:identifier) { outing.uuid_v2 }
+
+        it { expect(response.status).to eq 200 }
+        it { expect(result).to have_key("chat_messages") }
+        it { expect(result['chat_messages'][0]['id']).to eq(chat_message_2.id) }
+      end
     end
 
     context 'deeplink' do

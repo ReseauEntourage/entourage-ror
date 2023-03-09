@@ -98,12 +98,24 @@ describe Api::V1::Conversations::ChatMessagesController do
       end
     end
 
-    context 'no deeplink' do
-      before { get :index, params: { conversation_id: conversation.to_param, token: user.token } }
+    describe 'no deeplink' do
+      before { get :index, params: { conversation_id: identifier, token: user.token } }
 
-      it { expect(response.status).to eq 200 }
-      it { expect(result).to have_key("chat_messages") }
-      it { expect(result['chat_messages'][0]['id']).to eq(chat_message_1.id) }
+      context 'from id' do
+        let(:identifier) { conversation.id }
+
+        it { expect(response.status).to eq 200 }
+        it { expect(result).to have_key("chat_messages") }
+        it { expect(result['chat_messages'][0]['id']).to eq(chat_message_1.id) }
+      end
+
+      context 'from uuid_v2' do
+        let(:identifier) { conversation.uuid_v2 }
+
+        it { expect(response.status).to eq 200 }
+        it { expect(result).to have_key("chat_messages") }
+        it { expect(result['chat_messages'][0]['id']).to eq(chat_message_1.id) }
+      end
     end
 
     context 'deeplink' do

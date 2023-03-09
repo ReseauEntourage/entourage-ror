@@ -299,13 +299,26 @@ describe Api::V1::ContributionsController, :type => :controller do
 
     let(:contribution) { FactoryBot.create(:contribution, section: "hygiene") }
 
-    describe 'deeplink' do
-      before { get :show, params: { token: user.token, id: contribution.id } }
+    describe 'no deeplink' do
+      before { get :show, params: { token: user.token, id: identifier } }
 
-      it { expect(response.status).to eq 200 }
-      it { expect(subject).to have_key("contribution") }
-      it { expect(subject["contribution"]).to have_key("section") }
-      it { expect(subject["contribution"]["section"]).to eq("hygiene") }
+      context 'from id' do
+        let(:identifier) { contribution.id }
+
+        it { expect(response.status).to eq 200 }
+        it { expect(subject).to have_key("contribution") }
+        it { expect(subject["contribution"]).to have_key("section") }
+        it { expect(subject["contribution"]["section"]).to eq("hygiene") }
+      end
+
+      context 'from uuid_v2' do
+        let(:identifier) { contribution.uuid_v2 }
+
+        it { expect(response.status).to eq 200 }
+        it { expect(subject).to have_key("contribution") }
+        it { expect(subject["contribution"]).to have_key("section") }
+        it { expect(subject["contribution"]["section"]).to eq("hygiene") }
+      end
     end
 
     describe 'deeplink' do

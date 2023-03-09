@@ -301,12 +301,25 @@ describe Api::V1::SolicitationsController, :type => :controller do
     let(:solicitation) { FactoryBot.create(:solicitation, section: "social") }
 
     describe 'no deeplink' do
-      before { get :show, params: { token: user.token, id: solicitation.id } }
+      before { get :show, params: { token: user.token, id: identifier } }
 
-      it { expect(response.status).to eq 200 }
-      it { expect(subject).to have_key("solicitation") }
-      it { expect(subject["solicitation"]).to have_key("section") }
-      it { expect(subject["solicitation"]["section"]).to eq("social") }
+      context 'from id' do
+        let(:identifier) { solicitation.id }
+
+        it { expect(response.status).to eq 200 }
+        it { expect(subject).to have_key("solicitation") }
+        it { expect(subject["solicitation"]).to have_key("section") }
+        it { expect(subject["solicitation"]["section"]).to eq("social") }
+      end
+
+      context 'from uuid_v2' do
+        let(:identifier) { solicitation.uuid_v2 }
+
+        it { expect(response.status).to eq 200 }
+        it { expect(subject).to have_key("solicitation") }
+        it { expect(subject["solicitation"]).to have_key("section") }
+        it { expect(subject["solicitation"]["section"]).to eq("social") }
+      end
     end
 
     describe 'deeplink' do

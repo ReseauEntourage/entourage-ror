@@ -386,11 +386,24 @@ describe Api::V1::ConversationsController do
       end
     end
 
-    describe 'deeplink' do
-      before { get :show, params: { token: user.token, id: conversation.id } }
+    context 'no deeplink' do
+      before { get :show, params: { token: user.token, id: identifier } }
 
-      it { expect(response.status).to eq 200 }
-      it { expect(subject).to have_key("conversation") }
+      context 'from id' do
+        let(:identifier) { conversation.id }
+
+        it { expect(response.status).to eq 200 }
+        it { expect(subject).to have_key("conversation") }
+        it { expect(subject['conversation']['id']).to eq(conversation.id) }
+      end
+
+      context 'from uuid_v2' do
+        let(:identifier) { conversation.uuid_v2 }
+
+        it { expect(response.status).to eq 200 }
+        it { expect(subject).to have_key("conversation") }
+        it { expect(subject['conversation']['id']).to eq(conversation.id) }
+      end
     end
 
     describe 'deeplink' do

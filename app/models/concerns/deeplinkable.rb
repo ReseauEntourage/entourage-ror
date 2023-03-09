@@ -6,12 +6,27 @@ module Deeplinkable
   end
 
   class_methods do
-    def find_by_id_through_context id, params
-      return find(id) unless params.has_key?(:deeplink)
-      return find_by_uuid_v2(id) if attribute_names.include?("uuid_v2")
+    def find_by_id_through_context identifier, params
+      return find_by_id_or_uuid(identifier) unless params.has_key?(:deeplink)
+      return find_by_uuid_v2(identifier) if attribute_names.include?("uuid_v2")
 
       # fallback whenever it is a deeplink but table does not define uuid_v2
-      find(id)
+      find(identifier)
+    end
+
+    def find_by_id_or_uuid identifier
+      return find_by_id(identifier) unless identifier.is_a?(String)
+      return find_by_uuid_v2(identifier) if identifier.start_with?('1_hash_') && attribute_names.include?("uuid_v2")
+      return find_by_uuid(identifier) if identifier.length == 36 && attribute_names.include?("uuid")
+      return find_by_uuid_v2(identifier) if identifier.length == 12 && attribute_names.include?("uuid_v2")
+
+      find_by_id(identifier)
+    end
+
+    def find_by_id_or_uuid! identifier
+      raise ActiveRecord::RecordNotFound unless record = find_by_id_or_uuid(identifier)
+
+      record
     end
 
     def generate_uuid_v2

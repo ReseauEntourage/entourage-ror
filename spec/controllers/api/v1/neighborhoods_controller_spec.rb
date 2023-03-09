@@ -490,11 +490,23 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
     end
 
     context 'no deeplink' do
-      before { get :show, params: { token: user.token, id: neighborhood.id } }
+      before { get :show, params: { token: user.token, id: identifier } }
 
-      it { expect(response.status).to eq 200 }
-      it { expect(result).to have_key("neighborhood") }
-      it { expect(result['neighborhood']['id']).to eq(neighborhood.id) }
+      context 'from id' do
+        let(:identifier) { neighborhood.id }
+
+        it { expect(response.status).to eq 200 }
+        it { expect(result).to have_key("neighborhood") }
+        it { expect(result['neighborhood']['id']).to eq(neighborhood.id) }
+      end
+
+      context 'from uuid_v2' do
+        let(:identifier) { neighborhood.uuid_v2 }
+
+        it { expect(response.status).to eq 200 }
+        it { expect(result).to have_key("neighborhood") }
+        it { expect(result['neighborhood']['id']).to eq(neighborhood.id) }
+      end
     end
 
     context 'deeplink' do
