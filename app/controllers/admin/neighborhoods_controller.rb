@@ -4,6 +4,7 @@ module Admin
 
     before_action :set_neighborhood, only: [:edit, :update, :destroy, :reactivate, :edit_image, :update_image, :show_members, :show_outings, :show_outing_posts, :show_outing_post_comments, :show_posts, :show_post_comments, :edit_owner, :update_owner, :read_all_messages, :message]
     before_action :set_forced_join_request, only: [:message]
+    before_action :set_chat_message, only: [:unread_message, :destroy_message]
 
     def index
       @params = params.permit([:area, :search]).to_h
@@ -168,13 +169,11 @@ module Admin
     end
 
     def unread_message
-      chat_message = ChatMessage.find(params[:chat_message_id])
-
       ModeratorReadsService
-        .new(instance: chat_message.messageable, moderator: current_user)
-        .mark_as_read(at: chat_message.created_at)
+        .new(instance: @chat_message.messageable, moderator: current_user)
+        .mark_as_read(at: @chat_message.created_at)
 
-      redirect_to show_posts_admin_neighborhood_path(chat_message.messageable)
+      redirect_to show_posts_admin_neighborhood_path(@chat_message.messageable)
     end
 
     def message
@@ -203,13 +202,25 @@ module Admin
     end
 
     def destroy_message
-      chat_message = ChatMessage.find(params[:chat_message_id])
+      ChatServices::Deleter.new(user: current_user, chat_message: @chat_message).delete(true) do |on|
+        redirection = if @chat_message.has_parent?
+          show_post_comments_admin_neighborhood_path(@chat_message.messageable, post_id: @chat_message.parent_id)
+        else
+          show_posts_admin_neighborhood_path(@chat_message.messageable)
+        end
 
-      return redirect_to show_posts_admin_neighborhood_path(chat_message.messageable), alert: "Impossible de supprimer une publication qui a des commentaires" if chat_message.children.any?
+        on.success do |chat_message|
+          redirect_to redirection
+        end
 
-      chat_message.destroy
+        on.failure do |chat_message|
+          redirect_to redirection, alert: chat_message.errors.full_messages
+        end
 
-      redirect_to show_posts_admin_neighborhood_path(chat_message.messageable)
+        on.not_authorized do
+          redirect_to redirection, alert: "You are not authorized to delete this chat_message"
+        end
+      end
     end
 
     private
@@ -230,6 +241,10 @@ module Admin
       end
 
       @join_request.save!
+    end
+
+    def set_chat_message
+      @chat_message = ChatMessage.find(params[:chat_message_id])
     end
 
     def neighborhood_params
