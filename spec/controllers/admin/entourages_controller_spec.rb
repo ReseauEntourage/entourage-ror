@@ -126,6 +126,31 @@ describe Admin::EntouragesController do
     it { expect(assigns(:entourage)).to eq(entourage) }
   end
 
+  describe "DELETE destroy_message" do
+    context "on chat_message" do
+      let(:entourage) { create(:entourage) }
+      let(:chat_message) { create(:chat_message, messageable: entourage, content: "foo") }
+      let(:result) { chat_message.reload }
+
+      before { delete :destroy_message, params: { id: chat_message.id, type: 'ChatMessage' }}
+
+      it { expect(result.deleted?).to eq(true) }
+      it { expect(result.deleter_id).to eq(user.id) }
+      it { expect(result.content).to be_nil }
+      it { expect(result.content(true)).to eq("foo") }
+    end
+
+    context "on join_request" do
+      let(:entourage) { create(:entourage) }
+      let(:join_request) { create(:join_request, joinable: entourage, message: "foo") }
+      let(:result) { join_request.reload }
+
+      before { delete :destroy_message, params: { id: join_request.id, type: 'JoinRequest' }}
+
+      it { expect(result.message).to be_nil }
+    end
+  end
+
   describe "GET #edit_image" do
     context "no access when action" do
       let(:entourage) { FactoryBot.create(:entourage) }
