@@ -32,6 +32,7 @@
             <%= [current_user.first_name.try(:first), current_user.last_name.try(:first)].compact.join.upcase %>
           </div>
         </div>
+
         <div class="conversation-content">
           <div>
             <%= link_to UserPresenter.new(user: current_user).display_name, admin_user_path(current_user), class: "conversation-sender" %>
