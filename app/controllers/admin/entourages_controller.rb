@@ -188,6 +188,7 @@ module Admin
     end
 
     def show_comments
+      @post = ChatMessage.find(params[:message_id])
       @comments = ChatMessage.find(params[:message_id]).children.order(created_at: :desc).page(page).per(per)
 
       render :show
@@ -389,7 +390,7 @@ module Admin
         join_request: @join_request
       ).create do |on|
         redirection = if chat_messages_params.has_key?(:parent_id)
-          show_comments_admin_entourage_path(@entourage, post_id: chat_messages_params[:parent_id])
+          show_comments_admin_entourage_path(@entourage, message_id: chat_messages_params[:parent_id])
         else
           show_messages_admin_entourage_path(@entourage)
         end
@@ -516,7 +517,7 @@ module Admin
     end
 
     def chat_messages_params
-      params.require(:chat_message).permit(:content)
+      params.require(:chat_message).permit(:content, :parent_id)
     end
   end
 end

@@ -117,6 +117,13 @@
                   moderator_read_admin_entourage_path(@entourage, read_at: message.created_at),
                   method: :post %>
             </li>
+
+            <% unless message.children.any? %>
+              <li>
+                <%= link_to "Ajouter un commentaire", show_comments_admin_entourage_path(@entourage.id, message_id: message.full_object_id) %>
+              </li>
+            <% end %>
+
             <li>
               <%= link_to "Supprimer le message",
                   destroy_message_admin_entourages_path(type: message.full_object_type, id: message.full_object_id),

@@ -2,6 +2,20 @@
 
 <h3>Commentaires <span class="badge"><%= @comments.count %><span></h3>
 
+<div class="conversation-content">
+  <div>
+    <%= link_to UserPresenter.new(user: current_user).display_name, admin_user_path(current_user), class: "conversation-sender" %>
+  </div>
+
+  <%= form_for ChatMessage.new, url: message_admin_entourage_path(@entourage.id) do |f| %>
+    <%= f.hidden_field :parent_id, value: @post.id %>
+
+    <%= f.text_area :content, class: "conversation-message-box", rows: 5 %>
+    <%= f.submit 'Envoyer', class: "btn btn-primary", disabled: true %>
+  <% end %>
+</div>
+</div>
+
 <% if @comments.empty? %>
   Il n'y a pas encore de message.
 <% else %>
@@ -44,3 +58,14 @@
 <div class="row">
   <%= paginate @comments %>
 </div>
+
+<script>
+  $('[data-toggle="tooltip"]').tooltip()
+
+  $(function(){
+    var chatMessageSubmit = $('#new_chat_message [type=submit]')[0]
+    $('#chat_message_content').on('input', function() {
+      chatMessageSubmit.disabled = this.textLength === 0;
+    })
+  })
+</script>
