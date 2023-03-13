@@ -411,19 +411,41 @@ module Admin
     end
 
     def destroy_message
-      case params[:type]
-      when 'ChatMessage'
-        chat_message = ChatMessage.find(params[:id])
-        chat_message.destroy
-        entourage = chat_message.messageable
-      when 'JoinRequest'
-        join_request = JoinRequest.find(params[:id])
-        join_request.message = nil
-        join_request.save
-        entourage = join_request.joinable
+      unless ['JoinRequest', 'ChatMessage'].include?(params[:type])
+        return redirect_to admin_entourages_path, alert: "Wrong type param for destroy_message"
       end
 
-      redirect_to [:admin, entourage]
+      return destroy_join_request if params[:type] == 'JoinRequest'
+
+      @chat_message = ChatMessage.find(params[:id])
+
+      ChatServices::Deleter.new(user: current_user, chat_message: @chat_message).delete(true) do |on|
+        redirection = if @chat_message.has_parent?
+          show_comments_admin_entourage_path(@chat_message.messageable, post_id: @chat_message.parent_id)
+        else
+          show_messages_admin_entourage_path(@chat_message.messageable)
+        end
+
+        on.success do |chat_message|
+          redirect_to redirection
+        end
+
+        on.failure do |chat_message|
+          redirect_to redirection, alert: chat_message.errors.full_messages
+        end
+
+        on.not_authorized do
+          redirect_to redirection, alert: "You are not authorized to delete this chat_message"
+        end
+      end
+    end
+
+    def destroy_join_request
+      join_request = JoinRequest.find(params[:id])
+      join_request.message = nil
+      join_request.save
+
+      redirect_to [:admin, join_request.joinable]
     end
 
     def sensitive_words

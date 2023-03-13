@@ -9,10 +9,10 @@ module ChatServices
       @callback = DeleterCallback.new
     end
 
-    def delete
+    def delete from_backoffice = false
       yield callback if block_given?
 
-      return callback.on_not_authorized.try(:call) unless user.id == chat_message.user_id
+      return callback.on_not_authorized.try(:call) unless user.id == chat_message.user_id || (from_backoffice && user.admin?)
 
       chat_message.assign_attributes(status: :deleted, deleter: user, deleted_at: Time.zone.now)
 

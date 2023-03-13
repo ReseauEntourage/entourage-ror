@@ -89,4 +89,17 @@ describe Admin::NeighborhoodsController do
       end
     end
   end
+
+  describe "DELETE destroy_message" do
+    let(:neighborhood) { FactoryBot.create(:neighborhood) }
+    let(:chat_message) { FactoryBot.create(:chat_message, messageable: neighborhood, content: "foo") }
+    let(:result) { chat_message.reload }
+
+    before { delete :destroy_message, params: { id: neighborhood.id, chat_message_id: chat_message.id }}
+
+    it { expect(result.deleted?).to eq(true) }
+    it { expect(result.deleter_id).to eq(user.id) }
+    it { expect(result.content).to be_nil }
+    it { expect(result.content(true)).to eq("foo") }
+  end
 end
