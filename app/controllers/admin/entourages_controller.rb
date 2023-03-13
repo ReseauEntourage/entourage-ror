@@ -1,7 +1,7 @@
 module Admin
   class EntouragesController < Admin::BaseController
     before_action :set_entourage, only: [:show, :edit, :update, :close, :renew, :cancellation, :cancel, :edit_image, :update_image, :moderator_read, :moderator_unread, :message, :show_members, :show_joins, :show_invitations, :show_messages, :show_comments, :show_siblings, :sensitive_words, :sensitive_words_check, :edit_type, :edit_owner, :update_owner, :admin_pin, :admin_unpin, :pin, :unpin]
-    before_action :ensure_moderator!, only: [:message]
+    before_action :set_forced_join_request, only: [:message]
 
     before_action :set_default_index_params, only: [:index]
     before_action :set_index_params, only: [:index, :show, :edit, :show_messages, :show_invitations, :show_joins, :show_members]
@@ -188,6 +188,7 @@ module Admin
     end
 
     def show_comments
+      @post = ChatMessage.find(params[:message_id])
       @comments = ChatMessage.find(params[:message_id]).children.order(created_at: :desc).page(page).per(per)
 
       render :show
@@ -382,31 +383,29 @@ module Admin
     end
 
     def message
-      user = current_user
-
-      join_request =
-        user.join_requests.find_or_create_by!(joinable: @entourage) do |join_request|
-          join_request.role = JoinRequestsServices::JoinRequestBuilder.default_role(@entourage)
-          join_request.status = JoinRequest::ACCEPTED_STATUS
+      ChatServices::ChatMessageBuilder.new(
+        params: chat_messages_params,
+        user: current_user,
+        joinable: @entourage,
+        join_request: @join_request
+      ).create do |on|
+        redirection = if chat_messages_params.has_key?(:parent_id)
+          show_comments_admin_entourage_path(@entourage, message_id: chat_messages_params[:parent_id])
+        else
+          show_messages_admin_entourage_path(@entourage)
         end
 
-      chat_builder = ChatServices::ChatMessageBuilder.new(
-        params: chat_messages_params,
-        user: user,
-        joinable: @entourage,
-        join_request: join_request
-      )
-
-      chat_builder.create do |on|
         on.success do |message|
+          @join_request.update_column(:last_message_read, message.created_at)
           ModeratorReadsService
             .new(instance: @entourage, moderator: current_user)
             .mark_as_read
-          redirect_to [:admin, @entourage, anchor: "chat_message-#{message.id}"]
+
+          redirect_to redirection
         end
 
         on.failure do |message|
-          redirect_to [:admin, @entourage], alert: "Erreur lors de l'envoi du message : #{message.errors.full_messages.to_sentence}"
+          redirect_to redirection, alert: "Erreur lors de l'envoi du message : #{message.errors.full_messages.to_sentence}"
         end
       end
     end
@@ -453,6 +452,20 @@ module Admin
 
     def set_entourage
       @entourage = Entourage.find(params[:id])
+    end
+
+    def set_forced_join_request
+      @join_request = current_user.join_requests.find_by(joinable: @entourage)
+
+      return if @join_request.present? && @join_request.accepted?
+
+      if @join_request.present?
+        @join_request.status = :accepted
+      else
+        @join_request = JoinRequest.new(joinable: @entourage, user: current_user, role: :member, status: :accepted)
+      end
+
+      @join_request.save!
     end
 
     def set_index_params
@@ -504,7 +517,7 @@ module Admin
     end
 
     def chat_messages_params
-      params.require(:chat_message).permit(:content)
+      params.require(:chat_message).permit(:content, :parent_id)
     end
   end
 end

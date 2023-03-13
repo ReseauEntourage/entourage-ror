@@ -231,6 +231,7 @@ Rails.application.routes.draw do
         get '/edit/image', action: :edit_image
         put '/update/image', action: :update_image
         post :read_all_messages
+        post :message
       end
 
       collection do

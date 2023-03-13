@@ -2,7 +2,8 @@ module Admin
   class NeighborhoodsController < Admin::BaseController
     layout 'admin_large'
 
-    before_action :set_neighborhood, only: [:edit, :update, :destroy, :reactivate, :edit_image, :update_image, :show_members, :show_outings, :show_outing_posts, :show_outing_post_comments, :show_posts, :show_post_comments, :edit_owner, :update_owner, :read_all_messages]
+    before_action :set_neighborhood, only: [:edit, :update, :destroy, :reactivate, :edit_image, :update_image, :show_members, :show_outings, :show_outing_posts, :show_outing_post_comments, :show_posts, :show_post_comments, :edit_owner, :update_owner, :read_all_messages, :message]
+    before_action :set_forced_join_request, only: [:message]
 
     def index
       @params = params.permit([:area, :search]).to_h
@@ -102,7 +103,7 @@ module Admin
 
     def show_outing_posts
       @outing = Outing.find(params[:outing_id])
-      @posts = @outing.parent_chat_messages.ordered.page(page).per(per)
+      @posts = @outing.parent_chat_messages.order(created_at: :desc).page(page).per(per)
     end
 
     def show_outing_post_comments
@@ -119,7 +120,7 @@ module Admin
     end
 
     def show_posts
-      @posts = @neighborhood.posts.page(page).per(per).includes([:user])
+      @posts = @neighborhood.posts.order(created_at: :desc).page(page).per(per).includes([:user])
       @moderator_read = @neighborhood.moderator_read_for(user: current_user)
     end
 
@@ -127,7 +128,7 @@ module Admin
       @post = ChatMessage.find(params[:post_id])
 
       if @post.messageable == @neighborhood
-        @comments = @post.children.page(page).per(per).includes([:user])
+        @comments = @post.children.order(created_at: :desc).page(page).per(per).includes([:user])
       else
         redirect_to edit_admin_neighborhood_path(@neighborhood), alert: "La page n'est pas disponible"
       end
@@ -176,6 +177,31 @@ module Admin
       redirect_to show_posts_admin_neighborhood_path(chat_message.messageable)
     end
 
+    def message
+      ChatServices::ChatMessageBuilder.new(
+        params: chat_messages_params,
+        user: current_user,
+        joinable: @neighborhood,
+        join_request: @join_request
+      ).create do |on|
+        redirection = if chat_messages_params.has_key?(:parent_id)
+          show_post_comments_admin_neighborhood_path(@neighborhood, post_id: chat_messages_params[:parent_id])
+        else
+          show_posts_admin_neighborhood_path(@neighborhood)
+        end
+
+        on.success do |message|
+          @join_request.update_column(:last_message_read, message.created_at)
+
+          redirect_to redirection
+        end
+
+        on.failure do |message|
+          redirect_to redirection, alert: "Erreur lors de l'envoi du message : #{message.errors.full_messages.to_sentence}"
+        end
+      end
+    end
+
     def destroy_message
       chat_message = ChatMessage.find(params[:chat_message_id])
 
@@ -192,8 +218,26 @@ module Admin
       @neighborhood = Neighborhood.unscoped.find(params[:id])
     end
 
+    def set_forced_join_request
+      @join_request = current_user.join_requests.find_by(joinable: @neighborhood)
+
+      return if @join_request.present? && @join_request.accepted?
+
+      if @join_request.present?
+        @join_request.status = :accepted
+      else
+        @join_request = JoinRequest.new(joinable: @neighborhood, user: current_user, role: :member, status: :accepted)
+      end
+
+      @join_request.save!
+    end
+
     def neighborhood_params
       params.require(:neighborhood).permit(:status, :name, :description, :interest_list, :neighborhood_image_id, :google_place_id, :user_id, :change_ownership_message, interests: [])
+    end
+
+    def chat_messages_params
+      params.require(:chat_message).permit(:content, :parent_id)
     end
 
     def page

@@ -6,6 +6,26 @@
 
     <div class="row">
       <% color = {} %>
+      <% color[current_user.id] || (color.count * 0.381966011 * 360).round %>
+      <div class="conversation-message is-message-form">
+        <div class="conversation-gutter">
+          <div style="background-color: hsl(<%= color[current_user.id] %>, 70%, 75%)" class="conversation-icon">
+            <%= [current_user.first_name.try(:first), current_user.last_name.try(:first)].compact.join.upcase %>
+          </div>
+        </div>
+        <div class="conversation-content">
+          <div>
+            <%= link_to UserPresenter.new(user: current_user).display_name, admin_user_path(current_user), class: "conversation-sender" %>
+          </div>
+
+          <%= form_for ChatMessage.new, url: message_admin_neighborhood_path(@neighborhood.id) do |f| %>
+            <%= f.hidden_field :parent_id, value: @post.id %>
+
+            <%= f.text_area :content, class: "conversation-message-box", rows: 5 %>
+            <%= f.submit 'Envoyer', class: "btn btn-primary", disabled: true %>
+          <% end %>
+        </div>
+      </div>
 
       <% if @comments.empty? %>
         Il n'y a pas encore de message.
@@ -52,3 +72,14 @@
     </div>
   </div>
 </div>
+
+<script>
+  $('[data-toggle="tooltip"]').tooltip()
+
+  $(function(){
+    var chatMessageSubmit = $('#new_chat_message [type=submit]')[0]
+    $('#chat_message_content').on('input', function() {
+      chatMessageSubmit.disabled = this.textLength === 0;
+    })
+  })
+</script>

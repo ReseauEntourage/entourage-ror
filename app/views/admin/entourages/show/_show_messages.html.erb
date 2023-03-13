@@ -20,6 +20,26 @@
 <% end %>
 
 <% color = {} %>
+<% color[current_user.id] ||= (color.count * 0.381966011 * 360).round %>
+<div class="conversation-message is-message-form">
+  <div class="conversation-gutter">
+    <div style="background-color: hsl(<%= color[current_user.id] %>, 70%, 75%)" class="conversation-icon">
+      <%= [current_user.first_name.try(:first), current_user.last_name.try(:first)].compact.join.upcase %>
+    </div>
+  </div>
+
+  <div class="conversation-content">
+    <div>
+      <%= link_to UserPresenter.new(user: current_user).display_name, admin_user_path(current_user), class: "conversation-sender" %>
+    </div>
+    <%= form_for ChatMessage.new, url: message_admin_entourage_path(@entourage) do |f| %>
+      <%= f.text_area :content, class: "conversation-message-box" %>
+      <%= f.submit 'Envoyer', class: "btn btn-primary", disabled: true %>
+    <% end %>
+  </div>
+</div>
+
+<% color = {} %>
 <% if @chat_messages.empty? %>
   Il n'y a pas encore de message.
 <% else %>
@@ -97,6 +117,13 @@
                   moderator_read_admin_entourage_path(@entourage, read_at: message.created_at),
                   method: :post %>
             </li>
+
+            <% unless message.children.any? %>
+              <li>
+                <%= link_to "Ajouter un commentaire", show_comments_admin_entourage_path(@entourage.id, message_id: message.full_object_id) %>
+              </li>
+            <% end %>
+
             <li>
               <%= link_to "Supprimer le message",
                   destroy_message_admin_entourages_path(type: message.full_object_type, id: message.full_object_id),
@@ -114,29 +141,6 @@
 <div class="row">
   <%= paginate @chat_messages %>
 </div>
-
-<% if current_user.roles.include?(:moderator) %>
-  <% color[current_user.id] ||= (color.count * 0.381966011 * 360).round %>
-  <div class="conversation-message is-message-form">
-    <div class="conversation-gutter">
-      <div style="background-color: hsl(<%= color[current_user.id] %>, 70%, 75%)" class="conversation-icon">
-        <%= [current_user.first_name.try(:first), current_user.last_name.try(:first)].compact.join.upcase %>
-      </div>
-    </div>
-    <div class="conversation-content">
-      <div>
-        <%= link_to UserPresenter.new(user: current_user).display_name, admin_user_path(current_user), class: "conversation-sender" %>
-      </div>
-      <%= form_for ChatMessage.new, url: message_admin_entourage_path(@entourage) do |f| %>
-        <%= f.text_area :content, class: "conversation-message-box" %>
-        <% unless @join_requests.find { |r| r.user_id == current_user.id && r.status == 'accepted' } %>
-          <div class="small text-muted">Vous n'êtes actuellement pas membre de ce groupe. Vous y serez ajouté automatiquement si vous envoyez un message.</div>
-        <% end %>
-        <%= f.submit 'Envoyer', class: "btn btn-primary", disabled: true %>
-      <% end %>
-    </div>
-  </div>
-<% end %>
 
 <% if @entourage.moderator_has_unread_content(user: current_user) %>
   <div class="text-center">
