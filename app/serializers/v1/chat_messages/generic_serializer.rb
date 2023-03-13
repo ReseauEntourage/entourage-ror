@@ -10,7 +10,8 @@ module V1
                  :comments_count,
                  :image_url,
                  :read,
-                 :message_type
+                 :message_type,
+                 :status
 
       def user
         {

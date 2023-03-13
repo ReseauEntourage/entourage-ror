@@ -4,7 +4,8 @@ module V1
                :content,
                :user,
                :created_at,
-               :message_type
+               :message_type,
+               :status
 
     attribute :metadata, if: :metadata?
 

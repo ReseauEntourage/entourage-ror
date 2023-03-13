@@ -154,7 +154,13 @@
         <%= link_to message.user.full_name, admin_user_path(message.user), class: "conversation-sender" %>
         <span class="conversation-timestamp"><%= l message.created_at, format: "%H h %M" %></span>
       </div>
-      <%= simple_format message.content %>
+
+      <% if message.deleted? %>
+        <p style="color: red;"> Ce message a été supprimé : </p>
+        <em><%= simple_format message.content(true) %></em>
+      <% else %>
+        <%= simple_format message.content %>
+      <% end %>
 
       <% if @last_reads[message.id].any? %>
         <div style="display: flex; align-items: center; font-size: 12px; margin-top: -10px; margin-right: -40px; justify-content: end; ; padding-right: 2px;">

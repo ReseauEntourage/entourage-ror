@@ -30,7 +30,8 @@ describe Api::V1::Tours::ChatMessagesController do
               "display_name" => "John D.",
               "partner" => nil
             },
-            "created_at" => chat_message1.created_at.iso8601(3)
+            "created_at" => chat_message1.created_at.iso8601(3),
+            "status" => "active"
           }, {
            "id" => chat_message2.id,
            "message_type" => "text",
@@ -41,7 +42,8 @@ describe Api::V1::Tours::ChatMessagesController do
             "display_name" => "John D.",
             "partner" => nil
           },
-            "created_at" => chat_message2.created_at.iso8601(3)
+            "created_at" => chat_message2.created_at.iso8601(3),
+            "status" => "active"
           }]
         }) }
 
@@ -94,7 +96,8 @@ describe Api::V1::Tours::ChatMessagesController do
               "display_name" => "John D.",
               "partner" => nil
             },
-            "created_at" => chat_message2.created_at.iso8601(3)
+            "created_at" => chat_message2.created_at.iso8601(3),
+            "status" => "active"
           }]
         }) }
       end
@@ -130,7 +133,8 @@ describe Api::V1::Tours::ChatMessagesController do
               "display_name" => "John D.",
               "partner" => nil
             },
-            "created_at" => ChatMessage.first.created_at.iso8601(3)
+            "created_at" => ChatMessage.first.created_at.iso8601(3),
+            "status" => "active"
           }
         }) }
       end

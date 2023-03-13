@@ -147,7 +147,7 @@ module FeedServices
       last_chat_messages = ChatMessage
         .select("distinct on (messageable_type, messageable_id) messageable_type, messageable_id")
         .order("messageable_type, messageable_id, created_at desc")
-        .select(:id, :content, :user_id, :created_at)
+        .select(:id, :content, :user_id, :status, :created_at)
         .includes(:user)
         .where((clause * feedable_ids.count).join(" OR "), *feedable_ids.flatten)
       last_chat_messages =

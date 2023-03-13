@@ -464,6 +464,7 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
           "partner" => nil,
         },
         "created_at" => post.created_at.iso8601(3),
+        "status" => "active",
         "message_type" => "text",
         "post_id" => nil,
         "has_comments" => true,

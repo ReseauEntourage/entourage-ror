@@ -5,6 +5,8 @@ class ChatMessage < ApplicationRecord
   CONTENT_TYPES = %w(image/jpeg)
   BUCKET_PREFIX = "chat_messages"
 
+  STATUSES = [:active, :updated, :deleted]
+
   has_ancestry
 
   scope :preload_comments_count, -> {
@@ -22,11 +24,12 @@ class ChatMessage < ApplicationRecord
     where("chat_messages.messageable_type = 'Entourage'")
   }, foreign_key: :messageable_id, optional: true # why optional? Cause it might belongs_to Tour
   belongs_to :user
+  belongs_to :deleter, class_name: :User
 
   before_validation :generate_content
 
   validates :messageable_id, :messageable_type, :user_id, presence: true
-  validates :content, presence: true, unless: -> (m) { m.image_url.present? }
+  validates :content, presence: true, unless: -> (m) { m.image_url.present? || m.deleted? }
   validates_inclusion_of :message_type, in: -> (m) { m.message_types }
   validates :metadata, schema: -> (m) { "#{m.message_type}:metadata" }
 
@@ -79,16 +82,42 @@ class ChatMessage < ApplicationRecord
     end
   end
 
-  def image_path
-    return unless image_url.present?
-
-    ChatMessage.url_for(image_url)
+  def active?
+    status.to_sym == :active
   end
 
-  def image_url_with_size size
-    return unless image_url.present?
+  def updated?
+    status.to_sym == :updated
+  end
 
-    ChatMessage.url_for_with_size(image_url, size)
+  def deleted?
+    status.to_sym == :deleted
+  end
+
+  # @param force true to bypass deletion
+  def content force = false
+    return if deleted? && !force
+
+    self[:content]
+  end
+
+  # @param force true to bypass deletion
+  def image_url force = false
+    return if deleted? && !force
+
+    self[:image_url]
+  end
+
+  def image_path force = false
+    return unless image_url(force).present?
+
+    ChatMessage.url_for(image_url(force))
+  end
+
+  def image_url_with_size size, force = false
+    return unless image_url(force).present?
+
+    ChatMessage.url_for_with_size(image_url(force), size)
   end
 
   def validate_ancestry!

@@ -5,7 +5,8 @@ module V1
        :content,
        :user,
        :created_at,
-       :read
+       :read,
+       :status
     end
   end
 end

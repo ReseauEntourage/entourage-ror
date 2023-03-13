@@ -47,7 +47,8 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
           "comments_count" => 1,
           "image_url" => "http://foo.bar",
           "read" => false,
-          "message_type" => "text"
+          "message_type" => "text",
+          "status" => "active"
         }]
       }) }
     end
@@ -117,7 +118,8 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
           "comments_count" => 0,
           "image_url" => nil,
           "read" => false,
-          "message_type" => "text"
+          "message_type" => "text",
+          "status" => "active"
         }
       }) }
     end
@@ -167,7 +169,8 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
             "comments_count" => 0,
             "image_url" => image_url,
             "read" => nil,
-            "message_type" => "text"
+            "message_type" => "text",
+            "status" => "active"
           }
         }}
 
@@ -251,6 +254,64 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
     end
   end
 
+  describe 'PATCH update' do
+    let(:chat_message) { create :chat_message, messageable: neighborhood, content: "bar", image_url: "foo" }
+
+    context "not signed in" do
+      before { patch :update, params: { id: chat_message.id, neighborhood_id: neighborhood.id, chat_message: { content: "new content" } } }
+      it { expect(response.status).to eq(401) }
+    end
+
+    context "signed in" do
+      before { patch :update, params: { id: chat_message.id, neighborhood_id: neighborhood.id, chat_message: { content: "new content" } } }
+
+      context "user is not creator" do
+        before { patch :update, params: { id: chat_message.id, neighborhood_id: neighborhood.id, chat_message: { content: "new content" }, token: user.token } }
+        it { expect(response.status).to eq(401) }
+      end
+
+      context "user is creator" do
+        before { patch :update, params: { id: chat_message.id, neighborhood_id: neighborhood.id, chat_message: {
+          content: "new content",
+        }, token: chat_message.user.token } }
+
+        it { expect(response.status).to eq(200) }
+        it { expect(result["chat_message"]["content"]).to eq("new content") }
+        it { expect(result["chat_message"]["status"]).to eq("updated") }
+      end
+    end
+  end
+
+  describe 'DELETE destroy' do
+    let(:chat_message) { create :chat_message, messageable: neighborhood, content: "bar", image_url: "foo" }
+    let(:result) { ChatMessage.find(chat_message.id) }
+
+    describe 'not authorized' do
+      before { delete :destroy, params: { id: chat_message.id, neighborhood_id: neighborhood.id } }
+
+      it { expect(response.status).to eq 401 }
+      it { expect(result.status).to eq 'active' }
+    end
+
+    describe 'not authorized cause should be creator' do
+      before { delete :destroy, params: { id: chat_message.id, neighborhood_id: neighborhood.id, token: user.token } }
+
+      it { expect(response.status).to eq 401 }
+      it { expect(result.status).to eq 'active' }
+    end
+
+    describe 'authorized' do
+      before { delete :destroy, params: { id: chat_message.id, neighborhood_id: neighborhood.id, token: chat_message.user.token } }
+
+      it { expect(response.status).to eq 200 }
+      it { expect(result.content).to be_nil }
+      it { expect(result.content(true)).to eq("bar") }
+      it { expect(result.status).to eq 'deleted' }
+      it { expect(result.deleter_id).to eq(chat_message.user_id) }
+      it { expect(result.deleted_at).to be_a(ActiveSupport::TimeWithZone) }
+    end
+  end
+
   describe 'POST #report' do
     let(:neighborhood) { create :neighborhood }
     let(:chat_message) { create :chat_message, messageable: neighborhood }
@@ -320,7 +381,8 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
           "comments_count" => 0,
           "image_url" => nil,
           "read" => false,
-          "message_type" => "text"
+          "message_type" => "text",
+          "status" => "active"
         }]
       }) }
     end

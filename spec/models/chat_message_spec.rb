@@ -25,4 +25,65 @@ RSpec.describe ChatMessage, type: :model do
     it { expect(message(message_type: 'text', metadata: { foo: 'bar' }).save).to be false }
     it { expect(message(message_type: 'share', metadata: { type: :entourage, uuid: "uuid-123"}).save!).to be true }
   end
+
+  describe "content" do
+    let(:chat_message) { create(:chat_message, status: :active, content: "foobar") }
+
+    before { chat_message.update_attribute(:status, status) }
+
+    let(:status) { :active }
+
+    context "on active" do
+      let(:status) { :active }
+
+      it { expect(chat_message.content).to eq("foobar") }
+    end
+
+    context "on updated" do
+      let(:status) { :updated }
+
+      it { expect(chat_message.content).to eq("foobar") }
+    end
+
+    context "on deleted" do
+      let(:status) { :deleted }
+
+      it { expect(chat_message.content).to eq(nil) }
+    end
+
+    context "on deleted and force" do
+      let(:status) { :deleted }
+
+      it { expect(chat_message.content(true)).to eq("foobar") }
+    end
+  end
+
+  describe "image_url" do
+    let(:chat_message) { create(:chat_message, status: status, image_url: "path/to/url") }
+    let(:status) { :active }
+
+    context "on active" do
+      let(:status) { :active }
+
+      it { expect(chat_message.image_url).to eq("path/to/url") }
+    end
+
+    context "on updated" do
+      let(:status) { :updated }
+
+      it { expect(chat_message.image_url).to eq("path/to/url") }
+    end
+
+    context "on deleted" do
+      let(:status) { :deleted }
+
+      it { expect(chat_message.image_url).to eq(nil) }
+    end
+
+    context "on deleted and force" do
+      let(:status) { :deleted }
+
+      it { expect(chat_message.image_url(true)).to eq("path/to/url") }
+    end
+  end
 end
