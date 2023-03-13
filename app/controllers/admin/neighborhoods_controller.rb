@@ -2,9 +2,12 @@ module Admin
   class NeighborhoodsController < Admin::BaseController
     layout 'admin_large'
 
-    before_action :set_neighborhood, only: [:edit, :update, :destroy, :reactivate, :edit_image, :update_image, :show_members, :show_outings, :show_outing_posts, :show_outing_post_comments, :show_posts, :show_post_comments, :edit_owner, :update_owner, :read_all_messages, :join, :unjoin, :message]
-    before_action :set_forced_join_request, only: [:message]
-    before_action :set_chat_message, only: [:unread_message, :destroy_message]
+    before_action :set_neighborhood, only: [:edit, :update, :destroy, :reactivate, :edit_image, :update_image, :show_members, :show_outings, :show_outing_posts, :show_outing_post_comments, :show_posts, :show_post_comments, :edit_owner, :update_owner, :read_all_messages, :join, :unjoin, :message, :outing_message, :destroy_outing_message]
+
+    before_action :set_neighborhood_forced_join_request, only: [:message]
+    before_action :set_outing_forced_join_request, only: [:outing_message]
+
+    before_action :set_chat_message, only: [:unread_message, :destroy_message, :destroy_outing_message]
     before_action :set_join_request, only: [:join, :unjoin]
 
     def index
@@ -209,6 +212,7 @@ module Admin
       redirect_to show_posts_admin_neighborhood_path(@chat_message.messageable)
     end
 
+    # POST
     def message
       ChatServices::ChatMessageBuilder.new(
         params: chat_messages_params,
@@ -234,6 +238,35 @@ module Admin
       end
     end
 
+    # POST
+    def outing_message
+      @outing = Outing.find(params[:outing_id])
+
+      ChatServices::ChatMessageBuilder.new(
+        params: chat_messages_params,
+        user: current_user,
+        joinable: @outing,
+        join_request: @join_request
+      ).create do |on|
+        redirection = if chat_messages_params.has_key?(:parent_id)
+          show_outing_post_comments_admin_neighborhood_path(@neighborhood, post_id: chat_messages_params[:parent_id])
+        else
+          show_outing_posts_admin_neighborhood_path(@neighborhood, outing_id: @outing.id)
+        end
+
+        on.success do |message|
+          @join_request.update_column(:last_message_read, message.created_at)
+
+          redirect_to redirection
+        end
+
+        on.failure do |message|
+          redirect_to redirection, alert: "Erreur lors de l'envoi du message : #{message.errors.full_messages.to_sentence}"
+        end
+      end
+    end
+
+    # DELETE
     def destroy_message
       ChatServices::Deleter.new(user: current_user, chat_message: @chat_message).delete(true) do |on|
         redirection = if @chat_message.has_parent?
@@ -256,21 +289,56 @@ module Admin
       end
     end
 
+    # DELETE
+    def destroy_outing_message
+      ChatServices::Deleter.new(user: current_user, chat_message: @chat_message).delete(true) do |on|
+        redirection = if @chat_message.has_parent?
+          show_outing_post_comments_admin_neighborhood_path(@neighborhood, post_id: @chat_message.parent_id)
+        else
+          show_outing_posts_admin_neighborhood_path(@neighborhood, outing_id: @chat_message.messageable_id)
+        end
+
+        on.success do |chat_message|
+          redirect_to redirection
+        end
+
+        on.failure do |chat_message|
+          redirect_to redirection, alert: chat_message.errors.full_messages
+        end
+
+        on.not_authorized do
+          redirect_to redirection, alert: "You are not authorized to delete this chat_message"
+        end
+      end
+    end
+
     private
 
     def set_neighborhood
       @neighborhood = Neighborhood.unscoped.find(params[:id])
     end
 
-    def set_forced_join_request
-      @join_request = current_user.join_requests.find_by(joinable: @neighborhood)
+    def set_neighborhood_forced_join_request
+      @neighborhood = Neighborhood.unscoped.find(params[:id])
+
+      set_forced_join_request(@neighborhood)
+    end
+
+    def set_outing_forced_join_request
+      @outing = Outing.find(params[:outing_id])
+
+      set_forced_join_request(@outing)
+    end
+
+    def set_forced_join_request record
+      @join_request = current_user.join_requests.find_by(joinable: record)
 
       return if @join_request.present? && @join_request.accepted?
 
       if @join_request.present?
         @join_request.status = :accepted
       else
-        @join_request = JoinRequest.new(joinable: @neighborhood, user: current_user, role: :member, status: :accepted)
+        @join_request = JoinRequest.new(joinable: record, user: current_user, role: :member, status: :accepted)
       end
 
       @join_request.save!
