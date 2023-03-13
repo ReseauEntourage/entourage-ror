@@ -360,7 +360,7 @@ describe Api::V1::SolicitationsController, :type => :controller do
 
         it { expect(response.status).to eq 400 }
         it { expect(result.status).to eq 'open' }
-        it { expect(solicitation.reload.moderation).to be_nil }
+        it { expect(solicitation.reload.moderation.action_outcome).to be_nil }
       end
     end
   end
