@@ -343,7 +343,7 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
       before { delete :destroy, params: { id: chat_message.id, neighborhood_id: neighborhood.id, token: chat_message.user.token } }
 
       it { expect(response.status).to eq 200 }
-      it { expect(result.content).to be_nil }
+      it { expect(result.content).to eq("") }
       it { expect(result.content(true)).to eq("bar") }
       it { expect(result.status).to eq 'deleted' }
       it { expect(result.deleter_id).to eq(chat_message.user_id) }

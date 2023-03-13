@@ -97,7 +97,7 @@ class ChatMessage < ApplicationRecord
 
   # @param force true to bypass deletion
   def content force = false
-    return if deleted? && !force
+    return "" if deleted? && !force
 
     self[:content]
   end

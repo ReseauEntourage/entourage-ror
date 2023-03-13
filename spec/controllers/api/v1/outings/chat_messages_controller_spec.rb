@@ -345,7 +345,7 @@ describe Api::V1::Outings::ChatMessagesController do
       before { delete :destroy, params: { id: chat_message.id, outing_id: outing.id, token: chat_message.user.token } }
 
       it { expect(response.status).to eq 200 }
-      it { expect(result.content).to be_nil }
+      it { expect(result.content).to eq("") }
       it { expect(result.status).to eq 'deleted' }
       it { expect(result.deleter_id).to eq(chat_message.user_id) }
       it { expect(result.deleted_at).to be_a(ActiveSupport::TimeWithZone) }
