@@ -121,8 +121,6 @@ Rails.application.routes.draw do
           post :moderator_unread
           post :message
           get :show_members
-          get :show_joins
-          get :show_invitations
           get :show_messages
           get 'comments/:message_id' => :show_comments, as: :show_comments
           get :show_siblings
@@ -157,11 +155,7 @@ Rails.application.routes.draw do
         end
       end
 
-      resources :join_requests, only: [:create] do
-        member do
-          post :accept
-        end
-      end
+      resources :join_requests, only: [:create]
 
       resources :digest_emails, only: [:index, :show, :edit, :update] do
         member do

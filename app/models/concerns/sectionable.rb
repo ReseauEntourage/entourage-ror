@@ -50,12 +50,14 @@ module Sectionable
   private
 
   def set_category_from_section section
+    return unless has_attribute?(:category)
     return if category_changed?
 
     self.category = ActionServices::Mapper.category_from_section(section)
   end
 
   def set_display_category_from_section section
+    return unless has_attribute?(:display_category)
     return if display_category_changed?
 
     self.display_category = ActionServices::Mapper.display_category_from_section(section)

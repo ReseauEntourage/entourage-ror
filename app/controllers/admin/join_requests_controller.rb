@@ -14,14 +14,5 @@ module Admin
         redirect_to admin_entourage_path(@entourage)
       end
     end
-
-    def accept
-      @join_request = JoinRequest.find(params[:id])
-      @join_request.update_attribute(:status, :accepted)
-
-      redirect_to show_joins_admin_entourage_path(@join_request.joinable), notice: "La demande de l'utilisateur a été acceptée"
-    rescue => e
-      redirect_to show_joins_admin_entourage_path(@join_request.joinable), error: "La demande de l'utilisateur n'a pas pu être acceptée : #{e.message}"
-    end
   end
 end

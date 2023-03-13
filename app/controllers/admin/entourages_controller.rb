@@ -4,7 +4,7 @@ module Admin
     before_action :set_forced_join_request, only: [:message]
 
     before_action :set_default_index_params, only: [:index]
-    before_action :set_index_params, only: [:index, :show, :edit, :show_messages, :show_invitations, :show_joins, :show_members]
+    before_action :set_index_params, only: [:index, :show, :edit, :show_messages, :show_members]
 
     def index
       per_page = params[:per] || 50
@@ -124,33 +124,6 @@ module Admin
         .with_entourage_invitations
         .includes(:user)
         .to_a.find_all(&:is_accepted?)
-
-      render :show
-    end
-
-    def show_joins
-      @moderator_read = @entourage.moderator_read_for(user: current_user)
-
-      @join_requests = @entourage.join_requests
-        .with_entourage_invitations
-        .includes(:user)
-        .to_a
-      @requests = @entourage.join_requests
-        .with_entourage_invitations
-        .includes(:user)
-        .to_a.reject { |r|
-          r.is_accepted? || (r.entourage_invitation_id && r.entourage_invitation_status != 'accepted')
-        }
-
-      render :show
-    end
-
-    def show_invitations
-      @moderator_read = @entourage.moderator_read_for(user: current_user)
-      @invitations = @entourage.entourage_invitations
-        .where.not(status: :accepted)
-        .includes(:invitee)
-        .to_a
 
       render :show
     end

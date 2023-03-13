@@ -120,7 +120,6 @@ namespace :data_science do
             (group.display_category unless type == :event),
             group.moderation&.action_type.presence,
             group.moderation&.action_author_type.presence,
-            group.moderation&.action_recipient_type.presence,
             group.moderation&.action_outcome_reported_at.presence,
             group.moderation&.action_outcome.presence,
             group.moderation&.action_success_reason.presence,

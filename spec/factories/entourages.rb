@@ -26,8 +26,25 @@ FactoryBot.define do
     trait :closed do status { :closed } end
 
     # outcome
-    trait :outcome_oui do moderation { association :entourage_moderation, :oui } end
-    trait :outcome_non do moderation { association :entourage_moderation, :non } end
+    trait :outcome_oui do
+      after(:create) do |entourage, evaluator|
+        if entourage.moderation.present?
+          entourage.moderation.update_attribute(:action_outcome, 'Oui')
+        else
+          moderation { association :entourage_moderation, :oui }
+        end
+      end
+    end
+
+    trait :outcome_non do
+      after(:create) do |entourage, evaluator|
+        if entourage.moderation.present?
+          entourage.moderation.update_attribute(:action_outcome, 'Non')
+        else
+          moderation { association :entourage_moderation, :non }
+        end
+      end
+    end
 
     after(:create) do |entourage, stuff|
       stuff.participants.each do |participant|

@@ -200,8 +200,7 @@ describe Api::V1::FeedsController do
         let!(:entourage_blacklisted) { create(:entourage, created_at: 3.hour.ago, status: :blacklisted, latitude: latitude, longitude: longitude) }
         let!(:entourage_suspended)   { create(:entourage, created_at: 4.hour.ago, status: :suspended, latitude: latitude, longitude: longitude) }
         let!(:entourage_closed_success) do
-          entourage = create(:entourage, created_at: 5.hour.ago, status: :closed, latitude: latitude, longitude: longitude)
-          EntourageModeration.create!(entourage: entourage, action_outcome: 'Oui')
+          entourage = create(:entourage, :outcome_oui, created_at: 5.hour.ago, status: :closed, latitude: latitude, longitude: longitude)
           entourage
         end
 

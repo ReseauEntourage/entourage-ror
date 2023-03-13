@@ -24,8 +24,14 @@ module ModerationServices
       entourage.moderation.save
     end
 
-    def self.enable_callback
-      !Rails.env.test?
+    def assign_section entourage
+      # set section from either section or display_category
+      section = Tag.section_list_for(entourage).first ||
+        ActionServices::Mapper.section_from_display_category(entourage.display_category)
+
+      entourage.moderation || entourage.build_moderation
+      entourage.moderation.section = section
+      entourage.moderation.save
     end
 
     module Callback
@@ -33,17 +39,25 @@ module ModerationServices
 
       included do
         after_commit :assign_to_area_moderator
+        after_commit :assign_section
       end
 
       private
 
       def assign_to_area_moderator
-        return unless ModerationServices::EntourageModeration.enable_callback
-        return unless group_type.in?(['action', 'outing'])
+        return unless action? || outing?
         return unless (['country', 'postal_code'] & previous_changes.keys).any?
         return unless [country, postal_code].all?(&:present?)
         return if ::EntourageModeration.where(entourage_id: id).where.not(moderator_id: nil).exists?
-        AsyncService.new(ModerationServices::EntourageModeration).assign_to_area_moderator(self)
+
+        ModerationServices::EntourageModeration.assign_to_area_moderator(self)
+      end
+
+      def assign_section
+        return unless action?
+        return if ::EntourageModeration.where(entourage_id: id).where.not(moderator_id: nil).exists?
+
+        ModerationServices::EntourageModeration.assign_section(self)
       end
     end
   end

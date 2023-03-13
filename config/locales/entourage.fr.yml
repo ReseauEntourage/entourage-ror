@@ -122,6 +122,8 @@ fr:
         action_success_reason: Raison de la réussite
         action_failure_reason: Raison de l'échec
 
+        section: Catégorie
+
       inapp_notification:
         context_types:
           chat_message_on_create: chat_message_created

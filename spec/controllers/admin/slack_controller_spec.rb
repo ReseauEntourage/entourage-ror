@@ -44,6 +44,9 @@ describe Admin::SlackController do
         }
 
         it { expect(JSON.parse(response.body)['attachments'].last['text']).to eq("*:white_check_mark: <@John Doe> a validé cette action*") }
+        it { expect(entourage.reload.status).to eq("open") }
+        it { expect(entourage.reload.moderation).not_to be_nil }
+        it { expect(entourage.reload.moderation.moderated_at).not_to be_nil }
       end
 
       context "block message" do
@@ -54,6 +57,9 @@ describe Admin::SlackController do
         }
 
         it { expect(JSON.parse(response.body)['attachments'].last['text']).to eq("*:no_entry_sign: <@John Doe> a bloqué cette action*") }
+        it { expect(entourage.reload.status).to eq("blacklisted") }
+        it { expect(entourage.reload.moderation).not_to be_nil }
+        it { expect(entourage.reload.moderation.moderated_at).not_to be_nil }
       end
 
       context "wrong message" do

@@ -449,6 +449,12 @@ class Entourage < ApplicationRecord
     end
   end
 
+  def set_moderated_at_and_save
+    moderation = self.moderation || self.build_moderation
+    moderation.update_attribute(:moderated_at, Time.zone.now)
+    moderation.save
+  end
+
   protected
 
   def check_moderation
