@@ -163,7 +163,7 @@ module Admin
         .includes(:user)
         .to_a
 
-      @chat_messages = @entourage.parent_conversation_messages.ordered
+      @chat_messages = @entourage.parent_conversation_messages.order(created_at: :desc)
           .includes(:user)
           .with_content
           .page(params[:page])
@@ -188,7 +188,7 @@ module Admin
     end
 
     def show_comments
-      @comments = ChatMessage.find(params[:message_id]).children.page(page).per(per)
+      @comments = ChatMessage.find(params[:message_id]).children.order(created_at: :desc).page(page).per(per)
 
       render :show
     end
