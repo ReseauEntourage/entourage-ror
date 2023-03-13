@@ -228,6 +228,7 @@ Rails.application.routes.draw do
         put '/update/image', action: :update_image
         post :read_all_messages
         post :message
+        delete 'destroy_outing_message/:chat_message_id' => :destroy_outing_message, as: :destroy_outing_message
       end
 
       collection do

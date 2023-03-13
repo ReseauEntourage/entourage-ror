@@ -2,9 +2,9 @@ module Admin
   class NeighborhoodsController < Admin::BaseController
     layout 'admin_large'
 
-    before_action :set_neighborhood, only: [:edit, :update, :destroy, :reactivate, :edit_image, :update_image, :show_members, :show_outings, :show_outing_posts, :show_outing_post_comments, :show_posts, :show_post_comments, :edit_owner, :update_owner, :read_all_messages, :join, :unjoin, :message]
+    before_action :set_neighborhood, only: [:edit, :update, :destroy, :reactivate, :edit_image, :update_image, :show_members, :show_outings, :show_outing_posts, :show_outing_post_comments, :show_posts, :show_post_comments, :edit_owner, :update_owner, :read_all_messages, :join, :unjoin, :message, :destroy_outing_message]
     before_action :set_forced_join_request, only: [:message]
-    before_action :set_chat_message, only: [:unread_message, :destroy_message]
+    before_action :set_chat_message, only: [:unread_message, :destroy_message, :destroy_outing_message]
     before_action :set_join_request, only: [:join, :unjoin]
 
     def index
@@ -240,6 +240,29 @@ module Admin
           show_post_comments_admin_neighborhood_path(@chat_message.messageable, post_id: @chat_message.parent_id)
         else
           show_posts_admin_neighborhood_path(@chat_message.messageable)
+        end
+
+        on.success do |chat_message|
+          redirect_to redirection
+        end
+
+        on.failure do |chat_message|
+          redirect_to redirection, alert: chat_message.errors.full_messages
+        end
+
+        on.not_authorized do
+          redirect_to redirection, alert: "You are not authorized to delete this chat_message"
+        end
+      end
+    end
+
+    def destroy_outing_message
+      ChatServices::Deleter.new(user: current_user, chat_message: @chat_message).delete(true) do |on|
+        redirection = if @chat_message.has_parent?
+          show_outing_post_comments_admin_neighborhood_path(@neighborhood, post_id: @chat_message.parent_id)
+
+        else
+          show_outing_posts_admin_neighborhood_path(@neighborhood, outing_id: @chat_message.messageable_id)
         end
 
         on.success do |chat_message|
