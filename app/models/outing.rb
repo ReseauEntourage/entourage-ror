@@ -17,7 +17,9 @@ class Outing < Entourage
   after_validation :dup_neighborhoods_entourages, if: :original_outing
   after_validation :dup_taggings, if: :original_outing
 
-  has_many :members, -> { where("join_requests.status = 'accepted'") }, through: :join_requests, source: :user
+  has_many :members, -> {
+    where("join_requests.status = 'accepted'").order("join_requests.role, users.first_name")
+  }, through: :join_requests, source: :user
   has_many :neighborhoods_entourages, foreign_key: :entourage_id
   has_many :neighborhoods, through: :neighborhoods_entourages
 
