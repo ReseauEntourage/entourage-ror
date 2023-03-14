@@ -10,6 +10,16 @@ RSpec.describe ChatMessage, type: :model do
   it { should validate_presence_of :content }
   it { should validate_presence_of :user_id }
 
+  describe "has a v2 uuid" do
+    let(:chat_message) { create :chat_message }
+
+    describe "format" do
+      it { expect(chat_message.uuid_v2).not_to be_nil }
+      it { expect(chat_message.uuid_v2[0]).to eq 'e' }
+      it { expect(chat_message.uuid_v2.length).to eq 12 }
+    end
+  end
+
   describe "custom type" do
     let(:entourage) { create :entourage }
     let!(:group) { create :entourage, uuid_v2: "uuid-123" }

@@ -2,6 +2,7 @@ module V1
   module ChatMessages
     class GenericSerializer < ActiveModel::Serializer
       attributes :id,
+                 :uuid_v2,
                  :content,
                  :user,
                  :created_at,

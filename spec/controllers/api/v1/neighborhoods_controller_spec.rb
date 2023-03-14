@@ -216,6 +216,7 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
         it { expect(response.status).to eq(200) }
         it { expect(result["neighborhood"]).to eq({
           "id" => neighborhood.id,
+          "uuid_v2" => neighborhood.uuid_v2,
           "name" => "new name",
           "description" => "new description",
           "welcome_message" => "new welcome_message",
@@ -294,6 +295,7 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
       it { expect(result).to eq({
         "neighborhood" => {
           "id" => neighborhood.id,
+          "uuid_v2" => neighborhood.uuid_v2,
           "name" => "Foot Paris 17è",
           "description" => "Pour les passionnés de foot du 17è",
           "welcome_message" => nil,
@@ -369,6 +371,7 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
       it { expect(result['neighborhood']['future_outings']).to eq([{
         'id' => outing.id,
         'uuid' =>  outing.uuid_v2,
+        'uuid_v2' =>  outing.uuid_v2,
         'status' => 'open',
         'title' => outing.title,
         'description' => outing.description,
@@ -456,6 +459,7 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
       it { expect(result['neighborhood']).to have_key('posts') }
       it { expect(result['neighborhood']['posts']).to eq([{
         "id" => post.id,
+        "uuid_v2" => post.uuid_v2,
         "content" => post.content,
         "user" => {
           "id" => post.user_id,
@@ -483,6 +487,42 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
       it { expect(response.status).to eq 200 }
       it { expect(result['neighborhood']).to have_key('posts') }
       it { expect(result['neighborhood']['posts'][0]["read"]).to eq(false) }
+    end
+
+    context 'no deeplink' do
+      before { get :show, params: { token: user.token, id: identifier } }
+
+      context 'from id' do
+        let(:identifier) { neighborhood.id }
+
+        it { expect(response.status).to eq 200 }
+        it { expect(result).to have_key("neighborhood") }
+        it { expect(result['neighborhood']['id']).to eq(neighborhood.id) }
+      end
+
+      context 'from uuid_v2' do
+        let(:identifier) { neighborhood.uuid_v2 }
+
+        it { expect(response.status).to eq 200 }
+        it { expect(result).to have_key("neighborhood") }
+        it { expect(result['neighborhood']['id']).to eq(neighborhood.id) }
+      end
+    end
+
+    context 'deeplink' do
+      context 'using uuid_v2' do
+        before { get :show, params: { token: user.token, id: neighborhood.uuid_v2, deeplink: true } }
+
+        it { expect(response.status).to eq 200 }
+        it { expect(result).to have_key('neighborhood') }
+        it { expect(result['neighborhood']['id']).to eq(neighborhood.id) }
+      end
+
+      context 'using id fails' do
+        before { get :show, params: { token: user.token, id: neighborhood.id, deeplink: true } }
+
+        it { expect(response.status).to eq 400 }
+      end
     end
   end
 

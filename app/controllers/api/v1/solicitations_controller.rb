@@ -91,7 +91,9 @@ module Api
       private
 
       def set_solicitation
-        @solicitation = Solicitation.find(params[:id])
+        @solicitation = Solicitation.find_by_id_through_context(params[:id], params)
+
+        render json: { message: 'Could not find solicitation' }, status: 400 unless @solicitation.present?
       end
 
       def index_params

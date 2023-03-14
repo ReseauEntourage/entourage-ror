@@ -5,7 +5,7 @@ module Api
 
       class ChatMessagesController < Api::V1::BaseController
         before_action :set_outing, only: [:index, :show, :create, :update, :destroy, :report, :comments, :presigned_upload]
-        before_action :set_chat_message, only: [:show, :update, :destroy, :report]
+        before_action :set_chat_message, only: [:show, :update, :destroy, :report, :comments]
         before_action :ensure_is_member, only: [:create, :report, :presigned_upload]
 
         after_action :set_last_message_read, only: [:index]
@@ -101,7 +101,7 @@ module Api
         end
 
         def comments
-          post = Outing.find(params[:outing_id]).chat_messages.where(id: params[:id]).first
+          post = @outing.chat_messages.where(id: @chat_message.id).first
           messages = post.children.order(created_at: :asc)
 
           render json: messages, each_serializer: ::V1::ChatMessages::CommentSerializer, scope: { current_join_request: join_request }
@@ -135,12 +135,16 @@ module Api
         private
 
         def set_outing
-          @outing = Outing.find(params[:outing_id])
+          @outing = Outing.find_by_id_through_context(params[:outing_id], params)
+
+          render json: { message: 'Could not find outing' }, status: 400 unless @outing.present?
         end
 
         def set_chat_message
           # we want to force chat_message to belong to Outing
-          @chat_message = ChatMessage.where(id: params[:chat_message_id] || params[:id], messageable_type: :Entourage).first
+          @chat_message = ChatMessage.where(messageable_type: :Entourage).find_by_id_through_context(params[:chat_message_id] || params[:id], params)
+
+          render json: { message: 'Could not find chat_message' }, status: 400 unless @chat_message.present?
         end
 
         def report_params

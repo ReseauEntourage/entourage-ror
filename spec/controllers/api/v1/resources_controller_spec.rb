@@ -51,6 +51,7 @@ describe Api::V1::ResourcesController, :type => :controller do
         it { expect(result).to eq({
           "resource" => {
             "id" => resource.id,
+            "uuid_v2" => resource.uuid_v2,
             "name" => "Comment aider",
             "is_video" => false,
             "duration" => nil,
@@ -64,6 +65,42 @@ describe Api::V1::ResourcesController, :type => :controller do
         })}
         it { expect(user.users_resources.count).to eq(1) }
         it { expect(user.users_resources.first.resource_id).to eq(resource.id) }
+      end
+    end
+
+    context 'no deeplink' do
+      before { get :show, params: { token: user.token, id: identifier } }
+
+      context 'from id' do
+        let(:identifier) { resource.id }
+
+        it { expect(response.status).to eq 200 }
+        it { expect(result).to have_key("resource") }
+        it { expect(result['resource']['id']).to eq(resource.id) }
+      end
+
+      context 'from uuid_v2' do
+        let(:identifier) { resource.uuid_v2 }
+
+        it { expect(response.status).to eq 200 }
+        it { expect(result).to have_key("resource") }
+        it { expect(result['resource']['id']).to eq(resource.id) }
+      end
+    end
+
+    context 'deeplink' do
+      context 'using uuid_v2' do
+        before { get :show, params: { token: user.token, id: resource.uuid_v2, deeplink: true } }
+
+        it { expect(response.status).to eq 200 }
+        it { expect(result).to have_key('resource') }
+        it { expect(result['resource']['id']).to eq(resource.id) }
+      end
+
+      context 'using id fails' do
+        before { get :show, params: { token: user.token, id: resource.id, deeplink: true } }
+
+        it { expect(response.status).to eq 400 }
       end
     end
 

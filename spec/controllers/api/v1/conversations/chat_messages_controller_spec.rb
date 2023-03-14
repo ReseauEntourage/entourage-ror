@@ -35,6 +35,7 @@ describe Api::V1::Conversations::ChatMessagesController do
       it { expect(result).to eq({
         "chat_messages" => [{
           "id" => chat_message_1.id,
+          "uuid_v2" => chat_message_1.uuid_v2,
           "content" => chat_message_1.content,
           "user" => {
             "id" => user.id,
@@ -51,6 +52,7 @@ describe Api::V1::Conversations::ChatMessagesController do
           "status" => "active"
         }, {
           "id" => chat_message_2.id,
+          "uuid_v2" => chat_message_2.uuid_v2,
           "content" => chat_message_2.content,
           "user" => {
             "id" => user.id,
@@ -95,6 +97,42 @@ describe Api::V1::Conversations::ChatMessagesController do
         it { expect(last_message_read).to eq(Time.now.in_time_zone.to_s) }
       end
     end
+
+    describe 'no deeplink' do
+      before { get :index, params: { conversation_id: identifier, token: user.token } }
+
+      context 'from id' do
+        let(:identifier) { conversation.id }
+
+        it { expect(response.status).to eq 200 }
+        it { expect(result).to have_key("chat_messages") }
+        it { expect(result['chat_messages'][0]['id']).to eq(chat_message_1.id) }
+      end
+
+      context 'from uuid_v2' do
+        let(:identifier) { conversation.uuid_v2 }
+
+        it { expect(response.status).to eq 200 }
+        it { expect(result).to have_key("chat_messages") }
+        it { expect(result['chat_messages'][0]['id']).to eq(chat_message_1.id) }
+      end
+    end
+
+    context 'deeplink' do
+      context 'using uuid_v2' do
+        before { get :index, params: { conversation_id: conversation.uuid_v2, token: user.token, deeplink: true } }
+
+        it { expect(response.status).to eq 200 }
+        it { expect(result).to have_key("chat_messages") }
+        it { expect(result['chat_messages'][0]['id']).to eq(chat_message_1.id) }
+      end
+
+      context 'using id fails' do
+        before { get :index, params: { conversation_id: conversation.id, token: user.token, deeplink: true } }
+
+        it { expect(response.status).to eq 400 }
+      end
+    end
   end
 
   describe 'POST create' do
@@ -129,6 +167,7 @@ describe Api::V1::Conversations::ChatMessagesController do
         let(:json) {{
           "chat_message" => {
             "id" => ChatMessage.last.id,
+            "uuid_v2" => ChatMessage.last.uuid_v2,
             "content" => content,
             "user" => {
               "id" => user.id,

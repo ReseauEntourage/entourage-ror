@@ -4,6 +4,7 @@ module V1
     POSTS_LIMIT = 25
 
     attributes :id,
+      :uuid_v2,
       :name,
       :description,
       :welcome_message,

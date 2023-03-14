@@ -4,6 +4,7 @@ class Neighborhood < ApplicationRecord
   include JoinableScopable
   include Recommandable
   include ModeratorReadable
+  include Deeplinkable
   include Experimental::NeighborhoodSlack::Callback
 
   after_validation :track_status_change

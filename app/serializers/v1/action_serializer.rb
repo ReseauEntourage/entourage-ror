@@ -4,6 +4,7 @@ module V1
 
     attributes :id,
                :uuid,
+               :uuid_v2,
                :status,
                :section,
                :title,

@@ -11,6 +11,7 @@ class Entourage < ApplicationRecord
   include CoordinatesScopable
   include JoinableScopable
   include ModeratorReadable
+  include Deeplinkable
 
   after_validation :track_status_change
 
@@ -110,7 +111,6 @@ class Entourage < ApplicationRecord
   before_validation :set_default_online_attributes, if: :online_changed?
 
   after_create :check_moderation
-  before_create :set_uuid
 
   after_update :create_chat_message_on_status_update, if: :saved_change_to_status?
 
@@ -143,21 +143,8 @@ class Entourage < ApplicationRecord
     joins("left join entourage_moderations on entourage_moderations.entourage_id = entourages.id")
   end
 
-  def self.find_by_id_or_uuid identifier
-    key =
-      if !identifier.is_a?(String)
-        :id
-      elsif identifier.start_with?('1_hash_')
-        :uuid_v2
-      elsif identifier.length == 36
-        :uuid
-      elsif identifier.length == 12
-        :uuid_v2
-      else
-        :id
-      end
-
-    @entourage = Entourage.findable.find_by!(key => identifier)
+  def self.findable_by_id_or_uuid identifier
+    @entourage = Entourage.findable.find_by_id_or_uuid!(identifier)
   end
 
   #An entourage can never be freezed
@@ -590,16 +577,6 @@ class Entourage < ApplicationRecord
     end
   end
 
-  def set_uuid
-    self.uuid ||= SecureRandom.uuid
-    self.uuid_v2 ||= self.class.generate_uuid_v2
-    true
-  end
-
-  def self.generate_uuid_v2
-    'e' + SecureRandom.urlsafe_base64(8)
-  end
-
   def generate_display_address
     return unless (metadata_changed? || new_record?)
     case group_type
@@ -654,21 +631,6 @@ class Entourage < ApplicationRecord
   end
 
   private
-
-  # If the record creation fails because of an non-unique uuid_v2,
-  # generates a new uuid_v2 and retries (at most 3 times in total)
-  def _create_record
-    tries ||= 1
-    transaction(requires_new: true) { super }
-  rescue ActiveRecord::RecordNotUnique => e
-    raise e unless /uuid_v2/ === e.cause.error
-    logger.info "type=entourages.uuid_v2.not_unique tries=#{tries}"
-    raise e if tries == 3
-    self.uuid_v2 = nil
-    set_uuid
-    tries += 1
-    retry
-  end
 
   def track_status_change
     self[:status_changed_at] = Time.zone.now if status_changed?

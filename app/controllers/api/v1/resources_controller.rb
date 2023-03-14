@@ -15,7 +15,9 @@ module Api
       private
 
       def set_resource
-        @resource = Resource.find(params[:id])
+        @resource = Resource.find_by_id_through_context(params[:id], params)
+
+        render json: { message: 'Could not find resource' }, status: 400 unless @resource.present?
       end
 
       def set_as_watched

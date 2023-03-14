@@ -58,7 +58,7 @@ module Api
 
         private
         def set_entourage
-          @entourage = Entourage.find_by_id_or_uuid(params[:entourage_id])
+          @entourage = Entourage.findable_by_id_or_uuid(params[:entourage_id])
         end
 
         def set_entourage_or_handle_conversation_uuid

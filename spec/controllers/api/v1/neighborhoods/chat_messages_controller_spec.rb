@@ -35,6 +35,7 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
       it { expect(result).to eq({
         "chat_messages" => [{
           "id" => chat_message_1.id,
+          "uuid_v2" => chat_message_1.uuid_v2,
           "content" => chat_message_1.content,
           "user" => {
             "id" => user.id,
@@ -106,6 +107,7 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
       it { expect(result).to eq({
         "chat_message" => {
           "id" => chat_message.id,
+          "uuid_v2" => chat_message.uuid_v2,
           "content" => chat_message.content,
           "user" => {
             "id" => chat_message.user_id,
@@ -122,6 +124,42 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
           "status" => "active"
         }
       }) }
+    end
+
+    describe 'no deeplink' do
+      before { get :index, params: { neighborhood_id: identifier, token: user.token } }
+
+      context 'from id' do
+        let(:identifier) { neighborhood.id }
+
+        it { expect(response.status).to eq 200 }
+        it { expect(result).to have_key("chat_messages") }
+        it { expect(result['chat_messages'][0]['id']).to eq(chat_message.id) }
+      end
+
+      context 'from uuid_v2' do
+        let(:identifier) { neighborhood.uuid_v2 }
+
+        it { expect(response.status).to eq 200 }
+        it { expect(result).to have_key("chat_messages") }
+        it { expect(result['chat_messages'][0]['id']).to eq(chat_message.id) }
+      end
+    end
+
+    context 'deeplink' do
+      context 'using uuid_v2' do
+        before { get :show, params: { token: user.token, neighborhood_id: neighborhood.uuid_v2, id: chat_message.uuid_v2, deeplink: true } }
+
+        it { expect(response.status).to eq 200 }
+        it { expect(result).to have_key('chat_message') }
+        it { expect(result['chat_message']['id']).to eq(chat_message.id) }
+      end
+
+      context 'using id fails' do
+        before { get :show, params: { token: user.token, neighborhood_id: neighborhood.to_param, id: chat_message.id, deeplink: true } }
+
+        it { expect(response.status).to eq 400 }
+      end
     end
   end
 
@@ -157,6 +195,7 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
         let(:json) {{
           "chat_message" => {
             "id" => ChatMessage.last.id,
+            "uuid_v2" => ChatMessage.last.uuid_v2,
             "content" => content,
             "user" => {
               "id" => user.id,
@@ -369,6 +408,7 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
       it { expect(result).to eq({
         "chat_messages" => [{
           "id" => chat_message_2.id,
+          "uuid_v2" => chat_message_2.uuid_v2,
           "content" => chat_message_2.content,
           "user" => {
             "id" => user.id,
@@ -406,6 +446,42 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
         it { expect(result["chat_messages"].count).to eq(2) }
         it { expect(result["chat_messages"][0]["id"]).to eq(chat_message_2.id) }
         it { expect(result["chat_messages"][1]["id"]).to eq(chat_message_3.id) }
+      end
+    end
+
+    describe 'no deeplink' do
+      before { get :comments, params: { token: user.token, neighborhood_id: identifier, id: chat_message_1.id } }
+
+      context 'from id' do
+        let(:identifier) { neighborhood.id }
+
+        it { expect(response.status).to eq 200 }
+        it { expect(result).to have_key("chat_messages") }
+        it { expect(result['chat_messages'][0]['id']).to eq(chat_message_2.id) }
+      end
+
+      context 'from uuid_v2' do
+        let(:identifier) { neighborhood.uuid_v2 }
+
+        it { expect(response.status).to eq 200 }
+        it { expect(result).to have_key("chat_messages") }
+        it { expect(result['chat_messages'][0]['id']).to eq(chat_message_2.id) }
+      end
+    end
+
+    context 'deeplink' do
+      context 'using uuid_v2' do
+        before { get :comments, params: { token: user.token, neighborhood_id: neighborhood.uuid_v2, id: chat_message_1.uuid_v2, deeplink: true } }
+
+        it { expect(response.status).to eq 200 }
+        it { expect(result).to have_key('chat_messages') }
+        it { expect(result['chat_messages'][0]['id']).to eq(chat_message_2.id) }
+      end
+
+      context 'using id fails' do
+        before { get :comments, params: { token: user.token, neighborhood_id: neighborhood.to_param, id: chat_message_1.id, deeplink: true } }
+
+        it { expect(response.status).to eq 400 }
       end
     end
   end

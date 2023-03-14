@@ -300,12 +300,43 @@ describe Api::V1::SolicitationsController, :type => :controller do
 
     let(:solicitation) { FactoryBot.create(:solicitation, section: "social") }
 
-    before { get :show, params: { token: user.token, id: solicitation.id } }
+    describe 'no deeplink' do
+      before { get :show, params: { token: user.token, id: identifier } }
 
-    it { expect(response.status).to eq 200 }
-    it { expect(subject).to have_key("solicitation") }
-    it { expect(subject["solicitation"]).to have_key("section") }
-    it { expect(subject["solicitation"]["section"]).to eq("social") }
+      context 'from id' do
+        let(:identifier) { solicitation.id }
+
+        it { expect(response.status).to eq 200 }
+        it { expect(subject).to have_key("solicitation") }
+        it { expect(subject["solicitation"]).to have_key("section") }
+        it { expect(subject["solicitation"]["section"]).to eq("social") }
+      end
+
+      context 'from uuid_v2' do
+        let(:identifier) { solicitation.uuid_v2 }
+
+        it { expect(response.status).to eq 200 }
+        it { expect(subject).to have_key("solicitation") }
+        it { expect(subject["solicitation"]).to have_key("section") }
+        it { expect(subject["solicitation"]["section"]).to eq("social") }
+      end
+    end
+
+    describe 'deeplink' do
+      context 'using uuid_v2' do
+        before { get :show, params: { token: user.token, id: solicitation.uuid_v2, deeplink: true } }
+
+        it { expect(response.status).to eq 200 }
+        it { expect(subject).to have_key('solicitation') }
+        it { expect(subject['solicitation']['id']).to eq(solicitation.id) }
+      end
+
+      context 'using id fails' do
+        before { get :show, params: { token: user.token, id: solicitation.id, deeplink: true } }
+
+        it { expect(response.status).to eq 400 }
+      end
+    end
   end
 
   context 'destroy' do

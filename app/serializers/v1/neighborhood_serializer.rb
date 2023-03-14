@@ -1,6 +1,7 @@
 module V1
   class NeighborhoodSerializer < ActiveModel::Serializer
     attributes :id,
+      :uuid_v2,
       :name,
       :description,
       :welcome_message,

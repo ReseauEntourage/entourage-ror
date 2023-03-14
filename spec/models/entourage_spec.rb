@@ -179,8 +179,8 @@ RSpec.describe Entourage, type: :model do
     end
   end
 
-  describe '.find_by_id_or_uuid' do
-    subject { Entourage.find_by_id_or_uuid identifier }
+  describe '.findable_by_id_or_uuid' do
+    subject { Entourage.findable_by_id_or_uuid identifier }
 
     context "when the entourage exists" do
       let(:entourage) { create :entourage }

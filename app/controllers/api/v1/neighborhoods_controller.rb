@@ -87,7 +87,9 @@ module Api
       private
 
       def set_neighborhood
-        @neighborhood = Neighborhood.find(params[:id])
+        @neighborhood = Neighborhood.find_by_id_through_context(params[:id], params)
+
+        render json: { message: 'Could not find neighborhood' }, status: 400 unless @neighborhood.present?
       end
 
       def neighborhood_params

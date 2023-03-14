@@ -182,7 +182,7 @@ module Admin
         Entourage.find_by(uuid_v2: hash_uuid) ||
           ConversationService.build_conversation(participant_ids: participant_ids)
       else
-        Entourage.where(group_type: :conversation).find_by_id_or_uuid(params[:id])
+        Entourage.where(group_type: :conversation).findable_by_id_or_uuid(params[:id])
       end
     end
   end

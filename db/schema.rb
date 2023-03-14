@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_03_06_090001) do
+ActiveRecord::Schema.define(version: 2023_03_07_093303) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -106,6 +106,7 @@ ActiveRecord::Schema.define(version: 2023_03_06_090001) do
     t.string "status", default: "active"
     t.integer "deleter_id"
     t.datetime "deleted_at"
+    t.string "uuid_v2", limit: 12, null: false
     t.index ["ancestry"], name: "index_chat_messages_on_ancestry"
     t.index ["content"], name: "index_chat_messages_on_content", opclass: :gin_trgm_ops, using: :gin
     t.index ["created_at"], name: "index_chat_messages_on_created_at"
@@ -113,6 +114,7 @@ ActiveRecord::Schema.define(version: 2023_03_06_090001) do
     t.index ["messageable_id", "messageable_type"], name: "index_chat_messages_on_messageable_id_and_messageable_type"
     t.index ["status"], name: "index_chat_messages_on_status"
     t.index ["user_id"], name: "index_chat_messages_on_user_id"
+    t.index ["uuid_v2"], name: "index_chat_messages_on_uuid_v2", unique: true
   end
 
   create_table "conversation_message_broadcasts", id: :serial, force: :cascade do |t|
@@ -502,11 +504,13 @@ ActiveRecord::Schema.define(version: 2023_03_06_090001) do
     t.boolean "is_departement", default: false
     t.string "zone"
     t.boolean "public", default: true
+    t.string "uuid_v2", limit: 12, null: false
     t.index ["feed_updated_at"], name: "index_neighborhoods_on_feed_updated_at"
     t.index ["name"], name: "index_neighborhoods_on_name"
     t.index ["postal_code"], name: "index_neighborhoods_on_postal_code"
     t.index ["status"], name: "index_neighborhoods_on_status"
     t.index ["user_id"], name: "index_neighborhoods_on_user_id"
+    t.index ["uuid_v2"], name: "index_neighborhoods_on_uuid_v2", unique: true
     t.index ["zone"], name: "index_neighborhoods_on_zone"
   end
 
@@ -722,7 +726,9 @@ ActiveRecord::Schema.define(version: 2023_03_06_090001) do
     t.integer "duration"
     t.boolean "is_video", default: false
     t.string "status", default: "active", null: false
+    t.string "uuid_v2", limit: 12, null: false
     t.index ["name"], name: "index_resources_on_name"
+    t.index ["uuid_v2"], name: "index_resources_on_uuid_v2", unique: true
   end
 
   create_table "rpush_apps", force: :cascade do |t|
