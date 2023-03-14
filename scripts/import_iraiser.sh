@@ -1,6 +1,7 @@
 #!/bin/bash
 
-from_year=${1:-2023}
+from_year=${1:-$(date +%Y)}
+to_year=${2:-$(date +%Y)}
 
 # se connecte au compte iraiser pour faire un exportCsv
 
@@ -10,6 +11,9 @@ password=$(echo "$IRAISER_CREDENTIALS" | cut -d: -f2)
 function log {
   echo $@ >&2
 }
+
+log "from_year: $from_year"
+log "to_year: $to_year"
 
 log "[*] Obtaining cookie"
 curl 'https://entourage.iraiser.eu/manager.php/jauth/login/in' \
@@ -34,7 +38,7 @@ function download {
 # The export times out if it's too large, so we segment by quarter to reduce each
 # file's size.
 files=()
-for year in $(seq $from_year $(date +%Y)); do
+for year in $(seq $from_year $to_year); do
   files+=($(download "${year}_Q1_export.csv" 01/01/$year 31/03/$year))
   files+=($(download "${year}_Q2_export.csv" 01/04/$year 30/06/$year))
   files+=($(download "${year}_Q3_export.csv" 01/07/$year 30/09/$year))
