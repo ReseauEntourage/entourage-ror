@@ -58,7 +58,7 @@ RSpec.describe ChatMessage, type: :model do
     context "on deleted" do
       let(:status) { :deleted }
 
-      it { expect(chat_message.content).to eq(nil) }
+      it { expect(chat_message.content).to eq("") }
     end
 
     context "on deleted and force" do

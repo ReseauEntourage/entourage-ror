@@ -124,7 +124,7 @@ describe Admin::EntouragesController do
 
       it { expect(result.deleted?).to eq(true) }
       it { expect(result.deleter_id).to eq(user.id) }
-      it { expect(result.content).to be_nil }
+      it { expect(result.content).to eq("") }
       it { expect(result.content(true)).to eq("foo") }
     end
 
