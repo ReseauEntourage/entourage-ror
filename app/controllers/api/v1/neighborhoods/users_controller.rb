@@ -8,7 +8,7 @@ module Api
 
         def index
           # neighborhood members
-          render json: @neighborhood.join_requests.accepted, root: "users", each_serializer: ::V1::JoinRequestSerializer, scope: { user: current_user }
+          render json: @neighborhood.join_requests.includes(:user).ordered_by_users.accepted, root: "users", each_serializer: ::V1::JoinRequestSerializer, scope: { user: current_user }
         end
 
         def create
