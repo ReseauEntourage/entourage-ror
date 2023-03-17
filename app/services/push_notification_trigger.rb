@@ -7,6 +7,10 @@ class PushNotificationTrigger
   CREATE_COMMENT = "%s vient de commenter la publication \"%s\""
   CREATE_JOIN_REQUEST = "%s vient de rejoindre votre %s \"%s\""
   CREATE_JOIN_REQUEST_OUTING = "%s vient de rejoindre votre événement \"%s\" du %s"
+  CREATE_CONTRIBUTION = "Un voisin propose une nouvelle entraide. Peut-être que cela pourrait vous intéresser ?"
+  CREATE_SOLICITATION = "Un voisin recherche un équipement. Peut-être que vous pourriez l’aider ?"
+
+  DISTANCE_OF_ACTION = 10
 
   attr_reader :record, :method, :changes
 
@@ -46,6 +50,13 @@ class PushNotificationTrigger
   def entourage_on_create
     return unless @record.outing? || @record.action?
     return unless user = @record.user
+
+    entourage_on_create_for_followers(user)
+    entourage_on_create_for_neighbors(user)
+  end
+
+  # initial caller: entourage_on_create
+  def entourage_on_create_for_followers user
     return unless partner = user.partner
 
     follower_ids = Following.where(partner: partner, active: true).pluck(:user_id)
@@ -78,10 +89,40 @@ class PushNotificationTrigger
     end
   end
 
+  # initial caller: entourage_on_create
+  def entourage_on_create_for_neighbors user
+    neighbor_ids = Address.inside_perimeter(@record.latitude, @record.longitude, DISTANCE_OF_ACTION).pluck(:user_id).compact.uniq
+
+    return unless neighbor_ids.any?
+
+    content = @record.contribution? ? CREATE_CONTRIBUTION : CREATE_SOLICITATION
+
+    neighbor_ids.each do |neighbor_id|
+      next unless neighbor = User.find(neighbor_id)
+
+      notify(
+        sender_id: @record.user_id,
+        referent: @record,
+        instance: @record,
+        users: [neighbor],
+        params: {
+          object: @record.title,
+          content: content,
+          extra: {
+            type: "ENTOURAGE_INVITATION",
+            entourage_id: @record.id,
+            group_type: @record.group_type
+          }
+        }
+      )
+    end
+  end
+
   def entourage_on_update
     return outing_on_update if @record.outing?
   end
 
+  # initial caller: entourage_on_update
   def outing_on_update
     return outing_on_update_status if @changes.keys.include?("status")
     return unless @changes.any? # it happens when neighborhoods_entourage is updated
@@ -102,6 +143,7 @@ class PushNotificationTrigger
     )
   end
 
+  # initial caller: entourage_on_update
   def outing_on_update_status
     return outing_on_cancel if @record.cancelled?
     return outing_on_cancel if @record.closed? && @record.future_outing?
@@ -137,6 +179,7 @@ class PushNotificationTrigger
     private_chat_message_on_create
   end
 
+  # initial caller: chat_message_on_create
   def public_chat_message_on_create
     users = @record.messageable.accepted_members - [@record.user]
 
@@ -160,6 +203,7 @@ class PushNotificationTrigger
     )
   end
 
+  # initial caller: chat_message_on_create
   def private_chat_message_on_create
     users = @record.messageable.accepted_members - [@record.user]
 
@@ -183,6 +227,7 @@ class PushNotificationTrigger
     )
   end
 
+  # initial caller: chat_message_on_create
   def post_on_create
     users = @record.messageable.accepted_members - [@record.user]
 
@@ -206,6 +251,7 @@ class PushNotificationTrigger
     )
   end
 
+  # initial caller: chat_message_on_create
   def comment_on_create
     return unless @record.has_parent?
 
