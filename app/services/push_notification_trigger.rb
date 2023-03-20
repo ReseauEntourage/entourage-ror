@@ -55,6 +55,10 @@ class PushNotificationTrigger
     entourage_on_create_for_neighbors(user)
   end
 
+  alias_method :contribution_on_create, :entourage_on_create
+  alias_method :solicitation_on_create, :entourage_on_create
+  alias_method :outing_on_create, :entourage_on_create
+
   # initial caller: entourage_on_create
   def entourage_on_create_for_followers user
     return unless partner = user.partner
