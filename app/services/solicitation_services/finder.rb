@@ -18,7 +18,7 @@ module SolicitationServices
     end
 
     def find_all
-      solicitations = Solicitation.active.where.not(id: user.solicitation_membership_ids)
+      solicitations = Solicitation.active
 
       if latitude && longitude
         bounding_box_sql = Geocoder::Sql.within_bounding_box(*box, :latitude, :longitude)

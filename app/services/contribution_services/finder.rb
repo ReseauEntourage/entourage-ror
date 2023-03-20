@@ -18,7 +18,7 @@ module ContributionServices
     end
 
     def find_all
-      contributions = Contribution.active.where.not(id: user.contribution_membership_ids)
+      contributions = Contribution.active
 
       if latitude && longitude
         bounding_box_sql = Geocoder::Sql.within_bounding_box(*box, :latitude, :longitude)

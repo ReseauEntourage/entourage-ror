@@ -73,7 +73,9 @@ describe Api::V1::ContributionsController, :type => :controller do
       before { request }
 
       it { expect(response.status).to eq(200) }
-      it { expect(subject["contributions"].count).to eq(0) }
+      # we want to return contribution even if user is member
+      it { expect(subject["contributions"].count).to eq(1) }
+      it { expect(subject["contributions"][0]["id"]).to eq(contribution.id) }
     end
 
     context "user being a member along with some users" do
@@ -84,7 +86,9 @@ describe Api::V1::ContributionsController, :type => :controller do
       before { request }
 
       it { expect(response.status).to eq(200) }
-      it { expect(subject["contributions"].count).to eq(0) }
+      # we want to return contribution even if user is member
+      it { expect(subject["contributions"].count).to eq(1) }
+      it { expect(subject["contributions"][0]["id"]).to eq(contribution.id) }
     end
 
     context "user not being a member" do
