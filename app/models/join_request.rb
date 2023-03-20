@@ -36,6 +36,10 @@ class JoinRequest < ApplicationRecord
   scope :rejected, -> {where(status: REJECTED_STATUS)}
   scope :cancelled, -> {where(status: CANCELLED_STATUS)}
 
+  scope :ordered_by_users, -> {
+    joins(:user).order("join_requests.role, users.first_name")
+  }
+
   after_save :joinable_callback
   after_destroy :joinable_callback
 

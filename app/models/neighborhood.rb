@@ -21,7 +21,9 @@ class Neighborhood < ApplicationRecord
 
   alias_attribute :author, :user
 
-  has_many :members, -> { where("join_requests.status = 'accepted'") }, through: :join_requests, source: :user
+  has_many :members, -> {
+    where("join_requests.status = 'accepted'").order("join_requests.role, users.first_name")
+  }, through: :join_requests, source: :user
   has_many :neighborhoods_entourages
   has_many :chat_messages, as: :messageable, dependent: :destroy
   has_many :parent_chat_messages, -> { where(ancestry: nil) }, as: :messageable, class_name: :ChatMessage

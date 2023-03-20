@@ -8,7 +8,7 @@ module Api
 
         def index
           # outing members
-          render json: @outing.join_requests.accepted, root: "users", each_serializer: ::V1::JoinRequestSerializer, scope: { user: current_user }
+          render json: @outing.join_requests.includes(:user).ordered_by_users.accepted, root: "users", each_serializer: ::V1::JoinRequestSerializer, scope: { user: current_user }
         end
 
         def create
