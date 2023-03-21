@@ -195,12 +195,12 @@ describe Api::V1::Entourages::ChatMessagesController do
           join_request = FactoryBot.create(:join_request, joinable: entourage, user: user, status: "accepted")
           join_request2 = FactoryBot.create(:join_request, joinable: entourage, status: "accepted")
           FactoryBot.create(:join_request, joinable: entourage, status: "pending")
-          expect_any_instance_of(PushNotificationService).to receive(:send_notification).with(nil, 'John D. - Foobar', 'foobaz', [join_request2.user], "conversation", entourage.id, {
+          expect_any_instance_of(PushNotificationService).to receive(:send_notification).with(nil, 'John D. - Foobar', 'foobaz', [join_request2.user], "solicitation", entourage.id, {
             joinable_id: entourage.id,
             joinable_type: "Entourage",
             group_type: 'action',
             type: "NEW_CHAT_MESSAGE",
-            instance: "conversation",
+            instance: "solicitation",
             instance_id: entourage.id
           })
           post :create, params: { entourage_id: entourage.to_param, chat_message: {content: "foobaz"}, token: user.token }

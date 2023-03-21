@@ -26,7 +26,7 @@ class PushNotificationLinker
           instance: "partner",
           instance_id: object.id
         }
-      elsif object.is_a?(Entourage) && (object.action? || object.conversation?)
+      elsif object.is_a?(Entourage) && object.conversation?
         {
           instance: "conversation",
           instance_id: object.id
@@ -34,6 +34,16 @@ class PushNotificationLinker
       elsif object.is_a?(Entourage) && object.outing?
         {
           instance: "outing",
+          instance_id: object.id
+        }
+      elsif object.is_a?(Entourage) && object.action? && object.contribution?
+        {
+          instance: "contribution",
+          instance_id: object.id
+        }
+      elsif object.is_a?(Entourage) && object.action? && object.solicitation?
+        {
+          instance: "solicitation",
           instance_id: object.id
         }
       elsif is_a_post?(object)

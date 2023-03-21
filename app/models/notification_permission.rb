@@ -1,6 +1,6 @@
 class NotificationPermission < ApplicationRecord
-  INAPP_INSTANCES = %{neighborhood outing user}
-  PUSH_INSTANCES = %{neighborhood outing conversation user}
+  INAPP_INSTANCES = %{neighborhood outing contribution solicitation user}
+  PUSH_INSTANCES = %{neighborhood outing contribution solicitation conversation user}
 
   belongs_to :user
   validates_presence_of :user

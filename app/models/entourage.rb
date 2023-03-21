@@ -373,6 +373,10 @@ class Entourage < ApplicationRecord
     entourage_type && entourage_type.to_sym == :contribution
   end
 
+  def solicitation?
+    entourage_type && entourage_type.to_sym == :ask_for_help
+  end
+
   def cancelled?
     status && status.to_sym == :cancelled
   end
