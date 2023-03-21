@@ -8,7 +8,7 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
   let(:address_paris) { FactoryBot.create(:address, latitude: paris[:latitude], longitude: paris[:longitude]) }
 
   let(:user) { create :public_user, first_name: "John" }
-  let(:user_paris) { create :public_user, first_name: "Doe", addresses: [address_paris] }
+  let(:user_paris) { create :public_user, first_name: "Doe", addresses: [address_paris], goal: :ask_for_help }
   let(:participant) { create :public_user, first_name: "Jane" }
 
   # after_create
@@ -67,7 +67,7 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
         it { expect_any_instance_of(InappNotification).to receive(:save) }
       end
 
-      describe "contribution with neighbor for away" do
+      describe "contribution with neighbor far away" do
         let(:subject) { create :contribution, user: user, latitude: nantes[:latitude], longitude: nantes[:longitude] }
 
         after { subject }
@@ -83,6 +83,58 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
 
         it { expect_any_instance_of(PushNotificationTrigger).to receive(:entourage_on_create_for_neighbors) }
         it { expect_any_instance_of(PushNotificationTrigger).not_to receive(:notify) }
+      end
+
+      describe "contribution with ask_for_help neighbor" do
+        let(:user_paris) { create :public_user, first_name: "Doe", addresses: [address_paris], goal: :ask_for_help }
+
+        let(:subject) { create :contribution, user: user, latitude: paris[:latitude], longitude: paris[:longitude] }
+        let!(:notification_permission) { create :notification_permission, user: user_paris }
+
+        before { user_paris }
+
+        after { subject }
+
+        it { expect_any_instance_of(PushNotificationTrigger).to receive(:notify) }
+      end
+
+      describe "contribution with offer_help neighbor" do
+        let(:user_paris) { create :public_user, first_name: "Doe", addresses: [address_paris], goal: :offer_help }
+
+        let(:subject) { create :contribution, user: user, latitude: paris[:latitude], longitude: paris[:longitude] }
+        let!(:notification_permission) { create :notification_permission, user: user_paris }
+
+        before { user_paris }
+
+        after { subject }
+
+        it { expect_any_instance_of(PushNotificationTrigger).not_to receive(:notify) }
+      end
+
+      describe "solicitation with ask_for_help neighbor" do
+        let(:user_paris) { create :public_user, first_name: "Doe", addresses: [address_paris], goal: :ask_for_help }
+
+        let(:subject) { create :solicitation, user: user, latitude: paris[:latitude], longitude: paris[:longitude] }
+        let!(:notification_permission) { create :notification_permission, user: user_paris }
+
+        before { user_paris }
+
+        after { subject }
+
+        it { expect_any_instance_of(PushNotificationTrigger).not_to receive(:notify) }
+      end
+
+      describe "solicitation with offer_help neighbor" do
+        let(:user_paris) { create :public_user, first_name: "Doe", addresses: [address_paris], goal: :offer_help }
+
+        let(:subject) { create :solicitation, user: user, latitude: paris[:latitude], longitude: paris[:longitude] }
+        let!(:notification_permission) { create :notification_permission, user: user_paris }
+
+        before { user_paris }
+
+        after { subject }
+
+        it { expect_any_instance_of(PushNotificationTrigger).to receive(:notify) }
       end
 
       describe "chat_message" do
