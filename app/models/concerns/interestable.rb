@@ -21,12 +21,12 @@ module Interestable
         .group(sanitize_sql_array ["%s.id", self.table_name])
         .order(Arel.sql %(
         sum(
-          case context = 'interests' and tagger_id is null and tags.name in (%s)
+          case context = 'interests' and tagger_id is null and tags.name in (#{interest_list.join(',')})
           when true then 1
           else 0
           end
         ) desc
-      ) % interest_list.map { |interest| "'#{interest}'" }.join(","))
+      )))
     }
   end
 
