@@ -27,18 +27,18 @@ module Admin
           moderator_reads is null as unread,
           moderator_reads is null and neighborhoods_imageable.id is not null as unread_images
         ))
-        .order("case when status = 'active' then 1 else 2 end")
-        .order(%(
+        .order(Arel.sql("case when status = 'active' then 1 else 2 end"))
+        .order(Arel.sql(%(
           case
           when moderator_reads is null then 0
           when moderator_reads is null and neighborhoods_imageable.id is not null then 1
           when neighborhoods_messageable.max_created_at >= moderator_reads.read_at then 2
           else 3
           end
-        ))
-        .order(%(
+        )))
+        .order(Arel.sql(%(
           neighborhoods.created_at DESC
-        )).page(page).per(per)
+        ))).page(page).per(per)
 
       @message_count = ConversationMessage
         .with_moderator_reads_for(user: current_user)

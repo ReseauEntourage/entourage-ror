@@ -50,7 +50,7 @@ module ModerationServices
     return ModerationArea.none if community != :entourage
     ModerationArea
       .where(departement: [departement, '*'])
-      .order("case departement when '*' then 1 else 0 end")
+      .order(Arel.sql("case departement when '*' then 1 else 0 end"))
       .limit(1)
   end
 

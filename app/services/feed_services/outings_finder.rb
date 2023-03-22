@@ -26,7 +26,7 @@ module FeedServices
       feeds = outings
         .where("(#{bounding_box_sql}) OR online = true")
         .where("metadata->>'ends_at' >= ?", Time.zone.now)
-        .order("metadata->>'starts_at' asc, id")
+        .order(Arel.sql("metadata->>'starts_at' asc, id"))
         .limit(LIMIT)
         .includes(user: :partner)
 

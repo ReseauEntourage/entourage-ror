@@ -35,18 +35,18 @@ module Admin
         .like(params[:search])
         .group("entourages.id, moderator_reads.id, entourage_moderations.id, entourage_denorms.id")
         .joins(%(left outer join entourage_denorms on entourage_denorms.entourage_id = entourages.id))
-        .order("case when status = 'open' then 1 else 2 end")
-        .order(%(
+        .order(Arel.sql("case when status = 'open' then 1 else 2 end"))
+        .order(Arel.sql(%(
           case
           when moderator_reads is null and entourages.created_at >= now() - interval '1 week' then 0
           when max(max_chat_message_created_at) >= moderator_reads.read_at then 1
           else 2
           end
-        ))
-        .order(%(
+        )))
+        .order(Arel.sql(%(
           admin_pin DESC,
           entourages.created_at DESC
-        ))
+        )))
         .to_a
 
       @entourages = Kaminari.paginate_array(@entourages, total_count: @q.result.count).page(params[:page]).per(per_page)
@@ -56,18 +56,18 @@ module Admin
       @requests_count = JoinRequest
         .where(joinable_type: :Entourage, joinable_id: entourage_ids, status: :pending)
         .group(:joinable_id)
-        .pluck(%(
+        .pluck(Arel.sql(%(
           joinable_id,
           count(*),
           count(case when updated_at <= now() - interval '48 hours' then 1 end)
-        ))
+        )))
 
       @requests_count = Hash[@requests_count.map { |id, total, late| [id, { total: total, late: late }]}]
       @requests_count.default = { total: 0, late: 0 }
 
       @reminded_users = Experimental::PendingRequestReminder.recent
         .where(user_id: @entourages.map(&:user_id))
-        .pluck('distinct user_id')
+        .pluck(Arel.sql('distinct user_id'))
 
       @reminded_users = Set.new(@reminded_users)
 

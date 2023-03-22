@@ -485,8 +485,8 @@ describe Api::V1::OutingsController do
           let(:end_dates) { (end_at.to_datetime..(end_at + 64.days).to_datetime).step(7).to_a }
 
           it { expect(outing.siblings.count).to eq(10) }
-          it { expect(outing.siblings.pluck("metadata->>'starts_at'").map(&:to_datetime)).to match_array(start_dates) }
-          it { expect(outing.siblings.pluck("metadata->>'ends_at'").map(&:to_datetime)).to match_array(end_dates) }
+          it { expect(outing.siblings.pluck(Arel.sql("metadata->>'starts_at'")).map(&:to_datetime)).to match_array(start_dates) }
+          it { expect(outing.siblings.pluck(Arel.sql("metadata->>'ends_at'")).map(&:to_datetime)).to match_array(end_dates) }
         end
 
       end

@@ -51,7 +51,7 @@ module FeedServices
           JoinRequest
           .where(status: :pending)
           .joins(:entourage).merge(user.entourages.findable)
-          .pluck("distinct joinable_id")
+          .pluck(Arel.sql("distinct joinable_id"))
 
         if entourage_ids_for_pending_join_requests.any?
           if entourages_only

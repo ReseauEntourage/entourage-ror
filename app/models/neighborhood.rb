@@ -129,7 +129,7 @@ class Neighborhood < ApplicationRecord
     order_by_outings.order_by_chat_messages
   }
   scope :order_by_outings, -> {
-    left_outer_joins(:outings).group('neighborhoods.id').order(%(
+    left_outer_joins(:outings).group('neighborhoods.id').order(Arel.sql(%(
       sum(
         case
           (entourages.metadata->>'starts_at')::date > date_trunc('day', NOW() - interval '1 month')
@@ -137,10 +137,10 @@ class Neighborhood < ApplicationRecord
         else 0
         end
       ) desc
-    ))
+    )))
   }
   scope :order_by_chat_messages, -> {
-    left_outer_joins(:chat_messages).group('neighborhoods.id').order(%(
+    left_outer_joins(:chat_messages).group('neighborhoods.id').order(Arel.sql(%(
       sum(
         case
           chat_messages.created_at > date_trunc('day', NOW() - interval '1 month')
@@ -148,7 +148,7 @@ class Neighborhood < ApplicationRecord
         else 0
         end
       ) desc
-    ))
+    )))
   }
   scope :like, -> (search) {
     return unless search.present?
