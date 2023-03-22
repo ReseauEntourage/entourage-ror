@@ -5,21 +5,21 @@ describe EntourageServices::EntourageBuilder do
   describe '.update' do
     describe "don't touch updated_at when closing" do
       let(:entourage) { FactoryBot.create(:entourage, updated_at: 10.hours.ago) }
-      subject { -> { described_class.update(entourage: entourage, params: params) } }
+      let(:subject) { described_class.update(entourage: entourage, params: params) }
 
       context 'the status changed to closed' do
         let(:params) { { status: 'closed' } }
-        it { should_not change { entourage.reload.updated_at } }
+        it { expect { subject }.not_to change { entourage.reload.updated_at } }
       end
 
       context 'the status changed to something else' do
         let(:params) { { status: 'blacklisted' } }
-        it { should change { entourage.reload.updated_at } }
+        it { expect { subject }.to change { entourage.reload.updated_at } }
       end
 
       context 'the status changed to close but another attribute changed' do
         let(:params) { { status: 'closed', title: 'new title' } }
-        it { should change { entourage.reload.updated_at } }
+        it { expect { subject }.to change { entourage.reload.updated_at } }
       end
     end
   end
@@ -47,28 +47,28 @@ describe EntourageServices::EntourageBuilder do
     describe 'actions are not eligible to cancellation' do
       let(:action) { FactoryBot.create(:entourage) }
       let(:params) { { cancellation_message: 'my message' } }
-      subject { -> { described_class.cancel(entourage: action, params: params) } }
+      let(:subject) { described_class.cancel(entourage: action, params: params) }
 
-      it { should_not change { action.reload.status } }
-      it { should_not change { ChatMessage.count } }
+      it { expect { subject }.not_to change { action.reload.status } }
+      it { expect { subject }.not_to change { ChatMessage.count } }
     end
 
     describe 'outings are eligible to cancellation' do
       let(:outing) { FactoryBot.create(:outing) }
       let(:params) { { cancellation_message: 'my message' } }
-      subject { -> { described_class.cancel(entourage: outing, params: params) } }
+      let(:subject) { described_class.cancel(entourage: outing, params: params) }
 
-      it { should change { outing.reload.status } }
-      it { should change { ChatMessage.count }.by(2) }
+      it { expect { subject }.to change { outing.reload.status } }
+      it { expect { subject }.to change { ChatMessage.count }.by(2) }
     end
 
     describe 'outings without cancellation_message are eligible to cancellation' do
       let(:outing) { FactoryBot.create(:outing) }
       let(:params) { { cancellation_message: nil } }
-      subject { -> { described_class.cancel(entourage: outing, params: params) } }
+      let(:subject) { described_class.cancel(entourage: outing, params: params) }
 
-      it { should change { outing.reload.status } }
-      it { should change { ChatMessage.count }.by(1) }
+      it { expect { subject }.to change { outing.reload.status } }
+      it { expect { subject }.to change { ChatMessage.count }.by(1) }
     end
 
     describe 'cancellation with cancellation_message creates text and status_update chat_messages' do

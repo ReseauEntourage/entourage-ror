@@ -744,24 +744,24 @@ describe Api::V1::OutingsController do
 
     context 'not as creator' do
       let(:creator) { FactoryBot.create(:public_user) }
-      it { expect(lambda { request }).to change { Outing.count }.by(0) }
+      it { expect { request }.to change { Outing.count }.by(0) }
       it { request ; expect(response.status).to eq(401) }
     end
 
     context 'without recurrence' do
       let(:recurrence) { nil }
-      it { expect(lambda { request }).to change { Outing.count }.by(0) }
+      it { expect { request }.to change { Outing.count }.by(0) }
       it { request ; expect(response.status).to eq(401) }
     end
 
     context 'without unactive recurrence' do
       let(:recurrence) { FactoryBot.create(:outing_recurrence, continue: false) }
-      it { expect(lambda { request }).to change { Outing.count }.by(0) }
+      it { expect { request }.to change { Outing.count }.by(0) }
       it { request ; expect(response.status).to eq(401) }
     end
 
     context 'duplication as creator' do
-      it { expect(lambda { request }).to change { Outing.count }.by(1) }
+      it { expect { request }.to change { Outing.count }.by(1) }
     end
 
     context 'as creator' do

@@ -40,7 +40,7 @@ describe MailchimpService, type: :service do
 
     context "no api key" do
       let(:config) { {} }
-      it { expect(subject).to raise_error(MailchimpService::ConfigError, /API key/) }
+      it { expect { subject.call }.to raise_error(MailchimpService::ConfigError, /API key/) }
     end
 
     context "valid parameters" do
@@ -64,7 +64,7 @@ describe MailchimpService, type: :service do
 
     context "api error" do
       let(:response) { {status: 403, body: JSON.fast_generate(title: "Some Error")} }
-      it { expect(subject).to raise_error(MailchimpService::ApiError, /403 Some Error/) }
+      it { expect { subject.call }.to raise_error(MailchimpService::ApiError, /403 Some Error/) }
     end
   end
 

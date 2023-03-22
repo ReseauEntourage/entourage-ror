@@ -18,7 +18,7 @@ RSpec.describe Api::V1::MessagesController, :type => :controller do
 
     context "invalid message" do
       subject { post 'create', params: { message: {content: ""} } }
-      it { expect(lambda { subject }).to change {Message.count}.by(0) }
+      it { expect { subject }.to change {Message.count}.by(0) }
       it "returns 400" do
         subject
         expect(response.status).to eq(400)
