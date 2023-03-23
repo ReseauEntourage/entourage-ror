@@ -195,7 +195,7 @@ class PushNotificationTrigger
     notify(
       sender_id: @record.user_id,
       referent: @record.messageable,
-      instance: @record.messageable,
+      instance: @record,
       users: users,
       params: {
         object: "#{username(@record.user)} - #{title(@record.messageable)}",

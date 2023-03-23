@@ -164,6 +164,42 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
           }
         end
 
+        context "public_chat_message" do
+          let(:contribution) { create :contribution, user: user, participants: [user_paris] }
+          let(:subject) { create :chat_message, user: user, message_type: :text, messageable: contribution, content: "foo" }
+
+          it {
+            expect_any_instance_of(PushNotificationTrigger).to receive(:public_chat_message_on_create)
+            expect_any_instance_of(PushNotificationTrigger).not_to receive(:post_on_create)
+            expect_any_instance_of(PushNotificationTrigger).not_to receive(:comment_on_create)
+
+            subject
+          }
+
+          context "notify" do
+            after { subject }
+
+            it {
+              expect_any_instance_of(PushNotificationTrigger).to receive(:notify).with(
+                sender_id: user.id,
+                referent: Entourage.find(contribution.id),
+                instance: an_instance_of(ChatMessage),
+                users: [user_paris],
+                params: {
+                  object: "John D. - #{contribution.title}",
+                  content: "foo",
+                  extra: {
+                    group_type: "action",
+                    joinable_type: "Entourage",
+                    joinable_id: contribution.id,
+                    type: "NEW_CHAT_MESSAGE"
+                  }
+                }
+              )
+            }
+          end
+        end
+
         context "private_chat_message" do
           it {
             expect_any_instance_of(PushNotificationTrigger).to receive(:private_chat_message_on_create)
