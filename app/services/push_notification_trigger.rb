@@ -8,7 +8,8 @@ class PushNotificationTrigger
   CREATE_JOIN_REQUEST = "%s vient de rejoindre votre %s \"%s\""
   CREATE_JOIN_REQUEST_OUTING = "%s vient de rejoindre votre événement \"%s\" du %s"
   CREATE_CONTRIBUTION = "Un voisin propose une nouvelle entraide. Peut-être que cela pourrait vous intéresser ?"
-  CREATE_SOLICITATION = "Un voisin recherche un équipement. Peut-être que vous pourriez l’aider ?"
+  CREATE_SOLICITATION = "Un voisin recherche une entraide. Peut-être que vous pourriez l’aider ?"
+  CREATE_SOLICITATION_SECTION = "Un voisin recherche un %s. Peut-être que vous pourriez l’aider ?"
 
   DISTANCE_OF_ACTION = 10
 
@@ -100,8 +101,6 @@ class PushNotificationTrigger
 
     return unless neighbor_ids.any?
 
-    content = @record.contribution? ? CREATE_CONTRIBUTION : CREATE_SOLICITATION
-
     neighbor_ids.each do |neighbor_id|
       next unless neighbor = User.find(neighbor_id)
       next if @record.solicitation? && neighbor.is_ask_for_help?
@@ -114,7 +113,7 @@ class PushNotificationTrigger
         users: [neighbor],
         params: {
           object: @record.title,
-          content: content,
+          content: content_for_create_action(@record),
           extra: {
             type: "ENTOURAGE_INVITATION",
             entourage_id: @record.id,
@@ -392,6 +391,16 @@ class PushNotificationTrigger
 
   def entity_name object
     GroupService.name object
+  end
+
+  def content_for_create_action object
+    return unless object.is_a?(Entourage)
+    return unless object.action?
+
+    return CREATE_CONTRIBUTION if object.contribution?
+    return CREATE_SOLICITATION unless section = Solicitation.find(object.id).section
+
+    CREATE_SOLICITATION_SECTION % I18n.t("tags.sections.#{section}.name", default: CREATE_SOLICITATION).downcase
   end
 
   def to_date date_str

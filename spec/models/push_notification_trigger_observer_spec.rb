@@ -656,4 +656,50 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
       }
     end
   end
+
+  describe "content_for_create_action" do
+    let(:subject) { PushNotificationTrigger.new(record, :foo, Hash.new).content_for_create_action(record) }
+
+    context "on join_request" do
+      let(:record) { create :join_request }
+
+      it { expect(subject).to be_nil }
+    end
+
+    context "on neighborhood" do
+      let(:record) { create :neighborhood }
+
+      it { expect(subject).to be_nil }
+    end
+
+    context "on conversation" do
+      let(:record) { create :conversation }
+
+      it { expect(subject).to be_nil }
+    end
+
+    context "on outing" do
+      let(:record) { create :outing }
+
+      it { expect(subject).to be_nil }
+    end
+
+    context "on solicitation" do
+      let(:record) { create :solicitation }
+
+      it { expect(subject).to eq(PushNotificationTrigger::CREATE_SOLICITATION % nil) }
+    end
+
+    context "on clothes solicitation" do
+      let(:record) { create :solicitation, section: :clothes }
+
+      it { expect(subject).to eq(PushNotificationTrigger::CREATE_SOLICITATION_SECTION % "vêtement") }
+    end
+
+    context "on contribution" do
+      let(:record) { create :contribution }
+
+      it { expect(subject).to eq(PushNotificationTrigger::CREATE_CONTRIBUTION) }
+    end
+  end
 end
