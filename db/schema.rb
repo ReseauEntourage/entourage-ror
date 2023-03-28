@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_03_07_093303) do
+ActiveRecord::Schema.define(version: 2023_03_28_153400) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -107,6 +107,7 @@ ActiveRecord::Schema.define(version: 2023_03_07_093303) do
     t.integer "deleter_id"
     t.datetime "deleted_at"
     t.string "uuid_v2", limit: 12, null: false
+    t.index "((metadata -> 'conversation_message_broadcast_id'::text))", name: "chat_messages_conversation_message_broadcast_id", using: :hash
     t.index ["ancestry"], name: "index_chat_messages_on_ancestry"
     t.index ["content"], name: "index_chat_messages_on_content", opclass: :gin_trgm_ops, using: :gin
     t.index ["created_at"], name: "index_chat_messages_on_created_at"
