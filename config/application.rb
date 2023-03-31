@@ -1,6 +1,6 @@
-require File.expand_path('../boot', __FILE__)
+require_relative "boot"
 
-require 'rails/all'
+require "rails/all"
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
@@ -11,10 +11,19 @@ Bundler.require(*Rails.groups)
 
 module EntourageBack
   class Application < Rails::Application
+    # Configuration for the application, engines, and railties goes here.
+    #
+    # These settings can be overridden in specific environments using the files
+    # in config/environments, which are processed later.
+    #
+    # config.time_zone = "Central Time (US & Canada)"
+    # config.eager_load_paths << Rails.root.join("extras")
+
     config.time_zone = 'Paris'
 
     # Batch loading
     config.middleware.use BatchLoader::Middleware
+    config.load_defaults 5.0
 
     # The default locale is :en and all translations from config/locales/*.rb,yml are auto loaded.
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
