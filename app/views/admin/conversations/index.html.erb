@@ -107,17 +107,17 @@
         %>
         <%= recipient_names.join(', ') %>
       </div>
+
       <div class="cell truncate conversation-content">
         <% if last_message.nil? %>
           <span class="text-muted">(pas de messages)</span>
-        <% elsif last_message.user_id == @user.id %>
-          Vous :
-        <% elsif recipient_ids.count > 1 %>
-          <%= display_name @users[last_message.user_id] %> :
-        <% end %>
-        <%= last_message.content unless last_message.nil? %>
+        <% else %>
+          <% if last_message.user_id == @user.id %>
+            Vous :
+          <% elsif recipient_ids.count > 1 %>
+            <%= display_name @users[last_message.user_id] %> :
+          <% end %>
 
-        <% if last_message.present? %>
           <% if last_message.deleted? %>
             <p style="color: red;"> Ce message a été supprimé : </p>
             <em><%= simple_format last_message.content(true) %></em>
@@ -126,6 +126,7 @@
           <% end %>
         <% end %>
       </div>
+
       <div class="cell conversation-timestamp" style="text-align: right">
         <%= link_to "", admin_conversation_path(conversation), class: "overlay" %>
         <% timestamp = last_message&.created_at || conversation.created_at %>
