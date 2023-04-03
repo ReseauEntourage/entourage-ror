@@ -457,7 +457,8 @@ module Admin
       if @join_request.present?
         @join_request.status = :accepted
       else
-        @join_request = JoinRequest.new(joinable: @entourage, user: current_user, role: :member, status: :accepted)
+        role = @entourage.action? ? :member : :participant
+        @join_request = JoinRequest.new(joinable: @entourage, user: current_user, role: role, status: :accepted)
       end
 
       @join_request.save!
