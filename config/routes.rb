@@ -38,6 +38,7 @@ Rails.application.routes.draw do
 
       resources :pois do
         collection do
+          get :export
           post :import
         end
       end

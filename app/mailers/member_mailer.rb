@@ -111,6 +111,17 @@ class MemberMailer < MailjetMailer
     )
   end
 
+  def pois_csv_export poi_ids, recipient
+    attachments["pois-csv-export.csv"] = File.read(
+      PoiServices::ListExporter.export(poi_ids)
+    )
+
+    mail(
+      to: recipient,
+      subject: "Export des pois"
+    )
+  end
+
   def poi_import csv:, recipient:
     PoiServices::Importer.read(csv: CSV.parse(csv, headers: true)) do |successes, errors|
       @successes = successes

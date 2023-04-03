@@ -37,9 +37,11 @@
             <%= f.label :file, "Importer des POI" %>
             <%= f.file_field :file, class: 'form-control-file', required: true %>
           </div>
-          <%= f.submit "Upload CSV", class: 'btn btn-primary' %>
+          <%= f.submit "Upload CSV", class: 'btn btn-danger' %>
         <% end %>
       <% end %>
+
+      <%= link_to "Télécharger", export_admin_pois_path(@params), class: "btn btn-default" %>
     </div>
 
   </div>

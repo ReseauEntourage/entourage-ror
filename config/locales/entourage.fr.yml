@@ -151,7 +151,22 @@ fr:
         email: Email
         donations_needs: Dons acceptés
         volunteers_needs: Bénévoles recherchés
-
+      poi:
+        id: ID
+        name: Nom
+        adress: Adresse
+        description: Description
+        audience: Public
+        email: Email
+        website: Website
+        phone: Téléphone
+        category_1: Catégorie 1
+        category_2: Catégorie 2
+        category_3: Catégorie 3
+        category_4: Catégorie 4
+        category_5: Catégorie 5
+        category_6: Catégorie 6
+        category_7: Catégorie 7
       announcement:
         title: Titre
         icon: Picto
