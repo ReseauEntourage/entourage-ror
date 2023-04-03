@@ -21,15 +21,21 @@ class Poi < ApplicationRecord
     within_bounding_box(box)
   end
 
-  scope :in_postal_code, -> (postal_code) do
-    if postal_code.to_sym == :hors_zone
+  scope :in_departement, -> (departement) do
+    if departement.to_sym == :hors_zone
       not_like = ModerationArea.only_departements.map do |departement|
-        " %#{departement}%"
+        "% #{departement}%"
       end.join(',')
 
       where("adress NOT LIKE ALL (?)", "{#{not_like}}")
     else
-      where("adress LIKE ?", "% #{postal_code}%")
+      where("adress ~ ?", "(,|\s)#{departement}\\d\\d\\d")
+    end
+  end
+
+  (1..7).each do |iterator|
+    define_method("category_#{iterator}") do
+      categories[iterator - 1]
     end
   end
 
