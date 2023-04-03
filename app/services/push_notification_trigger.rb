@@ -7,9 +7,9 @@ class PushNotificationTrigger
   CREATE_COMMENT = "%s vient de commenter la publication \"%s\""
   CREATE_JOIN_REQUEST = "%s vient de rejoindre votre %s \"%s\""
   CREATE_JOIN_REQUEST_OUTING = "%s vient de rejoindre votre événement \"%s\" du %s"
-  CREATE_CONTRIBUTION = "Un voisin propose une nouvelle entraide. Peut-être que cela pourrait vous intéresser ?"
-  CREATE_SOLICITATION = "Un voisin recherche une entraide. Peut-être que vous pourriez l’aider ?"
-  CREATE_SOLICITATION_SECTION = "Un voisin recherche un %s. Peut-être que vous pourriez l’aider ?"
+  CREATE_CONTRIBUTION = "Un voisin propose une nouvelle entraide"
+  CREATE_SOLICITATION = "Un voisin recherche une aide"
+  CREATE_SOLICITATION_SECTION = "Un voisin recherche un %s"
 
   DISTANCE_OF_ACTION = 10
 
@@ -112,8 +112,8 @@ class PushNotificationTrigger
         instance: @record,
         users: [neighbor],
         params: {
-          object: @record.title,
-          content: content_for_create_action(@record),
+          object: content_for_create_action(@record),
+          content: @record.title,
           extra: {
             type: "ENTOURAGE_INVITATION",
             entourage_id: @record.id,
