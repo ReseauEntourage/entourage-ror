@@ -23,13 +23,11 @@ class Poi < ApplicationRecord
 
   scope :in_departement, -> (departement) do
     if departement.to_sym == :hors_zone
-      not_like = ModerationArea.only_departements.map do |departement|
-        "% #{departement}%"
-      end.join(',')
+      departements = ModerationArea.only_departements.join('|')
 
-      where("adress NOT LIKE ALL (?)", "{#{not_like}}")
+      where("adress !~ ?", "(,|\s)#{departements}\\d{3}")
     else
-      where("adress ~ ?", "(,|\s)#{departement}\\d\\d\\d")
+      where("adress ~ ?", "(,|\s)#{departement}\\d{3}")
     end
   end
 
