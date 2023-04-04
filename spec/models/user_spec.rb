@@ -81,12 +81,12 @@ describe User, :type => :model do
     it { expect(FactoryBot.build(:pro_user, phone: '0123456789').save).to be false }
 
     # foreign countries
-    it { expect(FactoryBot.build(:pro_user, phone: '02-555-12-12').save).to be false } #belgian number as local
-    it { expect(FactoryBot.build(:pro_user, phone: '+32-2-555-12-12').save).to be true } #belgian number as international
-    it { expect(FactoryBot.build(:pro_user, phone: '+3225551212').save).to be true } #belgian number as international
+    it { expect(FactoryBot.build(:pro_user, phone: '+32425551212').save).to be true } #belgian number as international (mobile)
+    it { expect(FactoryBot.build(:pro_user, phone: '+32225551212').save).to be false } #belgian number as international (local)
     it { expect(FactoryBot.build(:pro_user, phone: '+1-999-999-9999').save).to be false } #canadian number
     it { expect(FactoryBot.build(:pro_user, phone: '+40 (724) 593 579').save).to be false } #Apple formatted
     # wrongs
+    it { expect(FactoryBot.build(:pro_user, phone: '0425551212').save).to be false } #belgian number no international
     it { expect(FactoryBot.build(:pro_user, phone: '+33912345678').save).to be false }
     it { expect(FactoryBot.build(:pro_user, phone: '23-45-67-89').save).to be false }
     it { expect(FactoryBot.build(:pro_user, phone: '+3323456789').save).to be false }
@@ -195,7 +195,7 @@ describe User, :type => :model do
     it { expect(FactoryBot.create(:pro_user, phone: "06-12-34-56-78").phone).to eq('+33612345678') }
     it { expect(FactoryBot.create(:pro_user, phone: "+336-12-34-56-78").phone).to eq('+33612345678') }
     it { expect(FactoryBot.create(:pro_user, phone: "+33612345678").phone).to eq('+33612345678') }
-    it { expect(FactoryBot.create(:pro_user, phone: "+32-2-555-12-12").phone).to eq('+3225551212') } #belgian number
+    it { expect(FactoryBot.create(:pro_user, phone: "+32455512121").phone).to eq('+32455512121') } #belgian number
 
     context "updates with invalid phone number" do
       let(:user) { FactoryBot.create(:pro_user, phone: "+33612345678") }

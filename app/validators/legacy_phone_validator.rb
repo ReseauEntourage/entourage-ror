@@ -21,9 +21,8 @@ class LegacyPhoneValidator
   end
 
   def belgian_number?
-    # +32-9-999-99-99
-    # +3299999999
-    formatted.match(/\A\+32[-.\s]?\d[-.\s]?\d{3}[-.\s]?\d{2}[-.\s]?\d{2}$/).present?
+    # +32499999999
+    formatted.match(/\A(\+324)\d{8}$/).present?
   end
 
   def formatted
