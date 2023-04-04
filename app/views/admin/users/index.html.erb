@@ -75,7 +75,6 @@
 <% end %>
 
 <table class="table admin-table" style="table-layout: auto">
-  <th></th>
   <th>Nom</th>
   <th>Prénom</th>
   <th>Association</th>
@@ -96,20 +95,12 @@
     <th>Rôle modérateur</th>
   <% end %>
 
+  <th>Groupes</th>
+
   <th><!-- Actions --></th>
 
   <% @users.each do |user| %>
     <tr>
-      <td>
-        <% if user.neighborhood_memberships.any? %>
-          <% names = user.neighborhood_memberships.pluck(:name) %>
-          <% names_display = names[0..10].join("\n") + (names.length > 10 ? "\n..." : "") %>
-
-          <span class="badge" style="background: #d9534f" title="Groupes de voisins : <%= "\n" + names_display %>">
-            <%= user.neighborhood_memberships.count %>
-          </span>
-        <% end %>
-      </td>
       <td><%= user.last_name %></td>
       <td><%= user.first_name %></td>
       <td>
@@ -155,6 +146,17 @@
           <% end %>
         </td>
       <% end %>
+
+      <td>
+        <% if user.neighborhood_memberships.any? %>
+          <% names = user.neighborhood_memberships.pluck(:name) %>
+          <% names_display = names[0..10].join("\n") + (names.length > 10 ? "\n..." : "") %>
+
+          <span class="badge" style="color: #555; background-color: #ddd;" title="Groupes de voisins : <%= "\n" + names_display %>">
+            <%= user.neighborhood_memberships.count %>
+          </span>
+        <% end %>
+      </td>
 
       <td><%= link_to "Modifier", edit_admin_user_path(user), class: "btn btn-danger" %></td>
     </tr>
