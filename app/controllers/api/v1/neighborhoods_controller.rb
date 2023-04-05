@@ -93,7 +93,7 @@ module Api
       end
 
       def neighborhood_params
-        params.require(:neighborhood).permit(:name, :description, :welcome_message, :ethics, :latitude, :longitude, :google_place_id, :place_name, :neighborhood_image_id, :other_interest, interests: [])
+        params.require(:neighborhood).permit(:name, :description, :welcome_message, :ethics, :latitude, :longitude, :google_place_id, :place_name, :display_address, :neighborhood_image_id, :other_interest, interests: [])
       end
 
       def neighborhood_update_params
