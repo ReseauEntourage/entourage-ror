@@ -201,6 +201,20 @@ class Neighborhood < ApplicationRecord
     super(place_name)
   end
 
+  def display_address= display_address
+    return unless display_address.present?
+    return unless latitude.present? && longitude.present?
+    return if google_place_id_changed? && google_place_id.present?
+
+    return unless google_place_details = UserServices::AddressService.get_google_place_details_from_coordinates(latitude, longitude)
+
+    self[:place_name] = google_place_details[:place_name]
+    self[:street_address] = google_place_details[:formatted_address]
+    self[:postal_code] = google_place_details[:postal_code]
+    self[:latitude] = google_place_details[:latitude]
+    self[:longitude] = google_place_details[:longitude]
+  end
+
   def posts_count
     posts.length
   end
