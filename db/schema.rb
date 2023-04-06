@@ -506,6 +506,7 @@ ActiveRecord::Schema.define(version: 2023_03_28_153400) do
     t.string "zone"
     t.boolean "public", default: true
     t.string "uuid_v2", limit: 12, null: false
+    t.string "country", default: "FR"
     t.index ["feed_updated_at"], name: "index_neighborhoods_on_feed_updated_at"
     t.index ["name"], name: "index_neighborhoods_on_name"
     t.index ["postal_code"], name: "index_neighborhoods_on_postal_code"

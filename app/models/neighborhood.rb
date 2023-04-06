@@ -68,10 +68,12 @@ class Neighborhood < ApplicationRecord
 
   scope :with_moderation_area, -> (moderation_area) {
     if moderation_area.present? && moderation_area.to_sym == :hors_zone
-      return where("left(postal_code, 2) not in (?)", ModerationArea.only_departements)
+      return where("left(postal_code, 2) not in (?)", ModerationArea.only_departements).or(
+        where.not(country: :FR)
+      )
     end
 
-    where("left(postal_code, 2) = ?", ModerationArea.departement(moderation_area))
+    where("left(postal_code, 2) = ?", ModerationArea.departement(moderation_area)).where(country: :FR)
   }
 
   scope :join_chat_message_with_images, -> {
@@ -189,6 +191,7 @@ class Neighborhood < ApplicationRecord
     self[:place_name] = google_place_details[:place_name]
     self[:street_address] = google_place_details[:formatted_address]
     self[:postal_code] = google_place_details[:postal_code]
+    self[:country] = google_place_details[:country]
     self[:latitude] = google_place_details[:latitude]
     self[:longitude] = google_place_details[:longitude]
   end
