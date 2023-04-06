@@ -160,6 +160,34 @@ module UserServices
       }
     end
 
+    def self.get_google_place_details_from_coordinates latitude, longitude
+      return unless latitude.present?
+      return unless longitude.present?
+      return unless result = GeocodingServices::Finder.get_geocoder_from_coordinates(latitude, longitude)
+
+      country, postal_code =
+        if result.postal_code
+          [result.country_code, result.postal_code]
+        else
+          EntourageServices::GeocodingService.search_approximate_postal_code(
+            result.latitude, result.longitude)
+        end
+
+      {
+        place_name: result.data['name'],
+        formatted_address: result.data['formatted_address'],
+
+        latitude:  result.latitude,
+        longitude: result.longitude,
+
+        city:        result.city,
+        postal_code: postal_code,
+        country:     country,
+
+        google_place_id: result.place_id
+      }
+    end
+
     def can_update? record, attributes
       record[:google_place_id].present? &&
       attributes.any? { |p| record[p].blank? }
