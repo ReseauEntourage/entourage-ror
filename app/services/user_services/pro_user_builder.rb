@@ -33,7 +33,7 @@ module UserServices
     def update(user:)
       simplified_tour = (params.delete(:simplified_tour) == "true")
       PreferenceServices::UserDefault.new(user: user).simplified_tour = simplified_tour
-      user.update_attributes(params)
+      user.update(params)
     end
 
     def upgrade_to_pro(user:)

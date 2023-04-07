@@ -14,7 +14,7 @@ module PoiServices
       find_all_iterator do |page|
         post_all_for_page(page).each do |response|
           poi = Poi.find_or_initialize_by(source_id: response[:source_id])
-          poi.update_attributes(response.slice(*poi_attributes))
+          poi.update(response.slice(*poi_attributes))
           poi.source = :soliguide
           poi.validated = true
           poi.updated_at = Time.zone.now
