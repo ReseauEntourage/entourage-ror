@@ -7,8 +7,8 @@ Rails.application.configure do
   # test suite. You never need to work with it otherwise. Remember that
   # your test database is "scratch space" for the test suite and is wiped
   # and recreated between test runs. Don't rely on the data there!
+  config.cache_classes = true
 
-  config.cache_classes = false
   config.action_view.cache_template_loading = true
 
   # Do not eager load code on boot. This avoids loading your whole application
@@ -60,6 +60,9 @@ Rails.application.configure do
 
   config.action_mailer.default_url_options = { :host => "localhost" }
 
+  # Tell Active Support which deprecation messages to disallow.
+  config.active_support.disallowed_deprecation_warnings = []
+
   ENV["ENTOURAGE_IMAGES_BUCKET"]="foobar"
   ENV["ENTOURAGE_AVATARS_BUCKET"]="foobar"
   ENV["ENTOURAGE_AWS_ACCESS_KEY_ID"]="foo"
@@ -74,4 +77,7 @@ Rails.application.configure do
 
   # Limit slow down due to password hashing
   BCrypt::Engine.cost = BCrypt::Engine::MIN_COST
+
+  # Annotate rendered view with file names.
+  # config.action_view.annotate_rendered_view_with_filenames = true
 end
