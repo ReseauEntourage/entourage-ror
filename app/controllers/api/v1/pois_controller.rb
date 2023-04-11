@@ -22,7 +22,7 @@ module Api
           if version == :v1
             @pois = @pois.where(category_id: categories)
           else
-            @pois = @pois.joins(:pois_categories).where(categories_pois: {category_id: categories})
+            @pois = @pois.joins(:categories_pois).where(categories_pois: {category_id: categories})
           end
         else
           category_count = @categories.count

@@ -192,7 +192,7 @@ describe Admin::SlackController do
 
       it { expect(response.headers).not_to be_nil }
       it { expect(response.headers['Content-Disposition']).not_to be_nil }
-      it { expect(response.headers['Content-Disposition']).to eq 'inline; filename="filename.csv"' }
+      it { expect(response.headers['Content-Disposition']).to eq 'inline; filename="filename.csv"; filename*=UTF-8\'\'filename.csv' }
     end
   end
 end

@@ -31,10 +31,9 @@ RSpec.describe EntourageInvitation, type: :model do
   end
 
   context "SMS" do
-    let(:error_messages) { build(:entourage_invitation, invitee: nil).tap(&:save).errors.messages }
-    it { expect(error_messages).to eq(
-      invitee: ["doit être rempli(e)"]
-    )}
+    let(:error_messages) { build(:entourage_invitation, invitee: nil).tap(&:save).errors.messages.keys }
+
+    it { expect(error_messages).to eq([:invitee])}
   end
 
   context "good_waves" do

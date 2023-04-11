@@ -44,7 +44,7 @@ describe Experimental::AutoAccept do
 
       it do
         expect(Experimental::AutoAccept).to receive(:accept).with(join_request).and_call_original
-        join_request.update_attributes!(status: :pending)
+        join_request.update!(status: :pending)
       end
     end
   end

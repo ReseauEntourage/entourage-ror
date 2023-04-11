@@ -60,22 +60,6 @@ describe MemberMailer, type: :mailer do
     it { expect(json_variables['first_name']).to eq "Bob" }
   end
 
-  describe '#tour_report' do
-    let!(:tour) { FactoryBot.create :tour, :filled }
-    let!(:mail) { MemberMailer.tour_report(tour) }
-    it { expect(mail.from).to eq ['maraudes@entourage.social'] }
-    it { expect(mail.to).to eq [tour.user.email] }
-    it { expect(mail.subject).to eq 'Résumé de la maraude' }
-    it { expect(mail.body.encoded).to match "Bonjour #{tour.user.first_name}" }
-    it { expect(mail.body.encoded).to match "<a href=\"http://localhost/tours/#{tour.id}\">Cliquez ici</a> pour retrouver votre maraude sur le web" }
-
-    context "encounter has answers" do
-      let!(:question) { FactoryBot.create(:question) }
-      let!(:answer) { FactoryBot.create(:answer, question: question, encounter: tour.encounters.first) }
-      it { expect(mail.body.encoded).to match "aux questions" }
-    end
-  end
-
   describe '#poi_report' do
     let!(:poi) { create :poi }
     let!(:user) { create :pro_user }

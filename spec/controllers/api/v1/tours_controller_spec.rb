@@ -396,7 +396,7 @@ RSpec.describe Api::V1::ToursController, :type => :controller do
         let(:open_tour) { FactoryBot.create(:tour, user: user, status: :ongoing) }
         before { put 'update', params: { id: open_tour.id, token: user.token, tour:{tour_type:"medical", status:"closed", vehicle_type:"car", distance: 633.0878, end_time: "2016-01-01T20:09:06.000+01:00"}, format: :json } }
         it { expect(open_tour.reload.closed?).to be true }
-        it { expect(ActionMailer::Base.deliveries.last.to).to eq([user.email])}
+        it { expect(ActionMailer::Base.deliveries.last).to be nil} # tour_report mail has been removed: we do not maintain tours anymore
         it { expect(open_tour.reload.length).to eq(633)}
       end
 
