@@ -14,7 +14,7 @@ class DigestEmail < ApplicationRecord
 
   def track_status_change
     if status_changed? && !status_changed_at_changed?
-      @custom_timestamp_attributes_for_update = [:status_changed_at]
+      @custom_timestamp_attributes_for_update = ["status_changed_at"]
     end
   end
 end
