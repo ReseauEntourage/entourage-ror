@@ -12,7 +12,7 @@ module CoordinatesScopable
   included do
     scope :inside_perimeter, -> (latitude, longitude, travel_distance) {
       if latitude && longitude
-        where("#{PostgisHelper.distance_from(latitude, longitude, table_name.to_sym)} < ?", travel_distance)
+        where(Arel.sql("#{PostgisHelper.distance_from(latitude, longitude, table_name.to_sym)} < #{travel_distance}"))
       end
     }
     scope :inside_user_perimeter, -> (user) {
@@ -44,10 +44,12 @@ module CoordinatesScopable
     scope :order_by_city_for_user, -> (user, city) {
       return unless is_in_city?(user, city)
 
+      cities = in_city(city).map { |a| ApplicationRecord.connection.quote(a) }.join(',')
+
       if has_attribute?(:zone)
-        order(Arel.sql("case when zone = 'ville' and postal_code in (#{in_city(city)}) then 0 else 1 end"))
+        order(Arel.sql("case when zone = 'ville' and postal_code in (#{cities}) then 0 else 1 end"))
       else
-        order(Arel.sql("case when postal_code in (#{in_city(city)}) then 0 else 1 end"))
+        order(Arel.sql("case when postal_code in (#{cities}) then 0 else 1 end"))
       end
     }
     scope :order_by_zone, -> {

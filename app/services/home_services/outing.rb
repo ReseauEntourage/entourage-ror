@@ -51,7 +51,7 @@ module HomeServices
 
       outing = user.community.entourages.where(group_type: :outing, status: :open)
         .where("(#{Geocoder::Sql.within_bounding_box(*box, :latitude, :longitude)}) OR online = true")
-        .where(Arel.sql("metadata->>'ends_at' >= #{Time.zone.now}"))
+        .where(Arel.sql("metadata->>'ends_at' >= '#{Time.zone.now}'"))
         .order(Arel.sql("metadata->>'starts_at'"))
 
       return outing.where(online: true).offset(offset).first if category == :online
