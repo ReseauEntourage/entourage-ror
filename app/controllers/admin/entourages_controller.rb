@@ -171,6 +171,9 @@ module Admin
       @outing = Outing.find(@entourage.id)
       @neighborhoods = @outing.neighborhoods
 
+      @params = params.permit([:area, :search]).to_h
+      @area = params[:area].presence&.to_sym || :dep_75
+
       render :show
     end
 
