@@ -1,6 +1,6 @@
 module Admin
   class EntouragesController < Admin::BaseController
-    before_action :set_entourage, only: [:show, :edit, :update, :close, :renew, :cancellation, :cancel, :edit_image, :update_image, :moderator_read, :moderator_unread, :message, :show_members, :show_joins, :show_invitations, :show_messages, :show_comments, :show_siblings, :sensitive_words, :sensitive_words_check, :edit_type, :edit_owner, :update_owner, :admin_pin, :admin_unpin, :pin, :unpin]
+    before_action :set_entourage, only: [:show, :edit, :update, :close, :renew, :cancellation, :cancel, :edit_image, :update_image, :moderator_read, :moderator_unread, :message, :show_members, :show_joins, :show_invitations, :show_messages, :show_comments, :show_neighborhoods, :show_siblings, :sensitive_words, :sensitive_words_check, :edit_type, :edit_owner, :update_owner, :admin_pin, :admin_unpin, :pin, :unpin, :update_neighborhoods]
     before_action :set_forced_join_request, only: [:message]
 
     before_action :set_default_index_params, only: [:index]
@@ -163,6 +163,13 @@ module Admin
     def show_comments
       @post = ChatMessage.find(params[:message_id])
       @comments = ChatMessage.find(params[:message_id]).children.order(created_at: :desc).page(page).per(per)
+
+      render :show
+    end
+
+    def show_neighborhoods
+      @outing = Outing.find(@entourage.id)
+      @neighborhoods = @outing.neighborhoods
 
       render :show
     end
@@ -433,6 +440,12 @@ module Admin
       check.status = params[:status]
       check.save!
       redirect_to [:admin, @entourage]
+    end
+
+    def update_neighborhoods
+      unless @entourage.outing?
+        return redirect_to edit_neighborhoods_admin_entourage_path(@entourage), alert: "Seuls les événements peuvent être associés à des groupes de voisins"
+      end
     end
 
     private
