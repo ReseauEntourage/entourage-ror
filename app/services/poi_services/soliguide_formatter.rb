@@ -421,23 +421,17 @@ module PoiServices
       # Accueil Accueil de jour S'orienter
       701 => 5, # ACCUEIL_JOUR
 
-      # Accueil Hébergement à long terme  Se loger
-      703 => 2, # HEBERGEMENT_LONG_TERME
-
-      # Accueil Logement bas-prix Se loger
-      # 704 => 2, # LOGEMENT_BAS  PRIX
-
       # Accueil Espace de repos S'occuper de soi
-      705 => 6, # ESPACE_REPOS
-
-      # Accueil Halte de nuit Se loger
-      706 => 2, # HALTE_NUIT
+      702 => 6,
 
       # Accueil Garde d'enfants Se réinsérer
-      707 => 7, # GARDE_ENFANTS
+      703 => 7,
 
-      # Accueil Hébergement d'urgence Se loger
-      708 => 2, # HEBERGEMENT_URGENCE
+      # Accueil Espace famille S'occuper de soi
+      704 => 6,
+
+      # Accueil Point d'information Se réinsérer
+      705 => 7,
 
       # Activités (Toutes)  S'occuper de soi
       800 => 6, # ACTIVITES
@@ -505,8 +499,8 @@ module PoiServices
       3 => [100, 1100],
       4 => [300],
       5 => [400, 500, 700],
-      6 => [300, 705, 800, 900],
-      7 => [200, 707],
+      6 => [300, 702, 704, 800, 900],
+      7 => [200, 703, 705],
       40 => [304],
       41 => [605],
       42 => [301],
