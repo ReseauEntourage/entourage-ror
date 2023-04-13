@@ -1,4 +1,4 @@
-<h4>Liste des groupes de voisins <span class="badge"><%= @neighborhoods.count %><span></h4>
+<h4>Groupes de voisins actuellement associés <span class="badge"><%= @neighborhoods.count %><span></h4>
 
 <table id="neighborhoods-list" class="table table-striped">
   <% if @neighborhoods.any? %>
@@ -41,34 +41,70 @@
   </div>
 </div>
 
+<div class="alert alert-info" role="alert" style="display: flex; align-items: center">
+  <div style="flex-grow: 1">
+    <b>Notifications</b><br>
+    Une notification sera envoyée aux utilisateurs des groupes que vous associerez à l'événement.
+  </div>
+</div>
+
+<a href="#" data-role="select-neighborhoods" data-select="all">Tout sélectionner</a> ·
+<a href="#" data-role="select-neighborhoods" data-select="none">Tout désélectionner</a>
+
 <% neighborhoods_for_area = Neighborhood.with_moderation_area(@area.to_s).includes([:user]).order(:postal_code, :name) %>
 
-<table id="neighborhoods-for-area-list" class="table table-striped">
-  <% if neighborhoods_for_area.any? %>
-    <thead>
-      <tr>
-        <th>id</th>
-        <th>nom</th>
-        <th>code postal</th>
-        <th>créé le</th>
-        <th>administrateur</th>
-        <th>membres</th>
-      </tr>
-    </thead>
-
-    <tbody>
-      <% neighborhoods_for_area.each do |neighborhood| %>
+<%= form_for @outing, url: update_neighborhoods_admin_entourage_path, method: :put do |f| %>
+  <table id="neighborhoods-for-area-list" class="table table-striped">
+    <% if neighborhoods_for_area.any? %>
+      <thead>
         <tr>
-          <td><%= link_to neighborhood.id, admin_neighborhood_path(neighborhood) %></td>
-          <td><%= link_to neighborhood.name, admin_neighborhood_path(neighborhood) %></td>
-          <td><%= neighborhood.postal_code %></td>
-          <td><%= l neighborhood.created_at %></td>
-          <td><%= link_to neighborhood.user.full_name, admin_user_path(neighborhood.user) %></td>
-          <td><%= neighborhood.members_count %></td>
+          <th></th>
+          <th>id</th>
+          <th>nom</th>
+          <th>code postal</th>
+          <th>créé le</th>
+          <th>administrateur</th>
+          <th>membres</th>
         </tr>
-      <% end %>
-    </tbody>
-  <% else %>
-    <caption><%= "Il n'y a pas encore de groupe associable à cette zone de modération."%></caption>
-  <% end %>
-</table>
+      </thead>
+
+      <tbody>
+        <%= collection_check_boxes(:outing, :neighborhood_ids, neighborhoods_for_area, :id, :name ) do |b| %>
+          <tr>
+            <td><%= b.label(class: "checkbox-inline") { b.check_box + b.text } %></td>
+            <td><%= link_to b.object.id, admin_neighborhood_path(b.object) %></td>
+            <td><%= link_to b.object.name, admin_neighborhood_path(b.object) %></td>
+            <td><%= b.object.postal_code %></td>
+            <td><%= l b.object.created_at %></td>
+            <td><%= link_to b.object.user.full_name, admin_user_path(b.object.user) %></td>
+            <td><%= b.object.members_count %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    <% else %>
+      <caption><%= "Il n'y a pas encore de groupe associable à cette zone de modération."%></caption>
+    <% end %>
+  </table>
+
+  <%= f.submit 'Associer aux groupes sélectionnés', class: "btn btn-primary" %>
+<% end %>
+
+
+<script>
+  var $neighborhoods = $('[type="checkbox"][name="outing[neighborhood_ids][]"]');
+
+  $(document).on('click', '[data-role="select-neighborhoods"]', function(e) {
+    e.preventDefault()
+    var select = $(this).data('select'),
+        check = {
+          'all': function() { return true },
+          'none': function() { return false },
+        }[select]
+
+    $neighborhoods.each(function() {
+      var $box = $(this)
+      $box.prop('checked', check($box.val()))
+      this.setCustomValidity('') // reset validations
+    })
+  })
+</script>

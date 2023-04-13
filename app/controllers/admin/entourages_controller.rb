@@ -169,7 +169,7 @@ module Admin
 
     def show_neighborhoods
       @outing = Outing.find(@entourage.id)
-      @neighborhoods = @outing.neighborhoods
+      @neighborhoods = @outing.neighborhoods.includes([:user])
 
       @params = params.permit([:area, :search]).to_h
       @area = params[:area].presence&.to_sym || :dep_75
@@ -447,7 +447,16 @@ module Admin
 
     def update_neighborhoods
       unless @entourage.outing?
-        return redirect_to edit_neighborhoods_admin_entourage_path(@entourage), alert: "Seuls les événements peuvent être associés à des groupes de voisins"
+        return redirect_to show_neighborhoods_admin_entourage_path(@entourage), alert: "Seuls les événements peuvent être associés à des groupes de voisins"
+      end
+
+      @outing = Outing.find(@entourage.id)
+      @outing.assign_attributes(outing_neighborhoods_param)
+
+      if @outing.save
+        redirect_to show_neighborhoods_admin_entourage_path(@outing), notice: "Les groupes de voisins ont été associés à votre événement"
+      else
+        redirect_to show_neighborhoods_admin_entourage_path(@outing), alert: "Les groupes de voisins n'ont pas pu être associés à votre événement"
       end
     end
 
@@ -530,6 +539,10 @@ module Admin
 
     def chat_messages_params
       params.require(:chat_message).permit(:content, :parent_id)
+    end
+
+    def outing_neighborhoods_param
+      params.require(:outing).permit(neighborhood_ids: [])
     end
   end
 end
