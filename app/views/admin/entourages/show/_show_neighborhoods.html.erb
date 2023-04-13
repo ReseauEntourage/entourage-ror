@@ -7,7 +7,6 @@
         <th>id</th>
         <th>nom</th>
         <th>code postal</th>
-        <th>créé le</th>
         <th>administrateur</th>
         <th>membres</th>
       </tr>
@@ -19,7 +18,6 @@
           <td><%= link_to neighborhood.id, admin_neighborhood_path(neighborhood) %></td>
           <td><%= link_to neighborhood.name, admin_neighborhood_path(neighborhood) %></td>
           <td><%= neighborhood.postal_code %></td>
-          <td><%= l neighborhood.created_at %></td>
           <td><%= link_to neighborhood.user.full_name, admin_user_path(neighborhood.user) %></td>
           <td><%= neighborhood.members_count %></td>
         </tr>
@@ -62,7 +60,6 @@
           <th>id</th>
           <th>nom</th>
           <th>code postal</th>
-          <th>créé le</th>
           <th>administrateur</th>
           <th>membres</th>
         </tr>
@@ -75,7 +72,6 @@
             <td><%= link_to b.object.id, admin_neighborhood_path(b.object) %></td>
             <td><%= link_to b.object.name, admin_neighborhood_path(b.object) %></td>
             <td><%= b.object.postal_code %></td>
-            <td><%= l b.object.created_at %></td>
             <td><%= link_to b.object.user.full_name, admin_user_path(b.object.user) %></td>
             <td><%= b.object.members_count %></td>
           </tr>
