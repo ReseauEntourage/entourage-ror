@@ -48,7 +48,29 @@ class PushNotificationTrigger
     )
   end
 
-  def entourage_on_create
+  def entourage_moderation_on_create
+    return entourage_moderation_on_update_validated_at if @changes.keys.include?("validated_at")
+  end
+
+  def entourage_moderation_on_update
+    return entourage_moderation_on_update_validated_at if @changes.keys.include?("validated_at")
+  end
+
+  def entourage_moderation_on_update_validated_at
+    return unless @record.validated_at.present?
+    return unless @record.entourage.present?
+    return unless @record.entourage.action?
+    return unless @record.entourage.ongoing?
+
+    # configure entourage_on_create
+    @record = @record.entourage
+    @method = "entourage_on_create"
+    @changes = {}
+
+    async_entourage_on_create
+  end
+
+  def async_entourage_on_create
     return unless @record.outing? || @record.action?
     return unless user = @record.user
 
@@ -56,10 +78,6 @@ class PushNotificationTrigger
     entourage_on_create_for_neighbors(user) if @record.action?
   end
 
-  alias_method :contribution_on_create, :entourage_on_create
-  alias_method :solicitation_on_create, :entourage_on_create
-
-  # initial caller: entourage_on_create
   def entourage_on_create_for_followers user
     return unless partner = user.partner
 

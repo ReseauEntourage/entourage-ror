@@ -38,12 +38,12 @@ module Experimental
     # entourage
     def set_entourage_as_validate record
       record.update_attribute(:status, :open) unless record.status == :closed
-      record.set_moderated_at_and_save
+      record.set_moderation_dates_and_save
     end
 
     def set_entourage_as_block record
       record.update_attribute(:status, :blacklisted) unless record.status == :suspended
-      record.set_moderated_at_and_save
+      record.set_moderation_dates_and_save
     end
 
     def payload_entourage_as_validate record
