@@ -172,7 +172,9 @@ module Admin
       @neighborhoods = @outing.neighborhoods.includes([:user])
 
       @params = params.permit([:area, :search]).to_h
-      @area = params[:area].presence&.to_sym || :dep_75
+      @area = params[:area].presence&.to_sym ||
+        OutingsServices::Helper.new(@outing).neighborhoods_main_departement_slug ||
+        :dep_75
 
       render :show
     end

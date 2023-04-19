@@ -3,6 +3,8 @@ class ModerationArea < ApplicationRecord
 
   belongs_to :moderator, class_name: :User
 
+  HORS_ZONE = "*"
+
   def departement_slug
     self.class.departement_slug(departement)
   end
