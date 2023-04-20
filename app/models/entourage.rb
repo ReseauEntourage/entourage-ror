@@ -583,6 +583,7 @@ class Entourage < ApplicationRecord
     when 'action', 'group'
       generate_action_display_address
     when 'outing'
+      generate_outing_street_address
       generate_outing_display_address
     end
   end
@@ -596,15 +597,31 @@ class Entourage < ApplicationRecord
     end
   end
 
+  def generate_outing_street_address
+    return if metadata[:street_address].present?
+    return unless metadata[:google_place_id].present?
+
+    google_place_details = UserServices::AddressService.get_google_place_details(metadata[:google_place_id])
+
+    return unless google_place_details.present?
+
+    metadata[:street_address] = google_place_details[:formatted_address]
+    metadata[:display_address] = google_place_details[:formatted_address]
+  end
+
   def generate_outing_display_address
     return unless group_type == 'outing'
+
     address_fragments = metadata[:street_address].split(', ')
+
     if metadata[:place_name] != address_fragments.first
       address_fragments.unshift metadata[:place_name]
     end
+
     if address_fragments.last == 'France'
       address_fragments.pop
     end
+
     metadata[:display_address] = address_fragments.join(', ')
   rescue
     metadata[:display_address] = ""
