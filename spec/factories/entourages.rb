@@ -46,6 +46,27 @@ FactoryBot.define do
       end
     end
 
+    trait :moderation_validated do
+      after(:create) do |entourage, evaluator|
+        if entourage.moderation.present?
+          entourage.moderation.update_attribute(:validated_at, Time.now)
+          entourage.moderation.update_attribute(:moderated_at, Time.now)
+        else
+          moderation { association :entourage_moderation, :validated }
+        end
+      end
+    end
+
+    trait :moderation_moderated do
+      after(:create) do |entourage, evaluator|
+        if entourage.moderation.present?
+          entourage.moderation.update_attribute(:moderated_at, Time.now)
+        else
+          moderation { association :entourage_moderation, :moderated }
+        end
+      end
+    end
+
     after(:create) do |entourage, stuff|
       stuff.participants.each do |participant|
         create :join_request, joinable: entourage, user: participant, status: JoinRequest::ACCEPTED_STATUS

@@ -4,7 +4,7 @@ describe FollowingService do
   let(:partner) { create :partner, name: "PARTNER_NAME" }
   let(:partner_user) { create :public_user, partner: partner }
   let!(:following) { create :following, partner: partner }
-  let(:action) { create :entourage, user: partner_user }
+  let(:action) { create :entourage, :moderation_validated, user: partner_user }
 
   describe ".on_create_entourage" do
     subject { FollowingService.on_create_entourage(action) }

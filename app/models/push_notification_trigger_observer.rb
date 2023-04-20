@@ -1,5 +1,5 @@
 class PushNotificationTriggerObserver < ActiveRecord::Observer
-  observe :entourage_moderation, :chat_message, :join_request, :neighborhoods_entourage
+  observe :entourage, :entourage_moderation, :chat_message, :join_request, :neighborhoods_entourage
 
   def after_create(record)
     action(:create, record)

@@ -381,6 +381,10 @@ class Entourage < ApplicationRecord
     status && status.to_sym == :cancelled
   end
 
+  def blacklisted?
+    status && status.to_sym == :blacklisted
+  end
+
   def closed?
     status && status.to_sym == :closed
   end
@@ -391,6 +395,10 @@ class Entourage < ApplicationRecord
 
   def future_outing?
     outing? && starts_at > Time.zone.now
+  end
+
+  def moderation_validated?
+    moderation && moderation.validated?
   end
 
   def add_metadata_schema_urn(value)
@@ -443,7 +451,7 @@ class Entourage < ApplicationRecord
   def set_moderation_dates_and_save
     moderation = self.moderation || self.build_moderation
     moderation.update_attribute(:moderated_at, Time.zone.now)
-    moderation.update_attribute(:validated_at, Time.zone.now) if self.ongoing?
+    moderation.update_attribute(:validated_at, Time.zone.now) unless blacklisted?
     moderation.save
   end
 

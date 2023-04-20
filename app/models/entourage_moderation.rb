@@ -98,4 +98,8 @@ class EntourageModeration < ApplicationRecord
       "Sans consentement",
     ],
   }
+
+  def validated?
+    validated_at.present?
+  end
 end
