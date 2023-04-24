@@ -455,7 +455,7 @@ module Admin
       @outing = Outing.find(@entourage.id)
       @outing.assign_attributes(outing_neighborhoods_param)
 
-      if @outing.save
+      if @outing.save(validate: false) # we do not want validation on starts_at or neighborhood_ids memberships
         redirect_to show_neighborhoods_admin_entourage_path(@outing), notice: "Votre modification a bien été prise en compte"
       else
         redirect_to show_neighborhoods_admin_entourage_path(@outing), alert: "Votre modification n'a pas pu être prise en compte"
