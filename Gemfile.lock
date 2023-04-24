@@ -459,6 +459,8 @@ GEM
       attr_extras (>= 6.2.4)
       diff-lcs
       patience_diff
+    terser (1.1.16)
+      execjs (>= 0.3.0, < 3)
     thor (1.2.2)
     tilt (2.2.0)
     timecop (0.9.6)
@@ -559,6 +561,7 @@ DEPENDENCIES
   spring (~> 2.1.0)
   spring-commands-rspec
   super_diff
+  terser
   timecop
   tinymce-rails
   turbolinks (~> 5)

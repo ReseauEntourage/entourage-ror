@@ -6,6 +6,7 @@ gem 'rails',                          '~> 6.0'
 
 gem 'sass-rails'
 gem 'uglifier'
+gem 'terser'
 gem 'jquery-rails',                   '~> 4'
 gem 'jquery-ui-rails',                '~> 5'
 gem 'turbolinks',                     '~> 5'
