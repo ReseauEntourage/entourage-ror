@@ -74,6 +74,7 @@ class Rpush200Updates < ActiveRecord::VERSION::MAJOR >= 5 ? ActiveRecord::Migrat
   end
 
   def self.postgresql?
-    adapter_name =~ /postgresql|postgis/
+    # adapter_name =~ /postgresql|postgis/ # comment this: we know it is postgresql
+    true
   end
 end
