@@ -55,6 +55,7 @@ gem 'ams_lazy_relationships'
 gem 'acts-as-taggable-on',            '~> 9.0'
 gem 'ancestry'
 gem 'tinymce-rails'
+gem "sprockets-rails"
 
 group :development, :test do
   # gem 'annotate'

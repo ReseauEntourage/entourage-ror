@@ -566,6 +566,7 @@ DEPENDENCIES
   slack-notifier
   spring (~> 2.1.0)
   spring-commands-rspec
+  sprockets-rails
   super_diff (~> 0.9.0)
   terser
   timecop
