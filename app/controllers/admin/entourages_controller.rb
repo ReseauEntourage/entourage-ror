@@ -456,9 +456,9 @@ module Admin
       @outing.assign_attributes(outing_neighborhoods_param)
 
       if @outing.save
-        redirect_to show_neighborhoods_admin_entourage_path(@outing), notice: "Les groupes de voisins ont été associés à votre événement"
+        redirect_to show_neighborhoods_admin_entourage_path(@outing), notice: "Votre modification a bien été prise en compte"
       else
-        redirect_to show_neighborhoods_admin_entourage_path(@outing), alert: "Les groupes de voisins n'ont pas pu être associés à votre événement"
+        redirect_to show_neighborhoods_admin_entourage_path(@outing), alert: "Votre modification n'a pas pu être prise en compte"
       end
     end
 
