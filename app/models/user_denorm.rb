@@ -11,6 +11,10 @@ class UserDenorm < ApplicationRecord
     self[:last_created_action_id] = entourage.id
   end
 
+  alias_method :contribution_on_create, :entourage_on_create
+  alias_method :solicitation_on_create, :entourage_on_create
+  alias_method :outing_on_create, :entourage_on_create
+
   def join_request_on_create join_request, group_type:
     return unless [:pending, :accepted].include?(join_request.status.to_sym)
 
@@ -38,6 +42,10 @@ class UserDenorm < ApplicationRecord
     UserDenormJob.perform_later(entourage.id, nil)
   end
 
+  alias_method :contribution_on_update, :entourage_on_update
+  alias_method :solicitation_on_update, :entourage_on_update
+  alias_method :outing_on_update, :entourage_on_update
+
   def join_request_on_update join_request, group_type:
     return unless join_request.saved_change_to_status?
 
@@ -51,6 +59,10 @@ class UserDenorm < ApplicationRecord
   def entourage_on_destroy entourage, group_type:
     recompute_last_created_action_id
   end
+
+  alias_method :contribution_on_destroy, :entourage_on_destroy
+  alias_method :solicitation_on_destroy, :entourage_on_destroy
+  alias_method :outing_on_destroy, :entourage_on_destroy
 
   def join_request_on_destroy join_request, group_type:
     recompute_last_join_request_id

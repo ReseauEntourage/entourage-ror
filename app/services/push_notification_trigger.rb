@@ -7,6 +7,11 @@ class PushNotificationTrigger
   CREATE_COMMENT = "%s vient de commenter la publication \"%s\""
   CREATE_JOIN_REQUEST = "%s vient de rejoindre votre %s \"%s\""
   CREATE_JOIN_REQUEST_OUTING = "%s vient de rejoindre votre événement \"%s\" du %s"
+  CREATE_CONTRIBUTION = "Un voisin propose une nouvelle entraide"
+  CREATE_SOLICITATION = "Un voisin recherche une aide"
+  CREATE_SOLICITATION_SECTION = "Un voisin recherche un %s"
+
+  DISTANCE_OF_ACTION = 10
 
   attr_reader :record, :method, :changes
 
@@ -46,6 +51,16 @@ class PushNotificationTrigger
   def entourage_on_create
     return unless @record.outing? || @record.action?
     return unless user = @record.user
+
+    entourage_on_create_for_followers(user)
+    entourage_on_create_for_neighbors(user) if @record.action?
+  end
+
+  alias_method :contribution_on_create, :entourage_on_create
+  alias_method :solicitation_on_create, :entourage_on_create
+
+  # initial caller: entourage_on_create
+  def entourage_on_create_for_followers user
     return unless partner = user.partner
 
     follower_ids = Following.where(partner: partner, active: true).pluck(:user_id)
@@ -78,10 +93,42 @@ class PushNotificationTrigger
     end
   end
 
+  # initial caller: entourage_on_create
+  def entourage_on_create_for_neighbors user
+    return unless @record.action?
+
+    neighbor_ids = Address.inside_perimeter(@record.latitude, @record.longitude, DISTANCE_OF_ACTION).pluck(:user_id).compact.uniq
+
+    return unless neighbor_ids.any?
+
+    neighbor_ids.each do |neighbor_id|
+      next unless neighbor = User.find(neighbor_id)
+      next if @record.solicitation? && neighbor.is_ask_for_help?
+      next if @record.contribution? && !neighbor.is_ask_for_help?
+
+      notify(
+        sender_id: @record.user_id,
+        referent: @record,
+        instance: @record,
+        users: [neighbor],
+        params: {
+          object: content_for_create_action(@record),
+          content: @record.title,
+          extra: {
+            type: "ENTOURAGE_INVITATION",
+            entourage_id: @record.id,
+            group_type: @record.group_type
+          }
+        }
+      )
+    end
+  end
+
   def entourage_on_update
     return outing_on_update if @record.outing?
   end
 
+  # initial caller: entourage_on_update
   def outing_on_update
     return outing_on_update_status if @changes.keys.include?("status")
     return unless @changes.any? # it happens when neighborhoods_entourage is updated
@@ -102,6 +149,7 @@ class PushNotificationTrigger
     )
   end
 
+  # initial caller: entourage_on_update
   def outing_on_update_status
     return outing_on_cancel if @record.cancelled?
     return outing_on_cancel if @record.closed? && @record.future_outing?
@@ -137,6 +185,7 @@ class PushNotificationTrigger
     private_chat_message_on_create
   end
 
+  # initial caller: chat_message_on_create
   def public_chat_message_on_create
     users = @record.messageable.accepted_members - [@record.user]
 
@@ -145,7 +194,7 @@ class PushNotificationTrigger
     notify(
       sender_id: @record.user_id,
       referent: @record.messageable,
-      instance: @record.messageable,
+      instance: @record,
       users: users,
       params: {
         object: "#{username(@record.user)} - #{title(@record.messageable)}",
@@ -160,6 +209,7 @@ class PushNotificationTrigger
     )
   end
 
+  # initial caller: chat_message_on_create
   def private_chat_message_on_create
     users = @record.messageable.accepted_members - [@record.user]
 
@@ -183,6 +233,7 @@ class PushNotificationTrigger
     )
   end
 
+  # initial caller: chat_message_on_create
   def post_on_create
     users = @record.messageable.accepted_members - [@record.user]
 
@@ -206,6 +257,7 @@ class PushNotificationTrigger
     )
   end
 
+  # initial caller: chat_message_on_create
   def comment_on_create
     return unless @record.has_parent?
 
@@ -339,6 +391,16 @@ class PushNotificationTrigger
 
   def entity_name object
     GroupService.name object
+  end
+
+  def content_for_create_action object
+    return unless object.is_a?(Entourage)
+    return unless object.action?
+
+    return CREATE_CONTRIBUTION if object.contribution?
+    return CREATE_SOLICITATION unless section = Solicitation.find(object.id).section
+
+    CREATE_SOLICITATION_SECTION % I18n.t("tags.sections.#{section}.name", default: CREATE_SOLICITATION).downcase
   end
 
   def to_date date_str

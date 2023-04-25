@@ -3,29 +3,138 @@ require 'rails_helper'
 RSpec.describe PushNotificationTriggerObserver, type: :model do
   include ActiveJob::TestHelper
 
+  let(:paris) { { latitude: 48.87, longitude: 2.33 } }
+  let(:nantes) { { latitude: 47.22, longitude: -1.55 } }
+  let(:address_paris) { FactoryBot.create(:address, latitude: paris[:latitude], longitude: paris[:longitude]) }
+
   let(:user) { create :public_user, first_name: "John" }
+  let(:user_paris) { create :public_user, first_name: "Doe", addresses: [address_paris], goal: :ask_for_help }
   let(:participant) { create :public_user, first_name: "Jane" }
 
   # after_create
   describe "after_create" do
     describe "on_create is received" do
-      describe "outing" do
+      describe "outing attached to neighborhoods" do
         let(:subject) { create :outing, user: user, neighborhoods: [create(:neighborhood)] }
 
-        it {
-          expect_any_instance_of(PushNotificationTrigger).to receive(:neighborhoods_entourage_on_create)
-          subject
-        }
+        after { subject }
 
-        it {
-          expect_any_instance_of(PushNotificationService).to receive(:send_notification)
-          subject
-        }
+        it { expect_any_instance_of(PushNotificationService).to receive(:send_notification) }
+        it { expect_any_instance_of(InappNotificationServices::Builder).to receive(:instanciate) }
 
-        it {
-          expect_any_instance_of(InappNotificationServices::Builder).to receive(:instanciate)
-          subject
-        }
+        it { expect_any_instance_of(PushNotificationTrigger).to receive(:neighborhoods_entourage_on_create) }
+        it { expect_any_instance_of(PushNotificationTrigger).to receive(:entourage_on_create) }
+        it { expect_any_instance_of(PushNotificationTrigger).to receive(:entourage_on_create_for_followers) }
+        it { expect_any_instance_of(PushNotificationTrigger).not_to receive(:entourage_on_create_for_neighbors) }
+      end
+
+      describe "outing not attached to neighborhoods" do
+        let(:subject) { create :outing, user: user }
+
+        after { subject }
+
+        it { expect_any_instance_of(PushNotificationService).not_to receive(:send_notification) }
+        it { expect_any_instance_of(InappNotificationServices::Builder).not_to receive(:instanciate) }
+
+        it { expect_any_instance_of(PushNotificationTrigger).not_to receive(:neighborhoods_entourage_on_create) }
+        it { expect_any_instance_of(PushNotificationTrigger).to receive(:entourage_on_create) }
+        it { expect_any_instance_of(PushNotificationTrigger).to receive(:entourage_on_create_for_followers) }
+        it { expect_any_instance_of(PushNotificationTrigger).not_to receive(:entourage_on_create_for_neighbors) }
+      end
+
+      describe "contribution" do
+        let(:subject) { create :contribution, user: user }
+
+        after { subject }
+
+        it { expect_any_instance_of(PushNotificationTrigger).not_to receive(:entourage_on_create) }
+        it { expect_any_instance_of(PushNotificationTrigger).to receive(:contribution_on_create) }
+        it { expect_any_instance_of(PushNotificationTrigger).to receive(:entourage_on_create_for_followers) }
+        it { expect_any_instance_of(PushNotificationTrigger).to receive(:entourage_on_create_for_neighbors) }
+      end
+
+      describe "contribution with neighbor" do
+        let(:subject) { create :contribution, user: user, latitude: paris[:latitude], longitude: paris[:longitude] }
+        let!(:notification_permission) { create :notification_permission, user: user_paris }
+
+        before { user_paris }
+
+        after { subject }
+
+        it { expect_any_instance_of(PushNotificationTrigger).to receive(:entourage_on_create_for_neighbors) }
+        it { expect_any_instance_of(PushNotificationTrigger).to receive(:notify) }
+        it { expect_any_instance_of(InappNotificationServices::Builder).to receive(:instanciate) }
+        it { expect_any_instance_of(InappNotification).to receive(:save) }
+      end
+
+      describe "contribution with neighbor far away" do
+        let(:subject) { create :contribution, user: user, latitude: nantes[:latitude], longitude: nantes[:longitude] }
+
+        after { subject }
+
+        it { expect_any_instance_of(PushNotificationTrigger).to receive(:entourage_on_create_for_neighbors) }
+        it { expect_any_instance_of(PushNotificationTrigger).not_to receive(:notify) }
+      end
+
+      describe "contribution without neighbor" do
+        let(:subject) { create :contribution, user: user, latitude: paris[:latitude], longitude: paris[:longitude] }
+
+        after { subject }
+
+        it { expect_any_instance_of(PushNotificationTrigger).to receive(:entourage_on_create_for_neighbors) }
+        it { expect_any_instance_of(PushNotificationTrigger).not_to receive(:notify) }
+      end
+
+      describe "contribution with ask_for_help neighbor" do
+        let(:user_paris) { create :public_user, first_name: "Doe", addresses: [address_paris], goal: :ask_for_help }
+
+        let(:subject) { create :contribution, user: user, latitude: paris[:latitude], longitude: paris[:longitude] }
+        let!(:notification_permission) { create :notification_permission, user: user_paris }
+
+        before { user_paris }
+
+        after { subject }
+
+        it { expect_any_instance_of(PushNotificationTrigger).to receive(:notify) }
+      end
+
+      describe "contribution with offer_help neighbor" do
+        let(:user_paris) { create :public_user, first_name: "Doe", addresses: [address_paris], goal: :offer_help }
+
+        let(:subject) { create :contribution, user: user, latitude: paris[:latitude], longitude: paris[:longitude] }
+        let!(:notification_permission) { create :notification_permission, user: user_paris }
+
+        before { user_paris }
+
+        after { subject }
+
+        it { expect_any_instance_of(PushNotificationTrigger).not_to receive(:notify) }
+      end
+
+      describe "solicitation with ask_for_help neighbor" do
+        let(:user_paris) { create :public_user, first_name: "Doe", addresses: [address_paris], goal: :ask_for_help }
+
+        let(:subject) { create :solicitation, user: user, latitude: paris[:latitude], longitude: paris[:longitude] }
+        let!(:notification_permission) { create :notification_permission, user: user_paris }
+
+        before { user_paris }
+
+        after { subject }
+
+        it { expect_any_instance_of(PushNotificationTrigger).not_to receive(:notify) }
+      end
+
+      describe "solicitation with offer_help neighbor" do
+        let(:user_paris) { create :public_user, first_name: "Doe", addresses: [address_paris], goal: :offer_help }
+
+        let(:subject) { create :solicitation, user: user, latitude: paris[:latitude], longitude: paris[:longitude] }
+        let!(:notification_permission) { create :notification_permission, user: user_paris }
+
+        before { user_paris }
+
+        after { subject }
+
+        it { expect_any_instance_of(PushNotificationTrigger).to receive(:notify) }
       end
 
       describe "chat_message" do
@@ -53,6 +162,42 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
             expect_any_instance_of(PushNotificationTrigger).not_to receive(:comment_on_create)
             create :chat_message, user: user, message_type: :status_update, metadata: { status: :foo, outcome_success: true }
           }
+        end
+
+        context "public_chat_message" do
+          let(:contribution) { create :contribution, user: user, participants: [user_paris] }
+          let(:subject) { create :chat_message, user: user, message_type: :text, messageable: contribution, content: "foo" }
+
+          it {
+            expect_any_instance_of(PushNotificationTrigger).to receive(:public_chat_message_on_create)
+            expect_any_instance_of(PushNotificationTrigger).not_to receive(:post_on_create)
+            expect_any_instance_of(PushNotificationTrigger).not_to receive(:comment_on_create)
+
+            subject
+          }
+
+          context "notify" do
+            after { subject }
+
+            it {
+              expect_any_instance_of(PushNotificationTrigger).to receive(:notify).with(
+                sender_id: user.id,
+                referent: Entourage.find(contribution.id),
+                instance: an_instance_of(ChatMessage),
+                users: [user_paris],
+                params: {
+                  object: "John D. - #{contribution.title}",
+                  content: "foo",
+                  extra: {
+                    group_type: "action",
+                    joinable_type: "Entourage",
+                    joinable_id: contribution.id,
+                    type: "NEW_CHAT_MESSAGE"
+                  }
+                }
+              )
+            }
+          end
         end
 
         context "private_chat_message" do
@@ -509,6 +654,52 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
 
         create :join_request, user: participant, joinable: outing, status: :accepted
       }
+    end
+  end
+
+  describe "content_for_create_action" do
+    let(:subject) { PushNotificationTrigger.new(record, :foo, Hash.new).content_for_create_action(record) }
+
+    context "on join_request" do
+      let(:record) { create :join_request }
+
+      it { expect(subject).to be_nil }
+    end
+
+    context "on neighborhood" do
+      let(:record) { create :neighborhood }
+
+      it { expect(subject).to be_nil }
+    end
+
+    context "on conversation" do
+      let(:record) { create :conversation }
+
+      it { expect(subject).to be_nil }
+    end
+
+    context "on outing" do
+      let(:record) { create :outing }
+
+      it { expect(subject).to be_nil }
+    end
+
+    context "on solicitation" do
+      let(:record) { create :solicitation }
+
+      it { expect(subject).to eq(PushNotificationTrigger::CREATE_SOLICITATION % nil) }
+    end
+
+    context "on clothes solicitation" do
+      let(:record) { create :solicitation, section: :clothes }
+
+      it { expect(subject).to eq(PushNotificationTrigger::CREATE_SOLICITATION_SECTION % "vêtement") }
+    end
+
+    context "on contribution" do
+      let(:record) { create :contribution }
+
+      it { expect(subject).to eq(PushNotificationTrigger::CREATE_CONTRIBUTION) }
     end
   end
 end

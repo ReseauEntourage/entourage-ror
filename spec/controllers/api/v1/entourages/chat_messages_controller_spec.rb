@@ -155,8 +155,17 @@ describe Api::V1::Entourages::ChatMessagesController do
   end
 
   describe 'POST create' do
+    let(:token) { user.token }
+    let(:content) { "foobar" }
+    let(:message_type) { "text" }
+
+    let(:request) { post :create, params: { entourage_id: entourage.to_param, chat_message: { content: content, message_type: message_type }, token: token } }
+
     context "not signed in" do
-      before { post :create, params: { entourage_id: entourage.to_param, chat_message: {content: "foobar"} } }
+      let(:token) { nil }
+
+      before { request }
+
       it { expect(response.status).to eq(401) }
       it { expect(ChatMessage.count).to eq(0) }
     end
@@ -169,7 +178,9 @@ describe Api::V1::Entourages::ChatMessagesController do
       context "valid params" do
         let!(:join_request) { FactoryBot.create(:join_request, joinable: entourage, user: user, status: "accepted") }
         let!(:join_request2) { FactoryBot.create(:join_request, joinable: entourage, status: "accepted") }
-        before { post :create, params: { entourage_id: entourage.to_param, chat_message: {content: "foobar"}, token: user.token } }
+
+        before { request }
+
         it { expect(response.status).to eq(201) }
         it { expect(ChatMessage.count).to eq(1) }
         it { expect(JSON.parse(response.body)).to eq({
@@ -194,52 +205,76 @@ describe Api::V1::Entourages::ChatMessagesController do
         it "sends notif to everyone accepted except message sender" do
           join_request = FactoryBot.create(:join_request, joinable: entourage, user: user, status: "accepted")
           join_request2 = FactoryBot.create(:join_request, joinable: entourage, status: "accepted")
+
           FactoryBot.create(:join_request, joinable: entourage, status: "pending")
-          expect_any_instance_of(PushNotificationService).to receive(:send_notification).with(nil, 'John D. - Foobar', 'foobaz', [join_request2.user], "conversation", entourage.id, {
-            joinable_id: entourage.id,
-            joinable_type: "Entourage",
-            group_type: 'action',
-            type: "NEW_CHAT_MESSAGE",
-            instance: "conversation",
-            instance_id: entourage.id
-          })
-          post :create, params: { entourage_id: entourage.to_param, chat_message: {content: "foobaz"}, token: user.token }
+
+          expect_any_instance_of(PushNotificationService).to receive(:send_notification).with(
+            nil,
+            'John D. - Foobar',
+            'foobar',
+            [join_request2.user],
+            "solicitation",
+            entourage.id,
+            {
+              joinable_id: entourage.id,
+              joinable_type: "Entourage",
+              group_type: 'action',
+              type: "NEW_CHAT_MESSAGE",
+              instance: "conversation",
+              instance_id: entourage.id
+            }
+          )
+
+          request
         end
       end
 
       context "invalid params" do
+        let(:content) { nil }
         let!(:join_request) { FactoryBot.create(:join_request, joinable: entourage, user: user, status: "accepted") }
-        before { post :create, params: { entourage_id: entourage.to_param, chat_message: {content: nil}, token: user.token } }
+
+        before { request }
+
         it { expect(response.status).to eq(400) }
         it { expect(ChatMessage.count).to eq(0) }
       end
 
       context "post in a entourage i don't belong to" do
-        before { post :create, params: { entourage_id: entourage.to_param, chat_message: {content: "foobar"}, token: user.token } }
+        before { request }
+
         it { expect(response.status).to eq(401) }
       end
 
       context "post in a entourage i am still in pending status" do
         let!(:join_request) { FactoryBot.create(:join_request, joinable: entourage, user: user, status: "pending") }
-        before { post :create, params: { entourage_id: entourage.to_param, chat_message: {content: "foobar"}, token: user.token } }
+
+        before { request }
+
         it { expect(response.status).to eq(401) }
       end
 
       context "post in a entourage i am rejected from" do
         let!(:join_request) { FactoryBot.create(:join_request, joinable: entourage, user: user, status: "rejected") }
-        before { post :create, params: { entourage_id: entourage.to_param, chat_message: {content: "foobar"}, token: user.token } }
+
+        before { request }
+
         it { expect(response.status).to eq(401) }
       end
 
       context "post in a entourage i have quit" do
         let!(:join_request) { FactoryBot.create(:join_request, joinable: entourage, user: user, status: "cancelled") }
-        before { post :create, params: { entourage_id: entourage.to_param, chat_message: {content: "foobar"}, token: user.token } }
+
+        before { request }
+
         it { expect(response.status).to eq(401) }
       end
 
       context "invalid message type" do
+        let(:message_type) { "status_update" }
         let!(:join_request) { FactoryBot.create(:join_request, joinable: entourage, user: user, status: "accepted") }
-        before { post :create, params: { entourage_id: entourage.to_param, chat_message: {content: "foobar", message_type: "status_update"}, token: user.token } }
+
+        before { request }
+
         it { expect(response.status).to eq(400) }
         it { expect(JSON.parse(response.body)).to eq("message"=>"Could not create chat message",
                                                      "reasons"=>["Message type n'est pas inclus(e) dans la liste"]) }
