@@ -1,4 +1,11 @@
 class PushNotificationTrigger
+  # observed by PushNotificationTriggerObserver:
+  #  :entourage
+  #  :entourage_moderation
+  #  :chat_message
+  #  :join_request
+  #  :neighborhoods_entourage
+
   CREATE_OUTING = "Un nouvel événement vient d'être ajouté au %s : %s prévu le %s"
   CANCEL_OUTING = "Cet événement prévu le %s vient d'être annulé"
   UPDATE_OUTING = "L'événement prévu le %s a été modifié. Il se déroulera le %s, au %s"
@@ -34,6 +41,7 @@ class PushNotificationTrigger
     entourage = @record.entourage
 
     return unless entourage.outing?
+    return unless entourage.moderation_validated?
     return unless users = (neighborhood.members.uniq - [entourage.user])
 
     notify(
@@ -48,7 +56,32 @@ class PushNotificationTrigger
     )
   end
 
-  def entourage_on_create
+  def entourage_moderation_on_create
+    return entourage_moderation_on_update_validated_at if @changes.keys.include?("validated_at")
+  end
+
+  def entourage_moderation_on_update
+    return entourage_moderation_on_update_validated_at if @changes.keys.include?("validated_at")
+  end
+
+  def entourage_moderation_on_update_validated_at
+    record = @record
+
+    return unless record.validated_at.present?
+    return unless record.entourage.present?
+    return unless record.entourage.action? || record.entourage.outing?
+    return unless record.entourage.ongoing?
+
+    async_entourage_on_create(record.entourage)
+    async_neighborhoods_entourage_on_create(record.entourage)
+  end
+
+  def async_entourage_on_create entourage
+    # configure entourage_on_create
+    @record = entourage
+    @method = "entourage_on_create"
+    @changes = {}
+
     return unless @record.outing? || @record.action?
     return unless user = @record.user
 
@@ -56,10 +89,20 @@ class PushNotificationTrigger
     entourage_on_create_for_neighbors(user) if @record.action?
   end
 
-  alias_method :contribution_on_create, :entourage_on_create
-  alias_method :solicitation_on_create, :entourage_on_create
+  def async_neighborhoods_entourage_on_create entourage
+    # configure neighborhoods_entourage_on_create
+    @method = "neighborhoods_entourage_on_create"
+    @changes = {}
 
-  # initial caller: entourage_on_create
+    return unless entourage.outing?
+
+    NeighborhoodsEntourage.where(entourage_id: entourage.id).each do |neighborhood_entourage|
+      @record = neighborhood_entourage
+
+      neighborhoods_entourage_on_create
+    end
+  end
+
   def entourage_on_create_for_followers user
     return unless partner = user.partner
 
@@ -125,6 +168,9 @@ class PushNotificationTrigger
   end
 
   def entourage_on_update
+    return if @record.blacklisted?
+    return unless @record.moderation_validated?
+
     return outing_on_update if @record.outing?
   end
 
