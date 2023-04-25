@@ -394,7 +394,7 @@ class PushNotificationTrigger
       users,
       referent[:instance],
       referent[:instance_id],
-      instance.merge(params[:extra] || {})
+      instance.merge(params[:extra] || {}).merge(params[:options] || {})
     )
   end
 
@@ -413,7 +413,8 @@ class PushNotificationTrigger
         post_id: instance[:post_id],
         referent: referent[:instance],
         referent_id: referent[:instance_id],
-        content: params[:content]
+        content: params[:content],
+        options: params[:options] || Hash.new
       )
     end
   end
