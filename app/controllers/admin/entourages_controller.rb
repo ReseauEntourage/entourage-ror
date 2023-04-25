@@ -1,6 +1,6 @@
 module Admin
   class EntouragesController < Admin::BaseController
-    before_action :set_entourage, only: [:show, :edit, :update, :close, :renew, :cancellation, :cancel, :edit_image, :update_image, :moderator_read, :moderator_unread, :message, :show_members, :show_joins, :show_invitations, :show_messages, :show_comments, :show_siblings, :sensitive_words, :sensitive_words_check, :edit_type, :edit_owner, :update_owner, :admin_pin, :admin_unpin, :pin, :unpin]
+    before_action :set_entourage, only: [:show, :edit, :update, :close, :renew, :cancellation, :cancel, :edit_image, :update_image, :moderator_read, :moderator_unread, :message, :show_members, :show_joins, :show_invitations, :show_messages, :show_comments, :show_neighborhoods, :show_siblings, :sensitive_words, :sensitive_words_check, :edit_type, :edit_owner, :update_owner, :admin_pin, :admin_unpin, :pin, :unpin, :update_neighborhoods]
     before_action :set_forced_join_request, only: [:message]
 
     before_action :set_default_index_params, only: [:index]
@@ -163,6 +163,18 @@ module Admin
     def show_comments
       @post = ChatMessage.find(params[:message_id])
       @comments = ChatMessage.find(params[:message_id]).children.order(created_at: :desc).page(page).per(per)
+
+      render :show
+    end
+
+    def show_neighborhoods
+      @outing = Outing.find(@entourage.id)
+      @neighborhoods = @outing.neighborhoods.includes([:user])
+
+      @params = params.permit([:area, :search]).to_h
+      @area = params[:area].presence&.to_sym ||
+        OutingsServices::Helper.new(@outing).neighborhoods_main_departement_slug ||
+        :dep_75
 
       render :show
     end
@@ -435,6 +447,21 @@ module Admin
       redirect_to [:admin, @entourage]
     end
 
+    def update_neighborhoods
+      unless @entourage.outing?
+        return redirect_to show_neighborhoods_admin_entourage_path(@entourage), alert: "Seuls les événements peuvent être associés à des groupes de voisins"
+      end
+
+      @outing = Outing.find(@entourage.id)
+      @outing.assign_attributes(outing_neighborhoods_param)
+
+      if @outing.save(validate: false) # we do not want validation on starts_at or neighborhood_ids memberships
+        redirect_to show_neighborhoods_admin_entourage_path(@outing), notice: "Votre modification a bien été prise en compte"
+      else
+        redirect_to show_neighborhoods_admin_entourage_path(@outing), alert: "Votre modification n'a pas pu être prise en compte"
+      end
+    end
+
     private
 
     def per
@@ -514,6 +541,10 @@ module Admin
 
     def chat_messages_params
       params.require(:chat_message).permit(:content, :parent_id)
+    end
+
+    def outing_neighborhoods_param
+      params.require(:outing).permit(neighborhood_ids: [])
     end
   end
 end

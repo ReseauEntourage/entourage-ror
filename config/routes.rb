@@ -123,6 +123,7 @@ Rails.application.routes.draw do
           post :message
           get :show_members
           get :show_messages
+          get :show_neighborhoods
           get 'comments/:message_id' => :show_comments, as: :show_comments
           get :show_siblings
           get :sensitive_words
@@ -141,6 +142,7 @@ Rails.application.routes.draw do
           post :duplicate_outing
           get '/edit/image', action: :edit_image
           put '/update/image', action: :update_image
+          put :update_neighborhoods
         end
         collection do
           post :destroy_message
