@@ -32,7 +32,6 @@
 
 <div style="margin-bottom: 15px; display: flex">
   <div class="btn-group btn-group-sm">
-    <%#= link_to("Tous", @params.merge(area: :all), class: "btn btn-#{@area == :all ? :primary : :default}") %>
     <% ModerationArea.by_slug_without_no_zone.sort.each do |slug, area| %>
       <%= link_to(area.short_name, @params.merge(area: slug), class: "btn btn-#{@area == slug ? :primary : :default}") %>
     <% end %>
@@ -69,8 +68,8 @@
         <%= collection_check_boxes(:outing, :neighborhood_ids, neighborhoods_for_area, :id, :name ) do |b| %>
           <tr>
             <td><%= b.label(class: "checkbox-inline") { b.check_box + b.text } %></td>
-            <td><%= link_to b.object.id, admin_neighborhood_path(b.object) %></td>
-            <td><%= link_to b.object.name, admin_neighborhood_path(b.object) %></td>
+            <td><%= link_to b.object.id, edit_admin_neighborhood_path(b.object) %></td>
+            <td><%= link_to b.object.name, edit_admin_neighborhood_path(b.object) %></td>
             <td><%= b.object.postal_code %></td>
             <td><%= link_to b.object.user.full_name, admin_user_path(b.object.user) %></td>
             <td><%= b.object.members_count %></td>
