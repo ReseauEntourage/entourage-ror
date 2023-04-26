@@ -12,9 +12,7 @@ module V1
       end
 
       def community_roles
-        object.roles.sort_by { |r| object.community.roles.index(r) }.map do |role|
-          I18n.t("community.entourage.roles.#{role}")
-        end
+        UserPresenter.new(user: object).targeting_profiles
       end
     end
   end

@@ -23,9 +23,7 @@ module V1
           display_name: display_name,
           partner: partner.nil? ? nil : V1::PartnerSerializer.new(partner, scope: { minimal: true }, root: false).as_json,
           partner_role_title: object.user.partner_role_title.presence,
-          roles: object.user.roles.map do |role|
-            I18n.t("community.entourage.roles.#{role}")
-          end
+          roles: UserPresenter.new(user: object.user).targeting_profiles
         }
       end
 

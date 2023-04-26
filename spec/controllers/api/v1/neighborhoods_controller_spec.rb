@@ -64,7 +64,7 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
     end
 
     describe 'with user roles' do
-      before { neighborhood.user.update_attribute(:roles, [:ambassador]) }
+      before { neighborhood.user.update_attribute(:targeting_profile, :ambassador) }
 
       before { get :index, params: { token: user.token } }
 

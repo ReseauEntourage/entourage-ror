@@ -144,7 +144,7 @@ describe Api::V1::Entourages::ChatMessagesController do
                 "default" => true,
               },
               "partner_role_title" => nil,
-              "roles" => []
+              "roles" => ["Association"]
             },
             "created_at" => chat_message.created_at.iso8601(3),
             "status" => "active"

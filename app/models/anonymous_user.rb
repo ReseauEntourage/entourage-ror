@@ -85,6 +85,7 @@ class AnonymousUser
   def invitations; EntourageInvitation.none; end
   def active_invitations; EntourageInvitation.none; end
   def goal; nil; end
+  def targeting_profile; nil; end
   def interest_list; []; end
   def interests; []; end
   def interest_names; []; end
