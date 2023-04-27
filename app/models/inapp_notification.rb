@@ -21,6 +21,13 @@ class InappNotification < ApplicationRecord
   scope :active_criteria_by_user, -> (user, criteria) { active.where(user: user).where(criteria) }
   scope :processed_criteria_by_user, -> (user, criteria) { processed_by(user).where(criteria) }
 
+  scope :with_context, -> (context) {
+    return unless context.present?
+    return if context.to_sym == :all
+
+    where(context: context)
+  }
+
   def record
     return unless instance
     return post if post?
