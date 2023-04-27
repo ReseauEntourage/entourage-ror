@@ -112,6 +112,7 @@ Rails.application.routes.draw do
         post '/force_close_tours', action: :force_close_tours
         post '/unread_reminder_email', action: :unread_reminder_email
         post '/onboarding_sequence_send_welcome_messages', action: :onboarding_sequence_send_welcome_messages
+        get '/inapp_notifications', action: :inapp_notifications
       end
 
       resources :newsletter_subscriptions, only: [:index]
