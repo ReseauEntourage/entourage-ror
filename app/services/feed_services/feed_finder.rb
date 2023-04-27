@@ -221,7 +221,11 @@ module FeedServices
 
     def order_by_distance(feeds:)
       distance_from_center = PostgisHelper.distance_from(latitude, longitude)
-      feeds.order("case when online then 1 else 2 end", distance_from_center, created_at: :desc)
+
+      feeds
+        .order(Arel.sql("case when online then 1 else 2 end"))
+        .order(Arel.sql(distance_from_center))
+        .order(created_at: :desc)
     end
 
     def pin entourage_id, feeds:

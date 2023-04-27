@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 ruby '2.6.6'
 
-gem 'rails',                          '~> 5.2'
+gem 'rails',                          '~> 6.0'
 
 gem 'sass-rails'
 gem 'uglifier'
@@ -31,7 +31,7 @@ gem 'lograge'
 gem 'logstash-event'
 gem 'aws-sdk-s3',                     '~> 1'
 gem 'faker'
-gem 'activerecord-postgis-adapter',   '~> 5'
+gem 'activerecord-postgis-adapter',   '~> 6.0'
 gem 'slack-notifier'
 gem 'mailjet'
 gem 'safety_mailer'

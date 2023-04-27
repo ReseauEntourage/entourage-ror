@@ -22,7 +22,7 @@ module EntourageServices
       ApplicationRecord.transaction do
         creator_join_requests.update_all(role: member_type)
 
-        owner_join_request.update_attributes(status: :accepted, role: creator_type)
+        owner_join_request.update(status: :accepted, role: creator_type)
 
         @joinable.update_attribute(:user_id, user_id)
       end

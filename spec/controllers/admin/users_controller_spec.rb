@@ -249,14 +249,14 @@ describe Admin::UsersController do
 
     context "no phone_change request" do
       subject { put :cancel_phone_change_request, params: { id: user.id }}
-      it { expect(lambda { subject }).to change { UserPhoneChange.count }.by(0) }
+      it { expect { subject }.to change { UserPhoneChange.count }.by(0) }
     end
 
     context "with phone_change request" do
       let!(:change_request) { FactoryBot.create(:user_phone_change_request, user_id: user.id, admin_id: admin.id) }
 
       subject { put :cancel_phone_change_request, params: { id: user.id }}
-      it { expect(lambda { subject }).to change { UserPhoneChange.count }.by(1) }
+      it { expect { subject }.to change { UserPhoneChange.count }.by(1) }
       it { expect(subject && UserPhoneChange.last.kind).to eq('cancel') }
     end
   end

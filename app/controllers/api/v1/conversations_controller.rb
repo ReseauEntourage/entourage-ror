@@ -50,7 +50,7 @@ module Api
 
       def metadata
         entourages = Entourage.joins(:join_requests)
-          .select(:id, :group_type)
+          .select(:id, :user_id, :group_type)
           .includes(:join_requests, { user: :partner })
           .where('join_requests.user_id = ?', current_user.id)
           .where('join_requests.status = ?', :accepted)

@@ -8,7 +8,7 @@ class UserPresenter < ApplicationPresenter
   end
 
   def organization_members
-    @user.organization.users.order("upper(first_name) ASC")
+    @user.organization.users.order(Arel.sql("upper(first_name) ASC"))
   end
 
   def can_send_push?

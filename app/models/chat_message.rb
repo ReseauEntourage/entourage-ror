@@ -25,7 +25,7 @@ class ChatMessage < ApplicationRecord
     where("chat_messages.messageable_type = 'Entourage'")
   }, foreign_key: :messageable_id, optional: true # why optional? Cause it might belongs_to Tour
   belongs_to :user
-  belongs_to :deleter, class_name: :User
+  belongs_to :deleter, class_name: :User, required: false
 
   before_validation :generate_content
 

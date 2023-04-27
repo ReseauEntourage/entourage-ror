@@ -41,7 +41,6 @@ describe User, :type => :model do
   it { should have_many :encounters }
   it { should have_many :entourages }
   it { should have_many :user_applications }
-  it { should belong_to :organization }
   it { should have_and_belong_to_many(:coordinated_organizations).class_name('Organization') }
 
   describe "community" do

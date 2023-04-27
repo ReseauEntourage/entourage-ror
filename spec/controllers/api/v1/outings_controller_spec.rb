@@ -485,8 +485,8 @@ describe Api::V1::OutingsController do
           let(:end_dates) { (end_at.to_datetime..(end_at + 64.days).to_datetime).step(7).to_a }
 
           it { expect(outing.siblings.count).to eq(10) }
-          it { expect(outing.siblings.pluck("metadata->>'starts_at'").map(&:to_datetime)).to match_array(start_dates) }
-          it { expect(outing.siblings.pluck("metadata->>'ends_at'").map(&:to_datetime)).to match_array(end_dates) }
+          it { expect(outing.siblings.pluck(Arel.sql("metadata->>'starts_at'")).map(&:to_datetime)).to match_array(start_dates) }
+          it { expect(outing.siblings.pluck(Arel.sql("metadata->>'ends_at'")).map(&:to_datetime)).to match_array(end_dates) }
         end
 
       end
@@ -744,24 +744,24 @@ describe Api::V1::OutingsController do
 
     context 'not as creator' do
       let(:creator) { FactoryBot.create(:public_user) }
-      it { expect(lambda { request }).to change { Outing.count }.by(0) }
+      it { expect { request }.to change { Outing.count }.by(0) }
       it { request ; expect(response.status).to eq(401) }
     end
 
     context 'without recurrence' do
       let(:recurrence) { nil }
-      it { expect(lambda { request }).to change { Outing.count }.by(0) }
+      it { expect { request }.to change { Outing.count }.by(0) }
       it { request ; expect(response.status).to eq(401) }
     end
 
     context 'without unactive recurrence' do
       let(:recurrence) { FactoryBot.create(:outing_recurrence, continue: false) }
-      it { expect(lambda { request }).to change { Outing.count }.by(0) }
+      it { expect { request }.to change { Outing.count }.by(0) }
       it { request ; expect(response.status).to eq(401) }
     end
 
     context 'duplication as creator' do
-      it { expect(lambda { request }).to change { Outing.count }.by(1) }
+      it { expect { request }.to change { Outing.count }.by(1) }
     end
 
     context 'as creator' do

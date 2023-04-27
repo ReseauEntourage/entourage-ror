@@ -20,8 +20,6 @@ FactoryBot.define do
       (stuff.cancelled_participants - [neighborhood.user]).each do |cancelled_participant|
         create :join_request, joinable: neighborhood, user: cancelled_participant, status: JoinRequest::CANCELLED_STATUS
       end
-
-      neighborhood.reload
     end
   end
 end

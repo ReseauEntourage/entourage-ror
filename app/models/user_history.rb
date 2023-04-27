@@ -1,6 +1,6 @@
 class UserHistory < ApplicationRecord
   belongs_to :user
-  belongs_to :updater, class_name: :User
+  belongs_to :updater, class_name: :User, required: false
 
   attribute :metadata, :jsonb_with_schema
 

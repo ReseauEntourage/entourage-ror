@@ -8,7 +8,7 @@
 #
 #     before_save do
 #       if some_condition
-#         @custom_timestamp_attributes_for_update = [:some_timestamp_at]
+#         @custom_timestamp_attributes_for_update = ["some_timestamp_at"]
 #       end
 #     end
 #  end

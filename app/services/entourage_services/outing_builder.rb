@@ -29,7 +29,7 @@ module EntourageServices
       def batch_update_dates outing:, params:
         metadata = params[:metadata].to_h.reverse_merge(outing.metadata)
 
-        outing.update_attributes!({ metadata: metadata }.merge(force_relatives_dates: true))
+        outing.update!({ metadata: metadata }.merge(force_relatives_dates: true))
       end
 
       def update_recurrency outing:, params:

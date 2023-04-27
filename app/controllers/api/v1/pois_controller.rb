@@ -22,7 +22,7 @@ module Api
           if version == :v1
             @pois = @pois.where(category_id: categories)
           else
-            @pois = @pois.joins(:pois_categories).where(categories_pois: {category_id: categories})
+            @pois = @pois.joins(:categories_pois).where(categories_pois: {category_id: categories})
           end
         else
           category_count = @categories.count
@@ -55,7 +55,7 @@ module Api
             @pois = @pois.where(clauses.join(" OR "))
           end
 
-          @pois = @pois.order('random()').limit(100)
+          @pois = @pois.order(Arel.sql('random()')).limit(100)
         else
           @pois = @pois.limit(25)
         end

@@ -63,7 +63,7 @@ class TourCollectionPresenter < ApplicationPresenter
     end
 
     def collection_durations
-      Hash[TourPoint.where(tour_id: @tour_ids).group(:tour_id).pluck("tour_id, extract(epoch from max(created_at) - min(created_at))")]
+      Hash[TourPoint.where(tour_id: @tour_ids).group(:tour_id).pluck(Arel.sql("tour_id, extract(epoch from max(created_at) - min(created_at))"))]
     end
   end
 end

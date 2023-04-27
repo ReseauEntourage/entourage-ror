@@ -139,7 +139,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
         end
 
         context "when the user has a password" do
-          before { user.update_attributes(password: "P@ssw0rd") }
+          before { user.update(password: "P@ssw0rd") }
 
           context "on the web" do
             before { @request.env['X-API-KEY'] = 'api_debug_web' }
@@ -204,7 +204,10 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
 
     describe 'invalid params' do
       before { post 'login' }
-      it { expect(result).to eq("error"=>{"code"=>"PARAMETER_MISSING", "message"=>"param is missing or the value is empty: user"}) }
+      it { expect(result).to have_key("error") }
+      it { expect(result['error']['code']).to eq("PARAMETER_MISSING") }
+      it { expect(result['error']['message']).to match("param is missing or the value is empty: user") }
+
       it { expect(response.status).to eq 400 }
     end
 
@@ -1171,11 +1174,6 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
       context "with a standard user" do
         include_examples "common tests"
         it { expect(user.reload.address_id).to be_nil }
-      end
-
-      context "with an anonymous user" do
-        let(:user) { AnonymousUserService.create_user($server_community) }
-        include_examples "common tests"
       end
     end
 

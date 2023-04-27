@@ -41,7 +41,7 @@ class Outing < Entourage
     where.not(id: object.id).where("metadata->>'starts_at' >= ?", Time.zone.now).where.not(recurrency_identifier: nil)
   }, class_name: :Outing, foreign_key: :recurrency_identifier, primary_key: :recurrency_identifier
 
-  belongs_to :recurrence, class_name: :OutingRecurrence, foreign_key: :recurrency_identifier, primary_key: :identifier
+  belongs_to :recurrence, class_name: :OutingRecurrence, foreign_key: :recurrency_identifier, primary_key: :identifier, required: false
 
   # chat_messages redefinitions without updated_status
   has_many :chat_messages, -> { where.not(message_type: :status_update) }, as: :messageable, dependent: :destroy

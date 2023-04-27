@@ -33,7 +33,7 @@ class ConversationMessageBroadcastJob
         join_request.update_column(:last_message_read, message.created_at)
 
         ApplicationRecord.transaction do
-          conversation_message_broadcast.update_attributes(
+          conversation_message_broadcast.update(
             sent_users_count: (ConversationMessageBroadcast.find(conversation_message_broadcast_id).sent_users_count || 0) + 1
           )
         end
