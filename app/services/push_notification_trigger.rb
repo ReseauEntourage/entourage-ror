@@ -413,6 +413,7 @@ class PushNotificationTrigger
         post_id: instance[:post_id],
         referent: referent[:instance],
         referent_id: referent[:instance_id],
+        title: params[:object],
         content: params[:content]
       )
     end

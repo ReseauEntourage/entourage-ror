@@ -4,6 +4,7 @@ module V1
       :instance,
       :instance_id,
       :post_id,
+      :title,
       :content,
       :completed_at,
       :created_at,
