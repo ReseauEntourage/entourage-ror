@@ -492,6 +492,63 @@ describe PoiServices::Soliguide do
       } }
       it { expect(subject).to eq("Lun : 8h00 à 12h30 - 14h00 à 16h30\nMar : 7h00 à 12h30 - 13h30 à 16h30") }
     end
+
+    context 'on monday, tuesday' do
+      let(:hours) {
+        {
+          "closedHolidays"=>"UNKNOWN",
+          "description"=>nil,
+          "friday"=> {
+            "open"=>true,
+            "timeslot"=>[
+              { "end"=>1230, "start"=>800 },
+              { "end"=>1645, "start"=>1400 }
+            ]
+          },
+          "monday"=> {
+            "open"=>true,
+            "timeslot"=>[
+              { "end"=>1230, "start"=>800 },
+              { "end"=>1645, "start"=>1400 }
+            ]
+          },
+          "saturday"=>{
+            "open"=>false,
+            "timeslot"=>[]
+          },
+          "sunday"=> {
+            "open"=>true,
+            "timeslot"=>[
+              { "end"=>1230, "start"=>900 },
+              { "end"=>1645, "start"=>1400 }
+            ]
+          },
+          "thursday"=> {
+            "open"=>true,
+            "timeslot"=>[
+              { "end"=>1230, "start"=>800 },
+              { "end"=>1645, "start"=>1400 }
+            ]
+          },
+          "tuesday"=> {
+            "open"=>true,
+            "timeslot"=>[
+              { "end"=>1230, "start"=>800 },
+              { "end"=>1645, "start"=>1400 }
+            ]
+          },
+          "wednesday"=> {
+            "open"=>true,
+            "timeslot"=>[
+              { "end"=>1230, "start"=>800 },
+              { "end"=>1645, "start"=>1400 }
+            ]
+          }
+        }
+      }
+
+      it { expect(subject).to eq("Lun : 8h00 à 12h30 - 14h00 à 16h45\nMar : 8h00 à 12h30 - 14h00 à 16h45\nMer : 8h00 à 12h30 - 14h00 à 16h45\nJeu : 8h00 à 12h30 - 14h00 à 16h45\nVen : 8h00 à 12h30 - 14h00 à 16h45\nSam : Fermé\nDim : 9h00 à 12h30 - 14h00 à 16h45") }
+    end
   end
 
   describe 'format_title' do
