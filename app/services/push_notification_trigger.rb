@@ -111,6 +111,7 @@ class PushNotificationTrigger
     return unless follower_ids.any?
 
     follower_ids.each do |follower_id|
+      next if follower_id == user.id
       next unless follower = User.find(follower_id)
 
       invitation_id = EntourageInvitation.where(invitable: @record, inviter: user, invitee_id: follower_id).pluck(:id).first
@@ -145,6 +146,7 @@ class PushNotificationTrigger
     return unless neighbor_ids.any?
 
     neighbor_ids.each do |neighbor_id|
+      next if neighbor_id == user.id
       next unless neighbor = User.find(neighbor_id)
       next if @record.solicitation? && neighbor.is_ask_for_help?
       next if @record.contribution? && !neighbor.is_ask_for_help?
