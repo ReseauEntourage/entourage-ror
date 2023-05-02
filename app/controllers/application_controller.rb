@@ -60,4 +60,10 @@ class ApplicationController < ActionController::Base
   def ping_db
     render json: { status: :ok, count: User.count }
   end
+
+  def ping_mq
+    redis_info = Sidekiq.redis { |conn| conn.info }
+
+    render json: { status: :ok, count: redis_info['connected_clients'] }
+  end
 end
