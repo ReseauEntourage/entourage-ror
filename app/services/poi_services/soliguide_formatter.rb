@@ -349,18 +349,18 @@ module PoiServices
       104 => 3, # SOINS_ENFANTS
       105 => 3, # GENERALISTE
       106 => 3, # DENTAIRE
-      107 => 3, # PLANIFICATION
-      109 => 3, # VACCINATION
-      110 => 3, # INFIRMERIE
-      111 => 3, # VETERINAIRE
+      107 => 3, # SUIVI_GROSSESSE
+      108 => 3, # VACCINATION
+      109 => 3, # INFIRMERIE
+      110 => 3, # VETERINAIRE
 
       # Formation et emploi (toutes)  Se réinsérer
       200 => 7, # FORMATION_EMPLOI
       201 => 7, # FORMATION_NUMERIQUE
       202 => 7, # FORMATION_FRANCAIS
       203 => 7, # ACCOMPAGNEMENT_EMPLOI
-      205 => 7, # CHANTIER_DE_REINSERTION
-      206 => 7, # SOUTIEN_SCOLAIRE
+      204 => 7, # INSERTION_ACTIVITE_ECONOMIQUE
+      205 => 7, # SOUTIEN_SCOLAIRE
 
       # Hygiène et bien-être  Hygiène et bien-être  S'occuper de soi
       300 => 6, # HYGIENE
@@ -385,17 +385,14 @@ module PoiServices
 
       # Conseil -> S'orienter
       400 => 5, # CONSEIL
-
-      # Conseil Conseil logement  Se loger
-      401 => 2, # CONSEIL_LOGEMENT
-
-      # Conseil -> S'orienter
-      402 => 5, # PERMANENCE_JURIDIQUE
-      403 => 5, # DOMICILIATION
-      404 => 5, # ACCOMPAGNEMENT_SOCIAL
-      405 => 5, # ECRIVAIN_PUBLIC
-      406 => 5, # CONSEIL_HANDICAP
-      407 => 5, # CONSEIL_ADMINISTRATIF
+      401 => 5, # PERMANENCE_JURIDIQUE
+      402 => 5, # DOMICILIATION
+      403 => 5, # ACCOMPAGNEMENT_SOCIAL
+      404 => 5, # ECRIVAIN_PUBLIC
+      405 => 5, # CONSEIL_HANDICAP
+      406 => 5, # CONSEIL_ADMINISTRATIF
+      407 => 5, # CONSEIL_PARENTS
+      408 => 5, # CONSEIL_BUGDET
 
       # Technologie (toutes)  S'orienter
       500 => 5, # TECHNOLOGIE
@@ -403,7 +400,7 @@ module PoiServices
       502 => 5, # WIFI
       503 => 5, # PRISE
       504 => 5, # TELEPHONE
-      505 => 5, # NUMERISATION
+      505 => 5, # COFFRE_FORT_NUMERIQUE
 
       # Alimentation (toutes sauf Fontaine)  Se nourrir
       600 => 1, # ALIMENTATION
@@ -421,23 +418,17 @@ module PoiServices
       # Accueil Accueil de jour S'orienter
       701 => 5, # ACCUEIL_JOUR
 
-      # Accueil Hébergement à long terme  Se loger
-      703 => 2, # HEBERGEMENT_LONG_TERME
-
-      # Accueil Logement bas-prix Se loger
-      # 704 => 2, # LOGEMENT_BAS  PRIX
-
       # Accueil Espace de repos S'occuper de soi
-      705 => 6, # ESPACE_REPOS
-
-      # Accueil Halte de nuit Se loger
-      706 => 2, # HALTE_NUIT
+      702 => 6,
 
       # Accueil Garde d'enfants Se réinsérer
-      707 => 7, # GARDE_ENFANTS
+      703 => 7,
 
-      # Accueil Hébergement d'urgence Se loger
-      708 => 2, # HEBERGEMENT_URGENCE
+      # Accueil Espace famille S'occuper de soi
+      704 => 6,
+
+      # Accueil Point d'information Se réinsérer
+      705 => 7,
 
       # Activités (Toutes)  S'occuper de soi
       800 => 6, # ACTIVITES
@@ -445,6 +436,7 @@ module PoiServices
       802 => 6, # MUSEE
       803 => 6, # BIBLIOTHEQUE
       804 => 6, # ACTIVITES_DIVERSES
+      805 => 6, # ANIMATIONS_LOISIRS
 
       # Matériel -> S'occuper de soi
       900 => 6, # MATERIEL
@@ -487,16 +479,18 @@ module PoiServices
       1122 => 3, # ACUPUNCTURE
 
       # Nouvelles catégories
-      408 => 6, # "Conseil aux parents" (s'occuper de soi)
-      702 => 2, # "Hébergement d'urgence" (se loger)
-      709 => 5, # "Point d'information" (s'orienter)
-      710 => 2, # "Hébergement citoyen" (se loger)
-      805 => 6, # "Animations et loisirs" (s'occuper de soi)
       1200 => 7, # "Transport & mobilité" (se réinsérer)
       1201 => 7, # "Co-voiturage" (se réinsérer)
       1202 => 7, # "Mise à disposition de véhicule" (se réinsérer)
       1203 => 7, # "Transport avec chauffeur" (se réinsérer)
       1204 => 7, # Aide à la mobilité (se réinsérer)
+
+      1300 => 2, # HEBERGEMENT_LOGEMENT
+      1301 => 2, # HALTE_NUIT
+      1302 => 2, # HEBERGERMENT_URGENCE
+      1303 => 2, # HEBERGEMENT_LONG_TERME
+      1304 => 2, # HEBERGEMENT_CITOYEN
+      1305 => 2, # CONSEIL_LOGEMENT
     }
 
     CATEGORIES_EQUIVALENTS_REVERSED = {
@@ -505,8 +499,8 @@ module PoiServices
       3 => [100, 1100],
       4 => [300],
       5 => [400, 500, 700],
-      6 => [300, 705, 800, 900],
-      7 => [200, 707],
+      6 => [300, 702, 704, 800, 900],
+      7 => [200, 703, 705],
       40 => [304],
       41 => [605],
       42 => [301],

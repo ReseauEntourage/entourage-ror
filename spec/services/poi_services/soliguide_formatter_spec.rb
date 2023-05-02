@@ -157,6 +157,17 @@ describe PoiServices::Soliguide do
       ] } }
       it { expect(subject).to eq([3, 7, 6, 40]) }
     end
+
+    context 'multiple soliguide categorie with other categories' do
+      let(:poi) { { 'services_all' => [
+        { 'categorie' => 204 },
+        { 'categorie' => 704 },
+        { 'categorie' => 1302 },
+        { 'categorie' => 1303 },
+        { 'categorie' => 1305 },
+      ] } }
+      it { expect(subject).to match_array([7, 6, 2]) }
+    end
   end
 
   describe 'format_publics' do
