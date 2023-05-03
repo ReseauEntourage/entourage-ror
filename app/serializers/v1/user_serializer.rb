@@ -82,7 +82,7 @@ module V1
     end
 
     def roles
-      UserPresenter.new(user: object).targeting_profiles
+      UserPresenter.new(user: object).public_targeting_profiles
     end
 
     def partner

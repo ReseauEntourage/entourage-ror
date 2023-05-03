@@ -29,7 +29,7 @@ module V1
     end
 
     def community_roles
-      UserPresenter.new(user: object.user).targeting_profiles
+      UserPresenter.new(user: object.user).public_targeting_profiles
     end
 
     def status

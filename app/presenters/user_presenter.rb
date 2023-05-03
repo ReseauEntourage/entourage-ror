@@ -65,6 +65,13 @@ class UserPresenter < ApplicationPresenter
     [I18n.t("community.entourage.targeting_profiles.#{user.targeting_profile}")]
   end
 
+  def public_targeting_profiles
+    return [] unless user.targeting_profile.present?
+    return [] if ['offers_help', 'asks_for_help'].include?(user.targeting_profile.to_s)
+
+    [I18n.t("community.entourage.targeting_profiles.#{user.targeting_profile}")]
+  end
+
   def display_name
     self.class.display_name user
   end

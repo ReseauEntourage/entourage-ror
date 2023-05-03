@@ -12,7 +12,7 @@ module V1
       end
 
       def community_roles
-        UserPresenter.new(user: object).targeting_profiles
+        UserPresenter.new(user: object).public_targeting_profiles
       end
     end
   end
