@@ -41,7 +41,10 @@ describe Api::V1::Outings::ChatMessagesController do
           "user" => {
             "id" => user.id,
             "avatar_url" => nil,
-            "display_name" => "John D."
+            "display_name" => "John D.",
+            "partner" => nil,
+            "partner_role_title" => nil,
+            "roles" => []
           },
           "created_at" => chat_message_1.created_at.iso8601(3),
           "post_id" => nil,
@@ -113,7 +116,10 @@ describe Api::V1::Outings::ChatMessagesController do
           "user" => {
             "id" => chat_message.user_id,
             "avatar_url" => nil,
-            "display_name" => "John D."
+            "display_name" => "John D.",
+            "partner" => nil,
+            "partner_role_title" => nil,
+            "roles" => []
           },
           "created_at" => chat_message.created_at.iso8601(3),
           "post_id" => nil,
@@ -201,7 +207,10 @@ describe Api::V1::Outings::ChatMessagesController do
             "user" => {
               "id" => user.id,
               "avatar_url" => nil,
-              "display_name" => "John D."
+              "display_name" => "John D.",
+              "partner" => nil,
+              "partner_role_title" => nil,
+              "roles" => []
             },
             "created_at" => ChatMessage.last.created_at.iso8601(3),
             "post_id" => parent_id,
@@ -414,7 +423,10 @@ describe Api::V1::Outings::ChatMessagesController do
           "user" => {
             "id" => user.id,
             "avatar_url" => nil,
-            "display_name" => "John D."
+            "display_name" => "John D.",
+            "partner" => nil,
+            "partner_role_title" => nil,
+            "roles" => []
           },
           "created_at" => chat_message_2.created_at.iso8601(3),
           "post_id" => chat_message_1.id,
