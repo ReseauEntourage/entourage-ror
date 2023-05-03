@@ -243,7 +243,12 @@ module PoiServices
     def self.format_hours hours
       return [] unless hours
 
-      hours.map do |day, hours|
+      available_days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
+      # excluded keys are: closedHolidays, description
+
+      hours.slice(*available_days).sort_by do |days, value|
+        available_days.find_index(days) || -1
+      end.map do |day, hours|
         next unless hours.present?
 
         day = {

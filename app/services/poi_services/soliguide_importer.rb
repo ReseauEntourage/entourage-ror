@@ -18,7 +18,10 @@ module PoiServices
           poi.source = :soliguide
           poi.validated = true
           poi.updated_at = Time.zone.now
-          poi.save!
+
+          unless poi.save
+            Rails.logger.error("type:soliguide_importer error: poi not saved: #{poi.errors.full_messages} (#{response[:source_id]})")
+          end
         end
       end
 
