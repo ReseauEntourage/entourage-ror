@@ -135,7 +135,7 @@ class PushNotificationTimeliner
       nil,
       params[:object],
       nil,
-      [user],
+      [@user],
       instance[:instance],
       instance[:instance_id],
       instance.merge(params[:extra] || {})
