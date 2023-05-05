@@ -520,6 +520,10 @@ class User < ApplicationRecord
     Address.where(user_id: id).delete_all
   end
 
+  def default_neighborhood
+    Neighborhood.public_only.closests_to_by_zone(self).first
+  end
+
   # TODO(partner)
   def default_partner
     nil # @default_partner ||= default_user_partners.first&.partner
