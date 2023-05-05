@@ -17,7 +17,7 @@ module NeighborhoodServices
     end
 
     def default_neighborhood
-      @default_neighborhood ||= Neighborhood.public_only.closests_to_by_zone(user).first
+      @default_neighborhood ||= user.default_neighborhood
     end
   end
 end
