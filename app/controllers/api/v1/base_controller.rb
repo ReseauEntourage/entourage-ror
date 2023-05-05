@@ -14,6 +14,9 @@ module Api
 
       after_action :set_completed_route, only: [:index, :show, :create], if: -> { current_user.present? }
 
+      skip_before_action :authenticate_user!, only: [:ping, :ping_db, :ping_mq]
+      before_action :authenticate_user_or_anonymous!, only: [:ping, :ping_db, :ping_mq]
+
       rescue_from ApiRequest::Unauthorised do |e|
         Rails.logger.error e
         render json: {message: 'Missing API Key or invalid key'}, status: 426
@@ -115,6 +118,12 @@ module Api
 
       def ping_db
         render json: { status: :ok, count: User.count }
+      end
+
+      def ping_mq
+        redis_info = Sidekiq.redis { |conn| conn.info }
+
+        render json: { status: :ok, count: redis_info['connected_clients'] }
       end
 
       def api_request
