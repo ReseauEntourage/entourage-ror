@@ -9,7 +9,7 @@ class PushNotificationService
 
     users.each do |user|
       next if user.blocked?
-      next unless NotificationPermission.notify_push?(user, referent, referent_id)
+      next unless extra[:welcome] || NotificationPermission.notify_push?(user, referent, referent_id)
 
       UserServices::UserApplications.new(user: user).android_app_tokens.each do |token|
         android_notification_service.send_notification(sender, object, content, token.push_token, user.community.slug, extra, badge(user))
