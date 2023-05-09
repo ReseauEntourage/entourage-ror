@@ -19,10 +19,8 @@ module Onboarding
 
       def user_ids_to_be_welcomed
         User.where(deleted: false)
-          .with_event('onboarding.profile.first_name.entered', :name_entered)
-          .with_event('onboarding.profile.postal_code.entered', :postal_code_entered)
           .without_event('onboarding.push_notifications.welcome.sent')
-          .where("greatest(name_entered.created_at, postal_code_entered.created_at) <= ?", MIN_DELAY.ago)
+          .where("first_sign_in_at <= ?", MIN_DELAY.ago)
           .pluck(:id)
       end
     end
@@ -41,7 +39,7 @@ module Onboarding
 
       def user_ids_after_days n
         User.where(deleted: false)
-          .where(onboarding_sequence_start_at: n.days.ago.all_day)
+          .where(first_sign_in_at: n.days.ago.all_day)
           .pluck(:id)
       end
     end
