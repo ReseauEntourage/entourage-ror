@@ -24,7 +24,7 @@ class PushNotificationTimeliner
         extra: {
           welcome: true,
           stage: :h1,
-          instance: :resources
+          url: :resources
         }
       }
     )
@@ -38,7 +38,8 @@ class PushNotificationTimeliner
         object: "C'est le moment de se lancer",
         extra: {
           welcome: true,
-          stage: :j2
+          stage: :j2,
+          url: :home
         }
       }
     )
@@ -60,7 +61,7 @@ class PushNotificationTimeliner
         extra: {
           welcome: true,
           stage: :j8,
-          instance: :outings
+          url: :outings
         }
       }
     )
@@ -75,7 +76,7 @@ class PushNotificationTimeliner
         extra: {
           welcome: true,
           stage: :j8,
-          instance: :actions
+          url: :solicitations
         }
       }
     )
@@ -90,7 +91,7 @@ class PushNotificationTimeliner
         extra: {
           welcome: true,
           stage: :j8,
-          instance: :create_action
+          url: :create_action
         }
       }
     )
