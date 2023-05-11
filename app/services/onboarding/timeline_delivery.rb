@@ -1,5 +1,5 @@
 module Onboarding
-  module PushNotificationService
+  module TimelineDelivery
     MIN_DELAY = 1.hour
     ACTIVE_DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
     ACTIVE_HOURS = '09:00'..'18:30'
@@ -13,7 +13,7 @@ module Onboarding
 
         User.where(id: user_ids_to_be_welcomed).find_each do |user|
           Event.track('onboarding.push_notifications.welcome.sent', user_id: user.id)
-          PushNotificationTimeliner.new(user.id, :h1_after_registration)
+          Timeliner.new(user.id, :h1_after_registration)
         end
       end
 
@@ -33,7 +33,7 @@ module Onboarding
         return unless now.strftime('%H:%M').in?(ACTIVE_HOURS)
 
         User.where(id: user_ids_after_days(n)).find_each do |user|
-          PushNotificationTimeliner.new(user.id, "j#{n}_after_registration").run
+          Timeliner.new(user.id, "j#{n}_after_registration").run
         end
       end
 
