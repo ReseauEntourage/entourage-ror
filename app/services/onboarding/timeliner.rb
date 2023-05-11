@@ -1,3 +1,4 @@
+# send push notif to user having registered recently
 module Onboarding
   class Timeliner
     attr_reader :user, :method, :moderator_id

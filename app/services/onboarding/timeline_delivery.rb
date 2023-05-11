@@ -13,7 +13,7 @@ module Onboarding
 
         User.where(id: user_ids_to_be_welcomed).find_each do |user|
           Event.track('onboarding.push_notifications.welcome.sent', user_id: user.id)
-          Timeliner.new(user.id, :h1_after_registration)
+          Onboarding::Timeliner.new(user.id, :h1_after_registration).run
         end
       end
 
@@ -33,7 +33,7 @@ module Onboarding
         return unless now.strftime('%H:%M').in?(ACTIVE_HOURS)
 
         User.where(id: user_ids_after_days(n)).find_each do |user|
-          Timeliner.new(user.id, "j#{n}_after_registration").run
+          Onboarding::Timeliner.new(user.id, "j#{n}_after_registration").run
         end
       end
 
