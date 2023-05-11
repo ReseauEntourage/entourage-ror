@@ -47,26 +47,26 @@ namespace :push do
 
   desc "deliver_welcome"
   task deliver_welcome: :environment do
-    Onboarding::PushNotificationService.deliver_welcome
+    Onboarding::TimelineDelivery.deliver_welcome
   end
 
   desc "deliver_on(2)"
   task deliver_on_2: :environment do
-    Onboarding::PushNotificationService.deliver_on(2)
+    Onboarding::TimelineDelivery.deliver_on(2)
   end
 
   desc "deliver_on(5)"
   task deliver_on_5: :environment do
-    Onboarding::PushNotificationService.deliver_on(5)
+    Onboarding::TimelineDelivery.deliver_on(5)
   end
 
   desc "deliver_on(8)"
   task deliver_on_8: :environment do
-    Onboarding::PushNotificationService.deliver_on(8)
+    Onboarding::TimelineDelivery.deliver_on(8)
   end
 
   desc "deliver_on(11)"
   task deliver_on_11: :environment do
-    Onboarding::PushNotificationService.deliver_on(11)
+    Onboarding::TimelineDelivery.deliver_on(11)
   end
 end
