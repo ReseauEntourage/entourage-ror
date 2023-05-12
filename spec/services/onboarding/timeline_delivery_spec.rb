@@ -1,10 +1,10 @@
 require 'rails_helper'
 
 describe Onboarding::TimelineDelivery do
-  describe "deliver_welcome_message" do
-    let(:sunday) { Time.parse("01/01/2023 12:00:00") }
-    let(:monday) { Time.parse("02/01/2023 12:00:00") }
+  let(:sunday) { Time.parse("01/01/2023 12:00:00") }
+  let(:monday) { Time.parse("02/01/2023 12:00:00") }
 
+  describe "deliver_welcome_message" do
     let(:subject) { Onboarding::TimelineDelivery.deliver_welcome }
 
     before { Timecop.freeze(monday) }
@@ -45,9 +45,6 @@ describe Onboarding::TimelineDelivery do
   end
 
   describe "deliver_on" do
-    let(:sunday) { Time.parse("01/01/2023 12:00:00") }
-    let(:monday) { Time.parse("02/01/2023 12:00:00") }
-
     let(:subject) { Onboarding::TimelineDelivery.deliver_on(5) }
 
     before { Timecop.freeze(monday) }
