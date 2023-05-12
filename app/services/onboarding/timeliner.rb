@@ -3,6 +3,27 @@ module Onboarding
   class Timeliner
     attr_reader :user, :method, :moderator_id
 
+    OFFER_H1 = "(offer) Bienvenue sur le réseau social vraiment social"
+    ASK_H1 = "(ask_for) Bienvenue sur le réseau social vraiment social"
+
+    OFFER_J2 = "(offer) C'est le moment de se lancer"
+    ASK_J2 = "(ask_for) C'est le moment de se lancer"
+
+    OFFER_J5_OUTING = "(offer) %s personnes se sont faits de nouveaux amis lors d'un événement Entourage"
+    ASK_J5_OUTING = "(ask_for) %s personnes se sont faits de nouveaux amis lors d'un événement Entourage"
+
+    OFFER_J5_ACTION = "(offer) Donnez un coup de pouce à vos voisins"
+    ASK_J5_ACTION = "(ask_for) Donnez un coup de pouce à vos voisins"
+
+    OFFER_J5_CREATE_ACTION = "(offer) Pas d'entraide autour de vous ? Créez-là !"
+    ASK_J5_CREATE_ACTION = "(ask_for) Pas d'entraide autour de vous ? Créez-là !"
+
+    OFFER_J8 = "(offer) A vous de jouer"
+    ASK_J8 = "(ask_for) A vous de jouer"
+
+    OFFER_J11 = "(offer) Déjà 10 jours"
+    ASK_J11 = "(ask_for) Déjà 10 jours"
+
     def initialize user_id, verb
       @user = User.find(user_id)
       @method = "#{user_profile}_on_#{verb.to_s}".to_sym
@@ -22,7 +43,7 @@ module Onboarding
       notify(
         instance: nil,
         params: {
-          object: "(offer) Bienvenue sur le réseau social vraiment social",
+          object: OFFER_H1,
           extra: {
             welcome: true,
             stage: :h1,
@@ -36,7 +57,7 @@ module Onboarding
       notify(
         instance: nil,
         params: {
-          object: "(ask_for) Bienvenue sur le réseau social vraiment social",
+          object: ASK_H1,
           extra: {
             welcome: true,
             stage: :h1,
@@ -51,7 +72,7 @@ module Onboarding
       notify(
         instance: @user.default_neighborhood,
         params: {
-          object: "(offer) C'est le moment de se lancer",
+          object: OFFER_J2,
           extra: {
             welcome: true,
             stage: :j2,
@@ -65,7 +86,7 @@ module Onboarding
       notify(
         instance: @user.default_neighborhood,
         params: {
-          object: "(ask_for) C'est le moment de se lancer",
+          object: ASK_J2,
           extra: {
             welcome: true,
             stage: :j2,
@@ -94,7 +115,7 @@ module Onboarding
       notify(
         instance: nil,
         params: {
-          object: "(offer) #{nb_people} personnes se sont faits de nouveaux amis lors d'un événement Entourage",
+          object: OFFER_J5_OUTING % "n/a",
           extra: {
             welcome: true,
             stage: :j8,
@@ -108,7 +129,7 @@ module Onboarding
       notify(
         instance: nil,
         params: {
-          object: "(ask_for) #{nb_people} personnes se sont faits de nouveaux amis lors d'un événement Entourage",
+          object: ASK_J5_OUTING % "n/a",
           extra: {
             welcome: true,
             stage: :j8,
@@ -122,7 +143,7 @@ module Onboarding
       notify(
         instance: nil,
         params: {
-          object: "(offer) Donnez un coup de pouce à vos voisins",
+          object: OFFER_J5_ACTION,
           extra: {
             welcome: true,
             stage: :j8,
@@ -136,7 +157,7 @@ module Onboarding
       notify(
         instance: nil,
         params: {
-          object: "(ask_for) Donnez un coup de pouce à vos voisins",
+          object: ASK_J5_ACTION,
           extra: {
             welcome: true,
             stage: :j8,
@@ -150,7 +171,7 @@ module Onboarding
       notify(
         instance: nil,
         params: {
-          object: "(offer) Pas d'entraide autour de vous ? Créez-là !",
+          object: OFFER_J5_CREATE_ACTION,
           extra: {
             welcome: true,
             stage: :j8,
@@ -164,7 +185,7 @@ module Onboarding
       notify(
         instance: nil,
         params: {
-          object: "(ask_for) Pas d'entraide autour de vous ? Créez-là !",
+          object: ASK_J5_CREATE_ACTION,
           extra: {
             welcome: true,
             stage: :j8,
@@ -179,7 +200,7 @@ module Onboarding
       notify(
         instance: nil,
         params: {
-          object: "(offer) A vous de jouer",
+          object: OFFER_J8,
           extra: {
             welcome: true,
             stage: :j8
@@ -192,7 +213,7 @@ module Onboarding
       notify(
         instance: nil,
         params: {
-          object: "(ask_for) A vous de jouer",
+          object: ASK_J8,
           extra: {
             welcome: true,
             stage: :j8
@@ -206,7 +227,7 @@ module Onboarding
       notify(
         instance: nil,
         params: {
-          object: "(offer) Déjà 10 jours",
+          object: OFFER_J11,
           extra: {
             welcome: true,
             stage: :j11
@@ -219,7 +240,7 @@ module Onboarding
       notify(
         instance: nil,
         params: {
-          object: "(ask_for) Déjà 10 jours",
+          object: ASK_J11,
           extra: {
             welcome: true,
             stage: :j11
