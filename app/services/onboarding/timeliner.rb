@@ -3,25 +3,32 @@ module Onboarding
   class Timeliner
     attr_reader :user, :method, :moderator_id
 
-    OFFER_H1 = "(offer) Bienvenue sur le réseau social vraiment social"
+    TITLE_H1 = "Bienvenue chez Entourage"
+    OFFER_H1 = "Le saviez-vous ? Il suffit d'une vidéo pour déconstruire vos préjugés !"
     ASK_H1 = "(ask_for) Bienvenue sur le réseau social vraiment social"
 
-    OFFER_J2 = "(offer) C'est le moment de se lancer"
+    TITLE_J2 = "Et si on parlait de vous ?"
+    OFFER_J2 = "Les présentations, c'est dans les deux sens ! Passez dire bonjour à votre groupe de voisins"
     ASK_J2 = "(ask_for) C'est le moment de se lancer"
 
-    OFFER_J5_OUTING = "(offer) %s personnes se sont faits de nouveaux amis lors d'un événement Entourage"
+    TITLE_J5_OUTING = "Coucou, c'est encore nous !"
+    OFFER_J5_OUTING = "Le virtuel, c'est sympa deux minutes, prenez-en deux de plus pour faire une vraie rencontre !"
     ASK_J5_OUTING = "(ask_for) %s personnes se sont faits de nouveaux amis lors d'un événement Entourage"
 
-    OFFER_J5_ACTION = "(offer) Donnez un coup de pouce à vos voisins"
+    TITLE_J5_ACTION = "Coucou, c'est encore nous !"
+    OFFER_J5_ACTION = "Le virtuel, c'est sympa deux minutes, prenez-en deux de plus pour faire une vraie rencontre !"
     ASK_J5_ACTION = "(ask_for) Donnez un coup de pouce à vos voisins"
 
-    OFFER_J5_CREATE_ACTION = "(offer) Pas d'entraide autour de vous ? Créez-là !"
+    TITLE_J5_CREATE_ACTION = "Coucou, c'est encore nous !"
+    OFFER_J5_CREATE_ACTION = "Prenez deux minutes pour proposer votre aide autour de vous"
     ASK_J5_CREATE_ACTION = "(ask_for) Pas d'entraide autour de vous ? Créez-là !"
 
-    OFFER_J8 = "(offer) A vous de jouer"
+    TITLE_J8 = "A vous de jouer"
+    OFFER_J8 = "Un petit quiz anti-préjugés : on parie que vous allez apprendre des choses ?"
     ASK_J8 = "(ask_for) A vous de jouer"
 
-    OFFER_J11 = "(offer) Déjà 10 jours"
+    TITLE_J11 = "Entourage c'est la famille !"
+    OFFER_J11 = "On peut le dire, vous faites maintenant partie de la communauté Entourage. Ça se fête !"
     ASK_J11 = "(ask_for) Déjà 10 jours"
 
     def initialize user_id, verb
@@ -43,7 +50,8 @@ module Onboarding
       notify(
         instance: nil,
         params: {
-          object: OFFER_H1,
+          object: TITLE_H1,
+          content: OFFER_H1,
           extra: {
             welcome: true,
             stage: :h1,
@@ -72,7 +80,8 @@ module Onboarding
       notify(
         instance: @user.default_neighborhood,
         params: {
-          object: OFFER_J2,
+          object: TITLE_J2,
+          content: OFFER_J2,
           extra: {
             welcome: true,
             stage: :j2,
@@ -115,7 +124,8 @@ module Onboarding
       notify(
         instance: nil,
         params: {
-          object: OFFER_J5_OUTING % "n/a",
+          object: TITLE_J5_OUTING,
+          content: OFFER_J5_OUTING,
           extra: {
             welcome: true,
             stage: :j8,
@@ -143,7 +153,8 @@ module Onboarding
       notify(
         instance: nil,
         params: {
-          object: OFFER_J5_ACTION,
+          object: TITLE_J5_ACTION,
+          content: OFFER_J5_ACTION,
           extra: {
             welcome: true,
             stage: :j8,
@@ -171,7 +182,8 @@ module Onboarding
       notify(
         instance: nil,
         params: {
-          object: OFFER_J5_CREATE_ACTION,
+          object: TITLE_J5_CREATE_ACTION,
+          content: OFFER_J5_CREATE_ACTION,
           extra: {
             welcome: true,
             stage: :j8,
@@ -200,7 +212,8 @@ module Onboarding
       notify(
         instance: nil,
         params: {
-          object: OFFER_J8,
+          object: TITLE_J8,
+          content: OFFER_J8,
           extra: {
             welcome: true,
             stage: :j8
@@ -227,7 +240,8 @@ module Onboarding
       notify(
         instance: nil,
         params: {
-          object: OFFER_J11,
+          object: TITLE_J11,
+          content: OFFER_J11,
           extra: {
             welcome: true,
             stage: :j11
@@ -259,7 +273,7 @@ module Onboarding
       PushNotificationService.new.send_notification(
         nil,
         params[:object],
-        nil,
+        params[:content],
         [@user],
         instance[:instance],
         instance[:instance_id],
