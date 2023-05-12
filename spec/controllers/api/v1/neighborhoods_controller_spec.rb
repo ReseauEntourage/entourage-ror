@@ -542,6 +542,53 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
     end
   end
 
+  describe 'default' do
+    let(:paris) { create(:address, postal_code: '75001' )}
+    let(:user) { create(:public_user, address: paris) }
+
+    let!(:neighborhood_paris) { create(:neighborhood, zone: :ville, postal_code: '75020', latitude: 2, longitude: 2 ) }
+    let!(:neighborhood_not_paris) { create(:neighborhood, zone: :ville, postal_code: '15000', latitude: paris.latitude, longitude: paris.longitude ) }
+
+    let(:result) { JSON.parse(response.body) }
+
+    let(:request) { get :default, params: { token: user.token } }
+
+    context "user has not joined" do
+      before { request }
+
+      it { expect(response.status).to eq 200 }
+      it { expect(result).to eq(Hash.new) }
+    end
+
+    context "user has joined" do
+      let!(:join_request) { create :join_request, user: user, joinable: neighborhood_paris, status: :accepted }
+
+      before { request }
+
+      it { expect(response.status).to eq 200 }
+      it { expect(result).to have_key("neighborhood") }
+      it { expect(result["neighborhood"]["id"]).to eq(neighborhood_paris.id) }
+    end
+
+    context "user has left" do
+      before { request }
+
+      let!(:join_request) { create :join_request, user: user, joinable: neighborhood_paris, status: :cancelled }
+
+      it { expect(response.status).to eq 200 }
+      it { expect(result).to eq(Hash.new) }
+    end
+
+    context "user has joined a not-default neighborhood" do
+      before { request }
+
+      let!(:join_request) { create :join_request, user: user, joinable: neighborhood_not_paris, status: :accepted }
+
+      it { expect(response.status).to eq 200 }
+      it { expect(result).to eq(Hash.new) }
+    end
+  end
+
   context 'joined' do
     let(:joined) { create :neighborhood }
     let(:not_joined) { create :neighborhood }
