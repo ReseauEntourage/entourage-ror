@@ -10,8 +10,9 @@ describe Onboarding::Timeliner do
     after { subject }
 
     it { expect_any_instance_of(PushNotificationService).to receive(:send_notification).with(nil,
+      Onboarding::Timeliner::TITLE_H1,
       Onboarding::Timeliner::OFFER_H1,
-      nil, [user], nil, nil,
+      [user], nil, nil,
       { welcome: true, stage: :h1, url: :resources }
     ) }
   end
@@ -35,8 +36,9 @@ describe Onboarding::Timeliner do
     after { subject }
 
     it { expect_any_instance_of(PushNotificationService).to receive(:send_notification).with(nil,
+      Onboarding::Timeliner::TITLE_J2,
       Onboarding::Timeliner::OFFER_J2,
-      nil, [user], nil, nil,
+      [user], nil, nil,
       { welcome: true, stage: :j2, url: :home }
     ) }
   end
