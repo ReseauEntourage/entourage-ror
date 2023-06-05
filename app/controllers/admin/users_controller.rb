@@ -28,7 +28,7 @@ module Admin
           user_id
         ])
         .group('entourages.id')
-        .order('GREATEST(entourages.created_at, MAX(conversation_messages.created_at)) desc')
+        .order(Arel.sql('GREATEST(entourages.created_at, MAX(conversation_messages.created_at)) desc'))
         .page(params[:page]).per(10)
 
       messages = ConversationMessage
