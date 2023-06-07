@@ -159,6 +159,7 @@ describe Api::V1::Tours::ChatMessagesController do
           FactoryBot.create(:join_request, joinable: tour, status: "pending")
 
           expect_any_instance_of(PushNotificationService).to receive(:send_notification).with(nil, "John D.", 'foobar', [join_request2.user], "tour", tour.id, {
+            tracking: :private_chat_message_on_create,
             joinable_id: tour.id,
             joinable_type: "Tour",
             group_type: 'tour',

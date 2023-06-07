@@ -233,6 +233,7 @@ describe Api::V1::Conversations::ChatMessagesController do
             "conversation",
             conversation.id,
             {
+              tracking: :private_chat_message_on_create,
               joinable_id: conversation.id,
               joinable_type: "Entourage",
               group_type: 'conversation',

@@ -379,6 +379,9 @@ describe Api::V1::OutingsController do
             params: {
               object: "Foobar",
               content: "Cet événement prévu le #{I18n.l(outing.starts_at.to_date)} vient d'être annulé",
+              extra: {
+                tracking: :outing_on_cancel
+              }
             }
           )
         }
@@ -668,6 +671,9 @@ describe Api::V1::OutingsController do
           params: {
             object: "Foobar",
             content: "Cet événement prévu le #{I18n.l(outing.starts_at.to_date)} vient d'être annulé",
+            extra: {
+              tracking: :outing_on_cancel
+            }
           }
         ).once
       }
@@ -694,6 +700,9 @@ describe Api::V1::OutingsController do
           params: {
             object: "Foobar",
             content: "Cet événement prévu le #{I18n.l(outing.starts_at.to_date)} vient d'être annulé",
+            extra: {
+              tracking: :outing_on_cancel
+            }
           }
         ).once
       }
