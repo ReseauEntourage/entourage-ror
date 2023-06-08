@@ -362,7 +362,8 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
 
       before { get :show, params: { id: neighborhood.id, token: user.token } }
 
-      it { expect(response.status).to eq 401 }
+      # we dont check anymore whether the user is member or not
+      it { expect(response.status).to eq 200 }
     end
 
     describe 'private but member' do

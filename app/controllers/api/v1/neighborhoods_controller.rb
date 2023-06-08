@@ -2,7 +2,6 @@ module Api
   module V1
     class NeighborhoodsController < Api::V1::BaseController
       before_action :set_neighborhood, only: [:show, :update, :destroy, :report]
-      before_action :ensure_is_member_or_public_or_deeplink, only: [:show]
 
       after_action :set_last_message_read, only: [:show]
 
@@ -102,13 +101,6 @@ module Api
 
       def join_request
         @join_request ||= JoinRequest.where(joinable: @neighborhood, user: current_user, status: :accepted).first
-      end
-
-      def ensure_is_member_or_public_or_deeplink
-        return if params.has_key?(:id) && params[:id].length == 12
-        return if join_request
-
-        render json: { message: 'unauthorized user' }, status: :unauthorized unless @neighborhood.public?
       end
 
       def set_last_message_read
