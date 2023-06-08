@@ -105,7 +105,7 @@ module Api
       end
 
       def ensure_is_member_or_public_or_deeplink
-        return if params.has_key?(:deeplink)
+        return if params.has_key?(:id) && params[:id].length == 12
         return if join_request
 
         render json: { message: 'unauthorized user' }, status: :unauthorized unless @neighborhood.public?
