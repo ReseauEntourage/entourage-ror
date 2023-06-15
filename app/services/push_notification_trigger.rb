@@ -148,6 +148,9 @@ class PushNotificationTrigger
     neighbor_ids.each do |neighbor_id|
       next if neighbor_id == user.id
       next unless neighbor = User.find(neighbor_id)
+      next if neighbor.deleted?
+      next if neighbor.community == :pfp
+
       next if @record.solicitation? && neighbor.is_ask_for_help?
       next if @record.contribution? && !neighbor.is_ask_for_help?
 
