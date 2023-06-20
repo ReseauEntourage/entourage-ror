@@ -12,28 +12,28 @@ module Onboarding
     ASK_TITLE_J2_OUTING = "Vous avez 4 minutes ?"
     ASK_J2 = "Regardez une courte vidéo pour tout comprendre à votre nouvelle application"
 
-    TITLE_J5_OUTING = "Coucou, c'est encore nous !"
+    TITLE_J5_OUTING = "Coucou, c'est encore nous ! 🕺"
     OFFER_J5_OUTING = "Le virtuel, c'est sympa deux minutes, venez faire une rencontre dans la vraie vie !"
 
-    TITLE_J5_ACTION = "Coucou, c'est encore nous !"
+    TITLE_J5_ACTION = "Coucou, c'est encore nous ! 🕺"
     OFFER_J5_ACTION = "Vous avez deux minutes pour donner un coup de pouce à vos voisins ?"
 
-    TITLE_J5_CREATE_ACTION = "Coucou, c'est encore nous !"
+    TITLE_J5_CREATE_ACTION = "Coucou, c'est encore nous ! 🕺"
     OFFER_J5_CREATE_ACTION = "Prenez deux minutes pour proposer votre aide autour de vous"
 
     ASK_TITLE_J5 = "Passez dire bonjour 👏"
     ASK_J5 = "Votre groupe de voisins ne demande qu'à vous connaître"
 
-    TITLE_J8 = "A vous de jouer"
+    TITLE_J8 = "A vous de jouer ! 📱"
     OFFER_J8 = "Un petit quiz anti-préjugés : on parie que vous allez apprendre des choses ?"
 
-    ASK_TITLE_J8_OUTING = "Coucou, c'est encore nous !"
+    ASK_TITLE_J8_OUTING = "Coucou, c'est encore nous ! 🕺"
     ASK_J8_OUTING = "Le virtuel, c'est sympa deux minutes, venez faire une rencontre dans la vraie vie !"
 
-    ASK_TITLE_J8_ACTION = "Coucou, c'est encore nous !"
+    ASK_TITLE_J8_ACTION = "Coucou, c'est encore nous ! 🕺"
     ASK_J8_ACTION = "Jetez un oeil aux coups de pouce publiés près de chez vous."
 
-    ASK_TITLE_J8_CREATE_ACTION = "Coucou, c'est encore nous !"
+    ASK_TITLE_J8_CREATE_ACTION = "Coucou, c'est encore nous ! 🕺"
     ASK_J8_CREATE_ACTION = "Une pétanque, un café ou juste une balade : proposez une sortie à vos voisins !"
 
     TITLE_J11 = "Entourage c'est la famille !"
