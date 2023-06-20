@@ -3,25 +3,25 @@ module Onboarding
   class Timeliner
     attr_reader :user, :method, :moderator_id
 
-    TITLE_H1 = "Bienvenue chez Entourage"
+    TITLE_H1 = "Bienvenue chez Entourage 👌"
     OFFER_H1 = "Le saviez-vous ? Il suffit d'une vidéo pour déconstruire vos préjugés !"
     ASK_H1 = "Vous n'imaginez pas tout ce que contient votre nouvelle app : venez la découvrir !"
 
-    TITLE_J2 = "Et si on parlait de vous ?"
-    OFFER_J2 = "Les présentations, c'est dans les deux sens ! Passez dire bonjour à votre groupe de voisins"
+    TITLE_J2 = "Passez dire bonjour 👋"
+    OFFER_J2 = "Votre groupe de voisins ne demande qu'à vous connaître !"
     ASK_TITLE_J2_OUTING = "Vous avez 4 minutes ?"
     ASK_J2 = "Regardez une courte vidéo pour tout comprendre à votre nouvelle application"
 
     TITLE_J5_OUTING = "Coucou, c'est encore nous !"
-    OFFER_J5_OUTING = "Le virtuel, c'est sympa deux minutes, prenez-en deux de plus pour faire une vraie rencontre !"
+    OFFER_J5_OUTING = "Le virtuel, c'est sympa deux minutes, venez faire une rencontre dans la vraie vie !"
 
     TITLE_J5_ACTION = "Coucou, c'est encore nous !"
-    OFFER_J5_ACTION = "Le virtuel, c'est sympa deux minutes, prenez-en deux de plus pour faire une vraie rencontre !"
+    OFFER_J5_ACTION = "Vous avez deux minutes pour donner un coup de pouce à vos voisins ?"
 
     TITLE_J5_CREATE_ACTION = "Coucou, c'est encore nous !"
     OFFER_J5_CREATE_ACTION = "Prenez deux minutes pour proposer votre aide autour de vous"
 
-    ASK_TITLE_J5 = "Passez dire bonjour"
+    ASK_TITLE_J5 = "Passez dire bonjour 👏"
     ASK_J5 = "Votre groupe de voisins ne demande qu'à vous connaître"
 
     TITLE_J8 = "A vous de jouer"
@@ -37,8 +37,8 @@ module Onboarding
     ASK_J8_CREATE_ACTION = "Une pétanque, un café ou juste une balade : proposez une sortie à vos voisins !"
 
     TITLE_J11 = "Entourage c'est la famille !"
-    OFFER_J11 = "On peut le dire, vous faites maintenant partie de la communauté Entourage. Ça se fête !"
-    ASK_J11 = "On peut le dire, vous faites maintenant partie de la communauté Entourage. Ça se fête !"
+    OFFER_J11 = "On peut le dire, vous faites maintenant partie de la communauté Entourage. Ça se fête ! 🎉"
+    ASK_J11 = "On peut le dire, vous faites maintenant partie de la communauté Entourage. Ça se fête ! 🎉"
 
     def initialize user_id, verb
       @user = User.find(user_id)
