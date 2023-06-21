@@ -135,9 +135,12 @@ GEM
       rexml
     crass (1.0.6)
     date (3.3.3)
-    ddtrace (0.52.0)
-      ffi (~> 1.0)
+    ddtrace (1.12.1)
+      debase-ruby_core_source (= 3.2.1)
+      libdatadog (~> 2.0.0.1.0)
+      libddwaf (~> 1.9.0.0.0)
       msgpack
+    debase-ruby_core_source (3.2.1)
     diff-lcs (1.4.4)
     domain_name (0.5.20190701)
       unf (>= 0.0.5, < 1.0.0)
@@ -223,6 +226,9 @@ GEM
       activerecord
       kaminari-core (= 1.2.1)
     kaminari-core (1.2.1)
+    libdatadog (2.0.0.1.0-x86_64-linux)
+    libddwaf (1.9.0.0.1-x86_64-linux)
+      ffi (~> 1.0)
     lograge (0.11.2)
       actionpack (>= 4)
       activesupport (>= 4)
@@ -255,7 +261,7 @@ GEM
     mixpanel-ruby (2.2.2)
     momentjs-rails (2.20.1)
       railties (>= 3.1)
-    msgpack (1.4.2)
+    msgpack (1.7.1)
     multi_json (1.15.0)
     multi_xml (0.6.0)
     multipart-post (2.1.1)
@@ -501,7 +507,7 @@ DEPENDENCIES
   bcrypt (~> 3)
   bullet
   coffee-rails (~> 5)
-  ddtrace
+  ddtrace (~> 1.0)
   dotenv-rails
   factory_bot_rails (~> 4)
   faker
