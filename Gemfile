@@ -44,7 +44,7 @@ gem 'json-schema',                    '~> 2.8.1'
 gem 'icalendar'
 gem 'phonelib'
 gem 'whenever'
-gem 'ddtrace'
+gem 'ddtrace', '~> 1.0' # we may need to add "require: 'ddtrace/auto_instrument'" to get more components
 gem 'airrecord',                      '~> 1'
 gem 'select2-rails'
 gem 'rails-observers'
