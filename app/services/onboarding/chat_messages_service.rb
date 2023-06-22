@@ -33,8 +33,7 @@ module Onboarding
           variant = user.goal || :goal_not_known
 
           messages = [
-            moderation_area["welcome_message_1_#{variant}"],
-            moderation_area["welcome_message_2_#{variant}"]
+            moderation_area["welcome_message_1_#{variant}"]
           ].map(&:presence).compact
 
           next if messages.empty?

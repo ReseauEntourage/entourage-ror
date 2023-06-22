@@ -20,7 +20,7 @@ describe Onboarding::ChatMessagesService, type: :service do
 
     subject { Timecop.freeze(run_time) { Onboarding::ChatMessagesService.deliver_welcome_message } }
 
-    it { expect { subject }.to change { ChatMessage.count }.by(2) }
+    it { expect { subject }.to change { ChatMessage.count }.by(1) }
 
     describe "event tracking" do
       def event
@@ -74,7 +74,7 @@ describe Onboarding::ChatMessagesService, type: :service do
       let!(:chat_message) { create :chat_message, user: user, messageable: conversation }
 
       before { Onboarding::ChatMessagesService.stub(:user_ids) { [user.id, other_user.id] } }
-      it { expect { subject }.to change { ChatMessage.count }.by 2 }
+      it { expect { subject }.to change { ChatMessage.count }.by(1) }
     end
 
     describe 'user has already sent a message to the moderator' do

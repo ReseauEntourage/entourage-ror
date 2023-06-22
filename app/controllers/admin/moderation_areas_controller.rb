@@ -43,10 +43,10 @@ module Admin
         :slack_moderator_id,
         :departement,
         :name,
-        :welcome_message_1_offer_help,     :welcome_message_2_offer_help,
-        :welcome_message_1_ask_for_help,   :welcome_message_2_ask_for_help,
-        :welcome_message_1_organization,   :welcome_message_2_organization,
-        :welcome_message_1_goal_not_known, :welcome_message_2_goal_not_known,
+        :welcome_message_1_offer_help,
+        :welcome_message_1_ask_for_help,
+        :welcome_message_1_organization,
+        :welcome_message_1_goal_not_known,
       )
     end
   end
