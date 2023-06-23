@@ -3,7 +3,7 @@ require 'rails_helper'
 describe Onboarding::ChatMessagesService, type: :service do
   describe '.deliver_welcome_message' do
     let(:run_time) { 1.week.from_now.monday.change(hour: 10, minute: rand(60)) }
-    let(:onboarding_time) { run_time.advance(seconds: -rand(3.hours..4.hours)) }
+    let(:onboarding_time) { run_time.advance(seconds: -rand(6.hours..7.hours)) }
     let!(:admin) { create :admin_user }
     let(:moderation_area) { create :moderation_area, moderator: admin, welcome_message_1_offer_help: "Bonjour {{first_name}}" }
     let!(:user) { create :public_user, first_name: nil }

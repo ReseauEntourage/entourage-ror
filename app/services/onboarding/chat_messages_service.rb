@@ -1,6 +1,6 @@
 module Onboarding
   module ChatMessagesService
-    MIN_DELAY = 2.hours
+    MIN_DELAY = 5.hours
     ACTIVE_DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
     ACTIVE_HOURS = '09:00'..'18:30'
 
