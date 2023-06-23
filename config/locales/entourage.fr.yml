@@ -187,8 +187,7 @@ fr:
         name: Nom de la zone
         departement: Département
         moderator_id: Modérateur
-        welcome_message_1: Message de bienvenue 1
-        welcome_message_2: Message de bienvenue 2
+        welcome_message_1: Message de bienvenue
         slack_moderator_id: Identifiant Slack
       tour_area:
         statuses:
