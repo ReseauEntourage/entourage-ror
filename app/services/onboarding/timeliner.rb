@@ -49,6 +49,8 @@ module Onboarding
       return if @user.deleted?
       return unless respond_to?(@method)
 
+      return if user_profile == :ask_for_help
+
       send(@method)
     rescue => e
       Rails.logger.error "PushNotificationTrigger: #{e.message}"
