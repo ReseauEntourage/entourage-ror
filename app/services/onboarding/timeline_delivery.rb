@@ -1,6 +1,7 @@
 module Onboarding
   module TimelineDelivery
     MIN_DELAY = 1.hour
+    MAX_DELAY = 2.days
     ACTIVE_DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
     ACTIVE_HOURS = '09:00'..'18:30'
 
@@ -21,6 +22,7 @@ module Onboarding
         User.where(deleted: false)
           .without_event('onboarding.push_notifications.welcome.sent')
           .where("first_sign_in_at <= ?", MIN_DELAY.ago)
+          .where("first_sign_in_at >= ?", MAX_DELAY.ago)
           .pluck(:id)
       end
     end
