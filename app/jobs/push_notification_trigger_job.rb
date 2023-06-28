@@ -7,5 +7,6 @@ class PushNotificationTriggerJob
 
   def self.perform_later class_name, verb, id, changes
     PushNotificationTriggerJob.perform_async(class_name, verb, id, changes)
+  rescue
   end
 end
