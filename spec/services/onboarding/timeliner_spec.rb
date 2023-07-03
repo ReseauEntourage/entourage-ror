@@ -23,12 +23,12 @@ describe Onboarding::Timeliner do
 
     after { subject }
 
-    # it { expect_any_instance_of(PushNotificationService).to receive(:send_notification).with(nil,
-    #   Onboarding::Timeliner::TITLE_H1,
-    #   Onboarding::Timeliner::ASK_H1,
-    #   [user], nil, nil,
-    #   { welcome: true, stage: :h1, url: :resources }
-    # ) }
+    it { expect_any_instance_of(PushNotificationService).to receive(:send_notification).with(nil,
+      Onboarding::Timeliner::TITLE_H1,
+      Onboarding::Timeliner::ASK_H1,
+      [user], nil, nil,
+      { welcome: true, stage: :h1, url: :resources }
+    ) }
   end
 
   describe "offer_help_on_j2_after_registration" do
@@ -50,7 +50,7 @@ describe Onboarding::Timeliner do
 
     after { subject }
 
-    # it { expect_any_instance_of(PushNotificationService).to receive(:send_notification) }
+    it { expect_any_instance_of(PushNotificationService).to receive(:send_notification) }
   end
 
   describe "offer_help_on_j5_after_registration" do
@@ -99,7 +99,7 @@ describe Onboarding::Timeliner do
 
     after { subject }
 
-    # it { expect_any_instance_of(PushNotificationService).to receive(:send_notification) }
+    it { expect_any_instance_of(PushNotificationService).to receive(:send_notification) }
   end
 
   describe "offer_help_on_j8_after_registration" do
@@ -116,7 +116,7 @@ describe Onboarding::Timeliner do
 
     after { subject }
 
-    # it { expect_any_instance_of(PushNotificationService).to receive(:send_notification) }
+    it { expect_any_instance_of(PushNotificationService).to receive(:send_notification) }
   end
 
   describe "offer_help_on_j11_after_registration" do
@@ -133,6 +133,6 @@ describe Onboarding::Timeliner do
 
     after { subject }
 
-    # it { expect_any_instance_of(PushNotificationService).to receive(:send_notification) }
+    it { expect_any_instance_of(PushNotificationService).to receive(:send_notification) }
   end
 end
