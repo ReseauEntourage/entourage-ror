@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_05_05_171500) do
+ActiveRecord::Schema.define(version: 2023_07_03_141300) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -1082,7 +1082,7 @@ ActiveRecord::Schema.define(version: 2023_05_05_171500) do
     t.datetime "reset_admin_password_sent_at"
     t.boolean "super_admin", default: false
     t.datetime "unblock_at"
-    t.integer "travel_distance", default: 100
+    t.integer "travel_distance", default: 40
     t.string "birthday", limit: 5
     t.string "other_interest"
     t.index ["address_id"], name: "index_users_on_address_id"
