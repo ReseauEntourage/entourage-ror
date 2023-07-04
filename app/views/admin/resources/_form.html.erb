@@ -27,6 +27,13 @@
 
   <div class="form-group">
     <%= f.label :url %>
+
+    <div class="alert alert-info" role="alert" style="display: flex; align-items: center">
+      <div style="flex-grow: 1">
+        Si vous mettez un lien vers une vidéo, le format est le suivant : https://www.youtube.com/embed/[video-youtube]
+      </div>
+    </div>
+
     <div class="controls">
       <%= f.text_field :url, class: "form-control" %>
     </div>
