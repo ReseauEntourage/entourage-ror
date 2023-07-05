@@ -59,30 +59,22 @@ module Onboarding
     # h1
     def offer_help_on_h1_after_registration
       notify(
-        instance: nil,
+        instance: :resources,
         params: {
           object: TITLE_H1,
           content: OFFER_H1,
-          extra: {
-            welcome: true,
-            stage: :h1,
-            url: :resources
-          }
+          extra: { stage: :h1 }
         }
       )
     end
 
     def ask_for_help_on_h1_after_registration
       notify(
-        instance: nil,
+        instance: :resources,
         params: {
           object: TITLE_H1,
           content: ASK_H1,
-          extra: {
-            welcome: true,
-            stage: :h1,
-            url: :resources
-          }
+          extra: { stage: :h1 }
         }
       )
     end
@@ -94,10 +86,7 @@ module Onboarding
         params: {
           object: TITLE_J2,
           content: OFFER_J2,
-          extra: {
-            welcome: true,
-            stage: :j2
-          }
+          extra: { stage: :j2 }
         }
       )
     end
@@ -108,10 +97,7 @@ module Onboarding
         params: {
           object: ASK_TITLE_J2_OUTING,
           content: ASK_J2,
-          extra: {
-            welcome: true,
-            stage: :j2
-          }
+          extra: { stage: :j2 }
         }
       )
     end
@@ -130,55 +116,40 @@ module Onboarding
         params: {
           object: ASK_TITLE_J5,
           content: ASK_J5,
-          extra: {
-            welcome: true,
-            stage: :j5
-          }
+          extra: { stage: :j5 }
         }
       )
     end
 
     def offer_help_on_j5_after_registration_outings
       notify(
-        instance: nil,
+        instance: :outings,
         params: {
           object: TITLE_J5_OUTING,
           content: OFFER_J5_OUTING,
-          extra: {
-            welcome: true,
-            stage: :j5,
-            url: :outings
-          }
+          extra: { stage: :j5 }
         }
       )
     end
 
     def offer_help_on_j5_after_registration_actions
       notify(
-        instance: nil,
+        instance: :solicitations,
         params: {
           object: TITLE_J5_ACTION,
           content: OFFER_J5_ACTION,
-          extra: {
-            welcome: true,
-            stage: :j5,
-            url: :solicitations
-          }
+          extra: { stage: :j5 }
         }
       )
     end
 
     def offer_help_on_j5_after_registration_create_action
       notify(
-        instance: nil,
+        instance: :contribution,
         params: {
           object: TITLE_J5_CREATE_ACTION,
           content: OFFER_J5_CREATE_ACTION,
-          extra: {
-            welcome: true,
-            stage: :j5,
-            url: :create_action
-          }
+          extra: { stage: :j5 }
         }
       )
     end
@@ -190,10 +161,7 @@ module Onboarding
         params: {
           object: TITLE_J8,
           content: OFFER_J8,
-          extra: {
-            welcome: true,
-            stage: :j8
-          }
+          extra: { stage: :j8 }
         }
       )
     end
@@ -207,45 +175,33 @@ module Onboarding
 
     def ask_for_help_on_j8_after_registration_outings
       notify(
-        instance: nil,
+        instance: :outings,
         params: {
           object: ASK_TITLE_J8_OUTING,
           content: ASK_J8_OUTING,
-          extra: {
-            welcome: true,
-            stage: :j8,
-            url: :outings
-          }
+          extra: { stage: :j8 }
         }
       )
     end
 
     def ask_for_help_on_j8_after_registration_actions
       notify(
-        instance: nil,
+        instance: :solicitations,
         params: {
           object: ASK_TITLE_J8_ACTION,
           content: ASK_J8_ACTION,
-          extra: {
-            welcome: true,
-            stage: :j8,
-            url: :solicitations
-          }
+          extra: { stage: :j8 }
         }
       )
     end
 
     def ask_for_help_on_j8_after_registration_create_action
       notify(
-        instance: nil,
+        instance: :solicitation,
         params: {
           object: ASK_TITLE_J8_CREATE_ACTION,
           content: ASK_J8_CREATE_ACTION,
-          extra: {
-            welcome: true,
-            stage: :j8,
-            url: :create_action
-          }
+          extra: { stage: :j8 }
         }
       )
     end
@@ -257,10 +213,7 @@ module Onboarding
         params: {
           object: TITLE_J11,
           content: OFFER_J11,
-          extra: {
-            welcome: true,
-            stage: :j11
-          }
+          extra: { stage: :j11 }
         }
       )
     end
@@ -271,16 +224,14 @@ module Onboarding
         params: {
           object: TITLE_J11,
           content: ASK_J11,
-          extra: {
-            welcome: true,
-            stage: :j11
-          }
+          extra: { stage: :j11 }
         }
       )
     end
 
     def notify instance:, params: {}
       notify_push(instance: instance, params: params)
+      notify_inapp(instance: instance, params: params)
     end
 
     def notify_push instance:, params: {}
@@ -294,6 +245,22 @@ module Onboarding
         instance[:instance],
         instance[:instance_id],
         instance.merge(params[:extra] || {})
+      )
+    end
+
+    def notify_inapp instance, params: {}
+      instance = PushNotificationLinker.get(instance)
+
+      InappNotificationServices::Builder.new(@user).instanciate(
+        context: params[:extra][:stage],
+        sender_id: nil,
+        instance: instance[:instance],
+        instance_id: instance[:instance_id],
+        post_id: nil,
+        referent: instance[:instance],
+        referent_id: instance[:instance_id],
+        title: params[:object],
+        content: params[:content]
       )
     end
 

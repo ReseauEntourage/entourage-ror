@@ -9,11 +9,12 @@ describe Onboarding::Timeliner do
 
     after { subject }
 
-    it { expect_any_instance_of(PushNotificationService).to receive(:send_notification).with(nil,
+    it { expect_any_instance_of(PushNotificationService).to receive(:send_notification).with(
+      nil,
       Onboarding::Timeliner::TITLE_H1,
       Onboarding::Timeliner::OFFER_H1,
-      [user], nil, nil,
-      { welcome: true, stage: :h1, url: :resources }
+      [user], :resources, nil,
+      { instance: :resources, stage: :h1 }
     ) }
   end
 
@@ -40,7 +41,7 @@ describe Onboarding::Timeliner do
       Onboarding::Timeliner::TITLE_J2,
       Onboarding::Timeliner::OFFER_J2,
       [user], nil, nil,
-      { welcome: true, stage: :j2 }
+      { stage: :j2 }
     ) }
   end
 
@@ -65,8 +66,8 @@ describe Onboarding::Timeliner do
         nil,
         Onboarding::Timeliner::TITLE_J5_OUTING,
         Onboarding::Timeliner::OFFER_J5_OUTING,
-        [user], nil, nil,
-        { welcome: true, stage: :j5, url: :outings }
+        [user], :outings, nil,
+        { instance: :outings, stage: :j5 }
       ) }
     end
 
@@ -77,8 +78,8 @@ describe Onboarding::Timeliner do
         nil,
         Onboarding::Timeliner::TITLE_J5_ACTION,
         Onboarding::Timeliner::OFFER_J5_ACTION,
-        [user], nil, nil,
-        { welcome: true, stage: :j5, url: :solicitations }
+        [user], :solicitations, nil,
+        { instance: :solicitations, stage: :j5 }
       ) }
     end
 
@@ -87,8 +88,8 @@ describe Onboarding::Timeliner do
         nil,
         Onboarding::Timeliner::TITLE_J5_CREATE_ACTION,
         Onboarding::Timeliner::OFFER_J5_CREATE_ACTION,
-        [user], nil, nil,
-        { welcome: true, stage: :j5, url: :create_action }
+        [user], :contribution, nil,
+        { instance: :contribution, stage: :j5 }
       ) }
     end
   end

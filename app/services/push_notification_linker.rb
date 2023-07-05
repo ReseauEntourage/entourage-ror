@@ -1,6 +1,9 @@
 class PushNotificationLinker
   class << self
     def get object
+      return { instance: object } if object.is_a?(Symbol)
+      return { instance: object } if object.is_a?(String)
+
       if object.is_a?(Neighborhood)
         {
           instance: "neighborhood",

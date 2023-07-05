@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_07_03_141300) do
+ActiveRecord::Schema.define(version: 2023_07_05_140900) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -390,7 +390,7 @@ ActiveRecord::Schema.define(version: 2023_07_03_141300) do
 
   create_table "inapp_notifications", force: :cascade do |t|
     t.integer "user_id", null: false
-    t.string "instance", null: false
+    t.string "instance"
     t.integer "instance_id"
     t.datetime "completed_at"
     t.datetime "skipped_at"
