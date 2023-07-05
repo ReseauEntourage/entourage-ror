@@ -400,7 +400,7 @@ ActiveRecord::Schema.define(version: 2023_09_04_135500) do
 
   create_table "inapp_notifications", force: :cascade do |t|
     t.integer "user_id", null: false
-    t.string "instance", null: false
+    t.string "instance"
     t.integer "instance_id"
     t.datetime "completed_at"
     t.datetime "skipped_at"
