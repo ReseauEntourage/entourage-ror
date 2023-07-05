@@ -248,7 +248,7 @@ module Onboarding
       )
     end
 
-    def notify_inapp instance, params: {}
+    def notify_inapp instance:, params: {}
       instance = PushNotificationLinker.get(instance)
 
       InappNotificationServices::Builder.new(@user).instanciate(
