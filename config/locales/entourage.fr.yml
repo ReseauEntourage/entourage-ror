@@ -132,6 +132,11 @@ fr:
           join_request_on_update: join_request_updated
           neighborhoods_entourage_on_create: outing_created
           outing_on_update: outing_updated
+          h1: h1
+          j2: j2
+          j5: j5
+          j8: j8
+          j11: j11
 
       user_moderation:
         expectations: Attentes
