@@ -25,7 +25,7 @@ module SlackServices
 
     def payload_adds
       {
-        username: "Signalement de spam",
+        username: "Détection auto d'un spam",
         channel: webhook('channel'),
       }
     end
