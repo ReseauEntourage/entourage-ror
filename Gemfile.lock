@@ -459,7 +459,7 @@ GEM
       attr_extras (>= 6.2.4)
       diff-lcs
       patience_diff
-    terser (1.1.16)
+    terser (1.1.17)
       execjs (>= 0.3.0, < 3)
     thor (1.2.2)
     tilt (2.2.0)
@@ -570,7 +570,7 @@ DEPENDENCIES
   whenever
 
 RUBY VERSION
-   ruby 2.7.1p83
+   ruby 2.7.2p137
 
 BUNDLED WITH
    2.1.4
