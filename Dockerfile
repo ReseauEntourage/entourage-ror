@@ -11,7 +11,7 @@
 # build command: docker build --target prod -t <image_name> .
 #
 
-FROM ruby:2.7.1 as prod
+FROM ruby:2.7.2 as prod
 
 # Define workdir
 
