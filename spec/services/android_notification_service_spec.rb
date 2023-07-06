@@ -17,7 +17,7 @@ describe AndroidNotificationService do
       it "raises exception" do
         expect {
           service.send_notification("sender", "object", "content", ["device_id_1", "device_id_2"])
-        }.to raise_error
+        }.to raise_error(ArgumentError)
         expect(Rpush::Gcm::Notification.count).to eq(0)
       end
     end
