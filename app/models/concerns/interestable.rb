@@ -14,6 +14,9 @@ module Interestable
     }
 
     scope :order_by_interests_matching, -> (interest_list) {
+      return unless interest_list
+      return unless interest_list.any?
+
       join_tags
         .group(sanitize_sql_array ["%s.id", self.table_name])
         .order(Arel.sql %(
