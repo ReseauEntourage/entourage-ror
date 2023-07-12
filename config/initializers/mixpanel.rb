@@ -1,11 +1,7 @@
 require 'batch_processing_thread'
 
 Rails.application.configure do
-  options = {
-    batch_size: Mixpanel::BufferedConsumer::MAX_LENGTH
-  }
-
-  config.mixpanel_thread = BatchProcessingThread::Client.new(options) do |batch|
+  config.mixpanel_thread = BatchProcessingThread::Client.new(batch_size: Mixpanel::BufferedConsumer::MAX_LENGTH) do |batch|
     buffered_consumer =
       if ENV['MIXPANEL_TOKEN']
         Mixpanel::BufferedConsumer.new
