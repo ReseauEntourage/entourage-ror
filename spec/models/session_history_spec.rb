@@ -7,11 +7,11 @@ RSpec.describe SessionHistory, type: :model do
   before { SessionHistory.stub(:enable_tracking?) { true } }
 
   def track
-    SessionHistory.track(default_params)
+    SessionHistory.track(**default_params)
   end
 
   def track_with_permission permission
-    SessionHistory.track_notifications_permissions(default_params.merge(notifications_permissions: permission))
+    SessionHistory.track_notifications_permissions(**default_params.merge(notifications_permissions: permission))
   end
 
   describe ".track_notifications_permissions" do
