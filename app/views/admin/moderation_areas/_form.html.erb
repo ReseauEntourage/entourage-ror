@@ -70,13 +70,6 @@
           <%= f.text_area :welcome_message_1_offer_help, rows: 10, class: "form-control" %>
           Utilisez <code>{{first_name}}</code> pour insérer le prénom du destinataire.
         </div>
-        <div class="form-group">
-          <%= f.label :welcome_message_2_offer_help do %>
-            <%= t 'activerecord.attributes.moderation_area.welcome_message_2' %>
-            pour le profil <%= t 'community.entourage.goals_compact.offer_help' %>
-          <% end %>
-          <%= f.text_area :welcome_message_2_offer_help, rows: 10, class: "form-control" %>
-        </div>
       </div>
 
       <div class="tab-pane" id="ask_for_help">
@@ -87,13 +80,6 @@
           <% end %>
           <%= f.text_area :welcome_message_1_ask_for_help, rows: 10, class: "form-control" %>
           Utilisez <code>{{first_name}}</code> pour insérer le prénom du destinataire.
-        </div>
-        <div class="form-group">
-          <%= f.label :welcome_message_2_ask_for_help do %>
-            <%= t 'activerecord.attributes.moderation_area.welcome_message_2' %>
-            pour le profil <%= t 'community.entourage.goals_compact.ask_for_help' %>
-          <% end %>
-          <%= f.text_area :welcome_message_2_ask_for_help, rows: 10, class: "form-control" %>
         </div>
       </div>
 
@@ -106,13 +92,6 @@
           <%= f.text_area :welcome_message_1_organization, rows: 10, class: "form-control" %>
           Utilisez <code>{{first_name}}</code> pour insérer le prénom du destinataire.
         </div>
-        <div class="form-group">
-          <%= f.label :welcome_message_2_organization do %>
-            <%= t 'activerecord.attributes.moderation_area.welcome_message_2' %>
-            pour le profil <%= t 'community.entourage.goals_compact.organization' %>
-          <% end %>
-          <%= f.text_area :welcome_message_2_organization, rows: 10, class: "form-control" %>
-        </div>
       </div>
 
       <div class="tab-pane" id="goal_not_known">
@@ -123,13 +102,6 @@
           <% end %>
           <%= f.text_area :welcome_message_1_goal_not_known, rows: 10, class: "form-control" %>
           Utilisez <code>{{first_name}}</code> pour insérer le prénom du destinataire.
-        </div>
-        <div class="form-group">
-          <%= f.label :welcome_message_2_goal_not_known do %>
-            <%= t 'activerecord.attributes.moderation_area.welcome_message_2' %>
-            pour le profil <%= t 'community.entourage.goals_compact.goal_not_known' %>
-          <% end %>
-          <%= f.text_area :welcome_message_2_goal_not_known, rows: 10, class: "form-control" %>
         </div>
       </div>
     </div>
