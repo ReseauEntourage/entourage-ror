@@ -75,6 +75,7 @@ class Outing < Entourage
   scope :future_or_ongoing, -> { ending_after(Time.zone.now) }
   scope :future_or_recently_past, -> { ending_after(RECENTLY_PAST_PERIOD.ago) }
   scope :default_order, -> { order(Arel.sql("metadata->>'starts_at'")) }
+  scope :reversed_order, -> { order(Arel.sql("metadata->>'starts_at' desc")) }
 
   attr_accessor :recurrency, :original_outing, :force_relatives_dates
 
