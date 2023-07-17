@@ -51,6 +51,7 @@ describe FollowingService do
           "solicitation",
           action.id,
           {
+            :tracking => :solicitation_on_create,
             :instance => "solicitation",
             :instance_id => action.id,
             :type => "ENTOURAGE_INVITATION",

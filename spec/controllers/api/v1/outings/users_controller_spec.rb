@@ -121,6 +121,7 @@ describe Api::V1::Outings::UsersController do
               object: "Nouveau membre",
               content: "John D. vient de rejoindre votre événement \"#{outing.title}\" du #{I18n.l(outing.starts_at.to_date)}",
               extra: {
+                tracking: :join_request_on_create_to_outing,
                 group_type: "outing",
                 joinable_id: outing.id,
                 joinable_type: "Entourage",

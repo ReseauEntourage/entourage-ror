@@ -226,6 +226,7 @@ describe Api::V1::Entourages::ChatMessagesController do
             "solicitation",
             entourage.id,
             {
+              tracking: :public_chat_message_on_create,
               joinable_id: entourage.id,
               joinable_type: "Entourage",
               group_type: 'action',

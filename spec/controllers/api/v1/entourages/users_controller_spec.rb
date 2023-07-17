@@ -110,6 +110,7 @@ describe Api::V1::Entourages::UsersController do
               "contribution",
               entourage.id,
               {
+                tracking: :join_request_on_create,
                 joinable_type: "Entourage",
                 joinable_id: entourage.id,
                 group_type: 'action',
@@ -136,6 +137,7 @@ describe Api::V1::Entourages::UsersController do
               "contribution",
               entourage.id,
               {
+                tracking: :join_request_on_create,
                 joinable_type: "Entourage",
                 joinable_id: entourage.id,
                 group_type: 'action',

@@ -114,6 +114,9 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
                 params: {
                   object: "foo",
                   content: "L'événement prévu le #{I18n.l(entourage.starts_at.to_date)} a été modifié",
+                  extra: {
+                    tracking: :outing_on_update
+                  }
                 }
               )
             }
@@ -134,6 +137,9 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
                 params: {
                   object: "Café",
                   content: "L'événement prévu le #{I18n.l(Time.now.to_date)} a été modifié. Il se déroulera le #{I18n.l(90.minutes.from_now.to_date)}, au #{entourage.metadata[:display_address]}",
+                  extra: {
+                    tracking: :outing_on_update
+                  }
                 }
               )
             }
@@ -151,6 +157,9 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
                 params: {
                   object: "Café",
                   content: "Cet événement prévu le #{I18n.l(entourage.starts_at.to_date)} vient d'être annulé",
+                  extra: {
+                    tracking: :outing_on_cancel
+                  }
                 }
               )
             }
@@ -171,6 +180,9 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
                 params: {
                   object: "Café",
                   content: "Cet événement prévu le #{I18n.l(entourage.starts_at.to_date)} vient d'être annulé",
+                  extra: {
+                    tracking: :outing_on_cancel
+                  }
                 }
               )
             }
@@ -358,6 +370,7 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
               object: "John D. - #{contribution.title}",
               content: "foo",
               extra: {
+                tracking: :public_chat_message_on_create,
                 group_type: "action",
                 joinable_type: "Entourage",
                 joinable_id: contribution.id,
@@ -425,7 +438,10 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
             users: [john, jane],
             params: {
               object: neighborhood.title,
-              content: "John D. vient de commenter la publication \"#{chat_message.content}\""
+              content: "John D. vient de commenter la publication \"#{chat_message.content}\"",
+              extra: {
+                tracking: :comment_on_create_to_neighborhood
+              }
             }
           )
         }
@@ -444,7 +460,10 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
             users: [user, jane],
             params: {
               object: neighborhood.title,
-              content: "John D. vient de commenter la publication \"#{chat_message.content}\""
+              content: "John D. vient de commenter la publication \"#{chat_message.content}\"",
+              extra: {
+                tracking: :comment_on_create_to_neighborhood
+              }
             }
           )
         }
@@ -484,6 +503,7 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
               object: "John D.",
               content: "foobar",
               extra: {
+                tracking: :private_chat_message_on_create,
                 group_type: "conversation",
                 joinable_id: conversation.id,
                 joinable_type: "Entourage",
@@ -723,6 +743,7 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
             object: "Nouveau membre",
             content: "Jane D. vient de rejoindre votre événement \"Café\" du #{I18n.l(outing.starts_at.to_date)}",
             extra: {
+              tracking: :join_request_on_create_to_outing,
               joinable_id: outing.id,
               joinable_type: "Entourage",
               group_type: "outing",

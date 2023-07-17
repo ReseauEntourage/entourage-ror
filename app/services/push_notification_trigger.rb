@@ -51,7 +51,10 @@ class PushNotificationTrigger
       users: users,
       params: {
         object: neighborhood.title,
-        content: CREATE_OUTING % [entity_name(neighborhood), entourage.title, to_date(entourage.starts_at)]
+        content: CREATE_OUTING % [entity_name(neighborhood), entourage.title, to_date(entourage.starts_at)],
+        extra: {
+          tracking: :outing_on_add_to_neighborhood
+        }
       }
     )
   end
@@ -110,6 +113,14 @@ class PushNotificationTrigger
 
     return unless follower_ids.any?
 
+    tracking = if @record.outing?
+      :outing_on_create
+    elsif @record.contribution?
+      :contribution_on_create
+    else
+      :solicitation_on_create
+    end
+
     follower_ids.each do |follower_id|
       next if follower_id == user.id
       next unless follower = User.find(follower_id)
@@ -125,6 +136,7 @@ class PushNotificationTrigger
           object: @record.title,
           content: "#{partner.name} vous invite à rejoindre #{title(@record)}",
           extra: {
+            tracking: tracking,
             type: "ENTOURAGE_INVITATION",
             entourage_id: @record.id,
             group_type: @record.group_type,
@@ -145,6 +157,8 @@ class PushNotificationTrigger
 
     return unless neighbor_ids.any?
 
+    tracking = @record.contribution? ? :contribution_on_create : :solicitation_on_create
+
     neighbor_ids.each do |neighbor_id|
       next if neighbor_id == user.id
       next unless neighbor = User.find(neighbor_id)
@@ -163,6 +177,7 @@ class PushNotificationTrigger
           object: content_for_create_action(@record),
           content: @record.title,
           extra: {
+            tracking: tracking,
             type: "ENTOURAGE_INVITATION",
             entourage_id: @record.id,
             group_type: @record.group_type
@@ -195,7 +210,10 @@ class PushNotificationTrigger
       users: users,
       params: {
         object: @record.title,
-        content: update_outing_message(@record, @changes)
+        content: update_outing_message(@record, @changes),
+        extra: {
+          tracking: :outing_on_update
+        }
       }
     )
   end
@@ -220,7 +238,10 @@ class PushNotificationTrigger
       users: users,
       params: {
         object: @record.title,
-        content: CANCEL_OUTING % to_date(@record.starts_at)
+        content: CANCEL_OUTING % to_date(@record.starts_at),
+        extra: {
+          tracking: :outing_on_cancel
+        }
       }
     )
   end
@@ -251,6 +272,7 @@ class PushNotificationTrigger
         object: "#{username(@record.user)} - #{title(@record.messageable)}",
         content: @record.content,
         extra: {
+          tracking: :public_chat_message_on_create,
           group_type: group_type(@record.messageable),
           joinable_id: @record.messageable_id,
           joinable_type: @record.messageable_type,
@@ -275,6 +297,7 @@ class PushNotificationTrigger
         object: username(@record.user),
         content: @record.content,
         extra: {
+          tracking: :private_chat_message_on_create,
           group_type: group_type(@record.messageable),
           joinable_id: @record.messageable_id,
           joinable_type: @record.messageable_type,
@@ -290,6 +313,14 @@ class PushNotificationTrigger
 
     return if users.none?
 
+    tracking = if @record.messageable.is_a?(Neighborhood)
+      :post_on_create_to_neighborhood
+    elsif @record.messageable.respond_to?(:outing?) && @record.messageable.outing?
+      :post_on_create_to_outing
+    else
+      :post_on_create
+    end
+
     notify(
       sender_id: @record.user_id,
       referent: @record.messageable,
@@ -299,6 +330,7 @@ class PushNotificationTrigger
         object: title(@record.messageable),
         content: CREATE_POST % [username(@record.user), @record.content],
         extra: {
+          tracking: tracking,
           group_type: group_type(@record.messageable),
           joinable_id: @record.messageable_id,
           joinable_type: @record.messageable_type,
@@ -316,6 +348,14 @@ class PushNotificationTrigger
 
     return unless user_ids.any?
 
+    tracking = if @record.messageable.is_a?(Neighborhood)
+      :comment_on_create_to_neighborhood
+    elsif @record.messageable.respond_to?(:outing?) && @record.messageable.outing?
+      :comment_on_create_to_outing
+    else
+      :comment_on_create
+    end
+
     # should redirect to post
     notify(
       sender_id: @record.user_id,
@@ -324,7 +364,10 @@ class PushNotificationTrigger
       users: User.where(id: user_ids),
       params: {
         object: title(@record.messageable),
-        content: CREATE_COMMENT % [username(@record.user), @record.content]
+        content: CREATE_COMMENT % [username(@record.user), @record.content],
+        extra: {
+          tracking: tracking
+        }
       }
     )
   end
@@ -340,6 +383,14 @@ class PushNotificationTrigger
       CREATE_JOIN_REQUEST % [username(@record.user), entity_name(@record.joinable), title(@record.joinable)]
     end
 
+    tracking = if @record.joinable.is_a?(Neighborhood)
+      :join_request_on_create_to_neighborhood
+    elsif @record.joinable.respond_to?(:outing?) && @record.joinable.outing?
+      :join_request_on_create_to_outing
+    else
+      :join_request_on_create
+    end
+
     notify(
       sender_id: @record.user_id,
       referent: @record.joinable,
@@ -349,6 +400,7 @@ class PushNotificationTrigger
         object: "Nouveau membre",
         content: content,
         extra: {
+          tracking: tracking,
           joinable_id: @record.joinable_id,
           joinable_type: @record.joinable_type,
           group_type: group_type(@record.joinable),
