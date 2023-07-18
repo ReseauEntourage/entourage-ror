@@ -1,6 +1,8 @@
 module V1
   module Users
     class SummarySerializer < BasicSerializer
+      UNCLOSED_ACTION_ALERT = 10.days
+
       attributes :id,
         :display_name,
         :avatar_url,
@@ -10,6 +12,7 @@ module V1
         :neighborhood_participations_count,
         :recommandations,
         :congratulations,
+        :unclosed_action,
         :moderator
 
       def meetings_count
@@ -40,6 +43,21 @@ module V1
 
           V1::UserRecommandationSerializer.new(recommandation).as_json
         end
+      end
+
+      def unclosed_action
+        last_unclosed_action_notification_at = object.last_unclosed_action_notification_at_and_update!
+
+        actions = Entourage.where(user: object).action.active.where("created_at < ?", UNCLOSED_ACTION_ALERT.ago)
+        actions = actions.where("created_at > ?", last_unclosed_action_notification_at) if last_unclosed_action_notification_at.present?
+        actions = actions.order_by_entourage_type(:ask_for_help).order(:created_at)
+        action = actions.select(:entourage_type, :id).first
+
+        return unless action.present?
+
+        action = action.contribution? ? Contribution.find(action.id) : Solicitation.find(action.id)
+
+        V1::ActionSerializer.new(action).as_json
       end
 
       def moderator

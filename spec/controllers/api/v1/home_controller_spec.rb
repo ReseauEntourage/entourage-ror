@@ -185,6 +185,7 @@ describe Api::V1::HomeController do
               }
             }],
             "congratulations" => [],
+            "unclosed_action" => nil,
             "moderator" => {}
           }
         }) }
@@ -233,6 +234,47 @@ describe Api::V1::HomeController do
         before { request }
 
         it { expect(subject["user"]["neighborhood_participations_count"]).to eq(1) }
+      end
+
+      context "renders unclosed_action" do
+        let(:creation_time) { V1::Users::SummarySerializer::UNCLOSED_ACTION_ALERT }
+
+        context "old action" do
+          let!(:entourage) { FactoryBot.create(:entourage, user: user, created_at: (creation_time + 1.day).ago) }
+
+          before { request }
+
+          it { expect(subject["user"]["unclosed_action"]).to be_a(Hash) }
+          it { expect(subject["user"]["unclosed_action"]["id"]).to eq(entourage.id) }
+        end
+
+        context "recent action" do
+          let!(:entourage) { FactoryBot.create(:entourage, user: user, created_at: (creation_time - 1.day).ago) }
+
+          before { request }
+
+          it { expect(subject["user"]["unclosed_action"]).to be_nil }
+        end
+
+        context "order by created_at" do
+          let!(:entourage_1) { FactoryBot.create(:entourage, user: user, created_at: (creation_time + 1.day).ago) }
+          let!(:entourage_2) { FactoryBot.create(:entourage, user: user, created_at: (creation_time + 2.day).ago) }
+
+          before { request }
+
+          it { expect(subject["user"]["unclosed_action"]).to be_a(Hash) }
+          it { expect(subject["user"]["unclosed_action"]["id"]).to eq(entourage_2.id) }
+        end
+
+        context "order by ask_for_help" do
+          let!(:entourage_1) { FactoryBot.create(:entourage, user: user, entourage_type: :ask_for_help, created_at: (creation_time + 1.day).ago) }
+          let!(:entourage_2) { FactoryBot.create(:entourage, user: user, entourage_type: :contribution, created_at: (creation_time + 2.day).ago) }
+
+          before { request }
+
+          it { expect(subject["user"]["unclosed_action"]).to be_a(Hash) }
+          it { expect(subject["user"]["unclosed_action"]["id"]).to eq(entourage_1.id) }
+        end
       end
     end
   end

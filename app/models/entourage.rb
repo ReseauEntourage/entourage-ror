@@ -76,8 +76,15 @@ class Entourage < ApplicationRecord
   scope :contributions, -> { where(entourage_type: :contribution) }
   scope :ask_for_helps, -> { where(entourage_type: :ask_for_help) }
   scope :except_conversations, -> { where.not(group_type: :conversation) }
-  scope :order_by_profile, -> (profile) {
-    if profile == :ask_for_help
+  scope :order_by_profile, -> (user_profile) {
+    if user_profile == :ask_for_help
+      order(Arel.sql("case when entourage_type = 'contribution' then 1 else 2 end"))
+    else
+      order(Arel.sql("case when entourage_type = 'ask_for_help' then 1 else 2 end"))
+    end
+  }
+  scope :order_by_entourage_type, -> (entourage_type) {
+    if entourage_type == :contribution
       order(Arel.sql("case when entourage_type = 'contribution' then 1 else 2 end"))
     else
       order(Arel.sql("case when entourage_type = 'ask_for_help' then 1 else 2 end"))

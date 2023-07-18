@@ -1092,6 +1092,7 @@ ActiveRecord::Schema.define(version: 2023_09_04_135500) do
     t.integer "travel_distance", default: 40
     t.string "birthday", limit: 5
     t.string "other_interest"
+    t.json "options", default: {}
     t.index ["address_id"], name: "index_users_on_address_id"
     t.index ["email"], name: "index_users_on_email"
     t.index ["organization_id"], name: "index_users_on_organization_id"
