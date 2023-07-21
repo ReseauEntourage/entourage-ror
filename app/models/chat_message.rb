@@ -15,7 +15,9 @@ class ChatMessage < ApplicationRecord
     .joins(%(
       left outer join chat_messages as comments on
         comments.ancestry is not null and
-        comments.ancestry::integer = chat_messages.id
+        comments.ancestry::integer = chat_messages.id and
+        comments.messageable_type = chat_messages.messageable_type and
+        comments.messageable_id = chat_messages.messageable_id
     ))
     .group("chat_messages.id")
   }
