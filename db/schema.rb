@@ -334,6 +334,7 @@ ActiveRecord::Schema.define(version: 202401111415004) do
     t.index ["user_id"], name: "index_entourages_on_user_id"
     t.index ["uuid"], name: "index_entourages_on_uuid", unique: true
     t.index ["uuid_v2"], name: "index_entourages_on_uuid_v2", unique: true
+    t.index ["(metadata->'ends_at')", "(metadata->'starts_at')"], name: "index_entourages_metadata_dates"
   end
 
   create_table "entourages_users", id: :serial, force: :cascade do |t|
