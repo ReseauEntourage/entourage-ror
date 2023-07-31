@@ -1,11 +1,12 @@
 source 'https://rubygems.org'
 
-ruby '2.6.6'
+ruby '2.7.2'
 
 gem 'rails',                          '~> 6.0'
 
 gem 'sass-rails'
 gem 'uglifier'
+gem 'terser'
 gem 'jquery-rails',                   '~> 4'
 gem 'jquery-ui-rails',                '~> 5'
 gem 'turbolinks',                     '~> 5'

@@ -72,6 +72,10 @@ class Community < BasicObject
     end
   end
 
+  def as_json t
+    slug
+  end
+
   def inspect
     "#<Community #{slug}>"
   end

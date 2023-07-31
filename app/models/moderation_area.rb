@@ -47,7 +47,7 @@ class ModerationArea < ApplicationRecord
   def self.departement slug
     return '*' if slug.to_sym == :hors_zone
     return '_' if slug.to_sym == :sans_zone
-    raise "Unhandled slug #{slug.inspect}" unless slug.start_with? 'dep_'
+    raise ArgumentError.new("Unhandled slug #{slug.inspect}") unless slug.start_with? 'dep_'
 
     slug[4..-1]
   end

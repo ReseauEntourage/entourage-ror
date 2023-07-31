@@ -211,13 +211,13 @@ describe User, :type => :model do
       if user.update(params)
         user.previous_changes.key?('encrypted_password') ? :changed : :unchanged
       else
-        user.errors.to_h
+        user.errors.to_hash
       end
     end
 
     it { expect(update updated_at: Time.now).to be :unchanged }
     it { expect(update password: nil).to be :unchanged }
-    it { expect(update password: '').to eq password: "est trop court (au moins 8 caractères)" }
+    it { expect(update password: '').to eq password: ["est trop court (au moins 8 caractères)"] }
     it { expect(update password: ' ' * 10).to be :changed }
     it { expect(update password: 'x' * 10).to be :changed }
   end
@@ -287,13 +287,13 @@ describe User, :type => :model do
 
   def build_or_error *args
     o = build(*args)
-    o.save || o.errors.to_h
+    o.save || o.errors.to_hash
   end
 
   describe 'roles' do
-    it { expect(build_or_error :public_user, roles: [:moderator]).to eq(roles: ":moderator n'est pas inclus dans la liste") }
+    it { expect(build_or_error :public_user, roles: [:moderator]).to eq(roles: [":moderator n'est pas inclus dans la liste"]) }
     it { expect(build_or_error :public_user, admin: true, roles: [:moderator]).to be true }
-    it { expect(build_or_error :public_user, roles: [:lol]).to eq(roles: ":lol n'est pas inclus dans la liste") }
+    it { expect(build_or_error :public_user, roles: [:lol]).to eq(roles: [":lol n'est pas inclus dans la liste"]) }
     it { expect(build_or_error :public_user, roles: [:ambassador]).to be true }
   end
 
@@ -301,7 +301,7 @@ describe User, :type => :model do
     it { expect(build_or_error :public_user, interest_list: []).to be true }
     it { expect(build_or_error :public_user, interest_list: 'jeux').to be true }
     it { expect(build_or_error :public_user, interest_list: 'jeux, cuisine').to be true }
-    it { expect(build_or_error :public_user, interest_list: 'culture, lol').to eq(interests: "lol n'est pas inclus dans la liste") }
+    it { expect(build_or_error :public_user, interest_list: 'culture, lol').to eq(interests: ["lol n'est pas inclus dans la liste"]) }
   end
 
   describe 'pending_phone_change_request' do
