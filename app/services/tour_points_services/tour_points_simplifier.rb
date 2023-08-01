@@ -23,7 +23,7 @@ module TourPointsServices
         points = pg_result.map { |point| format_point(point) }
         # see: config/initializers/pg_result_clear.rb
         pg_result.clear
-        $redis.set(cache_key, points.to_json, {ex: 7 * 24 * 3600})
+        $redis.set(cache_key, points.to_json)
       end
 
       points
