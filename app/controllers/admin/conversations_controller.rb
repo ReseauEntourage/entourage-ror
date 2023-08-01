@@ -58,10 +58,10 @@ module Admin
       @new_conversation = join_request.nil?
       @read = join_request.present? &&
               join_request.last_message_read.present? &&
-              join_request.last_message_read >= @conversation.feed_updated_at
+              join_request.last_message_read >= (@conversation.feed_updated_at || @conversation.updated_at)
       @archived = join_request.present? &&
                   join_request.archived_at.present? &&
-                  join_request.archived_at >= @conversation.feed_updated_at
+                  join_request.archived_at >= (@conversation.feed_updated_at || @conversation.updated_at)
 
       @recipients =
         if @conversation.new_record?
