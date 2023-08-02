@@ -9,7 +9,7 @@ module NeighborhoodServices
         end
 
         neighborhoods
-          .includes([:user, :members, :interests, :ongoing_outings, :past_outings, :future_outings])
+          .includes([:user, :interests, :future_outings])
           .not_joined_by(user)
           .public_only
           .where(id: Neighborhood.inside_user_perimeter(user))

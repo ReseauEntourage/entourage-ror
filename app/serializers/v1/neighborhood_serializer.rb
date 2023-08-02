@@ -10,9 +10,7 @@ module V1
       :image_url,
       :interests,
       :ethics,
-      :past_outings_count,
       :future_outings_count,
-      :has_ongoing_outing,
       :address,
       :status_changed_at,
       :public
@@ -32,10 +30,6 @@ module V1
 
     def interests
       object.interest_names.sort
-    end
-
-    def has_ongoing_outing
-      object.has_ongoing_outing?
     end
 
     def address
