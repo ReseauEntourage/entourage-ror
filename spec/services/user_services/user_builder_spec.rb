@@ -7,12 +7,12 @@ describe UserServices::ProUserBuilder do
     let(:organization) { FactoryBot.build(:organization) }
 
     it 'sends sms with created code' do
-      expect_any_instance_of(UserServices::SMSSender).to receive(:send_welcome_sms).with("123456").once
+      expect_any_instance_of(UserServices::SmsSender).to receive(:send_welcome_sms).with("123456").once
       UserServices::ProUserBuilder.new(params: params, organization: organization).create(send_sms: true)
     end
 
     it "doesn't send sms with created code" do
-      expect_any_instance_of(UserServices::SMSSender).to receive(:send_welcome_sms).never
+      expect_any_instance_of(UserServices::SmsSender).to receive(:send_welcome_sms).never
       UserServices::ProUserBuilder.new(params: params, organization: organization).create(send_sms: false)
     end
   end
