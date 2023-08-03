@@ -244,12 +244,16 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
             "longitude" => 2.35,
             "display_address" => ""
           },
-          "members" => [1],
+          "members" => [{
+            "id" => 1,
+            "avatar_url" => "n/a",
+            "display_name" => "n/a",
+          }],
           "member" => true,
           "members_count" => 1,
-          "past_outings_count" => nil,
+          "past_outings_count" => 0,
           "future_outings_count" => 0,
-          "has_ongoing_outing" => nil,
+          "has_ongoing_outing" => false,
           "status_changed_at" => nil,
           "public" => true
         }) }
@@ -331,10 +335,10 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
           "ethics" => nil,
           "future_outings_count" => 0,
           "outings" => [],
-          "past_outings_count" => nil,
+          "past_outings_count" => 0,
           "future_outings" => [],
           "ongoing_outings" => [],
-          "has_ongoing_outing" => nil,
+          "has_ongoing_outing" => false,
           "posts" => [],
           "public" => true
         }

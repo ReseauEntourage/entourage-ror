@@ -30,7 +30,7 @@ module V1
       # fake data: not really used in mobile app
       # but to assure retrocompatibility with former app versions, we need this method to be compatible with "members.size"
       # so we want this method to return an array of "members" elements
-      Array.new(object.members_count, 1)
+      Array.new(object.members_count, { id: 1, avatar_url: "n/a", display_name: "n/a" })
     end
 
     def image_url
@@ -43,12 +43,12 @@ module V1
 
     def past_outings_count
       # fake data: not used in mobile app
-      nil
+      0
     end
 
     def has_ongoing_outing
       # fake data: not used in mobile app
-      nil
+      false
     end
 
     def address

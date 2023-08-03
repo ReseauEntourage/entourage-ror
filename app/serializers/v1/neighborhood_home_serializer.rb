@@ -38,12 +38,12 @@ module V1
 
     def past_outings_count
       # fake data: not used in mobile app
-      nil
+      0
     end
 
     def has_ongoing_outing
       # fake data: not used in mobile app
-      nil
+      false
     end
 
     def address
