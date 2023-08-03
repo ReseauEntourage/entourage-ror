@@ -13,7 +13,9 @@ module V1
       :image_url,
       :interests,
       :ethics,
+      :past_outings_count,
       :future_outings_count,
+      :has_ongoing_outing,
       :address,
       :posts,
       :public
@@ -32,6 +34,16 @@ module V1
 
     def interests
       object.interest_names.sort
+    end
+
+    def past_outings_count
+      # fake data: not used in mobile app
+      nil
+    end
+
+    def has_ongoing_outing
+      # fake data: not used in mobile app
+      nil
     end
 
     def address

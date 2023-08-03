@@ -247,7 +247,9 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
           "members" => [1],
           "member" => true,
           "members_count" => 1,
+          "past_outings_count" => nil,
           "future_outings_count" => 0,
+          "has_ongoing_outing" => nil,
           "status_changed_at" => nil,
           "public" => true
         }) }
@@ -329,8 +331,10 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
           "ethics" => nil,
           "future_outings_count" => 0,
           "outings" => [],
+          "past_outings_count" => nil,
           "future_outings" => [],
           "ongoing_outings" => [],
+          "has_ongoing_outing" => nil,
           "posts" => [],
           "public" => true
         }

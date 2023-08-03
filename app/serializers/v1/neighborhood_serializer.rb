@@ -11,7 +11,9 @@ module V1
       :image_url,
       :interests,
       :ethics,
+      :past_outings_count,
       :future_outings_count,
+      :has_ongoing_outing,
       :address,
       :status_changed_at,
       :public
@@ -25,8 +27,8 @@ module V1
     end
 
     def members
-      # we assume this serializer is only used in case where members is not used
-      # to assure retrocompatibility with former app versions, we need this method to be compatible with "members.size"
+      # fake data: not really used in mobile app
+      # but to assure retrocompatibility with former app versions, we need this method to be compatible with "members.size"
       # so we want this method to return an array of "members" elements
       Array.new(object.members_count, 1)
     end
@@ -37,6 +39,16 @@ module V1
 
     def interests
       object.interest_names.sort
+    end
+
+    def past_outings_count
+      # fake data: not used in mobile app
+      nil
+    end
+
+    def has_ongoing_outing
+      # fake data: not used in mobile app
+      nil
     end
 
     def address
