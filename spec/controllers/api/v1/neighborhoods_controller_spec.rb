@@ -244,12 +244,7 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
             "longitude" => 2.35,
             "display_address" => ""
           },
-          "members" => [{
-            "id" => user.id,
-            "display_name" => "John D.",
-            "avatar_url" => nil,
-            "community_roles" => [],
-          }],
+          "members" => [1],
           "member" => true,
           "members_count" => 1,
           "future_outings_count" => 0,
