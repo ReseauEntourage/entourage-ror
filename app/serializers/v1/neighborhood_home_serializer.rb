@@ -36,8 +36,14 @@ module V1
       object.interest_names.sort
     end
 
+    def past_outings_count
+      # fake data: not used in mobile app
+      0
+    end
+
     def has_ongoing_outing
-      object.has_ongoing_outing?
+      # fake data: not used in mobile app
+      false
     end
 
     def address
