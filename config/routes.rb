@@ -308,6 +308,13 @@ Rails.application.routes.draw do
         end
       end
 
+      resources :notifications do
+        collection do
+          put :welcome
+          put :at_day
+        end
+      end
+
       resources :notification_permissions, only: [:index, :create]
 
       resources :feeds, only: [:index] do
