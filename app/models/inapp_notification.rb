@@ -5,9 +5,6 @@ class InappNotification < ApplicationRecord
   belongs_to :sender, class_name: :User, required: false # user that created the notification
   belongs_to :post, class_name: :ChatMessage, required: false
 
-  validates_presence_of :instance, :instance_id
-  # validates_inclusion_of :instance, in: INSTANCES
-
   default_scope { order(created_at: :desc) }
 
   scope :active, -> { where(completed_at: nil, skipped_at: nil) }
