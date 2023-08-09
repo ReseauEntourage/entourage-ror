@@ -941,6 +941,16 @@ ActiveRecord::Schema.define(version: 2023_09_22_094100) do
     t.index ["user_id", "tour_id"], name: "index_tours_users_on_user_id_and_tour_id", unique: true
   end
 
+  create_table "translations", force: :cascade do |t|
+    t.integer "instance_id", null: false
+    t.string "instance_type", null: false
+    t.string "fr"
+    t.string "en"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["instance_id", "instance_type"], name: "index_translations_on_instance_id_and_instance_type"
+  end
+
   create_table "user_applications", id: :serial, force: :cascade do |t|
     t.string "push_token", null: false
     t.string "device_os", null: false
