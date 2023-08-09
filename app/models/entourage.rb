@@ -374,6 +374,12 @@ class Entourage < ApplicationRecord
     outing? && recurrency_identifier.present?
   end
 
+  def first_occurrence?
+    return true unless recurrent?
+
+    Outing.where(recurrency_identifier: recurrency_identifier).count <= 1
+  end
+
   def contribution?
     entourage_type && entourage_type.to_sym == :contribution
   end
