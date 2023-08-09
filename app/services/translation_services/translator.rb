@@ -32,6 +32,7 @@ module TranslationServices
     end
 
     def text_translation text, lang
+      return text if EnvironmentHelper.test?
       uri = URI(BASE_URI % ["fr", lang, text])
 
       response = Net::HTTP.start(uri.host, uri.port, :use_ssl => uri.scheme == 'https') do |http|
