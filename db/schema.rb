@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_07_03_141300) do
+ActiveRecord::Schema.define(version: 2023_08_09_163700) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -931,6 +931,16 @@ ActiveRecord::Schema.define(version: 2023_07_03_141300) do
     t.datetime "updated_at", null: false
     t.datetime "last_message_read"
     t.index ["user_id", "tour_id"], name: "index_tours_users_on_user_id_and_tour_id", unique: true
+  end
+
+  create_table "translations", force: :cascade do |t|
+    t.integer "instance_id", null: false
+    t.integer "instance_type", null: false
+    t.string "fr"
+    t.string "en"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["instance_id", "instance_type"], name: "index_translations_on_instance_id_and_instance_type"
   end
 
   create_table "user_applications", id: :serial, force: :cascade do |t|
