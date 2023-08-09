@@ -14,6 +14,10 @@ module V1
                  :message_type,
                  :status
 
+      def content
+        TranslationServices::Translator.new(object).translate(:en) || object.content
+      end
+
       def user
         partner = object.user.partner
 
