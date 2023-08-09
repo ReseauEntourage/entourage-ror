@@ -935,7 +935,7 @@ ActiveRecord::Schema.define(version: 2023_08_09_163700) do
 
   create_table "translations", force: :cascade do |t|
     t.integer "instance_id", null: false
-    t.integer "instance_type", null: false
+    t.string "instance_type", null: false
     t.string "fr"
     t.string "en"
     t.datetime "created_at", precision: 6, null: false

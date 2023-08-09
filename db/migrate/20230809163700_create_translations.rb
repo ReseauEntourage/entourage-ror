@@ -2,7 +2,7 @@ class CreateTranslations < ActiveRecord::Migration[6.1]
   def up
     create_table :translations do |t|
       t.integer :instance_id, null: false
-      t.integer :instance_type, null: false
+      t.string :instance_type, null: false
 
       t.string :fr
       t.string :en
