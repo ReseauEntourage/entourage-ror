@@ -28,7 +28,7 @@ module V1
     has_one :location
 
     def title
-      return object.title unless scope[:user].present?
+      return object.title unless scope && scope[:user].present?
       return object.title unless scope[:user].lang.present?
 
       TranslationServices::Translator.new(object).translate(scope[:user].lang) || object.title

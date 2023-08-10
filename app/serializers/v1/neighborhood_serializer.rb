@@ -21,7 +21,7 @@ module V1
     has_one :user, serializer: ::V1::Users::BasicSerializer
 
     def name
-      return object.name unless scope[:user].present?
+      return object.name unless scope && scope[:user].present?
       return object.name unless scope[:user].lang.present?
 
       TranslationServices::Translator.new(object).translate(scope[:user].lang) || object.name

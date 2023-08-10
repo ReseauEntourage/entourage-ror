@@ -15,7 +15,7 @@ module V1
                  :status
 
       def content
-        return object.content unless scope[:user].present?
+        return object.content unless scope && scope[:user].present?
         return object.content unless scope[:user].lang.present?
 
         TranslationServices::Translator.new(object).translate(scope[:user].lang) || object.content

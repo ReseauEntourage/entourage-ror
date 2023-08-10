@@ -27,7 +27,7 @@ module V1
     has_many :ongoing_outings, serializer: ::V1::OutingSerializer
 
     def name
-      return object.name unless scope[:user].present?
+      return object.name unless scope && scope[:user].present?
       return object.name unless scope[:user].lang.present?
 
       TranslationServices::Translator.new(object).translate(scope[:user].lang) || object.name
