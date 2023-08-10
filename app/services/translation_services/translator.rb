@@ -27,7 +27,8 @@ module TranslationServices
     end
 
     def translate lang
-      return unless LANGUAGES.include?(lang)
+      return unless lang
+      return unless LANGUAGES.include?(lang.to_sym)
       return unless translation = Translation.find_by(instance_id: record.id, instance_type: record.class.name)
 
       translation.send(lang)
