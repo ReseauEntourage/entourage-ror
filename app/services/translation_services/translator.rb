@@ -13,7 +13,7 @@ module TranslationServices
 
     def translate!
       translation = Translation.find_or_initialize_by(instance_id: record.id, instance_type: record.class.name)
-      return if translation.persisted?
+      # return if translation.persisted?
       return unless translation_key.present?
 
       original_text = record.send(translation_key)
