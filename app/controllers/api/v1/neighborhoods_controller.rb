@@ -9,7 +9,7 @@ module Api
         render json: NeighborhoodServices::Finder.search(
           user: current_user,
           q: params[:q]
-        ).page(page).per(per), root: :neighborhoods, each_serializer: ::V1::NeighborhoodSerializer
+        ).page(page).per(per), root: :neighborhoods, each_serializer: ::V1::NeighborhoodSerializer, scope: { user: current_user }
       end
 
       def show
