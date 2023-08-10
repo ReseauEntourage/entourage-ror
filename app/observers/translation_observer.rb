@@ -5,9 +5,10 @@ class TranslationObserver < ActiveRecord::Observer
     return if record.is_a?(Entourage) && record.conversation?
 
     return action(:create, record) if commit_is?(record, [:create])
+    return action(:update, record) if commit_is?(record, [:update])
   end
 
-  # @param verb :create
+  # @param verb :create, :update
   def action(verb, record)
     TranslationServices::Translator.new(record).translate!
   end
