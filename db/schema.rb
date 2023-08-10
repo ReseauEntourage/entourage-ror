@@ -938,6 +938,11 @@ ActiveRecord::Schema.define(version: 2023_08_09_163700) do
     t.string "instance_type", null: false
     t.string "fr"
     t.string "en"
+    t.string "de"
+    t.string "pl"
+    t.string "ro"
+    t.string "uk"
+    t.string "ar"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["instance_id", "instance_type"], name: "index_translations_on_instance_id_and_instance_type"
