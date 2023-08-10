@@ -4,8 +4,13 @@ class CreateTranslations < ActiveRecord::Migration[6.1]
       t.integer :instance_id, null: false
       t.string :instance_type, null: false
 
-      t.string :fr
-      t.string :en
+      t.string :fr # french
+      t.string :en # english
+      t.string :de # deutsch
+      t.string :pl # polish
+      t.string :ro # romanian
+      t.string :uk # ukrainian
+      t.string :ar # arab
 
       t.timestamps null: false
 
