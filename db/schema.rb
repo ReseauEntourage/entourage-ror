@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_08_09_163700) do
+ActiveRecord::Schema.define(version: 2023_08_10_094200) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -1100,6 +1100,8 @@ ActiveRecord::Schema.define(version: 2023_08_09_163700) do
     t.integer "travel_distance", default: 40
     t.string "birthday", limit: 5
     t.string "other_interest"
+    t.json "options", default: {}
+    t.string "lang", default: "fr"
     t.index ["address_id"], name: "index_users_on_address_id"
     t.index ["email"], name: "index_users_on_email"
     t.index ["organization_id"], name: "index_users_on_organization_id"
