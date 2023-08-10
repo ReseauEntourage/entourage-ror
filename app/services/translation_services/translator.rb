@@ -47,7 +47,7 @@ module TranslationServices
       return unless response.code == "200"
       return unless response.body.present?
 
-      Nokogiri::HTML(response.body).css('.result-container').text
+      Nokogiri::HTML(response.body, nil, 'UTF-8').css('.result-container').text
     end
 
     private
