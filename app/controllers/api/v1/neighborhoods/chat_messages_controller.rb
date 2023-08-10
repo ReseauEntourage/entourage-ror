@@ -23,7 +23,7 @@ module Api
         def show
           return render json: { message: "Wrong chat_message" }, status: :bad_request unless @chat_message
 
-          render json: @chat_message, serializer: ::V1::ChatMessages::PostSerializer, scope: { current_join_request: join_request, image_size: params[:image_size] }
+          render json: @chat_message, serializer: ::V1::ChatMessages::PostSerializer, scope: { current_join_request: join_request, user: current_user, image_size: params[:image_size] }
         end
 
         def create
@@ -104,7 +104,7 @@ module Api
           post = @neighborhood.chat_messages.where(id: @chat_message.id).first
           messages = post.children.order(created_at: :asc)
 
-          render json: messages, each_serializer: ::V1::ChatMessages::CommentSerializer, scope: { current_join_request: join_request }
+          render json: messages, each_serializer: ::V1::ChatMessages::CommentSerializer, scope: { current_join_request: join_request, user: current_user }
         end
 
         def presigned_upload
