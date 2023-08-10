@@ -1,7 +1,9 @@
 class TranslationObserver < ActiveRecord::Observer
-  observe :chat_message
+  observe :chat_message, :entourage, :neighborhood
 
   def after_commit record
+    return if record.is_a?(Entourage) && record.conversation?
+
     return action(:create, record) if commit_is?(record, [:create])
   end
 
