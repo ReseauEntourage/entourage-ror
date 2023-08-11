@@ -194,6 +194,15 @@ fr:
         moderator_id: Modérateur
         welcome_message_1: Message de bienvenue
         slack_moderator_id: Identifiant Slack
+      translation:
+        langs:
+          fr: Français
+          en: Anglais
+          de: Allemand
+          pl: Polonais
+          ro: Roumain
+          uk: Ukrainien
+          ar: Arabe
       tour_area:
         statuses:
           active: Active
