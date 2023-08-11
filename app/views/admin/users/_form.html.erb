@@ -138,6 +138,16 @@
         <%= f.number_field :travel_distance, class: "form-control" %>
       </div>
     </div>
+
+    <div class="control-group" style="margin-left: 30px">
+      <%= f.label :lang, class: "control-label" %>
+      <div class="controls">
+        <%= f.select :lang,
+          Translation::LANGUAGES.map { |key| [t("activerecord.attributes.translation.langs.#{key}"), key.to_s] },
+          { include_blank: false }
+        %>
+      </div>
+    </div>
   </div>
 
   <% unless @user.new_record? %>
