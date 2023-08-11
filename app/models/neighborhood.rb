@@ -5,6 +5,7 @@ class Neighborhood < ApplicationRecord
   include Recommandable
   include ModeratorReadable
   include Deeplinkable
+  include Translatable
   include Experimental::NeighborhoodSlack::Callback
 
   after_validation :track_status_change

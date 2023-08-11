@@ -2,6 +2,7 @@ class ChatMessage < ApplicationRecord
   include FeedsConcern
   include ChatServices::Spam
   include Deeplinkable
+  include Translatable
 
   CONTENT_TYPES = %w(image/jpeg)
   BUCKET_PREFIX = "chat_messages"
