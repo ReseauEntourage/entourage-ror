@@ -2,8 +2,6 @@ module TranslationServices
   # supported: ChatMessage (see TranslationObserver)
 
   class Translator
-    DEFAULT_LANG = :fr
-    LANGUAGES = [:fr, :en, :de, :pl, :ro, :uk, :ar]
     BASE_URI = "https://translate.google.com/m?sl=%s&tl=%s&q=%s"
 
     attr_reader :record
@@ -19,7 +17,7 @@ module TranslationServices
 
       translation = Translation.find_or_initialize_by(instance_id: @record.id, instance_type: @record.class.name)
 
-      LANGUAGES.each do |language|
+      ::Translation::LANGUAGES.each do |language|
         translation[language] = text_translation(original_text, language)
       end
 
@@ -28,7 +26,7 @@ module TranslationServices
 
     def translate lang
       return unless lang
-      return unless LANGUAGES.include?(lang.to_sym)
+      return unless ::Translation::LANGUAGES.include?(lang.to_sym)
       return unless translation = @record.translation
 
       translation.send(lang)
@@ -59,7 +57,7 @@ module TranslationServices
     end
 
     def from_lang
-      @record.user.lang || DEFAULT_LANG
+      @record.user.lang || ::Translation::DEFAULT_LANG
     end
   end
 end
