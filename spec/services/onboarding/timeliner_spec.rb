@@ -27,8 +27,8 @@ describe Onboarding::Timeliner do
     it { expect_any_instance_of(PushNotificationService).to receive(:send_notification).with(nil,
       Onboarding::Timeliner::TITLE_H1,
       Onboarding::Timeliner::ASK_H1,
-      [user], nil, nil,
-      { welcome: true, stage: :h1, url: :resources }
+      [user], :resources, nil,
+      { stage: :h1, instance: :resources }
     ) }
   end
 
