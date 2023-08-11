@@ -12,6 +12,7 @@ class Entourage < ApplicationRecord
   include JoinableScopable
   include ModeratorReadable
   include Deeplinkable
+  include Translatable
 
   after_validation :track_status_change
 
