@@ -13,12 +13,11 @@ module TranslationServices
     end
 
     def translate!
-      translation = Translation.find_or_initialize_by(instance_id: record.id, instance_type: record.class.name)
-      # return if translation.persisted?
       return unless translation_key.present?
-
-      original_text = record.send(translation_key)
+      return unless original_text = @record.send(translation_key)
       return unless original_text.present?
+
+      translation = Translation.find_or_initialize_by(instance_id: @record.id, instance_type: @record.class.name)
 
       LANGUAGES.each do |language|
         translation[language] = text_translation(original_text, language)
@@ -30,7 +29,7 @@ module TranslationServices
     def translate lang
       return unless lang
       return unless LANGUAGES.include?(lang.to_sym)
-      return unless translation = record.translation
+      return unless translation = @record.translation
 
       translation.send(lang)
     end
@@ -54,9 +53,9 @@ module TranslationServices
     private
 
     def translation_key
-      return :content if record.is_a? ChatMessage
-      return :title if record.is_a? Entourage
-      return :name if record.is_a? Neighborhood
+      return :content if @record.is_a? ChatMessage
+      return :title if @record.is_a? Entourage
+      return :name if @record.is_a? Neighborhood
     end
 
     def from_lang
