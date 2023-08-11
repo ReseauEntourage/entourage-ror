@@ -2,6 +2,7 @@ module TranslationServices
   # supported: ChatMessage (see TranslationObserver)
 
   class Translator
+    DEFAULT_LANG = :fr
     LANGUAGES = [:fr, :en, :de, :pl, :ro, :uk, :ar]
     BASE_URI = "https://translate.google.com/m?sl=%s&tl=%s&q=%s"
 
@@ -37,7 +38,7 @@ module TranslationServices
     def text_translation text, lang
       return text if EnvironmentHelper.test? # @bad_code Use stub_request in rspec instead
 
-      uri = URI(BASE_URI % ["fr", lang, CGI.escape(text)])
+      uri = URI(BASE_URI % [from_lang, lang, CGI.escape(text)])
 
       response = Net::HTTP.start(uri.host, uri.port, :use_ssl => uri.scheme == 'https') do |http|
         http.request Net::HTTP::Get.new(uri, {})
@@ -56,6 +57,10 @@ module TranslationServices
       return :content if record.is_a? ChatMessage
       return :title if record.is_a? Entourage
       return :name if record.is_a? Neighborhood
+    end
+
+    def from_lang
+      @record.user.lang || DEFAULT_LANG
     end
   end
 end
