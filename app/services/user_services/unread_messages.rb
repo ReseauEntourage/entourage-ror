@@ -24,16 +24,16 @@ module UserServices
         .joins(:entourage)
         .where("entourages.group_type = 'conversation'")
         .with_unread_text_messages
+        .distinct
         .pluck(:joinable_id)
-        .uniq
     end
 
     def unread_conversations_by_group_type
       @unread_conversations_by_group_type ||= JoinRequest.where(user_id: user.id, joinable_type: :Entourage)
         .with_unread_messages
         .joins(:entourage)
+        .distinct
         .pluck(:joinable_id, :group_type)
-        .uniq
     end
 
     private
