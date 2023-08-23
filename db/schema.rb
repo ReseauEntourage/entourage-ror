@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_03_28_153400) do
+ActiveRecord::Schema.define(version: 2023_08_10_094200) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -390,7 +390,7 @@ ActiveRecord::Schema.define(version: 2023_03_28_153400) do
 
   create_table "inapp_notifications", force: :cascade do |t|
     t.integer "user_id", null: false
-    t.string "instance", null: false
+    t.string "instance"
     t.integer "instance_id"
     t.datetime "completed_at"
     t.datetime "skipped_at"
@@ -401,6 +401,7 @@ ActiveRecord::Schema.define(version: 2023_03_28_153400) do
     t.datetime "displayed_at"
     t.integer "post_id"
     t.integer "sender_id"
+    t.string "title"
     t.index ["context"], name: "index_inapp_notifications_on_context"
     t.index ["displayed_at"], name: "index_inapp_notifications_on_displayed_at"
     t.index ["instance"], name: "index_inapp_notifications_on_instance"
@@ -932,6 +933,21 @@ ActiveRecord::Schema.define(version: 2023_03_28_153400) do
     t.index ["user_id", "tour_id"], name: "index_tours_users_on_user_id_and_tour_id", unique: true
   end
 
+  create_table "translations", force: :cascade do |t|
+    t.integer "instance_id", null: false
+    t.string "instance_type", null: false
+    t.string "fr"
+    t.string "en"
+    t.string "de"
+    t.string "pl"
+    t.string "ro"
+    t.string "uk"
+    t.string "ar"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["instance_id", "instance_type"], name: "index_translations_on_instance_id_and_instance_type"
+  end
+
   create_table "user_applications", id: :serial, force: :cascade do |t|
     t.string "push_token", null: false
     t.string "device_os", null: false
@@ -1081,9 +1097,11 @@ ActiveRecord::Schema.define(version: 2023_03_28_153400) do
     t.datetime "reset_admin_password_sent_at"
     t.boolean "super_admin", default: false
     t.datetime "unblock_at"
-    t.integer "travel_distance", default: 100
+    t.integer "travel_distance", default: 40
     t.string "birthday", limit: 5
     t.string "other_interest"
+    t.json "options", default: {}
+    t.string "lang", default: "fr"
     t.index ["address_id"], name: "index_users_on_address_id"
     t.index ["email"], name: "index_users_on_email"
     t.index ["organization_id"], name: "index_users_on_organization_id"

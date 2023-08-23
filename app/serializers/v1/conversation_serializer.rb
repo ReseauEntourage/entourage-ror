@@ -29,9 +29,7 @@ module V1
         avatar_url: UserServices::Avatar.new(user: user).thumbnail_url,
         partner: partner.nil? ? nil : V1::PartnerSerializer.new(partner, scope: { minimal: true }, root: false).as_json,
         partner_role_title: user.partner_role_title.presence,
-        roles: user.roles.map do |role|
-          I18n.t("community.entourage.roles.#{role}")
-        end
+        roles: UserPresenter.new(user: user).public_targeting_profiles
       }
     end
 

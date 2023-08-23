@@ -37,7 +37,7 @@ class PartnerInvitation < ApplicationRecord
     return unless new_record? || invitee_id_changed?
 
     if invitee_id.present?
-      @custom_timestamp_attributes_for_update = [:accepted_at]
+      @custom_timestamp_attributes_for_update = ["accepted_at"]
     else
       self.accepted_at = nil
     end
@@ -47,7 +47,7 @@ class PartnerInvitation < ApplicationRecord
     return unless new_record? || status_changed?
 
     if deleted?
-      @custom_timestamp_attributes_for_update = [:deleted_at]
+      @custom_timestamp_attributes_for_update = ["deleted_at"]
     else
       self.deleted_at = nil
     end

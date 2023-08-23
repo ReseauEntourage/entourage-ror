@@ -14,14 +14,19 @@ module Interestable
     }
 
     scope :order_by_interests_matching, -> (interest_list) {
-      join_tags.group(sanitize_sql_array ["%s.id", self.table_name]).order([%(
+      return unless interest_list
+      return unless interest_list.any?
+
+      join_tags
+        .group(sanitize_sql_array ["%s.id", self.table_name])
+        .order(Arel.sql %(
         sum(
-          case context = 'interests' and tagger_id is null and tags.name in (?)
+          case context = 'interests' and tagger_id is null and tags.name in (%s)
           when true then 1
           else 0
           end
         ) desc
-      ), interest_list])
+      ) % interest_list.map { |interest| "'#{interest}'" }.join(","))
     }
   end
 

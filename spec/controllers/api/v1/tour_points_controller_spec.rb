@@ -49,7 +49,7 @@ RSpec.describe Api::V1::TourPointsController, :type => :controller do
       it "raises exception" do
         expect {
           post 'create', params: { tour_id: tour.id, token: user.token, tour_points: {latitude: "ABC", longitude: "DEF"} }
-        }.to raise_error
+        }.to raise_error(TourPointsServices::MissingPassingTimeError)
       end
     end
   end

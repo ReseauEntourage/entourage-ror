@@ -33,7 +33,7 @@ class TourPresenter
     if collection_cache
       duration = collection_cache.duration(tour)
     else
-      duration = TourPoint.where(tour_id: tour.id).pluck("extract(epoch from max(created_at) - min(created_at))").first
+      duration = TourPoint.where(tour_id: tour.id).pluck(Arel.sql("extract(epoch from max(created_at) - min(created_at))")).first
     end
 
     return "-" if duration.nil?

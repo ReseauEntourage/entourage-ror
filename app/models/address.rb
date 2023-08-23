@@ -1,5 +1,6 @@
 class Address < ApplicationRecord
   include Onboarding::UserEventsTracking::AddressConcern
+  include CoordinatesScopable
 
   USER_MAX_ADDRESSES = 2
 

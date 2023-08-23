@@ -1,7 +1,7 @@
 
 # Prerequisites
 
-Ruby 2.6.6
+Ruby 2.7.1
 Rails 5.2.6
 
 rbenv or rvm recommanded

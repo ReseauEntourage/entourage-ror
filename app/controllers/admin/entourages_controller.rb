@@ -1,6 +1,6 @@
 module Admin
   class EntouragesController < Admin::BaseController
-    before_action :set_entourage, only: [:show, :edit, :update, :close, :renew, :cancellation, :cancel, :edit_image, :update_image, :moderator_read, :moderator_unread, :message, :show_members, :show_joins, :show_invitations, :show_messages, :show_comments, :show_siblings, :sensitive_words, :sensitive_words_check, :edit_type, :edit_owner, :update_owner, :admin_pin, :admin_unpin, :pin, :unpin]
+    before_action :set_entourage, only: [:show, :edit, :update, :close, :renew, :cancellation, :cancel, :edit_image, :update_image, :moderator_read, :moderator_unread, :message, :show_members, :show_joins, :show_invitations, :show_messages, :show_comments, :show_neighborhoods, :show_siblings, :sensitive_words, :sensitive_words_check, :edit_type, :edit_owner, :update_owner, :admin_pin, :admin_unpin, :pin, :unpin, :update_neighborhoods]
     before_action :set_forced_join_request, only: [:message]
 
     before_action :set_default_index_params, only: [:index]
@@ -35,18 +35,18 @@ module Admin
         .like(params[:search])
         .group("entourages.id, moderator_reads.id, entourage_moderations.id, entourage_denorms.id")
         .joins(%(left outer join entourage_denorms on entourage_denorms.entourage_id = entourages.id))
-        .order("case when status = 'open' then 1 else 2 end")
-        .order(%(
+        .order(Arel.sql("case when status = 'open' then 1 else 2 end"))
+        .order(Arel.sql(%(
           case
           when moderator_reads is null and entourages.created_at >= now() - interval '1 week' then 0
           when max(max_chat_message_created_at) >= moderator_reads.read_at then 1
           else 2
           end
-        ))
-        .order(%(
+        )))
+        .order(Arel.sql(%(
           admin_pin DESC,
           entourages.created_at DESC
-        ))
+        )))
         .to_a
 
       @entourages = Kaminari.paginate_array(@entourages, total_count: @q.result.count).page(params[:page]).per(per_page)
@@ -56,18 +56,18 @@ module Admin
       @requests_count = JoinRequest
         .where(joinable_type: :Entourage, joinable_id: entourage_ids, status: :pending)
         .group(:joinable_id)
-        .pluck(%(
+        .pluck(Arel.sql(%(
           joinable_id,
           count(*),
           count(case when updated_at <= now() - interval '48 hours' then 1 end)
-        ))
+        )))
 
       @requests_count = Hash[@requests_count.map { |id, total, late| [id, { total: total, late: late }]}]
       @requests_count.default = { total: 0, late: 0 }
 
       @reminded_users = Experimental::PendingRequestReminder.recent
         .where(user_id: @entourages.map(&:user_id))
-        .pluck('distinct user_id')
+        .pluck(Arel.sql('distinct user_id'))
 
       @reminded_users = Set.new(@reminded_users)
 
@@ -163,6 +163,18 @@ module Admin
     def show_comments
       @post = ChatMessage.find(params[:message_id])
       @comments = ChatMessage.find(params[:message_id]).children.order(created_at: :desc).page(page).per(per)
+
+      render :show
+    end
+
+    def show_neighborhoods
+      @outing = Outing.find(@entourage.id)
+      @neighborhoods = @outing.neighborhoods.includes([:user])
+
+      @params = params.permit([:area, :search]).to_h
+      @area = params[:area].presence&.to_sym ||
+        OutingsServices::Helper.new(@outing).neighborhoods_main_departement_slug ||
+        :dep_75
 
       render :show
     end
@@ -435,6 +447,21 @@ module Admin
       redirect_to [:admin, @entourage]
     end
 
+    def update_neighborhoods
+      unless @entourage.outing?
+        return redirect_to show_neighborhoods_admin_entourage_path(@entourage), alert: "Seuls les événements peuvent être associés à des groupes de voisins"
+      end
+
+      @outing = Outing.find(@entourage.id)
+      @outing.assign_attributes(outing_neighborhoods_param)
+
+      if @outing.save(validate: false) # we do not want validation on starts_at or neighborhood_ids memberships
+        redirect_to show_neighborhoods_admin_entourage_path(@outing), notice: "Votre modification a bien été prise en compte"
+      else
+        redirect_to show_neighborhoods_admin_entourage_path(@outing), alert: "Votre modification n'a pas pu être prise en compte"
+      end
+    end
+
     private
 
     def per
@@ -514,6 +541,10 @@ module Admin
 
     def chat_messages_params
       params.require(:chat_message).permit(:content, :parent_id)
+    end
+
+    def outing_neighborhoods_param
+      params.require(:outing).permit(neighborhood_ids: [])
     end
   end
 end

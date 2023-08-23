@@ -29,7 +29,9 @@ describe Api::V1::Tours::ChatMessagesController do
               "id" => chat_message1.user_id,
               "avatar_url" => nil,
               "display_name" => "John D.",
-              "partner" => nil
+              "partner" => nil,
+              "partner_role_title" => nil,
+              "roles" => []
             },
             "created_at" => chat_message1.created_at.iso8601(3),
             "status" => "active"
@@ -42,7 +44,9 @@ describe Api::V1::Tours::ChatMessagesController do
             "id" => chat_message2.user_id,
             "avatar_url" => nil,
             "display_name" => "John D.",
-            "partner" => nil
+            "partner" => nil,
+            "partner_role_title" => nil,
+            "roles" => []
           },
             "created_at" => chat_message2.created_at.iso8601(3),
             "status" => "active"
@@ -97,7 +101,9 @@ describe Api::V1::Tours::ChatMessagesController do
               "id" => chat_message2.user.id,
               "avatar_url" => nil,
               "display_name" => "John D.",
-              "partner" => nil
+              "partner" => nil,
+              "partner_role_title" => nil,
+              "roles" => []
             },
             "created_at" => chat_message2.created_at.iso8601(3),
             "status" => "active"
@@ -135,7 +141,9 @@ describe Api::V1::Tours::ChatMessagesController do
               "id" => user.id,
               "avatar_url" => nil,
               "display_name" => "John D.",
-              "partner" => nil
+              "partner" => nil,
+              "partner_role_title" => nil,
+              "roles" => []
             },
             "created_at" => ChatMessage.first.created_at.iso8601(3),
             "status" => "active"
@@ -151,6 +159,7 @@ describe Api::V1::Tours::ChatMessagesController do
           FactoryBot.create(:join_request, joinable: tour, status: "pending")
 
           expect_any_instance_of(PushNotificationService).to receive(:send_notification).with(nil, "John D.", 'foobar', [join_request2.user], "tour", tour.id, {
+            tracking: :private_chat_message_on_create,
             joinable_id: tour.id,
             joinable_type: "Tour",
             group_type: 'tour',

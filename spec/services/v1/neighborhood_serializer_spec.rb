@@ -17,9 +17,7 @@ describe V1::NeighborhoodSerializer do
     it { expect(serialized).to have_key(:image_url) }
     it { expect(serialized).to have_key(:interests) }
     it { expect(serialized).to have_key(:ethics) }
-    it { expect(serialized).to have_key(:past_outings_count) }
     it { expect(serialized).to have_key(:future_outings_count) }
-    it { expect(serialized).to have_key(:has_ongoing_outing) }
 
     it { expect(serialized).to have_key(:members) }
 

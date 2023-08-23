@@ -1,6 +1,6 @@
 class PartnerJoinRequest < ApplicationRecord
   belongs_to :user
-  belongs_to :partner
+  belongs_to :partner, required: false
 
   validates :user_id, presence: true
   validate :validate_id_or_name

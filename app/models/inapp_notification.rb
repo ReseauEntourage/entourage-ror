@@ -2,11 +2,8 @@ class InappNotification < ApplicationRecord
   INSTANCES = [:neighborhood, :outing, :contribution, :solicitation, :user, :neighborhood_post, :outing_post]
 
   belongs_to :user # user that is notified
-  belongs_to :sender, class_name: :User # user that created the notification
-  belongs_to :post, class_name: :ChatMessage
-
-  validates_presence_of :instance, :instance_id
-  # validates_inclusion_of :instance, in: INSTANCES
+  belongs_to :sender, class_name: :User, required: false # user that created the notification
+  belongs_to :post, class_name: :ChatMessage, required: false
 
   default_scope { order(created_at: :desc) }
 
@@ -21,6 +18,12 @@ class InappNotification < ApplicationRecord
   scope :active_criteria_by_user, -> (user, criteria) { active.where(user: user).where(criteria) }
   scope :processed_criteria_by_user, -> (user, criteria) { processed_by(user).where(criteria) }
 
+  scope :with_context, -> (context) {
+    return unless context.present?
+    return if context.to_sym == :all
+
+    where(context: context)
+  }
 
   def record
     return unless instance

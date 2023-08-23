@@ -2,7 +2,6 @@ module Api
   module V1
     class NeighborhoodsController < Api::V1::BaseController
       before_action :set_neighborhood, only: [:show, :update, :destroy, :report]
-      before_action :ensure_is_member_or_public, only: [:show]
 
       after_action :set_last_message_read, only: [:show]
 
@@ -10,7 +9,12 @@ module Api
         render json: NeighborhoodServices::Finder.search(
           user: current_user,
           q: params[:q]
-        ).page(page).per(per), root: :neighborhoods, each_serializer: ::V1::NeighborhoodSerializer
+        )
+          .includes(:translation, :members)
+          .page(page)
+          .per(per), root: :neighborhoods, each_serializer: ::V1::NeighborhoodSerializer, scope: {
+            user: current_user
+          }
       end
 
       def show
@@ -102,12 +106,6 @@ module Api
 
       def join_request
         @join_request ||= JoinRequest.where(joinable: @neighborhood, user: current_user, status: :accepted).first
-      end
-
-      def ensure_is_member_or_public
-        return if join_request
-
-        render json: { message: 'unauthorized user' }, status: :unauthorized unless @neighborhood.public?
       end
 
       def set_last_message_read

@@ -28,7 +28,7 @@ module Admin
           user_id
         ])
         .group('entourages.id')
-        .order('GREATEST(entourages.created_at, MAX(conversation_messages.created_at)) desc')
+        .order(Arel.sql('GREATEST(entourages.created_at, MAX(conversation_messages.created_at)) desc'))
         .page(params[:page]).per(10)
 
       messages = ConversationMessage
@@ -287,7 +287,7 @@ module Admin
     end
 
     def user_params
-      params.require(:user).permit(:first_name, :last_name, :email, :sms_code_password, :phone, :travel_distance, :organization_id, :use_suggestions, :about, :accepts_emails, :targeting_profile, :partner_id, :admin, :moderator, :interest_list, interests: [])
+      params.require(:user).permit(:first_name, :last_name, :email, :sms_code_password, :phone, :lang, :travel_distance, :organization_id, :use_suggestions, :about, :accepts_emails, :targeting_profile, :partner_id, :admin, :moderator, :interest_list, interests: [])
     end
 
     def email_preferences_params

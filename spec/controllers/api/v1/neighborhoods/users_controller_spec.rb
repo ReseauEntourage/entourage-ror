@@ -104,7 +104,7 @@ describe Api::V1::Neighborhoods::UsersController do
       end
 
       context "user has community_roles" do
-        let(:user) { FactoryBot.create(:public_user, roles: ["ambassador"]) }
+        let(:user) { FactoryBot.create(:public_user, targeting_profile: "ambassador") }
         before { post :create, params: { neighborhood_id: neighborhood.to_param, token: user.token, distance: 123.45 } }
 
         it { expect(neighborhood.member_ids).to match_array([neighborhood.user_id, user.id]) }

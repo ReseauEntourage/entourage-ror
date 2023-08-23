@@ -131,6 +131,11 @@ fr:
           join_request_on_update: join_request_updated
           neighborhoods_entourage_on_create: outing_created
           outing_on_update: outing_updated
+          h1: h1
+          j2: j2
+          j5: j5
+          j8: j8
+          j11: j11
 
       user_moderation:
         expectations: Attentes
@@ -187,9 +192,17 @@ fr:
         name: Nom de la zone
         departement: Département
         moderator_id: Modérateur
-        welcome_message_1: Message de bienvenue 1
-        welcome_message_2: Message de bienvenue 2
+        welcome_message_1: Message de bienvenue
         slack_moderator_id: Identifiant Slack
+      translation:
+        langs:
+          fr: Français
+          en: Anglais
+          de: Allemand
+          pl: Polonais
+          ro: Roumain
+          uk: Ukrainien
+          ar: Arabe
       tour_area:
         statuses:
           active: Active

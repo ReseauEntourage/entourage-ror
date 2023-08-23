@@ -36,7 +36,7 @@ class Recommandation < ApplicationRecord
       ),
       { user_id: user.id }
     ]))
-    .order("user_recommandations.skipped_at is null desc")
+    .order(Arel.sql("user_recommandations.skipped_at is null desc"))
   }
 
   # valides :image_url # should be ?x?

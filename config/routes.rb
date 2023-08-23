@@ -112,6 +112,7 @@ Rails.application.routes.draw do
         post '/force_close_tours', action: :force_close_tours
         post '/unread_reminder_email', action: :unread_reminder_email
         post '/onboarding_sequence_send_welcome_messages', action: :onboarding_sequence_send_welcome_messages
+        get '/inapp_notifications', action: :inapp_notifications
       end
 
       resources :newsletter_subscriptions, only: [:index]
@@ -123,6 +124,7 @@ Rails.application.routes.draw do
           post :message
           get :show_members
           get :show_messages
+          get :show_neighborhoods
           get 'comments/:message_id' => :show_comments, as: :show_comments
           get :show_siblings
           get :sensitive_words
@@ -141,6 +143,7 @@ Rails.application.routes.draw do
           post :duplicate_outing
           get '/edit/image', action: :edit_image
           put '/update/image', action: :update_image
+          put :update_neighborhoods
         end
         collection do
           post :destroy_message
@@ -302,6 +305,13 @@ Rails.application.routes.draw do
       resources :inapp_notifications, only: [:index, :destroy] do
         collection do
           get :count
+        end
+      end
+
+      resources :notifications do
+        collection do
+          put :welcome
+          put :at_day
         end
       end
 
@@ -560,6 +570,7 @@ Rails.application.routes.draw do
       get 'check' => 'base#check'
       get 'ping' => 'base#ping'
       get 'ping_db' => 'base#ping_db'
+      get 'ping_mq' => 'base#ping_mq'
       get 'organization_admin_redirect' => 'users#organization_admin_redirect'
 
       namespace :public do

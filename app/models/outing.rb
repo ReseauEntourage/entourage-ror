@@ -3,7 +3,7 @@ class Outing < Entourage
   include JsonStorable # @caution delete this include as soon as we migrate Rails to 6 or higher
   include Recommandable
 
-  RECENTLY_PAST_PERIOD = 4.days
+  RECENTLY_PAST_PERIOD = 7.days
 
   store_accessor :metadata, :starts_at, :ends_at, :previous_at, :place_name, :street_address, :google_place_id, :display_address, :landscape_url, :landscape_thumbnail_url, :portrait_url, :portrait_thumbnail_url, :place_limit
 
@@ -41,7 +41,7 @@ class Outing < Entourage
     where.not(id: object.id).where("metadata->>'starts_at' >= ?", Time.zone.now).where.not(recurrency_identifier: nil)
   }, class_name: :Outing, foreign_key: :recurrency_identifier, primary_key: :recurrency_identifier
 
-  belongs_to :recurrence, class_name: :OutingRecurrence, foreign_key: :recurrency_identifier, primary_key: :identifier
+  belongs_to :recurrence, class_name: :OutingRecurrence, foreign_key: :recurrency_identifier, primary_key: :identifier, required: false
 
   # chat_messages redefinitions without updated_status
   has_many :chat_messages, -> { where.not(message_type: :status_update) }, as: :messageable, dependent: :destroy

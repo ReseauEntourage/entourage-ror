@@ -50,7 +50,8 @@ describe Api::V1::ContributionsController, :type => :controller do
       it { expect(subject["contributions"][0]["members"]).to eq([{
         "id" => contribution.user_id,
         "display_name" => "John D.",
-        "avatar_url" => nil
+        "avatar_url" => nil,
+        "community_roles" => [],
       }]) }
     end
 

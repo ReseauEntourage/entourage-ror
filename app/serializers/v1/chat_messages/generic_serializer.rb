@@ -14,11 +14,23 @@ module V1
                  :message_type,
                  :status
 
+      def content
+        return object.content unless scope && scope[:user].present?
+        return object.content unless scope[:user].lang.present?
+
+        TranslationServices::Translator.new(object).translate(scope[:user].lang) || object.content
+      end
+
       def user
+        partner = object.user.partner
+
         {
           id: object.user.id,
           avatar_url: UserServices::Avatar.new(user: object.user).thumbnail_url,
-          display_name: display_name
+          display_name: display_name,
+          partner: partner.nil? ? nil : V1::PartnerSerializer.new(partner, scope: { minimal: true }, root: false).as_json,
+          partner_role_title: object.user.partner_role_title.presence,
+          roles: UserPresenter.new(user: object.user).public_targeting_profiles
         }
       end
 

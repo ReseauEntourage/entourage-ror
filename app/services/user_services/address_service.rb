@@ -116,7 +116,7 @@ module UserServices
       address.assign_attributes(params)
 
       if user.anonymous?
-        success = address.valid?
+        success = address.valid? || address.errors.attribute_names == [:user] # address.user is declared as required
         user.address = address
       else
         success = address.save

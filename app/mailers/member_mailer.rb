@@ -1,8 +1,5 @@
 class MemberMailer < MailjetMailer
   default from: "contact@entourage.social"
-  add_template_helper(OrganizationHelper)
-
-  TOUR_REPORT_EMAIL = ENV["TOUR_REPORT_EMAIL"] || "maraudes@entourage.social"
 
   def welcome(user)
     community = user.community
@@ -45,35 +42,6 @@ class MemberMailer < MailjetMailer
   end
 
   def tour_report(tour)
-    @tour = tour
-    @user = tour.user
-    @tour_presenter = TourPresenter.new(tour: @tour)
-
-    exporter = ExportServices::TourExporter.new(tour: tour)
-    attachments['tour_points.csv'] = File.read(exporter.export_tour_points)
-    attachments['encounters.csv'] = File.read(exporter.export_encounters)
-
-    headers(
-      'X-MJ-EventPayload' => JSON.fast_generate(
-        type: 'tour_report',
-        tour_id: tour.id
-      ),
-      'X-Mailjet-Campaign' => 'tour_report',
-      'X-MJ-CustomID' => "tour_report-#{tour.id}"
-    )
-
-    track_delivery(
-      user_id: @user.id,
-      campaign: 'tour_report',
-      detailed: true
-    )
-
-    mail(
-      from: TOUR_REPORT_EMAIL,
-      to: @user.email,
-      cc: @user.organization.tour_report_cc,
-      subject: 'Résumé de la maraude'
-    ) if @user.email.present? || @user.organization.tour_report_cc.present?
   end
 
   def poi_report(poi, user, message)

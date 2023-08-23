@@ -40,7 +40,10 @@ describe Api::V1::Conversations::ChatMessagesController do
           "user" => {
             "id" => user.id,
             "avatar_url" => nil,
-            "display_name" => "John D."
+            "display_name" => "John D.",
+            "partner" => nil,
+            "partner_role_title" => nil,
+            "roles" => []
           },
           "created_at" => chat_message_1.created_at.iso8601(3),
           "post_id" => nil,
@@ -57,7 +60,10 @@ describe Api::V1::Conversations::ChatMessagesController do
           "user" => {
             "id" => user.id,
             "avatar_url" => nil,
-            "display_name" => "John D."
+            "display_name" => "John D.",
+            "partner" => nil,
+            "partner_role_title" => nil,
+            "roles" => []
           },
           "created_at" => chat_message_2.created_at.iso8601(3),
           "post_id" => nil,
@@ -172,7 +178,10 @@ describe Api::V1::Conversations::ChatMessagesController do
             "user" => {
               "id" => user.id,
               "avatar_url" => nil,
-              "display_name" => "John D."
+              "display_name" => "John D.",
+              "partner" => nil,
+              "partner_role_title" => nil,
+              "roles" => []
             },
             "created_at" => ChatMessage.last.created_at.iso8601(3),
             "post_id" => parent_id,
@@ -224,6 +233,7 @@ describe Api::V1::Conversations::ChatMessagesController do
             "conversation",
             conversation.id,
             {
+              tracking: :private_chat_message_on_create,
               joinable_id: conversation.id,
               joinable_type: "Entourage",
               group_type: 'conversation',

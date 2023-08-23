@@ -1,6 +1,6 @@
 class NotificationPermission < ApplicationRecord
-  INAPP_INSTANCES = %{neighborhood outing user}
-  PUSH_INSTANCES = %{neighborhood outing conversation user}
+  INAPP_INSTANCES = %{neighborhood outing contribution solicitation user}
+  PUSH_INSTANCES = %{neighborhood outing contribution solicitation conversation user}
 
   belongs_to :user
   validates_presence_of :user
@@ -12,12 +12,16 @@ class NotificationPermission < ApplicationRecord
 
   class << self
     def notify_inapp? user, instance, instance_id
+      return true unless instance
+      return true unless instance_id
       return false unless INAPP_INSTANCES.include?(instance.to_s)
 
       notify?(user, instance, instance_id)
     end
 
     def notify_push? user, instance, instance_id
+      return true unless instance
+      return true unless instance_id
       return false unless PUSH_INSTANCES.include?(instance.to_s)
 
       notify?(user, instance, instance_id)

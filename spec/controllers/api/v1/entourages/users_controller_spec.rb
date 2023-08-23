@@ -107,9 +107,10 @@ describe Api::V1::Entourages::UsersController do
               "Nouveau membre",
               "John D. vient de rejoindre votre action \"Foobar1\"",
               [entourage.user],
-              "conversation",
+              "contribution",
               entourage.id,
               {
+                tracking: :join_request_on_create,
                 joinable_type: "Entourage",
                 joinable_id: entourage.id,
                 group_type: 'action',
@@ -133,9 +134,10 @@ describe Api::V1::Entourages::UsersController do
               "Nouveau membre",
               "John D. vient de rejoindre votre action \"Foobar1\"",
               [entourage.user],
-              "conversation",
+              "contribution",
               entourage.id,
               {
+                tracking: :join_request_on_create,
                 joinable_type: "Entourage",
                 joinable_id: entourage.id,
                 group_type: 'action',
@@ -272,7 +274,7 @@ describe Api::V1::Entourages::UsersController do
           "Foobar1",
           "Vous venez de rejoindre un(e) action de John D.",
           User.where(id: requester.id),
-          "conversation",
+          "solicitation",
           entourage.id,
           {
             :joinable_id => entourage.id,
@@ -280,7 +282,7 @@ describe Api::V1::Entourages::UsersController do
             :group_type => 'action',
             :type => "JOIN_REQUEST_ACCEPTED",
             :user_id => requester.id,
-            instance: "conversation",
+            instance: "solicitation",
             instance_id: entourage.id
           }
         )

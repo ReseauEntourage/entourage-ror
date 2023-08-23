@@ -334,9 +334,9 @@ describe Api::V1::ConversationsController do
   end
 
   describe 'GET metadata' do
-    let!(:group) { FactoryBot.create(:entourage, status: :open) }
+    let!(:group) { FactoryBot.create(:entourage, user: create(:public_user), status: :open) }
     let(:other_user) { FactoryBot.create(:public_user) }
-    let!(:conversation) { create :conversation, participants: [other_user] }
+    let!(:conversation) { create :conversation, user: create(:public_user), participants: [other_user] }
     subject { JSON.parse(response.body) }
 
     describe "some metadata conversations" do

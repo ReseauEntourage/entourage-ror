@@ -82,6 +82,18 @@ module Admin
       }
     end
 
+    def inapp_notifications
+      @params = params.permit(:context)
+      @context = params[:context] || :all
+
+      @inapp_notifications = InappNotification.unscoped
+        .select("count(*) as count, min(created_at) as min_created_at, instance, context, title")
+        .with_context(params[:context])
+        .group(:instance, :instance_id, :context, :title)
+        .order("min_created_at desc")
+        .page(params[:page]).per(PER_PAGE)
+    end
+
     private
 
     def soliguide_params

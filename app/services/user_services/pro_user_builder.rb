@@ -22,18 +22,18 @@ module UserServices
       user
     end
 
-    def create_or_upgrade(*args, &block)
+    def create_or_upgrade(send_sms: false, &block)
       if existing_user
         upgrade_to_pro(user: existing_user, &block)
       else
-        create(*args, &block)
+        create(send_sms: send_sms, &block)
       end
     end
 
     def update(user:)
       simplified_tour = (params.delete(:simplified_tour) == "true")
       PreferenceServices::UserDefault.new(user: user).simplified_tour = simplified_tour
-      user.update_attributes(params)
+      user.update(params)
     end
 
     def upgrade_to_pro(user:)

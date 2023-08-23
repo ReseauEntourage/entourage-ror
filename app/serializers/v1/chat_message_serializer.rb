@@ -15,20 +15,20 @@ module V1
     end
 
     def user
+      partner = object.user.partner
+
       {
-        id: chat_user.id,
-        avatar_url: UserServices::Avatar.new(user: chat_user).thumbnail_url,
+        id: object.user_id,
+        avatar_url: UserServices::Avatar.new(user: object.user).thumbnail_url,
         display_name: display_name,
-        partner: chat_user.partner.nil? ? nil : V1::PartnerSerializer.new(chat_user.partner, scope: {}, root: false).as_json
+        partner: partner.nil? ? nil : V1::PartnerSerializer.new(partner, scope: {}, root: false).as_json,
+        partner_role_title: object.user.partner_role_title.presence,
+        roles: UserPresenter.new(user: object.user).public_targeting_profiles
       }
     end
 
     def display_name
       UserPresenter.new(user: object.user).display_name
-    end
-
-    def chat_user
-      object.user
     end
 
     def metadata

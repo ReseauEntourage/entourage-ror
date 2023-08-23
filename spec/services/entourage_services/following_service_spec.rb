@@ -4,7 +4,7 @@ describe FollowingService do
   let(:partner) { create :partner, name: "PARTNER_NAME" }
   let(:partner_user) { create :public_user, partner: partner }
   let!(:following) { create :following, partner: partner }
-  let(:action) { create :entourage, user: partner_user }
+  let(:action) { create :entourage, :moderation_validated, user: partner_user }
 
   describe ".on_create_entourage" do
     subject { FollowingService.on_create_entourage(action) }
@@ -48,10 +48,11 @@ describe FollowingService do
           action.title,
           "#{partner.name} vous invite à rejoindre #{action.title}",
           [following.user],
-          "conversation",
+          "solicitation",
           action.id,
           {
-            :instance => "conversation",
+            :tracking => :solicitation_on_create,
+            :instance => "solicitation",
             :instance_id => action.id,
             :type => "ENTOURAGE_INVITATION",
             :entourage_id => action.id,

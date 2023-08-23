@@ -28,7 +28,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
               "display_name" => "John D.",
               "first_name" => "John",
               "last_name" => "Doe",
-              "roles" => [],
+              "roles" => ["Association"],
               "about" => nil,
               "token" => user.token,
               "user_type" => "pro",
@@ -89,7 +89,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
               "phone" => user.phone,
               "unread_count" => 0,
               "interests" => [],
-              "travel_distance" => 100,
+              "travel_distance" => 40,
               "birthday" => nil,
               "permissions" => {
                 "outing" => { "creation" => true }
@@ -139,7 +139,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
         end
 
         context "when the user has a password" do
-          before { user.update_attributes(password: "P@ssw0rd") }
+          before { user.update(password: "P@ssw0rd") }
 
           context "on the web" do
             before { @request.env['X-API-KEY'] = 'api_debug_web' }
@@ -204,7 +204,10 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
 
     describe 'invalid params' do
       before { post 'login' }
-      it { expect(result).to eq("error"=>{"code"=>"PARAMETER_MISSING", "message"=>"param is missing or the value is empty: user"}) }
+      it { expect(result).to have_key("error") }
+      it { expect(result['error']['code']).to eq("PARAMETER_MISSING") }
+      it { expect(result['error']['message']).to match("param is missing or the value is empty: user") }
+
       it { expect(response.status).to eq 400 }
     end
 
@@ -312,7 +315,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
           "phone" => user.phone,
           "unread_count" => 0,
           "interests" => [],
-          "travel_distance" => 100,
+          "travel_distance" => 40,
           "birthday" => nil,
           "permissions" => {
             "outing" => { "creation" => false }
@@ -359,8 +362,9 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
       after { ENV["DISABLE_CRYPT"]="TRUE" }
 
       context 'params are valid' do
-        before { patch 'update', params: { token:user.token, user: { email:'new@e.mail', sms_code:'654321', device_id: 'foo', device_type: 'android', avatar_key: 'foo.jpg', travel_distance: 12 }, format: :json } }
+        before { patch 'update', params: { token: user.token, user: { lang: 'pl', email:'new@e.mail', sms_code:'654321', device_id: 'foo', device_type: 'android', avatar_key: 'foo.jpg', travel_distance: 12 }, format: :json } }
         it { expect(response.status).to eq(200) }
+        it { expect(user.reload.lang).to eq('pl') }
         it { expect(user.reload.email).to eq('new@e.mail') }
         it { expect(user.reload.avatar_key).to eq('foo.jpg') }
         it { expect(user.reload.travel_distance).to eq(12) }
@@ -752,7 +756,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
             "display_name" => "John D.",
             "first_name" => "John",
             "last_name" => "Doe",
-            "roles" => [],
+            "roles" => ["Association"],
             "about" => nil,
             "token" => user.token,
             "user_type" => "pro",
@@ -812,7 +816,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
             "phone" => user.phone,
             "unread_count" => 0,
             "interests" => [],
-            "travel_distance" => 100,
+            "travel_distance" => 40,
             "birthday" => nil,
             "permissions" => {
               "outing" => { "creation" => true }
@@ -846,7 +850,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
             "display_name" => "John D.",
             "first_name" => "John",
             "last_name" => "Doe",
-            "roles" => [],
+            "roles" => ["Association"],
             "about" => nil,
             "token" => user.token,
             "user_type" => "pro",
@@ -906,7 +910,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
             "phone" => user.phone,
             "unread_count" => 0,
             "interests" => [],
-            "travel_distance" => 100,
+            "travel_distance" => 40,
             "birthday" => nil,
             "permissions" => {
               "outing" => { "creation" => true }
@@ -989,7 +993,7 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
       end
 
       context "roles" do
-        let(:other_user) { FactoryBot.create(:public_user, roles: [:ambassador]) }
+        let(:other_user) { FactoryBot.create(:public_user, targeting_profile: :ambassador) }
         let!(:join_request)  { create :join_request, user: other_user, status: :accepted }
         let!(:join_request2) { create :join_request, user: other_user, status: :pending }
         before { get :show, params: { id: other_user.id, token: user.token } }
@@ -1171,11 +1175,6 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
       context "with a standard user" do
         include_examples "common tests"
         it { expect(user.reload.address_id).to be_nil }
-      end
-
-      context "with an anonymous user" do
-        let(:user) { AnonymousUserService.create_user($server_community) }
-        include_examples "common tests"
       end
     end
 

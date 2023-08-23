@@ -78,20 +78,23 @@ describe EmailDeliveryHooks do
     end
 
     describe "sending 2 unique_email" do
-      subject { -> { 2.times { @mailer.unique_email(user.id).deliver_now } } }
+      let(:subject) {
+        @mailer.unique_email(user.id).deliver_now
+        @mailer.unique_email(user.id).deliver_now
+      }
       it "delivers only one email" do
-        expect(subject).to change { ActionMailer::Base.deliveries.count }.by 1
+        expect { subject }.to change { ActionMailer::Base.deliveries.count }.by 1
       end
 
       it "creates only one EmailDelivery" do
-        expect(subject).to change { EmailDelivery.count }.by 1
+        expect { subject }.to change { EmailDelivery.count }.by 1
       end
     end
 
     describe "sending untracked_email" do
-      subject { -> { @mailer.untracked_email.deliver_now } }
+      let(:subject) { @mailer.untracked_email.deliver_now }
       it "sends the email (no interference)" do
-        expect(subject).to change { ActionMailer::Base.deliveries.count }.by 1
+        expect { subject }.to change { ActionMailer::Base.deliveries.count }.by 1
       end
     end
   end

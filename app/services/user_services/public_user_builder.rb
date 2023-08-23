@@ -42,7 +42,7 @@ module UserServices
         params[key] = params[key]&.strip if params.key?(key)
       end
 
-      if user.update_attributes(params)
+      if user.update(params)
         signal_blocked_user(user)
 
         MemberMailer.welcome(user).deliver_later if start_onboarding_sequence

@@ -15,8 +15,8 @@ describe Admin::GenerateToursController do
       before { Timecop.freeze(Time.parse("10/10/2010").at_beginning_of_day) }
       subject { post :create, params: { coordinates: [{lat: -35.1, lng: 49.1}, {lat: -35.2, lng: 49.2}] } }
 
-      it { expect(lambda { subject }).to change {Tour.count}.by(1) }
-      it { expect(lambda { subject }).to change {SimplifiedTourPoint.count}.by(2) }
+      it { expect { subject }.to change {Tour.count}.by(1) }
+      it { expect { subject }.to change {SimplifiedTourPoint.count}.by(2) }
 
       it "saves tour" do
         subject

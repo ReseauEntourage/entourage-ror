@@ -62,6 +62,16 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
       it { expect(result).to have_key('neighborhoods') }
       it { expect(result['neighborhoods'].count).to eq(0) }
     end
+
+    describe 'with user roles' do
+      before { neighborhood.user.update_attribute(:targeting_profile, :ambassador) }
+
+      before { get :index, params: { token: user.token } }
+
+      it { expect(response.status).to eq 200 }
+      it { expect(result).to have_key('neighborhoods') }
+      it { expect(result['neighborhoods'][0]['user']['community_roles']).to eq(['Ambassadeur']) }
+    end
   end
 
   context 'create' do
@@ -226,7 +236,8 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
           "user" => {
             "id" => neighborhood.user_id,
             "display_name" => "John D.",
-            "avatar_url" => nil
+            "avatar_url" => nil,
+            "community_roles" => [],
           },
           "address" => {
             "latitude" => 48.86,
@@ -234,9 +245,9 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
             "display_address" => ""
           },
           "members" => [{
-            "id" => user.id,
-            "display_name" => "John D.",
-            "avatar_url" => nil,
+            "id" => 1,
+            "avatar_url" => "n/a",
+            "display_name" => "n/a",
           }],
           "member" => true,
           "members_count" => 1,
@@ -306,7 +317,8 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
           "user" => {
             "id" => neighborhood.user_id,
             "display_name" => "John D.",
-            "avatar_url" => nil
+            "avatar_url" => nil,
+            "community_roles" => [],
           },
           "address" => {
             "latitude" => 48.86,
@@ -318,11 +330,12 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
             "id" => neighborhood.user.id,
             "display_name" => "John D.",
             "avatar_url" => nil,
+            "community_roles" => [],
           }],
           "ethics" => nil,
-          "past_outings_count" => 0,
           "future_outings_count" => 0,
           "outings" => [],
+          "past_outings_count" => 0,
           "future_outings" => [],
           "ongoing_outings" => [],
           "has_ongoing_outing" => false,
@@ -348,7 +361,8 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
 
       before { get :show, params: { id: neighborhood.id, token: user.token } }
 
-      it { expect(response.status).to eq 401 }
+      # we dont check anymore whether the user is member or not
+      it { expect(response.status).to eq 200 }
     end
 
     describe 'private but member' do
@@ -466,6 +480,8 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
           'display_name' => 'John D.',
           "avatar_url" => nil,
           "partner" => nil,
+          "partner_role_title" => nil,
+          "roles" => []
         },
         "created_at" => post.created_at.iso8601(3),
         "status" => "active",

@@ -140,7 +140,11 @@ module EntourageServices
     def order_by_distance(entourages:)
       if latitude && longitude
         distance_from_center = PostgisHelper.distance_from(latitude, longitude)
-        entourages.order("case when online then 1 else 2 end", distance_from_center, created_at: :desc)
+
+        entourages
+          .order(Arel.sql("case when online then 1 else 2 end"))
+          .order(Arel.sql(distance_from_center))
+          .order(created_at: :desc)
       else
         entourages
       end

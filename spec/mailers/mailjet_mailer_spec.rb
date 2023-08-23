@@ -3,7 +3,7 @@ require 'rails_helper'
 describe MailjetMailer do
   let(:category) { create :email_category }
   let(:user) { create :public_user }
-  let(:mail) { MailjetMailer.mailjet_email({to: user, template_id: 1234, campaign_name: :test_campaign}.merge(mail_options)) }
+  let(:mail) { MailjetMailer.mailjet_email(**{to: user, template_id: 1234, campaign_name: :test_campaign}.merge(mail_options)) }
   let(:mail_options) { {} }
 
   describe "unsubscribe" do

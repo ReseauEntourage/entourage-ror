@@ -9,11 +9,11 @@ RSpec.describe Api::V1::MapController, :type => :controller do
     context "Access control" do
       it "returns http success if user is logged in" do
         get 'index', params: { token: user.token, :format => :json }
-        expect(response).to be_success
+        expect(response.status).to eq(200)
       end
       it "returns an error if user is not logged in" do
         get 'index', :format => :json
-        expect(response).not_to be_success
+        expect(response.status).to eq(401)
       end
     end
 

@@ -17,7 +17,7 @@
   </br>
   </br>
 
-  <% if @moderator_read.nil? %>
+  <% if ['show', 'show_messages'].include?(params[:action]) && @moderator_read.nil? %>
     <div class="conversation-unread-status">
       Nouvel entourage créé le
       <%= l @entourage.created_at, format: "%-d %B %Y" %>
@@ -39,6 +39,11 @@
         <% if params[:action] == 'show_comments' %>
           <li role="presentation" class="active">
             <%= link_to "Commentaires", "#" %>
+          </li>
+        <% end %>
+        <% if @entourage.outing? %>
+          <li role="presentation" class="<%= :active if params[:action] == 'show_neighborhoods' %>">
+            <%= link_to "Groupes de voisins", show_neighborhoods_admin_entourage_path(@entourage, @params) %>
           </li>
         <% end %>
         <% if @entourage.recurrent? %>

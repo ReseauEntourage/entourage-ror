@@ -1,0 +1,48 @@
+<div class="container">
+  <div class="row">
+    <div class="col-xs-offset-2 col-xs-8">
+      <div class="h1" style="display: flex; align-items: center;">
+        <div style="flex-grow: 1">Notifications inapp</div>
+      </div>
+
+      <div style="margin-bottom: 15px; display: flex">
+        <div class="btn-group btn-group-sm">
+          <%= link_to("Tous", @params.merge(context: :all), class: "btn btn-#{@context == "all" ? :primary : :default}") %>
+
+          <% InappNotification.unscoped.group(:context).pluck(:context).each do |context| %>
+            <%= link_to(context, @params.merge(context: context), class: "btn btn-#{@context == context ? :primary : :default}") %>
+          <% end %>
+        </div>
+      </div>
+
+      <% if @inapp_notifications.empty? %>
+        <div class="panel panel-warning">
+          <div class="panel-heading">
+            <h3 class="panel-title">Aucune notification inapp.</h3>
+          </div>
+        </div>
+      <% else %>
+        <table class="table">
+          <th>Envois</th>
+          <th>Date d'envoi</th>
+          <th>Instance</th>
+          <th>Context</th>
+          <th>Titre</th>
+          <% @inapp_notifications.each do |inapp_notification| %>
+            <tr>
+              <td><%= inapp_notification.count %></td>
+              <td><%= l inapp_notification.min_created_at, format: :long %></td>
+              <td><%= inapp_notification.instance %></td>
+              <td><%= inapp_notification.context %></td>
+              <td><%= inapp_notification.title %></td>
+            </tr>
+          <% end %>
+        </table>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="row">
+    <%#= paginate @paginated %>
+  </div>
+</div>

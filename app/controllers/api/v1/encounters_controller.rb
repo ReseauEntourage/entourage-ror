@@ -56,7 +56,7 @@ module Api
       def reopen_closed_tour_with_warning
         return if @tour.ongoing?
 
-        @tour.update_attributes!(status: :ongoing)
+        @tour.update!(status: :ongoing)
 
         begin
           AsyncService.new(TourService).send_reopened_tour_slack_alert(

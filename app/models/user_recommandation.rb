@@ -2,7 +2,7 @@ class UserRecommandation < ApplicationRecord
   ACTIONS = [:index, :show, :create, :join]
 
   belongs_to :user
-  belongs_to :recommandation
+  belongs_to :recommandation, required: false
 
   validates_presence_of :instance_id, if: Proc.new { |object| object.show? && !object.webview? }
   validates_presence_of :instance_url, if: Proc.new { |object| object.show? && object.webview? }

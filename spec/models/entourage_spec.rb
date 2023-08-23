@@ -207,29 +207,24 @@ RSpec.describe Entourage, type: :model do
     end
 
     context "when the entourage doesn't exists" do
-      # wraps subject in a Proc to allow use of `raise_error`
-      def subject
-        -> { super }
-      end
-
       context "when searching with an integer id" do
         let(:identifier) { 1234 }
-        it { is_expected.to raise_error ActiveRecord::RecordNotFound }
+        it { expect { subject }.to raise_error ActiveRecord::RecordNotFound }
       end
 
       context "when searching with an string id" do
         let(:identifier) { "1234" }
-        it { is_expected.to raise_error ActiveRecord::RecordNotFound }
+        it { expect { subject }.to raise_error ActiveRecord::RecordNotFound }
       end
 
       context "when searching with a v1 uuid" do
         let(:identifier) { "59f213f2-7101-4c4c-b9a2-e298d9cb56af" }
-        it { is_expected.to raise_error ActiveRecord::RecordNotFound }
+        it { expect { subject }.to raise_error ActiveRecord::RecordNotFound }
       end
 
       context "when searching with a v2 uuid" do
         let(:identifier) { "emRCdKR0VOio" }
-        it { is_expected.to raise_error ActiveRecord::RecordNotFound }
+        it { expect { subject }.to raise_error ActiveRecord::RecordNotFound }
       end
     end
   end

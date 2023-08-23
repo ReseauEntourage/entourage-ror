@@ -18,7 +18,7 @@ class EmailPreference < ApplicationRecord
 
   def track_subscription_change
     if subscribed_changed? && !subscription_changed_at_changed?
-      @custom_timestamp_attributes_for_update = [:subscription_changed_at]
+      @custom_timestamp_attributes_for_update = ["subscription_changed_at"]
     end
   end
 

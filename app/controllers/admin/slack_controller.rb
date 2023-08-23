@@ -33,9 +33,7 @@ module Admin
       redirect_to edit_admin_neighborhood_path(params[:id])
     end
 
-    # no option: render template
-    # option display: display csv
-    # option download: download csv
+    # @deprecated related to airtable exports for Les Bonnes Ondes
     def csv
       @filename = params['filename']
       @option = params['option']

@@ -12,6 +12,7 @@ class Entourage < ApplicationRecord
   include JoinableScopable
   include ModeratorReadable
   include Deeplinkable
+  include Translatable
 
   after_validation :track_status_change
 
@@ -78,9 +79,9 @@ class Entourage < ApplicationRecord
   scope :except_conversations, -> { where.not(group_type: :conversation) }
   scope :order_by_profile, -> (profile) {
     if profile == :ask_for_help
-      order("case when entourage_type = 'contribution' then 1 else 2 end")
+      order(Arel.sql("case when entourage_type = 'contribution' then 1 else 2 end"))
     else
-      order("case when entourage_type = 'ask_for_help' then 1 else 2 end")
+      order(Arel.sql("case when entourage_type = 'ask_for_help' then 1 else 2 end"))
     end
   }
   scope :like, -> (search) {
@@ -369,12 +370,26 @@ class Entourage < ApplicationRecord
     outing? && recurrency_identifier.present?
   end
 
+  def first_occurrence?
+    return true unless recurrent?
+
+    Outing.where(recurrency_identifier: recurrency_identifier).count <= 1
+  end
+
   def contribution?
     entourage_type && entourage_type.to_sym == :contribution
   end
 
+  def solicitation?
+    entourage_type && entourage_type.to_sym == :ask_for_help
+  end
+
   def cancelled?
     status && status.to_sym == :cancelled
+  end
+
+  def blacklisted?
+    status && status.to_sym == :blacklisted
   end
 
   def closed?
@@ -387,6 +402,10 @@ class Entourage < ApplicationRecord
 
   def future_outing?
     outing? && starts_at > Time.zone.now
+  end
+
+  def moderation_validated?
+    moderation && moderation.validated?
   end
 
   def add_metadata_schema_urn(value)
@@ -436,9 +455,10 @@ class Entourage < ApplicationRecord
     end
   end
 
-  def set_moderated_at_and_save
+  def set_moderation_dates_and_save
     moderation = self.moderation || self.build_moderation
     moderation.update_attribute(:moderated_at, Time.zone.now)
+    moderation.update_attribute(:validated_at, Time.zone.now) unless blacklisted?
     moderation.save
   end
 

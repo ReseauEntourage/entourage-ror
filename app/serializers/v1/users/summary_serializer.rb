@@ -55,7 +55,7 @@ module V1
       private
 
       def past_outing_memberships user
-        user.outing_memberships.where(id: Outing.active.past)
+        user.outing_memberships.where(id: Outing.past)
       end
 
       def successful_actions user

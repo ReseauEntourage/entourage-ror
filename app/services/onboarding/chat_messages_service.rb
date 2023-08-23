@@ -1,6 +1,6 @@
 module Onboarding
   module ChatMessagesService
-    MIN_DELAY = 2.hours
+    MIN_DELAY = 5.hours
     ACTIVE_DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
     ACTIVE_HOURS = '09:00'..'18:30'
 
@@ -33,8 +33,7 @@ module Onboarding
           variant = user.goal || :goal_not_known
 
           messages = [
-            moderation_area["welcome_message_1_#{variant}"],
-            moderation_area["welcome_message_2_#{variant}"]
+            moderation_area["welcome_message_1_#{variant}"]
           ].map(&:presence).compact
 
           next if messages.empty?

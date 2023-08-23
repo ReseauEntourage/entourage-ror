@@ -21,7 +21,7 @@ module OrganizationAdmin
       @actions = groups.where(group_type: :action).order(created_at: :desc).to_a
       @events = groups.where(group_type: :outing)
         .where("metadata->>'ends_at' >= ?", Time.zone.now)
-        .order("metadata->>'starts_at'")
+        .order(Arel.sql("metadata->>'starts_at'"))
         .to_a
     end
 
