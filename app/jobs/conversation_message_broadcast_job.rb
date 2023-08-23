@@ -88,6 +88,6 @@ class ConversationMessageBroadcastJob
       .where(joinable_type: 'Entourage')
       .where(
         joinable_id: ChatMessage.where(message_type: :broadcast).where("metadata ->> 'conversation_message_broadcast_id' = '?'", conversation_message_broadcast_id).pluck(:messageable_id)
-      ).pluck(:user_id).uniq.sort
+      ).distinct.pluck(:user_id).sort
   end
 end

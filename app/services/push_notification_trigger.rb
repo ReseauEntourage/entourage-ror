@@ -154,7 +154,7 @@ class PushNotificationTrigger
   def entourage_on_create_for_neighbors user
     return unless @record.action?
 
-    neighbor_ids = Address.inside_perimeter(@record.latitude, @record.longitude, DISTANCE_OF_ACTION).pluck(:user_id).compact.uniq
+    neighbor_ids = Address.inside_perimeter(@record.latitude, @record.longitude, DISTANCE_OF_ACTION).distinct.pluck(:user_id).compact
 
     return unless neighbor_ids.any?
 
