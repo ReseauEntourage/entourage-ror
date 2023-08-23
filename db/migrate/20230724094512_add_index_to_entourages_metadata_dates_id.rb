@@ -1,7 +1,7 @@
 class AddIndexToEntouragesMetadataDatesId < ActiveRecord::Migration[5.2]
   def up
     execute <<-SQL
-      CREATE INDEX IF NOT EXISTS index_entourages_metadata_dates ON entourages USING ((metadata->>'ends_at'), (metadata->>'starts_at'));
+      CREATE INDEX IF NOT EXISTS index_entourages_metadata_dates ON entourages ((metadata->>'ends_at'), (metadata->>'starts_at'));
     SQL
   end
 
