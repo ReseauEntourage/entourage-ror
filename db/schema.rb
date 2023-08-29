@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_08_10_094200) do
+ActiveRecord::Schema.define(version: 2023_08_29_093700) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -109,7 +109,6 @@ ActiveRecord::Schema.define(version: 2023_08_10_094200) do
     t.string "uuid_v2", limit: 12, null: false
     t.index "((metadata -> 'conversation_message_broadcast_id'::text))", name: "chat_messages_conversation_message_broadcast_id", using: :hash
     t.index ["ancestry"], name: "index_chat_messages_on_ancestry"
-    t.index ["content"], name: "index_chat_messages_on_content", opclass: :gin_trgm_ops, using: :gin
     t.index ["created_at"], name: "index_chat_messages_on_created_at"
     t.index ["message_type"], name: "index_chat_messages_on_message_type"
     t.index ["messageable_id", "messageable_type"], name: "index_chat_messages_on_messageable_id_and_messageable_type"
@@ -404,7 +403,6 @@ ActiveRecord::Schema.define(version: 2023_08_10_094200) do
     t.integer "sender_id"
     t.string "title"
     t.index ["context"], name: "index_inapp_notifications_on_context"
-    t.index ["displayed_at"], name: "index_inapp_notifications_on_displayed_at"
     t.index ["instance"], name: "index_inapp_notifications_on_instance"
     t.index ["instance_id"], name: "index_inapp_notifications_on_instance_id"
     t.index ["user_id"], name: "index_inapp_notifications_on_user_id"
@@ -427,7 +425,6 @@ ActiveRecord::Schema.define(version: 2023_08_10_094200) do
     t.datetime "archived_at"
     t.string "report_prompt_status"
     t.index ["joinable_type", "joinable_id", "status"], name: "index_join_requests_on_joinable_type_and_joinable_id_and_status"
-    t.index ["user_id", "joinable_id", "joinable_type", "status"], name: "index_user_joinable_on_join_requests"
     t.index ["user_id", "joinable_id", "joinable_type"], name: "index_join_requests_on_user_id_and_joinable_id"
   end
 
