@@ -332,6 +332,7 @@ Rails.application.routes.draw do
       resources :messages, only: [:create]
       resources :registration_requests, only: [:create]
       resources :map, only: [:index]
+      resources :contact_subscriptions, only: [:create]
       resources :newsletter_subscriptions, only: [:create]
       resources :questions, only: [:index]
 
