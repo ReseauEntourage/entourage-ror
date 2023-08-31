@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_07_03_141300) do
+ActiveRecord::Schema.define(version: 2023_08_30_164100) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -115,7 +115,17 @@ ActiveRecord::Schema.define(version: 2023_07_03_141300) do
     t.index ["messageable_id", "messageable_type"], name: "index_chat_messages_on_messageable_id_and_messageable_type"
     t.index ["status"], name: "index_chat_messages_on_status"
     t.index ["user_id"], name: "index_chat_messages_on_user_id"
-    t.index ["uuid_v2"], name: "index_chat_messages_on_uuid_v2", unique: true
+  end
+
+  create_table "contact_subscriptions", force: :cascade do |t|
+    t.string "email"
+    t.string "name"
+    t.string "profile"
+    t.string "subject"
+    t.string "message"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["email"], name: "index_contact_subscriptions_on_email", unique: true
   end
 
   create_table "conversation_message_broadcasts", id: :serial, force: :cascade do |t|
