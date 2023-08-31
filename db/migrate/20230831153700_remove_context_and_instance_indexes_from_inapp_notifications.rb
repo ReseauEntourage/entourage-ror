@@ -1,8 +1,8 @@
 class RemoveContextAndInstanceIndexesFromInappNotifications < ActiveRecord::Migration[6.1]
   def up
     execute <<-SQL
-      DROP INDEX IF EXISTS index_inapp_notifications_on_context
-      DROP INDEX IF EXISTS index_inapp_notifications_on_instance
+      DROP INDEX IF EXISTS index_inapp_notifications_on_context;
+      DROP INDEX IF EXISTS index_inapp_notifications_on_instance;
     SQL
   end
 
