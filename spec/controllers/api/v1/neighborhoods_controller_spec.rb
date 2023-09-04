@@ -327,10 +327,9 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
             "street_address" => nil
           },
           "members" => [{
-            "id" => neighborhood.user.id,
-            "display_name" => "John D.",
-            "avatar_url" => nil,
-            "community_roles" => [],
+            "id" => 1,
+            "display_name" => "n/a",
+            "avatar_url" => "n/a"
           }],
           "ethics" => nil,
           "future_outings_count" => 0,

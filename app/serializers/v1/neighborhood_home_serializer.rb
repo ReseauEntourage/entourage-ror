@@ -9,6 +9,7 @@ module V1
       :description,
       :welcome_message,
       :member,
+      :members,
       :members_count,
       :image_url,
       :interests,
@@ -21,7 +22,6 @@ module V1
       :public
 
     has_one :user, serializer: ::V1::Users::BasicSerializer
-    has_many :members, serializer: ::V1::Users::BasicSerializer
     has_many :outings, serializer: ::V1::OutingSerializer
     has_many :future_outings, serializer: ::V1::OutingSerializer
     has_many :ongoing_outings, serializer: ::V1::OutingSerializer
@@ -30,6 +30,13 @@ module V1
       return false unless scope && scope[:user]
 
       object.members.include? scope[:user]
+    end
+
+    def members
+      # fake data: not really used in mobile app
+      # but to assure retrocompatibility with former app versions, we need this method to be compatible with "members.size"
+      # so we want this method to return an array of "members" elements
+      Array.new(object.members_count, { id: 1, avatar_url: "n/a", display_name: "n/a" })
     end
 
     def interests
