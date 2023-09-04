@@ -216,7 +216,7 @@ module Admin
       user_ids = filtered_users
         .where("last_sign_in_at > ?", LAST_SIGN_IN_AT_EXPORT)
         .order(last_sign_in_at: :desc)
-        .pluck(:id)
+        .pluck(:id).compact.uniq
 
       MemberMailer.users_csv_export(user_ids, current_user.email).deliver_later
 
