@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_08_31_153700) do
+ActiveRecord::Schema.define(version: 2023_09_04_135500) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -413,7 +413,6 @@ ActiveRecord::Schema.define(version: 2023_08_31_153700) do
     t.integer "sender_id"
     t.string "title"
     t.index ["displayed_at"], name: "index_inapp_notifications_on_displayed_at"
-    t.index ["instance_id"], name: "index_inapp_notifications_on_instance_id"
     t.index ["user_id"], name: "index_inapp_notifications_on_user_id"
   end
 
