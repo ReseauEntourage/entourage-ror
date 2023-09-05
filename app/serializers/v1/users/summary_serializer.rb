@@ -48,8 +48,7 @@ module V1
       def unclosed_action
         actions = Entourage.where(user: object).action.active.where("created_at < ?", UNCLOSED_ACTION_ALERT.ago)
         actions = actions.where("created_at > ?", object.last_unclosed_action_notification_at) if object.last_unclosed_action_notification_at.present?
-        actions = actions.order_by_entourage_type(:ask_for_help).order(:created_at)
-        action = actions.select(:entourage_type, :id).first
+        action = actions.order(:created_at).select(:entourage_type, :id).first
 
         return unless action.present?
 

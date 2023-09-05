@@ -265,16 +265,6 @@ describe Api::V1::HomeController do
           it { expect(subject["user"]["unclosed_action"]).to be_a(Hash) }
           it { expect(subject["user"]["unclosed_action"]["id"]).to eq(entourage_2.id) }
         end
-
-        context "order by ask_for_help" do
-          let!(:entourage_1) { FactoryBot.create(:entourage, user: user, entourage_type: :ask_for_help, created_at: (creation_time + 1.day).ago) }
-          let!(:entourage_2) { FactoryBot.create(:entourage, user: user, entourage_type: :contribution, created_at: (creation_time + 2.day).ago) }
-
-          before { request }
-
-          it { expect(subject["user"]["unclosed_action"]).to be_a(Hash) }
-          it { expect(subject["user"]["unclosed_action"]["id"]).to eq(entourage_1.id) }
-        end
       end
     end
   end
