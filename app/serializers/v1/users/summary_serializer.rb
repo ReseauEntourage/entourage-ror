@@ -54,7 +54,7 @@ module V1
 
         action = action.contribution? ? Contribution.find(action.id) : Solicitation.find(action.id)
 
-        object.set_last_unclosed_action_notification_at_and_save(action.created_at)
+        object.set_last_unclosed_action_notification_at_and_save(action.created_at.utc.strftime("%Y-%m-%d %H:%M:%S.%N"))
 
         V1::ActionSerializer.new(action).as_json
       end
