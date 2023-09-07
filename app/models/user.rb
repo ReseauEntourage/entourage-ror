@@ -4,6 +4,7 @@ class User < ApplicationRecord
 
   include Onboarding::UserEventsTracking::UserConcern
   include UserServices::Engagement
+  include UserServices::Options
 
   TEMPORARY_BLOCK_PERIOD = 1.month
   PROFILES = [:offer_help, :ask_for_help, :organization, :goal_not_known]
