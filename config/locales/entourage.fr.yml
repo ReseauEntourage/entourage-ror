@@ -69,6 +69,7 @@ fr:
           spam-detection: Spam détecté
           sms: Code SMS redemandé
         sms:
+          invite: Invitation
           welcome: Bienvenue
           regenerate: Demande de nouveau mot de passe
       organization:
