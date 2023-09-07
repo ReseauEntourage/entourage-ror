@@ -100,4 +100,16 @@ class Rack::Attack
   Rack::Attack.blocklist_ip("54.36.101.21")
   Rack::Attack.blocklist_ip("185.220.101.25")
   Rack::Attack.blocklist_ip("185.220.101.50")
+
+  ### Notify against matched attack
+
+  throttled_response = lambda do |env|
+    request = Rack::Request.new(env)
+    ip = request.ip
+    attack_type = env['rack.attack.matched']
+
+    SlackServices::SignalRackAttack.new(ip: ip, attack_type: env['rack.attack.matched']).notify
+
+    [429, {}, ['Rate limit exceeded.']]
+  end
 end
