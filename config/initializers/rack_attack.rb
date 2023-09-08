@@ -105,7 +105,7 @@ class Rack::Attack
 
   ### Notify against matched attack
 
-  throttled_response = lambda do |env|
+  self.throttled_response = lambda do |env|
     request = Rack::Request.new(env)
     ip = request.ip
     attack_type = env['rack.attack.matched']
