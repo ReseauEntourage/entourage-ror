@@ -14,7 +14,7 @@ describe Api::V1::Users::NeighborhoodsController, :type => :controller do
 
     context "logged in" do
       let!(:neighborhood_created) { FactoryBot.create(:neighborhood, user: user, name: "bar") }
-      let!(:neighborhood_joined) { FactoryBot.create(:neighborhood, user: user, name: "foo") }
+      let!(:neighborhood_joined) { FactoryBot.create(:neighborhood, name: "foo", participants: [user]) }
       let!(:neighborhood_other) { FactoryBot.create(:neighborhood) }
 
       before { get :index, params: { user_id: user.id, token: user.token } }
