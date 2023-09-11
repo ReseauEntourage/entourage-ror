@@ -95,6 +95,5 @@ group :production do
   gem 'rails_stdout_logging'
   gem 'puma'
   gem 'rack-timeout', require: 'rack/timeout/base'
-  gem 'rack-attack'
   gem 'barnes'
 end
