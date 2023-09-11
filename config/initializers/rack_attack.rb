@@ -1,6 +1,11 @@
 require "rack/attack"
 
-Rack::Attack.cache.store = ActiveSupport::Cache::RedisCacheStore.new(url: ENV["REDIS_URL"].gsub("rediss://", "redis://"))
+redis_url = ENV["REDIS_URL"]
+if redis_url.include?("rediss://")
+  redis_url.gsub!("rediss://", "redis://")
+end
+
+Rack::Attack.cache.store = ActiveSupport::Cache::RedisCacheStore.new(url: redis_url)
 
 class Rack::Attack
 
