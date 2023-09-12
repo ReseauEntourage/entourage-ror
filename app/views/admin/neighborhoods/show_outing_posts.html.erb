@@ -67,7 +67,9 @@
                 <p style="color: red;"> Ce message a été supprimé : </p>
                 <em><%= simple_format post.content(true) %></em>
               <% else %>
-                <%= simple_format post.content %>
+                <div id="chat-message-<%= post.id %>">
+                  <%= simple_format post.content %>
+                </div>
               <% end %>
 
               <% if post.image_path(true).present? %>
@@ -92,6 +94,10 @@
                       <%= link_to "Ajouter un commentaire", show_outing_post_comments_admin_neighborhood_path(@neighborhood.id, post_id: post.id) %>
                     </li>
                   <% end %>
+
+                  <li>
+                    <%= link_to "Modifier le message", admin_chat_message_path(post.id), remote: true %>
+                  </li>
 
                   <li>
                     <%= link_to "Supprimer le message",
