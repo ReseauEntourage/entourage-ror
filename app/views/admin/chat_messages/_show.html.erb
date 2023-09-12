@@ -1,0 +1,5 @@
+<%= form_for chat_message, url: admin_chat_message_path(chat_message.id), remote: true do |f| %>
+  <%= f.text_area :content, class: "conversation-message-box", rows: 5 %>
+  <%= f.submit 'Envoyer', class: "btn btn-primary" %>
+  <%= link_to "Annuler", cancel_update_admin_chat_message_path(chat_message.id), class: "btn btn-default", remote: true %>
+<% end %>

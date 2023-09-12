@@ -1,0 +1,4 @@
+$("#chat-message-<%= @chat_message.id %>").html("<%= j render(
+  partial: 'show',
+  locals: { chat_message: @chat_message }
+) %>");

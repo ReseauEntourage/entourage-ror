@@ -43,6 +43,12 @@ Rails.application.routes.draw do
         end
       end
 
+      resources :chat_messages, only: [:show, :update] do
+        member do
+          get :cancel_update
+        end
+      end
+
       resources :entourage_images do
         member do
           get '/edit/landscape', action: :edit_landscape
