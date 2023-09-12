@@ -65,7 +65,9 @@
                 <p style="color: red;"> Ce message a été supprimé : </p>
                 <em><%= simple_format message.content(true) %></em>
               <% else %>
-                <%= simple_format message.content %>
+                <div id="chat-message-<%= message.id %>">
+                  <%= simple_format message.content %>
+                </div>
               <% end %>
             </div>
 
@@ -75,6 +77,9 @@
                   <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu1">
+                  <li>
+                    <%= link_to "Modifier le message", admin_chat_message_path(message.id), remote: true %>
+                  </li>
                   <li>
                     <%= link_to "Supprimer le message",
                         destroy_message_admin_neighborhoods_path(chat_message_id: message.id),
