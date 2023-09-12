@@ -86,7 +86,9 @@
           <p style="color: red;"> Ce message a été supprimé : </p>
           <em><%= simple_format message.content(true) %></em>
         <% else %>
-          <%= simple_format message.content %>
+          <div id="chat-message-<%= message.full_object_id %>">
+            <%= simple_format message.content %>
+          </div>
         <% end %>
 
         <% if message.image_path(true).present? %>
@@ -121,6 +123,10 @@
               <%= link_to "Marquer comme non lu",
                   moderator_read_admin_entourage_path(@entourage, read_at: message.created_at),
                   method: :post %>
+            </li>
+
+            <li>
+              <%= link_to "Modifier le message", admin_chat_message_path(message.full_object_id), remote: true %>
             </li>
 
             <% unless message.children.any? %>

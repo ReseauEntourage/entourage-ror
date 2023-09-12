@@ -1,0 +1,1 @@
+$("#chat-message-<%= @chat_message.id %>").html("<%= j @chat_message.content.gsub(/\n/, '<br>').html_safe %>");
