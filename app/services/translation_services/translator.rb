@@ -1,5 +1,5 @@
 module TranslationServices
-  # supported: ChatMessage (see TranslationObserver)
+  # supported: ChatMessage, Entourage, Neighborhood (see TranslationObserver)
 
   class Translator
     BASE_URI = "https://translate.google.com/m?sl=%s&tl=%s&q=%s"
