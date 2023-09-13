@@ -4,7 +4,9 @@ class TranslatorJob
   sidekiq_options :retry => true, queue: :translation
 
   def perform class_name, id
-    TranslationServices::Translator.new(class_name.constantize.unscoped.find(id)).translate!
+    return unless record = class_name.constantize.unscoped.find_by(id: id)
+
+    TranslationServices::Translator.new(record).translate!
   end
 
   def self.perform_later class_name, id
