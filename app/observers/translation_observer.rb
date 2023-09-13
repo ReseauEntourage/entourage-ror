@@ -3,6 +3,7 @@ class TranslationObserver < ActiveRecord::Observer
 
   def after_commit record
     return if record.is_a?(Entourage) && record.conversation?
+    return unless record.persisted?
 
     return action(:create, record) if commit_is?(record, [:create])
     return action(:update, record) if commit_is?(record, [:update])
