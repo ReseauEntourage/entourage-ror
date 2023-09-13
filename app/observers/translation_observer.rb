@@ -10,7 +10,7 @@ class TranslationObserver < ActiveRecord::Observer
 
   # @param verb :create, :update
   def action(verb, record)
-    TranslationServices::Translator.new(record).translate!
+    TranslatorJob.perform_later(record.class.name, record.id)
   end
 
   private
