@@ -1,5 +1,7 @@
 module Admin
   class ChatMessagesController < Admin::BaseController
+    skip_before_action :verify_authenticity_token, only: [:photo_upload_success]
+
     before_action :set_chat_message
 
     def show
@@ -31,11 +33,9 @@ module Admin
     end
 
     def photo_upload_success
-      image = ChatMessageUploader.handle_success(params)
-      respond_to do |format|
-        format.js
-        format.html
-      end
+      @chat_message = ChatMessageUploader.handle_success(params)
+
+      render partial: 'photo_upload_success'
     end
 
     private

@@ -1,24 +1,31 @@
-<% size = '300x492' %>
+<% chat_message_name = "chat-message-image-#{chat_message.id}" %>
+<% iframe_name = "hidden-iframe-chat-message-image-#{chat_message.id}" %>
 
-<div class="margin-bottom: 15px">
-  <p><i><%= size %> px</i></p>
-  <%= image_tag(image, size: size) if image.present? %>
-</div>
-
-<form class="form-inline" id="upload-form" action="#" method="post" enctype="multipart/form-data">
-  <div>PNG ou JPEG, <% size %></div>
+<%= form_for(chat_message, target: iframe_name, url: "#", html: {
+  id: "upload-form",
+  method: :post,
+  multipart: true,
+  target: iframe_name
+}) do |f| %>
   <div class="form-group">
     <input type="file" class="btn btn-default" name="file" accept="<%= form.content_types %>"/>
   </div>
   <input type="submit" value="Enregistrer" class="btn btn-success"/>
-</form>
+<% end %>
+
+<iframe id="<%= iframe_name %>" name="<%= iframe_name %>" style="display: none;"></iframe>
 
 <script>
   (function() {
     var $form = $('#upload-form'),
+        $iframe = $('#<%= iframe_name %>'),
         $fileInput = $form.find('input[type=file]'),
         $submit = $form.find('[type=submit]');
 
+    $form.find('input[name="authenticity_token"]').remove();
+    $form.find('input[name="utf8"]').remove();
+
+    // sends image to aws
     $fileInput.on('change', function() {
       var file = this.files[0],
           $field = null;
@@ -42,6 +49,7 @@
       })
       .done(function(data) {
         $form.attr('action', data.url);
+
         Object.keys(data.fields).forEach(function(key) {
           $field = $form.find('input[name=' + key + ']');
           if ($field.length === 0) {
@@ -52,6 +60,14 @@
         });
         $submit.prop('disabled', false);
       });
+    });
+
+    $iframe.on('load', function() {
+      var preText = $iframe.contents().find("#<%= chat_message_name %>").html();
+
+      $("#<%= chat_message_name %>").html(preText);
+
+      $form.remove();
     });
   })();
 </script>
