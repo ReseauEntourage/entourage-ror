@@ -1,8 +1,9 @@
 <% chat_message_name = "chat-message-image-#{chat_message.id}" %>
 <% iframe_name = "hidden-iframe-chat-message-image-#{chat_message.id}" %>
+<% upload_name = "upload-form-chat-message-image-#{chat_message.id}" %>
 
 <%= form_for(chat_message, target: iframe_name, url: "#", html: {
-  id: "upload-form",
+  id: upload_name,
   method: :post,
   multipart: true,
   target: iframe_name
@@ -17,7 +18,7 @@
 
 <script>
   (function() {
-    var $form = $('#upload-form'),
+    var $form = $('#<%= upload_name %>'),
         $iframe = $('#<%= iframe_name %>'),
         $fileInput = $form.find('input[type=file]'),
         $submit = $form.find('[type=submit]');

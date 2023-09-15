@@ -90,6 +90,8 @@
                 <div id="chat-message-image-<%= message.id %>" style="margin-bottom: 15px">
                   <%= image_tag(message.image_path(true), height: '100') %>
                 </div>
+              <% else %>
+                <div id="chat-message-image-<%= message.id %>" hidden="hidden"></div>
               <% end %>
 
               <% if message.children.any? %>

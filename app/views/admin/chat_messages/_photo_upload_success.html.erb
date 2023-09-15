@@ -1,3 +1,7 @@
-<div id="chat-message-image-<%= @chat_message.id %>" style="margin-bottom: 15px">
-  <%= image_tag(@chat_message.image_path(true), height: '100') %>
-</div>
+<% if @chat_message.image_path(true).present? %>
+  <div id="chat-message-image-<%= @chat_message.id %>" style="margin-bottom: 15px">
+    <%= image_tag(@chat_message.image_path(true), height: '100') %>
+  </div>
+<% else %>
+  <div id="chat-message-image-<%= @chat_message.id %>" hidden="hidden"></div>
+<% end %>
