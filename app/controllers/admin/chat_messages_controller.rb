@@ -32,10 +32,24 @@ module Admin
       end
     end
 
+    def cancel_update_photo
+      respond_to do |format|
+        format.js
+      end
+    end
+
+    def delete_photo
+      @chat_message.update_attribute(:image_url, nil)
+
+      respond_to do |format|
+        format.js
+      end
+    end
+
     def photo_upload_success
       @chat_message = ChatMessageUploader.handle_success(params)
 
-      render partial: 'photo_upload_success'
+      render partial: 'display_image'
     end
 
     private

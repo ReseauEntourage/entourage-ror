@@ -1,0 +1,6 @@
+$("#chat-message-image-<%= @chat_message.id %>").show().html("<%= j render(
+  partial: 'display_image',
+  locals: {
+    chat_message: @chat_message,
+  }
+) %>");

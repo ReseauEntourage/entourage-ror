@@ -12,6 +12,8 @@
     <input type="file" class="btn btn-default" name="file" accept="<%= form.content_types %>"/>
   </div>
   <input type="submit" value="Enregistrer" class="btn btn-success"/>
+  <%= link_to "Annuler la modification", cancel_update_photo_admin_chat_message_path(chat_message.id), class: "btn btn-default", remote: true %>
+  <%= link_to "Supprimer la photo", delete_photo_admin_chat_message_path(chat_message.id), class: "btn btn-default", method: :delete, remote: true %>
 <% end %>
 
 <iframe id="<%= iframe_name %>" name="<%= iframe_name %>" style="display: none;"></iframe>
