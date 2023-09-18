@@ -364,28 +364,6 @@ describe User, :type => :model do
         it { expect(suspended.reload.status).to eq('suspended') }
         it { expect(other_entourage.reload.status).to eq('open') }
       end
-
-      context 'a status_update message is requested' do
-        before { expect_any_instance_of(ChatMessage).to receive(:status_update_content) }
-
-        it { user.update(validation_status: :blocked) }
-      end
-
-      context 'a chat_message is created' do
-        subject { user.update(validation_status: :blocked) }
-
-        it { expect { subject }.to change { ChatMessage.count }.by 1 }
-      end
-
-      context 'the content of status_update message is specific' do
-        before { user.update(validation_status: :blocked) }
-
-        it {
-          expect(ChatMessage.last.content).to eq(
-            "a clôturé l’action : #{I18n.t("community.chat_messages.status_update.closed_user")}"
-          )
-        }
-      end
     end
 
     describe 'user is deleted' do
@@ -395,28 +373,6 @@ describe User, :type => :model do
         it { expect(open.reload.status).to eq('closed') }
         it { expect(suspended.reload.status).to eq('suspended') }
         it { expect(other_entourage.reload.status).to eq('open') }
-      end
-
-      context 'a status_update message is requested' do
-        before { expect_any_instance_of(ChatMessage).to receive(:status_update_content) }
-
-        it { user.update(deleted: true) }
-      end
-
-      context 'a chat_message is created' do
-        subject { user.update(deleted: true) }
-
-        it { expect { subject }.to change { ChatMessage.count }.by 1 }
-      end
-
-      context 'the content of status_update message is specific' do
-        before { user.update(deleted: true) }
-
-        it {
-          expect(ChatMessage.last.content).to eq(
-            "a clôturé l’action : #{I18n.t("community.chat_messages.status_update.closed_user")}"
-          )
-        }
       end
     end
 

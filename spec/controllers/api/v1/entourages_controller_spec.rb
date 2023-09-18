@@ -818,21 +818,9 @@ describe Api::V1::EntouragesController do
           it { expect(user_entourage.reload.status).to eq 'closed' }
           it { expect(user_entourage.moderation.action_outcome).to eq('Non') }
           it { expect(JSON.parse(response.body)["entourage"]).to include(
-                                                                    "status"=>"closed",
-                                                                    "outcome"=>{
-                                                                      "success"=>false
-                                                                    }
-                                                                  )}
-          it { expect(user_entourage.chat_messages.last.attributes).to include(
-            "content"=>"a clôturé l’action",
-            "user_id"=>user.id,
-            "message_type"=>"status_update",
-            "metadata"=>{
-              :$id=>"urn:chat_message:status_update:metadata",
-              :status=>"closed",
-              :outcome_success=>false
-            }
-          ) }
+            "status" => "closed",
+            "outcome" => { "success" => false }
+          )}
         end
 
         context "any string is a truthy success value" do
@@ -841,21 +829,9 @@ describe Api::V1::EntouragesController do
           it { expect(user_entourage.reload.status).to eq 'closed' }
           it { expect(user_entourage.moderation.action_outcome).to eq('Oui') }
           it { expect(JSON.parse(response.body)["entourage"]).to include(
-                                                                    "status"=>"closed",
-                                                                    "outcome"=>{
-                                                                      "success"=>true
-                                                                    }
-                                                                  )}
-          it { expect(user_entourage.chat_messages.last.attributes).to include(
-            "content"=>"a clôturé l’action",
-            "user_id"=>user.id,
-            "message_type"=>"status_update",
-            "metadata"=>{
-              :$id=>"urn:chat_message:status_update:metadata",
-              :status=>"closed",
-              :outcome_success=>true
-            }
-          ) }
+            "status" => "closed",
+            "outcome" => { "success" => true }
+          )}
         end
 
         context "invalid success value" do
@@ -872,16 +848,6 @@ describe Api::V1::EntouragesController do
         before { patch :update, params: { id: user_entourage.to_param, entourage: {status: 'open'}, token: user.token } }
 
         it { expect(response.code).to eq '200' }
-        it { expect(user_entourage.chat_messages.last.attributes).to include(
-          "content"=>"a rouvert l’action",
-          "user_id"=>user.id,
-          "message_type"=>"status_update",
-          "metadata"=>{
-            :$id=>"urn:chat_message:status_update:metadata",
-            :status=>"open",
-            :outcome_success=>nil
-          }
-        )}
       end
 
       context "close with message" do
@@ -893,16 +859,6 @@ describe Api::V1::EntouragesController do
         }, token: user.token } }
 
         it { expect(response.code).to eq '200' }
-        it { expect(user_entourage.chat_messages.last.attributes).to include(
-          "content"=>"a clôturé l’action",
-          "user_id"=>user.id,
-          "message_type"=>"status_update",
-          "metadata"=>{
-            :$id=>"urn:chat_message:status_update:metadata",
-            :status=>"closed",
-            :outcome_success=>nil
-          }
-        )}
 
         it { expect(user_entourage.reload.metadata).to eq({
           :$id => "urn:entourage:action:metadata",
