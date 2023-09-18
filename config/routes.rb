@@ -575,6 +575,7 @@ Rails.application.routes.draw do
       get 'ping' => 'base#ping'
       get 'ping_db' => 'base#ping_db'
       get 'ping_mq' => 'base#ping_mq'
+      get 'ping_op_lapin' => 'base#ping_op_lapin'
       get 'organization_admin_redirect' => 'users#organization_admin_redirect'
 
       namespace :public do
