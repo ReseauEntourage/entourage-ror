@@ -2,7 +2,7 @@ require "rack/attack"
 
 redis_url = ENV["REDIS_URL"]
 if redis_url.present? && redis_url.include?("rediss://")
-  redis_url = redis_url.dup.gsub!("rediss://", "redis://")
+  redis_url.gsub!("rediss://", "redis://")
 end
 
 Rack::Attack.cache.store = ActiveSupport::Cache::RedisCacheStore.new(url: redis_url)
