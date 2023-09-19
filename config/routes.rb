@@ -46,6 +46,10 @@ Rails.application.routes.draw do
       resources :chat_messages, only: [:show, :update] do
         member do
           get :cancel_update
+          get '/edit/photo', action: :edit_photo
+          get '/cancel_update/photo', action: :cancel_update_photo
+          delete '/delete/photo', action: :delete_photo
+          get '/photo_upload_success', action: :photo_upload_success
         end
       end
 

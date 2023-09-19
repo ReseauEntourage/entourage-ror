@@ -87,9 +87,11 @@
               <% end %>
 
               <% if message.image_path(true).present? %>
-                <div style="margin-bottom: 15px">
+                <div id="chat-message-image-<%= message.id %>" style="margin-bottom: 15px">
                   <%= image_tag(message.image_path(true), height: '100') %>
                 </div>
+              <% else %>
+                <div id="chat-message-image-<%= message.id %>" hidden="hidden"></div>
               <% end %>
 
               <% if message.children.any? %>
@@ -113,6 +115,10 @@
                       <%= link_to "Ajouter un commentaire", show_post_comments_admin_neighborhood_path(@neighborhood, post_id: message.id) %>
                     </li>
                   <% end %>
+
+                  <li>
+                    <%= link_to "Modifier la photo", edit_photo_admin_chat_message_path(message.id), remote: true %>
+                  </li>
 
                   <li>
                     <%= link_to "Modifier le message", admin_chat_message_path(message.id), remote: true %>

@@ -6,6 +6,7 @@ module Admin
       uploader = {
         'partner_logo' => PartnerLogoUploader,
         'announcement_image' => AnnouncementImageUploader,
+        'chat_message_uploader' => ChatMessageUploader,
         'entourage_image' => EntourageImageUploader,
         'entourage_image_landscape_uploader' => EntourageImageLandscapeUploader,
         'entourage_image_portrait_uploader' => EntourageImagePortraitUploader,
@@ -25,6 +26,7 @@ module Admin
       params.permit([:uploader, :redirect_url, :filetype, :controller, :action,
         :entourage_image_id,
         :announcement_id,
+        :chat_message_id,
         :entourage_id,
         :neighborhood_image_id,
         :recommandation_image_id,
