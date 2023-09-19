@@ -48,37 +48,23 @@ describe NeighborhoodServices::Finder do
       it { expect(response).to eq(["foot"]) }
     end
 
-    describe "ordered by most interests" do
+    describe "ordered by no zone" do
       let(:q) { nil }
       let(:latitude) { 0.1 }
       let(:longitude) { 0.1 }
 
-      context "one has an interest" do
-        let(:interests_1) { [:animaux] }
-        let(:interests_2) { [] }
-
-        it { expect(response).to eq(["foot", "ball"]) }
-      end
-
-      context "the other has an interest" do
-        let(:interests_1) { [] }
-        let(:interests_2) { [:animaux] }
+      context "one has a zone" do
+        let(:zone_0) { :ville }
+        let(:zone_1) { nil }
 
         it { expect(response).to eq(["ball", "foot"]) }
       end
 
-      context "one with more interests" do
-        let(:interests_1) { [:animaux, :sport] }
-        let(:interests_2) { [:animaux] }
+      context "the other has a zone" do
+        let(:zone_0) { nil }
+        let(:zone_1) { :ville }
 
         it { expect(response).to eq(["foot", "ball"]) }
-      end
-
-      context "the other with more interests" do
-        let(:interests_1) { [:animaux] }
-        let(:interests_2) { [:animaux, :sport] }
-
-        it { expect(response).to eq(["ball", "foot"]) }
       end
     end
 
