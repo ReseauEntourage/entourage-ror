@@ -1,7 +1,7 @@
 require "rack/attack"
 
 redis_url = ENV["REDIS_URL"]
-if redis_url.present? && redis_url.include?("rediss://")
+if redis_url.include?("rediss://")
   redis_url.gsub!("rediss://", "redis://")
 end
 
