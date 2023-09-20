@@ -4,3 +4,4 @@ toolbar:
 plugins:
   - image
   - link
+font_family_formats: "Entourage=quicksand;Arial=arial,helvetica,sans-serif;Courier New=courier new,courier,monospace;Times New Roman=times new roman,times,serif;Verdana=verdana,geneva,sans-serif"
