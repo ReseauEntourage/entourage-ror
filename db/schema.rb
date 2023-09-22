@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_09_04_135500) do
+ActiveRecord::Schema.define(version: 2023_09_22_094100) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -515,6 +515,7 @@ ActiveRecord::Schema.define(version: 2023_09_04_135500) do
     t.boolean "public", default: true
     t.string "uuid_v2", limit: 12, null: false
     t.string "country", default: "FR"
+    t.index "st_setsrid(st_makepoint(longitude, latitude), 4326)", name: "index_neighborhoods_on_coordinates", using: :gist
     t.index ["feed_updated_at"], name: "index_neighborhoods_on_feed_updated_at"
     t.index ["name"], name: "index_neighborhoods_on_name"
     t.index ["postal_code"], name: "index_neighborhoods_on_postal_code"
