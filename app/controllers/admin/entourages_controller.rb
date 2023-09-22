@@ -180,9 +180,23 @@ module Admin
     end
 
     def show_siblings
-      @siblings = Outing.find(params[:id]).siblings
+      @outing = Outing.find(params[:id])
+      @siblings = @outing.siblings
 
       render :show
+    end
+
+    def stop_recurrences
+      @outing = Outing.find(params[:id])
+      @recurrence = @outing.recurrence
+
+      return redirect_to show_siblings_admin_entourage_path(@outing), alert: "La récurrence n'a pas pu être identifiée" unless @recurrence
+
+      if @recurrence.update_attribute(:continue, false)
+        redirect_to show_siblings_admin_entourage_path(@outing), notice: "La récurrence a été annulée"
+      else
+        redirect_to show_siblings_admin_entourage_path(@outing), alert: "La récurrence n'a pas pu être annulée : #{@outing.errors.full_messages.to_sentence}"
+      end
     end
 
     def moderator_read
