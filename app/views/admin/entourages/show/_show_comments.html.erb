@@ -69,6 +69,15 @@
             <li>
               <%= link_to "Modifier le message", admin_chat_message_path(message.id), remote: true %>
             </li>
+            <li>
+              <% unless message.deleted? %>
+                <%= link_to "Supprimer le message",
+                    destroy_message_admin_entourages_path(id: message.id, type: :ChatMessage),
+                    method: :delete,
+                    data: { confirm: "Voulez-vous vraiment supprimer ce message ? \n\n#{message.user.full_name} :\n#{message.content}" },
+                    class: "text-danger" %>
+              <% end %>
+            </li>
           </ul>
         </div>
       </div>
