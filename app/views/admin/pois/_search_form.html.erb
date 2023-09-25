@@ -1,9 +1,9 @@
+<% q = @params[:q] || {} %>
 
 <div class="row">
   <div style="margin-bottom: 15px; display: flex">
     <div class="btn-group btn-group-sm" style="flex-grow: 1">
       <%
-        q = @params[:q] || {}
         presets = {
           "Partout" => {},
           "75" => { postal_code_start: '75' },
@@ -28,6 +28,20 @@
       <% end %>
     </div>
 
+    <div class="btn-group btn-group-sm" style="flex-grow: 1">
+      <%= link_to "Tous", admin_pois_path(@params.merge(q: q.except(:validated_eq))), class: "btn btn-#{q[:validated_eq].blank? ? :primary : :default}" %>
+      <%= link_to "Validé", admin_pois_path(@params.merge(q: q.merge(validated_eq: "true"))), class: "btn btn-#{q[:validated_eq] == "true" ? :primary : :default}" %>
+      <%= link_to "Non validé", admin_pois_path(@params.merge(q: q.merge(validated_eq: "false"))), class: "btn btn-#{q[:validated_eq] == "false" ? :primary : :default}" %>
+    </div>
+
+    <div class="btn-group btn-group-sm" style="flex-grow: 1">
+      <%= link_to "Tous", admin_pois_path(@params.merge(q: q.except(:source_eq))), class: "btn btn-#{q[:source_eq].blank? ? :primary : :default}" %>
+
+      <% Poi.sources.each do |key, value| %>
+        <%= link_to key.capitalize, admin_pois_path(@params.merge(q: q.merge(source_eq: value))), class: "btn btn-#{q[:source_eq] == value.to_s ? :primary : :default}" %>
+      <% end %>
+    </div>
+
     <div style="margin-left: auto">
       <%= link_to "ajouter un POI", new_admin_poi_path, class: "btn btn-success" %>
 
@@ -43,13 +57,22 @@
 
       <%= link_to "Télécharger", export_admin_pois_path(@params), class: "btn btn-default" %>
     </div>
-
   </div>
-    <%= search_form_for [:admin, @q], class: 'form-inline' do |f| %>
-      <div class='form-group'>
-        <%= f.search_field :name_or_adress_cont, class: 'form-control' %>
-      </div>
 
-      <%= f.submit 'Rechercher par nom', class: 'btn btn-default' %>
-    <% end %>
+  <%= search_form_for [:admin, @q], class: 'form-inline' do |f| %>
+    <div class='form-group'>
+      <%= f.search_field :name_or_adress_cont, class: 'form-control' %>
+    </div>
+
+    <%= f.submit 'Rechercher par nom', class: 'btn btn-default' %>
+  <% end %>
+
+  <% if q[:validated_eq] == "false" && q[:source_eq] == "0" %>
+    <div class="alert alert-info" role="alert" style="margin-top: 35px">
+      <div style="flex-grow: 1">
+        <b>POI non validés</b><br>
+        Voici la liste des POI Entourage non validés. Merci de soit les valider soit les supprimer.
+      </div>
+    </div>
+  <% end %>
 </div>
