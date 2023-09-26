@@ -79,6 +79,17 @@ describe Api::V1::SolicitationsController, :type => :controller do
       it { expect(subject["solicitations"][0]["id"]).to eq(solicitation.id) }
     end
 
+    context "excluded user being a member when exclude_memberships" do
+      let(:request) { get :index, params: { token: user.token, exclude_memberships: "true" } }
+      let!(:join_request) { create(:join_request, user: user, joinable: solicitation, status: :accepted, role: :member) }
+
+      before { request }
+
+      it { expect(response.status).to eq(200) }
+      # when exclude_memberships we do not want to return solicitation when user is member
+      it { expect(subject["solicitations"].count).to eq(0) }
+    end
+
     context "user being a member along with some users" do
       let!(:join_request) { create(:join_request, user: user, joinable: solicitation, status: :accepted, role: :member) }
       let!(:join_request_1) { create(:join_request, user: FactoryBot.create(:public_user), joinable: solicitation, status: :accepted, role: :member) }
