@@ -28,6 +28,14 @@ module Interestable
         ) desc
       ) % interest_list.map { |interest| "'#{interest}'" }.join(","))
     }
+
+    scope :order_with_interests, -> {
+      join_tags
+        .group(sanitize_sql_array ["%s.id", self.table_name])
+        .order(Arel.sql %(
+          sum(case when tags.id is not null then 1 else 0 end) desc
+        ))
+    }
   end
 
   def validate_interest_list!
