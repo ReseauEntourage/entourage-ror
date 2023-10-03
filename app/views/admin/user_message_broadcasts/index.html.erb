@@ -27,12 +27,12 @@
       </div>
 
       <div style="margin-left: 15px">
-        <%= link_to("Nouvelle diffusion", new_admin_conversation_message_broadcast_path, class: "btn btn-default btn-sm") %>
+        <%= link_to("Nouvelle diffusion", new_admin_user_message_broadcast_path, class: "btn btn-default btn-sm") %>
       </div>
     </div>
 
     <div class="row">
-      <% if @conversation_message_broadcasts.none? %>
+      <% if @user_message_broadcasts.none? %>
         Pas de diffusions de MP.
       <% else %>
         <table class="table">
@@ -49,31 +49,31 @@
             <th>En cours</th>
           <% end %>
           <th>Actions</th>
-          <% @conversation_message_broadcasts.each do |conversation_message_broadcast| %>
+          <% @user_message_broadcasts.each do |user_message_broadcast| %>
             <tr>
-              <td><%= conversation_message_broadcast.id %></td>
-              <td><%= link_to conversation_message_broadcast.title, edit_admin_conversation_message_broadcast_path(conversation_message_broadcast) %></td>
-              <td><%= check_box_tag '', '', conversation_message_broadcast.archived?, disabled: true %></td>
+              <td><%= user_message_broadcast.id %></td>
+              <td><%= link_to user_message_broadcast.title, edit_admin_user_message_broadcast_path(user_message_broadcast) %></td>
+              <td><%= check_box_tag '', '', user_message_broadcast.archived?, disabled: true %></td>
               <td>
-                <% conversation_message_broadcast[:areas].map do |area| %>
+                <% user_message_broadcast[:areas].map do |area| %>
                   <span class="badge"><%= area %></span>
                 <% end %>
               </td>
-              <td><%= UserGoalPresenter.new(conversation_message_broadcast.goal, community: current_user.community).name %></td>
-              <td><%= l(conversation_message_broadcast.updated_at, format: :short) if conversation_message_broadcast.updated_at %></td>
+              <td><%= UserGoalPresenter.new(user_message_broadcast.goal, community: current_user.community).name %></td>
+              <td><%= l(user_message_broadcast.updated_at, format: :short) if user_message_broadcast.updated_at %></td>
               <% if @status == :sent %>
-                <td><%= conversation_message_broadcast.sent_users_count %></td>
+                <td><%= user_message_broadcast.sent_recipients_count %></td>
               <% elsif @status == :sending %>
-                <td><%= conversation_message_broadcast.sent_users_count %></td>
-                <td><%= ConversationMessageBroadcast.pending_jobs[conversation_message_broadcast.id] %></td>
+                <td><%= user_message_broadcast.sent_recipients_count %></td>
+                <td><%= UserMessageBroadcast.pending_jobs[user_message_broadcast.id] %></td>
               <% end %>
               <td>
                 <% if @status == :draft %>
-                  <%= link_to "Modifier", edit_admin_conversation_message_broadcast_path(conversation_message_broadcast), class: "btn btn-primary" %>
+                  <%= link_to "Modifier", edit_admin_user_message_broadcast_path(user_message_broadcast), class: "btn btn-primary" %>
                 <% elsif [:sent, :archived].include? @status %>
-                  <%= link_to "Dupliquer", clone_admin_conversation_message_broadcast_path(conversation_message_broadcast), method: :post, class: "btn btn-danger" %>
+                  <%= link_to "Dupliquer", clone_admin_user_message_broadcast_path(user_message_broadcast), method: :post, class: "btn btn-danger" %>
                 <% elsif @status == :sending %>
-                  <%= link_to "Stopper", kill_admin_conversation_message_broadcast_path(conversation_message_broadcast), method: :post, class: "btn btn-danger" %>
+                  <%= link_to "Stopper", kill_admin_user_message_broadcast_path(user_message_broadcast), method: :post, class: "btn btn-danger" %>
                 <% end %>
               </td>
             </tr>
@@ -81,9 +81,9 @@
         </table>
       <% end %>
 
-      <%= page_entries_info @conversation_message_broadcasts, entry_name: 'diffusions de MP' %>
+      <%= page_entries_info @user_message_broadcasts, entry_name: 'diffusions de MP' %>
       <div class="container">
-        <%= paginate(@conversation_message_broadcasts) %>
+        <%= paginate(@user_message_broadcasts) %>
       </div>
     </div>
   </div>

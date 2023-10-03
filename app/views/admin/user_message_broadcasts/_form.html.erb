@@ -2,40 +2,40 @@
   .field_with_errors { display: inline-block }
 </style>
 
-<%= render partial: 'common/errors', locals: { obj: @conversation_message_broadcast } %>
-<%= form_for [:admin, @conversation_message_broadcast], html: { role: "form" } do |f| %>
+<%= render partial: 'common/errors', locals: { obj: @user_message_broadcast } %>
+<%= form_for [:admin, @user_message_broadcast], html: { role: "form" } do |f| %>
 
-  <% if @conversation_message_broadcast.archived? %>
+  <% if @user_message_broadcast.archived? %>
     <div class="alert alert-info" role="alert" style="display: flex; align-items: center">
       <div style="flex-grow: 1">
         <b>Archivé</b><br>
         Cette diffusion de MP est archivée. Vous pouvez la dupliquer pour planifier une diffusion similaire.
       </div>
-      <%= link_to("Dupliquer", clone_admin_conversation_message_broadcast_path, method: :post, class: "btn btn-success") %>
+      <%= link_to("Dupliquer", clone_admin_user_message_broadcast_path, method: :post, class: "btn btn-success") %>
     </div>
-  <% elsif @conversation_message_broadcast.sending? %>
+  <% elsif @user_message_broadcast.sending? %>
     <div class="alert alert-info" role="alert" style="display: flex; align-items: center">
       <div style="flex-grow: 1">
         <b>En cours d'envoi</b><br>
         Cette diffusion de MP est en cours d'envoi. La diffusion sera archivée une fois les envois effectués.
       </div>
-      <%= link_to("Rafraîchir", edit_admin_conversation_message_broadcast_path(@conversation_message_broadcast), class: "btn btn-success") %>
+      <%= link_to("Rafraîchir", edit_admin_user_message_broadcast_path(@user_message_broadcast), class: "btn btn-success") %>
     </div>
-  <% elsif @conversation_message_broadcast.sent? %>
+  <% elsif @user_message_broadcast.sent? %>
     <div class="alert alert-info" role="alert" style="display: flex; align-items: center">
       <div style="flex-grow: 1">
         <b>Envoyé</b><br>
         Votre message a été :
         <ul>
-          <li>diffusé à <%= @conversation_message_broadcast.sent_count %> utilisateurs</li>
-          <li>lus par <%= @conversation_message_broadcast.read_count %> utilisateurs</li>
-          <li>le <%= l @conversation_message_broadcast.sent_at %>.</li>
+          <li>diffusé à <%= @user_message_broadcast.sent_count %> utilisateurs</li>
+          <li>lus par <%= @user_message_broadcast.read_count %> utilisateurs</li>
+          <li>le <%= l @user_message_broadcast.sent_at %>.</li>
         </ul>
         Si vous souhaitez le renvoyer, vous pouvez dupliquer cette diffusion.
       </div>
-      <%= link_to("Dupliquer", clone_admin_conversation_message_broadcast_path, method: :post, class: "btn btn-success") %>
+      <%= link_to("Dupliquer", clone_admin_user_message_broadcast_path, method: :post, class: "btn btn-success") %>
     </div>
-  <% elsif @conversation_message_broadcast.persisted? %>
+  <% elsif @user_message_broadcast.persisted? %>
     <div class="alert alert-success" role="alert" style="display: flex; align-items: center">
       <div style="flex-grow: 1">
         <b>Brouillon</b><br>
@@ -47,11 +47,11 @@
     <div class="alert alert-danger" role="alert" style="display: flex; align-items: center">
       <div style="flex-grow: 1">
         <b>Envoyer</b><br>
-        L'envoi sera effectué auprès de <%= @conversation_message_broadcast.user_ids.count %> utilisateurs correspondants aux filtres configurés.<br>
+        L'envoi sera effectué auprès de <%= @user_message_broadcast.user_ids.count %> utilisateurs correspondants aux filtres configurés.<br>
         La diffusion de MP sera automatiquement archivée après envoi.
       </div>
-        <%= link_to("Envoyer", broadcast_admin_conversation_message_broadcast_path, method: :post, class: "btn btn-danger", data: {
-          confirm: "Êtes vous sûr de vouloir diffuser ces MP à #{@conversation_message_broadcast.user_ids.count} utilisateurs ?"
+        <%= link_to("Envoyer", broadcast_admin_user_message_broadcast_path, method: :post, class: "btn btn-danger", data: {
+          confirm: "Êtes vous sûr de vouloir diffuser ces MP à #{@user_message_broadcast.user_ids.count} utilisateurs ?"
         }) %>
     </div>
   <% end %>
@@ -65,14 +65,14 @@
 
   <div class="row">
     <div class="col-xs-6 form-group">
-      <% area_types = ConversationMessageBroadcast::AREA_TYPES.map {|area_type| [t("activerecord.attributes.conversation_message_broadcast.area_types.#{area_type}"), area_type]} %>
+      <% area_types = UserMessageBroadcast::AREA_TYPES.map {|area_type| [t("activerecord.attributes.user_message_broadcast.area_types.#{area_type}"), area_type]} %>
       <%= f.label :area_type %>
-      <%= f.select :area_type, options_for_select(area_types, @conversation_message_broadcast.area_type), { include_blank: false }, class: "form-control" %>
+      <%= f.select :area_type, options_for_select(area_types, @user_message_broadcast.area_type), { include_blank: false }, class: "form-control" %>
 
-      <div id="conversation_message_broadcast_areas_container">
+      <div id="user_message_broadcast_areas_container">
         <%= f.label :areas %><br/>
-        <select multiple data-role="tagsinput" name="conversation_message_broadcast[areas][]" id="conversation_message_broadcast_areas">
-          <% @conversation_message_broadcast.areas.each do |area| %>
+        <select multiple data-role="tagsinput" name="user_message_broadcast[areas][]" id="user_message_broadcast_areas">
+          <% @user_message_broadcast.areas.each do |area| %>
             <option value="<%= area %>"><%= area %></option>
           <% end %>
         </select>
@@ -83,7 +83,7 @@
     <div class="col-xs-6 form-group">
       <% goals = UserGoalPresenter.all_with_any(current_user.community).map {|goal| [goal.name, goal.slug]} %>
       <%= f.label :goal %>
-      <%= f.select :goal, options_for_select(goals, @conversation_message_broadcast.goal), { include_blank: false }, class: "form-control" %>
+      <%= f.select :goal, options_for_select(goals, @user_message_broadcast.goal), { include_blank: false }, class: "form-control" %>
     </div>
   </div>
 
@@ -92,19 +92,19 @@
       <%= f.text_area :content, class: "form-control", rows: 5, required: true %>
     </div>
 
-  <% if @conversation_message_broadcast.draft? %>
+  <% if @user_message_broadcast.draft? %>
     <%= f.submit 'Enregistrer', class: "btn btn-primary" %>
-    <%= link_to "Annuler", admin_conversation_message_broadcasts_path, class: "btn btn-default" %>
+    <%= link_to "Annuler", admin_user_message_broadcasts_path, class: "btn btn-default" %>
   <% else %>
-    <%= link_to "Retour", admin_conversation_message_broadcasts_path, class: "btn btn-default" %>
+    <%= link_to "Retour", admin_user_message_broadcasts_path, class: "btn btn-default" %>
   <% end %>
 <% end %>
 
 <script>
   $(document).on('turbolinks:load', function() {
-    let $areaType = $('#conversation_message_broadcast_area_type');
-    let $areasContainer = $('#conversation_message_broadcast_areas_container');
-    let $areas = $('#conversation_message_broadcast_areas');
+    let $areaType = $('#user_message_broadcast_area_type');
+    let $areasContainer = $('#user_message_broadcast_areas_container');
+    let $areas = $('#user_message_broadcast_areas');
 
     function toggleAreaType() {
       $areasContainer.toggle($areaType.val() == 'list');

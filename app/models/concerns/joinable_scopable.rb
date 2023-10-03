@@ -28,4 +28,19 @@ module JoinableScopable
 
     members.length
   end
+
+  def set_forced_join_request_as_member! user
+    join_request = user.join_requests.find_by(joinable: self)
+
+    return join_request if join_request.present? && join_request.accepted?
+
+    if join_request.present?
+      join_request.status = :accepted
+    else
+      join_request = JoinRequest.new(joinable: self, user: user, role: :member, status: :accepted)
+    end
+
+    join_request.save!
+    join_request
+  end
 end
