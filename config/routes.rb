@@ -158,6 +158,7 @@ Rails.application.routes.draw do
         end
         collection do
           post :destroy_message
+          delete :destroy_message
         end
       end
       resources :entourage_moderations, only: [:create]

@@ -420,7 +420,7 @@ module Admin
 
       ChatServices::Deleter.new(user: current_user, chat_message: @chat_message).delete(true) do |on|
         redirection = if @chat_message.has_parent?
-          show_comments_admin_entourage_path(@chat_message.messageable, post_id: @chat_message.parent_id)
+          show_comments_admin_entourage_path(@chat_message.messageable_id, message_id: @chat_message.parent_id)
         else
           show_messages_admin_entourage_path(@chat_message.messageable)
         end
