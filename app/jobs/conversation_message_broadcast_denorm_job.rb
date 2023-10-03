@@ -7,7 +7,7 @@ class ConversationMessageBroadcastDenormJob
   def perform conversation_message_broadcast_id
     conversation_message_broadcast = ConversationMessageBroadcast.find(conversation_message_broadcast_id)
     conversation_message_broadcast.update(
-      sent_users_count: conversation_message_broadcast.sent.count
+      sent_recipients_count: conversation_message_broadcast.sent.count
     )
 
     # reschedule whenever the queue is not empty for this broadcast

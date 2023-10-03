@@ -280,7 +280,14 @@ Rails.application.routes.draw do
     resources :entourage_invitations, only: [:index]
     resources :entourages, only: [:index, :show, :edit, :update]
     resources :join_requests, only: [:create]
-    resources :conversation_message_broadcasts do
+    resources :user_message_broadcasts do
+      member do
+        post 'broadcast'
+        post 'clone'
+        post 'kill'
+      end
+    end
+    resources :neighborhood_message_broadcasts do
       member do
         post 'broadcast'
         post 'clone'

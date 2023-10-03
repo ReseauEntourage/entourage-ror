@@ -1,0 +1,77 @@
+<style>
+  .field_with_errors { display: inline-block }
+</style>
+
+<%= render partial: 'common/errors', locals: { obj: @neighborhood_message_broadcast } %>
+<%= form_for [:admin, @neighborhood_message_broadcast], html: { role: "form" } do |f| %>
+
+  <% if @neighborhood_message_broadcast.archived? %>
+    <div class="alert alert-info" role="alert" style="display: flex; align-items: center">
+      <div style="flex-grow: 1">
+        <b>Archivé</b><br>
+        Cette diffusion de MP est archivée. Vous pouvez la dupliquer pour planifier une diffusion similaire.
+      </div>
+      <%= link_to("Dupliquer", clone_admin_neighborhood_message_broadcast_path, method: :post, class: "btn btn-success") %>
+    </div>
+  <% elsif @neighborhood_message_broadcast.sending? %>
+    <div class="alert alert-info" role="alert" style="display: flex; align-items: center">
+      <div style="flex-grow: 1">
+        <b>En cours d'envoi</b><br>
+        Cette diffusion de MP est en cours d'envoi. La diffusion sera archivée une fois les envois effectués.
+      </div>
+      <%= link_to("Rafraîchir", edit_admin_neighborhood_message_broadcast_path(@neighborhood_message_broadcast), class: "btn btn-success") %>
+    </div>
+  <% elsif @neighborhood_message_broadcast.sent? %>
+    <div class="alert alert-info" role="alert" style="display: flex; align-items: center">
+      <div style="flex-grow: 1">
+        <b>Envoyé</b><br>
+        Votre message a été :
+        <ul>
+          <li>diffusé à <%= @neighborhood_message_broadcast.sent_count %> utilisateurs</li>
+          <li>lus par <%= @neighborhood_message_broadcast.read_count %> utilisateurs</li>
+          <li>le <%= l @neighborhood_message_broadcast.sent_at %>.</li>
+        </ul>
+        Si vous souhaitez le renvoyer, vous pouvez dupliquer cette diffusion.
+      </div>
+      <%= link_to("Dupliquer", clone_admin_neighborhood_message_broadcast_path, method: :post, class: "btn btn-success") %>
+    </div>
+  <% elsif @neighborhood_message_broadcast.persisted? %>
+    <div class="alert alert-success" role="alert" style="display: flex; align-items: center">
+      <div style="flex-grow: 1">
+        <b>Brouillon</b><br>
+        Cette diffusion de MP est configurable avant envoi.<br>
+        Vous pouvez également choisir de l'archiver mais cette action n'est pas réversible.
+      </div>
+      <%= f.submit "Archiver", name: :archive, class: "btn btn-default" %>
+    </div>
+    <div class="alert alert-danger" role="alert" style="display: flex; align-items: center">
+      <div style="flex-grow: 1">
+        <b>Envoyer</b><br>
+        L'envoi sera effectué auprès de <%= @neighborhood_message_broadcast.user_ids.count %> utilisateurs correspondants aux filtres configurés.<br>
+        La diffusion de MP sera automatiquement archivée après envoi.
+      </div>
+        <%= link_to("Envoyer", broadcast_admin_neighborhood_message_broadcast_path, method: :post, class: "btn btn-danger", data: {
+          confirm: "Êtes vous sûr de vouloir diffuser ces MP à #{@neighborhood_message_broadcast.user_ids.count} utilisateurs ?"
+        }) %>
+    </div>
+  <% end %>
+
+  <div class="form-group">
+    <%= f.label :title, "Titre", class: "control-label" %>
+    <div class="controls">
+      <%= f.text_field :title, class: "form-control", required: true %>
+    </div>
+  </div>
+
+    <div class="form-group">
+      <%= f.label :content %>
+      <%= f.text_area :content, class: "form-control", rows: 5, required: true %>
+    </div>
+
+  <% if @neighborhood_message_broadcast.draft? %>
+    <%= f.submit 'Enregistrer', class: "btn btn-primary" %>
+    <%= link_to "Annuler", admin_neighborhood_message_broadcasts_path, class: "btn btn-default" %>
+  <% else %>
+    <%= link_to "Retour", admin_neighborhood_message_broadcasts_path, class: "btn btn-default" %>
+  <% end %>
+<% end %>

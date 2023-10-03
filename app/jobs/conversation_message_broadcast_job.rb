@@ -9,17 +9,24 @@ class ConversationMessageBroadcastJob
   def perform(conversation_message_broadcast_id, sender_id, recipient_id, content)
     user = User.find(sender_id)
     conversation_message_broadcast = ConversationMessageBroadcast.find(conversation_message_broadcast_id)
-    conversation = ChatServices::ChatMessageBuilder.find_conversation(recipient_id, user_id: sender_id)
+    joinable = nil
 
-    join_request = if conversation.new_record?
-      conversation.join_requests.to_a.find { |r| r.user_id == sender_id }
-    else
-      user.join_requests.accepted.find_by!(joinable: conversation)
+    if conversation_message_broadcast.entourage_type?
+      joinable = ChatServices::ChatMessageBuilder.find_conversation(recipient_id, user_id: sender_id)
+
+      join_request = if joinable.new_record?
+        joinable.join_requests.to_a.find { |r| r.user_id == sender_id }
+      else
+        user.join_requests.accepted.find_by!(joinable: joinable)
+      end
+    elsif conversation_message_broadcast.neighborhood_type?
+      joinable = Neighborhood.find(recipient_id)
+      joinable.set_forced_join_request_as_member!(user)
     end
 
     chat_builder = ChatServices::ChatMessageBuilder.new(
       user: user,
-      joinable: conversation,
+      joinable: joinable,
       join_request: join_request,
       params: {
         message_type: :broadcast,
@@ -34,7 +41,7 @@ class ConversationMessageBroadcastJob
 
         ApplicationRecord.transaction do
           conversation_message_broadcast.update(
-            sent_users_count: (ConversationMessageBroadcast.find(conversation_message_broadcast_id).sent_users_count || 0) + 1
+            sent_recipients_count: (ConversationMessageBroadcast.find(conversation_message_broadcast_id).sent_recipients_count || 0) + 1
           )
         end
       end
@@ -43,7 +50,7 @@ class ConversationMessageBroadcastJob
 
   # ActiveJob interface
   def self.perform_later(conversation_message_broadcast_id, sender_id, content)
-    user_ids_to_broadcast(conversation_message_broadcast_id, sender_id).each do |recipient_id|
+    recipient_ids_to_broadcast(conversation_message_broadcast_id, sender_id).each do |recipient_id|
       set(
         tags: [conversation_message_broadcast_id]
       ).perform_async(conversation_message_broadcast_id, sender_id, recipient_id, content)
@@ -76,18 +83,28 @@ class ConversationMessageBroadcastJob
     end.map(&:delete)
   end
 
-  def self.user_ids_to_broadcast conversation_message_broadcast_id, sender_id
-    ConversationMessageBroadcast.find(conversation_message_broadcast_id).user_ids - broadcasted_user_ids(conversation_message_broadcast_id, sender_id)
+  def self.recipient_ids_to_broadcast conversation_message_broadcast_id, sender_id
+    ConversationMessageBroadcast.find_with_cast(conversation_message_broadcast_id).recipient_ids - broadcasted_recipient_ids(conversation_message_broadcast_id, sender_id)
   end
 
   # find all users that have already been broadcasted
   # this case happens whenever a broadcast has timeout and we want to relaunch this broadcast
-  def self.broadcasted_user_ids conversation_message_broadcast_id, sender_id
-    JoinRequest
-      .where.not(user_id: sender_id)
-      .where(joinable_type: 'Entourage')
-      .where(
-        joinable_id: ChatMessage.where(message_type: :broadcast).where("metadata ->> 'conversation_message_broadcast_id' = '?'", conversation_message_broadcast_id).pluck(:messageable_id)
-      ).pluck(:user_id).uniq.sort
+  def self.broadcasted_recipient_ids conversation_message_broadcast_id, sender_id
+    conversation_message_broadcast = ConversationMessageBroadcast.find(conversation_message_broadcast_id)
+
+    conversation_ids = ChatMessage.where(message_type: :broadcast, messageable_type: conversation_message_broadcast.conversation_type)
+      .where("metadata ->> 'conversation_message_broadcast_id' = '?'", conversation_message_broadcast_id)
+      .pluck(:messageable_id)
+
+    if conversation_message_broadcast.entourage_type?
+      JoinRequest
+        .where.not(user_id: sender_id)
+        .where(joinable_type: 'Entourage')
+        .where(
+          joinable_id: conversation_ids
+        ).pluck(:user_id).uniq.sort
+    elsif conversation_message_broadcast.neighborhood_type?
+      conversation_ids
+    end
   end
 end
