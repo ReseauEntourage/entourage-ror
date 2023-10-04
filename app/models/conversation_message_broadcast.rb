@@ -32,7 +32,9 @@ class ConversationMessageBroadcast < ApplicationRecord
     conversation_type == 'Neighborhood'
   end
 
-  default_scope { where(conversation_type: messageable_type) }
+  def read_count
+    "n/a"
+  end
 
   validates_presence_of :content, :title
 

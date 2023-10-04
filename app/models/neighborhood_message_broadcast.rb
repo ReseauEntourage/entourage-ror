@@ -25,6 +25,8 @@ class NeighborhoodMessageBroadcast < ConversationMessageBroadcast
   alias_method :neighborhood_ids, :recipient_ids
   alias_method :neighborhood_ids=, :conversation_ids=
 
+  default_scope { where(conversation_type: messageable_type) }
+
   def clone
     cloned = super
     cloned.assign_attributes(

@@ -67,7 +67,7 @@ module Admin
       unless @neighborhood_message_broadcast.sent? || @neighborhood_message_broadcast.sending?
         @neighborhood_message_broadcast.update_attribute(:status, :sent)
 
-        NeighborhoodMessageBroadcastJob.perform_later(
+        ConversationMessageBroadcastJob.perform_later(
           @neighborhood_message_broadcast.id,
           current_admin.id,
           @neighborhood_message_broadcast.content
