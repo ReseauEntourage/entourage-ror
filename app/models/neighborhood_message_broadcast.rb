@@ -13,6 +13,18 @@ class NeighborhoodMessageBroadcast < ConversationMessageBroadcast
     conversation_ids
   end
 
+  def conversation_ids
+    self[:conversation_ids].map(&:to_i)
+  end
+
+  def conversation_ids= ids
+    self[:conversation_ids] = ids.reject(&:empty?)
+  end
+
+  alias_method :neighborhoods, :recipients
+  alias_method :neighborhood_ids, :recipient_ids
+  alias_method :neighborhood_ids=, :conversation_ids=
+
   def clone
     cloned = super
     cloned.assign_attributes(

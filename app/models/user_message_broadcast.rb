@@ -27,7 +27,7 @@ class UserMessageBroadcast < ConversationMessageBroadcast
   AREA_TYPES = %w(national hors_zone sans_zone list).freeze
   AREA_FORMAT = /^([0-9]{2}|[0-9]{5})$/
 
-  validates_presence_of :area_type, :goal, :content, :title
+  validates_presence_of :area_type, :goal
   validate :validate_areas_format
 
   # @param moderation_area Either (national, hors_zone, sans_zone) or "dep_xx"

@@ -2,6 +2,8 @@ module Admin
   class NeighborhoodMessageBroadcastsController < Admin::BaseController
     layout 'admin_large'
 
+    before_action :set_neighborhood_message_broadcast, only: [:edit, :update, :clone, :kill, :broadcast, :update_neighborhoods]
+
     def index
       @params = params.permit([:status]).to_h
       @status = params[:status].presence&.to_sym || :draft
@@ -24,11 +26,9 @@ module Admin
     end
 
     def edit
-      @neighborhood_message_broadcast = NeighborhoodMessageBroadcast.find(params[:id])
     end
 
     def update
-      @neighborhood_message_broadcast = NeighborhoodMessageBroadcast.find(params[:id])
       @neighborhood_message_broadcast.assign_attributes(neighborhood_message_broadcast_params)
 
       if params.key?(:archive)
@@ -43,22 +43,27 @@ module Admin
       end
     end
 
-    def clone
-      @neighborhood_message_broadcast = NeighborhoodMessageBroadcast.find(params[:id]).clone
+    def update_neighborhoods
+      @neighborhood_message_broadcast.assign_attributes(neighborhood_message_broadcast_neighborhoods_param)
 
+      if @neighborhood_message_broadcast.save!
+        redirect_to edit_admin_neighborhood_message_broadcast_path(@neighborhood_message_broadcast), notice: "Votre modification a bien été prise en compte"
+      else
+        redirect_to edit_admin_neighborhood_message_broadcast_path(@neighborhood_message_broadcast), alert: "Votre modification n'a pas pu être prise en compte"
+      end
+    end
+
+    def clone
       render :new
     end
 
     def kill
-      @neighborhood_message_broadcast = NeighborhoodMessageBroadcast.find(params[:id]).delete_jobs
       @neighborhood_message_broadcast.update_attribute(:status, :sent)
 
       redirect_to admin_neighborhood_message_broadcasts_path(status: :sending)
     end
 
     def broadcast
-      @neighborhood_message_broadcast = NeighborhoodMessageBroadcast.find(params[:id])
-
       unless @neighborhood_message_broadcast.sent? || @neighborhood_message_broadcast.sending?
         @neighborhood_message_broadcast.update_attribute(:status, :sent)
 
@@ -78,12 +83,20 @@ module Admin
       params.require(:neighborhood_message_broadcast).permit(:content, :title)
     end
 
+    def neighborhood_message_broadcast_neighborhoods_param
+      params.require(:neighborhood_message_broadcast).permit(neighborhood_ids: [])
+    end
+
     def page
       params[:page] || 1
     end
 
     def per
       params[:per] || 25
+    end
+
+    def set_neighborhood_message_broadcast
+      @neighborhood_message_broadcast = NeighborhoodMessageBroadcast.find(params[:id])
     end
   end
 end
