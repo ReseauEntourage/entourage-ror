@@ -30,6 +30,8 @@ class UserMessageBroadcast < ConversationMessageBroadcast
   validates_presence_of :area_type, :goal
   validate :validate_areas_format
 
+  default_scope { where(conversation_type: messageable_type) }
+
   # @param moderation_area Either (national, hors_zone, sans_zone) or "dep_xx"
   scope :with_moderation_area, -> (moderation_area) {
     return where(area_type: moderation_area) unless moderation_area.start_with? 'dep_'
