@@ -9,7 +9,7 @@
     <div class="alert alert-info" role="alert" style="display: flex; align-items: center">
       <div style="flex-grow: 1">
         <b>Archivé</b><br>
-        Cette diffusion de MP est archivée. Vous pouvez la dupliquer pour planifier une diffusion similaire.
+        Cette diffusion est archivée. Vous pouvez la dupliquer pour planifier une diffusion similaire.
       </div>
       <%= link_to("Dupliquer", clone_admin_neighborhood_message_broadcast_path, method: :post, class: "btn btn-success") %>
     </div>
@@ -17,7 +17,7 @@
     <div class="alert alert-info" role="alert" style="display: flex; align-items: center">
       <div style="flex-grow: 1">
         <b>En cours d'envoi</b><br>
-        Cette diffusion de MP est en cours d'envoi. La diffusion sera archivée une fois les envois effectués.
+        Cette diffusion est en cours d'envoi. La diffusion sera archivée une fois les envois effectués.
       </div>
       <%= link_to("Rafraîchir", edit_admin_neighborhood_message_broadcast_path(@neighborhood_message_broadcast), class: "btn btn-success") %>
     </div>
@@ -39,7 +39,7 @@
     <div class="alert alert-success" role="alert" style="display: flex; align-items: center">
       <div style="flex-grow: 1">
         <b>Brouillon</b><br>
-        Cette diffusion de MP est configurable avant envoi.<br>
+        Cette diffusion est configurable avant envoi.<br>
         Vous pouvez également choisir de l'archiver mais cette action n'est pas réversible.
       </div>
       <%= f.submit "Archiver", name: :archive, class: "btn btn-default" %>
@@ -48,7 +48,7 @@
       <div style="flex-grow: 1">
         <b>Envoyer</b><br>
         L'envoi sera effectué auprès de <%= @neighborhood_message_broadcast.recipient_ids.count %> utilisateurs correspondants aux filtres configurés.<br>
-        La diffusion de MP sera automatiquement archivée après envoi.
+        La diffusion sera automatiquement archivée après envoi.
       </div>
         <%= link_to("Envoyer", broadcast_admin_neighborhood_message_broadcast_path, method: :post, class: "btn btn-danger", data: {
           confirm: "Êtes vous sûr de vouloir diffuser ces MP à #{@neighborhood_message_broadcast.recipient_ids.count} utilisateurs ?"
