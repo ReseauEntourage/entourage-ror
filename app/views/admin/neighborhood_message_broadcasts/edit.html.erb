@@ -1,0 +1,15 @@
+<div class="container">
+  <div style="width: 750px; margin: auto">
+    <ol class="breadcrumb">
+      <li><%= link_to "Diffusions de MP", admin_neighborhood_message_broadcasts_path %></li>
+      <li class="active">Modifier</li>
+    </ol>
+
+    <h2>
+      <span class="text-muted">#<%= @neighborhood_message_broadcast.id %></span>
+      <%= @neighborhood_message_broadcast.title %>
+    </h2>
+
+    <%= render partial: 'form' %>
+  </div>
+</div>

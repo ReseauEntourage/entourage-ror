@@ -34,6 +34,8 @@ class ConversationMessageBroadcast < ApplicationRecord
 
   default_scope { where(conversation_type: messageable_type) }
 
+  validates_presence_of :content, :title
+
   scope :with_status, -> (status) {
     if status.to_sym == :sending
       where(id: ConversationMessageBroadcast.pending_jobs.keys)

@@ -289,6 +289,7 @@ Rails.application.routes.draw do
     end
     resources :neighborhood_message_broadcasts do
       member do
+        put :update_neighborhoods
         post 'broadcast'
         post 'clone'
         post 'kill'

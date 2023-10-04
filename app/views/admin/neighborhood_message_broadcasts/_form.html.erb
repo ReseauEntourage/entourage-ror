@@ -47,11 +47,11 @@
     <div class="alert alert-danger" role="alert" style="display: flex; align-items: center">
       <div style="flex-grow: 1">
         <b>Envoyer</b><br>
-        L'envoi sera effectué auprès de <%= @neighborhood_message_broadcast.user_ids.count %> utilisateurs correspondants aux filtres configurés.<br>
+        L'envoi sera effectué auprès de <%= @neighborhood_message_broadcast.recipient_ids.count %> utilisateurs correspondants aux filtres configurés.<br>
         La diffusion de MP sera automatiquement archivée après envoi.
       </div>
         <%= link_to("Envoyer", broadcast_admin_neighborhood_message_broadcast_path, method: :post, class: "btn btn-danger", data: {
-          confirm: "Êtes vous sûr de vouloir diffuser ces MP à #{@neighborhood_message_broadcast.user_ids.count} utilisateurs ?"
+          confirm: "Êtes vous sûr de vouloir diffuser ces MP à #{@neighborhood_message_broadcast.recipient_ids.count} utilisateurs ?"
         }) %>
     </div>
   <% end %>
@@ -63,10 +63,10 @@
     </div>
   </div>
 
-    <div class="form-group">
-      <%= f.label :content %>
-      <%= f.text_area :content, class: "form-control", rows: 5, required: true %>
-    </div>
+  <div class="form-group">
+    <%= f.label :content %>
+    <%= f.text_area :content, class: "form-control", rows: 5, required: true %>
+  </div>
 
   <% if @neighborhood_message_broadcast.draft? %>
     <%= f.submit 'Enregistrer', class: "btn btn-primary" %>
@@ -74,4 +74,15 @@
   <% else %>
     <%= link_to "Retour", admin_neighborhood_message_broadcasts_path, class: "btn btn-default" %>
   <% end %>
+<% end %>
+
+
+<% if @neighborhood_message_broadcast.persisted? %>
+  <% @neighborhoods = @neighborhood_message_broadcast.neighborhoods %>
+  <%= render partial: "admin/neighborhoods/select_multiple_form", locals: {
+    path: update_neighborhoods_admin_neighborhood_message_broadcast_path,
+    record: @neighborhood_message_broadcast,
+    record_type: :neighborhood_message_broadcast,
+    recipient_ids: :neighborhood_ids
+  } %>
 <% end %>

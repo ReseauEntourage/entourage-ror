@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_09_22_094100) do
+ActiveRecord::Schema.define(version: 2023_09_25_164500) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -131,18 +131,21 @@ ActiveRecord::Schema.define(version: 2023_09_22_094100) do
   create_table "conversation_message_broadcasts", id: :serial, force: :cascade do |t|
     t.string "area_old"
     t.text "content", null: false
-    t.string "goal", null: false
+    t.string "goal"
     t.string "title", null: false
     t.datetime "archived_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "status", default: "draft", null: false
     t.datetime "sent_at"
-    t.integer "sent_users_count"
+    t.integer "sent_recipients_count"
     t.string "area_type"
-    t.jsonb "areas", default: [], null: false
+    t.jsonb "areas", default: []
+    t.string "conversation_type", default: "Entourage"
+    t.json "conversation_ids", default: {}
     t.index ["area_old"], name: "index_conversation_message_broadcasts_on_area_old"
     t.index ["area_type"], name: "index_conversation_message_broadcasts_on_area_type"
+    t.index ["conversation_type"], name: "index_conversation_message_broadcasts_on_conversation_type"
     t.index ["goal"], name: "index_conversation_message_broadcasts_on_goal"
     t.index ["status"], name: "index_conversation_message_broadcasts_on_status"
   end
