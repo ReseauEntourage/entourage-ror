@@ -11,7 +11,7 @@
 <%# 2. recipient_ids: recipient_ids -%>
 
 <%
-  @params = params.permit([:area, :search]).to_h
+  @params = params.permit([:area, :search, :tab]).to_h
   @area = params[:area].presence&.to_sym ||
     NeighborhoodServices::Helper.new(record).main_departement_slug ||
     :dep_75
