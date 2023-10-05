@@ -27,8 +27,8 @@
         <b>Envoyé</b><br>
         Votre message a été :
         <ul>
-          <li>diffusé à <%= @neighborhood_message_broadcast.sent_count %> utilisateurs</li>
-          <li>lus par <%= @neighborhood_message_broadcast.read_count %> utilisateurs</li>
+          <li>diffusé à <%= @neighborhood_message_broadcast.sent_count %> groupes</li>
+          <li>lus par <%= @neighborhood_message_broadcast.read_count %> groupes</li>
           <li>le <%= l @neighborhood_message_broadcast.sent_at %>.</li>
         </ul>
         Si vous souhaitez le renvoyer, vous pouvez dupliquer cette diffusion.
@@ -47,11 +47,11 @@
     <div class="alert alert-danger" role="alert" style="display: flex; align-items: center">
       <div style="flex-grow: 1">
         <b>Envoyer</b><br>
-        L'envoi sera effectué auprès de <%= @neighborhood_message_broadcast.recipient_ids.count %> utilisateurs correspondants aux filtres configurés.<br>
+        L'envoi sera effectué auprès de <%= @neighborhood_message_broadcast.recipient_ids.count %> groupes correspondants aux filtres configurés.<br>
         La diffusion sera automatiquement archivée après envoi.
       </div>
         <%= link_to("Envoyer", broadcast_admin_neighborhood_message_broadcast_path, method: :post, class: "btn btn-danger", data: {
-          confirm: "Êtes vous sûr de vouloir diffuser ces MP à #{@neighborhood_message_broadcast.recipient_ids.count} utilisateurs ?"
+          confirm: "Êtes vous sûr de vouloir diffuser ce message à #{@neighborhood_message_broadcast.recipient_ids.count} groupes ?"
         }) %>
     </div>
   <% end %>
