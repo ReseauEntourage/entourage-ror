@@ -54,6 +54,8 @@ module Admin
     end
 
     def clone
+      @neighborhood_message_broadcast = NeighborhoodMessageBroadcast.find(params[:id]).clone
+
       render :new
     end
 
@@ -80,7 +82,7 @@ module Admin
     private
 
     def neighborhood_message_broadcast_params
-      params.require(:neighborhood_message_broadcast).permit(:content, :title)
+      params.require(:neighborhood_message_broadcast).permit(:content, :title, neighborhood_ids: [])
     end
 
     def neighborhood_message_broadcast_neighborhoods_param

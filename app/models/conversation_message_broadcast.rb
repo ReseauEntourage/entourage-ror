@@ -83,6 +83,7 @@ class ConversationMessageBroadcast < ApplicationRecord
 
   def clone
     self.class.new(
+      status: :draft,
       content: content,
       title: title
     )
