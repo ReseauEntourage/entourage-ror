@@ -26,6 +26,7 @@ module Admin
     end
 
     def edit
+      @tab = params[:tab].presence&.to_sym || :departements
     end
 
     def update
@@ -82,11 +83,11 @@ module Admin
     private
 
     def neighborhood_message_broadcast_params
-      params.require(:neighborhood_message_broadcast).permit(:content, :title, neighborhood_ids: [])
+      params.require(:neighborhood_message_broadcast).permit(:content, :title, neighborhood_ids: [], departements: [])
     end
 
     def neighborhood_message_broadcast_neighborhoods_param
-      params.require(:neighborhood_message_broadcast).permit(neighborhood_ids: [])
+      params.require(:neighborhood_message_broadcast).permit(neighborhood_ids: [], departements: [])
     end
 
     def page

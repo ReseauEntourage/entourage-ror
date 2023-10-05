@@ -3,6 +3,7 @@
 </style>
 
 <%= render partial: 'common/errors', locals: { obj: @neighborhood_message_broadcast } %>
+
 <%= form_for [:admin, @neighborhood_message_broadcast], html: { role: "form" } do |f| %>
 
   <% if @neighborhood_message_broadcast.archived? %>
@@ -56,6 +57,17 @@
     </div>
   <% end %>
 
+  <% if @neighborhood_message_broadcast.persisted? %>
+    <ul class="nav nav-tabs">
+      <li role="presentation" class="<%= :active if @tab == :departements %>">
+        <%= link_to "Par départements", edit_admin_neighborhood_message_broadcast_path(@neighborhood_message_broadcast, tab: :departements) %>
+      </li>
+      <li role="presentation" class="<%= :active if @tab == :neighborhoods %>">
+        <%= link_to "Par groupes", edit_admin_neighborhood_message_broadcast_path(@neighborhood_message_broadcast, tab: :neighborhoods) %>
+      </li>
+    </ul>
+  <% end %>
+
   <div class="form-group">
     <%= f.label :title, "Titre", class: "control-label" %>
     <div class="controls">
@@ -84,11 +96,22 @@
 <% end %>
 
 <% if @neighborhood_message_broadcast.persisted? %>
-  <% @neighborhoods = @neighborhood_message_broadcast.neighborhoods %>
-  <%= render partial: "admin/neighborhoods/select_multiple_form", locals: {
-    path: update_neighborhoods_admin_neighborhood_message_broadcast_path,
-    record: @neighborhood_message_broadcast,
-    record_type: :neighborhood_message_broadcast,
-    recipient_ids: :neighborhood_ids
-  } %>
+  <% if @tab == :departements %>
+    <% @neighborhoods = @neighborhood_message_broadcast.neighborhoods %>
+
+    <%= render partial: "admin/neighborhoods/select_departements_form", locals: {
+      path: update_neighborhoods_admin_neighborhood_message_broadcast_path,
+      record: @neighborhood_message_broadcast,
+      record_type: :neighborhood_message_broadcast,
+      recipient_ids: :neighborhood_ids
+    } %>
+  <% elsif @tab == :neighborhoods %>
+      <% @neighborhoods = @neighborhood_message_broadcast.neighborhoods %>
+      <%= render partial: "admin/neighborhoods/select_multiple_form", locals: {
+        path: update_neighborhoods_admin_neighborhood_message_broadcast_path,
+        record: @neighborhood_message_broadcast,
+        record_type: :neighborhood_message_broadcast,
+        recipient_ids: :neighborhood_ids
+      } %>
+  <% end %>
 <% end %>
