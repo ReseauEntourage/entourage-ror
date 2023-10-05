@@ -32,7 +32,7 @@
     </thead>
 
     <tbody>
-      <% @neighborhoods.each do |neighborhood| %>
+      <% @neighborhoods.includes([:user]).each do |neighborhood| %>
         <tr>
           <td><%= link_to neighborhood.id, admin_neighborhood_path(neighborhood) %></td>
           <td><%= link_to neighborhood.name, admin_neighborhood_path(neighborhood) %></td>

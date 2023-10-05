@@ -30,7 +30,7 @@ class NeighborhoodMessageBroadcast < ConversationMessageBroadcast
   def clone
     cloned = super
     cloned.assign_attributes(
-      conversation_ids: conversation_ids
+      conversation_ids: self[:conversation_ids]
     )
     cloned
   end
