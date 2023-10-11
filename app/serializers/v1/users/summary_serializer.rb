@@ -6,6 +6,7 @@ module V1
       attributes :id,
         :display_name,
         :avatar_url,
+        :preference,
         :meetings_count,
         :chat_messages_count,
         :outing_participations_count,
@@ -14,6 +15,12 @@ module V1
         :congratulations,
         :unclosed_action,
         :moderator
+
+      def preference
+        return :contribution if object.ask_for_help?
+
+        :solicitation
+      end
 
       def meetings_count
         past_outing_memberships(object).count + successful_actions(object).count

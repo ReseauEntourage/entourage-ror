@@ -423,6 +423,10 @@ class User < ApplicationRecord
     targeting_profile == 'ambassador'
   end
 
+  def ask_for_help?
+    goal.to_s == 'ask_for_help'
+  end
+
   def is_ask_for_help?
     (targeting_profile.blank? && goal.to_s == 'ask_for_help') || targeting_profile.to_s == 'asks_for_help'
   end
