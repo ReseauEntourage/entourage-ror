@@ -22,8 +22,6 @@
           <th>Id</th>
           <th>Titre</th>
           <th>Archivé</th>
-          <th>Zone de modération</th>
-          <th>Public</th>
           <th>Dernière mise à jour</th>
           <% if @status == :sent %>
             <th>Envoyés</th>
@@ -37,12 +35,6 @@
               <td><%= neighborhood_message_broadcast.id %></td>
               <td><%= link_to neighborhood_message_broadcast.title, edit_admin_neighborhood_message_broadcast_path(neighborhood_message_broadcast) %></td>
               <td><%= check_box_tag '', '', neighborhood_message_broadcast.archived?, disabled: true %></td>
-              <td>
-                <% neighborhood_message_broadcast[:areas].map do |area| %>
-                  <span class="badge"><%= area %></span>
-                <% end %>
-              </td>
-              <td><%= UserGoalPresenter.new(neighborhood_message_broadcast.goal, community: current_user.community).name %></td>
               <td><%= l(neighborhood_message_broadcast.updated_at, format: :short) if neighborhood_message_broadcast.updated_at %></td>
               <% if @status == :sent %>
                 <td><%= neighborhood_message_broadcast.sent_recipients_count %></td>
