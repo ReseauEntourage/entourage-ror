@@ -10,7 +10,7 @@ module Api
           user: current_user,
           q: params[:q]
         )
-          .includes(:translation, :members)
+          .includes(:translations, :members)
           .page(page)
           .per(per), root: :neighborhoods, each_serializer: ::V1::NeighborhoodSerializer, scope: {
             user: current_user
