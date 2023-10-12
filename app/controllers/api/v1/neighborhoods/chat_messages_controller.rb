@@ -15,7 +15,7 @@ module Api
         end
 
         def index
-          messages = @neighborhood.parent_chat_messages.includes(:translation, :user).ordered.page(page).per(per)
+          messages = @neighborhood.parent_chat_messages.includes(:translations, :user).ordered.page(page).per(per)
 
           render json: messages, each_serializer: ::V1::ChatMessages::PostSerializer, scope: { current_join_request: join_request, user: current_user }
         end
