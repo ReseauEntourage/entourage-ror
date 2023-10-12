@@ -959,6 +959,7 @@ ActiveRecord::Schema.define(version: 2023_11_17_103301) do
     t.string "ar"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "instance_field", default: "content"
     t.index ["instance_id", "instance_type"], name: "index_translations_on_instance_id_and_instance_type"
   end
 
