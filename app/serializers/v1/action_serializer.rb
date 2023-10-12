@@ -27,7 +27,14 @@ module V1
       return object.title unless scope && scope[:user].present?
       return object.title unless scope[:user].lang.present?
 
-      TranslationServices::Translator.new(object).translate(scope[:user].lang) || object.title
+      TranslationServices::Translator.new(object).translate(scope[:user].lang, :title) || object.title
+    end
+
+    def description
+      return object.description unless scope && scope[:user].present?
+      return object.description unless scope[:user].lang.present?
+
+      TranslationServices::Translator.new(object).translate(scope[:user].lang, :description) || object.description
     end
 
     def uuid

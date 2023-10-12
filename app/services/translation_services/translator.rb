@@ -10,12 +10,20 @@ module TranslationServices
       @record = record
     end
 
+    # records translation in translations table
     def translate!
-      return unless translation_key.present?
+      return unless translation_keys.any?
+
+      translation_keys.each do |translation_key|
+        translate_field!(translation_key)
+      end
+    end
+
+    def translate_field! translation_key
       return unless original_text = @record.send(translation_key)
       return unless original_text.present?
 
-      translation = Translation.find_or_initialize_by(instance_id: @record.id, instance_type: @record.class.name)
+      translation = Translation.find_or_initialize_by(instance_id: @record.id, instance_type: @record.class.name, instance_field: translation_key)
 
       ::Translation::LANGUAGES.each do |language|
         translation[language] = text_translation(original_text, language)
@@ -24,14 +32,16 @@ module TranslationServices
       translation.save
     end
 
-    def translate lang
+    # finds the record translation, in a given lang, from translations table
+    def translate lang, field
       return unless lang
       return unless ::Translation::LANGUAGES.include?(lang.to_sym)
-      return unless translation = @record.translation
+      return unless translation = @record.translation(field: field)
 
       translation.send(lang)
     end
 
+    # translate text into lang
     def text_translation text, lang
       return text if EnvironmentHelper.test? # @bad_code Use stub_request in rspec instead
 
@@ -50,10 +60,12 @@ module TranslationServices
 
     private
 
-    def translation_key
-      return :content if @record.is_a? ChatMessage
-      return :title if @record.is_a? Entourage
-      return :name if @record.is_a? Neighborhood
+    def translation_keys
+      return [:content] if @record.is_a? ChatMessage
+      return [:title, :description] if @record.is_a? Entourage
+      return [:name, :description] if @record.is_a? Neighborhood
+
+      []
     end
 
     def from_lang
