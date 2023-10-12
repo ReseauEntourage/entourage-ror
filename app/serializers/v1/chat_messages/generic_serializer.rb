@@ -14,6 +14,13 @@ module V1
                  :message_type,
                  :status
 
+      def content
+        return object.content unless scope && scope[:user].present?
+        return object.content unless scope[:user].lang.present?
+
+        TranslationServices::Translator.new(object).translate(scope[:user].lang, :content) || object.content
+      end
+
       def user
         partner = object.user.partner
 

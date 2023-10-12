@@ -27,6 +27,20 @@ module V1
     has_many :members, serializer: ::V1::Users::BasicSerializer
     has_one :location
 
+    def title
+      return object.title unless scope && scope[:user].present?
+      return object.title unless scope[:user].lang.present?
+
+      TranslationServices::Translator.new(object).translate(scope[:user].lang, :title) || object.title
+    end
+
+    def description
+      return object.description unless scope && scope[:user].present?
+      return object.description unless scope[:user].lang.present?
+
+      TranslationServices::Translator.new(object).translate(scope[:user].lang, :description) || object.description
+    end
+
     def uuid
       object.uuid_v2
     end

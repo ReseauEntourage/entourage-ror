@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_09_22_094100) do
+ActiveRecord::Schema.define(version: 2023_09_25_164500) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -941,6 +941,22 @@ ActiveRecord::Schema.define(version: 2023_09_22_094100) do
     t.index ["user_id", "tour_id"], name: "index_tours_users_on_user_id_and_tour_id", unique: true
   end
 
+  create_table "translations", force: :cascade do |t|
+    t.integer "instance_id", null: false
+    t.string "instance_type", null: false
+    t.string "fr"
+    t.string "en"
+    t.string "de"
+    t.string "pl"
+    t.string "ro"
+    t.string "uk"
+    t.string "ar"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.string "instance_field", default: "content"
+    t.index ["instance_id", "instance_type"], name: "index_translations_on_instance_id_and_instance_type"
+  end
+
   create_table "user_applications", id: :serial, force: :cascade do |t|
     t.string "push_token", null: false
     t.string "device_os", null: false
@@ -1094,6 +1110,7 @@ ActiveRecord::Schema.define(version: 2023_09_22_094100) do
     t.string "birthday", limit: 5
     t.string "other_interest"
     t.json "options", default: {}
+    t.string "lang", default: "fr"
     t.index ["address_id"], name: "index_users_on_address_id"
     t.index ["email"], name: "index_users_on_email"
     t.index ["organization_id"], name: "index_users_on_organization_id"

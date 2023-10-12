@@ -20,6 +20,20 @@ module V1
 
     has_one :user, serializer: ::V1::Users::BasicSerializer
 
+    def name
+      return object.name unless scope && scope[:user].present?
+      return object.name unless scope[:user].lang.present?
+
+      TranslationServices::Translator.new(object).translate(scope[:user].lang, :name) || object.name
+    end
+
+    def description
+      return object.description unless scope && scope[:user].present?
+      return object.description unless scope[:user].lang.present?
+
+      TranslationServices::Translator.new(object).translate(scope[:user].lang, :description) || object.description
+    end
+
     def member
       return false unless scope && scope[:user]
 
