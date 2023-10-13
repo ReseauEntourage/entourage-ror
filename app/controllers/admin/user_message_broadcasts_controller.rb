@@ -74,7 +74,7 @@ module Admin
         )
       end
 
-      redirect_to edit_admin_user_message_broadcast_path(@user_message_broadcast)
+      redirect_to admin_user_message_broadcasts_path
     end
 
     private
