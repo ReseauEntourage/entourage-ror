@@ -26,7 +26,9 @@ module Admin
     end
 
     def edit
-      @tab = params[:tab].presence&.to_sym || :departements
+      @tab = params[:tab].presence&.to_sym
+      @tab ||= :neighborhoods unless @neighborhood_message_broadcast.has_full_departements_selection?
+      @tab ||= :departements
     end
 
     def update
