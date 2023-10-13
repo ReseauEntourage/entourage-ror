@@ -18,21 +18,34 @@ class NeighborhoodMessageBroadcast < ConversationMessageBroadcast
   end
 
   def conversation_ids= ids
-    self[:conversation_ids] = ids.reject(&:empty?)
+    self[:conversation_ids] = ids.map(&:to_s).reject(&:empty?)
   end
 
   def departements
-    Neighborhood.select("left(postal_code, 2) as departement").where(id: conversation_ids).group("left(postal_code, 2)").map(&:departement)
+    @departements ||= Neighborhood
+      .select("left(postal_code, 2) as departement")
+      .where(id: conversation_ids)
+      .group("left(postal_code, 2)")
+      .map(&:departement)
   end
 
   def departements= departements
+    self[:conversation_ids] = self.class.neighborhood_ids_in_departements(departements)
+  end
+
+  def self.neighborhood_ids_in_departements departements
     departements = departements.compact.reject(&:empty?)
 
-    return self[:conversation_ids] = [] unless departements.any?
+    return [] unless departements.any?
 
     like_departements = departements.map { |departement| "#{departement}%" }
 
-    self[:conversation_ids] = Neighborhood.where("postal_code LIKE ANY ( array[?] )", like_departements).pluck(:id)
+    Neighborhood.where("postal_code LIKE ANY ( array[?] )", like_departements).pluck(:id)
+  end
+
+  # indicates whether the broadcast concerns all the neighborhoods of the concerned departements
+  def has_full_departements_selection?
+    self.class.neighborhood_ids_in_departements(departements).compact.uniq.sort == conversation_ids.compact.uniq.sort
   end
 
   alias_method :neighborhoods, :recipients

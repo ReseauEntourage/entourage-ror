@@ -1,5 +1,4 @@
 require 'rails_helper'
-require 'mixpanel_tools'
 
 RSpec.describe UserMessageBroadcast, type: :model do
   it { should validate_presence_of(:area_type) }
