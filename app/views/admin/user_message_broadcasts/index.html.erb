@@ -4,10 +4,10 @@
 
     <div style="margin-bottom: 15px; display: flex">
       <div class="btn-group btn-group-sm">
+        <%= link_to("Envoyés", @params.merge(status: :sent), class: "btn btn-#{@status == :sent ? :primary : :default}") %>
+        <%= link_to("En cours d'envoi", @params.merge(status: :sending), class: "btn btn-#{@status == :sending ? :primary : :default}") %>
         <%= link_to("Brouillons", @params.merge(status: :draft), class: "btn btn-#{@status == :draft ? :primary : :default}") %>
         <%= link_to("Archivées", @params.merge(status: :archived), class: "btn btn-#{@status == :archived ? :primary : :default}") %>
-        <%= link_to("En cours d'envoi", @params.merge(status: :sending), class: "btn btn-#{@status == :sending ? :primary : :default}") %>
-        <%= link_to("Envoyés", @params.merge(status: :sent), class: "btn btn-#{@status == :sent ? :primary : :default}") %>
       </div>
     </div>
 
