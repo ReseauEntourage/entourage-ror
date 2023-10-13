@@ -169,6 +169,7 @@ describe Api::V1::HomeController do
             "id" => user.id,
             "display_name" => "John D.",
             "avatar_url" => nil,
+            "preference" => "solicitation",
             "community_roles" => [],
             "meetings_count" => 0,
             "chat_messages_count" => 0,

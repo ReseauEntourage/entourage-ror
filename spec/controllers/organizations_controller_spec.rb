@@ -71,7 +71,7 @@ RSpec.describe OrganizationsController, :type => :controller do
       context 'with no filter' do
         before { get :tours, format: :json }
         it { expect(response.status).to eq(200) }
-        it { expect(assigns[:tours]).to match_array([tour1, tour2, tour5]) }
+        it { expect(assigns[:tours].map(&:id)).to match_array([tour1, tour2, tour5].map(&:id)) }
       end
       context 'with type filter' do
         before { get :tours, params: { tour_type: 'alimentary', format: :json } }
@@ -152,7 +152,7 @@ RSpec.describe OrganizationsController, :type => :controller do
       context 'with no filter' do
         before { get :encounters, format: :json }
         it { expect(response.status).to eq(200) }
-        it { expect(assigns[:encounters]).to eq [encounter1, encounter2, encounter3, encounter4, encounter7]}
+        it { expect(assigns[:encounters].map(&:id)).to eq [encounter1, encounter2, encounter3, encounter4, encounter7].map(&:id)}
         it { expect(assigns[:encounter_count]).to eq 5 }
         it { expect(assigns[:tourer_count]).to eq 3 }
         it { expect(assigns[:tour_count]).to eq 3 }
