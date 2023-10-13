@@ -6,7 +6,7 @@ module Admin
 
     def index
       @params = params.permit([:status]).to_h
-      @status = params[:status].presence&.to_sym || :draft
+      @status = params[:status].presence&.to_sym || :sent
 
       @neighborhood_message_broadcasts = NeighborhoodMessageBroadcast.with_status(@status).order(created_at: :desc)
       @neighborhood_message_broadcasts = @neighborhood_message_broadcasts.page(page).per(per)
@@ -79,7 +79,7 @@ module Admin
         )
       end
 
-      redirect_to edit_admin_neighborhood_message_broadcast_path(@neighborhood_message_broadcast)
+      redirect_to admin_neighborhood_message_broadcasts_path
     end
 
     private

@@ -6,7 +6,7 @@ module Admin
       @params = params.permit([:status, :area, :goal]).to_h
       @goal = params[:goal].presence&.to_sym || :all
       @area = params[:area].presence&.to_sym || :all
-      @status = params[:status].presence&.to_sym || :draft
+      @status = params[:status].presence&.to_sym || :sent
 
       @user_message_broadcasts = UserMessageBroadcast.with_status(@status).order(created_at: :desc)
 
@@ -74,7 +74,7 @@ module Admin
         )
       end
 
-      redirect_to edit_admin_user_message_broadcast_path(@user_message_broadcast)
+      redirect_to admin_user_message_broadcasts_path
     end
 
     private
