@@ -7,6 +7,6 @@ FactoryBot.define do
     goal { 'ask_for_help' }
     title { 'Titre de la diffusion' }
     archived_at { nil }
-    status { 'draft' }
+    status { 'sent' }
   end
 end
