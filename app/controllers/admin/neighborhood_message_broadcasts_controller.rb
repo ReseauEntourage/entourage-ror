@@ -79,7 +79,7 @@ module Admin
         )
       end
 
-      redirect_to edit_admin_neighborhood_message_broadcast_path(@neighborhood_message_broadcast)
+      redirect_to admin_neighborhood_message_broadcasts_path
     end
 
     private
