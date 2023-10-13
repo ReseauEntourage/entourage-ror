@@ -50,17 +50,17 @@ describe Admin::UserMessageBroadcastsController do
   end
 
   describe 'GET #index status filter' do
-    let!(:draft) { create(:user_message_broadcast, status: 'draft') }
+    let!(:sent) { create(:user_message_broadcast, status: 'sent') }
     let!(:archived) { create(:user_message_broadcast, status: 'archived', archived_at: Time.now) }
 
     context "has default status user_message_broadcasts" do
       before { get :index }
-      it { expect(assigns(:user_message_broadcasts).pluck(:id)).to match_array([draft].pluck(:id)) }
+      it { expect(assigns(:user_message_broadcasts).pluck(:id)).to match_array([sent].pluck(:id)) }
     end
 
     context "has status user_message_broadcasts" do
-      before { get :index, params: { status: 'draft' } }
-      it { expect(assigns(:user_message_broadcasts).pluck(:id)).to match_array([draft].pluck(:id)) }
+      before { get :index, params: { status: 'sent' } }
+      it { expect(assigns(:user_message_broadcasts).pluck(:id)).to match_array([sent].pluck(:id)) }
     end
 
     context "has status user_message_broadcasts" do
@@ -135,7 +135,7 @@ describe Admin::UserMessageBroadcastsController do
   end
 
   describe "POST #broadcast" do
-    let(:user_message_broadcast) { create(:user_message_broadcast) }
+    let(:user_message_broadcast) { create(:user_message_broadcast, status: :draft) }
 
     describe "single sending" do
       it {
