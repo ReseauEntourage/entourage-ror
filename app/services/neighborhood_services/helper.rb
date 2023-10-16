@@ -1,17 +1,17 @@
-module OutingsServices
+module NeighborhoodServices
   class Helper
-    attr_reader :outing
+    attr_reader :record
 
-    def initialize outing
-      @outing = outing
+    def initialize record
+      @record = record
     end
 
-    def neighborhoods_main_departement_slug
-      return unless outing.neighborhoods.any?
+    def main_departement_slug
+      return unless record.neighborhoods.any?
 
       departements = ModerationArea.pluck(:departement)
 
-      neighborhood_departements = outing.neighborhoods.map do |neighborhood|
+      neighborhood_departements = record.neighborhoods.map do |neighborhood|
         next unless neighborhood.postal_code
 
         (departements & [neighborhood.postal_code[0..1]] | [ModerationArea::HORS_ZONE]).first

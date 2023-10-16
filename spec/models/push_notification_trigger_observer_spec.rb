@@ -333,7 +333,7 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
     end
 
     context "broadcast chat_message" do
-      let!(:broadcast) { FactoryBot.create(:conversation_message_broadcast) }
+      let!(:broadcast) { FactoryBot.create(:user_message_broadcast) }
 
       after { create :chat_message, user: user, message_type: :broadcast, metadata: { conversation_message_broadcast_id: broadcast.id } }
 

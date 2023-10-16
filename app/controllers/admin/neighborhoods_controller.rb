@@ -321,27 +321,13 @@ module Admin
     def set_neighborhood_forced_join_request
       @neighborhood = Neighborhood.unscoped.find(params[:id])
 
-      set_forced_join_request(@neighborhood)
+      @join_request = @neighborhood.set_forced_join_request_as_member!(current_user)
     end
 
     def set_outing_forced_join_request
       @outing = Outing.find(params[:outing_id])
 
-      set_forced_join_request(@outing)
-    end
-
-    def set_forced_join_request record
-      @join_request = current_user.join_requests.find_by(joinable: record)
-
-      return if @join_request.present? && @join_request.accepted?
-
-      if @join_request.present?
-        @join_request.status = :accepted
-      else
-        @join_request = JoinRequest.new(joinable: record, user: current_user, role: :member, status: :accepted)
-      end
-
-      @join_request.save!
+      @join_request = @outing.set_forced_join_request_as_member!(current_user)
     end
 
     def set_chat_message

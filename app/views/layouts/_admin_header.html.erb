@@ -41,7 +41,8 @@
             <li><%= link_to "Pois", admin_pois_path({ q: { source_eq: "0", validated_eq: "false" } }) %></li>
             <li><%= link_to "Zones de modération", admin_moderation_areas_path %></li>
             <li><%= link_to "Zones de maraudes", admin_tour_areas_path %></li>
-            <li><%= link_to "Diffusions de MP", admin_conversation_message_broadcasts_path %></li>
+            <li><%= link_to "Diffusions de MP", admin_user_message_broadcasts_path %></li>
+            <li><%= link_to "Diffusions de groupes", admin_neighborhood_message_broadcasts_path %></li>
           </ul>
         </li>
 
