@@ -48,7 +48,8 @@
       <div style="flex-grow: 1">
         <b>Envoyer</b><br>
         L'envoi sera effectué auprès de <%= @neighborhood_message_broadcast.recipient_ids.count %> groupes correspondants aux filtres configurés.<br>
-        La diffusion sera automatiquement archivée après envoi.
+
+        ⚠️ Les utilisateurs associés aux groupes que vous sélectionnerez recevront une notification. Si un utilisateur appartient à plusieurs groupes alors il recevra autant de notifications que de groupes dans lesquels il est.
       </div>
         <%= link_to("Envoyer", broadcast_admin_neighborhood_message_broadcast_path, method: :post, class: "btn btn-danger", data: {
           confirm: "Êtes vous sûr de vouloir diffuser ce message à #{@neighborhood_message_broadcast.recipient_ids.count} groupes ?"
