@@ -23,7 +23,7 @@ module TranslationServices
       return unless original_text = @record.send(translation_key)
       return unless original_text.present?
 
-      translation = Translation.find_or_initialize_by(instance_id: @record.id, instance_type: @record.class.name, instance_field: translation_key)
+      translation = Translation.find_or_initialize_by(instance: @record, instance_field: translation_key)
 
       ::Translation::LANGUAGES.each do |language|
         translation[language] = text_translation(original_text, language)
