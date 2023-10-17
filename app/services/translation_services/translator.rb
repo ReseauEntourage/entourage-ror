@@ -3,6 +3,11 @@ module TranslationServices
 
   class Translator
     BASE_URI = "https://translate.google.com/m?sl=%s&tl=%s&q=%s"
+    TRANSLATION_KEYS = {
+      chat_message: [:content],
+      entourage: [:title, :description],
+      neighborhood: [:name, :description]
+    }
 
     attr_reader :record
 
@@ -20,6 +25,7 @@ module TranslationServices
     end
 
     def translate_field! translation_key
+      return unless original_text = @record.has_attribute?(translation_key)
       return unless original_text = @record.send(translation_key)
       return unless original_text.present?
 
@@ -43,8 +49,6 @@ module TranslationServices
 
     # translate text into lang
     def text_translation text, lang
-      return text if EnvironmentHelper.test? # @bad_code Use stub_request in rspec instead
-
       uri = URI(BASE_URI % [from_lang, lang, CGI.escape(text)])
 
       response = Net::HTTP.start(uri.host, uri.port, :use_ssl => uri.scheme == 'https') do |http|
@@ -61,9 +65,9 @@ module TranslationServices
     private
 
     def translation_keys
-      return [:content] if @record.is_a? ChatMessage
-      return [:title, :description] if @record.is_a? Entourage
-      return [:name, :description] if @record.is_a? Neighborhood
+      return TRANSLATION_KEYS[:chat_message] if @record.is_a? ChatMessage
+      return TRANSLATION_KEYS[:entourage] if @record.is_a? Entourage
+      return TRANSLATION_KEYS[:neighborhood] if @record.is_a? Neighborhood
 
       []
     end
