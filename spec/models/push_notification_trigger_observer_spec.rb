@@ -658,7 +658,7 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
     describe "notify is received" do
       describe "outing" do
         let(:neighborhood) { create(:neighborhood) }
-        let(:outing) { create :outing, user: user }
+        let(:outing) { create :outing, user: user, status: :open }
         let(:moderation) { outing.set_moderation_dates_and_save }
 
         after { moderation }
@@ -675,13 +675,15 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
 
         context "with neighborhood and as first occurrence" do
           let(:outing) { create :outing, user: user, neighborhoods: [neighborhood], recurrency_identifier: "abc" }
+          let!(:outing_recurrence) { create(:outing_recurrence, identifier: "abc") }
 
           include_examples :call_notify
         end
 
         context "with neighborhood and as second occurrence" do
-          let!(:outing_0) { create :outing, user: user, neighborhoods: [neighborhood], recurrency_identifier: "abc" }
-          let(:outing) { create :outing, user: user, neighborhoods: [neighborhood], recurrency_identifier: "abc" }
+          let!(:outing_recurrence) { create(:outing_recurrence, identifier: "abc") }
+          let!(:outing_0) { create :outing, title: "outing_0", user: user, neighborhoods: [neighborhood], recurrency_identifier: "abc", metadata: { starts_at: 2.minutes.ago } }
+          let(:outing) { create :outing, title: "outing", user: user, neighborhoods: [neighborhood], recurrency_identifier: "abc", metadata: { starts_at: 1.minute.ago } }
 
           include_examples :no_call_notify
         end
