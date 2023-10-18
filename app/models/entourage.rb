@@ -377,8 +377,10 @@ class Entourage < ApplicationRecord
 
   def first_occurrence?
     return true unless recurrent?
+    return true unless recurrence = OutingRecurrence.find_by_identifier(recurrency_identifier)
+    return true unless first_outing = recurrence.first_outing
 
-    Outing.where(recurrency_identifier: recurrency_identifier).count <= 1
+    first_outing.id == self.id
   end
 
   def contribution?
