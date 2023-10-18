@@ -672,6 +672,19 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
 
           include_examples :call_notify
         end
+
+        context "with neighborhood and as first occurrence" do
+          let(:outing) { create :outing, user: user, neighborhoods: [neighborhood], recurrency_identifier: "abc" }
+
+          include_examples :call_notify
+        end
+
+        context "with neighborhood and as second occurrence" do
+          let!(:outing_0) { create :outing, user: user, neighborhoods: [neighborhood], recurrency_identifier: "abc" }
+          let(:outing) { create :outing, user: user, neighborhoods: [neighborhood], recurrency_identifier: "abc" }
+
+          include_examples :no_call_notify
+        end
       end
 
       describe "join_request" do
