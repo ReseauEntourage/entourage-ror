@@ -41,7 +41,7 @@ class PushNotificationTrigger
       return @i18ns[lang] if @i18ns.has_key?(lang)
 
       return @i18ns[lang] = I18n.with_locale(lang) { I18n.t(@i18n) % @i18n_args } if @i18n.present?
-      return @i18ns[lang] = TranslationServices::Translator.new(@instance).translate(@field, lang) if @instance.present? && @field.present?
+      return @i18ns[lang] = TranslationServices::Translator.new(@instance).translate(lang, @field) if @instance.present? && @field.present?
 
       @i18ns[lang] = @text
       @i18ns[lang]
