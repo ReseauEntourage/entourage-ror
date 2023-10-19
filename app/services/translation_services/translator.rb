@@ -40,15 +40,18 @@ module TranslationServices
 
     # finds the record translation, in a given lang, from translations table
     def translate lang, field
-      return unless lang
-      return unless ::Translation::LANGUAGES.include?(lang.to_sym)
-      return unless translation = @record.translation(field: field)
+      lang = Translation::DEFAULT_LANG unless ::Translation::LANGUAGES.include?(lang.to_sym)
 
-      translation.send(lang)
+      return @record.send(field) unless translations = @record.translation(field: field)
+      return @record.send(field) unless translation = translations.send(lang)
+
+      translation
     end
 
     # translate text into lang
     def text_translation text, lang
+      lang ||= Translation::DEFAULT_LANG
+
       uri = URI(BASE_URI % [from_lang, lang, CGI.escape(text)])
 
       response = Net::HTTP.start(uri.host, uri.port, :use_ssl => uri.scheme == 'https') do |http|
