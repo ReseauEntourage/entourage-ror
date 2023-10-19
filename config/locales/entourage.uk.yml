@@ -1,0 +1,60 @@
+---
+uk:
+  push_notifications:
+    action:
+      create_for_follower: "[UK] - %s vous invite à rejoindre %s"
+    outing:
+      create: "[UK] - Un nouvel événement vient d'être ajouté au %s : %s prévu le %s"
+      cancel: "[UK] - Cet événement prévu le %s vient d'être annulé"
+      update: "[UK] - L'événement prévu le %s a été modifié. Il se déroulera le %s, au %s"
+      update_short: "[UK] - L'événement prévu le %s a été modifié"
+    post:
+      create: "[UK] - %s vient de partager : \"%s\""
+    comment:
+      create: "[UK] - %s vient de commenter la publication \"%s\""
+    join_request:
+      new: "[UK] - Nouveau membre"
+      update: "[UK] - Demande acceptée"
+      update_on_action: "[UK] - Vous venez de rejoindre une action de %s"
+      update_on_outing: "[UK] - Vous venez de rejoindre un événement de %s"
+      update_on_neighborhood: "[UK] - Vous venez de rejoindre un groupe de %s"
+      create: "[UK] - %s vient de rejoindre votre %s \"%s\""
+      create_outing: "[UK] - %s vient de rejoindre votre événement \"%s\" du %s"
+    contribution:
+      create: "[UK] - Un voisin propose une nouvelle entraide"
+    solicitation:
+      create: "[UK] - Un voisin recherche une aide"
+      create_section: "[UK] - Un voisin recherche un %s"
+
+  timeliner:
+    h1:
+      title: "[UK] - Bienvenue chez Entourage 👌"
+      offer: "[UK] - Le saviez-vous ? Il suffit d'une vidéo pour déconstruire vos préjugés !"
+      ask: "[UK] - Vous n'imaginez pas tout ce que contient votre nouvelle app : venez la découvrir !"
+    j2:
+      title: "[UK] - Passez dire bonjour 👋"
+      offer: "[UK] - Votre groupe de voisins ne demande qu'à vous connaître !"
+      ask_title_outing: "[UK] - Vous avez 4 minutes ?"
+      ask: "[UK] - Regardez une courte vidéo pour tout comprendre à votre nouvelle application"
+    j5:
+      title_outing: "[UK] - Coucou, c'est encore nous ! 🕺"
+      offer_outing: "[UK] - Le virtuel, c'est sympa deux minutes, venez faire une rencontre dans la vraie vie !"
+      title_action: "[UK] - Coucou, c'est encore nous ! 🕺"
+      offer_action: "[UK] - Vous avez deux minutes pour donner un coup de pouce à vos voisins ?"
+      title_create_action: "[UK] - Coucou, c'est encore nous ! 🕺"
+      offer_create_action: "[UK] - Prenez deux minutes pour proposer votre aide autour de vous"
+      ask_title: "[UK] - Passez dire bonjour 👏"
+      ask: "[UK] - Votre groupe de voisins ne demande qu'à vous connaître"
+    j8:
+      title: "[UK] - A vous de jouer ! 📱"
+      offer: "[UK] - Un petit quiz anti-préjugés : on parie que vous allez apprendre des choses ?"
+      ask_title_outing: "[UK] - Coucou, c'est encore nous ! 🕺"
+      ask_outing: "[UK] - Le virtuel, c'est sympa deux minutes, venez faire une rencontre dans la vraie vie !"
+      ask_title_action: "[UK] - Coucou, c'est encore nous ! 🕺"
+      ask_action: "[UK] - Jetez un oeil aux coups de pouce publiés près de chez vous."
+      ask_title_create_action: "[UK] - Coucou, c'est encore nous ! 🕺"
+      ask_create_action: "[UK] - Une pétanque, un café ou juste une balade : proposez une sortie à vos voisins !"
+    j11:
+      title: "[UK] - Entourage c'est la famille !"
+      offer: "[UK] - On peut le dire, vous faites maintenant partie de la communauté Entourage. Ça se fête ! 🎉"
+      ask: "[UK] - On peut le dire, vous faites maintenant partie de la communauté Entourage. Ça se fête ! 🎉"
