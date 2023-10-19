@@ -118,8 +118,8 @@ describe Api::V1::Outings::UsersController do
             instance: user,
             users: [outing.user],
             params: {
-              object: "Nouveau membre",
-              content: "John D. vient de rejoindre votre événement \"#{outing.title}\" du #{I18n.l(outing.starts_at.to_date)}",
+              object: PushNotificationTrigger::I18nStruct.new(i18n: 'push_notifications.join_request.new'),
+              content: PushNotificationTrigger::I18nStruct.new(i18n: 'push_notifications.join_request.create_outing', i18n_args: ["John D.", outing.title, I18n.l(outing.starts_at.to_date)]),
               extra: {
                 tracking: :join_request_on_create_to_outing,
                 group_type: "outing",
