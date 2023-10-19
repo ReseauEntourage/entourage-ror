@@ -1,0 +1,60 @@
+---
+pl:
+  push_notifications:
+    action:
+      create_for_follower: "[PL] - %s vous invite à rejoindre %s"
+    outing:
+      create: "[PL] - Un nouvel événement vient d'être ajouté au %s : %s prévu le %s"
+      cancel: "[PL] - Cet événement prévu le %s vient d'être annulé"
+      update: "[PL] - L'événement prévu le %s a été modifié. Il se déroulera le %s, au %s"
+      update_short: "[PL] - L'événement prévu le %s a été modifié"
+    post:
+      create: "[PL] - %s vient de partager : \"%s\""
+    comment:
+      create: "[PL] - %s vient de commenter la publication \"%s\""
+    join_request:
+      new: "[PL] - Nouveau membre"
+      update: "[PL] - Demande acceptée"
+      update_on_action: "[PL] - Vous venez de rejoindre une action de %s"
+      update_on_outing: "[PL] - Vous venez de rejoindre un événement de %s"
+      update_on_neighborhood: "[PL] - Vous venez de rejoindre un groupe de %s"
+      create: "[PL] - %s vient de rejoindre votre %s \"%s\""
+      create_outing: "[PL] - %s vient de rejoindre votre événement \"%s\" du %s"
+    contribution:
+      create: "[PL] - Un voisin propose une nouvelle entraide"
+    solicitation:
+      create: "[PL] - Un voisin recherche une aide"
+      create_section: "[PL] - Un voisin recherche un %s"
+
+  timeliner:
+    h1:
+      title: "[PL] - Bienvenue chez Entourage 👌"
+      offer: "[PL] - Le saviez-vous ? Il suffit d'une vidéo pour déconstruire vos préjugés !"
+      ask: "[PL] - Vous n'imaginez pas tout ce que contient votre nouvelle app : venez la découvrir !"
+    j2:
+      title: "[PL] - Passez dire bonjour 👋"
+      offer: "[PL] - Votre groupe de voisins ne demande qu'à vous connaître !"
+      ask_title_outing: "[PL] - Vous avez 4 minutes ?"
+      ask: "[PL] - Regardez une courte vidéo pour tout comprendre à votre nouvelle application"
+    j5:
+      title_outing: "[PL] - Coucou, c'est encore nous ! 🕺"
+      offer_outing: "[PL] - Le virtuel, c'est sympa deux minutes, venez faire une rencontre dans la vraie vie !"
+      title_action: "[PL] - Coucou, c'est encore nous ! 🕺"
+      offer_action: "[PL] - Vous avez deux minutes pour donner un coup de pouce à vos voisins ?"
+      title_create_action: "[PL] - Coucou, c'est encore nous ! 🕺"
+      offer_create_action: "[PL] - Prenez deux minutes pour proposer votre aide autour de vous"
+      ask_title: "[PL] - Passez dire bonjour 👏"
+      ask: "[PL] - Votre groupe de voisins ne demande qu'à vous connaître"
+    j8:
+      title: "[PL] - A vous de jouer ! 📱"
+      offer: "[PL] - Un petit quiz anti-préjugés : on parie que vous allez apprendre des choses ?"
+      ask_title_outing: "[PL] - Coucou, c'est encore nous ! 🕺"
+      ask_outing: "[PL] - Le virtuel, c'est sympa deux minutes, venez faire une rencontre dans la vraie vie !"
+      ask_title_action: "[PL] - Coucou, c'est encore nous ! 🕺"
+      ask_action: "[PL] - Jetez un oeil aux coups de pouce publiés près de chez vous."
+      ask_title_create_action: "[PL] - Coucou, c'est encore nous ! 🕺"
+      ask_create_action: "[PL] - Une pétanque, un café ou juste une balade : proposez une sortie à vos voisins !"
+    j11:
+      title: "[PL] - Entourage c'est la famille !"
+      offer: "[PL] - On peut le dire, vous faites maintenant partie de la communauté Entourage. Ça se fête ! 🎉"
+      ask: "[PL] - On peut le dire, vous faites maintenant partie de la communauté Entourage. Ça se fête ! 🎉"
