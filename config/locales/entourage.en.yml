@@ -1,20 +1,60 @@
 ---
 en:
   push_notifications:
+    action:
+      create_for_follower: "[EN] - %s vous invite à rejoindre %s"
     outing:
-      create: "EN - Un nouvel événement vient d'être ajouté au %s : %s prévu le %s"
-      cancel: "EN - Cet événement prévu le %s vient d'être annulé"
-      update: "EN - L'événement prévu le %s a été modifié. Il se déroulera le %s, au %s"
-      update_short: "EN - L'événement prévu le %s a été modifié"
+      create: "[EN] - Un nouvel événement vient d'être ajouté au %s : %s prévu le %s"
+      cancel: "[EN] - Cet événement prévu le %s vient d'être annulé"
+      update: "[EN] - L'événement prévu le %s a été modifié. Il se déroulera le %s, au %s"
+      update_short: "[EN] - L'événement prévu le %s a été modifié"
     post:
-      create: "EN - %s vient de partager : \"%s\""
+      create: "[EN] - %s vient de partager : \"%s\""
     comment:
-      create: "EN - %s vient de commenter la publication \"%s\""
+      create: "[EN] - %s vient de commenter la publication \"%s\""
     join_request:
-      create: "EN - %s vient de rejoindre votre %s \"%s\""
-      create_outing: "EN - %s vient de rejoindre votre événement \"%s\" du %s"
+      new: "[EN] - Nouveau membre"
+      update: "[EN] - Demande acceptée"
+      update_on_action: "[EN] - Vous venez de rejoindre une action de %s"
+      update_on_outing: "[EN] - Vous venez de rejoindre un événement de %s"
+      update_on_neighborhood: "[EN] - Vous venez de rejoindre un groupe de %s"
+      create: "[EN] - %s vient de rejoindre votre %s \"%s\""
+      create_outing: "[EN] - %s vient de rejoindre votre événement \"%s\" du %s"
     contribution:
-      create: "EN - Un voisin propose une nouvelle entraide"
+      create: "[EN] - Un voisin propose une nouvelle entraide"
     solicitation:
-      create: "EN - Un voisin recherche une aide"
-      create_section: "EN - Un voisin recherche un %s"
+      create: "[EN] - Un voisin recherche une aide"
+      create_section: "[EN] - Un voisin recherche un %s"
+
+  timeliner:
+    h1:
+      title: "[EN] - Bienvenue chez Entourage 👌"
+      offer: "[EN] - Le saviez-vous ? Il suffit d'une vidéo pour déconstruire vos préjugés !"
+      ask: "[EN] - Vous n'imaginez pas tout ce que contient votre nouvelle app : venez la découvrir !"
+    j2:
+      title: "[EN] - Passez dire bonjour 👋"
+      offer: "[EN] - Votre groupe de voisins ne demande qu'à vous connaître !"
+      ask_title_outing: "[EN] - Vous avez 4 minutes ?"
+      ask: "[EN] - Regardez une courte vidéo pour tout comprendre à votre nouvelle application"
+    j5:
+      title_outing: "[EN] - Coucou, c'est encore nous ! 🕺"
+      offer_outing: "[EN] - Le virtuel, c'est sympa deux minutes, venez faire une rencontre dans la vraie vie !"
+      title_action: "[EN] - Coucou, c'est encore nous ! 🕺"
+      offer_action: "[EN] - Vous avez deux minutes pour donner un coup de pouce à vos voisins ?"
+      title_create_action: "[EN] - Coucou, c'est encore nous ! 🕺"
+      offer_create_action: "[EN] - Prenez deux minutes pour proposer votre aide autour de vous"
+      ask_title: "[EN] - Passez dire bonjour 👏"
+      ask: "[EN] - Votre groupe de voisins ne demande qu'à vous connaître"
+    j8:
+      title: "[EN] - A vous de jouer ! 📱"
+      offer: "[EN] - Un petit quiz anti-préjugés : on parie que vous allez apprendre des choses ?"
+      ask_title_outing: "[EN] - Coucou, c'est encore nous ! 🕺"
+      ask_outing: "[EN] - Le virtuel, c'est sympa deux minutes, venez faire une rencontre dans la vraie vie !"
+      ask_title_action: "[EN] - Coucou, c'est encore nous ! 🕺"
+      ask_action: "[EN] - Jetez un oeil aux coups de pouce publiés près de chez vous."
+      ask_title_create_action: "[EN] - Coucou, c'est encore nous ! 🕺"
+      ask_create_action: "[EN] - Une pétanque, un café ou juste une balade : proposez une sortie à vos voisins !"
+    j11:
+      title: "[EN] - Entourage c'est la famille !"
+      offer: "[EN] - On peut le dire, vous faites maintenant partie de la communauté Entourage. Ça se fête ! 🎉"
+      ask: "[EN] - On peut le dire, vous faites maintenant partie de la communauté Entourage. Ça se fête ! 🎉"
