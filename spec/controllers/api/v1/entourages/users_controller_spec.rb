@@ -104,8 +104,8 @@ describe Api::V1::Entourages::UsersController do
           it {
             expect(notif_service).to have_received(:send_notification).with(
               nil,
-              "Nouveau membre",
-              "John D. vient de rejoindre votre action \"Foobar1\"",
+              PushNotificationTrigger::I18nStruct.new(i18n: 'push_notifications.join_request.new'),
+              PushNotificationTrigger::I18nStruct.new(i18n: 'push_notifications.join_request.create', i18n_args: ['John D.', 'action', entourage.title]),
               [entourage.user],
               "contribution",
               entourage.id,
@@ -131,8 +131,8 @@ describe Api::V1::Entourages::UsersController do
           it {
             expect(notif_service).to have_received(:send_notification).with(
               nil,
-              "Nouveau membre",
-              "John D. vient de rejoindre votre action \"Foobar1\"",
+              PushNotificationTrigger::I18nStruct.new(i18n: 'push_notifications.join_request.new'),
+              PushNotificationTrigger::I18nStruct.new(i18n: 'push_notifications.join_request.create', i18n_args: ['John D.', 'action', entourage.title]),
               [entourage.user],
               "contribution",
               entourage.id,
@@ -271,8 +271,8 @@ describe Api::V1::Entourages::UsersController do
 
         expect_any_instance_of(PushNotificationService).to receive(:send_notification).with(
           nil,
-          "Foobar1",
-          "Vous venez de rejoindre un(e) action de John D.",
+          PushNotificationTrigger::I18nStruct.new(instance: kind_of(Entourage), field: :title),
+          PushNotificationTrigger::I18nStruct.new(i18n: 'push_notifications.join_request.update_on_action', i18n_args: "John D."),
           User.where(id: requester.id),
           "solicitation",
           entourage.id,

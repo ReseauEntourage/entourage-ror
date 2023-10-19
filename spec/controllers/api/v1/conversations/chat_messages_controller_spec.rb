@@ -227,8 +227,8 @@ describe Api::V1::Conversations::ChatMessagesController do
 
           expect_any_instance_of(PushNotificationService).to receive(:send_notification).with(
             nil,
-            'John D.',
-            "foobaz",
+            PushNotificationTrigger::I18nStruct.new(text: 'John D.'),
+            PushNotificationTrigger::I18nStruct.new(instance: kind_of(ChatMessage), field: :content),
             [ join_request2.user ],
             "conversation",
             conversation.id,

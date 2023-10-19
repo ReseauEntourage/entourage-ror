@@ -220,8 +220,8 @@ describe Api::V1::Entourages::ChatMessagesController do
 
           expect_any_instance_of(PushNotificationService).to receive(:send_notification).with(
             nil,
-            'John D. - Foobar',
-            'foobar',
+            PushNotificationTrigger::I18nStruct.new(text: 'John D. - Foobar'),
+            PushNotificationTrigger::I18nStruct.new(instance: kind_of(Entourage), field: :title),
             [join_request2.user],
             "solicitation",
             entourage.id,

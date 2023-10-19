@@ -45,8 +45,8 @@ describe FollowingService do
       it {
         expect(notification_service).to have_received(:send_notification).with(
           nil,
-          action.title,
-          "#{partner.name} vous invite à rejoindre #{action.title}",
+          PushNotificationTrigger::I18nStruct.new(instance: kind_of(Entourage), field: :title),
+          PushNotificationTrigger::I18nStruct.new(i18n: 'push_notifications.action.create_for_follower', i18n_args: action.title),
           [following.user],
           "solicitation",
           action.id,

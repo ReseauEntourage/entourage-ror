@@ -1,0 +1,20 @@
+---
+en:
+  push_notifications:
+    outing:
+      create: "EN - Un nouvel événement vient d'être ajouté au %s : %s prévu le %s"
+      cancel: "EN - Cet événement prévu le %s vient d'être annulé"
+      update: "EN - L'événement prévu le %s a été modifié. Il se déroulera le %s, au %s"
+      update_short: "EN - L'événement prévu le %s a été modifié"
+    post:
+      create: "EN - %s vient de partager : \"%s\""
+    comment:
+      create: "EN - %s vient de commenter la publication \"%s\""
+    join_request:
+      create: "EN - %s vient de rejoindre votre %s \"%s\""
+      create_outing: "EN - %s vient de rejoindre votre événement \"%s\" du %s"
+    contribution:
+      create: "EN - Un voisin propose une nouvelle entraide"
+    solicitation:
+      create: "EN - Un voisin recherche une aide"
+      create_section: "EN - Un voisin recherche un %s"
