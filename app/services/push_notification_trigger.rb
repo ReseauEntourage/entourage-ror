@@ -359,7 +359,7 @@ class PushNotificationTrigger
       users: users,
       params: {
         object: title(@record.messageable),
-        content: I18nStruct.new(i18n: I18N_KEYS[:create_post], i18n_args:[username(@record.user), @record.content]),
+        content: I18nStruct.new(i18n: I18N_KEYS[:create_post], i18n_args: [username(@record.user), @record.content]),
         extra: {
           tracking: tracking,
           group_type: group_type(@record.messageable),
@@ -518,7 +518,7 @@ class PushNotificationTrigger
     return unless object.respond_to?(:title)
     return if object.respond_to?(:conversation?) && object.conversation?
 
-    I18nStruct.new(i18n: object, i18n_args: :title)
+    I18nStruct.new(instance: object, field: :title)
   end
 
   def group_type object
