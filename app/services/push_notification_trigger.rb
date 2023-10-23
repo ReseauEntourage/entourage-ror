@@ -6,26 +6,6 @@ class PushNotificationTrigger
   #  :join_request
   #  :neighborhoods_entourage
 
-  I18N_KEYS = {
-    create_action_for_follower: 'push_notifications.action.create_for_follower',
-    create_outing: 'push_notifications.outing.create',
-    cancel_outing: 'push_notifications.outing.cancel',
-    update_outing: 'push_notifications.outing.update',
-    update_outing_short: 'push_notifications.outing.update_short',
-    create_post: 'push_notifications.post.create',
-    create_comment: 'push_notifications.comment.create',
-    new_join_request: 'push_notifications.join_request.new',
-    update_join_request: 'push_notifications.join_request.update',
-    update_join_request_on_action: 'push_notifications.join_request.update_on_action',
-    update_join_request_on_outing: 'push_notifications.join_request.update_on_outing',
-    update_join_request_on_neighborhood: 'push_notifications.join_request.update_on_neighborhood',
-    create_join_request: 'push_notifications.join_request.create',
-    create_join_request_outing: 'push_notifications.join_request.create_outing',
-    create_contribution: 'push_notifications.contribution.create',
-    create_solicitation: 'push_notifications.solicitation.create',
-    create_solicitation_section: 'push_notifications.solicitation.create_section',
-  }
-
   I18nStruct = Struct.new(:i18n, :i18n_args, :instance, :field, :text) do
     def initialize(i18n: nil, i18n_args: [], instance: nil, field: nil, text: nil)
       @i18ns = Hash.new # memorizes translations
@@ -40,11 +20,22 @@ class PushNotificationTrigger
     def to lang
       return @i18ns[lang] if @i18ns.has_key?(lang)
 
-      return @i18ns[lang] = I18n.with_locale(lang) { I18n.t(@i18n) % @i18n_args } if @i18n.present?
+      return @i18ns[lang] = I18n.with_locale(lang) { I18n.t(@i18n) % args_to(lang) } if @i18n.present?
       return @i18ns[lang] = TranslationServices::Translator.new(@instance).translate(lang, @field) if @instance.present? && @field.present?
 
       @i18ns[lang] = @text
       @i18ns[lang]
+    end
+
+    # handle translatable arguments
+    def args_to lang
+      @i18n_args.map do |i18n_arg|
+        if i18n_arg.is_a?(I18nStruct)
+          i18n_arg.to(lang)
+        else
+          i18n_arg
+        end
+      end
     end
   end
 
@@ -81,8 +72,11 @@ class PushNotificationTrigger
       instance: entourage,
       users: users,
       params: {
-        object: I18nStruct.new(instance: neighborhood, field: :title),
-        content: I18nStruct.new(i18n: I18N_KEYS['create_outing'], i18n_args: [entity_name(neighborhood), entourage.title, to_date(entourage.starts_at)]),
+        object: I18nStruct.new(instance: neighborhood, field: :name),
+        content: I18nStruct.new(
+          i18n: 'push_notifications.outing.create',
+          i18n_args: [entity_name(neighborhood), title(entourage), to_date(entourage.starts_at)
+          ]),
         extra: {
           tracking: :outing_on_add_to_neighborhood
         }
@@ -165,7 +159,7 @@ class PushNotificationTrigger
         users: [follower],
         params: {
           object: I18nStruct.new(instance: @record, field: :title),
-          content: I18nStruct.new(i18n: I18N_KEYS['create_action_for_follower'], i18n_args: [partner.name, title(@record)]),
+          content: I18nStruct.new(i18n: 'push_notifications.action.create_for_follower', i18n_args: [partner.name, title(@record)]),
           extra: {
             tracking: tracking,
             type: "ENTOURAGE_INVITATION",
@@ -269,7 +263,7 @@ class PushNotificationTrigger
       users: users,
       params: {
         object: I18nStruct.new(instance: @record, field: :title),
-        content: I18nStruct.new(i18n: I18N_KEYS[:cancel_outing], i18n_args: to_date(@record.starts_at)),
+        content: I18nStruct.new(i18n: 'push_notifications.outing.cancel', i18n_args: to_date(@record.starts_at)),
         extra: {
           tracking: :outing_on_cancel
         }
@@ -359,7 +353,7 @@ class PushNotificationTrigger
       users: users,
       params: {
         object: title(@record.messageable),
-        content: I18nStruct.new(i18n: I18N_KEYS[:create_post], i18n_args: [username(@record.user), @record.content]),
+        content: I18nStruct.new(i18n: 'push_notifications.post.create', i18n_args: [username(@record.user), content(@record)]),
         extra: {
           tracking: tracking,
           group_type: group_type(@record.messageable),
@@ -395,7 +389,7 @@ class PushNotificationTrigger
       users: User.where(id: user_ids),
       params: {
         object: title(@record.messageable),
-        content: I18nStruct.new(i18n: I18N_KEYS[:CREATE_COMMENT], i18n_args: [username(@record.user), @record.content]),
+        content: I18nStruct.new(i18n: 'push_notifications.comment.create', i18n_args: [username(@record.user), content(@record)]),
         extra: {
           tracking: tracking
         }
@@ -409,9 +403,9 @@ class PushNotificationTrigger
     return if @record.joinable && @record.joinable.user == @record.user
 
     content = if @record.joinable.is_a?(Entourage) && @record.joinable.outing?
-      I18nStruct.new(i18n: I18N_KEYS[:create_join_request_outing], i18n_args: [username(@record.user), title(@record.joinable), to_date(@record.joinable.starts_at)])
+      I18nStruct.new(i18n: 'push_notifications.join_request.create_outing', i18n_args: [username(@record.user), title(@record.joinable), to_date(@record.joinable.starts_at)])
     else
-      I18nStruct.new(i18n: I18N_KEYS[:create_join_request], i18n_args: [username(@record.user), entity_name(@record.joinable), title(@record.joinable)])
+      I18nStruct.new(i18n: 'push_notifications.join_request.create', i18n_args: [username(@record.user), entity_name(@record.joinable), title(@record.joinable)])
     end
 
     tracking = if @record.joinable.is_a?(Neighborhood)
@@ -428,7 +422,7 @@ class PushNotificationTrigger
       instance: @record.user,
       users: [@record.joinable.user],
       params: {
-        object: I18nStruct.new(i18n: I18N_KEYS[:new_join_request]),
+        object: I18nStruct.new(i18n: 'push_notifications.join_request.new'),
         content: content,
         extra: {
           tracking: tracking,
@@ -446,7 +440,7 @@ class PushNotificationTrigger
     return unless @changes.keys.include?("status")
     return join_request_on_create unless @changes["status"] && @changes["status"].first&.to_sym == :pending
 
-    content_key = I18N_KEYS[:"update_join_request_on_#{@record.joinable.group_type}"]
+    content_key = "push_notifications.join_request.update_on_#{@record.joinable.group_type}"
 
     notify(
       sender_id: @record.user_id,
@@ -454,7 +448,7 @@ class PushNotificationTrigger
       instance: @record.joinable,
       users: [@record.user],
       params: {
-        object: title(@record.joinable) || I18nStruct.new(i18n: I18N_KEYS[:update_join_request]),
+        object: title(@record.joinable) || I18nStruct.new(i18n: 'push_notifications.join_request.update'),
         content: I18nStruct.new(i18n: content_key, i18n_args: username(@record.joinable.user)),
         extra: {
           joinable_id: @record.joinable_id,
@@ -531,14 +525,18 @@ class PushNotificationTrigger
     GroupService.name object
   end
 
+  def content chat_message
+    I18nStruct.new(instance: chat_message, field: :content)
+  end
+
   def content_for_create_action object
     return unless object.is_a?(Entourage)
     return unless object.action?
 
-    return I18nStruct.new(i18n: I18N_KEYS[:create_contribution]) if object.contribution?
-    return I18nStruct.new(i18n: I18N_KEYS[:create_solicitation]) unless section = Solicitation.find(object.id).section
+    return I18nStruct.new(i18n: 'push_notifications.contribution.create') if object.contribution?
+    return I18nStruct.new(i18n: 'push_notifications.solicitation.create') unless section = Solicitation.find(object.id).section
 
-    I18nStruct.new(i18n: I18N_KEYS[:create_solicitation_section], i18n_args: I18n.t("tags.sections.#{section}.name").downcase)
+    I18nStruct.new(i18n: 'push_notifications.solicitation.create_section', i18n_args: I18n.t("tags.sections.#{section}.name").downcase)
   end
 
   def to_date date_str
@@ -551,13 +549,13 @@ class PushNotificationTrigger
     metadata_before_last_save = changes["metadata"] ? changes["metadata"].first : {}
 
     if metadata_before_last_save.keys.include?("starts_at") && metadata_before_last_save.keys.include?("display_address")
-      return I18nStruct.new(i18n: I18N_KEYS[:update_outing], i18n_args: [
+      return I18nStruct.new(i18n: 'push_notifications.outing.update', i18n_args: [
         to_date(metadata_before_last_save["starts_at"] || outing.starts_at),
         to_date(outing.starts_at),
         outing.metadata["display_address"] || outing.metadata[:display_address]
       ])
     end
 
-    I18nStruct.new(i18n: I18N_KEYS[:update_outing_short], i18n_args: to_date(outing.starts_at))
+    I18nStruct.new(i18n: 'push_notifications.outing.update_short', i18n_args: to_date(outing.starts_at))
   end
 end
