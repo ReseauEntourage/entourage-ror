@@ -5,7 +5,7 @@ describe Api::V1::ResourcesController, :type => :controller do
 
   let(:user) { create :pro_user }
 
-  context 'index' do
+  describe 'index' do
     let!(:resource) { create :resource }
     let(:result) { JSON.parse(response.body) }
 
@@ -22,9 +22,27 @@ describe Api::V1::ResourcesController, :type => :controller do
       it { expect(result).to have_key('resources') }
       it { expect(result['resources'].count).to eq(1) }
     end
+
+    describe 'no param nohtml' do
+      let(:subject) { result['resources'][0] }
+
+      before { get :index, params: { token: user.token } }
+
+      it { expect(response.status).to eq 200 }
+      it { expect(subject).to have_key('html') }
+    end
+
+    describe 'with param nohtml' do
+      let(:subject) { result['resources'][0] }
+
+      before { get :index, params: { token: user.token, nohtml: true } }
+
+      it { expect(response.status).to eq 200 }
+      it { expect(subject).not_to have_key('html') }
+    end
   end
 
-  context 'show' do
+  describe 'show' do
     let(:resource) { create :resource }
 
     let(:result) { JSON.parse(response.body) }

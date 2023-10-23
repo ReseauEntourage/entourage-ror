@@ -9,13 +9,18 @@ module V1
       :description,
       :image_url,
       :url,
-      :watched,
-      :html
+      :watched
+
+    attribute :html, unless: :nohtml?
 
     def watched
       return false unless scope[:user].present?
 
       UsersResource.find_by_resource_id_and_user_id_and_watched(object.id, scope[:user].id, true).present?
+    end
+
+    def nohtml?
+      scope[:nohtml]
     end
 
     def html
