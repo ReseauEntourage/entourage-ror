@@ -64,12 +64,16 @@
     <% end %>
 
     <div class="btn-group btn-group-sm">
+
       <% locations_keys = [:country_eq, :postal_code_start_any, :postal_code_start, :postal_code_not_start_all] %>
-      <% locations.each do |name, options| %>
-        <% active = locations.key q.slice(*locations_keys).compact.symbolize_keys %>
-        <%= link_to(name, @params.merge(q: q.except(*locations_keys).merge(options)),
-            class: "btn btn-#{active == name ? :primary : :default}"
-        ) %>
+      <%= link_to("Partout", @params.merge(q: q.except(*locations_keys)), class: "btn btn-#{(!@params["q"].key?("postal_code_start") and !@params["q"].key?("postal_code_not_start_all")) ? :primary : :default}") %>
+      <% locations.sort.each do |name, options, index| %>
+        <% if (name != "Partout") %>
+          <% active = locations.key q.slice(*locations_keys).compact.symbolize_keys %>
+          <%= link_to(name, @params.merge(q: q.except(*locations_keys).merge(options)),
+              class: "btn btn-#{active == name ? :primary : :default}"
+          ) %>
+        <% end %>
       <% end %>
     </div>
 
