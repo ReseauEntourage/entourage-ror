@@ -15,10 +15,9 @@ module V1
                  :status
 
       def content
-        return object.content unless scope && scope[:user].present?
-        return object.content unless scope[:user].lang.present?
+        return object.content unless lang && object.translation
 
-        TranslationServices::Translator.new(object).translate(scope[:user].lang, :content) || object.content
+        object.translation.translate(field: :content, lang: scope[:user].lang) || object.content
       end
 
       def user
@@ -71,6 +70,12 @@ module V1
         return :medium unless scope
 
         scope[:image_size] || :medium
+      end
+
+      def lang
+        return unless scope && scope[:user] && scope[:user].lang
+
+        scope[:user].lang
       end
     end
   end

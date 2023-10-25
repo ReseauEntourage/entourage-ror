@@ -28,17 +28,15 @@ module V1
     has_one :location
 
     def title
-      return object.title unless scope && scope[:user].present?
-      return object.title unless scope[:user].lang.present?
+      return object.title unless lang && object.translation
 
-      TranslationServices::Translator.new(object).translate(scope[:user].lang, :title) || object.title
+      object.translation.translate(field: :title, lang: scope[:user].lang) || object.title
     end
 
     def description
-      return object.description unless scope && scope[:user].present?
-      return object.description unless scope[:user].lang.present?
+      return object.description unless lang && object.translation
 
-      TranslationServices::Translator.new(object).translate(scope[:user].lang, :description) || object.description
+      object.translation.translate(field: :description, lang: scope[:user].lang) || object.description
     end
 
     def uuid
@@ -87,6 +85,14 @@ module V1
       return unless object.recurrence.present?
 
       object.recurrence.recurrency
+    end
+
+    private
+
+    def lang
+      return unless scope && scope[:user] && scope[:user].lang
+
+      scope[:user].lang
     end
   end
 end
