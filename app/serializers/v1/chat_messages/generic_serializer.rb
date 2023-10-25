@@ -17,7 +17,7 @@ module V1
       def content
         return object.content unless lang && object.translation
 
-        object.translation.translate(field: :content, lang: scope[:user].lang) || object.content
+        object.translation.with_lang(lang).content || object.content
       end
 
       def user

@@ -23,13 +23,13 @@ module V1
     def name
       return object.name unless lang && object.translation
 
-      object.translation.translate(field: :name, lang: scope[:user].lang) || object.name
+      object.translation.with_lang(lang).name || object.name
     end
 
     def description
       return object.description unless lang && object.translation
 
-      object.translation.translate(field: :description, lang: scope[:user].lang) || object.description
+      object.translation.with_lang(lang).description || object.description
     end
 
     def member

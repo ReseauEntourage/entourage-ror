@@ -30,13 +30,13 @@ module V1
     def title
       return object.title unless lang && object.translation
 
-      object.translation.translate(field: :title, lang: scope[:user].lang) || object.title
+      object.translation.with_lang(lang).title || object.title
     end
 
     def description
       return object.description unless lang && object.translation
 
-      object.translation.translate(field: :description, lang: scope[:user].lang) || object.description
+      object.translation.with_lang(lang).description || object.description
     end
 
     def uuid
