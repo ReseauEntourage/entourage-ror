@@ -56,6 +56,13 @@ module Translatable
     Nokogiri::HTML(response.body, nil, 'UTF-8').css('.result-container').text
   end
 
+  def field_to_lang field, lang
+    return self[field] unless translation
+    return self[field] unless t = translation.send(lang)
+
+    t[field] || self[field]
+  end
+
   private
 
   def from_lang
