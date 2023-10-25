@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe JoinRequestAcceptTracking do
+describe JoinableScopable do
   let(:user) { create(:public_user) }
 
   let(:action) { create(:entourage) }

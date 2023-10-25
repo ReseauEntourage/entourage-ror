@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_09_25_164500) do
+ActiveRecord::Schema.define(version: 2023_10_25_094901) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -947,16 +947,15 @@ ActiveRecord::Schema.define(version: 2023_09_25_164500) do
   create_table "translations", force: :cascade do |t|
     t.integer "instance_id", null: false
     t.string "instance_type", null: false
-    t.string "fr"
-    t.string "en"
-    t.string "de"
-    t.string "pl"
-    t.string "ro"
-    t.string "uk"
-    t.string "ar"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.string "instance_field", default: "content"
+    t.jsonb "fr", default: {}, null: false
+    t.jsonb "en", default: {}, null: false
+    t.jsonb "de", default: {}, null: false
+    t.jsonb "pl", default: {}, null: false
+    t.jsonb "ro", default: {}, null: false
+    t.jsonb "uk", default: {}, null: false
+    t.jsonb "ar", default: {}, null: false
     t.index ["instance_id", "instance_type"], name: "index_translations_on_instance_id_and_instance_type"
   end
 

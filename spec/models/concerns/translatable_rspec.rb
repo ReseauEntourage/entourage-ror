@@ -1,13 +1,16 @@
 require 'rails_helper'
 
-describe TranslationServices::Translator do
+describe Translatable do
   describe "translate_field!" do
-    let(:subject) { described_class.new(record).translate_field!(field) }
+    let(:subject) { record.translate_field!(translation, field) }
+    let(:translation) { Translation.find_or_initialize_by(instance: record) }
 
     before {
       Translation::LANGUAGES.each do |lang|
-        described_class.any_instance.stub(:text_translation).with("Foo", lang) { "Foo+#{lang}" }
-        described_class.any_instance.stub(:text_translation).with("Bar", lang) { "Bar+#{lang}" }
+        [Neighborhood, Entourage, ChatMessage].each do |klass|
+          klass.any_instance.stub(:text_translation).with("Foo", lang) { "Foo+#{lang}" }
+          klass.any_instance.stub(:text_translation).with("Bar", lang) { "Bar+#{lang}" }
+        end
       end
     }
 
@@ -35,13 +38,12 @@ describe TranslationServices::Translator do
 
       context "translations with correct translation_key" do
         let(:field) { :name }
-        let(:translation) { Translation.find_by(instance: record, instance_field: :name) }
 
         before { subject }
 
         it { expect(translation).to be_a(Translation) }
-        it { expect(translation.fr).to eq("Foo+fr") }
-        it { expect(translation.en).to eq("Foo+en") }
+        it { expect(translation.fr.name).to eq("Foo+fr") }
+        it { expect(translation.en.name).to eq("Foo+en") }
         it { expect(translation.instance_type).to eq("Neighborhood") }
       end
     end
@@ -51,13 +53,12 @@ describe TranslationServices::Translator do
 
       context "translations with correct translation_key" do
         let(:field) { :title }
-        let(:translation) { Translation.find_by(instance: record, instance_field: :title) }
 
         before { subject }
 
         it { expect(translation).to be_a(Translation) }
-        it { expect(translation.fr).to eq("Foo+fr") }
-        it { expect(translation.en).to eq("Foo+en") }
+        it { expect(translation.fr.title).to eq("Foo+fr") }
+        it { expect(translation.en.title).to eq("Foo+en") }
         it { expect(translation.instance_type).to eq("Entourage") }
       end
     end
@@ -67,13 +68,12 @@ describe TranslationServices::Translator do
 
       context "translations with correct translation_key" do
         let(:field) { :content }
-        let(:translation) { Translation.find_by(instance: record, instance_field: :content) }
 
         before { subject }
 
         it { expect(translation).to be_a(Translation) }
-        it { expect(translation.fr).to eq("Foo+fr") }
-        it { expect(translation.en).to eq("Foo+en") }
+        it { expect(translation.fr.content).to eq("Foo+fr") }
+        it { expect(translation.en.content).to eq("Foo+en") }
         it { expect(translation.instance_type).to eq("ChatMessage") }
       end
     end
@@ -86,7 +86,7 @@ describe TranslationServices::Translator do
       stub_request(:get, "https://translate.google.com/m?q=Foofr&sl=fr&tl=en").to_return(body: '<div class="result-container">Fooen</div>')
     }
 
-    let(:subject) { described_class.new(record).text_translation("Foofr", :en) }
+    let(:subject) { record.text_translation("Foofr", :en) }
     let(:record) { create(:neighborhood, name: "Foo", description: "Bar") }
 
     it { expect(subject).to eq("Fooen") }

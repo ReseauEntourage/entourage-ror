@@ -27,17 +27,15 @@ module V1
     has_many :ongoing_outings, serializer: ::V1::OutingSerializer
 
     def name
-      return object.name unless scope && scope[:user].present?
-      return object.name unless scope[:user].lang.present?
+      return object.name unless lang && object.translation
 
-      TranslationServices::Translator.new(object).translate(scope[:user].lang, :name) || object.name
+      object.translation.translate(field: :name, lang: scope[:user].lang) || object.name
     end
 
     def description
-      return object.description unless scope && scope[:user].present?
-      return object.description unless scope[:user].lang.present?
+      return object.description unless lang && object.translation
 
-      TranslationServices::Translator.new(object).translate(scope[:user].lang, :description) || object.description
+      object.translation.translate(field: :description, lang: scope[:user].lang) || object.description
     end
 
     def member
@@ -104,6 +102,12 @@ module V1
       return unless scope[:user]
 
       @current_join_request ||= JoinRequest.where(joinable: object, user: scope[:user], status: :accepted).first
+    end
+
+    def lang
+      return unless scope && scope[:user] && scope[:user].lang
+
+      scope[:user].lang
     end
   end
 end
