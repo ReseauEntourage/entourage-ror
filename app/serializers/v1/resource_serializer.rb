@@ -36,7 +36,7 @@ module V1
     end
 
     def html
-      ResourceServices::Format.new(resource: object).to_html
+      ResourceServices::Format.new(resource: object, lang: lang).to_html
     end
 
     def image_url
