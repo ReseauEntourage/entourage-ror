@@ -13,6 +13,18 @@ module V1
 
     attribute :html, unless: :nohtml?
 
+    def name
+      return object.name unless lang && object.translation
+
+      object.translation.with_lang(lang).name || object.name
+    end
+
+    def description
+      return object.description unless lang && object.translation
+
+      object.translation.with_lang(lang).description || object.description
+    end
+
     def watched
       return false unless scope[:user].present?
 
@@ -29,6 +41,14 @@ module V1
 
     def image_url
       object.image_url_with_size :medium
+    end
+
+    private
+
+    def lang
+      return unless scope && scope[:user] && scope[:user].lang
+
+      scope[:user].lang
     end
   end
 end

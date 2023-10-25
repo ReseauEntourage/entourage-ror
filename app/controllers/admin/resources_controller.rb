@@ -2,7 +2,7 @@ module Admin
   class ResourcesController < Admin::BaseController
     layout 'admin_large'
 
-    before_action :set_resource, only: [:edit, :update, :destroy, :edit_image, :update_image]
+    before_action :set_resource, only: [:edit, :edit_translation, :update, :update_translation, :destroy, :edit_image, :update_image]
 
     def index
       @resources = Resource.page(page).per(per)
@@ -23,6 +23,7 @@ module Admin
     end
 
     def edit
+      @language = params[:language]&.to_sym
     end
 
     def update
@@ -30,6 +31,23 @@ module Admin
 
       if @resource.save
         redirect_to edit_admin_resource_path(@resource), notice: "Contenu pédagogique mis à jour"
+      else
+        render :edit
+      end
+    end
+
+    def edit_translation
+      @language = params[:language]&.to_sym
+
+      @translation = Translation.find_or_initialize_by(instance: @resource)
+    end
+
+    def update_translation
+      @translation = Translation.find_or_initialize_by(instance: @resource)
+      @translation.assign_attributes(translation_params)
+
+      if @translation.save
+        redirect_to edit_admin_resource_path(@resource), notice: "Traduction mise à jour"
       else
         render :edit
       end
@@ -74,6 +92,14 @@ module Admin
         :duration,
         :resource_image_id,
       )
+    end
+
+    def translation_params
+      permits = Translation::LANGUAGES.map do |language|
+        [language, {}]
+      end.to_h
+
+      params.require(:translation).permit(permits)
     end
   end
 end
