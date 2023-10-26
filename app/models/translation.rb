@@ -1,6 +1,6 @@
 class Translation < ApplicationRecord
   DEFAULT_LANG = :fr
-  LANGUAGES = [:fr, :en, :de, :pl, :ro, :uk, :ar]
+  LANGUAGES = [:fr, :en, :de, :es, :pl, :ro, :uk, :ar]
 
   belongs_to :instance, polymorphic: true
 
