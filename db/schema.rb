@@ -959,6 +959,7 @@ ActiveRecord::Schema.define(version: 2023_11_17_103301) do
     t.jsonb "ro", default: {}, null: false
     t.jsonb "uk", default: {}, null: false
     t.jsonb "ar", default: {}, null: false
+    t.string "from_lang", default: "fr", null: false
     t.index ["instance_id", "instance_type"], name: "index_translations_on_instance_id_and_instance_type"
   end
 
