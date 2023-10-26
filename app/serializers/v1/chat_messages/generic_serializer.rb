@@ -4,6 +4,7 @@ module V1
       attributes :id,
                  :uuid_v2,
                  :content,
+                 :content_translations,
                  :user,
                  :created_at,
                  :post_id,
@@ -15,9 +16,11 @@ module V1
                  :status
 
       def content
-        return object.content unless lang && object.translation
+        I18nSerializer.new(object, :content, lang).translation
+      end
 
-        object.translation.with_lang(lang).content || object.content
+      def content_translations
+        I18nSerializer.new(object, :content, lang).translations
       end
 
       def user
