@@ -510,6 +510,12 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
         "id" => post.id,
         "uuid_v2" => post.uuid_v2,
         "content" => post.content,
+        "content_translations" => {
+          "translation" => post.content,
+          "original" => post.content,
+          "from_lang" => "fr",
+          "to_lang" => "fr",
+        },
         "user" => {
           "id" => post.user_id,
           'display_name' => 'John D.',

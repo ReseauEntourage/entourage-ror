@@ -25,6 +25,12 @@ describe Api::V1::Tours::ChatMessagesController do
             "uuid_v2" => chat_message1.uuid_v2,
             "message_type" => "text",
             "content" => "MyText",
+            "content_translations" => {
+              "translation" => "MyText",
+              "original" => "MyText",
+              "from_lang" => "fr",
+              "to_lang" => "fr",
+            },
             "user" => {
               "id" => chat_message1.user_id,
               "avatar_url" => nil,
@@ -40,6 +46,12 @@ describe Api::V1::Tours::ChatMessagesController do
             "uuid_v2" => chat_message2.uuid_v2,
             "message_type" => "text",
             "content" => "MyText",
+            "content_translations" => {
+              "translation" => "MyText",
+              "original" => "MyText",
+              "from_lang" => "fr",
+              "to_lang" => "fr",
+            },
             "user" => {
             "id" => chat_message2.user_id,
             "avatar_url" => nil,
@@ -97,6 +109,12 @@ describe Api::V1::Tours::ChatMessagesController do
             "uuid_v2" => chat_message2.uuid_v2,
             "message_type" => "text",
             "content" => "MyText",
+            "content_translations" => {
+              "translation" => "MyText",
+              "original" => "MyText",
+              "from_lang" => "fr",
+              "to_lang" => "fr",
+            },
             "user" => {
               "id" => chat_message2.user.id,
               "avatar_url" => nil,
@@ -137,6 +155,12 @@ describe Api::V1::Tours::ChatMessagesController do
             "uuid_v2" => ChatMessage.first.uuid_v2,
             "message_type" => "text",
             "content" => "foobar",
+            "content_translations" => {
+              "translation" => "foobar",
+              "original" => "foobar",
+              "from_lang" => "fr",
+              "to_lang" => "fr",
+            },
             "user" => {
               "id" => user.id,
               "avatar_url" => nil,

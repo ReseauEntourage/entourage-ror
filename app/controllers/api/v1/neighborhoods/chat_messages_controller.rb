@@ -102,7 +102,7 @@ module Api
 
         def comments
           post = @neighborhood.chat_messages.where(id: @chat_message.id).first
-          messages = post.children.order(created_at: :asc)
+          messages = post.children.order(created_at: :asc).includes(:translation)
 
           render json: messages, each_serializer: ::V1::ChatMessages::CommentSerializer, scope: { current_join_request: join_request, user: current_user }
         end
