@@ -14,15 +14,11 @@ module V1
     attribute :html, unless: :nohtml?
 
     def name
-      return object.name unless lang && object.translation
-
-      object.translation.with_lang(lang).name || object.name
+      I18nSerializer.new(object, :name, lang).translation
     end
 
     def description
-      return object.description unless lang && object.translation
-
-      object.translation.with_lang(lang).description || object.description
+      I18nSerializer.new(object, :description, lang).translation
     end
 
     def watched

@@ -7,7 +7,9 @@ module V1
                :uuid_v2,
                :status,
                :title,
+               :title_translations,
                :description,
+               :description_translations,
                :share_url,
                :image_url,
                :event_url,
@@ -28,15 +30,19 @@ module V1
     has_one :location
 
     def title
-      return object.title unless lang && object.translation
+      I18nSerializer.new(object, :title, lang).translation
+    end
 
-      object.translation.with_lang(lang).title || object.title
+    def title_translations
+      I18nSerializer.new(object, :title, lang).translations
     end
 
     def description
-      return object.description unless lang && object.translation
+      I18nSerializer.new(object, :description, lang).translation
+    end
 
-      object.translation.with_lang(lang).description || object.description
+    def description_translations
+      I18nSerializer.new(object, :description, lang).translations
     end
 
     def uuid

@@ -17,6 +17,7 @@ module Translatable
     return unless translation_keys.any?
 
     translation = Translation.find_or_initialize_by(instance: self)
+    translation.from_lang = from_lang
 
     translation_keys.each do |translation_key|
       translate_field!(translation, translation_key)
@@ -32,7 +33,7 @@ module Translatable
       translation.translate!(
         lang: language,
         field: translation_key,
-        translation: self.text_translation(original_text, language)
+        translation: language == from_lang.to_sym ? original_text : text_translation(original_text, language)
       )
     end
 
@@ -66,9 +67,10 @@ module Translatable
   private
 
   def from_lang
-    return Translation::DEFAULT_LANG unless self.has_attribute?(:user)
+    return @from_lang if @from_lang.present?
+    return @from_lang = Translation::DEFAULT_LANG unless self.has_attribute?(:user) && user.lang
 
-    user.lang || Translation::DEFAULT_LANG
+    @from_lang = user.lang
   end
 
   def translation_keys

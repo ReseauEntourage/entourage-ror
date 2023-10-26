@@ -3,7 +3,9 @@ module V1
     attributes :id,
       :uuid_v2,
       :name,
+      :name_translations,
       :description,
+      :description_translations,
       :welcome_message,
       :member,
       :members,
@@ -21,15 +23,19 @@ module V1
     has_one :user, serializer: ::V1::Users::BasicSerializer
 
     def name
-      return object.name unless lang && object.translation
+      I18nSerializer.new(object, :name, lang).translation
+    end
 
-      object.translation.with_lang(lang).name || object.name
+    def name_translations
+      I18nSerializer.new(object, :name, lang).translations
     end
 
     def description
-      return object.description unless lang && object.translation
+      I18nSerializer.new(object, :description, lang).translation
+    end
 
-      object.translation.with_lang(lang).description || object.description
+    def description_translations
+      I18nSerializer.new(object, :description, lang).translations
     end
 
     def member
