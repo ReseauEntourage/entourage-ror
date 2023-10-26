@@ -3,12 +3,21 @@ module V1
     attributes :id,
                :uuid_v2,
                :content,
+               :content_translations,
                :user,
                :created_at,
                :message_type,
                :status
 
     attribute :metadata, if: :metadata?
+
+    def content
+      I18nSerializer.new(object, :content, lang).translation
+    end
+
+    def content_translations
+      I18nSerializer.new(object, :content, lang).translations
+    end
 
     def metadata?
       object.message_type.in?(['outing', 'status_update', 'share'])
@@ -33,6 +42,14 @@ module V1
 
     def metadata
       object.metadata.except(:$id)
+    end
+
+    private
+
+    def lang
+      return unless scope && scope[:user] && scope[:user].lang
+
+      scope[:user].lang
     end
   end
 end
