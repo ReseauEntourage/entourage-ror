@@ -68,15 +68,15 @@ module Translatable
 
   def from_lang
     return @from_lang if @from_lang.present?
-    return @from_lang = Translation::DEFAULT_LANG unless self.has_attribute?(:user) && user.lang
+    return @from_lang = Translation::DEFAULT_LANG unless respond_to?(:user) && user.lang
 
     @from_lang = user.lang
   end
 
   def translation_keys
-    return TRANSLATION_KEYS[:chat_message] if self.is_a?(ChatMessage)
-    return TRANSLATION_KEYS[:entourage] if self.is_a?(Entourage)
-    return TRANSLATION_KEYS[:neighborhood] if self.is_a?(Neighborhood)
+    return TRANSLATION_KEYS[:chat_message] if is_a?(ChatMessage)
+    return TRANSLATION_KEYS[:entourage] if is_a?(Entourage)
+    return TRANSLATION_KEYS[:neighborhood] if is_a?(Neighborhood)
 
     []
   end
