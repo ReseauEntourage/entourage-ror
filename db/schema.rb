@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_10_25_094901) do
+ActiveRecord::Schema.define(version: 2023_10_26_101901) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -953,6 +953,7 @@ ActiveRecord::Schema.define(version: 2023_10_25_094901) do
     t.jsonb "ro", default: {}, null: false
     t.jsonb "uk", default: {}, null: false
     t.jsonb "ar", default: {}, null: false
+    t.string "from_lang", default: "fr", null: false
     t.index ["instance_id", "instance_type"], name: "index_translations_on_instance_id_and_instance_type"
   end
 
