@@ -37,6 +37,12 @@ describe Api::V1::Conversations::ChatMessagesController do
           "id" => chat_message_1.id,
           "uuid_v2" => chat_message_1.uuid_v2,
           "content" => chat_message_1.content,
+          "content_translations" => {
+            "translation" => chat_message_1.content,
+            "original" => chat_message_1.content,
+            "from_lang" => "fr",
+            "to_lang" => "fr",
+          },
           "user" => {
             "id" => user.id,
             "avatar_url" => nil,
@@ -57,6 +63,12 @@ describe Api::V1::Conversations::ChatMessagesController do
           "id" => chat_message_2.id,
           "uuid_v2" => chat_message_2.uuid_v2,
           "content" => chat_message_2.content,
+          "content_translations" => {
+            "translation" => chat_message_2.content,
+            "original" => chat_message_2.content,
+            "from_lang" => "fr",
+            "to_lang" => "fr",
+          },
           "user" => {
             "id" => user.id,
             "avatar_url" => nil,
@@ -175,6 +187,12 @@ describe Api::V1::Conversations::ChatMessagesController do
             "id" => ChatMessage.last.id,
             "uuid_v2" => ChatMessage.last.uuid_v2,
             "content" => content,
+            "content_translations" => {
+              "translation" => content,
+              "original" => content,
+              "from_lang" => "fr",
+              "to_lang" => "fr",
+            },
             "user" => {
               "id" => user.id,
               "avatar_url" => nil,
