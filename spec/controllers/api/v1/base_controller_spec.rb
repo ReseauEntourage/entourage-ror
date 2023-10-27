@@ -94,24 +94,12 @@ RSpec.describe Api::V1::BaseController, :type => :controller do
         let(:api_key) { 'api_debug' }
         it { is_expected.to eq(200) }
       end
-
-      context "on the pfp server" do
-        with_community :pfp
-        let(:api_key) { 'api_debug_pfp' }
-        it { is_expected.to eq(200) }
-      end
     end
 
     context "with an api key for the wrong community" do
       context "on the entourage server" do
         with_community :entourage
-        let(:api_key) { 'api_debug_pfp' }
-        it { is_expected.to eq(401) }
-      end
-
-      context "on the pfp server" do
-        with_community :pfp
-        let(:api_key) { 'api_debug' }
+        let(:api_key) { 'api_debug_web' }
         it { is_expected.to eq(401) }
       end
     end
