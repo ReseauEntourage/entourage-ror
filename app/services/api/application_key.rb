@@ -32,7 +32,7 @@ module Api
     def api_keys
       {
         "api_debug" => {version: "1.0", device: "rspec", device_family: UserApplication::ANDROID,                    community: 'entourage'},
-        #"api_debug_pfp" => {version: "1.0", device: "rspec", device_family: UserApplication::ANDROID,                community: 'pfp'},
+        "api_debug_pfp" => {version: "1.0", device: "rspec", device_family: UserApplication::ANDROID,                community: 'pfp'},
         "api_debug_web" => {version: "1.0", device: "rspec", device_family: UserApplication::WEB,                    community: 'entourage'},
         "b05e6d0d2be8" => {version: "1.0.3", device: "iOS", device_family: UserApplication::IOS,                     community: 'entourage'},
         "32e2ced9df89" => {version: "1.0.24", device: "Android", device_family: UserApplication::ANDROID,            community: 'entourage'},
