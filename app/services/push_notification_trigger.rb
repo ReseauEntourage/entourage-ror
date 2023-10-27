@@ -24,7 +24,7 @@ class PushNotificationTrigger
 
       if @instance.present? && @field.present?
         return @i18ns[lang] = @instance.send(@field) unless @instance.translation.present?
-        return @i18ns[lang] = @instance.translation.translate(lang, @field) || @instance.send(@field)
+        return @i18ns[lang] = @instance.translation.translate(field: @field, lang: lang) || @instance.send(@field)
       end
 
       @i18ns[lang] = @text
