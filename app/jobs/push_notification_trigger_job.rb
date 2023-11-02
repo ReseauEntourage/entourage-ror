@@ -1,11 +1,11 @@
 class PushNotificationTriggerJob
   RETRY_MAX = 3
-  RETRY_DURATION = 5.minutes
+  RETRY_DURATION = 10.seconds
 
   include Sidekiq::Worker
 
   def perform class_name, verb, id, changes, retry_count = 0
-    puts "-- PERFORM"
+    return retry_push_notification_later(class_name, verb, id, changes, retry_count) if retry_count < 1
 
     if retry_count <= RETRY_MAX
       return retry_push_notification_later(class_name, verb, id, changes, retry_count) if translation_job_in_queue?(class_name, id)
@@ -34,6 +34,6 @@ class PushNotificationTriggerJob
   end
 
   def retry_push_notification_later class_name, verb, id, changes, retry_count
-    PushNotificationJob.perform_in(RETRY_DURATION, class_name, verb, id, changes, retry_count + 1)
+    PushNotificationTriggerJob.perform_in(RETRY_DURATION, class_name, verb, id, changes, retry_count + 1)
   end
 end
