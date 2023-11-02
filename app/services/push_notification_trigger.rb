@@ -42,6 +42,7 @@ class PushNotificationTrigger
 
     return unless entourage.outing?
     return unless entourage.moderation_validated?
+    return unless entourage.first_occurrence?
     return unless users = (neighborhood.members.uniq - [entourage.user])
 
     notify(
