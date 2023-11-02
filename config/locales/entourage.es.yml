@@ -1,5 +1,5 @@
 ---
-en:
+es:
   push_notifications:
     action:
       create_for_follower: "[ES] - %s vous invite à rejoindre %s"
