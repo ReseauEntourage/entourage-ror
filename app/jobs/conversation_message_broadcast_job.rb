@@ -37,7 +37,7 @@ class ConversationMessageBroadcastJob
 
     chat_builder.create do |on|
       on.success do |message|
-        join_request.update_column(:last_message_read, message.created_at)
+        join_request.update_column(:last_message_read, message.created_at) if join_request
 
         ApplicationRecord.transaction do
           conversation_message_broadcast.update(
@@ -56,7 +56,8 @@ class ConversationMessageBroadcastJob
       ).perform_async(conversation_message_broadcast_id, sender_id, recipient_id, content)
     end
 
-    ConversationMessageBroadcastDenormJob.perform_later conversation_message_broadcast_id
+    ConversationMessageBroadcastDenormJob.perform_later(conversation_message_broadcast_id)
+    TranslatorBroadcastJob.perform_later(conversation_message_broadcast_id)
   end
 
   def self.jobs
