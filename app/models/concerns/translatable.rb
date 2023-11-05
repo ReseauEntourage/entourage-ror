@@ -22,6 +22,8 @@ module Translatable
     translation_keys.each do |translation_key|
       translate_field!(translation, translation_key)
     end
+
+    translation.save if translation
   end
 
   def translate_field! translation, translation_key
@@ -36,8 +38,6 @@ module Translatable
         translation: language == from_lang.to_sym ? original_text : text_translation(original_text, language)
       )
     end
-
-    translation.save
   end
 
   # translate text into lang
@@ -55,6 +55,8 @@ module Translatable
     return unless response.body.present?
 
     Nokogiri::HTML(response.body, nil, 'UTF-8').css('.result-container').text
+  rescue
+    nil
   end
 
   def field_to_lang field, lang
