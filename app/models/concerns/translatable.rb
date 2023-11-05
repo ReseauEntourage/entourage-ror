@@ -22,6 +22,14 @@ module Translatable
     translation_keys.each do |translation_key|
       translate_field!(translation, translation_key)
     end
+
+    translation
+  end
+
+  def translate_from_copy! translation
+    duplication = translation.dup
+    duplication.instance = self
+    duplication.save
   end
 
   def translate_field! translation, translation_key
