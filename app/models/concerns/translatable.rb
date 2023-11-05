@@ -24,6 +24,13 @@ module Translatable
     end
 
     translation.save
+    translation
+  end
+
+  def translate_from_copy! translation
+    duplication = translation.dup
+    duplication.instance = self
+    duplication.save
   end
 
   def translate_field! translation, translation_key
