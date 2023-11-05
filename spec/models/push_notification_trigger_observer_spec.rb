@@ -325,23 +325,29 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
 
   describe "chat_message" do
     let(:neighborhood) { create :neighborhood }
+    let(:translation) { create :translation, instance: chat_message }
 
     context "text chat_message" do
-      after { create :chat_message, user: user, message_type: :text }
+      let(:chat_message) { create :chat_message, user: user, message_type: :text }
+
+      after { translation }
 
       include_examples :call_chat_message_on_create
     end
 
     context "broadcast chat_message" do
       let!(:broadcast) { FactoryBot.create(:user_message_broadcast) }
+      let(:chat_message) { create :chat_message, user: user, message_type: :broadcast, metadata: { conversation_message_broadcast_id: broadcast.id } }
 
-      after { create :chat_message, user: user, message_type: :broadcast, metadata: { conversation_message_broadcast_id: broadcast.id } }
+      after { translation }
 
       include_examples :call_chat_message_on_create
     end
 
     context "status chat_message" do
-      after { create :chat_message, user: user, message_type: :status_update, metadata: { status: :foo, outcome_success: true } }
+      let(:chat_message) { create :chat_message, user: user, message_type: :status_update, metadata: { status: :foo, outcome_success: true } }
+
+      after { translation }
 
       include_examples :no_call_post_on_create
       include_examples :no_call_comment_on_create
@@ -349,7 +355,8 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
 
     context "public_chat_message" do
       let(:contribution) { create :contribution, user: user, participants: [user_paris] }
-      let(:subject) { create :chat_message, user: user, message_type: :text, messageable: contribution, content: "foo" }
+      let(:chat_message) { create :chat_message, user: user, message_type: :text, messageable: contribution, content: "foo" }
+      let(:subject) { translation }
 
       after { subject }
 
@@ -383,14 +390,18 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
     end
 
     context "private_chat_message" do
-      after { create :chat_message, user: user, message_type: :text }
+      let(:chat_message) { create :chat_message, user: user, message_type: :text }
+
+      after { translation }
 
       include_examples :call_private_chat_message_on_create
       include_examples :no_call_post_on_create
     end
 
     context "post chat_message in neighborhood" do
-      after { create :chat_message, user: user, message_type: :text, messageable: neighborhood }
+      let(:chat_message) { create :chat_message, user: user, message_type: :text, messageable: neighborhood }
+
+      after { translation }
 
       include_examples :no_call_private_chat_message_on_create
       include_examples :call_post_on_create
@@ -398,11 +409,13 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
     end
 
     context "comment with no notification" do
-      let(:chat_message) { create :chat_message, messageable: neighborhood, user: user, message_type: :text }
-      let!(:comment) { create :chat_message, messageable: neighborhood, parent: chat_message, user: user, message_type: :text }
+      let(:publication) { create :chat_message, messageable: neighborhood, user: user, message_type: :text }
+      let!(:comment) { create :chat_message, messageable: neighborhood, parent: publication, user: user, message_type: :text }
 
       context "sender is publisher" do
-        after { create :chat_message, messageable: neighborhood, user: user, message_type: :text, parent: chat_message }
+        let(:chat_message) { create :chat_message, messageable: neighborhood, user: user, message_type: :text, parent: publication }
+
+        after { translation }
 
         include_examples :no_call_notify
       end
@@ -412,21 +425,25 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
       let(:john) { create :public_user, first_name: "John", last_name: "Doe" }
       let(:jane) { create :public_user, first_name: "Jane", last_name: "Doe" }
 
-      let(:chat_message) { create :chat_message, messageable: neighborhood, user: user, message_type: :text }
-      let!(:comment_1) { create :chat_message, messageable: neighborhood, parent: chat_message, user: user, message_type: :text }
-      let!(:comment_2) { create :chat_message, messageable: neighborhood, parent: chat_message, user: john, message_type: :text }
-      let!(:comment_3) { create :chat_message, messageable: neighborhood, parent: chat_message, user: john, message_type: :text }
-      let!(:comment_4) { create :chat_message, messageable: neighborhood, parent: chat_message, user: jane, message_type: :text }
+      let(:publication) { create :chat_message, messageable: neighborhood, user: user, message_type: :text }
+      let!(:comment_1) { create :chat_message, messageable: neighborhood, parent: publication, user: user, message_type: :text }
+      let!(:comment_2) { create :chat_message, messageable: neighborhood, parent: publication, user: john, message_type: :text }
+      let!(:comment_3) { create :chat_message, messageable: neighborhood, parent: publication, user: john, message_type: :text }
+      let!(:comment_4) { create :chat_message, messageable: neighborhood, parent: publication, user: jane, message_type: :text }
 
       context "sender" do
-        after { create :chat_message, messageable: neighborhood, user: user, message_type: :text, parent: chat_message }
+        let(:chat_message) { create :chat_message, messageable: neighborhood, user: user, message_type: :text, parent: publication }
+
+        after { translation }
 
         include_examples :no_call_post_on_create
         include_examples :call_comment_on_create
       end
 
       context "sender is publisher" do
-        after { create :chat_message, messageable: neighborhood, user: user, message_type: :text, parent: chat_message }
+        let(:chat_message) { create :chat_message, messageable: neighborhood, user: user, message_type: :text, parent: publication }
+
+        after { translation }
 
         include_examples :call_notify
 
@@ -434,11 +451,11 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
           expect_any_instance_of(PushNotificationTrigger).to receive(:notify).with(
             sender_id: user.id,
             referent: neighborhood,
-            instance: chat_message,
+            instance: publication,
             users: [john, jane],
             params: {
               object: PushNotificationTrigger::I18nStruct.new(instance: neighborhood, field: :title),
-              content: PushNotificationTrigger::I18nStruct.new(i18n: 'push_notifications.comment.create', i18n_args: chat_message.content),
+              content: PushNotificationTrigger::I18nStruct.new(i18n: 'push_notifications.comment.create', i18n_args: publication.content),
               extra: {
                 tracking: :comment_on_create_to_neighborhood
               }
@@ -448,7 +465,9 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
       end
 
       context "sender is commentator" do
-        after { create :chat_message, messageable: neighborhood, user: john, message_type: :text, parent: chat_message }
+        let(:chat_message) { create :chat_message, messageable: neighborhood, user: john, message_type: :text, parent: publication }
+
+        after { translation }
 
         include_examples :call_notify
 
@@ -456,11 +475,11 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
           expect_any_instance_of(PushNotificationTrigger).to receive(:notify).with(
             sender_id: john.id,
             referent: neighborhood,
-            instance: chat_message,
+            instance: publication,
             users: [user, jane],
             params: {
               object: PushNotificationTrigger::I18nStruct.new(instance: neighborhood, field: :title),
-              content: PushNotificationTrigger::I18nStruct.new(i18n: 'push_notifications.comment.create', i18n_args: chat_message.content),
+              content: PushNotificationTrigger::I18nStruct.new(i18n: 'push_notifications.comment.create', i18n_args: publication.content),
               extra: {
                 tracking: :comment_on_create_to_neighborhood
               }
@@ -473,6 +492,7 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
     describe "text chat_message" do
       let(:conversation) { ConversationService.build_conversation(participant_ids: [user.id, participant.id]) }
       let(:chat_message) { build(:chat_message, messageable: conversation, user: user, message_type: :text, content: "foobar") }
+      let(:translation) { build :translation, instance: chat_message }
 
       context "conversation creation does not push any notification" do
         after {
@@ -491,7 +511,7 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
           conversation.save
         }
 
-        after { chat_message.save }
+        after { translation.save }
 
         it {
           expect_any_instance_of(PushNotificationTrigger).to receive(:notify).with(
