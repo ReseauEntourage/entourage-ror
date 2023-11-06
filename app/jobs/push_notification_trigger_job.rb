@@ -2,7 +2,9 @@ class PushNotificationTriggerJob
   include Sidekiq::Worker
 
   def perform class_name, verb, id, changes
-    PushNotificationTrigger.new(class_name.constantize.find(id), verb, JSON.parse(changes)).run
+    return unless record = class_name.constantize.find_by_id(id)
+
+    PushNotificationTrigger.new(record, verb, JSON.parse(changes)).run
   end
 
   def self.perform_later class_name, verb, id, changes
