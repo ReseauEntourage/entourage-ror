@@ -23,7 +23,7 @@ module Translatable
       translate_field!(translation, translation_key)
     end
 
-    translation.save if translation
+    translation.save
   end
 
   def translate_field! translation, translation_key

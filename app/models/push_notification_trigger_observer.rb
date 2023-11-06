@@ -1,12 +1,8 @@
 class PushNotificationTriggerObserver < ActiveRecord::Observer
   observe :translation, :entourage, :entourage_moderation, :join_request, :neighborhoods_entourage
 
-  def after_create record
-    @record_changes = record.saved_changes
-  end
-
-  def after_update record
-    @record_changes = record.saved_changes
+  def after_save record
+    record.instance_variable_set(:@record_changes, record.saved_changes)
   end
 
   def after_commit record
@@ -19,7 +15,7 @@ class PushNotificationTriggerObserver < ActiveRecord::Observer
 
     record = record.instance if verb == :create && record.is_a?(Translation)
 
-    PushNotificationTriggerJob.perform_later(record.class.name, verb, record.id, @record_changes)
+    PushNotificationTriggerJob.perform_later(record.class.name, verb, record.id, record.instance_variable_get(:@record_changes))
   end
 
   private
