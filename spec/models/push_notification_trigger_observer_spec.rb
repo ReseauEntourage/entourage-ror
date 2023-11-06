@@ -337,7 +337,7 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
 
       after { create :chat_message, user: user, message_type: :broadcast, metadata: { conversation_message_broadcast_id: broadcast.id } }
 
-      include_examples :call_chat_message_on_create
+      include_examples :no_call_chat_message_on_create
     end
 
     context "status chat_message" do
