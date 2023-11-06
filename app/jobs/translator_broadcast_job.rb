@@ -19,8 +19,6 @@ class TranslatorBroadcastJob
   def translate! conversation_message_broadcast_id
     chat_message_ids = ChatMessage.with_broadcast_id(conversation_message_broadcast_id).pluck(:id)
 
-    puts "-- -- chat_message_ids.any?: #{chat_message_ids.any?}"
-
     return unless chat_message_ids.any?
 
     translation = nil
@@ -29,10 +27,8 @@ class TranslatorBroadcastJob
       chat_message = ChatMessage.find(chat_message_id)
 
       if translation
-        puts "-- copy"
         chat_message.translate_from_copy!(translation)
       else
-        puts "-- translate!"
         translation = chat_message.translate!
       end
     end
