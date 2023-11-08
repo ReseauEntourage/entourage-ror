@@ -156,11 +156,14 @@ Rails.application.routes.draw do
           put '/update/image', action: :update_image
           put :update_neighborhoods
         end
+
         collection do
+          get :download_list_export
           post :destroy_message
           delete :destroy_message
         end
       end
+
       resources :entourage_moderations, only: [:create]
       resources :sensitive_words, only: [:show, :destroy]
       resources :conversations, only: [:index, :show] do
