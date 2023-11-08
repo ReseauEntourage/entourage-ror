@@ -78,7 +78,16 @@ fr:
         phone: Téléphone
         address: Adresse
       entourage:
+        id: Id
         title: Titre
+        description: Description
+        display_address: Adresse
+        recurrency: Récurrence
+        created_at: Créé le
+        starts_at: Commence le
+        ends_at: Fini le
+        image_url: Image URL
+        members_count: Nombre de membres
         outing_image_url: Photo d'événement
         cancellation_message: Message d'annulation
         categories:
