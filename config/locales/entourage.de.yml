@@ -58,3 +58,46 @@ de:
       title: "Entourage ist wie eine Familie!"
       offer: "Wir können es jetzt sagen, Sie gehören endlich zur Entourage-Gemeinschaft. Lassen Sie uns feiern!"
       ask: "Wir können es jetzt sagen, Sie gehören endlich zur Entourage-Gemeinschaft. Lassen Sie uns feiern!"
+
+  pois:
+    soliguide:
+      public:
+        administrative: "[DE] - Accueil %s"
+        description: "[DE] - Autres informations importantes : %s"
+      accueil:
+        preferentiel: "[DE] - préférentiel"
+        exclusif: "[DE] - exclusif"
+        inconditionnel: "[DE] - inconditionnel"
+      age:
+        mineur: "[DE] - mineurs (-18 ans)"
+        adulte: "[DE] - adultes uniquement"
+        from: "[DE] - dès %s ans"
+        from_to: "[DE] - de %s à %s ans"
+      familiale:
+        isolated: "[DE] - Personne isolée"
+        family: "[DE] - Famille"
+        couple: "[DE] - Couple"
+        pregnant: "[DE] - Femme enceinte"
+      administrative:
+        default: "[DE] - personne %s"
+        regular: "[DE] - en situation régulière"
+        undocumented: "[DE] - sans papiers"
+        asylum: "[DE] - demandeurs d'asile"
+        refugee: "[DE] - réfugiés"
+      other:
+        violence: "[DE] - victime de violence"
+        addiction: "[DE] - en situation d'addiction"
+        handicap: "[DE] - en situation de handicap"
+        lgbt: "[DE] - appartenant aux communautés LGBT+"
+        hiv: "[DE] - porteuse du VIH"
+        prostitution: "[DE] - travailleur(euse) du sexe"
+        prison: "[DE] - sortant de prison"
+        student: "[DE] - étudiant(e)"
+      modalities:
+        inconditionnel: "[DE] - Accueil sans rendez-vous"
+        appointment: "[DE] - Sur rendez-vous (%s)"
+        inscription: "[DE] - Sur inscription (%s)"
+        orientation: "[DE] - Sur orientation (%s)"
+      animal:
+        unauthorized: "[DE] - Animaux non-autorisés"
+        authorized: "[DE] - Animaux autorisés"

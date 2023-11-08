@@ -58,3 +58,46 @@ en:
       title: "Entourage is like family!"
       offer: "We can say it, you're now part of the Entourage community. Let's celebrate!"
       ask: "We can say it, you're now part of the Entourage community. Let's celebrate!"
+
+  pois:
+    soliguide:
+      public:
+        administrative: "[EN] - Accueil %s"
+        description: "[EN] - Autres informations importantes : %s"
+      accueil:
+        preferentiel: "[EN] - préférentiel"
+        exclusif: "[EN] - exclusif"
+        inconditionnel: "[EN] - inconditionnel"
+      age:
+        mineur: "[EN] - mineurs (-18 ans)"
+        adulte: "[EN] - adultes uniquement"
+        from: "[EN] - dès %s ans"
+        from_to: "[EN] - de %s à %s ans"
+      familiale:
+        isolated: "[EN] - Personne isolée"
+        family: "[EN] - Famille"
+        couple: "[EN] - Couple"
+        pregnant: "[EN] - Femme enceinte"
+      administrative:
+        default: "[EN] - personne %s"
+        regular: "[EN] - en situation régulière"
+        undocumented: "[EN] - sans papiers"
+        asylum: "[EN] - demandeurs d'asile"
+        refugee: "[EN] - réfugiés"
+      other:
+        violence: "[EN] - victime de violence"
+        addiction: "[EN] - en situation d'addiction"
+        handicap: "[EN] - en situation de handicap"
+        lgbt: "[EN] - appartenant aux communautés LGBT+"
+        hiv: "[EN] - porteuse du VIH"
+        prostitution: "[EN] - travailleur(euse) du sexe"
+        prison: "[EN] - sortant de prison"
+        student: "[EN] - étudiant(e)"
+      modalities:
+        inconditionnel: "[EN] - Accueil sans rendez-vous"
+        appointment: "[EN] - Sur rendez-vous (%s)"
+        inscription: "[EN] - Sur inscription (%s)"
+        orientation: "[EN] - Sur orientation (%s)"
+      animal:
+        unauthorized: "[EN] - Animaux non-autorisés"
+        authorized: "[EN] - Animaux autorisés"

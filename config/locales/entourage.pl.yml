@@ -58,3 +58,46 @@ pl:
       title: "Entourage to jak rodzina!"
       offer: "Mamy prawo powiedzieć, że teraz jesteś częścią społeczności Entourage. Uczcijmy to! 🎉"
       ask: "Mamy prawo powiedzieć, że teraz jesteś częścią społeczności Entourage. Uczcijmy to! 🎉"
+
+  pois:
+    soliguide:
+      public:
+        administrative: "[PL] - Accueil %s"
+        description: "[PL] - Autres informations importantes : %s"
+      accueil:
+        preferentiel: "[PL] - préférentiel"
+        exclusif: "[PL] - exclusif"
+        inconditionnel: "[PL] - inconditionnel"
+      age:
+        mineur: "[PL] - mineurs (-18 ans)"
+        adulte: "[PL] - adultes uniquement"
+        from: "[PL] - dès %s ans"
+        from_to: "[PL] - de %s à %s ans"
+      familiale:
+        isolated: "[PL] - Personne isolée"
+        family: "[PL] - Famille"
+        couple: "[PL] - Couple"
+        pregnant: "[PL] - Femme enceinte"
+      administrative:
+        default: "[PL] - personne %s"
+        regular: "[PL] - en situation régulière"
+        undocumented: "[PL] - sans papiers"
+        asylum: "[PL] - demandeurs d'asile"
+        refugee: "[PL] - réfugiés"
+      other:
+        violence: "[PL] - victime de violence"
+        addiction: "[PL] - en situation d'addiction"
+        handicap: "[PL] - en situation de handicap"
+        lgbt: "[PL] - appartenant aux communautés LGBT+"
+        hiv: "[PL] - porteuse du VIH"
+        prostitution: "[PL] - travailleur(euse) du sexe"
+        prison: "[PL] - sortant de prison"
+        student: "[PL] - étudiant(e)"
+      modalities:
+        inconditionnel: "[PL] - Accueil sans rendez-vous"
+        appointment: "[PL] - Sur rendez-vous (%s)"
+        inscription: "[PL] - Sur inscription (%s)"
+        orientation: "[PL] - Sur orientation (%s)"
+      animal:
+        unauthorized: "[PL] - Animaux non-autorisés"
+        authorized: "[PL] - Animaux autorisés"

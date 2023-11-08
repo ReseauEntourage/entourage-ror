@@ -2,7 +2,9 @@ module PoiServices
   class SoliguideFormatter
     # @todo add unit tests
     # @todo refactor: get specific formatter for services_all, location, entity, languages
-    def self.format poi
+    def self.format poi, lang = nil
+      lang ||= Translation::DEFAULT_LANG
+
       return nil unless poi
       return nil unless poi['entity']
       return nil unless poi['position']
@@ -18,34 +20,36 @@ module PoiServices
         source_id: poi['lieu_id'],
         source: :soliguide,
         source_url: "https://soliguide.fr/fiche/#{poi['seo_url']}",
-        name: format_title(poi['name'], poi['entity']['name']),
-        description: format_description(poi['description']),
+        name: format_title(poi['name'], poi['entity']['name'], lang),
+        description: format_description(poi['description'], lang),
         longitude: poi['position']['location']['coordinates'][0].round(6),
         latitude: poi['position']['location']['coordinates'][1].round(6),
         address: poi['position']['adresse'].presence,
         postal_code: poi['position']['codePostal'].presence,
-        phone: format_phones(phones).first,
-        phones: format_phones(phones).join(', '),
+        phone: format_phones(phones, lang).first,
+        phones: format_phones(phones, lang).join(', '),
         website: poi['entity']['website'].presence,
         email:poi['entity']['mail'].presence,
-        audience: format_audience(poi['publics'], poi['modalities']),
-        category_ids: format_category_ids(poi),
+        audience: format_audience(poi['publics'], poi['modalities'], lang),
+        category_ids: format_category_ids(poi, lang),
         source_category_id: source_categories.compact.first,
         source_category_ids: source_categories.compact.uniq,
-        hours: format_hours(poi['newhours']),
+        hours: format_hours(poi['newhours'], lang),
         languages: languages.map { |l| ISO_LANGS[l.to_sym] }.compact.join(', ')
       }
     end
 
-    def self.format_short poi
+    def self.format_short poi, lang = nil
+      lang ||= Translation::DEFAULT_LANG
+
       return nil unless poi
 
-      category_ids = format_category_ids(poi)
+      category_ids = format_category_ids(poi, lang)
 
       {
         uuid: "s#{poi['lieu_id']}",
         source_id: poi['lieu_id'],
-        name: format_title(poi['name'], poi['entity']['name']),
+        name: format_title(poi['name'], poi['entity']['name'], lang),
         longitude: poi['position']['location']['coordinates'][0].round(6),
         latitude: poi['position']['location']['coordinates'][1].round(6),
         address: poi['position']['adresse'],
@@ -56,11 +60,11 @@ module PoiServices
       }
     end
 
-    def self.format_audience publics, modalities
-      (format_publics(publics) + format_modalities(modalities) + format_other_modalities(modalities)).join("\n")
+    def self.format_audience publics, modalities, lang
+      (format_publics(publics, lang) + format_modalities(modalities, lang) + format_other_modalities(modalities, lang)).join("\n")
     end
 
-    def self.format_category_ids poi
+    def self.format_category_ids poi, lang
       return [] unless poi['services_all']
 
       poi['services_all'].map do |service|
@@ -82,42 +86,42 @@ module PoiServices
     #   "gender": [String],
     #   "other": [String]
     # },
-    def self.format_publics publics
+    def self.format_publics publics, lang
       return [] unless publics
 
       sentences = []
 
-      accueil = "Accueil #{format_accueil publics['accueil']}"
+      accueil = "Accueil #{format_accueil publics['accueil'], lang}"
 
       sentences << if publics['accueil'] == 0
         accueil
       else
         "#{accueil} : #{(
-          format_age(publics['age']) +
-          format_familialle(publics['familialle']) +
-          format_other(publics['other'])
+          format_age(publics['age'], lang) +
+          format_familialle(publics['familialle'], lang) +
+          format_other(publics['other'], lang)
         ).compact.join(', ')}"
       end
 
-      if format_administrative(publics['administrative'])
-        sentences << "Accueil : %s" % format_administrative(publics['administrative'])
+      if format_administrative(publics['administrative'], lang)
+        sentences << I18n.t('pois.soliguide.public.administrative', locale: lang) % format_administrative(publics['administrative'], lang)
       end
 
       if publics['description'].present?
-        sentences << "Autres informations importantes : %s" % publics['description']
+        sentences << I18n.t('pois.soliguide.public.description', locale: lang) % publics['description']
       end
 
       sentences.compact
     end
 
-    def self.format_accueil accueil
-      return "préférentiel" if accueil == 1
-      return "exclusif" if accueil == 2
+    def self.format_accueil accueil, lang
+      return I18n.t('pois.soliguide.accueil.preferentiel', locale: lang) if accueil == 1
+      return I18n.t('pois.soliguide.accueil.exclusif', locale: lang) if accueil == 2
 
-      "inconditionnel"
+      I18n.t('pois.soliguide.accueil.inconditionnel', locale: lang)
     end
 
-    def self.format_age age
+    def self.format_age age, lang
       return [] unless age
 
       min = age['min'].presence
@@ -125,16 +129,16 @@ module PoiServices
 
       return [] unless min || max
 
-      return ["mineurs (-18 ans)"] if max && max <= 18
-      return ["adultes uniquement"] if min == 18 && max == 99
-      return ["dès %s ans" % min] if min.present? && max.nil?
+      return [I18n.t('pois.soliguide.age.mineur', locale: lang)] if max && max <= 18
+      return [I18n.t('pois.soliguide.age.adulte', locale: lang)] if min == 18 && max == 99
+      return [I18n.t('pois.soliguide.age.from', locale: lang) % min] if min.present? && max.nil?
       return [] if min == 0 && max == 99 # tous ages
-      return ["de %s à %s ans" % [min, max]] if min.present? && max.present?
+      return [I18n.t('pois.soliguide.age.from_to', locale: lang) % [min, max]] if min.present? && max.present?
 
       []
     end
 
-    def self.format_familialle familialle
+    def self.format_familialle familialle, lang
       # isolated : personne isolée
       # family : famille
       # couple : couple
@@ -142,17 +146,19 @@ module PoiServices
       return [] unless familialle.present?
       return [] if familialle.sort == ['isolated', 'family', 'couple', 'pregnant'].sort
 
+      # translate isolated in a given languag
+
       familialle.map do |term|
         case term
-        when 'isolated' then 'Personne isolée'
-        when 'family' then 'Famille'
-        when 'couple' then 'Couple'
-        when 'pregnant' then 'Femme enceinte'
+        when 'isolated' then I18n.t('pois.soliguide.familiale.isolated', locale: lang)
+        when 'family' then I18n.t('pois.soliguide.familiale.family', locale: lang)
+        when 'couple' then I18n.t('pois.soliguide.familiale.couple', locale: lang)
+        when 'pregnant' then I18n.t('pois.soliguide.familiale.pregnant', locale: lang)
         end
       end
     end
 
-    def self.format_administrative administrative
+    def self.format_administrative administrative, lang
       return nil unless administrative.present?
       return nil if administrative.sort == ["asylum", "refugee", "regular", "undocumented"].sort
 
@@ -162,15 +168,15 @@ module PoiServices
       # undocumented : personne sans papier
 
       situations = []
-      situations << "en situation régulière" if administrative.include?('regular')
-      situations << "sans papiers"         if administrative.include?('undocumented')
-      situations << "demandeurs d'asile"   if administrative.include?('asylum')
-      situations << "réfugiés"             if administrative.include?('refugee')
+      situations << I18n.t('pois.soliguide.administrative.regular', locale: lang) if administrative.include?('regular')
+      situations << I18n.t('pois.soliguide.administrative.undocumented', locale: lang) if administrative.include?('undocumented')
+      situations << I18n.t('pois.soliguide.administrative.asylum', locale: lang) if administrative.include?('asylum')
+      situations << I18n.t('pois.soliguide.administrative.refugee', locale: lang) if administrative.include?('refugee')
 
-      "personnes #{situations.join(', ')}"
+      I18n.t('pois.soliguide.administrative.default', locale: lang) % situations.join(', ')
     end
 
-    def self.format_other other
+    def self.format_other other, lang
       return [] unless other.present?
       return [] if other.sort == ['violence', 'addiction', 'handicap', 'lgbt+', 'hiv', 'prostitution', 'prison', 'student'].sort
 
@@ -184,21 +190,21 @@ module PoiServices
       # student : personne étudiante
 
       others = []
-      others << "victime de violence" if other.include?('violence')
-      others << "en situation d'addiction" if other.include?('addiction')
-      others << "en situation de handicap" if other.include?('handicap')
-      others << "appartenant aux communautés LGBT+" if other.include?('lgbt+')
-      others << "porteuse du VIH" if other.include?('hiv')
-      others << "travailleur(euse) du sexe" if other.include?('prostitution')
-      others << "sortant de prison" if other.include?('prison')
-      others << "étudiant(e)" if other.include?('student')
+      others << I18n.t('pois.soliguide.other.violence', locale: lang) if other.include?('violence')
+      others << I18n.t('pois.soliguide.other.addiction', locale: lang) if other.include?('addiction')
+      others << I18n.t('pois.soliguide.other.handicap', locale: lang) if other.include?('handicap')
+      others << I18n.t('pois.soliguide.other.lgbt', locale: lang) if other.include?('lgbt+')
+      others << I18n.t('pois.soliguide.other.hiv', locale: lang) if other.include?('hiv')
+      others << I18n.t('pois.soliguide.other.prostitution', locale: lang) if other.include?('prostitution')
+      others << I18n.t('pois.soliguide.other.prison', locale: lang) if other.include?('prison')
+      others << I18n.t('pois.soliguide.other.student', locale: lang) if other.include?('student')
 
       others
     end
 
-    def self.format_modalities modalities
+    def self.format_modalities modalities, lang
       return [] unless modalities
-      return ["Accueil sans rendez-vous"] if modalities['inconditionnel'] == true
+      return [I18n.t('pois.soliguide.modalities.inconditionnel', locale: lang)] if modalities['inconditionnel'] == true
 
       sentences = []
 
@@ -209,38 +215,38 @@ module PoiServices
       # Les 3 dernières données (appointment, inscription, orientation) sont cumulables (une structure peut être à la fois sur RDV et sur orientation) mais pas avec inconditionnel
 
       if modalities['appointment'] && modalities['appointment']['checked'] == true
-        sentences << "Sur rendez-vous (#{modalities['appointment']['precisions']})"
+        sentences << I18n.t('pois.soliguide.modalities.appointment', locale: lang) % modalities['appointment']['precisions']
       end
 
       if modalities['inscription'] && modalities['inscription']['checked'] == true
-        sentences << "Sur inscription (#{modalities['inscription']['precisions']})"
+        sentences << I18n.t('pois.soliguide.modalities.inscription', locale: lang) % modalities['inscription']['precisions']
       end
 
       if modalities['orientation'] && modalities['orientation']['checked'] == true
-        sentences << "Sur orientation (#{modalities['orientation']['precisions']})"
+        sentences << I18n.t('pois.soliguide.modalities.orientation', locale: lang) % modalities['orientation']['precisions']
       end
 
-      sentences << format_animal(modalities['animal'])
+      sentences << format_animal(modalities['animal'], lang)
 
       sentences.compact
     end
 
-    def self.format_animal animal
+    def self.format_animal animal, lang
       return nil unless animal.present?
       return nil if animal['checked'].nil?
-      return "Animaux non autorisés" unless animal['checked']
+      return I18n.t('pois.soliguide.animal.unauthorized', locale: lang) unless animal['checked']
 
-      "Animaux autorisés"
+      I18n.t('pois.soliguide.animal.authorized', locale: lang)
     end
 
-    def self.format_other_modalities modalities
+    def self.format_other_modalities modalities, lang
       return [] unless modalities.present?
       return [] unless modalities['other'].present?
 
       ["Autres précisions : #{modalities['other']}"]
     end
 
-    def self.format_hours hours
+    def self.format_hours hours, lang
       return [] unless hours
 
       available_days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
@@ -265,7 +271,7 @@ module PoiServices
           hours = 'Fermé'
         else
           hours = hours['timeslot'].map do |timeslot|
-            format_hour_range(timeslot['start'], timeslot['end'])
+            format_hour_range(timeslot['start'], timeslot['end'], lang)
           end.compact.join(' - ')
         end
 
@@ -273,20 +279,20 @@ module PoiServices
       end.compact.join("\n")
     end
 
-    def self.format_hour_range left, right
-      bounds = [left, right].map { |bound| format_hour(bound) }
+    def self.format_hour_range left, right, lang
+      bounds = [left, right].map { |bound| format_hour(bound, lang) }
       return if bounds.any?(&:nil?)
       bounds.join(' à ')
     end
 
-    def self.format_hour seconds
+    def self.format_hour seconds, lang
       return if seconds.nil? || seconds == -1
       hours = seconds / 100
       minutes = seconds % 100
       "%dh%02d" % [hours, minutes]
     end
 
-    def self.format_title place_name, entity_name
+    def self.format_title place_name, entity_name, lang
       place_name  = place_name.presence
       entity_name = entity_name.presence
 
@@ -306,13 +312,13 @@ module PoiServices
       [place_name, entity_name].compact.join(' - ')
     end
 
-    def self.format_description string
+    def self.format_description string, lang
       Nokogiri::HTML(string).text
         .gsub(/\n\n+/, "\n\n") # Never leave more than 2 consecutive newlines.
         .strip                 # Strip leading and trailing whitespace.
     end
 
-    def self.format_phones phones
+    def self.format_phones phones, lang
       return [] unless phones.presence
 
       phones.pluck('phoneNumber')
