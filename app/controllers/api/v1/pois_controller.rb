@@ -96,7 +96,7 @@ module Api
 
       def show
         if params[:id].start_with?('s') && current_user.not_default_lang?
-          return render json: { poi: PoiServices::SoliguideShow.get(params[:id][1..]) }
+          return render json: { poi: PoiServices::SoliguideShow.get(params[:id][1..], current_user.lang) }
         end
 
         if params[:id].start_with?('s')
