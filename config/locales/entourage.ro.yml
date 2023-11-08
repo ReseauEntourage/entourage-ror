@@ -58,3 +58,46 @@ ro:
       title: "Entourage e ca o familie!"
       offer: "Putem să spunem, acum faci parte din comunitatea Entourage. Haide să sărbătorim! 🎉"
       ask: "Putem să spunem, acum faci parte din comunitatea Entourage. Haide să sărbătorim! 🎉"
+
+  pois:
+    soliguide:
+      public:
+        administrative: "[RO] - Accueil %s"
+        description: "[RO] - Autres informations importantes : %s"
+      accueil:
+        preferentiel: "[RO] - préférentiel"
+        exclusif: "[RO] - exclusif"
+        inconditionnel: "[RO] - inconditionnel"
+      age:
+        mineur: "[RO] - mineurs (-18 ans)"
+        adulte: "[RO] - adultes uniquement"
+        from: "[RO] - dès %s ans"
+        from_to: "[RO] - de %s à %s ans"
+      familiale:
+        isolated: "[RO] - Personne isolée"
+        family: "[RO] - Famille"
+        couple: "[RO] - Couple"
+        pregnant: "[RO] - Femme enceinte"
+      administrative:
+        default: "[RO] - personne %s"
+        regular: "[RO] - en situation régulière"
+        undocumented: "[RO] - sans papiers"
+        asylum: "[RO] - demandeurs d'asile"
+        refugee: "[RO] - réfugiés"
+      other:
+        violence: "[RO] - victime de violence"
+        addiction: "[RO] - en situation d'addiction"
+        handicap: "[RO] - en situation de handicap"
+        lgbt: "[RO] - appartenant aux communautés LGBT+"
+        hiv: "[RO] - porteuse du VIH"
+        prostitution: "[RO] - travailleur(euse) du sexe"
+        prison: "[RO] - sortant de prison"
+        student: "[RO] - étudiant(e)"
+      modalities:
+        inconditionnel: "[RO] - Accueil sans rendez-vous"
+        appointment: "[RO] - Sur rendez-vous (%s)"
+        inscription: "[RO] - Sur inscription (%s)"
+        orientation: "[RO] - Sur orientation (%s)"
+      animal:
+        unauthorized: "[RO] - Animaux non-autorisés"
+        authorized: "[RO] - Animaux autorisés"
