@@ -389,6 +389,49 @@ fr:
       offer: "On peut le dire, vous faites maintenant partie de la communauté Entourage. Ça se fête ! 🎉"
       ask: "On peut le dire, vous faites maintenant partie de la communauté Entourage. Ça se fête ! 🎉"
 
+  pois:
+    soliguide:
+      public:
+        administrative: "Accueil : %s"
+        description: "Autres informations importantes : %s"
+      accueil:
+        preferentiel: "préférentiel"
+        exclusif: "exclusif"
+        inconditionnel: "inconditionnel"
+      age:
+        mineur: "mineurs (-18 ans)"
+        adulte: "adultes uniquement"
+        from: "dès %s ans"
+        from_to: "de %s à %s ans"
+      familiale:
+        isolated: "Personne isolée"
+        family: "Famille"
+        couple: "Couple"
+        pregnant: "Femme enceinte"
+      administrative:
+        default: "personnes %s"
+        regular: "en situation régulière"
+        undocumented: "sans papiers"
+        asylum: "demandeurs d'asile"
+        refugee: "réfugiés"
+      other:
+        violence: "victime de violence"
+        addiction: "en situation d'addiction"
+        handicap: "en situation de handicap"
+        lgbt: "appartenant aux communautés LGBT+"
+        hiv: "porteuse du VIH"
+        prostitution: "travailleur(euse) du sexe"
+        prison: "sortant de prison"
+        student: "étudiant(e)"
+      modalities:
+        inconditionnel: "Accueil sans rendez-vous"
+        appointment: "Sur rendez-vous (%s)"
+        inscription: "Sur inscription (%s)"
+        orientation: "Sur orientation (%s)"
+      animal:
+        unauthorized: "Animaux non autorisés"
+        authorized: "Animaux autorisés"
+
   tags:
     sections:
       social:

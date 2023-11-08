@@ -58,3 +58,46 @@ uk:
       title: "Entourage - це як сім'я!"
       offer: "Ми можемо сказати, ви тепер частина спільноти Entourage. Давайте відсвяткуємо! 🎉"
       ask: "Ми можемо сказати, ви тепер частина спільноти Entourage. Давайте відсвяткуємо! 🎉"
+
+  pois:
+    soliguide:
+      public:
+        administrative: "[UK] - Accueil %s"
+        description: "[UK] - Autres informations importantes : %s"
+      accueil:
+        preferentiel: "[UK] - préférentiel"
+        exclusif: "[UK] - exclusif"
+        inconditionnel: "[UK] - inconditionnel"
+      age:
+        mineur: "[UK] - mineurs (-18 ans)"
+        adulte: "[UK] - adultes uniquement"
+        from: "[UK] - dès %s ans"
+        from_to: "[UK] - de %s à %s ans"
+      familiale:
+        isolated: "[UK] - Personne isolée"
+        family: "[UK] - Famille"
+        couple: "[UK] - Couple"
+        pregnant: "[UK] - Femme enceinte"
+      administrative:
+        default: "[UK] - personne %s"
+        regular: "[UK] - en situation régulière"
+        undocumented: "[UK] - sans papiers"
+        asylum: "[UK] - demandeurs d'asile"
+        refugee: "[UK] - réfugiés"
+      other:
+        violence: "[UK] - victime de violence"
+        addiction: "[UK] - en situation d'addiction"
+        handicap: "[UK] - en situation de handicap"
+        lgbt: "[UK] - appartenant aux communautés LGBT+"
+        hiv: "[UK] - porteuse du VIH"
+        prostitution: "[UK] - travailleur(euse) du sexe"
+        prison: "[UK] - sortant de prison"
+        student: "[UK] - étudiant(e)"
+      modalities:
+        inconditionnel: "[UK] - Accueil sans rendez-vous"
+        appointment: "[UK] - Sur rendez-vous (%s)"
+        inscription: "[UK] - Sur inscription (%s)"
+        orientation: "[UK] - Sur orientation (%s)"
+      animal:
+        unauthorized: "[UK] - Animaux non-autorisés"
+        authorized: "[UK] - Animaux autorisés"

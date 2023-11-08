@@ -5,7 +5,7 @@ module PoiServices
 
     class << self
       def get id, lang = nil
-        PoiServices::SoliguideFormatter.format JSON.parse(query(id, lang).body)
+        PoiServices::SoliguideFormatter.format(JSON.parse(query(id, lang).body), lang)
       end
 
       def uptime

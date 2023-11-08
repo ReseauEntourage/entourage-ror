@@ -58,3 +58,46 @@ ar:
       title: "إنتوراج هو مثل العائلة!"
       offer: "يمكننا القول، أنت الآن جزء من مجتمع إنتوراج. هلنحتفل! 🎉"
       ask: "يمكننا القول، أنت الآن جزء من مجتمع إنتوراج. هلنحتفل! 🎉"
+
+  pois:
+    soliguide:
+      public:
+        administrative: "[AR] - Accueil %s"
+        description: "[AR] - Autres informations importantes : %s"
+      accueil:
+        preferentiel: "[AR] - préférentiel"
+        exclusif: "[AR] - exclusif"
+        inconditionnel: "[AR] - inconditionnel"
+      age:
+        mineur: "[AR] - mineurs (-18 ans)"
+        adulte: "[AR] - adultes uniquement"
+        from: "[AR] - dès %s ans"
+        from_to: "[AR] - de %s à %s ans"
+      familiale:
+        isolated: "[AR] - Personne isolée"
+        family: "[AR] - Famille"
+        couple: "[AR] - Couple"
+        pregnant: "[AR] - Femme enceinte"
+      administrative:
+        default: "[AR] - personne %s"
+        regular: "[AR] - en situation régulière"
+        undocumented: "[AR] - sans papiers"
+        asylum: "[AR] - demandeurs d'asile"
+        refugee: "[AR] - réfugiés"
+      other:
+        violence: "[AR] - victime de violence"
+        addiction: "[AR] - en situation d'addiction"
+        handicap: "[AR] - en situation de handicap"
+        lgbt: "[AR] - appartenant aux communautés LGBT+"
+        hiv: "[AR] - porteuse du VIH"
+        prostitution: "[AR] - travailleur(euse) du sexe"
+        prison: "[AR] - sortant de prison"
+        student: "[AR] - étudiant(e)"
+      modalities:
+        inconditionnel: "[AR] - Accueil sans rendez-vous"
+        appointment: "[AR] - Sur rendez-vous (%s)"
+        inscription: "[AR] - Sur inscription (%s)"
+        orientation: "[AR] - Sur orientation (%s)"
+      animal:
+        unauthorized: "[AR] - Animaux non-autorisés"
+        authorized: "[AR] - Animaux autorisés"
