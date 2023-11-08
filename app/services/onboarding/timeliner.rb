@@ -245,7 +245,7 @@ module Onboarding
     private
 
     def user_has_outings?
-      OutingsServices::Finder.new(@user, Hash.new).find_all.any?
+      OutingsServices::Finder.new(@user, Hash.new).find_all.where(online: false).any?
     end
 
     def user_has_actions?
