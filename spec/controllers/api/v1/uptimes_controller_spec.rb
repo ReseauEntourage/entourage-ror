@@ -66,7 +66,7 @@ RSpec.describe Api::V1::UptimesController, :type => :controller do
 
   describe 'soliguide' do
     before {
-      stub_request(:get, "https://api.soliguide.fr/place/0").to_return(status: response_status, body: body, headers: {})
+      stub_request(:get, "https://api.soliguide.fr/place/0/fr").to_return(status: response_status, body: body, headers: {})
       get :soliguide, params: { token: token }
     }
 
