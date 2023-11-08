@@ -1,11 +1,11 @@
 module PoiServices
   class SoliguideShow
-    SHOW_URI = "https://api.soliguide.fr/place/%s"
+    SHOW_URI = "https://api.soliguide.fr/place/%s/%s"
     UPTIME_DEFAULT = 0
 
     class << self
-      def get id
-        PoiServices::SoliguideFormatter.format JSON.parse(query(id).body)
+      def get id, lang = nil
+        PoiServices::SoliguideFormatter.format JSON.parse(query(id, lang).body)
       end
 
       def uptime
@@ -21,8 +21,10 @@ module PoiServices
         }
       end
 
-      def query id
-        uri = URI(SHOW_URI % id)
+      def query id, lang = nil
+        lang ||= Translation::DEFAULT_LANG
+
+        uri = URI(SHOW_URI % [id, lang])
 
         Net::HTTP.start(uri.host, uri.port, :use_ssl => uri.scheme == 'https') do |http|
           http.request Net::HTTP::Get.new(uri, headers)
