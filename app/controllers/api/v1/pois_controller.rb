@@ -95,16 +95,15 @@ module Api
       end
 
       def show
-        if params[:id].start_with?('s') && current_user.default_lang?
-          AsyncService.new(PoiServices::SoliguideShow).get(params[:id][1..], current_user.lang)
+        if params[:id].start_with?('s') && current_user.not_default_lang?
+          return render json: { poi: PoiServices::SoliguideShow.get(params[:id][1..]) }
         end
 
-        poi = if params[:id].start_with?('s') && current_user.not_default_lang?
-          PoiServices::SoliguideShow.get(params[:id][1..], current_user.lang)
-        else
-          Poi.validated.find_by_uuid(params[:id])
+        if params[:id].start_with?('s')
+          AsyncService.new(PoiServices::SoliguideShow).get(params[:id][1..])
         end
 
+        poi = Poi.validated.find_by_uuid(params[:id])
         render json: poi, serializer: ::V1::PoiSerializer, scope: {version: :v2}
       end
 
