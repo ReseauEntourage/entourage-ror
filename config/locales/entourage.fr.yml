@@ -82,6 +82,8 @@ fr:
         title: Titre
         description: Description
         display_address: Adresse
+        latitude: Latitude
+        longitude: Longitude
         recurrency: Récurrence
         created_at: Créé le
         starts_at: Commence le

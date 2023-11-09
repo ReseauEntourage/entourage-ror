@@ -9,6 +9,20 @@ module EntourageServices
         @entourage.metadata[:display_address]
       end
 
+      def image_url
+        return unless image = @entourage.metadata[:landscape_url]
+
+        EntourageImage.storage.public_url_with_size(key: image, size: :medium)
+      end
+
+      def latitude
+        @entourage.latitude.round(2)
+      end
+
+      def longitude
+        @entourage.longitude.round(2)
+      end
+
       def recurrency
         return unless @entourage.recurrent?
         return unless recurrence = OutingRecurrence.find_by_identifier(@entourage.recurrency_identifier)
@@ -36,6 +50,8 @@ module EntourageServices
       title
       description
       display_address
+      latitude
+      longitude
       recurrency
       created_at
       starts_at
