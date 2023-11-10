@@ -1,4 +1,4 @@
-class RemoveToursFromFeeds < ActiveRecord::Migration[4.2]
+class RemoveToursFromFeeds < ActiveRecord::Migration[6.1]
   def up
     sql = <<-SQL
       DROP VIEW IF EXISTS feeds;
