@@ -1,6 +1,6 @@
 module SolicitationServices
   class Finder
-    attr_reader :user, :latitude, :longitude, :distance, :sections
+    attr_reader :user, :latitude, :longitude, :distance, :sections, :exclude_memberships
 
     def initialize user, params
       @user = user
@@ -15,6 +15,7 @@ module SolicitationServices
 
       @distance = params[:travel_distance] || user.travel_distance
       @sections = params[:sections] || []
+      @exclude_memberships = params[:exclude_memberships]
     end
 
     def find_all
@@ -28,6 +29,10 @@ module SolicitationServices
 
       if sections.any?
         solicitations = solicitations.where(id: Solicitation.with_sections(sections))
+      end
+
+      if exclude_memberships.present?
+        solicitations = solicitations.not_joined_by(user)
       end
 
       # order by created_at is already in default_scope

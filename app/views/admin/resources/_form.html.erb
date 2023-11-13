@@ -3,6 +3,17 @@
 </style>
 
 <%= render partial: 'common/errors', locals: { obj: @resource } %>
+
+<div style="margin-bottom: 15px; display: flex">
+  <div class="btn-group btn-group-sm">
+    <%= link_to("Page principale", "#", class: "btn btn-primary") %>
+
+    <% Translation::LANGUAGES.each do |language| %>
+      <%= link_to language, edit_translation_admin_resource_path(@resource, { language: language }), class: "btn btn-default" %>
+    <% end %>
+  </div>
+</div>
+
 <%= form_for [:admin, @resource], html: { role: "form" } do |f| %>
   <div class="form-group">
     <%= f.label :name %>
@@ -81,6 +92,7 @@
     } %>
   <% end %>
 <% end %>
+
 <%= tinymce %>
 
 <script>

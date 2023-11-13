@@ -72,9 +72,7 @@ class ConversationMessageBroadcast < ApplicationRecord
   end
 
   def sent
-    ChatMessage
-    .where(messageable_type: self.class.messageable_type, message_type: :broadcast)
-    .where('metadata @> ?', { conversation_message_broadcast_id: id }.to_json)
+    ChatMessage.where(messageable_type: self.class.messageable_type).with_broadcast_id(id)
   end
 
   def sent_count

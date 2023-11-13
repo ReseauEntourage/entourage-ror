@@ -377,8 +377,8 @@ describe Api::V1::OutingsController do
             instance: outing.becomes(Outing),
             users: [participant],
             params: {
-              object: "Foobar",
-              content: "Cet événement prévu le #{I18n.l(outing.starts_at.to_date)} vient d'être annulé",
+              object: PushNotificationTrigger::I18nStruct.new(instance: kind_of(Entourage), field: :title),
+              content: PushNotificationTrigger::I18nStruct.new(i18n: 'push_notifications.outing.cancel', i18n_args: I18n.l(outing.starts_at.to_date)),
               extra: {
                 tracking: :outing_on_cancel
               }
@@ -669,8 +669,8 @@ describe Api::V1::OutingsController do
           instance: outing.reload.becomes(Outing),
           users: [participant],
           params: {
-            object: "Foobar",
-            content: "Cet événement prévu le #{I18n.l(outing.starts_at.to_date)} vient d'être annulé",
+            object: PushNotificationTrigger::I18nStruct.new(instance: kind_of(Entourage), field: :title),
+            content: PushNotificationTrigger::I18nStruct.new(i18n: 'push_notifications.outing.cancel', i18n_args: I18n.l(outing.starts_at.to_date)),
             extra: {
               tracking: :outing_on_cancel
             }
@@ -698,8 +698,8 @@ describe Api::V1::OutingsController do
           instance: outing.reload.becomes(Outing),
           users: [participant],
           params: {
-            object: "Foobar",
-            content: "Cet événement prévu le #{I18n.l(outing.starts_at.to_date)} vient d'être annulé",
+            object: PushNotificationTrigger::I18nStruct.new(instance: kind_of(Entourage), field: :title),
+            content: PushNotificationTrigger::I18nStruct.new(i18n: 'push_notifications.outing.cancel', i18n_args: I18n.l(outing.starts_at.to_date)),
             extra: {
               tracking: :outing_on_cancel
             }

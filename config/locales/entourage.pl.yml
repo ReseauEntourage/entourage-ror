@@ -1,0 +1,103 @@
+---
+pl:
+  push_notifications:
+    action:
+      create_for_follower: "%s zaprasza cię do dołączenia do %s"
+    outing:
+      create: "Nowe wydarzenie zostało dodane do %s: %s zaplanowane na %s"
+      cancel: "To wydarzenie zaplanowane na %s zostało odwołane"
+      update: "Wydarzenie zaplanowane na %s zostało zmodyfikowane. Odbędzie się %s o %s"
+      update_short: "Wydarzenie zaplanowane na %s zostało zmodyfikowane"
+    post:
+      create: "%s właśnie udostępnił(a): \"%s\""
+    comment:
+      create: "%s właśnie skomentował(a) post \"%s\""
+    join_request:
+      new: "Nowy członek"
+      update: "Podanie zostało zaakceptowane"
+      update_on_action: "Dołączyłeś właśnie do działania %s"
+      update_on_outing: "Dołączyłeś właśnie do wydarzenia %s"
+      update_on_neighborhood: "Dołączyłeś właśnie do grupy %s"
+      create: "%s właśnie dołączył(a) do twojego %s \"%s\""
+      create_outing: "%s właśnie dołączył(a) do twojego wydarzenia \"%s\" w dniu %s"
+    contribution:
+      create: "Sąsiedzi proponują nową pomoc"
+    solicitation:
+      create: "Sąsiedzi poszukują pomocy"
+      create_section: "Sąsiedzi szukają %s"
+
+  timeliner:
+    h1:
+      title: "Witaj w Entourage 👌"
+      offer: "Czy wiesz, że wystarczy jedno wideo, aby obalić twoje uprzedzenia?"
+      ask: "Nie możesz sobie wyobrazić, co zawiera twoja nowa aplikacja: przyjdź i ją odkryj!"
+    j2:
+      title: "Przyjdź i powiedz cześć 👋"
+      offer: "Twoja grupa sąsiadów chce cię poznać!"
+      ask_title_outing: "Masz 4 minuty?"
+      ask: "Obejrzyj krótki film, aby zrozumieć wszystko o swojej nowej aplikacji"
+    j5:
+      title_outing: "Cześć, to znowu my ! 🕺"
+      offer_outing: "Wirtualne jest fajne przez kilka minut; przyjdź i nawiąż prawdziwe połączenie!"
+      title_action: "Cześć, to znowu my ! 🕺"
+      offer_action: "Masz dwie minuty, aby pomóc sąsiadom?"
+      title_create_action: "Cześć, to znowu my ! 🕺"
+      offer_create_action: "Zarezerwuj dwie minuty, aby zaoferować swoją pomoc innym wokół ciebie"
+      ask_title: "Przyjdź i powiedz cześć 👏"
+      ask: "Twoja grupa sąsiadów chce cię poznać"
+    j8:
+      title: "Twoja kolej! 📱"
+      offer: "Krótki quiz przeciwko uprzedzeniom: zakładamy, że się czegoś nauczysz?"
+      ask_title_outing: "Cześć, to znowu my ! 🕺"
+      ask_outing: "Wirtualne jest fajne przez kilka minut; przyjdź i nawiąż prawdziwe połączenie!"
+      ask_title_action: "Cześć, to znowu my ! 🕺"
+      ask_action: "Sprawdź pomoc oferowaną w twojej okolicy."
+      ask_title_create_action: "Cześć, to znowu my ! 🕺"
+      ask_create_action: "Partia w petankę, kawa czy po prostu spacer: zaproponuj wypad sąsiadom!"
+    j11:
+      title: "Entourage to jak rodzina!"
+      offer: "Mamy prawo powiedzieć, że teraz jesteś częścią społeczności Entourage. Świętujmy to! 🎉"
+      ask: "Mamy prawo powiedzieć, że teraz jesteś częścią społeczności Entourage. Świętujmy to! 🎉"
+
+  pois:
+    soliguide:
+      public:
+        administrative: "[PL] - Accueil %s"
+        description: "[PL] - Autres informations importantes : %s"
+      accueil:
+        preferentiel: "[PL] - préférentiel"
+        exclusif: "[PL] - exclusif"
+        inconditionnel: "[PL] - inconditionnel"
+      age:
+        mineur: "[PL] - mineurs (-18 ans)"
+        adulte: "[PL] - adultes uniquement"
+        from: "[PL] - dès %s ans"
+        from_to: "[PL] - de %s à %s ans"
+      familiale:
+        isolated: "[PL] - Personne isolée"
+        family: "[PL] - Famille"
+        couple: "[PL] - Couple"
+        pregnant: "[PL] - Femme enceinte"
+      administrative:
+        default: "[PL] - personne %s"
+        regular: "[PL] - en situation régulière"
+        undocumented: "[PL] - sans papiers"
+        asylum: "[PL] - demandeurs d'asile"
+        refugee: "[PL] - réfugiés"
+      other:
+        violence: "[PL] - victime de violence"
+        addiction: "[PL] - en situation d'addiction"
+        handicap: "[PL] - en situation de handicap"
+        lgbt: "[PL] - appartenant aux communautés LGBT+"
+        hiv: "[PL] - porteuse du VIH"
+        prostitution: "[PL] - travailleur(euse) du sexe"
+        prison: "[PL] - sortant de prison"
+        student: "[PL] - étudiant(e)"
+      modalities:
+        inconditionnel: "[PL] - Accueil sans rendez-vous"
+        appointment: "[PL] - Sur rendez-vous (%s)"
+        inscription: "[PL] - Sur inscription (%s)"
+        orientation: "[PL] - Sur orientation (%s)"
+      animal:
+        unauthorized: "[PL] - Animaux non-autorisés"
+        authorized: "[PL] - Animaux autorisés"

@@ -270,6 +270,8 @@ Rails.application.routes.draw do
 
     resources :resources do
       member do
+        get :edit_translation
+        post :update_translation
         get '/edit/image', action: :edit_image
         put '/update/image', action: :update_image
       end
@@ -328,6 +330,13 @@ Rails.application.routes.draw do
       resources :inapp_notifications, only: [:index, :destroy] do
         collection do
           get :count
+        end
+      end
+
+      resources :notifications do
+        collection do
+          put :welcome
+          put :at_day
         end
       end
 

@@ -55,6 +55,17 @@ describe Api::V1::ContributionsController, :type => :controller do
       }]) }
     end
 
+    context "excluded user being a member when exclude_memberships" do
+      let(:request) { get :index, params: { token: user.token, exclude_memberships: "true" } }
+      let!(:join_request) { create(:join_request, user: user, joinable: contribution, status: :accepted, role: :member) }
+
+      before { request }
+
+      it { expect(response.status).to eq(200) }
+      # when exclude_memberships we do not want to return contribution when user is member
+      it { expect(subject["contributions"].count).to eq(0) }
+    end
+
     context "some users are members" do
       let!(:join_request_1) { create(:join_request, user: FactoryBot.create(:public_user), joinable: contribution, status: :accepted, role: :member) }
       let!(:join_request_2) { create(:join_request, user: FactoryBot.create(:public_user), joinable: contribution, status: :accepted, role: :member) }

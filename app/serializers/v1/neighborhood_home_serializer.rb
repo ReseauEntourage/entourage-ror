@@ -6,7 +6,9 @@ module V1
     attributes :id,
       :uuid_v2,
       :name,
+      :name_translations,
       :description,
+      :description_translations,
       :welcome_message,
       :member,
       :members,
@@ -25,6 +27,22 @@ module V1
     has_many :outings, serializer: ::V1::OutingSerializer
     has_many :future_outings, serializer: ::V1::OutingSerializer
     has_many :ongoing_outings, serializer: ::V1::OutingSerializer
+
+    def name
+      I18nSerializer.new(object, :name, lang).translation
+    end
+
+    def name_translations
+      I18nSerializer.new(object, :name, lang).translations
+    end
+
+    def description
+      I18nSerializer.new(object, :description, lang).translation
+    end
+
+    def description_translations
+      I18nSerializer.new(object, :description, lang).translations
+    end
 
     def member
       return false unless scope && scope[:user]
@@ -67,8 +85,8 @@ module V1
     end
 
     def posts
-      object.parent_chat_messages.includes(:user).preload_comments_count.ordered.limit(POSTS_LIMIT).map do |chat_message|
-        V1::ChatMessageHomeSerializer.new(chat_message, scope: { current_join_request: current_join_request }).as_json
+      object.parent_chat_messages.includes(:user, :translation).preload_comments_count.ordered.limit(POSTS_LIMIT).map do |chat_message|
+        V1::ChatMessageHomeSerializer.new(chat_message, scope: { current_join_request: current_join_request, user: scope[:user] }).as_json
       end
     end
 
@@ -90,6 +108,12 @@ module V1
       return unless scope[:user]
 
       @current_join_request ||= JoinRequest.where(joinable: object, user: scope[:user], status: :accepted).first
+    end
+
+    def lang
+      return unless scope && scope[:user] && scope[:user].lang
+
+      scope[:user].lang
     end
   end
 end

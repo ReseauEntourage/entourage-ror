@@ -147,28 +147,6 @@ describe Api::V1::Tours::UsersController do
         it { expect(tour_requester.reload.status).to eq("accepted") }
       end
 
-      it "sends a notification to the requester" do
-        FactoryBot.create(:android_app)
-        expect_any_instance_of(PushNotificationService).to receive(:send_notification).with(
-          nil,
-          "Demande acceptée",
-          "Vous venez de rejoindre un(e) maraude de John D.",
-          User.where(id: requester.id),
-          "tour",
-          tour.id,
-          {
-            joinable_id: tour.id,
-            joinable_type: "Tour",
-            group_type: 'tour',
-            type: "JOIN_REQUEST_ACCEPTED",
-            user_id: requester.id,
-            instance: "tour",
-            instance_id: tour.id
-          }
-        )
-        patch :update, params: { tour_id: tour.to_param, id: requester.id, user: {status: "accepted"}, token: user.token }
-      end
-
       context "invalid status" do
         before { patch :update, params: { tour_id: tour.to_param, id: requester.id, user: {status: "foobar"}, token: user.token } }
         it { expect(response.status).to eq(400) }

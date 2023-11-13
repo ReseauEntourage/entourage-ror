@@ -17,7 +17,16 @@ RSpec.configure do |config|
 
   config.before(:each) do
     ActionMailer::Base.deliveries.clear
+
+    # deactivate slack_trace notifications
     SlackServices::StackTrace.any_instance.stub(:notify).and_return(nil)
+
+    # deactivate translation on create
+    # TranslationObserver.any_instance.stub(:action).and_return(nil)
+    [ChatMessage, Entourage, Neighborhood].each do |klass|
+      # klass.any_instance.stub(:text_translation).and_return("foo")
+      klass.any_instance.stub(:translate_field!).and_return("foo")
+    end
   end
 end
 

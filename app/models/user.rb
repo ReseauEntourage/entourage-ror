@@ -525,6 +525,14 @@ class User < ApplicationRecord
     Address.where(user_id: id).delete_all
   end
 
+  def default_lang?
+    lang == Translation::DEFAULT_LANG
+  end
+
+  def not_default_lang?
+    !default_lang?
+  end
+
   def default_neighborhood
     Neighborhood.public_only.closests_to_by_zone(self).first
   end

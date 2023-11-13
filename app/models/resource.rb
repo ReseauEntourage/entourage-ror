@@ -1,6 +1,7 @@
 class Resource < ApplicationRecord
   include Recommandable
   include Deeplinkable
+  include Translatable
 
   CATEGORIES  = [:understand, :act, :inspire]
 
