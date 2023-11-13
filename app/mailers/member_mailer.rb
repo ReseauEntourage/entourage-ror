@@ -79,6 +79,17 @@ class MemberMailer < MailjetMailer
     )
   end
 
+  def entourages_csv_export entourage_ids, recipient
+    attachments["entourages-csv-export.csv"] = File.read(
+      EntourageServices::ListExporter.export(entourage_ids)
+    )
+
+    mail(
+      to: recipient,
+      subject: "Export des actions et événements"
+    )
+  end
+
   def pois_csv_export poi_ids, recipient
     attachments["pois-csv-export.csv"] = File.read(
       PoiServices::ListExporter.export(poi_ids)

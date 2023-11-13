@@ -85,6 +85,10 @@
   </div>
 
   <div style="float: right; margin: -10px 0 10px">
+    <% if @q.group_type_eq == "outing" %>
+      <%= link_to "Exporter", download_list_export_admin_entourages_path(@params), class: "btn btn-default" %>
+    <% end %>
+
     <%= link_to "Réinitialiser les filtres", admin_entourages_path, class: "btn btn-default" %>
   </div>
 <% end %>
