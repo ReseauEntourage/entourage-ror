@@ -11,13 +11,13 @@ en:
     post:
       create: "%s has just shared: \"%s\""
     comment:
-      create: "%s has just commented on the post \"%s\""
+      create: "%s has just made a comment on the post \"%s\""
     join_request:
       new: "New member"
       update: "Request accepted"
       update_on_action: "You have just joined an action by %s"
-      update_on_outing: "You have just joined an event by %s"
-      update_on_neighborhood: "You have just joined a group by %s"
+      update_on_outing: "You have just joined the event of %s"
+      update_on_neighborhood: "You have just joined a group made by %s"
       create: "%s has just joined your %s \"%s\""
       create_outing: "%s has just joined your event \"%s\" on %s"
     contribution:
@@ -30,17 +30,17 @@ en:
     h1:
       title: "Welcome to Entourage 👌"
       offer: "Did you know? It only takes one video to break down your prejudices!"
-      ask: "You can't imagine everything your new app contains: come discover it!"
+      ask: "You can't imagine everything your new app contains: come check it out!"
     j2:
       title: "Come and say hello 👋"
       offer: "Your group of neighbors is eager to get to know you!"
       ask_title_outing: "Do you have 4 minutes?"
-      ask: "Watch a short video to understand everything about your new application"
+      ask: "Watch a short video to understand everything about how your new application works"
     j5:
       title_outing: "Hello, it's us again! 🕺"
       offer_outing: "Virtual is nice for a couple of minutes; come and make a real-life connection!"
       title_action: "Hello, it's us again! 🕺"
-      offer_action: "Do you have two minutes to help your neighbors?"
+      offer_action: "Do you have two minutes to help out your neighbors?"
       title_create_action: "Hello, it's us again! 🕺"
       offer_create_action: "Take two minutes to offer your assistance to those around you"
       ask_title: "Come and say hello 👏"
@@ -51,10 +51,10 @@ en:
       ask_title_outing: "Hello, it's us again! 🕺"
       ask_outing: "Virtual is nice for a couple of minutes; come and make a real-life connection!"
       ask_title_action: "Hello, it's us again! 🕺"
-      ask_action: "Take a look at the help offered near you."
+      ask_action: "Take a look at the help offered near you"
       ask_title_create_action: "Hello, it's us again! 🕺"
       ask_create_action: "A game of pétanque, a coffee, or just a walk: suggest an outing to your neighbors!"
     j11:
-      title: "Entourage is family!"
-      offer: "We can say it, you're now part of the Entourage community. Let's celebrate! 🎉"
-      ask: "We can say it, you're now part of the Entourage community. Let's celebrate! 🎉"
+      title: "Entourage is like family!"
+      offer: "We can say it, you're now part of the Entourage community. Let's celebrate!"
+      ask: "We can say it, you're now part of the Entourage community. Let's celebrate!"

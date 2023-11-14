@@ -11,7 +11,7 @@ ro:
     post:
       create: "%s tocmai a distribuit: \"%s\""
     comment:
-      create: "%s tocmai a comentat postarea \"%s\""
+      create: "%s tocmai a comentat la postarea \"%s\""
     join_request:
       new: "Nou membru"
       update: "Cererea a fost acceptată"
@@ -21,14 +21,14 @@ ro:
       create: "%s tocmai s-a alăturat la %s-ul tău \"%s\""
       create_outing: "%s tocmai s-a alăturat la evenimentul tău \"%s\" de la %s"
     contribution:
-      create: "Un vecin propune ajutor nou"
+      create: "Un vecin propune o nouă împreunare"
     solicitation:
       create: "Un vecin caută ajutor"
       create_section: "Un vecin caută %s"
 
   timeliner:
     h1:
-      title: "Bun venit la Entourage 👌"
+      title: "Bine ai venit la Entourage 👌"
       offer: "Știai că e nevoie doar de un videoclip pentru a sparge prejudecățile tale?"
       ask: "Nu îți poți imagina tot ce conține noua ta aplicație: vino și descoperă-o!"
     j2:
@@ -51,10 +51,10 @@ ro:
       ask_title_outing: "Salut, suntem din nou aici! 🕺"
       ask_outing: "Virtualul e frumos pentru câteva minute; vino și fă o conexiune în viața reală!"
       ask_title_action: "Salut, suntem din nou aici! 🕺"
-      ask_action: "Uită-te la ajutorul oferit în apropierea ta."
+      ask_action: "Uită-te la ajutorul oferit în apropierea ta"
       ask_title_create_action: "Salut, suntem din nou aici! 🕺"
       ask_create_action: "Un joc de pétanque, o cafea sau doar o plimbare: propune o ieșire vecinilor tăi!"
     j11:
       title: "Entourage e ca o familie!"
-      offer: "Putem să spunem, acum faci parte din comunitatea Entourage. Haide să sărbătorim! 🎉"
-      ask: "Putem să spunem, acum faci parte din comunitatea Entourage. Haide să sărbătorim! 🎉"
+      offer: "Putem spune asta, acum faci parte din comunitatea Entourage. Haide să sărbătorim! 🎉"
+      ask: "Putem spune asta, acum faci parte din comunitatea Entourage. Haide să sărbătorim! 🎉"
