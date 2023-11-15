@@ -9,12 +9,16 @@ class ActiveModel::Serializer
     end
 
     def translation
+      return object[field] if Translation.disable_on_read?
       return object[field] unless lang && object.translation
 
       object.translation.with_lang(lang)[field] || object[field]
     end
 
     def translations
+      return if Translation.disable_on_read?
+      return unless object.translation
+
       {
         translation: translation,
         original: object[field],

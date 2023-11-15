@@ -29,4 +29,12 @@ class Translation < ApplicationRecord
 
     self[lang][field.to_s] = translation
   end
+
+  def self.disable_on_write?
+    ENV['DISABLE_TRANSLATIONS_ON_WRITE'] == 'true'
+  end
+
+  def self.disable_on_read?
+    ENV['DISABLE_TRANSLATIONS_ON_READ'] == 'true'
+  end
 end
