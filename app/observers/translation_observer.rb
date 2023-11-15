@@ -2,6 +2,8 @@ class TranslationObserver < ActiveRecord::Observer
   observe :chat_message, :entourage, :neighborhood
 
   def after_commit record
+    return if Translation.disable_on_write?
+
     return if record.is_a?(Entourage) && record.conversation?
     return unless record.persisted?
 
