@@ -6,11 +6,11 @@ module Api
       def create
         response = NewsletterServices::Contact.create(newsletter_subscription_params) do |on|
           on.success do |newsletter_subscription|
-            render { message: "contact #{params[:email]} ajouté" }
+            render json: { message: "contact #{params[:email]} ajouté" }
           end
 
           on.failure do |newsletter_subscription|
-            render { message: "Erreur lors de l'ajout de #{params[:email]}", status: 400 }
+            render json: { message: "Erreur lors de l'ajout de #{params[:email]}", status: 400 }
           end
         end
       end
