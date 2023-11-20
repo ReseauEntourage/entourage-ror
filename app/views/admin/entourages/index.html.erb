@@ -1,4 +1,35 @@
-<h1>Liste des entourages</h1>
+
+<div class="title-container">
+
+  <h1>Liste des actions et des événements</h1>
+
+  <div class="ctas-container">
+          <%= link_to "Nouvelle action", new_admin_entourage_path(group_type: :action), class: "btn btn-success" %>
+          <%= link_to "Nouvel événement", new_admin_entourage_path(group_type: :outing), class: "btn btn-success" %>
+  </div>
+</div>
+
+<%
+  q = @params[:q] || {}
+  locations = moderation_area_filters
+  types = {
+    "Actions" => { group_type_eq: 'action', pin_eq: 'false' },
+    "Événements" => { group_type_eq: 'outing', pin_eq: 'false' },
+  }
+%>
+
+<ul class="custom-nav-tabs">
+    <% types_keys = [:pin_eq, :group_type_eq, :moderation_action_outcome_blank, :created_at_lt]
+        types.each do |name, options| 
+        active = types.key q.slice(*types_keys).compact.symbolize_keys %>
+      <li>
+        <%= link_to(name, @params.merge(q: q.except(*types_keys).merge(options)), class: "#{active == name ? :active : :default}") %>
+      </li>
+    <% end %>
+</ul>
+
+
+
 
 <%= search_form_for [:admin, @q], class: 'form-inline', id: 'q_form' do |f| %>
   <div class="panel panel-default">
@@ -19,78 +50,63 @@
         <%= select_tag :moderator_id, options_for_select(options, params[:moderator_id]), class: "form-control" %>
       </div>
 
-      <div style="float: right">
-        <%= link_to "Nouvelle action", new_admin_entourage_path(group_type: :action), class: "btn btn-success" %>
-        <%= link_to "Nouvel événement", new_admin_entourage_path(group_type: :outing), class: "btn btn-success" %>
-      </div>
+      
     </div>
 
-    <div style="padding: 0 0 15px 15px">
+    <div class="panel-body">
       <div class='input-group'>
         <%= f.select :entourage_type_eq, [['Toutes les actions', nil]] + entourage_type_names, {}, class: 'form-control' %>
-      </div>
-      <div class='input-group'>
-        <%= f.select :display_category_eq, [['Toutes les catégories', nil]] + entourage_type_categories + [EntouragesHelper::NO_CATEGORY], {}, class: 'form-control' %>
       </div>
       <div class="input-group">
         <%= f.select :status_in, entourage_type_statuses, {}, class: 'form-control', multiple: true, style: "width: 200px" %>
       </div>
     </div>
-  </div>
+  
+    <div class="panel-body">
+      <%
+        q = @params[:q] || {}
 
-  <div style="float: left; margin: -10px 0 10px">
-    <%
-      q = @params[:q] || {}
+        locations = moderation_area_filters
+      %>
 
-      locations = moderation_area_filters
+      <%= f.hidden_field :postal_code_start if @q.postal_code_start %>
+      <%= f.hidden_field :postal_code_not_start_all if @q.postal_code_not_start_all %>
+      <%= f.hidden_field :pin_eq if @q.pin_eq || @q.pin_eq === false %>
+      <%= f.hidden_field :group_type_eq if @q.group_type_eq %>
+      <%= f.hidden_field :moderation_action_outcome_blank if @q.moderation_action_outcome_blank %>
+      <%= f.hidden_field :country_eq if @q.country_eq %>
+      <%= f.hidden_field :created_at_lt if @q.created_at_lt %>
+      <% (@q.postal_code_start_any || []).each do |value| %>
+        <%= hidden_field_tag 'q[postal_code_start_any][]', value %>
+      <% end %>
 
-      types = {
-        "Épinglées" => { pin_eq: 'true' },
-        "Actions" => { group_type_eq: 'action', pin_eq: 'false' },
-        "Événements" => { group_type_eq: 'outing', pin_eq: 'false' },
-        "Non abouties" => { group_type_eq: 'action', pin_eq: 'false', moderation_action_outcome_blank: 'true', created_at_lt: 3.months.ago.strftime("%Y-%m-%d") },
-      }
-    %>
+      <div class="btn-group btn-group-sm">
 
-    <%= f.hidden_field :postal_code_start if @q.postal_code_start %>
-    <%= f.hidden_field :postal_code_not_start_all if @q.postal_code_not_start_all %>
-    <%= f.hidden_field :pin_eq if @q.pin_eq || @q.pin_eq === false %>
-    <%= f.hidden_field :group_type_eq if @q.group_type_eq %>
-    <%= f.hidden_field :moderation_action_outcome_blank if @q.moderation_action_outcome_blank %>
-    <%= f.hidden_field :country_eq if @q.country_eq %>
-    <%= f.hidden_field :created_at_lt if @q.created_at_lt %>
-    <% (@q.postal_code_start_any || []).each do |value| %>
-      <%= hidden_field_tag 'q[postal_code_start_any][]', value %>
-    <% end %>
-
-    <div class="btn-group btn-group-sm">
-
-      <% locations_keys = [:country_eq, :postal_code_start_any, :postal_code_start, :postal_code_not_start_all] %>
-      <%= link_to("Partout", @params.merge(q: q.except(*locations_keys)), class: "btn btn-#{(!@params["q"].key?("postal_code_start") and !@params["q"].key?("postal_code_not_start_all")) ? :primary : :default}") %>
-      <% locations.sort.each do |name, options, index| %>
-        <% if (name != "Partout") %>
-          <% active = locations.key q.slice(*locations_keys).compact.symbolize_keys %>
-          <%= link_to(name, @params.merge(q: q.except(*locations_keys).merge(options)),
-              class: "btn btn-#{active == name ? :primary : :default}"
-          ) %>
+        <% locations_keys = [:country_eq, :postal_code_start_any, :postal_code_start, :postal_code_not_start_all] %>
+        <%= link_to("Partout", @params.merge(q: q.except(*locations_keys)), class: "btn btn-#{(!@params["q"].key?("postal_code_start") and !@params["q"].key?("postal_code_not_start_all")) ? :primary : :default}") %>
+        <% locations.sort.each do |name, options, index| %>
+          <% if (name != "Partout") %>
+            <% active = locations.key q.slice(*locations_keys).compact.symbolize_keys %>
+            <%= link_to(name, @params.merge(q: q.except(*locations_keys).merge(options)),
+                class: "btn btn-#{active == name ? :primary : :default}"
+            ) %>
+          <% end %>
         <% end %>
-      <% end %>
-    </div>
+      </div>
 
-    <div class="btn-group btn-group-sm" style="padding-left: 10px">
-      <% types_keys = [:pin_eq, :group_type_eq, :moderation_action_outcome_blank, :created_at_lt] %>
-      <% types.each do |name, options| %>
-        <% active = types.key q.slice(*types_keys).compact.symbolize_keys %>
-        <%= link_to(name, @params.merge(q: q.except(*types_keys).merge(options)),
-            class: "btn btn-#{active == name ? :primary : :default}"
-        ) %>
-      <% end %>
+      <div class="btn-group btn-group-sm" style="padding-left: 10px">
+        
+        <div class="btn-group btn-group-sm" style="padding-left: 10px">
+          <%= link_to "Réinitialiser les filtres", admin_entourages_path(q: {
+            group_type_eq: 'action',
+            pin_eq: 'false',
+            }), class: "btn btn-danger" %>
+        </div>
+      </div>
     </div>
   </div>
 
-  <div style="float: right; margin: -10px 0 10px">
-    <%= link_to "Réinitialiser les filtres", admin_entourages_path, class: "btn btn-default" %>
-  </div>
+  
 <% end %>
 
 <% if @q.moderation_action_outcome_blank %>
@@ -107,112 +123,84 @@
 <% outing_filter = params[:q] && params[:q][:group_type_eq] == 'outing' %>
 <% pin_filter = params[:q] && params[:q][:pin_eq] %>
 
-<table class="table admin-table" style="table-layout: auto">
-  <th></th>
-  <th></th>
-  <th></th>
-  <th></th>
-  <th>Date de création</th>
-  <th>Titre</th>
-  <% if outing_filter %><th>Date</th><% end %>
-  <th>Description</th>
-  <% if pin_filter %><th>Actions épinglées pour</th><% end %>
-  <% if outing_filter %><th>Photo</th><% end %>
-  <th>Statut</th>
-  <th><span class="glyphicon glyphicon-user" aria-hidden="true"></span></th>
-  <th><span class="glyphicon glyphicon-comment" aria-hidden="true"></span></th>
-  <th><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></th>
-
-  <% @entourages.each do |entourage| %>
-    <% unread_count  = @message_count[entourage.id].unread %>
-    <% unread_images_count = @message_count[entourage.id].unread_images %>
-    <tr class="<%= 'not-open' if entourage.status != 'open' %>">
-      <td>
-        <% if entourage.admin_pin? %>
-          <i class="fa fa-star" title="Prioritaire"></i>
-        <% end %>
-      </td>
-      <td>
-        <% if !entourage.moderated %>
-          <span class="badge" style="background: #f0ad4e" title="Non modéré">●</span>
-        <% end %>
-      </td>
-      <td>
-        <% if entourage.unread %>
-          <span class="badge" style="background: #d9534f" title="Non lu">●</span>
-        <% elsif unread_count > 0 %>
-          <span class="badge" style="background: #d9534f" title="Messages non lus"><%= unread_count %></span>
-        <% end %>
-      </td>
-      <td>
-        <% if entourage.unread_images %>
-          <span class="badge" style="background: #19534f" title="Images non lues">●</span>
-        <% elsif unread_images_count > 0 %>
-          <span class="badge" style="background: #19534f" title="Images non lues"><%= unread_images_count %></span>
-        <% end %>
-      </td>
-      <td><%= l entourage.created_at, format: "%-d %B %Y" %></td>
-      <td><%= link_to entourage.title, admin_entourage_path(entourage, @params) %></td>
-      <% if outing_filter %>
-        <td><%= l entourage.starts_at, format: :date_short %></td>
-      <% end %>
-      <td><%= entourage_description_excerpt(entourage.description) %></td>
-      <% if pin_filter %>
-        <td>
-          <% entourage[:pins].map do |pin| %>
-            <span class="badge"><%= pin %></span>
+<table class="table admin-table custom-table" style="table-layout: auto">
+  
+  <thead>
+    <th>Titre</th>
+    <th>Date de création</th>
+    <% if outing_filter %><th>Date de l'événement</th><% end %>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th>Description</th>
+    <th>Statut</th>
+    <th><span class="glyphicon glyphicon-user" aria-hidden="true"></span></th>
+    <th><span class="glyphicon glyphicon-comment" aria-hidden="true"></span></th>
+  </thead>
+  <tbody>
+    <% @entourages.each do |entourage| %>
+      <% unread_count  = @message_count[entourage.id].unread %>
+      <% unread_images_count = @message_count[entourage.id].unread_images %>
+      <tr class="<%= 'not-open' if entourage.status != 'open' %>">
+          <td>
+            <%= link_to entourage.title, admin_entourage_path(entourage, @params) %></td>
+          <td>
+            <%= l entourage.created_at, format:  :date_short%>
+          </td>
+          <% if outing_filter %>
+            <td><%= l entourage.starts_at, format: :date_short %></td>
+          <% end %>
+          <td>
+          <% if entourage.admin_pin? %>
+            <i class="fa fa-star" title="Prioritaire"></i>
           <% end %>
         </td>
-      <% end %>
-
-      <% if outing_filter %>
         <td>
-          <% if entourage.outing_image_url? %>
-            <span class="label label-success">oui</span>
-          <% else %>
-            <span class="label label-default">non</span>
+          <% if !entourage.moderated %>
+            <span class="badge" style="background: #f0ad4e" title="Non modéré">●</span>
           <% end %>
         </td>
-      <% end %>
-
-      <td><%= entourage_state_label(entourage) %></td>
-      <td><span class="badge" title="Membres"><%= entourage.members_count %></span></td>
-      <td><span class="badge" title="Messages"><%= @message_count[entourage.id].total %></span></td>
-      <td>
-        <% requests_count = @requests_count[entourage.id] %>
-        <% if requests_count[:total] > 0 %>
-          <%
-            highlight =
-              requests_count[:late] > 0 &&
-              !@reminded_users.include?(entourage.user_id)
-          %>
-          <%= link_to requests_count[:total],
-                url_for([:admin, entourage]) + "?join_requests",
-                class: "badge",
-                style: ('background: #d9534f' if highlight) %>
-        <% end %>
-      </td>
-    </tr>
-  <% end %>
-
-  <% if @entourages.none? && @entourages.current_page == 1 &&
-        params[:moderator_id].present? && params[:moderator_id].to_i != 0 %>
-    <% filtered_moderator = current_user.community.users.find(params[:moderator_id]) %>
-    <tr>
-      <td colspan="8" style="text-align: center">
-        <h4>
-          <% if filtered_moderator == current_user %>
-            Aucune action ne vous est assignée pour le moment.
-          <% else %>
-            Aucune action n'est assignée à <%= filtered_moderator.first_name %> pour le moment.
+        <td>
+          <% if entourage.unread %>
+            <span class="badge" style="background: #d9534f" title="Non lu">●</span>
+          <% elsif unread_count > 0 %>
+            <span class="badge" style="background: #d9534f" title="Messages non lus"><%= unread_count %></span>
           <% end %>
-        </h4>
-        <h4>
-          <%= link_to "Voir toutes les actions", admin_entourages_path(moderator_id: :any) %>
-        </h4>
-      </td>
-    </tr>
-  <% end %>
+        </td>
+        <td>
+          <% if entourage.unread_images %>
+            <span class="badge" style="background: #19534f" title="Images non lues">●</span>
+          <% elsif unread_images_count > 0 %>
+            <span class="badge" style="background: #19534f" title="Images non lues"><%= unread_images_count %></span>
+          <% end %>
+        </td>
+        <td><%= entourage_description_excerpt(entourage.description) %></td>
+        <td><%= entourage_state_label(entourage) %></td>
+        <td><span class="badge" title="Membres"><%= entourage.members_count %></span></td>
+        <td><span class="badge" title="Messages"><%= @message_count[entourage.id].total %></span></td>
+      </tr>
+    <% end %>
+
+    <% if @entourages.none? && @entourages.current_page == 1 &&
+          params[:moderator_id].present? && params[:moderator_id].to_i != 0 %>
+      <% filtered_moderator = current_user.community.users.find(params[:moderator_id]) %>
+      <tr>
+        <td colspan="8" style="text-align: center">
+          <h4>
+            <% if filtered_moderator == current_user %>
+              Aucune action ne vous est assignée pour le moment.
+            <% else %>
+              Aucune action n'est assignée à <%= filtered_moderator.first_name %> pour le moment.
+            <% end %>
+          </h4>
+          <h4>
+            <%= link_to "Voir toutes les actions", admin_entourages_path(moderator_id: :any) %>
+          </h4>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
 </table>
 
 <%= page_entries_info @entourages, entry_name: 'entourages' %>

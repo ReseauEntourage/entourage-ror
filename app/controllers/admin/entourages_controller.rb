@@ -509,7 +509,7 @@ module Admin
       return if params[:q] && params[:q][:status_in].present?
 
       params[:q] ||= {}
-      params[:q][:status_in] = ['open', 'suspended', 'full']
+      params[:q][:status_in] = ['open', 'suspended', 'full', 'blacklisted', 'closed', 'full', 'cancelled']
     end
 
     def index_params

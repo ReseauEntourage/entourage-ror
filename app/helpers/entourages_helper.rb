@@ -116,7 +116,7 @@ module EntouragesHelper
 
   def entourage_description_excerpt description
     return unless description.present?
-    content = description.length > 140 ? "#{description[0...140]}..." : description
+    content = description.length > 50 ? "#{description[0...50]}..." : description
 
     content_tag(:span, content)
   end

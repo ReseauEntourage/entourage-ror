@@ -1,17 +1,22 @@
-<nav class="navbar navbar-inverse navbar-fixed-top">
-  <div class="container-fluid">
+<nav class="navbar navbar-fixed-top">
+  <div class="container">
     <div class="navbar-header">
-      <%= image_tag('logo.png', alt:'Entourage', class:'navbar-brand', title: EnvironmentHelper.git_sha) %>
+      <div class='navbar-brand',>
+          <div class='images'>
+            <%= image_tag('logo.png', alt:'Entourage', title: EnvironmentHelper.git_sha) %>
+            <% if UserServices::Avatar.new(user: current_user).thumbnail_url %>
+              <%= image_tag(UserServices::Avatar.new(user: current_user).thumbnail_url, alt:'avatar', class:"nav-thumbnail", title: EnvironmentHelper.git_sha) %>
+            <% end %>
+          </div>
+          <%= current_admin.try(:first_name) %>
+      </div>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
-      <ul class="nav navbar-nav navbar-left">
-        <li class="navbar-text"> Bonjour, <%= current_admin.try(:first_name) %></li>
-
+      <ul class="nav">
         <% if current_admin.super_admin == true %>
-        <li class="dropdown" style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; text-transform: none">
+        <li class="dropdown custom-nav-item">
           <a class="dropdown-toggle" type="button" data-toggle="dropdown">
-            Super-administrer
-            <span class="caret"></span>
+            Superadmin
           </a>
           <ul class="dropdown-menu">
             <li><%= link_to "Options", admin_options_path %></li>
@@ -25,10 +30,9 @@
         </li>
         <% end %>
 
-        <li class="dropdown" style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; text-transform: none">
+        <li class="dropdown custom-nav-item">
           <a class="dropdown-toggle" type="button" data-toggle="dropdown">
             Administrer
-            <span class="caret"></span>
           </a>
           <ul class="dropdown-menu">
             <li><%= link_to "Cartes d'annonce", admin_announcements_path %></li>
@@ -40,24 +44,18 @@
             <li><%= link_to "Contenus pédagogiques", admin_resources_path %></li>
             <li><%= link_to "Pois", admin_pois_path %></li>
             <li><%= link_to "Zones de modération", admin_moderation_areas_path %></li>
-            <li><%= link_to "Zones de maraudes", admin_tour_areas_path %></li>
             <li><%= link_to "Diffusions de MP", admin_conversation_message_broadcasts_path %></li>
           </ul>
         </li>
 
-        <li class="dropdown" style="font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; text-transform: none">
+        <li class="dropdown custom-nav-item">
           <a class="dropdown-toggle" type="button" data-toggle="dropdown">
             Modérer
-            <span class="caret"></span>
           </a>
           <ul class="dropdown-menu">
             <li><%= link_to "Groupes de voisinage", admin_neighborhoods_path %></li>
             <li><%= link_to "Associations - Demandes d'adhésion", admin_partner_registrations_path %></li>
             <li><%= link_to "Associations - Liste", admin_partners_path %></li>
-
-            <li><%= link_to "Maraudes - Demandes d'adhésion", admin_registration_requests_path %></li>
-            <li><%= link_to "Maraudes - Liste des associations", admin_organizations_path %></li>
-
             <li><%= link_to "Modération des photos de profils", moderate_admin_users_path %></li>
             <li><%= link_to "Demandes de changement de téléphone", admin_users_path(status: :pending) %></li>
             <% if EnvironmentHelper.staging? %>
@@ -67,10 +65,13 @@
           </ul>
         </li>
 
-        <li class="<%= :active if controller_name == 'entourages' %>">
-          <%= link_to "Actions", admin_entourages_path %>
+        <li class="<%= :active if controller_name == 'entourages' %> custom-nav-item">
+          <%= link_to "Actions et événements", admin_entourages_path(q: {
+            group_type_eq: 'action',
+            pin_eq: 'false',
+            }) %>
         </li>
-        <li class="<%= :active if controller_name == 'conversations' %>">
+        <li class="<%= :active if controller_name == 'conversations' %> custom-nav-item">
           <%
             unread_count = ConversationService.unread_count_for(current_admin)
           %>
@@ -81,12 +82,10 @@
             <% end %>
           <% end %>
         </li>
-        <li class="<%= :active if controller_name == 'users' %>">
+        <li class="<%= :active if controller_name == 'users' %> custom-nav-item">
           <%= link_to "Utilisateurs", admin_users_path %>
         </li>
-      </ul>
-      <ul class="nav navbar-nav navbar-right">
-        <li><%= link_to 'Déconnexion', session_path(current_user), method: :delete %></li>
+        <li class="custom-nav-item custom-nav-item-reversed"><%= link_to 'Déconnexion', session_path(current_user), method: :delete %></li>
       </ul>
     </div>
   </div>
