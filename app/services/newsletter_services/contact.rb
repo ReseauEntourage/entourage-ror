@@ -4,7 +4,7 @@ module NewsletterServices
 
     attr_reader :callback, :email, :zone, :status, :active
 
-    def initialize params:
+    def initialize params
       @callback = Callback.new
 
       @email = params[:email]
@@ -31,7 +31,7 @@ module NewsletterServices
         status: status,
         active: active
       )
-      newsletter_subscription.save!
+      newsletter_subscription.save
     end
 
     def create_or_update_in_mailjet

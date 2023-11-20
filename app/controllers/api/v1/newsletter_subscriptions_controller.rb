@@ -4,13 +4,13 @@ module Api
       skip_before_action :authenticate_user!
 
       def create
-        response = NewsletterServices::Contact.create(newsletter_subscription_params) do |on|
+        response = NewsletterServices::Contact.new(newsletter_subscription_params).create do |on|
           on.success do |newsletter_subscription|
-            render json: { message: "contact #{params[:email]} ajouté" }
+            render json: { message: "Contact #{newsletter_subscription_params[:email]} ajouté" }, status: 201
           end
 
           on.failure do |newsletter_subscription|
-            render json: { message: "Erreur lors de l'ajout de #{params[:email]}", status: 400 }
+            render json: { message: "Erreur lors de l'ajout de #{newsletter_subscription_params[:email]}" }, status: 400
           end
         end
       end
