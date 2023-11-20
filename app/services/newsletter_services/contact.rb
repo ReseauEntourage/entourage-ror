@@ -13,6 +13,14 @@ module NewsletterServices
       @active = params[:active]
     end
 
+    def show
+      yield callback if block_given?
+
+      return callback.on_failure.try(:call) unless contact = Mailjet::Contact.find(email)
+
+      callback.on_success.try(:call, contact.attributes)
+    end
+
     def create
       yield callback if block_given?
 
