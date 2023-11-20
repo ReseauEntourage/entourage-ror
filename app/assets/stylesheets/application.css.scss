@@ -19,13 +19,15 @@ $buttons-color: #ef662f;
 @import "bootstrap4-toggle.min";
 @import "select2";
 @import "select2-bootstrap";
-@import "test_sheet"
+@import "header";
+@import "components";
+@import 'layout';
 
 
 body.with-navbar { padding-top: $navbar-height; }
 .navbar-brand { padding: 5px; }
 h1, h2, h3, h4, h5, h6, body:not(.fix-legacy-layout) .navbar-nav, select, button {
-  font-family: 'Asap', sans-serif;
+  font-family: 'Asap', sans-serif !important;
 }
 body:not(.fix-legacy-layout) .navbar-nav {
   font-size: 15px;
@@ -70,7 +72,7 @@ li.user-card {
 }
 
 body.fix-legacy-layout {
-  margin-top: 70px;
+  margin-top: 100px;
 }
 
 .entourages.index .table {
