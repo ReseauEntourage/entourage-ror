@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_09_04_135500) do
+ActiveRecord::Schema.define(version: 2023_11_17_103301) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -131,18 +131,21 @@ ActiveRecord::Schema.define(version: 2023_09_04_135500) do
   create_table "conversation_message_broadcasts", id: :serial, force: :cascade do |t|
     t.string "area_old"
     t.text "content", null: false
-    t.string "goal", null: false
+    t.string "goal"
     t.string "title", null: false
     t.datetime "archived_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "status", default: "draft", null: false
     t.datetime "sent_at"
-    t.integer "sent_users_count"
+    t.integer "sent_recipients_count"
     t.string "area_type"
-    t.jsonb "areas", default: [], null: false
+    t.jsonb "areas", default: []
+    t.string "conversation_type", default: "Entourage"
+    t.json "conversation_ids", default: {}
     t.index ["area_old"], name: "index_conversation_message_broadcasts_on_area_old"
     t.index ["area_type"], name: "index_conversation_message_broadcasts_on_area_type"
+    t.index ["conversation_type"], name: "index_conversation_message_broadcasts_on_conversation_type"
     t.index ["goal"], name: "index_conversation_message_broadcasts_on_goal"
     t.index ["status"], name: "index_conversation_message_broadcasts_on_status"
   end
@@ -515,6 +518,7 @@ ActiveRecord::Schema.define(version: 2023_09_04_135500) do
     t.boolean "public", default: true
     t.string "uuid_v2", limit: 12, null: false
     t.string "country", default: "FR"
+    t.index "st_setsrid(st_makepoint(longitude, latitude), 4326)", name: "index_neighborhoods_on_coordinates", using: :gist
     t.index ["feed_updated_at"], name: "index_neighborhoods_on_feed_updated_at"
     t.index ["name"], name: "index_neighborhoods_on_name"
     t.index ["postal_code"], name: "index_neighborhoods_on_postal_code"
@@ -534,10 +538,13 @@ ActiveRecord::Schema.define(version: 2023_09_04_135500) do
   end
 
   create_table "newsletter_subscriptions", id: :serial, force: :cascade do |t|
-    t.string "email"
+    t.string "email", limit: 255
     t.boolean "active"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string "zone"
+    t.string "status"
+    t.index ["email"], name: "index_newsletter_subscriptions_on_email"
   end
 
   create_table "notification_permissions", force: :cascade do |t|
@@ -940,6 +947,23 @@ ActiveRecord::Schema.define(version: 2023_09_04_135500) do
     t.index ["user_id", "tour_id"], name: "index_tours_users_on_user_id_and_tour_id", unique: true
   end
 
+  create_table "translations", force: :cascade do |t|
+    t.integer "instance_id", null: false
+    t.string "instance_type", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.jsonb "fr", default: {}, null: false
+    t.jsonb "en", default: {}, null: false
+    t.jsonb "de", default: {}, null: false
+    t.jsonb "pl", default: {}, null: false
+    t.jsonb "ro", default: {}, null: false
+    t.jsonb "uk", default: {}, null: false
+    t.jsonb "ar", default: {}, null: false
+    t.string "from_lang", default: "fr", null: false
+    t.jsonb "es", default: {}, null: false
+    t.index ["instance_id", "instance_type"], name: "index_translations_on_instance_id_and_instance_type"
+  end
+
   create_table "user_applications", id: :serial, force: :cascade do |t|
     t.string "push_token", null: false
     t.string "device_os", null: false
@@ -1093,6 +1117,7 @@ ActiveRecord::Schema.define(version: 2023_09_04_135500) do
     t.string "birthday", limit: 5
     t.string "other_interest"
     t.json "options", default: {}
+    t.string "lang", default: "fr"
     t.index ["address_id"], name: "index_users_on_address_id"
     t.index ["email"], name: "index_users_on_email"
     t.index ["organization_id"], name: "index_users_on_organization_id"

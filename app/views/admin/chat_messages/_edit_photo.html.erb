@@ -1,0 +1,76 @@
+<% chat_message_name = "chat-message-image-#{chat_message.id}" %>
+<% iframe_name = "hidden-iframe-chat-message-image-#{chat_message.id}" %>
+<% upload_name = "upload-form-chat-message-image-#{chat_message.id}" %>
+
+<%= form_for(chat_message, target: iframe_name, url: "#", html: {
+  id: upload_name,
+  method: :post,
+  multipart: true,
+  target: iframe_name
+}) do |f| %>
+  <div class="form-group">
+    <input type="file" class="btn btn-default" name="file" accept="<%= form.content_types %>"/>
+  </div>
+  <input type="submit" value="Enregistrer" class="btn btn-success"/>
+  <%= link_to "Annuler la modification", cancel_update_photo_admin_chat_message_path(chat_message.id), class: "btn btn-default", remote: true %>
+  <%= link_to "Supprimer la photo", delete_photo_admin_chat_message_path(chat_message.id), class: "btn btn-default", method: :delete, remote: true %>
+<% end %>
+
+<iframe id="<%= iframe_name %>" name="<%= iframe_name %>" style="display: none;"></iframe>
+
+<script>
+  (function() {
+    var $form = $('#<%= upload_name %>'),
+        $iframe = $('#<%= iframe_name %>'),
+        $fileInput = $form.find('input[type=file]'),
+        $submit = $form.find('[type=submit]');
+
+    $form.find('input[name="authenticity_token"]').remove();
+    $form.find('input[name="utf8"]').remove();
+
+    // sends image to aws
+    $fileInput.on('change', function() {
+      var file = this.files[0],
+          $field = null;
+
+      // Check file size
+      if (file.size > 2 * 1024 * 1024) {
+        return alert("L'image ne peut excéder 2Mo");
+      }
+
+      // Upload
+      $submit.prop('disabled', true);
+
+      $.ajax(
+        '<%= new_admin_upload_path %>', {
+        data: {
+          uploader: '<%= form.name.underscore %>',
+          chat_message_id: '<%= chat_message.id %>',
+          redirect_url: '<%= redirect_url %>',
+          filetype: file.type
+        }
+      })
+      .done(function(data) {
+        $form.attr('action', data.url);
+
+        Object.keys(data.fields).forEach(function(key) {
+          $field = $form.find('input[name=' + key + ']');
+          if ($field.length === 0) {
+            $field = $('<input>', {name: key, type: 'hidden'})
+                     .insertBefore($fileInput); // 'file' must be the last field
+          }
+          $field.val(data.fields[key]);
+        });
+        $submit.prop('disabled', false);
+      });
+    });
+
+    $iframe.on('load', function() {
+      var preText = $iframe.contents().find("#<%= chat_message_name %>").html();
+
+      $("#<%= chat_message_name %>").html(preText);
+
+      $form.remove();
+    });
+  })();
+</script>

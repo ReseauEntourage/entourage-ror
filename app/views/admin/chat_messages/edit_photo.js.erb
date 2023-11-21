@@ -1,0 +1,9 @@
+$("#chat-message-image-<%= @chat_message.id %>").show().html("<%= j render(
+  partial: 'edit_photo',
+  locals: {
+    chat_message: @chat_message,
+    image: @chat_message.image_url,
+    form: ChatMessageUploader,
+    redirect_url: photo_upload_success_admin_chat_message_url,
+  }
+) %>");

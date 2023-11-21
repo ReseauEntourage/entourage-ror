@@ -1,0 +1,69 @@
+<div class="container">
+  <div style="width: 750px; margin: auto">
+    <h1>Diffusions de messages de groupes</h1>
+
+    <div style="margin-bottom: 15px; display: flex">
+      <div class="btn-group btn-group-sm">
+        <%= link_to("Envoyés", @params.merge(status: :sent), class: "btn btn-#{@status == :sent ? :primary : :default}") %>
+        <%= link_to("En cours d'envoi", @params.merge(status: :sending), class: "btn btn-#{@status == :sending ? :primary : :default}") %>
+        <%= link_to("Brouillons", @params.merge(status: :draft), class: "btn btn-#{@status == :draft ? :primary : :default}") %>
+        <%= link_to("Archivées", @params.merge(status: :archived), class: "btn btn-#{@status == :archived ? :primary : :default}") %>
+      </div>
+      <div style="margin-left: 15px">
+        <%= link_to("Nouvelle diffusion", new_admin_neighborhood_message_broadcast_path, class: "btn btn-default btn-sm") %>
+      </div>
+    </div>
+
+    <div class="row">
+      <% if @neighborhood_message_broadcasts.none? %>
+        Pas de diffusions.
+      <% else %>
+        <table class="table">
+          <th>Id</th>
+          <th>Titre</th>
+          <th>Archivé</th>
+          <th>Dernière mise à jour</th>
+          <% if @status == :sent %>
+            <th>Envoyés</th>
+          <% elsif @status == :sending %>
+            <th>Envoyés</th>
+            <th>En cours</th>
+          <% end %>
+          <th>Actions</th>
+          <% @neighborhood_message_broadcasts.each do |neighborhood_message_broadcast| %>
+            <tr>
+              <td><%= neighborhood_message_broadcast.id %></td>
+              <td><%= link_to neighborhood_message_broadcast.title, edit_admin_neighborhood_message_broadcast_path(neighborhood_message_broadcast) %></td>
+              <td><%= check_box_tag '', '', neighborhood_message_broadcast.archived?, disabled: true %></td>
+              <td><%= l(neighborhood_message_broadcast.updated_at, format: :short) if neighborhood_message_broadcast.updated_at %></td>
+              <% if @status == :sent %>
+                <td><%= neighborhood_message_broadcast.sent_recipients_count %></td>
+              <% elsif @status == :sending %>
+                <td><%= neighborhood_message_broadcast.sent_recipients_count %></td>
+                <td><%= NeighborhoodMessageBroadcast.pending_jobs[neighborhood_message_broadcast.id] %></td>
+              <% end %>
+              <td>
+                <% if @status == :draft %>
+                  <%= link_to "Modifier", edit_admin_neighborhood_message_broadcast_path(neighborhood_message_broadcast), class: "btn btn-primary" %>
+                <% elsif [:sent, :archived].include? @status %>
+                  <%= link_to "Dupliquer", clone_admin_neighborhood_message_broadcast_path(neighborhood_message_broadcast), method: :post, class: "btn btn-danger" %>
+                <% elsif @status == :sending %>
+                  <%= link_to "Stopper", kill_admin_neighborhood_message_broadcast_path(neighborhood_message_broadcast), method: :post, class: "btn btn-danger" %>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        </table>
+      <% end %>
+
+      <%= page_entries_info @neighborhood_message_broadcasts, entry_name: 'diffusions' %>
+      <div class="container">
+        <%= paginate(@neighborhood_message_broadcasts) %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%= form_tag reorder_admin_announcements_path, class: "hide", id: "reorder-form" do %>
+  <%= hidden_field_tag :ordered_ids %>
+<% end %>

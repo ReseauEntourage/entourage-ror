@@ -8,11 +8,15 @@ module Api
       after_action :set_last_message_read, only: [:show]
 
       def index
-        render json: OutingsServices::Finder.new(current_user, index_params).find_all.page(page).per(per), root: :outings, each_serializer: ::V1::OutingSerializer, scope: {
-          user: current_user,
-          latitude: latitude,
-          longitude: longitude
-        }
+        render json: OutingsServices::Finder.new(current_user, index_params)
+          .find_all
+          .includes(:translation, :user, :members, :interests, :recurrence)
+          .page(page)
+          .per(per), root: :outings, each_serializer: ::V1::OutingSerializer, scope: {
+            user: current_user,
+            latitude: latitude,
+            longitude: longitude
+          }
       end
 
       def create

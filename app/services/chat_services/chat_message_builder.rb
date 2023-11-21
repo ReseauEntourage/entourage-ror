@@ -42,7 +42,7 @@ module ChatServices
       if success
         message.check_spam!
 
-        join_request.update_column(:last_message_read, message.created_at) unless [Neighborhood, Outing].include?(joinable.class)
+        join_request.update_column(:last_message_read, message.created_at) unless [Neighborhood, Outing, NeighborhoodMessageBroadcast].include?(joinable.class)
 
         callback.on_success.try(:call, message)
       else

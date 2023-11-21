@@ -1,0 +1,103 @@
+---
+ar:
+  push_notifications:
+    action:
+      create_for_follower: "دعاك %s للانضمام إلى %s"
+    outing:
+      create: "تمت إضافة حدث جديد إلى %s: %s مقرر في %s"
+      cancel: "تم إلغاء هذا الحدث المقرر في %s"
+      update: "تم تعديل الحدث المقرر في %s. سيتم عقده في %s في %s"
+      update_short: "تم تعديل الحدث المقرر في %s"
+    post:
+      create: "%s قام بمشاركة: \"%s\""
+    comment:
+      create: "%s قام بالتعليق على المنشور %s"
+    join_request:
+      new: "عضو جديد"
+      update: "تم قبول الطلب"
+      update_on_action: "لقد انضممت لتنفيذ %s"
+      update_on_outing: "لقد انضممت لحدث تنظمه %s"
+      update_on_neighborhood: "لقد انضممت لمجموعة تتبع %s"
+      create: "%s انضم لـ %s %s"
+      create_outing: "%s انضم لحدثك %s في %s"
+    contribution:
+      create: "جار الجيران تقديم المساعدة الجديدة"
+    solicitation:
+      create: "جار الجيران يبحث عن مساعدة"
+      create_section: "جار الجيران يبحث عن %s"
+
+  timeliner:
+    h1:
+      title: "مرحبًا بك في إنتوراج 👌"
+      offer: "هل تعلم؟ يكفي فيديو واحد لتفكيك تحاملاتك!"
+      ask: "لا تستطيع تخيل ما يحتويه تطبيقك الجديد: تعال واكتشفه!"
+    j2:
+      title: "تعال وقل مرحبًا 👋"
+      offer: "مجموعتك من الجيران متحمسة للتعرف عليك!"
+      ask_title_outing: "هل لديك 4 دقائق؟"
+      ask: "شاهد فيديو قصير لفهم كل شيء عن تطبيقك الجديد"
+    j5:
+      title_outing: "مرحبًا، نحن هنا مرة أخرى! 🕺"
+      offer_outing: "الافتراضي لطيف لبضع دقائق، تعال وقم بإجراء اتصال في الواقع!"
+      title_action: "مرحبًا، نحن هنا مرة أخرى! 🕺"
+      offer_action: "هل لديك دقيقتين لمساعدة جيرانك؟"
+      title_create_action: "مرحبًا، نحن هنا مرة أخرى! 🕺"
+      offer_create_action: "خذ دقيقتين لتقديم مساعدتك لمن حولك"
+      ask_title: "تعال وقل مرحبًا 👏"
+      ask: "مجموعتك من الجيران متحمسة للتعرف عليك"
+    j8:
+      title: "إنه دورك الآن! 📱"
+      offer: "اختبار سريع ضد التحامل: نراهن على أنك ستتعلم شيئًا ما؟"
+      ask_title_outing: "مرحبًا، نحن هنا مرة أخرى! 🕺"
+      ask_outing: "الافتراضي لطيف لبضع دقائق، تعال وقم بإجراء اتصال في الواقع!"
+      ask_title_action: "مرحبًا، نحن هنا مرة أخرى! 🕺"
+      ask_action: "انظر إلى المساعدة المقدمة بالقرب منك."
+      ask_title_create_action: "مرحبًا، نحن هنا مرة أخرى! 🕺"
+      ask_create_action: "لعبة بول أو قهوة أو مجرد نزهة: اقترح نزهة لجيرانك!"
+    j11:
+      title: "إنتوراج هو مثل العائلة!"
+      offer: "يمكننا القول، أنت الآن جزء من مجتمع إنتوراج. هلنحتفل! 🎉"
+      ask: "يمكننا القول، أنت الآن جزء من مجتمع إنتوراج. هلنحتفل! 🎉"
+
+  pois:
+    soliguide:
+      public:
+        administrative: "[AR] - Accueil %s"
+        description: "[AR] - Autres informations importantes : %s"
+      accueil:
+        preferentiel: "[AR] - préférentiel"
+        exclusif: "[AR] - exclusif"
+        inconditionnel: "[AR] - inconditionnel"
+      age:
+        mineur: "[AR] - mineurs (-18 ans)"
+        adulte: "[AR] - adultes uniquement"
+        from: "[AR] - dès %s ans"
+        from_to: "[AR] - de %s à %s ans"
+      familiale:
+        isolated: "[AR] - Personne isolée"
+        family: "[AR] - Famille"
+        couple: "[AR] - Couple"
+        pregnant: "[AR] - Femme enceinte"
+      administrative:
+        default: "[AR] - personne %s"
+        regular: "[AR] - en situation régulière"
+        undocumented: "[AR] - sans papiers"
+        asylum: "[AR] - demandeurs d'asile"
+        refugee: "[AR] - réfugiés"
+      other:
+        violence: "[AR] - victime de violence"
+        addiction: "[AR] - en situation d'addiction"
+        handicap: "[AR] - en situation de handicap"
+        lgbt: "[AR] - appartenant aux communautés LGBT+"
+        hiv: "[AR] - porteuse du VIH"
+        prostitution: "[AR] - travailleur(euse) du sexe"
+        prison: "[AR] - sortant de prison"
+        student: "[AR] - étudiant(e)"
+      modalities:
+        inconditionnel: "[AR] - Accueil sans rendez-vous"
+        appointment: "[AR] - Sur rendez-vous (%s)"
+        inscription: "[AR] - Sur inscription (%s)"
+        orientation: "[AR] - Sur orientation (%s)"
+      animal:
+        unauthorized: "[AR] - Animaux non-autorisés"
+        authorized: "[AR] - Animaux autorisés"

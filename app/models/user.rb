@@ -423,6 +423,10 @@ class User < ApplicationRecord
     targeting_profile == 'ambassador'
   end
 
+  def ask_for_help?
+    goal.to_s == 'ask_for_help'
+  end
+
   def is_ask_for_help?
     (targeting_profile.blank? && goal.to_s == 'ask_for_help') || targeting_profile.to_s == 'asks_for_help'
   end
@@ -519,6 +523,14 @@ class User < ApplicationRecord
     save(validate: false)
 
     Address.where(user_id: id).delete_all
+  end
+
+  def default_lang?
+    lang == Translation::DEFAULT_LANG
+  end
+
+  def not_default_lang?
+    !default_lang?
   end
 
   def default_neighborhood

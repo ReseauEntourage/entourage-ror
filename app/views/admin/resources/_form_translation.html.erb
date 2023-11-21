@@ -1,0 +1,35 @@
+<style>
+  .field_with_errors { display: inline-block }
+</style>
+
+<%= render partial: 'common/errors', locals: { obj: @translation } %>
+
+<div style="margin-bottom: 15px; display: flex">
+  <div class="btn-group btn-group-sm">
+    <%= link_to("Page principale", edit_admin_resource_path(@resource), class: "btn btn-default") %>
+
+    <% Translation::LANGUAGES.each do |language| %>
+      <%= link_to(language, { language: language }, class: "btn btn-#{ @language == language ? :primary : :default }") %>
+    <% end %>
+  </div>
+</div>
+
+<%= form_for @translation, url: update_translation_admin_resource_path(@resource), html: { role: "form" }, method: :post do |f| %>
+  <div class="form-group">
+    <%= f.label "#{@language}[name]" %>
+    <div class="controls">
+      <%= text_field_tag "translation[#{@language}][name]", @translation.with_lang(@language).name, class: "form-control" %>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <%= f.label "#{@language}[description]" %>
+    <div class="controls">
+      <%= text_area_tag "translation[#{@language}][description]", @translation.with_lang(@language).description, rows: 10, :class => "form-control tinymce" %>
+    </div>
+  </div>
+
+  <%= f.submit "Mettre à jour", class: "btn btn-default btn-sm" %>
+<% end %>
+
+<%= tinymce %>

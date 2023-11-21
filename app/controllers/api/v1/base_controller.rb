@@ -14,7 +14,7 @@ module Api
 
       after_action :set_completed_route, only: [:index, :show, :create], if: -> { current_user.present? }
 
-      skip_before_action :authenticate_user!, only: [:ping, :ping_db, :ping_mq]
+      skip_before_action :authenticate_user!, only: [:ping, :ping_db, :ping_mq, :ping_op_lapin]
       before_action :authenticate_user_or_anonymous!, only: [:ping, :ping_db, :ping_mq]
 
       rescue_from ApiRequest::Unauthorised do |e|
@@ -124,6 +124,12 @@ module Api
         redis_info = Sidekiq.redis { |conn| conn.info }
 
         render json: { status: :ok, count: redis_info['connected_clients'] }
+      end
+
+      def ping_op_lapin
+        from_date = ENV['OP_LAPIN_FROM_DATE'] || '2021-09-20'
+
+        render json: { status: :ok, count: User.where("created_at > ?", from_date).count }
       end
 
       def api_request

@@ -71,11 +71,11 @@ module Admin
     end
 
     def filter_params
-      params.permit([q: [:name_or_adress_cont, :postal_code_start, :postal_code_in_hors_zone]]).to_h
+      params.permit([q: [:name_or_adress_cont, :postal_code_start, :postal_code_in_hors_zone, :source_eq, :validated_eq]]).to_h
     end
 
     def ransack_params
-      params.permit([q: [:name_or_adress_cont]]).to_h
+      params.permit([q: [:name_or_adress_cont, :source_eq, :validated_eq]]).to_h
     end
 
     def filtered_pois

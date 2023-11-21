@@ -85,7 +85,8 @@ module V1
         avatar_url: UserServices::Avatar.new(user: user).thumbnail_url,
         partner: partner.nil? ? nil : V1::PartnerSerializer.new(partner, scope: { minimal: true }, root: false).as_json,
         partner_role_title: user.partner_role_title.presence,
-        roles: UserPresenter.new(user: user).public_targeting_profiles
+        roles: UserPresenter.new(user: user).public_targeting_profiles,
+        moderator: user.admin?,
       }
     end
 

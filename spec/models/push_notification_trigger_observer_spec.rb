@@ -112,8 +112,8 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
                 instance: entourage.reload,
                 users: [participant],
                 params: {
-                  object: "foo",
-                  content: "L'événement prévu le #{I18n.l(entourage.starts_at.to_date)} a été modifié",
+                  object: PushNotificationTrigger::I18nStruct.new(instance: kind_of(Entourage), field: :title),
+                  content: PushNotificationTrigger::I18nStruct.new(i18n: 'push_notifications.outing.update_short', i18n_args: I18n.l(entourage.starts_at.to_date)),
                   extra: {
                     tracking: :outing_on_update
                   }
@@ -135,8 +135,8 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
                 instance: entourage.reload,
                 users: [participant],
                 params: {
-                  object: "Café",
-                  content: "L'événement prévu le #{I18n.l(Time.now.to_date)} a été modifié. Il se déroulera le #{I18n.l(90.minutes.from_now.to_date)}, au #{entourage.metadata[:display_address]}",
+                  object: PushNotificationTrigger::I18nStruct.new(instance: kind_of(Entourage), field: :title),
+                  content: PushNotificationTrigger::I18nStruct.new(i18n: 'push_notifications.outing.update', i18n_args: [I18n.l(Time.now.to_date), I18n.l(90.minutes.from_now.to_date), entourage.metadata[:display_address]]),
                   extra: {
                     tracking: :outing_on_update
                   }
@@ -155,8 +155,8 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
                 instance: entourage.reload,
                 users: [participant],
                 params: {
-                  object: "Café",
-                  content: "Cet événement prévu le #{I18n.l(entourage.starts_at.to_date)} vient d'être annulé",
+                  object: PushNotificationTrigger::I18nStruct.new(instance: kind_of(Entourage), field: :title),
+                  content: PushNotificationTrigger::I18nStruct.new(i18n: 'push_notifications.outing.cancel', i18n_args: I18n.l(entourage.starts_at.to_date)),
                   extra: {
                     tracking: :outing_on_cancel
                   }
@@ -178,8 +178,8 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
                 instance: entourage.reload,
                 users: [participant],
                 params: {
-                  object: "Café",
-                  content: "Cet événement prévu le #{I18n.l(entourage.starts_at.to_date)} vient d'être annulé",
+                  object: PushNotificationTrigger::I18nStruct.new(instance: kind_of(Entourage), field: :title),
+                  content: PushNotificationTrigger::I18nStruct.new(i18n: 'push_notifications.outing.cancel', i18n_args: I18n.l(entourage.starts_at.to_date)),
                   extra: {
                     tracking: :outing_on_cancel
                   }
@@ -333,11 +333,11 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
     end
 
     context "broadcast chat_message" do
-      let!(:broadcast) { FactoryBot.create(:conversation_message_broadcast) }
+      let!(:broadcast) { FactoryBot.create(:user_message_broadcast) }
 
       after { create :chat_message, user: user, message_type: :broadcast, metadata: { conversation_message_broadcast_id: broadcast.id } }
 
-      include_examples :call_chat_message_on_create
+      include_examples :no_call_chat_message_on_create
     end
 
     context "status chat_message" do
@@ -367,8 +367,8 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
             instance: an_instance_of(ChatMessage),
             users: [user_paris],
             params: {
-              object: "John D. - #{contribution.title}",
-              content: "foo",
+              object: PushNotificationTrigger::I18nStruct.new(text: "John D. - #{contribution.title}"),
+              content: PushNotificationTrigger::I18nStruct.new(instance: kind_of(ChatMessage), field: :content),
               extra: {
                 tracking: :public_chat_message_on_create,
                 group_type: "action",
@@ -398,11 +398,11 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
     end
 
     context "comment with no notification" do
-      let(:chat_message) { create :chat_message, messageable: neighborhood, user: user, message_type: :text }
-      let!(:comment) { create :chat_message, messageable: neighborhood, parent: chat_message, user: user, message_type: :text }
+      let(:publication) { create :chat_message, messageable: neighborhood, user: user, message_type: :text }
+      let!(:comment) { create :chat_message, messageable: neighborhood, parent: publication, user: user, message_type: :text }
 
       context "sender is publisher" do
-        after { create :chat_message, messageable: neighborhood, user: user, message_type: :text, parent: chat_message }
+        after { create :chat_message, messageable: neighborhood, user: user, message_type: :text, parent: publication }
 
         include_examples :no_call_notify
       end
@@ -412,21 +412,21 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
       let(:john) { create :public_user, first_name: "John", last_name: "Doe" }
       let(:jane) { create :public_user, first_name: "Jane", last_name: "Doe" }
 
-      let(:chat_message) { create :chat_message, messageable: neighborhood, user: user, message_type: :text }
-      let!(:comment_1) { create :chat_message, messageable: neighborhood, parent: chat_message, user: user, message_type: :text }
-      let!(:comment_2) { create :chat_message, messageable: neighborhood, parent: chat_message, user: john, message_type: :text }
-      let!(:comment_3) { create :chat_message, messageable: neighborhood, parent: chat_message, user: john, message_type: :text }
-      let!(:comment_4) { create :chat_message, messageable: neighborhood, parent: chat_message, user: jane, message_type: :text }
+      let(:publication) { create :chat_message, messageable: neighborhood, user: user, message_type: :text }
+      let!(:comment_1) { create :chat_message, messageable: neighborhood, parent: publication, user: user, message_type: :text }
+      let!(:comment_2) { create :chat_message, messageable: neighborhood, parent: publication, user: john, message_type: :text }
+      let!(:comment_3) { create :chat_message, messageable: neighborhood, parent: publication, user: john, message_type: :text }
+      let!(:comment_4) { create :chat_message, messageable: neighborhood, parent: publication, user: jane, message_type: :text }
 
       context "sender" do
-        after { create :chat_message, messageable: neighborhood, user: user, message_type: :text, parent: chat_message }
+        after { create :chat_message, messageable: neighborhood, user: user, message_type: :text, parent: publication }
 
         include_examples :no_call_post_on_create
         include_examples :call_comment_on_create
       end
 
       context "sender is publisher" do
-        after { create :chat_message, messageable: neighborhood, user: user, message_type: :text, parent: chat_message }
+        after { create :chat_message, messageable: neighborhood, user: user, message_type: :text, parent: publication }
 
         include_examples :call_notify
 
@@ -434,11 +434,11 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
           expect_any_instance_of(PushNotificationTrigger).to receive(:notify).with(
             sender_id: user.id,
             referent: neighborhood,
-            instance: chat_message,
+            instance: publication,
             users: [john, jane],
             params: {
-              object: neighborhood.title,
-              content: "John D. vient de commenter la publication \"#{chat_message.content}\"",
+              object: PushNotificationTrigger::I18nStruct.new(instance: neighborhood, field: :title),
+              content: PushNotificationTrigger::I18nStruct.new(i18n: 'push_notifications.comment.create', i18n_args: publication.content),
               extra: {
                 tracking: :comment_on_create_to_neighborhood
               }
@@ -448,7 +448,7 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
       end
 
       context "sender is commentator" do
-        after { create :chat_message, messageable: neighborhood, user: john, message_type: :text, parent: chat_message }
+        after { create :chat_message, messageable: neighborhood, user: john, message_type: :text, parent: publication }
 
         include_examples :call_notify
 
@@ -456,11 +456,11 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
           expect_any_instance_of(PushNotificationTrigger).to receive(:notify).with(
             sender_id: john.id,
             referent: neighborhood,
-            instance: chat_message,
+            instance: publication,
             users: [user, jane],
             params: {
-              object: neighborhood.title,
-              content: "John D. vient de commenter la publication \"#{chat_message.content}\"",
+              object: PushNotificationTrigger::I18nStruct.new(instance: neighborhood, field: :title),
+              content: PushNotificationTrigger::I18nStruct.new(i18n: 'push_notifications.comment.create', i18n_args: publication.content),
               extra: {
                 tracking: :comment_on_create_to_neighborhood
               }
@@ -473,6 +473,7 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
     describe "text chat_message" do
       let(:conversation) { ConversationService.build_conversation(participant_ids: [user.id, participant.id]) }
       let(:chat_message) { build(:chat_message, messageable: conversation, user: user, message_type: :text, content: "foobar") }
+      let(:translation) { build :translation, instance: chat_message }
 
       context "conversation creation does not push any notification" do
         after {
@@ -491,7 +492,7 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
           conversation.save
         }
 
-        after { chat_message.save }
+        after { translation.save }
 
         it {
           expect_any_instance_of(PushNotificationTrigger).to receive(:notify).with(
@@ -500,8 +501,8 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
             instance: conversation,
             users: [participant],
             params: {
-              object: "John D.",
-              content: "foobar",
+              object: PushNotificationTrigger::I18nStruct.new(text: "John D."),
+              content: PushNotificationTrigger::I18nStruct.new(instance: chat_message, field: :content),
               extra: {
                 tracking: :private_chat_message_on_create,
                 group_type: "conversation",
@@ -658,7 +659,7 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
     describe "notify is received" do
       describe "outing" do
         let(:neighborhood) { create(:neighborhood) }
-        let(:outing) { create :outing, user: user }
+        let(:outing) { create :outing, user: user, status: :open }
         let(:moderation) { outing.set_moderation_dates_and_save }
 
         after { moderation }
@@ -671,6 +672,21 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
           let(:outing) { create :outing, user: user, neighborhoods: [neighborhood] }
 
           include_examples :call_notify
+        end
+
+        context "with neighborhood and as first occurrence" do
+          let(:outing) { create :outing, user: user, neighborhoods: [neighborhood], recurrency_identifier: "abc" }
+          let!(:outing_recurrence) { create(:outing_recurrence, identifier: "abc") }
+
+          include_examples :call_notify
+        end
+
+        context "with neighborhood and as second occurrence" do
+          let!(:outing_recurrence) { create(:outing_recurrence, identifier: "abc") }
+          let!(:outing_0) { create :outing, title: "outing_0", user: user, neighborhoods: [neighborhood], recurrency_identifier: "abc", metadata: { starts_at: 2.minutes.ago } }
+          let(:outing) { create :outing, title: "outing", user: user, neighborhoods: [neighborhood], recurrency_identifier: "abc", metadata: { starts_at: 1.minute.ago } }
+
+          include_examples :no_call_notify
         end
       end
 
@@ -740,8 +756,8 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
           instance: participant,
           users: [outing.user],
           params: {
-            object: "Nouveau membre",
-            content: "Jane D. vient de rejoindre votre événement \"Café\" du #{I18n.l(outing.starts_at.to_date)}",
+            object: PushNotificationTrigger::I18nStruct.new(i18n: 'push_notifications.join_request.new'),
+            content: PushNotificationTrigger::I18nStruct.new(i18n: 'push_notifications.outing.create', i18n_args: I18n.l(outing.starts_at.to_date)),
             extra: {
               tracking: :join_request_on_create_to_outing,
               joinable_id: outing.id,
@@ -786,19 +802,19 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
     context "on solicitation" do
       let(:record) { create :solicitation }
 
-      it { expect(subject).to eq(PushNotificationTrigger::CREATE_SOLICITATION % nil) }
+      it { expect(subject).to eq(PushNotificationTrigger::I18nStruct.new(i18n: 'push_notifications.solicitation.create', i18n_args: nil)) }
     end
 
     context "on clothes solicitation" do
       let(:record) { create :solicitation, section: :clothes }
 
-      it { expect(subject).to eq(PushNotificationTrigger::CREATE_SOLICITATION_SECTION % "vêtement") }
+      it { expect(subject).to eq(PushNotificationTrigger::I18nStruct.new(i18n: 'push_notifications.solicitation.create_section', i18n_args: "vêtement")) }
     end
 
     context "on contribution" do
       let(:record) { create :contribution }
 
-      it { expect(subject).to eq(PushNotificationTrigger::CREATE_CONTRIBUTION) }
+      it { expect(subject).to eq(PushNotificationTrigger::I18nStruct.new(i18n: 'push_notifications.contribution.create')) }
     end
   end
 end

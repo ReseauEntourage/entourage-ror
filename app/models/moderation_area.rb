@@ -3,6 +3,8 @@ class ModerationArea < ApplicationRecord
 
   belongs_to :moderator, class_name: :User
 
+  scope :no_hz, -> { where.not(departement: "*") }
+
   HORS_ZONE = "*"
 
   def departement_slug

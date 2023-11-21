@@ -1,5 +1,15 @@
 <h4>Liste des événements récurrents <span class="badge"><%= @siblings.count %><span></h4>
 
+<% if @outing.recurrence %>
+  <%= link_to("Arrêter les récurrences", stop_recurrences_admin_entourage_path(@outing), method: :post, class: "btn btn-primary", data: { confirm: "Cette action est irréversible. Êtes-vous sûr d'arrêter la récurrence de cet événement ?" }) %>
+<% else %>
+  <div class="alert alert-info" role="alert" style="display: flex; align-items: center">
+    <div style="flex-grow: 1">
+      Cet événement n'a pas de récurrence active
+    </div>
+  </div>
+<% end %>
+
 <table id="siblings-list" class="table table-striped">
   <% if @siblings.any? %>
     <thead>

@@ -7,7 +7,9 @@ module V1
                :uuid_v2,
                :status,
                :title,
+               :title_translations,
                :description,
+               :description_translations,
                :share_url,
                :image_url,
                :event_url,
@@ -26,6 +28,22 @@ module V1
 
     has_many :members, serializer: ::V1::Users::BasicSerializer
     has_one :location
+
+    def title
+      I18nSerializer.new(object, :title, lang).translation
+    end
+
+    def title_translations
+      I18nSerializer.new(object, :title, lang).translations
+    end
+
+    def description
+      I18nSerializer.new(object, :description, lang).translation
+    end
+
+    def description_translations
+      I18nSerializer.new(object, :description, lang).translations
+    end
 
     def uuid
       object.uuid_v2
@@ -73,6 +91,14 @@ module V1
       return unless object.recurrence.present?
 
       object.recurrence.recurrency
+    end
+
+    private
+
+    def lang
+      return unless scope && scope[:user] && scope[:user].lang
+
+      scope[:user].lang
     end
   end
 end

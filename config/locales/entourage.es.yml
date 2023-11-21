@@ -1,0 +1,103 @@
+---
+es:
+  push_notifications:
+    action:
+      create_for_follower: "%s te invita a unirte a %s"
+    outing:
+      create: "Se ha añadido un nuevo evento a %s: %s programado para el %s"
+      cancel: "Este evento programado para el %s ha sido cancelado"
+      update: "El evento programado para el %s ha sido modificado. Tendrá lugar el %s a las %s"
+      update_short: "El evento programado para el %s ha sido modificado"
+    post:
+      create: "%s acaba de compartir: \"%s\""
+    comment:
+      create: "%s acaba de comentar la publicación \"%s\""
+    join_request:
+      new: "Nuevo miembro"
+      update: "Solicitud aceptada"
+      update_on_action: "Acabas de unirte a una acción de %s"
+      update_on_outing: "Acabas de unirte a un evento de %s"
+      update_on_neighborhood: "Acabas de unirte a un grupo de %s"
+      create: "%s acaba de unirse a tu %s \"%s\""
+      create_outing: "%s acaba de unirse a tu evento \"%s\" del %s"
+    contribution:
+      create: "Un vecino ofrece nueva ayuda"
+    solicitation:
+      create: "Un vecino busca ayuda"
+      create_section: "Un vecino busca un %s"
+
+  timeliner:
+    h1:
+      title: "¡Bienvenido a Entourage 👌"
+      offer: "¿Sabías que solo se necesita un video para romper tus prejuicios?"
+      ask: "¡No puedes imaginar todo lo que contiene tu nueva aplicación: ven a descubrirla!"
+    j2:
+      title: "Ven a saludar 👋"
+      offer: "¡Tu grupo de vecinos está deseando conocerte!"
+      ask_title_outing: "¿Tienes 4 minutos?"
+      ask: "Mira un video corto para entender todo sobre tu nueva aplicación"
+    j5:
+      title_outing: "¡Hola, somos nosotros de nuevo! 🕺"
+      offer_outing: "Lo virtual es agradable durante un par de minutos; ¡ven y haz una conexión en la vida real!"
+      title_action: "¡Hola, somos nosotros de nuevo! 🕺"
+      offer_action: "¿Tienes dos minutos para ayudar a tus vecinos?"
+      title_create_action: "¡Hola, somos nosotros de nuevo! 🕺"
+      offer_create_action: "Tómate dos minutos para ofrecer tu ayuda a quienes te rodean"
+      ask_title: "Ven a saludar 👏"
+      ask: "Tu grupo de vecinos está deseando conocerte"
+    j8:
+      title: "¡Es tu turno! 📱"
+      offer: "Un pequeño cuestionario contra los prejuicios: ¿apostamos a que aprenderás algo?"
+      ask_title_outing: "¡Hola, somos nosotros de nuevo! 🕺"
+      ask_outing: "Lo virtual es agradable durante un par de minutos; ¡ven y haz una conexión en la vida real!"
+      ask_title_action: "¡Hola, somos nosotros de nuevo! 🕺"
+      ask_action: "Echa un vistazo a la ayuda ofrecida cerca de ti."
+      ask_title_create_action: "¡Hola, somos nosotros de nuevo! 🕺"
+      ask_create_action: "Una partida de petanca, un café o simplemente un paseo: ¡sugiere una salida a tus vecinos!"
+    j11:
+      title: "¡Entourage es familia!"
+      offer: "¡Podemos decirlo, ahora eres parte de la comunidad de Entourage. ¡Vamos a celebrarlo! 🎉"
+      ask: "¡Podemos decirlo, ahora eres parte de la comunidad de Entourage. ¡Vamos a celebrarlo! 🎉"
+
+  pois:
+    soliguide:
+      public:
+        administrative: "[ES] - Accueil %s"
+        description: "[ES] - Autres informations importantes : %s"
+      accueil:
+        preferentiel: "[ES] - préférentiel"
+        exclusif: "[ES] - exclusif"
+        inconditionnel: "[ES] - inconditionnel"
+      age:
+        mineur: "[ES] - mineurs (-18 ans)"
+        adulte: "[ES] - adultes uniquement"
+        from: "[ES] - dès %s ans"
+        from_to: "[ES] - de %s à %s ans"
+      familiale:
+        isolated: "[ES] - Personne isolée"
+        family: "[ES] - Famille"
+        couple: "[ES] - Couple"
+        pregnant: "[ES] - Femme enceinte"
+      administrative:
+        default: "[ES] - personne %s"
+        regular: "[ES] - en situation régulière"
+        undocumented: "[ES] - sans papiers"
+        asylum: "[ES] - demandeurs d'asile"
+        refugee: "[ES] - réfugiés"
+      other:
+        violence: "[ES] - victime de violence"
+        addiction: "[ES] - en situation d'addiction"
+        handicap: "[ES] - en situation de handicap"
+        lgbt: "[ES] - appartenant aux communautés LGBT+"
+        hiv: "[ES] - porteuse du VIH"
+        prostitution: "[ES] - travailleur(euse) du sexe"
+        prison: "[ES] - sortant de prison"
+        student: "[ES] - étudiant(e)"
+      modalities:
+        inconditionnel: "[ES] - Accueil sans rendez-vous"
+        appointment: "[ES] - Sur rendez-vous (%s)"
+        inscription: "[ES] - Sur inscription (%s)"
+        orientation: "[ES] - Sur orientation (%s)"
+      animal:
+        unauthorized: "[ES] - Animaux non-autorisés"
+        authorized: "[ES] - Animaux autorisés"

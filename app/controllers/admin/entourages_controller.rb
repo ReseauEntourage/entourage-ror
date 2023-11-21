@@ -1,5 +1,7 @@
 module Admin
   class EntouragesController < Admin::BaseController
+    EXPORT_PERIOD = 1.month
+
     before_action :set_entourage, only: [:show, :edit, :update, :close, :renew, :cancellation, :cancel, :edit_image, :update_image, :moderator_read, :moderator_unread, :message, :show_members, :show_joins, :show_invitations, :show_messages, :show_comments, :show_neighborhoods, :show_siblings, :sensitive_words, :sensitive_words_check, :edit_type, :edit_owner, :update_owner, :admin_pin, :admin_unpin, :pin, :unpin, :update_neighborhoods]
     before_action :set_forced_join_request, only: [:message]
 
@@ -9,20 +11,7 @@ module Admin
     def index
       per_page = params[:per] || 50
 
-      # workaround for the 'null' option
-      if params.dig(:q, :display_category_eq) == EntouragesHelper::NO_CATEGORY
-        ransack_params = params[:q].dup
-        ransack_params.delete(:display_category_eq)
-        ransack_params.merge!(display_category_null: 1)
-      else
-        ransack_params = params[:q]
-      end
-
-      group_types = (params[:group_type] || 'action,outing').split(',')
-
-      @q = Entourage.where(group_type: group_types).with_moderation
-        .moderator_search(params[:moderator_id])
-        .ransack(ransack_params)
+      @q = filtered_entourages
 
       @entourages = @q.result.page(params[:page]).per(per_page)
         .with_moderator_reads_for(user: current_user)
@@ -171,18 +160,41 @@ module Admin
       @outing = Outing.find(@entourage.id)
       @neighborhoods = @outing.neighborhoods.includes([:user])
 
-      @params = params.permit([:area, :search]).to_h
-      @area = params[:area].presence&.to_sym ||
-        OutingsServices::Helper.new(@outing).neighborhoods_main_departement_slug ||
-        :dep_75
-
       render :show
     end
 
     def show_siblings
-      @siblings = Outing.find(params[:id]).siblings
+      @outing = Outing.find(params[:id])
+      @siblings = @outing.siblings
 
       render :show
+    end
+
+    def download_list_export
+      entourage_ids = filtered_entourages.result.where(%((
+        (group_type = 'outing' and metadata->>'starts_at' >= :starts_after) or
+        (group_type = 'action' and created_at >= :created_after)
+      )), {
+        starts_after: EXPORT_PERIOD.ago,
+        created_after: EXPORT_PERIOD.ago,
+      }).pluck(:id).compact.uniq
+
+      MemberMailer.entourages_csv_export(entourage_ids, current_user.email).deliver_later
+
+      redirect_to admin_entourages_url(params: filter_params), flash: { success: "Vous recevrez l'export par mail (actions créées depuis moins d'un mois ou événements ayant eu lieu il y a moins d'un mois)" }
+    end
+
+    def stop_recurrences
+      @outing = Outing.find(params[:id])
+      @recurrence = @outing.recurrence
+
+      return redirect_to show_siblings_admin_entourage_path(@outing), alert: "La récurrence n'a pas pu être identifiée" unless @recurrence
+
+      if @recurrence.update_attribute(:continue, false)
+        redirect_to show_siblings_admin_entourage_path(@outing), notice: "La récurrence a été annulée"
+      else
+        redirect_to show_siblings_admin_entourage_path(@outing), alert: "La récurrence n'a pas pu être annulée : #{@outing.errors.full_messages.to_sentence}"
+      end
     end
 
     def moderator_read
@@ -406,7 +418,7 @@ module Admin
 
       ChatServices::Deleter.new(user: current_user, chat_message: @chat_message).delete(true) do |on|
         redirection = if @chat_message.has_parent?
-          show_comments_admin_entourage_path(@chat_message.messageable, post_id: @chat_message.parent_id)
+          show_comments_admin_entourage_path(@chat_message.messageable_id, message_id: @chat_message.parent_id)
         else
           show_messages_admin_entourage_path(@chat_message.messageable)
         end
@@ -545,6 +557,27 @@ module Admin
 
     def outing_neighborhoods_param
       params.require(:outing).permit(neighborhood_ids: [])
+    end
+
+    def filter_params
+      params.permit(:search, :moderator_id, :group_type, q: {})
+    end
+
+    def filtered_entourages
+      # workaround for the 'null' option
+      if params.dig(:q, :display_category_eq) == EntouragesHelper::NO_CATEGORY
+        ransack_params = params[:q].dup
+        ransack_params.delete(:display_category_eq)
+        ransack_params.merge!(display_category_null: 1)
+      else
+        ransack_params = params[:q]
+      end
+
+      group_types = (params[:group_type] || 'action,outing').split(',')
+
+      Entourage.where(group_type: group_types).like(params[:search]).with_moderation
+        .moderator_search(params[:moderator_id])
+        .ransack(ransack_params)
     end
   end
 end

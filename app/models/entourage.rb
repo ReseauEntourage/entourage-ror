@@ -12,6 +12,7 @@ class Entourage < ApplicationRecord
   include JoinableScopable
   include ModeratorReadable
   include Deeplinkable
+  include Translatable
 
   after_validation :track_status_change
 
@@ -118,8 +119,6 @@ class Entourage < ApplicationRecord
   before_validation :set_default_online_attributes, if: :online_changed?
 
   after_create :check_moderation
-
-  after_update :create_chat_message_on_status_update, if: :saved_change_to_status?
 
   def create_from_join_requests!
     ApplicationRecord.connection.transaction do
@@ -376,6 +375,14 @@ class Entourage < ApplicationRecord
     outing? && recurrency_identifier.present?
   end
 
+  def first_occurrence?
+    return true unless recurrent?
+    return true unless recurrence = OutingRecurrence.find_by_identifier(recurrency_identifier)
+    return true unless first_outing = recurrence.first_outing
+
+    first_outing.id == self.id
+  end
+
   def contribution?
     entourage_type && entourage_type.to_sym == :contribution
   end
@@ -467,39 +474,6 @@ class Entourage < ApplicationRecord
   def check_moderation
     return unless description.present?
     ping_slack if is_description_unacceptable?
-  end
-
-  def create_chat_message_on_status_update
-    return unless saved_change_to_status?
-    return unless status.in?(['closed', 'open'])
-
-    outcome = if status == 'closed' && moderation&.saved_change_to_action_outcome?
-      {
-        'Oui' => true,
-        'Non' => false,
-      }[moderation.action_outcome]
-    else
-      nil
-    end
-
-    chat_message_status = status
-    content = nil
-
-    if @user_status.present? && status == 'closed'
-      chat_message_status = "user_#{@user_status}"
-      content = I18n.t('community.chat_messages.status_update.closed_user')
-    end
-
-    ChatMessage.create(
-      messageable: self,
-      user_id: user_id,
-      content: content,
-      message_type: :status_update,
-      metadata: {
-        status: chat_message_status,
-        outcome_success: outcome
-      }
-    )
   end
 
   def is_description_unacceptable?

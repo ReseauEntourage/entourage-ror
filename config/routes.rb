@@ -43,6 +43,16 @@ Rails.application.routes.draw do
         end
       end
 
+      resources :chat_messages, only: [:show, :update] do
+        member do
+          get :cancel_update
+          get '/edit/photo', action: :edit_photo
+          get '/cancel_update/photo', action: :cancel_update_photo
+          delete '/delete/photo', action: :delete_photo
+          get '/photo_upload_success', action: :photo_upload_success
+        end
+      end
+
       resources :entourage_images do
         member do
           get '/edit/landscape', action: :edit_landscape
@@ -127,6 +137,7 @@ Rails.application.routes.draw do
           get :show_neighborhoods
           get 'comments/:message_id' => :show_comments, as: :show_comments
           get :show_siblings
+          post :stop_recurrences
           get :sensitive_words
           post :sensitive_words_check
           get :edit_type
@@ -145,10 +156,14 @@ Rails.application.routes.draw do
           put '/update/image', action: :update_image
           put :update_neighborhoods
         end
+
         collection do
+          get :download_list_export
           post :destroy_message
+          delete :destroy_message
         end
       end
+
       resources :entourage_moderations, only: [:create]
       resources :sensitive_words, only: [:show, :destroy]
       resources :conversations, only: [:index, :show] do
@@ -255,6 +270,8 @@ Rails.application.routes.draw do
 
     resources :resources do
       member do
+        get :edit_translation
+        post :update_translation
         get '/edit/image', action: :edit_image
         put '/update/image', action: :update_image
       end
@@ -268,8 +285,16 @@ Rails.application.routes.draw do
     resources :entourage_invitations, only: [:index]
     resources :entourages, only: [:index, :show, :edit, :update]
     resources :join_requests, only: [:create]
-    resources :conversation_message_broadcasts do
+    resources :user_message_broadcasts do
       member do
+        post 'broadcast'
+        post 'clone'
+        post 'kill'
+      end
+    end
+    resources :neighborhood_message_broadcasts do
+      member do
+        put :update_neighborhoods
         post 'broadcast'
         post 'clone'
         post 'kill'
@@ -308,6 +333,13 @@ Rails.application.routes.draw do
         end
       end
 
+      resources :notifications do
+        collection do
+          put :welcome
+          put :at_day
+        end
+      end
+
       resources :notification_permissions, only: [:index, :create]
 
       resources :feeds, only: [:index] do
@@ -333,7 +365,7 @@ Rails.application.routes.draw do
       resources :registration_requests, only: [:create]
       resources :map, only: [:index]
       resources :contact_subscriptions, only: [:create]
-      resources :newsletter_subscriptions, only: [:create]
+      resources :newsletter_subscriptions, only: [:show, :create], param: :email
       resources :questions, only: [:index]
 
       resources :tour_areas, only: [:index, :show] do
@@ -569,6 +601,7 @@ Rails.application.routes.draw do
       get 'ping' => 'base#ping'
       get 'ping_db' => 'base#ping_db'
       get 'ping_mq' => 'base#ping_mq'
+      get 'ping_op_lapin' => 'base#ping_op_lapin'
       get 'organization_admin_redirect' => 'users#organization_admin_redirect'
 
       namespace :public do

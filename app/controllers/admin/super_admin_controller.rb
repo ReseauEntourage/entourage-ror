@@ -52,7 +52,7 @@ module Admin
     end
 
     def soliguide_show
-      @poi = PoiServices::SoliguideShow.get(params[:id][1..])
+      @poi = PoiServices::SoliguideShow.get(params[:id][1..], current_user.lang)
     end
 
     def jobs_crons

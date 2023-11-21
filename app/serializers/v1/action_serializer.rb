@@ -8,7 +8,9 @@ module V1
                :status,
                :section,
                :title,
+               :title_translations,
                :description,
+               :description_translations,
                :image_url,
                :action_type,
                :author,
@@ -22,6 +24,22 @@ module V1
 
     has_many :members, serializer: ::V1::Users::BasicSerializer
     has_one :location
+
+    def title
+      I18nSerializer.new(object, :title, lang).translation
+    end
+
+    def title_translations
+      I18nSerializer.new(object, :title, lang).translations
+    end
+
+    def description
+      I18nSerializer.new(object, :description, lang).translation
+    end
+
+    def description_translations
+      I18nSerializer.new(object, :description, lang).translations
+    end
 
     def uuid
       object.uuid_v2
@@ -61,6 +79,14 @@ module V1
       return unless object.contribution?
 
       Contribution.image_url_for_with_size(object.image_url, :medium)
+    end
+
+    private
+
+    def lang
+      return unless scope && scope[:user] && scope[:user].lang
+
+      scope[:user].lang
     end
   end
 end

@@ -11,8 +11,8 @@ describe Onboarding::Timeliner do
 
     it { expect_any_instance_of(PushNotificationService).to receive(:send_notification).with(
       nil,
-      Onboarding::Timeliner::TITLE_H1,
-      Onboarding::Timeliner::OFFER_H1,
+      Onboarding::Timeliner::I18nStruct.new(i18n: 'timeliner.h1.title'),
+      Onboarding::Timeliner::I18nStruct.new(i18n: 'timeliner.h1.offer'),
       [user], :resources, nil,
       { instance: :resources, stage: :h1 }
     ) }
@@ -38,8 +38,8 @@ describe Onboarding::Timeliner do
     after { subject }
 
     it { expect_any_instance_of(PushNotificationService).to receive(:send_notification).with(nil,
-      Onboarding::Timeliner::TITLE_J2,
-      Onboarding::Timeliner::OFFER_J2,
+      Onboarding::Timeliner::I18nStruct.new(i18n: 'timeliner.j2.title'),
+      Onboarding::Timeliner::I18nStruct.new(i18n: 'timeliner.j2.offer'),
       [user], nil, nil,
       { stage: :j2 }
     ) }
@@ -60,24 +60,24 @@ describe Onboarding::Timeliner do
     after { subject }
 
     context "outing, no action" do
-      before { OutingsServices::Finder.any_instance.stub(:find_all) { [create(:outing)] } }
+      before { OutingsServices::Finder.any_instance.stub(:find_all) { Entourage.where(id: create(:outing, online: false)) } }
 
       it { expect_any_instance_of(PushNotificationService).to receive(:send_notification).with(
         nil,
-        Onboarding::Timeliner::TITLE_J5_OUTING,
-        Onboarding::Timeliner::OFFER_J5_OUTING,
+        Onboarding::Timeliner::I18nStruct.new(i18n: 'timeliner.j5.title_outing'),
+        Onboarding::Timeliner::I18nStruct.new(i18n: 'timeliner.j5.offer_outing'),
         [user], :outings, nil,
         { instance: :outings, stage: :j5 }
       ) }
     end
 
     context "no outing, action" do
-      before { SolicitationServices::Finder.any_instance.stub(:find_all) { [create(:entourage)] } }
+      before { SolicitationServices::Finder.any_instance.stub(:find_all) { Entourage.where(id: create(:entourage)) } }
 
       it { expect_any_instance_of(PushNotificationService).to receive(:send_notification).with(
         nil,
-        Onboarding::Timeliner::TITLE_J5_ACTION,
-        Onboarding::Timeliner::OFFER_J5_ACTION,
+        Onboarding::Timeliner::I18nStruct.new(i18n: 'timeliner.j5.title_action'),
+        Onboarding::Timeliner::I18nStruct.new(i18n: 'timeliner.j5.offer_action'),
         [user], :solicitations, nil,
         { instance: :solicitations, stage: :j5 }
       ) }
@@ -86,8 +86,8 @@ describe Onboarding::Timeliner do
     context "no outing, no action" do
       it { expect_any_instance_of(PushNotificationService).to receive(:send_notification).with(
         nil,
-        Onboarding::Timeliner::TITLE_J5_CREATE_ACTION,
-        Onboarding::Timeliner::OFFER_J5_CREATE_ACTION,
+        Onboarding::Timeliner::I18nStruct.new(i18n: 'timeliner.j5.title_create_action'),
+        Onboarding::Timeliner::I18nStruct.new(i18n: 'timeliner.j5.offer_create_action'),
         [user], :contribution, nil,
         { instance: :contribution, stage: :j5 }
       ) }

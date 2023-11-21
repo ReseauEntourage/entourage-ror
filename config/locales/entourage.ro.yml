@@ -1,0 +1,103 @@
+---
+ro:
+  push_notifications:
+    action:
+      create_for_follower: "%s te invită să te alături la %s"
+    outing:
+      create: "Un eveniment nou a fost adăugat la %s: %s programat pentru %s"
+      cancel: "Acest eveniment programat pentru %s a fost anulat"
+      update: "Evenimentul programat pentru %s a fost modificat. Va avea loc la %s la %s"
+      update_short: "Evenimentul programat pentru %s a fost modificat"
+    post:
+      create: "%s tocmai a distribuit: \"%s\""
+    comment:
+      create: "%s tocmai a comentat postarea \"%s\""
+    join_request:
+      new: "Nou membru"
+      update: "Cererea a fost acceptată"
+      update_on_action: "Ai aderat la o acțiune organizată de %s"
+      update_on_outing: "Ai aderat la un eveniment organizat de %s"
+      update_on_neighborhood: "Ai aderat la un grup din %s"
+      create: "%s tocmai s-a alăturat la %s-ul tău \"%s\""
+      create_outing: "%s tocmai s-a alăturat la evenimentul tău \"%s\" de la %s"
+    contribution:
+      create: "Un vecin propune ajutor nou"
+    solicitation:
+      create: "Un vecin caută ajutor"
+      create_section: "Un vecin caută %s"
+
+  timeliner:
+    h1:
+      title: "Bun venit la Entourage 👌"
+      offer: "Știai că e nevoie doar de un videoclip pentru a sparge prejudecățile tale?"
+      ask: "Nu îți poți imagina tot ce conține noua ta aplicație: vino și descoperă-o!"
+    j2:
+      title: "Vino să spui salut 👋"
+      offer: "Grupul tău de vecini este nerăbdător să te cunoască!"
+      ask_title_outing: "Ai 4 minute la dispoziție?"
+      ask: "Uită-te la un videoclip scurt pentru a înțelege totul despre noua ta aplicație"
+    j5:
+      title_outing: "Salut, suntem din nou aici! 🕺"
+      offer_outing: "Virtualul e frumos pentru câteva minute; vino și fă o conexiune în viața reală!"
+      title_action: "Salut, suntem din nou aici! 🕺"
+      offer_action: "Ai două minute să ajuți vecinii tăi?"
+      title_create_action: "Salut, suntem din nou aici! 🕺"
+      offer_create_action: "Ia două minute să îți oferi ajutorul celor din jurul tău"
+      ask_title: "Vino să spui salut 👏"
+      ask: "Grupul tău de vecini este nerăbdător să te cunoască"
+    j8:
+      title: "Este rândul tău! 📱"
+      offer: "Un mic quiz împotriva prejudecăților: pariem că vei învăța ceva?"
+      ask_title_outing: "Salut, suntem din nou aici! 🕺"
+      ask_outing: "Virtualul e frumos pentru câteva minute; vino și fă o conexiune în viața reală!"
+      ask_title_action: "Salut, suntem din nou aici! 🕺"
+      ask_action: "Uită-te la ajutorul oferit în apropierea ta."
+      ask_title_create_action: "Salut, suntem din nou aici! 🕺"
+      ask_create_action: "Un joc de pétanque, o cafea sau doar o plimbare: propune o ieșire vecinilor tăi!"
+    j11:
+      title: "Entourage e ca o familie!"
+      offer: "Putem să spunem, acum faci parte din comunitatea Entourage. Haide să sărbătorim! 🎉"
+      ask: "Putem să spunem, acum faci parte din comunitatea Entourage. Haide să sărbătorim! 🎉"
+
+  pois:
+    soliguide:
+      public:
+        administrative: "[RO] - Accueil %s"
+        description: "[RO] - Autres informations importantes : %s"
+      accueil:
+        preferentiel: "[RO] - préférentiel"
+        exclusif: "[RO] - exclusif"
+        inconditionnel: "[RO] - inconditionnel"
+      age:
+        mineur: "[RO] - mineurs (-18 ans)"
+        adulte: "[RO] - adultes uniquement"
+        from: "[RO] - dès %s ans"
+        from_to: "[RO] - de %s à %s ans"
+      familiale:
+        isolated: "[RO] - Personne isolée"
+        family: "[RO] - Famille"
+        couple: "[RO] - Couple"
+        pregnant: "[RO] - Femme enceinte"
+      administrative:
+        default: "[RO] - personne %s"
+        regular: "[RO] - en situation régulière"
+        undocumented: "[RO] - sans papiers"
+        asylum: "[RO] - demandeurs d'asile"
+        refugee: "[RO] - réfugiés"
+      other:
+        violence: "[RO] - victime de violence"
+        addiction: "[RO] - en situation d'addiction"
+        handicap: "[RO] - en situation de handicap"
+        lgbt: "[RO] - appartenant aux communautés LGBT+"
+        hiv: "[RO] - porteuse du VIH"
+        prostitution: "[RO] - travailleur(euse) du sexe"
+        prison: "[RO] - sortant de prison"
+        student: "[RO] - étudiant(e)"
+      modalities:
+        inconditionnel: "[RO] - Accueil sans rendez-vous"
+        appointment: "[RO] - Sur rendez-vous (%s)"
+        inscription: "[RO] - Sur inscription (%s)"
+        orientation: "[RO] - Sur orientation (%s)"
+      animal:
+        unauthorized: "[RO] - Animaux non-autorisés"
+        authorized: "[RO] - Animaux autorisés"

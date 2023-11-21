@@ -4,6 +4,7 @@ module V1
       attributes :id,
                  :uuid_v2,
                  :content,
+                 :content_translations,
                  :user,
                  :created_at,
                  :post_id,
@@ -13,6 +14,14 @@ module V1
                  :read,
                  :message_type,
                  :status
+
+      def content
+        I18nSerializer.new(object, :content, lang).translation
+      end
+
+      def content_translations
+        I18nSerializer.new(object, :content, lang).translations
+      end
 
       def user
         partner = object.user.partner
@@ -64,6 +73,12 @@ module V1
         return :medium unless scope
 
         scope[:image_size] || :medium
+      end
+
+      def lang
+        return unless scope && scope[:user] && scope[:user].lang
+
+        scope[:user].lang
       end
     end
   end

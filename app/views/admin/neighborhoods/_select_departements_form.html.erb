@@ -1,0 +1,78 @@
+<%# Excepted variables -%>
+
+<%# Case: outing -%>
+<%# 1. record: outing -%>
+<%# 1. record_type: outing -%>
+<%# 1. recipient_ids: neighborhood_ids -%>
+
+<%# Case: neighborhood_message_broadcast -%>
+<%# 2. record: neighborhood_message_broadcast instance -%>
+<%# 2. record_type: neighborhood_message_broadcast string -%>
+<%# 2. recipient_ids: recipient_ids -%>
+
+<%
+  @params = params.permit(:tab).to_h
+  @departements = record.departements
+%>
+
+<h4>Changer les groupes de voisins</h4>
+
+<div style="margin-bottom: 15px; display: flex">
+  <div class="btn-group btn-group-sm" id="departements-choices">
+    <% ModerationArea.no_hz.pluck(:departement).each do |departement| %>
+      <%= link_to(departement, "#", class: "btn btn-#{@departements.include?(departement) ? :primary : :default}") %>
+    <% end %>
+  </div>
+</div>
+
+<div class="alert alert-info" role="alert" style="display: flex; align-items: center">
+  <div style="flex-grow: 1">
+    <b>Notifications</b><br>
+    Une notification sera envoyée aux utilisateurs des groupes que vous associerez.
+  </div>
+</div>
+
+<%= form_for record, url: path, method: :put do |f| %>
+  <%= hidden_field_tag "#{record_type}[departements][]", '' %>
+
+  <div id="departements-selected">
+    <% @departements.each do |departement| %>
+      <%= hidden_field_tag "#{record_type}[departements][]", departement %>
+    <% end %>
+  </div>
+
+  <%= f.submit 'Valider', class: "btn btn-primary" %>
+<% end %>
+
+<script>
+  var $neighborhoods = $('[type="checkbox"][name="<%= record_type %>[<%= recipient_ids %>][]"]');
+
+  $(document).on('click', '[data-role="select-neighborhoods"]', function(e) {
+    e.preventDefault()
+    var select = $(this).data('select'),
+        check = {
+          'all': function() { return true },
+          'none': function() { return false },
+        }[select]
+
+    $neighborhoods.each(function() {
+      var $box = $(this)
+      $box.prop('checked', check($box.val()))
+      this.setCustomValidity('') // reset validations
+    })
+  });
+
+  var inputName = "neighborhood_message_broadcast[departements][]"
+
+  $("#departements-choices a").on('click', function(e) {
+    e.preventDefault();
+
+    $(this).toggleClass("btn-primary btn-default");
+
+    if ($(this).hasClass("btn-primary")) {
+      $("#departements-selected").append('<input type="hidden" name="' + inputName + '" value="' + $(this).text() + '">')
+    } else {
+      $("#departements-selected").find("input[value='" + $(this).text() + "']").remove();
+    }
+  });
+</script>

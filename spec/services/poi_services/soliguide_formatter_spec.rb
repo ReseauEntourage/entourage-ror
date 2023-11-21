@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe PoiServices::Soliguide do
   describe 'format' do
-    subject { PoiServices::SoliguideFormatter.format poi }
+    subject { PoiServices::SoliguideFormatter.format(poi, Translation::DEFAULT_LANG) }
 
     context 'empty poi' do
       let(:poi) {}
@@ -69,7 +69,7 @@ describe PoiServices::Soliguide do
   end
 
   describe 'format_short' do
-    subject { PoiServices::SoliguideFormatter.format_short poi }
+    subject { PoiServices::SoliguideFormatter.format_short(poi, Translation::DEFAULT_LANG) }
 
     let(:poi) { {
       'lieu_id' => 123,
@@ -99,7 +99,7 @@ describe PoiServices::Soliguide do
   end
 
   describe 'format_audience' do
-    subject { PoiServices::SoliguideFormatter.format_audience publics, modalities }
+    subject { PoiServices::SoliguideFormatter.format_audience(publics, modalities, Translation::DEFAULT_LANG) }
 
     let(:publics) { {
       'age' => { 'min' => 16, 'max' => 35 },
@@ -121,7 +121,7 @@ describe PoiServices::Soliguide do
   end
 
   describe 'format_category_ids' do
-    subject { PoiServices::SoliguideFormatter.format_category_ids poi }
+    subject { PoiServices::SoliguideFormatter.format_category_ids(poi, Translation::DEFAULT_LANG) }
 
     context 'no services_all' do
       let(:poi) { {} }
@@ -171,7 +171,7 @@ describe PoiServices::Soliguide do
   end
 
   describe 'format_publics' do
-    subject { PoiServices::SoliguideFormatter.format_publics publics }
+    subject { PoiServices::SoliguideFormatter.format_publics(publics, Translation::DEFAULT_LANG) }
 
     context 'with description' do
       let(:publics) { {
@@ -195,7 +195,7 @@ describe PoiServices::Soliguide do
   end
 
   describe 'format_accueil' do
-    subject { PoiServices::SoliguideFormatter.format_accueil accueil }
+    subject { PoiServices::SoliguideFormatter.format_accueil(accueil, Translation::DEFAULT_LANG) }
 
     context 'no accueil' do
       let(:accueil) { nil }
@@ -219,7 +219,7 @@ describe PoiServices::Soliguide do
   end
 
   describe 'format_age' do
-    subject { PoiServices::SoliguideFormatter.format_age age }
+    subject { PoiServices::SoliguideFormatter.format_age(age, Translation::DEFAULT_LANG) }
 
     context 'no age' do
       let(:age) { nil }
@@ -253,7 +253,7 @@ describe PoiServices::Soliguide do
   end
 
   describe 'format_familialle' do
-    subject { PoiServices::SoliguideFormatter.format_familialle familialle }
+    subject { PoiServices::SoliguideFormatter.format_familialle(familialle, Translation::DEFAULT_LANG) }
 
     context 'no familialle' do
       let(:familialle) { nil }
@@ -277,7 +277,7 @@ describe PoiServices::Soliguide do
   end
 
   describe 'format_administrative' do
-    subject { PoiServices::SoliguideFormatter.format_administrative administrative }
+    subject { PoiServices::SoliguideFormatter.format_administrative(administrative, Translation::DEFAULT_LANG) }
 
     context 'no format_administrative' do
       let(:administrative) { nil }
@@ -321,7 +321,7 @@ describe PoiServices::Soliguide do
   end
 
   describe 'format_other' do
-    subject { PoiServices::SoliguideFormatter.format_other other }
+    subject { PoiServices::SoliguideFormatter.format_other(other, Translation::DEFAULT_LANG) }
 
     context 'no format_other' do
       let(:other) { nil }
@@ -355,7 +355,7 @@ describe PoiServices::Soliguide do
   end
 
   describe 'format_animal' do
-    subject { PoiServices::SoliguideFormatter.format_animal animal }
+    subject { PoiServices::SoliguideFormatter.format_animal(animal, Translation::DEFAULT_LANG) }
 
     context 'no animal' do
       let(:animal) { nil }
@@ -374,7 +374,7 @@ describe PoiServices::Soliguide do
   end
 
   describe 'format_other_modalities' do
-    subject { PoiServices::SoliguideFormatter.format_other_modalities other }
+    subject { PoiServices::SoliguideFormatter.format_other_modalities(other, Translation::DEFAULT_LANG) }
 
     context 'no other' do
       let(:other) { nil }
@@ -393,7 +393,7 @@ describe PoiServices::Soliguide do
   end
 
   describe 'format_modalities' do
-    subject { PoiServices::SoliguideFormatter.format_modalities modalities }
+    subject { PoiServices::SoliguideFormatter.format_modalities(modalities, Translation::DEFAULT_LANG) }
 
     context 'no modalities' do
       let(:modalities) { nil }
@@ -466,7 +466,7 @@ describe PoiServices::Soliguide do
   end
 
   describe 'format_hours' do
-    subject { PoiServices::SoliguideFormatter.format_hours hours }
+    subject { PoiServices::SoliguideFormatter.format_hours(hours, Translation::DEFAULT_LANG) }
 
     context 'no hours' do
       let(:hours) { nil }
@@ -552,7 +552,7 @@ describe PoiServices::Soliguide do
   end
 
   describe 'format_title' do
-    subject { PoiServices::SoliguideFormatter.format_title place_name, entity_name }
+    subject { PoiServices::SoliguideFormatter.format_title(place_name, entity_name, Translation::DEFAULT_LANG) }
 
     context 'no names' do
       let(:place_name) { nil }
@@ -586,7 +586,7 @@ describe PoiServices::Soliguide do
   end
 
   describe 'format_description' do
-    subject { PoiServices::SoliguideFormatter.format_description description }
+    subject { PoiServices::SoliguideFormatter.format_description(description, Translation::DEFAULT_LANG) }
 
     context 'no description' do
       let(:description) { nil }
@@ -610,7 +610,7 @@ describe PoiServices::Soliguide do
   end
 
   describe 'format_phones' do
-    subject { PoiServices::SoliguideFormatter.format_phones phones }
+    subject { PoiServices::SoliguideFormatter.format_phones(phones, Translation::DEFAULT_LANG) }
 
     context 'no phones' do
       let(:phones) { nil }

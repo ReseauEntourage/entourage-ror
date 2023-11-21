@@ -2,6 +2,7 @@ class ChatMessage < ApplicationRecord
   include FeedsConcern
   include ChatServices::Spam
   include Deeplinkable
+  include Translatable
 
   CONTENT_TYPES = %w(image/jpeg)
   BUCKET_PREFIX = "chat_messages"
@@ -41,6 +42,11 @@ class ChatMessage < ApplicationRecord
 
   scope :ordered, -> { order("created_at DESC") }
   scope :with_content, -> { where("content <> ''") }
+  scope :with_broadcast_id, -> (conversation_message_broadcast_id) {
+    where(message_type: :broadcast).where(
+      'metadata @> ?', { conversation_message_broadcast_id: conversation_message_broadcast_id }.to_json
+    )
+  }
 
   attribute :metadata, :jsonb_with_schema
 
@@ -138,6 +144,10 @@ class ChatMessage < ApplicationRecord
     if UserBlockedUser.with_users(messageable.member_ids).any?
       errors.add(:status, "La conversation a été bloquée par l'un des participants")
     end
+  end
+
+  def broadcast?
+    'broadcast' == message_type
   end
 
   def entourage?

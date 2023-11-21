@@ -1,14 +1,13 @@
 require 'rails_helper'
-require 'mixpanel_tools'
 
-RSpec.describe ConversationMessageBroadcast, type: :model do
+RSpec.describe UserMessageBroadcast, type: :model do
   it { should validate_presence_of(:area_type) }
   it { should validate_presence_of(:goal) }
   it { should validate_presence_of(:content) }
   it { should validate_presence_of(:title) }
 
   describe "areas" do
-    let(:subject) { FactoryBot.build(:conversation_message_broadcast, area_type: area_type, areas: areas).save }
+    let(:subject) { FactoryBot.build(:user_message_broadcast, area_type: area_type, areas: areas).save }
     let(:area_type) { 'list' }
 
     context "not empty" do
@@ -43,8 +42,8 @@ RSpec.describe ConversationMessageBroadcast, type: :model do
   end
 
   describe "users & user_ids" do
-    let(:subjects) { conversation_message_broadcast.users }
-    let(:subject_ids) { conversation_message_broadcast.user_ids.sort }
+    let(:subjects) { user_message_broadcast.users }
+    let(:subject_ids) { user_message_broadcast.user_ids.sort }
 
     let!(:moderation_area) { FactoryBot.create(:moderation_area, departement: '75') }
     let(:users) {
@@ -56,8 +55,8 @@ RSpec.describe ConversationMessageBroadcast, type: :model do
         FactoryBot.create(:address, postal_code: postal_code, user: users[index])
       end
     }
-    let(:conversation_message_broadcast) {
-      FactoryBot.create(:conversation_message_broadcast, area_type: area_type, areas: areas)
+    let(:user_message_broadcast) {
+      FactoryBot.create(:user_message_broadcast, area_type: area_type, areas: areas)
     }
 
     # default

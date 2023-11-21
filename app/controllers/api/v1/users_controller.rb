@@ -112,7 +112,7 @@ module Api
 
       def code
         if user_params[:phone].blank?
-          return render json: {error: "Missing phone number"}, status:400
+          return render json: {error: "Missing phone number"}, status: 400
         end
 
         user_phone = Phone::PhoneBuilder.new(phone: user_params[:phone]).format
@@ -126,7 +126,7 @@ module Api
           UserServices::SMSSender.new(user: user).regenerate_sms!(clear_password: api_request.platform == :web)
           render json: user, status: 200, serializer: ::V1::Users::PhoneOnlySerializer
         else
-          render json: {error: "Unknown action"}, status:400
+          render json: {error: "Unknown action"}, status: 400
         end
       end
 
@@ -403,7 +403,7 @@ module Api
       end
 
       def update_params
-        @update_params ||= params.require(:user).permit(:first_name, :last_name, :email, :sms_code, :password, :secret, :auth_token, :current_phone, :requested_phone, :avatar_key, :about, :goal, :birthday, :travel_distance, :interest_list, :interests, interests: [])
+        @update_params ||= params.require(:user).permit(:lang, :first_name, :last_name, :email, :sms_code, :password, :secret, :auth_token, :current_phone, :requested_phone, :avatar_key, :about, :goal, :birthday, :travel_distance, :interest_list, :interests, interests: [])
       end
 
       def user_report_params
