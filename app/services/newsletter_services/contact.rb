@@ -37,7 +37,7 @@ module NewsletterServices
       newsletter_subscription.assign_attributes(
         zone: zone,
         status: status,
-        active: active
+        active: active || true
       )
       newsletter_subscription.save
     end
