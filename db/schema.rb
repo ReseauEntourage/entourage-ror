@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_09_25_164500) do
+ActiveRecord::Schema.define(version: 2023_11_17_103301) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -538,10 +538,13 @@ ActiveRecord::Schema.define(version: 2023_09_25_164500) do
   end
 
   create_table "newsletter_subscriptions", id: :serial, force: :cascade do |t|
-    t.string "email"
+    t.string "email", limit: 255
     t.boolean "active"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string "zone"
+    t.string "status"
+    t.index ["email"], name: "index_newsletter_subscriptions_on_email"
   end
 
   create_table "notification_permissions", force: :cascade do |t|
