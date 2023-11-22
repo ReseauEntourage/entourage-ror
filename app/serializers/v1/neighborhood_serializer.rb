@@ -3,7 +3,9 @@ module V1
     attributes :id,
       :uuid_v2,
       :name,
+      :name_translations,
       :description,
+      :description_translations,
       :welcome_message,
       :member,
       :members,
@@ -19,6 +21,22 @@ module V1
       :public
 
     has_one :user, serializer: ::V1::Users::BasicSerializer
+
+    def name
+      I18nSerializer.new(object, :name, lang).translation
+    end
+
+    def name_translations
+      I18nSerializer.new(object, :name, lang).translations
+    end
+
+    def description
+      I18nSerializer.new(object, :description, lang).translation
+    end
+
+    def description_translations
+      I18nSerializer.new(object, :description, lang).translations
+    end
 
     def member
       return false unless scope && scope[:user]
@@ -57,6 +75,14 @@ module V1
         longitude: object.longitude,
         display_address: [object.place_name, object.postal_code].compact.uniq.join(', ')
       }
+    end
+
+    private
+
+    def lang
+      return unless scope && scope[:user] && scope[:user].lang
+
+      scope[:user].lang
     end
   end
 end

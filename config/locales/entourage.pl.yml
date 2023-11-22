@@ -1,0 +1,60 @@
+---
+pl:
+  push_notifications:
+    action:
+      create_for_follower: "%s zaprasza cię do dołączenia do %s"
+    outing:
+      create: "Nowe wydarzenie zostało dodane do %s: %s zostało zaplanowane na %s"
+      cancel: "To wydarzenie zaplanowane na %s zostało odwołane"
+      update: "Wydarzenie zaplanowane na %s zostało zmodyfikowane. Odbędzie się %s o %s"
+      update_short: "Wydarzenie zaplanowane na %s zostało zmodyfikowane"
+    post:
+      create: "%s właśnie udostępnił(a): \"%s\""
+    comment:
+      create: "%s właśnie skomentował(a) post \"%s\""
+    join_request:
+      new: "Nowy członek"
+      update: "Podanie zostało zaakceptowane"
+      update_on_action: "Dołączyłeś właśnie do akcji %s"
+      update_on_outing: "Dołączyłeś właśnie do wydarzenia %s"
+      update_on_neighborhood: "Dołączyłeś właśnie do grupy %s"
+      create: "%s właśnie dołączył(a) do twojego %s \"%s\""
+      create_outing: "%s właśnie dołączył(a) do twojego wydarzenia \"%s\" w dniu %s"
+    contribution:
+      create: "Sąsiedzi proponują nową pomoc"
+    solicitation:
+      create: "Sąsiedzi poszukują pomocy"
+      create_section: "Sąsiedzi szukają %s"
+
+  timeliner:
+    h1:
+      title: "Witaj w Entourage 👌"
+      offer: "Czy wiesz, że wystarczy jedno wideo, aby obalić twoje uprzedzenia?"
+      ask: "Nie możesz sobie wyobrazić, co zawiera Twoja nowa aplikacja: przyjdź i ją odkryj!"
+    j2:
+      title: "Wpadnij powiedzieć cześć 👋"
+      offer: "Twoja grupa sąsiadów chce cię poznać!"
+      ask_title_outing: "Masz 4 minuty?"
+      ask: "Obejrzyj krótki film, aby zrozumieć wszystko o swojej nowej aplikacji"
+    j5:
+      title_outing: "Cześć, to znowu my! 🕺"
+      offer_outing: "Wirtualne jest fajne, ale przez kilka minut; przyjdź i nawiąż prawdziwe relacje!"
+      title_action: "Cześć, to znowu my! 🕺"
+      offer_action: "Masz dwie minuty, aby pomóc sąsiadom?"
+      title_create_action: "Cześć, to znowu my! 🕺"
+      offer_create_action: "Zarezerwuj dwie minuty, aby zaoferować swoją pomoc innym wokół Ciebie"
+      ask_title: "Przyjdź i powiedz cześć 👏"
+      ask: "Twoja grupa sąsiadów chce cię poznać"
+    j8:
+      title: "Twoja kolej! 📱"
+      offer: "Krótki quiz przeciwko uprzedzeniom: założysz się, że się czegoś nauczysz?"
+      ask_title_outing: "Cześć, to znowu my! 🕺"
+      ask_outing: "Wirtualne jest fajne, ale przez kilka minut; przyjdź i nawiąż prawdziwe relacje!"
+      ask_title_action: "Cześć, to znowu my! 🕺"
+      ask_action: "Sprawdź pomoc oferowaną w twojej okolicy"
+      ask_title_create_action: "Cześć, to znowu my! 🕺"
+      ask_create_action: "Partia w chińczyka, a może kawa czy po prostu spacer: zaproponuj wypad sąsiadom!"
+    j11:
+      title: "Entourage to jak rodzina!"
+      offer: "Mamy prawo powiedzieć, że teraz jesteś częścią społeczności Entourage. Uczcijmy to! 🎉"
+      ask: "Mamy prawo powiedzieć, że teraz jesteś częścią społeczności Entourage. Uczcijmy to! 🎉"

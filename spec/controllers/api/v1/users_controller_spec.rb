@@ -362,8 +362,9 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
       after { ENV["DISABLE_CRYPT"]="TRUE" }
 
       context 'params are valid' do
-        before { patch 'update', params: { token:user.token, user: { email:'new@e.mail', sms_code:'654321', device_id: 'foo', device_type: 'android', avatar_key: 'foo.jpg', travel_distance: 12 }, format: :json } }
+        before { patch 'update', params: { token: user.token, user: { lang: 'pl', email:'new@e.mail', sms_code:'654321', device_id: 'foo', device_type: 'android', avatar_key: 'foo.jpg', travel_distance: 12 }, format: :json } }
         it { expect(response.status).to eq(200) }
+        it { expect(user.reload.lang).to eq('pl') }
         it { expect(user.reload.email).to eq('new@e.mail') }
         it { expect(user.reload.avatar_key).to eq('foo.jpg') }
         it { expect(user.reload.travel_distance).to eq(12) }

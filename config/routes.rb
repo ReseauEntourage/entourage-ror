@@ -270,6 +270,8 @@ Rails.application.routes.draw do
 
     resources :resources do
       member do
+        get :edit_translation
+        post :update_translation
         get '/edit/image', action: :edit_image
         put '/update/image', action: :update_image
       end

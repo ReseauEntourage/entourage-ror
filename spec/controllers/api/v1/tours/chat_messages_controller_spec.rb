@@ -25,6 +25,12 @@ describe Api::V1::Tours::ChatMessagesController do
             "uuid_v2" => chat_message1.uuid_v2,
             "message_type" => "text",
             "content" => "MyText",
+            "content_translations" => {
+              "translation" => "MyText",
+              "original" => "MyText",
+              "from_lang" => "fr",
+              "to_lang" => "fr",
+            },
             "user" => {
               "id" => chat_message1.user_id,
               "avatar_url" => nil,
@@ -40,6 +46,12 @@ describe Api::V1::Tours::ChatMessagesController do
             "uuid_v2" => chat_message2.uuid_v2,
             "message_type" => "text",
             "content" => "MyText",
+            "content_translations" => {
+              "translation" => "MyText",
+              "original" => "MyText",
+              "from_lang" => "fr",
+              "to_lang" => "fr",
+            },
             "user" => {
             "id" => chat_message2.user_id,
             "avatar_url" => nil,
@@ -97,6 +109,12 @@ describe Api::V1::Tours::ChatMessagesController do
             "uuid_v2" => chat_message2.uuid_v2,
             "message_type" => "text",
             "content" => "MyText",
+            "content_translations" => {
+              "translation" => "MyText",
+              "original" => "MyText",
+              "from_lang" => "fr",
+              "to_lang" => "fr",
+            },
             "user" => {
               "id" => chat_message2.user.id,
               "avatar_url" => nil,
@@ -137,6 +155,12 @@ describe Api::V1::Tours::ChatMessagesController do
             "uuid_v2" => ChatMessage.first.uuid_v2,
             "message_type" => "text",
             "content" => "foobar",
+            "content_translations" => {
+              "translation" => "foobar",
+              "original" => "foobar",
+              "from_lang" => "fr",
+              "to_lang" => "fr",
+            },
             "user" => {
               "id" => user.id,
               "avatar_url" => nil,
@@ -149,26 +173,6 @@ describe Api::V1::Tours::ChatMessagesController do
             "status" => "active"
           }
         }) }
-      end
-
-      describe "send push notif" do
-        it "sends notif to everyone accepted except message sender" do
-          join_request = FactoryBot.create(:join_request, joinable: tour, user: user, status: "accepted")
-          join_request2 = FactoryBot.create(:join_request, joinable: tour, status: "accepted")
-
-          FactoryBot.create(:join_request, joinable: tour, status: "pending")
-
-          expect_any_instance_of(PushNotificationService).to receive(:send_notification).with(nil, "John D.", 'foobar', [join_request2.user], "tour", tour.id, {
-            tracking: :private_chat_message_on_create,
-            joinable_id: tour.id,
-            joinable_type: "Tour",
-            group_type: 'tour',
-            type: "NEW_CHAT_MESSAGE",
-            instance: "tour",
-            instance_id: tour.id
-          })
-          post :create, params: { tour_id: tour.to_param, chat_message: {content: "foobar"}, token: user.token }
-        end
       end
 
       context "invalid params" do

@@ -31,7 +31,7 @@ module Api
             mixpanel.track("Displayed Entourage Conversation", mp_params)
           end
 
-          render json: messages, each_serializer: ::V1::ChatMessageSerializer
+          render json: messages, each_serializer: ::V1::ChatMessageSerializer, scope: { user: current_user }
         end
 
         def create
@@ -43,7 +43,7 @@ module Api
             on.success do |message|
               is_onboarding, mp_params = Onboarding::V1.entourage_metadata(@entourage)
               mixpanel.track("Wrote Message in Entourage", mp_params)
-              render json: message, status: 201, serializer: ::V1::ChatMessageSerializer
+              render json: message, status: 201, serializer: ::V1::ChatMessageSerializer, scope: { user: current_user }
             end
 
             on.failure do |message|

@@ -1,0 +1,60 @@
+---
+de:
+  push_notifications:
+    action:
+      create_for_follower: "%s lädt Sie ein, sich %s anzuschließen"
+    outing:
+      create: "Eine neue Veranstaltung wurde zu %s hinzugefügt: %s geplant am %s"
+      cancel: "Die Veranstaltung geplant am %s wurde abgesagt"
+      update: "Die am %s geplante Veranstaltung wurde geändert. Sie findet am %s um %s statt"
+      update_short: "Die am %s geplante Veranstaltung wurde geändert"
+    post:
+      create: "%s hat gerade geteilt: \"%s\""
+    comment:
+      create: "%s hat gerade den Beitrag \"%s\" kommentiert"
+    join_request:
+      new: "Neues Mitglied"
+      update: "Anfrage akzeptiert"
+      update_on_action: "Sie haben sich gerade an einer Aktion von %s angeschlossen"
+      update_on_outing: "Sie haben sich gerade an der Veranstaltung von %s angeschlossen"
+      update_on_neighborhood: "Sie haben sich gerade an einer Gruppe von %s angeschlossen"
+      create: "%s hat sich ihrer %s \"%s\" angeschlossen"
+      create_outing: "%s hat sich gerade ihrer Veranstaltung \"%s\" am %s angeschlossen"
+    contribution:
+      create: "Ein Nachbar bietet neue Hilfe an"
+    solicitation:
+      create: "Ein Nachbar sucht Hilfe"
+      create_section: "Ein Nachbar sucht %s"
+
+  timeliner:
+    h1:
+      title: "Willkommen bei Entourage 👌"
+      offer: "Wussten Sie, dass nur ein Video reicht, um Vorurteile abzubauen?"
+      ask: "Sie können sich nicht vorstellen, was ihre neue App alles enthält: Kommt und entdeckt sie!"
+    j2:
+      title: "Kommen Sie Hallo sagen 👋"
+      offer: "Ihre Nachbarschaftsgruppe möchte Sie gerne kennenlernen!"
+      ask_title_outing: "Haben Sie 4 Minuten?"
+      ask: "Schauen Sie sich ein kurzes Video an, um alles über ihre neue App zu verstehen"
+    j5:
+      title_outing: "Hallo, wir sind es wieder! 🕺"
+      offer_outing: "Virtuelle Interaktionen sind ja ganz nett, aber erleben Sie jetzt eine Begegnung im echten Leben!"
+      title_action: "Hallo, wir sind es wieder! 🕺"
+      offer_action: "Haben Sie zwei Minuten, um Ihren Nachbarn zu helfen?"
+      title_create_action: "Hallo, wir sind es wieder! 🕺"
+      offer_create_action: "Nehmen Sie sich zwei Minuten Zeit, um ihre Hilfe anzubieten"
+      ask_title: "Kommen Sie hallo sagen 👏"
+      ask: "Ihre Nachbarschaftsgruppe möchte Sie gerne kennenlernen"
+    j8:
+      title: "Jetzt sind Sie dran! 📱"
+      offer: "Ein kleines Anti-Vorurteile-quiz: Wetten, Sie werden dabei etwas lernen?"
+      ask_title_outing: "Hallo, wir sind es wieder! 🕺"
+      ask_outing: "Das Virtuelle ist für ein paar Minuten nett; kommen Sie und knüpfen Sie eine Verbindung im echten Leben!"
+      ask_title_action: "Hallo, wir sind es wieder! 🕺"
+      ask_action: "Schauen Sie sich die angebotene Hilfe in ihrer Nähe an"
+      ask_title_create_action: "Hallo, wir sind es wieder! 🕺"
+      ask_create_action: "Ein Boulespiel, ein Kaffee oder einfach ein Spaziergang: schlagen Sie ihren Nachbarn einen Ausflug vor!"
+    j11:
+      title: "Entourage ist wie eine Familie!"
+      offer: "Wir können es jetzt sagen, Sie gehören endlich zur Entourage-Gemeinschaft. Lassen Sie uns feiern!"
+      ask: "Wir können es jetzt sagen, Sie gehören endlich zur Entourage-Gemeinschaft. Lassen Sie uns feiern!"

@@ -947,6 +947,23 @@ ActiveRecord::Schema.define(version: 2023_11_17_103301) do
     t.index ["user_id", "tour_id"], name: "index_tours_users_on_user_id_and_tour_id", unique: true
   end
 
+  create_table "translations", force: :cascade do |t|
+    t.integer "instance_id", null: false
+    t.string "instance_type", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.jsonb "fr", default: {}, null: false
+    t.jsonb "en", default: {}, null: false
+    t.jsonb "de", default: {}, null: false
+    t.jsonb "pl", default: {}, null: false
+    t.jsonb "ro", default: {}, null: false
+    t.jsonb "uk", default: {}, null: false
+    t.jsonb "ar", default: {}, null: false
+    t.string "from_lang", default: "fr", null: false
+    t.jsonb "es", default: {}, null: false
+    t.index ["instance_id", "instance_type"], name: "index_translations_on_instance_id_and_instance_type"
+  end
+
   create_table "user_applications", id: :serial, force: :cascade do |t|
     t.string "push_token", null: false
     t.string "device_os", null: false
@@ -1100,6 +1117,7 @@ ActiveRecord::Schema.define(version: 2023_11_17_103301) do
     t.string "birthday", limit: 5
     t.string "other_interest"
     t.json "options", default: {}
+    t.string "lang", default: "fr"
     t.index ["address_id"], name: "index_users_on_address_id"
     t.index ["email"], name: "index_users_on_email"
     t.index ["organization_id"], name: "index_users_on_organization_id"

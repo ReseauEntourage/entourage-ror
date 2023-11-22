@@ -206,6 +206,15 @@ fr:
         moderator_id: Modérateur
         welcome_message_1: Message de bienvenue
         slack_moderator_id: Identifiant Slack
+      translation:
+        langs:
+          fr: Français
+          en: Anglais
+          de: Allemand
+          pl: Polonais
+          ro: Roumain
+          uk: Ukrainien
+          ar: Arabe
       tour_area:
         statuses:
           active: Active
@@ -331,6 +340,65 @@ fr:
     chat_messages:
       status_update:
         closed_user: l'utilisateur a quitté le réseau Entourage. N'hésitez pas à rejoindre d'autres actions solidaires sur l'app !
+
+  push_notifications:
+    action:
+      create_for_follower: "%s vous invite à rejoindre %s"
+    outing:
+      create: "Un nouvel événement vient d'être ajouté au %s : %s prévu le %s"
+      cancel: "Cet événement prévu le %s vient d'être annulé"
+      update: "L'événement prévu le %s a été modifié. Il se déroulera le %s, au %s"
+      update_short: "L'événement prévu le %s a été modifié"
+    post:
+      create: "%s vient de partager : \"%s\""
+    comment:
+      create: "%s vient de commenter la publication \"%s\""
+    join_request:
+      new: "Nouveau membre"
+      update: "Demande acceptée"
+      update_on_action: "Vous venez de rejoindre une action de %s"
+      update_on_outing: "Vous venez de rejoindre un événement de %s"
+      update_on_neighborhood: "Vous venez de rejoindre un groupe de %s"
+      create: "%s vient de rejoindre votre %s \"%s\""
+      create_outing: "%s vient de rejoindre votre événement \"%s\" du %s"
+    contribution:
+      create: "Un voisin propose une nouvelle entraide"
+    solicitation:
+      create: "Un voisin recherche une aide"
+      create_section: "Un voisin recherche un %s"
+
+  timeliner:
+    h1:
+      title: "Bienvenue chez Entourage 👌"
+      offer: "Le saviez-vous ? Il suffit d'une vidéo pour déconstruire vos préjugés !"
+      ask: "Vous n'imaginez pas tout ce que contient votre nouvelle app : venez la découvrir !"
+    j2:
+      title: "Passez dire bonjour 👋"
+      offer: "Votre groupe de voisins ne demande qu'à vous connaître !"
+      ask_title_outing: "Vous avez 4 minutes ?"
+      ask: "Regardez une courte vidéo pour tout comprendre à votre nouvelle application"
+    j5:
+      title_outing: "Coucou, c'est encore nous ! 🕺"
+      offer_outing: "Le virtuel, c'est sympa deux minutes, venez faire une rencontre dans la vraie vie !"
+      title_action: "Coucou, c'est encore nous ! 🕺"
+      offer_action: "Vous avez deux minutes pour donner un coup de pouce à vos voisins ?"
+      title_create_action: "Coucou, c'est encore nous ! 🕺"
+      offer_create_action: "Prenez deux minutes pour proposer votre aide autour de vous"
+      ask_title: "Passez dire bonjour 👏"
+      ask: "Votre groupe de voisins ne demande qu'à vous connaître"
+    j8:
+      title: "A vous de jouer ! 📱"
+      offer: "Un petit quiz anti-préjugés : on parie que vous allez apprendre des choses ?"
+      ask_title_outing: "Coucou, c'est encore nous ! 🕺"
+      ask_outing: "Le virtuel, c'est sympa deux minutes, venez faire une rencontre dans la vraie vie !"
+      ask_title_action: "Coucou, c'est encore nous ! 🕺"
+      ask_action: "Jetez un oeil aux coups de pouce publiés près de chez vous."
+      ask_title_create_action: "Coucou, c'est encore nous ! 🕺"
+      ask_create_action: "Une pétanque, un café ou juste une balade : proposez une sortie à vos voisins !"
+    j11:
+      title: "Entourage c'est la famille !"
+      offer: "On peut le dire, vous faites maintenant partie de la communauté Entourage. Ça se fête ! 🎉"
+      ask: "On peut le dire, vous faites maintenant partie de la communauté Entourage. Ça se fête ! 🎉"
 
   tags:
     sections:
