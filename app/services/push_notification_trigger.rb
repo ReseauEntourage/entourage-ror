@@ -27,7 +27,7 @@ class PushNotificationTrigger
         return @i18ns[lang] = @instance.translation.translate(field: @field, lang: lang) || @instance.send(@field)
       end
 
-      @i18ns[lang] = @text
+      @i18ns[lang] = @text % args_to(lang)
       @i18ns[lang]
     end
 
@@ -298,7 +298,7 @@ class PushNotificationTrigger
       instance: @record,
       users: users,
       params: {
-        object: I18nStruct.new(text: "#{username(@record.user)} - #{title(@record.messageable)}"), # @requires i18n
+        object: I18nStruct.new(text: "#{username(@record.user)} - %s", i18n_args: [title(@record.messageable)]), # @requires i18n
         content: I18nStruct.new(instance: @record, field: :content),
         extra: {
           tracking: :public_chat_message_on_create,
