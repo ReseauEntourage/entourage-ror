@@ -34,7 +34,6 @@
 <%= search_form_for [:admin, @q], class: 'form-inline', id: 'q_form' do |f| %>
   <div class="panel panel-default">
     <div class="panel-body">
-      <div style="float: left">
         <div class='input-group'>
           <%= text_field_tag :search, params[:search], class: "form-control", placeholder: 'Titre, description' %>
           <span class="input-group-btn">
@@ -48,17 +47,19 @@
           options.unshift ['Tous (avec ou sans interlocuteur)', :any], ['Non assigné', :none]
         %>
         <%= select_tag :moderator_id, options_for_select(options, params[:moderator_id]), class: "form-control" %>
-      </div>
 
-      
-    </div>
-
-    <div class="panel-body">
       <div class='input-group'>
         <%= f.select :entourage_type_eq, [['Toutes les actions', nil]] + entourage_type_names, {}, class: 'form-control' %>
       </div>
       <div class="input-group">
         <%= f.select :status_in, entourage_type_statuses, {}, class: 'form-control', multiple: true, style: "width: 200px" %>
+      </div>
+      <div class="input-group">
+        
+          <%= link_to "Réinitialiser les filtres", admin_entourages_path(q: {
+            group_type_eq: 'action',
+            pin_eq: 'false',
+            }), class: "btn btn-danger" %>
       </div>
     </div>
   
@@ -94,18 +95,11 @@
         <% end %>
       </div>
 
-      <div class="btn-group btn-group-sm" style="padding-left: 10px">
-        
-        <div class="btn-group btn-group-sm" style="padding-left: 10px">
-          <%= link_to "Réinitialiser les filtres", admin_entourages_path(q: {
-            group_type_eq: 'action',
-            pin_eq: 'false',
-            }), class: "btn btn-danger" %>
-        </div>
-      </div>
+      
     </div>
-  </div>  
+  </div>
 
+  
 <% end %>
 
 <% if @q.moderation_action_outcome_blank %>
@@ -131,7 +125,6 @@
     <th></th>
     <th></th>
     <th></th>
-    <th></th>
     <th>Description</th>
     <th>Statut</th>
     <th><span class="glyphicon glyphicon-user" aria-hidden="true"></span></th>
@@ -150,11 +143,7 @@
           <% if outing_filter %>
             <td><%= l entourage.starts_at, format: :date_short %></td>
           <% end %>
-          <td>
-          <% if entourage.admin_pin? %>
-            <i class="fa fa-star" title="Prioritaire"></i>
-          <% end %>
-        </td>
+          
         <td>
           <% if !entourage.moderated %>
             <span class="badge" style="background: #f0ad4e" title="Non modéré">●</span>
