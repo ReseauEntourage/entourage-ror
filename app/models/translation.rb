@@ -30,6 +30,14 @@ class Translation < ApplicationRecord
     self[lang][field.to_s] = translation
   end
 
+  def completed_translations
+    return 0 unless from_lang.present?
+
+    (LANGUAGES - [from_lang.to_sym]).map do |lang|
+      self[lang].present? ? 1 : 0
+    end.sum
+  end
+
   def self.disable_on_write?
     ENV['DISABLE_TRANSLATIONS_ON_WRITE'] == 'true'
   end

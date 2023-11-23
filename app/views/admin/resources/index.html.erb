@@ -13,6 +13,7 @@
           <th>Name</th>
           <th>Catégorie</th>
           <th>Vues</th>
+          <th>Traductions</th>
           <th>Action</th>
           <% @resources.each do |resource| %>
             <tr>
@@ -20,6 +21,7 @@
               <td><%= link_to resource.name, edit_admin_resource_path(resource) %></td>
               <td><%= category_label resource.category %></td>
               <td><%= views_for resource %></td>
+              <td><%= resource.completed_translations %></td>
               <td>
                 <%= link_to "Modifier", edit_admin_resource_path(resource), class: "btn btn-primary" %>
               </td>

@@ -5,7 +5,7 @@ module Admin
     before_action :set_resource, only: [:edit, :edit_translation, :update, :update_translation, :destroy, :edit_image, :update_image]
 
     def index
-      @resources = Resource.page(page).per(per)
+      @resources = Resource.includes(:translation).page(page).per(per)
     end
 
     def new

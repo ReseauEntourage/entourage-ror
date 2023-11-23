@@ -66,6 +66,12 @@ module Translatable
     t[field] || self[field]
   end
 
+  def completed_translations
+    return 0 unless translation
+
+    translation.completed_translations
+  end
+
   private
 
   def from_lang
