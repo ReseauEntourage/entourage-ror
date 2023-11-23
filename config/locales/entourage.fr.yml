@@ -285,6 +285,10 @@ fr:
         is_video: Vidéo ?
         duration: Durée
         image_url: Image
+        tags:
+          neighborhood: "Groupes : l'importance de partager nos points communs"
+          outing: "Comment créer un événement ?"
+          action: "Entraide : ce que je peux proposer / demander"
         categories:
           act: Agir
           inspire: S'inspirer

@@ -451,6 +451,10 @@ Rails.application.routes.draw do
       end
 
       resources :resources, only: [:index, :show] do
+        collection do
+          get "tag/:tag" => :tag, as: :tag
+        end
+
         resources :users, :controller => 'resources/users', only: [:create, :destroy] do
           collection do
             # we want to avoid specific id to unjoin

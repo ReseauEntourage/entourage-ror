@@ -91,6 +91,7 @@ module Admin
         :is_video,
         :duration,
         :resource_image_id,
+        :tag,
       )
     end
 

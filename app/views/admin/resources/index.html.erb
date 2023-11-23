@@ -12,6 +12,7 @@
           <th>Id</th>
           <th>Name</th>
           <th>Catégorie</th>
+          <th>Tag</th>
           <th>Vues</th>
           <th>Traductions</th>
           <th>Action</th>
@@ -20,6 +21,7 @@
               <td><%= resource.id %></td>
               <td><%= link_to resource.name, edit_admin_resource_path(resource) %></td>
               <td><%= category_label resource.category %></td>
+              <td><%= tag_label resource.tag %></td>
               <td><%= views_for resource %></td>
               <td><%= resource.completed_translations %></td>
               <td>
