@@ -58,3 +58,38 @@ es:
       title: "¡Entourage es familia!"
       offer: "¡Podemos decirlo, ahora eres parte de la comunidad de Entourage. ¡Vamos a celebrarlo! 🎉"
       ask: "¡Podemos decirlo, ahora eres parte de la comunidad de Entourage. ¡Vamos a celebrarlo! 🎉"
+
+  tags:
+    sections:
+      social:
+        name: Tiempo de Compartir
+        subname: café, actividad...
+      services:
+        name: Servicio
+        subname: lavandería, impresión de documentos...
+      clothes:
+        name: Ropa
+        subname: zapatos, abrigo...
+      equipment:
+        name: Equipo
+        subname: teléfono, saco de dormir...
+      hygiene:
+        name: Producto de Higiene
+        subname: jabón, protección higiénica...
+    interests:
+      activities: Actividades Manuales
+      animals: Animales
+      well_being: Bienestar
+      cooking: Cocina
+      culture: Arte y Cultura
+      games: Juegos
+      nature: Naturaleza
+      sport: Deporte
+      marauding: Encuentros Nómadas
+      other: Otro
+    signals:
+      spam: Correo no deseado
+      fraud: Fraude
+      insults: Comentarios inapropiados
+      in_danger: Peligro
+      other: Otro

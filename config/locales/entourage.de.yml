@@ -58,3 +58,38 @@ de:
       title: "Entourage ist wie eine Familie!"
       offer: "Wir können es jetzt sagen, Sie gehören endlich zur Entourage-Gemeinschaft. Lassen Sie uns feiern!"
       ask: "Wir können es jetzt sagen, Sie gehören endlich zur Entourage-Gemeinschaft. Lassen Sie uns feiern!"
+
+  tags:
+    sections:
+      social:
+        name: Gemeinsame Zeit
+        subname: Kaffee, Aktivität...
+      services:
+        name: Dienstleistung
+        subname: Wäsche, Dokumentendruck...
+      clothes:
+        name: Kleidung
+        subname: Schuhe, Mantel...
+      equipment:
+        name: Ausrüstung
+        subname: Telefon, Schlafsack...
+      hygiene:
+        name: Hygieneprodukt
+        subname: Seife, Hygieneschutz...
+    interests:
+      activities: Manuelle Aktivitäten
+      animals: Tiere
+      well_being: Wohlbefinden
+      cooking: Kochen
+      culture: Kunst & Kultur
+      games: Spiele
+      nature: Natur
+      sport: Sport
+      marauding: Nomadische Begegnungen
+      other: Andere
+    signals:
+      spam: Spam
+      fraud: Betrug
+      insults: Unangemessene Äußerungen
+      in_danger: Gefährdung
+      other: Andere

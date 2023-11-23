@@ -58,3 +58,38 @@ ro:
       title: "Entourage e ca o familie!"
       offer: "Putem spune asta, acum faci parte din comunitatea Entourage. Haide să sărbătorim! 🎉"
       ask: "Putem spune asta, acum faci parte din comunitatea Entourage. Haide să sărbătorim! 🎉"
+
+  tags:
+    sections:
+      social:
+        name: Timp de Împărtășire
+        subname: cafea, activitate...
+      services:
+        name: Serviciu
+        subname: spălare, imprimare documente...
+      clothes:
+        name: Îmbrăcăminte
+        subname: pantofi, palton...
+      equipment:
+        name: Echipament
+        subname: telefon, sac de dormit...
+      hygiene:
+        name: Produs de Igienă
+        subname: săpun, protecție igienică...
+    interests:
+      activities: Activități Manuale
+      animals: Animale
+      well_being: Bunăstare
+      cooking: Gătit
+      culture: Artă și Cultură
+      games: Jocuri
+      nature: Natură
+      sport: Sport
+      marauding: Întâlniri Nomade
+      other: Altele
+    signals:
+      spam: Spam
+      fraud: Fraudă
+      insults: Remarci Nepotrivite
+      in_danger: Pericol
+      other: Altele

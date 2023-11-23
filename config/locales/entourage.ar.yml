@@ -58,3 +58,38 @@ ar:
       title: "إنتوراج كالعائلة!"
       offer: "يمكننا القول بأنك الآن جزء من مجتمع إنتوراج. هيا نحتفل! 🎉"
       ask: "يمكننا القول بأنك الآن جزء من مجتمع إنتوراج. هيا نحتفل! 🎉"
+
+  tags:
+    sections:
+      social:
+        name: وقت المشاركة
+        subname: قهوة، نشاط...
+      services:
+        name: خدمة
+        subname: غسيل، طباعة الوثائق...
+      clothes:
+        name: ملابس
+        subname: أحذية، معطف...
+      equipment:
+        name: معدات
+        subname: هاتف، حقيبة نوم...
+      hygiene:
+        name: منتج النظافة
+        subname: صابون، حماية النظافة...
+    interests:
+      activities: أنشطة يدوية
+      animals: حيوانات
+      well_being: الرفاهية
+      cooking: الطهي
+      culture: الفن والثقافة
+      games: ألعاب
+      nature: الطبيعة
+      sport: رياضة
+      marauding: لقاءات تجوالية
+      other: آخر
+    signals:
+      spam: رسائل غير مرغوب فيها
+      fraud: احتيال
+      insults: كلمات جارحة
+      in_danger: في خطر
+      other: آخر

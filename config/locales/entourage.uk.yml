@@ -58,3 +58,37 @@ uk:
       title: "Entourage - це як сім'я!"
       offer: "Ми можемо сказати, ви тепер частина спільноти Entourage. Давайте відсвяткуємо! 🎉"
       ask: "Ми можемо сказати, ви тепер частина спільноти Entourage. Давайте відсвяткуємо! 🎉"
+  tags:
+    sections:
+      social:
+        name: Час Спільного Відпочинку
+        subname: кава, активність...
+      services:
+        name: Послуга
+        subname: прання, друкування документів...
+      clothes:
+        name: Одяг
+        subname: взуття, пальто...
+      equipment:
+        name: Обладнання
+        subname: телефон, спальний мішок...
+      hygiene:
+        name: Засіб Гігієни
+        subname: мило, гігієнічний захист...
+    interests:
+      activities: Ручні Заняття
+      animals: Тварини
+      well_being: Добробут
+      cooking: Кулінарія
+      culture: Мистецтво та Культура
+      games: Ігри
+      nature: Природа
+      sport: Спорт
+      marauding: Номадські Зустрічі
+      other: Інше
+    signals:
+      spam: Спам
+      fraud: Шахрайство
+      insults: Неприязні слова
+      in_danger: Під загрозою
+      other: Інше

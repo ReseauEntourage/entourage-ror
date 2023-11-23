@@ -58,3 +58,38 @@ pl:
       title: "Entourage to jak rodzina!"
       offer: "Mamy prawo powiedzieć, że teraz jesteś częścią społeczności Entourage. Uczcijmy to! 🎉"
       ask: "Mamy prawo powiedzieć, że teraz jesteś częścią społeczności Entourage. Uczcijmy to! 🎉"
+
+  tags:
+    sections:
+      social:
+        name: Czas na Dzielenie Się
+        subname: kawa, aktywność...
+      services:
+        name: Usługa
+        subname: pranie, drukowanie dokumentów...
+      clothes:
+        name: Ubranie
+        subname: buty, płaszcz...
+      equipment:
+        name: Sprzęt
+        subname: telefon, śpiwór...
+      hygiene:
+        name: Produkt Higieniczny
+        subname: mydło, ochrona higieniczna...
+    interests:
+      activities: Aktywności Ręczne
+      animals: Zwierzęta
+      well_being: Dobrostan
+      cooking: Gotowanie
+      culture: Sztuka i Kultura
+      games: Gry
+      nature: Natur
+      sport: Sport
+      marauding: Spotkania Nomadyczne
+      other: Inne
+    signals:
+      spam: Spam
+      fraud: Oszustwo
+      insults: Obraźliwe Słowa
+      in_danger: Zagrożenie
+      other: Inne

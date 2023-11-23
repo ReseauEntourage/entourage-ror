@@ -58,3 +58,38 @@ en:
       title: "Entourage is like family!"
       offer: "We can say it, you're now part of the Entourage community. Let's celebrate!"
       ask: "We can say it, you're now part of the Entourage community. Let's celebrate!"
+
+  tags:
+    sections:
+      social:
+        name: Sharing Time
+        subname: coffee, activity...
+      services:
+        name: Service
+        subname: laundry, document printing...
+      clothes:
+        name: Clothing
+        subname: shoes, coat...
+      equipment:
+        name: Equipment
+        subname: phone, sleeping bag...
+      hygiene:
+        name: Hygiene Product
+        subname: soap, hygiene protection...
+    interests:
+      activities: Manual Activities
+      animals: Animals
+      well_being: Well-being
+      cooking: Cooking
+      culture: Art & Culture
+      games: Games
+      nature: Nature
+      sport: Sport
+      marauding: Nomadic Encounters
+      other: Other
+    signals:
+      spam: Spam
+      fraud: Fraud
+      insults: Inappropriate Remarks
+      in_danger: Endangerment
+      other: Other
