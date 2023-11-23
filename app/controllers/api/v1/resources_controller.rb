@@ -27,6 +27,8 @@ module Api
 
       def set_resource_from_tag
         @resource = Resource.find_by_tag(params[:tag])
+
+        render json: { message: 'Could not find resource' }, status: 400 unless @resource.present?
       end
 
       def set_as_watched
