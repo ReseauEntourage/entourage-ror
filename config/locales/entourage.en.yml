@@ -64,6 +64,7 @@ en:
       public:
         administrative: "Home: %s"
         description: "Other important information: %s"
+        reception: Reception
       accueil:
         preferentiel: "preferential"
         exclusif: "exclusive"

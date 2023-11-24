@@ -64,6 +64,7 @@ pl:
       public:
         administrative: "Strona główna: %s"
         description: "Inne ważne informacje: %s"
+        reception: Przyjęcie
       accueil:
         preferentiel: "preferencyjny"
         exclusif: "ekskluzywny"

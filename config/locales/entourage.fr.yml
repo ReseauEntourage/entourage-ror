@@ -406,6 +406,7 @@ fr:
       public:
         administrative: "Accueil : %s"
         description: "Autres informations importantes : %s"
+        reception: Accueil
       accueil:
         preferentiel: "préférentiel"
         exclusif: "exclusif"

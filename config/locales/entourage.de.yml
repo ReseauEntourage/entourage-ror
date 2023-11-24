@@ -64,6 +64,7 @@ de:
       public:
         administrative: "Startseite: %s"
         description: "Weitere wichtige Informationen: %s"
+        reception: Empfang
       accueil:
         preferentiel: "bevorzugt"
         exclusif: "exklusiv"

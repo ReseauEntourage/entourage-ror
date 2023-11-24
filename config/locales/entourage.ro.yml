@@ -64,6 +64,7 @@ ro:
       public:
         administrative: "Acasă: %s"
         description: "Alte informații importante: %s"
+        reception: Primire
       accueil:
         preferentiel: "preferențial"
         exclusif: "exclusiv"

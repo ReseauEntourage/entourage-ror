@@ -91,7 +91,7 @@ module PoiServices
 
       sentences = []
 
-      accueil = "Accueil #{format_accueil publics['accueil'], lang}"
+      accueil = "#{I18n.t('pois.soliguide.public.reception', locale: lang)} #{format_accueil publics['accueil'], lang}"
 
       sentences << if publics['accueil'] == 0
         accueil

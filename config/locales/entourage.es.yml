@@ -64,6 +64,7 @@ es:
       public:
         administrative: "Inicio: %s"
         description: "Otra información importante: %s"
+        reception: Recepción
       accueil:
         preferentiel: "preferencial"
         exclusif: "exclusivo"

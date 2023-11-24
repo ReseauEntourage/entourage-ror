@@ -64,6 +64,7 @@ ar:
       public:
         administrative: "الصفحة الرئيسية: %s"
         description: "معلومات أخرى هامة: %s"
+        reception: استقبال
       accueil:
         preferentiel: "تفضيلي"
         exclusif: "حصري"

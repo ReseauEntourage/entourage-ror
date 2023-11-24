@@ -64,6 +64,7 @@ uk:
       public:
         administrative: "Головна: %s"
         description: "Інша важлива інформація: %s"
+        reception: прийом
       accueil:
         preferentiel: "переважний"
         exclusif: "ексклюзивний"
