@@ -30,7 +30,7 @@ module Api
       private
 
       def newsletter_subscription_params
-        params.require(:fields).permit(:email, :zone, :status, :active)
+        params.require(:newsletter_subscription).permit(:email, :zone, :status, :active)
       end
     end
   end

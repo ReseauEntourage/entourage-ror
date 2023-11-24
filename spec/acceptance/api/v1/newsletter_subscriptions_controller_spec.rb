@@ -15,7 +15,7 @@ resource Api::V1::NewsletterSubscriptionsController do
 
     let(:raw_post) { {
       token: user.token,
-      fields: {
+      newsletter_subscription: {
         email: 'foo@bar.com',
         active: true
       }

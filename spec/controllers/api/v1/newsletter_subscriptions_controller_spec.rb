@@ -35,7 +35,7 @@ RSpec.describe Api::V1::NewsletterSubscriptionsController, :type => :controller 
       )
     end
 
-    let(:params) {{ fields: {
+    let(:params) {{ newsletter_subscription: {
       email: "foo@bar.fr",
       zone: "NANTES",
       status: "PARTICULIER",
@@ -59,7 +59,7 @@ RSpec.describe Api::V1::NewsletterSubscriptionsController, :type => :controller 
     end
 
     context "with incorrect parameters" do
-      let(:params) {{ fields: {
+      let(:params) {{ newsletter_subscription: {
         not_email_param: "subscriber@newsletter.com",
         not_active_param: true
       }, :format => :json }}
