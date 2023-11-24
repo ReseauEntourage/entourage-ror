@@ -243,7 +243,7 @@ module PoiServices
       return [] unless modalities.present?
       return [] unless modalities['other'].present?
 
-      ["Autres précisions : #{modalities['other']}"]
+      ["#{I18n.t('pois.soliguide.modalities.other_details')} : #{modalities['other']}"]
     end
 
     def self.format_hours hours, lang
@@ -258,17 +258,17 @@ module PoiServices
         next unless hours.present?
 
         day = {
-          'monday'    => 'Lun',
-          'tuesday'   => 'Mar',
-          'wednesday' => 'Mer',
-          'thursday'  => 'Jeu',
-          'friday'    => 'Ven',
-          'saturday'  => 'Sam',
-          'sunday'    => 'Dim',
+          'monday'    => I18n.t("date.abbr_day_names", locale: lang)[1],
+          'tuesday'   => I18n.t("date.abbr_day_names", locale: lang)[2],
+          'wednesday' => I18n.t("date.abbr_day_names", locale: lang)[3],
+          'thursday'  => I18n.t("date.abbr_day_names", locale: lang)[4],
+          'friday'    => I18n.t("date.abbr_day_names", locale: lang)[5],
+          'saturday'  => I18n.t("date.abbr_day_names", locale: lang)[6],
+          'sunday'    => I18n.t("date.abbr_day_names", locale: lang)[0],
         }[day]
 
         if hours['timeslot'].blank?
-          hours = 'Fermé'
+          hours = I18n.t('pois.soliguide.hours.closed', locale: lang)
         else
           hours = hours['timeslot'].map do |timeslot|
             format_hour_range(timeslot['start'], timeslot['end'], lang)
@@ -282,7 +282,7 @@ module PoiServices
     def self.format_hour_range left, right, lang
       bounds = [left, right].map { |bound| format_hour(bound, lang) }
       return if bounds.any?(&:nil?)
-      bounds.join(' à ')
+      bounds.join(" #{I18n.t('pois.soliguide.hours.at')} ")
     end
 
     def self.format_hour seconds, lang

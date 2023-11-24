@@ -98,6 +98,20 @@ pl:
         appointment: "Na spotkanie (%s)"
         inscription: "Na podstawie zapisów (%s)"
         orientation: "Na podstawie orientacji (%s)"
+        other_details: Inne szczegóły
       animal:
         unauthorized: "Zakaz wstępu zwierzętom"
         authorized: "Zwierzęta dozwolone"
+      hours:
+        closed: Zamknięte
+        at: o
+
+  date:
+    abbr_day_names:
+      - niedz.
+      - pon.
+      - wt.
+      - śr.
+      - czw.
+      - pt.
+      - sob.

@@ -98,6 +98,20 @@ de:
         appointment: "Nach Vereinbarung (%s)"
         inscription: "Mit Anmeldung (%s)"
         orientation: "Mit Orientierung (%s)"
+        other_details: Andere Details
       animal:
         unauthorized: "Haustiere nicht erlaubt"
         authorized: "Haustiere erlaubt"
+      hours:
+        closed: Geschlossen
+        at: um
+
+  date:
+    abbr_day_names:
+      - So
+      - Mo
+      - Di
+      - Mi
+      - Do
+      - Fr
+      - Sa

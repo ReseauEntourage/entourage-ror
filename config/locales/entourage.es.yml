@@ -98,6 +98,20 @@ es:
         appointment: "Con cita previa (%s)"
         inscription: "Con inscripción previa (%s)"
         orientation: "Con orientación (%s)"
+        other_details: Otros detalles
       animal:
         unauthorized: "Animales no autorizados"
         authorized: "Animales autorizados"
+      hours:
+        closed: Cerrado
+        at: a las
+
+  date:
+    abbr_day_names:
+      - dom
+      - lun
+      - mar
+      - mié
+      - jue
+      - vie
+      - sáb

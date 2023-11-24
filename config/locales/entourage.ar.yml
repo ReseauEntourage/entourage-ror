@@ -98,6 +98,20 @@ ar:
         appointment: "بموعد (%s)"
         inscription: "بالتسجيل (%s)"
         orientation: "بالتوجيه (%s)"
+        other_details: تفاصيل أخرى
       animal:
         unauthorized: "الحيوانات غير مسموح بها"
         authorized: "الحيوانات مسموح بها"
+      hours:
+        closed: مغلق
+        at: في
+
+  date:
+    abbr_day_names:
+      - الأحد
+      - الاثنين
+      - الثلاثاء
+      - الأربعاء
+      - الخميس
+      - الجمعة
+      - السبت

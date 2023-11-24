@@ -490,7 +490,7 @@ describe PoiServices::Soliguide do
           ]
         }
       } }
-      it { expect(subject).to eq("Lun : 8h00 à 12h30 - 14h00 à 16h30\nMar : 7h00 à 12h30 - 13h30 à 16h30") }
+      it { expect(subject).to eq("lun : 8h00 à 12h30 - 14h00 à 16h30\nmar : 7h00 à 12h30 - 13h30 à 16h30") }
     end
 
     context 'on monday, tuesday' do
@@ -547,7 +547,7 @@ describe PoiServices::Soliguide do
         }
       }
 
-      it { expect(subject).to eq("Lun : 8h00 à 12h30 - 14h00 à 16h45\nMar : 8h00 à 12h30 - 14h00 à 16h45\nMer : 8h00 à 12h30 - 14h00 à 16h45\nJeu : 8h00 à 12h30 - 14h00 à 16h45\nVen : 8h00 à 12h30 - 14h00 à 16h45\nSam : Fermé\nDim : 9h00 à 12h30 - 14h00 à 16h45") }
+      it { expect(subject).to eq("lun : 8h00 à 12h30 - 14h00 à 16h45\nmar : 8h00 à 12h30 - 14h00 à 16h45\nmer : 8h00 à 12h30 - 14h00 à 16h45\njeu : 8h00 à 12h30 - 14h00 à 16h45\nven : 8h00 à 12h30 - 14h00 à 16h45\nsam : Fermé\ndim : 9h00 à 12h30 - 14h00 à 16h45") }
     end
   end
 

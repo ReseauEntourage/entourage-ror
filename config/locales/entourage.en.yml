@@ -98,6 +98,20 @@ en:
         appointment: "By appointment (%s)"
         inscription: "By registration (%s)"
         orientation: "By orientation (%s)"
+        other_details: Other Details
       animal:
         unauthorized: "Pets not allowed"
         authorized: "Pets allowed"
+      hours:
+        closed: Closed
+        at: at
+
+  date:
+    abbr_day_names:
+    - sun
+    - mon
+    - tue
+    - wed
+    - thu
+    - fri
+    - sat
