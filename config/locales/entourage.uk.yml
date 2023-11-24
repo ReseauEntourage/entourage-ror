@@ -76,12 +76,12 @@ uk:
         name: Засіб Гігієни
         subname: мило, гігієнічний захист...
     interests:
-      activities: Ручні Заняття
-      animals: Тварини
-      well_being: Добробут
-      cooking: Кулінарія
+      activites: Ручні Заняття
+      animaux: Тварини
+      bien-etre: Добробут
+      cuisine: Кулінарія
       culture: Мистецтво та Культура
-      games: Ігри
+      jeux: Ігри
       nature: Природа
       sport: Спорт
       marauding: Номадські Зустрічі

@@ -77,12 +77,12 @@ es:
         name: Producto de Higiene
         subname: jabón, protección higiénica...
     interests:
-      activities: Actividades Manuales
-      animals: Animales
-      well_being: Bienestar
-      cooking: Cocina
+      activites: Actividades Manuales
+      animaux: Animales
+      bien-etre: Bienestar
+      cuisine: Cocina
       culture: Arte y Cultura
-      games: Juegos
+      jeux: Juegos
       nature: Naturaleza
       sport: Deporte
       marauding: Encuentros Nómadas

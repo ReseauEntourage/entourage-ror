@@ -77,12 +77,12 @@ ro:
         name: Produs de Igienă
         subname: săpun, protecție igienică...
     interests:
-      activities: Activități Manuale
-      animals: Animale
-      well_being: Bunăstare
-      cooking: Gătit
+      activites: Activități Manuale
+      animaux: Animale
+      bien-etre: Bunăstare
+      cuisine: Gătit
       culture: Artă și Cultură
-      games: Jocuri
+      jeux: Jocuri
       nature: Natură
       sport: Sport
       marauding: Întâlniri Nomade

@@ -8,12 +8,28 @@ class Tag < ApplicationRecord
       I18n.t('tags.interests')
     end
 
+    def interests_t lang
+      interests.to_a.map do |id, value|
+        { id: id, name: I18n.t("tags.interests.#{id}", locale: lang) }
+      end
+    end
+
     def section_list
       sections.keys.map(&:to_s)
     end
 
     def sections
       I18n.t('tags.sections')
+    end
+
+    def sections_t lang
+      sections.to_a.map do |id, values|
+        { id: id }.merge(
+          values.map do |value_id, value|
+            [value_id, I18n.t("tags.sections.#{id}.#{value_id}", locale: lang)]
+          end.to_h
+        )
+      end
     end
 
     def sections_collection
@@ -28,6 +44,12 @@ class Tag < ApplicationRecord
 
     def signals
       I18n.t('tags.signals')
+    end
+
+    def signals_t lang
+      signals.to_a.map do |id, value|
+        { id: id, name: I18n.t("tags.signals.#{id}", locale: lang) }
+      end
     end
 
     def signal_t signal

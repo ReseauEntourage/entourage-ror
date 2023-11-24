@@ -77,12 +77,12 @@ ar:
         name: منتج النظافة
         subname: صابون، حماية النظافة...
     interests:
-      activities: أنشطة يدوية
-      animals: حيوانات
-      well_being: الرفاهية
-      cooking: الطهي
+      activites: أنشطة يدوية
+      animaux: حيوانات
+      bien-etre: الرفاهية
+      cuisine: الطهي
       culture: الفن والثقافة
-      games: ألعاب
+      jeux: ألعاب
       nature: الطبيعة
       sport: رياضة
       marauding: لقاءات تجوالية

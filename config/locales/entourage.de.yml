@@ -77,12 +77,12 @@ de:
         name: Hygieneprodukt
         subname: Seife, Hygieneschutz...
     interests:
-      activities: Manuelle Aktivitäten
-      animals: Tiere
-      well_being: Wohlbefinden
-      cooking: Kochen
+      activites: Manuelle Aktivitäten
+      animaux: Tiere
+      bien-etre: Wohlbefinden
+      cuisine: Kochen
       culture: Kunst & Kultur
-      games: Spiele
+      jeux: Spiele
       nature: Natur
       sport: Sport
       marauding: Nomadische Begegnungen

@@ -77,12 +77,12 @@ en:
         name: Hygiene Product
         subname: soap, hygiene protection...
     interests:
-      activities: Manual Activities
-      animals: Animals
-      well_being: Well-being
-      cooking: Cooking
+      activites: Manual Activities
+      animaux: Animals
+      bien-etre: Well-being
+      cuisine: Cooking
       culture: Art & Culture
-      games: Games
+      jeux: Games
       nature: Nature
       sport: Sport
       marauding: Homelessness Encounters

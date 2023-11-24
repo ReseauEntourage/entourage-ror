@@ -44,9 +44,9 @@ module Api
       def metadata
         render json: {
           tags: {
-            sections: format_sections(Tag.sections),
-            interests: format_tags(Tag.interests),
-            signals: format_tags(Tag.signals)
+            sections: Tag.sections_t(current_user.lang),
+            interests: Tag.interests_t(current_user.lang),
+            signals: Tag.signals_t(current_user.lang)
           }
         }.to_json, status: 200
       end
@@ -93,14 +93,6 @@ module Api
         else
           [:headlines, :outings, :entourage_ask_for_helps, :entourage_contributions]
         end
-      end
-
-      def format_tags tags
-        tags.to_a.map { |t| { id: t.first, name: t.last } }
-      end
-
-      def format_sections sections
-        sections.to_a.map { |t| { id: t.first }.merge(t.last) }
       end
 
       def set_default_neighborhood

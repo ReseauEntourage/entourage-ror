@@ -77,12 +77,12 @@ pl:
         name: Produkt Higieniczny
         subname: mydło, ochrona higieniczna...
     interests:
-      activities: Aktywności Ręczne
-      animals: Zwierzęta
-      well_being: Dobrostan
-      cooking: Gotowanie
+      activites: Aktywności Ręczne
+      animaux: Zwierzęta
+      bien-etre: Dobrostan
+      cuisine: Gotowanie
       culture: Sztuka i Kultura
-      games: Gry
+      jeux: Gry
       nature: Natur
       sport: Sport
       marauding: Spotkania Nomadyczne
