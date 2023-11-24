@@ -98,6 +98,20 @@ ro:
         appointment: "Cu programare (%s)"
         inscription: "Cu înscriere (%s)"
         orientation: "Cu orientare (%s)"
+        other_details: Alte detalii
       animal:
         unauthorized: "Animalele nu sunt permise"
         authorized: "Animalele sunt permise"
+      hours:
+        closed: Închis
+        at: la
+
+  date:
+    abbr_day_names:
+      - dum.
+      - lun.
+      - mar.
+      - mie.
+      - joi
+      - vin.
+      - sâm.

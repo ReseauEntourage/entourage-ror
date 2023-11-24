@@ -440,9 +440,13 @@ fr:
         appointment: "Sur rendez-vous (%s)"
         inscription: "Sur inscription (%s)"
         orientation: "Sur orientation (%s)"
+        other_details: Autres précisions
       animal:
         unauthorized: "Animaux non autorisés"
         authorized: "Animaux autorisés"
+      hours:
+        closed: Fermé
+        at: à
 
   tags:
     sections:

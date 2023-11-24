@@ -98,6 +98,20 @@ uk:
         appointment: "За записом (%s)"
         inscription: "За реєстрацією (%s)"
         orientation: "За орієнтацією (%s)"
+        other_details: Інші деталі
       animal:
         unauthorized: "Тварини не дозволені"
         authorized: "Тварини дозволені"
+      hours:
+        closed: Закрито
+        at: о
+
+  date:
+    abbr_day_names:
+      - нд
+      - пн
+      - вт
+      - сер
+      - чт
+      - пт
+      - сб
