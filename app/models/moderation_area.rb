@@ -1,7 +1,11 @@
 class ModerationArea < ApplicationRecord
   validates :slack_moderator_id, length: { in: 9..11 }, allow_nil: true
 
-  belongs_to :moderator, class_name: :User
+  belongs_to :moderator, class_name: :User, optional: true
+  belongs_to :animator, class_name: :User, optional: true
+  belongs_to :mobilisator, class_name: :User, optional: true
+  belongs_to :sourcing, class_name: :User, optional: true
+  belongs_to :accompanyist, class_name: :User, optional: true
 
   scope :no_hz, -> { where.not(departement: "*") }
 

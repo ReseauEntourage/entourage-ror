@@ -25,21 +25,10 @@
     <%= f.text_field :name, class: "form-control", required: true %>
   </div>
 
-  <div class="form-group">
-    <%= f.label :moderator_id %>
-
-    <% unless @area.new_record? %>
-      <div>
-        <%= link_to UserPresenter.full_name(@area.moderator), [:admin, @area.moderator] %>
-      </div>
-
-      <% unless @area.moderator.moderator? %>
-        <i>Attention, le modérateur choisi n'a pas les autorisations d'un modérateur. Merci d'en préciser un nouveau</i>
-      <% end %>
-    <% end %>
-
-    <%= f.select :moderator_id, options_for_select(moderators_for_select, @area.moderator_id), { include_blank: false }, class: "form-control" %>
-  </div>
+  <%= render_user_selection_field(f, :animator, @area) %>
+  <%= render_user_selection_field(f, :mobilisator, @area) %>
+  <%= render_user_selection_field(f, :sourcing, @area) %>
+  <%= render_user_selection_field(f, :accompanyist, @area) %>
 
   <div class="form-group">
     <%= f.label :slack_moderator_id %>

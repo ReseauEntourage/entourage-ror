@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_11_17_103301) do
+ActiveRecord::Schema.define(version: 2023_11_28_103702) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -475,6 +475,11 @@ ActiveRecord::Schema.define(version: 2023_11_17_103301) do
     t.text "welcome_message_1_goal_not_known"
     t.text "welcome_message_2_goal_not_known"
     t.string "slack_moderator_id"
+    t.boolean "activity", default: false, null: false
+    t.integer "animator_id"
+    t.integer "mobilisator_id"
+    t.integer "sourcing_id"
+    t.integer "accompanyist_id"
     t.index ["departement"], name: "index_moderation_areas_on_departement", unique: true
   end
 

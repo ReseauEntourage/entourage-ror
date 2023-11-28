@@ -3,7 +3,7 @@ module Admin
     layout 'admin_large'
 
     def index
-      @areas = ModerationArea.includes(:moderator).order(:id)
+      @moderation_areas = ModerationArea.order(:id)
     end
 
     def new
@@ -35,11 +35,51 @@ module Admin
       end
     end
 
+    def update_animator
+      @moderation_area = ModerationArea.find(params[:id])
+      @moderation_area.update(animator_id: params[:animator_id])
+      respond_to do |format|
+        format.js { render "admin/moderation_areas/update/animator" }
+        format.html { redirect_to areas_path, notice: 'Animateur mis à jour avec succès.' }
+      end
+    end
+
+    def update_mobilisator
+      @moderation_area = ModerationArea.find(params[:id])
+      @moderation_area.update(mobilisator_id: params[:mobilisator_id])
+      respond_to do |format|
+        format.js { render "admin/moderation_areas/update/mobilisator" }
+        format.html { redirect_to areas_path, notice: 'Mobilisateur mis à jour avec succès.' }
+      end
+    end
+
+    def update_sourcing
+      @moderation_area = ModerationArea.find(params[:id])
+      @moderation_area.update(sourcing_id: params[:sourcing_id])
+      respond_to do |format|
+        format.js { render "admin/moderation_areas/update/sourcing" }
+        format.html { redirect_to areas_path, notice: 'Mobilisateur mis à jour avec succès.' }
+      end
+    end
+
+    def update_accompanyist
+      @moderation_area = ModerationArea.find(params[:id])
+      @moderation_area.update(accompanyist_id: params[:accompanyist_id])
+      respond_to do |format|
+        format.js { render "admin/moderation_areas/update/accompanyist" }
+        format.html { redirect_to areas_path, notice: 'Mobilisateur mis à jour avec succès.' }
+      end
+    end
+
     private
 
     def area_params
       params.require(:moderation_area).permit(
         :moderator_id,
+        :animator_id,
+        :mobilisator_id,
+        :sourcing_id,
+        :accompanyist_id,
         :slack_moderator_id,
         :departement,
         :name,

@@ -102,7 +102,14 @@ Rails.application.routes.draw do
 
       resources :partner_registrations, only: [:index, :show, :edit, :update]
 
-      resources :moderation_areas
+      resources :moderation_areas do
+        member do
+          patch 'update_animator'
+          patch 'update_mobilisator'
+          patch 'update_sourcing'
+          patch 'update_accompanyist'
+        end
+      end
       resources :tour_areas
 
       resources :uploads, only: :new
