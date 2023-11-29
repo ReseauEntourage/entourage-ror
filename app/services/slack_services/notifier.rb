@@ -1,6 +1,6 @@
 module SlackServices
   class Notifier
-    DEFAULT_SLACK_MODERATOR_ID = 'louis'
+    DEFAULT_SLACK_MODERATOR_ID = 'clemence'
 
     def notify
       notifier&.ping payload.merge(payload_adds)
@@ -38,7 +38,9 @@ module SlackServices
     def slack_moderator_id object
       moderation_area = ModerationServices.moderation_area_for_departement(departement(object), community: $server_community)
       moderation_area = ModerationServices.moderation_area_for_departement('*', community: $server_community) unless moderation_area.present?
+
       return DEFAULT_SLACK_MODERATOR_ID unless moderation_area.present?
+      return DEFAULT_SLACK_MODERATOR_ID unless moderation_area.slack_moderator_id
 
       moderation_area.slack_moderator_id
     end

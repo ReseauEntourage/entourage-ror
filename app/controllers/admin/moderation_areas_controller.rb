@@ -3,7 +3,7 @@ module Admin
     layout 'admin_large'
 
     def index
-      @moderation_areas = ModerationArea.order(:id)
+      @moderation_areas = ModerationArea.includes(:moderator, :animator, :mobilisator, :sourcing, :accompanyist, :community_builder).order(:id)
     end
 
     def new
@@ -90,7 +90,6 @@ module Admin
         :sourcing_id,
         :accompanyist_id,
         :community_builder_id,
-        :slack_moderator_id,
         :departement,
         :name,
         :welcome_message_1_offer_help,

@@ -1,8 +1,5 @@
 <div class="container">
   <div class="row">
-    <div class="col-xs-offset-2 col-xs-8">
-
-
       <div class="h1" style="display: flex; align-items: center;">
         <div style="flex-grow: 1">Zones de modération</div>
         <%= link_to "Ajouter une zone de modération", new_admin_moderation_area_path, class: "btn btn-default" %>
@@ -16,7 +13,9 @@
           <th>Mobilisateur</th>
           <th>Sourcing</th>
           <th>Accompagnateur</th>
-          <th>Lien vers l'identifiant Slack</th>
+          <th>Community builder</th>
+          <th>Slack ID</th>
+          <th>Slack ID par défaut</th>
         </tr>
         <% @moderation_areas.each do |moderation_area| %>
           <tr>
@@ -30,10 +29,10 @@
             <td><%= render partial: "admin/moderation_areas/update/community_builder_form", locals: { moderation_area: moderation_area } %></td>
 
             <td><%= link_to moderation_area.slack_moderator_id, "https://resentourage.slack.com/team/#{moderation_area.slack_moderator_id}", target: :_blank if moderation_area.slack_moderator_id.present? %></td>
+            <td><%= link_to moderation_area.slack_moderator_id_with_fallback, "https://resentourage.slack.com/team/#{moderation_area.slack_moderator_id_with_fallback}", target: :_blank if moderation_area.slack_moderator_id_with_fallback.present? %></td>
           </tr>
         <% end %>
       </table>
-    </div>
   </div>
 </div>
 

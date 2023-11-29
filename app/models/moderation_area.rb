@@ -12,6 +12,19 @@ class ModerationArea < ApplicationRecord
 
   HORS_ZONE = "*"
 
+  def slack_moderator_id
+    animator_with_fallback.slack_id
+  end
+
+  def slack_moderator_id_with_fallback
+    slack_moderator_id ||
+      mobilisator_with_fallback.slack_id ||
+      accompanyist_with_fallback.slack_id ||
+      sourcing_with_fallback.slack_id ||
+      default_interlocutor.slack_id ||
+      SlackServices::Notifier::DEFAULT_SLACK_MODERATOR_ID
+  end
+
   def default_interlocutor
     ModerationServices.moderator_if_exists(community: :entourage)
   end

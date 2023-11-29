@@ -31,15 +31,6 @@
   <%= render_user_selection_field(f, :accompanyist, @area) %>
   <%= render_user_selection_field(f, :community_builder, @area) %>
 
-  <div class="form-group">
-    <%= f.label :slack_moderator_id %>
-    <span class="glyphicon glyphicon-question-sign" aria-hidden="true" data-toggle="tooltip" data-placement="top" title="
-      Vous pouvez trouver l'identifiant Slack sur le profil Slack de l'utilisateur, bouton '...' (Plus), Copier l'ID de membre
-    "></span>
-
-    <%= f.text_field :slack_moderator_id, class: "form-control", maxlength: 11 %>
-  </div>
-
   <div>
     <!-- Nav tabs -->
     <ul class="nav nav-tabs" style="margin-bottom: 15px">
