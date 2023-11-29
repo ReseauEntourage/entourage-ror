@@ -96,7 +96,9 @@ module ModerationServices
   end
 
   def self.moderator_for_user user
-    moderation_area_for_user_with_default(user)&.moderator
+    return moderator_if_exists(community: :entourage) unless moderation_area = moderation_area_for_user_with_default(user)
+
+    moderator_area.interlocutor_for_user(user)
   end
 
   def self.default_moderation_area

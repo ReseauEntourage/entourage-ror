@@ -12,6 +12,38 @@ class ModerationArea < ApplicationRecord
 
   HORS_ZONE = "*"
 
+  def default_interlocutor
+    ModerationServices.moderator_if_exists(community: :entourage)
+  end
+
+  def interlocutor_for_user user
+    return default_interlocutor unless user.present?
+    return accompanyist_with_fallback if user.is_ask_for_help? && activity?
+    return sourcing_with_fallback if user.is_ask_for_help?
+
+    mobilisator_with_fallback
+  end
+
+  def animator_with_fallback
+    animator || mobilisator_with_fallback
+  end
+
+  def mobilisator_with_fallback
+    mobilisator || accompanyist || sourcing || default_interlocutor
+  end
+
+  def sourcing_with_fallback
+    sourcing || accompanyist || mobilisator || default_interlocutor
+  end
+
+  def accompanyist_with_fallback
+    accompanyist || sourcing || mobilisator || default_interlocutor
+  end
+
+  def community_builder_with_fallback
+    community_builder || mobilisator_with_fallback
+  end
+
   def departement_slug
     self.class.departement_slug(departement)
   end
