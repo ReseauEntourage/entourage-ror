@@ -35,6 +35,15 @@ module Admin
       end
     end
 
+    def update_moderator
+      @moderation_area = ModerationArea.find(params[:id])
+      @moderation_area.update(moderator_id: params[:moderator_id])
+      respond_to do |format|
+        format.js { render "admin/moderation_areas/update/moderator" }
+        format.html { redirect_to admin_moderation_areas, notice: 'Modérateur mis à jour avec succès.' }
+      end
+    end
+
     def update_animator
       @moderation_area = ModerationArea.find(params[:id])
       @moderation_area.update(animator_id: params[:animator_id])
