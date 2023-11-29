@@ -27,6 +27,7 @@
             <td><%= render partial: "admin/moderation_areas/update/mobilisator_form", locals: { moderation_area: moderation_area } %></td>
             <td><%= render partial: "admin/moderation_areas/update/sourcing_form", locals: { moderation_area: moderation_area } %></td>
             <td><%= render partial: "admin/moderation_areas/update/accompanyist_form", locals: { moderation_area: moderation_area } %></td>
+            <td><%= render partial: "admin/moderation_areas/update/community_builder_form", locals: { moderation_area: moderation_area } %></td>
 
             <td><%= link_to moderation_area.slack_moderator_id, "https://resentourage.slack.com/team/#{moderation_area.slack_moderator_id}", target: :_blank if moderation_area.slack_moderator_id.present? %></td>
           </tr>

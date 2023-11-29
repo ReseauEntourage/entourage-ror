@@ -6,6 +6,7 @@ class ModerationArea < ApplicationRecord
   belongs_to :mobilisator, class_name: :User, optional: true
   belongs_to :sourcing, class_name: :User, optional: true
   belongs_to :accompanyist, class_name: :User, optional: true
+  belongs_to :community_builder, class_name: :User, optional: true
 
   scope :no_hz, -> { where.not(departement: "*") }
 

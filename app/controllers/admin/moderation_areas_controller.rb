@@ -40,7 +40,7 @@ module Admin
       @moderation_area.update(animator_id: params[:animator_id])
       respond_to do |format|
         format.js { render "admin/moderation_areas/update/animator" }
-        format.html { redirect_to areas_path, notice: 'Animateur mis à jour avec succès.' }
+        format.html { redirect_to admin_moderation_areas, notice: 'Animateur mis à jour avec succès.' }
       end
     end
 
@@ -49,7 +49,7 @@ module Admin
       @moderation_area.update(mobilisator_id: params[:mobilisator_id])
       respond_to do |format|
         format.js { render "admin/moderation_areas/update/mobilisator" }
-        format.html { redirect_to areas_path, notice: 'Mobilisateur mis à jour avec succès.' }
+        format.html { redirect_to admin_moderation_areas, notice: 'Mobilisateur mis à jour avec succès.' }
       end
     end
 
@@ -58,7 +58,7 @@ module Admin
       @moderation_area.update(sourcing_id: params[:sourcing_id])
       respond_to do |format|
         format.js { render "admin/moderation_areas/update/sourcing" }
-        format.html { redirect_to areas_path, notice: 'Mobilisateur mis à jour avec succès.' }
+        format.html { redirect_to admin_moderation_areas, notice: 'Mobilisateur mis à jour avec succès.' }
       end
     end
 
@@ -67,7 +67,16 @@ module Admin
       @moderation_area.update(accompanyist_id: params[:accompanyist_id])
       respond_to do |format|
         format.js { render "admin/moderation_areas/update/accompanyist" }
-        format.html { redirect_to areas_path, notice: 'Mobilisateur mis à jour avec succès.' }
+        format.html { redirect_to admin_moderation_areas, notice: 'Mobilisateur mis à jour avec succès.' }
+      end
+    end
+
+    def update_community_builder
+      @moderation_area = ModerationArea.find(params[:id])
+      @moderation_area.update(community_builder_id: params[:community_builder_id])
+      respond_to do |format|
+        format.js { render "admin/moderation_areas/update/community_builder" }
+        format.html { redirect_to admin_moderation_areas, notice: 'Community builder mis à jour avec succès.' }
       end
     end
 
@@ -80,6 +89,7 @@ module Admin
         :mobilisator_id,
         :sourcing_id,
         :accompanyist_id,
+        :community_builder_id,
         :slack_moderator_id,
         :departement,
         :name,

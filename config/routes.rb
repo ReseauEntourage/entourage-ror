@@ -108,6 +108,7 @@ Rails.application.routes.draw do
           patch 'update_mobilisator'
           patch 'update_sourcing'
           patch 'update_accompanyist'
+          patch 'update_community_builder'
         end
       end
       resources :tour_areas
