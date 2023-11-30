@@ -14,7 +14,7 @@ module Onboarding
           Raven.user_context(id: user&.id)
 
           moderation_area = ModerationServices.moderation_area_for_user_with_default(user)
-          author = moderation_area.moderator
+          author = moderation_area.interlocutor_for_user(user)
 
           if conversation = conversation_with([author.id, user.id])
             join_request = JoinRequest.find_by(joinable: conversation, user: author, status: :accepted)
