@@ -55,7 +55,10 @@
         <%= f.select :status_in, entourage_type_statuses, {}, class: 'form-control', multiple: true, style: "width: 200px" %>
       </div>
       <div class="input-group">
-        
+        <% if @q.group_type_eq == "outing" %>
+          <%= link_to "Exporter", download_list_export_admin_entourages_path(@params), class: "btn btn-default" %>
+        <% end %>
+
           <%= link_to "Réinitialiser les filtres", admin_entourages_path(q: {
             group_type_eq: 'action',
             pin_eq: 'false',
