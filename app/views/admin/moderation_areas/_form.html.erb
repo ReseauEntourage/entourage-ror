@@ -5,6 +5,22 @@
 <%= render partial: 'common/errors', locals: {obj: @area} %>
 
 <%= form_for [:admin, @area], html: { role: "form" } do |f| %>
+  <% if @area.activity? %>
+    <div class="alert alert-info" role="alert" style="display: flex; align-items: center">
+      <div style="flex-grow: 1">
+        <b>Zone active</b><br>
+        Ce département est considéré comme une zone active : il s'agit d'une antenne d'Entourage ou d'une zone activement gérée par des ambassadeurs.
+      </div>
+    </div>
+  <% else %>
+    <div class="alert alert-danger" role="alert" style="display: flex; align-items: center">
+      <div style="flex-grow: 1">
+        <b>Zone non active</b><br>
+        Ce département est considéré comme une zone non active : il n'est rattaché à aucune antenne d'Entourage ni n'est activement géré par des ambassadeurs.
+      </div>
+    </div>
+  <% end %>
+
   <div class="form-group">
     <%= f.label :departement %>
 
