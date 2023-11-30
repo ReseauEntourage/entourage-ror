@@ -1,4 +1,8 @@
 module ModerationAreaHelper
+  def region_text_for moderation_area
+    "#{ModerationServices::Region.region_name(moderation_area.region)} (#{moderation_area.departement})"
+  end
+
   def render_user_selection_field(form, attribute, area)
     content_tag(:div, class: 'form-group') do
       concat form.label "#{attribute}_id".to_sym

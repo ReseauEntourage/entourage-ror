@@ -12,6 +12,10 @@ class ModerationArea < ApplicationRecord
 
   HORS_ZONE = "*"
 
+  def region
+    ModerationServices::Region.for_department(departement)
+  end
+
   def slack_moderator
     animator
   end

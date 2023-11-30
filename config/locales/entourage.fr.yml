@@ -401,6 +401,15 @@ fr:
       offer: "On peut le dire, vous faites maintenant partie de la communauté Entourage. Ça se fête ! 🎉"
       ask: "On peut le dire, vous faites maintenant partie de la communauté Entourage. Ça se fête ! 🎉"
 
+  regions:
+    aura: Auvergne-Rhône-Alpes
+    bretagne: Bretagne
+    hdf: Hauts-de-France
+    idf: Ile-de-France
+    paca: Provence-Alpes-Côte d'Azur
+    gironde: Gironde
+    digital_community: Communauté digitale
+
   pois:
     soliguide:
       public:
