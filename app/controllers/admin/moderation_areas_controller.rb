@@ -3,7 +3,12 @@ module Admin
     layout 'admin_large'
 
     def index
-      @moderation_areas = ModerationArea.includes(:moderator, :animator, :mobilisator, :sourcing, :accompanyist, :community_builder).order(:id)
+      @params = params.permit(:region)
+
+      @moderation_areas = ModerationArea
+        .includes(:moderator, :animator, :mobilisator, :sourcing, :accompanyist, :community_builder)
+        .in_region(@params[:region])
+        .order(:id)
     end
 
     def new

@@ -18,9 +18,31 @@ module ModerationServices
       )
     }.freeze
 
-    # def self.names
-    #   DEPARTMENTS_IN_REGION.keys
-    # end
+    RegionStruct = Struct.new(:id, :name, :departments) do
+      def initialize id:, name:, departments:
+        @id = id
+        @name = name
+        @departments = departments
+      end
+
+      def id
+        @id
+      end
+
+      def name
+        @name
+      end
+
+      def departements
+        @departements
+      end
+    end
+
+    def self.regions
+      DEPARTMENTS_IN_REGION.keys.map do |region|
+        RegionStruct.new(id: region, name: region_name(region), departments: departments_in(region))
+      end
+    end
 
     # def self.departments
     #   DEPARTMENTS_IN_REGION.values.flatten

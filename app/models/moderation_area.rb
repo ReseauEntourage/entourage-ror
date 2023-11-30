@@ -9,6 +9,11 @@ class ModerationArea < ApplicationRecord
   belongs_to :community_builder, class_name: :User, optional: true
 
   scope :no_hz, -> { where.not(departement: "*") }
+  scope :in_region, -> (region) {
+    return unless region.present?
+
+    where(departement: ModerationServices::Region.departments_in(region))
+  }
 
   HORS_ZONE = "*"
 

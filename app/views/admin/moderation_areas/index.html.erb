@@ -2,7 +2,18 @@
   <div class="row">
       <div class="h1" style="display: flex; align-items: center;">
         <div style="flex-grow: 1">Zones de modération</div>
-        <%= link_to "Ajouter une zone de modération", new_admin_moderation_area_path, class: "btn btn-default" %>
+      </div>
+
+      <div style="margin-bottom: 15px; display: flex">
+        <div class="btn-group btn-group-sm">
+          <% ModerationServices::Region.regions.each do |region| %>
+            <%= link_to(region.name, @params.merge(region: region.id), class: "btn btn-#{@params[:region] == region.id.to_s ? :primary : :default}") %>
+          <% end %>
+        </div>
+
+        <div style="margin-left: 15px">
+          <%= link_to "Ajouter une zone de modération", new_admin_moderation_area_path, class: "btn btn-default-sm" %>
+        </div>
       </div>
 
       <table class="table">
