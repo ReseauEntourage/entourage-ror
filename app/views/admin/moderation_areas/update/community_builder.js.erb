@@ -1,3 +1,11 @@
 $('#update-community-builder-form-<%= @moderation_area.id %>').html('<%= escape_javascript(
   render partial: "admin/moderation_areas/update/community_builder_form", locals: { moderation_area: @moderation_area }) %>'
 );
+
+$('#update-slack-id-<%= @moderation_area.id %>').html('<%= escape_javascript(
+  render partial: "admin/moderation_areas/fields/slack_id", locals: { moderation_area: @moderation_area }) %>'
+);
+
+$('#update-default-slack-id-<%= @moderation_area.id %>').html('<%= escape_javascript(
+  render partial: "admin/moderation_areas/fields/default_slack_id", locals: { moderation_area: @moderation_area }) %>'
+);

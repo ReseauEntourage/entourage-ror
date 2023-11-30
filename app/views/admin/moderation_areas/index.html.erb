@@ -30,8 +30,8 @@
             <td><%= render partial: "admin/moderation_areas/update/accompanyist_form", locals: { moderation_area: moderation_area } %></td>
             <td><%= render partial: "admin/moderation_areas/update/community_builder_form", locals: { moderation_area: moderation_area } %></td>
 
-            <td><%= link_to moderation_area.slack_moderator_id, "https://resentourage.slack.com/team/#{moderation_area.slack_moderator_id}", target: :_blank if moderation_area.slack_moderator_id.present? %></td>
-            <td><%= link_to moderation_area.slack_moderator_id_with_fallback, "https://resentourage.slack.com/team/#{moderation_area.slack_moderator_id_with_fallback}", target: :_blank if moderation_area.slack_moderator_id_with_fallback.present? %></td>
+            <td><%= render partial: "admin/moderation_areas/fields/slack_id", locals: { moderation_area: moderation_area } %></td>
+            <td><%= render partial: "admin/moderation_areas/fields/default_slack_id", locals: { moderation_area: moderation_area } %></td>
           </tr>
         <% end %>
       </table>
@@ -40,7 +40,7 @@
 
 <script type="text/javascript">
   $(document).ready(function() {
-    $('.update-select').change(function() {
+    $(document).on('change', '.update-select', function() {
       $(this).closest('form').submit();
     });
   });

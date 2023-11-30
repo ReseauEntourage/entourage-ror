@@ -1,0 +1,7 @@
+<div id="update-slack-id-<%= moderation_area.id %>">
+  <% if moderation_area.slack_moderator_id %>
+    <%= link_to moderation_area.slack_moderator_id, "https://resentourage.slack.com/team/#{moderation_area.slack_moderator_id}", target: :_blank %>
+  <% elsif moderation_area.slack_moderator %>
+    <%= link_to "Définir", admin_users_path(moderation_area.slack_moderator.id) %>
+  <% end %>
+</div>

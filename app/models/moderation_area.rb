@@ -12,8 +12,12 @@ class ModerationArea < ApplicationRecord
 
   HORS_ZONE = "*"
 
+  def slack_moderator
+    animator
+  end
+
   def slack_moderator_id
-    animator_with_fallback.try(:slack_id)
+    slack_moderator.try(:slack_id)
   end
 
   def slack_moderator_id_with_fallback
