@@ -1,0 +1,78 @@
+// tables
+
+table.custom-table {
+    font-family: "Poppins";
+    font-size: 15px !important;
+    thead {
+        th {
+            font-size: 13px !important;
+            font-weight: 400;
+            color: rgb(153, 153, 153);
+            padding: 15px !important;
+        }
+    }
+    tbody {
+        border-collapse: separate;
+        border-spacing: 0px 5px;
+        tr {
+            height: 70px;
+            box-sizing: border-box;
+            border-top: 1px solid rgb(245, 245, 245);
+            border-bottom: 1px solid rgb(245, 245, 245);
+            &:nth-child(2n+1) {
+                background-color: rgb(249, 249, 249);
+            }
+            td {
+                padding: 15px !important;
+                a {
+                    color: black;
+                    font-weight: 700;
+                    &:hover {
+                        text-decoration: none;
+                        color: $orange;
+                    }
+                }
+            }
+        }
+    }
+}
+
+// Nav tabs
+
+.custom-nav-tabs {
+    border-bottom: 1px solid rgb(217, 217, 217);
+    width: 100%;
+    padding-left: 0px;
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    margin: 24px 0;
+    font-size: 18px;
+    li {
+        list-style: none;
+        width: 20%;
+        text-align: center;
+        a {
+            border: 0px;
+            border-radius: 0px;
+            font-weight: 400;
+            color: rgb(153, 153, 153);
+            padding: 12px 20px;
+            width: 100%;
+            display: block;
+            margin-bottom: -1px;
+            text-decoration: none;
+            &.default:hover {
+                background-color: unset;
+                opacity: 0.5;
+            }
+            &.active {
+                border-bottom: 3px solid $orange;
+                color: $orange;
+                &:hover {
+                    cursor: default;
+                }
+            }
+        }
+    }
+}

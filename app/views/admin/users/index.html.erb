@@ -48,11 +48,15 @@
     <div class="btn-group btn-group-sm">
       <% location_keys = [:country_eq, :postal_code_start, :postal_code_not_start_all] %>
       <% active = locations.key q.slice(*location_keys).compact.symbolize_keys %>
+      
+      <%= link_to("Partout", @params.merge(q: q.except(*location_keys)), class: "btn btn-#{(!@params.keys.include? 'q') ? :primary : :default}") %>
 
-      <% locations.each do |name, options| %>
-        <%= link_to(name, @params.merge(q: q.except(*location_keys).merge(options)),
-          class: "btn btn-#{active == name ? :primary : :default}"
-        ) %>
+      <% locations.sort.each do |name, options| %>
+        <% if (name != "Partout") %>
+          <%= link_to(name, @params.merge(q: q.except(*location_keys).merge(options)),
+            class: "btn btn-#{active == name ? :primary : :default}"
+          ) %>
+        <% end %>
       <% end %>
     </div>
   </div>
