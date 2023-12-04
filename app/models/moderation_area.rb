@@ -8,6 +8,8 @@ class ModerationArea < ApplicationRecord
   belongs_to :accompanyist, class_name: :User, optional: true
   belongs_to :community_builder, class_name: :User, optional: true
 
+  before_save :slack_id_no_empty
+
   scope :no_hz, -> { where.not(departement: "*") }
   scope :in_region, -> (region) {
     return unless region.present?
@@ -160,5 +162,11 @@ class ModerationArea < ApplicationRecord
 
   def self.only_departements
     pluck(:departement) - ['*', '_']
+  end
+
+  private
+
+  def slack_id_no_empty
+    self.slack_id = nil if slack_id.blank?
   end
 end
