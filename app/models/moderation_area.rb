@@ -52,23 +52,23 @@ class ModerationArea < ApplicationRecord
   end
 
   def animator_with_fallback
-    animator || mobilisator_with_fallback
+    animator || mobilisator || community_builder || default_interlocutor
   end
 
   def mobilisator_with_fallback
-    mobilisator || accompanyist || sourcing || default_interlocutor
+    mobilisator || accompanyist || community_builder || default_interlocutor
   end
 
   def sourcing_with_fallback
-    sourcing || accompanyist || mobilisator || default_interlocutor
+    sourcing || accompanyist || mobilisator || community_builder || default_interlocutor
   end
 
   def accompanyist_with_fallback
-    accompanyist || sourcing || mobilisator || default_interlocutor
+    accompanyist || sourcing || mobilisator || community_builder || default_interlocutor
   end
 
   def community_builder_with_fallback
-    community_builder || mobilisator_with_fallback
+    community_builder || mobilisator || accompanyist || default_interlocutor
   end
 
   def departement_slug
