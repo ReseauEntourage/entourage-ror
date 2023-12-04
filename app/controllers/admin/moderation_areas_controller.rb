@@ -54,7 +54,7 @@ module Admin
       @moderation_area.update(animator_id: params[:animator_id])
       respond_to do |format|
         format.js { render "admin/moderation_areas/update/animator" }
-        format.html { redirect_to admin_moderation_areas, notice: 'Animateur mis à jour avec succès.' }
+        format.html { redirect_to admin_moderation_areas, notice: 'Com-anim mis à jour avec succès.' }
       end
     end
 
@@ -63,7 +63,7 @@ module Admin
       @moderation_area.update(mobilisator_id: params[:mobilisator_id])
       respond_to do |format|
         format.js { render "admin/moderation_areas/update/mobilisator" }
-        format.html { redirect_to admin_moderation_areas, notice: 'Mobilisateur mis à jour avec succès.' }
+        format.html { redirect_to admin_moderation_areas, notice: 'Mob-anim mis à jour avec succès.' }
       end
     end
 
@@ -72,7 +72,7 @@ module Admin
       @moderation_area.update(sourcing_id: params[:sourcing_id])
       respond_to do |format|
         format.js { render "admin/moderation_areas/update/sourcing" }
-        format.html { redirect_to admin_moderation_areas, notice: 'Mobilisateur mis à jour avec succès.' }
+        format.html { redirect_to admin_moderation_areas, notice: 'Sourcing mis à jour avec succès.' }
       end
     end
 
@@ -81,7 +81,7 @@ module Admin
       @moderation_area.update(accompanyist_id: params[:accompanyist_id])
       respond_to do |format|
         format.js { render "admin/moderation_areas/update/accompanyist" }
-        format.html { redirect_to admin_moderation_areas, notice: 'Mobilisateur mis à jour avec succès.' }
+        format.html { redirect_to admin_moderation_areas, notice: 'Accompagnement mis à jour avec succès.' }
       end
     end
 
