@@ -29,6 +29,7 @@ class User < ApplicationRecord
   validate :validate_partner!
   validate :validate_birthday!
 
+  before_save :slack_id_no_empty
   after_save :clean_up_passwords, if: :saved_change_to_encrypted_password?
 
   has_many :tours
@@ -614,6 +615,10 @@ class User < ApplicationRecord
   end
 
   protected
+
+  def slack_id_no_empty
+    self.slack_id = nil if slack_id.blank?
+  end
 
   def clean_up_passwords
     self.password = nil
