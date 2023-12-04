@@ -40,9 +40,8 @@ module SlackServices
       moderation_area = ModerationServices.moderation_area_for_departement('*', community: $server_community) unless moderation_area.present?
 
       return DEFAULT_SLACK_MODERATOR_ID unless moderation_area.present?
-      return DEFAULT_SLACK_MODERATOR_ID unless moderation_area.slack_moderator_id
 
-      moderation_area.slack_moderator_id
+      moderation_area.slack_moderator_id_with_fallback
     end
 
     def departement object
