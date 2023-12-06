@@ -1,5 +1,7 @@
 module Admin
   class ModerationAreasController < Admin::BaseController
+    before_action :authenticate_super_admin!, except: [:index, :show]
+
     layout 'admin_large'
 
     def index

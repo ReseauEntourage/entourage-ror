@@ -14,7 +14,7 @@
         </div>
 
         <div class="btn-group btn-group-sm" style="margin-left: 15px">
-          <%= link_to "Ajouter une zone de modération", new_admin_moderation_area_path, class: "btn btn-default" %>
+          <%= link_to "Ajouter une zone de modération", new_admin_moderation_area_path, class: "btn btn-default" if current_user.super_admin? %>
         </div>
       </div>
 
