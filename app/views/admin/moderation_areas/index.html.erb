@@ -29,7 +29,6 @@
           <th>Accompagnement</th>
           <th>Community builder</th>
           <th>Slack ID</th>
-          <th>Slack ID par défaut</th>
         </tr>
         <% @moderation_areas.each do |moderation_area| %>
           <tr>
@@ -51,7 +50,6 @@
             <td><%= render partial: "admin/moderation_areas/update/community_builder_form", locals: { moderation_area: moderation_area } %></td>
 
             <td><%= render partial: "admin/moderation_areas/fields/slack_id", locals: { moderation_area: moderation_area } %></td>
-            <td><%= render partial: "admin/moderation_areas/fields/default_slack_id", locals: { moderation_area: moderation_area } %></td>
           </tr>
         <% end %>
       </table>
