@@ -29,6 +29,10 @@ module Admin
       @area = ModerationArea.find(params[:id])
     end
 
+    def show
+      @area = ModerationArea.find(params[:id])
+    end
+
     def update
       @area = ModerationArea.find(params[:id])
       @area.assign_attributes(area_params)
