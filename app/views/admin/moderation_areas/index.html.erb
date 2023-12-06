@@ -22,12 +22,12 @@
         <tr>
           <th></th>
           <th></th>
-          <th>Modérateur</th>
-          <th>Com-anim</th>
-          <th>Mob-anim</th>
-          <th>Sourcing</th>
-          <th>Accompagnement</th>
-          <th>Community builder</th>
+          <th><%= t('activerecord.attributes.moderation_area.moderator_id') %></th>
+          <th><%= t('activerecord.attributes.moderation_area.animator_id') %></th>
+          <th><%= t('activerecord.attributes.moderation_area.mobilisator_id') %></th>
+          <th><%= t('activerecord.attributes.moderation_area.sourcing_id') %></th>
+          <th><%= t('activerecord.attributes.moderation_area.accompanyist_id') %></th>
+          <th><%= t('activerecord.attributes.moderation_area.community_builder_id') %></th>
           <th>Slack ID</th>
         </tr>
         <% @moderation_areas.each do |moderation_area| %>

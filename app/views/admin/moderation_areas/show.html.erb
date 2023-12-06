@@ -35,32 +35,32 @@
           </p>
 
           <p>
-            <strong>Moderateur:</strong>
+            <strong><%= label_tag :moderator_id, t('activerecord.attributes.moderation_area.moderator_id') %></strong>
             <%= @area.moderator.try(:full_name) %>
           </p>
 
           <p>
-            <strong>Animator:</strong>
+            <strong><%= label_tag :moderator_id, t('activerecord.attributes.moderation_area.animator_id') %></strong>
             <%= @area.animator.try(:full_name) %>
           </p>
 
           <p>
-            <strong>Mobilisator:</strong>
+            <strong><%= label_tag :moderator_id, t('activerecord.attributes.moderation_area.mobilisator_id') %></strong>
             <%= @area.mobilisator.try(:full_name) %>
           </p>
 
           <p>
-            <strong>Sourcing:</strong>
+            <strong><%= label_tag :moderator_id, t('activerecord.attributes.moderation_area.sourcing_id') %></strong>
             <%= @area.sourcing.try(:full_name) %>
           </p>
 
           <p>
-            <strong>Accompanyist:</strong>
+            <strong><%= label_tag :moderator_id, t('activerecord.attributes.moderation_area.accompanyist_id') %></strong>
             <%= @area.accompanyist.try(:full_name) %>
           </p>
 
           <p>
-            <strong>Community_builder:</strong>
+            <strong><%= label_tag :moderator_id, t('activerecord.attributes.moderation_area.community_builder_id') %></strong>
             <%= @area.community_builder.try(:full_name) %>
           </p>
 
