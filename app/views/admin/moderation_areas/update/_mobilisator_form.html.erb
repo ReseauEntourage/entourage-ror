@@ -1,3 +1,5 @@
 <%= form_tag(update_mobilisator_admin_moderation_area_path(moderation_area), method: :patch, remote: true, id: "update-mobilisator-form-#{moderation_area.id}", class: "update-form") do %>
-  <%= select_tag 'mobilisator_id', options_for_select(moderators_for_select, moderation_area.mobilisator_id), include_blank: true, class: "form-control update-select" %>
+  <div class="btn btn-<%= moderation_area.mobilisator.try(:slack_id) ? "default" : "danger" %>">
+    <%= select_tag 'mobilisator_id', options_for_select(moderators_for_select, moderation_area.mobilisator_id), include_blank: true, class: "form-control update-select" %>
+  </div>
 <% end %>

@@ -1,3 +1,5 @@
 <%= form_tag(update_accompanyist_admin_moderation_area_path(moderation_area), method: :patch, remote: true, id: "update-accompanyist-form-#{moderation_area.id}", class: "update-form") do %>
-  <%= select_tag 'accompanyist_id', options_for_select(moderators_for_select, moderation_area.accompanyist_id), include_blank: true, class: "form-control update-select" %>
+  <div class="btn btn-<%= moderation_area.accompanyist.try(:slack_id) ? "default" : "danger" %>">
+    <%= select_tag 'accompanyist_id', options_for_select(moderators_for_select, moderation_area.accompanyist_id), include_blank: true, class: "form-control update-select" %>
+  </div>
 <% end %>
