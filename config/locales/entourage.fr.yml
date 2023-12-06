@@ -297,7 +297,7 @@ fr:
         visitor: Visiteur
       targeting_profiles:
         offers_help: Riverain
-        asks_for_help: SDF
+        asks_for_help: Personne préca
         partner: Association
         ambassador: Ambassadeur
         team: Équipe Entourage
@@ -321,7 +321,7 @@ fr:
     user:
       profiles:
         offer_help: Voisin solidaire
-        ask_for_help: Personne isolée
+        ask_for_help: Personne préca
         organization: Association
         goal_not_known: Non défini
         all: Tous profils
