@@ -22,7 +22,7 @@ class ModerationArea < ApplicationRecord
   end
 
   def slack_moderator
-    animator
+    moderator
   end
 
   def slack_moderator_id
