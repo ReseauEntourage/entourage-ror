@@ -267,7 +267,7 @@ class PushNotificationTrigger
       users: users,
       params: {
         object: I18nStruct.new(instance: @record, field: :title),
-        content: I18nStruct.new(i18n: 'push_notifications.outing.cancel', i18n_args: to_date(@record.starts_at)),
+        content: I18nStruct.new(i18n: 'push_notifications.outing.cancel', i18n_args: [to_date(@record.starts_at)]),
         extra: {
           tracking: :outing_on_cancel
         }
@@ -453,7 +453,7 @@ class PushNotificationTrigger
       users: [@record.user],
       params: {
         object: title(@record.joinable) || I18nStruct.new(i18n: 'push_notifications.join_request.update'),
-        content: I18nStruct.new(i18n: content_key, i18n_args: username(@record.joinable.user)),
+        content: I18nStruct.new(i18n: content_key, i18n_args: [username(@record.joinable.user)]),
         extra: {
           joinable_id: @record.joinable_id,
           joinable_type: @record.joinable_type,
@@ -540,7 +540,7 @@ class PushNotificationTrigger
     return I18nStruct.new(i18n: 'push_notifications.contribution.create') if object.contribution?
     return I18nStruct.new(i18n: 'push_notifications.solicitation.create') unless section = Solicitation.find(object.id).section
 
-    I18nStruct.new(i18n: 'push_notifications.solicitation.create_section', i18n_args: I18n.t("tags.sections.#{section}.name").downcase)
+    I18nStruct.new(i18n: 'push_notifications.solicitation.create_section', i18n_args: [I18n.t("tags.sections.#{section}.name").downcase])
   end
 
   def to_date date_str
@@ -560,6 +560,6 @@ class PushNotificationTrigger
       ])
     end
 
-    I18nStruct.new(i18n: 'push_notifications.outing.update_short', i18n_args: to_date(outing.starts_at))
+    I18nStruct.new(i18n: 'push_notifications.outing.update_short', i18n_args: [to_date(outing.starts_at)])
   end
 end
