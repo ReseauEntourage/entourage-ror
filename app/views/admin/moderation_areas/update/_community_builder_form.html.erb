@@ -1,5 +1,5 @@
 <%= form_tag(update_community_builder_admin_moderation_area_path(moderation_area), method: :patch, remote: true, id: "update-community-builder-form-#{moderation_area.id}", class: "update-form") do %>
-  <div class="btn btn-<%= moderation_area.community_builder.try(:slack_id) ? "default" : "danger" %>">
+  <div class="btn btn-<%= moderation_area.community_builder && moderation_area.community_builder.slack_id.blank? ? "danger" : "default" %>">
     <%= select_tag 'community_builder_id', options_for_select(moderators_for_select, moderation_area.community_builder_id), include_blank: true, class: "form-control update-select" %>
   </div>
 <% end %>
