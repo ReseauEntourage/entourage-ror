@@ -25,17 +25,24 @@ class ModerationArea < ApplicationRecord
     moderator
   end
 
+  def slack_moderator_with_fallback
+    return slack_moderator if slack_moderator.try(:slack_id)
+    return mobilisator if mobilisator.try(:slack_id)
+    return accompanyist if accompanyist.try(:slack_id)
+    return sourcing if sourcing.try(:slack_id)
+    return default_interlocutor if default_interlocutor.try(:slack_id)
+
+    nil
+  end
+
   def slack_moderator_id
     slack_moderator.try(:slack_id)
   end
 
   def slack_moderator_id_with_fallback
-    slack_moderator_id ||
-      mobilisator_with_fallback.slack_id ||
-      accompanyist_with_fallback.slack_id ||
-      sourcing_with_fallback.slack_id ||
-      default_interlocutor.slack_id ||
-      SlackServices::Notifier::DEFAULT_SLACK_MODERATOR_ID
+    return slack_moderator_with_fallback.slack_id if slack_moderator_with_fallback
+
+    SlackServices::Notifier::DEFAULT_SLACK_MODERATOR_ID
   end
 
   def default_interlocutor
