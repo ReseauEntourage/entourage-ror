@@ -204,6 +204,11 @@ fr:
         name: Nom de la zone
         departement: Département
         moderator_id: Modérateur
+        animator_id: Com-anim
+        mobilisator_id: Mob-anim
+        sourcing_id: Sourcing
+        accompanyist_id: Accompagnement
+        community_builder_id: Community builder
         welcome_message_1: Message de bienvenue
         slack_moderator_id: Identifiant Slack
       translation:
@@ -297,7 +302,7 @@ fr:
         visitor: Visiteur
       targeting_profiles:
         offers_help: Riverain
-        asks_for_help: SDF
+        asks_for_help: Personne préca
         partner: Association
         ambassador: Ambassadeur
         team: Équipe Entourage
@@ -309,7 +314,7 @@ fr:
         all: Tous profils
       goals_compact:
         offer_help: Riverain
-        ask_for_help: SDF
+        ask_for_help: Personne préca
         organization: Association
         goal_not_known: Non défini
         all: Tous profils
@@ -321,7 +326,7 @@ fr:
     user:
       profiles:
         offer_help: Voisin solidaire
-        ask_for_help: Personne isolée
+        ask_for_help: Personne préca
         organization: Association
         goal_not_known: Non défini
         all: Tous profils
@@ -400,6 +405,15 @@ fr:
       title: "Entourage c'est la famille !"
       offer: "On peut le dire, vous faites maintenant partie de la communauté Entourage. Ça se fête ! 🎉"
       ask: "On peut le dire, vous faites maintenant partie de la communauté Entourage. Ça se fête ! 🎉"
+
+  regions:
+    aura: Auvergne-Rhône-Alpes
+    bretagne: Bretagne
+    hdf: Hauts-de-France
+    idf: Ile-de-France
+    paca: Provence-Alpes-Côte d'Azur
+    gironde: Gironde
+    digital_community: Communauté digitale
 
   pois:
     soliguide:

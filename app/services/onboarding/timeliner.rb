@@ -16,7 +16,7 @@ module Onboarding
       end
     end
 
-    attr_reader :user, :method, :moderator_id
+    attr_reader :user, :method
 
     def initialize user_id, verb
       @user = User.find(user_id)

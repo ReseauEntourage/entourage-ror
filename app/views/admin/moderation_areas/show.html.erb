@@ -1,0 +1,103 @@
+<div class="container">
+  <div class="row">
+    <div class="col-xs-offset-2 col-xs-8">
+      <ol class="breadcrumb">
+        <li><%= link_to "Zones de modération", admin_moderation_areas_path %></li>
+        <li><%= @area.name %> (<%= @area.departement %>)</li>
+      </ol>
+
+
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <%= region_text_for(@area) %>
+        </div>
+        <div class="panel-body">
+          <p>
+            <% if @area.activity? %>
+              <span class="label label-info">Zone active</span>
+            <% else %>
+              <span class="label label-danger">Zone non active</span>
+            <% end %>
+          </p>
+
+          <p>
+            <strong>Département:</strong>
+            <% if @area.departement == '*' %>
+              Hors-Zone (Non éditable pour la zone de modération Hors-Zone)
+            <% else %>
+              <%= @area.departement %>
+            <% end %>
+          </p>
+
+          <p>
+            <strong>Nom:</strong>
+            <%= @area.name %>
+          </p>
+
+          <p>
+            <strong><%= label_tag :moderator_id, t('activerecord.attributes.moderation_area.moderator_id') %></strong>
+            <%= @area.moderator.try(:full_name) %>
+          </p>
+
+          <p>
+            <strong><%= label_tag :moderator_id, t('activerecord.attributes.moderation_area.animator_id') %></strong>
+            <%= @area.animator.try(:full_name) %>
+          </p>
+
+          <p>
+            <strong><%= label_tag :moderator_id, t('activerecord.attributes.moderation_area.mobilisator_id') %></strong>
+            <%= @area.mobilisator.try(:full_name) %>
+          </p>
+
+          <p>
+            <strong><%= label_tag :moderator_id, t('activerecord.attributes.moderation_area.sourcing_id') %></strong>
+            <%= @area.sourcing.try(:full_name) %>
+          </p>
+
+          <p>
+            <strong><%= label_tag :moderator_id, t('activerecord.attributes.moderation_area.accompanyist_id') %></strong>
+            <%= @area.accompanyist.try(:full_name) %>
+          </p>
+
+          <p>
+            <strong><%= label_tag :moderator_id, t('activerecord.attributes.moderation_area.community_builder_id') %></strong>
+            <%= @area.community_builder.try(:full_name) %>
+          </p>
+
+          <!-- Ajoutez les autres champs de l'utilisateur selon le besoin -->
+
+          <ul class="nav nav-tabs">
+            <li role="presentation" class="active"><a href="#offer_help" data-toggle="tab">Offrir de l'aide</a></li>
+            <li role="presentation"><a href="#ask_for_help" data-toggle="tab">Demander de l'aide</a></li>
+            <li role="presentation"><a href="#organization" data-toggle="tab">Organisation</a></li>
+            <li role="presentation"><a href="#goal_not_known" data-toggle="tab">Objectif non connu</a></li>
+          </ul>
+
+          <div class="tab-content">
+            <div class="tab-pane active" id="offer_help">
+              <p><strong>Message de bienvenue pour Offrir de l'aide:</strong></p>
+              <%= @area.welcome_message_1_offer_help %>
+            </div>
+
+            <div class="tab-pane" id="ask_for_help">
+              <p><strong>Message de bienvenue pour Demander de l'aide:</strong></p>
+              <%= @area.welcome_message_1_ask_for_help %>
+            </div>
+
+            <div class="tab-pane" id="organization">
+              <p><strong>Message de bienvenue pour Organisation:</strong></p>
+              <%= @area.welcome_message_1_organization %>
+            </div>
+
+            <div class="tab-pane" id="goal_not_known">
+              <p><strong>Message de bienvenue pour Objectif non connu:</strong></p>
+              <%= @area.welcome_message_1_goal_not_known %>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

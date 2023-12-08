@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_11_17_103301) do
+ActiveRecord::Schema.define(version: 2023_11_28_103706) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -474,7 +474,13 @@ ActiveRecord::Schema.define(version: 2023_11_17_103301) do
     t.text "welcome_message_2_organization"
     t.text "welcome_message_1_goal_not_known"
     t.text "welcome_message_2_goal_not_known"
-    t.string "slack_moderator_id"
+    t.string "slack_moderator_id_old"
+    t.boolean "activity", default: false, null: false
+    t.integer "animator_id"
+    t.integer "mobilisator_id"
+    t.integer "sourcing_id"
+    t.integer "accompanyist_id"
+    t.integer "community_builder_id"
     t.index ["departement"], name: "index_moderation_areas_on_departement", unique: true
   end
 
@@ -1118,6 +1124,7 @@ ActiveRecord::Schema.define(version: 2023_11_17_103301) do
     t.string "other_interest"
     t.json "options", default: {}
     t.string "lang", default: "fr"
+    t.string "slack_id"
     t.index ["address_id"], name: "index_users_on_address_id"
     t.index ["email"], name: "index_users_on_email"
     t.index ["organization_id"], name: "index_users_on_organization_id"

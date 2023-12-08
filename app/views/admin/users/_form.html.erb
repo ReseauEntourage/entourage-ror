@@ -1,6 +1,12 @@
 <%= form_for([:admin, @user], html: { class: "form-horizontal", role: "form" }) do |f| %>
   <%= render partial: "layouts/errors", locals: {obj: @user} %>
 
+  <div class="alert alert-info" role="alert" style="display: flex; align-items: center">
+    <div style="flex-grow: 1">
+      <b>Interlocuteur : <%= ModerationServices.moderator_for_user(@user).full_name %></b>
+    </div>
+  </div>
+
   <div style="display: flex">
     <div style="flex-grow: 1">
       <div class="control-group">
@@ -288,6 +294,18 @@
           <%= f.check_box :moderator %>
         </td>
       </tr>
+
+      <% if @user.moderator? %>
+        <tr>
+          <td><%= f.label :slack_id %></td>
+          <td style="font-weight: bold">
+            <%= f.text_field :slack_id, class: "form-control", maxlength: 11 %>
+            <span class="glyphicon glyphicon-question-sign" aria-hidden="true" data-toggle="tooltip" data-placement="top" title="
+            Vous pouvez trouver l'identifiant Slack sur le profil Slack de l'utilisateur, bouton '...' (Plus), Copier l'ID de membre
+          "></span>
+          </td>
+        </tr>
+      <% end %>
     </table>
   </div>
 

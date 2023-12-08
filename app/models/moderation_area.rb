@@ -1,11 +1,75 @@
 class ModerationArea < ApplicationRecord
   validates :slack_moderator_id, length: { in: 9..11 }, allow_nil: true
 
-  belongs_to :moderator, class_name: :User
+  belongs_to :moderator, class_name: :User, optional: true
+  belongs_to :animator, class_name: :User, optional: true
+  belongs_to :mobilisator, class_name: :User, optional: true
+  belongs_to :sourcing, class_name: :User, optional: true
+  belongs_to :accompanyist, class_name: :User, optional: true
+  belongs_to :community_builder, class_name: :User, optional: true
 
   scope :no_hz, -> { where.not(departement: "*") }
+  scope :in_region, -> (region) {
+    return unless region.present?
+
+    where(departement: ModerationServices::Region.departments_in(region))
+  }
 
   HORS_ZONE = "*"
+
+  def region
+    ModerationServices::Region.for_department(departement)
+  end
+
+  def slack_moderator
+    moderator
+  end
+
+  def slack_moderator_id
+    slack_moderator.try(:slack_id)
+  end
+
+  def slack_moderator_id_with_fallback
+    slack_moderator_id ||
+      mobilisator_with_fallback.slack_id ||
+      accompanyist_with_fallback.slack_id ||
+      sourcing_with_fallback.slack_id ||
+      default_interlocutor.slack_id ||
+      SlackServices::Notifier::DEFAULT_SLACK_MODERATOR_ID
+  end
+
+  def default_interlocutor
+    ModerationServices.moderator_if_exists(community: :entourage)
+  end
+
+  def interlocutor_for_user user
+    return default_interlocutor unless user.present?
+    return accompanyist_with_fallback if user.is_ask_for_help? && activity?
+    return sourcing_with_fallback if user.is_ask_for_help?
+    return sourcing_with_fallback if user.org_member?
+
+    mobilisator_with_fallback
+  end
+
+  def animator_with_fallback
+    animator || mobilisator || community_builder || default_interlocutor
+  end
+
+  def mobilisator_with_fallback
+    mobilisator || accompanyist || community_builder || default_interlocutor
+  end
+
+  def sourcing_with_fallback
+    sourcing || accompanyist || mobilisator || community_builder || default_interlocutor
+  end
+
+  def accompanyist_with_fallback
+    accompanyist || sourcing || mobilisator || community_builder || default_interlocutor
+  end
+
+  def community_builder_with_fallback
+    community_builder || mobilisator || accompanyist || default_interlocutor
+  end
 
   def departement_slug
     self.class.departement_slug(departement)

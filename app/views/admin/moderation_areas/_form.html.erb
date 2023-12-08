@@ -5,6 +5,22 @@
 <%= render partial: 'common/errors', locals: {obj: @area} %>
 
 <%= form_for [:admin, @area], html: { role: "form" } do |f| %>
+  <% if @area.activity? %>
+    <div class="alert alert-info" role="alert" style="display: flex; align-items: center">
+      <div style="flex-grow: 1">
+        <b><%= region_text_for(@area) %> - Zone active</b><br>
+        Ce département est considéré comme une zone active : il s'agit d'une antenne d'Entourage ou d'une zone activement gérée par des ambassadeurs.
+      </div>
+    </div>
+  <% else %>
+    <div class="alert alert-danger" role="alert" style="display: flex; align-items: center">
+      <div style="flex-grow: 1">
+        <b><%= region_text_for(@area) %> - Zone non active</b><br>
+        Ce département est considéré comme une zone non active : il n'est rattaché à aucune antenne d'Entourage ni n'est activement géré par des ambassadeurs.
+      </div>
+    </div>
+  <% end %>
+
   <div class="form-group">
     <%= f.label :departement %>
 
@@ -25,30 +41,12 @@
     <%= f.text_field :name, class: "form-control", required: true %>
   </div>
 
-  <div class="form-group">
-    <%= f.label :moderator_id %>
-
-    <% unless @area.new_record? %>
-      <div>
-        <%= link_to UserPresenter.full_name(@area.moderator), [:admin, @area.moderator] %>
-      </div>
-
-      <% unless @area.moderator.moderator? %>
-        <i>Attention, le modérateur choisi n'a pas les autorisations d'un modérateur. Merci d'en préciser un nouveau</i>
-      <% end %>
-    <% end %>
-
-    <%= f.select :moderator_id, options_for_select(moderators_for_select, @area.moderator_id), { include_blank: false }, class: "form-control" %>
-  </div>
-
-  <div class="form-group">
-    <%= f.label :slack_moderator_id %>
-    <span class="glyphicon glyphicon-question-sign" aria-hidden="true" data-toggle="tooltip" data-placement="top" title="
-      Vous pouvez trouver l'identifiant Slack sur le profil Slack de l'utilisateur, bouton '...' (Plus), Copier l'ID de membre
-    "></span>
-
-    <%= f.text_field :slack_moderator_id, class: "form-control", maxlength: 11 %>
-  </div>
+  <%= render_user_selection_field(f, :moderator, @area) %>
+  <%= render_user_selection_field(f, :animator, @area) %>
+  <%= render_user_selection_field(f, :mobilisator, @area) %>
+  <%= render_user_selection_field(f, :sourcing, @area) %>
+  <%= render_user_selection_field(f, :accompanyist, @area) %>
+  <%= render_user_selection_field(f, :community_builder, @area) %>
 
   <div>
     <!-- Nav tabs -->

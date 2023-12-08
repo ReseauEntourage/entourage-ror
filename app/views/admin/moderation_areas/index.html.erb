@@ -1,29 +1,74 @@
 <div class="container">
   <div class="row">
-    <div class="col-xs-offset-2 col-xs-8">
-
-
       <div class="h1" style="display: flex; align-items: center;">
         <div style="flex-grow: 1">Zones de modération</div>
-        <%= link_to "Ajouter une zone de modération", new_admin_moderation_area_path, class: "btn btn-default" %>
+      </div>
+
+      <div style="margin-bottom: 15px; display: flex">
+        <div class="btn-group btn-group-sm">
+          <%= link_to("Tous", @params.except(:region), class: "btn btn-#{@params[:region].present? ? :default : :primary}") %>
+
+          <% ModerationServices::Region.regions.each do |region| %>
+            <%= link_to(region.name, @params.merge(region: region.id), class: "btn btn-#{@params[:region] == region.id.to_s ? :primary : :default}") %>
+          <% end %>
+        </div>
+
+        <div class="btn-group btn-group-sm" style="margin-left: 15px">
+          <%= link_to "Ajouter une zone de modération", new_admin_moderation_area_path, class: "btn btn-default" if current_user.super_admin? %>
+        </div>
       </div>
 
       <table class="table">
         <tr>
           <th></th>
           <th></th>
-          <th>Modérateur</th>
-          <th>Lien vers l'identifiant Slack</th>
+          <th><%= t('activerecord.attributes.moderation_area.moderator_id') %></th>
+          <th><%= t('activerecord.attributes.moderation_area.animator_id') %></th>
+          <th><%= t('activerecord.attributes.moderation_area.mobilisator_id') %></th>
+          <th><%= t('activerecord.attributes.moderation_area.sourcing_id') %></th>
+          <th><%= t('activerecord.attributes.moderation_area.accompanyist_id') %></th>
+          <th><%= t('activerecord.attributes.moderation_area.community_builder_id') %></th>
+          <th>Slack ID</th>
         </tr>
-        <% @areas.each do |area| %>
+        <% @moderation_areas.each do |moderation_area| %>
           <tr>
-            <td style="width: 3em"><%= area.departement %></td>
-            <td><%= link_to area.name, edit_admin_moderation_area_path(area) %></td>
-            <td><%= area.moderator.full_name %></td>
-            <td><%= link_to area.slack_moderator_id, "https://resentourage.slack.com/team/#{area.slack_moderator_id}", target: :_blank if area.slack_moderator_id.present? %></td>
+            <td style="width: 3em">
+              <% if moderation_area.activity? %>
+                <span class="badge" style="background: #19534f" title="Zone active"><%= moderation_area.departement %></span>
+              <% else %>
+                <span class="badge" style="background: #d9534f" title="Zone non active"><%= moderation_area.departement %></span>
+              <% end %>
+            </td>
+
+            <% if current_user.super_admin? %>
+              <td><%= link_to moderation_area.name, edit_admin_moderation_area_path(moderation_area) %></td>
+              <td><%= render partial: "admin/moderation_areas/update/moderator_form", locals: { moderation_area: moderation_area } %></td>
+              <td><%= render partial: "admin/moderation_areas/update/animator_form", locals: { moderation_area: moderation_area } %></td>
+              <td><%= render partial: "admin/moderation_areas/update/mobilisator_form", locals: { moderation_area: moderation_area } %></td>
+              <td><%= render partial: "admin/moderation_areas/update/sourcing_form", locals: { moderation_area: moderation_area } %></td>
+              <td><%= render partial: "admin/moderation_areas/update/accompanyist_form", locals: { moderation_area: moderation_area } %></td>
+              <td><%= render partial: "admin/moderation_areas/update/community_builder_form", locals: { moderation_area: moderation_area } %></td>
+            <% else %>
+              <td><%= link_to moderation_area.name, admin_moderation_area_path(moderation_area) %></td>
+              <td><%= moderation_area.moderator.full_name if moderation_area.moderator %></td>
+              <td><%= moderation_area.animator.full_name if moderation_area.animator %></td>
+              <td><%= moderation_area.mobilisator.full_name if moderation_area.mobilisator %></td>
+              <td><%= moderation_area.sourcing.full_name if moderation_area.sourcing %></td>
+              <td><%= moderation_area.accompanyist.full_name if moderation_area.accompanyist %></td>
+              <td><%= moderation_area.community_builder.full_name if moderation_area.community_builder %></td>
+            <% end %>
+
+            <td><%= render partial: "admin/moderation_areas/fields/slack_id", locals: { moderation_area: moderation_area } %></td>
           </tr>
         <% end %>
       </table>
-    </div>
   </div>
 </div>
+
+<script type="text/javascript">
+  $(document).ready(function() {
+    $(document).on('change', '.update-select', function() {
+      $(this).closest('form').submit();
+    });
+  });
+</script>
