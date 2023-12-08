@@ -10,7 +10,7 @@ module Admin
       @moderation_areas = ModerationArea
         .includes(:moderator, :animator, :mobilisator, :sourcing, :accompanyist, :community_builder)
         .in_region(@params[:region])
-        .order(:id)
+        .order(:departement)
     end
 
     def new
