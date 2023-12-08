@@ -4,7 +4,7 @@ module ModerationServices
       aura: %w{ 69 42 01 03 07 15 26 38 43 63 73 74 },
       bretagne: %w{ 35 56 44 22 53 29 85 },
       hdf: %w{ 59 62 60 80 02 },
-      idf: %w{ 75 92 93 94 77 78 91 },
+      idf: %w{ 75 92 93 94 77 78 91 95 },
       paca: %w{ 13 05 83 06 84 04 },
       gironde: %w{ 33 },
       digital_community: (
