@@ -39,9 +39,11 @@ module Onboarding
           next if messages.empty?
 
           first_name = UserPresenter.format_first_name user.first_name
+          interlocutor = ModerationServices.moderator_for_user(user)
 
           messages.each do |message|
             message = message.gsub(/\{\{\s*first_name\s*\}\}/, first_name)
+            message = message.gsub(/\{\{\s*interlocutor\s*\}\}/, interlocutor.first_name) if interlocutor.present?
 
             builder = ChatServices::ChatMessageBuilder.new(
               user: author,
