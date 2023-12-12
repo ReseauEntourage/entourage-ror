@@ -8,7 +8,7 @@ module ModerationServices
       .where(community: community)
       .where(admin: true)
 
-    candidates = scope.where(phone: '+33768037348')
+    candidates = scope.where(phone: ENV['MODERATOR_PHONE'])
 
     candidates = candidates.to_a
 
