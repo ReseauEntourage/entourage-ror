@@ -5,7 +5,7 @@ module OutingTasks
 
   class << self
     def send_post_to_upcoming
-      upcoming_outings.pluck(:id).each do |outing_id|
+      upcoming_outings.pluck(:id).uniq.each do |outing_id|
         outing = Outing.find(outing_id)
 
         if outing.chat_messages.new(user: outing.user, content: REMINDER_CONTENT).save
@@ -15,7 +15,12 @@ module OutingTasks
     end
 
     def upcoming_outings
-      Outing.active.where(notification_sent_at: nil).upcoming(UPCOMING_DELAY.from_now)
+      Outing
+        .active
+        .where(notification_sent_at: nil)
+        .upcoming(UPCOMING_DELAY.from_now)
+        .joins(:user)
+        .where(users: { admin: true })
     end
   end
 end
