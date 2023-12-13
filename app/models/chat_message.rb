@@ -1,6 +1,7 @@
 class ChatMessage < ApplicationRecord
   include FeedsConcern
   include ChatServices::Spam
+  include ChatServices::PrivateConversation
   include Deeplinkable
   include Translatable
 
