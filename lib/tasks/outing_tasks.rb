@@ -20,7 +20,7 @@ module OutingTasks
         .where(notification_sent_at: nil)
         .upcoming(UPCOMING_DELAY.from_now)
         .joins(:user)
-        .where(users: { admin: true })
+        .where("users.admin = ? OR users.targeting_profile = ?", true, 'team')
     end
   end
 end

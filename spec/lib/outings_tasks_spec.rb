@@ -2,7 +2,7 @@ require 'rails_helper'
 require 'tasks/outing_tasks'
 
 describe OutingTasks do
-  let(:user) { create :admin_user }
+  let(:user) { create :admin_user, partner: create(:partner, staff: true) }
   let(:status) { :open }
   let(:notification_sent_at) { nil }
   let(:starts_at) { 1.hour.from_now }
@@ -19,12 +19,26 @@ describe OutingTasks do
 
     before { outing }
 
+    # include
     context "correct params" do
       it { expect(subject).to include(outing.id) }
     end
 
-    context "not admin creator" do
-      let(:user) { create :public_user }
+    context "admin creator but not team" do
+      let(:user) { create :admin_user }
+
+      it { expect(subject).to include(outing.id) }
+    end
+
+    context "not admin creator but team" do
+      let(:user) { create :public_user, partner: create(:partner, staff: true) }
+
+      it { expect(subject).to include(outing.id) }
+    end
+
+    # not include
+    context "not admin creator nor team" do
+      let(:user) { create :partner_user }
 
       it { expect(subject).not_to include(outing.id) }
     end
