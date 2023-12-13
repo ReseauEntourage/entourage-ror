@@ -9,7 +9,7 @@ module OutingTasks
         outing = Outing.find(outing_id)
 
         if outing.chat_messages.new(user: outing.user, content: REMINDER_CONTENT).save
-          outing.update(notification_sent_at: Time.zone.now)
+          outing.update_columns(notification_sent_at: Time.zone.now)
         end
       end
     end
