@@ -21,7 +21,8 @@ module ChatServices
 
     def notify_moderator_not_available?
       return false if user.moderator?
-      return false unless messageable && messageable.conversation?
+      return false unless messageable.respond_to?(:conversation?)
+      return false unless messageable.conversation?
 
       is_interlocutor_a_moderator? && is_moderator_working_hours? && is_notify_moderator_not_sent?
     end
