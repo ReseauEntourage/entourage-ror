@@ -24,7 +24,7 @@ module ChatServices
       return false unless messageable.respond_to?(:conversation?)
       return false unless messageable.conversation?
 
-      is_interlocutor_a_moderator? && is_moderator_working_hours? && is_notify_moderator_not_sent?
+      is_interlocutor_a_moderator? && !is_moderator_working_hours? && is_notify_moderator_not_sent?
     end
 
     def is_interlocutor_a_moderator?
