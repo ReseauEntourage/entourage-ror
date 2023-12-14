@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_11_28_103706) do
+ActiveRecord::Schema.define(version: 2023_12_11_150400) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -351,8 +351,13 @@ ActiveRecord::Schema.define(version: 2023_11_28_103706) do
     t.string "other_interest"
     t.string "recurrency_identifier"
     t.datetime "status_changed_at"
+    t.datetime "notification_sent_at"
+    t.index "((metadata ->> 'ends_at'::text)), ((metadata ->> 'starts_at'::text))", name: "entourages_metadata_idx"
+    t.index "((metadata ->> 'ends_at'::text)), ((metadata ->> 'starts_at'::text))", name: "index_entourages_metadata_dates"
     t.index "st_setsrid(st_makepoint(longitude, latitude), 4326)", name: "index_entourages_on_coordinates", using: :gist
+    t.index ["community", "group_type"], name: "index_entourages_on_community_and_group_type"
     t.index ["country", "postal_code"], name: "index_entourages_on_country_and_postal_code"
+    t.index ["created_at"], name: "index_entourages_on_created_at"
     t.index ["latitude", "longitude"], name: "index_entourages_on_latitude_and_longitude"
     t.index ["pin"], name: "index_entourages_on_pin"
     t.index ["user_id"], name: "index_entourages_on_user_id"
