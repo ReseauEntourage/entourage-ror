@@ -132,4 +132,16 @@ describe Api::V1::ResourcesController, :type => :controller do
       )}
     end
   end
+
+  describe 'tag' do
+    let(:resource) { create :resource, tag: :foo }
+
+    let(:result) { JSON.parse(response.body) }
+
+    before { get :tag, params: { token: user.token, tag: resource.tag } }
+
+    it { expect(response.status).to eq 200 }
+    it { expect(result).to have_key("resource") }
+    it { expect(result['resource']['id']).to eq(resource.id) }
+  end
 end

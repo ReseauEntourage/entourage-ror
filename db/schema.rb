@@ -755,7 +755,9 @@ ActiveRecord::Schema.define(version: 2023_12_11_150400) do
     t.boolean "is_video", default: false
     t.string "status", default: "active", null: false
     t.string "uuid_v2", limit: 12, null: false
+    t.string "tag"
     t.index ["name"], name: "index_resources_on_name"
+    t.index ["tag"], name: "index_resources_on_tag"
     t.index ["uuid_v2"], name: "index_resources_on_uuid_v2", unique: true
   end
 

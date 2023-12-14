@@ -4,6 +4,7 @@ class Resource < ApplicationRecord
   include Translatable
 
   CATEGORIES  = [:understand, :act, :inspire]
+  TAGS  = [:neighborhood, :outing, :action]
 
   # STATUSES = [:active, :deleted]
   default_scope { where(status: :active) }

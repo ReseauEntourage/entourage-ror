@@ -29,6 +29,15 @@
     </div>
   </div>
 
+  <% if current_user.super_admin? %>
+    <div class="form-group">
+      <%= f.label :tag %>
+      <div class="controls">
+        <%= f.select :tag, options_for_select([['', nil]] + tags_options_for_select, @resource.tag), class: "form-control", required: true %>
+      </div>
+    </div>
+  <% end %>
+
   <div class="form-group">
     <%= f.label :description %>
     <div class="controls">
@@ -97,4 +106,5 @@
 
 <script>
   $('select#resource_category').select2({ width: '100%' });
+  $('select#resource_tag').select2({ width: '100%' });
 </script>
