@@ -60,7 +60,7 @@ describe Onboarding::Timeliner do
     after { subject }
 
     context "outing, no action" do
-      before { OutingsServices::Finder.any_instance.stub(:find_all) { [create(:outing)] } }
+      before { OutingsServices::Finder.any_instance.stub(:find_all) { Entourage.where(id: create(:outing, online: false)) } }
 
       it { expect_any_instance_of(PushNotificationService).to receive(:send_notification).with(
         nil,
@@ -72,7 +72,7 @@ describe Onboarding::Timeliner do
     end
 
     context "no outing, action" do
-      before { SolicitationServices::Finder.any_instance.stub(:find_all) { [create(:entourage)] } }
+      before { SolicitationServices::Finder.any_instance.stub(:find_all) { Entourage.where(id: create(:entourage)) } }
 
       it { expect_any_instance_of(PushNotificationService).to receive(:send_notification).with(
         nil,
