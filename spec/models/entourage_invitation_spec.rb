@@ -35,23 +35,4 @@ RSpec.describe EntourageInvitation, type: :model do
 
     it { expect(error_messages).to eq([:invitee])}
   end
-
-  context "good_waves" do
-    let(:error_messages) { build(:entourage_invitation, invitation_mode: :good_waves, metadata: metadata).tap(&:save).errors.messages }
-
-    context "no metadata" do
-      let(:metadata) { {} }
-      it { expect(error_messages).to eq(
-        metadata: ["did not contain a required property of 'name'",
-                   "did not contain a required property of 'email'"]
-      )}
-    end
-
-    context "null metadata values" do
-      let(:metadata) { {name:nil, email:nil} }
-      it { expect(error_messages).to eq(
-        metadata: ["'name' of type null did not match the following type: string"]
-      )}
-    end
-  end
 end

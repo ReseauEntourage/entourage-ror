@@ -87,15 +87,6 @@ module V1
       end
     end
 
-    def group_type
-      # good_waves cheat
-      if object.group_type == 'group'
-        'action'
-      else
-        object.group_type
-      end
-    end
-
     def author
       return unless entourage_author = object.user
       partner = entourage_author.partner
