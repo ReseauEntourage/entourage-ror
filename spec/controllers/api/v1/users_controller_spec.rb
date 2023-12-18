@@ -702,6 +702,29 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
       end
     end
 
+    context "newsletter_subscription" do
+      let(:params) { Hash.new }
+      let(:request) { post 'create', params: { user: { phone: "+33612345678", travel_distance: 16 }.merge(params) } }
+
+      before { request }
+
+      context "no newsletter_subscription param" do
+        it { expect(User.last.newsletter_subscription).to eq(false) }
+      end
+
+      context "newsletter_subscription is false" do
+        let(:params) { { newsletter_subscription: "false" } }
+
+        it { expect(User.last.newsletter_subscription).to eq(false) }
+      end
+
+      context "newsletter_subscription is true" do
+        let(:params) { { newsletter_subscription: "true" } }
+
+        it { expect(User.last.newsletter_subscription).to eq(true) }
+      end
+    end
+
     context "already has a user without email" do
       let!(:previous_user) { FactoryBot.create(:public_user, email: nil) }
       before { post 'create', params: { user: {phone: "+33612345678"} } }

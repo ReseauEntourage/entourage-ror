@@ -78,6 +78,7 @@ class User < ApplicationRecord
   has_many :users_resources
   has_many :user_recommandations
   has_many :inapp_notifications, dependent: :destroy
+  has_many :email_preferences, dependent: :destroy
   has_one :notification_permission, dependent: :destroy
   has_many :recommandations, -> { UserRecommandation.active }, through: :user_recommandations
 
@@ -343,6 +344,21 @@ class User < ApplicationRecord
     return super(interests) if interests.is_a?(String)
 
     super(interests & Tag.interest_list)
+  end
+
+  def newsletter_subscription
+    return false unless email_preferences
+    return false unless category_id = EmailPreferencesService.category_id('newsletter')
+    return false unless email_preference = email_preferences.find_by(email_category_id: category_id)
+
+    email_preference.subscribed
+  end
+
+  def newsletter_subscription= newsletter_subscription
+    return unless category_id = EmailPreferencesService.category_id('newsletter')
+
+    email_preference = EmailPreference.find_by(user: self, email_category_id: category_id) || email_preferences.build(email_category_id: category_id)
+    email_preference.subscribed = ActiveModel::Type::Boolean.new.cast(newsletter_subscription)
   end
 
   def to_s
