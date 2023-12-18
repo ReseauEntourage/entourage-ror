@@ -2,7 +2,7 @@ class EmailPreference < ApplicationRecord
   belongs_to :user
   belongs_to :category, class_name: :EmailCategory, foreign_key: :email_category_id
 
-  validates :user_id, :email_category_id, presence: true
+  validates :user, :email_category_id, presence: true
   validates :subscribed, inclusion: { in: [true, false] }
 
   include CustomTimestampAttributesForUpdate
