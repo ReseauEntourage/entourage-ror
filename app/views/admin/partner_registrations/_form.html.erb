@@ -42,14 +42,14 @@
   <div class="row">
     <div class="col-xs-6 form-group">
       <label class="radio-inline" style="padding-top: 0; margin-bottom: 5px;">
-        <%= f.radio_button :org_member?, true %>
+        <%= f.radio_button :association?, true %>
         Fait partie d'une association
       </label>
     </div>
 
     <div class="col-xs-6 form-group">
       <label class="radio-inline" style="padding-top: 0; margin-bottom: 5px;">
-        <%= f.radio_button :org_member?, false %>
+        <%= f.radio_button :association?, false %>
         Ne fait pas partie d'une association
       </label>
     </div>
@@ -81,13 +81,13 @@
 <script>
   $('#user_partner_id, #user_targeting_profile').select2();
 
-  $('#user_org_member_false, #user_org_member_true').on('change', function(event) {
-    var is_asso = $('#user_org_member_true').prop('checked');
+  $('#user_association_false, #user_association_true').on('change', function(event) {
+    var is_asso = $('#user_association_true').prop('checked');
 
     $('#targeting_profile_hidden').prop('disabled', !is_asso);
     $('#user_targeting_profile').prop('disabled', is_asso);
     $('#user_partner_id').prop('disabled', !is_asso);
   });
 
-  $('#user_org_member_true').trigger('change');
+  $('#user_association_true').trigger('change');
 </script>

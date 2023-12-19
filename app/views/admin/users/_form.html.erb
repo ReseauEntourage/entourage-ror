@@ -12,14 +12,14 @@
       <div class="control-group">
         <%= f.label :first_name,"Prénom", class: "control-label" %>
         <div class="controls">
-          <%= f.text_field :first_name, class: "form-control", required: @user.pro? || @user.org_member? %>
+          <%= f.text_field :first_name, class: "form-control", required: @user.pro? || @user.association? %>
         </div>
       </div>
 
       <div class="control-group">
         <%= f.label :last_name,"Nom", class: "control-label" %>
         <div class="controls">
-          <%= f.text_field :last_name, class: "form-control", required: @user.pro? || @user.org_member? %>
+          <%= f.text_field :last_name, class: "form-control", required: @user.pro? || @user.association? %>
         </div>
       </div>
 
