@@ -53,7 +53,7 @@ class ModerationArea < ApplicationRecord
     return default_interlocutor unless user.present?
     return accompanyist_with_fallback if user.is_ask_for_help? && activity?
     return sourcing_with_fallback if user.is_ask_for_help?
-    return sourcing_with_fallback if user.org_member?
+    return sourcing_with_fallback if user.association?
 
     mobilisator_with_fallback
   end

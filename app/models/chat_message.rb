@@ -269,7 +269,7 @@ class ChatMessage < ApplicationRecord
 
     return if user.moderator?
     return if user.ambassador?
-    return if user.org_member?
+    return if user.association?
 
     messageable.join_requests
       .where.not(user_id: user_id)
