@@ -87,16 +87,6 @@ module EntourageBack
     end
     config.lograge.formatter = Lograge::Formatters::Logstash.new
 
-    # Our staging env is not a proper distinct Rails env. We hack around this.
-    require File.join(Rails.root, 'app/services/environment_helper')
-    if EnvironmentHelper.env.to_s == Rails.env
-      config.x.mailchimp = config_for(:mailchimp)
-    else
-      # https://github.com/rails/rails/blob/v4.2.11/railties/lib/rails/application.rb#L232
-      config.x.mailchimp =
-        YAML.load(ERB.new(File.read("config/mailchimp.yml")).result)[EnvironmentHelper.env.to_s]
-    end
-
     if defined?(Skylight)
       # https://www.skylight.io/support/advanced-setup#probes
       config.skylight.probes += %w(active_model_serializers excon faraday redis)
