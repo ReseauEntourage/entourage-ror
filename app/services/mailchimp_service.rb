@@ -10,17 +10,6 @@ module MailchimpService
     })
   end
 
-  def self.strong_unsubscribe list:, email:, reason: nil
-    payload = {
-      status: :unsubscribed,
-      status_if_new: :unsubscribed,
-    }
-
-    payload[:unsubscribe_reason] = reason if reason.present?
-
-    add_or_update(list, email, payload) rescue MailchimpService::ForgottenEmailNotSubscribed
-  end
-
   def self.set_interest list:, email:, interest:, value:
     interest_id = list_config(list).dig('interests', interest.to_s)
 

@@ -10,18 +10,6 @@ module UserServices
       user.deleted = true
       user.email = add_timestamp(:email)
       user.save(validate: false)
-
-      if user.community == :entourage
-        AsyncService.new(self.class).mailchimp_unsubscribe(email)
-      end
-    end
-
-    def self.mailchimp_unsubscribe email
-      MailchimpService.strong_unsubscribe(
-        list: :newsletter,
-        email: email,
-        reason: "compte supprimé dans l'app"
-      )
     end
 
     def undelete
