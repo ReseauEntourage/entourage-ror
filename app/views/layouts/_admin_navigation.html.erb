@@ -9,7 +9,6 @@
   <li class="list-group-item"><%= link_to "Invitations à rejoindre un entourage", admin_entourage_invitations_path %></li>
   <li class="list-group-item"><%= link_to "Entourages", admin_entourages_path %></li>
   <% if EnvironmentHelper.staging? %>
-    <li class="list-group-item"><%= link_to "Maraudes de test", admin_generate_tours_path %></li>
     <li class="list-group-item"><%= link_to "Utilisateurs de test", fake_admin_users_path %></li>
   <% end %>
 </ul>
