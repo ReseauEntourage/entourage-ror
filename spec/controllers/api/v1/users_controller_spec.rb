@@ -1073,20 +1073,15 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
 
   describe "DELETE destroy" do
     before { Timecop.freeze(Time.parse("10/10/2010").at_beginning_of_day) }
-    before { MailchimpService.stub(:strong_unsubscribe) }
+
     let!(:user) { FactoryBot.create(:pro_user, deleted: false, phone: "0612345678", email: "foo@bar.com") }
+
     before { delete :destroy, params: { id: user.to_param, token: user.token } }
+
     it { expect(user.reload.deleted).to be true }
     it { expect(user.reload.phone).to eq("+33612345678-2010-10-10 00:00:00") }
     it { expect(user.reload.email).to eq("foo@bar.com-2010-10-10 00:00:00") }
     it { expect(response.status).to eq(200) }
-    it do
-      expect(MailchimpService).to have_received(:strong_unsubscribe).with(
-        list: :newsletter,
-        email: user.email,
-        reason: "compte supprimé dans l'app"
-      )
-    end
     it { expect(JSON.parse(response.body)).to have_key('user') }
   end
 

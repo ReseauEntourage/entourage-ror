@@ -11,7 +11,7 @@ class EmailPreference < ApplicationRecord
   after_commit :sync_newsletter!, if: :sync_newsletter?
 
   def newsletter_contact
-    NewsletterServices::Contact.new(email: email, zone: newsletter_zone, status: newsletter_status)
+    NewsletterServices::Contact.new(email: user.email, zone: newsletter_zone, status: newsletter_status)
   end
 
   def newsletter_zone
@@ -42,9 +42,9 @@ class EmailPreference < ApplicationRecord
       return unless email_preference.user
       return unless email_preference.user.email
 
-      return email_preference.contact.create if email_preference.subscribed
+      return email_preference.newsletter_contact.create if email_preference.subscribed
 
-      email_preference.contact.delete
+      email_preference.newsletter_contact.delete
     end
   end
 
