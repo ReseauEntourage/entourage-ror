@@ -1,7 +1,7 @@
 module V1
   module Users
     class BasicSerializer < ActiveModel::Serializer
-      attributes :id, :display_name, :avatar_url, :community_roles
+      attributes :id, :lang, :display_name, :avatar_url, :community_roles
 
       def avatar_url
         UserServices::Avatar.new(user: object).thumbnail_url

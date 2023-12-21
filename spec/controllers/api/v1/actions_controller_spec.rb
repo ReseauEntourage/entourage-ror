@@ -46,6 +46,7 @@ describe Api::V1::ActionsController, :type => :controller do
       it { expect(subject["actions"][0]).to have_key("members") }
       it { expect(subject["actions"][0]["members"]).to eq([{
         "id" => action.user_id,
+        "lang" => "fr",
         "display_name" => "John D.",
         "avatar_url" => nil,
         "community_roles" => [],

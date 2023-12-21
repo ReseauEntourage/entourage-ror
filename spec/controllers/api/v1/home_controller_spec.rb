@@ -167,6 +167,7 @@ describe Api::V1::HomeController do
         it { expect(subject).to eq({
           "user" => {
             "id" => user.id,
+            "lang" => "fr",
             "display_name" => "John D.",
             "avatar_url" => nil,
             "preference" => "solicitation",
