@@ -355,7 +355,9 @@ class User < ApplicationRecord
   end
 
   def newsletter_subscription
-    email_preference_newsletter.try(:subscribed)
+    return false unless email_preference_newsletter
+
+    email_preference_newsletter.subscribed
   end
 
   def newsletter_subscription= newsletter_subscription
