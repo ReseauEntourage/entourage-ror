@@ -18,6 +18,8 @@ RSpec.configure do |config|
   config.before(:each) do
     ActionMailer::Base.deliveries.clear
 
+    stub_request(:any, /.*api.mailjet.com.*/).to_return(status: 200, body: { id: 1 }.to_json, headers: {})
+
     # deactivate slack_trace notifications
     SlackServices::StackTrace.any_instance.stub(:notify).and_return(nil)
 
