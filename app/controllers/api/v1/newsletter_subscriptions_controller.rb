@@ -27,6 +27,18 @@ module Api
         end
       end
 
+      def delete
+        response = NewsletterServices::Contact.new(newsletter_subscription_params).delete do |on|
+          on.success do
+            render json: { message: "Contact #{newsletter_subscription_params[:email]} supprimé" }, status: 200
+          end
+
+          on.failure do
+            render json: { message: "Erreur lors de la suppression de #{newsletter_subscription_params[:email]}" }, status: 400
+          end
+        end
+      end
+
       private
 
       def newsletter_subscription_params
