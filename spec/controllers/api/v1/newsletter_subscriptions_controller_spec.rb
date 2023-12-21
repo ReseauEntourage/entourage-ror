@@ -2,10 +2,11 @@ require 'rails_helper'
 
 RSpec.describe Api::V1::NewsletterSubscriptionsController, :type => :controller do
   describe "GET show" do
-    before(:each) do
+    before do
       contact = double
       contact.stub(:attributes) {{ email: "foo@bar.fr" }}
-      Mailjet::Contact.stub(:find).and_return(contact)
+
+      Mailjet::Listrecipient.stub(:first).and_return(contact)
     end
 
     before { get 'show', params: { email: "foo@bar.fr" } }
