@@ -347,12 +347,15 @@ class User < ApplicationRecord
     super(interests & Tag.interest_list)
   end
 
-  def newsletter_subscription
+  def email_preference_newsletter
     return false unless email_preferences
     return false unless category_id = EmailPreferencesService.category_id('newsletter')
-    return false unless email_preference = email_preferences.find_by(email_category_id: category_id)
 
-    email_preference.subscribed
+    email_preferences.find_by(email_category_id: category_id)
+  end
+
+  def newsletter_subscription
+    email_preference_newsletter.try(:subscribed)
   end
 
   def newsletter_subscription= newsletter_subscription
@@ -365,9 +368,8 @@ class User < ApplicationRecord
 
   def sync_newsletter
     return unless email
-    return unless email_preference
 
-    email_preference.sync_newsletter!
+    email_preference_newsletter.try(:sync_newsletter!)
   end
 
   def to_s
