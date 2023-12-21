@@ -68,9 +68,6 @@ Rails.application.configure do
   ENV["ENTOURAGE_AWS_ACCESS_KEY_ID"]="foo"
   ENV["ENTOURAGE_AWS_SECRET_ACCESS_KEY"]="bar"
 
-  ENV["MAILCHIMP_LIST_ID"]="foobar"
-  ENV["MAILCHIMP_API_KEY"]="foobar-us8"
-
   ENV["HOST"]='localhost'
   ENV["ORGANIZATION_ADMIN_URL"]="localhost"
   ENV["ENTOURAGE_SOLIGUIDE_HOST"]="https://localhost:8080/api/v1/pois"

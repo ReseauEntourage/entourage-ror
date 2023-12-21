@@ -152,7 +152,6 @@ GEM
       railties (>= 3.2)
     encryptor (3.0.0)
     erubi (1.12.0)
-    excon (0.102.0)
     execjs (2.8.1)
     factory_bot (4.11.1)
       activesupport (>= 3.0.0)
@@ -234,9 +233,6 @@ GEM
       net-imap
       net-pop
       net-smtp
-    mailchimp-api (2.0.7)
-      excon (>= 0.16.0)
-      json (>= 1.7.7)
     mailjet (1.7.3)
       activesupport (>= 3.1.0)
       rack (>= 1.4.0)
@@ -528,7 +524,6 @@ DEPENDENCIES
   kaminari (~> 1)
   lograge
   logstash-event
-  mailchimp-api (~> 2)
   mailjet
   mini_magick
   mixpanel-ruby
