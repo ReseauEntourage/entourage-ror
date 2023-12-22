@@ -81,10 +81,8 @@ Rails.application.routes.draw do
         end
       end
 
-      resources :registration_requests, only: [:index, :show, :update, :destroy]
       resources :messages, only: [:index, :destroy]
-      resources :organizations, only: [:show, :index, :edit, :update]
-      resources :partners do
+      resources :partners, except: [:create, :update] do
         collection do
           post :change_admin_role
         end
@@ -108,7 +106,6 @@ Rails.application.routes.draw do
           patch 'update_community_builder'
         end
       end
-      resources :tour_areas
 
       resources :uploads, only: :new
       namespace :uploads do
@@ -271,9 +268,7 @@ Rails.application.routes.draw do
     end
 
     resources :pois
-    resources :registration_requests, only: [:index, :show, :update, :destroy]
     resources :messages, only: [:index, :destroy]
-    resources :organizations, only: [:index, :edit, :update]
     resources :newsletter_subscriptions, only: [:index]
     resources :entourage_invitations, only: [:index]
     resources :entourages, only: [:index, :show, :edit, :update]
@@ -338,7 +333,6 @@ Rails.application.routes.draw do
 
       resources :stats, only: [:index]
       resources :messages, only: [:create]
-      resources :registration_requests, only: [:create]
       resources :map, only: [:index]
       resources :contact_subscriptions, only: [:create]
       resources :newsletter_subscriptions, only: [:create] do
@@ -720,7 +714,6 @@ Rails.application.routes.draw do
       get 'statistics'
       get 'tours'
       get 'simplified_tours'
-      get 'encounters'
       get 'map_center'
       post 'send_message'
     end
