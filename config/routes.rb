@@ -335,16 +335,6 @@ Rails.application.routes.draw do
       end
 
       resources :myfeeds, only: [:index]
-      resources :tours, only: [:index, :create, :show, :update] do
-        resources :tour_points, only:[:create]
-        resources :encounters, only: [:index, :create, :update], :shallow => true
-        resources :users, :controller => 'tours/users', only: [:index, :destroy, :update, :create]
-        resources :chat_messages, :controller => 'tours/chat_messages', only: [:index, :create]
-
-        member do
-          put :read
-        end
-      end
 
       resources :stats, only: [:index]
       resources :messages, only: [:create]
@@ -358,12 +348,6 @@ Rails.application.routes.draw do
         end
       end
       resources :questions, only: [:index]
-
-      resources :tour_areas, only: [:index, :show] do
-        member do
-          post :request, action: :tour_request
-        end
-      end
 
       resources :pois, only: [:index, :show, :create] do
         member do
@@ -390,7 +374,6 @@ Rails.application.routes.draw do
           post :following
         end
 
-        resources :tours, :controller => 'users/tours', only: [:index]
         resources :entourages, :controller => 'users/entourages', only: [:index]
         resources :neighborhoods, :controller => 'users/neighborhoods', only: [:index]
         resources :outings, :controller => 'users/outings', only: [:index] do
