@@ -37,7 +37,7 @@ module Admin
           end
         )))
         .order(Arel.sql(%(
-          neighborhoods.created_at DESC
+          neighborhoods.number_of_people DESC
         ))).page(page).per(per)
 
       @message_count = ConversationMessage

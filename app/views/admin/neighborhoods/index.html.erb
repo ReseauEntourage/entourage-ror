@@ -13,53 +13,36 @@
               </span>
             </div>
           </div>
+          <div style="float-left>
+            <div class="btn-group btn-group-sm">
+              <%= link_to("Tous", @params.merge(area: :all), class: "btn btn-#{@area == :all ? :primary : :default}") %>
+              <% ModerationArea.by_slug_without_no_zone.sort.each do |slug, area| %>
+                <%= link_to(area.short_name, @params.merge(area: slug), class: "btn btn-#{@area == slug ? :primary : :default}") %>
+              <% end %>
+            </div>
+          </div>
         </div>
       </div>
     <% end %>
 
-    <div style="margin-bottom: 15px; display: flex">
-      <div class="btn-group btn-group-sm">
-        <%= link_to("Tous", @params.merge(area: :all), class: "btn btn-#{@area == :all ? :primary : :default}") %>
-        <% ModerationArea.by_slug_without_no_zone.sort.each do |slug, area| %>
-          <%= link_to(area.short_name, @params.merge(area: slug), class: "btn btn-#{@area == slug ? :primary : :default}") %>
-        <% end %>
-      </div>
-    </div>
 
     <div class="row">
       <% unless @neighborhoods.none? %>
-        <table class="table">
-          <th>Id</th>
-          <th></th>
-          <th></th>
-          <th>Name</th>
-          <th>Utilisateur</th>
-          <th>Lieu</th>
-          <th>Intérêts</th>
-          <th>Date de création</th>
-          <th>Membres</th>
-          <th>Statut</th>
-          <th>Zone</th>
-          <th>Actions</th>
-          <% @neighborhoods.each do |neighborhood| %>
+        <table class="table custom-table">
+          <thead>
+            <th>Nom du groupe</th>
+            <th>Admin</th>
+            <th>Lieu</th>
+            <th>Date de création</th>
+            <th>Membres</th>
+            <th>Statut</th>
+            <th></th>
+          </thead>
+          <% @neighborhoods.each_with_index do |neighborhood, i| %>
+            <% parite = i.even? ? 'pair' : 'impair' %>
             <% unread_count  = @message_count[neighborhood.id].unread %>
             <% unread_images_count = @message_count[neighborhood.id].unread_images || 0 %>
-            <tr>
-              <td><%= neighborhood.id %></td>
-              <td>
-                <% if neighborhood.unread %>
-                  <span class="badge" style="background: #d9534f" title="Non lu">●</span>
-                <% elsif unread_count > 0 %>
-                  <span class="badge" style="background: #d9534f" title="Messages non lus"><%= unread_count %></span>
-                <% end %>
-              </td>
-              <td>
-                <% if neighborhood.unread_images %>
-                  <span class="badge" style="background: #19534f" title="Images non lues">●</span>
-                <% elsif unread_count > 0 %>
-                  <span class="badge" style="background: #19534f" title="Images non lues"><%= unread_images_count %></span>
-                <% end %>
-              </td>
+            <tr class="above-row row-<%= parite %>">
               <td><%= link_to neighborhood.name, edit_admin_neighborhood_path(neighborhood) %></td>
               <td><%= link_to neighborhood.user.full_name, admin_user_path(neighborhood.user) %></td>
               <td>
@@ -67,18 +50,27 @@
                   <%= link_to neighborhood.place_name, "https://www.google.com/maps/search/?api=1&query=#{neighborhood.place_name}&query_place_id=#{neighborhood.google_place_id}" %>
                 <% end %>
               </td>
+              <td><%= l neighborhood.created_at, format: :date_short %></td>
               <td>
-                <% neighborhood.interests.each do |interest| %>
-                  <span class="badge"><%= interest.name %></span>
+                <%= "#{neighborhood.members_count}" %></td>
+              <td><%= status_label neighborhood %></td>
+              <td>
+                <% if neighborhood.unread_images %>
+                  <span class="badge" style="background: #19534f" title="Images non lues">●</span>
+                <% elsif unread_count > 0 %>
+                  <span class="badge" style="background: #19534f" title="Images non lues"><%= unread_images_count %></span>
                 <% end %>
               </td>
-              <td><%= l neighborhood.created_at, format: :date_short %></td>
-              <td><span class="label label-default"><%= "#{neighborhood.members_count} membres" %></span></td>
-              <td><%= status_label neighborhood %></td>
-              <td><%= neighborhood_zone_label neighborhood.zone %></td>
-              <td>
-                <%= link_to "Modifier", edit_admin_neighborhood_path(neighborhood), class: "btn btn-primary" %>
+            </tr>
+            <tr class="underneath-row row-<%= parite %>">
+              <td></td>
+              <td colspan="4">
+                <% neighborhood.interests.each do |interest| %>
+                    <span class="custom-badge"><%= interest.name %></span>
+                  <% end %>
               </td>
+              <td></td>
+              <td></td>
             </tr>
           <% end %>
         </table>
