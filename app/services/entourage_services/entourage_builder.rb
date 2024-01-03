@@ -60,7 +60,7 @@ module EntourageServices
           else raise 'Unhandled'
           end
 
-        TourServices::JoinRequestStatus.new(join_request: join_request).accept!
+        EntourageServices::JoinRequestStatus.new(join_request: join_request).accept!
         # AsyncService.new(ModerationServices::EntourageModeration).on_create(entourage)
         AsyncService.new(FollowingService).on_create_entourage(entourage)
         CommunityLogic.for(entourage).group_created(entourage)

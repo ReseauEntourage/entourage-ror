@@ -70,14 +70,7 @@ module Admin
     end
 
     def create
-      if user_params[:organization_id].present?
-        organization = Organization.find(user_params[:organization_id])
-        builder = UserServices::ProUserBuilder.new(params: user_params, organization: organization)
-      else
-        builder = UserServices::PublicUserBuilder.new(params: user_params, community: community)
-      end
-
-      builder.create(send_sms: params[:send_sms].present?) do |on|
+      UserServices::PublicUserBuilder.new(params: user_params, community: community).create(send_sms: params[:send_sms].present?) do |on|
         on.success do |user|
           return redirect_to admin_users_path, notice: "utilisateur créé"
         end
@@ -264,14 +257,7 @@ module Admin
 
     def generate
       @users = []
-      @users << UserServices::FakeUser.new.user_without_tours
-      user_with_tours = UserServices::FakeUser.new.user_with_tours
-      ongoing_tour = user_with_tours.tours.where(status: "ongoing").first
-      @users << user_with_tours
-      @users << UserServices::FakeUser.new.user_joining_tour(tour: ongoing_tour)
-      @users << UserServices::FakeUser.new.user_accepted_in_tour(tour: ongoing_tour)
-      @users << UserServices::FakeUser.new.user_rejected_of_tour(tour: ongoing_tour)
-      @users << UserServices::FakeUser.new.user_quitting_tour(tour: ongoing_tour)
+
       render :fake
     end
 
