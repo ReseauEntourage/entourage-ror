@@ -16,9 +16,7 @@ class User < ApplicationRecord
   validates_uniqueness_of :token
   validate :validate_phone!
   validates_format_of :email, with: /@/, unless: -> (u) { u.email.to_s.size.zero? }
-  validates_presence_of [:first_name, :last_name, :organization, :email], if: Proc.new { |u| u.pro? }
-  validates_associated :organization, if: Proc.new { |u| u.pro? }
-  validates_presence_of [:first_name, :last_name, :email], if: Proc.new { |u| u.association? }
+  validates_presence_of [:first_name, :last_name, :email], if: Proc.new { |u| u.pro? || u.association? }
   validates :sms_code, length: { minimum: 6 }
   validates :sms_code_password, length: { minimum: 6 }, if: Proc.new { |u| u.sms_code_password.present? }
   validates_length_of :about, maximum: 200, allow_nil: true
@@ -33,8 +31,6 @@ class User < ApplicationRecord
   after_save :clean_up_passwords, if: :saved_change_to_encrypted_password?
   after_save :sync_newsletter, if: :saved_change_to_email?
 
-  has_many :tours
-  has_many :encounters, through: :tours
   has_many :followings, -> { where active: true }
   has_many :subscriptions, through: :followings, source: :partner
   has_many :login_histories
@@ -50,14 +46,12 @@ class User < ApplicationRecord
   has_many :accepted_join_requests, -> { where("join_requests.status = 'accepted'") }, class_name: "JoinRequest"
   has_many :entourage_participations, through: :join_requests, source: :joinable, source_type: "Entourage"
   has_many :neighborhood_participations, through: :join_requests, source: :joinable, source_type: "Neighborhood"
-  has_many :tour_participations, through: :join_requests, source: :joinable, source_type: "Tour"
   has_many :outing_memberships, -> { where(group_type: :outing).where("join_requests.status = 'accepted'") }, through: :join_requests, source: :joinable, source_type: "Entourage"
   has_many :action_memberships, -> { where(group_type: :action, entourage_type: [:ask_for_help, :contribution]).where("join_requests.status = 'accepted'") }, through: :join_requests, source: :joinable, source_type: "Entourage"
   has_many :neighborhood_memberships, through: :accepted_join_requests, source: :joinable, source_type: "Neighborhood"
   has_many :solicitation_memberships, -> { where(group_type: :action, entourage_type: :ask_for_help).where("join_requests.status = 'accepted'") }, through: :join_requests, source: :joinable, source_type: "Entourage"
   has_many :contribution_memberships, -> { where(group_type: :action, entourage_type: :contribution).where("join_requests.status = 'accepted'") }, through: :join_requests, source: :joinable, source_type: "Entourage"
-  belongs_to :organization, optional: true
-  has_and_belongs_to_many :coordinated_organizations, -> { distinct }, class_name: "Organization", join_table: "coordination", optional: true
+
   has_many :chat_messages
   has_many :conversation_messages
   has_many :user_applications
@@ -151,7 +145,6 @@ class User < ApplicationRecord
   scope :unknown, -> { goal_not_known }
   scope :ask_for_help, -> { where('(targeting_profile is null and goal = ?) or targeting_profile = ?', :ask_for_help, :asks_for_help) }
   scope :offer_help, -> { where('(targeting_profile is null and goal = ?) or targeting_profile = ?', :offer_help, :offers_help) }
-  scope :organization, -> { where(goal: :organization) }
   scope :search_by, ->(search) {
     strip = search && search.strip
     like = "%#{strip}%"
@@ -604,14 +597,6 @@ class User < ApplicationRecord
 
   def apple?
     id == 101 || address&.country == 'US'
-  end
-
-  def organization_name
-    organization.name if organization_id
-  end
-
-  def organization_description
-    organization.description if organization_id
   end
 
   def address_2
