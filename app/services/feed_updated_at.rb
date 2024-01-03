@@ -2,7 +2,7 @@ module FeedUpdatedAt
   def self.update klass, id, value
     klass = klass.to_s.constantize unless klass.is_a?(Class)
 
-    return unless klass.is_a?(Entourage)
+    return unless klass == Entourage
 
     klass
       .where(id: id)
