@@ -97,9 +97,6 @@ module FeedServices
       feeds = feeds.to_a # feeds is now an Array.
       preload_user_join_requests(feeds)
       preload_entourage_moderations(feeds)
-      unless entourages_only
-        preload_tour_user_organizations(feeds)
-      end
       preload_chat_messages_counts(feeds)
       preload_last_chat_messages(feeds)
       preload_last_join_requests(feeds)

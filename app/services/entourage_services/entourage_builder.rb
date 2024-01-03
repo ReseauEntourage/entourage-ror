@@ -47,13 +47,12 @@ module EntourageServices
       entourage.category = EntourageServices::CategoryLexicon.new(text: text).category
 
       if entourage.save
-        #When you start an entourage you are automatically added to members of the tour
+        #When you start an entourage you are automatically added to members
         join_request = JoinRequest.create(joinable: entourage, user: user)
 
         joinable = entourage
         join_request.role =
           case [joinable.community, joinable.group_type]
-          when ['entourage', 'tour']   then 'creator'
           when ['entourage', 'action'] then 'creator'
           when ['entourage', 'outing'] then 'organizer'
           when ['pfp',       'outing'] then 'organizer'
@@ -198,6 +197,6 @@ module EntourageServices
     end
 
     private
-    attr_reader :tour, :user, :callback, :params, :recipient_consent_obtained
+    attr_reader :user, :callback, :params, :recipient_consent_obtained
   end
 end

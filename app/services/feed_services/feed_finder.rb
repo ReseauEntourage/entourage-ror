@@ -77,20 +77,7 @@ module FeedServices
 
       feeds = feeds.where.not(group_type: [:conversation, :group])
 
-      # NO_SUCCESSES (EN-1996)
-      # feeds = feeds
-      #   .joins(%(
-      #     left join entourage_moderations on
-      #       feedable_type = 'Entourage' and
-      #       entourage_moderations.entourage_id = feedable_id
-      #   ))
-      #   .where(%(
-      #     feeds.status != 'closed' or
-      #     feedable_type = 'Tour' or
-      #     (group_type = 'action' and entourage_moderations.action_outcome in ('Oui'))
-      #   ))
-
-      feeds = feeds.where(%(feeds.status != 'closed' or feedable_type = 'Tour'))
+      feeds = feeds.where(%(feeds.status != 'closed'))
 
       if types != nil
         feeds = feeds.where(feed_category: types)
@@ -107,7 +94,7 @@ module FeedServices
       end
 
       # actions are filtered out based on update date
-      feeds = feeds.where("group_type not in (?) or feeds.updated_at >= ?", [:action, :tour], time_range.hours.ago)
+      feeds = feeds.where("group_type not in (?) or feeds.updated_at >= ?", [:action], time_range.hours.ago)
 
       bounding_box_sql = Geocoder::Sql.within_bounding_box(*box, :latitude, :longitude)
       feeds = feeds.where("(#{bounding_box_sql}) OR online = true")
@@ -136,9 +123,6 @@ module FeedServices
       feeds = insert_announcements(feeds: feeds) if announcements == :v1
 
       preload_user_join_requests(feeds)
-      # NO_SUCCESSES (EN-1996)
-      # preload_entourage_moderations(feeds)
-      preload_tour_user_organizations(feeds)
       preload_chat_messages_counts(feeds)
 
       next_cursor =
