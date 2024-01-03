@@ -31,7 +31,6 @@ FactoryBot.define do
     end
 
     trait :pro do
-      organization
       user_type { 'pro' }
     end
 

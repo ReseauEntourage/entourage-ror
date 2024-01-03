@@ -41,7 +41,6 @@ describe User, :type => :model do
   it { should have_many :encounters }
   it { should have_many :entourages }
   it { should have_many :user_applications }
-  it { should have_and_belong_to_many(:coordinated_organizations).class_name('Organization') }
 
   describe "community" do
     let(:user) { create :public_user }
@@ -177,14 +176,6 @@ describe User, :type => :model do
     end
   end
 
-  describe "organization association" do
-    let(:valid_organization) { FactoryBot.build(:organization) }
-    let(:invalid_organization) { FactoryBot.build(:organization, name: nil) }
-    it { expect(FactoryBot.build(:pro_user, organization: nil).save).to be false }
-    it { expect(FactoryBot.build(:pro_user, organization: invalid_organization).save).to be false }
-    it { expect(FactoryBot.build(:pro_user, organization: valid_organization).save).to be true }
-  end
-
   describe "set_phone" do
     it { expect(FactoryBot.create(:pro_user, phone: "0612345678").phone).to eq('+33612345678') }
     it { expect(FactoryBot.create(:pro_user, phone: "06 12 34 56 78").phone).to eq('+33612345678') }
@@ -227,13 +218,6 @@ describe User, :type => :model do
     entourage = FactoryBot.create(:entourage)
     create(:join_request, user: user, joinable: entourage)
     expect(user.entourage_participations).to eq([entourage])
-  end
-
-  it "has many tour_participations" do
-    user = FactoryBot.create(:pro_user)
-    tour = FactoryBot.create(:tour)
-    create(:join_request, user: user, joinable: tour)
-    expect(user.tour_participations).to eq([tour])
   end
 
   it "has many relations" do

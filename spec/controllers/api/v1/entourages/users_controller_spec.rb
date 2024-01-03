@@ -340,7 +340,7 @@ describe Api::V1::Entourages::UsersController do
     end
 
     context "signed in" do
-      context "reject someone from tour" do
+      context "reject someone from entourage" do
         let!(:other_user) { FactoryBot.create(:pro_user) }
         let!(:other_join_request) { create(:join_request, user: other_user, joinable: entourage, status: "accepted") }
         let!(:my_join_request) { create(:join_request, user: user, joinable: entourage, status: "accepted") }
@@ -365,7 +365,7 @@ describe Api::V1::Entourages::UsersController do
         })}
       end
 
-      context "quit tour" do
+      context "quit entourage" do
         let!(:my_join_request) { create(:join_request, user: user, joinable: entourage, status: "accepted") }
         before { delete :destroy, params: { entourage_id: entourage.to_param, id: user.id, token: user.token } }
         it { expect(response.status).to eq(200) }
@@ -388,13 +388,13 @@ describe Api::V1::Entourages::UsersController do
       end
     end
 
-    context "quit tour when join request is pending acceptance" do
+    context "quit entourage when join request is pending acceptance" do
       let!(:join_request) { create(:join_request, user: user, joinable: entourage, status: "pending") }
       before { delete :destroy, params: { entourage_id: entourage.to_param, id: user.id, token: user.token } }
       it { expect(response.status).to eq(200) }
     end
 
-    context "reject someone from tour when join request is pending acceptance" do
+    context "reject someone from entourage when join request is pending acceptance" do
       let!(:other_user) { FactoryBot.create(:public_user) }
       let!(:my_join_request) { create(:join_request, user: user, joinable: entourage, status: "pending") }
       let!(:other_join_request) { create(:join_request, user: other_user, joinable: entourage, status: "pending") }

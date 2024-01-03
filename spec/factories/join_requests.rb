@@ -14,7 +14,6 @@ FactoryBot.define do
       next unless join_request.role == 'auto' && joinable.present?
       join_request.role = joinable.is_a?(Neighborhood) ? 'member' :
         case [joinable.community, joinable.group_type]
-        when ['entourage', 'tour'          ] then 'member'
         when ['entourage', 'action'        ] then 'member'
         when ['entourage', 'outing'        ] then 'participant'
         when ['entourage', 'conversation'  ] then 'participant'

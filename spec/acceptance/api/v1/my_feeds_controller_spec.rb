@@ -20,7 +20,6 @@ resource Api::V1::MyfeedsController do
     context '200' do
       let(:other_user) { create :public_user }
       let!(:entourage) { FactoryBot.create(:entourage, :joined, join_request_user: user, user: other_user, created_at: 1.hour.ago) }
-      let!(:tour) { FactoryBot.create(:tour, :joined, join_request_user: user, user: other_user, created_at: 1.hour.ago) }
 
       example_request 'Get the feed' do
         expect(response_status).to eq(200)

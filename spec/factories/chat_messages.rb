@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :chat_message do
-    association :messageable, factory: :tour
+    association :messageable, factory: :entourage
     association :user, factory: :pro_user
     content { "MyText" }
   end
