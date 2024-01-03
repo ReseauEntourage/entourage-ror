@@ -595,6 +595,15 @@ ActiveRecord::Schema.define(version: 202401111415004) do
     t.index ["name"], name: "index_organizations_on_name", unique: true
   end
 
+  create_table "old_questions", id: :integer, default: -> { "nextval('questions_id_seq'::regclass)" }, force: :cascade do |t|
+    t.string "title", null: false
+    t.string "answer_type", null: false
+    t.integer "organization_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["organization_id"], name: "index_questions_on_organization_id"
+  end
+
   create_table "old_registration_requests", id: :integer, default: -> { "nextval('registration_requests_id_seq'::regclass)" }, force: :cascade do |t|
     t.string "status", default: "pending", null: false
     t.string "extra", null: false
@@ -744,15 +753,6 @@ ActiveRecord::Schema.define(version: 202401111415004) do
     t.index ["postal_code"], name: "index_pois_on_postal_code"
     t.index ["source_id"], name: "index_pois_on_source_id"
     t.index ["textsearch"], name: "index_pois_on_textsearch", using: :gin
-  end
-
-  create_table "questions", id: :serial, force: :cascade do |t|
-    t.string "title", null: false
-    t.string "answer_type", null: false
-    t.integer "organization_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["organization_id"], name: "index_questions_on_organization_id"
   end
 
   create_table "reactions", force: :cascade do |t|

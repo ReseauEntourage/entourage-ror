@@ -335,13 +335,13 @@ Rails.application.routes.draw do
       resources :messages, only: [:create]
       resources :map, only: [:index]
       resources :contact_subscriptions, only: [:create]
+
       resources :newsletter_subscriptions, only: [:create] do
         collection do
           get :show
           delete :destroy
         end
       end
-      resources :questions, only: [:index]
 
       resources :pois, only: [:index, :show, :create] do
         member do
@@ -708,35 +708,12 @@ Rails.application.routes.draw do
       get 'switch_user' => 'admin/sessions#switch_user'
     end
   end
-  resources :organizations, only: [:new, :create, :edit, :update] do
-    collection do
-      get 'dashboard'
-      get 'statistics'
-      get 'tours'
-      get 'simplified_tours'
-      get 'map_center'
-      post 'send_message'
-    end
-  end
+
   resources :users, only: [:index, :edit, :create, :update, :destroy] do
     member do
       post 'send_sms'
     end
   end
-  resources :tours, only: [:show, :destroy] do
-    member do
-      get :map_center
-      get :map_data
-    end
-  end
-
-  resources :scheduled_pushes, only: [:index] do
-    collection do
-      delete :destroy
-    end
-  end
-
-  resources :questions, only: [:create, :destroy]
 
   get 'apps' => 'home#apps', as: :apps
   get 'store_redirection' => 'home#store_redirection'
