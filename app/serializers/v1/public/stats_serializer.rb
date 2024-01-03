@@ -12,25 +12,10 @@ module V1
 
       def stats
         {
-            tours: tours_count,
-            encounters: encounters_count,
-            organizations: organizations_count,
             actions: actions_count,
             events: events_count,
             users: users_count,
         }
-      end
-
-      def tours_count
-        Tour.joins(user: :organization).where('organizations.test_organization=false').group('tours.id').count.count
-      end
-
-      def encounters_count
-        Encounter.joins(tour: {user: :organization}).where('organizations.test_organization=false').group('encounters.id').count.count
-      end
-
-      def organizations_count
-        Organization.not_test.count
       end
 
       def actions_count
