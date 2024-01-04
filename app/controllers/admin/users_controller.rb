@@ -10,7 +10,7 @@ module Admin
       @status = get_status
       @role = get_role
 
-      @users = filtered_users.includes(:organization).order("created_at DESC").page(params[:page]).per(25)
+      @users = filtered_users.order("created_at DESC").page(params[:page]).per(25)
     end
 
     def show
@@ -90,11 +90,6 @@ module Admin
     end
 
     def update
-      if !user.pro? && user_params[:organization_id].present?
-        user.user_type = 'pro'
-        user.organization_id = user_params[:organization_id]
-      end
-
       email_prefs_success = EmailPreferencesService.update(user: user, preferences: email_preferences_params.to_h)
 
       user.assign_attributes(user_params)
@@ -273,7 +268,7 @@ module Admin
     end
 
     def user_params
-      params.require(:user).permit(:first_name, :last_name, :email, :sms_code_password, :phone, :lang, :travel_distance, :organization_id, :use_suggestions, :about, :accepts_emails, :targeting_profile, :partner_id, :admin, :moderator, :slack_id, :interest_list, interests: [])
+      params.require(:user).permit(:first_name, :last_name, :email, :sms_code_password, :phone, :lang, :travel_distance, :use_suggestions, :about, :accepts_emails, :targeting_profile, :partner_id, :admin, :moderator, :slack_id, :interest_list, interests: [])
     end
 
     def email_preferences_params
@@ -312,7 +307,6 @@ module Admin
       @users = @users.unknown if profile == :goal_not_known
       @users = @users.ask_for_help if profile == :ask_for_help
       @users = @users.offer_help if profile == :offer_help
-      @users = @users.organization if profile == :organization
       @users = @users.in_area("dep_" + params[:q][:postal_code_start]) if params[:q] && params[:q][:postal_code_start]
       @users = @users.in_area(:hors_zone) if params[:q] && params[:q][:postal_code_not_start_all]
       @users.group('users.id')

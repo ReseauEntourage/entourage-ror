@@ -383,7 +383,7 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
     end
 
     context "private_chat_message" do
-      after { create :chat_message, user: user, message_type: :text }
+      after { create :private_chat_message, user: user, message_type: :text }
 
       include_examples :call_private_chat_message_on_create
       include_examples :no_call_post_on_create

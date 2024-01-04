@@ -3,6 +3,12 @@ FactoryBot.define do
     association :messageable, factory: :entourage
     association :user, factory: :pro_user
     content { "MyText" }
+
+    trait :private do
+      association :messageable, factory: :conversation
+    end
+
+    factory :private_chat_message, traits: [:private]
   end
 
   trait :closed_as_success do
