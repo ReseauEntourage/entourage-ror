@@ -3,11 +3,7 @@ class HomeController < ApplicationController
   layout 'full_screen'
 
   def index
-    if current_user.pro?
-      redirect_to dashboard_organizations_path
-    else
-      redirect_to edit_public_user_user_path("me")
-    end
+    redirect_to edit_public_user_user_path("me")
   end
 
   def apps
