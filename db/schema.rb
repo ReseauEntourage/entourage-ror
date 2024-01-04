@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_12_11_150400) do
+ActiveRecord::Schema.define(version: 2023_12_13_150000) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_trgm"
@@ -352,8 +352,6 @@ ActiveRecord::Schema.define(version: 2023_12_11_150400) do
     t.string "recurrency_identifier"
     t.datetime "status_changed_at"
     t.datetime "notification_sent_at"
-    t.index "((metadata ->> 'ends_at'::text)), ((metadata ->> 'starts_at'::text))", name: "entourages_metadata_idx"
-    t.index "((metadata ->> 'ends_at'::text)), ((metadata ->> 'starts_at'::text))", name: "index_entourages_metadata_dates"
     t.index "st_setsrid(st_makepoint(longitude, latitude), 4326)", name: "index_entourages_on_coordinates", using: :gist
     t.index ["community", "group_type"], name: "index_entourages_on_community_and_group_type"
     t.index ["country", "postal_code"], name: "index_entourages_on_country_and_postal_code"

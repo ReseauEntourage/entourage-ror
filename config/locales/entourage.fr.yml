@@ -350,6 +350,12 @@ fr:
     chat_messages:
       status_update:
         closed_user: l'utilisateur a quitté le réseau Entourage. N'hésitez pas à rejoindre d'autres actions solidaires sur l'app !
+        moderator_working_hours: |
+          Merci de nous avoir contacté %s. Nous sommes actuellement en dehors de nos heures de travail (9h-18h en semaine). Nous vous répondrons dès que possible.
+          N'hésitez pas à poster un message sur votre groupe de voisins si vous pensez qu'une personne de la communauté peut vous conseiller et/ou apporter une réponse !
+          En cas d'urgence, contactez les numéros de services d'urgence : 18 (pompiers), 15 (samu) ou 115 (urgence sociale)
+          Nous vous remercions de votre compréhension et de votre patience.
+          %s
 
   push_notifications:
     action:
