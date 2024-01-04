@@ -49,6 +49,7 @@ describe Api::V1::ContributionsController, :type => :controller do
       it { expect(subject["contributions"][0]).to have_key("members") }
       it { expect(subject["contributions"][0]["members"]).to eq([{
         "id" => contribution.user_id,
+        "lang" => "fr",
         "display_name" => "John D.",
         "avatar_url" => nil,
         "community_roles" => [],

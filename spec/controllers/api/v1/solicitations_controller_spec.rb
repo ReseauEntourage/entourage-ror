@@ -49,6 +49,7 @@ describe Api::V1::SolicitationsController, :type => :controller do
       it { expect(subject["solicitations"][0]).to have_key("members") }
       it { expect(subject["solicitations"][0]["members"]).to eq([{
         "id" => solicitation.user_id,
+        "lang" => "fr",
         "display_name" => "John D.",
         "avatar_url" => nil,
         "community_roles" => [],

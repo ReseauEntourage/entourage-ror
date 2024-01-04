@@ -1,6 +1,7 @@
 module V1
   class UserSerializer < ActiveModel::Serializer
     attribute :id
+    attribute :lang
     attribute :display_name
     attribute :first_name
     attribute :last_name

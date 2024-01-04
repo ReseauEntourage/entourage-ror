@@ -67,6 +67,7 @@ describe Api::V1::OutingsController do
       it { expect(subject["outings"][0]).to have_key("members") }
       it { expect(subject["outings"][0]["members"]).to eq([{
         "id" => outing.user_id,
+        "lang" => "fr",
         "display_name" => "John D.",
         "avatar_url" => nil,
         "community_roles" => [],

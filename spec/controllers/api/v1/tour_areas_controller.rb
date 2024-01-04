@@ -12,7 +12,7 @@ describe Api::V1::TourAreasController do
     end
 
     context "signed in" do
-      before { get :index, token: user.token }
+      before { get :index, params: { token: user.token } }
       subject { JSON.parse(response.body) }
       it { expect(response.status).to eq(200) }
       it { expect(subject['tour_areas'].count).to eq(2) }
@@ -29,7 +29,7 @@ describe Api::V1::TourAreasController do
   describe "GET show" do
     let(:tour_area) { FactoryBot.create(:tour_area) }
 
-    before { get :show, token: user.token, id: tour_area.id }
+    before { get :show, params: { token: user.token, id: tour_area.id } }
     subject { JSON.parse(response.body) }
     it { expect(subject['tour_area']['id']).to eq(tour_area.id) }
   end
@@ -40,19 +40,19 @@ describe Api::V1::TourAreasController do
     subject { JSON.parse(response.body) }
 
     context "wrong id" do
-      before { post :tour_request, token: user.token, id: 0, message: 'I have a dream' }
+      before { post :tour_request, params: { token: user.token, id: 0, message: 'I have a dream' } }
       it { expect(response.status).to eq(400) }
       it { expect(subject['code']).to eq('tour_area_not_found') }
     end
 
     context "wrong status" do
-      before { post :tour_request, token: user.token, id: tour_area_inactive.id, message: 'I have a dream' }
+      before { post :tour_request, params: { token: user.token, id: tour_area_inactive.id, message: 'I have a dream' } }
       it { expect(response.status).to eq(400) }
       it { expect(subject['code']).to eq('tour_area_inactive') }
     end
 
     context "correct id" do
-      before { post :tour_request, token: user.token, id: tour_area.id, message: 'I have a dream' }
+      before { post :tour_request, params: { token: user.token, id: tour_area.id, message: 'I have a dream' } }
       it { expect(response.status).to eq(200) }
     end
   end

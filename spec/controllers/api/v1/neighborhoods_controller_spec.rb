@@ -247,6 +247,7 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
           "interests" => ["jeux", "nature", "other"],
           "user" => {
             "id" => neighborhood.user_id,
+            "lang" => "fr",
             "display_name" => "John D.",
             "avatar_url" => nil,
             "community_roles" => [],
@@ -258,6 +259,7 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
           },
           "members" => [{
             "id" => 1,
+            "lang" => "fr",
             "avatar_url" => "n/a",
             "display_name" => "n/a",
           }],
@@ -340,6 +342,7 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
           "interests" => ["sport"],
           "user" => {
             "id" => neighborhood.user_id,
+            "lang" => "fr",
             "display_name" => "John D.",
             "avatar_url" => nil,
             "community_roles" => [],
@@ -352,6 +355,7 @@ describe Api::V1::NeighborhoodsController, :type => :controller do
           },
           "members" => [{
             "id" => 1,
+            "lang" => "fr",
             "display_name" => "n/a",
             "avatar_url" => "n/a"
           }],

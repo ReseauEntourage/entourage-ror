@@ -18,6 +18,7 @@ describe Api::V1::AnonymousUsersController do
       "user"=>{
         "id"=>nil,
         "email"=>nil,
+        "lang"=>"fr",
         "display_name"=>nil,
         "first_name"=>nil,
         "last_name"=>nil,
