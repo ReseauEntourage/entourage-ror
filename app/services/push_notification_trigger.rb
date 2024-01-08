@@ -21,7 +21,7 @@ class PushNotificationTrigger
     def to lang
       return @i18ns[lang] if @i18ns.has_key?(lang)
 
-      return @i18ns[lang] = I18n.l(@date, locale: lang) if @date.present?
+      return @i18ns[lang] = I18n.l(@date, locale: lang, format: :long).strip if @date.present?
       return @i18ns[lang] = I18n.t(@i18n, locale: lang) % args_to(lang) if @i18n.present?
 
       if @instance.present? && @field.present?
