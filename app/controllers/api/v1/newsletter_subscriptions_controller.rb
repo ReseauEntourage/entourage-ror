@@ -1,16 +1,16 @@
 module Api
   module V1
     class NewsletterSubscriptionsController < Api::V1::BaseController
-      skip_before_action :authenticate_user!
+      skip_before_action :authenticate_user!, only: [:create]
 
       def show
-        response = NewsletterServices::Contact.new(email: params[:email]).show do |on|
+        response = NewsletterServices::Contact.new(email: current_user.email).show do |on|
           on.success do |contact|
             render json: { contact: contact }, status: 200
           end
 
           on.failure do
-            render json: { message: "Erreur lors de la recherche de #{newsletter_subscription_params[:email]}" }, status: 400
+            render json: { message: "Erreur lors de la recherche de #{current_user.email}" }, status: 400
           end
         end
       end
@@ -27,14 +27,14 @@ module Api
         end
       end
 
-      def delete
-        response = NewsletterServices::Contact.new(newsletter_subscription_params).delete do |on|
+      def destroy
+        response = NewsletterServices::Contact.new(email: current_user.email).delete do |on|
           on.success do
-            render json: { message: "Contact #{newsletter_subscription_params[:email]} supprimé" }, status: 200
+            render json: { message: "Contact #{current_user.email} supprimé" }, status: 200
           end
 
           on.failure do
-            render json: { message: "Erreur lors de la suppression de #{newsletter_subscription_params[:email]}" }, status: 400
+            render json: { message: "Erreur lors de la suppression de #{current_user.email}" }, status: 400
           end
         end
       end
