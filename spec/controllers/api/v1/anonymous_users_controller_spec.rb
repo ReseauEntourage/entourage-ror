@@ -32,6 +32,8 @@ describe Api::V1::AnonymousUsersController do
         "anonymous"=>true,
         "uuid"=>"1_anonymous_#{user.uuid}",
         "stats"=>{
+          "tour_count"=>0,
+          "encounter_count"=>0,
           "entourage_count"=>0,
           "actions_count" => 0,
           "ask_for_help_creation_count" => 0,

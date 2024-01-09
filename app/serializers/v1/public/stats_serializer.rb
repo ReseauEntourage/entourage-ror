@@ -12,6 +12,9 @@ module V1
 
       def stats
         {
+            tours: 0,
+            encounters: 0,
+            organizations: 0,
             actions: actions_count,
             events: events_count,
             users: users_count,
