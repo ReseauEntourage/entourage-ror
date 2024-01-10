@@ -230,6 +230,8 @@ class PushNotificationTrigger
     return outing_on_update_status if @changes.keys.include?("status")
     return unless @changes.any? # it happens when neighborhoods_entourage is updated
 
+    return unless (@changes.keys & ["metadata", "latitude", "longitude", "postal_code", "country"]).any?
+
     users = @record.accepted_members - [@record.user]
 
     return if users.none?

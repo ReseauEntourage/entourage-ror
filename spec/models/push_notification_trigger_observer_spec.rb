@@ -101,25 +101,36 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
           let(:entourage) { create :outing, user: user, status: :open, title: "Café", metadata: { starts_at: starts_at, ends_at: ends_at } }
           let!(:join_request) { create :join_request, user: participant, joinable: entourage, status: :accepted }
 
-          include_examples :call_outing_on_update
-          include_examples :call_notify
-
           context "update title" do
-            it {
-              expect_any_instance_of(PushNotificationTrigger).to receive(:notify).with(
-                sender_id: entourage.user_id,
-                referent: entourage,
-                instance: entourage.reload,
-                users: [participant],
-                params: {
-                  object: PushNotificationTrigger::I18nStruct.new(instance: kind_of(Entourage), field: :title),
-                  content: PushNotificationTrigger::I18nStruct.new(i18n: 'push_notifications.outing.update_short', i18n_args: I18n.l(entourage.starts_at.to_date)),
-                  extra: {
-                    tracking: :outing_on_update
-                  }
-                }
-              )
+            include_examples :call_outing_on_update
+            include_examples :no_call_notify
+
+            it { expect_any_instance_of(PushNotificationTrigger).not_to receive(:notify) }
+          end
+
+          context "update title and latitude" do
+            let(:subject) {
+              entourage.title = "foo"
+              entourage.latitude = 0.1
+              entourage.save
             }
+
+            include_examples :call_outing_on_update
+            include_examples :call_notify
+
+            it { expect_any_instance_of(PushNotificationTrigger).to receive(:notify) }
+          end
+
+          context "update latitude" do
+            let(:subject) {
+              entourage.latitude = 0.1
+              entourage.save
+            }
+
+            include_examples :call_outing_on_update
+            include_examples :call_notify
+
+            it { expect_any_instance_of(PushNotificationTrigger).to receive(:notify) }
           end
 
           context "update starts_at" do
@@ -127,6 +138,9 @@ RSpec.describe PushNotificationTriggerObserver, type: :model do
               entourage.metadata[:starts_at] = 90.minutes.from_now
               entourage.save
             }
+
+            include_examples :call_outing_on_update
+            include_examples :call_notify
 
             it {
               expect_any_instance_of(PushNotificationTrigger).to receive(:notify).with(
