@@ -1,0 +1,50 @@
+pl:
+  date:
+    abbr_day_names:
+      - nd
+      - pn
+      - wt
+      - śr
+      - cz
+      - pt
+      - sob
+    abbr_month_names:
+      -
+      - sty
+      - lut
+      - mar
+      - kwi
+      - maj
+      - cze
+      - lip
+      - sie
+      - wrz
+      - paź
+      - lis
+      - gru
+    day_names:
+      - niedziela
+      - poniedziałek
+      - wtorek
+      - środa
+      - czwartek
+      - piątek
+      - sobota
+    formats:
+      default: "%Y-%m-%d"
+      short: "%e %b"
+      long: "%e %B %Y"
+    month_names:
+      -
+      - styczeń
+      - luty
+      - marzec
+      - kwiecień
+      - maj
+      - czerwiec
+      - lipiec
+      - sierpień
+      - wrzesień
+      - październik
+      - listopad
+      - grudzień

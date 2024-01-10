@@ -6,21 +6,23 @@ class PushNotificationTrigger
   #  :join_request
   #  :neighborhoods_entourage
 
-  I18nStruct = Struct.new(:i18n, :i18n_args, :instance, :field, :text) do
-    def initialize(i18n: nil, i18n_args: [], instance: nil, field: nil, text: nil)
+  I18nStruct = Struct.new(:i18n, :i18n_args, :instance, :field, :date, :text) do
+    def initialize(i18n: nil, i18n_args: [], instance: nil, field: nil, date: nil, text: nil)
       @i18ns = Hash.new # memorizes translations
 
       @i18n = i18n
       @i18n_args = i18n_args
       @instance = instance
       @field = field
+      @date = date
       @text = text
     end
 
     def to lang
       return @i18ns[lang] if @i18ns.has_key?(lang)
 
-      return @i18ns[lang] = I18n.with_locale(lang) { I18n.t(@i18n) % args_to(lang) } if @i18n.present?
+      return @i18ns[lang] = I18n.l(@date, locale: lang, format: :long).strip if @date.present?
+      return @i18ns[lang] = I18n.t(@i18n, locale: lang) % args_to(lang) if @i18n.present?
 
       if @instance.present? && @field.present?
         return @i18ns[lang] = @instance.send(@field) unless @instance.translation.present?
@@ -546,7 +548,7 @@ class PushNotificationTrigger
   def to_date date_str
     return unless date_str
 
-    I18n.l(date_str.to_date)
+    I18nStruct.new(date: date_str.to_date)
   end
 
   def update_outing_message outing, changes

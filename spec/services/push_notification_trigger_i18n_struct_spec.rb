@@ -46,4 +46,16 @@ describe PushNotificationTrigger::I18nStruct do
 
     it { expect(subject.to(:fr)).to eq("foo")}
   end
+
+  describe "date" do
+    let(:subject) { described_class.new(date: "2023-01-01".to_date) }
+
+    it { expect(subject.to(:fr)).to eq("1 janvier 2023") }
+  end
+
+  describe "date as args" do
+    let(:subject) { described_class.new(text: "date is %s", i18n_args: [described_class.new(date: "2023-01-01".to_date)]) }
+
+    it { expect(subject.to(:fr)).to eq("date is 1 janvier 2023") }
+  end
 end
