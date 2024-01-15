@@ -32,7 +32,7 @@ module Populate
       Recommandation.delete_all
     end
 
-    def delete_resources
+    def delete_reactions
       Reaction.delete_all
     end
 

@@ -115,9 +115,11 @@ describe Api::V1::HomeController do
   end
 
   describe 'GET metadata' do
+    let!(:reaction) { create(:reaction) }
     let(:result) { JSON.parse(response.body) }
 
     before { get :metadata, params: { token: user.token } }
+
     it { expect(response.status).to eq(200) }
     it { expect(result).to have_key("tags") }
     it { expect(result["tags"]).to be_a(Hash) }
@@ -143,6 +145,15 @@ describe Api::V1::HomeController do
       "id" => "spam",
       "name" => "Spam"
     }) }
+    # reactions
+    it { expect(result).to have_key("reactions") }
+    it { expect(result["reactions"]).to eq([
+      {
+        "id" => reaction.id,
+        "name" => reaction.name,
+        "key" => reaction.key,
+        "image_url" => reaction.image_url }
+    ]) }
   end
 
   describe 'GET summary' do
