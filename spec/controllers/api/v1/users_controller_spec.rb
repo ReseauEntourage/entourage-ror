@@ -704,24 +704,46 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
 
     context "newsletter_subscription" do
       let(:params) { Hash.new }
-      let(:request) { post 'create', params: { user: { phone: "+33612345678", travel_distance: 16 }.merge(params) } }
-
-      before { request }
+      let(:request) { post 'create', params: { user: { phone: "+33612345678", travel_distance: 16, email: "foo@bar.fr" }.merge(params) } }
 
       context "no newsletter_subscription param" do
+        before { request }
+
         it { expect(User.last.newsletter_subscription).to eq(false) }
       end
 
       context "newsletter_subscription is false" do
         let(:params) { { newsletter_subscription: "false" } }
 
-        it { expect(User.last.newsletter_subscription).to eq(false) }
+        context do
+          before { request }
+
+          it { expect(User.last.newsletter_subscription).to eq(false) }
+          it { expect(User.last.email).to eq("foo@bar.fr") }
+        end
+
+        context do
+          after { request }
+
+          it { expect_any_instance_of(NewsletterServices::Contact).not_to receive(:create) }
+        end
       end
 
       context "newsletter_subscription is true" do
         let(:params) { { newsletter_subscription: "true" } }
 
-        it { expect(User.last.newsletter_subscription).to eq(true) }
+        context do
+          before { request }
+
+          it { expect(User.last.newsletter_subscription).to eq(true) }
+          it { expect(response.status).to eq(201) }
+        end
+
+        context do
+          after { request }
+
+          it { expect_any_instance_of(NewsletterServices::Contact).to receive(:create) }
+        end
       end
     end
 
