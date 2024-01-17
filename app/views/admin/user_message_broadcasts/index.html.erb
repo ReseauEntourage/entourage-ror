@@ -1,5 +1,5 @@
 <div class="container">
-  <div style="width: 750px; margin: auto">
+  <div>
     <h1>Diffusions de messages privés</h1>
 
     <div style="margin-bottom: 15px; display: flex">
@@ -35,20 +35,22 @@
       <% if @user_message_broadcasts.none? %>
         Pas de diffusions de MP.
       <% else %>
-        <table class="table">
-          <th>Id</th>
-          <th>Titre</th>
-          <th>Archivé</th>
-          <th>Zone de modération</th>
-          <th>Public</th>
-          <th>Dernière mise à jour</th>
-          <% if @status == :sent %>
-            <th>Envoyés</th>
-          <% elsif @status == :sending %>
-            <th>Envoyés</th>
-            <th>En cours</th>
-          <% end %>
-          <th>Actions</th>
+        <table class="custom-table">
+          <thead>
+            <th>Id</th>
+            <th>Titre</th>
+            <th>Archivé</th>
+            <th>Zone de modération</th>
+            <th>Public</th>
+            <th>Dernière mise à jour</th>
+            <% if @status == :sent %>
+              <th>Envoyés</th>
+            <% elsif @status == :sending %>
+              <th>Envoyés</th>
+              <th>En cours</th>
+            <% end %>
+            <th>Actions</th>
+          </thead>
           <% @user_message_broadcasts.each do |user_message_broadcast| %>
             <tr>
               <td><%= user_message_broadcast.id %></td>
@@ -56,7 +58,7 @@
               <td><%= check_box_tag '', '', user_message_broadcast.archived?, disabled: true %></td>
               <td>
                 <% user_message_broadcast[:areas].map do |area| %>
-                  <span class="badge"><%= area %></span>
+                  <span class="custom-badge"><%= area %></span>
                 <% end %>
               </td>
               <td><%= UserGoalPresenter.new(user_message_broadcast.goal, community: current_user.community).name %></td>
@@ -69,11 +71,11 @@
               <% end %>
               <td>
                 <% if @status == :draft %>
-                  <%= link_to "Modifier", edit_admin_user_message_broadcast_path(user_message_broadcast), class: "btn btn-primary" %>
+                  <%= link_to "Modifier", edit_admin_user_message_broadcast_path(user_message_broadcast), class: "custom-button custom-primary" %>
                 <% elsif [:sent, :archived].include? @status %>
-                  <%= link_to "Dupliquer", clone_admin_user_message_broadcast_path(user_message_broadcast), method: :post, class: "btn btn-danger" %>
+                  <%= link_to "Dupliquer", clone_admin_user_message_broadcast_path(user_message_broadcast), method: :post, class: "custom-button custom-primary red" %>
                 <% elsif @status == :sending %>
-                  <%= link_to "Stopper", kill_admin_user_message_broadcast_path(user_message_broadcast), method: :post, class: "btn btn-danger" %>
+                  <%= link_to "Stopper", kill_admin_user_message_broadcast_path(user_message_broadcast), method: :post, class: "custom-button custom-primary red" %>
                 <% end %>
               </td>
             </tr>

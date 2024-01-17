@@ -4,27 +4,29 @@
 
 <%= render 'search_form' %>
 
-<table class="table" style="margin-top: 35px">
-  <th></th>
-  <th></th>
-  <th>id</th>
-  <th>Nom</th>
-  <th>Adresse</th>
-  <th>Date de création</th>
-  <th>Source</th>
-  <th>Validé?</th>
+<table class="custom-table" style="margin-top: 35px">
+  <thead>
+    <th>Nom</th>
+    <th>id</th>
+    <th>Adresse</th>
+    <th>Date de création</th>
+    <th>Source</th>
+    <th>Validé?</th>
+    <th></th>
+    <th></th>
+  </thead>
   <% @pois.each do |poi| %>
     <tr>
-      <td><%= link_to "Modifier", edit_admin_poi_path(poi), class: "btn btn-default" %></td>
-      <td><%= link_to "Supprimer", admin_poi_path(poi), method: :delete, class: "btn btn-danger", data: { confirm: "Êtes vous sûr ?" } %></td>
-      <td><%= poi.id %></td>
       <td><%= poi.name %></td>
+      <td><%= poi.id %></td>
       <td><%= poi.adress %></td>
       <td><%= l(poi.created_at, format: :date_long) if poi.created_at %></td>
       <td>
-        <span class="label <%= poi.source_entourage? ? 'label-info' : 'label-warning' %>"><%= poi.source %></span>
+        <span class="custom-badge <%= poi.source_entourage? ? 'info' : 'warning' %>"><%= poi.source %></span>
       </td>
       <td><%= check_box_tag '', '', poi.validated, disabled: true %></td>
+      <td><%= link_to "Modifier", edit_admin_poi_path(poi), class: "custom-button custom-primary-inverted" %></td>
+      <td><%= link_to "Supprimer", admin_poi_path(poi), method: :delete, class: "custom-button custom-primary red", data: { confirm: "Êtes vous sûr ?" } %></td>
     </tr>
   <% end %>
 </table>

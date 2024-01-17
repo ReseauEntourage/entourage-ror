@@ -13,19 +13,21 @@
           </div>
         </div>
       <% else %>
-        <table class="table">
-          <th>Titre</th>
-          <th>Photos</th>
+        <table class="custom-table">
+          <thead>
+            <th>Titre</th>
+            <th>Photos</th>
+          </thead>
           <% @neighborhood_images.each do |neighborhood_image| %>
             <tr>
               <td>
                 <%= link_to neighborhood_image.title, edit_admin_neighborhood_image_path(neighborhood_image) %>
               </td>
               <td>
-                <%= image_tag(neighborhood_image.image_url, size: '390x258') if neighborhood_image.image_url.present? %>
+                <%= image_tag(neighborhood_image.image_url) if neighborhood_image.image_url.present? %>
               </td>
               <td>
-                <%= link_to "Modifier", edit_admin_neighborhood_image_path(neighborhood_image), class: "btn btn-default" %>
+                <%= link_to "Modifier", edit_admin_neighborhood_image_path(neighborhood_image), class: "custom-button custom-primary-inverted" %>
               </td>
             </tr>
           <% end %>
