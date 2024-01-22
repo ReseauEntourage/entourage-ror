@@ -58,6 +58,7 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
           "image_url" => "http://foo.bar",
           "read" => false,
           "message_type" => "text",
+          "reactions" => {},
           "status" => "active"
         }]
       }) }
@@ -139,6 +140,7 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
           "image_url" => nil,
           "read" => false,
           "message_type" => "text",
+          "reactions" => {},
           "status" => "active"
         }
       }) }
