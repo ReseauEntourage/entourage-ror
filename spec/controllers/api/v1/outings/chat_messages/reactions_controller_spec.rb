@@ -22,9 +22,11 @@ describe Api::V1::Outings::ChatMessages::ReactionsController do
       it { expect(response.status).to eq(200) }
       it { expect(result).to have_key('reactions')}
       it { expect(result).to eq({
-        "reactions" => {
-          user_reaction.reaction_id.to_s => 1,
-        }
+        "reactions" => [{
+          'chat_message_id' => user_reaction.instance_id,
+          "reaction_id" => user_reaction.reaction_id,
+          "reactions_count" => 1,
+        }]
       }) }
     end
   end

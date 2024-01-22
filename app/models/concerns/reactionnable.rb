@@ -2,6 +2,7 @@ module Reactionnable
   extend ActiveSupport::Concern
 
   included do
+    has_many :chat_message_reactions
     has_many :user_reactions, as: :instance
   end
 
@@ -11,7 +12,7 @@ module Reactionnable
     end
 
     def summary
-      @instance.user_reactions.group(:reaction_id).count
+      @instance.chat_message_reactions
     end
 
     def user_ids_for_reaction_id reaction_id
