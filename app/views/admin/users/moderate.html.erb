@@ -1,16 +1,19 @@
 <h1>Liste des dernières photos de profils ajoutées</h1>
 
-<table class="table">
-  <th>id</th>
-  <th>name</th>
-  <th>avatar</th>
-  <th></th>
+<table class="custom-table">
+  
+  <thead>
+    <th>Nom</th>
+    <th>id</th>
+    <th>avatar</th>
+    <th></th>
+  </thead>
 
   <% @users.each do |user| %>
     <% presenter = UserPresenter.new(user: user) %>
     <tr>
+      <td><%= link_to user.full_name, edit_admin_user_path(user) %></td>
       <td><%= user.id %></td>
-      <td><%= user.first_name %> <%= user.last_name %> </td>
       <td><%= presenter.avatar %> </td>
       <td><%= presenter.destroy_avatar_link %></td>
       <td><%= presenter.validation_status_action_link %></td>

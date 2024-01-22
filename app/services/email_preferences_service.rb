@@ -8,29 +8,6 @@ module EmailPreferencesService
     )
   end
 
-  def self.enable_mailchimp_callback?
-    !Rails.env.test?
-  end
-
-  def self.sync_mailchimp_subscription_status email_preference
-    return unless email_preference.email_category_id == category_id('newsletter')
-
-    if email_preference.subscribed
-      MailchimpService.update(
-        :newsletter, email_preference.user.email,
-        status: :subscribed
-      ) rescue MailchimpService::ResourceNotFound
-    else
-      MailchimpService.strong_unsubscribe(
-        list: :newsletter,
-        email: email_preference.user.email,
-        reason: "via le site"
-      )
-    end
-  rescue MailchimpService::ConfigError => e
-    Raven.capture_exception(e)
-  end
-
   def self.reload_categories
     @categories = Hash[EmailCategory.pluck(:name, :id)].symbolize_keys
   end

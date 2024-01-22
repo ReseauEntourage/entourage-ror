@@ -18,8 +18,8 @@
         </div>
       </div>
 
-      <table class="table">
-        <tr>
+      <table class="custom-table">
+        <thead>
           <th></th>
           <th></th>
           <th><%= t('activerecord.attributes.moderation_area.moderator_id') %></th>
@@ -29,7 +29,7 @@
           <th><%= t('activerecord.attributes.moderation_area.accompanyist_id') %></th>
           <th><%= t('activerecord.attributes.moderation_area.community_builder_id') %></th>
           <th>Slack ID</th>
-        </tr>
+        </thead>
         <% @moderation_areas.each do |moderation_area| %>
           <tr>
             <td style="width: 3em">

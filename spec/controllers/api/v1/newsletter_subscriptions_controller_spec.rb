@@ -1,14 +1,17 @@
 require 'rails_helper'
 
 RSpec.describe Api::V1::NewsletterSubscriptionsController, :type => :controller do
+  let(:user) { create :public_user }
+
   describe "GET show" do
-    before(:each) do
+    before do
       contact = double
       contact.stub(:attributes) {{ email: "foo@bar.fr" }}
-      Mailjet::Contact.stub(:find).and_return(contact)
+
+      Mailjet::Listrecipient.stub(:first).and_return(contact)
     end
 
-    before { get 'show', params: { email: "foo@bar.fr" } }
+    before { get :show, params: { token: user.token } }
 
     it { expect(response.status).to eq(200) }
     it { expect(response.body).to eq({ contact: { email: "foo@bar.fr" }}.to_json) }

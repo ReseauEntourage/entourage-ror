@@ -18,7 +18,7 @@ class User < ApplicationRecord
   validates_format_of :email, with: /@/, unless: -> (u) { u.email.to_s.size.zero? }
   validates_presence_of [:first_name, :last_name, :organization, :email], if: Proc.new { |u| u.pro? }
   validates_associated :organization, if: Proc.new { |u| u.pro? }
-  validates_presence_of [:first_name, :last_name, :email], if: Proc.new { |u| u.org_member? }
+  validates_presence_of [:first_name, :last_name, :email], if: Proc.new { |u| u.association? }
   validates :sms_code, length: { minimum: 6 }
   validates :sms_code_password, length: { minimum: 6 }, if: Proc.new { |u| u.sms_code_password.present? }
   validates_length_of :about, maximum: 200, allow_nil: true
@@ -31,6 +31,7 @@ class User < ApplicationRecord
 
   before_save :slack_id_no_empty
   after_save :clean_up_passwords, if: :saved_change_to_encrypted_password?
+  after_save :sync_newsletter, if: :saved_change_to_email?
 
   has_many :tours
   has_many :encounters, through: :tours
@@ -78,6 +79,7 @@ class User < ApplicationRecord
   has_many :users_resources
   has_many :user_recommandations
   has_many :inapp_notifications, dependent: :destroy
+  has_many :email_preferences, dependent: :destroy
   has_one :notification_permission, dependent: :destroy
   has_many :recommandations, -> { UserRecommandation.active }, through: :user_recommandations
 
@@ -345,6 +347,33 @@ class User < ApplicationRecord
     super(interests & Tag.interest_list)
   end
 
+  def email_preference_newsletter
+    return false unless email_preferences
+    return false unless category_id = EmailPreferencesService.category_id('newsletter')
+
+    email_preferences.find_by(email_category_id: category_id)
+  end
+
+  def newsletter_subscription
+    return false unless email_preference_newsletter
+
+    email_preference_newsletter.subscribed
+  end
+
+  def newsletter_subscription= newsletter_subscription
+    return unless category_id = EmailPreferencesService.category_id('newsletter')
+
+    email_preference = EmailPreference.find_by(user: self, email_category_id: category_id) || email_preferences.build(email_category_id: category_id)
+    email_preference.subscribed = ActiveModel::Type::Boolean.new.cast(newsletter_subscription)
+
+  end
+
+  def sync_newsletter
+    return unless email
+
+    email_preference_newsletter.try(:sync_newsletter!)
+  end
+
   def to_s
     "#{id} - #{first_name} #{last_name}"
   end
@@ -407,7 +436,7 @@ class User < ApplicationRecord
     user_type=="pro"
   end
 
-  def org_member?
+  def association?
     partner_id != nil
   end
 

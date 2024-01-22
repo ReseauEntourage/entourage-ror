@@ -13,9 +13,11 @@
           </div>
         </div>
       <% else %>
-        <table class="table">
-          <th>Titre</th>
-          <th>Photos</th>
+        <table class="custom-table">
+          <thead>
+            <th>Titre</th>
+            <th>Photos</th>
+          </thead>
           <% @entourage_images.each do |entourage_image| %>
             <tr>
               <td>
@@ -23,10 +25,12 @@
               </td>
               <td>
                 <%= image_tag(entourage_image.landscape_url, size: '288x96') if entourage_image.landscape_url.present? %>
+              </td>
+              <td>
                 <%= image_tag(entourage_image.portrait_url, size: '59x96') if entourage_image.portrait_url.present? %>
               </td>
               <td>
-                <%= link_to "Modifier", edit_admin_entourage_image_path(entourage_image), class: "btn btn-default" %>
+                <%= link_to "Modifier", edit_admin_entourage_image_path(entourage_image), class: "custom-button custom-primary-inverted" %>
               </td>
             </tr>
           <% end %>

@@ -5,12 +5,12 @@
         <div style="flex-grow: 1">Options</div>
       </div>
 
-      <table class="table">
-        <tr>
+      <table class="custom-table">
+        <thead>
           <th>Nom</th>
           <th>Description</th>
           <th>Actif</th>
-        </tr>
+        </thead>
         <% @options.each do |option| %>
           <tr>
             <td><%= option.key %></td>

@@ -358,7 +358,12 @@ Rails.application.routes.draw do
       resources :registration_requests, only: [:create]
       resources :map, only: [:index]
       resources :contact_subscriptions, only: [:create]
-      resources :newsletter_subscriptions, only: [:show, :create], param: :email
+      resources :newsletter_subscriptions, only: [:create] do
+        collection do
+          get :show
+          delete :destroy
+        end
+      end
       resources :questions, only: [:index]
 
       resources :tour_areas, only: [:index, :show] do

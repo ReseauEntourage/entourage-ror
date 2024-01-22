@@ -78,35 +78,36 @@
   </div>
 <% end %>
 
-<table class="table admin-table" style="table-layout: auto">
-  <th>Nom</th>
-  <th>Prénom</th>
-  <th>Association</th>
+<table class="table custom-table" style="table-layout: auto">
+  <thead>
+    <th>Nom</th>
+    <th>Prénom</th>
+    <th>Association</th>
 
-  <% if @status == :pending %>
-    <th>Email lié au compte</th>
-    <th>Date de la demande</th>
-  <% elsif @status == :temporary_blocked %>
-    <th>Notification de déblocage le</th>
-  <% else %>
-    <th>Date de création</th>
-    <th>Date de dernière connexion</th>
-  <% end %>
+    <% if @status == :pending %>
+      <th>Email lié au compte</th>
+      <th>Date de la demande</th>
+    <% elsif @status == :temporary_blocked %>
+      <th>Notification de déblocage le</th>
+    <% else %>
+      <th>Date de création</th>
+      <th>Date de dernière connexion</th>
+    <% end %>
 
-  <th>Profil</th>
+    <th>Profil</th>
 
-  <% if [:admin, :moderators].include? @role %>
-    <th>Rôle modérateur</th>
-  <% end %>
+    <% if [:admin, :moderators].include? @role %>
+      <th>Rôle modérateur</th>
+    <% end %>
 
-  <th>Groupes</th>
+    <th>Groupes</th>
 
-  <th><!-- Actions --></th>
+  </thead>
 
   <% @users.each do |user| %>
     <tr>
-      <td><%= user.last_name %></td>
-      <td><%= user.first_name %></td>
+      <td><%= link_to user.last_name,  edit_admin_user_path(user)%></td>
+      <td><%= link_to user.first_name,  edit_admin_user_path(user)%></td>
       <td>
         <% if user.pro? && user.organization.present? %>
           <%= user.organization.name %>
@@ -133,11 +134,11 @@
 
       <td>
         <% if user.targeting_profile.present? %>
-          <span class="label label-default" title="Profil renseigné par la modération">
+          <span class="custom-badge info" title="Profil renseigné par la modération">
             <%= t "community.entourage.targeting_profiles.#{user.targeting_profile}" %>
           </span>
         <% elsif user.goal.present? %>
-          <span class="label label-primary" title="Profil renseigné par l'utilisateur">
+          <span class="custom-badge info" title="Profil renseigné par l'utilisateur">
             <%= t "community.entourage.goals_compact.#{user.goal}" %>
           </span>
         <% end %>
@@ -146,7 +147,7 @@
       <% if [:admin, :moderators].include? @role %>
         <td>
           <% if user.moderator %>
-            <span class="label label-default" title="moderator">modérateur</span>
+            <span class="custom-badge" title="moderator">modérateur</span>
           <% end %>
         </td>
       <% end %>
@@ -161,8 +162,6 @@
           </span>
         <% end %>
       </td>
-
-      <td><%= link_to "Modifier", edit_admin_user_path(user), class: "btn btn-danger" %></td>
     </tr>
   <% end %>
 </table>

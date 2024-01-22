@@ -1,6 +1,6 @@
 <div class="container">
   <div class="row">
-    <div class="col-xs-offset-2 col-xs-8">
+    <div>
       <div class="h1" style="display: flex; align-items: center;">
         <div style="flex-grow: 1">Pois Soliguide</div>
       </div>
@@ -25,7 +25,8 @@
           </div>
         </div>
       <% else %>
-        <table class="table">
+        <table class="custom-table">
+        <thead>
           <th>UUID</th>
           <th>Name</th>
           <th>Latitude</th>
@@ -33,7 +34,7 @@
           <th>Address</th>
           <th>Phone</th>
           <th>Category_id</th>
-
+        </thead>
           <% @pois.each do |poi| %>
             <tr>
               <td><%= poi[:uuid][1..] %></td>

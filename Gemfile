@@ -21,7 +21,6 @@ gem 'googlestaticmap',                git: 'https://github.com/ReseauEntourage/g
 gem 'momentjs-rails',                 '~> 2'
 gem 'shorturl',                       '~> 1.0.0'
 gem 'attr_encrypted',                 '~> 3'
-gem 'mailchimp-api',                  '~> 2'
 gem 'pg',                             '~> 1'
 gem 'kaminari',                       '~> 1'
 gem 'redis',                          '~> 4'

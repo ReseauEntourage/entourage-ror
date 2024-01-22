@@ -702,6 +702,51 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
       end
     end
 
+    context "newsletter_subscription" do
+      let(:params) { Hash.new }
+      let(:request) { post 'create', params: { user: { phone: "+33612345678", travel_distance: 16, email: "foo@bar.fr" }.merge(params) } }
+
+      context "no newsletter_subscription param" do
+        before { request }
+
+        it { expect(User.last.newsletter_subscription).to eq(false) }
+      end
+
+      context "newsletter_subscription is false" do
+        let(:params) { { newsletter_subscription: "false" } }
+
+        context do
+          before { request }
+
+          it { expect(User.last.newsletter_subscription).to eq(false) }
+          it { expect(User.last.email).to eq("foo@bar.fr") }
+        end
+
+        context do
+          after { request }
+
+          it { expect_any_instance_of(NewsletterServices::Contact).not_to receive(:create) }
+        end
+      end
+
+      context "newsletter_subscription is true" do
+        let(:params) { { newsletter_subscription: "true" } }
+
+        context do
+          before { request }
+
+          it { expect(User.last.newsletter_subscription).to eq(true) }
+          it { expect(response.status).to eq(201) }
+        end
+
+        context do
+          after { request }
+
+          it { expect_any_instance_of(NewsletterServices::Contact).to receive(:create) }
+        end
+      end
+    end
+
     context "already has a user without email" do
       let!(:previous_user) { FactoryBot.create(:public_user, email: nil) }
       before { post 'create', params: { user: {phone: "+33612345678"} } }
@@ -1050,20 +1095,15 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
 
   describe "DELETE destroy" do
     before { Timecop.freeze(Time.parse("10/10/2010").at_beginning_of_day) }
-    before { MailchimpService.stub(:strong_unsubscribe) }
+
     let!(:user) { FactoryBot.create(:pro_user, deleted: false, phone: "0612345678", email: "foo@bar.com") }
+
     before { delete :destroy, params: { id: user.to_param, token: user.token } }
+
     it { expect(user.reload.deleted).to be true }
     it { expect(user.reload.phone).to eq("+33612345678-2010-10-10 00:00:00") }
     it { expect(user.reload.email).to eq("foo@bar.com-2010-10-10 00:00:00") }
     it { expect(response.status).to eq(200) }
-    it do
-      expect(MailchimpService).to have_received(:strong_unsubscribe).with(
-        list: :newsletter,
-        email: user.email,
-        reason: "compte supprimé dans l'app"
-      )
-    end
     it { expect(JSON.parse(response.body)).to have_key('user') }
   end
 

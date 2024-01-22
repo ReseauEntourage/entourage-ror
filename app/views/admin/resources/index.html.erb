@@ -8,14 +8,15 @@
 
     <div class="row">
       <% unless @resources.none? %>
-        <table class="table">
-          <th>Id</th>
-          <th>Name</th>
-          <th>Catégorie</th>
-          <th>Tag</th>
-          <th>Vues</th>
-          <th>Traductions</th>
-          <th>Action</th>
+        <table class="custom-table">
+          <thead>
+            <th>Id</th>
+            <th>Nom</th>
+            <th>Catégorie</th>
+            <th>Tag</th>
+            <th>Vues</th>
+            <th>Traductions</th>
+          </thead>
           <% @resources.each do |resource| %>
             <tr>
               <td><%= resource.id %></td>
@@ -24,9 +25,6 @@
               <td><%= tag_label resource.tag %></td>
               <td><%= views_for resource %></td>
               <td><%= resource.completed_translations %></td>
-              <td>
-                <%= link_to "Modifier", edit_admin_resource_path(resource), class: "btn btn-primary" %>
-              </td>
             </tr>
           <% end %>
         </table>
