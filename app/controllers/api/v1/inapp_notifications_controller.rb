@@ -34,10 +34,6 @@ module Api
         params[:page] || 1
       end
 
-      def per
-        params[:per] || 25
-      end
-
       private
 
       def set_inapp_notications_displayed_at
