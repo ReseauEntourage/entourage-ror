@@ -18,7 +18,7 @@
 
 <%= render partial: 'common/errors', locals: {obj: @partner} %>
 
-<%= form_for @partner, url: "", html: {id: "partner-form"} do |f| %>
+<%= form_for [:admin, @partner] do |f| %>
   <%= f.hidden_field :staff %>
 
   <div class="row">
@@ -79,7 +79,8 @@
     <%= f.label :email %>
     <%= f.email_field :email, class: "form-control" %>
   </div>
-  <%= f.submit @partner.new_record? ? "Créer" : "Modifier", class: "btn btn-success" %>
+
+  <%= f.submit "Enregistrer", class: "btn btn-success" %>
 <% end %>
 
 <script>
