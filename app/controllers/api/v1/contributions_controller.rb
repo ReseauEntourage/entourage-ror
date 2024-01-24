@@ -145,10 +145,6 @@ module Api
         params[:page] || 1
       end
 
-      def per
-        params[:per] || 25
-      end
-
       def latitude
         params[:latitude] || current_user.latitude
       end
