@@ -4,7 +4,7 @@
 
 <%= render partial: 'common/errors', locals: {obj: @announcement} %>
 
-<%= form_for @announcement, url: "", html: {id: "announcement_form"} do |f| %>
+<%= form_for [:admin, @announcement], html: { id: "announcement_form" } do |f| %>
   <% case @announcement.status %>
   <% when 'draft'  %>
     <div class="alert alert-info" role="alert" style="display: flex; align-items: center">

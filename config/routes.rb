@@ -86,13 +86,11 @@ Rails.application.routes.draw do
       resources :registration_requests, only: [:index, :show, :update, :destroy]
       resources :messages, only: [:index, :destroy]
       resources :organizations, only: [:show, :index, :edit, :update]
-      resources :partners, except: [:create, :update] do
+      resources :partners do
         collection do
-          post '/new', action: :create, as: nil
           post :change_admin_role
         end
         member do
-          match '/edit', via: [:patch, :put], action: :update, as: nil
           get '/edit/logo', action: :edit_logo
           get '/logo_upload_success', action: :logo_upload_success
         end
@@ -182,13 +180,12 @@ Rails.application.routes.draw do
         end
       end
 
-      resources :announcements, only: [:index, :new, :edit] do
+      resources :announcements do
         collection do
-          post '/new', action: :create, as: nil
           post :reorder
         end
+
         member do
-          match '/edit', via: [:patch, :put], action: :update, as: nil
           get '/edit/image', action: :edit_image
           get '/image_upload_success', action: :image_upload_success
           get '/edit/image_portrait', action: :edit_image_portrait
