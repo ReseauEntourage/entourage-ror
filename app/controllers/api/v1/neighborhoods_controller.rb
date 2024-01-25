@@ -118,10 +118,6 @@ module Api
         params[:page] || 1
       end
 
-      def per
-        params[:per] || 25
-      end
-
       def report_params
         params.require(:report).permit(:message, signals: [])
       end
