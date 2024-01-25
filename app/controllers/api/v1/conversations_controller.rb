@@ -119,6 +119,10 @@ module Api
         params[:page] || 1
       end
 
+      def per
+        params[:per] || 25
+      end
+
       def set_conversation
         @conversation = Entourage.find_by_id_through_context(params[:id], params)
 

@@ -164,7 +164,7 @@ module Api
       end
 
       def per
-        [params[:per].try(:to_i) || 10, 50].min
+        [params[:per].try(:to_i) || 10, 25].min
       end
 
       # For logging API_KEY with lograge
