@@ -94,7 +94,7 @@ describe Api::V1::Outings::ChatMessagesController do
   end
 
   describe 'GET show' do
-    let!(:chat_message) { FactoryBot.create(:chat_message, messageable: outing) }
+    let!(:chat_message) { create(:chat_message, messageable: outing) }
 
     context "not signed in" do
       before { get :show, params: { outing_id: outing.to_param, id: chat_message.id } }
@@ -142,9 +142,32 @@ describe Api::V1::Outings::ChatMessagesController do
           "read" => false,
           "message_type" => "text",
           "reactions" => [],
+          "has_reacted" => false,
           "status" => "active"
         }
       }) }
+    end
+
+    describe 'has_reacted' do
+      let(:request) { get :index, params: { outing_id: outing.id, token: user.token } }
+
+      context 'no' do
+        before { request }
+
+        it { expect(result['chat_messages'].count).to eq(1) }
+        it { expect(result['chat_messages'][0]).to have_key('has_reacted') }
+        it { expect(result['chat_messages'][0]['has_reacted']).to eq(false) }
+      end
+
+      context 'yes' do
+        let!(:user_reaction) { create(:user_reaction, instance: chat_message, user: user) }
+
+        before { request }
+
+        it { expect(result['chat_messages'].count).to eq(1) }
+        it { expect(result['chat_messages'][0]).to have_key('has_reacted') }
+        it { expect(result['chat_messages'][0]['has_reacted']).to eq(true) }
+      end
     end
 
     describe 'no deeplink' do

@@ -2,8 +2,8 @@ module Reactionnable
   extend ActiveSupport::Concern
 
   included do
-    has_many :chat_message_reactions
-    has_many :user_reactions, as: :instance
+    has_many :chat_message_reactions # using view for summary
+    has_many :user_reactions, as: :instance # using table for details
   end
 
   ReactionsStruct = Struct.new(:instance) do
