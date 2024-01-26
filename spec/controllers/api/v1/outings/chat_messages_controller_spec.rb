@@ -60,6 +60,7 @@ describe Api::V1::Outings::ChatMessagesController do
           "read" => false,
           "message_type" => "text",
           "reactions" => [],
+          "has_reacted" => false,
           "status" => "active"
         }]
       }) }
