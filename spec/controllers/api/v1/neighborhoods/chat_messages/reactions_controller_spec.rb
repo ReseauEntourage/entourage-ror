@@ -32,23 +32,47 @@ describe Api::V1::Neighborhoods::ChatMessages::ReactionsController do
   end
 
   describe 'details' do
-    let!(:user_reaction) { create(:user_reaction, instance: chat_message) }
+    let!(:user_reaction_1) { create(:user_reaction, instance: chat_message) }
+    let!(:user_reaction_2) { create(:user_reaction, instance: chat_message) }
 
     context "not signed in" do
-      before { get :details, params: { id: user_reaction.reaction_id, neighborhood_id: neighborhood.to_param, chat_message_id: chat_message.id } }
+      before { get :details, params: { id: user_reaction_1.reaction_id, neighborhood_id: neighborhood.to_param, chat_message_id: chat_message.id } }
 
       it { expect(response.status).to eq(401) }
     end
 
     context "signed in" do
-      before { get :details, params: { id: user_reaction.reaction_id, neighborhood_id: neighborhood.to_param, token: user.token, chat_message_id: chat_message.id } }
+      before { get :details, params: { id: user_reaction_1.reaction_id, neighborhood_id: neighborhood.to_param, token: user.token, chat_message_id: chat_message.id } }
 
       it { expect(response.status).to eq(200) }
       it { expect(result).to have_key('users')}
       it { expect(result['users'].count).to eq(1)}
       it { expect(result['users'][0]).to have_key('id')}
       it { expect(result['users'][0]).to have_key('display_name')}
-      it { expect(result['users'][0]['id']).to eq(user_reaction.user_id)}
+      it { expect(result['users'][0]['id']).to eq(user_reaction_1.user_id)}
+    end
+  end
+
+  describe 'users' do
+    let!(:user_reaction_1) { create(:user_reaction, instance: chat_message) }
+    let!(:user_reaction_2) { create(:user_reaction, instance: chat_message) }
+
+    context "not signed in" do
+      before { get :users, params: { neighborhood_id: neighborhood.to_param, chat_message_id: chat_message.id } }
+
+      it { expect(response.status).to eq(401) }
+    end
+
+    context "signed in" do
+      before { get :users, params: { neighborhood_id: neighborhood.to_param, token: user.token, chat_message_id: chat_message.id } }
+
+      it { expect(response.status).to eq(200) }
+      it { expect(result).to have_key('users')}
+      it { expect(result['users'].count).to eq(2)}
+      it { expect(result['users'][0]).to have_key('id')}
+      it { expect(result['users'][0]).to have_key('display_name')}
+      it { expect(result['users'][0]['id']).to eq(user_reaction_1.user_id)}
+      it { expect(result['users'][1]['id']).to eq(user_reaction_2.user_id)}
     end
   end
 

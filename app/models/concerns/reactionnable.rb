@@ -15,10 +15,6 @@ module Reactionnable
       @instance.chat_message_reactions
     end
 
-    def user_ids_for_reaction_id reaction_id
-      @instance.user_reactions.where(reaction_id: reaction_id).pluck(:user_id)
-    end
-
     def user_has_reacted? user_id
       @instance.user_reactions.where(user_id: user_id).exists?
     end

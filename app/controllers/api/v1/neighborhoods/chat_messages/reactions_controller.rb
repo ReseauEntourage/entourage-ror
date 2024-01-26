@@ -18,8 +18,23 @@ module Api
           end
 
           def details
-            user_ids = @chat_message.reactions.user_ids_for_reaction_id(params[:id])
-            users = User.where(id: user_ids).page(page).per(per)
+            users = @chat_message.user_reactions.where(reaction_id: params[:id])
+              .includes(:user)
+              .order(:created_at)
+              .page(page)
+              .per(per)
+              .map(&:user)
+
+            render json: users, each_serializer: ::V1::Users::BasicSerializer
+          end
+
+          def users
+            users = @chat_message.user_reactions
+            .includes(:user)
+            .order(:created_at)
+            .page(page)
+            .per(per)
+            .map(&:user)
 
             render json: users, each_serializer: ::V1::Users::BasicSerializer
           end

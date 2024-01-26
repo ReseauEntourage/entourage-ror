@@ -444,6 +444,7 @@ Rails.application.routes.draw do
 
           resources :reactions, :controller => 'neighborhoods/chat_messages/reactions', only: [:index, :create] do
             collection do
+              get :users
               delete :destroy
             end
 
@@ -517,6 +518,7 @@ Rails.application.routes.draw do
 
           resources :reactions, :controller => 'outings/chat_messages/reactions', only: [:index, :create] do
             collection do
+              get :users
               delete :destroy
             end
 
