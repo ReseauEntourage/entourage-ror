@@ -21,32 +21,34 @@
     </div>
   <% end %>
 
-  <div class="form-group">
-    <%= f.label :departement %>
+  <% if current_user.super_admin? %>
+    <div class="form-group">
+      <%= f.label :departement %>
 
-    <% if @area.departement == '*' %>
-      <div class="alert alert-info" role="alert" style="display: flex; align-items: center">
-        <div style="flex-grow: 1">
-          <b>Hors-Zone</b><br>
-          Le département n'est pas éditable pour la zone de modération Hors-Zone.
+      <% if @area.departement == '*' %>
+        <div class="alert alert-info" role="alert" style="display: flex; align-items: center">
+          <div style="flex-grow: 1">
+            <b>Hors-Zone</b><br>
+            Le département n'est pas éditable pour la zone de modération Hors-Zone.
+          </div>
         </div>
-      </div>
-    <% else %>
-      <%= f.text_field :departement, class: "form-control", required: true %>
-    <% end %>
-  </div>
+      <% else %>
+        <%= f.text_field :departement, class: "form-control", required: true %>
+      <% end %>
+    </div>
 
-  <div class="form-group">
-    <%= f.label :name %>
-    <%= f.text_field :name, class: "form-control", required: true %>
-  </div>
+    <div class="form-group">
+      <%= f.label :name %>
+      <%= f.text_field :name, class: "form-control", required: true %>
+    </div>
 
-  <%= render_user_selection_field(f, :moderator, @area) %>
-  <%= render_user_selection_field(f, :animator, @area) %>
-  <%= render_user_selection_field(f, :mobilisator, @area) %>
-  <%= render_user_selection_field(f, :sourcing, @area) %>
-  <%= render_user_selection_field(f, :accompanyist, @area) %>
-  <%= render_user_selection_field(f, :community_builder, @area) %>
+    <%= render_user_selection_field(f, :moderator, @area) %>
+    <%= render_user_selection_field(f, :animator, @area) %>
+    <%= render_user_selection_field(f, :mobilisator, @area) %>
+    <%= render_user_selection_field(f, :sourcing, @area) %>
+    <%= render_user_selection_field(f, :accompanyist, @area) %>
+    <%= render_user_selection_field(f, :community_builder, @area) %>
+  <% end %>
 
   <div>
     <!-- Nav tabs -->

@@ -40,8 +40,8 @@
               <% end %>
             </td>
 
+            <td><%= link_to moderation_area.name, edit_admin_moderation_area_path(moderation_area) %></td>
             <% if current_user.super_admin? %>
-              <td><%= link_to moderation_area.name, edit_admin_moderation_area_path(moderation_area) %></td>
               <td><%= render partial: "admin/moderation_areas/update/moderator_form", locals: { moderation_area: moderation_area } %></td>
               <td><%= render partial: "admin/moderation_areas/update/animator_form", locals: { moderation_area: moderation_area } %></td>
               <td><%= render partial: "admin/moderation_areas/update/mobilisator_form", locals: { moderation_area: moderation_area } %></td>
@@ -49,7 +49,6 @@
               <td><%= render partial: "admin/moderation_areas/update/accompanyist_form", locals: { moderation_area: moderation_area } %></td>
               <td><%= render partial: "admin/moderation_areas/update/community_builder_form", locals: { moderation_area: moderation_area } %></td>
             <% else %>
-              <td><%= link_to moderation_area.name, admin_moderation_area_path(moderation_area) %></td>
               <td><%= moderation_area.moderator.full_name if moderation_area.moderator %></td>
               <td><%= moderation_area.animator.full_name if moderation_area.animator %></td>
               <td><%= moderation_area.mobilisator.full_name if moderation_area.mobilisator %></td>

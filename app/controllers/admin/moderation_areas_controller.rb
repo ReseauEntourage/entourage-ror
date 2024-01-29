@@ -1,6 +1,6 @@
 module Admin
   class ModerationAreasController < Admin::BaseController
-    before_action :authenticate_super_admin!, except: [:index, :show]
+    before_action :authenticate_super_admin!, except: [:index, :show, :edit, :update]
 
     layout 'admin_large'
 
@@ -103,6 +103,12 @@ module Admin
     private
 
     def area_params
+      return super_admin_area_params if current_user.super_admin?
+
+      area_params_for_moderator
+    end
+
+    def super_admin_area_params
       params.require(:moderation_area).permit(
         :moderator_id,
         :animator_id,
@@ -112,6 +118,15 @@ module Admin
         :community_builder_id,
         :departement,
         :name,
+        :welcome_message_1_offer_help,
+        :welcome_message_1_ask_for_help,
+        :welcome_message_1_organization,
+        :welcome_message_1_goal_not_known,
+      )
+    end
+
+    def area_params_for_moderator
+      params.require(:moderation_area).permit(
         :welcome_message_1_offer_help,
         :welcome_message_1_ask_for_help,
         :welcome_message_1_organization,
