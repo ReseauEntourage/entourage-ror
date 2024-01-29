@@ -59,7 +59,7 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
           "read" => false,
           "message_type" => "text",
           "reactions" => [],
-          "has_reacted" => false,
+          "reaction_id" => nil,
           "status" => "active"
         }]
       }) }
@@ -142,7 +142,7 @@ describe Api::V1::Neighborhoods::ChatMessagesController do
           "read" => false,
           "message_type" => "text",
           "reactions" => [],
-          "has_reacted" => false,
+          "reaction_id" => nil,
           "status" => "active"
         }
       }) }

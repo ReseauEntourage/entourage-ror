@@ -60,7 +60,7 @@ describe Api::V1::Outings::ChatMessagesController do
           "read" => false,
           "message_type" => "text",
           "reactions" => [],
-          "has_reacted" => false,
+          "reaction_id" => nil,
           "status" => "active"
         }]
       }) }
@@ -143,21 +143,21 @@ describe Api::V1::Outings::ChatMessagesController do
           "read" => false,
           "message_type" => "text",
           "reactions" => [],
-          "has_reacted" => false,
+          "reaction_id" => nil,
           "status" => "active"
         }
       }) }
     end
 
-    describe 'has_reacted' do
+    describe 'reaction_id' do
       let(:request) { get :index, params: { outing_id: outing.id, token: user.token } }
 
       context 'no' do
         before { request }
 
         it { expect(result['chat_messages'].count).to eq(1) }
-        it { expect(result['chat_messages'][0]).to have_key('has_reacted') }
-        it { expect(result['chat_messages'][0]['has_reacted']).to eq(false) }
+        it { expect(result['chat_messages'][0]).to have_key('reaction_id') }
+        it { expect(result['chat_messages'][0]['reaction_id']).to eq(nil) }
       end
 
       context 'yes' do
@@ -166,8 +166,8 @@ describe Api::V1::Outings::ChatMessagesController do
         before { request }
 
         it { expect(result['chat_messages'].count).to eq(1) }
-        it { expect(result['chat_messages'][0]).to have_key('has_reacted') }
-        it { expect(result['chat_messages'][0]['has_reacted']).to eq(true) }
+        it { expect(result['chat_messages'][0]).to have_key('reaction_id') }
+        it { expect(result['chat_messages'][0]['reaction_id']).to eq(user_reaction.reaction_id) }
       end
     end
 

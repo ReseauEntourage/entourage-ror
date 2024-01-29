@@ -2,16 +2,16 @@ module V1
   module ChatMessages
     class PostSerializer < GenericSerializer
       attribute :reactions
-      attribute :has_reacted
+      attribute :reaction_id
 
       def reactions
         object.reactions.summary
       end
 
-      def has_reacted
+      def reaction_id
         return false unless scope[:user].present?
 
-        object.reactions.user_has_reacted?(scope[:user].id)
+        object.reactions.user_reaction_id(scope[:user].id)
       end
 
       def post_id

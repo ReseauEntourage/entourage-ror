@@ -39,34 +39,8 @@ describe Reactionnable do
     end
   end
 
-  describe "reactions.user_ids_for_reaction_id" do
-    let(:subject) { instance.reactions.user_ids_for_reaction_id(reaction_id) }
-
-    let!(:user_reaction_1) { create(:user_reaction, instance: instance, reaction: heart) }
-    let!(:user_reaction_2) { create(:user_reaction, instance: instance, reaction: heart) }
-    let!(:user_reaction_3) { create(:user_reaction, instance: instance, reaction: thumb) }
-
-    context "no reaction" do
-      let(:reaction_id) { entourage.id }
-
-      it { expect(subject).to match_array([]) }
-    end
-
-    context "one reaction" do
-      let(:reaction_id) { thumb.id }
-
-      it { expect(subject).to match_array([user_reaction_3.user_id]) }
-    end
-
-    context "multiple reactions" do
-      let(:reaction_id) { heart.id }
-
-      it { expect(subject).to match_array([user_reaction_1.user_id, user_reaction_2.user_id]) }
-    end
-  end
-
-  describe "reactions.user_has_reacted?" do
-    let(:subject) { instance.reactions.user_has_reacted?(user_id) }
+  describe "reactions.user_reaction_id" do
+    let(:subject) { instance.reactions.user_reaction_id(user_id) }
 
     let!(:user_reaction_0) { create(:user_reaction) }
     let!(:user_reaction_1) { create(:user_reaction, instance: instance, reaction: heart) }
@@ -76,25 +50,25 @@ describe Reactionnable do
     context "no reaction" do
       let(:user_id) { create(:public_user).id }
 
-      it { expect(subject).to eq(false) }
+      it { expect(subject).to eq(nil) }
     end
 
     context "no reaction on instance" do
       let(:user_id) { user_reaction_0.user_id }
 
-      it { expect(subject).to eq(false) }
+      it { expect(subject).to eq(nil) }
     end
 
     context "on single reaction" do
       let(:user_id) { user_reaction_3.user_id }
 
-      it { expect(subject).to eq(true) }
+      it { expect(subject).to eq(user_reaction_3.reaction_id) }
     end
 
     context "on multiple reactions" do
       let(:user_id) { user_reaction_2.user_id }
 
-      it { expect(subject).to eq(true) }
+      it { expect(subject).to eq(user_reaction_2.reaction_id) }
     end
   end
 
