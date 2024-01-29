@@ -26,7 +26,7 @@ module Reactionnable
     def destroy user:
       return unless user_reaction = @instance.user_reactions.find_by(user: user)
 
-      user_reaction.destroy
+      user_reaction.destroy and return user_reaction.reaction_id
     end
   end
 

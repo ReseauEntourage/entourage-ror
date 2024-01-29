@@ -52,8 +52,8 @@ module Api
           end
 
           def destroy
-            if @chat_message.reactions.destroy(user: current_user)
-              render json: :deleted, status: 200
+            if reaction_id = @chat_message.reactions.destroy(user: current_user)
+              render json: { reaction_id: reaction_id }, status: 200
             else
               render json: { message: "Could not delete reaction" }, status: 400
             end

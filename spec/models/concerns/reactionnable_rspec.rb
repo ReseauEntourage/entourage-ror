@@ -129,7 +129,7 @@ describe Reactionnable do
     context "on single reaction" do
       let!(:user_reaction) { create(:user_reaction, instance: instance, reaction: heart, user: user) }
 
-      it { expect(subject.id).to eq(user_reaction.id) }
+      it { expect(subject).to eq(user_reaction.reaction_id) }
       it { expect { subject }.to change { UserReaction.count }.by(-1) }
     end
 
@@ -137,7 +137,7 @@ describe Reactionnable do
       let!(:user_reaction_1) { create(:user_reaction, instance: instance, reaction: heart, user: user) }
       let!(:user_reaction_2) { create(:user_reaction, instance: instance, reaction: heart) }
 
-      it { expect(subject.id).to eq(user_reaction_1.id) }
+      it { expect(subject).to eq(user_reaction_1.reaction_id) }
       it { expect { subject }.to change { UserReaction.count }.by(-1) }
     end
   end
