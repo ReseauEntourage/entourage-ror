@@ -48,6 +48,13 @@
 
   <% if @entourage.outing? %>
     <div class="control-group">
+      <%= f.label :place_limit, "Places limitées", class: "control-label" %>
+      <div class="controls">
+        <%= text_field_tag "entourage[metadata][place_limit]", @entourage.metadata[:place_limit], placeholder: "Nombre entier positif ou laisser vide", class: "form-control" %>
+      </div>
+    </div>
+
+    <div class="control-group">
       <%= f.label :outing_image_url %>
       <% if @entourage.new_record? %>
         <div class="text-muted">
@@ -88,7 +95,7 @@
     </div>
   </div>
 
-  <% if @entourage.group_type == 'outing' %>
+  <% if @entourage.outing? %>
     <%
       timestamps = {
         starts_at: "Date et heure de début",
