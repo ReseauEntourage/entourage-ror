@@ -54,6 +54,7 @@ gem 'ams_lazy_relationships'
 gem 'acts-as-taggable-on',            '~> 8.0'
 gem 'ancestry'
 gem 'tinymce-rails'
+gem 'restforce', '~> 7.2.0'
 
 group :development, :test do
   # gem 'annotate'
