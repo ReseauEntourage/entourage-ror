@@ -45,11 +45,11 @@ describe Api::V1::Outings::ChatMessages::ReactionsController do
       before { get :details, params: { id: user_reaction_1.reaction_id, outing_id: outing.to_param, token: user.token, chat_message_id: chat_message.id } }
 
       it { expect(response.status).to eq(200) }
-      it { expect(result).to have_key('users')}
-      it { expect(result['users'].count).to eq(1)}
-      it { expect(result['users'][0]).to have_key('id')}
-      it { expect(result['users'][0]).to have_key('display_name')}
-      it { expect(result['users'][0]['id']).to eq(user_reaction_1.user_id)}
+      it { expect(result).to have_key('users') }
+      it { expect(result['users'].count).to eq(1) }
+      it { expect(result['users'][0]).to have_key('id') }
+      it { expect(result['users'][0]).to have_key('display_name') }
+      it { expect(result['users'][0]['id']).to eq(user_reaction_1.user_id) }
     end
   end
 
@@ -67,12 +67,30 @@ describe Api::V1::Outings::ChatMessages::ReactionsController do
       before { get :users, params: { outing_id: outing.to_param, token: user.token, chat_message_id: chat_message.id } }
 
       it { expect(response.status).to eq(200) }
-      it { expect(result).to have_key('users')}
-      it { expect(result['users'].count).to eq(2)}
-      it { expect(result['users'][0]).to have_key('id')}
-      it { expect(result['users'][0]).to have_key('display_name')}
-      it { expect(result['users'][0]['id']).to eq(user_reaction_1.user_id)}
-      it { expect(result['users'][1]['id']).to eq(user_reaction_2.user_id)}
+      it { expect(result).to have_key('user_reactions') }
+      it { expect(result['user_reactions'].count).to eq(2) }
+      it { expect(result['user_reactions']).to match_array([
+        {
+          'reaction_id' => user_reaction_1.reaction_id,
+          'user' => {
+            'id' => user_reaction_1.user_id,
+            'lang' => user_reaction_1.user.lang,
+            'display_name' => UserPresenter.new(user: user_reaction_1.user).display_name,
+            'avatar_url' => nil,
+            'community_roles' => []
+          }
+        },
+        {
+          'reaction_id' => user_reaction_2.reaction_id,
+          'user' => {
+            'id' => user_reaction_2.user_id,
+            'lang' => user_reaction_2.user.lang,
+            'display_name' => UserPresenter.new(user: user_reaction_2.user).display_name,
+            'avatar_url' => nil,
+            'community_roles' => []
+          }
+        },
+      ]) }
     end
   end
 

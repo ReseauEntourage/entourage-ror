@@ -29,14 +29,13 @@ module Api
           end
 
           def users
-            users = @chat_message.user_reactions
-            .includes(:user)
-            .order(:created_at)
-            .page(page)
-            .per(per)
-            .map(&:user)
+            user_reactions = @chat_message.user_reactions
+              .includes(:user)
+              .order(:created_at)
+              .page(page)
+              .per(per)
 
-            render json: users, each_serializer: ::V1::Users::BasicSerializer
+            render json: user_reactions, each_serializer: ::V1::UserReactionSerializer
           end
 
           def create
