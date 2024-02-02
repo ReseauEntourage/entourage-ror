@@ -4,6 +4,9 @@ table.custom-table {
     font-family: "Poppins";
     width: 100%;
     font-size: 15px !important;
+    * {
+        transition: 0.3s ease-in-out;
+    }
     thead {
         th {
             font-size: 13px !important;
@@ -58,6 +61,13 @@ table.custom-table {
                 &:nth-child(4n+2) {
                     background-color: rgb(249, 249, 249);
                 }
+            }
+            &.clickable-row:hover {
+                cursor: pointer;
+                background-color: #fddfd279 ;
+            }
+            &.unread {
+                background-color: #fddfd2 ;
             }
         }
     }
