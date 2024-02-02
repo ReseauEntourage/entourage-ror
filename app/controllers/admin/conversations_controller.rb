@@ -9,7 +9,6 @@ module Admin
       @conversations = Entourage
         .where(group_type: :conversation)
         .joins(:join_requests)
-        .merge(@user.join_requests.accepted)
         .select(%(
           entourages.*,
           last_message_read < feed_updated_at or last_message_read is null as unread
@@ -31,6 +30,11 @@ module Admin
       if params[:filter] == 'unread'
         @conversations = @conversations
           .where("last_message_read < feed_updated_at or last_message_read is null")
+      end
+
+      if params[:user_id].present?
+        @conversations = @conversations
+          .where("join_requests.user_id = ?", params[:user_id])
       end
 
       @last_message =
