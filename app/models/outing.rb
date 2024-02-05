@@ -78,6 +78,8 @@ class Outing < Entourage
   scope :default_order, -> { order(Arel.sql("metadata->>'starts_at'")) }
   scope :reversed_order, -> { order(Arel.sql("metadata->>'starts_at' desc")) }
 
+  scope :unlimited, -> { where("metadata->>'place_limit' is null or metadata->>'place_limit' = '0'") }
+
   attr_accessor :recurrency, :original_outing, :force_relatives_dates
 
   def initialize_dup original_outing
