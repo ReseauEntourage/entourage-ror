@@ -46,8 +46,9 @@ module Api
           tags: {
             sections: format_sections(Tag.sections),
             interests: format_tags(Tag.interests),
-            signals: format_tags(Tag.signals)
-          }
+            signals: format_tags(Tag.signals),
+          },
+          reactions: format_reactions(Reaction.all),
         }.to_json, status: 200
       end
 
@@ -101,6 +102,10 @@ module Api
 
       def format_sections sections
         sections.to_a.map { |t| { id: t.first }.merge(t.last) }
+      end
+
+      def format_reactions reactions
+        reactions.to_a.map { |reaction| { id: reaction.id, name: reaction.name, key: reaction.key, image_url: reaction.image_url } }
       end
 
       def set_default_neighborhood

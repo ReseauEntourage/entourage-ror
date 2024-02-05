@@ -1,0 +1,9 @@
+heart:
+  name: "Coeur"
+  key: heart
+thumbup:
+  name: "Pouce up"
+  key: thumbup
+entourage:
+  name: "Entourage"
+  key: entourage

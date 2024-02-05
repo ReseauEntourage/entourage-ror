@@ -402,6 +402,7 @@ Rails.application.routes.draw do
             get :past
           end
         end
+
         resources :actions, :controller => 'users/actions', only: [:index]
 
         resources :addresses, controller: 'users/addresses', only: [] do
@@ -439,6 +440,17 @@ Rails.application.routes.draw do
 
           collection do
             post :presigned_upload
+          end
+
+          resources :reactions, :controller => 'neighborhoods/chat_messages/reactions', only: [:index, :create] do
+            collection do
+              get :users
+              delete :destroy
+            end
+
+            member do
+              get :details
+            end
           end
         end
 
@@ -502,6 +514,17 @@ Rails.application.routes.draw do
 
           collection do
             post :presigned_upload
+          end
+
+          resources :reactions, :controller => 'outings/chat_messages/reactions', only: [:index, :create] do
+            collection do
+              get :users
+              delete :destroy
+            end
+
+            member do
+              get :details
+            end
           end
         end
 

@@ -15,7 +15,7 @@ module Api
         end
 
         def index
-          messages = @outing.parent_chat_messages.includes(:translation, :user).ordered.page(page).per(per)
+          messages = @outing.parent_chat_messages.includes(:translation, :user, :chat_message_reactions, :user_reactions).ordered.page(page).per(per)
 
           render json: messages, each_serializer: ::V1::ChatMessages::PostSerializer, scope: { current_join_request: join_request, user: current_user }
         end
@@ -102,7 +102,7 @@ module Api
 
         def comments
           post = @outing.chat_messages.where(id: @chat_message.id).first
-          messages = post.children.order(created_at: :asc).includes(:translation)
+          messages = post.children.order(created_at: :asc).includes(:translation, :user_reactions)
 
           render json: messages, each_serializer: ::V1::ChatMessages::CommentSerializer, scope: { current_join_request: join_request, user: current_user }
         end

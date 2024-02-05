@@ -18,12 +18,22 @@ module Populate
       end
     end
 
+    def set_reactions
+      load_reactions_config.each do |key, attributes|
+        Reaction.new(attributes).save
+      end
+    end
+
     def delete_resources
       Resource.delete_all
     end
 
     def delete_recommandations
       Recommandation.delete_all
+    end
+
+    def delete_reactions
+      Reaction.delete_all
     end
 
     def load_config type
@@ -36,6 +46,10 @@ module Populate
 
     def load_recommandations_config
       @recommandations_config ||= load_config(:recommandations)
+    end
+
+    def load_reactions_config
+      @reactions_config ||= load_config(:reactions)
     end
 
     def find_resource_id identifiant

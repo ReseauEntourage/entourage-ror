@@ -59,6 +59,8 @@ describe Api::V1::Outings::ChatMessagesController do
           "image_url" => "http://foo.bar",
           "read" => false,
           "message_type" => "text",
+          "reactions" => [],
+          "reaction_id" => nil,
           "status" => "active"
         }]
       }) }
@@ -93,7 +95,7 @@ describe Api::V1::Outings::ChatMessagesController do
   end
 
   describe 'GET show' do
-    let!(:chat_message) { FactoryBot.create(:chat_message, messageable: outing) }
+    let!(:chat_message) { create(:chat_message, messageable: outing) }
 
     context "not signed in" do
       before { get :show, params: { outing_id: outing.to_param, id: chat_message.id } }
@@ -140,9 +142,33 @@ describe Api::V1::Outings::ChatMessagesController do
           "image_url" => nil,
           "read" => false,
           "message_type" => "text",
+          "reactions" => [],
+          "reaction_id" => nil,
           "status" => "active"
         }
       }) }
+    end
+
+    describe 'reaction_id' do
+      let(:request) { get :index, params: { outing_id: outing.id, token: user.token } }
+
+      context 'no' do
+        before { request }
+
+        it { expect(result['chat_messages'].count).to eq(1) }
+        it { expect(result['chat_messages'][0]).to have_key('reaction_id') }
+        it { expect(result['chat_messages'][0]['reaction_id']).to eq(nil) }
+      end
+
+      context 'yes' do
+        let!(:user_reaction) { create(:user_reaction, instance: chat_message, user: user) }
+
+        before { request }
+
+        it { expect(result['chat_messages'].count).to eq(1) }
+        it { expect(result['chat_messages'][0]).to have_key('reaction_id') }
+        it { expect(result['chat_messages'][0]['reaction_id']).to eq(user_reaction.reaction_id) }
+      end
     end
 
     describe 'no deeplink' do

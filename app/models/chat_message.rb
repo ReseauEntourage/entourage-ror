@@ -4,6 +4,7 @@ class ChatMessage < ApplicationRecord
   include ChatServices::PrivateConversation
   include Deeplinkable
   include Translatable
+  include Reactionnable
 
   CONTENT_TYPES = %w(image/jpeg)
   BUCKET_PREFIX = "chat_messages"
