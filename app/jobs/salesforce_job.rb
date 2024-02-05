@@ -8,8 +8,8 @@ class SalesforceJob
   def perform(user_id, verb)
     user = User.find(user_id)
 
-    return perform_destroy(user) if verb == :destroy
-    return perform_upsert(user) if [:create, :upsert].include?(verb)
+    return perform_destroy(user) if verb == "destroy"
+    return perform_upsert(user) if ["create", "upsert"].include?(verb)
 
     perform_default(user, verb)
   end
@@ -33,6 +33,6 @@ class SalesforceJob
 
   # ActiveJob interface
   def self.perform_later(user_id, verb)
-    perform_async(user_id, verb)
+    perform_async(user_id, verb.to_s)
   end
 end
