@@ -17,6 +17,7 @@ module OutingTasks
     def upcoming_outings
       Outing
         .active
+        .unlimited
         .where(notification_sent_at: nil)
         .upcoming(UPCOMING_DELAY.from_now)
         .joins(:user)
