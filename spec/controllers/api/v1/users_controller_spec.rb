@@ -54,7 +54,6 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                 "events_count" => 0,
                 "outings_count" => 0,
                 "neighborhoods_count" => 0,
-                "good_waves_participation" => false,
               },
               "partner" => {
                 "id" => partner.id,
@@ -295,7 +294,6 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
             "events_count" => 0,
             "outings_count" => 0,
             "neighborhoods_count" => 0,
-            "good_waves_participation" => false,
           },
           "partner" => nil,
           "memberships" => [],
@@ -829,7 +827,6 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                "events_count" => 0,
                "outings_count" => 0,
                "neighborhoods_count" => 0,
-               "good_waves_participation" => false,
             },
             "partner" => {
               "id" => partner.id,
@@ -924,7 +921,6 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
                "events_count" => 0,
                "outings_count" => 0,
                "neighborhoods_count" => 0,
-               "good_waves_participation" => false,
             },
             "partner" => {
               "id" => partner.id,
@@ -1010,7 +1006,6 @@ RSpec.describe Api::V1::UsersController, :type => :controller do
               "events_count" => 0,
               "outings_count" => 0,
               "neighborhoods_count" => 0,
-              "good_waves_participation" => false,
             },
             "engaged" => false,
             "unread_count" => 0,

@@ -41,8 +41,7 @@ describe Api::V1::AnonymousUsersController do
           "contribution_creation_count" => 0,
           "events_count" => 0,
           "outings_count" => 0,
-          "neighborhoods_count" => 0,
-          "good_waves_participation" => false
+          "neighborhoods_count" => 0
         },
         "address"=>nil,
         "address_2"=>nil,

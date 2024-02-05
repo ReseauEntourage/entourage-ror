@@ -692,49 +692,13 @@ Rails.application.routes.draw do
     end
   end
 
-  good_waves_url = URI(ENV['GOOD_WAVES_URL'] || "//#{ENV['HOST']}/good_waves")
-  good_waves_scope = {
-    host: good_waves_url.host,
-    path: good_waves_url.path
-  }.compact
-
-  scope good_waves_scope.merge(
-    as: :good_waves, :module => :good_waves,
-    constraints: good_waves_scope.slice(:host)) do
-
-    get '/' => 'base#home'
-    get '/onboarding' => 'base#onboarding'
-    post '/onboarding' => 'base#update_profile'
-    get '/invitation/:id' => 'invitations#show', as: :invitation
-
-    resources :groups, only: [:index, :new, :create, :show] do
-      collection do
-        post :parse_members
-      end
-      member do
-        get :invitation, action: :new_invitation
-        post :invitation, action: :create_invitation
-        post :remove_member
-        post :cancel_invitation
-      end
-    end
-
-    resource :session, only: [:new] do
-      collection do
-        match :identify, via: [:post, :get]
-        post :authenticate
-        post :reset_password
-        post :logout
-      end
-    end
-  end
-
   #WEB
   resources :sessions, only: [:new, :create, :destroy] do
     collection do
       get 'switch_user' => 'admin/sessions#switch_user'
     end
   end
+
   resources :organizations, only: [:new, :create, :edit, :update] do
     collection do
       get 'dashboard'
